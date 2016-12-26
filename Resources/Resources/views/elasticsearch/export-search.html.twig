@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Export search{% endblock %}
+{% block pagetitle %}
+	Export search
+{% endblock %} 
+{# {% block subtitle %}{% endblock %} #}
+
+
+
+{% block body %}
+
+<div class="row">
+	<div id="search-page" class="col-md-12">
+	    {% if form is defined %}
+		{{ form_start(form) }}
+		
+			<div class="box ">
+				<div class="box-header with-border">
+					<h3>
+						<i class="glyphicon glyphicon-export"></i> Preset export
+					</h3>
+				</div>
+				<div class="box-body">
+					{% for row in form.children %}
+					  {% if (row.vars.id != 'form_massExport') and (row.vars.id != 'form__token') %}
+					    <div class="row">
+						  <div class="col-md-12">
+							{{ form_row(row) }}
+						  </div>
+					    </div>
+					  {% endif %}
+					{% endfor %}
+				</div>
+									
+				<div class="box-footer">
+					<div class="form-group">
+						<div class="btn-group">
+							{{ form_widget(form.massExport) }}
+						</div>
+					</div>
+				</div>
+			</div>
+		{{ form_end(form) }}
+		{% else %}
+		    <div class="box box-danger">
+				<div class="box-header with-border">
+					<h3>
+						<i class="fa fa-warning"></i> Error no export template found
+					</h3>
+				</div>
+				<div class="box-body">
+				    <p>There are no export templates defined for the resultset of your search preset</p>
+				</div>
+			</div>
+		{% endif %}
+	</div>
+</div>
+{% endblock %} 

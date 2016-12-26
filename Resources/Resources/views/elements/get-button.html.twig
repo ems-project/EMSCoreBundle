@@ -1,0 +1,20 @@
+
+
+<a  class="btn btn-sm btn-primary {%  if disabled is defined and disabled %}disabled{% endif %}" href="{{ url }}"
+	{% if target is defined %}
+		target="{{ target }}"
+	{% endif %}
+>
+	{% if icon is defined %}
+		{% if icon|slice(0,9) == 'glyphicon'  %}
+			<span class="glyphicon {{ icon }}"></span>&nbsp;
+		{% else %}
+			<span class="fa fa-{{ icon }}"></span>&nbsp;
+		{% endif  %}
+	{% endif %}
+	{% if label is defined %}
+		{{ label }}
+	{% endif %}
+
+</a>
+

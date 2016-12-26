@@ -1,0 +1,150 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Users list{% endblock %}
+{% block pagetitle %}Users list{% endblock %} 
+{% block subtitle %}<small>Are they ready to rock?</small>
+{% endblock %} {% block body %}
+
+<div class="row">
+	<div class="col-md-12">
+		<div class="box ">
+			<div class="box-header with-border">
+				<i class="fa fa-users"></i>
+				<h3 class="box-title">Users</h3>
+				<a class="btn btn-xs btn-primary pull-right"
+					href="{{ path('user.add') }}"><i class="fa fa-plus"></i>
+					Add user</a>
+			</div>
+			<!-- /.box-header -->
+			<div class="box-body">
+				<div class="table-responsive">
+				<table class="table table-condensed table-striped">
+					<tbody>
+						<tr>
+							<th class="text-center" style="width: 10px">#</th>
+							<th>Username</th>
+							<th>Display name</th>
+							<th>email</th>
+							<th>Circles</th>
+							<th>Enabled</th>
+{# 							<th>Locked</th>#}
+{# 							<th>Expired</th>#}
+							<th>Roles</th>
+							<th>Last login</th>
+							<th>Action</th>
+						</tr>
+						{% for user in users %}
+							<tr>
+								<td class="text-center" style="width: 10px">{{ loop.index }}</td>
+								<td>{{ user.username }}</td>
+								<td>{{ user.displayName }}</td>
+								<td>{{ user.email }}</td>
+								<td>
+									{% for circle in user.circles %}
+{# 										{% if not loop.first %}#}
+{# 											{% if loop.last %}#}
+{# 											&amp;#}
+{# 											{% else %}#}
+{# 											,#}
+{# 											{% endif %}#}
+{# 										{% endif %}#}
+										{{ circle|data_link|raw }}
+									{% endfor %}
+								</td>
+								<td>
+									{% if user.enabled %}
+										<i class="fa fa-check"></i>
+									{% endif %}
+								</td>
+{# 								<td>#}
+{# 									{% if user.locked %}#}
+{# 										<i class="fa fa-warning"></i>#}
+{# 									{% endif %}#}
+{# 								</td>#}
+{# 								<td>#}
+{# 									{% if user.expired %}#}
+{# 										<i class="fa fa-warning"></i>#}
+{# 									{% endif %}#}
+{# 								</td>#}
+								<td>
+									{% for role in user.roles %}
+										{% if not loop.first %}
+											{% if loop.last %}
+											&amp;
+											{% else %}
+											,
+											{% endif %}
+										{% endif %}
+										{{ role|trans }}
+									{% endfor %}
+								</td>
+								<td>{{ user.lastLogin|date(date_time_format) }}</td>
+								<td>
+									<div class="btn-group">
+										{% include 'elements/get-button.html.twig' with {
+											'url':  path('user.edit', {'id': user.id}),
+											'label': 'Edit',
+											'icon': 'pencil'
+										}%}
+										{% include 'elements/post-button.html.twig' with {
+											'url': path('user.delete', {'id': user.id}),
+											'message': 'Delete the user ' ~ user.username ~ ' ?',
+											'label': 'Delete',
+											'icon': 'trash'
+										}%}
+										{% if user.enabled %}
+											{% include 'elements/post-button.html.twig' with {
+												'url': path('user.enabling', {'id': user.id}),
+													'message': 'Disable the user ' ~ user.username ~ ' ?',
+													'label': 'Disable',
+													'icon': 'user-times'
+											}%}
+										{% else %}
+											{% include 'elements/post-button.html.twig' with {
+													'url': path('user.enabling', {'id': user.id}),
+													'message': 'Enable the user ' ~ user.username ~ ' ?',
+													'label': 'Enable',
+													'icon': 'user-plus'
+											}%}
+										{% endif %}
+{# 										{% if user.locked %}#}
+{# 											{% include 'elements/post-button.html.twig' with {#}
+{# 												'url': path('user.locking', {'id': user.id}),#}
+{# 													'message': 'Unlock the user ' ~ user.username ~ ' ?',#}
+{# 													'label': 'Unlock',#}
+{# 													'icon': 'unlock-alt'#}
+{# 											}%}#}
+{# 										{% else %}#}
+{# 											{% include 'elements/post-button.html.twig' with {#}
+{# 													'url': path('user.locking', {'id': user.id}),#}
+{# 													'message': 'Lock the user ' ~ user.username ~ ' ?',#}
+{# 													'label': 'Lock',#}
+{# 													'icon': 'lock'#}
+{# 											}%}#}
+											{% include 'elements/post-button.html.twig' with {
+													'url': path('user.apikey', {'user': user.id}),
+													'message': 'Generate API key for ' ~ user.username ~ ' ?',
+													'label': 'API key',
+													'icon': 'key'
+											}%}
+{# 										{% endif %}#}
+				                    </div>
+								</td>
+							</tr>						
+						{% endfor %}
+					</tbody>
+				</table>
+				</div>
+			</div>
+			<!-- /.box-body -->
+		</div>
+	</div>
+</div>
+{% endblock %} 
+
+
+{% block javascripts %}
+	{% include 'app/menu.html.twig' with {
+		'item':  'user-index'
+	}%}
+{% endblock %}

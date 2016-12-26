@@ -1,0 +1,83 @@
+# To get started with security, check out the documentation:
+# http://symfony.com/doc/current/book/security.html
+security:
+    # http://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
+    providers:
+        api_key_user_provider:
+            id: api_key_user_provider
+        fos_userbundle:
+            id: fos_user.user_provider.username_email
+    #providers:
+    #    in_memory:
+    #        memory:
+    #            users:
+    #                author:
+    #                    password: author
+    #                    roles: 'ROLE_AUTHOR'
+    #                publisher:
+    #                    password: author
+    #                    roles: 'ROLE_PUBLISHER'
+    #                admin:
+    #                    password: admin
+    #                    roles: 'ROLE_ADMIN'
+    encoders:
+        FOS\UserBundle\Model\UserInterface: bcrypt
+    role_hierarchy:
+        ROLE_SUPER_USER:      ROLE_USER
+        ROLE_AUTHOR:          ROLE_SUPER_USER
+        ROLE_SUPER_AUTHOR:    ROLE_AUTHOR
+        ROLE_PUBLISHER:       ROLE_SUPER_AUTHOR
+        ROLE_SUPER_PUBLISHER: ROLE_PUBLISHER
+        ROLE_WEBMASTER:       ROLE_SUPER_PUBLISHER
+        ROLE_SUPER_WEBMASTER: ROLE_WEBMASTER
+        ROLE_ADMIN:           ROLE_SUPER_WEBMASTER
+        ROLE_SUPER_ADMIN:     ROLE_ADMIN
+        
+    firewalls:
+        # disables authentication for assets and the profiler, adapt it according to your needs
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        secured_area:
+            pattern: ^/api
+            stateless: true
+            simple_preauth:
+                authenticator: apikey_authenticator
+            provider: api_key_user_provider
+        main:
+            anonymous: ~
+            # activate different ways to authenticate
+            form_login:
+                use_forward: true
+                provider: fos_userbundle
+                csrf_token_generator: security.csrf.token_manager
+                #login_path: /login
+                #check_path: /login_check
+            logout:
+                path: /logout
+                target: /login
+            remember_me:
+                secret:   '%secret%'
+                lifetime: 604800 # 1 week in seconds
+                path:     /
+            
+    access_control:
+        - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/auth-token$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/go-to-login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/status.json$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/status$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/documentation$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/data/custom-view, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/data/file, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api, roles: ROLE_API }
+        - { path: ^/content-type, roles: ROLE_ADMIN }
+        - { path: ^/environment, roles: ROLE_ADMIN }
+        - { path: ^/user, roles: ROLE_ADMIN }
+        - { path: ^/elasticsearch/delete-search, roles: ROLE_USER }
+        - { path: ^/elasticsearch, roles: ROLE_ADMIN }
+        - { path: ^/publisher/align, roles: ROLE_WEBMASTER }
+        - { path: ^/, roles: ROLE_USER }
+        

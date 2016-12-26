@@ -1,0 +1,291 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}All Environments{% endblock %}
+{% block pagetitle %}All Environments{% endblock %} 
+
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><i class="fa fa-database"></i> Environments</li>
+		<li>List Environments</li>
+   	</ol>
+{% endblock %}
+
+{% block body %}
+
+<div class="row">
+	<div class="col-md-12">
+		<div class="box ">
+			<div class="box-header with-border">
+				<i class="fa fa-database"></i>
+				<h3 class="box-title">Local environments</h3>{{ 'List all local evironment'|debug }}
+				<a class="btn btn-xs btn-primary pull-right" href="{{ url('environment.add') }}"><i class="fa fa-plus"></i> Add environment</a>
+			</div>
+			<!-- /.box-header -->
+			<div class="box-body">
+				{% if environments|length == 0 %}
+					There is no environment yet
+				{% else %}
+				<div class="table-responsive">
+				<table class="table table-condensed table-striped">
+					<tbody>
+						<tr>
+							<th class="text-center" style="width: 10px">#</th>
+							<th>Name</th>
+							<th>Alias</th>
+							<th>Index</th>
+							<th class="text-center">Total (indexed)</th>
+							<th class="text-center">Total (eMS)</th>
+							<th class="text-center">Deleted (eMS)</th>
+							<th>Action</th>
+						</tr>
+						{% for environment in environments %}
+							{{ 'Environmen\'s info'|debug({name: environment.name}) }}
+							{% if environment.managed  %}
+								<tr>
+									<td class="text-center">{{ loop.index }}.</td>
+									<td>
+										<span class="badge bg-{{ environment.color|raw }}" title="Circles:{% for circle in environment.circles %}
+						                     {% if not loop.first %}
+						                       {% if loop.last %}
+						                       &amp;
+						                       {% else %}
+						                       ,
+						                       {% endif %}
+						                     {% endif %}
+						                      {{ circle|trans }}
+						                    {% endfor %}">{{ environment.name|humanize }}
+						                </span>		
+									</td>
+									<td>{{ environment.alias }}</td>
+									<td>{{ environment.index }}</td>
+									<td class="text-center">{{ environment.total|number_format }}</td>
+									<td class="text-center">{{ environment.counter|number_format }}</td>
+									<td class="text-center">{{ environment.deletedRevision|number_format }}</td>
+									<td>
+										<div class="btn-group">
+											{% include 'elements/get-button.html.twig' with {
+												'url': path('environment.rebuild', {'id': environment.id}),
+												'label': 'Rebuild',
+												'icon': 'recycle'
+											}%}
+											{% include 'elements/get-button.html.twig' with {
+													'url': path('environment.view', {'id': environment.id}),
+													'label': 'View',
+													'icon': 'eye'
+												}%}
+											{% include 'elements/get-button.html.twig' with {
+													'url': path('environment.edit', {'id': environment.id}),
+													'label': 'Edit',
+													'icon': 'pencil'
+												}%}
+											{% include 'elements/post-button.html.twig' with {
+												'url': path('environment.remove', {'id': environment.id}),
+												'message': 'Delete the environment ' ~ environment.name|humanize ~ ' ?',
+												'label': 'Delete',
+												'icon': 'trash'
+											}%}
+										</div>
+									</td>
+								</tr>
+							{% endif %}
+						{% endfor %}
+					</tbody>
+				</table>
+				</div>
+				{% endif %}
+			</div>
+			<!-- /.box-body -->
+		</div>
+		
+		
+		{% set found = false %}
+		{% for environment in environments %}
+			{% if not environment.managed  %}			
+				{% set found = true %}
+			{% endif %}
+		{% endfor %}
+		
+		<div class="box ">
+			<div class="box-header with-border">
+				<i class="fa fa-database"></i>
+				<h3 class="box-title">Externals environments</h3>{{ 'List referenced external evironment'|debug }}
+				<a class="btn btn-xs btn-primary pull-right" href="{{ url('environment.add') }}"><i class="fa fa-plus"></i> Add environment</a>
+			</div>
+			<!-- /.box-header -->
+			<div class="box-body">
+				{% if not found %}
+					There is no external environment yet
+				{% else %}
+					<div class="table-responsive">
+						<table class="table table-condensed table-striped">
+							<tbody>
+								<tr>
+									<th class="text-center" style="width: 10px">#</th>
+									<th>Name</th>
+									<th>Alias</th>
+									<th>Index</th>
+									<th class="text-center">Total</th>
+									<th>Action</th>
+								</tr>
+								{% for environment in environments %}
+									{% if not environment.managed  %}
+										<tr>
+											<td class="text-center">{{ loop.index }}.</td>
+											<td>
+												<span class="badge bg-{{ environment.color|raw }}">{{ environment.name|humanize }}</span>		
+											</td>
+											<td>{{ environment.alias }}</td>
+											<td>{{ environment.index }}</td>
+											<td class="text-center">{{ environment.total|number_format }}</td>
+											<td>
+												<div class="btn-group">
+		{# 											{% include 'elements/get-button.html.twig' with {#}
+		{# 												'url': path('index.switch', {'id': environment.id}),#}
+		{# 												'label': 'Switch',#}
+		{# 												'icon': 'share-square-o'#}
+		{# 											}%}#}
+													{% include 'elements/get-button.html.twig' with {
+															'url': path('environment.view', {'id': environment.id}),
+															'label': 'View',
+															'icon': 'eye'
+														}%}
+													{% include 'elements/get-button.html.twig' with {
+															'url': path('environment.edit', {'id': environment.id}),
+															'label': 'Edit',
+															'icon': 'pencil'
+														}%}
+													{% include 'elements/post-button.html.twig' with {
+														'url': path('environment.remove', {'id': environment.id}),
+														'message': 'Detach the environment ' ~ environment.name|humanize ~ ' ?',
+														'label': 'Detach',
+														'icon': 'trash'
+													}%}
+												</div>
+											</td>
+										</tr>
+									{% endif %}
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				{% endif %}
+			</div>
+			<!-- /.box-body -->
+		</div>
+	</div>
+	
+</div>
+<div class="row">
+		
+	<div class="col-md-5">
+
+		<div class="box ">
+			<div class="box-header with-border">
+				<i class="fa fa-database"></i>
+				<h3 class="box-title">Unreferenced aliases</h3>{{ 'List unreferenced external environments/aliases'|debug }}
+			</div>
+			<!-- /.box-header -->
+			<div class="box-body">
+				{% if unmanagedIndexes|length == 0 %}
+					All indexes are referenced
+				{% else %}
+			
+					<div class="table-responsive">
+					<table class="table table-condensed table-striped">
+						<tbody>
+							<tr>
+								<th class="text-center" style="width: 10px">#</th>
+								<th>Name</th>
+								<th class="text-center">Total</th>
+								<th>Action</th>
+							</tr>
+							{% for alias in unmanagedIndexes %}
+								<tr>
+									<td class="text-center">{{ loop.index }}.</td>
+									<td>{{ alias.name }}</td>
+									<td class="text-center">{{ alias.total|number_format }}</td>
+									<td>
+										{% include 'elements/post-button.html.twig' with {
+											'url': path('environment.attach', {'name': alias.name }),
+											'message': 'Attach the alias ' ~ alias.name|humanize ~ ' ?',
+											'label': 'Attach',
+											'icon': 'plus'
+										}%}
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+					</div>
+				{% endif %}
+
+			</div>
+			<!-- /.box-body -->
+		</div>
+	</div>
+	
+	
+	<div class="col-md-7">
+		<div class="box ">
+			<div class="box-header with-border">
+				<i class="fa fa-database"></i>
+				<h3 class="box-title">Orphan indexes</h3>{{ 'List orphan indexes'|debug }}
+			</div>
+			<!-- /.box-header -->
+			<div class="box-body">
+			
+				{% if orphanIndexes|length == 0 %}
+					There is no orphean index
+				{% else %}
+				
+				<div class="table-responsive">
+				<table class="table table-condensed table-striped">
+					<tbody>
+						<tr>
+							<th class="text-center" style="width: 10px">#</th>
+							<th>Name</th>
+							<th class="text-center">Total</th>
+							<th>Action</th>
+						</tr>
+						{% for index in orphanIndexes %}
+							<tr>
+								<td class="text-center">{{ loop.index }}.</td>
+								<td>{{ index.name }}</td>
+								<td class="text-center">{{ index.total|number_format }}</td>
+								<td>
+								
+									<div class="btn-group">
+										{% include 'elements/get-button.html.twig' with {
+											'url': path('elasticsearch.alias.add', {'name': index.name}),
+											'label': 'Add alias',
+											'icon': 'plus'
+										}%}
+										{% include 'elements/post-button.html.twig' with {
+											'url': path('elasticsearch.index.delete', {'name': index.name}),
+											'message': 'Delete the index ' ~ index.name|humanize ~ ' ?',
+											'label': 'Delete',
+											'icon': 'trash'
+										}%}
+									</div>
+								</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+				</div>
+				{% endif %}
+
+			</div>
+			<!-- /.box-body -->
+		</div>
+	</div>
+
+</div>
+
+{% endblock %} 
+
+{% block javascripts %}
+	{% include 'app/menu.html.twig' with {
+		'item':  'environment-list'
+	}%}
+{% endblock %}	

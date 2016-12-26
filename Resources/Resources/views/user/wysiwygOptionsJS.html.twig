@@ -1,0 +1,25 @@
+
+<script language="javascript">
+
+	
+function profileChange() {
+	if($('#{{ form.vars.name }}_wysiwygProfile').val() == 'custom') {
+		$('#WysiwygOptionsSample,#{{ form.vars.name }}_wysiwygOptions').prop('disabled', false);
+	}
+	else {
+		$('#{{ form.vars.name }}_wysiwygOptions,#WysiwygOptionsSample').prop('disabled', true);
+	}
+}
+
+
+$(window).ready(function() {
+	$('#WysiwygOptionsSample').click(function(e){
+		//http://bernhardhaeussner.de/odd/json-escape/
+		$('#{{ form.vars.name }}_wysiwygOptions').val("{\n\t\"uiColor\": \"#66AB16\",\n\t\"plugins\": \"adv_link,a11yhelp,basicstyles,bidi,blockquote,clipboard,colorbutton,colordialog,contextmenu,dialogadvtab,div,elementspath,enterkey,entities,filebrowser,find,flash,floatingspace,font,format,horizontalrule,htmlwriter,image,iframe,indentlist,indentblock,justify,language,list,liststyle,magicline,maximize,newpage,pagebreak,pastefromword,pastetext,preview,print,removeformat,resize,save,scayt,selectall,showblocks,showborders,smiley,sourcearea,specialchar,stylescombo,tab,table,tabletools,templates,toolbar,undo,wsc,wysiwygarea\",\n\t\"toolbarGroups\": [{\n\t\t\t\"name\": \"document\",\n\t\t\t\"groups\": [\"mode\", \"document\", \"doctools\"]\n\t\t}, {\n\t\t\t\"name\": \"clipboard\",\n\t\t\t\"groups\": [\"clipboard\", \"undo\"]\n\t\t}, {\n\t\t\t\"name\": \"editing\",\n\t\t\t\"groups\": [\"find\", \"spellchecker\"]\n\t\t}, {\n\t\t\t\"name\": \"forms\"\n\t\t},\n\t\t\"/\", {\n\t\t\t\"name\": \"basicstyles\",\n\t\t\t\"groups\": [\"basicstyles\", \"cleanup\"]\n\t\t}, {\n\t\t\t\"name\": \"paragraph\",\n\t\t\t\"groups\": [\"list\", \"indent\", \"blocks\", \"align\", \"bidi\"]\n\t\t}, {\n\t\t\t\"name\": \"links\"\n\t\t}, {\n\t\t\t\"name\": \"insert\"\n\t\t},\n\t\t\"/\", {\n\t\t\t\"name\": \"styles\"\n\t\t}, {\n\t\t\t\"name\": \"colors\"\n\t\t}, {\n\t\t\t\"name\": \"tools\"\n\t\t}, {\n\t\t\t\"name\": \"others\"\n\t\t}, {\n\t\t\t\"name\": \"about\"\n\t\t}\n\t]\n}");
+	});	
+	$('#{{ form.vars.name }}_wysiwygProfile').change(function(){
+		profileChange();
+	});
+	profileChange();
+});
+</script>

@@ -1,0 +1,640 @@
+
+{%  macro renderDataField(dataField) %}
+	{{ attribute(_self, dataField.fieldType.type|replace({'\\': '_'}), [dataField]) }}
+	{{ _self.messages(dataField) }}
+{% endmacro %}
+
+
+{%  macro messages(dataField) %}
+	{% if dataField.messages|length > 0 %}
+		<div class="callout callout-warning">
+			{% if dataField.messages|length == 1 %}
+	    		<p>{{ dataField.messages.0 }}</p>
+	    	{% else %}
+	    		<ul>
+	    		{% for message in dataField.messages %}
+	    			<li>{{ message }}</li>
+	    		{% endfor %}
+	    		</ul>
+	    	{% endif %}
+		</div>
+	{% endif %}
+{% endmacro %}
+
+{% macro Ems/CoreBundle_Form_DataField_UrlAttachmentFieldType(dataField) %}
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			<i class="{% if dataField.fieldType.displayOptions.icon is defined %}{{ dataField.fieldType.displayOptions.icon }}{% else %}fa fa-file-o{% endif %}"></i> 				
+				{% if dataField.fieldType.displayOptions.label is defined %}
+					{{ dataField.fieldType.displayOptions.label }}
+				{% else %}
+					{{ dataField.fieldType.name }}
+				{% endif %}
+		</h3>
+	</div>
+	<div class="panel-body" >
+		{% if dataField.rawData and dataField.rawData.url is defined %}
+			<ul>
+				<li><a href="{{ dataField.rawData.url }}" target="_blank">URL: {{ dataField.rawData.url }}</a></li>
+				{% if dataField.rawData.size is defined %}
+					<li>Size: {{ dataField.rawData.size }}</li>
+				{% endif %}
+			</ul>
+		{% endif %}
+		
+	</div>
+{% endmacro %}
+
+{% macro Ems/CoreBundle_Form_DataField_FileAttachmentFieldType(dataField) %}
+	{{ _self.Ems/CoreBundle_Form_DataField_AssetFieldType(dataField) }}
+{% endmacro %}
+
+
+{% macro Ems/CoreBundle_Form_DataField_AssetFieldType(dataField) %}
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			<i class="{% if dataField.fieldType.displayOptions.icon is defined %}{{ dataField.fieldType.displayOptions.icon }}{% else %}fa fa-file-o{% endif %}"></i> 				
+				{% if dataField.fieldType.displayOptions.label is defined %}
+					{{ dataField.fieldType.displayOptions.label }}
+				{% else %}
+					{{ dataField.fieldType.name }}
+				{% endif %}
+		</h3>
+	</div>
+	<div class="panel-body" >
+		{% if dataField.rawData and dataField.rawData.sha1 is defined %}
+			{% if dataField.rawData.sha1 and dataField.rawData.mimetype starts with 'image/' %}
+				<img src="{{ url('file.download', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) }}" class="img-responsive" alt="Image of the field {{ dataField.fieldType.name }}">
+			{% else %}
+				<ul>
+					<li>Sha1: {{ dataField.rawData.sha1 }}</li>
+					<li>Name: {{ dataField.rawData.filename }}</li>
+					{% if dataField.rawData.filesize is defined %}
+						<li>Size: {{ dataField.rawData.filesize }}</li>
+					{% endif %}
+					<li>Type: {{ dataField.rawData.mimetype }}</li>
+				</ul>
+			{% endif %}
+		{% endif %}
+		
+	</div>
+	{% if dataField.rawData and dataField.rawData.sha1 is defined and dataField.rawData.sha1 %}
+		<div class="panel-footer" >
+			<a href="{{ url('file.download', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) }}" class="btn btn-small btn-primary"><i class="fa fa-download"></i>&nbsp;Download</a>
+		</div>
+	{% endif %}
+</div>
+{% endmacro %}
+
+
+{% macro Ems/CoreBundle_Form_DataField_CollectionFieldType(dataField) %}
+	{% set tempId = dataField.fieldType.name~'_'~random() %}
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">
+				{% if dataField.fieldType.displayOptions.icon is defined %}
+					<i class="{{ dataField.fieldType.displayOptions.icon }}"></i> 
+				{% endif %}
+				{% if dataField.fieldType.displayOptions.label is defined %}
+					{{ dataField.fieldType.displayOptions.label }}
+				{% else %}
+				{% endif %}
+				({{ dataField.fieldType.name }})
+				{% if dataField.fieldType.displayOptions.collapsible is defined and dataField.fieldType.displayOptions.collapsible %}
+					<a class="toggle-button pull-right" role="button" data-toggle="collapse" href="#{{ tempId }}" 
+						aria-expanded="false" aria-controls="{{ tempId }}" data-toggle-contain="Hide {{ '<i class="fa fa-chevron-down"></i>'|e }}">
+						Show <i class="fa fa-chevron-right"></i>
+					</a>
+				{% endif %}
+			</h3>
+		</div>
+		<div 
+			class="panel-body{% if dataField.fieldType.displayOptions.collapsible is defined and dataField.fieldType.displayOptions.collapsible %} collapse{% endif %}" 
+				id="{{ tempId }}">
+			{% for child in dataField.children %}
+				<div class="{% if dataField.fieldType.displayOptions.itemBootstrapClass is defined and dataField.fieldType.displayOptions.itemBootstrapClass %}{{ dataField.fieldType.displayOptions.itemBootstrapClass }}{% else %}col-md-12{% endif %}">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">
+								{% if dataField.fieldType.displayOptions.icon is defined %}
+									<i class="{{ dataField.fieldType.displayOptions.icon }}"></i> 
+								{% endif %}
+								{% if dataField.fieldType.displayOptions.singularLabel is defined %}
+									{{ dataField.fieldType.displayOptions.singularLabel }}
+								{% endif %}
+								#{{ loop.index0 }}
+								({{ dataField.fieldType.name }}.{{ loop.index0 }})
+							</h3>
+						</div>
+						<div class="panel-body container-fluid">
+							<div class="row">
+								{% for grandchild in child.children %}
+									<div class="{% if grandchild.fieldType.displayOptions.class is defined and grandchild.fieldType.displayOptions.class  %}{{ grandchild.fieldType.displayOptions.class }}{%else%}col-md-12{% endif %}">
+										{{ attribute(_self, grandchild.fieldType.type|replace({'\\': '_'}), [grandchild]) }}
+									</div>
+									{% if grandchild.fieldType.displayOptions.lastOfRow is defined and grandchild.fieldType.displayOptions.lastOfRow %}
+										</div><div class="row">
+									{% endif %}
+								{% endfor %}
+							</div>
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+	{{ _self.messages(dataField) }}
+{% endmacro %}
+
+{% macro Ems/CoreBundle_Form_DataField_ContainerFieldType(dataField) %}
+    {% if dataField.fieldType.displayOptions.label is defined and dataField.fieldType.displayOptions.label %}
+    	<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					{% if dataField.fieldType.displayOptions.icon is defined %}
+						<i class="{{ dataField.fieldType.displayOptions.icon }}"></i> 
+					{% endif %}
+					{% if dataField.fieldType.displayOptions.label is defined and dataField.fieldType.displayOptions.label%}
+						{{ dataField.fieldType.displayOptions.label }}
+					{% else %}
+						{{ dataField.fieldType.name }}
+					{% endif %}
+				</h3>
+			</div>
+			<div class="panel-body container-fluid">
+	{% endif %}
+	<div class="row">
+		{% for child in dataField.children if not child.fieldType.deleted %}
+			<div class="{% if child.fieldType.displayOptions.class is defined and child.fieldType.displayOptions.class  %}{{ child.fieldType.displayOptions.class }}{%else%}col-md-12{% endif %}">
+				{{ attribute(_self, child.fieldType.type|replace({'\\': '_'}), [child]) }}
+			</div>
+			{% if child.fieldType.displayOptions.lastOfRow is defined and child.fieldType.displayOptions.lastOfRow %}
+				</div><div class="row">
+			{% endif %}
+		{% endfor %}
+	</div>
+    {% if dataField.fieldType.displayOptions.label is defined and dataField.fieldType.displayOptions.label %}
+    		</div>
+		</div>
+	{% endif %}
+	{{ _self.messages(dataField) }}
+{% endmacro %}
+
+{% macro Ems/CoreBundle_Form_DataField_NestedFieldType(dataField) %}
+    {% if dataField.fieldType.displayOptions.label is defined %}
+    	<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					{% if dataField.fieldType.displayOptions.icon is defined %}
+						<i class="{{ dataField.fieldType.displayOptions.icon }}"></i> 
+					{% endif %}
+					{% if dataField.fieldType.displayOptions.label is defined %}
+						{{ dataField.fieldType.displayOptions.label }}
+					{% else %}
+						{{ dataField.fieldType.name }}
+					{% endif %}
+				</h3>
+			</div>
+			<div class="panel-body container-fluid">
+	{% endif %}
+	<div class="row">
+		{% for child in dataField.children if not child.fieldType.deleted %}
+			<div class="{% if child.fieldType.displayOptions.class is defined and child.fieldType.displayOptions.class  %}{{ child.fieldType.displayOptions.class }}{%else%}col-md-12{% endif %}">
+				{{ attribute(_self, child.fieldType.type|replace({'\\': '_'}), [child]) }}
+			</div>
+			{% if child.fieldType.displayOptions.lastOfRow is defined and child.fieldType.displayOptions.lastOfRow %}
+				</div><div class="row">
+			{% endif %}
+		{% endfor %}
+	</div>
+    {% if dataField.fieldType.displayOptions.label is defined %}
+    		</div>
+		</div>
+	{% endif %}
+	{{ _self.messages(dataField) }}
+{% endmacro %}
+
+{% macro Ems/CoreBundle_Form_DataField_TabsFieldType(dataField) %}
+		<div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+            	{% for child in dataField.children if not child.fieldType.deleted %}
+	              <li class="{% if loop.index == 1%}active{% endif %}"><a href="#item_{{ loop.index }}__tab" data-toggle="tab" aria-expanded="false">
+	              {% if child.fieldType.displayOptions.label is defined %}
+						{{ child.fieldType.displayOptions.label }}
+					{% else %}
+						{{ child.fieldType.name }}
+					{% endif %}
+				</a></li>
+            	{% endfor %}
+            </ul>
+            <div class="tab-content">
+            	{% for child in dataField.children if not child.fieldType.deleted %}
+	              <div class="tab-pane{% if loop.index == 1%} active{% endif %}" id="item_{{ loop.index }}__tab">
+	              	{{ attribute(_self, child.fieldType.type|replace({'\\': '_'}), [child]) }}
+	              </div>
+              {% endfor %}
+            </div>
+            <!-- /.tab-content -->
+         </div>  
+	{{ _self.messages(dataField) }}
+{% endmacro %}
+
+
+{% macro Ems/CoreBundle_Form_DataField_DataLinkFieldType(dataField) %}
+	<dl>
+		{% if dataField.fieldType.displayOptions.label is defined %}
+			<dt>{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})</dt>
+		{% else %}
+			<dt>{{ dataField.fieldType.name }}</dt>
+		{% endif %}
+		<dd>
+			{% if dataField.fieldType.displayOptions.multiple %}
+					{% for value in dataField.arrayTextValue %}
+			   			{{ value|data_link|raw }}
+					{% endfor %}
+			{% else %}
+			   	{{ dataField.textValue|data_link|raw }}
+			{% endif %}
+		
+		</dd>
+	</dl>
+	{{ _self.messages(dataField) }}
+{% endmacro %}
+
+{% macro Ems/CoreBundle_Form_DataField_SelectFieldType(dataField) %}
+	<dl>
+		{% if dataField.fieldType.displayOptions.label is defined %}
+			<dt>{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})</dt>
+		{% else %}
+			<dt>{{ dataField.fieldType.name }}</dt>
+		{% endif %}
+		<dd>
+			{% if dataField.fieldType.displayOptions.multiple %}
+				<ul>
+					{% for value in dataField.arrayTextValue if value  %}
+						<li>{{ value }}</li>
+					{% endfor %}
+				</ul>
+			{% else %}
+				{{ dataField.textValue }}
+			{% endif %}
+		
+		</dd>
+	</dl>
+	{{ _self.messages(dataField) }}
+{% endmacro %}
+
+{% macro Ems/CoreBundle_Form_DataField_OuuidFieldType(dataField) %}
+	<dl>
+		{% if dataField.fieldType.displayOptions.label is defined %}
+			<dt>{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})</dt>
+		{% else %}
+			<dt>{{ dataField.fieldType.name }}</dt>
+		{% endif %}
+		<dd>{{ dataField.textValue }}</dd>
+	</dl>
+	{{ _self.messages(dataField) }}
+{% endmacro %}
+
+{% macro Ems/CoreBundle_Form_DataField_ComputedFieldType(dataField) %}
+	<dl>
+		{% if dataField.fieldType.displayOptions.label is defined %}
+			<dt>{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})</dt>
+		{% else %}
+			<dt>{{ dataField.fieldType.name }}</dt>
+		{% endif %}
+		<dd>
+			{% if dataField.fieldType.displayOptions.displayTemplate %}
+				{{ dataField.fieldType.displayOptions.displayTemplate|generate_from_template({data: dataField.rawData})|raw }}
+			{% elseif dataField.rawData is iterable %}
+				Complex structure []
+			{% else %}
+				{{ dataField.rawData }}
+			{% endif %}
+		</dd>
+	</dl>
+	{{ _self.messages(dataField) }}
+{% endmacro %}
+
+{% macro Ems/CoreBundle_Form_DataField_TextStringFieldType(dataField) %}
+	<dl>
+		{% if dataField.fieldType.displayOptions.label is defined %}
+			<dt>{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})</dt>
+		{% else %}
+			<dt>{{ dataField.fieldType.name }}</dt>
+		{% endif %}
+		
+		<dd>{{ dataField.textValue }}</dd>
+	</dl>
+	{{ _self.messages(dataField) }}
+{% endmacro %}
+
+{% macro Ems/CoreBundle_Form_DataField_TextareaFieldType(dataField) %}
+	<dl>
+		<dt>
+			{% if dataField.fieldType.displayOptions.label is defined %}
+				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+			{% else %}
+				{{ dataField.fieldType.name }}
+			{% endif %}
+		</dt>
+		<dd>
+			<div class="panel panel-default">
+				<div class="panel-body">
+					{{ dataField.textValue }}
+				</div>
+			</div>
+		</dd>
+	</dl>
+	{{ _self.messages(dataField) }}
+{% endmacro %}
+
+{% macro Ems/CoreBundle_Form_DataField_JSONFieldType(dataField) %}
+	<dl>
+		<dt>
+			{% if dataField.fieldType.displayOptions.label is defined %}
+				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+			{% else %}
+				{{ dataField.fieldType.name }}
+			{% endif %}
+		</dt>
+		<dd>
+			<div class="panel panel-default">
+				<div class="panel-body">
+					{{ dataField.rawData|json_encode }}
+				</div>
+			</div>
+		</dd>
+	</dl>
+	{{ _self.messages(dataField) }}
+{% endmacro %}
+
+{% macro Ems/CoreBundle_Form_DataField_WysiwygFieldType(dataField) %}
+	<dl>
+		<dt>
+			{% if dataField.fieldType.displayOptions.label is defined %}
+				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+			{% else %}
+				{{ dataField.fieldType.name }}
+			{% endif %}
+		</dt>
+		<dd>
+			<div class="panel panel-default">
+				<div class="panel-body">	
+					{{ dataField.textValue|internal_links|raw }}
+				</div>
+			</div>
+		</dd>
+	</dl>
+	{{ _self.messages(dataField) }}
+{% endmacro %}
+
+{% macro Ems/CoreBundle_Form_DataField_PasswordFieldType(dataField) %}
+	<dl>
+		<dt>
+			{% if dataField.fieldType.displayOptions.label is defined %}
+				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+			{% else %}
+				{{ dataField.fieldType.name }}
+			{% endif %}
+		</dt>
+		<dd>
+			{% if dataField.textValue %}	
+				***************
+			{% else %}
+				not defined
+			{% endif %}
+		</dd>
+	</dl>
+	{{ _self.messages(dataField) }}
+{% endmacro %}
+
+{% macro Ems/CoreBundle_Form_DataField_EmailFieldType(dataField) %}
+	<dl>
+		<dt>
+			{% if dataField.fieldType.displayOptions.label is defined %}
+				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+			{% else %}
+				{{ dataField.fieldType.name }}
+			{% endif %}
+		</dt>
+		<dd>
+			{{ dataField.textValue|raw }}
+		</dd>
+	</dl>
+	{{ _self.messages(dataField) }}
+{% endmacro %}
+
+{% macro Ems/CoreBundle_Form_DataField_IconFieldType(dataField) %}
+	<dl>
+		<dt>
+			{% if dataField.fieldType.displayOptions.label is defined %}
+				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+			{% else %}
+				{{ dataField.fieldType.name }}
+			{% endif %}
+		</dt>
+		<dd>
+			<i class="{{ dataField.textValue|raw }}"></i> {{ dataField.textValue|raw }}
+		</dd>
+	</dl>
+	{{ _self.messages(dataField) }}
+{% endmacro %}
+
+{% macro Ems/CoreBundle_Form_DataField_ColorPickerFieldType(dataField) %}
+	<dl>
+		<dt>
+			{% if dataField.fieldType.displayOptions.label is defined %}
+				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+			{% else %}
+				{{ dataField.fieldType.name }}
+			{% endif %}
+		</dt>
+		<dd style="background-color: {{ dataField.textValue|raw }}; color:{%  if dataField.textValue|contrastratio('#000000') > dataField.textValue|contrastratio('#ffffff') %}#000000{% else %}#ffffff{% endif %};"> 
+			{{ dataField.textValue|raw }}
+		</dd>
+	</dl>
+	{{ _self.messages(dataField) }}
+{% endmacro %}
+
+
+
+
+{% macro Ems/CoreBundle_Form_DataField_RadioFieldType(dataField) %}
+	<dl>
+		<dt>
+			{% if dataField.fieldType.displayOptions.label is defined %}
+				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+			{% else %}
+				{{ dataField.fieldType.name }}
+			{% endif %}
+		</dt>
+		<dd>
+			{{ dataField.textValue|raw }}
+		</dd>
+	</dl>
+	{{ _self.messages(dataField) }}
+{% endmacro %}
+
+{% macro Ems/CoreBundle_Form_DataField_ChoiceFieldType(dataField) %}
+	<dl>
+		<dt>
+			{% if dataField.fieldType.displayOptions.label is defined %}
+				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+			{% else %}
+				{{ dataField.fieldType.name }}
+			{% endif %}
+		</dt>
+		<dd>
+			<ul>
+				{% if dataField.fieldType.displayOptions.multiple %}
+					{% for value in dataField.arrayTextValue if value %}
+						<li>{{ value|raw }}</li>
+					{% endfor %}
+				{% else %}
+				{{ dataField.textValue }}
+				{% endif %}
+			</ul>
+		</dd>
+	</dl>
+	{{ _self.messages(dataField) }}
+{% endmacro %}
+
+{% macro Ems/CoreBundle_Form_DataField_CheckboxFieldType(dataField) %}
+	<dl>
+		<dt>
+			{% if dataField.fieldType.displayOptions.label is defined %}
+				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+			{% else %}
+				{{ dataField.fieldType.name|raw }}
+			{% endif %}
+		</dt>
+		<dd>
+			{% if dataField.booleanValue %}
+		 		<i class="fa fa-check-square-o"></i>
+			{% else %}
+				<i class="fa fa-square-o"></i>
+			{% endif %}
+		</dd>
+	</dl>
+	{{ _self.messages(dataField) }}
+{% endmacro %}
+
+{% macro Ems/CoreBundle_Form_DataField_NumberFieldType(dataField) %}
+	<dl>
+		<dt>
+			{% if dataField.fieldType.displayOptions.label is defined %}
+				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+			{% else %}
+				{{ dataField.fieldType.name|raw }}
+			{% endif %}
+		</dt>
+		<dd>
+			{{ dataField.floatValue }}
+		</dd>
+	</dl>
+	{{ _self.messages(dataField) }}
+{% endmacro %}
+
+{% macro Ems/CoreBundle_Form_DataField_IntegerFieldType(dataField) %}
+	<dl>
+		<dt>
+			{% if dataField.fieldType.displayOptions.label is defined %}
+				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+			{% else %}
+				{{ dataField.fieldType.name|raw }}
+			{% endif %}
+		</dt>
+		<dd>
+			{{ dataField.integerValue }}
+		</dd>
+	</dl>
+	{{ _self.messages(dataField) }}
+{% endmacro %}
+
+{% macro Ems/CoreBundle_Form_DataField_DateFieldType(dataField) %}
+	<dl>
+		<dt>
+			{% if dataField.fieldType.displayOptions.label is defined %}
+				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+			{% else %}
+				{{ dataField.fieldType.name|raw }}
+			{% endif %}
+		</dt>
+		<dd>
+			<ul>
+				{% for value in dataField.dateValues %}
+					<li>
+						{{ value|date(dataField.fieldType.displayOptions.displayFormat|convertJavaDateFormat) }}
+						({{ value|date(dataField.fieldType.mappingOptions.format|convertJavaDateFormat) }})
+					</li>
+				{% endfor %}
+			</ul>
+		</dd>
+	</dl>
+	{{ _self.messages(dataField) }}
+{% endmacro %}
+
+{% macro Ems/CoreBundle_Form_DataField_DateRangeFieldType(dataField) %}
+	<dl>
+		<dt>
+			{% if dataField.fieldType.displayOptions.label is defined %}
+				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+			{% else %}
+				{{ dataField.fieldType.name|raw }}
+			{% endif %}
+		</dt>
+		{% set dateFrom = null %}
+		{% if attribute(dataField.rawData, dataField.fieldType.mappingOptions.fromDateMachineName) is defined %}
+			{% set dateFrom = attribute(dataField.rawData, dataField.fieldType.mappingOptions.fromDateMachineName) %}
+		{% endif %}
+		{% set dateTo = null %}
+		{% if attribute(dataField.rawData, dataField.fieldType.mappingOptions.toDateMachineName) is defined %}
+			{% set dateTo = attribute(dataField.rawData, dataField.fieldType.mappingOptions.toDateMachineName) %}
+		{% endif %}
+		
+		
+		<dd>
+			<ul>
+				{% if dateFrom %}
+					<li>
+						<b>From </b>
+						{{ dateFrom|date(dataField.fieldType.displayOptions.locale.format|convertJavascriptDateFormat) }}
+					</li>	
+				{% endif %}		
+				{% if dateTo %}
+					<li>
+						<b>To </b>
+						{{ dateTo|date(dataField.fieldType.displayOptions.locale.format|convertJavascriptDateFormat) }}
+					</li>	
+				{% endif %}		
+				{% if dateFrom and dateTo %}
+					<li>
+						<b>Duration </b> {{ dateFrom|date_difference(dateTo, dataField.fieldType.displayOptions.timePicker) }}
+					</li>
+				{% endif %}
+			</ul>
+		</dd>
+	</dl>
+	{{ _self.messages(dataField) }}
+{% endmacro %}
+
+{% macro Ems/CoreBundle_Form_DataField_TimeFieldType(dataField) %}
+	<dl>
+		<dt>
+			{% if dataField.fieldType.displayOptions.label is defined %}
+				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+			{% else %}
+				{{ dataField.fieldType.name|raw }}
+			{% endif %}
+		</dt>
+		<dd>
+			{% if dataField.dataValue %}
+				{{ dataField.dataValue|date(dataField.fieldType.options|getTimeFieldTimeFormat) }}
+				({{ dataField.dataValue|date(dataField.fieldType.mappingOptions.format|convertJavaDateFormat) }})
+			{% endif %}
+		</dd>
+	</dl>
+	{{ _self.messages(dataField) }}
+{% endmacro %}

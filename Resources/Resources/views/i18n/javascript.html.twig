@@ -1,0 +1,50 @@
+{% include 'app/menu.html.twig' with {
+	'item':  'i18n-index'
+}%}
+	
+<script type="text/javascript">
+<!--
+
+//-->
+
+$(window).ready(function() {
+
+	var $listTranslations = $('#i18n_content');
+	$listTranslations.data('index', $('#i18n_content > div').length)
+// 	console.log($listTranslations.data('prototype'));
+	
+	$('.btn-add').on('click', function(e) {
+		// prevent the link from creating a "#" on the URL
+        e.preventDefault();
+
+        var prototype = $listTranslations.data('prototype');
+        var index = $listTranslations.data('index');
+     	// Replace '__name__' in the prototype's HTML to
+        // instead be a number based on how many items we have
+        var newForm = $(prototype.replace(/__name__/g, index));
+
+     	// increase the index with one for the next item
+        $listTranslations.data('index', index + 1);
+
+        newForm.find('.btn-remove').on('click', function(e) {
+    		// prevent the link from creating a "#" on the URL
+            e.preventDefault();
+
+            console.log($(this).parents('.filter-container').remove());
+            
+    	});
+
+        $listTranslations.append(newForm);
+        
+	});
+
+	$('.btn-remove').on('click', function(e) {
+		// prevent the link from creating a "#" on the URL
+        e.preventDefault();
+
+        console.log($(this).parents('.filter-container').remove());
+        
+	});
+});
+
+</script>

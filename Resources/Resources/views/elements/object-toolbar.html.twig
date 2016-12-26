@@ -1,0 +1,38 @@
+<div class="btn-toolbar" role="toolbar" style="margin: 0;">
+	<div class="btn-group">
+		{% if recursiveView is not defined %}
+			{% set recursiveView = false %}
+		{% endif %}
+		{% include 'elements/object-views-button.html.twig' with { 
+			'ouuid':  object._id,
+			'contentType': contentType,
+			'environment': environment,
+			'recursiveView': recursiveView
+		}%}
+		{% if environment.managed %}
+		  	{% include 'elements/get-button.html.twig' with {
+				'url':  path('data.revisions', {'type': object._type, 'ouuid': object._id} ),
+				'label': 'Revisions',
+				'icon': 'archive'
+			}%}
+			{% if is_granted(contentType.editRole) %}
+				{% if not  contentType.circlesField or attribute(object._source, contentType.circlesField)|in_my_circles %}
+					{% include 'elements/post-button.html.twig' with { 
+						'url': path('revision.new-draft', {'ouuid': object._id, 'type': contentType.name}), 
+						'label': 'Edit', 
+						'icon': 'pencil' }%}
+				{% endif %}
+			{% endif %}
+			{% if is_granted(contentType.createRole) %}
+				{% if not  contentType.circlesField or attribute(object._source, contentType.circlesField)|in_my_circles %}
+					{% include 'elements/post-button.html.twig' with {
+						'url':  path('object.delete', {'type': object._type, 'ouuid': object._id} ),
+						'label': 'Delete',
+						'icon': 'trash',
+						'message': 'Do you confirm?'
+					}%}
+				{% endif %}
+			{% endif %}
+		{% endif %}
+	</div>
+</div>

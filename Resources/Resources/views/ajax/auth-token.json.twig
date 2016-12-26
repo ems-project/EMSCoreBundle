@@ -1,0 +1,5 @@
+{% extends 'ajax/notification.json.twig' %}
+
+{% block body %}
+	"authToken": {{ authToken.value|json_encode|raw }},
+{% endblock %}

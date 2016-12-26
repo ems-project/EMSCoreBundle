@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Add a new {{ contentType.name }}{% endblock %}
+{% block pagetitle %}Add a new {{ contentType.name }}{% endblock %} 
+{% block subtitle %}<small>This operation will not index the {{ contentType.name }}, but just initiate a draft</small>{% endblock %} 
+
+
+{% block body %}
+
+<div class="row">
+	<div class="col-md-6">
+		<div class="box ">
+			<div class="box-header with-border">
+				<i class="fa fa-warning"></i>
+				<h3 class="box-title">Notice</h3>
+			</div>
+			<!-- /.box-header -->
+			<div class="box-body">
+				<p>
+					This operation will not directly index a new object "<em>{{ contentType.name }}</em>". 
+					But it will instianciate a new draft without any previous revision. 
+					Wich means that <strong>this draft will not be visible</strong> in any envirronement <strong>until it's first save</strong>.
+					So you won't be able to see it in any list view (such as index, map, calendar, ...).
+					But all draft in progres can be found in the <em>Draft in progress</em> section.
+				</p>
+				<p>
+					About the <strong>object unique identifier</strong>, you are free to specify one (as soon as it is not alredy taken off-course).
+					But if you leave it <strong>empty</strong>, an object unique identifier <strong>will be generated</strong> during the save.
+					It is not possible to update the object unique identifier later.
+				</p>
+			</div>
+			<!-- /.box-body -->
+		</div>
+	</div>
+	<div class="col-md-6">
+		<!-- general form elements -->
+		<div class="box box-primary">
+			<div class="box-header with-border">
+				<h3 class="box-title">New {{ contentType.name }}</h3>
+			</div>
+			<!-- /.box-header -->
+			<!-- form start -->
+			{{ form_start(form) }}
+				
+				<div class="box-body">
+					{{ form_row(form.ouuid) }}
+
+				</div>
+				<!-- /.box-body -->
+				<div class="box-footer">
+					{{ form_widget(form.save) }}
+				</div>
+			{{ form_end(form) }}
+
+		</div>
+		<!-- /.box -->
+	</div>
+</div>
+
+{% endblock %} 
+
+
+{% block javascripts %}
+	{% include 'app/menu.html.twig' with {
+		'item':  'data-add-' ~ contentType.id
+	}%}
+{% endblock %}	

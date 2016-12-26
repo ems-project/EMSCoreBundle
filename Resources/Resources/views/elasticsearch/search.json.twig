@@ -1,0 +1,36 @@
+{
+	"total_count": {{results.hits.total}},
+	"incomplete_results": {{ (results.hits.total != results.hits.hits|length)|json_encode() }},
+	"items": [
+	{% for item in results.hits.hits %}
+		{% if loop.index > 1 %},{% endif %}
+		{
+			"id": {{ (item._type~':'~item._id)|json_encode()|raw }},
+			"type": {{ item._type|json_encode()|raw }},
+			"ouuid": {{ item._id|json_encode()|raw }},
+			{% if attribute(types, item._type).colorField is defined %}
+				{% set colorField = attribute(types, item._type).colorField %}
+				{% if attribute(item._source, colorField) is defined %}
+					"color": {{ attribute(item._source, colorField)|json_encode()|raw }},
+				{% endif %}
+			{% endif %}
+			{% set icon = '<i class="fa fa-question"></i> ' %}
+
+			{% if attribute(types, item._type).icon is defined %}
+				{% set icon = ('<i class=\"' ~ attribute(types, item._type).icon ~ '\"> </i> ') %}
+			{% endif %}
+						
+			{% if attribute(types, item._type).labelField is defined %}
+				{% set labelField = attribute(types, item._type).labelField %}
+				{% if attribute(item._source, labelField) is defined %}
+					"text": {{ (icon~attribute(item._source, labelField))|json_encode()|raw }}
+				{% else %}
+					"text": {{ (icon~item._id)|json_encode()|raw }}
+				{% endif %}
+			{% else %}
+				"text": {{ (icon~item._id)|json_encode()|raw }}
+			{% endif %}
+		}
+	{% endfor %}
+	]
+}

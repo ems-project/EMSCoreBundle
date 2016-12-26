@@ -1,0 +1,426 @@
+# Learn more about services, parameters and containers at
+# http://symfony.com/doc/current/book/service_container.html
+parameters:
+    templating: value
+
+services:
+    app.twig_extension:
+        class: Ems\CoreBundle\Twig\AppExtension
+        arguments: ['@doctrine', '@security.authorization_checker', '@ems.service.user', '@ems.service.contenttype', '@app.elasticsearch', '@router', '@twig', '@ems.form.factories.objectChoiceListFactory', '@ems.service.environment', '@logger' ]
+        #public: false
+        tags:
+            - { name: twig.extension, priority: -2000 }
+    app.listener.request:
+        class: Ems\CoreBundle\EventListener\RequestListener
+        arguments: ['@twig', '@doctrine', '@logger', '@router', '@service_container', '@security.authorization_checker', '@session', '%allow_user_registration%']
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller, method: provideTemplateTwigObjects, priority: -20 }
+            - { name: kernel.event_listener, event: kernel.terminate, method: startJob }
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+            #kernel.response or kernel.terminate
+    app.elasticsearch:
+        class: Elasticsearch\ClientBuilder
+        factory: [Ems\CoreBundle\Factories\ElasticsearchClientBuilderFactory, build]
+        arguments: ["%elasticsearch_cluster%"]
+    app.twig.extension.stringloader:
+        class: Twig_Extension_StringLoader
+        tags:
+             - { name: 'twig.extension' }
+#### Begin list available ems ViewType ###
+    ems.fieldtype.container:
+        class: Ems\CoreBundle\Form\DataField\ContainerFieldType
+        calls:
+            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        tags:
+            - { name: ems.form.datafieldtype, alias: container }
+            - { name: form.type }
+    ems.fieldtype.collection:
+        class: Ems\CoreBundle\Form\DataField\CollectionFieldType
+        calls:
+            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        tags:
+            - { name: ems.form.datafieldtype, alias: collection }
+            - { name: form.type }
+    ems.fieldtype.colorpicker:
+        class: Ems\CoreBundle\Form\DataField\ColorPickerFieldType
+        calls:
+            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        tags:
+            - { name: ems.form.datafieldtype, alias: colorpicker }
+            - { name: form.type }
+    ems.fieldtype.nested:
+        class: Ems\CoreBundle\Form\DataField\NestedFieldType
+        calls:
+            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        tags:
+            - { name: ems.form.datafieldtype, alias: nested }
+            - { name: form.type }
+    ems.fieldtype.tabs:
+        class: Ems\CoreBundle\Form\DataField\TabsFieldType
+        calls:
+            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        tags:
+            - { name: ems.form.datafieldtype, alias: tabs }
+            - { name: form.type }
+    ems.fieldtype.ouuid:
+        class: Ems\CoreBundle\Form\DataField\OuuidFieldType
+        calls:
+            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        tags:
+            - { name: ems.form.datafieldtype, alias: ouuid }
+            - { name: form.type }
+    ems.fieldtype.computed:
+        class: Ems\CoreBundle\Form\DataField\ComputedFieldType
+        calls:
+            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        tags:
+            - { name: ems.form.datafieldtype, alias: computed }
+            - { name: form.type }
+    ems.fieldtype.json:
+        class: Ems\CoreBundle\Form\DataField\JSONFieldType
+        calls:
+            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        tags:
+            - { name: ems.form.datafieldtype, alias: json }
+            - { name: form.type }
+    ems.fieldtype.dataLink:
+        class: Ems\CoreBundle\Form\DataField\DataLinkFieldType
+        calls:
+            - [setAuthorizationChecker, ['@security.authorization_checker']]
+            - [setClient, ['@app.elasticsearch']]
+            - [setRegistry, ['@form.registry']]
+        tags:
+            - { name: ems.form.datafieldtype, alias: datalink }
+            - { name: form.type }
+    ems.fieldtype.textstring:
+        class: Ems\CoreBundle\Form\DataField\TextStringFieldType
+        calls:
+            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        tags:
+            - { name: ems.form.datafieldtype, alias: textstring }
+            - { name: form.type }
+    ems.fieldtype.wysiwyg:
+        class: Ems\CoreBundle\Form\DataField\WysiwygFieldType
+        calls:
+            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        tags:
+            - { name: ems.form.datafieldtype, alias: wysiwyg }
+            - { name: form.type }
+    ems.fieldtype.textarea:
+        class: Ems\CoreBundle\Form\DataField\TextareaFieldType
+        calls:
+            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        tags:
+            - { name: ems.form.datafieldtype, alias: textarea }
+            - { name: form.type }
+    ems.fieldtype.select:
+        class: Ems\CoreBundle\Form\DataField\SelectFieldType
+        calls:
+            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        tags:
+            - { name: ems.form.datafieldtype, alias: select }
+            - { name: form.type }
+    ems.fieldtype.password:
+        class: Ems\CoreBundle\Form\DataField\PasswordFieldType
+        calls:
+            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        tags:
+            - { name: ems.form.datafieldtype, alias: password }
+            - { name: form.type }
+    ems.fieldtype.email:
+        class: Ems\CoreBundle\Form\DataField\EmailFieldType
+        calls:
+            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        tags:
+            - { name: ems.form.datafieldtype, alias: email }
+            - { name: form.type }
+    ems.fieldtype.icon:
+        class: Ems\CoreBundle\Form\DataField\IconFieldType
+        calls:
+            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        tags:
+            - { name: ems.form.datafieldtype, alias: icon }
+            - { name: form.type }
+    ems.fieldtype.asset:
+        class: Ems\CoreBundle\Form\DataField\AssetFieldType
+        calls:
+            - [setAuthorizationChecker, ['@security.authorization_checker']]
+            - [setFileService, ['@ems.service.file']]
+        tags:
+            - { name: ems.form.datafieldtype, alias: asset }
+            - { name: form.type }
+    ems.fieldtype.fileattachement:
+        class: Ems\CoreBundle\Form\DataField\FileAttachmentFieldType
+        calls:
+            - [setAuthorizationChecker, ['@security.authorization_checker']]
+            - [setFileService, ['@ems.service.file']]
+        tags:
+            - { name: ems.form.datafieldtype, alias: file_attachment }
+            - { name: form.type }
+    ems.fieldtype.urlattachement:
+        class: Ems\CoreBundle\Form\DataField\UrlAttachmentFieldType
+        calls:
+            - [setAuthorizationChecker, ['@security.authorization_checker']]
+            - [setFileService, ['@ems.service.file']]
+        tags:
+            - { name: ems.form.datafieldtype, alias: url_attachment }
+            - { name: form.type }
+    ems.fieldtype.radio:
+        class: Ems\CoreBundle\Form\DataField\RadioFieldType
+        calls:
+            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        tags:
+            - { name: ems.form.datafieldtype, alias: radio }
+            - { name: form.type }
+    ems.fieldtype.choice:
+        class: Ems\CoreBundle\Form\DataField\ChoiceFieldType
+        calls:
+            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        tags:
+            - { name: ems.form.datafieldtype, alias: choice }
+            - { name: form.type }
+    ems.fieldtype.checkbox:
+        class: Ems\CoreBundle\Form\DataField\CheckboxFieldType
+        calls:
+            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        tags:
+            - { name: ems.form.datafieldtype, alias: checkbox }
+            - { name: form.type }
+    ems.fieldtype.number:
+        class: Ems\CoreBundle\Form\DataField\NumberFieldType
+        calls:
+            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        tags:
+            - { name: ems.form.datafieldtype, alias: number }
+            - { name: form.type }
+    ems.fieldtype.integer:
+        class: Ems\CoreBundle\Form\DataField\IntegerFieldType
+        calls:
+            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        tags:
+            - { name: ems.form.datafieldtype, alias: integer }
+            - { name: form.type }
+    ems.fieldtype.date:
+        class: Ems\CoreBundle\Form\DataField\DateFieldType
+        #arguments: ['%date_format%']
+        calls:
+            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        #    - [setDateFormat, ['%date_format%']]
+        tags:
+            - { name: ems.form.datafieldtype, alias: date }
+            - { name: form.type }
+    ems.fieldtype.daterange:
+        class: Ems\CoreBundle\Form\DataField\DateRangeFieldType
+        #arguments: ['%date_format%']
+        calls:
+            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        #    - [setDateFormat, ['%date_format%']]
+        tags:
+            - { name: ems.form.datafieldtype, alias: daterange }
+            - { name: form.type }
+    ems.fieldtype.time:
+        class: Ems\CoreBundle\Form\DataField\TimeFieldType
+        #arguments: ['%date_format%']
+        calls:
+            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        tags:
+            - { name: ems.form.datafieldtype, alias: time }
+            - { name: form.type }
+    ems.fieldtype.collectionItem:
+        class: Ems\CoreBundle\Form\DataField\CollectionItemFieldType
+        #arguments: ['%date_format%']
+        calls:
+            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        tags:
+            - { name: form.type }
+    ems.fieldtype.time:
+        class: Ems\CoreBundle\Form\DataField\CollectionItemFieldType
+        #arguments: ['%date_format%']
+        calls:
+            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        tags:
+            - { name: form.type }
+#### End list available ems views ###
+#### Begin list available ems views ###
+    ems.view.keywords:
+        class: Ems\CoreBundle\Form\View\KeywordsViewType
+        arguments: ['@twig', '@app.elasticsearch']
+        tags:
+            - { name: ems.form.viewtype, alias: keywords }
+            - { name: form.type }
+    ems.view.criteria:
+        class: Ems\CoreBundle\Form\View\CriteriaViewType
+        arguments: ['@twig', '@app.elasticsearch', '@router']
+        tags:
+            - { name: ems.form.viewtype, alias: criteria }
+            - { name: form.type }
+    ems.view.report:
+        class: Ems\CoreBundle\Form\View\ReportViewType
+        arguments: ['@twig', '@app.elasticsearch']
+        tags:
+            - { name: ems.form.viewtype, alias: report }
+            - { name: form.type }
+    ems.view.calendar:
+        class: Ems\CoreBundle\Form\View\CalendarViewType
+        arguments: ['@twig', '@app.elasticsearch']
+        tags:
+            - { name: ems.form.viewtype, alias: calendar }
+            - { name: form.type }
+#### End list available ems views ###
+    ems.form.factories.objectChoiceListFactory:
+        class: Ems\CoreBundle\Form\Factory\ObjectChoiceListFactory
+        arguments: ['@ems.service.contenttype', '@ems.service.objectchoicecache']
+    ems.form.factories.contentTypeFieldChoiceListFactory:
+        class: Ems\CoreBundle\Form\Factory\ContentTypeFieldChoiceListFactory
+        arguments: ['@ems.service.contenttype']
+    ems.form.field.objectpickertype:
+        class: Ems\CoreBundle\Form\Field\ObjectPickerType
+        arguments: ['@ems.form.factories.objectChoiceListFactory', '@ems.service.contenttype']
+        tags:
+            - { name: form.type }
+    ems.form.field.contenttypefieldpickertype:
+        class: Ems\CoreBundle\Form\Field\ContentTypeFieldPickerType
+        arguments: ['@ems.form.factories.contentTypeFieldChoiceListFactory']
+        tags:
+            - { name: form.type }
+    ems.form.field.viewtypepickertype:
+        class: Ems\CoreBundle\Form\Field\ViewTypePickerType
+        tags:
+            - { name: form.type }
+    ems.form.field.datafieldtypepickertype:
+        class: Ems\CoreBundle\Form\Field\FieldTypePickerType
+        tags:
+            - { name: form.type }
+    ems.form.field.rolepickertype:
+        class: Ems\CoreBundle\Form\Field\RolePickerType
+        arguments: ['@ems.service.user']
+        tags:
+            - { name: form.type }
+    ems.form.field.environmentpickertype:
+        class: Ems\CoreBundle\Form\Field\EnvironmentPickerType
+        arguments: ['@ems.service.environment']
+        tags:
+            - { name: form.type }
+    ems.form.field.contenttypepickertype:
+        class: Ems\CoreBundle\Form\Field\ContentTypePickerType
+        arguments: ['@ems.service.contenttype']
+        tags:
+            - { name: form.type }
+    ems.form.fieldtype.fieldtypetype:
+        class: Ems\CoreBundle\Form\FieldType\FieldTypeType
+        arguments: ['@ems.form.field.datafieldtypepickertype']
+        tags:
+            - { name: form.type }
+    ems.form.form.templatetype:
+        class: Ems\CoreBundle\Form\Form\TemplateType
+        arguments: ['%circles_object%', '@ems.service.environment']
+        tags:
+            - { name: form.type }
+    ems.form.form.notificationtype:
+        class: Ems\CoreBundle\Form\Form\NotificationFormType
+        arguments: ['%circles_object%', '@ems.service.environment']
+        tags:
+            - { name: form.type }
+    ems.form.form.userprofile:
+        class: Ems\CoreBundle\Form\Form\UserProfileType
+        arguments: ['@security.token_storage']
+        tags:
+            - { name: form.type }
+### regular services
+    ems.service.mapping:
+        class: Ems\CoreBundle\Service\Mapping
+        arguments: ['@ems.form.fieldtype.fieldtypetype']
+    ems.service.data:
+        class: Ems\CoreBundle\Service\DataService
+        arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '%lock_time%', '@app.elasticsearch', '@ems.service.mapping', '%instance_id%', '@session', '@form.factory', '@service_container', '@form.registry', '@event_dispatcher']
+    ems.service.environment:
+        class: Ems\CoreBundle\Service\EnvironmentService
+        arguments: ['@doctrine', '@session', '@ems.service.user', '@security.authorization_checker']
+    ems.service.contenttype:
+        class: Ems\CoreBundle\Service\ContentTypeService
+        arguments: ['@doctrine', '@session', '@ems.service.mapping', '@app.elasticsearch', '@ems.service.environment', '@form.registry', '%instance_id%']
+    ems.service.user:
+        class: Ems\CoreBundle\Service\UserService
+        arguments: ['@doctrine', '@session', '@security.token_storage', '%security.role_hierarchy.roles%']
+    ems.service.objectchoicecache:
+        class: Ems\CoreBundle\Service\ObjectChoiceCacheService
+        arguments: ['@app.elasticsearch', '@session', '@ems.service.contenttype']
+    ems.service.audit:
+        class: Ems\CoreBundle\Service\AuditService
+        arguments: ['%audit_index%', '@doctrine', '@app.elasticsearch', '@ems.service.user', '@logger']
+    ems.service.publish:
+        class: Ems\CoreBundle\Service\PublishService
+        arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '@app.twig_extension', '%lock_time%', '@app.elasticsearch', '@ems.service.mapping', '%instance_id%', '@session', '@ems.service.contenttype', '@ems.service.environment', '@ems.service.data', '@ems.service.audit', '@ems.service.user', '@event_dispatcher']
+    ems.service.notification:
+        class: Ems\CoreBundle\Service\NotificationService
+        arguments: ['%audit_index%', '@doctrine', '@ems.service.user', '@logger', '@ems.service.audit', '@session', '@service_container', '@ems.service.data', '%from_email%', '@twig']
+        tags:
+            - { name: kernel.event_listener, event: revision.new_draft, method: newDraftEvent, priority: 0 }
+            - { name: kernel.event_listener, event: revision.finalize_draft, method: finalizeDraftEvent, priority: 0 }
+            - { name: kernel.event_listener, event: revision.publish, method: publishEvent, priority: 0 }
+            - { name: kernel.event_listener, event: revision.unpublish, method: unpublishEvent, priority: 0 }
+    ems.service.i18n:
+        class: Ems\CoreBundle\Service\I18nService
+        arguments: ['@doctrine']
+    ems.service.search:
+        class: Ems\CoreBundle\Service\SearchService
+        arguments: []
+    ems.service.file:
+        class: Ems\CoreBundle\Service\FileService
+        arguments: []
+        
+### Storage services ###
+    ems.storage.filesystem:
+        class: Ems\CoreBundle\Service\Storage\FileSystemStorage
+        arguments: ['%filesystem_storage_folder%', '%kernel.root_dir%']
+        tags:
+            -  { name: ems.storage }
+### command services ###
+    ems.environment.ems:
+        class: Ems\CoreBundle\Command\EmsCommand
+        arguments: ['@logger', '@app.elasticsearch', '@session']
+        tags:
+            -  { name: console.command }
+    ems.contenttype.migrate:
+        class: Ems\CoreBundle\Command\MigrateCommand
+        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.mapping', '@ems.service.data']
+        tags:
+            -  { name: console.command }
+    ems.environment.rebuild:
+        class: Ems\CoreBundle\Command\RebuildCommand
+        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.mapping', '@service_container', '@session', '%instance_id%']
+        tags:
+            -  { name: console.command }
+    ems.environment.align:
+        class: Ems\CoreBundle\Command\AlignCommand
+        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.data', '@ems.service.contenttype', '@ems.service.environment', '@ems.service.publish']
+        tags:
+            -  { name: console.command }
+    ems.environment.reindex:
+        class: Ems\CoreBundle\Command\ReindexCommand
+        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.mapping', '@service_container', '%instance_id%', '@session']
+        tags:
+            -  { name: console.command }
+    ems.contenttype.delete:
+        class: Ems\CoreBundle\Command\DeleteCommand
+        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.mapping', '@service_container']
+        tags:
+            -  { name: console.command }
+    ems.contenttype.clean:
+        class: Ems\CoreBundle\Command\CleanDeletedContentTypeCommand
+        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.mapping', '@service_container']
+        tags:
+            -  { name: console.command }
+    ems.notification.send:
+        class: Ems\CoreBundle\Command\SendNotificationsCommand
+        arguments: ['@doctrine', '@logger', '@ems.service.user', '@ems.service.notification', '%notification_pending_timeout%']
+        tags:
+            -  { name: console.command }
+#### security services
+    api_key_user_provider:
+        class: Ems\CoreBundle\Security\ApiKeyUserProvider
+        arguments: ['@ems.service.user']
+    apikey_authenticator:
+        class:  Ems\CoreBundle\Security\ApiKeyAuthenticator
+        public: false

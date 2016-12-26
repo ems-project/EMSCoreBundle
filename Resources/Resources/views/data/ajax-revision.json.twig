@@ -1,0 +1,15 @@
+{% extends 'ajax/notification.json.twig' %}
+
+{% block body %}
+   {% if formErrors|length > 0 %}
+		"formErrors": [
+		{% for error in formErrors %}
+			{ 
+				"propertyPath": {{ error|propertyPath|json_encode|raw }},
+				"message": {{ error.message|json_encode|raw }}
+			}
+			{% if not loop.last %},{% endif %}
+		{% endfor %}
+		] ,
+	{% endif %}
+{% endblock %}

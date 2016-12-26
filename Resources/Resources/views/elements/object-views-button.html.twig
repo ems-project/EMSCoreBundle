@@ -1,0 +1,76 @@
+{% if contentType %}
+	<div class="btn-group">
+		<button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+			<i class="fa fa-eye"></i>
+			Actions in {{ environment.name }}
+			<span class="caret"></span>
+			<span class="sr-only">Toggle dropdown of {{ contentType.name }}'s custom views</span>
+		</button>
+		<ul class="dropdown-menu" role="menu">
+	{# 		{% if recursiveView is not defined or not recursiveView  %}#}
+				{% for template in contentType.templates %}
+					{%  if currentTemplate is not defined or template != currentTemplate %}
+					{%if template.role == "not-defined" or is_granted(template.role) and (template.environments is empty or environment in template.environments or template.isEnvironmentExist(environment.name)) %}
+					<li>
+						{% if template.renderOption is constant('Ems\CoreBundle\\Form\\Field\\RenderOptionType::EXTERNALLINK') %}
+							<a href="{{ template.body|generate_from_template({
+										environment: environment,
+										contentType: contentType,
+										object: object,
+										source: object._source
+									}) }}" target="_blank">
+								<i class="{{ template.icon|raw }}"></i>
+								{{ template.name}}
+								<i class="fa fa-external-link pull-right"></i>
+							</a>
+						{% elseif template.renderOption is constant('Ems\CoreBundle\\Form\\Field\\RenderOptionType::NOTIFICATION') %}
+							{% if ( is_granted(template.role) and ((attribute(object._source, contentType.circlesField) is not defined) or (object._source and attribute(object._source, contentType.circlesField)|in_my_circles) or (environment.circles|in_my_circles and is_granted('ROLE_PUBLISHER')) ) ) %}
+								<a href='#' class="request_notification" onclick="requestNotification(this, {{template.id}}, '{{environment.name}}', '{{contentType.id}}' , '{{ouuid}}'); return false;" href="#" data-url="{{ url('notification.ajaxnotification', {'objectId' : ouuid}) }}">
+									<i class="{{ template.icon|raw }}"></i>
+									{{ template.name }}
+								</a>
+							{% endif %}
+						{% else %}{#  #}
+							<a href="{{ path('data.customview', {
+										environmentName: environment.name,
+										ouuid: object._id,
+										templateId: template.id}) }}" >
+								<i class="{{ template.icon|raw }}"></i>
+								{{ template.name }}
+							</a>
+						{% endif %}						
+							
+					</li>
+				</li>
+					{% endif %}	
+					{% endif %}					
+				{% endfor %}
+				
+				{% if environment.managed %}
+					<li>
+						<a href="{{ path('data.revision_in_environment', {'type': object._type, 'ouuid': object._id, 'environment':environment.name } ) }}" >
+							<i class="fa fa-archive"></i>
+							Corresponding revision
+						</a>
+					</li>
+				{% endif %}
+				{% if ''|is_super %}
+					<li>
+						<a href="{{ path('data.view', {'environmentName': environment.name, 'type': contentType.name, 'ouuid': object._id} ) }}">
+							<i class="fa fa-th"></i>
+							Raw view
+						</a>
+					</li>
+				{% endif %}
+			
+	{# 		{% endif %}#}
+		</ul>
+	</div>
+{% else %}
+
+		<a class="btn btn-sm btn-primary " href="{{ path('data.view', {'environmentName': environment.name, 'type': object._type, 'ouuid': object._id} ) }}">
+			<span class="entity">&infin;</span>Raw view
+		</a>
+{% endif %}	
+	
+

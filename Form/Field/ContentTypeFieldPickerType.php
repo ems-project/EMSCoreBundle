@@ -1,0 +1,55 @@
+<?php
+
+namespace Ems\CoreBundle\Form\Field;
+
+
+use Symfony\Component\Form\ChoiceList\Factory\ChoiceListFactoryInterface;
+use Symfony\Component\OptionsResolver\Options;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+class ContentTypeFieldPickerType extends SelectPickerType {
+	
+	/**@var ChoiceListFactoryInterface $choiceListFactory*/
+	private $choiceListFactory;
+
+	
+	public function __construct(ChoiceListFactoryInterface $factory){
+		$this->choiceListFactory = $factory;
+		parent::__construct($factory);
+	}
+	
+	
+	/**
+	 *
+	 * {@inheritdoc}
+	 *
+	 */
+	public function configureOptions(OptionsResolver $resolver)
+	{
+		
+		/* set the default option value for this kind of compound field */
+		parent::configureOptions ( $resolver );
+		$resolver->setDefaults(array(
+			'firstLevelOnly' => false,
+			'types' => [],
+			'mapping' => [],
+				
+			'choice_loader' => function (Options $options) {
+				return $this->choiceListFactory->createLoader($options->offsetGet('mapping'), $options->offsetGet('types'), $options->offsetGet('firstLevelOnly'));
+		    },
+		    'choice_label' => function ($value, $key, $index) {
+		    	return $value->getLabel();
+		    },
+		    'group_by' => function($value, $key, $index) {
+		    	return null;
+		    },
+			'choice_value' => function ($value) {
+				return $value->getValue();
+		    },
+		    'multiple' => false,
+		    
+		));
+	}
+
+}
+

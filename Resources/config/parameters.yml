@@ -1,0 +1,27 @@
+# This file is auto-generated during the composer install
+parameters:
+    from_email:
+        address: noreply@example.com
+        sender_name: elasticMS
+    elasticsearch_cluster: ['http://localhost:9200']
+    instance_id: _
+    circles_object: version
+    datepicker_format: dd/mm/yyyy
+    datepicker_weekstart: 1
+    datepicker_daysofweek_highlighted:
+        - 0
+        - 6
+    uploading_folder: null
+    filesystem_storage_folder: /Users/theus/git/ElasticMS/var/assets
+    storage_services:
+        - ems.storage.filesystem
+    audit_index: audit
+    date_time_format: 'j/m/Y \a\t G:i'
+    notification_pending_timeout: P0Y0M15DT0H0M0S
+    allow_user_registration: false
+    theme_color: blue
+    ems_name: '<b>elastic</b>MS'
+    ems_shortname: '<b>e</b>MS'
+    lock_time: "+1 minutes"
+    template_options:
+        base_url: 'http://c2blb.local'

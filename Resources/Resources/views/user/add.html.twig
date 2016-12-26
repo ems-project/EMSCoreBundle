@@ -1,0 +1,36 @@
+{% extends "FOSUserBundle::layout.html.twig" %}
+
+
+{% block title %}Add a user{% endblock %}
+{% block pagetitle %}New user{% endblock %} 
+
+{% block subtitle %}<small>A new user in town?</small>{% endblock %} 
+
+{% block fos_user_content %}
+{% trans_default_domain 'FOSUserBundle' %}
+<div class="box box-primary">
+			<div class="box-header with-border">
+				<h3 class="box-title">Add user</h3>
+			</div>
+{{ form_start(form, {'method': 'post', 'action': path('user.add'), 'attr': {'class': 'fos_user_registration_register'}}) }}
+    <div class="box-body">
+    	<div class="col-md-6">
+	    	{{ form_row(form.username) }}
+	    	{{ form_row(form.email) }}
+	    	{{ form_row(form.plainPassword) }}
+	    	{% if form.circles is defined %}
+	    	    {{ form_row(form.circles) }}
+	    	{% endif %}
+{# 	    	{{ form_row(form.expiresAt) }}#}
+    	</div>
+    	<div class="col-md-6">
+	    	{{ form_row(form.roles) }}
+    	</div>
+    </div>
+    <div class="box-footer">
+	    	{{ form_row(form.create) }}
+    </div>
+{{ form_end(form) }}
+</div>
+<!-- /.box -->
+{% endblock fos_user_content %}

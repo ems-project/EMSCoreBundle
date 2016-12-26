@@ -1,0 +1,4 @@
+{
+	"status": {{ status.status|json_encode()|raw }},
+	"body": {{ "<i class=\"fa fa-circle text-#{status.status}\"></i> #{status.status}"|json_encode()|raw }}
+}

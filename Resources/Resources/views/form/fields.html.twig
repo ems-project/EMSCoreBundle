@@ -1,0 +1,649 @@
+{% use "bootstrap_3_layout.html.twig" %}
+
+{# Widgets #}
+
+{% block icontext_widget -%}
+	{% if  icon or prefixText or suffixIcon or suffixText %}
+		<div class="input-group {% if class %}{{ class }}{% endif %}">
+			{% if icon or prefixText %}
+				<span class="input-group-addon"><i class="{% if icon %}{{ icon }}{% endif %}"></i>{% if prefixText %} &nbsp; {{ prefixText }} {% endif %}</span>
+			{% endif %}
+		 	{{ block('form_widget') }}
+			{% if suffixIcon or suffixText %}
+				<span class="input-group-addon"><i class="{% if suffixIcon %}{{ suffixIcon }}{% endif %}"></i>{% if suffixText %} &nbsp; {{ suffixText }} {% endif %}</span>
+			{% endif %}
+		</div>
+	{% else %}
+		{{ block('form_widget') }}
+	{% endif %}
+{%- endblock icontext_widget %}
+
+{% block colorpicker_widget -%}
+	<div class="input-group colorpicker-component">
+		<span class="input-group-addon"><i></i></span>
+	 	{{ block('form_widget') }}
+	</div>
+{%- endblock colorpicker_widget %}
+
+{% block select2_widget -%}
+	{% set attr = attr|merge({class: (attr.class|default('') ~ ' select2')|trim}) %}
+	{{ block('choice_widget') }}
+{%- endblock select2_widget %}
+
+{% block objectpicker_widget -%}
+	{% set attr = attr|merge({class: (attr.class|default('') ~ ' objectpicker')|trim}) %}
+	{{ block('choice_widget') }}
+{%- endblock objectpicker_widget %}
+
+{% block selectpicker_widget -%}
+	{% set attr = attr|merge({class: (attr.class|default('') ~ ' selectpicker')|trim}) %}
+	{{ block('choice_widget') }}
+{%- endblock selectpicker_widget %}
+
+{%- block submitems_widget -%}
+	{% set attr = attr|merge({class: (attr.class|default('') ~ ' btn')|trim}) %}
+    {%- if label is empty -%}
+        {%- if label_format is not empty -%}
+            {% set label = label_format|replace({
+                '%name%': name,
+                '%id%': id,
+            }) %}
+        {%- else -%}
+            {% set label = name|humanize %}
+        {%- endif -%}
+    {%- endif -%}
+    <button type="{{ type|default('submit') }}" {{ block('button_attributes') }}>
+    	{%- if icon -%}
+			<span class="{{ icon }}"></span>&nbsp;
+		{% endif %}
+		{{ translation_domain is same as(false) ? label : label|trans({}, translation_domain) }}
+  	</button>
+{%- endblock submitems_widget -%}
+
+
+{%- block data_field_options_widget -%}
+
+	<div class="tab-content">
+		{% set active='active' %}
+		{% if form.displayOptions is defined %}
+			<div class="tab-pane {{ active }}" id="tab_display_{{ seed }}">
+				{{- form_widget(form.displayOptions) -}}
+			</div>
+			{% set active='' %}
+		{% endif %}
+		<!-- /.tab-pane -->
+		{% if form.mappingOptions is defined %}
+			<div class="tab-pane {{ active }}" id="tab_mapping_{{ seed }}">
+				{{- form_widget(form.mappingOptions) -}}
+			</div>
+			{% set active='' %}
+		{% endif %}
+		<!-- /.tab-pane -->
+	    {% if form.restrictionOptions is defined %}
+	      <div class="tab-pane {{ active }}" id="tab_restriction_{{ seed }}">
+	        {{- form_widget(form.restrictionOptions) -}}
+	      </div>
+		  {% set active='' %}
+	    {% endif %}
+	    <!-- /.tab-pane -->
+	    {% if form.migrationOptions is defined %}
+	      <div class="tab-pane {{ active }}" id="tab_migration_{{ seed }}">
+	        {{- form_widget(form.migrationOptions) -}}
+	      </div>
+		  {% set active='' %}
+	    {% endif %}
+	    <!-- /.tab-pane -->
+	    {% if form.extraOptions is defined %}
+	      <div class="tab-pane {{ active }}" id="tab_extra_{{ seed }}">
+	        {{- form_widget(form.extraOptions) -}}
+	      </div>
+	    {% endif %}
+	    <!-- /.tab-pane -->
+	</div>
+	<!-- /.tab-content -->
+
+{%- endblock data_field_options_widget -%}
+
+{% block datafieldtype_widget %}
+	{% if isContainer %}
+		<div id="{{ form.vars.id }}" class="container-fluid">
+			<div class="row">
+				{% for child in form.children %}
+					{{- form_row(child) -}}
+					{% if child.vars.lastOfRow is defined and child.vars.lastOfRow %}
+						</div><div class="row">
+					{% endif %}
+				{% endfor %}
+			</div>
+		</div>
+	{% else %}
+		{{ form_widget(form) }}
+	{% endif %}
+{% endblock datafieldtype_widget %}
+
+{# Labels #}
+
+{% block datafieldtype_label %}
+	{% if data.fieldType.options.displayOptions is defined and data.fieldType.options.displayOptions.label %}
+		<label class="control-label {% if data.fieldType.options.restrictionOptions is defined and data.fieldType.options.restrictionOptions.mandatory is defined and data.fieldType.options.restrictionOptions.mandatory %}required{% endif %}"> 
+			{% if data.fieldType.options.displayOptions.icon %}<i class="{{ data.fieldType.options.displayOptions.icon }}"></i>{%  endif %}
+			{{ data.fieldType.options.displayOptions.label }}
+		</label>
+	{% endif %}
+{% endblock datafieldtype_label %}
+
+{% block container_label -%}
+	{% if data.fieldType.displayOptions.label is defined  %}
+		<div class="panel-heading">
+			<h3 class="panel-title">
+				{% if data.fieldType.displayOptions.icon is defined %}<i class="{{ data.fieldType.displayOptions.icon }}"></i>&nbsp;{% endif %}
+			</h3>
+		</div>
+	{% endif %}
+{%- endblock container_label %}
+
+{% block collectionfieldtype_label -%}
+	{% if data.fieldType.displayOptions.label is defined  %}
+		{% if data.fieldType.displayOptions.icon is defined %}
+			<i class="{{ data.fieldType.displayOptions.icon }}"></i>&nbsp;
+		{% endif %}
+		<label>{{ data.fieldType.displayOptions.label }}</label>
+	{% endif %}
+{%- endblock collectionfieldtype_label %}
+
+{% block collectionitemtype_label -%}
+	{% set parent = form.parent.parent %}
+	{% if parent.vars.icon is defined %}<i class="{{ parent.vars.icon }}"></i>&nbsp;{% endif %}
+	<label>
+		{{ parent.vars.singularLabel }} #{{ name }}
+	</label>
+{%- endblock collectionitemtype_label %}
+
+{# Rows #}
+{% block bouttongroup_row -%}
+<div class="btn-group">
+	{% for button in buttons %}
+		<a class="btn btn-sm btn-primary" href="/meta/environment/switch/39"> <span
+			class="fa fa-share-square-o"></span>&nbsp; Switch</a>
+			
+            {{- form_row(button) -}}
+		
+	{% endfor %}
+</div>
+{%- endblock bouttongroup_row %}
+
+
+
+{% block search_filter_row -%}
+	<div class="filter-container row">
+		<div class="col-xs-12">
+			<div class="col-md-2  col-sm-3 col-xs-4">
+				<div class="form-group">
+					<div class="visible-xs-block visible-sm-block">
+						{{ form_label(form.booleanClause) }}
+					</div>
+					{{- form_widget(form.booleanClause) -}}
+				</div>
+			</div>
+			<div class="col-md-2 col-sm-5 col-xs-4">
+				<div class="form-group">
+					<div class="visible-xs-block visible-sm-block">
+						{{ form_label(form.field) }}
+					</div>
+					{{- form_widget(form.field) -}}
+				</div>
+			</div>
+			<div class="col-md-2 col-sm-4 col-xs-4">
+				<div class="form-group">
+					<div class="visible-xs-block visible-sm-block">
+						{{ form_label(form.operator) }}
+					</div>
+					{{- form_widget(form.operator) -}}
+				</div>
+			</div>
+			<div class="clearfix visible-sm-block visible-xs-block"></div>
+			<div class="col-md-4 col-xs-8">
+				<div class="form-group">
+					<div class="visible-xs-block visible-sm-block">
+						{{ form_label(form.pattern) }}
+					</div>
+					{{- form_widget(form.pattern) -}}
+				</div>
+			</div>
+			
+			<div class="col-md-1 col-xs-2">
+				<div class="form-group">
+					<div class="visible-xs-block visible-sm-block">
+						{{ form_label(form.boost) }}
+					</div>
+					{{- form_widget(form.boost) -}}
+				</div>
+			</div>
+			<div class="col-md-1  col-xs-2">
+				<div class="form-group">
+					<div class="visible-xs-block visible-sm-block">
+						<label class="control-label">&nbsp;</label>
+					</div>
+{# 					<fieldset class="btn-group">#}
+						
+						{% if not form|firstInArray(form.parent.children)  %}
+							<a class="btn btn-primary remove-filter form-control" href="#">
+								<i class="fa fa-trash"></i>
+							</a>
+						{% endif %}					
+{# 						<button class="btn btn-primary remove-filter" href="#"><i class="fa fa-trash"></i></button>					#}
+{# 					</fieldset>#}
+				</div>
+			</div>
+			
+			{{- form_errors(form) -}}
+		</div>  
+	</div>             
+{%- endblock search_filter_row %}
+
+
+
+
+{% block container_row -%}
+	<div class="panel panel-default">
+	  		{{- form_label(form) -}}
+	  	<div class="panel-body">
+	  		{{- form_widget(form) -}}
+	  	</div>
+	  {{- form_errors(form) -}}
+	</div>               
+{%- endblock container_row %}
+
+{% block tabsfieldtype_row -%}
+	<div class="{% if class %}{{ class }}{% else %}col-xs-12 {% endif %}">
+		<div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+              {% for tab in  form.iterator %}
+	              <li id="{{ tab.vars.id}}__label" class="form-group{% if tab.vars.errors|length %} has-error{% endif %} {% if loop.index == 1%} active{% endif %}">
+	              	<a href="#{{ tab.vars.id}}__tab" data-toggle="tab" aria-expanded="{% if loop.index == 1%}true{%else%}false{% endif %}">{{- form_label(tab) -}}</a>
+	              </li>
+              {% endfor %}
+            </ul>
+            <div class="tab-content">
+              {% for tab in  form.iterator %}
+	              <div class="tab-pane{% if loop.index == 1%} active{% endif %}" id="{{ tab.vars.id}}__tab">
+	              	<div class="form-group has-error"  id="{{ tab.vars.id}}__error">
+		              {{ form_errors(tab) }}
+	              	</div>
+	              	<fieldset>
+					{% if loop.index == 1%}
+	               		{{- form_widget(tab) -}}
+	               	{% else %}
+	               		{{- form_widget(tab) -}}
+	               	{% endif %}
+	              	</fieldset>
+	              </div>
+              {% endfor %}
+            </div>
+            <!-- /.tab-content -->
+         </div>             
+	</div>
+{%- endblock tabsfieldtype_row %}
+
+
+{% block collectionfieldtype_widget -%}
+	<div class="collection-panel" 
+		data-prototype="{{ form_row(attribute(form, form.vars.name).vars.prototype)|e }}"
+		{% if (attribute(form, form.vars.name)|last).vars is defined  %}
+			data-index="{{ (attribute(form, form.vars.name)|last).vars.name + 1 }}"
+		{% else %}
+			data-index="0"
+		{% endif %}>
+		{% set tempId = form.vars.name~'_'~random() %}
+
+		<div 
+		  	class="panel-body{% if attribute(form, form.vars.name).vars.value.fieldType.displayOptions.collapsible is defined and attribute(form, form.vars.name).vars.value.fieldType.displayOptions.collapsible %} collapse{% endif %}{% if attribute(form, form.vars.name).vars.value.fieldType.displayOptions.sortable is defined and attribute(form, form.vars.name).vars.value.fieldType.displayOptions.sortable %} ems-sortable{% endif %}" 
+		  	id="{{ tempId }}">
+		    {{- form_widget(attribute(form, form.vars.name)) -}}
+		</div>
+		
+		<div class="">
+	  		<div class="btn-group">
+	  			{{ form_widget(form.add_nested) }}
+				{% if attribute(form, form.vars.name).vars.value.fieldType.displayOptions.collapsible is defined and attribute(form, form.vars.name).vars.value.fieldType.displayOptions.collapsible %}
+					<a class="toggle-button pull-right btn btn-primary btn-sm" role="button" data-toggle="collapse" href="#{{ tempId }}" 
+						aria-expanded="false" aria-controls="{{ tempId }}" data-toggle-contain="Hide {{ '<i class="fa fa-chevron-up"></i>'|e }}">
+						Show <i class="fa fa-chevron-right"></i>
+					</a>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+{%- endblock collectionfieldtype_widget %}
+
+{% block collectionfieldtype_row -%}
+<div class="form-group{% if class %} {{ class }}{% else %} col-xs-12 {% endif %}{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %}">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+	  		{{- form_label(form) -}}
+	  	</div>
+	  	<div  class="panel-body">
+			{{- form_widget(form) -}}
+		</div>
+		{{- form_errors(form) -}}
+	</div>               
+</div>
+{% endblock collectionfieldtype_row %}
+
+{% block collectionitemtype_row -%}
+<div class="form-group collection-item-panel{% if form.parent.parent.vars.itemBootstrapClass %} {{ form.parent.parent.vars.itemBootstrapClass }}{% else %} col-xs-12 {% endif %}{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %}">
+	<div class="panel panel-default">
+		<div class="panel-heading ems-handle">
+			{{ form_label(form) }}
+	  		<div class="btn-group pull-right">
+	  			{{- form_widget(form.remove_collection_item) -}}
+			</div>
+	  	</div>		
+		
+	  	<div class="panel-body">
+	    	{{- form_widget(form) -}}
+	  	</div>
+	  {{- form_errors(form) -}}
+	</div>    
+</div>
+{% endblock collectionitemtype_row %}
+
+
+{% block datafieldtype_row -%}
+<div class="form-group{% if class %} {{ class }}{% else %} col-xs-12 {% endif %}{% if form.vars.value.fieldType is defined and form.vars.value.fieldType.options.restrictionOptions is defined and form.vars.value.fieldType.options.restrictionOptions.mandatory is defined and form.vars.value.fieldType.options.restrictionOptions.mandatory %} required {% endif %}{% if force_error|default(false) or not valid or form.vars.errors|length > 0 %} has-error{% endif %}">
+	{% if isContainer and form.vars.data.fieldType.options.displayOptions.label %}
+		<div class="panel panel-default">
+			<div class="panel-heading">
+		  		{{- form_label(form) -}}
+		  	</div>
+		  <div class="panel-body">
+		    {{- form_widget(form) -}}
+		  </div>
+		  {{- form_errors(form) -}}
+		</div>               
+	{% else %}
+			{{- form_widget(form) -}}
+			{{- form_errors(form) -}}
+	{% endif %}
+</div>
+{% endblock datafieldtype_row %}
+
+{% block timefieldtype_row %}
+	<div class="form-group{% if class %} {{ class }}{% else %} col-xs-12 {% endif %}">
+    	{{ form_label(form.data_value) }} 
+
+                  <div class="input-group">
+                    <div class="input-group-addon">
+                      <i class="fa fa-clock-o"></i>
+                    </div>
+                    {{- form_widget(form.data_value) -}}
+                  </div>
+                  <!-- /.input group -->
+                </div>
+                <!-- /.form group -->
+{% endblock timefieldtype_row %}
+
+
+{% block datefieldtype_row %}
+	<div class="form-group{% if class %} {{ class }}{% else %} col-xs-12 {% endif %}">
+    	{{ form_label(form.data_value) }} 
+
+                  <div class="input-group">
+                    <div class="input-group-addon">
+                      <i class="fa fa-calendar"></i>
+                    </div>
+                    {{- form_widget(form.data_value) -}}
+                  </div>
+                  <!-- /.input group -->
+                </div>
+                <!-- /.form group -->
+{% endblock datefieldtype_row %}
+
+
+{% block assettype_row %}
+<div class="panel panel-default file-uploader-row">
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			<i class="fa fa-file-o"></i> 				
+			{{ form_label(form) }}
+		</h3>
+	</div>
+	<div class="panel-body" >
+		{{- form_widget(form) -}}
+		<div class="progress-group">
+        	<span class="progress-text">&nbsp;</span>
+			<span class="progress-number">&nbsp;</span>
+			<div class="progress sm">
+				<div class="progress-bar" style="width: {% if form.children.sha1.vars.value %}100{% else %}0{% endif %}%"></div>
+			</div>
+		</div>
+	</div>
+	<div class="panel-footer">
+		<div class="btn-group">
+			<input type="file" class="file-uploader-input">
+		</div>
+	</div>
+</div>
+{% endblock assettype_row %}
+
+
+
+{% block fieldTypeType_row -%}
+<li class="list-group-item" id="{{ form.vars.id }}_item">
+	<h4>
+	{% if form.vars.data.parent|length != 0 %}
+{# 			<i class="glyphicon glyphicon-move move-handle"></i>#}
+		<strong>{{ form.vars.data.name }}</strong> 
+		<small>{{ form.vars.data.type }}</small>
+	{% else %}
+		<strong>{{ form.vars.data.contentType.singularName }}</strong>
+	{% endif %}
+	<div class="btn-group pull-right">
+		{% if form.add is defined %}		
+			<!-- Modal windows add field -->
+			<div class="modal fade" id="{{ form.vars.id }}_modal_add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			  <div class="modal-dialog" role="document">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			        <h4 class="modal-title" id="myModalLabel">
+						Add a field to <strong>{{ form.vars.data.name }}</strong>	
+					</h4>
+			      </div>
+			      <div class="modal-body">
+					{{ form_row( attribute(form, 'ems:internal:add:field:class')) }}
+					{{ form_row( attribute(form, 'ems:internal:add:field:name')) }}
+				  </div>
+			      <div class="modal-footer">
+			      	<div class="btn-group">
+			      		{{ form_widget(form.add) }}
+				        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
+			      	</div>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+			<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#{{ form.vars.id }}_modal_add">
+				<i class="fa fa-plus"></i> Field
+			</button>
+		{% endif %}	
+		
+		{% if form.subfield is defined %}
+			<div class="modal fade" id="{{ form.vars.id }}_modal_add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			  <div class="modal-dialog" role="document">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			        <h4 class="modal-title" id="myModalLabel">
+						Add a subfield to <strong>{{ form.vars.data.name }}</strong>	
+					</h4>
+			      </div>
+			      <div class="modal-body">
+					{{ form_row( attribute(form, 'ems:internal:add:subfield:name')) }}
+				  </div>
+			      <div class="modal-footer">
+			      	<div class="btn-group">
+			      		{{ form_widget(form.subfield) }}
+				        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
+			      	</div>
+			      </div>
+			    </div>
+			  </div>
+			</div>	
+			<div class="modal fade" id="{{ form.vars.id }}_duplicate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			  <div class="modal-dialog" role="document">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			        <h4 class="modal-title" id="myModalLabel">
+						Duplicate <strong>{{ form.vars.data.name }}</strong>	
+					</h4>
+			      </div>
+			      <div class="modal-body">
+					{{ form_row( attribute(form, 'ems:internal:add:subfield:target_name')) }}
+				  </div>
+			      <div class="modal-footer">
+			      	<div class="btn-group">
+			      		{{ form_widget(form.duplicate) }}
+				        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
+			      	</div>
+			      </div>
+			    </div>
+			  </div>
+			</div>	
+			<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#{{ form.vars.id }}_modal_add">
+				<i class="fa fa-plus"></i> Subfield
+			</button>
+			<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#{{ form.vars.id }}_duplicate">
+				<i class="fa fa-paste"></i> Duplicate
+			</button>
+		{% endif %}
+		
+		{% if form.options is defined %}	
+			<!-- Modal windows field options -->
+			<div class="modal fade" id="{{ form.vars.id }}_modal_options" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			  <div class="modal-dialog" role="document">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			        <h4 class="modal-title" id="myModalLabel">
+						Options for the field <strong>{{ form.vars.data.name }}</strong> <small>({{ form.vars.data.type }})</small>	
+					</h4>
+			      </div>
+			      <div class="modal-body">
+		
+						<div class="nav-tabs-custom">
+							<ul class="nav nav-tabs">
+								{% set active='active' %}
+								{% if form.options.displayOptions is defined %}
+									<li class="{{ active }}"><a href="#tab_display_{{ form.vars.id }}" data-toggle="tab" aria-expanded="true">Display</a></li>
+									{% set active='' %}
+								{%  endif %}
+								{% if form.options.mappingOptions is defined %}
+									<li class="{{ active }}"><a href="#tab_mapping_{{ form.vars.id }}" data-toggle="tab" aria-expanded="false">Mapping</a></li>
+									{% set active='' %}
+								{%  endif %}
+				                {% if form.options.restrictionOptions is defined %}
+				                  <li class="{{ active }}"><a href="#tab_restriction_{{ form.vars.id }}" data-toggle="tab" aria-expanded="false">Restriction</a></li>
+									{% set active='' %}
+				                {%  endif %}
+				                {% if form.options.migrationOptions is defined %}
+				                  <li class="{{ active }}"><a href="#tab_migration_{{ form.vars.id }}" data-toggle="tab" aria-expanded="false">Migration</a></li>
+									{% set active='' %}
+				                {%  endif %}
+				                {% if form.options.extraOptions is defined %}
+				                  <li class="{{ active }}"><a href="#tab_extra_{{ form.vars.id }}" data-toggle="tab" aria-expanded="false">Extra</a></li>
+									{% set active='' %}
+				                {%  endif %}
+							</ul>
+							{{- form_widget(form.options, {'seed': form.vars.id} ) -}}
+						</div>
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+			<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#{{ form.vars.id }}_modal_options">
+				  <i class="fa fa-sliders"></i> Options
+			</button>
+		{% endif %}
+		
+		{% if form.reorder is defined %}
+			<div class="modal fade" id="{{ form.vars.id }}_modal_reorder" tabindex="-1" role="dialog" aria-labelledby="myModalReorderLabel">
+			  <div class="modal-dialog" role="document">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			        <h4 class="modal-title" id="myModalReorderLabel">
+						Reorder fields in <strong>{{ form.vars.data.name }}</strong>	
+					</h4>
+			      </div>
+			      <div class="modal-body">
+					<ul class="list-group sortable" id="{{ form.vars.id }}_modal_reorder_list">
+			      		{% for child in form.vars.data.children if not child.deleted %}
+			      			<li class="list-group-item">
+			      				<i class="glyphicon glyphicon-move"></i> 
+			      				{{ child.name }}
+			      				{{ form_row( attribute(attribute(form, 'ems_'~child.name), 'name')) }}
+			      			</li>
+			      		{% endfor %}
+					</ul>	
+				  </div>
+			      <div class="modal-footer">
+			      	<div class="btn-group">
+			      		{{ form_widget(form.reorder) }}
+			      	</div>
+			      </div>
+			    </div>
+			  </div>
+			</div>	
+			<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#{{ form.vars.id }}_modal_reorder">
+				<i class="fa fa-reorder"></i> Reorder
+			</button>
+		{% endif %}
+		{% if form.remove is defined %}
+			{{ form_widget(form.remove) }}
+		{% endif %}
+		
+	</div> 
+
+	</h4>
+	{% if form.vars.data.children is defined and form.vars.data.children|length > 0 %}
+		<ul class="list-group" id="{{ form.vars.id }}_list_container">{{-
+			form_widget(form) -}}
+		</ul>
+	{% endif %}
+</li>
+{%- endblock fieldTypeType_row %}
+
+
+{% block i18n_content_row -%}
+	<div class="filter-container row">
+		<div class="col-md-2 col-sm-3">
+			<div class="form-group col-xs-6 col-sm-12">
+				{{- form_label(form.locale) -}}
+				{{- form_widget(form.locale) -}}
+				{{- form_errors(form.locale) -}}
+			</div>
+			<div class="form-group col-xs-6 col-sm-12">
+					<div class="control-label visible-xs-block">&nbsp;
+					</div>
+					{% if not form|firstInArray(form.parent.children)  %}
+						<a class="btn btn-danger btn-remove form-control" href="#">
+							<i class="fa fa-trash"></i>
+						</a>
+					{% endif %}					
+			</div>
+			<div class="clearfix visible-xs-block"></div>
+		</div>
+		<div class="col-md-10 col-sm-9">
+			{{- form_row(form.text) -}}
+		</div>
+		{{- form_errors(form) -}}
+	</div>             
+{%- endblock i18n_content_row %}
+
+{# Errors #}
+

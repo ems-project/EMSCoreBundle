@@ -1,0 +1,5 @@
+{% if app.user %}
+	<img src="{{ asset('images/anonymous.gif') }}" data-original="http://www.gravatar.com/avatar/{{ app.user.email|lower|md5 }}?d={{ "http://www.gravatar.com/avatar"|url_encode }}" class="{{ class }} lazy" alt="{{ app.user.displayName }}">
+{% else %}
+	<img src="{{ asset('images/anonymous.gif') }}" class="{{ class }}" alt="Anonymous">
+{% endif %}

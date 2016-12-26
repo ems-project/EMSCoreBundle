@@ -1,0 +1,125 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit "{{ contentType.singularName }}"  content type{% endblock %}
+{% block pagetitle %}Edit "{{ contentType.singularName }}" content type{% endblock %} 
+
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><a href="{{ url("contenttype.index") }}"><i class="fa fa-cubes"></i> Content Types</a></li>
+   		<li class="active">edit</li>
+   	</ol>
+{% endblock %}
+
+{% block body %}
+
+	{{ form_start(form) }}
+	
+	<div class="row">
+		<div class="col-md-12">
+			<div class="box ">
+				<div class="box-header with-border">
+					<i class="fa fa-sitemap"></i>
+					<h3 class="box-title">{{ contentType.singularName }}'s metas</h3>
+				</div>
+				<!-- /.box-header -->
+				<div class="box-body">
+					<div class="col-md-4">
+{# 						{{ form_row(form.active) }}#}
+						{{ form_row(form.rootContentType) }}
+						{% if contentType.environment.managed %}
+							{{ form_row(form.askForOuuid) }}
+						{% endif %}
+						{{ form_row(form.editTwigWithWysiwyg) }}
+						{{ form_row(form.singularName) }}
+						{{ form_row(form.pluralName) }}
+						{% if contentType.environment.managed %}
+							{{ form_row(form.viewRole) }}
+							{{ form_row(form.createRole) }}
+							{{ form_row(form.editRole) }}
+						{% endif %}
+						{{ form_row(form.icon) }}
+						{{ form_row(form.color) }}
+						{{ form_row(form.refererFieldName) }}
+						{% if form.labelField is defined  %}
+							{{ form_row(form.circlesField) }}
+							{{ form_row(form.labelField) }}
+							{{ form_row(form.colorField) }}
+							{{ form_row(form.emailField) }}
+							{{ form_row(form.categoryField) }}
+							{{ form_row(form.sortBy) }}
+							{% if contentType.environment.managed %}
+								{{ form_row(form.orderField) }}
+							{% endif %}
+	{# 						{{ form_row(form.categoryField) }}#}
+	{# 						{{ form_row(form.userField) }}#}
+	{# 						{{ form_row(form.dateField) }}#}
+	{# 						{{ form_row(form.startDateField) }}#}
+	{# 						{{ form_row(form.endDateField) }}#}
+	{# 						{{ form_row(form.locationField) }}#}
+	{# 						{{ form_row(form.ouuidField) }}#}
+							{{ form_row(form.imageField) }}
+							{{ form_row(form.assetField) }}
+	{# 						{{ form_row(form.videoField) }}#}
+						{% endif %}
+					</div>
+					
+					<div class="col-md-8">
+						{{ form_row(form.description) }}
+			            {{ form_row(form.indexTwig) }}
+			            {{ form_row(form.extra) }}
+					</div>
+
+
+				<div class="col-md-8">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">
+								<i class="fa fa-sliders"></i> Mapping
+								<a class="toggle-button pull-right" role="button" data-toggle="collapse" href="#mapping-info" aria-expanded="false" aria-controls="mapping-info" data-toggle-contain="Hide <i class=&quot;fa fa-chevron-down&quot;></i>">
+									Show <i class="fa fa-chevron-right"></i>
+								</a>
+							</h3>
+						</div>
+						
+						{% import "macros/view.html.twig" as macros %}
+						<div class="panel-body collapse" id="mapping-info">
+							{{ macros.renderMapping(mapping) }}
+						</div>
+					</div>
+				</div>
+										
+				</div>
+				<!-- /.box-body -->		
+				<div class="box-footer">
+					<div class="btn-group">
+						{{ form_widget(form.save) }}
+						{{ form_widget(form.saveAndUpdateMapping) }}
+						{{ form_widget(form.saveAndClose) }}
+						{% if contentType.environment.managed %}
+							{{ form_widget(form.saveAndEditStructure) }}
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{{ form_end(form) }}	
+
+{% endblock %} 
+
+{% block javascripts %}
+	{% include 'app/menu.html.twig' with {
+		'item':  'contenttype-list'
+	}%}
+	
+<script type="text/javascript">
+<!--
+
+//-->
+	$(document).ready(function() {
+		$('ul.sortable').sortable();
+	});
+</script>
+	
+{% endblock %}	

@@ -1,0 +1,15 @@
+{#
+  Parameters:
+    * fieldType (Ems/CoreBundle:FieldType) : associative array that contains the current route-arguments
+    * revision (Ems/CoreBundle:Revision) : represents the total number of existing pages
+#}
+{% spaceless %}
+<div class="form-group">
+	<label>{{ fieldType.label }}</label>
+	<input type="text" class="form-control">
+	{% if fieldType.description  %}
+		<p class="help-block">{{ fieldType.description }}</p>
+	{% endif %}
+
+</div>
+{% endspaceless %}

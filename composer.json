@@ -1,5 +1,5 @@
 {
-    "name" : "ems-project/EMSCoreBundle",
+    "name" : "elasticms/core-bundle",
     "description" : "The elasticms core bundle",
     "type" : "symfony-bundle",
     "authors" : [{

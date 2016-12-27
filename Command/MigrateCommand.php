@@ -1,13 +1,13 @@
 <?php
 
-// src/Ems/CoreBundle/Command/GreetCommand.php
-namespace Ems\CoreBundle\Command;
+// src/EMS/CoreBundle/Command/GreetCommand.php
+namespace EMS\CoreBundle\Command;
 
-use Ems\CoreBundle\Entity\ContentType;
-use Ems\CoreBundle\Entity\Revision;
-use Ems\CoreBundle\Exception\NotLockedException;
-use Ems\CoreBundle\Repository\RevisionRepository;
-use Ems\CoreBundle\Service\Mapping;
+use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Exception\NotLockedException;
+use EMS\CoreBundle\Repository\RevisionRepository;
+use EMS\CoreBundle\Service\Mapping;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use Elasticsearch\Client;
@@ -17,7 +17,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Ems\CoreBundle\Service\DataService;
+use EMS\CoreBundle\Service\DataService;
 use Symfony\Component\Console\Helper\ProgressBar;
 
 class MigrateCommand extends ContainerAwareCommand
@@ -93,9 +93,9 @@ class MigrateCommand extends ContainerAwareCommand
     		$mode = "earse";
     	}
     	
-		/** @var \Ems\CoreBundle\Repository\ContentTypeRepository $contentTypeRepository */
-		$contentTypeRepository = $em->getRepository('Ems/CoreBundle:ContentType');
-		/** @var \Ems\CoreBundle\Entity\ContentType $contentTypeTo */
+		/** @var \EMS\CoreBundle\Repository\ContentTypeRepository $contentTypeRepository */
+		$contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
+		/** @var \EMS\CoreBundle\Entity\ContentType $contentTypeTo */
 		$contentTypeTo = $contentTypeRepository->findOneBy(array("name" => $contentTypeNameTo, 'deleted' => false));
 		if(!$contentTypeTo) {
 			$output->writeln("<error>Content type ".$contentTypeNameTo." not found</error>");
@@ -115,7 +115,7 @@ class MigrateCommand extends ContainerAwareCommand
 		//Delete ContentType if erase
 		if($mode == "erase") {
 			/** @var RevisionRepository $repository */
-			$repository = $em->getRepository( 'Ems/CoreBundle:Revision' );
+			$repository = $em->getRepository( 'EMSCoreBundle:Revision' );
 			$repository->deleteRevisions();
 			$repository->clear();
 		}
@@ -144,7 +144,7 @@ class MigrateCommand extends ContainerAwareCommand
 // 			$output->writeln("\nMigrating " . ($from+1) . " / " . $total );
 
 			/** @var RevisionRepository $repository */
-			$repository = $em->getRepository( 'Ems/CoreBundle:Revision' );
+			$repository = $em->getRepository( 'EMSCoreBundle:Revision' );
 
 			foreach ($arrayElasticsearchIndex["hits"]["hits"] as $index => $value) {
 				try{

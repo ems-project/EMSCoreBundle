@@ -1,0 +1,146 @@
+{% extends 'EMSCoreBundle:base:base.html.twig' %}
+
+{% block title %}Edit template {{ template.name }} for {{template.contentType.name}}{% endblock %}
+{% block pagetitle %}Edit template {{ template.name }} for {{template.contentType.name}}{% endblock %} 
+{% block subtitle %}{% endblock %} 
+
+
+{% block body %}
+
+<div class="row">
+	<div class="col-md-12">
+		<!-- general form elements -->
+		<div class="box box-primary">
+			<div class="box-header with-border">
+				<h3 class="box-title">Edit template for {{template.contentType.name}}</h3>
+			</div>
+			<!-- /.box-header -->
+			<!-- form start -->
+			{{ form_start(form) }}
+				
+				<div class="box-body">
+					{{ form_row(form.name) }}
+					{{ form_row(form.icon) }}
+                    {{ form_row(form.environments) }}
+					{{ form_row(form.body) }}
+					{{ form_row(form.editWithWysiwyg) }}
+                    {{ form_row(form.active) }}
+                    {{ form_row(form.role) }}
+                    {{ form_row(form.renderOption) }}
+                    <div id="embed">			
+                    {{ form_row(form.header) }}
+					</div>
+                    <div id="export">			
+                    {{ form_row(form.preview) }}
+                    {{ form_row(form.accumulateInOneFile) }}
+					{{ form_row(form.mimeType) }}
+					{{ form_row(form.filename) }}
+					{{ form_row(form.extension) }}
+					</div>
+					<div id="notification">					
+					{{ form_row(form.roleTo) }}
+					{{ form_row(form.roleCc) }}
+					{{ form_row(form.emailContentType) }}
+					{{ form_row(form.circlesTo) }}
+                    {{ form_row(form.responseTemplate) }}
+					</div>
+				</div>
+				<!-- /.box-body -->
+				<div class="box-footer">
+					{{ form_widget(form.save) }}
+				</div>
+			{{ form_end(form) }}
+
+		</div>
+		<!-- /.box -->
+	</div>
+</div>
+
+{% endblock %} 
+
+
+{% block javascripts %}
+	{% include 'EMSCoreBundle:app:menu.html.twig' with {
+		'item':  'contenttype-index'
+	}%}
+	
+		
+<script type="text/javascript">
+$(window).ready(function() {  
+
+
+	// Jira - ELASTICMS-41
+	$('#export').hide();
+	$('#notification').hide();
+	$('#embed').hide();
+	
+	if ($('#template_renderOption').val() == 'notification'){ 
+		$('#notification').show();
+	} else if ($('#template_renderOption').val() == 'export') {
+		 $('#export').show();
+	} else if ($('#template_renderOption').val() == 'embed') {
+		 $('#embed').show();
+	}
+
+	$('#template_renderOption').change(function(e){
+		  if ($(this).val() == 'notification'){
+		    $('#notification').show();
+		    $('#export').hide();
+		    $('#embed').hide();
+		  } else if ($(this).val() == 'export'){
+			$('#export').show();
+			$('#notification').hide();
+			$('#embed').hide();
+		  } else if ($(this).val() == 'embed'){
+			$('#embed').show();
+			$('#export').hide();
+			$('#notification').hide();
+		  } else{
+		    $('#export').hide();
+		    $('#notification').hide();
+		    $('#embed').hide();
+		  }
+		});
+	
+    var type = $( '#template_circlesTo' ).data('type'); 
+    var dynamicLoading = $( '#template_circlesTo' ).data('dynamic-loading'); 
+
+  $('#template_circlesTo').css('width', '100%');
+  $('#template_circlesTo').css('z-index', '20000');
+  $('#template_circlesTo').select2({
+    ajax: {
+      url: '{{ url("elasticsearch.api.search") }}',
+        dataType: 'json',
+        delay: 250,
+        data: function (params) {
+            return {
+            q: params.term, // search term
+            page: params.page,
+            type: type
+          };
+        },
+      processResults: function (data, params) {
+        // parse the results into the format expected by Select2
+        // since we are using custom formatting functions we do not need to
+        // alter the remote JSON data, except to indicate that infinite
+        // scrolling can be used
+        params.page = params.page || 1;
+    
+            return {
+              results: data.items,
+              pagination: {
+                more: (params.page * 30) < data.total_count
+              }
+            };
+        },
+        cache: true
+      },
+      escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+      //templateResult: formatRepo, // omitted for brevity, see the source of this page
+      //templateSelection: formatRepoSelection, // omitted for brevity, see the source of this page
+      minimumInputLength: 1
+  });
+});
+	
+</script>
+{% endblock %}	

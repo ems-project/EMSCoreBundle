@@ -1,16 +1,16 @@
 <?php
 
-namespace Ems\CoreBundle\Controller;
+namespace EMS\CoreBundle\Controller;
 
-use Ems\CoreBundle\Entity\I18n;
-use Ems\CoreBundle\Form\Form\I18nType;
-use Ems\CoreBundle\Service\I18nService;
+use EMS\CoreBundle\Entity\I18n;
+use EMS\CoreBundle\Form\Form\I18nType;
+use EMS\CoreBundle\Service\I18nService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Ems\CoreBundle\Entity\Form\I18nFilter;
-use Ems\CoreBundle\Form\Form\I18nFormType;
+use EMS\CoreBundle\Entity\Form\I18nFilter;
+use EMS\CoreBundle\Form\Form\I18nFormType;
 
 /**
  * I18n controller.
@@ -50,13 +50,13 @@ class I18nController extends Controller
         
         $count = $this->getI18nService()->count($filters);
         // for pagination
-        $paging_size = $this->getParameter('paging_size');
+        $paging_size = $this->getParameter('ems_core.paging_size');
         $lastPage = ceil($count/$paging_size);
         $page = $request->query->get('page', 1);
         
         $i18ns = $this->getI18nService()->findAll(($page-1)*$paging_size, $paging_size, $filters);
         
-        return $this->render('i18n/index.html.twig', array(
+        return $this->render('EMSCoreBundle:i18n:index.html.twig', array(
             'i18nkeys' => $i18ns,
         	'lastPage' => $lastPage,
         	'paginationPath' => 'i18n_index',
@@ -97,7 +97,7 @@ class I18nController extends Controller
             return $this->redirectToRoute('i18n_index', array('id' => $i18n->getId()));
         }
 
-        return $this->render('i18n/new.html.twig', array(
+        return $this->render('EMSCoreBundle:i18n:new.html.twig', array(
             'i18n' => $i18n,
             'form' => $form->createView(),
         ));
@@ -133,7 +133,7 @@ class I18nController extends Controller
             return $this->redirectToRoute('i18n_index');
         }
 
-        return $this->render('i18n/edit.html.twig', array(
+        return $this->render('EMSCoreBundle:i18n:edit.html.twig', array(
             'i18n' => $i18n,
             'edit_form' => $editForm->createView(),
         ));

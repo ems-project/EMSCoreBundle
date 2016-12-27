@@ -1,0 +1,70 @@
+{% extends 'EMSCoreBundle:base:base.html.twig' %}
+
+{% block title %}List view for {{ contentType.name }}{% endblock %}
+{% block pagetitle %}List view for content type {{ contentType.name }}{% endblock %} 
+
+
+{% block body %}
+<div class="row">
+	<div class="col-md-12">
+		<div class="box ">
+			<div class="box-header with-border">
+				<i class="fa fa-tv"></i>
+				<h3 class="box-title">Views for content type {{ contentType.name }}</h3>
+				<div class="btn-group  pull-right">
+					<a class="btn btn-xs btn-primary" href="{{ url('view.add', {'type':contentType.name }) }}"><i class="fa fa-plus"></i> Add view</a>
+				</div>
+			</div>
+			<!-- /.box-header -->
+			<div class="box-body">
+				<div class="table-responsive">
+				<table class="table table-condensed table-striped">
+					<tbody>
+						<tr>
+							<th class="text-center" style="width: 10px">#</th>
+							<th class="text-center" style="width: 20px">Icon</th>
+							<th>Name</th>
+							<th>Action</th>
+						</tr>
+						{% for view in contentType.views %}
+							<tr>
+								<td class="text-center">{{ loop.index }}.</td>
+								<td class="text-center"><i class="{% if view.icon %}{{ view.icon }}{% else %}fa fa-file-text-o{% endif %}"></i></td>
+								<td>{{ view.name }}</td>
+								<td>
+								
+									<div class="btn-group">
+										{% include 'EMSCoreBundle:elements:get-button.html.twig' with {
+											'url':  path('view.edit', {'id': view.id}),
+											'label': 'Edit',
+											'icon': 'pencil'
+										}%}
+										{% include 'EMSCoreBundle:elements:post-button.html.twig' with {
+											'url': path('view.remove', {'id': view.id}),
+											'message': 'Delete the view ' ~ view.name ~ ' ?',
+											'label': 'Delete',
+											'icon': 'trash'
+										}%}
+				                    </div>
+								
+              
+								</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+				</div>
+
+			</div>
+			<!-- /.box-body -->
+		</div>
+	</div>
+</div>
+{% endblock %} 
+
+
+{% block javascripts %}
+	{% include 'EMSCoreBundle:app:menu.html.twig' with {
+		'item':  'contenttype-list'
+	}%}
+{% endblock %}	

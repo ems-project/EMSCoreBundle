@@ -1,9 +1,9 @@
 <?php 
-namespace Ems\CoreBundle\EventListener;
+namespace EMS\CoreBundle\EventListener;
 
 
-use Ems\CoreBundle\Command\AbstractEmsCommand;
-use Ems\CoreBundle\Command\JobOutput;
+use EMS\CoreBundle\Command\AbstractEmsCommand;
+use EMS\CoreBundle\Command\JobOutput;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Monolog\Logger;
 use Symfony\Component\Console\Command\Command;
@@ -16,9 +16,9 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Ems\CoreBundle\Exception\LockedException;
+use EMS\CoreBundle\Exception\LockedException;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Ems\CoreBundle\Exception\PrivilegeException;
+use EMS\CoreBundle\Exception\PrivilegeException;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
@@ -94,7 +94,7 @@ class RequestListener
     public function provideTemplateTwigObjects(FilterControllerEvent $event)
     {
     	//TODO: move to twig appextension?
-    	$repository = $this->doctrine->getRepository('Ems/CoreBundle:ContentType');
+    	$repository = $this->doctrine->getRepository('EMSCoreBundle:ContentType');
     	$contentTypes = $repository->findBy([
     			'deleted' => false,
 //     			'rootContentType' => true,
@@ -104,7 +104,7 @@ class RequestListener
 
     	$this->twig->addGlobal('contentTypes', $contentTypes);
     	
-    	$envRepository = $this->doctrine->getRepository('Ems/CoreBundle:Environment');
+    	$envRepository = $this->doctrine->getRepository('EMSCoreBundle:Environment');
     	$contentTypes = $envRepository->findBy([
     			'inDefaultSearch' => true,
     	]);
@@ -132,9 +132,9 @@ class RequestListener
     		if(isset($params['_route']) && $params['_route'] == "job.status" && isset($params['job'])){
     			$this->logger->info('Job '.$params['job'].' can be started');
     			
-    			/** @var \Ems\CoreBundle\Repository\JobRepository $jobRepository */
-    			$jobRepository = $this->doctrine->getRepository('Ems/CoreBundle:Job');
-    			/** @var \Ems\CoreBundle\Entity\Job $job */
+    			/** @var \EMS\CoreBundle\Repository\JobRepository $jobRepository */
+    			$jobRepository = $this->doctrine->getRepository('EMSCoreBundle:Job');
+    			/** @var \EMS\CoreBundle\Entity\Job $job */
     			$job = $jobRepository->find($params['job']);
     			if($job && !$job->getDone()){
     				

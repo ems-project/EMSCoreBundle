@@ -1,10 +1,10 @@
 <?php
 
-namespace Ems\CoreBundle\Form\Field;
+namespace EMS\CoreBundle\Form\Field;
 
-use Ems\CoreBundle\Service\EnvironmentService;
+use EMS\CoreBundle\Service\EnvironmentService;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Ems\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\Environment;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -61,7 +61,7 @@ class EnvironmentPickerType extends ChoiceType {
 					'data-live-search' => false
 			],
 			'choice_attr' => function($category, $key, $index) {
-				/** @var \Ems\CoreBundle\Form\DataField\DataFieldType $dataFieldType */
+				/** @var \EMS\CoreBundle\Form\DataField\DataFieldType $dataFieldType */
 				$dataFieldType = $this->choices[$index];
 				return [
 						'data-content' => '<span class="text-'.$dataFieldType->getColor().'"><i class="fa fa-square"></i>&nbsp;&nbsp;'.$dataFieldType->getName().'</span>'

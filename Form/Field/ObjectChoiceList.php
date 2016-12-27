@@ -1,8 +1,8 @@
 <?php 
-namespace Ems\CoreBundle\Form\Field;
+namespace EMS\CoreBundle\Form\Field;
 
 
-use Ems\CoreBundle\Service\ObjectChoiceCacheService;
+use EMS\CoreBundle\Service\ObjectChoiceCacheService;
 use Symfony\Component\Form\ChoiceList\ChoiceListInterface;
 
 class ObjectChoiceList implements ChoiceListInterface {

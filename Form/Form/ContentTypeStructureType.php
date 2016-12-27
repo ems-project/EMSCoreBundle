@@ -1,10 +1,10 @@
 <?php
 
-namespace Ems\CoreBundle\Form\Form;
+namespace EMS\CoreBundle\Form\Form;
 
-use Ems\CoreBundle\Entity\ContentType;
-use Ems\CoreBundle\Form\Field\SubmitEmsType;
-use Ems\CoreBundle\Form\FieldType\FieldTypeType;
+use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Form\FieldType\FieldTypeType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;

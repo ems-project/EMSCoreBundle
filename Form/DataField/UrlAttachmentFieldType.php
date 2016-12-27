@@ -1,12 +1,12 @@
 <?php
 
-namespace Ems\CoreBundle\Form\DataField;
+namespace EMS\CoreBundle\Form\DataField;
 
-use Ems\CoreBundle\Entity\DataField;
-use Ems\CoreBundle\Entity\FieldType;
-use Ems\CoreBundle\Form\Field\IconPickerType;
-use Ems\CoreBundle\Form\Field\IconTextType;
-use Ems\CoreBundle\Service\FileService;
+use EMS\CoreBundle\Entity\DataField;
+use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Form\Field\IconPickerType;
+use EMS\CoreBundle\Form\Field\IconTextType;
+use EMS\CoreBundle\Service\FileService;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 	

@@ -1,12 +1,12 @@
 <?php
-namespace Ems\CoreBundle\Entity\Helper;
+namespace EMS\CoreBundle\Entity\Helper;
 
-use Ems\CoreBundle\Entity\ContentType;
-use Ems\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\FieldType;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Ems\CoreBundle\Entity\View;
-use Ems\CoreBundle\Entity\Template;
+use EMS\CoreBundle\Entity\View;
+use EMS\CoreBundle\Entity\Template;
 
 /**
  * Normalize and denormalize ContentType and FieldType objects in Json.
@@ -155,21 +155,21 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
 			} elseif($property == "views"){
 				foreach ($value as $index => $view) {
 					if(!empty($view)){
-						$object->addView($this->denormalize($view, "Ems\CoreBundle\Entity\View", $format, array("contentType" => $object)));
+						$object->addView($this->denormalize($view, "EMS\CoreBundle\Entity\View", $format, array("contentType" => $object)));
 					}
 				}
 				
 			} elseif($property == "templates"){
 				foreach ($value as $index => $template) {
 					if(!empty($template)){
-						$object->addTemplate($this->denormalize($template, "Ems\CoreBundle\Entity\Template", $format, array("contentType" => $object)));
+						$object->addTemplate($this->denormalize($template, "EMS\CoreBundle\Entity\Template", $format, array("contentType" => $object)));
 					}
 				}
 				
-			} elseif($class == "Ems\CoreBundle\Entity\Template" && $property == "contentType"){
+			} elseif($class == "EMS\CoreBundle\Entity\Template" && $property == "contentType"){
 				$object->setContentType($context["contentType"]);
 				
-			} elseif($class == "Ems\CoreBundle\Entity\View" && $property == "contentType"){
+			} elseif($class == "EMS\CoreBundle\Entity\View" && $property == "contentType"){
 				$object->setContentType($context["contentType"]);
 				
 			} else {

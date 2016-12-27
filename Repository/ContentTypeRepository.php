@@ -1,8 +1,8 @@
 <?php
 
-namespace Ems\CoreBundle\Repository;
+namespace EMS\CoreBundle\Repository;
 
-use Ems\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\ContentType;
 
 /**
  * ContentTypeRepository
@@ -19,7 +19,7 @@ class ContentTypeRepository extends \Doctrine\ORM\EntityRepository
 		
 		$out = [];
 		$result = $qb->getQuery()->getResult();
-		/** @var \Ems\CoreBundle\Entity\ContentType $record */
+		/** @var \EMS\CoreBundle\Entity\ContentType $record */
 		foreach ($result as $record){
 			$out[$record->getName()] = $record;
 		}

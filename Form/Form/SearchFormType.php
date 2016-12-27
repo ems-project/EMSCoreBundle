@@ -1,11 +1,11 @@
 <?php
 
-namespace Ems\CoreBundle\Form\Form;
+namespace EMS\CoreBundle\Form\Form;
 
-use Ems\CoreBundle\Form\Field\ContentTypePickerType;
-use Ems\CoreBundle\Form\Field\EnvironmentPickerType;
-use Ems\CoreBundle\Form\Field\SubmitEmsType;
-use Ems\CoreBundle\Form\Subform\SearchFilterType;
+use EMS\CoreBundle\Form\Field\ContentTypePickerType;
+use EMS\CoreBundle\Form\Field\EnvironmentPickerType;
+use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Form\Subform\SearchFilterType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -80,7 +80,7 @@ class SearchFormType extends AbstractType {
 	public function configureOptions(OptionsResolver $resolver)
 	{
 		$resolver->setDefaults([
-				'data_class' => 'Ems\CoreBundle\Entity\Form\Search',
+				'data_class' => 'EMS\CoreBundle\Entity\Form\Search',
 				'savedSearch' => false,
 				'csrf_protection' => false,
 				'light' => false,

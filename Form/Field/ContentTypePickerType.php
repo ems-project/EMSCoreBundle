@@ -1,9 +1,9 @@
 <?php
 
-namespace Ems\CoreBundle\Form\Field;
+namespace EMS\CoreBundle\Form\Field;
 
-use Ems\CoreBundle\Entity\ContentType;
-use Ems\CoreBundle\Service\ContentTypeService;
+use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Service\ContentTypeService;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 

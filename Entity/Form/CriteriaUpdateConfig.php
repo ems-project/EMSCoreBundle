@@ -1,10 +1,10 @@
 <?php
-namespace Ems\CoreBundle\Entity\Form;
+namespace EMS\CoreBundle\Entity\Form;
 
 
 
-use Ems\CoreBundle\Entity\DataField;
-use Ems\CoreBundle\Entity\View;
+use EMS\CoreBundle\Entity\DataField;
+use EMS\CoreBundle\Entity\View;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 /**

@@ -1,16 +1,16 @@
 <?php
 
-namespace Ems\CoreBundle\Controller\ContentManagement;
+namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use Ems\CoreBundle\Controller\AppController;
-use Ems\CoreBundle;
-use Ems\CoreBundle\Entity\ContentType;
-use Ems\CoreBundle\Entity\Environment;
-use Ems\CoreBundle\Entity\Form\Search;
-use Ems\CoreBundle\Entity\Revision;
-use Ems\CoreBundle\Form\Field\EnvironmentPickerType;
-use Ems\CoreBundle\Form\Field\SubmitEmsType;
-use Ems\CoreBundle\Form\Form\SearchFormType;
+use EMS\CoreBundle\Controller\AppController;
+use EMS\CoreBundle;
+use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\Form\Search;
+use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Form\Field\EnvironmentPickerType;
+use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Form\Form\SearchFormType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -123,7 +123,7 @@ class PublishController extends AppController
 	
 		
 		
-		return $this->render( 'publish/publish-search-result.html.twig', [
+		return $this->render( 'EMSCoreBundle:publish:publish-search-result.html.twig', [
 				'form' => $form->createView(),
 				'fromEnvironment' => $environment,
 				'contentType' => $contentType,

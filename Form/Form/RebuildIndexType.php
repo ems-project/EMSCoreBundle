@@ -1,12 +1,12 @@
 <?php
 
-namespace Ems\CoreBundle\Form\Form;
+namespace EMS\CoreBundle\Form\Form;
 
-use Ems\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Entity\Revision;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Ems\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Form\Field\SubmitEmsType;
 
 class RebuildIndexType extends AbstractType {
 	/**

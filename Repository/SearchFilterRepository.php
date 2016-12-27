@@ -1,6 +1,6 @@
 <?php
 
-namespace Ems\CoreBundle\Repository;
+namespace EMS\CoreBundle\Repository;
 
 /**
  * SearchFilterRepository

@@ -1,13 +1,13 @@
 <?php
 
-namespace Ems\CoreBundle\Form\View;
+namespace EMS\CoreBundle\Form\View;
 
-use Ems\CoreBundle\Entity\DataField;
-use Ems\CoreBundle\Form\View\ViewType;
+use EMS\CoreBundle\Entity\DataField;
+use EMS\CoreBundle\Form\View\ViewType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Elasticsearch\Client;
-use Ems\CoreBundle\Entity\View;
+use EMS\CoreBundle\Entity\View;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;

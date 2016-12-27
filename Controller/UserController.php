@@ -1,9 +1,9 @@
 <?php
-namespace Ems\CoreBundle\Controller;
+namespace EMS\CoreBundle\Controller;
 
-use Ems\CoreBundle\Entity\User;
-use Ems\CoreBundle\Form\Field\ObjectPickerType;
-use Ems\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Form\Field\ObjectPickerType;
+use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use FOS\UserBundle\Util\LegacyFormHelper;
@@ -15,7 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\HttpFoundation\Request;
-use Ems\CoreBundle\Entity\AuthToken;
+use EMS\CoreBundle\Entity\AuthToken;
 
 class UserController extends AppController
 {
@@ -28,10 +28,10 @@ class UserController extends AppController
 		$em = $this->getDoctrine()->getManager();
 		
 		/** @var EntityRepository $repository */
-		$repository = $em->getRepository('Ems/CoreBundle:User');
+		$repository = $em->getRepository('EMSCoreBundle:User');
 		
 		$users = $repository->findAll();
-		return $this->render( 'user/index.html.twig', [
+		return $this->render( 'EMSCoreBundle:user:index.html.twig', [
 				'users' => $users
 		] );
 	}
@@ -62,7 +62,7 @@ class UserController extends AppController
 				'first_options' => array('label' => 'form.password'),
 				'second_options' => array('label' => 'form.password_confirmation'),
 				'invalid_message' => 'fos_user.password.mismatch',));
-		if ($circleObject = $this->container->getParameter('circles_object')) {
+		if ($circleObject = $this->container->getParameter('ems_core.circles_object')) {
 			$form->add('circles', ObjectPickerType::class, [
 				'multiple' => TRUE,
 				'type' => $circleObject,
@@ -112,7 +112,7 @@ class UserController extends AppController
 			}
 		}
 		
-		return $this->render('user/add.html.twig', array(
+		return $this->render('EMSCoreBundle:user:add.html.twig', array(
 				'form' => $form->createView()
 		));
 	}
@@ -143,7 +143,7 @@ class UserController extends AppController
 		))
 		->add('circles', ObjectPickerType::class, [
 				'multiple' => TRUE,
-				'type' => $this->container->getParameter('circles_object'),
+				'type' => $this->container->getParameter('ems_core.circles_object'),
 				'dynamicLoading' => true
 				
 		])
@@ -215,7 +215,7 @@ class UserController extends AppController
 			}
 		}
 	
-		return $this->render('user/edit.html.twig', array(
+		return $this->render('EMSCoreBundle:user:edit.html.twig', array(
 				'form' => $form->createView(),
 				'user' => $user
 		));
@@ -341,7 +341,7 @@ class UserController extends AppController
 		$em->persist($user);
 		$em->flush();
 		
-		return $this->render( 'ajax/notification.json.twig', [
+		return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
 				'success' => true,
 		] );
 	}

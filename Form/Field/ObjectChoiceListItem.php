@@ -1,7 +1,7 @@
 <?php 
-namespace Ems\CoreBundle\Form\Field;
+namespace EMS\CoreBundle\Form\Field;
 
-use Ems\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\ContentType;
 
 class ObjectChoiceListItem {
 

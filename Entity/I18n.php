@@ -1,6 +1,6 @@
 <?php
 
-namespace Ems\CoreBundle\Entity;
+namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * DataField
  *
  * @ORM\Table(name="i18n")
- * @ORM\Entity(repositoryClass="Ems\CoreBundle\Repository\I18nRepository")
+ * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\I18nRepository")
  * @ORM\HasLifecycleCallbacks()
  */
 class I18n

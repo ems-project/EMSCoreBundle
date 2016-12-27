@@ -1,10 +1,10 @@
 <?php
 
-namespace Ems\CoreBundle\Form\Form;
+namespace EMS\CoreBundle\Form\Form;
 
-use Ems\CoreBundle\Entity\Template;
-use Ems\CoreBundle\Form\Field\SubmitEmsType;
-use Ems\CoreBundle\Service\EnvironmentService;
+use EMS\CoreBundle\Entity\Template;
+use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Service\EnvironmentService;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -39,7 +39,7 @@ class NotificationFormType extends AbstractType {
 		//}, 900);
 
 		$builder->add('template', EntityType::class, [
-			'class' => 'Ems/CoreBundle:Template',
+			'class' => 'EMSCoreBundle:Template',
 			'query_builder' => function (EntityRepository $er) {
 				return $er->createQueryBuilder('t')
 				->where("t.renderOption = 'notification'");
@@ -78,7 +78,7 @@ class NotificationFormType extends AbstractType {
 				},
 		])
 		->add('contentType', EntityType::class, [
-				'class' => 'Ems/CoreBundle:ContentType',
+				'class' => 'EMSCoreBundle:ContentType',
 				'query_builder' => function (EntityRepository $er) {
 					return $er->createQueryBuilder('ct')
 					->where("ct.deleted = false")

@@ -1,6 +1,6 @@
 <?php
 
-namespace Ems\CoreBundle\Factories;
+namespace EMS\CoreBundle\Factories;
 
 use Elasticsearch\ClientBuilder;
 use Elasticsearch\Client;

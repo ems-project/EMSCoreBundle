@@ -1,6 +1,6 @@
 <?php
 
-namespace Ems\CoreBundle\Form\Field;
+namespace EMS\CoreBundle\Form\Field;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;

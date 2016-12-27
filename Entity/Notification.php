@@ -1,6 +1,6 @@
 <?php
 
-namespace Ems\CoreBundle\Entity;
+namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Notification
  *
  * @ORM\Table(name="notification")
- * @ORM\Entity(repositoryClass="Ems\CoreBundle\Repository\NotificationRepository")
+ * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\NotificationRepository")
  * @ORM\HasLifecycleCallbacks()
  */
 class Notification
@@ -191,11 +191,11 @@ class Notification
     /**
      * Set template
      *
-     * @param \Ems\CoreBundle\Entity\Template $template
+     * @param \EMS\CoreBundle\Entity\Template $template
      *
      * @return Notification
      */
-    public function setTemplate(\Ems\CoreBundle\Entity\Template $template)
+    public function setTemplate(\EMS\CoreBundle\Entity\Template $template)
     {
         $this->template = $template;
 
@@ -205,7 +205,7 @@ class Notification
     /**
      * Get template
      *
-     * @return \Ems\CoreBundle\Entity\Template
+     * @return \EMS\CoreBundle\Entity\Template
      */
     public function getTemplate()
     {
@@ -359,11 +359,11 @@ class Notification
     /**
      * Set revision
      *
-     * @param \Ems\CoreBundle\Entity\Revision $revision
+     * @param \EMS\CoreBundle\Entity\Revision $revision
      *
      * @return Notification
      */
-    public function setRevision(\Ems\CoreBundle\Entity\Revision $revision)
+    public function setRevision(\EMS\CoreBundle\Entity\Revision $revision)
     {
         $this->revision = $revision;
 
@@ -373,7 +373,7 @@ class Notification
     /**
      * Get revision
      *
-     * @return \Ems\CoreBundle\Entity\Revision
+     * @return \EMS\CoreBundle\Entity\Revision
      */
     public function getRevision()
     {
@@ -383,11 +383,11 @@ class Notification
     /**
      * Set environment
      *
-     * @param \Ems\CoreBundle\Entity\Environment $environment
+     * @param \EMS\CoreBundle\Entity\Environment $environment
      *
      * @return Notification
      */
-    public function setEnvironment(\Ems\CoreBundle\Entity\Environment $environment)
+    public function setEnvironment(\EMS\CoreBundle\Entity\Environment $environment)
     {
         $this->environment = $environment;
 
@@ -397,7 +397,7 @@ class Notification
     /**
      * Get environment
      *
-     * @return \Ems\CoreBundle\Entity\Environment
+     * @return \EMS\CoreBundle\Entity\Environment
      */
     public function getEnvironment()
     {

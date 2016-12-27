@@ -1,12 +1,12 @@
 <?php
 
-namespace Ems\CoreBundle\Form\Form;
+namespace EMS\CoreBundle\Form\Form;
 
 
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\AbstractType;
-use Ems\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class JobType extends AbstractType
@@ -35,7 +35,7 @@ class JobType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Ems\CoreBundle\Entity\Job'
+            'data_class' => 'EMS\CoreBundle\Entity\Job'
         ));
     }
 }

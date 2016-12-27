@@ -1,6 +1,6 @@
 <?php
 
-namespace Ems\CoreBundle\Exception;
+namespace EMS\CoreBundle\Exception;
 
 
 

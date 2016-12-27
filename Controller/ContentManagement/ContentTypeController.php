@@ -1,20 +1,20 @@
 <?php
 
-namespace Ems\CoreBundle\Controller\ContentManagement;
+namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use Ems\CoreBundle;
-use Ems\CoreBundle\Controller\AppController;
-use Ems\CoreBundle\Entity\ContentType;
-use Ems\CoreBundle\Entity\Environment;
-use Ems\CoreBundle\Entity\FieldType;
-use Ems\CoreBundle\Entity\Helper\JsonNormalizer;
-use Ems\CoreBundle\Form\DataField\SubfieldType;
-use Ems\CoreBundle\Form\Field\IconTextType;
-use Ems\CoreBundle\Form\Field\SubmitEmsType;
-use Ems\CoreBundle\Form\Form\ContentTypeStructureType;
-use Ems\CoreBundle\Form\Form\ContentTypeType;
-use Ems\CoreBundle\Repository\ContentTypeRepository;
-use Ems\CoreBundle\Repository\EnvironmentRepository;
+use EMS\CoreBundle;
+use EMS\CoreBundle\Controller\AppController;
+use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Entity\Helper\JsonNormalizer;
+use EMS\CoreBundle\Form\DataField\SubfieldType;
+use EMS\CoreBundle\Form\Field\IconTextType;
+use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Form\Form\ContentTypeStructureType;
+use EMS\CoreBundle\Form\Form\ContentTypeType;
+use EMS\CoreBundle\Repository\ContentTypeRepository;
+use EMS\CoreBundle\Repository\EnvironmentRepository;
 use Doctrine\ORM\EntityManager;
 use Elasticsearch\Client;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -34,7 +34,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
-use Ems\CoreBundle\Form\DataField\DataFieldType;
+use EMS\CoreBundle\Form\DataField\DataFieldType;
 
 /**
  * Operations on content types such as CRUD but alose rebuild index.
@@ -67,7 +67,7 @@ class ContentTypeController extends AppController {
 		/** @var EntityManager $em */
 		$em = $this->getDoctrine ()->getManager ();
 		/** @var ContentTypeRepository $repository */
-		$repository = $em->getRepository ( 'Ems/CoreBundle:ContentType' );
+		$repository = $em->getRepository ( 'EMSCoreBundle:ContentType' );
 		
 		/** @var ContentType $contentType */
 		$contentType = $repository->find ( $id );
@@ -159,7 +159,7 @@ class ContentTypeController extends AppController {
 		$em = $this->getDoctrine ()->getManager ();
 		
 		/** @var EnvironmentRepository $environmetRepository */
-		$environmetRepository = $em->getRepository ( 'Ems/CoreBundle:Environment' );
+		$environmetRepository = $em->getRepository ( 'EMSCoreBundle:Environment' );
 		
 		$environments = $environmetRepository->findBy ( [ 
 				'managed' => true 
@@ -195,7 +195,7 @@ class ContentTypeController extends AppController {
 		if ($form->isSubmitted () && $form->isValid ()) {
 			/** @var ContentType $contentType */
 			$contentTypeAdded = $form->getData ();
-			$contentTypeRepository = $em->getRepository ( 'Ems/CoreBundle:ContentType' );
+			$contentTypeRepository = $em->getRepository ( 'EMSCoreBundle:ContentType' );
 			
 			$contentTypes = $contentTypeRepository->findBy ( [ 
 					'name' => $contentTypeAdded->getName () ,
@@ -224,7 +224,7 @@ class ContentTypeController extends AppController {
 					$normalizers = array(new JsonNormalizer());
 					$serializer = new Serializer($normalizers, $encoders);
 					$contentType = $serializer->deserialize($fileContent, 
-															"Ems\CoreBundle\Entity\ContentType", 
+															"EMS\CoreBundle\Entity\ContentType", 
 															'json');
 					$contentType->setName($name);
 					$contentType->setPluralName($pluralName);
@@ -274,7 +274,7 @@ class ContentTypeController extends AppController {
 		$em = $this->getDoctrine ()->getManager ();
 		
 		/** @var ContentTypeRepository $contentTypeRepository */
-		$contentTypeRepository = $em->getRepository ( 'Ems/CoreBundle:ContentType' );
+		$contentTypeRepository = $em->getRepository ( 'EMSCoreBundle:ContentType' );
 		
 		$contentTypes = $contentTypeRepository->findBy(['deleted' => false], ['orderKey'=>'ASC']);
 		
@@ -342,8 +342,8 @@ class ContentTypeController extends AppController {
 		$em = $this->getDoctrine ()->getManager ();
 		
 		/** @var EnvironmentRepository $environmetRepository */
-		$environmetRepository = $em->getRepository ( 'Ems/CoreBundle:Environment' );
-		$contentTypeRepository = $em->getRepository ( 'Ems/CoreBundle:ContentType' );
+		$environmetRepository = $em->getRepository ( 'EMSCoreBundle:Environment' );
+		$contentTypeRepository = $em->getRepository ( 'EMSCoreBundle:ContentType' );
 		
 		if ($request->isMethod ( 'POST' )) {
 			if (null != $request->get ( 'envId' ) && null != $request->get ( 'name' )) {
@@ -371,7 +371,7 @@ class ContentTypeController extends AppController {
 		}
 		
 		/** @var ContentTypeRepository $contenttypeRepository */
-		$contenttypeRepository = $em->getRepository ( 'Ems/CoreBundle:ContentType' );
+		$contenttypeRepository = $em->getRepository ( 'EMSCoreBundle:ContentType' );
 		
 		$environments = $environmetRepository->findBy ( [ 
 				'managed' => false 
@@ -605,7 +605,7 @@ class ContentTypeController extends AppController {
 		/** @var EntityManager $em */
 		$em = $this->getDoctrine ()->getManager ();
 		/** @var ContentTypeRepository $repository */
-		$repository = $em->getRepository ( 'Ems/CoreBundle:ContentType' );
+		$repository = $em->getRepository ( 'EMSCoreBundle:ContentType' );
 		
 		/** @var ContentType $contentType */
 		$contentType = $repository->find ( $id );
@@ -728,7 +728,7 @@ class ContentTypeController extends AppController {
 		/** @var EntityManager $em */
 		$em = $this->getDoctrine ()->getManager ();
 		/** @var ContentTypeRepository $repository */
-		$repository = $em->getRepository ( 'Ems/CoreBundle:ContentType' );
+		$repository = $em->getRepository ( 'EMSCoreBundle:ContentType' );
 		
 		/** @var ContentType $contentType */
 		$contentType = $repository->find ( $id );

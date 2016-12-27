@@ -1,10 +1,10 @@
 <?php
 
-namespace Ems\CoreBundle\Form\View\Criteria;
+namespace EMS\CoreBundle\Form\View\Criteria;
 
-use Ems\CoreBundle\Entity\DataField;
-use Ems\CoreBundle\Entity\View;
-use Ems\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Entity\DataField;
+use EMS\CoreBundle\Entity\View;
+use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -49,7 +49,7 @@ class CriteriaFilterType extends AbstractType {
 			$fieldPaths = preg_split("/\\r\\n|\\r|\\n/", $view->getOptions()['criteriaFieldPaths']);
 			
 			foreach ($fieldPaths as $path){
-				/**@var \Ems\CoreBundle\Entity\FieldType $child*/
+				/**@var \EMS\CoreBundle\Entity\FieldType $child*/
 				$child = $criteriaField->getChildByPath($path);
 				if($child) {
 					$label = $child->getDisplayOptions()['label']?$child->getDisplayOptions()['label']:$child->getName();
@@ -115,7 +115,7 @@ class CriteriaFilterType extends AbstractType {
 			$fieldPaths = preg_split("/\\r\\n|\\r|\\n/", $view->getOptions()['criteriaFieldPaths']);
 			
 			foreach ($fieldPaths as $path){
-				/**@var \Ems\CoreBundle\Entity\FieldType $child*/
+				/**@var \EMS\CoreBundle\Entity\FieldType $child*/
 				$child = $criteriaField->getChildByPath($path);
 				if($child) {
 

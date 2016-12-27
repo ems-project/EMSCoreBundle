@@ -1,14 +1,14 @@
 <?php
 
-namespace Ems\CoreBundle\Service;
+namespace EMS\CoreBundle\Service;
 
 
-use Ems\CoreBundle\Entity\Environment;
-use Ems\CoreBundle\Entity\Revision;
-use Ems\CoreBundle\Event\RevisionPublishEvent;
-use Ems\CoreBundle\Event\RevisionUnpublishEvent;
-use Ems\CoreBundle\Repository\RevisionRepository;
-use Ems\CoreBundle\Twig\AppExtension;
+use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Event\RevisionPublishEvent;
+use EMS\CoreBundle\Event\RevisionUnpublishEvent;
+use EMS\CoreBundle\Repository\RevisionRepository;
+use EMS\CoreBundle\Twig\AppExtension;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Elasticsearch\Client;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -84,7 +84,7 @@ class PublishService
 		$this->mapping = $mapping;
 		$this->instanceId = $instanceId;
 		$this->em = $this->doctrine->getManager();
-		$this->revRepository = $this->em->getRepository('Ems/CoreBundle:Revision');
+		$this->revRepository = $this->em->getRepository('EMSCoreBundle:Revision');
 		$this->session = $session;
 		$this->contentTypeService = $contentTypeService;
 		$this->environmentService = $environmentService;

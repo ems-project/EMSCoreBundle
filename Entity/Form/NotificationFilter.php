@@ -1,10 +1,10 @@
 <?php
-namespace Ems\CoreBundle\Entity\Form;
+namespace EMS\CoreBundle\Entity\Form;
 
 
-use Ems\CoreBundle\Entity\Template;
-use Ems\CoreBundle\Entity\Environment;
-use Ems\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Template;
+use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\ContentType;
 /**
  * RebuildIndex
  */

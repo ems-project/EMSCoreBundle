@@ -1,18 +1,18 @@
 <?php
 
-namespace Ems\CoreBundle\Controller;
+namespace EMS\CoreBundle\Controller;
 
-use Ems\CoreBundle\Controller\AppController;
-use Ems\CoreBundle;
-use Ems\CoreBundle\Entity\ContentType;
-use Ems\CoreBundle\Entity\Environment;
-use Ems\CoreBundle\Entity\Form\NotificationFilter;
-use Ems\CoreBundle\Entity\Form\TreatNotifications;
-use Ems\CoreBundle\Entity\Notification;
-use Ems\CoreBundle\Form\Form\NotificationFormType;
-use Ems\CoreBundle\Form\Form\TreatNotificationsType;
-use Ems\CoreBundle\Repository\ContentTypeRepository;
-use Ems\CoreBundle\Repository\EnvironmentRepository;
+use EMS\CoreBundle\Controller\AppController;
+use EMS\CoreBundle;
+use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\Form\NotificationFilter;
+use EMS\CoreBundle\Entity\Form\TreatNotifications;
+use EMS\CoreBundle\Entity\Notification;
+use EMS\CoreBundle\Form\Form\NotificationFormType;
+use EMS\CoreBundle\Form\Form\TreatNotificationsType;
+use EMS\CoreBundle\Repository\ContentTypeRepository;
+use EMS\CoreBundle\Repository\EnvironmentRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -36,7 +36,7 @@ class NotificationController extends AppController
 		$ouuid = $request->request->get('ouuid');
 		
 		/** @var EnvironmentRepository $repositoryEnv */
-		$repositoryEnv = $em->getRepository('Ems/CoreBundle:Environment');
+		$repositoryEnv = $em->getRepository('EMSCoreBundle:Environment');
 		/** @var Environment $env */
 		$env = $repositoryEnv->findOneByName($environmentName);
 		
@@ -45,7 +45,7 @@ class NotificationController extends AppController
 		}
 			
 		/** @var ContentTypeRepository $repositoryCt */
-		$repositoryCt = $em->getRepository('Ems/CoreBundle:ContentType');
+		$repositoryCt = $em->getRepository('EMSCoreBundle:ContentType');
 		/** @var ContentType $ct */
 		$ct = $repositoryCt->findOneById($ctId);
 		
@@ -55,7 +55,7 @@ class NotificationController extends AppController
 			
 		
 		/** @var RevisionRepository $repositoryRev */
-		$repositoryRev = $em->getRepository('Ems/CoreBundle:Revision');
+		$repositoryRev = $em->getRepository('EMSCoreBundle:Revision');
 		/** @var Revision $revision */
 		$revision = $repositoryRev->findByOuuidAndContentTypeAndEnvironnement($ct, $ouuid, $env);
 		if(!$revision) {
@@ -64,7 +64,7 @@ class NotificationController extends AppController
 		
 		$success = $this->getNotificationService()->addNotification($templateId, $revision, $env);
 
-		return $this->render( 'ajax/notification.json.twig', [
+		return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
 				'success' => $success,
 		] );
 	}
@@ -109,7 +109,7 @@ class NotificationController extends AppController
 
 
 		$em = $this->getDoctrine()->getManager();
-		$repositoryNotification = $em->getRepository('Ems/CoreBundle:Notification');
+		$repositoryNotification = $em->getRepository('EMSCoreBundle:Notification');
 		
 		$publishIn = $this->get('ems.service.environment')->getAliasByName($treatNotification->getPublishTo());
 // 		$unpublishFrom  = $this->get('ems.service.environment')->getAliasByName($treatNotification->getUnpublishfrom());
@@ -156,15 +156,16 @@ class NotificationController extends AppController
 	{
 		// TODO use a servce to pass authorization_checker to repositoryNotification.
 		$em = $this->getDoctrine()->getManager();
-		$repositoryNotification = $em->getRepository('Ems/CoreBundle:Notification');
+		$repositoryNotification = $em->getRepository('EMSCoreBundle:Notification');
 		$repositoryNotification->setAuthorizationChecker($this->get('security.authorization_checker'));
 		
 		$vars['counter'] = $this->get('ems.service.notification')->menuNotification();
 		
-		return $this->render('notification/menu.html.twig', $vars);
+		return $this->render('EMSCoreBundle:notification:menu.html.twig', $vars);
 	}
 	
 	/**
+	 * @Route("/", name="notifications.dashboard", defaults={"folder": "inbox"})
 	 * @Route("/notifications/list", name="notifications.list", defaults={"folder": "inbox"})
 	 * @Route("/notifications/inbox", name="notifications.inbox", defaults={"folder": "inbox"})
 	 * @Route("/notifications/sent", name="notifications.sent", defaults={"folder": "sent"})
@@ -188,7 +189,7 @@ class NotificationController extends AppController
  		
 		//TODO: use a servce to pass authorization_checker to repositoryNotification.
 		$em = $this->getDoctrine()->getManager();
-		$repositoryNotification = $em->getRepository('Ems/CoreBundle:Notification');
+		$repositoryNotification = $em->getRepository('EMSCoreBundle:Notification');
 		$repositoryNotification->setAuthorizationChecker($this->get('security.authorization_checker'));
 
 		$countRejected = $this->getNotificationService()->countRejected();
@@ -197,7 +198,7 @@ class NotificationController extends AppController
  		$count = $countRejected + $countPending;
 		
 		// for pagination
-		$paging_size = $this->getParameter('paging_size');
+		$paging_size = $this->getParameter('ems_core.paging_size');
 		$lastPage = ceil($count/$paging_size);
 		if(null != $request->query->get('page')){
 			$page = $request->query->get('page');
@@ -233,7 +234,7 @@ class NotificationController extends AppController
  				'notifications' => $notifications,
  		]);
 		
-		return $this->render('notification/list.html.twig', array(
+		return $this->render('EMSCoreBundle:notification:list.html.twig', array(
 				'counter' => $count,
 				'notifications' => $notifications,
 				'lastPage' => $lastPage,

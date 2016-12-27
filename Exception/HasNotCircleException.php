@@ -1,9 +1,9 @@
 <?php
 
-namespace Ems\CoreBundle\Exception;
+namespace EMS\CoreBundle\Exception;
 
 
-use Ems\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\Environment;
 
 class HasNotCircleException extends \Exception
 {

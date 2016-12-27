@@ -1,13 +1,13 @@
 <?php
 
-// src/Ems/CoreBundle/Command/GreetCommand.php
-namespace Ems\CoreBundle\Command;
+// src/EMS/CoreBundle/Command/GreetCommand.php
+namespace EMS\CoreBundle\Command;
 
-use Ems\CoreBundle\Controller\AppController;
-use Ems\CoreBundle\Entity\ContentType;
-use Ems\CoreBundle\Entity\Environment;
-use Ems\CoreBundle\Repository\JobRepository;
-use Ems\CoreBundle\Service\ContentTypeService;
+use EMS\CoreBundle\Controller\AppController;
+use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Repository\JobRepository;
+use EMS\CoreBundle\Service\ContentTypeService;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use Elasticsearch\Client;
@@ -27,11 +27,11 @@ class RebuildCommand extends EmsCommand
 	private $mapping;
 	private $doctrine;
 	private $container;
-	
+
 	/**@var ContentTypeService*/
 	private $contentTypeService;
 	private $instanceId;
-	
+
 	public function __construct(Registry $doctrine, Logger $logger, Client $client, $mapping, Container $container, Session $session, $instanceId)
 	{
 		$this->doctrine = $doctrine;
@@ -44,7 +44,7 @@ class RebuildCommand extends EmsCommand
 		$this->instanceId = $instanceId;
 		parent::__construct($logger, $client, $session);
 	}
-	
+
 	protected function configure()
     {
         $this
@@ -70,14 +70,14 @@ class RebuildCommand extends EmsCommand
     	if( ! $input->getOption('yellow-ok') ){
     		$this->waitForGreen($output);
     	}
-    	
+
 		/** @var EntityManager $em */
 		$em = $this->doctrine->getManager();
 		/** @var  Client $client */
 		$client = $this->client;
 		$name = $input->getArgument('name');
 		/** @var JobRepository $envRepo */
-		$envRepo = $em->getRepository('Ems/CoreBundle:Environment');
+		$envRepo = $em->getRepository('EMSCoreBundle:Environment');
 		/** @var Environment $environment */
 		$environment = $envRepo->findBy(['name' => $name, 'managed' => true]);
 		if($environment && count($environment) == 1) {
@@ -85,34 +85,34 @@ class RebuildCommand extends EmsCommand
 			if($environment->getAlias() != $this->instanceId.$environment->getName()) {
 				$environment->setAlias($this->instanceId.$environment->getName());
 				$em->persist($environment);
-				$em->flush();				
+				$em->flush();
 				$output->writeln("Alias has been aligned to ".$environment->getAlias());
 			}
-			
+
 			$indexName = $environment->getAlias().AppController::getFormatedTimestamp();
-				
-				
-			/** @var \Ems\CoreBundle\Repository\ContentTypeRepository $contentTypeRepository */
-			$contentTypeRepository = $em->getRepository('Ems/CoreBundle:ContentType');
+
+
+			/** @var \EMS\CoreBundle\Repository\ContentTypeRepository $contentTypeRepository */
+			$contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
 			$contentTypes = $contentTypeRepository->findAll();
 			/** @var ContentType $contentType */
-			
-	
+
+
 			$client->indices()->create([
 					'index' => $indexName,
 					'body' => ContentType::getIndexAnalysisConfiguration(),
 			]);
-		
+
 			$output->writeln('A new index '.$indexName.' has been created');
 	    	if( ! $input->getOption('yellow-ok') ){
 	    		$this->waitForGreen($output);
 	    	}
-			
+
 			// create a new progress bar
 			$progress = new ProgressBar($output, count($contentTypes));
 			// start and displays the progress bar
 			$progress->start();
-			
+
 			/** @var ContentType $contentType */
 			foreach ($contentTypes as $contentType){
 				if($contentType->getEnvironment()->getManaged() && !$contentType->getDeleted()){
@@ -123,23 +123,23 @@ class RebuildCommand extends EmsCommand
 			}
 			$progress->finish();
 			$output->writeln('');
-			
-			$this->flushFlash($output);			
-			
+
+			$this->flushFlash($output);
+
 			$command = $this->getReindexCommand();
-			
+
 			$arguments = array(
 					'name'    => $name,
 					'index'   => $indexName
 			);
-			
+
 			$reindexInput = new ArrayInput($arguments);
 			$returnCode = $command->run($reindexInput, $output);
-			
+
 			if($returnCode){
-				$output->writeln('Reindexed with return code: '.$returnCode);				
+				$output->writeln('Reindexed with return code: '.$returnCode);
 			}
-			
+
 	    	if( ! $input->getOption('yellow-ok') ){
 	    		$this->waitForGreen($output);
 	    	}
@@ -151,8 +151,8 @@ class RebuildCommand extends EmsCommand
 		}
 		$this->flushFlash($output);
     }
-    
-    
+
+
     /*
      * @return ReindexCommand
      */
@@ -168,11 +168,11 @@ class RebuildCommand extends EmsCommand
      */
     private function switchAlias($alias, $to, $newEnv=false, OutputInterface $output){
     	try{
-    			
-    		
+
+
     		$result = $this->client->indices()->getAlias(['name' => $alias]);
     		$params ['body']['actions'] = [];
-    		
+
     		foreach ($result as $id => $item){
     			$params ['body']['actions'][] = [
     				'remove' => [
@@ -181,18 +181,18 @@ class RebuildCommand extends EmsCommand
     				]
     			];
     		}
-    		
+
     		$params ['body']['actions'][] = [
     			'add' => [
 	    			'index' => $to,
 	    			'alias' => $alias,
     			]
     		];
-    		
+
     		$this->client->indices()->updateAliases ( $params );
     	}
     	catch(\Exception $e){ //TODO why does Elasticsearch\Common\Exceptions\Missing404Exception is not catched?
-    		
+
     		if(!$newEnv){
     			$output->writeln ( 'WARNING : Alias '.$alias.' not found' );
     		}
@@ -201,6 +201,6 @@ class RebuildCommand extends EmsCommand
     				'name' => $alias
     		]);
     	}
-    
+
     }
 }

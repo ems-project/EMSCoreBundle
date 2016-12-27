@@ -1,11 +1,11 @@
 <?php
 
-namespace Ems\CoreBundle\Controller\ContentManagement;
+namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use Ems\CoreBundle;
-use Ems\CoreBundle\Controller\AppController;
-use Ems\CoreBundle\Entity\ContentType;
-use Ems\CoreBundle\Service\DataService;
+use EMS\CoreBundle;
+use EMS\CoreBundle\Controller\AppController;
+use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Service\DataService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -51,7 +51,7 @@ class CrudController extends AppController
 			$isCreated = false;
 		}
 		
-		return $this->render( 'ajax/notification.json.twig', [
+		return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
 				'success' => $isCreated,
 				'revision_id' => $newRevision->getId(),
 		]);
@@ -83,7 +83,7 @@ class CrudController extends AppController
 			$isFinalize = false;
 			
 		}
-		return $this->render( 'ajax/notification.json.twig', [
+		return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
 				'success' => $isFinalize,
 		]);
 	}
@@ -113,7 +113,7 @@ class CrudController extends AppController
 			$isDiscard = false;
 				
 		}
-		return $this->render( 'ajax/notification.json.twig', [
+		return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
 				'success' => $isDiscard,
 		]);
 	}
@@ -148,7 +148,7 @@ class CrudController extends AppController
 			$isReplace = false;
 		
 		}
-		return $this->render( 'ajax/notification.json.twig', [
+		return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
 				'success' => $isReplace,
 				'revision_id' => $newDraft->getId(),
 		]);
@@ -185,7 +185,7 @@ class CrudController extends AppController
 			$isMerge = false;
 		
 		}
-		return $this->render( 'ajax/notification.json.twig', [
+		return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
 				'success' => $isMerge,
 				'revision_id' => $newDraft->getId(),
 		]);
@@ -197,7 +197,7 @@ class CrudController extends AppController
      * @Method({"GET"})
 	 */
 	public function testAction(Request $request) {
-		return $this->render( 'ajax/notification.json.twig', [
+		return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
 				'success' => true,
 		]);
 	}

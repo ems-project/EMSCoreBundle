@@ -1,14 +1,14 @@
 <?php
-namespace Ems\CoreBundle\Entity;
+namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Ems\CoreBundle\Form\DataField\ContainerFieldType;
+use EMS\CoreBundle\Form\DataField\ContainerFieldType;
 
 /**
  * ContentType
  *
  * @ORM\Table(name="content_type")
- * @ORM\Entity(repositoryClass="Ems\CoreBundle\Repository\ContentTypeRepository")
+ * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\ContentTypeRepository")
  * @ORM\HasLifecycleCallbacks()
  */
 class ContentType
@@ -1025,11 +1025,11 @@ class ContentType
     /**
      * Set fieldType
      *
-     * @param \Ems\CoreBundle\Entity\FieldType $fieldType
+     * @param \EMS\CoreBundle\Entity\FieldType $fieldType
      *
      * @return ContentType
      */
-    public function setFieldType(\Ems\CoreBundle\Entity\FieldType $fieldType = null)
+    public function setFieldType(\EMS\CoreBundle\Entity\FieldType $fieldType = null)
     {
         $this->fieldType = $fieldType;
 
@@ -1051,11 +1051,11 @@ class ContentType
     /**
      * Set environment
      *
-     * @param \Ems\CoreBundle\Entity\Environment $environment
+     * @param \EMS\CoreBundle\Entity\Environment $environment
      *
      * @return ContentType
      */
-    public function setEnvironment(\Ems\CoreBundle\Entity\Environment $environment = null)
+    public function setEnvironment(\EMS\CoreBundle\Entity\Environment $environment = null)
     {
         $this->environment = $environment;
 
@@ -1065,7 +1065,7 @@ class ContentType
     /**
      * Get environment
      *
-     * @return \Ems\CoreBundle\Entity\Environment
+     * @return \EMS\CoreBundle\Entity\Environment
      */
     public function getEnvironment()
     {
@@ -1147,11 +1147,11 @@ class ContentType
     /**
      * Add template
      *
-     * @param \Ems\CoreBundle\Entity\Template $template
+     * @param \EMS\CoreBundle\Entity\Template $template
      *
      * @return ContentType
      */
-    public function addTemplate(\Ems\CoreBundle\Entity\Template $template)
+    public function addTemplate(\EMS\CoreBundle\Entity\Template $template)
     {
         $this->templates[] = $template;
 
@@ -1161,9 +1161,9 @@ class ContentType
     /**
      * Remove template
      *
-     * @param \Ems\CoreBundle\Entity\Template $template
+     * @param \EMS\CoreBundle\Entity\Template $template
      */
-    public function removeTemplate(\Ems\CoreBundle\Entity\Template $template)
+    public function removeTemplate(\EMS\CoreBundle\Entity\Template $template)
     {
         $this->templates->removeElement($template);
     }
@@ -1181,11 +1181,11 @@ class ContentType
     /**
      * Add view
      *
-     * @param \Ems\CoreBundle\Entity\View $view
+     * @param \EMS\CoreBundle\Entity\View $view
      *
      * @return ContentType
      */
-    public function addView(\Ems\CoreBundle\Entity\View $view)
+    public function addView(\EMS\CoreBundle\Entity\View $view)
     {
         $this->views[] = $view;
 
@@ -1195,9 +1195,9 @@ class ContentType
     /**
      * Remove view
      *
-     * @param \Ems\CoreBundle\Entity\View $view
+     * @param \EMS\CoreBundle\Entity\View $view
      */
-    public function removeView(\Ems\CoreBundle\Entity\View $view)
+    public function removeView(\EMS\CoreBundle\Entity\View $view)
     {
         $this->views->removeElement($view);
     }

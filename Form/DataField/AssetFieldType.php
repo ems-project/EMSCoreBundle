@@ -1,14 +1,14 @@
 <?php
 
-namespace Ems\CoreBundle\Form\DataField;
+namespace EMS\CoreBundle\Form\DataField;
 
-use Ems\CoreBundle\Entity\DataField;
-use Ems\CoreBundle\Entity\FieldType;
-use Ems\CoreBundle\Form\Field\AssetType;
-use Ems\CoreBundle\Form\Field\IconPickerType;
+use EMS\CoreBundle\Entity\DataField;
+use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Form\Field\AssetType;
+use EMS\CoreBundle\Form\Field\IconPickerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Ems\CoreBundle\Service\FileService;
+use EMS\CoreBundle\Service\FileService;
 	
 /**
  * Defined a Container content type.

@@ -1,11 +1,11 @@
 <?php
 
-namespace Ems\CoreBundle\Controller\ContentManagement;
+namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use Ems\CoreBundle\Controller\AppController;
-use Ems\CoreBundle;
-use Ems\CoreBundle\Entity\ContentType;
-use Ems\CoreBundle\Form\Nature\ReorderType;
+use EMS\CoreBundle\Controller\AppController;
+use EMS\CoreBundle;
+use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Form\Nature\ReorderType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -58,7 +58,7 @@ class NatureController extends AppController
 		$form->handleRequest($request);
 		
 
-		/** @var \Ems\CoreBundle\Service\DataService $dataService*/
+		/** @var \EMS\CoreBundle\Service\DataService $dataService*/
 		$dataService = $this->get('ems.service.data');
 		$counter = 1;
 		
@@ -83,7 +83,7 @@ class NatureController extends AppController
 			]);
 		}
 
-		return $this->render( 'nature/reorder.html.twig', [
+		return $this->render( 'EMSCoreBundle:nature:reorder.html.twig', [
 				'contentType' => $contentType,
 				'form' => $form->createView(),
 				'result' => $result,

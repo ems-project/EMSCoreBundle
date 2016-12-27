@@ -1,6 +1,6 @@
 <?php
 
-namespace Ems\CoreBundle\Controller;
+namespace EMS\CoreBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -17,7 +17,7 @@ class DefaultController extends Controller
         
     	return $this->redirectToRoute('notifications.inbox');
     	
-//         return $this->render('default/index.html.twig', [
+//         return $this->render('EMSCoreBundle:default:index.html.twig', [
 //             'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..'),
 //         ]);
     }
@@ -28,7 +28,7 @@ class DefaultController extends Controller
     public function documentationAction(Request $request)
     {
     	// replace this example code with whatever you need
-    	return $this->render('default/documentation.html.twig');
+    	return $this->render('EMSCoreBundle:default:documentation.html.twig');
     }
     
 
@@ -38,6 +38,6 @@ class DefaultController extends Controller
     public function comingSoonAction()
     {
     	// replace this example code with whatever you need
-    	return $this->render('default/coming-soon.html.twig');
+    	return $this->render('EMSCoreBundle:default:coming-soon.html.twig');
     }
 }

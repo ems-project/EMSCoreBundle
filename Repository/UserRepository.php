@@ -1,6 +1,6 @@
 <?php
 
-namespace Ems\CoreBundle\Repository;
+namespace EMS\CoreBundle\Repository;
 
 /**
  * UserRepository
@@ -20,7 +20,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
 			])->getQuery()->getResult();
 			
 		if(!empty($circles)){
-			/**@var \Ems\CoreBundle\Entity\User $user*/
+			/**@var \EMS\CoreBundle\Entity\User $user*/
 			foreach ($resultSet as $idx => $user){
 				if(empty(array_intersect($circles, $user->getCircles()))){
 					unset($resultSet[$idx]);

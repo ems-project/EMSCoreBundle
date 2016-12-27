@@ -1,22 +1,22 @@
 <?php
-namespace Ems\CoreBundle\Controller\Views;
+namespace EMS\CoreBundle\Controller\Views;
 
-use Ems\CoreBundle;
-use Ems\CoreBundle\Controller\AppController;
-use Ems\CoreBundle\Entity\ContentType;
-use Ems\CoreBundle\Entity\DataField;
-use Ems\CoreBundle\Entity\FieldType;
-use Ems\CoreBundle\Entity\Form\CriteriaUpdateConfig;
-use Ems\CoreBundle\Entity\Revision;
-use Ems\CoreBundle\Entity\View;
-use Ems\CoreBundle\Exception\LockedException;
-use Ems\CoreBundle\Form\DataField\ContainerFieldType;
-use Ems\CoreBundle\Form\DataField\DataFieldType;
-use Ems\CoreBundle\Form\Factory\ObjectChoiceListFactory;
-use Ems\CoreBundle\Form\Field\ObjectChoiceListItem;
-use Ems\CoreBundle\Form\View\Criteria\CriteriaFilterType;
-use Ems\CoreBundle\Repository\ContentTypeRepository;
-use Ems\CoreBundle\Repository\RevisionRepository;
+use EMS\CoreBundle;
+use EMS\CoreBundle\Controller\AppController;
+use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\DataField;
+use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Entity\Form\CriteriaUpdateConfig;
+use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Entity\View;
+use EMS\CoreBundle\Exception\LockedException;
+use EMS\CoreBundle\Form\DataField\ContainerFieldType;
+use EMS\CoreBundle\Form\DataField\DataFieldType;
+use EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory;
+use EMS\CoreBundle\Form\Field\ObjectChoiceListItem;
+use EMS\CoreBundle\Form\View\Criteria\CriteriaFilterType;
+use EMS\CoreBundle\Repository\ContentTypeRepository;
+use EMS\CoreBundle\Repository\RevisionRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
 use Elasticsearch\Client;
@@ -197,7 +197,7 @@ class CriteriaController extends AppController
 		sleep(2);
 		$this->getDataService()->waitForGreen();
 
-		return $this->forward('Ems/CoreBundle:Views\Criteria:generateCriteriaTable', ['view' => $view]);
+		return $this->forward('EMSCoreBundle:Views\Criteria:generateCriteriaTable', ['view' => $view]);
 	}
 	
 	private function isAuthorized(FieldType $criteriaField) {
@@ -225,7 +225,7 @@ class CriteriaController extends AppController
 		/** @var EntityManager $em */
 		$em = $this->getDoctrine()->getManager();
 		/** @var RevisionRepository $revisionRep */
-		$revisionRep = $em->getRepository('Ems/CoreBundle:Revision');
+		$revisionRep = $em->getRepository('EMSCoreBundle:Revision');
 		$counters = $revisionRep->draftCounterGroupedByContentType([], true);
 		
 		foreach ($counters as $counter){
@@ -269,7 +269,7 @@ class CriteriaController extends AppController
 			
 			
 		if(!$valid){
-			return $this->render( 'view/custom/criteria_view.html.twig',[
+			return $this->render( 'EMSCoreBundle:view:custom:criteria_view.html.twig',[
 					'view' => $view,
 					'form' => $form->createView(),
 					'contentType' => $contentType,
@@ -296,7 +296,7 @@ class CriteriaController extends AppController
 		$authorized = $this->isAuthorized($criteriaField) && $this->getAuthorizationChecker()->isGranted($view->getContentType()->getEditRole());
 		
 		foreach ($fieldPaths as $path){
-			/**@var \Ems\CoreBundle\Entity\FieldType $child*/
+			/**@var \EMS\CoreBundle\Entity\FieldType $child*/
 			$child = $criteriaField->getChildByPath($path);
 			if($child) {
 				if($child->getName() == $criteriaUpdateConfig->getColumnCriteria()){
@@ -316,7 +316,7 @@ class CriteriaController extends AppController
 		
 		$tables = $this->generateCriteriaTable($view, $criteriaUpdateConfig, $request);
 		
-		return $this->render( 'view/custom/criteria_table.html.twig',[
+		return $this->render( 'EMSCoreBundle:view:custom/criteria_table.html.twig',[
 			'table' => $tables['table'],
 			'rowFieldType' => $rowField,
 			'columnFieldType' => $columnField,
@@ -406,11 +406,11 @@ class CriteriaController extends AppController
 		}
 
 		
-		/** @var \Ems\CoreBundle\Entity\FieldType $columnField */
+		/** @var \EMS\CoreBundle\Entity\FieldType $columnField */
 		$columnField = $criteriaField->getChildByPath($criteriaUpdateConfig->getColumnCriteria());
 		
 
-		/** @var \Ems\CoreBundle\Entity\FieldType $rowField */
+		/** @var \EMS\CoreBundle\Entity\FieldType $rowField */
 		$rowField = $criteriaField->getChildByPath($criteriaUpdateConfig->getRowCriteria());
 				
 		$table = [];
@@ -519,7 +519,7 @@ class CriteriaController extends AppController
 			$authorized = $this->getAuthorizationChecker()->isGranted($view->getContentType()->getEditRole());
 			if(!$authorized) {
 				$this->addFlash('warning', 'You are not authorized to update '.$revision);
-				return $this->render( 'ajax/notification.json.twig', [
+				return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
 						'success' => false,
 				] );
 			}
@@ -527,7 +527,7 @@ class CriteriaController extends AppController
 			
 			if($revision->getDraft()) {
 				$this->addFlash('warning', 'Impossible to update '.$revision. ' has there is a draft in progress');
-				return $this->render( 'ajax/notification.json.twig', [
+				return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
 						'success' => false,
 				] );
 			}
@@ -541,7 +541,7 @@ class CriteriaController extends AppController
 	
 			} catch (LockedException $e) {
 				$this->addFlash('warning', 'Impossible to update '.$revision. ' has the revision is locked by '.$revision->getLockBy());
-				return $this->render( 'ajax/notification.json.twig', [
+				return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
 						'success' => false,
 				] );
 			}
@@ -564,7 +564,7 @@ class CriteriaController extends AppController
 			}
 		}
 		
-		return $this->render( 'ajax/notification.json.twig', [
+		return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
 				'success' => true,
 		] );
 	}
@@ -786,7 +786,7 @@ class CriteriaController extends AppController
 			
 			if($revision->getDraft()) {
 				$this->addFlash('warning', 'Impossible to update '.$revision. ' has there is a draft in progress');
-				return $this->render( 'ajax/notification.json.twig', [
+				return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
 						'success' => false,
 				] );
 			}
@@ -799,7 +799,7 @@ class CriteriaController extends AppController
 	
 			} catch (LockedException $e) {
 				$this->addFlash('warning', 'Impossible to update '.$revision. ' has the revision is locked by '.$revision->getLockBy());
-				return $this->render( 'ajax/notification.json.twig', [
+				return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
 						'success' => false,
 				] );
 			}
@@ -822,7 +822,7 @@ class CriteriaController extends AppController
 			}
 		}
 		
-		return $this->render( 'ajax/notification.json.twig', [
+		return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
 			'success' => true,
 		] );
 	}
@@ -1049,10 +1049,10 @@ class CriteriaController extends AppController
 		/** @var EntityManager $em */
 		$em = $this->getDoctrine ()->getManager ();
 		/** @var ContentTypeRepository $repository */
-		$repository = $em->getRepository ( 'Ems/CoreBundle:FieldType' );
+		$repository = $em->getRepository ( 'EMSCoreBundle:FieldType' );
 		
 		
-		/** @var \Ems\CoreBundle\Entity\FieldType $field */
+		/** @var \EMS\CoreBundle\Entity\FieldType $field */
 		$field = $repository->find ( $request->query->get('targetField'));
 		
 

@@ -1,11 +1,11 @@
 <?php
 
-namespace Ems\CoreBundle\Entity;
+namespace EMS\CoreBundle\Entity;
 
-use Ems\CoreBundle\Exception\DataFormatException;
-use Ems\CoreBundle\Form\DataField\CollectionFieldType;
-use Ems\CoreBundle\Form\DataField\DataFieldType;
-use Ems\CoreBundle\Form\DataField\OuuidFieldType;
+use EMS\CoreBundle\Exception\DataFormatException;
+use EMS\CoreBundle\Form\DataField\CollectionFieldType;
+use EMS\CoreBundle\Form\DataField\DataFieldType;
+use EMS\CoreBundle\Form\DataField\OuuidFieldType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -723,11 +723,11 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Set fieldType
      *
-     * @param \Ems\CoreBundle\Entity\FieldType $fieldType
+     * @param \EMS\CoreBundle\Entity\FieldType $fieldType
      *
      * @return DataField
      */
-    public function setFieldType(\Ems\CoreBundle\Entity\FieldType $fieldType = null)
+    public function setFieldType(\EMS\CoreBundle\Entity\FieldType $fieldType = null)
     {
         $this->fieldType = $fieldType;
 
@@ -737,7 +737,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Get fieldType
      *
-     * @return \Ems\CoreBundle\Entity\FieldType
+     * @return \EMS\CoreBundle\Entity\FieldType
      */
     public function getFieldType()
     {
@@ -747,11 +747,11 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Set parent
      *
-     * @param \Ems\CoreBundle\Entity\DataField $parent
+     * @param \EMS\CoreBundle\Entity\DataField $parent
      *
      * @return DataField
      */
-    public function setParent(\Ems\CoreBundle\Entity\DataField $parent = null)
+    public function setParent(\EMS\CoreBundle\Entity\DataField $parent = null)
     {
         $this->parent = $parent;
 
@@ -761,7 +761,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Get parent
      *
-     * @return \Ems\CoreBundle\Entity\DataField
+     * @return \EMS\CoreBundle\Entity\DataField
      */
     public function getParent()
     {
@@ -771,11 +771,11 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Add child
      *
-     * @param \Ems\CoreBundle\Entity\DataField $child
+     * @param \EMS\CoreBundle\Entity\DataField $child
      *
      * @return DataField
      */
-    public function addChild(\Ems\CoreBundle\Entity\DataField $child)
+    public function addChild(\EMS\CoreBundle\Entity\DataField $child)
     {
         $this->children[] = $child;
 
@@ -785,9 +785,9 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Remove child
      *
-     * @param \Ems\CoreBundle\Entity\DataField $child
+     * @param \EMS\CoreBundle\Entity\DataField $child
      */
-    public function removeChild(\Ems\CoreBundle\Entity\DataField $child)
+    public function removeChild(\EMS\CoreBundle\Entity\DataField $child)
     {
         $this->children->removeElement($child);
     }

@@ -1,14 +1,14 @@
 <?php 
 
-namespace Ems\CoreBundle\Form\FieldType;
+namespace EMS\CoreBundle\Form\FieldType;
 
-use Ems\CoreBundle\Entity\DataField;
-use Ems\CoreBundle\Entity\FieldType;
-use Ems\CoreBundle\Form\DataField\CollectionItemFieldType;
-use Ems\CoreBundle\Form\DataField\DataFieldType;
-use Ems\CoreBundle\Form\DataField\SubfieldType;
-use Ems\CoreBundle\Form\Field\FieldTypePickerType;
-use Ems\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Entity\DataField;
+use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Form\DataField\CollectionItemFieldType;
+use EMS\CoreBundle\Form\DataField\DataFieldType;
+use EMS\CoreBundle\Form\DataField\SubfieldType;
+use EMS\CoreBundle\Form\Field\FieldTypePickerType;
+use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -134,7 +134,7 @@ class FieldTypeType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Ems\CoreBundle\Entity\FieldType',
+            'data_class' => 'EMS\CoreBundle\Entity\FieldType',
         	'container' => false,
         	'path' => false,
         	'new_field' => false,

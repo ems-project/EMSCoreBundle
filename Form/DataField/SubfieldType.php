@@ -1,13 +1,13 @@
 <?php
 
-namespace Ems\CoreBundle\Form\DataField;
+namespace EMS\CoreBundle\Form\DataField;
 
 
 
 use Symfony\Component\Form\FormBuilderInterface;
-use Ems\CoreBundle\Form\Field\AnalyzerPickerType;
-use Ems\CoreBundle\Entity\DataField;
-use Ems\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
+use EMS\CoreBundle\Entity\DataField;
+use EMS\CoreBundle\Entity\FieldType;
 
 //TODO:Refact Class name "SubfieldType" to "SubfieldFieldType"
 class SubfieldType extends DataFieldType {

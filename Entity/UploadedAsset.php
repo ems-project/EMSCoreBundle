@@ -1,6 +1,6 @@
 <?php
 
-namespace Ems\CoreBundle\Entity;
+namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * DataField
  *
  * @ORM\Table(name="uploaded_asset")
- * @ORM\Entity(repositoryClass="Ems\CoreBundle\Repository\UploadedAssetRepository")
+ * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\UploadedAssetRepository")
  * @ORM\HasLifecycleCallbacks()
  */
 class UploadedAsset

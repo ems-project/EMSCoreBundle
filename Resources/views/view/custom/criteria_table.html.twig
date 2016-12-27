@@ -1,0 +1,320 @@
+{% extends 'EMSCoreBundle:base:base.html.twig' %}
+
+{% block title %}{{ view.name }} for {{view.contentType.pluralName}}{% endblock %}
+{% block pagetitle %}{{ view.name }} for {{view.contentType.pluralName}}{% endblock %} 
+{# {% block subtitle %}<!-- TODO -->{% endblock %} #}
+
+
+{% block body %}
+		{% set criteriaFilters = {} %}
+		
+		
+		<div style="display: none;">
+			{{ form_start(form) }}
+			{{ form_end(form) }}
+		</div>
+		
+	 	<form role="form" id="criteria-form">
+		<div class="box">
+			<div class="box-header">
+				<h3 class="box-title">
+				{{ view.contentType.pluralName }}			
+				
+				{% if config.criterion|length > 2 %}
+					for criterion 				
+					{% for index, criterion in config.criterion %}	
+							{% if criterion.rawData|length == 1 %}
+								{% for item in criterion.rawData %}
+									{% set criteriaFilters = criteriaFilters|merge({(index):item}) %}
+									<span class="label label-primary">{{ attribute(attribute(criteriaChoiceLists, criterion.fieldType.name), item).label|raw }}</span>
+								{% endfor %}
+
+							{% endif %}
+						
+					{% endfor %}
+				{% endif %}
+				
+				{% if config.category and config.category.rawData %}
+					filtered by 
+					<strong>
+						<span class="label label-primary">{{ attribute(categoryChoiceList, config.category.rawData).label|raw }}</span>
+					</strong>
+				{% endif %}
+				</h3>
+				
+				<div class="btn-group  pull-right">
+					{% include 'EMSCoreBundle:elements:post-button.html.twig' with { 
+						'url': app.request.requestUri,
+						'label': 'Update filters',
+						'icon': 'sliders',
+						'destinationFormName': 'criteria_filter' }%}
+				</div>
+				
+			</div>
+			<!-- /.box-header -->
+			<div class="box-body">
+				<div class="dataTables_wrapper form-inline dt-bootstrap">
+						<div class="table-responsive">
+							<table class="table" id="CriteriaUpdateCustomViewTable"
+								class="table table-bordered table-striped dataTable" role="grid"
+								aria-describedby="example1_info" data-filters="{{ criteriaFilters|json_encode }}" >
+								<thead>
+									<tr role="row">
+										<th rowspan="1" colspan="1">&nbsp;</th>
+										{% for columnIdx in table|first|keys %}
+											{% if loop.index is divisible by(10) and loop.revindex >= 5 %}		
+												<th>&nbsp;</th>
+											{% endif %}
+											<th rowspan="1" colspan="1" nowrap>
+												{% if authorized %}
+													{% include 'EMSCoreBundle:elements:post-button.html.twig' with { 
+														'url': app.request.requestUri,
+														'destinationFormName': 'criteria_filter',
+														'action': url('views.criteria.align', {view: view.id}),
+														'name': 'alignOn',
+														'value': 'col:'~columnIdx,
+														'rawlabel': attribute(columns, columnIdx).label,
+														'message': 'Align table based on this column?' }%}
+												{% else %}
+													{{ attribute(columns, columnIdx).label|raw }}
+												{% endif %}
+											</th>	
+										{% endfor %}
+										<th rowspan="1" colspan="1">&nbsp;</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for rowIdx in table|keys %}
+										{% if loop.index is divisible by(10) and loop.revindex >= 5 %}
+											<tr role="row">
+												<th>&nbsp;</th>
+												{% for columnIdx in table|first|keys %}
+													{% if loop.index is divisible by(10) and loop.revindex >= 5 %}		
+														<th>&nbsp;</th>
+													{% endif %}
+													<th rowspan="1" colspan="1" nowrap>{{ attribute(columns, columnIdx).label|raw }}</th>	
+												{% endfor %}
+												<th>&nbsp;</th>
+											</tr>
+										{% endif %}
+										
+										<tr role="row">
+											<th nowrap>
+											{% if authorized %}
+												{% include 'EMSCoreBundle:elements:post-button.html.twig' with { 
+													'url': app.request.requestUri, 
+													'rawlabel': attribute(rows, rowIdx).label|raw,
+													'destinationFormName': 'criteria_filter',
+													'action': url('views.criteria.align', {view: view.id}),
+													'name': 'alignOn',
+													'value': 'row:'~rowIdx,
+													'message': 'Align table based on this line?' }%}
+											{% else %}
+												{{ attribute(rows, rowIdx).label|raw }}
+											{% endif %}
+											
+											</th>
+											{% for col in attribute(table, rowIdx) %}
+												{% if loop.index is divisible by(10) and loop.revindex >= 5 %}		
+													<th nowrap>{{ attribute(rows, rowIdx).label|raw }}</th>
+												{% endif %}
+												<td class="row" data-filters="{{ {(rowFieldType.name):rowIdx, (columnFieldType.name):attribute(table|first|keys, loop.index0) }|json_encode }}">
+								                  <select style="width: 100%" multiple {% if not authorized %}disabled{% endif %}>
+								                  	{% for card in col %}
+									                    <option data-status="added" value="{{ card.value }}" selected{% if card.color %} data-color="{{ card.color }}"{% endif %}>{{ card.label }}</option>
+								                  	{% endfor %}
+								                  </select>
+												</td>
+											{% endfor %}
+											<th nowrap>
+												{% if authorized %}
+													{% include 'EMSCoreBundle:elements:post-button.html.twig' with { 
+														'url': app.request.requestUri, 
+														'rawlabel': attribute(rows, rowIdx).label|raw,
+														'destinationFormName': 'criteria_filter',
+														'action': url('views.criteria.align', {view: view.id}),
+														'name': 'alignOn',
+														'value': 'row:'~rowIdx,
+														'message': 'Align table based on this line?' }%}
+												{% else %}
+													{{ attribute(rows, rowIdx).label|raw }}
+												{% endif %}
+											</th>
+										</tr>
+									{% endfor %}
+								</tbody>
+								<tfoot>
+									<tr>
+										<th rowspan="1" colspan="1">&nbsp;</th>
+										{% for columnIdx in table|first|keys %}
+											{% if loop.index is divisible by(10) and loop.revindex >= 5 %}		
+												<th>&nbsp;</th>
+											{% endif %}
+											<th rowspan="1" colspan="1" nowrap>
+												{% if authorized %}
+													{% include 'EMSCoreBundle:elements:post-button.html.twig' with { 
+														'url': app.request.requestUri,
+														'destinationFormName': 'criteria_filter',
+														'action': url('views.criteria.align', {view: view.id}),
+														'name': 'alignOn',
+														'value': 'col:'~columnIdx,
+														'rawlabel': attribute(columns, columnIdx).label,
+														'message': 'Align table based on this column?' }%}
+												{% else %}
+													{{ attribute(columns, columnIdx).label|raw }}
+												{% endif %}
+											</th>	
+										{% endfor %}
+										<th rowspan="1" colspan="1">&nbsp;</th>
+									</tr>
+								</tfoot>
+							</table>
+						</div>
+				</div>
+			</div>
+			<!-- /.box-body -->
+		</div>
+	</form>
+	
+{% endblock %} 
+
+
+{% block javascripts %}
+	{% include 'EMSCoreBundle:app:menu.html.twig' with {
+		'item':  'data-view-'~ view.contentType.id ~ '-' ~ view.id
+	}%}	
+	
+<script type="text/javascript">
+<!--
+
+//-->	
+
+
+
+function formatRepoSelectionForTable (repo) {
+	var color = $(repo.element).data('color');
+	if(!color) {
+		color = repo.color;
+	}
+	
+	var url = "{{ url('data.revisions', {type: '__type__' , ouuid: '__ouuid__' }) }}";
+	url = url.replace('__type__:__ouuid__', repo.id);
+
+	var style = "style=\"color: white;\"";
+	var complementary;
+	if(color){
+		//var colorIntValue = parseInt(color.replace("#", "0x"));
+		//complementary = '#'+('000000' + (('0xffffff' ^ colorIntValue).toString(16))).slice(-6);
+		complementary = (luma(color.replace("#", "")) >= 165) ? '#000000' : '#ffffff';
+		style = " style=\"color: "+complementary+";background-color: "+color+"; padding: 2px;\"";
+		
+	}
+
+	var html = $("<a href=\""+url+"\""+style+">"+repo.text+"</a>");
+	return html;
+}
+
+	$(window).load(function() {
+	
+	  var allSelect2 = $('#CriteriaUpdateCustomViewTable select').select2({
+	  ajax: {
+		    url: '{{ url("elasticsearch.api.search") }}',
+		    dataType: 'json',
+		    delay: 250,
+		    data: function (params) {
+		      return {
+		        		q: params.term, // search term
+		        		environment: {% if targetContentType %} {{ targetContentType.environment.name|json_encode|raw  }} {% else %} {{ view.contentType.environment.name|json_encode|raw }} {% endif %},
+		        		type: {% if targetContentType %} {{ targetContentType.name|json_encode|raw  }} {% else %} {{ view.contentType.name|json_encode|raw }} {% endif %},
+			        	{% if view.options.criteriaMode == 'internal' and config.category and config.category.rawData %}category: {{ config.category.rawData|json_encode|raw }}, {% endif %} 
+			        	page: params.page
+			     	};
+			    },
+			    processResults: function (data, params) {
+			      // parse the results into the format expected by Select2
+			      // since we are using custom formatting functions we do not need to
+			      // alter the remote JSON data, except to indicate that infinite
+			      // scrolling can be used
+			      params.page = params.page || 1;
+			
+			      return {
+			        results: data.items,
+			        pagination: {
+			          more: (params.page * 30) < data.total_count
+			        }
+			      };
+			    },
+			    cache: true
+			  },
+			  escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+			  minimumInputLength: 1,
+			  templateResult: formatRepo, // omitted for brevity, see the source of this page
+			  templateSelection: formatRepoSelectionForTable // omitted for brevity, see the source of this page
+		});
+	
+	  	$('#CriteriaUpdateCustomViewTable select').change(function(){
+			var filters = $.extend( $(this).closest('td').data('filters'), $(this).closest('table').data('filters') );
+
+			$(this).children("option:selected").each(function() {
+				var optionElem = $(this);
+				if( optionElem.attr('data-status') != 'added') {
+					var data = { 
+			  			filters: filters, 
+					  	target: $(this).val(), 
+					  	{% if config.category and config.category.rawData %}
+					  		category: {{ attribute(categoryChoiceList, config.category.rawData).value|json_encode|raw }},
+					  	{% endif %}
+					  	criteriaField: {{ view.options.criteriaField|json_encode|raw }}
+					};
+	
+
+					ajaxRequest.post( "{{ url('views.criteria.add', {view: view.id}) }}", data )
+			  	  		.success(function(response) {
+							optionElem.attr('data-status', 'added');
+				  	        
+						})
+					  	.fail(function( ) {
+				  	  		optionElem.attr('data-status', 'removed');
+				  	  		var valuesArray = optionElem.parents("select").val();
+					  	  	valuesArray = jQuery.grep(valuesArray, function(value) {
+					  	  	  return value != optionElem.val();
+					  	  	});
+					  	  	optionElem.parents("select").val(valuesArray).trigger("change");
+				  		});
+				}
+	  		});
+	  	
+			$(this).children("option:not(:selected)").each(function() {
+				var optionElem = $(this);
+				if( optionElem.attr('data-status') != 'removed') {
+					var data = { 
+			  			filters: filters, 
+					  	target: $(this).val(), 
+					  	{% if config.category and config.category.rawData %}
+					  		category: {{ attribute(categoryChoiceList, config.category.rawData).value|json_encode|raw }},
+					  	{% endif %}
+					  	criteriaField: {{ view.options.criteriaField|json_encode|raw }}
+					};
+	
+
+					ajaxRequest.post("{{ url('views.criteria.remove', {view: view.id}) }}", data)
+						.success(function(response){
+							optionElem.attr('data-status', 'removed');
+						})
+						.fail(function(response){
+							var valuesArray = optionElem.parents("select").val();
+				  	  		if(valuesArray == null){
+				  	  			valuesArray = [optionElem.val()];
+					  	  	}
+				  	  		else{
+					  	  		valuesArray.push(optionElem.val());
+				  	  		}
+				  	  		
+					  	  	optionElem.parents("select").val(valuesArray).trigger("change");
+						});
+				}
+		  	});
+		});
+	});
+</script>
+{% endblock %}	

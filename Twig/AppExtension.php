@@ -1,21 +1,21 @@
 <?php
-namespace Ems\CoreBundle\Twig;
+namespace EMS\CoreBundle\Twig;
 
-use Ems\CoreBundle\Form\DataField\DateFieldType;
-use Ems\CoreBundle\Form\DataField\TimeFieldType;
-use Ems\CoreBundle\Service\UserService;
+use EMS\CoreBundle\Form\DataField\DateFieldType;
+use EMS\CoreBundle\Form\DataField\TimeFieldType;
+use EMS\CoreBundle\Service\UserService;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Ems\CoreBundle\Service\ContentTypeService;
+use EMS\CoreBundle\Service\ContentTypeService;
 use Elasticsearch\Client;
 use Symfony\Component\Routing\Router;
-use Ems\CoreBundle\Form\Factory\ObjectChoiceListFactory;
+use EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory;
 use Symfony\Component\Form\FormError;
-use Ems\CoreBundle\Repository\I18nRepository;
-use Ems\CoreBundle\Entity\I18n;
-use Ems\CoreBundle\Entity\User;
-use Ems\CoreBundle\Form\DataField\DateRangeFieldType;
-use Ems\CoreBundle\Service\EnvironmentService;
+use EMS\CoreBundle\Repository\I18nRepository;
+use EMS\CoreBundle\Entity\I18n;
+use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Form\DataField\DateRangeFieldType;
+use EMS\CoreBundle\Service\EnvironmentService;
 use Monolog\Logger;
 
 class AppExtension extends \Twig_Extension
@@ -141,7 +141,7 @@ class AppExtension extends \Twig_Extension
 			$locale = $this->router->getContext()->getParameter('_locale');
 		}
 		/**@var I18nRepository $repo */
-		$repo = $this->doctrine->getManager()->getRepository('Ems/CoreBundle:I18n');
+		$repo = $this->doctrine->getManager()->getRepository('EMSCoreBundle:I18n');
 		/**@var I18n $result*/
 		$result = $repo->findOneBy([
 				'identifier' => $key,
@@ -242,7 +242,7 @@ class AppExtension extends \Twig_Extension
 			
 			$addAttribute = "";
 			
-			/**@var \Ems\CoreBundle\Entity\ContentType $contentType*/
+			/**@var \EMS\CoreBundle\Entity\ContentType $contentType*/
 			$contentType = $this->contentTypeService->getByName($type);
 			if($contentType) {
 				if($contentType->getIcon()){
@@ -313,7 +313,7 @@ class AppExtension extends \Twig_Extension
 				
 			$addAttribute = "";
 				
-			/**@var \Ems\CoreBundle\Entity\ContentType $contentType*/
+			/**@var \EMS\CoreBundle\Entity\ContentType $contentType*/
 			$contentType = $this->contentTypeService->getByName($type);
 			if($contentType) {
 	
@@ -398,7 +398,7 @@ class AppExtension extends \Twig_Extension
 
 	public function searchesList($username)
 	{
-		$searchRepository = $this->doctrine->getRepository('Ems/CoreBundle:Form\Search');
+		$searchRepository = $this->doctrine->getRepository('EMSCoreBundle:Form\Search');
     	$searches = $searchRepository->findBy([
     		'user' => $username
     	]);

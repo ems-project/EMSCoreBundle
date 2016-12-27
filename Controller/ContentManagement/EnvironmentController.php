@@ -1,21 +1,21 @@
 <?php
 
-namespace Ems\CoreBundle\Controller\ContentManagement;
+namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use Ems\CoreBundle\Controller\AppController;
-use Ems\CoreBundle\Entity\ContentType;
-use Ems\CoreBundle;
-use Ems\CoreBundle\Entity\Environment;
-use Ems\CoreBundle\Entity\Form\RebuildIndex;
-use Ems\CoreBundle\Entity\Revision;
-use Ems\CoreBundle\Form\Field\ColorPickerType;
-use Ems\CoreBundle\Form\Field\IconTextType;
-use Ems\CoreBundle\Form\Field\SubmitEmsType;
-use Ems\CoreBundle\Form\Form\CompareEnvironmentFormType;
-use Ems\CoreBundle\Form\Form\EditEnvironmentType;
-use Ems\CoreBundle\Form\Form\RebuildIndexType;
-use Ems\CoreBundle\Repository\ContentTypeRepository;
-use Ems\CoreBundle\Repository\RevisionRepository;
+use EMS\CoreBundle\Controller\AppController;
+use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle;
+use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\Form\RebuildIndex;
+use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Form\Field\ColorPickerType;
+use EMS\CoreBundle\Form\Field\IconTextType;
+use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Form\Form\CompareEnvironmentFormType;
+use EMS\CoreBundle\Form\Form\EditEnvironmentType;
+use EMS\CoreBundle\Form\Form\RebuildIndexType;
+use EMS\CoreBundle\Repository\ContentTypeRepository;
+use EMS\CoreBundle\Repository\RevisionRepository;
 use Doctrine\ORM\EntityManager;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
@@ -45,7 +45,7 @@ class EnvironmentController extends AppController {
 		
 		$form->handleRequest($request);	
 		
-		$paging_size = $this->getParameter('paging_size');
+		$paging_size = $this->getParameter('ems_core.paging_size');
 		
 		if ($form->isSubmitted() && $form->isValid()) {
 			$data = $form->getData();
@@ -65,7 +65,7 @@ class EnvironmentController extends AppController {
 					/** @var EntityManager $em */
 					$em = $this->getDoctrine()->getManager();
 					
-					$repository = $em->getRepository('Ems/CoreBundle:Revision');
+					$repository = $em->getRepository('EMSCoreBundle:Revision');
 					
 					/**@var Revision $revision */
 					$revision = $repository->findOneBy([
@@ -182,7 +182,7 @@ class EnvironmentController extends AppController {
 			/** @var EntityManager $em */
 			$em = $this->getDoctrine ()->getManager ();
 			/**@var RevisionRepository $repository*/
-			$repository = $em->getRepository ( 'Ems/CoreBundle:Revision' );
+			$repository = $em->getRepository ( 'EMSCoreBundle:Revision' );
 
 			$env = $this->get('ems.service.environment')->getAliasByName($environment);
 			$withEnvi = $this->get('ems.service.environment')->getAliasByName($withEnvironment);
@@ -218,7 +218,7 @@ class EnvironmentController extends AppController {
 			$withEnv = 0;
 		}
 		
-		return $this->render ( 'environment/align.html.twig', [
+		return $this->render ( 'EMSCoreBundle:environment:align.html.twig', [
 				'form' => $form->createView(),
 				'results' => $results,
 				'lastPage' => $lastPage,
@@ -257,7 +257,7 @@ class EnvironmentController extends AppController {
 				/** @var EntityManager $em */
 				$em = $this->getDoctrine ()->getManager ();
 				
-				$environmetRepository = $em->getRepository ( 'Ems/CoreBundle:Environment' );
+				$environmetRepository = $em->getRepository ( 'EMSCoreBundle:Environment' );
 				$anotherObject = $environmetRepository->findBy ( [ 
 						'name' => $name 
 				] );
@@ -301,7 +301,7 @@ class EnvironmentController extends AppController {
 		/** @var EntityManager $em */
 		$em = $this->getDoctrine ()->getManager ();
 		/** @var  EnvironmentRepository $repository */
-		$repository = $em->getRepository ( 'Ems/CoreBundle:Environment' );
+		$repository = $em->getRepository ( 'EMSCoreBundle:Environment' );
 		/** @var  Environment $environment */
 		$environment = $repository->find ( $id );
 			
@@ -387,7 +387,7 @@ class EnvironmentController extends AppController {
 			/** @var EntityManager $em */
 			$em = $this->getDoctrine ()->getManager ();
 			
-			$environmetRepository = $em->getRepository ( 'Ems/CoreBundle:Environment' );
+			$environmetRepository = $em->getRepository ( 'EMSCoreBundle:Environment' );
 			$anotherObject = $environmetRepository->findBy ( [ 
 					'name' => $environment->getName () 
 			] );
@@ -396,7 +396,7 @@ class EnvironmentController extends AppController {
 				//TODO: test name format
 				$form->get ( 'name' )->addError ( new FormError ( 'Another environment named ' . $environment->getName () . ' already exists' ) );
 			} else {
-				$environment->setAlias ( $this->getParameter ( 'instance_id' ) . $environment->getName () );
+				$environment->setAlias ( $this->getParameter ( 'ems_core.instance_id' ) . $environment->getName () );
 				$environment->setManaged ( true );
 				$em = $this->getDoctrine ()->getManager ();
 				$em->persist ( $environment );
@@ -423,7 +423,7 @@ class EnvironmentController extends AppController {
 			}
 		}
 		
-		return $this->render ( 'environment/add.html.twig', [ 
+		return $this->render ( 'EMSCoreBundle:environment:add.html.twig', [ 
 				'form' => $form->createView () 
 		] );
 	}
@@ -445,7 +445,7 @@ class EnvironmentController extends AppController {
 		$em = $this->getDoctrine()->getManager();
 	
 		/** @var EnvironmentRepository $repository */
-		$repository = $em->getRepository('Ems/CoreBundle:Environment');
+		$repository = $em->getRepository('EMSCoreBundle:Environment');
 	
 		/** @var Environment $environment */
 		$environment = $repository->find($id);
@@ -455,8 +455,8 @@ class EnvironmentController extends AppController {
 		}
 	
 		$options= [];
-		if ($this->getParameter("circles_object")){
-			$options['type'] = $this->getParameter("circles_object");
+		if ($this->getParameter("ems_core.circles_object")){
+			$options['type'] = $this->getParameter("ems_core.circles_object");
 		}
 		
 		$form = $this->createForm(EditEnvironmentType::class, $environment, $options);
@@ -470,7 +470,7 @@ class EnvironmentController extends AppController {
 			return $this->redirectToRoute('environment.index');
 		}
 	
-		return $this->render( 'environment/edit.html.twig',[
+		return $this->render( 'EMSCoreBundle:environment:edit.html.twig',[
 				'environment' => $environment,
 				'form' => $form->createView(),
 		]);
@@ -491,7 +491,7 @@ class EnvironmentController extends AppController {
 		$em = $this->getDoctrine()->getManager();
 		
 		/** @var EnvironmentRepository $repository */
-		$repository = $em->getRepository('Ems/CoreBundle:Environment');
+		$repository = $em->getRepository('EMSCoreBundle:Environment');
 		
 		/** @var Environment $environment */
 		$environment = $repository->find($id);
@@ -504,7 +504,7 @@ class EnvironmentController extends AppController {
 		$client = $this->get('app.elasticsearch');
 		
 		/** @var ContentTypeRepository $contentTypeRep */
-		$contentTypeRep = $em->getRepository('Ems/CoreBundle:ContentType');
+		$contentTypeRep = $em->getRepository('EMSCoreBundle:ContentType');
 		
 		
 		try{
@@ -517,7 +517,7 @@ class EnvironmentController extends AppController {
 			$info = false;
 		}
 	
-		return $this->render( 'environment/view.html.twig',[
+		return $this->render( 'EMSCoreBundle:environment:view.html.twig',[
 				'environment' => $environment,
 				'info' => $info,
 		]);
@@ -533,7 +533,7 @@ class EnvironmentController extends AppController {
 	private function reindexAll(Environment $environment, $alias){
 		/** @var  Client $client */
 		$client = $this->get('app.elasticsearch');
-		/** @var \Ems\CoreBundle\Entity\Revision $revision */
+		/** @var \EMS\CoreBundle\Entity\Revision $revision */
 		foreach ($environment->getRevisions() as $revision) {
 			if(!$revision->getDeleted()){
 				$objectArray = $this->get('ems.service.mapping')->dataFieldToArray ($revision->getDataField());
@@ -563,7 +563,7 @@ class EnvironmentController extends AppController {
 		/** @var EntityManager $em */
 		$em = $this->getDoctrine()->getManager();
 		/** @var EnvironmentRepository $repository */
-		$repository = $em->getRepository('Ems/CoreBundle:Environment');
+		$repository = $em->getRepository('EMSCoreBundle:Environment');
 	
 		/** @var Environment $environment */
 		$environment = $repository->find($id);
@@ -596,7 +596,7 @@ class EnvironmentController extends AppController {
 
 		}
 	
-		return $this->render( 'environment/rebuild.html.twig',[
+		return $this->render( 'EMSCoreBundle:environment:rebuild.html.twig',[
 				'environment' => $environment,
 				'form' => $form->createView(),
 		]);
@@ -615,7 +615,7 @@ class EnvironmentController extends AppController {
 			/** @var EntityManager $em */
 			$em = $this->getDoctrine()->getManager();
 			/** @var EnvironmentRepository $repository */
-			$repository = $em->getRepository('Ems/CoreBundle:Environment');
+			$repository = $em->getRepository('EMSCoreBundle:Environment');
 		
 			$client = $this->get('app.elasticsearch');
 			
@@ -669,7 +669,7 @@ class EnvironmentController extends AppController {
 			}
 			$logger->addDebug('For each environments: done');
 		
-			return $this->render( 'environment/index.html.twig', [
+			return $this->render( 'EMSCoreBundle:environment:index.html.twig', [
 					'environments' => $environments,
 					'orphanIndexes' => $orphanIndexes,
 					'unmanagedIndexes' => $unmanagedIndexes,

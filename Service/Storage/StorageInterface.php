@@ -1,6 +1,6 @@
 <?php
 
-namespace Ems\CoreBundle\Service\Storage;
+namespace EMS\CoreBundle\Service\Storage;
 
 interface StorageInterface {
 	

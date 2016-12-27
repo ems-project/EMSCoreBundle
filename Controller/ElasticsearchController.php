@@ -1,16 +1,16 @@
 <?php
-namespace Ems\CoreBundle\Controller;
+namespace EMS\CoreBundle\Controller;
 
-use Ems\CoreBundle\Controller\AppController;
-use Ems\CoreBundle\Entity\Form\Search;
-use Ems\CoreBundle\Entity\Form\SearchFilter;
-use Ems\CoreBundle\Entity\Template;
-use Ems\CoreBundle\Form\Field\IconTextType;
-use Ems\CoreBundle\Form\Field\RenderOptionType;
-use Ems\CoreBundle\Form\Field\SubmitEmsType;
-use Ems\CoreBundle\Form\Form\SearchFormType;
-use Ems\CoreBundle\Repository\ContentTypeRepository;
-use Ems\CoreBundle\Repository\EnvironmentRepository;
+use EMS\CoreBundle\Controller\AppController;
+use EMS\CoreBundle\Entity\Form\Search;
+use EMS\CoreBundle\Entity\Form\SearchFilter;
+use EMS\CoreBundle\Entity\Template;
+use EMS\CoreBundle\Form\Field\IconTextType;
+use EMS\CoreBundle\Form\Field\RenderOptionType;
+use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Form\Form\SearchFormType;
+use EMS\CoreBundle\Repository\ContentTypeRepository;
+use EMS\CoreBundle\Repository\EnvironmentRepository;
 use Doctrine\DBAL\Types\TextType;
 use Doctrine\ORM\EntityManager;
 use Elasticsearch\Client;
@@ -25,9 +25,9 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use ZipStream\ZipStream;
-use Ems\CoreBundle\Service\ContentTypeService;
-use Ems\CoreBundle\Service\EnvironmentService;
-use Ems\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Service\ContentTypeService;
+use EMS\CoreBundle\Service\EnvironmentService;
+use EMS\CoreBundle\Entity\ContentType;
 class ElasticsearchController extends AppController
 {
 	/**
@@ -75,7 +75,7 @@ class ElasticsearchController extends AppController
 		}
 		
 
-		return $this->render( 'elasticsearch/add-alias.html.twig',[
+		return $this->render( 'EMSCoreBundle:elasticsearch:add-alias.html.twig',[
 			'form' => $form->createView(),
 			'name' => $name,
 		]);
@@ -105,13 +105,13 @@ class ElasticsearchController extends AppController
 				}
 			}
 			
-			return $this->render( 'elasticsearch/status.'.$_format.'.twig', [
+			return $this->render( 'EMSCoreBundle:elasticsearch:status.'.$_format.'.twig', [
 					'status' => $status
 			] );			
 		}
 		catch (\Elasticsearch\Common\Exceptions\NoNodesAvailableException $e){
-			return $this->render( 'elasticsearch/no-nodes-available.'.$_format.'.twig', [
-					'cluster' => $this->getParameter('elasticsearch_cluster'),
+			return $this->render( 'EMSCoreBundle:elasticsearch:no-nodes-available.'.$_format.'.twig', [
+					'cluster' => $this->getParameter('ems_core.elasticsearch_cluster'),
 			]);
 		}
 	}
@@ -123,7 +123,7 @@ class ElasticsearchController extends AppController
 	public function deleteSearchAction($id, Request $request)
 	{
 		$em = $this->getDoctrine()->getManager();
-		$repository = $em->getRepository('Ems/CoreBundle:Form\Search');
+		$repository = $em->getRepository('EMSCoreBundle:Form\Search');
 		
 		$search = $repository->find($id);
 		if(!$search) {
@@ -173,7 +173,7 @@ class ElasticsearchController extends AppController
 		$em = $this->getDoctrine()->getManager();
 			
 		/** @var ContentTypeRepository $contentTypeRepository */
-		$contentTypeRepository = $em->getRepository ( 'Ems/CoreBundle:ContentType' );
+		$contentTypeRepository = $em->getRepository ( 'EMSCoreBundle:ContentType' );
 		
 		$allTypes = $contentTypeRepository->findAllAsAssociativeArray();
 	
@@ -224,7 +224,7 @@ class ElasticsearchController extends AppController
 			$params = [
 					'index' => array_unique($aliases),
 					'type' => array_unique($types),
-					'size' => $this->container->getParameter('paging_size'),
+					'size' => $this->container->getParameter('ems_core.paging_size'),
 					'body' => [
 						'query' => [
 							'bool' => [
@@ -315,7 +315,7 @@ class ElasticsearchController extends AppController
 		}
 		
 		
-		return $this->render( 'elasticsearch/search.json.twig', [
+		return $this->render( 'EMSCoreBundle:elasticsearch:search.json.twig', [
 				'results' => $results,
 				'types' => $allTypes,
 		] );
@@ -378,7 +378,7 @@ class ElasticsearchController extends AppController
 			$searchId = $request->query->get('searchId');
 			if(null != $searchId){
 				$em = $this->getDoctrine()->getManager();
-				$repository = $em->getRepository('Ems/CoreBundle:Form\Search');
+				$repository = $em->getRepository('EMSCoreBundle:Form\Search');
 				$search = $repository->find($request->query->get('searchId'));
 				if(! $search){
 					$this->createNotFoundException('Preset search not found');
@@ -410,7 +410,7 @@ class ElasticsearchController extends AppController
 				])
 				->getForm();
 				
-				return $this->render( 'elasticsearch/save-search.html.twig', [
+				return $this->render( 'EMSCoreBundle:elasticsearch:save-search.html.twig', [
 						'form' => $form->createView(),
 				] );				
 			}//Form treatement after the "Delete" button has been pressed (to delete a previous saved search preset)
@@ -452,12 +452,12 @@ class ElasticsearchController extends AppController
 			$em = $this->getDoctrine()->getManager();
 			
 			/** @var ContentTypeRepository $contentTypeRepository */
-			$contentTypeRepository = $em->getRepository ( 'Ems/CoreBundle:ContentType' );
+			$contentTypeRepository = $em->getRepository ( 'EMSCoreBundle:ContentType' );
 				
 			$types = $contentTypeRepository->findAllAsAssociativeArray();
 			
 			/** @var EnvironmentRepository $environmentRepository */
-			$environmentRepository = $em->getRepository ( 'Ems/CoreBundle:Environment' );
+			$environmentRepository = $em->getRepository ( 'EMSCoreBundle:Environment' );
 			
 			$environments = $environmentRepository->findAllAsAssociativeArray('alias');
 
@@ -495,8 +495,8 @@ class ElasticsearchController extends AppController
 // 					'df'=> isset($field)?$field:'_all',
 					'index' => empty($selectedEnvironments)?array_keys($environments):$selectedEnvironments,
 					'type' => empty($search->getContentTypes())?array_keys($types):array_values($search->getContentTypes()),
-					'size' => $this->container->getParameter('paging_size'), 
-					'from' => ($page-1)*$this->container->getParameter('paging_size')
+					'size' => $this->container->getParameter('ems_core.paging_size'), 
+					'from' => ($page-1)*$this->container->getParameter('ems_core.paging_size')
 				
 			];
 			
@@ -537,7 +537,7 @@ class ElasticsearchController extends AppController
 			
 			try {
 				$results = $client->search($params);
-				$lastPage = ceil($results['hits']['total']/$this->container->getParameter('paging_size'));
+				$lastPage = ceil($results['hits']['total']/$this->container->getParameter('ems_core.paging_size'));
 			}
 			catch (ElasticsearchException $e) {
 				$this->addFlash('warning', $e->getMessage());
@@ -598,11 +598,11 @@ class ElasticsearchController extends AppController
 				if ($form) {
 					$form = $form->add('massExport', SubmitType::class)->getForm();
 					$form->handlerequest($request);
-					return $this->render( 'elasticsearch/export-search.html.twig', [
+					return $this->render( 'EMSCoreBundle:elasticsearch:export-search.html.twig', [
 							'form' => $form->createView(),
 					] );
 				}else{
-					return $this->render( 'elasticsearch/export-search.html.twig');
+					return $this->render( 'EMSCoreBundle:elasticsearch:export-search.html.twig');
 				}
 				
 			}
@@ -616,7 +616,7 @@ class ElasticsearchController extends AppController
 				$em = $this->getDoctrine()->getManager();
 				
 				/** @var ContentTypeRepository $repository */
-				$templateRepository = $em->getRepository('Ems/CoreBundle:Template');
+				$templateRepository = $em->getRepository('EMSCoreBundle:Template');
 				
 				$templateChoises = $request->query->get('form');
 				
@@ -755,7 +755,7 @@ class ElasticsearchController extends AppController
 				exit;
 			}
 			
-			return $this->render( 'elasticsearch/search.html.twig', [
+			return $this->render( 'EMSCoreBundle:elasticsearch:search.html.twig', [
 					'results' => $results,
 					'lastPage' => $lastPage,
 					'paginationPath' => 'elasticsearch.search',

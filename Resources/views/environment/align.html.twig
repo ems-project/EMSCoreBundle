@@ -1,0 +1,200 @@
+{% extends 'EMSCoreBundle:base:base.html.twig' %}
+
+{% block title %}Align Environments{% endblock %}
+{% block pagetitle %}Align Environments{% endblock %} 
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><i class="fa fa-database"></i> Environments</li>
+   		<li class="active">Align Environments</li>
+   	</ol>
+{% endblock %}
+
+{% block subtitle %}
+<small>time to align environments?</small>
+{% endblock %}
+
+{% block body %}
+
+
+
+
+
+{{ form_start(form) }}
+
+
+<div class="row">
+	<div class="col-xs-12">
+	<div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Select and filter</h3>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+              <div class="box-body">
+              	<div class="col-md-6">
+              	{{ form_row(form.environment) }}
+              	</div>
+              	<div class="col-md-6">
+              	{{ form_row(form.withEnvironment) }}
+              	</div>
+	              {{ form_errors(form) }}
+              </div>
+              <!-- /.box-body -->
+
+              <div class="box-footer">
+              	{{ form_row(form.compare) }}
+              </div>
+          </div>
+	</div>
+
+
+{% if results %}
+	<div class="col-xs-12">
+		<div class="box">
+            <div class="box-header">
+              <h3 class="box-title">Compare "{{ environment }}" and "{{ withEnvironment }}"</h3> <small>{{ total }} difference(s)</small>
+
+				{% include 'EMSCoreBundle:elements:pagination.html.twig' with {
+					'lastPage': lastPage,
+					'currentPage': page,
+					'currentFilters': app.request.query,
+					'paginationPath': paginationPath,
+					'showAlwaysFirstAndLast': false
+				} %}
+
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body no-padding">
+			  <div class="table-responsive">
+              <table class="table">
+                <tbody><tr>
+                  <th style="width: 10px">#</th>
+                  <th>
+                  	<a href="#" onclick="javascript: $('.item-to-align').prop('checked', 'checked'); return false;"><i class="fa fa-check-square-o"></i></a> 
+                  	<a href="#" onclick="javascript: $('.item-to-align').prop('checked', false); return false;"><i class="fa fa-square-o"></i></a></th>
+                  <th>Content type</th>
+                  <th>OUUID</th>
+                  <th>Label</th>
+                  <th><span class="badge bg-{{ environments[environment].color }}" title="Circles:">{{ environment }}</span></th>
+                  <th><span class="badge bg-{{ environments[withEnvironment].color }}" title="Circles:">{{ withEnvironment }}</span></th>
+                  <th>Actions</th>
+                </tr>
+                {% for item in results %}
+        			{% set data = (item.content_type_name~':'~item.ouuid) %}
+        			{% set minrev = item.minrevid|split('/') %}
+        			{% set maxrev = item.maxrevid|split('/') %}
+        			{% set defaultEnv = false %}
+	                {% for ct in contentTypes %}
+	                	{% if ct.name == item.content_type_name %}
+	                		{% set defaultEnv = ct.environment %}
+	                	{% endif %}
+	                {% endfor %}
+	                <tr>
+	                  <td>{{ loop.index+((page-1)*paging_size) }}.</td>
+	                  <td>
+	                  	<input class="item-to-align" type="checkbox" name="compare_environment_form[item_to_align][{{ minrev[1] }}]" value="{{ item.content_type_name }}:{{ item.ouuid }}">
+	                  	</td>
+	                  <td class="text-{{ item.color }}"><i class="{% if item.icon %}{{item.icon}}{% else %}fa fa-book{% endif %}"></i> {{ item.content_type_name|humanize }}</td>
+	                  <td>{{ item.ouuid }}</td>
+	                  <td>{% if item.labelField and attribute(data, item.labelField) is defined %}{{ attribute(data, item.labelField) }}{% endif %}</td>
+	                  <td>
+	                  {% if defaultEnv %}
+        				{% if minrev[0] == fromEnv %}
+        					{% if fromEnv == defaultEnv.id %}
+        						<i class="fa fa-lock" aria-hidden="true"></i>
+        					{% elseif minrev[2] >= maxrev[2] %}
+        						<i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+        					{% endif %}
+        					{{ minrev[2]|date(date_time_format) }}
+        					({{ minrev[1] }})
+        				{% elseif maxrev[0] == fromEnv %}
+        					{% if fromEnv == defaultEnv.id %}
+        						<i class="fa fa-lock" aria-hidden="true"></i>
+        					{% elseif minrev[2] <= maxrev[2] %}
+        						<i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+        					{% endif %}
+        					{{ maxrev[2]|date(date_time_format) }}
+        					({{ maxrev[1] }})
+        				{% endif %}
+        			{% endif %}	
+	                  </td>
+	                  <td>
+        				{% if minrev[0] == withEnv %}
+        					{% if withEnv == defaultEnv.id %}
+        						<i class="fa fa-lock" aria-hidden="true"></i>
+        					{% elseif minrev[2] >= maxrev[2] %}
+        						<i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+        					{% endif %}
+        					{{ minrev[2]|date(date_time_format) }}
+        					({{ minrev[1] }})
+        				{% elseif maxrev[0] == withEnv %}
+        					{% if withEnv == defaultEnv.id %}
+        						<i class="fa fa-lock" aria-hidden="true"></i>
+        					{% elseif minrev[2] <= maxrev[2] %}
+        						<i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+        					{% endif %}
+        					{{ maxrev[2]|date(date_time_format) }}
+        					({{ maxrev[1] }})
+        				{% endif %}
+	                  </td>
+	                  <td>
+	                  	<div class="btn-group">     		
+						  	{% include 'EMSCoreBundle:elements:get-button.html.twig' with {
+								'url':  path('data.revisions', {'type': item.content_type_name, 'ouuid': item.ouuid} ),
+								'label': 'Revisions',
+								'icon': 'archive'
+							}%}
+							
+							{%  if defaultEnv and withEnv != defaultEnv.id %}
+								{% if minrev[0] == fromEnv %}
+		        					<button type="submit" id="{{ minrev[1] }}" name="compare_environment_form[alignWith]" value="{{ minrev[1] }}" class="btn-danger btn-sm btn"><span class="fa fa-chevron-right"></span>&nbsp;Align {{ withEnvironment }} with {{ environment }}</button>
+		        				{% elseif maxrev[0] == fromEnv %}
+		        					<button type="submit" id="{{ maxrev[1] }}" name="compare_environment_form[alignWith]" value="{{ maxrev[1] }}" class="btn-danger btn-sm btn"><span class="fa fa-chevron-right"></span>&nbsp;Align {{ withEnvironment }} with {{ environment }}</button>
+		        				{% endif %}
+		        			{% endif %}
+		        			
+							{%  if defaultEnv and fromEnv != defaultEnv.id %}
+		        				{% if minrev[0] == withEnv %}
+		        					<button type="submit" id="{{ minrev[1] }}" name="compare_environment_form[alignWith]" value="{{ minrev[1] }}" class="btn-danger btn-sm btn"><span class="fa fa-chevron-left"></span>&nbsp;Align {{ environment }} with {{ withEnvironment }}</button>
+		        				{% elseif maxrev[0] == withEnv %}
+		        					<button type="submit" id="{{ maxrev[1] }}" name="compare_environment_form[alignWith]" value="{{ maxrev[1] }}" class="btn-danger btn-sm btn"><span class="fa fa-chevron-left"></span>&nbsp;Align {{ environment }} with {{ withEnvironment }}</button>
+		        				{% endif %}
+		        			{% endif %}
+	                  	</div>
+	                  </td>
+	                </tr>
+	            {% endfor %}
+              </tbody></table>
+              </div>
+            </div>
+            <div class="box-footer">
+            	<div class="btn-group">
+	            	<button type="submit" name="compare_environment_form[alignRight]" class="btn-danger btn-md btn"><span class="fa fa-chevron-right"></span>&nbsp;Align {{ withEnvironment }} with {{ environment }}</button>
+	            	<button type="submit" name="compare_environment_form[alignLeft]" class="btn-danger btn-md btn"><span class="fa fa-chevron-left"></span>&nbsp;Align {{ environment }} with {{ withEnvironment }}</button>
+            	</div>
+
+				{% include 'EMSCoreBundle:elements:pagination.html.twig' with {
+					'lastPage': lastPage,
+					'currentPage': page,
+					'currentFilters': app.request.query,
+					'paginationPath': paginationPath,
+					'showAlwaysFirstAndLast': false
+				} %}
+				
+
+            </div>
+            <!-- /.box-body -->
+          </div>
+	</div>
+{% endif %}
+</div>
+
+{{ form_end(form) }}
+{% endblock %} 
+
+
+{% block javascripts %}
+	{% include 'EMSCoreBundle:app:menu.html.twig' with {
+		'item':  'environment-align'
+	}%}
+{% endblock %}	

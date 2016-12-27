@@ -1,11 +1,11 @@
 <?php
 
-namespace Ems\CoreBundle\Form\DataField;
+namespace EMS\CoreBundle\Form\DataField;
 
-use Ems\CoreBundle\Entity\DataField;
-use Ems\CoreBundle\Entity\FieldType;
-use Ems\CoreBundle\Form\Field\IconPickerType;
-use Ems\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Entity\DataField;
+use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Form\Field\IconPickerType;
+use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;

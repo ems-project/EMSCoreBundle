@@ -1,8 +1,8 @@
 <?php
 
-namespace Ems\CoreBundle\Form\Field;
+namespace EMS\CoreBundle\Form\Field;
 
-use Ems\CoreBundle\Form\View\ViewType;
+use EMS\CoreBundle\Form\View\ViewType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ViewTypePickerType extends SelectPickerType {

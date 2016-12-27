@@ -1,11 +1,11 @@
 <?php
 
-namespace Ems\CoreBundle\Form\View;
+namespace EMS\CoreBundle\Form\View;
 
-use Ems\CoreBundle\Entity\DataField;
+use EMS\CoreBundle\Entity\DataField;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Ems\CoreBundle\Entity\View;
+use EMS\CoreBundle\Entity\View;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 

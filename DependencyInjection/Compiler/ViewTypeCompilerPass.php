@@ -1,11 +1,11 @@
 <?php
 
-namespace Ems\CoreBundle\DependencyInjection\Compiler;
+namespace EMS\CoreBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Reference;
-use Ems\CoreBundle\Form\Form\ViewType;
+use EMS\CoreBundle\Form\Form\ViewType;
 use Symfony\Component\DependencyInjection\Definition;
 
 class ViewTypeCompilerPass implements CompilerPassInterface

@@ -1,6 +1,6 @@
 <?php
 
-namespace Ems\CoreBundle\Form\Subform;
+namespace EMS\CoreBundle\Form\Subform;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -53,7 +53,7 @@ class SearchFilterType extends AbstractType {
 	public function configureOptions(OptionsResolver $resolver)
 	{
 		$resolver->setDefaults([
-				'data_class' => 'Ems\CoreBundle\Entity\Form\SearchFilter',
+				'data_class' => 'EMS\CoreBundle\Entity\Form\SearchFilter',
 		]);
 	}
 	

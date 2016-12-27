@@ -1,0 +1,30 @@
+{
+    "name" : "ems-project/EMSCoreBundle",
+    "description" : "The elasticms core bundle",
+    "type" : "symfony-bundle",
+    "authors" : [{
+        "name" : "Mathieu De Keyzer",
+        "email" : "mathieu@dekeyzer.net"
+    }],
+    "keywords" : [
+        "elasticms"
+    ],
+    "license" : [
+        "MIT"
+    ],
+    "require" : {
+    },
+    "autoload" : {
+        "psr-0" : {
+            "Company\\DemoBundle" : ""
+        }
+    },
+    "target-dir" : "EMS/CoreBundle",
+    "repositories" : [{
+    }],
+    "extra" : {
+    "branch-alias" : {
+            "dev-master" : "some_version-dev"
+        }
+    }
+}

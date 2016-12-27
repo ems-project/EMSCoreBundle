@@ -1,26 +1,26 @@
 <?php
 
-namespace Ems\CoreBundle\Controller\ContentManagement;
+namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use Ems\CoreBundle;
-use Ems\CoreBundle\Controller\AppController;
-use Ems\CoreBundle\Entity\ContentType;
-use Ems\CoreBundle\Entity\DataField;
-use Ems\CoreBundle\Entity\Environment;
-use Ems\CoreBundle\Entity\Form\Search;
-use Ems\CoreBundle\Entity\Revision;
-use Ems\CoreBundle\Entity\Template;
-use Ems\CoreBundle\Entity\View;
-use Ems\CoreBundle\Exception\HasNotCircleException;
-use Ems\CoreBundle\Exception\PrivilegeException;
-use Ems\CoreBundle\Form\Field\IconTextType;
-use Ems\CoreBundle\Form\Form\RevisionType;
-use Ems\CoreBundle\Form\Form\ViewType;
-use Ems\CoreBundle\Repository\ContentTypeRepository;
-use Ems\CoreBundle\Repository\EnvironmentRepository;
-use Ems\CoreBundle\Repository\RevisionRepository;
-use Ems\CoreBundle\Repository\TemplateRepository;
-use Ems\CoreBundle\Repository\ViewRepository;
+use EMS\CoreBundle;
+use EMS\CoreBundle\Controller\AppController;
+use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\DataField;
+use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\Form\Search;
+use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Entity\Template;
+use EMS\CoreBundle\Entity\View;
+use EMS\CoreBundle\Exception\HasNotCircleException;
+use EMS\CoreBundle\Exception\PrivilegeException;
+use EMS\CoreBundle\Form\Field\IconTextType;
+use EMS\CoreBundle\Form\Form\RevisionType;
+use EMS\CoreBundle\Form\Form\ViewType;
+use EMS\CoreBundle\Repository\ContentTypeRepository;
+use EMS\CoreBundle\Repository\EnvironmentRepository;
+use EMS\CoreBundle\Repository\RevisionRepository;
+use EMS\CoreBundle\Repository\TemplateRepository;
+use EMS\CoreBundle\Repository\ViewRepository;
 use Doctrine\ORM\EntityManager;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
@@ -34,7 +34,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Ems\CoreBundle\Service\ContentTypeService;
+use EMS\CoreBundle\Service\ContentTypeService;
 
 class DataController extends AppController
 {
@@ -49,7 +49,7 @@ class DataController extends AppController
 		$em = $this->getDoctrine()->getManager();
 		
 		/** @var ContentTypeRepository $repository */
-		$repository = $em->getRepository('Ems/CoreBundle:ContentType');
+		$repository = $em->getRepository('EMSCoreBundle:ContentType');
 		$contentType = $repository->findOneBy([	
 			'name' => $name,
 			'deleted' => false
@@ -74,7 +74,7 @@ class DataController extends AppController
 		$em = $this->getDoctrine()->getManager();
 		
 		/** @var ContentTypeRepository $repository */
-		$repository = $em->getRepository('Ems/CoreBundle:ContentType');
+		$repository = $em->getRepository('EMSCoreBundle:ContentType');
 		
 		
 		$contentType = $repository->find($contentTypeId);		
@@ -84,7 +84,7 @@ class DataController extends AppController
 		}
 		
 		/** @var RevisionRepository $revisionRep */
-		$revisionRep = $em->getRepository('Ems/CoreBundle:Revision');
+		$revisionRep = $em->getRepository('EMSCoreBundle:Revision');
 // 		$revisions = $revisionRep->findBy([
 // 				'deleted' => false,
 // 				'draft' => true,
@@ -95,7 +95,7 @@ class DataController extends AppController
 		$revisions= $revisionRep->findInProgresByContentType($contentType, $this->get('ems.service.user')->getCurrentUser()->getCircles(), $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN'));
 		
 		
-		return $this->render( 'data/draft-in-progress.html.twig', [
+		return $this->render( 'EMSCoreBundle:data:draft-in-progress.html.twig', [
 				'contentType' =>  $contentType,
 				'revisions' => $revisions
 		] );		
@@ -110,7 +110,7 @@ class DataController extends AppController
 		$em = $this->getDoctrine()->getManager();
 		
 		/** @var EnvironmentRepository $environmentRepo */
-		$environmentRepo = $em->getRepository('Ems/CoreBundle:Environment');
+		$environmentRepo = $em->getRepository('EMSCoreBundle:Environment');
 		$environments = $environmentRepo->findBy([
 				'name' => $environmentName,
 		]);
@@ -119,7 +119,7 @@ class DataController extends AppController
 		}
 		
 		/** @var ContentTypeRepository $contentTypeRepo */
-		$contentTypeRepo = $em->getRepository('Ems/CoreBundle:ContentType');
+		$contentTypeRepo = $em->getRepository('EMSCoreBundle:ContentType');
 		$contentTypes = $contentTypeRepo->findBy([
 				'name' => $type,
 				'deleted' => false,
@@ -143,7 +143,7 @@ class DataController extends AppController
 			throw new NotFoundHttpException($type.' not found');			
 		}
 		
-		return $this->render( 'data/view-data.html.twig', [
+		return $this->render( 'EMSCoreBundle:data:view-data.html.twig', [
 				'object' =>  $result,
 				'environment' => $environments[0],
 				'contentType' => $contentType,
@@ -178,7 +178,7 @@ class DataController extends AppController
 		$em = $this->getDoctrine()->getManager();
 		
 		/** @var ContentTypeRepository $contentTypeRepo */
-		$contentTypeRepo = $em->getRepository('Ems/CoreBundle:ContentType');
+		$contentTypeRepo = $em->getRepository('EMSCoreBundle:ContentType');
 		
 		$contentTypes = $contentTypeRepo->findBy([
 				'deleted' => false,
@@ -200,7 +200,7 @@ class DataController extends AppController
 		
 		
 		/** @var RevisionRepository $repository */
-		$repository = $em->getRepository('Ems/CoreBundle:Revision');
+		$repository = $em->getRepository('EMSCoreBundle:Revision');
 		
 		/**@var Revision $revision */
 		if(!$revisionId) {
@@ -234,7 +234,7 @@ class DataController extends AppController
 		$counter = $repository->countRevisions($ouuid, $contentTypes[0]);
 		$firstElemOfPage = $repository->firstElemOfPage($page);
 		
-		$availableEnv = $em->getRepository('Ems/CoreBundle:Environment')->findAvailableEnvironements(
+		$availableEnv = $em->getRepository('EMSCoreBundle:Environment')->findAvailableEnvironements(
 				$revision->getContentType()->getEnvironment());
 		
 		$objectArray = $this->get('ems.service.mapping')->dataFieldToArray ($revision->getDataField());
@@ -263,7 +263,7 @@ class DataController extends AppController
 						'track_scores' => true
 				]];
 		
-		return $this->render( 'data/revisions-data.html.twig', [
+		return $this->render( 'EMSCoreBundle:data:revisions-data.html.twig', [
 				'revision' =>  $revision,
 				'revisionsSummary' => $revisionsSummary,
 				'availableEnv' => $availableEnv,
@@ -317,7 +317,7 @@ class DataController extends AppController
 		$em = $this->getDoctrine()->getManager();
 		
 		/** @var ContentTypeRepository $contentTypeRepo */
-		$contentTypeRepo = $em->getRepository('Ems/CoreBundle:ContentType');
+		$contentTypeRepo = $em->getRepository('EMSCoreBundle:ContentType');
 		
 		$contentTypes = $contentTypeRepo->findBy([
 				'deleted' => false,
@@ -328,7 +328,7 @@ class DataController extends AppController
 		}
 		
 		/** @var RevisionRepository $repository */
-		$repository = $em->getRepository('Ems/CoreBundle:Revision');
+		$repository = $em->getRepository('EMSCoreBundle:Revision');
 		
 		
 		$revisions = $repository->findBy([
@@ -389,7 +389,7 @@ class DataController extends AppController
 		$em = $this->getDoctrine()->getManager();
 		
 		/** @var RevisionRepository $repository */
-		$repository = $em->getRepository('Ems/CoreBundle:Revision');
+		$repository = $em->getRepository('EMSCoreBundle:Revision');
 		/** @var Revision $revision */
 		$revision = $repository->find($revisionId);
 		
@@ -460,7 +460,7 @@ class DataController extends AppController
 		$em = $this->getDoctrine()->getManager();
 		
 		/** @var RevisionRepository $repository */
-		$repository = $em->getRepository('Ems/CoreBundle:Revision');
+		$repository = $em->getRepository('EMSCoreBundle:Revision');
 		/** @var Revision $revision */
 		$revision = $repository->find($revisionId);
 		
@@ -479,11 +479,11 @@ class DataController extends AppController
 			$this->get('ems.service.data')->loadDataStructure($revision);
 			
 			$objectArray = $this->get('ems.service.mapping')->dataFieldToArray ($revision->getDataField());
-			/** @var \Ems\CoreBundle\Entity\Environment $environment */
+			/** @var \EMS\CoreBundle\Entity\Environment $environment */
 			foreach ($revision->getEnvironments() as $environment ){
 				$status = $client->index([
 						'id' => $revision->getOuuid(),
-						'index' => $this->getParameter('instance_id').$environment->getName(),
+						'index' => $this->getParameter('ems_core.instance_id').$environment->getName(),
 						'type' => $revision->getContentType()->getName(),
 						'body' => $objectArray
 				]);				
@@ -510,7 +510,7 @@ class DataController extends AppController
 		/** @var EntityManager $em */
 		$em = $this->getDoctrine()->getManager();
 		/** @var ViewRepository $viewRepository */
-		$viewRepository = $em->getRepository('Ems/CoreBundle:View');
+		$viewRepository = $em->getRepository('EMSCoreBundle:View');
 		
 		$view = $viewRepository->find($viewId);
 		/** @var View $view **/
@@ -519,10 +519,10 @@ class DataController extends AppController
 			throw new NotFoundHttpException('View type not found');
 		}
 		
-		/** @var \Ems\CoreBundle\Form\View\ViewType $viewType */
+		/** @var \EMS\CoreBundle\Form\View\ViewType $viewType */
  		$viewType = $this->get($view->getType());
 		
-		return $this->render( 'view/custom/'.$viewType->getBlockPrefix().'.html.twig', $viewType->getParameters($view, $this->container->get('form.factory'), $request));		
+		return $this->render( 'EMSCoreBundle:view:custom/'.$viewType->getBlockPrefix().'.html.twig', $viewType->getParameters($view, $this->container->get('form.factory'), $request));		
 	}
 
 	/**
@@ -534,7 +534,7 @@ class DataController extends AppController
 		$em = $this->getDoctrine()->getManager();
 		
 		/** @var TemplateRepository $templateRepository */
-		$templateRepository = $em->getRepository('Ems/CoreBundle:Template');
+		$templateRepository = $em->getRepository('EMSCoreBundle:Template');
 		
 		/** @var Template $template **/
 		$template = $templateRepository->find($templateId);
@@ -544,7 +544,7 @@ class DataController extends AppController
 		}
 		
 		/** @var EnvironmentRepository $environmentRepository */
-		$environmentRepository = $em->getRepository('Ems/CoreBundle:Environment');
+		$environmentRepository = $em->getRepository('EMSCoreBundle:Environment');
 		
 		/** @var Environment $environment **/
 		$environment = $environmentRepository->findBy([
@@ -617,7 +617,7 @@ class DataController extends AppController
 			exit;
 		}
 		
-		return $this->render( 'data/custom-view.html.twig', [
+		return $this->render( 'EMSCoreBundle:data/custom-view.html.twig', [
 				'template' =>  $template,
 				'object' => $object,
 				'environment' => $environment,
@@ -630,7 +630,7 @@ class DataController extends AppController
 	private function loadAutoSavedVersion(Revision $revision){
 		if(null != $revision->getAutoSave()){
 			$revision->setRawData($revision->getAutoSave());
-			$this->addFlash('warning', "Data were loaded from an autosave version by ".$revision->getAutoSaveBy()." at ".$revision->getAutoSaveAt()->format($this->getParameter('date_time_format')));			
+			$this->addFlash('warning', "Data were loaded from an autosave version by ".$revision->getAutoSaveBy()." at ".$revision->getAutoSaveAt()->format($this->getParameter('ems_core.date_time_format')));			
 		}
 	}
 
@@ -645,7 +645,7 @@ class DataController extends AppController
 		$em = $this->getDoctrine()->getManager();
 		
 		/** @var RevisionRepository $repository */
-		$repository = $em->getRepository('Ems/CoreBundle:Revision');
+		$repository = $em->getRepository('EMSCoreBundle:Revision');
 		/** @var Revision $revision */
 		$revision = $repository->find($revisionId);
 		
@@ -689,7 +689,7 @@ class DataController extends AppController
 		$this->get("ems.service.data")->isValid($form);
 		$formErrors = $form->getErrors(true, true);
 			
-		return $this->render( 'data/ajax-revision.json.twig', [
+		return $this->render( 'EMSCoreBundle:data:ajax-revision.json.twig', [
 // 				'revision' =>  $revision,
 				'success' => true,
 				'formErrors' => $formErrors,
@@ -708,7 +708,7 @@ class DataController extends AppController
 			$form = $this->createForm(RevisionType::class, $revision);
 			if(!empty($revision->getAutoSave())){
 				$this->addFlash("error", "This draft (".$revision->getContentType()->getName().":".$revision->getOuuid().") can't be finlized, as an autosave is pending.");
-				return $this->render( 'data/edit-revision.html.twig', [
+				return $this->render( 'EMSCoreBundle:data:edit-revision.html.twig', [
 						'revision' =>  $revision,
 						'form' => $form->createView(),
 				] );
@@ -717,7 +717,7 @@ class DataController extends AppController
 			$revision = $this->get("ems.service.data")->finalizeDraft($revision, $form);
 			if(count($form->getErrors()) !== 0) {
 				$this->addFlash("error", "This draft (".$revision->getContentType()->getName().":".$revision->getOuuid().") can't be finlized.");
-				return $this->render( 'data/edit-revision.html.twig', [
+				return $this->render( 'EMSCoreBundle:data:edit-revision.html.twig', [
 						'revision' =>  $revision,
 						'form' => $form->createView(),
 				] );
@@ -767,7 +767,7 @@ class DataController extends AppController
 		$logger = $this->get('logger');
 		
 		/** @var RevisionRepository $repository */
-		$repository = $em->getRepository('Ems/CoreBundle:Revision');
+		$repository = $em->getRepository('EMSCoreBundle:Revision');
 		/** @var Revision $revision */
 		$revision = $repository->find($revisionId);
 		
@@ -851,7 +851,7 @@ class DataController extends AppController
 							]);
 						} else {
 							$this->addFlash("warning", "This draft (".$revision->getContentType()->getName().":".$revision->getOuuid().") can't be finlized.");
-							return $this->render( 'data/edit-revision.html.twig', [
+							return $this->render( 'EMSCoreBundle:data:edit-revision.html.twig', [
 									'revision' =>  $revision,
 									'form' => $form->createView(),
 							] );
@@ -891,7 +891,7 @@ class DataController extends AppController
 		// Call Audit service for log
 		$this->get("ems.service.audit")->auditLog('DataController:editRevision', $revision->getRawData());
 		$logger->debug('Start twig rendering');
-		return $this->render( 'data/edit-revision.html.twig', [
+		return $this->render( 'EMSCoreBundle:data:edit-revision.html.twig', [
 				'revision' =>  $revision,
 				'form' => $form->createView(),
 		] );		
@@ -937,7 +937,7 @@ class DataController extends AppController
 		
 		$em = $this->getDoctrine()->getManager();
 		
-		$repository = $em->getRepository('Ems/CoreBundle:ContentType');
+		$repository = $em->getRepository('EMSCoreBundle:ContentType');
 		
 		$revision = new Revision();
 
@@ -973,7 +973,7 @@ class DataController extends AppController
 			
 
 			if(null != $revision->getOuuid()){
-				$revisionRepository = $em->getRepository('Ems/CoreBundle:Revision');
+				$revisionRepository = $em->getRepository('EMSCoreBundle:Revision');
 				$anotherObject = $revisionRepository->findBy([
 						'contentType' => $contentType,
 						'ouuid' => $revision->getOuuid(),
@@ -994,12 +994,12 @@ class DataController extends AppController
 				$revision->setStartTime($now);
 				$revision->setEndTime(null);
 				$revision->setLockBy( $this->getUser()->getUsername() );
-				$revision->setLockUntil(new \DateTime($this->getParameter('lock_time')));
+				$revision->setLockUntil(new \DateTime($this->getParameter('ems_core.lock_time')));
 				
 				if($contentType->getCirclesField()) {
 					$fieldType = $contentType->getFieldType()->getChildByPath($contentType->getCirclesField());
 					if($fieldType) {
-						/**@var \Ems\CoreBundle\Entity\User $user*/
+						/**@var \EMS\CoreBundle\Entity\User $user*/
 						$user = $this->getUser();
 						$options = $fieldType->getDisplayOptions();
 						if(isset($options['multiple']) && $options['multiple']){
@@ -1035,7 +1035,7 @@ class DataController extends AppController
 			}
 		}
 		
-		return $this->render( 'data/add.html.twig', [
+		return $this->render( 'EMSCoreBundle:data:add.html.twig', [
 				'contentType' =>  $contentType,
 				'form' => $form->createView(),
 		] );	
@@ -1080,7 +1080,7 @@ class DataController extends AppController
 			$em = $this->getDoctrine ()->getManager ();
 			
 			/** @var RevisionRepository $repository */
-			$repository = $em->getRepository ( 'Ems/CoreBundle:Revision' );
+			$repository = $em->getRepository ( 'EMSCoreBundle:Revision' );
 			
 			/**@var ContentTypeService $ctService*/
 			$ctService = $this->get('ems.service.contenttype');

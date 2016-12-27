@@ -1,14 +1,14 @@
 <?php
 
-namespace Ems\CoreBundle\Repository;
+namespace EMS\CoreBundle\Repository;
 
-use Ems\CoreBundle\Entity\ContentType;
-use Ems\CoreBundle\Entity\Notification;
-use Ems\CoreBundle\Entity\User;
-use Ems\CoreBundle\Repository\TemplateRepository;
+use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Notification;
+use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Repository\TemplateRepository;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Ems\CoreBundle\Entity\Revision;
-use Ems\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Entity\Environment;
 /**
  * NotificationRepository
  *
@@ -29,7 +29,7 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
 	public function findByRevionsionOuuidAndEnvironment(Revision $revision, Environment $environment){
 		$qb = $this->createQueryBuilder('n')
 			->select('n')
-			->join('Ems/CoreBundle:Revision', 'r', 'WITH', 'n.revision = r.id')
+			->join('EMSCoreBundle:Revision', 'r', 'WITH', 'n.revision = r.id')
 			->where('r.ouuid = :ouuid')
 			->andWhere('r.contentType = :contentType')
 // 			->andWhere('n.contentType = :contentType')
@@ -102,7 +102,7 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
 	public function countNotificationByUuidAndContentType($ouuid, ContentType $contentType){
 		$qb = $this->createQueryBuilder('n')
 		->select('count(n)')
-		->join('Ems/CoreBundle:Revision', 'r', 'WITH', 'n.revision = r.id')
+		->join('EMSCoreBundle:Revision', 'r', 'WITH', 'n.revision = r.id')
 		->where('n.status = :status')
 		->andWhere('r.contentType = :contentType')
 		->andwhere('r.ouuid = :ouuid');
@@ -293,7 +293,7 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
 		$em = $this->getEntityManager();
 		
 		/** @var TemplateRepository $templateRepoitory */
-	 	$templateRepoitory = $em->getRepository( 'Ems/CoreBundle:Template' );
+	 	$templateRepoitory = $em->getRepository( 'EMSCoreBundle:Template' );
 	 	
 	 	$results = $templateRepoitory->findByRenderOptionAndContentType('notification', $contentTypes);
 	 	
@@ -328,14 +328,14 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
 		$em = $this->getEntityManager();
 		
 		/** @var TemplateRepository $templateRepoitory */
-	 	$templateRepoitory = $em->getRepository( 'Ems/CoreBundle:Template' );
+	 	$templateRepoitory = $em->getRepository( 'EMSCoreBundle:Template' );
 	 	
 	 	$results = $templateRepoitory->findByRenderOptionAndContentType('notification', $contentTypes);
 	 	
 	  	$templateIds = array();
-	  	/**@var \Ems\CoreBundle\Entity\Template $template*/
+	  	/**@var \EMS\CoreBundle\Entity\Template $template*/
 	 	foreach ($results as $template) {
-	 		/**@var \Ems\CoreBundle\Entity\Environment $environment*/
+	 		/**@var \EMS\CoreBundle\Entity\Environment $environment*/
 	 		foreach ($template->getEnvironments() as $environment){
 	 			if(empty($environment->getCircles()) || count(array_intersect($environment->getCircles(), $user->getCircles())) > 0){
 	 				$templateIds[] = $template->getId();

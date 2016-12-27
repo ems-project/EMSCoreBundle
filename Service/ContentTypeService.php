@@ -1,10 +1,10 @@
 <?php
 
-namespace Ems\CoreBundle\Service;
+namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Ems\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\ContentType;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\BadRequest400Exception;
 use Symfony\Component\Form\FormRegistryInterface;
@@ -49,7 +49,7 @@ class ContentTypeService {
 	
 	private function loadEnvironment(){
 		if($this->orderedContentTypes === false) {
-			$this->orderedContentTypes = $this->doctrine->getManager()->getRepository('Ems/CoreBundle:ContentType')->findBy(['deleted' => false], ['orderKey' => 'ASC']);
+			$this->orderedContentTypes = $this->doctrine->getManager()->getRepository('EMSCoreBundle:ContentType')->findBy(['deleted' => false], ['orderKey' => 'ASC']);
 			$this->contentTypeArrayByName = [];
 			/**@var ContentType $contentType */
 			foreach ($this->orderedContentTypes as $contentType) {
@@ -72,10 +72,10 @@ class ContentTypeService {
 		try {
 			if(!empty($contentType->getFieldType())) {
 				$pipelines = [];
-				/**@var \Ems\CoreBundle\Entity\FieldType $child */
+				/**@var \EMS\CoreBundle\Entity\FieldType $child */
 				foreach ($contentType->getFieldType()->getChildren() as $child) {
 					if(!$child->getDeleted()){
-						/**@var \Ems\CoreBundle\Form\DataField\DataFieldType $dataFieldType */
+						/**@var \EMS\CoreBundle\Form\DataField\DataFieldType $dataFieldType */
 						$dataFieldType = $this->formRegistry->getType($child->getType())->getInnerType();
 						$pipeline = $dataFieldType->generatePipeline($child);
 						if($pipeline) {
@@ -108,7 +108,7 @@ class ContentTypeService {
 			
 			if(!$envs){
 				$envs = array_reduce ( $this->environmentService->getManagedEnvironement(), function ($envs, $item) {
-					/**@var \Ems\CoreBundle\Entity\Environment $item*/
+					/**@var \EMS\CoreBundle\Entity\Environment $item*/
 					if (isset ( $envs )) {
 						$envs .= ',' . $item->getAlias();
 					} else {

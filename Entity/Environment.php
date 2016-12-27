@@ -1,6 +1,6 @@
 <?php
 
-namespace Ems\CoreBundle\Entity;
+namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\PrePersist;
@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping\PrePersist;
  * Environment
  *
  * @ORM\Table(name="environment")
- * @ORM\Entity(repositoryClass="Ems\CoreBundle\Repository\EnvironmentRepository")
+ * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\EnvironmentRepository")
  * @ORM\HasLifecycleCallbacks()
  */
 class Environment
@@ -330,11 +330,11 @@ class Environment
     /**
      * Add revision
      *
-     * @param \Ems\CoreBundle\Entity\Revision $revision
+     * @param \EMS\CoreBundle\Entity\Revision $revision
      *
      * @return Environment
      */
-    public function addRevision(\Ems\CoreBundle\Entity\Revision $revision)
+    public function addRevision(\EMS\CoreBundle\Entity\Revision $revision)
     {
         $this->revisions[] = $revision;
 
@@ -344,9 +344,9 @@ class Environment
     /**
      * Remove revision
      *
-     * @param \Ems\CoreBundle\Entity\Revision $revision
+     * @param \EMS\CoreBundle\Entity\Revision $revision
      */
-    public function removeRevision(\Ems\CoreBundle\Entity\Revision $revision)
+    public function removeRevision(\EMS\CoreBundle\Entity\Revision $revision)
     {
         $this->revisions->removeElement($revision);
     }
@@ -532,11 +532,11 @@ class Environment
     /**
      * Add contentTypesHavingThisAsDefault
      *
-     * @param \Ems\CoreBundle\Entity\ContentType $contentTypesHavingThisAsDefault
+     * @param \EMS\CoreBundle\Entity\ContentType $contentTypesHavingThisAsDefault
      *
      * @return Environment
      */
-    public function addContentTypesHavingThisAsDefault(\Ems\CoreBundle\Entity\ContentType $contentTypesHavingThisAsDefault)
+    public function addContentTypesHavingThisAsDefault(\EMS\CoreBundle\Entity\ContentType $contentTypesHavingThisAsDefault)
     {
         $this->contentTypesHavingThisAsDefault[] = $contentTypesHavingThisAsDefault;
 
@@ -546,9 +546,9 @@ class Environment
     /**
      * Remove contentTypesHavingThisAsDefault
      *
-     * @param \Ems\CoreBundle\Entity\ContentType $contentTypesHavingThisAsDefault
+     * @param \EMS\CoreBundle\Entity\ContentType $contentTypesHavingThisAsDefault
      */
-    public function removeContentTypesHavingThisAsDefault(\Ems\CoreBundle\Entity\ContentType $contentTypesHavingThisAsDefault)
+    public function removeContentTypesHavingThisAsDefault(\EMS\CoreBundle\Entity\ContentType $contentTypesHavingThisAsDefault)
     {
         $this->contentTypesHavingThisAsDefault->removeElement($contentTypesHavingThisAsDefault);
     }

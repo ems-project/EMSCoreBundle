@@ -1,6 +1,6 @@
 <?php
 
-namespace Ems\CoreBundle\Service;
+namespace EMS\CoreBundle\Service;
 
 class FileService {
 	
@@ -21,7 +21,7 @@ class FileService {
 
 
 	public function getBase64($sha1){
-		/**@var \Ems\CoreBundle\Service\Storage\StorageInterface $service*/
+		/**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
 		foreach ($this->storageServices as $service){
 			$filename = $service->read($sha1);
 			if($filename){
@@ -34,7 +34,7 @@ class FileService {
 	}
 	
 	public function getSize($sha1){
-		/**@var \Ems\CoreBundle\Service\Storage\StorageInterface $service*/
+		/**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
 		foreach ($this->storageServices as $service){
 			$filename = $service->read($sha1);
 			if($filename){

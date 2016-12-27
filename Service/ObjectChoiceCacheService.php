@@ -1,11 +1,11 @@
 <?php
 
-namespace Ems\CoreBundle\Service;
+namespace EMS\CoreBundle\Service;
 
 
 use Elasticsearch\Client;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Ems\CoreBundle\Form\Field\ObjectChoiceListItem;
+use EMS\CoreBundle\Form\Field\ObjectChoiceListItem;
 
 
 class ObjectChoiceCacheService

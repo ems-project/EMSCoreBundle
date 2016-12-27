@@ -1,8 +1,8 @@
 <?php 
 
-namespace Ems\CoreBundle\Form\Nature;
+namespace EMS\CoreBundle\Form\Nature;
 
-use Ems\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;

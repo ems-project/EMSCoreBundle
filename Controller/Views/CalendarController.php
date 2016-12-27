@@ -1,11 +1,11 @@
 <?php
-namespace Ems\CoreBundle\Controller\Views;
+namespace EMS\CoreBundle\Controller\Views;
 
-use Ems\CoreBundle;
-use Ems\CoreBundle\Controller\AppController;
-use Ems\CoreBundle\Entity\Form\Search;
-use Ems\CoreBundle\Entity\View;
-use Ems\CoreBundle\Form\Form\SearchFormType;
+use EMS\CoreBundle;
+use EMS\CoreBundle\Controller\AppController;
+use EMS\CoreBundle\Entity\Form\Search;
+use EMS\CoreBundle\Entity\View;
+use EMS\CoreBundle\Form\Form\SearchFormType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -62,13 +62,13 @@ class CalendarController extends AppController
 			else {
 				$this->addFlash('warning', 'Object '.$ouuid.' not found');
 			}
-			return $this->render( 'view/custom/calendar_replan.json.twig', [
+			return $this->render( 'EMSCoreBundle:view:custom:calendar_replan.json.twig', [
 					'success' => true,
 			] );
 		}
 		catch(\Exception $e){
 			$this->addFlash('error', 'Exception: '.$e->getMessage());
-			return $this->render( 'ajax/notification.json.twig', [
+			return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
 				'success' => false,
 			] );			
 		}
@@ -144,7 +144,7 @@ class CalendarController extends AppController
 		
 		$data = $this->getElasticsearch()->search($searchQuery);
 		
-		return $this->render( 'view/custom/calendar_search.json.twig', [
+		return $this->render( 'EMSCoreBundle:view:custom:calendar_search.json.twig', [
 				'success' => true,
 				'data' => $data,
 				'field' => $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['dateRangeField']),

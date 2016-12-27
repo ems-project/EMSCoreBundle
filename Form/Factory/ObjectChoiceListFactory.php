@@ -1,14 +1,14 @@
 <?php
-namespace Ems\CoreBundle\Form\Factory;
+namespace EMS\CoreBundle\Form\Factory;
 
-use Ems\CoreBundle\Form\Field\ObjectChoiceLoader;
-use Ems\CoreBundle\Service\ContentTypeService;
-use Ems\CoreBundle\Service\ObjectChoiceCacheService;
+use EMS\CoreBundle\Form\Field\ObjectChoiceLoader;
+use EMS\CoreBundle\Service\ContentTypeService;
+use EMS\CoreBundle\Service\ObjectChoiceCacheService;
 use Elasticsearch\Client;
 use Symfony\Component\Form\ChoiceList\Factory\DefaultChoiceListFactory;
 use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Ems\CoreBundle\Exception\PerformanceException;
+use EMS\CoreBundle\Exception\PerformanceException;
 
 
 class ObjectChoiceListFactory extends DefaultChoiceListFactory{

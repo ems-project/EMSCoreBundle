@@ -1,0 +1,542 @@
+{% extends 'EMSCoreBundle:base:base.html.twig' %}
+
+{% block title %}{% if revision.ouuid %}Edit {{ revision.contentType.singularName }} : {{ revision.ouuid }}{% else %}{{ revision.contentType.singularName }} : new draft{% endif %}{% endblock %}
+{% block pagetitle %}{% if revision.ouuid %}Edit {{ revision.contentType.singularName }} : {{ revision.ouuid }}{% else %}{{ revision.contentType.singularName }} : new draft{% endif %}{% endblock %} 
+{% block subtitle %}<small>Working area</small>{% endblock %} 
+
+
+{% block body %}
+	{% if not revision.draft %}
+		<div class="alert alert-warning">
+        	<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h4><i class="icon fa fa-ban"></i> Alert!</h4>
+                You are editing an already publish revision. Are you sure that is a good idea?
+                Is not a better idea to create a draft: 
+                {% include 'EMSCoreBundle:elements:post-button.html.twig' with { 
+							'url': path('revision.new-draft', {'ouuid': revision.ouuid, 'type': revision.contentType.name }),
+							'label': 'Edit draft', 
+							'icon': 'pencil' }%} .
+        </div>
+	{% endif %}
+
+<div class="box box-primary">
+	<div class="box-header with-border">
+		<h3 class="box-title text-{{ revision.contentType.color }}"><i class="{% if revision.contentType.icon %}{{ revision.contentType.icon }} {% else %} fa fa-question {% endif %} "></i>&nbsp;&nbsp;&nbsp;{{ revision.contentType.singularName }}</h3>
+	</div>
+	<!-- /.box-header -->
+	<!-- form start -->
+		{{ form_start(form) }}
+		<div class="box-body">
+			
+			{{ form_widget(form.dataField) }}
+	
+		</div>
+		<!-- /.box-body -->
+		<div class="box-footer">
+			<div class="btn-group">
+				{{ form_widget(form.save) }}
+				{% include 'EMSCoreBundle:elements:post-button.html.twig' with {
+					'url': path('revision.cancel', {'revision': revision.id}),
+					'message': 'Cancel last modifications ?',
+					'label': 'Cancel',
+					'icon': 'remove'
+				}%}
+			</div>
+			<div class="btn-group">
+				{% if revision.draft %}
+					{{ form_widget(form.publish) }}
+					{% include 'EMSCoreBundle:elements:post-button.html.twig' with {
+						'url': path('revision.discard', {'revisionId': revision.id, 'type': revision.contentType.name}),
+						'message': 'Discard this draft ?',
+						'label': 'Discard draft',
+						'icon': 'trash'
+					}%}
+				{% else %}
+				{% endif %}
+			</div>
+		</div>
+		{{ form_end(form) }}
+		
+
+		
+		
+</div>
+
+{% endblock %}
+
+
+{% block javascripts %}
+<script src="{{ asset('bundles/emscore/js/Sha1.js') }}"></script>
+<script src="{{ asset('bundles/emscore/js/FileUploader.js') }}"></script>
+
+<script type="text/javascript">
+
+var waitingResponse = false;
+var synchAtTheEnd = true;
+
+function onFormChange(){
+		synch = false;
+		if(waitingResponse){
+			return;
+			//abort the request migth be an option, but it overload the server
+// 			waitingResponse.abort();
+		}
+
+		synch = true;
+		//update ckeditor's textareas
+		for (var i in CKEDITOR.instances) {
+	        CKEDITOR.instances[i].updateElement();
+		}
+		
+		waitingResponse = ajaxRequest.post("{{ url('revision.ajaxupdate', { revisionId: revision.id }) }}", $("form[name={{ form.vars.id }}]").serialize())
+		  .success(function(response) {
+			  $('.has-error').removeClass('has-error');
+			  $('span.help-block').remove();
+			  
+			  $(response.formErrors).each(function(index, item){
+
+				  if($('#'+item.propertyPath+'__label').length) {
+
+					  $('#'+item.propertyPath+'__label').addClass('has-error');
+					  if(item.message && $('#'+item.propertyPath+'__error').length > 0) {
+						  $('#'+item.propertyPath+'__error').addClass('has-error');
+						  if($('#'+item.propertyPath+'__error span.help-block').length == 0){
+							  $('#'+item.propertyPath+'__error').append('<span class="help-block"><ul class="list-unstyled"></ul></span>');
+						  }
+						  $('#'+item.propertyPath+'__error'+' span.help-block ul.list-unstyled').append('<li><span class="glyphicon glyphicon-exclamation-sign"></span> '+item.message+'</li>');
+					  }
+				  }
+				  else {
+					  $('#'+item.propertyPath).parent('.form-group').addClass('has-error');
+					  if(item.message) {
+						  if($('#'+item.propertyPath+' span.help-block').length == 0){
+							  $('#'+item.propertyPath).append('<span class="help-block"><ul class="list-unstyled"></ul></span>');
+						  }
+						  $('#'+item.propertyPath+' span.help-block ul.list-unstyled').append('<li><span class="glyphicon glyphicon-exclamation-sign"></span> '+item.message+'</li>');
+					  }
+				  }
+				  
+			  });
+		  })
+		  .always(function() {
+			  waitingResponse = false;
+			  if(!synch){
+				  onFormChange();
+			  }
+		});
+}
+
+function attachObjectPicker(domId) {
+
+	$('#'+domId).find('.cke_dialog_ui_input_select').css('width', '100%');
+	$('#'+domId).find('.cke_dialog_ui_input_select').css('z-index', '20000');
+	$('#'+domId).find('select').select2({
+		ajax: {
+			url: '{{ url("elasticsearch.api.search") }}',
+	    	dataType: 'json',
+	    	delay: 250,
+	    	data: function (params) {
+	      		return {
+		        q: params.term, // search term
+		        page: params.page,
+		        environment: environment,
+		        type: type
+		      };
+		    },
+			processResults: function (data, params) {
+				// parse the results into the format expected by Select2
+				// since we are using custom formatting functions we do not need to
+				// alter the remote JSON data, except to indicate that infinite
+				// scrolling can be used
+				params.page = params.page || 1;
+		
+		      	return {
+			        results: data.items,
+			        pagination: {
+			          more: (params.page * 30) < data.total_count
+			        }
+		      	};
+	    	},
+	    	cache: true
+	  	},
+	  	//escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+	  	//templateResult: formatRepo, // omitted for brevity, see the source of this page
+	  	//templateSelection: formatRepoSelection, // omitted for brevity, see the source of this page
+	  	minimumInputLength: 1
+	});
+}
+
+function initFileUploader(fileHandler, container){
+
+
+	var sha1Input = $(container).find(".sha1");
+	var typeInput = $(container).find(".type");
+	var nameInput = $(container).find(".name");
+	var progressBar = $(container).find(".progress-bar");
+	var progressText = $(container).find(".progress-text");
+	var progressNumber = $(container).find(".progress-number");
+
+	
+    var fileUploader = new FileUploader({
+    	file: fileHandler,
+    	onSha1Available: function(sha1, type, name){
+	    		$(sha1Input).val(sha1);
+	    		$(typeInput).val(type);
+	    		$(nameInput).val(name);
+	    },
+	    onProgress: function(status, progress, remaining){
+		    var pourcent = Math.round(progress*100);
+	    		$(progressBar).css('width', pourcent+'%');
+	    		$(progressText).html(status);
+	    		$(progressNumber).html(remaining);
+	    },
+	    onError: function(message, code){
+	    		$(progressBar).css('width', '0%');
+	    		$(progressText).html(message);
+	    		$(progressNumber).html('Error code : '+code);
+	    		$(sha1Input).val('');
+	    		$(typeInput).val('');
+	    		$(nameInput).val('');
+	    },
+	});
+}
+
+
+//file selection
+function FileSelectHandler(e) {
+
+	// cancel event and hover styling
+	FileDragHover(e);
+
+	// fetch FileList object
+	var files = e.target.files || e.dataTransfer.files;
+
+	// process all File objects
+	for (var i = 0, f; f = files[i]; i++) {
+		initFileUploader(f, this);
+		break;
+	}
+
+}
+
+//file drag hover
+function FileDragHover(e) {
+	e.stopPropagation();
+	e.preventDefault();
+	//e.target.className = (e.type == "dragover" ? "hover" : "");
+}
+
+function addEventListeners(target){
+
+
+	target.find(".file-uploader-input").fileinput({
+		'showUpload':false, 
+		'showCaption': false,
+		'showPreview': false,
+		'showRemove': false,
+		'showCancel': false,
+		'showClose': false,
+		'browseIcon': '<i class="fa fa-upload"></i>&nbsp;',
+		'browseLabel': 'Upload file'
+	});
+
+	target.find(".file-uploader-input").change(function(){
+		initFileUploader($(this)[0].files[0], $(this).closest(".file-uploader-row"));
+	});
+
+	
+	target.find(".file-uploader-row").each(function(){
+		// file drop
+		this.addEventListener("dragover", FileDragHover, false);
+		this.addEventListener("dragleave", FileDragHover, false);
+		this.addEventListener("drop", FileSelectHandler, false);
+	});
+
+	target.find('.remove-content-button').on('click', function(e) {
+		// prevent the link from creating a "#" on the URL
+        e.preventDefault();
+        
+        var panel = $(this).closest('.collection-item-panel');
+        panel.remove();
+        onFormChange();
+	});
+
+	target.find("input").keypress(onFormChange);
+	target.find("input").change(onFormChange);
+	target.find("select").change(onFormChange);
+	target.find("textarea").keypress(onFormChange);
+
+	target.find('.add-content-button').on('click', function(e) {
+		// prevent the link from creating a "#" on the URL
+        e.preventDefault();
+
+        var panel = $(this).closest('.collection-panel');
+        var index = panel.data('index');
+		var prototype = panel.data('prototype');
+     	// Replace '__name__' in the prototype's HTML to
+        // instead be a number based on how many items we have
+        var newForm = $(prototype.replace(/__name__/g, index));
+     	// increase the index with one for the next item
+        panel.data('index', index + 1);
+
+        addEventListeners(newForm);
+
+        panel.children('.panel-body').append(newForm);
+        onFormChange();
+        
+	});
+
+	target.find('.ems-sortable > div').sortable({
+		handle: ".ems-handle"
+	});
+
+	target.find(".ckeditor_ems").each(function(index){
+		var ckconfig = {
+			removePlugins: 'link,about',
+			extraPlugins: 'adv_link,dialogadvtab,div',
+		};
+
+
+		{% if app.user.wysiwygProfile == 'full' %}
+		ckconfig = {
+			//uiColor: 'grey',
+			plugins: 'adv_link,a11yhelp,basicstyles,bidi,blockquote,clipboard,colorbutton,colordialog,contextmenu,dialogadvtab,div,elementspath,enterkey,entities,filebrowser,find,floatingspace,font,format,horizontalrule,htmlwriter,image,iframe,indentlist,indentblock,justify,language,list,liststyle,magicline,maximize,newpage,pagebreak,pastefromword,pastetext,preview,print,removeformat,resize,save,scayt,selectall,showblocks,showborders,smiley,sourcearea,specialchar,stylescombo,tab,table,tabletools,templates,toolbar,undo,wsc,wysiwygarea',
+
+		    toolbarGroups: [
+		      { name: 'document',	   groups: [ 'mode', 'document', 'doctools' ] },
+		      { name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
+		      { name: 'editing',     groups: [ 'find', 'spellchecker' ] },//, 'selection'
+//			      { name: 'forms' },
+		      '/',
+		      { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+		      { name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
+		      { name: 'links' },
+		      { name: 'insert' },
+		      '/',
+		      { name: 'styles' },
+		      { name: 'colors' },
+		      { name: 'tools' },
+		      { name: 'others' },
+		      { name: 'about' }
+		    ]
+		};	
+	{% elseif app.user.wysiwygProfile == 'light' %}
+		ckconfig = {
+			toolbar : [
+	           ['Styles','Format','Font','FontSize'],
+	           ['Bold','Italic'],
+	           ['NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+	           ['Image','Table','-','Link']
+			        ],
+			removePlugins: 'link,about',
+			extraPlugins: 'adv_link,',
+		};	
+	{% elseif app.user.wysiwygProfile == 'custom' %}
+		ckconfig = {{ app.user.wysiwygOptions|raw }};
+	{% endif %}
+
+	
+		var height = $( this ).attr('data-height');
+		if(!height){
+			height = 400;
+		}
+		
+		ckconfig.height = height;
+		ckconfig.div_wrapTable = 'true';
+		ckconfig.allowedContent = true;
+
+		
+		if (!CKEDITOR.instances[$( this ).attr('id')]) {
+			CKEDITOR.replace(this, ckconfig).on('key', onFormChange );
+		}
+		else {
+			var editor = CKEDITOR.replace( $( this ).attr('id'), ckconfig);
+		}
+		
+
+		//Set defaults that are compatible with bootstrap for html generated by CKEDITOR (e.g. tables)
+		CKEDITOR.on( 'dialogDefinition', function( ev )
+  		  {
+  		     // Take the dialog name and its definition from the event data.
+  		     var dialogName = ev.data.name;
+  		     var dialogDefinition = ev.data.definition;
+
+  		     // Check if the definition is from the dialog we're interested in (the "Table" dialog).
+  		     if ( dialogName == 'table' )
+  		     {
+  		         // Get a reference to the "Table Info" tab.
+  		         var infoTab = dialogDefinition.getContents( 'info' );
+  		         
+  		         var txtBorder = infoTab.get( 'txtBorder');
+		         txtBorder['default'] = 0;
+		         var txtCellPad = infoTab.get( 'txtCellPad');
+		         txtCellPad['default'] = "";
+  		       	 var txtCellSpace = infoTab.get( 'txtCellSpace');
+  		         txtCellSpace['default'] = "";
+  		       	 var txtWidth = infoTab.get( 'txtWidth' );
+		         txtWidth['default'] = "";
+		         
+		         // Get a reference to the "Table Advanced" tab.
+		         var advancedTab = dialogDefinition.getContents( 'advanced' );
+		         
+		         var advCSSClasses = advancedTab.get( 'advCSSClasses' );
+		         advCSSClasses['default'] = "table table-bordered";
+  		         
+  		     }
+  		   });
+
+		
+	});
+	
+	target.find(".objectpicker").each(function(index){
+		var type = $( this ).data('type'); 
+		var dynamicLoading = $( this ).data('dynamic-loading'); 
+
+		var params = {
+		  	escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+		  	templateResult: formatRepo, // omitted for brevity, see the source of this page
+		  	templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
+		};
+
+		if($( this ).attr('multiple')) {
+		  	params.allowClear = true;
+		  	params.closeOnSelect = false;
+		}
+
+		if(dynamicLoading){
+		  	params.minimumInputLength = 1;
+			params.ajax = {
+				url: '{{ url("elasticsearch.api.search") }}',
+		    	dataType: 'json',
+		    	delay: 250,
+		    	data: function (params) {
+		      		return {
+			        q: params.term, // search term
+			        page: params.page,
+			        type: type
+			      };
+			    },
+				processResults: function (data, params) {
+					// parse the results into the format expected by Select2
+					// since we are using custom formatting functions we do not need to
+					// alter the remote JSON data, except to indicate that infinite
+					// scrolling can be used
+					params.page = params.page || 1;
+			
+			      	return {
+				        results: data.items,
+				        pagination: {
+				          more: (params.page * 30) < data.total_count
+				        }
+			      	};
+		    	},
+		    	cache: true
+		  	};
+		}
+		
+		$( this ).select2(params);
+    });	
+    
+	target.find(".colorpicker-component").colorpicker();
+
+	target.find(".colorpicker-component").bind('changeColor', onFormChange);
+
+	target.find(".timepicker").each(function(index){
+
+		var settings = {
+	            showMeridian: 	$( this ).data('show-meridian'),
+	            explicitMode: 	$( this ).data('explicit-mode'),
+        		minuteStep: 	$( this ).data('minute-step'),
+        		disableMousewheel: true
+		};
+
+		var defaultTime = $( this ).data('default-time');
+		//console.log( defaultTime !== false );
+		if(defaultTime !== false) {
+			if(defaultTime){
+				settings.defaultTime = defaultTime;
+			}
+			else {
+				settings.defaultTime = false;
+			}
+		}
+		//console.log($( this ).val());
+
+		//console.log(settings);
+		$( this ).timepicker(settings);
+
+		
+		if(defaultTime === false && !$( this ).val() ) {
+			$( this ).timepicker('setTime', new Date() );
+		}
+	});
+
+
+	target.find('.datepicker').each(function( index ) {
+		var params = {
+			format: $(this).attr('data-date-format'),
+			todayBtn: true,
+			weekStart: $(this).attr('data-week-start'),
+			daysOfWeekHighlighted: $(this).attr('data-days-of-week-highlighted'),
+			daysOfWeekDisabled: $(this).attr('data-days-of-week-disabled'),
+			todayHighlight: $(this).attr('data-today-highlight')
+		}
+
+		if($(this).attr('data-multidate') && $(this).attr('data-multidate') != 'false'){
+			params.multidate = true;
+		}
+
+	  	$(this).datepicker(params)
+	});
+
+	target.find('.ems_daterangepicker').each(function( index ) {
+
+		var options = $(this).data('display-option');
+		$(this).unbind('change');
+		
+		$(this).daterangepicker(
+			options, 
+			function(start, end, label) {
+// 				console.log(label);
+				onFormChange();
+			    //alert("A new date range was chosen: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+			});
+	});
+}
+
+
+$(window).ready(function() {	
+	
+	//Add custom div styles (e.g for responsive tables)
+	CKEDITOR.stylesSet.add( 
+			'bootstrap', 
+			[
+			 { name: 'Bordered Table', element: 'div', attributes: { 'class': 'table-responsive' } },
+	        ]);
+	CKEDITOR.plugins.addExternal('adv_link', '{{ asset("bundles/emscore/js/adv_link/plugin.js") }}', '' );
+	CKEDITOR.plugins.addExternal('div', '{{ asset("bundles/emscore/js/div/plugin.js") }}', '' );
+	addEventListeners($('form[name={{ form.vars.id }}]'));
+});
+
+
+$(window).load(function() {
+	/** TODO:  quid d'un CKEditor ajouté au vol*/
+	for (var i in CKEDITOR.instances) {
+        CKEDITOR.instances[i].on('key', onFormChange );
+	}
+});
+
+</script>
+
+	{% if revision.draft %}
+		{% include 'EMSCoreBundle:app:menu.html.twig' with {
+			'item':  'data-draft-' ~ revision.contentType.id
+		}%}
+	{% else %}
+		{% include 'EMSCoreBundle:app:menu.html.twig' with {
+			'item':  'data-index-' ~ revision.contentType.id
+		}%}
+	{% endif %}
+	
+{% endblock %}	
+

@@ -1,10 +1,10 @@
 <?php
 
-// src/Ems/CoreBundle/Command/GreetCommand.php
-namespace Ems\CoreBundle\Command;
+// src/EMS/CoreBundle/Command/GreetCommand.php
+namespace EMS\CoreBundle\Command;
 
-use Ems\CoreBundle\Entity\ContentType;
-use Ems\CoreBundle\Repository\ContentTypeRepository;
+use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Repository\ContentTypeRepository;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use Elasticsearch\Client;
@@ -13,9 +13,9 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Ems\CoreBundle\Repository\RevisionRepository;
+use EMS\CoreBundle\Repository\RevisionRepository;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
-use Ems\CoreBundle\Repository\NotificationRepository;
+use EMS\CoreBundle\Repository\NotificationRepository;
 use Symfony\Component\Console\Helper\ProgressBar;
 
 class DeleteCommand extends ContainerAwareCommand
@@ -57,7 +57,7 @@ class DeleteCommand extends ContainerAwareCommand
 		$client = $this->client;
 		$name = $input->getArgument('name');
 		/** @var ContentTypeRepository $ctRepo */
-		$ctRepo = $em->getRepository('Ems/CoreBundle:ContentType');
+		$ctRepo = $em->getRepository('EMSCoreBundle:ContentType');
 		/** @var ContentType $contentType */
 		$contentType = $ctRepo->findOneBy([
 				'name' => $name, 
@@ -66,10 +66,10 @@ class DeleteCommand extends ContainerAwareCommand
 		]);
 		if($contentType){	
 			/** @var RevisionRepository $revRepo */
-			$revRepo = $em->getRepository('Ems/CoreBundle:Revision');
+			$revRepo = $em->getRepository('EMSCoreBundle:Revision');
 			
 			/** @var NotificationRepository $notRepo */
-			$notRepo = $em->getRepository('Ems/CoreBundle:Notification');
+			$notRepo = $em->getRepository('EMSCoreBundle:Notification');
 			
 			$counter = 0;
 			$total = $revRepo->countByContentType($contentType);
@@ -84,7 +84,7 @@ class DeleteCommand extends ContainerAwareCommand
 				
 				while($revRepo->countByContentType($contentType) > 0 ) {
 					$revisions = $revRepo->findByContentType($contentType, null, 20);
-					/**@var \Ems\CoreBundle\Entity\Revision $revision */
+					/**@var \EMS\CoreBundle\Entity\Revision $revision */
 					foreach ($revisions as $revision){
 						foreach($revision->getEnvironments() as $environment) {
 							try{

@@ -1,12 +1,12 @@
 <?php
 
-namespace Ems\CoreBundle\Form\Form;
+namespace EMS\CoreBundle\Form\Form;
 
-use Ems\CoreBundle\Entity\Template;
-use Ems\CoreBundle\Form\Field\IconPickerType;
-use Ems\CoreBundle\Form\Field\IconTextType;
-use Ems\CoreBundle\Form\Field\SubmitEmsType;
-use Ems\CoreBundle\Form\Field\ViewTypePickerType;
+use EMS\CoreBundle\Entity\Template;
+use EMS\CoreBundle\Form\Field\IconPickerType;
+use EMS\CoreBundle\Form\Field\IconTextType;
+use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Form\Field\ViewTypePickerType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 

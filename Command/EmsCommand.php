@@ -1,7 +1,7 @@
 <?php
 
-// src/Ems/CoreBundle/Command/GreetCommand.php
-namespace Ems\CoreBundle\Command;
+// src/EMS/CoreBundle/Command/GreetCommand.php
+namespace EMS\CoreBundle\Command;
 
 use Elasticsearch\Client;
 use Monolog\Logger;

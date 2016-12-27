@@ -1,12 +1,12 @@
 <?php
 
-namespace Ems\CoreBundle\Service;
+namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Ems\CoreBundle\Entity\Environment;
-use Ems\CoreBundle\Repository\EnvironmentRepository;
+use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Repository\EnvironmentRepository;
 
 class EnvironmentService {
 	/**@var Registry $doctrine */
@@ -35,16 +35,16 @@ class EnvironmentService {
 	
 	public function getEnvironmentsStats() {
 		/**@var EnvironmentRepository $repo*/
-		$repo = $this->doctrine->getManager()->getRepository('Ems/CoreBundle:Environment');
+		$repo = $this->doctrine->getManager()->getRepository('EMSCoreBundle:Environment');
 		return $repo->getEnvironmentsStats();
 	}
 	
 	private function loadEnvironment(){
 		if($this->environments === false) {
-			$environments = $this->doctrine->getManager()->getRepository('Ems/CoreBundle:Environment')->findAll();
+			$environments = $this->doctrine->getManager()->getRepository('EMSCoreBundle:Environment')->findAll();
 			$this->environments = [];
 			$this->byId = [];
-			/**@var \Ems\CoreBundle\Entity\Environment $environment */
+			/**@var \EMS\CoreBundle\Entity\Environment $environment */
 			foreach ($environments as $environment) {
 				$this->environments[$environment->getName()] = $environment;
 				$this->byId[$environment->getId()] = $environment;
@@ -105,7 +105,7 @@ class EnvironmentService {
 		$out = [];
 		$user = $this->userService->getCurrentUser();
 		$isAdmin = $this->authorizationChecker->isGranted('ROLE_ADMIN');
-		/**@var \Ems\CoreBundle\Entity\Environment $environment*/
+		/**@var \EMS\CoreBundle\Entity\Environment $environment*/
 		foreach ($this->environments as $index => $environment){
 			if( empty($environment->getCircles()) || $isAdmin || !empty(array_intersect($user->getCircles(), $environment->getCircles()))) {
 				$out[$index] = $environment;

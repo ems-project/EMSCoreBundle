@@ -1,16 +1,16 @@
 <?php
 
-namespace Ems\CoreBundle\Controller\ContentManagement;
+namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use Ems\CoreBundle\Controller\AppController;
-use Ems\CoreBundle;
-use Ems\CoreBundle\Entity\View;
-use Ems\CoreBundle\Form\Field\IconPickerType;
-use Ems\CoreBundle\Form\Field\IconTextType;
-use Ems\CoreBundle\Form\Field\SubmitEmsType;
-use Ems\CoreBundle\Form\Form\ViewType;
-use Ems\CoreBundle\Repository\ContentTypeRepository;
-use Ems\CoreBundle\Repository\ViewRepository;
+use EMS\CoreBundle\Controller\AppController;
+use EMS\CoreBundle;
+use EMS\CoreBundle\Entity\View;
+use EMS\CoreBundle\Form\Field\IconPickerType;
+use EMS\CoreBundle\Form\Field\IconTextType;
+use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Form\Form\ViewType;
+use EMS\CoreBundle\Repository\ContentTypeRepository;
+use EMS\CoreBundle\Repository\ViewRepository;
 use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -27,7 +27,7 @@ class ViewController extends AppController
 		/** @var EntityManager $em */
 		$em = $this->getDoctrine()->getManager();
 		/** @var ContentTypeRepository $contentTypeRepository */
-		$contentTypeRepository = $em->getRepository('Ems/CoreBundle:ContentType');
+		$contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
 		
 		$contentTypes = $contentTypeRepository->findBy([
 			'deleted' => false,
@@ -39,7 +39,7 @@ class ViewController extends AppController
 		}
 		
 		
-		return $this->render( 'view/index.html.twig', [
+		return $this->render( 'EMSCoreBundle:view:index.html.twig', [
 				'contentType' => $contentTypes[0]
 		]);
 		
@@ -55,7 +55,7 @@ class ViewController extends AppController
 		$em = $this->getDoctrine()->getManager();
 		
 		/** @var ContentTypeRepository $contentTypeRepository */
-		$contentTypeRepository = $em->getRepository('Ems/CoreBundle:ContentType');
+		$contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
 		
 		$contentTypes = $contentTypeRepository->findBy([
 			'deleted' => false,
@@ -84,7 +84,7 @@ class ViewController extends AppController
 			]);
 		}
 		
-		return $this->render( 'view/add.html.twig', [
+		return $this->render( 'EMSCoreBundle:view:add.html.twig', [
 				'contentType' => $contentTypes[0],
 				'form' => $form->createView()
 		]);
@@ -100,7 +100,7 @@ class ViewController extends AppController
 		/** @var EntityManager $em */
 		$em = $this->getDoctrine()->getManager();
 		/** @var ViewRepository $viewRepository */
-		$viewRepository = $em->getRepository('Ems/CoreBundle:View');
+		$viewRepository = $em->getRepository('EMSCoreBundle:View');
 		
 		/** @var View $view **/
 		$view = $viewRepository->find($id);
@@ -137,7 +137,7 @@ class ViewController extends AppController
 // 			]);
 		}
 		
-		return $this->render( 'view/edit.'.$_format.'.twig', [
+		return $this->render( 'EMSCoreBundle:view:edit.'.$_format.'.twig', [
 				'form' => $form->createView(),
 				'view' => $view
 		]);
@@ -153,7 +153,7 @@ class ViewController extends AppController
 		/** @var EntityManager $em */
 		$em = $this->getDoctrine()->getManager();
 		/** @var ViewRepository $viewRepository */
-		$viewRepository = $em->getRepository('Ems/CoreBundle:View');
+		$viewRepository = $em->getRepository('EMSCoreBundle:View');
 		
 		/** @var View $view **/
 		$view = $viewRepository->find($id);

@@ -1,10 +1,10 @@
 <?php
 
-namespace Ems\CoreBundle\Service;
+namespace EMS\CoreBundle\Service;
 
 
-use Ems\CoreBundle\Entity\Form\Search;
-use Ems\CoreBundle\Entity\Form\SearchFilter;
+use EMS\CoreBundle\Entity\Form\Search;
+use EMS\CoreBundle\Entity\Form\SearchFilter;
 
 class SearchService
 {

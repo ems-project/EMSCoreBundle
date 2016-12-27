@@ -1,7 +1,7 @@
 <?php
 
-namespace Ems\CoreBundle\Repository;
-use Ems\CoreBundle\Entity\Template;
+namespace EMS\CoreBundle\Repository;
+use EMS\CoreBundle\Entity\Template;
 /**
  * FieldTypeRepository
  *

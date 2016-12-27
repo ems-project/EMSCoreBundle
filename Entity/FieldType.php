@@ -1,16 +1,16 @@
 <?php
 
-namespace Ems\CoreBundle\Entity;
+namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
-use Ems\CoreBundle\Form\DataField\DataFieldType;
+use EMS\CoreBundle\Form\DataField\DataFieldType;
 
 /**
  * FieldType
  *
  * @ORM\Table(name="field_type")
- * @ORM\Entity(repositoryClass="Ems\CoreBundle\Repository\FieldTypeRepository")
+ * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\FieldTypeRepository")
  * @ORM\HasLifecycleCallbacks()
  */
 class FieldType
@@ -439,11 +439,11 @@ class FieldType
     /**
      * Set contentType
      *
-     * @param \Ems\CoreBundle\Entity\ContentType $contentType
+     * @param \EMS\CoreBundle\Entity\ContentType $contentType
      *
      * @return FieldType
      */
-    public function setContentType(\Ems\CoreBundle\Entity\ContentType $contentType = null)
+    public function setContentType(\EMS\CoreBundle\Entity\ContentType $contentType = null)
     {
         $this->contentType = $contentType;
 
@@ -453,7 +453,7 @@ class FieldType
     /**
      * Get contentType
      *
-     * @return \Ems\CoreBundle\Entity\ContentType
+     * @return \EMS\CoreBundle\Entity\ContentType
      */
     public function getContentType()
     {
@@ -549,11 +549,11 @@ class FieldType
     /**
      * Set parent
      *
-     * @param \Ems\CoreBundle\Entity\FieldType $parent
+     * @param \EMS\CoreBundle\Entity\FieldType $parent
      *
      * @return FieldType
      */
-    public function setParent(\Ems\CoreBundle\Entity\FieldType $parent = null)
+    public function setParent(\EMS\CoreBundle\Entity\FieldType $parent = null)
     {
         $this->parent = $parent;
 
@@ -563,7 +563,7 @@ class FieldType
     /**
      * Get parent
      *
-     * @return \Ems\CoreBundle\Entity\FieldType
+     * @return \EMS\CoreBundle\Entity\FieldType
      */
     public function getParent()
     {
@@ -573,11 +573,11 @@ class FieldType
     /**
      * Add child
      *
-     * @param \Ems\CoreBundle\Entity\FieldType $child
+     * @param \EMS\CoreBundle\Entity\FieldType $child
      *
      * @return FieldType
      */
-    public function addChild(\Ems\CoreBundle\Entity\FieldType $child)
+    public function addChild(\EMS\CoreBundle\Entity\FieldType $child)
     {
         $this->children[] = $child;
 
@@ -587,9 +587,9 @@ class FieldType
     /**
      * Remove child
      *
-     * @param \Ems\CoreBundle\Entity\FieldType $child
+     * @param \EMS\CoreBundle\Entity\FieldType $child
      */
-    public function removeChild(\Ems\CoreBundle\Entity\FieldType $child)
+    public function removeChild(\EMS\CoreBundle\Entity\FieldType $child)
     {
         $this->children->removeElement($child);
     }

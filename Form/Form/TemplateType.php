@@ -1,15 +1,15 @@
 <?php
 
-namespace Ems\CoreBundle\Form\Form;
+namespace EMS\CoreBundle\Form\Form;
 
-use Ems\CoreBundle\Entity\Template;
-use Ems\CoreBundle\Form\Field\IconPickerType;
-use Ems\CoreBundle\Form\Field\IconTextType;
-use Ems\CoreBundle\Form\Field\ObjectPickerType;
-use Ems\CoreBundle\Form\Field\RenderOptionType;
-use Ems\CoreBundle\Form\Field\RolePickerType;
-use Ems\CoreBundle\Form\Field\SubmitEmsType;
-use Ems\CoreBundle\Service\EnvironmentService;
+use EMS\CoreBundle\Entity\Template;
+use EMS\CoreBundle\Form\Field\IconPickerType;
+use EMS\CoreBundle\Form\Field\IconTextType;
+use EMS\CoreBundle\Form\Field\ObjectPickerType;
+use EMS\CoreBundle\Form\Field\RenderOptionType;
+use EMS\CoreBundle\Form\Field\RolePickerType;
+use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Service\EnvironmentService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;

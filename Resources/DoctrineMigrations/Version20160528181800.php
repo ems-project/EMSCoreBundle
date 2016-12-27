@@ -17,7 +17,7 @@ class Version20160528181800 extends AbstractMigration
     {
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql("UPDATE `field_type` SET `type` = 'Ems\CoreBundle\\\\Form\\\\DataField\\\\TextStringFieldType' WHERE `type`='Ems\CoreBundle\\\\Form\\\\DataField\\\\TextFieldType'");
+        $this->addSql("UPDATE `field_type` SET `type` = 'EMS\CoreBundle\\\\Form\\\\DataField\\\\TextStringFieldType' WHERE `type`='EMS\CoreBundle\\\\Form\\\\DataField\\\\TextFieldType'");
     }
 
     /**
@@ -27,6 +27,6 @@ class Version20160528181800 extends AbstractMigration
     {
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql("UPDATE `field_type` SET `type` = 'Ems\CoreBundle\\\\Form\\\\DataField\\\\TextFieldType' WHERE `type`='Ems\CoreBundle\\\\Form\\\\DataField\\\\TextStringFieldType'");
+        $this->addSql("UPDATE `field_type` SET `type` = 'EMS\CoreBundle\\\\Form\\\\DataField\\\\TextFieldType' WHERE `type`='EMS\CoreBundle\\\\Form\\\\DataField\\\\TextStringFieldType'");
     }
 }

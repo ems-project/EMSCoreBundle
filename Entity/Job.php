@@ -1,6 +1,6 @@
 <?php
 
-namespace Ems\CoreBundle\Entity;
+namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * DataField
  *
  * @ORM\Table(name="job")
- * @ORM\Entity(repositoryClass="Ems\CoreBundle\Repository\JobRepository")
+ * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\JobRepository")
  * @ORM\HasLifecycleCallbacks()
  */
 class Job

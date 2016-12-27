@@ -1,12 +1,12 @@
 <?php
 
-// src/Ems/CoreBundle/Command/GreetCommand.php
-namespace Ems\CoreBundle\Command;
+// src/EMS/CoreBundle/Command/GreetCommand.php
+namespace EMS\CoreBundle\Command;
 
-use Ems\CoreBundle\Entity\Notification;
-use Ems\CoreBundle\Repository\NotificationRepository;
-use Ems\CoreBundle\Service\NotificationService;
-use Ems\CoreBundle\Service\UserService;
+use EMS\CoreBundle\Entity\Notification;
+use EMS\CoreBundle\Repository\NotificationRepository;
+use EMS\CoreBundle\Service\NotificationService;
+use EMS\CoreBundle\Service\UserService;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -87,7 +87,7 @@ class SendNotificationsCommand extends ContainerAwareCommand
     	
     	$em = $this->doctrine->getManager();
     	/**@var NotificationRepository $notificationRepository*/
-    	$notificationRepository = $em->getRepository('Ems/CoreBundle:Notification');
+    	$notificationRepository = $em->getRepository('EMSCoreBundle:Notification');
     	
     	//Send all pending notification
     	$notifications = $notificationRepository->findBy([

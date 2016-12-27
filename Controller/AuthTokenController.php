@@ -1,7 +1,7 @@
 <?php
-namespace Ems\CoreBundle\Controller;
+namespace EMS\CoreBundle\Controller;
 
-use Ems\CoreBundle\Entity\AuthToken;
+use EMS\CoreBundle\Entity\AuthToken;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -38,7 +38,7 @@ class AuthTokenController extends AppController
     		$em->persist($authToken);
     		$em->flush();
 
-    		return $this->render( 'ajax/auth-token.json.twig', [
+    		return $this->render( 'EMSCoreBundle:ajax:auth-token.json.twig', [
     				'authToken' => $authToken,
     				'success' => true,
     		]);

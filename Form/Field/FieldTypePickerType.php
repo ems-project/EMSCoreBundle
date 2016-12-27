@@ -1,6 +1,6 @@
 <?php
 
-namespace Ems\CoreBundle\Form\Field;
+namespace EMS\CoreBundle\Form\Field;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -36,7 +36,7 @@ class FieldTypePickerType extends SelectPickerType {
 					'data-live-search' => true
 			],
 			'choice_attr' => function($category, $key, $index) {
-				/** @var \Ems\CoreBundle\Form\DataField\DataFieldType $dataFieldType */
+				/** @var \EMS\CoreBundle\Form\DataField\DataFieldType $dataFieldType */
 				$dataFieldType = $this->dataFieldTypes[$index];
 				return [
 						'data-content' => '<div class="text-'.$category.'"><i class="'.$dataFieldType->getIcon().'"></i>&nbsp;&nbsp;'.$dataFieldType->getLabel().'</div>'

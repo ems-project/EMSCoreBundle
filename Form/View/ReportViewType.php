@@ -1,10 +1,10 @@
 <?php
 
-namespace Ems\CoreBundle\Form\View;
+namespace EMS\CoreBundle\Form\View;
 
-use Ems\CoreBundle\Entity\DataField;
-use Ems\CoreBundle\Entity\View;
-use Ems\CoreBundle\Form\View\ViewType;
+use EMS\CoreBundle\Entity\DataField;
+use EMS\CoreBundle\Entity\View;
+use EMS\CoreBundle\Form\View\ViewType;
 use Elasticsearch\Client;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;

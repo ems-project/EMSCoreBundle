@@ -1,11 +1,11 @@
 <?php
-namespace Ems\CoreBundle\Command;
+namespace EMS\CoreBundle\Command;
 
 
 
 use Symfony\Component\Console\Output\Output;
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Ems\CoreBundle\Entity\Job;
+use EMS\CoreBundle\Entity\Job;
 
 class JobOutput extends Output {
 	private $doctrine;

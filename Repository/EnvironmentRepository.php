@@ -1,8 +1,8 @@
 <?php
 
-namespace Ems\CoreBundle\Repository;
+namespace EMS\CoreBundle\Repository;
 
-use Ems\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\Environment;
 use Doctrine\DBAL\Query\QueryBuilder;
 
 /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace Ems\CoreBundle\Tests\Controller;
+namespace EMS\CoreBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 

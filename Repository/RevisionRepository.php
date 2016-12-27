@@ -1,10 +1,10 @@
 <?php
 
-namespace Ems\CoreBundle\Repository;
+namespace EMS\CoreBundle\Repository;
 
-use Ems\CoreBundle\Entity\ContentType;
-use Ems\CoreBundle\Entity\Environment;
-use Ems\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\Revision;
 use Doctrine\ORM\Mapping\OrderBy;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\NonUniqueResultException;

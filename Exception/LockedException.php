@@ -1,9 +1,9 @@
 <?php
 
-namespace Ems\CoreBundle\Exception;
+namespace EMS\CoreBundle\Exception;
 
 
-use Ems\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Entity\Revision;
 
 class LockedException extends \Exception
 {

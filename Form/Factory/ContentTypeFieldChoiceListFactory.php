@@ -1,9 +1,9 @@
 <?php
-namespace Ems\CoreBundle\Form\Factory;
+namespace EMS\CoreBundle\Form\Factory;
 
-use Ems\CoreBundle\Form\Field\ContentTypeFieldChoiceLoader;
-use Ems\CoreBundle\Form\Field\ObjectChoiceLoader;
-use Ems\CoreBundle\Service\ContentTypeService;
+use EMS\CoreBundle\Form\Field\ContentTypeFieldChoiceLoader;
+use EMS\CoreBundle\Form\Field\ObjectChoiceLoader;
+use EMS\CoreBundle\Service\ContentTypeService;
 use Symfony\Component\Form\ChoiceList\Factory\DefaultChoiceListFactory;
 use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace Ems\CoreBundle\Service;
+namespace EMS\CoreBundle\Service;
 
 
-use Ems\CoreBundle\Entity\Audit;
+use EMS\CoreBundle\Entity\Audit;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Elasticsearch\Client;
 use Monolog\Logger;

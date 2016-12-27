@@ -1,10 +1,10 @@
 <?php
-namespace Ems\CoreBundle\Entity;
+namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="Ems\CoreBundle\Repository\AuthTokenRepository")
+ * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\AuthTokenRepository")
  * @ORM\Table(name="auth_tokens",
  *      uniqueConstraints={@ORM\UniqueConstraint(name="auth_tokens_value_unique", columns={"value"})}
  * )
@@ -148,11 +148,11 @@ class AuthToken
     /**
      * Set user
      *
-     * @param \Ems\CoreBundle\Entity\User $user
+     * @param \EMS\CoreBundle\Entity\User $user
      *
      * @return AuthToken
      */
-    public function setUser(\Ems\CoreBundle\Entity\User $user = null)
+    public function setUser(\EMS\CoreBundle\Entity\User $user = null)
     {
         $this->user = $user;
 
@@ -162,7 +162,7 @@ class AuthToken
     /**
      * Get user
      *
-     * @return \Ems\CoreBundle\Entity\User
+     * @return \EMS\CoreBundle\Entity\User
      */
     public function getUser()
     {

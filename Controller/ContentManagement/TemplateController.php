@@ -1,17 +1,17 @@
 <?php
 
-namespace Ems\CoreBundle\Controller\ContentManagement;
+namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use Ems\CoreBundle\Controller\AppController;
-use Ems\CoreBundle;
-use Ems\CoreBundle\Repository\ContentTypeRepository;
+use EMS\CoreBundle\Controller\AppController;
+use EMS\CoreBundle;
+use EMS\CoreBundle\Repository\ContentTypeRepository;
 use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Ems\CoreBundle\Form\Form\TemplateType;
-use Ems\CoreBundle\Entity\Template;
-use Ems\CoreBundle\Repository\TemplateRepository;
+use EMS\CoreBundle\Form\Form\TemplateType;
+use EMS\CoreBundle\Entity\Template;
+use EMS\CoreBundle\Repository\TemplateRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 class TemplateController extends AppController
@@ -24,7 +24,7 @@ class TemplateController extends AppController
 		/** @var EntityManager $em */
 		$em = $this->getDoctrine()->getManager();
 		/** @var ContentTypeRepository $contentTypeRepository */
-		$contentTypeRepository = $em->getRepository('Ems/CoreBundle:ContentType');
+		$contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
 		
 		$contentTypes = $contentTypeRepository->findBy([
 			'deleted' => false,
@@ -36,7 +36,7 @@ class TemplateController extends AppController
 		}
 		
 		
-		return $this->render( 'template/index.html.twig', [
+		return $this->render( 'EMSCoreBundle:template:index.html.twig', [
 				'contentType' => $contentTypes[0]
 		]);
 		
@@ -51,7 +51,7 @@ class TemplateController extends AppController
 		/** @var EntityManager $em */
 		$em = $this->getDoctrine()->getManager();
 		/** @var ContentTypeRepository $contentTypeRepository */
-		$contentTypeRepository = $em->getRepository('Ems/CoreBundle:ContentType');
+		$contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
 		
 		$contentTypes = $contentTypeRepository->findBy([
 			'deleted' => false,
@@ -80,7 +80,7 @@ class TemplateController extends AppController
 			]);
 		}
 		
-		return $this->render( 'template/add.html.twig', [
+		return $this->render( 'EMSCoreBundle:template:add.html.twig', [
 				'contentType' => $contentTypes[0],
 				'form' => $form->createView()
 		]);
@@ -96,7 +96,7 @@ class TemplateController extends AppController
 		/** @var EntityManager $em */
 		$em = $this->getDoctrine()->getManager();
 		/** @var TemplateRepository $templateRepository */
-		$templateRepository = $em->getRepository('Ems/CoreBundle:Template');
+		$templateRepository = $em->getRepository('EMSCoreBundle:Template');
 		
 		/** @var Template $template **/
 		$template = $templateRepository->find($id);
@@ -120,7 +120,7 @@ class TemplateController extends AppController
 			]);
 		}
 		
-		return $this->render( 'template/edit.html.twig', [
+		return $this->render( 'EMSCoreBundle:template:edit.html.twig', [
 				'form' => $form->createView(),
 				'template' => $template
 		]);
@@ -135,7 +135,7 @@ class TemplateController extends AppController
 		/** @var EntityManager $em */
 		$em = $this->getDoctrine()->getManager();
 		/** @var TemplateRepository $templateRepository */
-		$templateRepository = $em->getRepository('Ems/CoreBundle:Template');
+		$templateRepository = $em->getRepository('EMSCoreBundle:Template');
 		
 		/** @var Template $template **/
 		$template = $templateRepository->find($id);

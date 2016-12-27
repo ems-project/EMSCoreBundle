@@ -1,6 +1,6 @@
 <?php
 
-namespace Ems\CoreBundle\Entity;
+namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Audit
  *
  * @ORM\Table(name="audit")
- * @ORM\Entity(repositoryClass="Ems\CoreBundle\Repository\AuditRepository")
+ * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\AuditRepository")
  */
 class Audit
 {

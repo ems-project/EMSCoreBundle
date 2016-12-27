@@ -1,11 +1,11 @@
 <?php
 
-namespace Ems\CoreBundle\Controller\ContentManagement;
+namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use Ems\CoreBundle\Controller\AppController;
-use Ems\CoreBundle;
-use Ems\CoreBundle\Entity\Job;
-use Ems\CoreBundle\Form\Form\JobType;
+use EMS\CoreBundle\Controller\AppController;
+use EMS\CoreBundle;
+use EMS\CoreBundle\Entity\Job;
+use EMS\CoreBundle\Form\Form\JobType;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -27,7 +27,7 @@ class JobController extends AppController
 		$theme = new Theme();
 		$converter = new AnsiToHtmlConverter($theme);
 		
-		return $this->render( 'job/status.html.twig', [
+		return $this->render( 'EMSCoreBundle:job:status.html.twig', [
 				'job' =>  $job,
 				'output' => $converter->convert($job->getOutput()),
 		] );
@@ -62,7 +62,7 @@ class JobController extends AppController
 			return $this->startConsole($job);
 		}
 		
-		return $this->render( 'job/add.html.twig', [
+		return $this->render( 'EMSCoreBundle:job:add.html.twig', [
 				'form' => $form->createView()
 		]);
 	}
@@ -75,8 +75,8 @@ class JobController extends AppController
 	{	
 		/**@var EntityManager $manager */
 		$manager = $this->getDoctrine()->getManager();
-		/** @var \Ems\CoreBundle\Repository\JobRepository $jobRepository */
-		$jobRepository = $manager->getRepository("Ems/CoreBundle:Job");
+		/** @var \EMS\CoreBundle\Repository\JobRepository $jobRepository */
+		$jobRepository = $manager->getRepository("EMSCoreBundle:Job");
 		$result = $jobRepository->findBy(['done' => true]);
 		foreach($result as $job){
 			$manager->remove($job);			
@@ -101,10 +101,10 @@ class JobController extends AppController
 		
 		/** @var EntityManagerInterface $em */
 		$em = $this->getDoctrine()->getManager();
-		/** @var \Ems\CoreBundle\Repository\JobRepository $jobRepository */
-		$jobRepository = $em->getRepository("Ems/CoreBundle:Job");
+		/** @var \EMS\CoreBundle\Repository\JobRepository $jobRepository */
+		$jobRepository = $em->getRepository("EMSCoreBundle:Job");
 		
-		$size = $this->container->getParameter('paging_size');
+		$size = $this->container->getParameter('ems_core.paging_size');
 		$from  = ($page-1)*$size;
 		$total = $jobRepository->countJobs();
 		$lastPage = ceil($total/$size);
@@ -112,7 +112,7 @@ class JobController extends AppController
 		
 		$jobs = $jobRepository->findBy([], ['created' => 'DESC'], $size, $from);
 		
-		return $this->render( 'job/index.html.twig', [
+		return $this->render( 'EMSCoreBundle:job:index.html.twig', [
 				'jobs' =>  $jobs,
 				'page' => $page,
 				'size' => $size,

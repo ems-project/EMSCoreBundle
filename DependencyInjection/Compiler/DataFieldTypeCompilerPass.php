@@ -1,6 +1,6 @@
 <?php
 
-namespace Ems\CoreBundle\DependencyInjection\Compiler;
+namespace EMS\CoreBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

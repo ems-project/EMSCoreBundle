@@ -1,0 +1,27 @@
+{% extends 'EMSCoreBundle:base:base.html.twig' %} 
+
+{% block title %} {{ 'I18N create'|trans }} {%endblock %}
+{% block pagetitle %} {{ 'I18N create'|trans }} {% endblock %} 
+
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><a href="{{ url('i18n_index') }}"><i class="fa fa-language"></i> {{ 'I18N'|trans }}</a></li>
+   		<li class="active">{{ 'I18N create'|trans }} </li>
+   	</ol>
+{% endblock %}
+
+{% block body %}
+	{% include "EMSCoreBundle:i18n:form.html.twig" with {
+		form: form,
+		title: 'I18N create',
+		action: 'Create',
+		actionIcon: 'fa-plus'
+	} %}
+{% endblock %}
+
+
+{% block javascripts %}
+	{% include 'EMSCoreBundle:i18n:javascript.html.twig' with {
+		'item':  'i18n-index'
+	}%}
+{% endblock %}	

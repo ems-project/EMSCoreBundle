@@ -1,6 +1,6 @@
 <?php 
 
-namespace Ems\CoreBundle\Form\Nature;
+namespace EMS\CoreBundle\Form\Nature;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;

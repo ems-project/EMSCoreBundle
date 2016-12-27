@@ -1,11 +1,11 @@
 <?php
 
-namespace Ems\CoreBundle\Service;
+namespace EMS\CoreBundle\Service;
 
 
-use Ems\CoreBundle\Entity\ContentType;
-use Ems\CoreBundle\Entity\DataField;
-use Ems\CoreBundle\Form\FieldType\FieldTypeType;
+use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\DataField;
+use EMS\CoreBundle\Form\FieldType\FieldTypeType;
 
 
 class Mapping

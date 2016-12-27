@@ -1,5 +1,5 @@
 <?php
-namespace Ems\CoreBundle\Entity\Form;
+namespace EMS\CoreBundle\Entity\Form;
 
 /**
  * RebuildIndex

@@ -1,15 +1,15 @@
 <?php
 
-namespace Ems\CoreBundle\Entity;
+namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Ems\CoreBundle\Exception\NotLockedException;
+use EMS\CoreBundle\Exception\NotLockedException;
 
 /**
  * Revision
  *
  * @ORM\Table(name="revision", uniqueConstraints={@ORM\UniqueConstraint(name="tuple_index", columns={"end_time", "ouuid"})})
- * @ORM\Entity(repositoryClass="Ems\CoreBundle\Repository\RevisionRepository")
+ * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\RevisionRepository")
  * @ORM\HasLifecycleCallbacks()
  */
 class Revision
@@ -489,11 +489,11 @@ class Revision
     /**
      * Set contentType
      *
-     * @param \Ems\CoreBundle\Entity\ContentType $contentType
+     * @param \EMS\CoreBundle\Entity\ContentType $contentType
      *
      * @return Revision
      */
-    public function setContentType(\Ems\CoreBundle\Entity\ContentType $contentType = null)
+    public function setContentType(\EMS\CoreBundle\Entity\ContentType $contentType = null)
     {
         $this->contentType = $contentType;
 
@@ -503,7 +503,7 @@ class Revision
     /**
      * Get contentType
      *
-     * @return \Ems\CoreBundle\Entity\ContentType
+     * @return \EMS\CoreBundle\Entity\ContentType
      */
     public function getContentType()
     {
@@ -537,11 +537,11 @@ class Revision
     /**
      * Set dataField
      *
-     * @param \Ems\CoreBundle\Entity\DataField $dataField
+     * @param \EMS\CoreBundle\Entity\DataField $dataField
      *
      * @return Revision
      */
-    public function setDataField(\Ems\CoreBundle\Entity\DataField $dataField = null)
+    public function setDataField(\EMS\CoreBundle\Entity\DataField $dataField = null)
     {
         $this->dataField = $dataField;
 
@@ -551,7 +551,7 @@ class Revision
     /**
      * Get dataField
      *
-     * @return \Ems\CoreBundle\Entity\DataField
+     * @return \EMS\CoreBundle\Entity\DataField
      */
     public function getDataField()
     {
@@ -561,11 +561,11 @@ class Revision
     /**
      * Add environment
      *
-     * @param \Ems\CoreBundle\Entity\Environment $environment
+     * @param \EMS\CoreBundle\Entity\Environment $environment
      *
      * @return Revision
      */
-    public function addEnvironment(\Ems\CoreBundle\Entity\Environment $environment)
+    public function addEnvironment(\EMS\CoreBundle\Entity\Environment $environment)
     {
         $this->environments[] = $environment;
 
@@ -575,9 +575,9 @@ class Revision
     /**
      * Remove environment
      *
-     * @param \Ems\CoreBundle\Entity\Environment $environment
+     * @param \EMS\CoreBundle\Entity\Environment $environment
      */
-    public function removeEnvironment(\Ems\CoreBundle\Entity\Environment $environment)
+    public function removeEnvironment(\EMS\CoreBundle\Entity\Environment $environment)
     {
         $this->environments->removeElement($environment);
     }
@@ -716,11 +716,11 @@ class Revision
     /**
      * Add notification
      *
-     * @param \Ems\CoreBundle\Entity\Notification $notification
+     * @param \EMS\CoreBundle\Entity\Notification $notification
      *
      * @return Revision
      */
-    public function addNotification(\Ems\CoreBundle\Entity\Notification $notification)
+    public function addNotification(\EMS\CoreBundle\Entity\Notification $notification)
     {
         $this->notifications[] = $notification;
 
@@ -730,9 +730,9 @@ class Revision
     /**
      * Remove notification
      *
-     * @param \Ems\CoreBundle\Entity\Notification $notification
+     * @param \EMS\CoreBundle\Entity\Notification $notification
      */
-    public function removeNotification(\Ems\CoreBundle\Entity\Notification $notification)
+    public function removeNotification(\EMS\CoreBundle\Entity\Notification $notification)
     {
         $this->notifications->removeElement($notification);
     }

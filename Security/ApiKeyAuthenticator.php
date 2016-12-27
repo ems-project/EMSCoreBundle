@@ -1,5 +1,5 @@
 <?php
-namespace Ems\CoreBundle\Security;
+namespace EMS\CoreBundle\Security;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\PreAuthenticatedToken;

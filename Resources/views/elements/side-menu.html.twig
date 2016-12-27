@@ -1,0 +1,222 @@
+  <!-- Left side column. contains the logo and sidebar -->
+  <aside class="main-sidebar">
+
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+
+      <!-- Sidebar user panel (optional) -->
+      <div class="user-panel">
+        <div class="pull-left image">
+        {% include 'EMSCoreBundle:elements:user-image.html.twig' with {
+					'class': 'img-circle'
+				} %}
+{#         	{% if app.user %}#}
+{# 	          <img src="{{ asset('bundles/emscore/images/anonymous.gif') }}" data-original="http://www.gravatar.com/avatar/df5cb42a86d5ded57a694955887c476d?d={{ "http://www.gravatar.com/avatar"|url_encode }}" class="lazy img-circle" alt="{{ app.user.username }}">#}
+{# 	        {% else %}#}
+{# 	          <img src="{{ asset('bundles/emscore/images/anonymous.gif') }}" class="img-circle" alt="Anonymous">#}
+{#         	{% endif %}#}
+        </div>
+        <div class="pull-left info">
+          <p>{% if app.user %} <a href="{{ url('fos_user_profile_show') }}" class="">{{ app.user.displayName }}</a> {% else %} Anonymous user {% endif %}</p>
+          <!-- Status -->
+          <a href="{{ url('elasticsearch.status') }}" id="status-overview"><i class="fa fa-circle"></i> Updating...</a>
+        </div>
+      </div>
+{% if app.user %}
+      <!-- search form (Optional) -->
+      <form action="{{ url('elasticsearch.search') }}" method="get" class="sidebar-form">
+        <div class="input-group">
+          <input type="text" name="search_form[filters][0][pattern]" class="form-control" placeholder="Search...">
+          <input type="hidden" name="search_form[filters][0][operator]" value="query_and">
+          <input type="hidden" name="search_form[filters][0][booleanClause]" value="must">
+          {% for environment in defaultEnvironments %}
+             <input type="hidden" name="search_form[environments][{{ loop.index0 }}]" value="{{ environment|e('html_attr') }}">
+          {% endfor %}
+              <span class="input-group-btn">
+                <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+                </button>
+              </span>
+        </div>
+      </form>
+      <!-- /.search form -->
+
+          		
+      <!-- Sidebar Menu -->
+      {% if app.user %}
+	      {% set searches = app.user.username|searches %}
+	      {% if searches|length > 0 %}
+	      <ul class="sidebar-menu">
+	        <li class="header">{{ app.user.username }}</li>
+	        <!-- Optionally, you can add icons to the links -->
+	          <li class="">
+	          	<a href="#" class="">
+	          		<i class="fa fa-search"></i> <span>Searches</span>
+	          		<i class="fa fa-angle-left pull-right"></i>
+	          		
+	          	</a>
+	          	<ul class="treeview-menu">
+	          		{% for search in searches %}
+	          			<li class=""><a id="menu-search-preset-{{ search.id }}" href="{{ path('elasticsearch.search', { 'searchId': search.id  }) }}"> {{ search.name }}</a></li>
+	          		{% endfor %}
+	          	</ul>
+	          </li>
+			</ul>
+			{% endif %}
+	{% endif %}
+		
+	{% if contentTypes|length > 0 %}
+      <ul class="sidebar-menu">
+        <li class="header">Content Management</li>
+        <!-- Optionally, you can add icons to the links -->
+        {% for contentType in contentTypes %}
+        	{% if contentType.active and (not contentType.viewRole or is_granted(contentType.viewRole) or contentType.rootContentType ) %}
+	          <li class="">
+	          	<a href="{{ path('data.root', {name: contentType.name}) }}" class="text-{{ contentType.color }}">
+	          		<i class=" {% if contentType.icon %}{{ contentType.icon }}{% else %}fa fa-book{% endif %}"></i> <span>{{ contentType.pluralName }}</span>
+	          		
+	            	{% if draftCounterGroupedByContentType[contentType.id] is defined %}
+	          			<span class="label {% if contentType.color %}bg-{{ contentType.color }}{% else %}label-primary{% endif %} pull-right">{{ draftCounterGroupedByContentType[contentType.id] }}</span>
+	          		{% else %}
+		          		<i class="fa fa-angle-left pull-right"></i>
+	          		{% endif %}
+	          	</a>
+	          	<ul class="treeview-menu">
+	            	{% set searchForm = { 
+	            		'search_form[contentTypes][0]': contentType.name, 
+	            		'search_form[environments][0]': contentType.environment.name
+					} %}
+					{% if contentType.sortBy %}
+		            	{% set searchForm = searchForm|merge({ 
+		            		'search_form[sortBy]': contentType.sortBy,
+		            		'search_form[sortOrder]': 'asc'
+						}) %}
+					{% endif %}
+					
+	            	<li class=""><a id="menu-data-index-{{ contentType.id }}" href="{{ path('elasticsearch.search', searchForm) }}"><i class="fa fa-search"></i> Search {{ contentType.pluralName }}</a></li>
+	          		
+	          		{% if contentType.circlesField and app.user.circles|length > 0 %}
+		            	
+	          			{% for circle in  app.user.circles%}
+	          				{% set searchForm = searchForm|merge({('search_form[filters]['~loop.index0~'][booleanClause]'):('should')}) %}
+	          				{% set searchForm = searchForm|merge({('search_form[filters]['~loop.index0~'][field]'):contentType.circlesField}) %}
+	          				{% set searchForm = searchForm|merge({('search_form[filters]['~loop.index0~'][operator]'):('term')}) %}
+	          				{% set searchForm = searchForm|merge({('search_form[filters]['~loop.index0~'][pattern]'):circle}) %}
+		            	{% endfor %}
+
+		            	{% set label = contentType.circlesField %}
+						{% if (contentType.fieldType.getChildByPath(contentType.circlesField).options.displayOptions.type) is defined %}
+
+		            		{% set circleContenttype = (contentType.fieldType.getChildByPath(contentType.circlesField).options.displayOptions.type)|get_content_type %}
+		            		{% if circleContenttype %}
+								{% if app.user.circles|length > 1 %}
+					            	{% set label = circleContenttype.pluralName %}
+								{% else %}
+					            	{% set label = circleContenttype.singularName %}
+								{% endif %}
+							{% endif %}
+						{% endif %}
+
+	            		<li class=""><a id="menu-data-index-{{ contentType.id }}" href="{{ path('elasticsearch.search', searchForm ) }}"><i class="{{ circleContenttype.icon }}"></i> In my {{ label }}</a></li>
+	            	{% endif %}
+	            	{% for view in contentType.views %}
+	            		<li>
+	            			<a id="menu-data-view-{{ contentType.id }}-{{ view.id }}" href="{{ path('data.customindexview', { viewId: view.id }) }}">
+	            				<i class="{{ view.icon }}"></i>
+	            				{{ view.name }}
+	            			</a>
+	            		</li>
+	            	{% endfor %}
+	            	{% if draftCounterGroupedByContentType[contentType.id] is defined %}
+	          			<li class=""><a id="menu-data-draft-{{ contentType.id }}" href="{{ path('data.draft_in_progress', { contentTypeId: contentType.id } ) }}">
+	          				<i class="fa fa-fire"></i>
+	          				<span>Drafts in progress</span> <span class="label {% if contentType.color %}bg-{{ contentType.color }}{% else %}label-primary{% endif %} pull-right">{{ draftCounterGroupedByContentType[contentType.id] }}</span>
+	          			</a></li>
+	            	{% endif %}
+	            	{% if contentType.environment.managed %}
+	            	
+	            	{% if contentType.orderField and (contentType.fieldType.__get('ems_'~contentType.orderField).options.restrictionOptions.minimum_role is not defined or is_granted(contentType.fieldType.__get('ems_'~contentType.orderField).options.restrictionOptions.minimum_role)) %}
+	          			<li class=""><a id="menu-data-reorder-{{ contentType.id }}" href="{{ path('nature.reorder', { contentType: contentType.id } ) }}">
+	          				<i class="fa fa-sort"></i>
+	          				<span>Reorder</span>
+	          			</a></li>
+	            	{% endif %}
+	            	
+	            	{% if not contentType.createRole or is_granted(contentType.createRole) %}
+						<li class=""><a id="menu-data-add-{{ contentType.id }}" href="{{ path('data.add', { contentType: contentType.id }) }}">
+							<i class="fa fa-plus"></i>
+	          				New {{ contentType.singularName }}
+						</a></li>
+					{% endif %}
+	            	
+	            	
+	            	{% endif %}
+	          	</ul>
+	          </li>
+	        {% endif %}
+         {% endfor %}
+		</ul>
+	{% endif %}
+	
+	{% if is_granted('ROLE_WEBMASTER') %}
+      <!-- Sidebar Menu -->
+      <ul class="sidebar-menu">
+        <li class="header">Webmaster</li>        
+          <li class="treeview">
+            <a href="{{ url('environment.align') }}" id="menu-environment-align">
+            	<i class="fa fa-align-center"></i> <span>{{ 'Align environments'|trans }}</span> 
+            </a>
+        </li>
+      </ul>	
+    {% endif %}
+	  
+	{% if is_granted('ROLE_ADMIN') %}
+      <!-- Sidebar Menu -->
+      <ul class="sidebar-menu">
+        <li class="header">Admin</li>        
+          <li class="treeview">
+            <a href="{{ url('contenttype.index') }}" id="menu-contenttype-list">
+            	<i class="fa fa-sitemap"></i> <span>Content Types</span> 
+            </a>
+        </li>
+        <li class="treeview">
+          <a href="{{ url('environment.index') }}" id="menu-environment-list">
+          	<i class="fa fa-database"></i> <span>Environments</span> 
+          </a>
+        </li>
+        <li class="treeview">
+          <a href="{{ url('user.index') }}" id="menu-user-index">
+          	<i class="fa fa-users"></i> <span>Users</span> 
+          </a>
+        </li>
+        <li class="treeview">
+          <a href="{{ url('i18n_index') }}" id="menu-i18n-index">
+          	<i class="fa fa-language"></i> <span>I18N</span> 
+          </a>
+        </li>
+        <li class="treeview">
+          <a href="{{ url('job.index') }}" id="menu-job-index">
+          	<i class="fa fa-terminal"></i> <span>Jobs</span> 
+          </a>
+        </li>
+	  </ul>
+	 {% endif %}{# end role admin #}
+	 
+	  {% endif %}{# not logged #}
+      <!-- Sidebar Menu -->
+      <ul class="sidebar-menu">
+        <li class="header">OTHER</li>
+        <li class="treeview">
+          <a href="{{ url('elasticsearch.status') }}" id="menu-elasticsearch-status">
+          	<i class="fa fa-cubes"></i> <span>Status</span> 
+          </a>
+        </li>
+        <li>
+        	<a id="menu-documentation" href="{{ url('documentation') }}">
+        		<i class="fa fa-book"></i> <span>Documentation</span>
+        	</a>
+        </li>
+      </ul>
+      <!-- /.sidebar-menu -->
+    </section>
+    <!-- /.sidebar -->
+  </aside>

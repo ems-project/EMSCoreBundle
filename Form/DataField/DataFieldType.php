@@ -1,17 +1,17 @@
 <?php
 
-namespace Ems\CoreBundle\Form\DataField;
+namespace EMS\CoreBundle\Form\DataField;
 
-use Ems\CoreBundle\Entity\DataField;
-use Ems\CoreBundle\Entity\FieldType;
-use Ems\CoreBundle\Exception\ContentTypeStructureException;
-use Ems\CoreBundle\Form\DataField\Options\OptionsType;
+use EMS\CoreBundle\Entity\DataField;
+use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Exception\ContentTypeStructureException;
+use EMS\CoreBundle\Form\DataField\Options\OptionsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Ems\CoreBundle\Form\Field\SelectPickerType;
+use EMS\CoreBundle\Form\Field\SelectPickerType;
 use Symfony\Component\Form\FormRegistryInterface;
 
 
@@ -127,7 +127,7 @@ abstract class DataFieldType extends AbstractType {
 	 */
 	public function configureOptions(OptionsResolver $resolver) {
 		$resolver->setDefaults ( [ 
-				'data_class' => 'Ems\CoreBundle\Entity\DataField',
+				'data_class' => 'EMS\CoreBundle\Entity\DataField',
 				'lastOfRow' => false,
 				'class' => null, // used to specify a bootstrap class arround the compoment
 				'metadata' => null, // used to keep a link to the FieldType

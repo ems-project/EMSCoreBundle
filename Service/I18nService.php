@@ -1,10 +1,10 @@
 <?php
 
-namespace Ems\CoreBundle\Service;
+namespace EMS\CoreBundle\Service;
 
-use Ems\CoreBundle\Entity\I18n;
+use EMS\CoreBundle\Entity\I18n;
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Ems\CoreBundle\Repository\I18nRepository;
+use EMS\CoreBundle\Repository\I18nRepository;
 use Doctrine\ORM\EntityManager;
 
 
@@ -21,7 +21,7 @@ class I18nService {
 	{
 		$this->doctrine = $doctrine;
 		$this->manager = $this->doctrine->getManager();
-		$this->repository = $this->manager->getRepository('Ems/CoreBundle:I18n');
+		$this->repository = $this->manager->getRepository('EMSCoreBundle:I18n');
 	}
 
 	public function count($filters = null) {

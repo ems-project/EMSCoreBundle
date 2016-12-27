@@ -1,5 +1,5 @@
 <?php
-namespace Ems\CoreBundle\Entity\Form;
+namespace EMS\CoreBundle\Entity\Form;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Search
  *
  * @ORM\Table(name="search")
- * @ORM\Entity(repositoryClass="Ems\CoreBundle\Repository\SearchRepository")
+ * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\SearchRepository")
  */
 class Search
 {
@@ -139,11 +139,11 @@ class Search
     /**
      * Add filter
      *
-     * @param \Ems\CoreBundle\Entity\Form\SearchFilter $filter
+     * @param \EMS\CoreBundle\Entity\Form\SearchFilter $filter
      *
      * @return Search
      */
-    public function addFilter(\Ems\CoreBundle\Entity\Form\SearchFilter $filter)
+    public function addFilter(\EMS\CoreBundle\Entity\Form\SearchFilter $filter)
     {
         $this->filters[] = $filter;
 
@@ -153,9 +153,9 @@ class Search
     /**
      * Remove filter
      *
-     * @param \Ems\CoreBundle\Entity\Form\SearchFilter $filter
+     * @param \EMS\CoreBundle\Entity\Form\SearchFilter $filter
      */
-    public function removeFilter(\Ems\CoreBundle\Entity\Form\SearchFilter $filter)
+    public function removeFilter(\EMS\CoreBundle\Entity\Form\SearchFilter $filter)
     {
         $this->filters->removeElement($filter);
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Ems\CoreBundle\Entity;
+namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * DataField
  *
  * @ORM\Table(name="view")
- * @ORM\Entity(repositoryClass="Ems\CoreBundle\Repository\LinkRepository")
+ * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\LinkRepository")
  * @ORM\HasLifecycleCallbacks()
  */
 class View
@@ -279,11 +279,11 @@ class View
     /**
      * Set contentType
      *
-     * @param \Ems\CoreBundle\Entity\ContentType $contentType
+     * @param \EMS\CoreBundle\Entity\ContentType $contentType
      *
      * @return View
      */
-    public function setContentType(\Ems\CoreBundle\Entity\ContentType $contentType = null)
+    public function setContentType(\EMS\CoreBundle\Entity\ContentType $contentType = null)
     {
         $this->contentType = $contentType;
 
@@ -293,7 +293,7 @@ class View
     /**
      * Get contentType
      *
-     * @return \Ems\CoreBundle\Entity\ContentType
+     * @return \EMS\CoreBundle\Entity\ContentType
      */
     public function getContentType()
     {

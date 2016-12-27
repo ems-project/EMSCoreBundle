@@ -1,14 +1,14 @@
 <?php
 
-// src/Ems/CoreBundle/Command/GreetCommand.php
-namespace Ems\CoreBundle\Command;
+// src/EMS/CoreBundle/Command/GreetCommand.php
+namespace EMS\CoreBundle\Command;
 
-use Ems\CoreBundle\Entity\Environment;
-use Ems\CoreBundle\Entity\Revision;
-use Ems\CoreBundle\Service\ContentTypeService;
-use Ems\CoreBundle\Service\DataService;
-use Ems\CoreBundle\Service\EnvironmentService;
-use Ems\CoreBundle\Service\PublishService;
+use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Service\ContentTypeService;
+use EMS\CoreBundle\Service\DataService;
+use EMS\CoreBundle\Service\EnvironmentService;
+use EMS\CoreBundle\Service\PublishService;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Elasticsearch\Client;
 use Monolog\Logger;
@@ -31,7 +31,7 @@ class AlignCommand extends ContainerAwareCommand
 	private $environmentService;
 	/**@var PublishService */
 	private $publishService;
-	
+
 	public function __construct(Registry $doctrine, Logger $logger, Client $client, DataService $data, ContentTypeService $contentTypeService, EnvironmentService $environmentService, PublishService $publishService)
 	{
 		$this->doctrine = $doctrine;
@@ -43,7 +43,7 @@ class AlignCommand extends ContainerAwareCommand
 		$this->publishService = $publishService;
 		parent::__construct();
 	}
-	
+
     protected function configure()
     {
     	$this->logger->info('Configure the AlignCommand');
@@ -70,52 +70,52 @@ class AlignCommand extends ContainerAwareCommand
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
-    {	
+    {
     	if(! $input->getOption('force')){
 			$output->writeln('<error>Has protection, the force option is mandatory</error>');
 			return -1;
-		}   	
-		
+		}
+
 		$sourceName = $input->getArgument('source');
     	$targetName = $input->getArgument('target');
 
     	$source = $this->environmentService->getAliasByName($sourceName);
     	$target = $this->environmentService->getAliasByName($targetName);
-    	
+
     	if(!$source){
     		$output->writeln('<error>Source '.$sourceName.' not found</error>');
-    	}   	
+    	}
     	if(!$target){
     		$output->writeln('<error>Target '.$targetName.' not found</error>');
     	}
-    	
+
     	if(! $source || ! $target){
 			return -1;
 		}
-		
+
 		if($source === $target) {
 			$output->writeln('<error>Target and source are the same environment, it\'s aligned ;-)</error>');
 			return -1;
 		}
-		
+
 		$this->logger->info('Execute the AlignCommand');
-    	 
+
     	$total = $this->client->search([
     		'index' => $source->getAlias(),
     		'size' => 0,
     	])['hits']['total'];
-    	
+
 		$output->writeln('The source environment contains '.$total.' elements, start aligning environments...');
 
     	// create a new progress bar
     	$progress = new ProgressBar($output, $total);
     	// start and displays the progress bar
     	$progress->start();
-    	
+
     	$deletedRevision = 0;
     	$alreadyAligned = 0;
     	$targetIsPreviewEnvironment = [];
-    	 
+
     	for($from = 0; $from < $total; $from = $from + 50) {
     		$scroll = $this->client->search([
     			'index' => $source->getAlias(),
@@ -123,7 +123,7 @@ class AlignCommand extends ContainerAwareCommand
     			'from' => $from,
     			'preference' => '_primary', //http://stackoverflow.com/questions/10836142/elasticsearch-duplicate-results-with-paging
     		]);
-    		
+
     		foreach ($scroll['hits']['hits'] as &$hit){
     			$revision = $this->data->getRevisionByEnvironment($hit['_id'], $this->contentTypeService->getByName($hit['_type']), $source);
     			if($revision->getDeleted()){
@@ -140,10 +140,10 @@ class AlignCommand extends ContainerAwareCommand
 	    				++ $alreadyAligned;
 	    			}
     			}
-    			$progress->advance();    				
+    			$progress->advance();
     		}
     	}
-    	
+
     	$progress->finish();
     	$output->writeln('');
     	if($deletedRevision){
@@ -153,10 +153,10 @@ class AlignCommand extends ContainerAwareCommand
 			$output->writeln(''.$alreadyAligned.' revisions were already aligned');
 		}
 		foreach ($targetIsPreviewEnvironment as $ctName => $counter){
-			$output->writeln('<error>'.$counter.' '.$ctName.' revisions were not aligned as '.$targetName.' is the default environment</error>');				
+			$output->writeln('<error>'.$counter.' '.$ctName.' revisions were not aligned as '.$targetName.' is the default environment</error>');
 		}
-		
+
 		$output->writeln('Environments are aligned.');
-    	return 0;    
+    	return 0;
     }
 }

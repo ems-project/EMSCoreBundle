@@ -1,6 +1,6 @@
 <?php
 
-namespace Ems\CoreBundle\Form\Subform;
+namespace EMS\CoreBundle\Form\Subform;
 
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;

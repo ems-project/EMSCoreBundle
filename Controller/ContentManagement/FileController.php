@@ -1,11 +1,11 @@
 <?php
 
-namespace Ems\CoreBundle\Controller\ContentManagement;
+namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use Ems\CoreBundle\Controller\AppController;
-use Ems\CoreBundle;
-use Ems\CoreBundle\Entity\UploadedAsset;
-use Ems\CoreBundle\Repository\UploadedAssetRepository;
+use EMS\CoreBundle\Controller\AppController;
+use EMS\CoreBundle;
+use EMS\CoreBundle\Entity\UploadedAsset;
+use EMS\CoreBundle\Repository\UploadedAssetRepository;
 use Elasticsearch\Common\Exceptions\Conflict409Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -31,8 +31,8 @@ class FileController extends AppController
 		
 		$file = false;
 		
-		foreach ($this->getParameter('storage_services') as $serviceName){
-			/**@var \Ems\CoreBundle\Service\Storage\StorageInterface $service */
+		foreach ($this->getParameter('ems_core.storage_services') as $serviceName){
+			/**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service */
 			$service = $this->get($serviceName);
 			$file = $service->read($sha1);
 			if($file) {
@@ -62,7 +62,7 @@ class FileController extends AppController
 		/** @var EntityManager $em */
 		$em = $this->getDoctrine ()->getManager ();
 		/** @var UploadedAssetRepository $repository */
-		$repository = $em->getRepository ( 'Ems/CoreBundle:UploadedAsset' );
+		$repository = $em->getRepository ( 'EMSCoreBundle:UploadedAsset' );
 		
 		$user = $this->getUser()->getUsername();
 		
@@ -99,7 +99,7 @@ class FileController extends AppController
 		}
 		
 		//TODO check if the file can be found in the repository
-		foreach ($this->getParameter('storage_services') as $serviceName){
+		foreach ($this->getParameter('ems_core.storage_services') as $serviceName){
 			if($this->get($serviceName)->head($uploadedAsset->getSha1())) {
 				$uploadedAsset->setUploaded($uploadedAsset->getSize());
 				$uploadedAsset->setAvailable(true);
@@ -139,7 +139,7 @@ class FileController extends AppController
 	}
 	
 	private function filename($sha1) {
-		$target = $this->getParameter('uploading_folder');
+		$target = $this->getParameter('ems_core.uploading_folder');
 		if(!$target) {
 			$target = sys_get_temp_dir();
 		}
@@ -156,7 +156,7 @@ class FileController extends AppController
 		/** @var EntityManager $em */
 		$em = $this->getDoctrine ()->getManager ();
 		/** @var UploadedAssetRepository $repository */
-		$repository = $em->getRepository ( 'Ems/CoreBundle:UploadedAsset' );
+		$repository = $em->getRepository ( 'EMSCoreBundle:UploadedAsset' );
 		
 		$user = $this->getUser()->getUsername();
 		
@@ -195,7 +195,7 @@ class FileController extends AppController
 				throw new Conflict409Exception("Sha1 mismatched ".sha1_file($filename).' '.$uploadedAsset->getSha1());
 			}
 			
-			foreach ($this->getParameter('storage_services') as $serviceName){
+			foreach ($this->getParameter('ems_core.storage_services') as $serviceName){
 				if($this->get($serviceName)->create($uploadedAsset->getSha1(), $filename)) {
 					$uploadedAsset->setAvailable(true);
 					break;

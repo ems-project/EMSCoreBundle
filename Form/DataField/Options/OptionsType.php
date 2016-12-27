@@ -1,12 +1,12 @@
 <?php 
 
-namespace Ems\CoreBundle\Form\DataField\Options;
+namespace EMS\CoreBundle\Form\DataField\Options;
 
-use Ems\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Entity\FieldType;
 
-use Ems\CoreBundle\Form\DataField\Options\DisplayOptionsType;
-use Ems\CoreBundle\Form\DataField\Options\MappingOptionsType;
-use Ems\CoreBundle\Form\DataField\Options\RestrictionOptionsType;
+use EMS\CoreBundle\Form\DataField\Options\DisplayOptionsType;
+use EMS\CoreBundle\Form\DataField\Options\MappingOptionsType;
+use EMS\CoreBundle\Form\DataField\Options\RestrictionOptionsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 

@@ -1,0 +1,117 @@
+{% extends 'EMSCoreBundle:base:base.html.twig' %}
+
+{% block title %}View {{ template.name }} of the {{ object._type }} : {{ object._id }}{% endblock %}
+{% block pagetitle %}
+	<i class="{% if contentType.icon %}{{ contentType.icon }} {% else %} fa fa-question {% endif %} "></i>
+	View {{ template.name }} of the {{ object._type }} : 
+	
+	{% if (contentType.labelField) and (attribute(attribute(object, '_source'), contentType.labelField)  is defined ) %}
+		{{ attribute(attribute(object, '_source'), contentType.labelField) }}<small>{{ object._id }}</small>
+	{% else %}
+		{{ object._id }}
+	{% endif %}
+					
+	
+	 as indexed in 
+	<span class="badge bg-{{ environment.color|raw }}">{{ environment.name|humanize }}</span>
+{% endblock %} 
+
+{% block subtitle %}{% endblock %} 
+
+
+{% block extraheader %}
+{% if template.header is defined and template.body %}
+		{{ template.header|generate_from_template({
+				environment: environment,
+				contentType: contentType,
+				object: object,
+				source: object._source
+			})|raw }}
+{% endif %}
+{% endblock %} 
+
+
+
+{% block body %}
+{% import "macros/data-field-type.html.twig" as macros %}
+<div class="row">
+	<div class="col-xs-12">
+		<div class="box">
+			<div class="box-header no-print">
+				<h3 class="box-title">View {{ template.name }}</h3>
+			</div>
+			<div class="box-body">
+				{%  if template.body and template.renderOption is constant('EMS\CoreBundle\\Form\\Field\\RenderOptionType::EMBED') %}
+					{{ template.body|generate_from_template({
+										environment: environment,
+										contentType: contentType,
+										object: object,
+										source: object._source
+									})|raw }}
+{# 					{% include template_from_string(template.body) with {#}
+{# 										environment: environment,#}
+{# 										contentType: contentType,#}
+{# 										object: object,#}
+{# 										source: object._source#}
+{# 									} %}#}
+				{% else %}
+					Template is missing
+{# 					{% include template_from_string(template.body) with {#}
+{# 										environment: environment,#}
+{# 										contentType: contentType,#}
+{# 										object: object,#}
+{# 										source: object._source#}
+{# 									} %}#}
+				{% endif %}
+				
+				{% if template.filename and template.renderOption is constant('EMS\CoreBundle\\Form\\Field\\RenderOptionType::EXPORT') %}
+					<br/><br/>
+					{{ template.filename|generate_from_template({
+											environment: environment,
+											contentType: contentType,
+											object: object,
+											source: object._source
+										}) }}
+{# 					{% include template_from_string(template.filename) with {#}
+{# 											environment: environment,#}
+{# 											contentType: contentType,#}
+{# 											object: object,#}
+{# 											source: object._source#}
+{# 										} %}#}
+				{% endif %}
+			</div>
+			<!-- /.box-body -->
+			<div class="box-footer no-print">
+			  	{% include 'EMSCoreBundle:elements:object-toolbar.html.twig' with {
+					'object':  object,
+					'contentType': contentType,
+					'recursiveView': true
+				}%}
+				
+				<div class="btn-toolbar pull-right" role="toolbar" style="margin: 0;">
+					<div class="btn-group">
+						{% if template.body and template.renderOption is constant('EMS\CoreBundle\\Form\\Field\\RenderOptionType::EXPORT') %}
+							{% include 'EMSCoreBundle:elements:get-button.html.twig' with {
+													'url':  path('data.customview', {
+															'environmentName': environment.name , 
+															'templateId': template.id, 
+															'ouuid': object._id,
+															'_download': true}),
+													'label': 'Download',
+													'icon': 'download',
+													'target': '_blank'
+												}%}
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+	{% include 'EMSCoreBundle:app:menu.html.twig' with {
+		'item':  'data-index-' ~ contentType.id
+	}%}
+{% endblock %}	

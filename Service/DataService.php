@@ -1,22 +1,22 @@
 <?php
 
-namespace Ems\CoreBundle\Service;
+namespace EMS\CoreBundle\Service;
 
 
-use Ems\CoreBundle\Entity\ContentType;
-use Ems\CoreBundle\Entity\DataField;
-use Ems\CoreBundle\Entity\Environment;
-use Ems\CoreBundle\Entity\Revision;
-use Ems\CoreBundle\Event\RevisionFinalizeDraftEvent;
-use Ems\CoreBundle\Event\RevisionNewDraftEvent;
-use Ems\CoreBundle\Exception\DataStateException;
-use Ems\CoreBundle\Exception\LockedException;
-use Ems\CoreBundle\Exception\PrivilegeException;
-use Ems\CoreBundle\Form\DataField\ComputedFieldType;
-use Ems\CoreBundle\Form\DataField\DataFieldType;
-use Ems\CoreBundle\Form\Form\RevisionType;
-use Ems\CoreBundle\Repository\ContentTypeRepository;
-use Ems\CoreBundle\Repository\RevisionRepository;
+use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\DataField;
+use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Event\RevisionFinalizeDraftEvent;
+use EMS\CoreBundle\Event\RevisionNewDraftEvent;
+use EMS\CoreBundle\Exception\DataStateException;
+use EMS\CoreBundle\Exception\LockedException;
+use EMS\CoreBundle\Exception\PrivilegeException;
+use EMS\CoreBundle\Form\DataField\ComputedFieldType;
+use EMS\CoreBundle\Form\DataField\DataFieldType;
+use EMS\CoreBundle\Form\Form\RevisionType;
+use EMS\CoreBundle\Repository\ContentTypeRepository;
+use EMS\CoreBundle\Repository\RevisionRepository;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use Elasticsearch\Client;
@@ -84,7 +84,7 @@ class DataService
 		$this->mapping = $mapping;
 		$this->instanceId = $instanceId;
 		$this->em = $this->doctrine->getManager();
-		$this->revRepository = $this->em->getRepository('Ems/CoreBundle:Revision');
+		$this->revRepository = $this->em->getRepository('EMSCoreBundle:Revision');
 		$this->session = $session;
 		$this->formFactory = $formFactory;
 		$this->container = $container;
@@ -256,7 +256,7 @@ class DataService
 		
 		$em = $this->doctrine->getManager();
 		if(!empty($ouuid)){
-			$revisionRepository = $em->getRepository('Ems/CoreBundle:Revision');
+			$revisionRepository = $em->getRepository('EMSCoreBundle:Revision');
 			$anotherObject = $revisionRepository->findOneBy([
 					'contentType' => $contentType,
 					'ouuid' => $newRevision->getOuuid(),
@@ -294,7 +294,7 @@ class DataService
 		$em = $this->doctrine->getManager();
 	
 		/** @var RevisionRepository $repository */
-		$repository = $em->getRepository('Ems/CoreBundle:Revision');
+		$repository = $em->getRepository('EMSCoreBundle:Revision');
 	
 		//TODO: test if draft and last version publish in
 		
@@ -364,7 +364,7 @@ class DataService
 		$em = $this->doctrine->getManager();
 	
 		/** @var ContentTypeRepository $contentTypeRepo */
-		$contentTypeRepo = $em->getRepository('Ems/CoreBundle:ContentType');
+		$contentTypeRepo = $em->getRepository('EMSCoreBundle:ContentType');
 		$contentTypes = $contentTypeRepo->findBy([
 				'name' => $type,
 				'deleted' => false,
@@ -376,7 +376,7 @@ class DataService
 		$contentType = $contentTypes[0];
 	
 		/** @var RevisionRepository $repository */
-		$repository = $em->getRepository('Ems/CoreBundle:Revision');
+		$repository = $em->getRepository('EMSCoreBundle:Revision');
 	
 		/** @var Revision $revision */
 		$revisions = $repository->findBy([
@@ -411,7 +411,7 @@ class DataService
 		$em = $this->doctrine->getManager();
 		
 		/** @var ContentTypeRepository $contentTypeRepo */
-		$contentTypeRepo = $em->getRepository('Ems/CoreBundle:ContentType');
+		$contentTypeRepo = $em->getRepository('EMSCoreBundle:ContentType');
 		/** @var ContentType $contentType */
 		$contentType = $contentTypeRepo->findOneBy([
 				'name' => $type,
@@ -476,7 +476,7 @@ class DataService
 		$em = $this->doctrine->getManager();
 	
 		/** @var RevisionRepository $repository */
-		$repository = $em->getRepository('Ems/CoreBundle:Revision');
+		$repository = $em->getRepository('EMSCoreBundle:Revision');
 	
 		if(!$revision) {
 			throw new NotFoundHttpException('Revision not found');
@@ -599,7 +599,7 @@ class DataService
 		$em = $this->doctrine->getManager();
 	
 		/** @var ContentTypeRepository $contentTypeRepo */
-		$contentTypeRepo = $em->getRepository('Ems/CoreBundle:ContentType');
+		$contentTypeRepo = $em->getRepository('EMSCoreBundle:ContentType');
 		$contentTypes = $contentTypeRepo->findBy([
 				'name' => $type->getName(),
 				'deleted' => false,
@@ -611,7 +611,7 @@ class DataService
 		$contentType = $contentTypes[0];
 	
 		/** @var RevisionRepository $repository */
-		$repository = $em->getRepository('Ems/CoreBundle:Revision');
+		$repository = $em->getRepository('EMSCoreBundle:Revision');
 	
 		/** @var Revision $revision */
 		$revisions = $repository->findBy([

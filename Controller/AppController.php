@@ -1,18 +1,18 @@
 <?php
-namespace Ems\CoreBundle\Controller;
+namespace EMS\CoreBundle\Controller;
 
-use Ems\CoreBundle\Entity\Job;
+use EMS\CoreBundle\Entity\Job;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Ems\CoreBundle\Service\DataService;
-use Ems\CoreBundle\Service\PublishService;
-use Ems\CoreBundle\Service\ContentTypeService;
-use Ems\CoreBundle\Service\EnvironmentService;
+use EMS\CoreBundle\Service\DataService;
+use EMS\CoreBundle\Service\PublishService;
+use EMS\CoreBundle\Service\ContentTypeService;
+use EMS\CoreBundle\Service\EnvironmentService;
 use Elasticsearch\Client;
-use Ems\CoreBundle\Service\SearchService;
+use EMS\CoreBundle\Service\SearchService;
 use Monolog\Logger;
-use Ems\CoreBundle\Service\NotificationService;
-use Ems\CoreBundle\Service\UserService;
+use EMS\CoreBundle\Service\NotificationService;
+use EMS\CoreBundle\Service\UserService;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
@@ -23,7 +23,7 @@ class AppController extends Controller
 	 */
 	public function javascriptAction()
 	{
-		return $this->render( 'app/app.js.twig' );
+		return $this->render( 'EMSCoreBundle:app:app.js.twig' );
 	}
 
 	/**

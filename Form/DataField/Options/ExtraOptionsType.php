@@ -1,6 +1,6 @@
 <?php
 
-namespace Ems\CoreBundle\Form\DataField\Options;
+namespace EMS\CoreBundle\Form\DataField\Options;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;

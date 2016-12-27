@@ -1,9 +1,9 @@
 <?php
 
-namespace Ems\CoreBundle\Form\Field;
+namespace EMS\CoreBundle\Form\Field;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Ems\CoreBundle\Service\UserService;
+use EMS\CoreBundle\Service\UserService;
 
 class RolePickerType extends SelectPickerType {
 	/**

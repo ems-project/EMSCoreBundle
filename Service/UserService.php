@@ -1,13 +1,13 @@
 <?php
 
-namespace Ems\CoreBundle\Service;
+namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Ems\CoreBundle\Entity\User;
+use EMS\CoreBundle\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Ems\CoreBundle\Entity\AuthToken;
+use EMS\CoreBundle\Entity\AuthToken;
 
 class UserService {
 	/**@var Registry $doctrine */
@@ -33,7 +33,7 @@ class UserService {
 	public function findUsernameByApikey($apiKey){
 		$em = $this->doctrine->getManager();
 		/**@var \Doctrine\ORM\EntityRepository */
-		$repository = $em->getRepository('Ems/CoreBundle:AuthToken');
+		$repository = $em->getRepository('EMSCoreBundle:AuthToken');
 		
 		/**@var AuthToken $token*/
 		$token = $repository->findOneBy([
@@ -49,7 +49,7 @@ class UserService {
 	public function getUser($username, $detachIt = true) {
 		$em = $this->doctrine->getManager();
 		/**@var \Doctrine\ORM\EntityRepository */
-		$repository = $em->getRepository('Ems/CoreBundle:User');
+		$repository = $em->getRepository('EMSCoreBundle:User');
 		$user = $repository->findOneBy([
 				'usernameCanonical' => $username
 		]);
@@ -76,7 +76,7 @@ class UserService {
 	public function getUsersForRoleAndCircles($role, $circles) {
 		/**@var EntityManagerInterface $em*/
 		$em = $this->doctrine->getManager();
-		$repository = $em->getRepository('Ems/CoreBundle:User');
+		$repository = $em->getRepository('EMSCoreBundle:User');
 		return $repository->findForRoleAndCircles($role, $circles);
 	}
 	
@@ -84,7 +84,7 @@ class UserService {
 	public function getAllUsers() {
 		$em = $this->doctrine->getManager();
 		/**@var \Doctrine\ORM\EntityRepository */
-		$repository = $em->getRepository('Ems/CoreBundle:User');
+		$repository = $em->getRepository('EMSCoreBundle:User');
 		return $repository->findBy([
 				'enabled' => true
 		]);

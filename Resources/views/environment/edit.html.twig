@@ -1,0 +1,112 @@
+{% extends 'EMSCoreBundle:base:base.html.twig' %}
+
+{% block title %}Edit the environment {{environment.name}}{% endblock %}
+{% block pagetitle %}Edit the environment {{environment.name}}{% endblock %} 
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><i class="fa fa-database"></i> Environments</li>
+		<li><a href={{ url('environment.index') }}>List Environments</a></li>
+   		<li class="active">Edit environment</li>
+   	</ol>
+{% endblock %}
+
+{% block body %}
+<div class="row">
+	<div class="col-md-6">
+		<div class="box ">
+			<div class="box-header with-border">
+				<i class="fa fa-warning"></i>
+				<h3 class="box-title">Notice</h3>
+			</div>
+			<!-- /.box-header -->
+			<div class="box-body">
+				<p>
+					If you intend to rename the alias, please create a new environment and align it to the one you would like to rename the alias.
+					Then delete the previous one.
+				</p>
+			</div>
+			<!-- /.box-body -->
+		</div>
+	</div>
+	<div class="col-md-6">
+		<div class="box box-info">
+			<div class="box-header with-border">
+				<h3 class="box-title">Update environement's options</h3>
+			</div>
+			<!-- /.box-header -->
+			<!-- form start -->
+			{{ form_start(form) }}
+				<div class="box-body">
+					{{ form_row(form.name) }}
+					{{ form_row(form.color) }}
+          			{{ form_row(form.inDefaultSearch) }}
+          			{{ form_row(form.baseUrl) }}
+          			{% if form.circles is defined %}
+	    	    		{{ form_row(form.circles) }}
+	    			{% endif %}
+          			{{ form_row(form.extra) }}
+				</div>
+				<!-- /.box-body -->
+				<div class="box-footer">
+					<div class="btn-group pull-right">
+						{{ form_widget(form.save) }}
+					</div>
+				</div>
+				<!-- /.box-footer -->
+			
+			{{ form_end(form) }}
+		</div>
+	</div>
+</div>
+{% endblock %} 
+
+{% block javascripts %}
+	{% include 'EMSCoreBundle:app:menu.html.twig' with {
+		'item':  'environment-list'
+	}%}
+	
+<script type="text/javascript">
+$(window).ready(function() {  
+
+    var type = $( '#edit_environment_circles' ).data('type'); 
+    var dynamicLoading = $( '#edit_environment_circles' ).data('dynamic-loading'); 
+
+  $('#edit_environment_circles').css('width', '100%');
+  $('#edit_environment_circles').css('z-index', '20000');
+  $('#edit_environment_circles').select2({
+    ajax: {
+      url: '{{ url("elasticsearch.api.search") }}',
+        dataType: 'json',
+        delay: 250,
+        data: function (params) {
+            return {
+            q: params.term, // search term
+            page: params.page,
+            type: type
+          };
+        },
+      processResults: function (data, params) {
+        // parse the results into the format expected by Select2
+        // since we are using custom formatting functions we do not need to
+        // alter the remote JSON data, except to indicate that infinite
+        // scrolling can be used
+        params.page = params.page || 1;
+    
+            return {
+              results: data.items,
+              pagination: {
+                more: (params.page * 30) < data.total_count
+              }
+            };
+        },
+        cache: true
+      },
+      escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+      //templateResult: formatRepo, // omitted for brevity, see the source of this page
+      //templateSelection: formatRepoSelection, // omitted for brevity, see the source of this page
+      minimumInputLength: 1
+  });
+});
+	
+</script>
+{% endblock %}	

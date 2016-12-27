@@ -1,6 +1,6 @@
 <?php
 
-namespace Ems\CoreBundle\Entity;
+namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * DataField
  *
  * @ORM\Table(name="template")
- * @ORM\Entity(repositoryClass="Ems\CoreBundle\Repository\TemplateRepository")
+ * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\TemplateRepository")
  * @ORM\HasLifecycleCallbacks()
  */
 class Template
@@ -667,11 +667,11 @@ class Template
     /**
      * Set contentType
      *
-     * @param \Ems\CoreBundle\Entity\ContentType $contentType
+     * @param \EMS\CoreBundle\Entity\ContentType $contentType
      *
      * @return Template
      */
-    public function setContentType(\Ems\CoreBundle\Entity\ContentType $contentType = null)
+    public function setContentType(\EMS\CoreBundle\Entity\ContentType $contentType = null)
     {
         $this->contentType = $contentType;
 
@@ -681,7 +681,7 @@ class Template
     /**
      * Get contentType
      *
-     * @return \Ems\CoreBundle\Entity\ContentType
+     * @return \EMS\CoreBundle\Entity\ContentType
      */
     public function getContentType()
     {
@@ -706,11 +706,11 @@ class Template
     /**
      * Add environment
      *
-     * @param \Ems\CoreBundle\Entity\Environment $environment
+     * @param \EMS\CoreBundle\Entity\Environment $environment
      *
      * @return Template
      */
-    public function addEnvironment(\Ems\CoreBundle\Entity\Environment $environment)
+    public function addEnvironment(\EMS\CoreBundle\Entity\Environment $environment)
     {
         $this->environments[] = $environment;
 
@@ -720,9 +720,9 @@ class Template
     /**
      * Remove environment
      *
-     * @param \Ems\CoreBundle\Entity\Environment $environment
+     * @param \EMS\CoreBundle\Entity\Environment $environment
      */
-    public function removeEnvironment(\Ems\CoreBundle\Entity\Environment $environment)
+    public function removeEnvironment(\EMS\CoreBundle\Entity\Environment $environment)
     {
         $this->environments->removeElement($environment);
     }

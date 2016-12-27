@@ -1,7 +1,7 @@
 <?php
-namespace Ems\CoreBundle\Event;
+namespace EMS\CoreBundle\Event;
 
-use Ems\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Entity\Revision;
 use Symfony\Component\EventDispatcher\Event;
 
 /**

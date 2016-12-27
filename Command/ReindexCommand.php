@@ -1,10 +1,10 @@
 <?php
 
-// src/Ems/CoreBundle/Command/GreetCommand.php
-namespace Ems\CoreBundle\Command;
+// src/EMS/CoreBundle/Command/GreetCommand.php
+namespace EMS\CoreBundle\Command;
 
-use Ems\CoreBundle\Entity\Environment;
-use Ems\CoreBundle\Repository\JobRepository;
+use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Repository\JobRepository;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use Elasticsearch\Client;
@@ -61,7 +61,7 @@ class ReindexCommand extends EmsCommand
 		$em = $this->doctrine->getManager();
 
 		/** @var JobRepository $envRepo */
-		$envRepo = $em->getRepository('Ems/CoreBundle:Environment');
+		$envRepo = $em->getRepository('EMSCoreBundle:Environment');
 		/** @var Environment $environment */
 		$environment = $envRepo->findBy(['name' => $name, 'managed' => true]);
 		if($environment && count($environment) == 1) {
@@ -81,7 +81,7 @@ class ReindexCommand extends EmsCommand
 			// start and displays the progress bar
 			$progress->start();
 			
-			/** @var \Ems\CoreBundle\Entity\Revision $revision */
+			/** @var \EMS\CoreBundle\Entity\Revision $revision */
 			foreach ($environment->getRevisions() as $revision) {
 				if($revision->getDeleted()){
 					++$deleted;

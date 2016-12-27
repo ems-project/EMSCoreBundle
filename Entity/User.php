@@ -1,7 +1,7 @@
 <?php
-// src/Ems/CoreBundle/Entity/User.php
+// src/EMS/CoreBundle/Entity/User.php
 
-namespace Ems\CoreBundle\Entity;
+namespace EMS\CoreBundle\Entity;
 
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity
  * @ORM\Table(name="`user`")
- * @ORM\Entity(repositoryClass="Ems\CoreBundle\Repository\UserRepository")
+ * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\UserRepository")
  * @ORM\HasLifecycleCallbacks()
  */
 class User extends BaseUser
@@ -375,11 +375,11 @@ class User extends BaseUser
     /**
      * Add authToken
      *
-     * @param \Ems\CoreBundle\Entity\AuthToken $authToken
+     * @param \EMS\CoreBundle\Entity\AuthToken $authToken
      *
      * @return User
      */
-    public function addAuthToken(\Ems\CoreBundle\Entity\AuthToken $authToken)
+    public function addAuthToken(\EMS\CoreBundle\Entity\AuthToken $authToken)
     {
         $this->authTokens[] = $authToken;
 
@@ -389,9 +389,9 @@ class User extends BaseUser
     /**
      * Remove authToken
      *
-     * @param \Ems\CoreBundle\Entity\AuthToken $authToken
+     * @param \EMS\CoreBundle\Entity\AuthToken $authToken
      */
-    public function removeAuthToken(\Ems\CoreBundle\Entity\AuthToken $authToken)
+    public function removeAuthToken(\EMS\CoreBundle\Entity\AuthToken $authToken)
     {
         $this->authTokens->removeElement($authToken);
     }

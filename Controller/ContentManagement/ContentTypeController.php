@@ -257,7 +257,7 @@ class ContentTypeController extends AppController {
 			}
 		}
 		
-		return $this->render ( 'contenttype/add.html.twig', [ 
+		return $this->render ( 'EMSCoreBundle:contenttype:add.html.twig', [ 
 				'form' => $form->createView () 
 		] );
 	}
@@ -326,7 +326,7 @@ class ContentTypeController extends AppController {
     		return $this->redirectToRoute('contenttype.index');
     	}
 		
-		return $this->render ( 'contenttype/index.html.twig', [
+		return $this->render ( 'EMSCoreBundle:contenttype:index.html.twig', [
 				'form' => $form->createView (),
 		] );
 	}
@@ -403,7 +403,7 @@ class ContentTypeController extends AppController {
 			}
 		}
 		
-		return $this->render ( 'contenttype/unreferenced.html.twig', [ 
+		return $this->render ( 'EMSCoreBundle:contenttype:unreferenced.html.twig', [ 
 				'referencedContentTypes' => $referencedContentTypes 
 		] );
 	}
@@ -709,7 +709,7 @@ class ContentTypeController extends AppController {
 			$this->addFlash('warning', $contentType->getName().' is dirty. Consider to update its mapping.');
 		}
 		
-		return $this->render ( 'contenttype/edit.html.twig', [ 
+		return $this->render ( 'EMSCoreBundle:contenttype:edit.html.twig', [ 
 				'form' => $form->createView (),
 				'contentType' => $contentType,
 				'mapping' => isset ( current ( $mapping ) ['mappings'] [$contentType->getName ()] ['properties'] ) ? current ( $mapping ) ['mappings'] [$contentType->getName ()] ['properties'] : false 
@@ -835,7 +835,7 @@ class ContentTypeController extends AppController {
 			$this->addFlash('warning', $contentType->getName().' is dirty. Consider to update its mapping.');
 		}
 		
-		return $this->render ( 'contenttype/structure.html.twig', [ 
+		return $this->render ( 'EMSCoreBundle:contenttype:structure.html.twig', [ 
 				'form' => $form->createView (),
 				'contentType' => $contentType,
 // 				'mapping' => isset ( current ( $mapping ) ['mappings'] [$contentType->getName ()] ['properties'] ) ? current ( $mapping ) ['mappings'] [$contentType->getName ()] ['properties'] : false 

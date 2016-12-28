@@ -165,7 +165,6 @@ class NotificationController extends AppController
 	}
 	
 	/**
-	 * @Route("/", name="notifications.dashboard", defaults={"folder": "inbox"})
 	 * @Route("/notifications/list", name="notifications.list", defaults={"folder": "inbox"})
 	 * @Route("/notifications/inbox", name="notifications.inbox", defaults={"folder": "inbox"})
 	 * @Route("/notifications/sent", name="notifications.sent", defaults={"folder": "sent"})

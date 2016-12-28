@@ -35,15 +35,6 @@ class UserController extends AppController
 				'users' => $users
 		] );
 	}
-
-	/**
-	 *
-	 * @Route("/go-to-login", name="user.login")
-	 */
-	public function loginAction(Request $request)
-	{	
-		return $this->redirectToRoute('fos_user_security_login');
-	}
 	
 	
 	/**

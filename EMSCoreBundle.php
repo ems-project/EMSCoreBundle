@@ -11,6 +11,12 @@ use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 
 class EMSCoreBundle extends Bundle
 {
+	
+//     public function getParent()
+//     {
+//         return 'FOSUserBundle';
+//     }
+    
 	public function build(ContainerBuilder $container)
 	{
 		$container->addCompilerPass(new ViewTypeCompilerPass(), PassConfig::TYPE_OPTIMIZE);

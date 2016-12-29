@@ -228,7 +228,7 @@ desired effect
 		{% if app.user %}
 		  	{{ render(controller('EMSCoreBundle:TwigElements:sideMenu')) }}
 		{% else %}
-			{% include 'EMSCoreBundle:elements/side-menu.html.twig' with {
+			{% include 'EMSCoreBundle:elements:side-menu.html.twig' with {
 				'contentTypes': contentTypes
 			} %}
         {% endif %} 

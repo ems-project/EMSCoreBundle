@@ -1,4 +1,4 @@
-{% extends 'EMSCoreBundle:base:base.html.twig' %}
+{% extends 'EMSCoreBundle::base.html.twig' %}
 
 {% block title %}{% if revision.ouuid %}Edit {{ revision.contentType.singularName }} : {{ revision.ouuid }}{% else %}{{ revision.contentType.singularName }} : new draft{% endif %}{% endblock %}
 {% block pagetitle %}{% if revision.ouuid %}Edit {{ revision.contentType.singularName }} : {{ revision.ouuid }}{% else %}{{ revision.contentType.singularName }} : new draft{% endif %}{% endblock %} 

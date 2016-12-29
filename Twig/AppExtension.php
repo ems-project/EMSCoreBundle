@@ -51,7 +51,7 @@ class AppExtension extends \Twig_Extension
 		$this->environmentService = $environmentService;
 		$this->logger = $logger;
 		
-		$this->twig->getExtension('Twig_Extension_Core')->setEscaper('csv', array($this, 'csvEscaper'));
+		//$this->twig->getExtension('Twig_Extension_Core')->setEscaper('csv', array($this, 'csvEscaper'));
 	}
 	
 	public function getFilters()

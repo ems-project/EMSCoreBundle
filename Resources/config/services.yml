@@ -322,11 +322,6 @@ services:
         arguments: ['%ems_core.circles_object%', '@ems.service.environment']
         tags:
             - { name: form.type }
-    ems.form.form.userprofile:
-        class: EMS\CoreBundle\Form\Form\UserProfileType
-        arguments: ['@security.token_storage']
-        tags:
-            - { name: form.type }
 ### regular services
     ems.service.mapping:
         class: EMS\CoreBundle\Service\Mapping

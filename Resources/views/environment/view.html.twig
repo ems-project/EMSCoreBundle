@@ -20,7 +20,7 @@
             <form role="form">
               <div class="box-body">
                 	{% if info %} 
-						{% import "macros/view.html.twig" as macros %}
+						{% import "EMSCoreBundle:macros:view.html.twig" as macros %}
 						{{ macros.recursifArray(info) }}
 					{% else %}
 						Elasticsearch index is missing !

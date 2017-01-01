@@ -21,7 +21,7 @@
 	{% endif %}
 {% endmacro %}
 
-{% macro EMS/CoreBundle_Form_DataField_UrlAttachmentFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_UrlAttachmentFieldType(dataField) %}
 	<div class="panel-heading">
 		<h3 class="panel-title">
 			<i class="{% if dataField.fieldType.displayOptions.icon is defined %}{{ dataField.fieldType.displayOptions.icon }}{% else %}fa fa-file-o{% endif %}"></i> 				
@@ -45,12 +45,12 @@
 	</div>
 {% endmacro %}
 
-{% macro EMS/CoreBundle_Form_DataField_FileAttachmentFieldType(dataField) %}
-	{{ _self.EMS/CoreBundle_Form_DataField_AssetFieldType(dataField) }}
+{% macro EMS_CoreBundle_Form_DataField_FileAttachmentFieldType(dataField) %}
+	{{ _self.EMS_CoreBundle_Form_DataField_AssetFieldType(dataField) }}
 {% endmacro %}
 
 
-{% macro EMS/CoreBundle_Form_DataField_AssetFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_AssetFieldType(dataField) %}
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<h3 class="panel-title">
@@ -88,7 +88,7 @@
 {% endmacro %}
 
 
-{% macro EMS/CoreBundle_Form_DataField_CollectionFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_CollectionFieldType(dataField) %}
 	{% set tempId = dataField.fieldType.name~'_'~random() %}
 	<div class="panel panel-default">
 		<div class="panel-heading">
@@ -147,7 +147,7 @@
 	{{ _self.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS/CoreBundle_Form_DataField_ContainerFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_ContainerFieldType(dataField) %}
     {% if dataField.fieldType.displayOptions.label is defined and dataField.fieldType.displayOptions.label %}
     	<div class="panel panel-default">
 			<div class="panel-heading">
@@ -181,7 +181,7 @@
 	{{ _self.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS/CoreBundle_Form_DataField_NestedFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_NestedFieldType(dataField) %}
     {% if dataField.fieldType.displayOptions.label is defined %}
     	<div class="panel panel-default">
 			<div class="panel-heading">
@@ -215,7 +215,7 @@
 	{{ _self.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS/CoreBundle_Form_DataField_TabsFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_TabsFieldType(dataField) %}
 		<div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
             	{% for child in dataField.children if not child.fieldType.deleted %}
@@ -241,7 +241,7 @@
 {% endmacro %}
 
 
-{% macro EMS/CoreBundle_Form_DataField_DataLinkFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_DataLinkFieldType(dataField) %}
 	<dl>
 		{% if dataField.fieldType.displayOptions.label is defined %}
 			<dt>{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})</dt>
@@ -262,7 +262,7 @@
 	{{ _self.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS/CoreBundle_Form_DataField_SelectFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_SelectFieldType(dataField) %}
 	<dl>
 		{% if dataField.fieldType.displayOptions.label is defined %}
 			<dt>{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})</dt>
@@ -285,7 +285,7 @@
 	{{ _self.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS/CoreBundle_Form_DataField_OuuidFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_OuuidFieldType(dataField) %}
 	<dl>
 		{% if dataField.fieldType.displayOptions.label is defined %}
 			<dt>{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})</dt>
@@ -297,7 +297,7 @@
 	{{ _self.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS/CoreBundle_Form_DataField_ComputedFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_ComputedFieldType(dataField) %}
 	<dl>
 		{% if dataField.fieldType.displayOptions.label is defined %}
 			<dt>{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})</dt>
@@ -317,7 +317,7 @@
 	{{ _self.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS/CoreBundle_Form_DataField_TextStringFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_TextStringFieldType(dataField) %}
 	<dl>
 		{% if dataField.fieldType.displayOptions.label is defined %}
 			<dt>{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})</dt>
@@ -330,7 +330,7 @@
 	{{ _self.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS/CoreBundle_Form_DataField_TextareaFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_TextareaFieldType(dataField) %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -350,7 +350,7 @@
 	{{ _self.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS/CoreBundle_Form_DataField_JSONFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_JSONFieldType(dataField) %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -370,7 +370,7 @@
 	{{ _self.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS/CoreBundle_Form_DataField_WysiwygFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_WysiwygFieldType(dataField) %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -390,7 +390,7 @@
 	{{ _self.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS/CoreBundle_Form_DataField_PasswordFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_PasswordFieldType(dataField) %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -410,7 +410,7 @@
 	{{ _self.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS/CoreBundle_Form_DataField_EmailFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_EmailFieldType(dataField) %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -426,7 +426,7 @@
 	{{ _self.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS/CoreBundle_Form_DataField_IconFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_IconFieldType(dataField) %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -442,7 +442,7 @@
 	{{ _self.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS/CoreBundle_Form_DataField_ColorPickerFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_ColorPickerFieldType(dataField) %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -461,7 +461,7 @@
 
 
 
-{% macro EMS/CoreBundle_Form_DataField_RadioFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_RadioFieldType(dataField) %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -477,7 +477,7 @@
 	{{ _self.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS/CoreBundle_Form_DataField_ChoiceFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_ChoiceFieldType(dataField) %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -501,7 +501,7 @@
 	{{ _self.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS/CoreBundle_Form_DataField_CheckboxFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_CheckboxFieldType(dataField) %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -521,7 +521,7 @@
 	{{ _self.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS/CoreBundle_Form_DataField_NumberFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_NumberFieldType(dataField) %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -537,7 +537,7 @@
 	{{ _self.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS/CoreBundle_Form_DataField_IntegerFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_IntegerFieldType(dataField) %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -553,7 +553,7 @@
 	{{ _self.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS/CoreBundle_Form_DataField_DateFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_DateFieldType(dataField) %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -576,7 +576,7 @@
 	{{ _self.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS/CoreBundle_Form_DataField_DateRangeFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_DateRangeFieldType(dataField) %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -620,7 +620,7 @@
 	{{ _self.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS/CoreBundle_Form_DataField_TimeFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_TimeFieldType(dataField) %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}

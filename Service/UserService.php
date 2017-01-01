@@ -66,7 +66,6 @@ class UserService {
 	 */
 	public function getCurrentUser() {
 		if(!$this->currentUser){
-			dump($this->tokenStorage->getToken());
 			$username = $this->tokenStorage->getToken()->getUsername();
 			$this->currentUser = $this->getUser($username);
 		}

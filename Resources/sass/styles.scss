@@ -15,11 +15,13 @@
 @import "bootstrap-datepicker";
 @import "select2";
 @import "AdminLTE";
+@import "iCheck-square-blue";
 
-@import "../public/bower/bootstrap-fileinput/sass/fileinput";
-@import "../public/bower/bootstrap-daterangepicker/daterangepicker";
-@import "../public/bower/components-font-awesome/scss/font-awesome";
-@import "../public/bower/Ionicons/scss/ionicons";
-@import "../public/bower/bootstrap-select/sass/bootstrap-select";
+@import "../../bower/bootstrap-fileinput/sass/fileinput";
+@import "../../bower/bootstrap-daterangepicker/daterangepicker";
+@import "../../bower/components-font-awesome/scss/font-awesome";
+@import "../../bower/Ionicons/scss/ionicons";
+@import "../../bower/bootstrap-select/sass/bootstrap-select";
+
 
 @import "ems";

@@ -1,5 +1,5 @@
 {
-  "name": "EMSCoreBundle",
+  "name": "elasticms-core-bundle",
   "homepage": "https://github.com/ems-project/EMSCoreBundle",
   "authors": [
     "Mathieu De Keyzer <mathieu@dekeyzer.net>"

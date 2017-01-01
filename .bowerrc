@@ -1,5 +1,5 @@
 {
-  "directory": "Resources/public/bower/",
+  "directory": "bower/",
   "analytics": false,
   "timeout": 120000
 }

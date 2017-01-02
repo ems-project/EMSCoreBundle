@@ -4,7 +4,7 @@ namespace EMS\CoreBundle\Repository;
 
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Notification;
-use EMS\CoreBundle\Entity\UserInterface;
+use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Repository\TemplateRepository;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use EMS\CoreBundle\Entity\Revision;
@@ -51,7 +51,7 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
 	}
 	
 	
-	public function countRejectedForUser(UserInterface $user, $contentTypes = null, $environments = null, $templates = null) {
+	public function countRejectedForUser(User $user, $contentTypes = null, $environments = null, $templates = null) {
 		
 		$query = $this->createQueryBuilder('n')
 		->select('COUNT(n)')
@@ -70,10 +70,10 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
 	/**
 	 * Count notifications for logged user
 	 * 
-	 * @param UserInterface $user
+	 * @param User $user
 	 * @return int
 	 */
-	public function countPendingByUserRoleAndCircle(UserInterface $user, $contentTypes = null, $environments = null, $templates = null) {
+	public function countPendingByUserRoleAndCircle(User $user, $contentTypes = null, $environments = null, $templates = null) {
 		
 		$templateIds = $this->getTemplatesIdsForUser($user, $contentTypes);
 		
@@ -123,10 +123,10 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
 	/**
 	 * Select sent notifications for logged user
 	 *
-	 * @param UserInterface $user
+	 * @param User $user
 	 * @return array Notification
 	 */
-	public function findByPendingAndRoleAndCircleForUserSent(UserInterface $user, $from, $limit, $contentTypes = null, $environments = null, $templates = null) {
+	public function findByPendingAndRoleAndCircleForUserSent(User $user, $from, $limit, $contentTypes = null, $environments = null, $templates = null) {
 		$templateIds = $this->getTemplatesIdsForUserFrom($user, $contentTypes);
 	
 		
@@ -178,7 +178,7 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
 	
 	}
 
-	public function countForSent(UserInterface $user) {
+	public function countForSent(User $user) {
 		$templateIds = $this->getTemplatesIdsForUserFrom($user);
 	
 	
@@ -218,7 +218,7 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
 	}
 	
 	
-	public function findRejectedForUser(UserInterface $user, $from, $limit, $contentTypes = null, $environments = null, $templates = null) {
+	public function findRejectedForUser(User $user, $from, $limit, $contentTypes = null, $environments = null, $templates = null) {
 	
 		$qb = $this->createQueryBuilder('n')
 		->select('n')
@@ -248,10 +248,10 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
 	/**
 	 * Select notifications for logged user
 	 *
-	 * @param UserInterface $user
+	 * @param User $user
 	 * @return array Notification
 	 */
-	public function findByPendingAndUserRoleAndCircle(UserInterface $user, $from, $limit, $contentTypes = null, $environments = null, $templates = null) {
+	public function findByPendingAndUserRoleAndCircle(User $user, $from, $limit, $contentTypes = null, $environments = null, $templates = null) {
 	
 		$templateIds = $this->getTemplatesIdsForUser($user, $contentTypes);
 	
@@ -283,10 +283,10 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
 	/**
 	 * Limit template by user role and user circles
 	 * 
-	 * @param UserInterface $user
+	 * @param User $user
 	 * @return array() of templateId
 	 */
-	 private function getTemplatesIdsForUser(UserInterface $user, $contentTypes = null) {
+	 private function getTemplatesIdsForUser($user, $contentTypes = null) {
 	 	$circles = $user->getCircles();
 		 
 	 	/** @var EntityManager $em */
@@ -318,10 +318,10 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
 	/**
 	 * Limit template by user role and user circles
 	 * 
-	 * @param UserInterface $user
+	 * @param User $user
 	 * @return array() of templateId
 	 */
-	 private function getTemplatesIdsForUserFrom(UserInterface $user, $contentTypes = null) {
+	 private function getTemplatesIdsForUserFrom($user, $contentTypes = null) {
 	 	$circles = $user->getCircles();
 		 
 	 	/** @var EntityManager $em */

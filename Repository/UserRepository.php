@@ -20,7 +20,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
 			])->getQuery()->getResult();
 			
 		if(!empty($circles)){
-			/**@var \EMS\CoreBundle\Entity\UserInterface $user*/
+			/**@var \EMS\CoreBundle\Entity\User $user*/
 			foreach ($resultSet as $idx => $user){
 				if(empty(array_intersect($circles, $user->getCircles()))){
 					unset($resultSet[$idx]);

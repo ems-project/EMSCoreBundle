@@ -37,16 +37,16 @@ class AuthToken
     protected $modified;
 
     /**
-     * @ORM\ManyToOne(targetEntity="UserInterface", inversedBy="authTokens")
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="authTokens")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
-     * @var UserInterface
+     * @var User
      */
     protected $user;
 
     /**
      * Constructor: initialize the authentication key
      */
-    function __construct(UserInterface $user){
+    function __construct(User $user){
     	$this->value = base64_encode(random_bytes(50));
     	$this->user = $user;
     }
@@ -148,11 +148,11 @@ class AuthToken
     /**
      * Set user
      *
-     * @param \EMS\CoreBundle\Entity\UserInterface $user
+     * @param \EMS\CoreBundle\Entity\User $user
      *
      * @return AuthToken
      */
-    public function setUser(\EMS\CoreBundle\Entity\UserInterface $user = null)
+    public function setUser(\EMS\CoreBundle\Entity\User $user = null)
     {
         $this->user = $user;
 
@@ -162,7 +162,7 @@ class AuthToken
     /**
      * Get user
      *
-     * @return \EMS\CoreBundle\Entity\UserInterface
+     * @return \EMS\CoreBundle\Entity\User
      */
     public function getUser()
     {

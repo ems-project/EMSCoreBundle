@@ -1,7 +1,7 @@
 <?php
 namespace EMS\CoreBundle\Controller;
 
-use EMS\CoreBundle\Entity\UserInterface;
+use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Doctrine\ORM\EntityManager;
@@ -28,7 +28,7 @@ class UserController extends AppController
 		$em = $this->getDoctrine()->getManager();
 		
 		/** @var EntityRepository $repository */
-		$repository = $em->getRepository('EMSCoreBundle:UserInterface');
+		$repository = $em->getRepository('EMSCoreBundle:User');
 		
 		$users = $repository->findAll();
 		return $this->render( 'EMSCoreBundle:user:index.html.twig', [
@@ -43,7 +43,7 @@ class UserController extends AppController
 	 */
 	public function addUserAction(Request $request)
 	{
-		$user = new UserInterface();
+		$user = new User();
 		$form = $this->createFormBuilder($user)
 		->add('username', null, array('label' => 'form.username', 'translation_domain' => 'FOSUserBundle'))
 		->add('email', LegacyFormHelper::getType('Symfony\Component\Form\Extension\Core\Type\EmailType'), array('label' => 'form.email', 'translation_domain' => 'FOSUserBundle'))

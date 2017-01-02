@@ -5,7 +5,7 @@ namespace EMS\CoreBundle\Service;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Entity\UserInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use EMS\CoreBundle\Entity\AuthToken;
 
@@ -62,7 +62,7 @@ class UserService {
 	}
 	
 	/**
-	 * @return User
+	 * @return UserInterface
 	 */
 	public function getCurrentUser() {
 		if(!$this->currentUser){

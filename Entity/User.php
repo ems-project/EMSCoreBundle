@@ -4,7 +4,7 @@
 namespace EMS\CoreBundle\Entity;
 
 
-interface User
+interface UserInterface
 {
     /**
      * Get created

@@ -6,7 +6,7 @@ namespace EMS\CoreBundle\Service;
 use EMS\CoreBundle\Entity\Form\TreatNotifications;
 use EMS\CoreBundle\Entity\Notification;
 use EMS\CoreBundle\Entity\Template;
-use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Event\RevisionFinalizeDraftEvent;
 use EMS\CoreBundle\Event\RevisionNewDraftEvent;
 use EMS\CoreBundle\Event\RevisionPublishEvent;
@@ -444,7 +444,7 @@ class NotificationService {
 		$this->response($notification, $treatNotifications, 'rejected');	
 	}
 
-	private function buildBodyPart(User $user, Template $template, $as) {
+	private function buildBodyPart(UserInterface $user, Template $template, $as) {
 		$em = $this->doctrine->getManager();
 		/** @var NotificationRepository $repository */
 		$this->repository = $em->getRepository('EMSCoreBundle:Notification');
@@ -462,7 +462,7 @@ class NotificationService {
 	
 	public static function usersToEmailAddresses($users){
 		$out = [];
-		/**@var User $user*/
+		/**@var UserInterface $user*/
 		foreach ($users as $user){
 			$out[$user->getEmail()] = $user->getDisplayName();
 		}

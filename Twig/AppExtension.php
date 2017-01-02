@@ -13,7 +13,7 @@ use EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory;
 use Symfony\Component\Form\FormError;
 use EMS\CoreBundle\Repository\I18nRepository;
 use EMS\CoreBundle\Entity\I18n;
-use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Form\DataField\DateRangeFieldType;
 use EMS\CoreBundle\Service\EnvironmentService;
 use Monolog\Logger;
@@ -118,7 +118,7 @@ class AppExtension extends \Twig_Extension
 	}
 	
 	function displayname($username){
-		/**@var User $user*/
+		/**@var UserInterface $user*/
 		$user = $this->userService->getUser($username);
 		if(!empty($user)){
 			return $user->getDisplayName();

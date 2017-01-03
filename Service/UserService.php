@@ -72,6 +72,20 @@ class UserService {
 		return $this->currentUser;
 	}
 	
+
+	public  function getExistingRoles()
+	{
+		$roleHierarchy = $this->securityRoles; //securityRolesthis->container->getParameter('security.role_hierarchy.roles');
+		$roles = array_keys($roleHierarchy);
+	
+		$theRoles['ROLE_USER'] = 'ROLE_USER';
+		 
+		foreach ($roles as $role) {
+			$theRoles[$role] = $role;
+		}
+		$theRoles['ROLE_API'] = 'ROLE_API';
+		return $theRoles;
+	}
 	
 	public function getUsersForRoleAndCircles($role, $circles) {
 		/**@var EntityManagerInterface $em*/

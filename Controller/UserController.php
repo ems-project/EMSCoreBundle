@@ -37,76 +37,6 @@ class UserController extends AppController
 	}
 	
 	
-	/**
-	 *
-	 * @Route("/user/add", name="user.add")
-	 */
-	public function addUserAction(Request $request)
-	{
-		$user = new User();
-		$form = $this->createFormBuilder($user)
-		->add('username', null, array('label' => 'form.username', 'translation_domain' => 'FOSUserBundle'))
-		->add('email', LegacyFormHelper::getType('Symfony\Component\Form\Extension\Core\Type\EmailType'), array('label' => 'form.email', 'translation_domain' => 'FOSUserBundle'))
-		->add('plainPassword', LegacyFormHelper::getType('Symfony\Component\Form\Extension\Core\Type\RepeatedType'), array(
-				'type' => LegacyFormHelper::getType('Symfony\Component\Form\Extension\Core\Type\PasswordType'),
-				'options' => array('translation_domain' => 'FOSUserBundle'),
-				'first_options' => array('label' => 'form.password'),
-				'second_options' => array('label' => 'form.password_confirmation'),
-				'invalid_message' => 'fos_user.password.mismatch',));
-		if ($circleObject = $this->container->getParameter('ems_core.circles_object')) {
-			$form->add('circles', ObjectPickerType::class, [
-				'multiple' => TRUE,
-				'type' => $circleObject,
-				'dynamicLoading' => false
-				
-			]);
-		}
-// 		$form = $form->add('expiresAt', DateType::class, array(
-// 				'required' => FALSE,
-//    				'widget' => 'single_text',
-// 				'format' => 'd/M/y',
-//  				'html5' => FALSE,
-// 				'attr' => array(
-// 						'class' => 'datepicker',
-// 				),
-// 		))
-		$form = $form->add('roles', ChoiceType::class, array('choices' => $this->getExistingRoles(),
-	        'label' => 'Roles',
-	        'expanded' => true,
-	        'multiple' => true,
-	        'mapped' => true,))
-	    ->add ( 'create', SubmitEmsType::class, [ 
-				'attr' => [ 
-						'class' => 'btn-primary btn-sm ' 
-				],
-				'icon' => 'fa fa-plus',
-		] )
-		->getForm();
-		
-		$form->handleRequest($request);
-		
-		if ($form->isSubmitted() && $form->isValid()) {
-			/** @var $userManager \FOS\UserBundle\Model\UserManagerInterface */
-			$userManager = $this->get('fos_user.user_manager');
-			
-			$continue = TRUE;
-			$continue = $this->userExist($user, 'add', $form);
-
-			if ($continue) {
-				$user->setEnabled(TRUE);
-				$userManager->updateUser($user);	
-				$this->addFlash(
-					'notice',
-					'User created!'
-					);
-				return $this->redirectToRoute('user.index');
-			}
-		}
-		
-		return $this->render('EMSCoreBundle:user:add.html.twig', array(
-				'form' => $form->createView()
-		));
-	}
 	
 	/**
 	 * 
@@ -300,11 +230,13 @@ class UserController extends AppController
 	
 	/**
 	 *
-	 * @Route("/user/{user}/apikey", name="user.apikey")
+	 * @Route("/user/{username}/apikey", name="EMS_user_apikey")
      * @Method({"POST"})
 	 */
-	public function apiKeyAction(User $user, Request $request)
+	public function apiKeyAction($username, Request $request)
 	{
+		$user = $this->getUserService()->getUser($username, false);
+		
 		$authToken = new AuthToken($user);
 
 		/** @var EntityManager $em */
@@ -360,17 +292,7 @@ class UserController extends AppController
 		return TRUE;
 	}
 	
-	private  function getExistingRoles()
-	{
-	    $roleHierarchy = $this->container->getParameter('security.role_hierarchy.roles');
-	    $roles = array_keys($roleHierarchy);
-
-	    $theRoles['ROLE_USER'] = 'ROLE_USER';
-	    
-	    foreach ($roles as $role) {
-	        $theRoles[$role] = $role;
-	    }
-	    $theRoles['ROLE_API'] = 'ROLE_API';
-	    return $theRoles;
+	private  function getExistingRoles() {
+	    return $this->getUserService()->getExistingRoles();
 	}
 }

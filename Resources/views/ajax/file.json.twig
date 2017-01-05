@@ -1,0 +1,12 @@
+{% extends 'EMSCoreBundle:ajax:notification.json.twig' %}
+
+{% block body %}
+	"sha1": {{ asset.sha1|json_encode|raw }},
+	"type": {{ asset.type|json_encode|raw }},
+	"available": {{ asset.available|json_encode|raw }},
+	"name": {{ asset.name|json_encode|raw }},
+	"size": {{ asset.size|json_encode|raw }},
+	"status": {{ asset.status|json_encode|raw }},
+	"uploaded": {{ asset.uploaded|json_encode|raw }},
+	"user": {{ asset.user|json_encode|raw }},
+{% endblock %}

@@ -25,13 +25,10 @@ class Configuration implements ConfigurationInterface
 	const DATEPICKER_FORMAT = 'dd/mm/yyyy';
 	const DATEPICKER_WEEKSTART = 1;
 	const DATEPICKER_DAYSOFWEEK_HIGHLIGHTED = [0,6];
-	const UPLOADING_FOLDER = null;
-	const STORAGE_SERVICES = [[ 'service' => 'ems.storage.filesystem', 'path' => null ]];
 	const AUDIT_INDEX = null;
 	const NOTIFICATION_PENDING_TIMEOUT = 'P0Y0M15DT0H0M0S';
 	const ALLOW_USER_REGISTRATION = false;
 	const LOCK_TIME = '+1 minutes';
-	const FILESYSTEM_STORAGE_FOLDER = null;
 	
 	
     /**
@@ -64,18 +61,6 @@ class Configuration implements ConfigurationInterface
 			        	->scalarNode('sender_name')->defaultValue(self::FROM_EMAIL_NAME)->end()
 			        ->end()
 		        ->end()
-		        ->arrayNode('storage_services')->defaultValue(self::STORAGE_SERVICES)
-		        	->prototype('array')
-				        ->children()
-				        	->scalarNode('service')->cannotBeEmpty()->end()
-				        	->scalarNode('path')->cannotBeEmpty()->end()
-				        	->scalarNode('identifier')->end()
-				        	->scalarNode('authkey')->end()
-				        	->end()
-				       ->end()
-		        ->end()
-		        ->scalarNode('filesystem_storage_folder')->defaultValue(self::FILESYSTEM_STORAGE_FOLDER)->end()
-		        ->scalarNode('uploading_folder')->defaultValue(self::UPLOADING_FOLDER)->end()
 		        ->scalarNode('audit_index')->defaultValue(self::AUDIT_INDEX)->end()
 		        ->scalarNode('date_time_format')->defaultValue(self::DATE_TIME_FORMAT)->end()
 		        ->scalarNode('notification_pending_timeout')->defaultValue(self::NOTIFICATION_PENDING_TIMEOUT)->end()

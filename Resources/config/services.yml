@@ -363,14 +363,8 @@ services:
         arguments: []
     ems.service.file:
         class: EMS\CoreBundle\Service\FileService
-        arguments: []
+        arguments: ['@doctrine']
         
-### Storage services ###
-    ems.storage.filesystem:
-        class: EMS\CoreBundle\Service\Storage\FileSystemStorage
-        arguments: ['%ems_core.filesystem_storage_folder%', '%kernel.root_dir%']
-        tags:
-            -  { name: ems.storage }
 ### command services ###
     ems.environment.ems:
         class: EMS\CoreBundle\Command\EmsCommand

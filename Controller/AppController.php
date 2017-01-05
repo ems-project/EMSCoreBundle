@@ -15,6 +15,7 @@ use EMS\CoreBundle\Service\NotificationService;
 use EMS\CoreBundle\Service\UserService;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
+use EMS\CoreBundle\Service\FileService;
 
 class AppController extends Controller
 {
@@ -32,6 +33,14 @@ class AppController extends Controller
 	protected function getElasticsearch()
 	{
 		return $this->get('app.elasticsearch');
+	}
+
+	/**
+	 * @return FileService
+	 */
+	protected function getFileService()
+	{
+		return $this->get('ems.service.file');
 	}
 
 	/**

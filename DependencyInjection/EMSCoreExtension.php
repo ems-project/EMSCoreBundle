@@ -35,17 +35,14 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.circles_object', $config['circles_object']);
         $container->setParameter('ems_core.elasticsearch_cluster', $config['elasticsearch_cluster']);
         $container->setParameter('ems_core.datepicker_daysofweek_highlighted', $config['datepicker_daysofweek_highlighted']);
-        $container->setParameter('ems_core.storage_services', $config['storage_services']);
         $container->setParameter('ems_core.datepicker_weekstart', $config['datepicker_weekstart']);
         $container->setParameter('ems_core.datepicker_format', $config['datepicker_format']);
-        $container->setParameter('ems_core.uploading_folder', $config['uploading_folder']);
         $container->setParameter('ems_core.audit_index', $config['audit_index']);
         $container->setParameter('ems_core.date_time_format', $config['date_time_format']);
         $container->setParameter('ems_core.notification_pending_timeout', $config['notification_pending_timeout']);
         $container->setParameter('ems_core.allow_user_registration', $config['allow_user_registration']);
         $container->setParameter('ems_core.lock_time', $config['lock_time']);
         $container->setParameter('ems_core.template_options', $config['template_options']);
-        $container->setParameter('ems_core.filesystem_storage_folder', $config['filesystem_storage_folder']);
         
     }
     

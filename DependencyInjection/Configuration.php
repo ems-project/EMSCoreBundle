@@ -82,7 +82,7 @@ class Configuration implements ConfigurationInterface
 		        ->scalarNode('allow_user_registration')->defaultValue(self::ALLOW_USER_REGISTRATION)->end()
 		        ->scalarNode('lock_time')->defaultValue(self::LOCK_TIME)->end()
 		        ->arrayNode('template_options')->defaultValue([])
-		        	->prototype('array')
+		        	->prototype('variable')
 		        	->end()
 		        ->end()
 	        ->end();

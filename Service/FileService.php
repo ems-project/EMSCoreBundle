@@ -213,6 +213,6 @@ class FileService {
 	 * @return string
 	 */
 	private function temporaryFilename($sha1) {
-		return sys_get_temp_dir().$sha1;
+		return sys_get_temp_dir().DIRECTORY_SEPARATOR.$sha1;
 	}
 }

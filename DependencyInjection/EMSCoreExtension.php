@@ -66,6 +66,8 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
 	    	'date_time_format' => isset($configs[0]['date_time_format'])?$configs[0]['date_time_format']:Configuration::DATE_TIME_FORMAT,
 	    	'allow_user_registration' => isset($configs[0]['allow_user_registration'])?$configs[0]['allow_user_registration']:Configuration::ALLOW_USER_REGISTRATION,
     		'user_login_route' => isset($configs[0]['user_login_route'])?$configs[0]['user_login_route']:Configuration::USER_LOGIN_ROUTE,
+    		'user_logout_route' => isset($configs[0]['user_logout_route'])?$configs[0]['user_logout_route']:Configuration::USER_LOGOUT_ROUTE,
+    		'user_profile_route' => isset($configs[0]['user_profile_route'])?$configs[0]['user_profile_route']:Configuration::USER_PROFILE_ROUTE,
 	    ];
 	    
 	    if(!empty($configs[0]['template_options'])){

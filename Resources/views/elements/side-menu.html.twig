@@ -17,7 +17,7 @@
 {#         	{% endif %}#}
         </div>
         <div class="pull-left info">
-          <p>{% if app.user %} <a href="{{ url('fos_user_profile_show') }}" class="">{{ app.user.displayName }}</a> {% else %} Anonymous user {% endif %}</p>
+          <p>{% if app.user %} <a href="{{ url(user_profile_route) }}" class="">{{ app.user.displayName }}</a> {% else %} Anonymous user {% endif %}</p>
           <!-- Status -->
           <a href="{{ url('elasticsearch.status') }}" id="status-overview"><i class="fa fa-circle"></i> Updating...</a>
         </div>

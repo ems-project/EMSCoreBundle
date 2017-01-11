@@ -30,6 +30,8 @@ class Configuration implements ConfigurationInterface
 	const ALLOW_USER_REGISTRATION = false;
 	const LOCK_TIME = '+1 minutes';
 	const USER_LOGIN_ROUTE = 'fos_user_security_login';
+	const USER_PROFILE_ROUTE = 'fos_user_profile_show';
+	const USER_LOGOUT_ROUTE = 'fos_user_security_logout';
 	
 	
     /**
@@ -68,6 +70,8 @@ class Configuration implements ConfigurationInterface
 		        ->scalarNode('allow_user_registration')->defaultValue(self::ALLOW_USER_REGISTRATION)->end()
 		        ->scalarNode('lock_time')->defaultValue(self::LOCK_TIME)->end()
 		        ->scalarNode('user_login_route')->defaultValue(self::USER_LOGIN_ROUTE)->end()
+		        ->scalarNode('user_profile_route')->defaultValue(self::USER_PROFILE_ROUTE)->end()
+		        ->scalarNode('user_logout_route')->defaultValue(self::USER_LOGOUT_ROUTE)->end()
 		        ->arrayNode('template_options')->defaultValue([])
 		        	->prototype('variable')
 		        	->end()

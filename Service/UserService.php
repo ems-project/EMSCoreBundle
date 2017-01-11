@@ -51,7 +51,7 @@ class UserService {
 		/**@var \Doctrine\ORM\EntityRepository */
 		$repository = $em->getRepository('EMSCoreBundle:User');
 		$user = $repository->findOneBy([
-				'usernameCanonical' => $username
+				'username' => $username
 		]);
 		
 		if(!empty($user) && $detachIt) {

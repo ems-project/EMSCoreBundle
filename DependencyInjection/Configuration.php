@@ -29,6 +29,7 @@ class Configuration implements ConfigurationInterface
 	const NOTIFICATION_PENDING_TIMEOUT = 'P0Y0M15DT0H0M0S';
 	const ALLOW_USER_REGISTRATION = false;
 	const LOCK_TIME = '+1 minutes';
+	const USER_LOGIN_ROUTE = 'fos_user_security_login';
 	
 	
     /**
@@ -66,6 +67,7 @@ class Configuration implements ConfigurationInterface
 		        ->scalarNode('notification_pending_timeout')->defaultValue(self::NOTIFICATION_PENDING_TIMEOUT)->end()
 		        ->scalarNode('allow_user_registration')->defaultValue(self::ALLOW_USER_REGISTRATION)->end()
 		        ->scalarNode('lock_time')->defaultValue(self::LOCK_TIME)->end()
+		        ->scalarNode('user_login_route')->defaultValue(self::USER_LOGIN_ROUTE)->end()
 		        ->arrayNode('template_options')->defaultValue([])
 		        	->prototype('variable')
 		        	->end()

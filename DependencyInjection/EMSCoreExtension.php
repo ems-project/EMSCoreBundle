@@ -65,6 +65,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
     		'datepicker_format' => isset($configs[0]['datepicker_format'])?$configs[0]['datepicker_format']:Configuration::DATEPICKER_FORMAT,
 	    	'date_time_format' => isset($configs[0]['date_time_format'])?$configs[0]['date_time_format']:Configuration::DATE_TIME_FORMAT,
 	    	'allow_user_registration' => isset($configs[0]['allow_user_registration'])?$configs[0]['allow_user_registration']:Configuration::ALLOW_USER_REGISTRATION,
+    		'user_login_route' => isset($configs[0]['user_login_route'])?$configs[0]['user_login_route']:Configuration::USER_LOGIN_ROUTE,
 	    ];
 	    
 	    if(!empty($configs[0]['template_options'])){

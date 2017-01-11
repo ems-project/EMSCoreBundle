@@ -64,8 +64,12 @@ class CollectionFieldType extends DataFieldType {
 						$grandChild->setParent($colItem);
 						$grandChild->setFieldType($childFieldType);
 						$grandChild->updateDataStructure($childFieldType);
-						
-						$grandChild->updateDataValue($item, $isMigration);
+						if(is_array($item)) {
+							$grandChild->updateDataValue($item, $isMigration);							
+						}
+						else  {
+							//TODO: add flash message
+						}
 						
 						$colItem->addChild($grandChild);
 					}

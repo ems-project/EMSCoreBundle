@@ -11,9 +11,11 @@
 			<div class="box-header with-border">
 				<i class="fa fa-users"></i>
 				<h3 class="box-title">Users</h3>
-				<a class="btn btn-xs btn-primary pull-right"
-					href="{{ path('user.add') }}"><i class="fa fa-plus"></i>
-					Add user</a>
+				{% if add_user_route %}
+					<a class="btn btn-xs btn-primary pull-right"
+						href="{{ path(add_user_route) }}"><i class="fa fa-plus"></i>
+						Add user</a>
+				{%endif%}
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
@@ -52,7 +54,7 @@
 									{% endfor %}
 								</td>
 								<td>
-									{% if user.enabled %}
+									{% if user.enabled is not defined or user.enabled  %}
 										<i class="fa fa-check"></i>
 									{% endif %}
 								</td>

@@ -46,6 +46,37 @@ class UserService {
 		
 	}
 	
+	public function getUserById($id) {
+		$em = $this->doctrine->getManager();
+		/**@var \Doctrine\ORM\EntityRepository */
+		$repository = $em->getRepository('EMSCoreBundle:User');
+		$user = $repository->findOneBy([
+				'id' => $id
+		]);
+		
+		return $user;
+	}
+	
+	public function findUserByEmail($email) {
+		$em = $this->doctrine->getManager();
+		/**@var \Doctrine\ORM\EntityRepository */
+		$repository = $em->getRepository('EMSCoreBundle:User');
+		$user = $repository->findOneBy([
+				'email' => $email
+		]);
+	
+		return $user;
+	}
+	
+	public function updateUser($user) {
+		$em = $this->doctrine->getManager();
+		$em->persist($user);
+		$em->flush();
+	
+		return $user;
+	}
+	
+	
 	public function getUser($username, $detachIt = true) {
 		$em = $this->doctrine->getManager();
 		/**@var \Doctrine\ORM\EntityRepository */

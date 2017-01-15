@@ -13,7 +13,6 @@ use EMS\CoreBundle\Event\RevisionPublishEvent;
 use EMS\CoreBundle\Event\RevisionUnpublishEvent;
 use EMS\CoreBundle\Repository\NotificationRepository;
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use FOS\UserBundle\Mailer\Mailer;
 use Monolog\Logger;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\Container;

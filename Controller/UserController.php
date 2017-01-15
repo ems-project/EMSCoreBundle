@@ -6,7 +6,6 @@ use EMS\CoreBundle\Form\Field\ObjectPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
-use FOS\UserBundle\Util\LegacyFormHelper;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -16,6 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\HttpFoundation\Request;
 use EMS\CoreBundle\Entity\AuthToken;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 
 class UserController extends AppController
 {
@@ -44,19 +44,17 @@ class UserController extends AppController
 	 */
 	public function editUserAction($id, Request $request)
 	{
-	
-		$userManager = $this->get('fos_user.user_manager');
-		$user = $userManager->findUserBy(array('id'=> $id));
+		$user = $this->getUserService()->getUserById($id);
 		// test if user exist before modified it
 		if(!$user){
 			throw $this->createNotFoundException('user not found');
 		}
+		
 	
 		$form = $this->createFormBuilder($user)
-		->add('email', LegacyFormHelper::getType('Symfony\Component\Form\Extension\Core\Type\EmailType'), array('label' => 'form.email', 'translation_domain' => 'FOSUserBundle'))
+		->add('email', EmailType::class, array('label' => 'form.email'))
 		->add('username', null, array(
 				'label' => 'form.username', 
-				'translation_domain' => 'FOSUserBundle',
 				'disabled' => true
 		))
 		->add('displayName', null, array(
@@ -68,7 +66,7 @@ class UserController extends AppController
 				'dynamicLoading' => true
 				
 		])
-		->add('enabled')
+		->add('enabled', CheckboxType::class)
 // 		->add('locked')
 // 		->add('expiresAt', DateType::class, array(
 // 				'required' => FALSE,
@@ -120,21 +118,21 @@ class UserController extends AppController
 		$form->handleRequest($request);
 	
 		if ($form->isSubmitted() && $form->isValid()) {
-			/** @var $userManager \FOS\UserBundle\Model\UserManagerInterface */
-			$userManager = $this->get('fos_user.user_manager');
-			$continue = TRUE;
-			$continue = $this->userExist($user, 'edit', $form);
+			$user = $form->getData();
+// 			dump($user);exit;
+// 			$continue = TRUE;
+// 			$continue = $this->userExist($user, 'edit', $form);
 			
-			if ($continue) {
-				$userManager->updateUser($user, false);
-				$this->getDoctrine()->getManager()->flush();
+// 			if ($continue) {
+				$this->getUserService()->updateUser($user);
+// 				$this->getDoctrine()->getManager()->flush();
 				$this->addFlash(
 						'notice',
 						'User was modified!'
 						);
 				return $this->redirectToRoute('user.index');
 			}
-		}
+// 		}
 	
 		return $this->render('EMSCoreBundle:user:edit.html.twig', array(
 				'form' => $form->createView(),
@@ -149,14 +147,13 @@ class UserController extends AppController
 	public function removeUserAction($id, Request $request)
 	{
 	
-		$userManager = $this->get('fos_user.user_manager');
-		$user = $userManager->findUserBy(array('id'=> $id));
+		$user = $this->getUserService()->getUserById($id);
 		// test if user exist before modified it
 		if(!$user){
 			throw $this->createNotFoundException('user not found');
 		}
 		
-		$userManager->deleteUser($user);
+		$this->getUserService()->deleteUser($user);
 		$this->getDoctrine()->getManager()->flush();
 		$this->addFlash(
 				'notice',
@@ -172,8 +169,7 @@ class UserController extends AppController
 	public function enablingUserAction($id, Request $request)
 	{
 	
-		$userManager = $this->get('fos_user.user_manager');
-		$user = $userManager->findUserBy(array('id'=> $id));
+		$user = $this->getUserService()->getUserById($id);
 		// test if user exist before modified it
 		if(!$user){
 			throw $this->createNotFoundException('user not found');
@@ -188,7 +184,7 @@ class UserController extends AppController
 			$message = $message . "enabled !";
 		}
 		
-		$userManager->updateUser($user);
+		$this->getUserService()->updateUser($user);
 		$this->getDoctrine()->getManager()->flush();
 		$this->addFlash(
 				'notice',
@@ -204,8 +200,7 @@ class UserController extends AppController
 	public function lockingUserAction($id, Request $request)
 	{
 	
-		$userManager = $this->get('fos_user.user_manager');
-		$user = $userManager->findUserBy(array('id'=> $id));
+		$user = $this->getUserService()->getUserById($id);
 		// test if user exist before modified it
 		if(!$user){
 			throw $this->createNotFoundException('user not found');
@@ -219,7 +214,7 @@ class UserController extends AppController
 			$message = $message . "locked !";
 		}
 		
-		$userManager->updateUser($user);
+		$this->getUserService()->updateUser($user);
 		$this->getDoctrine()->getManager()->flush();
 		$this->addFlash(
 				'notice',
@@ -273,9 +268,7 @@ class UserController extends AppController
 	 * Test if email or username exist return on add or edit Form
 	 */
 	private function userExist ($user, $action, $form) {
-		/** @var $userManager \FOS\UserBundle\Model\UserManagerInterface */
-		$userManager = $this->get('fos_user.user_manager');
-		$exists = array('email' => $userManager->findUserByEmail($user->getEmail()), 'username' => $userManager->findUserByUsername($user->getUsername()));
+		$exists = array('email' => $this->getUserService()->findUserByEmail($user->getEmail()), 'username' => $this->getUserService()->getUser($user->getUsername()));
 		$messages = array('email' => 'User email already exist!', 'username' => 'Username already exist!');
 		foreach ($exists as $key => $value) {
 			if ($value instanceof User) {

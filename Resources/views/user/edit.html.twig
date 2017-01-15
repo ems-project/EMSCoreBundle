@@ -1,7 +1,10 @@
-{% extends "FOSUserBundle::layout.html.twig" %}
+{% extends 'EMSCoreBundle::base.html.twig' %}
 
-{% block fos_user_content %}
-{% trans_default_domain 'FOSUserBundle' %}
+{% block title %}Edit user "{{ user.displayName }}"{% endblock %}
+{% block pagetitle %}Edit user "{{ user.displayName }}"{% endblock %} 
+{% block subtitle %}<small>User administration</small>{% endblock %} 
+
+{% block body %}
 	<div class="box box-primary">
 		<div class="box-header with-border">
 			<h3 class="box-title">Edit user {{ user.username }}</h3>
@@ -34,9 +37,89 @@
 	</div>
 	<!-- /.box -->
 
-{% endblock fos_user_content %}
-{% block extra_javascripts %}
+{% endblock body %}
+
+{% block javascripts %}
+	<script type="text/javascript">
+	function formatRepo (repo) {
+	    if (repo.loading) return repo.text;
+
+	    var markup = "<div class='select2-result-repository clearfix'>" +
+	      repo.text + "</div>";
+	      
+		return markup;
+	}
+	
+	function formatRepoSelection (repo) {
+	    return repo.text;
+	}
+
+	
+	$(document).ready(function() {
+		
+		$(".objectpicker").each(function(index){
+			var environment = $( this ).data('environment'); 
+			var type = $( this ).data('type'); 
+			var dynamicLoading = $( this ).data('dynamic-loading'); 
+
+			var params = {
+			  	escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+			  	templateResult: formatRepo, // omitted for brevity, see the source of this page
+			  	templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
+			};
+
+
+			if(dynamicLoading){
+			  	params.minimumInputLength = 1,
+				params.ajax = {
+					url: '{{ url("elasticsearch.api.search") }}',
+			    	dataType: 'json',
+			    	delay: 250,
+			    	data: function (params) {
+			      		return {
+				        q: params.term, // search term
+				        page: params.page,
+				        environment: environment,
+				        type: type
+				      };
+				    },
+					processResults: function (data, params) {
+						// parse the results into the format expected by Select2
+						// since we are using custom formatting functions we do not need to
+						// alter the remote JSON data, except to indicate that infinite
+						// scrolling can be used
+						params.page = params.page || 1;
+				
+				      	return {
+					        results: data.items,
+					        pagination: {
+					          more: (params.page * 30) < data.total_count
+					        }
+				      	};
+			    	},
+			    	cache: true
+			  	};
+			}
+			
+			$( this ).select2(params);
+	    });
+		
+		$('.datepicker').datepicker({
+			format: '{{ datepicker_format }}',
+			todayBtn: true,
+			todayHighlight: true,
+			weekStart: {{ datepicker_weekstart }},
+			daysOfWeekHighlighted: {{ datepicker_daysofweek_highlighted | json_encode }},
+			daysOfWeekDisabled: [],
+			multidate: false
+		});
+	});   
+    </script>
+	{% include 'EMSCoreBundle:app:menu.html.twig' with {
+		'item':  'user-index'
+	}%}
+
 	{% include "EMSCoreBundle:user:wysiwygOptionsJS.html.twig" with {
 		form: form
 	} %}
-{% endblock extra_javascripts %}
+{% endblock javascripts %}

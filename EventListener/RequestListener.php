@@ -24,19 +24,23 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 
 class RequestListener
 {
 	protected $twig;
 	protected $doctrine;
 	protected $logger;
+	/**@var \Symfony\Bundle\FrameworkBundle\Routing\Router*/
 	protected $router;
 	protected $container;
 	protected $authorizationChecker;
 	protected $session;
 	protected $allowUserRegistration;
+	protected $userLoginRoute;
+	protected $userRegistrationRoute;
 	
-	public function __construct(\Twig_Environment $twig, Registry $doctrine, Logger $logger, Router $router, Container $container, AuthorizationCheckerInterface $authorizationChecker, Session $session, $allowUserRegistration)
+	public function __construct(\Twig_Environment $twig, Registry $doctrine, Logger $logger, Router $router, Container $container, AuthorizationCheckerInterface $authorizationChecker, Session $session, $allowUserRegistration, $userLoginRoute, $userRegistrationRoute)
 	{
 		$this->twig = $twig;
 		$this->doctrine = $doctrine;
@@ -46,12 +50,14 @@ class RequestListener
 		$this->authorizationChecker = $authorizationChecker;
 		$this->session = $session;
 		$this->allowUserRegistration = $allowUserRegistration;
+		$this->userLoginRoute = $userLoginRoute;
+		$this->userRegistrationRoute = $userRegistrationRoute;
 	}
 
 	public function onKernelRequest(GetResponseEvent $event)
 	{
-		if($event->getRequest()->get('_route') === 'fos_user_registration_register' && !$this->allowUserRegistration) {
-			$response = new RedirectResponse($this->router->generate('fos_user_security_login', [
+		if($event->getRequest()->get('_route') === $this->userRegistrationRoute && !$this->allowUserRegistration) {
+			$response = new RedirectResponse($this->router->generate($this->userLoginRoute, [
 			]));
 			$event->setResponse($response);
 		}
@@ -64,7 +70,7 @@ class RequestListener
 		
 		try {
 			if (!($exception instanceof NotFoundHttpException) && !$this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')) {
-				$response = new RedirectResponse($this->router->generate('user.login'));
+				$response = new RedirectResponse($this->router->generate($this->userLoginRoute));
 				$event->setResponse($response);
 			}
 			else if($exception instanceof LockedException || $exception instanceof PrivilegeException) {
@@ -127,61 +133,66 @@ class RequestListener
     	if( $event->getRequest()->isMethod('POST') && $event->getResponse() instanceof RedirectResponse ){
     		/** @var RedirectResponse $redirect */
     		$redirect = $event->getResponse();
-    		$params = $this->router->match($redirect->getTargetUrl());
-    		
-    		if(isset($params['_route']) && $params['_route'] == "job.status" && isset($params['job'])){
-    			$this->logger->info('Job '.$params['job'].' can be started');
-    			
-    			/** @var \EMS\CoreBundle\Repository\JobRepository $jobRepository */
-    			$jobRepository = $this->doctrine->getRepository('EMSCoreBundle:Job');
-    			/** @var \EMS\CoreBundle\Entity\Job $job */
-    			$job = $jobRepository->find($params['job']);
-    			if($job && !$job->getDone()){
-    				
-    				$output = new JobOutput($this->doctrine, $job);
-    				$output->writeln("Job ready to be launch");
-    				
-    				try{
-	    				if(null !== $job->getService()){
-	    					try{
-			    				/** @var AbstractEmsCommand $command */
-			    				$command = $this->container->get($job->getService());
-	    						$input = new ArrayInput($job->getArguments());
-			    				$command->run($input, $output);    					
-		    					$output->writeln("Job done");
-	    					}
-	    					catch (ServiceNotFoundException $e){
-	    						$output->writeln("<error>Service not found</error>");
-	    					}
+    		try {
+	    		$params = $this->router->match($redirect->getTargetUrl());
+	    		
+	    		if(isset($params['_route']) && $params['_route'] == "job.status" && isset($params['job'])){
+	    			$this->logger->info('Job '.$params['job'].' can be started');
+	    			
+	    			/** @var \EMS\CoreBundle\Repository\JobRepository $jobRepository */
+	    			$jobRepository = $this->doctrine->getRepository('EMSCoreBundle:Job');
+	    			/** @var \EMS\CoreBundle\Entity\Job $job */
+	    			$job = $jobRepository->find($params['job']);
+	    			if($job && !$job->getDone()){
+	    				
+	    				$output = new JobOutput($this->doctrine, $job);
+	    				$output->writeln("Job ready to be launch");
+	    				
+	    				try{
+		    				if(null !== $job->getService()){
+		    					try{
+				    				/** @var AbstractEmsCommand $command */
+				    				$command = $this->container->get($job->getService());
+		    						$input = new ArrayInput($job->getArguments());
+				    				$command->run($input, $output);    					
+			    					$output->writeln("Job done");
+		    					}
+		    					catch (ServiceNotFoundException $e){
+		    						$output->writeln("<error>Service not found</error>");
+		    					}
+		    				}
+		    				else {
+		    					$command = $job->getCommand();
+		    					if(null === $command){
+		    						$command = "list";
+		    					}
+		    					
+		    					/** @var \AppKernel $kernel */
+		    					$kernel = $this->container->get('kernel');
+		    					$application = new Application($kernel);
+		    					$application->setAutoExit(false);
+		    					
+		    					
+		    					$input = new ArgvInput($this->getArgv("console ".$command));
+		    					$application->run($input, $output);
+			    				$output->writeln("Job done");
+		    				}
 	    				}
-	    				else {
-	    					$command = $job->getCommand();
-	    					if(null === $command){
-	    						$command = "list";
-	    					}
-	    					
-	    					/** @var \AppKernel $kernel */
-	    					$kernel = $this->container->get('kernel');
-	    					$application = new Application($kernel);
-	    					$application->setAutoExit(false);
-	    					
-	    					
-	    					$input = new ArgvInput($this->getArgv("console ".$command));
-	    					$application->run($input, $output);
-		    				$output->writeln("Job done");
+	    				catch (InvalidArgumentException $e){
+	    					$output->writeln("<error>".$e->getMessage()."</error>");
 	    				}
-    				}
-    				catch (InvalidArgumentException $e){
-    					$output->writeln("<error>".$e->getMessage()."</error>");
-    				}
-    		
-    				$job->setDone(true);
-    				$job->setProgress(100);
-    				
-    				$this->doctrine->getManager()->persist($job);
-    				$this->doctrine->getManager()->flush($job);
-    				$this->logger->info('Job '.$params['job'].' completed.');
-    			}
+	    		
+	    				$job->setDone(true);
+	    				$job->setProgress(100);
+	    				
+	    				$this->doctrine->getManager()->persist($job);
+	    				$this->doctrine->getManager()->flush($job);
+	    				$this->logger->info('Job '.$params['job'].' completed.');
+	    			}
+	    		}
+    		}
+    		catch(ResourceNotFoundException $e) {
+    			//not an internal redirect
     		}
     	}
     	

@@ -46,6 +46,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.user_login_route', $config['user_login_route']);
         $container->setParameter('ems_core.user_logout_route', $config['user_logout_route']);
         $container->setParameter('ems_core.user_profile_route', $config['user_profile_route']);
+        $container->setParameter('ems_core.user_registration_route', $config['user_registration_route']);
         $container->setParameter('ems_core.add_user_route', $config['add_user_route']);
         
     }
@@ -72,6 +73,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
     		'user_login_route' => isset($configs[0]['user_login_route'])?$configs[0]['user_login_route']:Configuration::USER_LOGIN_ROUTE,
     		'user_logout_route' => isset($configs[0]['user_logout_route'])?$configs[0]['user_logout_route']:Configuration::USER_LOGOUT_ROUTE,
     		'user_profile_route' => isset($configs[0]['user_profile_route'])?$configs[0]['user_profile_route']:Configuration::USER_PROFILE_ROUTE,
+    		'user_registration_route' => isset($configs[0]['user_registration_route'])?$configs[0]['user_registration_route']:Configuration::USER_REGISTRATION_ROUTE,
     		'add_user_route' => isset($configs[0]['add_user_route'])?$configs[0]['add_user_route']:Configuration::ADD_USER_ROUTE,
 	    ];
 	    

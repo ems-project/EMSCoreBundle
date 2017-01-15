@@ -12,7 +12,7 @@ services:
             - { name: twig.extension, priority: -2000 }
     app.listener.request:
         class: EMS\CoreBundle\EventListener\RequestListener
-        arguments: ['@twig', '@doctrine', '@logger', '@router', '@service_container', '@security.authorization_checker', '@session', '%ems_core.allow_user_registration%']
+        arguments: ['@twig', '@doctrine', '@logger', '@router', '@service_container', '@security.authorization_checker', '@session', '%ems_core.allow_user_registration%', '%ems_core.user_login_route%', '%ems_core.user_registration_route%']
         tags:
             - { name: kernel.event_listener, event: kernel.controller, method: provideTemplateTwigObjects, priority: -20 }
             - { name: kernel.event_listener, event: kernel.terminate, method: startJob }

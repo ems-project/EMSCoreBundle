@@ -90,7 +90,7 @@ var ajaxRequest = new function() {
     	
     }
     
-    this.get = function(url, data){
+    this.get = function(url, data, modal){
     	this.initRequest();
     	var self = this;
     	

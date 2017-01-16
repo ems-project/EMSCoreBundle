@@ -269,7 +269,7 @@ class CriteriaController extends AppController
 			
 			
 		if(!$valid){
-			return $this->render( 'EMSCoreBundle:view:custom:criteria_view.html.twig',[
+			return $this->render( 'EMSCoreBundle:view:custom/criteria_view.html.twig',[
 					'view' => $view,
 					'form' => $form->createView(),
 					'contentType' => $contentType,

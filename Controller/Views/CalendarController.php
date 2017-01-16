@@ -62,7 +62,7 @@ class CalendarController extends AppController
 			else {
 				$this->addFlash('warning', 'Object '.$ouuid.' not found');
 			}
-			return $this->render( 'EMSCoreBundle:view:custom:calendar_replan.json.twig', [
+			return $this->render( 'EMSCoreBundle:view:custom/calendar_replan.json.twig', [
 					'success' => true,
 			] );
 		}
@@ -144,7 +144,7 @@ class CalendarController extends AppController
 		
 		$data = $this->getElasticsearch()->search($searchQuery);
 		
-		return $this->render( 'EMSCoreBundle:view:custom:calendar_search.json.twig', [
+		return $this->render( 'EMSCoreBundle:view:custom/calendar_search.json.twig', [
 				'success' => true,
 				'data' => $data,
 				'field' => $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['dateRangeField']),

@@ -103,6 +103,7 @@ class CalendarViewType extends ViewType {
 				'light' => true,
 		]);
 		
+		$form->handleRequest($request);
 		
 		return [
 			'view' => $view,

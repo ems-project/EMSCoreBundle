@@ -306,7 +306,7 @@
 		{% endif %}
 		<dd>
 			{% if dataField.fieldType.displayOptions.displayTemplate %}
-				{{ dataField.fieldType.displayOptions.displayTemplate|generate_from_template({data: dataField.rawData})|raw }}
+				{{ dataField.fieldType.displayOptions.displayTemplate|generate_from_template({data: dataField.rawData, dataField: dataField})|raw }}
 			{% elseif dataField.rawData is iterable %}
 				Complex structure []
 			{% else %}

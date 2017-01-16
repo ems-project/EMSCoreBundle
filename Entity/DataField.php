@@ -653,6 +653,13 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         return $this;
     }
 	
+    public function getRootDataField() {
+    	$out = $this;
+    	while($out->getParent()){
+    		$out  = $out->getParent();
+    	}
+    	return $out;
+    }
     
     public function setMarked($marked)
     {

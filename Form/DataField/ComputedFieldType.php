@@ -31,7 +31,13 @@ class ComputedFieldType extends DataFieldType {
 	 */
 	public static function generateMapping(FieldType $current, $withPipeline){
 		if(!empty($current->getMappingOptions()) && !empty($current->getMappingOptions()['mappingOptions'])){
-			return [ $current->getName() =>  $current->getMappingOptions()['mappingOptions']];
+			try{
+				$mapping = json_decode($current->getMappingOptions()['mappingOptions']);
+				return [ $current->getName() =>  $mapping ];
+			}
+			catch(\Exception $e) {
+				//TODO send message to user, mustr move to service first
+			}
 		}
 		return [];
 	}

@@ -523,6 +523,7 @@ class DataService
 		$data = new DataField();
 		$data->setFieldType($revision->getContentType()->getFieldType());
 		$data->setOrderKey($revision->getContentType()->getFieldType()->getOrderKey());
+		$data->setRawData($revision->getRawData());
 		$revision->setDataField($data);
 		$revision->getDataField()->updateDataStructure($revision->getContentType()->getFieldType());
 		$object = $revision->getRawData();

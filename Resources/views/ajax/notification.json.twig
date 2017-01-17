@@ -8,14 +8,16 @@
 	{% if warning %}
 		"warning": {{ warning|json_encode|raw }},
 	{% endif %}
-	
 	{% set error = app.session.flashbag.get('error')  %}
 	{% if error %}
 		"error": {{ error|json_encode|raw }},
 	{% endif %}
-	{% block body %}{% endblock %}
-   "success": {{ success|json_encode|raw }}
     {% if revision_id is defined %}
 		"revision_id": {{ revision_id|json_encode|raw }},
 	{% endif %}
+    {% if uuid is defined %}
+		"uuid": {{ uuid|json_encode|raw }},
+	{% endif %}
+	{% block body %}{% endblock %}
+   "success": {{ success|json_encode|raw }}
 }

@@ -61,7 +61,7 @@ class CrudController extends AppController
 	/**
 	 * @Route("/api/{name}/finalize/{id}", defaults={"_format": "json"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
-     * @Method({"GET"})
+     * @Method({"POST"})
 	 */
 	public function finalizeAction($id, ContentType $contentType, Request $request) {
 		
@@ -69,10 +69,14 @@ class CrudController extends AppController
 			throw new BadRequestHttpException('You can not create content for a managed content type');	
 		}
 		
+		$out = [
+			'success' => 'false',
+		];
 		try {
 			$revision = $this->dataService()->getRevisionById($id, $contentType);
 			$newRevision = $this->dataService()->finalizeDraft($revision);
-			$isFinalize = !$newRevision->getDraft();
+			$out['success'] = !$newRevision->getDraft();
+			$out['uuid'] = $newRevision->getOuuid();
 			
 		} catch (\Exception $e) {
 			if (($e instanceof NotFoundHttpException) OR ($e instanceof DataStateException)) {
@@ -80,18 +84,16 @@ class CrudController extends AppController
 			} else {
 				$this->addFlash('error', 'The revision ' . $id . ' can not be finalized');
 			}
-			$isFinalize = false;
+			$out['success'] = false;
 			
 		}
-		return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
-				'success' => $isFinalize,
-		]);
+		return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', $out);
 	}
 	
 	/**
 	 * @Route("/api/{name}/discard/{id}", defaults={"_format": "json"})
 	 * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
-	 * @Method({"GET"})
+	 * @Method({"POST"})
 	 */
 	public function discardAction($id, ContentType $contentType, Request $request) {
 	

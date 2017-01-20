@@ -47,7 +47,7 @@ class CrudController extends AppController
 		    
 		} catch (\Exception $e) {
 			
-			$this->addFlash('error', 'The revision ' . $revision . ' can not be created');
+			$this->addFlash('error', 'The revision ' . $newRevision . ' can not be created');
 			$isCreated = false;
 		}
 		

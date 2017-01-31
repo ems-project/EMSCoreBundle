@@ -79,10 +79,11 @@ class CrudController extends AppController
 			$out['uuid'] = $newRevision->getOuuid();
 			
 		} catch (\Exception $e) {
+			
 			if (($e instanceof NotFoundHttpException) OR ($e instanceof DataStateException)) {
 				$this->addFlash('error', $e->getMessage());
 			} else {
-				$this->addFlash('error', 'The revision ' . $id . ' can not be finalized');
+				$this->addFlash('error', 'The revision ' . $id . ' can not be finalized: '.$e->getMessage());
 			}
 			$out['success'] = false;
 			

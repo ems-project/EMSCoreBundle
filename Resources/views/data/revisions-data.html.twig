@@ -76,25 +76,30 @@
 	
 	              <hr>
               {% endif %}
-              <strong><i class="fa fa-hourglass-end margin-r-5"></i> Pendings</strong>
+              
+              {% if revision.notifications|length > 0 %}
+	              <strong><i class="fa fa-hourglass-end margin-r-5"></i> Pendings</strong>
+	
+	              <p>
+					{% for notification in revision.notifications %}
+						{% if notification.status == 'pending'  %}
+			                <span class="label label-default"><i class="fa {{ notification.template.icon }}"></i> {{ notification.template.name }}</span>
+			            {% endif %}
+					{% endfor %}
+	              </p>
+	
+	              <hr>
+              {% endif %}
 
-              <p>
-				{% for notification in revision.notifications %}
-					{% if notification.status == 'pending'  %}
-		                <span class="label label-default"><i class="fa {{ notification.template.icon }}"></i> {{ notification.template.name }}</span>
-		            {% endif %}
-				{% endfor %}
-              </p>
-
-              <hr>
-
-              <strong><i class="fa fa-circle-o margin-r-5"></i> Circles</strong>
-
-              <p>
-              	{% for circle in revision.circles %}
-              		{{ circle|data_link|raw }}
-              	{% endfor %}
-              </p>
+              {% if revision.circles|length > 0 %}
+	              <strong><i class="fa fa-circle-o margin-r-5"></i> Circles</strong>
+	
+	              <p>
+	              	{% for circle in revision.circles %}
+	              		{{ circle|data_link|raw }}
+	              	{% endfor %}
+	              </p>
+              {% endif %}
             </div>
             <!-- /.box-body -->
           </div>

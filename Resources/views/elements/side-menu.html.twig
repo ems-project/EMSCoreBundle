@@ -46,7 +46,7 @@
 	      {% set searches = app.user.username|searches %}
 	      {% if searches|length > 0 %}
 	      <ul class="sidebar-menu">
-	        <li class="header">{{ app.user.username }}</li>
+	        <li class="header">{{ app.user.displayName }}</li>
 	        <!-- Optionally, you can add icons to the links -->
 	          <li class="">
 	          	<a href="#" class="">
@@ -63,6 +63,12 @@
 			</ul>
 			{% endif %}
 	{% endif %}
+
+      <!-- Application Menu -->
+		{% if application_menu_controller %}
+		  	{{ render(controller(application_menu_controller)) }}
+		{% endif %}
+      <!-- /Application Menu -->
 		
 	{% if contentTypes|length > 0 %}
       <ul class="sidebar-menu">

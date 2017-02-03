@@ -105,15 +105,21 @@ class ObjectChoiceCacheService
 				}
 				else{
 					if(!isset($this->fullyLoaded[$ref[0]])){
-						$alias = $this->contentTypeService->getByName($ref[0])->getEnvironment()->getAlias();
-						if($alias){
-							if(!array_key_exists($alias, $queries)){
-								$queries[$alias] = ['docs' => []];
+						$contentType = $this->contentTypeService->getByName($ref[0]);
+						if($contentType){
+							$alias = $contentType->getEnvironment()->getAlias();
+							if($alias){
+								if(!array_key_exists($alias, $queries)){
+									$queries[$alias] = ['docs' => []];
+								}
+								$queries[$alias]['docs'][] = [
+									"_type" => $ref[0],
+									"_id" => $ref[1],
+								];
 							}
-							$queries[$alias]['docs'][] = [
-								"_type" => $ref[0],
-								"_id" => $ref[1],
-							];
+							else {
+								$this->session->getFlashBag()->add('warning', 'ems was not able to find the alias for the content type "'.$ref[0].'"');
+							}
 						}
 						else {
 							$this->session->getFlashBag()->add('warning', 'ems was not able to find the content type "'.$ref[0].'"');

@@ -95,8 +95,10 @@ class DataService
 	}
 	
 	
-	public function unlockRevision(Revision $revision){
-		$lockerUsername = $this->tokenStorage->getToken()->getUsername();
+	public function unlockRevision(Revision $revision, $lockerUsername=null){
+		if(empty($lockerUsername)){
+			$lockerUsername = $this->tokenStorage->getToken()->getUsername();			
+		}
 		if($revision->getLockBy() === $lockerUsername && $revision->getLockUntil() > (new \DateTime())) { 
 			$this->revRepository->unlockRevision($revision->getId());
 		}
@@ -250,7 +252,12 @@ class DataService
 		$newRevision->setEndTime(null);
 		$newRevision->setDeleted(0);
 		$newRevision->setDraft(1);
-		$newRevision->setLockBy($this->tokenStorage->getToken()->getUsername());
+		if($byARealUser) {
+			$newRevision->setLockBy($this->tokenStorage->getToken()->getUsername());			
+		}
+		else {
+			$newRevision->setLockBy('DATA_SERVICE');
+		}
 		$newRevision->setLockUntil($until);
 		$newRevision->setRawData($rawdata);
 		
@@ -274,11 +281,22 @@ class DataService
 		
 	}
 	
+	public function buildForm(Revision $revision){
+		if( $revision->getDatafield() == NULL){
+			$this->loadDataStructure($revision);
+		}
+			
+		//Get the form from Factory
+		$builder = $this->formFactory->createBuilder(RevisionType::class, $revision);
+		$form = $builder->getForm();
+		return $form;
+	}
+	
 	public function finalizeDraft(Revision $revision, \Symfony\Component\Form\Form &$form=null, $username=null){
 		if($revision->getDeleted()){
 			throw new \Exception("Can not finalized a deleted revision");
 		}
-		if(null == $form) {
+		if(null == $form && empty($username)) {
 			if( $revision->getDatafield() == NULL){
 				$this->loadDataStructure($revision);
 			}
@@ -311,7 +329,7 @@ class DataService
 		
 		//Validation
 //    	if(!$form->isValid()){//Trying to work with validators
-  		if($this->isValid($form)){
+  		if(empty($form) || $this->isValid($form)){
 		
 			$config = [
 				'index' => $revision->getContentType()->getEnvironment()->getAlias(),
@@ -336,7 +354,7 @@ class DataService
 					$this->lockRevision($item, false, false, $username);
 					$item->removeEnvironment($revision->getContentType()->getEnvironment());
 					$em->persist($item);
-					$this->unlockRevision($item);
+					$this->unlockRevision($item, $username);
 				}
 			}
 				
@@ -348,7 +366,7 @@ class DataService
 			$em->flush();
 			
 
-			$this->unlockRevision($revision);
+			$this->unlockRevision($revision, $username);
 			$this->dispatcher->dispatch(RevisionFinalizeDraftEvent::NAME,  new RevisionFinalizeDraftEvent($revision));
 		
 		} else {

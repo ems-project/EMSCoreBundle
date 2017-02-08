@@ -54,6 +54,33 @@ class CrudController extends AppController
 		return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
 				'success' => $isCreated,
 				'revision_id' => $newRevision->getId(),
+			    'ouuid' => $newRevision->getOuuid(),
+		]);
+	}
+	
+	
+	/**
+	 * @Route("/api/{name}/{ouuid}", defaults={"ouuid": null, "_format": "json"})
+	 * @Route("/api/{name}/get/{ouuid}", defaults={"ouuid": null, "_format": "json"})
+     * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
+     * @Method({"GET"})
+	 */
+	public function getAction($ouuid, ContentType $contentType) {
+		
+		try {
+			$revision = $this->dataService()->getNewestRevision($contentType->getName(), $ouuid);
+		    $isFound = (isset($revision)) ?  true : false;
+		    
+		} catch (\Exception $e) {
+			
+			$this->addFlash('error', 'The revision for id '.$ouuid.' can not be found');
+			$isFound = false;
+		}
+		
+		return $this->render( 'EMSCoreBundle:ajax:revision.json.twig', [
+				'success' => $isFound,
+				'revision' => $revision->getRawData(),
+				'ouuid' => $revision->getOuuid(),
 		]);
 	}
 	
@@ -76,7 +103,7 @@ class CrudController extends AppController
 			$revision = $this->dataService()->getRevisionById($id, $contentType);
 			$newRevision = $this->dataService()->finalizeDraft($revision);
 			$out['success'] = !$newRevision->getDraft();
-			$out['uuid'] = $newRevision->getOuuid();
+			$out['ouuid'] = $newRevision->getOuuid();
 			
 		} catch (\Exception $e) {
 			

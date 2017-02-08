@@ -1,0 +1,7 @@
+{% extends 'EMSCoreBundle:ajax:notification.json.twig' %}
+
+{% block body %}
+  {% if revision is defined %}
+		"revision": {{ revision|json_encode|raw }},
+	{% endif %}
+{% endblock %}

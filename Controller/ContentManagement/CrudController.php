@@ -69,12 +69,13 @@ class CrudController extends AppController
 		
 		try {
 			$revision = $this->dataService()->getNewestRevision($contentType->getName(), $ouuid);
-		    $isFound = (isset($revision)) ?  true : false;
-		    
+			
+			$isFound = (isset($revision) && !empty($revision)) ?  true : false;
+			
 		} catch (\Exception $e) {
 			
-			$this->addFlash('error', 'The revision for id '.$ouuid.' can not be found');
 			$isFound = false;
+			throw $e;
 		}
 		
 		return $this->render( 'EMSCoreBundle:ajax:revision.json.twig', [
@@ -130,7 +131,11 @@ class CrudController extends AppController
 		}
 	
 		try {
+			dump($id);
+			dump($contentType);
+			dump($request);
 			$revision = $this->dataService()->getRevisionById($id, $contentType);
+			dump($revision);
 			$this->dataService()->discardDraft($revision);
 			$isDiscard = ($revision->getId() != $id) ? true : false;
 
@@ -138,7 +143,7 @@ class CrudController extends AppController
 			if (($e instanceof NotFoundHttpException) OR ($e instanceof BadRequestHttpException)) {
 				 $this->addFlash('error', $e->getMessage());
 			} else {
-				 $this->addFlash('error', 'The revision ' . $id . ' can not be dicscarded');
+				 $this->addFlash('error', 'The revision ' . $id . ' can not be discarded. Reason: '.$e->getMessage());
 			}
 			$isDiscard = false;
 				

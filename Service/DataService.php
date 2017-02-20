@@ -404,12 +404,18 @@ class DataService
 				'deleted' => false,
 		]);
 	
-		if(count($revisions) != 1 || null != $revisions[0]->getEndTime()) {
-			throw new NotFoundHttpException('Unknown revision');
+		if(count($revisions) == 1){
+			if(null == $revisions[0]->getEndTime()){
+				$revision = $revisions[0];
+				return $revision;
+			} else {
+				throw new NotFoundHttpException('Revision for ouuid '.$ouuid.' and contenttype '.$type.' with end time '.$revisions[0]->getEndTime() );
+			}
+		} elseif(count($revisions) == 0){
+			throw new NotFoundHttpException('Revision not found for ouuid '.$ouuid.' and contenttype '.$type);
+		}  else {
+			throw new Exception('Too much newest revisions available for ouuid '.$ouuid.' and contenttype '.$type);
 		}
-		$revision = $revisions[0];
-	
-		return $revision;
 	}
 	
 
@@ -628,10 +634,8 @@ class DataService
 			throw new NotFoundHttpException('Unknown content type');
 		}
 		$contentType = $contentTypes[0];
-	
 		/** @var RevisionRepository $repository */
 		$repository = $em->getRepository('EMSCoreBundle:Revision');
-	
 		/** @var Revision $revision */
 		$revisions = $repository->findBy([
 				'id' => $id,
@@ -644,7 +648,6 @@ class DataService
 			throw new NotFoundHttpException('Unknown revision');
 		}
 		$revision = $revisions[0];
-	
 		return $revision;
 		
 	}

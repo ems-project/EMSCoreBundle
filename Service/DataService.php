@@ -644,11 +644,18 @@ class DataService
 				'deleted' => false,
 		]);
 	
-		if(count($revisions) != 1 || null != $revisions[0]->getEndTime()) {
-			throw new NotFoundHttpException('Unknown revision');
+		if(count($revisions) == 1){
+			if(null == $revisions[0]->getEndTime()){
+				$revision = $revisions[0];
+				return $revision;
+			} else {
+				throw new NotFoundHttpException('Revision for ouuid '.$id.' and contenttype '.$type.' with end time '.$revisions[0]->getEndTime() );
+			}
+		} elseif(count($revisions) == 0){
+			throw new NotFoundHttpException('Revision not found for ouuid '.$id.' and contenttype '.$type);
+		}  else {
+			throw new Exception('Too much newest revisions available for ouuid '.$id.' and contenttype '.$type);
 		}
-		$revision = $revisions[0];
-		return $revision;
 		
 	}
 	

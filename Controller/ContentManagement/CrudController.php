@@ -131,21 +131,18 @@ class CrudController extends AppController
 		}
 	
 		try {
-			dump($id);
-			dump($contentType);
-			dump($request);
 			$revision = $this->dataService()->getRevisionById($id, $contentType);
-			dump($revision);
 			$this->dataService()->discardDraft($revision);
 			$isDiscard = ($revision->getId() != $id) ? true : false;
 
 		} catch (\Exception $e) {
+			$isDiscard = false;
 			if (($e instanceof NotFoundHttpException) OR ($e instanceof BadRequestHttpException)) {
 				 $this->addFlash('error', $e->getMessage());
 			} else {
 				 $this->addFlash('error', 'The revision ' . $id . ' can not be discarded. Reason: '.$e->getMessage());
 			}
-			$isDiscard = false;
+			throw $e;
 				
 		}
 		return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [

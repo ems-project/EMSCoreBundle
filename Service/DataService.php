@@ -649,7 +649,7 @@ class DataService
 				$revision = $revisions[0];
 				return $revision;
 			} else {
-				throw new NotFoundHttpException('Revision for ouuid '.$id.' and contenttype '.$type.' with end time '.$revisions[0]->getEndTime() );
+				throw new Exception('Revision for ouuid '.$id.' and contenttype '.$type.' with end time '.$revisions[0]->getEndTime() );
 			}
 		} elseif(count($revisions) == 0){
 			throw new NotFoundHttpException('Revision not found for ouuid '.$id.' and contenttype '.$type);

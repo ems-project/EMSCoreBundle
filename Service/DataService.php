@@ -542,6 +542,60 @@ class DataService
 		$em->flush();
 	}
 	
+	public function delete($type, $ouuid){
+	
+		/** @var EntityManager $em */
+		$em = $this->doctrine->getManager();
+		
+		/** @var ContentTypeRepository $contentTypeRepo */
+		$contentTypeRepo = $em->getRepository('EMSCoreBundle:ContentType');
+		
+		$contentTypes = $contentTypeRepo->findBy([
+				'deleted' => false,
+				'name' => $type,
+		]);
+		if(!$contentTypes || count($contentTypes) != 1) {
+			throw new NotFoundHttpException('Content Type not found');
+		}
+		
+		/** @var RevisionRepository $repository */
+		$repository = $em->getRepository('EMSCoreBundle:Revision');
+		
+		
+		$revisions = $repository->findBy([
+				'ouuid' => $ouuid,
+				'contentType' => $contentTypes[0]
+		]);
+		
+		/** @var Revision $revision */
+		foreach ($revisions as $revision){
+			$this->lockRevision($revision, true);
+				
+			/** @var Environment $environment */
+			foreach ($revision->getEnvironments() as $environment){
+				try{
+					$this->client->delete([
+							'index' => $environment->getAlias(),
+							'type' => $revision->getContentType()->getName(),
+							'id' => $revision->getOuuid(),
+					]);
+					$this->session->getFlashBag()->add('notice', 'The object has been unpublished from environment '.$environment->getName());
+				}
+				catch(Missing404Exception $e){
+					if(!$revision->getDeleted()) {
+						$this->session->getFlashBag()->add('warning', 'The object was already removed from environment '.$environment->getName());
+					}
+					throw $e;
+				}
+				$revision->removeEnvironment($environment);
+			}
+			$revision->setDeleted(true);
+			$em->persist($revision);
+		}
+		$this->session->getFlashBag()->add('notice', 'The object have been marked as deleted! ');
+		$em->flush();
+	}
+		
 	public function loadDataStructure(Revision $revision){
 
 		$data = new DataField();

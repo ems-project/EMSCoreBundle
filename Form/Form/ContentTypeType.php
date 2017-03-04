@@ -33,6 +33,7 @@ class ContentTypeType extends AbstractType {
 				'firstLevelOnly' => true,
 				'mapping' => $mapping,
 				'types' => [
+						'text',
 						'string',
 						'integer'
 			]]);
@@ -43,6 +44,7 @@ class ContentTypeType extends AbstractType {
 				'mapping' => $mapping,
 				'types' => [
 						'string',
+						'text',
 			]]);
 			$builder->add ( 'circlesField', ContentTypeFieldPickerType::class, [
 				'required' => false,
@@ -50,6 +52,7 @@ class ContentTypeType extends AbstractType {
 				'mapping' => $mapping,
 				'types' => [
 						'string',
+						'text',
 			]]);
 			$builder->add ( 'emailField', ContentTypeFieldPickerType::class, [
 				'required' => false,
@@ -57,6 +60,7 @@ class ContentTypeType extends AbstractType {
 				'mapping' => $mapping,
 				'types' => [
 						'string',
+						'text',
 			]]);
 			$builder->add ( 'categoryField', ContentTypeFieldPickerType::class, [
 				'required' => false,
@@ -64,6 +68,7 @@ class ContentTypeType extends AbstractType {
 				'mapping' => $mapping,
 				'types' => [
 						'string',
+						'text',
 			]]);
 			$builder->add ( 'imageField', ContentTypeFieldPickerType::class, [
 				'required' => false,
@@ -85,6 +90,7 @@ class ContentTypeType extends AbstractType {
 				'mapping' => $mapping,
 				'types' => [
 						'string',
+						'text',
 						'integer',
 						'text',
 						'keyword'

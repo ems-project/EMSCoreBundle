@@ -97,7 +97,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 	 */
 	public static function buildObjectArray(DataField $data, array &$out) {
 		if (! $data->getFieldType ()->getDeleted ()) {
-			if($data->getFieldType()->getDisplayOptions()['multiple']){
+			$options = $data->getFieldType()->getDisplayOptions();
+			if(isset($options['multiple']) && $options['multiple']){
 				$out [$data->getFieldType ()->getName ()] = $data->getArrayTextValue();
 			}
 			else{

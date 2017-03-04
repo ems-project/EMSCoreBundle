@@ -146,8 +146,11 @@ class ContentTypeService {
 				
 		} catch ( BadRequest400Exception $e ) {
 			$contentType->setDirty ( true );
-			$message = json_decode($e->getPrevious()->getMessage(), true);
-			$this->session->getFlashBag()->add ( 'error', '<p><strong>You should try to rebuild the indexes</strong></p>
+			$message = json_decode($e->getMessage(), true);
+			if(!empty($e->getPrevious())) {
+				$message = json_decode($e->getPrevious()->getMessage(), true);				
+			}
+			$this->session->getFlashBag()->add ( 'error', '<p><strong>You should try to rebuild the indexes for '.$contentType->getName().'</strong></p>
 					<p>Message from Elasticsearch: <b>' . $message['error']['type']. '</b>'.$message['error']['reason'] . '</p>' );
 		}
 	}

@@ -5,17 +5,13 @@ namespace EMS\CoreBundle\Controller\ContentManagement;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle;
 use EMS\CoreBundle\Entity\UploadedAsset;
-use EMS\CoreBundle\Repository\UploadedAssetRepository;
-use Elasticsearch\Common\Exceptions\Conflict409Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class FileController extends AppController
 {

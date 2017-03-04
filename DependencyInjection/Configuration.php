@@ -13,12 +13,12 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 class Configuration implements ConfigurationInterface
 {
 	const PAGING_SIZE = 20;
-	const SHORTNAME = '<b>e</b>MS';
-	const NAME = '<b>elastic</b>MS';
+	const SHORTNAME = 'e<b>ms</b>';
+	const NAME = 'elastic<b>ms</b>';
 	const THEME_COLOR = 'blue';
 	const DATE_TIME_FORMAT = 'j/m/Y \a\t G:i';
 	const FROM_EMAIL_ADDRESS = 'noreply@example.com';
-	const FROM_EMAIL_NAME = 'elasticMS';
+	const FROM_EMAIL_NAME = 'elasticms';
 	const INSTANCE_ID = 'ems_';
 	const CIRCLES_OBJECT = null;
 	const ELASTICSEARCH_DEFAULT_SERVER = 'http://localhost:9200';

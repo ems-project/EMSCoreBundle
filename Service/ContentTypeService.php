@@ -99,7 +99,10 @@ class ContentTypeService {
 			}
 		} catch ( BadRequest400Exception $e ) {
 			$contentType->setHavePipelines( false );
-			$message = json_decode($e->getPrevious()->getMessage(), true);
+			$message = json_decode($e->getMessage(), true);
+			if(!empty($e->getPrevious())){
+				$message = json_decode($e->getPrevious()->getMessage(), true);			
+			}
 			$this->session->getFlashBag()->add ( 'error', '<p><strong>We was not able to generate pipelines, they are disabled</strong> Please consider to update your elasticsearch cluster (>=5.0) and/or install the ingest attachment plugin (bin/elasticsearch-plugin install ingest-attachment)</p>
 					<p>Message from Elasticsearch: <b>' . $message['error']['type']. '</b>'.$message['error']['reason'] . '</p>' );
 		}

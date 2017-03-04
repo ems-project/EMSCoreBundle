@@ -14,6 +14,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Elasticsearch\Common\Exceptions\BadRequest400Exception;
 
 class ReindexCommand extends EmsCommand
 {
@@ -107,12 +108,17 @@ class ReindexCommand extends EmsCommand
 					if($revision->getContentType()->getHavePipelines()){
 						$config['pipeline'] = $this->instanceId.$revision->getContentType()->getName();
 					}
-					
-					$status = $this->client->index($config);
-					if($status["_shards"]["failed"] == 1) {
+					try {
+						$status = $this->client->index($config);
+						if($status["_shards"]["failed"] == 1) {
+							$error++;
+						} else {
+							$count++;				
+						}						
+					}
+					catch(BadRequest400Exception $e){
+						$this->session->getFlashBag()->add('warning', 'The revision '.$revision->getId().' of '.$revision->getContentType()->getName().':'.$revision->getOuuid().' through an error during indexing');
 						$error++;
-					} else {
-						$count++;				
 					}
 				}
 				$progress->advance();

@@ -566,8 +566,7 @@
 			<ul>
 				{% for value in dataField.dateValues %}
 					<li>
-						{{ value|date(dataField.fieldType.displayOptions.displayFormat|convertJavaDateFormat) }}
-						({{ value|date(dataField.fieldType.mappingOptions.format|convertJavaDateFormat) }})
+						{{ value|date(dataField.fieldType.displayOptions.displayFormat|convertJavascriptDateFormat) }}
 					</li>
 				{% endfor %}
 			</ul>
@@ -600,13 +599,13 @@
 				{% if dateFrom %}
 					<li>
 						<b>From </b>
-						{{ dateFrom|date(dataField.fieldType.displayOptions.locale.format|convertJavascriptDateFormat) }}
+						{{ dateFrom|date(dataField.fieldType.displayOptions.locale.format|convertJavascriptDateRangeFormat) }}
 					</li>	
 				{% endif %}		
 				{% if dateTo %}
 					<li>
 						<b>To </b>
-						{{ dateTo|date(dataField.fieldType.displayOptions.locale.format|convertJavascriptDateFormat) }}
+						{{ dateTo|date(dataField.fieldType.displayOptions.locale.format|convertJavascriptDateRangeFormat) }}
 					</li>	
 				{% endif %}		
 				{% if dateFrom and dateTo %}

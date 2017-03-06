@@ -45,7 +45,7 @@ class DateRangeFieldType extends DataFieldType {
 			$dateTo = \DateTime::createFromFormat(\DateTime::ISO8601, $temp[$options['mappingOptions']['toDateMachineName']]);
 
 			if($dateFrom && $dateTo){
-				$displayformat = DateRangeFieldType::convertJavascriptDateFormat($options['displayOptions']['locale']['format']);
+				$displayformat = DateRangeFieldType::convertJavascriptDateRangeFormat($options['displayOptions']['locale']['format']);
 				return $dateFrom->format($displayformat) . ' - ' . $dateTo->format($displayformat);
 			}
 		}
@@ -58,7 +58,7 @@ class DateRangeFieldType extends DataFieldType {
 	 *
 	 */
 	public function setDataValue($input, DataField &$dataField, array $options){
-		$format = DateRangeFieldType::convertJavascriptDateFormat($options['displayOptions']['locale']['format']);
+		$format = DateRangeFieldType::convertJavascriptDateRangeFormat($options['displayOptions']['locale']['format']);
 		
 		$inputs = explode(' - ', $input);
 		
@@ -184,12 +184,13 @@ class DateRangeFieldType extends DataFieldType {
 	
 
 
-	public static function convertJavascriptDateFormat($format){
+	public static function convertJavascriptDateRangeFormat($format){
 		$dateFormat = $format;
-		//TODO: naive approch....find a way to comvert java date format into php
+		//see http://www.daterangepicker.com/#examples
 		$dateFormat = str_replace('DD', 'd', $dateFormat);
 		$dateFormat = str_replace('MM', 'm', $dateFormat);
 		$dateFormat = str_replace('YYYY', 'Y', $dateFormat);
+		$dateFormat = str_replace('YY', 'y', $dateFormat);
 		$dateFormat = str_replace('hh', 'h', $dateFormat);
 		$dateFormat = str_replace('HH', 'H', $dateFormat);
 		$dateFormat = str_replace('mm', 'i', $dateFormat);

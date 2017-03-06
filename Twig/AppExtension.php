@@ -67,6 +67,7 @@ class AppExtension extends \Twig_Extension
 				new \Twig_SimpleFilter('md5', array($this, 'md5')),
 				new \Twig_SimpleFilter('convertJavaDateFormat', array($this, 'convertJavaDateFormat')),
 				new \Twig_SimpleFilter('convertJavascriptDateFormat', array($this, 'convertJavascriptDateFormat')),
+				new \Twig_SimpleFilter('convertJavascriptDateRangeFormat', array($this, 'convertJavascriptDateRangeFormat')),
 				new \Twig_SimpleFilter('getTimeFieldTimeFormat', array($this, 'getTimeFieldTimeFormat')),
 				new \Twig_SimpleFilter('soapRequest', array($this, 'soapRequest')),
 				new \Twig_SimpleFilter('luma', array($this, 'relativeluminance')),
@@ -413,12 +414,17 @@ class AppExtension extends \Twig_Extension
 
 	public function convertJavaDateFormat($format)
 	{
-    	return DateFieldType::convertJavaDateFormat($format);
+		return DateFieldType::convertJavaDateFormat($format);
 	}
 
 	public function convertJavascriptDateFormat($format)
 	{
-    	return DateRangeFieldType::convertJavascriptDateFormat($format);
+    	return DateFieldType::convertJavascriptDateFormat($format);
+	}
+
+	public function convertJavascriptDateRangeFormat($format)
+	{
+    	return DateRangeFieldType::convertJavascriptDateRangeFormat($format);
 	}
 
 	public function getTimeFieldTimeFormat($options)

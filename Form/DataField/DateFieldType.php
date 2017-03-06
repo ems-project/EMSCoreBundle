@@ -37,7 +37,7 @@ class DateFieldType extends DataFieldType {
 	 */
 	public function getDataValue(DataField &$dataField, array $options){
 		
-		$format = DateFieldType::convertJavaDateFormat($options['displayOptions']['displayFormat']);
+		$format = DateFieldType::convertJavascriptDateFormat($options['displayOptions']['displayFormat']);
 
 		$dates = [];
 		if(null !== $dataField->getRawData()){
@@ -238,6 +238,22 @@ class DateFieldType extends DataFieldType {
 		return $dateFormat;
 	}
 	
+
+	public static function convertJavascriptDateFormat($format){
+		$dateFormat = $format;
+		//see https://bootstrap-datepicker.readthedocs.io/en/latest/options.html#format	
+		$dateFormat = str_replace('yyyy', 'Y', $dateFormat);
+		$dateFormat = str_replace('yy', 'y', $dateFormat);
+		$dateFormat = str_replace('DD', 'l', $dateFormat);
+		$dateFormat = str_replace('D', 'D', $dateFormat);
+		$dateFormat = str_replace('dd', 'd', $dateFormat);
+		// 		$dateFormat = str_replace('d', 't', $dateFormat);
+		$dateFormat = str_replace('mm', 'm', $dateFormat);
+		// 		$dateFormat = str_replace('m', 'n', $dateFormat);
+		$dateFormat = str_replace('MM', 'F', $dateFormat);
+		$dateFormat = str_replace('M', 'M', $dateFormat);
+		return $dateFormat;
+	}
 	
 	/**
 	 *

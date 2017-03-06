@@ -63,7 +63,7 @@ class DateFieldType extends DataFieldType {
 	 */
 	public function setDataValue($input, DataField &$dataField, array $options){
 		
-		$format = DateFieldType::convertJavaDateFormat($options['displayOptions']['displayFormat']);
+		$format = DateFieldType::convertJavascriptDateFormat($options['displayOptions']['displayFormat']);
 		if($options['displayOptions']['multidate']){
 			$dates = explode(',', $input);
 		}
@@ -116,7 +116,10 @@ class DateFieldType extends DataFieldType {
 			foreach ($sourceArray as $idx => $child){
 				$dateObject = \DateTime::createFromFormat($format, $child);
 				if($dateObject){
-					$data[] = $dateObject->format(\DateTime::ISO8601);					
+					$data[] = $dateObject->format(\DateTime::ISO8601);		
+				}
+				else {
+					$dataField->addMessage("Bad date format:".$child);
 				}
 			}
 			$dataField->setRawData($data);
@@ -176,6 +179,7 @@ class DateFieldType extends DataFieldType {
 		return [
 				$current->getName() => array_merge([
 						"type" => "date",
+						"format" => "date_time_no_millis",
 				],  array_filter($current->getMappingOptions()))
 		];
 	}
@@ -265,13 +269,13 @@ class DateFieldType extends DataFieldType {
 		$optionsForm = $builder->get ( 'options' );
 
 		// String specific display options
-// 		$optionsForm->get ( 'mappingOptions' )->add ( 'format', TextType::class, [
-// 				'required' => false,
-// 				'empty_data' => 'yyyy/MM/dd',
-// 				'attr' => [
-// 						'placeholder' => 'i.e. yyyy/MM/dd'
-// 				],
-// 		] );	
+		$optionsForm->get ( 'mappingOptions' )->add ( 'format', TextType::class, [
+				'required' => false,
+				'empty_data' => 'yyyy/MM/dd',
+				'attr' => [
+						'placeholder' => 'i.e. yyyy/MM/dd'
+				],
+		] );	
 		
  		// String specific display options
 		$optionsForm->get ( 'displayOptions' )->add ( 'displayFormat', TextType::class, [

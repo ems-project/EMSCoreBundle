@@ -49,6 +49,7 @@ class DateFieldType extends DataFieldType {
 				}
 				else{
 					$dates[] = null;
+					$dataField->addMessage("Bad date format:".$dataValue);
 					//TODO: should add a flash message
 				}
 			}			
@@ -248,13 +249,13 @@ class DateFieldType extends DataFieldType {
 		$optionsForm = $builder->get ( 'options' );
 
 		// String specific display options
-		$optionsForm->get ( 'mappingOptions' )->add ( 'format', TextType::class, [
-				'required' => false,
-				'empty_data' => 'yyyy/MM/dd',
-				'attr' => [
-						'placeholder' => 'i.e. yyyy/MM/dd'
-				],
-		] );	
+// 		$optionsForm->get ( 'mappingOptions' )->add ( 'format', TextType::class, [
+// 				'required' => false,
+// 				'empty_data' => 'yyyy/MM/dd',
+// 				'attr' => [
+// 						'placeholder' => 'i.e. yyyy/MM/dd'
+// 				],
+// 		] );	
 		
  		// String specific display options
 		$optionsForm->get ( 'displayOptions' )->add ( 'displayFormat', TextType::class, [

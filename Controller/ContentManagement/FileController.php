@@ -34,7 +34,7 @@ class FileController extends AppController
 		
 		$response = new BinaryFileResponse($file);
 		$response->headers->set('Content-Type', $type);
-		$response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $name);
+		$response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE, $name);
 		
 		return $response;
 	}

@@ -17,11 +17,22 @@ class FileController extends AppController
 {
 	
 	/**
+	 * @Route("/data/file/view/{sha1}" , name="ems.file.view")
+     * @Method({"GET"})
+	 */
+	public function viewFileAction($sha1, Request $request) {
+		return $this->getFile($sha1, ResponseHeaderBag::DISPOSITION_INLINE, $request);
+	}
+	
+	/**
 	 * @Route("/data/file/{sha1}" , name="file.download")
      * @Method({"GET"})
 	 */
 	public function downloadFileAction($sha1, Request $request) {
-
+		return $this->getFile($sha1, ResponseHeaderBag::DISPOSITION_ATTACHMENT, $request);
+	}
+	
+	private function getFile($sha1, $disposition, Request $request){
 		$name = $request->query->get('name', 'upload.bin');
 		$type = $request->query->get('type', 'application/bin');
 		
@@ -34,10 +45,11 @@ class FileController extends AppController
 		
 		$response = new BinaryFileResponse($file);
 		$response->headers->set('Content-Type', $type);
-		$response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE, $name);
+		$response->setContentDisposition($disposition, $name);
 		
 		return $response;
 	}
+	
 	
 	/**
 	 * @Route("/data/file/init-upload/{sha1}/{size}" , name="file.init-upload")

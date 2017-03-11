@@ -94,12 +94,8 @@ class ContentTypeType extends AbstractType {
 				'firstLevelOnly' => false,
 				'mapping' => $mapping,
 				'types' => [
-						'string',
-						'text',
 						'keyword',
 						'integer',
-						'text',
-						'keyword'
 			]]);
     	}
     	

@@ -71,10 +71,12 @@ class ContentTypeFieldChoiceList implements ChoiceListInterface {
 			$newPath = (empty($path)?'':$path.'.').$key;
 			if( isset($field['type']) && array_search($field['type'], $this->types) !== false ){
 				$this->choices[$newPath] = new ContentTypeFieldChoiceListItem($newPath, $newPath);				
-				if(isset($field['fields'])){
-					foreach ($field['fields'] as $fieldName => $field){
+			}
+			if(isset($field['fields'])){
+				foreach ($field['fields'] as $fieldName => $field){
+					if( isset($field['type']) && array_search($field['type'], $this->types) !== false ){
 						$fieldPath = $newPath.'.'.$fieldName;
-						$this->choices[$fieldPath] = new ContentTypeFieldChoiceListItem($fieldPath, $fieldPath);	
+						$this->choices[$fieldPath] = new ContentTypeFieldChoiceListItem($fieldPath, $fieldPath);
 					}
 				}
 			}

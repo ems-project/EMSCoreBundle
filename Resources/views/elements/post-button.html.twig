@@ -1,4 +1,4 @@
-{% if message is defined %}
+{% trans_default_domain 'EMSCoreBundle' %}{% if message is defined %}
 <div class="btn-group">
   <button type="button" class="btn {% if class is defined %}{% else %}btn-sm{% endif %} btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     	{% if icon is defined %}

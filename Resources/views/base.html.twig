@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% trans_default_domain 'EMSCoreBundle' %}<!DOCTYPE html>
 <!--
 This is a starter template page. Use this page to start your new project from
 scratch. This page gets rid of all links and provides the needed markup only.
@@ -203,10 +203,14 @@ desired effect
               <!-- Menu Footer-->
               <li class="user-footer">
                 <div class="pull-left">
-                  <a href="{{ url(user_profile_route) }}" class="btn btn-default btn-flat">User profile</a>
+                  <a href="{{ url(user_profile_route) }}" class="btn btn-default btn-flat">{{ 'User profile'|trans }}</a>
                 </div>
                 <div class="pull-right">
-                  <a href="{{ url(user_logout_route) }}" class="btn btn-default btn-flat">Sign out</a>
+               		{% if is_granted('ROLE_PREVIOUS_ADMIN') %}
+               			<a href="{{ path('ems.user.index', {'_switch_user': '_exit'}) }}" class="btn btn-default btn-flat">{{ 'Exit'|trans }}</a>
+               		{% else %}
+               			<a href="{{ url(user_logout_route) }}" class="btn btn-default btn-flat">{{ 'Sign out'|trans }}</a>
+               		{% endif %}
                 </div>
               </li>
             </ul>

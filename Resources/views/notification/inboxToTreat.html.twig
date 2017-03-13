@@ -1,4 +1,4 @@
-{{ form_start(treatform) }}
+{% trans_default_domain 'EMSCoreBundle' %}{{ form_start(treatform) }}
 
 		{% if notifications|length <= 0  %}
 			<p>{{ 'No result for this filters combinaison'|trans }}: <a href="{{ url('notifications.inbox') }}">{{ 'reset filters' }}</a></p>

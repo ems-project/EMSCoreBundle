@@ -20,7 +20,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 class UserController extends AppController
 {
 	/**
-	 * @Route("/user", name="user.index"))
+	 * @Route("/user", name="ems.user.index"))
 	 */
 	public function indexAction(Request $request)
 	{
@@ -130,7 +130,7 @@ class UserController extends AppController
 						'notice',
 						'User was modified!'
 						);
-				return $this->redirectToRoute('user.index');
+				return $this->redirectToRoute('ems.user.index');
 			}
 // 		}
 	
@@ -159,7 +159,7 @@ class UserController extends AppController
 				'notice',
 				'User was deleted!'
 				);
-		return $this->redirectToRoute('user.index');
+		return $this->redirectToRoute('ems.user.index');
 	}
 	
 	/**
@@ -190,7 +190,7 @@ class UserController extends AppController
 				'notice',
 				$message
 				);
-		return $this->redirectToRoute('user.index');
+		return $this->redirectToRoute('ems.user.index');
 	}
 	
 	/**
@@ -220,7 +220,7 @@ class UserController extends AppController
 				'notice',
 				$message
 				);
-		return $this->redirectToRoute('user.index');
+		return $this->redirectToRoute('ems.user.index');
 	}
 	
 	/**
@@ -241,7 +241,7 @@ class UserController extends AppController
 		
 		$this->addFlash('notice', 'Here is a new API key for user '.$user->getUsername().' '.$authToken->getValue());
 		
-		return $this->redirectToRoute('user.index');
+		return $this->redirectToRoute('ems.user.index');
 	}
 	
 	/**

@@ -71,11 +71,13 @@
 											'icon': 'pencil'
 										}%}
 										{% if user.enabled %}
-											{% include 'EMSCoreBundle:elements:get-button.html.twig' with {
-												'url':  path('homepage', {'_switch_user': user.username}),
-												'label': 'Switch user',
-												'icon': 'refresh'
-											}%}
+											{% if not is_granted('ROLE_PREVIOUS_ADMIN') %}
+												{% include 'EMSCoreBundle:elements:get-button.html.twig' with {
+													'url':  path('homepage', {'_switch_user': user.username}),
+													'label': 'Switch user',
+													'icon': 'refresh'
+												}%}
+											{% endif %}
 											{% if not is_granted('ROLE_PREVIOUS_ADMIN') %}
 												{% include 'EMSCoreBundle:elements:post-button.html.twig' with {
 													'url': path('user.enabling', {'id': user.id}),

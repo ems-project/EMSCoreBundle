@@ -176,7 +176,7 @@ desired effect
 				} %}
                 
                 <p>
-                  {{ 'layout.logged_in_as'|trans({'%username%': app.user.username}) }}
+                  {{ 'Logged in as'|trans({'%username%': app.user.username}) }}
                   <small>Member since {{ app.user.created|date(date_time_format) }}</small>
                   <small>
                   	{% for role in app.user.roles %}

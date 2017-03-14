@@ -75,7 +75,7 @@
 												{% include 'EMSCoreBundle:elements:get-button.html.twig' with {
 													'url':  path('homepage', {'_switch_user': user.username}),
 													'label': 'Switch user',
-													'icon': 'refresh'
+													'icon': 'user-secret'
 												}%}
 											{% endif %}
 											{% if not is_granted('ROLE_PREVIOUS_ADMIN') %}

@@ -57,12 +57,34 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
     	// get all bundles
     	$bundles = $container->getParameter('kernel.bundles');
     	
+    	$coreVersion = false;
+    	//try to identify the ems core version
+    	if(file_exists($container->getParameter('kernel.root_dir').DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'composer.lock')) {
+    		
+    		$lockInfo = json_decode(file_get_contents($container->getParameter('kernel.root_dir').DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'composer.lock'), true);
+    		
+    		if(!empty($lockInfo['packages'])){
+    			foreach ($lockInfo['packages'] as $package){
+    				if(!empty($package['name']) && $package['name'] === 'elasticms/core-bundle'){
+    					if(!empty($package['version'])){
+    						$coreVersion = $package['version'];
+    					}
+    					break;
+    				}
+    			}
+    		}
+    		
+    	}
+    	
+    	
+    	
 	    $configs = $container->getExtensionConfig($this->getAlias());
 	    
 	    $globals = [
 	    	'theme_color' => isset($configs[0]['theme_color'])?$configs[0]['theme_color']:Configuration::THEME_COLOR,
     		'ems_name' => isset($configs[0]['name'])?$configs[0]['name']:Configuration::NAME,
     		'ems_shortname' => isset($configs[0]['shortname'])?$configs[0]['shortname']:Configuration::SHORTNAME,
+	    	'ems_core_version' => $coreVersion,
     		'date_time_format' => isset($configs[0]['date_time_format'])?$configs[0]['date_time_format']:Configuration::DATE_TIME_FORMAT,
    			'paging_size' => isset($configs[0]['paging_size'])?$configs[0]['paging_size']:Configuration::PAGING_SIZE,
    			'circles_object' => isset($configs[0]['circles_object'])?$configs[0]['circles_object']:Configuration::CIRCLES_OBJECT,
@@ -82,6 +104,9 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
 	    if(!empty($configs[0]['template_options'])){
 	    	$globals = array_merge($globals, $configs[0]['template_options']);
 	    }
+	    
+	    
+	    
 	    
 	    
 	    if (isset($bundles['TwigBundle'])) {

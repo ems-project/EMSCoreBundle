@@ -341,6 +341,9 @@ desired effect
   <footer class="main-footer no-print">
     <!-- To the right -->
     <div class="pull-right hidden-xs">
+    	{% if ems_core_version %}
+    		{{ 'Core %version%'|trans({'%version%': ems_core_version }) }}
+    	{% endif %}
       <span>With</span> Symfony {{ constant('Symfony\\Component\\HttpKernel\\Kernel::VERSION') }}
     </div>
     <!-- Default to the left -->

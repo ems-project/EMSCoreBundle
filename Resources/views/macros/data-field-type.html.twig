@@ -65,7 +65,7 @@
 	<div class="panel-body" >
 		{% if dataField.rawData and dataField.rawData.sha1 is defined %}
 			{% if dataField.rawData.sha1 and dataField.rawData.mimetype starts with 'image/' %}
-				<img src="{{ url('file.download', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) }}" class="img-responsive" alt="Image of the field {{ dataField.fieldType.name }}">
+				<img src="{{ url('ems.file.view', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) }}" class="img-responsive" alt="Image of the field {{ dataField.fieldType.name }}">
 			{% else %}
 				<ul>
 					<li>Sha1: {{ dataField.rawData.sha1 }}</li>
@@ -81,7 +81,10 @@
 	</div>
 	{% if dataField.rawData and dataField.rawData.sha1 is defined and dataField.rawData.sha1 %}
 		<div class="panel-footer" >
-			<a href="{{ url('file.download', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) }}" class="btn btn-small btn-primary"><i class="fa fa-download"></i>&nbsp;Download</a>
+			<div class="btn-group">
+				<a href="{{ url('file.download', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) }}" class="btn btn-small btn-primary"><i class="fa fa-download"></i>&nbsp;{{'Download'|trans}}</a>
+				<a href="{{ url('ems.file.view', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) }}" class="btn btn-small btn-primary"><i class="fa fa-eye"></i>&nbsp;{{'View'|trans}}</a>
+			</div>
 		</div>
 	{% endif %}
 </div>

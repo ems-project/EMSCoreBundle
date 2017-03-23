@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'ems';
-  src: url('../font/ems.eot?53712812');
-  src: url('../font/ems.eot?53712812#iefix') format('embedded-opentype'),
-       url('../font/ems.woff2?53712812') format('woff2'),
-       url('../font/ems.woff?53712812') format('woff'),
-       url('../font/ems.ttf?53712812') format('truetype'),
-       url('../font/ems.svg?53712812#ems') format('svg');
+  src: url('../fonts/ems.eot?53712812');
+  src: url('../fonts/ems.eot?53712812#iefix') format('embedded-opentype'),
+       url('../fonts/ems.woff2?53712812') format('woff2'),
+       url('../fonts/ems.woff?53712812') format('woff'),
+       url('../fonts/ems.ttf?53712812') format('truetype'),
+       url('../fonts/ems.svg?53712812#ems') format('svg');
   font-weight: normal;
   font-style: normal;
 }

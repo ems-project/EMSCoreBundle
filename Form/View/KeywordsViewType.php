@@ -87,7 +87,7 @@ class KeywordsViewType extends ViewType {
 		$searchQuery = [
 			'index' => $view->getContentType()->getEnvironment()->getAlias(),
 			'type' => $view->getContentType()->getName(),
-			'search_type' => 'count',
+// 			'search_type' => 'count',
 			'body' => $view->getOptions()['aggsQuery']
 		];
 		

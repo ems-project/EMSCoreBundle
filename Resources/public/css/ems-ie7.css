@@ -1,4 +1,4 @@
-[class^="icon-"], [class*=" icon-"] {
+[class^="ems-icon-"], [class*=" ems-icon-"] {
   font-family: 'ems';
   font-style: normal;
   font-weight: normal;
@@ -10,4 +10,4 @@
   /* font-size: 120%; */
 }
  
-.icon-ball_white { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe800;&nbsp;'); }
+.ems-icon-ball { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#x4f;&nbsp;'); }

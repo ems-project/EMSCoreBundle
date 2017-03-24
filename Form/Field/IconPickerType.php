@@ -8,6 +8,7 @@ class IconPickerType extends SelectPickerType {
 	
 	private $choices = [
 		 'not-defined' => null,
+		 'ems-ball' => 'ems-icon-ball',
 		 '500px' => 'fa fa-500px',
 		 'amazon' => 'fa fa-amazon',
 		 'balance-scale' => 'fa fa-balance-scale',

@@ -35,6 +35,7 @@
     "bootstrap-datepicker": "^1.6.0",
     "bootstrap-timepicker": "^0.5.2",
     "bootstrap-fileinput": "^4.3.2",
-    "bootstrap-daterangepicker": "^2.1.19"
+    "bootstrap-daterangepicker": "^2.1.19",
+    "ace-builds": "^1.2.6"
   }
 }

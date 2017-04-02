@@ -253,6 +253,48 @@ function addEventListeners(target){
 		this.addEventListener("drop", FileSelectHandler, false);
 	});
 
+	
+	target.find(".ems-code-editor").each(function(){
+		var pre = $(this).find('pre').get(0);
+		var hiddenField = $(this).find('input');
+		var editor = ace.edit(pre);
+		if(hiddenField.data('theme')){
+    	    editor.setTheme(hiddenField.data('theme'));
+		}
+		if(hiddenField.data('language')){
+    	    editor.session.setMode(hiddenField.data('language'));
+		}
+		var maxLines = 15;
+		if(hiddenField.data('max-lines') && hiddenField.data('max-lines') > 0){
+			maxLines = hiddenField.data('max-lines');
+		}
+		
+		if(hiddenField.data('disabled')){
+    		editor.setOptions({
+    		    readOnly: true,
+    		    highlightActiveLine: false,
+    		    highlightGutterLine: false,
+			    maxLines: maxLines
+    		});
+    		editor.renderer.$cursorLayer.element.style.opacity=0;
+    		editor.textInput.getElement().tabIndex=-1;
+    		editor.commands.commmandKeyBinding={};
+		}
+		else {
+			editor.setOptions({
+			    maxLines: maxLines
+			});
+		}
+	    editor.on("change", function(e){
+	    	hiddenField.val(editor.getValue());
+	    	if(e.action == 'remove'){
+    		    onFormChange();
+		    }
+// 	    	console.log(e);
+		});
+	});
+	
+
 	target.find('.remove-content-button').on('click', function(e) {
 		// prevent the link from creating a "#" on the URL
         e.preventDefault();

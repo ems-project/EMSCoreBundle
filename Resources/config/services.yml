@@ -107,6 +107,13 @@ services:
         tags:
             - { name: ems.form.datafieldtype, alias: wysiwyg }
             - { name: form.type }
+    ems.fieldtype.code:
+        class: EMS\CoreBundle\Form\DataField\CodeFieldType
+        calls:
+            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        tags:
+            - { name: ems.form.datafieldtype, alias: code }
+            - { name: form.type }
     ems.fieldtype.textarea:
         class: EMS\CoreBundle\Form\DataField\TextareaFieldType
         calls:

@@ -28,6 +28,7 @@ use ZipStream\ZipStream;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Entity\ContentType;
+use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 class ElasticsearchController extends AppController
 {
 	/**
@@ -82,12 +83,32 @@ class ElasticsearchController extends AppController
 	}
 	
 	/**
+	 * @Route("/health_check.{_format}", defaults={"_format": "html"}, name="health-check")
+	 */
+	public function healthCheckAction($_format) {		
+		try {
+			$client = $this->getElasticsearch();
+			$status = $client->cluster()->health();
+			if('red' === $status['status']) {
+				throw new \Exception('Elasticsearch cluster is red');
+			}
+			
+			return $this->render( 'EMSCoreBundle:elasticsearch:status.'.$_format.'.twig', [
+					'status' => $status['status']
+			] );	
+		} catch (\Exception $e) {
+			throw new ServiceUnavailableHttpException('Due to '.$e->getMessage());
+		}
+		
+	}
+	
+	/**
 	 * @Route("/status.{_format}", defaults={"_format": "html"}, name="elasticsearch.status"))
 	 */
 	public function statusAction($_format)
 	{
 		try {
-			$client = $this->get('app.elasticsearch');
+			$client = $this->getElasticsearch();
 			$status = $client->cluster()->health();
 			
 			if('html' === $_format && 'green' !== $status['status']){

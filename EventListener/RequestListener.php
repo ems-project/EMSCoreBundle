@@ -69,11 +69,12 @@ class RequestListener
 		$exception = $event->getException();
 		
 		try {
-			if (!($exception instanceof NotFoundHttpException) && !$this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')) {
-				$response = new RedirectResponse($this->router->generate($this->userLoginRoute));
-				$event->setResponse($response);
-			}
-			else if($exception instanceof LockedException || $exception instanceof PrivilegeException) {
+// 			if (!($exception instanceof NotFoundHttpException) && !$this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')) {
+// 				$response = new RedirectResponse($this->router->generate($this->userLoginRoute));
+// 				$event->setResponse($response);
+// 			}
+// 			else 
+			if($exception instanceof LockedException || $exception instanceof PrivilegeException) {
 				$this->session->getFlashBag()->add('error', $exception->getMessage());
 				/** @var LockedException $exception */
 				if(null == $exception->getRevision()->getOuuid()){

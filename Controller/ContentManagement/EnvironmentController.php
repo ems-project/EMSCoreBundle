@@ -155,11 +155,17 @@ class EnvironmentController extends AppController {
 			$page = 1;
 		}
 		
+		if(null != $request->query->get('orderDirection')){
+			$orderDirection = $request->query->get('orderDirection');
+		}
+		else{
+			$orderDirection = "ASC";
+		}
+		
 		if(null != $request->query->get('environment')){
 			$environment = $request->query->get('environment');
 			if (!$form->isSubmitted()){
 				$form->get('environment')->setData($environment);
-				
 			}
 		}
 		else{
@@ -196,7 +202,11 @@ class EnvironmentController extends AppController {
 					$page = $lastPage;
 				}
 	
-				$results = $repository->compareEnvironment($env->getId(), $withEnvi->getId(), ($page-1)*$paging_size, $paging_size);				
+				$results = $repository->compareEnvironment($env->getId(), 
+															$withEnvi->getId(), 
+															($page-1)*$paging_size, 
+															$paging_size,
+															$orderDirection);				
 			}
 			else {
 				$page = $lastPage = 1;

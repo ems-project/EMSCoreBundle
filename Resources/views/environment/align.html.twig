@@ -69,16 +69,13 @@
                   	<a href="#" onclick="javascript: $('.item-to-align').prop('checked', 'checked'); return false;"><i class="fa fa-check-square-o"></i></a> 
                   	<a href="#" onclick="javascript: $('.item-to-align').prop('checked', false); return false;"><i class="fa fa-square-o"></i></a>
                   </th>
-                  {% if app.request.query.get("orderDirection") is defined and app.request.query.get("orderDirection") == "desc" %}
-                    {% set orderIcon="fa-sort-asc" %}
-                    {% set orderDescription="Sort acending" %}
-                    {% set href=path(paginationPath, app.request.query.all|merge({("orderDirection"): "asc"})) %}
-                  {% else %}
-                    {% set orderIcon="fa-sort-desc" %}
-                    {% set orderDescription="Sort descending" %}
-                    {% set href=path(paginationPath, app.request.query.all|merge({("orderDirection"): "desc"})) %}
-                  {% endif %}
-                  <th><a href="{{ href }}" title="{{ orderDescription }}">Content type <i class="fa {{ orderIcon }}" aria-hidden="true"></i></a></th>
+                    {% set href=path(paginationPath, app.request.query.all|merge({("orderDirection"): orderDirection})) %}
+                  <th>{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {
+                   'orderHref': href,
+                   'orderDescription': orderDescription,
+                   'orderTitle': orderTitle,
+                   'orderIcon': orderIcon
+                  } %}</th>
                   <th>Label</th>
                   <th><span class="badge bg-{{ environments[environment].color }}" title="Circles:">{{ environment }}</span></th>
                   <th><span class="badge bg-{{ environments[withEnvironment].color }}" title="Circles:">{{ withEnvironment }}</span></th>

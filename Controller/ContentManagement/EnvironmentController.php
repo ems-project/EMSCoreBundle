@@ -161,6 +161,7 @@ class EnvironmentController extends AppController {
 		else{
 			$orderDirection = "ASC";
 		}
+		$orderDirection = strtoupper($orderDirection);
 		
 		if(null != $request->query->get('environment')){
 			$environment = $request->query->get('environment');
@@ -228,7 +229,18 @@ class EnvironmentController extends AppController {
 			$withEnv = 0;
 		}
 		
-		return $this->render ( 'EMSCoreBundle:environment:align.html.twig', [
+	    if($orderDirection == "DESC"){
+           $orderIcon = "fa-sort-asc";
+           $orderDescription = "Sort acending";
+           $otherOrderDirection = "ASC";
+	    } else {
+           $orderIcon = "fa-sort-desc";
+           $orderDescription = "Sort descending";
+           $otherOrderDirection = "DESC";
+	    }
+         $orderTitle = 'Content type';
+         
+         return $this->render ( 'EMSCoreBundle:environment:align.html.twig', [
 				'form' => $form->createView(),
 				'results' => $results,
 				'lastPage' => $lastPage,
@@ -241,8 +253,12 @@ class EnvironmentController extends AppController {
 				'withEnv' => $withEnv,
 				'environment' => $environment,
 				'withEnvironment' => $withEnvironment,
-				'environments' => $this->get('ems.service.environment')->getAll()
-		] );
+				'environments' => $this->get('ems.service.environment')->getAll(),
+         		'orderIcon' => $orderIcon,
+         		'orderDescription' => $orderDescription,
+         		'orderTitle' => $orderTitle,
+         		'orderDirection' => $otherOrderDirection,
+         ] );
 	}
 	
 	

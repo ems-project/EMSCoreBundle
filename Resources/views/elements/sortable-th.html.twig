@@ -1,0 +1,10 @@
+{% trans_default_domain 'EMSCoreBundle' %}{#
+  Parameters:
+    * orderHref (string) : the URL
+    * orderDescription (string) : "Sort ascending", "Sort descending"
+    * orderTitle (string) : The column name
+    * orderIcon (string) : "fa-sort-asc", "fa-sort-desc"
+#}
+{% spaceless %}
+<a href="{{ orderHref }}" title="{{ orderDescription }}">{{ orderTitle }} <i class="fa {{ orderIcon }}" aria-hidden="true"></i></a>
+{% endspaceless %}

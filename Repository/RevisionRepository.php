@@ -109,9 +109,8 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
 		return $foundRows[0]['foundRows'];
 	}
 	
-	public function compareEnvironment($source, $target, $from, $limit, $orderDirection = 'asc') {
+	public function compareEnvironment($source, $target, $from, $limit, $orderDirection = 'ASC') {
 		
-		$orderDirection = strtoupper($orderDirection);
 		$qb = $this->createQueryBuilder('r')
 			->select('c.id', 'c.color', 'c.labelField', 'c.name content_type_name', 'c.icon', 'r.ouuid', 'r.rawData', 'count(c.id) counter', 'min(concat(e.id, \'/\',r.id, \'/\', r.created)) minrevid', 'max(concat(e.id, \'/\',r.id, \'/\', r.created)) maxrevid')
 			->join('r.contentType', 'c')

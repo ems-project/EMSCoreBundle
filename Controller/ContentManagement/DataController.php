@@ -617,7 +617,7 @@ class DataController extends AppController
 			exit;
 		}
 		
-		return $this->render( 'EMSCoreBundle:data/custom-view.html.twig', [
+		return $this->render( 'EMSCoreBundle:data:custom-view.html.twig', [
 				'template' =>  $template,
 				'object' => $object,
 				'environment' => $environment,

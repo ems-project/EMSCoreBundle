@@ -16,7 +16,7 @@ class NatureController extends AppController
 	const MAX_ELEM = 400;
 
 	/**
-	 * @Route("/content-type/nature/reorder/{contentType}", name="nature.reorder"))
+	 * @Route("/nature/reorder/{contentType}", name="nature.reorder"))
 	 */
 	public function reorderAction(ContentType $contentType, Request $request) {
 		if($contentType->getOrderField() == null || $contentType->getFieldType()->__get('ems_'.$contentType->getOrderField()) == null ){

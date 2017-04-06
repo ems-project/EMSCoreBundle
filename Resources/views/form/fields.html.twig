@@ -384,6 +384,48 @@
 {% endblock timefieldtype_row %}
 
 
+{%- block form_label -%}
+    {% if label is not same as(false) -%}
+        {% if not compound -%}
+            {% set label_attr = label_attr|merge({'for': id}) %}
+        {%- endif -%}
+        {% if required -%}
+            {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' required')|trim}) %}
+        {%- endif -%}
+        {% if label is empty -%}
+            {%- if label_format is not empty -%}
+                {% set label = label_format|replace({
+                    '%name%': name,
+                    '%id%': id,
+                }) %}
+            {%- else -%}
+                {% set label = name|humanize %}
+            {%- endif -%}
+        {%- endif -%}
+        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ form|dump }}{% if form.vars.icon is defined and form.vars.icon %}<i class="{{ form.vars.icon }}"></i> {% endif %}{{ translation_domain is same as(false) ? label : label|trans({}, translation_domain) }}</label>
+    {%- endif -%}
+{%- endblock form_label -%}
+
+
+{% block codefieldtype_widget %}
+	<div class="ems-code-editor" {{ block('widget_attributes') }}>
+        {{ form_widget(form.text_value) }}
+{#         {{ form|dump }}#}
+    	<pre>{{ form.children.text_value.vars.value }}</pre>
+	</div>
+{% endblock codefieldtype_widget %}
+
+
+{% block codefieldtype_row %}
+	<div class="form-group{% if class %} {{ class }}{% else %} col-xs-12 {% endif %} {% if form.vars.errors|length %} has-error{% endif %}">
+    	{{ form_label(form) }}
+    	{{ form_widget(form) }}
+    	{{ form_errors(form) }}
+    </div>
+    <!-- /.form group -->
+{% endblock codefieldtype_row %}
+
+
 {% block datefieldtype_row %}
 	<div class="form-group{% if class %} {{ class }}{% else %} col-xs-12 {% endif %}">
     	{{ form_label(form.data_value) }} 
@@ -521,7 +563,7 @@
 		
 		{% if form.options is defined %}	
 			<!-- Modal windows field options -->
-			<div class="modal fade" id="{{ form.vars.id }}_modal_options" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			<div class="modal fade" id="{{ form.vars.id }}_modal_options" role="dialog" aria-labelledby="myModalLabel">
 			  <div class="modal-dialog" role="document">
 			    <div class="modal-content">
 			      <div class="modal-header">

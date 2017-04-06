@@ -15,10 +15,6 @@
 
 {% block body %}
 
-
-
-
-
 {{ form_start(form) }}
 
 
@@ -71,9 +67,15 @@
                   <th style="width: 10px">#</th>
                   <th>
                   	<a href="#" onclick="javascript: $('.item-to-align').prop('checked', 'checked'); return false;"><i class="fa fa-check-square-o"></i></a> 
-                  	<a href="#" onclick="javascript: $('.item-to-align').prop('checked', false); return false;"><i class="fa fa-square-o"></i></a></th>
-                  <th>Content type</th>
-                  <th>OUUID</th>
+                  	<a href="#" onclick="javascript: $('.item-to-align').prop('checked', false); return false;"><i class="fa fa-square-o"></i></a>
+                  </th>
+                    {% set href=path(paginationPath, app.request.query.all|merge({("orderDirection"): orderDirection})) %}
+                  <th>{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {
+                   'orderHref': href,
+                   'orderDescription': orderDescription,
+                   'orderTitle': orderTitle,
+                   'orderIcon': orderIcon
+                  } %}</th>
                   <th>Label</th>
                   <th><span class="badge bg-{{ environments[environment].color }}" title="Circles:">{{ environment }}</span></th>
                   <th><span class="badge bg-{{ environments[withEnvironment].color }}" title="Circles:">{{ withEnvironment }}</span></th>
@@ -95,8 +97,7 @@
 	                  	<input class="item-to-align" type="checkbox" name="compare_environment_form[item_to_align][{{ minrev[1] }}]" value="{{ item.content_type_name }}:{{ item.ouuid }}">
 	                  	</td>
 	                  <td class="text-{{ item.color }}"><i class="{% if item.icon %}{{item.icon}}{% else %}fa fa-book{% endif %}"></i> {{ item.content_type_name|humanize }}</td>
-	                  <td>{{ item.ouuid }}</td>
-	                  <td>{% if item.labelField and attribute(data, item.labelField) is defined %}{{ attribute(data, item.labelField) }}{% endif %}</td>
+	                  <td>{% if item.labelField and attribute(item.rawData, item.labelField) is defined %}<span title='{{ item.ouuid }}'>{{ attribute(item.rawData, item.labelField) }}</span>{% endif %}</td>
 	                  <td>
 	                  {% if defaultEnv %}
         				{% if minrev[0] == fromEnv %}

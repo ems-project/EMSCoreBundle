@@ -365,7 +365,7 @@
 		<dd>
 			<div class="panel panel-default">
 				<div class="panel-body">
-					{{ dataField.rawData|json_encode }}
+					<pre>{{ dataField.rawData|json_encode }}</pre>
 				</div>
 			</div>
 		</dd>
@@ -386,6 +386,26 @@
 			<div class="panel panel-default">
 				<div class="panel-body">	
 					{{ dataField.textValue|internal_links|raw }}
+				</div>
+			</div>
+		</dd>
+	</dl>
+	{{ _self.messages(dataField) }}
+{% endmacro %}
+
+{% macro EMS_CoreBundle_Form_DataField_CodeFieldType(dataField) %}
+	<dl>
+		<dt>
+			{% if dataField.fieldType.displayOptions.label is defined %}
+				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+			{% else %}
+				{{ dataField.fieldType.name }}
+			{% endif %}
+		</dt>
+		<dd>
+			<div class="panel panel-default">
+				<div class="panel-body">	
+					<pre class="ems-code-editor" data-language="{{ dataField.fieldType.displayOptions.language }}" data-them="{{ dataField.fieldType.displayOptions.theme }}" {% if dataField.fieldType.displayOptions.height %}style="height: {{ dataField.fieldType.displayOptions.height }}px;"{% endif %}>{{ dataField.textValue|internal_links }}</pre>
 				</div>
 			</div>
 		</dd>

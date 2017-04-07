@@ -418,14 +418,39 @@ class DataService
 		}
 	}
 	
-
+	public function setMetaFields(Revision $revision) {
+		$this->setCircles($revision);
+		$this->setLabelField($revision);
+	}
+	
 	public function setCircles(Revision $revision){
 		$objectArray = $revision->getRawData();
-		if(!empty($revision->getContentType()->getCirclesField()) && isset($objectArray[$revision->getContentType()->getCirclesField()])  && !empty($objectArray[$revision->getContentType()->getCirclesField()]) ){
-			$revision->setCircles(is_array($objectArray[$revision->getContentType()->getCirclesField()])?$objectArray[$revision->getContentType()->getCirclesField()]:[$objectArray[$revision->getContentType()->getCirclesField()]]);
+		$circlesField = $revision->getContentType()->getCirclesField();
+		if(!empty($circlesField) && 
+				isset($objectArray[$circlesField])  && 
+				!empty($objectArray[$circlesField]) ){
+			if(is_array($objectArray[$circlesField])){
+				$revision->setCircles($circlesField);
+			} else {
+				$revision->setCircles([$circlesField]);
+				
+			}
 		}
 		else {
 			$revision->setCircles(null);
+		}
+	}
+	
+	public function setLabelField(Revision $revision){//setMetaField
+		$objectArray = $revision->getRawData();
+		$labelField = $revision->getContentType()->getLabelField();
+		if(!empty($labelField) && 
+				isset($objectArray[$labelField])  && 
+				!empty($objectArray[$labelField]) ){
+			$revision->setLabelField($objectArray[$labelField]);
+		}
+		else {
+			$revision->setLabelField(null);
 		}
 	}
 	
@@ -461,7 +486,7 @@ class DataService
 		}
 		
 		
-		$this->setCircles($revision);
+		$this->setMetaFields($revision);
 		
 		$this->lockRevision($revision, false, false, $username);
 		

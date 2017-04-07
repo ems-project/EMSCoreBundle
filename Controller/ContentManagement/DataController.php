@@ -277,7 +277,7 @@ class DataController extends AppController
 	}
 	
 	public function getNewestRevision($type, $ouuid){
-		return $this->get("ems.service.data")->getNewestRevision($type, $ouuid);
+		return $this->getDataService()->getNewestRevision($type, $ouuid);
 	}
 	
 	/**
@@ -288,7 +288,7 @@ class DataController extends AppController
 	 * @return Revision
 	 */
 	public function initNewDraft($type, $ouuid, $fromRev = null){
-		return $this->get("ems.service.data")->initNewDraft($type, $ouuid, $fromRev);
+		return $this->getDataService()->initNewDraft($type, $ouuid, $fromRev);
 	}
 	
 
@@ -375,7 +375,7 @@ class DataController extends AppController
 	}
 	
 	public function discardDraft(Revision $revision){
-		return $this->get("ems.service.data")->discardDraft($revision);
+		return $this->getDataService()->discardDraft($revision);
 	}
 	
 	/**
@@ -476,7 +476,7 @@ class DataController extends AppController
 	
 		try{
 
-			$this->get('ems.service.data')->loadDataStructure($revision);
+			$this->getDataService()->loadDataStructure($revision);
 			
 			$objectArray = $this->get('ems.service.mapping')->dataFieldToArray ($revision->getDataField());
 			/** @var \EMS\CoreBundle\Entity\Environment $environment */
@@ -617,7 +617,7 @@ class DataController extends AppController
 			exit;
 		}
 		
-		return $this->render( 'EMSCoreBundle:data/custom-view.html.twig', [
+		return $this->render( 'EMSCoreBundle:data:custom-view.html.twig', [
 				'template' =>  $template,
 				'object' => $object,
 				'environment' => $environment,
@@ -660,7 +660,7 @@ class DataController extends AppController
 			throw new NotFoundHttpException('Unknown revision');
 		}		
 
-		$this->get('ems.service.data')->loadDataStructure($revision);
+		$this->getDataService()->loadDataStructure($revision);
 		
 		$form = $this->createForm(RevisionType::class, $revision);
 		
@@ -686,7 +686,7 @@ class DataController extends AppController
 		$em->persist($revision);
 		$em->flush();			
 
-		$this->get("ems.service.data")->isValid($form);
+		$this->getDataService()->isValid($form);
 		$formErrors = $form->getErrors(true, true);
 			
 		return $this->render( 'EMSCoreBundle:data:ajax-revision.json.twig', [
@@ -703,7 +703,7 @@ class DataController extends AppController
 	public function finalizeDraftAction(Revision $revision){
 
 		
-		$this->get('ems.service.data')->loadDataStructure($revision);
+		$this->getDataService()->loadDataStructure($revision);
 		try{
 			$form = $this->createForm(RevisionType::class, $revision);
 			if(!empty($revision->getAutoSave())){
@@ -714,7 +714,7 @@ class DataController extends AppController
 				] );
 			}
 			
-			$revision = $this->get("ems.service.data")->finalizeDraft($revision, $form);
+			$revision = $this->getDataService()->finalizeDraft($revision, $form);
 			if(count($form->getErrors()) !== 0) {
 				$this->addFlash("error", "This draft (".$revision->getContentType()->getName().":".$revision->getOuuid().") can't be finlized.");
 				return $this->render( 'EMSCoreBundle:data:edit-revision.html.twig', [
@@ -744,7 +744,7 @@ class DataController extends AppController
 // 		$validator = $this->get('validator');
 // 		$errors = $validator->validate($revision);
 		
-		return $this->get("ems.service.data")->finalizeDraft($revision, $form, $username);
+		return $this->getDataService()->finalizeDraft($revision, $form, $username);
 	}
 	
 	private function reorderCollection(&$input){
@@ -832,7 +832,7 @@ class DataController extends AppController
 				$revision->setRawData($objectArray);
 				
 				
-				$this->getDataService()->setCircles($revision);
+				$this->getDataService()->setMetaFields($revision);
 				
 				$logger->debug('Revision before persist');
 				$em->persist($revision);
@@ -883,7 +883,7 @@ class DataController extends AppController
 				
 		}
 		else{
-			$isValid = $this->get("ems.service.data")->isValid($form);
+			$isValid = $this->getDataService()->isValid($form);
 			if ( !$isValid ) {
 				$this->addFlash("warning", "This draft (".$revision->getContentType()->getName().":".$revision->getOuuid().") can't be finlized.");
 			}
@@ -905,7 +905,7 @@ class DataController extends AppController
 	 * @param string $super
 	 */
 	private function lockRevision(Revision $revision, $publishEnv=false, $super=false){
-		$this->get("ems.service.data")->lockRevision($revision, $publishEnv, $super);
+		$this->getDataService()->lockRevision($revision, $publishEnv, $super);
 	}
 	
 	
@@ -937,10 +937,7 @@ class DataController extends AppController
 		
 		$em = $this->getDoctrine()->getManager();
 		
-		$repository = $em->getRepository('EMSCoreBundle:ContentType');
-		
 		$revision = new Revision();
-
 		
 		$form = $this->createFormBuilder($revision)
 			->add('ouuid', IconTextType::class, [
@@ -961,7 +958,6 @@ class DataController extends AppController
 		$form->handleRequest($request);
 			
 		
-		
 		if (($form->isSubmitted() && $form->isValid()) || ! $contentType->getAskForOuuid()) {
 			/** @var Revision $revision */
 			$revision = $form->getData();
@@ -969,7 +965,6 @@ class DataController extends AppController
 			if( !$this->get('security.authorization_checker')->isGranted($contentType->getCreateRole()) ){
 				throw new PrivilegeException($revision);
 			}
-
 			
 
 			if(null != $revision->getOuuid()){
@@ -1025,6 +1020,7 @@ class DataController extends AppController
 						}
 					}
 				}
+				$this->getDataService()->setLabelField($revision);
 				
 				$em->persist($revision);
 				$em->flush();

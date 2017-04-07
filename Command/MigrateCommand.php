@@ -93,8 +93,11 @@ class MigrateCommand extends ContainerAwareCommand
     		$mode = "earse";
     	}
     	
+		/** @var RevisionRepository $revisionRepository */
+		$revisionRepository = $em->getRepository( 'EMSCoreBundle:Revision' );
 		/** @var \EMS\CoreBundle\Repository\ContentTypeRepository $contentTypeRepository */
 		$contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
+
 		/** @var \EMS\CoreBundle\Entity\ContentType $contentTypeTo */
 		$contentTypeTo = $contentTypeRepository->findOneBy(array("name" => $contentTypeNameTo, 'deleted' => false));
 		if(!$contentTypeTo) {
@@ -114,10 +117,8 @@ class MigrateCommand extends ContainerAwareCommand
 		
 		//Delete ContentType if erase
 		if($mode == "erase") {
-			/** @var RevisionRepository $repository */
-			$repository = $em->getRepository( 'EMSCoreBundle:Revision' );
-			$repository->deleteRevisions();
-			$repository->clear();
+			$revisionRepository->deleteRevisions();
+			$revisionRepository->clear();
 		}
 		
 		$arrayElasticsearchIndex = $this->client->search([
@@ -143,8 +144,6 @@ class MigrateCommand extends ContainerAwareCommand
 			]);
 // 			$output->writeln("\nMigrating " . ($from+1) . " / " . $total );
 
-			/** @var RevisionRepository $repository */
-			$repository = $em->getRepository( 'EMSCoreBundle:Revision' );
 
 			foreach ($arrayElasticsearchIndex["hits"]["hits"] as $index => $value) {
 				try{
@@ -161,7 +160,7 @@ class MigrateCommand extends ContainerAwareCommand
 					$newRevision->setLockBy('SYSTEM_MIGRATE');
 					$newRevision->setLockUntil($until);
 						
-					$currentRevision = $repository->getCurrentRevision($contentTypeTo, $value['_id']);
+					$currentRevision = $revisionRepository->getCurrentRevision($contentTypeTo, $value['_id']);
 					if($currentRevision) {
 						//If there is a current revision, datas in fields that are protected against migration must not be overridden
 						//So we load the datas from the current revision into the next revision
@@ -187,17 +186,7 @@ class MigrateCommand extends ContainerAwareCommand
 						$objectArray = $value['_source'];
 					}
 					
-					if($contentTypeTo->getCirclesField() &&  isset($newRevision->getRawData()[$contentTypeTo->getCirclesField()]) ){
-						if(is_array($newRevision->getRawData()[$contentTypeTo->getCirclesField()])){
-							$newRevision->setCircles($newRevision->getRawData()[$contentTypeTo->getCirclesField()]);					
-						}
-						else if(is_string($newRevision->getRawData()[$contentTypeTo->getCirclesField()])){
-							$newRevision->setCircles([$newRevision->getRawData()[$contentTypeTo->getCirclesField()]]);
-						}
-						else {
-							$output->write("Not supported circle type for ouuid ".$newRevision->getOuuid());
-						}
-					}
+					$this->dataService->setMetaFields($newRevision);
 					
 					$this->client->index([
 							'index' => $contentTypeTo->getEnvironment()->getAlias(),
@@ -208,9 +197,9 @@ class MigrateCommand extends ContainerAwareCommand
 					//TODO: Test if client->index OK
 					$em->persist($newRevision);
 					$em->flush();
- 					$repository->finaliseRevision($contentTypeTo, $value['_id'], $now);
+ 					$revisionRepository->finaliseRevision($contentTypeTo, $value['_id'], $now);
 					//hot fix query: insert into `environment_revision`  select id, 1 from `revision` where `end_time` is null;
-					$repository->publishRevision($newRevision);
+					$revisionRepository->publishRevision($newRevision);
 				}
 				catch(NotLockedException $e){
 					$output->writeln("<error>'.$e.'</error>");
@@ -219,7 +208,7 @@ class MigrateCommand extends ContainerAwareCommand
 				// advance the progress bar 1 unit
 				$progress->advance();
 			}
-			$repository->clear();
+			$revisionRepository->clear();
 		}
 		// ensure that the progress bar is at 100%
 		$progress->finish();

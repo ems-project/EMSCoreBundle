@@ -151,7 +151,14 @@ class Revision
      */
     private $circles;
     
-    /**not persisted field to ensure that they are all there after a submit */
+     /**
+     * @var string
+     *
+     * @ORM\Column(name="labelField", type="string", nullable=true)
+     */
+    private $labelField;
+    
+	/**not persisted field to ensure that they are all there after a submit */
     private $allFieldsAreThere;
     
     /**
@@ -690,6 +697,30 @@ class Revision
     }
 
     /**
+     * Set localField
+     *
+     * @param string$labelField
+     *
+     * @return Revision
+     */
+    public function setLabelField($labelField)
+    {
+    	$this->labelField = $labelField;
+    
+    	return $this;
+    }
+    
+    /**
+     * Get labelField
+     *
+     * @return string
+     */
+    public function getLabelField()
+    {
+    	return $this->labelField;
+    }
+    
+    /**
      * Set circles
      *
      * @param array $circles
@@ -698,11 +729,11 @@ class Revision
      */
     public function setCircles($circles)
     {
-        $this->circles = $circles;
-
-        return $this;
+    	$this->circles = $circles;
+    
+    	return $this;
     }
-
+    
     /**
      * Get circles
      *
@@ -710,7 +741,7 @@ class Revision
      */
     public function getCircles()
     {
-        return $this->circles;
+    	return $this->circles;
     }
 
     /**

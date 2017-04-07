@@ -329,6 +329,11 @@ services:
         arguments: ['%ems_core.circles_object%', '@ems.service.environment']
         tags:
             - { name: form.type }
+    ems.form.form.contenttypefiltertype:
+        class: EMS\CoreBundle\Form\Form\ContentTypeFilterFormType
+        arguments: ['%ems_core.circles_object%', '@ems.service.environment']
+        tags:
+            - { name: form.type }
 ### regular services
     ems.service.mapping:
         class: EMS\CoreBundle\Service\Mapping
@@ -386,6 +391,11 @@ services:
     ems.environment.rebuild:
         class: EMS\CoreBundle\Command\RebuildCommand
         arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.mapping', '@service_container', '@session', '%ems_core.instance_id%']
+        tags:
+            -  { name: console.command }
+    ems.environment.filllabelfield:
+        class: EMS\CoreBundle\Command\FillLabelFieldCommand
+        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@session', '@ems.service.data']
         tags:
             -  { name: console.command }
     ems.environment.align:

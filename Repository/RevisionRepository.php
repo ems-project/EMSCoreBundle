@@ -109,10 +109,17 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
 		return $foundRows[0]['foundRows'];
 	}
 	
-	public function compareEnvironment($source, $target, $from, $limit, $orderDirection = 'ASC') {
-		
+	public function compareEnvironment($source, $target, $contentypes = [], $from, $limit, $orderField = "contenttype", $orderDirection = 'ASC') {
+		switch ($orderField){
+			case "label":
+				$orderField = 'r.labelField';
+				break;
+			default:
+				$orderField = 'c.name';
+				break;
+		}
 		$qb = $this->createQueryBuilder('r')
-			->select('c.id', 'c.color', 'c.labelField', 'c.name content_type_name', 'c.icon', 'r.ouuid', 'r.rawData', 'count(c.id) counter', 'min(concat(e.id, \'/\',r.id, \'/\', r.created)) minrevid', 'max(concat(e.id, \'/\',r.id, \'/\', r.created)) maxrevid')
+			->select('c.id', 'c.color', 'c.labelField ct_labelField', 'c.name content_type_name', 'c.icon', 'r.ouuid', 'r.labelField', 'count(c.id) counter', 'min(concat(e.id, \'/\',r.id, \'/\', r.created)) minrevid', 'max(concat(e.id, \'/\',r.id, \'/\', r.created)) maxrevid')
 			->join('r.contentType', 'c')
 			->join('r.environments', 'e')
 			->where('e.id in (?1, ?2)')
@@ -121,13 +128,16 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
 			->groupBy('c.id', 'c.name', 'c.icon', 'r.ouuid', 'c.orderKey')
 			->orHaving('count(r.id) = 1')
 			->orHaving('max(r.id) <> min(r.id)')
-			->addOrderBy('c.name', $orderDirection)
+			->addOrderBy($orderField, $orderDirection)
 			->addOrderBy('r.ouuid')
 			->setFirstResult($from)
 			->setMaxResults($limit)
 			->setParameter(1, $source,  \Doctrine\DBAL\Types\Type::INTEGER)
 			->setParameter(2, $target,  \Doctrine\DBAL\Types\Type::INTEGER);		
 
+		if(!empty($contentypes)){
+			$qb->andWhere('c.name in (\''.implode("','", $contentypes).'\')');
+		}
 		return $qb->getQuery()->getResult();
 	}
 	

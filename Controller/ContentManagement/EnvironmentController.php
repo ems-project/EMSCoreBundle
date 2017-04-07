@@ -6,12 +6,14 @@ use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle;
 use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\Form\ContentTypeFilter;
 use EMS\CoreBundle\Entity\Form\RebuildIndex;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\Field\ColorPickerType;
 use EMS\CoreBundle\Form\Field\IconTextType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\Form\CompareEnvironmentFormType;
+use EMS\CoreBundle\Form\Form\ContentTypeFilterFormType;
 use EMS\CoreBundle\Form\Form\EditEnvironmentType;
 use EMS\CoreBundle\Form\Form\RebuildIndexType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
@@ -36,17 +38,28 @@ class EnvironmentController extends AppController {
 	 */
 	public function alignAction(Request $request) {
 		
-		
 		$data = [];
 		
 		$form = $this->createForm(CompareEnvironmentFormType::class, $data, [
-				
 		]);
-		
+
+ 		$formFilter = $this->createForm(ContentTypeFilterFormType::class, ['fromuri' => $request->getRequestUri(), 
+ 																			'request' => $request->query->all()],
+														 				['method' => 'POST']
+														 				);
+ 		$formFilter->handleRequest ( $request );
 		$form->handleRequest($request);	
-		
 		$paging_size = $this->getParameter('ems_core.paging_size');
-		
+ 		
+ 		if($formFilter->isSubmitted()){
+ 			$contentTypeFilter = $formFilter->getData();
+ 			$contentTypesList = $this->getContentTypesList($contentTypeFilter);
+ 			$requestParameters = $request->query->all();
+ 			$requestParameters['contentypes'] = $contentTypesList;
+ 			return $this->redirectToRoute('environment.align', $requestParameters);
+ 		}
+ 		$formFilterView = $formFilter->createView();
+ 		
 		if ($form->isSubmitted() && $form->isValid()) {
 			$data = $form->getData();
 			if($data['environment'] == $data['withEnvironment']){
@@ -104,7 +117,6 @@ class EnvironmentController extends AppController {
 							]);
 							
 						}
-
 						
 						$em->persist($revision);
 						$em->flush();
@@ -112,15 +124,13 @@ class EnvironmentController extends AppController {
 						foreach ($alignTo as $env){
 							$this->addFlash('notice','Revision '.$revid.' of the object '.$revision->getOuuid().' has been published in '.$env);						
 						}
-						
 					}
-					
 				}
 				else if(array_key_exists('alignLeft', $request->request->get('compare_environment_form'))) {
 					foreach ($request->request->get('compare_environment_form')['item_to_align'] as $item){
 						$exploded = explode(':', $item);
 						if(count($exploded) == 2){
-							$this->get('ems.service.publish')->alignRevision($exploded[0], $exploded[1], $request->query->get('withEnvironment'), $request->query->get('environment'));					
+							$this->getPublishService()->alignRevision($exploded[0], $exploded[1], $request->query->get('withEnvironment'), $request->query->get('environment'));					
 						}
 						else{
 							$this->addFlash('warning', 'Malformed OUUID: '.$item);
@@ -131,7 +141,7 @@ class EnvironmentController extends AppController {
 					foreach ($request->request->get('compare_environment_form')['item_to_align'] as $item){
 						$exploded = explode(':', $item);
 						if(count($exploded) == 2){
-							$this->get('ems.service.publish')->alignRevision($exploded[0], $exploded[1], $request->query->get('environment'), $request->query->get('withEnvironment'));					
+							$this->getPublishService()->alignRevision($exploded[0], $exploded[1], $request->query->get('environment'), $request->query->get('withEnvironment'));					
 						}
 						else{
 							$this->addFlash('warning', 'Malformed OUUID: '.$item);
@@ -154,6 +164,21 @@ class EnvironmentController extends AppController {
 		else{
 			$page = 1;
 		}
+		
+		if(null != $request->query->get('contentypes')){
+			$contentTypes = explode(",", $request->query->get('contentypes'));
+		}
+		else{
+			$contentTypes = [];
+		}
+		
+		if(null != $request->query->get('orderField')){
+			$orderField = $request->query->get('orderField');
+		}
+		else{
+			$orderField = "contenttype";
+		}
+		$orderField = strtolower($orderField);
 		
 		if(null != $request->query->get('orderDirection')){
 			$orderDirection = $request->query->get('orderDirection');
@@ -202,11 +227,12 @@ class EnvironmentController extends AppController {
 				if($page > $lastPage){
 					$page = $lastPage;
 				}
-	
 				$results = $repository->compareEnvironment($env->getId(), 
 															$withEnvi->getId(), 
+															$contentTypes,
 															($page-1)*$paging_size, 
 															$paging_size,
+															$orderField,
 															$orderDirection);				
 			}
 			else {
@@ -229,20 +255,37 @@ class EnvironmentController extends AppController {
 			$withEnv = 0;
 		}
 		
-	    if($orderDirection == "DESC"){
-           $orderIcon = "fa-sort-asc";
-           $orderDescription = "Sort acending";
-           $otherOrderDirection = "ASC";
-	    } else {
-           $orderIcon = "fa-sort-desc";
-           $orderDescription = "Sort descending";
-           $otherOrderDirection = "DESC";
-	    }
-         $orderTitle = 'Content type';
-         
+		if($orderField == 'label'){
+            $orderCTIcon = "fa-sort-asc";
+            $orderCTDescription = "Sort Content type ascending";
+            $orderCTDirection = "ASC";
+            if($orderDirection == "DESC"){
+	            $orderLabelFieldIcon = "fa-sort-asc";
+	            $orderLabelFieldDescription = "Sort ascending";
+		        $orderLabelFieldDirection = "ASC";
+            } else {
+	            $orderLabelFieldIcon = "fa-sort-desc";
+	            $orderLabelFieldDescription = "Sort descending";
+		        $orderLabelFieldDirection = "DESC";
+		     }
+		} else {
+            $orderLabelFieldIcon = "fa-sort-asc";
+            $orderLabelFieldDescription = "Sort Label ascending";
+            $orderLabelFieldDirection = "ASC";
+            if($orderDirection == "DESC"){
+	            $orderCTIcon = "fa-sort-asc";
+	            $orderCTDescription = "Sort ascending";
+		        $orderCTDirection = "ASC";
+		     } else {
+	            $orderCTIcon = "fa-sort-desc";
+	            $orderCTDescription = "Sort descending";
+		        $orderCTDirection = "DESC";
+		     }
+		}
          return $this->render ( 'EMSCoreBundle:environment:align.html.twig', [
 				'form' => $form->createView(),
-				'results' => $results,
+				'formFilter' => $formFilterView,
+         		'results' => $results,
 				'lastPage' => $lastPage,
 				'paginationPath' => 'environment.align',
 				'page' => $page,
@@ -254,10 +297,13 @@ class EnvironmentController extends AppController {
 				'environment' => $environment,
 				'withEnvironment' => $withEnvironment,
 				'environments' => $this->get('ems.service.environment')->getAll(),
-         		'orderIcon' => $orderIcon,
-         		'orderDescription' => $orderDescription,
-         		'orderTitle' => $orderTitle,
-         		'orderDirection' => $otherOrderDirection,
+         		'orderField' => $orderField,
+         		'orderCTDirection' => $orderCTDirection,
+         		'orderCTIcon' => $orderCTIcon,
+         		'orderCTDescription' => $orderCTDescription,
+         		'orderLabelFieldDirection' => $orderLabelFieldDirection,
+         		'orderLabelFieldIcon' => $orderLabelFieldIcon,
+         		'orderLabelFieldDescription' => $orderLabelFieldDescription,
          ] );
 	}
 	
@@ -745,6 +791,21 @@ class EnvironmentController extends AppController {
 			]);
 		}
 
+	}
+	
+	private function getContentTypesList($contentTypeFilter) {
+		$contentTypeList = "";
+		if(is_object($contentTypeFilter['contentType'])){
+			$elements = $contentTypeFilter['contentType']->toArray();
+			$elementList = [];
+			foreach ($elements as $element) {
+				$elementList[] = $element->getName();
+			}
+			if(!empty($elementList)){
+				$contentTypeList = implode(",",$elementList);
+			}
+		}
+		return $contentTypeList;
 	}
 	
 }

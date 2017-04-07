@@ -8,6 +8,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CompareEnvironmentFormType extends AbstractType {
 	/**
@@ -30,5 +31,13 @@ class CompareEnvironmentFormType extends AbstractType {
 				'icon' => 'fa fa-columns'
 		]);
 	}
-	
+
+	/**
+	 *
+	 * {@inheritdoc}
+	 *
+	 */
+	public function configureOptions(OptionsResolver $resolver) {
+		$resolver->setDefault ( 'csrf_protection', false );//To prevent forms conflicts with ContentTypeFilterFormType : "The CSRF token is invalid. Please try to resubmit the form."
+	}	
 }

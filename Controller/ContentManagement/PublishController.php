@@ -38,7 +38,7 @@ class PublishController extends AppController
 	 */
 	public function unpublishAction(Revision $revisionId, Environment $envId, Request $request)
 	{
-		$this->get("ems.service.publish")->unpublish($revisionId, $envId);
+		$this->getPublishService()->unpublish($revisionId, $envId);
 		
 		return $this->redirectToRoute('data.revisions', [
 				'ouuid' => $revisionId->getOuuid(),

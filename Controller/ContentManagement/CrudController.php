@@ -15,13 +15,6 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class CrudController extends AppController
 {
-	/**
-	 * 
-	 * @return DataService
-	 */
-	private function dataService() {
-		return $this->get('ems.service.data');
-	}
 	
 	/**
 	 * @Route("/api/{name}/create/{ouuid}", defaults={"ouuid": null, "_format": "json"})
@@ -41,7 +34,7 @@ class CrudController extends AppController
 		}
 		
 		try {
-			$newRevision = $this->dataService()->createData($ouuid, $rawdata, $contentType);
+			$newRevision = $this->getDataService()->createData($ouuid, $rawdata, $contentType);
 		    $isCreated = (isset($newRevision)) ?  true : false;
 		    
 		} catch (\Exception $e) {
@@ -75,7 +68,7 @@ class CrudController extends AppController
 	public function getAction($ouuid, ContentType $contentType) {
 		
 		try {
-			$revision = $this->dataService()->getNewestRevision($contentType->getName(), $ouuid);
+			$revision = $this->getDataService()->getNewestRevision($contentType->getName(), $ouuid);
 			
 			$isFound = (isset($revision) && !empty($revision)) ?  true : false;
 			
@@ -117,8 +110,8 @@ class CrudController extends AppController
 			'success' => 'false',
 		];
 		try {
-			$revision = $this->dataService()->getRevisionById($id, $contentType);
-			$newRevision = $this->dataService()->finalizeDraft($revision);
+			$revision = $this->getDataService()->getRevisionById($id, $contentType);
+			$newRevision = $this->getDataService()->finalizeDraft($revision);
 			$out['success'] = !$newRevision->getDraft();
 			$out['ouuid'] = $newRevision->getOuuid();
 			
@@ -146,8 +139,8 @@ class CrudController extends AppController
 		}
 	
 		try {
-			$revision = $this->dataService()->getRevisionById($id, $contentType);
-			$this->dataService()->discardDraft($revision);
+			$revision = $this->getDataService()->getRevisionById($id, $contentType);
+			$this->getDataService()->discardDraft($revision);
 			$isDiscard = ($revision->getId() != $id) ? true : false;
 
 		} catch (\Exception $e) {
@@ -183,9 +176,9 @@ class CrudController extends AppController
 		}
 	
 		try {
-			$this->dataService()->delete($contentType->getName(), $ouuid);
+			$this->getDataService()->delete($contentType->getName(), $ouuid);
 			try {
-				$revision = $this->dataService()->getNewestRevision($contentType->getName(), $ouuid);
+				$revision = $this->getDataService()->getNewestRevision($contentType->getName(), $ouuid);
 			} catch (\Exception $exception){
 				if ($exception instanceof NotFoundHttpException) {
 					$isDeleted = true;
@@ -224,8 +217,8 @@ class CrudController extends AppController
 		}
 		
 		try {
-			$revision = $this->dataService()->getNewestRevision($contentType->getName(), $ouuid);
-			$newDraft = $this->dataService()->replaceData($revision, $rawdata);
+			$revision = $this->getDataService()->getNewestRevision($contentType->getName(), $ouuid);
+			$newDraft = $this->getDataService()->replaceData($revision, $rawdata);
 			$isReplaced = ($revision->getId() != $newDraft->getId()) ? true : false;
 			
 		} catch (\Exception $e) {
@@ -267,8 +260,8 @@ class CrudController extends AppController
 		}
 	
 		try {
-			$revision = $this->dataService()->getNewestRevision($contentType->getName(), $ouuid);
-			$newDraft = $this->dataService()->replaceData($revision, $rawdata, "merge");
+			$revision = $this->getDataService()->getNewestRevision($contentType->getName(), $ouuid);
+			$newDraft = $this->getDataService()->replaceData($revision, $rawdata, "merge");
 			$isMerged = ($revision->getId() != $newDraft->getId()) ? true : false;
 			
 		} catch (\Exception $e) {

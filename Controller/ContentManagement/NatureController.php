@@ -59,7 +59,7 @@ class NatureController extends AppController
 		
 
 		/** @var \EMS\CoreBundle\Service\DataService $dataService*/
-		$dataService = $this->get('ems.service.data');
+		$dataService = $this->getDataService();
 		$counter = 1;
 		
 		if ($form->isSubmitted()) {

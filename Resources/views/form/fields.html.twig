@@ -402,7 +402,7 @@
                 {% set label = name|humanize %}
             {%- endif -%}
         {%- endif -%}
-        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ form|dump }}{% if form.vars.icon is defined and form.vars.icon %}<i class="{{ form.vars.icon }}"></i> {% endif %}{{ translation_domain is same as(false) ? label : label|trans({}, translation_domain) }}</label>
+        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{% if form.vars.icon is defined and form.vars.icon %}<i class="{{ form.vars.icon }}"></i> {% endif %}{{ translation_domain is same as(false) ? label : label|trans({}, translation_domain) }}</label>
     {%- endif -%}
 {%- endblock form_label -%}
 
@@ -410,7 +410,6 @@
 {% block codefieldtype_widget %}
 	<div class="ems-code-editor" {{ block('widget_attributes') }}>
         {{ form_widget(form.text_value) }}
-{#         {{ form|dump }}#}
     	<pre>{{ form.children.text_value.vars.value }}</pre>
 	</div>
 {% endblock codefieldtype_widget %}

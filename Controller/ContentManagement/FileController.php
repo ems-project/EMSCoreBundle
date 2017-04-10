@@ -2,8 +2,8 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle;
+use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\UploadedAsset;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;

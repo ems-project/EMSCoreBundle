@@ -136,6 +136,9 @@ class FileService {
 					file_put_contents($filename, "");
 					$uploadedAsset->setUploaded(0);
 				}
+				else {
+					$uploadedAsset = $this->saveFile($filename, $uploadedAsset);
+				}
 			}
 			else {
 				touch($filename);
@@ -189,19 +192,23 @@ class FileService {
 		$em->flush($uploadedAsset);
 		
 		if($uploadedAsset->getUploaded() == $uploadedAsset->getSize()){
+			$uploadedAsset = $this->saveFile($filename, $uploadedAsset);
+		}
 		
-			if(sha1_file($filename) != $uploadedAsset->getSha1()) {
-				throw new Conflict409Exception("Sha1 mismatched ".sha1_file($filename).' '.$uploadedAsset->getSha1());
+		return $uploadedAsset;
+	}
+	
+	private function saveFile($filename, UploadedAsset $uploadedAsset){
+		if(sha1_file($filename) != $uploadedAsset->getSha1()) {
+			throw new Conflict409Exception("Sha1 mismatched ".sha1_file($filename).' '.$uploadedAsset->getSha1());
+		}
+		
+		/**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
+		foreach ($this->storageServices as $service){
+			if($service->create($uploadedAsset->getSha1(), $filename)) {
+				$uploadedAsset->setAvailable(true);
+				break;
 			}
-
-			/**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
-			foreach ($this->storageServices as $service){
-				if($service->create($uploadedAsset->getSha1(), $filename)) {
-					$uploadedAsset->setAvailable(true);
-					break;
-				}
-			}
-				
 		}
 		
 		return $uploadedAsset;

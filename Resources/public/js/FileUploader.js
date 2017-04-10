@@ -183,7 +183,7 @@ function FileUploader(params) {
 		this.status = this.statics.UPLOADERROR;
 		this.errorDescription = description;
 		if(params.onError) {
-			this.onFileUploadError(description, errorCode);
+			params.onError(description, errorCode);
 		}
 	};
 
@@ -316,7 +316,12 @@ function FileUploader(params) {
 						}		
 					}
 					else{
-						self.setUploadError('Upload init has failed', 200);
+						if(fileInfo.error && fileInfo.error[0]){
+							self.setUploadError(fileInfo.error[0], 200);
+						}
+						else {
+							self.setUploadError('Upload init has failed', 200);							
+						}
 					}
 				}
 				else {

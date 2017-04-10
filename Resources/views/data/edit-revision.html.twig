@@ -176,7 +176,8 @@ function initFileUploader(fileHandler, container){
 	var progressBar = $(container).find(".progress-bar");
 	var progressText = $(container).find(".progress-text");
 	var progressNumber = $(container).find(".progress-number");
-
+	var viewButton = $(container).find(".view-asset-button");
+	var clearButton = $(container).find(".clear-asset-button");
 	
     var fileUploader = new FileUploader({
     	file: fileHandler,
@@ -184,12 +185,18 @@ function initFileUploader(fileHandler, container){
 	    		$(sha1Input).val(sha1);
 	    		$(typeInput).val(type);
 	    		$(nameInput).val(name);
+	    		$(viewButton).addClass('disabled');
+	    		$(clearButton).addClass('disabled');
 	    },
 	    onProgress: function(status, progress, remaining){
 		    var pourcent = Math.round(progress*100);
 	    		$(progressBar).css('width', pourcent+'%');
 	    		$(progressText).html(status);
 	    		$(progressNumber).html(remaining);
+	    		if(pourcent == 100){
+    	    		viewButton.removeClass("disabled");
+    	    		clearButton.removeClass("disabled");
+		    	}
 	    },
 	    onError: function(message, code){
 	    		$(progressBar).css('width', '0%');
@@ -198,6 +205,8 @@ function initFileUploader(fileHandler, container){
 	    		$(sha1Input).val('');
 	    		$(typeInput).val('');
 	    		$(nameInput).val('');
+	    		$(viewButton).addClass('disabled');
+	    		$(clearButton).addClass('disabled');
 	    },
 	});
 }
@@ -238,7 +247,36 @@ function addEventListeners(target){
 		'showCancel': false,
 		'showClose': false,
 		'browseIcon': '<i class="fa fa-upload"></i>&nbsp;',
-		'browseLabel': 'Upload file'
+		'browseLabel': '{{'Upload file'|trans}}'
+	});
+
+	target.find(".view-asset-button").click(function() {
+		var parent = $(this).closest('.file-uploader-row');
+		var sha1Input = $(parent).find(".sha1");
+		var typeInput = $(parent).find(".type");
+		var nameInput = $(parent).find(".name");
+		var href = $(this).data('href').replace(/__SHA1__/g, sha1Input.val()).replace(/__MIME_TYPE__/g, typeInput.val()).replace(/__FILE_NAME__/g, nameInput.val());
+		$(this).attr('href', href);
+	});
+
+	target.find(".clear-asset-button").click(function() {
+		var parent = $(this).closest('.file-uploader-row');
+		var sha1Input = $(parent).find(".sha1");
+		var typeInput = $(parent).find(".type");
+		var nameInput = $(parent).find(".name");
+		var progressBar = $(parent).find(".progress-bar");
+		var progressText = $(parent).find(".progress-text");
+		var progressNumber = $(parent).find(".progress-number");
+		$(parent).find(".file-uploader-input").val('');
+		sha1Input.val('');
+		typeInput.val('');
+		nameInput.val('');
+		$(progressBar).css('width', '0%');
+		$(progressText).html('');
+		$(progressNumber).html('');
+		$(parent).find('.view-asset-button').addClass('disabled');
+		$(this).addClass('disabled');
+		return false
 	});
 
 	target.find(".file-uploader-input").change(function(){

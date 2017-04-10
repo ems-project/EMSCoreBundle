@@ -196,6 +196,7 @@ function initFileUploader(fileHandler, container){
 	    		if(pourcent == 100){
     	    		viewButton.removeClass("disabled");
     	    		clearButton.removeClass("disabled");
+    	    		onFormChange();
 		    	}
 	    },
 	    onError: function(message, code){

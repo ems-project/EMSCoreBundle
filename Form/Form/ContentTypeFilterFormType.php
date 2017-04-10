@@ -32,6 +32,7 @@ class ContentTypeFilterFormType extends AbstractType {
 	 */
 	public function buildForm(FormBuilderInterface $builder, array $options) {		
 		
+		$contentTypesData =  [];
 		//TODO: why is this here?
 		//http://symfony.com/doc/current/cookbook/form/dynamic_form_modification.html#cookbook-dynamic-form-modification-suppressing-form-validation
 		//$builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
@@ -39,9 +40,11 @@ class ContentTypeFilterFormType extends AbstractType {
 		//}, 900);
 		if(isset($options['data']['request']['contentypes']) && 
 				!empty($options['data']['request']['contentypes'])) {
-			$contentTypesData = explode(",", $options['data']['request']['contentypes']);
-		} else {
-			$contentTypesData = [];
+			$contentTypes = explode(",", $options['data']['request']['contentypes']);
+			foreach ($contentTypes as $contentType) {
+				list($id, $name) = explode(":", $contentType);
+				$contentTypesData[] = $id;
+			}
 		}
 		$builder->add('contentType', EntityType::class, [
 				'class' => 'EMSCoreBundle:ContentType',

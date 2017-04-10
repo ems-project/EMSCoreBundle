@@ -50,7 +50,6 @@ class EnvironmentController extends AppController {
  		$formFilter->handleRequest ( $request );
 		$form->handleRequest($request);	
 		$paging_size = $this->getParameter('ems_core.paging_size');
- 		
  		if($formFilter->isSubmitted()){
  			$contentTypeFilter = $formFilter->getData();
  			$contentTypesList = $this->getContentTypesList($contentTypeFilter);
@@ -165,8 +164,12 @@ class EnvironmentController extends AppController {
 			$page = 1;
 		}
 		
-		if(null != $request->query->get('contentypes')){
-			$contentTypes = explode(",", $request->query->get('contentypes'));
+		if(null != $request->query->get('contentypes')){//6:institution,21:asset,15:convention,... => id:name,
+			$contentTypeList = explode(",", $request->query->get('contentypes'));
+			foreach ($contentTypeList as $contentType) {
+				list($id, $name) = explode(":", $contentType);
+				$contentTypes[$id] = $name;
+			}
 		}
 		else{
 			$contentTypes = [];
@@ -221,7 +224,7 @@ class EnvironmentController extends AppController {
 			$fromEnv = $env->getId();
 			$withEnv = $withEnvi->getId();
 
-			$total = $repository->countDifferencesBetweenEnvironment($env->getId(), $withEnvi->getId());
+			$total = $repository->countDifferencesBetweenEnvironment($env->getId(), $withEnvi->getId(), $contentTypes);
 			if($total){
 				$lastPage = ceil($total/$paging_size);
 				if($page > $lastPage){
@@ -795,11 +798,15 @@ class EnvironmentController extends AppController {
 	
 	private function getContentTypesList($contentTypeFilter) {
 		$contentTypeList = "";
-		if(is_object($contentTypeFilter['contentType'])){
+		if(is_object($contentTypeFilter['contentType'])) {
 			$elements = $contentTypeFilter['contentType']->toArray();
+		} else if(is_array($contentTypeFilter['contentType'])){
+			$elements = $contentTypeFilter['contentType'];
+		}
+		if(isset($elements)){
 			$elementList = [];
 			foreach ($elements as $element) {
-				$elementList[] = $element->getName();
+				$elementList[] = $element->getId().":".$element->getName();
 			}
 			if(!empty($elementList)){
 				$contentTypeList = implode(",",$elementList);

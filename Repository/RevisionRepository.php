@@ -99,8 +99,12 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
 	}
 	
 	
-	public function countDifferencesBetweenEnvironment($source, $target) {
-		$sql = 'select count(*) foundRows from (select r.ouuid from environment_revision e, revision r,  content_type ct where e.environment_id in ('.$source.' ,'.$target.') and r.id = e.revision_id and ct.id = r.`content_type_id` and ct.deleted = 0 group by ct.id, r.ouuid, ct.orderKey having count(*) = 1 or max(r.`id`) <> min(r.`id`)) tmp';
+	public function countDifferencesBetweenEnvironment($source, $target, $contentTypes = []) {
+		if(empty($contentTypes)) {
+			$sql = 'select count(*) foundRows from (select r.ouuid from environment_revision e, revision r,  content_type ct where e.environment_id in ('.$source.' ,'.$target.') and r.id = e.revision_id and ct.id = r.`content_type_id` and ct.deleted = 0 group by ct.id, r.ouuid, ct.orderKey having count(*) = 1 or max(r.`id`) <> min(r.`id`)) tmp';
+		} else {
+			$sql = 'select count(*) foundRows from (select r.ouuid from environment_revision e, revision r,  content_type ct where e.environment_id in ('.$source.' ,'.$target.') and r.id = e.revision_id and ct.id = r.`content_type_id` and ct.deleted = 0 and ct.name in ("'.implode('","', $contentTypes).'") group by ct.id, r.ouuid, ct.orderKey having count(*) = 1 or max(r.`id`) <> min(r.`id`)) tmp';
+		}
 		$rsm = new ResultSetMapping();
 		$rsm->addScalarResult('foundRows', 'foundRows');
 		$query = $this->getEntityManager()->createNativeQuery($sql, $rsm);

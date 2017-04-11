@@ -164,13 +164,13 @@
 		</ul>
 	{% endif %}
 	
-	{% if is_granted('ROLE_WEBMASTER') %}
+	{% if is_granted('ROLE_PUBLISHER') %}
       <!-- Sidebar Menu -->
       <ul class="sidebar-menu">
-        <li class="header">Webmaster</li>        
+        <li class="header">Publisher</li>        
           <li class="treeview">
             <a href="{{ url('environment.align') }}" id="menu-environment-align">
-            	<i class="fa fa-align-center"></i> <span>{{ 'Align environments'|trans }}</span> 
+            	<i class="fa fa-align-center"></i> <span>{{ 'Compare environments'|trans }}</span> 
             </a>
         </li>
       </ul>	

@@ -111,8 +111,8 @@ class NotificationController extends AppController
 		$em = $this->getDoctrine()->getManager();
 		$repositoryNotification = $em->getRepository('EMSCoreBundle:Notification');
 		
-		$publishIn = $this->get('ems.service.environment')->getAliasByName($treatNotification->getPublishTo());
-// 		$unpublishFrom  = $this->get('ems.service.environment')->getAliasByName($treatNotification->getUnpublishfrom());
+		$publishIn = $this->getEnvironmentService()->getAliasByName($treatNotification->getPublishTo());
+// 		$unpublishFrom  = $this->getEnvironmentService()->getAliasByName($treatNotification->getUnpublishfrom());
 		
 // 		if(!empty($publishIn) && !empty($unpublishFrom) && $publishIn == $unpublishFrom) {
 // 			$this->addFlash('error', 'You can\'t publish in and unpublish from the same environment '.$unpublishFrom.' !');

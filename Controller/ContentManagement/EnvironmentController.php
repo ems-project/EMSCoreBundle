@@ -244,6 +244,16 @@ class EnvironmentController extends AppController {
 															$orderDirection);
 				for ($index = 0; $index < count($results); $index++) {
 					$results[$index]['contentType'] = $contentTypeService->getByName($results[$index]['content_type_name']);
+					$results[$index]['revisionEnvironment'] = $repository->findOneById($results[$index]['rId']);
+					$minrevid = explode("/", $results[$index]['minrevid']);//1/81522/2017-03-08 14:32:52 => e.id/r.id/r.created
+					$maxrevid = explode("/", $results[$index]['maxrevid']);
+					if($minrevid[0] == $env->getId()){
+						$results[$index]['revisionEnvironment'] = $repository->findOneById($minrevid[1]);
+						$results[$index]['revisionWithEnvironment'] = $repository->findOneById($maxrevid[1]);
+					} else {
+						$results[$index]['revisionEnvironment'] = $repository->findOneById($maxrevid[1]);
+						$results[$index]['revisionWithEnvironment'] = $repository->findOneById($minrevid[1]);
+					}
 					try{
 						$results[$index]['objectEnvironment'] = $client->get([
 										'id' => $results[$index]['ouuid'],

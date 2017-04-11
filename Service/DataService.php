@@ -377,6 +377,14 @@ class DataService
 	}
 	
 
+	/**
+	 * 
+	 * @param string $type
+	 * @param string $ouuid
+	 * @throws NotFoundHttpException
+	 * @throws Exception
+	 * @return \EMS\CoreBundle\Entity\Revision
+	 */
 	public function getNewestRevision($type, $ouuid){
 		/** @var EntityManager $em */
 		$em = $this->doctrine->getManager();
@@ -423,25 +431,17 @@ class DataService
 		$this->setLabelField($revision);
 	}
 	
-	public function setCircles(Revision $revision){
+	private function setCircles(Revision $revision){
 		$objectArray = $revision->getRawData();
-		$circlesField = $revision->getContentType()->getCirclesField();
-		if(!empty($circlesField) && 
-				isset($objectArray[$circlesField])  && 
-				!empty($objectArray[$circlesField]) ){
-			if(is_array($objectArray[$circlesField])){
-				$revision->setCircles($circlesField);
-			} else {
-				$revision->setCircles([$circlesField]);
-				
-			}
+		if(!empty($revision->getContentType()->getCirclesField()) && isset($objectArray[$revision->getContentType()->getCirclesField()])  && !empty($objectArray[$revision->getContentType()->getCirclesField()]) ){
+			$revision->setCircles(is_array($objectArray[$revision->getContentType()->getCirclesField()])?$objectArray[$revision->getContentType()->getCirclesField()]:[$objectArray[$revision->getContentType()->getCirclesField()]]);
 		}
 		else {
 			$revision->setCircles(null);
 		}
 	}
 	
-	public function setLabelField(Revision $revision){//setMetaField
+	private function setLabelField(Revision $revision){//setMetaField
 		$objectArray = $revision->getRawData();
 		$labelField = $revision->getContentType()->getLabelField();
 		if(!empty($labelField) && 
@@ -486,7 +486,7 @@ class DataService
 		}
 		
 		
-		$this->setMetaFields($revision);
+ 		$this->setMetaFields($revision);
 		
 		$this->lockRevision($revision, false, false, $username);
 		

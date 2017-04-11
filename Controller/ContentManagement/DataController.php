@@ -35,6 +35,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use EMS\CoreBundle\Service\ContentTypeService;
+use Doctrine\ORM\NoResultException;
 
 class DataController extends AppController
 {
@@ -311,62 +312,33 @@ class DataController extends AppController
      * @Method({"POST"})
 	 */
 	public function deleteAction($type, $ouuid, Request $request)
-	{
-
-		/** @var EntityManager $em */
-		$em = $this->getDoctrine()->getManager();
-		
-		/** @var ContentTypeRepository $contentTypeRepo */
-		$contentTypeRepo = $em->getRepository('EMSCoreBundle:ContentType');
-		
-		$contentTypes = $contentTypeRepo->findBy([
-				'deleted' => false,
-				'name' => $type,
-		]);
-		if(!$contentTypes || count($contentTypes) != 1) {
-			throw new NotFoundHttpException('Content Type not found');
-		}
-		
-		/** @var RevisionRepository $repository */
-		$repository = $em->getRepository('EMSCoreBundle:Revision');
-		
-		
-		$revisions = $repository->findBy([
-				'ouuid' => $ouuid,
-				'contentType' => $contentTypes[0]
-		]);
-		
-		
-		/** @var Client $client */
-		$client = $this->get('app.elasticsearch');
-		
-		/** @var Revision $revision */
-		foreach ($revisions as $revision){
-			$this->lockRevision($revision, true);
-			
-			/** @var Environment $environment */
-			foreach ($revision->getEnvironments() as $environment){
-				try{					
-					$client->delete([
-						'index' => $environment->getAlias(),
-						'type' => $revision->getContentType()->getName(),
-						'id' => $revision->getOuuid(),
-					]);
-					$this->addFlash('notice', 'The object has been unpublished from environment '.$environment->getName());					
+	{	
+		$revision = $this->getDataService()->getNewestRevision($type, $ouuid);
+		$found = false;
+		foreach ($this->getEnvironmentService()->getAll() as $environment) {
+			/**@var Environment $environment*/
+			if($environment !== $revision->getContentType()->getEnvironment()){
+				try{
+					$sibling = $this->getDataService()->getRevisionByEnvironment($ouuid, $revision->getContentType(), $environment);
+					if($sibling){
+						$this->addFlash('warning', 'A revision as been found in '.$environment->getName().'. Consider to unpublish it first.');
+						$found = true;
+					}					
 				}
-				catch(Missing404Exception $e){
-					if(!$revision->getDeleted()) {
-						$this->addFlash('warning', 'The object was already removed from environment '.$environment->getName());						
-					}
+				catch (NoResultException $e){
+					
 				}
-				$revision->removeEnvironment($environment);
 			}
-			$revision->setDeleted(true);
-			$em->persist($revision);
+		}		
+		
+		if($found){
+			return $this->redirectToRoute('data.revisions', [
+					'type' => $type,
+					'ouuid' => $ouuid,
+			]);			
 		}
-		$this->addFlash('notice', count($revisions).' have been marked as deleted! ');
-		$em->flush();
-
+		
+		$this->getDataService()->delete($type, $ouuid);
 
 		return $this->redirectToRoute('elasticsearch.search', [
 			'search_form[contentTypes][0]' => $contentTypes[0]->getName(), 
@@ -1020,7 +992,7 @@ class DataController extends AppController
 						}
 					}
 				}
-				$this->getDataService()->setLabelField($revision);
+				$this->getDataService()->setMetaFields($revision);
 				
 				$em->persist($revision);
 				$em->flush();

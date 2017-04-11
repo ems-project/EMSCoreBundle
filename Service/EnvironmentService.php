@@ -95,6 +95,10 @@ class EnvironmentService {
 		return $out;
 	}
 
+	/**
+	 * 
+	 * @return boolean|array
+	 */
 	public function getAll(){
 		$this->loadEnvironment();
 		return $this->environments;

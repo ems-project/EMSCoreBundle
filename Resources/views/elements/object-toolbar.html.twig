@@ -23,16 +23,7 @@
 						'icon': 'pencil' }%}
 				{% endif %}
 			{% endif %}
-			{% if is_granted(contentType.createRole) %}
-				{% if not  contentType.circlesField or attribute(object._source, contentType.circlesField)|in_my_circles %}
-					{% include 'EMSCoreBundle:elements:post-button.html.twig' with {
-						'url':  path('object.delete', {'type': object._type, 'ouuid': object._id} ),
-						'label': 'Delete',
-						'icon': 'trash',
-						'message': 'Do you confirm?'
-					}%}
-				{% endif %}
-			{% endif %}
+
 		{% endif %}
 	</div>
 </div>

@@ -62,7 +62,7 @@ class FillLabelFieldCommand extends EmsCommand
 			/** @var \EMS\CoreBundle\Entity\Revision $revision */
 			foreach ($environment->getRevisions() as $revision) {
 				try{
-					$this->dataService->setLabelField($revision);
+					$this->dataService->setMetaFields($revision);
 //					echo $revision->getId()." => ".$revision->getLabelField()."\n";
 					
 					$query = 'UPDATE \EMS\CoreBundle\Entity\Revision r SET r.labelField = \''.str_replace ( "'", "&#39;", $revision->getLabelField()).'\' WHERE r.id = '.$revision->getId();

@@ -150,5 +150,15 @@
 			</div>
 		  {% endif %}
 		  
+            {% if is_granted(instance.contentType.createRole) %}
+            	{% if not  instance.contentType.circlesField or attribute(object._source, instance.contentType.circlesField)|in_my_circles %}
+            		{% include 'EMSCoreBundle:elements:post-button.html.twig' with {
+            			'url':  path('object.delete', {'type': instance.contentType.name, 'ouuid': instance.ouuid} ),
+            			'label': 'Delete',
+            			'icon': 'trash',
+            			'message': 'Do you confirm?'
+            		}%}
+            	{% endif %}
+            {% endif %}
 	{% endif %}
 </div>

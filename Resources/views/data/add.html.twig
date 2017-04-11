@@ -2,7 +2,7 @@
 
 {% block title %}Add a new {{ contentType.name }}{% endblock %}
 {% block pagetitle %}Add a new {{ contentType.name }}{% endblock %} 
-{% block subtitle %}<small>This operation will not index the {{ contentType.name }}, but just initiate a draft</small>{% endblock %} 
+{% block subtitle %}<small>{{ 'This operation will not index the %object_name%, but initiate a draft only with a specific OUUID'|trans({'%object_name%':contentType.singularName}) }}</small>{% endblock %} 
 
 
 {% block body %}
@@ -17,16 +17,12 @@
 			<!-- /.box-header -->
 			<div class="box-body">
 				<p>
-					This operation will not directly index a new object "<em>{{ contentType.name }}</em>". 
-					But it will instianciate a new draft without any previous revision. 
-					Wich means that <strong>this draft will not be visible</strong> in any envirronement <strong>until it's first save</strong>.
-					So you won't be able to see it in any list view (such as index, map, calendar, ...).
-					But all draft in progres can be found in the <em>Draft in progress</em> section.
+					{{ 'This operation will not index a new object ‘<em>%content_type%</em>’ immediately. It will start a new draft without any previous revision. <strong>This draft will not be visible</strong> in any environment <strong>until it has been finalized for the first time</strong>. This means you will not be able to see it in any list view (such as the index, map, calendar...), but all drafts in progress can be found in the ‘Draft in progress’ section.'|trans({ '%content_type%':contentType.name })|raw }} 
+					
 				</p>
 				<p>
-					About the <strong>object unique identifier</strong>, you are free to specify one (as soon as it is not alredy taken off-course).
-					But if you leave it <strong>empty</strong>, an object unique identifier <strong>will be generated</strong> during the save.
-					It is not possible to update the object unique identifier later.
+					{{ 'About the <strong>object unique identifier</strong>: you are free to specify one (provided it has not been taken yet, of course). If you leave it <strong>empty</strong>, an object unique identifier <strong>will be generated</strong> during the save. It is not possible to update the object unique identifier later.'|trans({ })|raw }}
+					
 				</p>
 			</div>
 			<!-- /.box-body -->

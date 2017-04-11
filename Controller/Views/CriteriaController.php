@@ -230,7 +230,12 @@ class CriteriaController extends AppController
 		
 		foreach ($counters as $counter){
 			if($counter['content_type_id'] == $view->getContentType()->getId()) {
-				$this->addFlash('warning', 'There is '.$counter['counter'].' drafts, you wont be able to update them from here.');
+				if($counter['counter'] > 1){
+					$this->addFlash('warning', 'There are '.$counter['counter'].' drafts in progress. You won’t be able to update them from here.');					
+				}
+				else {
+					$this->addFlash('warning', 'There is one drafts in progress. You won’t be able to update it from here.');
+				}
 			}
 		}
 		

@@ -20,12 +20,12 @@
 				<table class="table table-condensed table-striped">
 					<tbody>
 						<tr>
-							<th class="text-center" style="width: 10px">#</th>
-							<th>OUUID</th>
-							<th>Label</th>
-							<th>Locked</th>
-							<th>Last update</th>
-							<th>Action</th>
+							<th class="text-center" style="width: 10px">{{ '#'|trans }}</th>
+							<th>{{ 'OUUID'|trans }}</th>
+							<th>{{ 'Label'|trans }}</th>
+							<th>{{ 'Locked'|trans }}</th>
+							<th>{{ 'Last update'|trans }}</th>
+							<th>{{ 'Action'|trans }}</th>
 						</tr>
 						{% for revision in revisions %}
 							<tr>
@@ -64,19 +64,19 @@
 														'ouuid': revision.ouuid,
 														'revisionId': revision.id
 													}), 
-													'label': 'Revisions', 
+													'label': 'Revisions'|trans, 
 													'icon': 'eye' }%}
 										{% endif %}
 										{% if not revision.contentType.circlesField or attribute(revision.rawData, revision.contentType.circlesField) is not defined or attribute(revision.rawData, revision.contentType.circlesField)|in_my_circles %}
 											{% include 'EMSCoreBundle:elements:get-button.html.twig' with {
 												'url':  path('revision.edit', {'revisionId': revision.id}),
-												'label': 'Edit',
+												'label': 'Edit draft'|trans,
 												'icon': 'pencil'
 											}%}
 											{% include 'EMSCoreBundle:elements:post-button.html.twig' with {
 												'url': path('revision.discard', {'revisionId': revision.id}),
-												'message': 'Discard this draft ?',
-												'label': 'Discard',
+												'message': 'Discard this draft ?'|trans,
+												'label': 'Discard'|trans,
 												'icon': 'trash'
 											}%}
 										{% endif %}

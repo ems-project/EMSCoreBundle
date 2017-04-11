@@ -13,7 +13,7 @@
 			{% if countPending > 0 %}
 				<li class="{% if countRejected == 0 %}active{% endif %}"><a href="#tab_to_treat" data-toggle="tab" aria-expanded="{% if countRejected == 0 %}true{%else%}false{% endif %}">
 					<i class="fa fa-hourglass-half" aria-hidden="true"></i>
-					{{ 'To treat '|trans }}
+					{{ 'To be treated '|trans }}
 					<span class="badge badge-primary">{{ countPending }}</span>
 				</a></li>
 			{% endif %}

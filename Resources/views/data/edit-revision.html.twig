@@ -1,7 +1,7 @@
 {% extends 'EMSCoreBundle::base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
-{% block title %}{% if revision.ouuid %}Edit {{ revision.contentType.singularName }} : {{ revision.ouuid }}{% else %}{{ revision.contentType.singularName }} : new draft{% endif %}{% endblock %}
-{% block pagetitle %}{% if revision.ouuid %}Edit {{ revision.contentType.singularName }} : {{ revision.ouuid }}{% else %}{{ revision.contentType.singularName }} : new draft{% endif %}{% endblock %} 
+{% block title %}{% if revision.ouuid %}Edit {{ revision.contentType.singularName }}: {{ revision.ouuid }}{% else %}{{ revision.contentType.singularName }}: new draft{% endif %}{% endblock %}
+{% block pagetitle %}{% if revision.ouuid %}Edit {{ revision.contentType.singularName }}: {{ revision.ouuid }}{% else %}{{ revision.contentType.singularName }}: new draft{% endif %}{% endblock %} 
 {% block subtitle %}<small>Working area</small>{% endblock %} 
 
 

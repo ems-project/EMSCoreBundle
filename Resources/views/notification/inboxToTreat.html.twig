@@ -11,14 +11,14 @@
 					<th class="" style="">
 	                  	<a href="#" onclick="javascript: $('.item-to-treat').prop('checked', 'checked'); return false;"><i class="fa fa-check-square-o"></i></a> 
 	                  	<a href="#" onclick="javascript: $('.item-to-treat').prop('checked', false); return false;"><i class="fa fa-square-o"></i></a>
-	                  	&nbsp;Notification
+	                  	&nbsp;{{ 'Notification'|trans }}
 					</th>
-					<th>Create by</th>
-					<th>Date</th>
-					<th>Environment</th>
-					<th>Warnings</th>
-					<th>Revision</th>
-					<th>Actions</th>
+					<th>{{ 'Created by'|trans }}</th>
+					<th>{{ 'Date'|trans }}</th>
+					<th>{{ 'Environment'|trans }}</th>
+					<th>{{ 'Warnings'|trans }}</th>
+					<th>{{ 'Revision'|trans }}</th>
+					<th>{{ 'Actions'|trans }}</th>
 				</tr>
 			</tbody>
 			{% for notification in notifications %}

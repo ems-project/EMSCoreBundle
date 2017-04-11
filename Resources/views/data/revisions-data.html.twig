@@ -67,34 +67,39 @@
 
               <p class="text-muted">{{ revision.modified|date(date_time_format) }}</p>
 
-              <hr>
               {% if revision.lockby %}
+                  <hr>
 
 	              <strong><i class="fa fa-user margin-r-5"></i> Modified by</strong>
 	
 	              <p class="text-muted">{{ revision.lockby|displayname }}</p>
 	
-	              <hr>
               {% endif %}
               
               {% if revision.notifications|length > 0 %}
-	              <strong><i class="fa fa-hourglass-end margin-r-5"></i> Pendings</strong>
+	              <hr>
+	              <strong><i class="fa fa-hourglass-end margin-r-5"></i> {{ 'Pending'|trans }}</strong>
 	
-	              <p>
+	              <p class="text-muted">
+	              	{% set notificationFound = false %}
 					{% for notification in revision.notifications %}
 						{% if notification.status == 'pending'  %}
 			                <span class="label label-default"><i class="fa {{ notification.template.icon }}"></i> {{ notification.template.name }}</span>
+			                {% set notificationFound = true %}
 			            {% endif %}
 					{% endfor %}
+    				{% if not notificationFound %}
+    					{{ 'Nothing'|trans }}
+    				{% endif %}
 	              </p>
 	
-	              <hr>
               {% endif %}
-
-              {% if revision.circles|length > 0 %}
-	              <strong><i class="fa fa-circle-o margin-r-5"></i> Circles</strong>
+              {% if circles_object and revision.circles|length > 0 %}
+                  <hr>
+              	{% set circleContentType = circles_object|get_content_type %}
+	              <strong><i class=" {% if circleContentType.icon %}{{ circleContentType.icon }}{% else %}fa fa-circle-o{% endif %} margin-r-5"></i> {{ circleContentType.pluralName }}</strong>
 	
-	              <p>
+	              <p class="text-muted">
 	              	{% for circle in revision.circles %}
 	              		{{ circle|data_link|raw }}
 	              	{% endfor %}
@@ -154,7 +159,7 @@
           <!-- Custom Tabs -->
           <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
-              <li class="active"><a href="#tab_referrers" data-toggle="tab" aria-expanded="true">Referrers <small>{{ referrers.hits.hits|length }}/{{ referrers.hits.total }}</small></a></li>
+              <li class="active"><a href="#tab_referrers" data-toggle="tab" aria-expanded="true">{{ 'Linked documents'|trans }} <small>{{ referrers.hits.hits|length }}/{{ referrers.hits.total }}</small></a></li>
               <li class=""><a href="#tab_revisions" data-toggle="tab" aria-expanded="false">Revisions <small>{{ revisionsSummary|length }}/{{ counter }}</small></a></li>
             </ul>
             <div class="tab-content">
@@ -162,7 +167,7 @@
 	              <div class="box">
 					<div class="box-body">
 						{% if referrers.hits.total == 0 %}
-							This document does not have any referrers
+							{{ 'This document does not have any linked document'|trans }}
 						{% else %}
 						
 							<div class="btn-group">
@@ -183,7 +188,7 @@
 			            		'search_form[filters][0][field]' : revision.contentType.refererFieldName,
 			            		'search_form[filters][0][operator]' : 'term',
 			            		'search_form[filters][0][pattern]' : (revision.contentType.name~':'~revision.ouuid)
-								} ) }}" class="btn btn-primary"><i class="fa fa-search"></i> All referrers</a>
+								} ) }}" class="btn btn-primary"><i class="fa fa-search"></i> {{ 'All linked documents' }}</a>
 						</div>
 					</div>
 				</div>

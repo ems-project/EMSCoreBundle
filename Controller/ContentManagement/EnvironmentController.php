@@ -9,6 +9,7 @@ use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\ContentTypeFilter;
 use EMS\CoreBundle\Entity\Form\RebuildIndex;
 use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Form\Field\ColorPickerType;
 use EMS\CoreBundle\Form\Field\IconTextType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
@@ -39,6 +40,13 @@ class EnvironmentController extends AppController {
 	public function alignAction(Request $request) {
 		
 		$data = [];
+		$env = [];
+		$withEnvi = [];
+				
+		/**@var EnvironmentService $environmentService*/
+		$environmentService = $this->getEnvironmentService();
+		/** @var Client $client */
+		$client = $this->getElasticsearch();
 		
 		$form = $this->createForm(CompareEnvironmentFormType::class, $data, [
 		]);
@@ -71,9 +79,6 @@ class EnvironmentController extends AppController {
 					$alignTo[$request->query->get('environment')] = $request->query->get('environment');
 					$revid = $request->request->get('compare_environment_form')['alignWith'];
 
-					/** @var  Client $client */
-					$client = $this->get ( 'app.elasticsearch' );
-
 					/** @var EntityManager $em */
 					$em = $this->getDoctrine()->getManager();
 					
@@ -101,16 +106,16 @@ class EnvironmentController extends AppController {
 					if($continue) {
 						$this->getDataService()->lockRevision($revision);
 						foreach ($alignTo as $env){
-							$item = $repository->findByOuuidContentTypeAndEnvironnement($revision, $this->get('ems.service.environment')->getAliasByName($env));
+							$item = $repository->findByOuuidContentTypeAndEnvironnement($revision, $environmentService->getAliasByName($env));
 							if ($item){
 								$this->getDataService()->lockRevision($item);
-								$item->removeEnvironment($this->getEnvironmentService()->getAliasByName($env));
+								$item->removeEnvironment($environmentService->getAliasByName($env));
 								$em->persist($item);
 							}
-							$revision->addEnvironment($this->getEnvironmentService()->getAliasByName($env));
-							$status = $this->getElasticsearch()->index([
+							$revision->addEnvironment($environmentService->getAliasByName($env));
+							$status = $client->index([
 									'id' => $revision->getOuuid(),
-									'index' => $this->get('ems.service.environment')->getAliasByName($env)->getAlias(),
+									'index' => $environmentService->getAliasByName($env)->getAlias(),
 									'type' => $revision->getContentType()->getName(),
 									'body' => $revision->getRawData()
 							]);
@@ -218,14 +223,14 @@ class EnvironmentController extends AppController {
 			$em = $this->getDoctrine ()->getManager ();
 			/**@var RevisionRepository $repository*/
 			$repository = $em->getRepository ( 'EMSCoreBundle:Revision' );
+			
 
-			$env = $this->get('ems.service.environment')->getAliasByName($environment);
-			$withEnvi = $this->get('ems.service.environment')->getAliasByName($withEnvironment);
-			$fromEnv = $env->getId();
-			$withEnv = $withEnvi->getId();
+			$env = $environmentService->getAliasByName($environment);
+			$withEnvi = $environmentService->getAliasByName($withEnvironment);
 
 			$total = $repository->countDifferencesBetweenEnvironment($env->getId(), $withEnvi->getId(), $contentTypes);
 			if($total){
+				$contentTypeService = $this->getContentTypeService();
 				$lastPage = ceil($total/$paging_size);
 				if($page > $lastPage){
 					$page = $lastPage;
@@ -236,7 +241,30 @@ class EnvironmentController extends AppController {
 															($page-1)*$paging_size, 
 															$paging_size,
 															$orderField,
-															$orderDirection);				
+															$orderDirection);
+				for ($index = 0; $index < count($results); $index++) {
+					$results[$index]['contentType'] = $contentTypeService->getByName($results[$index]['content_type_name']);
+					try{
+						$results[$index]['objectEnvironment'] = $client->get([
+										'id' => $results[$index]['ouuid'],
+										'index' => $env->getAlias(),
+										'type' => $results[$index]['content_type_name'],
+								]);
+					}
+					catch (Missing404Exception $e){
+						$results[$index]['objectEnvironment'] = null;//This revision doesn't exist in this environment, but it's ok.
+					}
+					try{
+						$results[$index]['objectWithEnvironment'] = $client->get([
+								'id' => $results[$index]['ouuid'],
+								'index' => $withEnvi->getAlias(),
+								'type' => $results[$index]['content_type_name'],
+						]);
+					}
+					catch (Missing404Exception $e){
+						$results[$index]['objectWithEnvironment'] = null;//This revision doesn't exist in this environment, but it's ok.
+					}
+				}
 			}
 			else {
 				$page = $lastPage = 1;
@@ -244,8 +272,6 @@ class EnvironmentController extends AppController {
 				$total = 0;
 				$results = [];
 			}
-
-
 		}
 		else {
 			$environment = false; 
@@ -254,8 +280,6 @@ class EnvironmentController extends AppController {
 			$page = 0;
 			$total = 0;
 			$lastPage = 0;
-			$fromEnv = 0;
-			$withEnv = 0;
 		}
 		
 		if($orderField == 'label'){
@@ -285,7 +309,7 @@ class EnvironmentController extends AppController {
 		        $orderCTDirection = "DESC";
 		     }
 		}
-         return $this->render ( 'EMSCoreBundle:environment:align.html.twig', [
+		return $this->render ( 'EMSCoreBundle:environment:align.html.twig', [
 				'form' => $form->createView(),
 				'formFilter' => $formFilterView,
          		'results' => $results,
@@ -295,11 +319,11 @@ class EnvironmentController extends AppController {
 				'paging_size' => $paging_size,
 				'total' => $total,
 				'currentFilters' => $request->query,
-				'fromEnv' => $fromEnv,
-				'withEnv' => $withEnv,
+				'fromEnv' => $env,
+				'withEnv' => $withEnvi,
 				'environment' => $environment,
 				'withEnvironment' => $withEnvironment,
-				'environments' => $this->get('ems.service.environment')->getAll(),
+				'environments' => $environmentService->getAll(),
          		'orderField' => $orderField,
          		'orderCTDirection' => $orderCTDirection,
          		'orderCTIcon' => $orderCTIcon,
@@ -323,7 +347,7 @@ class EnvironmentController extends AppController {
 	 */
 	public function attachAction($name, Request $request) {
 		/** @var  Client $client */
-		$client = $this->get ( 'app.elasticsearch' );
+		$client = $this->getElasticsearch();
 		try {
 			$indexes = $client->indices ()->get ( [ 
 					'index' => $name 
@@ -381,7 +405,7 @@ class EnvironmentController extends AppController {
 		$environment = $repository->find ( $id );
 			
 		/** @var  Client $client */
-		$client = $this->get ( 'app.elasticsearch' );
+		$client = $this->getElasticsearch();
 		if ($environment->getManaged ()) {
 			try {
 				$indexes = $client->indices ()->get ( [ 
@@ -576,7 +600,7 @@ class EnvironmentController extends AppController {
 		}
 
 		/** @var  Client $client */
-		$client = $this->get('app.elasticsearch');
+		$client = $this->getElasticsearch();
 		
 		/** @var ContentTypeRepository $contentTypeRep */
 		$contentTypeRep = $em->getRepository('EMSCoreBundle:ContentType');
@@ -607,7 +631,7 @@ class EnvironmentController extends AppController {
 	 */
 	private function reindexAll(Environment $environment, $alias){
 		/** @var  Client $client */
-		$client = $this->get('app.elasticsearch');
+		$client = $this->getElasticsearch();
 		/** @var \EMS\CoreBundle\Entity\Revision $revision */
 		foreach ($environment->getRevisions() as $revision) {
 			if(!$revision->getDeleted()){
@@ -692,7 +716,7 @@ class EnvironmentController extends AppController {
 			/** @var EnvironmentRepository $repository */
 			$repository = $em->getRepository('EMSCoreBundle:Environment');
 		
-			$client = $this->get('app.elasticsearch');
+			$client = $this->getElasticsearch();
 			
 			$logger = $this->getLogger();
 		

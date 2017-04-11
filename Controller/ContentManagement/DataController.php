@@ -93,7 +93,7 @@ class DataController extends AppController
 // 				'contentType' => $contentTypeId
 // 		]);
 		
-		$revisions= $revisionRep->findInProgresByContentType($contentType, $this->get('ems.service.user')->getCurrentUser()->getCircles(), $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN'));
+		$revisions= $revisionRep->findInProgresByContentType($contentType, $this->getUserService()->getCurrentUser()->getCircles(), $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN'));
 		
 		
 		return $this->render( 'EMSCoreBundle:data:draft-in-progress.html.twig', [
@@ -243,11 +243,11 @@ class DataController extends AppController
 		
 
 		/** @var Client $client */
-		$client = $this->get('app.elasticsearch');
+		$client = $this->getElasticsearch();
 		
 		$refParams = [ 
-					'type' => $this->get('ems.service.contenttype')->getAllTypes(),
-					'index' => $this->get('ems.service.contenttype')->getAllAliases(),
+					'type' => $this->getContentTypeService()->getAllTypes(),
+					'index' => $this->getContentTypeService()->getAllAliases(),
 					'size' => 100,
 					'body'=> [
 						'query' => [
@@ -443,7 +443,7 @@ class DataController extends AppController
 		$this->lockRevision($revision);
 		
 		/** @var Client $client */
-		$client = $this->get('app.elasticsearch');
+		$client = $this->getElasticsearch();
 		
 	
 		try{
@@ -1051,7 +1051,7 @@ class DataController extends AppController
 			$repository = $em->getRepository ( 'EMSCoreBundle:Revision' );
 			
 			/**@var ContentTypeService $ctService*/
-			$ctService = $this->get('ems.service.contenttype');
+			$ctService = $this->getContentTypeService();
 			
 			
 			$contentType = $ctService->getByName($type);

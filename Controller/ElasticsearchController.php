@@ -41,7 +41,7 @@ class ElasticsearchController extends AppController
 	public function addAliasAction($name, Request $request) {
 	
 		/** @var  Client $client */
-		$client = $this->get ( 'app.elasticsearch' );
+		$client = $this->getElasticsearch();
 		$result = $client->indices()->getAlias(['index' => $name]);
 		
 		$form = $this->createFormBuilder ( [] )->add ( 'name', IconTextType::class, [
@@ -163,7 +163,7 @@ class ElasticsearchController extends AppController
 	public function deleteIndexAction($name, Request $request)
 	{
 		/** @var  Client $client */
-		$client = $this->get('app.elasticsearch');
+		$client = $this->getElasticsearch();
 		try {
 			$indexes = $client->indices()->get(['index' => $name]);
 			$client->indices()->delete([
@@ -218,7 +218,7 @@ class ElasticsearchController extends AppController
 			
 		if(!empty($types)){
 			$aliases = [];
-			$service = $this->get('ems.service.environment');
+			$service = $this->getEnvironmentService();
 			if(empty($environments)){
 				/**@var EnvironmentService $service*/
 				foreach ($types as $type){
@@ -289,7 +289,7 @@ class ElasticsearchController extends AppController
 			
 			if(count($types) == 1){
 				/**@var ContentTypeService $contentTypeService*/ 
-				$contentTypeService = $this->get('ems.service.contenttype');
+				$contentTypeService = $this->getContentTypeService();
 				$contentType = $contentTypeService->getByName($types[0]);
 				if($contentType && $contentType->getOrderField()) {
 					$params['body']['sort'] = [
@@ -320,7 +320,7 @@ class ElasticsearchController extends AppController
 			
 	
 			/** @var \Elasticsearch\Client $client */
-			$client = $this->get('app.elasticsearch');
+			$client = $this->getElasticsearch();
 			
 			$results = $client->search($params);
 		}
@@ -483,7 +483,7 @@ class ElasticsearchController extends AppController
 			$environments = $environmentRepository->findAllAsAssociativeArray('alias');
 
 			/** @var \Elasticsearch\Client $client */
-			$client = $this->get('app.elasticsearch');
+			$client = $this->getElasticsearch();
 			
 			$assocAliases = $client->indices()->getAliases();
 			
@@ -576,9 +576,9 @@ class ElasticsearchController extends AppController
 				$contentTypes = $this->getAllContentType($results);
 
 				/**@var ContentTypeService $contenttypeService*/
-				$contenttypeService = $this->get('ems.service.contenttype');
+				$contenttypeService = $this->getContentTypeService();
 				/**@var EnvironmentService $environmentService*/
-				$environmentService = $this->get('ems.service.environment');
+				$environmentService = $this->getEnvironmentService();
 				
 				//Check for each content type that an export template is available. 
 				//If no export template is defined, ignore the content type.

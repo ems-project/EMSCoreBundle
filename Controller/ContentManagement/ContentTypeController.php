@@ -378,7 +378,7 @@ class ContentTypeController extends AppController {
 		] );
 		
 		/** @var  Client $client */
-		$client = $this->get ( 'app.elasticsearch' );
+		$client = $this->getElasticsearch();
 		
 		$referencedContentTypes = [ ];
 		/** @var Environment $environment */
@@ -618,7 +618,7 @@ class ContentTypeController extends AppController {
 		$inputContentType = $request->request->get ( 'content_type' );
 		
 		/** @var  Client $client */
-		$client = $this->get ( 'app.elasticsearch' );
+		$client = $this->getElasticsearch();
 		
 		$mapping = $client->indices ()->getMapping ( [
 				'index' => $contentType->getEnvironment ()->getAlias (),
@@ -824,7 +824,7 @@ class ContentTypeController extends AppController {
 		}
 		
 // 		/** @var  Client $client */
-// 		$client = $this->get ( 'app.elasticsearch' );
+// 		$client = $this->getElasticsearch();
 		
 // 		$mapping = $client->indices ()->getMapping ( [ 
 // 				'index' => $contentType->getEnvironment ()->getAlias (),

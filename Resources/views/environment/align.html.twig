@@ -112,7 +112,9 @@
             } %}</th>
             <th><span class="badge bg-{{ environments[environment].color }}" title="Circles:">{{ environment }}</span></th>
             <th><span class="badge bg-{{ environments[withEnvironment].color }}" title="Circles:">{{ withEnvironment }}</span></th>
+            {% if is_granted('ROLE_WEBMASTER') or is_granted('ROLE_ADMIN')  %}
             <th>Actions</th>
+            {% endif %}
           </tr>
           {% for item in results %}
       			{% set data = (item.content_type_name~':'~item.ouuid) %}
@@ -197,6 +199,7 @@
                   {% endfor %}
                 {% endif %}
               </td>
+            {% if is_granted('ROLE_WEBMASTER') or is_granted('ROLE_ADMIN')  %}
               <td>
               	<div class="btn-group">
           				{%  if defaultEnv and withEnv.id != defaultEnv.id %}
@@ -216,16 +219,19 @@
             			{% endif %}
               	</div>
               </td>
+            {% endif %}
             </tr>
         {% endfor %}
         </tbody></table>
         </div>
       </div>
       <div class="box-footer">
+        {% if is_granted('ROLE_WEBMASTER') or is_granted('ROLE_ADMIN')  %}
       	<div class="btn-group">
         	<button type="submit" name="compare_environment_form[alignRight]" class="btn-danger btn-md btn"><span class="fa fa-chevron-right"></span>&nbsp;Align {{ withEnvironment }} with {{ environment }}</button>
         	<button type="submit" name="compare_environment_form[alignLeft]" class="btn-danger btn-md btn"><span class="fa fa-chevron-left"></span>&nbsp;Align {{ environment }} with {{ withEnvironment }}</button>
       	</div>
+        {% endif %}
 
 				{% include 'EMSCoreBundle:elements:pagination.html.twig' with {
 					'lastPage': lastPage,

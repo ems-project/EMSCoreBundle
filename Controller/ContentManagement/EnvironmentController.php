@@ -180,21 +180,8 @@ class EnvironmentController extends AppController {
 			$contentTypes = [];
 		}
 		
-		if(null != $request->query->get('orderField')){
-			$orderField = $request->query->get('orderField');
-		}
-		else{
-			$orderField = "contenttype";
-		}
-		$orderField = strtolower($orderField);
-		
-		if(null != $request->query->get('orderDirection')){
-			$orderDirection = $request->query->get('orderDirection');
-		}
-		else{
-			$orderDirection = "ASC";
-		}
-		$orderDirection = strtoupper($orderDirection);
+		$orderField = $request->query->get('orderField', "contenttype");
+		$orderDirection = $request->query->get('orderDirection', 'asc');
 		
 		if(null != $request->query->get('environment')){
 			$environment = $request->query->get('environment');
@@ -244,7 +231,8 @@ class EnvironmentController extends AppController {
 															$orderDirection);
 				for ($index = 0; $index < count($results); $index++) {
 					$results[$index]['contentType'] = $contentTypeService->getByName($results[$index]['content_type_name']);
-					$results[$index]['revisionEnvironment'] = $repository->findOneById($results[$index]['rId']);
+// 					$results[$index]['revisionEnvironment'] = $repository->findOneById($results[$index]['rId']);
+//TODO: is it the better options? to concatenate and split things?
 					$minrevid = explode("/", $results[$index]['minrevid']);//1/81522/2017-03-08 14:32:52 => e.id/r.id/r.created
 					$maxrevid = explode("/", $results[$index]['maxrevid']);
 					if($minrevid[0] == $env->getId()){
@@ -292,33 +280,6 @@ class EnvironmentController extends AppController {
 			$lastPage = 0;
 		}
 		
-		if($orderField == 'label'){
-            $orderCTIcon = "fa-sort-asc";
-            $orderCTDescription = "Sort Content type ascending";
-            $orderCTDirection = "ASC";
-            if($orderDirection == "DESC"){
-	            $orderLabelFieldIcon = "fa-sort-asc";
-	            $orderLabelFieldDescription = "Sort ascending";
-		        $orderLabelFieldDirection = "ASC";
-            } else {
-	            $orderLabelFieldIcon = "fa-sort-desc";
-	            $orderLabelFieldDescription = "Sort descending";
-		        $orderLabelFieldDirection = "DESC";
-		     }
-		} else {
-            $orderLabelFieldIcon = "fa-sort-asc";
-            $orderLabelFieldDescription = "Sort Label ascending";
-            $orderLabelFieldDirection = "ASC";
-            if($orderDirection == "DESC"){
-	            $orderCTIcon = "fa-sort-asc";
-	            $orderCTDescription = "Sort ascending";
-		        $orderCTDirection = "ASC";
-		     } else {
-	            $orderCTIcon = "fa-sort-desc";
-	            $orderCTDescription = "Sort descending";
-		        $orderCTDirection = "DESC";
-		     }
-		}
 		return $this->render ( 'EMSCoreBundle:environment:align.html.twig', [
 				'form' => $form->createView(),
 				'formFilter' => $formFilterView,
@@ -335,12 +296,7 @@ class EnvironmentController extends AppController {
 				'withEnvironment' => $withEnvironment,
 				'environments' => $environmentService->getAll(),
          		'orderField' => $orderField,
-         		'orderCTDirection' => $orderCTDirection,
-         		'orderCTIcon' => $orderCTIcon,
-         		'orderCTDescription' => $orderCTDescription,
-         		'orderLabelFieldDirection' => $orderLabelFieldDirection,
-         		'orderLabelFieldIcon' => $orderLabelFieldIcon,
-         		'orderLabelFieldDescription' => $orderLabelFieldDescription,
+         		'orderDirection' => $orderDirection,
          ] );
 	}
 	

@@ -89,33 +89,44 @@
       <!-- /.box-header -->
       <div class="box-body no-padding">
 			  <div class="table-responsive">
-        <table class="table">
-          <tbody><tr>
+        <table class="table dataTable">
+          <thead>
+          <tr>
             <th style="width: 10px">#</th>
             <th>
             	<a href="#" onclick="javascript: $('.item-to-align').prop('checked', 'checked'); return false;"><i class="fa fa-check-square-o"></i></a> 
             	<a href="#" onclick="javascript: $('.item-to-align').prop('checked', false); return false;"><i class="fa fa-square-o"></i></a>
             </th>
-              {% set href=path(paginationPath, app.request.query.all|merge({'orderField': 'contentype', 'orderDirection': orderCTDirection})) %}
-            <th>{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {
-             'orderHref': href,
-             'orderDescription': orderCTDescription,
-             'orderTitle': 'Content type',
-             'orderIcon': orderCTIcon
-            } %}</th>
-              {% set href=path(paginationPath, app.request.query.all|merge({'orderField': 'label', 'orderDirection': orderLabelFieldDirection})) %}
-            <th>{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {
-             'orderHref': href,
-             'orderDescription': orderLabelFieldDescription,
-             'orderTitle': 'Label',
-             'orderIcon': orderLabelFieldIcon
-            } %}</th>
+			{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {
+                 'title': 'Content type'|trans,
+                 'field': 'contentype',
+            } %}
+{#               {% set href=path(paginationPath, app.request.query.all|merge({'orderField': 'contentype', 'orderDirection': orderCTDirection})) %}#}
+{#             <th>{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {#}
+{#              'orderHref': href,#}
+{#              'orderDescription': orderCTDescription,#}
+{#              'orderTitle': 'Content type',#}
+{#              'orderIcon': orderCTIcon#}
+{#             } %}</th>#}
+			{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {
+                 'title': 'Label'|trans,
+                 'field': 'label',
+            } %}
+{#               {% set href=path(paginationPath, app.request.query.all|merge({'orderField': 'label', 'orderDirection': orderLabelFieldDirection})) %}#}
+{#             <th>{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {#}
+{#              'orderHref': href,#}
+{#              'orderDescription': orderLabelFieldDescription,#}
+{#              'orderTitle': 'Label',#}
+{#              'orderIcon': orderLabelFieldIcon#}
+{#             } %}</th>#}
             <th><span class="badge bg-{{ environments[environment].color }}" title="Circles:">{{ environment }}</span></th>
             <th><span class="badge bg-{{ environments[withEnvironment].color }}" title="Circles:">{{ withEnvironment }}</span></th>
             {% if is_granted('ROLE_WEBMASTER') or is_granted('ROLE_ADMIN')  %}
             <th>Actions</th>
             {% endif %}
           </tr>
+          </thead>
+          <tbody>
           {% for item in results %}
       			{% set data = (item.content_type_name~':'~item.ouuid) %}
       			{% set minrev = item.minrevid|split('/') %}

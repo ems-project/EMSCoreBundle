@@ -29,10 +29,22 @@ class UserController extends AppController
 		
 		/** @var EntityRepository $repository */
 		$repository = $em->getRepository('EMSCoreBundle:User');
+		$pageSize = $this->container->getParameter('ems_core.paging_size');
 		
-		$users = $repository->findAll();
+		$lastPage = ceil(count($repository->findAll())/$pageSize);
+		$page = $request->query->get('page', 1);
+		$orderField= $request->query->get('orderField', 'username');
+		$orderDirection= $request->query->get('orderDirection', 'asc');
+		
+		$users = $repository->findBy([], [$orderField => $orderDirection], $pageSize, ($page-1)*$pageSize);
 		return $this->render( 'EMSCoreBundle:user:index.html.twig', [
-				'users' => $users
+				'users' => $users,
+				'lastPage' => $lastPage,
+				'page' => $page,
+				'paginationPath' => 'ems.user.index',
+				'showAlwaysFirstAndLast' => true,
+				'orderField' => $orderField,
+				'orderDirection' => $orderDirection,
 		] );
 	}
 	

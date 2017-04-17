@@ -20,25 +20,57 @@
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
+    			{% if lastPage > 1 %}
+    				<div class="box-header">
+    				
+    			
+    				
+    				{% include 'EMSCoreBundle:elements:pagination.html.twig' with {
+    					'lastPage': lastPage,
+    					'currentPage': page,
+    					'currentFilters': app.request.query,
+    					'paginationPath': paginationPath,
+    					'showAlwaysFirstAndLast': false
+    				} %}
+    				</div>
+    			{% endif %}
+    			
 				<div class="table-responsive">
-				<table class="table table-condensed table-striped">
-					<tbody>
-						<tr>
-							<th class="text-center" style="width: 10px">{{ '#'|trans }}</th>
-							<th>{{ 'Username'|trans }}</th>
-							<th>{{ 'Display name'|trans }}</th>
-							<th>{{ 'email'|trans }}</th>
-							<th>{{ 'Circles'|trans }}</th>
-							<th>{{ 'Enabled'|trans }}</th>
-							<th>{{ 'Roles'|trans }}</th>
-							<th>{{ 'Last login'|trans }}</th>
-							<th>{{ 'Action'|trans }}</th>
+				<table class="table table-condensed table-striped dataTable">
+					<thead>
+						<tr role="row">
+							<th class="nowrap text-center" style="width: 10px">{{ '#'|trans }}</th>
+							{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {
+                                 'title': 'Username'|trans,
+                                 'field': 'username',
+                            } %}
+							{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {
+                                 'title': 'Display name'|trans,
+                                 'field': 'displayName',
+                            } %}
+							{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {
+                                 'title': 'email'|trans,
+                                 'field': 'email',
+                            } %}
+							<th class="nowrap">{{ 'Circles'|trans }}</th>
+							{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {
+                                 'title': 'Enabled'|trans,
+                                 'field': 'enabled',
+                            } %}
+							<th class="nowrap">{{ 'Roles'|trans }}</th>
+							{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {
+                                 'title': 'Last login'|trans,
+                                 'field': 'lastLogin',
+                            } %}
+							<th class="nowrap">{{ 'Action'|trans }}</th>
 						</tr>
+					</thead>
+					<tbody>
 						{% for user in users %}
 							<tr>
 								<td class="text-center" style="width: 10px">{{ loop.index }}</td>
 								<td>{{ user.username }}</td>
-								<td>{{ user.displayName }}</td>
+								<td>{% if user.displayName != user.username %}{{ user.displayName }}{% endif %}</td>
 								<td>{{ user.email }}</td>
 								<td>
 									{% for circle in user.circles %}
@@ -62,8 +94,8 @@
 										{{ role|trans }}
 									{% endfor %}
 								</td>
-								<td>{{ user.lastLogin|date(date_time_format) }}</td>
-								<td>
+								<td>{% if user.lastLogin %}{{ user.lastLogin|date(date_time_format) }}{% endif %}</td>
+								<td class="">
 									<div class="btn-group">
 										{% include 'EMSCoreBundle:elements:get-button.html.twig' with {
 											'url':  path('user.edit', {'id': user.id}),

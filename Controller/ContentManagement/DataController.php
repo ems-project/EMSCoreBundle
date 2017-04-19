@@ -292,11 +292,36 @@ class DataController extends AppController
 		return $this->getDataService()->initNewDraft($type, $ouuid, $fromRev);
 	}
 	
-
+	
+	/**
+	 *
+	 * @Route("/data/copy/{environment}/{type}/{ouuid}", name="revision.copy"))
+	 * @Method({"GET"})
+	 */
+	public function copyAction($environment, $type, $ouuid, Request $request)
+	{
+		$envObj = $this->getEnvironmentService()->getByName($environment);
+		$dataRaw = $this->getElasticsearch()->get([
+				'index' => $envObj->getAlias(),
+				'id' => $ouuid,
+				'type' => $type,
+		]);
+		
+		$this->addFlash('notice', 'The data of this object has been copied');
+		$request->getSession()->set('ems_clipboard', $dataRaw['_source']);
+		
+		return $this->redirectToRoute('data.view', [
+				'environmentName' => $environment, 
+				'type' => $type, 
+				'ouuid' => $ouuid,
+		]);
+	}
+	
+	
 	/**
 	 *
 	 * @Route("/data/new-draft/{type}/{ouuid}", name="revision.new-draft"))
-     * @Method({"POST"})
+	 * @Method({"POST"})
 	 */
 	public function newDraftAction($type, $ouuid, Request $request)
 	{
@@ -759,7 +784,9 @@ class DataController extends AppController
 
 		$logger->debug('DataField structure generated');
 		
-		$form = $this->createForm(RevisionType::class, $revision);
+		$form = $this->createForm(RevisionType::class, $revision, [
+			'has_clipboard' => $request->getSession()->has('ems_clipboard'),
+		]);
 
 		$logger->debug('Revision\'s form created');
 		
@@ -791,7 +818,7 @@ class DataController extends AppController
 			
 			
 			$revision->setAutoSave(null);
-			if(!array_key_exists('discard', $request->request->get('revision'))) {//Save or Finalize
+			if(!array_key_exists('discard', $request->request->get('revision'))) {//Save, Paste or Finalize
 				
 				//Save anyway
 				/** @var Revision $revision */
@@ -801,6 +828,14 @@ class DataController extends AppController
 				$this->getDataService()->convertInputValues($revision->getDataField());
 				
 				$objectArray = $this->get('ems.service.mapping')->dataFieldToArray($revision->getDataField());
+				
+				
+				if(array_key_exists('paste', $request->request->get('revision'))) {//Paste
+					$this->addFlash('notice', 'Data have been paste');
+					$objectArray = array_merge($objectArray, $request->getSession()->get('ems_clipboard', []));
+					$this->get('logger')->debug('Paste data have benn merged');
+				}
+				
 				$revision->setRawData($objectArray);
 				
 				
@@ -838,6 +873,13 @@ class DataController extends AppController
 					}
 					
 				}
+			}
+			
+			//if paste
+			if(array_key_exists('paste', $request->request->get('revision'))) {//Paste
+				return $this->redirectToRoute('revision.edit', [
+						'revisionId' => $revisionId,
+				]);
 			}
 			//if Save or Discard
 			if(null != $revision->getOuuid()){

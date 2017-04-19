@@ -56,11 +56,18 @@
 				{% endif %}
 				{% if ''|is_super %}
 					<li>
-						<a href="{{ path('data.view', {'environmentName': environment.name, 'type': contentType.name, 'ouuid': object._id} ) }}">
-							<i class="fa fa-th"></i>
-							Raw view
+						<a href="{{ path('revision.copy', {'environment': environment.name, 'type': contentType.name, 'ouuid': object._id} ) }}">
+							<i class="fa fa-copy"></i>
+							{{ 'Copy data'|trans }}
 						</a>
 					</li>
+					<li>
+						<a href="{{ path('data.view', {'environmentName': environment.name, 'type': contentType.name, 'ouuid': object._id} ) }}">
+							<i class="fa fa-th"></i>
+							{{ 'Raw view'|trans }}
+						</a>
+					</li>
+					
 				{% endif %}
 			
 	{# 		{% endif %}#}

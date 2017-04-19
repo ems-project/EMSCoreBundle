@@ -29,6 +29,16 @@ class RevisionType extends AbstractType {
 				],
 				'icon' => 'fa fa-save' 
 		] );
+		
+		if($options['has_clipboard']){
+			$builder->add ( 'paste', SubmitEmsType::class, [
+					'attr' => [
+							'class' => 'btn-primary btn-sm '
+					],
+					'icon' => 'fa fa-paste'
+			] );
+		}
+		
 		if($revision->getDraft()){
 			$builder->add ( 'publish', SubmitEmsType::class, [ 
 				'attr' => [ 
@@ -53,6 +63,7 @@ class RevisionType extends AbstractType {
 				'compound' => true,
             	'csrf_protection' => false,
 				'data_class' => 'EMS\CoreBundle\Entity\Revision',
+				'has_clipboard' => false,
 		) );
 	}
 	

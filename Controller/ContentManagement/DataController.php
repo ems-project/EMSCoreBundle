@@ -785,7 +785,8 @@ class DataController extends AppController
 		$logger->debug('DataField structure generated');
 		
 		$form = $this->createForm(RevisionType::class, $revision, [
-			'has_clipboard' => $request->getSession()->has('ems_clipboard'),
+				'has_clipboard' => $request->getSession()->has('ems_clipboard'),
+				'has_copy' => $this->getAuthorizationChecker()->isGranted('ROLE_ADMIN'),
 		]);
 
 		$logger->debug('Revision\'s form created');
@@ -818,7 +819,7 @@ class DataController extends AppController
 			
 			
 			$revision->setAutoSave(null);
-			if(!array_key_exists('discard', $request->request->get('revision'))) {//Save, Paste or Finalize
+			if(!array_key_exists('discard', $request->request->get('revision'))) {//Save, Copy, Paste or Finalize
 				
 				//Save anyway
 				/** @var Revision $revision */
@@ -834,6 +835,11 @@ class DataController extends AppController
 					$this->addFlash('notice', 'Data have been paste');
 					$objectArray = array_merge($objectArray, $request->getSession()->get('ems_clipboard', []));
 					$this->get('logger')->debug('Paste data have benn merged');
+				}
+				
+				if(array_key_exists('copy', $request->request->get('revision'))) {//Copy
+					$request->getSession()->set('ems_clipboard', $objectArray);
+					$this->addFlash('notice', 'Data have been copied');
 				}
 				
 				$revision->setRawData($objectArray);
@@ -876,7 +882,7 @@ class DataController extends AppController
 			}
 			
 			//if paste
-			if(array_key_exists('paste', $request->request->get('revision'))) {//Paste
+			if(array_key_exists('paste', $request->request->get('revision')) || array_key_exists('copy', $request->request->get('revision')) ) {//Paste
 				return $this->redirectToRoute('revision.edit', [
 						'revisionId' => $revisionId,
 				]);

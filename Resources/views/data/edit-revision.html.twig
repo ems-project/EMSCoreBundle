@@ -35,6 +35,9 @@
 		<div class="box-footer">
 			<div class="btn-group">
 				{{ form_widget(form.save) }}
+				{% if form.copy is defined %}
+				    {{ form_widget(form.copy) }}
+				{% endif %}
 				{% if form.paste is defined %}
 				    {{ form_widget(form.paste) }}
 				{% endif %}

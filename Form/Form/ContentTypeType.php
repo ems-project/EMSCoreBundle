@@ -96,6 +96,7 @@ class ContentTypeType extends AbstractType {
 				'types' => [
 						'keyword',
 						'integer',
+						'string', //TODO: backward compatibility with ES2 To remove?
 			]]);
     	}
     	

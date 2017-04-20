@@ -337,38 +337,39 @@ class DataController extends AppController
      * @Method({"POST"})
 	 */
 	public function deleteAction($type, $ouuid, Request $request)
-	{	
-		$revision = $this->getDataService()->getNewestRevision($type, $ouuid);
-		$found = false;
-		foreach ($this->getEnvironmentService()->getAll() as $environment) {
-			/**@var Environment $environment*/
-			if($environment !== $revision->getContentType()->getEnvironment()){
-				try{
-					$sibling = $this->getDataService()->getRevisionByEnvironment($ouuid, $revision->getContentType(), $environment);
-					if($sibling){
-						$this->addFlash('warning', 'A revision as been found in '.$environment->getName().'. Consider to unpublish it first.');
-						$found = true;
-					}					
-				}
-				catch (NoResultException $e){
-					
-				}
-			}
-		}		
-		
-		if($found){
-			return $this->redirectToRoute('data.revisions', [
-					'type' => $type,
-					'ouuid' => $ouuid,
-			]);			
-		}
-		
-		$this->getDataService()->delete($type, $ouuid);
-
-		return $this->redirectToRoute('elasticsearch.search', [
-			'search_form[contentTypes][0]' => $contentTypes[0]->getName(), 
-			'search_form[environments][0]' => $contentTypes[0]->getEnvironment()->getName(),
-		]);
+	{
+	    $revision = $this->getDataService()->getNewestRevision($type, $ouuid);
+	    $contentType = $revision->getContentType();
+	    $found = false;
+	    foreach ($this->getEnvironmentService()->getAll() as $environment) {
+	        /**@var Environment $environment*/
+	        if($environment !== $revision->getContentType()->getEnvironment()){
+	            try{
+	                $sibling = $this->getDataService()->getRevisionByEnvironment($ouuid, $revision->getContentType(), $environment);
+	                if($sibling){
+	                    $this->addFlash('warning', 'A revision as been found in '.$environment->getName().'. Consider to unpublish it first.');
+	                    $found = true;
+	                }
+	            }
+	            catch (NoResultException $e){
+	                
+	            }
+	        }
+	    }
+	    
+	    if($found){
+	        return $this->redirectToRoute('data.revisions', [
+	            'type' => $type,
+	            'ouuid' => $ouuid,
+	        ]);
+	    }
+	    
+	    $this->getDataService()->delete($type, $ouuid);
+	    
+	    return $this->redirectToRoute('elasticsearch.search', [
+	        'search_form[contentTypes][0]' => $contentType->getName(),
+	        'search_form[environments][0]' => $contentType->getEnvironment()->getName(),
+	    ]);
 	}
 	
 	public function discardDraft(Revision $revision){

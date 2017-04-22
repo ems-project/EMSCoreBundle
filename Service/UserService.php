@@ -126,6 +126,12 @@ class UserService {
 	}
 	
 	
+	public function deleteUser(User $user){
+		/**@var EntityManagerInterface $em*/
+		$em = $this->doctrine->getManager();
+		$em->remove($user);
+	}
+	
 	public function getAllUsers() {
 		$em = $this->doctrine->getManager();
 		/**@var \Doctrine\ORM\EntityRepository */

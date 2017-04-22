@@ -881,8 +881,8 @@ class DataController extends AppController
 				}
 			}
 			
-			//if paste
-			if(array_key_exists('paste', $request->request->get('revision')) || array_key_exists('copy', $request->request->get('revision')) ) {//Paste
+			//if paste or copy
+			if(array_key_exists('paste', $request->request->get('revision')) || array_key_exists('copy', $request->request->get('revision')) ) {//Paste or copy
 				return $this->redirectToRoute('revision.edit', [
 						'revisionId' => $revisionId,
 				]);

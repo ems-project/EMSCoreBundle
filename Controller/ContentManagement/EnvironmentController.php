@@ -51,21 +51,8 @@ class EnvironmentController extends AppController {
 		$form = $this->createForm(CompareEnvironmentFormType::class, $data, [
 		]);
 
- 		$formFilter = $this->createForm(ContentTypeFilterFormType::class, ['fromuri' => $request->getRequestUri(), 
- 																			'request' => $request->query->all()],
-														 				['method' => 'POST']
-														 				);
- 		$formFilter->handleRequest ( $request );
 		$form->handleRequest($request);	
 		$paging_size = $this->getParameter('ems_core.paging_size');
- 		if($formFilter->isSubmitted()){
- 			$contentTypeFilter = $formFilter->getData();
- 			$contentTypesList = $this->getContentTypesList($contentTypeFilter);
- 			$requestParameters = $request->query->all();
- 			$requestParameters['contentypes'] = $contentTypesList;
- 			return $this->redirectToRoute('environment.align', $requestParameters);
- 		}
- 		$formFilterView = $formFilter->createView();
  		
 		if ($form->isSubmitted() && $form->isValid()) {
 			$data = $form->getData();
@@ -155,6 +142,7 @@ class EnvironmentController extends AppController {
 				else if(array_key_exists('compare', $request->request->get('compare_environment_form'))) {
 					$request->query->set('environment', $data['environment']);
 					$request->query->set('withEnvironment', $data['withEnvironment']);
+					$request->query->set('contentTypes', $data['contentTypes']);
 					$request->query->set('page', 1);					
 				}
 				
@@ -169,15 +157,14 @@ class EnvironmentController extends AppController {
 			$page = 1;
 		}
 		
-		if(null != $request->query->get('contentypes')){//6:institution,21:asset,15:convention,... => id:name,
-			$contentTypeList = explode(",", $request->query->get('contentypes'));
-			foreach ($contentTypeList as $contentType) {
-				list($id, $name) = explode(":", $contentType);
-				$contentTypes[$id] = $name;
-			}
+		
+		
+		$contentTypes = $request->query->get('contentTypes', []);
+		if (!$form->isSubmitted()){
+			$form->get('contentTypes')->setData($contentTypes);
 		}
-		else{
-			$contentTypes = [];
+		if(empty($contentTypes)){
+			$contentTypes = $form->get('contentTypes')->getConfig()->getOption('choices', []);
 		}
 		
 		$orderField = $request->query->get('orderField', "contenttype");
@@ -266,7 +253,7 @@ class EnvironmentController extends AppController {
 			}
 			else {
 				$page = $lastPage = 1;
-				$this->addFlash('notice', 'Those environments are aligned');
+				$this->addFlash('notice', 'Those environments are aligned for these content types');
 				$total = 0;
 				$results = [];
 			}
@@ -282,7 +269,6 @@ class EnvironmentController extends AppController {
 		
 		return $this->render ( 'EMSCoreBundle:environment:align.html.twig', [
 				'form' => $form->createView(),
-				'formFilter' => $formFilterView,
          		'results' => $results,
 				'lastPage' => $lastPage,
 				'paginationPath' => 'environment.align',

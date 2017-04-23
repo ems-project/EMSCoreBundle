@@ -3,7 +3,7 @@
 {% block title %}Revisions of {{ revision.contentType.singularName }} : {{ revision.ouuid }}{% endblock %}
 {% block pagetitle %}
 	<i class="{% if revision.contentType.icon %}{{ revision.contentType.icon }} {% else %} fa fa-question {% endif %} "></i>
-	Revisions of {{ revision.contentType.name }} : {{ revision.ouuid }}
+	Revisions of {{ revision.contentType.name }} : {% if revision.labelField %}{{ revision.labelField }}{% else %}{{ revision.ouuid }}{% endif %}
 {% endblock %} 
 {% block subtitle %}<small>You are viewing the last revision as defined in eMS</small>{% endblock %} 
 

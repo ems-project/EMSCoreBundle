@@ -1,0 +1,42 @@
+
+<script type="text/javascript">
+<!--
+
+//-->
+$(document).ready(function() {
+	$('.ems_code_editor').each(function(){
+		var pre = $(this).find('pre').get(0);
+		var hiddenField = $(this).find('input');
+		var editor = ace.edit(pre);
+
+    	editor.setTheme("ace/theme/chrome");
+
+		editor.session.setMode(hiddenField.data('language'));
+		maxLines = hiddenField.data('max-lines');
+		minLines = hiddenField.data('min-lines');
+		
+		if(hiddenField.data('disabled')){
+    		editor.setOptions({
+    		    readOnly: true,
+    		    highlightActiveLine: false,
+    		    highlightGutterLine: false,
+			    minLines: minLines,
+			    maxLines: maxLines
+    		});
+    		editor.renderer.$cursorLayer.element.style.opacity=0;
+    		editor.textInput.getElement().tabIndex=-1;
+    		editor.commands.commmandKeyBinding={};
+		}
+		else {
+			editor.setOptions({
+			    minLines: minLines,
+			    maxLines: maxLines
+			});
+		}
+	    editor.on("change", function(e){
+	    	hiddenField.val(editor.getValue());
+		});
+	});
+});
+
+</script>

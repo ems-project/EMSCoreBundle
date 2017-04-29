@@ -123,6 +123,46 @@
 
 {# Labels #}
 
+
+{%- block code_editor_label -%}
+    {% if label is not same as(false) -%}
+        {% if not compound -%}
+            {% set label_attr = label_attr|merge({'for': id}) %}
+        {%- endif -%}
+        {% if required -%}
+            {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' required')|trim}) %}
+        {%- endif -%}
+        {% if label is empty -%}
+            {%- if label_format is not empty -%}
+                {% set label = label_format|replace({
+                    '%name%': name,
+                    '%id%': id,
+                }) %}
+            {%- else -%}
+                {% set label = name|humanize %}
+            {%- endif -%}
+        {%- endif -%}
+        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ translation_domain is same as(false) ? label : label|trans({}, translation_domain) }}</label>
+{#         &nbsp;<a href="http://www.elasticms.eu/" class="" target="_blank">more info</a>#}
+    {%- endif -%}
+{%- endblock code_editor_label -%}
+
+{% block code_editor_row -%}
+    <div class="form-group ems_code_editor{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %}">
+        {{- form_label(form) -}}
+        <div class="{{ block('form_group_class') }}">
+            {{- form_widget(form) -}}
+            {{- form_errors(form) -}}
+        </div>
+{##}</div>
+{%- endblock code_editor_row %}
+
+
+{% block code_editor_widget %}
+    <pre>{{ form.vars.data }}</pre>
+    <input type="hidden" id="{{ form.vars.id }}" name="{{ form.vars.full_name }}" data-language="{{ form.vars.language }}" data-disabled="{{ form.vars.disabled }}" data-min-lines="{{ form.vars.min_lines }}" data-max-lines="{{ form.vars.max_lines }}">
+{% endblock code_editor_widget %}
+
 {% block datafieldtype_label %}
 	{% if data.fieldType.options.displayOptions is defined and data.fieldType.options.displayOptions.label %}
 		<label class="control-label {% if data.fieldType.options.restrictionOptions is defined and data.fieldType.options.restrictionOptions.mandatory is defined and data.fieldType.options.restrictionOptions.mandatory %}required{% endif %}"> 

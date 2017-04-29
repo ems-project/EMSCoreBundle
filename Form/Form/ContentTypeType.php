@@ -14,6 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use EMS\CoreBundle\Form\Field\CodeEditorType;
 
 class ContentTypeType extends AbstractType {
 	/**
@@ -127,13 +128,24 @@ class ContentTypeType extends AbstractType {
 						'class' => 'ckeditor'
 				]
 		] );
-		$builder->add ( 'indexTwig', TextareaType::class, [
-				'required' => false,
-				'attr' => [
-						'class' => $options['twigWithWysiwyg']?'ckeditor':'',
-						'rows' => 10,
-				]
-		] );
+		
+		if($options['twigWithWysiwyg']) {
+			$builder->add ( 'indexTwig', TextareaType::class, [
+					'required' => false,
+					'attr' => [
+							'class' => 'ckeditor',
+							'rows' => 10,
+					]
+			] );			
+		}
+		else {
+			$builder->add ( 'indexTwig', CodeEditorType::class, [
+					'required' => false,
+					'attr' => [
+					],
+			] );	
+		}
+		
 		$builder->add ( 'extra', TextareaType::class, [
 				'required' => false,
 				'attr' => [

@@ -112,6 +112,8 @@
 {% endblock %} 
 
 {% block javascripts %}
+    <script src="{{ asset('bundles/emscore/bower/ace-builds/src-min-noconflict/ace.js') }}"></script>
+
 	{% include 'EMSCoreBundle:app:menu.html.twig' with {
 		'item':  'contenttype-list'
 	}%}
@@ -124,5 +126,9 @@
 		$('ul.sortable').sortable();
 	});
 </script>
+
+
+{% include 'EMSCoreBundle:js:code-editor.html.twig' with {
+}%}
 	
 {% endblock %}	

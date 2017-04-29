@@ -143,6 +143,7 @@ class ContentTypeType extends AbstractType {
 					'required' => false,
 					'attr' => [
 					],
+					'slug' => 'content_type'
 			] );	
 		}
 		

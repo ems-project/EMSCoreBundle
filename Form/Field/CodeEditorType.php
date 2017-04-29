@@ -28,9 +28,10 @@ class CodeEditorType extends AbstractType {
 	public function configureOptions(OptionsResolver $resolver)
 	{
 		$resolver->setDefaults([
-			'min-lines' => 15,
-			'max-lines' => 15,
-			'language' => 'ace/mode/twig'
+				'min-lines' => 15,
+				'max-lines' => 15,
+				'language' => 'ace/mode/twig',
+				'slug' => false
 		]);
 	}
 	
@@ -43,6 +44,7 @@ class CodeEditorType extends AbstractType {
 		$view->vars ['min_lines'] = $options ['min-lines'];
 		$view->vars ['max_lines'] = $options ['max-lines'];
 		$view->vars ['language'] = $options ['language'];
+		$view->vars ['slug'] = $options ['slug'];
 	}
 	
 }

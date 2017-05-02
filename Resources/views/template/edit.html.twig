@@ -60,10 +60,13 @@
 
 
 {% block javascripts %}
+    <script src="{{ asset('bundles/emscore/bower/ace-builds/src-min-noconflict/ace.js') }}"></script>
 	{% include 'EMSCoreBundle:app:menu.html.twig' with {
 		'item':  'contenttype-index'
 	}%}
 	
+	{% include 'EMSCoreBundle:js:code-editor.html.twig' with {
+    }%}
 		
 <script type="text/javascript">
 $(window).ready(function() {  
@@ -85,14 +88,23 @@ $(window).ready(function() {
 	$('#template_renderOption').change(function(e){
 		  if ($(this).val() == 'notification'){
 		    $('#notification').show();
+		    $('#notification').find('.ems_code_editor').each(function(){
+				emsAttachCodeEditor($(this));
+			});
 		    $('#export').hide();
 		    $('#embed').hide();
 		  } else if ($(this).val() == 'export'){
 			$('#export').show();
+		    $('#export').find('.ems_code_editor').each(function(){
+				emsAttachCodeEditor($(this));
+			});
 			$('#notification').hide();
 			$('#embed').hide();
 		  } else if ($(this).val() == 'embed'){
 			$('#embed').show();
+		    $('#embed').find('.ems_code_editor').each(function(){
+				emsAttachCodeEditor($(this));
+			});
 			$('#export').hide();
 			$('#notification').hide();
 		  } else{

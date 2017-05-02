@@ -16,6 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use EMS\CoreBundle\Form\Field\CodeEditorType;
 
 
 class TemplateType extends AbstractType {
@@ -89,22 +90,23 @@ class TemplateType extends AbstractType {
 				'required' => false,
 				'label' => 'Content type (ie: text/html)',
 		])
-		->add( 'filename', TextareaType::class, [
+		->add( 'filename', CodeEditorType::class, [
 				'required' => false,
 				'attr' => [
-						'class' => $template->getEditWithWysiwyg()?'ckeditor':''
 				],
+				'slug' => 'template-filename',
+				'max-lines' => 5,
+				'min-lines' => 5,
 		])
 		->add( 'extension', TextType::class, [
 				'required' => false,
 		])
-		->add ( 'body', TextareaType::class, [
-			'required' => false,
-			'attr' => [
-				'class' => $template->getEditWithWysiwyg()?'ckeditor':'',
-				'rows' => '20',
-			]
-		])
+		->add ( 'body', CodeEditorType::class, [
+				'required' => false,
+				'attr' => [
+				],
+				'slug' => 'template-body'
+		] )
 		->add ( 'header', TextareaType::class, [
 			'required' => false,
 			'attr' => [
@@ -118,11 +120,11 @@ class TemplateType extends AbstractType {
 				'type' => $this->circleType,
 				'multiple' => true,
 		])
-		->add( 'responseTemplate', TextareaType::class, [
+		->add( 'responseTemplate', CodeEditorType::class, [
 			'required' => false,
 			'attr' => [
-				'class' => $template->getEditWithWysiwyg()?'ckeditor':''
-			]
+			],
+			'slug' => 'template-response',
 		])
 		->add ( 'save', SubmitEmsType::class, [ 
 				'attr' => [ 

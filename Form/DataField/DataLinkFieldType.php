@@ -12,7 +12,9 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-															
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormEvent;
+																	
 /**
  * Defined a Container content type.
  * It's used to logically groups subfields together. However a Container is invisible in Elastic search.
@@ -117,6 +119,25 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 		/** @var FieldType $fieldType */
 		$fieldType = $options ['metadata'];
 		
+		//Add an event listener in order to sort existing normData before the merge in MergeCollectionListener
+		$listener = function (FormEvent $event) {
+			$data = $event->getForm()->getNormData();
+			$rawData = $data->getRawData();
+			usort($rawData, function($a, $b) use ($event){
+				if(!empty($event->getData()['array_text_value'])){
+					$indexA = array_search($a, $event->getData()['array_text_value']);
+					$indexB = array_search($b, $event->getData()['array_text_value']);
+					if($indexA === false || $indexA > $indexB) return 1;
+					if($indexB === false || $indexA < $indexB) return -1;
+				}
+				return 0;
+			});
+			$data->setRawData($rawData);
+			
+			$event->getForm()->setData($data);
+			
+		};
+		
 		$builder->add ( $options['multiple']?'array_text_value':'text_value', ObjectPickerType::class, [
 				'label' => (null != $options ['label']?$options ['label']:$fieldType->getName()),
 				'required' => false,
@@ -124,7 +145,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 				'multiple' => $options['multiple'],
 				'type' => $options['type'],
 				'dynamicLoading' => $options['dynamicLoading'],
-		] );	
+				'sortable' => $options['sortable'],
+		] )->addEventListener(FormEvents::PRE_SUBMIT, $listener);	
 			
 	}
 	
@@ -141,6 +163,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 		$resolver->setDefault ( 'environment', null );
 		$resolver->setDefault ( 'defaultValue', null );
 		$resolver->setDefault ( 'required', false );
+		$resolver->setDefault ( 'sortable', false );
 		$resolver->setDefault ( 'dynamicLoading', true );
 	}
 
@@ -152,7 +175,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 	 */
 	public function getDefaultOptions($name) {
 		$out = parent::getDefaultOptions($name);
-
+		
 		$out['displayOptions']['dynamicLoading'] = true;
 		$out['mappingOptions']['index'] = 'not_analyzed';
 	
@@ -197,7 +220,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 		// String specific display options
 		$optionsForm->get ( 'displayOptions' )->add ( 'multiple', CheckboxType::class, [ 
 				'required' => false,
-		] )->add ( 'dynamicLoading', CheckboxType::class, [ 
+		] )->add ( 'dynamicLoading', CheckboxType::class, [
+				'required' => false,
+		] )->add ( 'sortable', CheckboxType::class, [
 				'required' => false,
 		] )->add ( 'type', TextType::class, [ 
 				'required' => false,

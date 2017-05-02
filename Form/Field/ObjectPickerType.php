@@ -32,6 +32,7 @@ class ObjectPickerType extends Select2Type {
 		$resolver->setDefaults(array(
 			'required' => false,
 			'dynamicLoading' => true,  
+			'sortable' => false,
 			'choice_loader' => function (Options $options) {
 				$loadAll = 	$options->offsetGet('dynamicLoading')?false:true;
 				
@@ -69,6 +70,7 @@ class ObjectPickerType extends Select2Type {
 	public function buildView(FormView $view, FormInterface $form, array $options) {
 		$view->vars ['attr']['data-type'] = $options['type'];
 		$view->vars ['attr']['data-dynamic-loading'] = $options['dynamicLoading'];
+		$view->vars ['attr']['data-sortable'] = $options['sortable'];
 	}
 	
 	/**

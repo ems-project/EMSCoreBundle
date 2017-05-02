@@ -479,6 +479,7 @@ function addEventListeners(target){
 	target.find(".objectpicker").each(function(index){
 		var type = $( this ).data('type'); 
 		var dynamicLoading = $( this ).data('dynamic-loading'); 
+		var sortable = $( this ).data('sortable'); 
 
 		var params = {
 		  	escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
@@ -521,8 +522,36 @@ function addEventListeners(target){
 		    	cache: true
 		  	};
 		}
-		
-		$( this ).select2(params);
+
+		var select2 = $( this ).select2(params);
+
+		if(sortable){
+    		var selectItem = $(this);
+    		$(this).parent().find("ul.select2-selection__rendered").sortable({
+    			stop: function( event, ui ) {
+    				
+    				//http://stackoverflow.com/questions/45888/what-is-the-most-efficient-way-to-sort-an-html-selects-options-by-value-while
+    				var selected = selectItem.val();
+    				var my_options = selectItem.find("option");
+    				
+    				var ul = $(this);
+    				
+    				my_options.sort(function(a,b) {
+    					var indexA = ul.find("li[title='"+$(a).text()+"']").index();
+    					var indexB = ul.find("li[title='"+$(b).text()+"']").index();
+    					
+    					console.log(indexA);
+    					console.log(indexB);
+    					
+    				    if (indexA > indexB) return 1;
+    				    if (indexA < indexB) return -1;
+    				    return 0
+    				});
+    				selectItem.empty().append( my_options );
+    				selectItem.val(selected);
+    			}
+    		});
+		}
     });	
     
 	target.find(".colorpicker-component").colorpicker();

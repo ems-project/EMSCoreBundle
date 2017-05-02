@@ -144,7 +144,7 @@
         {%- endif -%}
         <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ translation_domain is same as(false) ? label : label|trans({}, translation_domain) }}</label>
         {% if form.vars.slug %}
-        	&nbsp;<a href="http://www.elasticms.eu/doc/template/{{ form.vars.slug }}" class="" target="_blank">more info</a>
+        	&nbsp;<a href="http://www.elasticms.eu/en/doc/templates/{{ form.vars.slug }}" class="" target="_blank">more info</a>
         {% endif %}
     {%- endif -%}
 {%- endblock code_editor_label -%}

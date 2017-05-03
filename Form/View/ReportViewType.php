@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
+use EMS\CoreBundle\Form\Field\CodeEditorType;
 
 /**
  * It's the mother class of all specific DataField used in eMS
@@ -56,20 +57,20 @@ class ReportViewType extends ViewType {
 	public function buildForm(FormBuilderInterface $builder, array $options) {
 		parent::buildForm($builder, $options);
 		$builder
-		->add ( 'body', TextareaType::class, [
+		->add ( 'body', CodeEditorType::class, [
 				'label' => 'The Elasticsearch body query [JSON Twig]',
 				'attr' => [
-					'rows' => 10,
-				]
+				],
+				'slug' => 'report_query',
 		] )
 		->add ( 'size', IntegerType::class, [
 				'label' => 'Limit the result to the x first results',
 		] )
-		->add ( 'template', TextareaType::class, [
+		->add ( 'template', CodeEditorType::class, [
 				'label' => 'The Twig template used to display each keywords',
 				'attr' => [
-					'rows' => 10,
-				]
+				],
+				'slug' => 'report_template',
 		] );
 	}
 	

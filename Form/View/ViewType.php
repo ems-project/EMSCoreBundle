@@ -3,11 +3,12 @@
 namespace EMS\CoreBundle\Form\View;
 
 use EMS\CoreBundle\Entity\DataField;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use EMS\CoreBundle\Entity\View;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use \Symfony\Component\HttpFoundation\Response;
 
 /**
  * It's the mother class of all specific DataField used in eMS
@@ -16,7 +17,20 @@ use Symfony\Component\HttpFoundation\Request;
  *        
  */
 abstract class ViewType extends AbstractType {
-
+	
+	
+	/**@var \Twig_Environment $twig*/
+	protected $twig;
+	/** @var Client $client */
+	protected $client;
+	protected $formFactory;
+	
+	public function __construct($formFactory, $twig, $client){
+		$this->twig = $twig;
+		$this->client = $client;
+		$this->formFactory = $formFactory;
+	}
+	
 	/**
 	 * Get a small description
 	 *
@@ -37,7 +51,7 @@ abstract class ViewType extends AbstractType {
 	 * @return array
 	 */
 	abstract public function getParameters(View $view, FormFactoryInterface $formFactoty, Request $request);
-
+	
 	/**
 	 *
 	 * {@inheritdoc}
@@ -45,6 +59,20 @@ abstract class ViewType extends AbstractType {
 	 */
 	public function configureOptions(OptionsResolver $resolver) {
 		$resolver->setDefault ( 'label', $this->getName().' options');
+	}
+	
+	/**
+	 * Generate a response for a view
+	 * 
+	 * @param View $view
+	 * @param Request $request
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function generateResponse(View $view, Request $request) {
+		$response = new Response();
+		$parameters = $this->getParameters($view, $this->formFactory, $request);
+		$response->setContent($this->twig->render('EMSCoreBundle:view:custom/'.$this->getBlockPrefix().'.html.twig', $parameters));
+		return $response;
 	}
 	
 	

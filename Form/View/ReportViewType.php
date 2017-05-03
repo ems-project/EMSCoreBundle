@@ -2,16 +2,15 @@
 
 namespace EMS\CoreBundle\Form\View;
 
+use Elasticsearch\Client;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\View;
+use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\View\ViewType;
-use Elasticsearch\Client;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
-use EMS\CoreBundle\Form\Field\CodeEditorType;
 
 /**
  * It's the mother class of all specific DataField used in eMS
@@ -21,16 +20,6 @@ use EMS\CoreBundle\Form\Field\CodeEditorType;
  */
 class ReportViewType extends ViewType {
 
-
-	/**@var \Twig_Environment $twig*/
-	private $twig;
-	/** @var Client $client */
-	private $client;
-	
-	public function __construct($twig, $client){
-		$this->twig = $twig;
-		$this->client = $client;
-	}
 	/**
 	 *
 	 * {@inheritdoc}
@@ -106,8 +95,11 @@ class ReportViewType extends ViewType {
 			'index' => $view->getContentType()->getEnvironment()->getAlias(),
 			'type' => $view->getContentType()->getName(),
 			'body' => $renderQuery,
-			'size' => $view->getOptions()['size'],
 		];
+		
+		if(isset($view->getOptions()['size'])){
+			$searchQuery['size'] = $view->getOptions()['size'];
+		}
 		
 		$result = $this->client->search($searchQuery);
 		

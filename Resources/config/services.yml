@@ -252,25 +252,31 @@ services:
 #### Begin list available ems views ###
     ems.view.keywords:
         class: EMS\CoreBundle\Form\View\KeywordsViewType
-        arguments: ['@twig', '@app.elasticsearch']
+        arguments: ['@form.factory', '@twig', '@app.elasticsearch']
         tags:
             - { name: ems.form.viewtype, alias: keywords }
             - { name: form.type }
     ems.view.criteria:
         class: EMS\CoreBundle\Form\View\CriteriaViewType
-        arguments: ['@twig', '@app.elasticsearch', '@router']
+        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@router']
         tags:
             - { name: ems.form.viewtype, alias: criteria }
             - { name: form.type }
+    ems.view.export:
+        class: EMS\CoreBundle\Form\View\ExportViewType
+        arguments: ['@form.factory', '@twig', '@app.elasticsearch']
+        tags:
+            - { name: ems.form.viewtype, alias: export }
+            - { name: form.type }
     ems.view.report:
         class: EMS\CoreBundle\Form\View\ReportViewType
-        arguments: ['@twig', '@app.elasticsearch']
+        arguments: ['@form.factory', '@twig', '@app.elasticsearch']
         tags:
             - { name: ems.form.viewtype, alias: report }
             - { name: form.type }
     ems.view.calendar:
         class: EMS\CoreBundle\Form\View\CalendarViewType
-        arguments: ['@twig', '@app.elasticsearch']
+        arguments: ['@form.factory', '@twig', '@app.elasticsearch']
         tags:
             - { name: ems.form.viewtype, alias: calendar }
             - { name: form.type }

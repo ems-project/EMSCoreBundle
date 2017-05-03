@@ -24,18 +24,11 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class CriteriaViewType extends ViewType {
 
-	/** @var \Twig_Environment twig*/
-	private $twig;
-
-	/** @var Client $client */
-	private $client;
-	
 	/** @var Router $router */
-	private $router;
+	protected $router;
 	
-	public function __construct($twig, $client, $router){
-		$this->twig = $twig;
-		$this->client = $client;
+	public function __construct($formFactory, $twig, $client, $router){
+		parent::__construct($formFactory, $twig, $client);
 		$this->router = $router;
 	}
 	

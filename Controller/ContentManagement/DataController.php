@@ -520,7 +520,7 @@ class DataController extends AppController
 		/** @var \EMS\CoreBundle\Form\View\ViewType $viewType */
  		$viewType = $this->get($view->getType());
 		
-		return $this->render( 'EMSCoreBundle:view:custom/'.$viewType->getBlockPrefix().'.html.twig', $viewType->getParameters($view, $this->container->get('form.factory'), $request));		
+ 		return $viewType->generateResponse($view, $request);		
 	}
 
 	/**

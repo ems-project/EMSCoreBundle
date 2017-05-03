@@ -123,18 +123,20 @@ use Symfony\Component\Form\FormEvent;
 		$listener = function (FormEvent $event) {
 			$data = $event->getForm()->getNormData();
 			$rawData = $data->getRawData();
-			usort($rawData, function($a, $b) use ($event){
-				if(!empty($event->getData()['array_text_value'])){
-					$indexA = array_search($a, $event->getData()['array_text_value']);
-					$indexB = array_search($b, $event->getData()['array_text_value']);
-					if($indexA === false || $indexA > $indexB) return 1;
-					if($indexB === false || $indexA < $indexB) return -1;
-				}
-				return 0;
-			});
-			$data->setRawData($rawData);
-			
-			$event->getForm()->setData($data);
+			if(!empty($rawData)){
+				usort($rawData, function($a, $b) use ($event){
+					if(!empty($event->getData()['array_text_value'])){
+						$indexA = array_search($a, $event->getData()['array_text_value']);
+						$indexB = array_search($b, $event->getData()['array_text_value']);
+						if($indexA === false || $indexA > $indexB) return 1;
+						if($indexB === false || $indexA < $indexB) return -1;
+					}
+					return 0;
+				});
+				$data->setRawData($rawData);
+				
+				$event->getForm()->setData($data);				
+			}
 			
 		};
 		
@@ -146,7 +148,11 @@ use Symfony\Component\Form\FormEvent;
 				'type' => $options['type'],
 				'dynamicLoading' => $options['dynamicLoading'],
 				'sortable' => $options['sortable'],
-		] )->addEventListener(FormEvents::PRE_SUBMIT, $listener);	
+		] );
+		
+		if($options['sortable']){
+			$builder->addEventListener(FormEvents::PRE_SUBMIT, $listener);				
+		}
 			
 	}
 	

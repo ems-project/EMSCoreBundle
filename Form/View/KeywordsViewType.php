@@ -20,16 +20,6 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class KeywordsViewType extends ViewType {
 
-	
-	private $twig;
-	
-	/** @var Client $client */
-	private $client;
-	
-	public function __construct($twig, $client){
-		$this->twig = $twig;
-		$this->client = $client;
-	}
 	/**
 	 *
 	 * {@inheritdoc}

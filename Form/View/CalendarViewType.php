@@ -7,7 +7,6 @@ use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Form\SearchFormType;
 use EMS\CoreBundle\Form\View\ViewType;
-use Elasticsearch\Client;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -23,16 +22,6 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class CalendarViewType extends ViewType {
 
-	
-	private $twig;
-	
-	/** @var Client $client */
-	private $client;
-	
-	public function __construct($twig, $client){
-		$this->twig = $twig;
-		$this->client = $client;
-	}
 	/**
 	 *
 	 * {@inheritdoc}

@@ -405,6 +405,11 @@ class EnvironmentController extends AppController {
 		return $this->redirectToRoute ( 'environment.index' );
 	}
 	
+	
+	public static function isValidName($name) {
+		return preg_match('/^[a-z][a-z0-9\-_]*$/', $name) && strlen($name) <= 100;
+	}
+	
 	/**
 	 * Add a new environement
 	 *
@@ -429,48 +434,55 @@ class EnvironmentController extends AppController {
 		
 		$form->handleRequest ( $request );
 		
-		if ($form->isSubmitted () && $form->isValid ()) {
+		if ($form->isSubmitted ()) {
 			
 			
 			/** @var Environment $environment */
 			$environment = $form->getData ();
+			if(!$this->isValidName($environment->getName())) {
+				$form->get('name')->addError(new FormError('Must respects the following regex /^[a-z][a-z0-9\-_]*$/'));
+			}
 			
-			/** @var EntityManager $em */
-			$em = $this->getDoctrine ()->getManager ();
-			
-			$environmetRepository = $em->getRepository ( 'EMSCoreBundle:Environment' );
-			$anotherObject = $environmetRepository->findBy ( [ 
-					'name' => $environment->getName () 
-			] );
-			
-			if (count ( $anotherObject ) != 0) {
-				//TODO: test name format
-				$form->get ( 'name' )->addError ( new FormError ( 'Another environment named ' . $environment->getName () . ' already exists' ) );
-			} else {
-				$environment->setAlias ( $this->getParameter ( 'ems_core.instance_id' ) . $environment->getName () );
-				$environment->setManaged ( true );
+			if($form->isValid ()){
+				
+				
+				/** @var EntityManager $em */
 				$em = $this->getDoctrine ()->getManager ();
-				$em->persist ( $environment );
-				$em->flush ();
-
-				$indexName = $environment->getAlias().AppController::getFormatedTimestamp();
-				$this->getElasticsearch()->indices()->create([
-						'index' => $indexName,
-						'body' => ContentType::getIndexAnalysisConfiguration(),
-				]);
 				
-				foreach ($this->getContentTypeService()->getAll() as $contentType){
-					$this->getContentTypeService()->updateMapping($contentType, $indexName);				
+				$environmetRepository = $em->getRepository ( 'EMSCoreBundle:Environment' );
+				$anotherObject = $environmetRepository->findBy ( [ 
+						'name' => $environment->getName () 
+				] );
+				
+				if (count ( $anotherObject ) != 0) {
+					//TODO: test name format
+					$form->get ( 'name' )->addError ( new FormError ( 'Another environment named ' . $environment->getName () . ' already exists' ) );
+				} else {
+					$environment->setAlias ( $this->getParameter ( 'ems_core.instance_id' ) . $environment->getName () );
+					$environment->setManaged ( true );
+					$em = $this->getDoctrine ()->getManager ();
+					$em->persist ( $environment );
+					$em->flush ();
+	
+					$indexName = $environment->getAlias().AppController::getFormatedTimestamp();
+					$this->getElasticsearch()->indices()->create([
+							'index' => $indexName,
+							'body' => ContentType::getIndexAnalysisConfiguration(),
+					]);
+					
+					foreach ($this->getContentTypeService()->getAll() as $contentType){
+						$this->getContentTypeService()->updateMapping($contentType, $indexName);				
+					}
+					
+					$this->getElasticsearch()->indices()->putAlias([
+	    				'index' => $indexName,
+	    				'name' => $environment->getAlias()
+	    			]);
+					
+					$this->addFlash('notice', 'A new environement '.$environment->getName().' has been created');
+					return $this->redirectToRoute ( 'environment.index' );
+					
 				}
-				
-				$this->getElasticsearch()->indices()->putAlias([
-    				'index' => $indexName,
-    				'name' => $environment->getAlias()
-    			]);
-				
-				$this->addFlash('notice', 'A new environement '.$environment->getName().' has been created');
-				return $this->redirectToRoute ( 'environment.index' );
-				
 			}
 		}
 		

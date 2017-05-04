@@ -188,6 +188,8 @@ class CollectionFieldType extends DataFieldType {
 		] )->add ( 'sortable', CheckboxType::class, [ 
 				'required' => false 
 		] );
+		
+		$optionsForm->get ( 'restrictionOptions' )->remove('mandatory');
 	}
 
 	/**

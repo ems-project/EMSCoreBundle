@@ -13,6 +13,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
 /**
  * Defined a Container content type.
@@ -167,6 +168,35 @@ class CollectionFieldType extends DataFieldType {
 	}
 	
 	/**
+	 * {@inheritdoc}
+	 */
+	public function isValid(DataField &$dataField){
+		$isValid = TRUE;
+		//Madatory Validation
+		//$isValid = $isValid && $this->isMandatory($dataField);
+		
+		$restrictionOptions = $dataField->getFieldType()->getRestrictionOptions();
+		
+		if(!empty($restrictionOptions['min']) && $dataField->getChildren()->count() < $restrictionOptions['min'])  {
+			if($restrictionOptions['min'] == 1){
+				$dataField->addMessage("At least ".$restrictionOptions['min']." item is required");				
+			}
+			else {
+				$dataField->addMessage("At least ".$restrictionOptions['min']." items are required");
+			}
+			$isValid = FALSE;
+		}
+		
+		if(!empty($restrictionOptions['max']) && $dataField->getChildren()->count() > $restrictionOptions['max'])  {
+			$dataField->addMessage("Too many items (max ".$restrictionOptions['max'].")");
+			$isValid = FALSE;
+		}
+		
+		
+		return $isValid;
+	}
+	
+	/**
 	 *
 	 * {@inheritdoc}
 	 *
@@ -189,6 +219,12 @@ class CollectionFieldType extends DataFieldType {
 				'required' => false 
 		] );
 		
+		$optionsForm->get ( 'restrictionOptions' )
+		->add ( 'min', IntegerType::class, [
+				'required' => false
+		] )->add ( 'max', IntegerType::class, [
+				'required' => false
+		] );
 		$optionsForm->get ( 'restrictionOptions' )->remove('mandatory');
 	}
 

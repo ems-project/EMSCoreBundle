@@ -8,6 +8,7 @@ use EMS\CoreBundle\Entity\ContentType;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\BadRequest400Exception;
 use Symfony\Component\Form\FormRegistryInterface;
+use EMS\CoreBundle\Entity\Environment;
 
 class ContentTypeService {
 	/**@var Registry $doctrine */
@@ -192,6 +193,21 @@ class ContentTypeService {
 	/**
 	 *
 	 */
+	public function getAllDefaultEnvironmentNames(){
+	    $this->loadEnvironment();
+	    $out = [];
+	    /**@var ContentType $contentType */
+	    foreach ($this->orderedContentTypes as $contentType){
+	        if(!isset( $out[$contentType->getEnvironment()->getAlias()] )){
+	            $out[$contentType->getEnvironment()->getName()] = $contentType->getEnvironment()->getName();
+	        }
+	    }
+	    return array_keys($out);
+	}
+	
+	/**
+	 *
+	 */
 	public function getAllAliases(){
 		$this->loadEnvironment();
 		$out = [];
@@ -207,8 +223,20 @@ class ContentTypeService {
 	 *
 	 */
 	public function getAll(){
-		$this->loadEnvironment();
-		return $this->orderedContentTypes;
+	    $this->loadEnvironment();
+	    return $this->orderedContentTypes;
+	}
+	/**
+	 *
+	 */
+	public function getAllNames(){
+	    $this->loadEnvironment();
+	    $out = [];
+	    /**@var Environment $env*/
+	    foreach ($this->orderedContentTypes as $env){
+	        $out[] = $env->getName();
+	    }
+	    return $out;
 	}
 
 	/**

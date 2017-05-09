@@ -181,13 +181,12 @@
 					<div class="box-footer">
 						<div class="btn-group">
 							<a href="{{ path('elasticsearch.search', {
-								'search_form[environments][]': revision.contentType.environment.name,
 			            		'search_form[sortBy]': '_uid',
 			            		'search_form[sortOrder]': 'asc',
-			            		'search_form[filters][0][booleanClause]' : 'must',
-			            		'search_form[filters][0][field]' : revision.contentType.refererFieldName,
-			            		'search_form[filters][0][operator]' : 'term',
-			            		'search_form[filters][0][pattern]' : (revision.contentType.name~':'~revision.ouuid)
+			            		'search_form[filters][0][booleanClause]' : referrersFilter.booleanClause,
+			            		'search_form[filters][0][field]' : referrersFilter.field,
+			            		'search_form[filters][0][operator]' : referrersFilter.operator,
+			            		'search_form[filters][0][pattern]' : referrersFilter.pattern
 								} ) }}" class="btn btn-primary"><i class="fa fa-search"></i> {{ 'All linked documents' }}</a>
 						</div>
 					</div>

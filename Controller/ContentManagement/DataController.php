@@ -36,6 +36,8 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use EMS\CoreBundle\Service\ContentTypeService;
 use Doctrine\ORM\NoResultException;
+use EMS\CoreBundle\Entity\Form\SearchFilter;
+use EMS\CoreBundle\Form\Form\SearchFormType;
 
 class DataController extends AppController
 {
@@ -245,24 +247,39 @@ class DataController extends AppController
 		/** @var Client $client */
 		$client = $this->getElasticsearch();
 		
+		
+		$filter = new SearchFilter();
+		$filter->setBooleanClause('must');
+		$filter->setField($revision->getContentType()->getRefererFieldName());
+		$filter->setPattern($type.':'.$ouuid);
+		if(empty($revision->getContentType()->getRefererFieldName())){
+		    $filter->setOperator('match');
+		}
+		else {
+		    $filter->setOperator('term');
+		}
+		$searchForm  = new Search();
+		$searchForm->setContentTypes($this->getContentTypeService()->getAllNames());
+		$searchForm->setEnvironments($this->getContentTypeService()->getAllDefaultEnvironmentNames());
+		$searchForm->setSortBy('_uid');
+		$searchForm->addFilter($filter);
+		$searchForm->setSortOrder('asc');
+		
+// 		/**@var Form $form*/
+// 		$form = $this->createForm ( SearchFormType::class, $searchForm, [
+// 		    'method' => 'GET',
+// 		] );
+		
 		$refParams = [ 
-					'type' => $this->getContentTypeService()->getAllTypes(),
-					'index' => $this->getContentTypeService()->getAllAliases(),
-					'size' => 100,
-					'body'=> [
-						'query' => [
-							'term'	=> [
-									empty($revision->getContentType()->getRefererFieldName())?'_all':$revision->getContentType()->getRefererFieldName() => [
-											'value' => $type.':'.$ouuid
-									]
-							]	
-						],
-						'sort' => [
-								'_uid' => 'asc',
-								
-						],
-						'track_scores' => true
-				]];
+		    'type' => $searchForm->getContentTypes(),
+			'index' => $this->getContentTypeService()->getAllAliases(),
+			'size' => 100,
+            'body'=> $this->getSearchService()->generateSearchBody($searchForm),
+		];
+		
+		
+// 		$this->generateUrl('elasticsearch.search', array('searchForm' => $searchForm), UrlGeneratorInterface::ABSOLUTE_URL);		
+// 		dump($refParams);
 		
 		return $this->render( 'EMSCoreBundle:data:revisions-data.html.twig', [
 				'revision' =>  $revision,
@@ -270,6 +287,7 @@ class DataController extends AppController
 				'availableEnv' => $availableEnv,
 				'object' => $revision->getObject($objectArray),
 				'referrers' => $client->search($refParams),
+		        'referrersFilter' => $filter,
 				'page' => $page,
 				'lastPage' => $lastPage,
 				'counter' => $counter,

@@ -2,17 +2,27 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use EMS\CoreBundle\Controller\AppController;
-use EMS\CoreBundle;
-use EMS\CoreBundle\Entity\Job;
-use EMS\CoreBundle\Form\Form\JobType;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use EMS\CoreBundle;
+use EMS\CoreBundle\Command\AbstractEmsCommand;
+use EMS\CoreBundle\Command\JobOutput;
+use EMS\CoreBundle\Controller\AppController;
+use EMS\CoreBundle\Entity\Job;
+use EMS\CoreBundle\Form\Form\JobType;
+use Monolog\Logger;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use SensioLabs\AnsiConverter\AnsiToHtmlConverter;
 use SensioLabs\AnsiConverter\Theme\Theme;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Exception\InvalidArgumentException;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
 
 class JobController extends AppController
@@ -25,14 +35,85 @@ class JobController extends AppController
 	{
 	
 		$theme = new Theme();
-		$converter = new AnsiToHtmlConverter($theme);
+		$converter = new AnsiToHtmlConverter ( $theme );
 		
-		return $this->render( 'EMSCoreBundle:job:status.html.twig', [
-				'job' =>  $job,
-				'output' => $converter->convert($job->getOutput()),
+		return $this->render ( 'EMSCoreBundle:job:status.html.twig', [ 
+				'job' => $job,
+				'output' => $converter->convert ( $job->getOutput () ) 
 		] );
 	}
-
+	
+	/**
+	 * @Route("/admin/job/start/{job}", name="job.start"))
+	 * 
+	 * @method ({"POST"})
+	 */
+	public function startJobAction(Job $job, Request $request) {
+		if (! $job->getStarted () && ! $job->getDone ()) {
+			/**@var EntityManager $manager */
+			$manager = $this->getDoctrine()->getManager ();
+			/** @var \EMS\CoreBundle\Repository\JobRepository $jobRepository */
+			$jobRepository = $this->getDoctrine()->getRepository ( 'EMSCoreBundle:Job' );
+			$output = new JobOutput( $this->getDoctrine(), $job );
+			$output->writeln ( "Job ready to be launch" );
+			
+			$job->setStarted( true );
+			$this->getDoctrine()->getManager ()->persist ( $job );
+			$this->getDoctrine()->getManager ()->flush ( $job );
+			
+			try {
+				
+				try {
+					if (null !== $job->getService ()) {
+						try {
+							/** @var AbstractEmsCommand $command */
+							$command = $this->container->get ( $job->getService () );
+							$input = new ArrayInput( $job->getArguments () );
+							$command->run ( $input, $output );
+							$output->writeln ( "Job done" );
+						} catch ( ServiceNotFoundException $e ) {
+							$output->writeln ( "<error>Service not found</error>" );
+						}
+					} else {
+						$command = $job->getCommand ();
+						if (null === $command) {
+							$command = "list";
+						}
+						
+						/** @var \AppKernel $kernel */
+						$kernel = $this->container->get ( 'kernel' );
+						$application = new Application ( $kernel );
+						$application->setAutoExit ( false );
+						
+						$input = new ArgvInput ( $this->getArgv ( "console " . $command ) );
+						$application->run ( $input, $output );
+						$output->writeln ( "Job done" );
+					}
+				} catch ( InvalidArgumentException $e ) {
+					$output->writeln ( "<error>" . $e->getMessage () . "</error>" );
+				}
+				
+				$job->setDone ( true );
+				$job->setProgress ( 100 );
+				
+				$this->getDoctrine()->getManager ()->persist ( $job );
+				$this->getDoctrine()->getManager ()->flush ( $job );
+				$this->getLogger()->info ( 'Job ' . $job->getCommand(). ' completed.' );
+			} catch ( \Exception $e ) {
+				$output->writeln ( "An exception has been raised!" );
+				$output->writeln ( "Exception:".$e->getMessage() );
+				$job->setDone(true);
+				$this->getDoctrine()->getManager ()->persist ( $job );
+				$this->getDoctrine()->getManager ()->flush ( $job );
+				// not an internal redirect
+			}
+			
+		}
+		return $this->redirectToRoute('job.status', [
+				'job' => $job->getId(),
+		]);
+	}
+	
 	/**
 	 * @Route("/admin/job/delete/{job}", name="job.delete"))
 	 * @Method({"POST"})

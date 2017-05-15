@@ -48,14 +48,21 @@ class Job
      *
      * @ORM\Column(name="output", type="text", nullable=true)
      */
-    private $output; 
-
+    private $output;
+    
     /**
      * @var bool
      *
      * @ORM\Column(name="done", type="boolean")
      */
     private $done;
+    
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="started", type="boolean")
+     */
+    private $started;
 
     /**
      * @var int
@@ -132,7 +139,7 @@ class Job
 
         return $this;
     }
-
+    
     /**
      * Get created
      *
@@ -140,7 +147,17 @@ class Job
      */
     public function getCreated()
     {
-        return $this->created;
+    	return $this->created;
+    }
+    
+    /**
+     * Get started
+     *
+     * @return \DateTime
+     */
+    public function getStarted()
+    {
+    	return $this->started;
     }
 
     /**
@@ -214,7 +231,7 @@ class Job
     {
         return $this->status;
     }
-
+    
     /**
      * Set done
      *
@@ -224,9 +241,23 @@ class Job
      */
     public function setDone($done)
     {
-        $this->done = $done;
-
-        return $this;
+    	$this->done = $done;
+    	
+    	return $this;
+    }
+    
+    /**
+     * Set started
+     *
+     * @param boolean $started
+     *
+     * @return Job
+     */
+    public function setStarted($started)
+    {
+    	$this->started = $started;
+    	
+    	return $this;
     }
 
     /**

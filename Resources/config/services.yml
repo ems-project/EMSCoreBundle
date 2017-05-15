@@ -15,7 +15,7 @@ services:
         arguments: ['@twig', '@doctrine', '@logger', '@router', '@service_container', '@security.authorization_checker', '@session', '%ems_core.allow_user_registration%', '%ems_core.user_login_route%', '%ems_core.user_registration_route%']
         tags:
             - { name: kernel.event_listener, event: kernel.controller, method: provideTemplateTwigObjects, priority: -20 }
-            - { name: kernel.event_listener, event: kernel.terminate, method: startJob }
+            #- { name: kernel.event_listener, event: kernel.terminate, method: startJob }
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
             #kernel.response or kernel.terminate

@@ -122,7 +122,7 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
 				'target' => $target,
 		]);
 		
-		return $qb->getQuery()->getSingleResult();
+		return $qb->getQuery()->getSingleScalarResult();
 	}
 	
 	/**

@@ -67,7 +67,7 @@ class UploadedAsset
     /**
      * @var user
      *
-     * @ORM\Column(name="user", type="string", length=255)
+     * @ORM\Column(name="username", type="string", length=255)
      */
     private $user; 
 

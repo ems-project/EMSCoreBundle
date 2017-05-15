@@ -30,7 +30,7 @@ class Search
 	/**
 	 * @var string
 	 * 
-     * @ORM\Column(name="user", type="string", length=100)
+     * @ORM\Column(name="username", type="string", length=100)
 	 */
 	private $user;
 

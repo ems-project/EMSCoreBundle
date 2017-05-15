@@ -122,12 +122,7 @@ class RequestListener
 
     	$this->twig->addGlobal('defaultEnvironments', $defaultEnvironments);
     }
-    
-//     public static function getArgv ($string) {
-//     	preg_match_all ('/(?<=^|\s)([\'"]?)(.+?)(?<!\\\\)\1(?=$|\s)/', $string, $ms);
-//     	return $ms[2];
-//     }
-    
+
 	
 }
 

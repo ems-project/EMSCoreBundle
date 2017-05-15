@@ -8,6 +8,7 @@ use EMS\CoreBundle\Entity\Revision;
 use Doctrine\ORM\Mapping\OrderBy;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\Query\Expr\Join;
 
 /**
  * RevisionRepository
@@ -31,22 +32,26 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
 	}
 	
 	public function draftCounterGroupedByContentType($circles, $isAdmin) {
-		$parameters = [];
 		$qb = $this->createQueryBuilder('r');
+		$qb->join('r.contentType', 'c');
+		$qb->select('c.id content_type_id', 'count(c.id) counter');
+		$qb->groupBy('c.id');
 
 		$draftConditions = $qb->expr()->andX();
-		$draftConditions->add($qb->expr()->eq('r.draft', true));		
+		$draftConditions->add($qb->expr()->eq('r.draft', ':true'));		
 		$draftConditions->add($qb->expr()->isNull('r.endTime'));
 		
 		$draftOrAutosave = $qb->expr()->orX();
 		$draftOrAutosave->add($draftConditions);
 		$draftOrAutosave->add($qb->expr()->isNotNull('r.autoSave'));
 		
-		$qb->select('c.id content_type_id', 'count(c.id) counter');
-		$qb->join('r.contentType', 'c');
 		$and = $qb->expr()->andX();
-		$and->add($qb->expr()->eq('r.deleted', 0));
+		$and->add($qb->expr()->eq('r.deleted', ':false'));
 		$and->add($draftOrAutosave);
+		$parameters = [
+				':false' => false,
+				':true' => true,
+		];
 		if(!$isAdmin){
 			$inCircles = $qb->expr()->orX();
 			$inCircles->add($qb->expr()->isNull('r.circles'));
@@ -57,19 +62,23 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
 			$and->add($inCircles);
 		}
 		$qb->where($and);
-		$qb->groupBy('c.id');
+
 		$qb->setParameters($parameters);
 		return $qb->getQuery()->getResult();
 	}
 	
 	public function findInProgresByContentType($contentType, $circles, $isAdmin) {
 
-		$parameters = ['contentType' => $contentType];
+		$parameters = [
+				'contentType' => $contentType,
+				'false' => false,
+				'true' => true,
+		];
 		
 		$qb = $this->createQueryBuilder('r');
 
 		$draftConditions = $qb->expr()->andX();
-		$draftConditions->add($qb->expr()->eq('r.draft', true));		
+		$draftConditions->add($qb->expr()->eq('r.draft', ':true'));		
 		$draftConditions->add($qb->expr()->isNull('r.endTime'));
 		
 		$draftOrAutosave = $qb->expr()->orX();
@@ -77,7 +86,7 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
 		$draftOrAutosave->add($qb->expr()->isNotNull('r.autoSave'));
 		
 		$and = $qb->expr()->andX();
-		$and->add($qb->expr()->eq('r.deleted', 0));
+		$and->add($qb->expr()->eq('r.deleted', ':false'));
 		$and->add($draftOrAutosave);
 		
 		if(!$isAdmin){
@@ -100,48 +109,67 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
 	
 	
 	public function countDifferencesBetweenEnvironment($source, $target, $contentTypes = []) {
-		if(empty($contentTypes)) {
-			$sql = 'select count(*) foundRows from (select r.ouuid from environment_revision e, revision r,  content_type ct where e.environment_id in ('.$source.' ,'.$target.') and r.id = e.revision_id and ct.id = r.`content_type_id` and ct.deleted = 0 group by ct.id, r.ouuid, ct.orderKey having count(*) = 1 or max(r.`id`) <> min(r.`id`)) tmp';
-		} else {
-			$sql = 'select count(*) foundRows from (select r.ouuid from environment_revision e, revision r,  content_type ct where e.environment_id in ('.$source.' ,'.$target.') and r.id = e.revision_id and ct.id = r.`content_type_id` and ct.deleted = 0 and ct.name in ("'.implode('","', $contentTypes).'") group by ct.id, r.ouuid, ct.orderKey having count(*) = 1 or max(r.`id`) <> min(r.`id`)) tmp';
-		}
-		$rsm = new ResultSetMapping();
-		$rsm->addScalarResult('foundRows', 'foundRows');
-		$query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
-		$foundRows = $query->getResult();
+				
+		$sqb = $this->getCompareQueryBuilder($source, $target, $contentTypes);
+		$sqb->select('max(r.id)');
+// 		$subQuery()
+		$qb = $this->createQueryBuilder('rev');
+		$qb->select('count(rev)');
+		$qb->where($qb->expr()->in('rev.id', $sqb->getDQL()));
+		$qb->setParameters([
+				'false' => false,
+				'source' => $source,
+				'target' => $target,
+		]);
 		
-		return $foundRows[0]['foundRows'];
+		return $qb->getQuery()->getSingleResult();
+	}
+	
+	/**
+	 * 
+	 * @return \Doctrine\ORM\QueryBuilder
+	 */
+	private function getCompareQueryBuilder($source, $target, $contentypes){
+		$qb = $this->createQueryBuilder('r');
+		$qb->select('c.id', 'c.color', 'c.labelField ct_labelField', 'c.name content_type_name', 'c.icon', 'r.ouuid', 'max(r.labelField) as item_labelField', 'count(c.id) counter', 'min(concat(e.id, \'/\',r.id, \'/\', r.created)) minrevid', 'max(concat(e.id, \'/\',r.id, \'/\', r.created)) maxrevid', 'max(r.id) lastRevId')
+		->join('r.contentType', 'c')
+		->join('r.environments', 'e')
+		->where('e.id in (:source, :target)')
+		->andWhere($qb->expr()->eq('r.deleted', ':false'))
+		->andWhere($qb->expr()->eq('c.deleted', ':false'))
+		->groupBy('c.id', 'c.name', 'c.icon', 'r.ouuid', 'c.orderKey')
+		->orHaving('count(r.id) = 1')
+		->orHaving('max(r.id) <> min(r.id)')
+		->setParameters([
+				'source'=>$source,
+				'target'=>$target,
+				'false'=>false,
+		],[
+				\Doctrine\DBAL\Types\Type::INTEGER,
+				\Doctrine\DBAL\Types\Type::INTEGER,
+				\Doctrine\DBAL\Types\Type::BOOLEAN,
+		]);
+		if(!empty($contentypes)){
+			$qb->andWhere('c.name in (\''.implode("','", $contentypes).'\')');
+		}
+		return $qb;
 	}
 	
 	public function compareEnvironment($source, $target, $contentypes = [], $from, $limit, $orderField = "contenttype", $orderDirection = 'ASC') {
 		switch ($orderField){
 			case "label":
-				$orderField = 'r.labelField';
+				$orderField = 'item_labelField';
 				break;
 			default:
 				$orderField = 'c.name';
 				break;
-		}
-		$qb = $this->createQueryBuilder('r')
-			->select('c.id', 'c.color', 'c.labelField ct_labelField', 'c.name content_type_name', 'c.icon', 'r.ouuid', 'r.labelField', 'count(c.id) counter', 'min(concat(e.id, \'/\',r.id, \'/\', r.created)) minrevid', 'max(concat(e.id, \'/\',r.id, \'/\', r.created)) maxrevid')
-			->join('r.contentType', 'c')
-			->join('r.environments', 'e')
-			->where('e.id in (?1, ?2)')
-			->andWhere('r.deleted = 0')
-			->andWhere('c.deleted = 0')
-			->groupBy('c.id', 'c.name', 'c.icon', 'r.ouuid', 'c.orderKey')
-			->orHaving('count(r.id) = 1')
-			->orHaving('max(r.id) <> min(r.id)')
-			->addOrderBy($orderField, $orderDirection)
-			->addOrderBy('r.ouuid')
-			->setFirstResult($from)
-			->setMaxResults($limit)
-			->setParameter(1, $source,  \Doctrine\DBAL\Types\Type::INTEGER)
-			->setParameter(2, $target,  \Doctrine\DBAL\Types\Type::INTEGER);		
+		}	
+		$qb = $this->getCompareQueryBuilder($source, $target, $contentypes);
+		$qb->addOrderBy($orderField, $orderDirection)
+		->addOrderBy('r.ouuid')
+		->setFirstResult($from)
+		->setMaxResults($limit);
 
-		if(!empty($contentypes)){
-			$qb->andWhere('c.name in (\''.implode("','", $contentypes).'\')');
-		}
 		return $qb->getQuery()->getResult();
 	}
 	
@@ -291,7 +319,7 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
 	
 	public function deleteRevision(Revision $revision) {
 		$qb = $this->createQueryBuilder('r')->update()
-		->set('r.delete', 1)
+		->set('r.delete', true)
 		->where('r.id = ?1')
 		->setParameter(1, $revision->getId());
 			
@@ -300,15 +328,22 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
 	
 	public function deleteRevisions(ContentType $contentType=null) {
 		if($contentType == null) {
-			$qb = $this->createQueryBuilder('r')->update()
-			->set('r.delete', 1);
+			$qb = $this->createQueryBuilder('r');
+			$qb->update()
+			->set($qb->expr()->eq('r.delete', ':true'))
+					->setParameters([
+							'true' => true,
+					]);
 			
 			return $qb->getQuery()->execute();
 		} else {
 			$qb = $this->createQueryBuilder('r')->update()
-			->set('r.delete', 1)
-			->where('r.contentTypeId = ?1')
-			->setParameter(1, $contentType->getId());
+			->set($qb->expr()->eq('r.delete', ':true'))
+			->where('r.contentTypeId = :contentTypeId')
+			->setParameters([
+					'true' => true,
+					'contentTypeId' => $contentType->getId()
+			]);
 			
 			return $qb->getQuery()->execute();
 		}

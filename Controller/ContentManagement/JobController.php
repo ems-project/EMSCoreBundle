@@ -43,6 +43,14 @@ class JobController extends AppController
 		] );
 	}
 	
+	
+	
+    public static function getArgv ($string) {
+    	preg_match_all ('/(?<=^|\s)([\'"]?)(.+?)(?<!\\\\)\1(?=$|\s)/', $string, $ms);
+    	return $ms[2];
+    }
+	
+	
 	/**
 	 * @Route("/admin/job/start/{job}", name="job.start"))
 	 * 

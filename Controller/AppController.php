@@ -143,6 +143,7 @@ class AppController extends Controller
 		
 		$job->setUser($this->getUser()->getUsername());
 		$job->setDone(false);
+		$job->setStarted(false);
 		$job->setProgress(0);
 		$job->setStatus("Job intialized");
 		

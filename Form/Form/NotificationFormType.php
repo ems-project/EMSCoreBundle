@@ -81,7 +81,8 @@ class NotificationFormType extends AbstractType {
 				'class' => 'EMSCoreBundle:ContentType',
 				'query_builder' => function (EntityRepository $er) {
 					return $er->createQueryBuilder('ct')
-					->where("ct.deleted = false")
+					->where("ct.deleted = :false")
+					->setParameters(['false' => false])
 					->orderBy('ct.orderKey');
 					
 				},

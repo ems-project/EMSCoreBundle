@@ -541,12 +541,13 @@ class DataService
 			$qb = $repository->createQueryBuilder('t')
 			->where('t.ouuid = :ouuid')
 			->andWhere('t.id <> :id')
-			->andWhere('t.deleted =  false')
+			->andWhere('t.deleted =  :false')
 			->andWhere('t.contentType =  :contentType')
 			->orderBy('t.startTime', 'desc')
 			->setParameter('ouuid', $revision->getOuuid())
 			->setParameter('contentType', $revision->getContentType())
 			->setParameter('id', $revision->getId())
+			->setParameter('false', false)
 			->setMaxResults(1);
 			$query = $qb->getQuery();
 	

@@ -81,7 +81,7 @@ class Job
     /**
      * @var string
      *
-     * @ORM\Column(name="user", type="string", length=255, nullable=true)
+     * @ORM\Column(name="username", type="string", length=255, nullable=true)
      */
     private $user;
 

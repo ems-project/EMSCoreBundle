@@ -13,6 +13,8 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 /**
  * An export view plugin
@@ -75,6 +77,17 @@ class ExportViewType extends ViewType {
 				'slug' => 'export_filename',
 				'min-lines' => 4,
 				'max-lines' => 4,
+		] )
+		->add ( 'disposition', ChoiceType::class, [
+				'label' => 'File diposition',
+				'expanded' => true,
+				'attr' => [
+				],
+				'choices' => [
+						'None' => null,
+						'Attachment' => 'attachment',
+						'Inline' => 'inline',
+				]
 		] );
 	}
 	
@@ -98,8 +111,15 @@ class ExportViewType extends ViewType {
 		$parameters = $this->getParameters($view, $this->formFactory, $request);
 // 		dump($parameters); exit;
 		
-		$disposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $parameters['filename']);
-		$response->headers->set('Content-Disposition', $disposition);
+		if(!empty($view->getOptions()['disposition'])){
+			$attachment = ResponseHeaderBag::DISPOSITION_ATTACHMENT;
+			if ($view->getOptions()['disposition'] == 'inline') {
+				$attachment = ResponseHeaderBag::DISPOSITION_INLINE;				
+			}
+			$disposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $parameters['filename']);
+			$response->headers->set('Content-Disposition', $disposition);
+		}
+		
 		$response->headers->set('Content-Type', $parameters['mimetype']);
 		
 		$response->setContent($parameters['render']);

@@ -268,6 +268,12 @@ services:
         tags:
             - { name: ems.form.viewtype, alias: export }
             - { name: form.type }
+    ems.view.sorter:
+        class: EMS\CoreBundle\Form\View\SorterViewType
+        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@session', '@ems.service.data', '@router']
+        tags:
+            - { name: ems.form.viewtype, alias: sorter }
+            - { name: form.type }
     ems.view.report:
         class: EMS\CoreBundle\Form\View\ReportViewType
         arguments: ['@form.factory', '@twig', '@app.elasticsearch']

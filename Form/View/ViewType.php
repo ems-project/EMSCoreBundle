@@ -9,6 +9,7 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use \Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Form\FormFactory;
 
 /**
  * It's the mother class of all specific DataField used in eMS
@@ -23,6 +24,7 @@ abstract class ViewType extends AbstractType {
 	protected $twig;
 	/** @var Client $client */
 	protected $client;
+	/**@var FormFactory*/
 	protected $formFactory;
 	
 	public function __construct($formFactory, $twig, $client){
@@ -58,7 +60,10 @@ abstract class ViewType extends AbstractType {
 	 *
 	 */
 	public function configureOptions(OptionsResolver $resolver) {
-		$resolver->setDefault ( 'label', $this->getName().' options');
+		$resolver->setDefaults ( array (
+				'view' => null,
+				'label' => $this->getName().' options',
+		) );
 	}
 	
 	/**

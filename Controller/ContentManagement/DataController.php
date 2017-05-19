@@ -2,12 +2,17 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\NoResultException;
+use Elasticsearch\Client;
+use Elasticsearch\Common\Exceptions\Missing404Exception;
 use EMS\CoreBundle;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\Search;
+use EMS\CoreBundle\Entity\Form\SearchFilter;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Template;
 use EMS\CoreBundle\Entity\View;
@@ -21,12 +26,10 @@ use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\TemplateRepository;
 use EMS\CoreBundle\Repository\ViewRepository;
-use Doctrine\ORM\EntityManager;
-use Elasticsearch\Client;
-use Elasticsearch\Common\Exceptions\Missing404Exception;
+use EMS\CoreBundle\Service\ContentTypeService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Form;
@@ -34,10 +37,6 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use EMS\CoreBundle\Service\ContentTypeService;
-use Doctrine\ORM\NoResultException;
-use EMS\CoreBundle\Entity\Form\SearchFilter;
-use EMS\CoreBundle\Form\Form\SearchFormType;
 
 class DataController extends AppController
 {

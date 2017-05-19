@@ -39,7 +39,7 @@ class I18n
     /**
      * @var string
      *
-     * @ORM\Column(name="identifier", type="string", length=200)
+     * @ORM\Column(name="identifier", type="string", unique=true, length=200)
      * @ORM\OrderBy({"identifier" = "ASC"})
      */
     private $identifier; 
@@ -157,10 +157,12 @@ class I18n
      */
     public function getContentTextforLocale($locale)
     {
-    	foreach ($this->content as $translation) {
-    		if ($translation['locale'] === $locale) {
-    			return $translation['text'];
-    		}
+    	if(!empty($this->content)){
+	    	foreach ($this->content as $translation) {
+	    		if ($translation['locale'] === $locale) {
+	    			return $translation['text'];
+	    		}
+	    	}    		
     	}
     	
     	return "no match found for key" . $this->getIdentifier() .  " with locale " . $locale;

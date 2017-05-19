@@ -194,7 +194,7 @@ class SorterViewType extends ViewType {
 			
 			return new RedirectResponse($this->router->generate('data.draft_in_progress', [
 					'contentTypeId' => $view->getContentType()->getId(),
-			]), UrlGeneratorInterface::RELATIVE_PATH);
+			], UrlGeneratorInterface::RELATIVE_PATH));
 // 			return $this->redirectToRoute();
 		}
 		

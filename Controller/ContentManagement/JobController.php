@@ -10,7 +10,6 @@ use EMS\CoreBundle\Command\JobOutput;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\Job;
 use EMS\CoreBundle\Form\Form\JobType;
-use Monolog\Logger;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use SensioLabs\AnsiConverter\AnsiToHtmlConverter;

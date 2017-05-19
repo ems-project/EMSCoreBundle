@@ -2,26 +2,25 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
+use Doctrine\ORM\EntityManager;
+use Elasticsearch\Client;
+use Elasticsearch\Common\Exceptions\Missing404Exception;
+use EMS\CoreBundle;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
-use EMS\CoreBundle;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\ContentTypeFilter;
 use EMS\CoreBundle\Entity\Form\RebuildIndex;
 use EMS\CoreBundle\Entity\Revision;
-use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Form\Field\ColorPickerType;
 use EMS\CoreBundle\Form\Field\IconTextType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\Form\CompareEnvironmentFormType;
-use EMS\CoreBundle\Form\Form\ContentTypeFilterFormType;
 use EMS\CoreBundle\Form\Form\EditEnvironmentType;
 use EMS\CoreBundle\Form\Form\RebuildIndexType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
-use Doctrine\ORM\EntityManager;
-use Elasticsearch\Client;
-use Elasticsearch\Common\Exceptions\Missing404Exception;
+use EMS\CoreBundle\Service\EnvironmentService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;

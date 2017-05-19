@@ -4,7 +4,7 @@
 {% block pagetitle %}View the environment {{environment.name}}{% endblock %} 
 {% block breadcrumb %}
 	<ol class="breadcrumb">
-		<li><a href={{ url('environment.index') }}><i class="fa fa-database"></i> Environments</a></li>
+		<li><a href={{ path('environment.index') }}><i class="fa fa-database"></i> Environments</a></li>
    		<li class="active">View environment</li>
    	</ol>
 {% endblock %}

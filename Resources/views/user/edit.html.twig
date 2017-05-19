@@ -72,7 +72,7 @@
 			if(dynamicLoading){
 			  	params.minimumInputLength = 1,
 				params.ajax = {
-					url: '{{ url("elasticsearch.api.search") }}',
+					url: '{{ path("elasticsearch.api.search") }}',
 			    	dataType: 'json',
 			    	delay: 250,
 			    	data: function (params) {

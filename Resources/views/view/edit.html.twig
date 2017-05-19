@@ -57,7 +57,7 @@ $(window).load(function() {
 		event.preventDefault();
 		var formContent = $("form[name=form]").serialize();
 		
-		$.post("{{ url('view.edit', { id: view.id, _format: 'json' }) }}", $("form[name={{ form.vars.id }}]").serialize())
+		$.post("{{ path('view.edit', { id: view.id, _format: 'json' }) }}", $("form[name={{ form.vars.id }}]").serialize())
 		  .done(function(message) {
 			  var response = jQuery.parseJSON( message );
 

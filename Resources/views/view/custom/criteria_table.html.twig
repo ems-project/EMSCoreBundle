@@ -70,7 +70,7 @@
 													{% include 'EMSCoreBundle:elements:post-button.html.twig' with { 
 														'url': app.request.requestUri,
 														'destinationFormName': 'criteria_filter',
-														'action': url('views.criteria.align', {view: view.id}),
+														'action': path('views.criteria.align', {view: view.id}),
 														'name': 'alignOn',
 														'value': 'col:'~columnIdx,
 														'rawlabel': attribute(columns, columnIdx).label,
@@ -105,7 +105,7 @@
 													'url': app.request.requestUri, 
 													'rawlabel': attribute(rows, rowIdx).label|raw,
 													'destinationFormName': 'criteria_filter',
-													'action': url('views.criteria.align', {view: view.id}),
+													'action': path('views.criteria.align', {view: view.id}),
 													'name': 'alignOn',
 													'value': 'row:'~rowIdx,
 													'message': 'Align table based on this line?' }%}
@@ -132,7 +132,7 @@
 														'url': app.request.requestUri, 
 														'rawlabel': attribute(rows, rowIdx).label|raw,
 														'destinationFormName': 'criteria_filter',
-														'action': url('views.criteria.align', {view: view.id}),
+														'action': path('views.criteria.align', {view: view.id}),
 														'name': 'alignOn',
 														'value': 'row:'~rowIdx,
 														'message': 'Align table based on this line?' }%}
@@ -155,7 +155,7 @@
 													{% include 'EMSCoreBundle:elements:post-button.html.twig' with { 
 														'url': app.request.requestUri,
 														'destinationFormName': 'criteria_filter',
-														'action': url('views.criteria.align', {view: view.id}),
+														'action': path('views.criteria.align', {view: view.id}),
 														'name': 'alignOn',
 														'value': 'col:'~columnIdx,
 														'rawlabel': attribute(columns, columnIdx).label,
@@ -197,7 +197,7 @@ function formatRepoSelectionForTable (repo) {
 		color = repo.color;
 	}
 	
-	var url = "{{ url('data.revisions', {type: '__type__' , ouuid: '__ouuid__' }) }}";
+	var url = "{{ path('data.revisions', {type: '__type__' , ouuid: '__ouuid__' }) }}";
 	url = url.replace('__type__:__ouuid__', repo.id);
 
 	var style = "style=\"color: white;\"";
@@ -218,7 +218,7 @@ function formatRepoSelectionForTable (repo) {
 	
 	  var allSelect2 = $('#CriteriaUpdateCustomViewTable select').select2({
 	  ajax: {
-		    url: '{{ url("elasticsearch.api.search") }}',
+		    url: '{{ path("elasticsearch.api.search") }}',
 		    dataType: 'json',
 		    delay: 250,
 		    data: function (params) {
@@ -268,7 +268,7 @@ function formatRepoSelectionForTable (repo) {
 					};
 	
 
-					ajaxRequest.post( "{{ url('views.criteria.add', {view: view.id}) }}", data )
+					ajaxRequest.post( "{{ path('views.criteria.add', {view: view.id}) }}", data )
 			  	  		.success(function(response) {
 							optionElem.attr('data-status', 'added');
 				  	        
@@ -297,7 +297,7 @@ function formatRepoSelectionForTable (repo) {
 					};
 	
 
-					ajaxRequest.post("{{ url('views.criteria.remove', {view: view.id}) }}", data)
+					ajaxRequest.post("{{ path('views.criteria.remove', {view: view.id}) }}", data)
 						.success(function(response){
 							optionElem.attr('data-status', 'removed');
 						})

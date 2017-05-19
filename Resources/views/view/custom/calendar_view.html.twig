@@ -120,7 +120,7 @@ function updateEvent(event){
 	if(event.end) {
 		data.end = event.end.format();
 	}
-	ajaxRequest.post("{{ url('views.calendar.replan', {view: view.id}) }}", data);
+	ajaxRequest.post("{{ path('views.calendar.replan', {view: view.id}) }}", data);
 }
 
 
@@ -176,7 +176,7 @@ $(function () {
     		var data = $("form[name={{ form.vars.id }}]").serialize();
     		data = data+'&from='+from.format()+'&to='+to.format();
 
-    		ajaxRequest.get("{{ url('views.calendar.search', {view: view.id}) }}", data)
+    		ajaxRequest.get("{{ path('views.calendar.search', {view: view.id}) }}", data)
     		.success(function(response) {
                 callback(response.events);
     		  });

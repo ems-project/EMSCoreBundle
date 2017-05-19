@@ -18,14 +18,14 @@
 {#         	{% endif %}#}
         </div>
         <div class="pull-left info">
-          <p>{% if app.user %} <a href="{{ url(user_profile_route) }}" class="">{{ app.user.displayName }}</a> {% else %} Anonymous user {% endif %}</p>
+          <p>{% if app.user %} <a href="{{ path(user_profile_route) }}" class="">{{ app.user.displayName }}</a> {% else %} Anonymous user {% endif %}</p>
           <!-- Status -->
-          <a href="{{ url('elasticsearch.status') }}" id="status-overview"><i class="fa fa-circle"></i> Updating...</a>
+          <a href="{{ path('elasticsearch.status') }}" id="status-overview"><i class="fa fa-circle"></i> Updating...</a>
         </div>
       </div>
 {% if app.user %}
       <!-- search form (Optional) -->
-      <form action="{{ url('elasticsearch.search') }}" method="get" class="sidebar-form">
+      <form action="{{ path('elasticsearch.search') }}" method="get" class="sidebar-form">
         <div class="input-group">
           <input type="text" name="search_form[filters][0][pattern]" class="form-control" placeholder="Search...">
           <input type="hidden" name="search_form[filters][0][operator]" value="query_and">
@@ -169,7 +169,7 @@
       <ul class="sidebar-menu">
         <li class="header">Publisher</li>        
           <li class="treeview">
-            <a href="{{ url('environment.align') }}" id="menu-environment-align">
+            <a href="{{ path('environment.align') }}" id="menu-environment-align">
             	<i class="fa fa-align-center"></i> <span>{{ 'Compare environments'|trans }}</span> 
             </a>
         </li>
@@ -181,27 +181,27 @@
       <ul class="sidebar-menu">
         <li class="header">Admin</li>        
           <li class="treeview">
-            <a href="{{ url('contenttype.index') }}" id="menu-contenttype-list">
+            <a href="{{ path('contenttype.index') }}" id="menu-contenttype-list">
             	<i class="fa fa-sitemap"></i> <span>Content Types</span> 
             </a>
         </li>
         <li class="treeview">
-          <a href="{{ url('environment.index') }}" id="menu-environment-list">
+          <a href="{{ path('environment.index') }}" id="menu-environment-list">
           	<i class="fa fa-database"></i> <span>Environments</span> 
           </a>
         </li>
         <li class="treeview">
-          <a href="{{ url('ems.user.index') }}" id="menu-user-index">
+          <a href="{{ path('ems.user.index') }}" id="menu-user-index">
           	<i class="fa fa-users"></i> <span>Users</span> 
           </a>
         </li>
         <li class="treeview">
-          <a href="{{ url('i18n_index') }}" id="menu-i18n-index">
+          <a href="{{ path('i18n_index') }}" id="menu-i18n-index">
           	<i class="fa fa-language"></i> <span>I18N</span> 
           </a>
         </li>
         <li class="treeview">
-          <a href="{{ url('job.index') }}" id="menu-job-index">
+          <a href="{{ path('job.index') }}" id="menu-job-index">
           	<i class="fa fa-terminal"></i> <span>Jobs</span> 
           </a>
         </li>
@@ -213,12 +213,12 @@
       <ul class="sidebar-menu">
         <li class="header">OTHER</li>
         <li class="treeview">
-          <a href="{{ url('elasticsearch.status') }}" id="menu-elasticsearch-status">
+          <a href="{{ path('elasticsearch.status') }}" id="menu-elasticsearch-status">
           	<i class="fa fa-cubes"></i> <span>Status</span> 
           </a>
         </li>
         <li>
-        	<a id="menu-documentation" href="{{ url('documentation') }}">
+        	<a id="menu-documentation" href="{{ path('documentation') }}">
         		<i class="fa fa-book"></i> <span>Documentation</span>
         	</a>
         </li>

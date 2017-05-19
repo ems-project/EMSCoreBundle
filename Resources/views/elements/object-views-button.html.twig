@@ -25,7 +25,7 @@
 							</a>
 						{% elseif template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::NOTIFICATION') %}
 							{% if ( is_granted(template.role) and ((attribute(object._source, contentType.circlesField) is not defined) or (object._source and attribute(object._source, contentType.circlesField)|in_my_circles) or (environment.circles|in_my_circles and is_granted('ROLE_PUBLISHER')) ) ) %}
-								<a href='#' class="request_notification" onclick="requestNotification(this, {{template.id}}, '{{environment.name}}', '{{contentType.id}}' , '{{ouuid}}'); return false;" href="#" data-url="{{ url('notification.ajaxnotification', {'objectId' : ouuid}) }}">
+								<a href='#' class="request_notification" onclick="requestNotification(this, {{template.id}}, '{{environment.name}}', '{{contentType.id}}' , '{{ouuid}}'); return false;" href="#" data-url="{{ path('notification.ajaxnotification', {'objectId' : ouuid}) }}">
 									<i class="{{ template.icon|raw }}"></i>
 									{{ template.name }}
 								</a>

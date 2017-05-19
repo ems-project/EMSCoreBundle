@@ -2,14 +2,13 @@
 
 namespace EMS\CoreBundle\Form\Form;
 
+use EMS\CoreBundle\Form\Field\ContentTypePickerType;
 use EMS\CoreBundle\Form\Field\EnvironmentPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use EMS\CoreBundle\Form\Field\ContentTypePickerType;
 
 class CompareEnvironmentFormType extends AbstractType {
 	/**

@@ -19,6 +19,7 @@ use EMS\CoreBundle\Service\DataService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Router;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * It's the mother class of all specific DataField used in eMS
@@ -193,7 +194,7 @@ class SorterViewType extends ViewType {
 			
 			return new RedirectResponse($this->router->generate('data.draft_in_progress', [
 					'contentTypeId' => $view->getContentType()->getId(),
-			]));
+			]), UrlGeneratorInterface::RELATIVE_PATH);
 // 			return $this->redirectToRoute();
 		}
 		

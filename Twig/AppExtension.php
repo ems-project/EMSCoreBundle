@@ -17,6 +17,7 @@ use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Form\DataField\DateRangeFieldType;
 use EMS\CoreBundle\Service\EnvironmentService;
 use Monolog\Logger;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class AppExtension extends \Twig_Extension
 {
@@ -128,9 +129,9 @@ class AppExtension extends \Twig_Extension
 	}
 
 	function internalLinks($input){
-		$url = $this->router->generate('data.link', ['key'=>'object:']);
+		$url = $this->router->generate('data.link', ['key'=>'object:'], UrlGeneratorInterface::RELATIVE_PATH);
 		$out = preg_replace('/ems:\/\/object:/i', $url, $input);
-		$url = $this->router->generate('data.link', ['key'=>'asset:']);
+		$url = $this->router->generate('data.link', ['key'=>'asset:'], UrlGeneratorInterface::RELATIVE_PATH);
 		$out = preg_replace('/ems:\/\/asset:/i', $url, $out);
 		return $out;
 	}
@@ -287,7 +288,7 @@ class AppExtension extends \Twig_Extension
 					'type' =>$type,
 					'ouuid' => $ouuid,
 					'revisionId' => $revisionId,
-			]).'" '.$addAttribute.' >'.$out.'</a>';
+			], UrlGeneratorInterface::RELATIVE_PATH).'" '.$addAttribute.' >'.$out.'</a>';
 		}
 		return $out;
 	}

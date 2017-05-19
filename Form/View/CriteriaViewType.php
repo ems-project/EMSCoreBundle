@@ -15,6 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * It's the mother class of all specific DataField used in eMS
@@ -104,7 +105,7 @@ class CriteriaViewType extends ViewType {
 				'view' => $view,
 				'action' => $this->router->generate('views.criteria.table', [
 					'view' => 	$view->getId(),
-				]),
+				], UrlGeneratorInterface::RELATIVE_PATH),
 		]);
 		
 		$form->handleRequest($request);

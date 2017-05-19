@@ -278,9 +278,6 @@ class DataController extends AppController
 		];
 		
 		
-// 		$this->generateUrl('elasticsearch.search', array('searchForm' => $searchForm), UrlGeneratorInterface::ABSOLUTE_URL);		
-// 		dump($refParams);
-		
 		return $this->render( 'EMSCoreBundle:data:revisions-data.html.twig', [
 				'revision' =>  $revision,
 				'revisionsSummary' => $revisionsSummary,

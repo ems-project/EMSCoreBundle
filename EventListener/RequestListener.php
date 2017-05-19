@@ -24,6 +24,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class RequestListener
 {
@@ -56,8 +57,7 @@ class RequestListener
 	public function onKernelRequest(GetResponseEvent $event)
 	{
 		if($event->getRequest()->get('_route') === $this->userRegistrationRoute && !$this->allowUserRegistration) {
-			$response = new RedirectResponse($this->router->generate($this->userLoginRoute, [
-			]));
+			$response = new RedirectResponse($this->router->generate($this->userLoginRoute, [], UrlGeneratorInterface::RELATIVE_PATH));
 			$event->setResponse($response);
 		}
 	}
@@ -68,24 +68,19 @@ class RequestListener
 		$exception = $event->getException();
 		
 		try {
-// 			if (!($exception instanceof NotFoundHttpException) && !$this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')) {
-// 				$response = new RedirectResponse($this->router->generate($this->userLoginRoute));
-// 				$event->setResponse($response);
-// 			}
-// 			else 
 			if($exception instanceof LockedException || $exception instanceof PrivilegeException) {
 				$this->session->getFlashBag()->add('error', $exception->getMessage());
 				/** @var LockedException $exception */
 				if(null == $exception->getRevision()->getOuuid()){
 					$response = new RedirectResponse($this->router->generate('data.draft_in_progress', [
 							'contentTypeId' => $exception->getRevision()->getContentType()->getId(),
-					]));
+					], UrlGeneratorInterface::RELATIVE_PATH));
 				}
 				else {
 					$response = new RedirectResponse($this->router->generate('data.revisions', [
 							'type' => $exception->getRevision()->getContentType()->getName(),
 							'ouuid'=> $exception->getRevision()->getOuuid()
-					]));				
+					], UrlGeneratorInterface::RELATIVE_PATH));				
 				}
 				$event->setResponse($response);
 			}

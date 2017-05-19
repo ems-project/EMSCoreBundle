@@ -18,6 +18,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class NotificationController extends AppController
 {
@@ -229,7 +230,7 @@ class NotificationController extends AppController
  		/**@var \Symfony\Component\Routing\RouterInterface $router*/
  		$router = $this->get('router');
  		$treatform = $this->createForm(TreatNotificationsType::class, $treatNotification, [
- 				'action' => $router->generate('notification.treat'),
+ 				'action' => $router->generate('notification.treat', [], UrlGeneratorInterface::RELATIVE_PATH),
  				'notifications' => $notifications,
  		]);
 		

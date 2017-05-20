@@ -36,6 +36,7 @@
     "bootstrap-timepicker": "^0.5.2",
     "bootstrap-fileinput": "^4.3.2",
     "bootstrap-daterangepicker": "^2.1.19",
-    "ace-builds": "^1.2.6"
+    "ace-builds": "^1.2.6",
+    "nestedSortable": "ilikenwf/nestedSortable#^2.0.0"
   }
 }

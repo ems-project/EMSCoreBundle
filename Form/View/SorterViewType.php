@@ -85,7 +85,7 @@ class SorterViewType extends ViewType {
 				'label' => 'The Elasticsearch body query [JSON Twig]',
 				'attr' => [
 				],
-				'slug' => 'report_query',
+				'slug' => 'sorter_query',
 		] )
 		->add ( 'size', IntegerType::class, [
 				'label' => 'Limit the result to the x first results',

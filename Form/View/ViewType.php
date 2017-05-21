@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use \Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Form\FormFactory;
+use Elasticsearch\Client;
 
 /**
  * It's the mother class of all specific DataField used in eMS

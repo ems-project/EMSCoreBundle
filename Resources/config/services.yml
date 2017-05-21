@@ -274,6 +274,12 @@ services:
         tags:
             - { name: ems.form.viewtype, alias: sorter }
             - { name: form.type }
+    ems.view.hierarchical:
+        class: EMS\CoreBundle\Form\View\HierarchicalViewType
+        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@session', '@ems.service.data', '@router']
+        tags:
+            - { name: ems.form.viewtype, alias: hierarchical }
+            - { name: form.type }
     ems.view.report:
         class: EMS\CoreBundle\Form\View\ReportViewType
         arguments: ['@form.factory', '@twig', '@app.elasticsearch']

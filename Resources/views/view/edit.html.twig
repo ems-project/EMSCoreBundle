@@ -75,6 +75,10 @@ $(window).load(function() {
 			globalWaitingResponse = false;
 		});
 	});
+
+	$(".objectpicker").each(function(index){
+		objectPickerListeners($( this ));
+	});
 	
 });
 

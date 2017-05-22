@@ -17,7 +17,7 @@ class EnvironmentRepository extends \Doctrine\ORM\EntityRepository
 	public function getEnvironmentsStats() {
 		/** @var QueryBuilder $qb */
 		$qb = $this->createQueryBuilder('e')
-			->select('e as environment', 'count(r) as counter', 'sum(r.deleted) as deleted')
+			->select('e as environment', 'count(r) as counter', 'count(r.deleted) as deleted')
 			->leftJoin('e.revisions', 'r')
 			->groupBy('e.id');
 		
@@ -28,9 +28,12 @@ class EnvironmentRepository extends \Doctrine\ORM\EntityRepository
 		/** @var QueryBuilder $qb */
 		$qb = $this->createQueryBuilder('e');
 		$qb->where($qb->expr()->neq('e.id', ':defaultEnvId'));
-		$qb->andWhere('e.managed <> 0');
+		$qb->andWhere($qb->expr()->neq('e.managed', ':false'));
 		$qb->orderBy('e.name', 'ASC');
-		$qb->setParameter('defaultEnvId', $defaultEnv->getId());
+		$qb->setParameters([
+				'false' => false,
+				'defaultEnvId' => $defaultEnv->getId()
+		]);
 	
 		return $qb->getQuery()->getResult();
 	}
@@ -39,8 +42,8 @@ class EnvironmentRepository extends \Doctrine\ORM\EntityRepository
 	public function findManagedIndexes() {
 		$qb = $this->createQueryBuilder('e');
 		$qb->select('e.alias alias');
-		$qb->where($qb->expr()->eq('e.managed', true));
-	
+		$qb->where($qb->expr()->eq('e.managed', ':true'));
+		$qb->setParameters([':true' => true]);
 		return $qb->getQuery()->getResult();
 	}
 	

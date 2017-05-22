@@ -33,7 +33,7 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
 			->where('r.ouuid = :ouuid')
 			->andWhere('r.contentType = :contentType')
 // 			->andWhere('n.contentType = :contentType')
-			->andwhere('r.deleted = 0')
+			->andwhere('r.deleted = :false')
 			->andwhere('n.status = :status')
 			->andwhere('n.environment = :environment');
 		
@@ -42,6 +42,7 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
 				'contentType' => $revision->getContentType(),
 				'ouuid' => $revision->getOuuid(),
 				'environment' => $environment,
+				'false' => false,
 		]);
 		
 		$query = $qb->getQuery();
@@ -136,12 +137,13 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
 			->join('n.environment', 'e', 'WITH', 'n.environment = e.id')
 			->where('n.status = :status')
 			->andwhere('n.template IN (:ids)')
-			->andwhere('r.deleted = 0')
+			->andwhere('r.deleted = :false')
 			->andwhere('r.id = n.revision');
 		
 		$params = array(
-					'status' => "pending",
-					'ids' => $templateIds
+				'status' => "pending",
+				'ids' => $templateIds,
+				'false' => false,
 			);
 		
 		if($environments != null){
@@ -187,14 +189,18 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
 			->join('n.revision', 'r', 'WITH', 'n.revision = r.id')
 			->join('n.environment', 'e', 'WITH', 'n.environment = e.id')
 			->where('n.status = :status')
-			->andwhere('n.template IN (:ids)')
-			->andwhere('r.deleted = 0')
+			->andwhere('r.deleted = :false')
 			->andwhere('r.id = n.revision');
 	
 		$params = array(
 				'status' => "pending",
-				'ids' => $templateIds
+				'false' => false,
 		);
+		
+		if(!empty($templateIds)){
+			$qb->andwhere('n.template IN (:ids)');
+			$params['ids'] = $templateIds;
+		}
 	
 		$orCircles = $qb->expr()->orX();
 		$orCircles->add('e.circles is null');

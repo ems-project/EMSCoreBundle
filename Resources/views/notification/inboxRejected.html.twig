@@ -1,5 +1,5 @@
 {% trans_default_domain 'EMSCoreBundle' %}{% if rejectedNotifications|length <= 0  %}
-	<p>{{ 'No result for this filters combinaison'|trans }}: <a href="{{ url('notifications.inbox') }}">{{ 'reset filters' }}</a></p>
+	<p>{{ 'No result for this filters combinaison'|trans }}: <a href="{{ path('notifications.inbox') }}">{{ 'reset filters' }}</a></p>
 {% else %}
 	<div class="table-responsive">
 		<table class="table table-condensed table-striped">

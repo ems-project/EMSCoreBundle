@@ -1,0 +1,132 @@
+{% extends 'EMSCoreBundle::base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}{{ view.name }} of {{contentType.singularName}}{% endblock %}
+{% block pagetitle %}{{ view.name }} of {{contentType.singularName}}{% endblock %} 
+{% block stylesheets %}
+
+<style>
+    <!--
+    ol.vertical li {
+        display: block;
+        margin: 7px;
+        padding: 7px;
+        border: 1px solid #cccccc;
+    /*     color: #0088cc; */
+    /*     background: #eeeeee; */
+    }
+    .mjs-nestedSortable-error {
+    	background: #fbe3e4;
+    	border-color: transparent;
+    }
+    -->
+</style>
+
+{% endblock %} 
+
+{% block body %}
+
+
+
+
+<div class="row">
+    <div class="col-md-12">
+		<div class="box box-solid">
+    		<div class="box-header with-border">
+    			<h2 class="box-title">{{ 'Reorganise: '|trans }}
+    				<i class="{% if contentType.icon %}{{ contentType.icon }} {% else %} fa fa-question {% endif %} "></i>
+    			    {% if (contentType.labelField) and (attribute(parent._source, contentType.labelField)  is defined ) %}
+                		{{ attribute(parent._source, contentType.labelField) }}
+                	{% else %}
+                		{{ parent._id }}
+                	{% endif %}
+                </h2>
+    		</div>
+    		<div class="box-body no-padding">
+    			<ol class="sortable vertical">
+					{% include "EMSCoreBundle:view:custom/hierarchical_item.html.twig" with {
+                		parent: parent._source,
+                		view: view,
+                	} %}
+            	</ol>
+    		</div>
+    		<!-- /.box-body -->
+    		<div class="box-footer">
+			    {{ form_start(form) }}
+				<div class="btn-group">
+				    {{ form_widget(form.reorder) }}
+				</div>
+			    {{ form_end(form) }}
+    		</div>
+    		<!-- /.box-footer -->
+    	</div>
+</div>
+</div>
+
+
+{% endblock %} 
+
+
+{% block javascripts %}
+	{% include 'EMSCoreBundle:app:menu.html.twig' with {
+		'item':  'data-view-'~ contentType.id ~ '-' ~ view.id
+	}%}
+	
+	
+	<script type="text/javascript" src="{{ asset('bundles/emscore/bower/nestedSortable/jquery.mjs.nestedSortable.js') }}"></script>
+	
+<script type="text/javascript">
+<!--
+
+//-->
+
+function addListeners(target){
+	$(target).find('a.remove-item').click(function(event){
+		event.preventDefault();
+		$(this).closest('li').remove();
+	});
+}
+
+function getAssocArray(input) {
+	var output = [];
+	for (var item in input){
+// 		console.log(input[item]);
+		output.push({
+			ouuid: input[item].id,
+			children: getAssocArray(input[item].children),
+		});
+	} 
+	return output;
+}
+
+$(document).ready(function(){
+
+	$('.sortable').nestedSortable({
+		forcePlaceholderSize: true,
+		handle: 'div',
+		helper:	'clone',
+		items: 'li',
+		opacity: .6,
+		placeholder: 'placeholder',
+		revert: 250,
+		tabSize: 25,
+		tolerance: 'pointer',
+		toleranceElement: '> div',
+		maxLevels: 3,
+		expression: /()(.+)/,
+
+		isTree: true,
+		expandOnHover: 700,
+		startCollapsed: true
+	});
+	
+	addListeners('.sortable');
+
+	$('#reorganize_reorder').click(function(e){
+		hiered = $('ol.sortable').nestedSortable('toHierarchy', {startDepthCount: 0});
+		$('#reorganize_structure').val(JSON.stringify(getAssocArray(hiered)));
+	})
+
+});
+
+</script>
+{% endblock %}	

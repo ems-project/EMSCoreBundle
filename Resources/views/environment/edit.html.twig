@@ -5,7 +5,7 @@
 {% block breadcrumb %}
 	<ol class="breadcrumb">
 		<li><i class="fa fa-database"></i> Environments</li>
-		<li><a href={{ url('environment.index') }}>List Environments</a></li>
+		<li><a href={{ path('environment.index') }}>List Environments</a></li>
    		<li class="active">Edit environment</li>
    	</ol>
 {% endblock %}
@@ -75,7 +75,7 @@ $(window).ready(function() {
   $('#edit_environment_circles').css('z-index', '20000');
   $('#edit_environment_circles').select2({
     ajax: {
-      url: '{{ url("elasticsearch.api.search") }}',
+      url: '{{ path("elasticsearch.api.search") }}',
         dataType: 'json',
         delay: 250,
         data: function (params) {

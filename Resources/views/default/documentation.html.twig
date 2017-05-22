@@ -1,53 +1,16 @@
 {% extends 'EMSCoreBundle::base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
-{% block title %}About elasticMS{% endblock %}
-{% block pagetitle %}Some facts and info about <b>elastic</b>MS{% endblock %}
-{% block documentation_active %}active{% endblock %}
+{% block title %}{{ 'Documentation'|trans }}{% endblock %}
+{% block pagetitle %}{{ 'Documentation'|trans }}{% endblock %}
 {% block breadcrumb %}
 	<ol class="breadcrumb">
-		<li><i class="fa fa-book"></i> Documentation</li>
+		<li><i class="fa fa-book"></i> {{ 'Documentation'|trans }}</li>
    	</ol>
 {% endblock %}
 
 {% block body %}
 
-<div class="box">
-        <div class="box-header with-border">
-          <h3 class="box-title">Based on Symfony 3, Bootstrap 3 and AdminLTE</h3>
-
-          <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="" data-original-title="Collapse">
-              <i class="fa fa-minus"></i></button>
-            <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
-              <i class="fa fa-times"></i></button>
-          </div>
-        </div>
-        <div class="box-body" style="display: block;">
-          <p>
-	          elasticMS has been created in order to manage some content as every regular CMS.
-	          Its goals is not associate its content directly to a web site but to publish it in several elasticsearch indexes.
-	          Even if those indexes are also provided by other sources, eMS stay the authentic source for its content.
-	          Up to you to develop other tools to generate websites, pdfs, graphs, ... directly based on the elasticsearch contents.
- 		  </p>         
-          <p>
-          	Here is some usefull links (while waiting the project's documentation):
-          	<ul>
-          		<li><a href="http://getbootstrap.com/">Bootstrap</a></li>
-          		<li><a href="https://almsaeedstudio.com/preview">AdminLTE demo website</a></li>
-          		<li><a href="http://symfony.com/doc/current/book/index.html">The Symfony Book</a></li>
-          		<li>Read Symfony documentation to learn
-                    <a href="http://symfony.com/doc/{{ constant('Symfony\\Component\\HttpKernel\\Kernel::VERSION')[:3] }}/book/page_creation.html">
-                        How to create your first page in Symfony
-                    </a></li>
-          	</ul>
-          </p>
-        </div>
-        <!-- /.box-body -->
-        <div class="box-footer" style="display: block;">
-          Elasticsearch rocks !
-        </div>
-        <!-- /.box-footer-->
-</div>
+    {{ 'ems.documentation.body'|i18n|raw }}
 
 {% endblock %}
 

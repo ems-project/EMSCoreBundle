@@ -116,7 +116,9 @@ class ViewController extends AppController
 		->add ( 'icon', IconPickerType::class, [
 				'required' => false,
 		])
-		->add ( 'options', get_class($this->get($view->getType())))
+		->add ( 'options', get_class($this->get($view->getType())),[
+				'view' => $view,
+		])
 		->add ( 'save', SubmitEmsType::class, [
 				'attr' => [
 						'class' => 'btn-primary btn-sm '

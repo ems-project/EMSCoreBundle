@@ -98,4 +98,21 @@
 	{% include 'EMSCoreBundle:app:menu.html.twig' with {
 		'item':  'job-index'
 	}%}
+	
+<script type="text/javascript">
+<!--
+
+//-->	
+$(document).ready(function() {
+	{% if not job.started %}
+    	$.ajax({
+    		type: "POST",
+    		url: "{{ path('job.start', {job: job.id}) }}"
+    	}).always(function() {
+    		location.reload();
+    	});
+    {% endif %}
+});
+</script>
 {% endblock %}
+

@@ -95,7 +95,7 @@ function onFormChange(){
 	        CKEDITOR.instances[i].updateElement();
 		}
 		
-		waitingResponse = ajaxRequest.post("{{ url('revision.ajaxupdate', { revisionId: revision.id }) }}", $("form[name={{ form.vars.id }}]").serialize())
+		waitingResponse = ajaxRequest.post("{{ path('revision.ajaxupdate', { revisionId: revision.id }) }}", $("form[name={{ form.vars.id }}]").serialize())
 		  .success(function(response) {
 			  $('.has-error').removeClass('has-error');
 			  $('span.help-block').remove();
@@ -139,7 +139,7 @@ function attachObjectPicker(domId) {
 	$('#'+domId).find('.cke_dialog_ui_input_select').css('z-index', '20000');
 	$('#'+domId).find('select').select2({
 		ajax: {
-			url: '{{ url("elasticsearch.api.search") }}',
+			url: '{{ path("elasticsearch.api.search") }}',
 	    	dataType: 'json',
 	    	delay: 250,
 	    	data: function (params) {
@@ -500,7 +500,7 @@ function addEventListeners(target){
 		if(dynamicLoading){
 		  	params.minimumInputLength = 1;
 			params.ajax = {
-				url: '{{ url("elasticsearch.api.search") }}',
+				url: '{{ path("elasticsearch.api.search") }}',
 		    	dataType: 'json',
 		    	delay: 250,
 		    	data: function (params) {

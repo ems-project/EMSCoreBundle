@@ -2,26 +2,25 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
+use Doctrine\ORM\EntityManager;
+use Elasticsearch\Client;
+use Elasticsearch\Common\Exceptions\Missing404Exception;
+use EMS\CoreBundle;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
-use EMS\CoreBundle;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\ContentTypeFilter;
 use EMS\CoreBundle\Entity\Form\RebuildIndex;
 use EMS\CoreBundle\Entity\Revision;
-use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Form\Field\ColorPickerType;
 use EMS\CoreBundle\Form\Field\IconTextType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\Form\CompareEnvironmentFormType;
-use EMS\CoreBundle\Form\Form\ContentTypeFilterFormType;
 use EMS\CoreBundle\Form\Form\EditEnvironmentType;
 use EMS\CoreBundle\Form\Form\RebuildIndexType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
-use Doctrine\ORM\EntityManager;
-use Elasticsearch\Client;
-use Elasticsearch\Common\Exceptions\Missing404Exception;
+use EMS\CoreBundle\Service\EnvironmentService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -405,6 +404,11 @@ class EnvironmentController extends AppController {
 		return $this->redirectToRoute ( 'environment.index' );
 	}
 	
+	
+	public static function isValidName($name) {
+		return preg_match('/^[a-z][a-z0-9\-_]*$/', $name) && strlen($name) <= 100;
+	}
+	
 	/**
 	 * Add a new environement
 	 *
@@ -429,48 +433,55 @@ class EnvironmentController extends AppController {
 		
 		$form->handleRequest ( $request );
 		
-		if ($form->isSubmitted () && $form->isValid ()) {
+		if ($form->isSubmitted ()) {
 			
 			
 			/** @var Environment $environment */
 			$environment = $form->getData ();
+			if(!$this->isValidName($environment->getName())) {
+				$form->get('name')->addError(new FormError('Must respects the following regex /^[a-z][a-z0-9\-_]*$/'));
+			}
 			
-			/** @var EntityManager $em */
-			$em = $this->getDoctrine ()->getManager ();
-			
-			$environmetRepository = $em->getRepository ( 'EMSCoreBundle:Environment' );
-			$anotherObject = $environmetRepository->findBy ( [ 
-					'name' => $environment->getName () 
-			] );
-			
-			if (count ( $anotherObject ) != 0) {
-				//TODO: test name format
-				$form->get ( 'name' )->addError ( new FormError ( 'Another environment named ' . $environment->getName () . ' already exists' ) );
-			} else {
-				$environment->setAlias ( $this->getParameter ( 'ems_core.instance_id' ) . $environment->getName () );
-				$environment->setManaged ( true );
+			if($form->isValid ()){
+				
+				
+				/** @var EntityManager $em */
 				$em = $this->getDoctrine ()->getManager ();
-				$em->persist ( $environment );
-				$em->flush ();
-
-				$indexName = $environment->getAlias().AppController::getFormatedTimestamp();
-				$this->getElasticsearch()->indices()->create([
-						'index' => $indexName,
-						'body' => ContentType::getIndexAnalysisConfiguration(),
-				]);
 				
-				foreach ($this->getContentTypeService()->getAll() as $contentType){
-					$this->getContentTypeService()->updateMapping($contentType, $indexName);				
+				$environmetRepository = $em->getRepository ( 'EMSCoreBundle:Environment' );
+				$anotherObject = $environmetRepository->findBy ( [ 
+						'name' => $environment->getName () 
+				] );
+				
+				if (count ( $anotherObject ) != 0) {
+					//TODO: test name format
+					$form->get ( 'name' )->addError ( new FormError ( 'Another environment named ' . $environment->getName () . ' already exists' ) );
+				} else {
+					$environment->setAlias ( $this->getParameter ( 'ems_core.instance_id' ) . $environment->getName () );
+					$environment->setManaged ( true );
+					$em = $this->getDoctrine ()->getManager ();
+					$em->persist ( $environment );
+					$em->flush ();
+	
+					$indexName = $environment->getAlias().AppController::getFormatedTimestamp();
+					$this->getElasticsearch()->indices()->create([
+							'index' => $indexName,
+							'body' => ContentType::getIndexAnalysisConfiguration(),
+					]);
+					
+					foreach ($this->getContentTypeService()->getAll() as $contentType){
+						$this->getContentTypeService()->updateMapping($contentType, $indexName);				
+					}
+					
+					$this->getElasticsearch()->indices()->putAlias([
+	    				'index' => $indexName,
+	    				'name' => $environment->getAlias()
+	    			]);
+					
+					$this->addFlash('notice', 'A new environement '.$environment->getName().' has been created');
+					return $this->redirectToRoute ( 'environment.index' );
+					
 				}
-				
-				$this->getElasticsearch()->indices()->putAlias([
-    				'index' => $indexName,
-    				'name' => $environment->getAlias()
-    			]);
-				
-				$this->addFlash('notice', 'A new environement '.$environment->getName().' has been created');
-				return $this->redirectToRoute ( 'environment.index' );
-				
 			}
 		}
 		

@@ -4,7 +4,7 @@
 {% for item in data.hits.hits %}{
 			"id": {{ item._id|json_encode|raw }},
         	"title": {% if contentType.labelField and attribute(item._source, contentType.labelField) is defined %}{{ attribute(item._source, contentType.labelField)|json_encode|raw }}{% else %}{{ item._id|json_encode|raw }}{% endif %},
-        	"url": {{ url('data.revisions', {type: contentType.name, ouuid: item._id})|json_encode|raw }},
+        	"url": {{ path('data.revisions', {type: contentType.name, ouuid: item._id})|json_encode|raw }},
         	{% if contentType.colorField and attribute(item._source, contentType.colorField) is defined %}
 	        	"backgroundColor": {{ attribute(item._source, contentType.colorField)|json_encode|raw }},
 	        	"borderColor": {{ attribute(item._source, contentType.colorField)|json_encode|raw }},

@@ -121,12 +121,15 @@ class AppController extends Controller
 		$job = new Job();
 		$job->setUser($this->getUser()->getUsername());
 		$job->setDone(false);
+		$job->setStarted(false);
 		$job->setArguments($arguments);
 		$job->setProgress(0);
 		$job->setService($service);
-		$job->setStatus("Job intialized");
+		$job->setStatus("Job prepared");
 		$em->persist($job);
 		$em->flush();
+		
+		$this->addFlash('notice', 'A job has been prepared');
 		
 		return $this->redirectToRoute('job.status', [
 			'job' => $job->getId(),
@@ -140,6 +143,7 @@ class AppController extends Controller
 		
 		$job->setUser($this->getUser()->getUsername());
 		$job->setDone(false);
+		$job->setStarted(false);
 		$job->setProgress(0);
 		$job->setStatus("Job intialized");
 		

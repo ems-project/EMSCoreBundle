@@ -15,7 +15,10 @@ class ContentTypeRepository extends \Doctrine\ORM\EntityRepository
 	
 	public function findAllAsAssociativeArray(){
 		$qb = $this->createQueryBuilder('ct');
-		$qb->where($qb->expr()->eq('ct.deleted', 0));
+		$qb->where($qb->expr()->eq('ct.deleted', ':false'));
+		$qb->setParameters([
+			'false' => false,
+		]);
 		
 		$out = [];
 		$result = $qb->getQuery()->getResult();

@@ -15,7 +15,7 @@ class RebuildIndex
     /**
      * Set the rebuild option
      *
-     * @param boolean $option
+     * @param string $option
      *
      * @return RebuildIndex
      */

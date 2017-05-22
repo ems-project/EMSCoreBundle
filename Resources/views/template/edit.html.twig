@@ -119,7 +119,7 @@ $(window).ready(function() {
   $('#template_circlesTo').css('z-index', '20000');
   $('#template_circlesTo').select2({
     ajax: {
-      url: '{{ url("elasticsearch.api.search") }}',
+      url: '{{ path("elasticsearch.api.search") }}',
         dataType: 'json',
         delay: 250,
         data: function (params) {

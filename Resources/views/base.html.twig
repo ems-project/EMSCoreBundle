@@ -64,7 +64,7 @@ desired effect
   <header class="main-header">
 
     <!-- Logo -->
-    <a href="{{ url('homepage') }}" class="logo">
+    <a href="{{ path('homepage') }}" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
       <span class="logo-mini">{{ ems_shortname|raw }}</span>
       <!-- logo for regular state and mobile devices -->
@@ -204,13 +204,13 @@ desired effect
               <!-- Menu Footer-->
               <li class="user-footer">
                 <div class="pull-left">
-                  <a href="{{ url(user_profile_route) }}" class="btn btn-default btn-flat">{{ 'User profile'|trans }}</a>
+                  <a href="{{ path(user_profile_route) }}" class="btn btn-default btn-flat">{{ 'User profile'|trans }}</a>
                 </div>
                 <div class="pull-right">
                		{% if is_granted('ROLE_PREVIOUS_ADMIN') %}
                			<a href="{{ path('ems.user.index', {'_switch_user': '_exit'}) }}" class="btn btn-default btn-flat">{{ 'Exit'|trans }}</a>
                		{% else %}
-               			<a href="{{ url(user_logout_route) }}" class="btn btn-default btn-flat">{{ 'Sign out'|trans }}</a>
+               			<a href="{{ path(user_logout_route) }}" class="btn btn-default btn-flat">{{ 'Sign out'|trans }}</a>
                		{% endif %}
                 </div>
               </li>
@@ -222,7 +222,7 @@ desired effect
           </li>#}
           {% else %}
           <li>
-            <a href="{{ url(user_login_route) }}" ><span class="glyphicon glyphicon-lock"></span> Login</a>
+            <a href="{{ path(user_login_route) }}" ><span class="glyphicon glyphicon-lock"></span> Login</a>
           </li>
           {% endif %}
         </ul>
@@ -481,7 +481,7 @@ desired effect
 <!-- AjaxRequest -->
 <script src="{{ asset('bundles/emscore/js/AjaxRequest.js') }}"></script>
 <!-- This app -->
-<script src="{{ url('app.js') }}"></script>
+<script src="{{ path('app.js') }}"></script>
 
 
 <!-- Optionally, you can add Slimscroll and FastClick plugins.

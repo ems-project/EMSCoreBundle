@@ -506,7 +506,7 @@
 			<input type="file" class="file-uploader-input">
 		</div>
 		<div class="btn-group">
-			<a href="#" data-href="{{ url('ems.file.view', {'sha1':'__SHA1__', 'type':'__MIME_TYPE__', 'name':'__FILE_NAME__' }) }}" class="btn btn-small btn-primary view-asset-button {% if not form.children.sha1.vars.value %}disabled{% endif %}" target="_blank" alt="{{'View'|trans}}"><i class="fa fa-eye">&nbsp;{{'View'|trans}}</i></a>
+			<a href="#" data-href="{{ path('ems.file.view', {'sha1':'__SHA1__', 'type':'__MIME_TYPE__', 'name':'__FILE_NAME__' }) }}" class="btn btn-small btn-primary view-asset-button {% if not form.children.sha1.vars.value %}disabled{% endif %}" target="_blank" alt="{{'View'|trans}}"><i class="fa fa-eye">&nbsp;{{'View'|trans}}</i></a>
 			<a href="#" class="btn btn-small btn-primary clear-asset-button  {% if not form.children.sha1.vars.value %}disabled{% endif %}" alt="{{'Clear'|trans}}"><i class="fa fa-remove"></i>&nbsp;{{'Clear'|trans}}</a>			
 		</div>
 	</div>

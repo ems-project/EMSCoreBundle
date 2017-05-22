@@ -27,6 +27,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class CriteriaController extends AppController
 {
@@ -246,7 +247,7 @@ class CriteriaController extends AppController
 				'view' => $view,
 				'attr' => [
 					'id' =>  'criteria_filter',
-					'action' => $this->generateUrl('data.customindexview', ['viewId'=>$view->getId()]),
+						'action' => $this->generateUrl('data.customindexview', ['viewId'=>$view->getId()], UrlGeneratorInterface::RELATIVE_PATH),
 				],
 		]);
 		

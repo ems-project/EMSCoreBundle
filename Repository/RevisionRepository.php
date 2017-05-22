@@ -114,7 +114,7 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
 	}
 	
 	public function compareEnvironment($source, $target, $contentypes = [], $from, $limit, $orderField = "contenttype", $orderDirection = 'ASC') {
-		switch ($orderField){
+		switch ($orderField){//Ordering on Label or ContentType.
 			case "label":
 				$orderField = 'r.labelField';
 				break;
@@ -123,14 +123,14 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
 				break;
 		}
 		$qb = $this->createQueryBuilder('r')
-			->select('c.id', 'c.color', 'c.labelField ct_labelField', 'c.name content_type_name', 'c.icon', 'r.ouuid', 'r.labelField', 'count(c.id) counter', 'min(concat(e.id, \'/\',r.id, \'/\', r.created)) minrevid', 'max(concat(e.id, \'/\',r.id, \'/\', r.created)) maxrevid')
+			->select('e.id eId', 'c.id cId', 'c.color', 'c.labelField ct_labelField', 'c.name content_type_name', 'c.icon', 'r.id rId', 'r.ouuid', 'r.labelField', 'count(c.id) counter', 'min(concat(e.id, \'/\',r.id, \'/\', r.created)) minrevid', 'max(concat(e.id, \'/\',r.id, \'/\', r.created)) maxrevid')
 			->join('r.contentType', 'c')
 			->join('r.environments', 'e')
 			->where('e.id in (?1, ?2)')
 			->andWhere('r.deleted = 0')
 			->andWhere('c.deleted = 0')
 			->groupBy('c.id', 'c.name', 'c.icon', 'r.ouuid', 'c.orderKey')
-			->orHaving('count(r.id) = 1')
+			->orHaving('count(r.id) = 1')//Found only one occurence of this revision in the two environments. => one is missing.
 			->orHaving('max(r.id) <> min(r.id)')
 			->addOrderBy($orderField, $orderDirection)
 			->addOrderBy('r.ouuid')
@@ -139,7 +139,7 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
 			->setParameter(1, $source,  \Doctrine\DBAL\Types\Type::INTEGER)
 			->setParameter(2, $target,  \Doctrine\DBAL\Types\Type::INTEGER);		
 
-		if(!empty($contentypes)){
+		if(!empty($contentypes)){//Filter on ContentTypes
 			$qb->andWhere('c.name in (\''.implode("','", $contentypes).'\')');
 		}
 		return $qb->getQuery()->getResult();

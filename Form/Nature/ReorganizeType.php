@@ -2,13 +2,15 @@
 
 namespace EMS\CoreBundle\Form\Nature;
 
+use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\CallbackTransformer;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use EMS\CoreBundle\Form\DataField\TextareaFieldType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use EMS\CoreBundle\Entity\DataField;
 
 class ReorganizeType extends AbstractType
 {
@@ -28,7 +30,34 @@ class ReorganizeType extends AbstractType
     			],
     			'icon' => 'fa fa-reorder'
     	]);
+    	
+    	/**@var View*/
+    	$view = $options['view'];
+    	if($view instanceof View){
+    		dump($view->getOptions());
+    		$fieldType = $view->getContentType()->getFieldType()->getChildByPath($view->getOptions()['field']);
+    		$builder->add ( 'addItem', $fieldType->getType(), [
+    				'metadata' => $fieldType,
+    				'label' => 'Add item',
+    				'required' => false,
+    		]);
+    		
+    		
+    		
+    		$builder->get('addItem')->addModelTransformer(new CallbackTransformer(
+    				function ($raw) {
+    					$dataField = new DataField();
+//     					$dataField->setRawData($raw);
+    					return $dataField;
+    				},
+    				function (DataField $tagsAsString) {
+    					// transform the string back to an array
+    					return '';
+    				}
+    		));
+    	}
     }   
+    
 
     /**
      * @param OptionsResolver $resolver
@@ -36,6 +65,7 @@ class ReorganizeType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
+        		'view' => null,
         ]);
     }
 	

@@ -1,7 +1,7 @@
 {% extends 'EMSCoreBundle::base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}{{ view.name }} of {{contentType.singularName}}{% endblock %}
-{% block pagetitle %}{{ view.name }} of {{contentType.singularName}}{% endblock %} 
+{% block pagetitle %}{{ view.name }} of {{contentType.singularName}}{% endblock %}
 {% block stylesheets %}
 
 <style>
@@ -21,7 +21,7 @@
     -->
 </style>
 
-{% endblock %} 
+{% endblock %}
 
 {% block body %}
 
@@ -42,7 +42,7 @@
                 </h2>
     		</div>
     		<div class="box-body no-padding">
-    			<ol class="sortable vertical">
+    			<ol class="sortable vertical" id="root-list">
 					{% include "EMSCoreBundle:view:custom/hierarchical_item.html.twig" with {
                 		parent: parent._source,
                 		view: view,
@@ -50,30 +50,38 @@
             	</ol>
     		</div>
     		<!-- /.box-body -->
-    		<div class="box-footer">
-			    {{ form_start(form) }}
-				<div class="btn-group">
-				    {{ form_widget(form.reorder) }}
-				</div>
-			    {{ form_end(form) }}
-    		</div>
+		    {{ form_start(form) }}
+		    <div>
+		    	{% if form.addItem is defined  %}
+            		<div class="box-footer">
+        			    {{ form_row(form.addItem) }}
+            		</div>
+            		<!-- /.box-footer -->
+            	{% endif %}
+        		<div class="box-footer">
+    				<div class="btn-group">
+    				    {{ form_widget(form.reorder) }}
+    				</div>
+        		</div>
+        	</div>
+		    {{ form_end(form) }}
     		<!-- /.box-footer -->
     	</div>
 </div>
 </div>
 
 
-{% endblock %} 
+{% endblock %}
 
 
 {% block javascripts %}
 	{% include 'EMSCoreBundle:app:menu.html.twig' with {
 		'item':  'data-view-'~ contentType.id ~ '-' ~ view.id
 	}%}
-	
-	
+
+
 	<script type="text/javascript" src="{{ asset('bundles/emscore/bower/nestedSortable/jquery.mjs.nestedSortable.js') }}"></script>
-	
+
 <script type="text/javascript">
 <!--
 
@@ -94,7 +102,7 @@ function getAssocArray(input) {
 			ouuid: input[item].id,
 			children: getAssocArray(input[item].children),
 		});
-	} 
+	}
 	return output;
 }
 
@@ -111,22 +119,50 @@ $(document).ready(function(){
 		tabSize: 25,
 		tolerance: 'pointer',
 		toleranceElement: '> div',
-		maxLevels: 3,
+		maxLevels: {% if view.options.maxDepth is defined and view.options.maxDepth and view.options.maxDepth >= 1 %}{{view.options.maxDepth}}{%else%}3{%endif%},
 		expression: /()(.+)/,
 
 		isTree: true,
 		expandOnHover: 700,
 		startCollapsed: true
 	});
-	
+
 	addListeners('.sortable');
 
 	$('#reorganize_reorder').click(function(e){
+// 		e.preventDefault();
 		hiered = $('ol.sortable').nestedSortable('toHierarchy', {startDepthCount: 0});
-		$('#reorganize_structure').val(JSON.stringify(getAssocArray(hiered)));
+		$('#reorganize_structure').val(JSON.stringify(getAssocArray(hiered))).trigger("change");
+		console.log($('#reorganize_structure').val());
 	})
 
+
+	$(".objectpicker").each(function(index){
+		objectPickerListeners($( this ));
+	});
+
+	$('#reorganize_addItem_text_value').on("select2:select", function(){
+
+		var prototype = "{{ path('views.hierarchical.item', {key: '__key__', view: view.id}) }}";
+
+		if($(this).val().startsWith('{{contentType}}:') && $('li#'+$(this).val().replace(':', '\\:')).length > 0){
+			alert('{{'This entry item has been detected'|trans}}');
+		}
+		else {
+    		$.get( prototype.replace('__key__', $(this).val()), function( data ) {
+    			var item = $(data);
+    			
+    			$('#root-list').append(item);
+    			item.each(function(index){
+    				addListeners($( this ));
+    					console.log(this);
+              	});
+            });
+		}
+
+		$(this).val(null).trigger("change");;
+	});
 });
 
 </script>
-{% endblock %}	
+{% endblock %}

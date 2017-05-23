@@ -4,27 +4,24 @@ namespace EMS\CoreBundle\Form\View;
 
 use Elasticsearch\Client;
 use EMS\CoreBundle\Entity\DataField;
+use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\View;
-use EMS\CoreBundle\Form\Field\CodeEditorType;
+use EMS\CoreBundle\Form\DataField\DataLinkFieldType;
+use EMS\CoreBundle\Form\Field\ContentTypeFieldPickerType;
+use EMS\CoreBundle\Form\Nature\ReorganizeType;
 use EMS\CoreBundle\Form\View\ViewType;
+use EMS\CoreBundle\Service\DataService;
+use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\HttpFoundation\Request;
-use EMS\CoreBundle\Form\Field\ContentTypeFieldPickerType;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\HttpFoundation\Session\Session;
-use EMS\CoreBundle\Form\Nature\ReorderType;
-use EMS\CoreBundle\Service\DataService;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Routing\Router;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use EMS\CoreBundle\Form\DataField\DataLinkFieldType;
-use EMS\CoreBundle\Entity\FieldType;
-use Symfony\Component\Form\CallbackTransformer;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use EMS\CoreBundle\Form\Nature\ReorganizeType;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\Router;
 
 /**
  * It's the mother class of all specific DataField used in eMS
@@ -97,6 +94,11 @@ class HierarchicalViewType extends ViewType {
 		] )
 		->add ( 'size', IntegerType::class, [
 				'label' => 'Limit the result to the x first results',
+				'attr' => [
+				]
+		] )
+		->add ( 'maxDepth', IntegerType::class, [
+				'label' => 'Limit the menu\'s depth',
 				'attr' => [
 				]
 		] )
@@ -178,6 +180,7 @@ class HierarchicalViewType extends ViewType {
 		$data = [];
 		
 		$form = $this->formFactory->create(ReorganizeType::class, $data, [
+				'view' => $view,
 		]);
 		
 		

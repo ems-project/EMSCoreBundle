@@ -100,6 +100,11 @@ class HierarchicalViewType extends ViewType {
 				'attr' => [
 				]
 		] )
+		->add ( 'maxDepth', IntegerType::class, [
+				'label' => 'Limit the menu\'s depth',
+				'attr' => [
+				]
+		] )
 		->add ( 'field', ContentTypeFieldPickerType::class, [
 				'label' => 'Target children field (datalink)',
 				'required' => false,

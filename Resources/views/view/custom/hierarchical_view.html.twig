@@ -1,7 +1,7 @@
 {% extends 'EMSCoreBundle::base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}{{ view.name }} of {{contentType.singularName}}{% endblock %}
-{% block pagetitle %}{{ view.name }} of {{contentType.singularName}}{% endblock %} 
+{% block pagetitle %}{{ view.name }} of {{contentType.singularName}}{% endblock %}
 {% block stylesheets %}
 
 <style>
@@ -21,7 +21,7 @@
     -->
 </style>
 
-{% endblock %} 
+{% endblock %}
 
 {% block body %}
 
@@ -63,17 +63,17 @@
 </div>
 
 
-{% endblock %} 
+{% endblock %}
 
 
 {% block javascripts %}
 	{% include 'EMSCoreBundle:app:menu.html.twig' with {
 		'item':  'data-view-'~ contentType.id ~ '-' ~ view.id
 	}%}
-	
-	
+
+
 	<script type="text/javascript" src="{{ asset('bundles/emscore/bower/nestedSortable/jquery.mjs.nestedSortable.js') }}"></script>
-	
+
 <script type="text/javascript">
 <!--
 
@@ -94,7 +94,7 @@ function getAssocArray(input) {
 			ouuid: input[item].id,
 			children: getAssocArray(input[item].children),
 		});
-	} 
+	}
 	return output;
 }
 
@@ -111,14 +111,14 @@ $(document).ready(function(){
 		tabSize: 25,
 		tolerance: 'pointer',
 		toleranceElement: '> div',
-		maxLevels: 3,
+		maxLevels: {% if view.options.maxDepth is defined and view.options.maxDepth and view.options.maxDepth >= 1 %}{{view.options.maxDepth}}{%else%}3{%endif%},
 		expression: /()(.+)/,
 
 		isTree: true,
 		expandOnHover: 700,
 		startCollapsed: true
 	});
-	
+
 	addListeners('.sortable');
 
 	$('#reorganize_reorder').click(function(e){
@@ -129,4 +129,4 @@ $(document).ready(function(){
 });
 
 </script>
-{% endblock %}	
+{% endblock %}

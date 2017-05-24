@@ -82,7 +82,7 @@
 						'label': 'New draft', 
 						'icon': 'pencil' }%}
 				{% else %} 
-					{% if instance.contentType.fieldType.fieldsRoles|one_granted(true) %}
+					{% if ''|is_super and instance.contentType.fieldType.fieldsRoles|one_granted(true) %}
 						{% include 'EMSCoreBundle:elements:get-button.html.twig' with { 
 							'url': path('revision.edit', {'revisionId': revisionId}), 
 							'label': 'Edit revision', 

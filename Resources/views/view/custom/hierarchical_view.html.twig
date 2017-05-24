@@ -146,7 +146,9 @@ $(document).ready(function(){
 		var prototype = "{{ path('views.hierarchical.item', {key: '__key__', view: view.id}) }}";
 
 		if($(this).val().startsWith('{{contentType}}:') && $('li#'+$(this).val().replace(':', '\\:')).length > 0){
-			alert('{{'This entry item has been detected'|trans}}');
+
+			$('#modal-notifications .modal-body').append('<p>{{'This item %ouuid% is already presents in this structure/menu'|trans()}}</p>'.replace('%ouuid%', $(this).val()));
+			$('#modal-notifications').modal('show');
 		}
 		else {
     		$.get( prototype.replace('__key__', $(this).val()), function( data ) {

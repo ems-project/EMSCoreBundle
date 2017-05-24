@@ -55,10 +55,14 @@
 					{% endif %}
               </p>
 
+              {% if revision.finalizedBy %}
+                  <hr>
+	              <strong><i class="fa fa-user margin-r-5"></i> {{ 'Finalized by'|trans }}</strong>
+	              <p class="text-muted">{{ revision.finalizedBy|displayname }}</p>
+              {% endif %}
+
               <hr>
-
               <strong><i class="fa fa-clock-o margin-r-5"></i> Creation date</strong>
-
               <p class="text-muted">{{ revision.created|date(date_time_format) }}</p>
 
               <hr>

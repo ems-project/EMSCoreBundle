@@ -362,6 +362,11 @@ class DataService
 			$revision->getDataField()->propagateOuuid($revision->getOuuid());
 			$revision->setDraft(false);
 			
+			if(empty($username)){
+				$username = $this->tokenStorage->getToken()->getUsername();
+			}
+			$revision->setFinalizedBy($username);
+			
 			$em->persist($revision);
 			$em->flush();
 			

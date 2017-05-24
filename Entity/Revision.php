@@ -200,9 +200,7 @@ class Revision
     {
     	$this->deleted = false;
     	$this->allFieldsAreThere = false;
-    	//TODO? 
-    	//$this->setStartTime(new \DateTime());
-		//$this->setDraft(false);
+    	$this->finalizedBy= null;
     	$this->environments = new \Doctrine\Common\Collections\ArrayCollection();
     	$this->notifications = new \Doctrine\Common\Collections\ArrayCollection();
     	
@@ -214,6 +212,7 @@ class Revision
     			$ancestor = $a[0];
     			$this->deleted = $ancestor->deleted;
     			$this->draft = true;
+    			$this->finalizedBy= null;
     			$this->allFieldsAreThere = $ancestor->allFieldsAreThere;
     			$this->ouuid = $ancestor->ouuid;
     			$this->contentType = $ancestor->contentType;

@@ -247,22 +247,22 @@ class DataController extends AppController
 		$client = $this->getElasticsearch();
 		
 		
-		$filter = new SearchFilter();
-		$filter->setBooleanClause('must');
-		$filter->setField($revision->getContentType()->getRefererFieldName());
-		$filter->setPattern($type.':'.$ouuid);
-		if(empty($revision->getContentType()->getRefererFieldName())){
-		    $filter->setOperator('match');
-		}
-		else {
-		    $filter->setOperator('term');
-		}
 		$searchForm  = new Search();
 		$searchForm->setContentTypes($this->getContentTypeService()->getAllNames());
 		$searchForm->setEnvironments($this->getContentTypeService()->getAllDefaultEnvironmentNames());
 		$searchForm->setSortBy('_uid');
-		$searchForm->addFilter($filter);
 		$searchForm->setSortOrder('asc');
+		
+		$filter = $searchForm->getFilters()[0];
+		$filter->setBooleanClause('must');
+		$filter->setField($revision->getContentType()->getRefererFieldName());
+		$filter->setPattern($type.':'.$ouuid);
+		if(empty($revision->getContentType()->getRefererFieldName())){
+		    $filter->setOperator('match_and');
+		}
+		else {
+		    $filter->setOperator('term');
+		}
 		
 // 		/**@var Form $form*/
 // 		$form = $this->createForm ( SearchFormType::class, $searchForm, [

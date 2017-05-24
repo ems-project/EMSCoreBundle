@@ -34,7 +34,6 @@ class ReorganizeType extends AbstractType
     	/**@var View*/
     	$view = $options['view'];
     	if($view instanceof View){
-    		dump($view->getOptions());
     		$fieldType = $view->getContentType()->getFieldType()->getChildByPath($view->getOptions()['field']);
     		$builder->add ( 'addItem', $fieldType->getType(), [
     				'metadata' => $fieldType,

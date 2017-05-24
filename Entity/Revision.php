@@ -96,7 +96,14 @@ class Revision
      * @ORM\Column(name="draft", type="boolean")
      */
     private $draft;
-
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="finalized_by", type="string", length=255, nullable=true)
+     */
+    private $finalizedBy;
+    
     /**
      * @var string
      *
@@ -444,7 +451,7 @@ class Revision
     {
         return $this->draft;
     }
-
+    
     /**
      * Set lockBy
      *
@@ -454,11 +461,11 @@ class Revision
      */
     public function setLockBy($lockBy)
     {
-        $this->lockBy = $lockBy;
-
-        return $this;
+    	$this->lockBy = $lockBy;
+    	
+    	return $this;
     }
-
+    
     /**
      * Get lockBy
      *
@@ -466,7 +473,31 @@ class Revision
      */
     public function getLockBy()
     {
-        return $this->lockBy;
+    	return $this->lockBy;
+    }
+    
+    /**
+     * Set finalizedBy
+     *
+     * @param string $finalizedBy
+     *
+     * @return Revision
+     */
+    public function setFinalizedBy($finalizedBy)
+    {
+    	$this->finalizedBy= $finalizedBy;
+    	
+    	return $this;
+    }
+    
+    /**
+     * Get finalizedBy
+     *
+     * @return string
+     */
+    public function getFinalizedBy()
+    {
+    	return $this->finalizedBy;
     }
 
     /**

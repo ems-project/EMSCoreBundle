@@ -790,6 +790,8 @@ class DataController extends AppController
 		$this->lockRevision($revision);
 		$logger->debug('Revision '.$revisionId.' locked');
 		
+		//TODO:Only a super user can edit a archived revision
+		
 		if ( $request->isMethod('GET') ) {
 			$this->loadAutoSavedVersion($revision);
 		}

@@ -480,8 +480,24 @@ desired effect
 <script src="{{ asset('bundles/emscore/js/helper.js') }}"></script>
 <!-- AjaxRequest -->
 <script src="{{ asset('bundles/emscore/js/AjaxRequest.js') }}"></script>
+<!-- Variables  -->
+<script>
+    var file_init_upload_url = '{{ path('file.init-upload', {
+    		sha1: '__sha1__',
+    		size: '__size__'
+    	})|raw }}';
+    var file_chunk_upload_url = '{{ path('file.uploadchunk', {
+    		sha1: '__sha1__'
+    	})|raw }}';
+    var data_link_url = '{{ path('data.link', {key: '__object_key__'})|raw }}';
+    var object_search_url = '{{ path('elasticsearch.api.search')|raw }}';
+    var collapse_sidebar_url = '{{ path('user.sidebar-collapse', {collapsed: '__collapsed__'})|raw }}'; 
+    var elasticsearch_status_url = "{{ path('elasticsearch.status')|raw }}.json";
+</script>
 <!-- This app -->
-<script src="{{ path('app.js') }}"></script>
+<script src="{{ asset('bundles/emscore/js/app.js') }}"></script>
+
+
 
 
 <!-- Optionally, you can add Slimscroll and FastClick plugins.

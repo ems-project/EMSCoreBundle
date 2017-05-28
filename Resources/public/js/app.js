@@ -1,19 +1,4 @@
 
-var file_init_upload_url = '{{ path('file.init-upload', {
-		sha1: '__sha1__',
-		size: '__size__'
-	})|raw }}';
-	
-var file_chunk_upload_url = '{{ path('file.uploadchunk', {
-		sha1: '__sha1__'
-	})|raw }}';
-	
-var data_link_url = '{{ path('data.link', {key: '__object_key__'})|raw }}';
-
-var object_search_url = '{{ path('elasticsearch.api.search')|raw }}';
-
-var collapse_sidebar_url = '{{ path('user.sidebar-collapse', {collapsed: '__collapsed__'})|raw }}'; 
-
 function luma(color) // color can be a hx string or an array of RGB values 0-255
 {
     var rgb = (typeof color === 'string') ? hexToRGBArray(color) : color;
@@ -42,7 +27,7 @@ $(document).ready(function() {
     
     //Function to update the cluster status
 	var updateStatusFct = function(){
-		$.getJSON( "{{ path('elasticsearch.status')|raw }}.json" )
+		$.getJSON( elasticsearch_status_url )
 		  .done(function( json ) {
 			  $('#status-overview').html(json.body);
 		  })
@@ -53,10 +38,9 @@ $(document).ready(function() {
 	};	
 
  	//cron to update the cluster status
-	updateStatusFct();
 	window.setInterval(function(){
 		updateStatusFct();
-	}, 60000);
+	}, 180000);
 	//60000 every minute
 	
 	

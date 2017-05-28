@@ -4,7 +4,7 @@ namespace EMS\CoreBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-class TwigElementsController extends Controller
+class TwigElementsController extends AppController
 {
     public function sideMenuAction()
     {
@@ -18,9 +18,17 @@ class TwigElementsController extends Controller
     		$draftCounterGroupedByContentType[$item["content_type_id"]] = $item["counter"];
     	}
 
+    	try{ 
+	    	$status = $this->getElasticsearch()->cluster()->health()['status'];
+    	}
+	    catch (\Exception $e){
+	    	$status = 'red';
+	    }
+    	
     	return $this->render(
     		'EMSCoreBundle:elements:side-menu.html.twig', [
-    			'draftCounterGroupedByContentType' => $draftCounterGroupedByContentType
+    				'draftCounterGroupedByContentType' => $draftCounterGroupedByContentType,
+    				'status' => $status,
     	]);
     }
 }

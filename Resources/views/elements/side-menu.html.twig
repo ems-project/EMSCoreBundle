@@ -20,7 +20,7 @@
         <div class="pull-left info">
           <p>{% if app.user %} <a href="{{ path(user_profile_route) }}" class="">{{ app.user.displayName }}</a> {% else %} Anonymous user {% endif %}</p>
           <!-- Status -->
-          <a href="{{ path('elasticsearch.status') }}" id="status-overview"><i class="fa fa-circle"></i> Updating...</a>
+          <a href="{{ path('elasticsearch.status') }}" id="status-overview"><i class="fa fa-circle text-{{ status }}"></i> {{ status }}</a>
         </div>
       </div>
 {% if app.user %}

@@ -195,6 +195,10 @@ function initFileUploader(fileHandler, container){
 	    		$(clearButton).addClass('disabled');
 	    },
 	    onProgress: function(status, progress, remaining){
+		    if($(sha1Input).val() != fileUploader.sha1){
+        		$(sha1Input).val(fileUploader.sha1);
+        		console.log('Sha1 missmatch');
+		    }
 		    var pourcent = Math.round(progress*100);
 	    		$(progressBar).css('width', pourcent+'%');
 	    		$(progressText).html(status);

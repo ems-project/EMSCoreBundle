@@ -243,6 +243,11 @@ function FileUploader(params) {
 		if(event.target.status == '200'){
 			self.uploaded += Math.min(self.statics.CHUNKSIZE, self.size-self.uploaded);
 			if(self.uploaded == self.size){
+				var response = JSON.parse(event.target.responseText);
+				if(response.sha1 != self.sha1){
+					console.log('sha1 missmatch');
+					self.sha1 = response.sha1;
+				}
 				self.status = self.statics.UPLOADED;
 				self.onProgress('Uploaded', 1, 'Done');	
 			}

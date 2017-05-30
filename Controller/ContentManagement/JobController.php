@@ -23,6 +23,7 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class JobController extends AppController
 {
@@ -56,6 +57,14 @@ class JobController extends AppController
 	 * @method ({"POST"})
 	 */
 	public function startJobAction(Job $job, Request $request) {
+		
+		
+		if($job->getUser() != $this->getUser()->getUsername()){
+			throw new AccessDeniedHttpException();
+		}
+		//http://blog.alterphp.com/2012/08/how-to-deal-with-asynchronous-request.html
+		$request->getSession()->save();
+		
 		if (! $job->getStarted () && ! $job->getDone ()) {
 			/**@var EntityManager $manager */
 			$manager = $this->getDoctrine()->getManager ();

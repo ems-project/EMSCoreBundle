@@ -804,7 +804,7 @@ class DataController extends AppController
 		
 		$form = $this->createForm(RevisionType::class, $revision, [
 				'has_clipboard' => $request->getSession()->has('ems_clipboard'),
-				'has_copy' => $this->getAuthorizationChecker()->isGranted('ROLE_ADMIN'),
+				'has_copy' => $this->getAuthorizationChecker()->isGranted('ROLE_COPY_PASTE'),
 		]);
 
 		$logger->debug('Revision\'s form created');

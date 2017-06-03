@@ -107,15 +107,30 @@ class UserService {
 	public  function getExistingRoles()
 	{
 		$roleHierarchy = $this->securityRoles; //securityRolesthis->container->getParameter('security.role_hierarchy.roles');
-		$roles = array_keys($roleHierarchy);
-	
-		$theRoles['ROLE_USER'] = 'ROLE_USER';
-		 
-		foreach ($roles as $role) {
-			$theRoles[$role] = $role;
+		
+		$out = [];
+		
+		foreach ($roleHierarchy as $parent => $children){
+			foreach ($children as $child) {
+				if(empty($out[$child])){
+					$out[$child] = $child;
+				}
+			}
+			if(empty($out[$parent])){
+				$out[$parent] = $parent;
+			}
 		}
-		$theRoles['ROLE_API'] = 'ROLE_API';
-		return $theRoles;
+		
+		
+// 		$roles = array_keys($roleHierarchy);
+	
+// 		$theRoles['ROLE_USER'] = 'ROLE_USER';
+		 
+// 		foreach ($roles as $role) {
+// 			$theRoles[$role] = $role;
+// 		}
+		$out['ROLE_API'] = 'ROLE_API';
+		return $out;
 	}
 	
 	public function getUsersForRoleAndCircles($role, $circles) {

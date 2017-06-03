@@ -54,7 +54,7 @@
 						</a>
 					</li>
 				{% endif %}
-				{% if ''|is_super %}
+				{% if is_granted('ROLE_COPY_PASTE') %}
 					<li>
 						<a href="{{ path('revision.copy', {'environment': environment.name, 'type': contentType.name, 'ouuid': object._id} ) }}">
 							<i class="fa fa-copy"></i>

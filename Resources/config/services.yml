@@ -363,6 +363,9 @@ services:
     ems.service.user:
         class: EMS\CoreBundle\Service\UserService
         arguments: ['@doctrine', '@session', '@security.token_storage', '%security.role_hierarchy.roles%']
+    ems.service.wysiwyg_profile:
+        class: EMS\CoreBundle\Service\WysiwygProfileService
+        arguments: ['@doctrine', '@session', '@translator']
     ems.service.objectchoicecache:
         class: EMS\CoreBundle\Service\ObjectChoiceCacheService
         arguments: ['@app.elasticsearch', '@session', '@ems.service.contenttype']

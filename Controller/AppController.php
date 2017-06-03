@@ -16,6 +16,8 @@ use EMS\CoreBundle\Service\UserService;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use EMS\CoreBundle\Service\FileService;
+use EMS\CoreBundle\Service\WysiwygProfileService;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class AppController extends Controller
 {
@@ -26,7 +28,15 @@ class AppController extends Controller
 	{
 		return $this->render( 'EMSCoreBundle:app:app.js.twig' );
 	}
-
+	
+	/**
+	 * @return TranslatorInterface
+	 */
+	protected function getTranslator()
+	{
+		return $this->get('translator');
+	}
+	
 	/**
 	 * @return Client
 	 */
@@ -34,13 +44,21 @@ class AppController extends Controller
 	{
 		return $this->get('app.elasticsearch');
 	}
-
+	
 	/**
 	 * @return FileService
 	 */
 	protected function getFileService()
 	{
 		return $this->get('ems.service.file');
+	}
+	
+	/**
+	 * @return WysiwygProfileService
+	 */
+	protected function getWysiwygProfileService()
+	{
+		return $this->get('ems.service.wysiwyg_profile');
 	}
 
 	/**

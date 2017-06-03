@@ -81,6 +81,13 @@
 var waitingResponse = false;
 var synchAtTheEnd = true;
 
+
+$("form[name={{ form.vars.id }}]").submit(function( event ) {
+	//disable autosave
+	waitingResponse = true;
+	synch = true;
+});
+
 function onFormChange(){
 		synch = false;
 		if(waitingResponse){

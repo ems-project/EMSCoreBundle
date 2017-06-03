@@ -18,6 +18,17 @@ function hexToRGBArray(color)
 }
 
 
+function getAssocArray(input) {
+	var output = [];
+	for (var item in input){
+// 		console.log(input[item]);
+		output.push({
+			ouuid: input[item].id,
+			children: getAssocArray(input[item].children),
+		});
+	}
+	return output;
+}
 
 $(document).ready(function() {
     //Initialize Select2 Elements

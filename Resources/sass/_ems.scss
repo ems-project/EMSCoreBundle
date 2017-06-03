@@ -23,3 +23,15 @@ div.table-responsive {
 .nowrap  {
 	white-space: nowrap;
 }
+
+ol.vertical li {
+    display: block;
+    margin: 7px;
+    padding: 7px;
+    border: 1px solid #cccccc;
+}
+
+.mjs-nestedSortable-error {
+	background: #fbe3e4;
+	border-color: transparent;
+}

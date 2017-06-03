@@ -368,8 +368,8 @@ th {
 }
 @font-face {
   font-family: 'Glyphicons Halflings';
-  src: url(../bower/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.eot?1483281642);
-  src: url(../bower/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.eot?&1483281642#iefix) format("embedded-opentype"), url(../bower/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.woff2?1483281642) format("woff2"), url(../bower/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.woff?1483281642) format("woff"), url(../bower/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.ttf?1483281642) format("truetype"), url(../bower/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.svg?1483281642#glyphicons_halflingsregular) format("svg");
+  src: url(../bower/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.eot?1495487730);
+  src: url(../bower/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.eot?&1495487730#iefix) format("embedded-opentype"), url(../bower/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.woff2?1495487730) format("woff2"), url(../bower/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.woff?1495487730) format("woff"), url(../bower/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.ttf?1495487730) format("truetype"), url(../bower/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.svg?1495487730#glyphicons_halflingsregular) format("svg");
 }
 /* line 24, ../../../../../../../Library/Ruby/Gems/2.0.0/gems/bootstrap-sass-3.3.7/assets/stylesheets/bootstrap/_glyphicons.scss */
 .glyphicon {
@@ -38488,4 +38488,18 @@ div.table-responsive {
 /* line 23, ../../sass/_ems.scss */
 .nowrap {
   white-space: nowrap;
+}
+
+/* line 27, ../../sass/_ems.scss */
+ol.vertical li {
+  display: block;
+  margin: 7px;
+  padding: 7px;
+  border: 1px solid #cccccc;
+}
+
+/* line 34, ../../sass/_ems.scss */
+.mjs-nestedSortable-error {
+  background: #fbe3e4;
+  border-color: transparent;
 }

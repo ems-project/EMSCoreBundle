@@ -2,26 +2,6 @@
 
 {% block title %}{{ view.name }} of {{contentType.singularName}}{% endblock %}
 {% block pagetitle %}{{ view.name }} of {{contentType.singularName}}{% endblock %}
-{% block stylesheets %}
-
-<style>
-    <!--
-    ol.vertical li {
-        display: block;
-        margin: 7px;
-        padding: 7px;
-        border: 1px solid #cccccc;
-    /*     color: #0088cc; */
-    /*     background: #eeeeee; */
-    }
-    .mjs-nestedSortable-error {
-    	background: #fbe3e4;
-    	border-color: transparent;
-    }
-    -->
-</style>
-
-{% endblock %}
 
 {% block body %}
 
@@ -94,17 +74,6 @@ function addListeners(target){
 	});
 }
 
-function getAssocArray(input) {
-	var output = [];
-	for (var item in input){
-// 		console.log(input[item]);
-		output.push({
-			ouuid: input[item].id,
-			children: getAssocArray(input[item].children),
-		});
-	}
-	return output;
-}
 
 $(document).ready(function(){
 

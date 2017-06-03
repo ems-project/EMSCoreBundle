@@ -661,6 +661,14 @@ class DataController extends AppController
 		/** @var Revision $revision */
 		$revision = $repository->find($revisionId);
 		
+		
+		if(!empty($revision->getFinalizedBy())) {
+			//HAs been alredy finalized so, autosave is disabled
+			return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
+					'success' => false,
+			] );
+		}
+		
 		if( empty($request->request->get('revision')) || empty($request->request->get('revision')['allFieldsAreThere']) || !$request->request->get('revision')['allFieldsAreThere']) {
 			$this->addFlash('error', 'Incomplete request, some fields of the request are missing, please verifiy your server configuration. (i.e.: max_input_vars in php.ini)');
 			$this->addFlash('error', 'Your modification are not saved!');

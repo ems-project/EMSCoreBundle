@@ -76,6 +76,7 @@ class WysiwygController extends AppController
         		$form->get('config')->addError(New FormError($this->getTranslator()->trans('Format not valid: %msg%', ['%msg%'=>json_last_error_msg()], 'EMSCoreBundle')));
         	}
         	else {
+        		$profile->setOrderKey(100+count($this->getWysiwygProfileService()->getProfiles()));
         		$this->getWysiwygProfileService()->saveProfile($profile);
         		return $this->redirectToRoute('ems_wysiwyg_index');
         	}	 

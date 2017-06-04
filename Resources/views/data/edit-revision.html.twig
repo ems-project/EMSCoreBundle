@@ -396,43 +396,11 @@ function addEventListeners(target){
 		};
 
 
-		{% if app.user.wysiwygProfile == 'full' %}
-		ckconfig = {
-			//uiColor: 'grey',
-			plugins: 'adv_link,a11yhelp,basicstyles,bidi,blockquote,clipboard,colorbutton,colordialog,contextmenu,dialogadvtab,div,elementspath,enterkey,entities,filebrowser,find,floatingspace,font,format,horizontalrule,htmlwriter,image,iframe,indentlist,indentblock,justify,language,list,liststyle,magicline,maximize,newpage,pagebreak,pastefromword,pastetext,preview,print,removeformat,resize,save,scayt,selectall,showblocks,showborders,smiley,sourcearea,specialchar,stylescombo,tab,table,tabletools,templates,toolbar,undo,wsc,wysiwygarea',
-
-		    toolbarGroups: [
-		      { name: 'document',	   groups: [ 'mode', 'document', 'doctools' ] },
-		      { name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
-		      { name: 'editing',     groups: [ 'find', 'spellchecker' ] },//, 'selection'
-//			      { name: 'forms' },
-		      '/',
-		      { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
-		      { name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
-		      { name: 'links' },
-		      { name: 'insert' },
-		      '/',
-		      { name: 'styles' },
-		      { name: 'colors' },
-		      { name: 'tools' },
-		      { name: 'others' },
-		      { name: 'about' }
-		    ]
-		};	
-	{% elseif app.user.wysiwygProfile == 'light' %}
-		ckconfig = {
-			toolbar : [
-	           ['Styles','Format','Font','FontSize'],
-	           ['Bold','Italic'],
-	           ['NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
-	           ['Image','Table','-','Link']
-			        ],
-			removePlugins: 'link,about',
-			extraPlugins: 'adv_link,',
-		};	
-	{% elseif app.user.wysiwygProfile == 'custom' %}
-		ckconfig = {{ app.user.wysiwygOptions|raw }};
-	{% endif %}
+		{% if app.user.wysiwygProfile and app.user.wysiwygProfile.config %}
+			ckconfig = {{ app.user.wysiwygProfile.config|raw }};
+		{% elseif app.user.wysiwygOptions %}
+			ckconfig = {{ app.user.wysiwygOptions|raw }};
+		{% endif %}
 
 	
 		var height = $( this ).attr('data-height');

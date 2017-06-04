@@ -3,11 +3,11 @@
 
 	
 function profileChange() {
-	if($('#{{ form.vars.name }}_wysiwygProfile').val() == 'custom') {
-		$('#WysiwygOptionsSample,#{{ form.vars.name }}_wysiwygOptions').prop('disabled', false);
+	if($('#{{ form.vars.name }}_wysiwygProfile').val()) {
+		$('#{{ form.vars.name }}_wysiwygOptions,#WysiwygOptionsSample').prop('disabled', true);
 	}
 	else {
-		$('#{{ form.vars.name }}_wysiwygOptions,#WysiwygOptionsSample').prop('disabled', true);
+		$('#WysiwygOptionsSample,#{{ form.vars.name }}_wysiwygOptions').prop('disabled', false);
 	}
 }
 

@@ -72,16 +72,16 @@ interface User
     /**
      * Set wysiwygProfile
      *
-     * @param string $wysiwygProfile
+     * @param WysiwygProfile $wysiwygProfile
      *
      * @return User
      */
-    public function setWysiwygProfile($wysiwygProfile);
+    public function setWysiwygProfile(WysiwygProfile $wysiwygProfile = null);
 
     /**
      * Get wysiwygProfile
      *
-     * @return string
+     * @return WysiwygProfile
      */
     public function getWysiwygProfile();
 

@@ -15,6 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class UserController extends AppController
 {
@@ -97,14 +98,14 @@ class UserController extends AppController
 		->add('allowedToConfigureWysiwyg', CheckboxType::class, [
 				'required' => false,
 		])
-		->add('wysiwygProfile', ChoiceType::class, [
-				'required' => true,
-				'choices' => [
-					'Standard' => 'standard',
-					'Light' => 'light',
-					'Full' => 'full',
-					'Custom' => 'custom'
-				]
+		->add('wysiwygProfile', EntityType::class, [
+				'required' => false,
+				'label' => 'WYSIWYG profile',
+				'class' => 'EMSCoreBundle:WysiwygProfile',
+				'choice_label' => 'name',
+				'query_builder' => function (EntityRepository $er) {
+					return $er->createQueryBuilder('p')->orderBy('p.orderKey', 'ASC');
+				},
 		])
 		->add('wysiwygOptions', TextareaType::class, [
 				'required' => false,

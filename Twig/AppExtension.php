@@ -18,6 +18,9 @@ use EMS\CoreBundle\Form\DataField\DateRangeFieldType;
 use EMS\CoreBundle\Service\EnvironmentService;
 use Monolog\Logger;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Form\FormFactory;
+use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Entity\DataField;
 
 class AppExtension extends \Twig_Extension
 {
@@ -38,8 +41,10 @@ class AppExtension extends \Twig_Extension
 	private $environmentService;
 	/** @var Logger */
 	private $logger;
+	/**@var FormFactory*/
+	protected $formFactory;
 	
-	public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, Client $client, Router $router, $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, Logger $logger)
+	public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, Client $client, Router $router, $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, Logger $logger, FormFactory $formFactory)
 	{
 		$this->doctrine = $doctrine;
 		$this->authorizationChecker = $authorizationChecker;
@@ -51,6 +56,7 @@ class AppExtension extends \Twig_Extension
 		$this->objectChoiceListFactory = $objectChoiceListFactory;
 		$this->environmentService = $environmentService;
 		$this->logger = $logger;
+		$this->formFactory = $formFactory;
 		
 		//$this->twig->getExtension('Twig_Extension_Core')->setEscaper('csv', array($this, 'csvEscaper'));
 	}
@@ -89,13 +95,18 @@ class AppExtension extends \Twig_Extension
 				new \Twig_SimpleFilter('get_user', array($this, 'getUser')),			
 				new \Twig_SimpleFilter('displayname', array($this, 'displayname')),			
 				new \Twig_SimpleFilter('date_difference', array($this, 'dateDifference')),	
-				new \Twig_SimpleFilter('debug', array($this, 'debug')),			
-				new \Twig_SimpleFilter('search', array($this, 'search')),			
+				new \Twig_SimpleFilter('debug', array($this, 'debug')),
+				new \Twig_SimpleFilter('search', array($this, 'search')),
+				new \Twig_SimpleFilter('call_user_func', array($this, 'call_user_func')),		
 				
 				
 		);
 	}
-
+	
+	function call_user_func($function){
+		return call_user_func($function);
+	}
+	
 	function search(array $params){
 		return $this->client->search($params);
 	}

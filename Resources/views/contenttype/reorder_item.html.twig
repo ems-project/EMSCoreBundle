@@ -1,0 +1,16 @@
+{% for child in parent.children %}
+
+       	<li id="{{ child.id }}" class="{% if not (child.type~'::isContainer')|call_user_func %}mjs-nestedSortable-no-nesting{% endif %}">
+        		<div class="box-header">
+					<b>{{ child.name }}</b> {{ child.type }}
+        		</div>
+        		{% if (child.type~'::isContainer')|call_user_func and child.children|length > 0  %}
+        			<ol>
+    					{% include "EMSCoreBundle:contenttype:reorder_item.html.twig" with {
+                    		parent: child
+                    	} %}
+        			</ol>
+            	{% endif %}
+        	</li>
+
+{% endfor %}

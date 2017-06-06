@@ -35,6 +35,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
+use EMS\CoreBundle\Form\Form\ReorderType;
 
 /**
  * Operations on content types such as CRUD but alose rebuild index.
@@ -595,9 +596,36 @@ class ContentTypeController extends AppController {
 	}
 	
 	/**
+	 * Reorder a content type
+	 *
+	 * @param integer $id
+	 * @param Request $request
+	 * @Route("/content-type/reorder/{contentType}", name="ems_contenttype_reorder"))
+	 */
+	public function reorderAction(ContentType $contentType, Request $request) {
+		$data = [];
+		$form = $this->createForm(ReorderType::class, $data, [
+		]);
+		
+		$form->handleRequest($request);
+		
+		if ($form->isSubmitted()) {
+			$data = $form->getData();
+			$structure = json_decode($data['items'], true);
+			$this->getContentTypeService()->reorderFields($contentType, $structure);
+			return $this->redirectToRoute('contenttype.edit', ['id' => $contentType->getId()]);
+		}
+		
+		return $this->render ( 'EMSCoreBundle:contenttype:reorder.html.twig', [
+				'form' => $form->createView (),
+				'contentType' => $contentType,
+		] );
+	}
+	
+	/**
 	 * Edit a content type; generic information, but Nothing impacting its structure or it's mapping
 	 *
-	 * @param integer $id        	
+	 * @param integer $id
 	 * @param Request $request
 	 *        	@Route("/content-type/{id}", name="contenttype.edit"))
 	 */
@@ -635,7 +663,7 @@ class ContentTypeController extends AppController {
 		if ($form->isSubmitted () && $form->isValid ()) {
 			$contentType->getFieldType()->setName('source');
 			
-			if (array_key_exists ( 'save', $inputContentType ) || array_key_exists ( 'saveAndUpdateMapping', $inputContentType ) || array_key_exists ( 'saveAndClose', $inputContentType ) || array_key_exists ( 'saveAndEditStructure', $inputContentType )) {
+			if (array_key_exists ( 'save', $inputContentType ) || array_key_exists ( 'saveAndUpdateMapping', $inputContentType ) || array_key_exists ( 'saveAndClose', $inputContentType ) || array_key_exists ( 'saveAndEditStructure', $inputContentType ) || array_key_exists ( 'saveAndReorder', $inputContentType )) {
 // 				$contentType->getFieldType ()->updateOrderKeys ();
 // 				$contentType->setDirty ( $contentType->getEnvironment ()->getManaged () );
 
@@ -655,8 +683,13 @@ class ContentTypeController extends AppController {
 				}
 				else if (array_key_exists ( 'saveAndEditStructure', $inputContentType )){
 					return $this->redirectToRoute ( 'contenttype.structure', [
-						'id' => $id
-				] );					
+							'id' => $id
+					] );
+				}
+				else if (array_key_exists ( 'saveAndReorder', $inputContentType )){
+					return $this->redirectToRoute ( 'ems_contenttype_reorder', [
+							'contentType' => $id
+					] );
 				}
 				return $this->redirectToRoute ( 'contenttype.edit', [
 						'id' => $id
@@ -749,11 +782,11 @@ class ContentTypeController extends AppController {
 		if ($form->isSubmitted () && $form->isValid ()) {
 			$contentType->getFieldType()->setName('source');
 			
-			if (array_key_exists ( 'save', $inputContentType ) || array_key_exists ( 'saveAndClose', $inputContentType )) {
+			if (array_key_exists ( 'save', $inputContentType ) || array_key_exists ( 'saveAndClose', $inputContentType ) || array_key_exists ( 'saveAndReorder', $inputContentType )) {
 				$contentType->getFieldType ()->updateOrderKeys ();
 				$contentType->setDirty ( $contentType->getEnvironment ()->getManaged () );
 				
-				if(array_key_exists ( 'saveAndClose', $inputContentType ) && $contentType->getDirty()){
+				if((array_key_exists ( 'saveAndClose', $inputContentType ) ||  array_key_exists ( 'saveAndReorder', $inputContentType )) && $contentType->getDirty()){
 					$this->getContentTypeService()->updateMapping($contentType);					
 				}
 				
@@ -764,8 +797,13 @@ class ContentTypeController extends AppController {
 				}
 				if (array_key_exists ( 'saveAndClose', $inputContentType )){
 					return $this->redirectToRoute ( 'contenttype.edit', [
-						'id' => $id
-				] );					
+							'id' => $id
+					]);
+				}
+				if (array_key_exists ( 'saveAndReorder', $inputContentType )){
+					return $this->redirectToRoute ( 'ems_contenttype_reorder', [
+							'contentType' => $id
+					]);
 				}
 				return $this->redirectToRoute ( 'contenttype.structure', [
 						'id' => $id

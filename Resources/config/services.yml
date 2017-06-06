@@ -6,7 +6,7 @@ parameters:
 services:
     app.twig_extension:
         class: EMS\CoreBundle\Twig\AppExtension
-        arguments: ['@doctrine', '@security.authorization_checker', '@ems.service.user', '@ems.service.contenttype', '@app.elasticsearch', '@router', '@twig', '@ems.form.factories.objectChoiceListFactory', '@ems.service.environment', '@logger' ]
+        arguments: ['@doctrine', '@security.authorization_checker', '@ems.service.user', '@ems.service.contenttype', '@app.elasticsearch', '@router', '@twig', '@ems.form.factories.objectChoiceListFactory', '@ems.service.environment', '@logger', '@form.factory' ]
         #public: false
         tags:
             - { name: twig.extension, priority: -2000 }
@@ -359,7 +359,7 @@ services:
         arguments: ['@doctrine', '@session', '@ems.service.user', '@security.authorization_checker']
     ems.service.contenttype:
         class: EMS\CoreBundle\Service\ContentTypeService
-        arguments: ['@doctrine', '@session', '@ems.service.mapping', '@app.elasticsearch', '@ems.service.environment', '@form.registry', '%ems_core.instance_id%']
+        arguments: ['@doctrine', '@session', '@ems.service.mapping', '@app.elasticsearch', '@ems.service.environment', '@form.registry', '@translator', '%ems_core.instance_id%']
     ems.service.user:
         class: EMS\CoreBundle\Service\UserService
         arguments: ['@doctrine', '@session', '@security.token_storage', '%security.role_hierarchy.roles%']

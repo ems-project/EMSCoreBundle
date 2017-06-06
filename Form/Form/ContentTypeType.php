@@ -185,11 +185,17 @@ class ContentTypeType extends AbstractType {
 			$builder->add ( 'editRole', RolePickerType::class);
 			$builder->add ( 'viewRole', RolePickerType::class);
 			$builder->add ( 'orderField');
-			$builder->add ( 'saveAndEditStructure', SubmitEmsType::class, [ 
-					'attr' => [ 
-							'class' => 'btn-primary btn-sm ' 
+			$builder->add ( 'saveAndEditStructure', SubmitEmsType::class, [
+					'attr' => [
+							'class' => 'btn-primary btn-sm '
 					],
 					'icon' => 'fa fa-save'
+			] );
+			$builder->add ( 'saveAndReorder', SubmitEmsType::class, [
+					'attr' => [
+							'class' => 'btn-primary btn-sm '
+					],
+					'icon' => 'fa fa-reorder'
 			] );
 		}
 		

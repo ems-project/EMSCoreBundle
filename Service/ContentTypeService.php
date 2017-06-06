@@ -9,6 +9,8 @@ use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\BadRequest400Exception;
 use Symfony\Component\Form\FormRegistryInterface;
 use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\FieldType;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class ContentTypeService {
 	/**@var Registry $doctrine */
@@ -28,6 +30,9 @@ class ContentTypeService {
 	/**@var FormRegistryInterface $formRegistry*/
 	private $formRegistry;
 	
+	/**@var TranslatorInterface $translator*/
+	private $translator;
+	
 	private $instanceId;
 	
 	protected $orderedContentTypes;
@@ -35,7 +40,7 @@ class ContentTypeService {
 	
 	
 	
-	public function __construct(Registry $doctrine, Session $session, Mapping $mappingService, Client $client, EnvironmentService $environmentService, FormRegistryInterface $formRegistry, $instanceId)
+	public function __construct(Registry $doctrine, Session $session, Mapping $mappingService, Client $client, EnvironmentService $environmentService, FormRegistryInterface $formRegistry, TranslatorInterface $translator, $instanceId)
 	{
 		$this->doctrine = $doctrine;
 		$this->session = $session;
@@ -46,6 +51,7 @@ class ContentTypeService {
 		$this->environmentService = $environmentService;
 		$this->formRegistry = $formRegistry;
 		$this->instanceId = $instanceId;
+		$this->translator= $translator;
 	}
 	
 	private function loadEnvironment(){
@@ -63,6 +69,44 @@ class ContentTypeService {
 		$em = $this->doctrine->getManager();
 		$em->persist($contentType);
 		$em->flush();
+	}
+	
+	private function listAllFields(FieldType $fieldType){
+		$out = [];
+		foreach ($fieldType->getChildren() as $child){
+			$out = array_merge($out, $this->listAllFields($child));
+		}
+		$out['key_'.$fieldType->getId()] = $fieldType;
+		return $out;
+	}
+	
+	private function reorderFieldsRecu(FieldType $fieldType, array $newStructure, array $ids){
+		
+		$fieldType->getChildren()->clear();
+		foreach ($newStructure as $key => $item){
+			if(array_key_exists('key_'.$item['ouuid'], $ids)){
+				$fieldType->getChildren()->add($ids['key_'.$item['ouuid']]);
+				$ids['key_'.$item['ouuid']]->setParent($fieldType);
+				$ids['key_'.$item['ouuid']]->setOrderKey($key);
+				$this->reorderFieldsRecu($ids['key_'.$item['ouuid']], $item['children'], $ids);
+			}
+			else {
+				$this->session->getFlashBag()->add('warning', $this->translator->trans('Field %id% not found and ignored', ['%id%'=>$item['ouuid']]));
+			}
+		}
+	}
+	
+	public function reorderFields(ContentType $contentType, array $newStructure){
+		$em = $this->doctrine->getManager();
+		
+		$ids = $this->listAllFields($contentType->getFieldType());
+		$this->reorderFieldsRecu($contentType->getFieldType(), $newStructure, $ids);
+		
+		$em->persist($contentType);
+		$em->flush();
+		
+		$this->session->getFlashBag()->add('notice', $this->translator->trans('Content type "%name% has been reordered', ['%name%'=>$contentType->getSingularName()]));
+		
 	}
 	
 	public function updateMapping(ContentType $contentType, $envs=false){

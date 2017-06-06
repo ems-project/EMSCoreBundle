@@ -9,45 +9,47 @@
 
 
 <div class="row">
-    <div class="col-md-12">
+	<div class="col-md-12">
 		<div class="box box-solid">
-    		<div class="box-header with-border">
-    			<h2 class="box-title">{{ 'Reorganise: '|trans }}
-    				<i class="{% if contentType.icon %}{{ contentType.icon }} {% else %} fa fa-question {% endif %} "></i>
-    			    {% if (contentType.labelField) and (attribute(parent._source, contentType.labelField)  is defined ) %}
-                		{{ attribute(parent._source, contentType.labelField) }}
-                	{% else %}
-                		{{ parent._id }}
-                	{% endif %}
-                </h2>
-    		</div>
-    		<div class="box-body no-padding">
-    			<ol class="sortable vertical" id="root-list">
+			<div class="box-header with-border">
+				<h2 class="box-title">
+					{{ 'Reorganise: '|trans }}
+					<i
+						class="{% if contentType.icon %}{{ contentType.icon }} {% else %} fa fa-question {% endif %} "></i>
+					{% if (contentType.labelField) and (attribute(parent._source, contentType.labelField)  is defined ) %}
+					{{ attribute(parent._source, contentType.labelField) }}
+					{% else %}
+					{{ parent._id }}
+					{% endif %}
+				</h2>
+			</div>
+			<div class="box-body no-padding">
+				<ol class="sortable vertical" id="root-list">
 					{% include "EMSCoreBundle:view:custom/hierarchical_item.html.twig" with {
                 		parent: parent._source,
                 		view: view,
                 	} %}
-            	</ol>
-    		</div>
-    		<!-- /.box-body -->
-		    {{ form_start(form) }}
-		    <div>
-		    	{% if form.addItem is defined  %}
-            		<div class="box-footer">
-        			    {{ form_row(form.addItem) }}
-            		</div>
-            		<!-- /.box-footer -->
-            	{% endif %}
-        		<div class="box-footer">
-    				<div class="btn-group">
-    				    {{ form_widget(form.reorder) }}
-    				</div>
-        		</div>
-        	</div>
-		    {{ form_end(form) }}
-    		<!-- /.box-footer -->
-    	</div>
-</div>
+				</ol>
+			</div>
+			<!-- /.box-body -->
+			{{ form_start(form) }}
+			<div>
+				{% if form.addItem is defined  %}
+				<div class="box-footer">
+					{{ form_row(form.addItem) }}
+				</div>
+				<!-- /.box-footer -->
+				{% endif %}
+				<div class="box-footer">
+					<div class="btn-group">
+						{{ form_widget(form.reorder) }}
+					</div>
+				</div>
+			</div>
+			{{ form_end(form) }}
+			<!-- /.box-footer -->
+		</div>
+	</div>
 </div>
 
 

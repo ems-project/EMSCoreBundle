@@ -33,12 +33,18 @@ class ContentTypeStructureType extends AbstractType {
 						'class' => 'btn-primary btn-sm ' 
 				],
 				'icon' => 'fa fa-save'
-		] );		
-		$builder->add ( 'saveAndClose', SubmitEmsType::class, [ 
-				'attr' => [ 
-						'class' => 'btn-primary btn-sm ' 
+		] );
+		$builder->add ( 'saveAndClose', SubmitEmsType::class, [
+				'attr' => [
+						'class' => 'btn-primary btn-sm '
 				],
 				'icon' => 'fa fa-save'
+		] );
+		$builder->add ( 'saveAndReorder', SubmitEmsType::class, [
+				'attr' => [
+						'class' => 'btn-primary btn-sm '
+				],
+				'icon' => 'fa fa-reorder'
 		] );
 		
 		return parent::buildForm($builder, $options);

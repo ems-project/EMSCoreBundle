@@ -160,6 +160,7 @@ class MigrateCommand extends ContainerAwareCommand
 					$newRevision->setLockBy('SYSTEM_MIGRATE');
 					$newRevision->setLockUntil($until);
 						
+					/**@var Revision $currentRevision*/
 					$currentRevision = $revisionRepository->getCurrentRevision($contentTypeTo, $value['_id']);
 					if($currentRevision) {
 						//If there is a current revision, datas in fields that are protected against migration must not be overridden
@@ -172,6 +173,10 @@ class MigrateCommand extends ContainerAwareCommand
 						//We serialize the new object
 						$objectArray = $this->mapping->dataFieldToArray($newRevision->getDataField());
 						$newRevision->setRawData($objectArray);
+						
+						$currentRevision->setEndTime($now);
+						$currentRevision->removeEnvironment($contentTypeTo->getEnvironment());
+						$em->persist($currentRevision);
 					}	
 					else if($input->getOption('strip')){
 						$newRevision->setRawData([]);

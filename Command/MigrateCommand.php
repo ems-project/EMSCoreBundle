@@ -176,6 +176,8 @@ class MigrateCommand extends ContainerAwareCommand
 						
 						$currentRevision->setEndTime($now);
 						$currentRevision->removeEnvironment($contentTypeTo->getEnvironment());
+						$currentRevision->setLockBy('SYSTEM_MIGRATE');
+						$currentRevision->setLockUntil($until);
 						$em->persist($currentRevision);
 					}	
 					else if($input->getOption('strip')){

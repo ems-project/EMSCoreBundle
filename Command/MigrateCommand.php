@@ -60,11 +60,6 @@ class MigrateCommand extends ContainerAwareCommand
                 InputArgument::REQUIRED,
                 'Elasticsearch index where to find ContentType objects as new source'
             )
-            ->addArgument(
-                'mode',
-                InputArgument::OPTIONAL,
-                'Migration mode: (E)rase, (M)erge'
-            )
             ->addOption(
                 'force',
                 null,
@@ -72,10 +67,10 @@ class MigrateCommand extends ContainerAwareCommand
                 'Allow to import from the default environment'
             )
             ->addOption(
-                'strip',
+                'raw',
                 null,
                 InputOption::VALUE_NONE,
-                'Strip unknowed fields'
+                'The content will be imported as is. Without any field validation, data stripping or field protection'
             )
         ;
     }
@@ -87,11 +82,6 @@ class MigrateCommand extends ContainerAwareCommand
     	$contentTypeNameFrom = $input->getArgument('contentTypeNameFrom');
     	$contentTypeNameTo = $input->getArgument('contentTypeNameTo');
     	$elasticsearchIndex = $input->getArgument('elasticsearchIndex');
-    	if(null !== $input->getArgument('mode') && ($input->getArgument('mode')[0] == "M" || $input->getArgument('mode')[0] == "m")) {
-    		$mode = "merge";
-    	} else {
-    		$mode = "earse";
-    	}
     	
 		/** @var RevisionRepository $revisionRepository */
 		$revisionRepository = $em->getRepository( 'EMSCoreBundle:Revision' );
@@ -111,14 +101,8 @@ class MigrateCommand extends ContainerAwareCommand
 			exit;
 		}
 		if(!$input->getOption('force') && strcmp($contentTypeTo->getEnvironment()->getAlias(), $elasticsearchIndex) === 0 && strcmp($contentTypeNameFrom, $contentTypeNameTo) === 0) {
-			$output->writeln("<error>You can not import a content type on himself</error>");
+			$output->writeln("<error>You can not import a content type on himself with the --force option</error>");
 			exit;
-		}
-		
-		//Delete ContentType if erase
-		if($mode == "erase") {
-			$revisionRepository->deleteRevisions();
-			$revisionRepository->clear();
 		}
 		
 		$arrayElasticsearchIndex = $this->client->search([
@@ -155,42 +139,50 @@ class MigrateCommand extends ContainerAwareCommand
 					$newRevision->setOuuid($value['_id']);
 					$newRevision->setStartTime($now);
 					$newRevision->setEndTime(null);
-					$newRevision->setDeleted(0);
-					$newRevision->setDraft(1);
+					$newRevision->setDeleted(false);
+					$newRevision->setDraft(true);
 					$newRevision->setLockBy('SYSTEM_MIGRATE');
 					$newRevision->setLockUntil($until);
 						
 					/**@var Revision $currentRevision*/
 					$currentRevision = $revisionRepository->getCurrentRevision($contentTypeTo, $value['_id']);
 					if($currentRevision) {
-						//If there is a current revision, datas in fields that are protected against migration must not be overridden
-						//So we load the datas from the current revision into the next revision
-						$newRevision->setRawData($currentRevision->getRawData());
-						//We build the new revision object
-						$this->dataService->loadDataStructure($newRevision);
-						//We update the new revision object with the new datas. Here, the protected fields are not overridden.
-						$newRevision->getDataField()->updateDataValue($value['_source'], true);//isMigrate=true
-						//We serialize the new object
-						$objectArray = $this->mapping->dataFieldToArray($newRevision->getDataField());
-						$newRevision->setRawData($objectArray);
+						if($input->getOption('raw')){
+							$newRevision->setRawData($value['_source']);
+							$objectArray = $value['_source'];
+						}
+						else {
+							//If there is a current revision, datas in fields that are protected against migration must not be overridden
+							//So we load the datas from the current revision into the next revision
+							$newRevision->setRawData($currentRevision->getRawData());
+							//We build the new revision object
+							$this->dataService->loadDataStructure($newRevision);
+							//We update the new revision object with the new datas. Here, the protected fields are not overridden.
+							$newRevision->getDataField()->updateDataValue($value['_source'], true);//isMigrate=true
+							//We serialize the new object
+							$objectArray = $this->mapping->dataFieldToArray($newRevision->getDataField());
+							$newRevision->setRawData($objectArray);
+						}
 						
 						$currentRevision->setEndTime($now);
+						$currentRevision->setDraft(false);
+						$currentRevision->setAutoSave(null);
 						$currentRevision->removeEnvironment($contentTypeTo->getEnvironment());
 						$currentRevision->setLockBy('SYSTEM_MIGRATE');
 						$currentRevision->setLockUntil($until);
 						$em->persist($currentRevision);
 					}	
-					else if($input->getOption('strip')){
+					else if($input->getOption('raw')){
+						$newRevision->setRawData($value['_source']);
+						$objectArray = $value['_source'];
+					}
+					else{
 						$newRevision->setRawData([]);
 						$this->dataService->loadDataStructure($newRevision);
 						$newRevision->getDataField()->updateDataValue($value['_source'], true);
 						//We serialize the new object
 						$objectArray = $this->mapping->dataFieldToArray($newRevision->getDataField());
 						$newRevision->setRawData($objectArray);
-					}
-					else{
-						$newRevision->setRawData($value['_source']);
-						$objectArray = $value['_source'];
 					}
 					
 					$this->dataService->setMetaFields($newRevision);

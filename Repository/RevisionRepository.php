@@ -306,12 +306,15 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
 	
 	public function publishRevision(Revision $revision) {
 		$qb = $this->createQueryBuilder('r')->update()
-		->set('r.draft', 0)
+		->set('r.draft', ':false')
 		->set('r.lockBy', "null")
 		->set('r.lockUntil', "null")
 		->set('r.endTime', "null")
-		->where('r.id = ?1')
-		->setParameter(1, $revision->getId());
+		->where('r.id = :id')
+		->setParameters([
+				'false' => false,
+				'id' => $revision->getId()
+			]);
 		
 		return $qb->getQuery()->execute();
 		

@@ -53,6 +53,7 @@ class CollectionFieldType extends DataFieldType {
 				$sourceArray = [$sourceArray];
 			}
 			
+			$dataField->getChildren()->clear();
 			foreach ($sourceArray as $idx => $item){
 				$colItem = new DataField();
 				$colItem->setOrderKey($idx);

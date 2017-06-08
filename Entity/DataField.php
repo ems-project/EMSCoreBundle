@@ -10,6 +10,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * DataField
@@ -36,6 +37,8 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     private $parent;
     
     /**
+     * 
+     * @var Collection
      */
     private $children;
 
@@ -802,7 +805,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Get children
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getChildren()
     {

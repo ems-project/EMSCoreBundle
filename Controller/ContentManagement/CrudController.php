@@ -16,8 +16,8 @@ class CrudController extends AppController
 {
 	
 	/**
-	 * @Route("/api/{name}/create/{ouuid}", defaults={"ouuid": null, "_format": "json"})
-	 * @Route("/api/{name}/draft/{ouuid}", defaults={"ouuid": null, "_format": "json"})
+	 * @Route("/api/data/{name}/create/{ouuid}", defaults={"ouuid": null, "_format": "json"})
+	 * @Route("/api/data/{name}/draft/{ouuid}", defaults={"ouuid": null, "_format": "json"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      * @Method({"POST"})
 	 */
@@ -59,8 +59,8 @@ class CrudController extends AppController
 	}
 	
 	/**
-	 * @Route("/api/{name}/{ouuid}", defaults={"ouuid": null, "_format": "json"})
-	 * @Route("/api/{name}/get/{ouuid}", defaults={"ouuid": null, "_format": "json"})
+	 * @Route("/api/data/{name}/{ouuid}", defaults={"ouuid": null, "_format": "json"})
+	 * @Route("/api/data/{name}/get/{ouuid}", defaults={"ouuid": null, "_format": "json"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      * @Method({"GET"})
 	 */
@@ -95,7 +95,7 @@ class CrudController extends AppController
 	}
 	
 	/**
-	 * @Route("/api/{name}/finalize/{id}", defaults={"_format": "json"})
+	 * @Route("/api/data/{name}/finalize/{id}", defaults={"_format": "json"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      * @Method({"POST"})
 	 */
@@ -127,7 +127,7 @@ class CrudController extends AppController
 	}
 	
 	/**
-	 * @Route("/api/{name}/discard/{id}", defaults={"_format": "json"})
+	 * @Route("/api/data/{name}/discard/{id}", defaults={"_format": "json"})
 	 * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
 	 * @Method({"POST"})
 	 */
@@ -163,7 +163,7 @@ class CrudController extends AppController
 	}
 	
 	/**
-	 * @Route("/api/{name}/delete/{ouuid}", defaults={"_format": "json"})
+	 * @Route("/api/data/{name}/delete/{ouuid}", defaults={"_format": "json"})
 	 * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
 	 * @Method({"POST"})
 	 */
@@ -200,7 +200,7 @@ class CrudController extends AppController
 	}
 	
 	/**
-	 * @Route("/api/{name}/replace/{ouuid}", defaults={"_format": "json"})
+	 * @Route("/api/data/{name}/replace/{ouuid}", defaults={"_format": "json"})
 	 * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
 	 * @Method({"POST"})
 	 */
@@ -243,7 +243,7 @@ class CrudController extends AppController
 	}
 	
 	/**
-	 * @Route("/api/{name}/merge/{ouuid}", defaults={"_format": "json"})
+	 * @Route("/api/data/{name}/merge/{ouuid}", defaults={"_format": "json"})
 	 * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
 	 * @Method({"POST"})
 	 */
@@ -292,6 +292,18 @@ class CrudController extends AppController
 	public function testAction(Request $request) {
 		return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
 				'success' => true,
+		]);
+	}
+	
+	/**
+	 * @Route("/api/meta/{name}", defaults={"_format": "json"})
+	 * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
+	 * @Method({"GET"})
+	 */
+	public function getContentTypeInfo(ContentType $contentType) {
+		return $this->render( 'EMSCoreBundle:ajax:contenttype_info.json.twig', [
+				'success' => true,
+				'contentType' => $contentType,
 		]);
 	}
 }

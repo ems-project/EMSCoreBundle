@@ -18,6 +18,7 @@ class FileController extends AppController
 	
 	/**
 	 * @Route("/data/file/view/{sha1}" , name="ems.file.view")
+	 * @Route("/api/file/view/{sha1}" , name="ems.api.file.view")
      * @Method({"GET"})
 	 */
 	public function viewFileAction($sha1, Request $request) {
@@ -26,6 +27,7 @@ class FileController extends AppController
 	
 	/**
 	 * @Route("/data/file/{sha1}" , name="file.download")
+	 * @Route("/api/file/{sha1}" , name="file.api.download")
      * @Method({"GET"})
 	 */
 	public function downloadFileAction($sha1, Request $request) {
@@ -53,6 +55,7 @@ class FileController extends AppController
 	
 	/**
 	 * @Route("/data/file/init-upload/{sha1}/{size}" , name="file.init-upload")
+	 * @Route("/api/file/init-upload/{sha1}/{size}" , name="file.api.init-upload")
      * @Method({"POST"})
 	 */
 	public function initUploadFileAction($sha1, $size, Request $request)
@@ -82,6 +85,7 @@ class FileController extends AppController
 	
 	/**
 	 * @Route("/data/file/upload-chunk/{sha1}", name="file.uploadchunk")
+	 * @Route("/api/file/upload-chunk/{sha1}", name="file.api.uploadchunk")
 	 */
 	public function uploadChunkAction($sha1, Request $request)
 	{

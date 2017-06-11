@@ -380,9 +380,11 @@ class DataService
 								// echo "ugly, error checking signature\n";
 							}
 						}
-						else if ($this->private_key){
+						else{
 							$data = json_encode($indexedItem);
-							$this->session->getFlashBag()->add('warning', 'Revision not signed in '.$environment->getName().' for '.$revision->getContentType()->getName().':'.$revision->getOuuid());
+							if ($this->private_key){
+								$this->session->getFlashBag()->add('warning', 'Revision not signed in '.$environment->getName().' for '.$revision->getContentType()->getName().':'.$revision->getOuuid());								
+							}
 						}
 						
 						if(sha1($data) != $revision->getSha1()){

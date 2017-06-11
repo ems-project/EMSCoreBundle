@@ -421,7 +421,7 @@ services:
             -  { name: console.command }
     ems.environment.reindex:
         class: EMS\CoreBundle\Command\ReindexCommand
-        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.mapping', '@service_container', '%ems_core.instance_id%', '@session']
+        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.mapping', '@service_container', '%ems_core.instance_id%', '@session', '@ems.service.data']
         tags:
             -  { name: console.command }
     ems.contenttype.delete:

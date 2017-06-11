@@ -109,8 +109,13 @@ class ReindexCommand extends EmsCommand
 						'body' => $this->dataService->sign($revision),
 					];
 					
-					$em->persist($revision);
-					$sm->flush();
+					try{
+						$em->persist($revision);
+						$em->flush();						
+					}
+					catch (\Exception $e){
+						
+					}
 					
 					if($revision->getContentType()->getHavePipelines()){
 						$config['pipeline'] = $this->instanceId.$revision->getContentType()->getName();

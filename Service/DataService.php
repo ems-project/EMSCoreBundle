@@ -346,7 +346,7 @@ class DataService
 	public function testIntegrityInIndexes(Revision $revision){
 		
 		if(empty($revision->getSha1())){
-			$this->session->getFlashBag()->add('notice', 'Sha1 never computed for this revision');
+			$this->session->getFlashBag()->add('notice', 'Sha1 never computed for this revision for '.$revision->getContentType()->getName().':'.$revision->getOuuid());
 		}
 		else {
 			//test integrity
@@ -359,7 +359,7 @@ class DataService
 					])['_source'];
 					if(isset($indexedItem['_sha1'])){
 						if($indexedItem['_sha1'] != $revision->getSha1()) {
-							$this->session->getFlashBag()->add('warning', 'Sha1 mismatch in '.$environment->getName());
+							$this->session->getFlashBag()->add('warning', 'Sha1 mismatch in '.$environment->getName().' for '.$revision->getContentType()->getName().':'.$revision->getOuuid());
 						}
 						unset($indexedItem['_sha1']);
 						

@@ -103,7 +103,7 @@ class EnvironmentController extends AppController {
 									'id' => $revision->getOuuid(),
 									'index' => $environmentService->getAliasByName($env)->getAlias(),
 									'type' => $revision->getContentType()->getName(),
-									'body' => $revision->getRawData()
+									'body' => $this->getDataService()->sign($revision),
 							]);
 							
 						}
@@ -593,18 +593,24 @@ class EnvironmentController extends AppController {
 	 * @param unknown $alias
 	 */
 	private function reindexAll(Environment $environment, $alias){
+		
+		/** @var EntityManager $em */
+		$em = $this->getDoctrine()->getManager();
 		/** @var  Client $client */
 		$client = $this->getElasticsearch();
 		/** @var \EMS\CoreBundle\Entity\Revision $revision */
 		foreach ($environment->getRevisions() as $revision) {
 			if(!$revision->getDeleted()){
 				$objectArray = $this->get('ems.service.mapping')->dataFieldToArray ($revision->getDataField());
+				$revision->setRawData($objectArray);
 				$status = $client->index([
 						'index' => $alias,
 						'id' => $revision->getOuuid(),
 						'type' => $revision->getContentType()->getName(),
-						'body' => $objectArray
-				]);				
+						'body' => $this->getDataService()->sign($revision)
+				]);		
+				$em->persist($revision);
+				$em->flush();
 			}
 		}
 			

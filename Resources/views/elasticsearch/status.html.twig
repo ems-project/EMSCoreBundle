@@ -15,7 +15,7 @@
 
 {% block body %}
 <div class="row">
-	<div class="col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
+	<div class="col-md-6 col-lg-4 col-lg-offset-2">
 		<div class="box box box-solid">
 			<div class="box-header with-border bg-{{ status.status }}">
 				<h4 class="box-title">
@@ -60,6 +60,60 @@
 					<li class="list-group-item">Active shards percent as number <span
 						class=" badge bg-{{ status.status }}">{{
 							status.active_shards_percent_as_number }}</span></li>
+
+				</ul>
+			</div>
+		</div>
+
+	</div>
+	<div class="col-md-6 col-lg-4">
+		<div class="box box box-solid">
+			<div class="box-header with-border bg-{% if certificate %}green{% else %}red{% endif %}">
+				<h4 class="box-title">
+						<i class="icon fa fa-key fa-2x"></i>
+						{{ 'Certificate\'s information'|trans }}</strong>
+				</h4>
+			</div>
+			<div class="box-body ">
+				<ul class="list-group">
+                    {% if certificate %}
+    					<li class="list-group-item">{{ 'Bits'|trans }} <span
+    						class=" badge bg-green">{{ certificate.bits }}</span></li>
+    					<li class="list-group-item"><a href="{{ path('ems_get_public_key') }}">{{ 'Public key'|trans }}</a>
+    						<pre>{{ certificate.key }}</pre>
+    					</li>
+                    {% else %}
+    					<li class="list-group-item">{{ 'Certificate is missing'|trans }}</li>
+                    {% endif %}
+{# 					<li class="list-group-item">Active primary shards <span#}
+{# 						class=" badge bg-{{ status.status }}">{{#}
+{# 							status.active_primary_shards }}</span></li>#}
+{# 					<li class="list-group-item">Active shards <span#}
+{# 						class=" badge bg-{{ status.status }}">{{ status.active_shards }}</span></li>#}
+{# 					<li class="list-group-item">Relocating shards <span#}
+{# 						class=" badge bg-{{ status.status }}">{{ status.relocating_shards#}
+{# 							}}</span></li>#}
+{# 					<li class="list-group-item">Initializing shards <span#}
+{# 						class=" badge bg-{{ status.status }}">{{#}
+{# 							status.initializing_shards }}</span></li>#}
+{# 					<li class="list-group-item">Unassigned shards <span#}
+{# 						class=" badge bg-{{ status.status }}">{{ status.unassigned_shards#}
+{# 							}}</span></li>#}
+{# 					<li class="list-group-item">Delayed unassigned shards <span#}
+{# 						class=" badge bg-{{ status.status }}">{{#}
+{# 							status.delayed_unassigned_shards }}</span></li>#}
+{# 					<li class="list-group-item">Number of pending tasks <span#}
+{# 						class=" badge bg-{{ status.status }}">{{#}
+{# 							status.number_of_pending_tasks }}</span></li>#}
+{# 					<li class="list-group-item">Number of in flight fetch <span#}
+{# 						class=" badge bg-{{ status.status }}">{{#}
+{# 							status.number_of_in_flight_fetch }}</span></li>#}
+{# 					<li class="list-group-item">Task max waiting in queue <span#}
+{# 						class=" badge bg-{{ status.status }}">{{#}
+{# 							status.task_max_waiting_in_queue_millis }} ms</span></li>#}
+{# 					<li class="list-group-item">Active shards percent as number <span#}
+{# 						class=" badge bg-{{ status.status }}">{{#}
+{# 							status.active_shards_percent_as_number }}</span></li>#}
 
 				</ul>
 			</div>

@@ -47,6 +47,9 @@ class ContentTypeController extends AppController {
 	
 	
 	public static function isValidName($name) {
+		if(in_array($name, ['_sha1', '_signature'])){
+			return false;
+		}
 		return preg_match('/^[a-z][a-z0-9\-_]*$/i', $name) && strlen($name) <= 100;
 	}
 	
@@ -436,7 +439,7 @@ class ContentTypeController extends AppController {
 					return '_ems_'.$child->getName().'_modal_options';
 				}
 				else {
-					$this->addFlash('error', 'The field\'s name is not valid (format: [a-z][a-z0-9_-]*)');
+					$this->addFlash('error', 'The field\'s name is not valid (format: [a-z][a-z0-9_-]*), _sha1 and _signature are reserved.');
 				}
 			}
 			else {

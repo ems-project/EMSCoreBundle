@@ -37,6 +37,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpFoundation\Response;
 
 class DataController extends AppController
 {
@@ -172,6 +173,17 @@ class DataController extends AppController
 	}
 	
 	/**
+	 * @Route("/public-key" , name="ems_get_public_key")
+	 */
+	public function publicKey(Request $request)
+	{
+		$response= new Response();
+		$response->headers->set('Content-Type', 'text/plain');
+		$response->setContent($this->getDataService()->getPublicKey());
+		return $response;
+	}
+		
+	/**
 	 * @Route("/data/revisions/{type}:{ouuid}/{revisionId}", defaults={"revisionId": false} , name="data.revisions")
 	 */
 	public function revisionsDataAction($type, $ouuid, $revisionId, Request $request)
@@ -221,6 +233,9 @@ class DataController extends AppController
 		if(!$revision || $revision->getOuuid() != $ouuid || $revision->getContentType() != $contentType || $revision->getDeleted()) {
 			throw new NotFoundHttpException('Revision not found');
 		}
+		
+		$this->getDataService()->testIntegrityInIndexes($revision);
+		
 		
 		$this->loadAutoSavedVersion($revision);
 		
@@ -491,6 +506,8 @@ class DataController extends AppController
 			$this->getDataService()->loadDataStructure($revision);
 			
 			$objectArray = $this->get('ems.service.mapping')->dataFieldToArray ($revision->getDataField());
+			$revision->setRawData($objectArray);
+			$objectArray = $this->getDataService()->sign($revision);
 			/** @var \EMS\CoreBundle\Entity\Environment $environment */
 			foreach ($revision->getEnvironments() as $environment ){
 				$status = $client->index([
@@ -502,6 +519,8 @@ class DataController extends AppController
 
 				$this->addFlash('notice', 'Reindexed in '.$environment->getName());
 			}
+			$em->persist($revision);
+			$em->flush();
 		}
 		catch (\Exception $e){
 			$this->addFlash('warning', 'Reindexing has failed: '.$e->getMessage());

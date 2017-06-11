@@ -191,7 +191,7 @@ class MigrateCommand extends ContainerAwareCommand
 							'index' => $contentTypeTo->getEnvironment()->getAlias(),
 							'type' => $contentTypeNameTo,
 							'id' => $value['_id'],
-							'body' => $objectArray,
+							'body' => $this->dataService->sign($newRevision),
 					]);
 					//TODO: Test if client->index OK
 					$em->persist($newRevision);

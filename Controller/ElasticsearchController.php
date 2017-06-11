@@ -110,6 +110,7 @@ class ElasticsearchController extends AppController
 		try {
 			$client = $this->getElasticsearch();
 			$status = $client->cluster()->health();
+			$certificatInfo = $this->getDataService()->getCertificateInfo();
 			
 			if('html' === $_format && 'green' !== $status['status']){
 				if('red' === $status['status']){
@@ -127,7 +128,8 @@ class ElasticsearchController extends AppController
 			}
 			
 			return $this->render( 'EMSCoreBundle:elasticsearch:status.'.$_format.'.twig', [
-					'status' => $status
+					'status' => $status,
+					'certificate' => $certificatInfo,
 			] );			
 		}
 		catch (\Elasticsearch\Common\Exceptions\NoNodesAvailableException $e){

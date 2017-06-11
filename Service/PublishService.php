@@ -172,7 +172,7 @@ class PublishService
 				'id' => $revision->getOuuid(),
 				'index' => $environment->getAlias(),
 				'type' => $revision->getContentType()->getName(),
-				'body' => $revision->getRawData(),
+				'body' => $this->dataService->sign($revision),
 		]);
 		
 		if(!$already) {

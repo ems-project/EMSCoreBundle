@@ -35,6 +35,7 @@ class Configuration implements ConfigurationInterface
 	const USER_REGISTRATION_ROUTE = 'fos_user_registration_register';
 	const ADD_USER_ROUTE = 'user.add';
 	const APPLICATION_MENU_CONTROLLER = null;
+	const PRIVATE_KEY = null;
 	
 	
     /**
@@ -78,6 +79,7 @@ class Configuration implements ConfigurationInterface
 		        ->scalarNode('user_registration_route')->defaultValue(self::USER_REGISTRATION_ROUTE)->end()
 		        ->scalarNode('add_user_route')->defaultValue(self::ADD_USER_ROUTE)->end()
 		        ->scalarNode('application_menu_controller')->defaultValue(self::APPLICATION_MENU_CONTROLLER)->end()
+		        ->scalarNode('private_key')->defaultValue(self::PRIVATE_KEY)->end()
 		        ->arrayNode('template_options')->defaultValue([])
 		        	->prototype('variable')
 		        	->end()

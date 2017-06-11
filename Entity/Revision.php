@@ -158,12 +158,19 @@ class Revision
      */
     private $circles;
     
-     /**
+    /**
      * @var string
      *
      * @ORM\Column(name="labelField", type="string", nullable=true)
      */
     private $labelField;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="sha1", type="string", nullable=true)
+     */
+    private $sha1;
     
 	/**not persisted field to ensure that they are all there after a submit */
     private $allFieldsAreThere;
@@ -725,7 +732,7 @@ class Revision
     {
         return $this->autoSave;
     }
-
+    
     /**
      * Set localField
      *
@@ -736,7 +743,7 @@ class Revision
     public function setLabelField($labelField)
     {
     	$this->labelField = $labelField;
-    
+    	
     	return $this;
     }
     
@@ -748,6 +755,30 @@ class Revision
     public function getLabelField()
     {
     	return $this->labelField;
+    }
+    
+    /**
+     * Set sha1
+     *
+     * @param string $sha1
+     *
+     * @return Revision
+     */
+    public function setSha1($sha1)
+    {
+    	$this->sha1= $sha1;
+    	
+    	return $this;
+    }
+    
+    /**
+     * Get sha1
+     *
+     * @return string
+     */
+    public function getSha1()
+    {
+    	return $this->sha1;
     }
     
     /**

@@ -15,6 +15,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Elasticsearch\Common\Exceptions\BadRequest400Exception;
+use EMS\CoreBundle\Service\DataService;
 
 class ReindexCommand extends EmsCommand
 {
@@ -23,9 +24,11 @@ class ReindexCommand extends EmsCommand
 	protected $doctrine;
 	protected $logger;
 	protected $container;
+	/**@var DataService*/
+	protected $dataService;
 	private $instanceId;
 	
-	public function __construct(Registry $doctrine, Logger $logger, Client $client, $mapping, $container, $instanceId, Session $session)
+	public function __construct(Registry $doctrine, Logger $logger, Client $client, $mapping, $container, $instanceId, Session $session, DataService $dataService)
 	{
 		$this->doctrine = $doctrine;
 		$this->logger = $logger;
@@ -33,6 +36,7 @@ class ReindexCommand extends EmsCommand
 		$this->mapping = $mapping;
 		$this->container = $container;
 		$this->instanceId = $instanceId;
+		$this->dataService = $dataService;
 		parent::__construct($logger, $client, $session);
 	}
 	
@@ -102,8 +106,11 @@ class ReindexCommand extends EmsCommand
 						'index' => $index,
 						'id' => $revision->getOuuid(),
 						'type' => $revision->getContentType()->getName(),
-						'body' => $revision->getRawData()
+						'body' => $this->dataService->sign($revision),
 					];
+					
+					$em->persist($revision);
+					$sm->flush();
 					
 					if($revision->getContentType()->getHavePipelines()){
 						$config['pipeline'] = $this->instanceId.$revision->getContentType()->getName();

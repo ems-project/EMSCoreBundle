@@ -35,6 +35,12 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 class DataService
 {
 	
+	const ALGO = OPENSSL_ALGO_SHA1;
+	
+	private $private_key;
+	private $public_key;
+	
+	
 	protected $twig;
 	/**@var Registry $doctrine */
 	protected $doctrine;
@@ -74,7 +80,8 @@ class DataService
 			FormFactoryInterface $formFactory,
 			$container,
 			FormRegistryInterface $formRegistry,
-			EventDispatcherInterface $dispatcher)
+			EventDispatcherInterface $dispatcher,
+			$privateKey)
 	{
 		$this->doctrine = $doctrine;
 		$this->authorizationChecker = $authorizationChecker;
@@ -92,6 +99,17 @@ class DataService
 		$this->appTwig = $container->get('app.twig_extension');
 		$this->formRegistry = $formRegistry;
 		$this->dispatcher= $dispatcher;
+
+		$this->public_key = null;
+		$this->private_key = null;
+		if($privateKey){
+			try {
+				$this->private_key = openssl_pkey_get_private(file_get_contents($privateKey));
+			}
+			catch (\Exception $e) {
+				$this->session->getFlashBag()->add('warning', 'ems was not able to load the certificat: '.$e->getMessage());
+			}
+		}
 	}
 	
 	
@@ -281,6 +299,108 @@ class DataService
 		
 	}
 	
+	
+	public function sign(Revision $revision) {
+		$objectArray = $revision->getRawData();
+		if(isset($objectArray['_sha1'])){
+			unset($objectArray['_sha1']);
+		}
+		if(isset($objectArray['_signature'])){
+			unset($objectArray['_signature']);
+		}
+		$json = json_encode($objectArray);
+		
+		$revision->setSha1(sha1($json));
+		$objectArray['_sha1'] = $revision->getSha1();
+		
+		if($this->private_key) {
+			$signature = null;
+			if(openssl_sign($json, $signature, $this->private_key, OPENSSL_ALGO_SHA1)){
+				$objectArray['_signature'] = base64_encode($signature);
+			}
+			else {
+				$this->session->getFlashBag()->add('warning', 'elasticms was not able to sign the revision\'s data');
+			}
+		}
+		return $objectArray;
+	}
+	
+	public function getPublicKey() {
+		if($this->private_key && empty($this->public_key)){
+			$certificate= openssl_pkey_get_private($this->private_key);
+			$details = openssl_pkey_get_details($certificate);
+			$this->public_key =$details['key'];
+		}
+		return $this->public_key;
+	}
+	
+	public function getCertificateInfo() {
+		if($this->private_key){
+			$certificate= openssl_pkey_get_private($this->private_key);
+			$details = openssl_pkey_get_details($certificate);
+			return $details;
+		}
+		return NULL;
+	}
+	
+	public function testIntegrityInIndexes(Revision $revision){
+		
+		if(empty($revision->getSha1())){
+			$this->session->getFlashBag()->add('notice', 'Sha1 never computed for this revision');
+		}
+		else {
+			//test integrity
+			foreach ($revision->getEnvironments() as $environment){
+				try {
+					$indexedItem = $this->client->get([
+							'id' => $revision->getOuuid(),
+							'type' => $revision->getContentType()->getName(),
+							'index' => $environment->getAlias(),
+					])['_source'];
+					if(isset($indexedItem['_sha1'])){
+						if($indexedItem['_sha1'] != $revision->getSha1()) {
+							$this->session->getFlashBag()->add('warning', 'Sha1 mismatch in '.$environment->getName());
+						}
+						unset($indexedItem['_sha1']);
+						
+						if(isset($indexedItem['_signature'])){
+							$binary_signature= base64_decode($indexedItem['_signature']);
+							unset($indexedItem['_signature']);
+							$data = json_encode($indexedItem);
+
+							// Check signature
+							$ok = openssl_verify($data, $binary_signature, $this->getPublicKey(), self::ALGO);
+							if ($ok == 1) {
+								//echo "signature ok (as it should be)\n";
+							} elseif ($ok == 0) {
+								$this->session->getFlashBag()->add('warning', 'Data migth be corrupted in '.$environment->getName().' for '.$revision->getContentType()->getName().':'.$revision->getOuuid());
+// 								echo "bad (there's something wrong)\n";
+							} else {
+								$this->session->getFlashBag()->add('warning', 'Error checking signature in '.$environment->getName().' for '.$revision->getContentType()->getName().':'.$revision->getOuuid());
+								// echo "ugly, error checking signature\n";
+							}
+						}
+						else {
+							$data = json_encode($indexedItem);
+							$this->session->getFlashBag()->add('warning', 'Revision not signed in '.$environment->getName().' for '.$revision->getContentType()->getName().':'.$revision->getOuuid());
+						}
+						
+						if(sha1($data) != $revision->getSha1()){
+							$this->session->getFlashBag()->add('warning', 'Computed sha1 mismatch in '.$environment->getName().' for '.$revision->getContentType()->getName().':'.$revision->getOuuid());
+						}
+						
+					}
+					else {
+						$this->session->getFlashBag()->add('warning', 'Sha1 not defined in '.$environment->getName().' for '.$revision->getContentType()->getName().':'.$revision->getOuuid());
+					}	
+				}
+				catch (\Exception $e) {
+					$this->session->getFlashBag()->add('warning', 'Issue with content indexed in '.$environment->getName().':'.$e->getMessage().' for '.$revision->getContentType()->getName().':'.$revision->getOuuid());
+				}
+			}
+		}
+	}
+	
 	public function buildForm(Revision $revision){
 		if( $revision->getDatafield() == NULL){
 			$this->loadDataStructure($revision);
@@ -327,8 +447,8 @@ class DataService
 			$revision->setRawData($objectArray);
 		}
 		
-		//Validation
-//    	if(!$form->isValid()){//Trying to work with validators
+		$objectArray = $this->sign($revision);
+		
   		if(empty($form) || $this->isValid($form)){
 		
 			$config = [

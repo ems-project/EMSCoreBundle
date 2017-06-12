@@ -1,5 +1,22 @@
-
-
+//https://stackoverflow.com/questions/31391207/javascript-readasbinarystring-function-on-e11
+if (FileReader.prototype.readAsBinaryString === undefined) {
+    FileReader.prototype.readAsBinaryString = function (fileData) {
+        var binary = "";
+        var pt = this;
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            var bytes = new Uint8Array(reader.result);
+            var length = bytes.byteLength;
+            for (var i = 0; i < length; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            //pt.result  - readonly so assign content to another property
+            pt.content = binary;
+            $(pt).trigger('onloadend');
+        }
+        reader.readAsArrayBuffer(fileData);
+    }
+}
 
 function FileUploader(params) {
 
@@ -90,7 +107,9 @@ function FileUploader(params) {
 		this.timeStamp = (new Date()).getTime();
 
 		self = this;
-		reader.onloadend = function(evt){ self.nakedSha1(evt, self); };
+		reader.onloadend = function(evt){ 
+			self.nakedSha1(evt, self, reader); 
+		};
 
 		var start;
 		var length;
@@ -110,11 +129,18 @@ function FileUploader(params) {
 	/**
 	 * Callback function continuing the sha1 computation with the current file slice
 	 */
-	this.nakedSha1 = function(evt, self){
+	this.nakedSha1 = function(evt, self, reader){
 		// If we use onloadend, we need to check the readyState.
-		if (evt.target.readyState == FileReader.DONE && self.status != self.statics.ERROR) { // DONE == 2
+		//TODO: !evt if IE to remove with the die of IE
+		if (!evt || (evt.target.readyState == FileReader.DONE && self.status != self.statics.ERROR)) { // DONE == 2
 			var block;
-			var slice = evt.target.result;
+			var slice;
+			if(!evt) {
+				slice = reader.content;
+			}
+			else {
+				slice = evt.target.result;				
+			}
 
 			if(self.sliceLoaded == 0){
 				block = self.gitPrefix + slice;

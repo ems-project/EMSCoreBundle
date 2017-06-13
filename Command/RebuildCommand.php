@@ -114,7 +114,7 @@ class RebuildCommand extends EmsCommand
 
 			/** @var ContentType $contentType */
 			foreach ($contentTypes as $contentType){
-				if($contentType->getEnvironment()->getManaged() && !$contentType->getDeleted()){
+				if(!$contentType->getDeleted() && $contentType->getEnvironment() && $contentType->getEnvironment()->getManaged()){
 					$this->contentTypeService->updateMapping($contentType, $indexName);
 				}
 

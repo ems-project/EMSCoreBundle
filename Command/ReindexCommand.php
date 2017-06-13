@@ -96,10 +96,10 @@ class ReindexCommand extends EmsCommand
 					++$deleted;
 					$this->session->getFlashBag()->add('warning', 'The content type of the revision '.$revision->getContentType()->getName().':'.$revision->getOuuid().' is deleted and is referenced in '.$environment->getName());
 				}
-				else if ($revision->getContentType()->getEnvironment() == $environment && $revision->getEndTime() != null) {
-					++$error;
-					$this->session->getFlashBag()->add('warning', 'The revision '.$revision->getId().' of '.$revision->getContentType()->getName().':'.$revision->getOuuid().' as an end date but '.$environment->getName().' is its defualt environment');
-				}
+// 				else if ($revision->getContentType()->getEnvironment() == $environment && $revision->getEndTime() != null) {
+// 					++$error;
+// 					$this->session->getFlashBag()->add('warning', 'The revision '.$revision->getId().' of '.$revision->getContentType()->getName().':'.$revision->getOuuid().' as an end date but '.$environment->getName().' is its default environment');
+// 				}
 				else {
 					
 					$config = [

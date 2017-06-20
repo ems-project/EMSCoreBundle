@@ -11,6 +11,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\DataField;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class ComputedFieldType extends DataFieldType {
 	/**
@@ -98,6 +99,9 @@ class ComputedFieldType extends DataFieldType {
 				'attr' => [
 					'rows' => 8,
 				],
+		] )
+		->add ( 'copy_to', TextType::class, [
+				'required' => false,
 		] );
 		$optionsForm->remove('restrictionOptions');
 		$optionsForm->remove('migrationOptions');

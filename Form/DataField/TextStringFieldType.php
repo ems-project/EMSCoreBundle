@@ -104,6 +104,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 		] );
 		
 		// String specific mapping options
-		$optionsForm->get ( 'mappingOptions' )->add ( 'analyzer', AnalyzerPickerType::class);
+		$optionsForm->get ( 'mappingOptions' )
+		->add ( 'analyzer', AnalyzerPickerType::class)
+		->add ( 'copy_to', TextType::class, [
+				'required' => false,
+		] );
 	}
 }

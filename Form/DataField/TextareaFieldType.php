@@ -10,7 +10,8 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-		
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+			
 /**
  * Defined a Container content type.
  * It's used to logically groups subfields together. However a Container is invisible in Elastic search.
@@ -84,7 +85,11 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 		$optionsForm = $builder->get ( 'options' );
 		
 		// String specific mapping options
-		$optionsForm->get ( 'mappingOptions' )->add ( 'analyzer', AnalyzerPickerType::class);
+		$optionsForm->get ( 'mappingOptions' )
+		->add ( 'analyzer', AnalyzerPickerType::class)
+		->add ( 'copy_to', TextType::class, [
+				'required' => false,
+		] );
 		$optionsForm->get ( 'displayOptions' )->add ( 'rows', IntegerType::class, [
 				'required' => false,
 		]);

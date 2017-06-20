@@ -10,6 +10,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class WysiwygFieldType extends DataFieldType {
 	/**
@@ -79,7 +80,11 @@ class WysiwygFieldType extends DataFieldType {
 		$optionsForm = $builder->get ( 'options' );
 		
 		// String specific mapping options
-		$optionsForm->get ( 'mappingOptions' )->add ( 'analyzer', AnalyzerPickerType::class);
+		$optionsForm->get ( 'mappingOptions' )
+		->add ( 'analyzer', AnalyzerPickerType::class)
+		->add ( 'copy_to', TextType::class, [
+				'required' => false,
+		] );
 		$optionsForm->get ( 'displayOptions' )->add ( 'height', IntegerType::class, [
 				'required' => false,
 		]);

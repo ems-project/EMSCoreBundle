@@ -9,6 +9,8 @@ use EMS\CoreBundle\Form\Field\IconPickerType;
 use EMS\CoreBundle\Service\FileService;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Form\FormRegistryInterface;
 	
 /**
  * Defined a Container content type.
@@ -23,8 +25,11 @@ class FileAttachmentFieldType extends DataFieldType {
 	/**@var FileService */
 	private $fileService;
 	
-	public function setFileService(FileService $fileService) {
-		$this->fileService = $fileService;
+	
+	
+	public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, FileService $fileService) {
+		parent::__construct($authorizationChecker, $formRegistry);
+		$this->fileService= $fileService;
 	}
 
 	/**

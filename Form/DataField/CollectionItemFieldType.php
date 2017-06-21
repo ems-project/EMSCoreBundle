@@ -10,6 +10,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Form\DataTransformer\DataFieldTransformer;
 
 /**
  * Defined a Nested obecjt.
@@ -47,6 +48,16 @@ class CollectionItemFieldType extends DataFieldType {
 	}
 	
 	
+	
+	public function transform($data) {
+		if(null == $data) {
+			return "";
+		}
+		dump($this);
+		dump($data);
+		return $data;
+	}
+	
 	/**
 	 *
 	 * {@inheritdoc}
@@ -66,7 +77,8 @@ class CollectionItemFieldType extends DataFieldType {
 						'metadata' => $fieldType,
 						'label' => false 
 				], $fieldType->getDisplayOptions () );
-				$builder->add ( 'ems_' . $fieldType->getName (), $fieldType->getType (), $options );
+				$builder->add ( 'ems_' . $fieldType->getName (), $fieldType->getType(), $options );
+				$builder->get('ems_' . $fieldType->getName ())->addViewTransformer(new DataFieldTransformer($fieldType, $this->formRegistry));
 			}
 		}
 		
@@ -109,8 +121,9 @@ class CollectionItemFieldType extends DataFieldType {
 			$tmp = [];
 			/** @var DataField $child */
 			foreach ($data->getChildren() as $child){
-				$className = $child->getFieldType()->getType();
-				$class = new $className;
+// 				$className = $child->getFieldType()->getType();
+// 				$class = new $className;
+				$class =$this->formRegistry->getType($child->getFieldType()->getType());
 				$class->buildObjectArray($child, $tmp);
 			}
 			$out [] = $tmp;

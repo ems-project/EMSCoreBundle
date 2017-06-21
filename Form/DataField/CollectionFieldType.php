@@ -14,6 +14,9 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Form\FormRegistryInterface;
+use EMS\CoreBundle\Form\DataTransformer\DataFieldTransformer;
 
 /**
  * Defined a Container content type.
@@ -23,6 +26,17 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
  *        
  */
 class CollectionFieldType extends DataFieldType {
+	
+	protected $dataService;
+	
+	
+	
+	public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, $service_container) {
+		parent::__construct($authorizationChecker, $formRegistry);
+		$this->service_container= $service_container;
+	}
+	
+	
 	/**
 	 *
 	 * {@inheritdoc}
@@ -53,6 +67,8 @@ class CollectionFieldType extends DataFieldType {
 				$sourceArray = [$sourceArray];
 			}
 			
+			$dataService = $this->service_container->get('ems.service.data');
+			
 			$dataField->getChildren()->clear();
 			foreach ($sourceArray as $idx => $item){
 				$colItem = new DataField();
@@ -65,9 +81,9 @@ class CollectionFieldType extends DataFieldType {
 						$grandChild->setOrderKey(0);	
 						$grandChild->setParent($colItem);
 						$grandChild->setFieldType($childFieldType);
-						$grandChild->updateDataStructure($childFieldType);
+						$dataService->updateDataStructure($childFieldType, $grandChild);
 						if(is_array($item)) {
-							$grandChild->updateDataValue($item, $isMigration);							
+							$dataService->updateDataValue($grandChild, $item, $isMigration);							
 						}
 						else  {
 							//TODO: add flash message
@@ -96,7 +112,7 @@ class CollectionFieldType extends DataFieldType {
 		/** @var FieldType $fieldType */
 		$fieldType = clone $builder->getOptions () ['metadata'];
 		
-		$builder->add('ems_' . $fieldType->getName(), CollectionType::class, array(
+		$builder->add('raw_data', CollectionType::class, array(
 				// each entry in the array will be an "email" field
 				'entry_type' => CollectionItemFieldType::class,
 				// these options are passed to each "email" type
@@ -116,6 +132,18 @@ class CollectionFieldType extends DataFieldType {
 				'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
 				'icon' => 'fa fa-plus' 
 		] );
+		
+		$builder->get('raw_data')->addViewTransformer(new DataFieldTransformer($fieldType, $this->formRegistry));
+	}
+	
+	
+	
+	public function transform($data) {
+		if(null == $data) {
+			return "";
+		}
+		dump($data);
+		return $data;
 	}
 	
 	/**

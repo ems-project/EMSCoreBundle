@@ -687,6 +687,7 @@ class DataController extends AppController
 		}
 
 		$this->lockRevision($revision);
+		$this->getLogger()->addDebug('Revision locked');
 		
 		if(!$revision) {
 			throw new NotFoundHttpException('Unknown revision');
@@ -862,11 +863,16 @@ class DataController extends AppController
 				/** @var Revision $revision */
 				$revision = $form->getData();
 				$this->get('logger')->debug('Revision extracted from the form');
+// 				dump($revision); exit;
 				
 				$this->getDataService()->convertInputValues($revision->getDataField());
+				$this->get('logger')->debug('Input values converted');
+				
+				
 				
 				$objectArray = $this->get('ems.service.mapping')->dataFieldToArray($revision->getDataField());
-				
+				$this->get('logger')->debug('$objectArray generated');
+// 				dump($objectArray); exit;
 				
 				if(array_key_exists('paste', $request->request->get('revision'))) {//Paste
 					$this->addFlash('notice', 'Data have been paste');

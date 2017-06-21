@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Service;
 
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\DataField;
+use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Event\RevisionFinalizeDraftEvent;
@@ -748,6 +749,76 @@ class DataService
 		$this->session->getFlashBag()->add('notice', 'The object have been marked as deleted! ');
 		$em->flush();
 	}
+	
+	
+	public function updateDataStructure(FieldType $meta, DataField $dataField){
+		
+		//no need to generate the structure for subfields (
+		$isContainer = true;
+		
+		if(null !== $dataField->getFieldType()){
+// 			$type = $dataField->getFieldType()->getType();
+			$datFieldType = $this->formRegistry->getType($dataField->getFieldType()->getType())->getInnerType();
+// 			dump($datFieldType);
+			$isContainer = $datFieldType->isContainer();
+		}
+		
+		if($isContainer){
+			/** @var FieldType $field */
+			foreach ($meta->getChildren() as $field){
+				//no need to generate the structure for delete field
+				if(!$field->getDeleted()){
+					$child = $dataField->__get('ems_'.$field->getName());
+					if(null == $child){
+						$child = new DataField();
+						$child->setFieldType($field);
+						$child->setOrderKey($field->getOrderKey());
+						$child->setParent($dataField);
+						$dataField->addChild($child);
+						if(isset($field->getDisplayOptions()['defaultValue'])){
+							$child->setEncodedText($field->getDisplayOptions()['defaultValue']);
+						}
+					}
+					if( strcmp($field->getType(), CollectionFieldType::class) != 0 ) {
+						$this->updateDataStructure($field, $child);
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Assign data in dataValues based on the elastic index content
+	 *
+	 * @param array $elasticIndexDatas
+	 * @return $elasticIndexDatas
+	 */
+	public  function updateDataValue(DataField $dataField, Array &$elasticIndexDatas, $isMigration = false){
+		$dataFieldType = $this->formRegistry->getType($dataField->getFieldType()->getType())->getInnerType();
+		
+		$fieldName = $dataFieldType->getJsonName($dataField->getFieldType());
+		if(NULL === $fieldName) {//Virtual container
+			/** @var DataField $child */
+			foreach ($dataField->getChildren() as $child){
+				$this->updateDataValue($child, $elasticIndexDatas, $isMigration);
+			}
+		}
+		else {
+			if($dataFieldType->isVirtualField($dataField->getFieldType()->getOptions()))  {
+				$treatedFields = $dataFieldType->importData($dataField, $elasticIndexDatas, $isMigration);
+				foreach($treatedFields as $fieldName){
+					unset($elasticIndexDatas[$fieldName]);
+				}
+			}
+			else if(array_key_exists($fieldName, $elasticIndexDatas)){
+				$treatedFields = $dataFieldType->importData($dataField, $elasticIndexDatas[$fieldName], $isMigration);
+				foreach($treatedFields as $fieldName){
+					unset($elasticIndexDatas[$fieldName]);
+				}
+			}
+			
+		}
+	}
 		
 	public function loadDataStructure(Revision $revision){
 
@@ -756,9 +827,10 @@ class DataService
 		$data->setOrderKey($revision->getContentType()->getFieldType()->getOrderKey());
 		$data->setRawData($revision->getRawData());
 		$revision->setDataField($data);
-		$revision->getDataField()->updateDataStructure($revision->getContentType()->getFieldType());
+		$this->updateDataStructure($revision->getContentType()->getFieldType(), $revision->getDataField());
+		//$revision->getDataField()->updateDataStructure($this->formRegistry, $revision->getContentType()->getFieldType());
 		$object = $revision->getRawData();
-		$data->updateDataValue($object);
+		$this->updateDataValue($data, $object);
 		if(count($object) > 0){
 			$html = DataService::arrayToHtml($object);
 			$this->session->getFlashBag()->add('warning', "Some data of this revision were not consumed by the content type:".$html);			
@@ -796,18 +868,21 @@ class DataService
 			/** @var DataField $dataField */
 			$dataField = $viewData;
 		} else {
+			dump($viewData);
 			throw new \Exception("Unforeseen type of viewData");
 		}
 		if($dataField->getFieldType() !== null && $dataField->getFieldType()->getType() !== null) {
-			$dataFieldTypeClassName = $dataField->getFieldType()->getType();
+// 			$dataFieldTypeClassName = $dataField->getFieldType()->getType();
+// 	    	/** @var DataFieldType $dataFieldType */
+// 	    	$dataFieldType = new $dataFieldTypeClassName();
 	    	/** @var DataFieldType $dataFieldType */
-	    	$dataFieldType = new $dataFieldTypeClassName();
+			$dataFieldType = $this->formRegistry->getType($dataField->getFieldType()->getType())->getInnerType();
 		}
 		$isValid = true;
 		if(isset($dataFieldType) && $dataFieldType->isContainer()) {//If datafield is container or type is null => Container => Recursive
 			$formChildren = $form->all();
 			foreach ($formChildren as $child) {
-				if($child instanceof \Symfony\Component\Form\Form) {
+				if( $child instanceof \Symfony\Component\Form\Form) {
 					$tempIsValid = $this->isValid($child);//Recursive
 					$isValid = $isValid && $tempIsValid;
 				}

@@ -492,7 +492,9 @@ desired effect
     var data_link_url = '{{ path('data.link', {key: '__object_key__'})|raw }}';
     var object_search_url = '{{ path('elasticsearch.api.search')|raw }}';
     var collapse_sidebar_url = '{{ path('user.sidebar-collapse', {collapsed: '__collapsed__'})|raw }}'; 
-    var elasticsearch_status_url = "{{ path('elasticsearch.status')|raw }}.json";
+    var elasticsearch_status_url = "{{ path('elasticsearch.status')|raw }}.json"; 
+    var ems_upload_url = "{{ path('ems_image_upload_url')|raw }}";
+    var ems_images_url = "{{ path('ems_images_index')|raw }}";
 </script>
 <!-- This app -->
 <script src="{{ asset('bundles/emscore/js/app.js') }}"></script>

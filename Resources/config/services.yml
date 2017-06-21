@@ -30,228 +30,185 @@ services:
 #### Begin list available ems ViewType ###
     ems.fieldtype.container:
         class: EMS\CoreBundle\Form\DataField\ContainerFieldType
-        calls:
-            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        arguments: ['@security.authorization_checker', '@form.registry']
         tags:
             - { name: ems.form.datafieldtype, alias: container }
             - { name: form.type }
     ems.fieldtype.collection:
         class: EMS\CoreBundle\Form\DataField\CollectionFieldType
-        calls:
-            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        arguments: ['@security.authorization_checker', '@form.registry', '@service_container']
         tags:
             - { name: ems.form.datafieldtype, alias: collection }
             - { name: form.type }
     ems.fieldtype.colorpicker:
         class: EMS\CoreBundle\Form\DataField\ColorPickerFieldType
-        calls:
-            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        arguments: ['@security.authorization_checker', '@form.registry']
         tags:
             - { name: ems.form.datafieldtype, alias: colorpicker }
             - { name: form.type }
     ems.fieldtype.nested:
         class: EMS\CoreBundle\Form\DataField\NestedFieldType
-        calls:
-            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        arguments: ['@security.authorization_checker', '@form.registry']
         tags:
             - { name: ems.form.datafieldtype, alias: nested }
             - { name: form.type }
     ems.fieldtype.tabs:
         class: EMS\CoreBundle\Form\DataField\TabsFieldType
-        calls:
-            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        arguments: ['@security.authorization_checker', '@form.registry']
         tags:
             - { name: ems.form.datafieldtype, alias: tabs }
             - { name: form.type }
     ems.fieldtype.ouuid:
         class: EMS\CoreBundle\Form\DataField\OuuidFieldType
-        calls:
-            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        arguments: ['@security.authorization_checker', '@form.registry']
         tags:
             - { name: ems.form.datafieldtype, alias: ouuid }
             - { name: form.type }
     ems.fieldtype.computed:
         class: EMS\CoreBundle\Form\DataField\ComputedFieldType
-        calls:
-            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        arguments: ['@security.authorization_checker', '@form.registry']
         tags:
             - { name: ems.form.datafieldtype, alias: computed }
             - { name: form.type }
     ems.fieldtype.json:
         class: EMS\CoreBundle\Form\DataField\JSONFieldType
-        calls:
-            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        arguments: ['@security.authorization_checker', '@form.registry']
         tags:
             - { name: ems.form.datafieldtype, alias: json }
             - { name: form.type }
     ems.fieldtype.dataLink:
         class: EMS\CoreBundle\Form\DataField\DataLinkFieldType
-        calls:
-            - [setAuthorizationChecker, ['@security.authorization_checker']]
-            - [setClient, ['@app.elasticsearch']]
-            - [setRegistry, ['@form.registry']]
+        arguments: ['@security.authorization_checker', '@form.registry', '@app.elasticsearch']
         tags:
             - { name: ems.form.datafieldtype, alias: datalink }
             - { name: form.type }
     ems.fieldtype.textstring:
         class: EMS\CoreBundle\Form\DataField\TextStringFieldType
-        calls:
-            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        arguments: ['@security.authorization_checker', '@form.registry']
         tags:
             - { name: ems.form.datafieldtype, alias: textstring }
             - { name: form.type }
     ems.fieldtype.wysiwyg:
         class: EMS\CoreBundle\Form\DataField\WysiwygFieldType
-        calls:
-            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        arguments: ['@security.authorization_checker', '@form.registry', '@router']
         tags:
             - { name: ems.form.datafieldtype, alias: wysiwyg }
             - { name: form.type }
     ems.fieldtype.code:
         class: EMS\CoreBundle\Form\DataField\CodeFieldType
-        calls:
-            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        arguments: ['@security.authorization_checker', '@form.registry']
         tags:
             - { name: ems.form.datafieldtype, alias: code }
             - { name: form.type }
     ems.fieldtype.textarea:
         class: EMS\CoreBundle\Form\DataField\TextareaFieldType
-        calls:
-            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        arguments: ['@security.authorization_checker', '@form.registry']
         tags:
             - { name: ems.form.datafieldtype, alias: textarea }
             - { name: form.type }
     ems.fieldtype.select:
         class: EMS\CoreBundle\Form\DataField\SelectFieldType
-        calls:
-            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        arguments: ['@security.authorization_checker', '@form.registry']
         tags:
             - { name: ems.form.datafieldtype, alias: select }
             - { name: form.type }
     ems.fieldtype.password:
         class: EMS\CoreBundle\Form\DataField\PasswordFieldType
-        calls:
-            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        arguments: ['@security.authorization_checker', '@form.registry']
         tags:
             - { name: ems.form.datafieldtype, alias: password }
             - { name: form.type }
     ems.fieldtype.email:
         class: EMS\CoreBundle\Form\DataField\EmailFieldType
-        calls:
-            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        arguments: ['@security.authorization_checker', '@form.registry']
         tags:
             - { name: ems.form.datafieldtype, alias: email }
             - { name: form.type }
     ems.fieldtype.icon:
         class: EMS\CoreBundle\Form\DataField\IconFieldType
-        calls:
-            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        arguments: ['@security.authorization_checker', '@form.registry']
         tags:
             - { name: ems.form.datafieldtype, alias: icon }
             - { name: form.type }
     ems.fieldtype.asset:
         class: EMS\CoreBundle\Form\DataField\AssetFieldType
-        calls:
-            - [setAuthorizationChecker, ['@security.authorization_checker']]
-            - [setFileService, ['@ems.service.file']]
+        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.file']
         tags:
             - { name: ems.form.datafieldtype, alias: asset }
             - { name: form.type }
     ems.fieldtype.fileattachement:
         class: EMS\CoreBundle\Form\DataField\FileAttachmentFieldType
-        calls:
-            - [setAuthorizationChecker, ['@security.authorization_checker']]
-            - [setFileService, ['@ems.service.file']]
+        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.file']
         tags:
             - { name: ems.form.datafieldtype, alias: file_attachment }
             - { name: form.type }
     ems.fieldtype.urlattachement:
         class: EMS\CoreBundle\Form\DataField\UrlAttachmentFieldType
-        calls:
-            - [setAuthorizationChecker, ['@security.authorization_checker']]
-            - [setFileService, ['@ems.service.file']]
+        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.file']
         tags:
             - { name: ems.form.datafieldtype, alias: url_attachment }
             - { name: form.type }
     ems.fieldtype.radio:
         class: EMS\CoreBundle\Form\DataField\RadioFieldType
-        calls:
-            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        arguments: ['@security.authorization_checker', '@form.registry']
         tags:
             - { name: ems.form.datafieldtype, alias: radio }
             - { name: form.type }
     ems.fieldtype.choice:
         class: EMS\CoreBundle\Form\DataField\ChoiceFieldType
-        calls:
-            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        arguments: ['@security.authorization_checker', '@form.registry']
         tags:
             - { name: ems.form.datafieldtype, alias: choice }
             - { name: form.type }
     ems.fieldtype.checkbox:
         class: EMS\CoreBundle\Form\DataField\CheckboxFieldType
-        calls:
-            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        arguments: ['@security.authorization_checker', '@form.registry']
         tags:
             - { name: ems.form.datafieldtype, alias: checkbox }
             - { name: form.type }
     ems.fieldtype.number:
         class: EMS\CoreBundle\Form\DataField\NumberFieldType
-        calls:
-            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        arguments: ['@security.authorization_checker', '@form.registry']
         tags:
             - { name: ems.form.datafieldtype, alias: number }
             - { name: form.type }
     ems.fieldtype.integer:
         class: EMS\CoreBundle\Form\DataField\IntegerFieldType
-        calls:
-            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        arguments: ['@security.authorization_checker', '@form.registry']
         tags:
             - { name: ems.form.datafieldtype, alias: integer }
             - { name: form.type }
     ems.fieldtype.date:
         class: EMS\CoreBundle\Form\DataField\DateFieldType
-        #arguments: ['%date_format%']
-        calls:
-            - [setAuthorizationChecker, ['@security.authorization_checker']]
-        #    - [setDateFormat, ['%date_format%']]
+        arguments: ['@security.authorization_checker', '@form.registry']
         tags:
             - { name: ems.form.datafieldtype, alias: date }
             - { name: form.type }
     ems.fieldtype.daterange:
         class: EMS\CoreBundle\Form\DataField\DateRangeFieldType
-        #arguments: ['%date_format%']
-        calls:
-            - [setAuthorizationChecker, ['@security.authorization_checker']]
-        #    - [setDateFormat, ['%date_format%']]
+        arguments: ['@security.authorization_checker', '@form.registry']
         tags:
             - { name: ems.form.datafieldtype, alias: daterange }
             - { name: form.type }
     ems.fieldtype.time:
         class: EMS\CoreBundle\Form\DataField\TimeFieldType
-        #arguments: ['%date_format%']
-        calls:
-            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        arguments: ['@security.authorization_checker', '@form.registry']
         tags:
             - { name: ems.form.datafieldtype, alias: time }
             - { name: form.type }
     ems.fieldtype.collectionItem:
         class: EMS\CoreBundle\Form\DataField\CollectionItemFieldType
-        #arguments: ['%date_format%']
-        calls:
-            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        arguments: ['@security.authorization_checker', '@form.registry']
         tags:
             - { name: form.type }
-    ems.fieldtype.time:
+    ems.fieldtype.collectionitem:
         class: EMS\CoreBundle\Form\DataField\CollectionItemFieldType
-        #arguments: ['%date_format%']
-        calls:
-            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        arguments: ['@security.authorization_checker', '@form.registry']
         tags:
             - { name: form.type }
     ems.fieldtype.copyto:
         class: EMS\CoreBundle\Form\DataField\CopyToFieldType
-        calls:
-            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        arguments: ['@security.authorization_checker', '@form.registry']
         tags:
             - { name: ems.form.datafieldtype, alias: copyto }
             - { name: form.type }
@@ -341,7 +298,7 @@ services:
             - { name: form.type }
     ems.form.fieldtype.fieldtypetype:
         class: EMS\CoreBundle\Form\FieldType\FieldTypeType
-        arguments: ['@ems.form.field.datafieldtypepickertype']
+        arguments: ['@ems.form.field.datafieldtypepickertype', '@form.registry', '@logger']
         tags:
             - { name: form.type }
     ems.form.form.templatetype:
@@ -354,6 +311,13 @@ services:
         arguments: ['%ems_core.circles_object%', '@ems.service.environment']
         tags:
             - { name: form.type }
+    ems.form.form.revisiontype:
+        class: EMS\CoreBundle\Form\Form\RevisionType
+        arguments: ['@form.registry']
+        tags:
+            - { name: form.type }
+            
+            
 ### regular services
     ems.service.mapping:
         class: EMS\CoreBundle\Service\Mapping

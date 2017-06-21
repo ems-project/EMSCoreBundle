@@ -390,18 +390,15 @@ function addEventListeners(target){
 	});
 
 	target.find(".ckeditor_ems").each(function(index){
-		var ckconfig = {
-			removePlugins: 'link,about',
-			extraPlugins: 'adv_link,dialogadvtab,div',
-		};
-
 
 		{% if app.user.wysiwygProfile and app.user.wysiwygProfile.config %}
-			ckconfig = {{ app.user.wysiwygProfile.config|raw }};
+			var ckconfig = {{ app.user.wysiwygProfile.config|raw }};
 		{% elseif app.user.wysiwygOptions %}
-			ckconfig = {{ app.user.wysiwygOptions|raw }};
+			var ckconfig = {{ app.user.wysiwygOptions|raw }};
 		{% endif %}
 
+		ckconfig.imageUploadUrl = ems_upload_url;
+		ckconfig.imageBrowser_listUrl = ems_images_url;
 	
 		var height = $( this ).attr('data-height');
 		if(!height){

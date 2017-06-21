@@ -13,6 +13,7 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use EMS\CoreBundle\Form\Field\SelectPickerType;
 use Symfony\Component\Form\FormRegistryInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 
 /**
@@ -23,20 +24,36 @@ use Symfony\Component\Form\FormRegistryInterface;
  */
 abstract class DataFieldType extends AbstractType {
 	
+	/**@var AuthorizationCheckerInterface $authorizationChecker*/
 	protected $authorizationChecker;
-	
-	public function setAuthorizationChecker($authorizationChecker){
-		$this->authorizationChecker = $authorizationChecker;
-		return $this;
-	}
-	
-	/**FormRegistryInterface $formRegistry*/
+	/**@var FormRegistryInterface $formRegistry*/
 	protected $formRegistry;
 	
-	public function setFormRegistry(FormRegistryInterface $formRegistry){
+	public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry) {
+		$this->authorizationChecker = $authorizationChecker;
 		$this->formRegistry = $formRegistry;
-		return $this;
 	}
+	
+	
+	
+	public function reverseTransform($data) {
+		return $data;
+	}
+	
+	public function transform($data) {
+		return $data;
+	}
+	
+// 	public function setAuthorizationChecker($authorizationChecker){
+// 		$this->authorizationChecker = $authorizationChecker;
+// 		return $this;
+// 	}
+	
+	
+// 	public function setFormRegistry(FormRegistryInterface $formRegistry){
+// 		$this->formRegistry = $formRegistry;
+// 		return $this;
+// 	}
 	
 	/**@var FormRegistryInterface*/
 	public function getFormRegistry(){

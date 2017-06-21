@@ -1,7 +1,9 @@
 {% trans_default_domain 'EMSCoreBundle' %}
+
 {%  macro renderDataField(dataField) %}
-	{{ attribute(_self, dataField.fieldType.type|replace({'\\': '_'}), [dataField]) }}
-	{{ _self.messages(dataField) }}
+{% import _self as macros %}
+	{{ attribute(macros, dataField.fieldType.type|replace({'\\': '_'}), [dataField]) }}
+	{{ macros.messages(dataField) }}
 {% endmacro %}
 
 
@@ -49,7 +51,8 @@
 {% endmacro %}
 
 {% macro EMS_CoreBundle_Form_DataField_FileAttachmentFieldType(dataField) %}
-	{{ _self.EMS_CoreBundle_Form_DataField_AssetFieldType(dataField) }}
+{% import _self as macros %}
+	{{ macros.EMS_CoreBundle_Form_DataField_AssetFieldType(dataField) }}
 {% endmacro %}
 
 
@@ -95,6 +98,7 @@
 
 
 {% macro EMS_CoreBundle_Form_DataField_CollectionFieldType(dataField) %}
+{% import _self as macros %}
 	{% set tempId = dataField.fieldType.name~'_'~random() %}
 	<div class="panel panel-default">
 		<div class="panel-heading">
@@ -137,7 +141,7 @@
 							<div class="row">
 								{% for grandchild in child.children %}
 									<div class="{% if grandchild.fieldType.displayOptions.class is defined and grandchild.fieldType.displayOptions.class  %}{{ grandchild.fieldType.displayOptions.class }}{%else%}col-md-12{% endif %}">
-										{{ attribute(_self, grandchild.fieldType.type|replace({'\\': '_'}), [grandchild]) }}
+										{{ attribute(macros, grandchild.fieldType.type|replace({'\\': '_'}), [grandchild]) }}
 									</div>
 									{% if grandchild.fieldType.displayOptions.lastOfRow is defined and grandchild.fieldType.displayOptions.lastOfRow %}
 										</div><div class="row">
@@ -150,10 +154,11 @@
 			{% endfor %}
 		</div>
 	</div>
-	{{ _self.messages(dataField) }}
+	{{ macros.messages(dataField) }}
 {% endmacro %}
 
 {% macro EMS_CoreBundle_Form_DataField_ContainerFieldType(dataField) %}
+{% import _self as macros %}
     {% if dataField.fieldType.displayOptions.label is defined and dataField.fieldType.displayOptions.label %}
     	<div class="panel panel-default">
 			<div class="panel-heading">
@@ -173,7 +178,7 @@
 	<div class="row">
 		{% for child in dataField.children if not child.fieldType.deleted %}
 			<div class="{% if child.fieldType.displayOptions.class is defined and child.fieldType.displayOptions.class  %}{{ child.fieldType.displayOptions.class }}{%else%}col-md-12{% endif %}">
-				{{ attribute(_self, child.fieldType.type|replace({'\\': '_'}), [child]) }}
+				{{ attribute(macros, child.fieldType.type|replace({'\\': '_'}), [child]) }}
 			</div>
 			{% if child.fieldType.displayOptions.lastOfRow is defined and child.fieldType.displayOptions.lastOfRow %}
 				</div><div class="row">
@@ -184,10 +189,11 @@
     		</div>
 		</div>
 	{% endif %}
-	{{ _self.messages(dataField) }}
+	{{ macros.messages(dataField) }}
 {% endmacro %}
 
 {% macro EMS_CoreBundle_Form_DataField_NestedFieldType(dataField) %}
+{% import _self as macros %}
     {% if dataField.fieldType.displayOptions.label is defined %}
     	<div class="panel panel-default">
 			<div class="panel-heading">
@@ -207,7 +213,7 @@
 	<div class="row">
 		{% for child in dataField.children if not child.fieldType.deleted %}
 			<div class="{% if child.fieldType.displayOptions.class is defined and child.fieldType.displayOptions.class  %}{{ child.fieldType.displayOptions.class }}{%else%}col-md-12{% endif %}">
-				{{ attribute(_self, child.fieldType.type|replace({'\\': '_'}), [child]) }}
+				{{ attribute(macros, child.fieldType.type|replace({'\\': '_'}), [child]) }}
 			</div>
 			{% if child.fieldType.displayOptions.lastOfRow is defined and child.fieldType.displayOptions.lastOfRow %}
 				</div><div class="row">
@@ -218,10 +224,11 @@
     		</div>
 		</div>
 	{% endif %}
-	{{ _self.messages(dataField) }}
+	{{ macros.messages(dataField) }}
 {% endmacro %}
 
 {% macro EMS_CoreBundle_Form_DataField_TabsFieldType(dataField) %}
+{% import _self as macros %}
 		<div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
             	{% for child in dataField.children if not child.fieldType.deleted %}
@@ -237,17 +244,18 @@
             <div class="tab-content">
             	{% for child in dataField.children if not child.fieldType.deleted %}
 	              <div class="tab-pane{% if loop.index == 1%} active{% endif %}" id="item_{{ loop.index }}__tab">
-	              	{{ attribute(_self, child.fieldType.type|replace({'\\': '_'}), [child]) }}
+	              	{{ attribute(macros, child.fieldType.type|replace({'\\': '_'}), [child]) }}
 	              </div>
               {% endfor %}
             </div>
             <!-- /.tab-content -->
          </div>  
-	{{ _self.messages(dataField) }}
+	{{ macros.messages(dataField) }}
 {% endmacro %}
 
 
 {% macro EMS_CoreBundle_Form_DataField_DataLinkFieldType(dataField) %}
+{% import _self as macros %}
 	<dl>
 		{% if dataField.fieldType.displayOptions.label is defined %}
 			<dt>{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})</dt>
@@ -265,10 +273,11 @@
 		
 		</dd>
 	</dl>
-	{{ _self.messages(dataField) }}
+	{{ macros.messages(dataField) }}
 {% endmacro %}
 
 {% macro EMS_CoreBundle_Form_DataField_SelectFieldType(dataField) %}
+{% import _self as macros %}
 	<dl>
 		{% if dataField.fieldType.displayOptions.label is defined %}
 			<dt>{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})</dt>
@@ -288,10 +297,11 @@
 		
 		</dd>
 	</dl>
-	{{ _self.messages(dataField) }}
+	{{ macros.messages(dataField) }}
 {% endmacro %}
 
 {% macro EMS_CoreBundle_Form_DataField_OuuidFieldType(dataField) %}
+{% import _self as macros %}
 	<dl>
 		{% if dataField.fieldType.displayOptions.label is defined %}
 			<dt>{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})</dt>
@@ -300,10 +310,11 @@
 		{% endif %}
 		<dd>{{ dataField.textValue }}</dd>
 	</dl>
-	{{ _self.messages(dataField) }}
+	{{ macros.messages(dataField) }}
 {% endmacro %}
 
 {% macro EMS_CoreBundle_Form_DataField_ComputedFieldType(dataField) %}
+{% import _self as macros %}
 	<dl>
 		{% if dataField.fieldType.displayOptions.label is defined %}
 			<dt>{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})</dt>
@@ -320,10 +331,11 @@
 			{% endif %}
 		</dd>
 	</dl>
-	{{ _self.messages(dataField) }}
+	{{ macros.messages(dataField) }}
 {% endmacro %}
 
 {% macro EMS_CoreBundle_Form_DataField_TextStringFieldType(dataField) %}
+{% import _self as macros %}
 	<dl>
 		{% if dataField.fieldType.displayOptions.label is defined %}
 			<dt>{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})</dt>
@@ -333,10 +345,11 @@
 		
 		<dd>{{ dataField.textValue }}</dd>
 	</dl>
-	{{ _self.messages(dataField) }}
+	{{ macros.messages(dataField) }}
 {% endmacro %}
 
 {% macro EMS_CoreBundle_Form_DataField_TextareaFieldType(dataField) %}
+{% import _self as macros %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -353,10 +366,11 @@
 			</div>
 		</dd>
 	</dl>
-	{{ _self.messages(dataField) }}
+	{{ macros.messages(dataField) }}
 {% endmacro %}
 
 {% macro EMS_CoreBundle_Form_DataField_JSONFieldType(dataField) %}
+{% import _self as macros %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -373,10 +387,11 @@
 			</div>
 		</dd>
 	</dl>
-	{{ _self.messages(dataField) }}
+	{{ macros.messages(dataField) }}
 {% endmacro %}
 
 {% macro EMS_CoreBundle_Form_DataField_WysiwygFieldType(dataField) %}
+{% import _self as macros %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -393,10 +408,11 @@
 			</div>
 		</dd>
 	</dl>
-	{{ _self.messages(dataField) }}
+	{{ macros.messages(dataField) }}
 {% endmacro %}
 
 {% macro EMS_CoreBundle_Form_DataField_CodeFieldType(dataField) %}
+{% import _self as macros %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -413,10 +429,11 @@
 			</div>
 		</dd>
 	</dl>
-	{{ _self.messages(dataField) }}
+	{{ macros.messages(dataField) }}
 {% endmacro %}
 
 {% macro EMS_CoreBundle_Form_DataField_PasswordFieldType(dataField) %}
+{% import _self as macros %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -433,10 +450,11 @@
 			{% endif %}
 		</dd>
 	</dl>
-	{{ _self.messages(dataField) }}
+	{{ macros.messages(dataField) }}
 {% endmacro %}
 
 {% macro EMS_CoreBundle_Form_DataField_EmailFieldType(dataField) %}
+{% import _self as macros %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -449,10 +467,11 @@
 			{{ dataField.textValue|raw }}
 		</dd>
 	</dl>
-	{{ _self.messages(dataField) }}
+	{{ macros.messages(dataField) }}
 {% endmacro %}
 
 {% macro EMS_CoreBundle_Form_DataField_IconFieldType(dataField) %}
+{% import _self as macros %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -465,10 +484,11 @@
 			<i class="{{ dataField.textValue|raw }}"></i> {{ dataField.textValue|raw }}
 		</dd>
 	</dl>
-	{{ _self.messages(dataField) }}
+	{{ macros.messages(dataField) }}
 {% endmacro %}
 
 {% macro EMS_CoreBundle_Form_DataField_ColorPickerFieldType(dataField) %}
+{% import _self as macros %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -481,13 +501,14 @@
 			{{ dataField.textValue|raw }}
 		</dd>
 	</dl>
-	{{ _self.messages(dataField) }}
+	{{ macros.messages(dataField) }}
 {% endmacro %}
 
 
 
 
 {% macro EMS_CoreBundle_Form_DataField_RadioFieldType(dataField) %}
+{% import _self as macros %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -500,10 +521,11 @@
 			{{ dataField.textValue|raw }}
 		</dd>
 	</dl>
-	{{ _self.messages(dataField) }}
+	{{ macros.messages(dataField) }}
 {% endmacro %}
 
 {% macro EMS_CoreBundle_Form_DataField_ChoiceFieldType(dataField) %}
+{% import _self as macros %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -524,10 +546,11 @@
 			</ul>
 		</dd>
 	</dl>
-	{{ _self.messages(dataField) }}
+	{{ macros.messages(dataField) }}
 {% endmacro %}
 
 {% macro EMS_CoreBundle_Form_DataField_CheckboxFieldType(dataField) %}
+{% import _self as macros %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -544,10 +567,11 @@
 			{% endif %}
 		</dd>
 	</dl>
-	{{ _self.messages(dataField) }}
+	{{ macros.messages(dataField) }}
 {% endmacro %}
 
 {% macro EMS_CoreBundle_Form_DataField_NumberFieldType(dataField) %}
+{% import _self as macros %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -560,10 +584,11 @@
 			{{ dataField.floatValue }}
 		</dd>
 	</dl>
-	{{ _self.messages(dataField) }}
+	{{ macros.messages(dataField) }}
 {% endmacro %}
 
 {% macro EMS_CoreBundle_Form_DataField_IntegerFieldType(dataField) %}
+{% import _self as macros %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -576,10 +601,11 @@
 			{{ dataField.integerValue }}
 		</dd>
 	</dl>
-	{{ _self.messages(dataField) }}
+	{{ macros.messages(dataField) }}
 {% endmacro %}
 
 {% macro EMS_CoreBundle_Form_DataField_DateFieldType(dataField) %}
+{% import _self as macros %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -598,10 +624,11 @@
 			</ul>
 		</dd>
 	</dl>
-	{{ _self.messages(dataField) }}
+	{{ macros.messages(dataField) }}
 {% endmacro %}
 
 {% macro EMS_CoreBundle_Form_DataField_DateRangeFieldType(dataField) %}
+{% import _self as macros %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -642,10 +669,11 @@
 			</ul>
 		</dd>
 	</dl>
-	{{ _self.messages(dataField) }}
+	{{ macros.messages(dataField) }}
 {% endmacro %}
 
 {% macro EMS_CoreBundle_Form_DataField_TimeFieldType(dataField) %}
+{% import _self as macros %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -661,5 +689,5 @@
 			{% endif %}
 		</dd>
 	</dl>
-	{{ _self.messages(dataField) }}
+	{{ macros.messages(dataField) }}
 {% endmacro %}

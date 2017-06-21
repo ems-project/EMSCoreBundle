@@ -14,7 +14,8 @@ use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormEvent;
-																	
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+																		
 /**
  * Defined a Container content type.
  * It's used to logically groups subfields together. However a Container is invisible in Elastic search.
@@ -26,18 +27,13 @@ use Symfony\Component\Form\FormEvent;
  class DataLinkFieldType extends DataFieldType {
 
  	/**@var Client $client*/
- 	private $client;
- 	/**@var FormRegistryInterface $registry*/
- 	private $registry;
+ 	protected $client;
  	
-	public function setClient(Client $client){
-		$this->client = $client;
-		return $this;
-	}
  	
- 	public function setRegistry(FormRegistryInterface $registry){
- 		$this->registry = $registry;
-	 	return $this;
+ 	
+ 	public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, Client $client) {
+ 		parent::__construct($authorizationChecker, $formRegistry);
+ 		$this->client = $client;
  	}
  	
 	/**

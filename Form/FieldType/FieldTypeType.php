@@ -14,14 +14,23 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormRegistryInterface;
+use Monolog\Logger;
 
 class FieldTypeType extends AbstractType
 {
 	/** @var FieldTypePickerType $fieldTypePickerType */
 	private $fieldTypePickerType;
+	/** @var FormRegistryInterface $formRegistry */
+	private $formRegistry;
+	/** @var Logger $logger */
+	private $logger;
 	
-	public function __construct(FieldTypePickerType $fieldTypePickerType) {
+	public function __construct(FieldTypePickerType $fieldTypePickerType, FormRegistryInterface $formRegistry, Logger $logger) {
 		$this->fieldTypePickerType = $fieldTypePickerType;
+		$this->formRegistry= $formRegistry;
+		$this->logger = $logger;
 	}
 	
 
@@ -37,8 +46,9 @@ class FieldTypeType extends AbstractType
 
     	$builder->add ( 'name', HiddenType::class ); 
     	
-    	$type = $fieldType->getType();
-    	$dataFieldType = new $type;
+//     	$type = $fieldType->getType();
+//     	$dataFieldType = new $type;
+    	$dataFieldType=$this->formRegistry->getType($fieldType->getType())->getInnerType();
     	
     	
     	$dataFieldType->buildOptionsForm($builder, $options);
@@ -144,21 +154,36 @@ class FieldTypeType extends AbstractType
     public function dataFieldToArray(DataField $dataField){
     	$out = [];
     	
+    	$this->logger->debug('dataFieldToArray for a type', [$dataField->getFieldType()->getType()]);
     	
-    	$dataFieldType = new CollectionItemFieldType();
+//     	$dataFieldType = new CollectionItemFieldType();
+
     	/** @var DataFieldType $dataFieldType */
     	if(null != $dataField->getFieldType()){
+	    	$this->logger->debug('Instanciate the FieldType', [$dataField->getFieldType()->getType()]);
 	    	$dataFieldType = $this->fieldTypePickerType->getDataFieldType($dataField->getFieldType()->getType());    		
     	}
+    	else {
+			$this->logger->debug('Field Type not found shoud be a collectionn item');
+    		$dataFieldType = $this->formRegistry->getType(CollectionItemFieldType::class)->getInnerType();
+    	}
     	 
+    	$this->logger->debug('build object array 2', [ get_class($dataFieldType) ]);
+    	
     	$dataFieldType->buildObjectArray($dataField, $out);
     	
     	
+    	$this->logger->debug('Builded', [json_encode($out), ]);
+    	
+//     	dump($out);exit;
 
     	/** @var DataField $child */
     	foreach ( $dataField->getChildren () as $child ) {
+    		$this->logger->debug('build object array for child', [$child->getFieldType()]);
+    	
     		//its a Collection Item
 	    	if ($child->getFieldType() == null){
+	    		$this->logger->debug('empty');
 	    		$subOut = [];
 	    		foreach ( $child->getChildren () as $grandchild ) {
 	    			$subOut = array_merge($subOut, $this->dataFieldToArray($grandchild));
@@ -166,6 +191,8 @@ class FieldTypeType extends AbstractType
 	    		$out[$dataFieldType->getJsonName($dataField->getFieldType())][] = $subOut;
 	    	}
 	    	else if (! $child->getFieldType()->getDeleted ()) {
+	    		
+	    		$this->logger->debug('not deleted');
 	    		if( $dataFieldType->isNested() ){
 					$out[$dataFieldType->getJsonName($dataField->getFieldType())] = array_merge($out[$dataFieldType->getJsonName($dataField->getFieldType())], $this->dataFieldToArray($child));
 	    		}
@@ -176,14 +203,17 @@ class FieldTypeType extends AbstractType
 	    			$out = array_merge($out, $this->dataFieldToArray($child));
 	    		}
 	    	}
+	    	
+	    	$this->logger->debug('build array for child done', [$child->getFieldType()]);
     	}
     	return $out;
     }
     
     public function generateMapping(FieldType $fieldType, $withPipeline = false) {
-    	$type = $fieldType->getType();
-    	/** @var DataFieldType $dataFieldType */
-    	$dataFieldType = new $type();
+//     	$type = $fieldType->getType();
+//     	/** @var DataFieldType $dataFieldType */
+//     	$dataFieldType = new $type();
+    	$dataFieldType = $this->formRegistry->getType($fieldType->getType())->getInnerType();
     	
     	$out = $dataFieldType->generateMapping($fieldType, $withPipeline);
     	

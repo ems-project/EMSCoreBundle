@@ -8,8 +8,18 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\FormRegistryInterface;
 
 class RevisionType extends AbstractType {
+	
+	/**@var FormRegistryInterface**/
+	private $formRegistry;
+	
+	public function __construct(FormRegistryInterface $formRegistry){
+		$this->formRegistry =$formRegistry;
+	}
+	
+	
 	/**
 	 *
 	 * {@inheritdoc}
@@ -20,8 +30,8 @@ class RevisionType extends AbstractType {
 		/** @var Revision $revision */
 		$revision = $builder->getData ();
 		
-		$builder->add ( 'dataField', $revision->getContentType ()->getFieldType ()->getType (), [ 
-				'metadata' => $revision->getContentType ()->getFieldType (),
+		$builder->add ( 'dataField', $revision->getContentType()->getFieldType()->getType(), [ 
+				'metadata' => $revision->getContentType()->getFieldType(),
 				'error_bubbling' => false,
 		] )->add ( 'save', SubmitEmsType::class, [ 
 				'attr' => [ 

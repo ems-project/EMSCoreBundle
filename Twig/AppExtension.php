@@ -140,10 +140,19 @@ class AppExtension extends \Twig_Extension
 	}
 
 	function internalLinks($input){
-		$url = $this->router->generate('data.link', ['key'=>'object:'], UrlGeneratorInterface::RELATIVE_PATH);
+		$url = $this->router->generate('data.link', ['key'=>'object:'], UrlGeneratorInterface::ABSOLUTE_PATH);
 		$out = preg_replace('/ems:\/\/object:/i', $url, $input);
-		$url = $this->router->generate('data.link', ['key'=>'asset:'], UrlGeneratorInterface::RELATIVE_PATH);
-		$out = preg_replace('/ems:\/\/asset:/i', $url, $out);
+		
+		$path = $this->router->generate('ems_file_view', ['sha1' => '__SHA1__'], UrlGeneratorInterface::ABSOLUTE_PATH );
+		$path = substr($path, 0, strlen($path)-8);
+		$out= preg_replace_callback(
+			'/(ems:\/\/asset:)([^\n\r"\'\?]*)/i',
+			function ($matches) use ($path) {
+					return $path.$matches[2];
+			},
+			$out
+		); 
+		
 		return $out;
 	}
 	

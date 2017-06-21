@@ -153,6 +153,45 @@ class FileService {
 	}
 	
 	
+	public function getImages() {
+		
+		/** @var EntityManager $em */
+		$em = $this->doctrine->getManager ();
+		/** @var UploadedAssetRepository $repository */
+		$repository = $em->getRepository ( 'EMSCoreBundle:UploadedAsset' );
+		
+
+		 $qb = $repository
+			->createQueryBuilder('a')->where('a.type like :image')
+			->select('a.type, a.name, a.sha1, a.user')
+			->setParameter('image', 'image/%')
+			->groupBy('a.type, a.name, a.sha1, a.user');
+			
+		$query = $qb->getQuery();
+		
+		
+		$result = $query->getResult();
+		return $result;
+	}
+		
+	public function uploadFile($name, $type, $filename, $user) {
+		
+		$sha1 = sha1_file($filename);
+		$size = filesize($filename);
+		$uploadedAsset = $this->initUploadFile($sha1, $size, $name, $type, $user);
+		if(!$uploadedAsset->getAvailable()) {
+			$uploadedAsset = $this->saveFile($filename, $uploadedAsset);
+		}
+		
+		/** @var EntityManager $em */
+		$em = $this->doctrine->getManager ();
+		$em->persist($uploadedAsset);
+		$em->flush($uploadedAsset);
+		
+		return $uploadedAsset;
+	}
+	
+	
 	public function addChunk($sha1, $chunk, $user) {
 		if(empty($this->storageServices)){
 			throw new StorageServiceMissingException("No storage service have been defined");
@@ -195,6 +234,8 @@ class FileService {
 			$uploadedAsset = $this->saveFile($filename, $uploadedAsset);
 		}
 		
+		$em->persist($uploadedAsset);
+		$em->flush($uploadedAsset);
 		return $uploadedAsset;
 	}
 	
@@ -203,6 +244,7 @@ class FileService {
 // 			throw new Conflict409Exception("Sha1 mismatched ".sha1_file($filename).' '.$uploadedAsset->getSha1());
 //TODO: fix this issue
 			$uploadedAsset->setSha1(sha1_file($filename));
+			$uploadedAsset->setUploaded(filesize($filename));
 		}
 		
 		/**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/

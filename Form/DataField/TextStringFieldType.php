@@ -9,7 +9,9 @@ use EMS\CoreBundle\Form\Field\IconTextType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-			
+use EMS\CoreBundle\Form\DataTransformer\DataFieldTransformer;
+use EMS\CoreBundle\Entity\DataField;
+					
 /**
  * Defined a Container content type.
  * It's used to logically groups subfields together. However a Container is invisible in Elastic search.
@@ -18,6 +20,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  *        
  */
  class TextStringFieldType extends DataFieldType {
+ 	
 	/**
 	 *
 	 * {@inheritdoc}
@@ -47,7 +50,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 		$fieldType = $options ['metadata'];
 		
 		if($options['prefixIcon'] || $options['prefixText'] || $options['suffixIcon'] || $options['suffixText'] ){
-			$builder->add ( 'text_value', IconTextType::class, [ 
+			$builder->add ( 'raw_data', IconTextType::class, [ 
 					'required' => false,
 					'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
 					'label' => (null != $options ['label']?$options ['label']:$fieldType->getName()),
@@ -58,12 +61,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 			] );			
 		}
 		else{
-			$builder->add ( 'text_value', TextType::class, [
+			$builder->add ( 'raw_data', TextType::class, [
 					'label' => (null != $options ['label']?$options ['label']:$fieldType->getName()),
 					'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
 					'required' => false,
 			] );			
 		}
+		$builder->get('raw_data')->addViewTransformer(new DataFieldTransformer($fieldType, $this->formRegistry));
 		
 	}
 	

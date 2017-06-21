@@ -12,23 +12,26 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class FileController extends AppController
 {
 	
+	
 	/**
 	 * @Route("/data/file/view/{sha1}" , name="ems.file.view")
+	 * @Route("/data/file/view/{sha1}" , name="ems_file_view")
 	 * @Route("/api/file/view/{sha1}" , name="ems.api.file.view")
      * @Method({"GET"})
 	 */
 	public function viewFileAction($sha1, Request $request) {
 		return $this->getFile($sha1, ResponseHeaderBag::DISPOSITION_INLINE, $request);
 	}
-	
 	/**
 	 * @Route("/data/file/{sha1}" , name="file.download")
+	 * @Route("/data/file/{sha1}" , name="ems_file_download")
 	 * @Route("/api/file/{sha1}" , name="file.api.download")
-     * @Method({"GET"})
+	 * @Method({"GET"})
 	 */
 	public function downloadFileAction($sha1, Request $request) {
 		return $this->getFile($sha1, ResponseHeaderBag::DISPOSITION_ATTACHMENT, $request);
@@ -107,6 +110,58 @@ class FileController extends AppController
 				'asset' => $uploadedAsset,
 		]);
 		
+	}
+	
+	
+	
+	
+	/**
+	 * @Route("/images/index" , name="ems_images_index", defaults={"_format": "json"})
+	 * @Route("/api/images" , name="ems_api_images_index", defaults={"_format": "json"})
+	 * @Method({"GET"})
+	 */
+	public function indexImagesAction(Request $request) {
+		$images = $this->getFileService()->getImages();
+		return $this->render( 'EMSCoreBundle:ajax:images.json.twig', [
+				'images' => $images,
+		]);
+	}
+	
+	
+	/**
+	 * @Route("/file/upload" , name="ems_image_upload_url", defaults={"_format": "json"})
+	 * @Route("/api/file" , name="ems_api_image_upload_url", defaults={"_format": "json"})
+	 * @Method({"POST"})
+	 */
+	public function uploadfileAction(Request $request) {
+		/**@var UploadedFile $file*/
+		$file = $request->files->get('upload');
+		if($file){
+			
+			$name = $file->getClientOriginalName();
+			$type = $file->getMimeType();
+			$user = $this->getUser()->getUsername();
+			
+			try {
+				$uploadedAsset = $this->getFileService()->uploadFile($name, $type, $file->getRealPath(), $user);
+				
+			}
+			catch (\Exception $e) {
+				$this->addFlash('error', $e->getMessage());
+				return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
+						'success' => false,
+				]);
+			}
+			
+			
+			return $this->render( 'EMSCoreBundle:ajax:multipart.json.twig', [
+					'success' => true,
+					'asset' => $uploadedAsset,
+			]);
+		}
+		return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
+				'success' => false,
+		]);
 	}
 	
 }

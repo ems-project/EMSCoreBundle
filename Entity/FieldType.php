@@ -183,11 +183,12 @@ class FieldType
      * @return \DateTime
      */
     public function setDataValue($input, DataField &$dataField) {
-    	$type = $this->getType();
-    	/** @var DataFieldType $dataFieldType */
-    	$dataFieldType = new $type;
+    	throw new \Exception('Deprecated method');
+//     	$type = $this->getType();
+//     	/** @var DataFieldType $dataFieldType */
+//     	$dataFieldType = new $type;
     	 
-    	$dataFieldType->setDataValue($input, $dataField, $this->getOptions());
+//     	$dataFieldType->setDataValue($input, $dataField, $this->getOptions());
     	 
     }
     
@@ -209,11 +210,12 @@ class FieldType
      * @return \DateTime
      */
     public function getDataValue(DataField &$dataField) {
-    	$type = $this->getType();
-    	/** @var DataFieldType $dataFieldType */
-    	$dataFieldType = new $type;
+    	throw new \Exception('Deprecated method');
+//     	$type = $this->getType();
+//     	/** @var DataFieldType $dataFieldType */
+//     	$dataFieldType = new $type;
     	
-    	return $dataFieldType->getDataValue($dataField, $this->getOptions());
+//     	return $dataFieldType->getDataValue($dataField, $this->getOptions());
     	
     }
     

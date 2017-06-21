@@ -384,7 +384,6 @@ class CriteriaController extends AppController
 		/** @var DataField $criteria */
 		foreach ($criteriaUpdateConfig->getCriterion() as $idxName => $criteria){
 			$fieldTypeName = $criteria->getFieldType()->getType();
-			//TODO: the 2 next lignes should replace all new $typeName everywhere!!!!!
 			/**@var DataFieldType $dataFieldType */
 			$dataFieldType = $this->get('form.registry')->getType($fieldTypeName)->getInnerType();
 			if(count($criteria->getRawData()) > 0) {

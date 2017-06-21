@@ -11,8 +11,25 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use EMS\CoreBundle\Entity\DataField;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Form\FormRegistryInterface;
+use EMS\CoreBundle\Form\DataTransformer\DataFieldTransformer;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class WysiwygFieldType extends DataFieldType {
+	
+	/**@var RouterInterface*/ 
+	private $router;
+	
+	
+	
+	public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, RouterInterface $router) {
+		parent::__construct($authorizationChecker, $formRegistry);
+		$this->router= $router;
+	}
+	
 	/**
 	 *
 	 * {@inheritdoc}
@@ -39,7 +56,7 @@ class WysiwygFieldType extends DataFieldType {
 	public function buildForm(FormBuilderInterface $builder, array $options) {
 		/** @var FieldType $fieldType */
 		$fieldType = $builder->getOptions () ['metadata'];
-		$builder->add ( 'text_value', TextareaSymfonyType::class, [ 
+		$builder->add ( 'raw_data', TextareaSymfonyType::class, [ 
 				'attr' => [ 
 						'class' => 'ckeditor_ems',
 						'data-height' => $options['height'],
@@ -48,6 +65,8 @@ class WysiwygFieldType extends DataFieldType {
 				'required' => false,
 				'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
 		] );
+		
+		$builder->get ( 'raw_data' )->addViewTransformer(new DataFieldTransformer($fieldType, $this->formRegistry));
 	}
 
 	/**
@@ -70,6 +89,36 @@ class WysiwygFieldType extends DataFieldType {
 		$resolver->setDefault('height', 400);
 	}
 	
+	
+	
+	public function reverseTransform($data) {
+		$path = $this->router->generate('ems_file_view', ['sha1' => '__SHA1__'], UrlGeneratorInterface::ABSOLUTE_PATH );
+		
+		$out= preg_replace_callback(
+				'/('.preg_quote(substr($path, 0, strlen($path)-8), '/').')([^\n\r"\'\?]*)/i',
+				function ($matches){
+					return 'ems://asset:'.$matches[2];
+				},
+				$data
+		); 
+		return $out;
+	}
+	
+	public function transform($data) {
+		$path = $this->router->generate('ems_file_view', ['sha1' => '__SHA1__'], UrlGeneratorInterface::ABSOLUTE_PATH );
+		$path = substr($path, 0, strlen($path)-8);
+		$out= preg_replace_callback(
+			'/(ems:\/\/asset:)([^\n\r"\'\?]*)/i',
+			function ($matches) use ($path) {
+				return $path.$matches[2];
+			},
+			$data
+		);
+		
+		return $out;
+	}
+	
+	
 	/**
 	 *
 	 * {@inheritdoc}
@@ -88,5 +137,48 @@ class WysiwygFieldType extends DataFieldType {
 		$optionsForm->get ( 'displayOptions' )->add ( 'height', IntegerType::class, [
 				'required' => false,
 		]);
+	}
+	
+	/**
+	 *
+	 * {@inheritdoc}
+	 *
+	 */
+	public function getDataValue(DataField &$dataValues, array $options){
+		
+		if(is_array($dataValues->getRawData()) && count($dataValues->getRawData()) === 0){
+			return null; //empty array means null/empty
+		}
+		
+		if($dataValues->getRawData()!== null && !is_string($dataValues->getRawData())){
+			if(is_array($dataValues->getRawData()) && count($dataValues->getRawData()) == 1 && is_string($dataValues->getRawData()[0])) {
+				$this->addMessage('String expected, single string in array instead');
+				return $dataValues->getRawData()[0];
+			}
+			$this->addMessage('String expected from the DB: '.print_r($dataValues->getRawData(), true));
+		}
+		
+		$output = $dataValues->getRawData();
+// 		dump($dataValues->getRawData());
+		dump($this);
+		throw new \Exception();
+		$this->router->generate('ems_file_download', [
+				'sha1' => 	'__toot__',
+		]);
+		
+		return $output;
+	}
+	
+	/**
+	 *
+	 * {@inheritdoc}
+	 *
+	 */
+	public function setDataValue($input, DataField &$dataValues, array $options){
+		if($input!== null && !is_string($input)){
+			throw new DataFormatException('String expected: '.print_r($rawData, true));
+		}
+		$dataValues->setRawData($input);
+		return $this;
 	}
 }

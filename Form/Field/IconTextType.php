@@ -18,9 +18,10 @@ class IconTextType extends TextType {
 		$resolver->setDefaults ( array (
 				'compound' => false,
 				'metadata' => null,
-				'icon' => 'fa fa-key',
+				'icon' => null,
 	        	'class' => null,
 		) );
+		$resolver->setDefault ( 'prefixIcon', null );
 		$resolver->setDefault ( 'prefixText', null );
 		$resolver->setDefault ( 'suffixIcon', null );
 		$resolver->setDefault ( 'suffixText', null );
@@ -34,6 +35,7 @@ class IconTextType extends TextType {
 	public function buildView(FormView $view, FormInterface $form, array $options) {
 		$view->vars ['icon'] = $options ['icon'];
 		$view->vars ['class'] = $options ['class'];
+		$view->vars ['prefixIcon'] = $options ['prefixIcon'];
 		$view->vars ['prefixText'] = $options ['prefixText'];
 		$view->vars ['suffixIcon'] = $options ['suffixIcon'];
 		$view->vars ['suffixText'] = $options ['suffixText'];

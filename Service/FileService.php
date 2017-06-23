@@ -7,6 +7,7 @@ use EMS\CoreBundle\Entity\UploadedAsset;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CoreBundle\Exception\StorageServiceMissingException;
 use Elasticsearch\Common\Exceptions\Conflict409Exception;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class FileService {
 

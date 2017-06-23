@@ -8,7 +8,7 @@ use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\FormRegistryInterface;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
 
-class DataFieldTransformer implements DataTransformerInterface
+class DataFieldModelTransformer implements DataTransformerInterface
 {
 	/**@var FieldType */
 	private $fieldType;
@@ -32,7 +32,7 @@ class DataFieldTransformer implements DataTransformerInterface
         /**@var DataFieldType $dataFieldType*/
         $dataFieldType = $this->formRegistry->getType($this->fieldType->getType())->getInnerType();
         
-        return $dataFieldType->transform($data);
+        return $dataFieldType->modelTransform($data, $this->fieldType);
     }
 
     /**
@@ -46,6 +46,6 @@ class DataFieldTransformer implements DataTransformerInterface
     	/**@var DataFieldType $dataFieldType*/
     	$dataFieldType = $this->formRegistry->getType($this->fieldType->getType())->getInnerType();
     	
-    	return $dataFieldType->reverseTransform($data);
+    	return $dataFieldType->reverseModelTransform($data);
     }
 }

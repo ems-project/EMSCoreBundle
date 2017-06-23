@@ -109,7 +109,6 @@ function onFormChange(){
 			  
 			  $(response.formErrors).each(function(index, item){
 
-				  console.log(item.propertyPath);
 				  if($('#'+item.propertyPath+'__label').length) {
 
 					  $('#'+item.propertyPath+'__label').addClass('has-error');
@@ -195,7 +194,6 @@ function initFileUploader(fileHandler, container){
 	
     var fileUploader = new FileUploader({
     	file: fileHandler,
-    	sha1: '',
     	onSha1Available: function(sha1, type, name){
 	    		$(sha1Input).val(sha1);
 	    		$(typeInput).val(type);

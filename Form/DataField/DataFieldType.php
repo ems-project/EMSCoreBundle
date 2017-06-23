@@ -35,13 +35,66 @@ abstract class DataFieldType extends AbstractType {
 	}
 	
 	
-	
-	public function reverseTransform($data) {
-		return $data;
+	/**
+	 * form array to DataField 
+	 * 
+	 * http://symfony.com/doc/current/form/data_transformers.html#about-model-and-view-transformers
+	 * 
+	 * @param unknown $data
+	 * @param FieldType $fieldType
+	 * @return \EMS\CoreBundle\Entity\DataField
+	 */
+	public function reverseViewTransform($data, FieldType $fieldType) {
+		$out = new DataField();
+		$out->setRawData($data);
+		$out->setFieldType($fieldType);
+		return $out;
 	}
 	
-	public function transform($data) {
-		return $data;
+	
+	/**
+	 * datafield to form array : 
+	 * 
+	 * http://symfony.com/doc/current/form/data_transformers.html#about-model-and-view-transformers
+	 * 
+	 * @param DataField $data
+	 * @return array|null|string|integer|float
+	 */
+	public function viewTransform(DataField $data) {
+		return $data->getRawData();
+	}
+	
+	
+	/**
+	 * datafield to raw_data array : 
+	 * 
+	 * http://symfony.com/doc/current/form/data_transformers.html#about-model-and-view-transformers
+	 * 
+	 * @param DataField $data
+	 * 
+	 * @return array|null|string|integer|float
+	 */
+	public function reverseModelTransform(DataField $data) {
+// 		dump($data);
+		return $data->getRawData();
+	}
+	
+	
+	/**
+	 * raw_data array to datafield: 
+	 * 
+	 * http://symfony.com/doc/current/form/data_transformers.html#about-model-and-view-transformers
+	 * 
+	 * @param unknown $data
+	 * @return DataField
+	 */
+	public function modelTransform($data, FieldType $fieldType) {
+// 		dump($data);
+		$out = new DataField();
+		$out->setRawData($data);
+		$out->setFieldType($fieldType);
+// 		dump($out);
+		return $out;
 	}
 	
 // 	public function setAuthorizationChecker($authorizationChecker){
@@ -144,11 +197,12 @@ abstract class DataFieldType extends AbstractType {
 	 */
 	public function configureOptions(OptionsResolver $resolver) {
 		$resolver->setDefaults ( [ 
-				'data_class' => 'EMS\CoreBundle\Entity\DataField',
+				//'data_class' => 'EMS\CoreBundle\Entity\DataField',
 				'lastOfRow' => false,
 				'class' => null, // used to specify a bootstrap class arround the compoment
 				'metadata' => null, // used to keep a link to the FieldType
 				'error_bubbling' => false,
+				'required' => false,
 		]);
 	}
 	
@@ -238,12 +292,7 @@ abstract class DataFieldType extends AbstractType {
 	 * @return boolean
 	 */
 	public function isValid(DataField &$dataField){
-		$isValid = TRUE;
-		//Madatory Validation
-		$isValid = $isValid && $this->isMandatory($dataField);
-		//Add here an other validation
-		//$isValid = isValid && isValidYourValidation();
-		return $isValid;
+		return count($dataField->getMessages()) === 0 && $this->isMandatory($dataField);
 	}
 	
 	/**

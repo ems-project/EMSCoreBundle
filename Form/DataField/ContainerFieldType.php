@@ -9,6 +9,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use EMS\CoreBundle\Form\DataTransformer\DataFieldTransformer;
+use EMS\CoreBundle\Form\DataTransformer\DataFieldViewTransformer;
+use EMS\CoreBundle\Form\DataTransformer\DataFieldModelTransformer;
 
 /**
  * Defined a Container content type.
@@ -65,7 +68,13 @@ class ContainerFieldType extends DataFieldType {
 						'metadata' => $child,
 						'label' => false 
 				], $child->getDisplayOptions () );
-				$builder->add ( 'ems_' . $child->getName (), $child->getType (), $options );
+				
+				$builder->add (  $child->getName (), $child->getType (), $options );
+				
+				
+				$builder->get ( $child->getName () )
+					->addViewTransformer(new DataFieldViewTransformer($child, $this->formRegistry))
+					->addModelTransformer(new DataFieldModelTransformer($child, $this->formRegistry));
 			}
 		}
 	}
@@ -99,7 +108,6 @@ class ContainerFieldType extends DataFieldType {
 	 *
 	 */
 	public static function buildObjectArray(DataField $data, array &$out) {
-		dump('hello');;
 		
 	}
 	

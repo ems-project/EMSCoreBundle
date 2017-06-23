@@ -9,8 +9,21 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use EMS\CoreBundle\Form\Field\IconTextType;
+use Symfony\Component\Form\FormView;
+use Symfony\Component\Form\FormInterface;
 
+/**
+ * Basic content type for text (regular text input)
+ * 
+ * @author Mathieu De Keyzer <ems@theus.be>
+ *
+ */
 class TimeFieldType extends DataFieldType {
+	
+	const storeFormat = 'H:i:s';
+	const indexFormat = 'HH:mm:ss';
+	
 	
 	/**
 	 *
@@ -47,6 +60,12 @@ class TimeFieldType extends DataFieldType {
 		return [$dataField->getFieldType()->getName()];
 	}
 	
+	/**
+	 * Convert options into PHP date format string
+	 * 
+	 * @param array $options
+	 * @return string
+	 */
 	public static function getFormat($options){
 		
 		if($options['displayOptions']['showMeridian']){
@@ -67,39 +86,24 @@ class TimeFieldType extends DataFieldType {
 	}
 	
 	/**
+	 *
 	 * {@inheritdoc}
 	 *
 	 */
-	public function setDataValue($input, DataField &$dataField, array $options){
-		$format = $this->getFormat($options);
-
-		$converted = \DateTime::createFromFormat($format, $input);
-		if($converted){
-			$dataField->setRawData($converted->format(\DateTime::ISO8601));
-		}		
-		else {
-			$dataField->setRawData(null);
-		}
-	}
-
-	/**
-	 * {@inheritdoc}
-	 *
-	 */
-	public function getDataValue(DataField &$dataField, array $options){
-
-		if(null !== $dataField->getRawData()){
-
-			if(is_array($dataField->getRawData()) && count($dataField->getRawData()) === 0){
-				return null; //empty array means null/empty
-			}
-			
-			$format = $this->getFormat($options);
-			/**@var \DateTime $converted*/
-			$dateTime = \DateTime::createFromFormat(\DateTime::ISO8601, $dataField->getRawData());
-			return $dateTime->format($format);
-		}
+	public function viewTransform(DataField $data) {
+		$out = parent::viewTransform($data);
 		
+		if(is_array($out) && count($out) === 0){
+			return null; //empty array means null/empty
+		}
+
+		$format = $this->getFormat($data->getFieldType()->getOptions());
+
+		/**@var \DateTime $converted*/
+		$dateTime = \DateTime::createFromFormat(TimeFieldType::storeFormat, $out);
+		if($dateTime) {
+			return $dateTime->format($format);			
+		}
 		return null;
 	}
 	
@@ -108,30 +112,16 @@ class TimeFieldType extends DataFieldType {
 	 * {@inheritdoc}
 	 *
 	 */
-	public function buildForm(FormBuilderInterface $builder, array $options) {
-		
-		/** @var FieldType $fieldType */
-		$fieldType = $builder->getOptions()['metadata'];
-		
-		$attr = [
-			'class' => 'timepicker',
-			'data-show-meridian' => $options['showMeridian']?'true':'false',
-// 			'data-provide' => 'timepicker', //for lazy-mode
-			'data-default-time'  => $options['defaultTime'],
-			'data-show-seconds'  => $options['showSeconds'],
-			'data-explicit-mode'  => $options['explicitMode'],
-		];
-		
-		if($options['minuteStep']){
-			$attr['data-minute-step'] = $options['minuteStep'];
+	public function reverseViewTransform($data, FieldType $fieldType){
+		$format = $this->getFormat($fieldType->getOptions());
+		$converted = \DateTime::createFromFormat($format, $data);
+		if($converted){
+			$out = $converted->format($this::storeFormat);
 		}
-		
-		$builder->add ( 'data_value', TextType::class, [
-				'label' => (isset($options['label'])?$options['label']:$fieldType->getName()),
-				'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
-				'required' => false,
-				'attr' =>  $attr
-		] );
+		else {
+			$out = null;
+		}
+		return parent::reverseViewTransform($out, $fieldType);
 	}
 	
 	/**
@@ -143,18 +133,9 @@ class TimeFieldType extends DataFieldType {
 		return [
 				$current->getName() => array_merge([
 						"type" => "date",
+						"format" => TimeFieldType::indexFormat,
 				],  array_filter($current->getMappingOptions()))
 		];
-	}
-
-
-	/**
-	 *
-	 * {@inheritdoc}
-	 *
-	 */
-	public function getBlockPrefix() {
-		return 'timefieldtype';
 	}
 
 	/**
@@ -165,6 +146,7 @@ class TimeFieldType extends DataFieldType {
 	public function configureOptions(OptionsResolver $resolver) {
 		/* set the default option value for this kind of compound field */
 		parent::configureOptions ( $resolver );
+		$resolver->setDefault ( 'prefixIcon', $this->getIcon());
 		$resolver->setDefault ( 'minuteStep', 15 );
 		$resolver->setDefault ( 'showMeridian', false );
 		$resolver->setDefault ( 'defaultTime', 'current' );
@@ -172,23 +154,38 @@ class TimeFieldType extends DataFieldType {
 		$resolver->setDefault ( 'explicitMode', true );
 	}
 	
+	
 	/**
 	 * {@inheritdoc}
 	 */
-	public static function buildObjectArray(DataField $data, array &$out) {
-		if (! $data->getFieldType()->getDeleted ()) {
-			
-			$format = $data->getFieldType()->getMappingOptions()['format'];
-			
-			$format = DateFieldType::convertJavaDateFormat($format);
-			
-			if(null !== $data->getRawData() && (!is_array($data->getRawData()) || count($data->getRawData()) !== 0)){
-
-				/**@var \DateTime $converted*/
-				$dateTime = \DateTime::createFromFormat(\DateTime::ISO8601, $data->getRawData());
-				$out [$data->getFieldType ()->getName ()] = $dateTime->format($format);
-			}
+	public function buildView(FormView $view, FormInterface $form, array $options) {
+		/*get options for twig context*/
+		parent::buildView($view, $form, $options);
+		$attr = $view->vars['attr'];
+		if(empty($attr['class'])){
+			$attr['class'] = '';
 		}
+		
+		$attr['class'] .= ' timepicker';
+		$attr['data-show-meridian'] = $options['showMeridian']?'true':'false';
+// 		$attr['data-provide'] = 'timepicker';
+		$attr['data-default-time'] = $options['defaultTime'];
+		$attr['data-show-seconds'] = $options['showSeconds'];
+		$attr['data-explicit-mode'] = $options['explicitMode'];
+
+		if($options['minuteStep']){
+			$attr['data-minute-step'] = $options['minuteStep'];
+		}
+		
+		$view->vars ['attr'] = $attr;
+	}
+	
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getParent()
+	{
+		return IconTextType	::class;
 	}
 	
 	/**

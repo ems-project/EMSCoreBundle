@@ -317,7 +317,7 @@ class AppExtension extends \Twig_Extension
 		$parent = $error->getOrigin();
 		$out = '';
 		while($parent) {
-			$out = $parent->getPropertyPath().$out;
+			$out = $parent->getName().$out;
 			$parent = $parent->getParent();
 			if($parent) {
 				$out = '_'.$out;

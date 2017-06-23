@@ -445,10 +445,11 @@ class DataService
 			
 		$objectArray = $revision->getRawData();
 		
-		if($this->propagateDataToComputedField($revision->getDataField(), $objectArray, $revision->getContentType()->getName(), $revision->getOuuid())) {
-			$objectArray = $this->mapping->dataFieldToArray($revision->getDataField());
-			$revision->setRawData($objectArray);
-		}
+		
+// 		if($this->propagateDataToComputedField($revision->getDataField(), $objectArray, $revision->getContentType()->getName(), $revision->getOuuid())) {
+// 			$objectArray = $this->mapping->dataFieldToArray($revision->getDataField());
+// 			$revision->setRawData($objectArray);
+// 		}
 		
 		$objectArray = $this->sign($revision);
 		
@@ -482,7 +483,7 @@ class DataService
 			}
 				
 			$revision->addEnvironment($revision->getContentType()->getEnvironment());
-			$revision->getDataField()->propagateOuuid($revision->getOuuid());
+// 			$revision->getDataField()->propagateOuuid($revision->getOuuid());
 			$revision->setDraft(false);
 			
 			if(empty($username)){
@@ -854,7 +855,7 @@ class DataService
 	
 	public function isValid(\Symfony\Component\Form\Form &$form) {
 		
-		$viewData = $form->getViewData();
+		$viewData = $form->getNormData();
 		
 		//pour le champ hidden allFieldsAreThere de Revision
 		if(!is_object($viewData) && 'allFieldsAreThere' == $form->getName()){
@@ -863,20 +864,23 @@ class DataService
 		
 		if($viewData instanceof Revision) {
 			/** @var DataField $dataField */
-			$dataField = $viewData->getDatafield();
-		} elseif($viewData instanceof DataField) {
+			$viewData = $form->get('raw_data')->getNormData();
+		}
+		
+		if($viewData instanceof DataField) {
 			/** @var DataField $dataField */
 			$dataField = $viewData;
 		} else {
-			dump($viewData);
 			throw new \Exception("Unforeseen type of viewData");
 		}
+		
 		if($dataField->getFieldType() !== null && $dataField->getFieldType()->getType() !== null) {
 // 			$dataFieldTypeClassName = $dataField->getFieldType()->getType();
 // 	    	/** @var DataFieldType $dataFieldType */
 // 	    	$dataFieldType = new $dataFieldTypeClassName();
 	    	/** @var DataFieldType $dataFieldType */
 			$dataFieldType = $this->formRegistry->getType($dataField->getFieldType()->getType())->getInnerType();
+			$dataFieldType->isValid($dataField);
 		}
 		$isValid = true;
 		if(isset($dataFieldType) && $dataFieldType->isContainer()) {//If datafield is container or type is null => Container => Recursive

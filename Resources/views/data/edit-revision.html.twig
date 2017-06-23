@@ -28,7 +28,7 @@
 		{{ form_start(form) }}
 		<div class="box-body">
 			
-			{{ form_widget(form.dataField) }}
+			{{ form_widget(form.raw_data) }}
 	
 		</div>
 		<!-- /.box-body -->
@@ -109,6 +109,7 @@ function onFormChange(){
 			  
 			  $(response.formErrors).each(function(index, item){
 
+				  console.log(item.propertyPath);
 				  if($('#'+item.propertyPath+'__label').length) {
 
 					  $('#'+item.propertyPath+'__label').addClass('has-error');
@@ -121,12 +122,12 @@ function onFormChange(){
 					  }
 				  }
 				  else {
-					  $('#'+item.propertyPath).parent('.form-group').addClass('has-error');
+					  $('#'+item.propertyPath).parents('.form-group').addClass('has-error');
 					  if(item.message) {
-						  if($('#'+item.propertyPath+' span.help-block').length == 0){
-							  $('#'+item.propertyPath).append('<span class="help-block"><ul class="list-unstyled"></ul></span>');
+						  if($('#'+item.propertyPath).parents('.form-group').find(' span.help-block').length == 0){
+							  $('#'+item.propertyPath).parent('.input-group').after('<span class="help-block"><ul class="list-unstyled"></ul></span>');
 						  }
-						  $('#'+item.propertyPath+' span.help-block ul.list-unstyled').append('<li><span class="glyphicon glyphicon-exclamation-sign"></span> '+item.message+'</li>');
+			  				$('#'+item.propertyPath).parents('.form-group').find(' span.help-block ul.list-unstyled').append('<li><span class="glyphicon glyphicon-exclamation-sign"></span> '+item.message+'</li>');
 					  }
 				  }
 				  
@@ -194,6 +195,7 @@ function initFileUploader(fileHandler, container){
 	
     var fileUploader = new FileUploader({
     	file: fileHandler,
+    	sha1: '',
     	onSha1Available: function(sha1, type, name){
 	    		$(sha1Input).val(sha1);
 	    		$(typeInput).val(type);
@@ -202,9 +204,9 @@ function initFileUploader(fileHandler, container){
 	    		$(clearButton).addClass('disabled');
 	    },
 	    onProgress: function(status, progress, remaining){
-		    if($(sha1Input).val() != fileUploader.sha1){
+		    if(status !== 'Computing sha1' && $(sha1Input).val() !== fileUploader.sha1){
         		$(sha1Input).val(fileUploader.sha1);
-        		console.log('Sha1 missmatch');
+        		console.log('Sha1 missmatch!');
 		    }
 		    var pourcent = Math.round(progress*100);
 	    		$(progressBar).css('width', pourcent+'%');
@@ -396,6 +398,15 @@ function addEventListeners(target){
 		{% elseif app.user.wysiwygOptions %}
 			var ckconfig = {{ app.user.wysiwygOptions|raw }};
 		{% endif %}
+
+// 		if(!ckconfig.extraPlugins) {
+// 			ckconfig.extraPlugins = '';
+// 		}
+// 		else {
+// 			ckconfig.extraPlugins += ',';
+// 		}
+		
+// 		ckconfig.extraPlugins += 'image2,imagebrowser,uploadimage';
 
 		ckconfig.imageUploadUrl = ems_upload_url;
 		ckconfig.imageBrowser_listUrl = ems_images_url;

@@ -683,9 +683,9 @@
 			{% endif %}
 		</dt>
 		<dd>
-			{% if dataField.dataValue %}
-				{{ dataField.dataValue|date(dataField.fieldType.options|getTimeFieldTimeFormat) }}
-				({{ dataField.dataValue|date(dataField.fieldType.mappingOptions.format|convertJavaDateFormat) }})
+			{% if dataField.rawData %}
+				{{ dataField.rawData|date(dataField.fieldType.options|getTimeFieldTimeFormat) }}
+				({{ dataField.rawData|date(dataField.fieldType.mappingOptions.format|convertJavaDateFormat) }})
 			{% endif %}
 		</dd>
 	</dl>

@@ -57,8 +57,8 @@ class FileController extends AppController
 	
 	
 	/**
-	 * @Route("/data/file/init-upload/{sha1}/{size}" , name="file.init-upload")
-	 * @Route("/api/file/init-upload/{sha1}/{size}" , name="file.api.init-upload")
+	 * @Route("/data/file/init-upload/{sha1}/{size}" , name="file.init-upload", defaults={"_format" = "json"})
+	 * @Route("/api/file/init-upload/{sha1}/{size}" , name="file.api.init-upload", defaults={"_format" = "json"})
      * @Method({"POST"})
 	 */
 	public function initUploadFileAction($sha1, $size, Request $request)
@@ -87,8 +87,8 @@ class FileController extends AppController
 	}
 	
 	/**
-	 * @Route("/data/file/upload-chunk/{sha1}", name="file.uploadchunk")
-	 * @Route("/api/file/upload-chunk/{sha1}", name="file.api.uploadchunk")
+	 * @Route("/data/file/upload-chunk/{sha1}", name="file.uploadchunk", defaults={"_format" = "json"})
+	 * @Route("/api/file/upload-chunk/{sha1}", name="file.api.uploadchunk", defaults={"_format" = "json"})
 	 */
 	public function uploadChunkAction($sha1, Request $request)
 	{
@@ -136,7 +136,8 @@ class FileController extends AppController
 	public function uploadfileAction(Request $request) {
 		/**@var UploadedFile $file*/
 		$file = $request->files->get('upload');
-		if($file){
+		
+		if($file && !$file->getError()){
 			
 			$name = $file->getClientOriginalName();
 			$type = $file->getMimeType();
@@ -157,6 +158,12 @@ class FileController extends AppController
 			return $this->render( 'EMSCoreBundle:ajax:multipart.json.twig', [
 					'success' => true,
 					'asset' => $uploadedAsset,
+			]);
+		}
+		else if($file->getError()) {
+			$this->addFlash('warning', $file->getError());
+			$this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
+					'success' => false,
 			]);
 		}
 		return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [

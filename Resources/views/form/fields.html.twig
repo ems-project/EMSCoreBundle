@@ -3,10 +3,10 @@
 {# Widgets #}
 
 {% block icontext_widget -%}
-	{% if  icon or prefixText or suffixIcon or suffixText %}
+	{% if  prefixIcon or prefixText or suffixIcon or suffixText %}
 		<div class="input-group {% if class %}{{ class }}{% endif %}">
-			{% if icon or prefixText %}
-				<span class="input-group-addon"><i class="{% if icon %}{{ icon }}{% endif %}"></i>{% if prefixText %} &nbsp; {{ prefixText }} {% endif %}</span>
+			{% if prefixIcon or prefixText %}
+				<span class="input-group-addon"><i class="{% if prefixIcon %}{{ prefixIcon }}{% endif %}"></i>{% if prefixText %} &nbsp; {{ prefixText }} {% endif %}</span>
 			{% endif %}
 		 	{{ block('form_widget') }}
 			{% if suffixIcon or suffixText %}
@@ -166,10 +166,10 @@
 {% endblock code_editor_widget %}
 
 {% block datafieldtype_label %}
-	{% if data.fieldType.options.displayOptions is defined and data.fieldType.options.displayOptions.label %}
-		<label class="control-label {% if data.fieldType.options.restrictionOptions is defined and data.fieldType.options.restrictionOptions.mandatory is defined and data.fieldType.options.restrictionOptions.mandatory %}required{% endif %}"> 
-			{% if data.fieldType.options.displayOptions.icon %}<i class="{{ data.fieldType.options.displayOptions.icon }}"></i>{%  endif %}
-			{{ data.fieldType.options.displayOptions.label }}
+	{% if form.vars.label %}
+		<label class="control-label {% if data.fieldType.options.restrictionOptions.mandatory is defined and data.fieldType.options.restrictionOptions.mandatory %}required{% endif %}"> 
+			{% if form.vars.icon is defined and form.vars.icon %}<i class="{{ form.vars.icon }}"></i>{%  endif %}
+			{{ form.vars.label }}
 		</label>
 	{% endif %}
 {% endblock datafieldtype_label %}
@@ -288,11 +288,11 @@
 
 {% block container_row -%}
 	<div class="panel panel-default">
-	  		{{- form_label(form) -}}
+	  	{{- form_label(form) -}}
 	  	<div class="panel-body">
 	  		{{- form_widget(form) -}}
 	  	</div>
-	  {{- form_errors(form) -}}
+	    {{- form_errors(form) -}}
 	</div>               
 {%- endblock container_row %}
 
@@ -404,26 +404,25 @@
 		  {{- form_errors(form) -}}
 		</div>               
 	{% else %}
-			{{- form_widget(form) -}}
-			{{- form_errors(form) -}}
+		  {{ form_row(form) }}
 	{% endif %}
 </div>
 {% endblock datafieldtype_row %}
 
-{% block timefieldtype_row %}
-	<div class="form-group{% if class %} {{ class }}{% else %} col-xs-12 {% endif %}">
-    	{{ form_label(form.data_value) }} 
+{# {% block timefieldtype_row %}#}
+{# 	<div class="form-group{% if class %} {{ class }}{% else %} col-xs-12 {% endif %}">#}
+{#     	{{ form_label(form.data_value) }} #}
 
-                  <div class="input-group">
-                    <div class="input-group-addon">
-                      <i class="fa fa-clock-o"></i>
-                    </div>
-                    {{- form_widget(form.data_value) -}}
-                  </div>
-                  <!-- /.input group -->
-                </div>
-                <!-- /.form group -->
-{% endblock timefieldtype_row %}
+{#                   <div class="input-group">#}
+{#                     <div class="input-group-addon">#}
+{#                       <i class="fa fa-clock-o"></i>#}
+{#                     </div>#}
+{#                     {{- form_widget(form.data_value) -}}#}
+{#                   </div>#}
+{#                   <!-- /.input group -->#}
+{#                 </div>#}
+{#                 <!-- /.form group -->#}
+{# {% endblock timefieldtype_row %}#}
 
 
 {%- block form_label -%}

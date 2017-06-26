@@ -123,26 +123,4 @@ class CodeFieldType extends DataFieldType {
 				],
 		]);
 	}
-	
-	/**
-	 * 
-	 * {@inheritDoc}
-	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
-	 */
-	public function viewTransform(DataField $dataField) {
-		$out = parent::viewTransform($dataField);
-		dump($out);
-		return $out;
-	}
-	
-	/**
-	 * 
-	 * {@inheritDoc}
-	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
-	 */
-	public function reverseViewTransform($data, FieldType $fieldType) {
-		$out = parent::reverseViewTransform($data, $fieldType);
-		dump($out);
-		return $out;
-	}
 }

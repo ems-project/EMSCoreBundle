@@ -65,8 +65,8 @@ abstract class DataFieldType extends AbstractType {
 	 * @param DataField $data
 	 * @return array|null|string|integer|float
 	 */
-	public function viewTransform(DataField $data) {
-		return $data->getRawData();
+	public function viewTransform(DataField $dataField) {
+		return $dataField->getRawData();
 	}
 	
 	

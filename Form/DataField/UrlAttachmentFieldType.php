@@ -71,9 +71,9 @@ class UrlAttachmentFieldType extends DataFieldType {
 			if($dataField->getFieldType()->getRestrictionOptions()['mandatory']){
 				$dataField->addMessage('This entry is required');
 			}
-			$dataField->setRawData(null);
+			$dataField->setRawData(['url'=>null, 'content' => ""]);
 		}
-		else if(is_string($data)) {
+		elseif(is_string($data)) {
 			try {
 				$content = file_get_contents($data);
 				$rawData = [
@@ -84,10 +84,6 @@ class UrlAttachmentFieldType extends DataFieldType {
 				$dataField->setRawData($rawData);				
 			}
 			catch(\Exception $e) {
-				$rawData = [
-						'url' => $data,
-				];
-				$dataField->setRawData($rawData);	
 				$dataField->addMessage(sprintf(
 						'Impossible to fetch the ressource due to %s',
 						$e->getMessage()
@@ -110,12 +106,16 @@ class UrlAttachmentFieldType extends DataFieldType {
 	 */
 	public function viewTransform(DataField $data) {
 		$out = parent::viewTransform($data);
-		if(!empty($out) && !empty($out['url']) && is_string($out['url'])){
-			return $out['url'];
+		if( !empty($out)) {
+			if(!empty($out['url'])){
+				if(is_string($out['url'])){
+					return $out['url'];									
+				}
+				$data->addMessage('Non supported input data : '.json_encode($out));
+			}
  		}
  		
- 		//TODO: flash
- 		return NULL;
+ 		return "";
 	}
 	
 	

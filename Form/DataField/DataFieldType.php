@@ -46,7 +46,12 @@ abstract class DataFieldType extends AbstractType {
 	 */
 	public function reverseViewTransform($data, FieldType $fieldType) {
 		$out = new DataField();
-		$out->setRawData($data);
+		if(empty($data)){
+			$out->setRawData(null);
+		}
+		else {
+			$out->setRawData($data);			
+		}
 		$out->setFieldType($fieldType);
 		return $out;
 	}
@@ -96,17 +101,6 @@ abstract class DataFieldType extends AbstractType {
 // 		dump($out);
 		return $out;
 	}
-	
-// 	public function setAuthorizationChecker($authorizationChecker){
-// 		$this->authorizationChecker = $authorizationChecker;
-// 		return $this;
-// 	}
-	
-	
-// 	public function setFormRegistry(FormRegistryInterface $formRegistry){
-// 		$this->formRegistry = $formRegistry;
-// 		return $this;
-// 	}
 	
 	/**@var FormRegistryInterface*/
 	public function getFormRegistry(){
@@ -240,9 +234,9 @@ abstract class DataFieldType extends AbstractType {
 		$view->vars ['lastOfRow'] = $options ['lastOfRow'];
 		$view->vars ['isContainer'] = $this->isContainer();
 		if( null == $options['label']){
-			/** @var FieldType $fieldType */
-			$fieldType = $options ['metadata'];
-			$view->vars ['label'] = $fieldType->getName();
+// 			/** @var FieldType $fieldType */
+// 			$fieldType = $options ['metadata'];
+			$view->vars ['label'] = false;//$fieldType->getName();
 		}
 	}
 	
@@ -329,8 +323,21 @@ abstract class DataFieldType extends AbstractType {
 		] );
 	}
 	
-	
+	/**
+	 * return true if the field exist as is in elasticsearch
+	 * 
+	 * @return boolean
+	 */
+	public static function isVirtual(){
+		return false;
+	}
 
+	/**
+	 * Return the json path
+	 * 
+	 * @param FieldType $current
+	 * @return string
+	 */
 	public static function getJsonName(FieldType $current){
 		return $current->getName();
 	}

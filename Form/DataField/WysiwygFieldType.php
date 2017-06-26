@@ -102,6 +102,9 @@ class WysiwygFieldType extends DataFieldType {
 			},
 			$data
 		); 
+		if(empty($out)){
+			$out = null;
+		}
 		return parent::reverseViewTransform($out, $fieldType);
 	}
 	
@@ -112,6 +115,10 @@ class WysiwygFieldType extends DataFieldType {
 	 */
 	public function viewTransform(DataField $data){
 		$out = parent::viewTransform($data);
+		
+		if(empty($out)){
+			return "";
+		}
 		
 		$path = $this->router->generate('ems_file_view', ['sha1' => '__SHA1__'], UrlGeneratorInterface::ABSOLUTE_PATH );
 		$path = substr($path, 0, strlen($path)-8);

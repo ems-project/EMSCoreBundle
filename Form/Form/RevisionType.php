@@ -32,7 +32,7 @@ class RevisionType extends AbstractType {
 		/** @var Revision $revision */
 		$revision = $builder->getData ();
 		
-		$builder->add ( 'raw_data', $revision->getContentType()->getFieldType()->getType(), [ 
+		$builder->add ( 'data', $revision->getContentType()->getFieldType()->getType(), [ 
 				'metadata' => $revision->getContentType()->getFieldType(),
 				'error_bubbling' => false,
 		] )->add ( 'save', SubmitEmsType::class, [ 
@@ -42,7 +42,7 @@ class RevisionType extends AbstractType {
 				'icon' => 'fa fa-save' 
 		] );
 		
-		$builder->get ( 'raw_data' )
+		$builder->get ( 'data' )
 		->addModelTransformer(new DataFieldModelTransformer($revision->getContentType()->getFieldType(), $this->formRegistry))
 		->addViewTransformer(new DataFieldViewTransformer($revision->getContentType()->getFieldType(), $this->formRegistry));
 		

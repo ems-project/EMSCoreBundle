@@ -32,6 +32,7 @@ use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Form\FormInterface;
 
 class DataService
 {
@@ -864,7 +865,7 @@ class DataService
 		
 		if($viewData instanceof Revision) {
 			/** @var DataField $dataField */
-			$viewData = $form->get('raw_data')->getNormData();
+			$viewData = $form->get('data')->getNormData();
 		}
 		
 		if($viewData instanceof DataField) {
@@ -981,8 +982,20 @@ class DataService
 	
 	}
 	
-
 	public function waitForGreen(){
 		$this->client->cluster()->health(['wait_for_status' => 'green']);
+	}
+	
+	
+	public function getDataFieldsStructure(FormInterface $form){
+		/**@var DataField $out*/
+		$out = $form->getNormData();
+		foreach ($form as $item) {
+			if($item->getNormData() instanceof DataField){
+				$out->addChild($item->getNormData());
+				$this->getDataFieldsStructure($item);				
+			}
+		}
+		return $out;
 	}
 }

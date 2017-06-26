@@ -38,6 +38,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Response;
+use EMS\CoreBundle\Form\DataField\DataFieldType;
 
 class DataController extends AppController
 {
@@ -239,9 +240,9 @@ class DataController extends AppController
 		
 		$this->loadAutoSavedVersion($revision);
 		
-		$this->getDataService()->loadDataStructure($revision);
+// 		$this->getDataService()->loadDataStructure($revision);
 		
-		$revision->getDataField()->orderChildren();
+// 		$revision->getDataField()->orderChildren();
 		
 		
 		$page = $request->query->get('page', 1);
@@ -254,8 +255,14 @@ class DataController extends AppController
 		$availableEnv = $em->getRepository('EMSCoreBundle:Environment')->findAvailableEnvironements(
 				$revision->getContentType()->getEnvironment());
 		
-		$objectArray = $this->get('ems.service.mapping')->dataFieldToArray ($revision->getDataField());
-	
+// 		$objectArray = $this->get('ems.service.mapping')->dataFieldToArray ($revision->getDataField());
+
+		
+		$form = $this->createForm(RevisionType::class, $revision);
+		
+		$objectArray = $form->get('data')->getData();
+		
+		$dataFields = $this->getDataService()->getDataFieldsStructure($form->get('data'));
 		
 
 		/** @var Client $client */
@@ -303,6 +310,7 @@ class DataController extends AppController
 				'lastPage' => $lastPage,
 				'counter' => $counter,
 				'firstElemOfPage' => $firstElemOfPage,
+				'dataFields' => $dataFields,
 		] );
 	}
 	

@@ -125,7 +125,6 @@ class AssetFieldType extends DataFieldType {
 	 */
 	public function reverseViewTransform($data, FieldType $fieldType){
 		$dataField = parent::reverseViewTransform($data, $fieldType);
-		
 		$this->testDataField($dataField);
 		return $dataField;
 	}
@@ -133,8 +132,12 @@ class AssetFieldType extends DataFieldType {
 	
 	private function testDataField(DataField $dataField) {
 		$raw = $dataField->getRawData();
-		if( (empty($raw) || empty($raw['sha1'])) && $dataField->getFieldType()->getRestrictionOptions()['mandatory']){
-			$dataField->addMessage('This entry is required');
+		
+		if( (empty($raw) || empty($raw['sha1']))){
+			if($dataField->getFieldType()->getRestrictionOptions()['mandatory']){
+				$dataField->addMessage('This entry is required');				
+			}
+			$dataField->setRawData(null);
 		}
 		else if (!$this->fileService->head($raw['sha1'])){
 			$dataField->addMessage('File not found on the server try to re-upload it');
@@ -151,8 +154,14 @@ class AssetFieldType extends DataFieldType {
 	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
 	 */
 	public function viewTransform(DataField $dataField){
-// 		$this->testDataField($dataField);
 		$out = parent::viewTransform($dataField);
+		
+		if(empty($out['sha1'])){
+			$out = null;
+		}
+		else if (isset($out['filesize'])) {
+			unset($out['filesize']);
+		}
 		return $out;
 		
 	}

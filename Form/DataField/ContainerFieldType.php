@@ -139,7 +139,17 @@ class ContainerFieldType extends DataFieldType {
 		] );
 	}
 
-
+	
+	
+	/**
+	 *
+	 * {@inheritdoc}
+	 *
+	 */
+	public static function isVirtual(){
+		return true;
+	}
+	
 	/**
 	 *
 	 * {@inheritdoc}

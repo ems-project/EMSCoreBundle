@@ -55,7 +55,12 @@ class TimeFieldType extends DataFieldType {
 			$format = DateFieldType::convertJavaDateFormat($format);
 
 			$timeObject = \DateTime::createFromFormat($format, $sourceArray);
-			$dataField->setRawData($timeObject->format(\DateTime::ISO8601));
+			if($timeObject){
+				$dataField->setRawData($timeObject->format(\DateTime::ISO8601));			
+			}
+			else {
+				//TODO:
+			}
 		}
 		return [$dataField->getFieldType()->getName()];
 	}
@@ -94,7 +99,7 @@ class TimeFieldType extends DataFieldType {
 		$out = parent::viewTransform($data);
 		
 		if(is_array($out) && count($out) === 0){
-			return null; //empty array means null/empty
+			return ''; //empty array means null/empty
 		}
 
 		$format = $this->getFormat($data->getFieldType()->getOptions());
@@ -104,7 +109,7 @@ class TimeFieldType extends DataFieldType {
 		if($dateTime) {
 			return $dateTime->format($format);			
 		}
-		return null;
+		return '';
 	}
 	
 	/**

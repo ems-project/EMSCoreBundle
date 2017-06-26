@@ -296,7 +296,7 @@
 	</div>               
 {%- endblock container_row %}
 
-{% block tabsfieldtype_row -%}
+{% block tabsfieldtype_widget -%}
 	<div class="{% if class %}{{ class }}{% else %}col-xs-12 {% endif %}">
 		<div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
@@ -325,7 +325,7 @@
             <!-- /.tab-content -->
          </div>             
 	</div>
-{%- endblock tabsfieldtype_row %}
+{%- endblock tabsfieldtype_widget %}
 
 
 {% block collectionfieldtype_widget -%}
@@ -426,7 +426,7 @@
 
 
 {%- block form_label -%}
-    {% if label is not same as(false) -%}
+    {% if label is not same as (false) -%}
         {% if not compound -%}
             {% set label_attr = label_attr|merge({'for': id}) %}
         {%- endif -%}

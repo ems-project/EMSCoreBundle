@@ -194,6 +194,86 @@ class Revision
     	}
     }
     
+    private function addVirtualFields(FieldType $fieldType, array $data){
+    	
+    	$out = [];
+    	/**@var FieldType $child*/
+    	foreach ($fieldType->getChildren() as $child){
+    		if(!$child->getDeleted()) {
+    			$type = $child->getType();
+    			if($type::isVirtual()){
+    				if($type::isContainer()){
+    					$out[$child->getName()]= self::addVirtualFields($child, $data);
+    				}
+    			}
+    			else {
+    				if($type::isContainer()){
+    					if(isset($data[$child->getName()])){
+    						$out[$child->getName()] = self::addVirtualFields($child, $data[$child->getName()]);
+    					}
+    				}
+    				else {
+    					if(isset($data[$child->getName()]) && !empty($data[$child->getName()])){
+    						$out[$child->getName()] = $data[$child->getName()];
+    					}
+    				}
+    			}
+    			
+    		}
+    	}
+    	return $out;
+    }
+    
+    
+    /**
+     * Add the virtual fields to the raw data and return it (the data)
+     * 
+     * @return array
+     */
+    public function getData(){
+    	$out = $this->addVirtualFields($this->getContentType()->getFieldType(), $this->rawData);
+    	return $out;
+    }
+   
+    private function removeVirtualField(FieldType $fieldType, array $data){
+    	$out = [];
+    	/**@var FieldType $child*/
+    	foreach ($fieldType->getChildren() as $child){
+    		if(!$child->getDeleted()) {
+    			$type = $child->getType();
+    			if($type::isVirtual()){
+    				if($type::isContainer() && isset($data[$child->getName()]) && !empty($data[$child->getName()])){
+    					$out = array_merge($out, self::removeVirtualField($child, $data[$child->getName()]));
+    				}
+    			}
+    			else {
+    				if($type::isContainer()){
+    					if(isset($data[$child->getName()]) && !empty($data[$child->getName()])){
+    						$out[$child->getName()] = self::removeVirtualField($child, $data[$child->getName()]);
+    					}
+    				}
+    				else {
+    					if(isset($data[$child->getName()]) && !empty($data[$child->getName()])){
+    						$out[$child->getName()] = $data[$child->getName()];
+    					}
+    				}
+    			}
+    			
+    		}
+    	}
+    	return $out;
+    }
+    
+    /**
+     * Remove virtual fields ans save the raw data
+     * 
+     * @param array $data
+     * @return \EMS\CoreBundle\Entity\Revision
+     */
+    public function setData(array $data){
+    	$this->rawData = $this->removeVirtualField($this->getContentType()->getFieldType(), $data);
+    	return $this;
+    }
     
     public function buildObject(){
     	return [

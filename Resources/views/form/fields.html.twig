@@ -454,8 +454,8 @@
 
 {% block codefieldtype_widget %}
 	<div class="ems-code-editor" {{ block('widget_attributes') }}>
-        {{ form_widget(form.text_value) }}
-    	<pre>{{ form.children.text_value.vars.value }}</pre>
+        {{ form_widget(form) }}
+    	<pre>{{ form.vars.value }}</pre>
 	</div>
 {% endblock codefieldtype_widget %}
 

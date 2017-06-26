@@ -12,6 +12,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Entity\DataField;
 
 class CodeFieldType extends DataFieldType {
 	/**
@@ -32,27 +34,39 @@ class CodeFieldType extends DataFieldType {
 		return 'fa fa-code';
 	}
 	
+	
 	/**
-	 *
-	 * @param FormBuilderInterface $builder        	
-	 * @param array $options        	
+	 * 
+	 * {@inheritDoc}
+	 * @see \Symfony\Component\Form\AbstractType::getParent()
 	 */
-	public function buildForm(FormBuilderInterface $builder, array $options) {
-		/** @var FieldType $fieldType */
-		$fieldType = $builder->getOptions () ['metadata'];
-		$builder->add ( 'text_value', HiddenType::class, [ 
-				'attr' => [ 
-						'class' => 'code_editor_ems',
-						'data-max-lines' => $options['maxLines'],
-						'data-language' => $options['language'],
-						'data-height' => $options['height'],
-						'data-theme' => $options['theme'],
-						'data-disabled' => !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
-				],
-				'label' => $options['label'],
-				'required' => false,
- 				'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
-		] );
+	public function getParent(){
+		return HiddenType::class;
+	}
+	
+	/**
+	 * {@inheritdoc}
+	 */
+	public function buildView(FormView $view, FormInterface $form, array $options) {
+		$fieldType = $options['metadata'];
+		
+		/*get options for twig context*/
+		parent::buildView($view, $form, $options);
+		$view->vars ['icon'] = $options ['icon'];
+		
+		$attr = $view->vars['attr'];
+		if(empty($attr['class'])){
+			$attr['class'] = '';
+		}
+		
+		$attr['data-max-lines'] = $options['maxLines'];
+		$attr['data-language'] = $options['language'];
+		$attr['data-height'] = $options['height'];
+		$attr['data-theme'] = $options['theme'];
+		$attr['data-disabled'] = !$this->authorizationChecker->isGranted($fieldType->getMinimumRole());
+		$attr['class'] .= ' code_editor_ems';
+		
+		$view->vars ['attr'] = $attr;
 	}
 	
 	
@@ -68,15 +82,6 @@ class CodeFieldType extends DataFieldType {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function buildView(FormView $view, FormInterface $form, array $options) {
-		/*get options for twig context*/
-		parent::buildView($view, $form, $options);
-		$view->vars ['icon'] = $options ['icon'];
-	}
-	
-	/**
-	 * {@inheritdoc}
-	 */
 	public function configureOptions(OptionsResolver $resolver)
 	{
 		/*set the default option value for this kind of compound field*/
@@ -86,6 +91,7 @@ class CodeFieldType extends DataFieldType {
 		$resolver->setDefault('theme', null);
 		$resolver->setDefault('maxLines', 15);
 		$resolver->setDefault('height', false);
+		$resolver->setDefault('required', false);
 	}
 	
 	/**
@@ -116,5 +122,27 @@ class CodeFieldType extends DataFieldType {
 						'class' => 'code_editor_theme_ems',
 				],
 		]);
+	}
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
+	 */
+	public function viewTransform(DataField $dataField) {
+		$out = parent::viewTransform($dataField);
+		dump($out);
+		return $out;
+	}
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
+	 */
+	public function reverseViewTransform($data, FieldType $fieldType) {
+		$out = parent::reverseViewTransform($data, $fieldType);
+		dump($out);
+		return $out;
 	}
 }

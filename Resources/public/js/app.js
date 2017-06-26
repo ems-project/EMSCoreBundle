@@ -67,10 +67,10 @@ $(document).ready(function() {
 	
 
 		
-	$("#sidebar-toggle-button").click(function(event){
-		var url = collapse_sidebar_url.replace("__collapsed__", $('body.sidebar-collapse').length == 0?1:0);
-		ajaxRequest.post( url );
-	});
+//	$("#sidebar-toggle-button").click(function(event){
+//		var url = collapse_sidebar_url.replace("__collapsed__", $('body.sidebar-collapse').length == 0?1:0);
+//		ajaxRequest.post( url );
+//	});
 	
 	
 	$('.toggle-button').click(function(){ 

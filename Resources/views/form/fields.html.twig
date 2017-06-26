@@ -2,6 +2,10 @@
 
 {# Widgets #}
 
+{% block bypassdatafield_widget -%}
+	{{form_widget(form.value)}}
+{%- endblock bypassdatafield_widget %}
+
 {% block icontext_widget -%}
 	{% if  prefixIcon or prefixText or suffixIcon or suffixText %}
 		<div class="input-group {% if class %}{{ class }}{% endif %}">

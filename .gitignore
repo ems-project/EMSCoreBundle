@@ -4,3 +4,4 @@
 /.project
 /bower
 /.buildpath
+*.yml~

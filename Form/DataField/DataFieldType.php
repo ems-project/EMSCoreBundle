@@ -197,6 +197,7 @@ abstract class DataFieldType extends AbstractType {
 				'metadata' => null, // used to keep a link to the FieldType
 				'error_bubbling' => false,
 				'required' => false,
+				'translation_domain' => false
 		]);
 	}
 	

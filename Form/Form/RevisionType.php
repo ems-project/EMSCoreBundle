@@ -90,6 +90,7 @@ class RevisionType extends AbstractType {
 				'data_class' => 'EMS\CoreBundle\Entity\Revision',
 				'has_clipboard' => false,
 				'has_copy' => false,
+				'translation_domain' => 'EMSCoreBundle'
 		) );
 	}
 	

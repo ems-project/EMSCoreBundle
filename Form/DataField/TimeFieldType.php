@@ -59,7 +59,7 @@ class TimeFieldType extends DataFieldType {
 				$dataField->setRawData($timeObject->format(\DateTime::ISO8601));			
 			}
 			else {
-				//TODO:
+				$dataField->addMessage('Not able to parse the date');
 			}
 		}
 		return [$dataField->getFieldType()->getName()];

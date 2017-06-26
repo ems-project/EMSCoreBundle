@@ -3,21 +3,20 @@
 namespace EMS\CoreBundle\Form\DataField;
 
 
+use EMS\CoreBundle\Entity\DataField;
+use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType as TextareaSymfonyType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use EMS\CoreBundle\Entity\DataField;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Form\FormRegistryInterface;
-use EMS\CoreBundle\Form\DataTransformer\DataFieldTransformer;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use EMS\CoreBundle\Entity\FieldType;
 
 class WysiwygFieldType extends DataFieldType {
 	
@@ -68,9 +67,9 @@ class WysiwygFieldType extends DataFieldType {
 		$attr = $view->vars['attr'];
 		if(empty($attr['class'])){
 			$attr['class'] = '';
-			$attr['data-height'] = $options['height'];
 		}
 		
+		$attr['data-height'] = $options['height'];
 		$attr['class'] .= ' ckeditor_ems';
 		$view->vars ['attr'] = $attr;
 	}

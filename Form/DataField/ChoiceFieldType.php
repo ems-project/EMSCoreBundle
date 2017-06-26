@@ -157,6 +157,7 @@ class ChoiceFieldType extends DataFieldType {
 			$value = $data['value'];
 		}
 		$out = parent::reverseViewTransform($value, $fieldType);
+		dump($out);
 		return $out;
 	}
 	
@@ -172,7 +173,7 @@ class ChoiceFieldType extends DataFieldType {
 			if(empty($temp)){
 				$out = [];
 			}
-			elseif($temp instanceof string) {
+			elseif(is_string($temp)) {
 				$out = [$temp];
 			}
 			elseif (is_array($temp) ) {
@@ -191,8 +192,11 @@ class ChoiceFieldType extends DataFieldType {
 				$out = [];
 			}
 		}
-		else {
-			if($temp instanceof string) {
+		else { //not mutiple
+			if(null === $temp) {
+				$out = null;
+			}
+			elseif(is_string($temp)) {
 				$out = $temp;
 			}
 			elseif ( is_array($temp) && ! empty($temp) && is_string(array_shift($temp)) ) {
@@ -205,7 +209,7 @@ class ChoiceFieldType extends DataFieldType {
 			}
 		}
 		
-		dump($dataField->getFieldType()->getDisplayOptions()['multiple']);dump([ 'value' => $out ]);
+// 		dump($dataField->getFieldType()->getDisplayOptions()['multiple']);dump([ 'value' => $out ]);
 		return [ 'value' => $out ];
 		
 		

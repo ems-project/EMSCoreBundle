@@ -234,7 +234,7 @@ desired effect
 		  	{{ render(controller('EMSCoreBundle:TwigElements:sideMenu')) }}
 		{% else %}
 			{% include 'EMSCoreBundle:elements:side-menu.html.twig' with {
-				'contentTypes': contentTypes
+				'contentTypes': get_content_types()
 			} %}
         {% endif %} 
   <!-- Content Wrapper. Contains page content -->

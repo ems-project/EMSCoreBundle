@@ -2,7 +2,7 @@
 
 {%  macro renderDataField(dataField) %}
 {% import _self as macros %}
-	{{ attribute(macros, dataField.fieldType.type|replace({'\\': '_'}), [dataField]) }}
+	{{ macros|macro_fct(dataField.fieldType.type|replace({'\\': '_'}), dataField) }}
 	{{ macros.messages(dataField) }}
 {% endmacro %}
 
@@ -145,7 +145,7 @@
 							<div class="row">
 								{% for grandchild in child.children %}
 									<div class="{% if grandchild.fieldType.displayOptions.class is defined and grandchild.fieldType.displayOptions.class  %}{{ grandchild.fieldType.displayOptions.class }}{%else%}col-md-12{% endif %}">
-										{{ attribute(macros, grandchild.fieldType.type|replace({'\\': '_'}), [grandchild]) }}
+										{{ macros|macro_fct(grandchild.fieldType.type|replace({'\\': '_'}), grandchild) }}
 									</div>
 									{% if grandchild.fieldType.displayOptions.lastOfRow is defined and grandchild.fieldType.displayOptions.lastOfRow %}
 										</div><div class="row">
@@ -181,8 +181,9 @@
 	{% endif %}
 	<div class="row">
 		{% for child in dataField.children if not child.fieldType.deleted %}
+		
 			<div class="{% if child.fieldType.displayOptions.class is defined and child.fieldType.displayOptions.class  %}{{ child.fieldType.displayOptions.class }}{%else%}col-md-12{% endif %}">
-				{{ attribute(macros, child.fieldType.type|replace({'\\': '_'}), [child]) }}
+				{{ macros|macro_fct(child.fieldType.type|replace({'\\': '_'}), child) }}
 			</div>
 			{% if child.fieldType.displayOptions.lastOfRow is defined and child.fieldType.displayOptions.lastOfRow %}
 				</div><div class="row">
@@ -217,7 +218,7 @@
 	<div class="row">
 		{% for child in dataField.children if not child.fieldType.deleted %}
 			<div class="{% if child.fieldType.displayOptions.class is defined and child.fieldType.displayOptions.class  %}{{ child.fieldType.displayOptions.class }}{%else%}col-md-12{% endif %}">
-				{{ attribute(macros, child.fieldType.type|replace({'\\': '_'}), [child]) }}
+				{{ macros|macro_fct(child.fieldType.type|replace({'\\': '_'}), child) }}
 			</div>
 			{% if child.fieldType.displayOptions.lastOfRow is defined and child.fieldType.displayOptions.lastOfRow %}
 				</div><div class="row">
@@ -248,7 +249,7 @@
             <div class="tab-content">
             	{% for child in dataField.children if not child.fieldType.deleted %}
 	              <div class="tab-pane{% if loop.index == 1%} active{% endif %}" id="item_{{ dataField.fieldType.id~'_'~loop.index }}__tab">
-	              	{{ attribute(macros, child.fieldType.type|replace({'\\': '_'}), [child]) }}
+	              	{{ macros|macro_fct(child.fieldType.type|replace({'\\': '_'}), child) }}
 	              </div>
               {% endfor %}
             </div>

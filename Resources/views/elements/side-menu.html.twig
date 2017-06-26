@@ -18,9 +18,17 @@
 {#         	{% endif %}#}
         </div>
         <div class="pull-left info">
-          <p>{% if app.user %} <a href="{{ path(user_profile_route) }}" class="">{{ app.user.displayName }}</a> {% else %} Anonymous user {% endif %}</p>
-          <!-- Status -->
-          <a href="{{ path('elasticsearch.status') }}" id="status-overview"><i class="fa fa-circle text-{{ status }}"></i> {{ status }}</a>
+          
+          	{% if app.user %}
+	          	<p><a href="{{ path(user_profile_route) }}" class="">{{ app.user.displayName }}</a></p> 
+		        <!-- Status -->
+		        <a href="{{ path('elasticsearch.status') }}" id="status-overview"><i class="fa fa-circle text-{{ status }}"></i> {{ status }}</a>
+	         {% else %} 
+	         	<p><a href="{{ path(user_profile_route) }}" class=""> Anonymous user</a></p>
+		        <!-- Status -->
+		        <a href="{{ path('elasticsearch.status') }}" id="status-overview"><i class="fa fa-circle text-"></i> </a>
+	      	{% endif %}
+          
         </div>
       </div>
 {% if app.user %}
@@ -30,7 +38,7 @@
           <input type="text" name="search_form[filters][0][pattern]" class="form-control" placeholder="Search...">
           <input type="hidden" name="search_form[filters][0][operator]" value="query_and">
           <input type="hidden" name="search_form[filters][0][booleanClause]" value="must">
-          {% for environment in defaultEnvironments %}
+          {% for environment in get_default_environments() %}
              <input type="hidden" name="search_form[environments][{{ loop.index0 }}]" value="{{ environment|e('html_attr') }}">
           {% endfor %}
               <span class="input-group-btn">
@@ -71,11 +79,11 @@
 		{% endif %}
       <!-- /Application Menu -->
 		
-	{% if contentTypes|length > 0 %}
+	{% if get_content_types()|length > 0 %}
       <ul class="sidebar-menu">
         <li class="header">Content Management</li>
         <!-- Optionally, you can add icons to the links -->
-        {% for contentType in contentTypes %}
+        {% for contentType in get_content_types() %}
         	{% if contentType.active and (not contentType.viewRole or is_granted(contentType.viewRole) or contentType.rootContentType ) %}
 	          <li class="">
 	          	<a href="{{ path('data.root', {name: contentType.name}) }}" class="text-{{ contentType.color }}">

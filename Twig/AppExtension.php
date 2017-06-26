@@ -61,6 +61,24 @@ class AppExtension extends \Twig_Extension
 		//$this->twig->getExtension('Twig_Extension_Core')->setEscaper('csv', array($this, 'csvEscaper'));
 	}
 	
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see Twig_Extension::getFunctions()
+	 */
+	public function getFunctions(){
+		return [
+				new \Twig_SimpleFunction('get_content_types', array($this, 'getContentTypes')),
+				new \Twig_SimpleFunction('get_default_environments', array($this, 'getDefaultEnvironments')),
+		];
+	}
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see Twig_Extension::getFilters()
+	 */
 	public function getFilters()
 	{
 		
@@ -97,10 +115,16 @@ class AppExtension extends \Twig_Extension
 				new \Twig_SimpleFilter('date_difference', array($this, 'dateDifference')),	
 				new \Twig_SimpleFilter('debug', array($this, 'debug')),
 				new \Twig_SimpleFilter('search', array($this, 'search')),
-				new \Twig_SimpleFilter('call_user_func', array($this, 'call_user_func')),		
+				new \Twig_SimpleFilter('call_user_func', array($this, 'call_user_func')),
+				new \Twig_SimpleFilter('macro_fct', array($this, 'macroFct')),	
 				
 				
 		);
+	}
+	
+	
+	function macroFct($tempate, $block, $context) {
+		return $tempate->{'get'.$block}($context);
 	}
 	
 	function call_user_func($function){
@@ -465,6 +489,22 @@ class AppExtension extends \Twig_Extension
 	
 	public function getContentType($name){
 		return $this->contentTypeService->getByName($name);
+	}
+	
+	public function getContentTypes(){
+		return $this->contentTypeService->getAll();
+	}
+	
+	/**
+	 * @deprecated  since ems 1.6
+	 * @return NULL[]
+	 */
+	public function getDefaultEnvironments(){
+		$defaultEnvironments = [];
+		foreach ($this->contentTypeService->getAll()as $contentType){
+			$defaultEnvironments[] = $contentType->getName();
+		}
+		return $defaultEnvironments;
 	}
 	
 	public function getEnvironment($name){

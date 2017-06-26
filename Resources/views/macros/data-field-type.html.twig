@@ -564,10 +564,13 @@
 			{% endif %}
 		</dt>
 		<dd>
-			{% if dataField.booleanValue %}
+			{% if dataField.rawData %}
 		 		<i class="fa fa-check-square-o"></i>
 			{% else %}
 				<i class="fa fa-square-o"></i>
+			{% endif %}
+			{% if dataField.fieldType.displayOptions.question_label is defined and dataField.fieldType.displayOptions.question_label %}
+				{{ dataField.fieldType.displayOptions.question_label }}
 			{% endif %}
 		</dd>
 	</dl>

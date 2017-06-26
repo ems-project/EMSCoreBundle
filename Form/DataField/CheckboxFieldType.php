@@ -2,12 +2,12 @@
 
 namespace EMS\CoreBundle\Form\DataField;
 
-use EMS\CoreBundle\Entity\FieldType;
-use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\FormBuilderInterface;
 use EMS\CoreBundle\Entity\DataField;
+use EMS\CoreBundle\Entity\FieldType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class CheckboxFieldType extends DataFieldType {
 
@@ -52,12 +52,54 @@ class CheckboxFieldType extends DataFieldType {
 		/** @var FieldType $fieldType */
 		$fieldType = $builder->getOptions () ['metadata'];
 	
-		$builder->add ( 'boolean_value', CheckboxType::class, [
-				'label' => (isset($options['label'])?$options['label']:$fieldType->getName()),
+		$builder->add ( 'value', CheckboxType::class, [
+				'label' => ($options['question_label'] ?$options['question_label']:(isset($options['label'])?$options['label']:false)),
 				'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
 				'required' => false,
 		] );
 	}
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
+	 */
+	public function viewTransform(DataField $dataField){
+		$out = parent::viewTransform($dataField);
+		return [ 'value' => (($out !== null && !empty($out) && $out)?true:false) ];
+		
+		
+	}
+	
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::configureOptions()
+	 */
+	public function configureOptions(OptionsResolver $resolver) {
+		parent::configureOptions($resolver);
+		$resolver->setDefaults ( [
+				'question_label' => false,
+		]);
+	}
+	
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
+	 */
+	public function reverseViewTransform($data, FieldType $fieldType) {
+		$out = parent::reverseViewTransform($data, $fieldType);
+		$value = false;
+		if(isset($data['value']) && $data['value'] === true){
+			$value = true;
+		}
+		$out->setRawData($value);
+		return $out;
+	}
+	
 	
 	/**
 	 *
@@ -94,12 +136,12 @@ class CheckboxFieldType extends DataFieldType {
 		parent::buildOptionsForm ( $builder, $options );
 		$optionsForm = $builder->get ( 'options' );
 	
-// 		// String specific display options
-// 		$optionsForm->get ( 'displayOptions' )->add ( 'choices', TextareaType::class, [
-// 				'required' => false,
+		// String specific display options
+		$optionsForm->get ( 'displayOptions' )->add ( 'question_label', TextType::class, [
+				'required' => false,
 // 		] )->add ( 'labels', TextareaType::class, [
 // 				'required' => false,
-// 		] );
+		] );
 	
 // 		// String specific mapping options
 // 		$optionsForm->get ( 'mappingOptions' )->add ( 'analyzer', AnalyzerPickerType::class);

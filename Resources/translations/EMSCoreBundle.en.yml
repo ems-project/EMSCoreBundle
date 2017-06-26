@@ -1,5 +1,5 @@
 ROLE_SUPER_ADMIN: 'Super Admin'
-ROLE_USER: 'User'
+ROLE_USER: User
 'Logged in as': 'Logged in as'
 'User profile': 'User profile'
 Exit: Exit

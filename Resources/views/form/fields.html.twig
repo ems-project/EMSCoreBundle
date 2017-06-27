@@ -168,7 +168,7 @@
 {% block datafieldtype_label %}
 	{% if data.fieldType.options.displayOptions is defined and data.fieldType.options.displayOptions.label %}
 		<label class="control-label {% if data.fieldType.options.restrictionOptions is defined and data.fieldType.options.restrictionOptions.mandatory is defined and data.fieldType.options.restrictionOptions.mandatory %}required{% endif %}"> 
-			{% if data.fieldType.options.displayOptions.icon %}<i class="{{ data.fieldType.options.displayOptions.icon }}"></i>{%  endif %}
+			{% if data.fieldType.options.displayOptions.icon is defined %}<i class="{{ data.fieldType.options.displayOptions.icon }}"></i>{%  endif %}
 			{{ data.fieldType.options.displayOptions.label }}
 		</label>
 	{% endif %}

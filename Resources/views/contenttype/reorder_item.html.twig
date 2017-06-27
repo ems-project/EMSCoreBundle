@@ -1,4 +1,4 @@
-{% for child in parent.children %}
+{% for child in parent.children if not child.deleted %}
 
        	<li id="{{ child.id }}" class="{% if not (child.type~'::isContainer')|call_user_func %}mjs-nestedSortable-no-nesting{% endif %}">
         		<div class="box-header">

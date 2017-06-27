@@ -4,14 +4,13 @@ namespace EMS\CoreBundle\Form\DataField;
 
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Form\DataTransformer\DataFieldModelTransformer;
+use EMS\CoreBundle\Form\DataTransformer\DataFieldViewTransformer;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use EMS\CoreBundle\Form\DataTransformer\DataFieldTransformer;
-use EMS\CoreBundle\Form\DataTransformer\DataFieldViewTransformer;
-use EMS\CoreBundle\Form\DataTransformer\DataFieldModelTransformer;
 
 /**
  * Defined a Container content type.

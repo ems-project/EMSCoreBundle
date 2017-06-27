@@ -3,10 +3,9 @@ namespace EMS\CoreBundle\Form\DataTransformer;
 
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
-use Symfony\Component\Form\DataTransformerInterface;
-use Symfony\Component\Form\Exception\TransformationFailedException;
-use Symfony\Component\Form\FormRegistryInterface;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
+use Symfony\Component\Form\DataTransformerInterface;
+use Symfony\Component\Form\FormRegistryInterface;
 
 class DataFieldViewTransformer implements DataTransformerInterface
 {

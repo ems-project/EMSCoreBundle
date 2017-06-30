@@ -50,4 +50,13 @@ use Symfony\Component\Form\FormBuilderInterface;
 		return ColorPickerFullType::class;
 	}
 	
+	public function modelTransform($data, FieldType $fieldType) {
+		$dataField = parent::modelTransform($data, $fieldType);
+		if($data !== null && !is_string($data) ){
+			$dataField->addMessage('Not able to import data from the database:' . json_encode($data));
+			$dataField->setRawData(null);
+		}
+		return $dataField;
+	}
+	
 }

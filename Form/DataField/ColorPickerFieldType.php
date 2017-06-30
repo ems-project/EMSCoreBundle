@@ -46,20 +46,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 		return $out;
 	}
 	
-	/**
-	 *
-	 * {@inheritdoc}
-	 *
-	 */
-	public function buildForm(FormBuilderInterface $builder, array $options) {
-
-		/** @var FieldType $fieldType */
-		$fieldType = $options ['metadata'];
-		
-		$builder->add ( 'text_value', ColorPickerFullType::class, [ 
-				'required' => false,
-				'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
-				'label' => (null != $options ['label']?$options ['label']:null)
-		] );					
+	public function getParent() {
+		return ColorPickerFullType::class;
 	}
+	
 }

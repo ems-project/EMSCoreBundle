@@ -152,12 +152,10 @@ class ChoiceFieldType extends DataFieldType {
 	 */
 	public function reverseViewTransform($data, FieldType $fieldType) {
 		$value = null;
-		dump($data);
 		if(isset($data['value'])){
 			$value = $data['value'];
 		}
 		$out = parent::reverseViewTransform($value, $fieldType);
-		dump($out);
 		return $out;
 	}
 	
@@ -209,7 +207,6 @@ class ChoiceFieldType extends DataFieldType {
 			}
 		}
 		
-// 		dump($dataField->getFieldType()->getDisplayOptions()['multiple']);dump([ 'value' => $out ]);
 		return [ 'value' => $out ];
 		
 		

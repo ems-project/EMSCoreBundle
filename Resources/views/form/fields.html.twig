@@ -2,8 +2,21 @@
 
 {# Widgets #}
 
+
+
+
+{% block empty_widget -%}
+{%- endblock empty_widget %}
+{% block empty_label -%}
+{%- endblock empty_label %}
+{% block empty_row-%}
+{%- endblock empty_row %}
+
+
 {% block bypassdatafield_widget -%}
-	{{form_widget(form.value)}}
+	{% if form.value is defined %}
+        {{form_widget(form.value)}}
+    {% endif %}
 {%- endblock bypassdatafield_widget %}
 
 {% block icontext_widget -%}

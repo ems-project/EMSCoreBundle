@@ -108,6 +108,9 @@ class ComputedFieldType extends DataFieldType {
 		
 	}
 
+	public function getBlockPrefix() {
+		return  'empty';
+	}
 
 	/**
 	 *

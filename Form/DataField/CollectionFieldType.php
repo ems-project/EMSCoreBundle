@@ -17,6 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Form\FormRegistryInterface;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldTransformer;
+use EMS\CoreBundle\Form\Form\EmsCollectionType;
 
 /**
  * Defined a Container content type.
@@ -103,47 +104,12 @@ class CollectionFieldType extends DataFieldType {
 	
 	
 	/**
-	 *
-	 * {@inheritdoc}
-	 *
+	 * 
+	 * {@inheritDoc}
+	 * @see \Symfony\Component\Form\AbstractType::getParent()
 	 */
-	public function buildForm(FormBuilderInterface $builder, array $options) {
-		/* get the metadata associate */
-		/** @var FieldType $fieldType */
-		$fieldType = clone $builder->getOptions () ['metadata'];
-		
-		$builder->add('raw_data', CollectionType::class, array(
-				// each entry in the array will be an "email" field
-				'entry_type' => CollectionItemFieldType::class,
-				// these options are passed to each "email" type
-				'entry_options' => $options,
-				'allow_add' => true,
-				'allow_delete' => true,
-				'prototype' => true,
-				'entry_options' => [
-						'metadata' => $fieldType,
-						'disabled' => !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
-				],
-		))->add ( 'add_nested', SubmitEmsType::class, [ 
-				'attr' => [ 
-						'class' => 'btn-primary btn-sm add-content-button' 
-				],
-				'label' => 'Add',
-				'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
-				'icon' => 'fa fa-plus' 
-		] );
-		
-		$builder->get('raw_data')->addViewTransformer(new DataFieldTransformer($fieldType, $this->formRegistry));
-	}
-	
-	
-	
-	public function transform($data) {
-		if(null == $data) {
-			return "";
-		}
-		dump($data);
-		return $data;
+	public function getParent() {
+		return EmsCollectionType::class;
 	}
 	
 	/**
@@ -158,6 +124,7 @@ class CollectionFieldType extends DataFieldType {
 		$view->vars ['singularLabel'] = $options ['singularLabel'];
 		$view->vars ['itemBootstrapClass'] = $options ['itemBootstrapClass'];
 		$view->vars ['sortable'] = $options ['sortable'];
+		$view->vars ['collapsible'] = $options ['collapsible'];
 	}
 	
 	/**
@@ -176,16 +143,6 @@ class CollectionFieldType extends DataFieldType {
 		$resolver->setDefault ( 'itemBootstrapClass', null );
 	}
 	
-// 	/**
-// 	 *
-// 	 * {@inheritdoc}
-// 	 *
-// 	 */
-// 	public static function buildObjectArray(DataField $data, array &$out) {
-		
-		
-// 	}
-	
 	/**
 	 *
 	 * {@inheritdoc}
@@ -193,6 +150,10 @@ class CollectionFieldType extends DataFieldType {
 	 */
 	public static function isContainer() {
 		/* this kind of compound field may contain children */
+		return true;
+	}
+	
+	public static function isCollection(){
 		return true;
 	}
 	
@@ -298,5 +259,22 @@ class CollectionFieldType extends DataFieldType {
 				'type' => 'nested',
 				'properties' => []
 		]];
+	}
+	
+	
+	/**
+	 *
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
+	 */
+	public function reverseViewTransform($data, FieldType $fieldType){
+		$cleaned = [];
+		foreach ( $data as $item ){
+			if(!empty($item)) {
+				$cleaned[] = $item;
+			}
+		}
+		$out = parent::reverseViewTransform($cleaned, $fieldType);
+		return $out;
 	}
 }

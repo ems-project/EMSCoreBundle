@@ -125,7 +125,7 @@ class NestedFieldType extends DataFieldType {
 
 
 
-	public function isNested(){
+	public static function isNested(){
 		return true;
 	}
 	

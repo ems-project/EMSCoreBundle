@@ -946,6 +946,13 @@ class DataService
 		
 	}
 	
+	/**
+	 * 
+	 * @param Revision $revision
+	 * @param array $rawData
+	 * @param string $replaceOrMerge
+	 * @return \EMS\CoreBundle\Entity\Revision
+	 */
 	public function replaceData(Revision $revision, array $rawData, $replaceOrMerge = "replace"){
 		
 		if(! $revision->getDraft()){
@@ -994,6 +1001,9 @@ class DataService
 			if($item->getNormData() instanceof DataField){
 				$out->addChild($item->getNormData());
 				$this->getDataFieldsStructure($item);				
+			}
+			else {
+				throw new \Exception('Unsupported type of class: '.get_class($item->getNormData()));
 			}
 		}
 		return $out;

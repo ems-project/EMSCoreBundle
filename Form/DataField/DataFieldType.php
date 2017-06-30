@@ -276,8 +276,12 @@ abstract class DataFieldType extends AbstractType {
 	public static function isContainer() {
 		return false;
 	}
-
-	public function isNested(){
+	
+	public static function isNested(){
+		return false;
+	}
+	
+	public static function isCollection(){
 		return false;
 	}
 	

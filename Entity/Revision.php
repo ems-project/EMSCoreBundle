@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Exception\NotLockedException;
+use EMS\CoreBundle\Form\DataField\CollectionFieldType;
 
 /**
  * Revision
@@ -209,7 +210,17 @@ class Revision
     			else {
     				if($type::isContainer()){
     					if(isset($data[$child->getName()])){
-    						$out[$child->getName()] = self::addVirtualFields($child, $data[$child->getName()]);
+    						if($type::isCollection()){
+    							if(is_array($data[$child->getName()])){
+    								$out[$child->getName()] = [];
+    								foreach ($data[$child->getName()] as $item) {
+    									$out[$child->getName()][] = self::addVirtualFields($child, $item); 
+    								}
+    							}
+    						}
+    						else {
+	    						$out[$child->getName()] = self::addVirtualFields($child, $data[$child->getName()]);    							
+    						}
     					}
     				}
     				else {
@@ -249,7 +260,15 @@ class Revision
     			else {
     				if($type::isContainer()){
     					if(isset($data[$child->getName()]) && !empty($data[$child->getName()])){
-    						$out[$child->getName()] = self::removeVirtualField($child, $data[$child->getName()]);
+    						if($type::isCollection()){
+    							$out[$child->getName()] = [];
+    							foreach ($data[$child->getName()] as $item) {
+    								$out[$child->getName()][] = self::removeVirtualField($child, $item);  
+    							}
+    						}
+    						else {
+	    						$out[$child->getName()] = self::removeVirtualField($child, $data[$child->getName()]);    							
+    						}
     					}
     				}
     				else {

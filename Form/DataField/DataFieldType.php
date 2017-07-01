@@ -241,14 +241,6 @@ abstract class DataFieldType extends AbstractType {
 		}
 	}
 	
-	/**
-	 *
-	 * {@inheritdoc}
-	 *
-	 */
-	public function getBlockPrefix() {
-		return 'datafieldtype';
-	}
 	
 	/**
 	 * Build an array representing the object, this array is ready to be serialized in json

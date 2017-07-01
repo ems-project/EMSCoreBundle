@@ -13,6 +13,12 @@
 {%- endblock empty_row %}
 
 
+{% block bypassdatafield_row -%}
+	{% if form.value is defined %}
+        {{form_row(form.value)}}
+    {% endif %}
+{%- endblock bypassdatafield_row %}
+
 {% block bypassdatafield_widget -%}
 	{% if form.value is defined %}
         {{form_widget(form.value)}}
@@ -183,12 +189,12 @@
 {% endblock code_editor_widget %}
 
 {% block datafieldtype_label %}
-	{% if form.vars.label %}
-		<label class="control-label {% if data.fieldType.options.restrictionOptions.mandatory is defined and data.fieldType.options.restrictionOptions.mandatory %}required{% endif %}"> 
-			{% if form.vars.icon is defined and form.vars.icon %}<i class="{{ form.vars.icon }}"></i>{%  endif %}
-			{{ form.vars.label }}
-		</label>
-	{% endif %}
+{# 	{% if form.vars.label %}#}
+{# 		<label class="control-label {% if data.fieldType.options.restrictionOptions.mandatory is defined and data.fieldType.options.restrictionOptions.mandatory %}required{% endif %}"> #}
+{# 			{% if form.vars.icon is defined and form.vars.icon %}<i class="{{ form.vars.icon }}"></i>{%  endif %}#}
+{# 			{{ form.vars.label }}#}
+{# 		</label>#}
+{# 	{% endif %}#}
 {% endblock datafieldtype_label %}
 
 {% block container_label -%}
@@ -302,15 +308,15 @@
 
 
 
-{% block container_row -%}
-	<div class="panel panel-default">
-	  	{{- form_label(form) -}}
-	  	<div class="panel-body">
-	  		{{- form_widget(form) -}}
-	  	</div>
-	    {{- form_errors(form) -}}
-	</div>               
-{%- endblock container_row %}
+{# {% block container_row -%}#}
+{# 	<div class="panel panel-default">#}
+{# 	  	{{- form_label(form) -}}#}
+{# 	  	<div class="panel-body">#}
+{# 	  		{{- form_widget(form) -}}#}
+{# 	  	</div>#}
+{# 	    {{- form_errors(form) -}}#}
+{# 	</div>               #}
+{# {%- endblock container_row %}#}
 
 {% block tabsfieldtype_widget -%}
 	<div class="{% if class %}{{ class }}{% else %}col-xs-12 {% endif %}">
@@ -318,7 +324,9 @@
             <ul class="nav nav-tabs">
               {% for tab in  form.iterator %}
 	              <li id="{{ tab.vars.id}}__label" class="form-group{% if tab.vars.errors|length %} has-error{% endif %} {% if loop.index == 1%} active{% endif %}">
-	              	<a href="#{{ tab.vars.id}}__tab" data-toggle="tab" aria-expanded="{% if loop.index == 1%}true{%else%}false{% endif %}">{{- form_label(tab) -}}</a>
+	              	<a href="#{{ tab.vars.id}}__tab" data-toggle="tab" aria-expanded="{% if loop.index == 1%}true{%else%}false{% endif %}">
+	              	  {{- form_label(tab) -}}
+	                </a>
 	              </li>
               {% endfor %}
             </ul>
@@ -406,23 +414,23 @@
 {% endblock collectionitemtype_row %}
 
 
-{% block datafieldtype_row -%}
-<div class="form-group{% if class %} {{ class }}{% else %} col-xs-12 {% endif %}{% if form.vars.value.fieldType is defined and form.vars.value.fieldType.options.restrictionOptions is defined and form.vars.value.fieldType.options.restrictionOptions.mandatory is defined and form.vars.value.fieldType.options.restrictionOptions.mandatory %} required {% endif %}{% if force_error|default(false) or not valid or form.vars.errors|length > 0 %} has-error{% endif %}">
-	{% if isContainer and form.vars.data and form.vars.data.fieldType.options.displayOptions.label %}
-		<div class="panel panel-default">
-			<div class="panel-heading">
-		  		{{- form_label(form) -}}
-		  	</div>
-		  <div class="panel-body">
-		    {{- form_widget(form) -}}
-		  </div>
-		  {{- form_errors(form) -}}
-		</div>               
-	{% else %}
-		  {{ form_row(form) }}
-	{% endif %}
-</div>
-{% endblock datafieldtype_row %}
+{# {% block datafieldtype_row -%}#}
+{# {# <div class="form-group{% if class %} {{ class }}{% else %} col-xs-12 {% endif %}{% if form.vars.value.fieldType is defined and form.vars.value.fieldType.options.restrictionOptions is defined and form.vars.value.fieldType.options.restrictionOptions.mandatory is defined and form.vars.value.fieldType.options.restrictionOptions.mandatory %} required {% endif %}{% if force_error|default(false) or not valid or form.vars.errors|length > 0 %} has-error{% endif %}">#}#}
+{# 	{% if isContainer and form.vars.data and form.vars.data.fieldType.options.displayOptions.label %}#}
+{# 		<div class="panel panel-default">#}
+{# 			<div class="panel-heading">#}
+{# 		  		{{- form_label(form) -}}#}
+{# 		  	</div>#}
+{# 		  <div class="panel-body">#}
+{# 		    {{- form_widget(form) -}}#}
+{# 		  </div>#}
+{# 		  {{- form_errors(form) -}}#}
+{# 		</div>               #}
+{# 	{% else %}#}
+{# 		  {{ form_row(form) }}#}
+{# 	{% endif %}#}
+{# {# </div>#}#}
+{# {% endblock datafieldtype_row %}#}
 
 {# {% block timefieldtype_row %}#}
 {# 	<div class="form-group{% if class %} {{ class }}{% else %} col-xs-12 {% endif %}">#}

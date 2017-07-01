@@ -134,7 +134,14 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     	}
     }
     
-
+    
+    public function __toString()
+    {
+    	if( null!== $this->rawData && is_string($this->rawData)){
+    		return $this->rawData;
+    	}
+    	return json_encode($this->rawData);
+    }
 
     public function orderChildren(){
     	$children = null;

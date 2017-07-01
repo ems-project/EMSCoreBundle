@@ -1002,9 +1002,7 @@ class DataService
 				$out->addChild($item->getNormData());
 				$this->getDataFieldsStructure($item);				
 			}
-			else {
-				throw new \Exception('Unsupported type of class: '.get_class($item->getNormData()));
-			}
+			//else shoudl be a sub-field
 		}
 		return $out;
 	}

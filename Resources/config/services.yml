@@ -212,8 +212,15 @@ services:
         tags:
             - { name: ems.form.datafieldtype, alias: copyto }
             - { name: form.type }
-#### End list available ems views ###
-#### Begin list available ems views ###
+#### End list available ems FieldType ###
+#### Begin list of extended symfony types for ems field type needs###
+    ems.exteneded.collectiontype:
+        class: EMS\CoreBundle\Form\Form\EmsCollectionType
+        arguments: ['@security.authorization_checker']
+        tags:
+            - { name: form.type }
+
+#### Begin list available ems views type ###
     ems.view.keywords:
         class: EMS\CoreBundle\Form\View\KeywordsViewType
         arguments: ['@form.factory', '@twig', '@app.elasticsearch']

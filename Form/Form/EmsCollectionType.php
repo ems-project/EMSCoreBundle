@@ -7,9 +7,16 @@ use Symfony\Component\Form\FormBuilderInterface;
 use EMS\CoreBundle\Form\DataField\CollectionItemFieldType;
 use EMS\CoreBundle\Entity\FieldType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class EmsCollectionType extends CollectionType{
 
+	/**@var AuthorizationCheckerInterface $authorizationChecker*/
+	protected $authorizationChecker;
+	
+	public function __construct(AuthorizationCheckerInterface $authorizationChecker) {
+		$this->authorizationChecker = $authorizationChecker;
+	}
 	
 	/**
 	 * 
@@ -32,9 +39,9 @@ class EmsCollectionType extends CollectionType{
 				'allow_delete' => true,
 				'prototype' => true,
 				'required' => false,
+				'disabled' => !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
 		]);
 		
-// 		$options['disabled'] = !$this->authorizationChecker->isGranted($fieldType->getMinimumRole());
 
 		parent::buildForm($builder, $options);
 	}

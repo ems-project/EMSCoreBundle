@@ -356,7 +356,16 @@ class FieldType
     	}
     	return [];
     }
-
+    
+    
+    public function getDisplayOption($key, $default = null){
+    	$options = $this->getDisplayOptions();
+    	if(isset($options[$key])){
+    		return $options[$key];
+    	}
+    	return $default;
+    }
+    
     public function getMappingOptions(){
     	$options = $this->getOptions();
     	if(isset($options['mappingOptions'])){

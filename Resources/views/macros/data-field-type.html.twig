@@ -268,12 +268,12 @@
 			<dt>{{ dataField.fieldType.name }}</dt>
 		{% endif %}
 		<dd>
-			{% if dataField.fieldType.displayOptions.multiple %}
-					{% for value in dataField.arrayTextValue %}
-			   			{{ value|data_link|raw }}
-					{% endfor %}
+			{% if dataField.rawData is iterable %}
+				{% for value in dataField.rawData %}
+		   			{{ value|data_link|raw }}
+				{% endfor %}
 			{% else %}
-			   	{{ dataField.textValue|data_link|raw }}
+			   	{{ dataField.rawData|data_link|raw }}
 			{% endif %}
 		
 		</dd>

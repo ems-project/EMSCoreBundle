@@ -33,11 +33,15 @@ class DateRangeFieldType extends DataFieldType {
 		return 'fa fa-calendar-o';
 	}
 	
+	
+	
 	/**
-	 * {@inheritdoc}
-	 *
+	 * 
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
 	 */
-	public function getDataValue(DataField &$dataField, array $options){
+	public function viewTransform(DataField $dataField) {
+		$options = $dataField->getFieldType()->getOptions();
 		if(!empty($dataField->getRawData())){
 			$temp = $dataField->getRawData();
 			
@@ -46,18 +50,32 @@ class DateRangeFieldType extends DataFieldType {
 
 			if($dateFrom && $dateTo){
 				$displayformat = DateRangeFieldType::convertJavascriptDateRangeFormat($options['displayOptions']['locale']['format']);
-				return $dateFrom->format($displayformat) . ' - ' . $dateTo->format($displayformat);
+				return ['value' => $dateFrom->format($displayformat) . ' - ' . $dateTo->format($displayformat)];
 			}
 		}
-		return '';
+		return ['value' => ''];
 		
 	}
 	
+	
 	/**
-	 * {@inheritdoc}
 	 *
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::getBlockPrefix()
 	 */
-	public function setDataValue($input, DataField &$dataField, array $options){
+	public function getBlockPrefix() {
+		return 'bypassdatafield';
+	}
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
+	 */
+	public function reverseViewTransform($data, FieldType $fieldType) {
+		$dataField = parent::reverseViewTransform($data, $fieldType);
+		$input = $data['value'];
+		$options = $fieldType->getOptions();
 		$format = DateRangeFieldType::convertJavascriptDateRangeFormat($options['displayOptions']['locale']['format']);
 		
 		$inputs = explode(' - ', $input);
@@ -80,6 +98,7 @@ class DateRangeFieldType extends DataFieldType {
 		else {
 			//TODO: log warnign
 		}
+		return $dataField;
 	}
 
 
@@ -149,7 +168,7 @@ class DateRangeFieldType extends DataFieldType {
 		/** @var FieldType $fieldType */
 		$fieldType = $builder->getOptions () ['metadata'];
 		
-		$builder->add ( 'data_value', IconTextType::class, [
+		$builder->add ( 'value', IconTextType::class, [
 				'label' => (null != $options ['label']?$options ['label']:$fieldType->getName()),
 				'required' => false,
 				'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),

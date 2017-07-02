@@ -73,7 +73,7 @@ class IntegerFieldType extends DataFieldType {
 		/** @var FieldType $fieldType */
 		$fieldType = $builder->getOptions () ['metadata'];
 	
-		$builder->add ( 'text_value', TextType::class, [
+		$builder->add ( 'value', TextType::class, [
 				'label' => (isset($options['label'])?$options['label']:$fieldType->getName()),
 				'required' => false,
 				'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
@@ -144,5 +144,29 @@ class IntegerFieldType extends DataFieldType {
 	
 // 		// String specific mapping options
 // 		$optionsForm->get ( 'mappingOptions' )->add ( 'analyzer', AnalyzerPickerType::class);
+	}	
+	
+	/**
+	 *
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::getBlockPrefix()
+	 */
+	public function getBlockPrefix() {
+		return 'bypassdatafield';
+	}
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
+	 */
+	public function viewTransform(DataField $dataField){
+		$out = parent::viewTransform($dataField);
+		return ['value' => $out];
+	}
+	
+	public function reverseViewTransform($data, FieldType $fieldType) {
+		$temp = (!empty($data) && isset($data['value']))?$data['value']:null;
+		return parent::reverseViewTransform($temp, $fieldType);
 	}
 }

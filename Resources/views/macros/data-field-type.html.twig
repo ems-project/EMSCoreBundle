@@ -624,7 +624,7 @@
 		</dt>
 		<dd>
 			<ul>
-				{% for value in dataField.dateValues %}
+				{% for value in dataField.rawData %}
 					<li>
 						{{ value|date(dataField.fieldType.displayOptions.displayFormat|convertJavascriptDateFormat) }}
 					</li>

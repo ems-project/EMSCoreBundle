@@ -83,9 +83,9 @@ abstract class DataFieldType extends AbstractType {
 	 * 
 	 * @return array|null|string|integer|float
 	 */
-	public function reverseModelTransform(DataField $data) {
+	public function reverseModelTransform(DataField $dataField) {
 // 		dump($data);
-		return $data->getRawData();
+		return $dataField->getRawData();
 	}
 	
 	

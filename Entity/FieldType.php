@@ -366,6 +366,15 @@ class FieldType
     	return $default;
     }
     
+    
+    public function getMappingOption($key, $default = null){
+    	$options = $this->getMappingOptions();
+    	if(isset($options[$key])){
+    		return $options[$key];
+    	}
+    	return $default;
+    }
+    
     public function getMappingOptions(){
     	$options = $this->getOptions();
     	if(isset($options['mappingOptions'])){

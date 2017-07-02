@@ -587,6 +587,8 @@ function addEventListeners(target){
 
 
 	target.find('.datepicker').each(function( index ) {
+
+		$(this).unbind('change');
 		var params = {
 			format: $(this).attr('data-date-format'),
 			todayBtn: true,
@@ -601,6 +603,8 @@ function addEventListeners(target){
 		}
 
 	  	$(this).datepicker(params)
+
+	  	$(this).on('change', onFormChange);
 	});
 
 	target.find('.ems_daterangepicker').each(function( index ) {

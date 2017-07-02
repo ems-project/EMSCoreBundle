@@ -516,18 +516,22 @@
 
 
 {% block datefieldtype_row %}
-	<div class="form-group{% if class %} {{ class }}{% else %} col-xs-12 {% endif %}">
-    	{{ form_label(form.data_value) }} 
-
-                  <div class="input-group">
-                    <div class="input-group-addon">
-                      <i class="fa fa-calendar"></i>
-                    </div>
-                    {{- form_widget(form.data_value) -}}
-                  </div>
-                  <!-- /.input group -->
-                </div>
-                <!-- /.form group -->
+<div class="form-group">
+	<div id="{{ form.vars.id}}__label">
+        {{ form_label(form.value) }} 
+	</div>
+	<div class="input-group">
+    	<div class="input-group-addon">
+    		<i class="fa fa-calendar"></i>
+    	</div>
+        {{- form_widget(form.value) -}}
+	</div>
+	<div class="has-error"  id="{{ form.vars.id}}__error">
+   	    {{- form_errors(form) -}}
+    </div>
+  	<!-- /.input group -->
+</div>
+<!-- /.form group -->
 {% endblock datefieldtype_row %}
 
 

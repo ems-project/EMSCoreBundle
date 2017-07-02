@@ -127,22 +127,22 @@
 
 {%- endblock data_field_options_widget -%}
 
-{% block datafieldtype_widget %}
-	{% if isContainer %}
-		<div id="{{ form.vars.id }}" class="container-fluid">
-			<div class="row">
-				{% for child in form.children %}
-					{{- form_row(child) -}}
-					{% if child.vars.lastOfRow is defined and child.vars.lastOfRow %}
-						</div><div class="row">
-					{% endif %}
-				{% endfor %}
-			</div>
-		</div>
-	{% else %}
-		{{ form_widget(form) }}
-	{% endif %}
-{% endblock datafieldtype_widget %}
+{# {% block datafieldtype_widget %}#}
+{# 	{% if isContainer %}#}
+{# 		<div id="{{ form.vars.id }}" class="container-fluid">#}
+{# 			<div class="row">#}
+{# 				{% for child in form.children %}#}
+{# 					{{- form_row(child) -}}#}
+{# 					{% if child.vars.lastOfRow is defined and child.vars.lastOfRow %}#}
+{# 						</div><div class="row">#}
+{# 					{% endif %}#}
+{# 				{% endfor %}#}
+{# 			</div>#}
+{# 		</div>#}
+{# 	{% else %}#}
+{# 		{{ form_widget(form) }}#}
+{# 	{% endif %}#}
+{# {% endblock datafieldtype_widget %}#}
 
 {# Labels #}
 
@@ -312,6 +312,13 @@
 {# 	</div>               #}
 {# {%- endblock container_row %}#}
 
+{% block tabsfieldtype_errors -%}
+{% endblock tabsfieldtype_errors -%}
+
+
+
+
+
 {% block tabsfieldtype_widget -%}
 	<div class="{% if class %}{{ class }}{% else %}col-xs-12 {% endif %}">
 		<div class="nav-tabs-custom">
@@ -407,6 +414,31 @@
 </div>
 {% endblock collectionitemtype_row %}
 
+
+{# {%  block data_field_type_row %}#}
+{# 	<div class="{{ form.vars.class }}">#}
+{#     	{{ form_row(form) }}#}
+{# 	</div>#}
+{# 	{% if form.vars.lastOfRow is defined and form.vars.lastOfRow %}#}
+{# 		</div><div class="row">#}
+{# 	{% endif %}#}
+{# {% endblock data_field_type_row %}#}
+
+
+{% block container_field_type_widget %}
+	<div id="{{ form.vars.id }}" class="container-fluid">
+		<div class="row">
+			{% for child in form.children %}
+				<div class="{{ child.vars.class }}{% if child.vars.errors|length > 0 and not child.vars.isContainer  %} has-error{% endif %}">
+    				{{- form_row(child) -}}
+				</div>
+				{% if child.vars.lastOfRow is defined and child.vars.lastOfRow %}
+					</div><div class="row">
+				{% endif %}
+			{% endfor %}
+		</div>
+	</div>
+{% endblock container_field_type_widget %}
 
 {# {% block datafieldtype_row -%}#}
 {# {# <div class="form-group{% if class %} {{ class }}{% else %} col-xs-12 {% endif %}{% if form.vars.value.fieldType is defined and form.vars.value.fieldType.options.restrictionOptions is defined and form.vars.value.fieldType.options.restrictionOptions.mandatory is defined and form.vars.value.fieldType.options.restrictionOptions.mandatory %} required {% endif %}{% if force_error|default(false) or not valid or form.vars.errors|length > 0 %} has-error{% endif %}">#}#}

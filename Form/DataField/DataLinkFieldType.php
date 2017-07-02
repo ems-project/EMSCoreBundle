@@ -279,6 +279,10 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 			if(is_string($data)){
 				return $out;
 			}
+			if(empty($data)){
+				$out->setRawData(null);
+				return $out;
+			}
 			
 			
 			if(is_array($data)) {

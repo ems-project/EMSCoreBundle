@@ -34,6 +34,10 @@ abstract class DataFieldType extends AbstractType {
 		$this->formRegistry = $formRegistry;
 	}
 	
+	public function getBlockPrefix() {
+		return 'data_field_type';
+	}
+	
 	
 	/**
 	 * form array to DataField 
@@ -197,7 +201,7 @@ abstract class DataFieldType extends AbstractType {
 				'metadata' => null, // used to keep a link to the FieldType
 				'error_bubbling' => false,
 				'required' => false,
-				'translation_domain' => false
+				'translation_domain' => false,
 		]);
 	}
 	
@@ -238,6 +242,11 @@ abstract class DataFieldType extends AbstractType {
 // 			/** @var FieldType $fieldType */
 // 			$fieldType = $options ['metadata'];
 			$view->vars ['label'] = false;//$fieldType->getName();
+		}
+		if($form->getErrors()->count() > 0 && !$form->getConfig()->getType()->getInnerType()->isContainer() && !empty($form->get('value'))){
+			foreach ($form->getErrors() as $error) {
+				$form->get('value')->addError($error);
+			}
 		}
 	}
 	

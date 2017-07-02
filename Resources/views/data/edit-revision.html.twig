@@ -553,28 +553,36 @@ function addEventListeners(target){
 	            showMeridian: 	$( this ).data('show-meridian'),
 	            explicitMode: 	$( this ).data('explicit-mode'),
         		minuteStep: 	$( this ).data('minute-step'),
-        		disableMousewheel: true
+        		disableMousewheel: true,
+        		defaultTime: false
 		};
 
-		var defaultTime = $( this ).data('default-time');
-		//console.log( defaultTime !== false );
-		if(defaultTime !== false) {
-			if(defaultTime){
-				settings.defaultTime = defaultTime;
-			}
-			else {
-				settings.defaultTime = false;
-			}
-		}
+		$( this ).unbind( "change" );
+
+// 		$( this ).on('change', function(event){
+// 			console.log('hello');
+// 			event.preventDefault();
+// 		});
+
+// 		var defaultTime = $( this ).data('default-time');
+// 		//console.log( defaultTime !== false );
+// 		if(defaultTime !== false) {
+// 			if(defaultTime){
+// 				settings.defaultTime = defaultTime;
+// 			}
+// 			else {
+// 				settings.defaultTime = false;
+// 			}
+// 		}
 		//console.log($( this ).val());
 
 		//console.log(settings);
-		$( this ).timepicker(settings);
+		$( this ).timepicker(settings).on('changeTime.timepicker', onFormChange);
 
 		
-		if(defaultTime === false && !$( this ).val() ) {
-			$( this ).timepicker('setTime', new Date() );
-		}
+// 		if(defaultTime === false && !$( this ).val() ) {
+// 			$( this ).timepicker('setTime', new Date() );
+// 		}
 	});
 
 

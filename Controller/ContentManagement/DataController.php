@@ -9,10 +9,8 @@ use Elasticsearch\Common\Exceptions\Missing404Exception;
 use EMS\CoreBundle;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
-use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\Search;
-use EMS\CoreBundle\Entity\Form\SearchFilter;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Template;
 use EMS\CoreBundle\Entity\View;
@@ -35,10 +33,9 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpFoundation\Response;
-use EMS\CoreBundle\Form\DataField\DataFieldType;
 
 class DataController extends AppController
 {

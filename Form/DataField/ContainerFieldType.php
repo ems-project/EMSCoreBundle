@@ -29,6 +29,11 @@ class ContainerFieldType extends DataFieldType {
 		return 'Visual container (invisible in Elasticsearch)';
 	}	
 	
+	public function getBlockPrefix() {
+		return 'container_field_type';
+	}
+	
+	
 	/**
 	 *
 	 * {@inheritdoc}

@@ -21,6 +21,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Form\FormFactory;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\DataField;
+use Elasticsearch\Common\Exceptions\Missing404Exception;
 
 class AppExtension extends \Twig_Extension
 {
@@ -358,18 +359,22 @@ class AppExtension extends \Twig_Extension
 			$ouuid =  $splitted[1];
 				
 			$addAttribute = "";
-				
+			
 			/**@var \EMS\CoreBundle\Entity\ContentType $contentType*/
 			$contentType = $this->contentTypeService->getByName($type);
 			if($contentType) {
-	
-				$result = $this->client->get([
-						'id' => $ouuid,
-						'index' => $contentType->getEnvironment()->getAlias(),
-						'type' => $type,
-				]);
-				
-				return $result['_source'];
+				try {
+					$result = $this->client->get([
+							'id' => $ouuid,
+							'index' => $contentType->getEnvironment()->getAlias(),
+							'type' => $type,
+					]);
+					
+					return $result['_source'];					
+				}
+				catch (Missing404Exception $e){
+					return false;
+				}
 			}
 		}
 		return false;

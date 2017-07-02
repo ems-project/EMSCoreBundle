@@ -90,7 +90,6 @@ class DateFieldType extends DataFieldType {
 			}			
 		}
 		$temp = ['value' => implode(',', $out)];
-		dump($temp);
 		return $temp;
 	}
 	

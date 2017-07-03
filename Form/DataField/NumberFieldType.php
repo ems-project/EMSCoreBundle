@@ -53,7 +53,7 @@ class NumberFieldType extends DataFieldType {
 		$builder->add ( 'value', TextType::class, [
 				'label' => (isset($options['label'])?$options['label']:$fieldType->getName()),
 				'required' => false,
-				'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
+				'disabled'=> $this->isDisabled($options),
 		] );
 	}
 

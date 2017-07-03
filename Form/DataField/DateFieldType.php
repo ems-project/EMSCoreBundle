@@ -44,7 +44,7 @@ class DateFieldType extends DataFieldType {
 			$format = \DateTime::ISO8601;
 		}
 		if(is_string($data)) {
-			$dates[] = \DateTime::createFromFormat($format, $dataValue);
+			$dates[] = \DateTime::createFromFormat($format, $data);
 			return parent::modelTransform($dates, $fieldType);
 		}
 		if(is_array($data)) {
@@ -178,7 +178,7 @@ class DateFieldType extends DataFieldType {
 		$builder->add ( 'value', TextType::class, [
 				'label' => (isset($options['label'])?$options['label']:$fieldType->getName()),
 				'required' => false,
-				'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
+				'disabled'=> $this->isDisabled($options),
 				'attr' => [
 					'class' => 'datepicker',
 					'data-date-format' => $fieldType->getDisplayOptions()['displayFormat'],

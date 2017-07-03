@@ -70,7 +70,8 @@ class ContainerFieldType extends DataFieldType {
 				/* merge the default options with the ones specified by the user */
 				$options = array_merge ( [ 
 						'metadata' => $child,
-						'label' => false 
+						'label' => false ,
+						'migration' => $options['migration'],
 				], $child->getDisplayOptions () );
 				
 				$builder->add (  $child->getName (), $child->getType (), $options );

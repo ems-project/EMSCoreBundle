@@ -138,7 +138,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 		$builder->add ( 'value', ObjectPickerType::class, [
 				'label' => (null != $options ['label']?$options ['label']:$fieldType->getName()),
 				'required' => false,
-				'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
+				'disabled'=> $this->isDisabled($options),
 				'multiple' => $options['multiple'],
 				'type' => $options['type'],
 				'dynamicLoading' => $options['dynamicLoading'],

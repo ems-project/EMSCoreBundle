@@ -71,7 +71,8 @@ class TabsFieldType extends DataFieldType {
 				/* merge the default options with the ones specified by the user */
 				$options = array_merge ( [ 
 						'metadata' => $fieldType,
-						'label' => false 
+						'label' => false ,
+						'migration' => $options['migration'],
 				], $fieldType->getDisplayOptions () );
 				
 				$builder->add (  $fieldType->getName (), $fieldType->getType (), $options );

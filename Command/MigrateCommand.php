@@ -162,7 +162,7 @@ class MigrateCommand extends ContainerAwareCommand
 							//So we load the datas from the current revision into the next revision
 							$newRevision->setRawData($currentRevision->getRawData());
 							
-							$revisionType = $this->formFactory->create(RevisionType::class, $newRevision);
+							$revisionType = $this->formFactory->create(RevisionType::class, $newRevision, ['migration' => true]);
 							$revisionType->submit(['data' => $value['_source']]);
 							$objectArray = $revisionType->get('data')->getData();
 							$newRevision->setRawData($objectArray);
@@ -182,7 +182,7 @@ class MigrateCommand extends ContainerAwareCommand
 					}
 					else{
 						$newRevision->setRawData(['data' => []]);
-						$revisionType = $this->formFactory->create(RevisionType::class, $newRevision);
+						$revisionType = $this->formFactory->create(RevisionType::class, $newRevision, ['migration' => true]);
 						$revisionType->submit(['data' => $value['_source']]);
 						$objectArray = $revisionType->get('data')->getData();
 						$newRevision->setRawData($objectArray);

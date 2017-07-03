@@ -35,6 +35,7 @@ class RevisionType extends AbstractType {
 		$builder->add ( 'data', $revision->getContentType()->getFieldType()->getType(), [ 
 				'metadata' => $revision->getContentType()->getFieldType(),
 				'error_bubbling' => false,
+				'migration' => $options['migration'],
 		] )->add ( 'save', SubmitEmsType::class, [ 
 				'attr' => [ 
 						'class' => 'btn-primary btn-sm ' 
@@ -90,6 +91,7 @@ class RevisionType extends AbstractType {
 				'data_class' => 'EMS\CoreBundle\Entity\Revision',
 				'has_clipboard' => false,
 				'has_copy' => false,
+				'migration' => false,
 				'translation_domain' => 'EMSCoreBundle'
 		) );
 	}

@@ -142,6 +142,13 @@ abstract class DataFieldType extends AbstractType {
 	 */
 	abstract public function getLabel();	
 
+	public function isDisabled($options){
+		/** @var FieldType $fieldType */
+		$fieldType = $options ['metadata'];
+		$enable = ($options['migration'] && !$fieldType->getMigrationgOption('protected', true)) || $this->authorizationChecker->isGranted($fieldType->getMinimumRole());
+		return !$enable;
+	}
+	
 
 	/**
 	 * Get Elasticsearch subquery
@@ -202,6 +209,7 @@ abstract class DataFieldType extends AbstractType {
 				'error_bubbling' => false,
 				'required' => false,
 				'translation_domain' => false,
+				'migration' => false,
 		]);
 	}
 	

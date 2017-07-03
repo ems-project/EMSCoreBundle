@@ -54,7 +54,7 @@ class CheckboxFieldType extends DataFieldType {
 	
 		$builder->add ( 'value', CheckboxType::class, [
 				'label' => ($options['question_label'] ?$options['question_label']:(isset($options['label'])?$options['label']:false)),
-				'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
+				'disabled'=> $this->isDisabled($options),
 				'required' => false,
 		] );
 	}

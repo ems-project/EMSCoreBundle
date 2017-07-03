@@ -390,7 +390,17 @@ class FieldType
     	}
     	return [];
     }
-
+    
+    
+    
+    public function getMigrationgOption($key, $default = null){
+    	$options = $this->getMigrationOptions();
+    	if(isset($options[$key])){
+    		return $options[$key];
+    	}
+    	return $default;
+    }
+    
     public function getMigrationOptions(){
     	$options = $this->getOptions();
     	if(isset($options['migrationOptions'])){

@@ -24,5 +24,9 @@ class OuuidFieldType extends DataFieldType {
 		return 'fa fa-key';
 	}
 	
+	public function getBlockPrefix() {
+		return 'empty';
+	}
+	
 
 }

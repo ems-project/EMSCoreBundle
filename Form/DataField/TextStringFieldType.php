@@ -9,7 +9,9 @@ use EMS\CoreBundle\Form\Field\IconTextType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-					
+use Symfony\Component\Form\FormView;
+use Symfony\Component\Form\FormInterface;
+							
 /**
  * Basic content type for text (regular text input)
  *
@@ -25,6 +27,16 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 	 */
 	public function getLabel(){
 		return 'Text field';
+	}
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::buildView()
+	 */
+	public function buildView(FormView $view, FormInterface $form, array $options){
+		parent::buildView($view, $form, $options);
+		$view->vars ['class'] = null;
 	}
 	
 	/**

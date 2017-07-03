@@ -160,11 +160,14 @@ class MigrateCommand extends ContainerAwareCommand
 						else {
 							//If there is a current revision, datas in fields that are protected against migration must not be overridden
 							//So we load the datas from the current revision into the next revision
-							$newRevision->setRawData($currentRevision->getRawData());
-							
+							$newRevision->setRawData($value['_source']);
 							$revisionType = $this->formFactory->create(RevisionType::class, $newRevision, ['migration' => true]);
-							$revisionType->submit(['data' => $value['_source']]);
-							$objectArray = $revisionType->get('data')->getData();
+							$viewData = $revisionType->getViewData();
+							
+							$anotherRevisionType = $this->formFactory->create(RevisionType::class, $currentRevision, ['migration' => true]);
+							$anotherRevisionType->submit($viewData);
+							$objectArray = $anotherRevisionType->get('data')->getData();
+							
 							$newRevision->setRawData($objectArray);
 						}
 						
@@ -181,9 +184,9 @@ class MigrateCommand extends ContainerAwareCommand
 						$objectArray = $value['_source'];
 					}
 					else{
-						$newRevision->setRawData(['data' => []]);
+						$newRevision->setRawData($value['_source']);
 						$revisionType = $this->formFactory->create(RevisionType::class, $newRevision, ['migration' => true]);
-						$revisionType->submit(['data' => $value['_source']]);
+						$revisionType->submit($revisionType->getViewData());
 						$objectArray = $revisionType->get('data')->getData();
 						$newRevision->setRawData($objectArray);
 					}
@@ -196,6 +199,7 @@ class MigrateCommand extends ContainerAwareCommand
 							'id' => $value['_id'],
 							'body' => $this->dataService->sign($newRevision),
 					]);
+// 					dump($value['_id']);
 					//TODO: Test if client->index OK
 					$em->persist($newRevision);
 					$em->flush();

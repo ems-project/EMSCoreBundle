@@ -86,6 +86,7 @@ class AppExtension extends \Twig_Extension
 		
 		return array(
 				new \Twig_SimpleFilter('searches', array($this, 'searchesList')),
+				new \Twig_SimpleFilter('url_generator', array($this, 'toAscii')),	
 				new \Twig_SimpleFilter('dump', array($this, 'dump')),
 				new \Twig_SimpleFilter('data', array($this, 'data')),
 				new \Twig_SimpleFilter('inArray', array($this, 'inArray')),
@@ -118,7 +119,6 @@ class AppExtension extends \Twig_Extension
 				new \Twig_SimpleFilter('search', array($this, 'search')),
 				new \Twig_SimpleFilter('call_user_func', array($this, 'call_user_func')),
 				new \Twig_SimpleFilter('macro_fct', array($this, 'macroFct')),
-				new \Twig_SimpleFilter('url_generator', array($this, 'toAscii')),	
 				
 				
 		);
@@ -126,14 +126,17 @@ class AppExtension extends \Twig_Extension
 	
 	/**
 	 * Convert a tring into an url frendly string
+	 * http://cubiq.org/the-perfect-php-clean-url-generator
+	 * 
 	 * @param string $str
 	 * @return string
 	 */
-	function toAscii(string $str) {
+	function toAscii($str) {
+// 		return($str);
 		$clean = iconv('UTF-8', 'ASCII//TRANSLIT', $str);
-		$clean = preg_replace("/[^a-zA-Z0-9/_| -]/", '', $clean);
+		$clean = preg_replace("/[^a-zA-Z0-9\_\|\ \-]/", '', $clean);
 		$clean = strtolower(trim($clean, '-'));
-		$clean = preg_replace("/[/_| -]+/", '-', $clean);
+		$clean = preg_replace("/[\/\_\|\ \-]+/", '-', $clean);
 		
 		return $clean;
 	}

@@ -43,6 +43,7 @@ class DataService
 	private $public_key;
 	
 	
+	/**@var \Twig_Environment $twig*/
 	protected $twig;
 	/**@var Registry $doctrine */
 	protected $doctrine;
@@ -101,7 +102,7 @@ class DataService
 		$this->appTwig = $container->get('app.twig_extension');
 		$this->formRegistry = $formRegistry;
 		$this->dispatcher= $dispatcher;
-
+		
 		$this->public_key = null;
 		$this->private_key = null;
 		if($privateKey){
@@ -202,38 +203,47 @@ class DataService
 
 	}
 	
-	public function propagateDataToComputedField(DataField $dataField, array $objectArray, $type, $ouuid){
+	public function propagateDataToComputedField(FormInterface $form, array& $objectArray, $type, $ouuid){
 		$found = false;
-		if(null !== $dataField->getFieldType()){
-			if(strcmp($dataField->getFieldType()->getType(),ComputedFieldType::class) == 0) {
-				$template = $dataField->getFieldType()->getDisplayOptions()['valueTemplate'];
-				if(empty($template)){
-					$out = NULL;
-				}
-				else {
-					try {
-						$out = $this->twig->createTemplate($template)->render([
-							'_source' => $objectArray,
-							'_type' => $type,
-							'_id' => $ouuid
-						]);
-						
-						if($dataField->getFieldType()->getDisplayOptions()['json']){
-							$out = json_decode($out);
-						}
-						
-					}
-					catch (\Exception $e) {
-						$out = "Error in template: ".$e->getMessage();
-					}					
-				}
-				$dataField->setRawData($out);
-				$found = true;
+		/**@var DataField $dataField*/
+		$dataField = $form->getNormData();
+		if( $form->getConfig()->getType()->getInnerType() instanceof ComputedFieldType ) {
+			$template = $dataField->getFieldType()->getDisplayOptions()['valueTemplate'];
+			if(empty($template)){
+				$out = NULL;
 			}
+			else {
+				try {
+					
+					
+					$this->twig->addExtension($this->appTwig);
+					$out = $this->twig->createTemplate($template)->render([
+						'_source' => $objectArray,
+						'_type' => $type,
+						'_id' => $ouuid
+					]);
+					
+					if($dataField->getFieldType()->getDisplayOptions()['json']){
+						$out = json_decode($out);
+					}
+					
+					
+				}
+				catch (\Exception $e) {
+					$out = "Error in template: ".$e->getMessage();
+				}					
+			}
+			//TODO: not always at the root
+			$objectArray[$dataField->getFieldType()->getName()] = $out;
+			$found = true;
 		}
 		
-		foreach ($dataField->getChildren() as $child){
-			$found = $found || $this->propagateDataToComputedField($child, $objectArray, $type, $ouuid);
+		if($form->getConfig()->getType()->getInnerType()->isContainer()) {
+			foreach ($form->getIterator() as $child){
+				if( $child->getConfig()->getType()->getInnerType() instanceof DataFieldType ) {
+					$found = $this->propagateDataToComputedField($child, $objectArray, $type, $ouuid) || $found;					
+				}
+			}			
 		}
 		return $found;
 	}
@@ -446,11 +456,10 @@ class DataService
 			
 		$objectArray = $revision->getRawData();
 		
-		
-// 		if($this->propagateDataToComputedField($revision->getDataField(), $objectArray, $revision->getContentType()->getName(), $revision->getOuuid())) {
-// 			$objectArray = $this->mapping->dataFieldToArray($revision->getDataField());
-// 			$revision->setRawData($objectArray);
-// 		}
+		$this->updateDataStructure($revision->getContentType()->getFieldType(), $form->get('data')->getNormData());
+		if($this->propagateDataToComputedField($form->get('data'), $objectArray, $revision->getContentType()->getName(), $revision->getOuuid())) {
+			$revision->setRawData($objectArray);
+		}
 		
 		$objectArray = $this->sign($revision);
 		
@@ -761,7 +770,6 @@ class DataService
 		if(null !== $dataField->getFieldType()){
 // 			$type = $dataField->getFieldType()->getType();
 			$datFieldType = $this->formRegistry->getType($dataField->getFieldType()->getType())->getInnerType();
-// 			dump($datFieldType);
 			$isContainer = $datFieldType->isContainer();
 		}
 		

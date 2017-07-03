@@ -15,7 +15,7 @@ use Symfony\Component\Form\FormBuilderInterface;
  *        
  */
  class IconFieldType extends DataFieldType {	
-	
+
 	/**
 	 * Get a icon to visually identify a FieldType
 	 * 
@@ -42,7 +42,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 	public function buildForm(FormBuilderInterface $builder, array $options) {
 		/** @var FieldType $fieldType */
 		$fieldType = $options ['metadata'];
-		$builder->add ( 'text_value', IconPickerType::class, [
+		$builder->add ( 'value', IconPickerType::class, [
 				'label' => (null != $options ['label']?$options ['label']:'Icon field type'),
 				'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
 				'required' => false,
@@ -60,5 +60,35 @@ use Symfony\Component\Form\FormBuilderInterface;
 		$out['mappingOptions']['index'] = 'not_analyzed';
 	
 		return $out;
+	}
+	
+	
+	/**
+	 *
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::getBlockPrefix()
+	 */
+	public function getBlockPrefix() {
+		return 'bypassdatafield';
+	}
+	
+	/**
+	 *
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
+	 */
+	public function viewTransform(DataField $dataField) {
+		$out = parent::viewTransform($dataField);
+		return ['value' => $out];
+	}
+	
+	/**
+	 *
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
+	 */
+	public function reverseViewTransform($data, FieldType $fieldType) {
+		$value = $data['value'];
+		return parent::reverseViewTransform($value, $fieldType);
 	}
 }

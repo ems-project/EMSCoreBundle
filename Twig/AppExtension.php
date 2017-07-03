@@ -312,10 +312,10 @@ class AppExtension extends \Twig_Extension
 			if($contentType) {
 				if($contentType->getIcon()){
 					
-					$icon = '<i class="'.$contentType->getIcon().'"></i>&nbsp;';
+					$icon = '<i class="'.$contentType->getIcon().'"></i>&nbsp;&nbsp;';
 				}
 				else{
-					$icon = '<i class="fa fa-book"></i>&nbsp;';
+					$icon = '<i class="fa fa-book"></i>&nbsp;&nbsp;';
 				}
 				
 				try {

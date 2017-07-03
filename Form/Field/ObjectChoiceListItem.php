@@ -21,9 +21,9 @@ class ObjectChoiceListItem {
 			$this->group = $object['_source'][$contentType->getCategoryField()];
 		}
 		
-		$this->label = '<i class="fa fa-question"></i> '.$this->value;
+		$this->label = '<i class="fa fa-question"></i>&nbsp;&nbsp;'.$this->value;
 		if( null !== $contentType ) {
-			$this->label = '<i class="'.(null !== $contentType->getIcon()?$contentType->getIcon():'fa fa-question').'"></i> ';
+			$this->label = '<i class="'.(null !== $contentType->getIcon()?$contentType->getIcon():'fa fa-question').'"></i>&nbsp;&nbsp;';
 			if(null !== $contentType->getLabelField() && isset($object['_source'][$contentType->getLabelField()])){
 				$this->label .= $object['_source'][$contentType->getLabelField()];
 			}

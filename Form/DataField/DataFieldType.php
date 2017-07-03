@@ -230,9 +230,9 @@ abstract class DataFieldType extends AbstractType {
 	}
 	
 	/**
-	 *
-	 * {@inheritdoc}
-	 *
+	 * 
+	 * {@inheritDoc}
+	 * @see \Symfony\Component\Form\AbstractType::buildView()
 	 */
 	public function buildView(FormView $view, FormInterface $form, array $options) {
 		$view->vars ['class'] = $options ['class'];

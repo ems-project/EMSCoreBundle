@@ -55,10 +55,10 @@ class SelectFieldType extends DataFieldType {
 			}
 		}
 		
-		$builder->add ( $options['multiple']?'array_text_value':'text_value', ChoiceType::class, [ 
+		$builder->add ( 'value', ChoiceType::class, [ 
 				'label' => (isset($options['label'])?$options['label']:$fieldType->getName()),
 				'required' => false,
-				'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
+				'disabled'=> $this->isDisabled($options),
 				'choices' => $choices,
     			'empty_data'  => null,
 				'multiple' => $options['multiple'],
@@ -130,5 +130,83 @@ class SelectFieldType extends DataFieldType {
 		$out['mappingOptions']['index'] = 'not_analyzed';
 	
 		return $out;
+	}
+	
+	
+	/**
+	 *
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::getBlockPrefix()
+	 */
+	public function getBlockPrefix() {
+		return 'bypassdatafield';
+	}
+	
+	
+	/**
+	 *
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
+	 */
+	public function reverseViewTransform($data, FieldType $fieldType) {
+		$value = null;
+		if(isset($data['value'])){
+			$value = $data['value'];
+		}
+		$out = parent::reverseViewTransform($value, $fieldType);
+		return $out;
+	}
+	
+	/**
+	 *
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
+	 */
+	public function viewTransform(DataField $dataField){
+		$temp = parent::viewTransform($dataField);
+		$out;
+		if($dataField->getFieldType()->getDisplayOptions()['multiple']){
+			if(empty($temp)){
+				$out = [];
+			}
+			elseif(is_string($temp)) {
+				$out = [$temp];
+			}
+			elseif (is_array($temp) ) {
+				$out = [];
+				foreach ($temp as $item){
+					if(is_string($item)){
+						$out[] = $item;
+					}
+					else {
+						$dataField->addMessage('Was not able to import the data : '+json_encode($item));
+					}
+				}
+			}
+			else {
+				$dataField->addMessage('Was not able to import the data : '+json_encode($out));
+				$out = [];
+			}
+		}
+		else { //not mutiple
+			if(null === $temp) {
+				$out = null;
+			}
+			elseif(is_string($temp)) {
+				$out = $temp;
+			}
+			elseif ( is_array($temp) && ! empty($temp) && is_string(array_shift($temp)) ) {
+				$out = array_shift($temp);
+				$dataField->addMessage('Only the first item has been imported : '+json_encode($temp));
+			}
+			else {
+				$dataField->addMessage('Was not able to import the data : '+json_encode($temp));
+				$out = "";
+			}
+		}
+		
+		return [ 'value' => $out ];
+		
+		
 	}
 }

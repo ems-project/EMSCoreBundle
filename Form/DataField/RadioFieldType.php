@@ -8,8 +8,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
+use EMS\CoreBundle\Entity\DataField;
 
-class RadioFieldType extends DataFieldType {
+class RadioFieldType extends DataFieldType {/* to refactor */
 
 	/**
 	 *
@@ -45,7 +46,7 @@ class RadioFieldType extends DataFieldType {
 		$labels = explode("\n", str_replace("\r", "", $options['labels']));
 	
 		foreach ($values as $id => $value){
-			if(isset($labels[$id])){
+			if(isset($labels[$id]) && !empty($labels[$id])){
 				$choices[$labels[$id]] = $value;
 			}
 			else {
@@ -53,7 +54,7 @@ class RadioFieldType extends DataFieldType {
 			}
 		}
 	
-		$builder->add ( 'text_value', ChoiceType::class, [
+		$builder->add ( 'value', ChoiceType::class, [
 				'label' => (isset($options['label'])?$options['label']:$fieldType->getName()),
 				'required' => false,
 				'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
@@ -108,5 +109,34 @@ class RadioFieldType extends DataFieldType {
 		$out['mappingOptions']['index'] = 'not_analyzed';
 	
 		return $out;
+	}
+	
+	/**
+	 *
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::getBlockPrefix()
+	 */
+	public function getBlockPrefix() {
+		return 'bypassdatafield';
+	}
+	
+	/**
+	 *
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
+	 */
+	public function viewTransform(DataField $dataField) {
+		$out = parent::viewTransform($dataField);
+		return ['value' => $out];
+	}
+	
+	/**
+	 *
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
+	 */
+	public function reverseViewTransform($data, FieldType $fieldType) {
+		$value = $data['value'];
+		return parent::reverseViewTransform($value, $fieldType);
 	}
 }

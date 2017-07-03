@@ -112,7 +112,7 @@ $(document).ready(function(){
 		objectPickerListeners($( this ));
 	});
 
-	$('#reorganize_addItem_text_value').on("select2:select", function(){
+	$('#reorganize_addItem_value').on("select2:select", function(){
 
 		var prototype = "{{ path('views.hierarchical.item', {key: '__key__', view: view.id}) }}";
 

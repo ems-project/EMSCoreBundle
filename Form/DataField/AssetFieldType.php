@@ -9,6 +9,8 @@ use EMS\CoreBundle\Form\Field\IconPickerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use EMS\CoreBundle\Service\FileService;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Form\FormRegistryInterface;
 	
 /**
  * Defined a Container content type.
@@ -22,8 +24,16 @@ class AssetFieldType extends DataFieldType {
 	/**@var FileService */
 	private $fileService;
 	
-	public function setFileService(FileService $fileService) {
-		$this->fileService = $fileService;
+	/**
+	 * {@inheritdoc}
+	 * 
+	 * @param AuthorizationCheckerInterface $authorizationChecker
+	 * @param FormRegistryInterface $formRegistry
+	 * @param FileService $fileService
+	 */
+	public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, FileService $fileService) {
+		parent::__construct($authorizationChecker, $formRegistry);
+		$this->fileService= $fileService;
 	}
 	
 	/**
@@ -43,20 +53,14 @@ class AssetFieldType extends DataFieldType {
 	public function getLabel(){
 		return 'File field';
 	}
-
+	
 	/**
 	 *
 	 * {@inheritdoc}
 	 *
 	 */
-	public function buildForm(FormBuilderInterface $builder, array $options) {
-		/** @var FieldType $fieldType */
-		$fieldType = $options ['metadata'];
-		$builder->add ( 'input_value', AssetType::class, [
-				'label' => (null != $options ['label']?$options ['label']:$fieldType->getName()),
-				'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
-				'required' => false,
-		] );
+	public function getParent() {
+		return AssetType::class;
 	}
 	
 	/**
@@ -114,31 +118,79 @@ class AssetFieldType extends DataFieldType {
 		];
 	}
 	
-	public function convertInput(DataField $dataField) {		
-		if(!empty($dataField->getInputValue()) && !empty($dataField->getInputValue()['sha1'])){
-			$rawData = $dataField->getInputValue();
-			$rawData['filesize'] = $this->fileService->getSize($rawData['sha1']);
-			if(!$rawData['filesize']){
-				unset($rawData['filesize']);
+	/**
+	 *
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
+	 */
+	public function reverseViewTransform($data, FieldType $fieldType){
+		$dataField = parent::reverseViewTransform($data, $fieldType);
+		$this->testDataField($dataField);
+		return $dataField;
+	}
+	
+	
+	private function testDataField(DataField $dataField) {
+		$raw = $dataField->getRawData();
+		
+		if( (empty($raw) || empty($raw['sha1']))){
+			if($dataField->getFieldType()->getRestrictionOptions()['mandatory']){
+				$dataField->addMessage('This entry is required');				
 			}
-			
-			$dataField->setRawData($rawData);
-		}
-		else{
 			$dataField->setRawData(null);
 		}
-	}	
-	
-	public function generateInput(DataField $dataField){
-		$rawData = $dataField->getRawData();
-		
-		if(!empty($rawData) && !empty($rawData['sha1'])){
-			unset($rawData['filesize']);
-			$dataField->setInputValue($rawData);
+		else if (!$this->fileService->head($raw['sha1'])){
+			$dataField->addMessage('File not found on the server try to re-upload it');
 		}
 		else {
-			$dataField->setInputValue(null);			
+			$raw['filesize'] = $this->fileService->getSize($raw['sha1']);
+			$dataField->setRawData($raw);
 		}
-		return $this;
 	}
+	
+	/**
+	 *
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
+	 */
+	public function viewTransform(DataField $dataField){
+		$out = parent::viewTransform($dataField);
+		
+		if(empty($out['sha1'])){
+			$out = null;
+		}
+		else if (isset($out['filesize'])) {
+			unset($out['filesize']);
+		}
+		return $out;
+		
+	}
+	
+// 	public function convertInput(DataField $dataField) {		
+// 		if(!empty($dataField->getInputValue()) && !empty($dataField->getInputValue()['sha1'])){
+// 			$rawData = $dataField->getInputValue();
+// 			$rawData['filesize'] = $this->fileService->getSize($rawData['sha1']);
+// 			if(!$rawData['filesize']){
+// 				unset($rawData['filesize']);
+// 			}
+			
+// 			$dataField->setRawData($rawData);
+// 		}
+// 		else{
+// 			$dataField->setRawData(null);
+// 		}
+// 	}	
+	
+// 	public function generateInput(DataField $dataField){
+// 		$rawData = $dataField->getRawData();
+		
+// 		if(!empty($rawData) && !empty($rawData['sha1'])){
+// 			unset($rawData['filesize']);
+// 			$dataField->setInputValue($rawData);
+// 		}
+// 		else {
+// 			$dataField->setInputValue(null);			
+// 		}
+// 		return $this;
+// 	}
 }

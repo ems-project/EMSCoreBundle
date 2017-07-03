@@ -8,5 +8,8 @@
 	"size": {{ asset.size|json_encode|raw }},
 	"status": {{ asset.status|json_encode|raw }},
 	"uploaded": {{ asset.uploaded|json_encode|raw }},
-	"user": {{ asset.user|json_encode|raw }},
+	"user": {{ asset.user|json_encode|raw }},   
+	"fileName": {{ asset.name|json_encode|raw }},
+    "url": {{path('ems_file_view', {sha1: asset.sha1, name:asset.name , type: asset.type})|json_encode|raw}},
+    
 {% endblock %}

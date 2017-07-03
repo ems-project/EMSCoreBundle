@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Service;
 
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\DataField;
+use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Event\RevisionFinalizeDraftEvent;
@@ -31,6 +32,7 @@ use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Form\FormInterface;
 
 class DataService
 {
@@ -41,6 +43,7 @@ class DataService
 	private $public_key;
 	
 	
+	/**@var \Twig_Environment $twig*/
 	protected $twig;
 	/**@var Registry $doctrine */
 	protected $doctrine;
@@ -99,7 +102,7 @@ class DataService
 		$this->appTwig = $container->get('app.twig_extension');
 		$this->formRegistry = $formRegistry;
 		$this->dispatcher= $dispatcher;
-
+		
 		$this->public_key = null;
 		$this->private_key = null;
 		if($privateKey){
@@ -200,38 +203,47 @@ class DataService
 
 	}
 	
-	public function propagateDataToComputedField(DataField $dataField, array $objectArray, $type, $ouuid){
+	public function propagateDataToComputedField(FormInterface $form, array& $objectArray, $type, $ouuid){
 		$found = false;
-		if(null !== $dataField->getFieldType()){
-			if(strcmp($dataField->getFieldType()->getType(),ComputedFieldType::class) == 0) {
-				$template = $dataField->getFieldType()->getDisplayOptions()['valueTemplate'];
-				if(empty($template)){
-					$out = NULL;
-				}
-				else {
-					try {
-						$out = $this->twig->createTemplate($template)->render([
-							'_source' => $objectArray,
-							'_type' => $type,
-							'_id' => $ouuid
-						]);
-						
-						if($dataField->getFieldType()->getDisplayOptions()['json']){
-							$out = json_decode($out);
-						}
-						
-					}
-					catch (\Exception $e) {
-						$out = "Error in template: ".$e->getMessage();
-					}					
-				}
-				$dataField->setRawData($out);
-				$found = true;
+		/**@var DataField $dataField*/
+		$dataField = $form->getNormData();
+		if( $form->getConfig()->getType()->getInnerType() instanceof ComputedFieldType ) {
+			$template = $dataField->getFieldType()->getDisplayOptions()['valueTemplate'];
+			if(empty($template)){
+				$out = NULL;
 			}
+			else {
+				try {
+					
+					
+					$this->twig->addExtension($this->appTwig);
+					$out = $this->twig->createTemplate($template)->render([
+						'_source' => $objectArray,
+						'_type' => $type,
+						'_id' => $ouuid
+					]);
+					
+					if($dataField->getFieldType()->getDisplayOptions()['json']){
+						$out = json_decode($out);
+					}
+					
+					
+				}
+				catch (\Exception $e) {
+					$out = "Error in template: ".$e->getMessage();
+				}					
+			}
+			//TODO: not always at the root
+			$objectArray[$dataField->getFieldType()->getName()] = $out;
+			$found = true;
 		}
 		
-		foreach ($dataField->getChildren() as $child){
-			$found = $found || $this->propagateDataToComputedField($child, $objectArray, $type, $ouuid);
+		if($form->getConfig()->getType()->getInnerType()->isContainer()) {
+			foreach ($form->getIterator() as $child){
+				if( $child->getConfig()->getType()->getInnerType() instanceof DataFieldType ) {
+					$found = $this->propagateDataToComputedField($child, $objectArray, $type, $ouuid) || $found;					
+				}
+			}			
 		}
 		return $found;
 	}
@@ -444,8 +456,8 @@ class DataService
 			
 		$objectArray = $revision->getRawData();
 		
-		if($this->propagateDataToComputedField($revision->getDataField(), $objectArray, $revision->getContentType()->getName(), $revision->getOuuid())) {
-			$objectArray = $this->mapping->dataFieldToArray($revision->getDataField());
+		$this->updateDataStructure($revision->getContentType()->getFieldType(), $form->get('data')->getNormData());
+		if($this->propagateDataToComputedField($form->get('data'), $objectArray, $revision->getContentType()->getName(), $revision->getOuuid())) {
 			$revision->setRawData($objectArray);
 		}
 		
@@ -481,7 +493,7 @@ class DataService
 			}
 				
 			$revision->addEnvironment($revision->getContentType()->getEnvironment());
-			$revision->getDataField()->propagateOuuid($revision->getOuuid());
+// 			$revision->getDataField()->propagateOuuid($revision->getOuuid());
 			$revision->setDraft(false);
 			
 			if(empty($username)){
@@ -748,6 +760,75 @@ class DataService
 		$this->session->getFlashBag()->add('notice', 'The object have been marked as deleted! ');
 		$em->flush();
 	}
+	
+	
+	public function updateDataStructure(FieldType $meta, DataField $dataField){
+		
+		//no need to generate the structure for subfields (
+		$isContainer = true;
+		
+		if(null !== $dataField->getFieldType()){
+// 			$type = $dataField->getFieldType()->getType();
+			$datFieldType = $this->formRegistry->getType($dataField->getFieldType()->getType())->getInnerType();
+			$isContainer = $datFieldType->isContainer();
+		}
+		
+		if($isContainer){
+			/** @var FieldType $field */
+			foreach ($meta->getChildren() as $field){
+				//no need to generate the structure for delete field
+				if(!$field->getDeleted()){
+					$child = $dataField->__get('ems_'.$field->getName());
+					if(null == $child){
+						$child = new DataField();
+						$child->setFieldType($field);
+						$child->setOrderKey($field->getOrderKey());
+						$child->setParent($dataField);
+						$dataField->addChild($child);
+						if(isset($field->getDisplayOptions()['defaultValue'])){
+							$child->setEncodedText($field->getDisplayOptions()['defaultValue']);
+						}
+					}
+					if( strcmp($field->getType(), CollectionFieldType::class) != 0 ) {
+						$this->updateDataStructure($field, $child);
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Assign data in dataValues based on the elastic index content
+	 *
+	 * @param array $elasticIndexDatas
+	 * @return $elasticIndexDatas
+	 */
+	public  function updateDataValue(DataField $dataField, Array &$elasticIndexDatas, $isMigration = false){
+		$dataFieldType = $this->formRegistry->getType($dataField->getFieldType()->getType())->getInnerType();
+		
+		$fieldName = $dataFieldType->getJsonName($dataField->getFieldType());
+		if(NULL === $fieldName) {//Virtual container
+			/** @var DataField $child */
+			foreach ($dataField->getChildren() as $child){
+				$this->updateDataValue($child, $elasticIndexDatas, $isMigration);
+			}
+		}
+		else {
+			if($dataFieldType->isVirtualField($dataField->getFieldType()->getOptions()))  {
+				$treatedFields = $dataFieldType->importData($dataField, $elasticIndexDatas, $isMigration);
+				foreach($treatedFields as $fieldName){
+					unset($elasticIndexDatas[$fieldName]);
+				}
+			}
+			else if(array_key_exists($fieldName, $elasticIndexDatas)){
+				$treatedFields = $dataFieldType->importData($dataField, $elasticIndexDatas[$fieldName], $isMigration);
+				foreach($treatedFields as $fieldName){
+					unset($elasticIndexDatas[$fieldName]);
+				}
+			}
+			
+		}
+	}
 		
 	public function loadDataStructure(Revision $revision){
 
@@ -756,9 +837,10 @@ class DataService
 		$data->setOrderKey($revision->getContentType()->getFieldType()->getOrderKey());
 		$data->setRawData($revision->getRawData());
 		$revision->setDataField($data);
-		$revision->getDataField()->updateDataStructure($revision->getContentType()->getFieldType());
+		$this->updateDataStructure($revision->getContentType()->getFieldType(), $revision->getDataField());
+		//$revision->getDataField()->updateDataStructure($this->formRegistry, $revision->getContentType()->getFieldType());
 		$object = $revision->getRawData();
-		$data->updateDataValue($object);
+		$this->updateDataValue($data, $object);
 		if(count($object) > 0){
 			$html = DataService::arrayToHtml($object);
 			$this->session->getFlashBag()->add('warning', "Some data of this revision were not consumed by the content type:".$html);			
@@ -782,7 +864,7 @@ class DataService
 	
 	public function isValid(\Symfony\Component\Form\Form &$form) {
 		
-		$viewData = $form->getViewData();
+		$viewData = $form->getNormData();
 		
 		//pour le champ hidden allFieldsAreThere de Revision
 		if(!is_object($viewData) && 'allFieldsAreThere' == $form->getName()){
@@ -791,23 +873,29 @@ class DataService
 		
 		if($viewData instanceof Revision) {
 			/** @var DataField $dataField */
-			$dataField = $viewData->getDatafield();
-		} elseif($viewData instanceof DataField) {
+			$viewData = $form->get('data')->getNormData();
+		}
+		
+		if($viewData instanceof DataField) {
 			/** @var DataField $dataField */
 			$dataField = $viewData;
 		} else {
 			throw new \Exception("Unforeseen type of viewData");
 		}
+		
 		if($dataField->getFieldType() !== null && $dataField->getFieldType()->getType() !== null) {
-			$dataFieldTypeClassName = $dataField->getFieldType()->getType();
+// 			$dataFieldTypeClassName = $dataField->getFieldType()->getType();
+// 	    	/** @var DataFieldType $dataFieldType */
+// 	    	$dataFieldType = new $dataFieldTypeClassName();
 	    	/** @var DataFieldType $dataFieldType */
-	    	$dataFieldType = new $dataFieldTypeClassName();
+			$dataFieldType = $this->formRegistry->getType($dataField->getFieldType()->getType())->getInnerType();
+			$dataFieldType->isValid($dataField);
 		}
 		$isValid = true;
 		if(isset($dataFieldType) && $dataFieldType->isContainer()) {//If datafield is container or type is null => Container => Recursive
 			$formChildren = $form->all();
 			foreach ($formChildren as $child) {
-				if($child instanceof \Symfony\Component\Form\Form) {
+				if( $child instanceof \Symfony\Component\Form\Form) {
 					$tempIsValid = $this->isValid($child);//Recursive
 					$isValid = $isValid && $tempIsValid;
 				}
@@ -866,6 +954,13 @@ class DataService
 		
 	}
 	
+	/**
+	 * 
+	 * @param Revision $revision
+	 * @param array $rawData
+	 * @param string $replaceOrMerge
+	 * @return \EMS\CoreBundle\Entity\Revision
+	 */
 	public function replaceData(Revision $revision, array $rawData, $replaceOrMerge = "replace"){
 		
 		if(! $revision->getDraft()){
@@ -902,8 +997,21 @@ class DataService
 	
 	}
 	
-
 	public function waitForGreen(){
 		$this->client->cluster()->health(['wait_for_status' => 'green']);
+	}
+	
+	
+	public function getDataFieldsStructure(FormInterface $form){
+		/**@var DataField $out*/
+		$out = $form->getNormData();
+		foreach ($form as $item) {
+			if($item->getNormData() instanceof DataField){
+				$out->addChild($item->getNormData());
+				$this->getDataFieldsStructure($item);				
+			}
+			//else shoudl be a sub-field
+		}
+		return $out;
 	}
 }

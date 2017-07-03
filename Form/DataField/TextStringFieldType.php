@@ -2,22 +2,22 @@
 
 namespace EMS\CoreBundle\Form\DataField;
 
-use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 use EMS\CoreBundle\Form\Field\IconTextType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-			
+					
 /**
- * Defined a Container content type.
- * It's used to logically groups subfields together. However a Container is invisible in Elastic search.
+ * Basic content type for text (regular text input)
  *
  * @author Mathieu De Keyzer <ems@theus.be>
  *        
  */
  class TextStringFieldType extends DataFieldType {
+ 	
 	/**
 	 *
 	 * {@inheritdoc}
@@ -28,12 +28,16 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 	}
 	
 	/**
-	 * Get a icon to visually identify a FieldType
 	 * 
-	 * @return string
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
 	 */
-	public static function getIcon(){
-		return 'fa fa-pencil-square-o';
+	public function viewTransform(DataField $data){
+		$out = parent::viewTransform($data);
+		if(empty($out)) {
+			return "";
+		}
+		return $out;
 	}
 	
 	/**
@@ -41,30 +45,18 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 	 * {@inheritdoc}
 	 *
 	 */
-	public function buildForm(FormBuilderInterface $builder, array $options) {
-
-		/** @var FieldType $fieldType */
-		$fieldType = $options ['metadata'];
-		
-		if($options['prefixIcon'] || $options['prefixText'] || $options['suffixIcon'] || $options['suffixText'] ){
-			$builder->add ( 'text_value', IconTextType::class, [ 
-					'required' => false,
-					'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
-					'label' => (null != $options ['label']?$options ['label']:$fieldType->getName()),
-					'icon' => $options['prefixIcon'],
-					'prefixText' => $options['prefixText'],
-					'suffixIcon' => $options['suffixIcon'],
-					'suffixText' => $options['suffixText'],
-			] );			
-		}
-		else{
-			$builder->add ( 'text_value', TextType::class, [
-					'label' => (null != $options ['label']?$options ['label']:$fieldType->getName()),
-					'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
-					'required' => false,
-			] );			
-		}
-		
+	public static function getIcon(){
+		return 'fa fa-pencil-square-o';
+	}
+	
+	
+	
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getParent()
+	{
+		return IconTextType::class;
 	}
 	
 	/**
@@ -75,10 +67,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 	public function configureOptions(OptionsResolver $resolver) {
 		/* set the default option value for this kind of compound field */
 		parent::configureOptions ( $resolver );
-		$resolver->setDefault ( 'prefixIcon', null );
-		$resolver->setDefault ( 'prefixText', null );
-		$resolver->setDefault ( 'suffixIcon', null );
-		$resolver->setDefault ( 'suffixText', null );
+		$resolver->setDefaults ([
+				'prefixIcon' => null,
+				'prefixText' => null,
+				'suffixIcon' => null,
+				'suffixText' => null,
+		] );
 	}
 	
 	/**
@@ -91,23 +85,25 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 		$optionsForm = $builder->get ( 'options' );
 		
 		// String specific display options
-		$optionsForm->get ( 'displayOptions' )->add ( 'prefixIcon', IconPickerType::class, [ 
-				'required' => false 
+		$optionsForm->get ( 'displayOptions' )->add ( 'icon', IconPickerType::class, [
+				'required' => false
+		] )->add ( 'prefixIcon', IconPickerType::class, [
+				'required' => false
 		] )->add ( 'prefixText', IconTextType::class, [ 
 				'required' => false,
-				'icon' => 'fa fa-hand-o-left' 
+				'prefixIcon' => 'fa fa-hand-o-left' 
 		] )->add ( 'suffixIcon', IconPickerType::class, [ 
 				'required' => false 
 		] )->add ( 'suffixText', IconTextType::class, [ 
 				'required' => false,
-				'icon' => 'fa fa-hand-o-right' 
+				'prefixIcon' => 'fa fa-hand-o-right' 
 		] );
 		
 		// String specific mapping options
 		$optionsForm->get ( 'mappingOptions' )
-		->add ( 'analyzer', AnalyzerPickerType::class)
-		->add ( 'copy_to', TextType::class, [
-				'required' => false,
-		] );
+			->add ( 'analyzer', AnalyzerPickerType::class)
+			->add ( 'copy_to', TextType::class, [
+					'required' => false,
+			] );
 	}
 }

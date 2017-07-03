@@ -4,6 +4,8 @@ namespace EMS\CoreBundle\Form\DataField;
 
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Form\DataTransformer\DataFieldModelTransformer;
+use EMS\CoreBundle\Form\DataTransformer\DataFieldViewTransformer;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -26,6 +28,11 @@ class ContainerFieldType extends DataFieldType {
 	public function getLabel(){
 		return 'Visual container (invisible in Elasticsearch)';
 	}	
+	
+	public function getBlockPrefix() {
+		return 'container_field_type';
+	}
+	
 	
 	/**
 	 *
@@ -57,15 +64,21 @@ class ContainerFieldType extends DataFieldType {
 		$fieldType = $builder->getOptions () ['metadata'];
 		
 		/** @var FieldType $fieldType */
-		foreach ( $fieldType->getChildren () as $fieldType ) {
+		foreach ( $fieldType->getChildren () as $child ) {
 
-			if (! $fieldType->getDeleted ()) {
+			if (! $child->getDeleted ()) {
 				/* merge the default options with the ones specified by the user */
 				$options = array_merge ( [ 
-						'metadata' => $fieldType,
+						'metadata' => $child,
 						'label' => false 
-				], $fieldType->getDisplayOptions () );
-				$builder->add ( 'ems_' . $fieldType->getName (), $fieldType->getType (), $options );
+				], $child->getDisplayOptions () );
+				
+				$builder->add (  $child->getName (), $child->getType (), $options );
+				
+				
+				$builder->get ( $child->getName () )
+					->addViewTransformer(new DataFieldViewTransformer($child, $this->formRegistry))
+					->addModelTransformer(new DataFieldModelTransformer($child, $this->formRegistry));
 			}
 		}
 	}
@@ -100,7 +113,6 @@ class ContainerFieldType extends DataFieldType {
 	 */
 	public static function buildObjectArray(DataField $data, array &$out) {
 		
-		
 	}
 	
 	/**
@@ -131,7 +143,17 @@ class ContainerFieldType extends DataFieldType {
 		] );
 	}
 
-
+	
+	
+	/**
+	 *
+	 * {@inheritdoc}
+	 *
+	 */
+	public static function isVirtual(){
+		return true;
+	}
+	
 	/**
 	 *
 	 * {@inheritdoc}

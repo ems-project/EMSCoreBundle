@@ -21,6 +21,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Form\FormFactory;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\DataField;
+use Elasticsearch\Common\Exceptions\Missing404Exception;
 
 class AppExtension extends \Twig_Extension
 {
@@ -61,12 +62,31 @@ class AppExtension extends \Twig_Extension
 		//$this->twig->getExtension('Twig_Extension_Core')->setEscaper('csv', array($this, 'csvEscaper'));
 	}
 	
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see Twig_Extension::getFunctions()
+	 */
+	public function getFunctions(){
+		return [
+				new \Twig_SimpleFunction('get_content_types', array($this, 'getContentTypes')),
+				new \Twig_SimpleFunction('get_default_environments', array($this, 'getDefaultEnvironments')),
+		];
+	}
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see Twig_Extension::getFilters()
+	 */
 	public function getFilters()
 	{
 		
 		
 		return array(
 				new \Twig_SimpleFilter('searches', array($this, 'searchesList')),
+				new \Twig_SimpleFilter('url_generator', array($this, 'toAscii')),	
 				new \Twig_SimpleFilter('dump', array($this, 'dump')),
 				new \Twig_SimpleFilter('data', array($this, 'data')),
 				new \Twig_SimpleFilter('inArray', array($this, 'inArray')),
@@ -97,10 +117,33 @@ class AppExtension extends \Twig_Extension
 				new \Twig_SimpleFilter('date_difference', array($this, 'dateDifference')),	
 				new \Twig_SimpleFilter('debug', array($this, 'debug')),
 				new \Twig_SimpleFilter('search', array($this, 'search')),
-				new \Twig_SimpleFilter('call_user_func', array($this, 'call_user_func')),		
+				new \Twig_SimpleFilter('call_user_func', array($this, 'call_user_func')),
+				new \Twig_SimpleFilter('macro_fct', array($this, 'macroFct')),
 				
 				
 		);
+	}
+	
+	/**
+	 * Convert a tring into an url frendly string
+	 * http://cubiq.org/the-perfect-php-clean-url-generator
+	 * 
+	 * @param string $str
+	 * @return string
+	 */
+	function toAscii($str) {
+// 		return($str);
+		$clean = iconv('UTF-8', 'ASCII//TRANSLIT', $str);
+		$clean = preg_replace("/[^a-zA-Z0-9\_\|\ \-]/", '', $clean);
+		$clean = strtolower(trim($clean, '-'));
+		$clean = preg_replace("/[\/\_\|\ \-]+/", '-', $clean);
+		
+		return $clean;
+	}
+	
+	
+	function macroFct($tempate, $block, $context) {
+		return $tempate->{'get'.$block}($context);
 	}
 	
 	function call_user_func($function){
@@ -140,10 +183,19 @@ class AppExtension extends \Twig_Extension
 	}
 
 	function internalLinks($input){
-		$url = $this->router->generate('data.link', ['key'=>'object:'], UrlGeneratorInterface::RELATIVE_PATH);
+		$url = $this->router->generate('data.link', ['key'=>'object:'], UrlGeneratorInterface::ABSOLUTE_PATH);
 		$out = preg_replace('/ems:\/\/object:/i', $url, $input);
-		$url = $this->router->generate('data.link', ['key'=>'asset:'], UrlGeneratorInterface::RELATIVE_PATH);
-		$out = preg_replace('/ems:\/\/asset:/i', $url, $out);
+		
+		$path = $this->router->generate('ems_file_view', ['sha1' => '__SHA1__'], UrlGeneratorInterface::ABSOLUTE_PATH );
+		$path = substr($path, 0, strlen($path)-8);
+		$out= preg_replace_callback(
+			'/(ems:\/\/asset:)([^\n\r"\'\?]*)/i',
+			function ($matches) use ($path) {
+					return $path.$matches[2];
+			},
+			$out
+		); 
+		
 		return $out;
 	}
 	
@@ -308,7 +360,7 @@ class AppExtension extends \Twig_Extension
 		$parent = $error->getOrigin();
 		$out = '';
 		while($parent) {
-			$out = $parent->getPropertyPath().$out;
+			$out = $parent->getName().$out;
 			$parent = $parent->getParent();
 			if($parent) {
 				$out = '_'.$out;
@@ -325,18 +377,22 @@ class AppExtension extends \Twig_Extension
 			$ouuid =  $splitted[1];
 				
 			$addAttribute = "";
-				
+			
 			/**@var \EMS\CoreBundle\Entity\ContentType $contentType*/
 			$contentType = $this->contentTypeService->getByName($type);
 			if($contentType) {
-	
-				$result = $this->client->get([
-						'id' => $ouuid,
-						'index' => $contentType->getEnvironment()->getAlias(),
-						'type' => $type,
-				]);
-				
-				return $result['_source'];
+				try {
+					$result = $this->client->get([
+							'id' => $ouuid,
+							'index' => $contentType->getEnvironment()->getAlias(),
+							'type' => $type,
+					]);
+					
+					return $result['_source'];					
+				}
+				catch (Missing404Exception $e){
+					return false;
+				}
 			}
 		}
 		return false;
@@ -456,6 +512,22 @@ class AppExtension extends \Twig_Extension
 	
 	public function getContentType($name){
 		return $this->contentTypeService->getByName($name);
+	}
+	
+	public function getContentTypes(){
+		return $this->contentTypeService->getAll();
+	}
+	
+	/**
+	 * @deprecated  since ems 1.6
+	 * @return NULL[]
+	 */
+	public function getDefaultEnvironments(){
+		$defaultEnvironments = [];
+		foreach ($this->contentTypeService->getAll()as $contentType){
+			$defaultEnvironments[] = $contentType->getName();
+		}
+		return $defaultEnvironments;
 	}
 	
 	public function getEnvironment($name){

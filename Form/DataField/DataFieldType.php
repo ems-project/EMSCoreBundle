@@ -13,6 +13,7 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use EMS\CoreBundle\Form\Field\SelectPickerType;
 use Symfony\Component\Form\FormRegistryInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 
 /**
@@ -23,19 +24,86 @@ use Symfony\Component\Form\FormRegistryInterface;
  */
 abstract class DataFieldType extends AbstractType {
 	
+	/**@var AuthorizationCheckerInterface $authorizationChecker*/
 	protected $authorizationChecker;
-	
-	public function setAuthorizationChecker($authorizationChecker){
-		$this->authorizationChecker = $authorizationChecker;
-		return $this;
-	}
-	
-	/**FormRegistryInterface $formRegistry*/
+	/**@var FormRegistryInterface $formRegistry*/
 	protected $formRegistry;
 	
-	public function setFormRegistry(FormRegistryInterface $formRegistry){
+	public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry) {
+		$this->authorizationChecker = $authorizationChecker;
 		$this->formRegistry = $formRegistry;
-		return $this;
+	}
+	
+	public function getBlockPrefix() {
+		return 'data_field_type';
+	}
+	
+	
+	/**
+	 * form array to DataField 
+	 * 
+	 * http://symfony.com/doc/current/form/data_transformers.html#about-model-and-view-transformers
+	 * 
+	 * @param unknown $data
+	 * @param FieldType $fieldType
+	 * @return \EMS\CoreBundle\Entity\DataField
+	 */
+	public function reverseViewTransform($data, FieldType $fieldType) {
+		$out = new DataField();
+		if(empty($data)){
+			$out->setRawData(null);
+		}
+		else {
+			$out->setRawData($data);			
+		}
+		$out->setFieldType($fieldType);
+		return $out;
+	}
+	
+	
+	/**
+	 * datafield to form array : 
+	 * 
+	 * http://symfony.com/doc/current/form/data_transformers.html#about-model-and-view-transformers
+	 * 
+	 * @param DataField $data
+	 * @return array|null|string|integer|float
+	 */
+	public function viewTransform(DataField $dataField) {
+		return $dataField->getRawData();
+	}
+	
+	
+	/**
+	 * datafield to raw_data array : 
+	 * 
+	 * http://symfony.com/doc/current/form/data_transformers.html#about-model-and-view-transformers
+	 * 
+	 * @param DataField $data
+	 * 
+	 * @return array|null|string|integer|float
+	 */
+	public function reverseModelTransform(DataField $dataField) {
+// 		dump($data);
+		return $dataField->getRawData();
+	}
+	
+	
+	/**
+	 * raw_data array to datafield: 
+	 * 
+	 * http://symfony.com/doc/current/form/data_transformers.html#about-model-and-view-transformers
+	 * 
+	 * @param unknown $data
+	 * @return DataField
+	 */
+	public function modelTransform($data, FieldType $fieldType) {
+// 		dump($data);
+		$out = new DataField();
+		$out->setRawData($data);
+		$out->setFieldType($fieldType);
+// 		dump($out);
+		return $out;
 	}
 	
 	/**@var FormRegistryInterface*/
@@ -127,11 +195,13 @@ abstract class DataFieldType extends AbstractType {
 	 */
 	public function configureOptions(OptionsResolver $resolver) {
 		$resolver->setDefaults ( [ 
-				'data_class' => 'EMS\CoreBundle\Entity\DataField',
+				//'data_class' => 'EMS\CoreBundle\Entity\DataField',
 				'lastOfRow' => false,
 				'class' => null, // used to specify a bootstrap class arround the compoment
 				'metadata' => null, // used to keep a link to the FieldType
 				'error_bubbling' => false,
+				'required' => false,
+				'translation_domain' => false,
 		]);
 	}
 	
@@ -169,20 +239,17 @@ abstract class DataFieldType extends AbstractType {
 		$view->vars ['lastOfRow'] = $options ['lastOfRow'];
 		$view->vars ['isContainer'] = $this->isContainer();
 		if( null == $options['label']){
-			/** @var FieldType $fieldType */
-			$fieldType = $options ['metadata'];
-			$view->vars ['label'] = $fieldType->getName();
+// 			/** @var FieldType $fieldType */
+// 			$fieldType = $options ['metadata'];
+			$view->vars ['label'] = false;//$fieldType->getName();
+		}
+		if($form->getErrors()->count() > 0 && !$form->getConfig()->getType()->getInnerType()->isContainer() && !empty($form->get('value'))){
+			foreach ($form->getErrors() as $error) {
+				$form->get('value')->addError($error);
+			}
 		}
 	}
 	
-	/**
-	 *
-	 * {@inheritdoc}
-	 *
-	 */
-	public function getBlockPrefix() {
-		return 'datafieldtype';
-	}
 	
 	/**
 	 * Build an array representing the object, this array is ready to be serialized in json
@@ -210,8 +277,12 @@ abstract class DataFieldType extends AbstractType {
 	public static function isContainer() {
 		return false;
 	}
-
-	public function isNested(){
+	
+	public static function isNested(){
+		return false;
+	}
+	
+	public static function isCollection(){
 		return false;
 	}
 	
@@ -221,12 +292,7 @@ abstract class DataFieldType extends AbstractType {
 	 * @return boolean
 	 */
 	public function isValid(DataField &$dataField){
-		$isValid = TRUE;
-		//Madatory Validation
-		$isValid = $isValid && $this->isMandatory($dataField);
-		//Add here an other validation
-		//$isValid = isValid && isValidYourValidation();
-		return $isValid;
+		return count($dataField->getMessages()) === 0 && $this->isMandatory($dataField);
 	}
 	
 	/**
@@ -263,8 +329,21 @@ abstract class DataFieldType extends AbstractType {
 		] );
 	}
 	
-	
+	/**
+	 * return true if the field exist as is in elasticsearch
+	 * 
+	 * @return boolean
+	 */
+	public static function isVirtual(){
+		return false;
+	}
 
+	/**
+	 * Return the json path
+	 * 
+	 * @param FieldType $current
+	 * @return string
+	 */
 	public static function getJsonName(FieldType $current){
 		return $current->getName();
 	}

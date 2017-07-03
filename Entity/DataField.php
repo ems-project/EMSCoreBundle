@@ -2,15 +2,14 @@
 
 namespace EMS\CoreBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\PersistentCollection;
 use EMS\CoreBundle\Exception\DataFormatException;
 use EMS\CoreBundle\Form\DataField\CollectionFieldType;
-use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Form\DataField\OuuidFieldType;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
-use Doctrine\Common\Collections\Collection;
 
 /**
  * DataField
@@ -74,10 +73,13 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     }
     
     private function initChild(DataField $child, $offset){
-    	$child->setParent($this);
-    	$child->updateDataStructure($this->getFieldType());
-    	$child->setOrderKey($offset);
-    	$child->setChildrenFieldType($this->fieldType);
+//     	dump($child);
+    	
+    	throw new \Exception('deprecate');
+//     	$child->setParent($this);
+//     	$child->updateDataStructure($this->getFieldType());
+//     	$child->setOrderKey($offset);
+//     	$child->setChildrenFieldType($this->fieldType);
     }
     
     public function offsetSet($offset, $value) {
@@ -132,7 +134,14 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     	}
     }
     
-
+    
+    public function __toString()
+    {
+    	if( null!== $this->rawData && is_string($this->rawData)){
+    		return $this->rawData;
+    	}
+    	return json_encode($this->rawData);
+    }
 
     public function orderChildren(){
     	$children = null;
@@ -243,38 +252,38 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     }
     
     public function updateDataStructure(FieldType $meta){
-    
-    	//no need to generate the structure for subfields (
-    	$isContainer = true;
+    	throw new \Exception('Deprecated method');
+//     	//no need to generate the structure for subfields (
+//     	$isContainer = true;
     	
-    	if(null !== $this->getFieldType()){
-	    	$type = $this->getFieldType()->getType();
-	    	$datFieldType = new $type;    	
-	    	$isContainer = $datFieldType->isContainer();
-    	}
+//     	if(null !== $this->getFieldType()){
+// 	    	$type = $this->getFieldType()->getType();
+// 	    	$datFieldType = new $type;    	
+// 	    	$isContainer = $datFieldType->isContainer();
+//     	}
     	
-    	if($isContainer){
-    		/** @var FieldType $field */
-    		foreach ($meta->getChildren() as $field){
-    			//no need to generate the structure for delete field
-    			if(!$field->getDeleted()){
-    				$child = $this->__get('ems_'.$field->getName());
-    				if(null == $child){
-    					$child = new DataField();
-    					$child->setFieldType($field);
-    					$child->setOrderKey($field->getOrderKey());
-    					$child->setParent($this);
-    					$this->addChild($child);
-    					if(isset($field->getDisplayOptions()['defaultValue'])){
-    						$child->setEncodedText($field->getDisplayOptions()['defaultValue']);
-    					}
-    				}
-    				if( strcmp($field->getType(), CollectionFieldType::class) != 0 ) {
-    					$child->updateDataStructure($field);
-    				}
-    			}
-    		}
-    	}
+//     	if($isContainer){
+//     		/** @var FieldType $field */
+//     		foreach ($meta->getChildren() as $field){
+//     			//no need to generate the structure for delete field
+//     			if(!$field->getDeleted()){
+//     				$child = $this->__get('ems_'.$field->getName());
+//     				if(null == $child){
+//     					$child = new DataField();
+//     					$child->setFieldType($field);
+//     					$child->setOrderKey($field->getOrderKey());
+//     					$child->setParent($this);
+//     					$this->addChild($child);
+//     					if(isset($field->getDisplayOptions()['defaultValue'])){
+//     						$child->setEncodedText($field->getDisplayOptions()['defaultValue']);
+//     					}
+//     				}
+//     				if( strcmp($field->getType(), CollectionFieldType::class) != 0 ) {
+//     					$child->updateDataStructure($field);
+//     				}
+//     			}
+//     		}
+//     	}
     }
     
     
@@ -285,31 +294,32 @@ class DataField implements \ArrayAccess, \IteratorAggregate
      * @return $elasticIndexDatas
      */
     public  function updateDataValue(Array &$elasticIndexDatas, $isMigration = false){
-    	$dataFieldTypeClassName = $this->fieldType->getType();
-    	/** @var DataFieldType $dataFieldType */
-    	$dataFieldType = new $dataFieldTypeClassName();
-    	$fieldName = $dataFieldType->getJsonName($this->fieldType);
-    	if(NULL === $fieldName) {//Virtual container
-    		/** @var DataField $child */
-	    	foreach ($this->children as $child){
-	    		$child->updateDataValue($elasticIndexDatas, $isMigration);
-	    	}
-    	} 
-    	else {
-    		if($dataFieldType->isVirtualField($this->getFieldType()->getOptions()))  {
-    			$treatedFields = $dataFieldType->importData($this, $elasticIndexDatas, $isMigration);
-    			foreach($treatedFields as $fieldName){
-    				unset($elasticIndexDatas[$fieldName]);
-    			}
-    		}
-    		else if(array_key_exists($fieldName, $elasticIndexDatas)){
-    			$treatedFields = $dataFieldType->importData($this, $elasticIndexDatas[$fieldName], $isMigration);
-    			foreach($treatedFields as $fieldName){
-	    			unset($elasticIndexDatas[$fieldName]);    				    				
-    			}
-    		}
+    	throw new \Exception('Deprecated method');
+//     	$dataFieldTypeClassName = $this->fieldType->getType();
+//     	/** @var DataFieldType $dataFieldType */
+//     	$dataFieldType = new $dataFieldTypeClassName();
+//     	$fieldName = $dataFieldType->getJsonName($this->fieldType);
+//     	if(NULL === $fieldName) {//Virtual container
+//     		/** @var DataField $child */
+// 	    	foreach ($this->children as $child){
+// 	    		$child->updateDataValue($elasticIndexDatas, $isMigration);
+// 	    	}
+//     	} 
+//     	else {
+//     		if($dataFieldType->isVirtualField($this->getFieldType()->getOptions()))  {
+//     			$treatedFields = $dataFieldType->importData($this, $elasticIndexDatas, $isMigration);
+//     			foreach($treatedFields as $fieldName){
+//     				unset($elasticIndexDatas[$fieldName]);
+//     			}
+//     		}
+//     		else if(array_key_exists($fieldName, $elasticIndexDatas)){
+//     			$treatedFields = $dataFieldType->importData($this, $elasticIndexDatas[$fieldName], $isMigration);
+//     			foreach($treatedFields as $fieldName){
+// 	    			unset($elasticIndexDatas[$fieldName]);    				    				
+//     			}
+//     		}
     		
-    	}
+//     	}
     }
     
     public function linkFieldType(PersistentCollection $fieldTypes){
@@ -511,6 +521,8 @@ class DataField implements \ArrayAccess, \IteratorAggregate
 	 * @return DataField
 	 */
 	public function getDataValue() {
+// 		dump($this);
+		throw new Exception('shoudl came here');
 		if($this->getFieldType())
 			return $this->getFieldType()->getDataValue($this);
 		return null;

@@ -1,16 +1,16 @@
 {% extends 'EMSCoreBundle::base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
-{% block title %}Align Environments{% endblock %}
-{% block pagetitle %}Align Environments{% endblock %} 
+{% block title %}{{ 'Align Environments'|trans }}{% endblock %}
+{% block pagetitle %}{{ 'Align Environments'|trans }}{% endblock %} 
 {% block breadcrumb %}
 	<ol class="breadcrumb">
-		<li><i class="fa fa-database"></i> Environments</li>
-   		<li class="active">Align Environments</li>
+		<li><i class="fa fa-database"></i> {{ 'Environments'|trans }}</li>
+   		<li class="active">{{ 'Align Environments'|trans }}</li>
    	</ol>
 {% endblock %}
 
 {% block subtitle %}
-<small>time to align environments?</small>
+<small>{{ 'time to align environments?'|trans }}</small>
 {% endblock %}
 
 {% block body %}
@@ -20,7 +20,7 @@
 	<div class="col-xs-12">
 	<div class="box box-primary">
       <div class="box-header with-border">
-        <h3 class="box-title">Select Environments to compare</h3>
+        <h3 class="box-title">{{ 'Select Environments to compare'|trans }}</h3>
       </div>
       <!-- /.box-header -->
       <!-- form start -->
@@ -31,24 +31,23 @@
         	<div class="col-md-6">
         	{{ form_row(form.withEnvironment) }}
         	</div>
-          {{ form_errors(form) }}
         </div>
         <!-- /.box-body -->
         
       <div class="box-header with-border">
-        <h3 class="box-title">Filters</h3>
+        <h3 class="box-title">{{ 'Filters' | trans }}</h3>
       </div>
         <div class="box-body">
         	<div class="col-md-6">
         	{{ form_row(form.contentTypes) }}
         	</div>
-          {{ form_errors(form) }}
         </div>
         <!-- /.box-body -->
 
         <div class="box-footer">
         	{{ form_row(form.compare) }}
         </div>
+         {{ form_errors(form) }}
     </div>
 	</div>
 

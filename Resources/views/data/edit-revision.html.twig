@@ -27,8 +27,7 @@
 	<!-- form start -->
 		{{ form_start(form) }}
 		<div class="box-body">
-			
-			{{ form_widget(form.dataField) }}
+			{{ form_widget(form.data) }}
 	
 		</div>
 		<!-- /.box-body -->
@@ -121,12 +120,12 @@ function onFormChange(){
 					  }
 				  }
 				  else {
-					  $('#'+item.propertyPath).parent('.form-group').addClass('has-error');
+					  $('#'+item.propertyPath).parents('.form-group').addClass('has-error');
 					  if(item.message) {
-						  if($('#'+item.propertyPath+' span.help-block').length == 0){
-							  $('#'+item.propertyPath).append('<span class="help-block"><ul class="list-unstyled"></ul></span>');
+						  if($('#'+item.propertyPath).parents('.form-group').find(' span.help-block').length == 0){
+							  $('#'+item.propertyPath).parent('.input-group').after('<span class="help-block"><ul class="list-unstyled"></ul></span>');
 						  }
-						  $('#'+item.propertyPath+' span.help-block ul.list-unstyled').append('<li><span class="glyphicon glyphicon-exclamation-sign"></span> '+item.message+'</li>');
+			  				$('#'+item.propertyPath).parents('.form-group').find(' span.help-block ul.list-unstyled').append('<li><span class="glyphicon glyphicon-exclamation-sign"></span> '+item.message+'</li>');
 					  }
 				  }
 				  
@@ -202,9 +201,9 @@ function initFileUploader(fileHandler, container){
 	    		$(clearButton).addClass('disabled');
 	    },
 	    onProgress: function(status, progress, remaining){
-		    if($(sha1Input).val() != fileUploader.sha1){
+		    if(status !== 'Computing sha1' && $(sha1Input).val() !== fileUploader.sha1){
         		$(sha1Input).val(fileUploader.sha1);
-        		console.log('Sha1 missmatch');
+        		console.log('Sha1 missmatch!');
 		    }
 		    var pourcent = Math.round(progress*100);
 	    		$(progressBar).css('width', pourcent+'%');
@@ -390,18 +389,24 @@ function addEventListeners(target){
 	});
 
 	target.find(".ckeditor_ems").each(function(index){
-		var ckconfig = {
-			removePlugins: 'link,about',
-			extraPlugins: 'adv_link,dialogadvtab,div',
-		};
-
 
 		{% if app.user.wysiwygProfile and app.user.wysiwygProfile.config %}
-			ckconfig = {{ app.user.wysiwygProfile.config|raw }};
+			var ckconfig = {{ app.user.wysiwygProfile.config|raw }};
 		{% elseif app.user.wysiwygOptions %}
-			ckconfig = {{ app.user.wysiwygOptions|raw }};
+			var ckconfig = {{ app.user.wysiwygOptions|raw }};
 		{% endif %}
 
+// 		if(!ckconfig.extraPlugins) {
+// 			ckconfig.extraPlugins = '';
+// 		}
+// 		else {
+// 			ckconfig.extraPlugins += ',';
+// 		}
+		
+// 		ckconfig.extraPlugins += 'image2,imagebrowser,uploadimage';
+
+		ckconfig.imageUploadUrl = ems_upload_url;
+		ckconfig.imageBrowser_listUrl = ems_images_url;
 	
 		var height = $( this ).attr('data-height');
 		if(!height){
@@ -548,32 +553,42 @@ function addEventListeners(target){
 	            showMeridian: 	$( this ).data('show-meridian'),
 	            explicitMode: 	$( this ).data('explicit-mode'),
         		minuteStep: 	$( this ).data('minute-step'),
-        		disableMousewheel: true
+        		disableMousewheel: true,
+        		defaultTime: false
 		};
 
-		var defaultTime = $( this ).data('default-time');
-		//console.log( defaultTime !== false );
-		if(defaultTime !== false) {
-			if(defaultTime){
-				settings.defaultTime = defaultTime;
-			}
-			else {
-				settings.defaultTime = false;
-			}
-		}
+		$( this ).unbind( "change" );
+
+// 		$( this ).on('change', function(event){
+// 			console.log('hello');
+// 			event.preventDefault();
+// 		});
+
+// 		var defaultTime = $( this ).data('default-time');
+// 		//console.log( defaultTime !== false );
+// 		if(defaultTime !== false) {
+// 			if(defaultTime){
+// 				settings.defaultTime = defaultTime;
+// 			}
+// 			else {
+// 				settings.defaultTime = false;
+// 			}
+// 		}
 		//console.log($( this ).val());
 
 		//console.log(settings);
-		$( this ).timepicker(settings);
+		$( this ).timepicker(settings).on('changeTime.timepicker', onFormChange);
 
 		
-		if(defaultTime === false && !$( this ).val() ) {
-			$( this ).timepicker('setTime', new Date() );
-		}
+// 		if(defaultTime === false && !$( this ).val() ) {
+// 			$( this ).timepicker('setTime', new Date() );
+// 		}
 	});
 
 
 	target.find('.datepicker').each(function( index ) {
+
+		$(this).unbind('change');
 		var params = {
 			format: $(this).attr('data-date-format'),
 			todayBtn: true,
@@ -588,6 +603,8 @@ function addEventListeners(target){
 		}
 
 	  	$(this).datepicker(params)
+
+	  	$(this).on('change', onFormChange);
 	});
 
 	target.find('.ems_daterangepicker').each(function( index ) {

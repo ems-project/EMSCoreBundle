@@ -25,6 +25,11 @@ use Symfony\Component\Form\FormBuilderInterface;
 		return 'fa fa-envelope';
 	}
 	
+	public function getBlockPrefix() {
+		return 'bypassdatafield';
+	}
+	
+	
 	/**
 	 *
 	 * {@inheritdoc}
@@ -66,6 +71,41 @@ use Symfony\Component\Form\FormBuilderInterface;
 	}
 	
 	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::modelTransform()
+	 */
+	public function modelTransform($data, FieldType $fieldType) {
+		if(empty($data)) {
+			return parent::modelTransform(null, $fieldType);
+		}
+		if(is_string($data)){
+			return parent::modelTransform($data, $fieldType);
+		}
+		$out = parent::modelTransform(null, $fieldType);
+		$out->addMessage('ems was not able to import the data: '.json_encode($data));
+		return $out;
+	}
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
+	 */
+	public function viewTransform(DataField $dataField) {
+		return ['value' => parent::viewTransform($dataField)];
+	}
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
+	 */
+	public function reverseViewTransform($data, FieldType $fieldType) {
+		return parent::reverseViewTransform($data['value'], $fieldType);
+	}
+	
+	/**
 	 *
 	 * {@inheritdoc}
 	 *
@@ -73,7 +113,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 	public function buildForm(FormBuilderInterface $builder, array $options) {
 		/** @var FieldType $fieldType */
 		$fieldType = $options ['metadata'];
-		$builder->add ( 'text_value', TextType::class, [
+		$builder->add ( 'value', TextType::class, [
 				'label' => (null != $options ['label']?$options ['label']:'Email field type'),
 				'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
 				'required' => false,

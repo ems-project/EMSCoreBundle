@@ -8,8 +8,20 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\FormRegistryInterface;
+use EMS\CoreBundle\Form\DataTransformer\DataFieldModelTransformer;
+use EMS\CoreBundle\Form\DataTransformer\DataFieldViewTransformer;
 
 class RevisionType extends AbstractType {
+	
+	/**@var FormRegistryInterface**/
+	private $formRegistry;
+	
+	public function __construct(FormRegistryInterface $formRegistry){
+		$this->formRegistry =$formRegistry;
+	}
+	
+	
 	/**
 	 *
 	 * {@inheritdoc}
@@ -20,8 +32,8 @@ class RevisionType extends AbstractType {
 		/** @var Revision $revision */
 		$revision = $builder->getData ();
 		
-		$builder->add ( 'dataField', $revision->getContentType ()->getFieldType ()->getType (), [ 
-				'metadata' => $revision->getContentType ()->getFieldType (),
+		$builder->add ( 'data', $revision->getContentType()->getFieldType()->getType(), [ 
+				'metadata' => $revision->getContentType()->getFieldType(),
 				'error_bubbling' => false,
 		] )->add ( 'save', SubmitEmsType::class, [ 
 				'attr' => [ 
@@ -29,6 +41,10 @@ class RevisionType extends AbstractType {
 				],
 				'icon' => 'fa fa-save' 
 		] );
+		
+		$builder->get ( 'data' )
+		->addModelTransformer(new DataFieldModelTransformer($revision->getContentType()->getFieldType(), $this->formRegistry))
+		->addViewTransformer(new DataFieldViewTransformer($revision->getContentType()->getFieldType(), $this->formRegistry));
 		
 		if($options['has_clipboard']){
 			$builder->add ( 'paste', SubmitEmsType::class, [
@@ -74,6 +90,7 @@ class RevisionType extends AbstractType {
 				'data_class' => 'EMS\CoreBundle\Entity\Revision',
 				'has_clipboard' => false,
 				'has_copy' => false,
+				'translation_domain' => 'EMSCoreBundle'
 		) );
 	}
 	

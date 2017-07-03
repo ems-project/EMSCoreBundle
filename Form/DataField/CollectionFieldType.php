@@ -14,6 +14,10 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Form\FormRegistryInterface;
+use EMS\CoreBundle\Form\DataTransformer\DataFieldTransformer;
+use EMS\CoreBundle\Form\Form\EmsCollectionType;
 
 /**
  * Defined a Container content type.
@@ -23,6 +27,17 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
  *        
  */
 class CollectionFieldType extends DataFieldType {
+	
+	protected $dataService;
+	
+	
+	
+	public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, $service_container) {
+		parent::__construct($authorizationChecker, $formRegistry);
+		$this->service_container= $service_container;
+	}
+	
+	
 	/**
 	 *
 	 * {@inheritdoc}
@@ -53,6 +68,8 @@ class CollectionFieldType extends DataFieldType {
 				$sourceArray = [$sourceArray];
 			}
 			
+			$dataService = $this->service_container->get('ems.service.data');
+			
 			$dataField->getChildren()->clear();
 			foreach ($sourceArray as $idx => $item){
 				$colItem = new DataField();
@@ -65,9 +82,9 @@ class CollectionFieldType extends DataFieldType {
 						$grandChild->setOrderKey(0);	
 						$grandChild->setParent($colItem);
 						$grandChild->setFieldType($childFieldType);
-						$grandChild->updateDataStructure($childFieldType);
+						$dataService->updateDataStructure($childFieldType, $grandChild);
 						if(is_array($item)) {
-							$grandChild->updateDataValue($item, $isMigration);							
+							$dataService->updateDataValue($grandChild, $item, $isMigration);							
 						}
 						else  {
 							//TODO: add flash message
@@ -87,35 +104,12 @@ class CollectionFieldType extends DataFieldType {
 	
 	
 	/**
-	 *
-	 * {@inheritdoc}
-	 *
+	 * 
+	 * {@inheritDoc}
+	 * @see \Symfony\Component\Form\AbstractType::getParent()
 	 */
-	public function buildForm(FormBuilderInterface $builder, array $options) {
-		/* get the metadata associate */
-		/** @var FieldType $fieldType */
-		$fieldType = clone $builder->getOptions () ['metadata'];
-		
-		$builder->add('ems_' . $fieldType->getName(), CollectionType::class, array(
-				// each entry in the array will be an "email" field
-				'entry_type' => CollectionItemFieldType::class,
-				// these options are passed to each "email" type
-				'entry_options' => $options,
-				'allow_add' => true,
-				'allow_delete' => true,
-				'prototype' => true,
-				'entry_options' => [
-						'metadata' => $fieldType,
-						'disabled' => !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
-				],
-		))->add ( 'add_nested', SubmitEmsType::class, [ 
-				'attr' => [ 
-						'class' => 'btn-primary btn-sm add-content-button' 
-				],
-				'label' => 'Add',
-				'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
-				'icon' => 'fa fa-plus' 
-		] );
+	public function getParent() {
+		return EmsCollectionType::class;
 	}
 	
 	/**
@@ -130,6 +124,7 @@ class CollectionFieldType extends DataFieldType {
 		$view->vars ['singularLabel'] = $options ['singularLabel'];
 		$view->vars ['itemBootstrapClass'] = $options ['itemBootstrapClass'];
 		$view->vars ['sortable'] = $options ['sortable'];
+		$view->vars ['collapsible'] = $options ['collapsible'];
 	}
 	
 	/**
@@ -148,16 +143,6 @@ class CollectionFieldType extends DataFieldType {
 		$resolver->setDefault ( 'itemBootstrapClass', null );
 	}
 	
-// 	/**
-// 	 *
-// 	 * {@inheritdoc}
-// 	 *
-// 	 */
-// 	public static function buildObjectArray(DataField $data, array &$out) {
-		
-		
-// 	}
-	
 	/**
 	 *
 	 * {@inheritdoc}
@@ -165,6 +150,10 @@ class CollectionFieldType extends DataFieldType {
 	 */
 	public static function isContainer() {
 		/* this kind of compound field may contain children */
+		return true;
+	}
+	
+	public static function isCollection(){
 		return true;
 	}
 	
@@ -270,5 +259,22 @@ class CollectionFieldType extends DataFieldType {
 				'type' => 'nested',
 				'properties' => []
 		]];
+	}
+	
+	
+	/**
+	 *
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
+	 */
+	public function reverseViewTransform($data, FieldType $fieldType){
+		$cleaned = [];
+		foreach ( $data as $item ){
+			if(!empty($item)) {
+				$cleaned[] = $item;
+			}
+		}
+		$out = parent::reverseViewTransform($cleaned, $fieldType);
+		return $out;
 	}
 }

@@ -2,19 +2,20 @@
 
 namespace EMS\CoreBundle\Form\DataField;
 
+use Elasticsearch\Client;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\ObjectChoiceLoader;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
-use Elasticsearch\Client;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormEvent;
-																	
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+																			
 /**
  * Defined a Container content type.
  * It's used to logically groups subfields together. However a Container is invisible in Elastic search.
@@ -26,18 +27,13 @@ use Symfony\Component\Form\FormEvent;
  class DataLinkFieldType extends DataFieldType {
 
  	/**@var Client $client*/
- 	private $client;
- 	/**@var FormRegistryInterface $registry*/
- 	private $registry;
+ 	protected $client;
  	
-	public function setClient(Client $client){
-		$this->client = $client;
-		return $this;
-	}
  	
- 	public function setRegistry(FormRegistryInterface $registry){
- 		$this->registry = $registry;
-	 	return $this;
+ 	
+ 	public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, Client $client) {
+ 		parent::__construct($authorizationChecker, $formRegistry);
+ 		$this->client = $client;
  	}
  	
 	/**
@@ -123,24 +119,23 @@ use Symfony\Component\Form\FormEvent;
 		$listener = function (FormEvent $event) {
 			$data = $event->getForm()->getNormData();
 			$rawData = $data->getRawData();
+			
 			if(!empty($rawData)){
 				usort($rawData, function($a, $b) use ($event){
-					if(!empty($event->getData()['array_text_value'])){
-						$indexA = array_search($a, $event->getData()['array_text_value']);
-						$indexB = array_search($b, $event->getData()['array_text_value']);
+					if(!empty($event->getData()['value'])){
+						$indexA = array_search($a, $event->getData()['value']);
+						$indexB = array_search($b, $event->getData()['value']);
 						if($indexA === false || $indexA > $indexB) return 1;
 						if($indexB === false || $indexA < $indexB) return -1;
 					}
 					return 0;
 				});
-				$data->setRawData($rawData);
-				
-				$event->getForm()->setData($data);				
+				$event->getForm()->setData($rawData);				
 			}
 			
 		};
 		
-		$builder->add ( $options['multiple']?'array_text_value':'text_value', ObjectPickerType::class, [
+		$builder->add ( 'value', ObjectPickerType::class, [
 				'label' => (null != $options ['label']?$options ['label']:$fieldType->getName()),
 				'required' => false,
 				'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
@@ -186,6 +181,17 @@ use Symfony\Component\Form\FormEvent;
 		$out['mappingOptions']['index'] = 'not_analyzed';
 	
 		return $out;
+	}
+	
+	
+	
+	/**
+	 *
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::getBlockPrefix()
+	 */
+	public function getBlockPrefix() {
+		return 'bypassdatafield';
 	}
 	
 	/**
@@ -236,5 +242,87 @@ use Symfony\Component\Form\FormEvent;
 				'required' => false,
 		] );
 		
+	}
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::modelTransform()
+	 */
+	public function modelTransform($data, FieldType $fieldType){
+		$out = parent::modelTransform($data, $fieldType);
+		if( $fieldType->getDisplayOption('multiple', false)) {
+			$temp = [];
+			if(null === $data) {
+				$out->setRawData([]);
+			}
+			elseif(is_array($data)) {
+				foreach ($data as $item) {
+					if(is_string($item)) {
+						$temp[] = $item;
+					}
+					else {
+						$out->addMessage('Some data was not able to be imported: '.json_encode($item));
+					}
+				}
+			}
+			elseif(is_string($data)) {
+				$temp[] = $data;
+				$out->addMessage('Data converted into array');
+			}
+			else {
+				$out->addMessage('Data was not able to be imported: '.json_encode($data));
+			}
+			$out->setRawData($temp);
+		}
+		else {
+			if(is_string($data)){
+				return $out;
+			}
+			if(empty($data)){
+				$out->setRawData(null);
+				return $out;
+			}
+			
+			
+			if(is_array($data)) {
+				if(count($data) == 0){
+					$out->setRawData(null);
+				}
+				elseif(is_string($data[0])){
+					$out->setRawData($data[0]);
+					if(count($data) > 0) {
+						$out->addMessage('Data converted into string, somae data migth be lost');
+					}
+				}
+			}
+			else {
+				$out->setRawData(null);
+				$out->addMessage('Data was not able to be imported: '.json_encode($data));
+			}
+		}
+		return $out;
+		
+	}
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
+	 */
+	public function viewTransform(DataField $dataField) {
+		$out = parent::viewTransform($dataField);
+		return [ 'value' => $out ];
+	}
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
+	 */
+	public function reverseViewTransform($data, FieldType $fieldType) {
+		$data= (null !== $data&& isset($data['value']))?$data['value']:null;
+		$out = parent::reverseViewTransform($data, $fieldType);
+		return $out;
 	}
 }

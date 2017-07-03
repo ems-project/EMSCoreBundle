@@ -69,7 +69,7 @@
 							<th class="text-center" style="width: 30px">Active</th>
 							<th>Action</th>
 						</tr>
-						{% for contentType in contentTypes %}
+						{% for contentType in get_content_types() %}
 							<tr class="text-{{ contentType.color }}">
 								<td class="text-center">{{ loop.index }}.</td>
 								<td class="text-center"><i class="{% if contentType.icon %}{{ contentType.icon }}{% else %}fa fa-book{% endif %}"></i></td>

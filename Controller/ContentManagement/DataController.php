@@ -9,10 +9,8 @@ use Elasticsearch\Common\Exceptions\Missing404Exception;
 use EMS\CoreBundle;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
-use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\Search;
-use EMS\CoreBundle\Entity\Form\SearchFilter;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Template;
 use EMS\CoreBundle\Entity\View;
@@ -35,9 +33,9 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpFoundation\Response;
 
 class DataController extends AppController
 {
@@ -239,9 +237,9 @@ class DataController extends AppController
 		
 		$this->loadAutoSavedVersion($revision);
 		
-		$this->getDataService()->loadDataStructure($revision);
+// 		$this->getDataService()->loadDataStructure($revision);
 		
-		$revision->getDataField()->orderChildren();
+// 		$revision->getDataField()->orderChildren();
 		
 		
 		$page = $request->query->get('page', 1);
@@ -254,8 +252,14 @@ class DataController extends AppController
 		$availableEnv = $em->getRepository('EMSCoreBundle:Environment')->findAvailableEnvironements(
 				$revision->getContentType()->getEnvironment());
 		
-		$objectArray = $this->get('ems.service.mapping')->dataFieldToArray ($revision->getDataField());
-	
+// 		$objectArray = $this->get('ems.service.mapping')->dataFieldToArray ($revision->getDataField());
+
+		
+		$form = $this->createForm(RevisionType::class, $revision);
+		
+		$objectArray = $form->get('data')->getData();
+		
+		$dataFields = $this->getDataService()->getDataFieldsStructure($form->get('data'));
 		
 
 		/** @var Client $client */
@@ -303,6 +307,7 @@ class DataController extends AppController
 				'lastPage' => $lastPage,
 				'counter' => $counter,
 				'firstElemOfPage' => $firstElemOfPage,
+				'dataFields' => $dataFields,
 		] );
 	}
 	
@@ -667,7 +672,7 @@ class DataController extends AppController
 
 
 	/**
-	 * @Route("/data/revision/{revisionId}.json", name="revision.ajaxupdate"))
+	 * @Route("/data/revision/{revisionId}.json", name="revision.ajaxupdate"), defaults={"_format": "json"})
      * @Method({"POST"})
 	 */
 	public function ajaxUpdateAction($revisionId, Request $request)
@@ -687,13 +692,14 @@ class DataController extends AppController
 		}
 
 		$this->lockRevision($revision);
+		$this->getLogger()->addDebug('Revision locked');
 		
 		if(!$revision) {
 			throw new NotFoundHttpException('Unknown revision');
 		}		
 
-		$this->getDataService()->loadDataStructure($revision);
-		
+// 		$this->getDataService()->loadDataStructure($revision);
+		$backup = $revision->getRawData();
 		$form = $this->createForm(RevisionType::class, $revision);
 		
 		
@@ -704,28 +710,37 @@ class DataController extends AppController
 		/**end little trick to reorder collection*/
 		
 		$form->handleRequest($request);
-				
-		/** @var Revision $revision */
-		$revision = $form->getData();
-
-		$this->getDataService()->convertInputValues($revision->getDataField());
+		$revision->setAutoSave($revision->getRawData());
+		$revision->setRawData($backup);
 		
-		$objectArray = $this->get('ems.service.mapping')->dataFieldToArray($revision->getDataField());
-		$revision->setAutoSave($objectArray);
+		
+		
+
+// 		$this->getDataService()->convertInputValues($revision->getDataField());
+		
+// 		$objectArray = $this->get('ems.service.mapping')->dataFieldToArray($revision->getDataField());
+// 		$revision->setAutoSave($objectArray);
 		$revision->setAutoSaveAt(new \DateTime());
 		$revision->setAutoSaveBy($this->getUser()->getUsername());
+		
+// 		dump($revision);
+// 		throw new \Exception();
 		
 		$em->persist($revision);
 		$em->flush();			
 
 		$this->getDataService()->isValid($form);
+// 		$form->isValid();
 		$formErrors = $form->getErrors(true, true);
 			
-		return $this->render( 'EMSCoreBundle:data:ajax-revision.json.twig', [
+		$response= $this->render( 'EMSCoreBundle:data:ajax-revision.json.twig', [
 // 				'revision' =>  $revision,
 				'success' => true,
 				'formErrors' => $formErrors,
 		] );
+		$response->headers->set('Content-Type', 'application/json');
+		
+		return $response;
 	}
 	
 	
@@ -816,10 +831,11 @@ class DataController extends AppController
 			$this->loadAutoSavedVersion($revision);
 		}
 		
-		$this->getDataService()->loadDataStructure($revision);
-		$this->getDataService()->generateInputValues($revision->getDataField());
+		
+// 		$this->getDataService()->loadDataStructure($revision);
+// 		$this->getDataService()->generateInputValues($revision->getDataField());
+// 		$logger->debug('DataField structure generated');
 
-		$logger->debug('DataField structure generated');
 		
 		$form = $this->createForm(RevisionType::class, $revision, [
 				'has_clipboard' => $request->getSession()->has('ems_clipboard'),
@@ -833,6 +849,7 @@ class DataController extends AppController
 		/**little trick to reorder collection*/
 		$requestRevision = $request->request->get('revision');
 		$this->reorderCollection($requestRevision);
+		
 		$request->request->set('revision', $requestRevision);
 		/**end little trick to reorder collection*/
 		
@@ -861,17 +878,24 @@ class DataController extends AppController
 				//Save anyway
 				/** @var Revision $revision */
 				$revision = $form->getData();
+				
 				$this->get('logger')->debug('Revision extracted from the form');
+// 				dump($revision); exit;
 				
-				$this->getDataService()->convertInputValues($revision->getDataField());
+// 				$this->getDataService()->convertInputValues($revision->getDataField());
+// 				$this->get('logger')->debug('Input values converted');
 				
-				$objectArray = $this->get('ems.service.mapping')->dataFieldToArray($revision->getDataField());
 				
+				$objectArray = $revision->getRawData();
+				
+// 				$objectArray = $this->get('ems.service.mapping')->dataFieldToArray($revision->getDataField());
+// 				$this->get('logger')->debug('$objectArray generated');
+// 				dump($objectArray); exit;
 				
 				if(array_key_exists('paste', $request->request->get('revision'))) {//Paste
 					$this->addFlash('notice', 'Data have been paste');
 					$objectArray = array_merge($objectArray, $request->getSession()->get('ems_clipboard', []));
-					$this->get('logger')->debug('Paste data have benn merged');
+					$this->get('logger')->debug('Paste data have been merged');
 				}
 				
 				if(array_key_exists('copy', $request->request->get('revision'))) {//Copy
@@ -891,8 +915,7 @@ class DataController extends AppController
 				$logger->debug('Revision after persist flush');
 				
 				if(array_key_exists('publish', $request->request->get('revision'))) {//Finalize
-					
-					try{
+// 					try{
 						$revision = $this->finalizeDraft($revision, $form);
 						if(count($form->getErrors()) === 0) {
 							return $this->redirectToRoute('data.revisions', [
@@ -906,14 +929,14 @@ class DataController extends AppController
 									'form' => $form->createView(),
 							] );
 						}
-					}
-					catch (\Exception $e){
-						$this->addFlash('error', 'The draft has been saved but something when wrong when we tried to publish it. '.$revision->getContentType()->getName().':'.$revision->getOuuid());
-						$this->addFlash('error', $e->getMessage());
-						return $this->redirectToRoute('revision.edit', [
-								'revisionId' => $revisionId,
-						]);	
-					}
+// 					}
+// 					catch (\Exception $e){
+// 						$this->addFlash('error', 'The draft has been saved but something when wrong when we tried to publish it. '.$revision->getContentType()->getName().':'.$revision->getOuuid());
+// 						$this->addFlash('error', $e->getMessage());
+// 						return $this->redirectToRoute('revision.edit', [
+// 								'revisionId' => $revisionId,
+// 						]);	
+// 					}
 					
 				}
 			}
@@ -945,6 +968,7 @@ class DataController extends AppController
 				$this->addFlash("warning", "This draft (".$revision->getContentType()->getSingularName().($revision->getOuuid()?":".$revision->getOuuid():"").") can't be finlized.");
 			}
 		}
+
 		// Call Audit service for log
 		$this->get("ems.service.audit")->auditLog('DataController:editRevision', $revision->getRawData());
 		$logger->debug('Start twig rendering');

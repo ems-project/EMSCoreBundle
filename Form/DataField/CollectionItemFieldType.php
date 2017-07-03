@@ -4,12 +4,10 @@ namespace EMS\CoreBundle\Form\DataField;
 
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
-use EMS\CoreBundle\Form\Field\IconPickerType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\FormView;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use EMS\CoreBundle\Form\DataTransformer\DataFieldModelTransformer;
+use EMS\CoreBundle\Form\DataTransformer\DataFieldViewTransformer;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use Symfony\Component\Form\FormBuilderInterface;
 
 /**
  * Defined a Nested obecjt.
@@ -57,6 +55,13 @@ class CollectionItemFieldType extends DataFieldType {
 		/** @var FieldType $fieldType */
 		$fieldType = $builder->getOptions () ['metadata'];
 		
+		$itemFieldType = new FieldType();
+		$itemFieldType->setParent($fieldType);
+		$itemFieldType->setType(CollectionItemFieldType::class);
+		
+		$builder->addViewTransformer(new DataFieldViewTransformer($itemFieldType, $this->formRegistry))
+			->addModelTransformer(new DataFieldModelTransformer($itemFieldType, $this->formRegistry));
+		
 		/** @var FieldType $fieldType */
 		foreach ( $fieldType->getChildren () as $fieldType ) {
 
@@ -66,7 +71,10 @@ class CollectionItemFieldType extends DataFieldType {
 						'metadata' => $fieldType,
 						'label' => false 
 				], $fieldType->getDisplayOptions () );
-				$builder->add ( 'ems_' . $fieldType->getName (), $fieldType->getType (), $options );
+				$builder->add ( $fieldType->getName (), $fieldType->getType(), $options );
+				$builder->get($fieldType->getName ())
+					->addViewTransformer(new DataFieldViewTransformer($fieldType, $this->formRegistry))
+					->addModelTransformer(new DataFieldModelTransformer($fieldType, $this->formRegistry));
 			}
 		}
 		
@@ -79,26 +87,6 @@ class CollectionItemFieldType extends DataFieldType {
 		] );
 	}
 	
-// 	/**
-// 	 *
-// 	 * {@inheritdoc}
-// 	 *
-// 	 */
-// 	public function buildView(FormView $view, FormInterface $form, array $options) {
-// 		/* give options for twig context */
-// 		parent::buildView ( $view, $form, $options );
-// 	}
-	
-// 	/**
-// 	 *
-// 	 * {@inheritdoc}
-// 	 *
-// 	 */
-// 	public function configureOptions(OptionsResolver $resolver) {
-// 		/* set the default option value for this kind of compound field */
-// 		parent::configureOptions ( $resolver );
-// 	}
-	
 	/**
 	 *
 	 * {@inheritdoc}
@@ -109,8 +97,9 @@ class CollectionItemFieldType extends DataFieldType {
 			$tmp = [];
 			/** @var DataField $child */
 			foreach ($data->getChildren() as $child){
-				$className = $child->getFieldType()->getType();
-				$class = new $className;
+// 				$className = $child->getFieldType()->getType();
+// 				$class = new $className;
+				$class =$this->formRegistry->getType($child->getFieldType()->getType());
 				$class->buildObjectArray($child, $tmp);
 			}
 			$out [] = $tmp;
@@ -122,7 +111,7 @@ class CollectionItemFieldType extends DataFieldType {
 
 
 
-	public function isNested(){
+	public static function isNested(){
 		return true;
 	}
 	
@@ -136,22 +125,6 @@ class CollectionItemFieldType extends DataFieldType {
 		return true;
 	}
 	
-// 	/**
-// 	 *
-// 	 * {@inheritdoc}
-// 	 *
-// 	 */
-// 	public function buildOptionsForm(FormBuilderInterface $builder, array $options) {
-// 		parent::buildOptionsForm ( $builder, $options );
-// 		$optionsForm = $builder->get ( 'options' );
-// 		// nested doesn't not have that much options in elasticsearch
-// 		$optionsForm->remove ( 'mappingOptions' );
-// 		// an optional icon can't be specified ritgh to the container label
-// 		$optionsForm->get ( 'displayOptions' )->add ( 'icon', IconPickerType::class, [ 
-// 				'required' => false 
-// 		] );
-// 	}
-	
 	/**
 	 *
 	 * {@inheritdoc}
@@ -164,4 +137,5 @@ class CollectionItemFieldType extends DataFieldType {
 				"properties" => [],
 		]];
 	}
+	
 }

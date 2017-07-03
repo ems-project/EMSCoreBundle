@@ -46,20 +46,17 @@ use Symfony\Component\Form\FormBuilderInterface;
 		return $out;
 	}
 	
-	/**
-	 *
-	 * {@inheritdoc}
-	 *
-	 */
-	public function buildForm(FormBuilderInterface $builder, array $options) {
-
-		/** @var FieldType $fieldType */
-		$fieldType = $options ['metadata'];
-		
-		$builder->add ( 'text_value', ColorPickerFullType::class, [ 
-				'required' => false,
-				'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
-				'label' => (null != $options ['label']?$options ['label']:null)
-		] );					
+	public function getParent() {
+		return ColorPickerFullType::class;
 	}
+	
+	public function modelTransform($data, FieldType $fieldType) {
+		$dataField = parent::modelTransform($data, $fieldType);
+		if($data !== null && !is_string($data) ){
+			$dataField->addMessage('Not able to import data from the database:' . json_encode($data));
+			$dataField->setRawData(null);
+		}
+		return $dataField;
+	}
+	
 }

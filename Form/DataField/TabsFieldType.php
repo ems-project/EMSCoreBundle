@@ -5,6 +5,8 @@ namespace EMS\CoreBundle\Form\DataField;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use Symfony\Component\Form\FormBuilderInterface;
+use EMS\CoreBundle\Form\DataTransformer\DataFieldViewTransformer;
+use EMS\CoreBundle\Form\DataTransformer\DataFieldModelTransformer;
 
 /**
  * Defined a Container content type.
@@ -71,12 +73,16 @@ class TabsFieldType extends DataFieldType {
 						'metadata' => $fieldType,
 						'label' => false 
 				], $fieldType->getDisplayOptions () );
-				$builder->add ( 'ems_' . $fieldType->getName (), $fieldType->getType (), $options );
+				
+				$builder->add (  $fieldType->getName (), $fieldType->getType (), $options );
+				
+				$builder->get ( $fieldType->getName () )
+					->addViewTransformer(new DataFieldViewTransformer($fieldType, $this->formRegistry))
+					->addModelTransformer(new DataFieldModelTransformer($fieldType, $this->formRegistry));
 			}
 		}
 	}
-	
-	
+		
 	/**
 	 *
 	 * {@inheritdoc}
@@ -110,7 +116,17 @@ class TabsFieldType extends DataFieldType {
 		$optionsForm->get ( 'restrictionOptions' )->remove('mandatory');
 	}
 
-
+	
+	
+	/**
+	 *
+	 * {@inheritdoc}
+	 *
+	 */
+	public static function isVirtual(){
+		return true;
+	}
+	
 	/**
 	 *
 	 * {@inheritdoc}

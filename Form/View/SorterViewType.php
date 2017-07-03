@@ -6,20 +6,19 @@ use Elasticsearch\Client;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
+use EMS\CoreBundle\Form\Field\ContentTypeFieldPickerType;
+use EMS\CoreBundle\Form\Nature\ReorderType;
 use EMS\CoreBundle\Form\View\ViewType;
+use EMS\CoreBundle\Service\DataService;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\HttpFoundation\Request;
-use EMS\CoreBundle\Form\Field\ContentTypeFieldPickerType;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\HttpFoundation\Session\Session;
-use EMS\CoreBundle\Form\Nature\ReorderType;
-use EMS\CoreBundle\Service\DataService;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Routing\Router;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\Router;
 
 /**
  * It's the mother class of all specific DataField used in eMS

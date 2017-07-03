@@ -2,11 +2,49 @@
 
 {# Widgets #}
 
+{% block container_field_type_row %}
+<div id="{{ form.vars.id }}" class="container-fluid">
+	<div class="row">	
+    	<div class="panel panel-default">
+        	<div class="panel-heading with-border">
+        		<h3 class="panel-title text-">{{- form_label(form) -}}</h3>
+        	</div>
+    	  	
+    	  	<div class="panel-body">
+    	  		{{- form_widget(form) -}}
+    	  	</div>
+    	    {{- form_errors(form) -}}
+    	</div>               
+	</div>
+</div>
+{% endblock container_field_type_row %}
+
+
+{% block empty_widget -%}
+{%- endblock empty_widget %}
+{% block empty_label -%}
+{%- endblock empty_label %}
+{% block empty_row-%}
+{%- endblock empty_row %}
+
+
+{% block bypassdatafield_row -%}
+	{% if form.value is defined %}
+        {{form_row(form.value)}}
+    {% endif %}
+{%- endblock bypassdatafield_row %}
+
+{% block bypassdatafield_widget -%}
+	{% if form.value is defined %}
+        {{form_widget(form.value)}}
+    {% endif %}
+{%- endblock bypassdatafield_widget %}
+
 {% block icontext_widget -%}
-	{% if  icon or prefixText or suffixIcon or suffixText %}
+	{% if  prefixIcon or prefixText or suffixIcon or suffixText %}
 		<div class="input-group {% if class %}{{ class }}{% endif %}">
-			{% if icon or prefixText %}
-				<span class="input-group-addon"><i class="{% if icon %}{{ icon }}{% endif %}"></i>{% if prefixText %} &nbsp; {{ prefixText }} {% endif %}</span>
+			{% if prefixIcon or prefixText %}
+				<span class="input-group-addon"><i class="{% if prefixIcon %}{{ prefixIcon }}{% endif %}"></i>{% if prefixText %} &nbsp; {{ prefixText }} {% endif %}</span>
 			{% endif %}
 		 	{{ block('form_widget') }}
 			{% if suffixIcon or suffixText %}
@@ -104,22 +142,22 @@
 
 {%- endblock data_field_options_widget -%}
 
-{% block datafieldtype_widget %}
-	{% if isContainer %}
-		<div id="{{ form.vars.id }}" class="container-fluid">
-			<div class="row">
-				{% for child in form.children %}
-					{{- form_row(child) -}}
-					{% if child.vars.lastOfRow is defined and child.vars.lastOfRow %}
-						</div><div class="row">
-					{% endif %}
-				{% endfor %}
-			</div>
-		</div>
-	{% else %}
-		{{ form_widget(form) }}
-	{% endif %}
-{% endblock datafieldtype_widget %}
+{# {% block datafieldtype_widget %}#}
+{# 	{% if isContainer %}#}
+{# 		<div id="{{ form.vars.id }}" class="container-fluid">#}
+{# 			<div class="row">#}
+{# 				{% for child in form.children %}#}
+{# 					{{- form_row(child) -}}#}
+{# 					{% if child.vars.lastOfRow is defined and child.vars.lastOfRow %}#}
+{# 						</div><div class="row">#}
+{# 					{% endif %}#}
+{# 				{% endfor %}#}
+{# 			</div>#}
+{# 		</div>#}
+{# 	{% else %}#}
+{# 		{{ form_widget(form) }}#}
+{# 	{% endif %}#}
+{# {% endblock datafieldtype_widget %}#}
 
 {# Labels #}
 
@@ -166,12 +204,6 @@
 {% endblock code_editor_widget %}
 
 {% block datafieldtype_label %}
-	{% if data.fieldType.options.displayOptions is defined and data.fieldType.options.displayOptions.label %}
-		<label class="control-label {% if data.fieldType.options.restrictionOptions is defined and data.fieldType.options.restrictionOptions.mandatory is defined and data.fieldType.options.restrictionOptions.mandatory %}required{% endif %}"> 
-			{% if data.fieldType.options.displayOptions.icon is defined %}<i class="{{ data.fieldType.options.displayOptions.icon }}"></i>{%  endif %}
-			{{ data.fieldType.options.displayOptions.label }}
-		</label>
-	{% endif %}
 {% endblock datafieldtype_label %}
 
 {% block container_label -%}
@@ -194,10 +226,9 @@
 {%- endblock collectionfieldtype_label %}
 
 {% block collectionitemtype_label -%}
-	{% set parent = form.parent.parent %}
-	{% if parent.vars.icon is defined %}<i class="{{ parent.vars.icon }}"></i>&nbsp;{% endif %}
+	{% if form.parent.vars.icon is defined %}<i class="{{ form.parent.vars.icon }}"></i>&nbsp;{% endif %}
 	<label>
-		{{ parent.vars.singularLabel }} #{{ name }}
+		{{ form.parent.vars.singularLabel }} #{{ name }}
 	</label>
 {%- endblock collectionitemtype_label %}
 
@@ -286,23 +317,32 @@
 
 
 
-{% block container_row -%}
-	<div class="panel panel-default">
-	  		{{- form_label(form) -}}
-	  	<div class="panel-body">
-	  		{{- form_widget(form) -}}
-	  	</div>
-	  {{- form_errors(form) -}}
-	</div>               
-{%- endblock container_row %}
+{# {% block container_row -%}#}
+{# 	<div class="panel panel-default">#}
+{# 	  	{{- form_label(form) -}}#}
+{# 	  	<div class="panel-body">#}
+{# 	  		{{- form_widget(form) -}}#}
+{# 	  	</div>#}
+{# 	    {{- form_errors(form) -}}#}
+{# 	</div>               #}
+{# {%- endblock container_row %}#}
 
-{% block tabsfieldtype_row -%}
+{% block tabsfieldtype_errors -%}
+{% endblock tabsfieldtype_errors -%}
+
+
+
+
+
+{% block tabsfieldtype_widget -%}
 	<div class="{% if class %}{{ class }}{% else %}col-xs-12 {% endif %}">
 		<div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
               {% for tab in  form.iterator %}
 	              <li id="{{ tab.vars.id}}__label" class="form-group{% if tab.vars.errors|length %} has-error{% endif %} {% if loop.index == 1%} active{% endif %}">
-	              	<a href="#{{ tab.vars.id}}__tab" data-toggle="tab" aria-expanded="{% if loop.index == 1%}true{%else%}false{% endif %}">{{- form_label(tab) -}}</a>
+	              	<a href="#{{ tab.vars.id}}__tab" data-toggle="tab" aria-expanded="{% if loop.index == 1%}true{%else%}false{% endif %}">
+	              	  {{- form_label(tab) -}}
+	                </a>
 	              </li>
               {% endfor %}
             </ul>
@@ -325,29 +365,28 @@
             <!-- /.tab-content -->
          </div>             
 	</div>
-{%- endblock tabsfieldtype_row %}
+{%- endblock tabsfieldtype_widget %}
 
 
 {% block collectionfieldtype_widget -%}
-	<div class="collection-panel" 
-		data-prototype="{{ form_row(attribute(form, form.vars.name).vars.prototype)|e }}"
-		{% if (attribute(form, form.vars.name)|last).vars is defined  %}
-			data-index="{{ (attribute(form, form.vars.name)|last).vars.name + 1 }}"
+	<div class="collection-panel"
+		data-prototype="{{ form_row(form.vars.prototype)|e }}"
+		{% if (form|last).vars is defined  %}
+			data-index="{{ (form|last).vars.name + 1 }}"
 		{% else %}
 			data-index="0"
 		{% endif %}>
 		{% set tempId = form.vars.name~'_'~random() %}
-
 		<div 
-		  	class="panel-body{% if attribute(form, form.vars.name).vars.value.fieldType.displayOptions.collapsible is defined and attribute(form, form.vars.name).vars.value.fieldType.displayOptions.collapsible %} collapse{% endif %}{% if attribute(form, form.vars.name).vars.value.fieldType.displayOptions.sortable is defined and attribute(form, form.vars.name).vars.value.fieldType.displayOptions.sortable %} ems-sortable{% endif %}" 
+		  	class="panel-body{% if form.vars.collapsible %} collapse{% endif %}{% if form.vars.sortable %} ems-sortable{% endif %}" 
 		  	id="{{ tempId }}">
-		    {{- form_widget(attribute(form, form.vars.name)) -}}
+		    {{- form_widget(form) -}}
 		</div>
 		
 		<div class="">
 	  		<div class="btn-group">
-	  			{{ form_widget(form.add_nested) }}
-				{% if attribute(form, form.vars.name).vars.value.fieldType.displayOptions.collapsible is defined and attribute(form, form.vars.name).vars.value.fieldType.displayOptions.collapsible %}
+				<a href="#" class="btn btn-primary add-content-button  btn-sm"><i class="fa fa-plus"></i> {{ 'Add'|trans }}</a>
+				{% if form.vars.collapsible %}
 					<a class="toggle-button pull-right btn btn-primary btn-sm" role="button" data-toggle="collapse" href="#{{ tempId }}" 
 						aria-expanded="false" aria-controls="{{ tempId }}" data-toggle-contain="Hide {{ '<i class="fa fa-chevron-up"></i>'|e }}">
 						Show <i class="fa fa-chevron-right"></i>
@@ -373,7 +412,7 @@
 {% endblock collectionfieldtype_row %}
 
 {% block collectionitemtype_row -%}
-<div class="form-group collection-item-panel{% if form.parent.parent.vars.itemBootstrapClass %} {{ form.parent.parent.vars.itemBootstrapClass }}{% else %} col-xs-12 {% endif %}{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %}">
+<div class="form-group collection-item-panel{% if form.parent.vars.itemBootstrapClass %} {{ form.parent.vars.itemBootstrapClass }}{% else %} col-xs-12 {% endif %}{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %}">
 	<div class="panel panel-default">
 		<div class="panel-heading ems-handle">
 			{{ form_label(form) }}
@@ -391,43 +430,67 @@
 {% endblock collectionitemtype_row %}
 
 
-{% block datafieldtype_row -%}
-<div class="form-group{% if class %} {{ class }}{% else %} col-xs-12 {% endif %}{% if form.vars.value.fieldType is defined and form.vars.value.fieldType.options.restrictionOptions is defined and form.vars.value.fieldType.options.restrictionOptions.mandatory is defined and form.vars.value.fieldType.options.restrictionOptions.mandatory %} required {% endif %}{% if force_error|default(false) or not valid or form.vars.errors|length > 0 %} has-error{% endif %}">
-	{% if isContainer and form.vars.data and form.vars.data.fieldType.options.displayOptions.label %}
-		<div class="panel panel-default">
-			<div class="panel-heading">
-		  		{{- form_label(form) -}}
-		  	</div>
-		  <div class="panel-body">
-		    {{- form_widget(form) -}}
-		  </div>
-		  {{- form_errors(form) -}}
-		</div>               
-	{% else %}
-			{{- form_widget(form) -}}
-			{{- form_errors(form) -}}
-	{% endif %}
-</div>
-{% endblock datafieldtype_row %}
+{# {%  block data_field_type_row %}#}
+{# 	<div class="{{ form.vars.class }}">#}
+{#     	{{ form_row(form) }}#}
+{# 	</div>#}
+{# 	{% if form.vars.lastOfRow is defined and form.vars.lastOfRow %}#}
+{# 		</div><div class="row">#}
+{# 	{% endif %}#}
+{# {% endblock data_field_type_row %}#}
 
-{% block timefieldtype_row %}
-	<div class="form-group{% if class %} {{ class }}{% else %} col-xs-12 {% endif %}">
-    	{{ form_label(form.data_value) }} 
 
-                  <div class="input-group">
-                    <div class="input-group-addon">
-                      <i class="fa fa-clock-o"></i>
-                    </div>
-                    {{- form_widget(form.data_value) -}}
-                  </div>
-                  <!-- /.input group -->
-                </div>
-                <!-- /.form group -->
-{% endblock timefieldtype_row %}
+{% block container_field_type_widget %}
+	<div id="{{ form.vars.id }}" class="container-fluid">
+		<div class="row">
+			{% for child in form.children %}
+				<div class="{{ child.vars.class }}{% if child.vars.errors|length > 0 and not child.vars.isContainer  %} has-error{% endif %}">
+    				{{- form_row(child) -}}
+				</div>
+				{% if child.vars.lastOfRow is defined and child.vars.lastOfRow %}
+					</div><div class="row">
+				{% endif %}
+			{% endfor %}
+		</div>
+	</div>
+{% endblock container_field_type_widget %}
+
+{# {% block datafieldtype_row -%}#}
+{# {# <div class="form-group{% if class %} {{ class }}{% else %} col-xs-12 {% endif %}{% if form.vars.value.fieldType is defined and form.vars.value.fieldType.options.restrictionOptions is defined and form.vars.value.fieldType.options.restrictionOptions.mandatory is defined and form.vars.value.fieldType.options.restrictionOptions.mandatory %} required {% endif %}{% if force_error|default(false) or not valid or form.vars.errors|length > 0 %} has-error{% endif %}">#}#}
+{# 	{% if isContainer and form.vars.data and form.vars.data.fieldType.options.displayOptions.label %}#}
+{# 		<div class="panel panel-default">#}
+{# 			<div class="panel-heading">#}
+{# 		  		{{- form_label(form) -}}#}
+{# 		  	</div>#}
+{# 		  <div class="panel-body">#}
+{# 		    {{- form_widget(form) -}}#}
+{# 		  </div>#}
+{# 		  {{- form_errors(form) -}}#}
+{# 		</div>               #}
+{# 	{% else %}#}
+{# 		  {{ form_row(form) }}#}
+{# 	{% endif %}#}
+{# {# </div>#}#}
+{# {% endblock datafieldtype_row %}#}
+
+{# {% block timefieldtype_row %}#}
+{# 	<div class="form-group{% if class %} {{ class }}{% else %} col-xs-12 {% endif %}">#}
+{#     	{{ form_label(form.data_value) }} #}
+
+{#                   <div class="input-group">#}
+{#                     <div class="input-group-addon">#}
+{#                       <i class="fa fa-clock-o"></i>#}
+{#                     </div>#}
+{#                     {{- form_widget(form.data_value) -}}#}
+{#                   </div>#}
+{#                   <!-- /.input group -->#}
+{#                 </div>#}
+{#                 <!-- /.form group -->#}
+{# {% endblock timefieldtype_row %}#}
 
 
 {%- block form_label -%}
-    {% if label is not same as(false) -%}
+    {% if label is not same as (false) -%}
         {% if not compound -%}
             {% set label_attr = label_attr|merge({'for': id}) %}
         {%- endif -%}
@@ -451,8 +514,8 @@
 
 {% block codefieldtype_widget %}
 	<div class="ems-code-editor" {{ block('widget_attributes') }}>
-        {{ form_widget(form.text_value) }}
-    	<pre>{{ form.children.text_value.vars.value }}</pre>
+        {{ form_widget(form) }}
+    	<pre>{{ form.vars.value }}</pre>
 	</div>
 {% endblock codefieldtype_widget %}
 
@@ -468,18 +531,22 @@
 
 
 {% block datefieldtype_row %}
-	<div class="form-group{% if class %} {{ class }}{% else %} col-xs-12 {% endif %}">
-    	{{ form_label(form.data_value) }} 
-
-                  <div class="input-group">
-                    <div class="input-group-addon">
-                      <i class="fa fa-calendar"></i>
-                    </div>
-                    {{- form_widget(form.data_value) -}}
-                  </div>
-                  <!-- /.input group -->
-                </div>
-                <!-- /.form group -->
+<div class="form-group">
+	<div id="{{ form.vars.id}}__label">
+        {{ form_label(form.value) }} 
+	</div>
+	<div class="input-group">
+    	<div class="input-group-addon">
+    		<i class="fa fa-calendar"></i>
+    	</div>
+        {{- form_widget(form.value) -}}
+	</div>
+	<div class="has-error"  id="{{ form.vars.id}}__error">
+   	    {{- form_errors(form) -}}
+    </div>
+  	<!-- /.input group -->
+</div>
+<!-- /.form group -->
 {% endblock datefieldtype_row %}
 
 

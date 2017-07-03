@@ -9,6 +9,9 @@ use EMS\CoreBundle\Form\Field\IconTextType;
 use EMS\CoreBundle\Service\FileService;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Form\FormRegistryInterface;
+use Symfony\Component\Form\Exception\TransformationFailedException;
 	
 /**
  * Defined a Container content type.
@@ -18,14 +21,16 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  *
  */
 class UrlAttachmentFieldType extends DataFieldType {
-	
 
 	/**@var FileService */
 	private $fileService;
 	
-	public function setFileService(FileService $fileService) {
+	
+	public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, FileService $fileService) {
+		parent::__construct($authorizationChecker, $formRegistry);
 		$this->fileService = $fileService;
 	}
+	
 
 	/**
 	 *
@@ -44,54 +49,73 @@ class UrlAttachmentFieldType extends DataFieldType {
 	public function getLabel(){
 		return 'Url Attachment (indexed) field';
 	}
-
+	
+	
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getParent()
+	{
+		return IconTextType::class;
+	}
+	
 	/**
 	 *
 	 * {@inheritdoc}
 	 *
 	 */
-	public function buildForm(FormBuilderInterface $builder, array $options) {
-		/** @var FieldType $fieldType */
-		$fieldType = $options ['metadata'];
-		$builder->add ( 'input_value', IconTextType::class, [
-				'label' => (null != $options ['label']?$options ['label']:$fieldType->getName()),
-				'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
-				'required' => false,
-				'icon' => $options['icon'],
-		] );
-	}
-	
-
-
-	public function convertInput(DataField $dataField) {
-		
-		if(!empty($dataField->getInputValue())){
-			$content = file_get_contents($dataField->getInputValue());
-			$rawData = [
-				'url' => $dataField->getInputValue(),
-				'content' => base64_encode($content),
-				'size' => strlen($content),
-			];
-			
-			$dataField->setRawData($rawData);
+	public function reverseViewTransform($data, FieldType $fieldType){
+		/**@var DataField $out*/
+		$dataField= parent::reverseViewTransform($data, $fieldType);
+		if(empty($data)){
+			if($dataField->getFieldType()->getRestrictionOptions()['mandatory']){
+				$dataField->addMessage('This entry is required');
+			}
+			$dataField->setRawData(['url'=>null, 'content' => ""]);
 		}
-		else{
-			$dataField->setRawData(['content' => ""]);
-		}
-	}	
-	
-	public function generateInput(DataField $dataField){
-		
-		
-		$rawData = $dataField->getRawData();
-		
-		if(!empty($rawData) && !empty($rawData['url'])){
-			$dataField->setInputValue($rawData['url']);
+		elseif(is_string($data)) {
+			try {
+				$content = file_get_contents($data);
+				$rawData = [
+					'url' => $data,
+					'content' => base64_encode($content),
+					'size' => strlen($content),
+				];
+				$dataField->setRawData($rawData);				
+			}
+			catch(\Exception $e) {
+				$dataField->addMessage(sprintf(
+						'Impossible to fetch the ressource due to %s',
+						$e->getMessage()
+				));
+			}
 		}
 		else {
-			$dataField->setInputValue(null);			
+			$dataField->addMessage(sprintf(
+					'Data not supported: %s',
+					json_encode($data)
+			));
 		}
-		return $this;
+		return $dataField;
+	}
+	
+	/**
+	 *
+	 * {@inheritdoc}
+	 *
+	 */
+	public function viewTransform(DataField $data) {
+		$out = parent::viewTransform($data);
+		if( !empty($out)) {
+			if(!empty($out['url'])){
+				if(is_string($out['url'])){
+					return $out['url'];									
+				}
+				$data->addMessage('Non supported input data : '.json_encode($out));
+			}
+ 		}
+ 		
+ 		return "";
 	}
 	
 	
@@ -105,9 +129,12 @@ class UrlAttachmentFieldType extends DataFieldType {
 		$optionsForm = $builder->get ( 'options' );
 		$optionsForm->remove ( 'mappingOptions' );
 		$optionsForm->get ( 'displayOptions' )
-			->add ( 'icon', IconPickerType::class, [ 
-					'required' => false 
-			] );
+		->add ( 'icon', IconPickerType::class, [
+				'required' => false
+		] )
+		->add ( 'prefixIcon', IconPickerType::class, [
+				'required' => false
+		] );
 	}
 
 

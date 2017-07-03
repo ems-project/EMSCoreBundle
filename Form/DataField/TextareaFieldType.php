@@ -11,6 +11,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use EMS\CoreBundle\Entity\DataField;
+use EMS\CoreBundle\Entity\FieldType;
 			
 /**
  * Defined a Container content type.
@@ -44,7 +46,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 	public function buildForm(FormBuilderInterface $builder, array $options) {
 		/** @var FieldType $fieldType */
 		$fieldType = $builder->getOptions () ['metadata'];
-		$builder->add ( 'text_value', TextareaType::class, [
+		$builder->add ( 'value', TextareaType::class, [
 				'attr' => [ 
 						'rows' => $options['rows'],
 				],
@@ -93,5 +95,35 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 		$optionsForm->get ( 'displayOptions' )->add ( 'rows', IntegerType::class, [
 				'required' => false,
 		]);
+	}
+	
+	
+	/**
+	 *
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::getBlockPrefix()
+	 */
+	public function getBlockPrefix() {
+		return 'bypassdatafield';
+	}
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
+	 */
+	public function viewTransform(DataField $dataField) {
+		$out = parent::viewTransform($dataField);
+		return ['value' => $out];
+	}
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
+	 */
+	public function reverseViewTransform($data, FieldType $fieldType) {
+		$value = $data['value'];
+		return parent::reverseViewTransform($value, $fieldType);
 	}
 }

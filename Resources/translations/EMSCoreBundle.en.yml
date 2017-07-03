@@ -1,0 +1,90 @@
+ROLE_SUPER_ADMIN: 'Super Admin'
+ROLE_USER: User
+'Logged in as': 'Logged in as'
+'User profile': 'User profile'
+Exit: Exit
+'Sign out': 'Sign out'
+'Core %version%': 'Core %version%'
+'with Symfony %version%': 'with Symfony %version%'
+'Reorder the content type "%content_type%"': 'Reorder the content type "%content_type%"'
+'Reorder %name%''s fields': 'Reorder %name%''s fields'
+'Select a language': 'Select a language'
+Bright: Bright
+Dark: Dark
+'Select a theme': 'Select a theme'
+'This operation will not index the %object_name%, but initiate a draft only with a specific OUUID': '__This operation will not index the %object_name%, but initiate a draft only with a specific OUUID'
+'This operation will not index a new object ‘<em>%content_type%</em>’ immediately. It will start a new draft without any previous revision. <strong>This draft will not be visible</strong> in any environment <strong>until it has been finalized for the first time</strong>. This means you will not be able to see it in any list view (such as the index, map, calendar...), but all drafts in progress can be found in the ‘Draft in progress’ section.': '__This operation will not index a new object ‘<em>%content_type%</em>’ immediately. It will start a new draft without any previous revision. <strong>This draft will not be visible</strong> in any environment <strong>until it has been finalized for the first time</strong>. This means you will not be able to see it in any list view (such as the index, map, calendar...), but all drafts in progress can be found in the ‘Draft in progress’ section.'
+'About the <strong>object unique identifier</strong>: you are free to specify one (provided it has not been taken yet, of course). If you leave it <strong>empty</strong>, an object unique identifier <strong>will be generated</strong> during the save. It is not possible to update the object unique identifier later.': '__About the <strong>object unique identifier</strong>: you are free to specify one (provided it has not been taken yet, of course). If you leave it <strong>empty</strong>, an object unique identifier <strong>will be generated</strong> during the save. It is not possible to update the object unique identifier later.'
+'#': '#'
+OUUID: OUUID
+Label: Label
+Locked: Locked
+'Last update': 'Last update'
+Action: Action
+Revisions: Revisions
+'Edit draft': 'Edit draft'
+'Discard this draft ?': 'Discard this draft ?'
+Discard: Discard
+'Upload file': 'Upload file'
+'Finalized by': 'Finalized by'
+Pending: Pending
+Nothing: Nothing
+'Linked documents': 'Linked documents'
+'This document does not have any linked document': 'This document does not have any linked document'
+Documentation: _ocumentation
+'Certificate''s information': 'Certificate''s information'
+Bits: Bits
+'Public key': 'Public key'
+'Certificate is missing': 'Certificate is missing'
+'Copy data': 'Copy data'
+'Raw view': 'Raw view'
+'Compare environments': 'Compare environments'
+'Content type': 'Content type'
+View: View
+Clear: Clear
+'I18N edit': 'I18N edit'
+I18N: I18N
+Cancel: Cancel
+Edit: Edit
+'I18N create': 'I18N create'
+'Not defined': 'Not defined'
+Download: Download
+'To be treated': 'To be treated'
+'No result for this filters combinaison': 'No result for this filters combinaison'
+Notification: Notification
+'Created by': 'Created by'
+Date: Date
+Environment: Environment
+Warnings: Warnings
+Revision: Revision
+Actions: Actions
+Inbox: Inbox
+Outbox: Outbox
+'No result to display': 'No result to display'
+'No pending notifications': 'No pending notifications'
+'Users list': 'Users list'
+'Are they ready to rock?': 'Are they ready to rock?'
+Users: Users
+'Add user': 'Add user'
+Username: Username
+'Display name': 'Display name'
+email: email
+Circles: Circles
+Enabled: Enabled
+Roles: Roles
+'Last login': 'Last login'
+'Reorganise:': 'Reorganise:'
+'This item %ouuid% is already presents in this structure/menu': 'This item %ouuid% is already presents in this structure/menu'
+'Edit WYSIWYG profile': 'Edit WYSIWYG profile'
+'WYSIWYG profiles': 'WYSIWYG profiles'
+'Add a profile': 'Add a profile'
+'Click on ''Add a profile'' to create a first WYSIWYG profile': 'Click on ''Add a profile'' to create a first WYSIWYG profile'
+'New WYSIWYG profile': 'New WYSIWYG profile'
+'Align Environments': 'Align Environments'
+Environments: Environments
+'time to align environments?': 'time to align environments?'
+'Select Environments to compare': 'Select Environments to compare'
+Filters: Filters
+Save: Save
+Copy: Copy
+'Finalize draft': 'Finalize draft'

@@ -31,57 +31,78 @@ class DateFieldType extends DataFieldType {
 		return 'fa fa-calendar';
 	}
 	
-	/**
-	 * {@inheritdoc}
-	 *
-	 */
-	public function getDataValue(DataField &$dataField, array $options){
-		
-		$format = DateFieldType::convertJavascriptDateFormat($options['displayOptions']['displayFormat']);
-
+	public function modelTransform($data, FieldType $fieldType){
+		if(empty($data)){
+			return parent::modelTransform([], $fieldType);
+		}
 		$dates = [];
-		if(null !== $dataField->getRawData()){
-			foreach ($dataField->getRawData() as $dataValue){
-				/**@var \DateTime $converted*/
-				$dateTime = \DateTime::createFromFormat(\DateTime::ISO8601, $dataValue);
-				if($dateTime){
-					$dates[] = $dateTime->format($format);
-				}
-				else{
-					$dates[] = null;
-					$dataField->addMessage("Bad date format:".$dataValue);
-					//TODO: should add a flash message
+		$format = $fieldType->getMappingOption('format', false);
+		if($format !== false) {
+			$format = $this->convertJavaDateFormat($format);
+		}
+		else {
+			$format = \DateTime::ISO8601;
+		}
+		if(is_string($data)) {
+			$dates[] = \DateTime::createFromFormat($format, $dataValue);
+			return parent::modelTransform($dates, $fieldType);
+		}
+		if(is_array($data)) {
+			foreach ($data as $dataValue){
+				$dates[] = \DateTime::createFromFormat($format, $dataValue);
+			}
+			return parent::modelTransform($dates, $fieldType);
+		}
+		$out = parent::modelTransform(null, $fieldType);
+		$out->addMessage('Was not able to import:'.json_encode($data));
+		return $out;
+	}
+	
+	public function reverseModelTransform(DataField $dataField) {
+		$data = parent::reverseModelTransform($dataField);
+		$format = $dataField->getFieldType()->getMappingOption('format', false);
+		if($format !== false) {
+			$format = $this->convertJavaDateFormat($format);
+		}
+		else {
+			$format = \DateTime::ISO8601;
+		}
+		$out = [];
+		if(!empty($data)){
+			foreach ($data as $data) {
+				if($data){
+					$out[] = $data->format($format);
 				}
 			}			
 		}
-		return implode(',', $dates);
+		return $out;
 	}
 	
-	/**
-	 * {@inheritdoc}
-	 *
-	 */
-	public function setDataValue($input, DataField &$dataField, array $options){
-		
-		$format = DateFieldType::convertJavascriptDateFormat($options['displayOptions']['displayFormat']);
-		if($options['displayOptions']['multidate']){
-			$dates = explode(',', $input);
+	public function viewTransform(DataField $dataField){	
+		$data =  parent::viewTransform($dataField);
+		$out = [];
+		$format = DateFieldType::convertJavascriptDateFormat($dataField->getFieldType()->getDisplayOption('displayFormat', 'dd/mm/yyyy'));
+		if(!empty($data)){
+			foreach ($data as $date){
+				if($date) {
+					$out[] = $date->format($format);					
+				}
+			}			
 		}
-		else{
-			$dates = [$input];
-		}
-		
-		$convertedDates = [];
-		
-		foreach ($dates as $idx => $date){
-			/**@var \DateTime $converted*/
-			$converted = \DateTime::createFromFormat($format, $date);
-			if($converted){
-				$convertedDates[] = $converted->format(\DateTime::ISO8601);
+		$temp = ['value' => implode(',', $out)];
+		return $temp;
+	}
+	
+	public function reverseViewTransform($data, FieldType $fieldType) {
+		$dates = [];
+		$format = DateFieldType::convertJavascriptDateFormat($fieldType->getDisplayOption('displayFormat', 'dd/mm/yyyy'));
+		foreach (explode(',', $data['value']) as $date) {
+			if(!empty($date)) {				
+				$dates[] = \DateTime::createFromFormat($format, $date);
 			}
 		}
-		
-		$dataField->setRawData($convertedDates);
+		$dataField = parent::reverseViewTransform($dates, $fieldType);
+		return $dataField;
 	}
 
 
@@ -154,7 +175,7 @@ class DateFieldType extends DataFieldType {
 		/** @var FieldType $fieldType */
 		$fieldType = $builder->getOptions () ['metadata'];
 	
-		$builder->add ( 'data_value', TextType::class, [
+		$builder->add ( 'value', TextType::class, [
 				'label' => (isset($options['label'])?$options['label']:$fieldType->getName()),
 				'required' => false,
 				'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),

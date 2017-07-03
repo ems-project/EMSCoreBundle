@@ -24,6 +24,16 @@ use EMS\CoreBundle\Entity\DataField;
 		return 'Elasticsearch copy_to field';
 	}
 	
+	
+	/**
+	 *
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::getBlockPrefix()
+	 */
+	public function getBlockPrefix() {
+		return 'empty';
+	}
+	
 	/**
 	 * Get a icon to visually identify a FieldType
 	 * 

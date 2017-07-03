@@ -9,6 +9,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use EMS\CoreBundle\Form\DataTransformer\DataFieldViewTransformer;
+use EMS\CoreBundle\Form\DataTransformer\DataFieldModelTransformer;
 
 /**
  * Defined a Nested obecjt.
@@ -18,6 +20,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  *        
  */
 class NestedFieldType extends DataFieldType {
+ 
 	/**
 	 *
 	 * {@inheritdoc}
@@ -71,9 +74,20 @@ class NestedFieldType extends DataFieldType {
 						'metadata' => $fieldType,
 						'label' => false 
 				], $fieldType->getDisplayOptions () );
-				$builder->add ( 'ems_' . $fieldType->getName (), $fieldType->getType (), $options );
+				$builder->add ( $fieldType->getName (), $fieldType->getType (), $options );
+
+				$builder->get ( $fieldType->getName () )
+					->addViewTransformer(new DataFieldViewTransformer($fieldType, $this->formRegistry))
+					->addModelTransformer(new DataFieldModelTransformer($fieldType, $this->formRegistry));
 			}
 		}
+	}
+	
+	
+	
+	
+	public function getBlockPrefix() {
+		return 'container_field_type';
 	}
 	
 	/**

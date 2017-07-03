@@ -2,7 +2,22 @@
 
 {# Widgets #}
 
-
+{% block container_field_type_row %}
+<div id="{{ form.vars.id }}" class="container-fluid">
+	<div class="row">	
+    	<div class="panel panel-default">
+        	<div class="panel-heading with-border">
+        		<h3 class="panel-title text-">{{- form_label(form) -}}</h3>
+        	</div>
+    	  	
+    	  	<div class="panel-body">
+    	  		{{- form_widget(form) -}}
+    	  	</div>
+    	    {{- form_errors(form) -}}
+    	</div>               
+	</div>
+</div>
+{% endblock container_field_type_row %}
 
 
 {% block empty_widget -%}

@@ -10,7 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use EMS\CoreBundle\Entity\DataField;
 
-class RadioFieldType extends DataFieldType {/* to refactor */
+class RadioFieldType extends DataFieldType {
 
 	/**
 	 *

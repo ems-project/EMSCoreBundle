@@ -117,10 +117,25 @@ class AppExtension extends \Twig_Extension
 				new \Twig_SimpleFilter('debug', array($this, 'debug')),
 				new \Twig_SimpleFilter('search', array($this, 'search')),
 				new \Twig_SimpleFilter('call_user_func', array($this, 'call_user_func')),
-				new \Twig_SimpleFilter('macro_fct', array($this, 'macroFct')),	
+				new \Twig_SimpleFilter('macro_fct', array($this, 'macroFct')),
+				new \Twig_SimpleFilter('url_generator', array($this, 'toAscii')),	
 				
 				
 		);
+	}
+	
+	/**
+	 * Convert a tring into an url frendly string
+	 * @param string $str
+	 * @return string
+	 */
+	function toAscii(string $str) {
+		$clean = iconv('UTF-8', 'ASCII//TRANSLIT', $str);
+		$clean = preg_replace("/[^a-zA-Z0-9/_| -]/", '', $clean);
+		$clean = strtolower(trim($clean, '-'));
+		$clean = preg_replace("/[/_| -]+/", '-', $clean);
+		
+		return $clean;
 	}
 	
 	

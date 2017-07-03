@@ -20,6 +20,7 @@ use EMS\CoreBundle\Entity\DataField;
  *        
  */
  class JSONFieldType extends DataFieldType {
+ 	/* to refactor */
 	/**
 	 *
 	 * {@inheritdoc}
@@ -44,7 +45,7 @@ use EMS\CoreBundle\Entity\DataField;
 	public function buildForm(FormBuilderInterface $builder, array $options) {
 		/** @var FieldType $fieldType */
 		$fieldType = $builder->getOptions () ['metadata'];
-		$builder->add ( 'data_value', TextareaType::class, [
+		$builder->add ( 'value', TextareaType::class, [
 				'attr' => [ 
 						'rows' => $options['rows'],
 				],
@@ -54,34 +55,32 @@ use EMS\CoreBundle\Entity\DataField;
 		]);
 	}
 	
-
-
 	/**
-	 * get the data value(s), as string, for the symfony form) in the context of this field
-	 *
+	 * 
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
 	 */
-	public function getDataValue(DataField &$dataValues, array $options){
-		return json_encode($dataValues->getRawData());
+	public function viewTransform(DataField $dataField) {
+		return [ 'value' => json_encode($dataField->getRawData()) ];
 	}
-	/**
-	 * set the data value(s) from a string recieved from the symfony form) in the context of this field
-	 *
-	 */
-	public function setDataValue($input, DataField &$dataValues, array $options){
+
+	public function reverseViewTransform($input, FieldType $fieldType) {
+		$dataValues = parent::reverseViewTransform($input, $fieldType);
+		$options = $fieldType->getOptions();
 		if($input === null){
 			$dataValues->setRawData(null);
 		}
 		else{
-			$data = @json_decode($input);
+			$data = @json_decode($input['value']);
 			if ($data === null
 					&& json_last_error() !== JSON_ERROR_NONE) {
-				$dataValues->setRawData($input);
+					$dataValues->setRawData($input['value']);
 			}
 			else{
 				$dataValues->setRawData($data);					
 			}
 		}
-		return $this;
+		return $dataValues;
 	}
 	
 
@@ -94,7 +93,17 @@ use EMS\CoreBundle\Entity\DataField;
 			$out [$data->getFieldType ()->getName ()] = $data->getRawData ();
 		}
 	}
-
+	
+	
+	/**
+	 *
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::getBlockPrefix()
+	 */
+	public function getBlockPrefix() {
+		return 'bypassdatafield';
+	}
+	
 	/**
 	 *
 	 * {@inheritdoc}

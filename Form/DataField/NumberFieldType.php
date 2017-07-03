@@ -147,6 +147,9 @@ class NumberFieldType extends DataFieldType {
 	 */
 	public function reverseViewTransform($data, FieldType $fieldType) {
 		$value = $data['value'];
+		if(null !== $value){
+			$value = floatval($value);
+		}
 		return parent::reverseViewTransform($value, $fieldType);
 	}
 }

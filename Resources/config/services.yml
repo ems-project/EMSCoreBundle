@@ -212,6 +212,11 @@ services:
         tags:
             - { name: ems.form.datafieldtype, alias: copyto }
             - { name: form.type }
+    ems.fieldtype.subfield:
+        class: EMS\CoreBundle\Form\DataField\SubfieldType
+        arguments: ['@security.authorization_checker', '@form.registry']
+        tags:
+            - { name: form.type }
 #### End list available ems FieldType ###
 #### Begin list of extended symfony types for ems field type needs###
     ems.exteneded.collectiontype:

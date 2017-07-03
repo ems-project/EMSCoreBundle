@@ -384,7 +384,7 @@ services:
             -  { name: console.command }
     ems.contenttype.migrate:
         class: EMS\CoreBundle\Command\MigrateCommand
-        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.mapping', '@ems.service.data']
+        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.mapping', '@ems.service.data', '@form.factory']
         tags:
             -  { name: console.command }
     ems.environment.rebuild:

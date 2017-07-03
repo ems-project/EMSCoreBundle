@@ -19,6 +19,9 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use EMS\CoreBundle\Service\DataService;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Form\FormRegistryInterface;
+use EMS\CoreBundle\Form\Form\RevisionType;
+use Symfony\Component\Form\FormFactoryInterface;
 
 class MigrateCommand extends ContainerAwareCommand
 {
@@ -29,14 +32,17 @@ class MigrateCommand extends ContainerAwareCommand
 	protected $logger;
 	protected $container;
 	protected $dataService;
+	/**@var FormFactoryInterface $formFactory*/
+	protected $formRegistry;
 	
-	public function __construct(Registry $doctrine, Logger $logger, Client $client, $mapping, DataService $dataService)
+	public function __construct(Registry $doctrine, Logger $logger, Client $client, $mapping, DataService $dataService, FormFactoryInterface $formFactory)
 	{
 		$this->doctrine = $doctrine;
 		$this->logger = $logger;
 		$this->client = $client;
 		$this->mapping = $mapping;
 		$this->dataService = $dataService;
+		$this->formFactory= $formFactory;
 		parent::__construct();
 	}
 	
@@ -155,12 +161,10 @@ class MigrateCommand extends ContainerAwareCommand
 							//If there is a current revision, datas in fields that are protected against migration must not be overridden
 							//So we load the datas from the current revision into the next revision
 							$newRevision->setRawData($currentRevision->getRawData());
-							//We build the new revision object
-							$this->dataService->loadDataStructure($newRevision);
-							//We update the new revision object with the new datas. Here, the protected fields are not overridden.
-							$newRevision->getDataField()->updateDataValue($value['_source'], true);//isMigrate=true
-							//We serialize the new object
-							$objectArray = $this->mapping->dataFieldToArray($newRevision->getDataField());
+							
+							$revisionType = $this->formFactory->create(RevisionType::class, $newRevision);
+							$revisionType->submit(['data' => $value['_source']]);
+							$objectArray = $revisionType->get('data')->getData();
 							$newRevision->setRawData($objectArray);
 						}
 						
@@ -177,11 +181,10 @@ class MigrateCommand extends ContainerAwareCommand
 						$objectArray = $value['_source'];
 					}
 					else{
-						$newRevision->setRawData([]);
-						$this->dataService->loadDataStructure($newRevision);
-						$newRevision->getDataField()->updateDataValue($value['_source'], true);
-						//We serialize the new object
-						$objectArray = $this->mapping->dataFieldToArray($newRevision->getDataField());
+						$newRevision->setRawData(['data' => []]);
+						$revisionType = $this->formFactory->create(RevisionType::class, $newRevision);
+						$revisionType->submit(['data' => $value['_source']]);
+						$objectArray = $revisionType->get('data')->getData();
 						$newRevision->setRawData($objectArray);
 					}
 					

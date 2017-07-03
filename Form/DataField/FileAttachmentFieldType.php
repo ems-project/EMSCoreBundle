@@ -20,7 +20,6 @@ use Symfony\Component\Form\FormRegistryInterface;
  *
  */
 class FileAttachmentFieldType extends DataFieldType {
-	
 
 	/**@var FileService */
 	private $fileService;
@@ -58,7 +57,7 @@ class FileAttachmentFieldType extends DataFieldType {
 	public function buildForm(FormBuilderInterface $builder, array $options) {
 		/** @var FieldType $fieldType */
 		$fieldType = $options ['metadata'];
-		$builder->add ( 'input_value', AssetType::class, [
+		$builder->add ( 'value', AssetType::class, [
 				'label' => (null != $options ['label']?$options ['label']:$fieldType->getName()),
 				'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
 				'required' => false,
@@ -66,11 +65,11 @@ class FileAttachmentFieldType extends DataFieldType {
 	}
 	
 
-
-	public function convertInput(DataField $dataField) {
+	public function reverseViewTransform($data, FieldType $fieldType) {
+		$dataField = parent::reverseViewTransform($data, $fieldType);
 		
-		if(!empty($dataField->getInputValue()) && !empty($dataField->getInputValue()['sha1'])){
-			$rawData = $dataField->getInputValue();
+		if(!empty($dataField->getRawData()) && !empty($dataField->getRawData()['value']['sha1'])){
+			$rawData = $dataField->getRawData()['value'];
 			$rawData['content'] = $this->fileService->getBase64($rawData['sha1']);
 			if(!$rawData['content']){
 				unset($rawData['content']);
@@ -85,22 +84,32 @@ class FileAttachmentFieldType extends DataFieldType {
 		else{
 			$dataField->setRawData(['content' => ""]);
 		}
+		return $dataField;
 	}	
 	
-	public function generateInput(DataField $dataField){
-		
+	
+	
+	/**
+	 *
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::getBlockPrefix()
+	 */
+	public function getBlockPrefix() {
+		return 'bypassdatafield';
+	}
+	
+	public function viewTransform(DataField $dataField) {
 		
 		$rawData = $dataField->getRawData();
 		
 		if(!empty($rawData) && !empty($rawData['sha1'])){
 			unset($rawData['content']);
 			unset($rawData['filesize']);
-			$dataField->setInputValue($rawData);
 		}
 		else {
-			$dataField->setInputValue(null);			
+			$rawData = [];			
 		}
-		return $this;
+		return ['value' => $rawData];
 	}
 	
 	

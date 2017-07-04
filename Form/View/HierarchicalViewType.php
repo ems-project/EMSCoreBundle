@@ -88,7 +88,7 @@ class HierarchicalViewType extends ViewType {
 		->add ( 'parent', DataLinkFieldType::class, [
 				'label' => 'Parent',
 				'metadata' => $fieldType,
-				'type' => $view->getContentType()->getName (),
+				'type' => $view->getContentType()->getName(),
 				'multiple' => false,
 				'dynamicLoading' => true
 		] )
@@ -123,11 +123,20 @@ class HierarchicalViewType extends ViewType {
 					$dataField->setRawData($raw);
 					return $dataField;
 				},
-				function (DataField $tagsAsString) {
+				function (DataField $dataField) {
 					// transform the string back to an array
-					return $tagsAsString->getRawData();
+					return $dataField->getRawData();
 				}
-		));
+			))->addViewTransformer(new CallbackTransformer(
+				function (DataField $dataField) {
+					return ['value' => $dataField->getRawData()];
+				},
+				function ($raw) {
+					$dataField = new DataField();
+					$dataField->setRawData($raw['value']);
+					return $dataField;
+				}
+			));
 	}
 	
 	/**

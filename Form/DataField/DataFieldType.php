@@ -251,7 +251,7 @@ abstract class DataFieldType extends AbstractType {
 // 			$fieldType = $options ['metadata'];
 			$view->vars ['label'] = false;//$fieldType->getName();
 		}
-		if($form->getErrors()->count() > 0 && !$form->getConfig()->getType()->getInnerType()->isContainer() && !empty($form->get('value'))){
+		if($form->getErrors()->count() > 0 && !$form->getConfig()->getType()->getInnerType()->isContainer() && $form->has('value')) {
 			foreach ($form->getErrors() as $error) {
 				$form->get('value')->addError($error);
 			}

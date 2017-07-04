@@ -146,7 +146,7 @@
 {# 	{% if isContainer %}#}
 {# 		<div id="{{ form.vars.id }}" class="container-fluid">#}
 {# 			<div class="row">#}
-{# 				{% for child in form.children %}#}
+{# 				{% for child in form.iterator %}#}
 {# 					{{- form_row(child) -}}#}
 {# 					{% if child.vars.lastOfRow is defined and child.vars.lastOfRow %}#}
 {# 						</div><div class="row">#}
@@ -443,7 +443,7 @@
 {% block container_field_type_widget %}
 	<div id="{{ form.vars.id }}" class="container-fluid">
 		<div class="row">
-			{% for child in form.children %}
+			{% for child in form.iterator %}
 				<div class="{% if child.vars.data.fieldType.options.displayOptions.class is defined %}{{ child.vars.data.fieldType.options.displayOptions.class }}{% endif %}{% if child.vars.errors|length > 0 and not child.vars.isContainer  %} has-error{% endif %}">
     				{{- form_row(child) -}}
 				</div>

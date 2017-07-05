@@ -164,8 +164,24 @@ class IntegerFieldType extends DataFieldType {
 	}
 	
 	public function reverseViewTransform($data, FieldType $fieldType) {
-		$temp = (!empty($data) && isset($data['value']))?intval($data['value']):null;
+		$temp = $data['value'];
 		
-		return parent::reverseViewTransform($temp, $fieldType);
+		$message = false;
+		if($temp !== null){
+			if(is_numeric($temp)) {
+				$temp = intval($temp);
+			}
+			else {
+				$message = 'It is not a integer value';
+			}
+		}
+		
+		$out = parent::reverseViewTransform($temp, $fieldType);
+		if($message) {
+			$out->addMessage($message);
+		}
+			
+			
+		return $out;
 	}
 }

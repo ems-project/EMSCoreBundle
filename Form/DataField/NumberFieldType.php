@@ -146,10 +146,23 @@ class NumberFieldType extends DataFieldType {
 	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
 	 */
 	public function reverseViewTransform($data, FieldType $fieldType) {
-		$value = $data['value'];
-		if(null !== $value){
-			$value = floatval($value);
+		$temp = $data['value'];
+		
+		$message = false;
+		if($temp !== null){
+			if(is_numeric($temp)) {
+				$temp = doubleval($temp);
+			}
+			else {
+				$message = 'It is not a float value:'.$temp;
+			}
 		}
-		return parent::reverseViewTransform($value, $fieldType);
+		
+		$out = parent::reverseViewTransform($temp, $fieldType);
+		if($message) {
+			$out->addMessage($message);
+		}
+		
+		return $out;
 	}
 }

@@ -50,8 +50,9 @@ abstract class DataFieldType extends AbstractType {
 	 */
 	public function reverseViewTransform($data, FieldType $fieldType) {
 		$out = new DataField();
-		if(empty($data)){
-			$out->setRawData(null);
+		
+		if((is_string($data) || is_array($data)) && empty($data)){
+			$out->setRawData(null);	
 		}
 		else {
 			$out->setRawData($data);			

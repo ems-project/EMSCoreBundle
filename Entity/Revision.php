@@ -224,7 +224,7 @@ class Revision
     					}
     				}
     				else {
-    					if(isset($data[$child->getName()]) && !empty($data[$child->getName()])){
+    					if(isset($data[$child->getName()]) && null !== $data[$child->getName()]){
     						$out[$child->getName()] = $data[$child->getName()];
     					}
     				}
@@ -272,7 +272,7 @@ class Revision
     					}
     				}
     				else {
-    					if(isset($data[$child->getName()]) && !empty($data[$child->getName()])){
+    					if( isset($data[$child->getName()]) && $data[$child->getName()] !== null ){
     						$out[$child->getName()] = $data[$child->getName()];
     					}
     				}

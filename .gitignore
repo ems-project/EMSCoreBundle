@@ -5,3 +5,4 @@
 /bower
 /.buildpath
 *.yml~
+/node_modules/

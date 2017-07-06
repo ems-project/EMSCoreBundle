@@ -133,7 +133,17 @@ class AppExtension extends \Twig_Extension
 	 */
 	function toAscii($str) {
 // 		return($str);
-		$clean = iconv('UTF-8', 'ASCII//TRANSLIT', $str);
+		$clean = $str;
+		if (extension_loaded('mbstring')) {
+			$clean = iconv('UTF-8', 'ASCII//TRANSLIT', $str);		
+		}
+		else {
+			$clean = strtr(utf8_decode($str),
+			utf8_decode(
+				'ŠŒŽšœžŸ¥µÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ'),
+				'SOZsozYYuAAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
+		}
+		
 		$clean = preg_replace("/[^a-zA-Z0-9\_\|\ \-]/", '', $clean);
 		$clean = strtolower(trim($clean, '-'));
 		$clean = preg_replace("/[\/\_\|\ \-]+/", '-', $clean);

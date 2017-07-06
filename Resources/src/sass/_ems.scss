@@ -1,0 +1,37 @@
+
+table#CriteriaUpdateCustomViewTable > tbody > tr > td {
+	min-width: 150px;	
+}
+
+
+.ui-sortable-handle {
+    cursor: move;
+}
+
+.raw-view, .revision-view {
+    word-break: break-word;
+	.leaf-item {
+		max-height: 400px;
+    	overflow-y: scroll;
+	}
+}
+
+div.table-responsive {
+	padding-bottom: 20px;
+}
+
+.nowrap  {
+	white-space: nowrap;
+}
+
+ol.vertical li {
+    display: block;
+    margin: 7px;
+    padding: 7px;
+    border: 1px solid #cccccc;
+}
+
+.mjs-nestedSortable-error {
+	background: #fbe3e4;
+	border-color: transparent;
+}

@@ -1,0 +1,26 @@
+// Import custom Bootstrap variables
+@import "bootstrap-variables";
+
+// Import Bootstrap for Sass
+@import "node_modules/bootstrap-sass/assets/stylesheets/_bootstrap";
+
+@import "jquery_ui";
+@import "ckeditor";
+@import "bootstrap";
+@import "node_modules/bootstrap-timepicker/css/bootstrap-timepicker";
+@import "node_modules/admin-lte/plugins/fullcalendar/fullcalendar";
+@import "node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker";
+@import "node_modules/admin-lte/plugins/select2/select2";
+@import "node_modules/admin-lte/dist/css/AdminLTE";
+@import "node_modules/admin-lte/dist/css/skins/_all-skins";
+@import "node_modules/admin-lte/plugins/iCheck/square/blue";
+@import "node_modules/admin-lte/plugins/datatables/dataTables.bootstrap";
+@import "node_modules/bootstrap-fileinput/sass/fileinput";
+@import "node_modules/bootstrap-daterangepicker/daterangepicker.scss";
+@import "node_modules/font-awesome/scss/font-awesome";
+@import "node_modules/ionicons/dist/scss/ionicons";
+@import "node_modules/bootstrap-select/sass/bootstrap-select";
+@import "node_modules/admin-lte/plugins/colorpicker/bootstrap-colorpicker.min";
+@import "../fonts/ems";
+
+@import "ems";

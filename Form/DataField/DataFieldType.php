@@ -51,7 +51,7 @@ abstract class DataFieldType extends AbstractType {
 	public function reverseViewTransform($data, FieldType $fieldType) {
 		$out = new DataField();
 		
-		if((is_string($data) && $data === "") || (is_array($data) && empty($data))) {
+		if((is_string($data) && $data === "") || (is_array($data) && count($data) === 0)) {
 			$out->setRawData(null);	
 		}
 		else {
@@ -316,7 +316,7 @@ abstract class DataFieldType extends AbstractType {
 		if(isset($restrictionOptions["mandatory"]) && true == $restrictionOptions["mandatory"]) {
 			//Get rawData
 			$rawData = $dataField->getRawData();
-			if(!isset($rawData) || empty($rawData) || $rawData === null) {
+			if( !isset($rawData) || (is_string($rawData) && $rawData=== "") || (is_array($rawData) && count($rawData) === 0) || $rawData === null ) {
 				$isValidMadatory = FALSE;
 				$dataField->addMessage("Empty field");
 			}

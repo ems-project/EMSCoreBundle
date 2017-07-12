@@ -214,8 +214,6 @@ class DataService
 			}
 			else {
 				try {
-					
-					
 //					$this->twig->addExtension($this->appTwig); 
 //	Bugfix because we are always getting the following error (we should not inject the service we load in the construct?):
 //	Error in template: Unable to register extension "app_extension" as extensions have already been initialized.
@@ -228,21 +226,29 @@ class DataService
 					if($dataField->getFieldType()->getDisplayOptions()['json']){
 						$out = json_decode($out);
 					}
-					
-					
 				}
 				catch (\Exception $e) {
 					$out = "Error in template: ".$e->getMessage();
 				}					
 			}
-			//TODO: not always at the root
-			$objectArray[$dataField->getFieldType()->getName()] = $out;
-			$found = true;
+				$objectArray[$dataField->getFieldType()->getName()] = $out;
+				$found = true;
 		}
-		
 		if($form->getConfig()->getType()->getInnerType()->isContainer()) {
 			foreach ($form->getIterator() as $child){
-				if( $child->getConfig()->getType()->getInnerType() instanceof DataFieldType ) {
+				$childType = $child->getConfig()->getType()->getInnerType();
+				
+				if ($childType instanceof CollectionFieldType) {
+					foreach ($child->getIterator() as $collectionChild) {
+						$elementsArray = $collectionChild->getNormData()->getRawData();
+						$found = $this->propagateDataToComputedField($collectionChild, $elementsArray, $type, $ouuid) || $found;
+						
+						$fieldName = $child->getNormData()->getFieldType()->getName();
+						$positionInCollection = $collectionChild->getConfig()->getName();
+
+						$objectArray[$fieldName][$positionInCollection] = $elementsArray;	
+					}
+				}elseif( $childType instanceof DataFieldType ) {
 					$found = $this->propagateDataToComputedField($child, $objectArray, $type, $ouuid) || $found;					
 				}
 			}			

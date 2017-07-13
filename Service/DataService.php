@@ -14,6 +14,7 @@ use EMS\CoreBundle\Exception\DataStateException;
 use EMS\CoreBundle\Exception\LockedException;
 use EMS\CoreBundle\Exception\PrivilegeException;
 use EMS\CoreBundle\Form\DataField\ComputedFieldType;
+use EMS\CoreBundle\Form\DataField\CollectionFieldType;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
@@ -231,8 +232,8 @@ class DataService
 					$out = "Error in template: ".$e->getMessage();
 				}					
 			}
-				$objectArray[$dataField->getFieldType()->getName()] = $out;
-				$found = true;
+			$objectArray[$dataField->getFieldType()->getName()] = $out;
+			$found = true;
 		}
 		if($form->getConfig()->getType()->getInnerType()->isContainer()) {
 			foreach ($form->getIterator() as $child){

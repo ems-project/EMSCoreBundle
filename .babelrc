@@ -1,2 +1,2 @@
-{ "presets": [ "stage-3" ] }
+{ "presets": [ "env", "stage-3", "stage-2" ] }
 

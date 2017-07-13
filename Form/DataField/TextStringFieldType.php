@@ -39,18 +39,18 @@ use Symfony\Component\Form\FormInterface;
 		$view->vars ['class'] = null;
 	}
 	
-	/**
-	 * 
-	 * {@inheritDoc}
-	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
-	 */
-	public function viewTransform(DataField $data){
-		$out = parent::viewTransform($data);
-		if(empty($out)) {
-			return "";
-		}
-		return $out;
-	}
+// 	/**
+// 	 * 
+// 	 * {@inheritDoc}
+// 	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
+// 	 */
+// 	public function viewTransform(DataField $data){
+// 		$out = parent::viewTransform($data);
+// 		if(empty($out)) {
+// 			return "";
+// 		}
+// 		return $out;
+// 	}
 	
 	/**
 	 *

@@ -27,8 +27,6 @@ class PublishService
 	protected $authorizationChecker;
 	/**@var TokenStorageInterface $tokenStorage*/
 	protected $tokenStorage;
-	/**@var AppExtension $twigExtension*/
-	protected $twigExtension;
 	protected $lockTime;
 	/**@Client $client*/
 	protected $client;
@@ -62,7 +60,6 @@ class PublishService
 			Registry $doctrine, 
 			AuthorizationCheckerInterface $authorizationChecker, 
 			TokenStorageInterface $tokenStorage, 
-			AppExtension $twigExtension, 
 			$lockTime, 
 			Client $client, 
 			Mapping $mapping, 
@@ -75,7 +72,6 @@ class PublishService
 			UserService $userService,
 			EventDispatcherInterface $dispatcher)
 	{
-		$this->twigExtension = $twigExtension;
 		$this->doctrine = $doctrine;
 		$this->authorizationChecker = $authorizationChecker;
 		$this->tokenStorage = $tokenStorage;

@@ -8,7 +8,6 @@ use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Event\RevisionPublishEvent;
 use EMS\CoreBundle\Event\RevisionUnpublishEvent;
 use EMS\CoreBundle\Repository\RevisionRepository;
-use EMS\CoreBundle\Twig\AppExtension;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Elasticsearch\Client;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -20,7 +19,6 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 class PublishService
 {
 	
-	protected $twig;
 	/**@var Registry $doctrine */
 	protected $doctrine;
 	/**@var AuthorizationCheckerInterface $authorizationChecker*/

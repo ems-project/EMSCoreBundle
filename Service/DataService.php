@@ -214,9 +214,6 @@ class DataService
 			}
 			else {
 				try {
-//					$this->twig->addExtension($this->appTwig); 
-//	Bugfix because we are always getting the following error (we should not inject the service we load in the construct?):
-//	Error in template: Unable to register extension "app_extension" as extensions have already been initialized.
 					$out = $this->twig->createTemplate($template)->render([
 						'_source' => $objectArray,
 						'_type' => $type,

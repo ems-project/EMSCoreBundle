@@ -252,12 +252,11 @@ class DataController extends AppController
 		$availableEnv = $em->getRepository('EMSCoreBundle:Environment')->findAvailableEnvironements(
 				$revision->getContentType()->getEnvironment());
 		
-// 		$objectArray = $this->get('ems.service.mapping')->dataFieldToArray ($revision->getDataField());
-
 		
 		$form = $this->createForm(RevisionType::class, $revision);
 		
-		$objectArray = $form->get('data')->getData();
+		
+		$objectArray = $form->getData()->getRawData();
 		
 		$dataFields = $this->getDataService()->getDataFieldsStructure($form->get('data'));
 		

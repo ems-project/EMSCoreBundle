@@ -352,7 +352,7 @@
 		<div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
               {% for tab in  form.iterator %}
-	              <li id="{{ tab.vars.id}}__label" class="form-group{% if tab.vars.errors|length %} has-error{% endif %} {% if loop.index == 1%} active{% endif %}">
+	              <li id="{{ tab.vars.id}}__label" class="form-group{% if tab.vars.errors|length %} has-error{% endif %}{% if loop.index == 1%} active{% endif %}{% if tab.vars.class is defined and tab.vars.class != 'col-md-12' %} {{tab.vars.class}}{% endif %}">
 	              	<a href="#{{ tab.vars.id}}__tab" data-toggle="tab" aria-expanded="{% if loop.index == 1%}true{%else%}false{% endif %}">
 	              	  {{- form_label(tab) -}}
 	                </a>

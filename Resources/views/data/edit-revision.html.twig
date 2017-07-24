@@ -108,24 +108,31 @@ function onFormChange(){
 			  
 			  $(response.formErrors).each(function(index, item){
 
-				  if($('#'+item.propertyPath+'__label').length) {
+				  var target = item.propertyPath;
+				  if($('#'+item.propertyPath+'_value').length){
+					  target = item.propertyPath+'_value';
+				  }
 
-					  $('#'+item.propertyPath+'__label').addClass('has-error');
-					  if(item.message && $('#'+item.propertyPath+'__error').length > 0) {
-						  $('#'+item.propertyPath+'__error').addClass('has-error');
-						  if($('#'+item.propertyPath+'__error span.help-block').length == 0){
-							  $('#'+item.propertyPath+'__error').append('<span class="help-block"><ul class="list-unstyled"></ul></span>');
+				  if($('#'+target+'__label').length) {
+
+					  $('#'+target+'__label').addClass('has-error');
+					  if(item.message && $('#'+target+'__error').length > 0) {
+						  $('#'+target+'__error').addClass('has-error');
+						  if($('#'+target+'__error span.help-block').length == 0){
+							  $('#'+target+'__error').append('<span class="help-block"><ul class="list-unstyled"></ul></span>');
 						  }
-						  $('#'+item.propertyPath+'__error'+' span.help-block ul.list-unstyled').append('<li><span class="glyphicon glyphicon-exclamation-sign"></span> '+item.message+'</li>');
+						  $('#'+target+'__error'+' span.help-block ul.list-unstyled').append('<li><span class="glyphicon glyphicon-exclamation-sign"></span> '+item.message+'</li>');
 					  }
 				  }
 				  else {
-					  $('#'+item.propertyPath).parents('.form-group').addClass('has-error');
+					  $('#'+target).parents('.form-group').addClass('has-error');
 					  if(item.message) {
-						  if($('#'+item.propertyPath).parents('.form-group').find(' span.help-block').length == 0){
-							  $('#'+item.propertyPath).parent('.input-group').after('<span class="help-block"><ul class="list-unstyled"></ul></span>');
+						  if($('#'+target).parents('.form-group').find(' span.help-block').length == 0){
+							  $('#'+target).parent('.form-group').append('<span class="help-block"><ul class="list-unstyled"><li><span class="glyphicon glyphicon-exclamation-sign"></span> '+item.message+'</li></ul></span>');
 						  }
-			  				$('#'+item.propertyPath).parents('.form-group').find(' span.help-block ul.list-unstyled').append('<li><span class="glyphicon glyphicon-exclamation-sign"></span> '+item.message+'</li>');
+						  else {
+    			  			  $('#'+target).parents('.form-group').find(' span.help-block ul.list-unstyled').append('<li><span class="glyphicon glyphicon-exclamation-sign"></span> '+item.message+'</li>');							  
+    			  		  }
 					  }
 				  }
 				  

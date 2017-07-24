@@ -331,11 +331,24 @@
 {% endblock tabsfieldtype_errors -%}
 
 
+{% block tabsfieldtype_row -%}
+{# <div class="form-group{% if class %} {{ class }}{% else %} col-xs-12 {% endif %}{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %}">#}
+{# 	<div class="panel panel-default">#}
+{# 		<div class="panel-heading">#}
+{# 	  		{{- form_label(form) -}}#}
+{# 	  	</div>#}
+{# 	  	<div  class="panel-body">#}
+			{{- form_widget(form) -}}
+{# 		</div>#}
+		{{- form_errors(form) -}}
+{# 	</div>               #}
+{# </div>#}
+{% endblock tabsfieldtype_row %}
 
 
 
 {% block tabsfieldtype_widget -%}
-	<div class="{% if class %}{{ class }}{% else %}col-xs-12 {% endif %}">
+{# 	<div class="{% if class %}{{ class }}{% else %}col-xs-12 {% endif %}">#}
 		<div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
               {% for tab in  form.iterator %}
@@ -346,7 +359,7 @@
 	              </li>
               {% endfor %}
             </ul>
-            <div class="tab-content">
+            <div class="tab-content panel panel-default">
               {% for tab in  form.iterator %}
 	              <div class="tab-pane{% if loop.index == 1%} active{% endif %}" id="{{ tab.vars.id}}__tab">
 	              	<div class="form-group has-error"  id="{{ tab.vars.id}}__error">
@@ -364,7 +377,7 @@
             </div>
             <!-- /.tab-content -->
          </div>             
-	</div>
+{# 	</div>#}
 {%- endblock tabsfieldtype_widget %}
 
 
@@ -398,7 +411,7 @@
 {%- endblock collectionfieldtype_widget %}
 
 {% block collectionfieldtype_row -%}
-<div class="form-group{% if class %} {{ class }}{% else %} col-xs-12 {% endif %}{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %}">
+{# <div class="form-group{% if class %} {{ class }}{% else %} col-xs-12 {% endif %}{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %}">#}
 	<div class="panel panel-default">
 		<div class="panel-heading">
 	  		{{- form_label(form) -}}
@@ -408,7 +421,7 @@
 		</div>
 		{{- form_errors(form) -}}
 	</div>               
-</div>
+{# </div>#}
 {% endblock collectionfieldtype_row %}
 
 {% block collectionitemtype_row -%}

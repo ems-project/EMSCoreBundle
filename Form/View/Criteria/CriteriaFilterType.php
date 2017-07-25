@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\CallbackTransformer;
 
 /**
  * It's the mother class of all specific DataField used in eMS
@@ -104,6 +105,19 @@ class CriteriaFilterType extends AbstractType {
 					}
 					$builder->add ( 'category', $categoryField->getType(), $displayOptions);
 					
+					$builder->get('category')->addViewTransformer(new CallbackTransformer(
+						function (DataField $dataField) {
+							return ['value' => $dataField->getRawData()];
+						},
+						function ($raw) use ($categoryField) {
+							$dataField = new DataField();
+							$dataField->setFieldType($categoryField);
+							if(isset($raw['value'])){
+								$dataField->setRawData($raw['value']);
+							}
+							return $dataField;
+						}
+					));
 				}
 			}
 			
@@ -138,7 +152,20 @@ class CriteriaFilterType extends AbstractType {
 					
 					$displayOptions['multiple'] = true;//($child->getName() == $defaultRow || $child->getName() == $defaultColumn);
 
-					$criterion->add ( $child->getName(), $child->getType(), $displayOptions);	
+					$criterion->add ( $child->getName(), $child->getType(), $displayOptions);
+					$criterion->get($child->getName())->addViewTransformer(new CallbackTransformer(
+							function (DataField $dataField) {
+								return ['value' => $dataField->getRawData()];
+							},
+							function ($raw) use ($child) {
+								$dataField = new DataField();
+								$dataField->setFieldType($child);
+								if(isset($raw['value'])){
+									$dataField->setRawData($raw['value']);									
+								}
+								return $dataField;
+							}
+					));
 				}
 			}
 			

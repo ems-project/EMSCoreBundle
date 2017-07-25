@@ -146,11 +146,9 @@ class CriteriaUpdateConfig{
      *
      * @return CriteriaUpdateConfig
      */
-    public function addCriterion($criterion)
+    public function addCriterion(DataField $criterion)
     {
-    	if($criterion)
-	        $this->criterion[] = $criterion;
-
+    	$this->criterion[$criterion->getFieldType()->getName()] = $criterion;
         return $this;
     }
 
@@ -161,7 +159,9 @@ class CriteriaUpdateConfig{
      */
     public function removeCriterion(DataField $criterion)
     {
-        $this->criterion->removeElement($criterion);
+    	if(isset($this->criterion[$criterion->getFieldType()->getName()])) {
+    		unset($this->criterion[$criterion->getFieldType()->getName()]);
+    	}
     }
 
     /**

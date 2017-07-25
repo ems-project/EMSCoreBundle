@@ -202,7 +202,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 	public function getChoiceList(FieldType $fieldType, array $choices){
 		
 		/**@var ObjectPickerType $objectPickerType*/
-		$objectPickerType = $this->registry->getType(ObjectPickerType::class)->getInnerType();
+		$objectPickerType = $this->formRegistry->getType(ObjectPickerType::class)->getInnerType();
 		
 		
 		/**@var ObjectChoiceLoader $loader */

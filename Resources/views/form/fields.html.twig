@@ -30,7 +30,9 @@
 
 {% block bypassdatafield_row -%}
 	{% if form.value is defined %}
-        {{form_row(form.value)}}
+		<div {{ block('widget_attributes') }} >
+	        {{form_row(form.value)}}
+		</div>
     {% endif %}
 {%- endblock bypassdatafield_row %}
 

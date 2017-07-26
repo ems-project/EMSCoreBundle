@@ -234,16 +234,21 @@
 
 {% macro EMS_CoreBundle_Form_DataField_TabsFieldType(dataField) %}
 {% import _self as macros %}
-		<div class="nav-tabs-custom">
-            <ul class="nav nav-tabs">
-            	{% for child in dataField.children if not child.fieldType.deleted %}
-	              <li class="{% if loop.index == 1%}active{% endif %}"><a href="#item_{{ dataField.fieldType.id~'_'~loop.index }}__tab" data-toggle="tab" aria-expanded="false">
-	              {% if child.fieldType.displayOptions.label is defined %}
-						{{ child.fieldType.displayOptions.label }}
-					{% else %}
-						{{ child.fieldType.name }}
-					{% endif %}
-				</a></li>
+	<div class="nav-tabs-custom">
+		<ul class="nav nav-tabs">
+            {% for child in dataField.children if not child.fieldType.deleted %}
+            	<li class="{% if loop.index == 1%}active{% endif %}{% if child.fieldType.displayOptions.class is defined and child.fieldType.displayOptions.class != 'col-md-12' %} {{child.fieldType.displayOptions.class}}{% endif %}">
+            		<a href="#item_{{ dataField.fieldType.id~'_'~loop.index }}__tab" data-toggle="tab" aria-expanded="false">
+                        {% if child.fieldType.displayOptions.icon is defined and child.fieldType.displayOptions.icon%}
+                        	<i class="{{ child.fieldType.displayOptions.icon }}"></i>
+                        {% endif %}
+                        {% if child.fieldType.displayOptions.label is defined %}
+                            {{ child.fieldType.displayOptions.label }}
+                        {% else %}
+                            {{ child.fieldType.name }}
+                        {% endif %}
+					</a>
+    			</li>
             	{% endfor %}
             </ul>
             <div class="tab-content">

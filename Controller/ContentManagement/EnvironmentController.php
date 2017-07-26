@@ -282,6 +282,7 @@ class EnvironmentController extends AppController {
 				'environments' => $environmentService->getAll(),
          		'orderField' => $orderField,
          		'orderDirection' => $orderDirection,
+				'contentTypes' => $this->getContentTypeService()->getAll(),
          ] );
 	}
 	

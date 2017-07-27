@@ -868,7 +868,7 @@ class DataService
 		return $out.'</ul>';
 	}
 	
-	public function isValid(\Symfony\Component\Form\Form &$form) {
+	public function isValid(\Symfony\Component\Form\Form &$form, DataField $parent=null) {
 		
 		$viewData = $form->getNormData();
 		
@@ -895,14 +895,14 @@ class DataService
 // 	    	$dataFieldType = new $dataFieldTypeClassName();
 	    	/** @var DataFieldType $dataFieldType */
 			$dataFieldType = $this->formRegistry->getType($dataField->getFieldType()->getType())->getInnerType();
-			$dataFieldType->isValid($dataField);
+			$dataFieldType->isValid($dataField, $parent);
 		}
 		$isValid = true;
 		if(isset($dataFieldType) && $dataFieldType->isContainer()) {//If datafield is container or type is null => Container => Recursive
 			$formChildren = $form->all();
 			foreach ($formChildren as $child) {
 				if( $child instanceof \Symfony\Component\Form\Form) {
-					$tempIsValid = $this->isValid($child);//Recursive
+					$tempIsValid = $this->isValid($child, $dataField);//Recursive
 					$isValid = $isValid && $tempIsValid;
 				}
 			}
@@ -912,7 +912,7 @@ class DataService
 
 		}
 //   		$isValid = $isValid && $dataFieldType->isValid($dataField);
-		if(isset($dataFieldType) && !$dataFieldType->isValid($dataField)) {
+		if(isset($dataFieldType) && !$dataFieldType->isValid($dataField, $parent)) {
 			$isValid = false;
 			$form->addError(new FormError("This Field is not valid! ".$dataField->getMessages()[0]));
 		}

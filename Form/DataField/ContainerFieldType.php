@@ -138,6 +138,7 @@ class ContainerFieldType extends DataFieldType {
 		$optionsForm->remove ( 'mappingOptions' );
 		$optionsForm->remove ( 'migrationOptions' );
 		$optionsForm->get ( 'restrictionOptions' )->remove('mandatory');
+		$optionsForm->get ( 'restrictionOptions' )->remove('mandatory_if');
 		// an optional icon can't be specified ritgh to the container label
 		$optionsForm->get ( 'displayOptions' )->add ( 'icon', IconPickerType::class, [ 
 				'required' => false 

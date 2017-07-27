@@ -305,8 +305,8 @@ abstract class DataFieldType extends AbstractType {
 	 *
 	 * @return boolean
 	 */
-	public function isValid(DataField &$dataField){
-		return count($dataField->getMessages()) === 0 && $this->isMandatory($dataField);
+	public function isValid(DataField &$dataField, DataField $parent=null){
+		return count($dataField->getMessages()) === 0 && $this->isMandatory($dataField, $parent);
 	}
 	
 	/**
@@ -319,11 +319,14 @@ abstract class DataFieldType extends AbstractType {
 		//Get FieldType mandatory option
 		$restrictionOptions = $dataField->getFieldType()->getRestrictionOptions();
 		if(isset($restrictionOptions["mandatory"]) && true == $restrictionOptions["mandatory"]) {
-			//Get rawData
-			$rawData = $dataField->getRawData();
-			if( !isset($rawData) || (is_string($rawData) && $rawData=== "") || (is_array($rawData) && count($rawData) === 0) || $rawData === null ) {
-				$isValidMadatory = FALSE;
-				$dataField->addMessage("Empty field");
+			
+			if($parent === null || !isset($restrictionOptions["mandatory_if"]) || $parent->getRawData() == null || !empty($parent->getRawData()[$restrictionOptions["mandatory_if"]])) {
+				//Get rawData
+				$rawData = $dataField->getRawData();
+				if( !isset($rawData) || (is_string($rawData) && $rawData=== "") || (is_array($rawData) && count($rawData) === 0) || $rawData === null ) {
+					$isValidMadatory = FALSE;
+					$dataField->addMessage("Empty field");
+				}
 			}
 		}
 		return $isValidMadatory;

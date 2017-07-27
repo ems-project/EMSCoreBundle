@@ -62,8 +62,8 @@ class NumberFieldType extends DataFieldType {
 	 * {@inheritdoc}
 	 *
 	 */
-	public function isValid(DataField &$dataField){
-		$isValid = parent::isValid($dataField);
+	public function isValid(DataField &$dataField, DataField $parent=null){
+		$isValid = parent::isValid($dataField, $parent);
 		
 		$rawData = $dataField->getRawData();
 		if(! empty($rawData) && !is_numeric($rawData)) {

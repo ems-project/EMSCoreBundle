@@ -109,8 +109,8 @@ use EMS\CoreBundle\Entity\DataField;
 	 * {@inheritdoc}
 	 *
 	 */
-	public function isValid(DataField &$dataField){
-		$isValid = parent::isValid($dataField);
+	public function isValid(DataField &$dataField, DataField $parent=null){
+		$isValid = parent::isValid($dataField, $parent);
 		$rawData = $dataField->getRawData();
 		if($rawData !== null){
 			$data = @json_decode($rawData);

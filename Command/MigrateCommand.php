@@ -170,6 +170,9 @@ class MigrateCommand extends ContainerAwareCommand
 							$data = $anotherRevisionType->get('data')->getData();
 							$newRevision->setData($data);
 							$objectArray = $newRevision->getRawData();
+
+							$this->dataService->propagateDataToComputedField($anotherRevisionType->get('data'), $objectArray, $contentTypeTo->getName(), $value['_id']);
+							$newRevision->setRawData($objectArray);
 							
 						}
 						
@@ -193,6 +196,8 @@ class MigrateCommand extends ContainerAwareCommand
 						$data = $anotherRevisionType->get('data')->getData();
 						$newRevision->setData($data);
 						$objectArray = $newRevision->getRawData();
+						$this->dataService->propagateDataToComputedField($anotherRevisionType->get('data'), $objectArray, $contentTypeTo->getName(), $value['_id']);
+						$newRevision->setRawData($objectArray);
 					}
 					
 					$this->dataService->setMetaFields($newRevision);

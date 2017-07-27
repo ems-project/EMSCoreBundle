@@ -162,13 +162,15 @@ class MigrateCommand extends ContainerAwareCommand
 							//So we load the datas from the current revision into the next revision
 							$newRevision->setRawData($value['_source']);
 							$revisionType = $this->formFactory->create(RevisionType::class, $newRevision, ['migration' => true]);
-							$viewData = $revisionType->getViewData();
+							$viewData = $revisionType->get('data')->getViewData();
 							
 							$anotherRevisionType = $this->formFactory->create(RevisionType::class, $currentRevision, ['migration' => true]);
-							$anotherRevisionType->submit($viewData);
-							$objectArray = $anotherRevisionType->get('data')->getData();
 							
-							$newRevision->setRawData($objectArray);
+							$anotherRevisionType->submit(['data' => $viewData]);
+							$data = $anotherRevisionType->get('data')->getData();
+							$newRevision->setData($data);
+							$objectArray = $newRevision->getRawData();
+							
 						}
 						
 						$currentRevision->setEndTime($now);
@@ -186,9 +188,11 @@ class MigrateCommand extends ContainerAwareCommand
 					else{
 						$newRevision->setRawData($value['_source']);
 						$revisionType = $this->formFactory->create(RevisionType::class, $newRevision, ['migration' => true]);
-						$revisionType->submit($revisionType->getViewData());
-						$objectArray = $revisionType->get('data')->getData();
-						$newRevision->setRawData($objectArray);
+						$viewData = $revisionType->get('data')->getViewData();
+						$revisionType->submit(['data' => $viewData]);
+						$data = $anotherRevisionType->get('data')->getData();
+						$newRevision->setData($data);
+						$objectArray = $newRevision->getRawData();
 					}
 					
 					$this->dataService->setMetaFields($newRevision);

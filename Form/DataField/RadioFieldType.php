@@ -57,7 +57,7 @@ class RadioFieldType extends DataFieldType {
 		$builder->add ( 'value', ChoiceType::class, [
 				'label' => (isset($options['label'])?$options['label']:$fieldType->getName()),
 				'required' => false,
-				'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
+				'disabled'=> $this->isDisabled($options),
 				'choices' => $choices,
 				'empty_data'  => null,
 				'multiple' => false,

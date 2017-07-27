@@ -29,7 +29,14 @@ class EmsCollectionType extends CollectionType{
 		$options['metadata'] = $fieldType;
 		
 		$entryOptions = $fieldType->getDisplayOptions();
+		
 
+		$disabled = false;
+		if(strcmp('cli', php_sapi_name()) !== 0){
+			$enable = ($options['migration'] && !$fieldType->getMigrationgOption('protected', true)) || $this->authorizationChecker->isGranted($fieldType->getMinimumRole());
+			$disabled = !$enable;
+		}
+		
 		$options = array_merge($options, [
 				'entry_type' => CollectionItemFieldType::class,
 				'entry_options' => [
@@ -39,7 +46,7 @@ class EmsCollectionType extends CollectionType{
 				'allow_delete' => true,
 				'prototype' => true,
 				'required' => false,
-				'disabled' => !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
+				'disabled' => $disabled,
 		]);
 		
 

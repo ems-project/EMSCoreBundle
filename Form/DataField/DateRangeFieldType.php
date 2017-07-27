@@ -171,7 +171,7 @@ class DateRangeFieldType extends DataFieldType {
 		$builder->add ( 'value', IconTextType::class, [
 				'label' => (null != $options ['label']?$options ['label']:$fieldType->getName()),
 				'required' => false,
-				'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
+				'disabled'=> $this->isDisabled($options),
 				'icon' => $options['icon'],
 				'attr' => [
 					'class' => 'ems_daterangepicker',

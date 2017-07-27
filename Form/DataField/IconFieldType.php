@@ -44,7 +44,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 		$fieldType = $options ['metadata'];
 		$builder->add ( 'value', IconPickerType::class, [
 				'label' => (null != $options ['label']?$options ['label']:'Icon field type'),
-				'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
+				'disabled'=> $this->isDisabled($options),
 				'required' => false,
 		] );
 	}

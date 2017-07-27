@@ -46,7 +46,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 		$fieldType = $options ['metadata'];
 		$builder->add ( 'password_value', PasswordType::class, [
 				'label' => (null != $options ['label']?$options ['label']:$fieldType->getName()),
-				'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
+				'disabled'=> $this->isDisabled($options),
 				'required' => false,
 				'attr' => [
 						'autocomplete' => "new-password" //http://stackoverflow.com/questions/18531437/stop-google-chrome-auto-fill-the-input
@@ -55,7 +55,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 		
 		$builder->add ( 'reset_password_value', CheckboxType::class, [
 				'label' => 'Reset the password',
-				'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
+				'disabled'=> $this->isDisabled($options),
 				'required' => false,
 		] );
 	}

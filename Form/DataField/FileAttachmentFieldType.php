@@ -59,7 +59,7 @@ class FileAttachmentFieldType extends DataFieldType {
 		$fieldType = $options ['metadata'];
 		$builder->add ( 'value', AssetType::class, [
 				'label' => (null != $options ['label']?$options ['label']:$fieldType->getName()),
-				'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
+				'disabled'=> $this->isDisabled($options),
 				'required' => false,
 		] );
 	}

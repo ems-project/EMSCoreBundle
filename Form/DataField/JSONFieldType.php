@@ -51,7 +51,7 @@ use EMS\CoreBundle\Entity\DataField;
 				],
 				'label' => (null != $options ['label']?$options ['label']:$fieldType->getName()),
 				'required' => false,
-				'disabled'=> !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
+				'disabled'=> $this->isDisabled($options),
 		]);
 	}
 	

@@ -144,8 +144,13 @@ abstract class DataFieldType extends AbstractType {
 	abstract public function getLabel();	
 
 	public function isDisabled($options){
+		if(strcmp('cli', php_sapi_name()) === 0){
+			return false;
+		}
+
 		/** @var FieldType $fieldType */
 		$fieldType = $options ['metadata'];
+		
 		$enable = ($options['migration'] && !$fieldType->getMigrationgOption('protected', true)) || $this->authorizationChecker->isGranted($fieldType->getMinimumRole());
 		return !$enable;
 	}

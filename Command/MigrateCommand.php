@@ -196,7 +196,7 @@ class MigrateCommand extends ContainerAwareCommand
 						$data = $revisionType->get('data')->getData();
 						$newRevision->setData($data);
 						$objectArray = $newRevision->getRawData();
-						$this->dataService->propagateDataToComputedField($anotherRevisionType->get('data'), $objectArray, $contentTypeTo->getName(), $value['_id']);
+						$this->dataService->propagateDataToComputedField($newRevision->get('data'), $objectArray, $contentTypeTo->getName(), $value['_id']);
 						$newRevision->setRawData($objectArray);
 					}
 					

@@ -395,6 +395,8 @@ function addEventListeners(target){
 		handle: ".ems-handle"
 	});
 
+	target.find('.selectpicker').selectpicker();
+
 	target.find(".ckeditor_ems").each(function(index){
 
 		{% if app.user.wysiwygProfile and app.user.wysiwygProfile.config %}

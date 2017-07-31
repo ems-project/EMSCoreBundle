@@ -314,7 +314,7 @@ abstract class DataFieldType extends AbstractType {
 	 *
 	 * @return boolean
 	 */
-	public function isMandatory(DataField &$dataField){
+	public function isMandatory(DataField &$dataField, DataField $parent=null){
 		$isValidMadatory = TRUE;
 		//Get FieldType mandatory option
 		$restrictionOptions = $dataField->getFieldType()->getRestrictionOptions();

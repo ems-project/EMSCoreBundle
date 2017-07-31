@@ -193,10 +193,11 @@ class MigrateCommand extends ContainerAwareCommand
 						$revisionType = $this->formFactory->create(RevisionType::class, $newRevision, ['migration' => true]);
 						$viewData = $revisionType->get('data')->getViewData();
 						$revisionType->submit(['data' => $viewData]);
-						$data = $anotherRevisionType->get('data')->getData();
+						$data = $revisionType->get('data')->getData();
 						$newRevision->setData($data);
 						$objectArray = $newRevision->getRawData();
-						$this->dataService->propagateDataToComputedField($anotherRevisionType->get('data'), $objectArray, $contentTypeTo->getName(), $value['_id']);
+						
+						$this->dataService->propagateDataToComputedField($revisionType->get('data'), $objectArray, $contentTypeTo->getName(), $value['_id']);
 						$newRevision->setRawData($objectArray);
 					}
 					

@@ -88,6 +88,7 @@ $(window).load(function() {
 	    threshold : 200
 	});
 	
+	$('.match-height').matchHeight();
 
 });
 

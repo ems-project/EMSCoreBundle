@@ -263,6 +263,33 @@ class CollectionFieldType extends DataFieldType {
 	}
 	
 	
+	
+	
+	/*public function modelTransform($data, FieldType $fieldType) {
+		dump('modelTransform');
+		dump($fieldType);
+		dump($data);
+		$out = parent::modelTransform($data, $fieldType);
+		dump($out);
+		return $out;
+	}
+	
+	public function reverseModelTransform(DataField $dataField){
+		dump('reverseModelTransform');
+		dump($dataField);
+		$out = parent::reverseModelTransform($dataField);
+		dump($out);
+		return $out;
+	}
+	
+	public function viewTransform(Datafield $dataField) {
+		dump('viewTransform');
+		dump($dataField);
+		$out = parent::viewTransform($dataField);
+		dump($out);
+		return $out;
+	}/**/
+	
 	/**
 	 *
 	 * {@inheritDoc}
@@ -271,7 +298,9 @@ class CollectionFieldType extends DataFieldType {
 	public function reverseViewTransform($data, FieldType $fieldType){
 		$cleaned = [];
 		foreach ( $data as $item ){
-			if(!empty($item)) {
+			//if the item _ems_item_reverseViewTransform is missing it means that this item hasn't been submitted (and it can be deleted)
+			if(!empty($item) && isset($item['_ems_item_reverseViewTransform'])) {
+				unset($item['_ems_item_reverseViewTransform']);
 				$cleaned[] = $item;
 			}
 		}

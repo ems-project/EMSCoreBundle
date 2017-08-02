@@ -167,9 +167,9 @@ class CollectionFieldType extends DataFieldType {
 		
 		$restrictionOptions = $dataField->getFieldType()->getRestrictionOptions();
 		
-		if(!empty($restrictionOptions['min']) && $dataField->getChildren()->count() < $restrictionOptions['min'])  {
+		if(!empty($restrictionOptions['min']) && count($dataField->getRawData()) < $restrictionOptions['min'])  {
 			if($restrictionOptions['min'] == 1){
-				$dataField->addMessage("At least ".$restrictionOptions['min']." item is required");				
+				$dataField->addMessage("At least 1 item is required");				
 			}
 			else {
 				$dataField->addMessage("At least ".$restrictionOptions['min']." items are required");
@@ -177,7 +177,7 @@ class CollectionFieldType extends DataFieldType {
 			$isValid = FALSE;
 		}
 		
-		if(!empty($restrictionOptions['max']) && $dataField->getChildren()->count() > $restrictionOptions['max'])  {
+		if(!empty($restrictionOptions['max']) && count($dataField->getRawData()) > $restrictionOptions['max'])  {
 			$dataField->addMessage("Too many items (max ".$restrictionOptions['max'].")");
 			$isValid = FALSE;
 		}

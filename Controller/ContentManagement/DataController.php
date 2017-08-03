@@ -753,7 +753,7 @@ class DataController extends AppController
 		try{
 			$form = $this->createForm(RevisionType::class, $revision);
 			if(!empty($revision->getAutoSave())){
-				$this->addFlash("error", "This draft (".$revision->getContentType()->getSingularName().($revision->getOuuid()?":".$revision->getOuuid():"").") can't be finlized, as an autosave is pending.");
+				$this->addFlash("error", "This draft (".$revision->getContentType()->getSingularName().($revision->getOuuid()?":".$revision->getOuuid():"").") can't be finalized, as an autosave is pending.");
 				return $this->render( 'EMSCoreBundle:data:edit-revision.html.twig', [
 						'revision' =>  $revision,
 						'form' => $form->createView(),
@@ -762,7 +762,7 @@ class DataController extends AppController
 			
 			$revision = $this->getDataService()->finalizeDraft($revision, $form);
 			if(count($form->getErrors()) !== 0) {
-				$this->addFlash("error", "This draft (".$revision->getContentType()->getSingularName().($revision->getOuuid()?":".$revision->getOuuid():"").") can't be finlized.");
+				$this->addFlash("error", "This draft (".$revision->getContentType()->getSingularName().($revision->getOuuid()?":".$revision->getOuuid():"").") can't be finalized.");
 				return $this->render( 'EMSCoreBundle:data:edit-revision.html.twig', [
 						'revision' =>  $revision,
 						'form' => $form->createView(),
@@ -771,7 +771,7 @@ class DataController extends AppController
 				
 		}
 		catch (\Exception $e){
-			$this->addFlash("error", "This draft (".$revision->getContentType()->getSingularName().($revision->getOuuid()?":".$revision->getOuuid():"").") can't be finlized.");
+			$this->addFlash("error", "This draft (".$revision->getContentType()->getSingularName().($revision->getOuuid()?":".$revision->getOuuid():"").") can't be finalized.");
 			$this->addFlash('error', $e->getMessage());
 			return $this->redirectToRoute('revision.edit', [
 					'revisionId' => $revision->getId(),
@@ -922,7 +922,7 @@ class DataController extends AppController
 									'type' => $revision->getContentType()->getName(),
 							]);
 						} else {
-							$this->addFlash("warning", "This draft (".$revision->getContentType()->getSingularName().($revision->getOuuid()?":".$revision->getOuuid():"").") can't be finlized.");
+							$this->addFlash("warning", "This draft (".$revision->getContentType()->getSingularName().($revision->getOuuid()?":".$revision->getOuuid():"").") can't be finalized.");
 							return $this->render( 'EMSCoreBundle:data:edit-revision.html.twig', [
 									'revision' =>  $revision,
 									'form' => $form->createView(),
@@ -964,7 +964,7 @@ class DataController extends AppController
 		else{
 			$isValid = $this->getDataService()->isValid($form);
 			if ( !$isValid ) {
-				$this->addFlash("warning", "This draft (".$revision->getContentType()->getSingularName().($revision->getOuuid()?":".$revision->getOuuid():"").") can't be finlized.");
+				$this->addFlash("warning", "This draft (".$revision->getContentType()->getSingularName().($revision->getOuuid()?":".$revision->getOuuid():"").") can't be finalized.");
 			}
 		}
 

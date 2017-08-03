@@ -437,7 +437,7 @@
 	  	</div>		
 		
 	  	<div class="panel-body">
-	  	
+	  		<div class="row">
 	  		{% for child in form.iterator %}
 				<div class="{% if child.vars.data.fieldType.options.displayOptions.class is defined %}{{ child.vars.data.fieldType.options.displayOptions.class }}{% endif %}">
     				{{- form_row(child) -}}
@@ -446,7 +446,7 @@
 					</div><div class="row">
 				{% endif %}
 			{% endfor %}
-			
+			</div>
 	  	</div>
 	  {{- form_errors(form) -}}
 	</div>    

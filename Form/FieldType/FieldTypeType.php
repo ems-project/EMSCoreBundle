@@ -217,13 +217,19 @@ class FieldTypeType extends AbstractType
     	
     	$out = $dataFieldType->generateMapping($fieldType, $withPipeline);
     	
+
     	$jsonName = $dataFieldType->getJsonName($fieldType);
     	/** @var FieldType $child */
     	foreach ( $fieldType->getChildren () as $child ) {
 	    	if (! $child->getDeleted ()) {
 	    		if(isset($jsonName)){
 	    			if(isset($out[$jsonName]["properties"])){
-		    			$out[$jsonName]["properties"] = array_merge($out[$jsonName]["properties"], $this->generateMapping($child, $withPipeline));
+	    				if(isset($out[$jsonName]["properties"]["attachment"]["properties"]["content"])){
+	    					$out[$jsonName]["properties"]["attachment"]["properties"]["content"]= array_merge($out[$jsonName]["properties"]["attachment"]["properties"]["content"], $this->generateMapping($child, $withPipeline));	
+	    				}
+	    				else {
+			    			$out[$jsonName]["properties"] = array_merge($out[$jsonName]["properties"], $this->generateMapping($child, $withPipeline));	    					
+	    				}
 	    			}
 	    			else{
 		    			$out[$jsonName] = array_merge($out[$jsonName], $this->generateMapping($child, $withPipeline));	    				

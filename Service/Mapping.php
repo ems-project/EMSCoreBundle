@@ -33,6 +33,7 @@ class Mapping
 		if(null != $contentType->getFieldType()){
 			$out[$contentType->getName()]['properties'] = $this->fieldTypeType->generateMapping($contentType->getFieldType(), $withPipeline);
 		}
+		
 		return $out;
 	} 
 

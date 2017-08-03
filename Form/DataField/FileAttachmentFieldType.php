@@ -175,19 +175,42 @@ class FileAttachmentFieldType extends DataFieldType {
 						],
 						"filesize" => [
 							"type" => "long",
-						]
+						],
 				],
 			];
 		
 		if($withPipeline) {
-			$body['properties']['content'] = [
-				"type" => "text",
-				"index" => "no",
-				'fields' => [
-					'keyword' => [
-						'type' => 'keyword',
-						'ignore_above' => 256
-					]
+			$body['properties']['attachment'] = [
+// 				"type" => "nested",
+				"properties" => [
+					'content' => [
+						"type" => "text",
+// 						"index" => "no",
+// 						'fields' => [
+// 							'keyword' => [
+// 								'type' => 'keyword',
+// 								'ignore_above' => 256
+// 							]
+// 						]
+					],
+// 					'author'=> [
+// 						"type" => "text",
+// 					],
+// 					'author'=> [
+// 							"type" => "text",
+// 					],
+// 					'content_type'=> [
+// 						"type" => "text",
+// 					],
+// 					'keywords'=> [
+// 						"type" => "text",
+// 					],
+// 					'language'=> [
+// 						"type" => "text",
+// 					],
+// 					'title'=> [
+// 						"type" => "text",
+// 					]
 				]
 			];
 		}

@@ -11,6 +11,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Form\FormRegistryInterface;
+use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 	
 /**
  * Defined a Container content type.
@@ -121,7 +123,15 @@ class FileAttachmentFieldType extends DataFieldType {
 	public function buildOptionsForm(FormBuilderInterface $builder, array $options) {
 		parent::buildOptionsForm ( $builder, $options );
 		$optionsForm = $builder->get ( 'options' );
-		$optionsForm->remove ( 'mappingOptions' );
+		// 		$optionsForm->remove ( 'mappingOptions' );
+		
+		// specific mapping options
+		$optionsForm->get ( 'mappingOptions' )
+		->add ( 'analyzer', AnalyzerPickerType::class)
+		->add ( 'copy_to', TextType::class, [
+				'required' => false,
+		] );
+		
 		$optionsForm->get ( 'displayOptions' )
 			->add ( 'icon', IconPickerType::class, [ 
 					'required' => false 
@@ -159,6 +169,7 @@ class FileAttachmentFieldType extends DataFieldType {
 	 * {@inheritdoc}
 	 */
 	public static function generateMapping(FieldType $current, $withPipeline){
+		$mapping = parent::generateMapping($current, $withPipeline);
 		$body = [
 				"type" => "nested",
 				"properties" => [
@@ -183,16 +194,7 @@ class FileAttachmentFieldType extends DataFieldType {
 			$body['properties']['attachment'] = [
 // 				"type" => "nested",
 				"properties" => [
-					'content' => [
-						"type" => "text",
-// 						"index" => "no",
-// 						'fields' => [
-// 							'keyword' => [
-// 								'type' => 'keyword',
-// 								'ignore_above' => 256
-// 							]
-// 						]
-					],
+					'content' => $mapping[$current->getName()],
 // 					'author'=> [
 // 						"type" => "text",
 // 					],
@@ -217,7 +219,7 @@ class FileAttachmentFieldType extends DataFieldType {
 		
 		
 		return [
-			$current->getName() => array_merge($body,  array_filter($current->getMappingOptions()))
+			$current->getName() => $body,
 		];
 	}
 	

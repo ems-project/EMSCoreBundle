@@ -372,8 +372,14 @@ abstract class DataFieldType extends AbstractType {
 	 * @param FieldType $current
 	 */
 	public static function generateMapping(FieldType $current, $withPipeline){
+		$options = $current->getMappingOptions();
+		if(isset($options['copy_to']) && !empty($options['copy_to']) && is_string($options['copy_to'])) {
+			$options['copy_to'] = explode(',', $options['copy_to']);
+// 			dump(array_filter($options));
+		}
 		return [
-			$current->getName() => array_merge(["type" => "string"],  array_filter($current->getMappingOptions()))
+			$current->getName() => 
+				array_merge(["type" => "string"],  array_filter($options))
 		];
 	}
 

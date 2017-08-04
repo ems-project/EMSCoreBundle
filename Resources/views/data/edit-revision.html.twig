@@ -535,11 +535,11 @@ function addEventListeners(target){
     				var ul = $(this);
     				
     				my_options.sort(function(a,b) {
-    					var indexA = ul.find("li[title='"+$(a).text()+"']").index();
-    					var indexB = ul.find("li[title='"+$(b).text()+"']").index();
+    					var indexA = ul.find("li[title='"+$(a).text().replace(/\'/g, "\\\'")+"']").index();
+    					var indexB = ul.find("li[title='"+$(b).text().replace(/\'/g, "\\\'")+"']").index();
     					
-    					console.log(indexA);
-    					console.log(indexB);
+//     					console.log(indexA);
+//     					console.log(indexB);
     					
     				    if (indexA > indexB) return 1;
     				    if (indexA < indexB) return -1;

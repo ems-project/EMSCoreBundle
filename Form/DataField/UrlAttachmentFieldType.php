@@ -86,6 +86,11 @@ class UrlAttachmentFieldType extends DataFieldType {
 				$dataField->setRawData($rawData);				
 			}
 			catch(\Exception $e) {
+				$rawData = [
+						'url' => $data,
+						'content' => "",
+						'size' => 0,
+				];
 				$dataField->addMessage(sprintf(
 						'Impossible to fetch the ressource due to %s',
 						$e->getMessage()
@@ -186,13 +191,16 @@ class UrlAttachmentFieldType extends DataFieldType {
 						],
 						"size" => [
 							"type" => "long",
-						]
+						],
+						'content' => [
+							"index" => "no",
+						],
 				],
 			];
 		
 		if($withPipeline) {
 			$body['properties']['attachment'] = [
-				"type" => "nested",
+// 				"type" => "nested",
 				"properties" => [
 					'content' => $mapping[$current->getName()],
 // 					'author'=> [

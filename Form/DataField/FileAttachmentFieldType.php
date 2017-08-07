@@ -74,11 +74,11 @@ class FileAttachmentFieldType extends DataFieldType {
 			$rawData = $dataField->getRawData()['value'];
 			$rawData['content'] = $this->fileService->getBase64($rawData['sha1']);
 			if(!$rawData['content']){
-				unset($rawData['content']);
+				$rawData['content'] = "";
 			}
 			$rawData['filesize'] = $this->fileService->getSize($rawData['sha1']);
 			if(!$rawData['filesize']){
-				unset($rawData['filesize']);
+				$rawData['filesize'] = 0;
 			}
 			
 			$dataField->setRawData($rawData);
@@ -187,10 +187,23 @@ class FileAttachmentFieldType extends DataFieldType {
 						"filesize" => [
 							"type" => "long",
 						],
+						'content' => [
+							"index" => "no",
+						],
 				],
 			];
 		
 		if($withPipeline) {
+// 			$body['properties']['content'] = [
+// 					"type" => "text",
+// 					"index" => "no",
+// 					'fields' => [
+// 							'keyword' => [
+// 									'type' => 'keyword',
+// 									'ignore_above' => 256
+// 							]
+// 					]
+// 			];
 			$body['properties']['attachment'] = [
 // 				"type" => "nested",
 				"properties" => [

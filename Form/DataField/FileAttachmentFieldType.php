@@ -188,6 +188,7 @@ class FileAttachmentFieldType extends DataFieldType {
 							"type" => "long",
 						],
 						'content' => [
+							"type" => "string",
 							"index" => "no",
 						],
 				],
@@ -204,6 +205,7 @@ class FileAttachmentFieldType extends DataFieldType {
 // 							]
 // 					]
 // 			];
+			
 			$body['properties']['attachment'] = [
 // 				"type" => "nested",
 				"properties" => [

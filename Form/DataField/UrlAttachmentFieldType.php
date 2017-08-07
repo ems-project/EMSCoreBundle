@@ -193,6 +193,7 @@ class UrlAttachmentFieldType extends DataFieldType {
 							"type" => "long",
 						],
 						'content' => [
+							"type" => "string",
 							"index" => "no",
 						],
 				],

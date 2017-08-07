@@ -162,12 +162,19 @@ class PublishService
 			$statement->execute();		
 		}
 
-		$status = $this->client->index([
+		$config =[
 				'id' => $revision->getOuuid(),
 				'index' => $environment->getAlias(),
 				'type' => $revision->getContentType()->getName(),
 				'body' => $this->dataService->sign($revision),
-		]);
+		];
+		
+		
+		if($revision->getContentType()->getHavePipelines()){
+			$config['pipeline'] = $this->instanceId.$revision->getContentType()->getName();
+		}
+		
+		$status = $this->client->index($config);
 		
 		if(!$already) {
 			

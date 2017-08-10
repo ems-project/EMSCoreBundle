@@ -161,7 +161,7 @@
               }%}
               {% for notification in item.revisionEnvironment.notifications %}
                 {% if notification.status == 'pending'  %}
-                          <span class="label label-default"><i class="fa {{ notification.template.icon }}"></i> {{ notification.template.name }}</span>
+                          <span class="label label-default"><i class="{{ notification.template.icon }}"></i> {{ notification.template.name }}</span>
                       {% endif %}
               {% endfor %}
               {% endif %} 
@@ -192,9 +192,9 @@
                     'recursiveView': true
                   }%}
                   {% for notification in item.revisionEnvironment.notifications %}
-                    {% if notification.status == 'pending'  %}
-                              <span class="label label-default"><i class="fa {{ notification.template.icon }}"></i> {{ notification.template.name }}</span>
-                          {% endif %}
+                      {% if notification.status == 'pending'  %}
+                      	<span class="label label-default"><i class="{{ notification.template.icon }}"></i> {{ notification.template.name }}</span>
+                      {% endif %}
                   {% endfor %}
                 {% endif %}
               </td>

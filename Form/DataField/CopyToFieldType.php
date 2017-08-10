@@ -6,7 +6,8 @@ use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use EMS\CoreBundle\Entity\DataField;
-				
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+					
 /**
  * Defined a Container content type.
  * It's used to logically groups subfields together. However a Container is invisible in Elastic search.
@@ -62,6 +63,11 @@ use EMS\CoreBundle\Entity\DataField;
 		
 		// String specific mapping options
 		$optionsForm->get ( 'mappingOptions' )->add ( 'analyzer', AnalyzerPickerType::class);
+		$optionsForm->get ( 'mappingOptions' )->add ( 'store', CheckboxType::class);
+		$optionsForm->remove('restrictionOptions');
+		$optionsForm->remove('migrationOptions');
+		$optionsForm->remove('extraOptions');
+		$optionsForm->remove('displayOptions');
 	}
 	
 	/**

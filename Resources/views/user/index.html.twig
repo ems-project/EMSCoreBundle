@@ -48,6 +48,7 @@
                                  'title': 'Display name'|trans,
                                  'field': 'displayName',
                             } %}
+                            <th class="nowrap"><i class="fa fa-bell"></i></th>
 							{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {
                                  'title': 'email'|trans,
                                  'field': 'email',
@@ -71,6 +72,7 @@
 								<td class="text-center" style="width: 10px">{{ loop.index }}</td>
 								<td>{{ user.username }}</td>
 								<td>{% if user.displayName != user.username %}{{ user.displayName }}{% endif %}</td>
+								<td><i class="fa fa-{% if user.emailNotification %}check-{% endif %}square-o"></i></td>
 								<td>{{ user.email }}</td>
 								<td>
 									{% for circle in user.circles %}
@@ -78,9 +80,7 @@
 									{% endfor %}
 								</td>
 								<td>
-									{% if user.enabled is not defined or user.enabled  %}
-										<i class="fa fa-check"></i>
-									{% endif %}
+									<i class="fa fa-{% if user.enabled is not defined or user.enabled %}check-{% endif %}square-o"></i>
 								</td>
 								<td>
 									{% for role in user.roles %}

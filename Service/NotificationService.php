@@ -463,7 +463,9 @@ class NotificationService {
 		$out = [];
 		/**@var User $user*/
 		foreach ($users as $user){
-			$out[$user->getEmail()] = $user->getDisplayName();
+			if($user->getEmailNotification() && $user->isEnabled()){
+				$out[$user->getEmail()] = $user->getDisplayName();				
+			}
 		}
 		return $out;
 	}

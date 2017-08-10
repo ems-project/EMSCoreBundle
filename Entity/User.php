@@ -116,7 +116,7 @@ interface User
      * @return boolean
      */
     public function getLayoutBoxed();
-
+    
     /**
      * Set sidebarMini
      *
@@ -125,14 +125,31 @@ interface User
      * @return User
      */
     public function setSidebarMini($sidebarMini);
-
+    
     /**
      * Get sidebarMini
      *
      * @return boolean
      */
     public function getSidebarMini();
-
+    
+    
+    /**
+     * Set emailNotification
+     *
+     * @param boolean $emailNotification
+     *
+     * @return User
+     */
+    public function setEmailNotification($emailNotification);
+    
+    /**
+     * Get emailNotification
+     *
+     * @return boolean
+     */
+    public function getEmailNotification();
+    
     /**
      * Set sidebarCollapse
      *
@@ -164,11 +181,18 @@ interface User
      * @param \EMS\CoreBundle\Entity\AuthToken $authToken
      */
     public function removeAuthToken(\EMS\CoreBundle\Entity\AuthToken $authToken);
-
+    
     /**
      * Get authTokens
      *
      * @return \Doctrine\Common\Collections\Collection
      */
     public function getAuthTokens();
+    
+    /**
+     * Is enabled
+     *
+     * @return boolean
+     */
+    public function isEnabled();
 }

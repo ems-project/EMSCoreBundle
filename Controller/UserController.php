@@ -69,6 +69,9 @@ class UserController extends AppController
 				'label' => 'form.username', 
 				'disabled' => true
 		))
+		->add('emailNotification', CheckboxType::class, [
+				'required' => false,
+		])
 		->add('displayName', null, array(
 				'label' => 'Display name',
 		))
@@ -78,7 +81,9 @@ class UserController extends AppController
 				'dynamicLoading' => true
 				
 		])
-		->add('enabled', CheckboxType::class)
+		->add('enabled', CheckboxType::class, [
+				'required' => false,
+		])
 // 		->add('locked')
 // 		->add('expiresAt', DateType::class, array(
 // 				'required' => FALSE,

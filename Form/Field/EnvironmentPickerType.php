@@ -32,8 +32,27 @@ class EnvironmentPickerType extends ChoiceType {
 	{
 // 		$this->choices = [];
 		$keys = [];
+		
+		
+		
+// 		/**@var Environment $choice*/
+// 		foreach ($this->service->getAllInMyCircle() as $choice){
+// 			$this->choices[$choice->getName()] = $choice;
+// 		}
+		
+		$environments = null;
+		
+		if($options['inMyCircle']){
+			$environments = $this->service->getAllInMyCircle();
+		}
+		else {
+			$environments = $this->service->getAll();
+		}
+		
+		$this->service->getAllInMyCircle();
+		
 		/**@var Environment $choice*/
-		foreach ($this->choices as $key => $choice){
+		foreach ($environments as $key => $choice){
 			if(($choice->getManaged() || !$options['managedOnly']) && ! in_array($choice->getName(), $options['ignore'])){
 				$keys[] = $choice->getName();
 				$this->choices[$choice->getName()] = $choice;
@@ -49,10 +68,6 @@ class EnvironmentPickerType extends ChoiceType {
 	public function configureOptions(OptionsResolver $resolver)
 	{
 		$this->choices = [];
-		/**@var Environment $choice*/
-		foreach ($this->service->getAllInMyCircle() as $choice){	
-				$this->choices[$choice->getName()] = $choice;
-		}
 		parent::configureOptions($resolver);
 		
 		$resolver->setDefaults(array(
@@ -72,6 +87,7 @@ class EnvironmentPickerType extends ChoiceType {
 		    },
 		    'multiple' => false,
 		    'managedOnly' => true,
+		    'inMyCircle' => true,
 		    'ignore' => [],
 		));
 	}

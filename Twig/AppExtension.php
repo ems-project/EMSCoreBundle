@@ -22,6 +22,7 @@ use Symfony\Component\Form\FormFactory;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\DataField;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
+use EMS\CoreBundle\Entity\Environment;
 
 class AppExtension extends \Twig_Extension
 {
@@ -524,14 +525,13 @@ class AppExtension extends \Twig_Extension
 		return $this->contentTypeService->getAll();
 	}
 	
-	/**
-	 * @deprecated  since ems 1.6
-	 * @return NULL[]
-	 */
 	public function getDefaultEnvironments(){
 		$defaultEnvironments = [];
-		foreach ($this->contentTypeService->getAll()as $contentType){
-			$defaultEnvironments[] = $contentType->getName();
+		/**@var Environment $environment*/
+		foreach ($this->environmentService->getAll() as $environment){
+			if($environment->getInDefaultSearch()) {
+				$defaultEnvironments[] = $environment->getName();				
+			}
 		}
 		return $defaultEnvironments;
 	}

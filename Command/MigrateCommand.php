@@ -3,24 +3,23 @@
 // src/EMS/CoreBundle/Command/GreetCommand.php
 namespace EMS\CoreBundle\Command;
 
-use EMS\CoreBundle\Entity\ContentType;
-use EMS\CoreBundle\Entity\Revision;
-use EMS\CoreBundle\Exception\NotLockedException;
-use EMS\CoreBundle\Repository\RevisionRepository;
-use EMS\CoreBundle\Service\Mapping;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use Elasticsearch\Client;
+use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Exception\NotLockedException;
+use EMS\CoreBundle\Form\Form\RevisionType;
+use EMS\CoreBundle\Repository\RevisionRepository;
+use EMS\CoreBundle\Service\DataService;
+use EMS\CoreBundle\Service\Mapping;
 use Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use EMS\CoreBundle\Service\DataService;
-use Symfony\Component\Console\Helper\ProgressBar;
-use Symfony\Component\Form\FormRegistryInterface;
-use EMS\CoreBundle\Form\Form\RevisionType;
 use Symfony\Component\Form\FormFactoryInterface;
 
 class MigrateCommand extends ContainerAwareCommand
@@ -80,11 +79,38 @@ class MigrateCommand extends ContainerAwareCommand
             )
         ;
     }
+    
+    /**
+     * 
+     * @return \EMS\CoreBundle\Entity\Revision
+     */
+    private function getEmptyRevision(ContentType $contentType) {
+    	$newRevision= new Revision();
+    	
+    	$now = new \DateTime();
+    	$until = $now->add(new \DateInterval("PT5M"));//+5 minutes
+    	$newRevision = new Revision();
+    	$newRevision->setContentType($contentType);
+    	$newRevision->addEnvironment($contentType->getEnvironment());
+    	$newRevision->setStartTime($now);
+    	$newRevision->setEndTime(null);
+    	$newRevision->setDeleted(false);
+    	$newRevision->setDraft(true);
+    	$newRevision->setLockBy('SYSTEM_MIGRATE');
+    	$newRevision->setLockUntil($until);
+    	$newRevision->setRawData([]);
+    	
+    	return $newRevision;
+    }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 		/** @var EntityManager $em */
 		$em = $this->doctrine->getManager();
+		//https://stackoverflow.com/questions/9699185/memory-leaks-symfony2-doctrine2-exceed-memory-limit
+		//https://stackoverflow.com/questions/13093689/is-there-a-way-to-free-the-memory-allotted-to-a-symfony-2-form-object
+		$em->getConnection()->getConfiguration()->setSQLLogger(null);
+		
     	$contentTypeNameFrom = $input->getArgument('contentTypeNameFrom');
     	$contentTypeNameTo = $input->getArgument('contentTypeNameTo');
     	$elasticsearchIndex = $input->getArgument('elasticsearchIndex');
@@ -100,13 +126,15 @@ class MigrateCommand extends ContainerAwareCommand
 			$output->writeln("<error>Content type ".$contentTypeNameTo." not found</error>");
 			exit;
 		}
+		$defaultEnv = $contentTypeTo->getEnvironment();
+		
     	$output->writeln("Start migration of ".$contentTypeTo->getPluralName());
 		
     	if($contentTypeTo->getDirty()) {
 			$output->writeln("<error>Content type \"".$contentTypeNameTo."\" is dirty. Please clean it first</error>");
 			exit;
 		}
-		if(!$input->getOption('force') && strcmp($contentTypeTo->getEnvironment()->getAlias(), $elasticsearchIndex) === 0 && strcmp($contentTypeNameFrom, $contentTypeNameTo) === 0) {
+		if(!$input->getOption('force') && strcmp($defaultEnv->getAlias(), $elasticsearchIndex) === 0 && strcmp($contentTypeNameFrom, $contentTypeNameTo) === 0) {
 			$output->writeln("<error>You can not import a content type on himself with the --force option</error>");
 			exit;
 		}
@@ -133,23 +161,17 @@ class MigrateCommand extends ContainerAwareCommand
 					'preference' => '_primary', //http://stackoverflow.com/questions/10836142/elasticsearch-duplicate-results-with-paging
 			]);
 // 			$output->writeln("\nMigrating " . ($from+1) . " / " . $total );
-
+			
+			$contentTypeTo = $contentTypeRepository->findOneBy(array("name" => $contentTypeNameTo, 'deleted' => false));
+			$defaultEnv = $contentTypeTo->getEnvironment();
 
 			foreach ($arrayElasticsearchIndex["hits"]["hits"] as $index => $value) {
 				try{
-					$now = new \DateTime();
-					$until = $now->add(new \DateInterval("PT5M"));//+5 minutes
-					$newRevision = new Revision();
-					$newRevision->setContentType($contentTypeTo);
-					$newRevision->addEnvironment($contentTypeTo->getEnvironment());
+					$newRevision = $this->getEmptyRevision($contentTypeTo);
 					$newRevision->setOuuid($value['_id']);
-					$newRevision->setStartTime($now);
-					$newRevision->setEndTime(null);
-					$newRevision->setDeleted(false);
-					$newRevision->setDraft(true);
-					$newRevision->setLockBy('SYSTEM_MIGRATE');
-					$newRevision->setLockUntil($until);
-						
+					$until = $newRevision->getLockUntil();
+					$now = $newRevision->getStartTime();
+					
 					/**@var Revision $currentRevision*/
 					$currentRevision = $revisionRepository->getCurrentRevision($contentTypeTo, $value['_id']);
 					if($currentRevision) {
@@ -164,22 +186,24 @@ class MigrateCommand extends ContainerAwareCommand
 							$revisionType = $this->formFactory->create(RevisionType::class, $newRevision, ['migration' => true]);
 							$viewData = $revisionType->get('data')->getViewData();
 							
-							$anotherRevisionType = $this->formFactory->create(RevisionType::class, $currentRevision, ['migration' => true]);
+							$revisionType->setData($currentRevision);
 							
-							$anotherRevisionType->submit(['data' => $viewData]);
-							$data = $anotherRevisionType->get('data')->getData();
+							$revisionType->submit(['data' => $viewData]);
+							$data = $revisionType->get('data')->getData();
 							$newRevision->setData($data);
 							$objectArray = $newRevision->getRawData();
 
-							$this->dataService->propagateDataToComputedField($anotherRevisionType->get('data'), $objectArray, $contentTypeTo->getName(), $value['_id']);
+							$this->dataService->propagateDataToComputedField($revisionType->get('data'), $objectArray, $contentTypeTo->getName(), $value['_id']);
 							$newRevision->setRawData($objectArray);
+							
+							unset($revisionType);
 							
 						}
 						
 						$currentRevision->setEndTime($now);
 						$currentRevision->setDraft(false);
 						$currentRevision->setAutoSave(null);
-						$currentRevision->removeEnvironment($contentTypeTo->getEnvironment());
+						$currentRevision->removeEnvironment($defaultEnv);
 						$currentRevision->setLockBy('SYSTEM_MIGRATE');
 						$currentRevision->setLockUntil($until);
 						$em->persist($currentRevision);
@@ -192,6 +216,8 @@ class MigrateCommand extends ContainerAwareCommand
 						$newRevision->setRawData($value['_source']);
 						$revisionType = $this->formFactory->create(RevisionType::class, $newRevision, ['migration' => true]);
 						$viewData = $revisionType->get('data')->getViewData();
+						
+						$revisionType->setData($this->getEmptyRevision($contentTypeTo));
 						$revisionType->submit(['data' => $viewData]);
 						$data = $revisionType->get('data')->getData();
 						$newRevision->setData($data);
@@ -199,12 +225,14 @@ class MigrateCommand extends ContainerAwareCommand
 						
 						$this->dataService->propagateDataToComputedField($revisionType->get('data'), $objectArray, $contentTypeTo->getName(), $value['_id']);
 						$newRevision->setRawData($objectArray);
+						
+						unset($revisionType);
 					}
 					
 					$this->dataService->setMetaFields($newRevision);
 					
 					$this->client->index([
-							'index' => $contentTypeTo->getEnvironment()->getAlias(),
+							'index' => $defaultEnv->getAlias(),
 							'type' => $contentTypeNameTo,
 							'id' => $value['_id'],
 							'body' => $this->dataService->sign($newRevision),
@@ -212,7 +240,6 @@ class MigrateCommand extends ContainerAwareCommand
 // 					dump($value['_id']);
 					//TODO: Test if client->index OK
 					$em->persist($newRevision);
-					$em->flush();
  					$revisionRepository->finaliseRevision($contentTypeTo, $value['_id'], $now);
 					//hot fix query: insert into `environment_revision`  select id, 1 from `revision` where `end_time` is null;
 					$revisionRepository->publishRevision($newRevision);
@@ -223,8 +250,15 @@ class MigrateCommand extends ContainerAwareCommand
 
 				// advance the progress bar 1 unit
 				$progress->advance();
+				$em->flush();
 			}
 			$revisionRepository->clear();
+			$contentTypeRepository->clear();
+			$em->clear();
+			unset($defaultEnv);
+			unset($contentTypeTo);
+			
+			
 		}
 		// ensure that the progress bar is at 100%
 		$progress->finish();

@@ -375,6 +375,9 @@ services:
     ems.service.file:
         class: EMS\CoreBundle\Service\FileService
         arguments: ['@doctrine']
+    ems.service.helper:
+        class: EMS\CoreBundle\Service\HelperService
+        arguments: ['@doctrine', '@request_stack', '%ems_core.paging_size%']
         
 ### command services ###
     ems.environment.ems:

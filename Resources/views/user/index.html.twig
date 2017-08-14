@@ -20,14 +20,13 @@
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
-    			{% if lastPage > 1 %}
+    			{% if paging.lastPage > 1 %}
     				<div class="box-header">
     				
     			
     				
     				{% include 'EMSCoreBundle:elements:pagination.html.twig' with {
-    					'lastPage': lastPage,
-    					'currentPage': page,
+    					'paging': paging,
     					'currentFilters': app.request.query,
     					'paginationPath': paginationPath,
     					'showAlwaysFirstAndLast': false
@@ -43,31 +42,46 @@
 							{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {
                                  'title': 'Username'|trans,
                                  'field': 'username',
+                                 'orderField': paging.orderField,
+                                 'orderDirection': paging.orderDirection,
+                                 'paginationPath': paging.paginationPath,
                             } %}
 							{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {
                                  'title': 'Display name'|trans,
                                  'field': 'displayName',
+                                 'orderField': paging.orderField,
+                                 'orderDirection': paging.orderDirection,
+                                 'paginationPath': paging.paginationPath,
                             } %}
                             <th class="nowrap"><i class="fa fa-bell"></i></th>
 							{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {
                                  'title': 'email'|trans,
                                  'field': 'email',
+                                 'orderField': paging.orderField,
+                                 'orderDirection': paging.orderDirection,
+                                 'paginationPath': paging.paginationPath,
                             } %}
 							<th class="nowrap">{{ 'Circles'|trans }}</th>
 							{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {
                                  'title': 'Enabled'|trans,
                                  'field': 'enabled',
+                                 'orderField': paging.orderField,
+                                 'orderDirection': paging.orderDirection,
+                                 'paginationPath': paging.paginationPath,
                             } %}
 							<th class="nowrap">{{ 'Roles'|trans }}</th>
 							{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {
                                  'title': 'Last login'|trans,
                                  'field': 'lastLogin',
+                                 'orderField': paging.orderField,
+                                 'orderDirection': paging.orderDirection,
+                                 'paginationPath': paging.paginationPath,
                             } %}
 							<th class="nowrap">{{ 'Action'|trans }}</th>
 						</tr>
 					</thead>
 					<tbody>
-						{% for user in users %}
+						{% for user in paging.data %}
 							<tr>
 								<td class="text-center" style="width: 10px">{{ loop.index }}</td>
 								<td>{{ user.username }}</td>

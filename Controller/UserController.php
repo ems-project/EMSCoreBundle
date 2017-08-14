@@ -9,13 +9,13 @@ use EMS\CoreBundle\Form\Field\ObjectPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class UserController extends AppController
 {
@@ -24,27 +24,8 @@ class UserController extends AppController
 	 */
 	public function indexAction(Request $request)
 	{
-		/** @var EntityManager $em */
-		$em = $this->getDoctrine()->getManager();
-		
-		/** @var EntityRepository $repository */
-		$repository = $em->getRepository('EMSCoreBundle:User');
-		$pageSize = $this->container->getParameter('ems_core.paging_size');
-		
-		$lastPage = ceil(count($repository->findAll())/$pageSize);
-		$page = $request->query->get('page', 1);
-		$orderField= $request->query->get('orderField', 'username');
-		$orderDirection= $request->query->get('orderDirection', 'asc');
-		
-		$users = $repository->findBy([], [$orderField => $orderDirection], $pageSize, ($page-1)*$pageSize);
 		return $this->render( 'EMSCoreBundle:user:index.html.twig', [
-				'users' => $users,
-				'lastPage' => $lastPage,
-				'page' => $page,
-				'paginationPath' => 'ems.user.index',
-				'showAlwaysFirstAndLast' => true,
-				'orderField' => $orderField,
-				'orderDirection' => $orderDirection,
+				'paging' => $this->getHelperService()->getPagingTool('EMSCoreBundle:User', 'ems.user.index', 'username'),
 		] );
 	}
 	

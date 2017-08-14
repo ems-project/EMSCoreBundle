@@ -18,6 +18,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use EMS\CoreBundle\Service\FileService;
 use EMS\CoreBundle\Service\WysiwygProfileService;
 use Symfony\Component\Translation\TranslatorInterface;
+use EMS\CoreBundle\Service\HelperService;
 
 class AppController extends Controller
 {
@@ -101,7 +102,7 @@ class AppController extends Controller
 	{
 		return $this->container->get('twig');
 	}
-
+	
 	/**
 	 * @return SearchService
 	 */
@@ -109,6 +110,14 @@ class AppController extends Controller
 	{
 		return $this->container->get('ems.service.search');
 	}
+	
+	/**
+	 * @return HelperService
+	 */
+	protected function getHelperService()
+	{
+		return $this->container->get('ems.service.helper');
+	}	
 	
 	/**
 	 * 

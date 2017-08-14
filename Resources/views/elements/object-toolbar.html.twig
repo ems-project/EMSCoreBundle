@@ -16,7 +16,7 @@
 				'icon': 'archive'
 			}%}
 			{% if is_granted(contentType.editRole) %}
-				{% if not  contentType.circlesField or attribute(object._source, contentType.circlesField)|in_my_circles %}
+				{% if not  contentType.circlesField or attribute(object._source, contentType.circlesField) is not defined or attribute(object._source, contentType.circlesField)|in_my_circles %}
 					{% include 'EMSCoreBundle:elements:post-button.html.twig' with { 
 						'url': path('revision.new-draft', {'ouuid': object._id, 'type': contentType.name}), 
 						'label': 'New draft', 

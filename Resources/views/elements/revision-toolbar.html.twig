@@ -11,7 +11,7 @@
 	{% endif %}
 	{% if draft %} 	
 		{% if is_granted(instance.contentType.editRole) %}
-			{% if not  instance.contentType.circlesField or instance.dataField.__get('ems_'~instance.contentType.circlesField).rawData|in_my_circles %}
+			{% if not  instance.contentType.circlesField or attribute(instance.rawData, instance.contentType.circlesField) is not defined or attribute(instance.rawData, instance.contentType.circlesField)|in_my_circles %}
 				{% include 'EMSCoreBundle:elements:get-button.html.twig' with { 
 					'url': path('revision.edit', {'revisionId': revisionId}), 
 					'label': 'Edit draft', 
@@ -62,7 +62,7 @@
 
 
 	   	{% if is_granted(instance.contentType.editRole) %}
-	   		{% if not  instance.contentType.circlesField or attribute(object._source,instance.contentType.circlesField)|in_my_circles %}			
+	   		{% if not  instance.contentType.circlesField or attribute(object._source,instance.contentType.circlesField) is not defined or attribute(object._source,instance.contentType.circlesField)|in_my_circles %}			
 				{% if draft %} 
 					{% include 'EMSCoreBundle:elements:get-button.html.twig' with { 
 						'url': path('revision.edit', {'revisionId': revisionId}), 
@@ -151,7 +151,7 @@
 		  {% endif %}
 		  
             {% if is_granted(instance.contentType.createRole) %}
-            	{% if not  instance.contentType.circlesField or attribute(object._source, instance.contentType.circlesField)|in_my_circles %}
+            	{% if not  instance.contentType.circlesField or attribute(object._source, instance.contentType.circlesField) is not defined or attribute(object._source, instance.contentType.circlesField)|in_my_circles %}
             		{% include 'EMSCoreBundle:elements:post-button.html.twig' with {
             			'url':  path('object.delete', {'type': instance.contentType.name, 'ouuid': instance.ouuid} ),
             			'label': 'Delete',

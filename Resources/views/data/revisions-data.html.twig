@@ -99,15 +99,17 @@
 	
               {% endif %}
               {% if circles_object and revision.circles|length > 0 %}
-                  <hr>
-              	{% set circleContentType = circles_object|get_content_type %}
-	              <strong><i class=" {% if circleContentType.icon %}{{ circleContentType.icon }}{% else %}fa fa-circle-o{% endif %} margin-r-5"></i> {{ circleContentType.pluralName }}</strong>
-	
-	              <p class="text-muted">
-	              	{% for circle in revision.circles %}
-	              		{{ circle|data_link|raw }}
-	              	{% endfor %}
-	              </p>
+                  {% set circleContentType = circles_object|get_content_type %}
+                  	{% if  circleContentType %}
+                      <hr>
+    	              <strong><i class=" {% if circleContentType.icon %}{{ circleContentType.icon }}{% else %}fa fa-circle-o{% endif %} margin-r-5"></i> {{ circleContentType.pluralName }}</strong>
+    	
+    	              <p class="text-muted">
+    	              	{% for circle in revision.circles %}
+    	              		{{ circle|data_link|raw }}
+    	              	{% endfor %}
+    	              </p>
+    	            {% endif %}
               {% endif %}
             </div>
             <!-- /.box-body -->

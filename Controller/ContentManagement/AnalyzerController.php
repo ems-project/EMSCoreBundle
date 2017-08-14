@@ -64,7 +64,25 @@ class AnalyzerController extends AppController
 				'form' => $form->createView (),
 		] );
 	}
+	
+	/**
+	 * Creates a new elasticsearch analyzer entity.
+	 *
+	 * @Route("/delete/{analyzer}", name="ems_analyzer_delete")
+	 * @Method({"POST"})
+	 */
+	public function deleteAction(Analyzer $analyzer, Request $request) {
 		
+		/** @var EntityManager $em */
+		$em = $this->getDoctrine ()->getManager ();
+		$em->remove($analyzer);
+		$em->flush();
+		
+		$this->addFlash('notice', 'The analyzer has been deleted');
+		return $this->redirectToRoute ( 'ems_analyzer_index', [
+		] );
+	}
+	
 	/**
 	 * Creates a new elasticsearch analyzer entity.
 	 *

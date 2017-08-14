@@ -65,6 +65,12 @@
 											'label': 'Edit',
 											'icon': 'pencil'
 										}%}
+										{% include 'EMSCoreBundle:elements:post-button.html.twig' with {
+											'url': path('ems_analyzer_delete', {'analyzer': analyzer.id}),
+											'message': 'Delete the analyzer ' ~ analyzer.name ~ ' ?',
+											'label': 'Delete',
+											'icon': 'trash'
+										}%}
 									</div>
 								</td>
 							</tr>

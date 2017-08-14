@@ -51,8 +51,6 @@ class AnalyzerController extends AppController
 			/** @var EntityManager $em */
 			$em = $this->getDoctrine ()->getManager ();
 			$analyzer =  $form->getData();
-			$analyzer->setOptions([]);
-			
 			$em->persist($analyzer);
 			$em->flush($analyzer);
 			
@@ -100,8 +98,6 @@ class AnalyzerController extends AppController
 			/** @var EntityManager $em */
 			$em = $this->getDoctrine ()->getManager ();
 			$analyzer =  $form->getData();
-			$analyzer->setOptions([]);
-			
 			$em->persist($analyzer);
 			$em->flush($analyzer);
 			

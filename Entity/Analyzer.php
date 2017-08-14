@@ -50,6 +50,10 @@ class Analyzer
      */
     private $modified;
     
+    public function __construct() {
+    	$this->options = [];
+    }
+    
     /**
      * @ORM\PrePersist
      * @ORM\PreUpdate

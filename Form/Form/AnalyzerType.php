@@ -7,6 +7,7 @@ use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use EMS\CoreBundle\Form\Field\AnalyzerOptionsType;
 
 class AnalyzerType extends AbstractType
 {
@@ -16,8 +17,9 @@ class AnalyzerType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('name', null, array('required' => true))
+    	$builder
+	    	->add('name', null, array('required' => true))
+	    	->add('options', AnalyzerOptionsType::class)
             ->add ( 'save', SubmitEmsType::class, [
             		'label' => 'Save',
             		'attr' => [

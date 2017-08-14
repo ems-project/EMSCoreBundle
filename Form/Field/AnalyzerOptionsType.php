@@ -25,51 +25,9 @@ class AnalyzerOptionsType extends AbstractType {
 						'Fingerprint' => 'fingerprint',
 						'Custom' => 'custom',
 				],
-		] )->add ( 'max_token_length', IntegerType::class, [
-				'required' => false
-		] )->add ( 'max_output_size', IntegerType::class, [
-				'required' => false
-		] )->add ( 'position_increment_gap', IntegerType::class, [
-				'required' => false
-		] )->add ( 'lowercase', CheckboxType::class, [
-				'required' => false
-		] )->add ( 'pattern', TextType::class, [
-				'required' => false,
-		] )->add ( 'separator', TextType::class, [
-				'required' => false,
-		] )->add ( 'flags', ChoiceType::class, [
-				'choices' => [
-						'CANON_EQ' => 'CANON_EQ',
-						'CASE_INSENSITIVE' => 'CASE_INSENSITIVE',
-						'COMMENTS' => 'COMMENTS',
-						'DOTALL' => 'DOTALL',
-						'LITERAL' => 'LITERAL',
-						'MULTILINE' => 'MULTILINE',
-						'UNICODE_CASE' => 'UNICODE_CASE',
-						'UNICODE_CHARACTER_CLASS' => 'UNICODE_CHARACTER_CLASS',
-						'UNIX_LINES' => 'UNIX_LINES',
-				],
-				'multiple' => true,
-		] )->add ( 'char_filter', ChoiceType::class, [
-				'choices' => [
-						'HTML Strip' => 'html_strip',
-				],
-				'multiple' => true,
-		] )->add ( 'filter', ChoiceType::class, [
-				'choices' => [
-						'Standard' => 'standard',
-						'ASCII Folding' => 'asciifolding',
-						'Flatten graph' => 'flatten_graph',
-						'Lowercase' => 'lowercase',
-						'Uppercase' => 'uppercase',
-						'NGram' => 'nGram',
-						'Edge NGram' => 'edgeNGram',
-						'Porter Stem' => 'porter_stem',
-						'Stop' => 'stop',
-						'Word Delimiter' => 'word_delimiter',
-				],
-				'multiple' => true,
 		] )->add ( 'tokenizer', ChoiceType::class, [
+				'attr' => ['class' => 'analyzer_option'],
+				'required' => false,
 				'choices' => [
 						'Standard' => 'standard',
 						'Letter' => 'letter',
@@ -84,7 +42,62 @@ class AnalyzerOptionsType extends AbstractType {
 						'Pattern' => 'pattern',
 						'Path' => 'path_hierarchy',
 				],
+		] )->add ( 'max_token_length', IntegerType::class, [
+				'attr' => ['class' => 'analyzer_option'],
+				'required' => false,
+		] )->add ( 'max_output_size', IntegerType::class, [
+				'attr' => ['class' => 'analyzer_option'],
+				'required' => false,
+		] )->add ( 'lowercase', CheckboxType::class, [
+				'attr' => ['class' => 'analyzer_option'],
+				'required' => false,
+		] )->add ( 'pattern', TextType::class, [
+				'attr' => ['class' => 'analyzer_option'],
+				'required' => false,
+		] )->add ( 'separator', TextType::class, [
+				'attr' => ['class' => 'analyzer_option'],
+				'required' => false,
+		] )->add ( 'flags', ChoiceType::class, [
+				'attr' => ['class' => 'analyzer_option'],
+				'required' => false,
+				'choices' => [
+						'CANON_EQ' => 'CANON_EQ',
+						'CASE_INSENSITIVE' => 'CASE_INSENSITIVE',
+						'COMMENTS' => 'COMMENTS',
+						'DOTALL' => 'DOTALL',
+						'LITERAL' => 'LITERAL',
+						'MULTILINE' => 'MULTILINE',
+						'UNICODE_CASE' => 'UNICODE_CASE',
+						'UNICODE_CHARACTER_CLASS' => 'UNICODE_CHARACTER_CLASS',
+						'UNIX_LINES' => 'UNIX_LINES',
+				],
+				'multiple' => true,
+		] )->add ( 'char_filter', ChoiceType::class, [
+				'required' => false,
+				'attr' => ['class' => 'analyzer_option'],
+				'choices' => [
+						'HTML Strip' => 'html_strip',
+				],
+				'multiple' => true,
+		] )->add ( 'filter', ChoiceType::class, [
+				'attr' => ['class' => 'analyzer_option'],
+				'required' => false,
+				'choices' => [
+						'Standard' => 'standard',
+						'ASCII Folding' => 'asciifolding',
+						'Flatten graph' => 'flatten_graph',
+						'Lowercase' => 'lowercase',
+						'Uppercase' => 'uppercase',
+						'NGram' => 'nGram',
+						'Edge NGram' => 'edgeNGram',
+						'Porter Stem' => 'porter_stem',
+						'Stop' => 'stop',
+						'Word Delimiter' => 'word_delimiter',
+				],
+				'multiple' => true,
 		] )->add ( 'stopwords', ChoiceType::class, [
+				'attr' => ['class' => 'analyzer_option'],
+				'required' => false,
 				'choices' => [
 						'None' => '_none_',
 						'Arabic' => '_arabic_',
@@ -121,6 +134,9 @@ class AnalyzerOptionsType extends AbstractType {
 						'Turkish' => '_turkish_',
 						'Thai' => '_thai_',
 				],
+		] )->add ( 'position_increment_gap', IntegerType::class, [
+				'attr' => ['class' => 'analyzer_option'],
+				'required' => false,
 		] );
 	}
 }

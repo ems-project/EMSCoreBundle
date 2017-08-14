@@ -20,15 +20,15 @@ class Analyzer
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255, unique=true)
-     */
-    private $name;
-
+	private $id;
+	
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(name="name", type="string", length=255, unique=true)
+	 */
+	private $name;
+	
     /**
      * @var array
      *
@@ -46,9 +46,9 @@ class Analyzer
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="mofified", type="datetime")
+     * @ORM\Column(name="modified", type="datetime")
      */
-    private $mofified;
+    private $modified;
     
     /**
      * @ORM\PrePersist
@@ -72,7 +72,7 @@ class Analyzer
     {
         return $this->id;
     }
-
+    
     /**
      * Set name
      *
@@ -82,11 +82,11 @@ class Analyzer
      */
     public function setName($name)
     {
-        $this->name = $name;
-
-        return $this;
+    	$this->name = $name;
+    	
+    	return $this;
     }
-
+    
     /**
      * Get name
      *
@@ -94,7 +94,7 @@ class Analyzer
      */
     public function getName()
     {
-        return $this->name;
+    	return $this->name;
     }
 
     /**
@@ -146,27 +146,27 @@ class Analyzer
     }
 
     /**
-     * Set mofified
+     * Set modified
      *
-     * @param \DateTime $mofified
+     * @param \DateTime $modified
      *
      * @return Analyzer
      */
-    public function setMofified($mofified)
+    public function setModified($modified)
     {
-        $this->mofified = $mofified;
+        $this->modified = $modified;
 
         return $this;
     }
 
     /**
-     * Get mofified
+     * Get modified
      *
      * @return \DateTime
      */
-    public function getMofified()
+    public function getModified()
     {
-        return $this->mofified;
+        return $this->modified;
     }
 }
 

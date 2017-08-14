@@ -1,0 +1,135 @@
+{% extends 'EMSCoreBundle::base.html.twig' %}
+{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}{{ 'Analyzers'|trans }}{% endblock %}
+{% block pagetitle %}{{ 'Analyzers'|trans }}{% endblock %} 
+{% block subtitle %}<small>{{ 'expert mode'|trans }}</small>{% endblock %}
+
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><a href="{{ path('ems_analyzer_index') }}"><i class="fa fa-signal"></i> {{ 'Analyzers'|trans }}</li></a>
+		<li>{{ 'List analyzers'|trans }}</li>
+   	</ol>
+{% endblock %}
+
+
+{% block body %}
+
+<div class="row">
+	<div class="col-md-12">
+		<div class="box ">
+			<div class="box-header with-border">
+				<i class="fa fa-users"></i>
+				<h3 class="box-title">{{ 'Analyzers'|trans }}</h3>
+				<a class="btn btn-xs btn-primary pull-right" href="{{ path('ems_analyzer_add') }}">
+					<i class="fa fa-plus"></i> {{ 'Add analyzer'|trans }}
+				</a>
+			</div>
+			<!-- /.box-header -->
+			<div class="box-body">
+    			{% if paging.lastPage > 1 %}
+    				<div class="box-header">
+        				{% include 'EMSCoreBundle:elements:pagination.html.twig' with {
+        					'paging': paging,
+        					'currentFilters': app.request.query,
+        					'paginationPath': paginationPath,
+        					'showAlwaysFirstAndLast': false
+        				} %}
+    				</div>
+    			{% endif %}
+
+				<div class="table-responsive">
+					<table class="table table-condensed table-striped dataTable">
+						<thead>
+							<tr role="row">
+								<th class="nowrap text-center" style="width: 10px">{{ '#'|trans }}</th>
+								{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {
+                                 'title': 'Name'|trans,
+                                 'field': 'name',
+                                 'orderField': paging.orderField,
+                                 'orderDirection': paging.orderDirection,
+                                 'paginationPath': paging.paginationPath,
+                                } %}
+								<th class="nowrap">{{ 'Action'|trans }}</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for analyzer in paging.data %}
+							<tr>
+								<td class="text-center" style="width: 10px">{{ loop.index }}</td>
+								<td>{{ user.username }}</td>
+								<td>{% if user.displayName != user.username %}
+									{{ user.displayName }}
+									{% endif %}</td>
+								<td><i
+									class="fa fa-{% if user.emailNotification %}check-{% endif %}square-o"></i></td>
+								<td>{{ user.email }}</td>
+								<td>{% for circle in user.circles %} {{ circle|data_link|raw }}
+									{% endfor %}</td>
+								<td><i
+									class="fa fa-{% if user.enabled is not defined or user.enabled %}check-{% endif %}square-o"></i>
+								</td>
+								<td>{% for role in user.roles %} {% if not loop.first %} {% if loop.last %}
+									&amp; {% else %} , {% endif %} {% endif %} {{ role|trans }} {% endfor %}
+								</td>
+								<td>{% if user.lastLogin %}
+									{{ user.lastLogin|date(date_time_format) }}
+									{% endif %}</td>
+								<td class="">
+									<div class="btn-group">
+										{% include 'EMSCoreBundle:elements:get-button.html.twig' with {
+											'url':  path('user.edit', {'id': user.id}),
+											'label': 'Edit',
+											'icon': 'pencil'
+										}%}
+										{% if user.enabled %}
+										{% if not is_granted('ROLE_PREVIOUS_ADMIN') %}
+										{% include 'EMSCoreBundle:elements:get-button.html.twig' with {
+													'url':  path('homepage', {'_switch_user': user.username}),
+													'label': 'Switch user',
+													'icon': 'user-secret'
+												}%}
+										{% endif %}
+										{% if not is_granted('ROLE_PREVIOUS_ADMIN') %}
+										{% include 'EMSCoreBundle:elements:post-button.html.twig' with {
+													'url': path('user.enabling', {'id': user.id}),
+														'message': 'Disable the user ' ~ user.username ~ ' ?',
+														'label': 'Disable',
+														'icon': 'user-times'
+												}%}
+										{% endif %}
+										{% else %}
+										{% include 'EMSCoreBundle:elements:post-button.html.twig' with {
+													'url': path('user.enabling', {'id': user.id}),
+													'message': 'Enable the user ' ~ user.username ~ ' ?',
+													'label': 'Enable',
+													'icon': 'user-plus'
+											}%}
+										{% endif %}
+										{% include 'EMSCoreBundle:elements:post-button.html.twig' with {
+												'url': path('EMS_user_apikey', {'username': user.username}),
+												'message': 'Generate API key for ' ~ user.username ~ ' ?',
+												'label': 'API key',
+												'icon': 'key'
+										}%}
+										{% include 'EMSCoreBundle:elements:post-button.html.twig' with {
+											'url': path('user.delete', {'id': user.id}),
+											'message': 'Delete the user ' ~ user.username ~ ' ?',
+											'label': 'Delete',
+											'icon': 'trash'
+										}%}
+									</div>
+								</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<!-- /.box-body -->
+		</div>
+	</div>
+</div>
+
+
+{% endblock %}

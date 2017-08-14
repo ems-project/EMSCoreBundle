@@ -2,20 +2,15 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
+use Doctrine\ORM\EntityManager;
 use EMS\CoreBundle;
 use EMS\CoreBundle\Controller\AppController;
+use EMS\CoreBundle\Entity\Analyzer;
+use EMS\CoreBundle\Form\Form\AnalyzerType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use EMS\CoreBundle\Entity\Analyzer;
-use EMS\CoreBundle\Form\Field\IconTextType;
-use EMS\CoreBundle\Form\Field\SubmitEmsType;
-use EMS\CoreBundle\Form\DataField\ChoiceFieldType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Doctrine\ORM\EntityManager;
-use EMS\CoreBundle\Repository\AnalyzerRepository;
-use EMS\CoreBundle\Form\Form\AnalyzerType;
 
 
 /**

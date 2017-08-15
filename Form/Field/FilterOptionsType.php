@@ -7,6 +7,7 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class FilterOptionsType extends AbstractType {
 	
@@ -141,7 +142,7 @@ class FilterOptionsType extends AbstractType {
 						'Swedish (light)' => 'light_swedish',
 						'Turkish' => 'turkish',
 				],
-		] )->add ( 'keywords', TextType::class, [
+		] )->add ( 'keywords', TextareaType::class, [
 				'attr' => ['class' => 'filter_option'],
 				'required' => false,
 		] )->add ( 'keywords_pattern', TextType::class, [

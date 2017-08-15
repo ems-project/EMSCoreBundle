@@ -7,6 +7,10 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
+use EMS\CoreBundle\Repository\FilterRepository;
+use EMS\CoreBundle\Entity\Filter;
+use EMS\CoreBundle\Repository\AnalyzerRepository;
+use EMS\CoreBundle\Entity\Analyzer;
 
 class EnvironmentService {
 	/**@var Registry $doctrine */
@@ -34,21 +38,54 @@ class EnvironmentService {
 	}
 	
 	public function getIndexAnalysisConfiguration(){
-		return '{
-		   "index" : {
-    		  "max_result_window" : 50000,
-		      "analysis" : {
-		         "analyzer" : {
-		            "for_all_field" : {
-		               "char_filter" : [
-		                  "html_strip"
-		               ],
-		               "tokenizer" : "standard"
-		            }
-		         }
-		      }
-		   }
-		}';
+		$filters = [];
+		
+		/**@var FilterRepository $filterRepository*/
+		$filterRepository= $this->doctrine->getRepository('EMSCoreBundle:Filter');
+		/**@var Filter $filter*/
+		foreach ($filterRepository->findAll() as $filter) {
+			$filters[$filter->getName()] = $filter->getOptions();
+		}
+		
+		$analyzers = [];
+		
+		/**@var AnalyzerRepository $analyzerRepository*/
+		$analyzerRepository= $this->doctrine->getRepository('EMSCoreBundle:Analyzer');
+		/**@var Analyzer $analyzer*/
+		foreach ($analyzerRepository->findAll() as $analyzer) {
+			$analyzers[$analyzer->getName()] = $analyzer->getOptions();
+		}
+		
+		
+		
+		$out = [
+			'index' => [
+				'max_result_window' => 	50000,
+				'analysis' => [
+					'filter' => $filters,
+					'analyzer' => $analyzers,
+				]
+			]
+		];
+		
+		return $out;
+		
+		
+// 		return '{
+// 		   "index" : {
+//     		  "max_result_window" : 50000,
+// 		      "analysis" : {
+// 		         "analyzer" : {
+// 		            "for_all_field" : {
+// 		               "char_filter" : [
+// 		                  "html_strip"
+// 		               ],
+// 		               "tokenizer" : "standard"
+// 		            }
+// 		         }
+// 		      }
+// 		   }
+// 		}';
 	}
 	
 	public function getEnvironmentsStats() {

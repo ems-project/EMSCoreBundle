@@ -8,8 +8,20 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
+use Doctrine\Bundle\DoctrineBundle\Registry;
+use EMS\CoreBundle\Repository\FilterRepository;
+use EMS\CoreBundle\Entity\Filter;
+
 
 class AnalyzerOptionsType extends AbstractType {
+	/**@var Registry $doctrine */
+	private $doctrine;
+	
+	public function __construct(Registry $doctrine) {//'@doctrine'
+		$this->doctrine = $doctrine;
+	}
+	
 	
 	/**
 	 *
@@ -82,18 +94,34 @@ class AnalyzerOptionsType extends AbstractType {
 		] )->add ( 'filter', ChoiceType::class, [
 				'attr' => ['class' => 'analyzer_option'],
 				'required' => false,
-				'choices' => [
-						'Standard' => 'standard',
-						'ASCII Folding' => 'asciifolding',
-						'Flatten graph' => 'flatten_graph',
-						'Lowercase' => 'lowercase',
-						'Uppercase' => 'uppercase',
-						'NGram' => 'nGram',
-						'Edge NGram' => 'edgeNGram',
-						'Porter Stem' => 'porter_stem',
-						'Stop' => 'stop',
-						'Word Delimiter' => 'word_delimiter',
-				],
+				'choice_loader' => new CallbackChoiceLoader(function() {
+					$out = [
+						'Built-in' => [
+									'Standard' => 'standard',
+									'ASCII Folding' => 'asciifolding',
+									'Flatten graph' => 'flatten_graph',
+									'Lowercase' => 'lowercase',
+									'Uppercase' => 'uppercase',
+									'NGram' => 'nGram',
+									'Edge NGram' => 'edgeNGram',
+									'Porter Stem' => 'porter_stem',
+									'Stop' => 'stop',
+									'Word Delimiter' => 'word_delimiter',
+						],
+						'Customised' =>[
+					
+						],
+					];
+					
+					/**@var FilterRepository $repository*/
+					$repository = $this->doctrine->getRepository('EMSCoreBundle:Filter');
+					/**@var Filter $filter*/
+					foreach ($repository->findAll() as $filter) {
+						$out['Customised'][$filter->getLabel()] = $filter->getName();
+					}
+				
+					return $out;
+				}),
 				'multiple' => true,
 		] )->add ( 'stopwords', ChoiceType::class, [
 				'attr' => ['class' => 'analyzer_option'],

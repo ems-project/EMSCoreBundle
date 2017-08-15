@@ -328,6 +328,11 @@ services:
         arguments: ['@form.registry']
         tags:
             - { name: form.type }
+    ems.form.field.analyzeroptionstype:
+        class: EMS\CoreBundle\Form\Field\AnalyzerOptionsType
+        arguments: ['@doctrine']
+        tags:
+            - { name: form.type }
             
             
 ### regular services

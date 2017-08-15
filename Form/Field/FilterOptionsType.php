@@ -12,6 +12,7 @@ class FilterOptionsType extends AbstractType {
 	
 	
 	const FIELDS_BY_TYPE = [
+			'standard' => [],
 			'stop' => [
 					'stopwords',
 					'ignore_case',

@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Form\Field\FilterOptionsType;
 
 /**
  * Analyzer
@@ -126,6 +127,15 @@ class Filter
     public function setOptions($options)
     {
         $this->options = $options;
+        
+        foreach ($this->options as $key => $data) {
+        	if($key != 'type' and !in_array($key, FilterOptionsType::FIELDS_BY_TYPE[$this->options['type']])) {
+        		unset($this->options[$key]); 
+        	}
+        	else if($this->options[$key] === null) {
+        		unset($this->options[$key]); 
+        	}
+        }
 
         return $this;
     }

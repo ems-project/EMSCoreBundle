@@ -26,7 +26,8 @@ class FilterType extends AbstractType
             		'label' => 'Save',
             		'attr' => [
             				'class' => 'btn btn-primary pull-right'
-            		]
+            		],
+            		'icon' => 'fa fa-save',
             ] );
     }
     

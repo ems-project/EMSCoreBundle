@@ -1,0 +1,28 @@
+{% extends 'EMSCoreBundle::base.html.twig' %}
+{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}{{ 'Add an Filter'|trans }}{% endblock %}
+{% block pagetitle %}{{ 'Add an Filter'|trans }}{% endblock %} 
+{% block subtitle %}<small>{{ 'expert mode'|trans }}</small>{% endblock %}
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><a href="{{ path('ems_filter_index') }}"><i class="fa fa-filter"></i> {{ 'Filters'|trans }}</li></a>
+		<li>{{ 'Add a filter'|trans }}</li>
+   	</ol>
+{% endblock %}
+
+{% block body %}
+
+    {% include "EMSCoreBundle:filter:form.html.twig" with {
+    	form: form,
+    	label: 'Add a filter',
+    } %}
+    
+{% endblock %}
+
+{% block javascripts %}
+
+    {% include "EMSCoreBundle:filter:form_js.html.twig" with {
+    } %}
+
+{% endblock %}

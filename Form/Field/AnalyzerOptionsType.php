@@ -15,6 +15,36 @@ use EMS\CoreBundle\Entity\Filter;
 
 
 class AnalyzerOptionsType extends AbstractType {
+	
+	
+	const FIELDS_BY_TYPE = [
+			'standard' => [
+					'stopwords',
+					'max_token_length',
+			],
+			'stop' => [
+					'stopwords',
+			],
+			'pattern' => [
+					'stopwords',
+					'lowercase',
+					'flags',
+					'pattern',
+			],
+			'fingerprint' => [
+					'separator',
+					'max_output_size',
+					'stopwords',
+			],
+			'custom' => [
+					'tokenizer',
+					'char_filter',
+					'filter',
+					'position_increment_gap',
+			],
+	];
+	
+	
 	/**@var Registry $doctrine */
 	private $doctrine;
 	

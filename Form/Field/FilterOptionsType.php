@@ -10,6 +10,24 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class FilterOptionsType extends AbstractType {
 	
+	
+	const FIELDS_BY_TYPE = [
+			'stop' => [
+					'stopwords',
+					'ignore_case',
+					'remove_trailing',
+			],
+			'keyword_marker' => [
+					'keywords',
+					'keywords_pattern',
+					'ignore_case',
+			],
+			'stemmer' => [
+					'name',
+			],
+	];
+	
+	
 	/**
 	 *
 	 * {@inheritdoc}

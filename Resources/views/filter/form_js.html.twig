@@ -9,19 +9,13 @@ function prepareForm(value){
 	$('.filter_option').closest('.form-group').hide();
 
 		switch(value) {
-		case 'stop':
-			$('#filter_options_stopwords').closest('.form-group').show();
-			$('#filter_options_ignore_case').closest('.form-group').show();
-			$('#filter_options_remove_trailing').closest('.form-group').show();
+		{% for key, fields in constant('EMS\\CoreBundle\\Form\\Field\\FilterOptionsType::FIELDS_BY_TYPE') %}
+		case '{{key}}':
+			{% for field in fields %}
+				$('#filter_options_{{ field }}').closest('.form-group').show();
+			{% endfor %}
 			break;
-		case 'keyword_marker':
-			$('#filter_options_keywords').closest('.form-group').show();
-			$('#filter_options_keywords_pattern').closest('.form-group').show();
-			$('#filter_options_ignore_case').closest('.form-group').show();
-			break;
-		case 'stemmer':
-			$('#filter_options_name').closest('.form-group').show();
-			break;
+		{% endfor %}
 		}
 }
 

@@ -19,6 +19,7 @@ class AnalyzerType extends AbstractType
     {
     	$builder
 	    	->add('name', null, array('required' => true))
+	    	->add('label', null, array('required' => true))
 	    	->add('options', AnalyzerOptionsType::class)
             ->add ( 'save', SubmitEmsType::class, [
             		'label' => 'Save',

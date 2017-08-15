@@ -233,7 +233,7 @@ class Filter
      */
     public function getLabel()
     {
-    	return $this->$label;
+    	return $this->label;
     }
 }
 

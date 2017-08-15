@@ -467,7 +467,7 @@ class EnvironmentController extends AppController {
 					$indexName = $environment->getAlias().AppController::getFormatedTimestamp();
 					$this->getElasticsearch()->indices()->create([
 							'index' => $indexName,
-							'body' => ContentType::getIndexAnalysisConfiguration(),
+							'body' => $this->getEnvironmentService()->getIndexAnalysisConfiguration(),
 					]);
 					
 					foreach ($this->getContentTypeService()->getAll() as $contentType){

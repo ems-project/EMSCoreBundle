@@ -33,6 +33,24 @@ class EnvironmentService {
 		$this->byId = false;
 	}
 	
+	public function getIndexAnalysisConfiguration(){
+		return '{
+		   "index" : {
+    		  "max_result_window" : 50000,
+		      "analysis" : {
+		         "analyzer" : {
+		            "for_all_field" : {
+		               "char_filter" : [
+		                  "html_strip"
+		               ],
+		               "tokenizer" : "standard"
+		            }
+		         }
+		      }
+		   }
+		}';
+	}
+	
 	public function getEnvironmentsStats() {
 		/**@var EnvironmentRepository $repo*/
 		$repo = $this->doctrine->getManager()->getRepository('EMSCoreBundle:Environment');

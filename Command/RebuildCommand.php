@@ -20,6 +20,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Session\Session;
+use EMS\CoreBundle\Service\EnvironmentService;
 
 class RebuildCommand extends EmsCommand
 {
@@ -29,6 +30,8 @@ class RebuildCommand extends EmsCommand
 
 	/**@var ContentTypeService*/
 	private $contentTypeService;
+	/**@var EnvironmentService*/
+	private $environmentService;
 	private $instanceId;
 
 	public function __construct(Registry $doctrine, Logger $logger, Client $client, $mapping, Container $container, Session $session, $instanceId)
@@ -39,6 +42,7 @@ class RebuildCommand extends EmsCommand
 		$this->mapping = $mapping;
 		$this->container = $container;
 		$this->contentTypeService = $container->get('ems.service.contenttype');
+		$this->environmentService = $container->get('ems.service.environment');
 		$this->session = $session;
 		$this->instanceId = $instanceId;
 		parent::__construct($logger, $client, $session);
@@ -99,7 +103,7 @@ class RebuildCommand extends EmsCommand
 
 			$client->indices()->create([
 					'index' => $indexName,
-					'body' => ContentType::getIndexAnalysisConfiguration(),
+					'body' => $this->environmentService->getIndexAnalysisConfiguration(),
 			]);
 
 			$output->writeln('A new index '.$indexName.' has been created');

@@ -29,6 +29,20 @@ class Analyzer
 	 */
 	private $name;
 	
+	/**
+	 * @var bool
+	 *
+	 * @ORM\Column(name="dirty", type="boolean")
+	 */
+	private $dirty;
+	
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(name="label", type="string", length=255, unique=true)
+	 */
+	private $label;
+	
     /**
      * @var array
      *
@@ -171,6 +185,54 @@ class Analyzer
     public function getModified()
     {
         return $this->modified;
+    }
+    
+    /**
+     * Set dirty
+     *
+     * @param boolean $dirty
+     *
+     * @return ContentType
+     */
+    public function setDirty($dirty)
+    {
+    	$this->dirty = $dirty;
+    	
+    	return $this;
+    }
+    
+    /**
+     * Get dirty
+     *
+     * @return boolean
+     */
+    public function getDirty()
+    {
+    	return $this->dirty;
+    }
+    
+    /**
+     * Set label
+     *
+     * @param string $label
+     *
+     * @return ContentType
+     */
+    public function setLabel($label)
+    {
+    	$this->label = $label;
+    	
+    	return $label;
+    }
+    
+    /**
+     * Get label
+     *
+     * @return string
+     */
+    public function getLabel()
+    {
+    	return $this->$label;
     }
 }
 

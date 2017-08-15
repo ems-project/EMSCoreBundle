@@ -2,9 +2,8 @@
 
 namespace EMS\CoreBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
-use EMS\CoreBundle\Form\DataField\DataFieldType;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * FieldType

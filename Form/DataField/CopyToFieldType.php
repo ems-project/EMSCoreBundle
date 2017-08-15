@@ -63,7 +63,9 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 		
 		// String specific mapping options
 		$optionsForm->get ( 'mappingOptions' )->add ( 'analyzer', AnalyzerPickerType::class);
-		$optionsForm->get ( 'mappingOptions' )->add ( 'store', CheckboxType::class);
+		$optionsForm->get ( 'mappingOptions' )->add ( 'store', CheckboxType::class, [
+				'required' => false,
+		]);
 		$optionsForm->remove('restrictionOptions');
 		$optionsForm->remove('migrationOptions');
 		$optionsForm->remove('extraOptions');

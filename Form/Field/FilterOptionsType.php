@@ -144,7 +144,7 @@ class FilterOptionsType extends AbstractType {
 				],
 		] )->add ( 'keywords', TextareaType::class, [
 				'attr' => ['class' => 'filter_option'],
-				'required' => false,
+				'required' => false,//TODO: convert textarea int array (one entry per line)
 		] )->add ( 'keywords_pattern', TextType::class, [
 				'attr' => ['class' => 'filter_option'],
 				'required' => false,

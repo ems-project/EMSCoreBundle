@@ -57,13 +57,13 @@
                                  'orderDirection': paging.orderDirection,
                                  'paginationPath': paging.paginationPath,
                                 } %}
-								{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {
-                                 'title': 'Dirty'|trans,
-                                 'field': 'dirty',
-                                 'orderField': paging.orderField,
-                                 'orderDirection': paging.orderDirection,
-                                 'paginationPath': paging.paginationPath,
-                                } %}
+{# 								{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {#}
+{#                                  'title': 'Dirty'|trans,#}
+{#                                  'field': 'dirty',#}
+{#                                  'orderField': paging.orderField,#}
+{#                                  'orderDirection': paging.orderDirection,#}
+{#                                  'paginationPath': paging.paginationPath,#}
+{#                                 } %}#}
 								<th class="nowrap">{{ 'Action'|trans }}</th>
 							</tr>
 						</thead>
@@ -73,7 +73,7 @@
 								<td class="text-center" style="width: 10px">{{ loop.index }}</td>
 								<td>{{ filter.name }}</td>
 								<td>{{ filter.label }}</td>
-								<td><i class="fa fa-{% if filter.name %}check-{% endif %}square-o"></i></td>
+{# 								<td><i class="fa fa-{% if filter.dirty %}check-{% endif %}square-o"></i></td>#}
 								<td class="">
 									<div class="btn-group">
 										{% include 'EMSCoreBundle:elements:get-button.html.twig' with {

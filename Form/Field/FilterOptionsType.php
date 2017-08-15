@@ -8,6 +8,8 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\DataTransformer\DataTransformerChain;
+use Symfony\Component\Form\CallbackTransformer;
 
 class FilterOptionsType extends AbstractType {
 	
@@ -15,18 +17,22 @@ class FilterOptionsType extends AbstractType {
 	const FIELDS_BY_TYPE = [
 			'standard' => [],
 			'stop' => [
-					'stopwords',
-					'ignore_case',
-					'remove_trailing',
+				'stopwords',
+				'ignore_case',
+				'remove_trailing',
 			],
 			'keyword_marker' => [
-					'keywords',
-					'keywords_pattern',
-					'ignore_case',
+				'keywords',
+				'keywords_pattern',
+				'ignore_case',
 			],
 			'stemmer' => [
-					'name',
+				'name',
 			],
+			'elision' => [
+				'articles_case',
+				'articles',
+			]
 	];
 	
 	
@@ -42,6 +48,7 @@ class FilterOptionsType extends AbstractType {
 						'Stop' => 'stop',
 						'Keyword Marker' => 'keyword_marker',
 						'Stemmer' => 'stemmer',
+						'Elision' => 'elision',
 				],
 		] )->add ( 'stopwords', ChoiceType::class, [
 				'attr' => ['class' => 'filter_option'],
@@ -144,7 +151,7 @@ class FilterOptionsType extends AbstractType {
 				],
 		] )->add ( 'keywords', TextareaType::class, [
 				'attr' => ['class' => 'filter_option'],
-				'required' => false,//TODO: convert textarea int array (one entry per line)
+				'required' => false,
 		] )->add ( 'keywords_pattern', TextType::class, [
 				'attr' => ['class' => 'filter_option'],
 				'required' => false,
@@ -154,6 +161,29 @@ class FilterOptionsType extends AbstractType {
 		] )->add ( 'remove_trailing', CheckboxType::class, [
 				'attr' => ['class' => 'filter_option'],
 				'required' => false,
+		] )->add ( 'articles_case', CheckboxType::class, [
+				'attr' => ['class' => 'filter_option'],
+				'required' => false,
+		] )->add ( 'articles', TextareaType::class, [
+				'attr' => ['class' => 'filter_option'],
+				'required' => false,
 		] );
+		
+		$textArea2Array = new CallbackTransformer(
+				function ($tagsAsArray) {
+					if(is_array($tagsAsArray)){
+						// transform the array to a string
+						return implode(', ', $tagsAsArray);
+					}
+					return $tagsAsArray;
+				},
+				function ($tagsAsString) {
+					// transform the string back to an array
+					return explode(', ', $tagsAsString);
+				}
+				);
+		
+		$builder->get('articles')->addModelTransformer($textArea2Array);
+		$builder->get('keywords')->addModelTransformer($textArea2Array);
 	}
 }

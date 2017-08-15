@@ -3,11 +3,10 @@
 namespace EMS\CoreBundle\Form\Field;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
 
 class FilterOptionsType extends AbstractType {
 	
@@ -21,6 +20,8 @@ class FilterOptionsType extends AbstractType {
 				'choices' => [
 						'Standard' => 'standard',
 						'Stop' => 'stop',
+						'Keyword Marker' => 'keyword_marker',
+						'Stemmer' => 'stemmer',
 				],
 		] )->add ( 'stopwords', ChoiceType::class, [
 				'attr' => ['class' => 'filter_option'],
@@ -61,6 +62,72 @@ class FilterOptionsType extends AbstractType {
 						'Turkish' => '_turkish_',
 						'Thai' => '_thai_',
 				],
+		] )->add ( 'name', ChoiceType::class, [
+				'attr' => ['class' => 'filter_option'],
+				'required' => false,
+				'choices' => [
+						'Arabic' => 'arabic',
+						'Armenian' => 'armenian',
+						'Basque' => 'basque',
+						'Brazilian Portuguese' => 'brazilian',
+						'Bulgarian' => 'bulgarian',
+						'Catalan' => 'catalan',
+						'Czech' => 'czech',
+						'Danish' => 'danish',
+						'Dutch' => 'dutch',
+						'Dutch KP' => 'dutch_kp',
+						'English' => 'english',
+						'English (light)' => 'light_english',
+						'English (minimal)' => 'minimal_english',
+						'English (possessive)' => 'possessive_english',
+						'English (porter2)' => 'porter2',
+						'English (lovins)' => 'lovins',
+						'Finnish' => 'finnish',
+						'Finnish (light)' => 'light_finnish',
+						'French' => 'french',
+						'French (light)' => 'light_french',
+						'French (minimal)' => 'minimal_french',
+						'Galician' => 'galician',
+						'Galician (minimal)' => 'minimal_galician',
+						'German' => 'german',
+						'German 2' => 'german2',
+						'German (light)' => 'light_german',
+						'German (minimal)' => 'minimal_german',
+						'Greek' => 'greek',
+						'Hindi' => 'hindi',
+						'Hungarian' => 'hungarian',
+						'Hungarian (light)' => 'light_hungarian',
+						'Indonesian' => 'indonesian',
+						'Irish' => 'irish',
+						'Italian' => 'italian',
+						'Italian (light)' => 'light_italian',
+						'Kurdish (Sorani)' => 'sorani',
+						'Latvian' => 'latvian',
+						'Lithuanian' => 'lithuanian',
+						'Norwegian (Bokmål)' => 'norwegian',
+						'Norwegian (Bokmål)(light)' => 'light_norwegian',
+						'Norwegian (Bokmål)(minimal)' => 'minimal_norwegian',
+						'Norwegian (Nynorsk)(light)' => 'light_nynorsk',
+						'Norwegian (Nynorsk)(minimal)' => 'minimal_nynorsk',
+						'Portuguese' => 'portuguese',
+						'Portuguese (light)' => 'light_portuguese',
+						'Portuguese (minimal)' => 'minimal_portuguese',
+						'Portuguese (RSLP)' => 'portuguese_rslp',
+						'Romanian' => 'romanian',
+						'Russian' => 'russian',
+						'Russian (light)' => 'light_russian',
+						'Spanish' => 'spanish',
+						'Spanish (light)' => 'light_spanish',
+						'Swedish' => 'swedish',
+						'Swedish (light)' => 'light_swedish',
+						'Turkish' => 'turkish',
+				],
+		] )->add ( 'keywords', TextType::class, [
+				'attr' => ['class' => 'filter_option'],
+				'required' => false,
+		] )->add ( 'keywords_pattern', TextType::class, [
+				'attr' => ['class' => 'filter_option'],
+				'required' => false,
 		] )->add ( 'ignore_case', CheckboxType::class, [
 				'attr' => ['class' => 'filter_option'],
 				'required' => false,

@@ -2,13 +2,12 @@
 
 namespace EMS\CoreBundle\Form\Form;
 
-use EMS\CoreBundle\Entity\Analyzer;
+use EMS\CoreBundle\Entity\Filter;
+use EMS\CoreBundle\Form\Field\FilterOptionsType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use EMS\CoreBundle\Form\Field\AnalyzerOptionsType;
-use EMS\CoreBundle\Entity\Filter;
 
 class FilterType extends AbstractType
 {
@@ -21,7 +20,7 @@ class FilterType extends AbstractType
     	$builder
 	    	->add('name', null, array('required' => true))
 	    	->add('label', null, array('required' => true))
-// 	    	->add('options', AnalyzerOptionsType::class)
+	    	->add('options', FilterOptionsType::class)
             ->add ( 'save', SubmitEmsType::class, [
             		'label' => 'Save',
             		'attr' => [

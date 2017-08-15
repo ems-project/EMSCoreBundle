@@ -138,7 +138,7 @@ class AnalyzerOptionsType extends AbstractType {
 									'Stop' => 'stop',
 									'Word Delimiter' => 'word_delimiter',
 						],
-						'Customised' =>[
+						'Customized' =>[
 					
 						],
 					];
@@ -147,7 +147,7 @@ class AnalyzerOptionsType extends AbstractType {
 					$repository = $this->doctrine->getRepository('EMSCoreBundle:Filter');
 					/**@var Filter $filter*/
 					foreach ($repository->findAll() as $filter) {
-						$out['Customised'][$filter->getLabel()] = $filter->getName();
+						$out['Customized'][$filter->getLabel()] = $filter->getName();
 					}
 				
 					return $out;

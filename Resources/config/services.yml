@@ -333,6 +333,11 @@ services:
         arguments: ['@doctrine']
         tags:
             - { name: form.type }
+    ems.form.field.analyzerpickertype:
+        class: EMS\CoreBundle\Form\Field\AnalyzerPickerType
+        arguments: ['@doctrine']
+        tags:
+            - { name: form.type }
             
             
 ### regular services

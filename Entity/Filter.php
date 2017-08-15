@@ -39,7 +39,7 @@ class Filter
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(name="label", type="string", length=255, unique=true)
+	 * @ORM\Column(name="label", type="string", length=255)
 	 */
 	private $label;
 	
@@ -66,6 +66,7 @@ class Filter
     
     public function __construct() {
     	$this->options = [];
+    	$this->dirty = true;
     }
     
     /**

@@ -8,6 +8,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 //TODO:Refact Class name "SubfieldType" to "SubfieldFieldType"
 class SubfieldType extends DataFieldType {
@@ -49,7 +50,11 @@ class SubfieldType extends DataFieldType {
 		$optionsForm->remove( 'displayOptions' )->remove( 'migrationOptions' )->remove( 'restrictionOptions' );
 		
 		// String specific mapping options
-		$optionsForm->get ( 'mappingOptions' )->add ( 'analyzer', AnalyzerPickerType::class);
+		$optionsForm->get ( 'mappingOptions' )
+			->add ( 'analyzer', AnalyzerPickerType::class)
+			->add ( 'fielddata', CheckboxType::class, [
+					'required' => false,
+			] );
 	}	
 	
 	

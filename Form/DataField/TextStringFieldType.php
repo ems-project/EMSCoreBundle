@@ -8,10 +8,9 @@ use EMS\CoreBundle\Form\Field\IconPickerType;
 use EMS\CoreBundle\Form\Field\IconTextType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\FormView;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 								
 /**
  * Basic content type for text (regular text input)
@@ -115,9 +114,6 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 		// String specific mapping options
 		$optionsForm->get ( 'mappingOptions' )
 			->add ( 'analyzer', AnalyzerPickerType::class)
-			->add ( 'fielddata', CheckboxType::class, [
-					'required' => false,
-			] )
 			->add ( 'copy_to', TextType::class, [
 					'required' => false,
 			] );

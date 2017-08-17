@@ -11,7 +11,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\FormInterface;
-							
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+								
 /**
  * Basic content type for text (regular text input)
  *
@@ -114,6 +115,9 @@ use Symfony\Component\Form\FormInterface;
 		// String specific mapping options
 		$optionsForm->get ( 'mappingOptions' )
 			->add ( 'analyzer', AnalyzerPickerType::class)
+			->add ( 'fielddata', CheckboxType::class, [
+					'required' => false,
+			] )
 			->add ( 'copy_to', TextType::class, [
 					'required' => false,
 			] );

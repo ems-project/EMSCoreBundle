@@ -30,8 +30,11 @@ class FilterOptionsType extends AbstractType {
 				'name',
 			],
 			'elision' => [
-				'articles_case',
-				'articles',
+					'articles_case',
+					'articles',
+			],
+			'asciifolding' => [
+					'preserve_original',
 			]
 	];
 	
@@ -49,6 +52,7 @@ class FilterOptionsType extends AbstractType {
 						'Keyword Marker' => 'keyword_marker',
 						'Stemmer' => 'stemmer',
 						'Elision' => 'elision',
+						'ASCII Folding' => 'asciifolding',
 				],
 		] )->add ( 'stopwords', ChoiceType::class, [
 				'attr' => ['class' => 'filter_option'],
@@ -162,6 +166,9 @@ class FilterOptionsType extends AbstractType {
 				'attr' => ['class' => 'filter_option'],
 				'required' => false,
 		] )->add ( 'articles_case', CheckboxType::class, [
+				'attr' => ['class' => 'filter_option'],
+				'required' => false,
+		] )->add ( 'preserve_original', CheckboxType::class, [
 				'attr' => ['class' => 'filter_option'],
 				'required' => false,
 		] )->add ( 'articles', TextareaType::class, [

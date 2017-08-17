@@ -232,11 +232,11 @@ class FieldTypeType extends AbstractType
 	    				}
 	    			}
 	    			else{
-		    			$out[$jsonName] = array_merge($out[$jsonName], $this->generateMapping($child, $withPipeline));	    				
+	    				$out[$jsonName] = array_merge_recursive($out[$jsonName], $this->generateMapping($child, $withPipeline));	    				
 	    			}
 	    		}
 	    		else{
-		    		$out = array_merge($out, $this->generateMapping($child, $withPipeline));	    			
+	    			$out = array_merge_recursive($out, $this->generateMapping($child, $withPipeline));	    			
 	    		}
 	    	}
     	}

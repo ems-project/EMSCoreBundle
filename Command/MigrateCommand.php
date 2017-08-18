@@ -238,6 +238,7 @@ class MigrateCommand extends ContainerAwareCommand
 							'body' => $this->dataService->sign($newRevision),
 					]);
 // 					dump($value['_id']);
+					$newRevision->setDraft(false);
 					//TODO: Test if client->index OK
 					$em->persist($newRevision);
  					$revisionRepository->finaliseRevision($contentTypeTo, $value['_id'], $now);

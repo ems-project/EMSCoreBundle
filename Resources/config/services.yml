@@ -138,7 +138,7 @@ services:
             - { name: form.type }
     ems.fieldtype.fileattachement:
         class: EMS\CoreBundle\Form\DataField\FileAttachmentFieldType
-        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.file']
+        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.file', '@session']
         tags:
             - { name: ems.form.datafieldtype, alias: file_attachment }
             - { name: form.type }
@@ -397,7 +397,7 @@ services:
             -  { name: console.command }
     ems.contenttype.migrate:
         class: EMS\CoreBundle\Command\MigrateCommand
-        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.mapping', '@ems.service.data', '@form.factory']
+        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.mapping', '@ems.service.data', '@form.factory', '%ems_core.instance_id%', '@session']
         tags:
             -  { name: console.command }
     ems.environment.rebuild:

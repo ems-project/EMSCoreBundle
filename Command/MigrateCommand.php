@@ -14,15 +14,16 @@ use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\Mapping;
 use Monolog\Logger;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
 
-class MigrateCommand extends ContainerAwareCommand
+class MigrateCommand extends EmsCommand
 {
 	protected $client;
 	/**@var Mapping */
@@ -34,7 +35,9 @@ class MigrateCommand extends ContainerAwareCommand
 	/**@var FormFactoryInterface $formFactory*/
 	protected $formRegistry;
 	
-	public function __construct(Registry $doctrine, Logger $logger, Client $client, $mapping, DataService $dataService, FormFactoryInterface $formFactory)
+	protected $instanceId;
+	
+	public function __construct(Registry $doctrine, Logger $logger, Client $client, $mapping, DataService $dataService, FormFactoryInterface $formFactory, $instanceId, Session $session)
 	{
 		$this->doctrine = $doctrine;
 		$this->logger = $logger;
@@ -42,7 +45,8 @@ class MigrateCommand extends ContainerAwareCommand
 		$this->mapping = $mapping;
 		$this->dataService = $dataService;
 		$this->formFactory= $formFactory;
-		parent::__construct();
+		$this->instanceId = $instanceId;
+		parent::__construct($logger, $client, $session);
 	}
 	
 	protected function configure()
@@ -78,6 +82,19 @@ class MigrateCommand extends ContainerAwareCommand
                 'The content will be imported as is. Without any field validation, data stripping or field protection'
             )
         ;
+    }
+    
+    
+    private function getSubmitData(Form $form){
+    	$out = $form->getViewData();
+    	/**@var Form $subform*/
+    	foreach ($form->getIterator() as $subform) {
+    		if($subform->getConfig()->getCompound()) {
+    			$out[$subform->getName()] = $this->getSubmitData($subform);
+    		}
+    	}
+    	
+    	return $out;
     }
     
     /**
@@ -184,7 +201,7 @@ class MigrateCommand extends ContainerAwareCommand
 							//So we load the datas from the current revision into the next revision
 							$newRevision->setRawData($value['_source']);
 							$revisionType = $this->formFactory->create(RevisionType::class, $newRevision, ['migration' => true]);
-							$viewData = $revisionType->get('data')->getViewData();
+							$viewData = $this->getSubmitData($revisionType->get('data'));
 							
 							$revisionType->setData($currentRevision);
 							
@@ -215,7 +232,7 @@ class MigrateCommand extends ContainerAwareCommand
 					else{
 						$newRevision->setRawData($value['_source']);
 						$revisionType = $this->formFactory->create(RevisionType::class, $newRevision, ['migration' => true]);
-						$viewData = $revisionType->get('data')->getViewData();
+						$viewData = $this->getSubmitData($revisionType->get('data'));
 						
 						$revisionType->setData($this->getEmptyRevision($contentTypeTo));
 						$revisionType->submit(['data' => $viewData]);
@@ -231,12 +248,20 @@ class MigrateCommand extends ContainerAwareCommand
 					
 					$this->dataService->setMetaFields($newRevision);
 					
-					$this->client->index([
+					
+					$indexConfig = [
 							'index' => $defaultEnv->getAlias(),
 							'type' => $contentTypeNameTo,
 							'id' => $value['_id'],
 							'body' => $this->dataService->sign($newRevision),
-					]);
+					];
+					
+					if($newRevision->getContentType()->getHavePipelines()){
+						$indexConfig['pipeline'] = $this->instanceId.$contentTypeNameTo;
+					}
+					
+					$this->client->index($indexConfig);
+					
 // 					dump($value['_id']);
 					$newRevision->setDraft(false);
 					//TODO: Test if client->index OK
@@ -249,6 +274,9 @@ class MigrateCommand extends ContainerAwareCommand
 					$output->writeln("<error>'.$e.'</error>");
 				}
 
+				$this->flushFlash($output);
+				
+				
 				// advance the progress bar 1 unit
 				$progress->advance();
 				$em->flush();
@@ -264,6 +292,7 @@ class MigrateCommand extends ContainerAwareCommand
 		// ensure that the progress bar is at 100%
 		$progress->finish();
 		$output->writeln("");
+		$this->flushFlash($output);
 		$output->writeln("Migration done");
     }
 }

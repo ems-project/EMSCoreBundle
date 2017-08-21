@@ -13,6 +13,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Form\FormRegistryInterface;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\Session\Session;
 	
 /**
  * Defined a Container content type.
@@ -22,15 +23,18 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
  *
  */
 class FileAttachmentFieldType extends DataFieldType {
-
+	
 	/**@var FileService */
 	private $fileService;
+	/**@var Session */
+	private $session;
 	
 	
 	
-	public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, FileService $fileService) {
+	public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, FileService $fileService, Session $session) {
 		parent::__construct($authorizationChecker, $formRegistry);
 		$this->fileService= $fileService;
+		$this->session = $session;
 	}
 
 	/**
@@ -69,11 +73,11 @@ class FileAttachmentFieldType extends DataFieldType {
 
 	public function reverseViewTransform($data, FieldType $fieldType) {
 		$dataField = parent::reverseViewTransform($data, $fieldType);
-		
 		if(!empty($dataField->getRawData()) && !empty($dataField->getRawData()['value']['sha1'])){
 			$rawData = $dataField->getRawData()['value'];
 			$rawData['content'] = $this->fileService->getBase64($rawData['sha1']);
 			if(!$rawData['content']){
+				$this->session->getFlashBag()->add('warning', 'File not found: '.$rawData['sha1']);
 				$rawData['content'] = "";
 			}
 			$rawData['filesize'] = $this->fileService->getSize($rawData['sha1']);
@@ -188,8 +192,7 @@ class FileAttachmentFieldType extends DataFieldType {
 							"type" => "long",
 						],
 						'content' => [
-							"type" => "string",
-							"index" => "no",
+							"type" => "binary",
 						],
 				],
 			];

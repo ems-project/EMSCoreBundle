@@ -44,7 +44,7 @@
 
 {% block icontext_widget -%}
 	{% if  prefixIcon or prefixText or suffixIcon or suffixText %}
-		<div class="input-group {% if class %}{{ class }}{% endif %}">
+		<div class="input-group">
 			{% if prefixIcon or prefixText %}
 				<span class="input-group-addon"><i class="{% if prefixIcon %}{{ prefixIcon }}{% endif %}"></i>{% if prefixText %} &nbsp; {{ prefixText }} {% endif %}</span>
 			{% endif %}

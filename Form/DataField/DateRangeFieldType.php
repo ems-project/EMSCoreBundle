@@ -76,6 +76,9 @@ class DateRangeFieldType extends DataFieldType {
 		$dataField = parent::reverseViewTransform($data, $fieldType);
 		$input = $data['value'];
 		$options = $fieldType->getOptions();
+		
+		dump($options);
+		dump($data);
 		$format = DateRangeFieldType::convertJavascriptDateRangeFormat($options['displayOptions']['locale']['format']);
 		
 		$inputs = explode(' - ', $input);
@@ -85,14 +88,21 @@ class DateRangeFieldType extends DataFieldType {
 			
 			$fromConverted = \DateTime::createFromFormat($format, $inputs[0]);
 			if($fromConverted){
+				if(!$options['displayOptions']['timePicker']){
+					$fromConverted->setTime(0, 0, 0);
+				}
 				$convertedDates[$options['mappingOptions']['fromDateMachineName']] = $fromConverted->format(\DateTime::ISO8601);
 			}
 			
 			$toConverted = \DateTime::createFromFormat($format, $inputs[1]);
 			if($toConverted){
+				if(!$options['displayOptions']['timePicker']){
+					$toConverted->setTime(23, 59, 59);
+				}
 				$convertedDates[$options['mappingOptions']['toDateMachineName']] = $toConverted->format(\DateTime::ISO8601);
 			}
 						
+			dump($convertedDates);
 			$dataField->setRawData($convertedDates);
 		}
 		else {
@@ -101,13 +111,39 @@ class DateRangeFieldType extends DataFieldType {
 		return $dataField;
 	}
 
-
+	
+	/**
+	 * 
+	 * {@inheritdoc}
+	 *
+	 * @param array $data
+	 * @param array $option
+	 * @return boolean
+	 */
+	 public static function filterSubField(array $data, array $option){
+		if(!$option['mappingOptions']['nested']){
+			$out = [];
+			$fromDateMachineName = $option['mappingOptions']['fromDateMachineName'];
+			$toDateMachineName = $option['mappingOptions']['toDateMachineName'];
+			if(isset($data[$fromDateMachineName])){
+				$out[$fromDateMachineName] = $data[$fromDateMachineName];
+			}
+			if(isset($data[$toDateMachineName])){
+				$out[$toDateMachineName] = $data[$toDateMachineName];
+			}
+			dump($out);
+			return $out;
+		}
+		return parent::filterSubField($data, $option);
+	}
+	
+	
 	/**
 	 *
 	 * {@inheritdoc}
 	 *
 	 */
-	public function isVirtualField(array $option){
+	public static function isVirtual(array $option=[]){
 		return !$option['mappingOptions']['nested'];
 	}
 	

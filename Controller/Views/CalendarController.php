@@ -98,7 +98,6 @@ class CalendarController extends AppController
 		if(empty($body['query']['bool']['must'])){
 			$body['query']['bool']['must'] = [];
 		}
-		
 		if($field->getMappingOptions()['nested']){
 			$body['query']['bool']['must'][] = [
 				'nested' => [
@@ -133,6 +132,7 @@ class CalendarController extends AppController
 				]
 			];
 		}
+		
 		
 		$searchQuery = [
 				'index' => $view->getContentType()->getEnvironment()->getAlias(),

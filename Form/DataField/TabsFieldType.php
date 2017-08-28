@@ -125,7 +125,7 @@ class TabsFieldType extends DataFieldType {
 	 * {@inheritdoc}
 	 *
 	 */
-	public static function isVirtual(){
+	public static function isVirtual(array $option=[]){
 		return true;
 	}
 	

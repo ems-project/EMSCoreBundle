@@ -4,7 +4,6 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Exception\NotLockedException;
-use EMS\CoreBundle\Form\DataField\CollectionFieldType;
 
 /**
  * Revision
@@ -202,9 +201,12 @@ class Revision
     	foreach ($fieldType->getChildren() as $child){
     		if(!$child->getDeleted()) {
     			$type = $child->getType();
-    			if($type::isVirtual()){
+    			if($type::isVirtual($child->getOptions())){
     				if($type::isContainer()){
     					$out[$child->getName()]= self::addVirtualFields($child, $data);
+    				}
+    				else {
+    					$out[$child->getName()] = $type::filterSubField($data, $child->getOptions());
     				}
     			}
     			else {
@@ -252,9 +254,14 @@ class Revision
     	foreach ($fieldType->getChildren() as $child){
     		if(!$child->getDeleted()) {
     			$type = $child->getType();
-    			if($type::isVirtual()){
-    				if($type::isContainer() && isset($data[$child->getName()]) && !empty($data[$child->getName()])){
-    					$out = array_merge($out, self::removeVirtualField($child, $data[$child->getName()]));
+    			if($type::isVirtual($child->getOptions())){
+    				if(isset($data[$child->getName()]) && !empty($data[$child->getName()])){
+    					if($type::isContainer()){
+    						$out = array_merge_recursive($out, self::removeVirtualField($child, $data[$child->getName()]));    						
+    					}
+    					else {
+    						$out = array_merge_recursive($out, $data[$child->getName()]);
+    					}
     				}
     			}
     			else {

@@ -820,7 +820,7 @@ class DataService
 			}
 		}
 		else {
-			if($dataFieldType->isVirtualField($dataField->getFieldType()->getOptions()))  {
+			if($dataFieldType->isVirtual($dataField->getFieldType()->getOptions()))  {
 				$treatedFields = $dataFieldType->importData($dataField, $elasticIndexDatas, $isMigration);
 				foreach($treatedFields as $fieldName){
 					unset($elasticIndexDatas[$fieldName]);

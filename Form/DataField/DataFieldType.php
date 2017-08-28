@@ -221,12 +221,12 @@ abstract class DataFieldType extends AbstractType {
 	
 	/**
 	 * See if we can asume that we should find this field directly or if its a more complex type such as file or date range
-	 * 
+	 * @deprecated
 	 * @param array $option
 	 * @return boolean
 	 */
-	public function isVirtualField(array $option){
-		return false;
+	public static function isVirtualField(array $option){
+		return $this::isVirtual($option);
 	}
 	
 	/**
@@ -351,8 +351,17 @@ abstract class DataFieldType extends AbstractType {
 	 * 
 	 * @return boolean
 	 */
-	public static function isVirtual(){
+	public static function isVirtual(array $option=[]){
 		return false;
+	}
+	
+	/**
+	 * return an array filtered with subfields foir this specfic fieldtype (in case of virtualfield wich is not a container (datarange)) 
+	 *
+	 * @return boolean
+	 */
+	public static function filterSubField(array $data, array $option){
+		throw new \Exception('Only a non-container datafield which is virtual (i.e. a non-nested datarange) can be filtered');
 	}
 
 	/**

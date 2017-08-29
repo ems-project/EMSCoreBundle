@@ -184,6 +184,7 @@ class ContentTypeType extends AbstractType {
 			$builder->add ( 'createRole', RolePickerType::class);
 			$builder->add ( 'editRole', RolePickerType::class);
 			$builder->add ( 'viewRole', RolePickerType::class);
+			$builder->add ( 'publishRole', RolePickerType::class);
 			$builder->add ( 'orderField');
 			$builder->add ( 'saveAndEditStructure', SubmitEmsType::class, [
 					'attr' => [

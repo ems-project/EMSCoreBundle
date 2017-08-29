@@ -288,6 +288,13 @@ class ContentType
     private $viewRole;
     
     /**
+     * @var string
+     *
+     * @ORM\Column(name="publish_role", type="string", length=100, nullable=true)
+     */
+    private $publishRole;
+    
+    /**
      * @var int
      *
      * @ORM\Column(name="orderKey", type="integer")
@@ -1433,7 +1440,7 @@ class ContentType
     {
         return $this->refererFieldName;
     }
-
+    
     /**
      * Set viewRole
      *
@@ -1443,11 +1450,11 @@ class ContentType
      */
     public function setViewRole($viewRole)
     {
-        $this->viewRole = $viewRole;
-
-        return $this;
+    	$this->viewRole = $viewRole;
+    	
+    	return $this;
     }
-
+    
     /**
      * Get viewRole
      *
@@ -1455,7 +1462,31 @@ class ContentType
      */
     public function getViewRole()
     {
-        return $this->viewRole;
+    	return $this->viewRole;
+    }
+    
+    /**
+     * Set publishRole
+     *
+     * @param string $publishRole
+     *
+     * @return ContentType
+     */
+    public function setPublishRole($publishRole)
+    {
+    	$this->publishRole = $publishRole;
+    	
+    	return $this;
+    }
+    
+    /**
+     * Get publishRole
+     *
+     * @return string
+     */
+    public function getPublishRole()
+    {
+    	return $this->publishRole;
     }
 
     /**

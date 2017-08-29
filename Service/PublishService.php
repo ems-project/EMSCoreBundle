@@ -135,16 +135,18 @@ class PublishService
 	
 	public function publish(Revision $revision, Environment $environment, $command=false) {
 		if(!$command) {
-			if( ! $this->authorizationChecker->isGranted($revision->getContentType()->getEditRole()) ){
-				$this->session->getFlashBag()->add('warning', 'You are not allowed to publish the object '.$revision);
-				return;
-			}
 	
 			$user = $this->userService->getCurrentUser();
 			if( !empty($environment->getCircles()) && !$this->authorizationChecker->isGranted('ROLE_ADMIN') && empty(array_intersect($environment->getCircles(), $user->getCircles()) )) {
 				$this->session->getFlashBag()->add('warning', 'You are not allowed to publish in the environment '.$environment);
 				return;
-			}			
+			}
+			
+			if(! $this->authorizationChecker->isGranted($revision->getContentType()->getPublishRole())) {
+				$this->session->getFlashBag()->add('warning', 'You can not publish the content type  '.$contentType->getSingularName());
+				return;
+			}	
+			
 		}
 		
 		if($revision->getContentType()->getEnvironment() == $environment && !empty($revision->getEndTime())) {
@@ -207,16 +209,18 @@ class PublishService
 	public function unpublish(Revision $revision, Environment $environment, $command=false) {
 		
 		if(!$command){
-			if( ! $this->authorizationChecker->isGranted($revision->getContentType()->getEditRole()) ){
-				$this->session->getFlashBag()->add('warning', 'You are not allowed to unpublish the object '.$revision);
-				return;
-			}
 	
 			$user = $this->userService->getCurrentUser();
 			if( !empty($environment->getCircles() && !$this->authorizationChecker->isGranted('ROLE_ADMIN') && empty(array_intersect($environment->getCircles(), $user->getCircles())) )) {
 				$this->session->getFlashBag()->add('warning', 'You are not allowed to unpublish from the environment '.$environment);
 				return;
 			}
+			
+			
+			if(! $this->authorizationChecker->isGranted($revision->getContentType()->getPublishRole())) {
+				$this->session->getFlashBag()->add('warning', 'You can not unpublish the content type  '.$contentType->getSingularName());
+				return;
+			}	
 			
 		}
 		

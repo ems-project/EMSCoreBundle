@@ -405,8 +405,8 @@ services:
         arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.mapping', '@service_container', '@session', '%ems_core.instance_id%']
         tags:
             -  { name: console.command }
-    ems.environment.filllabelfield:
-        class: EMS\CoreBundle\Command\FillLabelFieldCommand
+    ems.environment.updatemetafield:
+        class: EMS\CoreBundle\Command\UpdateMetaFieldCommand
         arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@session', '@ems.service.data']
         tags:
             -  { name: console.command }

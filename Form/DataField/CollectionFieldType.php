@@ -262,34 +262,6 @@ class CollectionFieldType extends DataFieldType {
 		]];
 	}
 	
-	
-	
-	
-	/*public function modelTransform($data, FieldType $fieldType) {
-		dump('modelTransform');
-		dump($fieldType);
-		dump($data);
-		$out = parent::modelTransform($data, $fieldType);
-		dump($out);
-		return $out;
-	}
-	
-	public function reverseModelTransform(DataField $dataField){
-		dump('reverseModelTransform');
-		dump($dataField);
-		$out = parent::reverseModelTransform($dataField);
-		dump($out);
-		return $out;
-	}
-	
-	public function viewTransform(Datafield $dataField) {
-		dump('viewTransform');
-		dump($dataField);
-		$out = parent::viewTransform($dataField);
-		dump($out);
-		return $out;
-	}/**/
-	
 	/**
 	 *
 	 * {@inheritDoc}

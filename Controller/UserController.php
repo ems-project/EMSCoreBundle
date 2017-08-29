@@ -116,21 +116,13 @@ class UserController extends AppController
 		$form->handleRequest($request);
 	
 		if ($form->isSubmitted() && $form->isValid()) {
-			$user = $form->getData();
-// 			dump($user);exit;
-// 			$continue = TRUE;
-// 			$continue = $this->userExist($user, 'edit', $form);
-			
-// 			if ($continue) {
-				$this->getUserService()->updateUser($user);
-// 				$this->getDoctrine()->getManager()->flush();
-				$this->addFlash(
-						'notice',
-						'User was modified!'
-						);
-				return $this->redirectToRoute('ems.user.index');
-			}
-// 		}
+			$this->getUserService()->updateUser($user);
+			$this->addFlash(
+					'notice',
+					'User was modified!'
+					);
+			return $this->redirectToRoute('ems.user.index');
+		}
 	
 		return $this->render('EMSCoreBundle:user:edit.html.twig', array(
 				'form' => $form->createView(),

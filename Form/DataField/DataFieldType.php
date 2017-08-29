@@ -85,7 +85,6 @@ abstract class DataFieldType extends AbstractType {
 	 * @return array|null|string|integer|float
 	 */
 	public function reverseModelTransform(DataField $dataField) {
-// 		dump($data);
 		return $dataField->getRawData();
 	}
 	
@@ -99,11 +98,9 @@ abstract class DataFieldType extends AbstractType {
 	 * @return DataField
 	 */
 	public function modelTransform($data, FieldType $fieldType) {
-// 		dump($data);
 		$out = new DataField();
 		$out->setRawData($data);
 		$out->setFieldType($fieldType);
-// 		dump($out);
 		return $out;
 	}
 	
@@ -384,7 +381,6 @@ abstract class DataFieldType extends AbstractType {
 		$options = $current->getMappingOptions();
 		if(isset($options['copy_to']) && !empty($options['copy_to']) && is_string($options['copy_to'])) {
 			$options['copy_to'] = explode(',', $options['copy_to']);
-// 			dump(array_filter($options));
 		}
 		return [
 			$current->getName() => 

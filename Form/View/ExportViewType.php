@@ -108,7 +108,6 @@ class ExportViewType extends ViewType {
 	public function generateResponse(View $view, Request $request) {
 		$response = new Response();
 		$parameters = $this->getParameters($view, $this->formFactory, $request);
-// 		dump($parameters); exit;
 		
 		if(!empty($view->getOptions()['disposition'])){
 			$attachment = ResponseHeaderBag::DISPOSITION_ATTACHMENT;

@@ -72,14 +72,15 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     	}
     }
     
+    /**
+     * @deprecated
+     * @param DataField $child
+     * @param unknown $offset
+     * @throws \Exception
+     */
     private function initChild(DataField $child, $offset){
-//     	dump($child);
     	
     	throw new \Exception('deprecate');
-//     	$child->setParent($this);
-//     	$child->updateDataStructure($this->getFieldType());
-//     	$child->setOrderKey($offset);
-//     	$child->setChildrenFieldType($this->fieldType);
     }
     
     public function offsetSet($offset, $value) {
@@ -517,12 +518,12 @@ class DataField implements \ArrayAccess, \IteratorAggregate
 	 * Get dataValue, the get of field is delegated to the corresponding fieldType class
 	 *
 	 * @param \DateTime $dateValue
+	 * @deprecated
 	 *
 	 * @return DataField
 	 */
 	public function getDataValue() {
-// 		dump($this);
-		throw new Exception('shoudl came here');
+		throw new Exception('should never came here');
 		if($this->getFieldType())
 			return $this->getFieldType()->getDataValue($this);
 		return null;

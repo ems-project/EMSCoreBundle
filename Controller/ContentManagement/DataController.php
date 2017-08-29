@@ -697,7 +697,6 @@ class DataController extends AppController
 			throw new NotFoundHttpException('Unknown revision');
 		}		
 
-// 		$this->getDataService()->loadDataStructure($revision);
 		$backup = $revision->getRawData();
 		$form = $this->createForm(RevisionType::class, $revision);
 		
@@ -713,27 +712,16 @@ class DataController extends AppController
 		$revision->setRawData($backup);
 		
 		
-		
-
-// 		$this->getDataService()->convertInputValues($revision->getDataField());
-		
-// 		$objectArray = $this->get('ems.service.mapping')->dataFieldToArray($revision->getDataField());
-// 		$revision->setAutoSave($objectArray);
 		$revision->setAutoSaveAt(new \DateTime());
 		$revision->setAutoSaveBy($this->getUser()->getUsername());
-		
-// 		dump($revision);
-// 		throw new \Exception();
 		
 		$em->persist($revision);
 		$em->flush();			
 
 		$this->getDataService()->isValid($form);
-// 		$form->isValid();
 		$formErrors = $form->getErrors(true, true);
 			
 		$response= $this->render( 'EMSCoreBundle:data:ajax-revision.json.twig', [
-// 				'revision' =>  $revision,
 				'success' => true,
 				'formErrors' => $formErrors,
 		] );
@@ -879,17 +867,9 @@ class DataController extends AppController
 				$revision = $form->getData();
 				
 				$this->get('logger')->debug('Revision extracted from the form');
-// 				dump($revision); exit;
-				
-// 				$this->getDataService()->convertInputValues($revision->getDataField());
-// 				$this->get('logger')->debug('Input values converted');
 				
 				
 				$objectArray = $revision->getRawData();
-				
-// 				$objectArray = $this->get('ems.service.mapping')->dataFieldToArray($revision->getDataField());
-// 				$this->get('logger')->debug('$objectArray generated');
-// 				dump($objectArray); exit;
 				
 				if(array_key_exists('paste', $request->request->get('revision'))) {//Paste
 					$this->addFlash('notice', 'Data have been paste');

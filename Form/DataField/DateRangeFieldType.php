@@ -77,8 +77,6 @@ class DateRangeFieldType extends DataFieldType {
 		$input = $data['value'];
 		$options = $fieldType->getOptions();
 		
-		dump($options);
-		dump($data);
 		$format = DateRangeFieldType::convertJavascriptDateRangeFormat($options['displayOptions']['locale']['format']);
 		
 		$inputs = explode(' - ', $input);
@@ -101,8 +99,7 @@ class DateRangeFieldType extends DataFieldType {
 				}
 				$convertedDates[$options['mappingOptions']['toDateMachineName']] = $toConverted->format(\DateTime::ISO8601);
 			}
-						
-			dump($convertedDates);
+					
 			$dataField->setRawData($convertedDates);
 		}
 		else {
@@ -131,7 +128,7 @@ class DateRangeFieldType extends DataFieldType {
 			if(isset($data[$toDateMachineName])){
 				$out[$toDateMachineName] = $data[$toDateMachineName];
 			}
-			dump($out);
+			
 			return $out;
 		}
 		return parent::filterSubField($data, $option);

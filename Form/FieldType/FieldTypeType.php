@@ -174,8 +174,6 @@ class FieldTypeType extends AbstractType
     	
     	
     	$this->logger->debug('Builded', [json_encode($out), ]);
-    	
-//     	dump($out);exit;
 
     	/** @var DataField $child */
     	foreach ( $dataField->getChildren () as $child ) {

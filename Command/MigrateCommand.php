@@ -262,7 +262,6 @@ class MigrateCommand extends EmsCommand
 					
 					$this->client->index($indexConfig);
 					
-// 					dump($value['_id']);
 					$newRevision->setDraft(false);
 					//TODO: Test if client->index OK
 					$em->persist($newRevision);

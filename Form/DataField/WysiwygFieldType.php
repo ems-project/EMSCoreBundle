@@ -151,47 +151,4 @@ class WysiwygFieldType extends DataFieldType {
 				'required' => false,
 		]);
 	}
-	
-// 	/**
-// 	 *
-// 	 * {@inheritdoc}
-// 	 *
-// 	 */
-// 	public function getDataValue(DataField &$dataValues, array $options){
-		
-// 		if(is_array($dataValues->getRawData()) && count($dataValues->getRawData()) === 0){
-// 			return null; //empty array means null/empty
-// 		}
-		
-// 		if($dataValues->getRawData()!== null && !is_string($dataValues->getRawData())){
-// 			if(is_array($dataValues->getRawData()) && count($dataValues->getRawData()) == 1 && is_string($dataValues->getRawData()[0])) {
-// 				$this->addMessage('String expected, single string in array instead');
-// 				return $dataValues->getRawData()[0];
-// 			}
-// 			$this->addMessage('String expected from the DB: '.print_r($dataValues->getRawData(), true));
-// 		}
-		
-// 		$output = $dataValues->getRawData();
-// // 		dump($dataValues->getRawData());
-// 		dump($this);
-// 		throw new \Exception();
-// 		$this->router->generate('ems_file_download', [
-// 				'sha1' => 	'__toot__',
-// 		]);
-		
-// 		return $output;
-// 	}
-	
-// 	/**
-// 	 *
-// 	 * {@inheritdoc}
-// 	 *
-// 	 */
-// 	public function setDataValue($input, DataField &$dataValues, array $options){
-// 		if($input!== null && !is_string($input)){
-// 			throw new DataFormatException('String expected: '.print_r($rawData, true));
-// 		}
-// 		$dataValues->setRawData($input);
-// 		return $this;
-// 	}
 }

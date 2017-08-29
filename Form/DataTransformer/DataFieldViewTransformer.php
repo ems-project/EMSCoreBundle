@@ -30,7 +30,6 @@ class DataFieldViewTransformer implements DataTransformerInterface
     {
         /**@var DataFieldType $dataFieldType*/
         $dataFieldType = $this->formRegistry->getType($this->fieldType->getType())->getInnerType();
-//         dump($dataFieldType);
         
         return $dataFieldType->viewTransform($data);
     }

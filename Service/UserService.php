@@ -3,11 +3,12 @@
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use EMS\CoreBundle\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use EMS\CoreBundle\Entity\AuthToken;
+use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Repository\UserRepositoryInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class UserService {
 	/**@var Registry $doctrine */
@@ -136,7 +137,10 @@ class UserService {
 	public function getUsersForRoleAndCircles($role, $circles) {
 		/**@var EntityManagerInterface $em*/
 		$em = $this->doctrine->getManager();
+		
+		/**@var UserRepositoryInterface $repository */
 		$repository = $em->getRepository('EMSCoreBundle:User');
+		
 		return $repository->findForRoleAndCircles($role, $circles);
 	}
 	

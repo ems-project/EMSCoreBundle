@@ -198,9 +198,10 @@
                   {% endfor %}
                 {% endif %}
               </td>
-            {% if is_granted('ROLE_ALLOW_ALIGN')  %}
+            {% if is_granted('ROLE_ALLOW_ALIGN') and is_granted(item.contentType.publishRole)  %}
               <td>
               	<div class="btn-group">
+              	
           				{%  if defaultEnv and withEnv.id != defaultEnv.id  and toInMyCircles %}
           					{% if minrev[0] == fromEnv.id %}
             					<button type="submit" id="{{ minrev[1] }}" name="compare_environment_form[alignWith]" value="{{ minrev[1] }}" class="btn-danger btn-sm btn"><span class="fa fa-chevron-right"></span>&nbsp;Align {{ withEnvironment }} with {{ environment }}</button>

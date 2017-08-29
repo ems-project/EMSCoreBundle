@@ -91,34 +91,40 @@ class PublishService
 	public function alignRevision($type, $ouuid, $envirronmentSource, $envirronmentTarget) {
 		if($this->contentTypeService->getByName($type)->getEnvironment()->getName() == $envirronmentTarget){
 			$this->session->getFlashBag()->add('warning', 'You can not align the default environment for '.$type.':'.$ouuid);
+			return;
+		}
+		$contentType = $this->contentTypeService->getByName($type);
+			
+			
+		if(! $this->authorizationChecker->isGranted($contentType->getPublishRole())) {
+			$this->session->getFlashBag()->add('warning', 'You can not publish the content type  '.$contentType->getSingularName());
+			return;
+		}		
+			
+			
+		$revision = $this->revRepository->findByOuuidAndContentTypeAndEnvironnement(
+				$contentType,
+				$ouuid, 
+				$this->environmentService->getByName($envirronmentSource)
+		);
+	
+		if(!$revision){
+			$this->session->getFlashBag()->add('warning', 'Missing revision in the environment '.$envirronmentSource.' for '.$type.':'.$ouuid);
 		}
 		else{
-			$contentType = $this->contentTypeService->getByName($type);
-			$revision = $this->revRepository->findByOuuidAndContentTypeAndEnvironnement(
-					$contentType,
-					$ouuid, 
-					$this->environmentService->getByName($envirronmentSource)
+			$target = $this->environmentService->getByName($envirronmentTarget);
+			
+			$toClean = $this->revRepository->findByOuuidAndContentTypeAndEnvironnement(
+				$contentType,
+				$ouuid,
+				$target
 			);
-		
-			if(!$revision){
-				$this->session->getFlashBag()->add('warning', 'Missing revision in the environment '.$envirronmentSource.' for '.$type.':'.$ouuid);
-			}
-			else{
-				$target = $this->environmentService->getByName($envirronmentTarget);
-				
-				$toClean = $this->revRepository->findByOuuidAndContentTypeAndEnvironnement(
-					$contentType,
-					$ouuid,
-					$target
-				);
-				
-				if($toClean != $revision) {
-					if($toClean) {
-						$this->unpublish($toClean, $target);
-					}
-					$this->publish($revision, $target);
-					
+			
+			if($toClean != $revision) {
+				if($toClean) {
+					$this->unpublish($toClean, $target);
 				}
+				$this->publish($revision, $target);
 				
 			}
 			

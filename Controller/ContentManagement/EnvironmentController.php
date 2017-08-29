@@ -84,11 +84,19 @@ class EnvironmentController extends AppController {
 					$continue = true;
 					foreach ($alignTo as $env){
 						if($revision->getContentType()->getEnvironment()->getName() == $env) {
-							$this->session->getFlashBag()->add('warning', 'You can not align the default environment for '.$type.':'.$ouuid);
+							$this->addFlash('warning', 'You can not align the default environment for the content type'.$revision->getContentType()->getSingularName());
 							$continue = false;
 							break;
-						}						
+						}
+						
+						
+						if(! $this->getAuthorizationChecker()->isGranted($revision->getContentType()->getPublishRole())) {
+							$this->addFlash('warning', 'You can not publish the content type  '.$revision->getContentType()->getSingularName());
+							$continue = false;
+							break;
+						}		
 					}
+					
 					if($continue) {
 						$this->getDataService()->lockRevision($revision);
 						foreach ($alignTo as $env){

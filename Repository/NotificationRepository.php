@@ -157,11 +157,11 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
 		
 		
 		$orCircles = $qb->expr()->orX();
-		$orCircles->add('e.circles is null');
+		$orCircles->add('r.circles is null');
 		
 		$counter = 0;
 		foreach ($user->getCircles() as $circle) {
-			$orCircles->add('e.circles like :circle_'.$counter);
+			$orCircles->add('r.circles like :circle_'.$counter);
 			$params['circle_'.$counter] = '%'.$circle.'%';
 			++$counter;
 		}
@@ -203,11 +203,11 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
 		}
 	
 		$orCircles = $qb->expr()->orX();
-		$orCircles->add('e.circles is null');
+		$orCircles->add('r.circles is null');
 	
 		$counter = 0;
 		foreach ($user->getCircles() as $circle) {
-			$orCircles->add('e.circles like :circle_'.$counter);
+			$orCircles->add('r.circles like :circle_'.$counter);
 			$params['circle_'.$counter] = '%'.$circle.'%';
 			++$counter;
 		}

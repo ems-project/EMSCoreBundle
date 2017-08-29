@@ -128,7 +128,9 @@ class NotificationController extends AppController
 				}
 				
 				if(!empty($publishIn)) {
+					$this->getDataService()->lockRevision($notification->getRevision());
 					$this->getPublishService()->publish($notification->getRevision(), $publishIn);
+					$this->getDataService()->unlockRevision($notification->getRevision());
 				}
 				
 // 				if(!empty($unpublishFrom)) {

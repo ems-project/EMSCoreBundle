@@ -7,6 +7,15 @@
     * lastPage (int) : represents the total number of existing pages
 #}
 {% spaceless %}
+
+	{% if paging is defined %}
+		{% set currentFilters = app.request.query %}
+		{% set currentPage = paging.page %}
+		{% set lastPage = paging.lastPage %}
+		{% set paginationPath = paging.paginationPath %}
+	{%  endif %}
+
+
     {% if lastPage > 1 %}
 
         {# the number of first and last pages to be displayed #}

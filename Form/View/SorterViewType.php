@@ -94,9 +94,10 @@ class SorterViewType extends ViewType {
 				'required' => false,
 				'firstLevelOnly' => false,
 				'mapping' => $mapping,
-				'types' => [
-						'integer',
-		]]);
+    		    'types' => [
+    		        'integer',
+    		        'long',
+    		]]);
 	}
 	
 	/**

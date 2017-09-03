@@ -75,6 +75,14 @@ class DateFieldType extends DataFieldType {
 				}
 			}			
 		}
+		if(!$dataField->getFieldType()->getDisplayOptions()['multidate']){
+			if(empty($out)){
+				return null;
+			}
+			else {
+				return $out[0];
+			}
+		}
 		return $out;
 	}
 	

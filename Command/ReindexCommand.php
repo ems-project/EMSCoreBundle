@@ -16,6 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Elasticsearch\Common\Exceptions\BadRequest400Exception;
 use EMS\CoreBundle\Service\DataService;
+use Elasticsearch\Common\Exceptions\ServerErrorResponseException;
 
 class ReindexCommand extends EmsCommand
 {
@@ -131,6 +132,11 @@ class ReindexCommand extends EmsCommand
 					catch(BadRequest400Exception $e){
 						$this->session->getFlashBag()->add('warning', 'The revision '.$revision->getId().' of '.$revision->getContentType()->getName().':'.$revision->getOuuid().' through an error during indexing');
 						$error++;
+					}
+					catch (ServerErrorResponseException $e){
+					    $output->writeln($revision->getContentType()->getName().':'.$revision->getOuuid().': '.$e->getMessage());
+ 					    $this->session->getFlashBag()->add('warning', 'The revision '.$revision->getId().' of '.$revision->getContentType()->getName().':'.$revision->getOuuid().' through an error during indexing');
+					    $error++;
 					}
 				}
 				$progress->advance();

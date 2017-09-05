@@ -9,6 +9,8 @@ use Doctrine\ORM\Mapping\OrderBy;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * RevisionRepository
@@ -19,6 +21,31 @@ use Doctrine\ORM\Query\Expr\Join;
 class RevisionRepository extends \Doctrine\ORM\EntityRepository
 {
 
+    
+    
+    
+    /**
+     * 
+     * @param Environment $env
+     * @param int $page
+     * @return \Doctrine\ORM\Tools\Pagination\Paginator
+     */
+    public function getRevisionsPaginatorPerEnvironment(Environment $env, $page=0) {
+        /** @var QueryBuilder $qb */
+        $qb = $this->createQueryBuilder('r');
+        $qb->join('r.environments', 'e')
+            ->where('e.id = :eid')
+            //->andWhere($qb->expr()->eq('r.deleted', ':false')
+            ->setMaxResults(50)
+            ->setFirstResult($page*50)
+            ->orderBy('r.ouuid', 'asc')
+            ->setParameters(['eid'=> $env->getId()]);
+        
+        $paginator = new Paginator($qb->getQuery());
+    
+        return $paginator;
+    }
+    
 	public function findByEnvironment($ouuid, ContentType $contentType, Environment $environment){
 		$qb = $this->createQueryBuilder('r')
 			->join('r.environments', 'e')

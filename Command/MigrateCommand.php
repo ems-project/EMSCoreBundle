@@ -175,9 +175,16 @@ class MigrateCommand extends EmsCommand
 					'type' => $contentTypeNameFrom,
 					'size' => 50,
 					'from' => $from,
-					'preference' => '_primary', //http://stackoverflow.com/questions/10836142/elasticsearch-duplicate-results-with-paging
+			        'body' => '{
+                       "sort": {
+                          "_uid": {
+                             "order": "asc",
+                             "missing": "_last"
+                          }
+                       }
+                    }',
+					//'preference' => '_primary', //http://stackoverflow.com/questions/10836142/elasticsearch-duplicate-results-with-paging
 			]);
-// 			$output->writeln("\nMigrating " . ($from+1) . " / " . $total );
 			
 			$contentTypeTo = $contentTypeRepository->findOneBy(array("name" => $contentTypeNameTo, 'deleted' => false));
 			$defaultEnv = $contentTypeTo->getEnvironment();

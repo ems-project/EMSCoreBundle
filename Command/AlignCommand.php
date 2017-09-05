@@ -120,8 +120,16 @@ class AlignCommand extends ContainerAwareCommand
     		$scroll = $this->client->search([
     			'index' => $source->getAlias(),
     			'size' => 50,
-    			'from' => $from,
-    			'preference' => '_primary', //http://stackoverflow.com/questions/10836142/elasticsearch-duplicate-results-with-paging
+    		    'from' => $from,
+    		    'body' => '{
+                       "sort": {
+                          "_uid": {
+                             "order": "asc",
+                             "missing": "_last"
+                          }
+                       }
+                    }',
+    			//'preference' => '_primary', //http://stackoverflow.com/questions/10836142/elasticsearch-duplicate-results-with-paging
     		]);
 
     		foreach ($scroll['hits']['hits'] as &$hit){

@@ -59,8 +59,6 @@ class UpdateMetaFieldCommand extends EmsCommand
 		if($environment && count($environment) == 1) {
 			$environment = $environment[0];
 			
-			dump($environment);
-			
 			$page = 0;
 			$paginator = $revRepo->getRevisionsPaginatorPerEnvironment($environment, $page);
 

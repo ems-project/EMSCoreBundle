@@ -3,7 +3,6 @@
 namespace EMS\CoreBundle\Repository;
 
 use EMS\CoreBundle\Entity\Environment;
-use Doctrine\DBAL\Query\QueryBuilder;
 
 /**
  * EnvironmentRepository
@@ -13,16 +12,31 @@ use Doctrine\DBAL\Query\QueryBuilder;
  */
 class EnvironmentRepository extends \Doctrine\ORM\EntityRepository
 {
-	
-	public function getEnvironmentsStats() {
-		/** @var QueryBuilder $qb */
-		$qb = $this->createQueryBuilder('e')
-			->select('e as environment', 'count(r) as counter', 'count(r.deleted) as deleted')
-			->leftJoin('e.revisions', 'r')
-			->groupBy('e.id');
-		
-		return $qb->getQuery()->getResult();
-	}
+    
+    public function getEnvironmentsStats() {
+        /** @var QueryBuilder $qb */
+        $qb = $this->createQueryBuilder('e')
+        ->select('e as environment', 'count(r) as counter', 'count(r.deleted) as deleted')
+        ->leftJoin('e.revisions', 'r')
+        ->groupBy('e.id');
+        
+        return $qb->getQuery()->getResult();
+    }
+    
+    public function countRevisionPerEnvironment(Environment $env) {
+        /** @var QueryBuilder $qb */
+        $qb = $this->createQueryBuilder('e');
+        
+        $qb->select('count(r) as counter')
+        ->where($qb->expr()->eq('e.id', $env->getId()))
+//         ->andWhere($qb->expr()->eq('r.deleted', ':false')
+        ->leftJoin('e.revisions', 'r')
+        ->groupBy('e.id');
+        
+//         $qb->setParameters([':false' => false]);
+        
+        return $qb->getQuery()->getSingleScalarResult();
+    }
 	
 	public function findAvailableEnvironements(Environment $defaultEnv) {
 		/** @var QueryBuilder $qb */

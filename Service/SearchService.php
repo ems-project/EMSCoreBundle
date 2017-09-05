@@ -4,7 +4,6 @@ namespace EMS\CoreBundle\Service;
 
 
 use EMS\CoreBundle\Entity\Form\Search;
-use EMS\CoreBundle\Entity\Form\SearchFilter;
 
 class SearchService
 {
@@ -29,11 +28,14 @@ class SearchService
 		if ( null != $search->getSortBy() && strlen($search->getSortBy()) > 0  ) {
 			$body["sort"] = [
 					$search->getSortBy() => [
-							'order' => $search->getSortOrder(),
+					    'order' => (empty($search->getSortOrder())?'asc': $search->getSortOrder()),
 							'missing' => '_last',
 					]
 			];
 		
+		}
+		else {
+		    $body["sort"] = ['_uid' => 'asc'];
 		}
 		return $body;
 	} 

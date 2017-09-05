@@ -17,6 +17,8 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Elasticsearch\Common\Exceptions\BadRequest400Exception;
 use EMS\CoreBundle\Service\DataService;
 use Elasticsearch\Common\Exceptions\ServerErrorResponseException;
+use EMS\CoreBundle\Repository\EnvironmentRepository;
+use EMS\CoreBundle\Repository\RevisionRepository;
 
 class ReindexCommand extends EmsCommand
 {
@@ -65,9 +67,11 @@ class ReindexCommand extends EmsCommand
     	$name = $input->getArgument('name');
     	/** @var EntityManager $em */
 		$em = $this->doctrine->getManager();
-
-		/** @var JobRepository $envRepo */
+		
+		/** @var EnvironmentRepository $envRepo */
 		$envRepo = $em->getRepository('EMSCoreBundle:Environment');
+		/** @var RevisionRepository $revRepo */
+		$revRepo = $em->getRepository('EMSCoreBundle:Revision');
 		/** @var Environment $environment */
 		$environment = $envRepo->findBy(['name' => $name, 'managed' => true]);
 		if($environment && count($environment) == 1) {
@@ -82,65 +86,73 @@ class ReindexCommand extends EmsCommand
 			$deleted = 0;
 			$error = 0;
 			
+			$output->write('Start reindex');
+			
+			$page = 0;
+			$paginator = $revRepo->getRevisionsPaginatorPerEnvironment($environment, $page);
+			
 			// create a new progress bar
-			$progress = new ProgressBar($output, count($environment->getRevisions()));
+			$progress = new ProgressBar($output, $paginator->count());
 			// start and displays the progress bar
 			$progress->start();
-			
-			/** @var \EMS\CoreBundle\Entity\Revision $revision */
-			foreach ($environment->getRevisions() as $revision) {
-				if($revision->getDeleted()){
-					++$deleted;
-					$this->session->getFlashBag()->add('warning', 'The revision '.$revision->getContentType()->getName().':'.$revision->getOuuid().' is deleted and is referenced in '.$environment->getName());
-				}
-				else if ($revision->getContentType()->getDeleted()) {
-					++$deleted;
-					$this->session->getFlashBag()->add('warning', 'The content type of the revision '.$revision->getContentType()->getName().':'.$revision->getOuuid().' is deleted and is referenced in '.$environment->getName());
-				}
-// 				else if ($revision->getContentType()->getEnvironment() == $environment && $revision->getEndTime() != null) {
-// 					++$error;
-// 					$this->session->getFlashBag()->add('warning', 'The revision '.$revision->getId().' of '.$revision->getContentType()->getName().':'.$revision->getOuuid().' as an end date but '.$environment->getName().' is its default environment');
-// 				}
-				else {
-					
-					$config = [
-						'index' => $index,
-						'id' => $revision->getOuuid(),
-						'type' => $revision->getContentType()->getName(),
-						'body' => $this->dataService->sign($revision),
-					];
-					
-					try{
-						$em->persist($revision);
-						$em->flush();						
-					}
-					catch (\Exception $e){
-						
-					}
-					
-					if($revision->getContentType()->getHavePipelines()){
-						$config['pipeline'] = $this->instanceId.$revision->getContentType()->getName();
-					}
-					try {
-						$status = $this->client->index($config);
-						if($status["_shards"]["failed"] == 1) {
-							$error++;
-						} else {
-							$count++;				
-						}						
-					}
-					catch(BadRequest400Exception $e){
-						$this->session->getFlashBag()->add('warning', 'The revision '.$revision->getId().' of '.$revision->getContentType()->getName().':'.$revision->getOuuid().' through an error during indexing');
-						$error++;
-					}
-					catch (ServerErrorResponseException $e){
-					    $output->writeln($revision->getContentType()->getName().':'.$revision->getOuuid().': '.$e->getMessage());
- 					    $this->session->getFlashBag()->add('warning', 'The revision '.$revision->getId().' of '.$revision->getContentType()->getName().':'.$revision->getOuuid().' through an error during indexing');
-					    $error++;
-					}
-				}
-				$progress->advance();
-			}
+			do {
+    			/** @var \EMS\CoreBundle\Entity\Revision $revision */
+    			foreach ($paginator as $revision) {
+    				if($revision->getDeleted()){
+    					++$deleted;
+    					$this->session->getFlashBag()->add('warning', 'The revision '.$revision->getContentType()->getName().':'.$revision->getOuuid().' is deleted and is referenced in '.$environment->getName());
+    				}
+    				else if ($revision->getContentType()->getDeleted()) {
+    					++$deleted;
+    					$this->session->getFlashBag()->add('warning', 'The content type of the revision '.$revision->getContentType()->getName().':'.$revision->getOuuid().' is deleted and is referenced in '.$environment->getName());
+    				}
+    // 				else if ($revision->getContentType()->getEnvironment() == $environment && $revision->getEndTime() != null) {
+    // 					++$error;
+    // 					$this->session->getFlashBag()->add('warning', 'The revision '.$revision->getId().' of '.$revision->getContentType()->getName().':'.$revision->getOuuid().' as an end date but '.$environment->getName().' is its default environment');
+    // 				}
+    				else {
+    					
+    					$config = [
+    						'index' => $index,
+    						'id' => $revision->getOuuid(),
+    						'type' => $revision->getContentType()->getName(),
+    						'body' => $this->dataService->sign($revision),
+    					];
+    					
+    					try{
+    						$em->persist($revision);
+    						$em->flush();						
+    					}
+    					catch (\Exception $e){
+    						
+    					}
+    					
+    					if($revision->getContentType()->getHavePipelines()){
+    						$config['pipeline'] = $this->instanceId.$revision->getContentType()->getName();
+    					}
+    					try {
+    						$status = $this->client->index($config);
+    						if($status["_shards"]["failed"] == 1) {
+    							$error++;
+    						} else {
+    							$count++;				
+    						}						
+    					}
+    					catch(BadRequest400Exception $e){
+    						$this->session->getFlashBag()->add('warning', 'The revision '.$revision->getId().' of '.$revision->getContentType()->getName().':'.$revision->getOuuid().' through an error during indexing');
+    						$error++;
+    					}
+    					catch (ServerErrorResponseException $e){
+    					    $output->writeln($revision->getContentType()->getName().':'.$revision->getOuuid().': '.$e->getMessage());
+     					    $this->session->getFlashBag()->add('warning', 'The revision '.$revision->getId().' of '.$revision->getContentType()->getName().':'.$revision->getOuuid().' through an error during indexing');
+    					    $error++;
+    					}
+    				}
+    				$progress->advance();
+    			}
+    			++$page;
+    			$paginator = $revRepo->getRevisionsPaginatorPerEnvironment($environment, $page);
+		    } while ($paginator->getIterator()->count());
 			$progress->finish();
 			$output->writeln('');
 

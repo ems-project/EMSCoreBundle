@@ -85,21 +85,22 @@ class ElasticsearchController extends AppController
 	/**
 	 * @Route("/health_check.{_format}", defaults={"_format": "html"}, name="health-check")
 	 */
-	public function healthCheckAction($_format) {		
-		try {
-			$client = $this->getElasticsearch();
-			$status = $client->cluster()->health();
-			if('red' === $status['status']) {
-				throw new \Exception('Elasticsearch cluster is red');
-			}
-			
-			return $this->render( 'EMSCoreBundle:elasticsearch:status.'.$_format.'.twig', [
-					'status' => $status['status']
-			] );	
-		} catch (\Exception $e) {
-			throw new ServiceUnavailableHttpException('Due to '.$e->getMessage());
-		}
-		
+	public function healthCheckAction($_format) {
+	    try {
+	        $client = $this->getElasticsearch();
+	        $status = $client->cluster()->health();
+	        $certificatInfo = $this->getDataService()->getCertificateInfo();
+	        if('red' === $status['status']) {
+	            throw new \Exception('Elasticsearch cluster is red');
+	        }
+	        
+	        return $this->render( 'EMSCoreBundle:elasticsearch:status.'.$_format.'.twig', [
+	            'status' => $status,
+	            'certificate' => $certificatInfo,
+	        ] );
+	    } catch (\Exception $e) {
+	        throw new ServiceUnavailableHttpException('Due to '.$e->getMessage());
+	    }
 	}
 	
 	/**

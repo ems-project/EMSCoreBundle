@@ -98,30 +98,9 @@ class EnvironmentController extends AppController {
 					}
 					
 					if($continue) {
-						$this->getDataService()->lockRevision($revision);
-						foreach ($alignTo as $env){
-							$item = $repository->findByOuuidContentTypeAndEnvironnement($revision, $environmentService->getAliasByName($env));
-							if ($item){
-								$this->getDataService()->lockRevision($item);
-								$item->removeEnvironment($environmentService->getAliasByName($env));
-								$em->persist($item);
-							}
-							$revision->addEnvironment($environmentService->getAliasByName($env));
-							$status = $client->index([
-									'id' => $revision->getOuuid(),
-									'index' => $environmentService->getAliasByName($env)->getAlias(),
-									'type' => $revision->getContentType()->getName(),
-									'body' => $this->getDataService()->sign($revision),
-							]);
-							
-						}
-						
-						$em->persist($revision);
-						$em->flush();
-	
-						foreach ($alignTo as $env){
-							$this->addFlash('notice','Revision '.$revid.' of the object '.$revision->getOuuid().' has been published in '.$env);						
-						}
+					    foreach ($alignTo as $env){
+					        $this->getPublishService()->alignRevision($revision->getContentType()->getName(), $revision->getOuuid(), $revision->getEnvironments()->first()->getName(), $env);
+					    }
 					}
 				}
 				else if(array_key_exists('alignLeft', $request->request->get('compare_environment_form'))) {

@@ -38,7 +38,7 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
             //->andWhere($qb->expr()->eq('r.deleted', ':false')
             ->setMaxResults(50)
             ->setFirstResult($page*50)
-            ->orderBy('r.ouuid', 'asc')
+            ->orderBy('r.id', 'asc')
             ->setParameters(['eid'=> $env->getId()]);
         
         $paginator = new Paginator($qb->getQuery());

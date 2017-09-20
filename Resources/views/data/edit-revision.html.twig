@@ -482,11 +482,12 @@ function addEventListeners(target){
 		var params = {
 		  	escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
 		  	templateResult: formatRepo, // omitted for brevity, see the source of this page
-		  	templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
+		  	templateSelection: formatRepoSelection, // omitted for brevity, see the source of this page
+		  	allowClear: true,
+		  	placeholder: 'Select an object'
 		};
 
 		if($( this ).attr('multiple')) {
-		  	params.allowClear = true;
 		  	params.closeOnSelect = false;
 		}
 

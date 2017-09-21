@@ -204,10 +204,28 @@ class DataService
 
 	}
 	
-	public function propagateDataToComputedField(FormInterface $form, array& $objectArray, $type, $ouuid){
+	public function propagateDataToComputedField(FormInterface $form, array& $objectArray, ContentType $contentType, $type, $ouuid, $migration=false){
 		$found = false;
 		/**@var DataField $dataField*/
 		$dataField = $form->getNormData();
+		$extraOption = $dataField->getFieldType()->getExtraOptions();
+		if( isset($extraOption['postProcessing']) && !empty($extraOption['postProcessing']) ) {
+			try {
+				$out = $this->twig->createTemplate($extraOption['postProcessing'])->render([
+						'_source' => $objectArray,
+						'_type' => $type,
+						'_id' => $ouuid,
+						'index' => $contentType->getEnvironment()->getAlias(),
+						'migration' => $migration,
+				]);
+				$out = json_decode($out);
+				$objectArray[$dataField->getFieldType()->getName()] = $out;
+				$found = true;
+			}
+			catch (\Exception $e) {
+				$this->session->getFlashBag()->add('warning', 'Error to parse the post processing script of field '.$dataField->getFieldType()->getName().': '.$e->getMessage());
+			}	
+		}
 		if( $form->getConfig()->getType()->getInnerType() instanceof ComputedFieldType ) {
 			$template = $dataField->getFieldType()->getDisplayOptions()['valueTemplate'];
 			if(empty($template)){
@@ -218,7 +236,9 @@ class DataService
 					$out = $this->twig->createTemplate($template)->render([
 						'_source' => $objectArray,
 						'_type' => $type,
-						'_id' => $ouuid
+						'_id' => $ouuid,
+						'index' => $contentType->getEnvironment()->getAlias(),
+						'migration' => $migration,
 					]);
 					
 					if($dataField->getFieldType()->getDisplayOptions()['json']){
@@ -226,7 +246,7 @@ class DataService
 					}
 				}
 				catch (\Exception $e) {
-					$out = "Error in template: ".$e->getMessage();
+					$this->session->getFlashBag()->add('warning', 'Error to parse the computed field '.$dataField->getFieldType()->getName().': '.$e->getMessage());
 				}					
 			}
 			$objectArray[$dataField->getFieldType()->getName()] = $out;
@@ -239,7 +259,7 @@ class DataService
 				if ($childType instanceof CollectionFieldType) {
 					foreach ($child->getIterator() as $collectionChild) {
 						$elementsArray = $collectionChild->getNormData()->getRawData();
-						$found = $this->propagateDataToComputedField($collectionChild, $elementsArray, $type, $ouuid) || $found;
+						$found = $this->propagateDataToComputedField($collectionChild, $elementsArray, $contentType, $type, $ouuid, $migration) || $found;
 						
 						$fieldName = $child->getNormData()->getFieldType()->getName();
 						$positionInCollection = $collectionChild->getConfig()->getName();
@@ -247,7 +267,7 @@ class DataService
 						$objectArray[$fieldName][$positionInCollection] = $elementsArray;	
 					}
 				}elseif( $childType instanceof DataFieldType ) {
-					$found = $this->propagateDataToComputedField($child, $objectArray, $type, $ouuid) || $found;					
+					$found = $this->propagateDataToComputedField($child, $objectArray, $contentType, $type, $ouuid, $migration) || $found;					
 				}
 			}			
 		}
@@ -463,7 +483,7 @@ class DataService
 		$objectArray = $revision->getRawData();
 		
 		$this->updateDataStructure($revision->getContentType()->getFieldType(), $form->get('data')->getNormData());
-		if($this->propagateDataToComputedField($form->get('data'), $objectArray, $revision->getContentType()->getName(), $revision->getOuuid())) {
+		if($this->propagateDataToComputedField($form->get('data'), $objectArray, $revision->getContentType(), $revision->getContentType()->getName(), $revision->getOuuid())) {
 			$revision->setRawData($objectArray);
 		}
 		

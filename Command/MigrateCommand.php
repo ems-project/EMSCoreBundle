@@ -217,7 +217,7 @@ class MigrateCommand extends EmsCommand
 							$newRevision->setData($data);
 							$objectArray = $newRevision->getRawData();
 
-							$this->dataService->propagateDataToComputedField($revisionType->get('data'), $objectArray, $contentTypeTo->getName(), $value['_id']);
+							$this->dataService->propagateDataToComputedField($revisionType->get('data'), $objectArray, $contentTypeTo, $contentTypeTo->getName(), $value['_id'], true);
 							$newRevision->setRawData($objectArray);
 							
 							unset($revisionType);
@@ -247,7 +247,7 @@ class MigrateCommand extends EmsCommand
 						$newRevision->setData($data);
 						$objectArray = $newRevision->getRawData();
 						
-						$this->dataService->propagateDataToComputedField($revisionType->get('data'), $objectArray, $contentTypeTo->getName(), $value['_id']);
+						$this->dataService->propagateDataToComputedField($revisionType->get('data'), $objectArray, $contentTypeTo, $contentTypeTo->getName(), $value['_id'], true);
 						$newRevision->setRawData($objectArray);
 						
 						unset($revisionType);

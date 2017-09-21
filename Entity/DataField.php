@@ -669,6 +669,10 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         return $this;
     }
 	
+    /**
+     * 
+     * @return \EMS\CoreBundle\Entity\DataField
+     */
     public function getRootDataField() {
     	$out = $this;
     	while($out->getParent()){

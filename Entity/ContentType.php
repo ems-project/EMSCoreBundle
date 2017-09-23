@@ -295,6 +295,13 @@ class ContentType
     private $publishRole;
     
     /**
+     * @var string
+     *
+     * @ORM\Column(name="trash_role", type="string", length=100, nullable=true)
+     */
+    private $trashRole;
+    
+    /**
      * @var int
      *
      * @ORM\Column(name="orderKey", type="integer")
@@ -1487,6 +1494,30 @@ class ContentType
     public function getPublishRole()
     {
     	return $this->publishRole;
+    }
+    
+    /**
+     * Set publishRole
+     *
+     * @param string $publishRole
+     *
+     * @return ContentType
+     */
+    public function setTrashRole($trashRole)
+    {
+    	$this->trashRole= $trashRole;
+    	
+    	return $this;
+    }
+    
+    /**
+     * Get trashRole
+     *
+     * @return string
+     */
+    public function getTrashRole()
+    {
+    	return $this->trashRole;
     }
 
     /**

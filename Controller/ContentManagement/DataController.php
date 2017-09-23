@@ -684,44 +684,47 @@ class DataController extends AppController
 		/** @var Revision $revision */
 		$revision = $repository->find($revisionId);
 		
+		if (!$revision){
+			throw new NotFoundHttpException('Revision not found');	
+		}
 		
 		if( empty($request->request->get('revision')) || empty($request->request->get('revision')['allFieldsAreThere']) || !$request->request->get('revision')['allFieldsAreThere']) {
 			$this->addFlash('error', 'Incomplete request, some fields of the request are missing, please verifiy your server configuration. (i.e.: max_input_vars in php.ini)');
 			$this->addFlash('error', 'Your modification are not saved!');
 		}
+		else {
 
-		$this->lockRevision($revision);
-		$this->getLogger()->addDebug('Revision locked');
-		
-		if(!$revision) {
-			throw new NotFoundHttpException('Unknown revision');
-		}		
-
-		$backup = $revision->getRawData();
-		$form = $this->createForm(RevisionType::class, $revision);
-		
-		
-		/**little trick to reorder collection*/
-		$requestRevision = $request->request->get('revision');
-		$this->reorderCollection($requestRevision);
-		$request->request->set('revision', $requestRevision);
-		/**end little trick to reorder collection*/
-		
-		$form->handleRequest($request);
-		$revision->setAutoSave($revision->getRawData());
-		$revision->setRawData($backup);
-		
-		
-		$revision->setAutoSaveAt(new \DateTime());
-		$revision->setAutoSaveBy($this->getUser()->getUsername());
-		
-		$em->persist($revision);
-		$em->flush();			
-
-		$this->getDataService()->isValid($form);
-		$formErrors = $form->getErrors(true, true);
+			$this->lockRevision($revision);
+			$this->getLogger()->addDebug('Revision locked');
+	
+			$backup = $revision->getRawData();
+			$form = $this->createForm(RevisionType::class, $revision);
+			//If the bag is not empty the user already see its content when opening the edit page
+			$request->getSession()->getBag('flashes')->clear();
 			
-		$response= $this->render( 'EMSCoreBundle:data:ajax-revision.json.twig', [
+			
+			/**little trick to reorder collection*/
+			$requestRevision = $request->request->get('revision');
+			$this->reorderCollection($requestRevision);
+			$request->request->set('revision', $requestRevision);
+			/**end little trick to reorder collection*/
+			
+			$form->handleRequest($request);
+			$revision->setAutoSave($revision->getRawData());
+			$revision->setRawData($backup);
+			
+			
+			$revision->setAutoSaveAt(new \DateTime());
+			$revision->setAutoSaveBy($this->getUser()->getUsername());
+			
+			$em->persist($revision);
+			$em->flush();			
+	
+			$this->getDataService()->isValid($form);
+			$formErrors = $form->getErrors(true, true);
+		}
+			
+		$response = $this->render( 'EMSCoreBundle:data:ajax-revision.json.twig', [
 				'success' => true,
 				'formErrors' => $formErrors,
 		] );

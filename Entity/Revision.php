@@ -107,6 +107,13 @@ class Revision
     /**
      * @var string
      *
+     * @ORM\Column(name="deleted_by", type="string", length=255, nullable=true)
+     */
+    private $deletedBy;
+    
+    /**
+     * @var string
+     *
      * @ORM\Column(name="lock_by", type="string", length=255, nullable=true)
      */
     private $lockBy;
@@ -610,6 +617,30 @@ class Revision
     public function getFinalizedBy()
     {
     	return $this->finalizedBy;
+    }
+    
+    /**
+     * Set deletedBy
+     *
+     * @param string $deletedBy
+     *
+     * @return Revision
+     */
+    public function setDeletedBy($deletedBy)
+    {
+    	$this->deletedBy= $deletedBy;
+    	
+    	return $this;
+    }
+    
+    /**
+     * Get deletedBy
+     *
+     * @return string
+     */
+    public function getDeletedBy()
+    {
+    	return $this->deletedBy;
     }
 
     /**

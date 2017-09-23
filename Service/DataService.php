@@ -238,10 +238,9 @@ class DataService
 		}
 		if( $form->getConfig()->getType()->getInnerType() instanceof ComputedFieldType ) {
 			$template = $dataField->getFieldType()->getDisplayOptions()['valueTemplate'];
-			if(empty($template)){
-				$out = NULL;
-			}
-			else {
+			
+			$out = NULL;
+			if(!empty($template)){
 				try {
 					$out = $this->twig->createTemplate($template)->render([
 						'_source' => $objectArray,
@@ -710,29 +709,36 @@ class DataService
 		}
 	
 		$contentTypeId = $revision->getContentType()->getId();
+		
+		$hasPreviousRevision = false;
 	
 		if(null != $revision->getOuuid()){
 			/** @var QueryBuilder $qb */
 			$qb = $repository->createQueryBuilder('t')
 			->where('t.ouuid = :ouuid')
 			->andWhere('t.id <> :id')
-			->andWhere('t.deleted =  :false')
+// 			->andWhere('t.deleted =  :false')
 			->andWhere('t.contentType =  :contentType')
-			->orderBy('t.startTime', 'desc')
+			->orderBy('t.id', 'desc')
 			->setParameter('ouuid', $revision->getOuuid())
 			->setParameter('contentType', $revision->getContentType())
 			->setParameter('id', $revision->getId())
-			->setParameter('false', false)
+// 			->setParameter('false', false)
 			->setMaxResults(1);
 			$query = $qb->getQuery();
 	
 	
 			$result = $query->getResult();
+			
 			if(count($result) == 1){
 				/** @var Revision $previous */
 				$previous = $result[0];
 				$this->lockRevision($previous);
 				$previous->setEndTime(null);
+				if($previous->getEnvironments()->isEmpty()) {
+					$previous->setDraft(true);
+				}
+				$hasPreviousRevision = true;
 				$em->persist($previous);
 			}
 	
@@ -741,6 +747,7 @@ class DataService
 		$em->remove($revision);
 	
 		$em->flush();
+		return $hasPreviousRevision;
 	}
 	
 	public function delete($type, $ouuid){
@@ -796,6 +803,60 @@ class DataService
 		}
 		$this->session->getFlashBag()->add('notice', 'The object have been marked as deleted! ');
 		$em->flush();
+	}
+	
+	public function emptyTrash(ContentType $contentType, $ouuid) {
+		
+		/** @var EntityManager $em */
+		$em = $this->doctrine->getManager();
+		
+		/** @var RevisionRepository $repository */
+		$repository = $em->getRepository('EMSCoreBundle:Revision');
+		
+		
+		$revisions = $repository->findBy([
+				'ouuid' => $ouuid,
+				'contentType' => $contentType,
+				'deleted' => true,
+		]);
+		
+		/** @var Revision $revision */
+		foreach ($revisions as $revision){
+			$this->lockRevision($revision, true);
+			$em->remove($revision);
+		}		
+		$em->flush();
+	}
+	
+	public function putBack(ContentType $contentType, $ouuid) {
+		
+		/** @var EntityManager $em */
+		$em = $this->doctrine->getManager();
+		
+		/** @var RevisionRepository $repository */
+		$repository = $em->getRepository('EMSCoreBundle:Revision');
+		
+		
+		$revisions = $repository->findBy([
+				'ouuid' => $ouuid,
+				'contentType' => $contentType,
+				'deleted' => true,
+		]);
+		
+		$out = NULL;
+		/** @var Revision $revision */
+		foreach ($revisions as $revision){
+			$this->lockRevision($revision, true);
+			$revision->setDeleted(false);
+			$revision->setDeletedBy(null);
+			if($revision->getEndTime() === NULL) {
+				$revision->setDraft(true);
+				$out = $revision->getId();
+			}
+			$em->persist($revision);
+		}
+		$em->flush();
+		return $out;
 	}
 	
 	

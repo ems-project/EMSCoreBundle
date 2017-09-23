@@ -70,7 +70,42 @@ class DataController extends AppController
 	 * @Route("/data/trash/{contentType}", name="ems_data_trash"))
 	 */
 	public function trashAction(ContentType $contentType, Request $request) {
+		return $this->render( '@EMSCore/data/trash.html.twig', [
+				'contentType' =>  $contentType,
+				'revisions' => $this->getDataService()->getAllDeleted($contentType),
+		] );	
+	}
+	
+	
+	
+	/**
+	 *
+	 * @Route("/data/put-back/{contentType}/{ouuid}", name="ems_data_put_back"))
+	 * @Method({"POST"})
+	 */
+	public function putBackAction(ContentType $contentType, $ouuid, Request $request)
+	{
+		$revId = $this->getDataService()->putBack($contentType, $ouuid);
 		
+		return $this->redirectToRoute('ems_revision_edit', [
+				'revisionId' => $revId
+		]);
+	}
+	
+	
+	
+	/**
+	 *
+	 * @Route("/data/empty-trash/{contentType}/{ouuid}", name="ems_data_empty_trash"))
+	 * @Method({"POST"})
+	 */
+	public function emptyTrashAction(ContentType $contentType, $ouuid, Request $request)
+	{
+		$this->getDataService()->emptyTrash($contentType, $ouuid);
+		
+		return $this->redirectToRoute('ems_data_trash', [
+				'contentType' => $contentType->getId(),
+		]);
 	}
 	
 	
@@ -444,9 +479,9 @@ class DataController extends AppController
 		$type = $revision->getContentType()->getName();
 		$ouuid = $revision->getOuuid();
 		
-		$this->discardDraft($revision);
+		$hasPreviousRevision = $this->discardDraft($revision);
 		
-		if(null != $ouuid){
+		if(null != $ouuid && $hasPreviousRevision){
 			return $this->redirectToRoute('data.revisions', [
 					'type' => $type,
 					'ouuid'=> $ouuid,
@@ -804,6 +839,7 @@ class DataController extends AppController
 	}
 	
 	/**
+	 * @Route("/data/draft/edit/{revisionId}", name="ems_revision_edit"))
 	 * @Route("/data/draft/edit/{revisionId}", name="revision.edit"))
 	 */
 	public function editRevisionAction($revisionId, Request $request)

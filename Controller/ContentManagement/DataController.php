@@ -67,6 +67,14 @@ class DataController extends AppController
 	
 	
 	/**
+	 * @Route("/data/trash/{contentType}", name="ems_data_trash"))
+	 */
+	public function trashAction(ContentType $contentType, Request $request) {
+		
+	}
+	
+	
+	/**
 	 * @Route("/data/draft/{contentTypeId}", name="data.draft_in_progress"))
 	 */
 	public function draftInProgressAction($contentTypeId, Request $request)

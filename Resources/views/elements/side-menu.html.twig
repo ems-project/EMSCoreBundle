@@ -164,6 +164,16 @@
 					{% endif %}
 	            	
 	            	
+                    {% if is_granted(contentType.trashRole) %}
+						<li class="">
+							<a id="menu-data-trash-{{ contentType.id }}" href="{{ path('ems_data_trash', { contentType: contentType.id }) }}">
+    							<i class="fa fa-trash"></i>
+    	          				Trash
+							</a>
+						</li>
+                    {% endif %}
+	            	
+	            	
 	            	{% endif %}
 	          	</ul>
 	          </li>

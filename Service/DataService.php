@@ -176,6 +176,16 @@ class DataService
 		$em->flush();
 	}
 	
+	public function getAllDeleted(ContentType $contentType) {
+		return $this->revRepository->findBy([
+			'deleted' => true,
+			'contentType' => $contentType,
+			'endTime' => null,
+		], [
+			'modified' => 'asc'
+		]);
+	}
+	
 	public function getDataCircles(Revision $revision) {
 		$out = [];
 		if($revision->getContentType()->getCirclesField()) {
@@ -781,6 +791,7 @@ class DataService
 				$revision->removeEnvironment($environment);
 			}
 			$revision->setDeleted(true);
+			$revision->setDeletedBy($this->tokenStorage->getToken()->getUsername());
 			$em->persist($revision);
 		}
 		$this->session->getFlashBag()->add('notice', 'The object have been marked as deleted! ');

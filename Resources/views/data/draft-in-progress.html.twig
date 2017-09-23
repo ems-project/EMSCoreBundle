@@ -38,7 +38,7 @@
 								</td>
 								<td>
 									{% if revision.lockUntil and revision.lockUntil > date('now') %}
-										{{ revision.lockBy }}
+										{{ revision.lockBy|displayname }}
 									{% endif %}
 								</td>
 								<td>
@@ -47,9 +47,6 @@
 										at {{ revision.autoSaveAt|date(date_time_format) }}
 									{% else %}
 										draft 
-										{% if revision.lockBy %}
-											by {{ revision.lockBy }} <br>
-										{% endif %}
 										at {{ revision.modified|date(date_time_format) }}
 									{% endif %}							
 								

@@ -333,10 +333,19 @@ class AppExtension extends \Twig_Extension
 				}
 				
 				try {
+				    $fields = [];
+				    if($contentType->getLabelField()){
+				        $fields[] = $contentType->getLabelField();
+				    }
+				    if($contentType->getColorField()){
+				        $fields[] = $contentType->getColorField();
+				    }
+				    
 					$result = $this->client->get([
-							'id' => $ouuid,
-							'index' => $contentType->getEnvironment()->getAlias(),
-							'type' => $type,
+					    '_source' => $fields,
+						'id' => $ouuid,
+						'index' => $contentType->getEnvironment()->getAlias(),
+						'type' => $type,
 					]);
 					
 					if($contentType->getLabelField()){

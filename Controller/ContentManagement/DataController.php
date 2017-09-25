@@ -331,6 +331,7 @@ class DataController extends AppController
 // 		] );
 		
 		$refParams = [ 
+		    '_source' => false,
 		    'type' => $searchForm->getContentTypes(),
 			'index' => $this->getContentTypeService()->getAllAliases(),
 			'size' => 100,

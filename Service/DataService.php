@@ -346,9 +346,18 @@ class DataService
 		
 	}
 	
+	public static function ksortRecursive(&$array, $sort_flags = SORT_REGULAR) {
+		if (!is_array($array)) return false;
+		ksort($array, $sort_flags);
+		foreach ($array as &$arr) {
+			DataService::ksortRecursive($arr, $sort_flags);
+		}
+		return true;
+	}
 	
 	public function sign(Revision $revision) {
 		$objectArray = $revision->getRawData();
+		DataService::ksortRecursive($objectArray);
 		if(isset($objectArray['_sha1'])){
 			unset($objectArray['_sha1']);
 		}
@@ -400,10 +409,14 @@ class DataService
 			foreach ($revision->getEnvironments() as $environment){
 				try {
 					$indexedItem = $this->client->get([
+							'_source_exclude' => ['*.attachment'],
 							'id' => $revision->getOuuid(),
 							'type' => $revision->getContentType()->getName(),
 							'index' => $environment->getAlias(),
 					])['_source'];
+					
+					DataService::ksortRecursive($indexedItem);
+					
 					if(isset($indexedItem['_sha1'])){
 						if($indexedItem['_sha1'] != $revision->getSha1()) {
 							$this->session->getFlashBag()->add('warning', 'Sha1 mismatch in '.$environment->getName().' for '.$revision->getContentType()->getName().':'.$revision->getOuuid());

@@ -159,11 +159,24 @@ class AssetFieldType extends DataFieldType {
 		if(empty($out['sha1'])){
 			$out = null;
 		}
-		else if (isset($out['filesize'])) {
-			unset($out['filesize']);
-		}
 		return $out;
 		
+	}
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::modelTransform()
+	 */
+	public function modelTransform($data, FieldType $fieldType){
+	    if(is_array($data)){
+	        foreach ($data as $id => $content){
+	            if(! in_array($id, ['sha1', 'filename', 'mimetype'], true)) {
+	                unset($data[$id]);
+	            }
+	        }
+	    }
+	    return parent::reverseViewTransform($data, $fieldType);
 	}
 	
 // 	public function convertInput(DataField $dataField) {		

@@ -106,6 +106,24 @@ class UrlAttachmentFieldType extends DataFieldType {
 		return $dataField;
 	}
 	
+	
+	
+	/**
+	 *
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::modelTransform()
+	 */
+	public function modelTransform($data, FieldType $fieldType){
+	    if(is_array($data)){
+	        foreach ($data as $id => $content){
+	            if(! in_array($id, ['url'], true)) {
+	                unset($data[$id]);
+	            }
+	        }
+	    }
+	    return parent::reverseViewTransform($data, $fieldType);
+	}
+	
 	/**
 	 *
 	 * {@inheritdoc}

@@ -34,6 +34,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Form\FormInterface;
+use Elasticsearch\Common\Exceptions\Missing404Exception;
 
 class DataService
 {
@@ -609,7 +610,7 @@ class DataService
 		} elseif(count($revisions) == 0){
 			throw new NotFoundHttpException('Revision not found for ouuid '.$ouuid.' and contenttype '.$type);
 		}  else {
-			throw new Exception('Too much newest revisions available for ouuid '.$ouuid.' and contenttype '.$type);
+			throw new \Exception('Too much newest revisions available for ouuid '.$ouuid.' and contenttype '.$type);
 		}
 	}
 	
@@ -1055,12 +1056,12 @@ class DataService
 				$revision = $revisions[0];
 				return $revision;
 			} else {
-				throw new Exception('Revision for ouuid '.$id.' and contenttype '.$type.' with end time '.$revisions[0]->getEndTime() );
+				throw new \Exception('Revision for ouuid '.$id.' and contenttype '.$type.' with end time '.$revisions[0]->getEndTime() );
 			}
 		} elseif(count($revisions) == 0){
 			throw new NotFoundHttpException('Revision not found for id '.$id.' and contenttype '.$type);
 		}  else {
-			throw new Exception('Too much newest revisions available for ouuid '.$id.' and contenttype '.$type);
+			throw new \Exception('Too much newest revisions available for ouuid '.$id.' and contenttype '.$type);
 		}
 		
 	}

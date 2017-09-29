@@ -515,6 +515,7 @@ class ElasticsearchController extends AppController
 			
 			//1. Define the parameters for a regular search request
 			$params = [
+			         '_source_exclude' => ['*.content', '*.attachement'],
 					'version' => true, 
 // 					'df'=> isset($field)?$field:'_all',
 					'index' => empty($selectedEnvironments)?array_keys($environments):$selectedEnvironments,

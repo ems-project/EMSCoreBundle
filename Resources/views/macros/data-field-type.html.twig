@@ -75,7 +75,11 @@
 	<div class="panel-body" >
 		{% if dataField.rawData and dataField.rawData.sha1 is defined %}
 			{% if dataField.rawData.sha1 and dataField.rawData.mimetype starts with 'image/' %}
-				<img src="{{ path('ems.file.view', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) }}" class="img-responsive" alt="Image of the field {{ dataField.fieldType.name }}">
+				{% set path = path('ems.file.view', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) %}
+				{% if dataField.fieldType.displayOptions.imageAssetConfigIdentifier is defined and dataField.fieldType.displayOptions.imageAssetConfigIdentifier %}
+				    {% set path = path('ems_asset_processor', {'hash':dataField.rawData.sha1, 'processor': dataField.fieldType.displayOptions.imageAssetConfigIdentifier, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) %}
+				{% endif %}
+				<img src="{{ path }}" class="img-responsive" alt="Image of the field {{ dataField.fieldType.name }}">
 			{% else %}
 				<ul>
 					<li>Sha1: {{ dataField.rawData.sha1 }}</li>

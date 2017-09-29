@@ -93,6 +93,7 @@ class AssetFieldType extends DataFieldType {
 		/* set the default option value for this kind of compound field */
 		parent::configureOptions ( $resolver );
 		$resolver->setDefault ( 'icon', null );
+		$resolver->setDefault ( 'imageAssetConfigIdentifier', null );
 	}
 	
 	/**

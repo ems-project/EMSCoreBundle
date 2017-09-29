@@ -28,7 +28,7 @@ class AssetController extends AppController
 				{
 				   "query": {
 				      "term": {
-				         "identifier": {
+				         "_identifier": {
 				            "value": '.json_encode($processor).'
 				         }
 				      }

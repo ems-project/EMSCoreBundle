@@ -7,15 +7,15 @@ class Image {
 	
 	public $fileName;
 	public $config = [
-			'resize' => false,
-			'width' => '*',
-			'quality' => false,
-			'height' => '*',
-			'gravity' => 'center',
-			'radius' => false,
-			'background' => 'FFFFFF',
-			'radius_geometry' => 'topleft-topright-bottomright-bottomleft',
-			'watermark' => false,
+			'_resize' => false,
+			'_width' => '*',
+			'_quality' => false,
+			'_height' => '*',
+			'_gravity' => 'center',
+			'_radius' => false,
+			'_background' => 'FFFFFF',
+			'_radius_geometry' => 'topleft-topright-bottomright-bottomleft',
+			'_watermark' => false,
 	];
 
 	public function __construct($fileName, array $config) {
@@ -186,11 +186,11 @@ class Image {
 				$cal_width = $size[1] * $width / $height;
 				if(stripos($gravity, 'west') !== false)
 				{
-					call_user_func($resizeFunction, $temp, $image, 0, 0, $size[0]-$cal_width, 0, $width, $height, $cal_width, $size[1]);
+					call_user_func($resizeFunction, $temp, $image, 0, 0, 0, 0, $width, $height, $cal_width, $size[1]);
 				}
 				else if(stripos($gravity, 'est') !== false)
 				{
-					call_user_func($resizeFunction, $temp, $image, 0, 0, 0, 0, $width, $height, $cal_width, $size[1]);
+					call_user_func($resizeFunction, $temp, $image, 0, 0, $size[0]-$cal_width, 0, $width, $height, $cal_width, $size[1]);
 				}
 				else{
 					call_user_func($resizeFunction, $temp, $image, 0, 0, ($size[0]-$cal_width)/2, 0, $width, $height, $cal_width, $size[1]);
@@ -239,11 +239,11 @@ class Image {
 		
 		$size	= getimagesizefromstring($contents);
 		$image = imagecreatefromstring($contents);
-		$width = $this->config['width'];
-		$height = $this->config['height'];
+		$width = $this->config['_width'];
+		$height = $this->config['_height'];
 	
 		//adjuste width or height in case of ratio resize
-		if($this->config['resize'] && $this->config['resize'] == 'ratio'){
+		if($this->config['_resize'] && $this->config['_resize'] == 'ratio'){
 			// if either width or height is an asterix
 			if($width == '*' || $height == '*') {
 				if($height == '*') {
@@ -263,19 +263,19 @@ class Image {
 		}
 	
 	
-		if($this->config['resize']){
-			$image = $this->applyResize($this->config['resize'], $image, $width, $height, $size, $this->config['background'], $this->config['gravity']);
+		if($this->config['_resize']){
+			$image = $this->applyResize($this->config['_resize'], $image, $width, $height, $size, $this->config['_background'], $this->config['_gravity']);
 		}
-		if($this->config['radius']){
-			$image = $this->applyCorner($image, $width, $height, $this->config['radius'], $this->config['radius_geometry'], $this->config['background']);
+		if($this->config['_radius']){
+			$image = $this->applyCorner($image, $width, $height, $this->config['_radius'], $this->config['_radius_geometry'], $this->config['_background']);
 		}
-		if(isset($this->config['watermark']['path']) && file_exists($this->config['watermark']['path'])) {
-			$image = $this->applyWatermark($image, $width, $height, $this->config['watermark']['path']);
+		if(isset($this->config['_watermark']['_path']) && file_exists($this->config['_watermark']['_path'])) {
+			$image = $this->applyWatermark($image, $width, $height, $this->config['_watermark']['_path']);
 		}
 	
 		//convert into jpeg or png
-		if($this->config['quality']){
-			imagejpeg($image, $path, $this->config['quality']);
+		if($this->config['_quality']){
+			imagejpeg($image, $path, $this->config['_quality']);
 		}
 		else {
 			imagepng($image, $path);

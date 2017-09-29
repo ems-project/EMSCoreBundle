@@ -11,6 +11,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use EMS\CoreBundle\Service\FileService;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Form\FormRegistryInterface;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 	
 /**
  * Defined a Container content type.
@@ -75,8 +76,11 @@ class AssetFieldType extends DataFieldType {
 		$optionsForm->remove ( 'mappingOptions' );
 		// an optional icon can't be specified ritgh to the container label
 		$optionsForm->get ( 'displayOptions' )
-		->add ( 'icon', IconPickerType::class, [ 
-				'required' => false 
+		->add ( 'icon', IconPickerType::class, [
+				'required' => false
+		] )
+		->add ( 'imageAssetConfigIdentifier', TextType::class, [
+				'required' => false,
 		] );
 	}
 	

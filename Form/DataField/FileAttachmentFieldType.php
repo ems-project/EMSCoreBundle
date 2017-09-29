@@ -154,6 +154,9 @@ class FileAttachmentFieldType extends DataFieldType {
 		$optionsForm->get ( 'displayOptions' )
 			->add ( 'icon', IconPickerType::class, [ 
 					'required' => false 
+			] )
+			->add ( 'imageAssetConfigIdentifier', TextType::class, [
+					'required' => false,
 			] );
 	}
 

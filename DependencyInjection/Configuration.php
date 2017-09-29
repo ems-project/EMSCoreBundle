@@ -36,6 +36,8 @@ class Configuration implements ConfigurationInterface
 	const ADD_USER_ROUTE = 'user.add';
 	const APPLICATION_MENU_CONTROLLER = null;
 	const PRIVATE_KEY = null;
+	const ASSET_CONFIG_TYPE = null;
+	const ASSET_CONFIG_INDEX = null;
 	
 	
     /**
@@ -79,6 +81,8 @@ class Configuration implements ConfigurationInterface
 		        ->scalarNode('user_registration_route')->defaultValue(self::USER_REGISTRATION_ROUTE)->end()
 		        ->scalarNode('add_user_route')->defaultValue(self::ADD_USER_ROUTE)->end()
 		        ->scalarNode('application_menu_controller')->defaultValue(self::APPLICATION_MENU_CONTROLLER)->end()
+		        ->scalarNode('asset_config_type')->defaultValue(self::ASSET_CONFIG_TYPE)->end()
+		        ->scalarNode('asset_config_index')->defaultValue(self::ASSET_CONFIG_INDEX)->end()
 		        ->scalarNode('private_key')->defaultValue(self::PRIVATE_KEY)->end()
 		        ->arrayNode('template_options')->defaultValue([])
 		        	->prototype('variable')

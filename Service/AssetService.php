@@ -76,7 +76,6 @@ class AssetService {
 				//'public'        => true,
 				'private'    => true,
 		));
-// 		exit;
 		return $response;
 	}
 	

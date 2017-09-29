@@ -28,12 +28,16 @@ class FileService {
 	public function getStorageService($dataFieldTypeId) {
 		return $this->dataFieldTypes[$dataFieldTypeId];
 	}
+	
+	public function getStorages() {
+		return $this->storageServices;
+	}
 
 
-	public function getBase64($sha1){
+	public function getBase64($sha1, $cacheContext=false){
 		/**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
 		foreach ($this->storageServices as $service){
-			$filename = $service->read($sha1);
+			$filename = $service->read($sha1, $cacheContext);
 			if($filename){
 				$data = file_get_contents($filename);
 				$base64 = base64_encode($data);
@@ -44,10 +48,10 @@ class FileService {
 	}
 
 
-	public function getFile($sha1){
+	public function getFile($sha1, $cacheContext=false){
 		/**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
 		foreach ($this->storageServices as $service){
-			$filename = $service->read($sha1);
+			$filename = $service->read($sha1, $cacheContext);
 			if($filename){
 				return $filename;
 			}
@@ -55,10 +59,10 @@ class FileService {
 		return false;
 	}
 	
-	public function getSize($sha1){
+	public function getSize($sha1, $cacheContext=false){
 		/**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
 		foreach ($this->storageServices as $service){
-			$filename = $service->read($sha1);
+			$filename = $service->read($sha1, $cacheContext);
 			if($filename){
 				return filesize($filename);
 			}
@@ -66,10 +70,22 @@ class FileService {
 		return false;
 	}
 	
-	public function head($sha1){
+	public function getLastUpdateDate($sha1, $cacheContext=false){
+		$out = false;
 		/**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
 		foreach ($this->storageServices as $service){
-			if($service->head($sha1)){
+			$date = $service->getLastUpdateDate($sha1, $cacheContext);
+			if($date && ($out === false || $date < $out)){
+				$out = $date;
+			}
+		}
+		return $out;
+	}
+	
+	public function head($sha1, $cacheContext=false){
+		/**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
+		foreach ($this->storageServices as $service){
+			if($service->head($sha1, $cacheContext)){
 				return true;
 			}
 		}
@@ -238,6 +254,17 @@ class FileService {
 		$em->persist($uploadedAsset);
 		$em->flush($uploadedAsset);
 		return $uploadedAsset;
+	}
+	
+	
+	public function create($sha1, $fileName, $cacheContext=false) {
+		/**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
+		foreach ($this->storageServices as $service){
+			if($service->create($sha1, $fileName, $cacheContext)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	private function saveFile($filename, UploadedAsset $uploadedAsset){

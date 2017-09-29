@@ -30,12 +30,12 @@ class AssetService {
 	public function getAssetResponse(array $config, $assetHash) {
 		
 		$lastUpdateDate = $this->fileService->getLastUpdateDate($assetHash, $config['_identifier']);
+		$lastUpdateDateConfig = strtotime($config['_last_update_date']);
 		
 		if($lastUpdateDate) {
 			$request = $this->requestStack->getCurrentRequest();
 			$versionInBrowser = strtotime($request->headers->get('if-modified-since', 'Wed, 09 Feb 1977 16:00:00 GMT'));
 			
-			$lastUpdateDateConfig = strtotime($config['_last_update_date']);
 			
 			if ($versionInBrowser >= $lastUpdateDate && $lastUpdateDate >= $lastUpdateDateConfig) {
 				//http://stackoverflow.com/questions/10847157/handling-if-modified-since-header-in-a-php-script

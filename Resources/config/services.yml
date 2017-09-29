@@ -379,6 +379,9 @@ services:
     ems.service.i18n:
         class: EMS\CoreBundle\Service\I18nService
         arguments: ['@doctrine']
+    ems.service.asset:
+        class: EMS\CoreBundle\Service\AssetService
+        arguments: ['@app.elasticsearch', '@ems.service.file', '@request_stack']
     ems.service.search:
         class: EMS\CoreBundle\Service\SearchService
         arguments: []

@@ -1,24 +1,25 @@
 <?php
 namespace EMS\CoreBundle\Controller;
 
+use Elasticsearch\Client;
 use EMS\CoreBundle\Entity\Job;
+use EMS\CoreBundle\Service\AssetService;
+use EMS\CoreBundle\Service\ContentTypeService;
+use EMS\CoreBundle\Service\DataService;
+use EMS\CoreBundle\Service\EnvironmentService;
+use EMS\CoreBundle\Service\FileService;
+use EMS\CoreBundle\Service\HelperService;
+use EMS\CoreBundle\Service\NotificationService;
+use EMS\CoreBundle\Service\PublishService;
+use EMS\CoreBundle\Service\SearchService;
+use EMS\CoreBundle\Service\UserService;
+use EMS\CoreBundle\Service\WysiwygProfileService;
+use Monolog\Logger;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use EMS\CoreBundle\Service\DataService;
-use EMS\CoreBundle\Service\PublishService;
-use EMS\CoreBundle\Service\ContentTypeService;
-use EMS\CoreBundle\Service\EnvironmentService;
-use Elasticsearch\Client;
-use EMS\CoreBundle\Service\SearchService;
-use Monolog\Logger;
-use EMS\CoreBundle\Service\NotificationService;
-use EMS\CoreBundle\Service\UserService;
-use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
-use EMS\CoreBundle\Service\FileService;
-use EMS\CoreBundle\Service\WysiwygProfileService;
+use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Translation\TranslatorInterface;
-use EMS\CoreBundle\Service\HelperService;
 
 class AppController extends Controller
 {
@@ -44,6 +45,14 @@ class AppController extends Controller
 	protected function getElasticsearch()
 	{
 		return $this->get('app.elasticsearch');
+	}
+	
+	/**
+	 * @return AssetService
+	 */
+	protected function getAssetService()
+	{
+		return $this->get('ems.service.asset');
 	}
 	
 	/**

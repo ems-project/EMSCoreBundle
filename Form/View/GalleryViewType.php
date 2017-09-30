@@ -14,6 +14,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use EMS\CoreBundle\Service\SearchService;
+use EMS\CoreBundle\Form\Field\AssetType;
 
 /**
  * It's the mother class of all specific DataField used in eMS
@@ -60,6 +61,10 @@ class GalleryViewType extends ViewType {
 		] )->add ( 'sourceFields', TextType::class, [
 				'required' => false,
 		] )->add ( 'imageAltFields', TextType::class, [
+				'required' => false,
+		] )->add ( 'missingImageHash', TextType::class, [
+				'required' => false,
+		] )->add ( 'thumbnailAssetConfigIdentifier', TextType::class, [
 				'required' => false,
 		] )->add ( 'imageAssetConfigIdentifier', TextType::class, [
 				'required' => false,

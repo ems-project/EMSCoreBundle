@@ -269,6 +269,10 @@ class DataService
 				if ($childType instanceof CollectionFieldType) {
 					foreach ($child->getIterator() as $collectionChild) {
 						$elementsArray = $collectionChild->getNormData()->getRawData();
+						if(isset($elementsArray['_ems_item_reverseViewTransform'])) {
+							//during migration those internal fields aren't properly cleaned
+							unset($elementsArray['_ems_item_reverseViewTransform']);
+						}
 						$found = $this->propagateDataToComputedField($collectionChild, $elementsArray, $contentType, $type, $ouuid, $migration) || $found;
 						
 						$fieldName = $child->getNormData()->getFieldType()->getName();

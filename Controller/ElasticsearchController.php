@@ -29,6 +29,7 @@ use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Entity\ContentType;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
+use Elasticsearch\Common\Exceptions\Missing404Exception;
 class ElasticsearchController extends AppController
 {
 	/**
@@ -185,6 +186,8 @@ class ElasticsearchController extends AppController
 	 */
 	public function searchApiAction(Request $request)
 	{
+	    
+	    $this->getLogger()->addDebug('At the begin of search api action');
 		$pattern = $request->query->get('q');
 		$environments = $request->query->get('environment');
 		$types = $request->query->get('type');
@@ -302,13 +305,10 @@ class ElasticsearchController extends AppController
 						]
 					];
 				}
-// 				else if($contentType && $contentType->getLabelField()) {
-// 					$params['body']['sort'] = [
-// 						$contentType->getLabelField() => [
-// 								'order' => '_id',
-// 						]
-// 					];
-// 				}
+				
+                if($contentType && $contentType->getLabelField()) {
+                    $params['_source'] = [$contentType->getLabelField()];
+				}
 				
 				if($category && $contentType && $contentType->getCategoryField()) {
 					$params['body']['query']['bool']['must'][] = [
@@ -321,11 +321,17 @@ class ElasticsearchController extends AppController
 				}			
 			}
 			
+			
+			//http://blog.alterphp.com/2012/08/how-to-deal-with-asynchronous-request.html
+			$request->getSession()->save();
 	
 			/** @var \Elasticsearch\Client $client */
 			$client = $this->getElasticsearch();
 			
+			$this->getLogger()->addDebug('Before search api');
 			$results = $client->search($params);
+			
+			$this->getLogger()->addDebug('After search api');
 		}
 		//ther is no type matching this request
 		else {

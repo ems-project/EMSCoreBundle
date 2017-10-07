@@ -229,7 +229,7 @@ class DataService
 						'index' => $contentType->getEnvironment()->getAlias(),
 						'migration' => $migration,
 				]);
-				$out = json_decode($out);
+				$out = json_decode($out, true);
 				$objectArray[$dataField->getFieldType()->getName()] = $out;
 				$found = true;
 			}
@@ -252,7 +252,7 @@ class DataService
 					]);
 					
 					if($dataField->getFieldType()->getDisplayOptions()['json']){
-						$out = json_decode($out);
+						$out = json_decode($out, true);
 					}
 				}
 				catch (\Exception $e) {

@@ -414,7 +414,7 @@ class DataService
 			foreach ($revision->getEnvironments() as $environment){
 				try {
 					$indexedItem = $this->client->get([
-							'_source_exclude' => ['*.attachment'],
+							'_source_exclude' => ['*.attachment', '*._attachment'],
 							'id' => $revision->getOuuid(),
 							'type' => $revision->getContentType()->getName(),
 							'index' => $environment->getAlias(),

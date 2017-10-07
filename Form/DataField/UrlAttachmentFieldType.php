@@ -68,33 +68,33 @@ class UrlAttachmentFieldType extends DataFieldType {
 	 */
 	public function reverseViewTransform($data, FieldType $fieldType){
 		/**@var DataField $out*/
-		$dataField= parent::reverseViewTransform($data, $fieldType);
+		$dataField = parent::reverseViewTransform($data, $fieldType);
 		if(empty($data)){
 			if($dataField->getFieldType()->getRestrictionOptions()['mandatory']){
 				$dataField->addMessage('This entry is required');
 			}
-			$dataField->setRawData(['url'=>null, 'content' => ""]);
+			$dataField->setRawData(['_url'=>null, '_content' => ""]);
 		}
 		elseif(is_string($data)) {
 			try {
 				$content = file_get_contents($data);
 				$rawData = [
-					'url' => $data,
-					'content' => base64_encode($content),
-					'size' => strlen($content),
+					'_url' => $data,
+					'_content' => base64_encode($content),
+					'_size' => strlen($content),
 				];
 				$dataField->setRawData($rawData);				
 			}
 			catch(\Exception $e) {
-				$rawData = [
-						'url' => $data,
-						'content' => "",
-						'size' => 0,
-				];
 				$dataField->addMessage(sprintf(
 						'Impossible to fetch the ressource due to %s',
 						$e->getMessage()
-				));
+						));
+				$dataField->setRawData([
+						'_url' => $data,
+						'_content' => "",
+						'_size' => 0,
+				]);	
 			}
 		}
 		else {
@@ -116,7 +116,7 @@ class UrlAttachmentFieldType extends DataFieldType {
 	public function modelTransform($data, FieldType $fieldType){
 	    if(is_array($data)){
 	        foreach ($data as $id => $content){
-	            if(! in_array($id, ['url'], true)) {
+	            if(! in_array($id, ['_url', '_size'], true)) {
 	                unset($data[$id]);
 	            }
 	        }
@@ -132,9 +132,9 @@ class UrlAttachmentFieldType extends DataFieldType {
 	public function viewTransform(DataField $data) {
 		$out = parent::viewTransform($data);
 		if( !empty($out)) {
-			if(!empty($out['url'])){
-				if(is_string($out['url'])){
-					return $out['url'];									
+			if(!empty($out['_url'])){
+				if(is_string($out['_url'])){
+					return $out['_url'];									
 				}
 				$data->addMessage('Non supported input data : '.json_encode($out));
 			}
@@ -204,43 +204,42 @@ class UrlAttachmentFieldType extends DataFieldType {
 		$body = [
 				"type" => "nested",
 				"properties" => [
-						"url" => [
+						"_url" => [
 							"type" => "string",
 						],
-						"size" => [
+						"_size" => [
 							"type" => "long",
 						],
-						'content' => [
-							"type" => "string",
-							"index" => "no",
+						'_content' => [
+								"type" => "binary",
 						],
 				],
 			];
 		
 		if($withPipeline) {
-			$body['properties']['attachment'] = [
-// 				"type" => "nested",
-				"properties" => [
-					'content' => $mapping[$current->getName()],
-// 					'author'=> [
-// 						"type" => "text",
-// 					],
-// 					'author'=> [
-// 							"type" => "text",
-// 					],
-// 					'content_type'=> [
-// 						"type" => "text",
-// 					],
-// 					'keywords'=> [
-// 						"type" => "text",
-// 					],
-// 					'language'=> [
-// 						"type" => "text",
-// 					],
-// 					'title'=> [
-// 						"type" => "text",
-// 					]
-				]
+			$body['properties']['_attachment'] = [
+			// 				"type" => "nested",
+					"properties" => [
+							'content' => $mapping[$current->getName()],
+							// 					'author'=> [
+									// 						"type" => "text",
+									// 					],
+							// 					'author'=> [
+									// 							"type" => "text",
+									// 					],
+							// 					'content_type'=> [
+									// 						"type" => "text",
+									// 					],
+							// 					'keywords'=> [
+									// 						"type" => "text",
+									// 					],
+							// 					'language'=> [
+									// 						"type" => "text",
+									// 					],
+							// 					'title'=> [
+									// 						"type" => "text",
+									// 					]
+					]
 			];
 		}
 		
@@ -254,11 +253,11 @@ class UrlAttachmentFieldType extends DataFieldType {
 	 */
 	public static function generatePipeline(FieldType $current){
 		return [
-			"attachment" => [
-				'field' => $current->getName().'.content',
-				'target_field' => $current->getName().'.attachment',
-				'indexed_chars' => 1000000,
-			]
+				"attachment" => [
+						'field' => $current->getName().'._content',
+						'target_field' => $current->getName().'._attachment',
+						'indexed_chars' => 1000000,
+				]
 		];
 	}
 }

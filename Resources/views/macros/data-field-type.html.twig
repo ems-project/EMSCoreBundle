@@ -38,12 +38,12 @@
 		</h3>
 	</div>
 	<div class="panel-body" >
-		{% if dataField.rawData and dataField.rawData.url is defined %}
+		{% if dataField.rawData and dataField.rawData._url is defined %}
 			<ul>
-				{% if dataField.rawData.url %}
-    				<li><a href="{{ dataField.rawData.url }}" target="_blank">URL: {{ dataField.rawData.url }}</a></li>
-    				{% if dataField.rawData.size is defined %}
-    					<li>Size: {{ dataField.rawData.size }}</li>
+				{% if dataField.rawData._url %}
+    				<li><a href="{{ dataField.rawData._url }}" target="_blank">URL: {{ dataField.rawData._url }}</a></li>
+    				{% if dataField.rawData._size is defined %}
+    					<li>Size: {{ dataField.rawData._size }}</li>
     				{% endif %}
     			{% else %}
     				<li>{{ 'Not defined'|trans }}</li>

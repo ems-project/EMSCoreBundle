@@ -283,6 +283,10 @@ class Revision
     						else {
 	    						$out[$child->getName()] = self::removeVirtualField($child, $data[$child->getName()]);    							
     						}
+    						
+    						if(is_array($out[$child->getName()]) && empty($out[$child->getName()])){
+    							unset($out[$child->getName()]);
+    						}
     					}
     				}
     				else {

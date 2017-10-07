@@ -109,6 +109,27 @@ class ContentTypeService {
 		
 	}
 	
+	private function generatePipeline(FieldType $fieldType) {
+		
+		$pipelines = [];
+		/**@var \EMS\CoreBundle\Entity\FieldType $child */
+		foreach ($fieldType->getChildren() as $child) {
+			if(!$child->getDeleted()){
+				/**@var \EMS\CoreBundle\Form\DataField\DataFieldType $dataFieldType */
+				$dataFieldType = $this->formRegistry->getType($child->getType())->getInnerType();
+				$pipeline = $dataFieldType->generatePipeline($child);
+				if($pipeline) {
+					$pipelines[] = $pipeline;
+				}
+				
+				if($dataFieldType->isContainer()) {
+					$pipelines = array_merge($pipelines, $this->generatePipeline($child));
+				}
+			}
+		}
+		return $pipelines;
+	}
+	
 	public function updateMapping(ContentType $contentType, $envs=false){
 
 
@@ -116,19 +137,7 @@ class ContentTypeService {
 		$contentType->setHavePipelines(FALSE);
 		try {
 			if(!empty($contentType->getFieldType())) {
-				$pipelines = [];
-				/**@var \EMS\CoreBundle\Entity\FieldType $child */
-				foreach ($contentType->getFieldType()->getChildren() as $child) {
-					if(!$child->getDeleted()){
-						/**@var \EMS\CoreBundle\Form\DataField\DataFieldType $dataFieldType */
-						$dataFieldType = $this->formRegistry->getType($child->getType())->getInnerType();
-						$pipeline = $dataFieldType->generatePipeline($child);
-						if($pipeline) {
-							$pipelines[] = $pipeline;
-						}
-					}
-				}
-		
+				$pipelines = $this->generatePipeline($contentType->getFieldType());
 				if(!empty($pipelines)) {
 					$body = [
 							"description" => "Extract attachment information for the content type ".$contentType->getName(),

@@ -368,8 +368,8 @@ th {
 }
 @font-face {
   font-family: 'Glyphicons Halflings';
-  src: url(../bower/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.eot?1502566252);
-  src: url(../bower/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.eot?&1502566252#iefix) format("embedded-opentype"), url(../bower/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.woff2?1502566252) format("woff2"), url(../bower/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.woff?1502566252) format("woff"), url(../bower/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.ttf?1502566252) format("truetype"), url(../bower/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.svg?1502566252#glyphicons_halflingsregular) format("svg");
+  src: url(../bower/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.eot?1507045740);
+  src: url(../bower/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.eot?&1507045740#iefix) format("embedded-opentype"), url(../bower/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.woff2?1507045740) format("woff2"), url(../bower/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.woff?1507045740) format("woff"), url(../bower/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.ttf?1507045740) format("truetype"), url(../bower/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.svg?1507045740#glyphicons_halflingsregular) format("svg");
 }
 /* line 24, ../../../../../../../../../../Library/Ruby/Gems/2.0.0/gems/bootstrap-sass-3.3.7/assets/stylesheets/bootstrap/_glyphicons.scss */
 .glyphicon {
@@ -38503,4 +38503,28 @@ ol.vertical li {
 .mjs-nestedSortable-error {
   background: #fbe3e4;
   border-color: transparent;
+}
+
+/* line 39, ../../sass/_ems.scss */
+.max-2-lines {
+  max-height: 85px;
+  overflow-y: scroll;
+}
+
+/* line 43, ../../sass/_ems.scss */
+.max-3-lines {
+  max-height: 115px;
+  overflow-y: scroll;
+}
+
+/* line 47, ../../sass/_ems.scss */
+.max-4-lines {
+  max-height: 143px;
+  overflow-y: scroll;
+}
+
+/* line 51, ../../sass/_ems.scss */
+.max-4-lines {
+  max-height: 174px;
+  overflow-y: scroll;
 }

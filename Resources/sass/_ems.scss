@@ -35,3 +35,20 @@ ol.vertical li {
 	background: #fbe3e4;
 	border-color: transparent;
 }
+
+.max-2-lines {
+    max-height: 85px;
+    overflow-y: scroll;
+}
+.max-3-lines {
+    max-height: 115px;
+    overflow-y: scroll;
+}
+.max-4-lines {
+    max-height: 143px;
+    overflow-y: scroll;
+}
+.max-4-lines {
+    max-height: 174px;
+    overflow-y: scroll;
+}

@@ -45,7 +45,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 		/** @var FieldType $fieldType */
 		$fieldType = $options ['metadata'];
 		$builder->add ( 'password_value', PasswordType::class, [
-				'label' => (null != $options ['label']?$options ['label']:$fieldType->getName()),
+                                'label' => false,
 				'disabled'=> $this->isDisabled($options),
 				'required' => false,
 				'attr' => [
@@ -86,6 +86,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 				'choices' => [ 
 					'sha1' => 'sha1',
 					'md5' => 'md5',
+                                        'bcrypt (cost 12)' => 'bcrypt_12'
 				], 
 				'empty_data'  => 'sha1',
 		] );
@@ -99,6 +100,49 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 				'empty_data'  => 'no',
 		] );
 	}
+        
+        /**
+	 * {@inheritDoc}
+         * 
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
+	 */
+	public function viewTransform(DataField $dataField) 
+        {
+            $out = parent::viewTransform($dataField);
+
+            return [ 
+                'password_value' => '',
+                'password_backup' => $out,
+                'reset_password_value' => false,
+            ];
+	}
+        
+        /**
+	 * 
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
+	 */
+	public function reverseViewTransform($data, FieldType $fieldType) 
+        {
+            $out = $data['password_backup'];
+            if($data['reset_password_value']){
+                $out = null;
+            }
+            else if(isset ($data['password_value'])) {
+                //new password defined?
+                switch ($fieldType->getDisplayOptions()['encryption']){
+                    case 'md5':
+                        $out = md5($data['password_value']);
+                        break;
+                    case 'bcrypt_12':
+                        $out = password_hash($data['password_value'], PASSWORD_BCRYPT, ['cost' => 12]);
+                        break;
+                    default:
+                        $out = sha1($data['password_value']);
+                }
+            }
+            return parent::reverseViewTransform($out, $fieldType);
+        }
 	
 	/**
 	 *

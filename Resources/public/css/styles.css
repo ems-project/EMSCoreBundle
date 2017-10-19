@@ -38524,7 +38524,7 @@ ol.vertical li {
 }
 
 /* line 51, ../../sass/_ems.scss */
-.max-4-lines {
+.max-5-lines {
   max-height: 174px;
   overflow-y: scroll;
 }

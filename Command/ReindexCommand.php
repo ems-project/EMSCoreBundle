@@ -68,6 +68,8 @@ class ReindexCommand extends EmsCommand
     	/** @var EntityManager $em */
 		$em = $this->doctrine->getManager();
 		
+		$em->getConnection()->getConfiguration()->setSQLLogger(null);
+		
 		/** @var EnvironmentRepository $envRepo */
 		$envRepo = $em->getRepository('EMSCoreBundle:Environment');
 		/** @var RevisionRepository $revRepo */
@@ -148,6 +150,8 @@ class ReindexCommand extends EmsCommand
     					    $error++;
     					}
     				}
+    				$em->detach($revision);
+    				$em->clear();
     				$progress->advance();
     			}
     			++$page;

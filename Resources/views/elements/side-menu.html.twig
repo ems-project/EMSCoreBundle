@@ -96,18 +96,8 @@
 	          		{% endif %}
 	          	</a>
 	          	<ul class="treeview-menu">
-	            	{% set searchForm = { 
-	            		'search_form[contentTypes][0]': contentType.name, 
-	            		'search_form[environments][0]': contentType.environment.name
-					} %}
-					{% if contentType.sortBy %}
-		            	{% set searchForm = searchForm|merge({ 
-		            		'search_form[sortBy]': contentType.sortBy,
-		            		'search_form[sortOrder]': 'asc'
-						}) %}
-					{% endif %}
 					
-	            	<li class=""><a id="menu-data-index-{{ contentType.id }}" href="{{ path('elasticsearch.search', searchForm) }}"><i class="fa fa-search"></i> Search {{ contentType.pluralName }}</a></li>
+	            	<li class=""><a id="menu-data-index-{{ contentType.id }}" href="{{ path('ems_data_default_search', {'name':contentType.name}) }}"><i class="fa fa-search"></i> Search {{ contentType.pluralName }}</a></li>
 	          		
 	          		{% if contentType.circlesField and app.user.circles|length > 0 %}
 		            	

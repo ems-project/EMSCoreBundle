@@ -39,14 +39,14 @@ class Search
      *
      * @ORM\Column(name="environments", type="json_array")
      */
-    private $environments; 
+	public $environments; 
 
      /**
      * @var array
      *
      * @ORM\Column(name="contentTypes", type="json_array")
      */
-    private $contentTypes; 
+    public $contentTypes; 
 	
 	/**
 	 * @var string
@@ -60,21 +60,21 @@ class Search
 	 * 
      * @ORM\Column(name="sort_by", type="string", length=100, nullable=true)
 	 */
-	private $sortBy;
+	public $sortBy;
 	
 	/**
 	 * @var string $sortOrder
 	 * 
      * @ORM\Column(name="sort_order", type="string", length=100, nullable=true)
 	 */
-	private $sortOrder;
+	public $sortOrder;
 	
 	
 	function __construct(){
 		$this->filters = [];//new \Doctrine\Common\Collections\ArrayCollection();
 		$this->filters[] = new SearchFilter();
-		$this->page = 1;
-		$this->boolean = "and";
+// 		$this->page = 1;
+// 		$this->boolean = "and";
 	}
 	
 

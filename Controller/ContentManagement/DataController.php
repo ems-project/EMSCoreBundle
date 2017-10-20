@@ -10,7 +10,6 @@ use EMS\CoreBundle;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
-use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Template;
 use EMS\CoreBundle\Entity\View;
@@ -36,12 +35,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use EMS\CoreBundle\Entity\Form\Search;
 
 class DataController extends AppController
 {
 	
 	
 	/**
+	 * @Route("/data/{name}", name="ems_data_default_search"))
 	 * @Route("/data/{name}", name="data.root"))
 	 */
 	public function rootAction($name, Request $request)
@@ -51,6 +52,7 @@ class DataController extends AppController
 		
 		/** @var ContentTypeRepository $repository */
 		$repository = $em->getRepository('EMSCoreBundle:ContentType');
+		/**@var ContentType $contentType*/
 		$contentType = $repository->findOneBy([	
 			'name' => $name,
 			'deleted' => false
@@ -59,9 +61,21 @@ class DataController extends AppController
 		if(!$contentType){
 			throw NotFoundHttpException('Content type '.$name.' not found');
 		}
-
-		return $this->redirectToRoute('data.draft_in_progress', [
-				'contentTypeId' => $contentType->getId(),
+		
+		$searchForm = new Search();
+		$searchForm->setContentTypes([$contentType->getName()]);
+		$searchForm->setEnvironments([$contentType->getEnvironment()->getName()]);
+		$searchForm->setSortBy('_uid');
+		if($contentType->getSortBy()){
+			$searchForm->setSortBy($contentType->getSortBy());
+		}
+		$searchForm->setSortOrder('asc');
+		if($contentType->getSortOrder()){
+			$searchForm->setSortOrder($contentType->getSortOrder());
+		}
+		
+		return $this->redirectToRoute('ems_search', [
+				'search_form' => $searchForm,
 		]);
 	}
 	
@@ -129,12 +143,6 @@ class DataController extends AppController
 		
 		/** @var RevisionRepository $revisionRep */
 		$revisionRep = $em->getRepository('EMSCoreBundle:Revision');
-// 		$revisions = $revisionRep->findBy([
-// 				'deleted' => false,
-// 				'draft' => true,
-// 				'endTime' => null,
-// 				'contentType' => $contentTypeId
-// 		]);
 		
 		$revisions= $revisionRep->findInProgresByContentType($contentType, $this->getUserService()->getCurrentUser()->getCircles(), $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN'));
 		
@@ -443,9 +451,8 @@ class DataController extends AppController
 	    
 	    $this->getDataService()->delete($type, $ouuid);
 	    
-	    return $this->redirectToRoute('elasticsearch.search', [
-	        'search_form[contentTypes][0]' => $contentType->getName(),
-	        'search_form[environments][0]' => $contentType->getEnvironment()->getName(),
+	    return $this->redirectToRoute('ems_data_default_search', [
+	        'name' => $contentType->getName(),
 	    ]);
 	}
 	

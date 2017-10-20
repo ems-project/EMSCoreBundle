@@ -403,6 +403,8 @@ function addEventListeners(target){
 			var ckconfig = {{ app.user.wysiwygProfile.config|raw }};
 		{% elseif app.user.wysiwygOptions %}
 			var ckconfig = {{ app.user.wysiwygOptions|raw }};
+                {% else %}
+                        var ckconfig = {};
 		{% endif %}
 
 // 		if(!ckconfig.extraPlugins) {

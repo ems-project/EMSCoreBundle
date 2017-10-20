@@ -94,8 +94,9 @@ class ContentTypeType extends AbstractType {
 				'required' => false,
 				'firstLevelOnly' => false,
 				'mapping' => $mapping,
-				'types' => [
+					'types' => [
 						'keyword',
+						'date',
 						'integer',
 						'string', //TODO: backward compatibility with ES2 To remove?
 			]]);

@@ -269,6 +269,13 @@ class ContentType
     /**
      * @var string
      *
+     * @ORM\Column(name="sort_order", type="string", length=4, nullable=true)
+     */
+    private $sortOrder;
+    
+    /**
+     * @var string
+     *
      * @ORM\Column(name="create_role", type="string", length=100, nullable=true)
      */
     private $createRole;
@@ -1566,5 +1573,29 @@ class ContentType
     public function getSingularName()
     {
         return $this->singularName;
+    }
+    
+    /**
+     * Set sortOrder
+     *
+     * @param string $sortOrder
+     *
+     * @return Search
+     */
+    public function setSortOrder($sortOrder)
+    {
+    	$this->sortOrder = $sortOrder;
+    	
+    	return $this;
+    }
+    
+    /**
+     * Get sortOrder
+     *
+     * @return string
+     */
+    public function getSortOrder()
+    {
+    	return $this->sortOrder;
     }
 }

@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use EMS\CoreBundle\Entity\DataField;
+use EMS\CoreBundle\Form\DataField\DataLinkFieldType;
 
 class ReorganizeType extends AbstractType
 {
@@ -35,10 +36,11 @@ class ReorganizeType extends AbstractType
     	$view = $options['view'];
     	if($view instanceof View){
     		$fieldType = $view->getContentType()->getFieldType()->getChildByPath($view->getOptions()['field']);
-    		$builder->add ( 'addItem', $fieldType->getType(), [
+    		$builder->add ( 'addItem', DataLinkFieldType::class, [
     				'metadata' => $fieldType,
     				'label' => 'Add item',
     				'required' => false,
+    				'type' => $fieldType->getDisplayOption('type', null),
     		]);
     		
     		

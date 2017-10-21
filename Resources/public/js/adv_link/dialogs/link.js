@@ -107,7 +107,7 @@
 			linkLang = editor.lang.adv_link, // added by @simo - http://blog.xoundboy.com/?p=393
 			anchors;
 
-		return {
+		var advLinkConfig = {
 			title: linkLang.title,
 			minWidth: 350,
 			minHeight: 230,
@@ -1009,6 +1009,13 @@
 				
 			}
 		};
+		
+		if(editor.config.hideAssetLink) {
+			advLinkConfig.contents["0"].elements.splice(2,1);
+			advLinkConfig.contents["0"].elements["0"].items.splice(3,1);
+		}
+		
+		return advLinkConfig;
 	} );
 } )();
 // jscs:disable maximumLineLength

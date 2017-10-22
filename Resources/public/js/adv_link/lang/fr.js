@@ -3,7 +3,7 @@ Copyright (c) 2003-2015, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.md or http://ckeditor.com/license
 */
 CKEDITOR.plugins.setLang( 'adv_link', 'fr', {
-	localPages:'Pages locales',
+	localPages:'Lien interne',
 	asset:'Asset',
 	selectPageLabel:'Sélectionnez une page',
 	selectPageTitle:'Sélectionnez la page que vous désirez lier au contenu',

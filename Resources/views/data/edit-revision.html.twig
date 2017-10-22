@@ -197,11 +197,20 @@ function initFileUploader(fileHandler, container){
 	var progressNumber = $(container).find(".progress-number");
 	var viewButton = $(container).find(".view-asset-button");
 	var clearButton = $(container).find(".clear-asset-button");
+	var previewTab = $(container).find(".asset-preview-tab");
+	var uploadTab = $(container).find(".asset-upload-tab");
+	var previewLink = $(container).find(".img-responsive");
+	var assetHashSignature = $(container).find(".asset-hash-signature");
+	
+
+	previewTab.hide();
+	uploadTab.show();
 	
     var fileUploader = new FileUploader({
     	file: fileHandler,
     	onSha1Available: function(sha1, type, name){
-	    		$(sha1Input).val(sha1);
+    			$(sha1Input).val(sha1);
+    			$(assetHashSignature).empty().append(sha1);
 	    		$(typeInput).val(type);
 	    		$(nameInput).val(name);
 	    		$(viewButton).addClass('disabled');
@@ -219,6 +228,16 @@ function initFileUploader(fileHandler, container){
 	    		if(pourcent == 100){
     	    		viewButton.removeClass("disabled");
     	    		clearButton.removeClass("disabled");
+
+    	    		var urlPattern = previewLink.data('src')
+    	    			.replace(/_asset_hash_/g, $(sha1Input).val())
+    	    			.replace(/_asset_mimetype_/g, $(typeInput).val())
+    	    			.replace(/_asset_name_/g, $(nameInput).val());
+
+    	    		previewLink.attr('src', urlPattern);
+    	    		
+    	    		previewTab.show();
+    	    		uploadTab.hide();
     	    		onFormChange();
 		    	}
 	    },
@@ -227,6 +246,7 @@ function initFileUploader(fileHandler, container){
 	    		$(progressText).html(message);
 	    		$(progressNumber).html('Error code : '+code);
 	    		$(sha1Input).val('');
+	    		$(assetHashSignature).empty();
 	    		$(typeInput).val('');
 	    		$(nameInput).val('');
 	    		$(viewButton).addClass('disabled');
@@ -291,13 +311,20 @@ function addEventListeners(target){
 		var progressBar = $(parent).find(".progress-bar");
 		var progressText = $(parent).find(".progress-text");
 		var progressNumber = $(parent).find(".progress-number");
+		var previewTab = $(parent).find(".asset-preview-tab");
+		var uploadTab = $(parent).find(".asset-upload-tab");
+		var assetHashSignature = $(parent).find(".asset-hash-signature");
+
 		$(parent).find(".file-uploader-input").val('');
 		sha1Input.val('');
+		assetHashSignature.empty();
 		typeInput.val('');
 		nameInput.val('');
 		$(progressBar).css('width', '0%');
 		$(progressText).html('');
 		$(progressNumber).html('');
+		previewTab.hide();
+		uploadTab.show();
 		$(parent).find('.view-asset-button').addClass('disabled');
 		$(this).addClass('disabled');
 		return false

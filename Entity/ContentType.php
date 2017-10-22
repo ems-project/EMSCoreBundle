@@ -269,6 +269,13 @@ class ContentType
     /**
      * @var string
      *
+     * @ORM\Column(name="sort_order", type="string", length=4, nullable=true, options={"default" : "asc"})
+     */
+    private $sortOrder;
+    
+    /**
+     * @var string
+     *
      * @ORM\Column(name="create_role", type="string", length=100, nullable=true)
      */
     private $createRole;
@@ -325,6 +332,13 @@ class ContentType
     /**
      * @var bool
      *
+     * @ORM\Column(name="web_content", type="boolean", options={"default" : 1})
+     */
+    private $webContent;
+    
+    /**
+     * @var bool
+     *
      * @ORM\Column(name="active", type="boolean")
      */
     private $active;
@@ -352,8 +366,9 @@ class ContentType
     	$this->templates = new \Doctrine\Common\Collections\ArrayCollection();
     	$this->views = new \Doctrine\Common\Collections\ArrayCollection();
     	
-     	$this->dirty = true;
-     	$this->editTwigWithWysiwyg = true;
+    	$this->dirty = true;
+    	$this->editTwigWithWysiwyg = true;
+    	$this->webContent = true;
 
      	$fieldType = new FieldType();
      	$fieldType->setName ( 'source' );
@@ -1115,7 +1130,7 @@ class ContentType
     {
         return $this->dirty;
     }
-
+    
     /**
      * Set editTwigWithWysiwyg
      *
@@ -1125,11 +1140,11 @@ class ContentType
      */
     public function setEditTwigWithWysiwyg($editTwigWithWysiwyg)
     {
-        $this->editTwigWithWysiwyg = $editTwigWithWysiwyg;
-
-        return $this;
+    	$this->editTwigWithWysiwyg = $editTwigWithWysiwyg;
+    	
+    	return $this;
     }
-
+    
     /**
      * Get editTwigWithWysiwyg
      *
@@ -1137,7 +1152,31 @@ class ContentType
      */
     public function getEditTwigWithWysiwyg()
     {
-        return $this->editTwigWithWysiwyg;
+    	return $this->editTwigWithWysiwyg;
+    }
+    
+    /**
+     * Set webContent
+     *
+     * @param boolean $webContent
+     *
+     * @return ContentType
+     */
+    public function setWebContent($webContent)
+    {
+    	$this->webContent= $webContent;
+    	
+    	return $this;
+    }
+    
+    /**
+     * Get webContent
+     *
+     * @return boolean
+     */
+    public function getWebContent()
+    {
+    	return $this->webContent;
     }
 
     /**
@@ -1566,5 +1605,29 @@ class ContentType
     public function getSingularName()
     {
         return $this->singularName;
+    }
+    
+    /**
+     * Set sortOrder
+     *
+     * @param string $sortOrder
+     *
+     * @return Search
+     */
+    public function setSortOrder($sortOrder)
+    {
+    	$this->sortOrder = $sortOrder;
+    	
+    	return $this;
+    }
+    
+    /**
+     * Get sortOrder
+     *
+     * @return string
+     */
+    public function getSortOrder()
+    {
+    	return $this->sortOrder;
     }
 }

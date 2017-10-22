@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Form\Form;
 
 use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\ColorPickerType;
 use EMS\CoreBundle\Form\Field\ContentTypeFieldPickerType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
@@ -10,11 +11,11 @@ use EMS\CoreBundle\Form\Field\RolePickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use EMS\CoreBundle\Form\Field\CodeEditorType;
 
 class ContentTypeType extends AbstractType {
 	/**
@@ -89,17 +90,25 @@ class ContentTypeType extends AbstractType {
 				'mapping' => $mapping,
 				'types' => [
 						'nested',
-			]]);
+				]]);
 			$builder->add ( 'sortBy', ContentTypeFieldPickerType::class, [
-				'required' => false,
-				'firstLevelOnly' => false,
-				'mapping' => $mapping,
+					'required' => false,
+					'firstLevelOnly' => false,
+					'mapping' => $mapping,
 					'types' => [
-						'keyword',
-						'date',
-						'integer',
-						'string', //TODO: backward compatibility with ES2 To remove?
-			]]);
+							'keyword',
+							'date',
+							'integer',
+							'string', //TODO: backward compatibility with ES2 To remove?
+					]]);
+			$builder->add ( 'sortOrder', ChoiceType::class, [
+					'required' => false,
+					'label' => 'Default sort order',
+					'choices'  => [
+						'Ascending' => 'asc',
+						'Descending' => 'desc',
+					],
+			]);
     	}
     	
 		
@@ -108,11 +117,15 @@ class ContentTypeType extends AbstractType {
 // 		$builder->add ( 'userField');
 // 		$builder->add ( 'dateField');
 // 		$builder->add ( 'startDateField');
-		$builder->add ( 'refererFieldName');
-		$builder->add ( 'editTwigWithWysiwyg', CheckboxType::class, [
-			'label' => 'Edit the Twig template with a WYSIWYG editor',
-			'required' => false,
-		]);
+    	$builder->add ( 'refererFieldName');
+    	$builder->add ( 'editTwigWithWysiwyg', CheckboxType::class, [
+    			'label' => 'Edit the Twig template with a WYSIWYG editor',
+    			'required' => false,
+    	]);
+    	$builder->add ( 'webContent', CheckboxType::class, [
+    			'label' => 'Web content (available in WYSIWYG field as internal link)',
+    			'required' => false,
+    	]);
 		$builder->add ( 'singularName', TextType::class);
 		$builder->add ( 'pluralName', TextType::class);
 		$builder->add ( 'icon', IconPickerType::class, [

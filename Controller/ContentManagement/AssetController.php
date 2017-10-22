@@ -19,25 +19,47 @@ class AssetController extends AppController
 		if(!$this->getParameter('ems_core.asset_config_type') || !$this->getParameter('ems_core.asset_config_type')){
 			throw new NotFoundHttpException('Asset processor index and type configuration not found');
 		}
+		$config = [
+				'_identifier' => $processor,
+				'_resize' => 'fill',
+				'_width' => 300,
+				'_quality' => 70,
+				'_height' => 200,
+				'_gravity' => 'center',
+				'_radius' => false,
+				'_background' => 'FFFFFF',
+				'_radius_geometry' => 'topleft-topright-bottomright-bottomleft',
+				'_watermark' => false,
+				'_last_update_date' => '1977-02-09T16:00:00+01:00',
+				'_config_type' => 'image',
+		];
 		
-		$result = $this->getElasticsearch()->search([
-				'size' => 1,
-				'type' => $this->getParameter('ems_core.asset_config_type'),
-				'index' => $this->getParameter('ems_core.asset_config_index'),
-				'body' => '
-				{
-				   "query": {
-				      "term": {
-				         "_identifier": {
-				            "value": '.json_encode($processor).'
-				         }
-				      }
-				   }
-				}',
-		]);
-		if($result['hits']['total'] == 0){
-			throw new NotFoundHttpException('Asset processor not found');
+		try {
+			$result = $this->getElasticsearch()->search([
+					'size' => 1,
+					'type' => $this->getParameter('ems_core.asset_config_type'),
+					'index' => $this->getParameter('ems_core.asset_config_index'),
+					'body' => '
+					{
+					   "query": {
+					      "term": {
+					         "_identifier": {
+					            "value": '.json_encode($processor).'
+					         }
+					      }
+					   }
+					}',
+			]);
+			
+			
+			if($result['hits']['total'] != 0){
+				$config = $result['hits']['hits'][0]['_source'];
+			}			
 		}
-		return $this->getAssetService()->getAssetResponse($result['hits']['hits'][0]['_source'], $hash);
+		catch (\Exception $e){
+			
+		}
+		
+		return $this->getAssetService()->getAssetResponse($config, $hash);
 	}
 }

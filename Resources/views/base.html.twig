@@ -498,6 +498,25 @@ desired effect
     var elasticsearch_status_url = "{{ path('elasticsearch.status')|raw }}.json"; 
     var ems_upload_url = "{{ path('ems_image_upload_url')|raw }}";
     var ems_images_url = "{{ path('ems_images_index')|raw }}";
+
+	{% set type_filters = [] %}
+	{% set all_types = false %}
+	{% if get_content_types()|length > 0 %}
+        {% for contentType in get_content_types() if contentType.webContent %}
+        	{% if all_types  %}
+        	    {% set all_types = all_types~','~contentType.name %}
+            {% else %}
+    	        {% set all_types = contentType.name %}
+            {% endif %}
+            {% set type_filters = type_filters|merge([[contentType.singularName|trans, contentType.name ]]) %}
+        {% endfor %}
+    {% endif %}
+
+    {% set type_filters = [['All content types'|trans, all_types ]]|merge(type_filters) %}
+    
+    var ems_wysiwyg_type_filters = {{ type_filters|json_encode|raw }};
+
+    
 </script>
 <!-- This app -->
 <script src="{{ asset('bundles/emscore/js/jquery.matchHeight.js') }}"></script>

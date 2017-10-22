@@ -32,10 +32,6 @@ class SearchService
 							'missing' => '_last',
 					]
 			];
-		
-		}
-		else {
-		    $body["sort"] = ['_uid' => 'asc'];
 		}
 		return $body;
 	} 

@@ -362,6 +362,7 @@ class ElasticsearchController extends AppController
 	}
 	
 	/**
+	 * @Route("/search/{query}", defaults={"query"=null}, name="ems_search"))
 	 * @Route("/search/{query}", defaults={"query"=null}, name="elasticsearch.search"))
 	 */
 	public function searchAction($query, Request $request)

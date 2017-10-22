@@ -135,13 +135,27 @@
 						data.type = this.getValue();
 					}
 				},
-				// added by @simo - http://blog.xoundboy.com/?p=393
-				// see also : 	http://docs.ckeditor.com/source/dialogDefinition.html#CKEDITOR-dialog-definition-uiElement-property-type
-				// 				http://docs.ckeditor.com/#!/guide/plugin_sdk_sample_1
 				{
 					type : 'vbox',
 					id : 'localPageOptions',
 					children : [
+					{
+						type : 'select',
+						label : linkLang.selectPageLabel,
+						id : 'contentTypeFilter',
+						className : 'adv_link_type_filter',
+						title : linkLang.selectPageTitle,
+						'default': ems_wysiwyg_type_filters[0][1],
+						items : ems_wysiwyg_type_filters,
+					    setup: function( data ) {
+					    	if(data.type == 'localPage' &&  data.filter){
+					    		this.setValue( data.filter );
+					    	}
+						}
+					},
+					// added by @simo - http://blog.xoundboy.com/?p=393
+					// see also : 	http://docs.ckeditor.com/source/dialogDefinition.html#CKEDITOR-dialog-definition-uiElement-property-type
+					// 				http://docs.ckeditor.com/#!/guide/plugin_sdk_sample_1
 					{
 						type : 'select',
 						label : linkLang.selectPageLabel,
@@ -150,15 +164,20 @@
 						title : linkLang.selectPageTitle,
 						items : [],
 						onLoad : function(element) {
-							$(".cke_dialog_ui_input_select.select2").select2({
+							
+							var objectPicker = $('#'+this.domId);
+							var typeFilter = objectPicker.parents('.cke_dialog_contents_body').find('select.adv_link_type_filter');
+							
+							objectPicker.find('select').select2({
 								ajax: {
 									url: object_search_url,
 							    	dataType: 'json',
 							    	delay: 250,
 							    	data: function (params) {
-							      		return {
+							    		return {
 								        q: params.term, // search term
-								        page: params.page
+								        page: params.page,
+								        type: typeFilter.val()
 								      };
 								    },
 									processResults: function (data, params) {
@@ -183,15 +202,21 @@
 							  	minimumInputLength: 1
 							});
 					    },
-						
+					    setup: function( data ) {
+					    	if(data.type == 'localPage' &&  data.id){
+					    		this.setValue( data.id );
+					    		if (!$('#'+this.domId+' select.select2').find("option[value='" + data.id + "']").length) {
+					    			var newOption = new Option('Current value', data.id, false, false);
+					    			$('#'+this.domId+' select.select2').append(newOption).trigger('change');			    			
+					    		}
+					    	}
+						},
 						commit : function( data )
 						{
-							
 							if ( !data.localPage )
 								data.localPage = {};
 //								data.localPage = data_link_url.replace(/__object_key__/g, 'object:' + this.getValue());
-								data.localPage = 'ems://object:' + this.getValue();
-	
+							data.localPage = 'ems://object:' + this.getValue();
 						}
 					}]						
 				},

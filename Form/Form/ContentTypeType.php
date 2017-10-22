@@ -117,11 +117,15 @@ class ContentTypeType extends AbstractType {
 // 		$builder->add ( 'userField');
 // 		$builder->add ( 'dateField');
 // 		$builder->add ( 'startDateField');
-		$builder->add ( 'refererFieldName');
-		$builder->add ( 'editTwigWithWysiwyg', CheckboxType::class, [
-			'label' => 'Edit the Twig template with a WYSIWYG editor',
-			'required' => false,
-		]);
+    	$builder->add ( 'refererFieldName');
+    	$builder->add ( 'editTwigWithWysiwyg', CheckboxType::class, [
+    			'label' => 'Edit the Twig template with a WYSIWYG editor',
+    			'required' => false,
+    	]);
+    	$builder->add ( 'webContent', CheckboxType::class, [
+    			'label' => 'Web content (available in WYSIWYG field as internal link)',
+    			'required' => false,
+    	]);
 		$builder->add ( 'singularName', TextType::class);
 		$builder->add ( 'pluralName', TextType::class);
 		$builder->add ( 'icon', IconPickerType::class, [

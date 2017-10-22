@@ -207,6 +207,8 @@
 		emailSubjectRegex = /subject=([^;?:@&=$,\/]*)/,
 		emailBodyRegex = /body=([^;?:@&=$,\/]*)/,
 		anchorRegex = /^#(.*)$/,
+		emsObjectRegex = /^ems:\/\/object:(.*):(.*)$/,
+		emsAssetRegex = /^ems:\/\/asset:(.*)$/,
 		urlRegex = /^((?:http|https|ftp|news):\/\/)?(.*)$/,
 		selectableTargets = /^(_(?:self|top|parent|blank))$/,
 		encodedEmailLinkRegex = /^javascript:void\(location\.href='mailto:'\+String\.fromCharCode\(([^)]+)\)(?:\+'(.*)')?\)$/,
@@ -431,7 +433,7 @@
 				// compiledProtectionFunction = editor.plugins.link.compiledProtectionFunction,
 				compiledProtectionFunction = editor.plugins.adv_link.compiledProtectionFunction, // added by @simo
 				emailProtection = editor.config.emailProtection,
-				javascriptMatch, emailMatch, anchorMatch, urlMatch,
+				javascriptMatch, emailMatch, anchorMatch, emsObjectMatch, urlMatch,
 				retval = {};
 
 			if ( ( javascriptMatch = href.match( javascriptProtocolRegex ) ) ) {
@@ -471,6 +473,12 @@
 					retval.type = 'anchor';
 					retval.anchor = {};
 					retval.anchor.name = retval.anchor.id = anchorMatch[ 1 ];
+				}
+				else if ( ( emsObjectMatch = href.match( emsObjectRegex ) ) ) {
+					retval.type = 'localPage';
+					retval.url = href;
+					retval.filter = emsObjectMatch[ 1 ];
+					retval.id = emsObjectMatch[ 1 ]+':'+emsObjectMatch[2];
 				}
 				// Protected email link as encoded string.
 				else if ( ( emailMatch = href.match( emailRegex ) ) ) {

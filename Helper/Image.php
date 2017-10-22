@@ -3,6 +3,8 @@ namespace EMS\CoreBundle\Helper;
 
 
 
+use Symfony\Component\HttpKernel\KernelInterface;
+
 class Image {
 	
 	public $fileName;
@@ -17,8 +19,11 @@ class Image {
 			'_radius_geometry' => 'topleft-topright-bottomright-bottomleft',
 			'_watermark' => false,
 	];
+	/**@var KernelInterface */
+	private $kernel;
 
-	public function __construct($fileName, array $config) {
+	public function __construct(KernelInterface $kernel, $fileName, array $config) {
+		$this->kernel = $kernel;
 		$this->fileName = $fileName;
 		$this->config = array_merge($this->config, $config);
 	}
@@ -236,9 +241,19 @@ class Image {
 		fclose($handle);
 		
 		$path = tempnam(sys_get_temp_dir(), 'ems_image');
+		$size	= @getimagesizefromstring($contents);
+		$image = @imagecreatefromstring($contents);	
 		
-		$size	= getimagesizefromstring($contents);
-		$image = imagecreatefromstring($contents);
+		if($image === false){
+			
+			$ballPath= $this->kernel->locateResource('@EMSCoreBundle/Resources/public/images/big-logo.png');
+			$handle = fopen($ballPath, "r");
+			$contents = fread($handle, filesize($ballPath));
+			fclose($handle);
+			
+			$size	= @getimagesizefromstring($contents);
+			$image = @imagecreatefromstring($contents);
+		}
 		$width = $this->config['_width'];
 		$height = $this->config['_height'];
 	

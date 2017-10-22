@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 class AssetService {
 	
@@ -20,11 +21,14 @@ class AssetService {
 	private $fileService;
 	/**@var RequestStack */
 	private $requestStack;
+	/**@var KernelInterface */
+	private $kernel;
 	
-	public function __construct(Client $client, FileService $fileService, RequestStack $requestStack) {
+	public function __construct(Client $client, FileService $fileService, RequestStack $requestStack, KernelInterface $kernel) {
 		$this->fileService = $fileService;
 		$this->client= $client;
 		$this->requestStack= $requestStack;
+		$this->kernel = $kernel;
 	}
 	
 	public function getAssetResponse(array $config, $assetHash) {
@@ -87,7 +91,7 @@ class AssetService {
 			$processorConfig['_watermark']['_path'] = $this->fileService->getFile($processorConfig['_watermark']['sha1']);
 		}
 		$file = $this->fileService->getFile($hash);
-		$image = new Image($file, $processorConfig);
+		$image = new Image($this->kernel, $file, $processorConfig);
 		return $image->generateImage();
 	}
 	

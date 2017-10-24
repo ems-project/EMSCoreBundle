@@ -419,6 +419,7 @@ class ElasticsearchController extends AppController
 			
 			$form = $this->createForm ( SearchFormType::class, $search, [
 					'method' => 'GET',
+					'action' => $this->generateUrl('ems_search'),
 					'savedSearch' => $searchId,
 			] );
 			

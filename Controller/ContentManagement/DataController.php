@@ -74,8 +74,12 @@ class DataController extends AppController
 			$searchForm->setSortOrder($contentType->getSortOrder());
 		}
 		
-		return $this->redirectToRoute('ems_search', [
-				'search_form' => $searchForm,
+		
+		
+		return $this->forward('EMSCoreBundle:Elasticsearch:search', [
+				'query' => null,
+		], [
+				'search_form' => json_decode(json_encode($searchForm), true),
 		]);
 	}
 	
@@ -112,6 +116,7 @@ class DataController extends AppController
 			$searchForm->setSortOrder($contentType->getSortOrder());
 		}
 		
+		$searchForm->filters = [];
 		foreach ( $this->getUser()->getCircles() as $cicle ) {
 			$filter = new SearchFilter();
 			$filter->setBooleanClause('should')
@@ -121,8 +126,10 @@ class DataController extends AppController
 			$searchForm->addFilter($filter);
 		}
 		
-		return $this->redirectToRoute('ems_search', [
-				'search_form' => $searchForm,
+		return $this->forward('EMSCoreBundle:Elasticsearch:search', [
+			'query' => null,
+		], [
+			'search_form' => json_decode(json_encode($searchForm), true),
 		]);
 	}
 	

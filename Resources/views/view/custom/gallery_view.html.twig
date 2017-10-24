@@ -43,7 +43,7 @@
 	                            {% endif %}
                               <img 
                               	src="{{ path }}" 
-                              	alt="{% if view.options.imageAltFields %}{{ attribute(item._source, view.options.imageAltFields) }}{% endif %}"
+                              	alt="{% if view.options.imageAltFields and attribute(item._source, view.options.imageAltFields) is defined %}{{ attribute(item._source, view.options.imageAltFields) }}{% endif %}"
                               	class="img-responsive center-block"
                               >
             				<div class="carousel-caption">
@@ -81,7 +81,7 @@
                      				 <td data-target="#myCarousel" data-slide-to="{{ loop.index0 }}" >
                                       <img 
                                       	src="{{ path }}" 
-                                      	alt="{% if view.options.imageAltFields %}{{ attribute(item._source, view.options.imageAltFields) }}{% endif %}"
+                                      	alt="{% if view.options.imageAltFields and attribute(item._source, view.options.imageAltFields) is defined %}{{ attribute(item._source, view.options.imageAltFields) }}{% endif %}"
                                       	class=""
                                       >
                                       </td>

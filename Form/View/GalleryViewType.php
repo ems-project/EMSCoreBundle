@@ -90,6 +90,11 @@ class GalleryViewType extends ViewType {
 		
 
 		$search = new Search();
+		if($request->query->get('search_form', false) === false) {
+			$search->getFilters()[0]->setField($view->getOptions()['imageField'].'.sha1');
+			$search->getFilters()[0]->setBooleanClause('must');
+		}
+		
 		$form = $formFactoty->create(SearchFormType::class, $search, [
 				'method' => 'GET',
 				'light' => true,

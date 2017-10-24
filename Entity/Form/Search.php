@@ -25,7 +25,7 @@ class Search
 	 * 
      * @ORM\OneToMany(targetEntity="SearchFilter", mappedBy="search", cascade={"persist", "remove"})
 	 */
-	private $filters;
+    public $filters;
 	
 	/**
 	 * @var string

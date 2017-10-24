@@ -31,35 +31,35 @@ class SearchFilter
 	 * 
      * @ORM\Column(name="pattern", type="string", length=200, nullable=true)
 	 */
-	private $pattern;
+	public $pattern;
 	
 	/**
 	 * @var string $field
 	 * 
      * @ORM\Column(name="field", type="string", length=100, nullable=true)
 	 */
-	private $field;
+	public $field;
 	
 	/**
 	 * @var string $booleanClause
 	 * 
      * @ORM\Column(name="boolean_clause", type="string", length=20, nullable=true)
 	 */
-	private $booleanClause;
+	public $booleanClause;
 	
 	/**
 	 * @var string $operator
 	 * 
      * @ORM\Column(name="operator", type="string", length=50)
 	 */
-	private $operator;
+	public $operator;
 	
 	/**
 	 * @var float $boost
 	 * 
      * @ORM\Column(name="boost", type="decimal", scale=2, nullable=true)
 	 */
-	private $boost;
+	public $boost;
 	
 	function __construct(){
 		$this->operator = "query_and";

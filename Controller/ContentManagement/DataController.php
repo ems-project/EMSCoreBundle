@@ -36,10 +36,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use EMS\CoreBundle\Entity\Form\Search;
+use EMS\CoreBundle\Entity\Form\SearchFilter;
 
 class DataController extends AppController
 {
-	
 	
 	/**
 	 * @Route("/data/{name}", name="ems_data_default_search"))
@@ -72,6 +72,53 @@ class DataController extends AppController
 		$searchForm->setSortOrder('asc');
 		if($contentType->getSortOrder()){
 			$searchForm->setSortOrder($contentType->getSortOrder());
+		}
+		
+		return $this->redirectToRoute('ems_search', [
+				'search_form' => $searchForm,
+		]);
+	}
+	
+	
+	/**
+	 * @Route("/data/in-my-circles/{name}", name="ems_search_in_my_circles"))
+	 */
+	public function inMyCirclesAction($name, Request $request)
+	{
+		/** @var EntityManager $em */
+		$em = $this->getDoctrine()->getManager();
+		
+		/** @var ContentTypeRepository $repository */
+		$repository = $em->getRepository('EMSCoreBundle:ContentType');
+		/**@var ContentType $contentType*/
+		$contentType = $repository->findOneBy([
+				'name' => $name,
+				'deleted' => false
+		]);
+		
+		if(!$contentType){
+			throw NotFoundHttpException('Content type '.$name.' not found');
+		}
+		
+		$searchForm = new Search();
+		$searchForm->setContentTypes([$contentType->getName()]);
+		$searchForm->setEnvironments([$contentType->getEnvironment()->getName()]);
+		$searchForm->setSortBy('_uid');
+		if($contentType->getSortBy()){
+			$searchForm->setSortBy($contentType->getSortBy());
+		}
+		$searchForm->setSortOrder('asc');
+		if($contentType->getSortOrder()){
+			$searchForm->setSortOrder($contentType->getSortOrder());
+		}
+		
+		foreach ( $this->getUser()->getCircles() as $cicle ) {
+			$filter = new SearchFilter();
+			$filter->setBooleanClause('should')
+				->setField($contentType->getCirclesField())
+				->setOperator('term')
+				->setPattern($cicle);
+			$searchForm->addFilter($filter);
 		}
 		
 		return $this->redirectToRoute('ems_search', [

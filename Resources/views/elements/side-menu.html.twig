@@ -100,13 +100,6 @@
 	            	<li class=""><a id="menu-data-index-{{ contentType.id }}" href="{{ path('ems_data_default_search', {'name':contentType.name}) }}"><i class="fa fa-search"></i> Search {{ contentType.pluralName }}</a></li>
 	          		
 	          		{% if contentType.circlesField and app.user.circles|length > 0 %}
-		            	
-	          			{% for circle in  app.user.circles%}
-	          				{% set searchForm = searchForm|merge({('search_form[filters]['~loop.index0~'][booleanClause]'):('should')}) %}
-	          				{% set searchForm = searchForm|merge({('search_form[filters]['~loop.index0~'][field]'):contentType.circlesField}) %}
-	          				{% set searchForm = searchForm|merge({('search_form[filters]['~loop.index0~'][operator]'):('term')}) %}
-	          				{% set searchForm = searchForm|merge({('search_form[filters]['~loop.index0~'][pattern]'):circle}) %}
-		            	{% endfor %}
 
 		            	{% set label = contentType.circlesField %}
 						{% if (contentType.fieldType.getChildByPath(contentType.circlesField).options.displayOptions.type) is defined %}
@@ -121,7 +114,7 @@
 							{% endif %}
 						{% endif %}
 
-	            		<li class=""><a id="menu-data-index-{{ contentType.id }}" href="{{ path('elasticsearch.search', searchForm ) }}"><i class="{{ circleContenttype.icon }}"></i> In my {{ label }}</a></li>
+	            		<li class=""><a id="menu-data-index-{{ contentType.id }}" href="{{ path('ems_search_in_my_circles', {'name':contentType.name} ) }}"><i class="{{ circleContenttype.icon }}"></i> In my {{ label }}</a></li>
 	            	{% endif %}
 	            	{% for view in contentType.views %}
 	            		<li>

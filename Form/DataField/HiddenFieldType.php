@@ -32,7 +32,9 @@ use EMS\CoreBundle\Entity\FieldType;
 	 *
 	 */
 	public function buildForm(FormBuilderInterface $builder, array $options) {
-			$builder->add ( 'value', HiddenType::class);		
+			$builder->add ( 'value', HiddenType::class, [
+					'disabled'=> $this->isDisabled($options),
+			]);		
 	}
 	
 	/**

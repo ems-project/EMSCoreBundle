@@ -40,6 +40,14 @@ abstract class DataFieldType extends AbstractType {
 	
 	
 	/**
+	 * {@inheritdoc}
+	 */
+	public function buildForm(FormBuilderInterface $builder, array $options)
+	{
+		$builder->setDisabled($this->isDisabled($options));
+	}
+	
+	/**
 	 * form array to DataField 
 	 * 
 	 * http://symfony.com/doc/current/form/data_transformers.html#about-model-and-view-transformers

@@ -28,6 +28,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 class EnvironmentController extends AppController {
 
@@ -663,7 +665,8 @@ class EnvironmentController extends AppController {
 	 * List all environments, orphean indexes, unmanaged aliases and referenced environments
 	 * 
 	 * @param Request $request
-	 * @Route("/environment", name="environment.index"))
+	 * @Route("/environment", name="environment.index")
+	 * @Route("/environment", name="ems_environment_index")
 	 */
 	public function indexAction(Request $request)
 	{
@@ -699,6 +702,17 @@ class EnvironmentController extends AppController {
 		
 
 			$logger->addDebug('For each environments: start');
+			
+			$builder = $this->createFormBuilder ( [] )
+			->add ( 'reorder', SubmitEmsType::class, [
+					'attr' => [
+							'class' => 'btn-primary '
+					],
+					'icon' => 'fa fa-reorder'
+			] );
+			
+			
+			$names = [];	
 
 
 			$environments = [];//$repository->findAll();
@@ -714,6 +728,7 @@ class EnvironmentController extends AppController {
 					unset($temp[$environment->getAlias()]);
 				}
 				$environments[] = $environment;
+				$names[] = $environment->getName();
 			}
 			$unmanagedIndexes = [];
 			foreach ($temp as $alias => $index){
@@ -724,11 +739,48 @@ class EnvironmentController extends AppController {
 				];
 			}
 			$logger->addDebug('For each environments: done');
+			
+			
+			
+			$builder->add('environmentNames', CollectionType::class, array(
+					// each entry in the array will be an "email" field
+					'entry_type'   => HiddenType::class,
+					// these options are passed to each "email" type
+					'entry_options'  => array(
+					),
+					'data' => $names
+			));
+			
+			$form = $builder->getForm ();
+			
+			
+			
+			if ($request->isMethod('POST')) {
+				$form = $request->get('form');
+				if(isset($form['environmentNames']) && is_array($form['environmentNames'])){
+					$counter = 0;
+					foreach ($form['environmentNames'] as $name){
+						
+						$contentType = $this->getEnvironmentService()->getByName($name);
+						if($contentType){
+							$contentType->setOrderKey($counter);
+							$em->persist($contentType);
+						}
+						++$counter;
+					}
+					
+					$em->flush();
+					$this->addFlash('notice', 'Environments have been reordered');
+				}
+				
+				return $this->redirectToRoute('ems_environment_index');
+			}
 		
 			return $this->render( 'EMSCoreBundle:environment:index.html.twig', [
 					'environments' => $environments,
 					'orphanIndexes' => $orphanIndexes,
 					'unmanagedIndexes' => $unmanagedIndexes,
+					'form' => $form->createView (),
 			]);
 		}
 		catch (\Elasticsearch\Common\Exceptions\NoNodesAvailableException $e){

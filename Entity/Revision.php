@@ -135,6 +135,7 @@ class Revision
     /**
      * @ORM\ManyToMany(targetEntity="Environment", inversedBy="revisions", cascade={"persist"})
      * @ORM\JoinTable(name="environment_revision")
+     * @ORM\OrderBy({"orderKey":"ASC"})
      */
     private $environments;
 

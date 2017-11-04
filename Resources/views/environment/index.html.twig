@@ -1,4 +1,4 @@
-{% extends 'EMSCoreBundle::base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}All Environments{% endblock %}
 {% block pagetitle %}All Environments{% endblock %} 
@@ -17,8 +17,44 @@
 		<div class="box ">
 			<div class="box-header with-border">
 				<i class="fa fa-database"></i>
-				<h3 class="box-title">Local environments</h3>{{ 'List all local evironment'|debug }}
-				<a class="btn btn-xs btn-primary pull-right" href="{{ path('environment.add') }}"><i class="fa fa-plus"></i> Add environment</a>
+				<h3 class="box-title">{{ 'Local environments'|trans }}</h3>
+				<div class="btn-group  pull-right">
+					<a class="btn btn-xs btn-primary" href="{{ path('environment.add') }}"><i class="fa fa-plus"></i> Add environment</a>
+					<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#environment_modal_reorder">
+						<i class="fa fa-reorder"></i> {{ 'Reorder'|trans }}
+					</button>
+				</div>
+				<div class="modal fade" id="environment_modal_reorder" tabindex="-1" role="dialog" aria-labelledby="myModalReorder">
+    			  <div class="modal-dialog" role="document">
+    			    <div class="modal-content">
+    			      <div class="modal-header">
+    			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    			        <h4 class="modal-title" id="myModalReorderLabel">
+    						<strong>{{ 'Reorder Environment'|trans }}</strong>	
+    					</h4>
+    			      </div>
+    			      {{ form_start(form) }}
+    			      <div class="modal-body">
+    					<ul class="list-group sortable" id="content_type_modal_reorder_list">
+    			      		{% for child in form.environmentNames %}
+    			      			<li class="list-group-item">
+    			      				<i class="glyphicon glyphicon-move"></i>
+    			      				{{ child.vars.value }}
+    			      				{{ form_row( child ) }}
+    			      			</li>
+    			      		{% endfor %}
+    					</ul>	
+    				  </div>
+    			      <div class="modal-footer">
+    			      	<div class="btn-group">
+    			      		{{ form_widget(form.reorder) }}
+    				        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
+    			      	</div>
+    			      </div>
+    			      {{ form_end(form) }}	
+    			    </div>
+    			  </div>
+    			</div>	
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
@@ -287,5 +323,13 @@
 {% block javascripts %}
 	{% include 'EMSCoreBundle:app:menu.html.twig' with {
 		'item':  'environment-list'
-	}%}
+	}%}	
+    <script type="text/javascript">
+    <!--
+    
+    //-->
+    	$(document).ready(function() {
+    		$('ul.sortable').sortable();
+    	});
+    </script>
 {% endblock %}	

@@ -1,4 +1,4 @@
-{% extends 'EMSCoreBundle::base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}List all content types{% endblock %}
 {% block pagetitle %}List all content types{% endblock %} 
@@ -15,13 +15,13 @@
 					<a class="btn btn-xs btn-primary" href="{{ path('contenttype.add') }}"><i class="fa fa-plus"></i> Add content type</a>
 					<a class="btn btn-xs btn-primary" href="{{ path('contenttype.unreferenced') }}"><i class="fa fa-plus"></i> Add referenced</a>
 					<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#content_type_modal_reorder">
-						<i class="fa fa-reorder"></i> Reorder
+						<i class="fa fa-reorder"></i> {{ 'Reorder'|trans }}
 					</button>
 					
 					
 				</div>
 				
-				<div class="modal fade" id="content_type_modal_reorder" tabindex="-1" role="dialog" aria-labelledby="myModalReorder">
+			<div class="modal fade" id="content_type_modal_reorder" tabindex="-1" role="dialog" aria-labelledby="myModalReorder">
 			  <div class="modal-dialog" role="document">
 			    <div class="modal-content">
 			      <div class="modal-header">

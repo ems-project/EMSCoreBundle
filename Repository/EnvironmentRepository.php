@@ -12,7 +12,17 @@ use EMS\CoreBundle\Entity\Environment;
  */
 class EnvironmentRepository extends \Doctrine\ORM\EntityRepository
 {
-    
+    public function findAll(){
+    	return $this->findBy([]);
+    }
+    	
+    public function findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null){
+    	if(empty($orderBy)){
+    		$orderBy = ['orderKey' => 'asc' ];
+    	}
+    	return parent::findBy($criteria, $orderBy, $limit, $offset);
+    }
+	
     public function getEnvironmentsStats() {
         /** @var QueryBuilder $qb */
         $qb = $this->createQueryBuilder('e')
@@ -44,7 +54,7 @@ class EnvironmentRepository extends \Doctrine\ORM\EntityRepository
 		$qb = $this->createQueryBuilder('e');
 		$qb->where($qb->expr()->neq('e.id', ':defaultEnvId'));
 		$qb->andWhere($qb->expr()->neq('e.managed', ':false'));
-		$qb->orderBy('e.name', 'ASC');
+		$qb->orderBy('e.orderKey', 'ASC');
 		$qb->setParameters([
 				'false' => false,
 				'defaultEnvId' => $defaultEnv->getId()
@@ -59,6 +69,7 @@ class EnvironmentRepository extends \Doctrine\ORM\EntityRepository
 		$qb->select('e.alias alias');
 		$qb->where($qb->expr()->eq('e.managed', ':true'));
 		$qb->setParameters([':true' => true]);
+		$qb->orderBy('e.orderKey', 'ASC');
 		return $qb->getQuery()->getResult();
 	}
 	

@@ -65,6 +65,14 @@ class Filter
      */
     private $modified;
     
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="order_key", type="integer")
+     */
+    private $orderKey;
+    
+    
     public function __construct() {
     	$this->options = [];
     	$this->dirty = true;
@@ -244,6 +252,30 @@ class Filter
     public function getLabel()
     {
     	return $this->label;
+    }
+    
+    /**
+     * Set orderKey
+     *
+     * @param integer $orderKey
+     *
+     * @return Filter
+     */
+    public function setOrderKey($orderKey)
+    {
+    	$this->orderKey = $orderKey;
+    	
+    	return $this;
+    }
+    
+    /**
+     * Get orderKey
+     *
+     * @return integer
+     */
+    public function getOrderKey()
+    {
+    	return $this->orderKey;
     }
 }
 

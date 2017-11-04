@@ -125,6 +125,14 @@ class Environment
     private $contentTypesHavingThisAsDefault;
     
     /**
+     * @var int
+     *
+     * @ORM\Column(name="order_key", type="integer")
+     */
+    private $orderKey;
+    
+    
+    /**
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
@@ -561,5 +569,29 @@ class Environment
     public function getContentTypesHavingThisAsDefault()
     {
         return $this->contentTypesHavingThisAsDefault;
+    }
+    
+    /**
+     * Set orderKey
+     *
+     * @param integer $orderKey
+     *
+     * @return Environment
+     */
+    public function setOrderKey($orderKey)
+    {
+    	$this->orderKey = $orderKey;
+    	
+    	return $this;
+    }
+    
+    /**
+     * Get orderKey
+     *
+     * @return integer
+     */
+    public function getOrderKey()
+    {
+    	return $this->orderKey;
     }
 }

@@ -68,7 +68,7 @@ class Filter
     /**
      * @var int
      *
-     * @ORM\Column(name="order_key", type="integer")
+     * @ORM\Column(name="order_key", type="integer", nullable=true)
      */
     private $orderKey;
     

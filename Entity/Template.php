@@ -81,7 +81,7 @@ class Template
     /**
      * @var int
      *
-     * @ORM\Column(name="orderKey", type="integer", nullable=true)
+     * @ORM\Column(name="orderKey", type="integer")
      */
     private $orderKey;
 

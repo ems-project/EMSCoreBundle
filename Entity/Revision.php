@@ -169,7 +169,7 @@ class Revision
     /**
      * @var string
      *
-     * @ORM\Column(name="labelField", type="string", nullable=true)
+     * @ORM\Column(name="labelField", type="text", nullable=true)
      */
     private $labelField;
     
@@ -884,6 +884,7 @@ class Revision
      */
     public function setLabelField($labelField)
     {
+        
     	$this->labelField = $labelField;
     	
     	return $this;

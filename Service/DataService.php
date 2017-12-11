@@ -35,6 +35,8 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Form\FormInterface;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
+use EMS\CoreBundle\Event\UpdateRevisionReferersEvent;
+use EMS\CoreBundle\Exception\NotLockedException;
 
 class DataService
 {
@@ -479,7 +481,18 @@ class DataService
 		return $form;
 	}
 	
-	public function finalizeDraft(Revision $revision, \Symfony\Component\Form\Form &$form=null, $username=null){
+	/**
+	 * Try to finalize a revision
+	 * 
+	 * @param Revision $revision
+	 * @param \Symfony\Component\Form\Form $form
+	 * @param string $username
+	 * @param booleam $computeFields (allow to sky computedFields compute, i.e during a post-finalize)
+	 * @throws \Exception
+	 * @throws DataStateException
+	 * @return \EMS\CoreBundle\Entity\Revision
+	 */
+	public function finalizeDraft(Revision $revision, \Symfony\Component\Form\Form &$form=null, $username=null, $computeFields=true){
 		if($revision->getDeleted()){
 			throw new \Exception("Can not finalized a deleted revision");
 		}
@@ -510,7 +523,7 @@ class DataService
 		$objectArray = $revision->getRawData();
 		
 		$this->updateDataStructure($revision->getContentType()->getFieldType(), $form->get('data')->getNormData());
-		if($this->propagateDataToComputedField($form->get('data'), $objectArray, $revision->getContentType(), $revision->getContentType()->getName(), $revision->getOuuid())) {
+		if($computeFields && $this->propagateDataToComputedField($form->get('data'), $objectArray, $revision->getContentType(), $revision->getContentType()->getName(), $revision->getOuuid())) {
 			$revision->setRawData($objectArray);
 		}
 		
@@ -565,7 +578,7 @@ class DataService
 			$this->dispatcher->dispatch(RevisionFinalizeDraftEvent::NAME,  new RevisionFinalizeDraftEvent($revision));
 			
 			try {
-				$this->postFinalizeTreatment($form->get('data'), $previousObjectArray, $objectArray );				
+				$this->postFinalizeTreatment($revision->getContentType()->getName(), $revision->getOuuid(), $form->get('data'), $previousObjectArray );				
 			}
 			catch (\Exception $e) {
 				$this->session->getFlashBag()->add('warning', 'Error while finalize post processing of '.$revision.': '.$e->getMessage());
@@ -579,46 +592,21 @@ class DataService
 	}
 	
 	
-	
-	public function postFinalizeTreatment(Form $form, $previousObjectArray, $objectArray){
-			foreach ($form->all() as $subForm){
-				if ($subForm->getNormData() instanceof DataField) {
-					$childrenPreviousData = $subForm->getConfig()->getType()->getInnerType()->postFinalizeTreatment($subForm->getNormData(), $previousObjectArray);
-					$this->postFinalizeTreatment($subForm, $childrenPreviousData, $objectArray);					
-				}
+	/**
+	 * Parcours all fields and call DataFieldsType postFinalizeTreament function 
+	 * 
+	 * @param string $type
+	 * @param string $id
+	 * @param Form $form
+	 * @param array|null $previousObjectArray
+	 */
+	public function postFinalizeTreatment($type, $id, Form $form, $previousObjectArray){
+		foreach ($form->all() as $subForm){
+			if ($subForm->getNormData() instanceof DataField) {
+				$childrenPreviousData = $subForm->getConfig()->getType()->getInnerType()->postFinalizeTreatment($type, $id, $subForm->getNormData(), $previousObjectArray);
+				$this->postFinalizeTreatment($type, $id, $subForm, $childrenPreviousData);					
 			}
-		
-		
-		
-// 		//no need to generate the structure for subfields (
-// 		$isContainer = true;
-		
-// 		if(null !== $dataField->getFieldType()){
-// 			// 			$type = $dataField->getFieldType()->getType();
-// 			$datFieldType = $this->formRegistry->getType($dataField->getFieldType()->getType())->getInnerType();
-// 			$datFieldType->postFinalizeTreatment($fieldType, $previousObjectArray, $objectArray);
-// 		}
-		
-// 		/** @var FieldType $field */
-// 		foreach ($meta->getChildren() as $field){
-// 			//no need to generate the structure for delete field
-// 			if(!$field->getDeleted()){
-// 				$child = $dataField->__get('ems_'.$field->getName());
-// 				if(null == $child){
-// 					$child = new DataField();
-// 					$child->setFieldType($field);
-// 					$child->setOrderKey($field->getOrderKey());
-// 					$child->setParent($dataField);
-// 					$dataField->addChild($child);
-// 					if(isset($field->getDisplayOptions()['defaultValue'])){
-// 						$child->setEncodedText($field->getDisplayOptions()['defaultValue']);
-// 					}
-// 				}
-// 				if( strcmp($field->getType(), CollectionFieldType::class) != 0 ) {
-// 					$this->updateDataStructure($field, $child);
-// 				}
-// 			}
-// 		}
+		}
 	}
 
 	/**
@@ -1181,5 +1169,61 @@ class DataService
 			//else shoudl be a sub-field
 		}
 		return $out;
+	}
+	
+	/**
+	 * Call on UpdateRevisionReferersEvent. Will try to update referers objects
+	 * 
+	 * @param UpdateRevisionReferersEvent $event
+	 */
+	public function updateRefers(UpdateRevisionReferersEvent $event){
+		
+		$form = null;
+		foreach ($event->getToCleanOuuids() as $ouuid) {
+			try {
+				$key = explode(':', $ouuid);
+				$revision = $this->initNewDraft($key[0], $key[1]);
+				$data = $revision->getRawData();
+				if(empty($data[$event->getTargetField()])){
+					$data[$event->getTargetField()] = [];
+				}
+				if(in_array($event->getRefererOuuid(), $data[$event->getTargetField()])) {
+					$data[$event->getTargetField()] = array_diff($data[$event->getTargetField()], [$event->getRefererOuuid()]);
+					$revision->setRawData($data);
+					
+					$this->finalizeDraft($revision, $form, null, false);
+				}
+				else {
+					$this->discardDraft($revision);
+				}
+			}
+			catch (LockedException $e) {
+				$this->session->getFlashBag()->add('error', 'elasticms was not able to udate referers in object ' . $ouuid);
+			}
+		}
+		
+		
+		foreach ($event->getToCreateOuuids() as $ouuid) {
+			try {
+				$key = explode(':', $ouuid);
+				$revision = $this->initNewDraft($key[0], $key[1]);
+				$data = $revision->getRawData();
+				if(empty($data[$event->getTargetField()])){
+					$data[$event->getTargetField()] = [];
+				}
+				if(! in_array($event->getRefererOuuid(), $data[$event->getTargetField()])) {
+					$data[$event->getTargetField()][] = $event->getRefererOuuid();
+					$revision->setRawData($data);
+					
+					$this->finalizeDraft($revision, $form, null, false);
+				}
+				else {
+					$this->discardDraft($revision);
+				}
+			}
+			catch (LockedException $e) {
+				$this->session->getFlashBag()->add('error', 'elasticms was not able to udate referers in object ' . $ouuid);
+			}
+		}
 	}
 }

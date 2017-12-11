@@ -47,7 +47,16 @@ abstract class DataFieldType extends AbstractType {
 		$builder->setDisabled($this->isDisabled($options));
 	}
 	
-	public function postFinalizeTreatment(DataField $dataField, $previousData) {
+	/**
+	 * Perfom field specfifc post-finalized treatment. It returns the children if it's a container
+	 * 
+	 * @param string $type
+	 * @param string $id
+	 * @param DataField $dataField
+	 * @param array $previousData
+	 * @return array|null
+	 */
+	public function postFinalizeTreatment($type, $id, DataField $dataField, $previousData) {
 		return $previousData;
 	}
 	

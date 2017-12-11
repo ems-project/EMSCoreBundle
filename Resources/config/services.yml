@@ -78,7 +78,7 @@ services:
             - { name: form.type }
     ems.fieldtype.dataLink:
         class: EMS\CoreBundle\Form\DataField\DataLinkFieldType
-        arguments: ['@security.authorization_checker', '@form.registry', '@app.elasticsearch']
+        arguments: ['@security.authorization_checker', '@form.registry', '@app.elasticsearch', '@event_dispatcher']
         tags:
             - { name: ems.form.datafieldtype, alias: datalink }
             - { name: form.type }
@@ -353,6 +353,8 @@ services:
     ems.service.data:
         class: EMS\CoreBundle\Service\DataService
         arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '%ems_core.lock_time%', '@app.elasticsearch', '@ems.service.mapping', '%ems_core.instance_id%', '@session', '@form.factory', '@service_container', '@form.registry', '@event_dispatcher', '%ems_private_key%']
+        tags:
+            - { name: kernel.event_listener, event: ems_core.revision.update_referers, method: updateRefers, priority: 0 }
     ems.service.environment:
         class: EMS\CoreBundle\Service\EnvironmentService
         arguments: ['@doctrine', '@session', '@ems.service.user', '@security.authorization_checker']

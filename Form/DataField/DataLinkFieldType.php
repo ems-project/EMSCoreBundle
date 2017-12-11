@@ -15,7 +15,9 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-																			
+use EMS\CoreBundle\Event\UpdateRevisionReferersEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+																					
 /**
  * Defined a Container content type.
  * It's used to logically groups subfields together. However a Container is invisible in Elastic search.
@@ -25,18 +27,33 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  *        
  */
  class DataLinkFieldType extends DataFieldType {
-
+ 	
  	/**@var Client $client*/
  	protected $client;
+ 	/**@var EventDispatcherInterface $dispatcher*/
+ 	protected $dispatcher;
  	
  	
- 	
- 	public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, Client $client) {
+ 	/**
+ 	 * Contructor
+ 	 * 
+ 	 * @param AuthorizationCheckerInterface $authorizationChecker
+ 	 * @param FormRegistryInterface $formRegistry
+ 	 * @param Client $client
+ 	 * @param EventDispatcherInterface $dispatcher
+ 	 */
+ 	public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, Client $client, EventDispatcherInterface $dispatcher) {
  		parent::__construct($authorizationChecker, $formRegistry);
  		$this->client = $client;
+ 		$this->dispatcher= $dispatcher;
  	}
  	
- 	public function postFinalizeTreatment(DataField $dataField, $previousData) {
+ 	/**
+ 	 * 
+ 	 * {@inheritDoc}
+ 	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::postFinalizeTreatment()
+ 	 */
+ 	public function postFinalizeTreatment($type, $id, DataField $dataField, $previousData) {
  		if(!empty($dataField->getFieldType()->getExtraOptions()['updateReferersField'])) {
 //  			dump($dataField->getFieldType()->getExtraOptions()['updateReferersField'], $previousData, $dataField->getRawData());
  			$referersToAdd = [];
@@ -45,12 +62,15 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  			if(!empty($previousData[$dataField->getFieldType()->getName()])) {
  				$referersToRemove = $previousData[$dataField->getFieldType()->getName()];
  			}
- 			$referersToAdd= $dataField->getRawData();
+ 			if(!empty($dataField->getRawData())) {
+	 			$referersToAdd= $dataField->getRawData(); 				
+ 			}
  			
- 			dump($referersToAdd, $referersToRemove);
+ 			$this->dispatcher->dispatch(UpdateRevisionReferersEvent::NAME,  new UpdateRevisionReferersEvent($type, $id, $dataField->getFieldType()->getExtraOptions()['updateReferersField'], $referersToRemove, $referersToAdd));
+ 			
  			
  		}
- 		return parent::postFinalizeTreatment($dataField, $previousData);
+ 		return parent::postFinalizeTreatment($type, $id, $dataField, $previousData);
  	}
  	
 	/**

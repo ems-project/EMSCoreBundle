@@ -1176,7 +1176,7 @@ class DataService
 	 * 
 	 * @param UpdateRevisionReferersEvent $event
 	 */
-	public function updateRefers(UpdateRevisionReferersEvent $event){
+	public function updateReferers(UpdateRevisionReferersEvent $event){
 		
 		$form = null;
 		foreach ($event->getToCleanOuuids() as $ouuid) {

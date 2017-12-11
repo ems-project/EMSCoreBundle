@@ -35,6 +35,18 @@ class ContainerFieldType extends DataFieldType {
 	
 	
 	/**
+	 * 
+	 * {@inheritDoc}
+	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::postFinalizeTreatment()
+	 */
+	public function postFinalizeTreatment($type, $id, DataField $dataField, $previousData) {
+		if(!empty($previousData[$dataField->getFieldType()->getName()])) {
+			return $previousData[$dataField->getFieldType()->getName()];
+		}
+		return null;
+	}
+	
+	/**
 	 *
 	 * {@inheritdoc}
 	 *

@@ -48,6 +48,20 @@ abstract class DataFieldType extends AbstractType {
 	}
 	
 	/**
+	 * Perfom field specfifc post-finalized treatment. It returns the children if it's a container
+	 * 
+	 * @param string $type
+	 * @param string $id
+	 * @param DataField $dataField
+	 * @param array $previousData
+	 * @return array|null
+	 */
+	public function postFinalizeTreatment($type, $id, DataField $dataField, $previousData) {
+		return $previousData;
+	}
+	
+	
+	/**
 	 * form array to DataField 
 	 * 
 	 * http://symfony.com/doc/current/form/data_transformers.html#about-model-and-view-transformers

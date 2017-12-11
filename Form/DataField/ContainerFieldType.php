@@ -34,6 +34,14 @@ class ContainerFieldType extends DataFieldType {
 	}
 	
 	
+	
+	public function postFinalizeTreatment(DataField $dataField, $subForm) {
+		if(!empty($previousData[$dataField->getFieldType()->getName()])) {
+			return $previousData[$dataField->getFieldType()->getName()];
+		}
+		return null;
+	}
+	
 	/**
 	 *
 	 * {@inheritdoc}

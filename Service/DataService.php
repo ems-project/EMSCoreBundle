@@ -514,6 +514,8 @@ class DataService
 			$revision->setRawData($objectArray);
 		}
 		
+		$previousObjectArray = null;
+		
 		$objectArray = $this->sign($revision);
 		
   		if(empty($form) || $this->isValid($form)){
@@ -539,6 +541,7 @@ class DataService
 				$item = $repository->findByOuuidContentTypeAndEnvironnement($revision);
 				if($item){
 					$this->lockRevision($item, false, false, $username);
+					$previousObjectArray = $item->getRawData();
 					$item->removeEnvironment($revision->getContentType()->getEnvironment());
 					$em->persist($item);
 					$this->unlockRevision($item, $username);
@@ -560,6 +563,13 @@ class DataService
 
 			$this->unlockRevision($revision, $username);
 			$this->dispatcher->dispatch(RevisionFinalizeDraftEvent::NAME,  new RevisionFinalizeDraftEvent($revision));
+			
+			try {
+				$this->postFinalizeTreatment($form->get('data'), $previousObjectArray, $objectArray );				
+			}
+			catch (\Exception $e) {
+				$this->session->getFlashBag()->add('warning', 'Error while finalize post processing of '.$revision.': '.$e->getMessage());
+			}
 		
 		} else {
  			$form->addError(new FormError("This Form is not valid!"));
@@ -568,6 +578,48 @@ class DataService
 		return $revision;
 	}
 	
+	
+	
+	public function postFinalizeTreatment(Form $form, $previousObjectArray, $objectArray){
+			foreach ($form->all() as $subForm){
+				if ($subForm->getNormData() instanceof DataField) {
+					$childrenPreviousData = $subForm->getConfig()->getType()->getInnerType()->postFinalizeTreatment($subForm->getNormData(), $previousObjectArray);
+					$this->postFinalizeTreatment($subForm, $childrenPreviousData, $objectArray);					
+				}
+			}
+		
+		
+		
+// 		//no need to generate the structure for subfields (
+// 		$isContainer = true;
+		
+// 		if(null !== $dataField->getFieldType()){
+// 			// 			$type = $dataField->getFieldType()->getType();
+// 			$datFieldType = $this->formRegistry->getType($dataField->getFieldType()->getType())->getInnerType();
+// 			$datFieldType->postFinalizeTreatment($fieldType, $previousObjectArray, $objectArray);
+// 		}
+		
+// 		/** @var FieldType $field */
+// 		foreach ($meta->getChildren() as $field){
+// 			//no need to generate the structure for delete field
+// 			if(!$field->getDeleted()){
+// 				$child = $dataField->__get('ems_'.$field->getName());
+// 				if(null == $child){
+// 					$child = new DataField();
+// 					$child->setFieldType($field);
+// 					$child->setOrderKey($field->getOrderKey());
+// 					$child->setParent($dataField);
+// 					$dataField->addChild($child);
+// 					if(isset($field->getDisplayOptions()['defaultValue'])){
+// 						$child->setEncodedText($field->getDisplayOptions()['defaultValue']);
+// 					}
+// 				}
+// 				if( strcmp($field->getType(), CollectionFieldType::class) != 0 ) {
+// 					$this->updateDataStructure($field, $child);
+// 				}
+// 			}
+// 		}
+	}
 
 	/**
 	 * 

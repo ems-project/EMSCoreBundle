@@ -36,6 +36,23 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  		$this->client = $client;
  	}
  	
+ 	public function postFinalizeTreatment(DataField $dataField, $previousData) {
+ 		if(!empty($dataField->getFieldType()->getExtraOptions()['updateReferersField'])) {
+//  			dump($dataField->getFieldType()->getExtraOptions()['updateReferersField'], $previousData, $dataField->getRawData());
+ 			$referersToAdd = [];
+ 			$referersToRemove = [];
+ 			
+ 			if(!empty($previousData[$dataField->getFieldType()->getName()])) {
+ 				$referersToRemove = $previousData[$dataField->getFieldType()->getName()];
+ 			}
+ 			$referersToAdd= $dataField->getRawData();
+ 			
+ 			dump($referersToAdd, $referersToRemove);
+ 			
+ 		}
+ 		return parent::postFinalizeTreatment($dataField, $previousData);
+ 	}
+ 	
 	/**
 	 *
 	 * {@inheritdoc}
@@ -239,6 +256,10 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 		] )->add ( 'type', TextType::class, [ 
 				'required' => false,
 		] )->add ( 'defaultValue', TextType::class, [ 
+				'required' => false,
+		] );
+		
+		$optionsForm->get ( 'extraOptions' )->add ( 'updateReferersField', TextType::class, [
 				'required' => false,
 		] );
 		

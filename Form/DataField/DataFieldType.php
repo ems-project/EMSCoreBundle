@@ -47,6 +47,11 @@ abstract class DataFieldType extends AbstractType {
 		$builder->setDisabled($this->isDisabled($options));
 	}
 	
+	public function postFinalizeTreatment(DataField $dataField, $previousData) {
+		return $previousData;
+	}
+	
+	
 	/**
 	 * form array to DataField 
 	 * 

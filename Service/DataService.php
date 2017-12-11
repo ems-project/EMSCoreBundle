@@ -1198,7 +1198,7 @@ class DataService
 				}
 			}
 			catch (LockedException $e) {
-				$this->session->getFlashBag()->add('error', 'elasticms was not able to udate referers in object ' . $ouuid);
+				$this->session->getFlashBag()->add('error', 'elasticms was not able to udate referers of object ' . $ouuid . ':' . $e->getMessage());
 			}
 		}
 		
@@ -1222,7 +1222,7 @@ class DataService
 				}
 			}
 			catch (LockedException $e) {
-				$this->session->getFlashBag()->add('error', 'elasticms was not able to udate referers in object ' . $ouuid);
+				$this->session->getFlashBag()->add('error', 'elasticms was not able to udate referers of object ' . $ouuid . ':' . $e->getMessage());
 			}
 		}
 	}

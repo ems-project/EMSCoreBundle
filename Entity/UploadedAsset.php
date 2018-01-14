@@ -81,14 +81,14 @@ class UploadedAsset
     /**
      * @var int
      *
-     * @ORM\Column(name="size", type="integer")
+     * @ORM\Column(name="size", type="bigint")
      */
     private $size; 
 
     /**
      * @var int
      *
-     * @ORM\Column(name="uploaded", type="integer")
+     * @ORM\Column(name="uploaded", type="bigint")
      */
     private $uploaded;
     

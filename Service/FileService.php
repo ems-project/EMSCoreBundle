@@ -12,12 +12,16 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class FileService {
 
 	private $storageServices;
+	
 	/**@var Registry*/
 	private $doctrine;
 	
-	public function __construct(Registry $doctrine)
+	private $uploadFolder;
+	
+	public function __construct(Registry $doctrine, $uploadFolder)
 	{
-		$this->doctrine = $doctrine;
+	    $this->doctrine = $doctrine;
+	    $this->uploadFolder = $uploadFolder;
 		$this->storageServices = [];
 	}
 	
@@ -292,6 +296,9 @@ class FileService {
 	 * @return string
 	 */
 	private function temporaryFilename($sha1) {
+	    if($this->uploadFolder){
+	        return $this->uploadFolder.DIRECTORY_SEPARATOR.$sha1;
+	    }
 		return sys_get_temp_dir().DIRECTORY_SEPARATOR.$sha1;
 	}
 }

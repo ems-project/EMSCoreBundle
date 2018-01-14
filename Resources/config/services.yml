@@ -395,7 +395,7 @@ services:
         arguments: []
     ems.service.file:
         class: EMS\CoreBundle\Service\FileService
-        arguments: ['@doctrine']
+        arguments: ['@doctrine', '%ems_core.upload_folder%']
     ems.service.helper:
         class: EMS\CoreBundle\Service\HelperService
         arguments: ['@doctrine', '@request_stack', '%ems_core.paging_size%']

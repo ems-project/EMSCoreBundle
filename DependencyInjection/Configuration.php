@@ -84,6 +84,7 @@ class Configuration implements ConfigurationInterface
 		        ->scalarNode('asset_config_type')->defaultValue(self::ASSET_CONFIG_TYPE)->end()
 		        ->scalarNode('asset_config_index')->defaultValue(self::ASSET_CONFIG_INDEX)->end()
 		        ->scalarNode('private_key')->defaultValue(self::PRIVATE_KEY)->end()
+		        ->scalarNode('upload_folder')->defaultValue(null)->end()
 		        ->arrayNode('template_options')->defaultValue([])
 		        	->prototype('variable')
 		        	->end()

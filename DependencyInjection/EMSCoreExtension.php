@@ -51,6 +51,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.application_menu_controller', $config['application_menu_controller']);
         $container->setParameter('ems_core.asset_config_type', $config['asset_config_type']);
         $container->setParameter('ems_core.asset_config_index', $config['asset_config_index']);
+        $container->setParameter('ems_core.upload_folder', $config['upload_folder']);
         
     }
     

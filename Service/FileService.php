@@ -153,13 +153,13 @@ class FileService {
 			//Get temporyName
 			$filename = $this->temporaryFilename($sha1);
 			if(file_exists($filename)) {
-				if(filesize($filename) !== $uploadedAsset->getUploaded()){
+			    if(filesize($filename) !== intval($uploadedAsset->getUploaded())){
 					file_put_contents($filename, "");
 					$uploadedAsset->setUploaded(0);
 				}
-				else {
-					$uploadedAsset = $this->saveFile($filename, $uploadedAsset);
-				}
+// 				else {
+// 					$uploadedAsset = $this->saveFile($filename, $uploadedAsset);
+// 				}
 			}
 			else {
 				touch($filename);

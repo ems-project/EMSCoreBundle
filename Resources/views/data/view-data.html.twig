@@ -12,8 +12,14 @@
 	{% endif %}
 					
 	
-	 as indexed in 
-	<span class="badge bg-{{ environment.color|raw }}">{{ environment.name|humanize }}</span>
+        {% if environment is defined %}
+            as indexed in <span class="badge bg-{{ environment.color|raw }}">{{ environment.name|humanize }}</span>
+        {% elseif environments is defined %}
+            in environments 
+            {% for environment in environments %}
+                <span class="badge bg-{{ environment.color|raw }}">{{ environment.name|humanize }}</span>
+            {% endfor %}
+        {% endif %}
 {% endblock %} 
 
 {% block subtitle %}{% endblock %} 
@@ -24,20 +30,21 @@
 	<div class="col-xs-12">
 		<div class="box">
 			<div class="box-header">
-				<h3 class="box-title">Recursif view</h3>
+				<h3 class="box-title">Recursive view</h3>
 			</div>
 			<div class="box-body">
 				{% import "EMSCoreBundle:macros:view.html.twig" as macros %}
 				{{ macros.recursifArray(object) }}
 			</div>
-			<!-- /.box-body -->
-			<div class="box-footer">
-			  	{% include 'EMSCoreBundle:elements:object-toolbar.html.twig' with {
-					'object':  object,
-					'contentType': contentType,
-					'recursiveView': true
-				}%}
-			</div>
+                        {% if environment is defined %}
+                            <div class="box-footer">
+                                {% include 'EMSCoreBundle:elements:object-toolbar.html.twig' with {
+                                    'object':  object,
+                                    'contentType': contentType,
+                                    'recursiveView': true
+                                }%}
+                            </div>
+                        {% endif %}
 		</div>
 	</div>
 </div>

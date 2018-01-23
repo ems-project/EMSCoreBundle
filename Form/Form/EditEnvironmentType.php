@@ -8,6 +8,8 @@ use EMS\CoreBundle\Form\Field\IconTextType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -55,16 +57,38 @@ class EditEnvironmentType extends AbstractType {
 				],
 				'icon' => 'fa fa-save' 
 		] );
+                
+                foreach ($options['indexes'] as $index => $info) {
+                    $builder->add($index, CheckboxType::class, [
+                        'mapped' => false,
+                        'required' => false,
+                        'data' => in_array($revision->getAlias(), array_keys($info['aliases'])),
+                    ]);
+                }
 	}
+        
+        /**
+         * {@inheritdoc}
+         */
+        public function buildView(FormView $view, FormInterface $form, array $options)
+        {
+            parent::buildView($view, $form, $options);
+            
+            $view->vars['indexes'] = array_keys($options['indexes']);
+        }
 
 	/**
 	 *
 	 * {@inheritdoc}
 	 *
 	 */
-	public function configureOptions(OptionsResolver $resolver) {
-		/* set the default option value for this kind of compound field */
-		parent::configureOptions ( $resolver );
-		$resolver->setDefault ( 'type', null );
+	public function configureOptions(OptionsResolver $resolver) 
+        {
+            parent::configureOptions($resolver);
+            
+            $resolver->setDefaults([
+                'type' => null, 
+                'indexes' => []
+            ]);
 	}
 }

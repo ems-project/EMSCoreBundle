@@ -393,11 +393,15 @@ class ContentTypeController extends AppController {
 			] );
 			foreach ( $mapping as $indexName => $index ) {
 				foreach ( $index ['mappings'] as $name => $type ) {
+                                    if (isset($referencedContentTypes[$name])) {
+                                        continue;
+                                    }
+                                    
 					$already = $contenttypeRepository->findBy ( [ 
 							'name' => $name 
 					] );
 					if (! $already || $already [0]->getDeleted ()) {
-						$referencedContentTypes [] = [ 
+						$referencedContentTypes[$name] = [ 
 								'name' => $name,
 								'alias' => $alias,
 								'envId' => $environment->getId () 

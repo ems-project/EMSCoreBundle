@@ -97,6 +97,8 @@ class EnvironmentRepository extends \Doctrine\ORM\EntityRepository
 					'managed' => $record['managed'],
 					'baseUrl' => $record['baseUrl'],
 					'circles' => $record['circles'],
+                                        'indexes' => [],
+                                        'count' => 0,
 			];
 		}
 	

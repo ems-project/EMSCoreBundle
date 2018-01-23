@@ -497,18 +497,18 @@ class ElasticsearchController extends AppController
 			$client = $this->getElasticsearch();
 			
 			$assocAliases = $client->indices()->getAliases();
-			
-			$mapAlias = [];
-			$mapIndex = [];
-			foreach ($assocAliases as $index => $aliasNames){
-				foreach ($aliasNames['aliases'] as $alias => $options){
-					if(isset($environments[$alias])){
-						$mapAlias[$environments[$alias]['alias']] = $environments[$alias];
-						$mapIndex[$index] = $environments[$alias];
-						break;
-					}
-				}
-			}
+                        $indexes = [];
+                        
+                        foreach ($assocAliases as $index => $aliasNames){
+                           foreach ($aliasNames['aliases'] as $alias => $options){
+                               if (!isset($environments[$alias])) {
+                                   continue;
+                               }
+                               
+                               $environments[$alias]['indexes'][] = $index;
+                               $indexes[$index][] = $environments[$alias];
+                           }
+                        }
 
 			$selectedEnvironments = [];
 			if(!empty($search->getEnvironments() )){
@@ -571,6 +571,24 @@ class ElasticsearchController extends AppController
 			try {
 				$results = $client->search($params);
 				$lastPage = ceil($results['hits']['total']/$this->container->getParameter('ems_core.paging_size'));
+                                
+                                foreach ($results['aggregations']['indexes']['buckets'] as $bucket) {
+                                    foreach ($environments as $alias => &$environment) {
+                                        if (!in_array($bucket['key'], $environment['indexes'])) {
+                                            continue;
+                                        }
+                                        if (!in_array($alias, $params['index'])) {
+                                            continue;
+                                        }
+                                        
+                                        $environment['count'] = $environment['count'] + $bucket['doc_count'];
+                                    }
+                                    unset($environment);
+                                }
+                                
+                                $environments = array_filter($environments, function (array $env) {
+                                    return $env['count'] > 0;
+                                });
 			}
 			catch (ElasticsearchException $e) {
 				$this->addFlash('warning', $e->getMessage());
@@ -793,8 +811,8 @@ class ElasticsearchController extends AppController
 					'lastPage' => $lastPage,
 					'paginationPath' => 'elasticsearch.search',
 					'types' => $types,
-					'alias' => $mapAlias,
-					'indexes' => $mapIndex,
+                                        'environments' => $environments,
+					'indexes' => $indexes,
 					'form' => $form->createView(),
 					'page' => $page,
 					'searchId' => $searchId,

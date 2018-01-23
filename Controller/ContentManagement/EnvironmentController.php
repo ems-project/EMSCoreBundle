@@ -506,7 +506,14 @@ class EnvironmentController extends AppController {
 			throw new NotFoundHttpException('Unknow environment');
 		}
 	
-		$options= [];
+                $indexes = [];
+                if (!$environment->getManaged()) {
+                    //only for external envirionments
+                    $indexes = $this->getAllIndexes();
+                    ksort($indexes);
+                }
+                
+		$options= ['indexes' => $indexes];
 		if ($this->getParameter("ems_core.circles_object")){
 			$options['type'] = $this->getParameter("ems_core.circles_object");
 		}
@@ -516,10 +523,29 @@ class EnvironmentController extends AppController {
 		$form->handleRequest($request);
 	
 		if ($form->isSubmitted() && $form->isValid()) {
-			$em->persist($environment);
-			$em->flush();
-			$this->addFlash('notice', 'Environment '.$environment->getName().' has been updated');
-			return $this->redirectToRoute('environment.index');
+                    $actions = [];
+                    $alias = $environment->getAlias();
+                    foreach (array_keys($indexes) as $index) {
+                        if ($form->get($index)->getData()) {
+                            $actions[] = ['add' => ['index' => $index, 'alias' => $alias]];
+                        } else {
+                            $actions[] = ['remove' => ['index' => $index, 'alias' => $alias]];
+                        }
+                    }
+                    
+                    if (count($actions) > 0 && !$environment->getManaged()) {
+                        $client = $this->getElasticsearch();
+                        $client->indices()->updateAliases([
+                            'body' => [
+                                'actions' => $actions
+                            ]
+                        ]);
+                    }
+                            
+                    $em->persist($environment);
+                    $em->flush();
+                    $this->addFlash('notice', 'Environment '.$environment->getName().' has been updated');
+                    return $this->redirectToRoute('environment.index');
 		}
 	
 		return $this->render( 'EMSCoreBundle:environment:edit.html.twig',[
@@ -685,8 +711,8 @@ class EnvironmentController extends AppController {
 			$orphanIndexes = [];
 		
 			$logger->addDebug('For each aliases: start');
-			foreach ($client->indices()->getAliases() as $index => $aliases) {
-				if(count($aliases["aliases"]) == 0 && strcmp($index{0}, '.') != 0 ){
+			foreach ($this->getAllIndexes() as $index => $aliases) {
+				if(count($aliases["aliases"]) == 0){
 					$orphanIndexes[] = [
 							'name'=> $index,
 							'total' => $client->count(['index'=>$index])["count"]
@@ -694,7 +720,7 @@ class EnvironmentController extends AppController {
 					];
 				}
 				foreach ($aliases["aliases"] as $alias => $other) {
-					$temp[$alias] = $index;
+					$temp[$alias][] = $index;
 				}
 					
 			}
@@ -723,7 +749,7 @@ class EnvironmentController extends AppController {
 				$environment->setCounter($stat['counter']);
 				$environment->setDeletedRevision($stat['deleted']);
 				if(isset($temp[$environment->getAlias()])){
-					$environment->setIndex($temp[$environment->getAlias()]);
+					$environment->setIndexes($temp[$environment->getAlias()]);
 					$environment->setTotal($client->count(['index'=>$environment->getAlias()])["count"]);
 					unset($temp[$environment->getAlias()]);
 				}
@@ -847,5 +873,19 @@ class EnvironmentController extends AppController {
 		}
 		return $contentTypeList;
 	}
-	
+        
+        /**
+         * Filters out indexes that start with .*
+         * 
+         * @return array
+         */
+        private function getAllIndexes()
+        {
+            $client = $this->getElasticsearch();
+            $aliases = $client->indices()->getAliases();
+            
+            return array_filter($aliases, function ($index){
+                return strcmp($index{0}, '.') != 0;
+            }, \ARRAY_FILTER_USE_KEY);
+        }
 }

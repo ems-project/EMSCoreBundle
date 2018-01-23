@@ -255,6 +255,54 @@ class DataController extends AppController
 				'contentType' => $contentType,
 		] );
 	}
+        
+        /**
+	 * @Route("/data/view-index/{index}/{type}/{ouuid}", name="data.view.index")
+	 */
+	public function viewDataIndexAction(Request $request, $index, $type, $ouuid)
+	{
+            $em = $this->getDoctrine()->getManager();
+                
+            /** @var ContentTypeRepository $contentTypeRepo */
+            $contentTypeRepo = $em->getRepository('EMSCoreBundle:ContentType');
+            $contentTypes = $contentTypeRepo->findBy([
+                'name' => $type,
+                'deleted' => false,
+            ]);
+
+            $contentType = null;
+            if($contentTypes && count($contentTypes) == 1) {
+                $contentType = $contentTypes[0];
+            }
+            
+            $environmentRepository = $em->getRepository ( 'EMSCoreBundle:Environment' );
+            $environments = $environmentRepository->findAllAsAssociativeArray('alias');
+                
+            try{
+                $client = $this->getElasticsearch();
+                /** @var Client $client */
+                $result = $client->get([
+                    'index' => $index,
+                    'type' => $type,
+                    'id' => $ouuid,
+                ]);
+                
+                $indices = $client->indices()->getAliases(['index' => $index]);
+                $aliases = $indices[$index]['aliases'];
+                
+                $environments = array_filter($environments, function (array $env) use ($aliases) {
+                    return in_array($env['alias'], array_keys($aliases));
+                });
+            } catch(Missing404Exception $e){
+                throw new NotFoundHttpException($type.' not found');			
+            }
+            
+            return $this->render( 'EMSCoreBundle:data:view-data.html.twig', [
+                'object' =>  $result,
+                'environments' => $environments,
+                'contentType' => $contentType,
+            ] );
+        }
 	
 	/**
 	 * @Route("/data/revisions-in-environment/{environment}/{type}:{ouuid}", name="data.revision_in_environment", defaults={"deleted":0})

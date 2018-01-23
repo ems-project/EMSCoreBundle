@@ -12,7 +12,7 @@
 
 {% block body %}
 <div class="row">
-	<div class="col-md-6">
+	<div class="col-md-12">
 		<div class="box ">
 			<div class="box-header with-border">
 				<i class="fa fa-warning"></i>
@@ -28,35 +28,48 @@
 			<!-- /.box-body -->
 		</div>
 	</div>
-	<div class="col-md-6">
-		<div class="box box-info">
-			<div class="box-header with-border">
-				<h3 class="box-title">Update environement's options</h3>
-			</div>
-			<!-- /.box-header -->
-			<!-- form start -->
-			{{ form_start(form) }}
-				<div class="box-body">
-					{{ form_row(form.name) }}
-					{{ form_row(form.color) }}
-          			{{ form_row(form.inDefaultSearch) }}
-          			{{ form_row(form.baseUrl) }}
-          			{% if form.circles is defined %}
-	    	    		{{ form_row(form.circles) }}
-	    			{% endif %}
-          			{{ form_row(form.extra) }}
-				</div>
-				<!-- /.box-body -->
-				<div class="box-footer">
-					<div class="btn-group pull-right">
-						{{ form_widget(form.save) }}
-					</div>
-				</div>
-				<!-- /.box-footer -->
-			
-			{{ form_end(form) }}
-		</div>
-	</div>
+        {{ form_start(form) }}
+            <div class="col-md-6">
+                <div class="box box-info">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Update environement's options</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <!-- form start -->
+                            <div class="box-body">
+                                    {{ form_row(form.name) }}
+                                    {{ form_row(form.color) }}
+                            {{ form_row(form.inDefaultSearch) }}
+                            {{ form_row(form.baseUrl) }}
+                            {% if form.circles is defined %}
+                            {{ form_row(form.circles) }}
+                            {% endif %}
+                            {{ form_row(form.extra) }}
+                            </div>
+                            <!-- /.box-body -->
+                            <div class="box-footer">
+                                <div class="btn-group pull-right">
+                                    {{ form_widget(form.save) }}
+                                </div>
+                            </div>
+                            <!-- /.box-footer -->
+                </div>
+            </div>
+            {% if form.vars.indexes|length > 0 %}
+                <div class="col-md-6">
+                    <div class="box box-info">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Indexes</h3>
+                        </div>
+                        <div class="box-body">
+                            {% for index in form.vars.indexes %}
+                                {{ form_widget(attribute(form, index)) }}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {{ form_end(form) }}
 </div>
 {% endblock %} 
 

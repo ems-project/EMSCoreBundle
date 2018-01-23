@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Form\Form;
 
 use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Form\Field\AlignIndexesType;
 use EMS\CoreBundle\Form\Field\ColorPickerType;
 use EMS\CoreBundle\Form\Field\IconTextType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
@@ -60,10 +61,13 @@ class EditEnvironmentType extends AbstractType {
                 
                 foreach ($options['indexes'] as $index => $info) {
                     $builder->add($index, CheckboxType::class, [
+                        'attr' => ['class' => 'align-index'],
                         'mapped' => false,
                         'required' => false,
                         'data' => in_array($revision->getAlias(), array_keys($info['aliases'])),
                     ]);
+                    
+                    $builder->add('align_indexes', AlignIndexesType::class);
                 }
 	}
         

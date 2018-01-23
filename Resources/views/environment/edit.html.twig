@@ -66,6 +66,9 @@
                                 {{ form_widget(attribute(form, index)) }}
                             {% endfor %}
                         </div>
+                        <div class="box-footer">
+                            {{ form_row(form.align_indexes) }}
+                        </div>
                     </div>
                 </div>
             {% endif %}
@@ -119,6 +122,18 @@ $(window).ready(function() {
       //templateSelection: formatRepoSelection, // omitted for brevity, see the source of this page
       minimumInputLength: 1
   });
+  
+    $('#edit_environment_align_indexes').on('change', function() {
+        var data = $(this).find("option:selected").data();
+        
+        if (data.indexes !== 'undefined') {
+            $('.align-index').prop( "checked", false);
+            
+            data.indexes.map(function (index) {
+                $('#edit_environment_'+index).prop( "checked", true);
+            });
+        }
+    });
 });
 	
 </script>

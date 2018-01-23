@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Elasticsearch\Client;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use EMS\CoreBundle\Entity\Environment;
@@ -25,9 +26,13 @@ class EnvironmentService {
 	
 	/** @var AuthorizationCheckerInterface $authorizationChecker*/
 	private $authorizationChecker;
+        
+        /**
+         * @var Elasticsearch\Client 
+         */
+        private $client;
 	
-	
-	public function __construct(Registry $doctrine, Session $session, UserService $userService, AuthorizationCheckerInterface $authorizationChecker)
+	public function __construct(Registry $doctrine, Session $session, UserService $userService, AuthorizationCheckerInterface $authorizationChecker, Client $client)
 	{
 		$this->doctrine = $doctrine;
 		$this->session = $session;
@@ -35,6 +40,7 @@ class EnvironmentService {
 		$this->authorizationChecker = $authorizationChecker;
 		$this->environments = false;
 		$this->byId = false;
+                $this->client = $client;
 	}
 	
 	public function getIndexAnalysisConfiguration(){
@@ -149,6 +155,31 @@ class EnvironmentService {
 		}
 		return $out;
 	}
+        
+        /**
+         * @return array
+         */
+        public function getExternalEnvironments()
+        {
+            $this->loadEnvironment();
+            $out = [];
+		
+            foreach ($this->environments as $index => $environment) {
+                /* @var $environment Environment */
+                if($environment->getManaged() ) {
+                   continue;
+                }
+                
+                $alias = $environment->getAlias();
+                $indices = $this->client->indices()->getAlias(['index' => $alias]);
+                
+                $environment->setIndexes(array_keys($indices));
+                
+                $out[$index] = $environment;
+            }
+            
+            return $out;
+        }
 
 	/**
 	 * 

@@ -244,7 +244,7 @@ class Environment
     /**
      * Set indexes
      *
-     * @param string $indexes
+     * @param array $indexes
      *
      * @return Environment
      */

@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Elasticsearch\Client;
+use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use EMS\CoreBundle\Entity\Environment;
@@ -170,10 +171,14 @@ class EnvironmentService {
                    continue;
                 }
                 
-                $alias = $environment->getAlias();
-                $indices = $this->client->indices()->getAlias(['index' => $alias]);
-                
-                $environment->setIndexes(array_keys($indices));
+                try {
+                    $alias = $environment->getAlias();
+                    $indices = $this->client->indices()->getAlias(['index' => $alias]);
+
+                    $environment->setIndexes(array_keys($indices));
+                } catch (Missing404Exception $ex) {
+                    $environment->setIndexes([]);
+                }
                 
                 $out[$index] = $environment;
             }

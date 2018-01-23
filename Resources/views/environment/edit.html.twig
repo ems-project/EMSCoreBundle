@@ -126,7 +126,7 @@ $(window).ready(function() {
     $('#edit_environment_align_indexes').on('change', function() {
         var data = $(this).find("option:selected").data();
         
-        if (data.indexes !== 'undefined') {
+        if (data.indexes !== undefined) {
             $('.align-index').prop( "checked", false);
             
             data.indexes.map(function (index) {

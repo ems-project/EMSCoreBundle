@@ -1,6 +1,6 @@
 {% trans_default_domain 'EMSCoreBundle' %}{% if message is defined %}
 <div class="btn-group">
-  <button type="button" class="btn {% if class is defined %}{% else %}btn-sm{% endif %} btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+  <button type="button" class="btn {% if class is defined %}{{ class }}{% else %}btn-sm btn-danger{% endif %} dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     	{% if icon is defined %}
 			{% if icon|slice(0,10) == 'glyphicon-'  %}
 				<span class="glyphicon {{ icon }}"></span>&nbsp;

@@ -344,6 +344,16 @@ services:
         arguments: ['@doctrine']
         tags:
             - { name: form.type }
+    ems.form.field.alignindexes:
+        class: EMS\CoreBundle\Form\Field\AlignIndexesType
+        arguments: ['@ems.service.alias']
+        tags:
+            - { name: form.type }
+    ems.form.managed_alias:
+        class: EMS\CoreBundle\Form\Form\ManagedAliasType
+        arguments: ['@ems.service.alias']
+        tags:
+            - { name: form.type }
             
             
 ### regular services
@@ -355,6 +365,9 @@ services:
         arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '%ems_core.lock_time%', '@app.elasticsearch', '@ems.service.mapping', '%ems_core.instance_id%', '@session', '@form.factory', '@service_container', '@form.registry', '@event_dispatcher', '%ems_private_key%']
         tags:
             - { name: kernel.event_listener, event: ems_core.revision.update_referers, method: updateReferers, priority: 0 }
+    ems.service.alias:
+        class: EMS\CoreBundle\Service\AliasService
+        arguments: ['@app.elasticsearch', '@doctrine']
     ems.service.environment:
         class: EMS\CoreBundle\Service\EnvironmentService
         arguments: ['@doctrine', '@session', '@ems.service.user', '@security.authorization_checker']

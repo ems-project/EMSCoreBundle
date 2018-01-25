@@ -22,6 +22,17 @@ class EnvironmentRepository extends \Doctrine\ORM\EntityRepository
     	}
     	return parent::findBy($criteria, $orderBy, $limit, $offset);
     }
+    
+    /**
+     * @return array
+     */
+    public function findAllAliases()
+    {
+        $qb = $this->createQueryBuilder('e', 'e.alias');
+        $qb->select('e.alias, e.name, e.managed');
+        
+        return $qb->getQuery()->getResult();
+    }
 	
     public function getEnvironmentsStats() {
         /** @var QueryBuilder $qb */

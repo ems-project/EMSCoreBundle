@@ -293,6 +293,13 @@ class EnvironmentController extends AppController {
 			$indexes = $client->indices ()->get ( [ 
 					'index' => $name 
 			] );
+                        
+                        if (count($indexes) > 1) {
+                            $this->addFlash('error', 'Can not attach alias with multiple indexes!');
+                            
+                            return $this->redirectToRoute ('environment.index');
+                        }
+                        
 			if (strcmp ( $name, array_keys ( $indexes ) [0] ) != 0) {
 				/** @var EntityManager $em */
 				$em = $this->getDoctrine ()->getManager ();
@@ -325,6 +332,23 @@ class EnvironmentController extends AppController {
 		
 		return $this->redirectToRoute ( 'environment.index' );
 	}
+        
+        /**
+         * Remove unreferenced alias
+         * 
+         * @param string $name
+         * 
+         * @Route("/environment/remove/alias/{name}", name="environment.remove.alias"))
+         * @Method({"POST"})
+         */
+        public function removeAliasAction($name)
+        {
+            if ($this->getAliasService()->removeAlias($name)) {
+                $this->addFlash ( 'notice', 'Alias ' . $name . ' has been removed.' );
+            }
+            
+            return $this->redirectToRoute ('environment.index');
+        }
 	
 	/**
 	 * Try to remove an evironment if it is empty form an eMS perspective.
@@ -679,28 +703,6 @@ class EnvironmentController extends AppController {
 			$client = $this->getElasticsearch();
 			
 			$logger = $this->getLogger();
-		
-		
-			$temp = [];
-			$orphanIndexes = [];
-		
-			$logger->addDebug('For each aliases: start');
-			foreach ($client->indices()->getAliases() as $index => $aliases) {
-				if(count($aliases["aliases"]) == 0 && strcmp($index{0}, '.') != 0 ){
-					$orphanIndexes[] = [
-							'name'=> $index,
-							'total' => $client->count(['index'=>$index])["count"]
-		
-					];
-				}
-				foreach ($aliases["aliases"] as $alias => $other) {
-					$temp[$alias] = $index;
-				}
-					
-			}
-			$logger->addDebug('For each aliases: done');
-		
-
 			$logger->addDebug('For each environments: start');
 			
 			$builder = $this->createFormBuilder ( [] )
@@ -711,10 +713,9 @@ class EnvironmentController extends AppController {
 					'icon' => 'fa fa-reorder'
 			] );
 			
-			
 			$names = [];	
-
-
+                        $aliasService = $this->getAliasService();
+                        
 			$environments = [];//$repository->findAll();
 			$stats = $this->getEnvironmentService()->getEnvironmentsStats();
 			/** @var  Environment $environment */
@@ -722,25 +723,17 @@ class EnvironmentController extends AppController {
 				$environment = $stat['environment'];
 				$environment->setCounter($stat['counter']);
 				$environment->setDeletedRevision($stat['deleted']);
-				if(isset($temp[$environment->getAlias()])){
-					$environment->setIndex($temp[$environment->getAlias()]);
-					$environment->setTotal($client->count(['index'=>$environment->getAlias()])["count"]);
-					unset($temp[$environment->getAlias()]);
-				}
+                                if ($aliasService->hasAlias($environment->getAlias())) {
+                                    $alias = $aliasService->getAlias($environment->getAlias());
+                                    $index = array_shift($alias['indexes']);
+                                    
+                                    $environment->setIndex($index['name']);
+                                    $environment->setTotal($alias['total']);
+                                }
 				$environments[] = $environment;
 				$names[] = $environment->getName();
 			}
-			$unmanagedIndexes = [];
-			foreach ($temp as $alias => $index){
-				$unmanagedIndexes[] = [
-						'index' => $index,
-						'name' => $alias,
-						'total' => $client->count(['index'=>$index])["count"],
-				];
-			}
 			$logger->addDebug('For each environments: done');
-			
-			
 			
 			$builder->add('environmentNames', CollectionType::class, array(
 					// each entry in the array will be an "email" field
@@ -778,8 +771,9 @@ class EnvironmentController extends AppController {
 		
 			return $this->render( 'EMSCoreBundle:environment:index.html.twig', [
 					'environments' => $environments,
-					'orphanIndexes' => $orphanIndexes,
-					'unmanagedIndexes' => $unmanagedIndexes,
+					'orphanIndexes' => $aliasService->getOrphanIndexes(),
+					'unreferencedAliases' => $aliasService->getUnreferencedAliases(),
+                                        'managedAliases' => $aliasService->getManagedAliases(),
 					'form' => $form->createView (),
 			]);
 		}
@@ -847,5 +841,4 @@ class EnvironmentController extends AppController {
 		}
 		return $contentTypeList;
 	}
-	
 }

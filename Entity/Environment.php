@@ -52,9 +52,9 @@ class Environment
     private $alias;
     
     /**
-     * @var string
+     * @var array
      */
-    private $index;
+    private $indexes = [];
     
     /**
      * @var string
@@ -242,15 +242,15 @@ class Environment
     }
 
     /**
-     * Set index
+     * Set indexes
      *
-     * @param string $index
+     * @param array $indexes
      *
      * @return Environment
      */
-    public function setIndex($index)
+    public function setIndexes(array $indexes)
     {
-        $this->index = $index;
+        $this->indexes = $indexes;
 
         return $this;
     }
@@ -258,11 +258,11 @@ class Environment
     /**
      * Get index
      *
-     * @return string
+     * @return array
      */
-    public function getIndex()
+    public function getIndexes()
     {
-        return $this->index;
+        return $this->indexes;
     }
     /**
      * Set total

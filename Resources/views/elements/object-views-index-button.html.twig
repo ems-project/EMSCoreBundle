@@ -1,0 +1,17 @@
+{% trans_default_domain 'EMSCoreBundle' %}
+<div class="btn-group">
+    <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+        <i class="fa fa-eye"></i>
+        Actions in index {{ index }}
+        <span class="caret"></span>
+        <span class="sr-only">Toggle dropdown of {{ contentType.name }}'s custom views</span>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+        <li>
+            <a href="{{ path('data.view.index', {'index': index, 'type': contentType.name, 'ouuid': object._id} ) }}">
+                <i class="fa fa-th"></i>
+                {{ 'Raw view'|trans }}
+            </a>
+        </li>
+    </ul>
+</div>

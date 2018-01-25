@@ -75,7 +75,7 @@
 							<th>Action</th>
 						</tr>
 						{% for environment in environments %}
-							{{ 'Environmen\'s info'|debug({name: environment.name}) }}
+							{{ "Environmen's info"|debug({name: environment.name}) }}
 							{% if environment.managed  %}
 								<tr>
 									<td class="text-center">{{ loop.index }}.</td>
@@ -93,7 +93,7 @@
 						                </span>		
 									</td>
 									<td>{{ environment.alias }}</td>
-									<td>{{ environment.index }}</td>
+									<td>{{ environment.indexes|slice(0, 3)|join(', ')  }}</td>
 									<td class="text-center">{{ environment.total|number_format }}</td>
 									<td class="text-center">{{ environment.counter|number_format }}</td>
 									<td class="text-center">{{ environment.deletedRevision|number_format }}</td>
@@ -143,9 +143,9 @@
 		
 		<div class="box ">
 			<div class="box-header with-border">
-				<i class="fa fa-database"></i>
-				<h3 class="box-title">Externals environments</h3>{{ 'List referenced external evironment'|debug }}
-				<a class="btn btn-xs btn-primary pull-right" href="{{ path('environment.add') }}"><i class="fa fa-plus"></i> Add environment</a>
+				<i class="fa fa-code-fork"></i>
+				<h3 class="box-title">{{ 'Externals environments and index aliases'|trans }}</h3>{{ 'List referenced external evironment'|debug }}
+				<a class="btn btn-xs btn-primary pull-right" href="{{ path('environment.add.external') }}"><i class="fa fa-plus"></i>{{ 'Add managed alias'|trans }}</a>
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
@@ -171,7 +171,11 @@
 												<span class="badge bg-{{ environment.color|raw }}">{{ environment.name|humanize }}</span>		
 											</td>
 											<td>{{ environment.alias }}</td>
-											<td>{{ environment.index }}</td>
+                                                                                        {% if environment.indexes|length > 3 %}
+                                                                                            <td>{{ environment.indexes|slice(0, 3)|join(', ') ~ ' ...' }}</td>
+                                                                                        {% else %}
+                                                                                            <td>{{ environment.indexes|join(', ') }}</td>
+                                                                                        {% endif %}
 											<td class="text-center">{{ environment.total|number_format }}</td>
 											<td>
 												<div class="btn-group">
@@ -217,7 +221,7 @@
 
 		<div class="box ">
 			<div class="box-header with-border">
-				<i class="fa fa-database"></i>
+				<i class="fa fa-tags"></i>
 				<h3 class="box-title">Unreferenced aliases</h3>{{ 'List unreferenced external environments/aliases'|debug }}
 			</div>
 			<!-- /.box-header -->
@@ -232,6 +236,7 @@
 							<tr>
 								<th class="text-center" style="width: 10px">#</th>
 								<th>Name</th>
+								<th class="text-center">Indexes</th>
 								<th class="text-center">Total</th>
 								<th>Action</th>
 							</tr>
@@ -239,6 +244,7 @@
 								<tr>
 									<td class="text-center">{{ loop.index }}.</td>
 									<td>{{ alias.name }}</td>
+									<td class="text-center">{{ alias.index|length }}</td>
 									<td class="text-center">{{ alias.total|number_format }}</td>
 									<td>
 										{% include 'EMSCoreBundle:elements:post-button.html.twig' with {

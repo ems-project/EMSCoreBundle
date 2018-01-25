@@ -400,91 +400,100 @@ class EnvironmentController extends AppController {
 	}
 	
 	/**
-	 * Add a new environement
+	 * Add a new managed environement
 	 *
 	 * @param Request $request
-	 *        	@Route("/environment/add", name="environment.add"))
+	 * 
+         * @Route("/environment/add", name="environment.add"))
 	 */
-	public function addAction(Request $request) {
-		$environment = new Environment ();
-		
-		$form = $this->createFormBuilder ( $environment )->add ( 'name', IconTextType::class, [ 
-				'icon' => 'fa fa-database',
-				'required' => false 
-		] )->add ( 'color', ColorPickerType::class, [ 
-				'required' => false 
-		] )->add ( 'save', SubmitEmsType::class, [ 
-				'label' => 'Create',
-				'icon' => 'fa fa-plus',
-				'attr' => [ 
-						'class' => 'btn btn-primary pull-right' 
-				] 
-		] )->getForm ();
-		
-		$form->handleRequest ( $request );
-		
-		if ($form->isSubmitted ()) {
-			
-			
-			/** @var Environment $environment */
-			$environment = $form->getData ();
-			if(!$this->isValidName($environment->getName())) {
-				$form->get('name')->addError(new FormError('Must respects the following regex /^[a-z][a-z0-9\-_]*$/'));
-			}
-			
-			if($form->isValid ()){
-				
-				
-				/** @var EntityManager $em */
-				$em = $this->getDoctrine ()->getManager ();
-				
-				$environmetRepository = $em->getRepository ( 'EMSCoreBundle:Environment' );
-				$anotherObject = $environmetRepository->findBy ( [ 
-						'name' => $environment->getName () 
-				] );
-				
-				if (count ( $anotherObject ) != 0) {
-					//TODO: test name format
-					$form->get ( 'name' )->addError ( new FormError ( 'Another environment named ' . $environment->getName () . ' already exists' ) );
-				} else {
-					$environment->setAlias ( $this->getParameter ( 'ems_core.instance_id' ) . $environment->getName () );
-					$environment->setManaged ( true );
-					$em = $this->getDoctrine ()->getManager ();
-					$em->persist ( $environment );
-					$em->flush ();
-	
-					$indexName = $environment->getAlias().AppController::getFormatedTimestamp();
-					$this->getElasticsearch()->indices()->create([
-							'index' => $indexName,
-							'body' => $this->getEnvironmentService()->getIndexAnalysisConfiguration(),
-					]);
-					
-					foreach ($this->getContentTypeService()->getAll() as $contentType){
-						$this->getContentTypeService()->updateMapping($contentType, $indexName);				
-					}
-					
-					$this->getElasticsearch()->indices()->putAlias([
-	    				'index' => $indexName,
-	    				'name' => $environment->getAlias()
-	    			]);
-					
-					$this->addFlash('notice', 'A new environement '.$environment->getName().' has been created');
-					return $this->redirectToRoute ( 'environment.index' );
-					
-				}
-			}
-		}
-		
-		return $this->render ( 'EMSCoreBundle:environment:add.html.twig', [ 
-				'form' => $form->createView () 
-		] );
+	public function addAction(Request $request) 
+        {
+            return $this->add($request);
 	}
-	
+        
+        /**
+	 * Add a new external environement
+	 *
+	 * @param Request $request
+	 * 
+         * @Route("/environment/add-external", name="environment.add.external"))
+	 */
+	public function addExternalAction(Request $request) 
+        {
+            return $this->add($request, false);
+	}
+        
+        private function add(Request $request, $managed = true)
+        {
+            $environment = new Environment ();
+            $form = $this->createFormBuilder($environment)
+                ->add('name', IconTextType::class, [
+                    'icon' => 'fa fa-database',
+                    'required' => false
+                ])
+                ->add('color', ColorPickerType::class, [
+                    'required' => false
+                ])
+                ->add('save', SubmitEmsType::class, [
+                    'label' => 'Create',
+                    'icon' => 'fa fa-plus',
+                    'attr' => ['class' => 'btn btn-primary pull-right']
+                ])->getForm();
 
+            $form->handleRequest($request);
 
+            if ($form->isSubmitted()) {
+                if (!$this->isValidName($environment->getName())) {
+                    $form->get('name')->addError(new FormError('Must respects the following regex /^[a-z][a-z0-9\-_]*$/'));
+                }
 
+                if ($form->isValid()) {
+                    /** @var EntityManager $em */
+                    $em = $this->getDoctrine()->getManager();
 
-	/**
+                    $environmetRepository = $em->getRepository('EMSCoreBundle:Environment');
+                    $anotherObject = $environmetRepository->findBy(['name' => $environment->getName()]);
+
+                    if (count($anotherObject) != 0) {
+                        //TODO: test name format
+                        $form->get('name')->addError(new FormError('Another environment named ' . $environment->getName() . ' already exists'));
+                    } else {
+                        $environment->setAlias($this->getParameter('ems_core.instance_id') . $environment->getName());
+                        $environment->setManaged($managed);
+                        $em = $this->getDoctrine()->getManager();
+                        $em->persist($environment);
+                        $em->flush();
+                        
+                        if ($managed) {
+                            $indexName = $environment->getAlias() . AppController::getFormatedTimestamp();
+                            $this->getElasticsearch()->indices()->create([
+                                'index' => $indexName,
+                                'body' => $this->getEnvironmentService()->getIndexAnalysisConfiguration(),
+                            ]);
+
+                            foreach ($this->getContentTypeService()->getAll() as $contentType) {
+                                $this->getContentTypeService()->updateMapping($contentType, $indexName);
+                            }
+
+                            $this->getElasticsearch()->indices()->putAlias([
+                                'index' => $indexName,
+                                'name' => $environment->getAlias()
+                            ]);
+                        } 
+
+                        $this->addFlash('notice', 'A new environement ' . $environment->getName() . ' has been created');
+                        return $this->redirectToRoute('environment.index');
+                    }
+                }
+            }
+
+            return $this->render('EMSCoreBundle:environment:add.html.twig', [
+                'form' => $form->createView(),
+                'managed' => $managed,
+            ]);
+        }
+
+        /**
 	 * Edit environement (name and color). It's not allowed to update the elasticsearch alias.
 	 * @param unknown $id
 	 * @param Request $request
@@ -506,7 +515,14 @@ class EnvironmentController extends AppController {
 			throw new NotFoundHttpException('Unknow environment');
 		}
 	
-		$options= [];
+                $indexes = [];
+                if (!$environment->getManaged()) {
+                    //only for external envirionments
+                    $indexes = $this->getAllIndexes();
+                    ksort($indexes);
+                }
+                
+		$options= ['indexes' => $indexes];
 		if ($this->getParameter("ems_core.circles_object")){
 			$options['type'] = $this->getParameter("ems_core.circles_object");
 		}
@@ -516,10 +532,29 @@ class EnvironmentController extends AppController {
 		$form->handleRequest($request);
 	
 		if ($form->isSubmitted() && $form->isValid()) {
-			$em->persist($environment);
-			$em->flush();
-			$this->addFlash('notice', 'Environment '.$environment->getName().' has been updated');
-			return $this->redirectToRoute('environment.index');
+                    $actions = [];
+                    $alias = $environment->getAlias();
+                    foreach (array_keys($indexes) as $index) {
+                        if ($form->get($index)->getData()) {
+                            $actions[] = ['add' => ['index' => $index, 'alias' => $alias]];
+                        } else {
+                            $actions[] = ['remove' => ['index' => $index, 'alias' => $alias]];
+                        }
+                    }
+                    
+                    if (count($actions) > 0 && !$environment->getManaged()) {
+                        $client = $this->getElasticsearch();
+                        $client->indices()->updateAliases([
+                            'body' => [
+                                'actions' => $actions
+                            ]
+                        ]);
+                    }
+                            
+                    $em->persist($environment);
+                    $em->flush();
+                    $this->addFlash('notice', 'Environment '.$environment->getName().' has been updated');
+                    return $this->redirectToRoute('environment.index');
 		}
 	
 		return $this->render( 'EMSCoreBundle:environment:edit.html.twig',[
@@ -685,8 +720,8 @@ class EnvironmentController extends AppController {
 			$orphanIndexes = [];
 		
 			$logger->addDebug('For each aliases: start');
-			foreach ($client->indices()->getAliases() as $index => $aliases) {
-				if(count($aliases["aliases"]) == 0 && strcmp($index{0}, '.') != 0 ){
+			foreach ($this->getAllIndexes() as $index => $aliases) {
+				if(count($aliases["aliases"]) == 0){
 					$orphanIndexes[] = [
 							'name'=> $index,
 							'total' => $client->count(['index'=>$index])["count"]
@@ -694,7 +729,7 @@ class EnvironmentController extends AppController {
 					];
 				}
 				foreach ($aliases["aliases"] as $alias => $other) {
-					$temp[$alias] = $index;
+					$temp[$alias][] = $index;
 				}
 					
 			}
@@ -723,7 +758,7 @@ class EnvironmentController extends AppController {
 				$environment->setCounter($stat['counter']);
 				$environment->setDeletedRevision($stat['deleted']);
 				if(isset($temp[$environment->getAlias()])){
-					$environment->setIndex($temp[$environment->getAlias()]);
+					$environment->setIndexes($temp[$environment->getAlias()]);
 					$environment->setTotal($client->count(['index'=>$environment->getAlias()])["count"]);
 					unset($temp[$environment->getAlias()]);
 				}
@@ -847,5 +882,19 @@ class EnvironmentController extends AppController {
 		}
 		return $contentTypeList;
 	}
-	
+        
+        /**
+         * Filters out indexes that start with .*
+         * 
+         * @return array
+         */
+        private function getAllIndexes()
+        {
+            $client = $this->getElasticsearch();
+            $aliases = $client->indices()->getAliases();
+            
+            return array_filter($aliases, function ($index){
+                return strcmp($index{0}, '.') != 0;
+            }, \ARRAY_FILTER_USE_KEY);
+        }
 }

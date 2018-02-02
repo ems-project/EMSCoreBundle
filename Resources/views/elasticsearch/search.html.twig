@@ -203,7 +203,7 @@
 			</div>
 		</div>
 	</div>
-		{% if is_granted('ROLE_PUBLISHER') and body is defined and form.environments.vars.value|length == 1  and form.contentTypes.vars.value|length == 1 and form.environments.vars.value.0|get_environment.managed and results.hits.total > 1 %}
+		{% if body is defined and form.environments.vars.value|length == 1  and form.contentTypes.vars.value|length == 1 and form.environments.vars.value.0|get_environment.managed and results.hits.total > 1 and form.environments.vars.value.0|get_environment.publishRole and is_granted(form.environments.vars.value.0|get_environment.publishRole) %}
 			<div class="col-md-12">
 				<div class="box">
 					<div class="box-footer with-border">

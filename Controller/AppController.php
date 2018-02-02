@@ -3,6 +3,7 @@ namespace EMS\CoreBundle\Controller;
 
 use Elasticsearch\Client;
 use EMS\CoreBundle\Entity\Job;
+use EMS\CoreBundle\Service\AliasService;
 use EMS\CoreBundle\Service\AssetService;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
@@ -126,7 +127,15 @@ class AppController extends Controller
 	protected function getHelperService()
 	{
 		return $this->container->get('ems.service.helper');
-	}	
+	}
+        
+        /**
+	 * @return AliasService
+	 */
+	protected function getAliasService()
+	{
+            return $this->container->get('ems.service.alias')->build();
+	}
 	
 	/**
 	 * 

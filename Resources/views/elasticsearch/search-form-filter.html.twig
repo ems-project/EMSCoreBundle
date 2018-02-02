@@ -66,7 +66,7 @@
 				
 			<div class="box-footer">
 				<div class="form-group">
-					<div class="btn-group">
+					<div class="btn-group pull-right">
 						<a class="btn btn-primary" href="#" id="add-search-filter-button"><i class="fa fa-plus"></i> Add filter</a>
 						{% if form.search is defined %}
 							{{ form_widget(form.search) }}
@@ -75,7 +75,7 @@
 							{{ form_widget(form.applyFilters) }}
 						{% endif %}
 					</div>
-					<div class="btn-group pull-right">
+					<div class="btn-group">
 						{% if searchId is defined and searchId %}
 							{% include 'EMSCoreBundle:elements:post-button.html.twig' with {
 								'url':  path('elasticsearch.search.delete', {'id': searchId, 'search': app.request.query}),

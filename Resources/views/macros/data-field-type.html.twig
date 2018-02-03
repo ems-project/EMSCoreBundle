@@ -550,12 +550,29 @@
 		</dt>
 		<dd>
 			<ul>
+			    {% set labels = dataField.fieldType.displayOptions.labels|replace({"\r":''})|split('\n') %}
+			    {% set choices = dataField.fieldType.displayOptions.choices|replace({"\r":''})|split('\n') %}
+						        
 				{% if dataField.fieldType.displayOptions.multiple %}
 					{% for value in dataField.arrayTextValue if value %}
-						<li>{{ value|raw }}</li>
+						{% set label = value %}
+						{% if labels|length > 0 %}
+						    {% for idx, item in choices if item == value %}
+							    {% if idx < labels|length %}
+							        {% set label = cycle(labels, idx)~' ('~value~')' %}
+							    {% endif %}
+							{% endfor %}
+						{% endif %}
+						<li>{{ label|raw }}</li>
 					{% endfor %}
 				{% else %}
-				{{ dataField.textValue }}
+					{% set label = dataField.textValue %}
+				    {% for idx, item in choices if item == dataField.textValue %}
+					    {% if idx < labels|length %}
+					        {% set label = cycle(labels, idx)~' ('~dataField.textValue~')' %}
+					    {% endif %}
+					{% endfor %}
+				    {{ label }}
 				{% endif %}
 			</ul>
 		</dd>

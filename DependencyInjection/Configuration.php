@@ -38,6 +38,7 @@ class Configuration implements ConfigurationInterface
 	const PRIVATE_KEY = null;
 	const ASSET_CONFIG_TYPE = null;
 	const ASSET_CONFIG_INDEX = null;
+	const TIKA_SERVER = null;
 	
 	
     /**
@@ -85,10 +86,11 @@ class Configuration implements ConfigurationInterface
 		        ->scalarNode('asset_config_index')->defaultValue(self::ASSET_CONFIG_INDEX)->end()
 		        ->scalarNode('private_key')->defaultValue(self::PRIVATE_KEY)->end()
 		        ->scalarNode('upload_folder')->defaultValue(null)->end()
+	        	->scalarNode('tika_server')->defaultValue(self::TIKA_SERVER)->end()
 		        ->arrayNode('template_options')->defaultValue([])
 		        	->prototype('variable')
 		        	->end()
-		        ->end()
+	        	->end()
 	        ->end();
 
         return $treeBuilder;

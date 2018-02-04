@@ -21,6 +21,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Translation\TranslatorInterface;
+use EMS\CoreBundle\Service\AssetExtratorService;
 
 class AppController extends Controller
 {
@@ -218,6 +219,16 @@ class AppController extends Controller
 	}
 
 
+	
+	/**
+	 *
+	 * @return AssetExtratorService
+	 */
+	public function getAssetExtractorService()
+	{
+		return $this->get('ems.service.asset_extractor');
+	}
+	
 	/**
 	 *
 	 * @return DataService

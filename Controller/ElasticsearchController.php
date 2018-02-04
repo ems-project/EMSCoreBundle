@@ -95,7 +95,13 @@ class ElasticsearchController extends AppController
 	            throw new \Exception('Elasticsearch cluster is red');
 	        }
 	        
+	        $tika = ($this->getAssetExtractorService()->hello());
+	        if( !empty($tika) && $tika['code'] > 300 ) {
+	        	throw new \Exception('Tika server issue: return code '.$tika['code']);
+	        }
+	        
 	        return $this->render( 'EMSCoreBundle:elasticsearch:status.'.$_format.'.twig', [
+        		'tika' => $tika,
 	            'status' => $status,
 	            'certificate' => $certificatInfo,
 	        ] );
@@ -114,7 +120,23 @@ class ElasticsearchController extends AppController
 			$status = $client->cluster()->health();
 			$certificatInfo = $this->getDataService()->getCertificateInfo();
 			
+			$globalStatus = 'green';
+			$tika = null;
+			try
+			{
+				$tika = ($this->getAssetExtractorService()->hello());				
+			}
+			catch(\Exception $e) 
+			{
+				$globalStatus = 'yellow';
+				$tika = [
+					'code' => 500,
+					'content' => $e->getMessage(),
+				];
+			}
+			
 			if('html' === $_format && 'green' !== $status['status']){
+				$globalStatus = $status['status'];
 				if('red' === $status['status']){
 					$this->addFlash(
 						'error',
@@ -132,6 +154,8 @@ class ElasticsearchController extends AppController
 			return $this->render( 'EMSCoreBundle:elasticsearch:status.'.$_format.'.twig', [
 					'status' => $status,
 					'certificate' => $certificatInfo,
+					'tika' => $tika,
+					'globalStatus' => $globalStatus,
 			] );			
 		}
 		catch (\Elasticsearch\Common\Exceptions\NoNodesAvailableException $e){

@@ -15,7 +15,7 @@
 
 {% block body %}
 <div class="row">
-	<div class="col-md-6 col-lg-4 col-lg-offset-2">
+	<div class="col-md-6 col-lg-4">
 		<div class="box box box-solid">
 			<div class="box-header with-border bg-{{ status.status }}">
 				<h4 class="box-title">
@@ -119,6 +119,23 @@
 			</div>
 		</div>
 
+	</div>
+	<div class="col-md-6 col-lg-4">
+		<div class="box box box-solid">
+			<div class="box-header with-border bg-{% if tika %}{% if tika.code == 200 %}green{% else %}red{% endif %}{% else %}yellow{% endif %}">
+				<h4 class="box-title">
+						<i class="icon fa file-check fa-2x"></i>
+						{{ 'Tika server'|trans }} {% if tika and tika.code != 200 %}({{tika.code}}){% endif %}</strong>
+				</h4>
+			</div>
+			<div class="box-body ">			
+				<ul class="list-group">
+					<li class="list-group-item">
+        			    {% if tika %}{{ tika.content }}{% else %}{{ 'Tika server is not configured'|trans }}{% endif %}
+					</li>
+				</ul>
+			</div>
+		</div>
 	</div>
 </div>
 {% endblock %}

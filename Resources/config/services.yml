@@ -142,6 +142,12 @@ services:
         tags:
             - { name: ems.form.datafieldtype, alias: file_attachment }
             - { name: form.type }
+    ems.fieldtype.indexed_asset:
+        class: EMS\CoreBundle\Form\DataField\IndexedAssetFieldType
+        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.file', '@session']
+        tags:
+            - { name: ems.form.datafieldtype, alias: file_attachment }
+            - { name: form.type }
     ems.fieldtype.urlattachement:
         class: EMS\CoreBundle\Form\DataField\UrlAttachmentFieldType
         arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.file']

@@ -2,7 +2,7 @@
 
 namespace EMS\CoreBundle\Service;
 
-use Circle\RestClientBundle\Services\RestClient;
+
 
 class AssetExtratorService
 {
@@ -13,7 +13,7 @@ class AssetExtratorService
 	/**@var string */
 	private $tikaServer;
 	
-	/**@var RestClient $rest*/
+	/**@var RestClientService $rest*/
 	private $rest;
 	
 	
@@ -22,7 +22,7 @@ class AssetExtratorService
 	 * 
 	 * @param string $tikaServer
 	 */
-	public function __construct(RestClient $rest, $tikaServer)
+	public function __construct(RestClientService $rest, $tikaServer)
 	{
 		$this->tikaServer = $tikaServer;
 		$this->rest = $rest;
@@ -30,11 +30,12 @@ class AssetExtratorService
 	
 	public function hello() {
 		if($this->tikaServer){
-			/**@var \Symfony\Component\HttpFoundation\Response $result*/
-			$result = $this->rest->get($this->tikaServer.self::HELLO_EP);
+			
+			$client = $this->rest->getClient($this->tikaServer);
+			$result = $client->get(self::HELLO_EP);
 			return [
 					'code' => $result->getStatusCode(),
-					'content' => $result->getContent(),
+					'content' => $result->getBody(),
 			];
 		}
 		else {

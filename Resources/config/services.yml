@@ -400,9 +400,11 @@ services:
     ems.service.i18n:
         class: EMS\CoreBundle\Service\I18nService
         arguments: ['@doctrine']
+    ems.service.rest_client:
+        class: EMS\CoreBundle\Service\RestClientService
     ems.service.asset_extractor:
         class: EMS\CoreBundle\Service\AssetExtratorService
-        arguments: ["@circle.restclient", '%ems_core.tika_server%']
+        arguments: ["@ems.service.rest_client", '%ems_core.tika_server%']
     ems.service.asset:
         class: EMS\CoreBundle\Service\AssetService
         arguments: ['@app.elasticsearch', '@ems.service.file', '@request_stack', '@kernel']

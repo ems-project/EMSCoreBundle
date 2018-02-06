@@ -570,7 +570,14 @@ class ElasticsearchController extends AppController
 			
 			try {
 				$results = $client->search($params);
-				$lastPage = ceil($results['hits']['total']/$this->container->getParameter('ems_core.paging_size'));
+				if($results['hits']['total'] > 50000){
+				    $this->addFlash('warning', 'The search results are limited to the first 50.000 items');
+				    $lastPage = ceil(50000/$this->container->getParameter('ems_core.paging_size'));
+				}
+				else  {
+    				$lastPage = ceil($results['hits']['total']/$this->container->getParameter('ems_core.paging_size'));				    
+				}
+				
 			}
 			catch (ElasticsearchException $e) {
 				$this->addFlash('warning', $e->getMessage());

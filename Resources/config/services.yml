@@ -410,7 +410,7 @@ services:
         class: EMS\CoreBundle\Service\RestClientService
     ems.service.asset_extractor:
         class: EMS\CoreBundle\Service\AssetExtratorService
-        arguments: ["@ems.service.rest_client", '%ems_core.tika_server%']
+        arguments: ["@ems.service.rest_client", '@session', '%ems_core.tika_server%']
     ems.service.asset:
         class: EMS\CoreBundle\Service\AssetService
         arguments: ['@app.elasticsearch', '@ems.service.file', '@request_stack', '@kernel']

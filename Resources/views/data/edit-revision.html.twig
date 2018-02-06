@@ -192,10 +192,6 @@ function initFileUploader(fileHandler, container){
 	var sha1Input = $(container).find(".sha1");
 	var typeInput = $(container).find(".type");
 	var nameInput = $(container).find(".name");
-	var dateInput = $(container).find(".date");
-	var authorInput = $(container).find(".author");
-	var languageInput = $(container).find(".language");
-	var contentInput = $(container).find(".content");
 	var progressBar = $(container).find(".progress-bar");
 	var progressText = $(container).find(".progress-text");
 	var progressNumber = $(container).find(".progress-number");
@@ -205,6 +201,11 @@ function initFileUploader(fileHandler, container){
 	var uploadTab = $(container).find(".asset-upload-tab");
 	var previewLink = $(container).find(".img-responsive");
 	var assetHashSignature = $(container).find(".asset-hash-signature");
+	var dateInput = $(container).find(".date");
+	var authorInput = $(container).find(".author");
+	var languageInput = $(container).find(".language");
+	var contentInput = $(container).find(".content");
+	var titleInput = $(container).find(".title");
 	
 
 	previewTab.hide();
@@ -221,6 +222,7 @@ function initFileUploader(fileHandler, container){
 	    		$(authorInput).val('');
 	    		$(languageInput).val('');
 	    		$(contentInput).val('');
+	    		$(titleInput).val('');
 	    		$(viewButton).addClass('disabled');
 	    		$(clearButton).addClass('disabled');
 	    },
@@ -248,7 +250,7 @@ function initFileUploader(fileHandler, container){
     	    		uploadTab.hide();
 
 					if($(contentInput).length) {
-						console.log('Extract data');
+						FileDataExtrator(container);
 					}
 					else {
         	    		onFormChange();
@@ -268,6 +270,7 @@ function initFileUploader(fileHandler, container){
 	    		$(authorInput).val('');
 	    		$(languageInput).val('');
 	    		$(contentInput).val('');
+	    		$(titleInput).val('');
 	    		$(viewButton).addClass('disabled');
 	    		$(clearButton).addClass('disabled');
 	    },
@@ -290,6 +293,38 @@ function FileSelectHandler(e) {
 		break;
 	}
 
+}
+
+
+//file data extractor
+function FileDataExtrator(container) {
+
+	var sha1Input = $(container).find(".sha1");
+	var nameInput = $(container).find(".name");
+
+	var dateInput = $(container).find(".date");
+	var authorInput = $(container).find(".author");
+	var languageInput = $(container).find(".language");
+	var contentInput = $(container).find(".content");
+	var titleInput = $(container).find(".title");
+
+    var urlPattern = file_extract_url
+    	.replace(/__file_identifier__/g, $(sha1Input).val())
+    	.replace(/__file_name__/g, $(nameInput).val());
+
+	waitingResponse = ajaxRequest.get(urlPattern)
+	  .success(function(response) {
+
+			$(dateInput).val(response.date);
+			$(authorInput).val(response.author);
+			$(languageInput).val(response.language);
+			$(contentInput).val(response.content);
+			$(titleInput).val(response.title);
+
+	  })
+	  .always(function() {
+	});
+    
 }
 
 //file drag hover
@@ -322,6 +357,11 @@ function addEventListeners(target){
 		$(this).attr('href', href);
 	});
 
+	target.find(".extract-file-info").click(function() {
+		var target = $(this).closest('.modal-content');
+		FileDataExtrator(target);
+	});
+
 	target.find(".clear-asset-button").click(function() {
 		var parent = $(this).closest('.file-uploader-row');
 		var sha1Input = $(parent).find(".sha1");
@@ -333,12 +373,22 @@ function addEventListeners(target){
 		var previewTab = $(parent).find(".asset-preview-tab");
 		var uploadTab = $(parent).find(".asset-upload-tab");
 		var assetHashSignature = $(parent).find(".asset-hash-signature");
+		var dateInput = $(parent).find(".date");
+		var authorInput = $(parent).find(".author");
+		var languageInput = $(parent).find(".language");
+		var contentInput = $(parent).find(".content");
+		var titleInput = $(parent).find(".title");
 
 		$(parent).find(".file-uploader-input").val('');
 		sha1Input.val('');
 		assetHashSignature.empty();
 		typeInput.val('');
 		nameInput.val('');
+		$(dateInput).val('');
+		$(authorInput).val('');
+		$(languageInput).val('');
+		$(contentInput).val('');
+		$(titleInput).val('');
 		$(progressBar).css('width', '0%');
 		$(progressText).html('');
 		$(progressNumber).html('');

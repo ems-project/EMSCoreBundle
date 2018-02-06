@@ -117,6 +117,12 @@
                       		<strong>{{ 'Hash signature'|trans }}</strong>
                       		{{ dataField.rawData.sha1 }}
                       	</li>
+    					{% if dataField.rawData._title is defined %}
+                          	<li class="list-group-item leaf-item">
+                          		<strong>{{ 'Title : '|trans }}</strong>
+                          		{{ dataField.rawData._title }}
+                          	</li>
+    					{% endif %}
     					{% if dataField.rawData.filesize is defined %}
                           	<li class="list-group-item leaf-item">
                           		<strong>{{ 'Size : '|trans }}</strong>
@@ -147,8 +153,8 @@
     					{% endif %}
     					{% if dataField.rawData._content is defined %}
                           	<li class="list-group-item leaf-item">
-                          		<strong>{{ 'Content : '|trans }}</strong>
-                          		{{ dataField.rawData._content }}
+                          		<strong>{{ 'Content : '|trans }}</strong><br>
+                          		{{ dataField.rawData._content|nl2br }}
                           	</li>
     					{% endif %}
                   	</ul>

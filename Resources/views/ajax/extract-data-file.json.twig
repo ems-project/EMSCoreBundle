@@ -1,0 +1,14 @@
+{% extends 'EMSCoreBundle:ajax:notification.json.twig' %}
+
+{% block body %}
+	"content": {{ data.content|json_encode|raw }},
+	{% if data.author is defined %}
+		"author": {{ data.author|json_encode|raw }},
+	{% endif %}
+	{% if data.date is defined %}
+		"date": {{ data.date|json_encode|raw }},
+	{% endif %}
+	{% if data.language is defined %}
+		"language": {{ data.language|json_encode|raw }},
+	{% endif %}
+{% endblock %}

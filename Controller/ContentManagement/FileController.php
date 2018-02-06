@@ -37,6 +37,30 @@ class FileController extends AppController
 		return $this->getFile($sha1, ResponseHeaderBag::DISPOSITION_ATTACHMENT, $request);
 	}
 	
+	/**
+	 * @Route("/data/file/extract/{sha1}.{_format}" , name="ems_file_extract", defaults={"_format" = "json"})
+	 * @Method({"GET"})
+	 */
+	public function extractFileContent($sha1, Request $request) {
+		
+		
+		$name = $request->query->get('name', 'temp');
+		$file = $this->getFileService()->getFile($sha1);
+		
+		if(!$file){
+			throw new NotFoundHttpException('Impossible to find the item corresponding to this id: '.$sha1);
+		}
+		
+		$data = $this->getAssetExtractorService()->extractData($file, $name);
+		
+		$response = $this->render( 'EMSCoreBundle:ajax:extract-data-file.json.twig', [
+				'success' => true,
+				'data' => $data,
+		] );
+		$response->headers->set('Content-Type', 'application/json');
+		return $response;
+	}
+	
 	private function getFile($sha1, $disposition, Request $request){
 		$name = $request->query->get('name', 'upload.bin');
 		$type = $request->query->get('type', 'application/bin');

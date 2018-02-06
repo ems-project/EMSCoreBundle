@@ -24,6 +24,19 @@ class TwigElementsController extends AppController
 	    catch (\Exception $e){
 	    	$status = 'red';
 	    }
+	    
+	    if($status == 'green') {
+	    	try {
+		    	$result = $this->getAssetExtractorService()->hello();
+		    	if($result && 200 != $result['code'])
+		    	{
+		    		$status = 'yellow';
+		    	}	    		
+	    	}
+	    	catch (\Exception $e) {
+	    		$status = 'yellow';
+	    	}
+	    }
     	
     	return $this->render(
     		'EMSCoreBundle:elements:side-menu.html.twig', [

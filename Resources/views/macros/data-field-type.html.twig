@@ -59,6 +59,11 @@
 	{{ macros.EMS_CoreBundle_Form_DataField_AssetFieldType(dataField) }}
 {% endmacro %}
 
+{% macro EMS_CoreBundle_Form_DataField_IndexedAssetFieldType(dataField) %}
+{% import _self as macros %}
+	{{ macros.EMS_CoreBundle_Form_DataField_AssetFieldType(dataField) }}
+{% endmacro %}
+
 
 {% macro EMS_CoreBundle_Form_DataField_AssetFieldType(dataField) %}
 <div class="panel panel-default">
@@ -81,24 +86,85 @@
 				{% endif %}
 				<img src="{{ path }}" class="img-responsive" alt="Image of the field {{ dataField.fieldType.name }}">
 			{% else %}
-				<ul>
-					<li>Sha1: {{ dataField.rawData.sha1 }}</li>
-					<li>Name: {{ dataField.rawData.filename }}</li>
-					{% if dataField.rawData.filesize is defined %}
-						<li>Size: {{ dataField.rawData.filesize }}</li>
-					{% endif %}
-					<li>Type: {{ dataField.rawData.mimetype }}</li>
-				</ul>
+                  	<strong>
+                  		{{ dataField.rawData.filename }}
+                  	</strong>
 			{% endif %}
 		{% endif %}
 		
 	</div>
 	{% if dataField.rawData and dataField.rawData.sha1 is defined and dataField.rawData.sha1 %}
+	    {% set tempId = dataField.fieldType.name~'_'~random() %}
 		<div class="panel-footer" >
 			<div class="btn-group">
+    			<button type="button" class="btn btn-small btn-primary asset-details" data-toggle="modal" data-target="#indexed-details-revision_{{ tempId }}">
+                	<i class="fa fa-info"></i>
+                    {{ 'Info'|trans }}
+                </button>
 				<a href="{{ path('file.download', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) }}" class="btn btn-small btn-primary"><i class="fa fa-download"></i>&nbsp;{{'Download'|trans}}</a>
 				<a href="{{ path('ems.file.view', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) }}" class="btn btn-small btn-primary"><i class="fa fa-eye"></i>&nbsp;{{'View'|trans}}</a>
 			</div>
+			<div class="modal" tabindex="-1" role="dialog" id="indexed-details-revision_{{ tempId }}">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                  	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+            		<h4 class="modal-title" id="myModalLabel">{{ 'Asset details' }}</h4>
+                  </div>
+                  <div class="modal-body raw-view">
+                  	<ul class="list-group">
+                      	<li class="list-group-item leaf-item">
+                      		<strong>{{ 'Hash signature'|trans }}</strong>
+                      		{{ dataField.rawData.sha1 }}
+                      	</li>
+    					{% if dataField.rawData._title is defined %}
+                          	<li class="list-group-item leaf-item">
+                          		<strong>{{ 'Title : '|trans }}</strong>
+                          		{{ dataField.rawData._title }}
+                          	</li>
+    					{% endif %}
+    					{% if dataField.rawData.filesize is defined %}
+                          	<li class="list-group-item leaf-item">
+                          		<strong>{{ 'Size : '|trans }}</strong>
+                          		{{ dataField.rawData.filesize|number_format(0, ',', '.') }} bytes
+                          	</li>
+    					{% endif %}
+                      	<li class="list-group-item leaf-item">
+                      		<strong>{{ 'MIME Type : '|trans }}</strong>
+                      		{{ dataField.rawData.mimetype }}
+                      	</li>
+    					{% if dataField.rawData._date is defined %}
+                          	<li class="list-group-item leaf-item">
+                          		<strong>{{ 'Date : '|trans }}</strong>
+                          		{{ dataField.rawData._date }}
+                          	</li>
+    					{% endif %}
+    					{% if dataField.rawData._autor is defined %}
+                          	<li class="list-group-item leaf-item">
+                          		<strong>{{ 'Autor : '|trans }}</strong>
+                          		{{ dataField.rawData._autor }}
+                          	</li>
+    					{% endif %}
+    					{% if dataField.rawData._language is defined %}
+                          	<li class="list-group-item leaf-item">
+                          		<strong>{{ 'Language : '|trans }}</strong>
+                          		{{ dataField.rawData._language }}
+                          	</li>
+    					{% endif %}
+    					{% if dataField.rawData._content is defined %}
+                          	<li class="list-group-item leaf-item">
+                          		<strong>{{ 'Content : '|trans }}</strong><br>
+                          		{{ dataField.rawData._content|nl2br }}
+                          	</li>
+    					{% endif %}
+                  	</ul>
+                  	<div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
 		</div>
 	{% endif %}
 </div>

@@ -142,6 +142,12 @@ services:
         tags:
             - { name: ems.form.datafieldtype, alias: file_attachment }
             - { name: form.type }
+    ems.fieldtype.indexed_asset:
+        class: EMS\CoreBundle\Form\DataField\IndexedAssetFieldType
+        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.file', '@session']
+        tags:
+            - { name: ems.form.datafieldtype, alias: file_attachment }
+            - { name: form.type }
     ems.fieldtype.urlattachement:
         class: EMS\CoreBundle\Form\DataField\UrlAttachmentFieldType
         arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.file']
@@ -400,6 +406,11 @@ services:
     ems.service.i18n:
         class: EMS\CoreBundle\Service\I18nService
         arguments: ['@doctrine']
+    ems.service.rest_client:
+        class: EMS\CoreBundle\Service\RestClientService
+    ems.service.asset_extractor:
+        class: EMS\CoreBundle\Service\AssetExtratorService
+        arguments: ["@ems.service.rest_client", '@session', '%ems_core.tika_server%']
     ems.service.asset:
         class: EMS\CoreBundle\Service\AssetService
         arguments: ['@app.elasticsearch', '@ems.service.file', '@request_stack', '@kernel']

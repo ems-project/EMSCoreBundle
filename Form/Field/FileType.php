@@ -39,25 +39,25 @@ class FileType extends AbstractType {
 		])
 		->add('_date', TextType::class, [
 				'attr' => [
-						'class' => '_date'
+						'class' => 'date'
 				],
 				'required' => false,
 		])
 		->add('_author', TextType::class, [
 				'attr' => [
-						'class' => '_author'
+						'class' => 'author'
 				],
 				'required' => false,
 		])
 		->add('_language', TextType::class, [
 				'attr' => [
-						'class' => '_language'
+						'class' => 'language'
 				],
 				'required' => false,
 		])
 		->add('_content', TextareaType::class, [
 				'attr' => [
-						'class' => '_content',
+						'class' => 'content',
 						'rows' => 6,
 				],
 				'required' => false,

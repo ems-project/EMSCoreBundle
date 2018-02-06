@@ -103,7 +103,8 @@ class ElasticsearchController extends AppController
 	        return $this->render( 'EMSCoreBundle:elasticsearch:status.'.$_format.'.twig', [
         		'tika' => $tika,
 	            'status' => $status,
-	            'certificate' => $certificatInfo,
+        		'certificate' => $certificatInfo,
+        		'globalStatus' => $status['status'],
 	        ] );
 	    } catch (\Exception $e) {
 	        throw new ServiceUnavailableHttpException('Due to '.$e->getMessage());

@@ -37,6 +37,12 @@ class FileType extends AbstractType {
 				],
 				'required' => $options['required'],
 		])
+		->add('_title', TextType::class, [
+				'attr' => [
+						'class' => 'title'
+				],
+				'required' => false,
+		])
 		->add('_date', TextType::class, [
 				'attr' => [
 						'class' => 'date'

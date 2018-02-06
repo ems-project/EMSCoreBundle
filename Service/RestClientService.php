@@ -17,7 +17,7 @@ class RestClientService
 			// Base URI is used with relative requests
 			'base_uri' => $baseUrl,
 			// You can set any number of default request options.
-			'timeout'  => 1,
+			'timeout'  => 3,
 		]);
 	}
 }

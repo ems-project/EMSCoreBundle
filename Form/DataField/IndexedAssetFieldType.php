@@ -127,7 +127,7 @@ class IndexedAssetFieldType extends DataFieldType {
 							"filesize" => [
 								"type" => "long",
 							],
-							'_content' => $mapping[$current->getName()]
+							'_content' => $mapping[$current->getName()],
 					]
 			]
 		];
@@ -186,7 +186,7 @@ class IndexedAssetFieldType extends DataFieldType {
 	public function modelTransform($data, FieldType $fieldType){
 	    if(is_array($data)){
 	        foreach ($data as $id => $content){
-	        	if(! in_array($id, ['sha1', 'filename', 'filesize', 'mimetype', '_date', '_author', '_language', '_content'], true)) {
+	        	if(! in_array($id, ['sha1', 'filename', 'filesize', 'mimetype', '_date', '_author', '_language', '_content', '_title'], true)) {
 	                unset($data[$id]);
 	            }
 	            else if ($id !== 'sha1' && empty($data[$id])) {

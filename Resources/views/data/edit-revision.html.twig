@@ -192,6 +192,10 @@ function initFileUploader(fileHandler, container){
 	var sha1Input = $(container).find(".sha1");
 	var typeInput = $(container).find(".type");
 	var nameInput = $(container).find(".name");
+	var dateInput = $(container).find(".date");
+	var authorInput = $(container).find(".author");
+	var languageInput = $(container).find(".language");
+	var contentInput = $(container).find(".content");
 	var progressBar = $(container).find(".progress-bar");
 	var progressText = $(container).find(".progress-text");
 	var progressNumber = $(container).find(".progress-number");
@@ -213,6 +217,10 @@ function initFileUploader(fileHandler, container){
     			$(assetHashSignature).empty().append(sha1);
 	    		$(typeInput).val(type);
 	    		$(nameInput).val(name);
+	    		$(dateInput).val('');
+	    		$(authorInput).val('');
+	    		$(languageInput).val('');
+	    		$(contentInput).val('');
 	    		$(viewButton).addClass('disabled');
 	    		$(clearButton).addClass('disabled');
 	    },
@@ -238,7 +246,14 @@ function initFileUploader(fileHandler, container){
     	    		
     	    		previewTab.show();
     	    		uploadTab.hide();
-    	    		onFormChange();
+
+					if($(contentInput).length) {
+						console.log('Extract data');
+					}
+					else {
+        	    		onFormChange();
+					}
+    	    		
 		    	}
 	    },
 	    onError: function(message, code){
@@ -249,6 +264,10 @@ function initFileUploader(fileHandler, container){
 	    		$(assetHashSignature).empty();
 	    		$(typeInput).val('');
 	    		$(nameInput).val('');
+	    		$(dateInput).val('');
+	    		$(authorInput).val('');
+	    		$(languageInput).val('');
+	    		$(contentInput).val('');
 	    		$(viewButton).addClass('disabled');
 	    		$(clearButton).addClass('disabled');
 	    },

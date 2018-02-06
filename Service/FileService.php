@@ -297,6 +297,10 @@ class FileService {
 	 */
 	private function temporaryFilename($sha1) {
 	    if($this->uploadFolder){
+	        if(!is_dir($this->uploadFolder)) {
+	            mkdir ( $this->uploadFolder , 0777, true);
+	        }
+
 	        return $this->uploadFolder.DIRECTORY_SEPARATOR.$sha1;
 	    }
 		return sys_get_temp_dir().DIRECTORY_SEPARATOR.$sha1;

@@ -191,7 +191,8 @@ class DataController extends AppController
 		
 		$contentType = $repository->find($contentTypeId);		
 		
-		if(!$contentType || count($contentType) != 1) {
+		
+		if(!$contentType) {
 			throw new NotFoundHttpException('Content type not found');
 		}
 		

@@ -88,6 +88,9 @@ $("form[name={{ form.vars.id }}]").submit(function( event ) {
 });
 
 function onFormChange(){
+    {% if not revision.draft %}
+    	return;
+    {% endif %}
 		synch = false;
 		if(waitingResponse){
 			return;

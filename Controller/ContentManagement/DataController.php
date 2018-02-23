@@ -794,6 +794,15 @@ class DataController extends AppController
 			throw new NotFoundHttpException('Revision not found');	
 		}
 		
+		if(!$revision->getDraft() || $revision->getEndTime() !== null) {
+			$this->addFlash("warning", "The autosave didn't worked as this revision (".$revision->getContentType()->getSingularName().($revision->getOuuid()?":".$revision->getOuuid():"").") has been already finalized .");			
+			$response = $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
+					'success' => false,
+			] );
+			$response->headers->set('Content-Type', 'application/json');
+			return $response;
+		}
+		
 		if( empty($request->request->get('revision')) || empty($request->request->get('revision')['allFieldsAreThere']) || !$request->request->get('revision')['allFieldsAreThere']) {
 			$this->addFlash('error', 'Incomplete request, some fields of the request are missing, please verifiy your server configuration. (i.e.: max_input_vars in php.ini)');
 			$this->addFlash('error', 'Your modification are not saved!');

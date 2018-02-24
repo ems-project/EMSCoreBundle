@@ -730,7 +730,7 @@
 {% block fieldTypeType_row -%}
 <li class="list-group-item" id="{{ form.vars.id }}_item">
 	<h4>
-	{% if form.vars.data.parent|length != 0 %}
+	{% if form.vars.data.parent %}
 {# 			<i class="glyphicon glyphicon-move move-handle"></i>#}
 		<strong>{{ form.vars.data.name }}</strong> 
 		<small>{{ form.vars.data.type }}</small>

@@ -769,7 +769,7 @@ class ContentTypeController extends AppController {
 		/** @var ContentType $contentType */
 		$contentType = $repository->find ( $id );
 		
-		if (! $contentType || count ( $contentType ) != 1) {
+		if (! $contentType ) {
 			$this-> addFlash ( 'warning', 'Content type not found.' );
 			return $this->redirectToRoute ( 'contenttype.index' );
 		}

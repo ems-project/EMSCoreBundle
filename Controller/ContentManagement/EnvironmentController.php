@@ -650,7 +650,7 @@ class EnvironmentController extends AppController {
 		/** @var Environment $environment */
 		$environment = $repository->find($id);
 	
-		if(! $environment || count($environment) != 1){
+		if(! $environment ){
 			throw new NotFoundHttpException('Unknow environment');
 		}
 	

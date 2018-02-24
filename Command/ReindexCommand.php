@@ -19,6 +19,7 @@ use EMS\CoreBundle\Service\DataService;
 use Elasticsearch\Common\Exceptions\ServerErrorResponseException;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
+use EMS\CoreBundle\Entity\Revision;
 
 class ReindexCommand extends EmsCommand
 {
@@ -62,9 +63,16 @@ class ReindexCommand extends EmsCommand
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
-    {	
-    	$this->logger->info('Execute the ReindexCommand');
+    {
+    	$this->formatFlash($output);
     	$name = $input->getArgument('name');
+    	$index = $input->getArgument('index');
+    	$this->reindex($name, $index, $output);
+    }
+    
+    public function reindex($name, $index, OutputInterface $output)
+    {
+    	$this->logger->info('Execute the ReindexCommand');
     	/** @var EntityManager $em */
 		$em = $this->doctrine->getManager();
 		
@@ -79,7 +87,6 @@ class ReindexCommand extends EmsCommand
 		if($environment && count($environment) == 1) {
 			$environment = $environment[0];
 			
-			$index = $input->getArgument('index');
 			if(!$index) {
 				$index = $environment->getAlias();
 			}
@@ -123,7 +130,7 @@ class ReindexCommand extends EmsCommand
     					
     					try{
     						$em->persist($revision);
-    						$em->flush();						
+//     						$em->flush($revision);						
     					}
     					catch (\Exception $e){
     						
@@ -151,9 +158,11 @@ class ReindexCommand extends EmsCommand
     					}
     				}
     				$em->detach($revision);
-    				$em->clear();
     				$progress->advance();
     			}
+    			$em->clear(Revision::class);
+    			$this->flushFlash($output);
+    			
     			++$page;
     			$paginator = $revRepo->getRevisionsPaginatorPerEnvironment($environment, $page);
 		    } while ($paginator->getIterator()->count());

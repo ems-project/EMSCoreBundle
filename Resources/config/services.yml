@@ -447,7 +447,7 @@ services:
             -  { name: console.command }
     ems.environment.align:
         class: EMS\CoreBundle\Command\AlignCommand
-        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.data', '@ems.service.contenttype', '@ems.service.environment', '@ems.service.publish']
+        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.data', '@ems.service.contenttype', '@ems.service.environment', '@ems.service.publish', '@session']
         tags:
             -  { name: console.command }
     ems.environment.reindex:

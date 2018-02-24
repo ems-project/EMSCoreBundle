@@ -69,6 +69,7 @@ class RebuildCommand extends EmsCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+    	$this->formatFlash($output);
 
     	if( ! $input->getOption('yellow-ok') ){
     		$this->waitForGreen($output);
@@ -130,18 +131,19 @@ class RebuildCommand extends EmsCommand
 			$this->flushFlash($output);
 
 			$command = $this->getReindexCommand();
+			$command->reindex($name, $indexName, $output);
 
-			$arguments = array(
-					'name'    => $name,
-					'index'   => $indexName
-			);
+// 			$arguments = array(
+// 					'name'    => $name,
+// 					'index'   => $indexName
+// 			);
 
-			$reindexInput = new ArrayInput($arguments);
-			$returnCode = $command->run($reindexInput, $output);
+// 			$reindexInput = new ArrayInput($arguments);
+// 			$returnCode = $command->run($reindexInput, $output);
 
-			if($returnCode){
-				$output->writeln('Reindexed with return code: '.$returnCode);
-			}
+// 			if($returnCode){
+// 				$output->writeln('Reindexed with return code: '.$returnCode);
+// 			}
 
 	    	if( ! $input->getOption('yellow-ok') ){
 	    		$this->waitForGreen($output);

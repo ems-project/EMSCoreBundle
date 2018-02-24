@@ -18,12 +18,11 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 
-class AlignCommand extends ContainerAwareCommand
+class AlignCommand extends EmsCommand
 {
 	protected $doctrine;
-	protected $logger;
-	protected $client;
 	protected $data;
 	/**@var ContentTypeService */
 	private $contentTypeService;
@@ -32,7 +31,7 @@ class AlignCommand extends ContainerAwareCommand
 	/**@var PublishService */
 	private $publishService;
 
-	public function __construct(Registry $doctrine, Logger $logger, Client $client, DataService $data, ContentTypeService $contentTypeService, EnvironmentService $environmentService, PublishService $publishService)
+	public function __construct(Registry $doctrine, Logger $logger, Client $client, DataService $data, ContentTypeService $contentTypeService, EnvironmentService $environmentService, PublishService $publishService, $session)
 	{
 		$this->doctrine = $doctrine;
 		$this->logger = $logger;
@@ -41,7 +40,8 @@ class AlignCommand extends ContainerAwareCommand
 		$this->contentTypeService = $contentTypeService;
 		$this->environmentService = $environmentService;
 		$this->publishService = $publishService;
-		parent::__construct();
+		$this->session = $session;
+		parent::__construct($logger, $client, $session);
 	}
 
     protected function configure()
@@ -71,6 +71,8 @@ class AlignCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+    	$this->formatFlash($output);
+    	
     	if(! $input->getOption('force')){
 			$output->writeln('<error>Has protection, the force option is mandatory</error>');
 			return -1;
@@ -132,6 +134,7 @@ class AlignCommand extends ContainerAwareCommand
     			//'preference' => '_primary', //http://stackoverflow.com/questions/10836142/elasticsearch-duplicate-results-with-paging
     		]);
 
+    		$flush = false;
     		foreach ($scroll['hits']['hits'] as &$hit){
     			$revision = $this->data->getRevisionByEnvironment($hit['_id'], $this->contentTypeService->getByName($hit['_type']), $source);
     			if($revision->getDeleted()){
@@ -146,9 +149,15 @@ class AlignCommand extends ContainerAwareCommand
     			else {
 	    			if($this->publishService->publish($revision, $target, true) == 0){
 	    				++ $alreadyAligned;
+	    				$flush = true;
 	    			}
     			}
     			$progress->advance();
+    		}
+    		
+    		if($flush) {
+    			$output->writeln("");
+    			$this->flushFlash($output);
     		}
     	}
 

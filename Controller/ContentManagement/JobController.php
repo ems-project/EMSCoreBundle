@@ -71,6 +71,7 @@ class JobController extends AppController
 			/** @var \EMS\CoreBundle\Repository\JobRepository $jobRepository */
 			$jobRepository = $this->getDoctrine()->getRepository ( 'EMSCoreBundle:Job' );
 			$output = new JobOutput( $this->getDoctrine(), $job );
+			$output->setDecorated(true);
 			$output->writeln ( "Job ready to be launch" );
 			
 			$job->setStarted( true );

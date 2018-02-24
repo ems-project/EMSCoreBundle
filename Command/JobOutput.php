@@ -22,7 +22,7 @@ class JobOutput extends Output {
 	public function doWrite($message, $newline){
 		$this->job->setStatus($message);
 		
-		$this->job->setOutput($this->job->getOutput().$message.($newline ? PHP_EOL : ''));
+		$this->job->setOutput($this->job->getOutput().$this->getFormatter()->format($message).($newline ? PHP_EOL : ''));
 		$this->doctrine->getManager()->persist($this->job);
 	}
 }

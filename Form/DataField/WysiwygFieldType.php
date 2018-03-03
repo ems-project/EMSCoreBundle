@@ -17,6 +17,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use EMS\CoreBundle\Form\Field\WysiwygStylesSetPickerType;
 
 class WysiwygFieldType extends DataFieldType {
 	
@@ -71,6 +72,7 @@ class WysiwygFieldType extends DataFieldType {
 		
 		$attr['data-height'] = $options['height'];
 		$attr['data-format-tags'] = $options['format_tags'];
+		$attr['data-styles-set'] = $options['styles_set'];
 		$attr['class'] .= ' ckeditor_ems';
 		$view->vars ['attr'] = $attr;
 	}
@@ -85,6 +87,7 @@ class WysiwygFieldType extends DataFieldType {
 		$resolver->setDefault('icon', null);
 		$resolver->setDefault('height', 400);
 		$resolver->setDefault('format_tags', 'p;h1;h2;h3;h4;h5;h6;pre;address;div');
+		$resolver->setDefault('styles_set', 'default');
 	}
 	
 	/**
@@ -146,6 +149,7 @@ class WysiwygFieldType extends DataFieldType {
 		
 		$out['displayOptions']['height'] = 200;
 		$out['displayOptions']['format_tags'] = 'p;h1;h2;h3;h4;h5;h6;pre;address;div';
+		$out['displayOptions']['styles_set'] = 'default';
 		
 		return $out;
 	}
@@ -168,6 +172,8 @@ class WysiwygFieldType extends DataFieldType {
 		$optionsForm->get ( 'displayOptions' )->add ( 'height', IntegerType::class, [
 				'required' => false,
 		])->add ( 'format_tags', TextType::class, [
+				'required' => false,
+		])->add ( 'styles_set', WysiwygStylesSetPickerType::class, [
 				'required' => false,
 		]);
 	}

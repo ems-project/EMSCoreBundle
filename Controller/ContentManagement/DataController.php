@@ -863,6 +863,7 @@ class DataController extends AppController
 				return $this->render( 'EMSCoreBundle:data:edit-revision.html.twig', [
 						'revision' =>  $revision,
 						'form' => $form->createView(),
+						'stylesSets' => $this->getWysiwygStylesSetService()->getStylesSets(),
 				] );
 			}
 			
@@ -872,6 +873,7 @@ class DataController extends AppController
 				return $this->render( 'EMSCoreBundle:data:edit-revision.html.twig', [
 						'revision' =>  $revision,
 						'form' => $form->createView(),
+						'stylesSets' => $this->getWysiwygStylesSetService()->getStylesSets(),
 				] );
 			}
 				
@@ -1025,6 +1027,7 @@ class DataController extends AppController
 							return $this->render( 'EMSCoreBundle:data:edit-revision.html.twig', [
 									'revision' =>  $revision,
 									'form' => $form->createView(),
+									'stylesSets' => $this->getWysiwygStylesSetService()->getStylesSets(),
 							] );
 						}
 // 					}
@@ -1073,6 +1076,7 @@ class DataController extends AppController
 		return $this->render( 'EMSCoreBundle:data:edit-revision.html.twig', [
 				'revision' =>  $revision,
 				'form' => $form->createView(),
+				'stylesSets' => $this->getWysiwygStylesSetService()->getStylesSets(),
 		] );		
 	}
 		

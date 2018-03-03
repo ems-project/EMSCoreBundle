@@ -527,6 +527,12 @@ function addEventListeners(target){
 		if(format_tags){
 			ckconfig.format_tags = format_tags;
 		}
+		
+		var styles_set = $( this ).attr('data-styles-set');
+		if(styles_set){
+    		ckconfig.stylesSet = styles_set;
+		}
+
 
 		ckconfig.height = height;
 		ckconfig.div_wrapTable = 'true';
@@ -741,13 +747,17 @@ function addEventListeners(target){
 
 
 $(window).ready(function() {	
-	
-	//Add custom div styles (e.g for responsive tables)
-	CKEDITOR.stylesSet.add( 
-			'bootstrap', 
-			[
-			 { name: 'Bordered Table', element: 'div', attributes: { 'class': 'table-responsive' } },
-	        ]);
+	{% if stylesSets is defined %}
+    	//Add custom styles sets (e.g for bootstrap (responsive tables, ...))
+    	{% for stylesSet in stylesSets %}
+        	CKEDITOR.stylesSet.add( 
+        			'{{ stylesSet.name|e('js') }}', 
+        			JSON.parse('{{ stylesSet.config|e('js') }}')
+    			);
+    	{% endfor %}
+    {% endif %}
+
+    
 	CKEDITOR.plugins.addExternal('adv_link', '{{ asset("bundles/emscore/js/adv_link/plugin.js") }}', '' );
 	CKEDITOR.plugins.addExternal('div', '{{ asset("bundles/emscore/js/div/plugin.js") }}', '' );
 	addEventListeners($('form[name={{ form.vars.id }}]'));

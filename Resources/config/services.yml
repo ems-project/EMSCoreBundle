@@ -305,6 +305,12 @@ services:
         class: EMS\CoreBundle\Form\Field\FieldTypePickerType
         tags:
             - { name: form.type }
+            
+    ems.form.field.wysiwygstylessetpickertype:
+        class: EMS\CoreBundle\Form\Field\WysiwygStylesSetPickerType
+        arguments: ['@ems.service.wysiwyg_styles_set']
+        tags:
+            - { name: form.type }
     ems.form.field.rolepickertype:
         class: EMS\CoreBundle\Form\Field\RolePickerType
         arguments: ['@ems.service.user']

@@ -70,6 +70,7 @@ class WysiwygFieldType extends DataFieldType {
 		}
 		
 		$attr['data-height'] = $options['height'];
+		$attr['data-format-tags'] = $options['format_tags'];
 		$attr['class'] .= ' ckeditor_ems';
 		$view->vars ['attr'] = $attr;
 	}
@@ -83,6 +84,7 @@ class WysiwygFieldType extends DataFieldType {
 		parent::configureOptions($resolver);
 		$resolver->setDefault('icon', null);
 		$resolver->setDefault('height', 400);
+		$resolver->setDefault('format_tags', 'p;h1;h2;h3;h4;h5;h6;pre;address;div');
 	}
 	
 	/**
@@ -132,6 +134,22 @@ class WysiwygFieldType extends DataFieldType {
 	}
 	
 	
+	
+	
+	/**
+	 *
+	 * {@inheritdoc}
+	 *
+	 */
+	public function getDefaultOptions($name) {
+		$out = parent::getDefaultOptions($name);
+		
+		$out['displayOptions']['height'] = 200;
+		$out['displayOptions']['format_tags'] = 'p;h1;h2;h3;h4;h5;h6;pre;address;div';
+		
+		return $out;
+	}
+	
 	/**
 	 *
 	 * {@inheritdoc}
@@ -148,6 +166,8 @@ class WysiwygFieldType extends DataFieldType {
 				'required' => false,
 		] );
 		$optionsForm->get ( 'displayOptions' )->add ( 'height', IntegerType::class, [
+				'required' => false,
+		])->add ( 'format_tags', TextType::class, [
 				'required' => false,
 		]);
 	}

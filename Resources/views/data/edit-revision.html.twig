@@ -523,6 +523,11 @@ function addEventListeners(target){
 			height = 400;
 		}
 
+		var format_tags = $( this ).attr('data-format-tags');
+		if(format_tags){
+			ckconfig.format_tags = format_tags;
+		}
+
 		ckconfig.height = height;
 		ckconfig.div_wrapTable = 'true';
 

@@ -386,6 +386,9 @@ services:
     ems.service.wysiwyg_profile:
         class: EMS\CoreBundle\Service\WysiwygProfileService
         arguments: ['@doctrine', '@session', '@translator']
+    ems.service.wysiwyg_styles_set:
+        class: EMS\CoreBundle\Service\WysiwygStylesSetService
+        arguments: ['@doctrine', '@session', '@translator']
     ems.service.objectchoicecache:
         class: EMS\CoreBundle\Service\ObjectChoiceCacheService
         arguments: ['@app.elasticsearch', '@session', '@ems.service.contenttype']

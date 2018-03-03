@@ -22,6 +22,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use EMS\CoreBundle\Service\AssetExtratorService;
+use EMS\CoreBundle\Service\WysiwygStylesSetService;
 
 class AppController extends Controller
 {
@@ -71,6 +72,14 @@ class AppController extends Controller
 	protected function getWysiwygProfileService()
 	{
 		return $this->get('ems.service.wysiwyg_profile');
+	}
+	
+	/**
+	 * @return WysiwygStylesSetService
+	 */
+	protected function getWysiwygStylesSetService()
+	{
+		return $this->get('ems.service.wysiwyg_styles_set');
 	}
 
 	/**

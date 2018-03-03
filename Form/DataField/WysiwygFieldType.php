@@ -73,6 +73,7 @@ class WysiwygFieldType extends DataFieldType {
 		$attr['data-height'] = $options['height'];
 		$attr['data-format-tags'] = $options['format_tags'];
 		$attr['data-styles-set'] = $options['styles_set'];
+		$attr['data-content-css'] = $options['content_css'];
 		$attr['class'] .= ' ckeditor_ems';
 		$view->vars ['attr'] = $attr;
 	}
@@ -88,6 +89,7 @@ class WysiwygFieldType extends DataFieldType {
 		$resolver->setDefault('height', 400);
 		$resolver->setDefault('format_tags', 'p;h1;h2;h3;h4;h5;h6;pre;address;div');
 		$resolver->setDefault('styles_set', 'default');
+		$resolver->setDefault('content_css', '../../../../bundles/emscore/css/styles.css');
 	}
 	
 	/**
@@ -150,6 +152,7 @@ class WysiwygFieldType extends DataFieldType {
 		$out['displayOptions']['height'] = 200;
 		$out['displayOptions']['format_tags'] = 'p;h1;h2;h3;h4;h5;h6;pre;address;div';
 		$out['displayOptions']['styles_set'] = 'default';
+		$out['displayOptions']['content_css'] = '../../../../bundles/emscore/css/styles.css';
 		
 		return $out;
 	}
@@ -174,6 +177,8 @@ class WysiwygFieldType extends DataFieldType {
 		])->add ( 'format_tags', TextType::class, [
 				'required' => false,
 		])->add ( 'styles_set', WysiwygStylesSetPickerType::class, [
+				'required' => false,
+		])->add ( 'contents_css', TextType::class, [
 				'required' => false,
 		]);
 	}

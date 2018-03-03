@@ -532,6 +532,11 @@ function addEventListeners(target){
 		if(styles_set){
     		ckconfig.stylesSet = styles_set;
 		}
+		
+		var content_css = $( this ).attr('data-content-css');
+		if(content_css){
+    		ckconfig.contentsCss = content_css;
+		}
 
 
 		ckconfig.height = height;

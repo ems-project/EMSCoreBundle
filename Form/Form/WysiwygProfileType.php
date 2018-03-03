@@ -22,7 +22,8 @@ class WysiwygProfileType extends AbstractType {
 		
 		$builder
 		->add ( 'name', IconTextType::class, [
-				'icon' => 'fa fa-tag'
+				'icon' => 'fa fa-tag',
+				'label' => 'Profile\'s name',
 		] )
 		->add ( 'config', CodeEditorType::class, [
 				'language' => 'ace/mode/json'

@@ -111,7 +111,7 @@ class IndexedAssetFieldType extends DataFieldType {
 		$mapping = parent::generateMapping($current, $withPipeline);
 		return [
 			$current->getName() => [
-// 					"type" => "nested",
+					"type" => "nested",
 					"properties" => [
 							"mimetype" => [
 								"type" => "string",

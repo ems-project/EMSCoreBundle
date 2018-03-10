@@ -27,8 +27,10 @@
 	<!-- form start -->
 		{{ form_start(form) }}
 		<div class="box-body">
+    	    {{- form_errors(form) -}}
+    	    {{- form_errors(form.data) -}}
+    	    
 			{{ form_widget(form.data) }}
-	
 		</div>
 		<!-- /.box-body -->
 		<div class="box-footer">

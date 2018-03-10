@@ -22,6 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
+use EMS\CoreBundle\Exception\CantBeFinalizedException;
 
 class MigrateCommand extends EmsCommand
 {
@@ -277,6 +278,9 @@ class MigrateCommand extends EmsCommand
 					$revisionRepository->publishRevision($newRevision);
 				}
 				catch(NotLockedException $e){
+					$output->writeln("<error>'.$e.'</error>");
+				}
+				catch(CantBeFinalizedException $e){
 					$output->writeln("<error>'.$e.'</error>");
 				}
 

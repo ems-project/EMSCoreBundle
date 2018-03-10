@@ -23,6 +23,7 @@ use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\DataField;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Exception\CantBeFinalizedException;
 
 class AppExtension extends \Twig_Extension
 {
@@ -72,6 +73,7 @@ class AppExtension extends \Twig_Extension
 	public function getFunctions(){
 		return [
 				new \Twig_SimpleFunction('get_content_types', array($this, 'getContentTypes')),
+				new \Twig_SimpleFunction('cant_be_finalized', array($this, 'cantBeFinalized')),
 				new \Twig_SimpleFunction('get_default_environments', array($this, 'getDefaultEnvironments')),
 		];
 	}
@@ -153,6 +155,10 @@ class AppExtension extends \Twig_Extension
 		$clean = preg_replace("/[\/\_\|\ \-]+/", '-', $clean);
 		
 		return $clean;
+	}
+	
+	function cantBeFinalized($message = null, $code = null, $previous = null) {
+		throw new CantBeFinalizedException($message, $code, $previous);
 	}
 	
 	

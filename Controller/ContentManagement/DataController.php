@@ -1023,7 +1023,7 @@ class DataController extends AppController
 									'type' => $revision->getContentType()->getName(),
 							]);
 						} else {
-							$this->addFlash("warning", "This draft (".$revision->getContentType()->getSingularName().($revision->getOuuid()?":".$revision->getOuuid():"").") can't be finalized.");
+							//$this->addFlash("warning", "This draft (".$revision->getContentType()->getSingularName().($revision->getOuuid()?":".$revision->getOuuid():"").") can't be finalized.");
 							return $this->render( 'EMSCoreBundle:data:edit-revision.html.twig', [
 									'revision' =>  $revision,
 									'form' => $form->createView(),

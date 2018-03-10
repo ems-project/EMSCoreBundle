@@ -37,6 +37,7 @@ use Symfony\Component\Form\FormInterface;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use EMS\CoreBundle\Event\UpdateRevisionReferersEvent;
 use EMS\CoreBundle\Exception\NotLockedException;
+use EMS\CoreBundle\Exception\CantBeFinalizedException;
 
 class DataService
 {
@@ -236,6 +237,9 @@ class DataService
 				$found = true;
 			}
 			catch (\Exception $e) {
+				if($e->getPrevious() && $e->getPrevious() instanceof CantBeFinalizedException) {
+					throw $e->getPrevious();
+				}
 				$this->session->getFlashBag()->add('warning', 'Error to parse the post processing script of field '.$dataField->getFieldType()->getName().': '.$e->getMessage());
 			}	
 		}
@@ -258,6 +262,9 @@ class DataService
 					}
 				}
 				catch (\Exception $e) {
+					if($e->getPrevious() && $e->getPrevious() instanceof CantBeFinalizedException) {
+						throw $e->getPrevious();
+					}				
 					$this->session->getFlashBag()->add('warning', 'Error to parse the computed field '.$dataField->getFieldType()->getName().': '.$e->getMessage());
 				}					
 			}
@@ -523,8 +530,13 @@ class DataService
 		$objectArray = $revision->getRawData();
 		
 		$this->updateDataStructure($revision->getContentType()->getFieldType(), $form->get('data')->getNormData());
-		if($computeFields && $this->propagateDataToComputedField($form->get('data'), $objectArray, $revision->getContentType(), $revision->getContentType()->getName(), $revision->getOuuid())) {
-			$revision->setRawData($objectArray);
+		try {
+			if($computeFields && $this->propagateDataToComputedField($form->get('data'), $objectArray, $revision->getContentType(), $revision->getContentType()->getName(), $revision->getOuuid())) {
+				$revision->setRawData($objectArray);
+			}			
+		}
+		catch (CantBeFinalizedException $e) {
+			$form->addError(new FormError($e->getMessage()));
 		}
 		
 		$previousObjectArray = null;
@@ -1065,6 +1077,10 @@ class DataService
 		if(isset($dataFieldType) && !$dataFieldType->isValid($dataField, $parent)) {
 			$isValid = false;
 			$form->addError(new FormError("This Field is not valid! ".$dataField->getMessages()[0]));
+		}
+		
+		if($form->getErrors(true, true)->count() > 0){
+			$isValid = false;
 		}
     	
 		return $isValid;

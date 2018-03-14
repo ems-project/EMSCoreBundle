@@ -178,7 +178,7 @@ class WysiwygFieldType extends DataFieldType {
 				'required' => false,
 		])->add ( 'styles_set', WysiwygStylesSetPickerType::class, [
 				'required' => false,
-		])->add ( 'contents_css', TextType::class, [
+		])->add ( 'content_css', TextType::class, [
 				'required' => false,
 		]);
 	}

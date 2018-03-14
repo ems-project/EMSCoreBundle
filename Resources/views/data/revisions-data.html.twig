@@ -33,6 +33,21 @@
 								'vertical': false,
 				}%}
 					
+				
+		  
+            {% if is_granted(revision.contentType.createRole) %}
+            	{% if not  revision.contentType.circlesField or attribute(object._source, revision.contentType.circlesField) is not defined or attribute(object._source, revision.contentType.circlesField)|in_my_circles %}
+            		{% include 'EMSCoreBundle:elements:post-button.html.twig' with {
+            			'url':  path('object.delete', {'type': revision.contentType.name, 'ouuid': revision.ouuid} ),
+            			'label': 'Delete all revisions',
+            			'icon': 'trash',
+            			'message': 'Do you confirm?',
+            			'group_class': 'pull-right'
+            		}%}
+            	{% endif %}
+            {% endif %}
+            	
+					
 			</div>
           </div>
          </div>

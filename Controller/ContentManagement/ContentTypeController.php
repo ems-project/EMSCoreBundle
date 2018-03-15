@@ -2,21 +2,24 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
+use Doctrine\ORM\EntityManager;
+use Elasticsearch\Client;
+use Elasticsearch\Common\Exceptions\ElasticsearchException;
 use EMS\CoreBundle;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Helper\JsonNormalizer;
+use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Form\DataField\SubfieldType;
 use EMS\CoreBundle\Form\Field\IconTextType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\Form\ContentTypeStructureType;
 use EMS\CoreBundle\Form\Form\ContentTypeType;
+use EMS\CoreBundle\Form\Form\ReorderType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
-use Doctrine\ORM\EntityManager;
-use Elasticsearch\Client;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -34,8 +37,6 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
-use EMS\CoreBundle\Form\DataField\DataFieldType;
-use EMS\CoreBundle\Form\Form\ReorderType;
 
 /**
  * Operations on content types such as CRUD but alose rebuild index.
@@ -651,10 +652,16 @@ class ContentTypeController extends AppController {
 		/** @var  Client $client */
 		$client = $this->getElasticsearch();
 		
-		$mapping = $client->indices ()->getMapping ( [
-				'index' => $contentType->getEnvironment ()->getAlias (),
-				'type' => $contentType->getName ()
-		] );
+		try{
+			$mapping = $client->indices ()->getMapping ( [
+					'index' => $contentType->getEnvironment ()->getAlias (),
+					'type' => $contentType->getName ()
+			] );
+		}
+		catch(ElasticsearchException$e){
+			$this-> addFlash ( 'warning', 'Mapping not found.' );
+			$mapping = [];
+		}
 		
 		$form = $this->createForm ( ContentTypeType::class, $contentType, [
 			'twigWithWysiwyg' => $contentType->getEditTwigWithWysiwyg(),

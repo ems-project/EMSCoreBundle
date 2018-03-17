@@ -513,6 +513,9 @@ class DataService
 			$form = $builder->getForm();
 		}
 		
+		if(empty($username)){
+			$username = $this->tokenStorage->getToken()->getUsername();
+		}
 		$this->lockRevision($revision, false, false, $username);
 		
 		
@@ -540,6 +543,8 @@ class DataService
 		}
 		
 		$previousObjectArray = null;
+		
+		$revision->setRawDataFinalizedBy($username);
 		
 		$objectArray = $this->sign($revision);
 		
@@ -577,9 +582,6 @@ class DataService
 // 			$revision->getDataField()->propagateOuuid($revision->getOuuid());
 			$revision->setDraft(false);
 			
-			if(empty($username)){
-				$username = $this->tokenStorage->getToken()->getUsername();
-			}
 			$revision->setFinalizedBy($username);
 			
 			$em->persist($revision);

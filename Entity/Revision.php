@@ -601,6 +601,20 @@ class Revision
     }
     
     /**
+     * Set rawDataFinalizedBy
+     *
+     * @param string $finalizedBy
+     *
+     * @return Revision
+     */
+    public function setRawDataFinalizedBy($finalizedBy)
+    {
+    	$this->rawData['_finalized_by'] = $finalizedBy;
+    	$this->rawData['_finalized_date'] = (new \DateTime())->format(\DateTime::ISO8601);
+    	return $this;
+    }
+    
+    /**
      * Set finalizedBy
      *
      * @param string $finalizedBy

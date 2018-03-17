@@ -432,6 +432,9 @@ services:
     ems.service.helper:
         class: EMS\CoreBundle\Service\HelperService
         arguments: ['@doctrine', '@request_stack', '%ems_core.paging_size%']
+    ems.service.elasticsearch:
+        class: EMS\CoreBundle\Service\ElasticsearchService
+        arguments: ['%ems_core.elasticsearch_version%']
         
 ### command services ###
     ems.environment.ems:

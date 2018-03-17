@@ -34,6 +34,30 @@ class Mapping
 			$out[$contentType->getName()]['properties'] = $this->fieldTypeType->generateMapping($contentType->getFieldType(), $withPipeline);
 		}
 		
+		$out[$contentType->getName()]['properties'] = array_merge(
+			[
+				'_sha1' => [
+					'type' => 'string',
+					'index' => 'not_analyzed'
+				],
+				'_signature' => [
+					'type' => 'string',
+					'index' => 'not_analyzed'
+				],
+				'_finalized_by' => [
+					'type' => 'string',
+					'index' => 'not_analyzed'
+				],
+				'_finalized_datetime' => [
+					'type' => 'date',
+					'format' => 'date_time_no_millis'
+				],
+			],
+			$out[$contentType->getName()]['properties']
+		);
+		
+		
+		
 		return $out;
 	} 
 

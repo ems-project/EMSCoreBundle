@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\AggregateOptionRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class AggregateProfile
+class AggregateOption
 {
     /**
      * @var int

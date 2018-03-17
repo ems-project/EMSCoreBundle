@@ -575,7 +575,7 @@
 
 
 {% block assettype_row %}
-<div class="panel panel-default file-uploader-row">
+<div class="panel panel-default file-uploader-row{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %}">
 	<div class="panel-heading">
 		<h3 class="panel-title">
 			<i class="fa fa-file-o"></i> 				
@@ -628,6 +628,7 @@
             	>
 	        </div>
         </div>
+        {{- form_errors(form) -}}
       </div>
 	</div>
 	<div class="panel-footer">

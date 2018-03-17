@@ -1,7 +1,13 @@
 <?php
 namespace EMS\CoreBundle\Controller;
 
+use Doctrine\DBAL\Types\TextType;
+use Doctrine\ORM\EntityManager;
+use Elasticsearch\Client;
+use Elasticsearch\Common\Exceptions\ElasticsearchException;
+use Elasticsearch\Common\Exceptions\Missing404Exception;
 use EMS\CoreBundle\Controller\AppController;
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\Form\SearchFilter;
 use EMS\CoreBundle\Entity\Template;
@@ -11,25 +17,19 @@ use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\Form\SearchFormType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
-use Doctrine\DBAL\Types\TextType;
-use Doctrine\ORM\EntityManager;
-use Elasticsearch\Client;
-use Elasticsearch\Common\Exceptions\ElasticsearchException;
+use EMS\CoreBundle\Service\ContentTypeService;
+use EMS\CoreBundle\Service\EnvironmentService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use ZipStream\ZipStream;
-use EMS\CoreBundle\Service\ContentTypeService;
-use EMS\CoreBundle\Service\EnvironmentService;
-use EMS\CoreBundle\Entity\ContentType;
-use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
-use Elasticsearch\Common\Exceptions\Missing404Exception;
 class ElasticsearchController extends AppController
 {
 	/**
@@ -157,6 +157,8 @@ class ElasticsearchController extends AppController
 					'certificate' => $certificatInfo,
 					'tika' => $tika,
 					'globalStatus' => $globalStatus,
+					'info' => $client->info(),
+					'specifiedVersion' => $this->getElasticsearchService()->getVersion(),
 			] );			
 		}
 		catch (\Elasticsearch\Common\Exceptions\NoNodesAvailableException $e){

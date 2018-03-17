@@ -23,6 +23,7 @@ use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use EMS\CoreBundle\Service\AssetExtratorService;
 use EMS\CoreBundle\Service\WysiwygStylesSetService;
+use EMS\CoreBundle\Service\ElasticsearchService;
 
 class AppController extends Controller
 {
@@ -56,6 +57,14 @@ class AppController extends Controller
 	protected function getAssetService()
 	{
 		return $this->get('ems.service.asset');
+	}
+	
+	/**
+	 * @return ElasticsearchService
+	 */
+	protected function getElasticsearchService()
+	{
+		return $this->get('ems.service.elasticsearch');
 	}
 	
 	/**

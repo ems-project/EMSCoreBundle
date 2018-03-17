@@ -42,7 +42,7 @@ class Mapping
 				],
 				'_signature' => [
 					'type' => 'string',
-					'index' => 'not_analyzed'
+					'index' => 'no'
 				],
 				'_finalized_by' => [
 					'type' => 'string',

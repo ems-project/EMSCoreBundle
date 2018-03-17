@@ -24,6 +24,9 @@ use Symfony\Component\Translation\TranslatorInterface;
 use EMS\CoreBundle\Service\AssetExtratorService;
 use EMS\CoreBundle\Service\WysiwygStylesSetService;
 use EMS\CoreBundle\Service\ElasticsearchService;
+use EMS\CoreBundle\Service\AggregateOptionService;
+use EMS\CoreBundle\Service\SearchOptionService;
+use EMS\CoreBundle\Service\SortOptionService;
 
 class AppController extends Controller
 {
@@ -81,6 +84,22 @@ class AppController extends Controller
 	protected function getWysiwygProfileService()
 	{
 		return $this->get('ems.service.wysiwyg_profile');
+	}
+	
+	/**
+	 * @return SortOptionService
+	 */
+	protected function getSortOptionService()
+	{
+		return $this->get('ems.service.sort_option');
+	}
+	
+	/**
+	 * @return AggregateOptionService
+	 */
+	protected function getAggregateOptionService()
+	{
+		return $this->get('ems.service.aggregate_option');
 	}
 	
 	/**

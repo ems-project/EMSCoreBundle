@@ -39,6 +39,7 @@ class Configuration implements ConfigurationInterface
 	const ASSET_CONFIG_TYPE = null;
 	const ASSET_CONFIG_INDEX = null;
 	const TIKA_SERVER = null;
+	const ELASTICSEARCH_VERSION = '5.4';
 	
 	
     /**
@@ -87,6 +88,7 @@ class Configuration implements ConfigurationInterface
 		        ->scalarNode('private_key')->defaultValue(self::PRIVATE_KEY)->end()
 		        ->scalarNode('upload_folder')->defaultValue(null)->end()
 	        	->scalarNode('tika_server')->defaultValue(self::TIKA_SERVER)->end()
+	        	->scalarNode('elasticsearch_version')->defaultValue(self::ELASTICSEARCH_VERSION)->end()
 		        ->arrayNode('template_options')->defaultValue([])
 		        	->prototype('variable')
 		        	->end()

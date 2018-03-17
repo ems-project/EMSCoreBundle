@@ -10,12 +10,22 @@ use EMS\CoreBundle\Form\FieldType\FieldTypeType;
 
 class Mapping
 {
-
+	
 	/** @var FieldTypeType $fieldTypeType */
 	private $fieldTypeType;
 	
-	public function __construct(FieldTypeType $fieldTypeType) {
+	/** @var ElasticsearchService $elasticsearchService */
+	private $elasticsearchService;
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param FieldTypeType $fieldTypeType
+	 * @param ElasticsearchService $elasticsearchService
+	 */
+	public function __construct(FieldTypeType $fieldTypeType, ElasticsearchService $elasticsearchService) {
 		$this->fieldTypeType = $fieldTypeType;
+		$this->elasticsearchService = $elasticsearchService;
 	}
 	
 	public function generateMapping(ContentType $contentType, $withPipeline = false){
@@ -36,22 +46,10 @@ class Mapping
 		
 		$out[$contentType->getName()]['properties'] = array_merge(
 			[
-				'_sha1' => [
-					'type' => 'string',
-					'index' => 'not_analyzed'
-				],
-				'_signature' => [
-					'type' => 'string',
-					'index' => 'no'
-				],
-				'_finalized_by' => [
-					'type' => 'string',
-					'index' => 'not_analyzed'
-				],
-				'_finalized_datetime' => [
-					'type' => 'date',
-					'format' => 'date_time_no_millis'
-				],
+				'_sha1' => $this->elasticsearchService->getKeywordMapping(),
+				'_signature' => $this->elasticsearchService->getNotIndexedStringMapping(),
+				'_finalized_by' => $this->elasticsearchService->getKeywordMapping(),
+				'_finalized_datetime' => $this->elasticsearchService->getDateTimeMapping(),
 			],
 			$out[$contentType->getName()]['properties']
 		);

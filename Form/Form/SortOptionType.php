@@ -8,6 +8,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 
 class SortOptionType extends AbstractType {
@@ -26,6 +27,9 @@ class SortOptionType extends AbstractType {
 				'label' => 'Sort Option\'s name',
 		] )
 		->add ( 'field', TextType::class, [
+		] )
+		->add ( 'inverted', CheckboxType::class, [
+				'required' => false,
 		] )
 		->add ( 'save', SubmitEmsType::class, [ 
 				'attr' => [ 

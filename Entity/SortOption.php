@@ -57,6 +57,13 @@ class SortOption {
 	private $orderKey;
 	
 	/**
+	 * @var bool
+	 *
+	 * @ORM\Column(name="inverted", type="boolean")
+	 */
+	private $inverted;
+	
+	/**
 	 * @ORM\PrePersist
 	 * @ORM\PreUpdate
 	 */
@@ -205,5 +212,29 @@ class SortOption {
 	public function getOrderKey()
 	{
 		return $this->orderKey;
+	}
+	
+	/**
+	 * Set inverted
+	 *
+	 * @param boolean $inverted
+	 *
+	 * @return SortOption
+	 */
+	public function setInverted($inverted)
+	{
+		$this->inverted= $inverted;
+		
+		return $this;
+	}
+	
+	/**
+	 * Get inverted
+	 *
+	 * @return boolean
+	 */
+	public function getInverted()
+	{
+		return $this->inverted;
 	}
 }

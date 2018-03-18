@@ -30,6 +30,7 @@ class SearchService
 					$search->getSortBy() => [
 					    'order' => (empty($search->getSortOrder())?'asc': $search->getSortOrder()),
 							'missing' => '_last',
+							'unmapped_type' => 'long',
 					]
 			];
 		}

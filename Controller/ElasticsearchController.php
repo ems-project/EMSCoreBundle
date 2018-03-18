@@ -836,6 +836,8 @@ class ElasticsearchController extends AppController
 					'body' => $body,
 					'openSearchForm' => $openSearchForm,
 					'search' => $search,
+					'sortOptions' => $this->getSortOptionService()->getAll(),
+					'aggregateOptions' => $this->getAggregateOptionService()->getAll(),
 			] );
 		}
 		catch (\Elasticsearch\Common\Exceptions\NoNodesAvailableException $e){

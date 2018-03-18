@@ -610,7 +610,7 @@ class Revision
     public function setRawDataFinalizedBy($finalizedBy)
     {
     	$this->rawData['_finalized_by'] = $finalizedBy;
-    	$this->rawData['_finalized_date'] = (new \DateTime())->format(\DateTime::ISO8601);
+    	$this->rawData['_finalization_datetime'] = (new \DateTime())->format(\DateTime::ISO8601);
     	return $this;
     }
     

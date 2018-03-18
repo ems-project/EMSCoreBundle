@@ -49,7 +49,7 @@ class Mapping
 				'_sha1' => $this->elasticsearchService->getKeywordMapping(),
 				'_signature' => $this->elasticsearchService->getNotIndexedStringMapping(),
 				'_finalized_by' => $this->elasticsearchService->getKeywordMapping(),
-				'_finalized_datetime' => $this->elasticsearchService->getDateTimeMapping(),
+				'_finalization_datetime' => $this->elasticsearchService->getDateTimeMapping(),
 			],
 			$out[$contentType->getName()]['properties']
 		);

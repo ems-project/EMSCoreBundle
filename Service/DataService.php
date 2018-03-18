@@ -1001,7 +1001,6 @@ class DataService
 	}
 		
 	public function loadDataStructure(Revision $revision){
-
 		$data = new DataField();
 		$data->setFieldType($revision->getContentType()->getFieldType());
 		$data->setOrderKey($revision->getContentType()->getFieldType()->getOrderKey());
@@ -1011,6 +1010,8 @@ class DataService
 		//$revision->getDataField()->updateDataStructure($this->formRegistry, $revision->getContentType()->getFieldType());
 		$object = $revision->getRawData();
 		$this->updateDataValue($data, $object);
+		unset($object['_finalized_by']);
+		unset($object['_finalization_datetime']);
 		if(count($object) > 0){
 			$html = DataService::arrayToHtml($object);
 			$this->session->getFlashBag()->add('warning', "Some data of this revision were not consumed by the content type:".$html);			

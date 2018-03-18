@@ -157,7 +157,6 @@
 				<h3 class="box-title"><i class="fa fa-sitemap"></i> Content types</h3>
 			</div>
 			<div class="box-body">
-				<ul class="list-group">
 				
 				{% set cleanedFilters = [] %}
 				{% if currentFilters.all.search_form is defined %}
@@ -172,34 +171,31 @@
 				{% endif %}
 				
 				{% for index in results.aggregations.types.buckets %}
-					<li class="list-group-item">
-						{% if attribute(types, index.key) is defined %}
-								<a href="{{ path(paginationPath, cleanedFilters|merge({'search_form[contentTypes][0]': index.key, page: 1})) }}" class="text-{{ attribute(types, index.key).color }}">
-									<i class="{{ attribute(types, index.key).icon }}"></i>
-									{% if index.doc_count >1  %}
-										{{ attribute(types, index.key).pluralName }} 
-									{% else %}
-										{{ attribute(types, index.key).singularName }} 
-									{% endif %}
-									<span class=" badge pull-right bg-{{ attribute(types, index.key).color }}">{{ index.doc_count }}</span>
-								</a>
-						{% else %}
-							<a href="{{ path(paginationPath, app.request.query|merge({'search_form[contentTypes][0]': index.key, page: 1})) }}" class="text-black">
-								<i class="fa fa-question"></i>
-								{{ index.key|humanize }}
-								<span class=" badge pull-right">{{ index.doc_count }}</span>
-							</a>
-						{% endif %}
-					</li>
-				{% endfor %}
-					{% if results.aggregations.types.sum_other_doc_count > 0 %}
-						<li class="list-group-item">
-							<i class="fa fa-question"></i>
-							Other
-							<span class=" badge pull-right">{{ results.aggregations.types.sum_other_doc_count }}</span>
-						</li>
+					{% if attribute(types, index.key) is defined %}
+						<a href="{{ path(paginationPath, cleanedFilters|merge({'search_form[contentTypes][0]': index.key, page: 1})) }}" class="btn btn-block btn-social {% if attribute(types, index.key).color %}bg-{{ attribute(types, index.key).color }}{% else %}bg-gray{% endif %}">
+							<i class="{% if attribute(types, index.key).icon %}{{ attribute(types, index.key).icon }}{% else %}fa fa-book{% endif %}"></i>
+							{% if index.doc_count >1  %}
+								{{ attribute(types, index.key).pluralName }} 
+							{% else %}
+								{{ attribute(types, index.key).singularName }} 
+							{% endif %}
+							<span class=" badge pull-right">{{ index.doc_count }}</span>
+						</a>
+					{% else %}
+    					<a href="{{ path(paginationPath, app.request.query|merge({'search_form[contentTypes][0]': index.key, page: 1})) }}" class="btn btn-block btn-social bg-gray">
+    						<i class="fa fa-question"></i>
+    						{{ index.key|humanize }}
+    						<span class=" badge pull-right">{{ index.doc_count }}</span>
+    					</a>
 					{% endif %}
-				</ul>
+				{% endfor %}
+				{% if results.aggregations.types.sum_other_doc_count > 0 %}
+					<a href="#" class="disabled btn btn-block btn-social btn-primary">
+						<i class="fa fa-question"></i>
+						Other
+						<span class=" badge pull-right">{{ results.aggregations.types.sum_other_doc_count }}</span>
+					</a>
+				{% endif %}
 			</div>
 		</div>
 		
@@ -208,7 +204,6 @@
 				<h3 class="box-title"><i class="fa fa-database"></i> Environments</h3>
 			</div>
 			<div class="box-body">
-				<ul class="list-group">
 				
 				{% set cleanedFilters = [] %}
 				{% if currentFilters.all.search_form is defined %}
@@ -223,16 +218,14 @@
 				{% endif %}
 				
 					{% for index in results.aggregations.indexes.buckets %}
-						<li class="list-group-item">
-							<a href="{{ path(paginationPath, cleanedFilters|merge({'search_form[environments][0]': attribute(indexes, index.key).name})) }}" class="text-{{ attribute(indexes, index.key).color }}">
-								{{ attribute(indexes, index.key).name|humanize }} 
-								<span class=" badge pull-right bg-{{ attribute(indexes, index.key).color }}">
+							<a href="{{ path(paginationPath, cleanedFilters|merge({'search_form[environments][0]': attribute(indexes, index.key).name})) }}" class="btn btn-block btn-social {% if attribute(indexes, index.key).color %}bg-{{ attribute(indexes, index.key).color }}{% else %}bg-gray{% endif %}">
+								<i class="fa fa-eye"></i>
+					            {{ attribute(indexes, index.key).name|humanize }} 
+								<span class=" badge pull-right">
 									{{ index.doc_count }}
 								</span>
 							</a>
-						</li>
 					{% endfor %}
-				</ul>
 			</div>
 		</div>
 	</div>

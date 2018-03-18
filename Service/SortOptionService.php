@@ -2,23 +2,15 @@
 
 namespace EMS\CoreBundle\Service;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
-use EMS\CoreBundle\Entity\WysiwygProfile;
-use EMS\CoreBundle\Repository\WysiwygProfileRepository;
-use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\Translation\TranslatorInterface;
+use EMS\CoreBundle\Entity\SortOption;
 
-class SortOptionService {
-	/**@var Registry $doctrine */
-	private $doctrine;
-	/**@var Session $session*/
-	private $session;
-	/**@var TranslatorInterface $translator */
-	private $translator;
+class SortOptionService extends EntityService{
 	
-	public function __construct(Registry $doctrine, Session $session, TranslatorInterface $translator) {
-		$this->doctrine = $doctrine;
-		$this->session = $session;
-		$this->translator= $translator;
+	protected function getRepositoryIdentifier() {
+		return 'EMSCoreBundle:SortOption';
+	}
+	
+	protected function getEntityName() {
+		return 'Sort Option';
 	}
 }

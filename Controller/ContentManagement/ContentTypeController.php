@@ -48,7 +48,7 @@ class ContentTypeController extends AppController {
 	
 	
 	public static function isValidName($name) {
-		if(in_array($name, ['_sha1', '_signature'])){
+		if(in_array($name, ['_sha1', '_signature', '_finalized_by', '_finalization_datetime'])){
 			return false;
 		}
 		return preg_match('/^[a-z][a-z0-9\-_]*$/i', $name) && strlen($name) <= 100;

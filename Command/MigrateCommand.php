@@ -87,15 +87,7 @@ class MigrateCommand extends EmsCommand
     
     
     private function getSubmitData(Form $form){
-    	$out = $form->getViewData();
-    	/**@var Form $subform*/
-    	foreach ($form->getIterator() as $subform) {
-    		if($subform->getConfig()->getCompound()) {
-    			$out[$subform->getName()] = $this->getSubmitData($subform);
-    		}
-    	}
-    	
-    	return $out;
+    	return $this->dataService->getSubmitData($form);
     }
     
     /**
@@ -103,22 +95,7 @@ class MigrateCommand extends EmsCommand
      * @return \EMS\CoreBundle\Entity\Revision
      */
     private function getEmptyRevision(ContentType $contentType) {
-    	$newRevision= new Revision();
-    	
-    	$now = new \DateTime();
-    	$until = $now->add(new \DateInterval("PT5M"));//+5 minutes
-    	$newRevision = new Revision();
-    	$newRevision->setContentType($contentType);
-    	$newRevision->addEnvironment($contentType->getEnvironment());
-    	$newRevision->setStartTime($now);
-    	$newRevision->setEndTime(null);
-    	$newRevision->setDeleted(false);
-    	$newRevision->setDraft(true);
-    	$newRevision->setLockBy('SYSTEM_MIGRATE');
-    	$newRevision->setLockUntil($until);
-    	$newRevision->setRawData([]);
-    	
-    	return $newRevision;
+    	return $this->dataService->getEmptyRevision($contentType, 'SYSTEM_MIGRATE');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

@@ -363,21 +363,24 @@ class DataService
 	public static function ksortRecursive(&$array, $sort_flags = SORT_REGULAR) {
 		if (!is_array($array)) return false;
 		ksort($array, $sort_flags);
-		foreach ($array as &$arr) {
+		foreach ($array as $index => &$arr) {
 			DataService::ksortRecursive($arr, $sort_flags);
+			if(is_array($array[$index]) && empty($array[$index])) {
+				unset($array[$index]);
+			}
 		}
 		return true;
 	}
 	
 	public function sign(Revision $revision) {
 		$objectArray = $revision->getRawData();
-		DataService::ksortRecursive($objectArray);
 		if(isset($objectArray['_sha1'])){
 			unset($objectArray['_sha1']);
 		}
 		if(isset($objectArray['_signature'])){
 			unset($objectArray['_signature']);
 		}
+		DataService::ksortRecursive($objectArray);
 		$json = json_encode($objectArray);
 		
 		$revision->setSha1(sha1($json));
@@ -1016,6 +1019,72 @@ class DataService
 			$html = DataService::arrayToHtml($object);
 			$this->session->getFlashBag()->add('warning', "Some data of this revision were not consumed by the content type:".$html);			
 		}
+	}
+	
+	public function reloadData(Revision $revision, $migration=true) {
+		$finalizedBy = false;
+		$finalizationDate = false;
+		$objectArray = $revision->getRawData();
+		if(isset($objectArray['_finalized_by'])){
+			$finalizedBy = $objectArray['_finalized_by'];
+		}
+		if(isset($objectArray['_finalization_datetime'])){
+			$finalizationDate = $objectArray['_finalization_datetime'];
+		}
+		
+		
+		$builder = $this->formFactory->createBuilder(RevisionType::class, $revision);
+		$form = $builder->getForm();
+		
+		$objectArray = $revision->getRawData();
+		$this->updateDataStructure($revision->getContentType()->getFieldType(), $form->get('data')->getNormData());
+		$this->propagateDataToComputedField($form->get('data'), $objectArray, $revision->getContentType(), $revision->getContentType()->getName(), $revision->getOuuid());
+		
+		if($finalizedBy !== false){
+			$objectArray['_finalized_by'] = $finalizedBy;
+		}
+		if($finalizationDate!== false){
+			$objectArray['_finalization_datetime'] = $finalizationDate;
+		}
+
+		$revision->setRawData($objectArray);
+		return $objectArray;
+	}
+	
+	
+	
+	public function getSubmitData(Form $form){
+		$out = $form->getViewData();
+		/**@var Form $subform*/
+		foreach ($form->getIterator() as $subform) {
+			if($subform->getConfig()->getCompound()) {
+				$out[$subform->getName()] = $this->getSubmitData($subform);
+			}
+		}
+		return $out;
+	}
+	
+	/**
+	 *
+	 * @return \EMS\CoreBundle\Entity\Revision
+	 */
+	public function getEmptyRevision(ContentType $contentType, $user) {
+		$newRevision= new Revision();
+		
+		$now = new \DateTime();
+		$until = $now->add(new \DateInterval("PT5M"));//+5 minutes
+		$newRevision = new Revision();
+		$newRevision->setContentType($contentType);
+		$newRevision->addEnvironment($contentType->getEnvironment());
+		$newRevision->setStartTime($now);
+		$newRevision->setEndTime(null);
+		$newRevision->setDeleted(false);
+		$newRevision->setDraft(true);
+		$newRevision->setLockBy($user);
+		$newRevision->setLockUntil($until);
+		$newRevision->setRawData([]);
+		
+		return $newRevision;
 	}
 	
 	public static function arrayToHtml(array $array){

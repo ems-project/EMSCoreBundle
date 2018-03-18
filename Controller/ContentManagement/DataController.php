@@ -612,11 +612,8 @@ class DataController extends AppController
 		
 	
 		try{
-
-			$this->getDataService()->loadDataStructure($revision);
+			$objectArray = $this->getDataService()->reloadData($revision);
 			
-			$objectArray = $this->get('ems.service.mapping')->dataFieldToArray ($revision->getDataField());
-			$revision->setRawData($objectArray);
 			$objectArray = $this->getDataService()->sign($revision);
 			/** @var \EMS\CoreBundle\Entity\Environment $environment */
 			foreach ($revision->getEnvironments() as $environment ){
@@ -625,7 +622,7 @@ class DataController extends AppController
 						'index' => $this->getParameter('ems_core.instance_id').$environment->getName(),
 						'type' => $revision->getContentType()->getName(),
 						'body' => $objectArray
-				]);				
+				]);
 
 				$this->addFlash('notice', 'Reindexed in '.$environment->getName());
 			}

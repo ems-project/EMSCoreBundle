@@ -30,6 +30,7 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use ZipStream\ZipStream;
+use EMS\CoreBundle\Entity\AggregateOption;
 class ElasticsearchController extends AppController
 {
 	/**
@@ -591,6 +592,12 @@ class ElasticsearchController extends AppController
 			   }
 			}', true));
 			
+			$aggregateOptions = $this->getAggregateOptionService()->getAll();
+			/**@var AggregateOption $option*/
+			foreach ($aggregateOptions as $id => $option){
+				$body['aggs']['agg_'.$id] = json_decode($option->getConfig(), true);
+			}
+			
 
 			
 			$params['body'] = $body;
@@ -837,7 +844,7 @@ class ElasticsearchController extends AppController
 					'openSearchForm' => $openSearchForm,
 					'search' => $search,
 					'sortOptions' => $this->getSortOptionService()->getAll(),
-					'aggregateOptions' => $this->getAggregateOptionService()->getAll(),
+					'aggregateOptions' => $aggregateOptions,
 			] );
 		}
 		catch (\Elasticsearch\Common\Exceptions\NoNodesAvailableException $e){

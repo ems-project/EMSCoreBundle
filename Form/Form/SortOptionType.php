@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use EMS\CoreBundle\Form\Field\IconPickerType;
 
 
 class SortOptionType extends AbstractType {
@@ -31,6 +32,9 @@ class SortOptionType extends AbstractType {
 		->add ( 'inverted', CheckboxType::class, [
 				'required' => false,
 		] )
+		->add ( 'icon', IconPickerType::class, [
+				'required' => false,
+		])
 		->add ( 'save', SubmitEmsType::class, [ 
 				'attr' => [ 
 						'class' => 'btn-primary btn-sm ' 

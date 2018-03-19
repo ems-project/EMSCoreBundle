@@ -64,6 +64,13 @@ class SortOption {
 	private $inverted;
 	
 	/**
+	 * @var string
+	 *
+	 * @ORM\Column(name="icon", type="text", length=255, nullable=true)
+	 */
+	private $icon;
+	
+	/**
 	 * @ORM\PrePersist
 	 * @ORM\PreUpdate
 	 */
@@ -236,5 +243,29 @@ class SortOption {
 	public function getInverted()
 	{
 		return $this->inverted;
+	}
+	
+	/**
+	 * Set icon
+	 *
+	 * @param boolean $icon
+	 *
+	 * @return SortOption
+	 */
+	public function setIcon($icon)
+	{
+		$this->icon= $icon;
+		
+		return $this;
+	}
+	
+	/**
+	 * Get icon
+	 *
+	 * @return boolean
+	 */
+	public function getIcon()
+	{
+		return $this->icon;
 	}
 }

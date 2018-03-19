@@ -51,11 +51,25 @@ class AggregateOption
     private $config;
     
     /**
+     * @var string
+     *
+     * @ORM\Column(name="template", type="text", nullable=true)
+     */
+    private $template;
+    
+    /**
      * @var int
      *
      * @ORM\Column(name="orderKey", type="integer")
      */
     private $orderKey;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="icon", type="text", length=255, nullable=true)
+     */
+    private $icon;
     
     /**
      * @ORM\PrePersist
@@ -93,7 +107,7 @@ class AggregateOption
      *
      * @param \DateTime $created
      *
-     * @return WysiwygProfile
+     * @return AggregateOption
      */
     public function setCreated($created)
     {
@@ -117,7 +131,7 @@ class AggregateOption
      *
      * @param \DateTime $modified
      *
-     * @return WysiwygProfile
+     * @return AggregateOption
      */
     public function setModified($modified)
     {
@@ -141,7 +155,7 @@ class AggregateOption
      *
      * @param string $name
      *
-     * @return WysiwygProfile
+     * @return AggregateOption
      */
     public function setName($name)
     {
@@ -165,7 +179,7 @@ class AggregateOption
      *
      * @param string $config
      *
-     * @return WysiwygProfile
+     * @return AggregateOption
      */
     public function setConfig($config)
     {
@@ -173,7 +187,31 @@ class AggregateOption
 
         return $this;
     }
-
+    
+    /**
+     * Get template
+     *
+     * @return string
+     */
+    public function getTemplate()
+    {
+    	return $this->template;
+    }
+    
+    /**
+     * Set template
+     *
+     * @param string $config
+     *
+     * @return AggregateOption
+     */
+    public function setTemplate($template)
+    {
+    	$this->template= $template;
+    	
+    	return $this;
+    }
+    
     /**
      * Get config
      *
@@ -189,7 +227,7 @@ class AggregateOption
      *
      * @param integer $orderKey
      *
-     * @return WysiwygProfile
+     * @return AggregateOption
      */
     public function setOrderKey($orderKey)
     {
@@ -206,5 +244,29 @@ class AggregateOption
     public function getOrderKey()
     {
         return $this->orderKey;
+    }
+    
+    /**
+     * Set icon
+     *
+     * @param boolean $icon
+     *
+     * @return SortOption
+     */
+    public function setIcon($icon)
+    {
+    	$this->icon= $icon;
+    	
+    	return $this;
+    }
+    
+    /**
+     * Get icon
+     *
+     * @return boolean
+     */
+    public function getIcon()
+    {
+    	return $this->icon;
     }
 }

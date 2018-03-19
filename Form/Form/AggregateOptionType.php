@@ -8,6 +8,7 @@ use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use EMS\CoreBundle\Form\Field\IconPickerType;
 
 
 class AggregateOptionType extends AbstractType {
@@ -25,8 +26,14 @@ class AggregateOptionType extends AbstractType {
 				'icon' => 'fa fa-tag',
 				'label' => 'Aggregate Option\'s name',
 		] )
+		->add ( 'icon', IconPickerType::class, [
+				'required' => false,
+		])
 		->add ( 'config', CodeEditorType::class, [
 				'language' => 'ace/mode/json'
+		] )
+		->add ( 'template', CodeEditorType::class, [
+				'language' => 'ace/mode/twig'
 		] )
 		->add ( 'save', SubmitEmsType::class, [ 
 				'attr' => [ 

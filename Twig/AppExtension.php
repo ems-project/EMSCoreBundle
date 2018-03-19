@@ -122,9 +122,15 @@ class AppExtension extends \Twig_Extension
 				new \Twig_SimpleFilter('search', array($this, 'search')),
 				new \Twig_SimpleFilter('call_user_func', array($this, 'call_user_func')),
 				new \Twig_SimpleFilter('macro_fct', array($this, 'macroFct')),
+				new \Twig_SimpleFilter('merge_recursive', array($this, 'array_merge_recursive')),
+				
 				
 				
 		);
+	}
+	
+	public function array_merge_recursive(array $array1, array $_ = null) {
+		return array_merge_recursive($array1, $_);
 	}
 	
 	/**
@@ -305,7 +311,7 @@ class AppExtension extends \Twig_Extension
 		return $out;
 	}
 	
-	function generateFromTemplate($template, array $params){
+	function generateFromTemplate($template, array $params=[]){
 		if(empty($template)){
 			return NULL;
 		}

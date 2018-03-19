@@ -132,24 +132,54 @@
     				        	{% if currentFilters.all.search_form.sortOrder is defined %}
     				        		 {% set order = currentFilters.all.search_form.sortOrder %}
     				        	{% endif %}
+				    		    {% set order = order=='desc'?'asc':'desc' %}
     				        {% else %}
     				        	{% if option.inverted %}
     				        	    {% set order = 'desc' %}
     				        	{% endif %}
     				        {% endif %}
 				    		<a href="{{ path(paginationPath, currentFilters.all|merge({'search_form[sortBy]': option.field, 'search_form[sortOrder]': order, page: 1})) }}" class="btn btn-block btn-social btn-primary {% if active %} active{% endif %}">
-				    		    <i class="fa fa-sort-alpha-{{ order }}"></i> {{ option.name }}
+				    		    <i class="{% if option.icon %}{{ option.icon }}{% else %}fa fa-sort-alpha-asc{% endif %}"></i> 
+				    		    {{ option.name }}
+				    		    {% if active %}
+				    		   		<i class="fa fa-sort-{% if option.inverted %}{{ order=='desc'?'asc':'desc' }}{% else %}{{ order }}{% endif %} pull-right"></i>
+				    		   	{% endif %}
 				    		</a>
-				    		{% if active %}
-				    		    {% set order = order=='desc'?'asc':'desc' %}
-    				    		<a href="{{ path(paginationPath, currentFilters.all|merge({'search_form[sortBy]': option.field, 'search_form[sortOrder]': order, page: 1})) }}" class="btn btn-block btn-social btn-primary">
-    				    		    <i class="fa fa-sort-alpha-{{ order }}"></i> {{ option.name }}
-    				    		</a>
-				    		{% endif %}
-    				    {% endfor %}
+    				    
+				       {% endfor %}
+				       {% if currentFilters.all.search_form.sortBy is defined and currentFilters.all.search_form.sortBy %}
+        					{% set search_form = currentFilters.all.search_form|merge({'sortBy':null, 'sortOrder':null }) %}
+				       		<a href="{{ path(paginationPath, currentFilters.all|merge({ 'search_form' : search_form})) }}" class="btn btn-block btn-social btn-primary">
+        						<i class="fa fa-remove"></i>
+        						Clear sort options
+							</a>
+				       {% endif %}
+    				    
+    				    
     			</div>
     		</div>
 		{% endif %}
+		
+		
+		{% for id, option in aggregateOptions %}
+			{% if attribute(results.aggregations, 'agg_'~id) is defined and attribute(results.aggregations, 'agg_'~id).buckets|length > 0 %}
+			 	<div class="box">
+            		<div class="box-header">
+            			<h3 class="box-title"><i class="fa fa-filter"></i> {{ option.name }}</h3>
+            		</div>
+            		<div class="box-body">
+        				{{ option.template|generate_from_template({
+        				    'option': option,
+        				    'id': id,
+        				    'aggregation': attribute(results.aggregations, 'agg_'~id),
+        				    'currentFilters': currentFilters,
+        				    'paginationPath': paginationPath
+        				})|raw }}
+        			</div>
+        		</div>
+        	{% endif %}
+	    {% endfor %}
+		
 		
 		
 		<div class="box">

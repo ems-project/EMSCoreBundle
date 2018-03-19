@@ -143,8 +143,29 @@ class SearchController extends AppController
 	 * @Route("/aggregate/{id}", name="ems_search_aggregate_option_edit")
 	 * @Method({"GET", "POST"})
 	 */
-	public function editAggregagteOptionAction(Request $request, WysiwygStylesSet $stylesSet)
+	public function editAggregagteOptionAction(Request $request, AggregateOption $option)
 	{
 		
+		
+		$form = $this->createForm(AggregateOptionType::class, $option);
+		$form->handleRequest($request);
+		
+		if ($form->isSubmitted()) {
+			
+			if($form->get('remove') && $form->get('remove')->isClicked()){
+				$this->getAggregateOptionService()->remove($option);
+				return $this->redirectToRoute('ems_search_options_index');
+			}
+			
+			if($form->isValid()) {
+				$this->getAggregateOptionService()->save($option);
+				return $this->redirectToRoute('ems_search_options_index');
+			}
+		}
+		
+		return $this->render('@EMSCore/entity/edit.html.twig', array(
+				'entity_name' => $this->getTranslator()->trans('Aggregate Option', [], EMSCoreExtension::TRANS_DOMAIN),
+				'form' => $form->createView(),
+		));
 	}
 }

@@ -488,6 +488,11 @@ services:
         arguments: ['@doctrine', '@logger', '@ems.service.user', '@ems.service.notification', '%ems_core.notification_pending_timeout%']
         tags:
             -  { name: console.command }
+    ems.revisions.migrate-ingested-file-fields:
+        class: EMS\CoreBundle\Command\MigrateIngestedFile
+        arguments: ['@logger', '@app.elasticsearch', '@session', '@doctrine', '@ems.service.contenttype', '%database_name%', '%database_driver%', '@ems.service.asset_extractor', '@ems.service.file']
+        tags:
+            -  { name: console.command }
 #### security services
     api_key_user_provider:
         class: EMS\CoreBundle\Security\ApiKeyUserProvider

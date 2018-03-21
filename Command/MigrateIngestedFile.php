@@ -177,9 +177,13 @@ class MigrateIngestedFile extends EmsCommand
 							$rawData[$field]['_content'] = $data['content'];
 							$out = true;
 						}
+						if(isset($data['Author']) && $data['Author']) {
+						    $rawData[$field]['_author'] = $data['Author'];
+						    $out = true;
+						}
 						if(isset($data['author']) && $data['author']) {
-							$rawData[$field]['_author'] = $data['author'];
-							$out = true;
+						    $rawData[$field]['_author'] = $data['author'];
+						    $out = true;
 						}
 						if(isset($data['language']) && $data['language']) {
 							$rawData[$field]['_language'] = $data['language'];

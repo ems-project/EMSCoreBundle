@@ -20,6 +20,7 @@ use Elasticsearch\Common\Exceptions\ServerErrorResponseException;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Entity\Revision;
+use Symfony\Component\Console\Input\InputOption;
 
 class ReindexCommand extends EmsCommand
 {
@@ -59,6 +60,12 @@ class ReindexCommand extends EmsCommand
                 'index',
                 InputArgument::OPTIONAL,
                 'Elasticsearch index where to index environment objects'
+            )
+            ->addOption(
+            	'dont-sign-data',
+            	null,
+            	InputOption::VALUE_NONE,
+            	'The content won\'t be (re)signed during the reindexing process'
             );
     }
 
@@ -67,10 +74,11 @@ class ReindexCommand extends EmsCommand
     	$this->formatFlash($output);
     	$name = $input->getArgument('name');
     	$index = $input->getArgument('index');
-    	$this->reindex($name, $index, $output);
+    	$signData= !$input->getOption('dont-sign-data');
+    	$this->reindex($name, $index, $output, $signData);
     }
     
-    public function reindex($name, $index, OutputInterface $output)
+    public function reindex($name, $index, OutputInterface $output, $signData=true)
     {
     	$this->logger->info('Execute the ReindexCommand');
     	/** @var EntityManager $em */
@@ -125,15 +133,17 @@ class ReindexCommand extends EmsCommand
     						'index' => $index,
     						'id' => $revision->getOuuid(),
     						'type' => $revision->getContentType()->getName(),
-    						'body' => $this->dataService->sign($revision),
+    						'body' => $signData?$this->dataService->sign($revision):$revision->getRawData(),
     					];
     					
-    					try{
-    						$em->persist($revision);
-//     						$em->flush($revision);						
-    					}
-    					catch (\Exception $e){
-    						
+    					if($signData) {
+	    					try{
+	    						$em->persist($revision);
+	//     						$em->flush($revision);						
+	    					}
+	    					catch (\Exception $e){
+	    						
+	    					}
     					}
     					
     					if($revision->getContentType()->getHavePipelines()){

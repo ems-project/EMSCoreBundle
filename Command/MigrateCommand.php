@@ -56,19 +56,31 @@ class MigrateCommand extends EmsCommand
             ->setName('ems:contenttype:migrate')
             ->setDescription('Migrate a content type from an elasticsearch index')
             ->addArgument(
+            		'elasticsearchIndex',
+            		InputArgument::REQUIRED,
+            		'Elasticsearch index where to find ContentType objects as new source'
+            		)
+            ->addArgument(
                 'contentTypeNameFrom',
                 InputArgument::REQUIRED,
                 'Content type name to migrate from'
             )
             ->addArgument(
                 'contentTypeNameTo',
-                InputArgument::REQUIRED,
-                'Content type name to migrate into'
+                InputArgument::OPTIONAL,
+                'Content type name to migrate into (default same as from)'
             )
             ->addArgument(
-                'elasticsearchIndex',
-                InputArgument::REQUIRED,
-                'Elasticsearch index where to find ContentType objects as new source'
+            	'scrollSize',
+            	InputArgument::OPTIONAL,
+            	'Size of the elasticsearch scroll request',
+            	100
+            )
+            ->addArgument(
+            	'scrollTimeout',
+            	InputArgument::OPTIONAL,
+            	'Time to migrate "scrollSize" items i.e. 30s or 2m',
+            	'1m'
             )
             ->addOption(
                 'force',
@@ -82,6 +94,12 @@ class MigrateCommand extends EmsCommand
                 InputOption::VALUE_NONE,
                 'The content will be imported as is. Without any field validation, data stripping or field protection'
             )
+            ->addOption(
+            	'dont-sign-data',
+            	null,
+            	InputOption::VALUE_NONE,
+            	'The content won\'t be (re)signed during the reindexing process'
+ 			);
         ;
     }
     
@@ -106,9 +124,17 @@ class MigrateCommand extends EmsCommand
 		//https://stackoverflow.com/questions/13093689/is-there-a-way-to-free-the-memory-allotted-to-a-symfony-2-form-object
 		$em->getConnection()->getConfiguration()->setSQLLogger(null);
 		
+		
+		$signData= !$input->getOption('dont-sign-data');
+		
+    	$elasticsearchIndex = $input->getArgument('elasticsearchIndex');
     	$contentTypeNameFrom = $input->getArgument('contentTypeNameFrom');
     	$contentTypeNameTo = $input->getArgument('contentTypeNameTo');
-    	$elasticsearchIndex = $input->getArgument('elasticsearchIndex');
+    	if(!$contentTypeNameTo){
+    		$contentTypeNameTo = $contentTypeNameFrom;
+    	}
+    	$scrollSize= $input->getArgument('scrollSize');
+    	$scrollTimeout = $input->getArgument('scrollTimeout');
     	
 		/** @var RevisionRepository $revisionRepository */
 		$revisionRepository = $em->getRepository( 'EMSCoreBundle:Revision' );
@@ -129,15 +155,30 @@ class MigrateCommand extends EmsCommand
 			$output->writeln("<error>Content type \"".$contentTypeNameTo."\" is dirty. Please clean it first</error>");
 			exit;
 		}
-		if(!$input->getOption('force') && strcmp($defaultEnv->getAlias(), $elasticsearchIndex) === 0 && strcmp($contentTypeNameFrom, $contentTypeNameTo) === 0) {
-			$output->writeln("<error>You can not import a content type on himself with the --force option</error>");
-			exit;
+		
+		$indexInDefaultEnv = true;
+		if(strcmp($defaultEnv->getAlias(), $elasticsearchIndex) === 0 && strcmp($contentTypeNameFrom, $contentTypeNameTo) === 0) {
+			if(!$input->getOption('force')) {
+				$output->writeln("<error>You can not import a content type on himself with the --force option</error>");
+				exit;				
+			}
+			$indexInDefaultEnv = false;
 		}
 		
+		//https://www.elastic.co/guide/en/elasticsearch/client/php-api/current/_search_operations.html#_scrolling
 		$arrayElasticsearchIndex = $this->client->search([
 				'index' => $elasticsearchIndex,
 				'type' => $contentTypeNameFrom,
-				'size' => 1
+				'size' => $scrollSize,
+				"scroll" => $scrollTimeout,
+				'body' => '{
+                       "sort": {
+                          "_uid": {
+                             "order": "asc",
+                             "missing": "_last"
+                          }
+                       }
+                    }',
 		]);
 		
 		$total = $arrayElasticsearchIndex["hits"]["total"];
@@ -147,22 +188,7 @@ class MigrateCommand extends EmsCommand
 		$progress->start();
 		
 		
-		for($from = 0; $from < $total; $from = $from + 50) {
-			$arrayElasticsearchIndex = $this->client->search([
-					'index' => $elasticsearchIndex,
-					'type' => $contentTypeNameFrom,
-					'size' => 50,
-					'from' => $from,
-			        'body' => '{
-                       "sort": {
-                          "_uid": {
-                             "order": "asc",
-                             "missing": "_last"
-                          }
-                       }
-                    }',
-					//'preference' => '_primary', //http://stackoverflow.com/questions/10836142/elasticsearch-duplicate-results-with-paging
-			]);
+		while (isset($arrayElasticsearchIndex['hits']['hits']) && count($arrayElasticsearchIndex['hits']['hits']) > 0){
 			
 			$contentTypeTo = $contentTypeRepository->findOneBy(array("name" => $contentTypeNameTo, 'deleted' => false));
 			$defaultEnv = $contentTypeTo->getEnvironment();
@@ -234,18 +260,20 @@ class MigrateCommand extends EmsCommand
 					$this->dataService->setMetaFields($newRevision);
 					
 					
-					$indexConfig = [
-							'index' => $defaultEnv->getAlias(),
-							'type' => $contentTypeNameTo,
-							'id' => $value['_id'],
-							'body' => $this->dataService->sign($newRevision),
-					];
-					
-					if($newRevision->getContentType()->getHavePipelines()){
-						$indexConfig['pipeline'] = $this->instanceId.$contentTypeNameTo;
+					if($indexInDefaultEnv){
+						$indexConfig = [
+								'index' => $defaultEnv->getAlias(),
+								'type' => $contentTypeNameTo,
+								'id' => $value['_id'],
+								'body' => $signData?$this->dataService->sign($newRevision):$newRevision->getRawData(),
+						];
+						
+						if($newRevision->getContentType()->getHavePipelines()){
+							$indexConfig['pipeline'] = $this->instanceId.$contentTypeNameTo;
+						}
+						
+						$this->client->index($indexConfig);						
 					}
-					
-					$this->client->index($indexConfig);
 					
 					$newRevision->setDraft(false);
 					//TODO: Test if client->index OK
@@ -273,6 +301,14 @@ class MigrateCommand extends EmsCommand
 			$em->clear();
 			unset($defaultEnv);
 			unset($contentTypeTo);
+			
+			
+			//https://www.elastic.co/guide/en/elasticsearch/client/php-api/current/_search_operations.html#_scrolling
+			$scroll_id = $arrayElasticsearchIndex['_scroll_id'];
+			$arrayElasticsearchIndex= $this->client->scroll([
+				"scroll_id" => $scroll_id,  //...using our previously obtained _scroll_id
+				"scroll" => $scrollTimeout, // and the same timeout window
+			]);
 			
 			
 		}

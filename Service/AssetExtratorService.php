@@ -8,7 +8,7 @@ use Enzim\Lib\TikaWrapper\TikaWrapper;
 class AssetExtratorService
 {
 	
-	const CONTENT_EP = '/tika';
+	const CONTENT_EP = '/tika/main';
 	const HELLO_EP = '/tika';
 	const META_EP = '/meta';
 	

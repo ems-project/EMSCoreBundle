@@ -18,7 +18,8 @@
 		"maennchen/zipstream-php" : "0.3.*",
 		"doctrine/doctrine-migrations-bundle" : "^1.0",
 		"sensiolabs/ansi-to-html" : "^1.1",
-		"guzzlehttp/guzzle" : "^6.3"
+		"guzzlehttp/guzzle" : "^6.3",
+		"ninoskopac/php-tika-wrapper": "^1.0"
 	},
 	"require-dev" : {
 		"doctrine/doctrine-bundle" : "^1.3",
@@ -29,8 +30,7 @@
 		"symfony/validator" : "^2.7 || ^3.0",
 		"symfony/yaml" : "^2.7 || ^3.0",
 		"phpunit/phpunit" : "~4.8|~5.0",
-		"guzzlehttp/guzzle" : "^6.3",
-		"ninoskopac/php-tika-wrapper": "^1.0"
+		"guzzlehttp/guzzle" : "^6.3"
 	},
 	"autoload" : {
 		"psr-4" : {

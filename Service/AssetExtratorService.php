@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Service;
 
 use Symfony\Component\HttpFoundation\Session\Session;
+use Enzim\Lib\TikaWrapper\TikaWrapper;
 
 class AssetExtratorService
 {
@@ -78,8 +79,38 @@ class AssetExtratorService
 			return $out;
 			
 		}
+		else {
+		    try {
+    		    $out = AssetExtratorService::convertMetaToArray(TikaWrapper::getMetadata($file));
+    		    if(!isset($out['content'])){
+    		        $out['content'] =  mb_convert_encoding(TikaWrapper::getTextMain($file), 'UTF-8', 'ASCII');    		        
+    		    }
+    		    if(!isset($out['language'])){
+        		    $out['language'] = AssetExtratorService::cleanString(TikaWrapper::getLanguage($file));
+    		    }
+    		    return $out;		        
+		    }
+		    catch (\Exception $e) {
+		        
+		    }
+		}
 		$this->session->getFlashBag()->add('warning', 'Tika server not configured');
 		return $out;
 
+	}
+	
+	static private function cleanString($string){
+	    return preg_replace("/\n/", "", (preg_replace("/\r/", "", mb_convert_encoding($string, 'UTF-8', 'ASCII'))));
+	}
+	
+	static private function convertMetaToArray($data) {
+	    $cleaned = mb_convert_encoding($data, 'UTF-8', 'ASCII');
+	    $cleaned = (preg_replace("/\r/", "", $cleaned));
+	    $matches = [];
+	    preg_match_all("/^(.*): (.*)$/m",
+	        $cleaned,
+	        $matches, PREG_PATTERN_ORDER );
+	    
+	    return array_combine($matches[1], $matches[2]);
 	}
 }

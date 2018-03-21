@@ -29,7 +29,8 @@
 		"symfony/validator" : "^2.7 || ^3.0",
 		"symfony/yaml" : "^2.7 || ^3.0",
 		"phpunit/phpunit" : "~4.8|~5.0",
-		"guzzlehttp/guzzle" : "^6.3"
+		"guzzlehttp/guzzle" : "^6.3",
+		"ninoskopac/php-tika-wrapper": "^1.0"
 	},
 	"autoload" : {
 		"psr-4" : {

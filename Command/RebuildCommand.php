@@ -64,6 +64,12 @@ class RebuildCommand extends EmsCommand
                 InputOption::VALUE_NONE,
                 'Agree to rebuild on a yellow status cluster'
             )
+            ->addOption(
+            	'dont-sign-data',
+            	null,
+            	InputOption::VALUE_NONE,
+            	'The content won\'t be (re)signed during the rebuilding process'
+            )
         ;
     }
 
@@ -74,6 +80,9 @@ class RebuildCommand extends EmsCommand
     	if( ! $input->getOption('yellow-ok') ){
     		$this->waitForGreen($output);
     	}
+    	
+    	
+    	$signData= !$input->getOption('dont-sign-data');
 
 		/** @var EntityManager $em */
 		$em = $this->doctrine->getManager();
@@ -131,7 +140,7 @@ class RebuildCommand extends EmsCommand
 			$this->flushFlash($output);
 
 			$command = $this->getReindexCommand();
-			$command->reindex($name, $indexName, $output);
+			$command->reindex($name, $indexName, $output, $signData);
 
 // 			$arguments = array(
 // 					'name'    => $name,

@@ -24,6 +24,7 @@ use EMS\CoreBundle\Entity\DataField;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
+use EMS\CoreBundle\Repository\SequenceRepository;
 
 class AppExtension extends \Twig_Extension
 {
@@ -75,6 +76,7 @@ class AppExtension extends \Twig_Extension
 				new \Twig_SimpleFunction('get_content_types', array($this, 'getContentTypes')),
 				new \Twig_SimpleFunction('cant_be_finalized', array($this, 'cantBeFinalized')),
 				new \Twig_SimpleFunction('get_default_environments', array($this, 'getDefaultEnvironments')),
+				new \Twig_SimpleFunction('sequence', array($this, 'getSequenceNextValue')),
 		];
 	}
 	
@@ -128,6 +130,20 @@ class AppExtension extends \Twig_Extension
 				
 		);
 	}
+	
+	/**
+	 * Return a sequence next value
+	 * @param string $name
+	 * @return integer
+	 */
+	public function getSequenceNextValue($name){
+		$em = $this->doctrine->getManager();
+		/**@var SequenceRepository $repo */
+		$repo = $em->getRepository('EMSCoreBundle:Sequence');
+		$out= $repo->nextValue($name);
+		return $out;
+	}
+	
 	
 	public function array_merge_recursive(array $array1, array $_ = null) {
 		return array_merge_recursive($array1, $_);

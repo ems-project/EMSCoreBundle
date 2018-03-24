@@ -77,7 +77,7 @@ class ContentTypeController extends AppController {
 		/** @var ContentType $contentType */
 		$contentType = $repository->find ( $id );
 		
-		if (!$contentType || count ( $contentType ) != 1) {
+		if (!$contentType) {
 			throw new NotFoundHttpException('Content Type not found');
 		}
 		

@@ -232,8 +232,15 @@ class DataService
 						'index' => $contentType->getEnvironment()->getAlias(),
 						'migration' => $migration,
 				]);
+				
 				$out = json_decode($out, true);
-				$objectArray[$dataField->getFieldType()->getName()] = $out;
+				$meg = json_last_error_msg();
+				if(strcasecmp($meg, 'No error') == 0) {
+					$objectArray[$dataField->getFieldType()->getName()] = $out;					
+				}
+				else {
+					$this->session->getFlashBag()->add('warning', 'Error to parse the post processing script of field '.$dataField->getFieldType()->getName().': '.$meg);
+				}
 				$found = true;
 			}
 			catch (\Exception $e) {

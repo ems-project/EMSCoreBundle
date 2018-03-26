@@ -232,16 +232,18 @@ class DataService
 						'index' => $contentType->getEnvironment()->getAlias(),
 						'migration' => $migration,
 				]);
-				
-				$out = json_decode($out, true);
-				$meg = json_last_error_msg();
-				if(strcasecmp($meg, 'No error') == 0) {
-					$objectArray[$dataField->getFieldType()->getName()] = $out;					
+				$out = trim($out);
+				if(strlen($out > 0)){
+					$out = json_decode($out, true);
+					$meg = json_last_error_msg();
+					if(strcasecmp($meg, 'No error') == 0) {
+						$objectArray[$dataField->getFieldType()->getName()] = $out;					
+					}
+					else {
+						$this->session->getFlashBag()->add('warning', 'Error to parse the post processing script of field '.$dataField->getFieldType()->getName().': '.$meg);
+					}
+					$found = true;					
 				}
-				else {
-					$this->session->getFlashBag()->add('warning', 'Error to parse the post processing script of field '.$dataField->getFieldType()->getName().': '.$meg);
-				}
-				$found = true;
 			}
 			catch (\Exception $e) {
 				if($e->getPrevious() && $e->getPrevious() instanceof CantBeFinalizedException) {

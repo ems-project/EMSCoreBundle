@@ -71,6 +71,54 @@ class AggregateOption
      */
     private $icon;
     
+    
+    public function __construct() {
+    	$this->config = '{
+    "terms" : { "field" : "_finalized_by" }
+}';
+    	$this->template = '{% set fieldName = \'_finalized_by\' %}
+{% if aggregation.buckets|length > 1  %}
+
+	{% for index in aggregation.buckets %}
+		{% set filters = currentFilters.all.search_form.filters|merge({ (1000+id) : {\'operator\': \'term\', \'booleanClause\': \'must\', \'field\': fieldName, \'pattern\': index.key, \'boost\': \'\'}}) %}
+		{% set search_form = currentFilters.all.search_form|merge({\'filters\':filters}) %}
+		{% set facettedSearch = currentFilters.all|merge({\'search_form\': search_form}) %}
+		<a href="{{ path(paginationPath, facettedSearch) }}" class="btn btn-block btn-social btn-primary">
+			<i class="fa fa-user"></i>
+			{{ index.key|displayname }}
+			<span class=" badge pull-right">{{ index.doc_count }}</span>
+		</a>
+	{% endfor %}
+{% elseif aggregation.buckets|length  == 1 and currentFilters.all.search_form.filters is defined %}
+	{% set filters = {} %}
+	{% set filterFound = false %}
+    {% for idx, filter in currentFilters.all.search_form.filters %}
+		{% if filter.operator == \'term\' and filter.field == fieldName and filter.pattern == aggregation.buckets[0].key %}
+            {% set filterFound = true %}
+	    {% else %}
+	        {% set filters = filters|merge({ (idx) : filter}) %}
+		{% endif %}
+    {% endfor %}
+	{% if filterFound %}
+	   	{% set search_form = currentFilters.all.search_form|merge({\'filters\':filters}) %}
+		{% set facettedSearch = currentFilters.all|merge({\'search_form\': search_form}) %}
+		<a href="{{ path(paginationPath, facettedSearch) }}" class="btn btn-block btn-social btn-primary">
+			<i class="fa fa-remove"></i>
+			Remove facet "{{ aggregation.buckets[0].key|displayname }}"
+		</a>
+	{% else %}
+		{% set filters = currentFilters.all.search_form.filters|merge({ (1000+id) : {\'operator\': \'term\', \'booleanClause\': \'must\', \'field\': fieldName, \'pattern\': aggregation.buckets[0].key, \'boost\': \'\'}}) %}
+		{% set search_form = currentFilters.all.search_form|merge({\'filters\':filters}) %}
+		{% set facettedSearch = currentFilters.all|merge({\'search_form\': search_form}) %}
+		<a href="{{ path(paginationPath, facettedSearch) }}" class="btn btn-block btn-social btn-primary">
+			<i class="fa fa-user"></i>
+			{{ aggregation.buckets[0].key|displayname }}
+			<span class=" badge pull-right">{{ aggregation.buckets[0].doc_count }}</span>
+		</a>
+	{% endif %}
+{% endif %}';
+    }
+    
     /**
      * @ORM\PrePersist
      * @ORM\PreUpdate

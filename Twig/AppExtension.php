@@ -108,6 +108,7 @@ class AppExtension extends \Twig_Extension
 				new \Twig_SimpleFilter('one_granted', array($this, 'one_granted')),
 				new \Twig_SimpleFilter('in_my_circles', array($this, 'inMyCircles')),
 				new \Twig_SimpleFilter('data_link', array($this, 'dataLink')),
+				new \Twig_SimpleFilter('data_label', array($this, 'dataLabel')),
 				new \Twig_SimpleFilter('get_content_type', array($this, 'getContentType')),
 				new \Twig_SimpleFilter('get_environment', array($this, 'getEnvironment')),
 				new \Twig_SimpleFilter('generate_from_template', array($this, 'generateFromTemplate')),
@@ -340,6 +341,69 @@ class AppExtension extends \Twig_Extension
 		return $out;
 	}
 	
+	function dataLabel($key, $revisionId=false){
+		$out = $key;
+		$splitted = explode(':', $key);
+		if($splitted && count($splitted) == 2 && strlen($splitted[0]) > 0 && strlen($splitted[1]) > 0 ){
+			$type = $splitted[0];
+			$ouuid =  $splitted[1];
+			
+			$addAttribute = "";
+			
+			/**@var \EMS\CoreBundle\Entity\ContentType $contentType*/
+			$contentType = $this->contentTypeService->getByName($type);
+			if($contentType) {
+				if($contentType->getIcon()){
+					
+					$icon = '<i class="'.$contentType->getIcon().'"></i>&nbsp;&nbsp;';
+				}
+				else{
+					$icon = '<i class="fa fa-book"></i>&nbsp;&nbsp;';
+				}
+				
+				try {
+					$fields = [];
+					if($contentType->getLabelField()){
+						$fields[] = $contentType->getLabelField();
+					}
+					if($contentType->getColorField()){
+						$fields[] = $contentType->getColorField();
+					}
+					
+					$result = $this->client->get([
+							'_source' => $fields,
+							'id' => $ouuid,
+							'index' => $contentType->getEnvironment()->getAlias(),
+							'type' => $type,
+					]);
+					
+					if($contentType->getLabelField()){
+						$label = $result['_source'][$contentType->getLabelField()];
+						if($label && strlen($label) > 0){
+							$out = $label;
+						}
+					}
+					$out = $icon.$out;
+					
+					if($contentType->getColorField() && $result['_source'][$contentType->getColorField()]){
+						$color = $result['_source'][$contentType->getColorField()];
+						$contrasted = $this->contrastratio($color, '#000000') > $this->contrastratio($color, '#ffffff')?'#000000':'#ffffff';
+						
+						$out = '<span class="" style="color:'.$contrasted.';">'.$out.'</span>';
+						$addAttribute = ' style="background-color: '.$result['_source'][$contentType->getColorField()].';border-color: '.$result['_source'][$contentType->getColorField()].';"';
+						
+					}
+				}
+				catch(\Exception $e) {
+					
+				}
+				
+			}
+		}
+		return $out;
+		
+	}
+		
 	function dataLink($key, $revisionId=false){
 		$out = $key;
 		$splitted = explode(':', $key);

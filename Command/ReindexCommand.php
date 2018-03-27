@@ -62,7 +62,7 @@ class ReindexCommand extends EmsCommand
                 'Elasticsearch index where to index environment objects'
             )
             ->addOption(
-            	'dont-sign-data',
+            	'sign-data',
             	null,
             	InputOption::VALUE_NONE,
             	'The content won\'t be (re)signed during the reindexing process'
@@ -74,7 +74,7 @@ class ReindexCommand extends EmsCommand
     	$this->formatFlash($output);
     	$name = $input->getArgument('name');
     	$index = $input->getArgument('index');
-    	$signData= !$input->getOption('dont-sign-data');
+    	$signData= $input->getOption('sign-data');
     	$this->reindex($name, $index, $output, $signData);
     }
     

@@ -65,7 +65,7 @@ class RebuildCommand extends EmsCommand
                 'Agree to rebuild on a yellow status cluster'
             )
             ->addOption(
-            	'dont-sign-data',
+            	'sign-data',
             	null,
             	InputOption::VALUE_NONE,
             	'The content won\'t be (re)signed during the rebuilding process'
@@ -82,7 +82,7 @@ class RebuildCommand extends EmsCommand
     	}
     	
     	
-    	$signData= !$input->getOption('dont-sign-data');
+    	$signData= $input->getOption('sign-data');
 
 		/** @var EntityManager $em */
 		$em = $this->doctrine->getManager();

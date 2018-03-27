@@ -233,16 +233,18 @@ class DataService
 						'migration' => $migration,
 				]);
 				$out = trim($out);
-				if(strlen($out > 0)){
+				
+				if(strlen($out) > 0){
+					
 					$out = json_decode($out, true);
 					$meg = json_last_error_msg();
 					if(strcasecmp($meg, 'No error') == 0) {
 						$objectArray[$dataField->getFieldType()->getName()] = $out;					
+						$found = true;					
 					}
 					else {
 						$this->session->getFlashBag()->add('warning', 'Error to parse the post processing script of field '.$dataField->getFieldType()->getName().': '.$meg);
 					}
-					$found = true;					
 				}
 			}
 			catch (\Exception $e) {

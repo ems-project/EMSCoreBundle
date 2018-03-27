@@ -20,31 +20,55 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
  */
 class RevisionRepository extends \Doctrine\ORM\EntityRepository
 {
-
-    
-    
-    
-    /**
-     * 
-     * @param Environment $env
-     * @param int $page
-     * @return \Doctrine\ORM\Tools\Pagination\Paginator
-     */
-    public function getRevisionsPaginatorPerEnvironment(Environment $env, $page=0) {
-        /** @var QueryBuilder $qb */
-        $qb = $this->createQueryBuilder('r');
-        $qb->join('r.environments', 'e')
-            ->where('e.id = :eid')
-            //->andWhere($qb->expr()->eq('r.deleted', ':false')
-            ->setMaxResults(50)
-            ->setFirstResult($page*50)
-            ->orderBy('r.id', 'asc')
-            ->setParameters(['eid'=> $env->getId()]);
-        
-        $paginator = new Paginator($qb->getQuery());
-    
-        return $paginator;
-    }
+	
+	
+	
+	
+	/**
+	 *
+	 * @param Environment $env
+	 * @param int $page
+	 * @return \Doctrine\ORM\Tools\Pagination\Paginator
+	 */
+	public function getRevisionsPaginatorPerEnvironment(Environment $env, $page=0) {
+		/** @var QueryBuilder $qb */
+		$qb = $this->createQueryBuilder('r');
+		$qb->join('r.environments', 'e')
+		->where('e.id = :eid')
+		//->andWhere($qb->expr()->eq('r.deleted', ':false')
+		->setMaxResults(50)
+		->setFirstResult($page*50)
+		->orderBy('r.id', 'asc')
+		->setParameters(['eid'=> $env->getId()]);
+		
+		$paginator = new Paginator($qb->getQuery());
+		
+		return $paginator;
+	}
+	
+	
+	
+	/**
+	 *
+	 * @param Environment $env
+	 * @param int $page
+	 * @return \Doctrine\ORM\Tools\Pagination\Paginator
+	 */
+	public function getRevisionsPaginatorPerEnvironmentAndContentType(Environment $env, ContentType $contentType, $page=0) {
+		/** @var QueryBuilder $qb */
+		$qb = $this->createQueryBuilder('r');
+		$qb->join('r.environments', 'e')
+		->where('e.id = :eid')
+		->andWhere('r.contentType = :ct')
+		->setMaxResults(50)
+		->setFirstResult($page*50)
+		->orderBy('r.id', 'asc')
+		->setParameters(['eid'=> $env->getId(), 'ct' => $contentType]);
+		
+		$paginator = new Paginator($qb->getQuery());
+		
+		return $paginator;
+	}
     
 	public function findByEnvironment($ouuid, ContentType $contentType, Environment $environment){
 		$qb = $this->createQueryBuilder('r')

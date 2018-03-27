@@ -21,6 +21,8 @@ use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Entity\Revision;
 use Symfony\Component\Console\Input\InputOption;
+use EMS\CoreBundle\Repository\ContentTypeRepository;
+use EMS\CoreBundle\Entity\ContentType;
 
 class ReindexCommand extends EmsCommand
 {
@@ -33,6 +35,10 @@ class ReindexCommand extends EmsCommand
 	protected $dataService;
 	private $instanceId;
 	
+	private $count;
+	private $deleted;
+	private $error;
+	
 	public function __construct(Registry $doctrine, Logger $logger, Client $client, $mapping, $container, $instanceId, Session $session, DataService $dataService)
 	{
 		$this->doctrine = $doctrine;
@@ -43,6 +49,10 @@ class ReindexCommand extends EmsCommand
 		$this->instanceId = $instanceId;
 		$this->dataService = $dataService;
 		parent::__construct($logger, $client, $session);
+		
+		$this->count = 0;
+		$this->deleted = 0;
+		$this->error = 0;
 	}
 	
     protected function configure()
@@ -69,9 +79,10 @@ class ReindexCommand extends EmsCommand
             )
             ->addOption(
             	'bulk-size',
-            	50,
-            	InputArgument::REQUIRED,
-            	'Number of item that will be indexed together during the same elasticsearch operation'
+            	null,
+            	InputOption::VALUE_OPTIONAL,
+            	'Number of item that will be indexed together during the same elasticsearch operation',
+            	1000
             );
     }
 
@@ -81,10 +92,10 @@ class ReindexCommand extends EmsCommand
     	$name = $input->getArgument('name');
     	$index = $input->getArgument('index');
     	$signData= !$input->getOption('sign-data');
-    	$this->reindex($name, $index, $output, $signData);
+    	$this->reindex($name, $index, $output, $signData, $input->getOption('bulk-size'));
     }
     
-    public function reindex($name, $index, OutputInterface $output, $signData=true)
+    public function reindex($name, $index, OutputInterface $output, $signData=true, $bulkSize=1000)
     {
     	$this->logger->info('Execute the ReindexCommand');
     	/** @var EntityManager $em */
@@ -98,6 +109,11 @@ class ReindexCommand extends EmsCommand
 		$revRepo = $em->getRepository('EMSCoreBundle:Revision');
 		/** @var Environment $environment */
 		$environment = $envRepo->findBy(['name' => $name, 'managed' => true]);
+		/** @var ContentTypeRepository $ctRepo */
+		$ctRepo = $em->getRepository('EMSCoreBundle:ContentType');
+		/** @var Environment $environment */
+		$contentTypes = $ctRepo->findBy(['deleted' => false]);
+		
 		if($environment && count($environment) == 1) {
 			$environment = $environment[0];
 			
@@ -105,83 +121,80 @@ class ReindexCommand extends EmsCommand
 				$index = $environment->getAlias();
 			}
 			
-			$count = 0;
-			$deleted = 0;
-			$error = 0;
 			
-			$output->write('Start reindex');
-			
-			$page = 0;
-			$paginator = $revRepo->getRevisionsPaginatorPerEnvironment($environment, $page);
-			
-			// create a new progress bar
-			$progress = new ProgressBar($output, $paginator->count());
-			// start and displays the progress bar
-			$progress->start();
-			do {
-    			/** @var \EMS\CoreBundle\Entity\Revision $revision */
-    			foreach ($paginator as $revision) {
-    				if($revision->getDeleted()){
-    					++$deleted;
-    					$this->session->getFlashBag()->add('warning', 'The revision '.$revision->getContentType()->getName().':'.$revision->getOuuid().' is deleted and is referenced in '.$environment->getName());
-    				}
-    				else if ($revision->getContentType()->getDeleted()) {
-    					++$deleted;
-    					$this->session->getFlashBag()->add('warning', 'The content type of the revision '.$revision->getContentType()->getName().':'.$revision->getOuuid().' is deleted and is referenced in '.$environment->getName());
-    				}
-    // 				else if ($revision->getContentType()->getEnvironment() == $environment && $revision->getEndTime() != null) {
-    // 					++$error;
-    // 					$this->session->getFlashBag()->add('warning', 'The revision '.$revision->getId().' of '.$revision->getContentType()->getName().':'.$revision->getOuuid().' as an end date but '.$environment->getName().' is its default environment');
-    // 				}
-    				else {
-    					
-    					$config = [
-    						'index' => $index,
-    						'id' => $revision->getOuuid(),
-    						'type' => $revision->getContentType()->getName(),
-    						'body' => $signData?$this->dataService->sign($revision):$revision->getRawData(),
-    					];
-    					
-    					if($signData) {
-	    					try{
-	    						$em->persist($revision);
-	//     						$em->flush($revision);						
+			/**@var ContentType $contentType*/
+			foreach ($contentTypes as $contentType) {
+				$page = 0;
+				$bulk = [];
+				$paginator = $revRepo->getRevisionsPaginatorPerEnvironmentAndContentType($environment, $contentType, $page);
+				
+				
+				
+				$output->writeln('');
+				$output->writeln('Start reindex '.$contentType->getName());
+				// create a new progress bar
+				$progress = new ProgressBar($output, $paginator->count());
+				// start and displays the progress bar
+				$progress->start();
+				do {
+	    			/** @var \EMS\CoreBundle\Entity\Revision $revision */
+	    			foreach ($paginator as $revision) {
+	    				if($revision->getDeleted()){
+	    					++$deleted;
+	    					$this->session->getFlashBag()->add('warning', 'The revision '.$revision->getContentType()->getName().':'.$revision->getOuuid().' is deleted and is referenced in '.$environment->getName());
+	    				}
+	    				else {
+	
+	    					if($signData) {
+	    						$this->dataService->sign($revision);
+	    						try{
+	    							$em->persist($revision);
+	    						}
+	    						catch (\Exception $e){
+	    						}
 	    					}
-	    					catch (\Exception $e){
-	    						
-	    					}
-    					}
-    					
-    					if($revision->getContentType()->getHavePipelines()){
-    						$config['pipeline'] = $this->instanceId.$revision->getContentType()->getName();
-    					}
-    					try {
-    						$status = $this->client->index($config);
-    						if($status["_shards"]["failed"] == 1) {
-    							$error++;
-    						} else {
-    							$count++;				
-    						}						
-    					}
-    					catch(BadRequest400Exception $e){
-    						$this->session->getFlashBag()->add('warning', 'The revision '.$revision->getId().' of '.$revision->getContentType()->getName().':'.$revision->getOuuid().' through an error during indexing');
-    						$error++;
-    					}
-    					catch (ServerErrorResponseException $e){
-    					    $output->writeln($revision->getContentType()->getName().':'.$revision->getOuuid().': '.$e->getMessage());
-     					    $this->session->getFlashBag()->add('warning', 'The revision '.$revision->getId().' of '.$revision->getContentType()->getName().':'.$revision->getOuuid().' through an error during indexing');
-    					    $error++;
-    					}
-    				}
-    				$em->detach($revision);
-    				$progress->advance();
-    			}
-    			$em->clear(Revision::class);
-    			$this->flushFlash($output);
-    			
-    			++$page;
-    			$paginator = $revRepo->getRevisionsPaginatorPerEnvironment($environment, $page);
-		    } while ($paginator->getIterator()->count());
+	    					
+    						if(empty($bulk) && $revision->getContentType()->getHavePipelines()){
+    							$bulk['pipeline'] = $this->instanceId.$revision->getContentType()->getName();
+    						}
+	    					
+	    					$bulk['body'][] = [
+    								'index' => [
+    									'_index' => $index,
+	    								'_type' => $contentType->getName(),
+    									'_id' => $revision->getOuuid(),
+	    							]
+	    						];
+	    					
+	    					$bulk['body'][] = $revision->getRawData();
+	
+	    					
+
+	    					
+	    				}
+	
+	    				if(count($bulk['body']) >= (2*$bulkSize)) {
+	    					$this->treatBulkResponse($this->client->bulk($bulk));
+	    					$bulk = [];
+	    				}
+	    				
+	    				$progress->advance();
+	    			}
+	    			$em->clear(Revision::class);
+	    			$this->flushFlash($output);
+	    			
+	    			++$page;
+	    			$paginator = $revRepo->getRevisionsPaginatorPerEnvironmentAndContentType($environment, $contentType, $page);
+			    } while ($paginator->getIterator()->count());
+				
+			    
+			    if(count($bulk)) {
+			    	$this->treatBulkResponse($this->client->bulk($bulk));
+			    	$bulk = [];
+			    }
+			    
+			}
+			
 			$progress->finish();
 			$output->writeln('');
 
@@ -192,5 +205,21 @@ class ReindexCommand extends EmsCommand
 		else{
 			$output->writeln("WARNING: Environment named ".$name." not found");
 		}
+    }
+    
+    public function treatBulkResponse($response) {
+    	foreach ($response['items'] as $item){
+    		if(isset($item['create']['error'])) {
+    			++$this->error;
+    			$this->session->getFlashBag()->add('warning', 'The revision '.$item['create']['_type'].':'.$item['create']['_id'].' through an error during create : '.$item['create']['error']);
+    		}
+    		else if(isset($item['index']['error'])) {
+    			++$this->error;
+    			$this->session->getFlashBag()->add('warning', 'The revision '.$item['index']['_type'].':'.$item['index']['_id'].' through an error during index : '.$item['index']['error']);
+    		}
+    		else {
+    			++$this->count;
+    		}
+    	}
     }
 }

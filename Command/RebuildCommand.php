@@ -72,9 +72,10 @@ class RebuildCommand extends EmsCommand
             )
             ->addOption(
             	'bulk-size',
-            	50,
-            	InputArgument::REQUIRED,
-            	'Number of item that will be indexed together during the same elasticsearch operation'
+            	null,
+            	InputOption::VALUE_OPTIONAL,
+            	'Number of item that will be indexed together during the same elasticsearch operation',
+            	1000
             )
         ;
     }
@@ -146,7 +147,7 @@ class RebuildCommand extends EmsCommand
 			$this->flushFlash($output);
 
 			$command = $this->getReindexCommand();
-			$command->reindex($name, $indexName, $output, $signData);
+			$command->reindex($name, $indexName, $output, $signData, $input->getOption('bulk-size'));
 
 // 			$arguments = array(
 // 					'name'    => $name,

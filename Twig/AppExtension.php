@@ -126,6 +126,7 @@ class AppExtension extends \Twig_Extension
 				new \Twig_SimpleFilter('call_user_func', array($this, 'call_user_func')),
 				new \Twig_SimpleFilter('macro_fct', array($this, 'macroFct')),
 				new \Twig_SimpleFilter('merge_recursive', array($this, 'array_merge_recursive')),
+				new \Twig_SimpleFilter('array_intersect', array($this, 'array_intersect')),
 				
 				
 				
@@ -143,6 +144,10 @@ class AppExtension extends \Twig_Extension
 		$repo = $em->getRepository('EMSCoreBundle:Sequence');
 		$out= $repo->nextValue($name);
 		return $out;
+	}
+	
+	public function array_intersect(array $array1, array $array2, array $_ = null) {
+		return array_intersect($array1, $array2, $_);
 	}
 	
 	

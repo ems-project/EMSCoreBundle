@@ -65,7 +65,13 @@ class ReindexCommand extends EmsCommand
             	'sign-data',
             	null,
             	InputOption::VALUE_NONE,
-            	'The content will be (re)signed during the reindexing process'
+            	'The content won\'t be (re)signed during the reindexing process'
+            )
+            ->addOption(
+            	'bulk-size',
+            	50,
+            	InputArgument::REQUIRED,
+            	'Number of item that will be indexed together during the same elasticsearch operation'
             );
     }
 
@@ -74,7 +80,7 @@ class ReindexCommand extends EmsCommand
     	$this->formatFlash($output);
     	$name = $input->getArgument('name');
     	$index = $input->getArgument('index');
-    	$signData= $input->getOption('sign-data');
+    	$signData= !$input->getOption('sign-data');
     	$this->reindex($name, $index, $output, $signData);
     }
     

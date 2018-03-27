@@ -70,6 +70,12 @@ class RebuildCommand extends EmsCommand
             	InputOption::VALUE_NONE,
             	'The content will be (re)signed during the rebuilding process'
             )
+            ->addOption(
+            	'bulk-size',
+            	50,
+            	InputArgument::REQUIRED,
+            	'Number of item that will be indexed together during the same elasticsearch operation'
+            )
         ;
     }
 

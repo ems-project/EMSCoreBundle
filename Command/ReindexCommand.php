@@ -65,7 +65,7 @@ class ReindexCommand extends EmsCommand
             	'sign-data',
             	null,
             	InputOption::VALUE_NONE,
-            	'The content won\'t be (re)signed during the reindexing process'
+            	'The content will be (re)signed during the reindexing process'
             );
     }
 

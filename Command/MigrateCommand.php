@@ -95,10 +95,10 @@ class MigrateCommand extends EmsCommand
                 'The content will be imported as is. Without any field validation, data stripping or field protection'
             )
             ->addOption(
-            	'dont-sign-data',
+            	'sign-data',
             	null,
             	InputOption::VALUE_NONE,
-            	'The content won\'t be (re)signed during the reindexing process'
+            	'The content will be (re)signed during the reindexing process'
  			);
         ;
     }
@@ -125,7 +125,7 @@ class MigrateCommand extends EmsCommand
 		$em->getConnection()->getConfiguration()->setSQLLogger(null);
 		
 		
-		$signData= !$input->getOption('dont-sign-data');
+		$signData= $input->getOption('sign-data');
 		
     	$elasticsearchIndex = $input->getArgument('elasticsearchIndex');
     	$contentTypeNameFrom = $input->getArgument('contentTypeNameFrom');

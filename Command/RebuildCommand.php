@@ -68,7 +68,7 @@ class RebuildCommand extends EmsCommand
             	'sign-data',
             	null,
             	InputOption::VALUE_NONE,
-            	'The content won\'t be (re)signed during the rebuilding process'
+            	'The content will be (re)signed during the rebuilding process'
             )
         ;
     }

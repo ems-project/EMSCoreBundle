@@ -332,6 +332,14 @@
 			<div class="box-header with-border">
 				<i class="fa fa-database"></i>
 				<h3 class="box-title">Orphan indexes</h3>{{ 'List orphan indexes'|debug }}
+				<div class="btn-group  pull-right">
+    				{% include 'EMSCoreBundle:elements:post-button.html.twig' with {
+    						'url': path('ems_delete_ophean_indexes', {}),
+    						'message': 'Delete all ophan indexes ?',
+    						'label': 'Delete all',
+    						'icon': 'trash'
+    				}%}
+				</div>
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">

@@ -198,7 +198,7 @@ class ReindexCommand extends EmsCommand
 			$progress->finish();
 			$output->writeln('');
 
-			$output->writeln(' '.$count.' objects are reindexed in '.$index.' ('.$deleted.' not indexed as deleted, '.$error.' with indexing error)');
+			$output->writeln(' '.$this->count.' objects are reindexed in '.$index.' ('.$this->deleted.' not indexed as deleted, '.$this->error.' with indexing error)');
 			$this->flushFlash($output);
 			
 		}
@@ -209,13 +209,9 @@ class ReindexCommand extends EmsCommand
     
     public function treatBulkResponse($response) {
     	foreach ($response['items'] as $item){
-    		if(isset($item['create']['error'])) {
+    		if(isset($item['index']['error'])) {
     			++$this->error;
-    			$this->session->getFlashBag()->add('warning', 'The revision '.$item['create']['_type'].':'.$item['create']['_id'].' through an error during create : '.$item['create']['error']);
-    		}
-    		else if(isset($item['index']['error'])) {
-    			++$this->error;
-    			$this->session->getFlashBag()->add('warning', 'The revision '.$item['index']['_type'].':'.$item['index']['_id'].' through an error during index : '.$item['index']['error']);
+    			$this->session->getFlashBag()->add('warning', 'The revision '.$item['index']['_type'].':'.$item['index']['_id'].' throw an error during index:'.(isset($item['index']['error']['reason'])?$item['index']['error']['reason']:''));
     		}
     		else {
     			++$this->count;

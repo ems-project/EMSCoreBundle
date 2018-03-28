@@ -59,7 +59,6 @@ class AssetController extends AppController
 		catch (\Exception $e){
 			
 		}
-		
-		return $this->getAssetService()->getAssetResponse($config, $hash);
+		return $this->getAssetService()->getAssetResponse($config, $hash, $request->query->get('type', 'unkown'));
 	}
 }

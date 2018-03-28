@@ -31,7 +31,7 @@ class AssetService {
 		$this->kernel = $kernel;
 	}
 	
-	public function getAssetResponse(array $config, $assetHash) {
+	public function getAssetResponse(array $config, $assetHash, $type) {
 		
 		$lastUpdateDate = $this->fileService->getLastUpdateDate($assetHash, $config['_identifier']);
 		$lastUpdateDateConfig = strtotime($config['_last_update_date']);
@@ -54,7 +54,7 @@ class AssetService {
 		if($lastUpdateDate < $lastUpdateDateConfig) {
 			switch ($config['_config_type']) {
 				case 'image':
-					$generatedFileName= $this->imageAssetResponse($config, $assetHash);
+					$generatedFileName= $this->imageAssetResponse($config, $assetHash, $type);
 					break;
 				default:
 					throw new NotFoundHttpException('Asset processor type not found');
@@ -84,13 +84,20 @@ class AssetService {
 	}
 	
 	
-	public function imageAssetResponse(array $processorConfig, $hash) {
+	public function imageAssetResponse(array $processorConfig, $hash, $type) {
 		
 		$file = $this->fileService->getFile($hash);
+		if( preg_match('/image\/svg.*/', $type)){
+			$path = tempnam(sys_get_temp_dir(), 'ems_image');
+			copy($file, $path);
+			return $path;
+		}
+		
 		if(isset($processorConfig['_watermark']['sha1'])) {
 			$processorConfig['_watermark']['_path'] = $this->fileService->getFile($processorConfig['_watermark']['sha1']);
 		}
-		$file = $this->fileService->getFile($hash);
+		
+		
 		$image = new Image($this->kernel, $file, $processorConfig);
 		return $image->generateImage();
 	}

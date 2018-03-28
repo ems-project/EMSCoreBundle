@@ -7,7 +7,9 @@ use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\ElasticsearchException;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use EMS\CoreBundle\Controller\AppController;
+use EMS\CoreBundle\Entity\AggregateOption;
 use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Filter;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\Form\SearchFilter;
 use EMS\CoreBundle\Entity\Template;
@@ -19,6 +21,7 @@ use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -30,7 +33,7 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use ZipStream\ZipStream;
-use EMS\CoreBundle\Entity\AggregateOption;
+
 class ElasticsearchController extends AppController
 {
 	/**
@@ -188,7 +191,72 @@ class ElasticsearchController extends AppController
 		
 		return $this->redirectToRoute("elasticsearch.search");
 	}
-
+	
+	/**
+	 * @Route("/quick-search", name="ems_quick_search"))
+	 * @Method("GET")
+	 */
+	public function quickSearchAction(Request $request)
+	{
+		
+		$query = $request->query->get('q', false);
+		
+		$em = $this->getDoctrine()->getManager();
+		$repository = $em->getRepository('EMSCoreBundle:Form\Search');
+		
+		/**@var Search $search*/
+		$search = $repository->findOneBy([
+				'default' => true,
+		]);
+		if($search) {
+			$em->detach($search);
+			$search->resetFilters($search->getFilters()->getValues());
+			/**@var SearchFilter $filter*/
+			foreach ($search->getFilters() as &$filter){
+				if(empty($filter->getPattern())){
+					$filter->setPattern($query);					
+				}
+			}
+		}
+		else {
+			$search = new Search();
+			if($query !== false){
+				$search->getFilters()[0]->setPattern($query)->setBooleanClause('must');				
+			}
+		}
+		
+		
+		return $this->redirectToRoute("elasticsearch.search", ['search_form' => $search]);
+	}
+		
+		
+	/**
+	 * @Route("/elasticsearch/set-default-search/{id}", name="ems_search_set_default_search_from"))
+	 * @Method("POST")
+	 */
+	public function setDefaultSearchAction($id, Request $request)
+	{
+		$em = $this->getDoctrine()->getManager();
+		$repository = $em->getRepository('EMSCoreBundle:Form\Search');
+		
+		$searchs = $repository->findBy([
+			'default' => true,
+		]);
+		/**@var Search $search*/
+		foreach ($searchs as $search){
+			$search->setDefault(false);
+			$em->persist($search);
+		}
+		$search = $repository->find($id);
+		$search->setDefault(true);
+		$em->persist($search);
+		$em->flush();
+		$this->addFlash('notice', 'This search has been defined as default search form');
+		
+		
+		return $this->redirectToRoute("elasticsearch.search", ['searchId' => $id]);
+	}
+	
 	/**
 	 * @Route("/elasticsearch/index/delete/{name}", name="elasticsearch.index.delete"))
 	 */

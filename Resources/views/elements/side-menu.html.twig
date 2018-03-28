@@ -33,18 +33,13 @@
       </div>
 {% if app.user %}
       <!-- search form (Optional) -->
-      <form action="{{ path('elasticsearch.search') }}" method="get" class="sidebar-form">
+      <form action="{{ path('ems_quick_search') }}" method="get" class="sidebar-form">
         <div class="input-group">
-          <input type="text" name="search_form[filters][0][pattern]" class="form-control" placeholder="Search...">
-          <input type="hidden" name="search_form[filters][0][operator]" value="query_and">
-          <input type="hidden" name="search_form[filters][0][booleanClause]" value="must">
-          {% for environment in get_default_environments() %}
-             <input type="hidden" name="search_form[environments][{{ loop.index0 }}]" value="{{ environment|e('html_attr') }}">
-          {% endfor %}
-              <span class="input-group-btn">
-                <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
-                </button>
-              </span>
+          <input type="text" name="q" class="form-control" placeholder="Search...">
+          <span class="input-group-btn">
+            <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+            </button>
+          </span>
         </div>
       </form>
       <!-- /.search form -->

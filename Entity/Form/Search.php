@@ -53,7 +53,14 @@ class Search
 	 * 
      * @ORM\Column(name="name", type="string", length=100)
 	 */
-	private $name;
+    private $name;
+    
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="default_search", type="boolean", options={"default" : false})
+     */
+    private $default;
 	
 	/**
 	 * @var string $sortBy
@@ -73,6 +80,7 @@ class Search
 	function __construct(){
 		$this->filters = [];//new \Doctrine\Common\Collections\ArrayCollection();
 		$this->filters[] = new SearchFilter();
+		$this->default = false;
 // 		$this->page = 1;
 // 		$this->boolean = "and";
 	}
@@ -145,9 +153,16 @@ class Search
      */
     public function addFilter(\EMS\CoreBundle\Entity\Form\SearchFilter $filter)
     {
-        $this->filters[] = $filter;
-
-        return $this;
+    	$this->filters[] = $filter;
+    	
+    	return $this;
+    }
+    
+    public function resetFilters(array $filters)
+    {
+    	$this->filters = $filters;
+    	
+    	return $this;
     }
 
     /**
@@ -241,7 +256,7 @@ class Search
     {
         return $this->environments;
     }
-
+    
     /**
      * Set contentTypes
      *
@@ -251,11 +266,11 @@ class Search
      */
     public function setContentTypes($contentTypes)
     {
-        $this->contentTypes = $contentTypes;
-
-        return $this;
+    	$this->contentTypes = $contentTypes;
+    	
+    	return $this;
     }
-
+    
     /**
      * Get contentTypes
      *
@@ -263,6 +278,30 @@ class Search
      */
     public function getContentTypes()
     {
-        return $this->contentTypes;
+    	return $this->contentTypes;
+    }
+    
+    /**
+     * Set default
+     *
+     * @param bool $default
+     *
+     * @return Search
+     */
+    public function setDefault($default)
+    {
+    	$this->default = $default;
+    	
+    	return $this;
+    }
+    
+    /**
+     * Get default
+     *
+     * @return bool
+     */
+    public function getDefault()
+    {
+    	return $this->default;
     }
 }

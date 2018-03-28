@@ -18,6 +18,7 @@ use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Service\AssetExtratorService;
 use EMS\CoreBundle\Service\FileService;
+use Symfony\Component\Console\Input\InputOption;
 
 class MigrateIngestedFile extends EmsCommand
 {
@@ -59,7 +60,13 @@ class MigrateIngestedFile extends EmsCommand
 			'field',
 			InputArgument::REQUIRED,
 			'Field name to migrate'
-		);
+		)
+		->addOption(
+		    'only-with-ingested-content',
+		    null,
+		    InputOption::VALUE_NONE,
+		    'Will migrated filed with content subfield only (should be an old ingested asset field)'
+	    );
 	}
 	
 	
@@ -86,6 +93,7 @@ class MigrateIngestedFile extends EmsCommand
 			throw new \Exception('Content type not found');
 		}
 		
+		$onlyWithIngestedContent = $input->getOption('only-with-ingested-content');
 		
 		/** @var EntityManager $em */
 		$em = $this->doctrine->getManager();
@@ -110,13 +118,13 @@ class MigrateIngestedFile extends EmsCommand
 			foreach ($revisions as $revision){
 				$update = false;
 				$rawData = $revision->getRawData();
-				if(!empty($rawData) && $this->migrate($rawData, $revision, $fieldName, $output) ) {
+				if(!empty($rawData) && $this->migrate($rawData, $revision, $fieldName, $output, $onlyWithIngestedContent) ) {
 					$revision->setRawData($rawData);
 					$update = true;
 				}
 				
 				$rawData = $revision->getAutoSave();
-				if(!empty($rawData) && $this->migrate($rawData, $revision, $fieldName, $output) ) {
+				if(!empty($rawData) && $this->migrate($rawData, $revision, $fieldName, $output, $onlyWithIngestedContent) ) {
 					$revision->setAutoSave($rawData);
 					$update = true;
 				}
@@ -154,13 +162,16 @@ class MigrateIngestedFile extends EmsCommand
 		
 	}
 	
-	private function migrate(array &$rawData, Revision $revision, $field, OutputInterface $output){
+	private function migrate(array &$rawData, Revision $revision, $field, OutputInterface $output, $onlyWithIngestedContent=false){
 		$out = false;
 		if(!empty($rawData) && !empty($rawData[$field])) {
 			
 			if(isset($rawData[$field]['content'])){
 				unset($rawData[$field]['content']);
 				$out = true;
+			}
+			else if($onlyWithIngestedContent) {
+			    return false;
 			}
 			
 			if(isset($rawData[$field]['sha1'])){

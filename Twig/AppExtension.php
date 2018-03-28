@@ -146,8 +146,11 @@ class AppExtension extends \Twig_Extension
 		return $out;
 	}
 	
-	public function array_intersect(array $array1, array $array2, array $_ = null) {
-		return array_intersect($array1, $array2, $_);
+	public function array_intersect(array $array1, $array2) {
+	    if(! is_array($array2)) {
+	        return [];
+	    }
+	    return array_intersect($array1, $array2);
 	}
 	
 	

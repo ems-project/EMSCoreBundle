@@ -6,6 +6,7 @@ use EMS\CoreBundle\Entity\ContentType;
 class ObjectChoiceListItem {
 
 	private $label;
+	private $title;
 	private $value;
 	private $group;
 	private $color;
@@ -26,9 +27,11 @@ class ObjectChoiceListItem {
 			$this->label = '<i class="'.(null !== $contentType->getIcon()?$contentType->getIcon():'fa fa-question').'" data-ouuid="'.$this->value.'"></i>&nbsp;&nbsp;';
 			if(null !== $contentType->getLabelField() && isset($object['_source'][$contentType->getLabelField()])){
 				$this->label .= $object['_source'][$contentType->getLabelField()];
+				$this->title = $object['_source'][$contentType->getLabelField()];
 			}
 			else {
-				$this->label .= $this->value;				
+				$this->label .= $this->value;
+				$this->title = $this->value;
 			}
 			
 
@@ -47,7 +50,12 @@ class ObjectChoiceListItem {
 	
 	public function getLabel(){
 		return $this->label;
-	}	
+	}
+
+    public function getTitle()
+    {
+        return $this->title;
+    }
 	
 	public function getGroup(){
 		return $this->group;

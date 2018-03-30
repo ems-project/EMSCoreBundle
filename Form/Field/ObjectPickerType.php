@@ -41,6 +41,13 @@ class ObjectPickerType extends Select2Type {
 		    'choice_label' => function ($value, $key, $index) {
 		    	return $value->getLabel();
 		    },
+            'choice_attr' => function($val, $key, $index) {
+			    if ($val instanceof ObjectChoiceListItem) {
+                    return ['title' => $val->getTitle()];
+                }
+
+                return [];
+            },
 		    'group_by' => function($value, $key, $index) {
 		    	return $value->getGroup();
 		    },

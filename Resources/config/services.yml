@@ -204,12 +204,7 @@ services:
         tags:
             - { name: ems.form.datafieldtype, alias: time }
             - { name: form.type }
-    ems.fieldtype.collectionItem:
-        class: EMS\CoreBundle\Form\DataField\CollectionItemFieldType
-        arguments: ['@security.authorization_checker', '@form.registry']
-        tags:
-            - { name: form.type }
-    ems.fieldtype.collectionitem:
+    ems.fieldtype.collection_item:
         class: EMS\CoreBundle\Form\DataField\CollectionItemFieldType
         arguments: ['@security.authorization_checker', '@form.registry']
         tags:

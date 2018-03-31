@@ -509,7 +509,7 @@ desired effect
             {% else %}
     	        {% set all_types = contentType.name %}
             {% endif %}
-            {% set type_filters = type_filters|merge([[contentType.singularName|trans, contentType.name ]]) %}
+            {% set type_filters = type_filters|merge([[contentType.singularName, contentType.name ]]) %}
         {% endfor %}
     {% endif %}
 

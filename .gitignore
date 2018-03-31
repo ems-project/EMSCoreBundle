@@ -6,3 +6,4 @@
 /.buildpath
 *.yml~
 /node_modules/
+/.idea/

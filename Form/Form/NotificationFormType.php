@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Form\Form;
 
 use Doctrine\ORM\EntityRepository;
+use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\Template;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Service\EnvironmentService;
@@ -38,6 +39,7 @@ class NotificationFormType extends AbstractType {
 
 		$builder->add('template', EntityType::class, [
 			'class' => 'EMSCoreBundle:Template',
+            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
 			'query_builder' => function (EntityRepository $er) {
 				return $er->createQueryBuilder('t')
 				->where("t.renderOption = 'notification'");
@@ -63,6 +65,9 @@ class NotificationFormType extends AbstractType {
 					'class' => 'select2'
 				],
  				'multiple' => true,
+                'choice_translation_domain' => false,
+                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
+
 				'choices' => $this->service->getAll(),
 				'required' => false,
 				'choice_label' => function ($value, $key, $index) {
@@ -76,7 +81,8 @@ class NotificationFormType extends AbstractType {
 				},
 		])
 		->add('contentType', EntityType::class, [
-				'class' => 'EMSCoreBundle:ContentType',
+				'class' => 'EMSCoreBundle:ContentType',    
+                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
 				'query_builder' => function (EntityRepository $er) {
 					return $er->createQueryBuilder('ct')
 					->where("ct.deleted = :false")
@@ -101,6 +107,7 @@ class NotificationFormType extends AbstractType {
 		])
 
 		->add('filter', SubmitEmsType::class, [
+                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
 				'attr' => [ 
 						'class' => 'btn-primary btn-md' 
 				],

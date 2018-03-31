@@ -11,6 +11,7 @@ use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 
 class EMSCoreBundle extends Bundle
 {
+    const TRANS_DOMAIN = 'EMSCoreBundle';
     
 	public function build(ContainerBuilder $container)
 	{

@@ -30,7 +30,7 @@ class FilterController extends AppController
 	}
 	
 	/**
-	 * Edit an filter entity.
+	 * Edit a filter entity.
 	 *
 	 * @Route("/edit/{filter}", name="ems_filter_edit")
 	 * @Method({"GET", "POST"})

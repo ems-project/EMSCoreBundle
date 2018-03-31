@@ -369,7 +369,7 @@ services:
     ems.service.mapping:
         class: EMS\CoreBundle\Service\Mapping
         arguments: ['@ems.form.fieldtype.fieldtypetype', '@ems.service.elasticsearch']
-    ems.service.data:
+    EMS\CoreBundle\Service\DataService:
         class: EMS\CoreBundle\Service\DataService
         arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '%ems_core.lock_time%', '@app.elasticsearch', '@ems.service.mapping', '%ems_core.instance_id%', '@session', '@form.factory', '@service_container', '@form.registry', '@event_dispatcher', '%ems_private_key%']
         tags:
@@ -497,6 +497,13 @@ services:
     apikey_authenticator:
         class:  EMS\CoreBundle\Security\ApiKeyAuthenticator
         public: false
+
+
+
+#### Will be mark as deprecated soon
+    ems.service.data:
+        alias: 'EMS\CoreBundle\Service\DataService'
+        public: true
 
 
 #activate autowiring on core bundle controller

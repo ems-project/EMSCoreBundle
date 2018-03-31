@@ -23,6 +23,7 @@
 	},
 	"require-dev" : {
 		"friendsofphp/php-cs-fixer" : "^2.11",
+		"swiftmailer/swiftmailer" : "^5.4",
 		"symfony/phpunit-bridge" : "^3.4",
 		"symfony/validator" : "^3.4",
 		"symfony/yaml" : "^3.4",

@@ -2,10 +2,12 @@
 
 namespace EMS\CoreBundle\Form\Form;
 
+use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ReorderType extends AbstractType
 {
@@ -29,6 +31,14 @@ class ReorderType extends AbstractType
     			],
     			'icon' => 'fa fa-reorder'    			
     	]);
-    }   
-	
+    }
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        parent::configureOptions($resolver);
+        $resolver->setDefaults([
+            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
+        ]);
+    }
+
 }

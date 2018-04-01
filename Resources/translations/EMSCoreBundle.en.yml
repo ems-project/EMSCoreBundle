@@ -1,193 +1,214 @@
-ROLE_SUPER_ADMIN: 'Super Admin'
-ROLE_USER: User
-'Logged in as': 'Logged in as'
-'User profile': 'User profile'
-Exit: Exit
-'Sign out': 'Sign out'
-'Core %version%': 'Core %version%'
-'with Symfony %version%': 'with Symfony %version%'
-'Reorder the content type "%content_type%"': 'Reorder the content type "%content_type%"'
-'Reorder %name%''s fields': 'Reorder %name%''s fields'
-'Select a language': 'Select a language'
-Bright: Bright
-Dark: Dark
-'Select a theme': 'Select a theme'
-'This operation will not index the %object_name%, but initiate a draft only with a specific OUUID': '__This operation will not index the %object_name%, but initiate a draft only with a specific OUUID'
-'This operation will not index a new object ‘<em>%content_type%</em>’ immediately. It will start a new draft without any previous revision. <strong>This draft will not be visible</strong> in any environment <strong>until it has been finalized for the first time</strong>. This means you will not be able to see it in any list view (such as the index, map, calendar...), but all drafts in progress can be found in the ‘Draft in progress’ section.': '__This operation will not index a new object ‘<em>%content_type%</em>’ immediately. It will start a new draft without any previous revision. <strong>This draft will not be visible</strong> in any environment <strong>until it has been finalized for the first time</strong>. This means you will not be able to see it in any list view (such as the index, map, calendar...), but all drafts in progress can be found in the ‘Draft in progress’ section.'
-'About the <strong>object unique identifier</strong>: you are free to specify one (provided it has not been taken yet, of course). If you leave it <strong>empty</strong>, an object unique identifier <strong>will be generated</strong> during the save. It is not possible to update the object unique identifier later.': '__About the <strong>object unique identifier</strong>: you are free to specify one (provided it has not been taken yet, of course). If you leave it <strong>empty</strong>, an object unique identifier <strong>will be generated</strong> during the save. It is not possible to update the object unique identifier later.'
 '#': '#'
-OUUID: OUUID
-Label: Label
-Locked: Locked
-'Last update': 'Last update'
-Action: Action
-Revisions: Revisions
-'Edit draft': 'Edit draft'
-'Discard this draft ?': 'Discard this draft ?'
-Discard: Discard
-'Upload file': 'Upload file'
-'Finalized by': 'Finalized by'
-Pending: Pending
-Nothing: Nothing
-'Linked documents': 'Linked documents'
-'This document does not have any linked document': 'This document does not have any linked document'
-Documentation: Documentation
-'Certificate''s information': 'Certificate''s information'
-Bits: Bits
-'Public key': 'Public key'
-'Certificate is missing': 'Certificate is missing'
-'Copy data': 'Copy data'
-'Raw view': 'Raw view'
-'Compare environments': 'Compare environments'
-'Content type': 'Content type'
-View: View
-Clear: Clear
-'I18N edit': 'I18N edit'
-I18N: I18N
-Cancel: Cancel
-Edit: Edit
-'I18N create': 'I18N create'
-'Not defined': 'Not defined'
-Download: Download
-'To be treated': 'To be treated'
-'No result for this filters combinaison': 'No result for this filters combinaison'
-Notification: Notification
-'Created by': 'Created by'
-Date: Date
-Environment: Environment
-Warnings: Warnings
-Revision: Revision
-Actions: Actions
-Inbox: Inbox
-Outbox: Outbox
-'No result to display': 'No result to display'
-'No pending notifications': 'No pending notifications'
-'Users list': 'Users list'
-'Are they ready to rock?': 'Are they ready to rock?'
-Users: Users
-'Add user': 'Add user'
-Username: Username
-'Display name': 'Display name'
-email: email
-Circles: Circles
-Enabled: Enabled
-Roles: Roles
-'Last login': 'Last login'
-'Reorganise:': 'Reorganise:'
-'This item %ouuid% is already presents in this structure/menu': 'This item %ouuid% is already presents in this structure/menu'
-'Edit WYSIWYG profile': 'Edit WYSIWYG profile'
-'WYSIWYG profiles': 'WYSIWYG profiles'
+'About the <strong>object unique identifier</strong>: you are free to specify one (provided it has not been taken yet, of course). If you leave it <strong>empty</strong>, an object unique identifier <strong>will be generated</strong> during the save. It is not possible to update the object unique identifier later.': 'About the <strong>object unique identifier</strong>: you are free to specify one (provided it has not been taken yet, of course). If you leave it <strong>empty</strong>, an object unique identifier <strong>will be generated</strong> during the save. It is not possible to update the object unique identifier later.'
+'Add a Filter': 'Add a Filter'
 'Add a profile': 'Add a profile'
-'Click on ''Add a profile'' to create a first WYSIWYG profile': 'Click on ''Add a profile'' to create a first WYSIWYG profile'
-'New WYSIWYG profile': 'New WYSIWYG profile'
-'Align Environments': 'Align Environments'
-Environments: Environments
-'time to align environments?': 'time to align environments?'
-'Select Environments to compare': 'Select Environments to compare'
-Filters: Filters
-Save: Save
-Copy: Copy
-'Finalize draft': 'Finalize draft'
+'Add a Sort Option': 'Add a Sort Option'
+'Add a style set': 'Add a style set'
+'Add an Aggregate Option': 'Add an Aggregate Option'
 'Add an Analyzer': 'Add an Analyzer'
-'expert mode': 'expert mode'
-Analyzers: Analyzers
 'Add an analyzer': 'Add an analyzer'
-'Edit an Analyzer': 'Edit an Analyzer'
-Notice: __Notice
-'All environments have to be re-builded each times that the analyzers configuration is updated.': '__All environments have to be re-builded each times that the analyzers configuration is updated.'
-'List analyzers': 'List analyzers'
 'Add analyzer': 'Add analyzer'
-Name: Name
+'Add filter': 'Add a Filter'
+'Add managed alias': 'Add managed alias'
+'Add user': 'Add user'
+'Aggregate Options': 'Aggregate Options'
+'Align Environments': 'Align Environments'
 'All content types': 'All content types'
-Reorder: Reorder
-'Template is missing': 'Template is missing'
-'Trash for content type %name%': 'Trash for content type %name%'
+'All environments have to be re-builded each times that the analyzers configuration is updated.': 'All environments have to be re-builded each times that the analyzers configuration is updated.'
+'All environments have to be re-builded each times that the filters configuration is updated.': 'All environments have to be re-builded each times that the filters configuration is updated.'
+'Allowed to configure wysiwyg': 'Allowed to configure wysiwyg'
+'An Error Occurred': 'An Error Occurred'
+'Are they ready to rock?': 'Are they ready to rock?'
+'Asset options': 'Asset options'
+'Author :': 'Author :'
+'Boolean clause': 'Boolean clause'
+'Build date': 'Build date'
+'Certificate is missing': 'Certificate is missing'
+'Certificate''s information': 'Certificate''s information'
+'Click on ''Add a profile'' to create a first WYSIWYG profile': 'Click on ''Add a profile'' to create a first WYSIWYG profile'
+'Click on ''Add a Sort Option'' to create a first Sort Option': 'Click on ''Add a Sort Option'' to create a first Sort Option'
+'Click on ''Add a styles set'' to create a first styles set': 'Click on ''Add a styles set'' to create a first styles set'
+'Click on ''Add an aggregate option'' to create a first Aggregate Option': 'Click on ''Add an aggregate option'' to create a first Aggregate Option'
+'Cluster''s UUID': 'Cluster''s UUID'
+'Compare environments': 'Compare environments'
+'Config': 'Config'
+'Content :': 'Content :'
+'Content type': 'Content type'
+'Content types': 'Content types'
+'Copy data': 'Copy data'
+'Core %version%': 'Core %version%'
+'Created by': 'Created by'
+'Date :': 'Date :'
 'Deleted by': 'Deleted by'
-'Put it back ?': 'Put it back ?'
-'Put back': 'Put back'
+'Discard this draft ?': 'Discard this draft ?'
+'Display name': 'Display name'
+'Edit %entity_name%': 'Edit %entity_name%'
+'Edit a Filter': 'Edit a Filter'
+'Edit an Analyzer': 'Edit an Analyzer'
+'Edit draft': 'Edit draft'
+'Edit managed alias': 'Edit managed alias'
+'Edit WYSIWYG profile': 'Edit WYSIWYG profile'
+'Edit WYSIWYG styles set': 'Edit WYSIWYG styles set'
+'Elasticsearch''s version': 'Elasticsearch''s version'
+'Email notification': 'Email notification'
 'Empty Trash ?': 'Empty Trash ?'
 'Empty Trash': 'Empty Trash'
-Empty: Empty
-'The trash is empty': 'The trash is empty'
-'Sort options': 'Sort options'
-'Cluster''s UUID': 'Cluster''s UUID'
-Tagline: Tagline
-'Node''s name': 'Node''s name'
-'Elasticsearch''s version': 'Elasticsearch''s version'
-'Specified version': 'Specified version'
-'Lucene''s version': 'Lucene''s version'
-'Build date': 'Build date'
-'Tika server': 'Tika server'
-'Tika server is not configured': 'Tika server is not configured'
-WYSIWYG: WYSIWYG
-Search: Search
-'Edit %entity_name%': 'Edit %entity_name%'
-'New %entity_name%': 'New %entity_name%'
-'Local environments': 'Local environments'
-'Reorder Environment': 'Reorder Environment'
-'Managed Aliases': 'Managed Aliases'
-'Add managed alias': 'Add managed alias'
-'Edit managed alias': 'Edit managed alias'
-'An Error Occurred': 'An Error Occurred'
-'Oops! An Error Occurred': 'Oops! An Error Occurred'
-'The server returned a %status_code%': 'The server returned a %status_code%'
-'With the message "%status_text%".': 'With the message "%status_text%".'
-'Add a Filter': 'Add a Filter'
-'Add filter': 'Add a Filter'
-'Edit a Filter': 'Edit a Filter'
-'All environments have to be re-builded each times that the filters configuration is updated.': '__All environments have to be re-builded each times that the filters configuration is updated.'
-'List filters': 'List filters'
-Add: Add
-'Asset options': 'Asset options'
-'Hash signature': 'Hash signature'
-Info: Info
+'expert mode': 'expert mode'
+'Export results': 'Export results'
 'Extract content': 'Extract content'
-'Title :': 'Title :'
-'Size :': 'Size :'
-'MIME Type :': 'MIME Type :'
-'Date :': 'Date :'
-'Author :': 'Author :'
-'Language :': 'Language :'
-'Content :': 'Content :'
-'Search options': 'Search options'
-'Sort Options': 'Sort Options'
-'Add a Sort Option': 'Add a Sort Option'
-'Click on ''Add a Sort Option'' to create a first Sort Option': 'Click on ''Add a Sort Option'' to create a first Sort Option'
-'Aggregate Options': 'Aggregate Options'
-'Add an Aggregate Option': 'Add an Aggregate Option'
-'Click on ''Add an aggregate option'' to create a first Aggregate Option': 'Click on ''Add an aggregate option'' to create a first Aggregate Option'
+'Finalize draft': 'Finalize draft'
+'Finalized by': 'Finalized by'
+'form.email': 'Email'
+'form.username': 'Username'
 'gallery view plugin': 'gallery view plugin'
-'Edit WYSIWYG styles set': 'Edit WYSIWYG styles set'
-'New WYSIWYG styles set': 'New WYSIWYG styles set'
-'WYSIWYG options': 'WYSIWYG options'
-'WYSIWYG styles sets': 'WYSIWYG styles sets'
-'Add a style set': 'Add a style set'
-'Click on ''Add a styles set'' to create a first styles set': 'Click on ''Add a styles set'' to create a first styles set'
-Menu: Menu
-Template: Template
-Filter: Filter
-'Content types': 'Content types'
-'Sort by': 'Sort by'
-'Sort order': 'Sort order'
-'Ascending': 'Ascending'
-'Descending': 'Descending'
-'Boolean clause': 'Boolean clause'
-'Must': 'Must'
-Should: Should
-'Must not': 'Must not'
-'Field': 'Field'
-'Operator': 'Operator'
-'Query (and)': 'Query (and)'
-'Query (or)': 'Query (or)'
+'Hash signature': 'Hash signature'
+'I18N create': 'I18N create'
+'I18N edit': 'I18N edit'
+'Language :': 'Language :'
+'Last login': 'Last login'
+'Last update': 'Last update'
+'Layout boxed': 'Layout boxed'
+'Linked documents': 'Linked documents'
+'List analyzers': 'List analyzers'
+'List filters': 'List filters'
+'Local environments': 'Local environments'
+'Logged in as': 'Logged in as'
+'Lucene''s version': 'Lucene''s version'
+'Managed Aliases': 'Managed Aliases'
 'Match (and)': 'Match (and)'
 'Match (or)': 'Match (or)'
-Term: Term
-Pattern: Pattern
-Boost: Boost
-'Export results': 'Export results'
-'Email notification': 'Email notification'
-'Layout boxed': 'Layout boxed'
-'Sidebar mini': 'Sidebar mini'
+'MIME Type :': 'MIME Type :'
+'Must not': 'Must not'
+'New %entity_name%': 'New %entity_name%'
+'New WYSIWYG profile': 'New WYSIWYG profile'
+'New WYSIWYG styles set': 'New WYSIWYG styles set'
+'No pending notifications': 'No pending notifications'
+'No result for this filters combinaison': 'No result for this filters combinaison'
+'No result to display': 'No result to display'
+'Node''s name': 'Node''s name'
+'Not defined': 'Not defined'
+'Oops! An Error Occurred': 'Oops! An Error Occurred'
+'Profile''s name': 'Profile''s name'
+'Public key': 'Public key'
+'Put back': 'Put back'
+'Put it back ?': 'Put it back ?'
+'Query (and)': 'Query (and)'
+'Query (or)': 'Query (or)'
+'Raw view': 'Raw view'
+'Remove': 'Remove'
+'Reorder %name%''s fields': 'Reorder %name%''s fields'
+'Reorder Environment': 'Reorder Environment'
+'Reorder the content type "%content_type%"': 'Reorder the content type "%content_type%"'
+'Reorganise: ': 'Reorganise: '
+'Reorganise:': 'Reorganise:'
+'Search options': 'Search options'
+'Select a language': 'Select a language'
+'Select a theme': 'Select a theme'
+'Select Environments to compare': 'Select Environments to compare'
 'Sidebar collapse': 'Sidebar collapse'
-'WYSIWYG profile': 'WYSIWYG profile'
+'Sidebar mini': 'Sidebar mini'
+'Sign out': 'Sign out'
+'Size :': 'Size :'
+'Sort by': 'Sort by'
+'Sort options': 'Sort options'
+'Sort Options': 'Sort Options'
+'Sort order': 'Sort order'
+'Specified version': 'Specified version'
+'Template is missing': 'Template is missing'
+'The server returned a %status_code%': 'The server returned a %status_code%'
+'The trash is empty': 'The trash is empty'
+'This document does not have any linked document': 'This document does not have any linked document'
+'This item %ouuid% is already presents in this structure/menu': 'This item %ouuid% is already presents in this structure/menu'
+'This operation will not index a new object ‘<em>%content_type%</em>’ immediately. It will start a new draft without any previous revision. <strong>This draft will not be visible</strong> in any environment <strong>until it has been finalized for the first time</strong>. This means you will not be able to see it in any list view (such as the index, map, calendar...), but all drafts in progress can be found in the ‘Draft in progress’ section.': 'This operation will not index a new object ‘<em>%content_type%</em>’ immediately. It will start a new draft without any previous revision. <strong>This draft will not be visible</strong> in any environment <strong>until it has been finalized for the first time</strong>. This means you will not be able to see it in any list view (such as the index, map, calendar...), but all drafts in progress can be found in the ‘Draft in progress’ section.'
+'This operation will not index the %object_name%, but initiate a draft only with a specific OUUID': 'This operation will not index the %object_name%, but initiate a draft only with a specific OUUID'
+'Tika server is not configured': 'Tika server is not configured'
+'Tika server': 'Tika server'
+'time to align environments?': 'time to align environments?'
+'Title :': 'Title :'
+'To be treated': 'To be treated'
+'Trash for content type %name%': 'Trash for content type %name%'
+'Update': 'Update'
+'Upload file': 'Upload file'
+'User profile': 'User profile'
+'Users list': 'Users list'
+'with Symfony %version%': 'with Symfony %version%'
+'With the message "%status_text%".': 'With the message "%status_text%".'
 'WYSIWYG custom options': 'WYSIWYG custom options'
+'WYSIWYG options': 'WYSIWYG options'
+'WYSIWYG profile': 'WYSIWYG profile'
+'WYSIWYG profiles': 'WYSIWYG profiles'
+'WYSIWYG styles sets': 'WYSIWYG styles sets'
+Action: Action
+Actions: Actions
+Add: Add
+Analyzers: Analyzers
+Ascending: Ascending
+Bits: Bits
+Boost: Boost
+Bright: Bright
+Cancel: Cancel
+Circles: Circles
+Clear: Clear
+Copy: Copy
+Dark: Dark
+Date: Date
+Descending: Descending
+Discard: Discard
+Documentation: Documentation
+Download: Download
+Edit: Edit
+email: email
+Empty: Empty
+Enabled: Enabled
+Environment: Environment
+Environments: Environments
+Exit: Exit
+Field: Field
+Filter: Filter
+Filters: Filters
+form.email:
+I18N: I18N
+Inbox: Inbox
+Info: Info
+Label: Label
+Locked: Locked
+Menu: Menu
+Must: Must
+Name: Name
+Nothing: Nothing
+Notice: Notice
+Notification: Notification
+Operator: Operator
+Outbox: Outbox
+OUUID: OUUID
+Pattern: Pattern
+Pending: Pending
+Reorder: Reorder
+Revision: Revision
+Revisions: Revisions
+ROLE_ADMIN: 'Administrator'
+ROLE_ALLOW_ALIGN: 'Align Environment'
+ROLE_API: 'API'
+ROLE_AUTHOR: 'Author'
+ROLE_COPY_PASTE: Copy/Paste
+ROLE_DEFAULT_SEARCH: 'Default search'
+ROLE_PUBLISHER: 'Publisher'
+ROLE_SUPER_ADMIN: 'Super Admin'
+ROLE_SUPER_AUTHOR: 'Super Author'
+ROLE_SUPER_PUBLISHER: 'Super Publisher'
+ROLE_SUPER_USER: 'Super User'
+ROLE_SUPER_WEBMASTER: 'Super Webmaster'
+ROLE_USER: User
+ROLE_WEBMASTER: Webmaster
+Roles: Roles
+Save: Save
+Search: Search
+Should: Should
+Tagline: Tagline
+Template: Template
+Term: Term
+Username: Username
+Users: Users
+View: View
+Warnings: Warnings
+WYSIWYG: WYSIWYG

@@ -36,6 +36,7 @@ class ReorderType extends AbstractType
     {
         $resolver->setDefaults([
 			'result' => [],
+            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
         ]);
     }
 	

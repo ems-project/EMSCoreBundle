@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Form\Form;
 
 
+use EMS\CoreBundle\EMSCoreBundle;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\AbstractType;
@@ -19,23 +20,24 @@ class JobType extends AbstractType
     {
         $builder
             ->add('command', TextType::class, [
-            		'required' =>false
+                'required' => false
             ])
-			->add ( 'launch', SubmitEmsType::class, [ 
-					'attr' => [ 
-							'class' => 'btn-primary btn-sm ' 
-					],
-					'icon' => 'fa fa-save' 
-			] );
+            ->add('launch', SubmitEmsType::class, [
+                'attr' => [
+                    'class' => 'btn-primary btn-sm '
+                ],
+                'icon' => 'fa fa-save'
+            ]);
     }
-    
+
     /**
      * @param OptionsResolver $resolver
      */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'EMS\CoreBundle\Entity\Job'
+            'data_class' => 'EMS\CoreBundle\Entity\Job',
+            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN
         ));
     }
 }

@@ -126,6 +126,7 @@
 'time to align environments?': 'time to align environments?'
 'Title :': 'Title :'
 'To be treated': 'To be treated'
+'Styles set''s name': 'Styles set''s name'
 'Trash for content type %name%': 'Trash for content type %name%'
 'Update': 'Update'
 'Upload file': 'Upload file'
@@ -166,7 +167,6 @@ Exit: Exit
 Field: Field
 Filter: Filter
 Filters: Filters
-form.email:
 I18N: I18N
 Inbox: Inbox
 Info: Info
@@ -212,3 +212,95 @@ Users: Users
 View: View
 Warnings: Warnings
 WYSIWYG: WYSIWYG
+Command: Command
+Launch: Launch
+form:
+    analyzer:
+        name: Name
+        label: Label
+        save: Save
+        type: Type
+        type.standard: Standard
+        type.stop: Stop
+        type.pattern: Pattern
+        type.fingerprint: Fingerprint
+        type.custom: Custom
+        tokenizer: Tokenizer
+        tokenizer.standard: Standard
+        tokenizer.letter: Letter
+        tokenizer.lowercase: Lowercase
+        tokenizer.whitespace: Whitespace
+        tokenizer.uax_url_email: 'UAX URL Email'
+        tokenizer.classic: Classic
+        tokenizer.thai: Thai
+        tokenizer.ngram: N-Gram
+        tokenizer.edge_ngram: 'Edge N-Gram'
+        tokenizer.keyword: Keyword
+        tokenizer.pattern: Pattern
+        tokenizer.path_hierarchy: Path
+        max_token_length: 'Max Token Length'
+        max_output_size: 'Max Output Size'
+        lowercase: Lowercase
+        position_increment_gap: 'Position Increment Gap'
+        stopwords: Stopwords
+        stopwords._none_: 'None'
+        stopwords._arabic_: 'Arabic'
+        stopwords._armenian_: 'Armenian'
+        stopwords._basque_: 'Basque'
+        stopwords._brazilian_: 'Brazilian'
+        stopwords._bulgarian_: 'Bulgarian'
+        stopwords._catalan_: 'Catalan'
+        stopwords._cjk_: 'CJK'
+        stopwords._czech_: 'Czech'
+        stopwords._danish_: 'Danish'
+        stopwords._dutch_: 'Dutch'
+        stopwords._english_: 'English'
+        stopwords._finnish_: 'Finnish'
+        stopwords._french_: 'French'
+        stopwords._galician_: 'Galician'
+        stopwords._german_: 'German'
+        stopwords._greek_: 'Greek'
+        stopwords._hindi_: 'Hindi'
+        stopwords._hungarian_: 'Hungarian'
+        stopwords._indonesian_: 'Indonesian'
+        stopwords._irish_: 'Irish'
+        stopwords._italian_: 'Italian'
+        stopwords._latvian_: 'Latvian'
+        stopwords._lithuanian_: 'Lithuanian'
+        stopwords._norwegian_: 'Norwegian'
+        stopwords._persian_: 'Persian'
+        stopwords._portuguese_: 'Portuguese'
+        stopwords._romanian_: 'Romanian'
+        stopwords._russian_: 'Russian'
+        stopwords._sorani_: 'Sorani'
+        stopwords._spanish_: 'Spanish'
+        stopwords._swedish_: 'Swedish'
+        stopwords._turkish_: 'Turkish'
+        stopwords._thai_: 'Thai'
+        filter: Filter
+        filter.built_in: 'Built-in'
+        filter.built_in.standard: Standard
+        filter.built_in.asciifolding: 'ASCII Folding'
+        filter.built_in.flatten_graph: 'Flatten graph'
+        filter.built_in.lowercase: 'Lowercase'
+        filter.built_in.uppercase: 'Uppercase'
+        filter.built_in.n_gram: 'NGram'
+        filter.built_in.edge_n_gram: 'Edge NGram'
+        filter.built_in.porter_stem: 'Porter Stem'
+        filter.built_in.stop: 'Stop'
+        filter.built_in.word_delimiter: 'Word Delimiter'
+        filter.customized: 'Customized'
+        char_filter: 'Char Filter'
+        char_filter.html_strip: 'HTML Strip'
+        flags: Flags
+        flags.canon_eq: CANON_EQ
+        flags.case_insensitive: CASE_INSENSITIVE
+        flags.comments: COMMENTS
+        flags.dotall: DOTALL
+        flags.literal: LITERAL
+        flags.multiline: MULTILINE
+        flags.unicode_case: UNICODE_CASE
+        flags.unicode_character_class: UNICODE_CHARACTER_CLASS
+        flags.unix_lines: UNIX_LINES
+        separator: Separator
+        pattern: Pattern

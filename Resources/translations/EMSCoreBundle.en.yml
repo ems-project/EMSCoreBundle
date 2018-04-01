@@ -166,3 +166,28 @@ Info: Info
 Menu: Menu
 Template: Template
 Filter: Filter
+'Content types': 'Content types'
+'Sort by': 'Sort by'
+'Sort order': 'Sort order'
+'Ascending': 'Ascending'
+'Descending': 'Descending'
+'Boolean clause': 'Boolean clause'
+'Must': 'Must'
+Should: Should
+'Must not': 'Must not'
+'Field': 'Field'
+'Operator': 'Operator'
+'Query (and)': 'Query (and)'
+'Query (or)': 'Query (or)'
+'Match (and)': 'Match (and)'
+'Match (or)': 'Match (or)'
+Term: Term
+Pattern: Pattern
+Boost: Boost
+'Export results': 'Export results'
+'Email notification': 'Email notification'
+'Layout boxed': 'Layout boxed'
+'Sidebar mini': 'Sidebar mini'
+'Sidebar collapse': 'Sidebar collapse'
+'WYSIWYG profile': 'WYSIWYG profile'
+'WYSIWYG custom options': 'WYSIWYG custom options'

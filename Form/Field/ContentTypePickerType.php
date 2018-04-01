@@ -61,6 +61,7 @@ class ContentTypePickerType extends ChoiceType {
 				return $value;
 		    },
 		    'multiple' => false,
+            'choice_translation_domain' => false,
 		));
 	}
 }

@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Form\Form;
 
+use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Form\Field\ContentTypePickerType;
 use EMS\CoreBundle\Form\Field\EnvironmentPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
@@ -76,14 +77,18 @@ class SearchFormType extends AbstractType {
 		}
 		
 	}
-	
+
+    /**
+     * @param OptionsResolver $resolver
+     */
 	public function configureOptions(OptionsResolver $resolver)
 	{
 		$resolver->setDefaults([
-				'data_class' => 'EMS\CoreBundle\Entity\Form\Search',
-				'savedSearch' => false,
-				'csrf_protection' => false,
-				'light' => false,
+            'data_class' => 'EMS\CoreBundle\Entity\Form\Search',
+            'savedSearch' => false,
+            'csrf_protection' => false,
+            'light' => false,
+            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
 		]);
 	}
 	

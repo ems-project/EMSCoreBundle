@@ -201,7 +201,7 @@ class DataController extends AppController
         $revisions = $revisionRep->findInProgresByContentType($contentType, $this->getUserService()->getCurrentUser()->getCircles(), $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN'));
 
 
-        return $this->render('EMSCoreBundle:data:draft-in-progress.html.twig', [
+        return $this->render('@EMSCore/data/draft-in-progress.html.twig', [
             'contentType' => $contentType,
             'revisions' => $revisions
         ]);
@@ -248,7 +248,7 @@ class DataController extends AppController
             throw new NotFoundHttpException($type . ' not found');
         }
 
-        return $this->render('EMSCoreBundle:data:view-data.html.twig', [
+        return $this->render('@EMSCore/data/view-data.html.twig', [
             'object' => $result,
             'environment' => $environments[0],
             'contentType' => $contentType,
@@ -398,7 +398,7 @@ class DataController extends AppController
         ];
 
 
-        return $this->render('EMSCoreBundle:data:revisions-data.html.twig', [
+        return $this->render('@EMSCore/data/revisions-data.html.twig', [
             'revision' => $revision,
             'revisionsSummary' => $revisionsSummary,
             'availableEnv' => $availableEnv,
@@ -752,7 +752,7 @@ class DataController extends AppController
             exit;
         }
 
-        return $this->render('EMSCoreBundle:data:custom-view.html.twig', [
+        return $this->render('@EMSCore/data/custom-view.html.twig', [
             'template' => $template,
             'object' => $object,
             'environment' => $environment,
@@ -791,7 +791,7 @@ class DataController extends AppController
 
         if (!$revision->getDraft() || $revision->getEndTime() !== null) {
             $this->addFlash("warning", "The autosave didn't worked as this revision (" . $revision->getContentType()->getSingularName() . ($revision->getOuuid() ? ":" . $revision->getOuuid() : "") . ") has been already finalized .");
-            $response = $this->render('EMSCoreBundle:ajax:notification.json.twig', [
+            $response = $this->render('@EMSCore/ajax/notification.json.twig', [
                 'success' => false,
             ]);
             $response->headers->set('Content-Type', 'application/json');
@@ -833,7 +833,7 @@ class DataController extends AppController
             $formErrors = $form->getErrors(true, true);
         }
 
-        $response = $this->render('EMSCoreBundle:data:ajax-revision.json.twig', [
+        $response = $this->render('@EMSCore/data/ajax-revision.json.twig', [
             'success' => true,
             'formErrors' => $formErrors,
         ]);
@@ -855,7 +855,7 @@ class DataController extends AppController
             $form = $this->createForm(RevisionType::class, $revision);
             if (!empty($revision->getAutoSave())) {
                 $this->addFlash("error", "This draft (" . $revision->getContentType()->getSingularName() . ($revision->getOuuid() ? ":" . $revision->getOuuid() : "") . ") can't be finalized, as an autosave is pending.");
-                return $this->render('EMSCoreBundle:data:edit-revision.html.twig', [
+                return $this->render('@EMSCore/data/edit-revision.html.twig', [
                     'revision' => $revision,
                     'form' => $form->createView(),
                     'stylesSets' => $this->getWysiwygStylesSetService()->getStylesSets(),
@@ -865,7 +865,7 @@ class DataController extends AppController
             $revision = $this->getDataService()->finalizeDraft($revision, $form);
             if (count($form->getErrors()) !== 0) {
                 $this->addFlash("error", "This draft (" . $revision->getContentType()->getSingularName() . ($revision->getOuuid() ? ":" . $revision->getOuuid() : "") . ") can't be finalized.");
-                return $this->render('EMSCoreBundle:data:edit-revision.html.twig', [
+                return $this->render('@EMSCore/data/edit-revision.html.twig', [
                     'revision' => $revision,
                     'form' => $form->createView(),
                     'stylesSets' => $this->getWysiwygStylesSetService()->getStylesSets(),
@@ -1018,7 +1018,7 @@ class DataController extends AppController
                         ]);
                     } else {
                         //$this->addFlash("warning", "This draft (".$revision->getContentType()->getSingularName().($revision->getOuuid()?":".$revision->getOuuid():"").") can't be finalized.");
-                        return $this->render('EMSCoreBundle:data:edit-revision.html.twig', [
+                        return $this->render('@EMSCore/data/edit-revision.html.twig', [
                             'revision' => $revision,
                             'form' => $form->createView(),
                             'stylesSets' => $this->getWysiwygStylesSetService()->getStylesSets(),
@@ -1065,7 +1065,7 @@ class DataController extends AppController
         // Call Audit service for log
         $this->get("ems.service.audit")->auditLog('DataController:editRevision', $revision->getRawData());
         $logger->debug('Start twig rendering');
-        return $this->render('EMSCoreBundle:data:edit-revision.html.twig', [
+        return $this->render('@EMSCore/data/edit-revision.html.twig', [
             'revision' => $revision,
             'form' => $form->createView(),
             'stylesSets' => $this->getWysiwygStylesSetService()->getStylesSets(),
@@ -1205,7 +1205,7 @@ class DataController extends AppController
             }
         }
 
-        return $this->render('EMSCoreBundle:data:add.html.twig', [
+        return $this->render('@EMSCore/data/add.html.twig', [
             'contentType' => $contentType,
             'form' => $form->createView(),
         ]);

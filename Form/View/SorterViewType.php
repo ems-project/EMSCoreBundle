@@ -200,7 +200,7 @@ class SorterViewType extends ViewType {
 		
 		
 		$response = new Response();
-		$response->setContent($this->twig->render('EMSCoreBundle:view:custom/'.$this->getBlockPrefix().'.html.twig', [
+		$response->setContent($this->twig->render('@EMSCore/view/custom/'.$this->getBlockPrefix().'.html.twig', [
 				'result' => $result,
 				'view' => $view,
 				'form' => $form->createView(),

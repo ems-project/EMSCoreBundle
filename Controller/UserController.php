@@ -124,7 +124,7 @@ class UserController extends AppController
 			return $this->redirectToRoute('ems.user.index');
 		}
 	
-		return $this->render('EMSCoreBundle:user:edit.html.twig', array(
+		return $this->render('@EMSCore/user/edit.html.twig', array(
 				'form' => $form->createView(),
 				'user' => $user
 		));

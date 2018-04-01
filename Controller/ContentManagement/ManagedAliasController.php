@@ -35,7 +35,7 @@ class ManagedAliasController extends AppController
             return $this->redirectToRoute('environment.index');
         }
 
-        return $this->render('EMSCoreBundle:environment:managed_alias.html.twig', [
+        return $this->render('@EMSCore/environment/managed_alias.html.twig', [
             'new' => true,
             'form' => $form->createView(),
         ]);
@@ -66,7 +66,7 @@ class ManagedAliasController extends AppController
             return $this->redirectToRoute('environment.index');
         }
         
-        return $this->render('EMSCoreBundle:environment:managed_alias.html.twig', [
+        return $this->render('@EMSCore/environment/managed_alias.html.twig', [
             'new' => false,
             'form' => $form->createView(),
         ]);

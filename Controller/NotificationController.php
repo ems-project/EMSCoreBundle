@@ -164,7 +164,7 @@ class NotificationController extends AppController
 		
 		$vars['counter'] = $this->get('ems.service.notification')->menuNotification();
 		
-		return $this->render('EMSCoreBundle:notification:menu.html.twig', $vars);
+		return $this->render('@EMSCore/notification/menu.html.twig', $vars);
 	}
 	
 	/**
@@ -236,7 +236,7 @@ class NotificationController extends AppController
  				'notifications' => $notifications,
  		]);
 		
-		return $this->render('EMSCoreBundle:notification:list.html.twig', array(
+		return $this->render('@EMSCore/notification/list.html.twig', array(
 				'counter' => $count,
 				'notifications' => $notifications,
 				'lastPage' => $lastPage,

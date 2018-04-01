@@ -262,7 +262,7 @@ class ContentTypeController extends AppController {
 			}
 		}
 		
-		return $this->render ( 'EMSCoreBundle:contenttype:add.html.twig', [ 
+		return $this->render ( '@EMSCore/contenttype/add.html.twig', [ 
 				'form' => $form->createView () 
 		] );
 	}
@@ -331,7 +331,7 @@ class ContentTypeController extends AppController {
     		return $this->redirectToRoute('contenttype.index');
     	}
 		
-		return $this->render ( 'EMSCoreBundle:contenttype:index.html.twig', [
+		return $this->render ( '@EMSCore/contenttype/index.html.twig', [
 				'form' => $form->createView (),
 		] );
 	}
@@ -408,7 +408,7 @@ class ContentTypeController extends AppController {
 			}
 		}
 		
-		return $this->render ( 'EMSCoreBundle:contenttype:unreferenced.html.twig', [ 
+		return $this->render ( '@EMSCore/contenttype/unreferenced.html.twig', [ 
 				'referencedContentTypes' => $referencedContentTypes 
 		] );
 	}
@@ -620,7 +620,7 @@ class ContentTypeController extends AppController {
 			return $this->redirectToRoute('contenttype.edit', ['id' => $contentType->getId()]);
 		}
 		
-		return $this->render ( 'EMSCoreBundle:contenttype:reorder.html.twig', [
+		return $this->render ( '@EMSCore/contenttype/reorder.html.twig', [
 				'form' => $form->createView (),
 				'contentType' => $contentType,
 		] );
@@ -752,7 +752,7 @@ class ContentTypeController extends AppController {
 			$this->addFlash('warning', $contentType->getName().' is dirty. Consider to update its mapping.');
 		}
 		
-		return $this->render ( 'EMSCoreBundle:contenttype:edit.html.twig', [ 
+		return $this->render ( '@EMSCore/contenttype/edit.html.twig', [ 
 				'form' => $form->createView (),
 				'contentType' => $contentType,
 				'mapping' => isset ( current ( $mapping ) ['mappings'] [$contentType->getName ()] ['properties'] ) ? current ( $mapping ) ['mappings'] [$contentType->getName ()] ['properties'] : false 
@@ -883,7 +883,7 @@ class ContentTypeController extends AppController {
 			$this->addFlash('warning', $contentType->getName().' is dirty. Consider to update its mapping.');
 		}
 		
-		return $this->render ( 'EMSCoreBundle:contenttype:structure.html.twig', [ 
+		return $this->render ( '@EMSCore/contenttype/structure.html.twig', [ 
 				'form' => $form->createView (),
 				'contentType' => $contentType,
 // 				'mapping' => isset ( current ( $mapping ) ['mappings'] [$contentType->getName ()] ['properties'] ) ? current ( $mapping ) ['mappings'] [$contentType->getName ()] ['properties'] : false 

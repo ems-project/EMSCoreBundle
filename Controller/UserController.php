@@ -24,7 +24,7 @@ class UserController extends AppController
 	 */
 	public function indexAction(Request $request)
 	{
-		return $this->render( 'EMSCoreBundle:user:index.html.twig', [
+		return $this->render( '@EMSCore/user/index.html.twig', [
 				'paging' => $this->getHelperService()->getPagingTool('EMSCoreBundle:User', 'ems.user.index', 'username'),
 		] );
 	}
@@ -249,7 +249,7 @@ class UserController extends AppController
 		$em->persist($user);
 		$em->flush();
 		
-		return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
+		return $this->render( '@EMSCore/ajax/notification.json.twig', [
 				'success' => true,
 		] );
 	}

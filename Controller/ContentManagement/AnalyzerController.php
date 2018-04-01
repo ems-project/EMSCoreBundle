@@ -24,7 +24,7 @@ class AnalyzerController extends AppController
 	 * @Route("/", name="ems_analyzer_index")
 	 */
 	public function indexAction(Request $request) {
-		return $this->render( 'EMSCoreBundle:analyzer:index.html.twig', [
+		return $this->render( '@EMSCore/analyzer/index.html.twig', [
 				'paging' => $this->getHelperService()->getPagingTool('EMSCoreBundle:Analyzer', 'ems_analyzer_index', 'name'),
 		] );
 	}
@@ -53,7 +53,7 @@ class AnalyzerController extends AppController
 			] );
 		}
 		
-		return $this->render( 'EMSCoreBundle:analyzer:edit.html.twig', [
+		return $this->render( '@EMSCore/analyzer/edit.html.twig', [
 				'form' => $form->createView (),
 		] );
 	}
@@ -100,7 +100,7 @@ class AnalyzerController extends AppController
 			] );
 		}
 		
-		return $this->render( 'EMSCoreBundle:analyzer:add.html.twig', [
+		return $this->render( '@EMSCore/analyzer/add.html.twig', [
 				'form' => $form->createView (),
 		] );
 		

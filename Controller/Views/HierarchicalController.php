@@ -45,7 +45,7 @@ class HierarchicalController extends AppController {
 				'id' => $ouuid[1],
 		]);
 		
-		return $this->render( 'EMSCoreBundle:view:custom/hierarchical_add_item.html.twig', [
+		return $this->render( '@EMSCore/view/custom/hierarchical_add_item.html.twig', [
 				'data' => $item['_source'],
 				'view' => $view,
 				'contentType' => $contentType,

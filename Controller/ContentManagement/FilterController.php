@@ -24,7 +24,7 @@ class FilterController extends AppController
 	 * @Route("/", name="ems_filter_index")
 	 */
 	public function indexAction(Request $request) {
-		return $this->render( 'EMSCoreBundle:filter:index.html.twig', [
+		return $this->render( '@EMSCore/filter/index.html.twig', [
 				'paging' => $this->getHelperService()->getPagingTool('EMSCoreBundle:Filter', 'ems_filter_index', 'name'),
 		] );
 	}
@@ -53,7 +53,7 @@ class FilterController extends AppController
 			] );
 		}
 		
-		return $this->render( 'EMSCoreBundle:filter:edit.html.twig', [
+		return $this->render( '@EMSCore/filter/edit.html.twig', [
 				'form' => $form->createView (),
 		] );
 	}
@@ -100,7 +100,7 @@ class FilterController extends AppController
 			] );
 		}
 		
-		return $this->render( 'EMSCoreBundle:filter:add.html.twig', [
+		return $this->render( '@EMSCore/filter/add.html.twig', [
 				'form' => $form->createView (),
 		] );
 		

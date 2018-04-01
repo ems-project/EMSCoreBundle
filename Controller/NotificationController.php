@@ -65,7 +65,7 @@ class NotificationController extends AppController
 		
 		$success = $this->getNotificationService()->addNotification($templateId, $revision, $env);
 
-		return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
+		return $this->render( '@EMSCore/ajax/notification.json.twig', [
 				'success' => $success,
 		] );
 	}

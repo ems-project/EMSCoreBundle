@@ -53,7 +53,7 @@ class FileController extends AppController
 		
 		$data = $this->getAssetExtractorService()->extractData($file, $name);
 		
-		$response = $this->render( 'EMSCoreBundle:ajax:extract-data-file.json.twig', [
+		$response = $this->render( '@EMSCore/ajax/extract-data-file.json.twig', [
 				'success' => true,
 				'data' => $data,
 		] );
@@ -98,13 +98,13 @@ class FileController extends AppController
 		}
 		catch (\Exception $e) {
 			$this->addFlash('error', $e->getMessage());
-			return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
+			return $this->render( '@EMSCore/ajax/notification.json.twig', [
 				'success' => false,
 			]);
 		}
 		
 
-		return $this->render( 'EMSCoreBundle:ajax:file.json.twig', [
+		return $this->render( '@EMSCore/ajax/file.json.twig', [
 				'success' => true,
 				'asset' => $uploadedAsset,
 		]);
@@ -124,12 +124,12 @@ class FileController extends AppController
 		}
 		catch (\Exception $e) {
 			$this->addFlash('error', $e->getMessage());
-			return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
+			return $this->render( '@EMSCore/ajax/notification.json.twig', [
 					'success' => false,
 			]);
 		}
 
-		return $this->render( 'EMSCoreBundle:ajax:file.json.twig', [
+		return $this->render( '@EMSCore/ajax/file.json.twig', [
 				'success' => true,
 				'asset' => $uploadedAsset,
 		]);
@@ -146,7 +146,7 @@ class FileController extends AppController
 	 */
 	public function indexImagesAction(Request $request) {
 		$images = $this->getFileService()->getImages();
-		return $this->render( 'EMSCoreBundle:ajax:images.json.twig', [
+		return $this->render( '@EMSCore/ajax/images.json.twig', [
 				'images' => $images,
 		]);
 	}
@@ -173,24 +173,24 @@ class FileController extends AppController
 			}
 			catch (\Exception $e) {
 				$this->addFlash('error', $e->getMessage());
-				return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
+				return $this->render( '@EMSCore/ajax/notification.json.twig', [
 						'success' => false,
 				]);
 			}
 			
 			
-			return $this->render( 'EMSCoreBundle:ajax:multipart.json.twig', [
+			return $this->render( '@EMSCore/ajax/multipart.json.twig', [
 					'success' => true,
 					'asset' => $uploadedAsset,
 			]);
 		}
 		else if($file->getError()) {
 			$this->addFlash('warning', $file->getError());
-			$this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
+			$this->render( '@EMSCore/ajax/notification.json.twig', [
 					'success' => false,
 			]);
 		}
-		return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
+		return $this->render( '@EMSCore/ajax/notification.json.twig', [
 				'success' => false,
 		]);
 	}

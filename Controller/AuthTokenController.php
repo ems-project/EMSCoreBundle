@@ -38,7 +38,7 @@ class AuthTokenController extends AppController
     		$em->persist($authToken);
     		$em->flush();
 
-    		return $this->render( 'EMSCoreBundle:ajax:auth-token.json.twig', [
+    		return $this->render( '@EMSCore/ajax/auth-token.json.twig', [
     				'authToken' => $authToken,
     				'success' => true,
     		]);

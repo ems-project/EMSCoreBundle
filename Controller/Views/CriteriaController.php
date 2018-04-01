@@ -275,7 +275,7 @@ class CriteriaController extends AppController
 			
 			
 		if(!$valid){
-			return $this->render( 'EMSCoreBundle:view:custom/criteria_view.html.twig',[
+			return $this->render( '@EMSCore/view/custom/criteria_view.html.twig',[
 					'view' => $view,
 					'form' => $form->createView(),
 					'contentType' => $contentType,
@@ -322,7 +322,7 @@ class CriteriaController extends AppController
 		
 		$tables = $this->generateCriteriaTable($view, $criteriaUpdateConfig, $request);
 		
-		return $this->render( 'EMSCoreBundle:view:custom/criteria_table.html.twig',[
+		return $this->render( '@EMSCore/view/custom/criteria_table.html.twig',[
 			'table' => $tables['table'],
 			'rowFieldType' => $rowField,
 			'columnFieldType' => $columnField,
@@ -524,7 +524,7 @@ class CriteriaController extends AppController
 			$authorized = $this->getAuthorizationChecker()->isGranted($view->getContentType()->getEditRole());
 			if(!$authorized) {
 				$this->addFlash('warning', 'You are not authorized to update '.$revision);
-				return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
+				return $this->render( '@EMSCore/ajax/notification.json.twig', [
 						'success' => false,
 				] );
 			}
@@ -532,7 +532,7 @@ class CriteriaController extends AppController
 			
 			if($revision->getDraft()) {
 				$this->addFlash('warning', 'Impossible to update '.$revision. ' has there is a draft in progress');
-				return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
+				return $this->render( '@EMSCore/ajax/notification.json.twig', [
 						'success' => false,
 				] );
 			}
@@ -546,7 +546,7 @@ class CriteriaController extends AppController
 	
 			} catch (LockedException $e) {
 				$this->addFlash('warning', 'Impossible to update '.$revision. ' has the revision is locked by '.$revision->getLockBy());
-				return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
+				return $this->render( '@EMSCore/ajax/notification.json.twig', [
 						'success' => false,
 				] );
 			}
@@ -569,7 +569,7 @@ class CriteriaController extends AppController
 			}
 		}
 		
-		return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
+		return $this->render( '@EMSCore/ajax/notification.json.twig', [
 				'success' => true,
 		] );
 	}
@@ -791,7 +791,7 @@ class CriteriaController extends AppController
 			
 			if($revision->getDraft()) {
 				$this->addFlash('warning', 'Impossible to update '.$revision. ' has there is a draft in progress');
-				return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
+				return $this->render( '@EMSCore/ajax/notification.json.twig', [
 						'success' => false,
 				] );
 			}
@@ -804,7 +804,7 @@ class CriteriaController extends AppController
 	
 			} catch (LockedException $e) {
 				$this->addFlash('warning', 'Impossible to update '.$revision. ' has the revision is locked by '.$revision->getLockBy());
-				return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
+				return $this->render( '@EMSCore/ajax/notification.json.twig', [
 						'success' => false,
 				] );
 			}
@@ -827,7 +827,7 @@ class CriteriaController extends AppController
 			}
 		}
 		
-		return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
+		return $this->render( '@EMSCore/ajax/notification.json.twig', [
 			'success' => true,
 		] );
 	}

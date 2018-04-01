@@ -37,7 +37,7 @@ class JobController extends AppController
 		$theme = new Theme();
 		$converter = new AnsiToHtmlConverter ( $theme );
 		
-		return $this->render ( 'EMSCoreBundle:job:status.html.twig', [ 
+		return $this->render ( '@EMSCore/job/status.html.twig', [ 
 				'job' => $job,
 				'output' => $converter->convert ( $job->getOutput () ) 
 		] );
@@ -160,7 +160,7 @@ class JobController extends AppController
 			return $this->startConsole($job);
 		}
 		
-		return $this->render( 'EMSCoreBundle:job:add.html.twig', [
+		return $this->render( '@EMSCore/job/add.html.twig', [
 				'form' => $form->createView()
 		]);
 	}
@@ -210,7 +210,7 @@ class JobController extends AppController
 		
 		$jobs = $jobRepository->findBy([], ['created' => 'DESC'], $size, $from);
 		
-		return $this->render( 'EMSCoreBundle:job:index.html.twig', [
+		return $this->render( '@EMSCore/job/index.html.twig', [
 				'jobs' =>  $jobs,
 				'page' => $page,
 				'size' => $size,

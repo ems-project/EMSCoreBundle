@@ -35,7 +35,7 @@ class AppController extends Controller
 	 */
 	public function javascriptAction()
 	{
-		return $this->render( 'EMSCoreBundle:app:app.js.twig' );
+		return $this->render( '@EMSCore/app/app.js.twig' );
 	}
 	
 	/**

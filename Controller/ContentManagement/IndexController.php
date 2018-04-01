@@ -23,7 +23,7 @@ class IndexController extends AppController
 		$repository = $em->getRepository('EMSCoreBundle:Revision');
 		/** @var Revision $revision */
 // 		$revisions = $repository->findBy();
-		return $this->render( 'EMSCoreBundle:default:coming-soon.html.twig');
+		return $this->render( '@EMSCore/default/coming-soon.html.twig');
 	}
 	
 	/**

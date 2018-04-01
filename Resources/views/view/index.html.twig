@@ -1,4 +1,4 @@
-{% extends 'EMSCoreBundle::base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}List view for {{ contentType.name }}{% endblock %}
 {% block pagetitle %}List view for content type {{ contentType.name }}{% endblock %} 
@@ -34,12 +34,12 @@
 								<td>
 								
 									<div class="btn-group">
-										{% include 'EMSCoreBundle:elements:get-button.html.twig' with {
+                                        {% include '@EMSCore/elements/get-button.html.twig' with {
 											'url':  path('view.edit', {'id': view.id}),
 											'label': 'Edit',
 											'icon': 'pencil'
 										}%}
-										{% include 'EMSCoreBundle:elements:post-button.html.twig' with {
+                                        {% include '@EMSCore/elements/post-button.html.twig' with {
 											'url': path('view.remove', {'id': view.id}),
 											'message': 'Delete the view ' ~ view.name ~ ' ?',
 											'label': 'Delete',
@@ -64,7 +64,7 @@
 
 
 {% block javascripts %}
-	{% include 'EMSCoreBundle:app:menu.html.twig' with {
+    {% include '@EMSCore/app/menu.html.twig' with {
 		'item':  'contenttype-list'
 	}%}
 {% endblock %}	

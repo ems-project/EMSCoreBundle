@@ -1,4 +1,4 @@
-{% extends 'EMSCoreBundle::base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}{{ view.name }} of {{contentType.singularName}}{% endblock %}
 {% block pagetitle %}{{ view.name }} of {{contentType.singularName}}{% endblock %}
@@ -25,7 +25,7 @@
 			</div>
 			<div class="box-body no-padding">
 				<ol class="sortable vertical" id="root-list">
-					{% include "EMSCoreBundle:view:custom/hierarchical_item.html.twig" with {
+                    {% include "@EMSCore/view/custom/hierarchical_item.html.twig" with {
                 		parent: parent._source,
                 		view: view,
                 	} %}
@@ -57,7 +57,7 @@
 
 
 {% block javascripts %}
-	{% include 'EMSCoreBundle:app:menu.html.twig' with {
+    {% include '@EMSCore/app/menu.html.twig' with {
 		'item':  'data-view-'~ contentType.id ~ '-' ~ view.id
 	}%}
 

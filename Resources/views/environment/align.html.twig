@@ -1,4 +1,4 @@
-{% extends 'EMSCoreBundle::base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}{{ 'Align Environments'|trans }}{% endblock %}
 {% block pagetitle %}{{ 'Align Environments'|trans }}{% endblock %} 
@@ -61,7 +61,7 @@
 
         <h3 class="box-title">Compare "{{ environment }}" and "{{ withEnvironment }}"</h3> <small>{{ total }} difference(s)</small>
 
-				{% include 'EMSCoreBundle:elements:pagination.html.twig' with {
+          {% include '@EMSCore/elements/pagination.html.twig' with {
 					'lastPage': lastPage,
 					'currentPage': page,
 					'currentFilters': app.request.query,
@@ -83,23 +83,23 @@
                 	<a href="#" onclick="javascript: $('.item-to-align').prop('checked', false); return false;"><i class="fa fa-square-o"></i></a>
                 </th>
             {% endif %}
-			{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {
+              {% include '@EMSCore/elements/sortable-th.html.twig' with {
                  'title': 'Content type'|trans,
                  'field': 'contentype',
             } %}
 {#               {% set href=path(paginationPath, app.request.query.all|merge({'orderField': 'contentype', 'orderDirection': orderCTDirection})) %}#}
-{#             <th>{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {#}
+              {#             <th>{% include '@EMSCore/elements/sortable-th.html.twig' with {#}
 {#              'orderHref': href,#}
 {#              'orderDescription': orderCTDescription,#}
 {#              'orderTitle': 'Content type',#}
 {#              'orderIcon': orderCTIcon#}
 {#             } %}</th>#}
-			{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {
+              {% include '@EMSCore/elements/sortable-th.html.twig' with {
                  'title': 'Label'|trans,
                  'field': 'label',
             } %}
 {#               {% set href=path(paginationPath, app.request.query.all|merge({'orderField': 'label', 'orderDirection': orderLabelFieldDirection})) %}#}
-{#             <th>{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {#}
+              {#             <th>{% include '@EMSCore/elements/sortable-th.html.twig' with {#}
 {#              'orderHref': href,#}
 {#              'orderDescription': orderLabelFieldDescription,#}
 {#              'orderTitle': 'Label',#}
@@ -153,7 +153,7 @@
         				{% endif %}
         			{% endif %}	
               {% if item.objectEnvironment %}
-                {% include 'EMSCoreBundle:elements:object-toolbar.html.twig' with {
+                  {% include '@EMSCore/elements/object-toolbar.html.twig' with {
                   'object':  item.objectEnvironment,
                   'environment': fromEnv,
                   'contentType': item.contentType,
@@ -185,7 +185,7 @@
         					({{ maxrev[1] }})
         				{% endif %}
                 {% if item.objectWithEnvironment %}
-                  {% include 'EMSCoreBundle:elements:object-toolbar.html.twig' with {
+                    {% include '@EMSCore/elements/object-toolbar.html.twig' with {
                     'object':  item.objectWithEnvironment,
                     'environment': withEnv,
                     'contentType': item.contentType,
@@ -237,8 +237,8 @@
               	    {% endif %}
               	</div>
             {% endif %}
-    
-    		{% include 'EMSCoreBundle:elements:pagination.html.twig' with {
+
+              {% include '@EMSCore/elements/pagination.html.twig' with {
     			'lastPage': lastPage,
     			'currentPage': page,
     			'currentFilters': app.request.query,
@@ -259,7 +259,7 @@
 
 
 {% block javascripts %}
-	{% include 'EMSCoreBundle:app:menu.html.twig' with {
+    {% include '@EMSCore/app/menu.html.twig' with {
 		'item':  'environment-align'
 	}%}
 {% endblock %}	

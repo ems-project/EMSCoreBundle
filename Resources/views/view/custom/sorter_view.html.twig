@@ -1,4 +1,4 @@
-{% extends 'EMSCoreBundle::base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}{{ view.name }} of {{contentType.singularName}}{% endblock %}
 {% block pagetitle %}{{ view.name }} of {{contentType.singularName}}{% endblock %} 
@@ -40,7 +40,7 @@
 
 
 {% block javascripts %}
-	{% include 'EMSCoreBundle:app:menu.html.twig' with {
+    {% include '@EMSCore/app/menu.html.twig' with {
 		'item':  'data-view-'~ contentType.id ~ '-' ~ view.id
 	}%}
 <script type="text/javascript">

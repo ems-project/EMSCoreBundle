@@ -1,4 +1,4 @@
-{% extends 'EMSCoreBundle::base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}Recursive view of the {{ object._type }} : {{ object._id }}{% endblock %}
 {% block pagetitle %}
@@ -19,7 +19,7 @@
 {% block subtitle %}{% endblock %} 
 
 {% block body %}
-{% import "EMSCoreBundle:macros:data-field-type.html.twig" as macros %}
+    {% import "@EMSCore/macros/data-field-type.html.twig" as macros %}
 <div class="row raw-view">
 	<div class="col-xs-12">
 		<div class="box">
@@ -27,12 +27,12 @@
 				<h3 class="box-title">Recursif view</h3>
 			</div>
 			<div class="box-body">
-				{% import "EMSCoreBundle:macros:view.html.twig" as macros %}
+                {% import "@EMSCore/macros/view.html.twig" as macros %}
 				{{ macros.recursifArray(object) }}
 			</div>
 			<!-- /.box-body -->
 			<div class="box-footer">
-			  	{% include 'EMSCoreBundle:elements:object-toolbar.html.twig' with {
+                {% include '@EMSCore/elements/object-toolbar.html.twig' with {
 					'object':  object,
 					'contentType': contentType,
 					'recursiveView': true
@@ -45,7 +45,7 @@
 
 {% block javascripts %}
 	{% if contentType %}
-		{% include 'EMSCoreBundle:app:menu.html.twig' with {
+        {% include '@EMSCore/app/menu.html.twig' with {
 			'item':  'data-index-' ~ contentType.id
 		}%}
 	{% endif %}

@@ -5,8 +5,8 @@
     	{% if data %}
     		{% set key = child|split(':') %}
     	    {% set contentType = key[0]|get_content_type %}
- 
-    		{% include "EMSCoreBundle:view:custom/hierarchical_add_item.html.twig" with {
+
+            {% include "@EMSCore/view/custom/hierarchical_add_item.html.twig" with {
         		parent: data,
             	view: view,
             	key: key,

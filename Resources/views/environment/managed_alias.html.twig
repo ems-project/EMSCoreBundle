@@ -1,4 +1,4 @@
-{% extends 'EMSCoreBundle::base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% if new %}
     {% set title = 'Add managed alias'|trans %}
@@ -64,7 +64,7 @@
 
 
 {% block javascripts %}
-    {% include 'EMSCoreBundle:app:menu.html.twig' with {
+    {% include '@EMSCore/app/menu.html.twig' with {
         'item':  'environment-managed-alias'
     }%}
     <script type="text/javascript">

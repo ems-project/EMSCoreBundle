@@ -233,7 +233,7 @@ desired effect
 		{% if app.user %}
 		  	{{ render(controller('EMSCoreBundle:TwigElements:sideMenu')) }}
 		{% else %}
-			{% include 'EMSCoreBundle:elements:side-menu.html.twig' with {
+            {% include '@EMSCore/elements/side-menu.html.twig' with {
 				'contentTypes': get_content_types()
 			} %}
         {% endif %} 

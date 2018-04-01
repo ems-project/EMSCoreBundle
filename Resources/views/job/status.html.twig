@@ -1,4 +1,4 @@
-{% extends 'EMSCoreBundle::base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}Status of the job #{{ job.id }}{% endblock %}
 {% block pagetitle %}Status of the job #{{ job.id }}{% endblock %} 
@@ -68,17 +68,17 @@
 				<!-- /.box-body -->
 				<div class="box-footer">
 					<div class="btn-group">
-						{% include 'EMSCoreBundle:elements:get-button.html.twig' with {
+                        {% include '@EMSCore/elements/get-button.html.twig' with {
 							'url':  path('job.status', {'job': job.id}),
 							'label': 'Refresh page',
 							'icon': 'refresh'
 						}%}
-						{% include 'EMSCoreBundle:elements:get-button.html.twig' with {
+                        {% include '@EMSCore/elements/get-button.html.twig' with {
 							'url':  path('job.index'),
 							'label': 'Job\'s list',
 							'icon': 'chevron-circle-right'
 						}%}
-						{% include 'EMSCoreBundle:elements:post-button.html.twig' with {
+                        {% include '@EMSCore/elements/post-button.html.twig' with {
 							'url':  path('job.delete', {'job': job.id}),
 							'message': 'Do you confirm ?',
 							'label': 'Delete',
@@ -95,7 +95,7 @@
 
 
 {% block javascripts %}
-	{% include 'EMSCoreBundle:app:menu.html.twig' with {
+    {% include '@EMSCore/app/menu.html.twig' with {
 		'item':  'job-index'
 	}%}
 	

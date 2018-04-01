@@ -1,4 +1,4 @@
-{% extends 'EMSCoreBundle::base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}View {{ template.name }} of the {{ object._type }} : {{ object._id }}{% endblock %}
 {% block pagetitle %}
@@ -33,7 +33,7 @@
 
 
 {% block body %}
-{% import "EMSCoreBundle:macros:data-field-type.html.twig" as macros %}
+    {% import "@EMSCore/macros/data-field-type.html.twig" as macros %}
 <div class="row">
 	<div class="col-xs-12">
 		<div class="box">
@@ -66,7 +66,7 @@
 			</div>
 			<!-- /.box-body -->
 			<div class="box-footer no-print">
-			  	{% include 'EMSCoreBundle:elements:object-toolbar.html.twig' with {
+                {% include '@EMSCore/elements/object-toolbar.html.twig' with {
 					'object':  object,
 					'contentType': contentType,
 					'recursiveView': true
@@ -75,7 +75,7 @@
 				<div class="btn-toolbar pull-right" role="toolbar" style="margin: 0;">
 					<div class="btn-group">
 						{% if template.body and template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::EXPORT') %}
-							{% include 'EMSCoreBundle:elements:get-button.html.twig' with {
+                            {% include '@EMSCore/elements/get-button.html.twig' with {
 													'url':  path('data.customview', {
 															'environmentName': environment.name , 
 															'templateId': template.id, 
@@ -95,7 +95,7 @@
 {% endblock %}
 
 {% block javascripts %}
-	{% include 'EMSCoreBundle:app:menu.html.twig' with {
+    {% include '@EMSCore/app/menu.html.twig' with {
 		'item':  'data-index-' ~ contentType.id
 	}%}
 {% endblock %}	

@@ -54,9 +54,9 @@
 
 
 {% block javascripts %}
-	{% include 'EMSCoreBundle:app:menu.html.twig' with {
+    {% include '@EMSCore/app/menu.html.twig' with {
 		'item':  'wysiwyg-index'
 	}%}
-	{% include 'EMSCoreBundle:js:code-editor.html.twig' %}
+    {% include '@EMSCore/js/code-editor.html.twig' %}
 {% endblock %}
 	

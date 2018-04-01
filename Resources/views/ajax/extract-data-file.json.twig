@@ -1,4 +1,4 @@
-{% extends 'EMSCoreBundle:ajax:notification.json.twig' %}
+{% extends '@EMSCore/ajax/notification.json.twig' %}
 
 {% block body %}
 	"content": {{ (data.content is defined ? data.content : '')|json_encode|raw }},

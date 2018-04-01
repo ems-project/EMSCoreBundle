@@ -1,4 +1,4 @@
-{% extends 'EMSCoreBundle::base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}Edit the environment {{environment.name}}{% endblock %}
 {% block pagetitle %}Edit the environment {{environment.name}}{% endblock %} 
@@ -61,7 +61,7 @@
 {% endblock %} 
 
 {% block javascripts %}
-	{% include 'EMSCoreBundle:app:menu.html.twig' with {
+    {% include '@EMSCore/app/menu.html.twig' with {
 		'item':  'environment-list'
 	}%}
 	

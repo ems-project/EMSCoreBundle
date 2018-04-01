@@ -1,4 +1,4 @@
-{% extends 'EMSCoreBundle::base.html.twig' %}
+{% extends '@EMSCore/base.html.twig' %}
 {% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}{{ 'Edit a Filter'|trans }}{% endblock %}
@@ -13,7 +13,7 @@
 
 {% block body %}
 
-    {% include "EMSCoreBundle:filter:form.html.twig" with {
+    {% include "@EMSCore/filter/form.html.twig" with {
     	form: form,
     	label: 'Edit a Filter'|trans,
     } %}
@@ -22,7 +22,7 @@
 
 {% block javascripts %}
 
-    {% include "EMSCoreBundle:filter:form_js.html.twig" with {
+    {% include "@EMSCore/filter/form_js.html.twig" with {
     } %}
 
 {% endblock %}

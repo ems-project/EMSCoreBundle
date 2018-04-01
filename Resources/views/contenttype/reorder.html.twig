@@ -1,4 +1,4 @@
-{% extends 'EMSCoreBundle::base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %} {{ 'Reorder the content type "%content_type%"'|trans({'%content_type%': contentType.singularName }) }}{% endblock %}
 {% block pagetitle %}{{ 'Reorder the content type "%content_type%"'|trans({'%content_type%': contentType.singularName }) }}{% endblock %} 
@@ -24,7 +24,7 @@
 			</div>
 			<div class="box-body no-padding">
 				<ol class="sortable vertical" id="root-list">
-					{% include "EMSCoreBundle:contenttype:reorder_item.html.twig" with {
+                    {% include "@EMSCore/contenttype/reorder_item.html.twig" with {
                 		parent: contentType.fieldType
                 	} %}
 				</ol>
@@ -53,8 +53,8 @@
 {% endblock %} 
 
 {% block javascripts %}
-	
-	{% include 'EMSCoreBundle:app:menu.html.twig' with {
+
+    {% include '@EMSCore/app/menu.html.twig' with {
 		'item':  'contenttype-list'
 	}%}
 	

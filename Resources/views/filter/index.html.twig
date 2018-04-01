@@ -1,4 +1,4 @@
-{% extends 'EMSCoreBundle::base.html.twig' %}
+{% extends '@EMSCore/base.html.twig' %}
 {% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}{{ 'Filters'|trans }}{% endblock %}
@@ -29,7 +29,7 @@
 			<div class="box-body">
     			{% if paging.lastPage > 1 %}
     				<div class="box-header">
-        				{% include 'EMSCoreBundle:elements:pagination.html.twig' with {
+                        {% include '@EMSCore/elements/pagination.html.twig' with {
         					'paging': paging,
         					'currentFilters': app.request.query,
         					'paginationPath': paginationPath,
@@ -43,21 +43,21 @@
 						<thead>
 							<tr role="row">
 								<th class="nowrap text-center" style="width: 10px">{{ '#'|trans }}</th>
-								{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {
+                                {% include '@EMSCore/elements/sortable-th.html.twig' with {
                                  'title': 'Name'|trans,
                                  'field': 'name',
                                  'orderField': paging.orderField,
                                  'orderDirection': paging.orderDirection,
                                  'paginationPath': paging.paginationPath,
                                 } %}
-								{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {
+                                {% include '@EMSCore/elements/sortable-th.html.twig' with {
                                  'title': 'Label'|trans,
                                  'field': 'label',
                                  'orderField': paging.orderField,
                                  'orderDirection': paging.orderDirection,
                                  'paginationPath': paging.paginationPath,
                                 } %}
-{# 								{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {#}
+                                {# 								{% include '@EMSCore/elements/sortable-th.html.twig' with {#}
 {#                                  'title': 'Dirty'|trans,#}
 {#                                  'field': 'dirty',#}
 {#                                  'orderField': paging.orderField,#}
@@ -76,12 +76,12 @@
 {# 								<td><i class="fa fa-{% if filter.dirty %}check-{% endif %}square-o"></i></td>#}
 								<td class="">
 									<div class="btn-group">
-										{% include 'EMSCoreBundle:elements:get-button.html.twig' with {
+                                        {% include '@EMSCore/elements/get-button.html.twig' with {
 											'url':  path('ems_filter_edit', {'filter': filter.id}),
 											'label': 'Edit',
 											'icon': 'pencil'
 										}%}
-										{% include 'EMSCoreBundle:elements:post-button.html.twig' with {
+                                        {% include '@EMSCore/elements/post-button.html.twig' with {
 											'url': path('ems_filter_delete', {'filter': filter.id}),
 											'message': 'Delete the filter ' ~ filter.name ~ ' ?',
 											'label': 'Delete',

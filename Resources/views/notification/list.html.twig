@@ -81,7 +81,7 @@
 	</div>
 	
 	<div class="col-md-9 col-sm-12">
-		{% include 'EMSCoreBundle:notification:'~folder~'.html.twig' with {
+        {% include '@EMSCore/notification/'~folder~'.html.twig' with {
 			'lastPage': lastPage,
 			'currentPage': page,
 			'currentFilters': app.request.query,

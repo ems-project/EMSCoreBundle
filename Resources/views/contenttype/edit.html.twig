@@ -1,4 +1,4 @@
-{% extends 'EMSCoreBundle::base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}Edit "{{ contentType.singularName }}"  content type{% endblock %}
 {% block pagetitle %}Edit "{{ contentType.singularName }}" content type{% endblock %} 
@@ -86,8 +86,8 @@
     								</a>
     							</h3>
     						</div>
-    						
-    						{% import "EMSCoreBundle:macros:view.html.twig" as macros %}
+
+                            {% import "@EMSCore/macros/view.html.twig" as macros %}
     						<div class="panel-body collapse" id="mapping-info">
     							{{ macros.renderMapping(mapping) }}
     						</div>
@@ -118,7 +118,7 @@
 
 {% block javascripts %}
 
-	{% include 'EMSCoreBundle:app:menu.html.twig' with {
+    {% include '@EMSCore/app/menu.html.twig' with {
 		'item':  'contenttype-list'
 	}%}
 	
@@ -132,6 +132,6 @@
 </script>
 
 
-{% include 'EMSCoreBundle:js:code-editor.html.twig' %}
+    {% include '@EMSCore/js/code-editor.html.twig' %}
 	
 {% endblock %}	

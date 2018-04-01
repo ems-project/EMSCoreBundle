@@ -1,4 +1,4 @@
-{% extends 'EMSCoreBundle:ajax:notification.json.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/ajax/notification.json.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 {% block body %}
 "events": [
 {% for item in data.hits.hits %}{

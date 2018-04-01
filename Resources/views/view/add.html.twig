@@ -1,4 +1,4 @@
-{% extends 'EMSCoreBundle::base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}Add a new view for {{contentType.name}}{% endblock %}
 {% block pagetitle %}Add a new view for {{contentType.name}}{% endblock %} 
@@ -39,8 +39,8 @@
 
 
 {% block javascripts %}
-	{% include 'EMSCoreBundle:js:code-editor.html.twig' %}
-	{% include 'EMSCoreBundle:app:menu.html.twig' with {
+    {% include '@EMSCore/js/code-editor.html.twig' %}
+    {% include '@EMSCore/app/menu.html.twig' with {
 		'item':  'contenttype-index'
 	}%}
 {% endblock %}	

@@ -4,9 +4,9 @@
 			<h3 class="box-title">
 				<i class="fa fa-envelope-o"></i> Sent
 			</h3>
-			
-			
-		    {% include 'EMSCoreBundle:elements:pagination.html.twig' with {
+
+
+            {% include '@EMSCore/elements/pagination.html.twig' with {
 				'lastPage': lastPage,
 				'currentPage': page,
 				'currentFilters': app.request.query,
@@ -69,14 +69,14 @@
 				
 									<td>
 										<div class="btn-group">
-											{% include 'EMSCoreBundle:elements:post-button.html.twig' with {
+                                            {% include '@EMSCore/elements/post-button.html.twig' with {
 												'url':  path('notification.cancel', {'notification': notification.id} ),
 												'label': 'Cancel',
 												'icon': 'ban',
 												'message': 'Do you confirm?'
 											}%}
-											
-											{% include 'EMSCoreBundle:elements:object-views-button.html.twig' with { 
+
+                                            {% include '@EMSCore/elements/object-views-button.html.twig' with {
 												'object':  notification.revision.buildObject,
 												'contentType': notification.revision.contentType,
 												'environment': notification.environment,

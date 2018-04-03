@@ -392,22 +392,13 @@
 			data-index="0"
 		{% endif %}>
 		{% set tempId = form.vars.name~'_'~random() %}
-		<div 
-		  	class="panel-body{% if form.vars.collapsible %} collapse{% endif %}{% if form.vars.sortable %} ems-sortable{% endif %}" 
-		  	id="{{ tempId }}">
+		<div class="panel-body ems-sortable">
 		    {{- form_widget(form) -}}
 		</div>
-		
-		<div class="">
+		<div>
 	  		<div class="btn-group">
 		  		{% if not form.vars.disabled %}
 					<a href="#" class="btn btn-primary add-content-button  btn-sm"><i class="fa fa-plus"></i> {{ 'Add'|trans }}</a>
-				{% endif %}
-				{% if form.vars.collapsible %}
-					<a class="toggle-button pull-right btn btn-primary btn-sm" role="button" data-toggle="collapse" href="#{{ tempId }}" 
-						aria-expanded="false" aria-controls="{{ tempId }}" data-toggle-contain="Hide {{ '<i class="fa fa-chevron-up"></i>'|e }}">
-						Show <i class="fa fa-chevron-right"></i>
-					</a>
 				{% endif %}
 			</div>
 		</div>
@@ -415,12 +406,24 @@
 {%- endblock collectionfieldtype_widget %}
 
 {% block collectionfieldtype_row -%}
+    {% set collapsible = form.vars.data.fieldType.displayOptions.collapsible|default(false) %}
 {# <div class="form-group{% if class %} {{ class }}{% else %} col-xs-12 {% endif %}{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %}">#}
-	<div class="panel panel-default">
+	<div class="panel panel-default {% if collapsible %}collapsible-collection{% endif %}">
 		<div class="panel-heading">
 	  		{{- form_label(form) -}}
+
+            {% if collapsible %}
+				<div class="pull-right">
+					<div class="btn-group toggle-group" role="group">
+						<button type="button" title="collapse" aria-expanded="false" class="btn btn-sm button-collapse"></button>
+						<button type="button" title="collapse all" aria-expanded="false" class="btn btn-sm button-collapse-all"></button>
+					</div>
+				</div>
+				<div class="clearfix"></div>
+            {% endif %}
+
 	  	</div>
-	  	<div  class="panel-body">
+	  	<div  class="panel-body {% if collapsible %}collapse{% endif %}">
 			{{- form_widget(form) -}}
 		</div>
 		{{- form_errors(form) -}}
@@ -429,16 +432,27 @@
 {% endblock collectionfieldtype_row %}
 
 {% block collectionitemtype_row -%}
+{% set collapsible = form.parent.vars.data.fieldType.displayOptions.collapsible|default(false) %}
+
 <div class="form-group collection-item-panel{% if form.parent.vars.itemBootstrapClass %} {{ form.parent.vars.itemBootstrapClass }}{% else %} col-xs-12 {% endif %}{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %}">
 	<div class="panel panel-default">
 		<div class="panel-heading ems-handle">
 			{{ form_label(form) }}
 	  		<div class="btn-group pull-right">
 	  			{{- form_widget(form.remove_collection_item) -}}
+                {% if collapsible %}
+                    <div class="pull-right">
+                        <div class="btn-group toggle-group" role="group">
+                            <button type="button" title="collapse" aria-expanded="false" class="btn btn-sm button-collapse"></button>
+                            <button type="button" title="collapse all" aria-expanded="false" class="btn btn-sm button-collapse-all"></button>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                {% endif %}
 			</div>
 	  	</div>		
 		
-	  	<div class="panel-body">
+	  	<div class="panel-body {% if collapsible %}collapse{% endif %}">
 	  		<div class="row">
 	  		{% for child in form.iterator %}
 				<div class="{% if child.vars.data.fieldType.options.displayOptions.class is defined %}{{ child.vars.data.fieldType.options.displayOptions.class }}{% endif %}">

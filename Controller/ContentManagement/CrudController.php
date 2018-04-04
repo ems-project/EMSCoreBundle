@@ -44,14 +44,14 @@ class CrudController extends AppController
 				$this->addFlash('error', 'The revision for contenttype '. $contentType->getName() .' can not be created. Reason:'.$e->getMessage());
 			}
 			$isCreated = false;
-			return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
+			return $this->render( '@EMSCore/ajax/notification.json.twig', [
 					'success' => $isCreated,
 				    'ouuid' => $ouuid,
 					'type' => $contentType->getName(),
 			]);
 		}
 		
-		return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
+		return $this->render( '@EMSCore/ajax/notification.json.twig', [
 				'success' => $isCreated,
 				'revision_id' => $newRevision->getId(),
 			    'ouuid' => $newRevision->getOuuid(),
@@ -79,14 +79,14 @@ class CrudController extends AppController
 			} else {
 				$this->addFlash('error', 'The revision for contenttype '. $contentType->getName() .' can not be found. Reason: '.$e->getMessage());
 			}
-			return $this->render( 'EMSCoreBundle:ajax:revision.json.twig', [
+			return $this->render( '@EMSCore/ajax/revision.json.twig', [
 					'success' => $isFound,
 					'ouuid' => $ouuid,
 					'type' => $contentType->getName(),
 			]);
 		}
 		
-		return $this->render( 'EMSCoreBundle:ajax:revision.json.twig', [
+		return $this->render( '@EMSCore/ajax/revision.json.twig', [
 				'success' => $isFound,
 				'revision' => $revision->getRawData(),
 				'ouuid' => $revision->getOuuid(),
@@ -123,7 +123,7 @@ class CrudController extends AppController
 			}
 			$out['success'] = false;
 		}
-		return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', $out);
+		return $this->render( '@EMSCore/ajax/notification.json.twig', $out);
 	}
 	
 	/**
@@ -149,13 +149,13 @@ class CrudController extends AppController
 			} else {
 				 $this->addFlash('error', 'The revision ' . $id . ' for contenttype '. $contentType->getName() .' can not be discarded. Reason: '.$e->getMessage());
 			}
-			return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
+			return $this->render( '@EMSCore/ajax/notification.json.twig', [
 					'success' => $isDiscard,
 					'type' => $contentType->getName(),
 					'revision_id' => $id,
 			]);
 		}
-		return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
+		return $this->render( '@EMSCore/ajax/notification.json.twig', [
 				'success' => $isDiscard,
 				'type' => $contentType->getName(),
 				'revision_id' => $revision->getId(),
@@ -192,7 +192,7 @@ class CrudController extends AppController
 				$this->addFlash('error', 'The revision ' . $id . ' can not be deleted. Reason: '.$e->getMessage());
 			}
 		}
-		return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
+		return $this->render( '@EMSCore/ajax/notification.json.twig', [
 				'success' => $isDeleted,
 				'ouuid' => $ouuid,
 				'type' => $contentType->getName(),
@@ -227,14 +227,14 @@ class CrudController extends AppController
 			} else {
 				 $this->addFlash('error', 'The revision ' . $ouuid . ' for contenttype '. $contentType->getName() .' can not be replaced. Reason: '.$e->getMessage());
 			}
-			return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
+			return $this->render( '@EMSCore/ajax/notification.json.twig', [
 					'success' => $isReplaced,
 					'ouuid' => $ouuid,
 					'type' => $contentType->getName(),
 					'revision_id' => null,
 			]);
 		}
-		return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
+		return $this->render( '@EMSCore/ajax/notification.json.twig', [
 				'success' => $isReplaced,
 				'ouuid' => $ouuid,
 				'type' => $contentType->getName(),
@@ -270,14 +270,14 @@ class CrudController extends AppController
 				 $this->addFlash('error', 'The revision ' . $ouuid . ' for contenttype '. $contentType->getName() .' can not be merged. Reason: '.$e->getMessage());
 			}
 			$isMerged = false;
-			return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
+			return $this->render( '@EMSCore/ajax/notification.json.twig', [
 					'success' => $isMerged,
 					'ouuid' => $ouuid,
 					'type' => $contentType->getName(),
 					'revision_id' => null,
 			]);
 		}
-		return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
+		return $this->render( '@EMSCore/ajax/notification.json.twig', [
 				'success' => $isMerged,
 				'ouuid' => $ouuid,
 				'type' => $contentType->getName(),
@@ -290,7 +290,7 @@ class CrudController extends AppController
      * @Method({"GET"})
 	 */
 	public function testAction(Request $request) {
-		return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
+		return $this->render( '@EMSCore/ajax/notification.json.twig', [
 				'success' => true,
 		]);
 	}
@@ -301,7 +301,7 @@ class CrudController extends AppController
 	 * @Method({"GET"})
 	 */
 	public function getContentTypeInfo(ContentType $contentType) {
-		return $this->render( 'EMSCoreBundle:ajax:contenttype_info.json.twig', [
+		return $this->render( '@EMSCore/ajax/contenttype_info.json.twig', [
 				'success' => true,
 				'contentType' => $contentType,
 		]);

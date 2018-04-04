@@ -22,7 +22,7 @@
 	</div>
 	{% if contentType.name == view.contentType.name %}
 		<ol>
-    		{% include "EMSCoreBundle:view:custom/hierarchical_item.html.twig" with {
+            {% include "@EMSCore/view/custom/hierarchical_item.html.twig" with {
         		parent: data,
             	view: view,
         	} %}

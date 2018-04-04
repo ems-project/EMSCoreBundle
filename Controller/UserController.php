@@ -3,6 +3,7 @@ namespace EMS\CoreBundle\Controller;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\AuthToken;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
@@ -24,7 +25,7 @@ class UserController extends AppController
 	 */
 	public function indexAction(Request $request)
 	{
-		return $this->render( 'EMSCoreBundle:user:index.html.twig', [
+		return $this->render( '@EMSCore/user/index.html.twig', [
 				'paging' => $this->getHelperService()->getPagingTool('EMSCoreBundle:User', 'ems.user.index', 'username'),
 		] );
 	}
@@ -45,25 +46,33 @@ class UserController extends AppController
 		
 	
 		$form = $this->createFormBuilder($user)
-		->add('email', EmailType::class, array('label' => 'form.email'))
+		->add('email', EmailType::class, array(
+		    'label' => 'form.email',
+            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
+        ))
 		->add('username', null, array(
-				'label' => 'form.username', 
-				'disabled' => true
+            'label' => 'form.username',
+            'disabled' => true,
+            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN
 		))
 		->add('emailNotification', CheckboxType::class, [
-				'required' => false,
+            'required' => false,
+            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN
 		])
 		->add('displayName', null, array(
-				'label' => 'Display name',
+            'label' => 'Display name',
+            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN
 		))
 		->add('circles', ObjectPickerType::class, [
-				'multiple' => TRUE,
-				'type' => $this->container->getParameter('ems_core.circles_object'),
-				'dynamicLoading' => true
+            'multiple' => TRUE,
+            'type' => $this->container->getParameter('ems_core.circles_object'),
+            'dynamicLoading' => true,
+            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN
 				
 		])
 		->add('enabled', CheckboxType::class, [
-				'required' => false,
+            'required' => false,
+            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN
 		])
 // 		->add('locked')
 // 		->add('expiresAt', DateType::class, array(
@@ -82,34 +91,40 @@ class UserController extends AppController
 // 				),
 // 		))
 		->add('allowedToConfigureWysiwyg', CheckboxType::class, [
-				'required' => false,
+		    'required' => false,
+            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
 		])
 		->add('wysiwygProfile', EntityType::class, [
-				'required' => false,
-				'label' => 'WYSIWYG profile',
-				'class' => 'EMSCoreBundle:WysiwygProfile',
-				'choice_label' => 'name',
-				'query_builder' => function (EntityRepository $er) {
-					return $er->createQueryBuilder('p')->orderBy('p.orderKey', 'ASC');
-				},
+            'required' => false,
+            'label' => 'WYSIWYG profile',
+            'class' => 'EMSCoreBundle:WysiwygProfile',
+            'choice_label' => 'name',
+            'query_builder' => function (EntityRepository $er) {
+                return $er->createQueryBuilder('p')->orderBy('p.orderKey', 'ASC');
+            },
+            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
 		])
 		->add('wysiwygOptions', TextareaType::class, [
-				'required' => false,
-				'label' => 'WYSIWYG custom options',
-				'attr' => [
-					'rows' => 8,
-				]
+            'required' => false,
+            'label' => 'WYSIWYG custom options',
+            'attr' => [
+                'rows' => 8,
+            ],
+            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN
 		])
 		->add('roles', ChoiceType::class, array('choices' => $this->getExistingRoles(),
 	        'label' => 'Roles',
 	        'expanded' => true,
 	        'multiple' => true,
-	        'mapped' => true,))
+	        'mapped' => true,
+            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN
+        ))
 	    ->add ( 'update', SubmitEmsType::class, [ 
-				'attr' => [ 
-						'class' => 'btn-primary btn-sm ' 
-				],
-				'icon' => 'fa fa-save',
+            'attr' => [
+                    'class' => 'btn-primary btn-sm '
+            ],
+            'icon' => 'fa fa-save',
+            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
 		] )
 		->getForm();
 		
@@ -124,7 +139,7 @@ class UserController extends AppController
 			return $this->redirectToRoute('ems.user.index');
 		}
 	
-		return $this->render('EMSCoreBundle:user:edit.html.twig', array(
+		return $this->render('@EMSCore/user/edit.html.twig', array(
 				'form' => $form->createView(),
 				'user' => $user
 		));
@@ -249,7 +264,7 @@ class UserController extends AppController
 		$em->persist($user);
 		$em->flush();
 		
-		return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
+		return $this->render( '@EMSCore/ajax/notification.json.twig', [
 				'success' => true,
 		] );
 	}

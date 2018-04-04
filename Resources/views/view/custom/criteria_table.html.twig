@@ -1,4 +1,4 @@
-{% extends 'EMSCoreBundle::base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}{{ view.name }} for {{view.contentType.pluralName}}{% endblock %}
 {% block pagetitle %}{{ view.name }} for {{view.contentType.pluralName}}{% endblock %} 
@@ -43,7 +43,7 @@
 				</h3>
 				
 				<div class="btn-group  pull-right">
-					{% include 'EMSCoreBundle:elements:post-button.html.twig' with { 
+                    {% include '@EMSCore/elements/post-button.html.twig' with {
 						'url': app.request.requestUri,
 						'label': 'Update filters',
 						'icon': 'sliders',
@@ -67,7 +67,7 @@
 											{% endif %}
 											<th rowspan="1" colspan="1" nowrap>
 												{% if authorized %}
-													{% include 'EMSCoreBundle:elements:post-button.html.twig' with { 
+                                                    {% include '@EMSCore/elements/post-button.html.twig' with {
 														'url': app.request.requestUri,
 														'destinationFormName': 'criteria_filter',
 														'action': path('views.criteria.align', {view: view.id}),
@@ -101,7 +101,7 @@
 										<tr role="row">
 											<th nowrap>
 											{% if authorized %}
-												{% include 'EMSCoreBundle:elements:post-button.html.twig' with { 
+                                                {% include '@EMSCore/elements/post-button.html.twig' with {
 													'url': app.request.requestUri, 
 													'rawlabel': attribute(rows, rowIdx).label|raw,
 													'destinationFormName': 'criteria_filter',
@@ -128,7 +128,7 @@
 											{% endfor %}
 											<th nowrap>
 												{% if authorized %}
-													{% include 'EMSCoreBundle:elements:post-button.html.twig' with { 
+                                                    {% include '@EMSCore/elements/post-button.html.twig' with {
 														'url': app.request.requestUri, 
 														'rawlabel': attribute(rows, rowIdx).label|raw,
 														'destinationFormName': 'criteria_filter',
@@ -152,7 +152,7 @@
 											{% endif %}
 											<th rowspan="1" colspan="1" nowrap>
 												{% if authorized %}
-													{% include 'EMSCoreBundle:elements:post-button.html.twig' with { 
+                                                    {% include '@EMSCore/elements/post-button.html.twig' with {
 														'url': app.request.requestUri,
 														'destinationFormName': 'criteria_filter',
 														'action': path('views.criteria.align', {view: view.id}),
@@ -180,7 +180,7 @@
 
 
 {% block javascripts %}
-	{% include 'EMSCoreBundle:app:menu.html.twig' with {
+    {% include '@EMSCore/app/menu.html.twig' with {
 		'item':  'data-view-'~ view.contentType.id ~ '-' ~ view.id
 	}%}	
 	

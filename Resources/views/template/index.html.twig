@@ -1,4 +1,4 @@
-{% extends 'EMSCoreBundle::base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}List templates for {{ contentType.name }}{% endblock %}
 {% block pagetitle %}List templates for content type {{ contentType.name }}{% endblock %} 
@@ -36,12 +36,12 @@
 								<td>
 								
 									<div class="btn-group">
-										{% include 'EMSCoreBundle:elements:get-button.html.twig' with {
+                                        {% include '@EMSCore/elements/get-button.html.twig' with {
 											'url':  path('template.edit', {'id': template.id}),
 											'label': 'Edit',
 											'icon': 'pencil'
 										}%}
-										{% include 'EMSCoreBundle:elements:post-button.html.twig' with {
+                                        {% include '@EMSCore/elements/post-button.html.twig' with {
 											'url': path('template.remove', {'id': template.id}),
 											'message': 'Delete the template ' ~ template.name ~ ' ?',
 											'label': 'Delete',
@@ -66,7 +66,7 @@
 
 
 {% block javascripts %}
-	{% include 'EMSCoreBundle:app:menu.html.twig' with {
+    {% include '@EMSCore/app/menu.html.twig' with {
 		'item':  'contenttype-list'
 	}%}
 {% endblock %}	

@@ -1,4 +1,4 @@
-{% extends 'EMSCoreBundle::base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}Draft in progress for object {{ contentType.singularName }}{% endblock %}
 {% block pagetitle %}Draft in progress for object {{ contentType.singularName }}{% endblock %} 
@@ -55,7 +55,7 @@
 								
 									<div class="btn-group">
 										{% if revision.ouuid %}
-											{% include 'EMSCoreBundle:elements:get-button.html.twig' with { 
+                                            {% include '@EMSCore/elements/get-button.html.twig' with {
 													'url': path('data.revisions', {
 														'type': revision.contentType.name,
 														'ouuid': revision.ouuid,
@@ -65,12 +65,12 @@
 													'icon': 'eye' }%}
 										{% endif %}
 										{% if not revision.contentType.circlesField or attribute(revision.rawData, revision.contentType.circlesField) is not defined or attribute(revision.rawData, revision.contentType.circlesField)|in_my_circles %}
-											{% include 'EMSCoreBundle:elements:get-button.html.twig' with {
+                                            {% include '@EMSCore/elements/get-button.html.twig' with {
 												'url':  path('revision.edit', {'revisionId': revision.id}),
 												'label': 'Edit draft'|trans,
 												'icon': 'pencil'
 											}%}
-											{% include 'EMSCoreBundle:elements:post-button.html.twig' with {
+                                            {% include '@EMSCore/elements/post-button.html.twig' with {
 												'url': path('revision.discard', {'revisionId': revision.id}),
 												'message': 'Discard this draft ?'|trans,
 												'label': 'Discard'|trans,
@@ -102,7 +102,7 @@
 
 
 {% block javascripts %}
-	{% include 'EMSCoreBundle:app:menu.html.twig' with {
+    {% include '@EMSCore/app/menu.html.twig' with {
 		'item':  'data-draft-' ~ contentType.id
 	}%}
 {% endblock %}	

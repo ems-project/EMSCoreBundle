@@ -56,7 +56,7 @@ class I18nController extends Controller
         
         $i18ns = $this->getI18nService()->findAll(($page-1)*$paging_size, $paging_size, $filters);
         
-        return $this->render('EMSCoreBundle:i18n:index.html.twig', array(
+        return $this->render('@EMSCore/i18n/index.html.twig', array(
             'i18nkeys' => $i18ns,
         	'lastPage' => $lastPage,
         	'paginationPath' => 'i18n_index',
@@ -97,7 +97,7 @@ class I18nController extends Controller
             return $this->redirectToRoute('i18n_index', array('id' => $i18n->getId()));
         }
 
-        return $this->render('EMSCoreBundle:i18n:new.html.twig', array(
+        return $this->render('@EMSCore/i18n/new.html.twig', array(
             'i18n' => $i18n,
             'form' => $form->createView(),
         ));
@@ -133,7 +133,7 @@ class I18nController extends Controller
             return $this->redirectToRoute('i18n_index');
         }
 
-        return $this->render('EMSCoreBundle:i18n:edit.html.twig', array(
+        return $this->render('@EMSCore/i18n/edit.html.twig', array(
             'i18n' => $i18n,
             'edit_form' => $editForm->createView(),
         ));

@@ -126,7 +126,7 @@ class PublishController extends AppController
 	
 		
 		
-		return $this->render( 'EMSCoreBundle:publish:publish-search-result.html.twig', [
+		return $this->render( '@EMSCore/publish/publish-search-result.html.twig', [
 				'form' => $form->createView(),
 				'fromEnvironment' => $environment,
 				'contentType' => $contentType,

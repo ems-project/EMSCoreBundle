@@ -1,4 +1,4 @@
-{% trans_default_domain 'EMSCoreBundle' %}{% extends 'EMSCoreBundle::base.html.twig' %} {% block title %} {{ 'WYSIWYG options'|trans }} {%endblock %}
+{% trans_default_domain 'EMSCoreBundle' %}{% extends '@EMSCore/base.html.twig' %} {% block title %} {{ 'WYSIWYG options'|trans }} {% endblock %}
 {% block pagetitle %} {{ 'WYSIWYG options'|trans }} {% endblock %} 
 
 {% block breadcrumb %}
@@ -27,12 +27,12 @@
                 				<div class="box-header ui-sortable-handle">
         							<div class="pull-right box-tools ui-sortable-handle">
         								<div class="btn-group">
-    										{% include 'EMSCoreBundle:elements:get-button.html.twig' with {
+                                            {% include '@EMSCore/elements/get-button.html.twig' with {
     											'url':  path('ems_wysiwyg_profile_edit', {'id': profile.id}),
     											'label': 'Edit',
     											'icon': 'pencil'
     										}%}
-{#     										{% include 'EMSCoreBundle:elements:post-button.html.twig' with {#}
+                                            {#     										{% include '@EMSCore/elements/post-button.html.twig' with {#}
 {#     											'url': path('view.remove', {'id': profile.id}),#}
 {#     											'message': 'Delete the view ' ~ profile.name ~ ' ?',#}
 {#     											'label': 'Delete',#}
@@ -107,7 +107,7 @@
                 				<div class="box-header ui-sortable-handle">
         							<div class="pull-right box-tools ui-sortable-handle">
         								<div class="btn-group">
-    										{% include 'EMSCoreBundle:elements:get-button.html.twig' with {
+                                            {% include '@EMSCore/elements/get-button.html.twig' with {
     											'url':  path('ems_wysiwyg_styles_set_edit', {'id': stylesSet.id}),
     											'label': 'Edit',
     											'icon': 'pencil'

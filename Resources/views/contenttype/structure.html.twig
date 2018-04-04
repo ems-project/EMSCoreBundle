@@ -1,4 +1,4 @@
-{% extends 'EMSCoreBundle::base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}Edit "{{ contentType.singularName }}"  structure{% endblock %}
 {% block pagetitle %}Edit "{{ contentType.singularName }}" structure{% endblock %} 
@@ -50,11 +50,11 @@
 {% endblock %} 
 
 {% block javascripts %}
-	{% include 'EMSCoreBundle:app:menu.html.twig' with {
+    {% include '@EMSCore/app/menu.html.twig' with {
 		'item':  'contenttype-list'
 	}%}
-	
-{% include 'EMSCoreBundle:js:code-editor.html.twig' %}
+
+    {% include '@EMSCore/js/code-editor.html.twig' %}
 <script src="{{ asset('bundles/emscore/bower/ace-builds/src-min-noconflict/ext-modelist.js') }}"></script>
 <script src="{{ asset('bundles/emscore/bower/ace-builds/src-min-noconflict/ext-themelist.js') }}"></script>
 	

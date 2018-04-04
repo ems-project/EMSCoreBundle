@@ -39,7 +39,7 @@ class TwigElementsController extends AppController
 	    }
     	
     	return $this->render(
-    		'EMSCoreBundle:elements:side-menu.html.twig', [
+    		'@EMSCore/elements/side-menu.html.twig', [
     				'draftCounterGroupedByContentType' => $draftCounterGroupedByContentType,
     				'status' => $status,
     	]);

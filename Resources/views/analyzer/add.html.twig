@@ -1,4 +1,4 @@
-{% extends 'EMSCoreBundle::base.html.twig' %}
+{% extends '@EMSCore/base.html.twig' %}
 {% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}{{ 'Add an Analyzer'|trans }}{% endblock %}
@@ -13,7 +13,7 @@
 
 {% block body %}
 
-    {% include "EMSCoreBundle:analyzer:form.html.twig" with {
+    {% include "@EMSCore/analyzer/form.html.twig" with {
     	form: form,
     	label: 'Add an analyzer',
     } %}
@@ -22,7 +22,7 @@
 
 {% block javascripts %}
 
-    {% include "EMSCoreBundle:analyzer:form_js.html.twig" with {
+    {% include "@EMSCore/analyzer/form_js.html.twig" with {
     } %}
 
 {% endblock %}

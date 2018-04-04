@@ -2,8 +2,10 @@
 # http://symfony.com/doc/current/book/service_container.html
 parameters:
     templating: value
-
 services:
+    _defaults:
+        public: true
+
     app.twig_extension:
         class: EMS\CoreBundle\Twig\AppExtension
         arguments: ['@doctrine', '@security.authorization_checker', '@ems.service.user', '@ems.service.contenttype', '@app.elasticsearch', '@router', '@twig', '@ems.form.factories.objectChoiceListFactory', '@ems.service.environment', '@logger', '@form.factory' ]
@@ -202,12 +204,7 @@ services:
         tags:
             - { name: ems.form.datafieldtype, alias: time }
             - { name: form.type }
-    ems.fieldtype.collectionItem:
-        class: EMS\CoreBundle\Form\DataField\CollectionItemFieldType
-        arguments: ['@security.authorization_checker', '@form.registry']
-        tags:
-            - { name: form.type }
-    ems.fieldtype.collectionitem:
+    ems.fieldtype.collection_item:
         class: EMS\CoreBundle\Form\DataField\CollectionItemFieldType
         arguments: ['@security.authorization_checker', '@form.registry']
         tags:
@@ -372,7 +369,7 @@ services:
     ems.service.mapping:
         class: EMS\CoreBundle\Service\Mapping
         arguments: ['@ems.form.fieldtype.fieldtypetype', '@ems.service.elasticsearch']
-    ems.service.data:
+    EMS\CoreBundle\Service\DataService:
         class: EMS\CoreBundle\Service\DataService
         arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '%ems_core.lock_time%', '@app.elasticsearch', '@ems.service.mapping', '%ems_core.instance_id%', '@session', '@form.factory', '@service_container', '@form.registry', '@event_dispatcher', '%ems_private_key%']
         tags:
@@ -500,3 +497,18 @@ services:
     apikey_authenticator:
         class:  EMS\CoreBundle\Security\ApiKeyAuthenticator
         public: false
+
+
+
+#### Will be mark as deprecated soon
+    ems.service.data:
+        alias: 'EMS\CoreBundle\Service\DataService'
+        public: true
+
+
+#activate autowiring on core bundle controller
+    EMS\CoreBundle\Controller\:
+        autowire: true
+        autoconfigure: true
+        public: true
+        resource: '../../Controller/*'

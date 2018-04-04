@@ -68,7 +68,7 @@ class WysiwygController extends AppController
     	}
     	
     	
-    	return $this->render('EMSCoreBundle:wysiwygprofile:index.html.twig', array(
+    	return $this->render('@EMSCore/wysiwygprofile/index.html.twig', array(
     			'profiles' => $this->getWysiwygProfileService()->getProfiles(),
     			'stylesSets' => $this->getWysiwygStylesSetService()->getStylesSets(),
     			'form' => $form->createView(),
@@ -104,7 +104,7 @@ class WysiwygController extends AppController
         	}	 
         }
 
-        return $this->render('EMSCoreBundle:wysiwygprofile:new.html.twig', array(
+        return $this->render('@EMSCore/wysiwygprofile/new.html.twig', array(
             'form' => $form->createView(),
         ));
     }
@@ -137,7 +137,7 @@ class WysiwygController extends AppController
     		}
     	}
     	
-    	return $this->render('EMSCoreBundle:wysiwyg_styles_set:new.html.twig', array(
+    	return $this->render('@EMSCore/wysiwyg_styles_set/new.html.twig', array(
     			'form' => $form->createView(),
     	));
     }
@@ -175,7 +175,7 @@ class WysiwygController extends AppController
     		}
     	}
     	
-    	return $this->render('EMSCoreBundle:wysiwyg_styles_set:edit.html.twig', array(
+    	return $this->render('@EMSCore/wysiwyg_styles_set/edit.html.twig', array(
     			'form' => $form->createView(),
     	));
     }
@@ -213,7 +213,7 @@ class WysiwygController extends AppController
     		}
         }
         
-        return $this->render('EMSCoreBundle:wysiwygprofile:edit.html.twig', array(
+        return $this->render('@EMSCore/wysiwygprofile/edit.html.twig', array(
         		'form' => $form->createView(),
         ));
     }

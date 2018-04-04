@@ -1,90 +1,306 @@
-ROLE_SUPER_ADMIN: 'Super Admin'
-ROLE_USER: User
-'Logged in as': 'Logged in as'
-'User profile': 'User profile'
-Exit: Exit
-'Sign out': 'Sign out'
-'Core %version%': 'Core %version%'
-'with Symfony %version%': 'with Symfony %version%'
-'Reorder the content type "%content_type%"': 'Reorder the content type "%content_type%"'
-'Reorder %name%''s fields': 'Reorder %name%''s fields'
-'Select a language': 'Select a language'
-Bright: Bright
-Dark: Dark
-'Select a theme': 'Select a theme'
-'This operation will not index the %object_name%, but initiate a draft only with a specific OUUID': '__This operation will not index the %object_name%, but initiate a draft only with a specific OUUID'
-'This operation will not index a new object ‘<em>%content_type%</em>’ immediately. It will start a new draft without any previous revision. <strong>This draft will not be visible</strong> in any environment <strong>until it has been finalized for the first time</strong>. This means you will not be able to see it in any list view (such as the index, map, calendar...), but all drafts in progress can be found in the ‘Draft in progress’ section.': '__This operation will not index a new object ‘<em>%content_type%</em>’ immediately. It will start a new draft without any previous revision. <strong>This draft will not be visible</strong> in any environment <strong>until it has been finalized for the first time</strong>. This means you will not be able to see it in any list view (such as the index, map, calendar...), but all drafts in progress can be found in the ‘Draft in progress’ section.'
-'About the <strong>object unique identifier</strong>: you are free to specify one (provided it has not been taken yet, of course). If you leave it <strong>empty</strong>, an object unique identifier <strong>will be generated</strong> during the save. It is not possible to update the object unique identifier later.': '__About the <strong>object unique identifier</strong>: you are free to specify one (provided it has not been taken yet, of course). If you leave it <strong>empty</strong>, an object unique identifier <strong>will be generated</strong> during the save. It is not possible to update the object unique identifier later.'
 '#': '#'
-OUUID: OUUID
+'About the <strong>object unique identifier</strong>: you are free to specify one (provided it has not been taken yet, of course). If you leave it <strong>empty</strong>, an object unique identifier <strong>will be generated</strong> during the save. It is not possible to update the object unique identifier later.': 'About the <strong>object unique identifier</strong>: you are free to specify one (provided it has not been taken yet, of course). If you leave it <strong>empty</strong>, an object unique identifier <strong>will be generated</strong> during the save. It is not possible to update the object unique identifier later.'
+'Add a Filter': 'Add a Filter'
+'Add a profile': 'Add a profile'
+'Add a Sort Option': 'Add a Sort Option'
+'Add a style set': 'Add a style set'
+'Add an Aggregate Option': 'Add an Aggregate Option'
+'Add an Analyzer': 'Add an Analyzer'
+'Add an analyzer': 'Add an analyzer'
+'Add analyzer': 'Add analyzer'
+'Add filter': 'Add a Filter'
+'Add managed alias': 'Add managed alias'
+'Add user': 'Add user'
+'Aggregate Options': 'Aggregate Options'
+'Align Environments': 'Align Environments'
+'All content types': 'All content types'
+'All environments have to be re-builded each times that the analyzers configuration is updated.': 'All environments have to be re-builded each times that the analyzers configuration is updated.'
+'All environments have to be re-builded each times that the filters configuration is updated.': 'All environments have to be re-builded each times that the filters configuration is updated.'
+'Allowed to configure wysiwyg': 'Allowed to configure wysiwyg'
+'An Error Occurred': 'An Error Occurred'
+'Are they ready to rock?': 'Are they ready to rock?'
+'Asset options': 'Asset options'
+'Author :': 'Author :'
+'Boolean clause': 'Boolean clause'
+'Build date': 'Build date'
+'Certificate is missing': 'Certificate is missing'
+'Certificate''s information': 'Certificate''s information'
+'Click on ''Add a profile'' to create a first WYSIWYG profile': 'Click on ''Add a profile'' to create a first WYSIWYG profile'
+'Click on ''Add a Sort Option'' to create a first Sort Option': 'Click on ''Add a Sort Option'' to create a first Sort Option'
+'Click on ''Add a styles set'' to create a first styles set': 'Click on ''Add a styles set'' to create a first styles set'
+'Click on ''Add an aggregate option'' to create a first Aggregate Option': 'Click on ''Add an aggregate option'' to create a first Aggregate Option'
+'Cluster''s UUID': 'Cluster''s UUID'
+'Compare environments': 'Compare environments'
+'Config': 'Config'
+'Content :': 'Content :'
+'Content type': 'Content type'
+'Content types': 'Content types'
+'Copy data': 'Copy data'
+'Core %version%': 'Core %version%'
+'Created by': 'Created by'
+'Date :': 'Date :'
+'Deleted by': 'Deleted by'
+'Discard this draft ?': 'Discard this draft ?'
+'Display name': 'Display name'
+'Edit %entity_name%': 'Edit %entity_name%'
+'Edit a Filter': 'Edit a Filter'
+'Edit an Analyzer': 'Edit an Analyzer'
+'Edit draft': 'Edit draft'
+'Edit managed alias': 'Edit managed alias'
+'Edit WYSIWYG profile': 'Edit WYSIWYG profile'
+'Edit WYSIWYG styles set': 'Edit WYSIWYG styles set'
+'Elasticsearch''s version': 'Elasticsearch''s version'
+'Email notification': 'Email notification'
+'Empty Trash ?': 'Empty Trash ?'
+'Empty Trash': 'Empty Trash'
+'expert mode': 'expert mode'
+'Export results': 'Export results'
+'Extract content': 'Extract content'
+'Finalize draft': 'Finalize draft'
+'Finalized by': 'Finalized by'
+'form.email': 'Email'
+'form.username': 'Username'
+'gallery view plugin': 'gallery view plugin'
+'Hash signature': 'Hash signature'
+'I18N create': 'I18N create'
+'I18N edit': 'I18N edit'
+'Language :': 'Language :'
+'Last login': 'Last login'
+'Last update': 'Last update'
+'Layout boxed': 'Layout boxed'
+'Linked documents': 'Linked documents'
+'List analyzers': 'List analyzers'
+'List filters': 'List filters'
+'Local environments': 'Local environments'
+'Logged in as': 'Logged in as'
+'Lucene''s version': 'Lucene''s version'
+'Managed Aliases': 'Managed Aliases'
+'Match (and)': 'Match (and)'
+'Match (or)': 'Match (or)'
+'MIME Type :': 'MIME Type :'
+'Must not': 'Must not'
+'New %entity_name%': 'New %entity_name%'
+'New WYSIWYG profile': 'New WYSIWYG profile'
+'New WYSIWYG styles set': 'New WYSIWYG styles set'
+'No pending notifications': 'No pending notifications'
+'No result for this filters combinaison': 'No result for this filters combinaison'
+'No result to display': 'No result to display'
+'Node''s name': 'Node''s name'
+'Not defined': 'Not defined'
+'Oops! An Error Occurred': 'Oops! An Error Occurred'
+'Profile''s name': 'Profile''s name'
+'Public key': 'Public key'
+'Put back': 'Put back'
+'Put it back ?': 'Put it back ?'
+'Query (and)': 'Query (and)'
+'Query (or)': 'Query (or)'
+'Raw view': 'Raw view'
+'Remove': 'Remove'
+'Reorder %name%''s fields': 'Reorder %name%''s fields'
+'Reorder Environment': 'Reorder Environment'
+'Reorder the content type "%content_type%"': 'Reorder the content type "%content_type%"'
+'Reorganise: ': 'Reorganise: '
+'Reorganise:': 'Reorganise:'
+'Search options': 'Search options'
+'Select a language': 'Select a language'
+'Select a theme': 'Select a theme'
+'Select Environments to compare': 'Select Environments to compare'
+'Sidebar collapse': 'Sidebar collapse'
+'Sidebar mini': 'Sidebar mini'
+'Sign out': 'Sign out'
+'Size :': 'Size :'
+'Sort by': 'Sort by'
+'Sort options': 'Sort options'
+'Sort Options': 'Sort Options'
+'Sort order': 'Sort order'
+'Specified version': 'Specified version'
+'Template is missing': 'Template is missing'
+'The server returned a %status_code%': 'The server returned a %status_code%'
+'The trash is empty': 'The trash is empty'
+'This document does not have any linked document': 'This document does not have any linked document'
+'This item %ouuid% is already presents in this structure/menu': 'This item %ouuid% is already presents in this structure/menu'
+'This operation will not index a new object ‘<em>%content_type%</em>’ immediately. It will start a new draft without any previous revision. <strong>This draft will not be visible</strong> in any environment <strong>until it has been finalized for the first time</strong>. This means you will not be able to see it in any list view (such as the index, map, calendar...), but all drafts in progress can be found in the ‘Draft in progress’ section.': 'This operation will not index a new object ‘<em>%content_type%</em>’ immediately. It will start a new draft without any previous revision. <strong>This draft will not be visible</strong> in any environment <strong>until it has been finalized for the first time</strong>. This means you will not be able to see it in any list view (such as the index, map, calendar...), but all drafts in progress can be found in the ‘Draft in progress’ section.'
+'This operation will not index the %object_name%, but initiate a draft only with a specific OUUID': 'This operation will not index the %object_name%, but initiate a draft only with a specific OUUID'
+'Tika server is not configured': 'Tika server is not configured'
+'Tika server': 'Tika server'
+'time to align environments?': 'time to align environments?'
+'Title :': 'Title :'
+'To be treated': 'To be treated'
+'Styles set''s name': 'Styles set''s name'
+'Trash for content type %name%': 'Trash for content type %name%'
+'Update': 'Update'
+'Upload file': 'Upload file'
+'User profile': 'User profile'
+'Users list': 'Users list'
+'with Symfony %version%': 'with Symfony %version%'
+'With the message "%status_text%".': 'With the message "%status_text%".'
+'WYSIWYG custom options': 'WYSIWYG custom options'
+'WYSIWYG options': 'WYSIWYG options'
+'WYSIWYG profile': 'WYSIWYG profile'
+'WYSIWYG profiles': 'WYSIWYG profiles'
+'WYSIWYG styles sets': 'WYSIWYG styles sets'
+Action: Action
+Actions: Actions
+Add: Add
+Analyzers: Analyzers
+Ascending: Ascending
+Bits: Bits
+Boost: Boost
+Bright: Bright
+Cancel: Cancel
+Circles: Circles
+Clear: Clear
+Copy: Copy
+Dark: Dark
+Date: Date
+Descending: Descending
+Discard: Discard
+Documentation: Documentation
+Download: Download
+Edit: Edit
+email: email
+Empty: Empty
+Enabled: Enabled
+Environment: Environment
+Environments: Environments
+Exit: Exit
+Field: Field
+Filter: Filter
+Filters: Filters
+I18N: I18N
+Inbox: Inbox
+Info: Info
 Label: Label
 Locked: Locked
-'Last update': 'Last update'
-Action: Action
-Revisions: Revisions
-'Edit draft': 'Edit draft'
-'Discard this draft ?': 'Discard this draft ?'
-Discard: Discard
-'Upload file': 'Upload file'
-'Finalized by': 'Finalized by'
-Pending: Pending
+Menu: Menu
+Must: Must
+Name: Name
 Nothing: Nothing
-'Linked documents': 'Linked documents'
-'This document does not have any linked document': 'This document does not have any linked document'
-Documentation: Documentation
-'Certificate''s information': 'Certificate''s information'
-Bits: Bits
-'Public key': 'Public key'
-'Certificate is missing': 'Certificate is missing'
-'Copy data': 'Copy data'
-'Raw view': 'Raw view'
-'Compare environments': 'Compare environments'
-'Content type': 'Content type'
-View: View
-Clear: Clear
-'I18N edit': 'I18N edit'
-I18N: I18N
-Cancel: Cancel
-Edit: Edit
-'I18N create': 'I18N create'
-'Not defined': 'Not defined'
-Download: Download
-'To be treated': 'To be treated'
-'No result for this filters combinaison': 'No result for this filters combinaison'
+Notice: Notice
 Notification: Notification
-'Created by': 'Created by'
-Date: Date
-Environment: Environment
-Warnings: Warnings
-Revision: Revision
-Actions: Actions
-Inbox: Inbox
+Operator: Operator
 Outbox: Outbox
-'No result to display': 'No result to display'
-'No pending notifications': 'No pending notifications'
-'Users list': 'Users list'
-'Are they ready to rock?': 'Are they ready to rock?'
-Users: Users
-'Add user': 'Add user'
-Username: Username
-'Display name': 'Display name'
-email: email
-Circles: Circles
-Enabled: Enabled
+OUUID: OUUID
+Pattern: Pattern
+Pending: Pending
+Reorder: Reorder
+Revision: Revision
+Revisions: Revisions
+ROLE_ADMIN: 'Administrator'
+ROLE_ALLOW_ALIGN: 'Align Environment'
+ROLE_API: 'API'
+ROLE_AUTHOR: 'Author'
+ROLE_COPY_PASTE: Copy/Paste
+ROLE_DEFAULT_SEARCH: 'Default search'
+ROLE_PUBLISHER: 'Publisher'
+ROLE_SUPER_ADMIN: 'Super Admin'
+ROLE_SUPER_AUTHOR: 'Super Author'
+ROLE_SUPER_PUBLISHER: 'Super Publisher'
+ROLE_SUPER_USER: 'Super User'
+ROLE_SUPER_WEBMASTER: 'Super Webmaster'
+ROLE_USER: User
+ROLE_WEBMASTER: Webmaster
 Roles: Roles
-'Last login': 'Last login'
-'Reorganise:': 'Reorganise:'
-'This item %ouuid% is already presents in this structure/menu': 'This item %ouuid% is already presents in this structure/menu'
-'Edit WYSIWYG profile': 'Edit WYSIWYG profile'
-'WYSIWYG profiles': 'WYSIWYG profiles'
-'Add a profile': 'Add a profile'
-'Click on ''Add a profile'' to create a first WYSIWYG profile': 'Click on ''Add a profile'' to create a first WYSIWYG profile'
-'New WYSIWYG profile': 'New WYSIWYG profile'
-'Align Environments': 'Align Environments'
-Environments: Environments
-'time to align environments?': 'time to align environments?'
-'Select Environments to compare': 'Select Environments to compare'
-Filters: Filters
 Save: Save
-Copy: Copy
-'Finalize draft': 'Finalize draft'
+Search: Search
+Should: Should
+Tagline: Tagline
+Template: Template
+Term: Term
+Username: Username
+Users: Users
+View: View
+Warnings: Warnings
+WYSIWYG: WYSIWYG
+Command: Command
+Launch: Launch
+form:
+    analyzer:
+        name: Name
+        label: Label
+        save: Save
+        type: Type
+        type.standard: Standard
+        type.stop: Stop
+        type.pattern: Pattern
+        type.fingerprint: Fingerprint
+        type.custom: Custom
+        tokenizer: Tokenizer
+        tokenizer.standard: Standard
+        tokenizer.letter: Letter
+        tokenizer.lowercase: Lowercase
+        tokenizer.whitespace: Whitespace
+        tokenizer.uax_url_email: 'UAX URL Email'
+        tokenizer.classic: Classic
+        tokenizer.thai: Thai
+        tokenizer.ngram: N-Gram
+        tokenizer.edge_ngram: 'Edge N-Gram'
+        tokenizer.keyword: Keyword
+        tokenizer.pattern: Pattern
+        tokenizer.path_hierarchy: Path
+        max_token_length: 'Max Token Length'
+        max_output_size: 'Max Output Size'
+        lowercase: Lowercase
+        position_increment_gap: 'Position Increment Gap'
+        stopwords: Stopwords
+        stopwords._none_: 'None'
+        stopwords._arabic_: 'Arabic'
+        stopwords._armenian_: 'Armenian'
+        stopwords._basque_: 'Basque'
+        stopwords._brazilian_: 'Brazilian'
+        stopwords._bulgarian_: 'Bulgarian'
+        stopwords._catalan_: 'Catalan'
+        stopwords._cjk_: 'CJK'
+        stopwords._czech_: 'Czech'
+        stopwords._danish_: 'Danish'
+        stopwords._dutch_: 'Dutch'
+        stopwords._english_: 'English'
+        stopwords._finnish_: 'Finnish'
+        stopwords._french_: 'French'
+        stopwords._galician_: 'Galician'
+        stopwords._german_: 'German'
+        stopwords._greek_: 'Greek'
+        stopwords._hindi_: 'Hindi'
+        stopwords._hungarian_: 'Hungarian'
+        stopwords._indonesian_: 'Indonesian'
+        stopwords._irish_: 'Irish'
+        stopwords._italian_: 'Italian'
+        stopwords._latvian_: 'Latvian'
+        stopwords._lithuanian_: 'Lithuanian'
+        stopwords._norwegian_: 'Norwegian'
+        stopwords._persian_: 'Persian'
+        stopwords._portuguese_: 'Portuguese'
+        stopwords._romanian_: 'Romanian'
+        stopwords._russian_: 'Russian'
+        stopwords._sorani_: 'Sorani'
+        stopwords._spanish_: 'Spanish'
+        stopwords._swedish_: 'Swedish'
+        stopwords._turkish_: 'Turkish'
+        stopwords._thai_: 'Thai'
+        filter: Filter
+        filter.built_in: 'Built-in'
+        filter.built_in.standard: Standard
+        filter.built_in.asciifolding: 'ASCII Folding'
+        filter.built_in.flatten_graph: 'Flatten graph'
+        filter.built_in.lowercase: 'Lowercase'
+        filter.built_in.uppercase: 'Uppercase'
+        filter.built_in.n_gram: 'NGram'
+        filter.built_in.edge_n_gram: 'Edge NGram'
+        filter.built_in.porter_stem: 'Porter Stem'
+        filter.built_in.stop: 'Stop'
+        filter.built_in.word_delimiter: 'Word Delimiter'
+        filter.customized: 'Customized'
+        char_filter: 'Char Filter'
+        char_filter.html_strip: 'HTML Strip'
+        flags: Flags
+        flags.canon_eq: CANON_EQ
+        flags.case_insensitive: CASE_INSENSITIVE
+        flags.comments: COMMENTS
+        flags.dotall: DOTALL
+        flags.literal: LITERAL
+        flags.multiline: MULTILINE
+        flags.unicode_case: UNICODE_CASE
+        flags.unicode_character_class: UNICODE_CHARACTER_CLASS
+        flags.unix_lines: UNIX_LINES
+        separator: Separator
+        pattern: Pattern

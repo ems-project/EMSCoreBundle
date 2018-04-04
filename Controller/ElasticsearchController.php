@@ -81,7 +81,7 @@ class ElasticsearchController extends AppController
 		}
 		
 
-		return $this->render( 'EMSCoreBundle:elasticsearch:add-alias.html.twig',[
+		return $this->render( '@EMSCore/elasticsearch/add-alias.html.twig',[
 			'form' => $form->createView(),
 			'name' => $name,
 		]);
@@ -104,7 +104,7 @@ class ElasticsearchController extends AppController
 	        	throw new \Exception('Tika server issue: return code '.$tika['code']);
 	        }
 	        
-	        return $this->render( 'EMSCoreBundle:elasticsearch:status.'.$_format.'.twig', [
+	        return $this->render( '@EMSCore/elasticsearch/status.'.$_format.'.twig', [
         		'tika' => $tika,
 	            'status' => $status,
         		'certificate' => $certificatInfo,
@@ -156,7 +156,7 @@ class ElasticsearchController extends AppController
 				}
 			}
 			
-			return $this->render( 'EMSCoreBundle:elasticsearch:status.'.$_format.'.twig', [
+			return $this->render( '@EMSCore/elasticsearch/status.'.$_format.'.twig', [
 					'status' => $status,
 					'certificate' => $certificatInfo,
 					'tika' => $tika,
@@ -166,7 +166,7 @@ class ElasticsearchController extends AppController
 			] );			
 		}
 		catch (\Elasticsearch\Common\Exceptions\NoNodesAvailableException $e){
-			return $this->render( 'EMSCoreBundle:elasticsearch:no-nodes-available.'.$_format.'.twig', [
+			return $this->render( '@EMSCore/elasticsearch/no-nodes-available.'.$_format.'.twig', [
 					'cluster' => $this->getParameter('ems_core.elasticsearch_cluster'),
 			]);
 		}
@@ -441,7 +441,7 @@ class ElasticsearchController extends AppController
 		}
 		
 		
-		return $this->render( 'EMSCoreBundle:elasticsearch:search.json.twig', [
+		return $this->render( '@EMSCore/elasticsearch/search.json.twig', [
 				'results' => $results,
 				'types' => $allTypes,
 		] );
@@ -538,7 +538,7 @@ class ElasticsearchController extends AppController
 				])
 				->getForm();
 				
-				return $this->render( 'EMSCoreBundle:elasticsearch:save-search.html.twig', [
+				return $this->render( '@EMSCore/elasticsearch/save-search.html.twig', [
 						'form' => $form->createView(),
 				] );				
 			}//Form treatement after the "Delete" button has been pressed (to delete a previous saved search preset)
@@ -740,11 +740,11 @@ class ElasticsearchController extends AppController
 				if ($form) {
 					$form = $form->add('massExport', SubmitType::class)->getForm();
 					$form->handlerequest($request);
-					return $this->render( 'EMSCoreBundle:elasticsearch:export-search.html.twig', [
+					return $this->render( '@EMSCore/elasticsearch/export-search.html.twig', [
 							'form' => $form->createView(),
 					] );
 				}else{
-					return $this->render( 'EMSCoreBundle:elasticsearch:export-search.html.twig');
+					return $this->render( '@EMSCore/elasticsearch/export-search.html.twig');
 				}
 				
 			}
@@ -897,7 +897,7 @@ class ElasticsearchController extends AppController
 				exit;
 			}
 			
-			return $this->render( 'EMSCoreBundle:elasticsearch:search.html.twig', [
+			return $this->render( '@EMSCore/elasticsearch/search.html.twig', [
 					'results' => $results,
 					'lastPage' => $lastPage,
 					'paginationPath' => 'elasticsearch.search',

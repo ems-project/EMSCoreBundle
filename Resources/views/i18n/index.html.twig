@@ -1,4 +1,4 @@
-{% trans_default_domain 'EMSCoreBundle' %}{% extends 'EMSCoreBundle::base.html.twig' %} {% block title %} I18n list {%endblock %}
+{% trans_default_domain 'EMSCoreBundle' %}{% extends '@EMSCore/base.html.twig' %} {% block title %} I18n list {% endblock %}
 {% block pagetitle %} I18n list {% endblock %} 
 
 {% block breadcrumb %}
@@ -36,7 +36,7 @@
 			<div class="box-header with-border">
 				<i class="fa fa-file-text-o"></i>
 				<h3 class="box-title">List of translation keys</h3>
-				{% include 'EMSCoreBundle:elements:pagination.html.twig' with { 'lastPage':
+                {% include '@EMSCore/elements/pagination.html.twig' with { 'lastPage':
 				lastPage, 'currentPage': page, 'currentFilters': app.request.query,
 				'paginationPath': paginationPath, 'showAlwaysFirstAndLast': false }
 				%}
@@ -67,8 +67,8 @@
 									<div class="btn-group">
 										<a class="btn btn-primary btn-sm"
 											href="{{ path('i18n_edit', { 'id': i18n.id }) }}"><i class="fa fa-pencil"></i> {{ 'Edit'|trans }}</a>
-										
-										{% include 'EMSCoreBundle:elements:post-button.html.twig' with {
+
+                                        {% include '@EMSCore/elements/post-button.html.twig' with {
 											'url':  path('i18n_delete', { 'id': i18n.id }),
 											'message': 'Delete the translations for the key ' ~  i18n.identifier ~ ' ?',
 											'label': 'Delete',
@@ -88,8 +88,8 @@
 						<i class="fa fa-plus"></i>
 						Create a new entry
 					</a>
-						
-					{% include 'EMSCoreBundle:elements:pagination.html.twig' with {
+
+                    {% include '@EMSCore/elements/pagination.html.twig' with {
 						'lastPage': lastPage, 'currentPage': page, 'currentFilters':
 						app.request.query, 'paginationPath': paginationPath,
 						'showAlwaysFirstAndLast': false } %}
@@ -137,7 +137,7 @@
 
 
 {% block javascripts %}
-	{% include 'EMSCoreBundle:app:menu.html.twig' with {
+    {% include '@EMSCore/app/menu.html.twig' with {
 		'item':  'i18n-index'
 	}%}
 {% endblock %}

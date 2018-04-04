@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Form\Nature;
 
+use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
@@ -74,7 +75,8 @@ class ReorganizeType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-        		'view' => null,
+            'view' => null,
+            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
         ]);
     }
 	

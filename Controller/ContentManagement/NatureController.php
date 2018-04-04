@@ -83,7 +83,7 @@ class NatureController extends AppController
 			]);
 		}
 
-		return $this->render( 'EMSCoreBundle:nature:reorder.html.twig', [
+		return $this->render( '@EMSCore/nature/reorder.html.twig', [
 				'contentType' => $contentType,
 				'form' => $form->createView(),
 				'result' => $result,

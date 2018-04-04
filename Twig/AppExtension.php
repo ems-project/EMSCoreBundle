@@ -194,7 +194,7 @@ class AppExtension extends \Twig_Extension
 	
 	
 	function macroFct($tempate, $block, $context) {
-		return $tempate->{'get'.$block}($context);
+		return $tempate->{'macro_'.$block}($context);
 	}
 	
 	function call_user_func($function){

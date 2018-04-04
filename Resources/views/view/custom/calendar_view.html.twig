@@ -1,4 +1,4 @@
-{% extends 'EMSCoreBundle::base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}{{ view.name }} of {{contentType.name}}{% endblock %}
 {% block pagetitle %}{{ view.name }} of {{contentType.name}}{% endblock %} 
@@ -10,7 +10,7 @@
       
 	<div class="row">
     	<div class="col-md-12">
-    		{% include "EMSCoreBundle:elasticsearch:search-form-filter.html.twig" with {
+            {% include "@EMSCore/elasticsearch/search-form-filter.html.twig" with {
 				form: form,
 			} %}
 		</div>
@@ -98,11 +98,11 @@
 
 
 {% block javascripts %}
-	{% include 'EMSCoreBundle:app:menu.html.twig' with {
+    {% include '@EMSCore/app/menu.html.twig' with {
 		'item':  'data-view-'~ contentType.id ~ '-' ~ view.id
 	}%}
 
-	{% include 'EMSCoreBundle:elasticsearch:search-javascript-filter.html.twig' %}
+    {% include '@EMSCore/elasticsearch/search-javascript-filter.html.twig' %}
 	
 <script src="{{ asset('bundles/emscore/bower/AdminLTE/plugins/fullcalendar/fullcalendar.min.js') }}"></script>
 

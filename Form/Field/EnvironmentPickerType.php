@@ -89,6 +89,7 @@ class EnvironmentPickerType extends ChoiceType {
 		    'managedOnly' => true,
 		    'inMyCircle' => true,
 		    'ignore' => [],
+            'choice_translation_domain' => false,
 		));
 	}
 }

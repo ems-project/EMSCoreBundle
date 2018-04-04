@@ -255,7 +255,7 @@ class EnvironmentController extends AppController {
 			$lastPage = 0;
 		}
 		
-		return $this->render ( 'EMSCoreBundle:environment:align.html.twig', [
+		return $this->render ( '@EMSCore/environment/align.html.twig', [
 				'form' => $form->createView(),
          		'results' => $results,
 				'lastPage' => $lastPage,
@@ -499,7 +499,7 @@ class EnvironmentController extends AppController {
 			}
 		}
 		
-		return $this->render ( 'EMSCoreBundle:environment:add.html.twig', [ 
+		return $this->render ( '@EMSCore/environment/add.html.twig', [ 
 				'form' => $form->createView () 
 		] );
 	}
@@ -546,7 +546,7 @@ class EnvironmentController extends AppController {
 			return $this->redirectToRoute('environment.index');
 		}
 	
-		return $this->render( 'EMSCoreBundle:environment:edit.html.twig',[
+		return $this->render( '@EMSCore/environment/edit.html.twig',[
 				'environment' => $environment,
 				'form' => $form->createView(),
 		]);
@@ -593,7 +593,7 @@ class EnvironmentController extends AppController {
 			$info = false;
 		}
 	
-		return $this->render( 'EMSCoreBundle:environment:view.html.twig',[
+		return $this->render( '@EMSCore/environment/view.html.twig',[
 				'environment' => $environment,
 				'info' => $info,
 		]);
@@ -678,7 +678,7 @@ class EnvironmentController extends AppController {
 
 		}
 	
-		return $this->render( 'EMSCoreBundle:environment:rebuild.html.twig',[
+		return $this->render( '@EMSCore/environment/rebuild.html.twig',[
 				'environment' => $environment,
 				'form' => $form->createView(),
 		]);
@@ -769,7 +769,7 @@ class EnvironmentController extends AppController {
 				return $this->redirectToRoute('ems_environment_index');
 			}
 		
-			return $this->render( 'EMSCoreBundle:environment:index.html.twig', [
+			return $this->render( '@EMSCore/environment/index.html.twig', [
 					'environments' => $environments,
 					'orphanIndexes' => $aliasService->getOrphanIndexes(),
 					'unreferencedAliases' => $aliasService->getUnreferencedAliases(),

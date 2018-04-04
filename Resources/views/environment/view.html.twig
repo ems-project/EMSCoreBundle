@@ -1,4 +1,4 @@
-{% extends 'EMSCoreBundle::base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}View the environment {{environment.name}}{% endblock %}
 {% block pagetitle %}View the environment {{environment.name}}{% endblock %} 
@@ -19,8 +19,8 @@
             <!-- form start -->
             <form role="form">
               <div class="box-body">
-                	{% if info %} 
-						{% import "EMSCoreBundle:macros:view.html.twig" as macros %}
+                  {% if info %}
+                      {% import "@EMSCore/macros/view.html.twig" as macros %}
 						{{ macros.recursifArray(info) }}
 					{% else %}
 						Elasticsearch index is missing !
@@ -30,12 +30,12 @@
 
               <div class="box-footer">
                 <div class="btn-group pull-right">
-					{% include 'EMSCoreBundle:elements:get-button.html.twig' with {
+                    {% include '@EMSCore/elements/get-button.html.twig' with {
 						'url': path('environment.index'),
 						'label': 'Close',
 						'icon': 'close'
 					}%}
-					{% include 'EMSCoreBundle:elements:get-button.html.twig' with {
+                    {% include '@EMSCore/elements/get-button.html.twig' with {
 							'url': path('environment.edit', {'id': environment.id}),
 							'label': 'Edit',
 							'icon': 'pencil'

@@ -47,6 +47,7 @@ class ContentTypeFieldPickerType extends SelectPickerType {
 				return $value->getValue();
 		    },
 		    'multiple' => false,
+            'choice_translation_domain' => false,
 		    
 		));
 	}

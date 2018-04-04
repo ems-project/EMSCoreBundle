@@ -77,7 +77,7 @@ abstract class ViewType extends AbstractType {
 	public function generateResponse(View $view, Request $request) {
 		$response = new Response();
 		$parameters = $this->getParameters($view, $this->formFactory, $request);
-		$response->setContent($this->twig->render('EMSCoreBundle:view:custom/'.$this->getBlockPrefix().'.html.twig', $parameters));
+		$response->setContent($this->twig->render('@EMSCore/view/custom/'.$this->getBlockPrefix().'.html.twig', $parameters));
 		return $response;
 	}
 	

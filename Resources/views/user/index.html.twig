@@ -1,4 +1,4 @@
-{% extends 'EMSCoreBundle::base.html.twig' %}
+{% extends '@EMSCore/base.html.twig' %}
 {% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}{{ 'Users list'|trans }}{% endblock %}
@@ -22,7 +22,7 @@
 			<div class="box-body">
     			{% if paging.lastPage > 1 %}
     				<div class="box-header">
-        				{% include 'EMSCoreBundle:elements:pagination.html.twig' with {
+                        {% include '@EMSCore/elements/pagination.html.twig' with {
         					'paging': paging,
         					'showAlwaysFirstAndLast': false
         				} %}
@@ -34,14 +34,14 @@
 					<thead>
 						<tr role="row">
 							<th class="nowrap text-center" style="width: 10px">{{ '#'|trans }}</th>
-							{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {
+                            {% include '@EMSCore/elements/sortable-th.html.twig' with {
                                  'title': 'Username'|trans,
                                  'field': 'username',
                                  'orderField': paging.orderField,
                                  'orderDirection': paging.orderDirection,
                                  'paginationPath': paging.paginationPath,
                             } %}
-							{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {
+                            {% include '@EMSCore/elements/sortable-th.html.twig' with {
                                  'title': 'Display name'|trans,
                                  'field': 'displayName',
                                  'orderField': paging.orderField,
@@ -49,7 +49,7 @@
                                  'paginationPath': paging.paginationPath,
                             } %}
                             <th class="nowrap"><i class="fa fa-bell"></i></th>
-							{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {
+                            {% include '@EMSCore/elements/sortable-th.html.twig' with {
                                  'title': 'email'|trans,
                                  'field': 'email',
                                  'orderField': paging.orderField,
@@ -57,7 +57,7 @@
                                  'paginationPath': paging.paginationPath,
                             } %}
 							<th class="nowrap">{{ 'Circles'|trans }}</th>
-							{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {
+                            {% include '@EMSCore/elements/sortable-th.html.twig' with {
                                  'title': 'Enabled'|trans,
                                  'field': 'enabled',
                                  'orderField': paging.orderField,
@@ -65,7 +65,7 @@
                                  'paginationPath': paging.paginationPath,
                             } %}
 							<th class="nowrap">{{ 'Roles'|trans }}</th>
-							{% include 'EMSCoreBundle:elements:sortable-th.html.twig' with {
+                            {% include '@EMSCore/elements/sortable-th.html.twig' with {
                                  'title': 'Last login'|trans,
                                  'field': 'lastLogin',
                                  'orderField': paging.orderField,
@@ -106,21 +106,21 @@
 								<td>{% if user.lastLogin %}{{ user.lastLogin|date(date_time_format) }}{% endif %}</td>
 								<td class="">
 									<div class="btn-group">
-										{% include 'EMSCoreBundle:elements:get-button.html.twig' with {
+                                        {% include '@EMSCore/elements/get-button.html.twig' with {
 											'url':  path('user.edit', {'id': user.id}),
 											'label': 'Edit',
 											'icon': 'pencil'
 										}%}
 										{% if user.enabled %}
 											{% if not is_granted('ROLE_PREVIOUS_ADMIN') %}
-												{% include 'EMSCoreBundle:elements:get-button.html.twig' with {
+                                                {% include '@EMSCore/elements/get-button.html.twig' with {
 													'url':  path('homepage', {'_switch_user': user.username}),
 													'label': 'Switch user',
 													'icon': 'user-secret'
 												}%}
 											{% endif %}
 											{% if not is_granted('ROLE_PREVIOUS_ADMIN') %}
-												{% include 'EMSCoreBundle:elements:post-button.html.twig' with {
+                                                {% include '@EMSCore/elements/post-button.html.twig' with {
 													'url': path('user.enabling', {'id': user.id}),
 														'message': 'Disable the user ' ~ user.username ~ ' ?',
 														'label': 'Disable',
@@ -128,20 +128,20 @@
 												}%}
 											{% endif %}
 										{% else %}
-											{% include 'EMSCoreBundle:elements:post-button.html.twig' with {
+                                            {% include '@EMSCore/elements/post-button.html.twig' with {
 													'url': path('user.enabling', {'id': user.id}),
 													'message': 'Enable the user ' ~ user.username ~ ' ?',
 													'label': 'Enable',
 													'icon': 'user-plus'
 											}%}
 										{% endif %}
-										{% include 'EMSCoreBundle:elements:post-button.html.twig' with {
+                                        {% include '@EMSCore/elements/post-button.html.twig' with {
 												'url': path('EMS_user_apikey', {'username': user.username}),
 												'message': 'Generate API key for ' ~ user.username ~ ' ?',
 												'label': 'API key',
 												'icon': 'key'
 										}%}
-										{% include 'EMSCoreBundle:elements:post-button.html.twig' with {
+                                        {% include '@EMSCore/elements/post-button.html.twig' with {
 											'url': path('user.delete', {'id': user.id}),
 											'message': 'Delete the user ' ~ user.username ~ ' ?',
 											'label': 'Delete',
@@ -163,7 +163,7 @@
 
 
 {% block javascripts %}
-	{% include 'EMSCoreBundle:app:menu.html.twig' with {
+    {% include '@EMSCore/app/menu.html.twig' with {
 		'item':  'user-index'
 	}%}
 {% endblock %}

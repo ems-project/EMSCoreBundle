@@ -39,7 +39,7 @@ class ViewController extends AppController
 		}
 		
 		
-		return $this->render( 'EMSCoreBundle:view:index.html.twig', [
+		return $this->render( '@EMSCore/view/index.html.twig', [
 				'contentType' => $contentTypes[0]
 		]);
 		
@@ -84,7 +84,7 @@ class ViewController extends AppController
 			]);
 		}
 		
-		return $this->render( 'EMSCoreBundle:view:add.html.twig', [
+		return $this->render( '@EMSCore/view/add.html.twig', [
 				'contentType' => $contentTypes[0],
 				'form' => $form->createView()
 		]);
@@ -139,7 +139,7 @@ class ViewController extends AppController
 // 			]);
 		}
 		
-		return $this->render( 'EMSCoreBundle:view:edit.'.$_format.'.twig', [
+		return $this->render( '@EMSCore/view/edit.'.$_format.'.twig', [
 				'form' => $form->createView(),
 				'view' => $view
 		]);

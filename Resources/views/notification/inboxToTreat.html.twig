@@ -64,7 +64,7 @@
 							<button onclick="javascript: $('.item-to-treat').prop('checked', false); $('#treat_notifications_notifications_{{ notification.id }}').prop('checked', 'checked'); return false;" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#treatNotificationsModal">
 							  <i class="fa fa-gear"></i> Treat
 							</button>
-							{% include 'EMSCoreBundle:elements:object-views-button.html.twig' with { 
+                            {% include '@EMSCore/elements/object-views-button.html.twig' with {
 								'object':  notification.revision.buildObject,
 								'contentType': notification.revision.contentType,
 								'environment': notification.environment,

@@ -99,22 +99,22 @@
 									<td class="text-center">{{ environment.deletedRevision|number_format }}</td>
 									<td>
 										<div class="btn-group">
-											{% include 'EMSCoreBundle:elements:get-button.html.twig' with {
+                                            {% include '@EMSCore/elements/get-button.html.twig' with {
 												'url': path('environment.rebuild', {'id': environment.id}),
 												'label': 'Rebuild',
 												'icon': 'recycle'
 											}%}
-											{% include 'EMSCoreBundle:elements:get-button.html.twig' with {
+                                            {% include '@EMSCore/elements/get-button.html.twig' with {
 													'url': path('environment.view', {'id': environment.id}),
 													'label': 'View',
 													'icon': 'eye'
 												}%}
-											{% include 'EMSCoreBundle:elements:get-button.html.twig' with {
+                                            {% include '@EMSCore/elements/get-button.html.twig' with {
 													'url': path('environment.edit', {'id': environment.id}),
 													'label': 'Edit',
 													'icon': 'pencil'
 												}%}
-											{% include 'EMSCoreBundle:elements:post-button.html.twig' with {
+                                            {% include '@EMSCore/elements/post-button.html.twig' with {
 												'url': path('environment.remove', {'id': environment.id}),
 												'message': 'Delete the environment ' ~ environment.name|humanize ~ ' ?',
 												'label': 'Delete',
@@ -174,22 +174,22 @@
 											<td class="text-center">{{ environment.total|number_format }}</td>
 											<td>
 												<div class="btn-group">
-		{# 											{% include 'EMSCoreBundle:elements:get-button.html.twig' with {#}
+                                                    {# 											{% include '@EMSCore/elements/get-button.html.twig' with {#}
 		{# 												'url': path('index.switch', {'id': environment.id}),#}
 		{# 												'label': 'Switch',#}
 		{# 												'icon': 'share-square-o'#}
 		{# 											}%}#}
-													{% include 'EMSCoreBundle:elements:get-button.html.twig' with {
+                                                    {% include '@EMSCore/elements/get-button.html.twig' with {
 															'url': path('environment.view', {'id': environment.id}),
 															'label': 'View',
 															'icon': 'eye'
 														}%}
-													{% include 'EMSCoreBundle:elements:get-button.html.twig' with {
+                                                    {% include '@EMSCore/elements/get-button.html.twig' with {
 															'url': path('environment.edit', {'id': environment.id}),
 															'label': 'Edit',
 															'icon': 'pencil'
 														}%}
-													{% include 'EMSCoreBundle:elements:post-button.html.twig' with {
+                                                    {% include '@EMSCore/elements/post-button.html.twig' with {
 														'url': path('environment.remove', {'id': environment.id}),
 														'message': 'Detach the environment ' ~ environment.name|humanize ~ ' ?',
 														'label': 'Detach',
@@ -240,12 +240,12 @@
                                                 <td>{{ managedAlias.total }}</td>
                                                 <td>
                                                     <div class="btn-group">
-                                                        {% include 'EMSCoreBundle:elements:get-button.html.twig' with {
+                                                        {% include '@EMSCore/elements/get-button.html.twig' with {
                                                             'url': path('environment_edit_managed_alias', {'id': managedAlias.id}),
                                                             'label': 'Edit',
                                                             'icon': 'pencil'
                                                         }%}
-                                                        {% include 'EMSCoreBundle:elements:post-button.html.twig' with {
+                                                        {% include '@EMSCore/elements/post-button.html.twig' with {
                                                             'url': path('environment_remove_managed_alias', {'id': managedAlias.id}),
                                                             'message': 'Delete the managed alias ' ~ managedAlias.name|humanize ~ ' ?',
                                                             'label': 'Delete',
@@ -298,7 +298,7 @@
 									<td>
                                                                             <div class="btn-group">
                                                                                 {% if alias.indexes|length == 1 %}
-                                                                                    {% include 'EMSCoreBundle:elements:post-button.html.twig' with {
+                                                                                    {% include '@EMSCore/elements/post-button.html.twig' with {
                                                                                             'url': path('environment.attach', {'name': name }),
                                                                                             'message': 'Attach the alias ' ~ name|humanize ~ ' ?',
                                                                                             'label': 'Attach',
@@ -306,7 +306,7 @@
                                                                                             'class': 'btn-sm btn-primary',
                                                                                     }%}
                                                                                 {% endif %}
-                                                                                {% include 'EMSCoreBundle:elements:post-button.html.twig' with {
+                                                                                {% include '@EMSCore/elements/post-button.html.twig' with {
                                                                                         'url': path('environment.remove.alias', {'name': name }),
                                                                                         'message': 'Delete the alias ' ~ name|humanize ~ ' ?',
                                                                                         'label': 'Delete',
@@ -333,7 +333,7 @@
 				<i class="fa fa-database"></i>
 				<h3 class="box-title">Orphan indexes</h3>{{ 'List orphan indexes'|debug }}
 				<div class="btn-group  pull-right">
-    				{% include 'EMSCoreBundle:elements:post-button.html.twig' with {
+                    {% include '@EMSCore/elements/post-button.html.twig' with {
     						'url': path('ems_delete_ophean_indexes', {}),
     						'message': 'Delete all ophan indexes ?',
     						'label': 'Delete all',
@@ -365,12 +365,12 @@
 								<td>
 								
 									<div class="btn-group">
-										{% include 'EMSCoreBundle:elements:get-button.html.twig' with {
+                                        {% include '@EMSCore/elements/get-button.html.twig' with {
 											'url': path('elasticsearch.alias.add', {'name': index.name}),
 											'label': 'Add alias',
 											'icon': 'plus'
 										}%}
-										{% include 'EMSCoreBundle:elements:post-button.html.twig' with {
+                                        {% include '@EMSCore/elements/post-button.html.twig' with {
 											'url': path('elasticsearch.index.delete', {'name': index.name}),
 											'message': 'Delete the index ' ~ index.name|humanize ~ ' ?',
 											'label': 'Delete',
@@ -395,7 +395,7 @@
 {% endblock %} 
 
 {% block javascripts %}
-	{% include 'EMSCoreBundle:app:menu.html.twig' with {
+    {% include '@EMSCore/app/menu.html.twig' with {
 		'item':  'environment-list'
 	}%}	
     <script type="text/javascript">

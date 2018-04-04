@@ -65,7 +65,7 @@ class NotificationController extends AppController
 		
 		$success = $this->getNotificationService()->addNotification($templateId, $revision, $env);
 
-		return $this->render( 'EMSCoreBundle:ajax:notification.json.twig', [
+		return $this->render( '@EMSCore/ajax/notification.json.twig', [
 				'success' => $success,
 		] );
 	}
@@ -164,7 +164,7 @@ class NotificationController extends AppController
 		
 		$vars['counter'] = $this->get('ems.service.notification')->menuNotification();
 		
-		return $this->render('EMSCoreBundle:notification:menu.html.twig', $vars);
+		return $this->render('@EMSCore/notification/menu.html.twig', $vars);
 	}
 	
 	/**
@@ -236,7 +236,7 @@ class NotificationController extends AppController
  				'notifications' => $notifications,
  		]);
 		
-		return $this->render('EMSCoreBundle:notification:list.html.twig', array(
+		return $this->render('@EMSCore/notification/list.html.twig', array(
 				'counter' => $count,
 				'notifications' => $notifications,
 				'lastPage' => $lastPage,

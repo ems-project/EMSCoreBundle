@@ -1,4 +1,4 @@
-{% extends 'EMSCoreBundle::base.html.twig' %} {% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %} {% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %} {{ 'I18N edit'|trans }} {%endblock %}
 {% block pagetitle %} {{ 'I18N edit'|trans }} {% endblock %} 
@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block body %}
-	{% include "EMSCoreBundle:i18n:form.html.twig" with {
+    {% include "@EMSCore/i18n/form.html.twig" with {
 		form: edit_form,
 		title: 'I18N edit',
 		action: 'Save',
@@ -21,7 +21,7 @@
 
 
 {% block javascripts %}
-	{% include 'EMSCoreBundle:i18n:javascript.html.twig' with {
+    {% include '@EMSCore/i18n/javascript.html.twig' with {
 		'item':  'i18n-index'
 	}%}
 {% endblock %}	

@@ -217,7 +217,7 @@ class HierarchicalViewType extends ViewType {
 		
 		
 		$response = new Response();
-		$response->setContent($this->twig->render('EMSCoreBundle:view:custom/'.$this->getBlockPrefix().'.html.twig', [
+		$response->setContent($this->twig->render('@EMSCore/view/custom/'.$this->getBlockPrefix().'.html.twig', [
 				'parent' => $parent,
 				'view' => $view,
 				'form' => $form->createView(),

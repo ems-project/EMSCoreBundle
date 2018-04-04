@@ -1,4 +1,4 @@
-{% extends 'EMSCoreBundle::base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}Edit user "{{ user.displayName }}"{% endblock %}
 {% block pagetitle %}Edit user "{{ user.displayName }}"{% endblock %} 
@@ -23,7 +23,7 @@
 	    	{% endif %}
 {# 	    	{{ form_row(form.expiresAt) }}#}
 	    	{{ form_row(form.allowedToConfigureWysiwyg) }}
-    		{% include "EMSCoreBundle:user:wysiwygOptions.html.twig" with {
+            {% include "@EMSCore/user/wysiwygOptions.html.twig" with {
 				form: form
 			} %}
     	</div>
@@ -116,11 +116,11 @@
 		});
 	});   
     </script>
-	{% include 'EMSCoreBundle:app:menu.html.twig' with {
+    {% include '@EMSCore/app/menu.html.twig' with {
 		'item':  'user-index'
 	}%}
 
-	{% include "EMSCoreBundle:user:wysiwygOptionsJS.html.twig" with {
+    {% include "@EMSCore/user/wysiwygOptionsJS.html.twig" with {
 		form: form
 	} %}
 {% endblock javascripts %}

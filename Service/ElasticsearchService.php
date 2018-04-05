@@ -143,10 +143,6 @@ class ElasticsearchService {
         ];
     }
 
-    public function isSingleType() {
-        return version_compare($this->version, '5.6') > 0;
-    }
-
     public function withAllMapping() {
         return version_compare($this->version, '6') < 0;
     }

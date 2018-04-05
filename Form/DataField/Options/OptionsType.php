@@ -51,7 +51,7 @@ class OptionsType extends AbstractType
 		return true;
 	}
 	
-	public static function generateMapping(array $options, FieldType $current){
+	public function generateMapping(array $options, FieldType $current){
 		return [];
 	}
 }

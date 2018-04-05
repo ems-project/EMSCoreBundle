@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Form\DataField;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
+use EMS\CoreBundle\Service\ElasticsearchService;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType as TextareaSymfonyType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -26,8 +27,8 @@ class WysiwygFieldType extends DataFieldType {
 	
 	
 	
-	public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, RouterInterface $router) {
-		parent::__construct($authorizationChecker, $formRegistry);
+	public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, RouterInterface $router) {
+		parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
 		$this->router= $router;
 	}
 	

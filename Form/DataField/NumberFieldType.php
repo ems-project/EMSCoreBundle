@@ -94,7 +94,7 @@ class NumberFieldType extends DataFieldType {
 	 * {@inheritdoc}
 	 *
 	 */
-	public static function generateMapping(FieldType $current, $withPipeline){
+	public function generateMapping(FieldType $current, $withPipeline){
 		return [
 				$current->getName() => array_merge(["type" => "double"],  array_filter($current->getMappingOptions()))
 		];

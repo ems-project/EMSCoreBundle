@@ -6,6 +6,7 @@ use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Exception\ContentTypeStructureException;
 use EMS\CoreBundle\Form\DataField\Options\OptionsType;
+use EMS\CoreBundle\Service\ElasticsearchService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -28,10 +29,14 @@ abstract class DataFieldType extends AbstractType {
 	protected $authorizationChecker;
 	/**@var FormRegistryInterface $formRegistry*/
 	protected $formRegistry;
-	
-	public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry) {
+	/**@var ElasticsearchService*/
+	protected $elasticsearchService;
+
+
+	public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService) {
 		$this->authorizationChecker = $authorizationChecker;
 		$this->formRegistry = $formRegistry;
+		$this->elasticsearchService = $elasticsearchService;
 	}
 	
 	public function getBlockPrefix() {
@@ -399,15 +404,10 @@ abstract class DataFieldType extends AbstractType {
 	 * @param array $options
 	 * @param FieldType $current
 	 */
-	public static function generateMapping(FieldType $current, $withPipeline){
-		$options = $current->getMappingOptions();
-		if(isset($options['copy_to']) && !empty($options['copy_to']) && is_string($options['copy_to'])) {
-			$options['copy_to'] = explode(',', $options['copy_to']);
-		}
-		return [
-			$current->getName() => 
-				array_merge(["type" => "string"],  array_filter($options))
-		];
+	public function generateMapping(FieldType $current, $withPipeline){
+        $options = $this->elasticsearchService->updateMapping(array_merge(["type" => "string"],  array_filter($current->getMappingOptions())));
+
+		return [ $current->getName() => $options ];
 	}
 
 

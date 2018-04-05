@@ -6,6 +6,7 @@ use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Service\ElasticsearchService;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -32,8 +33,8 @@ class CollectionFieldType extends DataFieldType {
 	
 	
 	
-	public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, $service_container) {
-		parent::__construct($authorizationChecker, $formRegistry);
+	public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, $service_container) {
+		parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
 		$this->service_container= $service_container;
 	}
 	
@@ -255,7 +256,7 @@ class CollectionFieldType extends DataFieldType {
 	 * {@inheritdoc}
 	 *
 	 */
-	public static function generateMapping(FieldType $current, $withPipeline) {
+	public function generateMapping(FieldType $current, $withPipeline) {
 		return [$current->getName () => [
 				'type' => 'nested',
 				'properties' => []

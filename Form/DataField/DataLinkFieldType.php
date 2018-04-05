@@ -7,6 +7,7 @@ use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\ObjectChoiceLoader;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
+use EMS\CoreBundle\Service\ElasticsearchService;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -42,8 +43,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  	 * @param Client $client
  	 * @param EventDispatcherInterface $dispatcher
  	 */
- 	public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, Client $client, EventDispatcherInterface $dispatcher) {
- 		parent::__construct($authorizationChecker, $formRegistry);
+ 	public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, Client $client, EventDispatcherInterface $dispatcher) {
+ 		parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
  		$this->client = $client;
  		$this->dispatcher= $dispatcher;
  	}

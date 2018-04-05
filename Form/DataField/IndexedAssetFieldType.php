@@ -6,6 +6,7 @@ use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\AssetType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
+use EMS\CoreBundle\Service\ElasticsearchService;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use EMS\CoreBundle\Service\FileService;
@@ -34,8 +35,8 @@ class IndexedAssetFieldType extends DataFieldType {
 	 * @param FormRegistryInterface $formRegistry
 	 * @param FileService $fileService
 	 */
-	public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, FileService $fileService) {
-		parent::__construct($authorizationChecker, $formRegistry);
+	public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, FileService $fileService) {
+		parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
 		$this->fileService = $fileService;
 	}
 	
@@ -107,26 +108,16 @@ class IndexedAssetFieldType extends DataFieldType {
 	/**
 	 * {@inheritdoc}
 	 */
-	public static function generateMapping(FieldType $current, $withPipeline){
+	public function generateMapping(FieldType $current, $withPipeline){
 		$mapping = parent::generateMapping($current, $withPipeline);
 		return [
 			$current->getName() => [
 					"type" => "nested",
 					"properties" => [
-							"mimetype" => [
-								"type" => "string",
-								"index" => "not_analyzed"
-							],
-							"sha1" => [
-								"type" => "string",
-								"index" => "not_analyzed"
-							],
-							"filename" => [
-								"type" => "string",
-							],
-							"filesize" => [
-								"type" => "long",
-							],
+							"mimetype" => $this->elasticsearchService->getKeywordMapping(),
+							"sha1" => $this->elasticsearchService->getKeywordMapping(),
+							"filename" => $this->elasticsearchService->getIndexedStringMapping(),
+							"filesize" => $this->elasticsearchService->getLongMapping(),
 							'_content' => $mapping[$current->getName()],
 					]
 			]

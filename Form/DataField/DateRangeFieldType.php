@@ -256,7 +256,7 @@ class DateRangeFieldType extends DataFieldType {
 	 * {@inheritdoc}
 	 *
 	 */
-	public static function generateMapping(FieldType $current, $withPipeline){
+	public function generateMapping(FieldType $current, $withPipeline){
 		
 		$out = [
 			$current->getMappingOptions()['fromDateMachineName'] => 

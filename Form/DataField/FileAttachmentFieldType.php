@@ -6,6 +6,7 @@ use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\AssetType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
+use EMS\CoreBundle\Service\ElasticsearchService;
 use EMS\CoreBundle\Service\FileService;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -31,8 +32,8 @@ class FileAttachmentFieldType extends DataFieldType {
 	
 	
 	
-	public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, FileService $fileService, Session $session) {
-		parent::__construct($authorizationChecker, $formRegistry);
+	public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, FileService $fileService, Session $session) {
+		parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
 		$this->fileService= $fileService;
 		$this->session = $session;
 	}
@@ -191,25 +192,15 @@ class FileAttachmentFieldType extends DataFieldType {
 	/**
 	 * {@inheritdoc}
 	 */
-	public static function generateMapping(FieldType $current, $withPipeline){
+	public function generateMapping(FieldType $current, $withPipeline){
 		$mapping = parent::generateMapping($current, $withPipeline);
 		$body = [
 				"type" => "nested",
 				"properties" => [
-						"mimetype" => [
-							"type" => "string",
-							"index" => "not_analyzed"
-						],
-						"sha1" => [
-							"type" => "string",
-							"index" => "not_analyzed"
-						],
-						"filename" => [
-							"type" => "string",
-						],
-						"filesize" => [
-							"type" => "long",
-						],
+						"mimetype" => $this->elasticsearchService->getKeywordMapping(),
+						"sha1" => $this->elasticsearchService->getKeywordMapping(),
+						"filename" => $this->elasticsearchService->getIndexedStringMapping(),
+						"filesize" => $this->elasticsearchService->getLongMapping(),
 						'content' => [
 							"type" => "binary",
 						],

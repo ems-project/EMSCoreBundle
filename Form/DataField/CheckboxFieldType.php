@@ -121,9 +121,10 @@ class CheckboxFieldType extends DataFieldType {
 	 * {@inheritdoc}
 	 *
 	 */
-	public static function generateMapping(FieldType $current, $withPipeline){
+	public function generateMapping(FieldType $current, $withPipeline){
+
 		return [
-				$current->getName() => array_merge(["type" => "boolean"],  array_filter($current->getMappingOptions()))
+				$current->getName() => $this->elasticsearchService->updateMapping(array_merge(["type" => "boolean"],  array_filter($current->getMappingOptions())))
 		];
 	}
 	

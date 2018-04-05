@@ -30,33 +30,32 @@ class Mapping
 	
 	public function generateMapping(ContentType $contentType, $withPipeline = false){
 		$out = [
-				$contentType->getName() => [
-						"_all" => [
-								"store" => true,
-								"enabled" => true,
-						],
-							"properties" => [
-						],
-				],
+		    "properties" => [],
 		];
+
+		if($this->elasticsearchService->withAllMapping()) {
+            $out['_all'] = [
+                "store" => true,
+                "enabled" => true,
+            ];
+        }
 		
 		if(null != $contentType->getFieldType()){
-			$out[$contentType->getName()]['properties'] = $this->fieldTypeType->generateMapping($contentType->getFieldType(), $withPipeline);
+			$out['properties'] = $this->fieldTypeType->generateMapping($contentType->getFieldType(), $withPipeline);
 		}
 		
-		$out[$contentType->getName()]['properties'] = array_merge(
+		$out['properties'] = array_merge(
 			[
 				'_sha1' => $this->elasticsearchService->getKeywordMapping(),
 				'_signature' => $this->elasticsearchService->getNotIndexedStringMapping(),
 				'_finalized_by' => $this->elasticsearchService->getKeywordMapping(),
 				'_finalization_datetime' => $this->elasticsearchService->getDateTimeMapping(),
 			],
-			$out[$contentType->getName()]['properties']
+			$out['properties']
 		);
 		
 		
-		
-		return $out;
+		return [ $contentType->getName() => $out ];
 	} 
 
 

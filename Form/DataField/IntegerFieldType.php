@@ -27,21 +27,6 @@ class IntegerFieldType extends DataFieldType {
 		return 'glyphicon glyphicon-sort-by-order';
 	}
 	
-// 	/**
-// 	 *
-// 	 * {@inheritdoc}
-// 	 *
-// 	 */
-// 	public function importData(DataField $dataField, $sourceArray, $isMigration) {
-// 		$migrationOptions = $dataField->getFieldType()->getMigrationOptions();
-// 		if(!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {
-// 			$dataField->setIntegerValue($sourceArray);
-// 		}
-// 		return [$dataField->getFieldType()->getName()];
-// 	}
-	
-	
-	
 
 
 	/**
@@ -80,22 +65,6 @@ class IntegerFieldType extends DataFieldType {
 				]
 		] );
 	}
-
-// 	/**
-// 	 *
-// 	 * {@inheritdoc}
-// 	 *
-// 	 */
-// 	public function isValid(DataField &$dataField){
-// 		$isValid = parent::isValid ( $dataField );
-
-// 		if($dataField->getRawData() !== null && (!intval($dataField->getRawData()) || $dataField->getRawData() === '0' || $dataField->getRawData() === 0 )){
-// 			$dataField->addMessage("Misformated integer ".$dataField->getRawData());
-// 			return FALSE;
-// 		}
-		
-// 		return $isValid;
-// 	}
 	
 	/**
 	 *
@@ -117,9 +86,9 @@ class IntegerFieldType extends DataFieldType {
 	 * {@inheritdoc}
 	 *
 	 */
-	public static function generateMapping(FieldType $current, $withPipeline){
+	public function generateMapping(FieldType $current, $withPipeline){
 		return [
-				$current->getName() => array_merge(["type" => "integer"],  array_filter($current->getMappingOptions()))
+				$current->getName() => $this->elasticsearchService->updateMapping(array_merge(["type" => "integer"],  array_filter($current->getMappingOptions())))
 		];
 	}
 	

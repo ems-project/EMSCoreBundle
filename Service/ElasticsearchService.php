@@ -39,22 +39,54 @@ class ElasticsearchService {
 	public function compare($version) {
 		return version_compare($this->version, $version);
 	}
-	
-	/**
-	 * Return a keyword mapping (not analyzed)
-	 * @return string[]
-	 */
-	public function getKeywordMapping() {
-		if(version_compare($this->version, '5') > 0){
-			return [
-					'type' => 'keyword',
-			];
-		}
-		return [
-				'type' => 'string',
-				'index' => 'not_analyzed'
-		];
-	}
+
+    /**
+     * Return a keyword mapping (not analyzed)
+     * @return string[]
+     */
+    public function getKeywordMapping() {
+        if(version_compare($this->version, '5') > 0){
+            return [
+                'type' => 'keyword',
+            ];
+        }
+        return [
+            'type' => 'string',
+            'index' => 'not_analyzed'
+        ];
+    }
+
+    /**
+     * Return a keyword mapping (not analyzed)
+     * @return string[]
+     */
+    public function updateMapping($mapping) {
+
+        if(isset($mapping['copy_to']) && !empty($mapping['copy_to']) && is_string($mapping['copy_to'])) {
+            $mapping['copy_to'] = explode(',', $mapping['copy_to']);
+        }
+
+        if(version_compare($this->version, '5') > 0){
+
+            if($mapping['type'] === 'string'){
+                if( (isset($mapping['analyzer']) && $mapping['analyzer'] === 'keyword') || (empty($mapping['analyzer']) && isset($mapping['index']) && $mapping['index'] === 'not_analyzed') ){
+                    $mapping['type'] = 'keyword';
+                    unset($mapping['analyzer']);
+                }
+                else {
+                    $mapping['type'] = 'text';
+                }
+            }
+
+            if(isset($mapping['index']) && $mapping['index'] === 'No' ){
+                $mapping['index'] = false;
+            }
+            else {
+                $mapping['index'] = true;
+            }
+        }
+        return $mapping;
+    }
 	
 	/**
 	 * Return a datetime mapping 
@@ -66,22 +98,57 @@ class ElasticsearchService {
 			'format' => 'date_time_no_millis'
 		];
 	}
-	
-	/**
-	 * Return a not indexed text mapping
-	 * @return string[]
-	 */
-	public function getNotIndexedStringMapping() {
-		if(version_compare($this->version, '5') > 0){
-			return [
-					'type' => 'text',
-					'index' => false,
-			];
-		}
-		return [
-				'type' => 'string',
-				'index' => 'no'
-		];
-	}
+
+    /**
+     * Return a not indexed text mapping
+     * @return string[]
+     */
+    public function getNotIndexedStringMapping() {
+        if(version_compare($this->version, '5') > 0){
+            return [
+                'type' => 'text',
+                'index' => false,
+            ];
+        }
+        return [
+            'type' => 'string',
+            'index' => 'no'
+        ];
+    }
+
+    /**
+     * Return a indexed text mapping
+     * @return string[]
+     */
+    public function getIndexedStringMapping() {
+        if(version_compare($this->version, '5') > 0){
+            return [
+                'type' => 'text',
+                'index' => true,
+            ];
+        }
+        return [
+            'type' => 'string',
+            'index' => 'analyzed'
+        ];
+    }
+
+    /**
+     * Return a indexed text mapping
+     * @return string[]
+     */
+    public function getLongMapping() {
+        return [
+            "type" => "long",
+        ];
+    }
+
+    public function isSingleType() {
+        return version_compare($this->version, '5.6') > 0;
+    }
+
+    public function withAllMapping() {
+        return version_compare($this->version, '6') < 0;
+    }
 	
 }

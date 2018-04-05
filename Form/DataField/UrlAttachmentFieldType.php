@@ -6,6 +6,7 @@ use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 use EMS\CoreBundle\Form\Field\IconTextType;
+use EMS\CoreBundle\Service\ElasticsearchService;
 use EMS\CoreBundle\Service\FileService;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -28,8 +29,8 @@ class UrlAttachmentFieldType extends DataFieldType {
 	private $fileService;
 	
 	
-	public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, FileService $fileService) {
-		parent::__construct($authorizationChecker, $formRegistry);
+	public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, FileService $fileService) {
+		parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
 		$this->fileService = $fileService;
 	}
 	
@@ -199,7 +200,7 @@ class UrlAttachmentFieldType extends DataFieldType {
 	/**
 	 * {@inheritdoc}
 	 */
-	public static function generateMapping(FieldType $current, $withPipeline){
+	public function generateMapping(FieldType $current, $withPipeline){
 		$mapping = parent::generateMapping($current, $withPipeline);
 		$body = [
 				"type" => "nested",

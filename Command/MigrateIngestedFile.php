@@ -118,15 +118,16 @@ class MigrateIngestedFile extends EmsCommand
 			foreach ($revisions as $revision){
 				$update = false;
 				$rawData = $revision->getRawData();
-				if(!empty($rawData) && $this->migrate($rawData, $revision, $fieldName, $output, $onlyWithIngestedContent) ) {
-					$revision->setRawData($rawData);
-					$update = true;
+				$newRawData = $this->findfield($rawData, $fieldName, $output, $onlyWithIngestedContent);
+				if(!empty($rawData) && $rawData !== $newRawData) {
+				    $revision->setRawData($newRawData);
+				    $update = true;
 				}
-				
 				$rawData = $revision->getAutoSave();
-				if(!empty($rawData) && $this->migrate($rawData, $revision, $fieldName, $output, $onlyWithIngestedContent) ) {
-					$revision->setAutoSave($rawData);
-					$update = true;
+				$newRawData = $this->findfield($rawData, $fieldName, $output, $onlyWithIngestedContent);
+				if(!empty($rawData) && $rawData !== $newRawData) {
+				    $revision->setAutoSave($rawData);
+				    $update = true;
 				}
 				
 				if($update) {
@@ -139,7 +140,7 @@ class MigrateIngestedFile extends EmsCommand
 					$em->flush($revision);
 				}
 				
-				$progress->advance();				
+				$progress->advance();
 			}
 			
 			if(count($revisions) == $limit){
@@ -162,61 +163,62 @@ class MigrateIngestedFile extends EmsCommand
 		
 	}
 	
-	private function migrate(array &$rawData, Revision $revision, $field, OutputInterface $output, $onlyWithIngestedContent=false){
-		$out = false;
-		if(!empty($rawData) && !empty($rawData[$field])) {
-			
-			if(isset($rawData[$field]['content'])){
-				unset($rawData[$field]['content']);
-				$out = true;
-			}
-			else if($onlyWithIngestedContent) {
-			    return false;
-			}
-			
-			if(isset($rawData[$field]['sha1'])){
-				$file = $this->fileService->getFile($rawData[$field]['sha1']);
-				if($file) {
-					$data = $this->extractorService->extractData($file, isset($rawData[$field]['filename'])?$rawData[$field]['filename']:'filename');
-					
-					if(!empty($data)) {
-						if(isset($data['date']) && $data['date']) {
-							$rawData[$field]['_date'] = $data['date'];
-							$out = true;
-						}
-						if(isset($data['content']) && $data['content']) {
-							$rawData[$field]['_content'] = $data['content'];
-							$out = true;
-						}
-						if(isset($data['Author']) && $data['Author']) {
-						    $rawData[$field]['_author'] = $data['Author'];
-						    $out = true;
-						}
-						if(isset($data['author']) && $data['author']) {
-						    $rawData[$field]['_author'] = $data['author'];
-						    $out = true;
-						}
-						if(isset($data['language']) && $data['language']) {
-							$rawData[$field]['_language'] = $data['language'];
-							$out = true;
-						}
-						if(isset($data['title']) && $data['title']) {
-							$rawData[$field]['_title'] = $data['title'];
-							$out = true;
-						}
-					}
-					
-					
-				}
-				else {
-					$output->writeln('File not found:'.$rawData[$field]['sha1']);	
-				}
-				
-			}
-			
-			
-		}
-		return $out;
+	private function findfield(array $rawData, $field, OutputInterface $output, $onlyWithIngestedContent=false)
+	{
+	    foreach ($rawData as $key => $data) {
+	        if ($key === $field) {
+	            $rawData[$key] = $this->migrate($data, $output, $onlyWithIngestedContent);
+	        } elseif (is_array($data)) {
+	            $rawData[$key] = $this->findfield($data, $field, $output, $onlyWithIngestedContent);
+	        }
+	    }
+	    return $rawData;
+	}
+
+	private function migrate(array $rawData, OutputInterface $output, $onlyWithIngestedContent)
+	{
+	    if(!empty($rawData) && !empty($rawData)) {
+	        
+	        if(isset($rawData['content'])) {
+	            unset($rawData['content']);
+	        }
+	        else if($onlyWithIngestedContent) {
+	            return $rawData;
+	        }
+	        
+	        if(isset($rawData['sha1'])) {
+	            $file = $this->fileService->getFile($rawData['sha1']);
+	            if($file) {
+	                $data = $this->extractorService->extractData($file, isset($rawData['filename'])?$rawData['filename']:'filename');
+	                
+	                if(!empty($data)) {
+	                    if(isset($data['date']) && $data['date']) {
+	                        $rawData['_date'] = $data['date'];
+	                    }
+	                    if(isset($data['content']) && $data['content']) {
+	                        $rawData['_content'] = $data['content'];
+	                    }
+	                    if(isset($data['Author']) && $data['Author']) {
+	                        $rawData['_author'] = $data['Author'];
+	                    }
+	                    if(isset($data['author']) && $data['author']) {
+	                        $rawData['_author'] = $data['author'];
+	                    }
+	                    if(isset($data['language']) && $data['language']) {
+	                        $rawData['_language'] = $data['language'];
+	                    }
+	                    if(isset($data['title']) && $data['title']) {
+	                        $rawData['_title'] = $data['title'];
+	                    }
+	                }
+	            }
+	            else {
+	                $output->writeln('File not found:'.$rawData['sha1']);
+	            }
+	            
+	        }
+	    }
+	    return $rawData;
 	}
 	
 	private function dbSize(OutputInterface $output)

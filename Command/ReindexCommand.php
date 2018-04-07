@@ -92,10 +92,20 @@ class ReindexCommand extends EmsCommand
     	$name = $input->getArgument('name');
     	$index = $input->getArgument('index');
     	$signData= !$input->getOption('sign-data');
-    	$this->reindex($name, $index, $output, $signData, $input->getOption('bulk-size'));
+
+        /** @var Environment $environment */
+        $contentTypes = $ctRepo->findBy(['deleted' => false]);
+
+
+
+        /**@var ContentType $contentType*/
+        foreach ($contentTypes as $contentType) {
+
+            $this->reindex($name, $contentType, $index, $output, $signData, $input->getOption('bulk-size'));
+        }
     }
     
-    public function reindex($name, $index, OutputInterface $output, $signData=true, $bulkSize=1000)
+    public function reindex($name, ContentType $contentType, $index, OutputInterface $output, $signData=true, $bulkSize=1000)
     {
     	$this->logger->info('Execute the ReindexCommand');
     	/** @var EntityManager $em */
@@ -111,8 +121,6 @@ class ReindexCommand extends EmsCommand
 		$environment = $envRepo->findBy(['name' => $name, 'managed' => true]);
 		/** @var ContentTypeRepository $ctRepo */
 		$ctRepo = $em->getRepository('EMSCoreBundle:ContentType');
-		/** @var Environment $environment */
-		$contentTypes = $ctRepo->findBy(['deleted' => false]);
 		
 		if($environment && count($environment) == 1) {
 			$environment = $environment[0];
@@ -120,80 +128,74 @@ class ReindexCommand extends EmsCommand
 			if(!$index) {
 				$index = $environment->getAlias();
 			}
-			
-			
-			/**@var ContentType $contentType*/
-			foreach ($contentTypes as $contentType) {
-				$page = 0;
-				$bulk = [];
-				$paginator = $revRepo->getRevisionsPaginatorPerEnvironmentAndContentType($environment, $contentType, $page);
-				
-				
-				
-				$output->writeln('');
-				$output->writeln('Start reindex '.$contentType->getName());
-				// create a new progress bar
-				$progress = new ProgressBar($output, $paginator->count());
-				// start and displays the progress bar
-				$progress->start();
-				do {
-	    			/** @var \EMS\CoreBundle\Entity\Revision $revision */
-	    			foreach ($paginator as $revision) {
-	    				if($revision->getDeleted()){
-	    					++$deleted;
-	    					$this->session->getFlashBag()->add('warning', 'The revision '.$revision->getContentType()->getName().':'.$revision->getOuuid().' is deleted and is referenced in '.$environment->getName());
-	    				}
-	    				else {
-	
-	    					if($signData) {
-	    						$this->dataService->sign($revision);
-	    						try{
-	    							$em->persist($revision);
-	    						}
-	    						catch (\Exception $e){
-	    						}
-	    					}
-	    					
-    						if(empty($bulk) && $revision->getContentType()->getHavePipelines()){
-    							$bulk['pipeline'] = $this->instanceId.$revision->getContentType()->getName();
-    						}
-	    					
-	    					$bulk['body'][] = [
-    								'index' => [
-    									'_index' => $index,
-	    								'_type' => $contentType->getName(),
-    									'_id' => $revision->getOuuid(),
-	    							]
-	    						];
-	    					
-	    					$bulk['body'][] = $revision->getRawData();
-	
-	    					
+            $page = 0;
+            $bulk = [];
+            $paginator = $revRepo->getRevisionsPaginatorPerEnvironmentAndContentType($environment, $contentType, $page);
 
-	    					
-	    				}
-	
-	    				if(count($bulk['body']) >= (2*$bulkSize)) {
-	    					$this->treatBulkResponse($this->client->bulk($bulk));
-	    					$bulk = [];
-	    				}
-	    				
-	    				$progress->advance();
-	    			}
-	    			$em->clear(Revision::class);
-	    			$this->flushFlash($output);
-	    			
-	    			++$page;
-	    			$paginator = $revRepo->getRevisionsPaginatorPerEnvironmentAndContentType($environment, $contentType, $page);
-			    } while ($paginator->getIterator()->count());
-				
-			    
-			    if(count($bulk)) {
-			    	$this->treatBulkResponse($this->client->bulk($bulk));
-			    	$bulk = [];
-			    }
-			    
-			}
+
+
+            $output->writeln('');
+            $output->writeln('Start reindex '.$contentType->getName());
+            // create a new progress bar
+            $progress = new ProgressBar($output, $paginator->count());
+            // start and displays the progress bar
+            $progress->start();
+            do {
+                /** @var \EMS\CoreBundle\Entity\Revision $revision */
+                foreach ($paginator as $revision) {
+                    if($revision->getDeleted()){
+                        ++$deleted;
+                        $this->session->getFlashBag()->add('warning', 'The revision '.$revision->getContentType()->getName().':'.$revision->getOuuid().' is deleted and is referenced in '.$environment->getName());
+                    }
+                    else {
+
+                        if($signData) {
+                            $this->dataService->sign($revision);
+                            try{
+                                $em->persist($revision);
+                            }
+                            catch (\Exception $e){
+                            }
+                        }
+
+                        if(empty($bulk) && $revision->getContentType()->getHavePipelines()){
+                            $bulk['pipeline'] = $this->instanceId.$revision->getContentType()->getName();
+                        }
+
+                        $bulk['body'][] = [
+                                'index' => [
+                                    '_index' => $index,
+                                    '_type' => $contentType->getName(),
+                                    '_id' => $revision->getOuuid(),
+                                ]
+                            ];
+
+                        $bulk['body'][] = $revision->getRawData();
+
+
+
+
+                    }
+
+                    if(count($bulk['body']) >= (2*$bulkSize)) {
+                        $this->treatBulkResponse($this->client->bulk($bulk));
+                        $bulk = [];
+                    }
+
+                    $progress->advance();
+                }
+                $em->clear(Revision::class);
+                $this->flushFlash($output);
+
+                ++$page;
+                $paginator = $revRepo->getRevisionsPaginatorPerEnvironmentAndContentType($environment, $contentType, $page);
+            } while ($paginator->getIterator()->count());
+
+
+            if(count($bulk)) {
+                $this->treatBulkResponse($this->client->bulk($bulk));
+                $bulk = [];
+            }
 			
 			$progress->finish();
 			$output->writeln('');

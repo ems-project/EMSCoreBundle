@@ -103,7 +103,13 @@ class EnvironmentService {
 	public function getEnvironmentsStats() {
 		/**@var EnvironmentRepository $repo*/
 		$repo = $this->doctrine->getManager()->getRepository('EMSCoreBundle:Environment');
-		return $repo->getEnvironmentsStats();
+        $out = $repo->getEnvironmentsStats();
+
+        foreach ($out as &$item) {
+            $item['deleted'] = $repo->getDeletedRevisionsPerEnvironment($item['environment']);
+        }
+
+		return $out;
 	}
 	
 	private function loadEnvironment(){

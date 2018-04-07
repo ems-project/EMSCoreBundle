@@ -1,12 +1,12 @@
 {% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
-{% block title %}All Environments{% endblock %}
-{% block pagetitle %}All Environments{% endblock %} 
+{% block title %}{{ 'view.environment.index.title'|trans }}{% endblock %}
+{% block pagetitle %}{{ 'view.environment.index.pagetitle'|trans }}{% endblock %}
 
 {% block breadcrumb %}
 	<ol class="breadcrumb">
-		<li><i class="fa fa-database"></i> Environments</li>
-		<li>List Environments</li>
+		<li><i class="fa fa-database"></i> {{ 'view.environment.index.environment_breadcrumb'|trans }}</li>
+		<li>{{ 'view.environment.index.index_breadcrumb'|trans }}</li>
    	</ol>
 {% endblock %}
 
@@ -17,11 +17,11 @@
 		<div class="box ">
 			<div class="box-header with-border">
 				<i class="fa fa-database"></i>
-				<h3 class="box-title">{{ 'Local environments'|trans }}</h3>
+				<h3 class="box-title">{{ 'view.environment.index.local_environment_label'|trans }}</h3>
 				<div class="btn-group  pull-right">
-					<a class="btn btn-xs btn-primary" href="{{ path('environment.add') }}"><i class="fa fa-plus"></i> Add environment</a>
+					<a class="btn btn-xs btn-primary" href="{{ path('environment.add') }}"><i class="fa fa-plus"></i> {{ 'view.environment.index.add_environment_button'|trans }}</a>
 					<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#environment_modal_reorder">
-						<i class="fa fa-reorder"></i> {{ 'Reorder'|trans }}
+						<i class="fa fa-reorder"></i> {{ 'view.environment.index.reorder_button'|trans }}
 					</button>
 				</div>
 				<div class="modal fade" id="environment_modal_reorder" tabindex="-1" role="dialog" aria-labelledby="myModalReorder">
@@ -30,7 +30,7 @@
     			      <div class="modal-header">
     			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
     			        <h4 class="modal-title" id="myModalReorderLabel">
-    						<strong>{{ 'Reorder Environment'|trans }}</strong>	
+    						<strong>{{ 'view.environment.index.reorder_title'|trans }}</strong>
     					</h4>
     			      </div>
     			      {{ form_start(form) }}
@@ -48,7 +48,7 @@
     			      <div class="modal-footer">
     			      	<div class="btn-group">
     			      		{{ form_widget(form.reorder) }}
-    				        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
+    				        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-close"></i> {{ 'view.environment.index.close_modal_button'|trans }}</button>
     			      	</div>
     			      </div>
     			      {{ form_end(form) }}	
@@ -59,20 +59,20 @@
 			<!-- /.box-header -->
 			<div class="box-body">
 				{% if environments|length == 0 %}
-					There is no environment yet
+                    {{ 'view.environment.index.no_environment_yet'|trans }}
 				{% else %}
 				<div class="table-responsive">
 				<table class="table table-condensed table-striped">
 					<tbody>
 						<tr>
-							<th class="text-center" style="width: 10px">#</th>
-							<th>Name</th>
-							<th>Alias</th>
-							<th>Index</th>
-							<th class="text-center">Total (indexed)</th>
-							<th class="text-center">Total (eMS)</th>
-							<th class="text-center">Deleted (eMS)</th>
-							<th>Action</th>
+							<th class="text-center" style="width: 10px">{{ 'view.environment.index.count_label'|trans }}</th>
+							<th>{{ 'view.environment.index.name_label'|trans }}</th>
+							<th>{{ 'view.environment.index.alias_label'|trans }}</th>
+							<th>{{ 'view.environment.index.indexes_label'|trans }}</th>
+							<th class="text-center">{{ 'view.environment.index.total_indexed_label'|trans }}</th>
+							<th class="text-center">{{ 'view.environment.index.total_in_ems'|trans }}</th>
+							<th class="text-center">{{ 'view.environment.index.total_mark_has_deleted'|trans }}</th>
+							<th>{{ 'view.environment.index.action_label'|trans }}</th>
 						</tr>
 						{% for environment in environments %}
 							{{ "Environmen's info"|debug({name: environment.name}) }}
@@ -93,7 +93,11 @@
 						                </span>		
 									</td>
 									<td>{{ environment.alias }}</td>
-									<td>{{ environment.index }}</td>
+									<td>
+                                        <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#modal-environment-{{ environment.id }}">
+                                            {{ 'view.environment.index.environment_index_count'|transchoice(environment.indexes|length, {'%count%': environment.indexes|length}) }}
+                                        </button>
+                                    </td>
 									<td class="text-center">{{ environment.total|number_format }}</td>
 									<td class="text-center">{{ environment.counter|number_format }}</td>
 									<td class="text-center">{{ environment.deletedRevision|number_format }}</td>
@@ -101,23 +105,23 @@
 										<div class="btn-group">
                                             {% include '@EMSCore/elements/get-button.html.twig' with {
 												'url': path('environment.rebuild', {'id': environment.id}),
-												'label': 'Rebuild',
+												'label': 'view.environment.index.rebuild_button'|trans,
 												'icon': 'recycle'
 											}%}
                                             {% include '@EMSCore/elements/get-button.html.twig' with {
 													'url': path('environment.view', {'id': environment.id}),
-													'label': 'View',
+													'label': 'view.environment.index.view_button'|trans,
 													'icon': 'eye'
 												}%}
                                             {% include '@EMSCore/elements/get-button.html.twig' with {
 													'url': path('environment.edit', {'id': environment.id}),
-													'label': 'Edit',
+													'label': 'view.environment.index.view_button'|trans,
 													'icon': 'pencil'
 												}%}
                                             {% include '@EMSCore/elements/post-button.html.twig' with {
 												'url': path('environment.remove', {'id': environment.id}),
-												'message': 'Delete the environment ' ~ environment.name|humanize ~ ' ?',
-												'label': 'Delete',
+												'message': 'view.environment.index.confirm_delete'|trans({'%name%': environment.name|humanize}),
+												'label': 'view.environment.index.delete_button'|trans,
 												'icon': 'trash'
 											}%}
 										</div>
@@ -144,23 +148,23 @@
 		<div class="box ">
 			<div class="box-header with-border">
 				<i class="fa fa-database"></i>
-				<h3 class="box-title">Externals environments</h3>{{ 'List referenced external evironment'|debug }}
+				<h3 class="box-title">{{ 'view.environment.index.external_environments_title'|trans }}</h3>
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
 				{% if not found %}
-					There is no external environment yet
+                {{ 'view.environment.index.no_external_environment_yet'|trans }}
 				{% else %}
 					<div class="table-responsive">
 						<table class="table table-condensed table-striped">
 							<tbody>
 								<tr>
-									<th class="text-center" style="width: 10px">#</th>
-									<th>Name</th>
-									<th>Alias</th>
-									<th>Index</th>
-									<th class="text-center">Total</th>
-									<th>Action</th>
+									<th class="text-center" style="width: 10px">{{ 'view.environment.index.count_label'|trans }}#</th>
+									<th>{{ 'view.environment.index.name_label'|trans }}</th>
+									<th>{{ 'view.environment.index.alias_label'|trans }}</th>
+									<th>{{ 'view.environment.index.indexes_label'|trans }}</th>
+									<th class="text-center">{{ 'view.environment.index.total_label'|trans }}</th>
+									<th>{{ 'view.environment.index.action_label'|trans }}</th>
 								</tr>
 								{% for environment in environments %}
 									{% if not environment.managed  %}
@@ -170,31 +174,30 @@
 												<span class="badge bg-{{ environment.color|raw }}">{{ environment.name|humanize }}</span>		
 											</td>
 											<td>{{ environment.alias }}</td>
-											<td>{{ environment.index }}</td>
+											<td>
+                                                <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#modal-environment-{{ environment.id }}">
+                                                    {{ 'view.environment.index.environment_index_count'|trans({'%count%': environment.indexes|length}) }}
+                                                </button>
+
+                                            </td>
 											<td class="text-center">{{ environment.total|number_format }}</td>
 											<td>
-												<div class="btn-group">
-                                                    {# 											{% include '@EMSCore/elements/get-button.html.twig' with {#}
-		{# 												'url': path('index.switch', {'id': environment.id}),#}
-		{# 												'label': 'Switch',#}
-		{# 												'icon': 'share-square-o'#}
-		{# 											}%}#}
-                                                    {% include '@EMSCore/elements/get-button.html.twig' with {
-															'url': path('environment.view', {'id': environment.id}),
-															'label': 'View',
-															'icon': 'eye'
-														}%}
-                                                    {% include '@EMSCore/elements/get-button.html.twig' with {
-															'url': path('environment.edit', {'id': environment.id}),
-															'label': 'Edit',
-															'icon': 'pencil'
-														}%}
-                                                    {% include '@EMSCore/elements/post-button.html.twig' with {
-														'url': path('environment.remove', {'id': environment.id}),
-														'message': 'Detach the environment ' ~ environment.name|humanize ~ ' ?',
-														'label': 'Detach',
-														'icon': 'trash'
-													}%}
+                                                {% include '@EMSCore/elements/get-button.html.twig' with {
+                                                    'url': path('environment.view', {'id': environment.id}),
+                                                    'label': 'view.environment.index.view_button'|trans,
+                                                    'icon': 'eye'
+                                                }%}
+                                                {% include '@EMSCore/elements/get-button.html.twig' with {
+                                                    'url': path('environment.edit', {'id': environment.id}),
+                                                    'label': 'view.environment.index.edit_button'|trans,
+                                                    'icon': 'pencil'
+                                                }%}
+                                                {% include '@EMSCore/elements/post-button.html.twig' with {
+                                                    'url': path('environment.remove', {'id': environment.id}),
+                                                    'message': 'view.environment.index.confirm_dettach'|trans({'%name%': environment.name|humanize }),
+                                                    'label': 'view.environment.index.dettach_button'|trans,
+                                                    'icon': 'trash'
+                                                }%}
 												</div>
 											</td>
 										</tr>
@@ -207,13 +210,46 @@
 			</div>
 			<!-- /.box-body -->
 		</div>
+
+
+
+        {% for environment in environments %}
+            <div class="modal fade in" id="modal-environment-{{ environment.id }}">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span></button>
+                            <h4 class="modal-title">{{ 'view.environment.index.environment_indexes_modal_title'|trans({'%name%': environment.name|humanize}) }}</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+                                <ul class="list-group">
+                                    {% for index in environment.indexes %}
+                                        <li class="list-group-item">
+                                            <span class="badge">{{ index.count }}</span>
+                                            {{ index.name }}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+        {% endfor %}
                         
                 <div class="box ">
                     <div class="box-header with-border">
                         <i class="fa fa-code-fork"></i>
-                        <h3 class="box-title">{{ 'Managed Aliases'|trans }}</h3>
+                        <h3 class="box-title">{{ 'view.environment.index.managed_alias_title'|trans }}</h3>
                         <div class="btn-group  pull-right">
-                            <a class="btn btn-xs btn-primary" href="{{ path('environment_add_managed_alias') }}"><i class="fa fa-plus"></i> Add managed alias</a>
+                            <a class="btn btn-xs btn-primary" href="{{ path('environment_add_managed_alias') }}"><i class="fa fa-plus"></i> {{ 'view.environment.index.add_managed_alias_button'|trans }}</a>
                         </div>
                     </div>
                     {% if managedAliases|length > 0 %}
@@ -222,12 +258,12 @@
                                 <table class="table table-condensed table-striped">
                                     <tbody>
                                         <tr>
-                                            <th class="text-center" style="width: 10px">#</th>
-                                            <th>Name</th>
-                                            <th>Alias</th>
-                                            <th>Indexes</th>
-                                            <th>Total</th>
-                                            <th>Action</th>
+                                            <th class="text-center" style="width: 10px">{{ 'view.environment.index.count_label'|trans }}</th>
+                                            <th>{{ 'view.environment.index.name_label'|trans }}</th>
+                                            <th>{{ 'view.environment.index.alias_label'|trans }}</th>
+                                            <th>{{ 'view.environment.index.indexes_label'|trans }}</th>
+                                            <th>{{ 'view.environment.index.total_label'|trans }}</th>
+                                            <th>{{ 'view.environment.index.total_label'|trans }}</th>
                                         </tr>
                                         {% for managedAlias in managedAliases %}
                                             <tr>
@@ -242,13 +278,13 @@
                                                     <div class="btn-group">
                                                         {% include '@EMSCore/elements/get-button.html.twig' with {
                                                             'url': path('environment_edit_managed_alias', {'id': managedAlias.id}),
-                                                            'label': 'Edit',
+                                                            'label': 'view.environment.index.edit_button'|trans,
                                                             'icon': 'pencil'
                                                         }%}
                                                         {% include '@EMSCore/elements/post-button.html.twig' with {
                                                             'url': path('environment_remove_managed_alias', {'id': managedAlias.id}),
-                                                            'message': 'Delete the managed alias ' ~ managedAlias.name|humanize ~ ' ?',
-                                                            'label': 'Delete',
+                                                            'message': 'view.environment.index.delete_managed_environemnt_button'|trans({'%name%': managedAlias.name|humanize}),
+                                                            'label': 'view.environment.index.delete_button'|trans,
                                                             'icon': 'trash'
                                                         } %}
                                                     </div>
@@ -271,23 +307,23 @@
 		<div class="box ">
 			<div class="box-header with-border">
 				<i class="fa fa-database"></i>
-				<h3 class="box-title">Unreferenced aliases</h3>{{ 'List unreferenced external environments/aliases'|debug }}
+				<h3 class="box-title">{{ 'view.environment.index.unreferenced_aliases_title'|trans }}</h3>
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
 				{% if unreferencedAliases|length == 0 %}
-					All indexes are referenced
+                    {{ 'view.environment.index.all_indexes_are_referenced'|trans }}
 				{% else %}
 			
 					<div class="table-responsive">
 					<table class="table table-condensed table-striped">
 						<tbody>
 							<tr>
-								<th class="text-center" style="width: 10px">#</th>
-								<th>Name</th>
-								<th class="text-center">Indexes</th>
-								<th class="text-center">Total</th>
-								<th>Action</th>
+								<th class="text-center" style="width: 10px">{{ 'view.environment.index.count_label'|trans }}</th>
+								<th>{{ 'view.environment.index.name_label'|trans }}</th>
+								<th class="text-center">{{ 'view.environment.index.indexes_label'|trans }}</th>
+								<th class="text-center">{{ 'view.environment.index.total_label'|trans }}</th>
+								<th>{{ 'view.environment.index.action_label'|trans }}</th>
 							</tr>
 							{% for name, alias in unreferencedAliases %}
 								<tr>
@@ -300,16 +336,16 @@
                                                                                 {% if alias.indexes|length == 1 %}
                                                                                     {% include '@EMSCore/elements/post-button.html.twig' with {
                                                                                             'url': path('environment.attach', {'name': name }),
-                                                                                            'message': 'Attach the alias ' ~ name|humanize ~ ' ?',
-                                                                                            'label': 'Attach',
+                                                                                            'message': 'view.environment.index.attach_alias_confirm'|trans({'%name%': name|humanize}),
+                                                                                            'label': 'view.environment.index.attach_button'|trans,
                                                                                             'icon': 'plus',
                                                                                             'class': 'btn-sm btn-primary',
                                                                                     }%}
                                                                                 {% endif %}
                                                                                 {% include '@EMSCore/elements/post-button.html.twig' with {
                                                                                         'url': path('environment.remove.alias', {'name': name }),
-                                                                                        'message': 'Delete the alias ' ~ name|humanize ~ ' ?',
-                                                                                        'label': 'Delete',
+                                                                                        'message': 'view.environment.index.delete_alias_confirm'|trans({'%name%': name|humanize}),
+                                                                                        'label': 'view.environment.index.delete_button'|trans,
                                                                                         'icon': 'trash',
                                                                                 }%}
                                                                             </div>
@@ -331,12 +367,12 @@
 		<div class="box ">
 			<div class="box-header with-border">
 				<i class="fa fa-database"></i>
-				<h3 class="box-title">Orphan indexes</h3>{{ 'List orphan indexes'|debug }}
+				<h3 class="box-title">{{ 'view.environment.index.orphan_index_title'|trans }}</h3>
 				<div class="btn-group  pull-right">
                     {% include '@EMSCore/elements/post-button.html.twig' with {
     						'url': path('ems_delete_ophean_indexes', {}),
-    						'message': 'Delete all ophan indexes ?',
-    						'label': 'Delete all',
+    						'message': 'view.environment.index.delete_all_ophan_indexes_confirm'|trans,
+    						'label': 'view.environment.index.delete_all_button'|trans,
     						'icon': 'trash'
     				}%}
 				</div>
@@ -345,17 +381,17 @@
 			<div class="box-body">
 			
 				{% if orphanIndexes|length == 0 %}
-					There is no orphean index
+                    {{ 'view.environment.index.there_is_no_orphan_index'|trans }}
 				{% else %}
 				
 				<div class="table-responsive">
 				<table class="table table-condensed table-striped">
 					<tbody>
 						<tr>
-							<th class="text-center" style="width: 10px">#</th>
-							<th>Name</th>
-							<th class="text-center">Total</th>
-							<th>Action</th>
+							<th class="text-center" style="width: 10px">{{ 'view.environment.index.count_label'|trans }}</th>
+							<th>{{ 'view.environment.index.name_label'|trans }}</th>
+							<th class="text-center">{{ 'view.environment.index.total_label'|trans }}</th>
+							<th>{{ 'view.environment.index.action_label'|trans }}</th>
 						</tr>
 						{% for index in orphanIndexes %}
 							<tr>
@@ -367,13 +403,13 @@
 									<div class="btn-group">
                                         {% include '@EMSCore/elements/get-button.html.twig' with {
 											'url': path('elasticsearch.alias.add', {'name': index.name}),
-											'label': 'Add alias',
+											'label': 'view.environment.index.add_alias_button'|trans,
 											'icon': 'plus'
 										}%}
                                         {% include '@EMSCore/elements/post-button.html.twig' with {
 											'url': path('elasticsearch.index.delete', {'name': index.name}),
-											'message': 'Delete the index ' ~ index.name|humanize ~ ' ?',
-											'label': 'Delete',
+											'message': 'view.environment.index.delete_index_confirm'|trans({'%name%': index.name|humanize}),
+											'label': 'view.environment.index.delete_index_button'|trans,
 											'icon': 'trash'
 										}%}
 									</div>

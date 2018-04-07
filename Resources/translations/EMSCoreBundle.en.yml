@@ -31,7 +31,7 @@
 'Click on ''Add an aggregate option'' to create a first Aggregate Option': 'Click on ''Add an aggregate option'' to create a first Aggregate Option'
 'Cluster''s UUID': 'Cluster''s UUID'
 'Compare environments': 'Compare environments'
-'Config': 'Config'
+Config: Config
 'Content :': 'Content :'
 'Content type': 'Content type'
 'Content types': 'Content types'
@@ -58,8 +58,8 @@
 'Extract content': 'Extract content'
 'Finalize draft': 'Finalize draft'
 'Finalized by': 'Finalized by'
-'form.email': 'Email'
-'form.username': 'Username'
+form.email: Email
+form.username: Username
 'gallery view plugin': 'gallery view plugin'
 'Hash signature': 'Hash signature'
 'I18N create': 'I18N create'
@@ -95,7 +95,7 @@
 'Query (and)': 'Query (and)'
 'Query (or)': 'Query (or)'
 'Raw view': 'Raw view'
-'Remove': 'Remove'
+Remove: Remove
 'Reorder %name%''s fields': 'Reorder %name%''s fields'
 'Reorder Environment': 'Reorder Environment'
 'Reorder the content type "%content_type%"': 'Reorder the content type "%content_type%"'
@@ -128,7 +128,7 @@
 'To be treated': 'To be treated'
 'Styles set''s name': 'Styles set''s name'
 'Trash for content type %name%': 'Trash for content type %name%'
-'Update': 'Update'
+Update: Update
 'Upload file': 'Upload file'
 'User profile': 'User profile'
 'Users list': 'Users list'
@@ -186,13 +186,13 @@ Pending: Pending
 Reorder: Reorder
 Revision: Revision
 Revisions: Revisions
-ROLE_ADMIN: 'Administrator'
+ROLE_ADMIN: Administrator
 ROLE_ALLOW_ALIGN: 'Align Environment'
-ROLE_API: 'API'
-ROLE_AUTHOR: 'Author'
+ROLE_API: API
+ROLE_AUTHOR: Author
 ROLE_COPY_PASTE: Copy/Paste
 ROLE_DEFAULT_SEARCH: 'Default search'
-ROLE_PUBLISHER: 'Publisher'
+ROLE_PUBLISHER: Publisher
 ROLE_SUPER_ADMIN: 'Super Admin'
 ROLE_SUPER_AUTHOR: 'Super Author'
 ROLE_SUPER_PUBLISHER: 'Super Publisher'
@@ -214,93 +214,137 @@ Warnings: Warnings
 WYSIWYG: WYSIWYG
 Command: Command
 Launch: Launch
-form:
-    analyzer:
-        name: Name
-        label: Label
-        save: Save
-        type: Type
-        type.standard: Standard
-        type.stop: Stop
-        type.pattern: Pattern
-        type.fingerprint: Fingerprint
-        type.custom: Custom
-        tokenizer: Tokenizer
-        tokenizer.standard: Standard
-        tokenizer.letter: Letter
-        tokenizer.lowercase: Lowercase
-        tokenizer.whitespace: Whitespace
-        tokenizer.uax_url_email: 'UAX URL Email'
-        tokenizer.classic: Classic
-        tokenizer.thai: Thai
-        tokenizer.ngram: N-Gram
-        tokenizer.edge_ngram: 'Edge N-Gram'
-        tokenizer.keyword: Keyword
-        tokenizer.pattern: Pattern
-        tokenizer.path_hierarchy: Path
-        max_token_length: 'Max Token Length'
-        max_output_size: 'Max Output Size'
-        lowercase: Lowercase
-        position_increment_gap: 'Position Increment Gap'
-        stopwords: Stopwords
-        stopwords._none_: 'None'
-        stopwords._arabic_: 'Arabic'
-        stopwords._armenian_: 'Armenian'
-        stopwords._basque_: 'Basque'
-        stopwords._brazilian_: 'Brazilian'
-        stopwords._bulgarian_: 'Bulgarian'
-        stopwords._catalan_: 'Catalan'
-        stopwords._cjk_: 'CJK'
-        stopwords._czech_: 'Czech'
-        stopwords._danish_: 'Danish'
-        stopwords._dutch_: 'Dutch'
-        stopwords._english_: 'English'
-        stopwords._finnish_: 'Finnish'
-        stopwords._french_: 'French'
-        stopwords._galician_: 'Galician'
-        stopwords._german_: 'German'
-        stopwords._greek_: 'Greek'
-        stopwords._hindi_: 'Hindi'
-        stopwords._hungarian_: 'Hungarian'
-        stopwords._indonesian_: 'Indonesian'
-        stopwords._irish_: 'Irish'
-        stopwords._italian_: 'Italian'
-        stopwords._latvian_: 'Latvian'
-        stopwords._lithuanian_: 'Lithuanian'
-        stopwords._norwegian_: 'Norwegian'
-        stopwords._persian_: 'Persian'
-        stopwords._portuguese_: 'Portuguese'
-        stopwords._romanian_: 'Romanian'
-        stopwords._russian_: 'Russian'
-        stopwords._sorani_: 'Sorani'
-        stopwords._spanish_: 'Spanish'
-        stopwords._swedish_: 'Swedish'
-        stopwords._turkish_: 'Turkish'
-        stopwords._thai_: 'Thai'
-        filter: Filter
-        filter.built_in: 'Built-in'
-        filter.built_in.standard: Standard
-        filter.built_in.asciifolding: 'ASCII Folding'
-        filter.built_in.flatten_graph: 'Flatten graph'
-        filter.built_in.lowercase: 'Lowercase'
-        filter.built_in.uppercase: 'Uppercase'
-        filter.built_in.n_gram: 'NGram'
-        filter.built_in.edge_n_gram: 'Edge NGram'
-        filter.built_in.porter_stem: 'Porter Stem'
-        filter.built_in.stop: 'Stop'
-        filter.built_in.word_delimiter: 'Word Delimiter'
-        filter.customized: 'Customized'
-        char_filter: 'Char Filter'
-        char_filter.html_strip: 'HTML Strip'
-        flags: Flags
-        flags.canon_eq: CANON_EQ
-        flags.case_insensitive: CASE_INSENSITIVE
-        flags.comments: COMMENTS
-        flags.dotall: DOTALL
-        flags.literal: LITERAL
-        flags.multiline: MULTILINE
-        flags.unicode_case: UNICODE_CASE
-        flags.unicode_character_class: UNICODE_CHARACTER_CLASS
-        flags.unix_lines: UNIX_LINES
-        separator: Separator
-        pattern: Pattern
+form.analyzer.name: Name
+form.analyzer.label: Label
+form.analyzer.save: Save
+form.analyzer.type: Type
+form.analyzer.type.standard: Standard
+form.analyzer.type.stop: Stop
+form.analyzer.type.pattern: Pattern
+form.analyzer.type.fingerprint: Fingerprint
+form.analyzer.type.custom: Custom
+form.analyzer.tokenizer: Tokenizer
+form.analyzer.tokenizer.standard: Standard
+form.analyzer.tokenizer.letter: Letter
+form.analyzer.tokenizer.lowercase: Lowercase
+form.analyzer.tokenizer.whitespace: Whitespace
+form.analyzer.tokenizer.uax_url_email: 'UAX URL Email'
+form.analyzer.tokenizer.classic: Classic
+form.analyzer.tokenizer.thai: Thai
+form.analyzer.tokenizer.ngram: N-Gram
+form.analyzer.tokenizer.edge_ngram: 'Edge N-Gram'
+form.analyzer.tokenizer.keyword: Keyword
+form.analyzer.tokenizer.pattern: Pattern
+form.analyzer.tokenizer.path_hierarchy: Path
+form.analyzer.max_token_length: 'Max Token Length'
+form.analyzer.max_output_size: 'Max Output Size'
+form.analyzer.lowercase: Lowercase
+form.analyzer.position_increment_gap: 'Position Increment Gap'
+form.analyzer.stopwords: Stopwords
+form.analyzer.stopwords._none_: None
+form.analyzer.stopwords._arabic_: Arabic
+form.analyzer.stopwords._armenian_: Armenian
+form.analyzer.stopwords._basque_: Basque
+form.analyzer.stopwords._brazilian_: Brazilian
+form.analyzer.stopwords._bulgarian_: Bulgarian
+form.analyzer.stopwords._catalan_: Catalan
+form.analyzer.stopwords._cjk_: CJK
+form.analyzer.stopwords._czech_: Czech
+form.analyzer.stopwords._danish_: Danish
+form.analyzer.stopwords._dutch_: Dutch
+form.analyzer.stopwords._english_: English
+form.analyzer.stopwords._finnish_: Finnish
+form.analyzer.stopwords._french_: French
+form.analyzer.stopwords._galician_: Galician
+form.analyzer.stopwords._german_: German
+form.analyzer.stopwords._greek_: Greek
+form.analyzer.stopwords._hindi_: Hindi
+form.analyzer.stopwords._hungarian_: Hungarian
+form.analyzer.stopwords._indonesian_: Indonesian
+form.analyzer.stopwords._irish_: Irish
+form.analyzer.stopwords._italian_: Italian
+form.analyzer.stopwords._latvian_: Latvian
+form.analyzer.stopwords._lithuanian_: Lithuanian
+form.analyzer.stopwords._norwegian_: Norwegian
+form.analyzer.stopwords._persian_: Persian
+form.analyzer.stopwords._portuguese_: Portuguese
+form.analyzer.stopwords._romanian_: Romanian
+form.analyzer.stopwords._russian_: Russian
+form.analyzer.stopwords._sorani_: Sorani
+form.analyzer.stopwords._spanish_: Spanish
+form.analyzer.stopwords._swedish_: Swedish
+form.analyzer.stopwords._turkish_: Turkish
+form.analyzer.stopwords._thai_: Thai
+form.analyzer.filter: Filter
+form.analyzer.filter.built_in: Built-in
+form.analyzer.filter.built_in.standard: Standard
+form.analyzer.filter.built_in.asciifolding: 'ASCII Folding'
+form.analyzer.filter.built_in.flatten_graph: 'Flatten graph'
+form.analyzer.filter.built_in.lowercase: Lowercase
+form.analyzer.filter.built_in.uppercase: Uppercase
+form.analyzer.filter.built_in.n_gram: NGram
+form.analyzer.filter.built_in.edge_n_gram: 'Edge NGram'
+form.analyzer.filter.built_in.porter_stem: 'Porter Stem'
+form.analyzer.filter.built_in.stop: Stop
+form.analyzer.filter.built_in.word_delimiter: 'Word Delimiter'
+form.analyzer.filter.customized: Customized
+form.analyzer.char_filter: 'Char Filter'
+form.analyzer.char_filter.html_strip: 'HTML Strip'
+form.analyzer.flags: Flags
+form.analyzer.flags.canon_eq: CANON_EQ
+form.analyzer.flags.case_insensitive: CASE_INSENSITIVE
+form.analyzer.flags.comments: COMMENTS
+form.analyzer.flags.dotall: DOTALL
+form.analyzer.flags.literal: LITERAL
+form.analyzer.flags.multiline: MULTILINE
+form.analyzer.flags.unicode_case: UNICODE_CASE
+form.analyzer.flags.unicode_character_class: UNICODE_CHARACTER_CLASS
+form.analyzer.flags.unix_lines: UNIX_LINES
+form.analyzer.separator: Separator
+form.analyzer.pattern: Pattern
+view.environment.index.title: 'All Environments'
+view.environment.index.pagetitle: 'All Environments'
+view.environment.index.environment_breadcrumb: Environments
+view.environment.index.index_breadcrumb: List
+view.environment.index.local_environment_label: 'Local Environments'
+view.environment.index.add_environment_button: 'Add Environment'
+view.environment.index.reorder_button: Reorder
+view.environment.index.reorder_title: Reorder
+view.environment.index.close_modal_button: Close
+view.environment.index.no_environment_yet: 'There is no environment defined yet.'
+view.environment.index.count_label: '#'
+view.environment.index.name_label: Name
+view.environment.index.alias_label: Alias
+view.environment.index.indexes_label: Indexes
+view.environment.index.total_indexed_label: 'Total in ES'
+view.environment.index.total_in_ems: 'Total in ems'
+view.environment.index.total_mark_has_deleted: 'Total deleted'
+view.environment.index.action_label: Action
+view.environment.index.environment_index_count: '{0} There are no index|{1} There is one index|]1,Inf[ There are %count% indexes'
+view.environment.index.rebuild_button: 'Rebuild'
+view.environment.index.view_button: 'View'
+view.environment.index.confirm_delete: 'Do you want to delete %name%?'
+view.environment.index.delete_button: 'Delete'
+view.environment.index.external_environments_title: 'External environments'
+view.environment.index.no_external_environment_yet: 'There is no external environment defined yet.'
+view.environment.index.total_label: 'Total'
+view.environment.index.edit_button: 'Edit'
+view.environment.index.confirm_dettach: 'Do you want to detach %name%?'
+view.environment.index.dettach_button: 'Detach'
+view.environment.index.environment_indexes_modal_title: 'Indexes'
+view.environment.index.managed_alias_title: 'Managed alias'
+view.environment.index.add_managed_alias_button: 'Add managed alias'
+view.environment.index.delete_managed_environemnt_button: 'Delete'
+view.environment.index.unreferenced_aliases_title: 'Unreferenced aliases'
+view.environment.index.all_indexes_are_referenced: 'All aliases are referenced'
+view.environment.index.attach_alias_confirm: 'Attache the alias %name%?'
+view.environment.index.attach_button: 'Atach'
+view.environment.index.delete_alias_confirm: 'Do you want to delete the alias %name%?'
+view.environment.index.orphan_index_title: 'Orphan indexes'
+view.environment.index.delete_all_button: 'Delete all'
+view.environment.index.there_is_no_orphan_index: 'There is no orphan indexes'
+view.environment.index.add_alias_button: 'Add alias'
+view.environment.index.delete_index_confirm: 'Are you sure to delete the index %name%?'
+view.environment.index.delete_index_button: 'Delete'
+view.environment.index.delete_all_ophan_indexes_confirm: 'Do you confirm?'
+controller.environment.index.reorder_submit_button: 'Reorder'

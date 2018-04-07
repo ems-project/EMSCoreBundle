@@ -2,6 +2,8 @@
 
 namespace EMS\CoreBundle\Repository;
 
+use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\Environment;
 
 /**
@@ -33,16 +35,40 @@ class EnvironmentRepository extends \Doctrine\ORM\EntityRepository
         
         return $qb->getQuery()->getResult();
     }
-	
+
     public function getEnvironmentsStats() {
         /** @var QueryBuilder $qb */
         $qb = $this->createQueryBuilder('e')
-        ->select('e as environment', 'count(r) as counter', 'count(r.deleted) as deleted')
+        ->select('e as environment', 'count(r) as counter')
         ->leftJoin('e.revisions', 'r')
         ->groupBy('e.id')
         ->orderBy('e.orderKey', 'ASC');
-        
+
         return $qb->getQuery()->getResult();
+    }
+
+
+
+    public function getDeletedRevisionsPerEnvironment(Environment $environment) {
+        /** @var QueryBuilder $qb */
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('count(r) as counter')
+            ->leftJoin('e.revisions', 'r')
+            ->where($qb->expr()->eq('r.deleted', ':true'))
+            ->andWhere($qb->expr()->eq('e', ':environment'))
+            ->groupBy('e.id')
+            ->orderBy('e.orderKey', 'ASC')
+            ->setParameters([
+                ':true' => true,
+                ':environment' => $environment
+            ]);
+
+        try {
+            return $qb->getQuery()->getSingleScalarResult();
+        }
+        catch(NoResultException $e) {
+            return 0;
+        }
     }
     
     public function countRevisionPerEnvironment(Environment $env) {

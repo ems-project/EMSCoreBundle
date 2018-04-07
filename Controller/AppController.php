@@ -16,6 +16,7 @@ use EMS\CoreBundle\Service\SearchService;
 use EMS\CoreBundle\Service\UserService;
 use EMS\CoreBundle\Service\WysiwygProfileService;
 use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
@@ -30,7 +31,17 @@ use EMS\CoreBundle\Service\SortOptionService;
 
 class AppController extends Controller
 {
-	/**
+
+    /**@var LoggerInterface*/
+    private $logger;
+
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+
+    /**
 	 * @Route("/js/app.js", name="app.js"))
 	 */
 	public function javascriptAction()
@@ -188,11 +199,11 @@ class AppController extends Controller
 	/**
 	 * Get the injected logger
 	 * 
-	 * @return Logger
+	 * @return LoggerInterface
 	 * 
 	 */
 	protected function getLogger(){
-		return $this->get('logger');
+		return $this->logger;
 	}
 	
 	

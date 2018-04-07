@@ -3,6 +3,8 @@
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use EMS\CoreBundle\Controller\AppController;
+use EMS\CoreBundle\Entity\ContentType;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use EMS\CoreBundle\Entity\Environment;
@@ -25,17 +27,27 @@ class EnvironmentService {
 	
 	/** @var AuthorizationCheckerInterface $authorizationChecker*/
 	private $authorizationChecker;
+
+    private $singleTypeIndex;
 	
 	
-	public function __construct(Registry $doctrine, Session $session, UserService $userService, AuthorizationCheckerInterface $authorizationChecker)
+	public function __construct(Registry $doctrine, Session $session, UserService $userService, AuthorizationCheckerInterface $authorizationChecker, $singleTypeIndex)
 	{
 		$this->doctrine = $doctrine;
 		$this->session = $session;
 		$this->userService = $userService;
 		$this->authorizationChecker = $authorizationChecker;
-		$this->environments = false;
-		$this->byId = false;
+        $this->singleTypeIndex = $singleTypeIndex;
+        $this->environments = false;
+        $this->byId = false;
 	}
+
+	public function getNewIndexName(Environment $environment, ContentType $contentType){
+        if($this->singleTypeIndex){
+            return $environment->getAlias().'_'.$contentType->getName().AppController::getFormatedTimestamp();
+        }
+        return $environment->getAlias().AppController::getFormatedTimestamp();
+    }
 	
 	public function getIndexAnalysisConfiguration(){
 		$filters = [];

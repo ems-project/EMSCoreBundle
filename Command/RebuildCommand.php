@@ -33,8 +33,9 @@ class RebuildCommand extends EmsCommand
 	/**@var EnvironmentService*/
 	private $environmentService;
 	private $instanceId;
+    private $singleTypeIndex;
 
-	public function __construct(Registry $doctrine, Logger $logger, Client $client, $mapping, Container $container, Session $session, $instanceId)
+	public function __construct(Registry $doctrine, Logger $logger, Client $client, $mapping, Container $container, Session $session, $instanceId, $singleTypeIndex)
 	{
 		$this->doctrine = $doctrine;
 		$this->logger = $logger;
@@ -45,6 +46,7 @@ class RebuildCommand extends EmsCommand
 		$this->environmentService = $container->get('ems.service.environment');
 		$this->session = $session;
 		$this->instanceId = $instanceId;
+        $this->singleTypeIndex = $singleTypeIndex;
 		parent::__construct($logger, $client, $session);
 	}
 

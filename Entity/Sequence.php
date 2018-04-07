@@ -72,7 +72,6 @@ class Sequence
      */
     public function updateModified()
     {
-    	dump('updateModifed');
     	$this->modified = new \DateTime();
     	++$this->version;
     	if(!isset($this->created)){

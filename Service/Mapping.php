@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Service;
 
 
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CoreBundle\DependencyInjection\EMSCoreExtension;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\ContentType;
@@ -73,7 +74,7 @@ class Mapping
 		
 		
 		return [ $contentType->getName() => $out ];
-	} 
+	}
 
 
 

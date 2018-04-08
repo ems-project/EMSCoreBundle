@@ -354,17 +354,24 @@ class ContentType
      * @ORM\OrderBy({"orderKey" = "ASC"})
      */
     private $templates;
-    
+
     /**
      * @ORM\OneToMany(targetEntity="View", mappedBy="contentType", cascade={"persist", "remove"})
      * @ORM\OrderBy({"orderKey" = "ASC"})
      */
     private $views;
+
+    /**
+     * @ORM\OneToMany(targetEntity="SingleTypeIndex", mappedBy="contentType", cascade={"persist", "remove"})
+     * @ORM\OrderBy({"name" = "ASC"})
+     */
+    private $singleTypeIndexes;
     
     function __construct(){
 
     	$this->templates = new \Doctrine\Common\Collections\ArrayCollection();
-    	$this->views = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->views = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->singleTypeIndexes = new \Doctrine\Common\Collections\ArrayCollection();
     	
     	$this->dirty = true;
     	$this->editTwigWithWysiwyg = true;
@@ -1629,5 +1636,39 @@ class ContentType
     public function getSortOrder()
     {
     	return $this->sortOrder;
+    }
+
+    /**
+     * Add single type index
+     *
+     * @param SingleTypeIndex $index
+     *
+     * @return ContentType
+     */
+    public function addSingleTypeIndex(SingleTypeIndex $index)
+    {
+        $this->singleTypeIndexes[] = $index;
+
+        return $this;
+    }
+
+    /**
+     * Remove single type index
+     *
+     * @param SingleTypeIndex $index
+     */
+    public function removeSingleTypeIndex(SingleTypeIndex $index)
+    {
+        $this->singleTypeIndexes->removeElement($index);
+    }
+
+    /**
+     * Get single type indexes
+     *
+     * @return SingleTypeIndex
+     */
+    public function getSingleTypeIndex()
+    {
+        return $this->singleTypeIndexes;
     }
 }

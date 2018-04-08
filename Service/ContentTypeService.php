@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use EMS\CoreBundle\Repository\SingleTypeIndexRepository;
 use Symfony\Component\HttpFoundation\Session\Session;
 use EMS\CoreBundle\Entity\ContentType;
 use Elasticsearch\Client;
@@ -129,6 +130,13 @@ class ContentTypeService {
 		}
 		return $pipelines;
 	}
+
+    public function setSingleTypeIndex(Environment $environment, ContentType $contentType, string $name){
+        $this->em = $this->doctrine->getManager();
+        /**@var SingleTypeIndexRepository $repository*/
+        $repository = $this->em->getRepository('EMSCoreBundle:SingleTypeIndex');
+        $repository->setIndexName($environment, $contentType, $name);
+    }
 	
 	public function updateMapping(ContentType $contentType, $envs=false){
 

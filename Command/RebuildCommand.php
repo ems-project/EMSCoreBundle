@@ -168,19 +168,6 @@ class RebuildCommand extends EmsCommand
 
 			$this->flushFlash($output);
 
-
-// 			$arguments = array(
-// 					'name'    => $name,
-// 					'index'   => $indexName
-// 			);
-
-// 			$reindexInput = new ArrayInput($arguments);
-// 			$returnCode = $command->run($reindexInput, $output);
-
-// 			if($returnCode){
-// 				$output->writeln('Reindexed with return code: '.$returnCode);
-// 			}
-
 	    	if( ! $input->getOption('yellow-ok') ){
 	    		$this->waitForGreen($output);
 	    	}

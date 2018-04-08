@@ -57,32 +57,37 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.tika_server', $config['tika_server']);
         $container->setParameter('ems_core.elasticsearch_version', $config['elasticsearch_version']);
         $container->setParameter('ems_core.single_type_index', $config['single_type_index']);
+        $container->setParameter('ems_core.version', $this->getCoreVersion($container->getParameter('kernel.root_dir')));
         
+    }
+
+    public static function getCoreVersion($rootDir){
+        $out = false;
+        //try to identify the ems core version
+        if(file_exists($rootDir.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'composer.lock')) {
+
+            $lockInfo = json_decode(file_get_contents($rootDir.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'composer.lock'), true);
+
+            if(!empty($lockInfo['packages'])){
+                foreach ($lockInfo['packages'] as $package){
+                    if(!empty($package['name']) && $package['name'] === 'elasticms/core-bundle'){
+                        if(!empty($package['version'])){
+                            $out = $package['version'];
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        return $out;
     }
     
     public function prepend(ContainerBuilder $container) {
 
     	// get all bundles
     	$bundles = $container->getParameter('kernel.bundles');
-    	
-    	$coreVersion = false;
-    	//try to identify the ems core version
-    	if(file_exists($container->getParameter('kernel.root_dir').DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'composer.lock')) {
-    		
-    		$lockInfo = json_decode(file_get_contents($container->getParameter('kernel.root_dir').DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'composer.lock'), true);
-    		
-    		if(!empty($lockInfo['packages'])){
-    			foreach ($lockInfo['packages'] as $package){
-    				if(!empty($package['name']) && $package['name'] === 'elasticms/core-bundle'){
-    					if(!empty($package['version'])){
-    						$coreVersion = $package['version'];
-    					}
-    					break;
-    				}
-    			}
-    		}
-    		
-    	}
+
+    	$coreVersion = $this->getCoreVersion($container->getParameter('kernel.root_dir'));
     	
     	
     	

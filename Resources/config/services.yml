@@ -368,7 +368,7 @@ services:
 ### regular services
     ems.service.mapping:
         class: EMS\CoreBundle\Service\Mapping
-        arguments: ['@ems.form.fieldtype.fieldtypetype', '@ems.service.elasticsearch']
+        arguments: ['@ems.form.fieldtype.fieldtypetype', '@ems.service.elasticsearch', '%ems_core.version%', '%ems_core.instance_id%']
     EMS\CoreBundle\Service\DataService:
         class: EMS\CoreBundle\Service\DataService
         arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '%ems_core.lock_time%', '@app.elasticsearch', '@ems.service.mapping', '%ems_core.instance_id%', '@session', '@form.factory', '@service_container', '@form.registry', '@event_dispatcher', '%ems_private_key%']

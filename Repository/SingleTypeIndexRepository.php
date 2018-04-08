@@ -16,20 +16,19 @@ use EMS\CoreBundle\Entity\SingleTypeIndex;
 class SingleTypeIndexRepository extends \Doctrine\ORM\EntityRepository
 {
 
-    public function getIndexName(ContentType $contentType, Environment $environment)
+    public function getIndexName(Environment $environment, ContentType $contentType)
     {
 
         $qb = $this->createQueryBuilder('i')
             ->select('i');
-        $qb->where('i.contentType LIKE :contentType')
-            ->andWhere('i.environment LIKE :environment')
+        $qb->where($qb->expr()->eq('i.contentType', ':contentType'))
+            ->andWhere($qb->expr()->eq('i.environment', ':environment'))
             ->setParameters([
-                ':contentType' => $environment,
+                ':environment' => $environment,
                 ':contentType' => $contentType,
             ]);
 
         $result = $qb->getQuery()->getSingleResult();
-        dump($result);
         return $result;
     }
 

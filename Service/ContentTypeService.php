@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use EMS\CoreBundle\Entity\SingleTypeIndex;
 use EMS\CoreBundle\Repository\SingleTypeIndexRepository;
 use Symfony\Component\HttpFoundation\Session\Session;
 use EMS\CoreBundle\Entity\ContentType;
@@ -37,11 +38,14 @@ class ContentTypeService {
 	private $instanceId;
 	
 	protected $orderedContentTypes;
-	protected $contentTypeArrayByName;
-	
-	
-	
-	public function __construct(Registry $doctrine, Session $session, Mapping $mappingService, Client $client, EnvironmentService $environmentService, FormRegistryInterface $formRegistry, TranslatorInterface $translator, $instanceId)
+
+    protected $contentTypeArrayByName;
+
+    protected $singleTypeIndex;
+
+
+
+    public function __construct(Registry $doctrine, Session $session, Mapping $mappingService, Client $client, EnvironmentService $environmentService, FormRegistryInterface $formRegistry, TranslatorInterface $translator, $instanceId, $singleTypeIndex)
 	{
 		$this->doctrine = $doctrine;
 		$this->session = $session;
@@ -53,6 +57,7 @@ class ContentTypeService {
 		$this->formRegistry = $formRegistry;
 		$this->instanceId = $instanceId;
 		$this->translator= $translator;
+        $this->singleTypeIndex = $singleTypeIndex;
 	}
 	
 	private function loadEnvironment(){
@@ -136,6 +141,19 @@ class ContentTypeService {
         /**@var SingleTypeIndexRepository $repository*/
         $repository = $this->em->getRepository('EMSCoreBundle:SingleTypeIndex');
         $repository->setIndexName($environment, $contentType, $name);
+    }
+
+    public function getIndex(Environment $environment, ContentType $contentType) {
+	    if($this->singleTypeIndex){
+            $this->em = $this->doctrine->getManager();
+            /**@var SingleTypeIndexRepository $repository*/
+            $repository = $this->em->getRepository('EMSCoreBundle:SingleTypeIndex');
+
+            /**@var SingleTypeIndex $singleTypeIndex*/
+            $singleTypeIndex = $repository->getIndexName($environment, $contentType);
+            return $singleTypeIndex->getName();
+        }
+        return $environment->getAlias();
     }
 	
 	public function updateMapping(ContentType $contentType, $envs=false){

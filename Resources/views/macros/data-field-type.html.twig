@@ -630,7 +630,7 @@
 			    {% set choices = dataField.fieldType.displayOptions.choices|replace({"\r":''})|split('\n') %}
 						        
 				{% if dataField.fieldType.displayOptions.multiple %}
-					{% for value in dataField.arrayTextValue if value %}
+					{% for value in dataField.arrayTextValue if value is not null %}
 						{% set label = value %}
 						{% if labels|length > 0 %}
 						    {% for idx, item in choices if item == value %}

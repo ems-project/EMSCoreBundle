@@ -11,6 +11,7 @@ use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Exception\NotLockedException;
 use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Repository\RevisionRepository;
+use EMS\CoreBundle\Service\BulkerService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\Mapping;
 use Monolog\Logger;
@@ -18,6 +19,7 @@ use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -27,6 +29,8 @@ use EMS\CoreBundle\Exception\CantBeFinalizedException;
 class MigrateCommand extends EmsCommand
 {
 	protected $client;
+	/** @var BulkerService */
+	protected $bulkerService;
 	/**@var Mapping */
 	protected $mapping;
 	protected $doctrine;
@@ -38,11 +42,12 @@ class MigrateCommand extends EmsCommand
 	
 	protected $instanceId;
 	
-	public function __construct(Registry $doctrine, Logger $logger, Client $client, $mapping, DataService $dataService, FormFactoryInterface $formFactory, $instanceId, Session $session)
+	public function __construct(Registry $doctrine, Logger $logger, Client $client, BulkerService $bulkerService, $mapping, DataService $dataService, FormFactoryInterface $formFactory, $instanceId, Session $session)
 	{
 		$this->doctrine = $doctrine;
 		$this->logger = $logger;
 		$this->client = $client;
+		$this->bulkerService = $bulkerService;
 		$this->mapping = $mapping;
 		$this->dataService = $dataService;
 		$this->formFactory= $formFactory;
@@ -75,6 +80,13 @@ class MigrateCommand extends EmsCommand
             	InputArgument::OPTIONAL,
             	'Size of the elasticsearch scroll request',
             	100
+            )
+            ->addOption(
+                'bulkSize',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Size of the elasticsearch bulk request',
+                500
             )
             ->addArgument(
             	'scrollTimeout',
@@ -135,6 +147,10 @@ class MigrateCommand extends EmsCommand
     	}
     	$scrollSize= $input->getArgument('scrollSize');
     	$scrollTimeout = $input->getArgument('scrollTimeout');
+
+    	$this->bulkerService
+            ->setLogger(new ConsoleLogger($output))
+            ->setSize($input->getOption('bulkSize'));
     	
 		/** @var RevisionRepository $revisionRepository */
 		$revisionRepository = $em->getRepository( 'EMSCoreBundle:Revision' );
@@ -164,7 +180,7 @@ class MigrateCommand extends EmsCommand
 			}
 			$indexInDefaultEnv = false;
 		}
-		
+
 		//https://www.elastic.co/guide/en/elasticsearch/client/php-api/current/_search_operations.html#_scrolling
 		$arrayElasticsearchIndex = $this->client->search([
 				'index' => $elasticsearchIndex,
@@ -262,17 +278,18 @@ class MigrateCommand extends EmsCommand
 					
 					if($indexInDefaultEnv){
 						$indexConfig = [
-								'index' => $defaultEnv->getAlias(),
-								'type' => $contentTypeNameTo,
-								'id' => $value['_id'],
-								'body' => $signData?$this->dataService->sign($newRevision):$newRevision->getRawData(),
+                            '_index' => $defaultEnv->getAlias(),
+                            '_type' => $contentTypeNameTo,
+                            '_id' => $value['_id'],
 						];
-						
+
 						if($newRevision->getContentType()->getHavePipelines()){
 							$indexConfig['pipeline'] = $this->instanceId.$contentTypeNameTo;
 						}
-						
-						$this->client->index($indexConfig);						
+
+						$body = $signData?$this->dataService->sign($newRevision):$newRevision->getRawData();
+
+                        $this->bulkerService->index($indexConfig, $body);
 					}
 					
 					$newRevision->setDraft(false);
@@ -301,6 +318,8 @@ class MigrateCommand extends EmsCommand
 			$em->clear();
 			unset($defaultEnv);
 			unset($contentTypeTo);
+
+			$this->bulkerService->send(true);
 			
 			
 			//https://www.elastic.co/guide/en/elasticsearch/client/php-api/current/_search_operations.html#_scrolling

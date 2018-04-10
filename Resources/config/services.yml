@@ -377,6 +377,9 @@ services:
     ems.service.alias:
         class: EMS\CoreBundle\Service\AliasService
         arguments: ['@app.elasticsearch', '@doctrine']
+    ems.service.bulker:
+        class: EMS\CoreBundle\Service\BulkerService
+        arguments: ['@app.elasticsearch', '@logger']
     ems.service.environment:
         class: EMS\CoreBundle\Service\EnvironmentService
         arguments: ['@doctrine', '@session', '@ems.service.user', '@security.authorization_checker', '%ems_core.single_type_index%']
@@ -447,7 +450,7 @@ services:
             -  { name: console.command }
     ems.contenttype.migrate:
         class: EMS\CoreBundle\Command\MigrateCommand
-        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.mapping', '@ems.service.data', '@form.factory', '%ems_core.instance_id%', '@session']
+        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.bulker', '@ems.service.mapping', '@ems.service.data', '@form.factory', '%ems_core.instance_id%', '@session']
         tags:
             -  { name: console.command }
     ems.environment.rebuild:

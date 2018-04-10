@@ -152,7 +152,7 @@ use EMS\CoreBundle\Entity\DataField;
 	 */
 	public function generateMapping(FieldType $current, $withPipeline){
 		if(!empty($current->getMappingOptions()) && !empty($current->getMappingOptions()['mappingOptions'])){
-			return [ $current->getName() =>  json_decode($current->getMappingOptions()['mappingOptions' ])];
+			return [ $current->getName() =>  json_decode($current->getMappingOptions()['mappingOptions'], true)];
 		}
 		return [];
 	}

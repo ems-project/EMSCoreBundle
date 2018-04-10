@@ -33,7 +33,7 @@ class ComputedFieldType extends DataFieldType {
 	public function generateMapping(FieldType $current, $withPipeline){
 		if(!empty($current->getMappingOptions()) && !empty($current->getMappingOptions()['mappingOptions'])){
 			try{
-				$mapping = json_decode($current->getMappingOptions()['mappingOptions']);
+				$mapping = json_decode($current->getMappingOptions()['mappingOptions'], true);
 				return [ $current->getName() =>  $this->elasticsearchService->updateMapping($mapping) ];
 			}
 			catch(\Exception $e) {

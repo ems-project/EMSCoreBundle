@@ -101,6 +101,12 @@ $(document).ready(function() {
 		$('#modal-notifications .modal-body').empty();
 		$('#modal-notifications').modal('hide');
 	});
-	
 
+    $("a.request_job").click(function(e){
+        e.preventDefault();
+
+        $.post($(e.target).data('url'), function() {
+            location.reload();
+        });
+    });
 });

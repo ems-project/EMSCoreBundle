@@ -104,11 +104,6 @@ $(document).ready(function() {
 
     $("a.request_job").click(function(e){
         e.preventDefault();
-
-        $.post($(e.target).data('url'), function() {
-            location.reload();
-        });
-    });
         ajaxRequest.post($(e.target).data('url'));
     });
 });

@@ -2,7 +2,6 @@
 namespace EMS\CoreBundle\Controller;
 
 use Elasticsearch\Client;
-use EMS\CoreBundle\Entity\Job;
 use EMS\CoreBundle\Service\AliasService;
 use EMS\CoreBundle\Service\AssetService;
 use EMS\CoreBundle\Service\ContentTypeService;
@@ -10,6 +9,7 @@ use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\FileService;
 use EMS\CoreBundle\Service\HelperService;
+use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\NotificationService;
 use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\SearchService;
@@ -22,6 +22,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use EMS\CoreBundle\Service\AssetExtratorService;
 use EMS\CoreBundle\Service\WysiwygStylesSetService;
 use EMS\CoreBundle\Service\ElasticsearchService;
@@ -205,44 +206,20 @@ class AppController extends Controller
 	protected function getLogger(){
 		return $this->logger;
 	}
-	
-	
 
-	protected function startJob($service, $arguments){
-		/** @var EntityManager $em */
-		$em = $this->getDoctrine()->getManager();
-		
-		$job = new Job();
-		$job->setUser($this->getUser()->getUsername());
-		$job->setDone(false);
-		$job->setStarted(false);
-		$job->setArguments($arguments);
-		$job->setProgress(0);
-		$job->setService($service);
-		$job->setStatus("Job prepared");
-		$em->persist($job);
-		$em->flush();
-		
+    /**
+     * @param string $service
+     * @param string $arguments
+     *
+     * @return RedirectResponse
+     */
+	protected function startJob($service, $arguments)
+    {
+        /** @var $jobService JobService */
+		$jobService = $this->container->get('ems.service.job');
+		$job = $jobService->createService($this->getUser(), $service, $arguments);
+
 		$this->addFlash('notice', 'A job has been prepared');
-		
-		return $this->redirectToRoute('job.status', [
-			'job' => $job->getId(),
-		]);
-	}
-	
-
-	protected function startConsole(Job $job){
-		/** @var EntityManager $em */
-		$em = $this->getDoctrine()->getManager();
-		
-		$job->setUser($this->getUser()->getUsername());
-		$job->setDone(false);
-		$job->setStarted(false);
-		$job->setProgress(0);
-		$job->setStatus("Job intialized");
-		
-		$em->persist($job);
-		$em->flush();
 		
 		return $this->redirectToRoute('job.status', [
 			'job' => $job->getId(),

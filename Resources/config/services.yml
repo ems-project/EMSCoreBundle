@@ -441,6 +441,10 @@ services:
     ems.service.elasticsearch:
         class: EMS\CoreBundle\Service\ElasticsearchService
         arguments: ['%ems_core.elasticsearch_version%']
+    ems.service.job:
+        class: EMS\CoreBundle\Service\JobService
+        arguments: ['@doctrine', '@kernel', '@logger']
+
         
 ### command services ###
     ems.environment.ems:

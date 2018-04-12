@@ -33,6 +33,13 @@
 									{{ template.name }}
 								</a></li>
 							{% endif %}
+                        {% elseif template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::JOB') %}
+            				{% if (is_granted(template.role)) or template.role == "not-defined" %}
+								<li><a href="#" class="request_job" data-url="{{ path('job.custom.view', {'environmentName': environment.name, 'templateId': template.id, 'ouuid': ouuid}) }}">
+									<i class="{{ template.icon|raw }}"></i>
+									{{ template.name }}
+								</a></li>
+							{% endif %}
 						{% else %}{#  #}
 							<li><a href="{{ path('data.customview', {
 										environmentName: environment.name,

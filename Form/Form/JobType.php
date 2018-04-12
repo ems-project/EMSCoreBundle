@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Form\Form;
 
-
 use EMS\CoreBundle\EMSCoreBundle;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -14,7 +13,7 @@ class JobType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
-     * @param array $options
+     * @param array                $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -35,9 +34,8 @@ class JobType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class' => 'EMS\CoreBundle\Entity\Job',
+        $resolver->setDefaults([
             'translation_domain' => EMSCoreBundle::TRANS_DOMAIN
-        ));
+        ]);
     }
 }

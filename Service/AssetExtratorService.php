@@ -8,7 +8,7 @@ use Enzim\Lib\TikaWrapper\TikaWrapper;
 class AssetExtratorService
 {
 	
-	const CONTENT_EP = '/tika/main';
+	const CONTENT_EP = '/tika';
 	const HELLO_EP = '/tika';
 	const META_EP = '/meta';
 	
@@ -83,7 +83,7 @@ class AssetExtratorService
 		    try {
     		    $out = AssetExtratorService::convertMetaToArray(TikaWrapper::getMetadata($file));
     		    if(!isset($out['content'])){
-    		        $out['content'] =  mb_convert_encoding(TikaWrapper::getTextMain($file), 'UTF-8', 'ASCII');    		        
+    		        $out['content'] =  mb_convert_encoding(TikaWrapper::getText($file), 'UTF-8', 'ASCII');
     		    }
     		    if(!isset($out['language'])){
         		    $out['language'] = AssetExtratorService::cleanString(TikaWrapper::getLanguage($file));

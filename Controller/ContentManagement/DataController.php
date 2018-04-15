@@ -34,6 +34,7 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -241,7 +242,7 @@ class DataController extends AppController
             /** @var Client $client */
             $client = $this->getElasticsearch();
             $result = $client->get([
-                'index' => $environments[0]->getAlias(),
+                'index' => $this->getContentTypeService()->getIndex($environments[0], $contentType),
                 'type' => $type,
                 'id' => $ouuid,
             ]);

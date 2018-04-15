@@ -526,7 +526,7 @@ class EnvironmentController extends AppController {
 		/** @var Environment $environment */
 		$environment = $repository->find($id);
 	
-		if(! $environment || count($environment) != 1){
+		if(! $environment ){
 			throw new NotFoundHttpException('Unknow environment');
 		}
 	
@@ -572,7 +572,7 @@ class EnvironmentController extends AppController {
 		/** @var Environment $environment */
 		$environment = $repository->find($id);
 	
-		if(! $environment || count($environment) != 1){
+		if(! $environment ){
 			throw new NotFoundHttpException('Unknow environment');
 		}
 
@@ -701,35 +701,37 @@ class EnvironmentController extends AppController {
 			$repository = $em->getRepository('EMSCoreBundle:Environment');
 		
 			$client = $this->getElasticsearch();
-			
+
 			$logger = $this->getLogger();
 			$logger->addDebug('For each environments: start');
 			
 			$builder = $this->createFormBuilder ( [] )
 			->add ( 'reorder', SubmitEmsType::class, [
-					'attr' => [
-							'class' => 'btn-primary '
-					],
-					'icon' => 'fa fa-reorder'
+                'attr' => [
+                    'class' => 'btn-primary '
+                ],
+                'label' => 'controller.environment.index.reorder_submit_button',
+                'icon' => 'fa fa-reorder',
+                'translation_domain' => CoreBundle\EMSCoreBundle::TRANS_DOMAIN,
 			] );
 			
 			$names = [];	
                         $aliasService = $this->getAliasService();
                         
 			$environments = [];//$repository->findAll();
-			$stats = $this->getEnvironmentService()->getEnvironmentsStats();
+            $stats = $this->getEnvironmentService()->getEnvironmentsStats();
+//            $statsDeleted = $this->getEnvironmentService()->getDe EnvironmentsStats();
 			/** @var  Environment $environment */
 			foreach ($stats as $stat) {
 				$environment = $stat['environment'];
 				$environment->setCounter($stat['counter']);
 				$environment->setDeletedRevision($stat['deleted']);
-                                if ($aliasService->hasAlias($environment->getAlias())) {
-                                    $alias = $aliasService->getAlias($environment->getAlias());
-                                    $index = array_shift($alias['indexes']);
-                                    
-                                    $environment->setIndex($index['name']);
-                                    $environment->setTotal($alias['total']);
-                                }
+                if ($aliasService->hasAlias($environment->getAlias())) {
+                    $alias = $aliasService->getAlias($environment->getAlias());
+
+                    $environment->setIndexes($alias['indexes']);
+                    $environment->setTotal($alias['total']);
+                }
 				$environments[] = $environment;
 				$names[] = $environment->getName();
 			}

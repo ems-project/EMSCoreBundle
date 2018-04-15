@@ -75,6 +75,8 @@ class DataService
 	protected $formRegistry;
 	/**@var EventDispatcherInterface*/
 	protected $dispatcher;
+	/**@var ContentTypeService */
+	protected $contentTypeService;
 	
 	public function __construct(
 			Registry $doctrine, 
@@ -89,6 +91,7 @@ class DataService
 			$container,
 			FormRegistryInterface $formRegistry,
 			EventDispatcherInterface $dispatcher,
+			ContentTypeService $contentTypeService,
 			$privateKey)
 	{
 		$this->doctrine = $doctrine;
@@ -107,6 +110,7 @@ class DataService
 		$this->appTwig = $container->get('app.twig_extension');
 		$this->formRegistry = $formRegistry;
 		$this->dispatcher= $dispatcher;
+        $this->contentTypeService = $contentTypeService;
 		
 		$this->public_key = null;
 		$this->private_key = null;
@@ -440,7 +444,7 @@ class DataService
 							'_source_exclude' => ['*.attachment', '*._attachment'],
 							'id' => $revision->getOuuid(),
 							'type' => $revision->getContentType()->getName(),
-							'index' => $environment->getAlias(),
+							'index' => $this->contentTypeService->getIndex($environment, $revision->getContentType()),
 					])['_source'];
 					
 					DataService::ksortRecursive($indexedItem);

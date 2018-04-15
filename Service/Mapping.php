@@ -3,6 +3,9 @@
 namespace EMS\CoreBundle\Service;
 
 
+use Doctrine\Bundle\DoctrineBundle\Registry;
+use EMS\CoreBundle\DependencyInjection\EMSCoreExtension;
+use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Form\FieldType\FieldTypeType;
@@ -16,6 +19,12 @@ class Mapping
 	
 	/** @var ElasticsearchService $elasticsearchService */
 	private $elasticsearchService;
+
+    /**@var string*/
+    private $coreVersion;
+
+    /**@var string*/
+    private $instanceId;
 	
 	/**
 	 * Constructor
@@ -23,9 +32,11 @@ class Mapping
 	 * @param FieldTypeType $fieldTypeType
 	 * @param ElasticsearchService $elasticsearchService
 	 */
-	public function __construct(FieldTypeType $fieldTypeType, ElasticsearchService $elasticsearchService) {
+	public function __construct(FieldTypeType $fieldTypeType, ElasticsearchService $elasticsearchService, $coreVersion, $instanceId) {
 		$this->fieldTypeType = $fieldTypeType;
 		$this->elasticsearchService = $elasticsearchService;
+        $this->coreVersion = $coreVersion;
+        $this->instanceId = $instanceId;
 	}
 	
 	public function generateMapping(ContentType $contentType, $withPipeline = false){
@@ -53,10 +64,17 @@ class Mapping
 			],
 			$out['properties']
 		);
+
+		$out['_meta'] = [
+		    'content_type' => $contentType->getName(),
+            'generator' => 'elasticms',
+            'core_version' => $this->coreVersion,
+            'instance_id' => $this->instanceId,
+        ];
 		
 		
 		return [ $contentType->getName() => $out ];
-	} 
+	}
 
 
 

@@ -33,8 +33,9 @@ class RebuildCommand extends EmsCommand
 	/**@var EnvironmentService*/
 	private $environmentService;
 	private $instanceId;
+    private $singleTypeIndex;
 
-	public function __construct(Registry $doctrine, Logger $logger, Client $client, $mapping, Container $container, Session $session, $instanceId)
+	public function __construct(Registry $doctrine, Logger $logger, Client $client, $mapping, Container $container, Session $session, $instanceId, $singleTypeIndex)
 	{
 		$this->doctrine = $doctrine;
 		$this->logger = $logger;
@@ -45,6 +46,7 @@ class RebuildCommand extends EmsCommand
 		$this->environmentService = $container->get('ems.service.environment');
 		$this->session = $session;
 		$this->instanceId = $instanceId;
+        $this->singleTypeIndex = $singleTypeIndex;
 		parent::__construct($logger, $client, $session);
 	}
 
@@ -109,7 +111,8 @@ class RebuildCommand extends EmsCommand
 				$output->writeln("Alias has been aligned to ".$environment->getAlias());
 			}
 
-			$indexName = $environment->getAlias().AppController::getFormatedTimestamp();
+            $singleIndexName = $indexName = $environment->getAlias().AppController::getFormatedTimestamp();
+			$indexes = [];
 
 
 			/** @var \EMS\CoreBundle\Repository\ContentTypeRepository $contentTypeRepository */
@@ -117,55 +120,66 @@ class RebuildCommand extends EmsCommand
 			$contentTypes = $contentTypeRepository->findAll();
 			/** @var ContentType $contentType */
 
+            $indexDefaultConfig = $this->environmentService->getIndexAnalysisConfiguration();
+			if(!$this->singleTypeIndex) {
+                $client->indices()->create([
+                    'index' => $indexName,
+                    'body' => $indexDefaultConfig,
+                ]);
 
-			$client->indices()->create([
-					'index' => $indexName,
-					'body' => $this->environmentService->getIndexAnalysisConfiguration(),
-			]);
+                $output->writeln('A new index '.$indexName.' has been created');
+                if( ! $input->getOption('yellow-ok') ){
+                    $this->waitForGreen($output);
+                }
+            }
 
-			$output->writeln('A new index '.$indexName.' has been created');
-	    	if( ! $input->getOption('yellow-ok') ){
-	    		$this->waitForGreen($output);
-	    	}
 
-			// create a new progress bar
-			$progress = new ProgressBar($output, count($contentTypes));
-			// start and displays the progress bar
-			$progress->start();
+            $command = $this->getReindexCommand();
+            $output->writeln(count($contentTypes).' content types will be re-indexed');
+
+            $countContentType = 1;
 
 			/** @var ContentType $contentType */
 			foreach ($contentTypes as $contentType){
 				if(!$contentType->getDeleted() && $contentType->getEnvironment() && $contentType->getEnvironment()->getManaged()){
+
+                    if($this->singleTypeIndex) {
+                        $indexName = $this->environmentService->getNewIndexName($environment, $contentType);
+                        $indexes[] = $indexName;
+                        $client->indices()->create([
+                            'index' => $indexName,
+                            'body' => $indexDefaultConfig,
+                        ]);
+
+                        $output->writeln('A new index '.$indexName.' has been created');
+                        if( ! $input->getOption('yellow-ok') ){
+                            $this->waitForGreen($output);
+                        }
+                    }
+
 					$this->contentTypeService->updateMapping($contentType, $indexName);
+                    $command->reindex($name, $contentType, $indexName, $output, $signData, $input->getOption('bulk-size'));
+                    $this->contentTypeService->setSingleTypeIndex($environment, $contentType, $indexName);
 				}
 
-				$progress->advance();
+                $output->writeln('');
+                $output->writeln($contentType->getPluralName().' have been re-indexed '.$countContentType.'/'.count($contentTypes));
+                ++$countContentType;
 			}
-			$progress->finish();
-			$output->writeln('');
 
 			$this->flushFlash($output);
-
-			$command = $this->getReindexCommand();
-			$command->reindex($name, $indexName, $output, $signData, $input->getOption('bulk-size'));
-
-// 			$arguments = array(
-// 					'name'    => $name,
-// 					'index'   => $indexName
-// 			);
-
-// 			$reindexInput = new ArrayInput($arguments);
-// 			$returnCode = $command->run($reindexInput, $output);
-
-// 			if($returnCode){
-// 				$output->writeln('Reindexed with return code: '.$returnCode);
-// 			}
 
 	    	if( ! $input->getOption('yellow-ok') ){
 	    		$this->waitForGreen($output);
 	    	}
-			$this->switchAlias($environment->getAlias(), $indexName, true, $output);
-			$output->writeln('The alias <info>'.$environment->getName().'</info> is now pointing to '.$indexName);
+	    	if(empty($indexes)){
+                $indexes = [$singleIndexName];
+            }
+			$this->switchAlias($environment->getAlias(), $indexes, true, $output);
+			$output->writeln('The alias <info>'.$environment->getName().'</info> is now pointing to :');
+			foreach ($indexes as $index){
+                $output->writeln('     - '.$index);
+            }
 		}
 		else{
 			$output->writeln("WARNING: Environment named ".$name." not found");
@@ -187,7 +201,7 @@ class RebuildCommand extends EmsCommand
      * @param string $alias
      * @param string $to
      */
-    private function switchAlias($alias, $to, $newEnv=false, OutputInterface $output){
+    private function switchAlias($alias, $toIndexes, $newEnv=false, OutputInterface $output){
     	try{
 
 
@@ -203,12 +217,15 @@ class RebuildCommand extends EmsCommand
     			];
     		}
 
-    		$params ['body']['actions'][] = [
-    			'add' => [
-	    			'index' => $to,
-	    			'alias' => $alias,
-    			]
-    		];
+
+            foreach ($toIndexes as $index){
+                $params ['body']['actions'][] = [
+                    'add' => [
+                        "index" => $index,
+                        "alias" => $alias,
+                    ]
+                ];
+            }
 
     		$this->client->indices()->updateAliases ( $params );
     	}
@@ -217,10 +234,12 @@ class RebuildCommand extends EmsCommand
     		if(!$newEnv){
     			$output->writeln ( 'WARNING : Alias '.$alias.' not found' );
     		}
-    		$this->client->indices()->putAlias([
-    				'index' => $to,
-    				'name' => $alias
-    		]);
+            foreach ($toIndexes as $index){
+                $this->client->indices()->putAlias([
+                    'index' => $index,
+                    'name' => $alias
+                ]);
+            }
     	}
 
     }

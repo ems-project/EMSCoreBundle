@@ -32,6 +32,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -764,7 +765,7 @@ class DataController extends AppController
     }
 
     /**
-     * @Route("/data/custom-view-job/{environmentName}/{templateId}/{ouuid}", name="job.custom.view")
+     * @Route("/data/custom-view-job/{environmentName}/{templateId}/{ouuid}", name="ems_job_custom_view")
      * @method ({"POST"})
      */
     public function customViewJobAction($environmentName, $templateId, $ouuid)

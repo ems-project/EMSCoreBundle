@@ -285,6 +285,17 @@ class AppController extends Controller
 	public function getEnvironmentService(){
 		return $this->get('ems.service.environment');
 	}
-	
+
+    /**
+     *
+     */
+    protected function returnJson($success, $template = '@EMSCore/ajax/notification.json.twig'){
+        $response = $this->render($template, [
+            'success' => $success,
+        ]);
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
+    }
+
 	
 }

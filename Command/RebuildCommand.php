@@ -160,7 +160,6 @@ class RebuildCommand extends EmsCommand
 					$this->contentTypeService->updateMapping($contentType, $indexName);
                     $command->reindex($name, $contentType, $indexName, $output, $signData, $input->getOption('bulk-size'));
                     $this->contentTypeService->setSingleTypeIndex($environment, $contentType, $indexName);
-                    $command->reindex($name, $contentType, $indexName, $output, $signData, $input->getOption('bulk-size'));
 				}
 
                 $output->writeln('');

@@ -785,6 +785,7 @@ class DataController extends AppController
             'id' => $ouuid,
         ]);
 
+        $success = false;
         try {
             $command = $this->getTwig()->createTemplate($template->getBody())->render([
                 'environment' => $env->getName(),
@@ -799,13 +800,14 @@ class DataController extends AppController
 
             $jobService->run($job);
 
+            $success = true;
             $this->addFlash('notice', sprintf('The job "%s" was successfully started', $template->getName()));
         } catch (\Exception $e) {
             $this->getLogger()->error($e->getMessage());
             $this->addFlash('error', sprintf('Something went wrong and the job "%s" was not successfully started', $template->getName()));
         }
 
-        return new JsonResponse();
+        return $this->returnJson($success);
     }
 
     private function loadAutoSavedVersion(Revision $revision)

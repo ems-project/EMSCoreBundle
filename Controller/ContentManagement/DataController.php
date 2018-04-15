@@ -32,6 +32,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -760,6 +761,51 @@ class DataController extends AppController
             'body' => $body
         ]);
 
+    }
+
+    /**
+     * @Route("/data/custom-view-job/{environmentName}/{templateId}/{ouuid}", name="job.custom.view")
+     * @method ({"POST"})
+     */
+    public function customViewJobAction($environmentName, $templateId, $ouuid)
+    {
+        $em = $this->getDoctrine()->getManager();
+        /** @var CoreBundle\Entity\Template $template * */
+        $template = $em->getRepository(Template::class)->find($templateId);
+        /** @var CoreBundle\Entity\Environment $env */
+        $env = $em->getRepository(Environment::class)->findOneByName($environmentName);
+
+        if(!$template || !$env) {
+            throw new NotFoundHttpException();
+        }
+
+        $object = $this->getElasticsearch()->get([
+            'index' => $env->getAlias(),
+            'type' => $template->getContentType()->getName(),
+            'id' => $ouuid,
+        ]);
+
+        try {
+            $command = $this->getTwig()->createTemplate($template->getBody())->render([
+                'environment' => $env->getName(),
+                'contentType' => $template->getContentType(),
+                'object' => $object,
+                'source' => $object['_source'],
+            ]);
+
+            /** @var CoreBundle\Service\JobService $jobService */
+            $jobService = $this->get('ems.service.job');
+            $job = $jobService->createCommand($this->getUser(), $command);
+
+            $jobService->run($job);
+
+            $this->addFlash('notice', sprintf('The job "%s" was successfully started', $template->getName()));
+        } catch (\Exception $e) {
+            $this->getLogger()->error($e->getMessage());
+            $this->addFlash('error', sprintf('Something went wrong and the job "%s" was not successfully started', $template->getName()));
+        }
+
+        return new JsonResponse();
     }
 
     private function loadAutoSavedVersion(Revision $revision)

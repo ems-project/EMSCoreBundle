@@ -377,11 +377,13 @@ class AppExtension extends \Twig_Extension
 					if($contentType->getColorField()){
 						$fields[] = $contentType->getColorField();
 					}
+
+					$index = $this->contentTypeService->getIndex($contentType->getEnvironment(), $contentType);
 					
 					$result = $this->client->get([
 							'_source' => $fields,
 							'id' => $ouuid,
-							'index' => $contentType->getEnvironment()->getAlias(),
+							'index' => $index,
 							'type' => $type,
 					]);
 					
@@ -440,11 +442,13 @@ class AppExtension extends \Twig_Extension
 				    if($contentType->getColorField()){
 				        $fields[] = $contentType->getColorField();
 				    }
-				    
+
+                    $index = $this->contentTypeService->getIndex($contentType->getEnvironment(), $contentType);
+
 					$result = $this->client->get([
 					    '_source' => $fields,
 						'id' => $ouuid,
-						'index' => $contentType->getEnvironment()->getAlias(),
+						'index' => $index,
 						'type' => $type,
 					]);
 					

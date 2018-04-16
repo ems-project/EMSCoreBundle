@@ -502,6 +502,11 @@ services:
         arguments: ['@app.elasticsearch', '@ems.service.contenttype', '@ems.service.environment']
         tags:
             -  { name: console.command }
+    ems.environment.list:
+        class: EMS\CoreBundle\Command\EnvironmentCommand
+        arguments: ['@logger', '@ems.service.environment']
+        tags:
+            -  { name: console.command }
 #### security services
     api_key_user_provider:
         class: EMS\CoreBundle\Security\ApiKeyUserProvider

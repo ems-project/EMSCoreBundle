@@ -1,6 +1,7 @@
 <?php
 namespace EMS\CoreBundle\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Form\DataField\ContainerFieldType;
 
@@ -1665,9 +1666,9 @@ class ContentType
     /**
      * Get single type indexes
      *
-     * @return SingleTypeIndex
+     * @return Collection
      */
-    public function getSingleTypeIndex()
+    public function getSingleTypeIndexes()
     {
         return $this->singleTypeIndexes;
     }

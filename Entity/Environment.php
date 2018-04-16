@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\PrePersist;
 
@@ -132,7 +133,7 @@ class Environment
     private $orderKey;
 
     /**
-     * @ORM\OneToMany(targetEntity="SingleTypeIndex", mappedBy="Environment", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="SingleTypeIndex", mappedBy="environment", cascade={"persist", "remove"})
      * @ORM\OrderBy({"name" = "ASC"})
      */
     private $singleTypeIndexes;
@@ -629,9 +630,9 @@ class Environment
     /**
      * Get single type indexes
      *
-     * @return SingleTypeIndex
+     * @return Collection
      */
-    public function getSingleTypeIndex()
+    public function getSingleTypeIndexes()
     {
         return $this->singleTypeIndexes;
     }

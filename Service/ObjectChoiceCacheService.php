@@ -107,12 +107,13 @@ class ObjectChoiceCacheService
 					if(!isset($this->fullyLoaded[$ref[0]])){
 						$contentType = $this->contentTypeService->getByName($ref[0]);
 						if($contentType){
-							$alias = $contentType->getEnvironment()->getAlias();
-							if($alias){
-								if(!array_key_exists($alias, $queries)){
-									$queries[$alias] = ['docs' => []];
+
+                            $index = $this->contentTypeService->getIndex($contentType->getEnvironment(), $contentType);
+							if($index){
+								if(!array_key_exists($index, $queries)){
+									$queries[$index] = ['docs' => []];
 								}
-								$queries[$alias]['docs'][] = [
+								$queries[$index]['docs'][] = [
 									"_type" => $ref[0],
 									"_id" => $ref[1],
 								];

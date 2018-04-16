@@ -912,7 +912,7 @@ class ContentTypeController extends AppController {
 	 *
 	 * @param integer $id        	
 	 * @param Request $request
-	 *        	@Route("/content-type/export/{contentType}.{_format}", defaults={"_format" = "json"}, name="contenttype.export"))
+	 * @Route("/content-type/export/{contentType}.{_format}", defaults={"_format" = "json"}, name="contenttype.export"))
 	 */
 	public function exportAction(ContentType $contentType, Request $request) {
 		//Sanitize the CT

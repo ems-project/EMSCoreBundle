@@ -56,7 +56,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  	 */
  	public function postFinalizeTreatment($type, $id, DataField $dataField, $previousData) {
  		if(!empty($dataField->getFieldType()->getExtraOptions()['updateReferersField'])) {
-//  			dump($dataField->getFieldType()->getExtraOptions()['updateReferersField'], $previousData, $dataField->getRawData());
  			$referersToAdd = [];
  			$referersToRemove = [];
  			

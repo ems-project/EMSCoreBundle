@@ -15,34 +15,35 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Console\Input\InputOption;
 
 class IndexFile extends EmsCommand
 {
     
     /**
-     * 
      *
-     * @var Registry 
+     *
+     * @var Registry
      */
     protected $doctrine;
     /**
-     * 
      *
-     * @var ContentTypeService 
+     *
+     * @var ContentTypeService
      */
     protected $contentTypeService;
     /**
-     * 
      *
-     * @var AssetExtratorService 
+     *
+     * @var AssetExtratorService
      */
     protected $extractorService;
     protected $databaseName;
     protected $databaseDriver;
     /**
-     * 
      *
-     * @var FileService 
+     *
+     * @var FileService
      */
     protected $fileService;
      
@@ -78,7 +79,7 @@ class IndexFile extends EmsCommand
                 null,
                 InputOption::VALUE_NONE,
                 'Will migrated filed with content subfield only (should be an old ingested asset field)'
-            ) 
+            )
             ->addOption(
                 'missing-content-only',
                 null,
@@ -94,7 +95,7 @@ class IndexFile extends EmsCommand
         $helper = $this->getHelper('question');
         $question= new ConfirmationQuestion('Continue?', false);
         
-        if(!$helper->ask($input, $output, $question)) {
+        if (!$helper->ask($input, $output, $question)) {
             return;
         }
         
@@ -107,23 +108,19 @@ class IndexFile extends EmsCommand
         $this->dbSize($output);
         
         $contentType = $this->contentTypeService->getByName($contentTypeName);
-        if(!$contentType) {
+        if (!$contentType) {
             throw new \Exception('Content type not found');
         }
         
         $onlyWithIngestedContent = $input->getOption('only-with-ingested-content');
-        
+        $onlyMissingContent = $input->getOption('missing-content-only');
         /**
-* 
-         *
- * @var EntityManager $em 
-*/
+         * @var EntityManager $em
+         */
         $em = $this->doctrine->getManager();
-        /**
-* 
-         *
- * @var RevisionRepository $revisionRepository 
-*/
+        /**  
+         * @var RevisionRepository $revisionRepository
+         */
         $revisionRepository = $em->getRepository('EMSCoreBundle:Revision');
         
         $total = $revisionRepository->countByContentType($contentType);
@@ -137,29 +134,26 @@ class IndexFile extends EmsCommand
         // start and displays the progress bar
         $progress->start();
         
-        while(true) {
+        while (true) {
             $revisions = $revisionRepository->findBy(['contentType' => $contentType], ['id' => 'asc'], $limit, $offset);
             
             /**
-* 
-          *
-* @var Revision $revision
-*/
-            foreach ($revisions as $revision){
+             * @var Revision $revision
+             */
+            foreach ($revisions as $revision) {
                 $update = false;
                 $rawData = $revision->getRawData();
-                if(!empty($rawData) && $this->findfield($rawData, $fieldName, $output, $onlyWithIngestedContent, $onlyMissingContent, false)) {
+                if (!empty($rawData) && $this->findfield($rawData, $fieldName, $output, $onlyWithIngestedContent, $onlyMissingContent, false)) {
                     $revision->setRawData($rawData);
                     $update = true;
                 }
                 $rawData = $revision->getAutoSave();
-                if(!empty($rawData) && $this->findfield($rawData, $fieldName, $output, $onlyWithIngestedContent, $onlyMissingContent, false)) {
+                if (!empty($rawData) && $this->findfield($rawData, $fieldName, $output, $onlyWithIngestedContent, $onlyMissingContent, false)) {
                     $revision->setAutoSave($rawData);
                     $update = true;
                 }
                 
-                if($update) {
-                    
+                if ($update) {
                     $revision->setLockBy('SYSTEM_MIGRATE');
                     $date = new \DateTime();
                     $date->modify('+5 minutes');
@@ -171,13 +165,11 @@ class IndexFile extends EmsCommand
                 $progress->advance();
             }
             
-            if(count($revisions) == $limit) {
+            if (count($revisions) == $limit) {
                 $offset += $limit;
-            }
-            else {
+            } else {
                 break;
             }
-            
         }
         
         $progress->finish();
@@ -188,20 +180,19 @@ class IndexFile extends EmsCommand
         
         $output->write('DB size after the migration : ');
         $this->dbSize($output);
-        
     }
     
     private function findfield(array &$rawData, $field, OutputInterface $output, $onlyWithIngestedContent=false, $onlyMissingContent=false, $out)
     {
         foreach ($rawData as $key => $data) {
             if ($key === $field) {
-                if($onlyMissingContent and ((isset($rawData[$key]['_content']) and !empty($rawData[$key]['_content'])) or (isset($rawData[$key]['_language']) and !empty($rawData[$key]['_language'])))) {
+                if ($onlyMissingContent and (isset($rawData[$key]['_content']) and !empty($rawData[$key]['_content']))) {
                     $out = $this->findfield($rawData[$key], $field, $output, $onlyWithIngestedContent, $onlyMissingContent, $out);
                 } else {
                     $out = $this->migrate($rawData[$key], $output, $onlyWithIngestedContent, $out);
                 }
             } elseif (is_array($data)) {
-                $out = $this->findfield($rawData[$key], $field, $output, $onlyWithIngestedContent, $onlyMissingContent, $out);  
+                $out = $this->findfield($rawData[$key], $field, $output, $onlyWithIngestedContent, $onlyMissingContent, $out);
             }
         }
         return $out;
@@ -209,52 +200,48 @@ class IndexFile extends EmsCommand
 
     private function migrate(array &$rawData, OutputInterface $output, $onlyWithIngestedContent, $out)
     {
-        if(!empty($rawData) && !empty($rawData)) {
-            
-            if(isset($rawData['content'])) {
+        if (!empty($rawData) && !empty($rawData)) {
+            if (isset($rawData['content'])) {
                 unset($rawData['content']);
                 $out = true;
-            }
-            else if($onlyWithIngestedContent) {
+            } elseif ($onlyWithIngestedContent) {
                 $out = false;
             }
             
-            if(isset($rawData['sha1'])) {
+            if (isset($rawData['sha1'])) {
                 $file = $this->fileService->getFile($rawData['sha1']);
-                if($file) {
+                if ($file) {
                     $data = $this->extractorService->extractData($file, isset($rawData['filename'])?$rawData['filename']:'filename');
                     
-                    if(!empty($data)) {
-                        if(isset($data['date']) && $data['date']) {
+                    if (!empty($data)) {
+                        if (isset($data['date']) && $data['date']) {
                             $rawData['_date'] = $data['date'];
                             $out = true;
                         }
-                        if(isset($data['content']) && $data['content']) {
+                        if (isset($data['content']) && $data['content']) {
                             $rawData['_content'] = $data['content'];
                             $out = true;
                         }
-                        if(isset($data['Author']) && $data['Author']) {
+                        if (isset($data['Author']) && $data['Author']) {
                             $rawData['_author'] = $data['Author'];
                             $out = true;
                         }
-                        if(isset($data['author']) && $data['author']) {
+                        if (isset($data['author']) && $data['author']) {
                             $rawData['_author'] = $data['author'];
                             $out = true;
                         }
-                        if(isset($data['language']) && $data['language']) {
+                        if (isset($data['language']) && $data['language']) {
                             $rawData['_language'] = $data['language'];
                             $out = true;
                         }
-                        if(isset($data['title']) && $data['title']) {
+                        if (isset($data['title']) && $data['title']) {
                             $rawData['_title'] = $data['title'];
                             $out = true;
                         }
                     }
-                }
-                else {
+                } else {
                     $output->writeln('File not found:'.$rawData['sha1']);
                 }
-                
             }
         }
         return $out;
@@ -264,24 +251,20 @@ class IndexFile extends EmsCommand
     {
         
         /**
-* 
-         *
- * @var EntityManager $em 
-*/
+         * @var EntityManager $em
+         */
         $em = $this->doctrine->getManager();
         $query = '';
         
         if (in_array($this->databaseDriver, ['pdo_pgsql'])) {
             $query = "SELECT pg_size_pretty(pg_database_size('$this->databaseName')) AS size";
-        }
-        else if (in_array($this->databaseDriver, ['pdo_mysql'])) {
+        } elseif (in_array($this->databaseDriver, ['pdo_mysql'])) {
             $query = "SELECT
 			SUM(data_length + index_length)/1024/1024 AS size
 			FROM information_schema.TABLES
 			WHERE table_schema='$this->databaseName'
 			GROUP BY table_schema";
-        }
-        else {
+        } else {
             throw new \Exception('Not supported driver');
         }
         $stmt = $em->getConnection()->prepare($query);

@@ -378,7 +378,7 @@ class AppExtension extends \Twig_Extension
 						$fields[] = $contentType->getColorField();
 					}
 
-					$index = $this->contentTypeService->getIndex($contentType->getEnvironment(), $contentType);
+					$index = $this->contentTypeService->getIndex($contentType);
 					
 					$result = $this->client->get([
 							'_source' => $fields,
@@ -443,7 +443,7 @@ class AppExtension extends \Twig_Extension
 				        $fields[] = $contentType->getColorField();
 				    }
 
-                    $index = $this->contentTypeService->getIndex($contentType->getEnvironment(), $contentType);
+                    $index = $this->contentTypeService->getIndex($contentType);
 
 					$result = $this->client->get([
 					    '_source' => $fields,

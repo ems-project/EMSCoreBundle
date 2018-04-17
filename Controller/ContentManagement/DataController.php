@@ -241,7 +241,7 @@ class DataController extends AppController
             /** @var Client $client */
             $client = $this->getElasticsearch();
             $result = $client->get([
-                'index' => $this->getContentTypeService()->getIndex($environments[0], $contentType),
+                'index' => $this->getContentTypeService()->getIndex($contentType, $environments[0]),
                 'type' => $type,
                 'id' => $ouuid,
             ]);

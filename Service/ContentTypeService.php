@@ -143,14 +143,18 @@ class ContentTypeService {
         $repository->setIndexName($environment, $contentType, $name);
     }
 
-    public function getIndex(Environment $environment, ContentType $contentType) {
+    public function getIndex(ContentType $contentType, Environment $environment = null) {
+        if(!$environment) {
+            $environment = $contentType->getEnvironment();
+        }
+
 	    if($this->singleTypeIndex){
             $this->em = $this->doctrine->getManager();
             /**@var SingleTypeIndexRepository $repository*/
             $repository = $this->em->getRepository('EMSCoreBundle:SingleTypeIndex');
 
             /**@var SingleTypeIndex $singleTypeIndex*/
-            $singleTypeIndex = $repository->getIndexName($environment, $contentType);
+            $singleTypeIndex = $repository->getIndexName($contentType, $environment);
             return $singleTypeIndex->getName();
         }
         return $environment->getAlias();

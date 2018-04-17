@@ -444,7 +444,7 @@ class DataService
 							'_source_exclude' => ['*.attachment', '*._attachment'],
 							'id' => $revision->getOuuid(),
 							'type' => $revision->getContentType()->getName(),
-							'index' => $this->contentTypeService->getIndex($environment, $revision->getContentType()),
+							'index' => $this->contentTypeService->getIndex($revision->getContentType(), $environment),
 					])['_source'];
 					
 					DataService::ksortRecursive($indexedItem);

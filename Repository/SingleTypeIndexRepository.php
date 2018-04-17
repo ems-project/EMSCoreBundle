@@ -16,7 +16,7 @@ use EMS\CoreBundle\Entity\SingleTypeIndex;
 class SingleTypeIndexRepository extends \Doctrine\ORM\EntityRepository
 {
 
-    public function getIndexName(Environment $environment, ContentType $contentType)
+    public function getIndexName(ContentType $contentType, Environment $environment)
     {
 
         $qb = $this->createQueryBuilder('i')

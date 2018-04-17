@@ -108,7 +108,7 @@ class ObjectChoiceCacheService
 						$contentType = $this->contentTypeService->getByName($ref[0]);
 						if($contentType){
 
-                            $index = $this->contentTypeService->getIndex($contentType->getEnvironment(), $contentType);
+                            $index = $this->contentTypeService->getIndex($contentType);
 							if($index){
 								if(!array_key_exists($index, $queries)){
 									$queries[$index] = ['docs' => []];

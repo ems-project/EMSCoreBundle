@@ -389,6 +389,8 @@ class DataService
 	
 	public function sign(Revision $revision) {
 		$objectArray = $revision->getRawData();
+
+        $objectArray['_contenttype'] = $revision->getContentType()->getName();
 		if(isset($objectArray['_sha1'])){
 			unset($objectArray['_sha1']);
 		}
@@ -569,7 +571,7 @@ class DataService
   		if(empty($form) || $this->isValid($form)){
 		
 			$config = [
-				'index' => $revision->getContentType()->getEnvironment()->getAlias(),
+				'index' => $this->contentTypeService->getIndex($revision->getContentType()),
 				'type' => $revision->getContentType()->getName(),
 				'body' => $objectArray,
 			];

@@ -71,12 +71,18 @@ class ContentTypeService {
 			}
 		}
 	}
-	
-	public function persist(ContentType $contentType){
-		$em = $this->doctrine->getManager();
-		$em->persist($contentType);
-		$em->flush();
-	}
+
+    public function persist(ContentType $contentType){
+        $em = $this->doctrine->getManager();
+        $em->persist($contentType);
+        $em->flush();
+    }
+
+    public function persistField(FieldType $fieldType){
+        $em = $this->doctrine->getManager();
+        $em->persist($fieldType);
+        $em->flush();
+    }
 	
 	private function listAllFields(FieldType $fieldType){
 		$out = [];

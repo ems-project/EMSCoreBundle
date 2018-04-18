@@ -1,0 +1,116 @@
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}Edit "{{ contentType.singularName }}"  structure{% endblock %}
+{% block pagetitle %}Edit "{{ contentType.singularName }}" structure{% endblock %}
+
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><a href="{{ path("contenttype.index") }}"><i class="fa fa-cubes"></i> Content Types</a></li>
+		<li><a href="{{ path("contenttype.edit", {id: contentType.id}) }}"><i class="{{ contentType.icon }}"></i> Edit {{ contentType.singularName }}</a></li>
+		<li><a href="{{ path("ems_contenttype_reorder", {contentType: contentType.id}) }}"><i class="{{ contentType.icon }}"></i> Reorder {{ contentType.singularName }}</a></li>
+		<li class="active">Field</li>
+	</ol>
+{% endblock %}
+
+{% block body %}
+
+    {{ form_start(form) }}
+
+	<div class="row">
+		<div class="col-md-12">
+
+			<div class="box ">
+				<div class="box-header with-border">
+					<i class="fa fa-sitemap"></i>
+					<h3 class="box-title">{{ contentType.singularName }}'s metas</h3>
+				</div>
+				<!-- /.box-header -->
+				<div class="box-body">
+
+					<div class="col-md-12">
+                        {{ form_row(form.fieldType) }}
+					</div>
+
+
+
+				</div>
+				<!-- /.box-body -->
+				<div class="box-footer">
+					<div class="btn-group pull-right">
+                        {{ form_widget(form.save) }}
+                        {{ form_widget(form.saveAndClose) }}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    {{ form_end(form) }}
+
+{% endblock %}
+
+{% block javascripts %}
+    {% include '@EMSCore/app/menu.html.twig' with {
+        'item':  'contenttype-list'
+    }%}
+
+    {% include '@EMSCore/js/code-editor.html.twig' %}
+	<script src="{{ asset('bundles/emscore/bower/ace-builds/src-min-noconflict/ext-modelist.js') }}"></script>
+	<script src="{{ asset('bundles/emscore/bower/ace-builds/src-min-noconflict/ext-themelist.js') }}"></script>
+
+	<script type="text/javascript">
+        <!--
+
+        //-->
+        $(document).ready(function() {
+            $('ul.sortable').sortable();
+
+            if(QueryString.open){
+                $('#content_type_structure_fieldType'+QueryString.open).modal('show');
+            }
+
+
+            if($('.code_editor_mode_ems')){
+
+
+                var modelist = ace.require("ace/ext/modelist");
+                var modelist_var = [];
+                for (index = 0; index < modelist.modes.length; ++index) {
+                    modelist_var.push({
+                        id: modelist.modes[index].mode,
+                        text: modelist.modes[index].caption,
+                    });
+                }
+                $('.code_editor_mode_ems').select2({
+                    data: modelist_var,
+                    placeholder: '{{ 'Select a language'|trans|e('js') }}'
+                });
+
+                var themelist = ace.require("ace/ext/themelist");
+                var themelist_var = [];
+//     		var themelist_var = [{
+//   			text: '{{ 'Bright'|trans|e('js') }}',
+//     			children: []
+//         	},{
+//    			text: '{{ 'Dark'|trans|e('js') }}',
+//     			children: []
+//         	}];
+                for (index = 0; index < themelist.themes.length; ++index) {
+//     			themelist_var[themelist.themes[index].isDark?1:0].children.push({
+//     			    id: themelist.themes[index].name,
+//     			    text: themelist.themes[index].caption,
+//     			});
+                    themelist_var.push({
+                        id: themelist.themes[index].theme,
+                        text: themelist.themes[index].caption+' ('+(themelist.themes[index].isDark?'Dark':'Brigth')+')',
+                    });
+                }
+                $('.code_editor_theme_ems').select2({
+                    data: themelist_var,
+                    placeholder: '{{ 'Select a theme'|trans|e('js') }}'
+                });
+            }
+        });
+	</script>
+
+{% endblock %}	

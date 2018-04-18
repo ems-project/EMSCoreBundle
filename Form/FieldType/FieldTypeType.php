@@ -118,7 +118,7 @@ class FieldTypeType extends AbstractType
     		$childFound = false;
 			/** @var FieldType $field */
 			foreach ($fieldType->getChildren() as $idx => $field) {
-				if(!$field->getDeleted()){
+				if(!$field->getDeleted() && ( $options['editSubfields'] || $field->getType() === SubfieldType::class)){
 					$childFound = true;
 					$builder->add ( 'ems_'.$field->getName(), FieldTypeType::class, [
 							'data' => $field,
@@ -148,6 +148,7 @@ class FieldTypeType extends AbstractType
         	'container' => false,
         	'path' => false,
         	'new_field' => false,
+            'editSubfields' => true,
         ));
     }
 	

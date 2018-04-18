@@ -348,3 +348,4 @@ view.environment.index.delete_index_confirm: 'Are you sure to delete the index %
 view.environment.index.delete_index_button: 'Delete'
 view.environment.index.delete_all_ophan_indexes_confirm: 'Do you confirm?'
 controller.environment.index.reorder_submit_button: 'Reorder'
+view.contenttype.reorder_item.edit_field_button: 'Edit %name%'

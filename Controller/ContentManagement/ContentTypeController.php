@@ -484,7 +484,7 @@ class ContentTypeController extends AppController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
+            return $this->treatFieldSubmit($contentType, $field, $form->getClickedButton()->getName());
         }
 
         return $this->render('@EMSCore/contenttype/field.html.twig', [
@@ -633,7 +633,7 @@ class ContentTypeController extends AppController
     /**
      * Reorder a content type
      *
-     * @param integer $id
+     * @param ContentType $contentType
      * @param Request $request
      * @Route("/content-type/reorder/{contentType}", name="ems_contenttype_reorder"))
      */
@@ -914,81 +914,81 @@ class ContentTypeController extends AppController
     }
 
 
-    private function treatStructure(ContentType $contentType, $inputContentType)
+    private function treatFieldSubmit(ContentType $contentType, FieldType $field, $action)
     {
 
+        /** @var EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
         $contentType->getFieldType()->setName('source');
 
-        if (array_key_exists('save', $inputContentType) || array_key_exists('saveAndClose', $inputContentType) || array_key_exists('saveAndReorder', $inputContentType)) {
-            $contentType->getFieldType()->updateOrderKeys();
+        if ( in_array($action, ['save', 'saveAndClose']) ) {
+            $field->updateOrderKeys();
             $contentType->setDirty($contentType->getEnvironment()->getManaged());
 
-            if ((array_key_exists('saveAndClose', $inputContentType) || array_key_exists('saveAndReorder', $inputContentType)) && $contentType->getDirty()) {
-                $this->getContentTypeService()->updateMapping($contentType);
-            }
 
             $this->getContentTypeService()->persist($contentType);
+            $this->getContentTypeService()->persistField($field);
 
             if ($contentType->getDirty()) {
                 $this->addFlash('warning', 'Content type has beend saved. Please consider to update the Elasticsearch mapping.');
             }
-            if (array_key_exists('saveAndClose', $inputContentType)) {
-                return $this->redirectToRoute('contenttype.edit', [
-                    'id' => $id
-                ]);
-            }
-            if (array_key_exists('saveAndReorder', $inputContentType)) {
-                return $this->redirectToRoute('ems_contenttype_reorder', [
-                    'contentType' => $id
-                ]);
-            }
-            return $this->redirectToRoute('contenttype.structure', [
-                'id' => $id
-            ]);
-        } else {
-            if ($out = $this->addNewField($inputContentType ['fieldType'], $contentType->getFieldType())) {
-                $contentType->getFieldType()->updateOrderKeys();
 
-                $em->persist($contentType);
-                $em->flush();
-                return $this->redirectToRoute('contenttype.structure', [
-                    'id' => $id,
-                    'open' => $out,
-                ]);
-            } else if ($out = $this->addNewSubfield($inputContentType ['fieldType'], $contentType->getFieldType())) {
-                $contentType->getFieldType()->updateOrderKeys();
-                $em->persist($contentType);
-                $em->flush();
-                return $this->redirectToRoute('contenttype.structure', [
-                    'id' => $id,
-                    'open' => $out,
-                ]);
-            } else if ($out = $this->duplicateField($inputContentType ['fieldType'], $contentType->getFieldType())) {
-                $contentType->getFieldType()->updateOrderKeys();
-                $em->persist($contentType);
-                $em->flush();
-                return $this->redirectToRoute('contenttype.structure', [
-                    'id' => $id,
-                    'open' => $out,
-                ]);
-            } else if ($this->removeField($inputContentType ['fieldType'], $contentType->getFieldType())) {
-                $contentType->getFieldType()->updateOrderKeys();
-                $em->persist($contentType);
-                $em->flush();
-                $this->addFlash('notice', 'A field has been removed.');
-                return $this->redirectToRoute('contenttype.structure', [
-                    'id' => $id
-                ]);
-            } else if ($this->reorderFields($inputContentType ['fieldType'], $contentType->getFieldType())) {
-                // $contentType->getFieldType()->updateOrderKeys();
-                $em->persist($contentType);
-                $em->flush();
-                $this->addFlash('notice', 'Fields have been reordered.');
-                return $this->redirectToRoute('contenttype.structure', [
-                    'id' => $id
+            if ( $action === 'saveAndClose' ) {
+                return $this->redirectToRoute('ems_contenttype_reorder', [
+                    'contentType' => $contentType->getId()
                 ]);
             }
+        } else {
+            $this->addFlash('warning', 'Action not found '.$action);
+
+
+//            if ($out = $this->addNewField($inputContentType ['fieldType'], $contentType->getFieldType())) {
+//                $contentType->getFieldType()->updateOrderKeys();
+//
+//                $em->persist($contentType);
+//                $em->flush();
+//                return $this->redirectToRoute('contenttype.structure', [
+//                    'id' => $contentType->getId(),
+//                    'open' => $out,
+//                ]);
+//            } else if ($out = $this->addNewSubfield($inputContentType ['fieldType'], $contentType->getFieldType())) {
+//                $contentType->getFieldType()->updateOrderKeys();
+//                $em->persist($contentType);
+//                $em->flush();
+//                return $this->redirectToRoute('contenttype.structure', [
+//                    'id' => $contentType->getId(),
+//                    'open' => $out,
+//                ]);
+//            } else if ($out = $this->duplicateField($inputContentType ['fieldType'], $contentType->getFieldType())) {
+//                $contentType->getFieldType()->updateOrderKeys();
+//                $em->persist($contentType);
+//                $em->flush();
+//                return $this->redirectToRoute('contenttype.structure', [
+//                    'id' => $contentType->getId(),
+//                    'open' => $out,
+//                ]);
+//            } else if ($this->removeField($inputContentType ['fieldType'], $contentType->getFieldType())) {
+//                $contentType->getFieldType()->updateOrderKeys();
+//                $em->persist($contentType);
+//                $em->flush();
+//                $this->addFlash('notice', 'A field has been removed.');
+//                return $this->redirectToRoute('contenttype.structure', [
+//                    'id' => $contentType->getId()
+//                ]);
+//            } else if ($this->reorderFields($inputContentType ['fieldType'], $contentType->getFieldType())) {
+//                // $contentType->getFieldType()->updateOrderKeys();
+//                $em->persist($contentType);
+//                $em->flush();
+//                $this->addFlash('notice', 'Fields have been reordered.');
+//                return $this->redirectToRoute('contenttype.structure', [
+//                    'id' => $contentType->getId()
+//                ]);
+//            }
         }
+        return $this->redirectToRoute('ems_contenttype_field_edit', [
+            'contentType' => $contentType->getId(),
+            'field' => $field->getId(),
+        ]);
     }
 
 

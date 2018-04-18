@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CoreBundle\Entity\SingleTypeIndex;
+use EMS\CoreBundle\Repository\FieldTypeRepository;
 use EMS\CoreBundle\Repository\SingleTypeIndexRepository;
 use Symfony\Component\HttpFoundation\Session\Session;
 use EMS\CoreBundle\Entity\ContentType;

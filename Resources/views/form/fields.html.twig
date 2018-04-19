@@ -103,44 +103,128 @@
 
 {%- block data_field_options_widget -%}
 
-	<div class="tab-content">
-		{% set active='active' %}
-		{% if form.displayOptions is defined %}
-			<div class="tab-pane {{ active }}" id="tab_display_{{ seed }}">
-				{{- form_widget(form.displayOptions) -}}
+	{% if editSubfields is not defined or editSubfields %}
+		<div class="tab-content">
+			{% set active='active' %}
+			{% if form.displayOptions is defined %}
+				<div class="tab-pane {{ active }}" id="tab_display_{{ seed }}">
+					{{- form_widget(form.displayOptions) -}}
+				</div>
+				{% set active='' %}
+			{% endif %}
+			<!-- /.tab-pane -->
+			{% if form.mappingOptions is defined %}
+				<div class="tab-pane {{ active }}" id="tab_mapping_{{ seed }}">
+					{{- form_widget(form.mappingOptions) -}}
+				</div>
+				{% set active='' %}
+			{% endif %}
+			<!-- /.tab-pane -->
+			{% if form.restrictionOptions is defined %}
+			  <div class="tab-pane {{ active }}" id="tab_restriction_{{ seed }}">
+				{{- form_widget(form.restrictionOptions) -}}
+			  </div>
+			  {% set active='' %}
+			{% endif %}
+			<!-- /.tab-pane -->
+			{% if form.migrationOptions is defined %}
+			  <div class="tab-pane {{ active }}" id="tab_migration_{{ seed }}">
+				{{- form_widget(form.migrationOptions) -}}
+			  </div>
+			  {% set active='' %}
+			{% endif %}
+			<!-- /.tab-pane -->
+			{% if form.extraOptions is defined %}
+			  <div class="tab-pane {{ active }}" id="tab_extra_{{ seed }}">
+				{{- form_widget(form.extraOptions) -}}
+			  </div>
+			{% endif %}
+			<!-- /.tab-pane -->
+		</div>
+		<!-- /.tab-content -->
+	{% else %}
+		<div class="row">
+        {% if form.displayOptions is defined %}
+			<div class="col-md-4 match-height">
+				<div class="box box-default">
+					<div class="box-header with-border">
+						<i class="fa fa-eye"></i>
+						<h3 class="box-title">{{- form_label(form.displayOptions) -}}</h3>
+					</div>
+					<!-- /.box-header -->
+					<div class="box-body">
+                        {{- form_widget(form.displayOptions) -}}
+					</div>
+					<!-- /.box-body -->
+				</div>
 			</div>
-			{% set active='' %}
-		{% endif %}
+        {% endif %}
 		<!-- /.tab-pane -->
-		{% if form.mappingOptions is defined %}
-			<div class="tab-pane {{ active }}" id="tab_mapping_{{ seed }}">
-				{{- form_widget(form.mappingOptions) -}}
+        {% if form.mappingOptions is defined %}
+			<div class="col-md-4 match-height">
+				<div class="box box-default">
+					<div class="box-header with-border">
+						<i class="fa fa-sitemap"></i>
+						<h3 class="box-title">{{- form_label(form.mappingOptions) -}}</h3>
+					</div>
+					<!-- /.box-header -->
+					<div class="box-body">
+                        {{- form_widget(form.mappingOptions) -}}
+					</div>
+					<!-- /.box-body -->
+				</div>
 			</div>
-			{% set active='' %}
-		{% endif %}
+        {% endif %}
 		<!-- /.tab-pane -->
-	    {% if form.restrictionOptions is defined %}
-	      <div class="tab-pane {{ active }}" id="tab_restriction_{{ seed }}">
-	        {{- form_widget(form.restrictionOptions) -}}
-	      </div>
-		  {% set active='' %}
-	    {% endif %}
-	    <!-- /.tab-pane -->
-	    {% if form.migrationOptions is defined %}
-	      <div class="tab-pane {{ active }}" id="tab_migration_{{ seed }}">
-	        {{- form_widget(form.migrationOptions) -}}
-	      </div>
-		  {% set active='' %}
-	    {% endif %}
-	    <!-- /.tab-pane -->
-	    {% if form.extraOptions is defined %}
-	      <div class="tab-pane {{ active }}" id="tab_extra_{{ seed }}">
-	        {{- form_widget(form.extraOptions) -}}
-	      </div>
-	    {% endif %}
-	    <!-- /.tab-pane -->
-	</div>
-	<!-- /.tab-content -->
+        {% if form.restrictionOptions is defined %}
+			<div class="col-md-4 match-height">
+				<div class="box box-default">
+					<div class="box-header with-border">
+						<i class="fa fa-shield"></i>
+						<h3 class="box-title">{{- form_label(form.restrictionOptions) -}}</h3>
+					</div>
+					<!-- /.box-header -->
+					<div class="box-body">
+                        {{- form_widget(form.restrictionOptions) -}}
+					</div>
+					<!-- /.box-body -->
+				</div>
+			</div>
+        {% endif %}
+		<!-- /.tab-pane -->
+        {% if form.migrationOptions is defined %}
+			<div class="col-md-4 match-height">
+				<div class="box box-default">
+					<div class="box-header with-border">
+						<i class="fa fa-recycle"></i>
+						<h3 class="box-title">{{- form_label(form.migrationOptions) -}}</h3>
+					</div>
+					<!-- /.box-header -->
+					<div class="box-body">
+                        {{- form_widget(form.migrationOptions) -}}
+					</div>
+					<!-- /.box-body -->
+				</div>
+			</div>
+        {% endif %}
+		<!-- /.tab-pane -->
+        {% if form.extraOptions is defined %}
+			<div class="col-md-4 match-height">
+				<div class="box box-default">
+					<div class="box-header with-border">
+						<i class="fa fa-plus"></i>
+						<h3 class="box-title">{{- form_label(form.extraOptions) -}}</h3>
+					</div>
+					<!-- /.box-header -->
+					<div class="box-body">
+                        {{- form_widget(form.extraOptions) -}}
+					</div>
+					<!-- /.box-body -->
+				</div>
+			</div>
+        {% endif %}
+		</div>
+	{% endif %}
 
 {%- endblock data_field_options_widget -%}
 
@@ -836,8 +920,8 @@
 				<i class="fa fa-paste"></i> Duplicate
 			</button>
 		{% endif %}
-		
-		{% if form.options is defined %}	
+
+		{% if form.options is defined and form.vars.editSubfields %}
 			<!-- Modal windows field options -->
 			<div class="modal fade" id="{{ form.vars.id }}_modal_options" role="dialog" aria-labelledby="myModalLabel">
 			  <div class="modal-dialog" role="document">
@@ -902,7 +986,7 @@
 					<ul class="list-group sortable" id="{{ form.vars.id }}_modal_reorder_list">
 			      		{% for child in form.vars.data.children if not child.deleted %}
 			      			<li class="list-group-item">
-			      				<i class="glyphicon glyphicon-move"></i> 
+			      				<i class="glyphicon glyphicon-move"></i>
 			      				{{ child.name }}
 			      				{{ form_row( attribute(attribute(form, 'ems_'~child.name), 'name')) }}
 			      			</li>
@@ -928,9 +1012,14 @@
 	</div> 
 
 	</h4>
+
+    {% if form.options is defined and not form.vars.editSubfields %}
+        {{- form_widget(form.options, {'seed': form.vars.id, 'editSubfields': false} ) -}}
+    {% endif %}
+
 	{% if form.vars.data.children is defined and form.vars.data.children|length > 0 %}
-		<ul class="list-group" id="{{ form.vars.id }}_list_container">{{-
-			form_widget(form) -}}
+		<ul class="list-group" id="{{ form.vars.id }}_list_container">
+			{{- form_widget(form) -}}
 		</ul>
 	{% endif %}
 </li>

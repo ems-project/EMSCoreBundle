@@ -13,6 +13,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormRegistryInterface;
@@ -150,6 +151,16 @@ class FieldTypeType extends AbstractType
         	'new_field' => false,
             'editSubfields' => true,
         ));
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildView(FormView $view, FormInterface $form, array $options) {
+        /*get options for twig context*/
+        parent::buildView($view, $form, $options);
+        $view->vars ['editSubfields'] = $options ['editSubfields'];
     }
 	
     public function dataFieldToArray(DataField $dataField){

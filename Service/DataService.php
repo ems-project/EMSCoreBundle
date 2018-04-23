@@ -226,70 +226,73 @@ class DataService
 		$found = false;
 		/**@var DataField $dataField*/
 		$dataField = $form->getNormData();
-		$extraOption = $dataField->getFieldType()->getExtraOptions();
-		if( isset($extraOption['postProcessing']) && !empty($extraOption['postProcessing']) ) {
-			try {
-				$out = $this->twig->createTemplate($extraOption['postProcessing'])->render([
-						'_source' => $objectArray,
-						'_type' => $type,
-						'_id' => $ouuid,
-						'index' => $contentType->getEnvironment()->getAlias(),
-						'migration' => $migration,
-				]);
-				$out = trim($out);
-				
-				if(strlen($out) > 0){
-					
-					$out = json_decode($out, true);
-					$meg = json_last_error_msg();
-					if(strcasecmp($meg, 'No error') == 0) {
-						$objectArray[$dataField->getFieldType()->getName()] = $out;					
-						$found = true;					
-					}
-					else {
-						$this->session->getFlashBag()->add('warning', 'Error to parse the post processing script of field '.$dataField->getFieldType()->getName().': '.$meg);
-					}
-				}
-			}
-			catch (\Exception $e) {
-				if($e->getPrevious() && $e->getPrevious() instanceof CantBeFinalizedException) {
-					throw $e->getPrevious();
-				}
-				$this->session->getFlashBag()->add('warning', 'Error to parse the post processing script of field '.$dataField->getFieldType()->getName().': '.$e->getMessage());
-			}	
-		}
-		if( $form->getConfig()->getType()->getInnerType() instanceof ComputedFieldType ) {
-			$template = $dataField->getFieldType()->getDisplayOptions()['valueTemplate'];
-			
-			$out = NULL;
-			if(!empty($template)){
-				try {
-					$out = $this->twig->createTemplate($template)->render([
-						'_source' => $objectArray,
-						'_type' => $type,
-						'_id' => $ouuid,
-						'index' => $contentType->getEnvironment()->getAlias(),
-						'migration' => $migration,
-					]);
-					
-					if($dataField->getFieldType()->getDisplayOptions()['json']){
-						$out = json_decode($out, true);
-					}
-				}
-				catch (\Exception $e) {
-					if($e->getPrevious() && $e->getPrevious() instanceof CantBeFinalizedException) {
-						throw $e->getPrevious();
-					}				
-					$this->session->getFlashBag()->add('warning', 'Error to parse the computed field '.$dataField->getFieldType()->getName().': '.$e->getMessage());
-				}					
-			}
-			$objectArray[$dataField->getFieldType()->getName()] = $out;
-			$found = true;
-		}
-		if($form->getConfig()->getType()->getInnerType()->isContainer()) {
+        if($dataField !== null) {
+            $extraOption = $dataField->getFieldType()->getExtraOptions();
+            if( isset($extraOption['postProcessing']) && !empty($extraOption['postProcessing']) ) {
+                try {
+                    $out = $this->twig->createTemplate($extraOption['postProcessing'])->render([
+                        '_source' => $objectArray,
+                        '_type' => $type,
+                        '_id' => $ouuid,
+                        'index' => $contentType->getEnvironment()->getAlias(),
+                        'migration' => $migration,
+                    ]);
+                    $out = trim($out);
+
+                    if(strlen($out) > 0){
+
+                        $out = json_decode($out, true);
+                        $meg = json_last_error_msg();
+                        if(strcasecmp($meg, 'No error') == 0) {
+                            $objectArray[$dataField->getFieldType()->getName()] = $out;
+                            $found = true;
+                        }
+                    }
+                }
+                catch (\Exception $e) {
+                    if($e->getPrevious() && $e->getPrevious() instanceof CantBeFinalizedException) {
+                        throw $e->getPrevious();
+                    }
+                    $this->session->getFlashBag()->add('warning', 'Error to parse the post processing script of field '.$dataField->getFieldType()->getName().': '.$e->getMessage());
+                }
+            }
+            if( $form->getConfig()->getType()->getInnerType() instanceof ComputedFieldType ) {
+                $template = $dataField->getFieldType()->getDisplayOptions()['valueTemplate'];
+
+                $out = NULL;
+                if(!empty($template)){
+                    try {
+                        $out = $this->twig->createTemplate($template)->render([
+                            '_source' => $objectArray,
+                            '_type' => $type,
+                            '_id' => $ouuid,
+                            'index' => $contentType->getEnvironment()->getAlias(),
+                            'migration' => $migration,
+                        ]);
+
+                        if($dataField->getFieldType()->getDisplayOptions()['json']){
+                            $out = json_decode($out, true);
+                        }
+                    }
+                    catch (\Exception $e) {
+                        if($e->getPrevious() && $e->getPrevious() instanceof CantBeFinalizedException) {
+                            throw $e->getPrevious();
+                        }
+                        $this->session->getFlashBag()->add('warning', 'Error to parse the computed field '.$dataField->getFieldType()->getName().': '.$e->getMessage());
+                    }
+                }
+                $objectArray[$dataField->getFieldType()->getName()] = $out;
+                $found = true;
+            }
+
+        }
+        else {
+            //$this->session->getFlashBag()->add('warning', 'Error to parse the post processing script of field '.$dataField->getFieldType()->getName().': ');
+        }
+        if($form->getConfig()->getType()->getInnerType()->isContainer()) {
 			foreach ($form->getIterator() as $child){
 				$childType = $child->getConfig()->getType()->getInnerType();
-				
+
 				if ($childType instanceof CollectionFieldType) {
 					foreach ($child->getIterator() as $collectionChild) {
 						$elementsArray = $collectionChild->getNormData()->getRawData();
@@ -298,16 +301,16 @@ class DataService
 							unset($elementsArray['_ems_item_reverseViewTransform']);
 						}
 						$found = $this->propagateDataToComputedField($collectionChild, $elementsArray, $contentType, $type, $ouuid, $migration) || $found;
-						
+
 						$fieldName = $child->getNormData()->getFieldType()->getName();
 						$positionInCollection = $collectionChild->getConfig()->getName();
 
-						$objectArray[$fieldName][$positionInCollection] = $elementsArray;	
+						$objectArray[$fieldName][$positionInCollection] = $elementsArray;
 					}
 				}elseif( $childType instanceof DataFieldType ) {
-					$found = $this->propagateDataToComputedField($child, $objectArray, $contentType, $type, $ouuid, $migration) || $found;					
+					$found = $this->propagateDataToComputedField($child, $objectArray, $contentType, $type, $ouuid, $migration) || $found;
 				}
-			}			
+			}
 		}
 		return $found;
 	}

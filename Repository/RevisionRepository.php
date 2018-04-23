@@ -21,7 +21,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 class RevisionRepository extends \Doctrine\ORM\EntityRepository
 {
 	
-	
+
 	
 	
 	/**
@@ -402,4 +402,28 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
 			return $qb->getQuery()->execute();
 		}
 	}
+
+    /**
+     * @param ContentType $contentType
+     * @param int         $page
+     *
+     * @return Paginator
+     */
+	public function findAllActiveByContentType(ContentType $contentType, $page = 0)
+    {
+        $qb = $this->createQueryBuilder('r');
+        $qb
+            ->andWhere($qb->expr()->eq('r.contentType', ':content_type'))
+            ->andWhere($qb->expr()->isNull('r.endTime'))
+            ->andWhere($qb->expr()->isNull('r.lockBy'))
+            ->andWhere($qb->expr()->eq('r.deleted', $qb->expr()->literal(false)))
+            ->andWhere($qb->expr()->eq('r.draft', $qb->expr()->literal(false)))
+            ->setMaxResults(50)
+            ->setFirstResult($page*50)
+            ->orderBy('r.id', 'asc')
+            ->setParameter('content_type', $contentType)
+        ;
+
+        return new Paginator($qb->getQuery());
+    }
 }

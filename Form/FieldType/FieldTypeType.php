@@ -13,6 +13,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormRegistryInterface;
@@ -104,7 +105,15 @@ class FieldTypeType extends AbstractType
     				'icon' => 'fa fa-paste'
     		] );    		
     	}
-    	if(null != $fieldType->getParent()){
+        if( !$options['editSubfields'] ){
+
+            $builder->add ( 'name', TextType::class, [
+                'label' => 'Field\'s name',
+//                'mapped' => false,
+//                'required' => false,
+            ]);
+        }
+    	if(null != $fieldType->getParent() && $options['editSubfields']){
 	    	$builder->add ( 'remove', SubmitEmsType::class, [
 	    			'attr' => [
 	    					'class' => 'btn-danger btn-xs'
@@ -118,16 +127,16 @@ class FieldTypeType extends AbstractType
     		$childFound = false;
 			/** @var FieldType $field */
 			foreach ($fieldType->getChildren() as $idx => $field) {
-				if(!$field->getDeleted()){
+				if(!$field->getDeleted() && ( $options['editSubfields'] || $field->getType() === SubfieldType::class)){
 					$childFound = true;
 					$builder->add ( 'ems_'.$field->getName(), FieldTypeType::class, [
 							'data' => $field,
 							'container' => true,
+                            'editSubfields' => $options['editSubfields'],
 					]  );						
 				}
 			}
-			
-			if($childFound) {
+			if($childFound && $options['editSubfields']) {
 				$builder->add ( 'reorder', SubmitEmsType::class, [
 						'attr' => [
 								'class' => 'btn-primary '
@@ -148,7 +157,18 @@ class FieldTypeType extends AbstractType
         	'container' => false,
         	'path' => false,
         	'new_field' => false,
+            'editSubfields' => true,
         ));
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildView(FormView $view, FormInterface $form, array $options) {
+        /*get options for twig context*/
+        parent::buildView($view, $form, $options);
+        $view->vars ['editSubfields'] = $options ['editSubfields'];
     }
 	
     public function dataFieldToArray(DataField $dataField){

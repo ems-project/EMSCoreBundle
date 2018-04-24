@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CoreBundle\Entity\SingleTypeIndex;
+use EMS\CoreBundle\Repository\FieldTypeRepository;
 use EMS\CoreBundle\Repository\SingleTypeIndexRepository;
 use Symfony\Component\HttpFoundation\Session\Session;
 use EMS\CoreBundle\Entity\ContentType;
@@ -70,12 +71,18 @@ class ContentTypeService {
 			}
 		}
 	}
-	
-	public function persist(ContentType $contentType){
-		$em = $this->doctrine->getManager();
-		$em->persist($contentType);
-		$em->flush();
-	}
+
+    public function persist(ContentType $contentType){
+        $em = $this->doctrine->getManager();
+        $em->persist($contentType);
+        $em->flush();
+    }
+
+    public function persistField(FieldType $fieldType){
+        $em = $this->doctrine->getManager();
+        $em->persist($fieldType);
+        $em->flush();
+    }
 	
 	private function listAllFields(FieldType $fieldType){
 		$out = [];
@@ -194,12 +201,13 @@ class ContentTypeService {
 		try {	
 			
 			if(!$envs){
-				$envs = array_reduce ( $this->environmentService->getManagedEnvironement(), function ($envs, $item) {
+				$envs = array_reduce ( $this->environmentService->getManagedEnvironement(), function ($envs, $item) use ($contentType) {
 					/**@var \EMS\CoreBundle\Entity\Environment $item*/
+				    $index = $this->getIndex($contentType, $item);
 					if (isset ( $envs )) {
-						$envs .= ',' . $item->getAlias();
+						$envs .= ',' . $index;
 					} else {
-						$envs = $item->getAlias();
+						$envs = $index;
 					}
 					return $envs;
 				} );

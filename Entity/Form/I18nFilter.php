@@ -2,7 +2,7 @@
 namespace EMS\CoreBundle\Entity\Form;
 
 /**
- * RebuildIndex
+ * I18nFilter
  */
 class I18nFilter{
 

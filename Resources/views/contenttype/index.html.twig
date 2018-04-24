@@ -83,10 +83,15 @@
 								
 									<div class="btn-group">
                                         {% include '@EMSCore/elements/get-button.html.twig' with {
-											'url':  path('contenttype.edit', {'id': contentType.id}),
-											'label': 'Edit',
-											'icon': 'pencil'
-										}%}
+                                            'url':  path('contenttype.edit', {'id': contentType.id}),
+                                            'label': 'Edit',
+                                            'icon': 'pencil'
+                                        }%}
+                                        {% include '@EMSCore/elements/get-button.html.twig' with {
+                                            'url':  path('ems_contenttype_reorder', {'contentType': contentType.id}),
+                                            'label': 'Structure',
+                                            'icon': 'sitemap'
+                                        }%}
                                         {% include '@EMSCore/elements/get-button.html.twig' with {
 											'url': path('template.index', {'type': contentType.name}),
 											'label': 'Templates',

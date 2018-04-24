@@ -13,20 +13,21 @@ use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\PublishService;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 class RecomputeCommand extends EmsCommand
 {
     /**
-     * @var Registry
+     * @var EntityManager
      */
-    private $doctrine;
+    private $em;
 
     /**
      * @var DataService
@@ -44,6 +45,18 @@ class RecomputeCommand extends EmsCommand
     private $publishService;
 
     /**
+     * @var ContentTypeRepository
+     */
+    private $contentTypeRepository;
+
+    /**
+     * @var RevisionRepository
+     */
+    private $revisionRepository;
+
+    const LOCK_BY = 'SYSTEM_RECOMPUTE';
+
+    /**
      * @inheritdoc
      */
     public function __construct(
@@ -57,10 +70,14 @@ class RecomputeCommand extends EmsCommand
     ) {
         parent::__construct($logger, $client, $session);
 
-        $this->doctrine = $doctrine;
         $this->dataService = $dataService;
         $this->formFactory = $formFactory;
         $this->publishService = $publishService;
+
+        $em = $doctrine->getManager();
+        $this->em = $em;
+        $this->contentTypeRepository = $em->getRepository(ContentType::class);
+        $this->revisionRepository = $em->getRepository(Revision::class);
     }
 
     /**
@@ -72,6 +89,8 @@ class RecomputeCommand extends EmsCommand
             ->setName('ems:contenttype:recompute')
             ->setDescription('Recompute a content type')
             ->addArgument('contentType', InputArgument::REQUIRED, 'content type to recompute')
+            ->addOption('force', null, InputOption::VALUE_NONE, 'do not check for already locked revisions')
+            ->addOption('continue', null, InputOption::VALUE_NONE, 'continue a recompute')
             ->addOption('keep-align', null , InputOption::VALUE_NONE, 'keep the revisions aligned to all already aligned environments')
         ;
     }
@@ -81,35 +100,51 @@ class RecomputeCommand extends EmsCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->logger = new ConsoleLogger($output);
-        $contentTypeName = $input->getArgument('contentType');
+        $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
+        $this->em->getConnection()->setAutoCommit(false);
 
-        /** @var EntityManager $em */
-        $em = $this->doctrine->getManager();
-        $em->getConnection()->getConfiguration()->setSQLLogger(null);
+        $io = new SymfonyStyle($input, $output);
 
-        /** @var ContentTypeRepository $contentTypeRepository */
-        $contentTypeRepository = $em->getRepository(ContentType::class);
-        /** @var RevisionRepository $revisionRepository */
-        $revisionRepository = $em->getRepository(Revision::class);
+        /** @var $contentType ContentType */
+        if (null === $contentType = $this->contentTypeRepository->findOneBy(['name' => $input->getArgument('contentType')])) {
+            throw new \RuntimeException('invalid content type');
+        }
 
-        /** @var ContentType $contentType */
-        $contentType = $contentTypeRepository->findOneBy(['name' => $contentTypeName]);
-
-        if(!$contentType) {
-            $output->writeln("<error>Content type ".$contentTypeName." not found</error>");
-            exit;
+        if (!$input->getOption('continue')) {
+            $this->lock($output, $contentType, $input->getOption('force'));
         }
 
         $page = 0;
-        $revisionPaginator = $revisionRepository->findAllActiveByContentType($contentType, $page);
-        $this->logger->info('found {count} revisions', ['count' => $revisionPaginator->getIterator()->count()]);
+        $limit = 200;
+        $paginator = $this->revisionRepository->findAllLockedRevisions($contentType, self::LOCK_BY, $page, $limit);
+
+        $progress = $io->createProgressBar($paginator->count());
+        $progress->start();
+
+        $revisionType = $this->formFactory->create(RevisionType::class, null, [
+            'migration' => true,
+            'content_type' => $contentType,
+        ]);
 
         do {
-            foreach ($revisionPaginator as $revision) {
-                /** @var \EMS\CoreBundle\Entity\Revision $revision */
+            foreach ($paginator as $revision) {
+                /** @var Revision $revision */
+                $newRevision = $revision->convertToDraft();
 
-                $newRevision = $this->save($contentType->getName(), $revision->getOuuid());
+                $revisionType->setData($newRevision);
+                $objectArray = $newRevision->getRawData();
+
+                //@todo maybe improve the data binding like the migration?
+
+                $this->dataService->propagateDataToComputedField($revisionType->get('data'), $objectArray, $contentType, $contentType->getName(), $newRevision->getOuuid(), true);
+                $newRevision->setRawData($objectArray);
+
+                $revision->close(new \DateTime('now'));
+                $newRevision->setDraft(false);
+
+                $this->em->persist($revision);
+                $this->em->persist($newRevision);
+                $this->em->flush();
 
                 if ($input->getOption('keep-align')) {
                     foreach ($revision->getEnvironments() as $environment) {
@@ -117,37 +152,37 @@ class RecomputeCommand extends EmsCommand
                         $this->publishService->publish($newRevision, $environment, true);
                     }
                 }
+
+                $this->revisionRepository->unlockRevision($revision->getId());
+                $this->revisionRepository->unlockRevision($newRevision->getId());
+
+                $this->em->commit();
+
+                $progress->advance();
             }
 
-            ++$page;
-            $revisionPaginator = $revisionRepository->findAllActiveByContentType($contentType, $page);
-        } while ($revisionPaginator->getIterator()->count());
+            $paginator = $this->revisionRepository->findAllLockedRevisions($contentType, self::LOCK_BY, $page, $limit);
+        } while ($paginator->getIterator()->count());
+
+        $progress->finish();
     }
 
     /**
-     * @param string $contentType
-     * @param string $ouuid
-     *
-     * @return \EMS\CoreBundle\Entity\Revision
+     * @param OutputInterface $output
+     * @param ContentType     $contentType
+     * @param bool            $force
      */
-    private function save($contentType, $ouuid)
+    private function lock(OutputInterface $output, ContentType $contentType, $force = false)
     {
-        $revision = $this->dataService->initNewDraft($contentType, $ouuid, null, 'cron_job');
-        $rawData = $revision->getRawData();
+        $command = $this->getApplication()->find('ems:contenttype:lock');
+        $arguments = [
+            'command'     => 'ems:contenttype:lock',
+            'contentType' => $contentType->getName(),
+            'time'        => '+1day',
+            '--user'      => self::LOCK_BY,
+            '--force'     => $force
+        ];
 
-        if( $revision->getDatafield() == NULL){
-            $this->dataService->loadDataStructure($revision);
-        }
-
-        $builder = $this->formFactory->createBuilder(RevisionType::class, $revision);
-        $form = $builder->getForm();
-
-        $revision->setRawData($rawData);
-
-        $this->logger->info('finalize {ouuid}', ['ouuid' => $ouuid]);
-
-        $this->dataService->finalizeDraft($revision, $form, 'cron_job');
-
-        return $revision;
+        $command->run(new ArrayInput($arguments), $output);
     }
 }

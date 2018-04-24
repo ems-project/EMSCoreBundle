@@ -487,6 +487,12 @@ services:
         arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.mapping', '@service_container']
         tags:
             -  { name: console.command }
+    ems.contenttype.lock:
+        class: EMS\CoreBundle\Command\LockCommand
+        arguments: ['@doctrine']
+        tags:
+            -  { name: console.command }
+
     ems.contenttype.clean:
         class: EMS\CoreBundle\Command\CleanDeletedContentTypeCommand
         arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.mapping', '@service_container']

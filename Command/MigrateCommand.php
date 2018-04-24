@@ -307,12 +307,10 @@ class MigrateCommand extends EmsCommand
 				}
 
 				$this->flushFlash($output);
-				
-				
-				// advance the progress bar 1 unit
-				$progress->advance();
-				$em->flush();
 			}
+
+			$em->flush();
+
 			$revisionRepository->clear();
 			$contentTypeRepository->clear();
 			$em->clear();
@@ -320,7 +318,8 @@ class MigrateCommand extends EmsCommand
 			unset($contentTypeTo);
 
 			$this->bulkerService->send(true);
-			
+
+			$progress->advance(count($arrayElasticsearchIndex['hits']['hits']));
 			
 			//https://www.elastic.co/guide/en/elasticsearch/client/php-api/current/_search_operations.html#_scrolling
 			$scroll_id = $arrayElasticsearchIndex['_scroll_id'];

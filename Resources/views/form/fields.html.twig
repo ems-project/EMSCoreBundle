@@ -912,13 +912,15 @@
 			      </div>
 			    </div>
 			  </div>
-			</div>	
-			<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#{{ form.vars.id }}_modal_add">
-				<i class="fa fa-plus"></i> Subfield
-			</button>
-			<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#{{ form.vars.id }}_duplicate">
-				<i class="fa fa-paste"></i> Duplicate
-			</button>
+			</div>
+			{% if form.vars.editSubfields  %}
+				<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#{{ form.vars.id }}_modal_add">
+					<i class="fa fa-plus"></i> Subfield
+				</button>
+				<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#{{ form.vars.id }}_duplicate">
+					<i class="fa fa-paste"></i> Duplicate
+				</button>
+			{% endif %}
 		{% endif %}
 
 		{% if form.options is defined and form.vars.editSubfields %}
@@ -1012,6 +1014,11 @@
 	</div> 
 
 	</h4>
+
+
+    {% if form.name is defined %}
+		{{ form_row(form.name) }}
+	{% endif %}
 
     {% if form.options is defined and not form.vars.editSubfields %}
         {{- form_widget(form.options, {'seed': form.vars.id, 'editSubfields': false} ) -}}

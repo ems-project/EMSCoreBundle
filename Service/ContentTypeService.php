@@ -201,12 +201,13 @@ class ContentTypeService {
 		try {	
 			
 			if(!$envs){
-				$envs = array_reduce ( $this->environmentService->getManagedEnvironement(), function ($envs, $item) {
+				$envs = array_reduce ( $this->environmentService->getManagedEnvironement(), function ($envs, $item) use ($contentType) {
 					/**@var \EMS\CoreBundle\Entity\Environment $item*/
+				    $index = $this->getIndex($contentType, $item);
 					if (isset ( $envs )) {
-						$envs .= ',' . $item->getAlias();
+						$envs .= ',' . $index;
 					} else {
-						$envs = $item->getAlias();
+						$envs = $index;
 					}
 					return $envs;
 				} );

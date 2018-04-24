@@ -484,7 +484,12 @@ class ContentTypeController extends AppController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            return $this->treatFieldSubmit($contentType, $field, $form->getClickedButton()->getName());
+            $subFieldName = '';
+            if ($form->get('fieldType')->has('ems:internal:add:subfield:name')){
+                $subFieldName = $form->get('fieldType')->get('ems:internal:add:subfield:name')->getData();
+            }
+
+            return $this->treatFieldSubmit($contentType, $field, $form->getClickedButton()->getName(), $subFieldName);
         }
 
         return $this->render('@EMSCore/contenttype/field.html.twig', [
@@ -914,7 +919,7 @@ class ContentTypeController extends AppController
     }
 
 
-    private function treatFieldSubmit(ContentType $contentType, FieldType $field, $action)
+    private function treatFieldSubmit(ContentType $contentType, FieldType $field, $action, $subFieldName)
     {
 
         /** @var EntityManager $em */
@@ -939,7 +944,32 @@ class ContentTypeController extends AppController
                 ]);
             }
         } else {
-            $this->addFlash('warning', 'Action not found '.$action);
+
+            switch ($action){
+                case 'subfield':
+                    if($this->isValidName($subFieldName)){
+//                        dump($field);
+                        $child = new FieldType ();
+//                        dump($subFieldName);
+                        $child->setName($subFieldName);
+                        $child->setType(SubfieldType::class);
+                        $child->setParent($field);
+                        $field->addChild($child);
+                        $this->addFlash('notice', 'The subfield ' . $child->getName() . ' has been prepared to be added');
+//                        dump($field);
+                        $em->persist($field);
+//                        dump('toto');
+                        $em->flush();
+//                        exit;
+                    }
+                    else {
+                        $this->addFlash('error', 'The field\'s name is not valid (format: [a-z][a-z0-9_-]*), _sha1 and _signature are reserved.');
+                    }
+                    break;
+                default:
+                    $this->addFlash('warning', 'Action not found '.$action);
+            }
+
 
 
 //            if ($out = $this->addNewField($inputContentType ['fieldType'], $contentType->getFieldType())) {
@@ -968,9 +998,7 @@ class ContentTypeController extends AppController
 //                    'open' => $out,
 //                ]);
 //            } else if ($this->removeField($inputContentType ['fieldType'], $contentType->getFieldType())) {
-//                $contentType->getFieldType()->updateOrderKeys();
-//                $em->persist($contentType);
-//                $em->flush();
+//                $contentType->getFieldType()->updateOrderKeys();v
 //                $this->addFlash('notice', 'A field has been removed.');
 //                return $this->redirectToRoute('contenttype.structure', [
 //                    'id' => $contentType->getId()

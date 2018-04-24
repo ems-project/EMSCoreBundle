@@ -105,7 +105,15 @@ class FieldTypeType extends AbstractType
     				'icon' => 'fa fa-paste'
     		] );    		
     	}
-    	if(null != $fieldType->getParent()){
+        if( !$options['editSubfields'] ){
+
+            $builder->add ( 'name', TextType::class, [
+                'label' => 'Field\'s name',
+//                'mapped' => false,
+//                'required' => false,
+            ]);
+        }
+    	if(null != $fieldType->getParent() && $options['editSubfields']){
 	    	$builder->add ( 'remove', SubmitEmsType::class, [
 	    			'attr' => [
 	    					'class' => 'btn-danger btn-xs'
@@ -124,11 +132,11 @@ class FieldTypeType extends AbstractType
 					$builder->add ( 'ems_'.$field->getName(), FieldTypeType::class, [
 							'data' => $field,
 							'container' => true,
+                            'editSubfields' => $options['editSubfields'],
 					]  );						
 				}
 			}
-			
-			if($childFound) {
+			if($childFound && $options['editSubfields']) {
 				$builder->add ( 'reorder', SubmitEmsType::class, [
 						'attr' => [
 								'class' => 'btn-primary '

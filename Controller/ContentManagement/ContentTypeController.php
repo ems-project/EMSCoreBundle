@@ -21,6 +21,7 @@ use EMS\CoreBundle\Form\Form\EditFieldTypeType;
 use EMS\CoreBundle\Form\Form\ReorderType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
+use EMS\CoreBundle\Service\Mapping;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -50,7 +51,7 @@ class ContentTypeController extends AppController
 
     public static function isValidName($name)
     {
-        if (in_array($name, ['_sha1', '_signature', '_finalized_by', '_finalization_datetime'])) {
+        if (in_array($name, [Mapping::HASH_FIELD, Mapping::SIGNATURE_FIELD, Mapping::FINALIZED_BY_FIELD, Mapping::FINALIZATION_DATETIME_FIELD])) {
             return false;
         }
         return preg_match('/^[a-z][a-z0-9\-_]*$/i', $name) && strlen($name) <= 100;
@@ -446,7 +447,7 @@ class ContentTypeController extends AppController
                     $this->addFlash('notice', 'The field ' . $child->getName() . ' has been prepared to be added');
                     return '_ems_' . $child->getName() . '_modal_options';
                 } else {
-                    $this->addFlash('error', 'The field\'s name is not valid (format: [a-z][a-z0-9_-]*), _sha1 and _signature are reserved.');
+                    $this->addFlash('error', 'The field\'s name is not valid (format: [a-z][a-z0-9_-]*), '.Mapping::HASH_FIELD.' and '.Mapping::SIGNATURE_FIELD.' are reserved.');
                 }
             } else {
                 $this->addFlash('error', 'The field\'s name and type are mandatory');
@@ -963,7 +964,7 @@ class ContentTypeController extends AppController
 //                        exit;
                     }
                     else {
-                        $this->addFlash('error', 'The field\'s name is not valid (format: [a-z][a-z0-9_-]*), _sha1 and _signature are reserved.');
+                        $this->addFlash('error', 'The field\'s name is not valid (format: [a-z][a-z0-9_-]*),'. Mapping::HASH_FIELD.' and '.Mapping::SIGNATURE_FIELD.' are reserved.');
                     }
                     break;
                 default:

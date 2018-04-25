@@ -170,11 +170,13 @@ class PublishService
 			$statement->execute();		
 		}
 
+		$body = $this->dataService->sign($revision);
+        $body[Mapping::PUBLISHED_DATETIME_FIELD] = (new \DateTime())->format(\DateTime::ISO8601);
 		$config =[
 				'id' => $revision->getOuuid(),
 				'index' => $environment->getAlias(),
 				'type' => $revision->getContentType()->getName(),
-				'body' => $this->dataService->sign($revision),
+				'body' => $body,
 		];
 		
 		

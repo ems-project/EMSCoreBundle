@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Exception\NotLockedException;
+use EMS\CoreBundle\Service\Mapping;
 
 /**
  * Revision
@@ -609,8 +610,8 @@ class Revision
      */
     public function setRawDataFinalizedBy($finalizedBy)
     {
-    	$this->rawData['_finalized_by'] = $finalizedBy;
-    	$this->rawData['_finalization_datetime'] = (new \DateTime())->format(\DateTime::ISO8601);
+    	$this->rawData[Mapping::FINALIZED_BY_FIELD] = $finalizedBy;
+    	$this->rawData[Mapping::FINALIZATION_DATETIME_FIELD] = (new \DateTime())->format(\DateTime::ISO8601);
     	return $this;
     }
     

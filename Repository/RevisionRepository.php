@@ -405,23 +405,67 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * @param ContentType $contentType
+     * @param \DateTime   $until
+     * @param string      $by
+     * @param bool        $force
+     *
+     * @return int affected rows
+     */
+	public function lockRevisions(ContentType $contentType, \DateTime $until, $by, $force = false)
+    {
+        $params = ['by' => $by, 'until' => $until, 'content_type' => $contentType];
+
+        $qbSelect = $this->createQueryBuilder('s');
+        $qbSelect
+            ->select('s.id')
+            ->andWhere($qbSelect->expr()->eq('s.contentType', ':content_type'))
+            ->andWhere($qbSelect->expr()->isNull('s.endTime'))
+            ->andWhere($qbSelect->expr()->eq('s.deleted', $qbSelect->expr()->literal(false)))
+            ->andWhere($qbSelect->expr()->eq('s.draft', $qbSelect->expr()->literal(false)))
+        ;
+
+        if (!$force) {
+            $qbSelect->andWhere($qbSelect->expr()->orX(
+                $qbSelect->expr()->lt('s.lockUntil', ':now'),
+                $qbSelect->expr()->isNull('s.lockUntil')
+            ));
+
+            $params['now'] = new \DateTime();
+        }
+
+        $qbUpdate = $this->createQueryBuilder('r');
+        $qbUpdate
+            ->update()
+            ->set('r.lockBy', ':by')
+            ->set('r.lockUntil', ':until')
+            ->andWhere($qbUpdate->expr()->in('r.id', $qbSelect->getDQL()))
+            ->setParameters($params);
+
+        return $qbUpdate->getQuery()->execute();
+    }
+
+    /**
+     * @param ContentType $contentType
+     * @param string      $lockBy
      * @param int         $page
+     * @param int         $limit
      *
      * @return Paginator
      */
-	public function findAllActiveByContentType(ContentType $contentType, $page = 0)
+    public function findAllLockedRevisions(ContentType $contentType, $lockBy, $page = 0, $limit = 50)
     {
         $qb = $this->createQueryBuilder('r');
         $qb
             ->andWhere($qb->expr()->eq('r.contentType', ':content_type'))
+            ->andWhere($qb->expr()->eq('r.lockBy', ':username'))
             ->andWhere($qb->expr()->isNull('r.endTime'))
-            ->andWhere($qb->expr()->isNull('r.lockBy'))
-            ->andWhere($qb->expr()->eq('r.deleted', $qb->expr()->literal(false)))
-            ->andWhere($qb->expr()->eq('r.draft', $qb->expr()->literal(false)))
-            ->setMaxResults(50)
-            ->setFirstResult($page*50)
+            ->setMaxResults($limit)
+            ->setFirstResult($page*$limit)
             ->orderBy('r.id', 'asc')
-            ->setParameter('content_type', $contentType)
+            ->setParameters([
+                'content_type' => $contentType,
+                'username' => $lockBy
+            ])
         ;
 
         return new Paginator($qb->getQuery());

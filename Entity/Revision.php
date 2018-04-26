@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Exception\NotLockedException;
 use EMS\CoreBundle\Service\Mapping;
@@ -377,6 +378,38 @@ class Revision
     	];
     	
     	return $object;
+    }
+
+    /**
+     * Create a draft from a revision
+     *
+     * @return Revision
+     */
+    public function convertToDraft()
+    {
+        $draft = clone $this;
+        $draft->environments = new ArrayCollection();
+
+        $draft->addEnvironment($this->contentType->getEnvironment());
+        $draft->setStartTime(new \DateTime('now'));
+        $draft->setEndTime(null);
+        $draft->setAutoSave(null);
+        $draft->setDraft(true);
+
+        return $draft;
+    }
+
+    /**
+     * Close a revision
+     *
+     * @param \DateTime $endTime
+     */
+    public function close(\DateTime $endTime)
+    {
+        $this->setEndTime($endTime);
+        $this->setDraft(false);
+        $this->setAutoSave(null);
+        $this->removeEnvironment($this->getContentType()->getEnvironment());
     }
 
     /**

@@ -28,12 +28,13 @@ class RevisionType extends AbstractType {
 	 *
 	 */
 	public function buildForm(FormBuilderInterface $builder, array $options) {
-		
+
 		/** @var Revision $revision */
 		$revision = $builder->getData ();
-		
-		$builder->add ( 'data', $revision->getContentType()->getFieldType()->getType(), [ 
-				'metadata' => $revision->getContentType()->getFieldType(),
+	    $contentType = $options['content_type'] ? $options['content_type'] : $revision->getContentType();
+
+		$builder->add ( 'data', $contentType->getFieldType()->getType(), [
+				'metadata' => $contentType->getFieldType(),
 				'error_bubbling' => false,
 				'migration' => $options['migration'],
 		] )->add ( 'save', SubmitEmsType::class, [ 
@@ -44,8 +45,8 @@ class RevisionType extends AbstractType {
 		] );
 		
 		$builder->get ( 'data' )
-		->addModelTransformer(new DataFieldModelTransformer($revision->getContentType()->getFieldType(), $this->formRegistry))
-		->addViewTransformer(new DataFieldViewTransformer($revision->getContentType()->getFieldType(), $this->formRegistry));
+		->addModelTransformer(new DataFieldModelTransformer($contentType->getFieldType(), $this->formRegistry))
+		->addViewTransformer(new DataFieldViewTransformer($contentType->getFieldType(), $this->formRegistry));
 		
 		if($options['has_clipboard']){
 			$builder->add ( 'paste', SubmitEmsType::class, [
@@ -65,7 +66,7 @@ class RevisionType extends AbstractType {
 			] );
 		}
 		
-		if($revision->getDraft()){
+		if($revision && $revision->getDraft()){
 			$builder->add ( 'publish', SubmitEmsType::class, [ 
 				'attr' => [ 
 						'class' => 'btn-primary btn-sm ' 
@@ -87,6 +88,7 @@ class RevisionType extends AbstractType {
 	public function configureOptions(OptionsResolver $resolver) {
 		$resolver->setDefaults ( array (
 				'compound' => true,
+            	'content_type' => null,
             	'csrf_protection' => false,
 				'data_class' => 'EMS\CoreBundle\Entity\Revision',
 				'has_clipboard' => false,

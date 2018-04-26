@@ -394,22 +394,22 @@ class DataService
 		$objectArray = $revision->getRawData();
 
         $objectArray['_contenttype'] = $revision->getContentType()->getName();
-		if(isset($objectArray['_sha1'])){
-			unset($objectArray['_sha1']);
+		if(isset($objectArray[Mapping::HASH_FIELD])){
+			unset($objectArray[Mapping::HASH_FIELD]);
 		}
-		if(isset($objectArray['_signature'])){
-			unset($objectArray['_signature']);
+		if(isset($objectArray[Mapping::SIGNATURE_FIELD])){
+			unset($objectArray[Mapping::SIGNATURE_FIELD]);
 		}
 		DataService::ksortRecursive($objectArray);
 		$json = json_encode($objectArray);
 		
 		$revision->setSha1(sha1($json));
-		$objectArray['_sha1'] = $revision->getSha1();
+		$objectArray[Mapping::HASH_FIELD] = $revision->getSha1();
 		
 		if($this->private_key) {
 			$signature = null;
 			if(openssl_sign($json, $signature, $this->private_key, OPENSSL_ALGO_SHA1)){
-				$objectArray['_signature'] = base64_encode($signature);
+				$objectArray[Mapping::SIGNATURE_FIELD] = base64_encode($signature);
 			}
 			else {
 				$this->session->getFlashBag()->add('warning', 'elasticms was not able to sign the revision\'s data');
@@ -454,15 +454,15 @@ class DataService
 					
 					DataService::ksortRecursive($indexedItem);
 					
-					if(isset($indexedItem['_sha1'])){
-						if($indexedItem['_sha1'] != $revision->getSha1()) {
+					if(isset($indexedItem[Mapping::HASH_FIELD])){
+						if($indexedItem[Mapping::HASH_FIELD] != $revision->getSha1()) {
 							$this->session->getFlashBag()->add('warning', 'Sha1 mismatch in '.$environment->getName().' for '.$revision->getContentType()->getName().':'.$revision->getOuuid());
 						}
-						unset($indexedItem['_sha1']);
+						unset($indexedItem[Mapping::HASH_FIELD]);
 						
-						if(isset($indexedItem['_signature'])){
-							$binary_signature= base64_decode($indexedItem['_signature']);
-							unset($indexedItem['_signature']);
+						if(isset($indexedItem[Mapping::SIGNATURE_FIELD])){
+							$binary_signature= base64_decode($indexedItem[Mapping::SIGNATURE_FIELD]);
+							unset($indexedItem[Mapping::SIGNATURE_FIELD]);
 							$data = json_encode($indexedItem);
 
 							// Check signature
@@ -1033,8 +1033,8 @@ class DataService
 		//$revision->getDataField()->updateDataStructure($this->formRegistry, $revision->getContentType()->getFieldType());
 		$object = $revision->getRawData();
 		$this->updateDataValue($data, $object);
-		unset($object['_finalized_by']);
-		unset($object['_finalization_datetime']);
+		unset($object[Mapping::FINALIZED_BY_FIELD]);
+		unset($object[Mapping::FINALIZATION_DATETIME_FIELD]);
 		if(count($object) > 0){
 			$html = DataService::arrayToHtml($object);
 			$this->session->getFlashBag()->add('warning', "Some data of this revision were not consumed by the content type:".$html);			
@@ -1045,11 +1045,11 @@ class DataService
 		$finalizedBy = false;
 		$finalizationDate = false;
 		$objectArray = $revision->getRawData();
-		if(isset($objectArray['_finalized_by'])){
-			$finalizedBy = $objectArray['_finalized_by'];
+		if(isset($objectArray[Mapping::FINALIZED_BY_FIELD])){
+			$finalizedBy = $objectArray[Mapping::FINALIZED_BY_FIELD];
 		}
-		if(isset($objectArray['_finalization_datetime'])){
-			$finalizationDate = $objectArray['_finalization_datetime'];
+		if(isset($objectArray[Mapping::FINALIZATION_DATETIME_FIELD])){
+			$finalizationDate = $objectArray[Mapping::FINALIZATION_DATETIME_FIELD];
 		}
 		
 		
@@ -1061,10 +1061,10 @@ class DataService
 		$this->propagateDataToComputedField($form->get('data'), $objectArray, $revision->getContentType(), $revision->getContentType()->getName(), $revision->getOuuid());
 		
 		if($finalizedBy !== false){
-			$objectArray['_finalized_by'] = $finalizedBy;
+			$objectArray[Mapping::FINALIZED_BY_FIELD] = $finalizedBy;
 		}
 		if($finalizationDate!== false){
-			$objectArray['_finalization_datetime'] = $finalizationDate;
+			$objectArray[Mapping::FINALIZATION_DATETIME_FIELD] = $finalizationDate;
 		}
 
 		$revision->setRawData($objectArray);

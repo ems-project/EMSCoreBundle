@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Service\Mapping;
 
 /**
  * DataField
@@ -74,9 +75,9 @@ class AggregateOption
     
     public function __construct() {
     	$this->config = '{
-    "terms" : { "field" : "_finalized_by" }
+    "terms" : { "field" : "'.Mapping::FINALIZED_BY_FIELD.'" }
 }';
-    	$this->template = '{% set fieldName = \'_finalized_by\' %}
+    	$this->template = '{% set fieldName = \''.Mapping::FINALIZED_BY_FIELD.'\' %}
 {% if aggregation.buckets|length > 1  %}
 
 	{% for index in aggregation.buckets %}

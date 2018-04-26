@@ -13,6 +13,19 @@ use EMS\CoreBundle\Form\FieldType\FieldTypeType;
 
 class Mapping
 {
+    const PUBLISHED_DATETIME_FIELD = '_published_datetime';
+    const FINALIZATION_DATETIME_FIELD = '_finalization_datetime';
+    const FINALIZED_BY_FIELD = '_finalized_by';
+    const HASH_FIELD = '_sha1';
+    const SIGNATURE_FIELD = '_signature';
+    const CONTENT_TYPE_FIELD = '_contenttype';
+
+    const CONTENT_TYPE_META_FIELD = 'content_type';
+    const GENERATOR_META_FIELD = 'generator';
+    const GENERATOR_META_FIELD_VALUE = 'elasticms';
+    const CORE_VERSION_META_FIELD = 'core_version';
+    const INSTANCE_ID_META_FIELD = 'instance_id';
+
 	
 	/** @var FieldTypeType $fieldTypeType */
 	private $fieldTypeType;
@@ -57,20 +70,21 @@ class Mapping
 		
 		$out['properties'] = array_merge(
 			[
-				'_sha1' => $this->elasticsearchService->getKeywordMapping(),
-				'_signature' => $this->elasticsearchService->getNotIndexedStringMapping(),
-                '_finalized_by' => $this->elasticsearchService->getKeywordMapping(),
-                '_contenttype' => $this->elasticsearchService->getKeywordMapping(),
-				'_finalization_datetime' => $this->elasticsearchService->getDateTimeMapping(),
+				Mapping::HASH_FIELD => $this->elasticsearchService->getKeywordMapping(),
+				Mapping::SIGNATURE_FIELD => $this->elasticsearchService->getNotIndexedStringMapping(),
+                Mapping::FINALIZED_BY_FIELD => $this->elasticsearchService->getKeywordMapping(),
+                Mapping::CONTENT_TYPE_FIELD => $this->elasticsearchService->getKeywordMapping(),
+                Mapping::FINALIZATION_DATETIME_FIELD => $this->elasticsearchService->getDateTimeMapping(),
+                Mapping::PUBLISHED_DATETIME_FIELD => $this->elasticsearchService->getDateTimeMapping(),
 			],
 			$out['properties']
 		);
 
 		$out['_meta'] = [
-		    'content_type' => $contentType->getName(),
-            'generator' => 'elasticms',
-            'core_version' => $this->coreVersion,
-            'instance_id' => $this->instanceId,
+            Mapping::CONTENT_TYPE_META_FIELD => $contentType->getName(),
+            Mapping::GENERATOR_META_FIELD => Mapping::GENERATOR_META_FIELD_VALUE,
+            Mapping::CORE_VERSION_META_FIELD => $this->coreVersion,
+            Mapping::INSTANCE_ID_META_FIELD => $this->instanceId,
         ];
 		
 		

@@ -390,8 +390,10 @@ class Revision
         $draft = clone $this;
         $draft->environments = new ArrayCollection();
 
+        $now = new \DateTime('now');
         $draft->addEnvironment($this->contentType->getEnvironment());
-        $draft->setStartTime(new \DateTime('now'));
+        $draft->setStartTime($now);
+        $draft->setCreated($now);
         $draft->setEndTime(null);
         $draft->setAutoSave(null);
         $draft->setDraft(true);

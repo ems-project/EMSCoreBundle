@@ -91,7 +91,9 @@ class RecomputeCommand extends EmsCommand
             ->addArgument('contentType', InputArgument::REQUIRED, 'content type to recompute')
             ->addOption('force', null, InputOption::VALUE_NONE, 'do not check for already locked revisions')
             ->addOption('continue', null, InputOption::VALUE_NONE, 'continue a recompute')
-            ->addOption('keep-align', null , InputOption::VALUE_NONE, 'keep the revisions aligned to all already aligned environments')
+            ->addOption('no-align', null , InputOption::VALUE_NONE, "don't keep the revisions aligned to all already aligned environments")
+            ->addOption('cron', null , InputOption::VALUE_NONE, 'optimized for automated recurring recompute calls, tries --continue, when no locks are found for user runs command without --continue')
+            ->addOption('id', null, InputOption::VALUE_OPTIONAL, 'recompute a specific id')
         ;
     }
 
@@ -110,8 +112,8 @@ class RecomputeCommand extends EmsCommand
             throw new \RuntimeException('invalid content type');
         }
 
-        if (!$input->getOption('continue')) {
-            $this->lock($output, $contentType, $input->getOption('force'));
+        if (!$input->getOption('continue') || $input->getOption('cron')) {
+            $this->lock($output, $contentType, $input->getOption('force'), $input->getOption('cron'), $input->getOption('id'));
         }
 
         $page = 0;
@@ -146,7 +148,7 @@ class RecomputeCommand extends EmsCommand
                 $this->em->persist($newRevision);
                 $this->em->flush();
 
-                if ($input->getOption('keep-align')) {
+                if (!$input->getOption('no-align')) {
                     foreach ($revision->getEnvironments() as $environment) {
                         $this->logger->info('published to {env}', ['env' => $environment->getName()]);
                         $this->publishService->publish($newRevision, $environment, true);
@@ -172,7 +174,7 @@ class RecomputeCommand extends EmsCommand
      * @param ContentType     $contentType
      * @param bool            $force
      */
-    private function lock(OutputInterface $output, ContentType $contentType, $force = false)
+    private function lock(OutputInterface $output, ContentType $contentType, $force = false, $ifEmpty = false, $id = false)
     {
         $command = $this->getApplication()->find('ems:contenttype:lock');
         $arguments = [
@@ -180,7 +182,9 @@ class RecomputeCommand extends EmsCommand
             'contentType' => $contentType->getName(),
             'time'        => '+1day',
             '--user'      => self::LOCK_BY,
-            '--force'     => $force
+            '--force'     => $force,
+            '--if-empty'  => $ifEmpty,
+            '--id'        => $id
         ];
 
         $command->run(new ArrayInput($arguments), $output);

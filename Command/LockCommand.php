@@ -50,6 +50,8 @@ class LockCommand extends Command
             ->addArgument('time', InputArgument::REQUIRED, 'lock until (+1day, +5min, now)')
             ->addOption('user', null, InputOption::VALUE_REQUIRED, 'lock username', 'EMS_COMMAND')
             ->addOption('force', null, InputOption::VALUE_NONE, 'do not check for already locked revisions')
+            ->addOption('if-empty', null, InputOption::VALUE_NONE, 'lock if there are no pending locks for the same user')
+            ->addOption('id', null, InputOption::VALUE_OPTIONAL, 'lock a specific id')
         ;
     }
 
@@ -73,7 +75,12 @@ class LockCommand extends Command
 
         $io = new SymfonyStyle($input, $output);
 
-        $rows = $this->revisionRepository->lockRevisions($contentType, $until, $by, $force);
+        if ($input->getOption('if-empty') &&
+            0 !== $this->revisionRepository->findAllLockedRevisions($contentType, $by)->count()) {
+            return;
+        }
+
+        $rows = $this->revisionRepository->lockRevisions($contentType, $until, $by, $force, $input->getOption('id'));
 
         if (0 === $rows) {
             $io->error('no revisions locked, try force?');

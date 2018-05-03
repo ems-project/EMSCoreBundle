@@ -411,7 +411,7 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
      *
      * @return int affected rows
      */
-	public function lockRevisions(ContentType $contentType, \DateTime $until, $by, $force = false)
+	public function lockRevisions(ContentType $contentType, \DateTime $until, $by, $force = false, $id = false)
     {
         $params = ['by' => $by, 'until' => $until, 'content_type' => $contentType];
 
@@ -431,6 +431,13 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
             ));
 
             $params['now'] = new \DateTime();
+        }
+
+        if ($id) {
+            $qbSelect->andWhere(
+                $qbSelect->expr()->eq('s.ouuid', ':content_id')
+            );
+            $params['content_id'] = $id;
         }
 
         $qbUpdate = $this->createQueryBuilder('r');

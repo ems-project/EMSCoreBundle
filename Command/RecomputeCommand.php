@@ -144,6 +144,9 @@ class RecomputeCommand extends EmsCommand
                 $revision->close(new \DateTime('now'));
                 $newRevision->setDraft(false);
 
+                $this->dataService->sign($revision);
+                $this->dataService->sign($newRevision);
+
                 $this->em->persist($revision);
                 $this->em->persist($newRevision);
                 $this->em->flush();
@@ -158,12 +161,13 @@ class RecomputeCommand extends EmsCommand
                 $this->revisionRepository->unlockRevision($revision->getId());
                 $this->revisionRepository->unlockRevision($newRevision->getId());
 
-                $this->em->commit();
-
                 $progress->advance();
             }
 
             $paginator = $this->revisionRepository->findAllLockedRevisions($contentType, self::LOCK_BY, $page, $limit);
+
+            $this->em->commit();
+            $this->em->clear(Revision::class);
         } while ($paginator->getIterator()->count());
 
         $progress->finish();

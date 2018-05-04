@@ -415,6 +415,9 @@ class DataService
 				$this->session->getFlashBag()->add('warning', 'elasticms was not able to sign the revision\'s data');
 			}
 		}
+
+		$revision->setRawData($objectArray);
+
 		return $objectArray;
 	}
 	

@@ -456,6 +456,10 @@ class DataService
 					])['_source'];
 					
 					DataService::ksortRecursive($indexedItem);
+
+					if (isset($indexedItem[Mapping::PUBLISHED_DATETIME_FIELD])) {
+					    unset($indexedItem[Mapping::PUBLISHED_DATETIME_FIELD]);
+                    }
 					
 					if(isset($indexedItem[Mapping::HASH_FIELD])){
 						if($indexedItem[Mapping::HASH_FIELD] != $revision->getSha1()) {

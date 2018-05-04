@@ -579,7 +579,8 @@ class DataService
 		$objectArray = $this->sign($revision);
 		
   		if(empty($form) || $this->isValid($form)){
-		
+            $objectArray[Mapping::PUBLISHED_DATETIME_FIELD] = (new \DateTime())->format(\DateTime::ISO8601);
+
 			$config = [
 				'index' => $this->contentTypeService->getIndex($revision->getContentType()),
 				'type' => $revision->getContentType()->getName(),

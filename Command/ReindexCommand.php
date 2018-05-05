@@ -67,6 +67,11 @@ class ReindexCommand extends EmsCommand
                 'Environment name'
             )
             ->addArgument(
+                'content-type',
+                InputArgument::OPTIONAL,
+                'If not defined all content types will be reindexed'
+            )
+            ->addArgument(
                 'index',
                 InputArgument::OPTIONAL,
                 'Elasticsearch index where to index environment objects'
@@ -93,9 +98,21 @@ class ReindexCommand extends EmsCommand
     	$index = $input->getArgument('index');
     	$signData= !$input->getOption('sign-data');
 
-        /** @var Environment $environment */
-        $contentTypes = $ctRepo->findBy(['deleted' => false]);
 
+
+        /** @var EntityManager $em */
+        $em = $this->doctrine->getManager();
+
+        /** @var ContentTypeRepository $ctRepo */
+        $ctRepo = $em->getRepository('EMSCoreBundle:ContentType');
+
+        $contentTypes = [];
+        if($input->hasArgument('content-type')) {
+            $contentTypes = $ctRepo->findBy(['deleted' => false, 'name' => $input->getArgument('content-type')]);
+        }
+        else {
+            $contentTypes = $ctRepo->findBy(['deleted' => false]);
+        }
 
 
         /**@var ContentType $contentType*/

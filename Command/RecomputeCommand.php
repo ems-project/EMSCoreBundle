@@ -5,11 +5,13 @@ namespace EMS\CoreBundle\Command;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use Elasticsearch\Client;
+use Elasticsearch\Common\Exceptions\Missing404Exception;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
+use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\PublishService;
 use Psr\Log\LoggerInterface;
@@ -54,6 +56,11 @@ class RecomputeCommand extends EmsCommand
      */
     private $revisionRepository;
 
+    /**
+     * @var ContentTypeService
+     */
+    private $contentTypeService;
+
     const LOCK_BY = 'SYSTEM_RECOMPUTE';
 
     /**
@@ -66,13 +73,15 @@ class RecomputeCommand extends EmsCommand
         PublishService $publishService,
         LoggerInterface $logger,
         Client $client,
-        Session $session
+        Session $session,
+        ContentTypeService $contentTypeService
     ) {
         parent::__construct($logger, $client, $session);
 
         $this->dataService = $dataService;
         $this->formFactory = $formFactory;
         $this->publishService = $publishService;
+        $this->contentTypeService = $contentTypeService;
 
         $em = $doctrine->getManager();
         $this->em = $em;
@@ -90,6 +99,7 @@ class RecomputeCommand extends EmsCommand
             ->setDescription('Recompute a content type')
             ->addArgument('contentType', InputArgument::REQUIRED, 'content type to recompute')
             ->addOption('force', null, InputOption::VALUE_NONE, 'do not check for already locked revisions')
+            ->addOption('missing', null, InputOption::VALUE_NONE, 'will recompute the objects that are missing in their default environment only')
             ->addOption('continue', null, InputOption::VALUE_NONE, 'continue a recompute')
             ->addOption('no-align', null , InputOption::VALUE_NONE, "don't keep the revisions aligned to all already aligned environments")
             ->addOption('cron', null , InputOption::VALUE_NONE, 'optimized for automated recurring recompute calls, tries --continue, when no locks are found for user runs command without --continue')
@@ -128,8 +138,36 @@ class RecomputeCommand extends EmsCommand
             'content_type' => $contentType,
         ]);
 
+        $missingInIndex = false;
+
+        if( $input->getOption('missing') ) {
+            $missingInIndex = $this->contentTypeService->getIndex($contentType);
+        }
+
+        
         do {
+            $transactionActive = false;
+            /**@var Revision $revision*/
             foreach ($paginator as $revision) {
+
+                if($missingInIndex) {
+                    try {
+                        $this->client->get([
+                            'index' => $missingInIndex,
+                            'type' => $contentType->getName(),
+                            'id' => $revision->getOuuid(),
+                        ]);
+                        $this->revisionRepository->unlockRevision($revision->getId());
+                        $progress->advance();
+                        continue;
+                    }
+                    catch (Missing404Exception $e){
+
+                    }
+                }
+
+                $transactionActive = true;
+
                 /** @var Revision $revision */
                 $newRevision = $revision->convertToDraft();
 
@@ -166,8 +204,11 @@ class RecomputeCommand extends EmsCommand
 
             $paginator = $this->revisionRepository->findAllLockedRevisions($contentType, self::LOCK_BY, $page, $limit);
 
-            $this->em->commit();
+            if($transactionActive){
+                $this->em->commit();
+            }
             $this->em->clear(Revision::class);
+            $this->flushFlash($output);
         } while ($paginator->getIterator()->count());
 
         $progress->finish();

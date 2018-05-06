@@ -250,10 +250,14 @@ class DataService
                     }
                 }
                 catch (\Exception $e) {
-                    if($e->getPrevious() && $e->getPrevious() instanceof CantBeFinalizedException) {
-                        throw $e->getPrevious();
+                    if($e->getPrevious() && $e->getPrevious() instanceof CantBeFinalizedException ) {
+                        if( !$migration) {
+                            throw $e->getPrevious();
+                        }
                     }
-                    $this->session->getFlashBag()->add('warning', 'Error to parse the post processing script of field '.$dataField->getFieldType()->getName().': '.$e->getMessage());
+                    else {
+                        $this->session->getFlashBag()->add('warning', 'Error to parse the post processing script of field '.$dataField->getFieldType()->getName().': '.$e->getMessage());
+                    }
                 }
             }
             if( $form->getConfig()->getType()->getInnerType() instanceof ComputedFieldType ) {
@@ -273,6 +277,9 @@ class DataService
                         if($dataField->getFieldType()->getDisplayOptions()['json']){
                             $out = json_decode($out, true);
                         }
+                        else {
+                            $out = trim($out);
+                        }
                     }
                     catch (\Exception $e) {
                         if($e->getPrevious() && $e->getPrevious() instanceof CantBeFinalizedException) {
@@ -281,7 +288,12 @@ class DataService
                         $this->session->getFlashBag()->add('warning', 'Error to parse the computed field '.$dataField->getFieldType()->getName().': '.$e->getMessage());
                     }
                 }
-                $objectArray[$dataField->getFieldType()->getName()] = $out;
+                if($out !== NULL && !empty($out)){
+                    $objectArray[$dataField->getFieldType()->getName()] = $out;
+                }
+                else if(isset($objectArray[$dataField->getFieldType()->getName()])) {
+                    unset($objectArray[$dataField->getFieldType()->getName()]);
+                }
                 $found = true;
             }
 

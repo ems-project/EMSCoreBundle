@@ -160,11 +160,20 @@ class FileController extends AppController
 	public function uploadfileAction(Request $request) {
 		/**@var UploadedFile $file*/
 		$file = $request->files->get('upload');
+        $type = $request->get('type', false);
 		
 		if($file && !$file->getError()){
 			
 			$name = $file->getClientOriginalName();
-			$type = $file->getMimeType();
+
+			if($type === false){
+                try{
+                    $type = $file->getMimeType();
+                } catch (\Exception $e) {
+                    $type = 'application/bin';
+                }
+            }
+
 			$user = $this->getUser()->getUsername();
 			
 			try {

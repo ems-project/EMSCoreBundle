@@ -186,10 +186,10 @@ class IndexFile extends EmsCommand
     {
         foreach ($rawData as $key => $data) {
             if ($key === $field) {
-                if ($onlyMissingContent && empty($rawData[$key]['_content'])) {
+                if ($onlyMissingContent && isset($rawData[$key]['_content'])) {
                     //do nothing in this case as a content has been already extracted
                 }
-                else if ($onlyWithIngestedContent && !empty($rawData[$key]['content'])) {
+                else if ($onlyWithIngestedContent && !isset($rawData[$key]['content'])) {
                     //do nothing in this case as a there is no ingested (binary) content
                 }
                 else {
@@ -211,7 +211,6 @@ class IndexFile extends EmsCommand
     {
         $updated = false;
         if (!empty($rawData) && !empty($rawData)) {
-
             if (isset($rawData['content'])) {
                 unset($rawData['content']);
                 $updated = true;
@@ -219,6 +218,9 @@ class IndexFile extends EmsCommand
 
             if (isset($rawData['sha1'])) {
                 $file = $this->fileService->getFile($rawData['sha1']);
+                $output->writeln('');
+                $output->writeln(filesize($file));
+
                 if ($file) {
                     $data = $this->extractorService->extractData($file, isset($rawData['filename'])?$rawData['filename']:'filename');
 

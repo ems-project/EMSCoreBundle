@@ -194,12 +194,14 @@ class ReindexCommand extends EmsCommand
 
                     }
 
+
+                    $progress->advance();
                     if(count($bulk['body']) >= (2*$bulkSize)) {
                         $this->treatBulkResponse($this->client->bulk($bulk));
+                        unset($bulk);
                         $bulk = [];
                     }
 
-                    $progress->advance();
                 }
                 $em->clear(Revision::class);
                 $this->flushFlash($output);

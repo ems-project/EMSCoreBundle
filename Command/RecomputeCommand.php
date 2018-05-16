@@ -189,6 +189,13 @@ class RecomputeCommand extends EmsCommand
                 $this->em->persist($newRevision);
                 $this->em->flush();
 
+                $this->client->index([
+                    'index' => $this->contentTypeService->getIndex($contentType),
+                    'body' => $newRevision->getRawData(),
+                    'id' => $newRevision->getOuuid(),
+                    'type' => $contentType->getName(),
+                ]);
+
                 if (!$input->getOption('no-align')) {
                     foreach ($revision->getEnvironments() as $environment) {
                         $this->logger->info('published to {env}', ['env' => $environment->getName()]);

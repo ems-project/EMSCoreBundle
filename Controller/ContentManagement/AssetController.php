@@ -16,9 +16,7 @@ class AssetController extends AppController
 	 */
 	public function assetProcessorAction($processor, $hash, Request $request)
 	{
-		if(!$this->getParameter('ems_core.asset_config_type') || !$this->getParameter('ems_core.asset_config_type')){
-			throw new NotFoundHttpException('Asset processor index and type configuration not found');
-		}
+
 		$config = [
 				'_identifier' => $processor,
 				'_resize' => 'fill',
@@ -33,32 +31,33 @@ class AssetController extends AppController
 				'_last_update_date' => '1977-02-09T16:00:00+01:00',
 				'_config_type' => 'image',
 		];
-		
-		try {
-			$result = $this->getElasticsearch()->search([
-					'size' => 1,
-					'type' => $this->getParameter('ems_core.asset_config_type'),
-					'index' => $this->getParameter('ems_core.asset_config_index'),
-					'body' => '
-					{
-					   "query": {
-					      "term": {
-					         "_identifier": {
-					            "value": '.json_encode($processor).'
-					         }
-					      }
-					   }
-					}',
-			]);
-			
-			
-			if($result['hits']['total'] != 0){
-				$config = $result['hits']['hits'][0]['_source'];
-			}			
-		}
-		catch (\Exception $e){
-			
-		}
+
+        if($this->getParameter('ems_core.asset_config_type') || $this->getParameter('ems_core.asset_config_index')) {
+            try {
+                $result = $this->getElasticsearch()->search([
+                    'size' => 1,
+                    'type' => $this->getParameter('ems_core.asset_config_type'),
+                    'index' => $this->getParameter('ems_core.asset_config_index'),
+                    'body' => '
+                        {
+                           "query": {
+                              "term": {
+                                 "_identifier": {
+                                    "value": ' . json_encode($processor) . '
+                                 }
+                              }
+                           }
+                        }',
+                ]);
+
+
+                if ($result['hits']['total'] != 0) {
+                    $config = $result['hits']['hits'][0]['_source'];
+                }
+            } catch (\Exception $e) {
+
+            }
+        }
 		return $this->getAssetService()->getAssetResponse($config, $hash, $request->query->get('type', 'unkown'));
 	}
 }

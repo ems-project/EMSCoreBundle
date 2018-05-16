@@ -414,7 +414,7 @@ class DataService
 		}
 		DataService::ksortRecursive($objectArray);
 		$json = json_encode($objectArray);
-		
+
 		$revision->setSha1(sha1($json));
 		$objectArray[Mapping::HASH_FIELD] = $revision->getSha1();
 		
@@ -452,71 +452,67 @@ class DataService
 	}
 	
 	public function testIntegrityInIndexes(Revision $revision){
-		
-		if(empty($revision->getSha1())){
-			$this->session->getFlashBag()->add('notice', 'Sha1 never computed for this revision for '.$revision->getContentType()->getName().':'.$revision->getOuuid());
-		}
-		else {
-			//test integrity
-			foreach ($revision->getEnvironments() as $environment){
-				try {
-					$indexedItem = $this->client->get([
-							'_source_exclude' => ['*.attachment', '*._attachment'],
-							'id' => $revision->getOuuid(),
-							'type' => $revision->getContentType()->getName(),
-							'index' => $this->contentTypeService->getIndex($revision->getContentType(), $environment),
-					])['_source'];
-					
-					DataService::ksortRecursive($indexedItem);
+        $this->sign($revision);
 
-					if (isset($indexedItem[Mapping::PUBLISHED_DATETIME_FIELD])) {
-					    unset($indexedItem[Mapping::PUBLISHED_DATETIME_FIELD]);
+        //test integrity
+        foreach ($revision->getEnvironments() as $environment){
+            try {
+                $indexedItem = $this->client->get([
+                        '_source_exclude' => ['*.attachment', '*._attachment'],
+                        'id' => $revision->getOuuid(),
+                        'type' => $revision->getContentType()->getName(),
+                        'index' => $this->contentTypeService->getIndex($revision->getContentType(), $environment),
+                ])['_source'];
+
+                DataService::ksortRecursive($indexedItem);
+
+                if (isset($indexedItem[Mapping::PUBLISHED_DATETIME_FIELD])) {
+                    unset($indexedItem[Mapping::PUBLISHED_DATETIME_FIELD]);
+                }
+
+                if(isset($indexedItem[Mapping::HASH_FIELD])){
+                    if($indexedItem[Mapping::HASH_FIELD] != $revision->getSha1()) {
+                        $this->session->getFlashBag()->add('warning', 'Sha1 mismatch in '.$environment->getName().' for '.$revision->getContentType()->getName().':'.$revision->getOuuid());
                     }
-					
-					if(isset($indexedItem[Mapping::HASH_FIELD])){
-						if($indexedItem[Mapping::HASH_FIELD] != $revision->getSha1()) {
-							$this->session->getFlashBag()->add('warning', 'Sha1 mismatch in '.$environment->getName().' for '.$revision->getContentType()->getName().':'.$revision->getOuuid());
-						}
-						unset($indexedItem[Mapping::HASH_FIELD]);
-						
-						if(isset($indexedItem[Mapping::SIGNATURE_FIELD])){
-							$binary_signature= base64_decode($indexedItem[Mapping::SIGNATURE_FIELD]);
-							unset($indexedItem[Mapping::SIGNATURE_FIELD]);
-							$data = json_encode($indexedItem);
+                    unset($indexedItem[Mapping::HASH_FIELD]);
 
-							// Check signature
-							$ok = openssl_verify($data, $binary_signature, $this->getPublicKey(), self::ALGO);
-							if ($ok == 1) {
-								//echo "signature ok (as it should be)\n";
-							} elseif ($ok == 0) {
-								$this->session->getFlashBag()->add('warning', 'Data migth be corrupted in '.$environment->getName().' for '.$revision->getContentType()->getName().':'.$revision->getOuuid());
+                    if(isset($indexedItem[Mapping::SIGNATURE_FIELD])){
+                        $binary_signature= base64_decode($indexedItem[Mapping::SIGNATURE_FIELD]);
+                        unset($indexedItem[Mapping::SIGNATURE_FIELD]);
+                        $data = json_encode($indexedItem);
+
+                        // Check signature
+                        $ok = openssl_verify($data, $binary_signature, $this->getPublicKey(), self::ALGO);
+                        if ($ok == 1) {
+                            //echo "signature ok (as it should be)\n";
+                        } elseif ($ok == 0) {
+                            $this->session->getFlashBag()->add('warning', 'Data migth be corrupted in '.$environment->getName().' for '.$revision->getContentType()->getName().':'.$revision->getOuuid());
 // 								echo "bad (there's something wrong)\n";
-							} else {
-								$this->session->getFlashBag()->add('warning', 'Error checking signature in '.$environment->getName().' for '.$revision->getContentType()->getName().':'.$revision->getOuuid());
-								// echo "ugly, error checking signature\n";
-							}
-						}
-						else{
-							$data = json_encode($indexedItem);
-							if ($this->private_key){
-								$this->session->getFlashBag()->add('warning', 'Revision not signed in '.$environment->getName().' for '.$revision->getContentType()->getName().':'.$revision->getOuuid());								
-							}
-						}
-						
-						if(sha1($data) != $revision->getSha1()){
-							$this->session->getFlashBag()->add('warning', 'Computed sha1 mismatch in '.$environment->getName().' for '.$revision->getContentType()->getName().':'.$revision->getOuuid());
-						}
-						
-					}
-					else {
-						$this->session->getFlashBag()->add('warning', 'Sha1 not defined in '.$environment->getName().' for '.$revision->getContentType()->getName().':'.$revision->getOuuid());
-					}	
-				}
-				catch (\Exception $e) {
-					$this->session->getFlashBag()->add('warning', 'Issue with content indexed in '.$environment->getName().':'.$e->getMessage().' for '.$revision->getContentType()->getName().':'.$revision->getOuuid());
-				}
-			}
-		}
+                        } else {
+                            $this->session->getFlashBag()->add('warning', 'Error checking signature in '.$environment->getName().' for '.$revision->getContentType()->getName().':'.$revision->getOuuid());
+                            // echo "ugly, error checking signature\n";
+                        }
+                    }
+                    else{
+                        $data = json_encode($indexedItem);
+                        if ($this->private_key){
+                            $this->session->getFlashBag()->add('warning', 'Revision not signed in '.$environment->getName().' for '.$revision->getContentType()->getName().':'.$revision->getOuuid());
+                        }
+                    }
+
+                    if(sha1($data) != $revision->getSha1()){
+                        $this->session->getFlashBag()->add('warning', 'Computed sha1 mismatch in '.$environment->getName().' for '.$revision->getContentType()->getName().':'.$revision->getOuuid());
+                    }
+
+                }
+                else {
+                    $this->session->getFlashBag()->add('warning', 'Sha1 not defined in '.$environment->getName().' for '.$revision->getContentType()->getName().':'.$revision->getOuuid());
+                }
+            }
+            catch (\Exception $e) {
+                $this->session->getFlashBag()->add('warning', 'Issue with content indexed in '.$environment->getName().':'.$e->getMessage().' for '.$revision->getContentType()->getName().':'.$revision->getOuuid());
+            }
+        }
 	}
 	
 	public function buildForm(Revision $revision){

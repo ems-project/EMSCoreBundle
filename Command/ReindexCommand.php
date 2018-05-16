@@ -8,6 +8,7 @@ use EMS\CoreBundle\Repository\JobRepository;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use Elasticsearch\Client;
+use EMS\CoreBundle\Service\Mapping;
 use Monolog\Logger;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
@@ -161,18 +162,13 @@ class ReindexCommand extends EmsCommand
                 /** @var \EMS\CoreBundle\Entity\Revision $revision */
                 foreach ($paginator as $revision) {
                     if($revision->getDeleted()){
-                        ++$deleted;
+                        ++$this->deleted;
                         $this->session->getFlashBag()->add('warning', 'The revision '.$revision->getContentType()->getName().':'.$revision->getOuuid().' is deleted and is referenced in '.$environment->getName());
                     }
                     else {
 
                         if($signData) {
                             $this->dataService->sign($revision);
-                            try{
-                                $em->persist($revision);
-                            }
-                            catch (\Exception $e){
-                            }
                         }
 
                         if(empty($bulk) && $revision->getContentType()->getHavePipelines()){
@@ -203,6 +199,7 @@ class ReindexCommand extends EmsCommand
                     }
 
                 }
+
                 $em->clear(Revision::class);
                 $this->flushFlash($output);
 

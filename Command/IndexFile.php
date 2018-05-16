@@ -147,11 +147,13 @@ class IndexFile extends EmsCommand
                     $revision->setRawData($rawData);
                     $update = true;
                 }
+                unset($rawData);
                 $rawData = $revision->getAutoSave();
                 if (!empty($rawData) && $this->findField($rawData, $fieldName, $output, $onlyWithIngestedContent, $onlyMissingContent)) {
                     $revision->setAutoSave($rawData);
                     $update = true;
                 }
+                unset($rawData);
 
                 if ($update) {
                     $revision->setLockBy('SYSTEM_MIGRATE');
@@ -161,11 +163,13 @@ class IndexFile extends EmsCommand
                     $em->persist($revision);
                     $em->flush($revision);
                 }
+                unset($revision);
 
                 $progress->advance();
             }
 
             if (count($revisions) == $limit) {
+                unset($revisions);
                 $offset += $limit;
             } else {
                 break;
@@ -218,8 +222,6 @@ class IndexFile extends EmsCommand
 
             if (isset($rawData['sha1'])) {
                 $file = $this->fileService->getFile($rawData['sha1']);
-                $output->writeln('');
-                $output->writeln(filesize($file));
 
                 if ($file) {
                     $data = $this->extractorService->extractData($file, isset($rawData['filename'])?$rawData['filename']:'filename');

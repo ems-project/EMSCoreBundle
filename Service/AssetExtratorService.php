@@ -91,10 +91,9 @@ class AssetExtratorService
     		    return $out;		        
 		    }
 		    catch (\Exception $e) {
-		        
+                $this->session->getFlashBag()->add('warning', 'Error with Tika: '.$e->getMessage());
 		    }
 		}
-		$this->session->getFlashBag()->add('warning', 'Tika server not configured');
 		return $out;
 
 	}

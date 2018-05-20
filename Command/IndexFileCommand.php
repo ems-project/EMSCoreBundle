@@ -17,7 +17,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Console\Input\InputOption;
 
-class IndexFile extends EmsCommand
+class IndexFileCommand extends EmsCommand
 {
 
     /**
@@ -215,13 +215,32 @@ class IndexFile extends EmsCommand
     {
         $updated = false;
         if (!empty($rawData) && !empty($rawData)) {
-            if (isset($rawData['content'])) {
-                unset($rawData['content']);
-                $updated = true;
-            }
 
             if (isset($rawData['sha1'])) {
                 $file = $this->fileService->getFile($rawData['sha1']);
+
+                if ((!$file || !file_exists($file)) && isset($rawData['content'])) {
+                    $fileContent = base64_decode($rawData['content']);
+
+                    if($rawData['sha1'] === sha1($fileContent)) {
+                        $tempName = $this->fileService->temporaryFilename($rawData['sha1']);
+                        file_put_contents($tempName, $fileContent);
+
+                        /**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
+                        foreach ($this->fileService->getStorages() as $service){
+                            $service->create($rawData['sha1'], $tempName);
+                            $output->writeln('File restored from DB: '.$rawData['sha1']);
+                            break;
+                        }
+
+                        $file = $this->fileService->getFile($rawData['sha1']);
+                    }
+                }
+
+                if (isset($rawData['content'])) {
+                    unset($rawData['content']);
+                    $out = true;
+                }
 
                 if ($file) {
                     $data = $this->extractorService->extractData($file, isset($rawData['filename'])?$rawData['filename']:'filename');

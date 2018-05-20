@@ -504,7 +504,7 @@ services:
         tags:
             -  { name: console.command }
     ems.revisions.index-file-fields:
-        class: EMS\CoreBundle\Command\IndexFile
+        class: EMS\CoreBundle\Command\IndexFileCommand
         arguments: ['@logger', '@app.elasticsearch', '@session', '@doctrine', '@ems.service.contenttype', '%database_name%', '%database_driver%', '@ems.service.asset_extractor', '@ems.service.file']
         tags:
             -  { name: console.command }

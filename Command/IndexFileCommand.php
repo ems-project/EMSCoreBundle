@@ -243,7 +243,7 @@ class IndexFileCommand extends EmsCommand
                 }
 
                 if ($file) {
-                    $data = $this->extractorService->extractData($file, isset($rawData['filename'])?$rawData['filename']:'filename');
+                    $data = $this->extractorService->extractData($rawData['sha1'], $file);
 
                     if (!empty($data)) {
                         if (isset($data['date']) && $data['date']) {

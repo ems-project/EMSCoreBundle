@@ -2,6 +2,8 @@
 
 namespace EMS\CoreBundle\Service;
 
+use Doctrine\Bundle\DoctrineBundle\Registry;
+use EMS\CoreBundle\Exception\AssetNotFoundException;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Enzim\Lib\TikaWrapper\TikaWrapper;
 
@@ -21,17 +23,25 @@ class AssetExtratorService
 	
 	/**@var Session $session*/
 	private $session;
+
+    /**@var Registry $doctrine */
+    private $doctrine;
+
+    /**@var FileService */
+    private $fileService;
 	
 	
 	/**
 	 * 
 	 * @param string $tikaServer
 	 */
-	public function __construct(RestClientService $rest, Session $session, $tikaServer)
+	public function __construct(RestClientService $rest, Session $session, Registry $doctrine, FileService $fileService, $tikaServer)
 	{
 		$this->tikaServer = $tikaServer;
 		$this->rest = $rest;
 		$this->session = $session;
+        $this->doctrine = $doctrine;
+        $this->fileService = $fileService;
 	}
 	
 	public function hello() {
@@ -48,8 +58,22 @@ class AssetExtratorService
 			return null;
 		}
 	}
-	
-	public function extractData($file, $name) {
+
+    /**
+     * @param string $sha1
+     * @return array|mixed
+     * @throws AssetNotFoundException
+     */
+	public function extractData($sha1, $file=null) {
+
+        if(!$file || !file_exists($file)){
+            $file = $this->fileService->getFile($sha1);
+        }
+
+        if(!$file || !file_exists($file)){
+            throw new AssetNotFoundException($sha1);
+        }
+
 		$out = [];
 		if($this->tikaServer){
 			try {

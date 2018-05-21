@@ -239,7 +239,7 @@ class IndexFileCommand extends EmsCommand
 
                 if (isset($rawData['content'])) {
                     unset($rawData['content']);
-                    $out = true;
+                    $updated = true;
                 }
 
                 if ($file) {

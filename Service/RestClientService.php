@@ -12,12 +12,15 @@ class RestClientService
 	 * @param string $baseUrl
 	 * @return \GuzzleHttp\Client
 	 */
-	public function getClient($baseUrl) {
-		return new Client([
-			// Base URI is used with relative requests
-			'base_uri' => $baseUrl,
-			// You can set any number of default request options.
-			'timeout'  => 30,
-		]);
+	public function getClient($baseUrl=NULL) {
+	    $options = [
+            // You can set any number of default request options.
+            'timeout'  => 30,
+        ];
+	    if($baseUrl){
+            // Base URI is used with relative requests
+            $options['base_uri'] = $baseUrl;
+        }
+		return new Client($options);
 	}
 }

@@ -94,20 +94,10 @@ class ElasticsearchController extends AppController
 	    try {
 	        $client = $this->getElasticsearch();
 	        $status = $client->cluster()->health();
-	        $certificatInfo = $this->getDataService()->getCertificateInfo();
-	        if('red' === $status['status']) {
-	            throw new \Exception('Elasticsearch cluster is red');
-	        }
-	        
-	        $tika = ($this->getAssetExtractorService()->hello());
-	        if( !empty($tika) && $tika['code'] > 300 ) {
-	        	throw new \Exception('Tika server issue: return code '.$tika['code']);
-	        }
+
 	        
 	        return $this->render( '@EMSCore/elasticsearch/status.'.$_format.'.twig', [
-        		'tika' => $tika,
 	            'status' => $status,
-        		'certificate' => $certificatInfo,
         		'globalStatus' => $status['status'],
 	        ] );
 	    } catch (\Exception $e) {

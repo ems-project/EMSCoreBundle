@@ -26,20 +26,22 @@
 			</div>
 			<div class="box-body ">
 				<ul class="list-group">
-					<li class="list-group-item">{{ 'Cluster\'s UUID'|trans }}<span
-						class=" badge bg-{{ status.status }}">{{ info.cluster_uuid }}</span></li>
-					<li class="list-group-item">{{ 'Tagline'|trans }}<span
-						class=" badge bg-{{ status.status }}">{{ info.tagline }}</span></li>
-					<li class="list-group-item">{{ 'Node\'s name'|trans }}<span
-						class=" badge bg-{{ status.status }}">{{ info.name }}</span></li>
-					<li class="list-group-item">{{ 'Elasticsearch\'s version'|trans }}<span
-						class=" badge bg-{{ status.status }}">{{ info.version.number }}</span></li>
-					<li class="list-group-item">{{ 'Specified version'|trans }}<span
-						class=" badge bg-{% if info.version.number starts with specifiedVersion %}green{% else %}red{% endif %}">{{ specifiedVersion }}</span></li>
-					<li class="list-group-item">{{ 'Lucene\'s version'|trans }}<span
-						class=" badge bg-{{ status.status }}">{{ info.version.lucene_version }}</span></li>
-					<li class="list-group-item">{{ 'Build date'|trans }}<span
-						class=" badge bg-{{ status.status }}">{{ info.version.build_date|date(date_time_format) }}</span></li>
+					{% if info is defined and info %}
+						<li class="list-group-item">{{ 'Cluster\'s UUID'|trans }}<span
+							class=" badge bg-{{ status.status }}">{{ info.cluster_uuid }}</span></li>
+						<li class="list-group-item">{{ 'Tagline'|trans }}<span
+							class=" badge bg-{{ status.status }}">{{ info.tagline }}</span></li>
+						<li class="list-group-item">{{ 'Node\'s name'|trans }}<span
+							class=" badge bg-{{ status.status }}">{{ info.name }}</span></li>
+						<li class="list-group-item">{{ 'Elasticsearch\'s version'|trans }}<span
+							class=" badge bg-{{ status.status }}">{{ info.version.number }}</span></li>
+						<li class="list-group-item">{{ 'Specified version'|trans }}<span
+							class=" badge bg-{% if info.version.number starts with specifiedVersion %}green{% else %}red{% endif %}">{{ specifiedVersion }}</span></li>
+						<li class="list-group-item">{{ 'Lucene\'s version'|trans }}<span
+							class=" badge bg-{{ status.status }}">{{ info.version.lucene_version }}</span></li>
+						<li class="list-group-item">{{ 'Build date'|trans }}<span
+							class=" badge bg-{{ status.status }}">{{ info.version.build_date|date(date_time_format) }}</span></li>
+					{% endif %}
 					<li class="list-group-item">Number of nodes <span
 						class=" badge bg-{{ status.status }}">{{ status.number_of_nodes }}</span></li>
 					<li class="list-group-item">Number of data nodes <span
@@ -80,7 +82,8 @@
 		</div>
 
 	</div>
-	<div class="col-md-6 col-lg-8">
+	{% if certificate is defined and certificate %}
+		<div class="col-md-6 col-lg-8">
 		<div class="box box box-solid">
 			<div class="box-header with-border bg-{% if certificate %}green{% else %}red{% endif %}">
 				<h4 class="box-title">
@@ -134,23 +137,26 @@
 		</div>
 
 	</div>
-	<div class="col-md-6 col-lg-8">
-		<div class="box box box-solid">
-			<div class="box-header with-border bg-{% if tika %}{% if tika.code == 200 %}green{% else %}red{% endif %}{% else %}yellow{% endif %}">
-				<h4 class="box-title">
-						<i class="icon fa fa-external-link fa-2x"></i>
-						{{ 'Tika server'|trans }} {% if tika and tika.code != 200 %}({{tika.code}}){% endif %}</strong>
-				</h4>
-			</div>
-			<div class="box-body ">			
-				<ul class="list-group">
-					<li class="list-group-item">
-        			    {% if tika %}{{ tika.content }}{% else %}{{ 'Tika server is not configured'|trans }}{% endif %}
-					</li>
-				</ul>
+	{% endif %}
+    {% if tika is defined and tika %}
+		<div class="col-md-6 col-lg-8">
+			<div class="box box box-solid">
+				<div class="box-header with-border bg-{% if tika %}{% if tika.code == 200 %}green{% else %}red{% endif %}{% else %}yellow{% endif %}">
+					<h4 class="box-title">
+							<i class="icon fa fa-external-link fa-2x"></i>
+							{{ 'Tika server'|trans }} {% if tika and tika.code != 200 %}({{tika.code}}){% endif %}</strong>
+					</h4>
+				</div>
+				<div class="box-body ">
+					<ul class="list-group">
+						<li class="list-group-item">
+							{% if tika %}{{ tika.content }}{% else %}{{ 'Tika server is not configured'|trans }}{% endif %}
+						</li>
+					</ul>
+				</div>
 			</div>
 		</div>
-	</div>
+    {% endif %}
 </div>
 {% endblock %}
 

@@ -56,7 +56,12 @@ class AssetExtratorService
 			];
 		}
 		else {
-			return null;
+            $temp_file = tempnam(sys_get_temp_dir(), 'TikaWrapperTest');
+            file_put_contents($temp_file, "elasticms's built in TikaWrapper : àêïôú");
+			return [
+                'code' => 200,
+                'content' => $this->cleanString(TikaWrapper::getText($temp_file)),
+            ];
 		}
 	}
 

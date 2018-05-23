@@ -42,16 +42,9 @@ class FileController extends AppController
 	 * @Method({"GET"})
 	 */
 	public function extractFileContent($sha1, Request $request) {
+//		$name = $request->query->get('name', 'temp');
 		
-		
-		$name = $request->query->get('name', 'temp');
-		$file = $this->getFileService()->getFile($sha1);
-		
-		if(!$file){
-			throw new NotFoundHttpException('Impossible to find the item corresponding to this id: '.$sha1);
-		}
-		
-		$data = $this->getAssetExtractorService()->extractData($file, $name);
+		$data = $this->getAssetExtractorService()->extractData($sha1);
 		
 		$response = $this->render( '@EMSCore/ajax/extract-data-file.json.twig', [
 				'success' => true,

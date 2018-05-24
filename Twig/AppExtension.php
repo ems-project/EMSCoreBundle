@@ -78,12 +78,7 @@ class AppExtension extends \Twig_Extension
 				new \Twig_SimpleFunction('cant_be_finalized', array($this, 'cantBeFinalized')),
 				new \Twig_SimpleFunction('get_default_environments', array($this, 'getDefaultEnvironments')),
 				new \Twig_SimpleFunction('sequence', array($this, 'getSequenceNextValue')),
-            new \Twig_SimpleFunction('diff_text', array($this, 'diffText')),
-            new \Twig_SimpleFunction('diff_html', array($this, 'diffHtml')),
-            new \Twig_SimpleFunction('diff_icon', array($this, 'diffIcon')),
-            new \Twig_SimpleFunction('diff_raw', array($this, 'diffRaw')),
-            new \Twig_SimpleFunction('diff_color', array($this, 'diffColor')),
-            new \Twig_SimpleFunction('diff_boolean', array($this, 'diffBoolean')),
+                new \Twig_SimpleFunction('diff', array($this, 'diff')),
 		];
 	}
 	
@@ -141,114 +136,34 @@ class AppExtension extends \Twig_Extension
 	}
 
 
-	public function diff($a, $b, $compare, $escape=false, $htmlDiff=false, $raw=false)
-    {
-        $tag = 'span';
-        $textClass = '';
-        $textLabel = '';
 
-        if($compare && $a !== $b){
-            if($htmlDiff && $a && $b){
-                $textClass = 'text-orange';
-                $htmlDiff = new HtmlDiff(($escape?htmlentities($b):$this->internalLinks($b)), ($escape?htmlentities($a):$this->internalLinks($a)));
-                $textLabel = $htmlDiff->build();
+    public function diff($rawData, $compare, $fieldName, $compareRawData){
+
+	    if($compare) {
+	        if(isset($compareRawData[$fieldName])) {
+	            if($compareRawData[$fieldName] === $rawData) {
+                    dump('no change');
+                }
+                elseif ($rawData === null) {
+                    dump('was fill now empty');
+                }
+                else {
+
+                    $htmlDiff = new HtmlDiff($compareRawData[$fieldName], $rawData);
+                    $content = $htmlDiff->build();
+
+                    return $content;
+                }
+            }
+            elseif ($rawData !== null) {
+                dump('was empty still empty');
             }
             else {
-                $textClass = false;
-                if($b){
-                    $textClass = 'text-red';
-                    $textLabel .= '<del class="diffmod">'.($escape?htmlentities($b):$b).'</del>';
-                }
-
-                if($a){
-                    if($textClass){
-                        $textClass = 'text-orange';
-                    }
-                    else {
-                        $textClass = 'text-green';
-                    }
-                    $textLabel .= ' <ins class="diffmod">'.($escape?htmlentities($a):$a).'</ins>';
-                }
-            }
-        }
-        else {
-            if($a){
-                $textLabel = ($escape?htmlentities($a):$a);
-            }
-            else{
-                $textClass = 'text-gray';
-                $textLabel = '[not defined]';
-                $tag = 's';
+	            dump('new data');
             }
         }
 
-        if($raw){
-            return $textLabel;
-        }
-        return '<'.$tag.' class="'.$textClass.'">'.$textLabel.'</'.$tag.'>';
-
-    }
-
-    public function diffBoolean($rawData, $compare, $fieldName, $compareRawData)
-    {
-        $a = $rawData?true:false;
-        $b = isset($compareRawData[$fieldName]) && $compareRawData[$fieldName];
-
-        $textClass = '';
-        if($a !== $b){
-            $textClass = 'text-orange';
-        }
-
-        return '<span class="'.$textClass.'"><i class="fa fa'.($a?'-check':'').'-square-o"></i></span>';
-    }
-
-    public function diffIcon($rawData, $compare, $fieldName, $compareRawData)
-    {
-        $b = $a = null;
-        if($rawData){
-            $a = '<i class="'.$rawData.'"></i> '.$rawData;
-        }
-
-        if(isset($compareRawData[$fieldName]) && $compareRawData[$fieldName]) {
-            $b = '<i class="'.$compareRawData[$fieldName].'"></i> '.$compareRawData[$fieldName];
-        }
-        return $this->diff($a, $b, $compare);
-    }
-
-    public function diffColor($rawData, $compare, $fieldName, $compareRawData)
-    {
-        $b = $a = null;
-        if($rawData){
-            $color = $rawData;
-            $a = '<span style="background-color: '.$color.'; color: '.($this->contrastratio($color, '#000000') > $this->contrastratio($color, '#ffffff')?'#000000':'#ffffff').';">'.$color.'</span> ';
-        }
-
-        if(isset($compareRawData[$fieldName]) && $compareRawData[$fieldName]) {
-            $color = $compareRawData[$fieldName];
-            $b = '<span style="background-color: '.$color.'; color: '.($this->contrastratio($color, '#000000') > $this->contrastratio($color, '#ffffff')?'#000000':'#ffffff').';">'.$color.'</span> ';
-        }
-        return $this->diff($a, $b, $compare, false, false, true);
-    }
-
-    public function diffRaw($rawData, $compare, $fieldName, $compareRawData)
-    {
-        $b = isset($compareRawData[$fieldName])?$compareRawData[$fieldName]:null;
-        return $this->diff($rawData, $b, $compare);
-    }
-
-
-
-    public function diffText($rawData, $compare, $fieldName, $compareRawData){
-        $b = isset($compareRawData[$fieldName])?$compareRawData[$fieldName]:null;
-
-        return $this->diff($rawData, $b, $compare, true, true);
-    }
-
-
-
-    public function diffHtml($rawData, $compare, $fieldName, $compareRawData){
-        $b = isset($compareRawData[$fieldName])?$compareRawData[$fieldName]:null;
-        return $this->diff($rawData, $b, $compare, false, true, true);
+        return '<span class="text-green">'.$rawData.'</span>';
     }
 
 

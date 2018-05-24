@@ -333,20 +333,12 @@ class DataController extends AppController
 
         $compareData = false;
         if($compareId) {
-
-            $this->addFlash('warning', 'The compare is a beta functionality');
             /**@var Revision $compareRevision*/
             $compareRevision = $repository->findOneById($compareId);
             if($compareRevision) {
-
                 $compareData = $compareRevision->getRawData();
                 if($revision->getContentType() === $compareRevision->getContentType() && $revision->getOuuid() == $compareRevision->getOuuid()) {
-                    if($compareRevision->getCreated() <= $revision->getCreated()  ){
-                        $this->addFlash('notice', 'Compared with the revision of '.$compareRevision->getCreated()->format($this->getParameter('ems_core.date_time_format')));
-                    }
-                    else{
-                        $this->addFlash('warning', 'Compared with the revision of '.$compareRevision->getCreated()->format($this->getParameter('ems_core.date_time_format')). ' wich one is more recent.');
-                    }
+                    $this->addFlash('notice', 'Compared with the revision of '.$compareRevision->getCreated()->format($this->getParameter('ems_core.date_time_format')));
                 }
                 else {
                     $this->addFlash('notice', 'Compared with '.$compareRevision->getContentType().':'.$compareRevision->getOuuid().' of '.$compareRevision->getCreated()->format($this->getParameter('ems_core.date_time_format')));

@@ -173,15 +173,13 @@
 
 {% macro EMS_CoreBundle_Form_DataField_CollectionFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
-	{% set collapsible = dataField.fieldType.displayOptions.collapsible|default(false) %}
-	{% set compareCollectionRawData = (attribute(compareRawData, dataField.fieldType.name) is defined?attribute(compareRawData, dataField.fieldType.name):null) %}
-	{% set diffCount = dataField.children|length - compareCollectionRawData|length %}
+{% set collapsible = dataField.fieldType.displayOptions.collapsible|default(false) %}
 
 	<div class="panel panel-default {% if collapsible %}collapsible-collection{% endif %}">
 		<div class="panel-heading">
 			<h3 class="panel-title">
 				{% if dataField.fieldType.displayOptions.icon is defined %}
-					<i class="{{ dataField.fieldType.displayOptions.icon }}"></i>
+					<i class="{{ dataField.fieldType.displayOptions.icon }}"></i> 
 				{% endif %}
 				{% if dataField.fieldType.displayOptions.label is defined %}
 					{{ dataField.fieldType.displayOptions.label }}
@@ -198,18 +196,11 @@
                     <div class="clearfix"></div>
 				{% endif %}
 			</h3>
-			{% if compare %}
-				{% if diffCount < 0 %}
-					<del class="text-red">{{ 'view.macros.data-field-type.collection_removed_items'|transchoice(-diffCount, {'%singular%': 'item', '%plural%': 'items'}) }}</del>
-				{% elseif diffCount > 0 %}
-					<ins class="text-green">{{ 'view.macros.data-field-type.collection_added_items'|transchoice(diffCount, {'%singular%': 'item', '%plural%': 'items'}) }}</ins>
-                {% endif %}
-            {% endif %}
 		</div>
 		<div class="panel-body {% if collapsible %}collapse{% endif %}">
-			{% for idx, child in dataField.children %}
+			{% for child in dataField.children %}
 				<div class="{% if dataField.fieldType.displayOptions.itemBootstrapClass is defined and dataField.fieldType.displayOptions.itemBootstrapClass %}{{ dataField.fieldType.displayOptions.itemBootstrapClass }}{% else %}col-md-12{% endif %}">
-                    <div class="panel panel-default">
+					<div class="panel panel-default">
 						<div class="panel-heading">
 							<h3 class="panel-title">
 								{% if dataField.fieldType.displayOptions.icon is defined %}
@@ -234,7 +225,7 @@
 							<div class="row">
 								{% for grandchild in child.children %}
 									<div class="{% if grandchild.fieldType.displayOptions.class is defined and grandchild.fieldType.displayOptions.class  %}{{ grandchild.fieldType.displayOptions.class }}{%else%}col-md-12{% endif %}">
-										{{ macros|macro_fct(grandchild.fieldType.type|replace({'\\': '_'}), grandchild, compare, (attribute(compareCollectionRawData, idx) is defined?attribute(compareCollectionRawData, idx):null) ) }}
+										{{ macros|macro_fct(grandchild.fieldType.type|replace({'\\': '_'}), grandchild) }}
 									</div>
 									{% if grandchild.fieldType.displayOptions.lastOfRow is defined and grandchild.fieldType.displayOptions.lastOfRow %}
 										</div><div class="row">
@@ -305,14 +296,9 @@
 			<div class="panel-body container-fluid">
 	{% endif %}
 	<div class="row">
-	{% set compareSubRawData = null %}
-	{% if compareRawData and attribute(compareRawData, dataField.fieldType.name) is defined %}
-		{% set compareSubRawData = attribute(compareRawData, dataField.fieldType.name) %}
-	{% endif %}
-
-    {% for child in dataField.children if not child.fieldType.deleted %}
-	<div class="{% if child.fieldType.displayOptions.class is defined and child.fieldType.displayOptions.class  %}{{ child.fieldType.displayOptions.class }}{%else%}col-md-12{% endif %}">
-				{{ macros|macro_fct(child.fieldType.type|replace({'\\': '_'}), child, compare, compareSubRawData) }}
+		{% for child in dataField.children if not child.fieldType.deleted %}
+			<div class="{% if child.fieldType.displayOptions.class is defined and child.fieldType.displayOptions.class  %}{{ child.fieldType.displayOptions.class }}{%else%}col-md-12{% endif %}">
+				{{ macros|macro_fct(child.fieldType.type|replace({'\\': '_'}), child) }}
 			</div>
 			{% if child.fieldType.displayOptions.lastOfRow is defined and child.fieldType.displayOptions.lastOfRow %}
 				</div><div class="row">
@@ -348,7 +334,7 @@
             <div class="tab-content">
             	{% for child in dataField.children if not child.fieldType.deleted %}
 	              <div class="tab-pane{% if loop.index == 1%} active{% endif %}" id="item_{{ dataField.fieldType.id~'_'~loop.index }}__tab">
-	              	{{ macros|macro_fct(child.fieldType.type|replace({'\\': '_'}), child, compare, compareRawData) }}
+	              	{{ macros|macro_fct(child.fieldType.type|replace({'\\': '_'}), child) }}
 	              </div>
               {% endfor %}
             </div>
@@ -446,7 +432,8 @@
 		{% else %}
 			<dt>{{ dataField.fieldType.name }}</dt>
 		{% endif %}
-		<dd>{{ diff_text(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}</dd>
+		
+		<dd>{{ diff(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}</dd>
 	</dl>
 	{{ macros.messages(dataField) }}
 {% endmacro %}
@@ -464,7 +451,7 @@
 		<dd>
 			<div class="panel panel-default">
 				<div class="panel-body">
-                    {{ diff_text(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
+					{{ dataField.textValue }}
 				</div>
 			</div>
 		</dd>
@@ -505,8 +492,8 @@
 		</dt>
 		<dd>
 			<div class="panel panel-default">
-				<div class="panel-body">
-                    {{ diff_html(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
+				<div class="panel-body">	
+					{{ dataField.textValue|internal_links|raw }}
 				</div>
 			</div>
 		</dd>
@@ -527,7 +514,7 @@
 		<dd>
 			<div class="panel panel-default">
 				<div class="panel-body">	
-					<pre class="ems-code-editor" data-language="{{ dataField.fieldType.displayOptions.language }}" data-them="{{ dataField.fieldType.displayOptions.theme }}" {% if dataField.fieldType.displayOptions.height %}style="height: {{ dataField.fieldType.displayOptions.height }}px;"{% endif %}>{{ dataField.rawData|internal_links }}</pre>
+					<pre class="ems-code-editor" data-language="{{ dataField.fieldType.displayOptions.language }}" data-them="{{ dataField.fieldType.displayOptions.theme }}" {% if dataField.fieldType.displayOptions.height %}style="height: {{ dataField.fieldType.displayOptions.height }}px;"{% endif %}>{{ dataField.textValue|internal_links }}</pre>
 				</div>
 			</div>
 		</dd>
@@ -567,7 +554,7 @@
 			{% endif %}
 		</dt>
 		<dd>
-            {{ diff_text(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
+			{{ dataField.textValue|raw }}
 		</dd>
 	</dl>
 	{{ macros.messages(dataField) }}
@@ -584,7 +571,7 @@
 			{% endif %}
 		</dt>
 		<dd>
-            {{ diff_icon(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
+			<i class="{{ dataField.textValue|raw }}"></i> {{ dataField.textValue|raw }}
 		</dd>
 	</dl>
 	{{ macros.messages(dataField) }}
@@ -600,8 +587,8 @@
 				{{ dataField.fieldType.name }}
 			{% endif %}
 		</dt>
-		<dd>
-            {{ diff_color(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
+		<dd style="background-color: {{ dataField.textValue|raw }}; color:{%  if dataField.textValue|contrastratio('#000000') > dataField.textValue|contrastratio('#ffffff') %}#000000{% else %}#ffffff{% endif %};"> 
+			{{ dataField.textValue|raw }}
 		</dd>
 	</dl>
 	{{ macros.messages(dataField) }}
@@ -680,7 +667,11 @@
 			{% endif %}
 		</dt>
 		<dd>
-            {{ diff_boolean(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
+			{% if dataField.rawData %}
+		 		<i class="fa fa-check-square-o"></i>
+			{% else %}
+				<i class="fa fa-square-o"></i>
+			{% endif %}
 			{% if dataField.fieldType.displayOptions.question_label is defined and dataField.fieldType.displayOptions.question_label %}
 				{{ dataField.fieldType.displayOptions.question_label }}
 			{% endif %}
@@ -700,7 +691,7 @@
 			{% endif %}
 		</dt>
 		<dd>
-            {{ diff_raw(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
+			{{ dataField.rawData }}
 		</dd>
 	</dl>
 	{{ macros.messages(dataField) }}
@@ -717,7 +708,7 @@
 			{% endif %}
 		</dt>
 		<dd>
-            {{ diff_raw(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
+			{{ dataField.rawData }}
 		</dd>
 	</dl>
 	{{ macros.messages(dataField) }}

@@ -1,8 +1,8 @@
 {% trans_default_domain 'EMSCoreBundle' %}
 
-{%  macro renderDataField(dataField) %}
+{%  macro renderDataField(dataField, compare, compareRawData) %}
 {% import _self as macros %}
-	{{ macros|macro_fct(dataField.fieldType.type|replace({'\\': '_'}), dataField) }}
+	{{ macros|macro_fct(dataField.fieldType.type|replace({'\\': '_'}), dataField, compare, compareRawData) }}
 	{{ macros.messages(dataField) }}
 {% endmacro %}
 
@@ -23,10 +23,10 @@
 	{% endif %}
 {% endmacro %}
 
-{% macro EMS_CoreBundle_Form_DataField_CopyToFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_CopyToFieldType(dataField, compare, compareRawData) %}
 {% endmacro %}
 
-{% macro EMS_CoreBundle_Form_DataField_UrlAttachmentFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_UrlAttachmentFieldType(dataField, compare, compareRawData) %}
 	<div class="panel-heading">
 		<h3 class="panel-title">
 			<i class="{% if dataField.fieldType.displayOptions.icon is defined %}{{ dataField.fieldType.displayOptions.icon }}{% else %}fa fa-file-o{% endif %}"></i> 				
@@ -54,18 +54,18 @@
 	</div>
 {% endmacro %}
 
-{% macro EMS_CoreBundle_Form_DataField_FileAttachmentFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_FileAttachmentFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
-	{{ macros.EMS_CoreBundle_Form_DataField_AssetFieldType(dataField) }}
+	{{ macros.EMS_CoreBundle_Form_DataField_AssetFieldType(dataField, compare, compareRawData) }}
 {% endmacro %}
 
-{% macro EMS_CoreBundle_Form_DataField_IndexedAssetFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_IndexedAssetFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
-	{{ macros.EMS_CoreBundle_Form_DataField_AssetFieldType(dataField) }}
+	{{ macros.EMS_CoreBundle_Form_DataField_AssetFieldType(dataField, compare, compareRawData) }}
 {% endmacro %}
 
 
-{% macro EMS_CoreBundle_Form_DataField_AssetFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_AssetFieldType(dataField, compare, compareRawData) %}
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<h3 class="panel-title">
@@ -171,7 +171,7 @@
 {% endmacro %}
 
 
-{% macro EMS_CoreBundle_Form_DataField_CollectionFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_CollectionFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
 {% set collapsible = dataField.fieldType.displayOptions.collapsible|default(false) %}
 
@@ -241,7 +241,7 @@
 	{{ macros.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS_CoreBundle_Form_DataField_ContainerFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_ContainerFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
     {% if dataField.fieldType.displayOptions.label is defined and dataField.fieldType.displayOptions.label %}
     	<div class="panel panel-default">
@@ -263,7 +263,7 @@
 		{% for child in dataField.children if not child.fieldType.deleted %}
 		
 			<div class="{% if child.fieldType.displayOptions.class is defined and child.fieldType.displayOptions.class  %}{{ child.fieldType.displayOptions.class }}{%else%}col-md-12{% endif %}">
-				{{ macros|macro_fct(child.fieldType.type|replace({'\\': '_'}), child) }}
+				{{ macros|macro_fct(child.fieldType.type|replace({'\\': '_'}), child, compare, compareRawData) }}
 			</div>
 			{% if child.fieldType.displayOptions.lastOfRow is defined and child.fieldType.displayOptions.lastOfRow %}
 				</div><div class="row">
@@ -277,7 +277,7 @@
 	{{ macros.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS_CoreBundle_Form_DataField_NestedFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_NestedFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
     {% if dataField.fieldType.displayOptions.label is defined %}
     	<div class="panel panel-default">
@@ -312,7 +312,7 @@
 	{{ macros.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS_CoreBundle_Form_DataField_TabsFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_TabsFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
 	<div class="nav-tabs-custom">
 		<ul class="nav nav-tabs">
@@ -344,7 +344,7 @@
 {% endmacro %}
 
 
-{% macro EMS_CoreBundle_Form_DataField_DataLinkFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_DataLinkFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
 	<dl>
 		{% if dataField.fieldType.displayOptions.label is defined %}
@@ -366,7 +366,7 @@
 	{{ macros.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS_CoreBundle_Form_DataField_SelectFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_SelectFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
 	<dl>
 		{% if dataField.fieldType.displayOptions.label is defined %}
@@ -390,7 +390,7 @@
 	{{ macros.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS_CoreBundle_Form_DataField_OuuidFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_OuuidFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
 	<dl>
 		{% if dataField.fieldType.displayOptions.label is defined %}
@@ -403,7 +403,7 @@
 	{{ macros.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS_CoreBundle_Form_DataField_ComputedFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_ComputedFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
 	<dl>
 		{% if dataField.fieldType.displayOptions.label is defined %}
@@ -424,7 +424,7 @@
 	{{ macros.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS_CoreBundle_Form_DataField_TextStringFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_TextStringFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
 	<dl>
 		{% if dataField.fieldType.displayOptions.label is defined %}
@@ -433,12 +433,12 @@
 			<dt>{{ dataField.fieldType.name }}</dt>
 		{% endif %}
 		
-		<dd>{{ dataField.textValue }}</dd>
+		<dd>{{ diff(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}</dd>
 	</dl>
 	{{ macros.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS_CoreBundle_Form_DataField_TextareaFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_TextareaFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
 	<dl>
 		<dt>
@@ -459,7 +459,7 @@
 	{{ macros.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS_CoreBundle_Form_DataField_JSONFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_JSONFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
 	<dl>
 		<dt>
@@ -480,7 +480,7 @@
 	{{ macros.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS_CoreBundle_Form_DataField_WysiwygFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_WysiwygFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
 	<dl>
 		<dt>
@@ -501,7 +501,7 @@
 	{{ macros.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS_CoreBundle_Form_DataField_CodeFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_CodeFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
 	<dl>
 		<dt>
@@ -522,7 +522,7 @@
 	{{ macros.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS_CoreBundle_Form_DataField_PasswordFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_PasswordFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
 	<dl>
 		<dt>
@@ -543,7 +543,7 @@
 	{{ macros.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS_CoreBundle_Form_DataField_EmailFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_EmailFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
 	<dl>
 		<dt>
@@ -560,7 +560,7 @@
 	{{ macros.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS_CoreBundle_Form_DataField_IconFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_IconFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
 	<dl>
 		<dt>
@@ -577,7 +577,7 @@
 	{{ macros.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS_CoreBundle_Form_DataField_ColorPickerFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_ColorPickerFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
 	<dl>
 		<dt>
@@ -597,7 +597,7 @@
 
 
 
-{% macro EMS_CoreBundle_Form_DataField_RadioFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_RadioFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
 	<dl>
 		<dt>
@@ -614,7 +614,7 @@
 	{{ macros.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS_CoreBundle_Form_DataField_ChoiceFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_ChoiceFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
 	<dl>
 		<dt>
@@ -656,7 +656,7 @@
 	{{ macros.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS_CoreBundle_Form_DataField_CheckboxFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_CheckboxFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
 	<dl>
 		<dt>
@@ -680,7 +680,7 @@
 	{{ macros.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS_CoreBundle_Form_DataField_NumberFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_NumberFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
 	<dl>
 		<dt>
@@ -697,7 +697,7 @@
 	{{ macros.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS_CoreBundle_Form_DataField_IntegerFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_IntegerFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
 	<dl>
 		<dt>
@@ -714,7 +714,7 @@
 	{{ macros.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS_CoreBundle_Form_DataField_DateFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_DateFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
 	<dl>
 		<dt>
@@ -737,7 +737,7 @@
 	{{ macros.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS_CoreBundle_Form_DataField_DateRangeFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_DateRangeFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
 	<dl>
 		<dt>
@@ -782,7 +782,7 @@
 	{{ macros.messages(dataField) }}
 {% endmacro %}
 
-{% macro EMS_CoreBundle_Form_DataField_TimeFieldType(dataField) %}
+{% macro EMS_CoreBundle_Form_DataField_TimeFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
 	<dl>
 		<dt>

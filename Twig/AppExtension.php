@@ -1,6 +1,7 @@
 <?php
 namespace EMS\CoreBundle\Twig;
 
+use Caxy\HtmlDiff\HtmlDiff;
 use EMS\CoreBundle\Form\DataField\DateFieldType;
 use EMS\CoreBundle\Form\DataField\TimeFieldType;
 use EMS\CoreBundle\Service\UserService;
@@ -77,6 +78,7 @@ class AppExtension extends \Twig_Extension
 				new \Twig_SimpleFunction('cant_be_finalized', array($this, 'cantBeFinalized')),
 				new \Twig_SimpleFunction('get_default_environments', array($this, 'getDefaultEnvironments')),
 				new \Twig_SimpleFunction('sequence', array($this, 'getSequenceNextValue')),
+                new \Twig_SimpleFunction('diff', array($this, 'diff')),
 		];
 	}
 	
@@ -126,13 +128,45 @@ class AppExtension extends \Twig_Extension
 				new \Twig_SimpleFilter('call_user_func', array($this, 'call_user_func')),
 				new \Twig_SimpleFilter('macro_fct', array($this, 'macroFct')),
 				new \Twig_SimpleFilter('merge_recursive', array($this, 'array_merge_recursive')),
-				new \Twig_SimpleFilter('array_intersect', array($this, 'array_intersect')),
+                new \Twig_SimpleFilter('array_intersect', array($this, 'array_intersect')),
 				
 				
 				
 		);
 	}
-	
+
+
+
+    public function diff($rawData, $compare, $fieldName, $compareRawData){
+
+	    if($compare) {
+	        if(isset($compareRawData[$fieldName])) {
+	            if($compareRawData[$fieldName] === $rawData) {
+                    dump('no change');
+                }
+                elseif ($rawData === null) {
+                    dump('was fill now empty');
+                }
+                else {
+
+                    $htmlDiff = new HtmlDiff($compareRawData[$fieldName], $rawData);
+                    $content = $htmlDiff->build();
+
+                    return $content;
+                }
+            }
+            elseif ($rawData !== null) {
+                dump('was empty still empty');
+            }
+            else {
+	            dump('new data');
+            }
+        }
+
+        return '<span class="text-green">'.$rawData.'</span>';
+    }
+
+
 	/**
 	 * Return a sequence next value
 	 * @param string $name
@@ -193,8 +227,8 @@ class AppExtension extends \Twig_Extension
 	}
 	
 	
-	function macroFct($tempate, $block, $context) {
-		return $tempate->{'macro_'.$block}($context);
+	function macroFct($tempate, $block, $context, $compare=false, $compareRawData=null) {
+		return $tempate->{'macro_'.$block}($context, $compare, $compareRawData);
 	}
 	
 	function call_user_func($function){

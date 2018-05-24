@@ -287,9 +287,9 @@ class DataController extends AppController
     }
 
     /**
-     * @Route("/data/revisions/{type}:{ouuid}/{revisionId}", defaults={"revisionId": false} , name="data.revisions")
+     * @Route("/data/revisions/{type}:{ouuid}/{revisionId}/{compareId}", defaults={"revisionId": false, "compareId": false} , name="data.revisions")
      */
-    public function revisionsDataAction($type, $ouuid, $revisionId, Request $request, DataService $dataService)
+    public function revisionsDataAction($type, $ouuid, $revisionId, $compareId, Request $request, DataService $dataService)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -329,6 +329,24 @@ class DataController extends AppController
             ]);
         } else {
             $revision = $repository->findOneById($revisionId);
+        }
+
+        $compareData = false;
+        if($compareId) {
+            /**@var Revision $compareRevision*/
+            $compareRevision = $repository->findOneById($compareId);
+            if($compareRevision) {
+                $compareData = $compareRevision->getRawData();
+                if($revision->getContentType() === $compareRevision->getContentType() && $revision->getOuuid() == $compareRevision->getOuuid()) {
+                    $this->addFlash('notice', 'Compared with the revision of '.$compareRevision->getCreated()->format($this->getParameter('ems_core.date_time_format')));
+                }
+                else {
+                    $this->addFlash('notice', 'Compared with '.$compareRevision->getContentType().':'.$compareRevision->getOuuid().' of '.$compareRevision->getCreated()->format($this->getParameter('ems_core.date_time_format')));
+                }
+            }
+            else {
+                $this->addFlash('warning', 'Revision to compare with not found');
+            }
         }
 
 
@@ -411,6 +429,7 @@ class DataController extends AppController
             'counter' => $counter,
             'firstElemOfPage' => $firstElemOfPage,
             'dataFields' => $dataFields,
+            'compareData' => $compareData,
         ]);
     }
 

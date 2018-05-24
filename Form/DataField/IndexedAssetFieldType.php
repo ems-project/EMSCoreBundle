@@ -140,7 +140,7 @@ class IndexedAssetFieldType extends DataFieldType {
 		$raw = $dataField->getRawData();
 		
 		if( (empty($raw) || empty($raw['sha1']))){
-			if($dataField->getFieldType()->getRestrictionOptions()['mandatory']){
+			if(isset($dataField->getFieldType()->getRestrictionOptions()['mandatory']) && $dataField->getFieldType()->getRestrictionOptions()['mandatory']){
 				$dataField->addMessage('This entry is required');				
 			}
 			$dataField->setRawData(null);

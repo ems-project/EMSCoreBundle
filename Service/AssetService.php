@@ -65,11 +65,12 @@ class AssetService {
 			}			
 			$cachedFile = $this->fileService->create($assetHash, $generatedFileName, $config['_identifier']);
 		}
-		
-		
+
+
 		$response = new BinaryFileResponse($cachedFile?$this->fileService->getFile($assetHash, $config['_identifier']):$generatedFileName);
 		// set headers and output image
 		$response->headers->set('X-EMS-CACHED-FILES', $cachedFile);
+        $response->headers->set('Content-Type', $this->getMimeType($config, $type));
 		
 		// Set cache settings in one call
 		$response->setCache(array(
@@ -101,6 +102,14 @@ class AssetService {
 		$image = new Image($this->kernel, $file, $processorConfig);
 		return $image->generateImage();
 	}
-	
+
+
+    public function getMimeType(array $processorConfig, $type) {
+        if( preg_match('/image\/svg.*/', $type)){
+            return $type;
+        }
+
+        return Image::getMimeType($processorConfig);
+    }
 	
 }

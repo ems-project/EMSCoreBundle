@@ -8,24 +8,26 @@ use Symfony\Component\HttpKernel\KernelInterface;
 class Image {
 	
 	public $fileName;
-	public $config = [
-			'_resize' => false,
-			'_width' => '*',
-			'_quality' => false,
-			'_height' => '*',
-			'_gravity' => 'center',
-			'_radius' => false,
-			'_background' => 'FFFFFF',
-			'_radius_geometry' => 'topleft-topright-bottomright-bottomleft',
-			'_watermark' => false,
-	];
+    static public $defaultConfig = [
+        '_resize' => false,
+        '_width' => '*',
+        '_quality' => false,
+        '_height' => '*',
+        '_gravity' => 'center',
+        '_radius' => false,
+        '_background' => 'FFFFFF',
+        '_radius_geometry' => 'topleft-topright-bottomright-bottomleft',
+        '_watermark' => false,
+    ];
+	public $config;
+
 	/**@var KernelInterface */
 	private $kernel;
 
 	public function __construct(KernelInterface $kernel, $fileName, array $config) {
 		$this->kernel = $kernel;
 		$this->fileName = $fileName;
-		$this->config = array_merge($this->config, $config);
+		$this->config = array_merge(Image::$defaultConfig, $config);
 	}
 
 	private function applyWatermark($image, $width, $height, $watermark){
@@ -234,6 +236,20 @@ class Image {
 		//imagedestroy($image);
 		return $temp;
 	}
+
+
+    static public function getMimeType(array $config)
+    {
+
+        $config = array_merge(Image::$defaultConfig, $config);
+
+        if($config['_quality']){
+            return 'image/jpeg';
+        }
+        else {
+            return 'image/png';
+        }
+    }
 	
 	public function generateImage(){
 		$handle = fopen($this->fileName, "r");

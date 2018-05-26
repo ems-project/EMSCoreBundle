@@ -134,11 +134,22 @@ class AppExtension extends \Twig_Extension
 				new \Twig_SimpleFilter('macro_fct', array($this, 'macroFct')),
 				new \Twig_SimpleFilter('merge_recursive', array($this, 'array_merge_recursive')),
                 new \Twig_SimpleFilter('array_intersect', array($this, 'array_intersect')),
+            new \Twig_SimpleFilter('get_string', array($this, 'getString')),
 				
 				
 				
 		);
 	}
+
+	public function getString($rawData, $field){
+	    if(empty($rawData) or !isset($rawData[$field])){
+	        return null;
+        }
+        if(is_string($rawData[$field])) {
+	        return $rawData[$field];
+        }
+        return json_encode($rawData[$field]);
+    }
 
 
 	public function diff($a, $b, $compare, $escape=false, $htmlDiff=false, $raw=false)

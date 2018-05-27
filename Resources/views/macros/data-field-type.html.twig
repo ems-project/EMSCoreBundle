@@ -495,8 +495,10 @@
 
 {% macro EMS_CoreBundle_Form_DataField_WysiwygFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
+    {% set doCompare = compare and dataField.rawData is not same as( compareRawData|get_string(dataField.fieldType.name) )  %}
+	{% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
 	<dl>
-		<dt>
+		<dt class="{{ color }}">
 			{% if dataField.fieldType.displayOptions.label is defined %}
 				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
 			{% else %}
@@ -516,6 +518,8 @@
 
 {% macro EMS_CoreBundle_Form_DataField_CodeFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
+    {% set doCompare = compare and dataField.rawData is not same as( compareRawData|get_string(dataField.fieldType.name) )  %}
+    {% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -526,16 +530,14 @@
 		</dt>
 		<dd>
 			<div class="panel panel-default">
-				{% if compare and dataField.rawData is same as( compareRawData|get_string(dataField.fieldType.name) )  %}
-					<div class="panel-body">
-						<pre class="ems-code-editor" data-language="{{ dataField.fieldType.displayOptions.language }}" data-them="{{ dataField.fieldType.displayOptions.theme }}" {% if dataField.fieldType.displayOptions.height %}style="height: {{ dataField.fieldType.displayOptions.height }}px;"{% endif %}>{{ dataField.rawData|internal_links }}</pre>
-					</div>
-				{% else %}
-					<div class="panel-body {% if not dataField.rawData %}bg-red{% elseif not compareRawData|get_string(dataField.fieldType.name) %}bg-green{% else %}bg-orange{% endif %}">
+				<div class="panel-body {{ color }}">
+					{% if doCompare  %}
 						<pre class="ems-code-editor col-md-6" data-language="{{ dataField.fieldType.displayOptions.language }}" data-them="{{ dataField.fieldType.displayOptions.theme }}" {% if dataField.fieldType.displayOptions.height %}style="height: {{ dataField.fieldType.displayOptions.height }}px;"{% endif %}>{{ compareRawData|get_string(dataField.fieldType.name)|internal_links }}</pre>
 						<pre class="ems-code-editor col-md-6" data-language="{{ dataField.fieldType.displayOptions.language }}" data-them="{{ dataField.fieldType.displayOptions.theme }}" {% if dataField.fieldType.displayOptions.height %}style="height: {{ dataField.fieldType.displayOptions.height }}px;"{% endif %}>{{ dataField.rawData|internal_links }}</pre>
-					</div>
-				{% endif %}
+					{% else %}
+						<pre class="ems-code-editor" data-language="{{ dataField.fieldType.displayOptions.language }}" data-them="{{ dataField.fieldType.displayOptions.theme }}" {% if dataField.fieldType.displayOptions.height %}style="height: {{ dataField.fieldType.displayOptions.height }}px;"{% endif %}>{{ dataField.rawData|internal_links }}</pre>
+					{% endif %}
+				</div>
 			</div>
 		</dd>
 	</dl>
@@ -636,8 +638,10 @@
 
 {% macro EMS_CoreBundle_Form_DataField_ChoiceFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
+    {% set doCompare = compare and dataField.rawData is not same as( compareRawData|get_string(dataField.fieldType.name) )  %}
+    {% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
 	<dl>
-		<dt>
+		<dt class="{{ color }}">
 			{% if dataField.fieldType.displayOptions.label is defined %}
 				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
 			{% else %}
@@ -678,8 +682,10 @@
 
 {% macro EMS_CoreBundle_Form_DataField_CheckboxFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
+    {% set doCompare = compare and dataField.rawData is not same as( compareRawData|get_string(dataField.fieldType.name) )  %}
+    {% set color = not doCompare ? '' : 'bg-orange' %}
 	<dl>
-		<dt>
+		<dt class="{{ color }}">
 			{% if dataField.fieldType.displayOptions.label is defined %}
 				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
 			{% else %}

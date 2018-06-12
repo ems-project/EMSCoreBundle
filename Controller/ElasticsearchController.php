@@ -515,7 +515,7 @@ class ElasticsearchController extends AppController
 			$openSearchForm = $form->get('search')->isClicked();
 			
 			//Form treatement after the "Save" button has been pressed (= ask for a name to save the search preset)
-			if($form->isValid() && $request->query->get('search_form') && array_key_exists('save', $request->query->get('search_form'))) {
+			if($form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && array_key_exists('save', $request->query->get('search_form'))) {
 				
 				$form = $this->createFormBuilder($search)
 				->add('name', \Symfony\Component\Form\Extension\Core\Type\TextType::class)
@@ -532,7 +532,7 @@ class ElasticsearchController extends AppController
 						'form' => $form->createView(),
 				] );				
 			}//Form treatement after the "Delete" button has been pressed (to delete a previous saved search preset)
-			else if($form->isValid() && $request->query->get('search_form') && array_key_exists('delete', $request->query->get('search_form'))) {
+			else if($form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && array_key_exists('delete', $request->query->get('search_form'))) {
 					$this->addFlash('notice', 'Search has been deleted');
 			}
 			
@@ -682,7 +682,7 @@ class ElasticsearchController extends AppController
 			$currentFilters->remove('search_form[_token]');
 			
 			//Form treatement after the "Export results" button has been pressed (= ask for a "content type" <-> "template" mapping)
-			if($form->isValid() && $request->query->get('search_form') && array_key_exists('exportResults', $request->query->get('search_form'))) {
+			if($form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && array_key_exists('exportResults', $request->query->get('search_form'))) {
 				//Store all the content types present in the current resultset
 				$contentTypes = $this->getAllContentType($results);
 

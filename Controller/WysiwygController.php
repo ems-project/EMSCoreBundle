@@ -161,7 +161,7 @@ class WysiwygController extends AppController
     			return $this->redirectToRoute('ems_wysiwyg_index');
     		}
     		
-    		if($form->isValid()) {
+    		if($form->isSubmitted() && $form->isValid()) {
     			
     			$data = json_decode($stylesSet->getConfig(), true);
     			if(json_last_error()){
@@ -199,7 +199,7 @@ class WysiwygController extends AppController
     			return $this->redirectToRoute('ems_wysiwyg_index');
     		}
     		
-    		if($form->isValid()) {
+    		if($form->isSubmitted() && $form->isValid()) {
 	    		
 	    		$data = json_decode($profile->getConfig(), true);
 	    		if(json_last_error()){

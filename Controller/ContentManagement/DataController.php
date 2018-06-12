@@ -963,7 +963,6 @@ class DataController extends AppController
     public function editRevisionAction($revisionId, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $logger = $this->get('logger');
 
         /** @var RevisionRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:Revision');
@@ -975,7 +974,7 @@ class DataController extends AppController
         }
 
         $this->lockRevision($revision);
-        $logger->debug('Revision ' . $revisionId . ' locked');
+        $this->getLogger()->debug('Revision ' . $revisionId . ' locked');
 
         //TODO:Only a super user can edit a archived revision
 
@@ -986,7 +985,7 @@ class DataController extends AppController
 
 // 		$this->getDataService()->loadDataStructure($revision);
 // 		$this->getDataService()->generateInputValues($revision->getDataField());
-// 		$logger->debug('DataField structure generated');
+// 		$this->getLogger()->debug('DataField structure generated');
 
 
         $form = $this->createForm(RevisionType::class, $revision, [
@@ -994,7 +993,7 @@ class DataController extends AppController
             'has_copy' => $this->getAuthorizationChecker()->isGranted('ROLE_COPY_PASTE'),
         ]);
 
-        $logger->debug('Revision\'s form created');
+        $this->getLogger()->debug('Revision\'s form created');
 
 
         /**little trick to reorder collection*/
@@ -1007,7 +1006,7 @@ class DataController extends AppController
 
         $form->handleRequest($request);
 
-        $logger->debug('Revision request form handled');
+        $this->getLogger()->debug('Revision request form handled');
 
 
         if ($form->isSubmitted()) {//Save, Finalize or Discard
@@ -1029,7 +1028,7 @@ class DataController extends AppController
                 /** @var Revision $revision */
                 $revision = $form->getData();
 
-                $this->get('logger')->debug('Revision extracted from the form');
+                $this->getLogger()->debug('Revision extracted from the form');
 
 
                 $objectArray = $revision->getRawData();
@@ -1037,7 +1036,7 @@ class DataController extends AppController
                 if (array_key_exists('paste', $request->request->get('revision'))) {//Paste
                     $this->addFlash('notice', 'Data have been paste');
                     $objectArray = array_merge($objectArray, $request->getSession()->get('ems_clipboard', []));
-                    $this->get('logger')->debug('Paste data have been merged');
+                    $this->getLogger()->debug('Paste data have been merged');
                 }
 
                 if (array_key_exists('copy', $request->request->get('revision'))) {//Copy
@@ -1050,11 +1049,11 @@ class DataController extends AppController
 
                 $this->getDataService()->setMetaFields($revision);
 
-                $logger->debug('Revision before persist');
+                $this->getLogger()->debug('Revision before persist');
                 $em->persist($revision);
                 $em->flush();
 
-                $logger->debug('Revision after persist flush');
+                $this->getLogger()->debug('Revision after persist flush');
 
                 if (array_key_exists('publish', $request->request->get('revision'))) {//Finalize
 // 					try{
@@ -1112,7 +1111,7 @@ class DataController extends AppController
 
         // Call Audit service for log
         $this->get("ems.service.audit")->auditLog('DataController:editRevision', $revision->getRawData());
-        $logger->debug('Start twig rendering');
+        $this->getLogger()->debug('Start twig rendering');
         return $this->render('@EMSCore/data/edit-revision.html.twig', [
             'revision' => $revision,
             'form' => $form->createView(),
@@ -1204,7 +1203,7 @@ class DataController extends AppController
                 }
             }
 
-            if ($form->isValid() || !$contentType->getAskForOuuid()) {
+            if (($form->isSubmitted() && $form->isValid()) || !$contentType->getAskForOuuid()) {
                 $now = new \DateTime('now');
                 $revision->setContentType($contentType);
                 $revision->setDraft(true);

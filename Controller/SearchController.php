@@ -125,7 +125,7 @@ class SearchController extends AppController
 				return $this->redirectToRoute('ems_search_options_index');
 			}
 			
-			if($form->isValid()) {
+			if($form->isSubmitted() && $form->isValid()) {
 				$this->getSortOptionService()->save($sortOption);
 				return $this->redirectToRoute('ems_search_options_index');
 			}
@@ -157,7 +157,7 @@ class SearchController extends AppController
 				return $this->redirectToRoute('ems_search_options_index');
 			}
 			
-			if($form->isValid()) {
+			if($form->isSubmitted() && $form->isValid()) {
 				$this->getAggregateOptionService()->save($option);
 				return $this->redirectToRoute('ems_search_options_index');
 			}

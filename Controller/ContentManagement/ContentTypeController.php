@@ -222,7 +222,7 @@ class ContentTypeController extends AppController
                 $form->get('name')->addError(new FormError ('The content type name is malformed (format: [a-z][a-z0-9_-]*)'));
             }
 
-            if ($form->isValid()) {
+            if ($form->isSubmitted() && $form->isValid()) {
                 $normData = $form->get("import")->getNormData();
                 if ($normData) {
                     $name = $contentTypeAdded->getName();

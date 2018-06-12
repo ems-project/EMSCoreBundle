@@ -369,8 +369,8 @@ class CriteriaController extends AppController
 			if($dataField->getRawData() && strlen($dataField->getRawData()) > 0){
 				$categoryFieldTypeName = $dataField->getFieldType()->getType();
 				/**@var DataFieldType $categoryFieldType */
-				$categoryFieldType = $this->get('form.registry')->getType($categoryFieldTypeName)->getInnerType();
-			
+				$categoryFieldType = $this->getDataFieldType($categoryFieldTypeName);
+
 				$body['query']['bool']['must'][] = $categoryFieldType->getElasticsearchQuery($dataField);
 				$categoryChoiceList  = $categoryFieldType->getChoiceList($dataField->getFieldType(), [$dataField->getRawData()]);				
 			}
@@ -385,7 +385,7 @@ class CriteriaController extends AppController
 		foreach ($criteriaUpdateConfig->getCriterion() as $idxName => $criteria){
 			$fieldTypeName = $criteria->getFieldType()->getType();
 			/**@var DataFieldType $dataFieldType */
-			$dataFieldType = $this->get('form.registry')->getType($fieldTypeName)->getInnerType();
+			$dataFieldType = $this->getDataFieldType($fieldTypeName);
 			if(count($criteria->getRawData()) > 0) {
 				if($criteriaFieldName) {
 					$criteriaFilters[] = $dataFieldType->getElasticsearchQuery($criteria, ['nested' => $criteriaFieldName]);									

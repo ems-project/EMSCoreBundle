@@ -84,6 +84,7 @@ class AppExtension extends \Twig_Extension
             new \Twig_SimpleFunction('diff_raw', array($this, 'diffRaw')),
             new \Twig_SimpleFunction('diff_color', array($this, 'diffColor')),
             new \Twig_SimpleFunction('diff_boolean', array($this, 'diffBoolean')),
+            new \Twig_SimpleFunction('diff_choice', array($this, 'diffChoice')),
 		];
 	}
 	
@@ -224,6 +225,67 @@ class AppExtension extends \Twig_Extension
             $b = '<i class="'.$compareRawData[$fieldName].'"></i> '.$compareRawData[$fieldName];
         }
         return $this->diff($a, $b, $compare);
+    }
+
+
+
+    public function diffChoice($rawData, $labels, $choices, $compare, $fieldName, $compareRawData)
+    {
+        $b = $a = [];
+        $out = "";
+        $tag = 'li';
+        
+        if(is_array($rawData)) {
+            $a = $rawData;
+        }
+        elseif (is_scalar($rawData)) {
+            $tag = 'span';
+            $a = [$rawData];
+        }
+
+        if(isset($compareRawData[$fieldName])){
+            if(is_array($compareRawData[$fieldName])){
+                $b = $compareRawData[$fieldName];
+            }
+            elseif (is_scalar($compareRawData[$fieldName])) {
+                $b = [$compareRawData[$fieldName]];
+            }
+        }
+
+
+        foreach ($a as $item) {
+            $value = $item;
+            if(is_array($choices) && in_array($value, $choices)) {
+                $idx = array_search($value, $choices);
+                if(is_array($labels) && array_key_exists($idx, $labels)) {
+                    $value = $labels[$idx].' ('.$value.')';
+                }
+            }
+            if(!$compare || in_array($item, $b)) {
+                $out .= '<'.$tag.' class="">'.htmlentities($value).'</'.$tag.'>';
+            }
+            else {
+                $out .= '<'.$tag.' class="text-green"><ins class="diffmod">'.htmlentities($value).'</ins></'.$tag.'>';
+            }
+        }
+
+        if($compare){
+            foreach ($b as $item) {
+                $value = $item;
+                if(is_array($choices) && in_array($value, $choices)) {
+                    $idx = array_search($value, $choices);
+                    if(is_array($labels) && array_key_exists($idx, $labels)) {
+                        $value = $labels[$idx].' ('.$value.')';
+                    }
+                }
+                if (!in_array($item, $a)) {
+                    $out .= '<'.$tag.' class="text-red"><del class="diffmod">' . htmlentities($value) . '</del></'.$tag.'>';
+                }
+            }
+        }
+
+
+        return $out;
     }
 
     public function diffColor($rawData, $compare, $fieldName, $compareRawData)

@@ -474,23 +474,30 @@
 
 {% macro EMS_CoreBundle_Form_DataField_JSONFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
-	<dl>
-		<dt>
-			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
-			{% else %}
-				{{ dataField.fieldType.name }}
-			{% endif %}
-		</dt>
-		<dd>
-			<div class="panel panel-default">
-				<div class="panel-body">
-					<pre>{{ dataField.rawData|json_encode }}</pre>
-				</div>
-			</div>
-		</dd>
-	</dl>
-	{{ macros.messages(dataField) }}
+    {% set doCompare = compare and dataField.rawData|json_encode is not same as( compareRawData|get_string(dataField.fieldType.name) )  %}
+    {% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
+    <dl>
+        <dt>
+            {% if dataField.fieldType.displayOptions.label is defined %}
+                {{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+            {% else %}
+                {{ dataField.fieldType.name }}
+            {% endif %}
+        </dt>
+        <dd>
+            <div class="panel panel-default">
+                <div class="panel-body {{ color }}">
+                    {% if doCompare  %}
+                        <pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ compareRawData|get_string(dataField.fieldType.name)|internal_links }}</pre>
+                        <pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ dataField.rawData|json_encode|internal_links }}</pre>
+                    {% else %}
+                        <pre class="ems-code-editor" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ dataField.rawData|json_encode|internal_links }}</pre>
+                    {% endif %}
+                </div>
+            </div>
+        </dd>
+    </dl>
+    {{ macros.messages(dataField) }}
 {% endmacro %}
 
 {% macro EMS_CoreBundle_Form_DataField_WysiwygFieldType(dataField, compare, compareRawData) %}
@@ -638,10 +645,8 @@
 
 {% macro EMS_CoreBundle_Form_DataField_ChoiceFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
-    {% set doCompare = compare and dataField.rawData is not same as( compareRawData|get_string(dataField.fieldType.name) )  %}
-    {% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
-	<dl>
-		<dt class="{{ color }}">
+    <dl>
+		<dt class="">
 			{% if dataField.fieldType.displayOptions.label is defined %}
 				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
 			{% else %}
@@ -652,28 +657,8 @@
 			<ul>
 			    {% set labels = dataField.fieldType.displayOptions.labels|replace({"\r":''})|split('\n') %}
 			    {% set choices = dataField.fieldType.displayOptions.choices|replace({"\r":''})|split('\n') %}
-						        
-				{% if dataField.fieldType.displayOptions.multiple %}
-					{% for value in dataField.arrayTextValue if value is not null %}
-						{% set label = value %}
-						{% if labels|length > 0 %}
-						    {% for idx, item in choices if item == value %}
-							    {% if idx < labels|length %}
-							        {% set label = cycle(labels, idx)~' ('~value~')' %}
-							    {% endif %}
-							{% endfor %}
-						{% endif %}
-						<li>{{ label|raw }}</li>
-					{% endfor %}
-				{% else %}
-					{% set label = dataField.textValue %}
-				    {% for idx, item in choices if item == dataField.textValue %}
-					    {% if idx < labels|length %}
-					        {% set label = cycle(labels, idx)~' ('~dataField.textValue~')' %}
-					    {% endif %}
-					{% endfor %}
-				    {{ label }}
-				{% endif %}
+
+				{{ diff_choice(dataField.rawData, labels, choices, compare, dataField.fieldType.name, compareRawData)|raw }}
 			</ul>
 		</dd>
 	</dl>

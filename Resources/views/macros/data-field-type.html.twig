@@ -405,7 +405,7 @@
 		{% else %}
 			<dt>{{ dataField.fieldType.name }}</dt>
 		{% endif %}
-		<dd>{{ dataField.textValue }}</dd>
+		<dd>{{ diff_text(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}</dd>
 	</dl>
 	{{ macros.messages(dataField) }}
 {% endmacro %}

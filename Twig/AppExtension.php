@@ -191,7 +191,7 @@ class AppExtension extends \Twig_Extension
             else{
                 $textClass = 'text-gray';
                 $textLabel = '[not defined]';
-                $tag = 's';
+                $tag = 'span';
             }
         }
 

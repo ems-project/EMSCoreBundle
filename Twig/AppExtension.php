@@ -84,7 +84,8 @@ class AppExtension extends \Twig_Extension
             new \Twig_SimpleFunction('diff_raw', array($this, 'diffRaw')),
             new \Twig_SimpleFunction('diff_color', array($this, 'diffColor')),
             new \Twig_SimpleFunction('diff_boolean', array($this, 'diffBoolean')),
-            new \Twig_SimpleFunction('diff_choice', array($this, 'diffChoice')),
+            new \Twig_SimpleFunction('diff_choice', array($this, 'diffChoice'), ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('diff_data_link', array($this, 'diffDataLink'), ['is_safe' => ['html']]),
 		];
 	}
 	
@@ -280,6 +281,54 @@ class AppExtension extends \Twig_Extension
                 }
                 if (!in_array($item, $a)) {
                     $out .= '<'.$tag.' class="text-red"><del class="diffmod">' . htmlentities($value) . '</del></'.$tag.'>';
+                }
+            }
+        }
+
+
+        return $out;
+    }
+
+
+
+
+
+
+
+    public function diffDataLink($rawData, $compare, $fieldName, $compareRawData)
+    {
+        $b = $a = [];
+        $out = "";
+
+        if(is_array($rawData)) {
+            $a = $rawData;
+        }
+        elseif (is_scalar($rawData)) {
+            $a = [$rawData];
+        }
+
+        if(isset($compareRawData[$fieldName])){
+            if(is_array($compareRawData[$fieldName])){
+                $b = $compareRawData[$fieldName];
+            }
+            elseif (is_scalar($compareRawData[$fieldName])) {
+                $b = [$compareRawData[$fieldName]];
+            }
+        }
+
+        foreach ($a as $item) {
+            if(!$compare || in_array($item, $b)) {
+                $out .= $this->dataLink($item).' ';
+            }
+            else {
+                $out .= $this->dataLink($item, false, 'ins').' ';
+            }
+        }
+
+        if($compare){
+            foreach ($b as $item) {
+                if (!in_array($item, $a)) {
+                    $out .= $this->dataLink($item, false, 'del').' ';
                 }
             }
         }
@@ -606,7 +655,7 @@ class AppExtension extends \Twig_Extension
 		
 	}
 		
-	function dataLink($key, $revisionId=false){
+	function dataLink($key, $revisionId=false, $diffMod=false){
 		$out = $key;
 		$splitted = explode(':', $key);
 		if($splitted && count($splitted) == 2 && strlen($splitted[0]) > 0 && strlen($splitted[1]) > 0 ){
@@ -659,7 +708,11 @@ class AppExtension extends \Twig_Extension
 						$out = '<span class="" style="color:'.$contrasted.';">'.$out.'</span>';
 						$addAttribute = ' style="background-color: '.$result['_source'][$contentType->getColorField()].';border-color: '.$result['_source'][$contentType->getColorField()].';"';
 						
-					}					
+					}
+
+					if($diffMod !== false) {
+                        $out = '<'.$diffMod.' class="diffmod">'.$out.'<'.$diffMod.'>';
+                    }
 				}
 				catch(\Exception $e) {
 					

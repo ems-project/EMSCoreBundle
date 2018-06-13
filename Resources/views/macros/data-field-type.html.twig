@@ -367,14 +367,7 @@
 			<dt>{{ dataField.fieldType.name }}</dt>
 		{% endif %}
 		<dd>
-			{% if dataField.rawData is iterable %}
-				{% for value in dataField.rawData %}
-		   			{{ value|data_link|raw }}
-				{% endfor %}
-			{% else %}
-			   	{{ dataField.rawData|data_link|raw }}
-			{% endif %}
-		
+            {{ diff_data_link(dataField.rawData, compare, dataField.fieldType.name, compareRawData) }}
 		</dd>
 	</dl>
 	{{ macros.messages(dataField) }}
@@ -674,7 +667,7 @@
 			    {% set labels = dataField.fieldType.displayOptions.labels|replace({"\r":''})|split('\n') %}
 			    {% set choices = dataField.fieldType.displayOptions.choices|replace({"\r":''})|split('\n') %}
 
-				{{ diff_choice(dataField.rawData, labels, choices, compare, dataField.fieldType.name, compareRawData)|raw }}
+				{{ diff_choice(dataField.rawData, labels, choices, compare, dataField.fieldType.name, compareRawData) }}
 			</ul>
 		</dd>
 	</dl>

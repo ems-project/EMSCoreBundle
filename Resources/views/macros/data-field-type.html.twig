@@ -419,6 +419,8 @@
 
 {% macro EMS_CoreBundle_Form_DataField_ComputedFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
+	{% set doCompare = compare and dataField.rawData|json_encode is not same as( compareRawData|get_string(dataField.fieldType.name) )  %}
+    {% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
 	<dl>
 		{% if dataField.fieldType.displayOptions.label is defined %}
 			<dt>{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})</dt>
@@ -426,12 +428,26 @@
 			<dt>{{ dataField.fieldType.name }}</dt>
 		{% endif %}
 		<dd>
-			{% if dataField.fieldType.displayOptions.displayTemplate %}
-				{{ dataField.fieldType.displayOptions.displayTemplate|generate_from_template({data: dataField.rawData, dataField: dataField})|raw }}
-			{% elseif dataField.rawData is iterable %}
-				Complex structure []
+            {% if dataField.fieldType.displayOptions.displayTemplate %}
+            	{% if doCompare  %}
+					<div class="panel-body {{ color }}">
+						<div class="col-md-6">{% if attribute(compareRawData, dataField.fieldType.name) is defined %}{{ dataField.fieldType.displayOptions.displayTemplate|generate_from_template({data: attribute(compareRawData, dataField.fieldType.name), dataField: dataField})|raw }}{% endif %}</div>
+						<div class="col-md-6">{{ dataField.fieldType.displayOptions.displayTemplate|generate_from_template({data: dataField.rawData, dataField: dataField})|raw }}</div>
+					</div>
+                {% else %}
+                    {{ dataField.fieldType.displayOptions.displayTemplate|generate_from_template({data: dataField.rawData, dataField: dataField})|raw }}
+                {% endif %}
 			{% else %}
-				{{ dataField.rawData }}
+				<div class="panel panel-default">
+					<div class="panel-body {{ color }}">
+						{% if doCompare  %}
+							<pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ compareRawData|get_string(dataField.fieldType.name)|internal_links }}</pre>
+							<pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ dataField.rawData|json_encode|internal_links }}</pre>
+						{% else %}
+							<pre class="ems-code-editor" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ dataField.rawData|json_encode|internal_links }}</pre>
+						{% endif %}
+					</div>
+				</div>
 			{% endif %}
 		</dd>
 	</dl>

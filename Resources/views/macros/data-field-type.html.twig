@@ -544,7 +544,7 @@
 
 {% macro EMS_CoreBundle_Form_DataField_JSONFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
-    {% set doCompare = compare and dataField.rawData|json_encode is not same as( compareRawData|get_string(dataField.fieldType.name) )  %}
+    {% set doCompare = compare and dataField.rawData|json_encode is not same as( (attribute(compareRawData, dataField.fieldType.name) is defined?attribute(compareRawData, dataField.fieldType.name):null)|json_encode )  %}
     {% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
     <dl>
         <dt>
@@ -633,7 +633,7 @@
 		</dt>
 		<dd>
 			{% if dataField.textValue %}	
-				***************
+				*************** {% if compare %}(May have change or not){% endif %}
 			{% else %}
 				not defined
 			{% endif %}
@@ -707,7 +707,10 @@
 			{% endif %}
 		</dt>
 		<dd>
-			{{ dataField.textValue|raw }}
+            {% set labels = dataField.fieldType.displayOptions.labels|replace({"\r":''})|split('\n') %}
+            {% set choices = dataField.fieldType.displayOptions.choices|replace({"\r":''})|split('\n') %}
+
+            {{ diff_choice(dataField.rawData, labels, choices, compare, dataField.fieldType.name, compareRawData) }}
 		</dd>
 	</dl>
 	{{ macros.messages(dataField) }}

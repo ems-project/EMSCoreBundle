@@ -447,15 +447,11 @@
 			<dt>{{ dataField.fieldType.name }}</dt>
 		{% endif %}
 		<dd>
-			{% if dataField.fieldType.displayOptions.multiple %}
-				<ul>
-					{% for value in dataField.arrayTextValue if value  %}
-						<li>{{ value }}</li>
-					{% endfor %}
-				</ul>
-			{% else %}
-				{{ dataField.textValue }}
-			{% endif %}
+            {% set labels = dataField.fieldType.displayOptions.labels|replace({"\r":''})|split('\n') %}
+            {% set choices = dataField.fieldType.displayOptions.choices|replace({"\r":''})|split('\n') %}
+			<ul>
+            	{{ diff_choice(dataField.rawData, labels, choices, compare, dataField.fieldType.name, compareRawData) }}
+			</ul>
 		
 		</dd>
 	</dl>
@@ -477,7 +473,7 @@
 
 {% macro EMS_CoreBundle_Form_DataField_ComputedFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
-	{% set doCompare = compare and dataField.rawData|json_encode is not same as( compareRawData|get_string(dataField.fieldType.name) )  %}
+	{% set doCompare = compare and dataField.rawData|json_encode is not same as( (attribute(compareRawData, dataField.fieldType.name) is defined?attribute(compareRawData, dataField.fieldType.name):null)|json_encode  )  %}
     {% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
 	<dl>
 		{% if dataField.fieldType.displayOptions.label is defined %}
@@ -741,7 +737,7 @@
 
 {% macro EMS_CoreBundle_Form_DataField_CheckboxFieldType(dataField, compare, compareRawData) %}
 {% import _self as macros %}
-    {% set doCompare = compare and dataField.rawData is not same as( compareRawData|get_string(dataField.fieldType.name) )  %}
+    {% set doCompare = compare and dataField.rawData is not same as( attribute(compareRawData, dataField.fieldType.name) is defined ? attribute(compareRawData, dataField.fieldType.name) : null )  %}
     {% set color = not doCompare ? '' : 'bg-orange' %}
 	<dl>
 		<dt class="{{ color }}">

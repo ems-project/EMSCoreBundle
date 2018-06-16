@@ -414,6 +414,9 @@ class AppExtension extends \Twig_Extension
             }
         }
 
+        if(empty($out)) {
+            $out = '<span class="text-gray">[empty]</span>';
+        }
 
         return $out;
     }

@@ -632,10 +632,25 @@
 			{% endif %}
 		</dt>
 		<dd>
-			{% if dataField.textValue %}	
-				*************** {% if compare %}(May have change or not){% endif %}
+            {% set hasChanged = compare and dataField.rawData is not same as ( attribute(compareRawData, dataField.fieldType.name) is defined ? attribute(compareRawData, dataField.fieldType.name) : null ) %}
+            {% if dataField.rawData %}
+                {% if hasChanged %}
+					{% if attribute(compareRawData, dataField.fieldType.name) is defined %}
+						<span class="text-orange">*************** (It has been updated)</span>
+					{% else %}
+						<span class="text-green"><ins class="diffmod">***************</ins> (It has been defined)</span>
+                    {% endif %}
+				{% else %}
+					***************
+				{% endif %}
+
 			{% else %}
-				not defined
+                {% if hasChanged %}
+					<span class="text-red"><del class="diffmod">***************</del> (It has been deleted)</span>
+                {% else %}
+					<span class="text-grey">[not defined]</span>
+                {% endif %}
+
 			{% endif %}
 		</dd>
 	</dl>

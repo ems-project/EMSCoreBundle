@@ -79,12 +79,13 @@ class AppExtension extends \Twig_Extension
 				new \Twig_SimpleFunction('cant_be_finalized', array($this, 'cantBeFinalized')),
 				new \Twig_SimpleFunction('get_default_environments', array($this, 'getDefaultEnvironments')),
 				new \Twig_SimpleFunction('sequence', array($this, 'getSequenceNextValue')),
-            new \Twig_SimpleFunction('diff_text', array($this, 'diffText')),
-            new \Twig_SimpleFunction('diff_html', array($this, 'diffHtml')),
-            new \Twig_SimpleFunction('diff_icon', array($this, 'diffIcon')),
-            new \Twig_SimpleFunction('diff_raw', array($this, 'diffRaw')),
-            new \Twig_SimpleFunction('diff_color', array($this, 'diffColor')),
-            new \Twig_SimpleFunction('diff_boolean', array($this, 'diffBoolean')),
+            new \Twig_SimpleFunction('diff_text', array($this, 'diffText'), ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('diff', array($this, 'diff'), ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('diff_html', array($this, 'diffHtml'), ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('diff_icon', array($this, 'diffIcon'), ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('diff_raw', array($this, 'diffRaw'), ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('diff_color', array($this, 'diffColor'), ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('diff_boolean', array($this, 'diffBoolean'), ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('diff_choice', array($this, 'diffChoice'), ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('diff_data_link', array($this, 'diffDataLink'), ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('diff_date', array($this, 'diffDate'), ['is_safe' => ['html']]),
@@ -241,14 +242,8 @@ class AppExtension extends \Twig_Extension
         $b = $a = [];
         $out = "";
         $tag = 'li';
-
-        if(is_array($rawData)) {
-            $a = $rawData;
-        }
-        elseif (is_scalar($rawData)) {
-            $tag = 'span';
-            $a = [$rawData];
-        }
+        $insColor = 'green';
+        $delColor = 'red';
 
         if(isset($compareRawData[$fieldName])){
             if(is_array($compareRawData[$fieldName])){
@@ -257,6 +252,17 @@ class AppExtension extends \Twig_Extension
             elseif (is_scalar($compareRawData[$fieldName])) {
                 $b = [$compareRawData[$fieldName]];
             }
+        }
+
+        if(is_array($rawData)) {
+            $a = $rawData;
+        }
+        elseif (is_scalar($rawData)) {
+            $tag = 'span';
+            if(! empty($b)){
+                $insColor = $delColor = 'orange';
+            }
+            $a = [$rawData];
         }
 
         $formatedA = [];
@@ -279,10 +285,10 @@ class AppExtension extends \Twig_Extension
             $value2 = false;
 
             if($internalFormat) {
-                $value2 = $date->format($internalFormat);
+                $internal = $date->format($internalFormat);
 //                dump($value2, $b);
-                $formatedA[] = $value2;
-                $inArray = in_array($value2, $b);
+                $formatedA[] = $internal;
+                $inArray = in_array($internal, $b);
             }
             elseif($format2) {
                 $value2 = $date->format($format2);
@@ -304,7 +310,7 @@ class AppExtension extends \Twig_Extension
                 $out .= '<'.$tag.' class="">'.htmlentities($value).'</'.$tag.'>';
             }
             else {
-                $out .= '<'.$tag.' class="text-green"><ins class="diffmod">'.htmlentities($value).'</ins></'.$tag.'>';
+                $out .= '<'.$tag.' class="text-'.$insColor.'"><ins class="diffmod">'.htmlentities($value).'</ins></'.$tag.'>';
             }
         }
 
@@ -325,17 +331,14 @@ class AppExtension extends \Twig_Extension
                 $value2 = false;
 
                 if($internalFormat) {
-                    $value2 = $date->format($internalFormat);
-//                dump($value2, $b);
-                    $inArray = in_array($value2, $formatedA);
+                    $internal = $date->format($internalFormat);
+                    $inArray = in_array($internal, $formatedA);
                 }
                 elseif($format2) {
                     $value2 = $date->format($format2);
-//                dump($value2, $b);
                     $inArray = in_array($item, $formatedA);
                 }
                 else{
-//                dump($value, $b);
                     $inArray = in_array($value, $formatedA);
                 }
 
@@ -344,7 +347,7 @@ class AppExtension extends \Twig_Extension
                 }
 
                 if (!$inArray) {
-                    $out .= '<'.$tag.' class="text-red"><del class="diffmod">' . htmlentities($value) . '</del></'.$tag.'>';
+                    $out .= ' <'.$tag.' class="text-'.$delColor.'"><del class="diffmod">' . htmlentities($value) . '</del></'.$tag.'>';
                 }
             }
         }
@@ -359,14 +362,8 @@ class AppExtension extends \Twig_Extension
         $b = $a = [];
         $out = "";
         $tag = 'li';
-        
-        if(is_array($rawData)) {
-            $a = $rawData;
-        }
-        elseif (is_scalar($rawData)) {
-            $tag = 'span';
-            $a = [$rawData];
-        }
+        $insColor = 'green';
+        $delColor = 'red';
 
         if(isset($compareRawData[$fieldName])){
             if(is_array($compareRawData[$fieldName])){
@@ -375,6 +372,17 @@ class AppExtension extends \Twig_Extension
             elseif (is_scalar($compareRawData[$fieldName])) {
                 $b = [$compareRawData[$fieldName]];
             }
+        }
+        
+        if(is_array($rawData)) {
+            $a = $rawData;
+        }
+        elseif (is_scalar($rawData)) {
+            $tag = 'span';
+            if(! empty($b)){
+                $insColor = $delColor = 'orange';
+            }
+            $a = [$rawData];
         }
 
 
@@ -390,7 +398,7 @@ class AppExtension extends \Twig_Extension
                 $out .= '<'.$tag.' class="">'.htmlentities($value).'</'.$tag.'>';
             }
             else {
-                $out .= '<'.$tag.' class="text-green"><ins class="diffmod">'.htmlentities($value).'</ins></'.$tag.'>';
+                $out .= '<'.$tag.' class="text-'.$insColor.'"><ins class="diffmod">'.htmlentities($value).'</ins></'.$tag.'>';
             }
         }
 
@@ -404,7 +412,7 @@ class AppExtension extends \Twig_Extension
                     }
                 }
                 if (!in_array($item, $a)) {
-                    $out .= '<'.$tag.' class="text-red"><del class="diffmod">' . htmlentities($value) . '</del></'.$tag.'>';
+                    $out .= '<'.$tag.' class="text-'.$delColor.'"><del class="diffmod">' . htmlentities($value) . '</del></'.$tag.'>';
                 }
             }
         }

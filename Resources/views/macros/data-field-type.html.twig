@@ -742,11 +742,8 @@
 		</dt>
 		<dd>
 			<ul>
-				{% for value in dataField.rawData %}
-					<li>
-						{{ value|date(dataField.fieldType.displayOptions.displayFormat|convertJavascriptDateFormat) }}
-					</li>
-				{% endfor %}
+				{{ diff_date(dataField.rawData, compare, dataField.fieldType.name, compareRawData, dataField.fieldType.displayOptions.displayFormat|convertJavascriptDateFormat, false, dataField.fieldType.mappingOptions.format|convertJavaDateFormat) }}
+
 			</ul>
 		</dd>
 	</dl>
@@ -809,10 +806,7 @@
 			{% endif %}
 		</dt>
 		<dd>
-			{% if dataField.rawData %}
-				{{ dataField.rawData|date(dataField.fieldType.options|getTimeFieldTimeFormat) }}
-				({{ dataField.rawData|date(dataField.fieldType.mappingOptions.format|convertJavaDateFormat) }})
-			{% endif %}
+            {{ diff_time(dataField.rawData, compare, dataField.fieldType.name, compareRawData, dataField.fieldType.options|getTimeFieldTimeFormat, dataField.fieldType.mappingOptions.format|convertJavaDateFormat) }}
 		</dd>
 	</dl>
 	{{ macros.messages(dataField) }}

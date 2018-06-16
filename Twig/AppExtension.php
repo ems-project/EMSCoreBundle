@@ -2,6 +2,7 @@
 namespace EMS\CoreBundle\Twig;
 
 use Caxy\HtmlDiff\HtmlDiff;
+use DateTime;
 use EMS\CoreBundle\Form\DataField\DateFieldType;
 use EMS\CoreBundle\Form\DataField\TimeFieldType;
 use EMS\CoreBundle\Service\UserService;
@@ -86,6 +87,8 @@ class AppExtension extends \Twig_Extension
             new \Twig_SimpleFunction('diff_boolean', array($this, 'diffBoolean')),
             new \Twig_SimpleFunction('diff_choice', array($this, 'diffChoice'), ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('diff_data_link', array($this, 'diffDataLink'), ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('diff_date', array($this, 'diffDate'), ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('diff_time', array($this, 'diffTime'), ['is_safe' => ['html']]),
 		];
 	}
 	
@@ -228,6 +231,127 @@ class AppExtension extends \Twig_Extension
         return $this->diff($a, $b, $compare);
     }
 
+
+    public function diffTime($rawData, $compare, $fieldName, $compareRawData, $format1, $format2){
+        return $this->diffDate($rawData, $compare, $fieldName, $compareRawData, $format1, $format2,TimeFieldType::storeFormat);
+    }
+
+    public function diffDate($rawData, $compare, $fieldName, $compareRawData, $format1, $format2=false, $internalFormat=false)
+    {
+        $b = $a = [];
+        $out = "";
+        $tag = 'li';
+
+        if(is_array($rawData)) {
+            $a = $rawData;
+        }
+        elseif (is_scalar($rawData)) {
+            $tag = 'span';
+            $a = [$rawData];
+        }
+
+        if(isset($compareRawData[$fieldName])){
+            if(is_array($compareRawData[$fieldName])){
+                $b = $compareRawData[$fieldName];
+            }
+            elseif (is_scalar($compareRawData[$fieldName])) {
+                $b = [$compareRawData[$fieldName]];
+            }
+        }
+
+        $formatedA = [];
+
+        foreach ($a as $item) {
+
+            if($item instanceof \DateTime) {
+                $date = $item;
+            }
+            elseif($internalFormat){
+                $date = \DateTime::createFromFormat($internalFormat, $item);
+            }
+            else {
+                $date = new DateTime($item);
+            }
+
+
+
+            $value = $date->format($format1);
+            $value2 = false;
+
+            if($internalFormat) {
+                $value2 = $date->format($internalFormat);
+//                dump($value2, $b);
+                $formatedA[] = $value2;
+                $inArray = in_array($value2, $b);
+            }
+            elseif($format2) {
+                $value2 = $date->format($format2);
+                $formatedA[] = $value2;
+//                dump($value2, $b);
+                $inArray = in_array($item, $b);
+            }
+            else{
+//                dump($value, $b);
+                $formatedA[] = $value;
+                $inArray = in_array($value, $b);
+            }
+
+            if($value2){
+                $value .= ' ('.$value2.')';
+            }
+
+            if(!$compare || $inArray) {
+                $out .= '<'.$tag.' class="">'.htmlentities($value).'</'.$tag.'>';
+            }
+            else {
+                $out .= '<'.$tag.' class="text-green"><ins class="diffmod">'.htmlentities($value).'</ins></'.$tag.'>';
+            }
+        }
+
+        if($compare){
+            foreach ($b as $item) {
+
+                if($item instanceof \DateTime) {
+                    $date = $item;
+                }
+                elseif($internalFormat){
+                    $date = \DateTime::createFromFormat($internalFormat, $item);
+                }
+                else {
+                    $date = new DateTime($item);
+                }
+
+                $value = $date->format($format1);
+                $value2 = false;
+
+                if($internalFormat) {
+                    $value2 = $date->format($internalFormat);
+//                dump($value2, $b);
+                    $inArray = in_array($value2, $formatedA);
+                }
+                elseif($format2) {
+                    $value2 = $date->format($format2);
+//                dump($value2, $b);
+                    $inArray = in_array($item, $formatedA);
+                }
+                else{
+//                dump($value, $b);
+                    $inArray = in_array($value, $formatedA);
+                }
+
+                if($value2){
+                    $value .= ' ('.$value2.')';
+                }
+
+                if (!$inArray) {
+                    $out .= '<'.$tag.' class="text-red"><del class="diffmod">' . htmlentities($value) . '</del></'.$tag.'>';
+                }
+            }
+        }
+
+
+        return $out;
+    }
 
 
     public function diffChoice($rawData, $labels, $choices, $compare, $fieldName, $compareRawData)

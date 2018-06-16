@@ -77,25 +77,80 @@
 				{% endif %}
 		</h3>
 	</div>
-	<div class="panel-body" >
-		{% if dataField.rawData and dataField.rawData.sha1 is defined %}
-			{% if dataField.rawData.sha1 and dataField.rawData.mimetype starts with 'image/' %}
-				{% set path = path('ems.file.view', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) %}
-				{% if dataField.fieldType.displayOptions.imageAssetConfigIdentifier is defined and dataField.fieldType.displayOptions.imageAssetConfigIdentifier %}
-				    {% set path = path('ems_asset_processor', {'hash':dataField.rawData.sha1, 'processor': dataField.fieldType.displayOptions.imageAssetConfigIdentifier, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) %}
-				{% endif %}
-				<img src="{{ path }}" class="img-responsive" alt="Image of the field {{ dataField.fieldType.name }}">
-			{% else %}
-                  	<strong>
-                  		{{ dataField.rawData.filename }}
-                  	</strong>
+    {% set doCompare = false %}
+    {% set compareColor = '' %}
+    {% set showA = true %}
+    {% set showB = false %}
+	{% if compare %}
+        {% if dataField.rawData and dataField.rawData.sha1 is defined and attribute(compareRawData, dataField.fieldType.name) is defined and attribute(compareRawData, dataField.fieldType.name).sha1 is defined %}
+
+
+			{% if dataField.rawData.sha1 != attribute(compareRawData, dataField.fieldType.name).sha1 %}
+                {% set doCompare = true %}
+                {% set compareColor = 'orange' %}
+                {% set showB = true %}
 			{% endif %}
+		{% elseif dataField.rawData and dataField.rawData.sha1 is defined %}
+            {% set doCompare = true %}
+            {% set compareColor = 'green' %}
+		{% else %}
+            {% set doCompare = true %}
+            {% set compareColor = 'red' %}
+            {% set showA = false %}
+            {% set showB = true %}
 		{% endif %}
-		
-	</div>
-	{% if dataField.rawData and dataField.rawData.sha1 is defined and dataField.rawData.sha1 %}
-	    {% set tempId = dataField.fieldType.name~'_'~random() %}
-		<div class="panel-footer" >
+	{% endif %}
+
+	{% if showA %}
+		<div class="panel-body{% if showA and showB %} col-md-6{% endif %} bg-{{ compareColor }}" >
+			{% if dataField.rawData and dataField.rawData.sha1 is defined %}
+				{% if dataField.rawData.sha1 and dataField.rawData.mimetype starts with 'image/' %}
+					{% set path = path('ems.file.view', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) %}
+					{% if dataField.fieldType.displayOptions.imageAssetConfigIdentifier is defined and dataField.fieldType.displayOptions.imageAssetConfigIdentifier %}
+						{% set path = path('ems_asset_processor', {'hash':dataField.rawData.sha1, 'processor': dataField.fieldType.displayOptions.imageAssetConfigIdentifier, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) %}
+					{% endif %}
+				{% if doCompare %}
+					<ins class="diffmod">
+                {% endif %}
+				<img src="{{ path }}" class="img-responsive" alt="Image of the field {{ dataField.fieldType.name }}">
+				{% if doCompare %}
+					</ins>
+				{% endif %}
+				{% else %}
+						<strong>
+                            {% if doCompare %}
+								<ins class="diffmod">
+							{% endif %}
+							{{ dataField.rawData.filename }}
+                            {% if doCompare %}
+								</ins>
+							{% endif %}
+						</strong>
+				{% endif %}
+			{% endif %}
+		</div>
+	{% endif %}
+    {% if showB %}
+
+			<div class="panel-body{% if showA and showB %} col-md-6{% endif %} bg-{{ compareColor }}" >
+			{% if attribute(compareRawData, dataField.fieldType.name).mimetype starts with 'image/' %}
+				{% set path = path('ems.file.view', {'sha1':attribute(compareRawData, dataField.fieldType.name).sha1, 'type':attribute(compareRawData, dataField.fieldType.name).mimetype, 'name':attribute(compareRawData, dataField.fieldType.name).filename }) %}
+				{% if dataField.fieldType.displayOptions.imageAssetConfigIdentifier is defined and dataField.fieldType.displayOptions.imageAssetConfigIdentifier %}
+					{% set path = path('ems_asset_processor', {'hash':attribute(compareRawData, dataField.fieldType.name).sha1, 'processor': dataField.fieldType.displayOptions.imageAssetConfigIdentifier, 'type':attribute(compareRawData, dataField.fieldType.name).mimetype, 'name':attribute(compareRawData, dataField.fieldType.name).filename }) %}
+				{% endif %}
+				<del class="diffmod">
+					<img src="{{ path }}" class="img-responsive" alt="Image of the field {{ dataField.fieldType.name }}">
+				</del>
+			{% else %}
+				<strong>
+					<del class="diffmod">{{ attribute(compareRawData, dataField.fieldType.name).filename }}</del>
+				</strong>
+			{% endif %}
+			</div>
+    {% endif %}
+	<div class="panel-footer" >
+		{% if dataField.rawData and dataField.rawData.sha1 is defined and dataField.rawData.sha1 %}
+	    	{% set tempId = dataField.fieldType.name~'_'~random() %}
 			<div class="btn-group">
     			<button type="button" class="btn btn-small btn-primary asset-details" data-toggle="modal" data-target="#indexed-details-revision_{{ tempId }}">
                 	<i class="fa fa-info"></i>
@@ -165,8 +220,12 @@
               </div>
             </div>
             </div>
-		</div>
-	{% endif %}
+		{% endif %}
+
+        {% if doCompare and showB %}
+			<a href="{{ path('ems.file.view', {'sha1':attribute(compareRawData, dataField.fieldType.name).sha1, 'type':attribute(compareRawData, dataField.fieldType.name).mimetype, 'name':attribute(compareRawData, dataField.fieldType.name).filename }) }}" class="btn btn-small btn-primary"><i class="fa fa-history"></i>&nbsp;{{'View Previous'|trans}}</a>
+        {% endif %}
+	</div>
 </div>
 {% endmacro %}
 
@@ -772,21 +831,41 @@
 		
 		<dd>
 			<ul>
-				{% if dateFrom %}
+				{% set child = compareRawData %}
+				{% if dataField.fieldType.mappingOptions.nested %}
+					{% if attribute(compareRawData, dataField.fieldType.name) is defined  %}
+                        {% set child = attribute(compareRawData, dataField.fieldType.name) %}
+					{% else %}
+                        {% set child = null %}
+					{% endif %}
+				{% endif %}
+				{#{% set child = (dataField.fieldType.mappingOptions.nested ? (attribute(compareRawData, dataField.fieldType.name) is defined ? attribute(compareRawData, dataField.fieldType.name) : null ) : compareRawData, dataField.fieldType.displayOptions.locale.format|convertJavascriptDateRangeFormat) %}#}
+
+
+                {% if dateFrom %}
 					<li>
 						<b>From </b>
-						{{ dateFrom|date(dataField.fieldType.displayOptions.locale.format|convertJavascriptDateRangeFormat) }}
+                        {{ diff_date(dateFrom, compare, dataField.fieldType.mappingOptions.fromDateMachineName, child, dataField.fieldType.displayOptions.locale.format|convertJavascriptDateRangeFormat, false, constant('\\DateTime::ISO8601')) }}
 					</li>	
 				{% endif %}		
 				{% if dateTo %}
 					<li>
 						<b>To </b>
-						{{ dateTo|date(dataField.fieldType.displayOptions.locale.format|convertJavascriptDateRangeFormat) }}
+                        {{ diff_date(dateTo, compare, dataField.fieldType.mappingOptions.toDateMachineName, child, dataField.fieldType.displayOptions.locale.format|convertJavascriptDateRangeFormat, false, constant('\\DateTime::ISO8601')) }}
 					</li>	
-				{% endif %}		
+				{% endif %}
 				{% if dateFrom and dateTo %}
 					<li>
-						<b>Duration </b> {{ dateFrom|date_difference(dateTo, dataField.fieldType.displayOptions.timePicker) }}
+						<b>Duration </b>
+						{% if compare %}
+							{% if attribute(child, dataField.fieldType.mappingOptions.fromDateMachineName) is defined and attribute(child, dataField.fieldType.mappingOptions.toDateMachineName) is defined %}
+                                {{ diff(dateFrom|date_difference(dateTo, dataField.fieldType.displayOptions.timePicker), attribute(child, dataField.fieldType.mappingOptions.fromDateMachineName)|date_difference(attribute(child, dataField.fieldType.mappingOptions.toDateMachineName), dataField.fieldType.displayOptions.timePicker), compare, true) }}
+							{% else %}
+								<span class="text-green"><ins class="diffmod">{{ dateFrom|date_difference(dateTo, dataField.fieldType.displayOptions.timePicker) }}</ins></span>
+							{% endif %}
+						{% else %}
+							{{ dateFrom|date_difference(dateTo, dataField.fieldType.displayOptions.timePicker) }}
+						{% endif %}
 					</li>
 				{% endif %}
 			</ul>

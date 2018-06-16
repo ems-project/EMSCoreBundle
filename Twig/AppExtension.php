@@ -286,18 +286,15 @@ class AppExtension extends \Twig_Extension
 
             if($internalFormat) {
                 $internal = $date->format($internalFormat);
-//                dump($value2, $b);
                 $formatedA[] = $internal;
                 $inArray = in_array($internal, $b);
             }
             elseif($format2) {
                 $value2 = $date->format($format2);
                 $formatedA[] = $value2;
-//                dump($value2, $b);
                 $inArray = in_array($item, $b);
             }
             else{
-//                dump($value, $b);
                 $formatedA[] = $value;
                 $inArray = in_array($value, $b);
             }

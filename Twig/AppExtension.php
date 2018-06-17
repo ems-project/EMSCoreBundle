@@ -75,10 +75,10 @@ class AppExtension extends \Twig_Extension
 	 */
 	public function getFunctions(){
 		return [
-				new \Twig_SimpleFunction('get_content_types', array($this, 'getContentTypes')),
-				new \Twig_SimpleFunction('cant_be_finalized', array($this, 'cantBeFinalized')),
-				new \Twig_SimpleFunction('get_default_environments', array($this, 'getDefaultEnvironments')),
-				new \Twig_SimpleFunction('sequence', array($this, 'getSequenceNextValue')),
+            new \Twig_SimpleFunction('get_content_types', array($this, 'getContentTypes')),
+            new \Twig_SimpleFunction('cant_be_finalized', array($this, 'cantBeFinalized')),
+            new \Twig_SimpleFunction('get_default_environments', array($this, 'getDefaultEnvironments')),
+            new \Twig_SimpleFunction('sequence', array($this, 'getSequenceNextValue')),
             new \Twig_SimpleFunction('diff_text', array($this, 'diffText'), ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('diff', array($this, 'diff'), ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('diff_html', array($this, 'diffHtml'), ['is_safe' => ['html']]),
@@ -103,43 +103,43 @@ class AppExtension extends \Twig_Extension
 		
 		
 		return array(
-				new \Twig_SimpleFilter('searches', array($this, 'searchesList')),
-				new \Twig_SimpleFilter('url_generator', array($this, 'toAscii')),	
-				new \Twig_SimpleFilter('dump', array($this, 'dump')),
-				new \Twig_SimpleFilter('data', array($this, 'data')),
-				new \Twig_SimpleFilter('inArray', array($this, 'inArray')),
-				new \Twig_SimpleFilter('firstInArray', array($this, 'firstInArray')),
-				new \Twig_SimpleFilter('md5', array($this, 'md5')),
-				new \Twig_SimpleFilter('convertJavaDateFormat', array($this, 'convertJavaDateFormat')),
-				new \Twig_SimpleFilter('convertJavascriptDateFormat', array($this, 'convertJavascriptDateFormat')),
-				new \Twig_SimpleFilter('convertJavascriptDateRangeFormat', array($this, 'convertJavascriptDateRangeFormat')),
-				new \Twig_SimpleFilter('getTimeFieldTimeFormat', array($this, 'getTimeFieldTimeFormat')),
-				new \Twig_SimpleFilter('soapRequest', array($this, 'soapRequest')),
-				new \Twig_SimpleFilter('luma', array($this, 'relativeluminance')),
-				new \Twig_SimpleFilter('contrastratio', array($this, 'contrastratio')),
-				new \Twig_SimpleFilter('all_granted', array($this, 'all_granted')),
-				new \Twig_SimpleFilter('one_granted', array($this, 'one_granted')),
-				new \Twig_SimpleFilter('in_my_circles', array($this, 'inMyCircles')),
-				new \Twig_SimpleFilter('data_link', array($this, 'dataLink')),
-				new \Twig_SimpleFilter('data_label', array($this, 'dataLabel')),
-				new \Twig_SimpleFilter('get_content_type', array($this, 'getContentType')),
-				new \Twig_SimpleFilter('get_environment', array($this, 'getEnvironment')),
-				new \Twig_SimpleFilter('generate_from_template', array($this, 'generateFromTemplate')),
-				new \Twig_SimpleFilter('objectChoiceLoader', array($this, 'objectChoiceLoader')),
-				new \Twig_SimpleFilter('groupedObjectLoader', array($this, 'groupedObjectLoader')),		
-				new \Twig_SimpleFilter('propertyPath', array($this, 'propertyPath')),			
-				new \Twig_SimpleFilter('is_super', array($this, 'is_super')),					
-				new \Twig_SimpleFilter('i18n', array($this, 'i18n')),						
-				new \Twig_SimpleFilter('internal_links', array($this, 'internalLinks')),		
-				new \Twig_SimpleFilter('get_user', array($this, 'getUser')),			
-				new \Twig_SimpleFilter('displayname', array($this, 'displayname')),			
-				new \Twig_SimpleFilter('date_difference', array($this, 'dateDifference')),	
-				new \Twig_SimpleFilter('debug', array($this, 'debug')),
-				new \Twig_SimpleFilter('search', array($this, 'search')),
-				new \Twig_SimpleFilter('call_user_func', array($this, 'call_user_func')),
-				new \Twig_SimpleFilter('macro_fct', array($this, 'macroFct')),
-				new \Twig_SimpleFilter('merge_recursive', array($this, 'array_merge_recursive')),
-                new \Twig_SimpleFilter('array_intersect', array($this, 'array_intersect')),
+            new \Twig_SimpleFilter('searches', array($this, 'searchesList')),
+            new \Twig_SimpleFilter('url_generator', array($this, 'toAscii')),
+            new \Twig_SimpleFilter('dump', array($this, 'dump')),
+            new \Twig_SimpleFilter('data', array($this, 'data')),
+            new \Twig_SimpleFilter('inArray', array($this, 'inArray')),
+            new \Twig_SimpleFilter('firstInArray', array($this, 'firstInArray')),
+            new \Twig_SimpleFilter('md5', array($this, 'md5')),
+            new \Twig_SimpleFilter('convertJavaDateFormat', array($this, 'convertJavaDateFormat')),
+            new \Twig_SimpleFilter('convertJavascriptDateFormat', array($this, 'convertJavascriptDateFormat')),
+            new \Twig_SimpleFilter('convertJavascriptDateRangeFormat', array($this, 'convertJavascriptDateRangeFormat')),
+            new \Twig_SimpleFilter('getTimeFieldTimeFormat', array($this, 'getTimeFieldTimeFormat')),
+            new \Twig_SimpleFilter('soapRequest', array($this, 'soapRequest')),
+            new \Twig_SimpleFilter('luma', array($this, 'relativeluminance')),
+            new \Twig_SimpleFilter('contrastratio', array($this, 'contrastratio')),
+            new \Twig_SimpleFilter('all_granted', array($this, 'all_granted')),
+            new \Twig_SimpleFilter('one_granted', array($this, 'one_granted')),
+            new \Twig_SimpleFilter('in_my_circles', array($this, 'inMyCircles')),
+            new \Twig_SimpleFilter('data_link', array($this, 'dataLink')),
+            new \Twig_SimpleFilter('data_label', array($this, 'dataLabel')),
+            new \Twig_SimpleFilter('get_content_type', array($this, 'getContentType')),
+            new \Twig_SimpleFilter('get_environment', array($this, 'getEnvironment')),
+            new \Twig_SimpleFilter('generate_from_template', array($this, 'generateFromTemplate')),
+            new \Twig_SimpleFilter('objectChoiceLoader', array($this, 'objectChoiceLoader')),
+            new \Twig_SimpleFilter('groupedObjectLoader', array($this, 'groupedObjectLoader')),
+            new \Twig_SimpleFilter('propertyPath', array($this, 'propertyPath')),
+            new \Twig_SimpleFilter('is_super', array($this, 'is_super')),
+            new \Twig_SimpleFilter('i18n', array($this, 'i18n')),
+            new \Twig_SimpleFilter('internal_links', array($this, 'internalLinks')),
+            new \Twig_SimpleFilter('get_user', array($this, 'getUser')),
+            new \Twig_SimpleFilter('displayname', array($this, 'displayname')),
+            new \Twig_SimpleFilter('date_difference', array($this, 'dateDifference')),
+            new \Twig_SimpleFilter('debug', array($this, 'debug')),
+            new \Twig_SimpleFilter('search', array($this, 'search')),
+            new \Twig_SimpleFilter('call_user_func', array($this, 'call_user_func')),
+            new \Twig_SimpleFilter('macro_fct', array($this, 'macroFct')),
+            new \Twig_SimpleFilter('merge_recursive', array($this, 'array_merge_recursive')),
+            new \Twig_SimpleFilter('array_intersect', array($this, 'array_intersect')),
             new \Twig_SimpleFilter('get_string', array($this, 'getString')),
 				
 				
@@ -383,6 +383,21 @@ class AppExtension extends \Twig_Extension
         }
 
 
+        if($compare){
+            foreach ($b as $item) {
+                $value = $item;
+                if(is_array($choices) && in_array($value, $choices)) {
+                    $idx = array_search($value, $choices);
+                    if(is_array($labels) && array_key_exists($idx, $labels)) {
+                        $value = $labels[$idx].' ('.$value.')';
+                    }
+                }
+                if (!in_array($item, $a)) {
+                    $out .= '<'.$tag.' class="text-'.$delColor.'"><del class="diffmod">' . htmlentities($value) . '</del></'.$tag.'>';
+                }
+            }
+        }
+
         foreach ($a as $item) {
             $value = $item;
             if(is_array($choices) && in_array($value, $choices)) {
@@ -399,20 +414,6 @@ class AppExtension extends \Twig_Extension
             }
         }
 
-        if($compare){
-            foreach ($b as $item) {
-                $value = $item;
-                if(is_array($choices) && in_array($value, $choices)) {
-                    $idx = array_search($value, $choices);
-                    if(is_array($labels) && array_key_exists($idx, $labels)) {
-                        $value = $labels[$idx].' ('.$value.')';
-                    }
-                }
-                if (!in_array($item, $a)) {
-                    $out .= '<'.$tag.' class="text-'.$delColor.'"><del class="diffmod">' . htmlentities($value) . '</del></'.$tag.'>';
-                }
-            }
-        }
 
         if(empty($out)) {
             $out = '<span class="text-gray">[empty]</span>';
@@ -448,20 +449,20 @@ class AppExtension extends \Twig_Extension
             }
         }
 
+        if($compare){
+            foreach ($b as $item) {
+                if (!in_array($item, $a)) {
+                    $out .= $this->dataLink($item, false, 'del').' ';
+                }
+            }
+        }
+
         foreach ($a as $item) {
             if(!$compare || in_array($item, $b)) {
                 $out .= $this->dataLink($item).' ';
             }
             else {
                 $out .= $this->dataLink($item, false, 'ins').' ';
-            }
-        }
-
-        if($compare){
-            foreach ($b as $item) {
-                if (!in_array($item, $a)) {
-                    $out .= $this->dataLink($item, false, 'del').' ';
-                }
             }
         }
 

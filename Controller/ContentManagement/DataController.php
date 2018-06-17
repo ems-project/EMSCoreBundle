@@ -288,6 +288,7 @@ class DataController extends AppController
 
     /**
      * @Route("/data/revisions/{type}:{ouuid}/{revisionId}/{compareId}", defaults={"revisionId": false, "compareId": false} , name="data.revisions")
+     * @Route("/data/revisions/{type}:{ouuid}/{revisionId}/{compareId}", defaults={"revisionId": false, "compareId": false} , name="ems_content_revisions_view")
      */
     public function revisionsDataAction($type, $ouuid, $revisionId, $compareId, Request $request, DataService $dataService)
     {
@@ -438,6 +439,7 @@ class DataController extends AppController
             'firstElemOfPage' => $firstElemOfPage,
             'dataFields' => $dataFields,
             'compareData' => $compareData,
+            'compareId' => $compareId,
         ]);
     }
 

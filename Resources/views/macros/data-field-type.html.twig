@@ -93,13 +93,13 @@
 
 			{% if dataField.rawData.sha1 != attribute(compareRawData, dataField.fieldType.name).sha1 %}
                 {% set doCompare = true %}
-                {% set compareColor = 'orange' %}
+                {% set compareColor = 'bg-green' %}
                 {% set showB = true %}
 			{% endif %}
 		{% elseif dataField.rawData and dataField.rawData.sha1 is defined %}
             {% set doCompare = true %}
-            {% set compareColor = 'green' %}
-		{% else %}
+            {% set compareColor = 'bg-green' %}
+		{% elseif attribute(compareRawData, dataField.fieldType.name).sha1 is defined %}
             {% set doCompare = true %}
             {% set compareColor = 'red' %}
             {% set showA = false %}
@@ -107,8 +107,28 @@
 		{% endif %}
 	{% endif %}
 
+
+    {% if showB %}
+		<div class="panel-body{% if showA and showB %} col-md-6{% endif %} bg-red" >
+            {% if attribute(compareRawData, dataField.fieldType.name).mimetype starts with 'image/' %}
+                {% set path = path('ems.file.view', {'sha1':attribute(compareRawData, dataField.fieldType.name).sha1, 'type':attribute(compareRawData, dataField.fieldType.name).mimetype, 'name':attribute(compareRawData, dataField.fieldType.name).filename }) %}
+                {% if dataField.fieldType.displayOptions.imageAssetConfigIdentifier is defined and dataField.fieldType.displayOptions.imageAssetConfigIdentifier %}
+                    {% set path = path('ems_asset_processor', {'hash':attribute(compareRawData, dataField.fieldType.name).sha1, 'processor': dataField.fieldType.displayOptions.imageAssetConfigIdentifier, 'type':attribute(compareRawData, dataField.fieldType.name).mimetype, 'name':attribute(compareRawData, dataField.fieldType.name).filename }) %}
+                {% endif %}
+				<a href="{{ path('ems.file.view', {'sha1':attribute(compareRawData, dataField.fieldType.name).sha1, 'type':attribute(compareRawData, dataField.fieldType.name).mimetype, 'name':attribute(compareRawData, dataField.fieldType.name).filename }) }}">
+					<del class="diffmod">
+						<img src="{{ path }}" class="img-responsive" alt="Image of the field {{ dataField.fieldType.name }}">
+					</del>
+				</a>
+            {% else %}
+				<strong>
+					<del class="diffmod"><a href="{{ path('ems.file.view', {'sha1':attribute(compareRawData, dataField.fieldType.name).sha1, 'type':attribute(compareRawData, dataField.fieldType.name).mimetype, 'name':attribute(compareRawData, dataField.fieldType.name).filename }) }}" class="text-gray">{{ attribute(compareRawData, dataField.fieldType.name).filename }}</a></del>
+				</strong>
+            {% endif %}
+		</div>
+    {% endif %}
 	{% if showA %}
-		<div class="panel-body{% if showA and showB %} col-md-6{% endif %} bg-{{ compareColor }}" >
+		<div class="panel-body{% if showA and showB %} col-md-6{% endif %} {{ compareColor }}" >
 			{% if dataField.rawData and dataField.rawData.sha1 is defined %}
 				{% if dataField.rawData.sha1 and dataField.rawData.mimetype starts with 'image/' %}
 					{% set path = path('ems.file.view', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) %}
@@ -118,7 +138,9 @@
 				{% if doCompare %}
 					<ins class="diffmod">
                 {% endif %}
-				<img src="{{ path }}" class="img-responsive" alt="Image of the field {{ dataField.fieldType.name }}">
+					<a href="{{ path('ems.file.view', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) }}" class="">
+						<img src="{{ path }}" class="img-responsive" alt="Image of the field {{ dataField.fieldType.name }}">
+					</a>
 				{% if doCompare %}
 					</ins>
 				{% endif %}
@@ -136,25 +158,11 @@
 			{% endif %}
 		</div>
 	{% endif %}
-    {% if showB %}
-
-			<div class="panel-body{% if showA and showB %} col-md-6{% endif %} bg-{{ compareColor }}" >
-			{% if attribute(compareRawData, dataField.fieldType.name).mimetype starts with 'image/' %}
-				{% set path = path('ems.file.view', {'sha1':attribute(compareRawData, dataField.fieldType.name).sha1, 'type':attribute(compareRawData, dataField.fieldType.name).mimetype, 'name':attribute(compareRawData, dataField.fieldType.name).filename }) %}
-				{% if dataField.fieldType.displayOptions.imageAssetConfigIdentifier is defined and dataField.fieldType.displayOptions.imageAssetConfigIdentifier %}
-					{% set path = path('ems_asset_processor', {'hash':attribute(compareRawData, dataField.fieldType.name).sha1, 'processor': dataField.fieldType.displayOptions.imageAssetConfigIdentifier, 'type':attribute(compareRawData, dataField.fieldType.name).mimetype, 'name':attribute(compareRawData, dataField.fieldType.name).filename }) %}
-				{% endif %}
-				<del class="diffmod">
-					<img src="{{ path }}" class="img-responsive" alt="Image of the field {{ dataField.fieldType.name }}">
-				</del>
-			{% else %}
-				<strong>
-					<del class="diffmod">{{ attribute(compareRawData, dataField.fieldType.name).filename }}</del>
-				</strong>
-			{% endif %}
-			</div>
-    {% endif %}
 	<div class="panel-footer" >
+        {% if doCompare and showB %}
+			<a href="{{ path('ems.file.view', {'sha1':attribute(compareRawData, dataField.fieldType.name).sha1, 'type':attribute(compareRawData, dataField.fieldType.name).mimetype, 'name':attribute(compareRawData, dataField.fieldType.name).filename }) }}" class="btn btn-small btn-primary"><i class="fa fa-history"></i>&nbsp;{{'View Previous'|trans}}</a>
+        {% endif %}
+
 		{% if dataField.rawData and dataField.rawData.sha1 is defined and dataField.rawData.sha1 %}
 	    	{% set tempId = dataField.fieldType.name~'_'~random() %}
 			<div class="btn-group">
@@ -227,10 +235,6 @@
             </div>
             </div>
 		{% endif %}
-
-        {% if doCompare and showB %}
-			<a href="{{ path('ems.file.view', {'sha1':attribute(compareRawData, dataField.fieldType.name).sha1, 'type':attribute(compareRawData, dataField.fieldType.name).mimetype, 'name':attribute(compareRawData, dataField.fieldType.name).filename }) }}" class="btn btn-small btn-primary"><i class="fa fa-history"></i>&nbsp;{{'View Previous'|trans}}</a>
-        {% endif %}
 	</div>
 </div>
 {% endmacro %}

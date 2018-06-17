@@ -56,6 +56,41 @@ class ElasticsearchService {
         ];
     }
 
+
+
+    /**
+     * Convert mapping
+     * @return string[]
+     */
+    public function convertMapping(array $in) {
+        $out = $in;
+        if(version_compare($this->version, '5') > 0){
+            if(isset($out['analyzer']) && $out['analyzer'] === 'keyword') {
+                $out['type'] = 'keyword';
+                unset($out['analyzer']);
+                unset($out['fielddata']);
+                unset($out['index']);
+
+            }
+            elseif(isset($out['index']) && $out['index'] === 'not_analyzed') {
+                $out['type'] = 'keyword';
+                unset($out['analyzer']);
+                unset($out['fielddata']);
+                unset($out['index']);
+            }
+            elseif(isset($out['type']) && $out['type'] === 'string') {
+                $out['type'] = 'text';
+            }
+            elseif(isset($out['type']) && $out['type'] === 'keyword') {
+                unset($out['analyzer']);
+                unset($out['fielddata']);
+                unset($out['index']);
+            }
+        }
+        return $out;
+    }
+
+
     /**
      * Return a keyword mapping (not analyzed)
      * @return string[]

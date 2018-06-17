@@ -242,10 +242,18 @@ class FieldTypeType extends AbstractType
 	    	if (! $child->getDeleted ()) {
 	    		if(isset($jsonName)){
 	    			if(isset($out[$jsonName]["properties"])){
-	    				if(isset($out[$jsonName]["properties"]["attachment"]["properties"]["content"])){
-	    					$out[$jsonName]["properties"]["attachment"]["properties"]["content"]= array_merge_recursive($out[$jsonName]["properties"]["attachment"]["properties"]["content"], $this->generateMapping($child, $withPipeline));	
-	    				}
-	    				else {
+                        if(isset($out[$jsonName]["properties"]["attachment"]["properties"]["content"])){
+                            $out[$jsonName]["properties"]["attachment"]["properties"]["content"]= array_merge_recursive($out[$jsonName]["properties"]["attachment"]["properties"]["content"], $this->generateMapping($child, $withPipeline));
+                        }
+                        elseif(isset($out[$jsonName]["properties"]["_content"])){
+                            $out[$jsonName]["properties"]["_content"]= array_merge_recursive($out[$jsonName]["properties"]["_content"], $this->generateMapping($child, $withPipeline));
+
+                        }
+                        elseif(isset($out[$jsonName]["properties"]["filename"])){
+                            $out[$jsonName]["properties"]["filename"]= array_merge_recursive($out[$jsonName]["properties"]["filename"], $this->generateMapping($child, $withPipeline));
+
+                        }
+                        else {
 	    					$out[$jsonName]["properties"] = array_merge_recursive($out[$jsonName]["properties"], $this->generateMapping($child, $withPipeline));	    					
 	    				}
 	    			}

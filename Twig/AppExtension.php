@@ -1,6 +1,8 @@
 <?php
 namespace EMS\CoreBundle\Twig;
 
+use Caxy\HtmlDiff\HtmlDiff;
+use DateTime;
 use EMS\CoreBundle\Form\DataField\DateFieldType;
 use EMS\CoreBundle\Form\DataField\TimeFieldType;
 use EMS\CoreBundle\Service\UserService;
@@ -73,10 +75,21 @@ class AppExtension extends \Twig_Extension
 	 */
 	public function getFunctions(){
 		return [
-				new \Twig_SimpleFunction('get_content_types', array($this, 'getContentTypes')),
-				new \Twig_SimpleFunction('cant_be_finalized', array($this, 'cantBeFinalized')),
-				new \Twig_SimpleFunction('get_default_environments', array($this, 'getDefaultEnvironments')),
-				new \Twig_SimpleFunction('sequence', array($this, 'getSequenceNextValue')),
+            new \Twig_SimpleFunction('get_content_types', array($this, 'getContentTypes')),
+            new \Twig_SimpleFunction('cant_be_finalized', array($this, 'cantBeFinalized')),
+            new \Twig_SimpleFunction('get_default_environments', array($this, 'getDefaultEnvironments')),
+            new \Twig_SimpleFunction('sequence', array($this, 'getSequenceNextValue')),
+            new \Twig_SimpleFunction('diff_text', array($this, 'diffText'), ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('diff', array($this, 'diff'), ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('diff_html', array($this, 'diffHtml'), ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('diff_icon', array($this, 'diffIcon'), ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('diff_raw', array($this, 'diffRaw'), ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('diff_color', array($this, 'diffColor'), ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('diff_boolean', array($this, 'diffBoolean'), ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('diff_choice', array($this, 'diffChoice'), ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('diff_data_link', array($this, 'diffDataLink'), ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('diff_date', array($this, 'diffDate'), ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('diff_time', array($this, 'diffTime'), ['is_safe' => ['html']]),
 		];
 	}
 	
@@ -90,49 +103,410 @@ class AppExtension extends \Twig_Extension
 		
 		
 		return array(
-				new \Twig_SimpleFilter('searches', array($this, 'searchesList')),
-				new \Twig_SimpleFilter('url_generator', array($this, 'toAscii')),	
-				new \Twig_SimpleFilter('dump', array($this, 'dump')),
-				new \Twig_SimpleFilter('data', array($this, 'data')),
-				new \Twig_SimpleFilter('inArray', array($this, 'inArray')),
-				new \Twig_SimpleFilter('firstInArray', array($this, 'firstInArray')),
-				new \Twig_SimpleFilter('md5', array($this, 'md5')),
-				new \Twig_SimpleFilter('convertJavaDateFormat', array($this, 'convertJavaDateFormat')),
-				new \Twig_SimpleFilter('convertJavascriptDateFormat', array($this, 'convertJavascriptDateFormat')),
-				new \Twig_SimpleFilter('convertJavascriptDateRangeFormat', array($this, 'convertJavascriptDateRangeFormat')),
-				new \Twig_SimpleFilter('getTimeFieldTimeFormat', array($this, 'getTimeFieldTimeFormat')),
-				new \Twig_SimpleFilter('soapRequest', array($this, 'soapRequest')),
-				new \Twig_SimpleFilter('luma', array($this, 'relativeluminance')),
-				new \Twig_SimpleFilter('contrastratio', array($this, 'contrastratio')),
-				new \Twig_SimpleFilter('all_granted', array($this, 'all_granted')),
-				new \Twig_SimpleFilter('one_granted', array($this, 'one_granted')),
-				new \Twig_SimpleFilter('in_my_circles', array($this, 'inMyCircles')),
-				new \Twig_SimpleFilter('data_link', array($this, 'dataLink')),
-				new \Twig_SimpleFilter('data_label', array($this, 'dataLabel')),
-				new \Twig_SimpleFilter('get_content_type', array($this, 'getContentType')),
-				new \Twig_SimpleFilter('get_environment', array($this, 'getEnvironment')),
-				new \Twig_SimpleFilter('generate_from_template', array($this, 'generateFromTemplate')),
-				new \Twig_SimpleFilter('objectChoiceLoader', array($this, 'objectChoiceLoader')),
-				new \Twig_SimpleFilter('groupedObjectLoader', array($this, 'groupedObjectLoader')),		
-				new \Twig_SimpleFilter('propertyPath', array($this, 'propertyPath')),			
-				new \Twig_SimpleFilter('is_super', array($this, 'is_super')),					
-				new \Twig_SimpleFilter('i18n', array($this, 'i18n')),						
-				new \Twig_SimpleFilter('internal_links', array($this, 'internalLinks')),		
-				new \Twig_SimpleFilter('get_user', array($this, 'getUser')),			
-				new \Twig_SimpleFilter('displayname', array($this, 'displayname')),			
-				new \Twig_SimpleFilter('date_difference', array($this, 'dateDifference')),	
-				new \Twig_SimpleFilter('debug', array($this, 'debug')),
-				new \Twig_SimpleFilter('search', array($this, 'search')),
-				new \Twig_SimpleFilter('call_user_func', array($this, 'call_user_func')),
-				new \Twig_SimpleFilter('macro_fct', array($this, 'macroFct')),
-				new \Twig_SimpleFilter('merge_recursive', array($this, 'array_merge_recursive')),
-				new \Twig_SimpleFilter('array_intersect', array($this, 'array_intersect')),
+            new \Twig_SimpleFilter('searches', array($this, 'searchesList')),
+            new \Twig_SimpleFilter('url_generator', array($this, 'toAscii')),
+            new \Twig_SimpleFilter('dump', array($this, 'dump')),
+            new \Twig_SimpleFilter('data', array($this, 'data')),
+            new \Twig_SimpleFilter('inArray', array($this, 'inArray')),
+            new \Twig_SimpleFilter('firstInArray', array($this, 'firstInArray')),
+            new \Twig_SimpleFilter('md5', array($this, 'md5')),
+            new \Twig_SimpleFilter('convertJavaDateFormat', array($this, 'convertJavaDateFormat')),
+            new \Twig_SimpleFilter('convertJavascriptDateFormat', array($this, 'convertJavascriptDateFormat')),
+            new \Twig_SimpleFilter('convertJavascriptDateRangeFormat', array($this, 'convertJavascriptDateRangeFormat')),
+            new \Twig_SimpleFilter('getTimeFieldTimeFormat', array($this, 'getTimeFieldTimeFormat')),
+            new \Twig_SimpleFilter('soapRequest', array($this, 'soapRequest')),
+            new \Twig_SimpleFilter('luma', array($this, 'relativeluminance')),
+            new \Twig_SimpleFilter('contrastratio', array($this, 'contrastratio')),
+            new \Twig_SimpleFilter('all_granted', array($this, 'all_granted')),
+            new \Twig_SimpleFilter('one_granted', array($this, 'one_granted')),
+            new \Twig_SimpleFilter('in_my_circles', array($this, 'inMyCircles')),
+            new \Twig_SimpleFilter('data_link', array($this, 'dataLink')),
+            new \Twig_SimpleFilter('data_label', array($this, 'dataLabel')),
+            new \Twig_SimpleFilter('get_content_type', array($this, 'getContentType')),
+            new \Twig_SimpleFilter('get_environment', array($this, 'getEnvironment')),
+            new \Twig_SimpleFilter('generate_from_template', array($this, 'generateFromTemplate')),
+            new \Twig_SimpleFilter('objectChoiceLoader', array($this, 'objectChoiceLoader')),
+            new \Twig_SimpleFilter('groupedObjectLoader', array($this, 'groupedObjectLoader')),
+            new \Twig_SimpleFilter('propertyPath', array($this, 'propertyPath')),
+            new \Twig_SimpleFilter('is_super', array($this, 'is_super')),
+            new \Twig_SimpleFilter('i18n', array($this, 'i18n')),
+            new \Twig_SimpleFilter('internal_links', array($this, 'internalLinks')),
+            new \Twig_SimpleFilter('get_user', array($this, 'getUser')),
+            new \Twig_SimpleFilter('displayname', array($this, 'displayname')),
+            new \Twig_SimpleFilter('date_difference', array($this, 'dateDifference')),
+            new \Twig_SimpleFilter('debug', array($this, 'debug')),
+            new \Twig_SimpleFilter('search', array($this, 'search')),
+            new \Twig_SimpleFilter('call_user_func', array($this, 'call_user_func')),
+            new \Twig_SimpleFilter('macro_fct', array($this, 'macroFct')),
+            new \Twig_SimpleFilter('merge_recursive', array($this, 'array_merge_recursive')),
+            new \Twig_SimpleFilter('array_intersect', array($this, 'array_intersect')),
+            new \Twig_SimpleFilter('get_string', array($this, 'getString')),
 				
 				
 				
 		);
 	}
-	
+
+	public function getString($rawData, $field){
+	    if(empty($rawData) or !isset($rawData[$field])){
+	        return null;
+        }
+        if(is_string($rawData[$field])) {
+	        return $rawData[$field];
+        }
+        return json_encode($rawData[$field]);
+    }
+
+
+	public function diff($a, $b, $compare, $escape=false, $htmlDiff=false, $raw=false)
+    {
+        $tag = 'span';
+        $textClass = '';
+        $textLabel = '';
+
+        if($compare && $a !== $b){
+            if($htmlDiff && $a && $b){
+                $textClass = 'text-orange';
+                $htmlDiff = new HtmlDiff(($escape?htmlentities($b):$this->internalLinks($b)), ($escape?htmlentities($a):$this->internalLinks($a)));
+                $textLabel = $htmlDiff->build();
+            }
+            else {
+                $textClass = false;
+                if($b){
+                    $textClass = 'text-red';
+                    $textLabel .= '<del class="diffmod">'.($escape?htmlentities($b):$b).'</del>';
+                }
+
+                if($a){
+                    if($textClass){
+                        $textClass = 'text-orange';
+                    }
+                    else {
+                        $textClass = 'text-green';
+                    }
+                    $textLabel .= ' <ins class="diffmod">'.($escape?htmlentities($a):$a).'</ins>';
+                }
+            }
+        }
+        else {
+            if($a){
+                $textLabel = ($escape?htmlentities($a):$a);
+            }
+            else{
+                $textClass = 'text-gray';
+                $textLabel = '[not defined]';
+                $tag = 'span';
+            }
+        }
+
+        if($raw){
+            return $textLabel;
+        }
+        return '<'.$tag.' class="'.$textClass.'">'.$textLabel.'</'.$tag.'>';
+
+    }
+
+    public function diffBoolean($rawData, $compare, $fieldName, $compareRawData)
+    {
+        $a = $rawData?true:false;
+        $b = isset($compareRawData[$fieldName]) && $compareRawData[$fieldName];
+
+        $textClass = '';
+        if($a !== $b){
+            $textClass = 'text-orange';
+        }
+
+        return '<span class="'.$textClass.'"><i class="fa fa'.($a?'-check':'').'-square-o"></i></span>';
+    }
+
+    public function diffIcon($rawData, $compare, $fieldName, $compareRawData)
+    {
+        $b = $a = null;
+        if($rawData){
+            $a = '<i class="'.$rawData.'"></i> '.$rawData;
+        }
+
+        if(isset($compareRawData[$fieldName]) && $compareRawData[$fieldName]) {
+            $b = '<i class="'.$compareRawData[$fieldName].'"></i> '.$compareRawData[$fieldName];
+        }
+        return $this->diff($a, $b, $compare);
+    }
+
+
+    public function diffTime($rawData, $compare, $fieldName, $compareRawData, $format1, $format2){
+        return $this->diffDate($rawData, $compare, $fieldName, $compareRawData, $format1, $format2,TimeFieldType::storeFormat);
+    }
+
+    public function diffDate($rawData, $compare, $fieldName, $compareRawData, $format1, $format2=false, $internalFormat=false)
+    {
+        $b = $a = [];
+        $out = "";
+        $tag = 'li';
+        $insColor = 'green';
+        $delColor = 'red';
+
+        if(isset($compareRawData[$fieldName])){
+            if(is_array($compareRawData[$fieldName])){
+                $b = $compareRawData[$fieldName];
+            }
+            elseif (is_scalar($compareRawData[$fieldName])) {
+                $b = [$compareRawData[$fieldName]];
+            }
+        }
+
+        if(is_array($rawData)) {
+            $a = $rawData;
+        }
+        elseif (is_scalar($rawData)) {
+            $tag = 'span';
+            if(! empty($b)){
+                $insColor = $delColor = 'orange';
+            }
+            $a = [$rawData];
+        }
+
+        $formatedA = [];
+
+        foreach ($a as $item) {
+
+            if($item instanceof \DateTime) {
+                $date = $item;
+            }
+            elseif($internalFormat){
+                $date = \DateTime::createFromFormat($internalFormat, $item);
+            }
+            else {
+                $date = new DateTime($item);
+            }
+
+
+
+            $value = $date->format($format1);
+            $value2 = false;
+
+            if($internalFormat) {
+                $internal = $date->format($internalFormat);
+                $formatedA[] = $internal;
+                $inArray = in_array($internal, $b);
+            }
+            elseif($format2) {
+                $value2 = $date->format($format2);
+                $formatedA[] = $value2;
+                $inArray = in_array($item, $b);
+            }
+            else{
+                $formatedA[] = $value;
+                $inArray = in_array($value, $b);
+            }
+
+            if($value2){
+                $value .= ' ('.$value2.')';
+            }
+
+            if(!$compare || $inArray) {
+                $out .= '<'.$tag.' class="">'.htmlentities($value).'</'.$tag.'>';
+            }
+            else {
+                $out .= '<'.$tag.' class="text-'.$insColor.'"><ins class="diffmod">'.htmlentities($value).'</ins></'.$tag.'>';
+            }
+        }
+
+        if($compare){
+            foreach ($b as $item) {
+
+                if($item instanceof \DateTime) {
+                    $date = $item;
+                }
+                elseif($internalFormat){
+                    $date = \DateTime::createFromFormat($internalFormat, $item);
+                }
+                else {
+                    $date = new DateTime($item);
+                }
+
+                $value = $date->format($format1);
+                $value2 = false;
+
+                if($internalFormat) {
+                    $internal = $date->format($internalFormat);
+                    $inArray = in_array($internal, $formatedA);
+                }
+                elseif($format2) {
+                    $value2 = $date->format($format2);
+                    $inArray = in_array($item, $formatedA);
+                }
+                else{
+                    $inArray = in_array($value, $formatedA);
+                }
+
+                if($value2){
+                    $value .= ' ('.$value2.')';
+                }
+
+                if (!$inArray) {
+                    $out .= ' <'.$tag.' class="text-'.$delColor.'"><del class="diffmod">' . htmlentities($value) . '</del></'.$tag.'>';
+                }
+            }
+        }
+
+
+        return $out;
+    }
+
+
+    public function diffChoice($rawData, $labels, $choices, $compare, $fieldName, $compareRawData)
+    {
+        $b = $a = [];
+        $out = "";
+        $tag = 'li';
+        $insColor = 'green';
+        $delColor = 'red';
+
+        if(isset($compareRawData[$fieldName])){
+            if(is_array($compareRawData[$fieldName])){
+                $b = $compareRawData[$fieldName];
+            }
+            elseif (is_scalar($compareRawData[$fieldName])) {
+                $b = [$compareRawData[$fieldName]];
+            }
+        }
+        
+        if(is_array($rawData)) {
+            $a = $rawData;
+        }
+        elseif (is_scalar($rawData)) {
+            $tag = 'span';
+            if(! empty($b)){
+                $insColor = $delColor = 'orange';
+            }
+            $a = [$rawData];
+        }
+
+
+        if($compare){
+            foreach ($b as $item) {
+                $value = $item;
+                if(is_array($choices) && in_array($value, $choices)) {
+                    $idx = array_search($value, $choices);
+                    if(is_array($labels) && array_key_exists($idx, $labels)) {
+                        $value = $labels[$idx].' ('.$value.')';
+                    }
+                }
+                if (!in_array($item, $a)) {
+                    $out .= '<'.$tag.' class="text-'.$delColor.'"><del class="diffmod">' . htmlentities($value) . '</del></'.$tag.'>';
+                }
+            }
+        }
+
+        foreach ($a as $item) {
+            $value = $item;
+            if(is_array($choices) && in_array($value, $choices)) {
+                $idx = array_search($value, $choices);
+                if(is_array($labels) && array_key_exists($idx, $labels)) {
+                    $value = $labels[$idx].' ('.$value.')';
+                }
+            }
+            if(!$compare || in_array($item, $b)) {
+                $out .= '<'.$tag.' class="">'.htmlentities($value).'</'.$tag.'>';
+            }
+            else {
+                $out .= '<'.$tag.' class="text-'.$insColor.'"><ins class="diffmod">'.htmlentities($value).'</ins></'.$tag.'>';
+            }
+        }
+
+
+        if(empty($out)) {
+            $out = '<span class="text-gray">[empty]</span>';
+        }
+
+        return $out;
+    }
+
+
+
+
+
+
+
+    public function diffDataLink($rawData, $compare, $fieldName, $compareRawData)
+    {
+        $b = $a = [];
+        $out = "";
+
+        if(is_array($rawData)) {
+            $a = $rawData;
+        }
+        elseif (is_scalar($rawData)) {
+            $a = [$rawData];
+        }
+
+        if(isset($compareRawData[$fieldName])){
+            if(is_array($compareRawData[$fieldName])){
+                $b = $compareRawData[$fieldName];
+            }
+            elseif (is_scalar($compareRawData[$fieldName])) {
+                $b = [$compareRawData[$fieldName]];
+            }
+        }
+
+        if($compare){
+            foreach ($b as $item) {
+                if (!in_array($item, $a)) {
+                    $out .= $this->dataLink($item, false, 'del').' ';
+                }
+            }
+        }
+
+        foreach ($a as $item) {
+            if(!$compare || in_array($item, $b)) {
+                $out .= $this->dataLink($item).' ';
+            }
+            else {
+                $out .= $this->dataLink($item, false, 'ins').' ';
+            }
+        }
+
+
+        return $out;
+    }
+
+    public function diffColor($rawData, $compare, $fieldName, $compareRawData)
+    {
+        $b = $a = null;
+        if($rawData){
+            $color = $rawData;
+            $a = '<span style="background-color: '.$color.'; color: '.($this->contrastratio($color, '#000000') > $this->contrastratio($color, '#ffffff')?'#000000':'#ffffff').';">'.$color.'</span> ';
+        }
+
+        if(isset($compareRawData[$fieldName]) && $compareRawData[$fieldName]) {
+            $color = $compareRawData[$fieldName];
+            $b = '<span style="background-color: '.$color.'; color: '.($this->contrastratio($color, '#000000') > $this->contrastratio($color, '#ffffff')?'#000000':'#ffffff').';">'.$color.'</span> ';
+        }
+        return $this->diff($a, $b, $compare, false, false, true);
+    }
+
+    public function diffRaw($rawData, $compare, $fieldName, $compareRawData)
+    {
+        $b = isset($compareRawData[$fieldName])?$compareRawData[$fieldName]:null;
+        return $this->diff($rawData, $b, $compare);
+    }
+
+
+
+    public function diffText($rawData, $compare, $fieldName, $compareRawData){
+        $b = isset($compareRawData[$fieldName])?$compareRawData[$fieldName]:null;
+
+        return $this->diff($rawData, $b, $compare, true, true);
+    }
+
+
+
+    public function diffHtml($rawData, $compare, $fieldName, $compareRawData){
+        $b = isset($compareRawData[$fieldName])?$compareRawData[$fieldName]:null;
+        return $this->diff($rawData, $b, $compare, false, true, true);
+    }
+
+
 	/**
 	 * Return a sequence next value
 	 * @param string $name
@@ -193,8 +567,8 @@ class AppExtension extends \Twig_Extension
 	}
 	
 	
-	function macroFct($tempate, $block, $context) {
-		return $tempate->{'macro_'.$block}($context);
+	function macroFct($tempate, $block, $context, $compare=false, $compareRawData=null) {
+		return $tempate->{'macro_'.$block}($context, $compare, $compareRawData);
 	}
 	
 	function call_user_func($function){
@@ -414,7 +788,7 @@ class AppExtension extends \Twig_Extension
 		
 	}
 		
-	function dataLink($key, $revisionId=false){
+	function dataLink($key, $revisionId=false, $diffMod=false){
 		$out = $key;
 		$splitted = explode(':', $key);
 		if($splitted && count($splitted) == 2 && strlen($splitted[0]) > 0 && strlen($splitted[1]) > 0 ){
@@ -467,7 +841,11 @@ class AppExtension extends \Twig_Extension
 						$out = '<span class="" style="color:'.$contrasted.';">'.$out.'</span>';
 						$addAttribute = ' style="background-color: '.$result['_source'][$contentType->getColorField()].';border-color: '.$result['_source'][$contentType->getColorField()].';"';
 						
-					}					
+					}
+
+					if($diffMod !== false) {
+                        $out = '<'.$diffMod.' class="diffmod">'.$out.'<'.$diffMod.'>';
+                    }
 				}
 				catch(\Exception $e) {
 					

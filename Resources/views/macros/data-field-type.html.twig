@@ -108,8 +108,11 @@
 	{% endif %}
 
 
+	<div class="panel-body row">
+
     {% if showB %}
-		<div class="panel-body{% if showA and showB %} col-md-6{% endif %} bg-red" >
+		<div class="{% if showA and showB %} col-md-6{% endif %}" >
+
             {% if attribute(compareRawData, dataField.fieldType.name).mimetype starts with 'image/' %}
                 {% set path = path('ems.file.view', {'sha1':attribute(compareRawData, dataField.fieldType.name).sha1, 'type':attribute(compareRawData, dataField.fieldType.name).mimetype, 'name':attribute(compareRawData, dataField.fieldType.name).filename }) %}
                 {% if dataField.fieldType.displayOptions.imageAssetConfigIdentifier is defined and dataField.fieldType.displayOptions.imageAssetConfigIdentifier %}
@@ -117,18 +120,20 @@
                 {% endif %}
 				<a href="{{ path('ems.file.view', {'sha1':attribute(compareRawData, dataField.fieldType.name).sha1, 'type':attribute(compareRawData, dataField.fieldType.name).mimetype, 'name':attribute(compareRawData, dataField.fieldType.name).filename }) }}">
 					<del class="diffmod">
-						<img src="{{ path }}" class="img-responsive" alt="Image of the field {{ dataField.fieldType.name }}">
+						<img src="{{ path }}" class="img-responsive pad bg-red" alt="Image of the field {{ dataField.fieldType.name }}">
 					</del>
 				</a>
             {% else %}
-				<strong>
-					<del class="diffmod"><a href="{{ path('ems.file.view', {'sha1':attribute(compareRawData, dataField.fieldType.name).sha1, 'type':attribute(compareRawData, dataField.fieldType.name).mimetype, 'name':attribute(compareRawData, dataField.fieldType.name).filename }) }}" class="text-gray">{{ attribute(compareRawData, dataField.fieldType.name).filename }}</a></del>
-				</strong>
+				<div class="pad bg-red">
+					<strong class="">
+						<del class="diffmod"><a href="{{ path('ems.file.view', {'sha1':attribute(compareRawData, dataField.fieldType.name).sha1, 'type':attribute(compareRawData, dataField.fieldType.name).mimetype, 'name':attribute(compareRawData, dataField.fieldType.name).filename }) }}" class="text-gray">{{ attribute(compareRawData, dataField.fieldType.name).filename }}</a></del>
+					</strong>
+				</div>
             {% endif %}
 		</div>
     {% endif %}
 	{% if showA %}
-		<div class="panel-body{% if showA and showB %} col-md-6{% endif %} {{ compareColor }}" >
+		<div class="{% if showA and showB %} col-md-6{% endif %}" >
 			{% if dataField.rawData and dataField.rawData.sha1 is defined %}
 				{% if dataField.rawData.sha1 and dataField.rawData.mimetype starts with 'image/' %}
 					{% set path = path('ems.file.view', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) %}
@@ -138,104 +143,109 @@
 				{% if doCompare %}
 					<ins class="diffmod">
                 {% endif %}
-					<a href="{{ path('ems.file.view', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) }}" class="">
-						<img src="{{ path }}" class="img-responsive" alt="Image of the field {{ dataField.fieldType.name }}">
+					<a href="{{ path('ems.file.view', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) }}">
+						<img src="{{ path }}" class="img-responsive pad  {{ compareColor }}" alt="Image of the field {{ dataField.fieldType.name }}">
 					</a>
 				{% if doCompare %}
 					</ins>
 				{% endif %}
 				{% else %}
+					<div class="pad {{ compareColor }}">
 						<strong>
-                            {% if doCompare %}
-								<ins class="diffmod">
-							{% endif %}
-							{{ dataField.rawData.filename }}
-                            {% if doCompare %}
-								</ins>
-							{% endif %}
+							<a href="{{ path('ems.file.view', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) }}" class="{% if doCompare %}text-gray{% endif %}">
+								{% if doCompare %}
+									<ins class="diffmod">
+								{% endif %}
+								{{ dataField.rawData.filename }}
+								{% if doCompare %}
+									</ins>
+								{% endif %}
+							</a>
 						</strong>
+					</div>
 				{% endif %}
 			{% endif %}
 		</div>
 	{% endif %}
-	<div class="panel-footer" >
-        {% if doCompare and showB %}
-			<a href="{{ path('ems.file.view', {'sha1':attribute(compareRawData, dataField.fieldType.name).sha1, 'type':attribute(compareRawData, dataField.fieldType.name).mimetype, 'name':attribute(compareRawData, dataField.fieldType.name).filename }) }}" class="btn btn-small btn-primary"><i class="fa fa-history"></i>&nbsp;{{'View Previous'|trans}}</a>
-        {% endif %}
-
-		{% if dataField.rawData and dataField.rawData.sha1 is defined and dataField.rawData.sha1 %}
-	    	{% set tempId = dataField.fieldType.name~'_'~random() %}
-			<div class="btn-group">
-    			<button type="button" class="btn btn-small btn-primary asset-details" data-toggle="modal" data-target="#indexed-details-revision_{{ tempId }}">
-                	<i class="fa fa-info"></i>
-                    {{ 'Info'|trans }}
-                </button>
-				<a href="{{ path('file.download', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) }}" class="btn btn-small btn-primary"><i class="fa fa-download"></i>&nbsp;{{'Download'|trans}}</a>
-				<a href="{{ path('ems.file.view', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) }}" class="btn btn-small btn-primary"><i class="fa fa-eye"></i>&nbsp;{{'View'|trans}}</a>
-			</div>
-			<div class="modal" tabindex="-1" role="dialog" id="indexed-details-revision_{{ tempId }}">
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                  	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-            		<h4 class="modal-title" id="myModalLabel">{{ 'Asset details' }}</h4>
-                  </div>
-                  <div class="modal-body raw-view">
-                  	<ul class="list-group">
-                      	<li class="list-group-item leaf-item">
-                      		<strong>{{ 'Hash signature'|trans }}</strong>
-                      		{{ dataField.rawData.sha1 }}
-                      	</li>
-    					{% if dataField.rawData._title is defined %}
-                          	<li class="list-group-item leaf-item">
-                          		<strong>{{ 'Title : '|trans }}</strong>
-                          		{{ dataField.rawData._title }}
-                          	</li>
-    					{% endif %}
-    					{% if dataField.rawData.filesize is defined %}
-                          	<li class="list-group-item leaf-item">
-                          		<strong>{{ 'Size : '|trans }}</strong>
-                          		{{ dataField.rawData.filesize|number_format(0, ',', '.') }} bytes
-                          	</li>
-    					{% endif %}
-                      	<li class="list-group-item leaf-item">
-                      		<strong>{{ 'MIME Type : '|trans }}</strong>
-                      		{{ dataField.rawData.mimetype }}
-                      	</li>
-    					{% if dataField.rawData._date is defined %}
-                          	<li class="list-group-item leaf-item">
-                          		<strong>{{ 'Date : '|trans }}</strong>
-                          		{{ dataField.rawData._date }}
-                          	</li>
-    					{% endif %}
-    					{% if dataField.rawData._author is defined %}
-                          	<li class="list-group-item leaf-item">
-                          		<strong>{{ 'Author : '|trans }}</strong>
-                          		{{ dataField.rawData._author }}
-                          	</li>
-    					{% endif %}
-    					{% if dataField.rawData._language is defined %}
-                          	<li class="list-group-item leaf-item">
-                          		<strong>{{ 'Language : '|trans }}</strong>
-                          		{{ dataField.rawData._language }}
-                          	</li>
-    					{% endif %}
-    					{% if dataField.rawData._content is defined %}
-                          	<li class="list-group-item leaf-item">
-                          		<strong>{{ 'Content : '|trans }}</strong><br>
-                          		{{ dataField.rawData._content|nl2br }}
-                          	</li>
-    					{% endif %}
-                  	</ul>
-                  	<div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            </div>
-		{% endif %}
 	</div>
+		{% if dataField.rawData and dataField.rawData.sha1 is defined and dataField.rawData.sha1 %}
+			<div class="panel-footer" >
+				{#{% if doCompare and showB %}#}
+				{#<a href="{{ path('ems.file.view', {'sha1':attribute(compareRawData, dataField.fieldType.name).sha1, 'type':attribute(compareRawData, dataField.fieldType.name).mimetype, 'name':attribute(compareRawData, dataField.fieldType.name).filename }) }}" class="btn btn-small btn-primary"><i class="fa fa-history"></i>&nbsp;{{'View Previous'|trans}}</a>#}
+				{#{% endif %}#}
+
+				{% set tempId = dataField.fieldType.name~'_'~random() %}
+				<div class="btn-group">
+					<button type="button" class="btn btn-small btn-primary asset-details" data-toggle="modal" data-target="#indexed-details-revision_{{ tempId }}">
+						<i class="fa fa-info"></i>
+						{{ 'Info'|trans }}
+					</button>
+					<a href="{{ path('file.download', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) }}" class="btn btn-small btn-primary"><i class="fa fa-download"></i>&nbsp;{{'Download'|trans}}</a>
+					{#<a href="{{ path('ems.file.view', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) }}" class="btn btn-small btn-primary"><i class="fa fa-eye"></i>&nbsp;{{'View'|trans}}</a>#}
+				</div>
+				<div class="modal" tabindex="-1" role="dialog" id="indexed-details-revision_{{ tempId }}">
+				  <div class="modal-dialog" role="document">
+					<div class="modal-content">
+					  <div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+						<h4 class="modal-title" id="myModalLabel">{{ 'Asset details' }}</h4>
+					  </div>
+					  <div class="modal-body raw-view">
+						<ul class="list-group">
+							<li class="list-group-item leaf-item">
+								<strong>{{ 'Hash signature'|trans }}</strong>
+								{{ dataField.rawData.sha1 }}
+							</li>
+							{% if dataField.rawData._title is defined %}
+								<li class="list-group-item leaf-item">
+									<strong>{{ 'Title : '|trans }}</strong>
+									{{ dataField.rawData._title }}
+								</li>
+							{% endif %}
+							{% if dataField.rawData.filesize is defined %}
+								<li class="list-group-item leaf-item">
+									<strong>{{ 'Size : '|trans }}</strong>
+									{{ dataField.rawData.filesize|number_format(0, ',', '.') }} bytes
+								</li>
+							{% endif %}
+							<li class="list-group-item leaf-item">
+								<strong>{{ 'MIME Type : '|trans }}</strong>
+								{{ dataField.rawData.mimetype }}
+							</li>
+							{% if dataField.rawData._date is defined %}
+								<li class="list-group-item leaf-item">
+									<strong>{{ 'Date : '|trans }}</strong>
+									{{ dataField.rawData._date }}
+								</li>
+							{% endif %}
+							{% if dataField.rawData._author is defined %}
+								<li class="list-group-item leaf-item">
+									<strong>{{ 'Author : '|trans }}</strong>
+									{{ dataField.rawData._author }}
+								</li>
+							{% endif %}
+							{% if dataField.rawData._language is defined %}
+								<li class="list-group-item leaf-item">
+									<strong>{{ 'Language : '|trans }}</strong>
+									{{ dataField.rawData._language }}
+								</li>
+							{% endif %}
+							{% if dataField.rawData._content is defined %}
+								<li class="list-group-item leaf-item">
+									<strong>{{ 'Content : '|trans }}</strong><br>
+									{{ dataField.rawData._content|nl2br }}
+								</li>
+							{% endif %}
+						</ul>
+						<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					  </div>
+					</div>
+				  </div>
+				</div>
+				</div>
+			</div>
+		{% endif %}
 </div>
 {% endmacro %}
 

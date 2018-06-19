@@ -212,7 +212,7 @@ class AppExtension extends \Twig_Extension
         $b = isset($compareRawData[$fieldName]) && $compareRawData[$fieldName];
 
         $textClass = '';
-        if($a !== $b){
+        if($compare && $a !== $b){
             $textClass = 'text-orange';
         }
 

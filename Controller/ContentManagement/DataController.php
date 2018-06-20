@@ -1191,6 +1191,16 @@ class DataController extends AppController
 
         $revision = new Revision();
 
+        if(! empty($contentType->getDefaultValue())){
+                $raw = json_decode($contentType->getDefaultValue(), true);
+                if($raw === NULL) {
+                    $this->addFlash('error', 'elasticms was not able to initiate the default value, please check the content type\'s configuration');
+                }
+                else {
+                    $revision->setRawData($raw);
+                }
+        }
+
         $form = $this->createFormBuilder($revision)
             ->add('ouuid', IconTextType::class, [
                 'attr' => [

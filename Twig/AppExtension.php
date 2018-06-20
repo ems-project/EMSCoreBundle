@@ -193,9 +193,10 @@ class AppExtension extends \Twig_Extension
                 $textLabel = ($escape?htmlentities($a):$a);
             }
             else{
-                $textClass = 'text-gray';
-                $textLabel = '[not defined]';
-                $tag = 'span';
+//                $textClass = 'text-gray';
+//                $textLabel = '[not defined]';
+//                $tag = 'span';
+                return '<span class="text-gray">[not defined]</span>';
             }
         }
 

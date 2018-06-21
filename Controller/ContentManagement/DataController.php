@@ -1202,13 +1202,13 @@ class DataController extends AppController
                 ]);
                 $raw = json_decode($defaultValue, true);
                 if($raw === NULL) {
-                    $this->addFlash('error', 'elasticms was not able to initiate the default value, please check the content type\'s configuration');
+                    $this->addFlash('error', 'elasticms was not able to initiate the default value (json_decode), please check the content type\'s configuration');
                 }
                 else {
                     $revision->setRawData($raw);
                 }
             } catch (\Twig_Error $e) {
-                $this->addFlash('error', 'elasticms was not able to initiate the default value, please check the content type\'s configuration');
+                $this->addFlash('error', 'elasticms was not able to initiate the default value (twig error), please check the content type\'s configuration');
             }
             
         }

@@ -70,7 +70,9 @@
 					<div class="col-md-8">
 						{{ form_row(form.description) }}
 			            {{ form_row(form.indexTwig) }}
-                        {{ form_row(form.defaultValue) }}
+                        {% if contentType.environment.managed %}
+                        	{{ form_row(form.defaultValue) }}
+                        {% endif %}
                         {{ form_row(form.extra) }}
 					</div>
 

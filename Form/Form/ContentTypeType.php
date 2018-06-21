@@ -161,10 +161,7 @@ class ContentTypeType extends AbstractType {
 			] );	
 		}
 		
-		$builder->add ( 'defaultValue', CodeEditorType::class, [
-            'required' => false,
-            'language' => 'ace/mode/json',
-        ] )->add ( 'extra', TextareaType::class, [
+		$builder->add ( 'extra', TextareaType::class, [
 				'required' => false,
 				'attr' => [
 						'rows' => 10,
@@ -194,7 +191,10 @@ class ContentTypeType extends AbstractType {
 		$builder->add ( 'rootContentType');
 		
 		if($contentType->getEnvironment()->getManaged()){
-			$builder->add ( 'askForOuuid', CheckboxType::class, [
+			$builder->add ( 'defaultValue', CodeEditorType::class, [
+                'required' => false,
+                'language' => 'ace/mode/json',
+            ] )->add ( 'askForOuuid', CheckboxType::class, [
 				'label' => 'Ask for OUUID',
 				'required' => false,
 			]);

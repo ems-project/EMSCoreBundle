@@ -1192,13 +1192,25 @@ class DataController extends AppController
         $revision = new Revision();
 
         if(! empty($contentType->getDefaultValue())){
-                $raw = json_decode($contentType->getDefaultValue(), true);
+
+            $twig = $this->getTwig();
+            try {
+                $template = $twig->createTemplate($contentType->getDefaultValue());
+                $defaultValue = $template->render([
+                    'environment' => $environment,
+                    'contentType' => $contentType,
+                ]);
+                $raw = json_decode($defaultValue, true);
                 if($raw === NULL) {
                     $this->addFlash('error', 'elasticms was not able to initiate the default value, please check the content type\'s configuration');
                 }
                 else {
                     $revision->setRawData($raw);
                 }
+            } catch (\Twig_Error $e) {
+                $this->addFlash('error', 'elasticms was not able to initiate the default value, please check the content type\'s configuration');
+            }
+            
         }
 
         $form = $this->createFormBuilder($revision)

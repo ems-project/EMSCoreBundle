@@ -8,7 +8,7 @@ services:
 
     app.twig_extension:
         class: EMS\CoreBundle\Twig\AppExtension
-        arguments: ['@doctrine', '@security.authorization_checker', '@ems.service.user', '@ems.service.contenttype', '@app.elasticsearch', '@router', '@twig', '@ems.form.factories.objectChoiceListFactory', '@ems.service.environment', '@logger', '@form.factory' ]
+        arguments: ['@doctrine', '@security.authorization_checker', '@ems.service.user', '@ems.service.contenttype', '@app.elasticsearch', '@router', '@twig', '@ems.form.factories.objectChoiceListFactory', '@ems.service.environment', '@logger', '@form.factory', '@ems.service.file' ]
         #public: false
         tags:
             - { name: twig.extension, priority: -2000 }

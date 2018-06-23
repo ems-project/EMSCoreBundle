@@ -5,6 +5,7 @@ use Caxy\HtmlDiff\HtmlDiff;
 use DateTime;
 use EMS\CoreBundle\Form\DataField\DateFieldType;
 use EMS\CoreBundle\Form\DataField\TimeFieldType;
+use EMS\CoreBundle\Service\FileService;
 use EMS\CoreBundle\Service\UserService;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -47,10 +48,12 @@ class AppExtension extends \Twig_Extension
 	private $environmentService;
 	/** @var Logger */
 	private $logger;
-	/**@var FormFactory*/
-	protected $formFactory;
+    /**@var FormFactory*/
+    protected $formFactory;
+    /**@var FileService*/
+    protected $fileService;
 	
-	public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, Client $client, Router $router, $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, Logger $logger, FormFactory $formFactory)
+	public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, Client $client, Router $router, $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, Logger $logger, FormFactory $formFactory, FileService $fileService)
 	{
 		$this->doctrine = $doctrine;
 		$this->authorizationChecker = $authorizationChecker;
@@ -63,6 +66,7 @@ class AppExtension extends \Twig_Extension
 		$this->environmentService = $environmentService;
 		$this->logger = $logger;
 		$this->formFactory = $formFactory;
+        $this->fileService = $fileService;
 		
 		//$this->twig->getExtension('Twig_Extension_Core')->setEscaper('csv', array($this, 'csvEscaper'));
 	}
@@ -141,11 +145,17 @@ class AppExtension extends \Twig_Extension
             new \Twig_SimpleFilter('merge_recursive', array($this, 'array_merge_recursive')),
             new \Twig_SimpleFilter('array_intersect', array($this, 'array_intersect')),
             new \Twig_SimpleFilter('get_string', array($this, 'getString')),
+            new \Twig_SimpleFilter('get_file', array($this, 'getFile')),
 				
 				
 				
 		);
 	}
+
+
+	public function getFile($hash, $cacheContext=false) {
+	    return $this->fileService->getFile($hash, $cacheContext);
+    }
 
 	public function getString($rawData, $field){
 	    if(empty($rawData) or !isset($rawData[$field])){

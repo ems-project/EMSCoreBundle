@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NoResultException;
+use Dompdf\Dompdf;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use EMS\CoreBundle;
@@ -16,6 +17,7 @@ use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Exception\HasNotCircleException;
 use EMS\CoreBundle\Exception\PrivilegeException;
 use EMS\CoreBundle\Form\Field\IconTextType;
+use EMS\CoreBundle\Form\Field\RenderOptionType;
 use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Form\Form\ViewType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
@@ -744,7 +746,30 @@ class DataController extends AppController
             $body = $twig->createTemplate('error in the template!');
         }
 
-        if ($_download || (strcmp($template->getRenderOption(), "export") === 0 && !$template->getPreview())) {
+        if($template->getRenderOption() === RenderOptionType::PDF && $_download) {
+            $output = $body->render([
+                'environment' => $environment,
+                'contentType' => $template->getContentType(),
+                'object' => $object,
+                'source' => $object['_source'],
+                '_download' => $_download,
+            ]);
+
+            // instantiate and use the dompdf class
+            $dompdf = new Dompdf();
+            $dompdf->loadHtml($output);
+
+            // (Optional) Setup the paper size and orientation
+            $dompdf->setPaper($template->getSize()?$template->getSize():'A3', $template->getOrientation()?$template->getOrientation():'portrait');
+
+            // Render the HTML as PDF
+            $dompdf->render();
+
+            // Output the generated PDF to Browser
+            $dompdf->stream();
+            exit;
+        }
+        if ($_download || (strcmp($template->getRenderOption(), RenderOptionType::EXPORT) === 0 && !$template->getPreview())) {
             if (null != $template->getMimeType()) {
                 header('Content-Type: ' . $template->getMimeType());
             }

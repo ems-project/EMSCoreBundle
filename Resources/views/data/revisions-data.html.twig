@@ -157,7 +157,8 @@
 			<!-- /.box-header -->
 			<!-- form start -->
 			<div class="box-body">
-				{{ macros.renderDataField(dataFields) }}
+				{% set compare = compareData?true:false %}
+				{{ macros.renderDataField(dataFields, compare, compareData) }}
 			</div>
 			<!-- /.box-body -->
 			<div class="box-footer">
@@ -239,7 +240,7 @@
 									<th>Actions</th>
 								</tr>
 								{% for rev in revisionsSummary %}
-								<tr {% if rev.id == revision.id %}class="bg-{{ revision.contentType.color }}"{% endif %}>
+								<tr {% if rev.id == revision.id %}class="bg-{{ revision.contentType.color }}"{% elseif compareId == rev.id or compareId == revision.id %}class="bg-gray"{% endif %}>
 									<td>{{ loop.index+firstElemOfPage }}.</td>
 									<td>{{ rev.created|date|date(date_time_format) }}</td>
 									<td>
@@ -272,13 +273,25 @@
 									</td>
 									<td>
                                         {% include '@EMSCore/elements/revision-toolbar.html.twig' with {
-										'revisionId' : rev.id,
-										'environments': rev.environments,
-										'draft': rev.draft,
-										'current': not rev.endTime,
-										'autoSave': rev.autoSave,
-										'instance': revision
-									}%}
+											'revisionId' : rev.id,
+											'environments': rev.environments,
+											'draft': rev.draft,
+											'current': not rev.endTime,
+											'autoSave': rev.autoSave,
+											'instance': revision
+										}%}
+                                        {% if rev.id != revision.id and compareId != rev.id and compareId != revision.id %}
+                                            {% include '@EMSCore/elements/get-button.html.twig' with {
+                                                'url': path('ems_content_revisions_view', {
+                                                    'type': revision.contentType.name,
+                                                    'ouuid': revision.ouuid,
+                                                    'revisionId': rev.id > revision.id ? rev.id :revision.id,
+                                                    'compareId': rev.id < revision.id ? rev.id :revision.id,
+													'page': page
+                                                }),
+                                                'label': 'Compare',
+                                                'icon': 'compress' }%}
+										{% endif %}
 									</td>
 								</tr>
 								{% endfor %}
@@ -290,7 +303,7 @@
                         {% include '@EMSCore/elements/pagination.html.twig' with {
 							'lastPage': lastPage,
 							'currentPage': page,
-							'currentFilters': app.request.query|merge({ type: revision.contentType.name , ouuid: revision.ouuid , revisionId: revision.id}),
+							'currentFilters': app.request.query|merge({ type: revision.contentType.name , ouuid: revision.ouuid , revisionId: revision.id, compareId: compareId}),
 							'paginationPath': 'data.revisions',
 							'showAlwaysFirstAndLast': false
 						} %}

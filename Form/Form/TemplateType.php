@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Form\Form;
 
+use Dompdf\Adapter\CPDF;
 use EMS\CoreBundle\Entity\Template;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 use EMS\CoreBundle\Form\Field\IconTextType;
@@ -125,12 +126,22 @@ class TemplateType extends AbstractType {
 			'attr' => [
 			],
 			'slug' => 'template-response',
-		])
-		->add ( 'save', SubmitEmsType::class, [ 
-				'attr' => [ 
-						'class' => 'btn-primary btn-sm ' 
-				],
-				'icon' => 'fa fa-save' 
+        ])->add('orientation', ChoiceType::class, [
+                'required' => false,
+                'choices' => [
+                    'Portrait' => 'portrait',
+                    'Landscape' => 'landscape',
+                ],
+                'required' => false,
+        ])->add('size', ChoiceType::class, [
+            'required' => false,
+            'choices' => array_combine(array_keys(CPDF::$PAPER_SIZES), array_keys(CPDF::$PAPER_SIZES)),
+            'required' => false,
+        ])->add ( 'save', SubmitEmsType::class, [
+            'attr' => [
+                    'class' => 'btn-primary btn-sm '
+            ],
+            'icon' => 'fa fa-save'
 		] );
 	}
 }

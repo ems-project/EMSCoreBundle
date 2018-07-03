@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NoResultException;
+use Dompdf\Dompdf;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use EMS\CoreBundle;
@@ -16,6 +17,7 @@ use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Exception\HasNotCircleException;
 use EMS\CoreBundle\Exception\PrivilegeException;
 use EMS\CoreBundle\Form\Field\IconTextType;
+use EMS\CoreBundle\Form\Field\RenderOptionType;
 use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Form\Form\ViewType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
@@ -287,9 +289,10 @@ class DataController extends AppController
     }
 
     /**
-     * @Route("/data/revisions/{type}:{ouuid}/{revisionId}", defaults={"revisionId": false} , name="data.revisions")
+     * @Route("/data/revisions/{type}:{ouuid}/{revisionId}/{compareId}", defaults={"revisionId": false, "compareId": false} , name="data.revisions")
+     * @Route("/data/revisions/{type}:{ouuid}/{revisionId}/{compareId}", defaults={"revisionId": false, "compareId": false} , name="ems_content_revisions_view")
      */
-    public function revisionsDataAction($type, $ouuid, $revisionId, Request $request, DataService $dataService)
+    public function revisionsDataAction($type, $ouuid, $revisionId, $compareId, Request $request, DataService $dataService)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -329,6 +332,32 @@ class DataController extends AppController
             ]);
         } else {
             $revision = $repository->findOneById($revisionId);
+        }
+
+        $compareData = false;
+        if($compareId) {
+
+            $this->addFlash('warning', 'The compare is a beta functionality');
+            /**@var Revision $compareRevision*/
+            $compareRevision = $repository->findOneById($compareId);
+            if($compareRevision) {
+
+                $compareData = $compareRevision->getRawData();
+                if($revision->getContentType() === $compareRevision->getContentType() && $revision->getOuuid() == $compareRevision->getOuuid()) {
+                    if($compareRevision->getCreated() <= $revision->getCreated()  ){
+                        $this->addFlash('notice', 'Compared with the revision of '.$compareRevision->getCreated()->format($this->getParameter('ems_core.date_time_format')));
+                    }
+                    else{
+                        $this->addFlash('warning', 'Compared with the revision of '.$compareRevision->getCreated()->format($this->getParameter('ems_core.date_time_format')). ' wich one is more recent.');
+                    }
+                }
+                else {
+                    $this->addFlash('notice', 'Compared with '.$compareRevision->getContentType().':'.$compareRevision->getOuuid().' of '.$compareRevision->getCreated()->format($this->getParameter('ems_core.date_time_format')));
+                }
+            }
+            else {
+                $this->addFlash('warning', 'Revision to compare with not found');
+            }
         }
 
 
@@ -411,6 +440,8 @@ class DataController extends AppController
             'counter' => $counter,
             'firstElemOfPage' => $firstElemOfPage,
             'dataFields' => $dataFields,
+            'compareData' => $compareData,
+            'compareId' => $compareId,
         ]);
     }
 
@@ -715,7 +746,30 @@ class DataController extends AppController
             $body = $twig->createTemplate('error in the template!');
         }
 
-        if ($_download || (strcmp($template->getRenderOption(), "export") === 0 && !$template->getPreview())) {
+        if($template->getRenderOption() === RenderOptionType::PDF && $_download) {
+            $output = $body->render([
+                'environment' => $environment,
+                'contentType' => $template->getContentType(),
+                'object' => $object,
+                'source' => $object['_source'],
+                '_download' => $_download,
+            ]);
+
+            // instantiate and use the dompdf class
+            $dompdf = new Dompdf();
+            $dompdf->loadHtml($output);
+
+            // (Optional) Setup the paper size and orientation
+            $dompdf->setPaper($template->getSize()?$template->getSize():'A3', $template->getOrientation()?$template->getOrientation():'portrait');
+
+            // Render the HTML as PDF
+            $dompdf->render();
+
+            // Output the generated PDF to Browser
+            $dompdf->stream();
+            exit;
+        }
+        if ($_download || (strcmp($template->getRenderOption(), RenderOptionType::EXPORT) === 0 && !$template->getPreview())) {
             if (null != $template->getMimeType()) {
                 header('Content-Type: ' . $template->getMimeType());
             }
@@ -1160,6 +1214,28 @@ class DataController extends AppController
         $em = $this->getDoctrine()->getManager();
 
         $revision = new Revision();
+
+        if(! empty($contentType->getDefaultValue())){
+
+            $twig = $this->getTwig();
+            try {
+                $template = $twig->createTemplate($contentType->getDefaultValue());
+                $defaultValue = $template->render([
+                    'environment' => $environment,
+                    'contentType' => $contentType,
+                ]);
+                $raw = json_decode($defaultValue, true);
+                if($raw === NULL) {
+                    $this->addFlash('error', 'elasticms was not able to initiate the default value (json_decode), please check the content type\'s configuration');
+                }
+                else {
+                    $revision->setRawData($raw);
+                }
+            } catch (\Twig_Error $e) {
+                $this->addFlash('error', 'elasticms was not able to initiate the default value (twig error), please check the content type\'s configuration');
+            }
+            
+        }
 
         $form = $this->createFormBuilder($revision)
             ->add('ouuid', IconTextType::class, [

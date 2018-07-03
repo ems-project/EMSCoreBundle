@@ -179,7 +179,21 @@ class Template
      * @ORM\Column(name="email_content_type", type="string", nullable=true)
      */
     private $emailContentType;
-    
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="orientation", type="string", length=20, nullable=true)
+     */
+    private $orientation;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="size", type="string", length=20, nullable=true)
+     */
+    private $size;
+
     /**
      * @ORM\PrePersist
      * @ORM\PreUpdate
@@ -801,4 +815,42 @@ class Template
     {
         return $this->header;
     }
+
+    /**
+     * @return string
+     */
+    public function getOrientation()
+    {
+        return $this->orientation;
+    }
+
+    /**
+     * @param string $orientation
+     * @return Template
+     */
+    public function setOrientation($orientation)
+    {
+        $this->orientation = $orientation;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSize()
+    {
+        return $this->size;
+    }
+
+    /**
+     * @param string $size
+     * @return Template
+     */
+    public function setSize($size)
+    {
+        $this->size = $size;
+        return $this;
+    }
+
+
 }

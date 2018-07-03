@@ -367,7 +367,14 @@ class ContentType
      * @ORM\OrderBy({"name" = "ASC"})
      */
     private $singleTypeIndexes;
-    
+
+    /**
+     * @var string
+     * @ORM\Column(name="default_value", type="text", nullable=true)
+     */
+    public $defaultValue;
+
+
     function __construct(){
 
     	$this->templates = new \Doctrine\Common\Collections\ArrayCollection();
@@ -1671,5 +1678,23 @@ class ContentType
     public function getSingleTypeIndexes()
     {
         return $this->singleTypeIndexes;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDefaultValue()
+    {
+        return $this->defaultValue;
+    }
+
+    /**
+     * @param array $defaultValue
+     * @return ContentType
+     */
+    public function setDefaultValue($defaultValue)
+    {
+        $this->defaultValue = $defaultValue;
+        return $this;
     }
 }

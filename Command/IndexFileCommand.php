@@ -4,6 +4,7 @@
 namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\DBAL\Connection;
 use EMS\CoreBundle\Service\AssetExtratorService;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\FileService;
@@ -48,15 +49,13 @@ class IndexFileCommand extends EmsCommand
     protected $fileService;
 
 
-    public function __construct(Logger $logger, Client $client, Session $session, Registry $doctrine, ContentTypeService $contentTypeService, $databaseName, $databaseDriver, AssetExtratorService $extractorService, FileService $fileService)
+    public function __construct(Logger $logger, Client $client, Session $session, Registry $doctrine, ContentTypeService $contentTypeService, AssetExtratorService $extractorService, FileService $fileService)
     {
         $this->doctrine = $doctrine;
         $this->contentTypeService = $contentTypeService;
         $this->extractorService = $extractorService;
-        $this->databaseName = $databaseName;
-        $this->databaseDriver = $databaseDriver;
         $this->fileService = $fileService;
-        parent::__construct($logger, $client, $session, $databaseName, $databaseDriver);
+        parent::__construct($logger, $client, $session);
     }
 
     protected function configure()
@@ -288,13 +287,17 @@ class IndexFileCommand extends EmsCommand
         $em = $this->doctrine->getManager();
         $query = '';
 
-        if (in_array($this->databaseDriver, ['pdo_pgsql'])) {
-            $query = "SELECT pg_size_pretty(pg_database_size('$this->databaseName')) AS size";
-        } elseif (in_array($this->databaseDriver, ['pdo_mysql'])) {
+        /**@var Connection $connection */
+        $connection = $this->doctrine->getConnection();
+        $dbName = $connection->getDatabase();
+
+        if (in_array($connection->getDriver()->getName(), ['pdo_pgsql'])) {
+            $query = "SELECT pg_size_pretty(pg_database_size('$dbName')) AS size";
+        } elseif (in_array($connection->getDriver()->getName(), ['pdo_mysql'])) {
             $query = "SELECT
 			SUM(data_length + index_length)/1024/1024 AS size
 			FROM information_schema.TABLES
-			WHERE table_schema='$this->databaseName'
+			WHERE table_schema='$dbName'
 			GROUP BY table_schema";
         } else {
             throw new \Exception('Not supported driver');

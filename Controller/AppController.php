@@ -19,6 +19,7 @@ use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -36,9 +37,15 @@ class AppController extends Controller
     /**@var LoggerInterface*/
     private $logger;
 
-    public function __construct(LoggerInterface $logger)
+    /**
+     * @var FormRegistryInterface
+     */
+    private $formRegistry;
+
+    public function __construct(LoggerInterface $logger, FormRegistryInterface $formRegistry)
     {
         $this->logger = $logger;
+        $this->formRegistry = $formRegistry;
     }
 
 
@@ -193,8 +200,8 @@ class AppController extends Controller
 	 * 
 	 * @return DataFieldType
 	 */
-	protected function getDataFielType($fieldTypeNameOrServiceName){
-		return $this->get('form.registry')->getType($fieldTypeNameOrServiceName)->getInnerType();
+	protected function getDataFieldType($fieldTypeNameOrServiceName){
+		return $this->formRegistry->getType($fieldTypeNameOrServiceName)->getInnerType();
 	}
 	
 	/**

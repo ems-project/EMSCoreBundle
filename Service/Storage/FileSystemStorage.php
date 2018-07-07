@@ -10,7 +10,7 @@ class FileSystemStorage implements StorageInterface {
 	
 	public function __construct($storagePath, $kernel_root_dir) {
 		$this->storagePath = $storagePath;
-		if(!$storagePath) {
+		if(empty($storagePath)) {
 			$this->storagePath = $kernel_root_dir.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'var'.DIRECTORY_SEPARATOR.'assets';
 		}
 		if(!file_exists($this->storagePath)){

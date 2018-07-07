@@ -114,7 +114,7 @@ class DataService
 		
 		$this->public_key = null;
 		$this->private_key = null;
-		if($privateKey){
+		if(! empty($privateKey)){
 			try {
 				$this->private_key = openssl_pkey_get_private(file_get_contents($privateKey));
 			}

@@ -6,7 +6,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CoreBundle\Entity\CacheAssetExtractor;
 use EMS\CoreBundle\Exception\AssetNotFoundException;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Enzim\Lib\TikaWrapper\TikaWrapper;
+use EMS\CoreBundle\Tika\TikaWrapper;
 
 class AssetExtratorService
 {
@@ -46,7 +46,7 @@ class AssetExtratorService
 	}
 	
 	public function hello() {
-		if($this->tikaServer){
+		if(! empty($this->tikaServer)){
 			
 			$client = $this->rest->getClient($this->tikaServer);
 			$result = $client->get(self::HELLO_EP);

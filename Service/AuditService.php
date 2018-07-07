@@ -37,7 +37,7 @@ class AuditService {
 		$userName = $this->userService->getCurrentUser()->getUserName();
 
 		// if index is define (insert in index)
-		if ($this->index != null) {
+		if (! empty($this->index)) {
 			$this->auditLogToIndex($action, $rawData, $environment);
 		} else {
 			// insert in DB

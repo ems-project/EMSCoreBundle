@@ -437,7 +437,7 @@ class ContentTypeController extends AppController
                     $fieldTypeNameOrServiceName = $formArray ['ems:internal:add:field:class'];
                     $fieldName = $formArray ['ems:internal:add:field:name'];
                     /** @var DataFieldType $dataFieldType */
-                    $dataFieldType = $this->getDataFielType($fieldTypeNameOrServiceName);
+                    $dataFieldType = $this->getDataFieldType($fieldTypeNameOrServiceName);
                     $child = new FieldType ();
                     $child->setName($fieldName);
                     $child->setType($fieldTypeNameOrServiceName);

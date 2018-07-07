@@ -21,7 +21,7 @@ class Configuration implements ConfigurationInterface
     const FROM_EMAIL_NAME = 'elasticms';
     const INSTANCE_ID = 'ems_';
     const CIRCLES_OBJECT = null;
-    const ELASTICSEARCH_DEFAULT_SERVER = 'http://localhost:9200';
+    const ELASTICSEARCH_DEFAULT_CLUSTER = ['http://localhost:9200'];
     const DATEPICKER_FORMAT = 'dd/mm/yyyy';
     const DATEPICKER_WEEKSTART = 1;
     const DATEPICKER_DAYSOFWEEK_HIGHLIGHTED = [0, 6];
@@ -61,12 +61,8 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('instance_id')->defaultValue(self::INSTANCE_ID)->end()
             ->scalarNode('datepicker_format')->defaultValue(self::DATEPICKER_FORMAT)->end()
             ->scalarNode('datepicker_weekstart')->defaultValue(self::DATEPICKER_WEEKSTART)->end()
-            ->arrayNode('elasticsearch_cluster')->requiresAtLeastOneElement()->defaultValue([self::ELASTICSEARCH_DEFAULT_SERVER])
-            ->prototype('scalar')->end()
-            ->end()
-            ->arrayNode('datepicker_daysofweek_highlighted')->requiresAtLeastOneElement()->defaultValue([self::DATEPICKER_DAYSOFWEEK_HIGHLIGHTED])
-            ->prototype('scalar')->end()
-            ->end()
+            ->variableNode('elasticsearch_cluster')->defaultValue(self::ELASTICSEARCH_DEFAULT_CLUSTER)->end()
+            ->variableNode('datepicker_daysofweek_highlighted')->defaultValue([self::DATEPICKER_DAYSOFWEEK_HIGHLIGHTED])->end()
             ->arrayNode('from_email')->addDefaultsIfNotSet()
             ->children()
             ->scalarNode('address')->defaultValue(self::FROM_EMAIL_ADDRESS)->end()
@@ -74,7 +70,6 @@ class Configuration implements ConfigurationInterface
             ->end()
             ->end()
             ->scalarNode('audit_index')->defaultValue(self::AUDIT_INDEX)->end()
-            ->scalarNode('date_time_format')->defaultValue(self::DATE_TIME_FORMAT)->end()
             ->scalarNode('notification_pending_timeout')->defaultValue(self::NOTIFICATION_PENDING_TIMEOUT)->end()
             ->scalarNode('allow_user_registration')->defaultValue(self::ALLOW_USER_REGISTRATION)->end()
             ->scalarNode('lock_time')->defaultValue(self::LOCK_TIME)->end()

@@ -39,7 +39,7 @@ class Job
     /**
      * @var string
      *
-     * @ORM\Column(name="status", type="string", length=2048)
+     * @ORM\Column(name="status", type="text", nullable=true)
      */
     private $status; 
 

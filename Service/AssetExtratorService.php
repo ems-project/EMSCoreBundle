@@ -46,7 +46,7 @@ class AssetExtratorService
 	}
 	
 	public function hello() {
-		if($this->tikaServer){
+		if(! empty($this->tikaServer)){
 			
 			$client = $this->rest->getClient($this->tikaServer);
 			$result = $client->get(self::HELLO_EP);

@@ -329,13 +329,20 @@ class ContentType
      * @ORM\Column(name="edit_twig_with_wysiwyg", type="boolean")
      */
     private $editTwigWithWysiwyg;
-    
+
     /**
      * @var bool
      *
      * @ORM\Column(name="web_content", type="boolean", options={"default" : 1})
      */
     private $webContent;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="auto_publish", type="boolean", options={"default" : 0})
+     */
+    private $autoPublish;
     
     /**
      * @var bool
@@ -1695,6 +1702,24 @@ class ContentType
     public function setDefaultValue($defaultValue)
     {
         $this->defaultValue = $defaultValue;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAutoPublish(): bool
+    {
+        return $this->autoPublish;
+    }
+
+    /**
+     * @param bool $autoPublish
+     * @return ContentType
+     */
+    public function setAutoPublish(bool $autoPublish): ContentType
+    {
+        $this->autoPublish = $autoPublish;
         return $this;
     }
 }

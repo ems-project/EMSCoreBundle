@@ -402,8 +402,13 @@ class DataService
 		return true;
 	}
 	
-	public function sign(Revision $revision) {
-		$objectArray = $revision->getRawData();
+	public function sign(Revision $revision, $silentPublish=false) {
+	    if($silentPublish && $revision->getAutoSave()){
+            $objectArray = $revision->getAutoSave();
+        }
+        else {
+		    $objectArray = $revision->getRawData();
+        }
 
         $objectArray['_contenttype'] = $revision->getContentType()->getName();
 		if(isset($objectArray[Mapping::HASH_FIELD])){
@@ -418,7 +423,7 @@ class DataService
 		$revision->setSha1(sha1($json));
 		$objectArray[Mapping::HASH_FIELD] = $revision->getSha1();
 		
-		if($this->private_key) {
+		if(!$silentPublish && $this->private_key) {
 			$signature = null;
 			if(openssl_sign($json, $signature, $this->private_key, OPENSSL_ALGO_SHA1)){
 				$objectArray[Mapping::SIGNATURE_FIELD] = base64_encode($signature);

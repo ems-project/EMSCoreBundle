@@ -933,6 +933,10 @@ class DataController extends AppController
 
             $this->getDataService()->isValid($form);
             $formErrors = $form->getErrors(true, true);
+
+            if($formErrors->count() === 0 && $revision->getContentType()->isAutoPublish()) {
+                $this->getPublishService()->silentPublish($revision);
+            }
         }
 
         $response = $this->render('@EMSCore/data/ajax-revision.json.twig', [

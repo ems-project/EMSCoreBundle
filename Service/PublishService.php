@@ -132,6 +132,38 @@ class PublishService
 		
 		
 	}
+
+	public function silentPublish(Revision $revision) {
+        try {
+            if(empty($revision->getOuuid())){
+                return;
+            }
+
+            $body = $this->dataService->sign($revision, true);
+            $index = $this->contentTypeService->getIndex($revision->getContentType());
+
+            $body[Mapping::PUBLISHED_DATETIME_FIELD] = (new \DateTime())->format(\DateTime::ISO8601);
+            $config =[
+                'id' => $revision->getOuuid(),
+                'index' => $index,
+                'type' => $revision->getContentType()->getName(),
+                'body' => $body,
+            ];
+
+
+            if($revision->getContentType()->getHavePipelines()){
+                $config['pipeline'] = $this->instanceId.$revision->getContentType()->getName();
+            }
+
+            $this->client->index($config);
+
+            $this->session->getFlashBag()->add('notice', 'An new draft/autosave has been published in '.$revision->getContentType()->getEnvironment()->getName());
+
+        }
+        catch (\Exception $e) {
+            $this->session->getFlashBag()->add('warning', 'Elasticms was not able to publish draft/autosave in '.$revision->getContentType()->getEnvironment()->getName());
+        }
+	}
 	
 	public function publish(Revision $revision, Environment $environment, $command=false) {
 		if(!$command) {

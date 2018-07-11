@@ -179,7 +179,7 @@ class ElasticsearchService {
     }
 
     public function withAllMapping() {
-        return version_compare($this->version, '6') < 0;
+        return version_compare($this->version, '5.6') < 0;
     }
 	
 }

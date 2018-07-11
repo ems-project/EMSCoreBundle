@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\ORM\NoResultException;
 use EMS\CoreBundle\Entity\SingleTypeIndex;
 use EMS\CoreBundle\Repository\FieldTypeRepository;
 use EMS\CoreBundle\Repository\SingleTypeIndexRepository;
@@ -194,57 +195,80 @@ class ContentTypeService {
 			if(!empty($e->getPrevious())){
 				$message = json_decode($e->getPrevious()->getMessage(), true);			
 			}
-			$this->session->getFlashBag()->add ( 'error', '<p><strong>elasticms was not able to generate pipelines, they are disabled</strong> Please consider to update your elasticsearch cluster (>=5.0) and/or install the ingest attachment plugin (bin/elasticsearch-plugin install ingest-attachment)</p>
+            $this->session->getFlashBag()->add ( 'error', '<p><strong>elasticms was not able to generate pipelines, they are disabled</strong> Please consider to update your elasticsearch cluster (>=5.0) and/or install the ingest attachment plugin (bin/elasticsearch-plugin install ingest-attachment)</p>
 					<p>Message from Elasticsearch: <b>' . $message['error']['type']. '</b>'.$message['error']['reason'] . '</p>' );
-		}
-		
-		try {	
-			
-			if(!$envs){
-				$envs = array_reduce ( $this->environmentService->getManagedEnvironement(), function ($envs, $item) use ($contentType) {
-					/**@var \EMS\CoreBundle\Entity\Environment $item*/
-				    $index = $this->getIndex($contentType, $item);
-					if (isset ( $envs )) {
-						$envs .= ',' . $index;
-					} else {
-						$envs = $index;
-					}
-					return $envs;
+        }
+
+        try {
+            $body = $this->environmentService->getIndexAnalysisConfiguration();
+            if(!$envs){
+                $envs = array_reduce ( $this->environmentService->getManagedEnvironement(), function ($envs, $item) use ($contentType, $body) {
+                    /**@var \EMS\CoreBundle\Entity\Environment $item*/
+				    try {
+                        $index = $this->getIndex($contentType, $item);
+                    }
+                    catch (NoResultException $e) {
+                        $index = $this->environmentService->getNewIndexName($item, $contentType);
+                        $this->setSingleTypeIndex($item, $contentType, $index);
+                    }
+
+                    $indexExist = $this->client->indices()->exists(['index' => $index]);
+
+                    if(!$indexExist) {
+                        $result = $this->client->indices()->create([
+                            'index' => $index,
+                            'body' => $body,
+                        ]);
+
+                        $result = $this->client->indices()->putAlias([
+                            'index' => $index,
+                            'name' => $item->getAlias(),
+                        ]);
+                    }
+
+                    if (isset ( $envs )) {
+                        $envs .= ',' . $index;
+                    } else {
+                        $envs = $index;
+                    }
+                    return $envs;
 				} );
-			}
-			
-			$body = $this->mappingService->generateMapping ($contentType, $contentType->getHavePipelines());
-			$out = $this->client->indices()->putMapping ( [
-					'index' => $envs,
-					'type' => $contentType->getName(),
-					'body' => $body
-			] );
-				
-			if (isset ( $out ['acknowledged'] ) && $out ['acknowledged']) {
-				$contentType->setDirty ( false );
-				if($this->session->isStarted()){
-					$this->session->getFlashBag()->add ( 'notice', 'Mappings successfully updated/created for '.$contentType->getName().' in '.$envs );
-				}
-			} else {
-				$contentType->setDirty ( true );
-				$this->session->getFlashBag()->add ( 'warning', '<p><strong>Something went wrong. Try again</strong></p>
+            }
+
+            $body = $this->mappingService->generateMapping ($contentType, $contentType->getHavePipelines());
+            if (isset ( $envs )) {
+                $out = $this->client->indices()->putMapping([
+                    'index' => $envs,
+                    'type' => $contentType->getName(),
+                    'body' => $body
+                ]);
+                if (isset ( $out ['acknowledged'] ) && $out ['acknowledged']) {
+                    $contentType->setDirty ( false );
+                    if($this->session->isStarted()){
+                        $this->session->getFlashBag()->add ( 'notice', 'Mappings successfully updated/created for '.$contentType->getName().' in '.$envs );
+                    }
+                } else {
+                    $contentType->setDirty ( true );
+                    $this->session->getFlashBag()->add ( 'warning', '<p><strong>Something went wrong. Try again</strong></p>
 						<p>Message from Elasticsearch: ' . print_r ( $out, true ) . '</p>' );
-			}
-			
-			$em = $this->doctrine->getManager();
+                }
+            }
+
+
+            $em = $this->doctrine->getManager();
 			$em->persist($contentType);
 			$em->flush();
 			
 				
 		} catch ( BadRequest400Exception $e ) {
-			$contentType->setDirty ( true );
-			$message = json_decode($e->getMessage(), true);
-			if(!empty($e->getPrevious())) {
-				$message = json_decode($e->getPrevious()->getMessage(), true);				
-			}
-			$this->session->getFlashBag()->add ( 'error', '<p><strong>You should try to rebuild the indexes for '.$contentType->getName().'</strong></p>
+            $contentType->setDirty ( true );
+            $message = json_decode($e->getMessage(), true);
+            if(!empty($e->getPrevious())) {
+                $message = json_decode($e->getPrevious()->getMessage(), true);
+            }
+            $this->session->getFlashBag()->add ( 'error', '<p><strong>You should try to rebuild the indexes for '.$contentType->getName().'</strong></p>
 					<p>Message from Elasticsearch: <b>' . $message['error']['type']. '</b>'.$message['error']['reason'] . '</p>' );
-		}
+        }
 	}
 	
 	/**

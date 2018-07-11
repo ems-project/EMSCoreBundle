@@ -825,7 +825,7 @@ class DataService
 		}
 	
 		$contentTypeId = $revision->getContentType()->getId();
-		
+
 		$hasPreviousRevision = false;
 	
 		if(null != $revision->getOuuid()){
@@ -854,7 +854,7 @@ class DataService
 				if($previous->getEnvironments()->isEmpty()) {
 					$previous->setDraft(true);
 				}
-				$hasPreviousRevision = true;
+				$hasPreviousRevision = $previous->getId();
 				$em->persist($previous);
 			}
 	

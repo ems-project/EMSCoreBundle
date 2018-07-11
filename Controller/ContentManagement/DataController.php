@@ -570,11 +570,17 @@ class DataController extends AppController
 
         $contentTypeId = $revision->getContentType()->getId();
         $type = $revision->getContentType()->getName();
+        $autoPublish = $revision->getContentType()->isAutoPublish();
         $ouuid = $revision->getOuuid();
 
         $hasPreviousRevision = $this->discardDraft($revision);
 
         if (null != $ouuid && $hasPreviousRevision) {
+
+            if($autoPublish) {
+                return $this->reindexRevisionAction($hasPreviousRevision, $request, true);
+            }
+
             return $this->redirectToRoute('data.revisions', [
                 'type' => $type,
                 'ouuid' => $ouuid,
@@ -606,6 +612,11 @@ class DataController extends AppController
         $em->flush();
 
         if (null != $ouuid) {
+
+            if($revision->getContentType()->isAutoPublish()) {
+                $this->addFlash('warning', 'Elasticms was not able to determine if this draft can be silently published');
+            }
+
             return $this->redirectToRoute('data.revisions', [
                 'type' => $type,
                 'ouuid' => $ouuid,
@@ -621,7 +632,7 @@ class DataController extends AppController
      * @Route("/data/revision/re-index/{revisionId}", name="revision.reindex"))
      * @Method({"POST"})
      */
-    public function reindexRevisionAction($revisionId, Request $request)
+    public function reindexRevisionAction($revisionId, Request $request, $defaultOnly=false)
     {
 
         /** @var EntityManager $em */
@@ -643,19 +654,27 @@ class DataController extends AppController
 
 
         try {
-            $objectArray = $this->getDataService()->reloadData($revision);
+            $this->getDataService()->reloadData($revision);
 
             $objectArray = $this->getDataService()->sign($revision);
+
+
+            $objectArray[CoreBundle\Service\Mapping::PUBLISHED_DATETIME_FIELD] = (new \DateTime())->format(\DateTime::ISO8601);
+
             /** @var \EMS\CoreBundle\Entity\Environment $environment */
             foreach ($revision->getEnvironments() as $environment) {
-                $status = $client->index([
-                    'id' => $revision->getOuuid(),
-                    'index' => $this->getParameter('ems_core.instance_id') . $environment->getName(),
-                    'type' => $revision->getContentType()->getName(),
-                    'body' => $objectArray
-                ]);
+                if(!$defaultOnly || $environment === $revision->getContentType()->getEnvironment()) {
+                    $index = $this->getContentTypeService()->getIndex($revision->getContentType(), $environment);
 
-                $this->addFlash('notice', 'Reindexed in ' . $environment->getName());
+                    $status = $client->index([
+                        'id' => $revision->getOuuid(),
+                        'index' => $index,
+                        'type' => $revision->getContentType()->getName(),
+                        'body' => $objectArray
+                    ]);
+
+                    $this->addFlash('notice', 'Reindexed in ' . $environment->getName());
+                }
             }
             $em->persist($revision);
             $em->flush();
@@ -1149,6 +1168,11 @@ class DataController extends AppController
             }
             //if Save or Discard
             if (null != $revision->getOuuid()) {
+
+                if(count($form->getErrors()) === 0 && $revision->getContentType()->isAutoPublish()) {
+                    $this->getPublishService()->silentPublish($revision);
+                }
+
                 return $this->redirectToRoute('data.revisions', [
                     'ouuid' => $revision->getOuuid(),
                     'type' => $revision->getContentType()->getName(),

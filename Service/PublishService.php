@@ -171,10 +171,12 @@ class PublishService
 		}
 
 		$body = $this->dataService->sign($revision);
+        $index = $this->contentTypeService->getIndex($revision->getContentType(), $environment);
+
         $body[Mapping::PUBLISHED_DATETIME_FIELD] = (new \DateTime())->format(\DateTime::ISO8601);
 		$config =[
 				'id' => $revision->getOuuid(),
-				'index' => $environment->getAlias(),
+				'index' => $index,
 				'type' => $revision->getContentType()->getName(),
 				'body' => $body,
 		];
@@ -183,7 +185,7 @@ class PublishService
 		if($revision->getContentType()->getHavePipelines()){
 			$config['pipeline'] = $this->instanceId.$revision->getContentType()->getName();
 		}
-		
+
 		$status = $this->client->index($config);
 		
 		if(!$already) {

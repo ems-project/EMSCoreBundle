@@ -21,8 +21,8 @@ services:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
             #- { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
             #kernel.response or kernel.terminate
-    app.elasticsearch:
-        class: Elasticsearch\ClientBuilder
+    app.elasticsearch: '@Elasticsearch\Client'
+    Elasticsearch\Client:
         factory: [EMS\CoreBundle\Factories\ElasticsearchClientBuilderFactory, build]
         arguments: ["%ems_core.elasticsearch_cluster%"]
     app.twig.extension.stringloader:
@@ -380,11 +380,11 @@ services:
     ems.service.bulker:
         class: EMS\CoreBundle\Service\BulkerService
         arguments: ['@app.elasticsearch', '@logger']
-    ems.service.environment:
-        class: EMS\CoreBundle\Service\EnvironmentService
+    ems.service.environment: '@EMS\CoreBundle\Service\EnvironmentService'
+    EMS\CoreBundle\Service\EnvironmentService:
         arguments: ['@doctrine', '@session', '@ems.service.user', '@security.authorization_checker', '%ems_core.single_type_index%']
-    ems.service.contenttype:
-        class: EMS\CoreBundle\Service\ContentTypeService
+    ems.service.contenttype: '@EMS\CoreBundle\Service\ContentTypeService'
+    EMS\CoreBundle\Service\ContentTypeService:
         arguments: ['@doctrine', '@session', '@ems.service.mapping', '@app.elasticsearch', '@ems.service.environment', '@form.registry', '@translator', '%ems_core.instance_id%', '%ems_core.single_type_index%']
     ems.service.user:
         class: EMS\CoreBundle\Service\UserService

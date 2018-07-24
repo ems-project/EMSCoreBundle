@@ -390,7 +390,8 @@ class ContentType
     	
     	$this->dirty = true;
     	$this->editTwigWithWysiwyg = true;
-    	$this->webContent = true;
+        $this->webContent = true;
+        $this->autoPublish = false;
 
      	$fieldType = new FieldType();
      	$fieldType->setName ( 'source' );

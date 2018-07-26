@@ -250,7 +250,7 @@ abstract class DataFieldType extends AbstractType {
 	 * @return boolean
 	 */
 	public static function isVirtualField(array $option){
-		return $this::isVirtual($option);
+		return false;
 	}
 	
 	/**

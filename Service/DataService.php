@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Service;
 
-
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
@@ -174,7 +173,7 @@ class DataService
 		$revision->setLockBy($lockerUsername);
 		if($username){
 			//lock by a console script
-			$revision->setLockUntil(new \DateTime("+10 seconds"));
+			$revision->setLockUntil(new \DateTime("+30 seconds"));
 		}
 		else{
 			$revision->setLockUntil(new \DateTime($this->lockTime));			
@@ -223,9 +222,23 @@ class DataService
 	}
 	
 	public function propagateDataToComputedField(FormInterface $form, array& $objectArray, ContentType $contentType, $type, $ouuid, $migration=false){
+	    return $this->propagateDataToComputedField_recursive($form, $objectArray, $contentType, $type, $ouuid, $migration, $objectArray, '');
+
+    }
+
+    private function propagateDataToComputedField_recursive(FormInterface $form, array& $objectArray, ContentType $contentType, $type, $ouuid, $migration, &$parent, $path){
 		$found = false;
 		/**@var DataField $dataField*/
 		$dataField = $form->getNormData();
+
+        /**@var DataFieldType $dataFieldType */
+        $dataFieldType = $form->getConfig()->getType()->getInnerType();
+
+        $options = $dataField->getFieldType()->getOptions();
+        if(!$dataFieldType::isVirtual(!$options?[]:$options)) {
+            $path .= ($path == ''?'':'.').$form->getConfig()->getName();
+        }
+
         if($dataField !== null) {
             $extraOption = $dataField->getFieldType()->getExtraOptions();
             if( isset($extraOption['postProcessing']) && !empty($extraOption['postProcessing']) ) {
@@ -236,6 +249,8 @@ class DataService
                         '_id' => $ouuid,
                         'index' => $contentType->getEnvironment()->getAlias(),
                         'migration' => $migration,
+                        'parent' => $parent,
+                        'path' => $path,
                     ]);
                     $out = trim($out);
 
@@ -272,6 +287,8 @@ class DataService
                             '_id' => $ouuid,
                             'index' => $contentType->getEnvironment()->getAlias(),
                             'migration' => $migration,
+                            'parent' => $parent,
+                            'path' => $path,
                         ]);
 
                         if($dataField->getFieldType()->getDisplayOptions()['json']){
@@ -288,7 +305,7 @@ class DataService
                         $this->session->getFlashBag()->add('warning', 'Error to parse the computed field '.$dataField->getFieldType()->getName().': '.$e->getMessage());
                     }
                 }
-                if($out !== NULL && !empty($out)){
+                if( $out !== NULL && $out !== false && (!is_array($out) || !empty($out))){
                     $objectArray[$dataField->getFieldType()->getName()] = $out;
                 }
                 else if(isset($objectArray[$dataField->getFieldType()->getName()])) {
@@ -301,26 +318,35 @@ class DataService
         else {
             //$this->session->getFlashBag()->add('warning', 'Error to parse the post processing script of field '.$dataField->getFieldType()->getName().': ');
         }
-        if($form->getConfig()->getType()->getInnerType()->isContainer()) {
+
+        if($dataFieldType->isContainer()) {
+
+            /**@var Form $child*/
 			foreach ($form->getIterator() as $child){
+
+
+               /**@var DataFieldType $childType */
 				$childType = $child->getConfig()->getType()->getInnerType();
 
 				if ($childType instanceof CollectionFieldType) {
-					foreach ($child->getIterator() as $collectionChild) {
+
+					foreach ($child->getIterator() as $itemId => $collectionChild) {
 						$elementsArray = $collectionChild->getNormData()->getRawData();
 						if(isset($elementsArray['_ems_item_reverseViewTransform'])) {
 							//during migration those internal fields aren't properly cleaned
 							unset($elementsArray['_ems_item_reverseViewTransform']);
 						}
-						$found = $this->propagateDataToComputedField($collectionChild, $elementsArray, $contentType, $type, $ouuid, $migration) || $found;
+                        $fieldName = $child->getNormData()->getFieldType()->getName();
 
-						$fieldName = $child->getNormData()->getFieldType()->getName();
+                        $found = $this->propagateDataToComputedField_recursive($collectionChild, $elementsArray, $contentType, $type, $ouuid, $migration, $parent, $path.($path == ''?'':'.').$fieldName) || $found;
+
 						$positionInCollection = $collectionChild->getConfig()->getName();
 
 						$objectArray[$fieldName][$positionInCollection] = $elementsArray;
 					}
 				}elseif( $childType instanceof DataFieldType ) {
-					$found = $this->propagateDataToComputedField($child, $objectArray, $contentType, $type, $ouuid, $migration) || $found;
+
+					$found = $this->propagateDataToComputedField_recursive($child, $objectArray, $contentType, $type, $ouuid, $migration, $parent, $path) || $found;
 				}
 			}
 		}
@@ -760,20 +786,13 @@ class DataService
 		if(!$contentType){
 			throw new NotFoundHttpException('ContentType '.$type.' Not found');
 		}
-		
-		try{
-			$revision = $this->getNewestRevision($type, $ouuid);
-			$revision->setDeleted(false);
-			if(null !== $revision->getDataField()) {
-				$revision->getDataField()->propagateOuuid($revision->getOuuid());
-			}
-		}
-		catch(NotFoundHttpException $e){
-			$revision = new Revision();
-			$revision->setDraft(true);
-			$revision->setOuuid($ouuid);
-			$revision->setContentType($contentType);
-		}
+
+
+        $revision = $this->getNewestRevision($type, $ouuid);
+        $revision->setDeleted(false);
+        if(null !== $revision->getDataField()) {
+            $revision->getDataField()->propagateOuuid($revision->getOuuid());
+        }
 		
 		
  		$this->setMetaFields($revision);
@@ -784,7 +803,7 @@ class DataService
 	
 		if(! $revision->getDraft()){
 			$now = new \DateTime();
-	
+
 			if ($fromRev){
 				$newDraft = new Revision($fromRev);
 			} else {

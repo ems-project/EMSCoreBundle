@@ -225,8 +225,8 @@ class Revision
     						if($type::isCollection()){
     							if(is_array($data[$child->getName()])){
     								$out[$child->getName()] = [];
-    								foreach ($data[$child->getName()] as $item) {
-    									$out[$child->getName()][] = self::addVirtualFields($child, $item); 
+    								foreach ($data[$child->getName()] as  $idx => $item) {
+    									$out[$child->getName()][$idx] = self::addVirtualFields($child, $item);
     								}
     							}
     						}
@@ -280,7 +280,12 @@ class Revision
     						if($type::isCollection()){
     							$out[$child->getName()] = [];
     							foreach ($data[$child->getName()] as $item) {
-    								$out[$child->getName()][] = self::removeVirtualField($child, $item);  
+                                    $newItem = self::removeVirtualField($child, $item);
+                                    if(isset($item['_ems_internal_index']))
+                                    {
+                                        $newItem['_ems_internal_index'] = $item['_ems_internal_index'];
+                                    }
+    								$out[$child->getName()][] = $newItem;
     							}
     						}
     						else {

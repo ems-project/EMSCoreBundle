@@ -286,7 +286,8 @@
             {% endif %}
 		</div>
 		<div class="panel-body {% if collapsible %}collapse{% endif %}">
-			{% for idx, child in dataField.children %}
+			{% for idx, rawChild in dataField.rawData %}
+				{%  set child = dataField.children[loop.index0] %}
 				<div class="{% if dataField.fieldType.displayOptions.itemBootstrapClass is defined and dataField.fieldType.displayOptions.itemBootstrapClass %}{{ dataField.fieldType.displayOptions.itemBootstrapClass }}{% else %}col-md-12{% endif %}">
                     <div class="panel panel-default">
 						<div class="panel-heading">
@@ -297,8 +298,8 @@
 								{% if dataField.fieldType.displayOptions.singularLabel is defined %}
 									{{ dataField.fieldType.displayOptions.singularLabel }}
 								{% endif %}
-								#{{ loop.index0 }}
-								({{ dataField.fieldType.name }}.{{ loop.index0 }})
+								#{{ idx }}
+
                                 {% if collapsible %}
                                     <div class="pull-right">
                                         <div class="btn-group" role="group">

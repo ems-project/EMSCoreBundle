@@ -206,10 +206,10 @@ class CollectionFieldType extends DataFieldType {
 				'required' => false 
 		] )->add ( 'collapsible', CheckboxType::class, [ 
 				'required' => false 
-		] )->add ( 'sortable', CheckboxType::class, [ 
-				'required' => false 
+		] )->add ( 'sortable', CheckboxType::class, [
+				'required' => false
 		] );
-		
+
 		$optionsForm->get ( 'restrictionOptions' )
 		->add ( 'min', IntegerType::class, [
 				'required' => false
@@ -270,13 +270,20 @@ class CollectionFieldType extends DataFieldType {
 	 */
 	public function reverseViewTransform($data, FieldType $fieldType){
 		$cleaned = [];
-		foreach ( $data as $item ){
+		foreach ( $data as $idx => $item ){
 			//if the item _ems_item_reverseViewTransform is missing it means that this item hasn't been submitted (and it can be deleted)
 			if(!empty($item) && isset($item['_ems_item_reverseViewTransform'])) {
 				unset($item['_ems_item_reverseViewTransform']);
-				$cleaned[] = $item;
-			}
-		}
+
+				//now that we know that this has been submited, let's check if it has been marked to be deleted, if not w
+                if(!isset($item['_ems_internal_deleted']) || $item['_ems_internal_deleted'] != 'deleted') {
+                    unset($item['_ems_internal_deleted']);
+                    $item['_ems_internal_index'] = $idx;
+                    $cleaned[] = $item;
+                }
+            }
+
+        }
 		$out = parent::reverseViewTransform($cleaned, $fieldType);
 		return $out;
 	}

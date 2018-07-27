@@ -463,7 +463,8 @@ function addEventListeners(target){
         e.preventDefault();
         
         var panel = $(this).closest('.collection-item-panel');
-        panel.remove();
+        panel.find('input._ems_internal_deleted').val('deleted');
+        panel.hide();
         onFormChange();
 	});
 

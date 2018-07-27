@@ -7,6 +7,7 @@ use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldModelTransformer;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldViewTransformer;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**
@@ -61,6 +62,14 @@ class CollectionItemFieldType extends DataFieldType {
 		
 		$builder->addViewTransformer(new DataFieldViewTransformer($itemFieldType, $this->formRegistry))
 			->addModelTransformer(new DataFieldModelTransformer($itemFieldType, $this->formRegistry));
+
+
+        $builder->add ('_ems_internal_deleted', HiddenType::class, [
+            'required' => false,
+            'attr' => [
+                'class' => '_ems_internal_deleted',
+            ],
+        ] );
 		
 		/** @var FieldType $fieldType */
 		foreach ( $fieldType->getChildren () as $fieldType ) {

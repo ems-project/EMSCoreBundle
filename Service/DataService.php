@@ -12,6 +12,7 @@ use EMS\CoreBundle\Event\RevisionNewDraftEvent;
 use EMS\CoreBundle\Exception\DataStateException;
 use EMS\CoreBundle\Exception\LockedException;
 use EMS\CoreBundle\Exception\PrivilegeException;
+use EMS\CoreBundle\Form\DataField\CollectionItemFieldType;
 use EMS\CoreBundle\Form\DataField\ComputedFieldType;
 use EMS\CoreBundle\Form\DataField\CollectionFieldType;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
@@ -222,7 +223,7 @@ class DataService
 	}
 	
 	public function propagateDataToComputedField(FormInterface $form, array& $objectArray, ContentType $contentType, $type, $ouuid, $migration=false){
-	    return $this->propagateDataToComputedField_recursive($form, $objectArray, $contentType, $type, $ouuid, $migration, $objectArray, '');
+        return $this->propagateDataToComputedField_recursive($form, $objectArray, $contentType, $type, $ouuid, $migration, $objectArray, '');
 
     }
 
@@ -329,21 +330,28 @@ class DataService
 				$childType = $child->getConfig()->getType()->getInnerType();
 
 				if ($childType instanceof CollectionFieldType) {
+                    $fieldName = $child->getNormData()->getFieldType()->getName();
 
-					foreach ($child->getIterator() as $itemId => $collectionChild) {
-						$elementsArray = $collectionChild->getNormData()->getRawData();
-						if(isset($elementsArray['_ems_item_reverseViewTransform'])) {
-							//during migration those internal fields aren't properly cleaned
-							unset($elementsArray['_ems_item_reverseViewTransform']);
-						}
-                        $fieldName = $child->getNormData()->getFieldType()->getName();
+                    foreach ($child->getIterator() as $collectionChild)
+                    {
+                        $reindexed = [];
+                        foreach ($objectArray[$fieldName] as &$elementsArray)
+                        {
+                            $found = $this->propagateDataToComputedField_recursive($collectionChild, $elementsArray, $contentType, $type, $ouuid, $migration, $parent, $path.($path == ''?'':'.').$fieldName) || $found;
+                            if(isset($elementsArray['_ems_internal_index'])){
+                                $newKey = $elementsArray['_ems_internal_index'];
+                                unset($elementsArray['_ems_internal_index']);
+                                $reindexed[$newKey] = $elementsArray;
+                            }
+                        }
 
-                        $found = $this->propagateDataToComputedField_recursive($collectionChild, $elementsArray, $contentType, $type, $ouuid, $migration, $parent, $path.($path == ''?'':'.').$fieldName) || $found;
 
-						$positionInCollection = $collectionChild->getConfig()->getName();
+                        if(!empty($reindexed))
+                        {
+                            $objectArray[$fieldName] = $reindexed;
+                        }
+                    }
 
-						$objectArray[$fieldName][$positionInCollection] = $elementsArray;
-					}
 				}elseif( $childType instanceof DataFieldType ) {
 
 					$found = $this->propagateDataToComputedField_recursive($child, $objectArray, $contentType, $type, $ouuid, $migration, $parent, $path) || $found;
@@ -1163,7 +1171,10 @@ class DataService
 	}
 	
 	public function isValid(\Symfony\Component\Form\Form &$form, DataField $parent=null) {
-		
+	    if($form->getName() == '_ems_internal_deleted' && $parent != null && $parent->getFieldType() != null && $parent->getFieldType()->getType() == CollectionItemFieldType::class) {
+	        return true;
+        }
+
 		$viewData = $form->getNormData();
 		
 		//pour le champ hidden allFieldsAreThere de Revision

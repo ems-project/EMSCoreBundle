@@ -330,6 +330,11 @@ abstract class DataFieldType extends AbstractType {
 	 * @return boolean
 	 */
 	public function isValid(DataField &$dataField, DataField $parent=null){
+        if($this->hasDeletedParent($parent))
+        {
+            return true;
+        }
+
 		return count($dataField->getMessages()) === 0 && $this->isMandatory($dataField, $parent);
 	}
 	
@@ -355,7 +360,20 @@ abstract class DataFieldType extends AbstractType {
 		}
 		return $isValidMadatory;
 	}
-	
+
+	public function hasDeletedParent(DataField $parent=null)
+    {
+        if(!$parent)
+        {
+            return false;
+        }
+        if(isset($parent->getRawData()['_ems_internal_deleted']) && $parent->getRawData()['_ems_internal_deleted'] == 'deleted')
+        {
+            return true;
+        }
+        return $parent->getParent()?$this->hasDeletedParent($parent->getParent()):false;
+    }
+
 	/**
 	 * Build a Field specific options sub-form (or compount field) (used in edit content type).
 	 *

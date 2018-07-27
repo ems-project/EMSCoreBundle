@@ -162,6 +162,11 @@ class CollectionFieldType extends DataFieldType {
 	 * {@inheritdoc}
 	 */
 	public function isValid(DataField &$dataField, DataField $parent=null){
+        if($this->hasDeletedParent($parent))
+        {
+            return true;
+        }
+
 		$isValid = TRUE;
 		//Madatory Validation
 		//$isValid = $isValid && $this->isMandatory($dataField);

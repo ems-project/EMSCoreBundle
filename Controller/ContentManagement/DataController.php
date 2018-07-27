@@ -1024,8 +1024,17 @@ class DataController extends AppController
     private function reorderCollection(&$input)
     {
         if (is_array($input) && !empty($input)) {
-            if (is_int(array_keys($input)[0])) {
-                $input = array_values($input);
+            $keys = array_keys($input);
+            if (is_int($keys[0])) {
+                sort($keys);
+                $temp = [];
+                $loop0 = 0;
+                foreach ($input as $item)
+                {
+                    $temp[$keys[$loop0]] = $item;
+                    ++$loop0;
+                }
+                $input = $temp;
             }
             foreach ($input as &$elem) {
                 $this->reorderCollection($elem);
@@ -1076,7 +1085,6 @@ class DataController extends AppController
         /**little trick to reorder collection*/
         $requestRevision = $request->request->get('revision');
         $this->reorderCollection($requestRevision);
-
         $request->request->set('revision', $requestRevision);
         /**end little trick to reorder collection*/
 

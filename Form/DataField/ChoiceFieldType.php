@@ -85,7 +85,6 @@ class ChoiceFieldType extends DataFieldType {
             }
 
         }
-        dump($choices);
 		
 		$builder->add ( 'value', ChoiceType::class, [ 
 				'label' => (isset($options['label'])?$options['label']:$fieldType->getName()),

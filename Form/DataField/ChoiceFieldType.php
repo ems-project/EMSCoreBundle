@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Form\DataField;
 
 use EMS\CoreBundle\Entity\FieldType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -94,8 +95,11 @@ class ChoiceFieldType extends DataFieldType {
 		parent::configureOptions ( $resolver );
 		$resolver->setDefault ( 'choices', [] );
 		$resolver->setDefault ( 'labels', [] );
-		$resolver->setDefault ( 'multiple', false );
-		$resolver->setDefault ( 'expanded', false );
+        $resolver->setDefault ( 'multiple', false );
+        $resolver->setDefault ( 'expanded', false );
+        $resolver->setDefault ( 'linked_collection', false );
+        $resolver->setDefault ( 'collection_label_field', false );
+
 	}
 	
 	/**
@@ -116,6 +120,10 @@ class ChoiceFieldType extends DataFieldType {
 				'required' => false,
 		] )->add ( 'labels', TextareaType::class, [ 
 				'required' => false,
+        ] )->add ( 'linked_collection', TextType::class, [
+            'required' => false,
+        ] )->add ( 'collection_label_field', TextType::class, [
+            'required' => false,
 		] );
 		
 		// String specific mapping options

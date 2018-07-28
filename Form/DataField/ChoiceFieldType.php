@@ -94,6 +94,11 @@ class ChoiceFieldType extends DataFieldType {
     			'empty_data'  => null,
 				'multiple' => $options['multiple'],
 				'expanded' => $options['expanded'],
+                'attr' => [
+                    'data-linked-collection' => $options['linked_collection'],
+                    'data-collection-label-field' => $options['collection_label_field'],
+                    'class' => 'ems-choice-field-type',
+                ]
 		] );
 	}
 	

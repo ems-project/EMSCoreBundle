@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Form\DataField;
 
 use EMS\CoreBundle\Entity\FieldType;
+use function is_integer;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -65,13 +66,26 @@ class ChoiceFieldType extends DataFieldType {
 		$labels = explode("\n", str_replace("\r", "", $options['labels']));
 		
 		foreach ($values as $id => $value){
-			if(isset($labels[$id]) && !empty($labels[$id])){
-				$choices[$labels[$id]] = $value;
-			}
-			else {
-				$choices[$value] = $value;
-			}
+		    if($value != '')
+            {
+                if(isset($labels[$id]) && !empty($labels[$id])){
+                    $choices[$labels[$id]] = $value;
+                }
+                else {
+                    $choices[$value] = $value;
+                }
+            }
 		}
+
+        if(isset($options['linked_collection']) &&  $options['linked_collection'] && isset($options['raw_data'][$options['linked_collection']]) && is_array($options['raw_data'][$options['linked_collection']]))
+        {
+            foreach ($options['raw_data'][$options['linked_collection']] as $idx => $child)
+            {
+                $choices['#'.$idx.': '.((isset($child[$options['collection_label_field']]) && $child[$options['collection_label_field']])?$child[$options['collection_label_field']]:'')] = $idx;
+            }
+
+        }
+        dump($choices);
 		
 		$builder->add ( 'value', ChoiceType::class, [ 
 				'label' => (isset($options['label'])?$options['label']:$fieldType->getName()),
@@ -185,16 +199,16 @@ class ChoiceFieldType extends DataFieldType {
 			elseif (is_array($temp) ) {
 				$out = [];
 				foreach ($temp as $item){
-					if(is_string($item)){
+					if(is_string($item) || is_integer($item)){
 						$out[] = $item;
 					}
 					else {
-						$dataField->addMessage('Was not able to import the data : '+json_encode($item));
+						$dataField->addMessage('Was not able to import the data : '.json_encode($item));
 					}
 				}
 			}
 			else {
-				$dataField->addMessage('Was not able to import the data : '+json_encode($out));
+				$dataField->addMessage('Was not able to import the data : '.json_encode($out));
 				$out = [];
 			}
 		}

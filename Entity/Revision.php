@@ -279,13 +279,8 @@ class Revision
     					if(isset($data[$child->getName()]) && !empty($data[$child->getName()])){
     						if($type::isCollection()){
     							$out[$child->getName()] = [];
-    							foreach ($data[$child->getName()] as $item) {
-                                    $newItem = self::removeVirtualField($child, $item);
-                                    if(isset($item['_ems_internal_index']))
-                                    {
-                                        $newItem['_ems_internal_index'] = $item['_ems_internal_index'];
-                                    }
-    								$out[$child->getName()][] = $newItem;
+    							foreach ($data[$child->getName()] as $itemIdx => $item) {
+                                    $out[$child->getName()][$itemIdx] = self::removeVirtualField($child, $item);
     							}
     						}
     						else {

@@ -280,11 +280,10 @@ class CollectionFieldType extends DataFieldType {
 			if(!empty($item) && isset($item['_ems_item_reverseViewTransform'])) {
 				unset($item['_ems_item_reverseViewTransform']);
 
-				//now that we know that this has been submited, let's check if it has been marked to be deleted, if not w
+				//now that we know that this has been submited, let's check if it has not been marked to be deleted
                 if(!isset($item['_ems_internal_deleted']) || $item['_ems_internal_deleted'] != 'deleted') {
                     unset($item['_ems_internal_deleted']);
-                    $item['_ems_internal_index'] = $idx;
-                    $cleaned[] = $item;
+                    $cleaned[$idx] = $item;
                 }
             }
 

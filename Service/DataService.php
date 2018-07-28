@@ -334,21 +334,9 @@ class DataService
 
                     foreach ($child->getIterator() as $collectionChild)
                     {
-                        $reindexed = [];
                         foreach ($objectArray[$fieldName] as &$elementsArray)
                         {
                             $found = $this->propagateDataToComputedField_recursive($collectionChild, $elementsArray, $contentType, $type, $ouuid, $migration, $parent, $path.($path == ''?'':'.').$fieldName) || $found;
-                            if(isset($elementsArray['_ems_internal_index'])){
-                                $newKey = $elementsArray['_ems_internal_index'];
-                                unset($elementsArray['_ems_internal_index']);
-                                $reindexed[$newKey] = $elementsArray;
-                            }
-                        }
-
-
-                        if(!empty($reindexed))
-                        {
-                            $objectArray[$fieldName] = $reindexed;
                         }
                     }
 

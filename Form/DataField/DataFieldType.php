@@ -157,6 +157,8 @@ abstract class DataFieldType extends AbstractType {
 			],
 			'extraOptions' => [
 			],
+            'raw_data' => [
+            ],
 		];
 	}
 
@@ -240,6 +242,7 @@ abstract class DataFieldType extends AbstractType {
 				'required' => false,
 				'translation_domain' => false,
 				'migration' => false,
+                'raw_data' => [],
 		]);
 	}
 	

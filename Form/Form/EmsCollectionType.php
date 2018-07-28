@@ -40,7 +40,9 @@ class EmsCollectionType extends CollectionType{
 		$options = array_merge($options, [
 				'entry_type' => CollectionItemFieldType::class,
 				'entry_options' => [
-						'metadata' => $fieldType,
+				    'metadata' => $fieldType,
+                    'migration' => $options['migration'],
+                    'raw_data' =>  $options['raw_data'],
 				],
 				'allow_add' => true,
 				'allow_delete' => true,

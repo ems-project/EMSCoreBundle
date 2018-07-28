@@ -386,7 +386,7 @@ class DataController extends AppController
             $revision->getContentType()->getEnvironment());
 
 
-        $form = $this->createForm(RevisionType::class, $revision);
+        $form = $this->createForm(RevisionType::class, $revision, ['raw_data' => $revision->getRawData()]);
 
 
         $objectArray = $form->getData()->getRawData();
@@ -928,7 +928,7 @@ class DataController extends AppController
             $this->getLogger()->addDebug('Revision locked');
 
             $backup = $revision->getRawData();
-            $form = $this->createForm(RevisionType::class, $revision);
+            $form = $this->createForm(RevisionType::class, $revision, ['raw_data' => $revision->getRawData()]);
             //If the bag is not empty the user already see its content when opening the edit page
             $request->getSession()->getBag('flashes')->clear();
 
@@ -977,7 +977,7 @@ class DataController extends AppController
 
         $this->getDataService()->loadDataStructure($revision);
         try {
-            $form = $this->createForm(RevisionType::class, $revision);
+            $form = $this->createForm(RevisionType::class, $revision, ['raw_data' => $revision->getRawData()]);
             if (!empty($revision->getAutoSave())) {
                 $this->addFlash("error", "This draft (" . $revision->getContentType()->getSingularName() . ($revision->getOuuid() ? ":" . $revision->getOuuid() : "") . ") can't be finalized, as an autosave is pending.");
                 return $this->render('@EMSCore/data/edit-revision.html.twig', [
@@ -1077,6 +1077,7 @@ class DataController extends AppController
         $form = $this->createForm(RevisionType::class, $revision, [
             'has_clipboard' => $request->getSession()->has('ems_clipboard'),
             'has_copy' => $this->getAuthorizationChecker()->isGranted('ROLE_COPY_PASTE'),
+            'raw_data' => $revision->getRawData(),
         ]);
 
         $this->getLogger()->debug('Revision\'s form created');

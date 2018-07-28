@@ -227,7 +227,7 @@ class MigrateCommand extends EmsCommand
 							//If there is a current revision, datas in fields that are protected against migration must not be overridden
 							//So we load the datas from the current revision into the next revision
 							$newRevision->setRawData($value['_source']);
-							$revisionType = $this->formFactory->create(RevisionType::class, $newRevision, ['migration' => true]);
+							$revisionType = $this->formFactory->create(RevisionType::class, $newRevision, ['migration' => true, 'raw_data' => $newRevision->getRawData()]);
 							$viewData = $this->getSubmitData($revisionType->get('data'));
 							
 							$revisionType->setData($currentRevision);
@@ -258,7 +258,7 @@ class MigrateCommand extends EmsCommand
 					}
 					else{
 						$newRevision->setRawData($value['_source']);
-						$revisionType = $this->formFactory->create(RevisionType::class, $newRevision, ['migration' => true]);
+						$revisionType = $this->formFactory->create(RevisionType::class, $newRevision, ['migration' => true, 'raw_data' => $newRevision->getRawData()]);
 						$viewData = $this->getSubmitData($revisionType->get('data'));
 						
 						$revisionType->setData($this->getEmptyRevision($contentTypeTo));

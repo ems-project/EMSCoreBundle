@@ -55,7 +55,7 @@ class CollectionItemFieldType extends DataFieldType {
 		/* get the metadata associate */
 		/** @var FieldType $fieldType */
 		$fieldType = $builder->getOptions () ['metadata'];
-		
+
 		$itemFieldType = new FieldType();
 		$itemFieldType->setParent($fieldType);
 		$itemFieldType->setType(CollectionItemFieldType::class);
@@ -80,6 +80,7 @@ class CollectionItemFieldType extends DataFieldType {
 						'metadata' => $fieldType,
 						'label' => false,
 						'migration' => $options['migration'],
+                        'raw_data' =>  $options['raw_data'],
 				], $fieldType->getDisplayOptions () );
 				$builder->add ( $fieldType->getName (), $fieldType->getType(), $options );
 				$builder->get($fieldType->getName ())

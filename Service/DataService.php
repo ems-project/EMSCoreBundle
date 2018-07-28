@@ -560,7 +560,7 @@ class DataService
 		}
 			
 		//Get the form from Factory
-		$builder = $this->formFactory->createBuilder(RevisionType::class, $revision);
+		$builder = $this->formFactory->createBuilder(RevisionType::class, $revision, ['raw_data' => $revision->getRawData()]);
 		$form = $builder->getForm();
 		return $form;
 	}
@@ -586,7 +586,7 @@ class DataService
 			}
 			
 			//Get the form from Factory
-			$builder = $this->formFactory->createBuilder(RevisionType::class, $revision);
+			$builder = $this->formFactory->createBuilder(RevisionType::class, $revision, ['raw_data' => $revision->getRawData()]);
 			$form = $builder->getForm();
 		}
 		
@@ -1101,7 +1101,7 @@ class DataService
 		}
 		
 		
-		$builder = $this->formFactory->createBuilder(RevisionType::class, $revision);
+		$builder = $this->formFactory->createBuilder(RevisionType::class, $revision, ['raw_data' => $revision->getRawData()]);
 		$form = $builder->getForm();
 		
 		$objectArray = $revision->getRawData();

@@ -157,8 +157,8 @@
 			<!-- /.box-header -->
 			<!-- form start -->
 			<div class="box-body">
-				{% set compare = compareData?true:false %}
-				{{ macros.renderDataField(dataFields, compare, compareData) }}
+                {% set compare = compareData?true:false %}
+				{{ macros.renderDataField(dataFields, revision.rawData, compare, compareData) }}
 			</div>
 			<!-- /.box-body -->
 			<div class="box-footer">

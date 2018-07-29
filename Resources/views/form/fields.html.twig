@@ -469,6 +469,8 @@
 
 {% block collectionfieldtype_widget -%}
 	<div class="collection-panel"
+		 data-name="{{ form.vars.name }}"
+		 data-id="{{ form.vars.id }}"
 		data-prototype="{{ form_row(form.vars.prototype)|e }}"
 		{% if (form|last).vars is defined  %}
 			data-index="{{ (form|last).vars.name + 1 }}"
@@ -476,8 +478,8 @@
 			data-index="0"
 		{% endif %}>
 		{% set tempId = form.vars.name~'_'~random() %}
-		<div class="panel-body ems-sortable">
-		    {{- form_widget(form) -}}
+		<div class="panel-body{% if  form.vars.sortable %} ems-sortable{% endif %}">
+		    {{- form_widget(form, { 'attr': {'class': 'collection-panel-container'} }) -}}
 		</div>
 		<div>
 	  		<div class="btn-group">
@@ -518,7 +520,7 @@
 {% block collectionitemtype_row -%}
 {% set collapsible = form.parent.vars.data.fieldType.displayOptions.collapsible|default(false) %}
 
-<div class="form-group collection-item-panel{% if form.parent.vars.itemBootstrapClass %} {{ form.parent.vars.itemBootstrapClass }}{% else %} col-xs-12 {% endif %}{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %}">
+<div data-index="{{ form.vars.name }}" data-id="{{ form.vars.id }}" class="form-group collection-item-panel{% if form.parent.vars.itemBootstrapClass %} {{ form.parent.vars.itemBootstrapClass }}{% else %} col-xs-12 {% endif %}{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %}">
 	<div class="panel panel-default">
 		<div class="panel-heading ems-handle">
 			{{ form_label(form) }}

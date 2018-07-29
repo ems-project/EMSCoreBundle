@@ -182,12 +182,12 @@ class AppExtension extends \Twig_Extension
             }
             else {
                 $textClass = false;
-                if($b){
+                if($b !== null){
                     $textClass = 'text-red';
                     $textLabel .= '<del class="diffmod">'.($escape?htmlentities($b):$b).'</del>';
                 }
 
-                if($a){
+                if($a !== null){
                     if($textClass){
                         $textClass = 'text-orange';
                     }

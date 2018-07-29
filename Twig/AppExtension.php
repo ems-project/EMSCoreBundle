@@ -579,7 +579,7 @@ class AppExtension extends \Twig_Extension
 	
 	
 	function macroFct($tempate, $block, $context, $source=null, $compare=false, $compareRawData=null) {
-		return $tempate->{'macro_'.$block}($context, $source=null, $compare, $compareRawData);
+		return $tempate->{'macro_'.$block}($context, $source, $compare, $compareRawData);
 	}
 	
 	function call_user_func($function){

@@ -94,6 +94,76 @@ function onFormChange(){
     	return;
     {% endif %}
 		synch = false;
+
+
+		$('.ems-choice-field-type').each(function(){
+		    var choice = $(this);
+		    var collectionName = choice.data('linked-collection');
+            if(collectionName)
+			{
+
+                $('.collection-panel').each(function()
+				{
+                    var collectionPanel = $(this);
+                    if(collectionPanel.data('name') === collectionName)
+					{
+						var collectionLabelField = choice.data('collection-label-field');
+
+                        collectionPanel.children('.panel-body').children('.collection-panel-container').children('.collection-item-panel').each(function(){
+
+                            var collectionItem = $(this);
+                            var index = collectionItem.data('index');
+                            var id = collectionItem.data('id');
+                            var label = ' #'+index;
+                            if(collectionLabelField)
+							{
+                                label += ': '+$('#'+id+'_'+collectionLabelField).val();
+							}
+
+
+                            var prototype = choice.data('prototype');
+                            var multiple = choice.data('multiple');
+                            var expanded = choice.data('expanded');
+
+
+                            choice.attr('id')
+
+                            var html = prototype.replace(/__value__/g, index).replace(/__label__/g, label);
+
+                            if(expanded && multiple)
+							{
+								var option = choice.find('input[value="'+index+'"]');
+								if(option.length)
+								{
+                                    html = html.replace(new RegExp(choice.attr('id')+'_0', 'g'), option.attr('id'));
+                                    var parent = option.closest('.checkbox');
+									if($('#'+id+'__ems_internal_deleted').val() === 'deleted'){
+										option.attr('checked', false);
+										parent.hide();
+									}
+									else if(option.attr('checked')){
+										var toto = $(html);
+										toto.find('input').attr('checked', 'checked');
+										parent.replaceWith(toto);
+									}
+									else{
+										parent.replaceWith(html);
+									}
+								}
+								else {
+                                    choice.append(html.replace(/_value_0\"/g, '_value_'+index+'"'));
+								}
+							}
+
+						})
+					}
+
+				});
+
+			}
+		});
+
+
 		if(waitingResponse){
 			return;
 			//abort the request migth be an option, but it overload the server
@@ -488,7 +558,7 @@ function addEventListeners(target){
 
         addEventListeners(newForm);
 
-        panel.children('.panel-body').append(newForm);
+        panel.children('.panel-body').children('.collection-panel-container').append(newForm);
         onFormChange();
         
 	});

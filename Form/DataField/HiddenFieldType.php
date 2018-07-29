@@ -45,16 +45,16 @@ use EMS\CoreBundle\Entity\FieldType;
 	public function getBlockPrefix() {
 		return 'empty';
 	}
-	
-	/**
-	 *
-	 * {@inheritDoc}
-	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
-	 */
-	public function viewTransform(DataField $dataField) {
-		$out = parent::viewTransform($dataField);
-		return ['value' => json_encode($out)];
-	}
+
+     /**
+      *
+      * {@inheritDoc}
+      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
+      */
+     public function viewTransform(DataField $dataField) {
+         $out = parent::viewTransform($dataField);
+         return ['value' => json_encode($out)];
+     }
 	
 	/**
 	 *
@@ -62,7 +62,7 @@ use EMS\CoreBundle\Entity\FieldType;
 	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
 	 */
 	public function reverseViewTransform($data, FieldType $fieldType) {
-		$dataField = parent::reverseViewTransform($value, $fieldType);
+		$dataField = parent::reverseViewTransform($data, $fieldType);
 		try {
 			$value = json_decode($data['value']);
 			$dataField->setRawData($value);

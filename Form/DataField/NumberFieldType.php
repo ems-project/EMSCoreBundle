@@ -63,6 +63,11 @@ class NumberFieldType extends DataFieldType {
 	 *
 	 */
 	public function isValid(DataField &$dataField, DataField $parent=null){
+        if($this->hasDeletedParent($parent))
+        {
+            return true;
+        }
+
 		$isValid = parent::isValid($dataField, $parent);
 		
 		$rawData = $dataField->getRawData();

@@ -74,7 +74,7 @@ class ContainerFieldType extends DataFieldType {
 		/* get the metadata associate */
 		/** @var FieldType $fieldType */
 		$fieldType = $builder->getOptions () ['metadata'];
-		
+
 		/** @var FieldType $fieldType */
 		foreach ( $fieldType->getChildren () as $child ) {
 
@@ -84,6 +84,7 @@ class ContainerFieldType extends DataFieldType {
 						'metadata' => $child,
 						'label' => false ,
 						'migration' => $options['migration'],
+                        'raw_data' =>  $options['raw_data'],
 				], $child->getDisplayOptions () );
 				
 				$builder->add (  $child->getName (), $child->getType (), $options );

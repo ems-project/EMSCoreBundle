@@ -2,9 +2,14 @@
 
 namespace EMS\CoreBundle\Form\DataField;
 
+use function array_merge;
 use EMS\CoreBundle\Entity\FieldType;
+use function is_integer;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
@@ -60,17 +65,29 @@ class ChoiceFieldType extends DataFieldType {
 		$fieldType = $builder->getOptions () ['metadata'];
 		
 		$choices = [];
-		$values = explode("\n", str_replace("\r", "", $options['choices']));
-		$labels = explode("\n", str_replace("\r", "", $options['labels']));
+		$values = array_merge(['__value__'], explode("\n", str_replace("\r", "", $options['choices'])));
+		$labels = array_merge(['__label__'], explode("\n", str_replace("\r", "", $options['labels'])));
 		
 		foreach ($values as $id => $value){
-			if(isset($labels[$id]) && !empty($labels[$id])){
-				$choices[$labels[$id]] = $value;
-			}
-			else {
-				$choices[$value] = $value;
-			}
+		    if($value != '')
+            {
+                if(isset($labels[$id]) && !empty($labels[$id])){
+                    $choices[$labels[$id]] = $value;
+                }
+                else {
+                    $choices[$value] = $value;
+                }
+            }
 		}
+
+        if(isset($options['linked_collection']) &&  $options['linked_collection'] && isset($options['raw_data'][$options['linked_collection']]) && is_array($options['raw_data'][$options['linked_collection']]))
+        {
+            foreach ($options['raw_data'][$options['linked_collection']] as $idx => $child)
+            {
+                $choices['#'.$idx.': '.((isset($child[$options['collection_label_field']]) && $child[$options['collection_label_field']] !== null)?$child[$options['collection_label_field']]:'')] = $idx;
+            }
+
+        }
 		
 		$builder->add ( 'value', ChoiceType::class, [ 
 				'label' => (isset($options['label'])?$options['label']:$fieldType->getName()),
@@ -82,6 +99,19 @@ class ChoiceFieldType extends DataFieldType {
 				'expanded' => $options['expanded'],
 		] );
 	}
+
+
+	public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        parent::buildView($view, $form, $options);
+        $view->vars ['attr'] = [
+            'data-linked-collection' => $options['linked_collection'],
+            'data-collection-label-field' => $options['collection_label_field'],
+            'data-multiple' => $options['multiple'],
+            'data-expanded' => $options['expanded'],
+            'class' => 'ems-choice-field-type',
+        ];
+    }
 	
 
 	/**
@@ -94,8 +124,11 @@ class ChoiceFieldType extends DataFieldType {
 		parent::configureOptions ( $resolver );
 		$resolver->setDefault ( 'choices', [] );
 		$resolver->setDefault ( 'labels', [] );
-		$resolver->setDefault ( 'multiple', false );
-		$resolver->setDefault ( 'expanded', false );
+        $resolver->setDefault ( 'multiple', false );
+        $resolver->setDefault ( 'expanded', false );
+        $resolver->setDefault ( 'linked_collection', false );
+        $resolver->setDefault ( 'collection_label_field', false );
+
 	}
 	
 	/**
@@ -116,6 +149,10 @@ class ChoiceFieldType extends DataFieldType {
 				'required' => false,
 		] )->add ( 'labels', TextareaType::class, [ 
 				'required' => false,
+        ] )->add ( 'linked_collection', TextType::class, [
+            'required' => false,
+        ] )->add ( 'collection_label_field', TextType::class, [
+            'required' => false,
 		] );
 		
 		// String specific mapping options
@@ -141,7 +178,7 @@ class ChoiceFieldType extends DataFieldType {
 	 * @see \EMS\CoreBundle\Form\DataField\DataFieldType::getBlockPrefix()
 	 */
 	public function getBlockPrefix() {
-		return 'bypassdatafield';
+		return 'ems_choice';
 	}
 	
 	
@@ -177,16 +214,16 @@ class ChoiceFieldType extends DataFieldType {
 			elseif (is_array($temp) ) {
 				$out = [];
 				foreach ($temp as $item){
-					if(is_string($item)){
+					if(is_string($item) || is_integer($item)){
 						$out[] = $item;
 					}
 					else {
-						$dataField->addMessage('Was not able to import the data : '+json_encode($item));
+						$dataField->addMessage('Was not able to import the data : '.json_encode($item));
 					}
 				}
 			}
 			else {
-				$dataField->addMessage('Was not able to import the data : '+json_encode($out));
+				$dataField->addMessage('Was not able to import the data : '.json_encode($out));
 				$out = [];
 			}
 		}
@@ -194,15 +231,15 @@ class ChoiceFieldType extends DataFieldType {
 			if(null === $temp) {
 				$out = null;
 			}
-			elseif(is_string($temp)) {
+			elseif(is_string($temp) || is_integer($temp)) {
 				$out = $temp;
 			}
-			elseif ( is_array($temp) && ! empty($temp) && is_string(array_shift($temp)) ) {
+			elseif ( is_array($temp) && $temp != null && (is_string(array_shift($temp)) || is_integer(array_shift($temp)))) {
 				$out = array_shift($temp);
-				$dataField->addMessage('Only the first item has been imported : '+json_encode($temp));
+				$dataField->addMessage('Only the first item has been imported : '.json_encode($temp));
 			}
 			else {
-				$dataField->addMessage('Was not able to import the data : '+json_encode($temp));
+				$dataField->addMessage('Was not able to import the data : '.json_encode($temp));
 				$out = "";
 			}
 		}

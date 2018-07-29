@@ -7,6 +7,7 @@ use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldModelTransformer;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldViewTransformer;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**
@@ -54,13 +55,21 @@ class CollectionItemFieldType extends DataFieldType {
 		/* get the metadata associate */
 		/** @var FieldType $fieldType */
 		$fieldType = $builder->getOptions () ['metadata'];
-		
+
 		$itemFieldType = new FieldType();
 		$itemFieldType->setParent($fieldType);
 		$itemFieldType->setType(CollectionItemFieldType::class);
 		
 		$builder->addViewTransformer(new DataFieldViewTransformer($itemFieldType, $this->formRegistry))
 			->addModelTransformer(new DataFieldModelTransformer($itemFieldType, $this->formRegistry));
+
+
+        $builder->add ('_ems_internal_deleted', HiddenType::class, [
+            'required' => false,
+            'attr' => [
+                'class' => '_ems_internal_deleted',
+            ],
+        ] );
 		
 		/** @var FieldType $fieldType */
 		foreach ( $fieldType->getChildren () as $fieldType ) {
@@ -71,6 +80,7 @@ class CollectionItemFieldType extends DataFieldType {
 						'metadata' => $fieldType,
 						'label' => false,
 						'migration' => $options['migration'],
+                        'raw_data' =>  $options['raw_data'],
 				], $fieldType->getDisplayOptions () );
 				$builder->add ( $fieldType->getName (), $fieldType->getType(), $options );
 				$builder->get($fieldType->getName ())

@@ -182,12 +182,12 @@ class AppExtension extends \Twig_Extension
             }
             else {
                 $textClass = false;
-                if($b){
+                if($b !== null){
                     $textClass = 'text-red';
                     $textLabel .= '<del class="diffmod">'.($escape?htmlentities($b):$b).'</del>';
                 }
 
-                if($a){
+                if($a !== null){
                     if($textClass){
                         $textClass = 'text-orange';
                     }
@@ -199,7 +199,7 @@ class AppExtension extends \Twig_Extension
             }
         }
         else {
-            if($a){
+            if($a !== null){
                 $textLabel = ($escape?htmlentities($a):$a);
             }
             else{
@@ -578,8 +578,8 @@ class AppExtension extends \Twig_Extension
 	}
 	
 	
-	function macroFct($tempate, $block, $context, $compare=false, $compareRawData=null) {
-		return $tempate->{'macro_'.$block}($context, $compare, $compareRawData);
+	function macroFct($tempate, $block, $context, $source=null, $compare=false, $compareRawData=null) {
+		return $tempate->{'macro_'.$block}($context, $source, $compare, $compareRawData);
 	}
 	
 	function call_user_func($function){

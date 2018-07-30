@@ -17,7 +17,6 @@ class ElasticsearchClientBuilderFactory
 	//=== Set retries (defaults to the number of nodes)
 	//=== Enabling the Logger (requires "monolog/monolog": "~1.0")
 	//=== Configure the HTTP Handler
-	//=== Setting the Connection Pool
 	//=== Setting the Connection Selector
 	//=== Setting the Serializer
 	//=== Setting a custom ConnectionFactory
@@ -26,13 +25,14 @@ class ElasticsearchClientBuilderFactory
      * @return Client
 	 */
 	public static function build($hosts){
-		$params = [];
+		$params = [
+            'connectionPool' => '\Elasticsearch\ConnectionPool\SniffingConnectionPool',
+        ];
 		
 		if (isset($hosts)){
 			$params['hosts'] = $hosts;
 		}
-		
-		
+
 		return ClientBuilder::fromConfig($params);
 	}
 }

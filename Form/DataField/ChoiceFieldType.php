@@ -17,7 +17,10 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use EMS\CoreBundle\Entity\DataField;
 
 class ChoiceFieldType extends DataFieldType {
-	
+
+
+    private $fakeIndex = false;
+
 	/**
 	 *
 	 * {@inheritdoc}
@@ -53,6 +56,15 @@ class ChoiceFieldType extends DataFieldType {
 				
 		}
 	}
+
+	public function choiceAttr($choiceValue, $key, $value){
+        $out = [];
+        if($this->fakeIndex !== false && is_int($choiceValue) && $choiceValue >= $this->fakeIndex)
+        {
+            $out['class'] = 'input-to-hide';
+        }
+	    return $out;
+    }
 	
 	/**
 	 *
@@ -80,12 +92,25 @@ class ChoiceFieldType extends DataFieldType {
             }
 		}
 
-        if(isset($options['linked_collection']) &&  $options['linked_collection'] && isset($options['raw_data'][$options['linked_collection']]) && is_array($options['raw_data'][$options['linked_collection']]))
+        if(isset($options['linked_collection']) &&  $options['linked_collection'])
         {
-            foreach ($options['raw_data'][$options['linked_collection']] as $idx => $child)
+            $idx = 0;
+            if(isset($options['raw_data'][$options['linked_collection']]) && is_array($options['raw_data'][$options['linked_collection']]))
             {
-                $choices['#'.$idx.': '.((isset($child[$options['collection_label_field']]) && $child[$options['collection_label_field']] !== null)?$child[$options['collection_label_field']]:'')] = $idx;
+                foreach ($options['raw_data'][$options['linked_collection']] as $idx => $child)
+                {
+                    $choices['#'.$idx.': '.((isset($child[$options['collection_label_field']]) && $child[$options['collection_label_field']] !== null)?$child[$options['collection_label_field']]:'')] = $idx;
+                }
+                ++$idx;
             }
+
+            $this->fakeIndex = $idx;
+
+            for($i=0; $i < 50; ++$i)
+            {
+                $choices['[ems_hide_input]'.($idx+$i)] = $idx+$i;
+            }
+
 
         }
 		
@@ -97,6 +122,7 @@ class ChoiceFieldType extends DataFieldType {
     			'empty_data'  => null,
 				'multiple' => $options['multiple'],
 				'expanded' => $options['expanded'],
+                'choice_attr' => array($this, 'choiceAttr'),
 		] );
 	}
 
@@ -203,7 +229,7 @@ class ChoiceFieldType extends DataFieldType {
 	 */
 	public function viewTransform(DataField $dataField){
 		$temp = parent::viewTransform($dataField);
-		$out;
+		$out = [];
 		if($dataField->getFieldType()->getDisplayOptions()['multiple']){
 			if(empty($temp)){
 				$out = [];

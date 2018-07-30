@@ -398,7 +398,7 @@ class AppExtension extends \Twig_Extension
             foreach ($b as $item) {
                 $value = $item;
                 if(is_array($choices) && in_array($value, $choices)) {
-                    $idx = array_search($value, $choices);
+                    $idx = array_search($value, $choices, true);
                     if(is_array($labels) && array_key_exists($idx, $labels)) {
                         $value = $labels[$idx].' ('.$value.')';
                     }
@@ -412,7 +412,7 @@ class AppExtension extends \Twig_Extension
         foreach ($a as $item) {
             $value = $item;
             if(is_array($choices) && in_array($value, $choices)) {
-                $idx = array_search($value, $choices);
+                $idx = array_search($value, $choices, true);
                 if(is_array($labels) && array_key_exists($idx, $labels)) {
                     $value = $labels[$idx].' ('.$value.')';
                 }

@@ -135,23 +135,17 @@ function onFormChange(){
 								var option = choice.find('input[value="'+index+'"]');
 								if(option.length)
 								{
-                                    html = html.replace(new RegExp(choice.attr('id')+'_0', 'g'), option.attr('id'));
                                     var parent = option.closest('.checkbox');
-									if($('#'+id+'__ems_internal_deleted').val() === 'deleted'){
-										option.attr('checked', false);
-										parent.hide();
-									}
-									else if(option.attr('checked')){
-										var toto = $(html);
-										toto.find('input').attr('checked', 'checked');
-										parent.replaceWith(toto);
+                                    if($('#'+id+'__ems_internal_deleted').val() === 'deleted'){
+                                        option.attr('checked', false);
+                                        parent.hide();
 									}
 									else{
-										parent.replaceWith(html);
+                                    	parent.find('.checkbox-radio-label-text').text(label);
 									}
 								}
 								else {
-                                    choice.append(html.replace(/_value_0\"/g, '_value_'+index+'"'));
+                                    choice.append(html.replace(/_value_0\"/g, '_value_generated_'+index+'"'));
 								}
 							}
 

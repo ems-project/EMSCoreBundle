@@ -334,9 +334,12 @@ class DataService
 
                     foreach ($child->getIterator() as $collectionChild)
                     {
-                        foreach ($objectArray[$fieldName] as &$elementsArray)
+                        if(isset($objectArray[$fieldName]))
                         {
-                            $found = $this->propagateDataToComputedField_recursive($collectionChild, $elementsArray, $contentType, $type, $ouuid, $migration, $parent, $path.($path == ''?'':'.').$fieldName) || $found;
+                            foreach ($objectArray[$fieldName] as &$elementsArray)
+                            {
+                                $found = $this->propagateDataToComputedField_recursive($collectionChild, $elementsArray, $contentType, $type, $ouuid, $migration, $parent, $path.($path == ''?'':'.').$fieldName) || $found;
+                            }
                         }
                     }
 

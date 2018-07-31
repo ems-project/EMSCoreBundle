@@ -2,6 +2,34 @@
 
 {# Widgets #}
 
+
+
+{% block checkbox_radio_label -%}
+    {# Do not display the label if widget is not defined in order to prevent double label rendering #}
+    {%- if widget is defined -%}
+        {%- if required -%}
+            {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' required')|trim}) -%}
+        {%- endif -%}
+        {%- if parent_label_class is defined -%}
+            {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' ' ~ parent_label_class)|trim}) -%}
+        {%- endif -%}
+        {%- if label is not same as(false) and label is empty -%}
+            {%- if label_format is not empty -%}
+                {%- set label = label_format|replace({
+                    '%name%': name,
+                    '%id%': id,
+                }) -%}
+            {%- else -%}
+                {% set label = name|humanize %}
+            {%- endif -%}
+        {%- endif -%}
+		<label {% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
+        {{- widget|raw }} <span class="checkbox-radio-label-text">{{ label is not same as(false) ? (translation_domain is same as(false) ? label : label|trans({}, translation_domain)) -}}</span>
+		</label>
+    {%- endif -%}
+{%- endblock checkbox_radio_label %}
+
+
 {% block container_field_type_row %}
 <div id="{{ form.vars.id }}" class="container-fluid">
 	<div class="row">	
@@ -60,12 +88,7 @@
 
 
 {% block ems_choice_row %}
-    {% if form.value is defined %}
-        {% if form.children.value.children.0 is defined %}
-        	{% set attr = attr|merge({'data-prototype': form_widget(form.children.value.children.0) } ) %}
-        {% endif %}
-		{{form_row(form.value, {'attr': attr, 'required': required, 'disabled': disabled})}}
-    {% endif %}
+	{{form_row(form.value, {'attr': attr, 'required': required, 'disabled': disabled})}}
 {%- endblock ems_choice_row %}
 
 {% block colorpicker_widget -%}

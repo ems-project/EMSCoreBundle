@@ -89,79 +89,81 @@ $("form[name={{ form.vars.id }}]").submit(function( event ) {
 	synch = true;
 });
 
+function updateChoiceFieldTypes()
+{
+    $('.ems-choice-field-type').each(function(){
+        var choice = $(this);
+        var collectionName = choice.data('linked-collection');
+        if(collectionName)
+        {
+
+            $('.collection-panel').each(function()
+            {
+                var collectionPanel = $(this);
+                if(collectionPanel.data('name') === collectionName)
+                {
+                    var collectionLabelField = choice.data('collection-label-field');
+
+                    collectionPanel.children('.panel-body').children('.collection-panel-container').children('.collection-item-panel').each(function(){
+
+                        var collectionItem = $(this);
+                        var index = collectionItem.data('index');
+                        var id = collectionItem.data('id');
+                        var label = ' #'+index;
+                        if(collectionLabelField)
+                        {
+                            label += ': '+$('#'+id+'_'+collectionLabelField).val();
+                        }
+
+                        var multiple = choice.data('multiple');
+                        var expanded = choice.data('expanded');
+
+                        if(expanded)
+                        {
+                            var option = choice.find('input[value="'+index+'"]');
+                            if(option.length)
+                            {
+                                var parent = option.closest('.checkbox,.radio');
+                                if($('#'+id+'__ems_internal_deleted').val() === 'deleted'){
+									parent.hide();
+									if(multiple)
+									{
+                                        option.attr('checked', false);
+                                    }
+                                    else
+									{
+                                        option.removeAttr("checked");
+									}
+                                }
+                                else{
+                                    option.removeClass('input-to-hide');
+                                    parent.find('.checkbox-radio-label-text').text(label);
+                                    parent.show();
+                                }
+                            }
+                        }
+
+                    })
+                }
+
+            });
+
+        }
+
+        $(this).find('.input-to-hide').each(function(){
+			$(this).closest('.checkbox,.radio').hide();
+		})
+    });
+}
+
+
 function onFormChange(){
     {% if not revision.draft %}
     	return;
     {% endif %}
 		synch = false;
 
-
-		$('.ems-choice-field-type').each(function(){
-		    var choice = $(this);
-		    var collectionName = choice.data('linked-collection');
-            if(collectionName)
-			{
-
-                $('.collection-panel').each(function()
-				{
-                    var collectionPanel = $(this);
-                    if(collectionPanel.data('name') === collectionName)
-					{
-						var collectionLabelField = choice.data('collection-label-field');
-
-                        collectionPanel.children('.panel-body').children('.collection-panel-container').children('.collection-item-panel').each(function(){
-
-                            var collectionItem = $(this);
-                            var index = collectionItem.data('index');
-                            var id = collectionItem.data('id');
-                            var label = ' #'+index;
-                            if(collectionLabelField)
-							{
-                                label += ': '+$('#'+id+'_'+collectionLabelField).val();
-							}
-
-
-                            var prototype = choice.data('prototype');
-                            var multiple = choice.data('multiple');
-                            var expanded = choice.data('expanded');
-
-
-                            choice.attr('id')
-
-                            var html = prototype.replace(/__value__/g, index).replace(/__label__/g, label);
-
-                            if(expanded && multiple)
-							{
-								var option = choice.find('input[value="'+index+'"]');
-								if(option.length)
-								{
-                                    html = html.replace(new RegExp(choice.attr('id')+'_0', 'g'), option.attr('id'));
-                                    var parent = option.closest('.checkbox');
-									if($('#'+id+'__ems_internal_deleted').val() === 'deleted'){
-										option.attr('checked', false);
-										parent.hide();
-									}
-									else if(option.attr('checked')){
-										var toto = $(html);
-										toto.find('input').attr('checked', 'checked');
-										parent.replaceWith(toto);
-									}
-									else{
-										parent.replaceWith(html);
-									}
-								}
-								else {
-                                    choice.append(html.replace(/_value_0\"/g, '_value_'+index+'"'));
-								}
-							}
-
-						})
-					}
-
-				});
-
-			}
-		});
+    	updateChoiceFieldTypes();
 
 
 		if(waitingResponse){
@@ -821,7 +823,10 @@ function addEventListeners(target){
 }
 
 
-$(window).ready(function() {	
+$(window).ready(function() {
+
+    updateChoiceFieldTypes();
+
 	{% if stylesSets is defined %}
     	//Add custom styles sets (e.g for bootstrap (responsive tables, ...))
     	{% for stylesSet in stylesSets %}

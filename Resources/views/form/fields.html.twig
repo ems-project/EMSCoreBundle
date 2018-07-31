@@ -23,7 +23,7 @@
                 {% set label = name|humanize %}
             {%- endif -%}
         {%- endif -%}
-		<label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
+		<label {% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
         {{- widget|raw }} <span class="checkbox-radio-label-text">{{ label is not same as(false) ? (translation_domain is same as(false) ? label : label|trans({}, translation_domain)) -}}</span>
 		</label>
     {%- endif -%}
@@ -88,12 +88,7 @@
 
 
 {% block ems_choice_row %}
-    {% if form.value is defined %}
-        {% if form.children.value.children.0 is defined %}
-        	{% set attr = attr|merge({'data-prototype': form_widget(form.children.value.children.0) } ) %}
-        {% endif %}
-		{{form_row(form.value, {'attr': attr, 'required': required, 'disabled': disabled})}}
-    {% endif %}
+	{{form_row(form.value, {'attr': attr, 'required': required, 'disabled': disabled})}}
 {%- endblock ems_choice_row %}
 
 {% block colorpicker_widget -%}

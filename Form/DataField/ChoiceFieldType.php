@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Form\DataField;
 
-use function array_merge;
 use EMS\CoreBundle\Entity\FieldType;
 use function is_integer;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -77,8 +76,8 @@ class ChoiceFieldType extends DataFieldType {
 		$fieldType = $builder->getOptions () ['metadata'];
 		
 		$choices = [];
-		$values = array_merge(['__value__'], explode("\n", str_replace("\r", "", $options['choices'])));
-		$labels = array_merge(['__label__'], explode("\n", str_replace("\r", "", $options['labels'])));
+		$values = explode("\n", str_replace("\r", "", $options['choices']));
+		$labels = explode("\n", str_replace("\r", "", $options['labels']));
 		
 		foreach ($values as $id => $value){
 		    if($value != '')
@@ -92,7 +91,7 @@ class ChoiceFieldType extends DataFieldType {
             }
 		}
 
-        if(isset($options['linked_collection']) &&  $options['linked_collection'])
+        if($options['linked_collection'] && $options['expanded'])
         {
             $idx = 0;
             if(isset($options['raw_data'][$options['linked_collection']]) && is_array($options['raw_data'][$options['linked_collection']]))

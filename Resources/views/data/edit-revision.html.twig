@@ -115,20 +115,25 @@ function updateChoiceFieldTypes()
                             label += ': '+$('#'+id+'_'+collectionLabelField).val();
                         }
 
-
-                        var prototype = choice.data('prototype');
                         var multiple = choice.data('multiple');
                         var expanded = choice.data('expanded');
 
-                        if(expanded && multiple)
+                        if(expanded)
                         {
                             var option = choice.find('input[value="'+index+'"]');
                             if(option.length)
                             {
-                                var parent = option.closest('.checkbox');
+                                var parent = option.closest('.checkbox,.radio');
                                 if($('#'+id+'__ems_internal_deleted').val() === 'deleted'){
-                                    option.attr('checked', false);
-                                    parent.hide();
+									parent.hide();
+									if(multiple)
+									{
+                                        option.attr('checked', false);
+                                    }
+                                    else
+									{
+                                        option.removeAttr("checked");
+									}
                                 }
                                 else{
                                     option.removeClass('input-to-hide');
@@ -146,7 +151,7 @@ function updateChoiceFieldTypes()
         }
 
         $(this).find('.input-to-hide').each(function(){
-			$(this).closest('.checkbox').hide();
+			$(this).closest('.checkbox,.radio').hide();
 		})
     });
 }

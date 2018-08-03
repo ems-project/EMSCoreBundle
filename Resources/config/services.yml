@@ -23,8 +23,9 @@ services:
             #kernel.response or kernel.terminate
     app.elasticsearch: '@Elasticsearch\Client'
     Elasticsearch\Client:
-        factory: [EMS\CoreBundle\Factories\ElasticsearchClientBuilderFactory, build]
-        arguments: ["%ems_core.elasticsearch_cluster%"]
+        factory: 'ems_common.elasticsearch.factory:fromConfig'
+        arguments:
+              - { hosts: "%ems_core.elasticsearch_cluster%" }
     app.twig.extension.stringloader:
         class: Twig_Extension_StringLoader
         tags:

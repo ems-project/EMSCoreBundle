@@ -184,7 +184,7 @@ class AppExtension extends \Twig_Extension
                 $textClass = false;
                 if($b !== null){
                     $textClass = 'text-red';
-                    $textLabel .= '<del class="diffmod">'.($escape?htmlentities($b):$b).'</del>';
+                    $textLabel .= '<del class="diffmod">'.($escape?htmlentities($b):$this->internalLinks($b)).'</del>';
                 }
 
                 if($a !== null){
@@ -194,13 +194,13 @@ class AppExtension extends \Twig_Extension
                     else {
                         $textClass = 'text-green';
                     }
-                    $textLabel .= ' <ins class="diffmod">'.($escape?htmlentities($a):$a).'</ins>';
+                    $textLabel .= ' <ins class="diffmod">'.($escape?htmlentities($a):$this->internalLinks($a)).'</ins>';
                 }
             }
         }
         else {
             if($a !== null){
-                $textLabel = ($escape?htmlentities($a):$a);
+                $textLabel = ($escape?htmlentities($a):$this->internalLinks($a));
             }
             else{
 //                $textClass = 'text-gray';

@@ -126,6 +126,7 @@ function updateChoiceFieldTypes()
                                 var parent = option.closest('.checkbox,.radio');
                                 if($('#'+id+'__ems_internal_deleted').val() === 'deleted'){
 									parent.hide();
+                                    option.addClass('input-to-hide');
 									if(multiple)
 									{
                                         option.attr('checked', false);
@@ -142,6 +143,24 @@ function updateChoiceFieldTypes()
                                 }
                             }
                         }
+                        else
+						{
+                            var option = choice.find('option[value="'+index+'"]');
+                            if(option.length)
+							{
+                                if($('#'+id+'__ems_internal_deleted').val() === 'deleted')
+                                {
+                                    option.addClass('input-to-hide');
+                                }
+                                else
+								{
+                                    option.removeClass('input-to-hide');
+                                    option.show();
+                                    option.text(label);
+								}
+
+							}
+						}
 
                     })
                 }
@@ -150,6 +169,7 @@ function updateChoiceFieldTypes()
 
         }
 
+        $(this).find('option.input-to-hide').hide();
         $(this).find('.input-to-hide').each(function(){
 			$(this).closest('.checkbox,.radio').hide();
 		})

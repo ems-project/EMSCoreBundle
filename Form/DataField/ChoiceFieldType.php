@@ -91,7 +91,7 @@ class ChoiceFieldType extends DataFieldType {
             }
 		}
 
-        if($options['linked_collection'] && $options['expanded'])
+        if($options['linked_collection'])
         {
             $idx = 0;
             if(isset($options['raw_data'][$options['linked_collection']]) && is_array($options['raw_data'][$options['linked_collection']]))

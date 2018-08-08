@@ -61,6 +61,15 @@ class Search
      * @ORM\Column(name="default_search", type="boolean", options={"default" : false})
      */
     private $default;
+
+
+
+    /**
+     * @ORM\OneToOne(targetEntity="EMS\CoreBundle\Entity\ContentType", cascade={})
+     * @ORM\JoinColumn(name="content_type_id", referencedColumnName="id")
+     */
+    private $contentType;
+
 	
 	/**
 	 * @var string $sortBy
@@ -304,4 +313,24 @@ class Search
     {
     	return $this->default;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getContentType()
+    {
+        return $this->contentType;
+    }
+
+    /**
+     * @param mixed $contentType
+     * @return Search
+     */
+    public function setContentType($contentType)
+    {
+        $this->contentType = $contentType;
+        return $this;
+    }
+
+
 }

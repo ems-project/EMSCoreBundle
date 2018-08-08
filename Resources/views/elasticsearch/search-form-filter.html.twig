@@ -77,14 +77,31 @@
 					</div>
 					<div class="btn-group">
 						{% if searchId is defined and searchId %}
-							{% if is_granted('ROLE_COPY_PASTE') %}
+							{% if is_granted('ROLE_DEFAULT_SEARCH') %}
                                 {% include '@EMSCore/elements/post-button.html.twig' with {
-    								'url':  path('ems_search_set_default_search_from', {'id': searchId, 'search': app.request.query}),
-    								'message': 'Set as default search ?',
-    								'label': 'Set default',
-    								'icon': 'check-square',
-    								'class': 'btn'
-    							}%}
+                                    'url':  path('ems_search_set_default_search_from', {'id': searchId, 'search': app.request.query}),
+                                    'message': 'Set as default search ?',
+                                    'label': 'Set default',
+                                    'icon': 'check-square',
+                                    'class': 'btn'
+                                }%}
+								{%  if form.contentTypes.vars.value|length == 1 %}
+									{% set contentType = form.contentTypes.vars.value|first|get_content_type %}
+									{% if contentType %}
+                                        {% include '@EMSCore/elements/post-button.html.twig' with {
+                                            'url':  path('ems_search_set_default_search_from', {
+                                                'id': searchId,
+                                                'search': app.request.query,
+                                                'contentType': form.contentTypes.vars.value|first
+                                            }),
+                                            'message': 'Set as default '~contentType.singularName~' search ?',
+                                            'label': 'Set for '~contentType.singularName,
+                                            'icon': contentType.icon|default('check-square'),
+                                            'icon': 'check-square',
+                                            'class': 'btn'
+                                        }%}
+                                    {% endif %}
+								{% endif %}
 							{% endif %}
                             {% include '@EMSCore/elements/post-button.html.twig' with {
 								'url':  path('elasticsearch.search.delete', {'id': searchId, 'search': app.request.query}),

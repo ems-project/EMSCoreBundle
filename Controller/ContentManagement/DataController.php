@@ -66,6 +66,22 @@ class DataController extends AppController
             throw NotFoundHttpException('Content type ' . $name . ' not found');
         }
 
+
+        $searchRepository = $em->getRepository('EMSCoreBundle:Form\Search');
+        $searchs = $searchRepository->findBy([
+            'contentType' => $contentType->getId(),
+        ]);
+        /**@var Search $search*/
+        foreach ($searchs as $search){
+
+            return $this->forward('EMSCoreBundle:Elasticsearch:search', [
+                'query' => null,
+            ], [
+                'search_form' => $search->jsonSerialize(),
+            ]);
+        }
+
+
         $searchForm = new Search();
         $searchForm->setContentTypes([$contentType->getName()]);
         $searchForm->setEnvironments([$contentType->getEnvironment()->getName()]);
@@ -82,7 +98,7 @@ class DataController extends AppController
         return $this->forward('EMSCoreBundle:Elasticsearch:search', [
             'query' => null,
         ], [
-            'search_form' => json_decode(json_encode($searchForm), true),
+            'search_form' => $searchForm->jsonSerialize(),
         ]);
     }
 

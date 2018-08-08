@@ -2,6 +2,7 @@
 namespace EMS\CoreBundle\Entity\Form;
 
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 /**
  * SearchFilter
@@ -9,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="search_filter")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\SearchFilterRepository")
  */
-class SearchFilter
+class SearchFilter implements JsonSerializable
 {
 	/**
 	 * @var int
@@ -64,8 +65,19 @@ class SearchFilter
 	function __construct(){
 		$this->operator = "query_and";
 	}
-	
-	function generateEsFilter(){
+
+	public function jsonSerialize()
+    {
+        return [
+            'pattern' => $this->pattern,
+            'field' => $this->field,
+            'booleanClause' => $this->booleanClause,
+            'operator' => $this->operator,
+            'boost' => $this->boost,
+        ];
+    }
+
+    function generateEsFilter(){
 		$out = false;
 		if($this->field || $this->pattern) {
 			

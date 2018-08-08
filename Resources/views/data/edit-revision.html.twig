@@ -419,6 +419,8 @@ function FileDataExtrator(container) {
 
     $(progressText).html('Extracting information from asset...');
     $(progressNumber).html('');
+    uploadTab.show();
+    previewTab.hide();
 
 	waitingResponse = ajaxRequest.get(urlPattern)
 		.success(function(response) {
@@ -434,8 +436,8 @@ function FileDataExtrator(container) {
 		})
 		.always(function() {
             $(progressText).html('');
-			uploadTab.show();
-			previewTab.hide();
+			uploadTab.hide();
+			previewTab.show();
 	});
     
 }

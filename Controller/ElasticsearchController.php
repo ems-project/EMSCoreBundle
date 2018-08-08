@@ -214,35 +214,58 @@ class ElasticsearchController extends AppController
 				$search->getFilters()[0]->setPattern($query)->setBooleanClause('must');				
 			}
 		}
-		
-		
-		return $this->redirectToRoute("elasticsearch.search", ['search_form' => $search]);
+
+        return $this->forward('EMSCoreBundle:Elasticsearch:search', [
+            'query' => null,
+        ], [
+            'search_form' => $search->jsonSerialize(),
+        ]);
 	}
 		
 		
 	/**
-	 * @Route("/elasticsearch/set-default-search/{id}", name="ems_search_set_default_search_from"))
+	 * @Route("/elasticsearch/set-default-search/{id}/{contentType}", defaults={"contentType": false}, name="ems_search_set_default_search_from"))
 	 * @Method("POST")
 	 */
-	public function setDefaultSearchAction($id, Request $request)
+	public function setDefaultSearchAction($id, $contentType, Request $request)
 	{
 		$em = $this->getDoctrine()->getManager();
 		$repository = $em->getRepository('EMSCoreBundle:Form\Search');
-		
-		$searchs = $repository->findBy([
-			'default' => true,
-		]);
-		/**@var Search $search*/
-		foreach ($searchs as $search){
-			$search->setDefault(false);
-			$em->persist($search);
-		}
-		$search = $repository->find($id);
-		$search->setDefault(true);
-		$em->persist($search);
-		$em->flush();
-		$this->addFlash('notice', 'This search has been defined as default search form');
-		
+
+		if($contentType)
+        {
+            $contentType = $this->getContentTypeService()->getByName($contentType);
+            $searchs = $repository->findBy([
+                'contentType' => $contentType->getId(),
+            ]);
+            /**@var Search $search*/
+            foreach ($searchs as $search){
+                $search->setDefault(false);
+                $em->persist($search);
+            }
+
+            $search = $repository->find($id);
+            $search->setContentType($contentType);
+            $em->persist($search);
+            $em->flush();
+            $this->addFlash('notice', 'This search has been defined as default search form for '.$contentType->getSingularName());
+        }
+        else
+        {
+            $searchs = $repository->findBy([
+                'default' => true,
+            ]);
+            /**@var Search $search*/
+            foreach ($searchs as $search){
+                $search->setDefault(false);
+                $em->persist($search);
+            }
+            $search = $repository->find($id);
+            $search->setDefault(true);
+            $em->persist($search);
+            $em->flush();
+            $this->addFlash('notice', 'This search has been defined as default search form');
+        }
 		
 		return $this->redirectToRoute("elasticsearch.search", ['searchId' => $id]);
 	}
@@ -561,7 +584,7 @@ class ElasticsearchController extends AppController
 				$search = $form->getData();
 			}
 
-			
+
 			$body = $this->getSearchService()->generateSearchBody($search);
 			
 // 			

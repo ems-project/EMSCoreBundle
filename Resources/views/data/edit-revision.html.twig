@@ -405,21 +405,37 @@ function FileDataExtrator(container) {
 	var contentInput = $(container).find(".content");
 	var titleInput = $(container).find(".title");
 
+
+    var progressText = $(container).find(".progress-text");
+    var progressNumber = $(container).find(".progress-number");
+    var previewTab = $(container).find(".asset-preview-tab");
+    var uploadTab = $(container).find(".asset-upload-tab");
+
     var urlPattern = file_extract_url
     	.replace(/__file_identifier__/g, $(sha1Input).val())
     	.replace(/__file_name__/g, $(nameInput).val());
 
-	waitingResponse = ajaxRequest.get(urlPattern)
-	  .success(function(response) {
 
+
+    $(progressText).html('Extracting information from asset...');
+    $(progressNumber).html('');
+
+	waitingResponse = ajaxRequest.get(urlPattern)
+		.success(function(response) {
 			$(dateInput).val(response.date);
 			$(authorInput).val(response.author);
 			$(languageInput).val(response.language);
 			$(contentInput).val(response.content);
 			$(titleInput).val(response.title);
-
-	  })
-	  .always(function() {
+		})
+		.fail(function() {
+			$($('#modal-notifications').find('.modal-body')).html('Something went wrong while extrating information from file');
+			$('#modal-notifications').modal('show');
+		})
+		.always(function() {
+            $(progressText).html('');
+			uploadTab.show();
+			previewTab.hide();
 	});
     
 }

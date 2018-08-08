@@ -2,6 +2,7 @@
 namespace EMS\CoreBundle\Entity\Form;
 
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 /**
  * Search
@@ -9,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="search")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\SearchRepository")
  */
-class Search
+class Search implements JsonSerializable
 {
     /**
      * @var int
@@ -93,6 +94,24 @@ class Search
 // 		$this->page = 1;
 // 		$this->boolean = "and";
 	}
+
+
+
+    public function jsonSerialize()
+    {
+        $out = [
+            'environments' => $this->environments,
+            'contentTypes' => $this->contentTypes,
+            'sortBy' => $this->sortBy,
+        ];
+
+        $out['filters'] = [];
+        /**@var SearchFilter $filter*/
+        foreach ($this->filters as $filter){
+            $out['filters'][] = $filter->jsonSerialize();
+        }
+        return $out;
+    }
 	
 
     /**

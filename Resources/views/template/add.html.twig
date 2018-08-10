@@ -19,32 +19,34 @@
 			{{ form_start(form) }}
 				
 				<div class="box-body">
-					{{ form_row(form.name) }}
-					{{ form_row(form.icon) }}
-                    {{ form_row(form.environments) }}
-					{{ form_row(form.body) }}
-					{{ form_row(form.editWithWysiwyg) }}
-                    {{ form_row(form.active) }}
-                    {{ form_row(form.role) }}
-                    {{ form_row(form.renderOption) }}
-                    <div id="embed">			
-                    {{ form_row(form.header) }}
+						{{ form_row(form.name) }}
+						{{ form_row(form.icon) }}
+						{{ form_row(form.environments) }}
+						{{ form_row(form.body) }}
+						{{ form_row(form.editWithWysiwyg) }}
+						{{ form_row(form.active) }}
+						{{ form_row(form.role) }}
+						{{ form_row(form.renderOption) }}
+                    <div class="embed">
+						{{ form_row(form.header) }}
 					</div>
-                    <div id="export">			
-                    {{ form_row(form.preview) }}
-                    {{ form_row(form.accumulateInOneFile) }}
-					{{ form_row(form.mimeType) }}
-					{{ form_row(form.filename) }}
-					{{ form_row(form.extension) }}
+					<div class="export pdf">
+                        {{ form_row(form.preview) }}
 					</div>
-					<div id="notification">
+					<div class="export">
+						{{ form_row(form.accumulateInOneFile) }}
+						{{ form_row(form.mimeType) }}
+						{{ form_row(form.filename) }}
+						{{ form_row(form.extension) }}
+					</div>
+					<div class="notification">
                         {{ form_row(form.roleTo) }}
                         {{ form_row(form.roleCc) }}
                         {{ form_row(form.emailContentType) }}
                         {{ form_row(form.circlesTo) }}
                         {{ form_row(form.responseTemplate) }}
 					</div>
-					<div id="pdf">
+					<div class="pdf">
                         {{ form_row(form.orientation) }}
                         {{ form_row(form.size) }}
 					</div>
@@ -75,37 +77,53 @@ $(window).ready(function() {
 
 
 	// Jira - ELASTICMS-41
-	$('#export').hide();
-	$('#notification').hide();
-	$('#embed').hide();
+	$('.export').hide();
+	$('.notification').hide();
+    $('.embed').hide();
+    $('.pdf').hide();
 	
 	if ($('#template_renderOption').val() == 'notification'){ 
-		$('#notification').show();
+		$('.notification').show();
 	} else if ($('#template_renderOption').val() == 'export') {
-		 $('#export').show();
-	} else if ($('#template_renderOption').val() == 'embed') {
-		 $('#embed').show();
-	}
+		 $('.export').show();
+    } else if ($('#template_renderOption').val() == 'embed') {
+        $('.embed').show();
+    } else if ($('#template_renderOption').val() == 'pdf') {
+        $('.pdf').show();
+    }
+
 
 	$('#template_renderOption').change(function(e){
+
+        console.log($('#template_renderOption').val());
+
 		  if ($(this).val() == 'notification'){
-		    $('#notification').show();
-		    $('#export').hide();
-		    $('#embed').hide();
+		      $('.notification').show();
+			  $('.export').hide();
+			  $('.embed').hide();
+			  $('.pdf').hide();
 		  } else if ($(this).val() == 'export'){
-			$('#export').show();
-			$('#notification').hide();
-			$('#embed').hide();
+		      $('.export').show();
+		      $('.notification').hide();
+              $('.embed').hide();
+              $('.pdf').hide();
 		  } else if ($(this).val() == 'embed'){
-			$('#embed').show();
-			$('#export').hide();
-			$('#notification').hide();
+		      $('.embed').show();
+		      $('.export').hide();
+		      $('.notification').hide();
+		      $('.pdf').hide();
+		  } else if ($(this).val() == 'pdf'){
+		      $('.embed').hide();
+		      $('.export').hide();
+		      $('.notification').hide();
+		      $('.pdf').show();
 		  } else{
-		    $('#export').hide();
-		    $('#notification').hide();
-		    $('#embed').hide();
+		      $('.export').hide();
+		      $('.notification').hide();
+		      $('.embed').hide();
+		      $('.pdf').hide();
 		  }
-		});
+	});
 	
     var type = $( '#template_circlesTo' ).data('type'); 
     var dynamicLoading = $( '#template_circlesTo' ).data('dynamic-loading'); 

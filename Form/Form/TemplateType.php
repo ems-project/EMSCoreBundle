@@ -53,7 +53,7 @@ class TemplateType extends AbstractType {
 		])
 		->add ( 'preview', CheckboxType::class, [
 			'required' => false,
-			'label' => 'Preview (exports)',
+			'label' => 'Preview',
 		])
 		->add('environments', ChoiceType::class, [
 				'attr' => [

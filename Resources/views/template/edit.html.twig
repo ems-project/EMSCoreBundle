@@ -27,24 +27,26 @@
                     {{ form_row(form.active) }}
                     {{ form_row(form.role) }}
                     {{ form_row(form.renderOption) }}
-                    <div id="embed">			
-                    {{ form_row(form.header) }}
+                    <div class="embed">
+						{{ form_row(form.header) }}
 					</div>
-                    <div id="export">			
-                    {{ form_row(form.preview) }}
-                    {{ form_row(form.accumulateInOneFile) }}
-					{{ form_row(form.mimeType) }}
-					{{ form_row(form.filename) }}
-					{{ form_row(form.extension) }}
+					<div class="export pdf">
+                        {{ form_row(form.preview) }}
 					</div>
-					<div id="notification">					
-					{{ form_row(form.roleTo) }}
-					{{ form_row(form.roleCc) }}
-					{{ form_row(form.emailContentType) }}
-					{{ form_row(form.circlesTo) }}
-                    {{ form_row(form.responseTemplate) }}
+					<div class="export">
+						{{ form_row(form.accumulateInOneFile) }}
+						{{ form_row(form.mimeType) }}
+						{{ form_row(form.filename) }}
+						{{ form_row(form.extension) }}
 					</div>
-					<div id="pdf">
+					<div class="notification">
+						{{ form_row(form.roleTo) }}
+						{{ form_row(form.roleCc) }}
+						{{ form_row(form.emailContentType) }}
+						{{ form_row(form.circlesTo) }}
+						{{ form_row(form.responseTemplate) }}
+					</div>
+					<div class="pdf">
                         {{ form_row(form.orientation) }}
                         {{ form_row(form.size) }}
 					</div>
@@ -71,50 +73,53 @@
     {% include '@EMSCore/js/code-editor.html.twig' %}
 		
 <script type="text/javascript">
-$(window).ready(function() {  
+$(window).ready(function() {
 
 
-	// Jira - ELASTICMS-41
-	$('#export').hide();
-	$('#notification').hide();
-	$('#embed').hide();
-	
-	if ($('#template_renderOption').val() == 'notification'){ 
-		$('#notification').show();
-	} else if ($('#template_renderOption').val() == 'export') {
-		 $('#export').show();
-	} else if ($('#template_renderOption').val() == 'embed') {
-		 $('#embed').show();
-	}
+    // Jira - ELASTICMS-41
+    $('.export').hide();
+    $('.notification').hide();
+    $('.embed').hide();
+    $('.pdf').hide();
 
-	$('#template_renderOption').change(function(e){
-		  if ($(this).val() == 'notification'){
-		    $('#notification').show();
-		    $('#notification').find('.ems_code_editor').each(function(){
-				emsAttachCodeEditor($(this));
-			});
-		    $('#export').hide();
-		    $('#embed').hide();
-		  } else if ($(this).val() == 'export'){
-			$('#export').show();
-		    $('#export').find('.ems_code_editor').each(function(){
-				emsAttachCodeEditor($(this));
-			});
-			$('#notification').hide();
-			$('#embed').hide();
-		  } else if ($(this).val() == 'embed'){
-			$('#embed').show();
-		    $('#embed').find('.ems_code_editor').each(function(){
-				emsAttachCodeEditor($(this));
-			});
-			$('#export').hide();
-			$('#notification').hide();
-		  } else{
-		    $('#export').hide();
-		    $('#notification').hide();
-		    $('#embed').hide();
-		  }
-		});
+    if ($('#template_renderOption').val() == 'notification'){
+        $('.notification').show();
+    } else if ($('#template_renderOption').val() == 'export') {
+        $('.export').show();
+    } else if ($('#template_renderOption').val() == 'embed') {
+        $('.embed').show();
+    } else if ($('#template_renderOption').val() == 'pdf') {
+        $('.pdf').show();
+    }
+
+    $('#template_renderOption').change(function(e){
+        if ($(this).val() == 'notification'){
+            $('.notification').show();
+            $('.export').hide();
+            $('.embed').hide();
+            $('.pdf').hide();
+        } else if ($(this).val() == 'export'){
+            $('.export').show();
+            $('.notification').hide();
+            $('.embed').hide();
+            $('.pdf').hide();
+        } else if ($(this).val() == 'embed'){
+            $('.embed').show();
+            $('.export').hide();
+            $('.notification').hide();
+            $('.pdf').hide();
+        } else if ($(this).val() == 'pdf'){
+            $('.embed').hide();
+            $('.export').hide();
+            $('.notification').hide();
+            $('.pdf').show();
+        } else{
+            $('.export').hide();
+            $('.notification').hide();
+            $('.embed').hide();
+            $('.pdf').hide();
+        }
+    });
 	
     var type = $( '#template_circlesTo' ).data('type'); 
     var dynamicLoading = $( '#template_circlesTo' ).data('dynamic-loading'); 

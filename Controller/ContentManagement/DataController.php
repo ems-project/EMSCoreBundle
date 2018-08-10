@@ -781,7 +781,7 @@ class DataController extends AppController
             $body = $twig->createTemplate('error in the template!');
         }
 
-        if($template->getRenderOption() === RenderOptionType::PDF && $_download) {
+        if($template->getRenderOption() === RenderOptionType::PDF && ($_download || !$template->getPreview()) ) {
             $output = $body->render([
                 'environment' => $environment,
                 'contentType' => $template->getContentType(),

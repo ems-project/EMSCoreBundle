@@ -4,6 +4,9 @@ namespace EMS\CoreBundle\Service\Storage;
 
 
 
+use function filesize;
+use function fopen;
+
 class FileSystemStorage implements StorageInterface {
 	
 	private $storagePath;
@@ -38,19 +41,20 @@ class FileSystemStorage implements StorageInterface {
 	}
 	
 	public function create($sha1, $filename, $cacheContext=false){
-		return rename($filename, $this->getPath($sha1, $cacheContext));
+		return copy($filename, $this->getPath($sha1, $cacheContext));
 	}
 	
 	public function supportCacheStore() {
 		return true;
 	}
-	
+
 	public function read($sha1, $cacheContext=false){
 		$out = $this->getPath($sha1, $cacheContext);
 		if(!file_exists($out)){
 			return false;
 		}
-		return $out;
+
+		return fopen($out, 'rb');
 	}
 	
 	public function getLastUpdateDate($sha1, $cacheContext=false){
@@ -60,4 +64,13 @@ class FileSystemStorage implements StorageInterface {
 		}
 		return false;
 	}
+
+	public function getSize($sha1, $cacheContext = false)
+    {
+        $path = $this->getPath($sha1, $cacheContext);
+        if( file_exists($path)) {
+            return @filesize($path);
+        }
+        return false;
+    }
 }

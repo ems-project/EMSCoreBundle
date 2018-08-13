@@ -7,7 +7,9 @@ use EMS\CoreBundle\Entity\UploadedAsset;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CoreBundle\Exception\StorageServiceMissingException;
 use Elasticsearch\Common\Exceptions\Conflict409Exception;
+use function stream_get_contents;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use function unlink;
 
 class FileService {
 
@@ -41,9 +43,9 @@ class FileService {
 	public function getBase64($sha1, $cacheContext=false){
 		/**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
 		foreach ($this->storageServices as $service){
-			$filename = $service->read($sha1, $cacheContext);
-			if($filename){
-				$data = file_get_contents($filename);
+			$resource = $service->read($sha1, $cacheContext);
+			if($resource){
+				$data = stream_get_contents($resource);
 				$base64 = base64_encode($data);
 				return $base64;
 			}
@@ -55,8 +57,10 @@ class FileService {
 	public function getFile($sha1, $cacheContext=false){
 		/**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
 		foreach ($this->storageServices as $service){
-			$filename = $service->read($sha1, $cacheContext);
-			if($filename){
+			$resource = $service->read($sha1, $cacheContext);
+			if($resource){
+                $filename = tempnam(sys_get_temp_dir(), 'EMS');
+                file_put_contents($filename, $resource);
 				return $filename;
 			}
 		}
@@ -153,13 +157,10 @@ class FileService {
 			//Get temporyName
 			$filename = $this->temporaryUploadFilename($sha1);
 			if(file_exists($filename)) {
-			    if(filesize($filename) !== intval($uploadedAsset->getUploaded())){
+			    if(filesize($filename) !== intval($uploadedAsset->getUploaded()) || $uploadedAsset->getUploaded() == $uploadedAsset->getSize()){
 					file_put_contents($filename, "");
 					$uploadedAsset->setUploaded(0);
 				}
-// 				else {
-// 					$uploadedAsset = $this->saveFile($filename, $uploadedAsset);
-// 				}
 			}
 			else {
 				touch($filename);
@@ -265,6 +266,7 @@ class FileService {
 		/**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
 		foreach ($this->storageServices as $service){
 			if($service->create($sha1, $fileName, $cacheContext)) {
+			    unlink($fileName);
 				return true;
 			}
 		}
@@ -283,6 +285,7 @@ class FileService {
 		foreach ($this->storageServices as $service){
 			if($service->create($uploadedAsset->getSha1(), $filename)) {
 				$uploadedAsset->setAvailable(true);
+                unlink($filename);
 				break;
 			}
 		}

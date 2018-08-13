@@ -21,35 +21,35 @@ class FileSystemStorage implements StorageInterface {
 		}
 	}
 	
-	private function getPath($sha1, $cacheContext){
+	private function getPath($hash, $cacheContext){
 		$out = $this->storagePath;
 		if($cacheContext) {
 			$out .= DIRECTORY_SEPARATOR.'cache'.DIRECTORY_SEPARATOR.$cacheContext;
 		}
-		$out.= DIRECTORY_SEPARATOR.substr($sha1, 0, 3);
+		$out.= DIRECTORY_SEPARATOR.substr($hash, 0, 3);
 		
 		
 		if(!file_exists($out) ) {
 			mkdir($out, 0777, true);
 		}
 		
-		return $out.DIRECTORY_SEPARATOR.$sha1;
+		return $out.DIRECTORY_SEPARATOR.$hash;
 	}
 	
-	public function head($sha1, $cacheContext=false) {
-		return file_exists($this->getPath($sha1, $cacheContext));
+	public function head($hash, $cacheContext=false) {
+		return file_exists($this->getPath($hash, $cacheContext));
 	}
 	
-	public function create($sha1, $filename, $cacheContext=false){
-		return copy($filename, $this->getPath($sha1, $cacheContext));
+	public function create($hash, $filename, $cacheContext=false){
+		return copy($filename, $this->getPath($hash, $cacheContext));
 	}
 	
 	public function supportCacheStore() {
 		return true;
 	}
 
-	public function read($sha1, $cacheContext=false){
-		$out = $this->getPath($sha1, $cacheContext);
+	public function read($hash, $cacheContext=false){
+		$out = $this->getPath($hash, $cacheContext);
 		if(!file_exists($out)){
 			return false;
 		}
@@ -57,17 +57,17 @@ class FileSystemStorage implements StorageInterface {
 		return fopen($out, 'rb');
 	}
 	
-	public function getLastUpdateDate($sha1, $cacheContext=false){
-		$path = $this->getPath($sha1, $cacheContext);
+	public function getLastUpdateDate($hash, $cacheContext=false){
+		$path = $this->getPath($hash, $cacheContext);
 		if( file_exists($path)) {
 			return @filemtime($path);
 		}
 		return false;
 	}
 
-	public function getSize($sha1, $cacheContext = false)
+	public function getSize($hash, $cacheContext = false)
     {
-        $path = $this->getPath($sha1, $cacheContext);
+        $path = $this->getPath($hash, $cacheContext);
         if( file_exists($path)) {
             return @filesize($path);
         }

@@ -31,18 +31,23 @@ class HttpStorage implements StorageInterface {
         $this->authKey = $authKey;
 	}
 	
-	private function getCachePath($sha1){
+	private function getCachePath($hash){
 		$out = $this->cacheDir;
-		$out.= DIRECTORY_SEPARATOR.substr($sha1, 0, 3);
+		$out.= DIRECTORY_SEPARATOR.substr($hash, 0, 3);
 
 		if(!file_exists($out) ) {
 			mkdir($out, 0777, true);
 		}
 		
-		return $out.DIRECTORY_SEPARATOR.$sha1;
+		return $out.DIRECTORY_SEPARATOR.$hash;
 	}
 	
 	public function head($hash, $cacheContext=false) {
+	    if($cacheContext)
+        {
+            return false;
+        }
+
         //https://stackoverflow.com/questions/1545432/what-is-the-easiest-way-to-use-the-head-command-of-http-in-php?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
 	    try {
             $context  = stream_context_create(array('http' =>array('method'=>'HEAD')));
@@ -57,6 +62,11 @@ class HttpStorage implements StorageInterface {
 	}
 	
 	public function create($hash, $filename, $cacheContext=FALSE){
+        if($cacheContext)
+        {
+            return false;
+        }
+
         $out = $this->getCachePath($hash);
         copy($filename, $out);
 
@@ -93,8 +103,13 @@ class HttpStorage implements StorageInterface {
 	}
 	
 	public function read($hash, $cacheContext=false){
+        if($cacheContext)
+        {
+            return false;
+        }
+
 		$out = $this->getCachePath($hash);
-		if(file_exists($out) && sha1_file($out) == $hash){
+		if(file_exists($out)){
 			return $out;
 		}
 		
@@ -104,7 +119,12 @@ class HttpStorage implements StorageInterface {
 		return fopen($out, 'rb');
 	}
 	
-	public function getSize($sha1, $cacheContext=false){
+	public function getSize($hash, $cacheContext=false){
+        if($cacheContext)
+        {
+            return false;
+        }
+
         //https://stackoverflow.com/questions/1545432/what-is-the-easiest-way-to-use-the-head-command-of-http-in-php?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
         try {
             $context  = stream_context_create(array('http' =>array('method'=>'HEAD')));
@@ -126,7 +146,12 @@ class HttpStorage implements StorageInterface {
         return FALSE;
 	}
 
-	public function getLastUpdateDate($sha1, $cacheContext=false){
+	public function getLastUpdateDate($hash, $cacheContext=false){
+        if($cacheContext)
+        {
+            return false;
+        }
+
         //https://stackoverflow.com/questions/1545432/what-is-the-easiest-way-to-use-the-head-command-of-http-in-php?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
         try {
             $context  = stream_context_create(array('http' =>array('method'=>'HEAD')));

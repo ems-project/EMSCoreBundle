@@ -10,6 +10,34 @@ use EMS\CoreBundle\Entity\AssetStorage;
  */
 class AssetStorageRepository extends \Doctrine\ORM\EntityRepository
 {
+
+    /**
+     * @param string $hash
+     * @param false|string $context
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    private function getQuery($hash, $context)
+    {
+        $qb = $this->createQueryBuilder('a');
+        $qb->where($qb->expr()->eq('a.hash', ':hash'));
+
+        if($context)
+        {
+            $qb->andWhere($qb->expr()->eq('a.context', ':context'));
+            $qb->setParameters([
+                ':hash' => $hash,
+                ':context' => $context,
+            ]);
+        }
+        else{
+            $qb->andWhere('a.context is null');
+            $qb->setParameters([
+                ':hash' => $hash,
+            ]);
+        }
+        return $qb;
+    }
+
     /**
      * @param string $hash
      * @param string $context
@@ -18,15 +46,7 @@ class AssetStorageRepository extends \Doctrine\ORM\EntityRepository
      */
     public function head($hash, $context)
     {
-        $qb = $this->createQueryBuilder('a')
-            ->select('count(a.hash)')
-            ->where('a.hash = :hash')
-            ->andWhere('a.context = :context');
-
-        $qb->setParameters([
-            'hash' => $hash,
-            'context' => $context?$context:null,
-        ]);
+        $qb = $this->getQuery($hash, $context)->select('count(a.hash)');
 
         return $qb->getQuery()->getSingleScalarResult() !== 0;
     }
@@ -38,11 +58,9 @@ class AssetStorageRepository extends \Doctrine\ORM\EntityRepository
      */
     public function findByHash($hash, $context)
     {
+        $qb = $this->getQuery($hash, $context)->select('a');
 
-        return $this->findOneBy([
-            'hash' => $hash,
-            'context' => ($context?$context:null),
-        ]);
+        return $qb->getQuery()->getOneOrNullResult();
     }
 
     /**
@@ -53,16 +71,7 @@ class AssetStorageRepository extends \Doctrine\ORM\EntityRepository
      */
     public function getSize($hash, $context)
     {
-        $qb = $this->createQueryBuilder('a')
-            ->select('a.size')
-            ->where('a.hash = :hash')
-            ->andWhere('a.context = :context');
-
-        $qb->setParameters([
-            'hash' => $hash,
-            'context' => $context?$context:null,
-        ]);
-
+        $qb = $this->getQuery($hash, $context)->select('a.size');
 
         return $qb->getQuery()->getSingleScalarResult();
     }
@@ -75,16 +84,7 @@ class AssetStorageRepository extends \Doctrine\ORM\EntityRepository
      */
     public function getLastUpdateDate($hash, $context)
     {
-        $qb = $this->createQueryBuilder('a')
-            ->select('a.lastUpdateDate')
-            ->where('a.hash = :hash')
-            ->andWhere('a.context = :context');
-
-        $qb->setParameters([
-            'hash' => $hash,
-            'context' => $context?$context:null,
-        ]);
-
+        $qb = $this->getQuery($hash, $context)->select('a.lastUpdateDate');
 
         return $qb->getQuery()->getSingleScalarResult();
     }

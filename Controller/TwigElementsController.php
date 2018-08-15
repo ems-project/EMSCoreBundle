@@ -3,9 +3,12 @@
 namespace EMS\CoreBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Cache\Simple\FilesystemCache;
 
 class TwigElementsController extends AppController
 {
+    const ASSET_EXTRACTOR_STATUS_CACHE_ID = 'status.asset_extractor.result';
+
     public function sideMenuAction()
     {
     	$draftCounterGroupedByContentType = [];
@@ -27,7 +30,14 @@ class TwigElementsController extends AppController
 	    
 	    if($status == 'green') {
 	    	try {
-		    	$result = $this->getAssetExtractorService()->hello();
+                $cache = new FilesystemCache();
+                if (!$cache->has(TwigElementsController::ASSET_EXTRACTOR_STATUS_CACHE_ID)) {
+                    $result = $this->getAssetExtractorService()->hello();
+                    $cache->set(TwigElementsController::ASSET_EXTRACTOR_STATUS_CACHE_ID, $result, 600);
+                } else {
+                    $result = $cache->get(TwigElementsController::ASSET_EXTRACTOR_STATUS_CACHE_ID);
+                }
+
 		    	if($result && 200 != $result['code'])
 		    	{
 		    		$status = 'yellow';

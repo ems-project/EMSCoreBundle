@@ -172,4 +172,9 @@ class HttpStorage implements StorageInterface {
         }
         return FALSE;
 	}
+	
+	public function __toString()
+    {
+        return HttpStorage::class." ($this->getUrl - $this->postUrl)";
+    }
 }

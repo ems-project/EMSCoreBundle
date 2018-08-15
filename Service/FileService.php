@@ -70,9 +70,9 @@ class FileService {
 	public function getSize($sha1, $cacheContext=false){
 		/**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
 		foreach ($this->storageServices as $service){
-			$filename = $service->read($sha1, $cacheContext);
-			if($filename){
-				return filesize($filename);
+			$filesize = $service->getSize($sha1, $cacheContext);
+			if($filesize !== false){
+				return $filesize;
 			}
 		}
 		return false;

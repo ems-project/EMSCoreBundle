@@ -10,4 +10,32 @@ namespace EMS\CoreBundle\Repository;
  */
 class UploadedAssetRepository extends \Doctrine\ORM\EntityRepository
 {
+    const PAGE_SIZE=100;
+
+    public function countHashes(){
+        $qb = $this->createQueryBuilder('ua');
+        $qb->select('count(DISTINCT ua.sha1)')
+            ->where($qb->expr()->eq('ua.available', ':true'));
+        $qb->setParameters([
+            ':true' => true
+        ]);
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+
+    public function getHashes($page){
+        $qb = $this->createQueryBuilder('ua');
+        $qb->select('ua.sha1 as hash')
+            ->where($qb->expr()->eq('ua.available', ':true'))
+            ->orderBy('ua.sha1', 'ASC')
+            ->groupBy('ua.sha1')
+            ->setFirstResult(UploadedAssetRepository::PAGE_SIZE*$page)
+            ->setMaxResults(UploadedAssetRepository::PAGE_SIZE);
+        $qb->setParameters([
+            ':true' => true
+        ]);
+
+        return $qb->getQuery()->getArrayResult();
+    }
 }

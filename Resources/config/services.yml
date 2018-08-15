@@ -519,6 +519,10 @@ services:
         arguments: ['@logger', '@ems.service.environment']
         tags:
             -  { name: console.command }
+    EMS\CoreBundle\Command\SynchAssetCommand:
+        arguments: ['@logger', '@app.elasticsearch', '@session', '@doctrine', '@ems.service.contenttype', '@ems.service.asset_extractor', '@ems.service.file']
+        tags:
+        - { name: console.command }
 #### security services
     api_key_user_provider:
         class: EMS\CoreBundle\Security\ApiKeyUserProvider

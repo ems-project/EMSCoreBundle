@@ -115,7 +115,11 @@ class SynchAssetCommand extends EmsCommand
                     {
                         if(! $storage->head($hash['hash']))
                         {
-                            $storage->create($hash['hash'], $file);
+                            if(!$storage->create($hash['hash'], $file))
+                            {
+                                $output->writeln('');
+                                $output->writeln('<comment>EMS was not able to synchronize on the service '.$storage.'</comment>');
+                            }
                         }
                     }
 

@@ -30,6 +30,7 @@ class EntityStorage implements StorageInterface {
 	public function __construct(Registry $doctrine, bool $contextSupport) {
         $this->doctrine = $doctrine;
         $this->contextSupport = $contextSupport;
+        $this->repository = false;
 	}
 
     /**
@@ -37,8 +38,11 @@ class EntityStorage implements StorageInterface {
      */
 	private function init()
     {
-        $this->manager = $this->doctrine->getManager();
-        $this->repository = $this->manager->getRepository('EMSCoreBundle:AssetStorage');
+        if($this->repository === false)
+        {
+            $this->manager = $this->doctrine->getManager();
+            $this->repository = $this->manager->getRepository('EMSCoreBundle:AssetStorage');
+        }
     }
 
     /**

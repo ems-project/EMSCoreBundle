@@ -112,11 +112,18 @@ class HttpStorage implements StorageInterface {
 		if(file_exists($out)){
 			return $out;
 		}
-		
-		//https://stackoverflow.com/questions/3938534/download-file-to-server-from-url?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
-        file_put_contents($out, fopen($this->getUrl.$hash, 'rb'));
 
-		return fopen($out, 'rb');
+		try
+        {
+            //https://stackoverflow.com/questions/3938534/download-file-to-server-from-url?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
+            file_put_contents($out, fopen($this->getUrl.$hash, 'rb'));
+
+            return fopen($out, 'rb');
+        }
+        catch (Exception $e)
+        {
+            return false;
+        }
 	}
 	
 	public function getSize($hash, $cacheContext=false){

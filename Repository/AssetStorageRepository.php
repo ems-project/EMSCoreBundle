@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Repository;
 
+use Doctrine\ORM\NoResultException;
 use EMS\CoreBundle\Entity\AssetStorage;
 
 /**
@@ -46,9 +47,13 @@ class AssetStorageRepository extends \Doctrine\ORM\EntityRepository
      */
     public function head($hash, $context)
     {
-        $qb = $this->getQuery($hash, $context)->select('count(a.hash)');
-
-        return $qb->getQuery()->getSingleScalarResult() !== 0;
+        try{
+            $qb = $this->getQuery($hash, $context)->select('count(a.hash)');
+            return $qb->getQuery()->getSingleScalarResult() !== 0;
+        }
+        catch (NoResultException $e){
+            return false;
+        }
     }
 
     /**
@@ -71,9 +76,14 @@ class AssetStorageRepository extends \Doctrine\ORM\EntityRepository
      */
     public function getSize($hash, $context)
     {
-        $qb = $this->getQuery($hash, $context)->select('a.size');
-
-        return $qb->getQuery()->getSingleScalarResult();
+        try
+        {
+            $qb = $this->getQuery($hash, $context)->select('a.size');
+            return $qb->getQuery()->getSingleScalarResult();
+        }
+        catch (NoResultException $e){
+            return false;
+        }
     }
 
     /**
@@ -84,8 +94,13 @@ class AssetStorageRepository extends \Doctrine\ORM\EntityRepository
      */
     public function getLastUpdateDate($hash, $context)
     {
-        $qb = $this->getQuery($hash, $context)->select('a.lastUpdateDate');
-
-        return $qb->getQuery()->getSingleScalarResult();
+        try
+        {
+            $qb = $this->getQuery($hash, $context)->select('a.lastUpdateDate');
+            return $qb->getQuery()->getSingleScalarResult();
+        }
+        catch (NoResultException $e){
+            return false;
+        }
     }
 }

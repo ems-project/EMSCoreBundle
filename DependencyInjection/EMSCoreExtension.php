@@ -54,11 +54,19 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.asset_config_type', $config['asset_config_type']);
         $container->setParameter('ems_core.asset_config_index', $config['asset_config_index']);
         $container->setParameter('ems_core.upload_folder', $config['upload_folder']);
+        $container->setParameter('ems_core.storage_folder', $config['storage_folder']);
         $container->setParameter('ems_core.tika_server', $config['tika_server']);
         $container->setParameter('ems_core.elasticsearch_version', $config['elasticsearch_version']);
         $container->setParameter('ems_core.single_type_index', $config['single_type_index']);
         $container->setParameter('ems_core.version', $this->getCoreVersion($container->getParameter('kernel.root_dir')));
         $container->setParameter('ems_core.private_key', $config['private_key']);
+        $container->setParameter('ems_core.public_key', $config['public_key']);
+        $container->setParameter('ems_core.save_assets_in_db', $config['save_assets_in_db']);
+        $container->setParameter('ems_core.ems_remote_host', $config['ems_remote_host']);
+        $container->setParameter('ems_core.ems_remote_authkey', $config['ems_remote_authkey']);
+        $container->setParameter('ems_core.sftp_server', $config['sftp_server']);
+        $container->setParameter('ems_core.sftp_path', $config['sftp_path']);
+        $container->setParameter('ems_core.sftp_user', $config['sftp_user']);
 
     }
 

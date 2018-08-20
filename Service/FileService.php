@@ -2,11 +2,15 @@
 
 namespace EMS\CoreBundle\Service;
 
+use const DIRECTORY_SEPARATOR;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\UploadedAsset;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CoreBundle\Exception\StorageServiceMissingException;
 use Elasticsearch\Common\Exceptions\Conflict409Exception;
+use EMS\CoreBundle\Service\Storage\EntityStorage;
+use EMS\CoreBundle\Service\Storage\FileSystemStorage;
+use EMS\CoreBundle\Service\Storage\HttpStorage;
 use function stream_get_contents;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use function unlink;
@@ -20,15 +24,37 @@ class FileService {
 	
 	private $uploadFolder;
 	
-	public function __construct(Registry $doctrine, $uploadFolder)
+	public function __construct(Registry $doctrine, RestClientService $restClient, string $projectDir, string $uploadFolder, string $storageFolder, bool $createDbStorageService, string $elasticmsRemoteServer, string $elasticmsRemoteAuthkey, string $sftpServer, string $sftpPath, string $sftpUser, string $publicKey, string $privateKey)
 	{
 	    $this->doctrine = $doctrine;
 	    $this->uploadFolder = $uploadFolder;
 		$this->storageServices = [];
+
+        if(!empty($storageFolder))
+        {
+            if(substr($storageFolder, 0, 2) === ('.'.DIRECTORY_SEPARATOR))
+            {
+                $this->addStorageService(new FileSystemStorage($projectDir.substr($storageFolder, 1)));
+            }
+            else
+            {
+                $this->addStorageService(new FileSystemStorage($storageFolder));
+            }
+        }
+
+        if($createDbStorageService)
+        {
+            $this->addStorageService(new EntityStorage($doctrine, empty($storageFolder)));
+        }
+
+        if(!empty($elasticmsRemoteServer))
+        {
+            $this->addStorageService(new HttpStorage($restClient, $elasticmsRemoteServer.'/data/file/view/', $elasticmsRemoteServer.'/api/file', $elasticmsRemoteAuthkey));
+        }
 	}
 	
 	public function addStorageService($dataField) {
-		$this->storageServices[ get_class($dataField) ] = $dataField;
+		$this->storageServices[] = $dataField;
 	}
 	
 	public function getStorageService($dataFieldTypeId) {

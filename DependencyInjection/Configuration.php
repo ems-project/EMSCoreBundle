@@ -36,11 +36,13 @@ class Configuration implements ConfigurationInterface
     const ADD_USER_ROUTE = 'user.add';
     const APPLICATION_MENU_CONTROLLER = null;
     const PRIVATE_KEY = null;
+    const PUBLIC_KEY = null;
     const ASSET_CONFIG_TYPE = null;
     const ASSET_CONFIG_INDEX = null;
     const TIKA_SERVER = null;
     const ELASTICSEARCH_VERSION = '5.4';
     const SINGLE_TYPE_INDEX = false;
+    const SAVE_ASSETS_IN_DB = false;
 
 
     /**
@@ -82,10 +84,18 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('asset_config_type')->defaultValue(self::ASSET_CONFIG_TYPE)->end()
             ->scalarNode('asset_config_index')->defaultValue(self::ASSET_CONFIG_INDEX)->end()
             ->scalarNode('private_key')->defaultValue(self::PRIVATE_KEY)->end()
+            ->scalarNode('public_key')->defaultValue(self::PUBLIC_KEY)->end()
             ->scalarNode('upload_folder')->defaultValue(null)->end()
+            ->scalarNode('storage_folder')->defaultValue(null)->end()
+            ->scalarNode('sftp_server')->defaultValue(null)->end()
+            ->scalarNode('sftp_path')->defaultValue(null)->end()
+            ->scalarNode('sftp_user')->defaultValue(null)->end()
+            ->scalarNode('ems_remote_host')->defaultValue(null)->end()
+            ->scalarNode('ems_remote_authkey')->defaultValue(null)->end()
             ->scalarNode('tika_server')->defaultValue(self::TIKA_SERVER)->end()
             ->scalarNode('elasticsearch_version')->defaultValue(self::ELASTICSEARCH_VERSION)->end()
             ->scalarNode('single_type_index')->defaultValue(self::SINGLE_TYPE_INDEX)->end()
+            ->scalarNode('save_assets_in_db')->defaultValue(self::SAVE_ASSETS_IN_DB)->end()
             ->arrayNode('template_options')->defaultValue([])->prototype('variable')->end()
             ->end()
             ->end();

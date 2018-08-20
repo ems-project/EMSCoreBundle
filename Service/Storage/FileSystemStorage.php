@@ -11,17 +11,15 @@ class FileSystemStorage implements StorageInterface {
 	
 	private $storagePath;
 	
-	public function __construct($storagePath, $kernel_root_dir) {
+	public function __construct($storagePath) {
 		$this->storagePath = $storagePath;
-		if(empty($storagePath)) {
-			$this->storagePath = $kernel_root_dir.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'var'.DIRECTORY_SEPARATOR.'assets';
-		}
+	}
+
+	private function getPath($hash, $cacheContext){
 		if(!file_exists($this->storagePath)){
 			mkdir($this->storagePath, 0777, true);
 		}
-	}
-	
-	private function getPath($hash, $cacheContext){
+
 		$out = $this->storagePath;
 		if($cacheContext) {
 			$out .= DIRECTORY_SEPARATOR.'cache'.DIRECTORY_SEPARATOR.$cacheContext;

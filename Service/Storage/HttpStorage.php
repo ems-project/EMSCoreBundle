@@ -16,30 +16,17 @@ class HttpStorage implements StorageInterface {
     /**@var RestClientService $restClient*/
     private $restClient;
 
-    private $cacheDir;
     private $getUrl;
     private $postUrl;
     private $postFieldName;
     private $authKey;
 	
-	public function __construct(RestClientService $restClient, $cacheDir, $getUrl, $postUrl, $authKey=false, $postFieldName='upload') {
-        $this->cacheDir = $cacheDir;
+	public function __construct(RestClientService $restClient, $getUrl, $postUrl, $authKey=false, $postFieldName='upload') {
         $this->getUrl = $getUrl;
         $this->postUrl = $postUrl;
         $this->postFieldName = $postFieldName;
         $this->restClient = $restClient;
         $this->authKey = $authKey;
-	}
-	
-	private function getCachePath($hash){
-		$out = $this->cacheDir;
-		$out.= DIRECTORY_SEPARATOR.substr($hash, 0, 3);
-
-		if(!file_exists($out) ) {
-			mkdir($out, 0777, true);
-		}
-		
-		return $out.DIRECTORY_SEPARATOR.$hash;
 	}
 	
 	public function head($hash, $cacheContext=false) {
@@ -67,9 +54,6 @@ class HttpStorage implements StorageInterface {
             return false;
         }
 
-        $out = $this->getCachePath($hash);
-        copy($filename, $out);
-
         try {
 
             $client = $this->restClient->getClient();
@@ -95,7 +79,7 @@ class HttpStorage implements StorageInterface {
             return false;
         }
 
-        return $out;
+        return true;
 	}
 	
 	public function supportCacheStore() {
@@ -108,20 +92,14 @@ class HttpStorage implements StorageInterface {
             return false;
         }
 
-		$out = $this->getCachePath($hash);
-		if(file_exists($out)){
-			return $out;
-		}
-
 		try
         {
             //https://stackoverflow.com/questions/3938534/download-file-to-server-from-url?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
-            file_put_contents($out, fopen($this->getUrl.$hash, 'rb'));
-
-            return fopen($out, 'rb');
+            return @fopen($this->getUrl.$hash, 'rb');
         }
         catch (Exception $e)
         {
+            dump($e);
             return false;
         }
 	}

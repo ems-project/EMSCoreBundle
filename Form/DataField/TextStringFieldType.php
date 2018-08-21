@@ -37,6 +37,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 	public function buildView(FormView $view, FormInterface $form, array $options){
 		parent::buildView($view, $form, $options);
 		$view->vars ['class'] = null;
+		$view->vars ['attr']['placeholder'] = $options['placeholder'];
 	}
 	
 // 	/**
@@ -84,6 +85,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 				'prefixText' => null,
 				'suffixIcon' => null,
 				'suffixText' => null,
+				'placeholder' => null,
 		] );
 	}
 	
@@ -109,6 +111,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 		] )->add ( 'suffixText', IconTextType::class, [ 
 				'required' => false,
 				'prefixIcon' => 'fa fa-hand-o-right' 
+		] )->add ( 'placeholder', TextType::class, [
+				'required' => false,
 		] );
 		
 		// String specific mapping options

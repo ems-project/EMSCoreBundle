@@ -49,6 +49,7 @@ use EMS\CoreBundle\Entity\FieldType;
 		$builder->add ( 'value', TextareaType::class, [
 				'attr' => [ 
 						'rows' => $options['rows'],
+						'placeholder' => $options['placeholder'],
 				],
 				'label' => (null != $options ['label']?$options ['label']:$fieldType->getName()),
 				'required' => false,
@@ -75,6 +76,7 @@ use EMS\CoreBundle\Entity\FieldType;
 		parent::configureOptions($resolver);
 		$resolver->setDefault('icon', null);
 		$resolver->setDefault('rows', null);
+		$resolver->setDefault('placeholder', null);
 	}
 	
 	/**
@@ -94,7 +96,9 @@ use EMS\CoreBundle\Entity\FieldType;
 		] );
 		$optionsForm->get ( 'displayOptions' )->add ( 'rows', IntegerType::class, [
 				'required' => false,
-		]);
+		])->add ( 'placeholder', TextareaType::class, [
+            'required' => false,
+        ] );
 	}
 	
 	

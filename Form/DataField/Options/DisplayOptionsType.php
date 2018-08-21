@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Form\DataField\Options;
 
 use EMS\CoreBundle\Form\Field\IconTextType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
@@ -30,9 +31,11 @@ class DisplayOptionsType extends AbstractType {
 				'label' => 'Bootstrap class',
 				'icon' => 'fa fa-css3' 
 		] );
-		$builder->add ( 'lastOfRow', CheckboxType::class, [ 
-				'required' => false,
-				'label' => 'Last item of the row'
-		] );
+		$builder->add ( 'lastOfRow', CheckboxType::class, [
+            'required' => false,
+            'label' => 'Last item of the row'
+        ] )->add ( 'helptext', TextareaType::class, [
+            'required' => false,
+        ] );
 	}
 }

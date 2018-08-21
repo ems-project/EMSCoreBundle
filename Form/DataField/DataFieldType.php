@@ -243,6 +243,7 @@ abstract class DataFieldType extends AbstractType {
 				'translation_domain' => false,
 				'migration' => false,
                 'raw_data' => [],
+                'helptext' => null,
 		]);
 	}
 	
@@ -278,6 +279,7 @@ abstract class DataFieldType extends AbstractType {
 	public function buildView(FormView $view, FormInterface $form, array $options) {
 		$view->vars ['class'] = $options ['class'];
 		$view->vars ['lastOfRow'] = $options ['lastOfRow'];
+		$view->vars ['helptext'] = $options ['helptext'];
 		$view->vars ['isContainer'] = $this->isContainer();
 		if( null == $options['label']){
 // 			/** @var FieldType $fieldType */

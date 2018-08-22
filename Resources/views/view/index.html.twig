@@ -23,6 +23,7 @@
 						<tr>
 							<th class="text-center" style="width: 10px">#</th>
 							<th class="text-center" style="width: 20px">Icon</th>
+							<th class="text-center" style="width: 20px">Public</th>
 							<th>Name</th>
 							<th>Action</th>
 						</tr>
@@ -30,6 +31,7 @@
 							<tr>
 								<td class="text-center">{{ loop.index }}.</td>
 								<td class="text-center"><i class="{% if view.icon %}{{ view.icon }}{% else %}fa fa-file-text-o{% endif %}"></i></td>
+								<td class="text-center"><i class="{% if view.public %}fa fa-check-square-o{% else %}fa fa-square-o{% endif %}"></i></td>
 								<td>{{ view.name }}</td>
 								<td>
 								

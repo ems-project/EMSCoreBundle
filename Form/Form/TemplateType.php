@@ -48,6 +48,9 @@ class TemplateType extends AbstractType {
 		->add ( 'icon', IconPickerType::class, [
 			'required' => false,
 		])
+        ->add ( 'public', CheckboxType::class, [
+            'required' => false,
+        ])
 		->add ( 'editWithWysiwyg', CheckboxType::class, [
 			'required' => false,
 		])

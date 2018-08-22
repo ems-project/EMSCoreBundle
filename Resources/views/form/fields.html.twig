@@ -59,13 +59,18 @@
 {% block bypassdatafield_row -%}
 	{% if form.value is defined %}
 		<div {{ block('widget_attributes') }} >
-	        {{form_row(form.value)}}
-            {% if form.vars.helptext is defined and form.vars.helptext %}
-				<p class="help-block">{{ form.vars.helptext|raw }}</p>
-            {% endif %}
+			<div class="form-group">
+                {{ form_label(form.value) }}
+                {{ form_widget(form.value) }}
+					{% if form.vars.helptext is defined and form.vars.helptext %}
+						<p class="help-block">{{ form.vars.helptext|raw }}</p>
+					{% endif %}
+                {{ form_errors(form.value) }}
+			</div>
 		</div>
     {% endif %}
 {%- endblock bypassdatafield_row %}
+
 
 {% block bypassdatafield_widget -%}
 	{% if form.value is defined %}

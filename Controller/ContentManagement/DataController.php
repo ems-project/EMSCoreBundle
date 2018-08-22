@@ -706,9 +706,11 @@ class DataController extends AppController
     }
 
     /**
-     * @Route("/data/custom-index-view/{viewId}", name="data.customindexview"))
+     * @Route("/public/view/{viewId}", name="ems_custom_view_public", defaults={"public": true})
+     * @Route("/data/custom-index-view/{viewId}", name="data.customindexview", defaults={"public": false})
+     * @Route("/data/custom-index-view/{viewId}", name="ems_custom_view_protected", defaults={"public": false})
      */
-    public function customIndexViewAction($viewId, Request $request)
+    public function customIndexViewAction($viewId, $public, Request $request)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -718,7 +720,7 @@ class DataController extends AppController
         $view = $viewRepository->find($viewId);
         /** @var View $view * */
 
-        if (!$view) {
+        if (!$view || ($public && !$view->isPublic()) ) {
             throw new NotFoundHttpException('View type not found');
         }
 
@@ -729,9 +731,11 @@ class DataController extends AppController
     }
 
     /**
-     * @Route("/data/custom-view/{environmentName}/{templateId}/{ouuid}/{_download}", defaults={"_download": false} , name="data.customview"))
+     * @Route("/public/template/{environmentName}/{templateId}/{ouuid}/{_download}", defaults={"_download": false, "public": true} , name="ems_data_custom_template_public"))
+     * @Route("/data/custom-view/{environmentName}/{templateId}/{ouuid}/{_download}", defaults={"_download": false, "public": false} , name="data.customview"))
+     * @Route("/data/template/{environmentName}/{templateId}/{ouuid}/{_download}", defaults={"_download": false, "public": false} , name="ems_data_custom_template_protected"))
      */
-    public function customViewAction($environmentName, $templateId, $ouuid, Request $request, $_download)
+    public function customViewAction($environmentName, $templateId, $ouuid, Request $request, $_download, $public)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -742,7 +746,7 @@ class DataController extends AppController
         /** @var Template $template * */
         $template = $templateRepository->find($templateId);
 
-        if (!$template) {
+        if (!$template || ($template && !$template->isPublic())) {
             throw new NotFoundHttpException('Template type not found');
         }
 

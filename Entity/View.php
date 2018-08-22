@@ -76,7 +76,20 @@ class View
      * @ORM\JoinColumn(name="content_type_id", referencedColumnName="id")
      */
     private $contentType;
-    
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="public", type="boolean", options={"default" : 0})
+     */
+    private $public;
+
+
+    public function __construct()
+    {
+        $this->public = false;
+    }
+
     /**
      * @ORM\PrePersist
      * @ORM\PreUpdate
@@ -299,4 +312,24 @@ class View
     {
         return $this->contentType;
     }
+
+    /**
+     * @return bool
+     */
+    public function isPublic(): bool
+    {
+        return $this->public;
+    }
+
+    /**
+     * @param bool $public
+     * @return View
+     */
+    public function setPublic(bool $public): View
+    {
+        $this->public = $public;
+        return $this;
+    }
+
+
 }

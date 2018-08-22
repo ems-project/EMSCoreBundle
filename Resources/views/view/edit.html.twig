@@ -4,6 +4,14 @@
 {% block pagetitle %}Edit view {{ view.name }} for {{view.contentType.name}}{% endblock %} 
 {% block subtitle %}{% endblock %} 
 
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><a href="{{ path("contenttype.index") }}"><i class="fa fa-cubes"></i> Content Types</a></li>
+		<li><a href="{{ path("view.index", {type: view.contentType.name}) }}"><i class="fa fa-tv"></i> Views</a></li>
+		<li class="active">edit</li>
+	</ol>
+{% endblock %}
+
 
 {% block body %}
 
@@ -20,6 +28,7 @@
 				<div class="box-body">
 					{{ form_row(form.name) }}
 					{{ form_row(form.icon) }}
+					{{ form_row(form.public) }}
 					{{ form_row(form.options) }}
 					
 

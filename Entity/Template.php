@@ -195,6 +195,13 @@ class Template
     private $size;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(name="public", type="boolean", options={"default" : 0})
+     */
+    private $public;
+
+    /**
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
@@ -707,6 +714,7 @@ class Template
     public function __construct()
     {
         $this->environments = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->public = false;
     }
 
 
@@ -849,6 +857,24 @@ class Template
     public function setSize($size)
     {
         $this->size = $size;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPublic(): bool
+    {
+        return $this->public;
+    }
+
+    /**
+     * @param bool $public
+     * @return Template
+     */
+    public function setPublic(bool $public): Template
+    {
+        $this->public = $public;
         return $this;
     }
 

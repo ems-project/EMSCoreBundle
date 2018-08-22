@@ -41,7 +41,7 @@
 								</a></li>
 							{% endif %}
 						{% else %}{#  #}
-							<li><a href="{{ path('data.customview', {
+							<li><a href="{{ path(template.public?'ems_data_custom_template_public':'ems_data_custom_template_protected', {
 										environmentName: environment.name,
 										ouuid: object._id,
 										templateId: template.id}) }}" >

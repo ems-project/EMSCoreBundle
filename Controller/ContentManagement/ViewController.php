@@ -15,6 +15,7 @@ use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\HttpFoundation\Request;
 
 class ViewController extends AppController
@@ -113,6 +114,9 @@ class ViewController extends AppController
 		->add ( 'name', IconTextType::class, [
 				'icon' => 'fa fa-tag'
 		] )
+        ->add ( 'public', CheckboxType::class, [
+            'required' => false,
+        ])
 		->add ( 'icon', IconPickerType::class, [
 				'required' => false,
 		])

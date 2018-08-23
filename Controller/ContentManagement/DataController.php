@@ -791,7 +791,7 @@ class DataController extends AppController
                 'contentType' => $template->getContentType(),
                 'object' => $object,
                 'source' => $object['_source'],
-                '_download' => $_download,
+                '_download' => ($_download || !$template->getPreview()),
             ]);
 
             // instantiate and use the dompdf class

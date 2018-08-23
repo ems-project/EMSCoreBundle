@@ -28,6 +28,7 @@ class FileController extends AppController
 		return $this->getFile($sha1, ResponseHeaderBag::DISPOSITION_INLINE, $request);
 	}
 	/**
+	 * @Route("/public/file/{sha1}" , name="ems_file_download_public")
 	 * @Route("/data/file/{sha1}" , name="file.download")
 	 * @Route("/data/file/{sha1}" , name="ems_file_download")
 	 * @Route("/api/file/{sha1}" , name="file.api.download")

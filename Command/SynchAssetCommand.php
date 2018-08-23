@@ -16,9 +16,11 @@ use EMS\CoreBundle\Service\Storage\StorageInterface;
 use Elasticsearch\Client;
 use Monolog\Logger;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Console\Input\InputOption;
@@ -70,7 +72,13 @@ class SynchAssetCommand extends EmsCommand
     {
         $this
             ->setName('ems:asset:synchronize')
-            ->setDescription('Synchronize registered assets on all storage services');
+            ->setDescription('Synchronize registered assets on storage services')
+            ->addOption(
+                'all',
+                null,
+                InputOption::VALUE_NONE,
+                'All storage services will be synchronized'
+            );
     }
 
 
@@ -87,6 +95,27 @@ class SynchAssetCommand extends EmsCommand
         {
             $output->writeln('<error>There is nothing to synchronize as there is less than 2 storage services</error>');
             return;
+        }
+
+        $serviceId = count($this->fileService->getStorages());
+        if(! $input->getOption('all') ){
+            /**@var QuestionHelper $helper*/
+            $helper = $this->getHelper('question');
+            $question = new ChoiceQuestion(
+                'Please select the storage service to synchronize',
+                array_merge($this->fileService->getStorages(), ['All']),
+                0
+            );
+            $question->setErrorMessage('Service %s is invalid.');
+
+            $service = $helper->ask($input, $output, $question);
+
+
+            if( $service != 'All' )
+            {
+                $serviceId = array_search ( $service ,$this->fileService->getStorages() );
+                $output->writeln('You have just selected: '.$service.' ('.$serviceId.')');
+            }
         }
 
         // create a new progress bar
@@ -110,9 +139,24 @@ class SynchAssetCommand extends EmsCommand
 
                 if($file)
                 {
-                    /**@var StorageInterface $storage */
-                    foreach ($this->fileService->getStorages() as $storage)
+                    if($serviceId == count($this->fileService->getStorages()))
                     {
+                        /**@var StorageInterface $storage */
+                        foreach ($this->fileService->getStorages() as $storage)
+                        {
+                            if(! $storage->head($hash['hash']))
+                            {
+                                if(!$storage->create($hash['hash'], $file))
+                                {
+                                    $output->writeln('');
+                                    $output->writeln('<comment>EMS was not able to synchronize on the service '.$storage.'</comment>');
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        /**@var StorageInterface $storage */
+                        $storage = $this->fileService->getStorages()[$serviceId];
                         if(! $storage->head($hash['hash']))
                         {
                             if(!$storage->create($hash['hash'], $file))

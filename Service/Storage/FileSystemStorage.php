@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Service\Storage;
 
 use function filesize;
 use function fopen;
+use Symfony\Component\Filesystem\Filesystem;
 
 class FileSystemStorage implements StorageInterface {
 	
@@ -75,5 +76,15 @@ class FileSystemStorage implements StorageInterface {
     public function __toString()
     {
         return HttpStorage::class." ($this->storagePath)";
+    }
+
+    /**
+     * @return bool
+     */
+    public function clearCache()
+    {
+        $fileSystem = new Filesystem();
+        $fileSystem->remove($this->storagePath.DIRECTORY_SEPARATOR.'cache');
+        return false;
     }
 }

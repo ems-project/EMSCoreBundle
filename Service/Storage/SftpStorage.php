@@ -152,4 +152,12 @@ class SftpStorage implements StorageInterface {
     {
         return HttpStorage::class." ($this->host)";
     }
+
+    /**
+     * @return bool
+     */
+    public function clearCache()
+    {
+        return false;
+    }
 }

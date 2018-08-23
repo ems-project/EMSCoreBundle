@@ -9,7 +9,6 @@ use Exception;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
 use function intval;
-use MongoDB\Driver\Exception\ExecutionTimeoutException;
 
 class HttpStorage implements StorageInterface {
 
@@ -161,5 +160,14 @@ class HttpStorage implements StorageInterface {
 	public function __toString()
     {
         return HttpStorage::class." ($this->getUrl - $this->postUrl)";
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function clearCache()
+    {
+        return false;
     }
 }

@@ -142,4 +142,18 @@ class EntityStorage implements StorageInterface {
     {
         return HttpStorage::class;
     }
+
+    /**
+     * @return bool
+     */
+    public function clearCache()
+    {
+        if($this->contextSupport)
+        {
+            $this->init();
+            $this->repository->clearCache();
+            return true;
+        }
+        return false;
+    }
 }

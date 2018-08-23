@@ -44,4 +44,9 @@ interface StorageInterface {
      * @return bool
      */
 	public function supportCacheStore();
+
+    /**
+     * @return bool
+     */
+	public function clearCache();
 }

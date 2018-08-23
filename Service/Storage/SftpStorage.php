@@ -150,6 +150,15 @@ class SftpStorage implements StorageInterface {
 
     public function __toString()
     {
-        return HttpStorage::class." ($this->host)";
+        return SftpStorage::class." ($this->host)";
+    }
+
+    /**
+     * @return bool
+     */
+    public function clearCache()
+    {
+        //TODO: should probaly be implemented, but how?
+        return false;
     }
 }

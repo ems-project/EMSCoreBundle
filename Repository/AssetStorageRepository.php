@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Repository;
 
 use Doctrine\ORM\NoResultException;
 use EMS\CoreBundle\Entity\AssetStorage;
+use Exception;
 
 /**
  * AssetStorageRepository
@@ -52,6 +53,22 @@ class AssetStorageRepository extends \Doctrine\ORM\EntityRepository
             return $qb->getQuery()->getSingleScalarResult() !== 0;
         }
         catch (NoResultException $e){
+            return false;
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function clearCache()
+    {
+        try
+        {
+            $qb = $this->createQueryBuilder('asset')->delete()
+                ->where('asset.context is not null');
+            return $qb->getQuery()->execute() !== false;
+        }
+        catch (Exception $e){
             return false;
         }
     }

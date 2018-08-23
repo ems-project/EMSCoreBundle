@@ -168,6 +168,7 @@ class HttpStorage implements StorageInterface {
      */
     public function clearCache()
     {
+        //TODO: should probaly be implemented, but how?
         return false;
     }
 }

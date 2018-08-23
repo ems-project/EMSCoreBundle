@@ -698,6 +698,7 @@ class AppExtension extends \Twig_Extension
 			}
 		}
 		else if(is_string($circles)){
+            $user = $this->userService->getCurrentUser();
 			return in_array($circles, $user->getCircles());
 		}
 		

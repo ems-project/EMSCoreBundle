@@ -64,8 +64,8 @@ class AssetStorageRepository extends \Doctrine\ORM\EntityRepository
     {
         try
         {
-            $qb = $this->createQueryBuilder('a')->delete()
-                ->where('a.context is null');
+            $qb = $this->createQueryBuilder('asset')->delete()
+                ->where('asset.context is not null');
             return $qb->getQuery()->execute() !== false;
         }
         catch (Exception $e){

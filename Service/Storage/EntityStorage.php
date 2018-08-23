@@ -140,7 +140,7 @@ class EntityStorage implements StorageInterface {
 
     public function __toString()
     {
-        return HttpStorage::class;
+        return EntityStorage::class;
     }
 
     /**
@@ -148,12 +148,7 @@ class EntityStorage implements StorageInterface {
      */
     public function clearCache()
     {
-        if($this->contextSupport)
-        {
-            $this->init();
-            $this->repository->clearCache();
-            return true;
-        }
-        return false;
+        $this->init();
+        return $this->repository->clearCache();
     }
 }

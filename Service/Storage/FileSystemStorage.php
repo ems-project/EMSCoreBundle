@@ -75,7 +75,7 @@ class FileSystemStorage implements StorageInterface {
 
     public function __toString()
     {
-        return HttpStorage::class." ($this->storagePath)";
+        return FileSystemStorage::class." ($this->storagePath)";
     }
 
     /**

@@ -162,6 +162,7 @@ class EntityStorage implements StorageInterface
     }
 
     /**
+     * @param $hash
      * @return bool
      */
     public function remove($hash)

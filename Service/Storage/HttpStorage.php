@@ -5,8 +5,7 @@ namespace EMS\CoreBundle\Service\Storage;
 
 use EMS\CoreBundle\Service\RestClientService;
 use Exception;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\GuzzleException;
 use function intval;
 
 class HttpStorage implements StorageInterface
@@ -57,7 +56,7 @@ class HttpStorage implements StorageInterface
 
             $client = $this->restClient->getClient();
 
-            $res = $client->request('POST', $this->postUrl, [
+            $client->request('POST', $this->postUrl, [
                 'multipart' => [
                     [
                         'name' => $this->postFieldName,
@@ -70,9 +69,7 @@ class HttpStorage implements StorageInterface
 
             ]);
 
-        } catch (ClientException $e) {
-            return false;
-        } catch (RequestException $e) {
+        } catch (GuzzleException $e) {
             return false;
         }
 
@@ -165,6 +162,7 @@ class HttpStorage implements StorageInterface
     }
 
     /**
+     * @param $hash
      * @return bool
      */
     public function remove($hash)

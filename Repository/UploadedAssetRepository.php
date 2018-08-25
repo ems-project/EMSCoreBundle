@@ -2,6 +2,9 @@
 
 namespace EMS\CoreBundle\Repository;
 
+use Doctrine\ORM\NonUniqueResultException;
+use function intval;
+
 /**
  * UploadedAssetRepository
  *
@@ -12,6 +15,9 @@ class UploadedAssetRepository extends \Doctrine\ORM\EntityRepository
 {
     const PAGE_SIZE=100;
 
+    /**
+     * @return int
+     */
     public function countHashes(){
         $qb = $this->createQueryBuilder('ua');
         $qb->select('count(DISTINCT ua.sha1)')
@@ -20,10 +26,18 @@ class UploadedAssetRepository extends \Doctrine\ORM\EntityRepository
             ':true' => true
         ]);
 
-        return $qb->getQuery()->getSingleScalarResult();
+        try {
+            return intval($qb->getQuery()->getSingleScalarResult());
+        } catch (NonUniqueResultException $e) {
+            return 0;
+        }
     }
 
 
+    /**
+     * @param $page
+     * @return array
+     */
     public function getHashes($page){
         $qb = $this->createQueryBuilder('ua');
         $qb->select('ua.sha1 as hash')
@@ -37,5 +51,27 @@ class UploadedAssetRepository extends \Doctrine\ORM\EntityRepository
         ]);
 
         return $qb->getQuery()->getArrayResult();
+    }
+
+    /**
+     * @param $hash
+     * @return mixed
+     */
+    public function dereference($hash){
+
+        $qb = $this->createQueryBuilder('ua');
+        $qb->update()
+            ->set('ua.available', ':false')
+            ->set('ua.status', ':status')
+            ->where($qb->expr()->eq('ua.available', ':true'))
+            ->andWhere($qb->expr()->eq('ua.sha1', ':hash'));
+        $qb->setParameters([
+            ':true' => true,
+            ':false' => false,
+            ':hash' => $hash,
+            ':status' => 'cleaned',
+        ]);
+
+        return $qb->getQuery()->execute();
     }
 }

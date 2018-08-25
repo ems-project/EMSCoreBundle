@@ -13,12 +13,13 @@ use function intval;
  */
 class UploadedAssetRepository extends \Doctrine\ORM\EntityRepository
 {
-    const PAGE_SIZE=100;
+    const PAGE_SIZE = 100;
 
     /**
      * @return int
      */
-    public function countHashes(){
+    public function countHashes()
+    {
         $qb = $this->createQueryBuilder('ua');
         $qb->select('count(DISTINCT ua.sha1)')
             ->where($qb->expr()->eq('ua.available', ':true'));
@@ -38,13 +39,14 @@ class UploadedAssetRepository extends \Doctrine\ORM\EntityRepository
      * @param $page
      * @return array
      */
-    public function getHashes($page){
+    public function getHashes($page)
+    {
         $qb = $this->createQueryBuilder('ua');
         $qb->select('ua.sha1 as hash')
             ->where($qb->expr()->eq('ua.available', ':true'))
             ->orderBy('ua.sha1', 'ASC')
             ->groupBy('ua.sha1')
-            ->setFirstResult(UploadedAssetRepository::PAGE_SIZE*$page)
+            ->setFirstResult(UploadedAssetRepository::PAGE_SIZE * $page)
             ->setMaxResults(UploadedAssetRepository::PAGE_SIZE);
         $qb->setParameters([
             ':true' => true
@@ -57,7 +59,8 @@ class UploadedAssetRepository extends \Doctrine\ORM\EntityRepository
      * @param $hash
      * @return mixed
      */
-    public function dereference($hash){
+    public function dereference($hash)
+    {
 
         $qb = $this->createQueryBuilder('ua');
         $qb->update()

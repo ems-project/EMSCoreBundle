@@ -1,15 +1,14 @@
 <?php
 namespace EMS\CoreBundle\Service\Storage;
 
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\NonUniqueResultException;
 use EMS\CoreBundle\Entity\AssetStorage;
 use EMS\CoreBundle\Repository\AssetStorageRepository;
-use Exception;
 use function file_get_contents;
 use function filemtime;
 use function filesize;
-use function unlink;
 
 class EntityStorage implements StorageInterface {
 
@@ -62,7 +61,10 @@ class EntityStorage implements StorageInterface {
         if($cacheContext === false || $this->contextSupport)
         {
             $this->init();
-            return $this->repository->head($hash, $cacheContext);
+            try {
+                return $this->repository->head($hash, $cacheContext);
+            } catch (NonUniqueResultException $e) {
+            }
         }
         return false;
     }
@@ -76,7 +78,10 @@ class EntityStorage implements StorageInterface {
         if($cacheContext === false || $this->contextSupport)
         {
             $this->init();
-            return $this->repository->getSize($hash, $cacheContext);
+            try {
+                return $this->repository->getSize($hash, $cacheContext);
+            } catch (NonUniqueResultException $e) {
+            }
         }
         return false;
     }
@@ -98,7 +103,7 @@ class EntityStorage implements StorageInterface {
             $entity->setContents(file_get_contents($filename));
             $entity->setContext($cacheContext?$cacheContext:null);
             $this->manager->persist($entity);
-            $this->manager->flush($entity);
+            $this->manager->flush();
 
             return true;
         }
@@ -133,7 +138,10 @@ class EntityStorage implements StorageInterface {
         if($cacheContext === false || $this->contextSupport)
         {
             $this->init();
-            return $this->repository->head($hash, $cacheContext);
+            try {
+                return $this->repository->head($hash, $cacheContext);
+            } catch (NonUniqueResultException $e) {
+            }
         }
         return false;
 	}
@@ -150,5 +158,14 @@ class EntityStorage implements StorageInterface {
     {
         $this->init();
         return $this->repository->clearCache();
+    }
+
+    /**
+     * @return bool
+     */
+    public function remove($hash)
+    {
+        $this->init();
+        return $this->repository->removeByHash($hash);
     }
 }

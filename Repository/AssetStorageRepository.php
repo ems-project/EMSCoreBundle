@@ -2,7 +2,7 @@
 
 namespace EMS\CoreBundle\Repository;
 
-use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\NonUniqueResultException;
 use EMS\CoreBundle\Entity\AssetStorage;
 use Exception;
 
@@ -52,7 +52,7 @@ class AssetStorageRepository extends \Doctrine\ORM\EntityRepository
             $qb = $this->getQuery($hash, $context)->select('count(a.hash)');
             return $qb->getQuery()->getSingleScalarResult() !== 0;
         }
-        catch (NoResultException $e){
+        catch (NonUniqueResultException $e){
             return false;
         }
     }
@@ -74,6 +74,25 @@ class AssetStorageRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
+     * @return bool
+     */
+    public function removeByHash($hash)
+    {
+        try
+        {
+            $qb = $this->createQueryBuilder('asset')->delete();
+            $qb->where($qb->expr()->eq('asset.hash', ':hash'));
+            $qb->setParameters([
+                ':hash' => $hash,
+            ]);
+            return $qb->getQuery()->execute() !== false;
+        }
+        catch (Exception $e){
+            return false;
+        }
+    }
+
+    /**
      * @param string $hash
      * @param string $context
      * @return null|AssetStorage
@@ -82,14 +101,17 @@ class AssetStorageRepository extends \Doctrine\ORM\EntityRepository
     {
         $qb = $this->getQuery($hash, $context)->select('a');
 
-        return $qb->getQuery()->getOneOrNullResult();
+        try {
+            return $qb->getQuery()->getOneOrNullResult();
+        } catch (NonUniqueResultException $e) {
+            return null;
+        }
     }
 
     /**
      * @param string $hash
      * @param string $context
      * @return int
-     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function getSize($hash, $context)
     {
@@ -98,7 +120,7 @@ class AssetStorageRepository extends \Doctrine\ORM\EntityRepository
             $qb = $this->getQuery($hash, $context)->select('a.size');
             return $qb->getQuery()->getSingleScalarResult();
         }
-        catch (NoResultException $e){
+        catch (NonUniqueResultException $e){
             return false;
         }
     }
@@ -116,7 +138,7 @@ class AssetStorageRepository extends \Doctrine\ORM\EntityRepository
             $qb = $this->getQuery($hash, $context)->select('a.lastUpdateDate');
             return $qb->getQuery()->getSingleScalarResult();
         }
-        catch (NoResultException $e){
+        catch (NonUniqueResultException $e){
             return false;
         }
     }

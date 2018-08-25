@@ -5,10 +5,11 @@ namespace EMS\CoreBundle\Service\Storage;
 
 
 use Exception;
-use function filesize;
 use function fopen;
-use function get_class;
 use function ssh2_auth_pubkey_file;
+use function ssh2_sftp_unlink;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 
 class SftpStorage implements StorageInterface {
 
@@ -43,6 +44,9 @@ class SftpStorage implements StorageInterface {
         $this->sftp = false;
 	}
 
+    /**
+     * @throws Exception
+     */
 	private function init()
     {
 
@@ -65,19 +69,37 @@ class SftpStorage implements StorageInterface {
             $this->sftp = @ssh2_sftp($this->connection);
         }
     }
-	
-	private function getPath($hash, $cacheContext){
+
+    /**
+     * @param $hash
+     * @param null $cacheContext
+     * @return string
+     * @throws Exception
+     */
+	private function getPath($hash, $cacheContext=null){
 		$out = $this->path;
 		if($cacheContext) {
 			$out .= DIRECTORY_SEPARATOR.'cache'.DIRECTORY_SEPARATOR.$cacheContext;
 		}
 		$out.= DIRECTORY_SEPARATOR.substr($hash, 0, 3);
 
-		@ssh2_sftp_mkdir($this->sftp, $out, 0777, true);
+        $this->init();
+        if(is_resource($this->sftp)){
+		    @ssh2_sftp_mkdir($this->sftp, $out, 0777, true);
+        }
+        else{
+            throw new Exception('EMS was not able to initiate the sftp connection');
+        }
 
 		return $out.DIRECTORY_SEPARATOR.$hash;
 	}
-	
+
+    /**
+     * @param string $hash
+     * @param bool $cacheContext
+     * @return bool
+     * @throws Exception
+     */
 	public function head($hash, $cacheContext=false) {
         if($cacheContext && !$this->contextSupport)
         {
@@ -86,15 +108,25 @@ class SftpStorage implements StorageInterface {
         $this->init();
         try
         {
-            $statinfo = @ssh2_sftp_stat($this->sftp, $this->getPath($hash, $cacheContext));
-		    return $statinfo?true:false;
+            if($this->sftp)
+            {
+                $statinfo = @ssh2_sftp_stat($this->sftp, $this->getPath($hash, $cacheContext));
+                return $statinfo?true:false;
+            }
         }
         catch (Exception $e)
         {
         }
         return false;
 	}
-	
+
+    /**
+     * @param string $hash
+     * @param string $filename
+     * @param bool $cacheContext
+     * @return bool
+     * @throws Exception
+     */
 	public function create($hash, $filename, $cacheContext=false){
         if($cacheContext && !$this->contextSupport)
         {
@@ -158,7 +190,23 @@ class SftpStorage implements StorageInterface {
      */
     public function clearCache()
     {
-        //TODO: should probaly be implemented, but how?
+        $this->init();
+        $fileSystem = new Filesystem();
+        $fileSystem->remove('ssh2.sftp://' . intval($this->sftp).$this->path.DIRECTORY_SEPARATOR.'cache');
         return false;
+    }
+
+    public function remove($hash)
+    {
+        if($this->head($hash))
+        {
+            ssh2_sftp_unlink($this->sftp, $this->getPath($hash));
+        }
+        $finder = new Finder();
+        $finder->name($hash);
+        foreach ($finder->in('ssh2.sftp://' . intval($this->sftp).$this->path.DIRECTORY_SEPARATOR.'cache') as $file) {
+            ssh2_sftp_unlink($this->sftp, $file);
+        }
+        return true;
     }
 }

@@ -168,7 +168,16 @@ class HttpStorage implements StorageInterface {
      */
     public function clearCache()
     {
-        //TODO: should probaly be implemented, but how?
+        // TODO: should probably be implemented, but how?
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function remove($hash)
+    {
+        // TODO: should probably be implemented, but how?
         return false;
     }
 }

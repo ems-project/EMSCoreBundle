@@ -49,4 +49,9 @@ interface StorageInterface {
      * @return bool
      */
 	public function clearCache();
+
+    /**
+     * @return bool
+     */
+	public function remove($hash);
 }

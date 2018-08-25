@@ -4,9 +4,12 @@ namespace EMS\CoreBundle\Service\Storage;
 
 
 
+use function file_exists;
 use function filesize;
 use function fopen;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
+use function unlink;
 
 class FileSystemStorage implements StorageInterface {
 	
@@ -16,7 +19,7 @@ class FileSystemStorage implements StorageInterface {
 		$this->storagePath = $storagePath;
 	}
 
-	private function getPath($hash, $cacheContext){
+	private function getPath($hash, $cacheContext=null){
 		if(!file_exists($this->storagePath)){
 			mkdir($this->storagePath, 0777, true);
 		}
@@ -85,6 +88,21 @@ class FileSystemStorage implements StorageInterface {
     {
         $fileSystem = new Filesystem();
         $fileSystem->remove($this->storagePath.DIRECTORY_SEPARATOR.'cache');
-        return false;
+        return true;
+    }
+
+    public function remove($hash)
+    {
+        $file = $this->getPath($hash);
+        if(file_exists($file))
+        {
+            unlink($file);
+        }
+        $finder = new Finder();
+        $finder->name($hash);
+        foreach ($finder->in($this->storagePath.DIRECTORY_SEPARATOR.'cache') as $file) {
+            unlink($file);
+        }
+        return true;
     }
 }

@@ -1,23 +1,24 @@
 <?php
+
 namespace EMS\CoreBundle\Service\Storage;
 
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\NonUniqueResultException;
 use EMS\CoreBundle\Entity\AssetStorage;
 use EMS\CoreBundle\Repository\AssetStorageRepository;
-use Exception;
 use function file_get_contents;
 use function filemtime;
 use function filesize;
-use function unlink;
 
-class EntityStorage implements StorageInterface {
+class EntityStorage implements StorageInterface
+{
 
     /**@var Registry $doctrine */
     private $doctrine;
-    /**@var ObjectManager*/
+    /**@var ObjectManager */
     private $manager;
-    /**@var AssetStorageRepository*/
+    /**@var AssetStorageRepository */
     private $repository;
     /**@var bool */
     private $contextSupport;
@@ -27,28 +28,17 @@ class EntityStorage implements StorageInterface {
      * @param Registry $doctrine
      * @param bool $contextSupport
      */
-	public function __construct(Registry $doctrine, bool $contextSupport) {
+    public function __construct(Registry $doctrine, bool $contextSupport)
+    {
         $this->doctrine = $doctrine;
         $this->contextSupport = $contextSupport;
         $this->repository = false;
-	}
-
-    /**
-     *
-     */
-	private function init()
-    {
-        if($this->repository === false)
-        {
-            $this->manager = $this->doctrine->getManager();
-            $this->repository = $this->manager->getRepository('EMSCoreBundle:AssetStorage');
-        }
     }
 
     /**
      * @return bool
      */
-	public function supportCacheStore()
+    public function supportCacheStore()
     {
         return $this->contextSupport;
     }
@@ -58,13 +48,27 @@ class EntityStorage implements StorageInterface {
      * @param bool|string $cacheContext
      * @return bool
      */
-    public function head($hash, $cacheContext=false) {
-        if($cacheContext === false || $this->contextSupport)
-        {
+    public function head($hash, $cacheContext = false)
+    {
+        if ($cacheContext === false || $this->contextSupport) {
             $this->init();
-            return $this->repository->head($hash, $cacheContext);
+            try {
+                return $this->repository->head($hash, $cacheContext);
+            } catch (NonUniqueResultException $e) {
+            }
         }
         return false;
+    }
+
+    /**
+     *
+     */
+    private function init()
+    {
+        if ($this->repository === false) {
+            $this->manager = $this->doctrine->getManager();
+            $this->repository = $this->manager->getRepository('EMSCoreBundle:AssetStorage');
+        }
     }
 
     /**
@@ -72,11 +76,14 @@ class EntityStorage implements StorageInterface {
      * @param bool|string $cacheContext
      * @return bool|int
      */
-    public function getSize($hash, $cacheContext=false) {
-        if($cacheContext === false || $this->contextSupport)
-        {
+    public function getSize($hash, $cacheContext = false)
+    {
+        if ($cacheContext === false || $this->contextSupport) {
             $this->init();
-            return $this->repository->getSize($hash, $cacheContext);
+            try {
+                return $this->repository->getSize($hash, $cacheContext);
+            } catch (NonUniqueResultException $e) {
+            }
         }
         return false;
     }
@@ -87,56 +94,58 @@ class EntityStorage implements StorageInterface {
      * @param bool|string $cacheContext
      * @return bool
      */
-	public function create($hash, $filename, $cacheContext=false){
-        if($cacheContext === false || $this->contextSupport)
-        {
+    public function create($hash, $filename, $cacheContext = false)
+    {
+        if ($cacheContext === false || $this->contextSupport) {
             $this->init();
             $entity = new AssetStorage();
             $entity->setLastUpdateDate(filemtime($filename));
             $entity->setHash($hash);
             $entity->setSize(filesize($filename));
             $entity->setContents(file_get_contents($filename));
-            $entity->setContext($cacheContext?$cacheContext:null);
+            $entity->setContext($cacheContext ? $cacheContext : null);
             $this->manager->persist($entity);
-            $this->manager->flush($entity);
+            $this->manager->flush();
 
             return true;
         }
-		return false;
-	}
+        return false;
+    }
 
     /**
      * @param string $hash
      * @param bool|string $cacheContext
      * @return bool|resource
      */
-	public function read($hash, $cacheContext=false){
-        if($cacheContext === false || $this->contextSupport)
-        {
+    public function read($hash, $cacheContext = false)
+    {
+        if ($cacheContext === false || $this->contextSupport) {
             $this->init();
-            /**@var AssetStorage $entity*/
+            /**@var AssetStorage $entity */
             $entity = $this->repository->findByHash($hash, $cacheContext);
-            if($entity)
-            {
+            if ($entity) {
                 return $entity->getContents();
             }
         }
         return false;
-	}
+    }
 
     /**
      * @param string $hash
      * @param bool|string $cacheContext
      * @return bool|int
      */
-	public function getLastUpdateDate($hash, $cacheContext=false){
-        if($cacheContext === false || $this->contextSupport)
-        {
+    public function getLastUpdateDate($hash, $cacheContext = false)
+    {
+        if ($cacheContext === false || $this->contextSupport) {
             $this->init();
-            return $this->repository->head($hash, $cacheContext);
+            try {
+                return $this->repository->head($hash, $cacheContext);
+            } catch (NonUniqueResultException $e) {
+            }
         }
         return false;
-	}
+    }
 
     public function __toString()
     {
@@ -150,5 +159,15 @@ class EntityStorage implements StorageInterface {
     {
         $this->init();
         return $this->repository->clearCache();
+    }
+
+    /**
+     * @param $hash
+     * @return bool
+     */
+    public function remove($hash)
+    {
+        $this->init();
+        return $this->repository->removeByHash($hash);
     }
 }

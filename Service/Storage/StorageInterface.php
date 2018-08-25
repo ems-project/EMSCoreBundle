@@ -2,14 +2,15 @@
 
 namespace EMS\CoreBundle\Service\Storage;
 
-interface StorageInterface {
+interface StorageInterface
+{
 
     /**
      * @param string $hash
      * @param bool|string $cacheContext
      * @return bool
      */
-	public function head($hash, $cacheContext=false);
+    public function head($hash, $cacheContext = false);
 
     /**
      * @param string $hash
@@ -17,36 +18,42 @@ interface StorageInterface {
      * @param bool|string $cacheContext
      * @return bool
      */
-	public function create($hash, $filename, $cacheContext=false);
+    public function create($hash, $filename, $cacheContext = false);
 
     /**
      * @param string $hash
      * @param bool|string $cacheContext
      * @return resource|bool
      */
-	public function read($hash, $cacheContext=false);
+    public function read($hash, $cacheContext = false);
 
     /**
      * @param string $hash
      * @param bool|string $cacheContext
      * @return integer
      */
-    public function getLastUpdateDate($hash, $cacheContext=false);
+    public function getLastUpdateDate($hash, $cacheContext = false);
 
     /**
      * @param string $hash
      * @param bool|string $cacheContext
      * @return integer
      */
-    public function getSize($hash, $cacheContext=false);
+    public function getSize($hash, $cacheContext = false);
 
     /**
      * @return bool
      */
-	public function supportCacheStore();
+    public function supportCacheStore();
 
     /**
      * @return bool
      */
-	public function clearCache();
+    public function clearCache();
+
+    /**
+     * @param $hash
+     * @return bool
+     */
+    public function remove($hash);
 }

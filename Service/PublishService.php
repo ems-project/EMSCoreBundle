@@ -175,7 +175,7 @@ class PublishService
 			}
 			
 			if(! $this->authorizationChecker->isGranted($revision->getContentType()->getPublishRole())) {
-				$this->session->getFlashBag()->add('warning', 'You can not publish the content type  '.$contentType->getSingularName());
+				$this->session->getFlashBag()->add('warning', 'You can not publish the content type  '.$revision->getContentType()->getSingularName());
 				return;
 			}	
 			
@@ -254,7 +254,7 @@ class PublishService
 			
 			
 			if(! $this->authorizationChecker->isGranted($revision->getContentType()->getPublishRole())) {
-				$this->session->getFlashBag()->add('warning', 'You can not unpublish the content type  '.$contentType->getSingularName());
+				$this->session->getFlashBag()->add('warning', 'You can not unpublish the content type  '.$revision->getContentType()->getSingularName());
 				return;
 			}	
 			

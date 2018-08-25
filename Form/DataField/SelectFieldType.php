@@ -164,7 +164,6 @@ class SelectFieldType extends DataFieldType {
 	 */
 	public function viewTransform(DataField $dataField){
 		$temp = parent::viewTransform($dataField);
-		$out;
 		if($dataField->getFieldType()->getDisplayOptions()['multiple']){
 			if(empty($temp)){
 				$out = [];

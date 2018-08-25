@@ -2,6 +2,9 @@
 
 namespace EMS\CoreBundle\Repository;
 
+use Doctrine\ORM\NonUniqueResultException;
+use function intval;
+
 /**
  * UploadedAssetRepository
  *
@@ -10,9 +13,13 @@ namespace EMS\CoreBundle\Repository;
  */
 class UploadedAssetRepository extends \Doctrine\ORM\EntityRepository
 {
-    const PAGE_SIZE=100;
+    const PAGE_SIZE = 100;
 
-    public function countHashes(){
+    /**
+     * @return int
+     */
+    public function countHashes()
+    {
         $qb = $this->createQueryBuilder('ua');
         $qb->select('count(DISTINCT ua.sha1)')
             ->where($qb->expr()->eq('ua.available', ':true'));
@@ -20,22 +27,54 @@ class UploadedAssetRepository extends \Doctrine\ORM\EntityRepository
             ':true' => true
         ]);
 
-        return $qb->getQuery()->getSingleScalarResult();
+        try {
+            return intval($qb->getQuery()->getSingleScalarResult());
+        } catch (NonUniqueResultException $e) {
+            return 0;
+        }
     }
 
 
-    public function getHashes($page){
+    /**
+     * @param $page
+     * @return array
+     */
+    public function getHashes($page)
+    {
         $qb = $this->createQueryBuilder('ua');
         $qb->select('ua.sha1 as hash')
             ->where($qb->expr()->eq('ua.available', ':true'))
             ->orderBy('ua.sha1', 'ASC')
             ->groupBy('ua.sha1')
-            ->setFirstResult(UploadedAssetRepository::PAGE_SIZE*$page)
+            ->setFirstResult(UploadedAssetRepository::PAGE_SIZE * $page)
             ->setMaxResults(UploadedAssetRepository::PAGE_SIZE);
         $qb->setParameters([
             ':true' => true
         ]);
 
         return $qb->getQuery()->getArrayResult();
+    }
+
+    /**
+     * @param $hash
+     * @return mixed
+     */
+    public function dereference($hash)
+    {
+
+        $qb = $this->createQueryBuilder('ua');
+        $qb->update()
+            ->set('ua.available', ':false')
+            ->set('ua.status', ':status')
+            ->where($qb->expr()->eq('ua.available', ':true'))
+            ->andWhere($qb->expr()->eq('ua.sha1', ':hash'));
+        $qb->setParameters([
+            ':true' => true,
+            ':false' => false,
+            ':hash' => $hash,
+            ':status' => 'cleaned',
+        ]);
+
+        return $qb->getQuery()->execute();
     }
 }

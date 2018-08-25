@@ -47,7 +47,6 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
     /**
      * @param $hash
      * @return int
-     * @throws NonUniqueResultException
      * @throws \Doctrine\DBAL\DBALException
      */
 	public function hashReferenced($hash)
@@ -58,12 +57,16 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
             return intval($result[0]['counter']);
         }
 
-        $qb = $this->createQueryBuilder('r')
-            ->select('count(r)')
-            ->where('r.rawData like :hash')
-            ->setParameter('hash', "%$hash%");
-        $query = $qb->getQuery();
-        return intval($query->getSingleScalarResult());
+        try {
+            $qb = $this->createQueryBuilder('r')
+                ->select('count(r)')
+                ->where('r.rawData like :hash')
+                ->setParameter('hash', "%$hash%");
+            $query = $qb->getQuery();
+            return intval($query->getSingleScalarResult());
+        } catch (NonUniqueResultException $e) {
+            return 0;
+        }
     }
 
 

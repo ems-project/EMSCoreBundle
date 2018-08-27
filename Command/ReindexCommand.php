@@ -4,7 +4,6 @@
 namespace EMS\CoreBundle\Command;
 
 use EMS\CoreBundle\Entity\Environment;
-use EMS\CoreBundle\Repository\JobRepository;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use Elasticsearch\Client;
@@ -15,9 +14,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Elasticsearch\Common\Exceptions\BadRequest400Exception;
 use EMS\CoreBundle\Service\DataService;
-use Elasticsearch\Common\Exceptions\ServerErrorResponseException;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Entity\Revision;
@@ -70,7 +67,7 @@ class ReindexCommand extends EmsCommand
             ->addArgument(
                 'content-type',
                 InputArgument::OPTIONAL,
-                'If not defined all content types will be reindexed'
+                'If not defined all content types will be re-indexed'
             )
             ->addArgument(
                 'index',
@@ -92,6 +89,12 @@ class ReindexCommand extends EmsCommand
             );
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int|null|void
+     * @throws \Doctrine\Common\Persistence\Mapping\MappingException
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
     	$this->formatFlash($output);
@@ -107,7 +110,6 @@ class ReindexCommand extends EmsCommand
         /** @var ContentTypeRepository $ctRepo */
         $ctRepo = $em->getRepository('EMSCoreBundle:ContentType');
 
-        $contentTypes = [];
         if($input->hasArgument('content-type')) {
             $contentTypes = $ctRepo->findBy(['deleted' => false, 'name' => $input->getArgument('content-type')]);
         }
@@ -122,7 +124,16 @@ class ReindexCommand extends EmsCommand
             $this->reindex($name, $contentType, $index, $output, $signData, $input->getOption('bulk-size'));
         }
     }
-    
+
+    /**
+     * @param $name
+     * @param ContentType $contentType
+     * @param $index
+     * @param OutputInterface $output
+     * @param bool $signData
+     * @param int $bulkSize
+     * @throws \Doctrine\Common\Persistence\Mapping\MappingException
+     */
     public function reindex($name, ContentType $contentType, $index, OutputInterface $output, $signData=true, $bulkSize=1000)
     {
     	$this->logger->info('Execute the ReindexCommand');
@@ -135,12 +146,10 @@ class ReindexCommand extends EmsCommand
 		$envRepo = $em->getRepository('EMSCoreBundle:Environment');
 		/** @var RevisionRepository $revRepo */
 		$revRepo = $em->getRepository('EMSCoreBundle:Revision');
-		/** @var Environment $environment */
 		$environment = $envRepo->findBy(['name' => $name, 'managed' => true]);
-		/** @var ContentTypeRepository $ctRepo */
-		$ctRepo = $em->getRepository('EMSCoreBundle:ContentType');
 		
 		if($environment && count($environment) == 1) {
+            /** @var Environment $environment */
 			$environment = $environment[0];
 			
 			if(!$index) {
@@ -183,7 +192,9 @@ class ReindexCommand extends EmsCommand
                                 ]
                             ];
 
-                        $bulk['body'][] = $revision->getRawData();
+                        $rawData = $revision->getRawData();
+                        $rawData[Mapping::PUBLISHED_DATETIME_FIELD] =  (new \DateTime())->format(\DateTime::ISO8601);
+                        $bulk['body'][] = $rawData;
 
 
 
@@ -210,13 +221,12 @@ class ReindexCommand extends EmsCommand
 
             if(count($bulk)) {
                 $this->treatBulkResponse($this->client->bulk($bulk));
-                $bulk = [];
             }
 			
 			$progress->finish();
 			$output->writeln('');
 
-			$output->writeln(' '.$this->count.' objects are reindexed in '.$index.' ('.$this->deleted.' not indexed as deleted, '.$this->error.' with indexing error)');
+			$output->writeln(' '.$this->count.' objects are re-indexed in '.$index.' ('.$this->deleted.' not indexed as deleted, '.$this->error.' with indexing error)');
 			$this->flushFlash($output);
 			
 		}

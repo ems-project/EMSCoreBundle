@@ -50,7 +50,7 @@
 					  	
 					  	{% set contentType=attribute(types, result._type) %}
 						{% if (contentType.labelField and attribute(result._source, contentType.labelField)  is defined ) %}
-							{{ attribute(result._source, contentType.labelField) }} <small>({{ result._id }})</small>
+							{{ attribute(result._source, contentType.labelField) }}{% if is_super() %} <small>({{ result._id }})</small>{% endif %}
 						{% else %}
 							{{ result._id }}
 						{% endif %}

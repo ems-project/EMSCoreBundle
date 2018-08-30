@@ -395,8 +395,6 @@ class ContentType
 
      	$fieldType = new FieldType();
      	$fieldType->setName ( 'source' );
-//      	$fieldType->setDeleted ( false );
-//      	$fieldType->setOrderKey( false );
      	$fieldType->setType ( ContainerFieldType::class );
      	$fieldType->setContentType ( $this );
      	$this->setFieldType ( $fieldType );

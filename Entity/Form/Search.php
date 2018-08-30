@@ -103,6 +103,7 @@ class Search implements JsonSerializable
             'environments' => $this->environments,
             'contentTypes' => $this->contentTypes,
             'sortBy' => $this->sortBy,
+            'sortOrder' => $this->sortOrder,
         ];
 
         $out['filters'] = [];

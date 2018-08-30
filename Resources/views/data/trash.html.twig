@@ -21,7 +21,7 @@
 					<tbody>
 						<tr>
 							<th class="text-center" style="width: 10px">{{ '#'|trans }}</th>
-							<th>{{ 'OUUID'|trans }}</th>
+                            {% if is_super() %}<th>{{ 'OUUID'|trans }}</th>{% endif %}
 							<th>{{ 'Label'|trans }}</th>
 							<th>{{ 'Deleted by'|trans }}</th>
 							<th>{{ 'Last update'|trans }}</th>
@@ -30,7 +30,7 @@
 						{% for revision in revisions %}
 							<tr>
 								<td class="text-center">{{ loop.index }}.</td>
-								<td>{{ revision.ouuid }}</td>
+                                {% if is_super() %}<td>{{ revision.ouuid }}</td>{% endif %}
 								<td>
 								{% if revision.contentType.labelField is defined and revision.rawData and attribute(revision.rawData, revision.contentType.labelField) is defined %}
 									{{ attribute(revision.rawData, revision.contentType.labelField) }}

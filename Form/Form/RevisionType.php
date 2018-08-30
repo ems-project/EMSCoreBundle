@@ -42,7 +42,8 @@ class RevisionType extends AbstractType {
 				'attr' => [ 
 						'class' => 'btn-primary btn-sm ' 
 				],
-				'icon' => 'fa fa-save' 
+				'icon' => 'fa fa-save',
+                'label' => 'data.edit_revision.save_draft',
 		] );
 		
 		$builder->get ( 'data' )

@@ -205,7 +205,7 @@ class ContentTypeController extends AppController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var ContentType $contentType */
+            /** @var ContentType $contentTypeAdded */
             $contentTypeAdded = $form->getData();
             $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
 
@@ -227,6 +227,7 @@ class ContentTypeController extends AppController
                 if ($normData) {
                     $name = $contentTypeAdded->getName();
                     $pluralName = $contentTypeAdded->getPluralName();
+                    $singularName = $contentTypeAdded->getSingularName();
                     $environment = $contentTypeAdded->getEnvironment();
                     /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $file */
                     $file = $request->files->get('form')['import'];
@@ -235,10 +236,12 @@ class ContentTypeController extends AppController
                     $encoders = array(new JsonEncoder());
                     $normalizers = array(new JsonNormalizer());
                     $serializer = new Serializer($normalizers, $encoders);
+                    /**@var ContentType $contentType */
                     $contentType = $serializer->deserialize($fileContent,
                         "EMS\CoreBundle\Entity\ContentType",
                         'json');
                     $contentType->setName($name);
+                    $contentType->setSingularName($singularName);
                     $contentType->setPluralName($pluralName);
                     $contentType->setEnvironment($environment);
                     $contentType->setActive(false);

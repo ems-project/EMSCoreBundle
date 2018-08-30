@@ -60,7 +60,7 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
 		);
 		//Parsing all methods of the object
 		foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
-			if (strtolower(substr($reflectionMethod->getName(), 0, 3)) !== 'get') {
+			if (strtolower(substr($reflectionMethod->getName(), 0, 3)) !== 'get' && strtolower(substr($reflectionMethod->getName(), 0, 2)) !== 'is') {
 				continue;
 			}
 
@@ -68,7 +68,7 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
 				continue;
 			}
 
-			$property = lcfirst(substr($reflectionMethod->getName(), 3));
+			$property = lcfirst((strtolower(substr($reflectionMethod->getName(), 0, 3)) === 'get')?substr($reflectionMethod->getName(), 3):substr($reflectionMethod->getName(), 2));
 			$value = $reflectionMethod->invoke($object);
  			if ($property == "deleted" && $value == true) {
  				break;

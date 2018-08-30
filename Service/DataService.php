@@ -179,7 +179,6 @@ class DataService
 		else{
 			$revision->setLockUntil(new \DateTime($this->lockTime));			
 		}
-		$revision->setStartTime($now);
 		
 		$em->flush();
 	}

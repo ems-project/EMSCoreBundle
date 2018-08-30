@@ -1051,7 +1051,7 @@ class Revision
     /**
      * @return \DateTime
      */
-    public function getFinalizedDate(): \DateTime
+    public function getFinalizedDate()
     {
         return $this->finalizedDate;
     }
@@ -1060,7 +1060,7 @@ class Revision
      * @param \DateTime $finalizedDate
      * @return Revision
      */
-    public function setFinalizedDate(\DateTime $finalizedDate): Revision
+    public function setFinalizedDate(\DateTime $finalizedDate)
     {
         $this->finalizedDate = $finalizedDate;
         return $this;

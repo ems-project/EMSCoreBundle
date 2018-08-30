@@ -86,7 +86,7 @@
 						Current revision
 					{% else %} 
 						<i class="fa fa-clock-o"></i>
-						Previous revision ({{ revision.startTime|date(date_time_format) }})
+						Previous revision ({{ revision.created|date(date_time_format) }})
 					{% endif %}
               </p>
 
@@ -95,26 +95,28 @@
 	              <strong><i class="fa fa-user margin-r-5"></i> {{ 'Finalized by'|trans }}</strong>
 	              <p class="text-muted">{{ revision.finalizedBy|displayname }}</p>
               {% endif %}
+              {% if revision.finalizedDate %}
+                  <hr>
+	              <strong><i class="glyphicon glyphicon-open margin-r-5"></i> {{ 'Finalized on'|trans }}</strong>
+	              <p class="text-muted">{{ revision.finalizedDate|date(date_time_format) }}</p>
+              {% endif %}
 
               <hr>
               <strong><i class="fa fa-clock-o margin-r-5"></i> Creation date</strong>
               <p class="text-muted">{{ revision.created|date(date_time_format) }}</p>
 
-              <hr>
-
-              <strong><i class="fa fa-pencil margin-r-5"></i> Last update</strong>
-
-              <p class="text-muted">{{ revision.modified|date(date_time_format) }}</p>
+				{% if is_super() %}
+					<hr>
+					<strong><i class="fa fa-pencil margin-r-5"></i> Last update</strong>
+					<p class="text-muted">{{ revision.modified|date(date_time_format) }}</p>
+                {% endif %}
 
               {% if revision.lockby %}
                   <hr>
-
 	              <strong><i class="fa fa-user margin-r-5"></i> Modified by</strong>
-	
 	              <p class="text-muted">{{ revision.lockby|displayname }}</p>
-	
               {% endif %}
-              
+
               {% if revision.notifications|length > 0 %}
 	              <hr>
 	              <strong><i class="fa fa-hourglass-end margin-r-5"></i> {{ 'Pending'|trans }}</strong>
@@ -163,7 +165,7 @@
 						Current revision
 					{% else %} 
 						<i class="fa fa-clock-o"></i>
-						Previous revision ({{ revision.startTime|date(date_time_format) }})
+						Previous revision ({{ revision.created|date(date_time_format) }})
 					{% endif %}
 				</h3>
 			</div>

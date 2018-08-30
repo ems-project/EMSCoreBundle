@@ -12,7 +12,20 @@
 	<i class="{% if revision.contentType.icon %}{{ revision.contentType.icon }} {% else %} fa fa-question {% endif %} "></i>
 	Revisions of {{ revision.contentType.singularName }} :  {{ title }}
 {% endblock %} 
-{% block subtitle %}<small>You are viewing the last revision as defined in eMS</small>{% endblock %} 
+{% block subtitle %}
+	<small>
+		{% if revision.draft %}
+			<i class="fa fa-fire"></i>
+			This is a draft in progress
+		{% elseif not revision.endTime %}
+			<i class="fa fa-thumbs-up"></i>
+			You are viewing the last revision
+		{% else %}
+			<i class="fa fa-clock-o"></i>
+			This is a revision from the past
+		{% endif %}
+	</small>
+{% endblock %}
 
 
 {% block body %}

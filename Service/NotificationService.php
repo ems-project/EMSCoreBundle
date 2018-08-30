@@ -479,8 +479,8 @@ class NotificationService {
 		$fromUser = $this->usersToEmailAddresses([$this->userService->getUser($notification->getUsername())]);
 		$toUsers = $this->usersToEmailAddresses($this->userService->getUsersForRoleAndCircles($notification->getTemplate()->getRoleTo(), $toCircles));
 		$ccUsers = $this->usersToEmailAddresses($this->userService->getUsersForRoleAndCircles($notification->getTemplate()->getRoleCc(), $toCircles));
-		
-		$message = \Swift_Message::newInstance();
+
+        $message = (new \Swift_Message());
 		
 		$params = [
 				'notification' => $notification,

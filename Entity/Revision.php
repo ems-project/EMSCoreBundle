@@ -105,6 +105,18 @@ class Revision
      * @ORM\Column(name="finalized_by", type="string", length=255, nullable=true)
      */
     private $finalizedBy;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="finalized_date", type="datetime", nullable=true)
+     */
+    private $finalizedDate;
+
+    /**
+     * @var \DateTime
+     */
+    private $tryToFinalizeOn;
     
     /**
      * @var string
@@ -327,7 +339,8 @@ class Revision
     {
     	$this->deleted = false;
     	$this->allFieldsAreThere = false;
-    	$this->finalizedBy= null;
+        $this->finalizedBy= null;
+        $this->finalizedDate= null;
     	$this->environments = new \Doctrine\Common\Collections\ArrayCollection();
     	$this->notifications = new \Doctrine\Common\Collections\ArrayCollection();
     	
@@ -339,7 +352,8 @@ class Revision
     			$ancestor = $a[0];
     			$this->deleted = $ancestor->deleted;
     			$this->draft = true;
-    			$this->finalizedBy= null;
+                $this->finalizedBy= null;
+                $this->finalizedDate= null;
     			$this->allFieldsAreThere = $ancestor->allFieldsAreThere;
     			$this->ouuid = $ancestor->ouuid;
     			$this->contentType = $ancestor->contentType;
@@ -646,7 +660,8 @@ class Revision
     public function setRawDataFinalizedBy($finalizedBy)
     {
     	$this->rawData[Mapping::FINALIZED_BY_FIELD] = $finalizedBy;
-    	$this->rawData[Mapping::FINALIZATION_DATETIME_FIELD] = (new \DateTime())->format(\DateTime::ISO8601);
+    	$this->tryToFinalizeOn = new \DateTime();
+    	$this->rawData[Mapping::FINALIZATION_DATETIME_FIELD] = ($this->tryToFinalizeOn)->format(\DateTime::ISO8601);
     	return $this;
     }
     
@@ -659,7 +674,8 @@ class Revision
      */
     public function setFinalizedBy($finalizedBy)
     {
-    	$this->finalizedBy= $finalizedBy;
+        $this->finalizedBy = $finalizedBy;
+        $this->finalizedDate = $this->tryToFinalizeOn;
     	
     	return $this;
     }
@@ -1030,5 +1046,23 @@ class Revision
     public function getNotifications()
     {
         return $this->notifications;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getFinalizedDate(): \DateTime
+    {
+        return $this->finalizedDate;
+    }
+
+    /**
+     * @param \DateTime $finalizedDate
+     * @return Revision
+     */
+    public function setFinalizedDate(\DateTime $finalizedDate): Revision
+    {
+        $this->finalizedDate = $finalizedDate;
+        return $this;
     }
 }

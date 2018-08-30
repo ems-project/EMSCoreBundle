@@ -121,15 +121,11 @@ class UserService {
 				$out[$parent] = $parent;
 			}
 		}
-		
-		
-// 		$roles = array_keys($roleHierarchy);
-	
-// 		$theRoles['ROLE_USER'] = 'ROLE_USER';
-		 
-// 		foreach ($roles as $role) {
-// 			$theRoles[$role] = $role;
-// 		}
+
+		$out['ROLE_COPY_PASTE'] = 'ROLE_COPY_PASTE';
+		$out['ROLE_ALLOW_ALIGN'] = 'ROLE_ALLOW_ALIGN';
+		$out['ROLE_DEFAULT_SEARCH'] = 'ROLE_DEFAULT_SEARCH';
+		$out['ROLE_SUPER'] = 'ROLE_SUPER';
 		$out['ROLE_API'] = 'ROLE_API';
 		return $out;
 	}

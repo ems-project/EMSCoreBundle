@@ -201,6 +201,9 @@ ROLE_SUPER_WEBMASTER: 'Super Webmaster'
 ROLE_USER: User
 ROLE_WEBMASTER: Webmaster
 Roles: Roles
+ROLE_REVIEWER: Reviewer
+ROLE_SUPER: Super user
+ROLE_TRADUCTOR: Traductor
 Save: Save
 Search: Search
 Should: Should

@@ -94,6 +94,7 @@ class AppExtension extends \Twig_Extension
             new \Twig_SimpleFunction('diff_data_link', array($this, 'diffDataLink'), ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('diff_date', array($this, 'diffDate'), ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('diff_time', array($this, 'diffTime'), ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('is_super', array($this, 'isSuper')),
 		];
 	}
 	
@@ -654,26 +655,31 @@ class AppExtension extends \Twig_Extension
 		
 		return $result->getContentTextforLocale($locale);
 	}
-	
-	private function superizer($role){
-		if(strpos($role, '_SUPER_')){
-			return $role;
-		}
-		return str_replace('ROLE_', 'ROLE_SUPER_', $role);
-	}
-	
+
+    /**
+     * @param $empty
+     * @return bool
+     * @deprecated since version 1.8.17 (will be remove with ems 1.9)
+     */
 	function is_super($empty) {
-		foreach($this->userService->getCurrentUser()->getRoles() as $role){
-			if(strpos($role, '_SUPER_')){
-				return true;
-			}
-		}
-		return false;
+	    //TODO to remove
+	    return $this->isSuper();
 	}
-	
+
+    /**
+     * Test if the user has some superpowers
+     * @return bool
+     */
+	function isSuper() {
+        return $this->authorizationChecker->isGranted('ROLE_SUPER');
+	}
+
 	function all_granted($roles, $super=false){
+        if($super && !$this->isSuper()) {
+            return false;
+        }
 		foreach ($roles as $role){
-			if(!$this->authorizationChecker->isGranted($super?$this->superizer($role):$role)){
+			if(!$this->authorizationChecker->isGranted($role)){
 				return false;
 			}
 		}
@@ -916,12 +922,15 @@ class AppExtension extends \Twig_Extension
 	}
 	
 	function one_granted($roles, $super=false){
-		foreach ($roles as $role){
-			if($this->authorizationChecker->isGranted($super?$this->superizer($role):$role)){
-				return true;
-			}
-		}
-		return false;
+        if($super && !$this->isSuper()) {
+            return false;
+        }
+        foreach ($roles as $role){
+            if($this->authorizationChecker->isGranted($role)) {
+                return true;
+            }
+        }
+        return false;
 	}
 	
 	/**

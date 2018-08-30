@@ -248,8 +248,11 @@
 								<tr>
 									<th style="width: 10px">#</th>
 									<th>Date</th>
-									<th>Locked</th>
-									<th>Autosave</th>
+									<th>Finalize</th>
+									{% if is_super() %}
+										<th>Locked</th>
+										<th>Autosave</th>
+									{% endif %}
 									<th>Environments</th>
 									<th>Pendings</th>
 									<th>Actions</th>
@@ -259,17 +262,27 @@
 									<td>{{ loop.index+firstElemOfPage }}.</td>
 									<td>{{ rev.created|date|date(date_time_format) }}</td>
 									<td>
-										{% if rev.lockUntil and rev.lockUntil > date('now') %}
-											by {{ rev.lockBy }} <br>
-											until  {{ rev.lockUntil|date(date_time_format) }}
-										{% endif %}
+                                        {% if rev.finalizedBy %}
+											by {{ rev.finalizedBy|displayname }} <br>
+											{% if rev.finalizedDate %}
+												on {{ rev.finalizedDate|date(date_time_format) }}
+											{% endif %}
+                                        {% endif %}
 									</td>
-									<td>
-										{% if rev.autoSave %}
-											by {{ rev.autoSaveBy }} <br>
-											at {{ rev.autoSaveAt|date(date_time_format) }}
-										{% endif %}
-									</td>
+                                    {% if is_super() %}
+										<td>
+											{% if rev.lockUntil and rev.lockUntil > date('now') %}
+												by {{ rev.lockBy }} <br>
+												until  {{ rev.lockUntil|date(date_time_format) }}
+											{% endif %}
+										</td>
+										<td>
+											{% if rev.autoSave %}
+												by {{ rev.autoSaveBy|displayname  }} <br>
+												on {{ rev.autoSaveAt|date(date_time_format) }}
+											{% endif %}
+										</td>
+                                    {% endif %}
 									<td>
 										{% for env in rev.environments %}
 											<span class="badge bg-{{ env.color|raw }}">{{ env.name|humanize }}</span>

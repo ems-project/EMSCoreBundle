@@ -81,10 +81,22 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./Resources/assets/default.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./Resources/assets/blue.js");
 /******/ })
 /************************************************************************/
 /******/ ({
+
+/***/ "./Resources/assets/blue.js":
+/*!**********************************!*\
+  !*** ./Resources/assets/blue.js ***!
+  \**********************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _css_app_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./css/app.scss */ \"./Resources/assets/css/app.scss\");\n/* harmony import */ var _css_app_scss__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_css_app_scss__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _css_blue_less__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./css/blue.less */ \"./Resources/assets/css/blue.less\");\n/* harmony import */ var _css_blue_less__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_css_blue_less__WEBPACK_IMPORTED_MODULE_1__);\n\n\n\n\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi9SZXNvdXJjZXMvYXNzZXRzL2JsdWUuanMuanMiLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8vLi9SZXNvdXJjZXMvYXNzZXRzL2JsdWUuanM/OWQ5YiJdLCJzb3VyY2VzQ29udGVudCI6WyIndXNlIHN0cmljdCc7XG5cbmltcG9ydCAnLi9jc3MvYXBwLnNjc3MnO1xuaW1wb3J0ICcuL2Nzcy9ibHVlLmxlc3MnO1xuIl0sIm1hcHBpbmdzIjoiQUFBQTtBQUFBO0FBQUE7QUFBQTtBQUFBO0FBQUE7QUFDQTtBQUNBO0FBQ0E7Iiwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///./Resources/assets/blue.js\n");
+
+/***/ }),
 
 /***/ "./Resources/assets/css/app.scss":
 /*!***************************************!*\
@@ -105,18 +117,6 @@ eval("// extracted by mini-css-extract-plugin//# sourceURL=[module]\n//# sourceM
 /***/ (function(module, exports, __webpack_require__) {
 
 eval("// extracted by mini-css-extract-plugin//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi9SZXNvdXJjZXMvYXNzZXRzL2Nzcy9ibHVlLmxlc3MuanMiLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8vLi9SZXNvdXJjZXMvYXNzZXRzL2Nzcy9ibHVlLmxlc3M/MzU1NSJdLCJzb3VyY2VzQ29udGVudCI6WyIvLyBleHRyYWN0ZWQgYnkgbWluaS1jc3MtZXh0cmFjdC1wbHVnaW4iXSwibWFwcGluZ3MiOiJBQUFBIiwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///./Resources/assets/css/blue.less\n");
-
-/***/ }),
-
-/***/ "./Resources/assets/default.js":
-/*!*************************************!*\
-  !*** ./Resources/assets/default.js ***!
-  \*************************************/
-/*! no exports provided */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _css_app_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./css/app.scss */ \"./Resources/assets/css/app.scss\");\n/* harmony import */ var _css_app_scss__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_css_app_scss__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _css_blue_less__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./css/blue.less */ \"./Resources/assets/css/blue.less\");\n/* harmony import */ var _css_blue_less__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_css_blue_less__WEBPACK_IMPORTED_MODULE_1__);\n\n\n\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi9SZXNvdXJjZXMvYXNzZXRzL2RlZmF1bHQuanMuanMiLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8vLi9SZXNvdXJjZXMvYXNzZXRzL2RlZmF1bHQuanM/NGQ0MCJdLCJzb3VyY2VzQ29udGVudCI6WyIndXNlIHN0cmljdCc7XG5cbmltcG9ydCAnLi9jc3MvYXBwLnNjc3MnO1xuaW1wb3J0ICcuL2Nzcy9ibHVlLmxlc3MnOyJdLCJtYXBwaW5ncyI6IkFBQUE7QUFBQTtBQUFBO0FBQUE7QUFBQTtBQUFBO0FBQ0E7QUFDQTsiLCJzb3VyY2VSb290IjoiIn0=\n//# sourceURL=webpack-internal:///./Resources/assets/default.js\n");
 
 /***/ })
 

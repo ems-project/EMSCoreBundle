@@ -13,7 +13,9 @@ module.exports = {
     ],
     context: path.resolve(__dirname, './'),
     entry: {
-        default: './Resources/assets/app.js',
+        app: './Resources/assets/app.js',
+        default: './Resources/assets/default.js',
+        blue: './Resources/assets/blue.js',
     },
     output: {
         path: path.resolve(__dirname, 'Resources/public'),

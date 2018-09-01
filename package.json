@@ -37,7 +37,13 @@
     "@bower_components/morris.js": "oesmith/morris.js#^0.5.1",
     "@bower_components/nestedSortable": "ilikenwf/nestedSortable#^2.0.0",
     "@bower_components/raphael": "DmitryBaranovskiy/raphael#>= 2.0",
-    "@bower_components/select2": "ivaynberg/select2#^4.0.3"
+    "@bower_components/select2": "ivaynberg/select2#^4.0.3",
+    "css-loader": "^1.0.0",
+    "mini-css-extract-plugin": "^0.4.2",
+    "node-sass": "^4.9.3",
+    "postcss-loader": "^3.0.0",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.0"
   },
   "engines": {
     "yarn": ">= 1.0.0"

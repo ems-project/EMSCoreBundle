@@ -105,15 +105,15 @@ $(document).ready(function() {
 	
 });
 
-$(window).load(function() {
+
+window.onload = function() {
 	$("img.lazy").show().lazyload({
 	    effect : "fadeIn",
 	    threshold : 200
 	});
-	
-	$('.match-height').matchHeight();
 
-});
+	$('.match-height').matchHeight();
+};
 
 
 

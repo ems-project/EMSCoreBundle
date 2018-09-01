@@ -1,0 +1,14 @@
+// Import elasticms colors definition
+@import "ems-variables";
+
+// Import custom Bootstrap variables
+@import "bootstrap-variables";
+
+// Import Bootstrap for Sass
+//@import "~bootstrap-sass";
+
+
+
+.hello-word {
+  background-color: $elasticms_dark_blue;
+}

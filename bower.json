@@ -38,5 +38,8 @@
     "bootstrap-daterangepicker": "^2.1.19",
     "ace-builds": "^1.2.6",
     "nestedSortable": "ilikenwf/nestedSortable#^2.0.0"
+  },
+  "resolutions": {
+    "jquery": ">=1.8"
   }
 }

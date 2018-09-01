@@ -2,222 +2,6 @@
 # yarn lockfile v1
 
 
-"@bower_components/AdminLTE@almasaeed2010/AdminLTE#^2.3.2":
-  version "2.4.8"
-  resolved "https://codeload.github.com/almasaeed2010/AdminLTE/tar.gz/d9e68301848a95dff2e2dbef6569e617a9b3fa30"
-  dependencies:
-    bootstrap "^3.3.7"
-    bootstrap-colorpicker "^2.5.1"
-    bootstrap-datepicker "^1.7.0"
-    bootstrap-daterangepicker "^2.1.25"
-    bootstrap-slider "^9.8.0"
-    bootstrap-timepicker "^0.5.2"
-    chart.js "1.0.*"
-    ckeditor "^4.7.0"
-    datatables.net "^1.10.15"
-    datatables.net-bs "^1.10.15"
-    fastclick "^1.0.6"
-    flot "^0.8.0-alpha"
-    font-awesome "^4.7.0"
-    fullcalendar "^3.4.0"
-    inputmask "^3.3.7"
-    ion-rangeslider "^2.2.0"
-    ionicons "^3.0.0"
-    jquery "^3.2.1"
-    jquery-knob "^1.2.11"
-    jquery-sparkline "^2.4.0"
-    jquery-ui "^1.12.1"
-    jvectormap "^1.2.2"
-    moment "^2.18.1"
-    morris.js "^0.5.0"
-    pace "0.0.4"
-    raphael "^2.2.7"
-    select2 "^4.0.3"
-    slimscroll "^0.9.1"
-
-"@bower_components/Flot@flot/flot#^0.8.3":
-  version "0.8.3"
-  resolved "https://codeload.github.com/flot/flot/tar.gz/453b017cc5acfd75e252b93e8635f57f4196d45d"
-
-"@bower_components/Ionicons@driftyco/ionicons#^2.0.1":
-  version "0.0.0"
-  resolved "https://codeload.github.com/driftyco/ionicons/tar.gz/ecb4b806831005c25b97ed9089fbb1d7dcc0879c"
-
-"@bower_components/PACE@HubSpot/pace#^1.0.2":
-  version "1.0.2"
-  resolved "https://codeload.github.com/HubSpot/pace/tar.gz/c6846cbf6b928e9903b569269fa9fbf32f2554f4"
-
-"@bower_components/ace-builds@ajaxorg/ace-builds#^1.2.6":
-  version "1.4.1"
-  resolved "https://codeload.github.com/ajaxorg/ace-builds/tar.gz/8a271c3dae5267e4a124f378d940f221cc7b3dab"
-
-"@bower_components/bootstrap-colorpicker@itsjavi/bootstrap-colorpicker#^2.5.1":
-  version "2.5.3"
-  resolved "https://codeload.github.com/itsjavi/bootstrap-colorpicker/tar.gz/525cd6a0aa26ae95803bbf34d231c4163136a314"
-  dependencies:
-    jquery ">=1.10"
-
-"@bower_components/bootstrap-datepicker@eternicode/bootstrap-datepicker#^1.6.0":
-  version "1.8.0"
-  resolved "https://codeload.github.com/eternicode/bootstrap-datepicker/tar.gz/0d32bc5d91da11d9a3587537c3c36ce7ee815c94"
-  dependencies:
-    jquery ">=1.7.1 <4.0.0"
-
-"@bower_components/bootstrap-daterangepicker@dangrossman/bootstrap-daterangepicker#^2.1.19":
-  version "2.1.27"
-  resolved "https://codeload.github.com/dangrossman/bootstrap-daterangepicker/tar.gz/d4aabfbceaf57117e1af33f3f82e92162719eee9"
-  dependencies:
-    jquery ">=1.10"
-    moment "^2.9.0"
-
-"@bower_components/bootstrap-fileinput@kartik-v/bootstrap-fileinput#^4.3.2":
-  version "4.5.0"
-  resolved "https://codeload.github.com/kartik-v/bootstrap-fileinput/tar.gz/e3126b482e72022b819f4aae58096f3f17d55a90"
-  dependencies:
-    bootstrap ">= 3.0.0"
-    jquery ">= 1.9.0"
-
-"@bower_components/bootstrap-sass@twbs/bootstrap-sass#^3.3.6":
-  version "3.3.7"
-  resolved "https://codeload.github.com/twbs/bootstrap-sass/tar.gz/5d6b2ebba0c2a5885ce2f0e01e9218db3d3b5e47"
-
-"@bower_components/bootstrap-select@snapappointments/bootstrap-select#^1.10.0":
-  version "1.13.2"
-  resolved "https://codeload.github.com/snapappointments/bootstrap-select/tar.gz/f629d2f98e05c5cbc8a5feed030286bbf07525c5"
-
-"@bower_components/bootstrap-slider@pammacdotnet/bootstrap-slider#*":
-  version "0.0.0"
-  resolved "https://codeload.github.com/pammacdotnet/bootstrap-slider/tar.gz/879a98dcd0923107363861e56423f3cc1c2472e7"
-
-"@bower_components/bootstrap-timepicker@jdewit/bootstrap-timepicker#^0.5.2":
-  version "0.5.2"
-  resolved "https://codeload.github.com/jdewit/bootstrap-timepicker/tar.gz/c31df7a9170e7e63617890a9ed282eeaf6bc2cb1"
-
-"@bower_components/bootstrap@twbs/bootstrap#^3.3.7":
-  version "3.3.7"
-  resolved "https://codeload.github.com/twbs/bootstrap/tar.gz/0b9c4a4007c44201dce9a6cc1a38407005c26c86"
-
-"@bower_components/chart.js@chartjs/Chart.js#1.0.*":
-  version "1.0.2"
-  resolved "https://codeload.github.com/chartjs/Chart.js/tar.gz/930b16a0af59201dcfcd1594b0e7540db4d04c9f"
-
-"@bower_components/ckeditor@ckeditor/ckeditor-releases#^4.5.6":
-  version "4.10.0"
-  resolved "https://codeload.github.com/ckeditor/ckeditor-releases/tar.gz/485918a01ecac5bd286f169e831eddcc895f5132"
-
-"@bower_components/components-font-awesome@components/font-awesome#^4.5.0":
-  version "4.7.0"
-  resolved "https://codeload.github.com/components/font-awesome/tar.gz/885308b939369d147bec93174722786bc2c4eedd"
-
-"@bower_components/datatables.net-bs@DataTables/Dist-DataTables-Bootstrap#^2.1.1":
-  version "2.1.1"
-  resolved "https://codeload.github.com/DataTables/Dist-DataTables-Bootstrap/tar.gz/d946808c4e2bcb5cf82f606f750a53992f234b18"
-  dependencies:
-    datatables.net ">=1.10.9"
-    jquery ">=1.7"
-
-"@bower_components/datatables.net@DataTables/Dist-DataTables#^1.10.15":
-  version "1.10.19"
-  resolved "https://codeload.github.com/DataTables/Dist-DataTables/tar.gz/ef746740676545d39555f1140703a5c6d5570b31"
-  dependencies:
-    jquery ">=1.7"
-
-"@bower_components/eve-raphael@tomasAlabes/eve#0.5.0":
-  version "0.5.0"
-  resolved "https://codeload.github.com/tomasAlabes/eve/tar.gz/93132d5d47a0ce31dbd1b75208b1d4c0e2ad81e8"
-
-"@bower_components/fastclick@ftlabs/fastclick#^1.0.6":
-  version "1.0.6"
-  resolved "https://codeload.github.com/ftlabs/fastclick/tar.gz/9977a916739360ad4ffd7aa19b0016bf375e934b"
-
-"@bower_components/font-awesome@FortAwesome/Font-Awesome#^4.7.0":
-  version "4.7.0"
-  resolved "https://codeload.github.com/FortAwesome/Font-Awesome/tar.gz/a8386aae19e200ddb0f6845b5feeee5eb7013687"
-
-"@bower_components/fullcalendar@fullcalendar/fullcalendar#^3.4.0":
-  version "3.9.0"
-  resolved "https://codeload.github.com/fullcalendar/fullcalendar/tar.gz/3ddb3c8d1461c6b841aed3487ba07d8ba338adb6"
-  dependencies:
-    jquery "2 - 3"
-    moment "^2.20.1"
-
-"@bower_components/inputmask@RobinHerbots/jquery.inputmask#^3.3.7":
-  version "3.3.11"
-  resolved "https://codeload.github.com/RobinHerbots/jquery.inputmask/tar.gz/5e670ad62f50c738388d4dcec78d2888505ad77b"
-
-"@bower_components/ion.rangeSlider@IonDen/ion.rangeSlider#^2.2.0":
-  version "2.2.0"
-  resolved "https://codeload.github.com/IonDen/ion.rangeSlider/tar.gz/4bb522d3d28aedaaf035e3daa0f2f46850b2242c"
-  dependencies:
-    jquery ">=1.8"
-
-"@bower_components/jquery-knob@aterrien/jQuery-Knob#^1.2.13":
-  version "1.2.13"
-  resolved "https://codeload.github.com/aterrien/jQuery-Knob/tar.gz/755309e933d326ffaa5a2d758dc377147b766515"
-
-"@bower_components/jquery-slimscroll@rochal/jQuery-slimScroll#^1.3.8":
-  version "1.3.8"
-  resolved "https://codeload.github.com/rochal/jQuery-slimScroll/tar.gz/cf39d364e777ef95574c30c42d3b85cb2bf325d3"
-  dependencies:
-    jquery ">= 1.7"
-
-"@bower_components/jquery-sparkline@rkgrep/jquery.sparkline#^2.1.3":
-  version "0.0.0"
-  resolved "https://codeload.github.com/rkgrep/jquery.sparkline/tar.gz/47b1f5a7daaa45739a75f8fd1d7c2948693d66fd"
-
-"@bower_components/jquery-ui@components/jqueryui#1.11.4":
-  version "1.11.4"
-  resolved "https://codeload.github.com/components/jqueryui/tar.gz/c34f8dbf3ba57b3784b93f26119f436c0e8288e1"
-
-"@bower_components/jquery@jquery/jquery-dist#>=1.8":
-  version "3.3.1"
-  resolved "https://codeload.github.com/jquery/jquery-dist/tar.gz/9e8ec3d10fad04748176144f108d7355662ae75e"
-
-"@bower_components/jquery_lazyload@tuupola/jquery_lazyload#^1.9.7":
-  version "1.9.7"
-  resolved "https://codeload.github.com/tuupola/jquery_lazyload/tar.gz/218e50eb4999fe59ac94b939a65c8c988d1d420b"
-
-"@bower_components/jvectormap@bjornd/jvectormap#^1.2.2":
-  version "0.0.0"
-  resolved "https://codeload.github.com/bjornd/jvectormap/tar.gz/0a0575b3de25a03d45689c1f369998fc37175531"
-
-"@bower_components/mocha@mochajs/mocha#~1.17.1":
-  version "1.17.1"
-  resolved "https://codeload.github.com/mochajs/mocha/tar.gz/7fc565ee3e225cb7a66bf39ae9c2c05b346675c1"
-  dependencies:
-    commander "2.0.0"
-    debug "*"
-    diff "1.0.7"
-    glob "3.2.3"
-    growl "1.7.x"
-    jade "0.26.3"
-    mkdirp "0.3.5"
-
-"@bower_components/moment@moment/moment#>=2.9.0":
-  version "2.22.2"
-  resolved "https://codeload.github.com/moment/moment/tar.gz/2e2a5b35439665d4b0200143d808a7c26d6cd30f"
-
-"@bower_components/morris.js@oesmith/morris.js#^0.5.1":
-  version "0.5.0"
-  resolved "https://codeload.github.com/oesmith/morris.js/tar.gz/d5cf1410eda7055eaf2c7d218d4cb24ec5ed55c8"
-
-"@bower_components/nestedSortable@ilikenwf/nestedSortable#^2.0.0":
-  version "1.3.4"
-  resolved "https://codeload.github.com/ilikenwf/nestedSortable/tar.gz/8fdc6a1892e3249e93a035445e59639dc6f040b8"
-
-"@bower_components/raphael@DmitryBaranovskiy/raphael#>= 2.0":
-  version "2.2.7"
-  resolved "https://codeload.github.com/DmitryBaranovskiy/raphael/tar.gz/c02b9c125d036e42b9bb95d0e401bbf6a5153da5"
-  dependencies:
-    eve-raphael "0.5.0"
-
-"@bower_components/select2@ivaynberg/select2#^4.0.3":
-  version "4.0.5"
-  resolved "https://codeload.github.com/ivaynberg/select2/tar.gz/ebf10c93db7d6d7a0d1330119d4c6f32cbd231d7"
-  dependencies:
-    almond "~0.3.1"
-    jquery-mousewheel "~3.1.13"
-
 "@webassemblyjs/ast@1.5.13":
   version "1.5.13"
   resolved "https://registry.yarnpkg.com/@webassemblyjs/ast/-/ast-1.5.13.tgz#81155a570bd5803a30ec31436bc2c9c0ede38f25"
@@ -383,6 +167,39 @@ acorn@^5.0.0, acorn@^5.6.2, acorn@^5.7.1:
   version "5.7.2"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-5.7.2.tgz#91fa871883485d06708800318404e72bfb26dcc5"
 
+admin-lte@^2.4.8:
+  version "2.4.8"
+  resolved "https://registry.yarnpkg.com/admin-lte/-/admin-lte-2.4.8.tgz#35edb2b7857af7fcfed7355c83649d5abd09a501"
+  dependencies:
+    bootstrap "^3.3.7"
+    bootstrap-colorpicker "^2.5.1"
+    bootstrap-datepicker "^1.7.0"
+    bootstrap-daterangepicker "^2.1.25"
+    bootstrap-slider "^9.8.0"
+    bootstrap-timepicker "^0.5.2"
+    chart.js "1.0.*"
+    ckeditor "^4.7.0"
+    datatables.net "^1.10.15"
+    datatables.net-bs "^1.10.15"
+    fastclick "^1.0.6"
+    flot "^0.8.0-alpha"
+    font-awesome "^4.7.0"
+    fullcalendar "^3.4.0"
+    inputmask "^3.3.7"
+    ion-rangeslider "^2.2.0"
+    ionicons "^3.0.0"
+    jquery "^3.2.1"
+    jquery-knob "^1.2.11"
+    jquery-sparkline "^2.4.0"
+    jquery-ui "^1.12.1"
+    jvectormap "^1.2.2"
+    moment "^2.18.1"
+    morris.js "^0.5.0"
+    pace "0.0.4"
+    raphael "^2.2.7"
+    select2 "^4.0.3"
+    slimscroll "^0.9.1"
+
 ajv-errors@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/ajv-errors/-/ajv-errors-1.0.0.tgz#ecf021fa108fd17dfb5e6b383f2dd233e31ffc59"
@@ -494,6 +311,10 @@ array-reduce@~0.0.0:
 array-unique@^0.3.2:
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/array-unique/-/array-unique-0.3.2.tgz#a894b75d4bc4f6cd679ef3244a9fd8f46ae2d428"
+
+asap@~2.0.3:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/asap/-/asap-2.0.6.tgz#e50347611d7e690943208bbdafebcbc2fb866d46"
 
 asn1.js@^4.0.0:
   version "4.10.1"
@@ -622,9 +443,27 @@ bootstrap-daterangepicker@^2.1.25:
     jquery ">=1.10"
     moment "^2.9.0"
 
-bootstrap-sass@^3.3.7:
+bootstrap-daterangepicker@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/bootstrap-daterangepicker/-/bootstrap-daterangepicker-3.0.3.tgz#670c638dc124a15a95ddf0440af34d1acee7cffc"
+  dependencies:
+    jquery ">=1.10"
+    moment "^2.9.0"
+
+bootstrap-fileinput@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/bootstrap-fileinput/-/bootstrap-fileinput-4.5.0.tgz#05a139869711ec6d2cb023dcf0ff960379f6982a"
+  dependencies:
+    bootstrap ">= 3.0.0"
+    jquery ">= 1.9.0"
+
+bootstrap-sass@3.3.7:
   version "3.3.7"
   resolved "https://registry.yarnpkg.com/bootstrap-sass/-/bootstrap-sass-3.3.7.tgz#6596c7ab40f6637393323ab0bc80d064fc630498"
+
+bootstrap-select@^1.13.2:
+  version "1.13.2"
+  resolved "https://registry.yarnpkg.com/bootstrap-select/-/bootstrap-select-1.13.2.tgz#b22dd116e6fdced73189202fcc963ae849e47594"
 
 bootstrap-slider@^9.8.0:
   version "9.10.0"
@@ -634,13 +473,13 @@ bootstrap-timepicker@^0.5.2:
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/bootstrap-timepicker/-/bootstrap-timepicker-0.5.2.tgz#10ed9f2a2f0b8ccaefcde0fcf6a0738b919a3835"
 
+bootstrap@3.3.7, bootstrap@^3.3.7:
+  version "3.3.7"
+  resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-3.3.7.tgz#5a389394549f23330875a3b150656574f8a9eb71"
+
 "bootstrap@>= 3.0.0":
   version "4.1.3"
   resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-4.1.3.tgz#0eb371af2c8448e8c210411d0cb824a6409a12be"
-
-bootstrap@^3.3.7:
-  version "3.3.7"
-  resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-3.3.7.tgz#5a389394549f23330875a3b150656574f8a9eb71"
 
 brace-expansion@^1.1.7:
   version "1.1.11"
@@ -999,6 +838,10 @@ clone-deep@^2.0.1:
     kind-of "^6.0.0"
     shallow-clone "^1.0.0"
 
+clone@^2.1.1, clone@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/clone/-/clone-2.1.2.tgz#1b7f4b9f591f1e8f83670401600345a02887435f"
+
 co@^4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/co/-/co-4.6.0.tgz#6ea6bdf3d853ae54ccb8e47bfa0bf3f9031fb184"
@@ -1038,14 +881,6 @@ combined-stream@1.0.6, combined-stream@~1.0.5, combined-stream@~1.0.6:
   resolved "https://registry.yarnpkg.com/combined-stream/-/combined-stream-1.0.6.tgz#723e7df6e801ac5613113a7e445a9b69cb632818"
   dependencies:
     delayed-stream "~1.0.0"
-
-commander@0.6.1:
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-0.6.1.tgz#fa68a14f6a945d54dbbe50d8cdb3320e9e3b1a06"
-
-commander@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-2.0.0.tgz#d1b86f901f8b64bd941bdeadaf924530393be928"
 
 commander@~2.13.0:
   version "2.13.0"
@@ -1239,9 +1074,15 @@ datatables.net-bs@^1.10.15:
     datatables.net "1.10.19"
     jquery ">=1.7"
 
-datatables.net@1.10.19, datatables.net@>=1.10.9, datatables.net@^1.10.15:
+datatables.net@1.10.19, datatables.net@^1.10.15:
   version "1.10.19"
   resolved "https://registry.yarnpkg.com/datatables.net/-/datatables.net-1.10.19.tgz#97a1ed41c85e62d61040603481b59790a172dd1f"
+  dependencies:
+    jquery ">=1.7"
+
+datatables@^1.10.18:
+  version "1.10.18"
+  resolved "https://registry.yarnpkg.com/datatables/-/datatables-1.10.18.tgz#fee16e82aa70b17c5faf1a6954ac68f404f33a70"
   dependencies:
     jquery ">=1.7"
 
@@ -1249,15 +1090,15 @@ date-now@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/date-now/-/date-now-0.1.4.tgz#eaf439fd4d4848ad74e5cc7dbef200672b9e345b"
 
-debug@*, debug@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"
-  dependencies:
-    ms "2.0.0"
-
 debug@^2.1.2, debug@^2.2.0, debug@^2.3.3:
   version "2.6.9"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.9.tgz#5d128515df134ff327e90a4c93f4e077a536341f"
+  dependencies:
+    ms "2.0.0"
+
+debug@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"
   dependencies:
     ms "2.0.0"
 
@@ -1338,10 +1179,6 @@ detective@^5.0.2:
     defined "^1.0.0"
     minimist "^1.1.1"
 
-diff@1.0.7:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/diff/-/diff-1.0.7.tgz#24bbb001c4a7d5522169e7cabdb2c2814ed91cf4"
-
 diffie-hellman@^5.0.0:
   version "5.0.3"
   resolved "https://registry.yarnpkg.com/diffie-hellman/-/diffie-hellman-5.0.3.tgz#40e8ee98f55a2149607146921c63e1ae5f3d2875"
@@ -1414,7 +1251,7 @@ enhanced-resolve@^4.0.0, enhanced-resolve@^4.1.0:
     memory-fs "^0.4.0"
     tapable "^1.0.0"
 
-errno@^0.1.3, errno@~0.1.7:
+errno@^0.1.1, errno@^0.1.3, errno@~0.1.7:
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/errno/-/errno-0.1.7.tgz#4684d71779ad39af177e3f007996f7c67c852618"
   dependencies:
@@ -1570,6 +1407,13 @@ figures@^2.0.0:
   dependencies:
     escape-string-regexp "^1.0.5"
 
+file-loader@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/file-loader/-/file-loader-2.0.0.tgz#39749c82f020b9e85901dcff98e8004e6401cfde"
+  dependencies:
+    loader-utils "^1.0.2"
+    schema-utils "^1.0.0"
+
 fill-range@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/fill-range/-/fill-range-4.0.0.tgz#d544811d428f98eb06a63dc402d2403c328c38f7"
@@ -1617,7 +1461,7 @@ flush-write-stream@^1.0.0:
     inherits "^2.0.1"
     readable-stream "^2.0.4"
 
-font-awesome@^4.7.0:
+font-awesome@4.7.0, font-awesome@^4.7.0:
   version "4.7.0"
   resolved "https://registry.yarnpkg.com/font-awesome/-/font-awesome-4.7.0.tgz#8fa8cf0411a1a31afd07b06d2902bb9fc815a133"
 
@@ -1758,14 +1602,6 @@ glob-parent@^3.1.0:
     is-glob "^3.1.0"
     path-dirname "^1.0.0"
 
-glob@3.2.3:
-  version "3.2.3"
-  resolved "https://registry.yarnpkg.com/glob/-/glob-3.2.3.tgz#e313eeb249c7affaa5c475286b0e115b59839467"
-  dependencies:
-    graceful-fs "~2.0.0"
-    inherits "2"
-    minimatch "~0.2.11"
-
 glob@^7.0.0, glob@^7.0.3, glob@^7.0.5, glob@^7.1.0, glob@^7.1.2, glob@~7.1.1:
   version "7.1.3"
   resolved "https://registry.yarnpkg.com/glob/-/glob-7.1.3.tgz#3960832d3f1574108342dafd3a67b332c0969df1"
@@ -1792,14 +1628,6 @@ globule@^1.0.0:
 graceful-fs@^4.1.11, graceful-fs@^4.1.2:
   version "4.1.11"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.1.11.tgz#0e8bdfe4d1ddb8854d64e04ea7c00e2a026e5658"
-
-graceful-fs@~2.0.0:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-2.0.3.tgz#7cd2cdb228a4a3f36e95efa6cc142de7d1a136d0"
-
-growl@1.7.x:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/growl/-/growl-1.7.0.tgz#de2d66136d002e112ba70f3f10c31cf7c350b2da"
 
 har-schema@^2.0.0:
   version "2.0.0"
@@ -1908,6 +1736,10 @@ https-browserify@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/https-browserify/-/https-browserify-1.0.0.tgz#ec06c10e0a34c0f2faf199f7fd7fc78fffd03c73"
 
+icheck@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/icheck/-/icheck-1.0.2.tgz#06d08da3d47ae448c153b2639b86e9ad7fdf7128"
+
 iconv-lite@^0.4.24, iconv-lite@^0.4.4:
   version "0.4.24"
   resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.24.tgz#2022b4b25fbddc21d2f524974a474aafe733908b"
@@ -1937,6 +1769,10 @@ ignore-walk@^3.0.1:
   resolved "https://registry.yarnpkg.com/ignore-walk/-/ignore-walk-3.0.1.tgz#a83e62e7d272ac0e3b551aaa82831a19b69f82f8"
   dependencies:
     minimatch "^3.0.4"
+
+image-size@~0.5.0:
+  version "0.5.5"
+  resolved "https://registry.yarnpkg.com/image-size/-/image-size-0.5.5.tgz#09dfd4ab9d20e29eb1c3e80b8990378df9e3cb9c"
 
 import-cwd@^2.0.0:
   version "2.1.0"
@@ -2219,13 +2055,6 @@ isstream@~0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/isstream/-/isstream-0.1.2.tgz#47e63f7af55afa6f92e1500e690eb8b8529c099a"
 
-jade@0.26.3:
-  version "0.26.3"
-  resolved "https://registry.yarnpkg.com/jade/-/jade-0.26.3.tgz#8f10d7977d8d79f2f6ff862a81b0513ccb25686c"
-  dependencies:
-    commander "0.6.1"
-    mkdirp "0.3.0"
-
 jquery-knob@^1.2.11:
   version "1.2.11"
   resolved "https://registry.yarnpkg.com/jquery-knob/-/jquery-knob-1.2.11.tgz#f37c39dbc1c7a6a6c12cdb2ed4f6bffb683f10d6"
@@ -2242,7 +2071,7 @@ jquery-ui@^1.12.1:
   version "1.12.1"
   resolved "https://registry.yarnpkg.com/jquery-ui/-/jquery-ui-1.12.1.tgz#bcb4045c8dd0539c134bc1488cdd3e768a7a9e51"
 
-"jquery@2 - 3", "jquery@>= 1.7", "jquery@>= 1.9.0", jquery@>=1.10, jquery@>=1.5, jquery@>=1.7, "jquery@>=1.7.1 <4.0.0", jquery@>=1.8, jquery@^3.2.1:
+"jquery@2 - 3", "jquery@>= 1.9.0", jquery@>=1.10, jquery@>=1.5, jquery@>=1.7, "jquery@>=1.7.1 <4.0.0", jquery@>=1.8, jquery@^3.2.1:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.3.1.tgz#958ce29e81c9790f31be7792df5d4d95fc57fbca"
 
@@ -2356,6 +2185,29 @@ lcid@^1.0.0:
   dependencies:
     invert-kv "^1.0.0"
 
+less-loader@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/less-loader/-/less-loader-4.1.0.tgz#2c1352c5b09a4f84101490274fd51674de41363e"
+  dependencies:
+    clone "^2.1.1"
+    loader-utils "^1.1.0"
+    pify "^3.0.0"
+
+less@^3.8.1:
+  version "3.8.1"
+  resolved "https://registry.yarnpkg.com/less/-/less-3.8.1.tgz#f31758598ef5a1930dd4caefa9e4340641e71e1d"
+  dependencies:
+    clone "^2.1.2"
+  optionalDependencies:
+    errno "^0.1.1"
+    graceful-fs "^4.1.2"
+    image-size "~0.5.0"
+    mime "^1.4.1"
+    mkdirp "^0.5.0"
+    promise "^7.1.1"
+    request "^2.83.0"
+    source-map "~0.6.0"
+
 load-json-file@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/load-json-file/-/load-json-file-1.1.0.tgz#956905708d58b4bab4c2261b04f59f31c99374c0"
@@ -2438,10 +2290,6 @@ loud-rejection@^1.0.0:
   dependencies:
     currently-unhandled "^0.4.1"
     signal-exit "^3.0.0"
-
-lru-cache@2:
-  version "2.7.3"
-  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-2.7.3.tgz#6d4524e8b955f95d4f5b58851ce21dd72fb4e952"
 
 lru-cache@^4.0.1, lru-cache@^4.1.1:
   version "4.1.3"
@@ -2544,6 +2392,14 @@ mime-types@^2.1.12, mime-types@~2.1.17, mime-types@~2.1.19:
   dependencies:
     mime-db "~1.36.0"
 
+mime@^1.4.1:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/mime/-/mime-1.6.0.tgz#32cd9e5c64553bd58d19a568af452acff04981b1"
+
+mime@^2.0.3:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/mime/-/mime-2.3.1.tgz#b1621c54d63b97c47d3cfe7f7215f7d64517c369"
+
 mimic-fn@^1.0.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/mimic-fn/-/mimic-fn-1.2.0.tgz#820c86a39334640e99516928bd03fca88057d022"
@@ -2569,13 +2425,6 @@ minimatch@^3.0.2, minimatch@^3.0.4, minimatch@~3.0.2:
   resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-3.0.4.tgz#5166e286457f03306064be5497e8dbb0c3d32083"
   dependencies:
     brace-expansion "^1.1.7"
-
-minimatch@~0.2.11:
-  version "0.2.14"
-  resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-0.2.14.tgz#c74e780574f63c6f9a090e90efbe6ef53a6a756a"
-  dependencies:
-    lru-cache "2"
-    sigmund "~1.0.0"
 
 minimist@0.0.8:
   version "0.0.8"
@@ -2626,14 +2475,6 @@ mixin-object@^2.0.1:
   dependencies:
     for-in "^0.1.3"
     is-extendable "^0.1.1"
-
-mkdirp@0.3.0:
-  version "0.3.0"
-  resolved "http://registry.npmjs.org/mkdirp/-/mkdirp-0.3.0.tgz#1bbf5ab1ba827af23575143490426455f481fe1e"
-
-mkdirp@0.3.5:
-  version "0.3.5"
-  resolved "http://registry.npmjs.org/mkdirp/-/mkdirp-0.3.5.tgz#de3e5f8961c88c787ee1368df849ac4413eca8d7"
 
 "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.0:
   version "0.5.1"
@@ -3114,6 +2955,10 @@ pkg-dir@^2.0.0:
   dependencies:
     find-up "^2.1.0"
 
+popper.js@^1.14.4:
+  version "1.14.4"
+  resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.14.4.tgz#8eec1d8ff02a5a3a152dd43414a15c7b79fd69b6"
+
 posix-character-classes@^0.1.0:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/posix-character-classes/-/posix-character-classes-0.1.1.tgz#01eac0fe3b5af71a2a6c02feabb8c1fef7e00eab"
@@ -3192,6 +3037,12 @@ process@^0.11.10, process@~0.11.0:
 promise-inflight@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/promise-inflight/-/promise-inflight-1.0.1.tgz#98472870bf228132fcbdd868129bad12c3c029e3"
+
+promise@^7.1.1:
+  version "7.3.1"
+  resolved "https://registry.yarnpkg.com/promise/-/promise-7.3.1.tgz#064b72602b18f90f29192b8b1bc418ffd1ebd3bf"
+  dependencies:
+    asap "~2.0.3"
 
 prr@~1.0.1:
   version "1.0.1"
@@ -3403,7 +3254,7 @@ request@2.87.0:
     tunnel-agent "^0.6.0"
     uuid "^3.1.0"
 
-request@^2.87.0:
+request@^2.83.0, request@^2.87.0:
   version "2.88.0"
   resolved "https://registry.yarnpkg.com/request/-/request-2.88.0.tgz#9c2fca4f7d35b592efe57c7f0a55e81052124fef"
   dependencies:
@@ -3656,10 +3507,6 @@ shell-quote@^1.6.1:
     array-reduce "~0.0.0"
     jsonify "~0.0.0"
 
-sigmund@~1.0.0:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/sigmund/-/sigmund-1.0.1.tgz#3ff21f198cad2175f9f3b781853fd94d0d19b590"
-
 signal-exit@^3.0.0, signal-exit@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-3.0.2.tgz#b5fdc08f1287ea1178628e415e25132b73646c6d"
@@ -3732,7 +3579,7 @@ source-map@^0.5.6, source-map@~0.5.3:
   version "0.5.7"
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.5.7.tgz#8a039d2d1021d22d1ea14c80d8ea468ba2ef3fcc"
 
-source-map@^0.6.1, source-map@~0.6.1:
+source-map@^0.6.1, source-map@~0.6.0, source-map@~0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.6.1.tgz#74722af32e9614e9c287a8d0bbde48b5e2f1a263"
 
@@ -3961,6 +3808,12 @@ through2@^2.0.0:
   version "2.3.8"
   resolved "https://registry.yarnpkg.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
 
+timepicker@^1.11.12:
+  version "1.11.12"
+  resolved "https://registry.yarnpkg.com/timepicker/-/timepicker-1.11.12.tgz#776a18f2dfb1c72fe993058a703c5103213f6500"
+  dependencies:
+    jquery ">=1.7"
+
 timers-browserify@^1.0.1:
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/timers-browserify/-/timers-browserify-1.4.2.tgz#c9c58b575be8407375cb5e2462dacee74359f41d"
@@ -4128,6 +3981,14 @@ uri-js@^4.2.2:
 urix@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/urix/-/urix-0.1.0.tgz#da937f7a62e21fec1fd18d49b35c2935067a6c72"
+
+url-loader@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/url-loader/-/url-loader-1.1.1.tgz#4d1f3b4f90dde89f02c008e662d604d7511167c1"
+  dependencies:
+    loader-utils "^1.1.0"
+    mime "^2.0.3"
+    schema-utils "^1.0.0"
 
 url@^0.11.0, url@~0.11.0:
   version "0.11.0"

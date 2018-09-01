@@ -1,14 +1,30 @@
-// Import elasticms colors definition
+$node-modules-path: "../../../node_modules/";
+$fa-font-path: $node-modules-path + "font-awesome/fonts/";
+$ionicons-font-path: $node-modules-path + "ionicons/dist/fonts/";
+
 @import "ems-variables";
 
 // Import custom Bootstrap variables
 @import "bootstrap-variables";
 
 // Import Bootstrap for Sass
-//@import "~bootstrap-sass";
+@import "~bootstrap-sass/assets/stylesheets/bootstrap";
 
+@import "jquery_ui";
+@import "ckeditor";
+@import "bootstrap_fix";
+@import "~timepicker/jquery.timepicker.css";
+@import "~fullcalendar/dist/fullcalendar.css";
+@import "~bootstrap-datepicker/dist/css/bootstrap-datepicker.css";
+@import "~select2/src/scss/core";
+//@import "AdminLTE"; >> see less
+@import "~icheck/skins/all.css";
+@import "~datatables/media/css/jquery.dataTables.css";
 
+@import "~bootstrap-fileinput/scss/fileinput";
+@import "~bootstrap-daterangepicker/daterangepicker.css";
+@import "~font-awesome/scss/font-awesome";
+@import "~ionicons/dist/scss/ionicons";
+@import "~bootstrap-select/sass/bootstrap-select";
 
-.hello-word {
-  background-color: $elasticms_dark_blue;
-}
+@import "ems";

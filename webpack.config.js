@@ -23,9 +23,26 @@ module.exports = {
     module: {
         rules: [
             {
+                test: /\.less$/,
+                use: [{
+                    loader: MiniCssExtractPlugin.loader,
+                    options: {
+                        // you can specify a publicPath here
+                        // by default it use publicPath in webpackOptions.output
+                        publicPath: '../'
+                    }
+                },{
+                    loader: 'css-loader', // translates CSS into CommonJS
+                    options: {
+                        sourceMap: true
+                    }
+                }, {
+                    loader: 'less-loader' // compiles Less to CSS
+                }]
+            },
+            {
                 test: /\.(sa|sc|c)ss$/,
-                use: [
-                    {
+                use: [{
                         loader: MiniCssExtractPlugin.loader,
                         options: {
                             // you can specify a publicPath here
@@ -46,7 +63,8 @@ module.exports = {
                 test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
                 loader: 'url-loader',
                 options: {
-                    limit: 10000
+                    limit: 10000,
+                    name: 'media/[name].[ext]',
                 }
             }
         ]

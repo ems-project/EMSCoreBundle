@@ -2,23 +2,31 @@
   "dependencies": {
     "admin-lte": "^2.4.8",
     "bootstrap": "3.3.7",
+    "bootstrap-colorpicker": "^3.0.3",
+    "bootstrap-datepicker": "^1.8.0",
     "bootstrap-daterangepicker": "^3.0.3",
     "bootstrap-fileinput": "^4.5.0",
     "bootstrap-sass": "3.3.7",
     "bootstrap-select": "^1.13.2",
+    "bootstrap-timepicker": "^0.5.2",
+    "ckeditor": "^4.10.0",
     "datatables": "^1.10.18",
+    "datatables-bootstrap": "^0.0.1",
+    "datatables.net": "^1.10.19",
+    "datatables.net-bs": "^1.10.19",
     "daterangepicker": "^3.0.3",
     "font-awesome": "4.7.0",
     "icheck": "^1.0.2",
+    "moment": "^2.22.2",
     "popper.js": "^1.14.4",
-    "timepicker": "^1.11.12"
+    "select2": "^4.0.6-rc.1",
+    "timepicker": "^1.11.12",
+    "webpack-jquery-ui": "^2.0.1"
   },
   "engines": {
     "yarn": ">= 1.0.0"
   },
-  "scripts": {
-    "postinstall": "node -e \"try { require('fs').symlinkSync(require('path').resolve('node_modules/@bower_components'), 'bower', 'junction') } catch (e) { }\""
-  },
+  "scripts": {},
   "devDependencies": {
     "css-loader": "^1.0.0",
     "file-loader": "^2.0.0",

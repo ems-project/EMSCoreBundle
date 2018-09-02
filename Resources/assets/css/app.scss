@@ -19,12 +19,13 @@ $ionicons-font-path: $node-modules-path + "ionicons/dist/fonts/";
 @import "~select2/src/scss/core";
 //@import "AdminLTE"; >> see less
 @import "~icheck/skins/all.css";
-@import "~datatables/media/css/jquery.dataTables.css";
+@import "~datatables-bootstrap/css/dataTables.bootstrap.css";
 
 @import "~bootstrap-fileinput/scss/fileinput";
-@import "~bootstrap-daterangepicker/daterangepicker.css";
+@import "~daterangepicker/daterangepicker.css";
 @import "~font-awesome/scss/font-awesome";
 @import "~ionicons/dist/scss/ionicons";
 @import "~bootstrap-select/sass/bootstrap-select";
+//@import "~bootstrap-colorpicker/dist/css/bootstrap-colorpicker.css";
 
 @import "ems";

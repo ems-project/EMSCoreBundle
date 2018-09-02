@@ -430,7 +430,14 @@ bootstrap-colorpicker@^2.5.1:
   dependencies:
     jquery ">=1.10"
 
-bootstrap-datepicker@^1.7.0:
+bootstrap-colorpicker@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/bootstrap-colorpicker/-/bootstrap-colorpicker-3.0.3.tgz#9fb703e96254ba51c83e6a2274138bdcde1adaf6"
+  dependencies:
+    bootstrap "^4.0"
+    jquery ">=2.1.0"
+
+bootstrap-datepicker@^1.7.0, bootstrap-datepicker@^1.8.0:
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/bootstrap-datepicker/-/bootstrap-datepicker-1.8.0.tgz#c63513931e6f09f16ae9f11b62f32d950df3958e"
   dependencies:
@@ -477,7 +484,7 @@ bootstrap@3.3.7, bootstrap@^3.3.7:
   version "3.3.7"
   resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-3.3.7.tgz#5a389394549f23330875a3b150656574f8a9eb71"
 
-"bootstrap@>= 3.0.0":
+"bootstrap@>= 3.0.0", bootstrap@^4.0:
   version "4.1.3"
   resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-4.1.3.tgz#0eb371af2c8448e8c210411d0cb824a6409a12be"
 
@@ -786,7 +793,7 @@ cipher-base@^1.0.0, cipher-base@^1.0.1, cipher-base@^1.0.3:
     inherits "^2.0.1"
     safe-buffer "^5.0.1"
 
-ckeditor@^4.7.0:
+ckeditor@^4.10.0, ckeditor@^4.7.0:
   version "4.10.0"
   resolved "https://registry.yarnpkg.com/ckeditor/-/ckeditor-4.10.0.tgz#c0c6d5d059d6c60a669083d8307fe55ec8cd7587"
 
@@ -1067,20 +1074,27 @@ dashdash@^1.12.0:
   dependencies:
     assert-plus "^1.0.0"
 
-datatables.net-bs@^1.10.15:
+datatables-bootstrap@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/datatables-bootstrap/-/datatables-bootstrap-0.0.1.tgz#31f1691623bbed87feb72c83682d1e75ca3fc6f9"
+  dependencies:
+    datatables ">=1.10.0"
+    jquery ">=1.7.0"
+
+datatables.net-bs@^1.10.15, datatables.net-bs@^1.10.19:
   version "1.10.19"
   resolved "https://registry.yarnpkg.com/datatables.net-bs/-/datatables.net-bs-1.10.19.tgz#08763b4e4d0cef1a427d019dc15e717c7ed67a4d"
   dependencies:
     datatables.net "1.10.19"
     jquery ">=1.7"
 
-datatables.net@1.10.19, datatables.net@^1.10.15:
+datatables.net@1.10.19, datatables.net@^1.10.15, datatables.net@^1.10.19:
   version "1.10.19"
   resolved "https://registry.yarnpkg.com/datatables.net/-/datatables.net-1.10.19.tgz#97a1ed41c85e62d61040603481b59790a172dd1f"
   dependencies:
     jquery ">=1.7"
 
-datatables@^1.10.18:
+datatables@>=1.10.0, datatables@^1.10.18:
   version "1.10.18"
   resolved "https://registry.yarnpkg.com/datatables/-/datatables-1.10.18.tgz#fee16e82aa70b17c5faf1a6954ac68f404f33a70"
   dependencies:
@@ -1413,6 +1427,13 @@ figures@^2.0.0:
   resolved "https://registry.yarnpkg.com/figures/-/figures-2.0.0.tgz#3ab1a2d2a62c8bfb431a0c94cb797a2fce27c962"
   dependencies:
     escape-string-regexp "^1.0.5"
+
+file-loader@^1.1.11:
+  version "1.1.11"
+  resolved "https://registry.yarnpkg.com/file-loader/-/file-loader-1.1.11.tgz#6fe886449b0f2a936e43cabaac0cdbfb369506f8"
+  dependencies:
+    loader-utils "^1.0.2"
+    schema-utils "^0.4.5"
 
 file-loader@^2.0.0:
   version "2.0.0"
@@ -2078,7 +2099,7 @@ jquery-ui@^1.12.1:
   version "1.12.1"
   resolved "https://registry.yarnpkg.com/jquery-ui/-/jquery-ui-1.12.1.tgz#bcb4045c8dd0539c134bc1488cdd3e768a7a9e51"
 
-"jquery@2 - 3", "jquery@>= 1.9.0", jquery@>=1.10, jquery@>=1.5, jquery@>=1.7, "jquery@>=1.7.1 <4.0.0", jquery@>=1.8, jquery@^3.2.1:
+"jquery@2 - 3", "jquery@>= 1.9.0", jquery@>=1.10, jquery@>=1.5, jquery@>=1.7, jquery@>=1.7.0, "jquery@>=1.7.1 <4.0.0", jquery@>=1.8, jquery@>=2.1.0, jquery@^3.2.1, jquery@^3.3.1:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.3.1.tgz#958ce29e81c9790f31be7792df5d4d95fc57fbca"
 
@@ -2509,7 +2530,7 @@ module-deps@^6.0.0:
     through2 "^2.0.0"
     xtend "^4.0.0"
 
-moment@^2.18.1, moment@^2.20.1, moment@^2.9.0:
+moment@^2.18.1, moment@^2.20.1, moment@^2.22.2, moment@^2.9.0:
   version "2.22.2"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.22.2.tgz#3c257f9839fc0e93ff53149632239eb90783ff66"
 
@@ -3431,6 +3452,13 @@ select2@^4.0.3:
     almond "~0.3.1"
     jquery-mousewheel "~3.1.13"
 
+select2@^4.0.6-rc.1:
+  version "4.0.6-rc.1"
+  resolved "https://registry.yarnpkg.com/select2/-/select2-4.0.6-rc.1.tgz#aa6c3038a7f0f2e91ffade38f0a21c15e1813276"
+  dependencies:
+    almond "~0.3.1"
+    jquery-mousewheel "~3.1.13"
+
 "semver@2 || 3 || 4 || 5", semver@^5.3.0, semver@^5.5.0:
   version "5.5.1"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.5.1.tgz#7dfdd8814bdb7cabc7be0fb1d734cfb66c940477"
@@ -3750,6 +3778,13 @@ strip-indent@^1.0.1:
 strip-json-comments@~2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-2.0.1.tgz#3c531942e908c2697c0ec344858c286c7ca0a60a"
+
+style-loader@^0.21.0:
+  version "0.21.0"
+  resolved "https://registry.yarnpkg.com/style-loader/-/style-loader-0.21.0.tgz#68c52e5eb2afc9ca92b6274be277ee59aea3a852"
+  dependencies:
+    loader-utils "^1.1.0"
+    schema-utils "^0.4.5"
 
 style-loader@^0.23.0:
   version "0.23.0"
@@ -4084,6 +4119,16 @@ webpack-cli@^3.1.0:
     supports-color "^5.4.0"
     v8-compile-cache "^2.0.0"
     yargs "^12.0.1"
+
+webpack-jquery-ui@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/webpack-jquery-ui/-/webpack-jquery-ui-2.0.1.tgz#7b061beaed848da3d6f5a0acdfdf9dedbac0baed"
+  dependencies:
+    css-loader "^1.0.0"
+    file-loader "^1.1.11"
+    jquery "^3.3.1"
+    jquery-ui "^1.12.1"
+    style-loader "^0.21.0"
 
 webpack-sources@^1.0.1, webpack-sources@^1.1.0:
   version "1.2.0"

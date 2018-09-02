@@ -16,7 +16,9 @@
   "engines": {
     "yarn": ">= 1.0.0"
   },
-  "scripts": {},
+  "scripts": {
+    "postinstall": "node -e \"try { require('fs').symlinkSync(require('path').resolve('node_modules/@bower_components'), 'bower', 'junction') } catch (e) { }\""
+  },
   "devDependencies": {
     "css-loader": "^1.0.0",
     "file-loader": "^2.0.0",

@@ -5,19 +5,21 @@ scratch. This page gets rid of all links and provides the needed markup only.
 -->
 <html>
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>{{ ems_shortname|striptags }}: {% block title %}elasticms{% endblock %}</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{{ ems_shortname|striptags }}: {% block title %}elasticms{% endblock %}</title>
 
-  <!-- Tell the browser to be responsive to screen width -->
-  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
-  <!-- stylesheets -->
-  {% if theme_color %}
+    <link rel="stylesheet" href="{{ asset('bundles/emscore/css/app.bundle.css') }}">
+
+    <!-- stylesheets -->
+    {% if theme_color %}
       <link rel="stylesheet" href="{{ asset('bundles/emscore/css/default.bundle.css') }}">
-  {%  else %}
+    {%  else %}
       <link rel="stylesheet" href="{{ asset('bundles/emscore/css/'~theme_color~'.bundle.css') }}">
-  {%  endif %}
+    {%  endif %}
 
     <!-- ems ball -->
     <link rel="stylesheet" href="{{ asset('bundles/emscore/css/animation.css') }}">
@@ -456,7 +458,7 @@ desired effect
 
 <!-- REQUIRED JS SCRIPTS -->
 
-<script src="{{ asset('bundles/emscore/js/default.bundle.js') }}"></script>
+<script src="{{ asset('bundles/emscore/js/app.bundle.js') }}"></script>
 {#<!-- jQuery -->#}
 {#<script src="{{ asset('bundles/emscore/bower/jquery/dist/jquery.min.js') }}"></script>#}
 <!-- jQuery UI -->

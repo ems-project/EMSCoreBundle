@@ -81,19 +81,19 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./Resources/assets/css/blue.less");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./Resources/assets/css/purple-light.less");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "./Resources/assets/css/blue.less":
-/*!****************************************!*\
-  !*** ./Resources/assets/css/blue.less ***!
-  \****************************************/
+/***/ "./Resources/assets/css/purple-light.less":
+/*!************************************************!*\
+  !*** ./Resources/assets/css/purple-light.less ***!
+  \************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("// extracted by mini-css-extract-plugin//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi9SZXNvdXJjZXMvYXNzZXRzL2Nzcy9ibHVlLmxlc3MuanMiLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8vLi9SZXNvdXJjZXMvYXNzZXRzL2Nzcy9ibHVlLmxlc3M/MzU1NSJdLCJzb3VyY2VzQ29udGVudCI6WyIvLyBleHRyYWN0ZWQgYnkgbWluaS1jc3MtZXh0cmFjdC1wbHVnaW4iXSwibWFwcGluZ3MiOiJBQUFBIiwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///./Resources/assets/css/blue.less\n");
+eval("// extracted by mini-css-extract-plugin//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi9SZXNvdXJjZXMvYXNzZXRzL2Nzcy9wdXJwbGUtbGlnaHQubGVzcy5qcyIsInNvdXJjZXMiOlsid2VicGFjazovLy8uL1Jlc291cmNlcy9hc3NldHMvY3NzL3B1cnBsZS1saWdodC5sZXNzPzU3NjgiXSwic291cmNlc0NvbnRlbnQiOlsiLy8gZXh0cmFjdGVkIGJ5IG1pbmktY3NzLWV4dHJhY3QtcGx1Z2luIl0sIm1hcHBpbmdzIjoiQUFBQSIsInNvdXJjZVJvb3QiOiIifQ==\n//# sourceURL=webpack-internal:///./Resources/assets/css/purple-light.less\n");
 
 /***/ })
 

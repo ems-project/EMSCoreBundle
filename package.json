@@ -1,26 +1,12 @@
 {
   "dependencies": {
-    "admin-lte": "^2.4.8",
-    "bootstrap": "3.3.7",
-    "bootstrap-colorpicker": "^3.0.3",
-    "bootstrap-datepicker": "^1.8.0",
-    "bootstrap-daterangepicker": "^3.0.3",
+    "admin-lte": "^2.3.2",
     "bootstrap-fileinput": "^4.5.0",
     "bootstrap-sass": "3.3.7",
     "bootstrap-select": "^1.13.2",
-    "bootstrap-timepicker": "^0.5.2",
-    "ckeditor": "^4.10.0",
-    "datatables": "^1.10.18",
-    "datatables-bootstrap": "^0.0.1",
-    "datatables.net": "^1.10.19",
-    "datatables.net-bs": "^1.10.19",
+    "datepicker": "^0.0.0",
     "daterangepicker": "^3.0.3",
-    "font-awesome": "4.7.0",
     "icheck": "^1.0.2",
-    "moment": "^2.22.2",
-    "popper.js": "^1.14.4",
-    "select2": "^4.0.6-rc.1",
-    "timepicker": "^1.11.12",
     "webpack-jquery-ui": "^2.0.1"
   },
   "engines": {

@@ -3,26 +3,39 @@ const jQuery = require('jquery');
 window.$ = $;
 window.jQuery = $;
 
-require('webpack-jquery-ui');
 require('bootstrap');
-require('bootstrap-fileinput');
-require('select2');
-require('jquery.dataTables');
-// var dt      = require( 'datatables.net' )( window, $ );
-// require('datatables');
-// require('admin-lte');
-// require('ckeditor');
-// require('bootstrap-colorpicker');
-require('moment');
-require('daterangepicker');
-require('bootstrap-datepicker');
+require('bootstrap-colorpicker');
+// require('bootstrap-daterangepicker');
+require('bootstrap-slider');
 require('bootstrap-select');
 require('bootstrap-timepicker');
+require('chart.js');
+// require('ckeditor');
+require('datatables.net');
+require('datatables.net-bs');
+require('fastclick');
+require('flot');
+// require('font-awesome'); //pure css
+require('fullcalendar');
+require('inputmask');
+require('ion-rangeslider');
+// require('ionicons'); //pure css
+require('jquery');
+require('jquery-knob');
+require('jquery-sparkline');
+require('jquery-ui');
+require('jvectormap');
+require('moment');
+// require('morris.js'); //??
+require('pace');
+require('raphael');
+require('select2');
+require('slimscroll');
+require('bootstrap-datepicker');
+require('admin-lte');
+require('bootstrap-fileinput');
+require('webpack-jquery-ui/sortable');
 
 $(document).ready(function() {
-    console.log('ems_core requirements have been defined');
-});
-
-jQuery(document).ready(function() {
-    console.log('ems_core requirements have been defined 2');
+    console.log('AdminLTE\'s and elasticms\'s scripts loaded');
 });

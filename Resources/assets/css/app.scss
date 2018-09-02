@@ -13,19 +13,19 @@ $ionicons-font-path: $node-modules-path + "ionicons/dist/fonts/";
 @import "jquery_ui";
 @import "ckeditor";
 @import "bootstrap_fix";
-@import "~timepicker/jquery.timepicker.css";
+@import "~bootstrap-timepicker/css/bootstrap-timepicker.css";
 @import "~fullcalendar/dist/fullcalendar.css";
-@import "~bootstrap-datepicker/dist/css/bootstrap-datepicker.css";
 @import "~select2/src/scss/core";
-//@import "AdminLTE"; >> see less
+////@import "AdminLTE"; >> see less
 @import "~icheck/skins/all.css";
-@import "~datatables-bootstrap/css/dataTables.bootstrap.css";
-
+@import "~datatables.net-bs/css/dataTables.bootstrap.css";
+//
 @import "~bootstrap-fileinput/scss/fileinput";
 @import "~daterangepicker/daterangepicker.css";
 @import "~font-awesome/scss/font-awesome";
 @import "~ionicons/dist/scss/ionicons";
 @import "~bootstrap-select/sass/bootstrap-select";
-//@import "~bootstrap-colorpicker/dist/css/bootstrap-colorpicker.css";
+@import "~bootstrap-colorpicker/dist/css/bootstrap-colorpicker.css";
+@import "~bootstrap-datepicker/dist/css/bootstrap-datepicker.standalone.css";
 
 @import "ems";

@@ -85,7 +85,7 @@ desired effect
     <!-- Header Navbar -->
     <nav class="navbar navbar-static-top" role="navigation">
       <!-- Sidebar toggle button-->
-      <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button" id="sidebar-toggle-button">
+      <a href="#" class="sidebar-toggle" data-toggle="{%  if webpack  %}push-menu{% else %}offcanvas{% endif %}" role="button" id="sidebar-toggle-button">
         <span class="sr-only">Toggle navigation</span>
       </a>
       <!-- Navbar Right Menu -->

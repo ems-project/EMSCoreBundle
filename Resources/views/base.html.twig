@@ -5,46 +5,38 @@ scratch. This page gets rid of all links and provides the needed markup only.
 -->
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>{{ ems_shortname|striptags }}: {% block title %}elasticms{% endblock %}</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>{{ ems_shortname|striptags }}: {% block title %}elasticMS{% endblock %}</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- stylesheets -->
+  <link rel="stylesheet" href="{{ asset('bundles/emscore/css/styles.css') }}">
+  <link rel="stylesheet" href="{{ asset('bundles/emscore/css/ems.css') }}">
+  {% if theme_color %}
+  <link rel="stylesheet" href="{{ asset('bundles/emscore/bower/AdminLTE/dist/css/skins/skin-'~theme_color~'.min.css') }}">
+  {%  endif %}
 
-    <link rel="stylesheet" href="{{ asset('bundles/emscore/css/app.bundle.css') }}">
+  <!-- Color Picker style -->
+  <link rel="stylesheet" href="{{ asset('bundles/emscore/bower/AdminLTE/plugins/colorpicker/bootstrap-colorpicker.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('bundles/emscore/bower/daterangepicker/daterangepicker.css') }}">
 
-    <!-- stylesheets -->
-    {% if theme_color %}
-        <link rel="stylesheet" href="{{ asset('bundles/emscore/css/default.bundle.css') }}">
-    {%  else %}
-        <link rel="stylesheet" href="{{ asset('bundles/emscore/css/'~theme_color~'.bundle.css') }}">
-    {%  endif %}
+  {% block stylesheets %}{% endblock %}
 
-    <!-- ems ball -->
-    <link rel="stylesheet" href="{{ asset('bundles/emscore/css/animation.css') }}">
-    <link rel="stylesheet" href="{{ asset('bundles/emscore/css/ems.css') }}">
-
-
-    <!-- Color Picker style -->
-    <link rel="stylesheet" href="{{ asset('bundles/emscore/bower/AdminLTE/plugins/colorpicker/bootstrap-colorpicker.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('bundles/emscore/bower/daterangepicker/daterangepicker.css') }}">
-
-    {% block stylesheets %}{% endblock %}
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
 
 
-    <link rel="icon" type="image/png" href="{{ asset('bundles/emscore/favicon.ico') }}?v=8" />
+	<link rel="icon" type="image/png" href="{{ asset('bundles/emscore/favicon.ico') }}?v=8" />
+	
+{% block extraheader %}
 
-    {% block extraheader %}
-
-    {% endblock %}
+{% endblock %}
 </head>
 <!--
 BODY TAG OPTIONS:
@@ -69,399 +61,398 @@ desired effect
 <body class="hold-transition skin-{{ theme_color }} {% if app.user %}{% if app.user.layoutBoxed %}layout-boxed{% endif %}{% if app.user.sidebarCollapse %} sidebar-collapse{% endif %}{% if app.user.sidebarMini %} sidebar-mini{% endif %}{% endif %}">
 <div class="wrapper">
 
-    <!-- Main Header -->
-    <header class="main-header">
+  <!-- Main Header -->
+  <header class="main-header">
 
-        <!-- Logo -->
-        <a href="{{ path('homepage') }}" class="logo">
-            <!-- mini logo for sidebar mini 50x50 pixels -->
-            <span class="logo-mini">{{ ems_shortname|raw }}</span>
-            <!-- logo for regular state and mobile devices -->
-            <span class="logo-lg">{{ ems_name|raw }}</span>
-        </a>
+    <!-- Logo -->
+    <a href="{{ path('homepage') }}" class="logo">
+      <!-- mini logo for sidebar mini 50x50 pixels -->
+      <span class="logo-mini">{{ ems_shortname|raw }}</span>
+      <!-- logo for regular state and mobile devices -->
+      <span class="logo-lg">{{ ems_name|raw }}</span>
+    </a>
 
-        <!-- Header Navbar -->
-        <nav class="navbar navbar-static-top" role="navigation">
-            <!-- Sidebar toggle button-->
-            <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button" id="sidebar-toggle-button">
-                <span class="sr-only">Toggle navigation</span>
+    <!-- Header Navbar -->
+    <nav class="navbar navbar-static-top" role="navigation">
+      <!-- Sidebar toggle button-->
+      <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button" id="sidebar-toggle-button">
+        <span class="sr-only">Toggle navigation</span>
+      </a>
+      <!-- Navbar Right Menu -->
+      <div class="navbar-custom-menu">
+        <ul class="nav navbar-nav">
+          {% if app.user %}
+{#           <!-- Messages: style can be found in dropdown.less-->#}
+{#           <li class="dropdown messages-menu">#}
+{#             <!-- Menu toggle button -->#}
+{#             <a href="#" class="dropdown-toggle" data-toggle="dropdown">#}
+{#               <i class="fa fa-envelope-o"></i>#}
+{#               <span class="label label-success">4</span>#}
+{#             </a>#}
+{#             <ul class="dropdown-menu">#}
+{#               <li class="header">You have 4 messages</li>#}
+{#               <li>#}
+{#                 <!-- inner menu: contains the messages -->#}
+{#                 <ul class="menu">#}
+{#                   <li><!-- start message -->#}
+{#                     <a href="#">#}
+{#                       <div class="pull-left">#}
+{#                         <!-- User Image -->#}
+{#                         <img src="{{ asset('images/anonymous.gif') }}" data-original="{{ asset('bower/AdminLTE/dist/img/user2-160x160.jpg') }}" class="lazy img-circle" alt="User Image">#}
+{#                       </div>#}
+{#                       <!-- Message title and timestamp -->#}
+{#                       <h4>#}
+{#                         Support Team#}
+{#                         <small><i class="fa fa-clock-o"></i> 5 mins</small>#}
+{#                       </h4>#}
+{#                       <!-- The message -->#}
+{#                       <p>Why not buy a new awesome theme?</p>#}
+{#                     </a>#}
+{#                   </li>#}
+{#                   <!-- end message -->#}
+{#                 </ul>#}
+{#                 <!-- /.menu -->#}
+{#               </li>#}
+{#               <li class="footer"><a href="#">See All Messages</a></li>#}
+{#             </ul>#}
+{#           </li>#}
+{#           <!-- /.messages-menu -->#}
+
+		{% if app.user %}
+		  {{ render(controller('EMSCoreBundle:Notification:menuNotification')) }}
+        {% endif %} 
+
+          <!-- Tasks Menu -->
+          <li class="dropdown tasks-menu" id="system-messages">
+            <!-- Menu Toggle Button -->
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <i id="ajax-activity" class="fa fa-refresh"></i>
+              <span class="label label-danger"></span>
             </a>
-            <!-- Navbar Right Menu -->
-            <div class="navbar-custom-menu">
-                <ul class="nav navbar-nav">
-                    {% if app.user %}
-                        {#           <!-- Messages: style can be found in dropdown.less-->#}
-                        {#           <li class="dropdown messages-menu">#}
-                        {#             <!-- Menu toggle button -->#}
-                        {#             <a href="#" class="dropdown-toggle" data-toggle="dropdown">#}
-                        {#               <i class="fa fa-envelope-o"></i>#}
-                        {#               <span class="label label-success">4</span>#}
-                        {#             </a>#}
-                        {#             <ul class="dropdown-menu">#}
-                        {#               <li class="header">You have 4 messages</li>#}
-                        {#               <li>#}
-                        {#                 <!-- inner menu: contains the messages -->#}
-                        {#                 <ul class="menu">#}
-                        {#                   <li><!-- start message -->#}
-                        {#                     <a href="#">#}
-                        {#                       <div class="pull-left">#}
-                        {#                         <!-- User Image -->#}
-                        {#                         <img src="{{ asset('images/anonymous.gif') }}" data-original="{{ asset('bower/AdminLTE/dist/img/user2-160x160.jpg') }}" class="lazy img-circle" alt="User Image">#}
-                        {#                       </div>#}
-                        {#                       <!-- Message title and timestamp -->#}
-                        {#                       <h4>#}
-                        {#                         Support Team#}
-                        {#                         <small><i class="fa fa-clock-o"></i> 5 mins</small>#}
-                        {#                       </h4>#}
-                        {#                       <!-- The message -->#}
-                        {#                       <p>Why not buy a new awesome theme?</p>#}
-                        {#                     </a>#}
-                        {#                   </li>#}
-                        {#                   <!-- end message -->#}
-                        {#                 </ul>#}
-                        {#                 <!-- /.menu -->#}
-                        {#               </li>#}
-                        {#               <li class="footer"><a href="#">See All Messages</a></li>#}
-                        {#             </ul>#}
-                        {#           </li>#}
-                        {#           <!-- /.messages-menu -->#}
-
-                        {% if app.user %}
-                            {{ render(controller('EMSCoreBundle:Notification:menuNotification')) }}
-                        {% endif %}
-
-                        <!-- Tasks Menu -->
-                        <li class="dropdown tasks-menu" id="system-messages">
-                            <!-- Menu Toggle Button -->
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <i id="ajax-activity" class="fa fa-refresh"></i>
-                                <span class="label label-danger"></span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                {#               <li class="header">You do not get any system message yet</li>#}
-                                <li>
-                                    <!-- Inner menu: contains the tasks -->
-                                    <ul class="menu">
-                                        {#                   <li><!-- Task item -->#}
-                                        {#                     <a href="#">#}
-                                        {#                       <!-- Task title and progress text -->#}
-                                        {#                       <h3>#}
-                                        {#                         Design some buttons#}
-                                        {#                         <small class="pull-right">20%</small>#}
-                                        {#                       </h3>#}
-                                        {#                       <!-- The progress bar -->#}
-                                        {#                       <div class="progress xs">#}
-                                        {#                         <!-- Change the css width attribute to simulate progress -->#}
-                                        {#                         <div class="progress-bar progress-bar-aqua" style="width: 20%" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">#}
-                                        {#                           <span class="sr-only">20% Complete</span>#}
-                                        {#                         </div>#}
-                                        {#                       </div>#}
-                                        {#                     </a>#}
-                                        {#                   </li>#}
-                                        <!-- end task item -->
-                                    </ul>
-                                </li>
-                                <li class="footer">
-                                    <a href="#" onclick="$('#system-messages ul.menu').empty(); ajaxRequest.updateCounter(); return false;">Clear all system messages</a>
-                                </li>
-                            </ul>
-                        </li>
-
-                        <!-- User Account Menu -->
-                        <li class="dropdown user user-menu">
-                            <!-- Menu Toggle Button -->
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <!-- The user image in the navbar-->
-                                {% include '@EMSCore/elements/user-image.html.twig' with {
-                                    'class': 'user-image'
-                                } %}
-                                <!-- hidden-xs hides the username on small devices so only the image appears. -->
-                                <span class="hidden-xs">{{ app.user.displayName }}</span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <!-- The user image in the menu -->
-                                <li class="user-header">
-                                    {% include '@EMSCore/elements/user-image.html.twig' with {
-                                        'class': 'img-circle'
-                                    } %}
-
-                                    <p>
-                                        {{ 'Logged in as'|trans({'%username%': app.user.username}) }}
-                                        <small>Member since {{ app.user.created|date(date_time_format) }}</small>
-                                        <small>
-                                            {% for role in app.user.roles %}
-                                                {{ role|trans }}{% if not loop.last %},{% endif %}
-                                            {% endfor %}
-                                        </small>
-                                    </p>
-                                </li>
-                                <!-- Menu Body -->
-                                {#               <li class="user-body">#}
-                                {#                 <div class="row">#}
-                                {#                   <div class="col-xs-4 text-center">#}
-                                {#                     <a href="#">Followers</a>#}
-                                {#                   </div>#}
-                                {#                   <div class="col-xs-4 text-center">#}
-                                {#                     <a href="#">Sales</a>#}
-                                {#                   </div>#}
-                                {#                   <div class="col-xs-4 text-center">#}
-                                {#                     <a href="#">Friends</a>#}
-                                {#                   </div>#}
-                                {#                 </div>#}
-                                {#                 <!-- /.row -->#}
-                                {#               </li>#}
-                                <!-- Menu Footer-->
-                                <li class="user-footer">
-                                    <div class="pull-left">
-                                        <a href="{{ path(user_profile_route) }}" class="btn btn-default btn-flat">{{ 'User profile'|trans }}</a>
-                                    </div>
-                                    <div class="pull-right">
-                                        {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
-                                            <a href="{{ path('ems.user.index', {'_switch_user': '_exit'}) }}" class="btn btn-default btn-flat">{{ 'Exit'|trans }}</a>
-                                        {% else %}
-                                            <a href="{{ path(user_logout_route) }}" class="btn btn-default btn-flat">{{ 'Sign out'|trans }}</a>
-                                        {% endif %}
-                                    </div>
-                                </li>
-                            </ul>
-                        </li>
-                        <!-- Control Sidebar Toggle Button -->
-                        {#          <li>
-                                    <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
-                                  </li>#}
-                    {% else %}
-                        <li>
-                            <a href="{{ path(user_login_route) }}" ><span class="glyphicon glyphicon-lock"></span> Login</a>
-                        </li>
-                    {% endif %}
+            <ul class="dropdown-menu">
+{#               <li class="header">You do not get any system message yet</li>#}
+              <li>
+                <!-- Inner menu: contains the tasks -->
+                <ul class="menu">
+{#                   <li><!-- Task item -->#}
+{#                     <a href="#">#}
+{#                       <!-- Task title and progress text -->#}
+{#                       <h3>#}
+{#                         Design some buttons#}
+{#                         <small class="pull-right">20%</small>#}
+{#                       </h3>#}
+{#                       <!-- The progress bar -->#}
+{#                       <div class="progress xs">#}
+{#                         <!-- Change the css width attribute to simulate progress -->#}
+{#                         <div class="progress-bar progress-bar-aqua" style="width: 20%" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">#}
+{#                           <span class="sr-only">20% Complete</span>#}
+{#                         </div>#}
+{#                       </div>#}
+{#                     </a>#}
+{#                   </li>#}
+                  <!-- end task item -->
                 </ul>
-            </div>
-        </nav>
-    </header>
+              </li>
+              <li class="footer">
+                <a href="#" onclick="$('#system-messages ul.menu').empty(); ajaxRequest.updateCounter(); return false;">Clear all system messages</a>
+              </li>
+            </ul>
+          </li>
 
-    {% if app.user %}
-        {{ render(controller('EMSCoreBundle:TwigElements:sideMenu')) }}
-    {% else %}
-        {% include '@EMSCore/elements/side-menu.html.twig' with {
-            'contentTypes': get_content_types()
-        } %}
-    {% endif %}
-    <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <h1>
-                {% block pagetitle %}<strong>elastic</strong>MS{% endblock %}
-                {% block subtitle %}<small>Your content management system in an elastic world wide web</small>{% endblock %}
-            </h1>
-
-            {% block breadcrumb %}{% endblock %}
-        </section>
-
-        <!-- Main content -->
-        <section class="content">
-            <div id="flashbags">
-                {% set notice = app.session.flashbag.get('notice')  %}
-                {% if notice %}
-                    <div class="alert alert-info alert-dismissible">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        <h4><i class="icon fa fa-info"></i> Info! </h4>
-                        {% for flash_message in notice %}
-                            <div class="flash-notice">
-                                {{ flash_message|raw }}
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-
-                {% set warning = app.session.flashbag.get('warning')  %}
-                {% if warning %}
-                    <div class="alert alert-warning alert-dismissible">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        <h4><i class="icon fa fa-warning"></i> Warning! </h4>
-                        {% for flash_message in warning %}
-                            <div class="flash-notice">
-                                {{ flash_message|raw }}
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-
-                {% set error = app.session.flashbag.get('error')  %}
-                {% if error %}
-                    <div class="alert alert-danger alert-dismissible">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        <h4><i class="icon fa fa-ban"></i> Error! </h4>
-                        {% for flash_message in error %}
-                            <div class="flash-notice">
-                                {{ flash_message|raw }}
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
-
-            <!-- Your Page Content Here -->
-            {% block body %}{% endblock %}
-
-            <div class="modal fade" id="data-out-of-sync" tabindex="-1" role="dialog" aria-labelledby="myModalOutOfSync">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" id="myModalOutOfSync">
-                                <strong>Out of sync</strong>
-                            </h4>
-                        </div>
-                        <div class="modal-body">
-                            There is something wrong with this application. Please reload the page.
-                        </div>
-                        <div class="modal-footer">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-primary" onclick="location.reload();"><i class="fa fa-refresh"></i> Reload</button>
-                            </div>
-                        </div>
-                    </div>
+          <!-- User Account Menu -->
+          <li class="dropdown user user-menu">
+            <!-- Menu Toggle Button -->
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <!-- The user image in the navbar-->
+              	{% include '@EMSCore/elements/user-image.html.twig' with {
+					'class': 'user-image'
+				} %}
+              <!-- hidden-xs hides the username on small devices so only the image appears. -->
+              <span class="hidden-xs">{{ app.user.displayName }}</span>
+            </a>
+            <ul class="dropdown-menu">
+              <!-- The user image in the menu -->
+              <li class="user-header">
+                {% include '@EMSCore/elements/user-image.html.twig' with {
+					'class': 'img-circle'
+				} %}
+                
+                <p>
+                  {{ 'Logged in as'|trans({'%username%': app.user.username}) }}
+                  <small>Member since {{ app.user.created|date(date_time_format) }}</small>
+                  <small>
+                  	{% for role in app.user.roles %}
+                  		{{ role|trans }}{% if not loop.last %},{% endif %}
+                  	{% endfor %}
+                  </small>
+                </p>
+              </li>
+              <!-- Menu Body -->
+{#               <li class="user-body">#}
+{#                 <div class="row">#}
+{#                   <div class="col-xs-4 text-center">#}
+{#                     <a href="#">Followers</a>#}
+{#                   </div>#}
+{#                   <div class="col-xs-4 text-center">#}
+{#                     <a href="#">Sales</a>#}
+{#                   </div>#}
+{#                   <div class="col-xs-4 text-center">#}
+{#                     <a href="#">Friends</a>#}
+{#                   </div>#}
+{#                 </div>#}
+{#                 <!-- /.row -->#}
+{#               </li>#}
+              <!-- Menu Footer-->
+              <li class="user-footer">
+                <div class="pull-left">
+                  <a href="{{ path(user_profile_route) }}" class="btn btn-default btn-flat">{{ 'User profile'|trans }}</a>
                 </div>
-            </div>
-
-            <div class="modal fade" id="modal-notifications" tabindex="-1" role="dialog" aria-labelledby="myModalNotifications">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" id="myModalNotifications">
-                                <strong>Notifications</strong>
-                            </h4>
-                        </div>
-                        <div class="modal-body">
-                        </div>
-                        <div class="modal-footer">
-                            <button id="modal-notification-close-button" type="button" class="btn btn-primary"><i class="fa fa-close"></i> Close</button>
-                        </div>
-                    </div>
+                <div class="pull-right">
+               		{% if is_granted('ROLE_PREVIOUS_ADMIN') %}
+               			<a href="{{ path('ems.user.index', {'_switch_user': '_exit'}) }}" class="btn btn-default btn-flat">{{ 'Exit'|trans }}</a>
+               		{% else %}
+               			<a href="{{ path(user_logout_route) }}" class="btn btn-default btn-flat">{{ 'Sign out'|trans }}</a>
+               		{% endif %}
                 </div>
-            </div>
-        </section>
-        <!-- /.content -->
-    </div>
-    <!-- /.content-wrapper -->
-
-    <!-- Main Footer -->
-    <footer class="main-footer no-print">
-        <!-- To the right -->
-        <div class="pull-right">
-            {% if ems_core_version %}
-                {{ 'Core %version%'|trans({'%version%': ems_core_version }) }}
-            {% endif %}
-            {{ 'with Symfony %version%'|trans({'%version%':constant('Symfony\\Component\\HttpKernel\\Kernel::VERSION') }) }}
-        </div>
-        <!-- Default to the left -->
-        <a href="http://www.elasticms.eu/">elastic<b>ms</b></a>
-    </footer>
-
-    <!-- Control Sidebar -->
-    <aside class="control-sidebar control-sidebar-dark">
-        <!-- Create the tabs -->
-        <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-            <li class="active"><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
-            <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
+              </li>
+            </ul>
+          </li>
+          <!-- Control Sidebar Toggle Button -->
+{#          <li>
+            <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
+          </li>#}
+          {% else %}
+          <li>
+            <a href="{{ path(user_login_route) }}" ><span class="glyphicon glyphicon-lock"></span> Login</a>
+          </li>
+          {% endif %}
         </ul>
-        <!-- Tab panes -->
-        <div class="tab-content">
-            <!-- Home tab content -->
-            <div class="tab-pane active" id="control-sidebar-home-tab">
-                <h3 class="control-sidebar-heading">Recent Activity</h3>
-                <ul class="control-sidebar-menu">
-                    <li>
-                        <a href="#">
-                            <i class="menu-icon fa fa-birthday-cake bg-red"></i>
+      </div>
+    </nav>
+  </header>
+  
+		{% if app.user %}
+		  	{{ render(controller('EMSCoreBundle:TwigElements:sideMenu')) }}
+		{% else %}
+            {% include '@EMSCore/elements/side-menu.html.twig' with {
+				'contentTypes': get_content_types()
+			} %}
+        {% endif %} 
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        {% block pagetitle %}<strong>elastic</strong>MS{% endblock %}
+        {% block subtitle %}<small>Your content management system in an elastic world wide web</small>{% endblock %}
+      </h1>
 
-                            <div class="menu-info">
-                                <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
+      	{% block breadcrumb %}{% endblock %}
+    </section>
 
-                                <p>Will be 23 on April 24th</p>
-                            </div>
-                        </a>
-                    </li>
-                </ul>
-                <!-- /.control-sidebar-menu -->
+    <!-- Main content -->
+    <section class="content">
+    	<div id="flashbags">
+			{% set notice = app.session.flashbag.get('notice')  %}
+			{% if notice %}
+				<div class="alert alert-info alert-dismissible">
+	                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+	                <h4><i class="icon fa fa-info"></i> Info! </h4>
+	                {% for flash_message in notice %}
+					    <div class="flash-notice">
+					       {{ flash_message|raw }}
+					    </div>
+					{% endfor %}
+	            </div>
+			{% endif %}    	
+			
+			{% set warning = app.session.flashbag.get('warning')  %}
+			{% if warning %}
+				<div class="alert alert-warning alert-dismissible">
+	                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+	                <h4><i class="icon fa fa-warning"></i> Warning! </h4>
+	                {% for flash_message in warning %}
+					    <div class="flash-notice">
+					       {{ flash_message|raw }}
+					    </div>
+					{% endfor %}
+	            </div>
+			{% endif %}
+			
+			{% set error = app.session.flashbag.get('error')  %}
+			{% if error %}
+				<div class="alert alert-danger alert-dismissible">
+	                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+	                <h4><i class="icon fa fa-ban"></i> Error! </h4>
+	                {% for flash_message in error %}
+					    <div class="flash-notice">
+					       {{ flash_message|raw }}
+					    </div>
+					{% endfor %}
+	            </div>
+			{% endif %}
+		</div>
 
-                <h3 class="control-sidebar-heading">Tasks Progress</h3>
-                <ul class="control-sidebar-menu">
-                    <li>
-                        <a href="#">
-                            <h4 class="control-sidebar-subheading">
-                                Custom Template Design
-                                <span class="label label-danger pull-right">70%</span>
-                            </h4>
+      <!-- Your Page Content Here -->
+      {% block body %}{% endblock %}
 
-                            <div class="progress progress-xxs">
-                                <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
-                            </div>
-                        </a>
-                    </li>
-                </ul>
-                <!-- /.control-sidebar-menu -->
+		<div class="modal fade" id="data-out-of-sync" tabindex="-1" role="dialog" aria-labelledby="myModalOutOfSync">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="myModalOutOfSync">
+							<strong>Out of sync</strong>	
+				</h4>
+		      </div>
+		      <div class="modal-body">
+				There is something wrong with this application. Please reload the page.
+			  </div>
+		      <div class="modal-footer">
+		      	<div class="btn-group">
+			        <button type="button" class="btn btn-primary" onclick="location.reload();"><i class="fa fa-refresh"></i> Reload</button>
+		      	</div>
+		      </div>
+		    </div>
+		  </div>
+		</div>	
 
-            </div>
-            <!-- /.tab-pane -->
-            <!-- Stats tab content -->
-            <div class="tab-pane" id="control-sidebar-stats-tab">Stats Tab Content</div>
-            <!-- /.tab-pane -->
-            <!-- Settings tab content -->
-            <div class="tab-pane" id="control-sidebar-settings-tab">
-                <form method="post">
-                    <h3 class="control-sidebar-heading">General Settings</h3>
+		<div class="modal fade" id="modal-notifications" tabindex="-1" role="dialog" aria-labelledby="myModalNotifications">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="myModalNotifications">
+							<strong>Notifications</strong>	
+				</h4>
+		      </div>
+		      <div class="modal-body">
+			  </div>
+		      <div class="modal-footer">
+		      	<button id="modal-notification-close-button" type="button" class="btn btn-primary"><i class="fa fa-close"></i> Close</button>
+			  </div>
+		    </div>
+		  </div>
+		</div>	
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
 
-                    <div class="form-group">
-                        <label class="control-sidebar-subheading">
-                            Report panel usage
-                            <input type="checkbox" class="pull-right" checked>
-                        </label>
-
-                        <p>
-                            Some information about this general settings option
-                        </p>
-                    </div>
-                    <!-- /.form-group -->
-                </form>
-            </div>
-            <!-- /.tab-pane -->
-        </div>
-    </aside>
-    <!-- /.control-sidebar -->
-    <!-- Add the sidebar's background. This div must be placed
-         immediately after the control sidebar -->
-    <div class="control-sidebar-bg"></div>
-
-    <div class="modal fade" id="waitingModal" tabindex="-1" role="dialog" aria-labelledby="waitingModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title" id="waitingModalLabel">Loading information</h3>
-                </div>
-                <div class="modal-body">
-                    <div class="progress progress-striped active" style="margin-bottom:0;"><div class="progress-bar" style="width: 100%"></div></div>
-                </div>
-                {#       <div class="modal-footer">#}
-                {#         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>#}
-                {#         <button type="button" class="btn btn-primary">Send message</button>#}
-                {#       </div>#}
-            </div>
-        </div>
+  <!-- Main Footer -->
+  <footer class="main-footer no-print">
+    <!-- To the right -->
+    <div class="pull-right">
+    	{% if ems_core_version %}
+    		{{ 'Core %version%'|trans({'%version%': ems_core_version }) }}
+    	{% endif %}
+      	{{ 'with Symfony %version%'|trans({'%version%':constant('Symfony\\Component\\HttpKernel\\Kernel::VERSION') }) }}
     </div>
+    <!-- Default to the left -->
+    <a href="http://www.elasticms.eu/">elastic<b>ms</b></a>
+  </footer>
 
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Create the tabs -->
+    <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+      <li class="active"><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
+      <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
+    </ul>
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <!-- Home tab content -->
+      <div class="tab-pane active" id="control-sidebar-home-tab">
+        <h3 class="control-sidebar-heading">Recent Activity</h3>
+        <ul class="control-sidebar-menu">
+          <li>
+            <a href="#">
+              <i class="menu-icon fa fa-birthday-cake bg-red"></i>
 
+              <div class="menu-info">
+                <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
+
+                <p>Will be 23 on April 24th</p>
+              </div>
+            </a>
+          </li>
+        </ul>
+        <!-- /.control-sidebar-menu -->
+
+        <h3 class="control-sidebar-heading">Tasks Progress</h3>
+        <ul class="control-sidebar-menu">
+          <li>
+            <a href="#">
+              <h4 class="control-sidebar-subheading">
+                Custom Template Design
+                <span class="label label-danger pull-right">70%</span>
+              </h4>
+
+              <div class="progress progress-xxs">
+                <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
+              </div>
+            </a>
+          </li>
+        </ul>
+        <!-- /.control-sidebar-menu -->
+
+      </div>
+      <!-- /.tab-pane -->
+      <!-- Stats tab content -->
+      <div class="tab-pane" id="control-sidebar-stats-tab">Stats Tab Content</div>
+      <!-- /.tab-pane -->
+      <!-- Settings tab content -->
+      <div class="tab-pane" id="control-sidebar-settings-tab">
+        <form method="post">
+          <h3 class="control-sidebar-heading">General Settings</h3>
+
+          <div class="form-group">
+            <label class="control-sidebar-subheading">
+              Report panel usage
+              <input type="checkbox" class="pull-right" checked>
+            </label>
+
+            <p>
+              Some information about this general settings option
+            </p>
+          </div>
+          <!-- /.form-group -->
+        </form>
+      </div>
+      <!-- /.tab-pane -->
+    </div>
+  </aside>
+  <!-- /.control-sidebar -->
+  <!-- Add the sidebar's background. This div must be placed
+       immediately after the control sidebar -->
+  <div class="control-sidebar-bg"></div>
+  
+  <div class="modal fade" id="waitingModal" tabindex="-1" role="dialog" aria-labelledby="waitingModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="waitingModalLabel">Loading information</h3>
+      </div>
+      <div class="modal-body">
+        <div class="progress progress-striped active" style="margin-bottom:0;"><div class="progress-bar" style="width: 100%"></div></div>
+      </div>
+{#       <div class="modal-footer">#}
+{#         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>#}
+{#         <button type="button" class="btn btn-primary">Send message</button>#}
+{#       </div>#}
+    </div>
+  </div>
+</div>
+  
+  
 </div>
 <!-- ./wrapper -->
 
 <!-- REQUIRED JS SCRIPTS -->
 
-<script src="{{ asset('bundles/emscore/js/app.bundle.js') }}"></script>
-{#<!-- jQuery -->#}
-{#<script src="{{ asset('bundles/emscore/bower/jquery/dist/jquery.min.js') }}"></script>#}
-<!-- jQuery UI -->
+<!-- jQuery -->
+<script src="{{ asset('bundles/emscore/bower/jquery/dist/jquery.min.js') }}"></script>
+<!-- jQuery -->
 <script src="{{ asset('bundles/emscore/bower/jquery-ui/jquery-ui.min.js') }}"></script>
 <!-- fileinput plugin file -->
 <script src="{{ asset('bundles/emscore/bower/bootstrap-fileinput/js/fileinput.min.js') }}"></script>
@@ -496,38 +487,38 @@ desired effect
 <!-- Variables  -->
 <script>
     var file_init_upload_url = '{{ path('file.init-upload', {
-        sha1: '__sha1__',
-        size: '__size__'
-    })|raw }}';
+    		sha1: '__sha1__',
+    		size: '__size__'
+    	})|raw }}';
     var file_chunk_upload_url = '{{ path('file.uploadchunk', {
-        sha1: '__sha1__'
-    })|raw }}';
+    		sha1: '__sha1__'
+    	})|raw }}';
     var data_link_url = '{{ path('data.link', {key: '__object_key__'})|raw }}';
     var object_search_url = '{{ path('elasticsearch.api.search')|raw }}';
-    var collapse_sidebar_url = '{{ path('user.sidebar-collapse', {collapsed: '__collapsed__'})|raw }}';
-    var elasticsearch_status_url = "{{ path('elasticsearch.status')|raw }}.json";
+    var collapse_sidebar_url = '{{ path('user.sidebar-collapse', {collapsed: '__collapsed__'})|raw }}'; 
+    var elasticsearch_status_url = "{{ path('elasticsearch.status')|raw }}.json"; 
     var ems_upload_url = "{{ path('ems_image_upload_url')|raw }}";
     var ems_images_url = "{{ path('ems_images_index')|raw }}";
     var file_extract_url = '{{ path('ems_file_extract', { sha1: '__file_identifier__', name: '__file_name__' })|raw }}';
 
-    {% set type_filters = [] %}
-    {% set all_types = false %}
-    {% if get_content_types()|length > 0 %}
-    {% for contentType in get_content_types() if contentType.webContent %}
-    {% if all_types  %}
-    {% set all_types = all_types~','~contentType.name %}
-    {% else %}
-    {% set all_types = contentType.name %}
-    {% endif %}
-    {% set type_filters = type_filters|merge([[contentType.singularName, contentType.name ]]) %}
-    {% endfor %}
+	{% set type_filters = [] %}
+	{% set all_types = false %}
+	{% if get_content_types()|length > 0 %}
+        {% for contentType in get_content_types() if contentType.webContent %}
+        	{% if all_types  %}
+        	    {% set all_types = all_types~','~contentType.name %}
+            {% else %}
+    	        {% set all_types = contentType.name %}
+            {% endif %}
+            {% set type_filters = type_filters|merge([[contentType.singularName, contentType.name ]]) %}
+        {% endfor %}
     {% endif %}
 
     {% set type_filters = [['All content types'|trans, all_types ]]|merge(type_filters) %}
-
+    
     var ems_wysiwyg_type_filters = {{ type_filters|json_encode|raw }};
 
-
+    
 </script>
 <!-- This app -->
 <script src="{{ asset('bundles/emscore/js/jquery.matchHeight.js') }}"></script>
@@ -541,7 +532,7 @@ desired effect
      user experience. Slimscroll is required when using the
      fixed layout. -->
 
-{% block javascripts %}{% endblock %}
-
+	{% block javascripts %}{% endblock %}	
+	
 </body>
 </html>

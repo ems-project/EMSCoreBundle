@@ -13,18 +13,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
     {%  if webpack  %}
-        <link rel="stylesheet" href="{{ asset('bundles/emscore/css/app.bundle.css') }}">
-
         <!-- stylesheets -->
         {% if theme_color %}
-            <link rel="stylesheet" href="{{ asset('bundles/emscore/css/default.bundle.css') }}">
-        {%  else %}
             <link rel="stylesheet" href="{{ asset('bundles/emscore/css/'~theme_color~'.bundle.css') }}">
+        {%  else %}
+            <link rel="stylesheet" href="{{ asset('bundles/emscore/css/blue.bundle.css') }}">
         {%  endif %}
-
-        <!-- ems ball -->
-        <link rel="stylesheet" href="{{ asset('bundles/emscore/css/animation.css') }}">
-        <link rel="stylesheet" href="{{ asset('bundles/emscore/css/ems.css') }}">
     {%  else %}
   <!-- stylesheets -->
   <link rel="stylesheet" href="{{ asset('bundles/emscore/css/styles.css') }}">
@@ -466,64 +460,48 @@ desired effect
 
 <!-- REQUIRED JS SCRIPTS -->
 {%  if webpack %}
-    <script src="{{ asset('bundles/emscore/js/app.bundle.js') }}"></script>
 
-    {#<!-- Bootstrap -->#}
-    {#<script src="{{ asset('bundles/emscore/bower/bootstrap-sass/assets/javascripts/bootstrap.min.js') }}"></script>#}
-    {#<!-- Select2 -->#}
-    {#<script src="{{ asset('bundles/emscore/bower/AdminLTE/plugins/select2/select2.full.min.js') }}"></script>#}
-    <!-- DataTables -->
-    {#<script src="{{ asset('bundles/emscore/bower/AdminLTE/plugins/datatables/jquery.dataTables.min.js') }}"></script>#}
-    {#<script src="{{ asset('bundles/emscore/bower/AdminLTE/plugins/datatables/dataTables.bootstrap.min.js') }}"></script>#}
-    {#<!-- AdminLTE App -->#}
-    {#<script src="{{ asset('bundles/emscore/bower/AdminLTE/dist/js/app.min.js') }}"></script>#}
+    {% if theme_color %}
+        <script src="{{ asset('bundles/emscore/js/'~theme_color~'.bundle.js') }}"></script>
+    {%  else %}
+        <script src="{{ asset('bundles/emscore/js/blue.bundle.js') }}"></script>
+    {%  endif %}
+
     <!-- CK editor App -->
     <script src="{{ asset('bundles/emscore/bower/ckeditor/ckeditor.js') }}"></script>
-    {#<!-- Date picker App -->#}
-    {#<script src="{{ asset('bundles/emscore/bower/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>#}
-    {#<!-- Select Picker App -->#}
-    {#<script src="{{ asset('bundles/emscore/bower/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>#}
+    <!-- lazy loading -->
+    <script src="{{ asset('bundles/emscore/bower/jquery_lazyload/jquery.lazyload.js') }}"></script>
+ {% else %}
+    <!-- jQuery -->
+    <script src="{{ asset('bundles/emscore/bower/jquery/dist/jquery.min.js') }}"></script>
+    <!-- jQuery -->
+    <script src="{{ asset('bundles/emscore/bower/jquery-ui/jquery-ui.min.js') }}"></script>
+    <!-- fileinput plugin file -->
+    <script src="{{ asset('bundles/emscore/bower/bootstrap-fileinput/js/fileinput.min.js') }}"></script>
+    <!-- Bootstrap -->
+    <script src="{{ asset('bundles/emscore/bower/bootstrap-sass/assets/javascripts/bootstrap.min.js') }}"></script>
+    <!-- Select2 -->
+    <script src="{{ asset('bundles/emscore/bower/AdminLTE/plugins/select2/select2.full.min.js') }}"></script>
+    <!-- DataTables -->
+    <script src="{{ asset('bundles/emscore/bower/AdminLTE/plugins/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('bundles/emscore/bower/AdminLTE/plugins/datatables/dataTables.bootstrap.min.js') }}"></script>
+    <!-- AdminLTE App -->
+    <script src="{{ asset('bundles/emscore/bower/AdminLTE/dist/js/app.min.js') }}"></script>
+    <!-- CK editor App -->
+    <script src="{{ asset('bundles/emscore/bower/ckeditor/ckeditor.js') }}"></script>
+    <!-- Date picker App -->
+    <script src="{{ asset('bundles/emscore/bower/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
+    <!-- Select Picker App -->
+    <script src="{{ asset('bundles/emscore/bower/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
     <!-- Color Picker App -->
-    {#<script src="{{ asset('bundles/emscore/bower/AdminLTE/plugins/colorpicker/bootstrap-colorpicker.min.js') }}"></script>#}
+    <script src="{{ asset('bundles/emscore/bower/AdminLTE/plugins/colorpicker/bootstrap-colorpicker.min.js') }}"></script>
     <!-- lazy loading -->
     <script src="{{ asset('bundles/emscore/bower/jquery_lazyload/jquery.lazyload.js') }}"></script>
     <!-- timepicker loading -->
-    {#<script src="{{ asset('bundles/emscore/bower/bootstrap-timepicker/js/bootstrap-timepicker.js') }}"></script>#}
+    <script src="{{ asset('bundles/emscore/bower/bootstrap-timepicker/js/bootstrap-timepicker.js') }}"></script>
     <!-- bootstrap-daterangepicker loading -->
-    {#<script src="{{ asset('bundles/emscore/bower/moment/moment.js') }}"></script>#}
-    {#<script src="{{ asset('bundles/emscore/bower/bootstrap-daterangepicker/daterangepicker.js') }}"></script>#}
-    <!-- helper functions -->
-{% else %}
-<!-- jQuery -->
-<script src="{{ asset('bundles/emscore/bower/jquery/dist/jquery.min.js') }}"></script>
-<!-- jQuery -->
-<script src="{{ asset('bundles/emscore/bower/jquery-ui/jquery-ui.min.js') }}"></script>
-<!-- fileinput plugin file -->
-<script src="{{ asset('bundles/emscore/bower/bootstrap-fileinput/js/fileinput.min.js') }}"></script>
-<!-- Bootstrap -->
-<script src="{{ asset('bundles/emscore/bower/bootstrap-sass/assets/javascripts/bootstrap.min.js') }}"></script>
-<!-- Select2 -->
-<script src="{{ asset('bundles/emscore/bower/AdminLTE/plugins/select2/select2.full.min.js') }}"></script>
-<!-- DataTables -->
-<script src="{{ asset('bundles/emscore/bower/AdminLTE/plugins/datatables/jquery.dataTables.min.js') }}"></script>
-<script src="{{ asset('bundles/emscore/bower/AdminLTE/plugins/datatables/dataTables.bootstrap.min.js') }}"></script>
-<!-- AdminLTE App -->
-<script src="{{ asset('bundles/emscore/bower/AdminLTE/dist/js/app.min.js') }}"></script>
-<!-- CK editor App -->
-<script src="{{ asset('bundles/emscore/bower/ckeditor/ckeditor.js') }}"></script>
-<!-- Date picker App -->
-<script src="{{ asset('bundles/emscore/bower/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
-<!-- Select Picker App -->
-<script src="{{ asset('bundles/emscore/bower/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
-<!-- Color Picker App -->
-<script src="{{ asset('bundles/emscore/bower/AdminLTE/plugins/colorpicker/bootstrap-colorpicker.min.js') }}"></script>
-<!-- lazy loading -->
-<script src="{{ asset('bundles/emscore/bower/jquery_lazyload/jquery.lazyload.js') }}"></script>
-<!-- timepicker loading -->
-<script src="{{ asset('bundles/emscore/bower/bootstrap-timepicker/js/bootstrap-timepicker.js') }}"></script>
-<!-- bootstrap-daterangepicker loading -->
-<script src="{{ asset('bundles/emscore/bower/daterangepicker/moment.min.js') }}"></script>
-<script src="{{ asset('bundles/emscore/bower/daterangepicker/daterangepicker.js') }}"></script>
+    <script src="{{ asset('bundles/emscore/bower/daterangepicker/moment.min.js') }}"></script>
+    <script src="{{ asset('bundles/emscore/bower/daterangepicker/daterangepicker.js') }}"></script>
 {% endif %}
 
 <!-- helper functions -->

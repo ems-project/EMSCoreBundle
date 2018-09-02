@@ -214,7 +214,7 @@ function formatRepoSelectionForTable (repo) {
 	return html;
 }
 
-	$(window).load(function() {
+	window.onload = (function() {
 	
 	  var allSelect2 = $('#CriteriaUpdateCustomViewTable select').select2({
 	  ajax: {

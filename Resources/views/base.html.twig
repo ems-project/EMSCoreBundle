@@ -1,4 +1,5 @@
 {% trans_default_domain 'EMSCoreBundle' %}<!DOCTYPE html>
+{% set webpack = (app.environment == 'dev') %}
 <!--
 This is a starter template page. Use this page to start your new project from
 scratch. This page gets rid of all links and provides the needed markup only.
@@ -11,16 +12,25 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
+    {%  if webpack  %}
+        <!-- stylesheets -->
+        {% if theme_color %}
+            <link rel="stylesheet" href="{{ asset('bundles/emscore/css/'~theme_color~'.bundle.css') }}">
+        {%  else %}
+            <link rel="stylesheet" href="{{ asset('bundles/emscore/css/blue.bundle.css') }}">
+        {%  endif %}
+    {%  else %}
   <!-- stylesheets -->
   <link rel="stylesheet" href="{{ asset('bundles/emscore/css/styles.css') }}">
   <link rel="stylesheet" href="{{ asset('bundles/emscore/css/ems.css') }}">
   {% if theme_color %}
   <link rel="stylesheet" href="{{ asset('bundles/emscore/bower/AdminLTE/dist/css/skins/skin-'~theme_color~'.min.css') }}">
   {%  endif %}
-  
+
   <!-- Color Picker style -->
   <link rel="stylesheet" href="{{ asset('bundles/emscore/bower/AdminLTE/plugins/colorpicker/bootstrap-colorpicker.min.css') }}">
   <link rel="stylesheet" href="{{ asset('bundles/emscore/bower/daterangepicker/daterangepicker.css') }}">
+    {% endif %}
 
   {% block stylesheets %}{% endblock %}
 
@@ -36,7 +46,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 	
 {% block extraheader %}
 
-{% endblock %} 
+{% endblock %}
 </head>
 <!--
 BODY TAG OPTIONS:
@@ -75,7 +85,7 @@ desired effect
     <!-- Header Navbar -->
     <nav class="navbar navbar-static-top" role="navigation">
       <!-- Sidebar toggle button-->
-      <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button" id="sidebar-toggle-button">
+      <a href="#" class="sidebar-toggle" data-toggle="{%  if webpack  %}push-menu{% else %}offcanvas{% endif %}" role="button" id="sidebar-toggle-button">
         <span class="sr-only">Toggle navigation</span>
       </a>
       <!-- Navbar Right Menu -->
@@ -449,37 +459,51 @@ desired effect
 <!-- ./wrapper -->
 
 <!-- REQUIRED JS SCRIPTS -->
+{%  if webpack %}
 
-<!-- jQuery -->
-<script src="{{ asset('bundles/emscore/bower/jquery/dist/jquery.min.js') }}"></script>
-<!-- jQuery -->
-<script src="{{ asset('bundles/emscore/bower/jquery-ui/jquery-ui.min.js') }}"></script>
-<!-- fileinput plugin file -->
-<script src="{{ asset('bundles/emscore/bower/bootstrap-fileinput/js/fileinput.min.js') }}"></script>
-<!-- Bootstrap -->
-<script src="{{ asset('bundles/emscore/bower/bootstrap-sass/assets/javascripts/bootstrap.min.js') }}"></script>
-<!-- Select2 -->
-<script src="{{ asset('bundles/emscore/bower/AdminLTE/plugins/select2/select2.full.min.js') }}"></script>
-<!-- DataTables -->
-<script src="{{ asset('bundles/emscore/bower/AdminLTE/plugins/datatables/jquery.dataTables.min.js') }}"></script>
-<script src="{{ asset('bundles/emscore/bower/AdminLTE/plugins/datatables/dataTables.bootstrap.min.js') }}"></script>
-<!-- AdminLTE App -->
-<script src="{{ asset('bundles/emscore/bower/AdminLTE/dist/js/app.min.js') }}"></script>
-<!-- CK editor App -->
-<script src="{{ asset('bundles/emscore/bower/ckeditor/ckeditor.js') }}"></script>
-<!-- Date picker App -->
-<script src="{{ asset('bundles/emscore/bower/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
-<!-- Select Picker App -->
-<script src="{{ asset('bundles/emscore/bower/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
-<!-- Color Picker App -->
-<script src="{{ asset('bundles/emscore/bower/AdminLTE/plugins/colorpicker/bootstrap-colorpicker.min.js') }}"></script>
-<!-- lazy loading -->
-<script src="{{ asset('bundles/emscore/bower/jquery_lazyload/jquery.lazyload.js') }}"></script>
-<!-- timepicker loading -->
-<script src="{{ asset('bundles/emscore/bower/bootstrap-timepicker/js/bootstrap-timepicker.js') }}"></script>
-<!-- bootstrap-daterangepicker loading -->
-<script src="{{ asset('bundles/emscore/bower/daterangepicker/moment.min.js') }}"></script>
-<script src="{{ asset('bundles/emscore/bower/daterangepicker/daterangepicker.js') }}"></script>
+    {% if theme_color %}
+        <script src="{{ asset('bundles/emscore/js/'~theme_color~'.bundle.js') }}"></script>
+    {%  else %}
+        <script src="{{ asset('bundles/emscore/js/blue.bundle.js') }}"></script>
+    {%  endif %}
+
+    <!-- CK editor App -->
+    <script src="{{ asset('bundles/emscore/bower/ckeditor/ckeditor.js') }}"></script>
+    <!-- lazy loading -->
+    <script src="{{ asset('bundles/emscore/bower/jquery_lazyload/jquery.lazyload.js') }}"></script>
+ {% else %}
+    <!-- jQuery -->
+    <script src="{{ asset('bundles/emscore/bower/jquery/dist/jquery.min.js') }}"></script>
+    <!-- jQuery -->
+    <script src="{{ asset('bundles/emscore/bower/jquery-ui/jquery-ui.min.js') }}"></script>
+    <!-- fileinput plugin file -->
+    <script src="{{ asset('bundles/emscore/bower/bootstrap-fileinput/js/fileinput.min.js') }}"></script>
+    <!-- Bootstrap -->
+    <script src="{{ asset('bundles/emscore/bower/bootstrap-sass/assets/javascripts/bootstrap.min.js') }}"></script>
+    <!-- Select2 -->
+    <script src="{{ asset('bundles/emscore/bower/AdminLTE/plugins/select2/select2.full.min.js') }}"></script>
+    <!-- DataTables -->
+    <script src="{{ asset('bundles/emscore/bower/AdminLTE/plugins/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('bundles/emscore/bower/AdminLTE/plugins/datatables/dataTables.bootstrap.min.js') }}"></script>
+    <!-- AdminLTE App -->
+    <script src="{{ asset('bundles/emscore/bower/AdminLTE/dist/js/app.min.js') }}"></script>
+    <!-- CK editor App -->
+    <script src="{{ asset('bundles/emscore/bower/ckeditor/ckeditor.js') }}"></script>
+    <!-- Date picker App -->
+    <script src="{{ asset('bundles/emscore/bower/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
+    <!-- Select Picker App -->
+    <script src="{{ asset('bundles/emscore/bower/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
+    <!-- Color Picker App -->
+    <script src="{{ asset('bundles/emscore/bower/AdminLTE/plugins/colorpicker/bootstrap-colorpicker.min.js') }}"></script>
+    <!-- lazy loading -->
+    <script src="{{ asset('bundles/emscore/bower/jquery_lazyload/jquery.lazyload.js') }}"></script>
+    <!-- timepicker loading -->
+    <script src="{{ asset('bundles/emscore/bower/bootstrap-timepicker/js/bootstrap-timepicker.js') }}"></script>
+    <!-- bootstrap-daterangepicker loading -->
+    <script src="{{ asset('bundles/emscore/bower/daterangepicker/moment.min.js') }}"></script>
+    <script src="{{ asset('bundles/emscore/bower/daterangepicker/daterangepicker.js') }}"></script>
+{% endif %}
+
 <!-- helper functions -->
 <script src="{{ asset('bundles/emscore/js/helper.js') }}"></script>
 <!-- AjaxRequest -->

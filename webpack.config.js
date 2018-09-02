@@ -1,54 +1,83 @@
 const path = require('path');
-const webpack = require('webpack'); 
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
-
-const extractSass = new ExtractTextPlugin({
-    filename: "[name].bundle.css",
-//    disable: process.env.NODE_ENV === "development"
-});
+const webpack = require('webpack');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
-     entry: { 
-    	 app: './Resources/src/index.js',
-//         style: './Resources/sass/styles.scss', 
-     },
-     output: {
-         path: path.resolve(__dirname, 'Resources/public'),
-         filename: '[name].bundle.js',
-//         publicPath: '../bundles/emscore/'
-     },
-     module: {
-    	 
-         rules: [
-         	{ test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' },
-            { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "url-loader?limit=10000&mimetype=application/font-woff" },
-            { test: /\.(ttf|eot|svg|jpg|png|gif)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "file-loader" },{
-                test: /\.scss$/,
-                use: extractSass.extract({
-                    use: [{
-                        loader: "css-loader?modules&importLoaders=2&localIdentName=[name]__[local]__[hash:base64:5]", options: {
+    plugins: [
+        new MiniCssExtractPlugin({
+            // Options similar to the same options in webpackOptions.output
+            // both options are optional
+            filename: "css/[name].bundle.css",
+            chunkFilename: "[id].css"
+        })
+    ],
+    context: path.resolve(__dirname, './'),
+    entry: {
+        'black': './Resources/assets/skins/black.js',
+        'black-light': './Resources/assets/skins/black-light.js',
+        'blue': './Resources/assets/skins/blue.js',
+        'blue-light': './Resources/assets/skins/blue-light.js',
+        'green': './Resources/assets/skins/green.js',
+        'green-light': './Resources/assets/skins/green-light.js',
+        'purple': './Resources/assets/skins/purple.js',
+        'purple-light': './Resources/assets/skins/purple-light.js',
+        'red': './Resources/assets/skins/red.js',
+        'red-light': './Resources/assets/skins/red-light.js',
+        'yellow': './Resources/assets/skins/yellow.js',
+        'yellow-light': './Resources/assets/skins/yellow-light.js',
+    },
+    output: {
+        path: path.resolve(__dirname, 'Resources/public'),
+        filename: 'js/[name].bundle.js',
+        //publicPath: '../bundles/emscore/',
+    },
+    module: {
+        rules: [
+            {
+                test: /\.less$/,
+                use: [{
+                    loader: MiniCssExtractPlugin.loader,
+                    options: {
+                        // you can specify a publicPath here
+                        // by default it use publicPath in webpackOptions.output
+                        publicPath: '../'
+                    }
+                },{
+                    loader: 'css-loader', // translates CSS into CommonJS
+                    options: {
+                        sourceMap: true
+                    }
+                }, {
+                    loader: 'less-loader' // compiles Less to CSS
+                }]
+            },
+            {
+                test: /\.(sa|sc|c)ss$/,
+                use: [{
+                        loader: MiniCssExtractPlugin.loader,
+                        options: {
+                            // you can specify a publicPath here
+                            // by default it use publicPath in webpackOptions.output
+                            publicPath: '../'
+                        }
+                    },{
+                        loader: 'css-loader',
+                        options: {
                             sourceMap: true
                         }
-                    }, {
-                        loader: "resolve-url-loader"
-                    }, {
-                        loader: "sass-loader", options: {
-                            sourceMap: true
-                        }
-                    }],
-                    // use style-loader in development
-                    fallback: "style-loader"
-                })
-            }],
-    	 
-     },
-     plugins: [
-    	 extractSass,
-    	 new webpack.ProvidePlugin({
-             $: "jquery",
-             jQuery: "jquery",
-             "window.jQuery": "jquery"
-         })
-     ],
-     
- };
+                    },
+                    // 'postcss-loader',
+                    'sass-loader',
+                ],
+            },
+            {
+                test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
+                loader: 'url-loader',
+                options: {
+                    limit: 10000,
+                    name: 'media/[name].[ext]',
+                }
+            }
+        ]
+    }
+};

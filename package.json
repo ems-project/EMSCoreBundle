@@ -1,63 +1,30 @@
 {
-  "name": "elasticms-core",
-  "version": "1.6.4",
-  "description": "Symfony bundle for the core of elasticms",
-  "main": "./Resources/src/index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ems-project/EMSCoreBundle.git"
-  },
-  "keywords": [
-    "CMS",
-    "Symfony",
-    "elasticsearch",
-    "AdminLTE"
-  ],
-  "author": "Mathieu De Keyzer",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/ems-project/EMSCoreBundle/issues"
-  },
-  "homepage": "https://github.com/ems-project/EMSCoreBundle#readme",
-  "devDependencies": {
-    "babel-core": "^6.25.0",
-    "babel-loader": "^7.1.1",
-    "babel-preset-stage-3": "^6.24.1",
-    "bootstrap-loader": "^2.1.0",
-    "bootstrap-sass": "^3.3.7",
-    "css-loader": "^0.28.4",
-    "extract-text-webpack-plugin": "^2.1.2",
-    "jquery": "^3.2.1",
-    "node-sass": "^4.5.3",
-    "resolve-url-loader": "^2.1.0",
-    "sass-loader": "^6.0.6",
-    "sass-resources-loader": "^1.2.1",
-    "style-loader": "^0.18.2",
-    "url-loader": "^0.5.9",
-    "webpack": "^3.0.0"
-  },
   "dependencies": {
-    "admin-lte": "^2.3.11",
-    "babel-polyfill": "^6.23.0",
-    "babel-preset-env": "^1.6.0",
-    "babel-preset-stage-2": "^6.24.1",
-    "bootstrap": "^3.3.7",
-    "bootstrap-datepicker": "^1.7.0",
-    "bootstrap-daterangepicker": "^2.1.25",
-    "bootstrap-fileinput": "^4.4.2",
-    "bootstrap-select": "^1.12.2",
-    "bootstrap-timepicker": "^0.5.2",
-    "ckeditor": "^4.7.1",
-    "file-loader": "^0.11.2",
-    "font-awesome": "^4.7.0",
-    "glyphicons": "^0.2.0",
-    "glyphicons-halflings": "^1.9.0",
-    "ionicons": "^3.0.0",
-    "jquery-lazyload": "^1.9.7",
-    "jquery-ui": "^1.12.1",
-    "select2": "^4.0.3"
+    "admin-lte": "^2.3.2",
+    "bootstrap-fileinput": "^4.5.0",
+    "bootstrap-sass": "3.3.7",
+    "bootstrap-select": "^1.13.2",
+    "datepicker": "^0.0.0",
+    "daterangepicker": "^3.0.3",
+    "icheck": "^1.0.2",
+    "webpack-jquery-ui": "^2.0.1"
+  },
+  "engines": {
+    "yarn": ">= 1.0.0"
+  },
+  "scripts": {},
+  "devDependencies": {
+    "css-loader": "^1.0.0",
+    "file-loader": "^2.0.0",
+    "less": "^3.8.1",
+    "less-loader": "^4.1.0",
+    "mini-css-extract-plugin": "^0.4.2",
+    "node-sass": "^4.9.3",
+    "postcss-loader": "^3.0.0",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.0",
+    "url-loader": "^1.1.1",
+    "webpack": "^4.17.1",
+    "webpack-cli": "^3.1.0"
   }
 }

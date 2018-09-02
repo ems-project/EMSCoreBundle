@@ -882,7 +882,7 @@ $(window).ready(function() {
 });
 
 
-$(window).load(function() {
+window.onload = (function() {
 	/** TODO:  quid d'un CKEditor ajouté au vol*/
 	for (var i in CKEDITOR.instances) {
         CKEDITOR.instances[i].on('key', onFormChange );

@@ -35,6 +35,7 @@ require('bootstrap-datepicker');
 require('admin-lte');
 require('bootstrap-fileinput');
 require('webpack-jquery-ui/sortable');
+require('daterangepicker');
 
 $(document).ready(function() {
     console.log('AdminLTE\'s and elasticms\'s scripts loaded');

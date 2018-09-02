@@ -49,10 +49,10 @@
       {% if app.user %}
 	      {% set searches = app.user.username|searches %}
 	      {% if searches|length > 0 %}
-	      <ul class="sidebar-menu">
+	      <ul class="sidebar-menu" data-widget="tree">
 	        <li class="header">{{ app.user.displayName }}</li>
 	        <!-- Optionally, you can add icons to the links -->
-	          <li class="">
+	          <li class="treeview">
 	          	<a href="#" class="">
 	          		<i class="fa fa-search"></i> <span>Searches</span>
 	          		<i class="fa fa-angle-left pull-right"></i>
@@ -73,14 +73,14 @@
 		  	{{ render(controller(application_menu_controller)) }}
 		{% endif %}
       <!-- /Application Menu -->
-		
+
 	{% if get_content_types()|length > 0 %}
-      <ul class="sidebar-menu">
+      <ul class="sidebar-menu" data-widget="tree">
         <li class="header">Content Management</li>
         <!-- Optionally, you can add icons to the links -->
         {% for contentType in get_content_types() %}
         	{% if contentType.active and (not contentType.viewRole or is_granted(contentType.viewRole) or contentType.rootContentType ) %}
-	          <li class="">
+	          <li class="treeview">
 	          	<a href="{{ path('data.root', {name: contentType.name}) }}" class="text-{{ contentType.color }}">
 	          		<i class=" {% if contentType.icon %}{{ contentType.icon }}{% else %}fa fa-book{% endif %}"></i> <span>{{ contentType.pluralName }}</span>
 	          		

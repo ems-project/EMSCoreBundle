@@ -1160,7 +1160,7 @@ class DataService
 		return $out.'</ul>';
 	}
 	
-	public function isValid(\Symfony\Component\Form\Form &$form, DataField $parent=null) {
+	public function isValid(\Symfony\Component\Form\Form &$form, DataField $parent=null, &$masterRawData=null) {
 	    if($form->getName() == '_ems_internal_deleted' && $parent != null && $parent->getFieldType() != null && $parent->getFieldType()->getType() == CollectionItemFieldType::class) {
 	        return true;
         }
@@ -1171,10 +1171,11 @@ class DataService
 		if(!is_object($viewData) && 'allFieldsAreThere' == $form->getName()){
 			return true;
 		}
-		
+
 		if($viewData instanceof Revision) {
-			/** @var DataField $dataField */
 			$viewData = $form->get('data')->getNormData();
+
+            $masterRawData = $viewData->getRawData();
 		}
 		
 		if($viewData instanceof DataField) {
@@ -1190,14 +1191,14 @@ class DataService
 // 	    	$dataFieldType = new $dataFieldTypeClassName();
 	    	/** @var DataFieldType $dataFieldType */
 			$dataFieldType = $this->formRegistry->getType($dataField->getFieldType()->getType())->getInnerType();
-			$dataFieldType->isValid($dataField, $parent);
+			$dataFieldType->isValid($dataField, $parent, $masterRawData);
 		}
 		$isValid = true;
 		if(isset($dataFieldType) && $dataFieldType->isContainer()) {//If datafield is container or type is null => Container => Recursive
 			$formChildren = $form->all();
 			foreach ($formChildren as $child) {
 				if( $child instanceof \Symfony\Component\Form\Form) {
-					$tempIsValid = $this->isValid($child, $dataField);//Recursive
+					$tempIsValid = $this->isValid($child, $dataField, $masterRawData);//Recursive
 					$isValid = $isValid && $tempIsValid;
 				}
 			}

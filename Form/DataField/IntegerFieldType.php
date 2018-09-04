@@ -34,13 +34,13 @@ class IntegerFieldType extends DataFieldType {
 	 * {@inheritdoc}
 	 *
 	 */
-	public function isValid(DataField &$dataField, DataField $parent=null){
+	public function isValid(DataField &$dataField, DataField $parent=null, &$masterRawData=null){
         if($this->hasDeletedParent($parent))
         {
             return true;
         }
 
-		$isValid = parent::isValid($dataField, $parent);
+		$isValid = parent::isValid($dataField, $parent,$masterRawData);
 		
 		$rawData = $dataField->getRawData();
 		if(! empty($rawData) && !is_numeric($rawData)) {

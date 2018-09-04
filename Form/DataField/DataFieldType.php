@@ -334,13 +334,13 @@ abstract class DataFieldType extends AbstractType {
 	 *
 	 * @return boolean
 	 */
-	public function isValid(DataField &$dataField, DataField $parent=null){
+	public function isValid(DataField &$dataField, DataField $parent=null, &$masterRawData=null){
         if($this->hasDeletedParent($parent))
         {
             return true;
         }
 
-		return count($dataField->getMessages()) === 0 && $this->isMandatory($dataField, $parent);
+		return count($dataField->getMessages()) === 0 && $this->isMandatory($dataField, $parent, $masterRawData);
 	}
 	
 	/**
@@ -348,14 +348,15 @@ abstract class DataFieldType extends AbstractType {
 	 *
 	 * @return boolean
 	 */
-	public function isMandatory(DataField &$dataField, DataField $parent=null){
+	public function isMandatory(DataField &$dataField, DataField $parent=null, &$masterRawData=null){
 		$isValidMadatory = TRUE;
 		//Get FieldType mandatory option
 		$restrictionOptions = $dataField->getFieldType()->getRestrictionOptions();
 		if(isset($restrictionOptions["mandatory"]) && true == $restrictionOptions["mandatory"]) {
-			
-			if($parent === null || !isset($restrictionOptions["mandatory_if"]) || $parent->getRawData() === null || !empty($parent->getRawData()[$restrictionOptions["mandatory_if"]])) {
-				//Get rawData
+
+			if($parent === null || !isset($restrictionOptions["mandatory_if"]) || $parent->getRawData() === null || (is_array($masterRawData) && !empty($this->resolve($masterRawData, $restrictionOptions["mandatory_if"])) )) {
+
+			    //Get rawData
 				$rawData = $dataField->getRawData();
 				if( !isset($rawData) || (is_string($rawData) && $rawData=== "") || (is_array($rawData) && count($rawData) === 0) || $rawData === null ) {
 					$isValidMadatory = FALSE;
@@ -365,6 +366,22 @@ abstract class DataFieldType extends AbstractType {
 		}
 		return $isValidMadatory;
 	}
+
+	public static function resolve(array $a, $path, $default = null)
+    {
+        $current = $a;
+        $p = strtok($path, '.');
+
+        while ($p !== false) {
+            if (!isset($current[$p])) {
+                return $default;
+            }
+            $current = $current[$p];
+            $p = strtok('.');
+        }
+
+        return $current;
+    }
 
 	public function hasDeletedParent(DataField $parent=null)
     {

@@ -58,13 +58,13 @@ use Symfony\Component\Form\FormBuilderInterface;
 	 * {@inheritdoc}
 	 *
 	 */
-	public function isValid(DataField &$dataField, DataField $parent=null){
+	public function isValid(DataField &$dataField, DataField $parent=null, &$masterRawData=null){
         if($this->hasDeletedParent($parent))
         {
             return true;
         }
 
-		$isValid = parent::isValid($dataField, $parent);
+		$isValid = parent::isValid($dataField, $parent, $masterRawData);
 		
 		$rawData = $dataField->getRawData();
 		if(! empty($rawData) && filter_var($rawData, FILTER_VALIDATE_EMAIL) === false) {

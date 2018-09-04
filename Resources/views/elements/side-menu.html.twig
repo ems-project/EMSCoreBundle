@@ -106,10 +106,10 @@
 								{% else %}
 					            	{% set label = circleContenttype.singularName %}
 								{% endif %}
+	            		        <li class=""><a id="menu-data-index-{{ contentType.id }}" href="{{ path('ems_search_in_my_circles', {'name':contentType.name} ) }}"><i class="{{ circleContenttype.icon }}"></i> In my {{ label }}</a></li>
 							{% endif %}
 						{% endif %}
 
-	            		<li class=""><a id="menu-data-index-{{ contentType.id }}" href="{{ path('ems_search_in_my_circles', {'name':contentType.name} ) }}"><i class="{{ circleContenttype.icon }}"></i> In my {{ label }}</a></li>
 	            	{% endif %}
 	            	{% for view in contentType.views %}
 	            		<li>

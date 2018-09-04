@@ -61,6 +61,43 @@ class ContentTypeService {
 		$this->translator= $translator;
         $this->singleTypeIndex = $singleTypeIndex;
 	}
+
+
+    /**
+     * Get child by path
+     *
+     * @return FieldType
+     */
+    public function getChildByPath(FieldType $fieldType, $path, $skipVirtualFields = false)
+    {
+        $elem = explode('.', $path);
+        if(!empty($elem)){
+            /**@var FieldType $child*/
+            foreach ($fieldType->getChildren() as $child){
+                if(!$child->getDeleted() ){
+                    $type = $child->getType();
+                    if( $skipVirtualFields && $type::isVirtual($child->getOptions())  ){
+                        $out = $this->getChildByPath($child, $path, $skipVirtualFields);
+                        if($out) {
+                            return $out;
+                        }
+                    }
+                    else if($child->getName() == $elem[0]) {
+                        if(strpos($path, ".")){
+                            $out = $this->getChildByPath($fieldType, substr($path, strpos($path, ".")+1), $skipVirtualFields);
+                            if($out) {
+                                return $out;
+                            }
+                        }
+                        return $child;
+                    }
+
+                }
+            }
+
+        }
+        return FALSE;
+    }
 	
 	private function loadEnvironment(){
 		if($this->orderedContentTypes === false) {

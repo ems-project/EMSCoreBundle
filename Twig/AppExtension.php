@@ -3,6 +3,7 @@ namespace EMS\CoreBundle\Twig;
 
 use Caxy\HtmlDiff\HtmlDiff;
 use DateTime;
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Form\DataField\DateFieldType;
 use EMS\CoreBundle\Form\DataField\TimeFieldType;
 use EMS\CoreBundle\Service\FileService;
@@ -147,11 +148,18 @@ class AppExtension extends \Twig_Extension
             new \Twig_SimpleFilter('array_intersect', array($this, 'array_intersect')),
             new \Twig_SimpleFilter('get_string', array($this, 'getString')),
             new \Twig_SimpleFilter('get_file', array($this, 'getFile')),
-				
+            new \Twig_SimpleFilter('get_field_by_path', array($this, 'getFieldByPath')),
+
 				
 				
 		);
 	}
+
+
+
+	public function getFieldByPath(ContentType $contentType, $path, $skipVirtualFields=false) {
+	    return $this->contentTypeService->getChildByPath($contentType->getFieldType(), $path, $skipVirtualFields);
+    }
 
 
 	public function getFile($hash, $cacheContext=false) {

@@ -637,6 +637,7 @@ class FieldType
      * Get child by path
      *
      * @return FieldType
+     * @deprecated it's not clear if its the mapping of the rawdata or of the formdata (with ou without the virtual fields) see the same function in the contenttypeservice
      */
     public function getChildByPath($path)
     {

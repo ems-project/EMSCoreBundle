@@ -97,9 +97,10 @@
 	          		{% if contentType.circlesField and app.user.circles|length > 0 %}
 
 		            	{% set label = contentType.circlesField %}
-						{% if (contentType.fieldType.getChildByPath(contentType.circlesField).options.displayOptions.type) is defined %}
+		            	{% set circleField = contentType|get_field_by_path(contentType.circlesField, true) %}
 
-		            		{% set circleContenttype = (contentType.fieldType.getChildByPath(contentType.circlesField).options.displayOptions.type)|get_content_type %}
+						{% if circleField and circleField.options.displayOptions.type is defined  %}
+		            		{% set circleContenttype = circleField.options.displayOptions.type|get_content_type %}
 		            		{% if circleContenttype %}
 								{% if app.user.circles|length > 1 %}
 					            	{% set label = circleContenttype.pluralName %}

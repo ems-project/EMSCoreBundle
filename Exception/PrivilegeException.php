@@ -10,13 +10,13 @@ class PrivilegeException extends \Exception
 	
 	private $revision;
 	
-	public function __construct(Revision $revision) {
+	public function __construct(Revision $revision, string $message = 'Not enough privilege the manipulate the object') {
 		$this->revision = $revision;
 		if($revision->getContentType()){
-			$message = "Not enough privilege the manipulate the object ".$revision->getContentType()->getName().":".$revision->getOuuid();			
+			$message = $message." ".$revision->getContentType()->getName().":".$revision->getOuuid();
 		}
 		else {
-			throw new \Exception("Not enough privilege the manipulate the object");
+			throw new \Exception($message);
 		}
 		parent::__construct($message, 0, null);
 	}

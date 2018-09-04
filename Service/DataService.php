@@ -139,15 +139,15 @@ class DataService
 		
 		
 		
-		if(!empty($publishEnv) && !$this->authorizationChecker->isGranted('ROLE_PUBLISHER') ){
-			throw new PrivilegeException($revision);
-		}
-		else if( !empty($publishEnv) && is_object($publishEnv) && !empty($publishEnv->getCircles()) && !$this->authorizationChecker->isGranted('ROLE_ADMIN') && !$this->appTwig->inMyCircles($publishEnv->getCircles()) ) {
-			throw new PrivilegeException($revision);
-		}
-		else if(empty($publishEnv) && !empty($revision->getContentType()->getCirclesField()) && !empty($revision->getRawData()[$revision->getContentType()->getCirclesField()])) {
-			if(!$this->appTwig->inMyCircles($revision->getRawData()[$revision->getContentType()->getCirclesField()])) {
-				throw new PrivilegeException($revision);
+		if(!empty($publishEnv) && !$this->authorizationChecker->isGranted($revision->getContentType()->getPublishRole()?:'ROLE_PUBLISHER') ){
+		    throw new PrivilegeException($revision, 'You don\'t have publisher role for this content' );
+        }
+        else if( !empty($publishEnv) && is_object($publishEnv) && !empty($publishEnv->getCircles()) && !$this->authorizationChecker->isGranted('ROLE_ADMIN') && !$this->appTwig->inMyCircles($publishEnv->getCircles()) ) {
+            throw new PrivilegeException($revision, 'You don\'t share any circle with this content');
+        }
+        else if(empty($publishEnv) && !empty($revision->getContentType()->getCirclesField()) && !empty($revision->getRawData()[$revision->getContentType()->getCirclesField()])) {
+            if(!$this->appTwig->inMyCircles($revision->getRawData()[$revision->getContentType()->getCirclesField()])) {
+            throw new PrivilegeException($revision);
 			}
 		}
 		

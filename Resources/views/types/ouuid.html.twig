@@ -7,6 +7,6 @@
 <div class="form-group">
 	<label>{{ fieldType.label }}</label>
 	<input type="text" class="form-control" disabled="" value="{% if revision.ouuid  %}{{ revision.ouuid }}{% else %}The object unique identifier will be generated{% endif %}">
-	<p class="help-block">{% if fieldType.description %}{{ fieldType.description }}{% else %}This field contains a copy of the object unique identifier.{% endif %}</p>
+	<div class="help-block">{% if fieldType.description %}{{ fieldType.description }}{% else %}This field contains a copy of the object unique identifier.{% endif %}</div>
 </div>
 {% endspaceless %}

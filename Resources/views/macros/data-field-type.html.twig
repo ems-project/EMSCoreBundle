@@ -266,7 +266,7 @@
 					{{ dataField.fieldType.displayOptions.label }}
 				{% else %}
 				{% endif %}
-				({{ dataField.fieldType.name }})
+				{% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
 				{% if collapsible %}
                     <div class="pull-right">
                         <div class="btn-group toggle-group" role="group">
@@ -443,7 +443,7 @@
 {% import _self as macros %}
 	<dl>
 		{% if dataField.fieldType.displayOptions.label is defined %}
-			<dt>{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})</dt>
+			<dt>{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}</dt>
 		{% else %}
 			<dt>{{ dataField.fieldType.name }}</dt>
 		{% endif %}
@@ -458,7 +458,7 @@
 {% import _self as macros %}
 	<dl>
 		{% if dataField.fieldType.displayOptions.label is defined %}
-			<dt>{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})</dt>
+			<dt>{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}</dt>
 		{% else %}
 			<dt>{{ dataField.fieldType.name }}</dt>
 		{% endif %}
@@ -478,7 +478,7 @@
 {% import _self as macros %}
 	<dl>
 		{% if dataField.fieldType.displayOptions.label is defined %}
-			<dt>{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})</dt>
+			<dt>{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}</dt>
 		{% else %}
 			<dt>{{ dataField.fieldType.name }}</dt>
 		{% endif %}
@@ -493,7 +493,7 @@
     {% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
 	<dl>
 		{% if dataField.fieldType.displayOptions.label is defined %}
-			<dt>{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})</dt>
+			<dt>{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}</dt>
 		{% else %}
 			<dt>{{ dataField.fieldType.name }}</dt>
 		{% endif %}
@@ -528,7 +528,7 @@
 {% import _self as macros %}
 	<dl>
 		{% if dataField.fieldType.displayOptions.label is defined %}
-			<dt>{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})</dt>
+			<dt>{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}</dt>
 		{% else %}
 			<dt>{{ dataField.fieldType.name }}</dt>
 		{% endif %}
@@ -542,7 +542,7 @@
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name }}
 			{% endif %}
@@ -565,7 +565,7 @@
     <dl>
         <dt>
             {% if dataField.fieldType.displayOptions.label is defined %}
-                {{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+                {{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
             {% else %}
                 {{ dataField.fieldType.name }}
             {% endif %}
@@ -593,7 +593,7 @@
 	<dl>
 		<dt class="{{ color }}">
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name }}
 			{% endif %}
@@ -616,7 +616,7 @@
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name }}
 			{% endif %}
@@ -642,7 +642,7 @@
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name }}
 			{% endif %}
@@ -678,7 +678,7 @@
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name }}
 			{% endif %}
@@ -695,7 +695,7 @@
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name }}
 			{% endif %}
@@ -712,7 +712,7 @@
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name }}
 			{% endif %}
@@ -732,7 +732,7 @@
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name }}
 			{% endif %}
@@ -752,7 +752,7 @@
     <dl>
 		<dt class="">
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name }}
 			{% endif %}
@@ -792,7 +792,7 @@
 	<dl>
 		<dt class="{{ color }}">
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name|raw }}
 			{% endif %}
@@ -812,7 +812,7 @@
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name|raw }}
 			{% endif %}
@@ -829,7 +829,7 @@
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name|raw }}
 			{% endif %}
@@ -846,7 +846,7 @@
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name|raw }}
 			{% endif %}
@@ -866,7 +866,7 @@
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name|raw }}
 			{% endif %}
@@ -931,7 +931,7 @@
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} ({{ dataField.fieldType.name }})
+				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name|raw }}
 			{% endif %}

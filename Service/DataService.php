@@ -155,7 +155,7 @@ class DataService
 		/**@var Notification $notification*/
 		foreach ($revision->getNotifications() as $notification) {
             if( $notification->getStatus() === Notification::PENDING && !$this->authorizationChecker->isGranted($notification->getTemplate()->getRole())) {
-                throw new PrivilegeException($revision, 'A pending "'.$notification->getTemplate()->getName().' notification is locking this content');
+                throw new PrivilegeException($revision, 'A pending "'.$notification->getTemplate()->getName().'" notification is locking this content');
             }
         }
 

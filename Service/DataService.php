@@ -255,12 +255,14 @@ class DataService
                     $out = trim($out);
 
                     if(strlen($out) > 0){
-
-                        $out = json_decode($out, true);
+                        $json = json_decode($out, true);
                         $meg = json_last_error_msg();
                         if(strcasecmp($meg, 'No error') == 0) {
-                            $objectArray[$dataField->getFieldType()->getName()] = $out;
+                            $objectArray[$dataField->getFieldType()->getName()] = $json;
                             $found = true;
+                        }
+                        else {
+                            $this->session->getFlashBag()->add('warning', 'Error to JSON parse the result of the post processing script of field '.$dataField->getFieldType()->getName().' (|json_encode|raw): '.$out);
                         }
                     }
                 }
@@ -324,7 +326,6 @@ class DataService
             /**@var Form $child*/
 			foreach ($form->getIterator() as $child){
 
-
                /**@var DataFieldType $childType */
 				$childType = $child->getConfig()->getType()->getInnerType();
 
@@ -344,7 +345,7 @@ class DataService
 
 				}elseif( $childType instanceof DataFieldType ) {
 
-					$found = $this->propagateDataToComputedField_recursive($child, $objectArray, $contentType, $type, $ouuid, $migration, $parent, $path) || $found;
+				    $found = $this->propagateDataToComputedField_recursive($child, $objectArray, $contentType, $type, $ouuid, $migration, $parent, $path) || $found;
 				}
 			}
 		}

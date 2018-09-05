@@ -13,6 +13,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Notification
 {
+    const PENDING = 'pending';
+
     /**
      * @var int
      *

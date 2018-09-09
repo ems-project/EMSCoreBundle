@@ -354,7 +354,7 @@ abstract class DataFieldType extends AbstractType {
 		$restrictionOptions = $dataField->getFieldType()->getRestrictionOptions();
 		if(isset($restrictionOptions["mandatory"]) && true == $restrictionOptions["mandatory"]) {
 
-			if($parent === null || !isset($restrictionOptions["mandatory_if"]) || $parent->getRawData() === null || (is_array($masterRawData) && !empty($this->resolve($masterRawData, $restrictionOptions["mandatory_if"])) )) {
+			if($parent === null || !isset($restrictionOptions["mandatory_if"]) || $parent->getRawData() === null || (is_array($masterRawData) && !empty($this->resolve($masterRawData, $parent->getRawData(), $restrictionOptions["mandatory_if"])) )) {
 
 			    //Get rawData
 				$rawData = $dataField->getRawData();
@@ -367,11 +367,14 @@ abstract class DataFieldType extends AbstractType {
 		return $isValidMadatory;
 	}
 
-	public static function resolve(array $a, $path, $default = null)
+	public static function resolve(array $rawData, array $parentRawData, $path, $default = null)
     {
-        $current = $a;
-        $p = strtok($path, '.');
+        $current = $rawData;
+        if (strlen($path) && substr($path, 0, 1) === '.') {
+            $current = $parentRawData;
+        }
 
+        $p = strtok($path, '.');
         while ($p !== false) {
             if (!isset($current[$p])) {
                 return $default;

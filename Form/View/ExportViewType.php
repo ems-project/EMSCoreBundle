@@ -69,6 +69,11 @@ class ExportViewType extends ViewType {
 				'attr' => [
 				],
 		] )
+        ->add ( 'allow_origin', TextType::class, [
+				'label' => 'The Access-Control-Allow-Originm header',
+				'attr' => [
+				],
+		] )
 		->add ( 'filename', CodeEditorType::class, [
 				'label' => 'The Twig template used to generate the export file name',
 				'attr' => [
@@ -119,6 +124,9 @@ class ExportViewType extends ViewType {
 		}
 		
 		$response->headers->set('Content-Type', $parameters['mimetype']);
+		if($parameters['allow_origin']) {
+    		$response->headers->set('Access-Control-Allow-Origin', $parameters['allow_origin']);
+        }
 		
 		$response->setContent($parameters['render']);
 		
@@ -183,6 +191,7 @@ class ExportViewType extends ViewType {
 				'render' => $render,
 				'filename' => $filename,
 				'mimetype' => empty($view->getOptions()['mimetype'])?'application/bin':$view->getOptions()['mimetype'],
+				'allow_origin' => empty($view->getOptions()['allow_origin'])?null:$view->getOptions()['allow_origin'],
 				'view' => $view,
 				'contentType' => $view->getContentType(),
 				'environment' => $view->getContentType()->getEnvironment(),

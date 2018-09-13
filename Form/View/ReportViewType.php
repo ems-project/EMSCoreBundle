@@ -60,6 +60,16 @@ class ReportViewType extends ViewType {
 				'attr' => [
 				],
 				'slug' => 'report_template',
+        ] )
+        ->add ( 'header', CodeEditorType::class, [
+                'label' => 'The HTML template included at the end of the header',
+                'attr' => [
+                ],
+		] )
+		->add ( 'javascript', CodeEditorType::class, [
+				'label' => 'The HTML template included at the end of the page (after jquery and bootstrap)',
+				'attr' => [
+				],
 		] );
 	}
 	
@@ -114,9 +124,33 @@ class ReportViewType extends ViewType {
 		catch (\Exception $e){
 			$render = "Something went wrong with the template of the view ".$view->getName()." for the content type ".$view->getContentType()->getName()." (".$e->getMessage().")";
 		}
-		
+        try {
+            $javascript = $this->twig->createTemplate($view->getOptions()['javascript'])->render([
+                'view' => $view,
+                'contentType' => $view->getContentType(),
+                'environment' => $view->getContentType()->getEnvironment(),
+                'result' => $result,
+            ]);
+        }
+        catch (\Exception $e){
+            $javascript = "";
+        }
+        try {
+            $header = $this->twig->createTemplate($view->getOptions()['header'])->render([
+                'view' => $view,
+                'contentType' => $view->getContentType(),
+                'environment' => $view->getContentType()->getEnvironment(),
+                'result' => $result,
+            ]);
+        }
+        catch (\Exception $e){
+            $header = "";
+        }
+
 		return [
 			'render' => $render,
+			'header' => $header,
+			'javascript' => $javascript,
 			'view' => $view,
 			'contentType' => $view->getContentType(),
 			'environment' => $view->getContentType()->getEnvironment(),

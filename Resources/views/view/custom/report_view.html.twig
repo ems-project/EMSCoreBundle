@@ -1,5 +1,8 @@
 {% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
+
+{% block extraheader %}{{ header|raw }}{% endblock %}
+
 {% block title %}{{ view.name }} of {{contentType.singularName}}{% endblock %}
 {% block pagetitle %}{{ view.name }} of {{contentType.singularName}}{% endblock %} 
 {# {% block subtitle %}<!-- TODO -->{% endblock %} #}
@@ -21,4 +24,5 @@
     {% include '@EMSCore/app/menu.html.twig' with {
 		'item':  'data-view-'~ contentType.id ~ '-' ~ view.id
 	}%}
+    {{ javascript|raw }}
 {% endblock %}	

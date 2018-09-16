@@ -140,10 +140,26 @@ class TemplateType extends AbstractType {
             'required' => false,
             'choices' => array_combine(array_keys(CPDF::$PAPER_SIZES), array_keys(CPDF::$PAPER_SIZES)),
             'required' => false,
-        ])->add ( 'save', SubmitEmsType::class, [
+        ])->add ( 'disposition', ChoiceType::class, [
+            'label' => 'File diposition',
+            'expanded' => true,
             'attr' => [
-                    'class' => 'btn-primary btn-sm '
             ],
+            'choices' => [
+                'None' => null,
+                'Attachment' => 'attachment',
+                'Inline' => 'inline',
+            ]
+        ] )
+        ->add ( 'allow_origin', TextType::class, [
+            'label' => 'The Access-Control-Allow-Originm header',
+            'attr' => [
+            ],
+        ] )
+        ->add ( 'save', SubmitEmsType::class, [
+            'attr' => [
+                'class' => 'btn-primary btn-sm '
+        ],
             'icon' => 'fa fa-save'
 		] );
 	}

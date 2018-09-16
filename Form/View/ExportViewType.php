@@ -119,7 +119,7 @@ class ExportViewType extends ViewType {
 			if ($view->getOptions()['disposition'] == 'inline') {
 				$attachment = ResponseHeaderBag::DISPOSITION_INLINE;				
 			}
-			$disposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $parameters['filename']);
+			$disposition = $response->headers->makeDisposition($attachment, $parameters['filename']);
 			$response->headers->set('Content-Disposition', $disposition);
 		}
 		

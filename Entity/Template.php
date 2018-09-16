@@ -173,12 +173,24 @@ class Template
    	 * @ORM\Column(name="response_template", type="text", nullable=true)
    	 */
    	private $responseTemplate;
-    
+
     /** @var string
-     * 
+     *
      * @ORM\Column(name="email_content_type", type="string", nullable=true)
      */
     private $emailContentType;
+
+    /** @var string
+     *
+     * @ORM\Column(name="allow_origin", type="string", nullable=true)
+     */
+    private $allowOrigin;
+
+    /** @var string
+     *
+     * @ORM\Column(name="disposition", type="string", length=20, nullable=true)
+     */
+    private $disposition;
 
     /**
      * @var string
@@ -875,6 +887,42 @@ class Template
     public function setPublic(bool $public): Template
     {
         $this->public = $public;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAllowOrigin()
+    {
+        return $this->allowOrigin;
+    }
+
+    /**
+     * @param string $allowOrigin
+     * @return Template
+     */
+    public function setAllowOrigin(string $allowOrigin)
+    {
+        $this->allowOrigin = $allowOrigin;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDisposition()
+    {
+        return $this->disposition;
+    }
+
+    /**
+     * @param string $disposition
+     * @return Template
+     */
+    public function setDisposition(string $disposition)
+    {
+        $this->disposition = $disposition;
         return $this;
     }
 

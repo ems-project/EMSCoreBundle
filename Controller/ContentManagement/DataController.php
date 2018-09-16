@@ -831,8 +831,16 @@ class DataController extends AppController
                 $filename = preg_replace('~[\r\n]+~', '', $filename);
             }
 
-            if (null != $template->getExtension()) {
-                header("Content-Disposition: attachment; filename=" . $filename . '.' . $template->getExtension());
+
+            if(!empty($template->getDisposition())){
+                $attachment = ResponseHeaderBag::DISPOSITION_ATTACHMENT;
+                if ($template->getDisposition() == 'inline') {
+                    $attachment = ResponseHeaderBag::DISPOSITION_INLINE;
+                }
+                header("Content-Disposition: $attachment; filename=" . $filename . ($template->getExtension()?'.'.$template->getExtension():''));
+            }
+            if (null != $template->getAllowOrigin()) {
+                header("Access-Control-Allow-Origin: " . $template->getAllowOrigin());
             }
 
             $output = $body->render([

@@ -85,7 +85,7 @@
 	          		<i class=" {% if contentType.icon %}{{ contentType.icon }}{% else %}fa fa-book{% endif %}"></i> <span>{{ contentType.pluralName }}</span>
 	          		
 	            	{% if draftCounterGroupedByContentType[contentType.id] is defined and is_granted(contentType.editRole)  %}
-	          			<span class="label {% if contentType.color %}bg-{{ contentType.color }}{% else %}label-primary{% endif %} pull-right">{{ draftCounterGroupedByContentType[contentType.id] }}</span>
+	          			<span class="label {% if contentType.color %}bg-{{ contentType.color }}{% else %}label-primary{% endif %} pull-right-container">{{ draftCounterGroupedByContentType[contentType.id] }}</span>
 	          		{% else %}
 		          		<i class="fa fa-angle-left pull-right"></i>
 	          		{% endif %}
@@ -123,7 +123,7 @@
 	            	{% if draftCounterGroupedByContentType[contentType.id] is defined and is_granted(contentType.editRole) %}
 	          			<li class=""><a id="menu-data-draft-{{ contentType.id }}" href="{{ path('data.draft_in_progress', { contentTypeId: contentType.id } ) }}">
 	          				<i class="fa fa-fire"></i>
-	          				<span>Drafts in progress</span> <span class="label {% if contentType.color %}bg-{{ contentType.color }}{% else %}label-primary{% endif %} pull-right">{{ draftCounterGroupedByContentType[contentType.id] }}</span>
+	          				<span>Drafts in progress</span> <span class="label {% if contentType.color %}bg-{{ contentType.color }}{% else %}label-primary{% endif %} pull-right-container">{{ draftCounterGroupedByContentType[contentType.id] }}</span>
 	          			</a></li>
 	            	{% endif %}
 	            	{% if contentType.environment.managed %}

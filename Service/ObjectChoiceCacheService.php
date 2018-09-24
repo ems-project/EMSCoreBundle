@@ -1,11 +1,15 @@
 <?php
 
+
 namespace EMS\CoreBundle\Service;
 
 
 use Elasticsearch\Client;
+use EMS\LocalUserBundle\Entity\User;
 use Symfony\Component\HttpFoundation\Session\Session;
 use EMS\CoreBundle\Form\Field\ObjectChoiceListItem;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 
 class ObjectChoiceCacheService
@@ -16,21 +20,27 @@ class ObjectChoiceCacheService
 	private $session;
 	/**@var ContentTypeService $contentTypeService*/
 	private $contentTypeService;
+    /**@var AuthorizationCheckerInterface $authorizationChecker*/
+    protected $authorizationChecker;
+    /**@var TokenStorageInterface $tokenStorage*/
+    protected $tokenStorage;
 	
 	private $fullyLoaded;
 	private $cache;
 	
-	public function __construct(Client $client, Session $session, ContentTypeService $contentTypeService) {
+	public function __construct(Client $client, Session $session, ContentTypeService $contentTypeService, AuthorizationCheckerInterface $authorizationChecker, TokenStorageInterface $tokenStorage) {
 		$this->client = $client;
 		$this->session = $session;
 		$this->contentTypeService = $contentTypeService;
-		
+		$this->authorizationChecker = $authorizationChecker;
+		$this->tokenStorage = $tokenStorage;
+
 		$this->fullyLoaded = [];
 		$this->cache = [];
 	}
 	
 
-	public function loadAll($types) {
+	public function loadAll($types, $circleOnly = false) {
 		$aliasTypes = [];
 		$out = [];
 		
@@ -49,8 +59,8 @@ class ObjectChoiceCacheService
 							'index'=> $currentType->getEnvironment()->getAlias(),
 							'type'=> $type,
 					];
-					//TODO test si > 500...flashbag
-					
+
+
 					if($currentType->getOrderField()) {
 						$params['body'] = [
 							'sort' => [
@@ -61,10 +71,25 @@ class ObjectChoiceCacheService
 							]
 						];
 					}
-					
-						
+
+                    if($circleOnly && !$this->authorizationChecker->isGranted('ROLE_ADMIN')){
+                        /**@var User $user */
+                        $user = $this->tokenStorage->getToken()->getUser();
+                        $circles = $user->getCircles();
+                        $ouuids = [];
+                        foreach ($circles as $circle) {
+                            preg_match('/(?P<type>\w+):(?P<ouuid>\w+)/', $circle, $matches);
+                            $ouuids[] = $matches['ouuid'];
+                        }
+
+                        $params['body']['query']['terms'] = [
+                                '_id' => $ouuids,
+                        ];
+                    }
+
 					$items = $this->client->search($params);
-						
+					//TODO test si > 500...flashbag
+
 					foreach ($items['hits']['hits'] as $hit){
 						$listItem = new ObjectChoiceListItem($hit, $this->contentTypeService->getByName($hit['_type']));
 						$out[$listItem->getValue()] = $listItem;
@@ -88,7 +113,7 @@ class ObjectChoiceCacheService
 		return $out;
 	}
 	
-	public function load($objectIds) {
+	public function load($objectIds, $circleOnly = false) {
 		$out = [];
 		$queries = [];
 		foreach ($objectIds as $objectId){

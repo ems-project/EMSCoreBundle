@@ -13,6 +13,7 @@ use EMS\CoreBundle\Entity\Filter;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\Form\SearchFilter;
 use EMS\CoreBundle\Entity\Template;
+use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Form\Field\IconTextType;
 use EMS\CoreBundle\Form\Field\RenderOptionType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
@@ -303,8 +304,8 @@ class ElasticsearchController extends AppController
 		$category = $request->query->get('category', false);
 		// Added for ckeditor adv_link plugin.
 		$assetName = $request->query->get('asset_name', false);
-		
-		
+		$circleOnly = $request->query->get('circle', false);
+
 		/** @var EntityManager $em */
 		$em = $this->getDoctrine()->getManager();
 			
@@ -382,6 +383,24 @@ class ElasticsearchController extends AppController
 					$params['type'] = $filterType;
 				}
 			}
+
+            if($circleOnly && !$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+                /**@var User $user*/
+                $user = $this->getUser();
+                $circles = $user->getCircles();
+
+                $ouuids = [];
+                foreach ($circles as $circle) {
+                    preg_match('/(?P<type>\w+):(?P<ouuid>\w+)/', $circle, $matches);
+                    $ouuids[] = $matches['ouuid'];
+                }
+
+                $params['body']['query']['bool']['must'][] = [
+                    'terms' => [
+                        '_id' => $ouuids,
+                    ]
+                ];
+            }
 			
 			
 			$patterns = explode(' ', $pattern);

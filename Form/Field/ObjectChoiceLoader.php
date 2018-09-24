@@ -12,8 +12,9 @@ class ObjectChoiceLoader implements ChoiceLoaderInterface {
 	public function __construct(
 			$objectChoiceCacheService,
 			$types,
-			$loadAll){
-		$this->objectChoiceList = new ObjectChoiceList($objectChoiceCacheService, $types, $loadAll);
+			$loadAll,
+            $circleOnly){
+		$this->objectChoiceList = new ObjectChoiceList($objectChoiceCacheService, $types, $loadAll, $circleOnly);
 	}
 
 	/**

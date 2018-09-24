@@ -173,15 +173,16 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 		};
 		
 		$builder->add ( 'value', ObjectPickerType::class, [
-				'label' => (null != $options ['label']?$options ['label']:$fieldType->getName()),
-				'required' => false,
-				'disabled'=> $this->isDisabled($options),
-				'multiple' => $options['multiple'],
-				'type' => $options['type'],
-				'dynamicLoading' => $options['dynamicLoading'],
-				'sortable' => $options['sortable'],
+            'label' => (null != $options ['label']?$options ['label']:$fieldType->getName()),
+            'required' => false,
+            'disabled'=> $this->isDisabled($options),
+            'multiple' => $options['multiple'],
+            'type' => $options['type'],
+            'dynamicLoading' => $options['dynamicLoading'],
+            'sortable' => $options['sortable'],
+            'circle-only' => $fieldType->getContentType()->getCirclesField() === $fieldType->getName()
 		] );
-		
+
 		if($options['sortable']){
 			$builder->addEventListener(FormEvents::PRE_SUBMIT, $listener);				
 		}

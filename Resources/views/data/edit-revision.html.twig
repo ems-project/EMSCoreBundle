@@ -706,7 +706,8 @@ function addEventListeners(target){
 	
 	target.find(".objectpicker").each(function(index){
 		var type = $( this ).data('type'); 
-		var dynamicLoading = $( this ).data('dynamic-loading'); 
+		const circleOnly = $( this ).data('circleOnly');
+		var dynamicLoading = $( this ).data('dynamic-loading');
 		var sortable = $( this ).data('sortable'); 
 
 		var params = {
@@ -730,9 +731,10 @@ function addEventListeners(target){
 		    	delay: 250,
 		    	data: function (params) {
 		      		return {
-			        q: params.term, // search term
-			        page: params.page,
-			        type: type
+						q: params.term, // search term
+						page: params.page,
+						type: type,
+						circle: circleOnly !== undefined
 			      };
 			    },
 				processResults: function (data, params) {

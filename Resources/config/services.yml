@@ -404,7 +404,7 @@ services:
         arguments: ['@doctrine', '@session', '@translator']
     ems.service.objectchoicecache:
         class: EMS\CoreBundle\Service\ObjectChoiceCacheService
-        arguments: ['@app.elasticsearch', '@session', '@ems.service.contenttype']
+        arguments: ['@app.elasticsearch', '@session', '@ems.service.contenttype', '@security.authorization_checker', '@security.token_storage']
     ems.service.audit:
         class: EMS\CoreBundle\Service\AuditService
         arguments: ['%ems_core.audit_index%', '@doctrine', '@app.elasticsearch', '@ems.service.user', '@logger']

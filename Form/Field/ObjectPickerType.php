@@ -35,8 +35,9 @@ class ObjectPickerType extends Select2Type {
 			'sortable' => false,
 			'choice_loader' => function (Options $options) {
 				$loadAll = 	$options->offsetGet('dynamicLoading')?false:true;
-				
-				return $this->choiceListFactory->createLoader($options->offsetGet('type'), $loadAll);
+				$circleOnly = 	$options->offsetGet('circle-only');
+
+				return $this->choiceListFactory->createLoader($options->offsetGet('type'), $loadAll, $circleOnly);
 		    },
 		    'choice_label' => function ($value, $key, $index) {
 		    	return $value->getLabel();
@@ -56,7 +57,8 @@ class ObjectPickerType extends Select2Type {
 		    },
 		    'multiple' => false,
 		    'type' => null ,
-		    
+		    'circle-only' => false ,
+
 		));
 	}
 	
@@ -76,6 +78,7 @@ class ObjectPickerType extends Select2Type {
 	 */
 	public function buildView(FormView $view, FormInterface $form, array $options) {
 		$view->vars ['attr']['data-type'] = $options['type'];
+		$view->vars ['attr']['data-circle-only'] = $options['circle-only'];
 		$view->vars ['attr']['data-dynamic-loading'] = $options['dynamicLoading'];
 		$view->vars ['attr']['data-sortable'] = $options['sortable'];
 	}

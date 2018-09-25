@@ -135,6 +135,7 @@ class AppExtension extends \Twig_Extension
             new \Twig_SimpleFilter('is_super', array($this, 'is_super')),
             new \Twig_SimpleFilter('i18n', array($this, 'i18n')),
             new \Twig_SimpleFilter('internal_links', array($this, 'internalLinks')),
+            new \Twig_SimpleFilter('src_path', array($this, 'srcPath')),
             new \Twig_SimpleFilter('get_user', array($this, 'getUser')),
             new \Twig_SimpleFilter('displayname', array($this, 'displayname')),
             new \Twig_SimpleFilter('date_difference', array($this, 'dateDifference')),
@@ -182,25 +183,25 @@ class AppExtension extends \Twig_Extension
             }
             else {
                 $textClass = false;
-                if($b){
+                if($b !== null){
                     $textClass = 'text-red';
-                    $textLabel .= '<del class="diffmod">'.($escape?htmlentities($b):$b).'</del>';
+                    $textLabel .= '<del class="diffmod">'.($escape?htmlentities($b):$this->internalLinks($b)).'</del>';
                 }
 
-                if($a){
+                if($a !== null){
                     if($textClass){
                         $textClass = 'text-orange';
                     }
                     else {
                         $textClass = 'text-green';
                     }
-                    $textLabel .= ' <ins class="diffmod">'.($escape?htmlentities($a):$a).'</ins>';
+                    $textLabel .= ' <ins class="diffmod">'.($escape?htmlentities($a):$this->internalLinks($a)).'</ins>';
                 }
             }
         }
         else {
-            if($a){
-                $textLabel = ($escape?htmlentities($a):$a);
+            if($a !== null){
+                $textLabel = ($escape?htmlentities($a):$this->internalLinks($a));
             }
             else{
 //                $textClass = 'text-gray';
@@ -618,21 +619,28 @@ class AppExtension extends \Twig_Extension
 		return $username;
 	}
 
-	function internalLinks($input){
+    function srcPath($input, $fileName=false){
+        $path = $this->router->generate('ems_file_view', ['sha1' => '__SHA1__'], UrlGeneratorInterface::ABSOLUTE_PATH );
+        $path = substr($path, 0, strlen($path)-8);
+        $out= preg_replace_callback(
+            '/(ems:\/\/asset:)([^\n\r"\'\?]*)/i',
+            function ($matches) use ($path, $fileName) {
+                if($fileName){
+                    return $this->fileService->getFile($matches[2]);
+                }
+                return $path.$matches[2];
+            },
+            $input
+        );
+
+        return $out;
+    }
+
+	function internalLinks($input, $fileName=false){
 		$url = $this->router->generate('data.link', ['key'=>'object:'], UrlGeneratorInterface::ABSOLUTE_PATH);
 		$out = preg_replace('/ems:\/\/object:/i', $url, $input);
-		
-		$path = $this->router->generate('ems_file_view', ['sha1' => '__SHA1__'], UrlGeneratorInterface::ABSOLUTE_PATH );
-		$path = substr($path, 0, strlen($path)-8);
-		$out= preg_replace_callback(
-			'/(ems:\/\/asset:)([^\n\r"\'\?]*)/i',
-			function ($matches) use ($path) {
-					return $path.$matches[2];
-			},
-			$out
-		); 
-		
-		return $out;
+
+        return $this->srcPath($out, $fileName);
 	}
 	
 	

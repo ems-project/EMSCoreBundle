@@ -746,7 +746,7 @@ class DataController extends AppController
         /** @var Template $template * */
         $template = $templateRepository->find($templateId);
 
-        if (!$template || ($template && !$template->isPublic())) {
+        if (!$template || ($public && !$template->isPublic())) {
             throw new NotFoundHttpException('Template type not found');
         }
 

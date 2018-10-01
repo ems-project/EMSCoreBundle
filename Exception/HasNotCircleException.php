@@ -5,7 +5,7 @@ namespace EMS\CoreBundle\Exception;
 
 use EMS\CoreBundle\Entity\Environment;
 
-class HasNotCircleException extends \Exception
+class HasNotCircleException extends ElasticmsException
 {
 	
 	private $environment;

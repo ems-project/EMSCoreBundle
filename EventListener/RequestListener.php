@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\EventListener;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CoreBundle\Command\AbstractEmsCommand;
 use EMS\CoreBundle\Command\JobOutput;
+use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Exception\LockedException;
 use EMS\CoreBundle\Exception\PrivilegeException;
 use Monolog\Logger;
@@ -84,6 +85,12 @@ class RequestListener
 				}
 				$event->setResponse($response);
 			}
+			if($exception instanceof ElasticmsException) {
+                $this->session->getFlashBag()->add('error', $exception->getMessage());
+                $response = new RedirectResponse($this->router->generate('notifications.list', [
+                    ]));
+                $event->setResponse($response);
+            }
 		}
 		catch(\Exception $e){
 			if(function_exists('dump')){

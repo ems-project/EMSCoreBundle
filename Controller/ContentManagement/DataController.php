@@ -1260,7 +1260,7 @@ class DataController extends AppController
         $userCircles = $this->getUser()->getCircles();
         $environment = $contentType->getEnvironment();
         $environmentCircles = $environment->getCircles();
-        if (!empty($environmentCircles)) {
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN') && !empty($environmentCircles)) {
             if (empty($userCircles)) {
                 throw new HasNotCircleException($environment);
             }

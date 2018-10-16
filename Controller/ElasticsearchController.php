@@ -422,17 +422,49 @@ class ElasticsearchController extends AppController
 			];
 			
 			if(count($types) == 1){
-				/**@var ContentTypeService $contentTypeService*/ 
-				$contentTypeService = $this->getContentTypeService();
-				$contentType = $contentTypeService->getByName($types[0]);
-				if($contentType && $contentType->getOrderField()) {
-					$params['body']['sort'] = [
-						$contentType->getOrderField() => [
-								'order' => 'asc',
-								'missing' => '_last',
-						]
-					];
-				}
+
+                $em = $this->getDoctrine()->getManager();
+                $searchRepository = $em->getRepository('EMSCoreBundle:Form\Search');
+                $contentType = $this->getContentTypeService()->getByName($types[0]);
+
+                $search = $searchRepository->findOneBy([
+                    'contentType' => $contentType->getId(),
+                ]);
+
+
+                if($search) {
+                    $em->detach($search);
+                    $search->resetFilters($search->getFilters()->getValues());
+
+                    $query = $pattern;
+                    if(!empty($pattern) && substr($pattern, strlen($pattern)-1) != ' ') {
+                        $query .= '*';
+                    }
+
+                    /**@var SearchFilter $filter*/
+                    foreach ($search->getFilters() as &$filter){
+                        if(empty($filter->getPattern())){
+                            $filter->setPattern($query);
+                        }
+                    }
+                    $body = $this->getSearchService()->generateSearchBody($search);
+                    $params['body'] = $body;
+                }
+                else {
+                    /**@var ContentTypeService $contentTypeService*/
+                    $contentTypeService = $this->getContentTypeService();
+                    $contentType = $contentTypeService->getByName($types[0]);
+                    if($contentType && $contentType->getOrderField()) {
+                        $params['body']['sort'] = [
+                            $contentType->getOrderField() => [
+                                'order' => 'asc',
+                                'missing' => '_last',
+                            ]
+                        ];
+                    }
+                }
+
+
 				
                 if($contentType && $contentType->getLabelField()) {
                     $params['_source'] = [$contentType->getLabelField()];

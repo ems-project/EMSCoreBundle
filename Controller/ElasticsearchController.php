@@ -301,6 +301,7 @@ class ElasticsearchController extends AppController
 		$pattern = $request->query->get('q');
 		$environments = $request->query->get('environment');
 		$types = $request->query->get('type');
+		$searchId = $request->query->get('searchId');
 		$category = $request->query->get('category', false);
 		// Added for ckeditor adv_link plugin.
 		$assetName = $request->query->get('asset_name', false);
@@ -308,11 +309,70 @@ class ElasticsearchController extends AppController
 
 		/** @var EntityManager $em */
 		$em = $this->getDoctrine()->getManager();
-			
-		/** @var ContentTypeRepository $contentTypeRepository */
-		$contentTypeRepository = $em->getRepository ( 'EMSCoreBundle:ContentType' );
-		
-		$allTypes = $contentTypeRepository->findAllAsAssociativeArray();
+
+        /** @var ContentTypeRepository $contentTypeRepository */
+        $contentTypeRepository = $em->getRepository ( 'EMSCoreBundle:ContentType' );
+
+        $allTypes = $contentTypeRepository->findAllAsAssociativeArray();
+
+
+		if($searchId){
+
+            $searchRepository = $em->getRepository('EMSCoreBundle:Form\Search');
+            $search = $searchRepository->findOneBy ([
+                'id' => $searchId,
+            ]);
+
+            $params = [];
+
+
+            /**@var Search $search*/
+            if($search) {
+                $em->detach($search);
+                $search->resetFilters($search->getFilters()->getValues());
+
+                $query = $pattern;
+                if(!empty($pattern) && substr($pattern, strlen($pattern)-1) != ' ') {
+                    $query .= '*';
+                }
+
+                /**@var SearchFilter $filter*/
+                foreach ($search->getFilters() as &$filter){
+                    if(empty($filter->getPattern())){
+                        $filter->setPattern($query);
+                    }
+                }
+                $body = $this->getSearchService()->generateSearchBody($search);
+                $params['body'] = $body;
+
+                /** @var \Elasticsearch\Client $client */
+                $client = $this->getElasticsearch();
+
+
+                $selectedEnvironments = [];
+                if(!empty($search->getEnvironments() )){
+                    foreach($search->getEnvironments() as $envName){
+                        $temp = $this->getEnvironmentService()->getAliasByName($envName);
+                        if($temp){
+                            $selectedEnvironments[] = $temp->getAlias();
+                        }
+                    }
+                }
+
+                $params['index'] = $selectedEnvironments;
+                $params['type'] = $search->getContentTypes();
+
+                $results = $client->search($params);
+
+                return $this->render( '@EMSCore/elasticsearch/search.json.twig', [
+                    'results' => $results,
+                    'types' => $allTypes,
+                ] );
+            }
+        }
+
+
+
 	
 		if (empty($types)) {	
 			$types = [];
@@ -423,7 +483,6 @@ class ElasticsearchController extends AppController
 			
 			if(count($types) == 1){
 
-                $em = $this->getDoctrine()->getManager();
                 $searchRepository = $em->getRepository('EMSCoreBundle:Form\Search');
                 $contentType = $this->getContentTypeService()->getByName($types[0]);
 

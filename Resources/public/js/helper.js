@@ -38,6 +38,7 @@ var QueryString = function () {
 function objectPickerListeners(objectPicker, maximumSelectionLength){
 	var type = objectPicker.data('type'); 
 	var dynamicLoading = objectPicker.data('dynamic-loading'); 
+	var searchId = objectPicker.data('search-id');
 
 	
 	var params = {
@@ -66,7 +67,8 @@ function objectPickerListeners(objectPicker, maximumSelectionLength){
 	      		return {
 		        q: params.term, // search term
 		        page: params.page,
-		        type: type
+		        type: type,
+				searchId: searchId
 		      };
 		    },
 			processResults: function (data, params) {

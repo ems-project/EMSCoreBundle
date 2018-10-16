@@ -178,6 +178,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
             'disabled'=> $this->isDisabled($options),
             'multiple' => $options['multiple'],
             'type' => $options['type'],
+            'searchId' => $options['searchId'],
             'dynamicLoading' => $options['dynamicLoading'],
             'sortable' => $options['sortable'],
             'circle-only' => $fieldType->getContentType()->getCirclesField() === $fieldType->getName()
@@ -199,6 +200,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 		parent::configureOptions ( $resolver );
 		$resolver->setDefault ( 'multiple', false );
 		$resolver->setDefault ( 'type', null );
+		$resolver->setDefault ( 'searchId', null );
 		$resolver->setDefault ( 'environment', null );
 		$resolver->setDefault ( 'defaultValue', null );
 		$resolver->setDefault ( 'required', false );
@@ -274,8 +276,10 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 				'required' => false,
 		] )->add ( 'sortable', CheckboxType::class, [
 				'required' => false,
-		] )->add ( 'type', TextType::class, [ 
-				'required' => false,
+        ] )->add ( 'type', TextType::class, [
+            'required' => false,
+        ] )->add ( 'searchId', TextType::class, [
+            'required' => false,
 		] )->add ( 'defaultValue', TextType::class, [ 
 				'required' => false,
 		] );

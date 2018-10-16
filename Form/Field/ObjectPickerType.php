@@ -57,6 +57,7 @@ class ObjectPickerType extends Select2Type {
 		    },
 		    'multiple' => false,
 		    'type' => null ,
+		    'searchId' => null ,
 		    'circle-only' => false ,
 
 		));
@@ -78,6 +79,7 @@ class ObjectPickerType extends Select2Type {
 	 */
 	public function buildView(FormView $view, FormInterface $form, array $options) {
 		$view->vars ['attr']['data-type'] = $options['type'];
+		$view->vars ['attr']['data-search-id'] = $options['searchId'];
 		$view->vars ['attr']['data-circle-only'] = $options['circle-only'];
 		$view->vars ['attr']['data-dynamic-loading'] = $options['dynamicLoading'];
 		$view->vars ['attr']['data-sortable'] = $options['sortable'];

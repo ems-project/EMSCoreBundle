@@ -706,6 +706,7 @@ function addEventListeners(target){
 	
 	target.find(".objectpicker").each(function(index){
 		var type = $( this ).data('type'); 
+		var searchId = $( this ).data('search-id');
 		const circleOnly = $( this ).data('circleOnly');
 		var dynamicLoading = $( this ).data('dynamic-loading');
 		var sortable = $( this ).data('sortable'); 
@@ -734,6 +735,7 @@ function addEventListeners(target){
 						q: params.term, // search term
 						page: params.page,
 						type: type,
+                        searchId: searchId,
 						circle: circleOnly !== undefined
 			      };
 			    },

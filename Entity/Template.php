@@ -902,7 +902,7 @@ class Template
      * @param string $allowOrigin
      * @return Template
      */
-    public function setAllowOrigin(string $allowOrigin)
+    public function setAllowOrigin($allowOrigin)
     {
         $this->allowOrigin = $allowOrigin;
         return $this;
@@ -920,7 +920,7 @@ class Template
      * @param string $disposition
      * @return Template
      */
-    public function setDisposition(string $disposition)
+    public function setDisposition($disposition)
     {
         $this->disposition = $disposition;
         return $this;

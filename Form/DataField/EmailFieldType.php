@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Form\DataField;
 
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 								
@@ -124,4 +125,21 @@ use Symfony\Component\Form\FormBuilderInterface;
 				'required' => false,
 		] );
 	}
+
+     /**
+      *
+      * {@inheritdoc}
+      *
+      */
+     public function buildOptionsForm(FormBuilderInterface $builder, array $options) {
+         parent::buildOptionsForm ( $builder, $options );
+         $optionsForm = $builder->get ( 'options' );
+
+         // String specific mapping options
+         $optionsForm->get ( 'mappingOptions' )
+             ->add ( 'analyzer', AnalyzerPickerType::class)
+             ->add ( 'copy_to', TextType::class, [
+                 'required' => false,
+             ]);
+     }
 }

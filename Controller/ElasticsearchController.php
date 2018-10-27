@@ -241,7 +241,7 @@ class ElasticsearchController extends AppController
             ]);
             /**@var Search $search*/
             foreach ($searchs as $search){
-                $search->setDefault(false);
+                $search->setContentType(null);
                 $em->persist($search);
             }
 

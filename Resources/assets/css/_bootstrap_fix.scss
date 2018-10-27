@@ -16,3 +16,8 @@ span.select2-container {
 	min-height: $input-height-base;
 	width: 100% !important;
 }
+
+/* height auto in user menu */
+ul.navbar-nav>.user-menu>.dropdown-menu>li.user-header {
+  height: auto;
+}

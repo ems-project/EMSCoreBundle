@@ -25,6 +25,7 @@
 							<th>{{ 'Label'|trans }}</th>
 							<th>{{ 'Locked'|trans }}</th>
 							<th>{{ 'Last update'|trans }}</th>
+							<th>{{ 'By'|trans }}</th>
 							<th>{{ 'Action'|trans }}</th>
 						</tr>
 						{% for revision in revisions %}
@@ -38,7 +39,9 @@
 								</td>
 								<td>
 									{% if revision.lockUntil and revision.lockUntil > date('now') %}
-										{{ revision.lockBy|displayname }}
+										<i class="fa fa-check-square"> </i>
+									{% else %}
+										<i class="fa fa-square-o"> </i>
 									{% endif %}
 								</td>
 								<td>
@@ -50,6 +53,11 @@
 										at {{ revision.modified|date(date_time_format) }}
 									{% endif %}							
 								
+								</td>
+								<td>
+									{% if revision.lockBy %}
+                                    	{{ revision.lockBy|displayname }}
+                                    {% endif %}
 								</td>
 								<td>
 								

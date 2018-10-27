@@ -181,7 +181,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
             'searchId' => $options['searchId'],
             'dynamicLoading' => $options['dynamicLoading'],
             'sortable' => $options['sortable'],
-            'circle-only' => $fieldType->getContentType()->getCirclesField() === $fieldType->getName()
+            'circle-only' => ($fieldType->getContentType() && $fieldType->getContentType()->getCirclesField() === $fieldType->getName())
 		] );
 
 		if($options['sortable']){

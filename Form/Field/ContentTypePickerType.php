@@ -54,7 +54,7 @@ class ContentTypePickerType extends ChoiceType {
 				/** @var ContentType $contentType */
 				$contentType = $this->choices[$index];
 				return [
-						'data-content' => '<span class="text-'.$contentType->getColor().'"><i class="'.(empty($contentType->getIcon())?' fa fa-book':$contentType->getIcon()).'"></i>&nbsp;&nbsp;'.$contentType->getName().'</span>'
+						'data-content' => '<span class="text-'.$contentType->getColor().'"><i class="'.(empty($contentType->getIcon())?' fa fa-book':$contentType->getIcon()).'"></i>&nbsp;&nbsp;'.$contentType->getPluralName().'</span>'
 				];
 			},
 			'choice_value' => function ($value) {

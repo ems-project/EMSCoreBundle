@@ -2,6 +2,7 @@
 namespace EMS\CoreBundle\Controller;
 
 use Elasticsearch\Client;
+use EMS\CoreBundle\Entity\SearchFieldOption;
 use EMS\CoreBundle\Service\AliasService;
 use EMS\CoreBundle\Service\AssetService;
 use EMS\CoreBundle\Service\ContentTypeService;
@@ -12,6 +13,7 @@ use EMS\CoreBundle\Service\HelperService;
 use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\NotificationService;
 use EMS\CoreBundle\Service\PublishService;
+use EMS\CoreBundle\Service\SearchFieldOptionService;
 use EMS\CoreBundle\Service\SearchService;
 use EMS\CoreBundle\Service\UserService;
 use EMS\CoreBundle\Service\WysiwygProfileService;
@@ -112,14 +114,22 @@ class AppController extends Controller
 	{
 		return $this->get('ems.service.sort_option');
 	}
-	
-	/**
-	 * @return AggregateOptionService
-	 */
-	protected function getAggregateOptionService()
-	{
-		return $this->get('ems.service.aggregate_option');
-	}
+
+    /**
+     * @return AggregateOptionService
+     */
+    protected function getAggregateOptionService()
+    {
+        return $this->get('ems.service.aggregate_option');
+    }
+
+    /**
+     * @return SearchFieldOptionService
+     */
+    protected function getSearchFieldOptionService()
+    {
+        return $this->get('ems.service.search_field_option');
+    }
 	
 	/**
 	 * @return WysiwygStylesSetService

@@ -253,9 +253,9 @@ class SearchFieldOption {
 	}
 
     /**
-     * @return array
+     * @return array|null
      */
-    public function getContentTypes(): array
+    public function getContentTypes()
     {
         return $this->contentTypes;
     }

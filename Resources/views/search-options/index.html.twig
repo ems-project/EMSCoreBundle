@@ -34,6 +34,18 @@
     		    'form': aggregateOptionReorderForm
     		}%}
     	</div>
+    	<div class="col-md-6">
+    		{% include '@EMSCore/entity/list-entities.html.twig' with {
+    		    'entities': searchFieldOptions,
+    		    'icon': 'fa fa-th',
+    		    'title': 'Search Field Options'|trans,
+    		    'add_label': 'Add an Search Field Option'|trans,
+    		    'missing_label': 'Click on \'Add an search field option\' to create a first Search Field Option'|trans,
+    		    'add_route': 'ems_search_field_option_new',
+    		    'edit_route': 'ems_search_field_option_edit',
+    		    'form': searchFieldOptionReorderForm
+    		}%}
+    	</div>
     </div>
 {% endblock %}
 

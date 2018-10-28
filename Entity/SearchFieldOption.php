@@ -62,8 +62,22 @@ class SearchFieldOption {
 	 * @ORM\Column(name="icon", type="text", length=255, nullable=true)
 	 */
 	private $icon;
-	
-	/**
+
+    /**
+     * @var array
+     *
+     * @ORM\Column(name="contentTypes", type="json_array")
+     */
+    public $contentTypes;
+
+    /**
+     * @var array
+     *
+     * @ORM\Column(name="operators", type="json_array")
+     */
+    public $operators;
+
+    /**
 	 * @ORM\PrePersist
 	 * @ORM\PreUpdate
 	 */
@@ -237,4 +251,43 @@ class SearchFieldOption {
 	{
 		return $this->icon;
 	}
+
+    /**
+     * @return array
+     */
+    public function getContentTypes(): array
+    {
+        return $this->contentTypes;
+    }
+
+    /**
+     * @param array|null $contentTypes
+     * @return SearchFieldOption
+     */
+    public function setContentTypes($contentTypes)
+    {
+        $this->contentTypes = $contentTypes;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOperators()
+    {
+        return $this->operators;
+    }
+
+    /**
+     * @param array|null $operators
+     * @return SearchFieldOption
+     */
+    public function setOperators($operators)
+    {
+        $this->operators = $operators;
+        return $this;
+    }
+
+
+
 }

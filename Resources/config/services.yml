@@ -403,6 +403,9 @@ services:
     ems.service.sort_option:
         class: EMS\CoreBundle\Service\SortOptionService
         arguments: ['@doctrine', '@session', '@translator']
+    ems.service.search_field_option:
+        class: EMS\CoreBundle\Service\SearchFieldOptionService
+        arguments: ['@doctrine', '@session', '@translator']
     ems.service.wysiwyg_styles_set:
         class: EMS\CoreBundle\Service\WysiwygStylesSetService
         arguments: ['@doctrine', '@session', '@translator']

@@ -2,6 +2,8 @@
 
 namespace EMS\CoreBundle\Form\Subform;
 
+use EMS\CoreBundle\Entity\SearchFieldOption;
+use function json_encode;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -19,9 +21,25 @@ class SearchFilterType extends AbstractType {
 	 */
 	public function buildForm(FormBuilderInterface $builder, array $options) {
 
-		$builder->add('field', TextType::class, [
-				'required' => false,
-		]);
+	    if($options['is_super'] || empty($options['searchFields'])) {
+            $builder->add('field', TextType::class, [
+                'required' => false,
+            ]);
+        }
+        else {
+            $builder->add('field', ChoiceType::class, [
+                'choices' => $options['searchFieldsData'],
+                'required' => false,
+                'choice_attr' => function($category, $key, $index) use($options) {
+                    /**@var SearchFieldOption $searchFieldOption*/
+                    $searchFieldOption =  $options['searchFields'][$key];
+                    return [
+                        'data-content-types' => json_encode($searchFieldOption->getContentTypes()),
+                        'data-operators' => json_encode($searchFieldOption->getOperators()),
+                    ];
+                },
+            ]);
+        }
 
 		$builder->add('boost', $options['is_super']?NumberType::class:HiddenType::class, [
 			'required' => false,
@@ -56,6 +74,8 @@ class SearchFilterType extends AbstractType {
 		$resolver->setDefaults([
             'data_class' => 'EMS\CoreBundle\Entity\Form\SearchFilter',
             'is_super' => false,
+            'searchFields' => [],
+            'searchFieldsData' => [],
 		]);
 	}
 	

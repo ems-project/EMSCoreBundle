@@ -8,6 +8,7 @@ use EMS\CoreBundle\Form\Field\ContentTypePickerType;
 use EMS\CoreBundle\Form\Field\EnvironmentPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\Subform\SearchFilterType;
+use EMS\CoreBundle\Service\SearchFieldOptionService;
 use EMS\CoreBundle\Service\SortOptionService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -27,11 +28,14 @@ class SearchFormType extends AbstractType {
     private $authorizationChecker;
     /** @var SortOptionService $sortOptionService*/
     private $sortOptionService;
+    /** @var SearchFieldOptionService $searchFieldOptionService*/
+    private $searchFieldOptionService;
 
-    function __construct(AuthorizationCheckerInterface $authorizationChecker, SortOptionService $sortOptionService)
+    function __construct(AuthorizationCheckerInterface $authorizationChecker, SortOptionService $sortOptionService, SearchFieldOptionService $searchFieldOptionService)
     {
         $this->authorizationChecker = $authorizationChecker;
         $this->sortOptionService = $sortOptionService;
+        $this->searchFieldOptionService = $searchFieldOptionService;
     }
 
     /**
@@ -42,11 +46,22 @@ class SearchFormType extends AbstractType {
 	public function buildForm(FormBuilderInterface $builder, array $options) {
 		$isSuper = $this->authorizationChecker->isGranted('ROLE_SUPER');
 
+        $searchFields = [];
+        $searchFieldsData = [];
+        /**@var SortOption $sortOption*/
+        foreach ($this->searchFieldOptionService->getAll() as $searchFieldOption) {
+            $searchFieldsData[$searchFieldOption->getName()] = $searchFieldOption->getField();
+            $searchFields[$searchFieldOption->getName()] = $searchFieldOption;
+        }
+
+
 		$builder->add('filters', CollectionType::class, array(
             'entry_type'   => SearchFilterType::class,
             'allow_add'    => true,
             'entry_options' => [
                 'is_super'     => $isSuper,
+                'searchFieldsData' => $searchFieldsData,
+                'searchFields' => $searchFields,
             ],
 		));
 		if($options['light']){
@@ -58,11 +73,8 @@ class SearchFormType extends AbstractType {
 			]);
 		}
 		else{
-
-
-
-
-            if($isSuper) {
+		    $sortOptions = $this->sortOptionService->getAll();
+            if($isSuper || empty($sortOptions)) {
                 $builder->add('sortBy', TextType::class, [
                     'required' => false,
                 ]);
@@ -71,7 +83,7 @@ class SearchFormType extends AbstractType {
                 $sortFields = [];
                 $sortFieldIcons = [];
                 /**@var SortOption $sortOption*/
-                foreach ($this->sortOptionService->getAll() as $sortOption) {
+                foreach ($sortOptions as $sortOption) {
                     $sortFields[$sortOption->getName()] = $sortOption->getField();
                     $sortFieldIcons[$sortOption->getField()] = $sortOption->getIcon();
                 }

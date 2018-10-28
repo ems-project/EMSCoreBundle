@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Form\Subform;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -21,8 +22,8 @@ class SearchFilterType extends AbstractType {
 		$builder->add('field', TextType::class, [
 				'required' => false,
 		]);
-		
-		$builder->add('boost', NumberType::class, [
+
+		$builder->add('boost', $options['is_super']?NumberType::class:HiddenType::class, [
 			'required' => false,
 		]);
 		
@@ -53,7 +54,8 @@ class SearchFilterType extends AbstractType {
 	public function configureOptions(OptionsResolver $resolver)
 	{
 		$resolver->setDefaults([
-				'data_class' => 'EMS\CoreBundle\Entity\Form\SearchFilter',
+            'data_class' => 'EMS\CoreBundle\Entity\Form\SearchFilter',
+            'is_super' => false,
 		]);
 	}
 	

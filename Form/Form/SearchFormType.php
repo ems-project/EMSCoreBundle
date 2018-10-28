@@ -15,9 +15,21 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class SearchFormType extends AbstractType {
-	/**
+
+
+
+    /** @var AuthorizationCheckerInterface $authorizationChecker*/
+    private $authorizationChecker;
+
+    function __construct(AuthorizationCheckerInterface $authorizationChecker)
+    {
+        $this->authorizationChecker = $authorizationChecker;
+    }
+
+    /**
 	 *
 	 * {@inheritdoc}
 	 *
@@ -25,8 +37,11 @@ class SearchFormType extends AbstractType {
 	public function buildForm(FormBuilderInterface $builder, array $options) {
 		
 		$builder->add('filters', CollectionType::class, array(
-				'entry_type'   => SearchFilterType::class,
-				'allow_add'    => true,
+            'entry_type'   => SearchFilterType::class,
+            'allow_add'    => true,
+            'entry_options' => [
+                'is_super'     => $this->authorizationChecker->isGranted('ROLE_SUPER'),
+            ],
 		));
 		if($options['light']){
 			$builder->add('applyFilters', SubmitEmsType::class, [

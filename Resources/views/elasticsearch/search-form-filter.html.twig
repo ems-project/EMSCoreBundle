@@ -42,16 +42,18 @@
 										<label class="control-label">Operator</label>
 									</div>
 								</div>
-								<div class="col-md-4">
+								<div class="{% if is_super() %}col-md-4{% else %}col-md-5{% endif %}">
 									<div class="form-group">
 										<label class="control-label">Pattern</label>
 									</div>
 								</div>
-								<div class="col-md-1">
-									<div class="form-group">
-										<label class="control-label">Boost</label>
+                                {% if is_super() %}
+									<div class="col-md-1">
+										<div class="form-group">
+											<label class="control-label">Boost</label>
+										</div>
 									</div>
-								</div>
+                                {% endif %}
 								<div class="col-md-1">
 									<div class="form-group">
 										<label class="control-label">&nbsp;</label>
@@ -135,7 +137,7 @@
 				<a class="toggle-button {% if openSearchForm is not defined or not openSearchForm %}collapsed{% endif %} btn btn-primary btn-sm" role="button" data-toggle="collapse" href="#searchFormBoxBody" aria-expanded="{% if openSearchForm is not defined or not openSearchForm %}false{%else%}true{% endif %}" aria-controls="searchFormBoxBody">
 					<i class="fa fa-search"></i> Search form
 				</a>
-				{% if is_granted('ROLE_ADMIN') and body is defined	 %}
+				{% if is_super() and body is defined	 %}
 					<a class="toggle-button collapsed btn btn-primary btn-sm" role="button" data-toggle="collapse" href="#queryElasticsearchBoxBody" aria-expanded="false" aria-controls="queryElasticsearchBoxBody">
 						<i class="fa fa-eye"></i> Query
 					</a>

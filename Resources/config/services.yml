@@ -230,6 +230,10 @@ services:
             - { name: form.type }
 
 #### Begin list available ems views type ###
+    EMS\CoreBundle\Form\Form\SearchFormType:
+        arguments: ['@security.authorization_checker']
+        tags:
+            - { name: form.type }
     ems.view.keywords:
         class: EMS\CoreBundle\Form\View\KeywordsViewType
         arguments: ['@form.factory', '@twig', '@app.elasticsearch']

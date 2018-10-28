@@ -231,7 +231,7 @@ services:
 
 #### Begin list available ems views type ###
     EMS\CoreBundle\Form\Form\SearchFormType:
-        arguments: ['@security.authorization_checker']
+        arguments: ['@security.authorization_checker', '@ems.service.sort_option']
         tags:
             - { name: form.type }
     ems.view.keywords:

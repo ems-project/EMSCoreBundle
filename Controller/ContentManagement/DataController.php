@@ -85,11 +85,11 @@ class DataController extends AppController
         $searchForm = new Search();
         $searchForm->setContentTypes([$contentType->getName()]);
         $searchForm->setEnvironments([$contentType->getEnvironment()->getName()]);
-        $searchForm->setSortBy('_uid');
+        $searchForm->setSortBy('_finalization_datetime');
         if ($contentType->getSortBy()) {
             $searchForm->setSortBy($contentType->getSortBy());
         }
-        $searchForm->setSortOrder('asc');
+        $searchForm->setSortOrder('desc');
         if ($contentType->getSortOrder()) {
             $searchForm->setSortOrder($contentType->getSortOrder());
         }
@@ -126,11 +126,11 @@ class DataController extends AppController
         $searchForm = new Search();
         $searchForm->setContentTypes([$contentType->getName()]);
         $searchForm->setEnvironments([$contentType->getEnvironment()->getName()]);
-        $searchForm->setSortBy('_uid');
+        $searchForm->setSortBy('_finalization_datetime');
         if ($contentType->getSortBy()) {
             $searchForm->setSortBy($contentType->getSortBy());
         }
-        $searchForm->setSortOrder('asc');
+        $searchForm->setSortOrder('desc');
         if ($contentType->getSortOrder()) {
             $searchForm->setSortOrder($contentType->getSortOrder());
         }

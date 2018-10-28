@@ -426,13 +426,11 @@
 						<label class="control-label">&nbsp;</label>
 					</div>
 {# 					<fieldset class="btn-group">#}
-						
-						{% if not form|firstInArray(form.parent.children)  %}
+						{% if form.vars.name != '0'  %}
 							<a class="btn btn-primary remove-filter form-control" href="#">
 								<i class="fa fa-trash"></i>
 							</a>
-						{% endif %}					
-{# 						<button class="btn btn-primary remove-filter" href="#"><i class="fa fa-trash"></i></button>					#}
+						{% endif %}
 {# 					</fieldset>#}
 				</div>
 			</div>

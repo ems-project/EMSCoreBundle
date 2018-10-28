@@ -38,15 +38,16 @@
 			{% for result in results.hits.hits %}
 			<div class="panel panel-default">
 			  <div class="panel-heading">
-			  	<span class="text-{{ attribute(indexes, result._index).color }}">
-				 	{{ attribute(indexes, result._index).name|humanize }} 
-			  	</span>
-			  	|
+			  	{#<span class="text-{{ attribute(indexes, result._index).color }}">#}
+				 	{#{{ attribute(indexes, result._index).name|humanize }} #}
+			  	{#</span>#}
+			  	{#|#}
 			  	{% if attribute(types, result._type) is defined %}
 			  		<span class="text-{{ attribute(types, result._type).color }}">
-					  	<i class="{{ attribute(types, result._type).icon }}"></i> 
-					  	{{ attribute(types, result._type).singularName|humanize }} | 
-					  	
+					  	<i class="{{ attribute(types, result._type).icon }}"></i>
+						{% if form.vars.data.environments|length != 1 %}
+						  	{{ attribute(types, result._type).singularName|humanize }} |
+						{% endif %}
 					  	
 					  	{% set contentType=attribute(types, result._type) %}
 						{% if (contentType.labelField and attribute(result._source, contentType.labelField)  is defined ) %}

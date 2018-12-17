@@ -78,7 +78,7 @@ class ObjectChoiceCacheService
                         $circles = $user->getCircles();
                         $ouuids = [];
                         foreach ($circles as $circle) {
-                            preg_match('/(?P<type>\w+):(?P<ouuid>\w+)/', $circle, $matches);
+                            preg_match('/(?P<type>(\w|-)+):(?P<ouuid>(\w|-)+)/', $circle, $matches);
                             $ouuids[] = $matches['ouuid'];
                         }
 

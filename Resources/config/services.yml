@@ -383,7 +383,7 @@ services:
         class: EMS\CoreBundle\Service\AliasService
         arguments: ['@app.elasticsearch', '@doctrine']
     ems.service.bulker:
-        class: EMS\CoreBundle\Service\BulkerService
+        class: EMS\CommonBundle\Elasticsearch\Bulk\Bulker
         arguments: ['@app.elasticsearch', '@logger']
     ems.service.environment: '@EMS\CoreBundle\Service\EnvironmentService'
     EMS\CoreBundle\Service\EnvironmentService:

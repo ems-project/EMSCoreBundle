@@ -2,62 +2,83 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use EMS\CoreBundle;
-use EMS\CoreBundle\Controller\AppController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Elasticsearch\Client;
+use EMS\CommonBundle\Storage\Processor\Config;
+use EMS\CommonBundle\Storage\Processor\Processor;
+use EMS\CoreBundle\Service\ContentTypeService;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class AssetController extends AppController
+class AssetController extends AbstractController
 {
-	/**
+    /** @var Processor */
+    private $processor;
+    /** @var Client */
+    private $client;
+    /** @var ContentTypeService */
+    private $contentTypeService;
+    /** @var string */
+    private $configType;
+    /** @var string */
+    private $configIndex;
+
+    public function __construct(Processor $processor, Client $client, ContentTypeService $contentTypeService, $configType, $configIndex)
+    {
+        $this->processor = $processor;
+        $this->client = $client;
+        $this->contentTypeService = $contentTypeService;
+        $this->configType = $configType;
+        $this->configIndex = $configIndex;
+    }
+
+    /**
 	 * @Route("/asset/{processor}/{hash}", name="ems_asset_processor")
 	 */
-	public function assetProcessorAction($processor, $hash, Request $request)
+	public function assetProcessorAction(Request $request, string $processor, string $hash): Response
 	{
-
-		$config = [
-				'_identifier' => $processor,
-				'_resize' => 'fill',
-				'_width' => 300,
-				'_quality' => 70,
-				'_height' => 200,
-				'_gravity' => 'center',
-				'_radius' => false,
-				'_background' => 'FFFFFF',
-				'_radius_geometry' => 'topleft-topright-bottomright-bottomleft',
-				'_watermark' => false,
-				'_last_update_date' => '1977-02-09T16:00:00+01:00',
-				'_config_type' => 'image',
-		];
-
-        if($this->getParameter('ems_core.asset_config_type') || $this->getParameter('ems_core.asset_config_index')) {
-            try {
-                $result = $this->getElasticsearch()->search([
-                    'size' => 1,
-                    'type' => $this->getParameter('ems_core.asset_config_type'),
-                    'index' => $this->getParameter('ems_core.asset_config_index'),
-                    'body' => '
-                        {
-                           "query": {
-                              "term": {
-                                 "_identifier": {
-                                    "value": ' . json_encode($processor) . '
-                                 }
-                              }
-                           }
-                        }',
-                ]);
-
-
-                if ($result['hits']['total'] != 0) {
-                    $config = $result['hits']['hits'][0]['_source'];
-                }
-            } catch (\Exception $e) {
-
-            }
-        }
-		return $this->getAssetService()->getAssetResponse($config, $hash, $request->query->get('type', 'unkown'));
+	    return $this->processor->createResponse($request, $processor, $hash, $this->getOptions($processor));
 	}
+
+	private function getOptions(string $processor): array
+    {
+        if (null == $this->configType) {
+            return [];
+        }
+
+        $contentType = $this->contentTypeService->getByName($this->configType);
+
+        if (!$contentType) {
+            return [];
+        }
+
+        try {
+            $result = $this->client->search([
+                'size' => 1,
+                'type' => $contentType->getName(),
+                'index' => $this->configIndex ? $this->configIndex : $contentType->getEnvironment()->getAlias(),
+                'body' => '{
+                   "query": {
+                      "term": {
+                         "_identifier": {
+                            "value": ' . json_encode($processor) . '
+                         }
+                      }
+                   }
+                }',
+            ]);
+
+            if ($result['hits']['total'] == 0) {
+                return [];
+            }
+
+            $defaults = Config::getDefaults();
+
+            // removes invalid options like _sha1, _finalized_by, ..
+            return array_intersect_key($result['hits']['hits'][0]['_source'] + $defaults, $defaults);
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
 }

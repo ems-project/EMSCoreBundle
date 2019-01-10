@@ -2,8 +2,11 @@
 
 namespace EMS\CoreBundle\DependencyInjection;
 
+use EMS\CommonBundle\Storage\Adapter\FileAdapter;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
@@ -68,6 +71,26 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.sftp_path', $config['sftp_path']);
         $container->setParameter('ems_core.sftp_user', $config['sftp_user']);
 
+        $this->loadCommonStorageAdapters($config, $container);
+    }
+
+    private function loadCommonStorageAdapters(array $config, ContainerBuilder $container)
+    {
+        if (null === $config['storage_folder']) {
+            return;
+        }
+
+        $cacheAdapter = new Definition(FileAdapter::class);
+        $cacheAdapter->setArguments([ sprintf('%s/cache', $config['storage_folder'])]);
+        $cacheAdapter->addTag('ems_common.storage.cache_adapter');
+
+        $container->setDefinition('ems.common.storage.cache', $cacheAdapter);
+
+        $fileAdapter = new Definition(FileAdapter::class);
+        $fileAdapter->setArguments([$config['storage_folder']]);
+        $fileAdapter->addTag('ems_common.storage.adapter');
+
+        $container->setDefinition('ems.common.storage.file', $fileAdapter);
     }
 
     public static function getCoreVersion($rootDir){

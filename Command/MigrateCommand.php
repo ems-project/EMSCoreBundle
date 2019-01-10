@@ -11,9 +11,9 @@ use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Exception\NotLockedException;
 use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Repository\RevisionRepository;
-use EMS\CoreBundle\Service\BulkerService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\Mapping;
+use EMS\CommonBundle\Elasticsearch\Bulk\Bulker;
 use Monolog\Logger;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
@@ -29,8 +29,8 @@ use EMS\CoreBundle\Exception\CantBeFinalizedException;
 class MigrateCommand extends EmsCommand
 {
 	protected $client;
-	/** @var BulkerService */
-	protected $bulkerService;
+	/** @var Bulker */
+	protected $bulker;
 	/**@var Mapping */
 	protected $mapping;
 	protected $doctrine;
@@ -42,12 +42,12 @@ class MigrateCommand extends EmsCommand
 	
 	protected $instanceId;
 	
-	public function __construct(Registry $doctrine, Logger $logger, Client $client, BulkerService $bulkerService, $mapping, DataService $dataService, FormFactoryInterface $formFactory, $instanceId, Session $session)
+	public function __construct(Registry $doctrine, Logger $logger, Client $client, Bulker $bulker, $mapping, DataService $dataService, FormFactoryInterface $formFactory, $instanceId, Session $session)
 	{
 		$this->doctrine = $doctrine;
 		$this->logger = $logger;
 		$this->client = $client;
-		$this->bulkerService = $bulkerService;
+		$this->bulker = $bulker;
 		$this->mapping = $mapping;
 		$this->dataService = $dataService;
 		$this->formFactory= $formFactory;
@@ -148,7 +148,7 @@ class MigrateCommand extends EmsCommand
     	$scrollSize= $input->getArgument('scrollSize');
     	$scrollTimeout = $input->getArgument('scrollTimeout');
 
-    	$this->bulkerService
+    	$this->bulker
             ->setLogger(new ConsoleLogger($output))
             ->setSize($input->getOption('bulkSize'));
     	
@@ -289,7 +289,7 @@ class MigrateCommand extends EmsCommand
 
 						$body = $signData?$this->dataService->sign($newRevision):$newRevision->getRawData();
 
-                        $this->bulkerService->index($indexConfig, $body);
+                        $this->bulker->index($indexConfig, $body);
 					}
 					
 					$newRevision->setDraft(false);
@@ -319,7 +319,7 @@ class MigrateCommand extends EmsCommand
 			unset($defaultEnv);
 			unset($contentTypeTo);
 
-			$this->bulkerService->send(true);
+			$this->bulker->send(true);
 
 			
 			//https://www.elastic.co/guide/en/elasticsearch/client/php-api/current/_search_operations.html#_scrolling

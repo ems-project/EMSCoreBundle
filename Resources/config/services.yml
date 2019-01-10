@@ -383,7 +383,7 @@ services:
         class: EMS\CoreBundle\Service\AliasService
         arguments: ['@app.elasticsearch', '@doctrine']
     ems.service.bulker:
-        class: EMS\CoreBundle\Service\BulkerService
+        class: EMS\CommonBundle\Elasticsearch\Bulk\Bulker
         arguments: ['@app.elasticsearch', '@logger']
     ems.service.environment: '@EMS\CoreBundle\Service\EnvironmentService'
     EMS\CoreBundle\Service\EnvironmentService:
@@ -434,9 +434,6 @@ services:
     ems.service.asset_extractor:
         class: EMS\CoreBundle\Service\AssetExtratorService
         arguments: ["@ems.service.rest_client", '@session', '@doctrine', '@ems.service.file', '%ems_core.tika_server%']
-    ems.service.asset:
-        class: EMS\CoreBundle\Service\AssetService
-        arguments: ['@app.elasticsearch', '@ems.service.file', '@request_stack', '@kernel']
     ems.service.search:
         class: EMS\CoreBundle\Service\SearchService
         arguments: []
@@ -554,9 +551,15 @@ services:
         public: true
 
 
-#activate autowiring on core bundle controller
+    #activate autowiring on core bundle controller
     EMS\CoreBundle\Controller\:
         autowire: true
         autoconfigure: true
         public: true
         resource: '../../Controller/*'
+
+    EMS\CoreBundle\Controller\ContentManagement\AssetController:
+        autowire: true
+        arguments:
+            $configType: '%ems_core.asset_config_type%'
+            $configIndex: '%ems_core.asset_config_index%'

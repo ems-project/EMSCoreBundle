@@ -220,7 +220,7 @@ class EnvironmentController extends AppController {
 					try{
 						$results[$index]['objectEnvironment'] = $client->get([
 										'id' => $results[$index]['ouuid'],
-										'index' => $env->getAlias(),
+										'index' => $this->getContentTypeService()->getIndex($results[$index]['contentType'], $env),
 										'type' => $results[$index]['content_type_name'],
 								]);
 					}
@@ -230,7 +230,7 @@ class EnvironmentController extends AppController {
 					try{
 						$results[$index]['objectWithEnvironment'] = $client->get([
 								'id' => $results[$index]['ouuid'],
-								'index' => $withEnvi->getAlias(),
+                                'index' => $this->getContentTypeService()->getIndex($results[$index]['contentType'], $withEnvi),
 								'type' => $results[$index]['content_type_name'],
 						]);
 					}

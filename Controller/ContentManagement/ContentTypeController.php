@@ -362,6 +362,7 @@ class ContentTypeController extends AppController
 
         if ($request->isMethod('POST')) {
             if (null != $request->get('envId') && null != $request->get('name')) {
+                /** @var Environment $defaultEnvironment */
                 $defaultEnvironment = $environmetRepository->find($request->get('envId'));
                 if ($defaultEnvironment) {
                     $contentType = new ContentType ();
@@ -375,6 +376,9 @@ class ContentTypeController extends AppController
 
                     $em->persist($contentType);
                     $em->flush();
+
+                    $this->getContentTypeService()->setSingleTypeIndex($defaultEnvironment, $contentType, $defaultEnvironment->getAlias());
+
                     $this->addFlash('notice', 'The content type ' . $contentType->getName() . ' is now referenced');
                     return $this->redirectToRoute('contenttype.edit', [
                         'id' => $contentType->getId()

@@ -182,6 +182,10 @@ class ContentTypeService {
 	}
 
     public function setSingleTypeIndex(Environment $environment, ContentType $contentType, string $name){
+        if(!$this->singleTypeIndex){
+            return;
+        }
+
         $this->em = $this->doctrine->getManager();
         /**@var SingleTypeIndexRepository $repository*/
         $repository = $this->em->getRepository('EMSCoreBundle:SingleTypeIndex');

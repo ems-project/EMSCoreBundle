@@ -150,11 +150,15 @@ class AppExtension extends \Twig_Extension
             new \Twig_SimpleFilter('get_string', array($this, 'getString')),
             new \Twig_SimpleFilter('get_file', array($this, 'getFile')),
             new \Twig_SimpleFilter('get_field_by_path', array($this, 'getFieldByPath')),
-
-				
+            new \Twig_SimpleFilter('json_decode', array($this, 'jsonDecode')),
 				
 		);
 	}
+
+
+	public function jsonDecode($json, $assoc = true, $depth = 512, $options = 0) {
+	    return json_decode($json, $assoc, $depth, $options);
+    }
 
 
 

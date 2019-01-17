@@ -369,7 +369,7 @@ services:
         tags:
             - { name: form.type }
             
-            
+
 ### regular services
     ems.service.mapping:
         class: EMS\CoreBundle\Service\Mapping
@@ -383,7 +383,7 @@ services:
         class: EMS\CoreBundle\Service\AliasService
         arguments: ['@app.elasticsearch', '@doctrine']
     ems.service.bulker:
-        class: EMS\CommonBundle\Elasticsearch\Bulk\Bulker
+        class: EMS\CoreBundle\Elasticsearch\Bulker
         arguments: ['@app.elasticsearch', '@logger']
     ems.service.environment: '@EMS\CoreBundle\Service\EnvironmentService'
     EMS\CoreBundle\Service\EnvironmentService:
@@ -543,9 +543,12 @@ services:
         class:  EMS\CoreBundle\Security\ApiKeyAuthenticator
         public: false
 
+#### aliases
+
+    EMS\CoreBundle\Elasticsearch\Bulker: '@ems.service.bulker'
 
 
-#### Will be mark as deprecated soon
+    #### Will be mark as deprecated soon
     ems.service.data:
         alias: 'EMS\CoreBundle\Service\DataService'
         public: true

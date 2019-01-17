@@ -13,7 +13,7 @@ use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\Mapping;
-use EMS\CommonBundle\Elasticsearch\Bulk\Bulker;
+use EMS\CoreBundle\Elasticsearch\Bulker;
 use Monolog\Logger;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;

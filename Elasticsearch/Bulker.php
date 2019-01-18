@@ -137,7 +137,7 @@ class Bulker
         $body = $document->getSource();
 
         if ($this->singleIndex) {
-            $body = array_merge(['contenttype' => $document->getType()], $body);
+            $body = array_merge(['_contenttype' => $document->getType()], $body);
         }
 
         return $this->index($config, $body);

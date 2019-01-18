@@ -3,7 +3,7 @@
 namespace EMS\CoreBundle\Elasticsearch;
 
 use Elasticsearch\Client;
-use EMS\CoreBundle\Elasticsearch\Index\Mapping;
+use EMS\CoreBundle\Elasticsearch\Index\Mappings;
 use EMS\CoreBundle\Elasticsearch\Index\Settings;
 use Psr\Log\LoggerInterface;
 
@@ -26,29 +26,50 @@ class Indexer
         return $this;
     }
 
-    public function new(string $name, Settings $settings, Mapping $mapping, bool $delete = false): void
+    public function exists(string $name): bool
+    {
+        return $this->client->indices()->exists(['index' => $name]);
+    }
+
+    public function delete(string $name): void
     {
         $params = ['index' => $name];
-        $indices = $this->client->indices();
-        $exists = $indices->exists($params);
+        $this->client->indices()->delete($params);
+        $this->logger->info('Deleted index {index}', $params);
+    }
 
-        if ($exists && $delete) {
-            $indices->delete($params);
-            $this->logger->info('Deleted index {index}', $params);
-        } elseif ($exists) {
-            $this->logger->info('Index {index} already exists!', $params);
-            return;
-        }
-
+    public function create(string $name, Settings $settings, Mappings $mappings): string
+    {
         $body = [];
         if (!$settings->isEmpty()) {
             $body['settings'] = $settings->toArray();
         }
-        if (!$mapping->isEmpty()) {
-            $body['mapping'] = $mapping->toArray();
+        if (!$mappings->isEmpty()) {
+            $body['mappings'] = $mappings->toArray();
         }
 
-        $indices->create(['index' => $name, 'body' => $body,]);
-        $this->logger->info('Created index {index}', $params);
+        $this->client->indices()->create(['index' => $name, 'body' => $body,]);
+        $this->logger->info('Created index {index}', ['index' => $name]);
+
+        return $name;
+    }
+
+    public function atomicSwitch(string $alias, string $index): void
+    {
+        $params = ['name' => $alias];
+        $indices = $this->client->indices();
+        $actions = [['add' => ['index' => $index, 'alias' => $alias]]];
+
+        if ($indices->existsAlias($params)) {
+            $infoAlias = $indices->getAlias($params);
+
+            foreach (array_keys($infoAlias) as $oldIndex) {
+                $actions[] = ['remove' => ['index' => $oldIndex, 'alias' => $alias]];
+            }
+        }
+
+        $indices->updateAliases(['body' => ['actions' => $actions]]);
+
+        $this->logger->info('Alias {alias} is now pointing to {index}', ['alias' => $alias, 'index' => $index]);
     }
 }

@@ -4,7 +4,7 @@ namespace EMS\CoreBundle\Elasticsearch\Index;
 
 use EMS\CoreBundle\Service\Mapping as EMS;
 
-class Mapping
+class Mappings
 {
     private $mappings = [];
 
@@ -18,13 +18,13 @@ class Mapping
         return $this->mappings;
     }
 
-    public function add(string $name, array $mapping, string $type = '_doc'): Mapping
+    public function add(string $name, array $mapping, string $type = 'doc'): Mappings
     {
         if (!isset($this->mappings[$type])) {
             $this->mappings[$type] = $this->getDefaults($type);
         }
 
-        $this->mappings[$type][$name] = $mapping;
+        $this->mappings[$type]['properties'][$name] = $mapping;
 
         return $this;
     }

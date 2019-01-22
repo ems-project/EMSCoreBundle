@@ -486,9 +486,11 @@ class DataController extends AppController
      */
     public function copyAction($environment, $type, $ouuid, Request $request)
     {
-        $envObj = $this->getEnvironmentService()->getByName($environment);
+        $environment = $this->getEnvironmentService()->getByName($environment);
+        $contentType = $this->getContentTypeService()->getByName($type);
+
         $dataRaw = $this->getElasticsearch()->get([
-            'index' => $envObj->getAlias(),
+            'index' => $contentType->getIndexForEnvironment($environment),
             'id' => $ouuid,
             'type' => $type,
         ]);

@@ -1686,6 +1686,19 @@ class ContentType
         return $this->singleTypeIndexes;
     }
 
+    public function getIndexForEnvironment(Environment $environment): string
+    {
+        foreach ($this->singleTypeIndexes as $singleTypeIndex) {
+            /** @var SingleTypeIndex $singleTypeIndex */
+
+            if ($singleTypeIndex->getEnvironment() === $environment) {
+                return $singleTypeIndex->getName();
+            }
+        }
+
+        return $environment->getAlias();
+    }
+
     /**
      * @return array
      */

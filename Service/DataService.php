@@ -923,15 +923,22 @@ class DataService
         foreach ($revisions as $revision){
             $this->lockRevision($revision, true);
 
-            if ($this->contentTypeService->isSingleTypeIndex()) {
-                foreach ($revision->getContentType()->getSingleTypeIndexes() as $singleTypeIndex) {
-                    /** @var SingleTypeIndex $singleTypeIndex */
-                    $this->deleteRevisionForEnv($revision, $singleTypeIndex->getEnvironment(), $singleTypeIndex->getName());
+            foreach ($revision->getEnvironments() as $environment){
+                $index = $revision->getContentType()->getIndexForEnvironment($environment);
+
+                try {
+                    $this->client->delete([
+                        'index' => $index,
+                        'type' => $revision->getContentType()->getName(),
+                        'id' => $revision->getOuuid(),
+                    ]);
+                    $this->session->getFlashBag()->add('notice', 'The object has been unpublished from environment ' . $environment->getName());
+                } catch (Missing404Exception $e) {
+                    if (!$revision->getDeleted()) {
+                        $this->session->getFlashBag()->add('warning', 'The object was already removed from environment ' . $environment->getName());
+                    }
                 }
-            } else {
-                foreach ($revision->getEnvironments() as $environment){
-                    $this->deleteRevisionForEnv($revision, $environment, $environment->getAlias());
-                }
+                $revision->removeEnvironment($environment);
             }
 
             $revision->setDeleted(true);
@@ -945,19 +952,7 @@ class DataService
 
     public function deleteRevisionForEnv(Revision $revision, Environment $environment, string $index)
     {
-        try {
-            $this->client->delete([
-                'index' => $index,
-                'type' => $revision->getContentType()->getName(),
-                'id' => $revision->getOuuid(),
-            ]);
-            $this->session->getFlashBag()->add('notice', 'The object has been unpublished from environment ' . $environment->getName());
-        } catch (Missing404Exception $e) {
-            if (!$revision->getDeleted()) {
-                $this->session->getFlashBag()->add('warning', 'The object was already removed from environment ' . $environment->getName());
-            }
-        }
-        $revision->removeEnvironment($environment);
+
     }
 	
 	public function emptyTrash(ContentType $contentType, $ouuid) {

@@ -8,6 +8,7 @@ use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Notification;
 use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Entity\SingleTypeIndex;
 use EMS\CoreBundle\Event\RevisionFinalizeDraftEvent;
 use EMS\CoreBundle\Event\RevisionNewDraftEvent;
 use EMS\CoreBundle\Exception\DataStateException;
@@ -917,36 +918,47 @@ class DataService
 				'ouuid' => $ouuid,
 				'contentType' => $contentTypes[0]
 		]);
-		
-		/** @var Revision $revision */
-		foreach ($revisions as $revision){
-			$this->lockRevision($revision, true);
-				
-			/** @var Environment $environment */
-			foreach ($revision->getEnvironments() as $environment){
-				try{
-					$this->client->delete([
-							'index' => $environment->getAlias(),
-							'type' => $revision->getContentType()->getName(),
-							'id' => $revision->getOuuid(),
-					]);
-					$this->session->getFlashBag()->add('notice', 'The object has been unpublished from environment '.$environment->getName());
-				}
-				catch(Missing404Exception $e){
-					if(!$revision->getDeleted()) {
-						$this->session->getFlashBag()->add('warning', 'The object was already removed from environment '.$environment->getName());
-					}
-					throw $e;
-				}
-				$revision->removeEnvironment($environment);
-			}
-			$revision->setDeleted(true);
-			$revision->setDeletedBy($this->tokenStorage->getToken()->getUsername());
-			$em->persist($revision);
-		}
+
+        /** @var Revision $revision */
+        foreach ($revisions as $revision){
+            $this->lockRevision($revision, true);
+
+            if ($this->contentTypeService->isSingleTypeIndex()) {
+                foreach ($revision->getContentType()->getSingleTypeIndexes() as $singleTypeIndex) {
+                    /** @var SingleTypeIndex $singleTypeIndex */
+                    $this->deleteRevisionForEnv($revision, $singleTypeIndex->getEnvironment(), $singleTypeIndex->getName());
+                }
+            } else {
+                foreach ($revision->getEnvironments() as $environment){
+                    $this->deleteRevisionForEnv($revision, $environment, $environment->getAlias());
+                }
+            }
+
+            $revision->setDeleted(true);
+            $revision->setDeletedBy($this->tokenStorage->getToken()->getUsername());
+            $em->persist($revision);
+        }
+
 		$this->session->getFlashBag()->add('notice', 'The object have been marked as deleted! ');
 		$em->flush();
 	}
+
+    public function deleteRevisionForEnv(Revision $revision, Environment $environment, string $index)
+    {
+        try {
+            $this->client->delete([
+                'index' => $index,
+                'type' => $revision->getContentType()->getName(),
+                'id' => $revision->getOuuid(),
+            ]);
+            $this->session->getFlashBag()->add('notice', 'The object has been unpublished from environment ' . $environment->getName());
+        } catch (Missing404Exception $e) {
+            if (!$revision->getDeleted()) {
+                $this->session->getFlashBag()->add('warning', 'The object was already removed from environment ' . $environment->getName());
+            }
+        }
+        $revision->removeEnvironment($environment);
+    }
 	
 	public function emptyTrash(ContentType $contentType, $ouuid) {
 		

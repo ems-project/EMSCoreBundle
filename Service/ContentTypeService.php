@@ -181,6 +181,11 @@ class ContentTypeService {
 		return $pipelines;
 	}
 
+	public function isSingleTypeIndex(): bool
+    {
+        return $this->singleTypeIndex === true ? true : false;
+    }
+
     public function setSingleTypeIndex(Environment $environment, ContentType $contentType, string $name){
         if(!$this->singleTypeIndex){
             return;

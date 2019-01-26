@@ -200,8 +200,15 @@ class CollectionFieldType extends DataFieldType {
 	public function buildOptionsForm(FormBuilderInterface $builder, array $options) {
 		parent::buildOptionsForm ( $builder, $options );
 		$optionsForm = $builder->get ( 'options' );
-		// container aren't mapped in elasticsearch
-		$optionsForm->remove ( 'mappingOptions' );
+
+		$optionsForm->get ( 'mappingOptions' )
+            ->add('renumbering', CheckboxType::class, [
+                'required' => false,
+                'label' => 'Items will be renumbered'
+            ] )
+            ->remove('index');
+
+
 		// an optional icon can't be specified ritgh to the container label
 		$optionsForm->get ( 'displayOptions' )->add ( 'singularLabel', TextType::class, [ 
 				'required' => false 
@@ -283,7 +290,13 @@ class CollectionFieldType extends DataFieldType {
 				//now that we know that this has been submited, let's check if it has not been marked to be deleted
                 if(!isset($item['_ems_internal_deleted']) || $item['_ems_internal_deleted'] != 'deleted') {
                     unset($item['_ems_internal_deleted']);
-                    $cleaned[$idx] = $item;
+                    if($fieldType->getMappingOption('renumbering', false)){
+                        $cleaned[] = $item;
+                    }
+                    else{
+                        $cleaned[$idx] = $item;
+
+                    }
                 }
             }
 

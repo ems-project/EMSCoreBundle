@@ -158,14 +158,33 @@ class RebuildCommand extends EmsCommand
                     }
 
 					$this->contentTypeService->updateMapping($contentType, $indexName);
-                    $command->reindex($name, $contentType, $indexName, $output, $signData, $input->getOption('bulk-size'));
+                    $output->writeln('A mapping has been defined for '.$contentType->setSingularName());
+
+                    if($this->singleTypeIndex) {
+                        $command->reindex($name, $contentType, $indexName, $output, $signData, $input->getOption('bulk-size'));
+                    }
                     $this->contentTypeService->setSingleTypeIndex($environment, $contentType, $indexName);
+
+                    if($this->singleTypeIndex) {
+                        $output->writeln('');
+                        $output->writeln($contentType->getPluralName() . ' have been re-indexed ' . $countContentType . '/' . count($contentTypes));
+                    }
+                    ++$countContentType;
 				}
 
-                $output->writeln('');
-                $output->writeln($contentType->getPluralName().' have been re-indexed '.$countContentType.'/'.count($contentTypes));
-                ++$countContentType;
 			}
+
+
+            if(!$this->singleTypeIndex) {
+                /** @var ContentType $contentType */
+                foreach ($contentTypes as $contentType) {
+                    if (!$contentType->getDeleted() && $contentType->getEnvironment() && $contentType->getEnvironment()->getManaged()) {
+                        $command->reindex($name, $contentType, $indexName, $output, $signData, $input->getOption('bulk-size'));
+                        $output->writeln('');
+                        $output->writeln($contentType->getPluralName() . ' have been re-indexed ');
+                    }
+                }
+            }
 
 			$this->flushFlash($output);
 

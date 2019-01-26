@@ -158,7 +158,7 @@ class RebuildCommand extends EmsCommand
                     }
 
 					$this->contentTypeService->updateMapping($contentType, $indexName);
-                    $output->writeln('A mapping has been defined for '.$contentType->setSingularName());
+                    $output->writeln('A mapping has been defined for '.$contentType->getSingularName());
 
                     if($this->singleTypeIndex) {
                         $command->reindex($name, $contentType, $indexName, $output, $signData, $input->getOption('bulk-size'));

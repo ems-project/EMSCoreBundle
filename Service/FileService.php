@@ -11,9 +11,9 @@ use Elasticsearch\Common\Exceptions\Conflict409Exception;
 use EMS\CoreBundle\Service\Storage\EntityStorage;
 use EMS\CoreBundle\Service\Storage\FileSystemStorage;
 use EMS\CoreBundle\Service\Storage\HttpStorage;
-use function stream_get_contents;
+use EMS\CoreBundle\Service\Storage\S3Storage;
+use EMS\CoreBundle\Service\Storage\SftpStorage;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use function unlink;
 
 class FileService {
 
@@ -24,7 +24,7 @@ class FileService {
 	
 	private $uploadFolder;
 	
-	public function __construct(Registry $doctrine, RestClientService $restClient, string $projectDir, string $uploadFolder, string $storageFolder, bool $createDbStorageService, string $elasticmsRemoteServer, string $elasticmsRemoteAuthkey, string $sftpServer, string $sftpPath, string $sftpUser, string $publicKey, string $privateKey)
+	public function __construct(Registry $doctrine, RestClientService $restClient, string $projectDir, string $uploadFolder, string $storageFolder, bool $createDbStorageService, string $elasticmsRemoteServer, string $elasticmsRemoteAuthkey, string $sftpServer, string $sftpPath, string $sftpUser, string $publicKey, string $privateKey, array $s3Credentials=null, string $s3Bucket=null)
 	{
 	    $this->doctrine = $doctrine;
 	    $this->uploadFolder = $uploadFolder;
@@ -42,6 +42,12 @@ class FileService {
             }
         }
 
+        if(!empty($s3Credentials) && !empty($s3Bucket))
+        {
+            $this->addStorageService(new S3Storage($s3Credentials, $s3Bucket));
+        }
+
+
         if($createDbStorageService)
         {
             $this->addStorageService(new EntityStorage($doctrine, empty($storageFolder)));
@@ -51,6 +57,12 @@ class FileService {
         {
             $this->addStorageService(new HttpStorage($restClient, $elasticmsRemoteServer.'/data/file/view/', $elasticmsRemoteServer.'/api/file', $elasticmsRemoteAuthkey));
         }
+
+        if(!empty($sftpServer) && !empty($sftpPath) && !empty($sftpPath) && !empty($publicKey) && !empty($privateKey))
+        {
+            $this->addStorageService(new SftpStorage($sftpServer, $sftpPath, $sftpPath, $publicKey, $privateKey));
+        }
+
 	}
 	
 	public function addStorageService($dataField) {
@@ -80,16 +92,32 @@ class FileService {
 	}
 
 
+
+    public function getResource($hash, $cacheContext=false){
+        /**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
+        foreach ($this->storageServices as $service){
+            $resource = $service->read($hash, $cacheContext);
+            if($resource){
+                return $resource;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @deprecated
+     * @param $sha1
+     * @param bool $cacheContext
+     * @return bool|string
+     */
 	public function getFile($sha1, $cacheContext=false){
-		/**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
-		foreach ($this->storageServices as $service){
-			$resource = $service->read($sha1, $cacheContext);
-			if($resource){
-                $filename = tempnam(sys_get_temp_dir(), 'EMS');
-                file_put_contents($filename, $resource);
-				return $filename;
-			}
-		}
+        $resource = $this->getResource($sha1, $cacheContext);
+        if($resource)
+        {
+            $filename = tempnam(sys_get_temp_dir(), 'EMS');
+            file_put_contents($filename, $resource);
+            return $filename;
+        }
 		return false;
 	}
 	

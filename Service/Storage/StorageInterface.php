@@ -12,6 +12,13 @@ interface StorageInterface
      */
     public function head($hash, $cacheContext = false);
 
+
+    /**
+     * Use to display the service in the console
+     * @return string
+     */
+    public function __toString();
+
     /**
      * @param string $hash
      * @param string $filename

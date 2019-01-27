@@ -71,7 +71,7 @@ class FileService {
 	public function addStorageService($storageAdapter) {
 	    $this->storageManager->addAdapter($storageAdapter);
 	}
-	
+
 	public function getStorageService(StorageInterface $dataFieldTypeId)
     {
 		return $this->dataFieldTypes($dataFieldTypeId);

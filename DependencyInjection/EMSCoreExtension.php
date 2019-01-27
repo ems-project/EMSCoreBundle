@@ -70,6 +70,8 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.sftp_server', $config['sftp_server']);
         $container->setParameter('ems_core.sftp_path', $config['sftp_path']);
         $container->setParameter('ems_core.sftp_user', $config['sftp_user']);
+        $container->setParameter('ems_core.s3_credentials', $config['s3_credentials']);
+        $container->setParameter('ems_core.s3_bucket', $config['s3_bucket']);
 
         $this->loadCommonStorageAdapters($config, $container);
     }

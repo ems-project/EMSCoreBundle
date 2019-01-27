@@ -153,6 +153,7 @@ class TemplateType extends AbstractType {
         ] )
         ->add ( 'allow_origin', TextType::class, [
             'label' => 'The Access-Control-Allow-Originm header',
+            'required' => false,
             'attr' => [
             ],
         ] )

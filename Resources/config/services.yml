@@ -439,7 +439,7 @@ services:
         arguments: []
     ems.service.file:
         class: EMS\CoreBundle\Service\FileService
-        arguments: ['@doctrine', '@ems_common.storage.manager', '%kernel.project_dir%', '%ems_core.upload_folder%', '%ems_core.storage_folder%', '%ems_core.save_assets_in_db%', '%ems_core.ems_remote_host%', '%ems_core.ems_remote_authkey%', '%ems_core.sftp_server%', '%ems_core.sftp_path%', '%ems_core.sftp_user%', '%ems_core.public_key%', '%ems_core.private_key%', '%ems_core.s3_credentials%', '%ems_core.s3_bucket%']
+        arguments: ['@doctrine', '@ems.service.rest_client', '%kernel.project_dir%', '%ems_core.upload_folder%', '%ems_core.storage_folder%', '%ems_core.save_assets_in_db%', '%ems_core.ems_remote_host%', '%ems_core.ems_remote_authkey%', '%ems_core.sftp_server%', '%ems_core.sftp_path%', '%ems_core.sftp_user%', '%ems_core.private_key%', '%ems_core.public_key%', '%ems_core.s3_credentials%', '%ems_core.s3_bucket%']
     ems.service.helper:
         class: EMS\CoreBundle\Service\HelperService
         arguments: ['@doctrine', '@request_stack', '%ems_core.paging_size%']

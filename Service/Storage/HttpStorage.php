@@ -91,7 +91,6 @@ class HttpStorage implements StorageInterface
             //https://stackoverflow.com/questions/3938534/download-file-to-server-from-url?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
             return @fopen($this->getUrl . $hash, 'rb');
         } catch (Exception $e) {
-            dump($e);
             return false;
         }
     }

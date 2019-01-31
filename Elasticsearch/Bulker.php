@@ -110,7 +110,7 @@ class Bulker
     public function index(array $config, array $body): bool
     {
         if ($this->enableSha1) {
-            $body['sha1'] = sha1(json_encode($body));
+            $body['_sha1'] = sha1(json_encode($body));
         }
 
         $this->params['body'][] = ['index' => $config];
@@ -150,7 +150,11 @@ class Bulker
      */
     public function send($force = false): bool
     {
-        if (!$force && $this->counter < $this->size || empty($this->params['body'])) {
+        if (0 === $this->counter) {
+            return false;
+        }
+
+        if (!$force && $this->counter < $this->size) {
             return false;
         }
 

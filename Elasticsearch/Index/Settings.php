@@ -6,6 +6,7 @@ class Settings
 {
     private $filters = [];
     private $analyzers = [];
+    private $languages = [];
 
     public function isEmpty(): bool
     {
@@ -22,6 +23,11 @@ class Settings
         ];
     }
 
+    public function getLanguages(): array
+    {
+        return $this->languages;
+    }
+
     public function addAnalyzerHtmlStrip(): Settings
     {
         $this->analyzers['html_strip'] = $this->createCustomAnalyzer('standard');
@@ -33,11 +39,13 @@ class Settings
     {
         $this->filters['english_stop'] = $this->getFilterStop('_english_');
         $this->filters['english_stemmer'] = $this->getFilterStemmer('english');
-        $this->filters['empty_elision'] = $this->getFilterElision([]);
+        $this->filters['empty_elision'] = $this->getFilterElision();
 
         $this->analyzers['english_for_highlighting'] = $this->createCustomAnalyzer(
             ['standard', 'lowercase', 'empty_elision', 'english_stemmer', 'english_stop']
         );
+
+        $this->languages['en'] = 'english_for_highlighting';
 
         return $this;
     }
@@ -52,6 +60,8 @@ class Settings
             ['standard', 'asciifolding', 'lowercase', 'french_elision', 'french_stemmer', 'french_stop']
         );
 
+        $this->languages['fr'] = 'french_for_highlighting';
+
         return $this;
     }
 
@@ -59,11 +69,13 @@ class Settings
     {
         $this->filters['dutch_stop'] = $this->getFilterStop('_dutch_');
         $this->filters['dutch_stemmer'] = $this->getFilterStemmer('dutch');
-        $this->filters['empty_elision'] = $this->getFilterElision([]);
+        $this->filters['empty_elision'] = $this->getFilterElision();
 
         $this->analyzers['dutch_for_highlighting'] = $this->createCustomAnalyzer(
             ['standard', 'asciifolding', 'lowercase', 'empty_elision', 'dutch_stemmer', 'dutch_stop']
         );
+
+        $this->languages['nl'] = 'dutch_for_highlighting';
 
         return $this;
     }
@@ -72,11 +84,13 @@ class Settings
     {
         $this->filters['german_stop'] = $this->getFilterStop('_german_');
         $this->filters['german_stemmer'] = $this->getFilterStemmer('light_german');
-        $this->filters['empty_elision'] = $this->getFilterElision([]);
+        $this->filters['empty_elision'] = $this->getFilterElision();
 
         $this->analyzers['german_for_highlighting'] = $this->createCustomAnalyzer(
             ['standard', 'lowercase', 'empty_elision', 'german_stemmer', 'german_stop']
         );
+
+        $this->languages['de'] = 'german_for_highlighting';
 
         return $this;
     }

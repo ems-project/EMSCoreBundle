@@ -7,6 +7,20 @@ use EMS\CoreBundle\Service\Mapping as EMS;
 class Mappings
 {
     private $mappings = [];
+    private $defaultProperties = [];
+
+    public function __construct(Settings $settings = null)
+    {
+        if ($settings) {
+            foreach ($settings->getLanguages() as $language => $analyzer) {
+                $this->defaultProperties['all_'.$language] = [
+                    'type' => 'text',
+                    'store' => true,
+                    'analyzer' => $analyzer,
+                ];
+            }
+        }
+    }
 
     public function isEmpty(): bool
     {
@@ -21,7 +35,7 @@ class Mappings
     public function add(string $name, array $mapping, string $type = 'doc'): Mappings
     {
         if (!isset($this->mappings[$type])) {
-            $this->mappings[$type] = $this->getDefaults($type);
+            $this->mappings[$type] = $this->getDefaults();
         }
 
         $this->mappings[$type]['properties'][$name] = $mapping;
@@ -29,14 +43,14 @@ class Mappings
         return $this;
     }
 
-    private function getDefaults(string $type)
+    private function getDefaults()
     {
         return [
             '_all' => ['store' => true, 'enabled' => true],
-            'properties' => [
+            'properties' => array_merge([
                 EMS::CONTENT_TYPE_FIELD => ['type' => 'keyword'],
                 EMS::HASH_FIELD => ['type' => 'keyword'],
-            ]
+            ], $this->defaultProperties)
         ];
     }
 }

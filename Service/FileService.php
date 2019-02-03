@@ -3,34 +3,37 @@
 namespace EMS\CoreBundle\Service;
 
 use const DIRECTORY_SEPARATOR;
+use EMS\CommonBundle\Storage\Service\EntityStorage;
+use EMS\CommonBundle\Storage\Service\FileSystemStorage;
+use EMS\CommonBundle\Storage\Service\HttpStorage;
+use EMS\CommonBundle\Storage\Service\S3Storage;
+use EMS\CommonBundle\Storage\Service\SftpStorage;
+use EMS\CommonBundle\Storage\Service\StorageInterface;
+use EMS\CommonBundle\Storage\StorageManager;
+use EMS\CommonBundle\Storage\StorageServiceMissingException;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\UploadedAsset;
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use EMS\CoreBundle\Exception\StorageServiceMissingException;
 use Elasticsearch\Common\Exceptions\Conflict409Exception;
-use EMS\CoreBundle\Service\Storage\EntityStorage;
-use EMS\CoreBundle\Service\Storage\FileSystemStorage;
-use EMS\CoreBundle\Service\Storage\HttpStorage;
-use EMS\CoreBundle\Service\Storage\S3Storage;
-use EMS\CoreBundle\Service\Storage\SftpStorage;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class FileService {
-
-	private $storageServices;
 	
 	/**@var Registry*/
 	private $doctrine;
+
+    private $uploadFolder;
+
+    /**@var StorageManager*/
+    private $storageManager;
 	
-	private $uploadFolder;
-	
-	public function __construct(Registry $doctrine, RestClientService $restClient, string $projectDir, string $uploadFolder, string $storageFolder, bool $createDbStorageService, string $elasticmsRemoteServer, string $elasticmsRemoteAuthkey, string $sftpServer, string $sftpPath, string $sftpUser, string $publicKey, string $privateKey, array $s3Credentials=null, string $s3Bucket=null)
+	public function __construct(Registry $doctrine, StorageManager $storageManager, string $projectDir, string $uploadFolder, string $storageFolder, bool $createDbStorageService, string $elasticmsRemoteServer, string $elasticmsRemoteAuthkey, string $sftpServer, string $sftpPath, string $sftpUser, string $publicKey, string $privateKey, array $s3Credentials=null, string $s3Bucket=null)
 	{
 	    $this->doctrine = $doctrine;
 	    $this->uploadFolder = $uploadFolder;
-		$this->storageServices = [];
+        $this->storageManager = $storageManager;
 
-        if(!empty($storageFolder))
+        if($storageFolder && !empty($storageFolder))
         {
             if(substr($storageFolder, 0, 2) === ('.'.DIRECTORY_SEPARATOR))
             {
@@ -55,32 +58,33 @@ class FileService {
 
         if(!empty($elasticmsRemoteServer))
         {
-            $this->addStorageService(new HttpStorage($restClient, $elasticmsRemoteServer.'/data/file/view/', $elasticmsRemoteServer.'/api/file', $elasticmsRemoteAuthkey));
+            $this->addStorageService(new HttpStorage($elasticmsRemoteServer.'/data/file/view/', $elasticmsRemoteServer.'/api/file', $elasticmsRemoteAuthkey));
         }
 
         if(!empty($sftpServer) && !empty($sftpPath) && !empty($sftpPath) && !empty($publicKey) && !empty($privateKey))
         {
-            $this->addStorageService(new SftpStorage($sftpServer, $sftpPath, $sftpPath, $publicKey, $privateKey));
+            $this->addStorageService(new SftpStorage($sftpServer, $sftpPath, $sftpUser, $publicKey, $privateKey, true));
         }
 
 	}
 	
-	public function addStorageService($dataField) {
-		$this->storageServices[] = $dataField;
+	public function addStorageService($storageAdapter) {
+	    $this->storageManager->addAdapter($storageAdapter);
 	}
 	
-	public function getStorageService($dataFieldTypeId) {
-		return $this->dataFieldTypes[$dataFieldTypeId];
+	public function getStorageService(StorageInterface $dataFieldTypeId)
+    {
+		return $this->dataFieldTypes($dataFieldTypeId);
 	}
 	
 	public function getStorages() {
-		return $this->storageServices;
+		return $this->storageManager->getAdapters();
 	}
 
 
 	public function getBase64($sha1, $cacheContext=false){
-		/**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
-		foreach ($this->storageServices as $service){
+		/**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service*/
+		foreach ($this->storageManager->getAdapters() as $service){
 			$resource = $service->read($sha1, $cacheContext);
 			if($resource){
 				$data = stream_get_contents($resource);
@@ -94,8 +98,8 @@ class FileService {
 
 
     public function getResource($hash, $cacheContext=false){
-        /**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
-        foreach ($this->storageServices as $service){
+        /**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service*/
+        foreach ($this->storageManager->getAdapters() as $service){
             $resource = $service->read($hash, $cacheContext);
             if($resource){
                 return $resource;
@@ -122,8 +126,8 @@ class FileService {
 	}
 	
 	public function getSize($sha1, $cacheContext=false){
-		/**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
-		foreach ($this->storageServices as $service){
+		/**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service*/
+		foreach ($this->storageManager->getAdapters() as $service){
 			$filesize = $service->getSize($sha1, $cacheContext);
 			if($filesize !== false){
 				return $filesize;
@@ -131,13 +135,20 @@ class FileService {
 		}
 		return false;
 	}
-	
-	public function getLastUpdateDate($sha1, $cacheContext=false){
-		$out = false;
-		/**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
-		foreach ($this->storageServices as $service){
-			$date = $service->getLastUpdateDate($sha1, $cacheContext);
-			if($date && ($out === false || $date < $out)){
+
+    /**
+     * @param string      $hash
+     * @param string|null $context
+     *
+     * @return null|\DateTime
+     */
+    public function getLastUpdateDate(string $hash, ?string $context = null): ?\DateTime
+    {
+		$out = null;
+		/**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service*/
+		foreach ($this->storageManager->getAdapters() as $service){
+			$date = $service->getLastUpdateDate($hash, $context);
+			if($date && ($out === null || $date < $out)){
 				$out = $date;
 			}
 		}
@@ -145,8 +156,8 @@ class FileService {
 	}
 	
 	public function head($sha1, $cacheContext=false){
-		/**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
-		foreach ($this->storageServices as $service){
+		/**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service*/
+		foreach ($this->storageManager->getAdapters() as $service){
 			if($service->head($sha1, $cacheContext)){
 				return true;
 			}
@@ -166,7 +177,7 @@ class FileService {
 	 * @return UploadedAsset
 	 */
 	public function initUploadFile($sha1, $size, $name, $type, $user){
-		if(empty($this->storageServices)){
+		if(empty($this->storageManager->getAdapters())){
 			throw new StorageServiceMissingException("No storage service have been defined");
 		}
 		
@@ -269,7 +280,7 @@ class FileService {
 	
 	
 	public function addChunk($sha1, $chunk, $user) {
-		if(empty($this->storageServices)){
+		if(empty($this->storageManager->getAdapters())){
 			throw new StorageServiceMissingException("No storage service have been defined");
 		}
 		
@@ -317,8 +328,8 @@ class FileService {
 	
 	
 	public function create($sha1, $fileName, $cacheContext=false) {
-		/**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
-		foreach ($this->storageServices as $service){
+		/**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service*/
+		foreach ($this->storageManager->getAdapters() as $service){
 			if($service->create($sha1, $fileName, $cacheContext)) {
 			    unlink($fileName);
 				return true;
@@ -330,13 +341,13 @@ class FileService {
 	private function saveFile($filename, UploadedAsset $uploadedAsset){
 		if(sha1_file($filename) != $uploadedAsset->getSha1()) {
 // 			throw new Conflict409Exception("Sha1 mismatched ".sha1_file($filename).' '.$uploadedAsset->getSha1());
-//TODO: fix this issue
+//TODO: fix this issue by using the CryotJS librairy on the FE JS?
 			$uploadedAsset->setSha1(sha1_file($filename));
 			$uploadedAsset->setUploaded(filesize($filename));
 		}
 		
-		/**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
-		foreach ($this->storageServices as $service){
+		/**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service*/
+		foreach ($this->storageManager->getAdapters() as $service){
 			if($service->create($uploadedAsset->getSha1(), $filename)) {
 				$uploadedAsset->setAvailable(true);
                 unlink($filename);

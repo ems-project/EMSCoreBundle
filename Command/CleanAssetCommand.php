@@ -9,7 +9,7 @@ use Elasticsearch\Client;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\UploadedAssetRepository;
 use EMS\CoreBundle\Service\FileService;
-use EMS\CoreBundle\Service\Storage\StorageInterface;
+use EMS\CommonBundle\Storage\Service\StorageInterface;
 use Monolog\Logger;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;

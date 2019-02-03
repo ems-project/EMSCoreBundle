@@ -225,7 +225,7 @@ class IndexFileCommand extends EmsCommand
                         $tempName = $this->fileService->temporaryFilename($rawData['sha1']);
                         file_put_contents($tempName, $fileContent);
 
-                        /**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
+                        /**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service*/
                         foreach ($this->fileService->getStorages() as $service){
                             $service->create($rawData['sha1'], $tempName);
                             $output->writeln('File restored from DB: '.$rawData['sha1']);

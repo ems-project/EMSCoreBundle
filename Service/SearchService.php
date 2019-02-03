@@ -25,6 +25,12 @@ class SearchService
 			}
 				
 		}
+
+		if(isset($body["query"]["bool"]['should']))
+        {
+            $body["query"]["bool"]['minimum_should_match'] = 1;
+        }
+
 		if ( null != $search->getSortBy() && strlen($search->getSortBy()) > 0  ) {
 			$body["sort"] = [
 					$search->getSortBy() => [

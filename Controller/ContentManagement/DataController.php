@@ -551,8 +551,8 @@ class DataController extends AppController
 
         $this->getDataService()->delete($type, $ouuid);
 
-        return $this->redirectToRoute('ems_data_default_search', [
-            'name' => $contentType->getName(),
+        return $this->redirectToRoute('data.draft_in_progress', [
+            'contentTypeId' => $contentType->getId(),
         ]);
     }
 

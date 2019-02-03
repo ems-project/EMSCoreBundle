@@ -7,7 +7,7 @@ namespace EMS\CoreBundle\Command;
 use function array_merge;
 use Elasticsearch\Client;
 use EMS\CoreBundle\Service\FileService;
-use EMS\CoreBundle\Service\Storage\StorageInterface;
+use EMS\CommonBundle\Storage\Service\StorageInterface;
 use Monolog\Logger;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\QuestionHelper;

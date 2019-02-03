@@ -78,21 +78,21 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
 
     private function loadCommonStorageAdapters(array $config, ContainerBuilder $container)
     {
-        if (null === $config['storage_folder']) {
-            return;
-        }
-
-        $cacheAdapter = new Definition(FileAdapter::class);
-        $cacheAdapter->setArguments([ sprintf('%s/cache', $config['storage_folder'])]);
-        $cacheAdapter->addTag('ems_common.storage.cache_adapter');
-
-        $container->setDefinition('ems.common.storage.cache', $cacheAdapter);
-
-        $fileAdapter = new Definition(FileAdapter::class);
-        $fileAdapter->setArguments([$config['storage_folder']]);
-        $fileAdapter->addTag('ems_common.storage.adapter');
-
-        $container->setDefinition('ems.common.storage.file', $fileAdapter);
+//        if (null === $config['storage_folder']) {
+//            return;
+//        }
+//
+//        $cacheAdapter = new Definition(FileAdapter::class);
+//        $cacheAdapter->setArguments([ sprintf('%s/cache', $config['storage_folder'])]);
+//        $cacheAdapter->addTag('ems_common.storage.cache_adapter');
+//
+//        $container->setDefinition('ems.common.storage.cache', $cacheAdapter);
+//
+//        $fileAdapter = new Definition(FileAdapter::class);
+//        $fileAdapter->setArguments([$config['storage_folder']]);
+//        $fileAdapter->addTag('ems_common.storage.adapter');
+//
+//        $container->setDefinition('ems.common.storage.file', $fileAdapter);
     }
 
     public static function getCoreVersion($rootDir){

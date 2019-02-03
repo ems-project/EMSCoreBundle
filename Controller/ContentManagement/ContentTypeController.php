@@ -952,19 +952,14 @@ class ContentTypeController extends AppController
             switch ($action){
                 case 'subfield':
                     if($this->isValidName($subFieldName)){
-//                        dump($field);
                         $child = new FieldType ();
-//                        dump($subFieldName);
                         $child->setName($subFieldName);
                         $child->setType(SubfieldType::class);
                         $child->setParent($field);
                         $field->addChild($child);
                         $this->addFlash('notice', 'The subfield ' . $child->getName() . ' has been prepared to be added');
-//                        dump($field);
                         $em->persist($field);
-//                        dump('toto');
                         $em->flush();
-//                        exit;
                     }
                     else {
                         $this->addFlash('error', 'The field\'s name is not valid (format: [a-z][a-z0-9_-]*),'. Mapping::HASH_FIELD.' and '.Mapping::SIGNATURE_FIELD.' are reserved.');

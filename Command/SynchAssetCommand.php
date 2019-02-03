@@ -12,7 +12,7 @@ use EMS\CoreBundle\Repository\UploadedAssetRepository;
 use EMS\CoreBundle\Service\AssetExtratorService;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\FileService;
-use EMS\CoreBundle\Service\Storage\StorageInterface;
+use EMS\CommonBundle\Storage\Service\StorageInterface;
 use Elasticsearch\Client;
 use Monolog\Logger;
 use Symfony\Component\Console\Helper\ProgressBar;

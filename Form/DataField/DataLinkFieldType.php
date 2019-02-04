@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Form\DataField;
 use Elasticsearch\Client;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use EMS\CoreBundle\Form\Field\ObjectChoiceLoader;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
 use EMS\CoreBundle\Service\ElasticsearchService;
@@ -287,6 +288,14 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 		$optionsForm->get ( 'extraOptions' )->add ( 'updateReferersField', TextType::class, [
 				'required' => false,
 		] );
+
+
+        // String specific mapping options
+        $optionsForm->get ( 'mappingOptions' )
+            ->add ( 'analyzer', AnalyzerPickerType::class)
+            ->add ( 'copy_to', TextType::class, [
+                'required' => false,
+            ] );
 		
 	}
 	

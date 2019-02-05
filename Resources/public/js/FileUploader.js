@@ -267,15 +267,25 @@ function FileUploader(params) {
 		
 		//success
 		if(event.target.status == '200'){
+			
 			self.uploaded += Math.min(self.statics.CHUNKSIZE, self.size-self.uploaded);
 			if(self.uploaded == self.size){
 				var response = JSON.parse(event.target.responseText);
-				if(response.sha1 != self.sha1){
-					console.log('sha1 missmatch');
-					self.sha1 = response.sha1;
+
+				if(!response.error)
+				{
+					if(response.sha1 != self.sha1){
+						console.log('sha1 missmatch');
+						self.sha1 = response.sha1;
+					}
+					self.status = self.statics.UPLOADED;
+					self.onProgress('Uploaded', 1, 'Done');
 				}
-				self.status = self.statics.UPLOADED;
-				self.onProgress('Uploaded', 1, 'Done');	
+				else
+				{
+                    self.setUploadError(response.error[0], 200);
+				}
+
 			}
 			else{
 				self.onProgress('Uploading', (self.uploaded / self.size), self.msToTime(((self.size - self.uploaded)/self.statics.CHUNKSIZE)*((new Date()).getTime()-self.timeStamp)));

@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Service;
 
 use const DIRECTORY_SEPARATOR;
+use Doctrine\ORM\EntityManager;
 use EMS\CommonBundle\Storage\Service\EntityStorage;
 use EMS\CommonBundle\Storage\Service\FileSystemStorage;
 use EMS\CommonBundle\Storage\Service\HttpStorage;
@@ -351,21 +352,35 @@ class FileService {
             foreach ($this->storageManager->getAdapters() as $service)
             {
                 $handler = $service->read($uploadedAsset->getSha1(), false, false);
-                $ctx = hash_init('sha1');
-                while (!feof($handler)) {
-                    hash_update($ctx, fread($handler, 8192));
-                }
-                $computedHash = hash_final($ctx);
 
-                if($computedHash != $uploadedAsset->getSha1()) {
-                    throw new Conflict409Exception("Sha1 mismatched ".$computedHash.' '.$uploadedAsset->getSha1());
-                }
-
-                if( $service->finalizeUpload($sha1) && ++$loopCounter >= $this->uploadMinimuNumberOfReplications )
+                if($handler)
                 {
-                    break;
+
+
+                    $ctx = hash_init('sha1');
+                    while (!feof($handler)) {
+                        hash_update($ctx, fread($handler, 8192));
+                    }
+                    $computedHash = hash_final($ctx);
+
+                    if($computedHash != $uploadedAsset->getSha1()) {
+                        throw new Conflict409Exception("Hash mismatched ".$computedHash.' '.$uploadedAsset->getSha1());
+                    }
+
+                    if( $service->finalizeUpload($sha1) && ++$loopCounter >= $this->uploadMinimuNumberOfReplications )
+                    {
+                        break;
+                    }
+
                 }
 
+            }
+
+            if( $loopCounter === 0 )
+            {
+                $em->remove($uploadedAsset);
+                $em->flush($uploadedAsset);
+                throw new Exception('Was not able to finalize or confirmed the upload in at least one storage service');
             }
 
 		}

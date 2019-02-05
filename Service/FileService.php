@@ -15,6 +15,8 @@ use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\UploadedAsset;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Elasticsearch\Common\Exceptions\Conflict409Exception;
+use Exception;
+use function strlen;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class FileService {
@@ -26,12 +28,16 @@ class FileService {
 
     /**@var StorageManager*/
     private $storageManager;
+
+    /**@var integer*/
+    private $uploadMinimuNumberOfReplications;
 	
 	public function __construct(Registry $doctrine, StorageManager $storageManager, string $projectDir, string $uploadFolder, string $storageFolder, bool $createDbStorageService, string $elasticmsRemoteServer, string $elasticmsRemoteAuthkey, string $sftpServer, string $sftpPath, string $sftpUser, string $publicKey, string $privateKey, array $s3Credentials=null, string $s3Bucket=null)
 	{
 	    $this->doctrine = $doctrine;
 	    $this->uploadFolder = $uploadFolder;
         $this->storageManager = $storageManager;
+        $this->uploadMinimuNumberOfReplications = 10;
 
         if($storageFolder && !empty($storageFolder))
         {
@@ -206,6 +212,11 @@ class FileService {
 		$uploadedAsset->setType($type);
 		$uploadedAsset->setName($name);
 		$uploadedAsset->setAvailable(false);
+
+		if($size >= $uploadedAsset->getUploaded())
+        {
+            $uploadedAsset->setUploaded(0);
+        }
 		
 		if($uploadedAsset->getSize() != $size){
 			throw new Conflict409Exception("Target size mismatched ".$uploadedAsset->getSize().' '.$size);
@@ -219,18 +230,25 @@ class FileService {
 			$uploadedAsset->setAvailable(true);
 		}
 		else {
-			//Get temporyName
-			$filename = $this->temporaryUploadFilename($sha1);
-			if(file_exists($filename)) {
-			    if(filesize($filename) !== intval($uploadedAsset->getUploaded()) || $uploadedAsset->getUploaded() == $uploadedAsset->getSize()){
-					file_put_contents($filename, "");
-					$uploadedAsset->setUploaded(0);
-				}
-			}
-			else {
-				touch($filename);
-				$uploadedAsset->setUploaded(0);
-			}
+		    $loopCounter = 0;
+            foreach ($this->storageManager->getAdapters() as $service){
+                if($service->initUpload($sha1, $size, $name, $type) && ++$loopCounter >= $this->uploadMinimuNumberOfReplications)
+                {
+                    break;
+                }
+            }
+//			//Get temporary file name
+//			$filename = $this->temporaryUploadFilename($sha1);
+//			if(file_exists($filename)) {
+//			    if(filesize($filename) !== intval($uploadedAsset->getUploaded()) || $uploadedAsset->getUploaded() == $uploadedAsset->getSize()){
+//					file_put_contents($filename, "");
+//					$uploadedAsset->setUploaded(0);
+//				}
+//			}
+//			else {
+//				touch($filename);
+//				$uploadedAsset->setUploaded(0);
+//			}
 		}
 
 		$em->persist($uploadedAsset);
@@ -300,25 +318,56 @@ class FileService {
 		if(!$uploadedAsset) {
 			throw new NotFoundHttpException('Upload job not found');
 		}
+
+
+        $loopCounter = 0;
+        foreach ($this->storageManager->getAdapters() as $service)
+        {
+            if( $service->addChunk($sha1, $chunk) && ++$loopCounter >= $this->uploadMinimuNumberOfReplications )
+            {
+                break;
+            }
+        }
+
+//		$filename = $this->temporaryUploadFilename($sha1);
+//		if(!file_exists($filename)) {
+//			throw new NotFoundHttpException('tempory file not found');
+//		}
+//
+//		$myfile = fopen($filename, "a");
+//		$result = fwrite($myfile, $chunk);
+//		fflush($myfile);
+//		fclose($myfile);
 		
-		
-		$filename = $this->temporaryUploadFilename($sha1);
-		if(!file_exists($filename)) {
-			throw new NotFoundHttpException('tempory file not found');
-		}
-		
-		$myfile = fopen($filename, "a");
-		$result = fwrite($myfile, $chunk);
-		fflush($myfile);
-		fclose($myfile);
-		
-		$uploadedAsset->setUploaded(filesize($filename));
+		$uploadedAsset->setUploaded($uploadedAsset->getUploaded()+strlen($chunk));
 		
 		$em->persist($uploadedAsset);
 		$em->flush($uploadedAsset);
 		
 		if($uploadedAsset->getUploaded() == $uploadedAsset->getSize()){
-			$uploadedAsset = $this->saveFile($filename, $uploadedAsset);
+
+
+            $loopCounter = 0;
+            foreach ($this->storageManager->getAdapters() as $service)
+            {
+                $handler = $service->read($uploadedAsset->getSha1(), false, false);
+                $ctx = hash_init('sha1');
+                while (!feof($handler)) {
+                    hash_update($ctx, fread($handler, 8192));
+                }
+                $computedHash = hash_final($ctx);
+
+                if($computedHash != $uploadedAsset->getSha1()) {
+                    throw new Conflict409Exception("Sha1 mismatched ".$computedHash.' '.$uploadedAsset->getSha1());
+                }
+
+                if( $service->finalizeUpload($sha1) && ++$loopCounter >= $this->uploadMinimuNumberOfReplications )
+                {
+                    break;
+                }
+
+            }
+
 		}
 		
 		$em->persist($uploadedAsset);
@@ -345,7 +394,7 @@ class FileService {
 			$uploadedAsset->setSha1(sha1_file($filename));
 			$uploadedAsset->setUploaded(filesize($filename));
 		}
-		
+
 		/**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service*/
 		foreach ($this->storageManager->getAdapters() as $service){
 			if($service->create($uploadedAsset->getSha1(), $filename)) {

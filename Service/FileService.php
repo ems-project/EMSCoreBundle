@@ -19,6 +19,7 @@ use Elasticsearch\Common\Exceptions\Conflict409Exception;
 use Exception;
 use function strlen;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Router;
 
 class FileService {
 	
@@ -60,12 +61,12 @@ class FileService {
 
         if($createDbStorageService)
         {
-            $this->addStorageService(new EntityStorage($doctrine, empty($storageFolder)));
+            $this->addStorageService(new EntityStorage($doctrine, true));
         }
 
         if(!empty($elasticmsRemoteServer))
         {
-            $this->addStorageService(new HttpStorage($elasticmsRemoteServer.'/data/file/view/', $elasticmsRemoteServer.'/api/file', $elasticmsRemoteAuthkey));
+            $this->addStorageService(new HttpStorage($elasticmsRemoteServer, '/data/file/view/', $elasticmsRemoteAuthkey));
         }
 
         if(!empty($sftpServer) && !empty($sftpPath) && !empty($sftpPath) && !empty($publicKey) && !empty($privateKey))
@@ -83,8 +84,11 @@ class FileService {
     {
 		return $this->dataFieldTypes($dataFieldTypeId);
 	}
-	
-	public function getStorages() {
+
+    /**
+     * @return StorageInterface[]|iterable
+     */
+    public function getStorages() {
 		return $this->storageManager->getAdapters();
 	}
 

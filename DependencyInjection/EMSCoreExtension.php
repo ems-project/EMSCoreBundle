@@ -17,18 +17,18 @@ use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
  */
 class EMSCoreExtension extends Extension implements PrependExtensionInterface
 {
-	const TRANS_DOMAIN = 'EMSCoreBundle';
-	
+    const TRANS_DOMAIN = 'EMSCoreBundle';
+
     /**
      * {@inheritdoc}
      */
     public function load(array $configs, ContainerBuilder $container) {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
-		 
+
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
-        
+
         $container->setParameter('ems_core.from_email', $config['from_email']);
         $container->setParameter('ems_core.instance_id', $config['instance_id']);
         $container->setParameter('ems_core.shortname', $config['shortname']);
@@ -93,54 +93,54 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         }
         return $out;
     }
-    
+
     public function prepend(ContainerBuilder $container) {
 
-    	// get all bundles
-    	$bundles = $container->getParameter('kernel.bundles');
+        // get all bundles
+        $bundles = $container->getParameter('kernel.bundles');
 
-    	$coreVersion = $this->getCoreVersion($container->getParameter('kernel.root_dir'));
-    	
-    	
-    	
-	    $configs = $container->getExtensionConfig($this->getAlias());
-	    
-	    $globals = [
-	    	'theme_color' => isset($configs[0]['theme_color'])?$configs[0]['theme_color']:Configuration::THEME_COLOR,
-    		'ems_name' => isset($configs[0]['name'])?$configs[0]['name']:Configuration::NAME,
-    		'ems_shortname' => isset($configs[0]['shortname'])?$configs[0]['shortname']:Configuration::SHORTNAME,
-	    	'ems_core_version' => $coreVersion,
-    		'date_time_format' => isset($configs[0]['date_time_format'])?$configs[0]['date_time_format']:Configuration::DATE_TIME_FORMAT,
-   			'paging_size' => isset($configs[0]['paging_size'])?$configs[0]['paging_size']:Configuration::PAGING_SIZE,
-   			'circles_object' => isset($configs[0]['circles_object'])?$configs[0]['circles_object']:Configuration::CIRCLES_OBJECT,
-   			'datepicker_daysofweek_highlighted' => isset($configs[0]['datepicker_daysofweek_highlighted'])?$configs[0]['datepicker_daysofweek_highlighted']:Configuration::DATEPICKER_DAYSOFWEEK_HIGHLIGHTED,
-   			'datepicker_weekstart' => isset($configs[0]['datepicker_weekstart'])?$configs[0]['datepicker_weekstart']:Configuration::DATEPICKER_WEEKSTART,
-    		'datepicker_format' => isset($configs[0]['datepicker_format'])?$configs[0]['datepicker_format']:Configuration::DATEPICKER_FORMAT,
-	    	'date_time_format' => isset($configs[0]['date_time_format'])?$configs[0]['date_time_format']:Configuration::DATE_TIME_FORMAT,
-	    	'allow_user_registration' => isset($configs[0]['allow_user_registration'])?$configs[0]['allow_user_registration']:Configuration::ALLOW_USER_REGISTRATION,
-    		'user_login_route' => isset($configs[0]['user_login_route'])?$configs[0]['user_login_route']:Configuration::USER_LOGIN_ROUTE,
-    		'user_logout_route' => isset($configs[0]['user_logout_route'])?$configs[0]['user_logout_route']:Configuration::USER_LOGOUT_ROUTE,
-    		'user_profile_route' => isset($configs[0]['user_profile_route'])?$configs[0]['user_profile_route']:Configuration::USER_PROFILE_ROUTE,
-    		'user_registration_route' => isset($configs[0]['user_registration_route'])?$configs[0]['user_registration_route']:Configuration::USER_REGISTRATION_ROUTE,
-    		'add_user_route' => isset($configs[0]['add_user_route'])?$configs[0]['add_user_route']:Configuration::ADD_USER_ROUTE,
-    		'application_menu_controller' => isset($configs[0]['application_menu_controller'])?$configs[0]['application_menu_controller']:Configuration::APPLICATION_MENU_CONTROLLER,
-	    ];
-	    
-	    if(!empty($configs[0]['template_options'])){
-	    	$globals = array_merge($globals, $configs[0]['template_options']);
-	    }
-	    
-	    
-	    
-	    
-	    
-	    if (isset($bundles['TwigBundle'])) {
-    		$container->prependExtensionConfig('twig', [
-    			'globals' => $globals,
-    			'form_themes' => ["@EMSCore/form/fields.html.twig"],
-    		]);
-    	}
-    	
-    	
+        $coreVersion = $this->getCoreVersion($container->getParameter('kernel.root_dir'));
+
+
+
+        $configs = $container->getExtensionConfig($this->getAlias());
+
+        $globals = [
+            'theme_color' => isset($configs[0]['theme_color'])?$configs[0]['theme_color']:Configuration::THEME_COLOR,
+            'ems_name' => isset($configs[0]['name'])?$configs[0]['name']:Configuration::NAME,
+            'ems_shortname' => isset($configs[0]['shortname'])?$configs[0]['shortname']:Configuration::SHORTNAME,
+            'ems_core_version' => $coreVersion,
+            'date_time_format' => isset($configs[0]['date_time_format'])?$configs[0]['date_time_format']:Configuration::DATE_TIME_FORMAT,
+            'paging_size' => isset($configs[0]['paging_size'])?$configs[0]['paging_size']:Configuration::PAGING_SIZE,
+            'circles_object' => isset($configs[0]['circles_object'])?$configs[0]['circles_object']:Configuration::CIRCLES_OBJECT,
+            'datepicker_daysofweek_highlighted' => isset($configs[0]['datepicker_daysofweek_highlighted'])?$configs[0]['datepicker_daysofweek_highlighted']:Configuration::DATEPICKER_DAYSOFWEEK_HIGHLIGHTED,
+            'datepicker_weekstart' => isset($configs[0]['datepicker_weekstart'])?$configs[0]['datepicker_weekstart']:Configuration::DATEPICKER_WEEKSTART,
+            'datepicker_format' => isset($configs[0]['datepicker_format'])?$configs[0]['datepicker_format']:Configuration::DATEPICKER_FORMAT,
+            'date_time_format' => isset($configs[0]['date_time_format'])?$configs[0]['date_time_format']:Configuration::DATE_TIME_FORMAT,
+            'allow_user_registration' => isset($configs[0]['allow_user_registration'])?$configs[0]['allow_user_registration']:Configuration::ALLOW_USER_REGISTRATION,
+            'user_login_route' => isset($configs[0]['user_login_route'])?$configs[0]['user_login_route']:Configuration::USER_LOGIN_ROUTE,
+            'user_logout_route' => isset($configs[0]['user_logout_route'])?$configs[0]['user_logout_route']:Configuration::USER_LOGOUT_ROUTE,
+            'user_profile_route' => isset($configs[0]['user_profile_route'])?$configs[0]['user_profile_route']:Configuration::USER_PROFILE_ROUTE,
+            'user_registration_route' => isset($configs[0]['user_registration_route'])?$configs[0]['user_registration_route']:Configuration::USER_REGISTRATION_ROUTE,
+            'add_user_route' => isset($configs[0]['add_user_route'])?$configs[0]['add_user_route']:Configuration::ADD_USER_ROUTE,
+            'application_menu_controller' => isset($configs[0]['application_menu_controller'])?$configs[0]['application_menu_controller']:Configuration::APPLICATION_MENU_CONTROLLER,
+        ];
+
+        if(!empty($configs[0]['template_options'])){
+            $globals = array_merge($globals, $configs[0]['template_options']);
+        }
+
+
+
+
+
+        if (isset($bundles['TwigBundle'])) {
+            $container->prependExtensionConfig('twig', [
+                'globals' => $globals,
+                'form_themes' => ["@EMSCore/form/fields.html.twig"],
+            ]);
+        }
+
+
     }
 }

@@ -6,11 +6,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Sessions
- * based on documentation : https://symfony.com/doc/4.1/doctrine/pdo_session_storage.html
  *
  * @ORM\Table(name="session")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\SessionRepository")
- * @ORM\HasLifecycleCallbacks()
  */
 class Session
 {
@@ -22,20 +20,6 @@ class Session
      * @ORM\Id
      */
     private $id;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created", type="datetime")
-     */
-    private $created;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="modified", type="datetime")
-     */
-    private $modified;
 
     /**
      * @var resource
@@ -56,7 +40,7 @@ class Session
     /**
      * @var int
      *
-     * @ORM\Column(name="sess_lifetime", type="integer")
+     * @ORM\Column(name="lifetime", type="integer")
      */
     private $lifetime;
 
@@ -75,42 +59,6 @@ class Session
     public function setId(string $id): Session
     {
         $this->id = $id;
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getCreated(): \DateTime
-    {
-        return $this->created;
-    }
-
-    /**
-     * @param \DateTime $created
-     * @return Session
-     */
-    public function setCreated(\DateTime $created): Session
-    {
-        $this->created = $created;
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getModified(): \DateTime
-    {
-        return $this->modified;
-    }
-
-    /**
-     * @param \DateTime $modified
-     * @return Session
-     */
-    public function setModified(\DateTime $modified): Session
-    {
-        $this->modified = $modified;
         return $this;
     }
 

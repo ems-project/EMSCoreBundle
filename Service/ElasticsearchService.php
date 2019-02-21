@@ -116,7 +116,7 @@ class ElasticsearchService {
             if(isset($mapping['index']) && $mapping['index'] === 'No' ){
                 $mapping['index'] = false;
             }
-            else {
+            if( isset($mapping['index']) && $mapping['index'] !== false ){
                 $mapping['index'] = true;
             }
         }

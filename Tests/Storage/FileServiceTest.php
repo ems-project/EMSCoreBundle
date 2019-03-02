@@ -1,16 +1,14 @@
 <?php
 namespace EMS\CoreBundle\Tests\Service;
 
-use DateTime;
 use EMS\CommonBundle\Storage\Service\StorageInterface;
+use EMS\CoreBundle\Service\FileService;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use function file_put_contents;
 use function hash_file;
 use function hash_init;
 use function printf;
-use function stream_get_contents;
 use function strlen;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use EMS\CoreBundle\Service\FileService;
 use function unlink;
 
 

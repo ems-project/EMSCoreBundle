@@ -4,26 +4,23 @@
 
 namespace EMS\CoreBundle\Command;
 
-use function count;
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
+use Elasticsearch\Client;
+use EMS\CommonBundle\Storage\Service\StorageInterface;
 use EMS\CoreBundle\Repository\UploadedAssetRepository;
 use EMS\CoreBundle\Service\AssetExtratorService;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\FileService;
-use EMS\CommonBundle\Storage\Service\StorageInterface;
-use Elasticsearch\Client;
 use Monolog\Logger;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\QuestionHelper;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\Console\Input\InputOption;
+use function count;
 use function unlink;
 
 class SynchAssetCommand extends EmsCommand

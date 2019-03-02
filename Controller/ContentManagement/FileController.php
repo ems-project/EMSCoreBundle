@@ -2,19 +2,13 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use EMS\CoreBundle;
 use EMS\CoreBundle\Controller\AppController;
-use EMS\CoreBundle\Entity\UploadedAsset;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class FileController extends AppController
 {
@@ -45,7 +39,6 @@ class FileController extends AppController
 	 * @Method({"GET"})
 	 */
 	public function extractFileContent($sha1, Request $request) {
-//		$name = $request->query->get('name', 'temp');
 		
 		$data = $this->getAssetExtractorService()->extractData($sha1);
 		
@@ -79,19 +72,6 @@ class FileController extends AppController
         ]);
 
         return $response;
-		
-//		$file = $this->getFileService()->getFile($sha1);
-//
-//
-//		if(!$file){
-//			throw new NotFoundHttpException('Impossible to find the item corresponding to this id: '.$sha1);
-//		}
-//
-//		$response = new BinaryFileResponse($file);
-//		$response->headers->set('Content-Type', $type);
-//		$response->setContentDisposition($disposition, $name);
-//
-//		return $response;
 	}
 	
 	

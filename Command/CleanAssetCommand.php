@@ -6,10 +6,10 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManager;
 use Elasticsearch\Client;
+use EMS\CommonBundle\Storage\Service\StorageInterface;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\UploadedAssetRepository;
 use EMS\CoreBundle\Service\FileService;
-use EMS\CommonBundle\Storage\Service\StorageInterface;
 use Monolog\Logger;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,7 +18,11 @@ use Symfony\Component\HttpFoundation\Session\Session;
 
 class CleanAssetCommand extends EmsCommand
 {
+    /**
+     * @var int
+     */
     const PAGE_SIZE = 10;
+
     /**
      *
      *

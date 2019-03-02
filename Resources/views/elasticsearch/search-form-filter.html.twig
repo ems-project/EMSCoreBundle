@@ -126,7 +126,9 @@
 				<div class="box-body" >
 					<div class="row">
 						<div class=" col-md-12">
-							{{ body|json_encode }}
+							<pre>
+								{{- body|json_encode(constant('JSON_PRETTY_PRINT')) -}}
+							</pre>
 					    </div>
 					</div>
 				</div>

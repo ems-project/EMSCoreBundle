@@ -24,11 +24,11 @@ class CompareEnvironmentFormType extends AbstractType {
 		
 		$builder
 			->add ( 'environment', EnvironmentPickerType::class, [
-					'inMyCircle' => false,
+					'inMyCircle' => true,
 					'managedOnly' => true,
 			] )
 			->add ( 'withEnvironment', EnvironmentPickerType::class, [
-					'inMyCircle' => false,
+					'inMyCircle' => true,
 					'managedOnly' => true,
 			] )
 			->add('contentTypes', ContentTypePickerType::class, [

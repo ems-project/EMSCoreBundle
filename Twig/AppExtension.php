@@ -428,11 +428,11 @@ class AppExtension extends \Twig_Extension
             if(is_array($choices) && in_array($value, $choices)) {
                 $idx = array_search($value, $choices, true);
                 if(is_array($labels) && array_key_exists($idx, $labels)) {
-                    $value = $labels[$idx].' ('.$value.')';
+                    $value = $labels[$idx];
                 }
             }
             if(!$compare || in_array($item, $b)) {
-                $out .= '<'.$tag.' class="">'.htmlentities($value).'</'.$tag.'>';
+                $out .= '<'.$tag.' class="" data-ems-id="'.$item.'">'.htmlentities($value).'</'.$tag.'>';
             }
             else {
                 $out .= '<'.$tag.' class="text-'.$insColor.'"><ins class="diffmod">'.htmlentities($value).'</ins></'.$tag.'>';

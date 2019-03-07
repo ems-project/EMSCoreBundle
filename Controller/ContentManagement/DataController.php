@@ -71,8 +71,8 @@ class DataController extends AppController
         $searchs = $searchRepository->findBy([
             'contentType' => $contentType->getId(),
         ]);
-        /**@var Search $search*/
-        foreach ($searchs as $search){
+        /**@var Search $search */
+        foreach ($searchs as $search) {
 
             return $this->forward('EMSCoreBundle:Elasticsearch:search', [
                 'query' => null,
@@ -351,27 +351,24 @@ class DataController extends AppController
         }
 
         $compareData = false;
-        if($compareId) {
+        if ($compareId) {
 
             $this->addFlash('warning', 'The compare is a beta functionality');
-            /**@var Revision $compareRevision*/
+            /**@var Revision $compareRevision */
             $compareRevision = $repository->findOneById($compareId);
-            if($compareRevision) {
+            if ($compareRevision) {
 
                 $compareData = $compareRevision->getRawData();
-                if($revision->getContentType() === $compareRevision->getContentType() && $revision->getOuuid() == $compareRevision->getOuuid()) {
-                    if($compareRevision->getCreated() <= $revision->getCreated()  ){
-                        $this->addFlash('notice', 'Compared with the revision of '.$compareRevision->getCreated()->format($this->getParameter('ems_core.date_time_format')));
+                if ($revision->getContentType() === $compareRevision->getContentType() && $revision->getOuuid() == $compareRevision->getOuuid()) {
+                    if ($compareRevision->getCreated() <= $revision->getCreated()) {
+                        $this->addFlash('notice', 'Compared with the revision of ' . $compareRevision->getCreated()->format($this->getParameter('ems_core.date_time_format')));
+                    } else {
+                        $this->addFlash('warning', 'Compared with the revision of ' . $compareRevision->getCreated()->format($this->getParameter('ems_core.date_time_format')) . ' wich one is more recent.');
                     }
-                    else{
-                        $this->addFlash('warning', 'Compared with the revision of '.$compareRevision->getCreated()->format($this->getParameter('ems_core.date_time_format')). ' wich one is more recent.');
-                    }
+                } else {
+                    $this->addFlash('notice', 'Compared with ' . $compareRevision->getContentType() . ':' . $compareRevision->getOuuid() . ' of ' . $compareRevision->getCreated()->format($this->getParameter('ems_core.date_time_format')));
                 }
-                else {
-                    $this->addFlash('notice', 'Compared with '.$compareRevision->getContentType().':'.$compareRevision->getOuuid().' of '.$compareRevision->getCreated()->format($this->getParameter('ems_core.date_time_format')));
-                }
-            }
-            else {
+            } else {
                 $this->addFlash('warning', 'Revision to compare with not found');
             }
         }
@@ -438,11 +435,10 @@ class DataController extends AppController
         $refParams = [
             '_source' => false,
             'type' => $searchForm->getContentTypes(),
-            'index' => $this->getContentTypeService()->getAllAliases(),
+            'index' => $revision->getContentType()->getEnvironment()->getAlias(),
             'size' => 100,
             'body' => $this->getSearchService()->generateSearchBody($searchForm),
         ];
-
 
         return $this->render('@EMSCore/data/revisions-data.html.twig', [
             'revision' => $revision,
@@ -593,7 +589,7 @@ class DataController extends AppController
 
         if (null != $ouuid && $hasPreviousRevision) {
 
-            if($autoPublish) {
+            if ($autoPublish) {
                 return $this->reindexRevisionAction($hasPreviousRevision, $request, true);
             }
 
@@ -629,7 +625,7 @@ class DataController extends AppController
 
         if (null != $ouuid) {
 
-            if($revision->getContentType()->isAutoPublish()) {
+            if ($revision->getContentType()->isAutoPublish()) {
                 $this->addFlash('warning', 'Elasticms was not able to determine if this draft can be silently published');
             }
 
@@ -648,7 +644,7 @@ class DataController extends AppController
      * @Route("/data/revision/re-index/{revisionId}", name="revision.reindex"))
      * @Method({"POST"})
      */
-    public function reindexRevisionAction($revisionId, Request $request, $defaultOnly=false)
+    public function reindexRevisionAction($revisionId, Request $request, $defaultOnly = false)
     {
 
         /** @var EntityManager $em */
@@ -679,7 +675,7 @@ class DataController extends AppController
 
             /** @var \EMS\CoreBundle\Entity\Environment $environment */
             foreach ($revision->getEnvironments() as $environment) {
-                if(!$defaultOnly || $environment === $revision->getContentType()->getEnvironment()) {
+                if (!$defaultOnly || $environment === $revision->getContentType()->getEnvironment()) {
                     $index = $this->getContentTypeService()->getIndex($revision->getContentType(), $environment);
 
                     $status = $client->index([
@@ -720,7 +716,7 @@ class DataController extends AppController
         $view = $viewRepository->find($viewId);
         /** @var View $view * */
 
-        if (!$view || ($public && !$view->isPublic()) ) {
+        if (!$view || ($public && !$view->isPublic())) {
             throw new NotFoundHttpException('View type not found');
         }
 
@@ -785,7 +781,7 @@ class DataController extends AppController
             $body = $twig->createTemplate('error in the template!');
         }
 
-        if($template->getRenderOption() === RenderOptionType::PDF && ($_download || !$template->getPreview()) ) {
+        if ($template->getRenderOption() === RenderOptionType::PDF && ($_download || !$template->getPreview())) {
             $output = $body->render([
                 'environment' => $environment,
                 'contentType' => $template->getContentType(),
@@ -799,7 +795,7 @@ class DataController extends AppController
             $dompdf->loadHtml($output);
 
             // (Optional) Setup the paper size and orientation
-            $dompdf->setPaper($template->getSize()?$template->getSize():'A3', $template->getOrientation()?$template->getOrientation():'portrait');
+            $dompdf->setPaper($template->getSize() ? $template->getSize() : 'A3', $template->getOrientation() ? $template->getOrientation() : 'portrait');
 
             // Render the HTML as PDF
             $dompdf->render();
@@ -832,12 +828,12 @@ class DataController extends AppController
             }
 
 
-            if(!empty($template->getDisposition())){
+            if (!empty($template->getDisposition())) {
                 $attachment = ResponseHeaderBag::DISPOSITION_ATTACHMENT;
                 if ($template->getDisposition() == 'inline') {
                     $attachment = ResponseHeaderBag::DISPOSITION_INLINE;
                 }
-                header("Content-Disposition: $attachment; filename=" . $filename . ($template->getExtension()?'.'.$template->getExtension():''));
+                header("Content-Disposition: $attachment; filename=" . $filename . ($template->getExtension() ? '.' . $template->getExtension() : ''));
             }
             if (null != $template->getAllowOrigin()) {
                 header("Access-Control-Allow-Origin: " . $template->getAllowOrigin());
@@ -866,7 +862,9 @@ class DataController extends AppController
 
     /**
      * @Route("/data/custom-view-job/{environmentName}/{templateId}/{ouuid}", name="ems_job_custom_view")
-     * @method ({"POST"})
+     * @method ({
+    "POST"
+    })
      */
     public function customViewJobAction($environmentName, $templateId, $ouuid)
     {
@@ -876,7 +874,7 @@ class DataController extends AppController
         /** @var CoreBundle\Entity\Environment $env */
         $env = $em->getRepository(Environment::class)->findOneByName($environmentName);
 
-        if(!$template || !$env) {
+        if (!$template || !$env) {
             throw new NotFoundHttpException();
         }
 
@@ -981,7 +979,7 @@ class DataController extends AppController
             $this->getDataService()->isValid($form);
             $formErrors = $form->getErrors(true, true);
 
-            if($formErrors->count() === 0 && $revision->getContentType()->isAutoPublish()) {
+            if ($formErrors->count() === 0 && $revision->getContentType()->isAutoPublish()) {
                 $this->getPublishService()->silentPublish($revision);
             }
         }
@@ -1057,8 +1055,7 @@ class DataController extends AppController
                 sort($keys);
                 $temp = [];
                 $loop0 = 0;
-                foreach ($input as $item)
-                {
+                foreach ($input as $item) {
                     $temp[$keys[$loop0]] = $item;
                     ++$loop0;
                 }
@@ -1206,7 +1203,7 @@ class DataController extends AppController
             //if Save or Discard
             if (null != $revision->getOuuid()) {
 
-                if(count($form->getErrors()) === 0 && $revision->getContentType()->isAutoPublish()) {
+                if (count($form->getErrors()) === 0 && $revision->getContentType()->isAutoPublish()) {
                     $this->getPublishService()->silentPublish($revision);
                 }
 
@@ -1280,7 +1277,7 @@ class DataController extends AppController
 
         $revision = new Revision();
 
-        if(! empty($contentType->getDefaultValue())){
+        if (!empty($contentType->getDefaultValue())) {
 
             $twig = $this->getTwig();
             try {
@@ -1290,16 +1287,15 @@ class DataController extends AppController
                     'contentType' => $contentType,
                 ]);
                 $raw = json_decode($defaultValue, true);
-                if($raw === NULL) {
+                if ($raw === NULL) {
                     $this->addFlash('error', 'elasticms was not able to initiate the default value (json_decode), please check the content type\'s configuration');
-                }
-                else {
+                } else {
                     $revision->setRawData($raw);
                 }
             } catch (\Twig_Error $e) {
                 $this->addFlash('error', 'elasticms was not able to initiate the default value (twig error), please check the content type\'s configuration');
             }
-            
+
         }
 
         $form = $this->createFormBuilder($revision)

@@ -295,7 +295,8 @@ class ElasticsearchController extends AppController
 	{
 	    
 	    $this->getLogger()->addDebug('At the begin of search api action');
-		$pattern = $request->query->get('q');
+        $pattern = $request->query->get('q');
+        $page = $request->query->get('page', 1);
 		$environments = $request->query->get('environment');
 		$types = $request->query->get('type');
 		$searchId = $request->query->get('searchId');
@@ -414,11 +415,13 @@ class ElasticsearchController extends AppController
 					}
 				}
 			}
-						
+
+			$pageSize = $this->container->getParameter('ems_core.paging_size');
 			$params = [
 					'index' => array_unique($aliases),
 					'type' => array_unique($types),
-					'size' => $this->container->getParameter('ems_core.paging_size'),
+					'size' => $pageSize,
+                    'from' => ($page-1)*$pageSize,
 					'body' => [
 						'query' => [
 							'bool' => [

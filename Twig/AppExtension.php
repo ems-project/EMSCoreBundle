@@ -428,7 +428,7 @@ class AppExtension extends \Twig_Extension
             if(is_array($choices) && in_array($value, $choices)) {
                 $idx = array_search($value, $choices, true);
                 if(is_array($labels) && array_key_exists($idx, $labels)) {
-                    $value = $labels[$idx];
+                    $value = $this->isSuper() ? $labels[$idx].' ('.$item.')' : $labels[$idx];
                 }
             }
             if(!$compare || in_array($item, $b)) {

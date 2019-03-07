@@ -352,12 +352,12 @@
 	{% endif %}
 {%- endblock collectionfieldtype_label %}
 
-{% block collectionitemtype_label -%}
+{%- block collectionitemtype_label -%}
 	{% if form.parent.vars.icon is defined %}<i class="{{ form.parent.vars.icon }}"></i>&nbsp;{% endif %}
 	<label>
-		{{ form.parent.vars.singularLabel }} #{{ name }}
+		{{ form.parent.vars.singularLabel }} #{{ name|number_format + 1 }}
 	</label>
-{%- endblock collectionitemtype_label %}
+{%- endblock collectionitemtype_label -%}
 
 {# Rows #}
 {% block bouttongroup_row -%}

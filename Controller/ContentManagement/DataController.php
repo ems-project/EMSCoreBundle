@@ -438,11 +438,10 @@ class DataController extends AppController
         $refParams = [
             '_source' => false,
             'type' => $searchForm->getContentTypes(),
-            'index' => $this->getContentTypeService()->getAllAliases(),
+            'index' => $revision->getContentType()->getEnvironment()->getAlias(),
             'size' => 100,
             'body' => $this->getSearchService()->generateSearchBody($searchForm),
         ];
-
 
         return $this->render('@EMSCore/data/revisions-data.html.twig', [
             'revision' => $revision,

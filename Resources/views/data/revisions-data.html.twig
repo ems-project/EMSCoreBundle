@@ -203,7 +203,7 @@
           <!-- Custom Tabs -->
           <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
-              <li class="active"><a href="#tab_referrers" data-toggle="tab" aria-expanded="true">{{ 'Linked documents'|trans }} <small>{{ referrers.hits.hits|length }}/{{ referrers.hits.total }}</small></a></li>
+              <li class="active"><a href="#tab_referrers" data-toggle="tab" aria-expanded="true">{{ 'Linked documents in'|trans }} {{ revision.contentType.environment.name|capitalize }} <small>{{ referrers.hits.hits|length }}/{{ referrers.hits.total }}</small></a></li>
               <li class=""><a href="#tab_revisions" data-toggle="tab" aria-expanded="false">Revisions <small>{{ revisionsSummary|length }}/{{ counter }}</small></a></li>
             </ul>
             <div class="tab-content">

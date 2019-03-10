@@ -41,7 +41,7 @@ class AssetController extends AbstractController
      * @return Response
      *
      * @Route("/data/asset/{hash_config}/{hash}/{filename}" , name="ems_asset", methods={"GET","HEAD"})
-     * @Route("/public/asset/{hash_config}/{hash}/{filename}" , name="ems_asset_public", methods={"GET","HEAD"})
+     * @Route("/public/asset/{hash_config}/{hash}/{filename}" , name="emsco_asset_public", methods={"GET","HEAD"})
      */
     public function assetAction(string $hash, string $hash_config, string $filename, Request $request) {
         return $this->processor->getResponse($request, $hash, $hash_config, $filename);

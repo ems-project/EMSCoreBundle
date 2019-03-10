@@ -14,8 +14,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class FileController extends AppController
 {
-	
-	
+
+
 	/**
 	 * @Route("/data/file/view/{sha1}" , name="ems.file.view")
 	 * @Route("/data/file/view/{sha1}" , name="ems_file_view")
@@ -23,7 +23,8 @@ class FileController extends AppController
      * @Method({"GET"})
 	 */
 	public function viewFileAction($sha1, Request $request) {
-		return $this->getFile($sha1, ResponseHeaderBag::DISPOSITION_INLINE, $request);
+	    @trigger_error(sprintf('The "%s::viewFileAction" function is deprecated and should not be used anymore.', FileController::class, AssetController::class), E_USER_DEPRECATED);
+	    return $this->getFile($sha1, ResponseHeaderBag::DISPOSITION_INLINE, $request);
 	}
 	/**
 	 * @Route("/public/file/{sha1}" , name="ems_file_download_public")
@@ -33,6 +34,7 @@ class FileController extends AppController
 	 * @Method({"GET"})
 	 */
 	public function downloadFileAction($sha1, Request $request) {
+        @trigger_error(sprintf('The "%s::downloadFileAction" function is deprecated and should not be used anymore.', FileController::class, AssetController::class), E_USER_DEPRECATED);
 		return $this->getFile($sha1, ResponseHeaderBag::DISPOSITION_ATTACHMENT, $request);
 	}
 	

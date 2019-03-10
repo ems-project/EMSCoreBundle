@@ -6,10 +6,10 @@ use Elasticsearch\Client;
 use EMS\CommonBundle\Storage\Processor\Config;
 use EMS\CommonBundle\Storage\Processor\Processor;
 use EMS\CoreBundle\Service\ContentTypeService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class AssetController extends AbstractController
 {
@@ -34,15 +34,34 @@ class AssetController extends AbstractController
     }
 
     /**
+     * @param string $hash
+     * @param string hash_config
+     * @param string $filename
+     * @param Request $request
+     * @return Response
+     *
+     * @Route("/data/asset/{hash_config}/{hash}/{filename}" , name="ems_asset", methods={"GET","HEAD"})
+     * @Route("/public/asset/{hash_config}/{hash}/{filename}" , name="ems_asset_public", methods={"GET","HEAD"})
+     */
+    public function assetAction(string $hash, string $hash_config, string $filename, Request $request) {
+        return $this->processor->getResponse($request, $hash, $hash_config, $filename);
+    }
+
+
+    /**
 	 * @Route("/asset/{processor}/{hash}", name="ems_asset_processor")
 	 */
 	public function assetProcessorAction(Request $request, string $processor, string $hash): Response
 	{
-	    return $this->processor->createResponse($request, $processor, $hash, $this->getOptions($processor));
+	    @trigger_error(sprintf('The "%s::assetProcessorAction" controller is deprecated. Used "%s::assetAction" instead.', AssetController::class, AssetController::class), E_USER_DEPRECATED);
+
+        return $this->processor->createResponse($request, $processor, $hash, $this->getOptions($processor));
 	}
 
 	private function getOptions(string $processor): array
     {
+        @trigger_error(sprintf('The "%s::getOptions" function is deprecated and should not be used anymore.', AssetController::class, AssetController::class), E_USER_DEPRECATED);
+
         if (null == $this->configType) {
             return [];
         }

@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CommonBundle\Helper\EmsConst;
 
 /**
  * DataField
@@ -367,5 +368,19 @@ class UploadedAsset
     public function getSha1()
     {
         return ($this->sha1);
+    }
+
+    /**
+     * Convert an UploadedAsset entity into a associative array just like it will be indexed in elasticsearch
+     * @return array
+     */
+    public function getData():array
+    {
+        return [
+            EmsConst::CONTENT_FILE_NAME_FIELD => $this->getName(),
+            EmsConst::CONTENT_FILE_SIZE_FIELD => $this->getSize(),
+            EmsConst::CONTENT_MIME_TYPE_FIELD => $this->getType(),
+            EmsConst::CONTENT_FILE_HASH_FIELD => $this->getSha1(),
+        ];
     }
 }

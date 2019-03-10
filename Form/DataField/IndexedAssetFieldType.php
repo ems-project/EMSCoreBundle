@@ -2,20 +2,20 @@
 
 namespace EMS\CoreBundle\Form\DataField;
 
+use EMS\CommonBundle\Helper\EmsConst;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
-use EMS\CoreBundle\Form\Field\AssetType;
-use EMS\CoreBundle\Form\Field\IconPickerType;
-use EMS\CoreBundle\Service\ElasticsearchService;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use EMS\CoreBundle\Service\FileService;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Form\FormRegistryInterface;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use EMS\CoreBundle\Form\Field\FileType;
-	
+use EMS\CoreBundle\Form\Field\IconPickerType;
+use EMS\CoreBundle\Service\ElasticsearchService;
+use EMS\CoreBundle\Service\FileService;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormRegistryInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+
 /**
  * Defined a Container content type.
  * It's used to logically groups subfields together. However a Container is invisible in Elastic search.
@@ -114,10 +114,10 @@ class IndexedAssetFieldType extends DataFieldType {
 			$current->getName() => [
 					"type" => "nested",
 					"properties" => [
-							"mimetype" => $this->elasticsearchService->getKeywordMapping(),
-							"sha1" => $this->elasticsearchService->getKeywordMapping(),
-							"filename" => $this->elasticsearchService->getIndexedStringMapping(),
-							"filesize" => $this->elasticsearchService->getLongMapping(),
+                        EmsConst::CONTENT_MIME_TYPE_FIELD => $this->elasticsearchService->getKeywordMapping(),
+                        EmsConst::CONTENT_FILE_HASH_FIELD => $this->elasticsearchService->getKeywordMapping(),
+                        EmsConst::CONTENT_FILE_NAME_FIELD=> $this->elasticsearchService->getIndexedStringMapping(),
+                        EmsConst::CONTENT_FILE_SIZE_FIELD => $this->elasticsearchService->getLongMapping(),
 							'_content' => $mapping[$current->getName()],
 					]
 			]

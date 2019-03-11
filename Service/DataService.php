@@ -426,15 +426,14 @@ class DataService
 	}
 
     /**
-     * @deprecated since 9/3/2019
+     * @deprecated
      * @param $array
      * @param int $sort_flags
-     * @return bool
      */
 	public static function ksortRecursive(&$array, $sort_flags = SORT_REGULAR) {
         @trigger_error("DataService::ksortRecursive is deprecated use the ArrayTool::normalizeArray instead", E_USER_DEPRECATED);
 
-		return ArrayTool::normalizeArray($array, $sort_flags);
+		ArrayTool::normalizeArray($array, $sort_flags);
 	}
 	
 	public function sign(Revision $revision, $silentPublish=false) {

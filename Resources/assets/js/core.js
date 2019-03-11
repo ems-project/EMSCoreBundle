@@ -1,5 +1,7 @@
 const $ = require('jquery');
 const jQuery = require('jquery');
+window.CryptoJS = require("crypto-js");
+
 window.$ = $;
 window.jQuery = $;
 

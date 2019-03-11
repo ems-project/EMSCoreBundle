@@ -3,7 +3,7 @@
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use EMS\CommonBundle\Helper\EmsConst;
+use EMS\CommonBundle\Helper\EmsFields;
 
 /**
  * DataField
@@ -377,10 +377,10 @@ class UploadedAsset
     public function getData():array
     {
         return [
-            EmsConst::CONTENT_FILE_NAME_FIELD => $this->getName(),
-            EmsConst::CONTENT_FILE_SIZE_FIELD => $this->getSize(),
-            EmsConst::CONTENT_MIME_TYPE_FIELD => $this->getType(),
-            EmsConst::CONTENT_FILE_HASH_FIELD => $this->getSha1(),
+            EmsFields::CONTENT_FILE_NAME_FIELD => $this->getName(),
+            EmsFields::CONTENT_FILE_SIZE_FIELD => $this->getSize(),
+            EmsFields::CONTENT_MIME_TYPE_FIELD => $this->getType(),
+            EmsFields::CONTENT_FILE_HASH_FIELD => $this->getSha1(),
         ];
     }
 }

@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Form\DataField;
 
-use EMS\CommonBundle\Helper\EmsConst;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
@@ -198,10 +197,10 @@ class FileAttachmentFieldType extends DataFieldType {
 		$body = [
 				"type" => "nested",
 				"properties" => [
-                    EmsConst::CONTENT_MIME_TYPE_FIELD => $this->elasticsearchService->getKeywordMapping(),
-                    EmsConst::CONTENT_FILE_HASH_FIELD => $this->elasticsearchService->getKeywordMapping(),
-                    EmsConst::CONTENT_FILE_NAME_FIELD => $this->elasticsearchService->getIndexedStringMapping(),
-                    EmsConst::CONTENT_FILE_SIZE_FIELD => $this->elasticsearchService->getLongMapping(),
+                    EmsFields::CONTENT_MIME_TYPE_FIELD => $this->elasticsearchService->getKeywordMapping(),
+                    EmsFields::CONTENT_FILE_HASH_FIELD => $this->elasticsearchService->getKeywordMapping(),
+                    EmsFields::CONTENT_FILE_NAME_FIELD => $this->elasticsearchService->getIndexedStringMapping(),
+                    EmsFields::CONTENT_FILE_SIZE_FIELD => $this->elasticsearchService->getLongMapping(),
 						'content' => [
 							"type" => "binary",
 						],

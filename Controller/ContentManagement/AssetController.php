@@ -2,7 +2,7 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use EMS\CommonBundle\Helper\EmsConst;
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Storage\Processor\Processor;
 use EMS\CoreBundle\Twig\AppExtension;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -47,9 +47,9 @@ class AssetController extends AbstractController
 	    @trigger_error(sprintf('The "%s::assetProcessorAction" controller is deprecated. Used "%s::assetAction" instead.', AssetController::class, AssetController::class), E_USER_DEPRECATED);
 
 	    return $this->redirect($this->appExtension->assetPath([
-	        EmsConst::CONTENT_FILE_HASH_FIELD => $hash,
-            EmsConst::CONTENT_FILE_NAME_FIELD => $request->query->get('name', 'filename'),
-            EmsConst::CONTENT_MIME_TYPE_FIELD => $request->query->get('type', 'application/octet-stream'),
+            EmsFields::CONTENT_FILE_HASH_FIELD => $hash,
+            EmsFields::CONTENT_FILE_NAME_FIELD => $request->query->get('name', 'filename'),
+            EmsFields::CONTENT_MIME_TYPE_FIELD => $request->query->get('type', 'application/octet-stream'),
         ], $processor, [], 'emsco_asset_public'));
 
 	}

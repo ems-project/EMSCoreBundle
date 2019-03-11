@@ -6,7 +6,7 @@ use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
-use EMS\CommonBundle\Helper\EmsConst;
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Storage\Processor\Config;
 use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\Entity\ContentType;
@@ -179,7 +179,7 @@ class AppExtension extends \Twig_Extension
      * @param int $referenceType
      * @return string
      */
-    public function assetPath(array $fileField, string $processorIdentifier, array $assetConfig=[], string $route = 'ems_asset', string $fileHashField=EmsConst::CONTENT_FILE_HASH_FIELD, $filenameField=EmsConst::CONTENT_FILE_NAME_FIELD, $mimeTypeField=EmsConst::CONTENT_MIME_TYPE_FIELD, $referenceType = UrlGeneratorInterface::RELATIVE_PATH) : string
+    public function assetPath(array $fileField, string $processorIdentifier, array $assetConfig=[], string $route = 'ems_asset', string $fileHashField=EmsFields::CONTENT_FILE_HASH_FIELD, $filenameField=EmsFields::CONTENT_FILE_NAME_FIELD, $mimeTypeField=EmsFields::CONTENT_MIME_TYPE_FIELD, $referenceType = UrlGeneratorInterface::RELATIVE_PATH) : string
     {
         $config = $assetConfig;
 

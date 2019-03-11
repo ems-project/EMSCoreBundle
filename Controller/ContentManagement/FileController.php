@@ -2,10 +2,9 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use EMS\CommonBundle\Helper\EmsConst;
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\Controller\AppController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -62,9 +61,9 @@ class FileController extends AppController
         @trigger_error(sprintf('The "%s::getFile" function is deprecated and should not be used anymore.', FileController::class, AssetController::class), E_USER_DEPRECATED);
 
         return $this->redirect($this->requestRuntime->assetPath([
-            EmsConst::CONTENT_FILE_HASH_FIELD => $sha1,
-            EmsConst::CONTENT_FILE_NAME_FIELD => $request->query->get('name', 'filename'),
-            EmsConst::CONTENT_MIME_TYPE_FIELD => $request->query->get('type', 'application/octet-stream'),
+            EmsFields::CONTENT_FILE_HASH_FIELD => $sha1,
+            EmsFields::CONTENT_FILE_NAME_FIELD => $request->query->get('name', 'filename'),
+            EmsFields::CONTENT_MIME_TYPE_FIELD => $request->query->get('type', 'application/octet-stream'),
         ], [
             '_disposition' => $disposition,
         ]));

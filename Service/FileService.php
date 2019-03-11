@@ -17,62 +17,56 @@ use EMS\CoreBundle\Entity\UploadedAsset;
 use Exception;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class FileService {
+class FileService
+{
 
-    /**@var Registry*/
+    /**@var Registry */
     private $doctrine;
 
     private $uploadFolder;
 
-    /**@var StorageManager*/
+    /**@var StorageManager */
     private $storageManager;
 
-    /**@var integer*/
+    /**@var integer */
     private $uploadMinimuNumberOfReplications;
 
-    public function __construct(Registry $doctrine, StorageManager $storageManager, string $projectDir, string $uploadFolder, string $storageFolder, bool $createDbStorageService, string $elasticmsRemoteServer, string $elasticmsRemoteAuthkey, string $sftpServer, string $sftpPath, string $sftpUser, string $publicKey, string $privateKey, array $s3Credentials=null, string $s3Bucket=null)
+    public function __construct(Registry $doctrine, StorageManager $storageManager, string $projectDir, string $uploadFolder, string $storageFolder, bool $createDbStorageService, string $elasticmsRemoteServer, string $elasticmsRemoteAuthkey, string $sftpServer, string $sftpPath, string $sftpUser, string $publicKey, string $privateKey, array $s3Credentials = null, string $s3Bucket = null)
     {
         $this->doctrine = $doctrine;
         $this->uploadFolder = $uploadFolder;
         $this->storageManager = $storageManager;
         $this->uploadMinimuNumberOfReplications = 10;
 
-        if($storageFolder && !empty($storageFolder))
-        {
-            if(substr($storageFolder, 0, 2) === ('.'.DIRECTORY_SEPARATOR))
-            {
-                $this->addStorageService(new FileSystemStorage($projectDir.substr($storageFolder, 1)));
-            }
-            else
-            {
+        if ($storageFolder && !empty($storageFolder)) {
+            if (substr($storageFolder, 0, 2) === ('.' . DIRECTORY_SEPARATOR)) {
+                $this->addStorageService(new FileSystemStorage($projectDir . substr($storageFolder, 1)));
+            } else {
                 $this->addStorageService(new FileSystemStorage($storageFolder));
             }
         }
 
-        if(!empty($s3Credentials) && !empty($s3Bucket))
-        {
+        if (!empty($s3Credentials) && !empty($s3Bucket)) {
             $this->addStorageService(new S3Storage($s3Credentials, $s3Bucket));
         }
 
 
-        if($createDbStorageService)
-        {
+        if ($createDbStorageService) {
             $this->addStorageService(new EntityStorage($doctrine, true));
         }
 
-        if(!empty($elasticmsRemoteServer))
-        {
+        if (!empty($elasticmsRemoteServer)) {
             $this->addStorageService(new HttpStorage($elasticmsRemoteServer, '/data/file/view/', $elasticmsRemoteAuthkey));
         }
 
-        if(!empty($sftpServer) && !empty($sftpPath) && !empty($sftpPath) && !empty($publicKey) && !empty($privateKey))
-        {
+        if (!empty($sftpServer) && !empty($sftpPath) && !empty($sftpPath) && !empty($publicKey) && !empty($privateKey)) {
             $this->addStorageService(new SftpStorage($sftpServer, $sftpPath, $sftpUser, $publicKey, $privateKey, true));
         }
 
     }
 
-    public function addStorageService($storageAdapter) {
+    public function addStorageService($storageAdapter)
+    {
         $this->storageManager->addAdapter($storageAdapter);
     }
 
@@ -84,32 +78,21 @@ class FileService {
     /**
      * @return StorageInterface[]|iterable
      */
-    public function getStorages() {
+    public function getStorages()
+    {
         return $this->storageManager->getAdapters();
     }
 
 
-    public function getBase64($hash, $cacheContext=false){
-        /**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service*/
-        foreach ($this->storageManager->getAdapters() as $service){
+    public function getBase64($hash, $cacheContext = false)
+    {
+        /**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service */
+        foreach ($this->storageManager->getAdapters() as $service) {
             $resource = $service->read($hash, $cacheContext);
-            if($resource){
+            if ($resource) {
                 $data = stream_get_contents($resource);
                 $base64 = base64_encode($data);
                 return $base64;
-            }
-        }
-        return false;
-    }
-
-
-
-    public function getResource($hash, $cacheContext=false){
-        /**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service*/
-        foreach ($this->storageManager->getAdapters() as $service){
-            $resource = $service->read($hash, $cacheContext);
-            if($resource){
-                return $resource;
             }
         }
         return false;
@@ -121,10 +104,10 @@ class FileService {
      * @param bool $cacheContext
      * @return bool|string
      */
-    public function getFile($hash, $cacheContext=false){
+    public function getFile($hash, $cacheContext = false)
+    {
         $resource = $this->getResource($hash, $cacheContext);
-        if($resource)
-        {
+        if ($resource) {
             $filename = tempnam(sys_get_temp_dir(), 'EMS');
             file_put_contents($filename, $resource);
             return $filename;
@@ -132,19 +115,20 @@ class FileService {
         return false;
     }
 
-    public function getSize($hash, $cacheContext=false){
-        /**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service*/
-        foreach ($this->storageManager->getAdapters() as $service){
-            $filesize = $service->getSize($hash, $cacheContext);
-            if($filesize !== false){
-                return $filesize;
+    public function getResource($hash, $cacheContext = false)
+    {
+        /**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service */
+        foreach ($this->storageManager->getAdapters() as $service) {
+            $resource = $service->read($hash, $cacheContext);
+            if ($resource) {
+                return $resource;
             }
         }
         return false;
     }
 
     /**
-     * @param string      $hash
+     * @param string $hash
      * @param string|null $context
      *
      * @return null|\DateTime
@@ -152,102 +136,23 @@ class FileService {
     public function getLastUpdateDate(string $hash, ?string $context = null): ?\DateTime
     {
         $out = null;
-        /**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service*/
-        foreach ($this->storageManager->getAdapters() as $service){
+        /**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service */
+        foreach ($this->storageManager->getAdapters() as $service) {
             $date = $service->getLastUpdateDate($hash, $context);
-            if($date && ($out === null || $date < $out)){
+            if ($date && ($out === null || $date < $out)) {
                 $out = $date;
             }
         }
         return $out;
     }
 
-    public function head($hash, $cacheContext=false){
-        /**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service*/
-        foreach ($this->storageManager->getAdapters() as $service){
-            if($service->head($hash, $cacheContext)){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * @param $hash
-     * @param $size
-     * @param $name
-     * @param $type
-     * @param $user
-     * @return UploadedAsset
-     * @throws Conflict409Exception
-     * @throws StorageServiceMissingException
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     */
-    public function initUploadFile($hash, $size, $name, $type, $user){
-        if(empty($this->storageManager->getAdapters())){
-            throw new StorageServiceMissingException("No storage service have been defined");
-        }
+    public function getImages()
+    {
 
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
         /** @var UploadedAssetRepository $repository */
-        $repository = $em->getRepository( 'EMSCoreBundle:UploadedAsset' );
-
-
-        /**@var UploadedAsset $uploadedAsset*/
-        $uploadedAsset = $repository->findOneBy([
-            'sha1' => $hash,
-            'available' => false,
-            'user' => $user,
-        ]);
-
-        if(!$uploadedAsset) {
-            $uploadedAsset = new UploadedAsset();
-            $uploadedAsset->setSha1($hash);
-            $uploadedAsset->setUser($user);
-            $uploadedAsset->setSize($size);
-            $uploadedAsset->setUploaded(0);
-        }
-
-
-        $uploadedAsset->setType($type);
-        $uploadedAsset->setName($name);
-        $uploadedAsset->setAvailable(false);
-
-        if($size >= $uploadedAsset->getUploaded())
-        {
-            $uploadedAsset->setUploaded(0);
-        }
-
-        if($uploadedAsset->getSize() != $size){
-            throw new Conflict409Exception("Target size mismatched ".$uploadedAsset->getSize().' '.$size);
-        }
-
-        if($this->head($hash)) {
-            if($this->getSize($hash) != $size){ //one is a string the other is a number
-                throw new Conflict409Exception("Hash conflict");
-            }
-            $uploadedAsset->setUploaded($uploadedAsset->getSize());
-            $uploadedAsset->setAvailable(true);
-        }
-        else {
-            $this->storageManager->initUploadFile($hash, $size, $name, $type, $this->uploadMinimuNumberOfReplications);
-        }
-
-        $em->persist($uploadedAsset);
-        $em->flush($uploadedAsset);
-
-        return $uploadedAsset;
-    }
-
-
-    public function getImages() {
-
-        /** @var EntityManager $em */
-        $em = $this->doctrine->getManager ();
-        /** @var UploadedAssetRepository $repository */
-        $repository = $em->getRepository ( 'EMSCoreBundle:UploadedAsset' );
+        $repository = $em->getRepository('EMSCoreBundle:UploadedAsset');
 
 
         $qb = $repository
@@ -263,79 +168,188 @@ class FileService {
         return $result;
     }
 
-    public function uploadFile($name, $type, $filename, $user) {
+    public function uploadFile($name, $type, $filename, $user)
+    {
 
         $hash = $this->storageManager->computeFileHash($filename);
         $size = filesize($filename);
         $uploadedAsset = $this->initUploadFile($hash, $size, $name, $type, $user);
-        if(!$uploadedAsset->getAvailable()) {
+        if (!$uploadedAsset->getAvailable()) {
             $uploadedAsset = $this->saveFile($filename, $uploadedAsset);
         }
 
         /** @var EntityManager $em */
-        $em = $this->doctrine->getManager ();
+        $em = $this->doctrine->getManager();
         $em->persist($uploadedAsset);
         $em->flush($uploadedAsset);
 
         return $uploadedAsset;
     }
 
-
-    public function addChunk($hash, $chunk, $user) {
-        if(empty($this->storageManager->getAdapters())){
+    /**
+     * @param $hash
+     * @param $size
+     * @param $name
+     * @param $type
+     * @param $user
+     * @return UploadedAsset
+     * @throws Conflict409Exception
+     * @throws StorageServiceMissingException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function initUploadFile($hash, $size, $name, $type, $user)
+    {
+        if (empty($this->storageManager->getAdapters())) {
             throw new StorageServiceMissingException("No storage service have been defined");
         }
 
         /** @var EntityManager $em */
-        $em = $this->doctrine->getManager ();
+        $em = $this->doctrine->getManager();
         /** @var UploadedAssetRepository $repository */
-        $repository = $em->getRepository ( 'EMSCoreBundle:UploadedAsset' );
+        $repository = $em->getRepository('EMSCoreBundle:UploadedAsset');
 
 
-        /**@var UploadedAsset $uploadedAsset*/
+        /**@var UploadedAsset $uploadedAsset */
         $uploadedAsset = $repository->findOneBy([
             'sha1' => $hash,
             'available' => false,
             'user' => $user,
         ]);
 
-        if(!$uploadedAsset) {
+        if (!$uploadedAsset) {
+            $uploadedAsset = new UploadedAsset();
+            $uploadedAsset->setSha1($hash);
+            $uploadedAsset->setUser($user);
+            $uploadedAsset->setSize($size);
+            $uploadedAsset->setUploaded(0);
+        }
+
+
+        $uploadedAsset->setType($type);
+        $uploadedAsset->setName($name);
+        $uploadedAsset->setAvailable(false);
+
+        if ($size >= $uploadedAsset->getUploaded()) {
+            $uploadedAsset->setUploaded(0);
+        }
+
+        if ($uploadedAsset->getSize() != $size) {
+            throw new Conflict409Exception("Target size mismatched " . $uploadedAsset->getSize() . ' ' . $size);
+        }
+
+        if ($this->head($hash)) {
+            if ($this->getSize($hash) != $size) { //one is a string the other is a number
+                throw new Conflict409Exception("Hash conflict");
+            }
+            $uploadedAsset->setUploaded($uploadedAsset->getSize());
+            $uploadedAsset->setAvailable(true);
+        } else {
+            $this->storageManager->initUploadFile($hash, $size, $name, $type, $this->uploadMinimuNumberOfReplications);
+        }
+
+        $em->persist($uploadedAsset);
+        $em->flush($uploadedAsset);
+
+        return $uploadedAsset;
+    }
+
+    public function head($hash, $cacheContext = false)
+    {
+        /**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service */
+        foreach ($this->storageManager->getAdapters() as $service) {
+            if ($service->head($hash, $cacheContext)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function getSize($hash, $cacheContext = false)
+    {
+        /**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service */
+        foreach ($this->storageManager->getAdapters() as $service) {
+            $filesize = $service->getSize($hash, $cacheContext);
+            if ($filesize !== false) {
+                return $filesize;
+            }
+        }
+        return false;
+    }
+
+    private function saveFile($filename, UploadedAsset $uploadedAsset)
+    {
+        $hash = $this->storageManager->computeFileHash($filename);
+        if ($hash != $uploadedAsset->getSha1()) {
+// 			throw new Conflict409Exception("Hash mismatched ".$hash.' >< '.$uploadedAsset->getSha1());
+//TODO: fix this issue by using the CryotJS librairy on the FE JS?
+            $uploadedAsset->setSha1($hash);
+            $uploadedAsset->setUploaded(filesize($filename));
+        }
+
+        /**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service */
+        foreach ($this->storageManager->getAdapters() as $service) {
+            if ($service->create($uploadedAsset->getSha1(), $filename)) {
+                $uploadedAsset->setAvailable(true);
+                unlink($filename);
+                break;
+            }
+        }
+
+        return $uploadedAsset;
+    }
+
+    public function addChunk($hash, $chunk, $user)
+    {
+        if (empty($this->storageManager->getAdapters())) {
+            throw new StorageServiceMissingException("No storage service have been defined");
+        }
+
+        /** @var EntityManager $em */
+        $em = $this->doctrine->getManager();
+        /** @var UploadedAssetRepository $repository */
+        $repository = $em->getRepository('EMSCoreBundle:UploadedAsset');
+
+
+        /**@var UploadedAsset $uploadedAsset */
+        $uploadedAsset = $repository->findOneBy([
+            'sha1' => $hash,
+            'available' => false,
+            'user' => $user,
+        ]);
+
+        if (!$uploadedAsset) {
             throw new NotFoundHttpException('Upload job not found');
         }
 
 
         $loopCounter = 0;
-        foreach ($this->storageManager->getAdapters() as $service)
-        {
-            if( $service->addChunk($hash, $chunk) && ++$loopCounter >= $this->uploadMinimuNumberOfReplications )
-            {
+        foreach ($this->storageManager->getAdapters() as $service) {
+            if ($service->addChunk($hash, $chunk) && ++$loopCounter >= $this->uploadMinimuNumberOfReplications) {
                 break;
             }
         }
 
-        $uploadedAsset->setUploaded($uploadedAsset->getUploaded()+strlen($chunk));
+        $uploadedAsset->setUploaded($uploadedAsset->getUploaded() + strlen($chunk));
 
         $em->persist($uploadedAsset);
         $em->flush($uploadedAsset);
 
-        if($uploadedAsset->getUploaded() == $uploadedAsset->getSize()){
+        if ($uploadedAsset->getUploaded() == $uploadedAsset->getSize()) {
 
 
             $loopCounter = 0;
-            foreach ($this->storageManager->getAdapters() as $service)
-            {
+            foreach ($this->storageManager->getAdapters() as $service) {
                 $handler = $service->read($uploadedAsset->getSha1(), false, false);
 
-                if($handler)
-                {
+                if ($handler) {
                     $computedHash = $this->storageManager->computeResourceHash($handler);
 
-                    if($computedHash != $uploadedAsset->getSha1()) {
-                        throw new Conflict409Exception("Hash mismatched ".$computedHash.' '.$uploadedAsset->getSha1());
+                    if ($computedHash != $uploadedAsset->getSha1()) {
+                        throw new Conflict409Exception("Hash mismatched " . $computedHash . ' ' . $uploadedAsset->getSha1());
                     }
 
-                    if( $service->finalizeUpload($hash) && ++$loopCounter >= $this->uploadMinimuNumberOfReplications )
-                    {
+                    if ($service->finalizeUpload($hash) && ++$loopCounter >= $this->uploadMinimuNumberOfReplications) {
                         break;
                     }
 
@@ -343,8 +357,7 @@ class FileService {
 
             }
 
-            if( $loopCounter === 0 )
-            {
+            if ($loopCounter === 0) {
                 $em->remove($uploadedAsset);
                 $em->flush($uploadedAsset);
                 throw new Exception('Was not able to finalize or confirmed the upload in at least one storage service');
@@ -357,11 +370,11 @@ class FileService {
         return $uploadedAsset;
     }
 
-
-    public function create($hash, $fileName, $cacheContext=false) {
-        /**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service*/
-        foreach ($this->storageManager->getAdapters() as $service){
-            if($service->create($hash, $fileName, $cacheContext)) {
+    public function create($hash, $fileName, $cacheContext = false)
+    {
+        /**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service */
+        foreach ($this->storageManager->getAdapters() as $service) {
+            if ($service->create($hash, $fileName, $cacheContext)) {
                 unlink($fileName);
                 return true;
             }
@@ -369,33 +382,13 @@ class FileService {
         return false;
     }
 
-    private function saveFile($filename, UploadedAsset $uploadedAsset){
-        $hash = $this->storageManager->computeFileHash($filename);
-        if($hash != $uploadedAsset->getSha1()) {
-// 			throw new Conflict409Exception("Hash mismatched ".$hash.' >< '.$uploadedAsset->getSha1());
-//TODO: fix this issue by using the CryotJS librairy on the FE JS?
-            $uploadedAsset->setSha1($hash);
-            $uploadedAsset->setUploaded(filesize($filename));
-        }
-
-        /**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service*/
-        foreach ($this->storageManager->getAdapters() as $service){
-            if($service->create($uploadedAsset->getSha1(), $filename)) {
-                $uploadedAsset->setAvailable(true);
-                unlink($filename);
-                break;
-            }
-        }
-
-        return $uploadedAsset;
-    }
-
     /**
      * return temporary filename
      * @param string $hash
      * @return string
      */
-    public function temporaryFilename($hash) {
-        return sys_get_temp_dir().DIRECTORY_SEPARATOR.$hash;
+    public function temporaryFilename($hash)
+    {
+        return sys_get_temp_dir() . DIRECTORY_SEPARATOR . $hash;
     }
 }

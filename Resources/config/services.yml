@@ -6,8 +6,9 @@ services:
     _defaults:
         public: true
 
-    app.twig_extension:
-        class: EMS\CoreBundle\Twig\AppExtension
+    app.twig_extension: '@EMS\CoreBundle\Twig\AppExtension'
+    EMS\CoreBundle\Twig\AppExtension:
+        #class: EMS\CoreBundle\Twig\AppExtension
         arguments: ['@doctrine', '@security.authorization_checker', '@ems.service.user', '@ems.service.contenttype', '@app.elasticsearch', '@router', '@twig', '@ems.form.factories.objectChoiceListFactory', '@ems.service.environment', '@logger', '@form.factory', '@ems.service.file' , '@ems_common.twig.runtime.request', '%ems_core.asset_config_index%', '%ems_core.asset_config_type%']
         #public: false
         tags:
@@ -560,6 +561,3 @@ services:
 
     EMS\CoreBundle\Controller\ContentManagement\AssetController:
         autowire: true
-        arguments:
-            $configType: '%ems_core.asset_config_type%'
-            $configIndex: '%ems_core.asset_config_index%'

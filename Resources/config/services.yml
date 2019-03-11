@@ -558,6 +558,3 @@ services:
         autoconfigure: true
         public: true
         resource: '../../Controller/*'
-
-    EMS\CoreBundle\Controller\ContentManagement\AssetController:
-        autowire: true

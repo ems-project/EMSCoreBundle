@@ -32,8 +32,6 @@ use Symfony\Component\Routing\Router;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
-use function array_merge;
-use function json_encode;
 
 class AppExtension extends \Twig_Extension
 {

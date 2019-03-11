@@ -4,12 +4,6 @@ namespace EMS\CoreBundle\Tests\Service;
 use EMS\CommonBundle\Storage\Service\StorageInterface;
 use EMS\CoreBundle\Service\FileService;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use function file_put_contents;
-use function hash_file;
-use function hash_init;
-use function printf;
-use function strlen;
-use function unlink;
 
 
 class FileServiceTest extends WebTestCase

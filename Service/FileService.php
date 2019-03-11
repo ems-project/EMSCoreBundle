@@ -16,8 +16,6 @@ use EMS\CommonBundle\Storage\StorageServiceMissingException;
 use EMS\CoreBundle\Entity\UploadedAsset;
 use Exception;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use function strlen;
-use const DIRECTORY_SEPARATOR;
 
 class FileService {
 

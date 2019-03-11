@@ -20,8 +20,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\HttpFoundation\Session\Session;
-use function count;
-use function unlink;
 
 class SynchAssetCommand extends EmsCommand
 {

@@ -32,8 +32,6 @@ class FileServiceTest extends WebTestCase
 
         $this->assertTrue($storage->health());
 
-        printf("\n%s\n", $storage->__toString());
-
         $string1 = 'foo';
         $string2 = 'bar';
         $hash = sha1($string1.$string2);

@@ -24,7 +24,8 @@ class TemplateType extends AbstractType {
 	
 	private $choices;
 	private $service;
-	
+	private $circleType;
+
 	public function __construct($circleType, EnvironmentService $service)
 	{
 		$this->service = $service;

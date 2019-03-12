@@ -1041,8 +1041,10 @@ class DataService
 	/**
 	 * Assign data in dataValues based on the elastic index content
 	 *
+	 * @param DataField $dataField
 	 * @param array $elasticIndexDatas
-	 * @return $elasticIndexDatas
+	 * @param bool $isMigration
+     *
 	 */
 	public  function updateDataValue(DataField $dataField, Array &$elasticIndexDatas, $isMigration = false){
 		$dataFieldType = $this->formRegistry->getType($dataField->getFieldType()->getType())->getInnerType();

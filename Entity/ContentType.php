@@ -1687,7 +1687,7 @@ class ContentType
     }
 
     /**
-     * @return array
+     * @return string
      */
     public function getDefaultValue()
     {

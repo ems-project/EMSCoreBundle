@@ -192,7 +192,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     	$a = func_get_args();
     	$i = func_num_args();
     	if($i >= 1 && $a[0] instanceof DataField){
-    		/** @var \DataField $ancestor */
+    		/** @var DataField $ancestor */
     		$ancestor = $a[0];
     		$this->fieldType = $ancestor->getFieldType();
     		$this->orderKey = $ancestor->orderKey;

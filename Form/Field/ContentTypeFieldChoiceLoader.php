@@ -5,7 +5,10 @@ namespace EMS\CoreBundle\Form\Field;
 use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
 
 class ContentTypeFieldChoiceLoader implements ChoiceLoaderInterface {
-	
+
+    /**@var ContentTypeFieldChoiceList*/
+    private $contentTypeFieldChoiceList;
+
 	public function __construct(array $mapping, array $types, $firstLevelOnly){
 		$this->contentTypeFieldChoiceList = new ContentTypeFieldChoiceList($mapping, $types, $firstLevelOnly);
 	}

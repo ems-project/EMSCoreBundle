@@ -29,7 +29,9 @@ class EnvironmentService {
 	private $authorizationChecker;
 
     private $singleTypeIndex;
-	
+
+    private $byId;
+
 	
 	public function __construct(Registry $doctrine, Session $session, UserService $userService, AuthorizationCheckerInterface $authorizationChecker, $singleTypeIndex)
 	{

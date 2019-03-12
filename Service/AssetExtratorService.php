@@ -73,10 +73,10 @@ class AssetExtratorService
 	public function extractData($hash, $file=null) {
 
         $manager = $this->doctrine->getManager();
-        $this->repository = $manager->getRepository('EMSCoreBundle:CacheAssetExtractor');
+        $repository = $manager->getRepository('EMSCoreBundle:CacheAssetExtractor');
 
         /**@var CacheAssetExtractor $cacheData*/
-        $cacheData = $this->repository->findOneBy([
+        $cacheData = $repository->findOneBy([
             'hash' => $hash
         ]);
 

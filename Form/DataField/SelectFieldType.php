@@ -183,7 +183,7 @@ class SelectFieldType extends DataFieldType {
 				}
 			}
 			else {
-				$dataField->addMessage('Was not able to import the data : '+json_encode($out));
+				$dataField->addMessage('Was not able to import the data : '+json_encode($temp));
 				$out = [];
 			}
 		}

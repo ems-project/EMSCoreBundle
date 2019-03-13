@@ -32,7 +32,7 @@ class SearchFormType extends AbstractType
     /** @var SearchFieldOptionService $searchFieldOptionService*/
     private $searchFieldOptionService;
 
-    function __construct(AuthorizationCheckerInterface $authorizationChecker, SortOptionService $sortOptionService, SearchFieldOptionService $searchFieldOptionService)
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker, SortOptionService $sortOptionService, SearchFieldOptionService $searchFieldOptionService)
     {
         $this->authorizationChecker = $authorizationChecker;
         $this->sortOptionService = $sortOptionService;

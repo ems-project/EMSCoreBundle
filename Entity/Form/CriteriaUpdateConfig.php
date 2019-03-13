@@ -23,7 +23,7 @@ class CriteriaUpdateConfig
     private $session;
 
 
-    function __construct(View $view, Session $session)
+    public function __construct(View $view, Session $session)
     {
         
         $this->session = $session;

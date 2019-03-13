@@ -234,7 +234,7 @@ class HierarchicalViewType extends ViewType
         return $response;
     }
     
-    function reorder($itemKey, View $view, $structure)
+    public function reorder($itemKey, View $view, $structure)
     {
         $temp = explode(':', $itemKey);
         $type = $temp[0];

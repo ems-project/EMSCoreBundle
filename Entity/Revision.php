@@ -330,7 +330,7 @@ class Revision
         ];
     }
     
-    function __construct()
+    public function __construct()
     {
         $this->deleted = false;
         $this->allFieldsAreThere = false;

@@ -85,9 +85,9 @@ class Search implements JsonSerializable
      * @ORM\Column(name="sort_order", type="string", length=100, nullable=true)
      */
     public $sortOrder;
-    
-    
-    function __construct()
+
+
+    public function __construct()
     {
         $this->filters = [];//new \Doctrine\Common\Collections\ArrayCollection();
         $this->filters[] = new SearchFilter();

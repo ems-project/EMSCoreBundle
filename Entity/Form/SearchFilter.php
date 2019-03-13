@@ -61,8 +61,8 @@ class SearchFilter implements JsonSerializable
      * @ORM\Column(name="boost", type="decimal", scale=2, nullable=true)
      */
     public $boost;
-    
-    function __construct()
+
+    public function __construct()
     {
         $this->operator = "query_and";
     }
@@ -78,7 +78,7 @@ class SearchFilter implements JsonSerializable
         ];
     }
 
-    function generateEsFilter()
+    public function generateEsFilter()
     {
         $out = false;
         if ($this->field || $this->pattern) {

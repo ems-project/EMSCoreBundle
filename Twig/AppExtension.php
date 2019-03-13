@@ -551,7 +551,7 @@ class AppExtension extends \Twig_Extension
      * @param string $str
      * @return string
      */
-    function toAscii($str)
+    public function toAscii($str)
     {
         $clean = $str;
         
@@ -573,35 +573,35 @@ class AppExtension extends \Twig_Extension
         
         return $clean;
     }
-    
-    function cantBeFinalized($message = null, $code = null, $previous = null)
+
+    public function cantBeFinalized($message = null, $code = null, $previous = null)
     {
         throw new CantBeFinalizedException($message, $code, $previous);
     }
-    
-    
-    function macroFct($tempate, $block, $context, $source = null, $compare = false, $compareRawData = null)
+
+
+    public function macroFct($tempate, $block, $context, $source = null, $compare = false, $compareRawData = null)
     {
         return $tempate->{'macro_'.$block}($context, $source, $compare, $compareRawData);
     }
-    
-    function call_user_func($function)
+
+    public function call_user_func($function)
     {
         return call_user_func($function);
     }
-    
-    function search(array $params)
+
+    public function search(array $params)
     {
         return $this->client->search($params);
     }
 
-    function debug($message, array $context = [])
+    public function debug($message, array $context = [])
     {
         $context['twig'] = 'twig';
         $this->logger->addDebug($message, $context);
     }
-    
-    function dateDifference($date1, $date2, $detailed = false)
+
+    public function dateDifference($date1, $date2, $detailed = false)
     {
         $datetime1 = date_create($date1);
         $datetime2 = date_create($date2);
@@ -611,13 +611,13 @@ class AppExtension extends \Twig_Extension
         }
         return (intval($interval->format('%R%a'))+1).' days';
     }
-    
-    function getUser($username)
+
+    public function getUser($username)
     {
         return $this->userService->getUser($username);
     }
-    
-    function displayname($username)
+
+    public function displayname($username)
     {
         /**@var User $user*/
         $user = $this->userService->getUser($username);
@@ -627,7 +627,7 @@ class AppExtension extends \Twig_Extension
         return $username;
     }
 
-    function srcPath($input, $fileName = false)
+    public function srcPath($input, $fileName = false)
     {
         $path = $this->router->generate('ems_file_view', ['sha1' => '__SHA1__'], UrlGeneratorInterface::ABSOLUTE_PATH);
         $path = substr($path, 0, strlen($path)-8);
@@ -645,16 +645,16 @@ class AppExtension extends \Twig_Extension
         return $out;
     }
 
-    function internalLinks($input, $fileName = false)
+    public function internalLinks($input, $fileName = false)
     {
         $url = $this->router->generate('data.link', ['key'=>'object:'], UrlGeneratorInterface::ABSOLUTE_PATH);
         $out = preg_replace('/ems:\/\/object:/i', $url, $input);
 
         return $this->srcPath($out, $fileName);
     }
-    
-    
-    function i18n($key, $locale = null)
+
+
+    public function i18n($key, $locale = null)
     {
 
         if (empty($locale)) {
@@ -679,7 +679,7 @@ class AppExtension extends \Twig_Extension
      * @return bool
      * @deprecated since version 1.8.17 (will be remove with ems 1.9)
      */
-    function is_super($empty)
+    public function is_super($empty)
     {
         //TODO to remove
         return $this->isSuper();
@@ -689,12 +689,12 @@ class AppExtension extends \Twig_Extension
      * Test if the user has some superpowers
      * @return bool
      */
-    function isSuper()
+    public function isSuper()
     {
         return $this->authorizationChecker->isGranted('ROLE_SUPER');
     }
 
-    function all_granted($roles, $super = false)
+    public function all_granted($roles, $super = false)
     {
         if ($super && !$this->isSuper()) {
             return false;
@@ -706,8 +706,8 @@ class AppExtension extends \Twig_Extension
         }
         return true;
     }
-    
-    function inMyCircles($circles)
+
+    public function inMyCircles($circles)
     {
         
         if (!$circles) {
@@ -729,13 +729,13 @@ class AppExtension extends \Twig_Extension
         
         return false;
     }
-    
-    function objectChoiceLoader($contentTypeName)
+
+    public function objectChoiceLoader($contentTypeName)
     {
         return $this->objectChoiceListFactory->createLoader($contentTypeName, true)->loadAll();
     }
-    
-    function groupedObjectLoader($contentTypeName)
+
+    public function groupedObjectLoader($contentTypeName)
     {
         $choices = $this->objectChoiceListFactory->createLoader($contentTypeName, true)->loadAll();
         $out = [];
@@ -747,8 +747,8 @@ class AppExtension extends \Twig_Extension
         }
         return $out;
     }
-    
-    function generateFromTemplate($template, array $params = [])
+
+    public function generateFromTemplate($template, array $params = [])
     {
         if (empty($template)) {
             return null;
@@ -760,8 +760,8 @@ class AppExtension extends \Twig_Extension
         }
         return $out;
     }
-    
-    function dataLabel($key, $revisionId = false)
+
+    public function dataLabel($key, $revisionId = false)
     {
         $out = $key;
         $splitted = explode(':', $key);
@@ -819,8 +819,8 @@ class AppExtension extends \Twig_Extension
         }
         return $out;
     }
-        
-    function dataLink($key, $revisionId = false, $diffMod = false)
+
+    public function dataLink($key, $revisionId = false, $diffMod = false)
     {
         $out = $key;
         $splitted = explode(':', $key);
@@ -887,8 +887,8 @@ class AppExtension extends \Twig_Extension
         }
         return $out;
     }
-    
-    function propertyPath(FormError $error)
+
+    public function propertyPath(FormError $error)
     {
         $parent = $error->getOrigin();
         $out = '';
@@ -901,8 +901,8 @@ class AppExtension extends \Twig_Extension
         }
         return $out;
     }
-    
-    function data($key)
+
+    public function data($key)
     {
         $out = $key;
         $splitted = explode(':', $key);
@@ -930,8 +930,8 @@ class AppExtension extends \Twig_Extension
         }
         return false;
     }
-    
-    function one_granted($roles, $super = false)
+
+    public function one_granted($roles, $super = false)
     {
         if ($super && !$this->isSuper()) {
             return false;
@@ -951,7 +951,7 @@ class AppExtension extends \Twig_Extension
      * @return float
      * @author Marcus Bointon <marcus@synchromedia.co.uk>
      */
-    function relativeluminance($col)
+    public function relativeluminance($col)
     {
         //Remove any leading #
         $col = trim($col, '#');
@@ -986,7 +986,7 @@ class AppExtension extends \Twig_Extension
      * @return float
      * @author Marcus Bointon <marcus@synchromedia.co.uk>
      */
-    function contrastratio($c1, $c2)
+    public function contrastratio($c1, $c2)
     {
         $y1 = $this->relativeluminance($c1);
         $y2 = $this->relativeluminance($c2);

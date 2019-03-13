@@ -18,9 +18,9 @@ class TreatNotifications
     private $publishTo;
     
     private $notifications;
-    
-    
-    function __construct()
+
+
+    public function __construct()
     {
     }
 

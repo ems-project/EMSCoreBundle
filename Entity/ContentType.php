@@ -382,7 +382,7 @@ class ContentType
     public $defaultValue;
 
 
-    function __construct()
+    public function __construct()
     {
 
         $this->templates = new \Doctrine\Common\Collections\ArrayCollection();

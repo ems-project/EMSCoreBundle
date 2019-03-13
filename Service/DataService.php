@@ -233,10 +233,10 @@ class DataService
     
     public function propagateDataToComputedField(FormInterface $form, array& $objectArray, ContentType $contentType, $type, $ouuid, $migration = false)
     {
-        return $this->propagateDataToComputedField_recursive($form, $objectArray, $contentType, $type, $ouuid, $migration, $objectArray, '');
+        return $this->propagateDataToComputedFieldRecursive($form, $objectArray, $contentType, $type, $ouuid, $migration, $objectArray, '');
     }
 
-    private function propagateDataToComputedField_recursive(FormInterface $form, array& $objectArray, ContentType $contentType, $type, $ouuid, $migration, &$parent, $path)
+    private function propagateDataToComputedFieldRecursive(FormInterface $form, array& $objectArray, ContentType $contentType, $type, $ouuid, $migration, &$parent, $path)
     {
         $found = false;
         /**@var DataField $dataField*/
@@ -338,12 +338,12 @@ class DataService
                     foreach ($child->getIterator() as $collectionChild) {
                         if (isset($objectArray[$fieldName])) {
                             foreach ($objectArray[$fieldName] as &$elementsArray) {
-                                $found = $this->propagateDataToComputedField_recursive($collectionChild, $elementsArray, $contentType, $type, $ouuid, $migration, $parent, $path.($path == ''?'':'.').$fieldName) || $found;
+                                $found = $this->propagateDataToComputedFieldRecursive($collectionChild, $elementsArray, $contentType, $type, $ouuid, $migration, $parent, $path.($path == ''?'':'.').$fieldName) || $found;
                             }
                         }
                     }
                 } elseif ($childType instanceof DataFieldType) {
-                    $found = $this->propagateDataToComputedField_recursive($child, $objectArray, $contentType, $type, $ouuid, $migration, $parent, $path) || $found;
+                    $found = $this->propagateDataToComputedFieldRecursive($child, $objectArray, $contentType, $type, $ouuid, $migration, $parent, $path) || $found;
                 }
             }
         }

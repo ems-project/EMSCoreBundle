@@ -124,8 +124,8 @@ class AppExtension extends \Twig_Extension
             new \Twig_SimpleFilter('soapRequest', array($this, 'soapRequest')),
             new \Twig_SimpleFilter('luma', array($this, 'relativeluminance')),
             new \Twig_SimpleFilter('contrastratio', array($this, 'contrastratio')),
-            new \Twig_SimpleFilter('all_granted', array($this, 'all_granted')),
-            new \Twig_SimpleFilter('one_granted', array($this, 'one_granted')),
+            new \Twig_SimpleFilter('all_granted', array($this, 'allGranted')),
+            new \Twig_SimpleFilter('one_granted', array($this, 'oneGranted')),
             new \Twig_SimpleFilter('in_my_circles', array($this, 'inMyCircles')),
             new \Twig_SimpleFilter('data_link', array($this, 'dataLink')),
             new \Twig_SimpleFilter('data_label', array($this, 'dataLabel')),
@@ -144,10 +144,10 @@ class AppExtension extends \Twig_Extension
             new \Twig_SimpleFilter('date_difference', array($this, 'dateDifference')),
             new \Twig_SimpleFilter('debug', array($this, 'debug')),
             new \Twig_SimpleFilter('search', array($this, 'search')),
-            new \Twig_SimpleFilter('call_user_func', array($this, 'call_user_func')),
+            new \Twig_SimpleFilter('call_user_func', array($this, 'callUserFunc')),
             new \Twig_SimpleFilter('macro_fct', array($this, 'macroFct')),
-            new \Twig_SimpleFilter('merge_recursive', array($this, 'array_merge_recursive')),
-            new \Twig_SimpleFilter('array_intersect', array($this, 'array_intersect')),
+            new \Twig_SimpleFilter('merge_recursive', array($this, 'arrayMergeRecursive')),
+            new \Twig_SimpleFilter('array_intersect', array($this, 'arrayIntersect')),
             new \Twig_SimpleFilter('get_string', array($this, 'getString')),
             new \Twig_SimpleFilter('get_file', array($this, 'getFile')),
             new \Twig_SimpleFilter('get_field_by_path', array($this, 'getFieldByPath')),
@@ -530,7 +530,7 @@ class AppExtension extends \Twig_Extension
         return $out;
     }
     
-    public function array_intersect(array $array1, $array2)
+    public function arrayIntersect(array $array1, $array2)
     {
         if (! is_array($array2)) {
             return [];
@@ -539,7 +539,7 @@ class AppExtension extends \Twig_Extension
     }
     
     
-    public function array_merge_recursive(array $array1, array $_ = null)
+    public function arrayMergeRecursive(array $array1, array $_ = null)
     {
         return array_merge_recursive($array1, $_);
     }
@@ -585,7 +585,7 @@ class AppExtension extends \Twig_Extension
         return $tempate->{'macro_'.$block}($context, $source, $compare, $compareRawData);
     }
 
-    public function call_user_func($function)
+    public function callUserFunc($function)
     {
         return call_user_func($function);
     }
@@ -675,17 +675,6 @@ class AppExtension extends \Twig_Extension
     }
 
     /**
-     * @param $empty
-     * @return bool
-     * @deprecated since version 1.8.17 (will be remove with ems 1.9)
-     */
-    public function is_super($empty)
-    {
-        //TODO to remove
-        return $this->isSuper();
-    }
-
-    /**
      * Test if the user has some superpowers
      * @return bool
      */
@@ -694,7 +683,7 @@ class AppExtension extends \Twig_Extension
         return $this->authorizationChecker->isGranted('ROLE_SUPER');
     }
 
-    public function all_granted($roles, $super = false)
+    public function allGranted($roles, $super = false)
     {
         if ($super && !$this->isSuper()) {
             return false;
@@ -931,7 +920,7 @@ class AppExtension extends \Twig_Extension
         return false;
     }
 
-    public function one_granted($roles, $super = false)
+    public function oneGranted($roles, $super = false)
     {
         if ($super && !$this->isSuper()) {
             return false;

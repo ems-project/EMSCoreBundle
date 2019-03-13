@@ -192,7 +192,7 @@ class RebuildCommand extends EmsCommand
             if (empty($indexes)) {
                 $indexes = [$singleIndexName];
             }
-            $this->switchAlias($environment->getAlias(), $indexes, true, $output);
+            $this->switchAlias($environment->getAlias(), $indexes, $output, true);
             $output->writeln('The alias <info>'.$environment->getName().'</info> is now pointing to :');
             foreach ($indexes as $index) {
                 $output->writeln('     - '.$index);
@@ -218,7 +218,7 @@ class RebuildCommand extends EmsCommand
      * @param string $alias
      * @param string $to
      */
-    private function switchAlias($alias, $toIndexes, $newEnv = false, OutputInterface $output)
+    private function switchAlias($alias, $toIndexes, OutputInterface $output, $newEnv = false)
     {
         try {
             $result = $this->client->indices()->getAlias(['name' => $alias]);

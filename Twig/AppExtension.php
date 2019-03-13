@@ -260,7 +260,7 @@ class AppExtension extends \Twig_Extension
 
     public function diffTime($rawData, $compare, $fieldName, $compareRawData, $format1, $format2)
     {
-        return $this->diffDate($rawData, $compare, $fieldName, $compareRawData, $format1, $format2, TimeFieldType::storeFormat);
+        return $this->diffDate($rawData, $compare, $fieldName, $compareRawData, $format1, $format2, TimeFieldType::STOREFORMAT);
     }
 
     public function diffDate($rawData, $compare, $fieldName, $compareRawData, $format1, $format2 = false, $internalFormat = false)

@@ -22,8 +22,8 @@ use Symfony\Component\Form\FormInterface;
 class TimeFieldType extends DataFieldType
 {
     
-    const storeFormat = 'H:i:s';
-    const indexFormat = 'HH:mm:ss';
+    const STOREFORMAT = 'H:i:s';
+    const INDEXFORMAT = 'HH:mm:ss';
     
     
     /**
@@ -109,7 +109,7 @@ class TimeFieldType extends DataFieldType
         $format = $this->getFormat($data->getFieldType()->getOptions());
 
         /**@var \DateTime $converted*/
-        $dateTime = \DateTime::createFromFormat(TimeFieldType::storeFormat, $out);
+        $dateTime = \DateTime::createFromFormat(TimeFieldType::STOREFORMAT, $out);
         if ($dateTime) {
             return $dateTime->format($format);
         }
@@ -126,7 +126,7 @@ class TimeFieldType extends DataFieldType
         $format = $this->getFormat($fieldType->getOptions());
         $converted = \DateTime::createFromFormat($format, $data);
         if ($converted) {
-            $out = $converted->format($this::storeFormat);
+            $out = $converted->format($this::STOREFORMAT);
         } else {
             $out = null;
         }
@@ -143,7 +143,7 @@ class TimeFieldType extends DataFieldType
         return [
                 $current->getName() => array_merge([
                         "type" => "date",
-                        "format" => TimeFieldType::indexFormat,
+                        "format" => TimeFieldType::INDEXFORMAT,
                 ], array_filter($current->getMappingOptions()))
         ];
     }

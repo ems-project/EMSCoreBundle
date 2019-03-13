@@ -65,7 +65,7 @@ class Revision
     
     /**
      * @var integer
-     * 
+     *
      * @ORM\Column(name="version", type="integer")
      * @ORM\Version
      */
@@ -204,56 +204,52 @@ class Revision
     public function updateModified()
     {
         $this->modified = new \DateTime();
-        if(!isset($this->created)){
+        if (!isset($this->created)) {
             $this->created = $this->modified;
         }
-        if(!isset($this->orderKey)){
+        if (!isset($this->orderKey)) {
             $this->orderKey = 0;
         }
         
-        if(null == $this->lockBy || null == $this->lockUntil || new \DateTime() > $this->lockUntil){
+        if (null == $this->lockBy || null == $this->lockUntil || new \DateTime() > $this->lockUntil) {
             throw new NotLockedException($this);
         }
     }
     
-    private function addVirtualFields(FieldType $fieldType, array $data){
+    private function addVirtualFields(FieldType $fieldType, array $data)
+    {
         
         $out = [];
         /**@var FieldType $child*/
-        foreach ($fieldType->getChildren() as $child){
-            if(!$child->getDeleted()) {
+        foreach ($fieldType->getChildren() as $child) {
+            if (!$child->getDeleted()) {
                 $type = $child->getType();
-                if($type::isVirtual($child->getOptions())){
-                    if($type::isContainer()){
+                if ($type::isVirtual($child->getOptions())) {
+                    if ($type::isContainer()) {
                         $out[$child->getName()]= self::addVirtualFields($child, $data);
-                    }
-                    else {
+                    } else {
                         $out[$child->getName()] = $type::filterSubField($data, $child->getOptions());
                     }
-                }
-                else {
-                    if($type::isContainer()){
-                        if(isset($data[$child->getName()])){
-                            if($type::isCollection()){
-                                if(is_array($data[$child->getName()])){
+                } else {
+                    if ($type::isContainer()) {
+                        if (isset($data[$child->getName()])) {
+                            if ($type::isCollection()) {
+                                if (is_array($data[$child->getName()])) {
                                     $out[$child->getName()] = [];
-                                    foreach ($data[$child->getName()] as  $idx => $item) {
+                                    foreach ($data[$child->getName()] as $idx => $item) {
                                         $out[$child->getName()][$idx] = self::addVirtualFields($child, $item);
                                     }
                                 }
-                            }
-                            else {
-                                $out[$child->getName()] = self::addVirtualFields($child, $data[$child->getName()]);                                
+                            } else {
+                                $out[$child->getName()] = self::addVirtualFields($child, $data[$child->getName()]);
                             }
                         }
-                    }
-                    else {
-                        if(isset($data[$child->getName()]) && null !== $data[$child->getName()]){
+                    } else {
+                        if (isset($data[$child->getName()]) && null !== $data[$child->getName()]) {
                             $out[$child->getName()] = $data[$child->getName()];
                         }
                     }
                 }
-                
             }
         }
         return $out;
@@ -262,55 +258,52 @@ class Revision
     
     /**
      * Add the virtual fields to the raw data and return it (the data)
-     * 
+     *
      * @return array
      */
-    public function getData(){
+    public function getData()
+    {
         $out = $this->addVirtualFields($this->getContentType()->getFieldType(), $this->rawData);
         return $out;
     }
    
-    private function removeVirtualField(FieldType $fieldType, array $data){
+    private function removeVirtualField(FieldType $fieldType, array $data)
+    {
         $out = [];
         /**@var FieldType $child*/
-        foreach ($fieldType->getChildren() as $child){
-            if(!$child->getDeleted()) {
+        foreach ($fieldType->getChildren() as $child) {
+            if (!$child->getDeleted()) {
                 $type = $child->getType();
-                if($type::isVirtual($child->getOptions())){
-                    if(isset($data[$child->getName()]) && !empty($data[$child->getName()])){
-                        if($type::isContainer()){
-                            $out = array_merge_recursive($out, self::removeVirtualField($child, $data[$child->getName()]));                            
-                        }
-                        else {
+                if ($type::isVirtual($child->getOptions())) {
+                    if (isset($data[$child->getName()]) && !empty($data[$child->getName()])) {
+                        if ($type::isContainer()) {
+                            $out = array_merge_recursive($out, self::removeVirtualField($child, $data[$child->getName()]));
+                        } else {
                             $out = array_merge_recursive($out, $data[$child->getName()]);
                         }
                     }
-                }
-                else {
-                    if($type::isContainer()){
-                        if(isset($data[$child->getName()]) && !empty($data[$child->getName()])){
-                            if($type::isCollection()){
+                } else {
+                    if ($type::isContainer()) {
+                        if (isset($data[$child->getName()]) && !empty($data[$child->getName()])) {
+                            if ($type::isCollection()) {
                                 $out[$child->getName()] = [];
                                 foreach ($data[$child->getName()] as $itemIdx => $item) {
                                     $out[$child->getName()][$itemIdx] = self::removeVirtualField($child, $item);
                                 }
-                            }
-                            else {
-                                $out[$child->getName()] = self::removeVirtualField($child, $data[$child->getName()]);                                
+                            } else {
+                                $out[$child->getName()] = self::removeVirtualField($child, $data[$child->getName()]);
                             }
                             
-                            if(is_array($out[$child->getName()]) && empty($out[$child->getName()])){
+                            if (is_array($out[$child->getName()]) && empty($out[$child->getName()])) {
                                 unset($out[$child->getName()]);
                             }
                         }
-                    }
-                    else {
-                        if( isset($data[$child->getName()]) && $data[$child->getName()] !== null ){
+                    } else {
+                        if (isset($data[$child->getName()]) && $data[$child->getName()] !== null) {
                             $out[$child->getName()] = $data[$child->getName()];
                         }
                     }
                 }
-                
             }
         }
         return $out;
@@ -318,16 +311,18 @@ class Revision
     
     /**
      * Remove virtual fields ans save the raw data
-     * 
+     *
      * @param array $data
      * @return \EMS\CoreBundle\Entity\Revision
      */
-    public function setData(array $data){
+    public function setData(array $data)
+    {
         $this->rawData = $this->removeVirtualField($this->getContentType()->getFieldType(), $data);
         return $this;
     }
     
-    public function buildObject(){
+    public function buildObject()
+    {
         return [
             '_id' => $this->ouuid,
             '_type' => $this->contentType->getName(),
@@ -346,8 +341,8 @@ class Revision
         
         $a = func_get_args();
         $i = func_num_args();
-        if($i == 1){
-            if($a[0] instanceof Revision){
+        if ($i == 1) {
+            if ($a[0] instanceof Revision) {
                 /** @var \Revision $ancestor */
                 $ancestor = $a[0];
                 $this->deleted = $ancestor->deleted;
@@ -368,22 +363,25 @@ class Revision
     public function __toString()
     {
         $out = 'New instance';
-        if($this->ouuid){
+        if ($this->ouuid) {
             $out = $this->ouuid;
         }
-        if($this->contentType) {
+        if ($this->contentType) {
             $out = $this->contentType->getName().':'.$out;
-            if(!empty($this->id)) $out .=  '#'.$this->id;
+            if (!empty($this->id)) {
+                $out .=  '#'.$this->id;
+            }
         }
         
         
-        if($this->contentType && $this->contentType->getLabelField() && $this->rawData && isset($this->rawData[$this->contentType->getLabelField()])){
+        if ($this->contentType && $this->contentType->getLabelField() && $this->rawData && isset($this->rawData[$this->contentType->getLabelField()])) {
             return $this->rawData[$this->contentType->getLabelField()]." ($out)";
         }
         return $out;
     }
 
-    public function getObject($object){
+    public function getObject($object)
+    {
         $object = [
                 '_index' => 'N/A',
                 '_source' => $object,
@@ -440,7 +438,7 @@ class Revision
 
 
     /**
-     * 
+     *
      */
     public function setAllFieldsAreThere($allFieldsAreThere)
     {

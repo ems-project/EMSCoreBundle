@@ -20,7 +20,8 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-class SearchFormType extends AbstractType {
+class SearchFormType extends AbstractType
+{
 
 
 
@@ -43,7 +44,8 @@ class SearchFormType extends AbstractType {
      * {@inheritdoc}
      *
      */
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         $isSuper = $this->authorizationChecker->isGranted('ROLE_SUPER');
 
         $searchFields = [];
@@ -64,22 +66,20 @@ class SearchFormType extends AbstractType {
                 'searchFields' => $searchFields,
             ],
         ));
-        if($options['light']){
+        if ($options['light']) {
             $builder->add('applyFilters', SubmitEmsType::class, [
-                'attr' => [ 
+                'attr' => [
                         'class' => 'btn-primary btn-md',
                 ],
                 'icon' => 'fa fa-check',
             ]);
-        }
-        else{
+        } else {
             $sortOptions = $this->sortOptionService->getAll();
-            if($isSuper || empty($sortOptions)) {
+            if ($isSuper || empty($sortOptions)) {
                 $builder->add('sortBy', TextType::class, [
                     'required' => false,
                 ]);
-            }
-            else {
+            } else {
                 $sortFields = [];
                 $sortFieldIcons = [];
                 /**@var SortOption $sortOption*/
@@ -91,7 +91,7 @@ class SearchFormType extends AbstractType {
                 $builder->add('sortBy', ChoiceType::class, [
                     'required' => false,
                     'choices' => $sortFields,
-                    'choice_attr' => function($category, $key, $index) use($sortFieldIcons) {
+                    'choice_attr' => function ($category, $key, $index) use ($sortFieldIcons) {
                         return [
                             'data-content' => '<span class=""><i class="'.($sortFieldIcons[$index]?:'fa fa-square').'"></i>&nbsp;&nbsp;'.$key.'</span>'
                         ];
@@ -108,7 +108,7 @@ class SearchFormType extends AbstractType {
                             'Ascending' => 'asc',
                             'Descending' => 'desc',
                     ],
-                    'choice_attr' => function($category, $key, $index) {
+                    'choice_attr' => function ($category, $key, $index) {
                         return [
                             'data-content' => '<span class=""><i class="fa fa-sort-'.$index.'"></i>&nbsp;&nbsp;'.$key.'</span>'
                         ];
@@ -119,8 +119,8 @@ class SearchFormType extends AbstractType {
                     'required' => false,
             ]);
             $builder->add('search', SubmitEmsType::class, [
-                    'attr' => [ 
-                            'class' => 'btn-primary btn-md' 
+                    'attr' => [
+                            'class' => 'btn-primary btn-md'
                     ],
                     'icon' => 'fa fa-search'
             ])->add('exportResults', SubmitEmsType::class, [
@@ -135,18 +135,16 @@ class SearchFormType extends AbstractType {
             ])->add('contentTypes', ContentTypePickerType::class, [
                 'multiple' => true,
                 'required' => false,
-            ]);            
-            if(!$options['savedSearch']){
+            ]);
+            if (!$options['savedSearch']) {
                 $builder->add('save', SubmitEmsType::class, [
-                        'attr' => [ 
-                                'class' => 'btn-primary btn-md' 
+                        'attr' => [
+                                'class' => 'btn-primary btn-md'
                         ],
                         'icon' => 'fa fa-save',
                 ]);
-                
             }
         }
-        
     }
 
     /**
@@ -168,8 +166,9 @@ class SearchFormType extends AbstractType {
      * {@inheritdoc}
      *
      */
-    public function buildView(FormView $view, FormInterface $form, array $options) {
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
         /* give options for twig context */
-        parent::buildView ( $view, $form, $options );
+        parent::buildView($view, $form, $options);
     }
 }

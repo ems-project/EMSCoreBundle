@@ -10,8 +10,8 @@ use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use EMS\CoreBundle\Exception\PerformanceException;
 
-
-class ObjectChoiceListFactory extends DefaultChoiceListFactory{
+class ObjectChoiceListFactory extends DefaultChoiceListFactory
+{
 
     private $client;
     /**@var Session $session*/
@@ -25,8 +25,9 @@ class ObjectChoiceListFactory extends DefaultChoiceListFactory{
      * constructor called by the service mechanisme
      */
     public function __construct(
-            ContentTypeService $contentTypes,
-            ObjectChoiceCacheService $objectChoiceCacheService){
+        ContentTypeService $contentTypes,
+        ObjectChoiceCacheService $objectChoiceCacheService
+    ) {
         $this->contentTypes = $contentTypes;
         $this->objectChoiceCacheService = $objectChoiceCacheService;
     }
@@ -34,9 +35,10 @@ class ObjectChoiceListFactory extends DefaultChoiceListFactory{
     /**
      * instanciate a ObjectChoiceLoader (with the required services)
      */
-    public function createLoader($types = null, $loadAll = false, $circleOnly=false){
-        if(null === $types || $loadAll === ""){
-            if($loadAll) {
+    public function createLoader($types = null, $loadAll = false, $circleOnly = false)
+    {
+        if (null === $types || $loadAll === "") {
+            if ($loadAll) {
                 throw new PerformanceException('Try to load all objects of all content types');
             }
             $types = $this->contentTypes->getAllTypes();

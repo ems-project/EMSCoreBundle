@@ -115,7 +115,8 @@ class Notification
     
     private $counter;
 
-    public function __toString() {
+    public function __toString()
+    {
         return $this->getTemplate()->getName().'#'.$this->id;
     }
     
@@ -126,7 +127,7 @@ class Notification
     public function updateModified()
     {
         $this->modified = new \DateTime();
-        if(!isset($this->created)){
+        if (!isset($this->created)) {
             $this->created = $this->modified;
         }
     }

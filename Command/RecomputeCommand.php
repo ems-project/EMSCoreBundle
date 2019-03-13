@@ -101,8 +101,8 @@ class RecomputeCommand extends EmsCommand
             ->addOption('force', null, InputOption::VALUE_NONE, 'do not check for already locked revisions')
             ->addOption('missing', null, InputOption::VALUE_NONE, 'will recompute the objects that are missing in their default environment only')
             ->addOption('continue', null, InputOption::VALUE_NONE, 'continue a recompute')
-            ->addOption('no-align', null , InputOption::VALUE_NONE, "don't keep the revisions aligned to all already aligned environments")
-            ->addOption('cron', null , InputOption::VALUE_NONE, 'optimized for automated recurring recompute calls, tries --continue, when no locks are found for user runs command without --continue')
+            ->addOption('no-align', null, InputOption::VALUE_NONE, "don't keep the revisions aligned to all already aligned environments")
+            ->addOption('cron', null, InputOption::VALUE_NONE, 'optimized for automated recurring recompute calls, tries --continue, when no locks are found for user runs command without --continue')
             ->addOption('id', null, InputOption::VALUE_OPTIONAL, 'recompute a specific id')
         ;
     }
@@ -140,7 +140,7 @@ class RecomputeCommand extends EmsCommand
 
         $missingInIndex = false;
 
-        if( $input->getOption('missing') ) {
+        if ($input->getOption('missing')) {
             $missingInIndex = $this->contentTypeService->getIndex($contentType);
         }
 
@@ -149,8 +149,7 @@ class RecomputeCommand extends EmsCommand
             $transactionActive = false;
             /**@var Revision $revision*/
             foreach ($paginator as $revision) {
-
-                if($missingInIndex) {
+                if ($missingInIndex) {
                     try {
                         $this->client->get([
                             'index' => $missingInIndex,
@@ -160,9 +159,7 @@ class RecomputeCommand extends EmsCommand
                         $this->revisionRepository->unlockRevision($revision->getId());
                         $progress->advance();
                         continue;
-                    }
-                    catch (Missing404Exception $e){
-
+                    } catch (Missing404Exception $e) {
                     }
                 }
 
@@ -211,7 +208,7 @@ class RecomputeCommand extends EmsCommand
 
             $paginator = $this->revisionRepository->findAllLockedRevisions($contentType, self::LOCK_BY, $page, $limit);
 
-            if($transactionActive){
+            if ($transactionActive) {
                 $this->em->commit();
             }
             $this->em->clear(Revision::class);

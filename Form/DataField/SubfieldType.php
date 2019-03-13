@@ -2,8 +2,6 @@
 
 namespace EMS\CoreBundle\Form\DataField;
 
-
-
 use Symfony\Component\Form\FormBuilderInterface;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use EMS\CoreBundle\Entity\DataField;
@@ -11,22 +9,25 @@ use EMS\CoreBundle\Entity\FieldType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 //TODO:Refact Class name "SubfieldType" to "SubfieldFieldType"
-class SubfieldType extends DataFieldType {
+class SubfieldType extends DataFieldType
+{
     /**
      *
      * {@inheritdoc}
      *
      */
-    public function getLabel(){
+    public function getLabel()
+    {
         return 'Virtual subfield (used to define alternatives analyzers)';
     }
     
     /**
      * Get a icon to visually identify a FieldType
-     * 
+     *
      * @return string
      */
-    public static function getIcon(){
+    public static function getIcon()
+    {
         return 'fa fa-sitemap';
     }
     
@@ -35,7 +36,8 @@ class SubfieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function importData(DataField $dataField, $sourceArray, $isMigration) {
+    public function importData(DataField $dataField, $sourceArray, $isMigration)
+    {
         //do nothing as it's a virtual field
     }
     
@@ -44,28 +46,30 @@ class SubfieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options) {
-        parent::buildOptionsForm ( $builder, $options );
-        $optionsForm = $builder->get ( 'options' );
-        $optionsForm->remove( 'displayOptions' )->remove( 'migrationOptions' )->remove( 'restrictionOptions' );
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    {
+        parent::buildOptionsForm($builder, $options);
+        $optionsForm = $builder->get('options');
+        $optionsForm->remove('displayOptions')->remove('migrationOptions')->remove('restrictionOptions');
         
         // String specific mapping options
-        $optionsForm->get ( 'mappingOptions' )
-            ->add ( 'analyzer', AnalyzerPickerType::class)
-            ->add ( 'fielddata', CheckboxType::class, [
+        $optionsForm->get('mappingOptions')
+            ->add('analyzer', AnalyzerPickerType::class)
+            ->add('fielddata', CheckboxType::class, [
                     'required' => false,
-            ] );
-    }    
+            ]);
+    }
     
     
     /**
      *
      * {@inheritdoc}
      *
-     */    
-    public function generateMapping(FieldType $current, $withPipeline){
+     */
+    public function generateMapping(FieldType $current, $withPipeline)
+    {
 
-        $options = $this->elasticsearchService->updateMapping(array_merge(["type" => "string"],  array_filter($current->getMappingOptions())));
+        $options = $this->elasticsearchService->updateMapping(array_merge(["type" => "string"], array_filter($current->getMappingOptions())));
 
         return [
                 'fields' => [$current->getName() => $options]
@@ -76,9 +80,9 @@ class SubfieldType extends DataFieldType {
      *
      * {@inheritdoc}
      *
-     */    
-    public static function buildObjectArray(DataField $data, array &$out) {
+     */
+    public static function buildObjectArray(DataField $data, array &$out)
+    {
         //do nothing as it's a virtual field
     }
-    
 }

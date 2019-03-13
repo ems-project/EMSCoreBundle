@@ -11,37 +11,38 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 
-
-class ViewType extends AbstractType {
+class ViewType extends AbstractType
+{
     
     /**
      *
      * {@inheritdoc}
      *
      */
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         
         /** @var Template $template */
-        $template = $builder->getData ();
+        $template = $builder->getData();
         
         $builder
-        ->add ( 'name', IconTextType::class, [
+        ->add('name', IconTextType::class, [
             'icon' => 'fa fa-tag'
-        ] )
-        ->add ( 'icon', IconPickerType::class, [
+        ])
+        ->add('icon', IconPickerType::class, [
             'required' => false,
         ])
-        ->add ( 'type', ViewTypePickerType::class, [
+        ->add('type', ViewTypePickerType::class, [
             'required' => false,
         ])
-        ->add ( 'public', CheckboxType::class, [
+        ->add('public', CheckboxType::class, [
             'required' => false,
         ])
-        ->add ( 'create', SubmitEmsType::class, [
-                'attr' => [ 
-                        'class' => 'btn-primary btn-sm ' 
+        ->add('create', SubmitEmsType::class, [
+                'attr' => [
+                        'class' => 'btn-primary btn-sm '
                 ],
-                'icon' => 'fa fa-save' 
-        ] );
+                'icon' => 'fa fa-save'
+        ]);
     }
 }

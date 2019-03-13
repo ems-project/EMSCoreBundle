@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace EMS\CoreBundle\Form\Nature;
 
@@ -24,9 +24,9 @@ class ReorganizeType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         
-        $builder->add ( 'structure', HiddenType::class, [
+        $builder->add('structure', HiddenType::class, [
         ])
-        ->add ( 'reorder', SubmitEmsType::class, [
+        ->add('reorder', SubmitEmsType::class, [
                 'attr' => [
                         'class' => 'btn-primary '
                 ],
@@ -35,9 +35,9 @@ class ReorganizeType extends AbstractType
         
         /**@var View*/
         $view = $options['view'];
-        if($view instanceof View){
+        if ($view instanceof View) {
             $fieldType = $view->getContentType()->getFieldType()->getChildByPath($view->getOptions()['field']);
-            $builder->add ( 'addItem', DataLinkFieldType::class, [
+            $builder->add('addItem', DataLinkFieldType::class, [
                     'metadata' => $fieldType,
                     'label' => 'Add item',
                     'required' => false,
@@ -47,26 +47,26 @@ class ReorganizeType extends AbstractType
             
             
             $builder->get('addItem')->addModelTransformer(new CallbackTransformer(
-                    function ($raw) {
+                function ($raw) {
                         $dataField = new DataField();
                         return $dataField;
-                    },
-                    function (DataField $tagsAsString) {
+                },
+                function (DataField $tagsAsString) {
                         // transform the string back to an array
                         return null;
-                    }
-                    ))->addViewTransformer(new CallbackTransformer(
-                            function (DataField $tagsAsString) {
+                }
+            ))->addViewTransformer(new CallbackTransformer(
+                function (DataField $tagsAsString) {
                                 // transform the string back to an array
                                 return null;
-                            },
-                            function ($raw) {
+                },
+                function ($raw) {
                                 $dataField = new DataField();
                                 return $dataField;
-                            }
-                    ));
+                }
+            ));
         }
-    }   
+    }
     
 
     /**
@@ -79,5 +79,4 @@ class ReorganizeType extends AbstractType
             'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
         ]);
     }
-    
 }

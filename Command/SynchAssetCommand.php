@@ -85,20 +85,19 @@ class SynchAssetCommand extends EmsCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         /** @var EntityManager $em */
-        $em = $this->doctrine->getManager ();
+        $em = $this->doctrine->getManager();
         /** @var UploadedAssetRepository $repository */
-        $repository = $em->getRepository ( 'EMSCoreBundle:UploadedAsset' );
+        $repository = $em->getRepository('EMSCoreBundle:UploadedAsset');
 
         $this->formatFlash($output);
 
-        if(count($this->fileService->getStorages()) < 2)
-        {
+        if (count($this->fileService->getStorages()) < 2) {
             $output->writeln('<error>There is nothing to synchronize as there is less than 2 storage services</error>');
             return;
         }
 
         $serviceId = count($this->fileService->getStorages());
-        if(! $input->getOption('all') ){
+        if (! $input->getOption('all')) {
             /**@var QuestionHelper $helper*/
             $helper = $this->getHelper('question');
             $question = new ChoiceQuestion(
@@ -111,9 +110,8 @@ class SynchAssetCommand extends EmsCommand
             $service = $helper->ask($input, $output, $question);
 
 
-            if( $service != 'All' )
-            {
-                $serviceId = array_search ( $service ,$this->fileService->getStorages() );
+            if ($service != 'All') {
+                $serviceId = array_search($service, $this->fileService->getStorages());
                 $output->writeln('You have just selected: '.$service.' ('.$serviceId.')');
             }
         }
@@ -127,40 +125,30 @@ class SynchAssetCommand extends EmsCommand
         $fileNotFound = 0;
         while (true) {
             $hashes = $repository->getHashes($page);
-            if(empty($hashes))
-            {
+            if (empty($hashes)) {
                 break;
             }
             ++$page;
 
-            foreach ($hashes as $hash)
-            {
+            foreach ($hashes as $hash) {
                 $file = $this->fileService->getFile($hash['hash']);
 
-                if($file)
-                {
-                    if($serviceId == count($this->fileService->getStorages()))
-                    {
+                if ($file) {
+                    if ($serviceId == count($this->fileService->getStorages())) {
                         /**@var StorageInterface $storage */
-                        foreach ($this->fileService->getStorages() as $storage)
-                        {
-                            if(! $storage->head($hash['hash']))
-                            {
-                                if(!$storage->create($hash['hash'], $file))
-                                {
+                        foreach ($this->fileService->getStorages() as $storage) {
+                            if (! $storage->head($hash['hash'])) {
+                                if (!$storage->create($hash['hash'], $file)) {
                                     $output->writeln('');
                                     $output->writeln('<comment>EMS was not able to synchronize on the service '.$storage.'</comment>');
                                 }
                             }
                         }
-                    }
-                    else {
+                    } else {
                         /**@var StorageInterface $storage */
                         $storage = $this->fileService->getStorages()[$serviceId];
-                        if(! $storage->head($hash['hash']))
-                        {
-                            if(!$storage->create($hash['hash'], $file))
-                            {
+                        if (! $storage->head($hash['hash'])) {
+                            if (!$storage->create($hash['hash'], $file)) {
                                 $output->writeln('');
                                 $output->writeln('<comment>EMS was not able to synchronize on the service '.$storage.'</comment>');
                             }
@@ -168,9 +156,7 @@ class SynchAssetCommand extends EmsCommand
                     }
 
                     unlink($file);
-                }
-                else
-                {
+                } else {
                     $output->writeln('');
                     $output->writeln('<comment>File not found '.$hash['hash'].'</comment>');
                     ++$fileNotFound;
@@ -182,12 +168,8 @@ class SynchAssetCommand extends EmsCommand
 
         $progress->finish();
         $output->writeln('');
-        if($fileNotFound)
-        {
-
+        if ($fileNotFound) {
             $output->writeln('<comment>'.$fileNotFound.' files not found</comment>');
         }
-
     }
-
 }

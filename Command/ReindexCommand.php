@@ -110,17 +110,15 @@ class ReindexCommand extends EmsCommand
         /** @var ContentTypeRepository $ctRepo */
         $ctRepo = $em->getRepository('EMSCoreBundle:ContentType');
 
-        if($input->hasArgument('content-type')) {
+        if ($input->hasArgument('content-type')) {
             $contentTypes = $ctRepo->findBy(['deleted' => false, 'name' => $input->getArgument('content-type')]);
-        }
-        else {
+        } else {
             $contentTypes = $ctRepo->findBy(['deleted' => false]);
         }
 
 
         /**@var ContentType $contentType*/
         foreach ($contentTypes as $contentType) {
-
             $this->reindex($name, $contentType, $index, $output, $signData, $input->getOption('bulk-size'));
         }
     }
@@ -134,7 +132,7 @@ class ReindexCommand extends EmsCommand
      * @param int $bulkSize
      * @throws \Doctrine\Common\Persistence\Mapping\MappingException
      */
-    public function reindex($name, ContentType $contentType, $index, OutputInterface $output, $signData=true, $bulkSize=1000)
+    public function reindex($name, ContentType $contentType, $index, OutputInterface $output, $signData = true, $bulkSize = 1000)
     {
         $this->logger->info('Execute the ReindexCommand');
         /** @var EntityManager $em */
@@ -148,11 +146,11 @@ class ReindexCommand extends EmsCommand
         $revRepo = $em->getRepository('EMSCoreBundle:Revision');
         $environment = $envRepo->findBy(['name' => $name, 'managed' => true]);
         
-        if($environment && count($environment) == 1) {
+        if ($environment && count($environment) == 1) {
             /** @var Environment $environment */
             $environment = $environment[0];
             
-            if(!$index) {
+            if (!$index) {
                 $index = $environment->getAlias();
             }
             $page = 0;
@@ -170,17 +168,15 @@ class ReindexCommand extends EmsCommand
             do {
                 /** @var \EMS\CoreBundle\Entity\Revision $revision */
                 foreach ($paginator as $revision) {
-                    if($revision->getDeleted()){
+                    if ($revision->getDeleted()) {
                         ++$this->deleted;
                         $this->session->getFlashBag()->add('warning', 'The revision '.$revision->getContentType()->getName().':'.$revision->getOuuid().' is deleted and is referenced in '.$environment->getName());
-                    }
-                    else {
-
-                        if($signData) {
+                    } else {
+                        if ($signData) {
                             $this->dataService->sign($revision);
                         }
 
-                        if(empty($bulk) && $revision->getContentType()->getHavePipelines()){
+                        if (empty($bulk) && $revision->getContentType()->getHavePipelines()) {
                             $bulk['pipeline'] = $this->instanceId.$revision->getContentType()->getName();
                         }
 
@@ -195,20 +191,15 @@ class ReindexCommand extends EmsCommand
                         $rawData = $revision->getRawData();
                         $rawData[Mapping::PUBLISHED_DATETIME_FIELD] =  (new \DateTime())->format(\DateTime::ISO8601);
                         $bulk['body'][] = $rawData;
-
-
-
-
                     }
 
 
                     $progress->advance();
-                    if(count($bulk['body']) >= (2*$bulkSize)) {
+                    if (count($bulk['body']) >= (2*$bulkSize)) {
                         $this->treatBulkResponse($this->client->bulk($bulk));
                         unset($bulk);
                         $bulk = [];
                     }
-
                 }
 
                 $em->clear(Revision::class);
@@ -219,7 +210,7 @@ class ReindexCommand extends EmsCommand
             } while ($paginator->getIterator()->count());
 
 
-            if(count($bulk)) {
+            if (count($bulk)) {
                 $this->treatBulkResponse($this->client->bulk($bulk));
             }
             
@@ -228,20 +219,18 @@ class ReindexCommand extends EmsCommand
 
             $output->writeln(' '.$this->count.' objects are re-indexed in '.$index.' ('.$this->deleted.' not indexed as deleted, '.$this->error.' with indexing error)');
             $this->flushFlash($output);
-            
-        }
-        else{
+        } else {
             $output->writeln("WARNING: Environment named ".$name." not found");
         }
     }
     
-    public function treatBulkResponse($response) {
-        foreach ($response['items'] as $item){
-            if(isset($item['index']['error'])) {
+    public function treatBulkResponse($response)
+    {
+        foreach ($response['items'] as $item) {
+            if (isset($item['index']['error'])) {
                 ++$this->error;
                 $this->session->getFlashBag()->add('warning', 'The revision '.$item['index']['_type'].':'.$item['index']['_id'].' throw an error during index:'.(isset($item['index']['error']['reason'])?$item['index']['error']['reason']:''));
-            }
-            else {
+            } else {
                 ++$this->count;
             }
         }

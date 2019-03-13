@@ -19,13 +19,14 @@ class UpdateRevisionReferersEvent extends Event
     private $type;
     
     /**
-     * 
-     * 
+     *
+     *
      * @param sting $targetField
      * @param array $toCleanOuuids
      * @param array $toCreateOuuids
      */
-    public function __construct($type, $id, $targetField, array $toCleanOuuids, array $toCreateOuuids) {
+    public function __construct($type, $id, $targetField, array $toCleanOuuids, array $toCreateOuuids)
+    {
         $this->type = $type;
         $this->id = $id;
         $this->targetField = $targetField;
@@ -37,7 +38,8 @@ class UpdateRevisionReferersEvent extends Event
      * Return the name of the computed field where the back link is store
      * @return string
      */
-     public function getTargetField() {
+    public function getTargetField()
+    {
         return $this->targetField;
     }
     
@@ -46,7 +48,8 @@ class UpdateRevisionReferersEvent extends Event
      * List of UUIDs where the back link should be removed
      * @return array
      */
-    public function getToCleanOuuids() {
+    public function getToCleanOuuids()
+    {
         return array_diff($this->toClean, $this->toCreate);
     }
     
@@ -54,7 +57,8 @@ class UpdateRevisionReferersEvent extends Event
      * List of UUIDs where the back link should be added
      * @return array
      */
-    public function getToCreateOuuids() {
+    public function getToCreateOuuids()
+    {
         return array_diff($this->toCreate, $this->toClean);
     }
     
@@ -62,7 +66,8 @@ class UpdateRevisionReferersEvent extends Event
      * Type of the object triggering the event
      * @return string
      */
-    public function getType() {
+    public function getType()
+    {
         return $this->type;
     }
     
@@ -70,11 +75,13 @@ class UpdateRevisionReferersEvent extends Event
      * Id of the object triggering the event
      * @return string
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
     
-    public function getRefererOuuid() {
+    public function getRefererOuuid()
+    {
         return $this->getType().':'.$this->getId();
     }
 }

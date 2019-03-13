@@ -15,7 +15,8 @@ use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use EMS\CoreBundle\Entity\DataField;
 
-class ChoiceFieldType extends DataFieldType {
+class ChoiceFieldType extends DataFieldType
+{
 
 
     private $fakeIndex = false;
@@ -25,7 +26,8 @@ class ChoiceFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function getLabel(){
+    public function getLabel()
+    {
         return 'Choice field';
     }
     
@@ -34,7 +36,8 @@ class ChoiceFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public static function getIcon(){
+    public static function getIcon()
+    {
         return 'glyphicon glyphicon-check';
     }
 
@@ -44,22 +47,21 @@ class ChoiceFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public static function buildObjectArray(DataField $data, array &$out) {
-        if (! $data->getFieldType ()->getDeleted ()) {
-            if($data->getFieldType()->getDisplayOptions()['multiple']){
-                $out [$data->getFieldType ()->getName ()] = $data->getArrayTextValue();
-            }
-            else{
+    public static function buildObjectArray(DataField $data, array &$out)
+    {
+        if (! $data->getFieldType()->getDeleted()) {
+            if ($data->getFieldType()->getDisplayOptions()['multiple']) {
+                $out [$data->getFieldType()->getName()] = $data->getArrayTextValue();
+            } else {
                 parent::buildObjectArray($data, $out);
             }
-                
         }
     }
 
-    public function choiceAttr($choiceValue, $key, $value){
+    public function choiceAttr($choiceValue, $key, $value)
+    {
         $out = [];
-        if($this->fakeIndex !== false && is_int($choiceValue) && $choiceValue >= $this->fakeIndex)
-        {
+        if ($this->fakeIndex !== false && is_int($choiceValue) && $choiceValue >= $this->fakeIndex) {
             $out['class'] = 'input-to-hide';
         }
         return $out;
@@ -70,34 +72,30 @@ class ChoiceFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         
         /** @var FieldType $fieldType */
-        $fieldType = $builder->getOptions () ['metadata'];
+        $fieldType = $builder->getOptions() ['metadata'];
         
         $choices = [];
         $values = explode("\n", str_replace("\r", "", $options['choices']));
         $labels = explode("\n", str_replace("\r", "", $options['labels']));
         
-        foreach ($values as $id => $value){
-            if($value != '')
-            {
-                if(isset($labels[$id]) && !empty($labels[$id])){
+        foreach ($values as $id => $value) {
+            if ($value != '') {
+                if (isset($labels[$id]) && !empty($labels[$id])) {
                     $choices[$labels[$id]] = $value;
-                }
-                else {
+                } else {
                     $choices[$value] = $value;
                 }
             }
         }
 
-        if($options['linked_collection'])
-        {
+        if ($options['linked_collection']) {
             $idx = 0;
-            if(isset($options['raw_data'][$options['linked_collection']]) && is_array($options['raw_data'][$options['linked_collection']]))
-            {
-                foreach ($options['raw_data'][$options['linked_collection']] as $idx => $child)
-                {
+            if (isset($options['raw_data'][$options['linked_collection']]) && is_array($options['raw_data'][$options['linked_collection']])) {
+                foreach ($options['raw_data'][$options['linked_collection']] as $idx => $child) {
                     $choices['#'.$idx.': '.((isset($child[$options['collection_label_field']]) && $child[$options['collection_label_field']] !== null)?$child[$options['collection_label_field']]:'')] = $idx;
                 }
                 ++$idx;
@@ -105,15 +103,12 @@ class ChoiceFieldType extends DataFieldType {
 
             $this->fakeIndex = $idx;
 
-            for($i=0; $i < 50; ++$i)
-            {
+            for ($i=0; $i < 50; ++$i) {
                 $choices['[ems_hide_input]'.($idx+$i)] = $idx+$i;
             }
-
-
         }
         
-        $builder->add ( 'value', ChoiceType::class, [ 
+        $builder->add('value', ChoiceType::class, [
                 'label' => (isset($options['label'])?$options['label']:$fieldType->getName()),
                 'required' => false,
                 'disabled'=> $this->isDisabled($options),
@@ -122,7 +117,7 @@ class ChoiceFieldType extends DataFieldType {
                 'multiple' => $options['multiple'],
                 'expanded' => $options['expanded'],
                 'choice_attr' => array($this, 'choiceAttr'),
-        ] );
+        ]);
     }
 
 
@@ -144,16 +139,16 @@ class ChoiceFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function configureOptions(OptionsResolver $resolver) {
+    public function configureOptions(OptionsResolver $resolver)
+    {
         /* set the default option value for this kind of compound field */
-        parent::configureOptions ( $resolver );
-        $resolver->setDefault ( 'choices', [] );
-        $resolver->setDefault ( 'labels', [] );
-        $resolver->setDefault ( 'multiple', false );
-        $resolver->setDefault ( 'expanded', false );
-        $resolver->setDefault ( 'linked_collection', false );
-        $resolver->setDefault ( 'collection_label_field', false );
-
+        parent::configureOptions($resolver);
+        $resolver->setDefault('choices', []);
+        $resolver->setDefault('labels', []);
+        $resolver->setDefault('multiple', false);
+        $resolver->setDefault('expanded', false);
+        $resolver->setDefault('linked_collection', false);
+        $resolver->setDefault('collection_label_field', false);
     }
     
     /**
@@ -161,27 +156,28 @@ class ChoiceFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options) {
-        parent::buildOptionsForm ( $builder, $options );
-        $optionsForm = $builder->get ( 'options' );
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    {
+        parent::buildOptionsForm($builder, $options);
+        $optionsForm = $builder->get('options');
         
         // String specific display options
-        $optionsForm->get ( 'displayOptions' )->add ( 'multiple', CheckboxType::class, [ 
+        $optionsForm->get('displayOptions')->add('multiple', CheckboxType::class, [
                 'required' => false,
-        ] )->add ( 'expanded', CheckboxType::class, [ 
+        ])->add('expanded', CheckboxType::class, [
                 'required' => false,
-        ] )->add ( 'choices', TextareaType::class, [ 
+        ])->add('choices', TextareaType::class, [
                 'required' => false,
-        ] )->add ( 'labels', TextareaType::class, [ 
+        ])->add('labels', TextareaType::class, [
                 'required' => false,
-        ] )->add ( 'linked_collection', TextType::class, [
+        ])->add('linked_collection', TextType::class, [
             'required' => false,
-        ] )->add ( 'collection_label_field', TextType::class, [
+        ])->add('collection_label_field', TextType::class, [
             'required' => false,
-        ] );
+        ]);
         
         // String specific mapping options
-        $optionsForm->get ( 'mappingOptions' )->add ( 'analyzer', AnalyzerPickerType::class);
+        $optionsForm->get('mappingOptions')->add('analyzer', AnalyzerPickerType::class);
     }
 
     /**
@@ -189,7 +185,8 @@ class ChoiceFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function getDefaultOptions($name) {
+    public function getDefaultOptions($name)
+    {
         $out = parent::getDefaultOptions($name);
         
         $out['mappingOptions']['index'] = 'not_analyzed';
@@ -198,11 +195,12 @@ class ChoiceFieldType extends DataFieldType {
     }
     
     /**
-     * 
+     *
      * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::getBlockPrefix()
      */
-    public function getBlockPrefix() {
+    public function getBlockPrefix()
+    {
         return 'ems_choice';
     }
     
@@ -212,9 +210,10 @@ class ChoiceFieldType extends DataFieldType {
      * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
      */
-    public function reverseViewTransform($data, FieldType $fieldType) {
+    public function reverseViewTransform($data, FieldType $fieldType)
+    {
         $value = null;
-        if(isset($data['value'])){
+        if (isset($data['value'])) {
             $value = $data['value'];
         }
         $out = parent::reverseViewTransform($value, $fieldType);
@@ -226,51 +225,42 @@ class ChoiceFieldType extends DataFieldType {
      * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
      */
-    public function viewTransform(DataField $dataField){
+    public function viewTransform(DataField $dataField)
+    {
         $temp = parent::viewTransform($dataField);
         $out = [];
-        if($dataField->getFieldType()->getDisplayOptions()['multiple']){
-            if(empty($temp)){
+        if ($dataField->getFieldType()->getDisplayOptions()['multiple']) {
+            if (empty($temp)) {
                 $out = [];
-            }
-            elseif(is_string($temp)) {
+            } elseif (is_string($temp)) {
                 $out = [$temp];
-            }
-            elseif (is_array($temp) ) {
+            } elseif (is_array($temp)) {
                 $out = [];
-                foreach ($temp as $item){
-                    if(is_string($item) || is_integer($item)){
+                foreach ($temp as $item) {
+                    if (is_string($item) || is_integer($item)) {
                         $out[] = $item;
-                    }
-                    else {
+                    } else {
                         $dataField->addMessage('Was not able to import the data : '.json_encode($item));
                     }
                 }
-            }
-            else {
+            } else {
                 $dataField->addMessage('Was not able to import the data : '.json_encode($out));
                 $out = [];
             }
-        }
-        else { //not mutiple
-            if(null === $temp) {
+        } else { //not mutiple
+            if (null === $temp) {
                 $out = null;
-            }
-            elseif(is_string($temp) || is_integer($temp)) {
+            } elseif (is_string($temp) || is_integer($temp)) {
                 $out = $temp;
-            }
-            elseif ( is_array($temp) && $temp != null && (is_string(array_shift($temp)) || is_integer(array_shift($temp)))) {
+            } elseif (is_array($temp) && $temp != null && (is_string(array_shift($temp)) || is_integer(array_shift($temp)))) {
                 $out = array_shift($temp);
                 $dataField->addMessage('Only the first item has been imported : '.json_encode($temp));
-            }
-            else {
+            } else {
                 $dataField->addMessage('Was not able to import the data : '.json_encode($temp));
                 $out = "";
             }
         }
         
         return [ 'value' => $out ];
-        
-        
     }
 }

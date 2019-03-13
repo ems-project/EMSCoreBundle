@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace EMS\CoreBundle\Form\Nature;
 
@@ -19,13 +19,13 @@ class ItemsType extends AbstractType
         
         $result = $options['result'];
          
-        foreach ($result['hits']['hits'] as $hit){
-            $builder->add ( $hit['_id'], HiddenType::class, [
+        foreach ($result['hits']['hits'] as $hit) {
+            $builder->add($hit['_id'], HiddenType::class, [
                     'attr' => [
                     ],
             ]);
         }
-    }   
+    }
 
     /**
      * @param OptionsResolver $resolver
@@ -36,5 +36,4 @@ class ItemsType extends AbstractType
             'result' => [],
         ]);
     }
-    
 }

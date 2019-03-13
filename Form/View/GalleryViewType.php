@@ -20,14 +20,16 @@ use EMS\CoreBundle\Form\Field\AssetType;
  * It's the mother class of all specific DataField used in eMS
  *
  * @author Mathieu De Keyzer <ems@theus.be>
- *        
+ *
  */
-class GalleryViewType extends ViewType {
+class GalleryViewType extends ViewType
+{
     
     /**@var SearchService */
     private $searchService;
     
-    public function __construct($formFactory, $twig, $client, SearchService $searchService){
+    public function __construct($formFactory, $twig, $client, SearchService $searchService)
+    {
         parent::__construct($formFactory, $twig, $client);
         $this->searchService = $searchService;
     }
@@ -37,7 +39,8 @@ class GalleryViewType extends ViewType {
      * {@inheritdoc}
      *
      */
-    public function getLabel(){
+    public function getLabel()
+    {
         return "Gallery: a view where you can browse images";
     }
     
@@ -46,7 +49,8 @@ class GalleryViewType extends ViewType {
      * {@inheritdoc}
      *
      */
-    public function getName(){
+    public function getName()
+    {
         return "Gallery";
     }
     
@@ -55,20 +59,21 @@ class GalleryViewType extends ViewType {
      * {@inheritdoc}
      *
      */
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         parent::buildForm($builder, $options);
-        $builder->add ( 'imageField', TextType::class, [
-        ] )->add ( 'sourceFields', TextType::class, [
+        $builder->add('imageField', TextType::class, [
+        ])->add('sourceFields', TextType::class, [
                 'required' => false,
-        ] )->add ( 'imageAltFields', TextType::class, [
+        ])->add('imageAltFields', TextType::class, [
                 'required' => false,
-        ] )->add ( 'missingImageHash', TextType::class, [
+        ])->add('missingImageHash', TextType::class, [
                 'required' => false,
-        ] )->add ( 'thumbnailAssetConfigIdentifier', TextType::class, [
+        ])->add('thumbnailAssetConfigIdentifier', TextType::class, [
                 'required' => false,
-        ] )->add ( 'imageAssetConfigIdentifier', TextType::class, [
+        ])->add('imageAssetConfigIdentifier', TextType::class, [
                 'required' => false,
-        ] );
+        ]);
     }
     
     /**
@@ -76,7 +81,8 @@ class GalleryViewType extends ViewType {
      * {@inheritdoc}
      *
      */
-    public function getBlockPrefix() {
+    public function getBlockPrefix()
+    {
         return 'gallery_view';
     }
     
@@ -86,11 +92,12 @@ class GalleryViewType extends ViewType {
      * {@inheritdoc}
      *
      */
-    public function getParameters(View $view, FormFactoryInterface $formFactoty, Request $request) {
+    public function getParameters(View $view, FormFactoryInterface $formFactoty, Request $request)
+    {
         
 
         $search = new Search();
-        if($request->query->get('search_form', false) === false) {
+        if ($request->query->get('search_form', false) === false) {
             $search->getFilters()[0]->setField($view->getOptions()['imageField'].'.sha1');
             $search->getFilters()[0]->setBooleanClause('must');
         }
@@ -115,7 +122,7 @@ class GalleryViewType extends ViewType {
                 "body" => $body,
         ];
         
-        if(isset($view->getOptions()['sourceFields'])) {
+        if (isset($view->getOptions()['sourceFields'])) {
             $searchQuery['_source'] = $view->getOptions()['sourceFields'];
         }
         
@@ -131,5 +138,4 @@ class GalleryViewType extends ViewType {
             'data' => $data,
         ];
     }
-    
 }

@@ -23,15 +23,13 @@ class AssetStorageRepository extends \Doctrine\ORM\EntityRepository
         $qb = $this->createQueryBuilder('a');
         $qb->where($qb->expr()->eq('a.hash', ':hash'));
 
-        if($context)
-        {
+        if ($context) {
             $qb->andWhere($qb->expr()->eq('a.context', ':context'));
             $qb->setParameters([
                 ':hash' => $hash,
                 ':context' => $context,
             ]);
-        }
-        else{
+        } else {
             $qb->andWhere('a.context is null');
             $qb->setParameters([
                 ':hash' => $hash,
@@ -48,11 +46,10 @@ class AssetStorageRepository extends \Doctrine\ORM\EntityRepository
      */
     public function head($hash, $context)
     {
-        try{
+        try {
             $qb = $this->getQuery($hash, $context)->select('count(a.hash)');
             return $qb->getQuery()->getSingleScalarResult() !== 0;
-        }
-        catch (NonUniqueResultException $e){
+        } catch (NonUniqueResultException $e) {
             return false;
         }
     }
@@ -62,13 +59,11 @@ class AssetStorageRepository extends \Doctrine\ORM\EntityRepository
      */
     public function clearCache()
     {
-        try
-        {
+        try {
             $qb = $this->createQueryBuilder('asset')->delete()
                 ->where('asset.context is not null');
             return $qb->getQuery()->execute() !== false;
-        }
-        catch (Exception $e){
+        } catch (Exception $e) {
             return false;
         }
     }
@@ -78,16 +73,14 @@ class AssetStorageRepository extends \Doctrine\ORM\EntityRepository
      */
     public function removeByHash($hash)
     {
-        try
-        {
+        try {
             $qb = $this->createQueryBuilder('asset')->delete();
             $qb->where($qb->expr()->eq('asset.hash', ':hash'));
             $qb->setParameters([
                 ':hash' => $hash,
             ]);
             return $qb->getQuery()->execute() !== false;
-        }
-        catch (Exception $e){
+        } catch (Exception $e) {
             return false;
         }
     }
@@ -115,12 +108,10 @@ class AssetStorageRepository extends \Doctrine\ORM\EntityRepository
      */
     public function getSize($hash, $context)
     {
-        try
-        {
+        try {
             $qb = $this->getQuery($hash, $context)->select('a.size');
             return $qb->getQuery()->getSingleScalarResult();
-        }
-        catch (NonUniqueResultException $e){
+        } catch (NonUniqueResultException $e) {
             return false;
         }
     }
@@ -133,12 +124,10 @@ class AssetStorageRepository extends \Doctrine\ORM\EntityRepository
      */
     public function getLastUpdateDate($hash, $context)
     {
-        try
-        {
+        try {
             $qb = $this->getQuery($hash, $context)->select('a.lastUpdateDate');
             return $qb->getQuery()->getSingleScalarResult();
-        }
-        catch (NonUniqueResultException $e){
+        } catch (NonUniqueResultException $e) {
             return false;
         }
     }

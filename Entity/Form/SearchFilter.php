@@ -29,40 +29,41 @@ class SearchFilter implements JsonSerializable
     
     /**
      * @var string $pattern
-     * 
+     *
      * @ORM\Column(name="pattern", type="string", length=200, nullable=true)
      */
     public $pattern;
     
     /**
      * @var string $field
-     * 
+     *
      * @ORM\Column(name="field", type="string", length=100, nullable=true)
      */
     public $field;
     
     /**
      * @var string $booleanClause
-     * 
+     *
      * @ORM\Column(name="boolean_clause", type="string", length=20, nullable=true)
      */
     public $booleanClause;
     
     /**
      * @var string $operator
-     * 
+     *
      * @ORM\Column(name="operator", type="string", length=50)
      */
     public $operator;
     
     /**
      * @var float $boost
-     * 
+     *
      * @ORM\Column(name="boost", type="decimal", scale=2, nullable=true)
      */
     public $boost;
     
-    function __construct(){
+    function __construct()
+    {
         $this->operator = "query_and";
     }
 
@@ -77,10 +78,10 @@ class SearchFilter implements JsonSerializable
         ];
     }
 
-    function generateEsFilter(){
+    function generateEsFilter()
+    {
         $out = false;
-        if($this->field || $this->pattern) {
-            
+        if ($this->field || $this->pattern) {
             $field = $this->field;
 //             if($this->field){
 //                 $path = explode('.', $this->field);
@@ -88,7 +89,7 @@ class SearchFilter implements JsonSerializable
 //             }
             
             
-            switch ($this->operator){
+            switch ($this->operator) {
                 case 'match_and':
                     $out = [
                         "match" => [
@@ -96,7 +97,7 @@ class SearchFilter implements JsonSerializable
                                 "query" =>  $this->pattern?$this->pattern:"",
                                 "operator" => "AND",
                                 "boost" => $this->boost?$this->boost:1,
-                            ]
+                                ]
                         ]
                     ];
                     break;
@@ -107,7 +108,7 @@ class SearchFilter implements JsonSerializable
                                 "query" =>  $this->pattern?$this->pattern:"",
                                 "operator" => "OR",
                                 "boost" => $this->boost?$this->boost:1,
-                            ]
+                                ]
                         ]
                     ];
                     break;
@@ -143,9 +144,9 @@ class SearchFilter implements JsonSerializable
                     break;
             }
             
-            if($this->field){
+            if ($this->field) {
                 $path = explode('.', $this->field);
-                for($i=count($path)-2; $i >= 0; --$i){
+                for ($i=count($path)-2; $i >= 0; --$i) {
                     $out = [
                         "nested" => [
                                 "path" => $path[$i],
@@ -154,7 +155,7 @@ class SearchFilter implements JsonSerializable
                     ];
                 }
             }
-        }        
+        }
         
         return $out;
     }
@@ -164,15 +165,17 @@ class SearchFilter implements JsonSerializable
      *
      * @return string
      */
-    public function getPattern(){
+    public function getPattern()
+    {
         return $this->pattern;
-    }    
+    }
     /**
      * Set pattern
-     * 
+     *
      * @param string $pattern
      */
-    public function setPattern($pattern){
+    public function setPattern($pattern)
+    {
         $this->pattern = $pattern;
         return $this;
     }
@@ -182,15 +185,17 @@ class SearchFilter implements JsonSerializable
      *
      * @return string
      */
-    public function getField(){
+    public function getField()
+    {
         return $this->field;
-    }    
+    }
     /**
      * Set field
-     * 
+     *
      * @param string $field
      */
-    public function setField($field){
+    public function setField($field)
+    {
         $this->field = $field;
         return $this;
     }
@@ -200,7 +205,8 @@ class SearchFilter implements JsonSerializable
      *
      * @return string
      */
-    public function getOperator(){
+    public function getOperator()
+    {
         return $this->operator;
     }
     /**
@@ -208,7 +214,8 @@ class SearchFilter implements JsonSerializable
      *
      * @param string $operator
      */
-    public function setOperator($operator){
+    public function setOperator($operator)
+    {
         $this->operator = $operator;
         return $this;
     }
@@ -218,7 +225,8 @@ class SearchFilter implements JsonSerializable
      *
      * @return float
      */
-    public function getBoost(){
+    public function getBoost()
+    {
         return $this->boost;
     }
     /**
@@ -226,7 +234,8 @@ class SearchFilter implements JsonSerializable
      *
      * @param float $boost
      */
-    public function setBoost($boost){
+    public function setBoost($boost)
+    {
         $this->boost = $boost;
         return $this;
     }

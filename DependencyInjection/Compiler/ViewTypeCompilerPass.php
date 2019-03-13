@@ -30,7 +30,6 @@ class ViewTypeCompilerPass implements CompilerPassInterface
                 $definition->addMethodCall(
                     'addViewType',
                     array(new Reference($id), $id)
-                    
                 );
             }
         }

@@ -7,8 +7,8 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CoreBundle\Repository\I18nRepository;
 use Doctrine\ORM\EntityManager;
 
-
-class I18nService {
+class I18nService
+{
     
     /**@var Registry $doctrine */
     private $doctrine;
@@ -24,32 +24,34 @@ class I18nService {
         $this->repository = $this->manager->getRepository('EMSCoreBundle:I18n');
     }
 
-    public function count($filters = null) {
+    public function count($filters = null)
+    {
         $identifier = null;
         
-        if($filters != null && isset($filters['identifier']) && !empty($filters['identifier'])) {
+        if ($filters != null && isset($filters['identifier']) && !empty($filters['identifier'])) {
             $identifier = $filters['identifier'];
         }
         return $this->repository->count($identifier);
     }
 
-    public function delete(I18n $i18n) {
+    public function delete(I18n $i18n)
+    {
         $this->manager->remove($i18n);
         $this->manager->flush();
     }
     
     /**
      * Call to generate list of i18n keys
-     * 
+     *
      * @return array Notification
      */
-    public function findAll($from, $limit, $filters = null) {
+    public function findAll($from, $limit, $filters = null)
+    {
         $identifier = null;
         
-        if($filters != null && isset($filters['identifier']) && !empty($filters['identifier'])) {
+        if ($filters != null && isset($filters['identifier']) && !empty($filters['identifier'])) {
             $identifier = $filters['identifier'];
         }
         return $this->repository->findByWithFilter($limit, $from, $identifier);
     }
-    
 }

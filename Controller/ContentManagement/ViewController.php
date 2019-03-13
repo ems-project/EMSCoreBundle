@@ -35,16 +35,14 @@ class ViewController extends AppController
             'name' => $type,
         ]);
             
-        if(!$contentTypes || count($contentTypes) != 1) {
+        if (!$contentTypes || count($contentTypes) != 1) {
             throw new NotFoundHttpException('Content type not found');
         }
         
         
-        return $this->render( '@EMSCore/view/index.html.twig', [
+        return $this->render('@EMSCore/view/index.html.twig', [
                 'contentType' => $contentTypes[0]
         ]);
-        
-        
     }
     
     /**
@@ -63,18 +61,18 @@ class ViewController extends AppController
             'name' => $type,
         ]);
             
-        if(!$contentTypes || count($contentTypes) != 1) {
+        if (!$contentTypes || count($contentTypes) != 1) {
             throw new NotFoundHttpException('Content type not found');
         }
         
         $view = new View();
         $view->setContentType($contentTypes[0]);
         
-        $form = $this->createForm ( ViewType::class, $view );
+        $form = $this->createForm(ViewType::class, $view);
         
-        $form->handleRequest ( $request );
+        $form->handleRequest($request);
         
-        if ($form->isSubmitted () && $form->isValid ()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($view);
             $em->flush();
             
@@ -85,12 +83,10 @@ class ViewController extends AppController
             ]);
         }
         
-        return $this->render( '@EMSCore/view/add.html.twig', [
+        return $this->render('@EMSCore/view/add.html.twig', [
                 'contentType' => $contentTypes[0],
                 'form' => $form->createView()
         ]);
-        
-        
     }
     
     /**
@@ -106,33 +102,33 @@ class ViewController extends AppController
         /** @var View $view **/
         $view = $viewRepository->find($id);
             
-        if(!$view) {
+        if (!$view) {
             throw new NotFoundHttpException('View type not found');
         }
         
-        $form = $this->createFormBuilder ( $view )
-        ->add ( 'name', IconTextType::class, [
+        $form = $this->createFormBuilder($view)
+        ->add('name', IconTextType::class, [
                 'icon' => 'fa fa-tag'
-        ] )
-        ->add ( 'public', CheckboxType::class, [
+        ])
+        ->add('public', CheckboxType::class, [
             'required' => false,
         ])
-        ->add ( 'icon', IconPickerType::class, [
+        ->add('icon', IconPickerType::class, [
                 'required' => false,
         ])
-        ->add ( 'options', get_class($this->get($view->getType())),[
+        ->add('options', get_class($this->get($view->getType())), [
                 'view' => $view,
         ])
-        ->add ( 'save', SubmitEmsType::class, [
+        ->add('save', SubmitEmsType::class, [
                 'attr' => [
                         'class' => 'btn-primary btn-sm '
                 ],
                 'icon' => 'fa fa-save'
-        ] )->getForm ();
+        ])->getForm();
         
-        $form->handleRequest ( $request );
+        $form->handleRequest($request);
         
-        if ($form->isSubmitted () && $form->isValid ()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($view);
             $em->flush();
 
@@ -143,7 +139,7 @@ class ViewController extends AppController
 //             ]);
         }
         
-        return $this->render( '@EMSCore/view/edit.'.$_format.'.twig', [
+        return $this->render('@EMSCore/view/edit.'.$_format.'.twig', [
                 'form' => $form->createView(),
                 'view' => $view
         ]);
@@ -164,7 +160,7 @@ class ViewController extends AppController
         /** @var View $view **/
         $view = $viewRepository->find($id);
             
-        if(!$view) {
+        if (!$view) {
             throw new NotFoundHttpException('View not found');
         }
         

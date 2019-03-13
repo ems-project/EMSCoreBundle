@@ -2,14 +2,12 @@
 
 namespace EMS\CoreBundle\Service;
 
-
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CoreBundle\DependencyInjection\EMSCoreExtension;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Form\FieldType\FieldTypeType;
-
 
 class Mapping
 {
@@ -41,30 +39,32 @@ class Mapping
     
     /**
      * Constructor
-     * 
+     *
      * @param FieldTypeType $fieldTypeType
      * @param ElasticsearchService $elasticsearchService
      */
-    public function __construct(FieldTypeType $fieldTypeType, ElasticsearchService $elasticsearchService, $coreVersion, $instanceId) {
+    public function __construct(FieldTypeType $fieldTypeType, ElasticsearchService $elasticsearchService, $coreVersion, $instanceId)
+    {
         $this->fieldTypeType = $fieldTypeType;
         $this->elasticsearchService = $elasticsearchService;
         $this->coreVersion = $coreVersion;
         $this->instanceId = $instanceId;
     }
     
-    public function generateMapping(ContentType $contentType, $withPipeline = false){
+    public function generateMapping(ContentType $contentType, $withPipeline = false)
+    {
         $out = [
             "properties" => [],
         ];
 
-        if($this->elasticsearchService->withAllMapping()) {
+        if ($this->elasticsearchService->withAllMapping()) {
             $out['_all'] = [
                 "store" => true,
                 "enabled" => true,
             ];
         }
         
-        if(null != $contentType->getFieldType()){
+        if (null != $contentType->getFieldType()) {
             $out['properties'] = $this->fieldTypeType->generateMapping($contentType->getFieldType(), $withPipeline);
         }
         
@@ -93,9 +93,8 @@ class Mapping
 
 
 
-    public function dataFieldToArray(DataField $dataField){
+    public function dataFieldToArray(DataField $dataField)
+    {
         return $this->fieldTypeType->dataFieldToArray($dataField);
-    }    
-    
-    
+    }
 }

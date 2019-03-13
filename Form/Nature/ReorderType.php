@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace EMS\CoreBundle\Form\Nature;
 
@@ -18,17 +18,17 @@ class ReorderType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
-        $builder->add ( 'items', ItemsType::class, [
+        $builder->add('items', ItemsType::class, [
                 'result' => $options['result']
         ]);
         
-        $builder->add ( 'reorder', SubmitEmsType::class, [
+        $builder->add('reorder', SubmitEmsType::class, [
                 'attr' => [
                         'class' => 'btn-primary '
                 ],
-                'icon' => 'fa fa-reorder'                
+                'icon' => 'fa fa-reorder'
         ]);
-    }   
+    }
 
     /**
      * @param OptionsResolver $resolver
@@ -40,5 +40,4 @@ class ReorderType extends AbstractType
             'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
         ]);
     }
-    
 }

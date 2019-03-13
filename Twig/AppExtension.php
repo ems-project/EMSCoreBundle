@@ -74,11 +74,12 @@ class AppExtension extends \Twig_Extension
     
     
     /**
-     * 
+     *
      * {@inheritDoc}
      * @see Twig_Extension::getFunctions()
      */
-    public function getFunctions(){
+    public function getFunctions()
+    {
         return [
             new \Twig_SimpleFunction('get_content_types', array($this, 'getContentTypes')),
             new \Twig_SimpleFunction('cant_be_finalized', array($this, 'cantBeFinalized')),
@@ -100,7 +101,7 @@ class AppExtension extends \Twig_Extension
     }
     
     /**
-     * 
+     *
      * {@inheritDoc}
      * @see Twig_Extension::getFilters()
      */
@@ -156,67 +157,67 @@ class AppExtension extends \Twig_Extension
     }
 
 
-    public function jsonDecode($json, $assoc = true, $depth = 512, $options = 0) {
+    public function jsonDecode($json, $assoc = true, $depth = 512, $options = 0)
+    {
         return json_decode($json, $assoc, $depth, $options);
     }
 
 
 
-    public function getFieldByPath(ContentType $contentType, $path, $skipVirtualFields=false) {
+    public function getFieldByPath(ContentType $contentType, $path, $skipVirtualFields = false)
+    {
         return $this->contentTypeService->getChildByPath($contentType->getFieldType(), $path, $skipVirtualFields);
     }
 
 
-    public function getFile($hash, $cacheContext=false) {
+    public function getFile($hash, $cacheContext = false)
+    {
         return $this->fileService->getFile($hash, $cacheContext);
     }
 
-    public function getString($rawData, $field){
-        if(empty($rawData) or !isset($rawData[$field])){
+    public function getString($rawData, $field)
+    {
+        if (empty($rawData) or !isset($rawData[$field])) {
             return null;
         }
-        if(is_string($rawData[$field])) {
+        if (is_string($rawData[$field])) {
             return $rawData[$field];
         }
         return json_encode($rawData[$field]);
     }
 
 
-    public function diff($a, $b, $compare, $escape=false, $htmlDiff=false, $raw=false)
+    public function diff($a, $b, $compare, $escape = false, $htmlDiff = false, $raw = false)
     {
         $tag = 'span';
         $textClass = '';
         $textLabel = '';
 
-        if($compare && $a !== $b){
-            if($htmlDiff && $a && $b){
+        if ($compare && $a !== $b) {
+            if ($htmlDiff && $a && $b) {
                 $textClass = 'text-orange';
                 $htmlDiff = new HtmlDiff(($escape?htmlentities($b):$this->internalLinks($b)), ($escape?htmlentities($a):$this->internalLinks($a)));
                 $textLabel = $htmlDiff->build();
-            }
-            else {
+            } else {
                 $textClass = false;
-                if($b !== null){
+                if ($b !== null) {
                     $textClass = 'text-red';
                     $textLabel .= '<del class="diffmod">'.($escape?htmlentities($b):$this->internalLinks($b)).'</del>';
                 }
 
-                if($a !== null){
-                    if($textClass){
+                if ($a !== null) {
+                    if ($textClass) {
                         $textClass = 'text-orange';
-                    }
-                    else {
+                    } else {
                         $textClass = 'text-green';
                     }
                     $textLabel .= ' <ins class="diffmod">'.($escape?htmlentities($a):$this->internalLinks($a)).'</ins>';
                 }
             }
-        }
-        else {
-            if($a !== null){
+        } else {
+            if ($a !== null) {
                 $textLabel = ($escape?htmlentities($a):$this->internalLinks($a));
-            }
-            else{
+            } else {
 //                $textClass = 'text-gray';
 //                $textLabel = '[not defined]';
 //                $tag = 'span';
@@ -224,11 +225,10 @@ class AppExtension extends \Twig_Extension
             }
         }
 
-        if($raw){
+        if ($raw) {
             return $textLabel;
         }
         return '<'.$tag.' class="'.$textClass.'">'.$textLabel.'</'.$tag.'>';
-
     }
 
     public function diffBoolean($rawData, $compare, $fieldName, $compareRawData)
@@ -237,7 +237,7 @@ class AppExtension extends \Twig_Extension
         $b = isset($compareRawData[$fieldName]) && $compareRawData[$fieldName];
 
         $textClass = '';
-        if($compare && $a !== $b){
+        if ($compare && $a !== $b) {
             $textClass = 'text-orange';
         }
 
@@ -247,22 +247,23 @@ class AppExtension extends \Twig_Extension
     public function diffIcon($rawData, $compare, $fieldName, $compareRawData)
     {
         $b = $a = null;
-        if($rawData){
+        if ($rawData) {
             $a = '<i class="'.$rawData.'"></i> '.$rawData;
         }
 
-        if(isset($compareRawData[$fieldName]) && $compareRawData[$fieldName]) {
+        if (isset($compareRawData[$fieldName]) && $compareRawData[$fieldName]) {
             $b = '<i class="'.$compareRawData[$fieldName].'"></i> '.$compareRawData[$fieldName];
         }
         return $this->diff($a, $b, $compare);
     }
 
 
-    public function diffTime($rawData, $compare, $fieldName, $compareRawData, $format1, $format2){
-        return $this->diffDate($rawData, $compare, $fieldName, $compareRawData, $format1, $format2,TimeFieldType::storeFormat);
+    public function diffTime($rawData, $compare, $fieldName, $compareRawData, $format1, $format2)
+    {
+        return $this->diffDate($rawData, $compare, $fieldName, $compareRawData, $format1, $format2, TimeFieldType::storeFormat);
     }
 
-    public function diffDate($rawData, $compare, $fieldName, $compareRawData, $format1, $format2=false, $internalFormat=false)
+    public function diffDate($rawData, $compare, $fieldName, $compareRawData, $format1, $format2 = false, $internalFormat = false)
     {
         $b = $a = [];
         $out = "";
@@ -270,21 +271,19 @@ class AppExtension extends \Twig_Extension
         $insColor = 'green';
         $delColor = 'red';
 
-        if(isset($compareRawData[$fieldName])){
-            if(is_array($compareRawData[$fieldName])){
+        if (isset($compareRawData[$fieldName])) {
+            if (is_array($compareRawData[$fieldName])) {
                 $b = $compareRawData[$fieldName];
-            }
-            elseif (is_scalar($compareRawData[$fieldName])) {
+            } elseif (is_scalar($compareRawData[$fieldName])) {
                 $b = [$compareRawData[$fieldName]];
             }
         }
 
-        if(is_array($rawData)) {
+        if (is_array($rawData)) {
             $a = $rawData;
-        }
-        elseif (is_scalar($rawData)) {
+        } elseif (is_scalar($rawData)) {
             $tag = 'span';
-            if(! empty($b)){
+            if (! empty($b)) {
                 $insColor = $delColor = 'orange';
             }
             $a = [$rawData];
@@ -293,14 +292,11 @@ class AppExtension extends \Twig_Extension
         $formatedA = [];
 
         foreach ($a as $item) {
-
-            if($item instanceof \DateTime) {
+            if ($item instanceof \DateTime) {
                 $date = $item;
-            }
-            elseif($internalFormat){
+            } elseif ($internalFormat) {
                 $date = \DateTime::createFromFormat($internalFormat, $item);
-            }
-            else {
+            } else {
                 $date = new DateTime($item);
             }
 
@@ -309,62 +305,54 @@ class AppExtension extends \Twig_Extension
             $value = $date->format($format1);
             $value2 = false;
 
-            if($internalFormat) {
+            if ($internalFormat) {
                 $internal = $date->format($internalFormat);
                 $formatedA[] = $internal;
                 $inArray = in_array($internal, $b);
-            }
-            elseif($format2) {
+            } elseif ($format2) {
                 $value2 = $date->format($format2);
                 $formatedA[] = $value2;
                 $inArray = in_array($item, $b);
-            }
-            else{
+            } else {
                 $formatedA[] = $value;
                 $inArray = in_array($value, $b);
             }
 
-            if($value2){
+            if ($value2) {
                 $value .= ' ('.$value2.')';
             }
 
-            if(!$compare || $inArray) {
+            if (!$compare || $inArray) {
                 $out .= '<'.$tag.' class="">'.htmlentities($value).'</'.$tag.'>';
-            }
-            else {
+            } else {
                 $out .= '<'.$tag.' class="text-'.$insColor.'"><ins class="diffmod">'.htmlentities($value).'</ins></'.$tag.'>';
             }
         }
 
-        if($compare){
+        if ($compare) {
             foreach ($b as $item) {
-
-                if($item instanceof \DateTime) {
+                if ($item instanceof \DateTime) {
                     $date = $item;
-                }
-                elseif($internalFormat){
+                } elseif ($internalFormat) {
                     $date = \DateTime::createFromFormat($internalFormat, $item);
-                }
-                else {
+                } else {
                     $date = new DateTime($item);
                 }
 
                 $value = $date->format($format1);
                 $value2 = false;
 
-                if($internalFormat) {
+                if ($internalFormat) {
                     $internal = $date->format($internalFormat);
                     $inArray = in_array($internal, $formatedA);
-                }
-                elseif($format2) {
+                } elseif ($format2) {
                     $value2 = $date->format($format2);
                     $inArray = in_array($item, $formatedA);
-                }
-                else{
+                } else {
                     $inArray = in_array($value, $formatedA);
                 }
 
-                if($value2){
+                if ($value2) {
                     $value .= ' ('.$value2.')';
                 }
 
@@ -387,33 +375,31 @@ class AppExtension extends \Twig_Extension
         $insColor = 'green';
         $delColor = 'red';
 
-        if(isset($compareRawData[$fieldName])){
-            if(is_array($compareRawData[$fieldName])){
+        if (isset($compareRawData[$fieldName])) {
+            if (is_array($compareRawData[$fieldName])) {
                 $b = $compareRawData[$fieldName];
-            }
-            elseif (is_scalar($compareRawData[$fieldName])) {
+            } elseif (is_scalar($compareRawData[$fieldName])) {
                 $b = [$compareRawData[$fieldName]];
             }
         }
         
-        if(is_array($rawData)) {
+        if (is_array($rawData)) {
             $a = $rawData;
-        }
-        elseif (is_scalar($rawData)) {
+        } elseif (is_scalar($rawData)) {
             $tag = 'span';
-            if(! empty($b)){
+            if (! empty($b)) {
                 $insColor = $delColor = 'orange';
             }
             $a = [$rawData];
         }
 
 
-        if($compare){
+        if ($compare) {
             foreach ($b as $item) {
                 $value = $item;
-                if(is_array($choices) && in_array($value, $choices)) {
+                if (is_array($choices) && in_array($value, $choices)) {
                     $idx = array_search($value, $choices, true);
-                    if(is_array($labels) && array_key_exists($idx, $labels)) {
+                    if (is_array($labels) && array_key_exists($idx, $labels)) {
                         $value = $labels[$idx].' ('.$value.')';
                     }
                 }
@@ -425,22 +411,21 @@ class AppExtension extends \Twig_Extension
 
         foreach ($a as $item) {
             $value = $item;
-            if(is_array($choices) && in_array($value, $choices)) {
+            if (is_array($choices) && in_array($value, $choices)) {
                 $idx = array_search($value, $choices, true);
-                if(is_array($labels) && array_key_exists($idx, $labels)) {
+                if (is_array($labels) && array_key_exists($idx, $labels)) {
                     $value = $this->isSuper() ? $labels[$idx].' ('.$item.')' : $labels[$idx];
                 }
             }
-            if(!$compare || in_array($item, $b)) {
+            if (!$compare || in_array($item, $b)) {
                 $out .= '<'.$tag.' class="" data-ems-id="'.$item.'">'.htmlentities($value).'</'.$tag.'>';
-            }
-            else {
+            } else {
                 $out .= '<'.$tag.' class="text-'.$insColor.'"><ins class="diffmod">'.htmlentities($value).'</ins></'.$tag.'>';
             }
         }
 
 
-        if(empty($out)) {
+        if (empty($out)) {
             $out = '<span class="text-gray">[empty]</span>';
         }
 
@@ -458,23 +443,21 @@ class AppExtension extends \Twig_Extension
         $b = $a = [];
         $out = "";
 
-        if(is_array($rawData)) {
+        if (is_array($rawData)) {
             $a = $rawData;
-        }
-        elseif (is_scalar($rawData)) {
+        } elseif (is_scalar($rawData)) {
             $a = [$rawData];
         }
 
-        if(isset($compareRawData[$fieldName])){
-            if(is_array($compareRawData[$fieldName])){
+        if (isset($compareRawData[$fieldName])) {
+            if (is_array($compareRawData[$fieldName])) {
                 $b = $compareRawData[$fieldName];
-            }
-            elseif (is_scalar($compareRawData[$fieldName])) {
+            } elseif (is_scalar($compareRawData[$fieldName])) {
                 $b = [$compareRawData[$fieldName]];
             }
         }
 
-        if($compare){
+        if ($compare) {
             foreach ($b as $item) {
                 if (!in_array($item, $a)) {
                     $out .= $this->dataLink($item, false, 'del').' ';
@@ -483,10 +466,9 @@ class AppExtension extends \Twig_Extension
         }
 
         foreach ($a as $item) {
-            if(!$compare || in_array($item, $b)) {
+            if (!$compare || in_array($item, $b)) {
                 $out .= $this->dataLink($item).' ';
-            }
-            else {
+            } else {
                 $out .= $this->dataLink($item, false, 'ins').' ';
             }
         }
@@ -498,12 +480,12 @@ class AppExtension extends \Twig_Extension
     public function diffColor($rawData, $compare, $fieldName, $compareRawData)
     {
         $b = $a = null;
-        if($rawData){
+        if ($rawData) {
             $color = $rawData;
             $a = '<span style="background-color: '.$color.'; color: '.($this->contrastratio($color, '#000000') > $this->contrastratio($color, '#ffffff')?'#000000':'#ffffff').';">'.$color.'</span> ';
         }
 
-        if(isset($compareRawData[$fieldName]) && $compareRawData[$fieldName]) {
+        if (isset($compareRawData[$fieldName]) && $compareRawData[$fieldName]) {
             $color = $compareRawData[$fieldName];
             $b = '<span style="background-color: '.$color.'; color: '.($this->contrastratio($color, '#000000') > $this->contrastratio($color, '#ffffff')?'#000000':'#ffffff').';">'.$color.'</span> ';
         }
@@ -518,7 +500,8 @@ class AppExtension extends \Twig_Extension
 
 
 
-    public function diffText($rawData, $compare, $fieldName, $compareRawData){
+    public function diffText($rawData, $compare, $fieldName, $compareRawData)
+    {
         $b = isset($compareRawData[$fieldName])?$compareRawData[$fieldName]:null;
 
         return $this->diff($rawData, $b, $compare, true, true);
@@ -526,7 +509,8 @@ class AppExtension extends \Twig_Extension
 
 
 
-    public function diffHtml($rawData, $compare, $fieldName, $compareRawData){
+    public function diffHtml($rawData, $compare, $fieldName, $compareRawData)
+    {
         $b = isset($compareRawData[$fieldName])?$compareRawData[$fieldName]:null;
         return $this->diff($rawData, $b, $compare, false, true, true);
     }
@@ -537,7 +521,8 @@ class AppExtension extends \Twig_Extension
      * @param string $name
      * @return integer
      */
-    public function getSequenceNextValue($name){
+    public function getSequenceNextValue($name)
+    {
         $em = $this->doctrine->getManager();
         /**@var SequenceRepository $repo */
         $repo = $em->getRepository('EMSCoreBundle:Sequence');
@@ -545,36 +530,38 @@ class AppExtension extends \Twig_Extension
         return $out;
     }
     
-    public function array_intersect(array $array1, $array2) {
-        if(! is_array($array2)) {
+    public function array_intersect(array $array1, $array2)
+    {
+        if (! is_array($array2)) {
             return [];
         }
         return array_intersect($array1, $array2);
     }
     
     
-    public function array_merge_recursive(array $array1, array $_ = null) {
+    public function array_merge_recursive(array $array1, array $_ = null)
+    {
         return array_merge_recursive($array1, $_);
     }
     
     /**
      * Convert a tring into an url frendly string
      * http://cubiq.org/the-perfect-php-clean-url-generator
-     * 
+     *
      * @param string $str
      * @return string
      */
-    function toAscii($str) {
+    function toAscii($str)
+    {
         $clean = $str;
         
         try {
-            $clean = iconv('UTF-8', 'ASCII//TRANSLIT', $str);                    
-        }
-        catch (\Exception $e) {
+            $clean = iconv('UTF-8', 'ASCII//TRANSLIT', $str);
+        } catch (\Exception $e) {
             $clean = false;
         }
     
-        if ( $clean === false ) {
+        if ($clean === false) {
             $a = array('À', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Æ', 'Ç', 'È', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Î', 'Ï', 'Ð', 'Ñ', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', 'Ø', 'Ù', 'Ú', 'Û', 'Ü', 'Ý', 'ß', 'à', 'á', 'â', 'ã', 'ä', 'å', 'æ', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ñ', 'ò', 'ó', 'ô', 'õ', 'ö', 'ø', 'ù', 'ú', 'û', 'ü', 'ý', 'ÿ', 'Ā', 'ā', 'Ă', 'ă', 'Ą', 'ą', 'Ć', 'ć', 'Ĉ', 'ĉ', 'Ċ', 'ċ', 'Č', 'č', 'Ď', 'ď', 'Đ', 'đ', 'Ē', 'ē', 'Ĕ', 'ĕ', 'Ė', 'ė', 'Ę', 'ę', 'Ě', 'ě', 'Ĝ', 'ĝ', 'Ğ', 'ğ', 'Ġ', 'ġ', 'Ģ', 'ģ', 'Ĥ', 'ĥ', 'Ħ', 'ħ', 'Ĩ', 'ĩ', 'Ī', 'ī', 'Ĭ', 'ĭ', 'Į', 'į', 'İ', 'ı', 'Ĳ', 'ĳ', 'Ĵ', 'ĵ', 'Ķ', 'ķ', 'Ĺ', 'ĺ', 'Ļ', 'ļ', 'Ľ', 'ľ', 'Ŀ', 'ŀ', 'Ł', 'ł', 'Ń', 'ń', 'Ņ', 'ņ', 'Ň', 'ň', 'ŉ', 'Ō', 'ō', 'Ŏ', 'ŏ', 'Ő', 'ő', 'Œ', 'œ', 'Ŕ', 'ŕ', 'Ŗ', 'ŗ', 'Ř', 'ř', 'Ś', 'ś', 'Ŝ', 'ŝ', 'Ş', 'ş', 'Š', 'š', 'Ţ', 'ţ', 'Ť', 'ť', 'Ŧ', 'ŧ', 'Ũ', 'ũ', 'Ū', 'ū', 'Ŭ', 'ŭ', 'Ů', 'ů', 'Ű', 'ű', 'Ų', 'ų', 'Ŵ', 'ŵ', 'Ŷ', 'ŷ', 'Ÿ', 'Ź', 'ź', 'Ż', 'ż', 'Ž', 'ž', 'ſ', 'ƒ', 'Ơ', 'ơ', 'Ư', 'ư', 'Ǎ', 'ǎ', 'Ǐ', 'ǐ', 'Ǒ', 'ǒ', 'Ǔ', 'ǔ', 'Ǖ', 'ǖ', 'Ǘ', 'ǘ', 'Ǚ', 'ǚ', 'Ǜ', 'ǜ', 'Ǻ', 'ǻ', 'Ǽ', 'ǽ', 'Ǿ', 'ǿ');
             $b = array('A', 'A', 'A', 'A', 'A', 'A', 'AE', 'C', 'E', 'E', 'E', 'E', 'I', 'I', 'I', 'I', 'D', 'N', 'O', 'O', 'O', 'O', 'O', 'O', 'U', 'U', 'U', 'U', 'Y', 's', 'a', 'a', 'a', 'a', 'a', 'a', 'ae', 'c', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'n', 'o', 'o', 'o', 'o', 'o', 'o', 'u', 'u', 'u', 'u', 'y', 'y', 'A', 'a', 'A', 'a', 'A', 'a', 'C', 'c', 'C', 'c', 'C', 'c', 'C', 'c', 'D', 'd', 'D', 'd', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'G', 'g', 'G', 'g', 'G', 'g', 'G', 'g', 'H', 'h', 'H', 'h', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'IJ', 'ij', 'J', 'j', 'K', 'k', 'L', 'l', 'L', 'l', 'L', 'l', 'L', 'l', 'l', 'l', 'N', 'n', 'N', 'n', 'N', 'n', 'n', 'O', 'o', 'O', 'o', 'O', 'o', 'OE', 'oe', 'R', 'r', 'R', 'r', 'R', 'r', 'S', 's', 'S', 's', 'S', 's', 'S', 's', 'T', 't', 'T', 't', 'T', 't', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'W', 'w', 'Y', 'y', 'Y', 'Z', 'z', 'Z', 'z', 'Z', 'z', 's', 'f', 'O', 'o', 'U', 'u', 'A', 'a', 'I', 'i', 'O', 'o', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'A', 'a', 'AE', 'ae', 'O', 'o');
             $clean = str_replace($a, $b, $str);
@@ -587,58 +574,67 @@ class AppExtension extends \Twig_Extension
         return $clean;
     }
     
-    function cantBeFinalized($message = null, $code = null, $previous = null) {
+    function cantBeFinalized($message = null, $code = null, $previous = null)
+    {
         throw new CantBeFinalizedException($message, $code, $previous);
     }
     
     
-    function macroFct($tempate, $block, $context, $source=null, $compare=false, $compareRawData=null) {
+    function macroFct($tempate, $block, $context, $source = null, $compare = false, $compareRawData = null)
+    {
         return $tempate->{'macro_'.$block}($context, $source, $compare, $compareRawData);
     }
     
-    function call_user_func($function){
+    function call_user_func($function)
+    {
         return call_user_func($function);
     }
     
-    function search(array $params){
+    function search(array $params)
+    {
         return $this->client->search($params);
     }
 
-    function debug($message, array $context=[]){
+    function debug($message, array $context = [])
+    {
         $context['twig'] = 'twig';
         $this->logger->addDebug($message, $context);
     }
     
-    function dateDifference($date1, $date2, $detailed=false){
+    function dateDifference($date1, $date2, $detailed = false)
+    {
         $datetime1 = date_create($date1);
         $datetime2 = date_create($date2);
         $interval = date_diff($datetime1, $datetime2);
-        if($detailed){
-            return $interval->format('%R%a days %h hours %i minutes');            
+        if ($detailed) {
+            return $interval->format('%R%a days %h hours %i minutes');
         }
-        return (intval($interval->format('%R%a'))+1).' days';    
+        return (intval($interval->format('%R%a'))+1).' days';
     }
     
-    function getUser($username){
+    function getUser($username)
+    {
         return $this->userService->getUser($username);
     }
     
-    function displayname($username){
+    function displayname($username)
+    {
         /**@var User $user*/
         $user = $this->userService->getUser($username);
-        if(!empty($user)){
+        if (!empty($user)) {
             return $user->getDisplayName();
         }
         return $username;
     }
 
-    function srcPath($input, $fileName=false){
-        $path = $this->router->generate('ems_file_view', ['sha1' => '__SHA1__'], UrlGeneratorInterface::ABSOLUTE_PATH );
+    function srcPath($input, $fileName = false)
+    {
+        $path = $this->router->generate('ems_file_view', ['sha1' => '__SHA1__'], UrlGeneratorInterface::ABSOLUTE_PATH);
         $path = substr($path, 0, strlen($path)-8);
         $out= preg_replace_callback(
             '/(ems:\/\/asset:)([^\n\r"\'\?]*)/i',
             function ($matches) use ($path, $fileName) {
-                if($fileName){
+                if ($fileName) {
                     return $this->fileService->getFile($matches[2]);
                 }
                 return $path.$matches[2];
@@ -649,7 +645,8 @@ class AppExtension extends \Twig_Extension
         return $out;
     }
 
-    function internalLinks($input, $fileName=false){
+    function internalLinks($input, $fileName = false)
+    {
         $url = $this->router->generate('data.link', ['key'=>'object:'], UrlGeneratorInterface::ABSOLUTE_PATH);
         $out = preg_replace('/ems:\/\/object:/i', $url, $input);
 
@@ -657,9 +654,10 @@ class AppExtension extends \Twig_Extension
     }
     
     
-    function i18n($key, $locale=null){
+    function i18n($key, $locale = null)
+    {
 
-        if(empty($locale)) {
+        if (empty($locale)) {
             $locale = $this->router->getContext()->getParameter('_locale');
         }
         /**@var I18nRepository $repo */
@@ -669,7 +667,7 @@ class AppExtension extends \Twig_Extension
                 'identifier' => $key,
         ]);
 
-        if(empty($result)){
+        if (empty($result)) {
             return $key;
         }
         
@@ -681,7 +679,8 @@ class AppExtension extends \Twig_Extension
      * @return bool
      * @deprecated since version 1.8.17 (will be remove with ems 1.9)
      */
-    function is_super($empty) {
+    function is_super($empty)
+    {
         //TODO to remove
         return $this->isSuper();
     }
@@ -690,40 +689,39 @@ class AppExtension extends \Twig_Extension
      * Test if the user has some superpowers
      * @return bool
      */
-    function isSuper() {
+    function isSuper()
+    {
         return $this->authorizationChecker->isGranted('ROLE_SUPER');
     }
 
-    function all_granted($roles, $super=false){
-        if($super && !$this->isSuper()) {
+    function all_granted($roles, $super = false)
+    {
+        if ($super && !$this->isSuper()) {
             return false;
         }
-        foreach ($roles as $role){
-            if(!$this->authorizationChecker->isGranted($role)){
+        foreach ($roles as $role) {
+            if (!$this->authorizationChecker->isGranted($role)) {
                 return false;
             }
         }
         return true;
     }
     
-    function inMyCircles($circles){
+    function inMyCircles($circles)
+    {
         
-        if(!$circles){
+        if (!$circles) {
             return true;
-        }
-        else if ($this->authorizationChecker->isGranted('ROLE_ADMIN')){
+        } else if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
             return true;
-        }
-        else if (is_array($circles)){
-            if(count($circles) > 0){
+        } else if (is_array($circles)) {
+            if (count($circles) > 0) {
                 $user = $this->userService->getCurrentUser();
                 return count(array_intersect($circles, $user->getCircles())) > 0;
-            }
-            else {
+            } else {
                 return true;
             }
-        }
-        else if(is_string($circles)){
+        } else if (is_string($circles)) {
             $user = $this->userService->getCurrentUser();
             return in_array($circles, $user->getCircles());
         }
@@ -732,15 +730,17 @@ class AppExtension extends \Twig_Extension
         return false;
     }
     
-    function objectChoiceLoader($contentTypeName) {
+    function objectChoiceLoader($contentTypeName)
+    {
         return $this->objectChoiceListFactory->createLoader($contentTypeName, true)->loadAll();
     }
     
-    function groupedObjectLoader($contentTypeName) {
+    function groupedObjectLoader($contentTypeName)
+    {
         $choices = $this->objectChoiceListFactory->createLoader($contentTypeName, true)->loadAll();
         $out = [];
-        foreach ($choices as $choice){
-            if(!isset($out[$choice->getGroup()])){
+        foreach ($choices as $choice) {
+            if (!isset($out[$choice->getGroup()])) {
                 $out[$choice->getGroup()] = [];
             }
             $out[$choice->getGroup()][] = $choice;
@@ -748,23 +748,24 @@ class AppExtension extends \Twig_Extension
         return $out;
     }
     
-    function generateFromTemplate($template, array $params=[]){
-        if(empty($template)){
-            return NULL;
+    function generateFromTemplate($template, array $params = [])
+    {
+        if (empty($template)) {
+            return null;
         }
         try {
             $out = $this->twig->createTemplate($template)->render($params);
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $out = "Error in template: ".$e->getMessage();
         }
         return $out;
     }
     
-    function dataLabel($key, $revisionId=false){
+    function dataLabel($key, $revisionId = false)
+    {
         $out = $key;
         $splitted = explode(':', $key);
-        if($splitted && count($splitted) == 2 && strlen($splitted[0]) > 0 && strlen($splitted[1]) > 0 ){
+        if ($splitted && count($splitted) == 2 && strlen($splitted[0]) > 0 && strlen($splitted[1]) > 0) {
             $type = $splitted[0];
             $ouuid =  $splitted[1];
             
@@ -772,21 +773,19 @@ class AppExtension extends \Twig_Extension
             
             /**@var \EMS\CoreBundle\Entity\ContentType $contentType*/
             $contentType = $this->contentTypeService->getByName($type);
-            if($contentType) {
-                if($contentType->getIcon()){
-                    
+            if ($contentType) {
+                if ($contentType->getIcon()) {
                     $icon = '<i class="'.$contentType->getIcon().'"></i>&nbsp;&nbsp;';
-                }
-                else{
+                } else {
                     $icon = '<i class="fa fa-book"></i>&nbsp;&nbsp;';
                 }
                 
                 try {
                     $fields = [];
-                    if($contentType->getLabelField()){
+                    if ($contentType->getLabelField()) {
                         $fields[] = $contentType->getLabelField();
                     }
-                    if($contentType->getColorField()){
+                    if ($contentType->getColorField()) {
                         $fields[] = $contentType->getColorField();
                     }
 
@@ -799,37 +798,33 @@ class AppExtension extends \Twig_Extension
                             'type' => $type,
                     ]);
                     
-                    if($contentType->getLabelField()){
+                    if ($contentType->getLabelField()) {
                         $label = $result['_source'][$contentType->getLabelField()];
-                        if($label && strlen($label) > 0){
+                        if ($label && strlen($label) > 0) {
                             $out = $label;
                         }
                     }
                     $out = $icon.$out;
                     
-                    if($contentType->getColorField() && $result['_source'][$contentType->getColorField()]){
+                    if ($contentType->getColorField() && $result['_source'][$contentType->getColorField()]) {
                         $color = $result['_source'][$contentType->getColorField()];
                         $contrasted = $this->contrastratio($color, '#000000') > $this->contrastratio($color, '#ffffff')?'#000000':'#ffffff';
                         
                         $out = '<span class="" style="color:'.$contrasted.';">'.$out.'</span>';
                         $addAttribute = ' style="background-color: '.$result['_source'][$contentType->getColorField()].';border-color: '.$result['_source'][$contentType->getColorField()].';"';
-                        
                     }
+                } catch (\Exception $e) {
                 }
-                catch(\Exception $e) {
-                    
-                }
-                
             }
         }
         return $out;
-        
     }
         
-    function dataLink($key, $revisionId=false, $diffMod=false){
+    function dataLink($key, $revisionId = false, $diffMod = false)
+    {
         $out = $key;
         $splitted = explode(':', $key);
-        if($splitted && count($splitted) == 2 && strlen($splitted[0]) > 0 && strlen($splitted[1]) > 0 ){
+        if ($splitted && count($splitted) == 2 && strlen($splitted[0]) > 0 && strlen($splitted[1]) > 0) {
             $type = $splitted[0];
             $ouuid =  $splitted[1];
             
@@ -837,21 +832,19 @@ class AppExtension extends \Twig_Extension
             
             /**@var \EMS\CoreBundle\Entity\ContentType $contentType*/
             $contentType = $this->contentTypeService->getByName($type);
-            if($contentType) {
-                if($contentType->getIcon()){
-                    
+            if ($contentType) {
+                if ($contentType->getIcon()) {
                     $icon = '<i class="'.$contentType->getIcon().'"></i>&nbsp;&nbsp;';
-                }
-                else{
+                } else {
                     $icon = '<i class="fa fa-book"></i>&nbsp;&nbsp;';
                 }
                 
                 try {
                     $fields = [];
-                    if($contentType->getLabelField()){
+                    if ($contentType->getLabelField()) {
                         $fields[] = $contentType->getLabelField();
                     }
-                    if($contentType->getColorField()){
+                    if ($contentType->getColorField()) {
                         $fields[] = $contentType->getColorField();
                     }
 
@@ -864,31 +857,27 @@ class AppExtension extends \Twig_Extension
                         'type' => $type,
                     ]);
                     
-                    if($contentType->getLabelField()){
+                    if ($contentType->getLabelField()) {
                         $label = $result['_source'][$contentType->getLabelField()];
-                        if($label && strlen($label) > 0){
+                        if ($label && strlen($label) > 0) {
                             $out = $label;
                         }
                     }
                     $out = $icon.$out;
                     
-                    if($contentType->getColorField() && $result['_source'][$contentType->getColorField()]){
+                    if ($contentType->getColorField() && $result['_source'][$contentType->getColorField()]) {
                         $color = $result['_source'][$contentType->getColorField()];
                         $contrasted = $this->contrastratio($color, '#000000') > $this->contrastratio($color, '#ffffff')?'#000000':'#ffffff';
                         
                         $out = '<span class="" style="color:'.$contrasted.';">'.$out.'</span>';
                         $addAttribute = ' style="background-color: '.$result['_source'][$contentType->getColorField()].';border-color: '.$result['_source'][$contentType->getColorField()].';"';
-                        
                     }
 
-                    if($diffMod !== false) {
+                    if ($diffMod !== false) {
                         $out = '<'.$diffMod.' class="diffmod">'.$out.'<'.$diffMod.'>';
                     }
+                } catch (\Exception $e) {
                 }
-                catch(\Exception $e) {
-                    
-                }
-                
             }
             $out = '<a class="btn btn-primary btn-sm" href="'.$this->router->generate('data.revisions', [
                     'type' =>$type,
@@ -899,23 +888,25 @@ class AppExtension extends \Twig_Extension
         return $out;
     }
     
-    function propertyPath(FormError $error) {
+    function propertyPath(FormError $error)
+    {
         $parent = $error->getOrigin();
         $out = '';
-        while($parent) {
+        while ($parent) {
             $out = $parent->getName().$out;
             $parent = $parent->getParent();
-            if($parent) {
+            if ($parent) {
                 $out = '_'.$out;
             }
         }
         return $out;
     }
     
-    function data($key){
+    function data($key)
+    {
         $out = $key;
         $splitted = explode(':', $key);
-        if($splitted && count($splitted) == 2){
+        if ($splitted && count($splitted) == 2) {
             $type = $splitted[0];
             $ouuid =  $splitted[1];
                 
@@ -923,7 +914,7 @@ class AppExtension extends \Twig_Extension
             
             /**@var \EMS\CoreBundle\Entity\ContentType $contentType*/
             $contentType = $this->contentTypeService->getByName($type);
-            if($contentType) {
+            if ($contentType) {
                 try {
                     $result = $this->client->get([
                             'id' => $ouuid,
@@ -931,9 +922,8 @@ class AppExtension extends \Twig_Extension
                             'type' => $type,
                     ]);
                     
-                    return $result['_source'];                    
-                }
-                catch (Missing404Exception $e){
+                    return $result['_source'];
+                } catch (Missing404Exception $e) {
                     return false;
                 }
             }
@@ -941,12 +931,13 @@ class AppExtension extends \Twig_Extension
         return false;
     }
     
-    function one_granted($roles, $super=false){
-        if($super && !$this->isSuper()) {
+    function one_granted($roles, $super = false)
+    {
+        if ($super && !$this->isSuper()) {
             return false;
         }
-        foreach ($roles as $role){
-            if($this->authorizationChecker->isGranted($role)) {
+        foreach ($roles as $role) {
+            if ($this->authorizationChecker->isGranted($role)) {
                 return true;
             }
         }
@@ -960,7 +951,8 @@ class AppExtension extends \Twig_Extension
      * @return float
      * @author Marcus Bointon <marcus@synchromedia.co.uk>
      */
-    function relativeluminance($col) {
+    function relativeluminance($col)
+    {
         //Remove any leading #
         $col = trim($col, '#');
         //Convert 3-digit to 6-digit
@@ -974,7 +966,7 @@ class AppExtension extends \Twig_Extension
                 'b' => hexdec(substr($col, 4, 2)) / 255
         );
         //Correct for sRGB
-        foreach($components as $c => $v) {
+        foreach ($components as $c => $v) {
             if ($v <= 0.03928) {
                 $components[$c] = $v / 12.92;
             } else {
@@ -994,7 +986,8 @@ class AppExtension extends \Twig_Extension
      * @return float
      * @author Marcus Bointon <marcus@synchromedia.co.uk>
      */
-    function contrastratio($c1, $c2) {
+    function contrastratio($c1, $c2)
+    {
         $y1 = $this->relativeluminance($c1);
         $y2 = $this->relativeluminance($c2);
         //Arrange so $y1 is lightest
@@ -1020,8 +1013,9 @@ class AppExtension extends \Twig_Extension
         return $searches;
     }
 
-    public function dump($object) {
-        if(function_exists('dump')){
+    public function dump($object)
+    {
+        if (function_exists('dump')) {
             dump($object);
         }
     }
@@ -1056,26 +1050,30 @@ class AppExtension extends \Twig_Extension
         return array_search($needle, $haystack) === 0;
     }
     
-    public function getContentType($name){
+    public function getContentType($name)
+    {
         return $this->contentTypeService->getByName($name);
     }
     
-    public function getContentTypes(){
+    public function getContentTypes()
+    {
         return $this->contentTypeService->getAll();
     }
     
-    public function getDefaultEnvironments(){
+    public function getDefaultEnvironments()
+    {
         $defaultEnvironments = [];
         /**@var Environment $environment*/
-        foreach ($this->environmentService->getAll() as $environment){
-            if($environment->getInDefaultSearch()) {
-                $defaultEnvironments[] = $environment->getName();                
+        foreach ($this->environmentService->getAll() as $environment) {
+            if ($environment->getInDefaultSearch()) {
+                $defaultEnvironments[] = $environment->getName();
             }
         }
         return $defaultEnvironments;
     }
     
-    public function getEnvironment($name){
+    public function getEnvironment($name)
+    {
         return $this->environmentService->getAliasByName($name);
     }
 
@@ -1087,31 +1085,31 @@ class AppExtension extends \Twig_Extension
     {
         /** @var \SoapClient $soapClient */
         $soapClient = null;
-        if ($arguments && array_key_exists('options', $arguments)){
+        if ($arguments && array_key_exists('options', $arguments)) {
             $soapClient = new \SoapClient($wsdl, $arguments['options']);
         } else {
             $soapClient = new \SoapClient($wsdl);
         }
         
         $function = null;
-        if ($arguments && array_key_exists('function', $arguments)){
+        if ($arguments && array_key_exists('function', $arguments)) {
             $function = $arguments['function'];
         } else {
             //TODO: throw error "argument 'function' is obligator"
         }
         
         $response = null;
-        if ($arguments && array_key_exists('parameters', $arguments)){
+        if ($arguments && array_key_exists('parameters', $arguments)) {
             $response = $soapClient->$function($arguments['parameters']);
-        }else{
+        } else {
             $response = $soapClient->$function();
         }
         
         return $response;
-        
     }
     
-    public function csvEscaper($twig, $name, $charset) {
+    public function csvEscaper($twig, $name, $charset)
+    {
         return $name;
     }
 

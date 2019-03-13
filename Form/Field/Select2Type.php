@@ -4,13 +4,15 @@ namespace EMS\CoreBundle\Form\Field;
 
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
-class Select2Type extends ChoiceType {
+class Select2Type extends ChoiceType
+{
     /**
      *
      * {@inheritdoc}
      *
      */
-    public function getParent() {
+    public function getParent()
+    {
         return ChoiceType::class;
     }
     
@@ -19,7 +21,8 @@ class Select2Type extends ChoiceType {
      * {@inheritdoc}
      *
      */
-    public function getBlockPrefix() {
+    public function getBlockPrefix()
+    {
         return 'select2';
     }
 }

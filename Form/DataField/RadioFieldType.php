@@ -10,23 +10,26 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use EMS\CoreBundle\Entity\DataField;
 
-class RadioFieldType extends DataFieldType {
+class RadioFieldType extends DataFieldType
+{
 
     /**
      *
      * {@inheritdoc}
      *
      */
-    public function getLabel(){
+    public function getLabel()
+    {
         return 'Radio field';
     }
     
     /**
      * Get a icon to visually identify a FieldType
-     * 
+     *
      * @return string
      */
-    public static function getIcon(){
+    public static function getIcon()
+    {
         return 'fa fa-dot-circle-o';
     }
     
@@ -36,25 +39,25 @@ class RadioFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
     
         /** @var FieldType $fieldType */
-        $fieldType = $builder->getOptions () ['metadata'];
+        $fieldType = $builder->getOptions() ['metadata'];
     
         $choices = [];
         $values = explode("\n", str_replace("\r", "", $options['choices']));
         $labels = explode("\n", str_replace("\r", "", $options['labels']));
     
-        foreach ($values as $id => $value){
-            if(isset($labels[$id]) && !empty($labels[$id])){
+        foreach ($values as $id => $value) {
+            if (isset($labels[$id]) && !empty($labels[$id])) {
                 $choices[$labels[$id]] = $value;
-            }
-            else {
+            } else {
                 $choices[$value] = $value;
             }
         }
     
-        $builder->add ( 'value', ChoiceType::class, [
+        $builder->add('value', ChoiceType::class, [
                 'label' => (isset($options['label'])?$options['label']:$fieldType->getName()),
                 'required' => false,
                 'disabled'=> $this->isDisabled($options),
@@ -62,7 +65,7 @@ class RadioFieldType extends DataFieldType {
                 'empty_data'  => null,
                 'multiple' => false,
                 'expanded' => true,
-        ] );
+        ]);
     }
     
     
@@ -71,11 +74,12 @@ class RadioFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function configureOptions(OptionsResolver $resolver) {
+    public function configureOptions(OptionsResolver $resolver)
+    {
         /* set the default option value for this kind of compound field */
-        parent::configureOptions ( $resolver );
-        $resolver->setDefault ( 'choices', [] );
-        $resolver->setDefault ( 'labels', [] );
+        parent::configureOptions($resolver);
+        $resolver->setDefault('choices', []);
+        $resolver->setDefault('labels', []);
     }
     
     /**
@@ -83,19 +87,20 @@ class RadioFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options) {
-        parent::buildOptionsForm ( $builder, $options );
-        $optionsForm = $builder->get ( 'options' );
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    {
+        parent::buildOptionsForm($builder, $options);
+        $optionsForm = $builder->get('options');
     
         // String specific display options
-        $optionsForm->get ( 'displayOptions' )->add ( 'choices', TextareaType::class, [
+        $optionsForm->get('displayOptions')->add('choices', TextareaType::class, [
                 'required' => false,
-        ] )->add ( 'labels', TextareaType::class, [
+        ])->add('labels', TextareaType::class, [
                 'required' => false,
-        ] );
+        ]);
     
         // String specific mapping options
-        $optionsForm->get ( 'mappingOptions' )->add ( 'analyzer', AnalyzerPickerType::class);
+        $optionsForm->get('mappingOptions')->add('analyzer', AnalyzerPickerType::class);
     }
 
     /**
@@ -103,7 +108,8 @@ class RadioFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function getDefaultOptions($name) {
+    public function getDefaultOptions($name)
+    {
         $out = parent::getDefaultOptions($name);
         
         $out['mappingOptions']['index'] = 'not_analyzed';
@@ -116,7 +122,8 @@ class RadioFieldType extends DataFieldType {
      * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::getBlockPrefix()
      */
-    public function getBlockPrefix() {
+    public function getBlockPrefix()
+    {
         return 'bypassdatafield';
     }
     
@@ -125,7 +132,8 @@ class RadioFieldType extends DataFieldType {
      * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
      */
-    public function viewTransform(DataField $dataField) {
+    public function viewTransform(DataField $dataField)
+    {
         $out = parent::viewTransform($dataField);
         return ['value' => $out];
     }
@@ -135,7 +143,8 @@ class RadioFieldType extends DataFieldType {
      * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
      */
-    public function reverseViewTransform($data, FieldType $fieldType) {
+    public function reverseViewTransform($data, FieldType $fieldType)
+    {
         $value = $data['value'];
         return parent::reverseViewTransform($value, $fieldType);
     }

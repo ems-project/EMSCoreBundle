@@ -24,7 +24,8 @@ class FileController extends AppController
      * @Route("/api/file/view/{sha1}" , name="ems.api.file.view")
      * @Method({"GET"})
      */
-    public function viewFileAction($sha1, Request $request) {
+    public function viewFileAction($sha1, Request $request)
+    {
         return $this->getFile($sha1, ResponseHeaderBag::DISPOSITION_INLINE, $request);
     }
     /**
@@ -34,7 +35,8 @@ class FileController extends AppController
      * @Route("/api/file/{sha1}" , name="file.api.download")
      * @Method({"GET"})
      */
-    public function downloadFileAction($sha1, Request $request) {
+    public function downloadFileAction($sha1, Request $request)
+    {
         return $this->getFile($sha1, ResponseHeaderBag::DISPOSITION_ATTACHMENT, $request);
     }
     
@@ -42,27 +44,29 @@ class FileController extends AppController
      * @Route("/data/file/extract/{sha1}.{_format}" , name="ems_file_extract", defaults={"_format" = "json"})
      * @Method({"GET"})
      */
-    public function extractFileContent($sha1, Request $request) {
+    public function extractFileContent($sha1, Request $request)
+    {
 //        $name = $request->query->get('name', 'temp');
         
         $data = $this->getAssetExtractorService()->extractData($sha1);
         
-        $response = $this->render( '@EMSCore/ajax/extract-data-file.json.twig', [
+        $response = $this->render('@EMSCore/ajax/extract-data-file.json.twig', [
                 'success' => true,
                 'data' => $data,
-        ] );
+        ]);
         $response->headers->set('Content-Type', 'application/json');
         return $response;
     }
     
-    private function getFile($sha1, $disposition, Request $request){
+    private function getFile($sha1, $disposition, Request $request)
+    {
         $name = $request->query->get('name', 'upload.bin');
         $type = $request->query->get('type', 'application/bin');
         
         $file = $this->getFileService()->getFile($sha1);
         
         
-        if(!$file){
+        if (!$file) {
             throw new NotFoundHttpException('Impossible to find the item corresponding to this id: '.$sha1);
         }
         
@@ -89,16 +93,15 @@ class FileController extends AppController
         
         try {
             $uploadedAsset = $this->getFileService()->initUploadFile($sha1, $size, $name, $type, $user);
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->addFlash('error', $e->getMessage());
-            return $this->render( '@EMSCore/ajax/notification.json.twig', [
+            return $this->render('@EMSCore/ajax/notification.json.twig', [
                 'success' => false,
             ]);
         }
         
 
-        return $this->render( '@EMSCore/ajax/file.json.twig', [
+        return $this->render('@EMSCore/ajax/file.json.twig', [
                 'success' => true,
                 'asset' => $uploadedAsset,
         ]);
@@ -115,19 +118,17 @@ class FileController extends AppController
 
         try {
             $uploadedAsset = $this->getFileService()->addChunk($sha1, $chunk, $user);
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->addFlash('error', $e->getMessage());
-            return $this->render( '@EMSCore/ajax/notification.json.twig', [
+            return $this->render('@EMSCore/ajax/notification.json.twig', [
                     'success' => false,
             ]);
         }
 
-        return $this->render( '@EMSCore/ajax/file.json.twig', [
+        return $this->render('@EMSCore/ajax/file.json.twig', [
                 'success' => true,
                 'asset' => $uploadedAsset,
         ]);
-        
     }
     
     
@@ -138,9 +139,10 @@ class FileController extends AppController
      * @Route("/api/images" , name="ems_api_images_index", defaults={"_format": "json"})
      * @Method({"GET"})
      */
-    public function indexImagesAction(Request $request) {
+    public function indexImagesAction(Request $request)
+    {
         $images = $this->getFileService()->getImages();
-        return $this->render( '@EMSCore/ajax/images.json.twig', [
+        return $this->render('@EMSCore/ajax/images.json.twig', [
                 'images' => $images,
         ]);
     }
@@ -151,17 +153,17 @@ class FileController extends AppController
      * @Route("/api/file" , name="ems_api_image_upload_url", defaults={"_format": "json"})
      * @Method({"POST"})
      */
-    public function uploadfileAction(Request $request) {
+    public function uploadfileAction(Request $request)
+    {
         /**@var UploadedFile $file*/
         $file = $request->files->get('upload');
         $type = $request->get('type', false);
         
-        if($file && !$file->getError()){
-            
+        if ($file && !$file->getError()) {
             $name = $file->getClientOriginalName();
 
-            if($type === false){
-                try{
+            if ($type === false) {
+                try {
                     $type = $file->getMimeType();
                 } catch (\Exception $e) {
                     $type = 'application/bin';
@@ -172,30 +174,26 @@ class FileController extends AppController
             
             try {
                 $uploadedAsset = $this->getFileService()->uploadFile($name, $type, $file->getRealPath(), $user);
-                
-            }
-            catch (\Exception $e) {
+            } catch (\Exception $e) {
                 $this->addFlash('error', $e->getMessage());
-                return $this->render( '@EMSCore/ajax/notification.json.twig', [
+                return $this->render('@EMSCore/ajax/notification.json.twig', [
                         'success' => false,
                 ]);
             }
             
             
-            return $this->render( '@EMSCore/ajax/multipart.json.twig', [
+            return $this->render('@EMSCore/ajax/multipart.json.twig', [
                     'success' => true,
                     'asset' => $uploadedAsset,
             ]);
-        }
-        else if($file->getError()) {
+        } else if ($file->getError()) {
             $this->addFlash('warning', $file->getError());
-            $this->render( '@EMSCore/ajax/notification.json.twig', [
+            $this->render('@EMSCore/ajax/notification.json.twig', [
                     'success' => false,
             ]);
         }
-        return $this->render( '@EMSCore/ajax/notification.json.twig', [
+        return $this->render('@EMSCore/ajax/notification.json.twig', [
                 'success' => false,
         ]);
     }
-    
 }

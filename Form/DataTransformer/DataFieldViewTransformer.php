@@ -1,4 +1,4 @@
-<?php 
+<?php
 namespace EMS\CoreBundle\Form\DataTransformer;
 
 use EMS\CoreBundle\Entity\DataField;

@@ -9,7 +9,8 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use EMS\CoreBundle\Form\DataField\DateFieldType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
-class FileType extends AbstractType {
+class FileType extends AbstractType
+{
 
 
     /**
@@ -17,9 +18,10 @@ class FileType extends AbstractType {
      * {@inheritdoc}
      *
      */
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         
-        $builder->add ( 'sha1', HiddenType::class, [
+        $builder->add('sha1', HiddenType::class, [
             'attr' => [
                     'class' => 'sha1'
             ],
@@ -68,7 +70,6 @@ class FileType extends AbstractType {
                 ],
                 'required' => false,
         ]);
-        
     }
 
     /**
@@ -76,8 +77,8 @@ class FileType extends AbstractType {
      * {@inheritdoc}
      *
      */
-    public function getBlockPrefix() {
+    public function getBlockPrefix()
+    {
         return 'filetype';
     }
-    
 }

@@ -18,16 +18,18 @@ use Symfony\Component\HttpFoundation\Request;
  * It's the mother class of all specific DataField used in eMS
  *
  * @author Mathieu De Keyzer <ems@theus.be>
- *        
+ *
  */
-class CalendarViewType extends ViewType {
+class CalendarViewType extends ViewType
+{
 
     /**
      *
      * {@inheritdoc}
      *
      */
-    public function getLabel(){
+    public function getLabel()
+    {
         return "Calendar: a view where you can planify your object";
     }
     
@@ -36,7 +38,8 @@ class CalendarViewType extends ViewType {
      * {@inheritdoc}
      *
      */
-    public function getName(){
+    public function getName()
+    {
         return "Calendar";
     }
     
@@ -45,27 +48,28 @@ class CalendarViewType extends ViewType {
      * {@inheritdoc}
      *
      */
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         parent::buildForm($builder, $options);
-        $builder->add ( 'dateRangeField', TextType::class, [
-        ] )->add ( 'timeFormat', TextType::class, [
+        $builder->add('dateRangeField', TextType::class, [
+        ])->add('timeFormat', TextType::class, [
                 'attr' => [
                         'placeholder' => 'i.e. H(:mm)',
                 ]
-        ] )->add ( 'locale', TextType::class, [
+        ])->add('locale', TextType::class, [
                 'attr' => [
                         'placeholder' => 'i.e. fr',
                 ]
-        ] )->add ( 'firstDay', IntegerType::class, [
+        ])->add('firstDay', IntegerType::class, [
                 'attr' => [
                         'placeholder' => 'Sunday=0, Monday=1, Tuesday=2, etc.',
                 ]
-        ] )->add ( 'weekends', CheckboxType::class, [
-        ] )->add ( 'slotDuration', TextType::class, [
+        ])->add('weekends', CheckboxType::class, [
+        ])->add('slotDuration', TextType::class, [
                 'attr' => [
                         'placeholder' => 'i.e. 00:30:00',
                 ]
-        ] );
+        ]);
     }
     
     /**
@@ -73,7 +77,8 @@ class CalendarViewType extends ViewType {
      * {@inheritdoc}
      *
      */
-    public function getBlockPrefix() {
+    public function getBlockPrefix()
+    {
         return 'calendar_view';
     }
     
@@ -83,7 +88,8 @@ class CalendarViewType extends ViewType {
      * {@inheritdoc}
      *
      */
-    public function getParameters(View $view, FormFactoryInterface $formFactoty, Request $request) {
+    public function getParameters(View $view, FormFactoryInterface $formFactoty, Request $request)
+    {
         
 
         $search = new Search();
@@ -102,5 +108,4 @@ class CalendarViewType extends ViewType {
             'form' => $form->createView(),
         ];
     }
-    
 }

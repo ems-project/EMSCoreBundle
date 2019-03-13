@@ -16,16 +16,18 @@ use Symfony\Component\HttpFoundation\Request;
  * It's the mother class of all specific DataField used in eMS
  *
  * @author Mathieu De Keyzer <ems@theus.be>
- *        
+ *
  */
-class ReportViewType extends ViewType {
+class ReportViewType extends ViewType
+{
 
     /**
      *
      * {@inheritdoc}
      *
      */
-    public function getLabel(){
+    public function getLabel()
+    {
         return "Report: perform an elasticsearch query and generate a report with a twig template";
     }
     
@@ -34,7 +36,8 @@ class ReportViewType extends ViewType {
      * {@inheritdoc}
      *
      */
-    public function getName(){
+    public function getName()
+    {
         return "Report";
     }
     
@@ -43,34 +46,35 @@ class ReportViewType extends ViewType {
      * {@inheritdoc}
      *
      */
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         parent::buildForm($builder, $options);
         $builder
-        ->add ( 'body', CodeEditorType::class, [
+        ->add('body', CodeEditorType::class, [
                 'label' => 'The Elasticsearch body query [JSON Twig]',
                 'attr' => [
                 ],
                 'slug' => 'report_query',
-        ] )
-        ->add ( 'size', IntegerType::class, [
+        ])
+        ->add('size', IntegerType::class, [
                 'label' => 'Limit the result to the x first results',
-        ] )
-        ->add ( 'template', CodeEditorType::class, [
+        ])
+        ->add('template', CodeEditorType::class, [
                 'label' => 'The Twig template used to display each keywords',
                 'attr' => [
                 ],
                 'slug' => 'report_template',
-        ] )
-        ->add ( 'header', CodeEditorType::class, [
+        ])
+        ->add('header', CodeEditorType::class, [
                 'label' => 'The HTML template included at the end of the header',
                 'attr' => [
                 ],
-        ] )
-        ->add ( 'javascript', CodeEditorType::class, [
+        ])
+        ->add('javascript', CodeEditorType::class, [
                 'label' => 'The HTML template included at the end of the page (after jquery and bootstrap)',
                 'attr' => [
                 ],
-        ] );
+        ]);
     }
     
     /**
@@ -78,7 +82,8 @@ class ReportViewType extends ViewType {
      * {@inheritdoc}
      *
      */
-    public function getBlockPrefix() {
+    public function getBlockPrefix()
+    {
         return 'report_view';
     }
     
@@ -88,7 +93,8 @@ class ReportViewType extends ViewType {
      * {@inheritdoc}
      *
      */
-    public function getParameters(View $view, FormFactoryInterface $formFactoty, Request $request) {
+    public function getParameters(View $view, FormFactoryInterface $formFactoty, Request $request)
+    {
 
         try {
             $renderQuery = $this->twig->createTemplate($view->getOptions()['body'])->render([
@@ -96,10 +102,9 @@ class ReportViewType extends ViewType {
                     'contentType' => $view->getContentType(),
                     'environment' => $view->getContentType()->getEnvironment(),
             ]);
-        }
-        catch (\Exception $e){
+        } catch (\Exception $e) {
             $renderQuery = "{}";
-        }        
+        }
         
         $searchQuery = [
             'index' => $view->getContentType()->getEnvironment()->getAlias(),
@@ -107,7 +112,7 @@ class ReportViewType extends ViewType {
             'body' => $renderQuery,
         ];
         
-        if(isset($view->getOptions()['size'])){
+        if (isset($view->getOptions()['size'])) {
             $searchQuery['size'] = $view->getOptions()['size'];
         }
         
@@ -120,8 +125,7 @@ class ReportViewType extends ViewType {
                 'environment' => $view->getContentType()->getEnvironment(),
                 'result' => $result,
             ]);
-        }
-        catch (\Exception $e){
+        } catch (\Exception $e) {
             $render = "Something went wrong with the template of the view ".$view->getName()." for the content type ".$view->getContentType()->getName()." (".$e->getMessage().")";
         }
         try {
@@ -131,8 +135,7 @@ class ReportViewType extends ViewType {
                 'environment' => $view->getContentType()->getEnvironment(),
                 'result' => $result,
             ]);
-        }
-        catch (\Exception $e){
+        } catch (\Exception $e) {
             $javascript = "";
         }
         try {
@@ -142,8 +145,7 @@ class ReportViewType extends ViewType {
                 'environment' => $view->getContentType()->getEnvironment(),
                 'result' => $result,
             ]);
-        }
-        catch (\Exception $e){
+        } catch (\Exception $e) {
             $header = "";
         }
 
@@ -156,5 +158,4 @@ class ReportViewType extends ViewType {
             'environment' => $view->getContentType()->getEnvironment(),
         ];
     }
-    
 }

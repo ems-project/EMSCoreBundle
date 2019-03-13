@@ -24,13 +24,13 @@ class AuthTokenController extends AppController
         
         $user = $userService->getUser($loginInfo['username'], false);
         
-        if(empty($user)){ //le user n'est pas trouvés
+        if (empty($user)) { //le user n'est pas trouvés
             return $this->invalidCredentials();
         }
         
         $encoder = $factory->getEncoder($user);
         
-        if($encoder->isPasswordValid($user->getPassword(),$loginInfo['password'], $user->getSalt())) {
+        if ($encoder->isPasswordValid($user->getPassword(), $loginInfo['password'], $user->getSalt())) {
             $authToken = new AuthToken($user);
             
             $em = $this->getDoctrine()->getManager();
@@ -38,13 +38,11 @@ class AuthTokenController extends AppController
             $em->persist($authToken);
             $em->flush();
 
-            return $this->render( '@EMSCore/ajax/auth-token.json.twig', [
+            return $this->render('@EMSCore/ajax/auth-token.json.twig', [
                     'authToken' => $authToken,
                     'success' => true,
             ]);
-            
-        }
-        else { // Le mot de passe n'est pas correct
+        } else { // Le mot de passe n'est pas correct
             return $this->invalidCredentials();
         }
     }

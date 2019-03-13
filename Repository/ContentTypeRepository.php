@@ -13,7 +13,8 @@ use EMS\CoreBundle\Entity\ContentType;
 class ContentTypeRepository extends \Doctrine\ORM\EntityRepository
 {
     
-    public function findAllAsAssociativeArray(){
+    public function findAllAsAssociativeArray()
+    {
         $qb = $this->createQueryBuilder('ct');
         $qb->where($qb->expr()->eq('ct.deleted', ':false'));
         $qb->setParameters([
@@ -23,7 +24,7 @@ class ContentTypeRepository extends \Doctrine\ORM\EntityRepository
         $out = [];
         $result = $qb->getQuery()->getResult();
         /** @var \EMS\CoreBundle\Entity\ContentType $record */
-        foreach ($result as $record){
+        foreach ($result as $record) {
             $out[$record->getName()] = $record;
         }
         
@@ -32,18 +33,20 @@ class ContentTypeRepository extends \Doctrine\ORM\EntityRepository
 
 
     /**
-     * 
+     *
      * @param string $name
      * @return ContentType
      */
-    public function findByName($name) {
+    public function findByName($name)
+    {
         return $this->findOneBy([
                 'deleted' => false,
                 'name' => $name,
         ]);
     }
     
-    public function countContentType() {
+    public function countContentType()
+    {
         return $this->createQueryBuilder('a')
          ->select('COUNT(a)')
          ->getQuery()
@@ -51,7 +54,8 @@ class ContentTypeRepository extends \Doctrine\ORM\EntityRepository
     }
     
     
-    public function maxOrderKey() {
+    public function maxOrderKey()
+    {
         return $this->createQueryBuilder('a')
          ->select('max(a.orderKey)')
          ->getQuery()

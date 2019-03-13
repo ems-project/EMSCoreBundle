@@ -56,7 +56,7 @@ class AppController extends Controller
      */
     public function javascriptAction()
     {
-        return $this->render( '@EMSCore/app/app.js.twig' );
+        return $this->render('@EMSCore/app/app.js.twig');
     }
     
     /**
@@ -142,12 +142,13 @@ class AppController extends Controller
     /**
      * @return AuthorizationChecker
      */
-    protected function getAuthorizationChecker(){
+    protected function getAuthorizationChecker()
+    {
         return $this->get('security.authorization_checker');
     }
     
     /**
-     * 
+     *
      * @return EncoderFactoryInterface
      */
     protected function getSecurityEncoder()
@@ -205,22 +206,24 @@ class AppController extends Controller
     }
     
     /**
-     * 
+     *
      * @param string $fieldTypeNameOrServiceName
-     * 
+     *
      * @return DataFieldType
      */
-    protected function getDataFieldType($fieldTypeNameOrServiceName){
+    protected function getDataFieldType($fieldTypeNameOrServiceName)
+    {
         return $this->formRegistry->getType($fieldTypeNameOrServiceName)->getInnerType();
     }
     
     /**
      * Get the injected logger
-     * 
+     *
      * @return LoggerInterface
-     * 
+     *
      */
-    protected function getLogger(){
+    protected function getLogger()
+    {
         return $this->logger;
     }
 
@@ -243,20 +246,22 @@ class AppController extends Controller
         ]);
     }
 
-    public static function getFormatedTimestamp(){
+    public static function getFormatedTimestamp()
+    {
         return date('_Ymd_His');
     }
     
-    protected function getGUID(){
+    protected function getGUID()
+    {
         mt_srand((double)microtime()*10000);//optional for php 4.2.0 and up.
         $charid = strtolower(md5(uniqid(rand(), true)));
         $hyphen = chr(45);// "-"
-        $uuid = 
+        $uuid =
          substr($charid, 0, 8).$hyphen
         .substr($charid, 8, 4).$hyphen
-        .substr($charid,12, 4).$hyphen
-        .substr($charid,16, 4).$hyphen
-        .substr($charid,20,12);
+        .substr($charid, 12, 4).$hyphen
+        .substr($charid, 16, 4).$hyphen
+        .substr($charid, 20, 12);
         return $uuid;
     }
 
@@ -275,15 +280,17 @@ class AppController extends Controller
      *
      * @return DataService
      */
-    public function getDataService(){
+    public function getDataService()
+    {
         return $this->get('ems.service.data');
     }
     
     /**
-     * 
+     *
      * @return PublishService
      */
-    public function getPublishService(){
+    public function getPublishService()
+    {
         return $this->get('ems.service.publish');
     }
 
@@ -291,28 +298,29 @@ class AppController extends Controller
      *
      * @return ContentTypeService
      */
-    public function getContentTypeService(){
+    public function getContentTypeService()
+    {
         return $this->get('ems.service.contenttype');
     }
     
     /**
-     * 
+     *
      * @return EnvironmentService
      */
-    public function getEnvironmentService(){
+    public function getEnvironmentService()
+    {
         return $this->get('ems.service.environment');
     }
 
     /**
      *
      */
-    protected function returnJson($success, $template = '@EMSCore/ajax/notification.json.twig'){
+    protected function returnJson($success, $template = '@EMSCore/ajax/notification.json.twig')
+    {
         $response = $this->render($template, [
             'success' => $success,
         ]);
         $response->headers->set('Content-Type', 'application/json');
         return $response;
     }
-
-    
 }

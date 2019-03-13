@@ -4,7 +4,8 @@ namespace EMS\CoreBundle\Form\Field;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class IconPickerType extends SelectPickerType {
+class IconPickerType extends SelectPickerType
+{
     
     private $choices = [
          'not-defined' => null,
@@ -1146,13 +1147,13 @@ class IconPickerType extends SelectPickerType {
             'attr' => [
                     'data-live-search' => true
             ],
-            'choice_attr' => function($category, $key, $index) {
+            'choice_attr' => function ($category, $key, $index) {
                 return [
                         'data-content' => "<i class='".$category."'></i>&nbsp;".$this->humanize($key)
                 ];
             },
             'choice_value' => function ($value) {
-               return $value;
+                return $value;
             },
         ));
     }

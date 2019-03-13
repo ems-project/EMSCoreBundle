@@ -5,9 +5,10 @@ namespace EMS\CoreBundle\Form\Field;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use EMS\CoreBundle\Service\UserService;
 
-class RolePickerType extends SelectPickerType {
+class RolePickerType extends SelectPickerType
+{
     /**
-     * 
+     *
      * @var UserService $userService
      */
     private $userService;
@@ -30,19 +31,19 @@ class RolePickerType extends SelectPickerType {
             'attr' => [
                     'data-live-search' => true
             ],
-            'choice_attr' => function($category, $key, $index) {
+            'choice_attr' => function ($category, $key, $index) {
                 //TODO: it would be nice to translate the roles
                 return [
                         'data-content' => "<div class='text-".$category."'><i class='fa fa-square'></i>&nbsp;&nbsp;".$this->humanize($key).'</div>'
                 ];
             },
             'choice_value' => function ($value) {
-               return $value;
+                return $value;
             },
         ));
     }
     
-    private  function getExistingRoles()
+    private function getExistingRoles()
     {
         $roleHierarchy = $this->userService->getsecurityRoles();
         $roles = array_keys($roleHierarchy);

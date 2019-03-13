@@ -177,7 +177,7 @@ class ContentTypeController extends AppController
             'managed' => true
         ]);
 
-        $contentTypeAdded = new ContentType ();
+        $contentTypeAdded = new ContentType();
         $form = $this->createFormBuilder($contentTypeAdded)->add('name', IconTextType::class, [
             'icon' => 'fa fa-gear',
             'label' => "Machine name",
@@ -215,11 +215,11 @@ class ContentTypeController extends AppController
             ]);
 
             if (count($contentTypes) != 0) {
-                $form->get('name')->addError(new FormError ('Another content type named ' . $contentTypeAdded->getName() . ' already exists'));
+                $form->get('name')->addError(new FormError('Another content type named ' . $contentTypeAdded->getName() . ' already exists'));
             }
 
             if (!$this->isValidName($contentTypeAdded->getName())) {
-                $form->get('name')->addError(new FormError ('The content type name is malformed (format: [a-z][a-z0-9_-]*)'));
+                $form->get('name')->addError(new FormError('The content type name is malformed (format: [a-z][a-z0-9_-]*)'));
             }
 
             if ($form->isSubmitted() && $form->isValid()) {
@@ -237,16 +237,18 @@ class ContentTypeController extends AppController
                     $normalizers = array(new JsonNormalizer());
                     $serializer = new Serializer($normalizers, $encoders);
                     /**@var ContentType $contentType */
-                    $contentType = $serializer->deserialize($fileContent,
+                    $contentType = $serializer->deserialize(
+                        $fileContent,
                         "EMS\CoreBundle\Entity\ContentType",
-                        'json');
+                        'json'
+                    );
                     $contentType->setName($name);
                     $contentType->setSingularName($singularName);
                     $contentType->setPluralName($pluralName);
                     $contentType->setEnvironment($environment);
                     $contentType->setActive(false);
                     $contentType->setDirty(true);
-                    $contentType->getFieldType()->updateAncestorReferences($contentType, NULL);
+                    $contentType->getFieldType()->updateAncestorReferences($contentType, null);
                     $contentType->setOrderKey($contentTypeRepository->maxOrderKey() + 1);
 
                     $em->persist($contentType);
@@ -265,7 +267,6 @@ class ContentTypeController extends AppController
                 return $this->redirectToRoute('contenttype.edit', [
                     'id' => $contentType->getId()
                 ]);
-
             } else {
                 $this->addFlash('error', 'Invalid form.');
             }
@@ -321,7 +322,6 @@ class ContentTypeController extends AppController
             if (isset($form['contentTypeNames']) && is_array($form['contentTypeNames'])) {
                 $counter = 0;
                 foreach ($form['contentTypeNames'] as $name) {
-
                     $contentType = $contentTypeRepository->findOneBy([
                         'deleted' => false,
                         'name' => $name
@@ -364,7 +364,7 @@ class ContentTypeController extends AppController
             if (null != $request->get('envId') && null != $request->get('name')) {
                 $defaultEnvironment = $environmetRepository->find($request->get('envId'));
                 if ($defaultEnvironment) {
-                    $contentType = new ContentType ();
+                    $contentType = new ContentType();
                     $contentType->setName($request->get('name'));
                     $contentType->setPluralName($contentType->getName());
                     $contentType->setSingularName($contentType->getName());
@@ -441,7 +441,7 @@ class ContentTypeController extends AppController
                     $fieldName = $formArray ['ems:internal:add:field:name'];
                     /** @var DataFieldType $dataFieldType */
                     $dataFieldType = $this->getDataFieldType($fieldTypeNameOrServiceName);
-                    $child = new FieldType ();
+                    $child = new FieldType();
                     $child->setName($fieldName);
                     $child->setType($fieldTypeNameOrServiceName);
                     $child->setParent($fieldType);
@@ -489,7 +489,7 @@ class ContentTypeController extends AppController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $subFieldName = '';
-            if ($form->get('fieldType')->has('ems:internal:add:subfield:name')){
+            if ($form->get('fieldType')->has('ems:internal:add:subfield:name')) {
                 $subFieldName = $form->get('fieldType')->get('ems:internal:add:subfield:name')->getData();
             }
 
@@ -515,7 +515,7 @@ class ContentTypeController extends AppController
             if (isset($formArray ['ems:internal:add:subfield:name'])
                 && strcmp($formArray ['ems:internal:add:subfield:name'], '') !== 0) {
                 if ($this->isValidName($formArray ['ems:internal:add:subfield:name'])) {
-                    $child = new FieldType ();
+                    $child = new FieldType();
                     $child->setName($formArray ['ems:internal:add:subfield:name']);
                     $child->setType(SubfieldType::class);
                     $child->setParent($fieldType);
@@ -749,8 +749,8 @@ class ContentTypeController extends AppController
 
 //                     $em->persist ( $contentType );
 //                     $em->flush ();
-//                     return $this->redirectToRoute ( 'contenttype.edit', [ 
-//                             'id' => $id 
+//                     return $this->redirectToRoute ( 'contenttype.edit', [
+//                             'id' => $id
 //                     ] );
 //                 }
 
@@ -758,8 +758,8 @@ class ContentTypeController extends AppController
 //                     $contentType->getFieldType ()->updateOrderKeys ();
 //                     $em->persist ( $contentType );
 //                     $em->flush ();
-//                     return $this->redirectToRoute ( 'contenttype.edit', [ 
-//                             'id' => $id 
+//                     return $this->redirectToRoute ( 'contenttype.edit', [
+//                             'id' => $id
 //                     ] );
 //                 }
 
@@ -768,8 +768,8 @@ class ContentTypeController extends AppController
 //                     $em->persist ( $contentType );
 //                     $em->flush ();
 //                     $this->addFlash ( 'notice', 'A field has been removed.' );
-//                     return $this->redirectToRoute ( 'contenttype.edit', [ 
-//                             'id' => $id 
+//                     return $this->redirectToRoute ( 'contenttype.edit', [
+//                             'id' => $id
 //                     ] );
 //                 }
 
@@ -778,8 +778,8 @@ class ContentTypeController extends AppController
 //                     $em->persist ( $contentType );
 //                     $em->flush ();
 //                     $this->addFlash ( 'notice', 'Fields have been reordered.' );
-//                     return $this->redirectToRoute ( 'contenttype.edit', [ 
-//                             'id' => $id 
+//                     return $this->redirectToRoute ( 'contenttype.edit', [
+//                             'id' => $id
 //                     ] );
 //                 }
             }
@@ -793,7 +793,7 @@ class ContentTypeController extends AppController
         return $this->render('@EMSCore/contenttype/edit.html.twig', [
             'form' => $form->createView(),
             'contentType' => $contentType,
-            'mapping' => isset (current($mapping) ['mappings'] [$contentType->getName()] ['properties']) ? current($mapping) ['mappings'] [$contentType->getName()] ['properties'] : false
+            'mapping' => isset(current($mapping) ['mappings'] [$contentType->getName()] ['properties']) ? current($mapping) ['mappings'] [$contentType->getName()] ['properties'] : false
         ]);
     }
 
@@ -906,9 +906,9 @@ class ContentTypeController extends AppController
 //         /** @var  Client $client */
 //         $client = $this->getElasticsearch();
 
-//         $mapping = $client->indices ()->getMapping ( [ 
+//         $mapping = $client->indices ()->getMapping ( [
 //                 'index' => $contentType->getEnvironment ()->getAlias (),
-//                 'type' => $contentType->getName () 
+//                 'type' => $contentType->getName ()
 //         ] );
 
         if ($contentType->getDirty()) {
@@ -918,7 +918,7 @@ class ContentTypeController extends AppController
         return $this->render('@EMSCore/contenttype/structure.html.twig', [
             'form' => $form->createView(),
             'contentType' => $contentType,
-//                 'mapping' => isset ( current ( $mapping ) ['mappings'] [$contentType->getName ()] ['properties'] ) ? current ( $mapping ) ['mappings'] [$contentType->getName ()] ['properties'] : false 
+//                 'mapping' => isset ( current ( $mapping ) ['mappings'] [$contentType->getName ()] ['properties'] ) ? current ( $mapping ) ['mappings'] [$contentType->getName ()] ['properties'] : false
         ]);
     }
 
@@ -930,7 +930,7 @@ class ContentTypeController extends AppController
         $em = $this->getDoctrine()->getManager();
         $contentType->getFieldType()->setName('source');
 
-        if ( in_array($action, ['save', 'saveAndClose']) ) {
+        if (in_array($action, ['save', 'saveAndClose'])) {
             $field->updateOrderKeys();
             $contentType->setDirty($contentType->getEnvironment()->getManaged());
 
@@ -942,18 +942,17 @@ class ContentTypeController extends AppController
                 $this->addFlash('warning', 'Content type has beend saved. Please consider to update the Elasticsearch mapping.');
             }
 
-            if ( $action === 'saveAndClose' ) {
+            if ($action === 'saveAndClose') {
                 return $this->redirectToRoute('ems_contenttype_reorder', [
                     'contentType' => $contentType->getId()
                 ]);
             }
         } else {
-
-            switch ($action){
+            switch ($action) {
                 case 'subfield':
-                    if($this->isValidName($subFieldName)){
+                    if ($this->isValidName($subFieldName)) {
 //                        dump($field);
-                        $child = new FieldType ();
+                        $child = new FieldType();
 //                        dump($subFieldName);
                         $child->setName($subFieldName);
                         $child->setType(SubfieldType::class);
@@ -965,8 +964,7 @@ class ContentTypeController extends AppController
 //                        dump('toto');
                         $em->flush();
 //                        exit;
-                    }
-                    else {
+                    } else {
                         $this->addFlash('error', 'The field\'s name is not valid (format: [a-z][a-z0-9_-]*),'. Mapping::HASH_FIELD.' and '.Mapping::SIGNATURE_FIELD.' are reserved.');
                     }
                     break;
@@ -1050,10 +1048,10 @@ class ContentTypeController extends AppController
     public function exportAction(ContentType $contentType, Request $request)
     {
         //Sanitize the CT
-        $contentType->setCreated(NULL);
-        $contentType->setModified(NULL);
+        $contentType->setCreated(null);
+        $contentType->setModified(null);
         $contentType->getFieldType()->removeCircularReference();
-        $contentType->setEnvironment(NULL);
+        $contentType->setEnvironment(null);
         //$contentType->getTemplates()->clear();
         //$contentType->getViews()->clear();
 

@@ -2,13 +2,13 @@
 
 namespace EMS\CoreBundle\Service;
 
-
 use EMS\CoreBundle\Entity\Audit;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Elasticsearch\Client;
 use Monolog\Logger;
 
-class AuditService {
+class AuditService
+{
     
     // index elasticSerach
     protected $index;
@@ -28,10 +28,10 @@ class AuditService {
         $this->client = $client;
         $this->userService = $userService;
         $this->logger = $logger;
-        
-    } 
+    }
     
-    public function auditLog($action, $rawData, $environment = null) { 
+    public function auditLog($action, $rawData, $environment = null)
+    {
         
         $date = new \DateTime();
         $userName = $this->userService->getCurrentUser()->getUserName();
@@ -45,8 +45,9 @@ class AuditService {
         }
     }
     
-    public function auditLogToIndex($action, $rawData, $environment = null){
-        try{
+    public function auditLogToIndex($action, $rawData, $environment = null)
+    {
+        try {
             $date = new \DateTime();
             $userName = $this->userService->getCurrentUser()->getUserName();
             $objectArray = ["action" => $action,
@@ -61,14 +62,14 @@ class AuditService {
                     'type' => 'Audit',
                     'body' => $objectArray
             ]);
-        }
-        catch(\Exception $e){
+        } catch (\Exception $e) {
             $this->logger->err('An error occured: '.$e->getMessage());
         }
     }
     
-    public function auditLogToDB($action, $rawData, $environment = null){
-        try{
+    public function auditLogToDB($action, $rawData, $environment = null)
+    {
+        try {
             $audit = new Audit();
             $audit->setAction($action);
             $audit->setRawData(serialize($rawData));
@@ -81,8 +82,7 @@ class AuditService {
             $em = $this->doctrine->getManager();
             $em->persist($audit);
             $em->flush();
-        }
-        catch(\Exception $e){
+        } catch (\Exception $e) {
             $this->logger->err('An error occured: '.$e->getMessage());
         }
     }

@@ -382,7 +382,8 @@ class ContentType
     public $defaultValue;
 
 
-    function __construct(){
+    function __construct()
+    {
 
         $this->templates = new \Doctrine\Common\Collections\ArrayCollection();
         $this->views = new \Doctrine\Common\Collections\ArrayCollection();
@@ -394,11 +395,11 @@ class ContentType
         $this->autoPublish = false;
 
          $fieldType = new FieldType();
-         $fieldType->setName ( 'source' );
-         $fieldType->setType ( ContainerFieldType::class );
-         $fieldType->setContentType ( $this );
-         $this->setFieldType ( $fieldType );
-         $this->setAskForOuuid( true );
+         $fieldType->setName('source');
+         $fieldType->setType(ContainerFieldType::class);
+         $fieldType->setContentType($this);
+         $this->setFieldType($fieldType);
+         $this->setAskForOuuid(true);
     }
 
 
@@ -415,19 +416,19 @@ class ContentType
     public function updateModified()
     {
         $this->modified = new \DateTime();
-        if(!isset($this->created)){
+        if (!isset($this->created)) {
             $this->created = $this->modified;
         }
-        if(!isset($this->deleted)){
+        if (!isset($this->deleted)) {
             $this->deleted = false;
         }
-        if(!isset($this->orderKey)){
+        if (!isset($this->orderKey)) {
             $this->orderKey = 0;
         }
-        if(!isset($this->rootContentType)){
+        if (!isset($this->rootContentType)) {
             $this->rootContentType = true;
         }
-        if(!isset($this->active)){
+        if (!isset($this->active)) {
             $this->active = false;
         }
     }

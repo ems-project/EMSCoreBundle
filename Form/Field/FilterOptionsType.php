@@ -10,7 +10,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class FilterOptionsType extends AbstractType {
+class FilterOptionsType extends AbstractType
+{
     
     
     const FIELDS_BY_TYPE = [
@@ -43,8 +44,9 @@ class FilterOptionsType extends AbstractType {
      * {@inheritdoc}
      *
      */
-    public function buildForm(FormBuilderInterface $builder, array $options) {
-        $builder->add ( 'type', ChoiceType::class, [
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('type', ChoiceType::class, [
                 'choices' => [
                         'Standard' => 'standard',
                         'Stop' => 'stop',
@@ -53,7 +55,7 @@ class FilterOptionsType extends AbstractType {
                         'Elision' => 'elision',
                         'ASCII Folding' => 'asciifolding',
                 ],
-        ] )->add ( 'stopwords', ChoiceType::class, [
+        ])->add('stopwords', ChoiceType::class, [
                 'attr' => ['class' => 'filter_option'],
                 'required' => false,
                 'choices' => [
@@ -92,7 +94,7 @@ class FilterOptionsType extends AbstractType {
                         'Turkish' => '_turkish_',
                         'Thai' => '_thai_',
                 ],
-        ] )->add ( 'name', ChoiceType::class, [
+        ])->add('name', ChoiceType::class, [
                 'attr' => ['class' => 'filter_option'],
                 'required' => false,
                 'choices' => [
@@ -152,42 +154,42 @@ class FilterOptionsType extends AbstractType {
                         'Swedish (light)' => 'light_swedish',
                         'Turkish' => 'turkish',
                 ],
-        ] )->add ( 'keywords', TextareaType::class, [
+        ])->add('keywords', TextareaType::class, [
                 'attr' => ['class' => 'filter_option'],
                 'required' => false,
-        ] )->add ( 'keywords_pattern', TextType::class, [
+        ])->add('keywords_pattern', TextType::class, [
                 'attr' => ['class' => 'filter_option'],
                 'required' => false,
-        ] )->add ( 'ignore_case', CheckboxType::class, [
+        ])->add('ignore_case', CheckboxType::class, [
                 'attr' => ['class' => 'filter_option'],
                 'required' => false,
-        ] )->add ( 'remove_trailing', CheckboxType::class, [
+        ])->add('remove_trailing', CheckboxType::class, [
                 'attr' => ['class' => 'filter_option'],
                 'required' => false,
-        ] )->add ( 'articles_case', CheckboxType::class, [
+        ])->add('articles_case', CheckboxType::class, [
                 'attr' => ['class' => 'filter_option'],
                 'required' => false,
-        ] )->add ( 'preserve_original', CheckboxType::class, [
+        ])->add('preserve_original', CheckboxType::class, [
                 'attr' => ['class' => 'filter_option'],
                 'required' => false,
-        ] )->add ( 'articles', TextareaType::class, [
+        ])->add('articles', TextareaType::class, [
                 'attr' => ['class' => 'filter_option'],
                 'required' => false,
-        ] );
+        ]);
         
         $textArea2Array = new CallbackTransformer(
-                function ($tagsAsArray) {
-                    if(is_array($tagsAsArray)){
-                        // transform the array to a string
-                        return implode(', ', $tagsAsArray);
-                    }
+            function ($tagsAsArray) {
+                if (is_array($tagsAsArray)) {
+                    // transform the array to a string
+                    return implode(', ', $tagsAsArray);
+                }
                     return $tagsAsArray;
-                },
-                function ($tagsAsString) {
+            },
+            function ($tagsAsString) {
                     // transform the string back to an array
                     return explode(', ', $tagsAsString);
-                }
-                );
+            }
+        );
         
         $builder->get('articles')->addModelTransformer($textArea2Array);
         $builder->get('keywords')->addModelTransformer($textArea2Array);

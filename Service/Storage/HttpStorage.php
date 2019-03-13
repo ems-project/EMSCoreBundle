@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Service\Storage;
 
-
 use EMS\CoreBundle\Service\RestClientService;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
@@ -39,21 +38,20 @@ class HttpStorage implements StorageInterface
             $context = stream_context_create(array('http' => array('method' => 'HEAD')));
             $fd = fopen($this->getUrl . $hash, 'rb', false, $context);
             fclose($fd);
-            return TRUE;
+            return true;
         } catch (Exception $e) {
             //So it's a FALSE
         }
-        return FALSE;
+        return false;
     }
 
-    public function create($hash, $filename, $cacheContext = FALSE)
+    public function create($hash, $filename, $cacheContext = false)
     {
         if ($cacheContext) {
             return false;
         }
 
         try {
-
             $client = $this->restClient->getClient();
 
             $client->request('POST', $this->postUrl, [
@@ -68,7 +66,6 @@ class HttpStorage implements StorageInterface
                 ],
 
             ]);
-
         } catch (GuzzleException $e) {
             return false;
         }
@@ -118,7 +115,7 @@ class HttpStorage implements StorageInterface
         } catch (Exception $e) {
             //So it's a FALSE
         }
-        return FALSE;
+        return false;
     }
 
     public function getLastUpdateDate($hash, $cacheContext = false)
@@ -143,7 +140,7 @@ class HttpStorage implements StorageInterface
         } catch (Exception $e) {
             //So it's a FALSE
         }
-        return FALSE;
+        return false;
     }
 
     public function __toString()

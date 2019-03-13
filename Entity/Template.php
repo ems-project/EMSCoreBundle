@@ -42,14 +42,14 @@ class Template
      *
      * @ORM\Column(name="name", type="string", length=255)
      */
-    private $name; 
+    private $name;
 
     /**
      * @var string
      *
      * @ORM\Column(name="icon", type="string", length=255, nullable=true)
      */
-    private $icon; 
+    private $icon;
     
     /**
      * @var string
@@ -73,7 +73,7 @@ class Template
     private $editWithWysiwyg;
     
     /** @var string
-     * 
+     *
      * @ORM\Column(name="render_option", type="string")
      */
     private $renderOption;
@@ -99,7 +99,7 @@ class Template
     private $accumulateInOneFile;
     
     /** @var string
-    
+
     /**
      * @var bool
      *
@@ -108,7 +108,7 @@ class Template
     private $preview;
     
     /** @var string
-     * 
+     *
      * @ORM\Column(name="mime_type", type="string", nullable=true)
      */
     private $mimeType;
@@ -137,7 +137,7 @@ class Template
      *
      * @ORM\Column(name="role", type="string")
      */
-       private $role;
+    private $role;
        
        /**
         * @ORM\ManyToMany(targetEntity="Environment", cascade={"persist"})
@@ -146,33 +146,33 @@ class Template
      *      inverseJoinColumns={@ORM\JoinColumn(name="environment_id", referencedColumnName="id")}
      *      )
      */
-       private $environments;
+    private $environments;
        
        /** @var string
        *
        * @ORM\Column(name="role_to", type="string")
        */
-       private $roleTo;
+    private $roleTo;
        
        /** @var string
        *
        * @ORM\Column(name="role_cc", type="string")
        */
-       private $roleCc;
+    private $roleCc;
        
        /**
         * @var \ObjectPickerType
         *
         * @ORM\Column(name="circles_to", type="json_array", nullable=true)
         */
-       private $circlesTo;
+    private $circlesTo;
        
        /**
         * @var string
         *
         * @ORM\Column(name="response_template", type="text", nullable=true)
         */
-       private $responseTemplate;
+    private $responseTemplate;
 
     /** @var string
      *
@@ -220,10 +220,10 @@ class Template
     public function updateModified()
     {
         $this->modified = new \DateTime();
-            if(!isset($this->created)){
+        if (!isset($this->created)) {
             $this->created = $this->modified;
         }
-        if(!isset($this->orderKey)){
+        if (!isset($this->orderKey)) {
             $this->orderKey = 0;
         }
     }
@@ -733,7 +733,8 @@ class Template
     /**
      * ToString
      */
-    public function __toString() {
+    public function __toString()
+    {
         return $this->name;
     }
     
@@ -781,7 +782,7 @@ class Template
     public function isEnvironmentExist($name)
     {
         foreach ($this->environments as $environment) {
-            if( $environment->getname() === $name) {
+            if ($environment->getname() === $name) {
                 return true;
             }
         }
@@ -925,6 +926,4 @@ class Template
         $this->disposition = $disposition;
         return $this;
     }
-
-
 }

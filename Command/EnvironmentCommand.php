@@ -31,7 +31,7 @@ class EnvironmentCommand extends ContainerAwareCommand
     /**@var EnvironmentService*/
     private $environmentService;
 
-    public function __construct(Logger $logger, EnvironmentService $environmentService )
+    public function __construct(Logger $logger, EnvironmentService $environmentService)
     {
         $this->logger = $logger;
         $this->environmentService = $environmentService;
@@ -59,18 +59,15 @@ class EnvironmentCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if($input->hasOption('all')){
+        if ($input->hasOption('all')) {
             $environments = $this->environmentService->getAll();
-        }
-        else {
+        } else {
             $environments = $this->environmentService->getManagedEnvironement();
         }
 
         /** @var Environment $environment */
-        foreach ( $environments as $environment) {
+        foreach ($environments as $environment) {
             $output->writeln($environment->getName());
         }
     }
-
-
 }

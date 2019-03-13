@@ -20,7 +20,7 @@ use EMS\CoreBundle\Entity\Revision;
 
 class CleanDeletedContentTypeCommand extends ContainerAwareCommand
 {
-    protected  $client;
+    protected $client;
     protected $mapping;
     protected $doctrine;
     protected $logger;
@@ -64,7 +64,7 @@ class CleanDeletedContentTypeCommand extends ContainerAwareCommand
 
         $output->writeln('Cleaning deleted fields');
         $fields = $fieldRepo->findBy(['deleted' => true]);
-        foreach ($fields as $field){
+        foreach ($fields as $field) {
             $em->remove($field);
         }
         $em->flush();
@@ -75,11 +75,9 @@ class CleanDeletedContentTypeCommand extends ContainerAwareCommand
         ]);
 
         foreach ($contentTypes as $contentType) {
-
-
             $output->writeln('Remove deleted content type '.$contentType->getName());
             //remove field types
-            if($contentType->getFieldType()){
+            if ($contentType->getFieldType()) {
                 $contentType->unsetFieldType();
                 $em->persist($contentType);
             }
@@ -89,14 +87,14 @@ class CleanDeletedContentTypeCommand extends ContainerAwareCommand
             ]);
 
             $output->writeln('Remove '.count($fields).' assosiated fields');
-            foreach ($fields as $field){
+            foreach ($fields as $field) {
                 $em->remove($field);
                 $em->flush($field);
             }
 
             $revisions = $revisionRepo->findBy(['contentType' => $contentType]);
             $output->writeln('Remove '.count($revisions).' assosiated revisions');
-            foreach ($revisions as $revision){
+            foreach ($revisions as $revision) {
                 $em->remove($revision);
                 $em->flush($revision);
             }
@@ -104,14 +102,14 @@ class CleanDeletedContentTypeCommand extends ContainerAwareCommand
             $templates = $templateRepo->findBy(['contentType' => $contentType]);
             $output->writeln('Remove '.count($templates).' assosiated templates');
             /**@var \EMS\CoreBundle\Entity\Template $template*/
-            foreach ($templates as $template){
+            foreach ($templates as $template) {
                 $em->remove($template);
                 $em->flush($template);
             }
 
             $views = $viewRepo->findBy(['contentType' => $contentType]);
             $output->writeln('Remove '.count($views).' assosiated views');
-            foreach ($views as $view){
+            foreach ($views as $view) {
                 $em->remove($view);
                 $em->flush($view);
             }
@@ -128,16 +126,12 @@ class CleanDeletedContentTypeCommand extends ContainerAwareCommand
         $revisions = $revisionRepo->findBy([
                 'deleted'=> true
         ]);
-        foreach ($revisions as $revision){
+        foreach ($revisions as $revision) {
             $em->remove($revision);
         }
         $em->flush();
 
 
         $output->writeln('Done');
-
     }
-
-
-
 }

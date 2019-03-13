@@ -29,7 +29,7 @@ class I18nController extends Controller
     {
         $filters = $request->query->get('i18n_form');
 
-         //TODO: Why do we need to unset these fields ? 
+         //TODO: Why do we need to unset these fields ?
 //          if (is_array($filters)) {
 //              unset($filters['filter']);
 //              unset($filters['_token']);
@@ -40,11 +40,11 @@ class I18nController extends Controller
          $form = $this->createForm(I18nFormType::class, $i18nFilter, [
                  'method' => 'GET'
          ]);
-         $form->handleRequest ( $request );
+         $form->handleRequest($request);
          
-         if($form->isSubmitted()){
-             $i18nFilter = $form->getData();
-         }
+        if ($form->isSubmitted()) {
+            $i18nFilter = $form->getData();
+        }
         
         $em = $this->getDoctrine()->getManager();
         
@@ -69,7 +69,8 @@ class I18nController extends Controller
     /**
      * @return I18nService
      */
-    private function getI18nService(){
+    private function getI18nService()
+    {
         return $this->get('ems.service.i18n');
     }
 
@@ -112,7 +113,7 @@ class I18nController extends Controller
     public function editAction(Request $request, I18n $i18n)
     {
 //         $deleteForm = $this->createDeleteForm($i18n);
-        if(empty($i18n->getContent())){
+        if (empty($i18n->getContent())) {
             $i18n->setContent([
                 [
                     'locale' => '',

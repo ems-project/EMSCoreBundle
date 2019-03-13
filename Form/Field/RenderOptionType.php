@@ -5,7 +5,8 @@ namespace EMS\CoreBundle\Form\Field;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
-class RenderOptionType extends ChoiceType {
+class RenderOptionType extends ChoiceType
+{
 
     const EMBED = 'embed';
     const EXPORT = 'export';
@@ -50,7 +51,7 @@ class RenderOptionType extends ChoiceType {
             'data_class' => null,
             'choice_translation_domain' => true,
             'choice_value' => function ($value) {
-               return $value;
+                return $value;
             },
         ));
     }

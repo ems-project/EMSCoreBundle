@@ -2,15 +2,16 @@
 
 namespace EMS\CoreBundle\Service;
 
-
-
-class AggregateOptionService extends EntityService{
+class AggregateOptionService extends EntityService
+{
     
-    protected function getRepositoryIdentifier() {
+    protected function getRepositoryIdentifier()
+    {
         return 'EMSCoreBundle:AggregateOption';
     }
     
-    protected function getEntityName() {
+    protected function getEntityName()
+    {
         return 'Aggregate Option';
     }
 }

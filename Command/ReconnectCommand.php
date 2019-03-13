@@ -57,7 +57,7 @@ class ReconnectCommand extends ContainerAwareCommand
         $environmentName = $input->getArgument('name');
         $environment = $this->environmentService->getByName($environmentName);
 
-        if(!$environment){
+        if (!$environment) {
             $output->writeln('Environment not found');
             return -1;
         }
@@ -66,25 +66,20 @@ class ReconnectCommand extends ContainerAwareCommand
             'index' => $environment->getAlias(),
         ]);
 
-        foreach ($mappings as $index => $indexMapping){
-            foreach ($indexMapping['mappings'] as $type => $typeMapping){
-                if(isset($typeMapping['_meta']['generator']) && $typeMapping['_meta']['generator'] === 'elasticms' && isset($typeMapping['_meta']['content_type'])){
+        foreach ($mappings as $index => $indexMapping) {
+            foreach ($indexMapping['mappings'] as $type => $typeMapping) {
+                if (isset($typeMapping['_meta']['generator']) && $typeMapping['_meta']['generator'] === 'elasticms' && isset($typeMapping['_meta']['content_type'])) {
                     $contentType = $this->contentTypeService->getByName($typeMapping['_meta']['content_type']);
-                    if($contentType){
+                    if ($contentType) {
                         $this->contentTypeService->setSingleTypeIndex($environment, $contentType, $index);
                         $output->writeln('Index found for content type: '.$typeMapping['_meta']['content_type']);
-                    }
-                    else {
+                    } else {
                         $output->writeln('Content type not found: '.$typeMapping['_meta']['content_type']);
                     }
-                }
-                else {
+                } else {
                     $output->writeln('This mapping was not defined be elasticms: '.$type);
                 }
             }
         }
     }
-    
-
-
 }

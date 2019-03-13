@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace EMS\CoreBundle\Form\Form;
 
@@ -9,30 +9,33 @@ use EMS\CoreBundle\Entity\FieldType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-class EmsCollectionType extends CollectionType{
+class EmsCollectionType extends CollectionType
+{
 
     /**@var AuthorizationCheckerInterface $authorizationChecker*/
     protected $authorizationChecker;
     
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker) {
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker)
+    {
         $this->authorizationChecker = $authorizationChecker;
     }
     
     /**
-     * 
+     *
      * {@inheritDoc}
      * @see \Symfony\Component\Form\Extension\Core\Type\CollectionType::buildForm()
      */
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         /** @var FieldType $fieldType */
-        $fieldType = clone $builder->getOptions () ['metadata'];
+        $fieldType = clone $builder->getOptions() ['metadata'];
         $options['metadata'] = $fieldType;
         
         $entryOptions = $fieldType->getDisplayOptions();
         
 
         $disabled = false;
-        if(strcmp('cli', php_sapi_name()) !== 0){
+        if (strcmp('cli', php_sapi_name()) !== 0) {
             $enable = ($options['migration'] && !$fieldType->getMigrationgOption('protected', true)) || $this->authorizationChecker->isGranted($fieldType->getMinimumRole());
             $disabled = !$enable;
         }
@@ -55,10 +58,11 @@ class EmsCollectionType extends CollectionType{
         parent::buildForm($builder, $options);
     }
     
-    public function configureOptions(OptionsResolver $resolver){
+    public function configureOptions(OptionsResolver $resolver)
+    {
         
         /* set the default option value for this kind of compound field */
-        parent::configureOptions ( $resolver );
+        parent::configureOptions($resolver);
         $resolver->setDefaults([
                 'collapsible' => false,
                 'icon' => null,
@@ -67,5 +71,4 @@ class EmsCollectionType extends CollectionType{
                 'sortable' => false,
         ]);
     }
-    
 }

@@ -18,8 +18,9 @@ class NatureController extends AppController
     /**
      * @Route("/content-type/nature/reorder/{contentType}", name="nature.reorder"))
      */
-    public function reorderAction(ContentType $contentType, Request $request) {
-        if($contentType->getOrderField() == null || $contentType->getFieldType()->__get('ems_'.$contentType->getOrderField()) == null ){
+    public function reorderAction(ContentType $contentType, Request $request)
+    {
+        if ($contentType->getOrderField() == null || $contentType->getFieldType()->__get('ems_'.$contentType->getOrderField()) == null) {
             $this->addFlash('warning', 'This content type does not have any order field');
 
             return $this->redirectToRoute('data.draft_in_progress', [
@@ -28,10 +29,10 @@ class NatureController extends AppController
         }
         
 
-        if($contentType->getFieldType()->__get('ems_'.$contentType->getOrderField())->getRestrictionOptions()['minimum_role'] != null && !$this->isGranted($contentType->getFieldType()->__get('ems_'.$contentType->getOrderField())->getRestrictionOptions()['minimum_role'])){
+        if ($contentType->getFieldType()->__get('ems_'.$contentType->getOrderField())->getRestrictionOptions()['minimum_role'] != null && !$this->isGranted($contentType->getFieldType()->__get('ems_'.$contentType->getOrderField())->getRestrictionOptions()['minimum_role'])) {
             return $this->redirectToRoute('data.draft_in_progress', [
                     'contentTypeId' => $contentType->getId(),
-            ]);            
+            ]);
         }
         
         $result = $this->getElasticsearch()->search([
@@ -43,7 +44,7 @@ class NatureController extends AppController
                 ]
         ]);
         
-        if($result['hits']['total'] > $this::MAX_ELEM) {
+        if ($result['hits']['total'] > $this::MAX_ELEM) {
             $this->addFlash('warning', 'This content type have to much elements to reorder them all in once');
         }
         
@@ -63,15 +64,14 @@ class NatureController extends AppController
         $counter = 1;
         
         if ($form->isSubmitted()) {
-            foreach($request->request->get('reorder')['items'] as $itemKey => $value){
+            foreach ($request->request->get('reorder')['items'] as $itemKey => $value) {
                 try {
                     $revision = $dataService->initNewDraft($contentType->getName(), $itemKey);
                     $data = $revision->getRawData();
                     $data[$contentType->getOrderField()] = $counter++;
                     $revision->setRawData($data);
-                    $dataService->finalizeDraft($revision);                    
-                }
-                catch (\Exception $e) {
+                    $dataService->finalizeDraft($revision);
+                } catch (\Exception $e) {
                     $this->addFlash('warning', 'It was impossible to update the item '.$itemKey.': '.$e->getMessage());
                 }
             }
@@ -83,10 +83,10 @@ class NatureController extends AppController
             ]);
         }
 
-        return $this->render( '@EMSCore/nature/reorder.html.twig', [
+        return $this->render('@EMSCore/nature/reorder.html.twig', [
                 'contentType' => $contentType,
                 'form' => $form->createView(),
                 'result' => $result,
-         ] );
+         ]);
     }
 }

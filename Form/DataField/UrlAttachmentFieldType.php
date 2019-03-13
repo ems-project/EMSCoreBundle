@@ -23,13 +23,15 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
  * @author Mathieu De Keyzer <ems@theus.be>
  *
  */
-class UrlAttachmentFieldType extends DataFieldType {
+class UrlAttachmentFieldType extends DataFieldType
+{
 
     /**@var FileService */
     private $fileService;
     
     
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, FileService $fileService) {
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, FileService $fileService)
+    {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
         $this->fileService = $fileService;
     }
@@ -40,7 +42,8 @@ class UrlAttachmentFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public static function getIcon() {
+    public static function getIcon()
+    {
         return 'fa fa-cloud-download';
     }
 
@@ -49,7 +52,8 @@ class UrlAttachmentFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function getLabel(){
+    public function getLabel()
+    {
         return 'Url Attachment (indexed) field';
     }
     
@@ -67,16 +71,16 @@ class UrlAttachmentFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function reverseViewTransform($data, FieldType $fieldType){
+    public function reverseViewTransform($data, FieldType $fieldType)
+    {
         /**@var DataField $out*/
         $dataField = parent::reverseViewTransform($data, $fieldType);
-        if(empty($data)){
-            if($dataField->getFieldType()->getRestrictionOptions()['mandatory']){
+        if (empty($data)) {
+            if ($dataField->getFieldType()->getRestrictionOptions()['mandatory']) {
                 $dataField->addMessage('This entry is required');
             }
             $dataField->setRawData(['_url'=>null, '_content' => ""]);
-        }
-        elseif(is_string($data)) {
+        } elseif (is_string($data)) {
             try {
                 $content = file_get_contents($data);
                 $rawData = [
@@ -84,24 +88,22 @@ class UrlAttachmentFieldType extends DataFieldType {
                     '_content' => base64_encode($content),
                     '_size' => strlen($content),
                 ];
-                $dataField->setRawData($rawData);                
-            }
-            catch(\Exception $e) {
+                $dataField->setRawData($rawData);
+            } catch (\Exception $e) {
                 $dataField->addMessage(sprintf(
-                        'Impossible to fetch the ressource due to %s',
-                        $e->getMessage()
-                        ));
+                    'Impossible to fetch the ressource due to %s',
+                    $e->getMessage()
+                ));
                 $dataField->setRawData([
                         '_url' => $data,
                         '_content' => "",
                         '_size' => 0,
-                ]);    
+                ]);
             }
-        }
-        else {
+        } else {
             $dataField->addMessage(sprintf(
-                    'Data not supported: %s',
-                    json_encode($data)
+                'Data not supported: %s',
+                json_encode($data)
             ));
         }
         return $dataField;
@@ -114,10 +116,11 @@ class UrlAttachmentFieldType extends DataFieldType {
      * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::modelTransform()
      */
-    public function modelTransform($data, FieldType $fieldType){
-        if(is_array($data)){
-            foreach ($data as $id => $content){
-                if(! in_array($id, ['_url', '_size'], true)) {
+    public function modelTransform($data, FieldType $fieldType)
+    {
+        if (is_array($data)) {
+            foreach ($data as $id => $content) {
+                if (! in_array($id, ['_url', '_size'], true)) {
                     unset($data[$id]);
                 }
             }
@@ -130,16 +133,17 @@ class UrlAttachmentFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function viewTransform(DataField $data) {
+    public function viewTransform(DataField $data)
+    {
         $out = parent::viewTransform($data);
-        if( !empty($out)) {
-            if(!empty($out['_url'])){
-                if(is_string($out['_url'])){
-                    return $out['_url'];                                    
+        if (!empty($out)) {
+            if (!empty($out['_url'])) {
+                if (is_string($out['_url'])) {
+                    return $out['_url'];
                 }
                 $data->addMessage('Non supported input data : '.json_encode($out));
             }
-         }
+        }
          
          return "";
     }
@@ -150,24 +154,25 @@ class UrlAttachmentFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options) {
-        parent::buildOptionsForm ( $builder, $options );
-        $optionsForm = $builder->get ( 'options' );
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    {
+        parent::buildOptionsForm($builder, $options);
+        $optionsForm = $builder->get('options');
         
         // specific mapping options
-        $optionsForm->get ( 'mappingOptions' )
-        ->add ( 'analyzer', AnalyzerPickerType::class)
-        ->add ( 'copy_to', TextType::class, [
+        $optionsForm->get('mappingOptions')
+        ->add('analyzer', AnalyzerPickerType::class)
+        ->add('copy_to', TextType::class, [
                 'required' => false,
-        ] );
+        ]);
         
-        $optionsForm->get ( 'displayOptions' )
-        ->add ( 'icon', IconPickerType::class, [
+        $optionsForm->get('displayOptions')
+        ->add('icon', IconPickerType::class, [
                 'required' => false
-        ] )
-        ->add ( 'prefixIcon', IconPickerType::class, [
+        ])
+        ->add('prefixIcon', IconPickerType::class, [
                 'required' => false
-        ] );
+        ]);
     }
 
 
@@ -176,13 +181,14 @@ class UrlAttachmentFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public static function buildObjectArray(DataField $data, array &$out) {
-        if (! $data->getFieldType ()->getDeleted ()) {
+    public static function buildObjectArray(DataField $data, array &$out)
+    {
+        if (! $data->getFieldType()->getDeleted()) {
             /**
              * by default it serialize the text value.
              * It can be overrided.
              */
-            $out [$data->getFieldType ()->getName ()] = $data->getRawData();
+            $out [$data->getFieldType()->getName()] = $data->getRawData();
         }
     }
     
@@ -191,16 +197,18 @@ class UrlAttachmentFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function configureOptions(OptionsResolver $resolver) {
+    public function configureOptions(OptionsResolver $resolver)
+    {
         /* set the default option value for this kind of compound field */
-        parent::configureOptions ( $resolver );
-        $resolver->setDefault ( 'icon', null );
+        parent::configureOptions($resolver);
+        $resolver->setDefault('icon', null);
     }
     
     /**
      * {@inheritdoc}
      */
-    public function generateMapping(FieldType $current, $withPipeline){
+    public function generateMapping(FieldType $current, $withPipeline)
+    {
         $mapping = parent::generateMapping($current, $withPipeline);
         $body = [
                 "type" => "nested",
@@ -217,7 +225,7 @@ class UrlAttachmentFieldType extends DataFieldType {
                 ],
             ];
         
-        if($withPipeline) {
+        if ($withPipeline) {
             $body['properties']['_attachment'] = [
             //                 "type" => "nested",
                     "properties" => [
@@ -252,7 +260,8 @@ class UrlAttachmentFieldType extends DataFieldType {
     /**
      * {@inheritdoc}
      */
-    public static function generatePipeline(FieldType $current){
+    public static function generatePipeline(FieldType $current)
+    {
         return [
                 "attachment" => [
                         'field' => $current->getName().'._content',

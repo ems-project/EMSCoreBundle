@@ -19,8 +19,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
 
-
-class TemplateType extends AbstractType {
+class TemplateType extends AbstractType
+{
     
     private $choices;
     private $service;
@@ -33,28 +33,29 @@ class TemplateType extends AbstractType {
     }
     /**
      *
-     * @param FormBuilderInterface $builder            
-     * @param array $options            
+     * @param FormBuilderInterface $builder
+     * @param array $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         
         /** @var Template $template */
-        $template = $builder->getData ();
+        $template = $builder->getData();
         
         $builder
-        ->add ( 'name', IconTextType::class, [
+        ->add('name', IconTextType::class, [
             'icon' => 'fa fa-tag'
-        ] )
-        ->add ( 'icon', IconPickerType::class, [
+        ])
+        ->add('icon', IconPickerType::class, [
             'required' => false,
         ])
-        ->add ( 'public', CheckboxType::class, [
+        ->add('public', CheckboxType::class, [
             'required' => false,
         ])
-        ->add ( 'editWithWysiwyg', CheckboxType::class, [
+        ->add('editWithWysiwyg', CheckboxType::class, [
             'required' => false,
         ])
-        ->add ( 'preview', CheckboxType::class, [
+        ->add('preview', CheckboxType::class, [
             'required' => false,
             'label' => 'Preview',
         ])
@@ -69,32 +70,32 @@ class TemplateType extends AbstractType {
                     return '<i class="fa fa-square text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getName();
                 },
                 'choice_value' => function ($value) {
-                    if($value != null){
-                        return $value->getId();                    
+                    if ($value != null) {
+                        return $value->getId();
                     }
                     return $value;
                 },
         ])
         ->add('role', RolePickerType::class)
-        ->add ( 'active', CheckboxType::class, [
+        ->add('active', CheckboxType::class, [
                 'required' => false,
                 'label' => 'Active',
         ])
         
-        ->add( 'renderOption', RenderOptionType::class, [
+        ->add('renderOption', RenderOptionType::class, [
                 'required' => true,
         ])
-        ->add( 'accumulateInOneFile', CheckboxType::class, [
+        ->add('accumulateInOneFile', CheckboxType::class, [
                 'required' => false,
         ])
-        ->add( 'mimeType', TextType::class, [
+        ->add('mimeType', TextType::class, [
                 'required' => false,
         ])
-        ->add( 'emailContentType', TextType::class, [
+        ->add('emailContentType', TextType::class, [
                 'required' => false,
                 'label' => 'Content type (ie: text/html)',
         ])
-        ->add( 'filename', CodeEditorType::class, [
+        ->add('filename', CodeEditorType::class, [
                 'required' => false,
                 'attr' => [
                 ],
@@ -102,16 +103,16 @@ class TemplateType extends AbstractType {
                 'max-lines' => 5,
                 'min-lines' => 5,
         ])
-        ->add( 'extension', TextType::class, [
+        ->add('extension', TextType::class, [
                 'required' => false,
         ])
-        ->add ( 'body', CodeEditorType::class, [
+        ->add('body', CodeEditorType::class, [
                 'required' => false,
                 'attr' => [
                 ],
                 'slug' => 'template-body'
-        ] )
-        ->add ( 'header', TextareaType::class, [
+        ])
+        ->add('header', TextareaType::class, [
             'required' => false,
             'attr' => [
                 'rows' => '10',
@@ -124,7 +125,7 @@ class TemplateType extends AbstractType {
                 'type' => $this->circleType,
                 'multiple' => true,
         ])
-        ->add( 'responseTemplate', CodeEditorType::class, [
+        ->add('responseTemplate', CodeEditorType::class, [
             'required' => false,
             'attr' => [
             ],
@@ -140,7 +141,7 @@ class TemplateType extends AbstractType {
             'required' => false,
             'choices' => array_combine(array_keys(CPDF::$PAPER_SIZES), array_keys(CPDF::$PAPER_SIZES)),
             'required' => false,
-        ])->add ( 'disposition', ChoiceType::class, [
+        ])->add('disposition', ChoiceType::class, [
             'label' => 'File diposition',
             'expanded' => true,
             'attr' => [
@@ -150,18 +151,18 @@ class TemplateType extends AbstractType {
                 'Attachment' => 'attachment',
                 'Inline' => 'inline',
             ]
-        ] )
-        ->add ( 'allow_origin', TextType::class, [
+        ])
+        ->add('allow_origin', TextType::class, [
             'label' => 'The Access-Control-Allow-Originm header',
             'required' => false,
             'attr' => [
             ],
-        ] )
-        ->add ( 'save', SubmitEmsType::class, [
+        ])
+        ->add('save', SubmitEmsType::class, [
             'attr' => [
                 'class' => 'btn-primary btn-sm '
-        ],
+            ],
             'icon' => 'fa fa-save'
-        ] );
+        ]);
     }
 }

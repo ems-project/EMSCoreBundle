@@ -11,23 +11,26 @@ use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use EMS\CoreBundle\Entity\DataField;
 
-class SelectFieldType extends DataFieldType {
+class SelectFieldType extends DataFieldType
+{
     
     /**
      *
      * {@inheritdoc}
      *
      */
-    public function getLabel(){
+    public function getLabel()
+    {
         return 'Select field';
     }
     
     /**
      * Get a icon to visually identify a FieldType
-     * 
+     *
      * @return string
      */
-    public static function getIcon(){
+    public static function getIcon()
+    {
         return 'fa fa-caret-square-o-down';
     }
     
@@ -37,32 +40,32 @@ class SelectFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         
         /** @var FieldType $fieldType */
-        $fieldType = $builder->getOptions () ['metadata'];
+        $fieldType = $builder->getOptions() ['metadata'];
         
         $choices = [];
         $values = explode("\n", str_replace("\r", "", $options['choices']));
         $labels = explode("\n", str_replace("\r", "", $options['labels']));
         
-        foreach ($values as $id => $value){
-            if(isset($labels[$id]) && strlen($labels[$id]) > 0){
+        foreach ($values as $id => $value) {
+            if (isset($labels[$id]) && strlen($labels[$id]) > 0) {
                 $choices[$labels[$id]] = $value;
-            }
-            else {
+            } else {
                 $choices[$value] = $value;
             }
         }
         
-        $builder->add ( 'value', ChoiceType::class, [ 
+        $builder->add('value', ChoiceType::class, [
                 'label' => (isset($options['label'])?$options['label']:$fieldType->getName()),
                 'required' => false,
                 'disabled'=> $this->isDisabled($options),
                 'choices' => $choices,
                 'empty_data'  => null,
                 'multiple' => $options['multiple'],
-        ] );
+        ]);
     }
     
 
@@ -71,12 +74,13 @@ class SelectFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function configureOptions(OptionsResolver $resolver) {
+    public function configureOptions(OptionsResolver $resolver)
+    {
         /* set the default option value for this kind of compound field */
-        parent::configureOptions ( $resolver );
-        $resolver->setDefault ( 'choices', [] );
-        $resolver->setDefault ( 'labels', [] );
-        $resolver->setDefault ( 'multiple', false );
+        parent::configureOptions($resolver);
+        $resolver->setDefault('choices', []);
+        $resolver->setDefault('labels', []);
+        $resolver->setDefault('multiple', false);
     }
     
     /**
@@ -84,15 +88,14 @@ class SelectFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public static function buildObjectArray(DataField $data, array &$out) {
-        if (! $data->getFieldType ()->getDeleted ()) {
-            if($data->getFieldType()->getDisplayOptions()['multiple']){
-                $out [$data->getFieldType ()->getName ()] = $data->getArrayTextValue();
-            }
-            else{
+    public static function buildObjectArray(DataField $data, array &$out)
+    {
+        if (! $data->getFieldType()->getDeleted()) {
+            if ($data->getFieldType()->getDisplayOptions()['multiple']) {
+                $out [$data->getFieldType()->getName()] = $data->getArrayTextValue();
+            } else {
                 parent::buildObjectArray($data, $out);
             }
-            
         }
     }
     
@@ -101,22 +104,23 @@ class SelectFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options) {
-        parent::buildOptionsForm ( $builder, $options );
-        $optionsForm = $builder->get ( 'options' );
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    {
+        parent::buildOptionsForm($builder, $options);
+        $optionsForm = $builder->get('options');
         
         // String specific display options
-        $optionsForm->get ( 'displayOptions' )
-        ->add ( 'multiple', CheckboxType::class, [ 
+        $optionsForm->get('displayOptions')
+        ->add('multiple', CheckboxType::class, [
                 'required' => false,
-        ] )->add ( 'choices', TextareaType::class, [ 
+        ])->add('choices', TextareaType::class, [
                 'required' => false,
-        ] )->add ( 'labels', TextareaType::class, [ 
+        ])->add('labels', TextareaType::class, [
                 'required' => false,
-        ] );
+        ]);
         
         // String specific mapping options
-        $optionsForm->get ( 'mappingOptions' )->add ( 'analyzer', AnalyzerPickerType::class);
+        $optionsForm->get('mappingOptions')->add('analyzer', AnalyzerPickerType::class);
     }
 
     /**
@@ -124,7 +128,8 @@ class SelectFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function getDefaultOptions($name) {
+    public function getDefaultOptions($name)
+    {
         $out = parent::getDefaultOptions($name);
         
         $out['mappingOptions']['index'] = 'not_analyzed';
@@ -138,7 +143,8 @@ class SelectFieldType extends DataFieldType {
      * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::getBlockPrefix()
      */
-    public function getBlockPrefix() {
+    public function getBlockPrefix()
+    {
         return 'bypassdatafield';
     }
     
@@ -148,9 +154,10 @@ class SelectFieldType extends DataFieldType {
      * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
      */
-    public function reverseViewTransform($data, FieldType $fieldType) {
+    public function reverseViewTransform($data, FieldType $fieldType)
+    {
         $value = null;
-        if(isset($data['value'])){
+        if (isset($data['value'])) {
             $value = $data['value'];
         }
         $out = parent::reverseViewTransform($value, $fieldType);
@@ -162,50 +169,41 @@ class SelectFieldType extends DataFieldType {
      * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
      */
-    public function viewTransform(DataField $dataField){
+    public function viewTransform(DataField $dataField)
+    {
         $temp = parent::viewTransform($dataField);
-        if($dataField->getFieldType()->getDisplayOptions()['multiple']){
-            if(empty($temp)){
+        if ($dataField->getFieldType()->getDisplayOptions()['multiple']) {
+            if (empty($temp)) {
                 $out = [];
-            }
-            elseif(is_string($temp)) {
+            } elseif (is_string($temp)) {
                 $out = [$temp];
-            }
-            elseif (is_array($temp) ) {
+            } elseif (is_array($temp)) {
                 $out = [];
-                foreach ($temp as $item){
-                    if(is_string($item)){
+                foreach ($temp as $item) {
+                    if (is_string($item)) {
                         $out[] = $item;
-                    }
-                    else {
+                    } else {
                         $dataField->addMessage('Was not able to import the data : '+json_encode($item));
                     }
                 }
-            }
-            else {
+            } else {
                 $dataField->addMessage('Was not able to import the data : '+json_encode($out));
                 $out = [];
             }
-        }
-        else { //not mutiple
-            if(null === $temp) {
+        } else { //not mutiple
+            if (null === $temp) {
                 $out = null;
-            }
-            elseif(is_string($temp)) {
+            } elseif (is_string($temp)) {
                 $out = $temp;
-            }
-            elseif ( is_array($temp) && ! empty($temp) && is_string(array_shift($temp)) ) {
+            } elseif (is_array($temp) && ! empty($temp) && is_string(array_shift($temp))) {
                 $out = array_shift($temp);
                 $dataField->addMessage('Only the first item has been imported : '+json_encode($temp));
-            }
-            else {
+            } else {
                 $dataField->addMessage('Was not able to import the data : '+json_encode($temp));
                 $out = "";
             }
         }
         
         return [ 'value' => $out ];
-        
-        
     }
 }

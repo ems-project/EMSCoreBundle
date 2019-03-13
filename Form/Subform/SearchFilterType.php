@@ -12,25 +12,26 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class SearchFilterType extends AbstractType {
+class SearchFilterType extends AbstractType
+{
 
     /**
      *
      * {@inheritdoc}
      *
      */
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
 
-        if($options['is_super'] || empty($options['searchFields'])) {
+        if ($options['is_super'] || empty($options['searchFields'])) {
             $builder->add('field', TextType::class, [
                 'required' => false,
             ]);
-        }
-        else {
+        } else {
             $builder->add('field', ChoiceType::class, [
                 'choices' => $options['searchFieldsData'],
                 'required' => false,
-                'choice_attr' => function($category, $key, $index) use($options) {
+                'choice_attr' => function ($category, $key, $index) use ($options) {
                     /**@var SearchFieldOption $searchFieldOption*/
                     $searchFieldOption =  $options['searchFields'][$key];
                     return [
@@ -48,19 +49,19 @@ class SearchFilterType extends AbstractType {
         $builder->add('operator', ChoiceType::class, [
             'choices' => [
                 'Query (and)' => 'query_and',
-                'Query (or)' => 'query_or', 
+                'Query (or)' => 'query_or',
                 'Match (and)' => 'match_and',
-                'Match (or)' => 'match_or', 
-                'Term' => 'term', 
+                'Match (or)' => 'match_or',
+                'Term' => 'term',
             ]
         ]);
         
         $builder->add('booleanClause', ChoiceType::class, [
             'choices' => [
                 'Must' => 'must',
-                'Should' => 'should', 
+                'Should' => 'should',
                 'Must not' => 'must_not',
-                'Filter' => 'filter', 
+                'Filter' => 'filter',
             ]
         ]);
         
@@ -84,8 +85,8 @@ class SearchFilterType extends AbstractType {
      * {@inheritdoc}
      *
      */
-    public function getBlockPrefix() {
+    public function getBlockPrefix()
+    {
         return 'search_filter';
     }
-    
 }

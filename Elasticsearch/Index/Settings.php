@@ -95,7 +95,7 @@ class Settings
         return $this;
     }
     
-    private function createCustomAnalyzer(array $filters): array 
+    private function createCustomAnalyzer(array $filters): array
     {
         return [
             'filter' => $filters,

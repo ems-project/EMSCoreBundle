@@ -10,11 +10,12 @@ namespace EMS\CoreBundle\Repository;
  */
 class I18nRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function count($identifier) {
+    public function count($identifier)
+    {
         $qb = $this->createQueryBuilder('i')
         ->select('COUNT(i)');
         
-        if($identifier != null){
+        if ($identifier != null) {
             $qb->where('i.identifier LIKE :identifier')
             ->setParameter('identifier', '%' . $identifier .'%');
         }
@@ -23,12 +24,13 @@ class I18nRepository extends \Doctrine\ORM\EntityRepository
         ->getSingleScalarResult();
     }
     
-    public function findByWithFilter($limit, $from, $identifier) {
+    public function findByWithFilter($limit, $from, $identifier)
+    {
         
         $qb = $this->createQueryBuilder('i')
         ->select('i');
         
-        if($identifier != null){
+        if ($identifier != null) {
             $qb->where('i.identifier LIKE :identifier')
             ->setParameter('identifier', '%' . $identifier .'%');
         }

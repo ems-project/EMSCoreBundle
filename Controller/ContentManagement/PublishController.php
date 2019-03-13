@@ -44,30 +44,30 @@ class PublishController extends AppController
                 'ouuid' => $revisionId->getOuuid(),
                 'type'=> $revisionId->getContentType()->getName(),
                 'revisionId' => $revisionId->getId(),
-        ]);        
+        ]);
     }
     
     /**
      * @Route("/publish/search-result", name="search.publish", defaults={"deleted": 0, "managed": 1})
      * @Security("has_role('ROLE_PUBLISHER')")
      */
-    public function publishSearchResult( Request $request)
+    public function publishSearchResult(Request $request)
     {
         $search = new Search();
-        $searchForm = $this->createForm ( SearchFormType::class, $search, [
+        $searchForm = $this->createForm(SearchFormType::class, $search, [
                 'method' => 'GET',
-        ] );
+        ]);
         $requestBis = clone $request;
         
         $requestBis->setMethod('GET');
-        $searchForm->handleRequest ( $requestBis );
+        $searchForm->handleRequest($requestBis);
         
         /**@var Environment $environment */
         /**@var ContentType $contentType */
-        if(count($search->getEnvironments()) != 1 && $this->getEnvironmentService()->getAliasByName($search->getEnvironments()[0])){
+        if (count($search->getEnvironments()) != 1 && $this->getEnvironmentService()->getAliasByName($search->getEnvironments()[0])) {
             throw new NotFoundHttpException('Environment not found');
         }
-        if(count($search->getContentTypes()) != 1 && $contentType = $this->getContentTypeService()->getByName($search->getContentTypes()[0]))  {
+        if (count($search->getContentTypes()) != 1 && $contentType = $this->getContentTypeService()->getByName($search->getContentTypes()[0])) {
             throw new NotFoundHttpException('Content type not found');
         }
         
@@ -80,8 +80,8 @@ class PublishController extends AppController
             'managedOnly' => true,
             'ignore' => [$environment->getName()],
         ])->add('publish', SubmitEmsType::class, [
-                'attr' => [ 
-                        'class' => 'btn-primary btn-md' 
+                'attr' => [
+                        'class' => 'btn-primary btn-md'
                 ],
                 'icon' => 'glyphicon glyphicon-open'
         ]);
@@ -102,10 +102,10 @@ class PublishController extends AppController
     
         
         
-        if($form->isSubmitted()) {
+        if ($form->isSubmitted()) {
             $toEnvironment = $this->getEnvironmentService()->getAliasByName($form->get('toEnvironment')->getData());
             $body['sort'] = ['_uid' => 'asc'];
-            for($from = 0; $from < $total; $from = $from + 50) {
+            for ($from = 0; $from < $total; $from = $from + 50) {
                 $scroll = $this->getElasticsearch()->search([
                     'type' => $contentType->getName(),
                     'index' => $environment->getAlias(),
@@ -114,7 +114,7 @@ class PublishController extends AppController
                     //'preference' => '_primary', //http://stackoverflow.com/questions/10836142/elasticsearch-duplicate-results-with-paging
                 ]);
                 
-                foreach ($scroll['hits']['hits'] as $hit){
+                foreach ($scroll['hits']['hits'] as $hit) {
                     $revision = $this->getDataService()->getRevisionByEnvironment($hit['_id'], $this->getContentTypeService()->getByName($hit['_type']), $environment);
                     $this->getPublishService()->publish($revision, $toEnvironment);
                 }
@@ -126,13 +126,11 @@ class PublishController extends AppController
     
         
         
-        return $this->render( '@EMSCore/publish/publish-search-result.html.twig', [
+        return $this->render('@EMSCore/publish/publish-search-result.html.twig', [
                 'form' => $form->createView(),
                 'fromEnvironment' => $environment,
                 'contentType' => $contentType,
                 'counter' => $total,
-        ] );    
+        ]);
     }
-    
-    
 }

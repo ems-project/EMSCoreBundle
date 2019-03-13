@@ -19,7 +19,7 @@ class ManagedAliasController extends AppController
 {
     /**
      * @param Request $request
-     * 
+     *
      * @Route("/add", name="environment_add_managed_alias")
      */
     public function addAction(Request $request)
@@ -93,7 +93,7 @@ class ManagedAliasController extends AppController
             $this->addFlash('notice', sprintf('The managed %s has been removed', $managedAlias->getName()));
         }
         
-        return $this->redirectToRoute ( 'environment.index' );
+        return $this->redirectToRoute('environment.index');
     }
     
     /**

@@ -8,7 +8,8 @@ use EMS\CoreBundle\Entity\Environment;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class EnvironmentPickerType extends ChoiceType {
+class EnvironmentPickerType extends ChoiceType
+{
     
     private $choices;
     private $service;
@@ -24,7 +25,8 @@ class EnvironmentPickerType extends ChoiceType {
      * {@inheritdoc}
      *
      */
-    public function getBlockPrefix() {
+    public function getBlockPrefix()
+    {
         return 'selectpicker';
     }
     
@@ -42,22 +44,21 @@ class EnvironmentPickerType extends ChoiceType {
         
         $environments = null;
         
-        if($options['inMyCircle']){
+        if ($options['inMyCircle']) {
             $environments = $this->service->getAllInMyCircle();
-        }
-        else {
+        } else {
             $environments = $this->service->getAll();
         }
         
         $this->service->getAllInMyCircle();
         
         /**@var Environment $choice*/
-        foreach ($environments as $key => $choice){
-            if(($choice->getManaged() || !$options['managedOnly']) && ! in_array($choice->getName(), $options['ignore'])){
+        foreach ($environments as $key => $choice) {
+            if (($choice->getManaged() || !$options['managedOnly']) && ! in_array($choice->getName(), $options['ignore'])) {
                 $keys[] = $choice->getName();
                 $this->choices[$choice->getName()] = $choice;
             }
-        }        
+        }
         $options['choices'] = $keys;
         parent::buildForm($builder, $options);
     }
@@ -75,7 +76,7 @@ class EnvironmentPickerType extends ChoiceType {
             'attr' => [
                     'data-live-search' => false
             ],
-            'choice_attr' => function($category, $key, $index) {
+            'choice_attr' => function ($category, $key, $index) {
                 /** @var \EMS\CoreBundle\Form\DataField\DataFieldType $dataFieldType */
                 $dataFieldType = $this->choices[$index];
                 return [
@@ -93,4 +94,3 @@ class EnvironmentPickerType extends ChoiceType {
         ));
     }
 }
-

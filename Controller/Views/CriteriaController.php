@@ -59,9 +59,9 @@ class CriteriaController extends AppController
         $key = $params[1].':'.$params[2];
         
         $filters = [];
-        $criteriaField = $view->getOptions()['criteriaField'];    
+        $criteriaField = $view->getOptions()['criteriaField'];
         foreach ($tables['criteriaChoiceLists'] as $name => $criteria) {
-            if(count($criteria) == 1) {
+            if (count($criteria) == 1) {
                 $filters[$name] = array_keys($criteria)[0];
             }
         }
@@ -69,51 +69,49 @@ class CriteriaController extends AppController
         $itemToFinalize = [];
         
         
-        foreach ($tables['table'] as $rowId => $row){
-            foreach ($row as $colId => $col){
+        foreach ($tables['table'] as $rowId => $row) {
+            foreach ($row as $colId => $col) {
                 $alignWith = $tables['table'][$isRowAlign?$key:$rowId][$isRowAlign?$colId:$key];
-                if(!empty($col)) {
+                if (!empty($col)) {
                     /**@var ObjectChoiceListItem $toremove*/
-                    foreach ($col as $toremove){
+                    foreach ($col as $toremove) {
                         $found = false;
                         /**@var ObjectChoiceListItem $item*/
-                        if(!empty($alignWith)) {
-                            foreach ($alignWith as $item){
-                                if($item->getValue() == $toremove->getValue()){
+                        if (!empty($alignWith)) {
+                            foreach ($alignWith as $item) {
+                                if ($item->getValue() == $toremove->getValue()) {
                                     $found = true;
                                     break;
                                 }
                             }
                         }
-                        if(!$found) {
+                        if (!$found) {
                             $filters[$criteriaUpdateConfig->getRowCriteria()] = $rowId;
                             $filters[$criteriaUpdateConfig->getColumnCriteria()] = $colId;
                             
 
-                            if($view->getOptions()['criteriaMode'] == 'internal'){
-                                if(isset($itemToFinalize[$toremove->getValue()])) {
+                            if ($view->getOptions()['criteriaMode'] == 'internal') {
+                                if (isset($itemToFinalize[$toremove->getValue()])) {
                                     $revision = $itemToFinalize[$toremove->getValue()];
-                                }
-                                else {
+                                } else {
                                     $structuredTarget = explode(":", $toremove->getValue());
                                     $type = $structuredTarget[0];
                                     $ouuid = $structuredTarget[1];
                                     
                                     /**@var Revision $revision*/
-                                    $revision = $this->getDataService()->getNewestRevision($type, $ouuid);                            
+                                    $revision = $this->getDataService()->getNewestRevision($type, $ouuid);
                                 }
                                 
-                                if($revision = $this->removeCriteria($filters, $revision, $criteriaField)) {
+                                if ($revision = $this->removeCriteria($filters, $revision, $criteriaField)) {
                                     $itemToFinalize[$toremove->getValue()] = $revision;
                                 }
-                            }
-                            else {
+                            } else {
                                 $rawData = $filters;
                                 $targetFieldName = null;
-                                if($view->getContentType()->getCategoryField() &&  $criteriaUpdateConfig->getCategory()){
+                                if ($view->getContentType()->getCategoryField() &&  $criteriaUpdateConfig->getCategory()) {
                                     $rawData[$view->getContentType()->getCategoryField()] = $criteriaUpdateConfig->getCategory()->getRawData();
                                 }
-                                if(isset($view->getOptions()['targetField'])){
+                                if (isset($view->getOptions()['targetField'])) {
                                     $pathTargetField = $view->getOptions()['targetField'];
                                     $pathTargetField = explode('.', $pathTargetField);
                                     $targetFieldName = array_pop($pathTargetField);
@@ -123,56 +121,53 @@ class CriteriaController extends AppController
                                 
                                 $revision = $this->removeCriteriaRevision($view, $rawData, $targetFieldName, $itemToFinalize);
 //                                 $revision = $this->addCriteriaRevision($view, $rawData, $targetFieldName, $itemToFinalize);
-                                if($revision) {
+                                if ($revision) {
                                     $itemToFinalize[$revision->getOuuid()] = $revision;
                                 }
-                                
                             }
                         }
                     }
                 }
-                if(!empty($alignWith)) {
+                if (!empty($alignWith)) {
                     /**@var ObjectChoiceListItem $toadd*/
-                    foreach ($alignWith as $toadd){
+                    foreach ($alignWith as $toadd) {
                         $found = false;
                         /**@var ObjectChoiceListItem $item*/
-                        if(!empty($col)) {
-                            foreach ($col as $item){
-                                if($item->getValue() == $toadd->getValue()){
+                        if (!empty($col)) {
+                            foreach ($col as $item) {
+                                if ($item->getValue() == $toadd->getValue()) {
                                     $found = true;
-                                    break;    
+                                    break;
                                 }
-                            }                            
+                            }
                         }
-                        if(!$found) {
+                        if (!$found) {
                             $filters[$criteriaUpdateConfig->getRowCriteria()] = $rowId;
                             $filters[$criteriaUpdateConfig->getColumnCriteria()] = $colId;
 
 
-                            if($view->getOptions()['criteriaMode'] == 'internal'){
-                                if(isset($itemToFinalize[$toadd->getValue()])) {
+                            if ($view->getOptions()['criteriaMode'] == 'internal') {
+                                if (isset($itemToFinalize[$toadd->getValue()])) {
                                     $revision = $itemToFinalize[$toadd->getValue()];
-                                }
-                                else {
+                                } else {
                                     $structuredTarget = explode(":", $toadd->getValue());
                                     $type = $structuredTarget[0];
                                     $ouuid = $structuredTarget[1];
                                     
                                     /**@var Revision $revision*/
-                                    $revision = $this->getDataService()->getNewestRevision($type, $ouuid);                            
+                                    $revision = $this->getDataService()->getNewestRevision($type, $ouuid);
                                 }
                                 
-                                if($revision = $this->addCriteria($filters, $revision, $criteriaField)) {
+                                if ($revision = $this->addCriteria($filters, $revision, $criteriaField)) {
                                     $itemToFinalize[$toadd->getValue()] = $revision;
                                 }
-                            }
-                            else {
+                            } else {
                                 $rawData = $filters;
                                 $targetFieldName = null;
-                                if($view->getContentType()->getCategoryField() &&  $criteriaUpdateConfig->getCategory()){
+                                if ($view->getContentType()->getCategoryField() &&  $criteriaUpdateConfig->getCategory()) {
                                     $rawData[$view->getContentType()->getCategoryField()] = $criteriaUpdateConfig->getCategory()->getRawData();
                                 }
-                                if(isset($view->getOptions()['targetField'])){
+                                if (isset($view->getOptions()['targetField'])) {
                                     $pathTargetField = $view->getOptions()['targetField'];
                                     $pathTargetField = explode('.', $pathTargetField);
                                     $targetFieldName = array_pop($pathTargetField);
@@ -180,19 +175,17 @@ class CriteriaController extends AppController
                                 }
                                 
                                 $revision = $this->addCriteriaRevision($view, $rawData, $targetFieldName, $itemToFinalize);
-                                if($revision) {
+                                if ($revision) {
                                     $itemToFinalize[$revision->getOuuid()] = $revision;
                                 }
                             }
                         }
                     }
-                    
                 }
             }
         }
         
         foreach ($itemToFinalize as $revision) {
-            
             $this->getDataService()->finalizeDraft($revision);
         }
         sleep(2);
@@ -201,14 +194,15 @@ class CriteriaController extends AppController
         return $this->forward('EMSCoreBundle:Views\Criteria:generateCriteriaTable', ['view' => $view]);
     }
     
-    private function isAuthorized(FieldType $criteriaField) {
+    private function isAuthorized(FieldType $criteriaField)
+    {
         $security = $this->getAuthorizationChecker();
         
         $authorized = empty($criteriaField->getMinimumRole()) || $security->isGranted($criteriaField->getMinimumRole());
-        if($authorized) {
-            foreach ($criteriaField->getChildren() as $child){
+        if ($authorized) {
+            foreach ($criteriaField->getChildren() as $child) {
                 $authorized = $this->isAuthorized($child);
-                if(!$authorized){
+                if (!$authorized) {
                     break;
                 }
             }
@@ -229,12 +223,11 @@ class CriteriaController extends AppController
         $revisionRep = $em->getRepository('EMSCoreBundle:Revision');
         $counters = $revisionRep->draftCounterGroupedByContentType([], true);
         
-        foreach ($counters as $counter){
-            if($counter['content_type_id'] == $view->getContentType()->getId()) {
-                if($counter['counter'] > 1){
-                    $this->addFlash('warning', 'There are '.$counter['counter'].' drafts in progress. You won’t be able to update them from here.');                    
-                }
-                else {
+        foreach ($counters as $counter) {
+            if ($counter['content_type_id'] == $view->getContentType()->getId()) {
+                if ($counter['counter'] > 1) {
+                    $this->addFlash('warning', 'There are '.$counter['counter'].' drafts in progress. You won’t be able to update them from here.');
+                } else {
                     $this->addFlash('warning', 'There is one drafts in progress. You won’t be able to update it from here.');
                 }
             }
@@ -257,16 +250,15 @@ class CriteriaController extends AppController
         
         $contentType = $view->getContentType();
         $valid = true;
-        if( !empty($view->getOptions()['categoryFieldPath']) && empty($criteriaUpdateConfig->getCategory()->getTextValue())){
+        if (!empty($view->getOptions()['categoryFieldPath']) && empty($criteriaUpdateConfig->getCategory()->getTextValue())) {
             $valid = false;
             $form->get('category')->addError(new FormError('Category is mandatory'));
         }
         
-        foreach ($form->get('criterion')->all() as $child){
-            if( $child->getConfig()->getName() !=  $criteriaUpdateConfig->getColumnCriteria() 
-                    && $child->getConfig()->getName() !=  $criteriaUpdateConfig->getRowCriteria() 
-                    && empty($child->getNormData()->getTextValue()))
-            {
+        foreach ($form->get('criterion')->all() as $child) {
+            if ($child->getConfig()->getName() !=  $criteriaUpdateConfig->getColumnCriteria()
+                    && $child->getConfig()->getName() !=  $criteriaUpdateConfig->getRowCriteria()
+                    && empty($child->getNormData()->getTextValue())) {
                 $valid = false;
                 $child->addError(new FormError('Non-row/column criteria are mandatory'));
             }
@@ -274,8 +266,8 @@ class CriteriaController extends AppController
             
             
             
-        if(!$valid){
-            return $this->render( '@EMSCore/view/custom/criteria_view.html.twig',[
+        if (!$valid) {
+            return $this->render('@EMSCore/view/custom/criteria_view.html.twig', [
                     'view' => $view,
                     'form' => $form->createView(),
                     'contentType' => $contentType,
@@ -284,13 +276,10 @@ class CriteriaController extends AppController
         
         
         $criteriaField = $view->getContentType()->getFieldType();
-        if($view->getOptions()['criteriaMode'] == 'internal'){
+        if ($view->getOptions()['criteriaMode'] == 'internal') {
             $criteriaField = $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['criteriaField']);
-        }
-        else if ($view->getOptions()['criteriaMode'] == 'another'){
-                
-        }
-        else {
+        } else if ($view->getOptions()['criteriaMode'] == 'another') {
+        } else {
             throw new \Exception('Should never happen');
         }
         
@@ -301,28 +290,26 @@ class CriteriaController extends AppController
         
         $authorized = $this->isAuthorized($criteriaField) && $this->getAuthorizationChecker()->isGranted($view->getContentType()->getEditRole());
         
-        foreach ($fieldPaths as $path){
+        foreach ($fieldPaths as $path) {
             /**@var \EMS\CoreBundle\Entity\FieldType $child*/
             $child = $criteriaField->getChildByPath($path);
-            if($child) {
-                if($child->getName() == $criteriaUpdateConfig->getColumnCriteria()){
+            if ($child) {
+                if ($child->getName() == $criteriaUpdateConfig->getColumnCriteria()) {
                     $columnField = $child;
-                }
-                else if($child->getName() == $criteriaUpdateConfig->getRowCriteria()){
+                } else if ($child->getName() == $criteriaUpdateConfig->getRowCriteria()) {
                     $rowField = $child;
                 }
                 
                 $authorized = $authorized && $this->isAuthorized($child);
             }
         }
-        if(!$authorized) {
+        if (!$authorized) {
             $this->addFlash('notice', 'Your are not allowed to update data via this view');
-        
         }
         
         $tables = $this->generateCriteriaTable($view, $criteriaUpdateConfig, $request);
         
-        return $this->render( '@EMSCore/view/custom/criteria_table.html.twig',[
+        return $this->render('@EMSCore/view/custom/criteria_table.html.twig', [
             'table' => $tables['table'],
             'rowFieldType' => $rowField,
             'columnFieldType' => $columnField,
@@ -340,7 +327,7 @@ class CriteriaController extends AppController
     
     
     public function generateCriteriaTable(View $view, CriteriaUpdateConfig $criteriaUpdateConfig, Request $request)
-    {        
+    {
         /** @var Client $client */
         $client = $this->getElasticsearch();
         
@@ -349,32 +336,31 @@ class CriteriaController extends AppController
         $criteriaField = $contentType->getFieldType();
         
         $criteriaFieldName = false;
-        if($view->getOptions()['criteriaMode'] == 'internal') {
+        if ($view->getOptions()['criteriaMode'] == 'internal') {
             $criteriaFieldName = $view->getOptions()['criteriaField'];
             $criteriaField = $contentType->getFieldType()->getChildByPath($criteriaFieldName);
         }
         
         $body = [
                 'query' => [
-                        'bool' => [    
+                        'bool' => [
                                 'must' => [
                                 ]
                         ]
                 ]
-        ];            
+        ];
         
         $categoryChoiceList = false;
-        if($criteriaUpdateConfig->getCategory()){
+        if ($criteriaUpdateConfig->getCategory()) {
             $dataField = $criteriaUpdateConfig->getCategory();
-            if($dataField->getRawData() && strlen($dataField->getRawData()) > 0){
+            if ($dataField->getRawData() && strlen($dataField->getRawData()) > 0) {
                 $categoryFieldTypeName = $dataField->getFieldType()->getType();
                 /**@var DataFieldType $categoryFieldType */
                 $categoryFieldType = $this->getDataFieldType($categoryFieldTypeName);
 
                 $body['query']['bool']['must'][] = $categoryFieldType->getElasticsearchQuery($dataField);
-                $categoryChoiceList  = $categoryFieldType->getChoiceList($dataField->getFieldType(), [$dataField->getRawData()]);                
+                $categoryChoiceList  = $categoryFieldType->getChoiceList($dataField->getFieldType(), [$dataField->getRawData()]);
             }
-            
         }
         
         
@@ -382,15 +368,14 @@ class CriteriaController extends AppController
         $criteriaFilters = [];
         $criteriaChoiceLists = [];
         /** @var DataField $criteria */
-        foreach ($criteriaUpdateConfig->getCriterion() as $idxName => $criteria){
+        foreach ($criteriaUpdateConfig->getCriterion() as $idxName => $criteria) {
             $fieldTypeName = $criteria->getFieldType()->getType();
             /**@var DataFieldType $dataFieldType */
             $dataFieldType = $this->getDataFieldType($fieldTypeName);
-            if(count($criteria->getRawData()) > 0) {
-                if($criteriaFieldName) {
-                    $criteriaFilters[] = $dataFieldType->getElasticsearchQuery($criteria, ['nested' => $criteriaFieldName]);                                    
-                }
-                else {
+            if (count($criteria->getRawData()) > 0) {
+                if ($criteriaFieldName) {
+                    $criteriaFilters[] = $dataFieldType->getElasticsearchQuery($criteria, ['nested' => $criteriaFieldName]);
+                } else {
                     $body['query']['bool']['must'][] = $dataFieldType->getElasticsearchQuery($criteria, []);
                 }
             }
@@ -399,15 +384,15 @@ class CriteriaController extends AppController
         }
         
 
-        if($criteriaFieldName){
+        if ($criteriaFieldName) {
             $body['query']['bool']['must'][] = [
                 'nested' => [
                     'path' => $criteriaFieldName,
                     'query' => [
-                            'bool' => ['must' => $criteriaFilters] 
+                            'bool' => ['must' => $criteriaFilters]
                     ]
-                ]                
-            ];            
+                ]
+            ];
         }
 
         
@@ -420,10 +405,10 @@ class CriteriaController extends AppController
                 
         $table = [];
         /**@var ObjectChoiceListItem $rowItem*/
-        foreach($criteriaChoiceLists[$criteriaUpdateConfig->getRowCriteria()] as $rowItem){
+        foreach ($criteriaChoiceLists[$criteriaUpdateConfig->getRowCriteria()] as $rowItem) {
             $table[$rowItem->getValue()] = [];
             /**@var ObjectChoiceListItem $columnItem*/
-            foreach ($criteriaChoiceLists[$criteriaUpdateConfig->getColumnCriteria()] as $columnItem){
+            foreach ($criteriaChoiceLists[$criteriaUpdateConfig->getColumnCriteria()] as $columnItem) {
                 $table[$rowItem->getValue()][$columnItem->getValue()] = null;
             }
         }
@@ -435,16 +420,16 @@ class CriteriaController extends AppController
             'size' => 500, //is it enough?
         ]);
 
-        if($result['hits']['total']>count($result['hits']['hits'])) {
+        if ($result['hits']['total']>count($result['hits']['hits'])) {
             $this->addFlash('error', 'Some criteria were not loaded!!!! There is more than '.count($result['hits']['hits']). ' criteria for this view. Leave this view and be more restrictive with your filters.');
         }
         
         $targetField = false;
         $loaderTypes = $view->getContentType()->getName();
-        $targetContentType = NULL;
-        if($view->getOptions()['targetField']) {
+        $targetContentType = null;
+        if ($view->getOptions()['targetField']) {
             $targetField = $contentType->getFieldType()->getChildByPath($view->getOptions()['targetField']);
-            if($targetField && isset($targetField->getOptions()['displayOptions']['type'])){
+            if ($targetField && isset($targetField->getOptions()['displayOptions']['type'])) {
                 $loaderTypes = $targetField->getOptions()['displayOptions']['type'];
                 $targetContentType = $this->getContentTypeService()->getByName($loaderTypes);
             }
@@ -454,34 +439,29 @@ class CriteriaController extends AppController
         $objectChoiceListFactory = $this->get('ems.form.factories.objectChoiceListFactory');
         $loader = $objectChoiceListFactory->createLoader($loaderTypes, false);
         
-        foreach ($result['hits']['hits'] as $item){
+        foreach ($result['hits']['hits'] as $item) {
             $value = $item['_type'].':'.$item['_id'];
-            if($targetField){
+            if ($targetField) {
                 $value = $item['_source'][$targetField->getName()];
             }
             
             $choices = $loader->loadChoiceList()->loadChoices([$value]);
             
-            if(isset($choices[$value])){
+            if (isset($choices[$value])) {
                 $choice = $choices[$value];
                 
-                if($view->getOptions()['criteriaMode'] == 'internal'){
-                    foreach ($item['_source'][$criteriaFieldName] as $criterion){
+                if ($view->getOptions()['criteriaMode'] == 'internal') {
+                    foreach ($item['_source'][$criteriaFieldName] as $criterion) {
                         $this->addToTable($choice, $table, $criterion, array_keys($criteriaChoiceLists), $criteriaChoiceLists, $criteriaUpdateConfig);
                     }
-                }
-                else if ($view->getOptions()['criteriaMode'] == 'another'){
+                } else if ($view->getOptions()['criteriaMode'] == 'another') {
                     $this->addToTable($choice, $table, $item['_source'], array_keys($criteriaChoiceLists), $criteriaChoiceLists, $criteriaUpdateConfig);
-                }
-                else {
+                } else {
                     throw new \Exception('Should never happen');
-                }                
-            }
-            else {
+                }
+            } else {
                 $this->addFlash('warning', "ems was not able to find the object key \"".$value."\" from ".$item['_type'].':'.$item['_id']);
             }
-                
-            
         }
         
         return [
@@ -507,8 +487,7 @@ class CriteriaController extends AppController
         
         //TODO securtity test
         
-        if($view->getOptions()['criteriaMode'] == 'internal'){
-            
+        if ($view->getOptions()['criteriaMode'] == 'internal') {
             $structuredTarget = explode(":", $target);
             
             $type = $structuredTarget[0];
@@ -518,65 +497,63 @@ class CriteriaController extends AppController
             $session = $this->get('session');
             
             /**@var Revision $revision*/
-            $revision = $this->getDataService()->getNewestRevision($type, $ouuid);    
+            $revision = $this->getDataService()->getNewestRevision($type, $ouuid);
             
             
             $authorized = $this->getAuthorizationChecker()->isGranted($view->getContentType()->getEditRole());
-            if(!$authorized) {
+            if (!$authorized) {
                 $this->addFlash('warning', 'You are not authorized to update '.$revision);
-                return $this->render( '@EMSCore/ajax/notification.json.twig', [
+                return $this->render('@EMSCore/ajax/notification.json.twig', [
                         'success' => false,
-                ] );
+                ]);
             }
             
             
-            if($revision->getDraft()) {
+            if ($revision->getDraft()) {
                 $this->addFlash('warning', 'Impossible to update '.$revision. ' has there is a draft in progress');
-                return $this->render( '@EMSCore/ajax/notification.json.twig', [
+                return $this->render('@EMSCore/ajax/notification.json.twig', [
                         'success' => false,
-                ] );
+                ]);
             }
     
     
             try {
-                
-                if($revision = $this->addCriteria($filters, $revision, $criteriaField)){
+                if ($revision = $this->addCriteria($filters, $revision, $criteriaField)) {
                     $this->getDataService()->finalizeDraft($revision);
                 }
-    
             } catch (LockedException $e) {
                 $this->addFlash('warning', 'Impossible to update '.$revision. ' has the revision is locked by '.$revision->getLockBy());
-                return $this->render( '@EMSCore/ajax/notification.json.twig', [
+                return $this->render('@EMSCore/ajax/notification.json.twig', [
                         'success' => false,
-                ] );
+                ]);
             }
-        }
-        else {
+        } else {
             $rawData = $filters;
             $targetFieldName = null;
-            if($view->getContentType()->getCategoryField() &&  $category){
+            if ($view->getContentType()->getCategoryField() &&  $category) {
                 $rawData[$view->getContentType()->getCategoryField()] = $category;
             }
-            if(isset($view->getOptions()['targetField'])){
+            if (isset($view->getOptions()['targetField'])) {
                 $pathTargetField = $view->getOptions()['targetField'];
                 $pathTargetField = explode('.', $pathTargetField);
                 $targetFieldName = array_pop($pathTargetField);
                 $rawData[$targetFieldName] = $target;
             }
             $revision = $this->addCriteriaRevision($view, $rawData, $targetFieldName);
-            if($revision){
+            if ($revision) {
                 $this->getDataService()->finalizeDraft($revision);
             }
         }
         
-        return $this->render( '@EMSCore/ajax/notification.json.twig', [
+        return $this->render('@EMSCore/ajax/notification.json.twig', [
                 'success' => true,
-        ] );
+        ]);
     }
     
     
         
-    public function addCriteriaRevision(View $view, array $rawData, $targetFieldName, array $loadedRevision=[]){        
+    public function addCriteriaRevision(View $view, array $rawData, $targetFieldName, array $loadedRevision = [])
+    {
         $multipleField = $this->getMultipleField($view->getContentType()->getFieldType());
         
         $body = [
@@ -590,14 +567,14 @@ class CriteriaController extends AppController
         
         
         foreach ($rawData as $name => $key) {
-            if($multipleField != $name){
+            if ($multipleField != $name) {
                 $body['query']['bool']['must'][] = [
                     'term' => [
                         $name => [
                             'value' => $key
                         ]
                     ]
-                ];            
+                ];
             }
         }
         
@@ -608,31 +585,29 @@ class CriteriaController extends AppController
                 
         ]);
         
-        if($result['hits']['total'] == 0){
+        if ($result['hits']['total'] == 0) {
             $revision = false;
-            foreach ($loadedRevision as $item)
-            {
+            foreach ($loadedRevision as $item) {
                 $found = true;
                 foreach ($rawData as $name => $key) {
-                    if($multipleField != $name){
-                        if($item->getRawData()[$name] != $key){
+                    if ($multipleField != $name) {
+                        if ($item->getRawData()[$name] != $key) {
                             $found = false;
                             break;
-                        }                        
+                        }
                     }
                 }
-                if($found){
+                if ($found) {
                     $revision = $item;
                 }
             }
 
             $multipleValueToAdd = $rawData[$multipleField];
-            if(!$revision){
+            if (!$revision) {
                 $revision = new Revision();
                 $revision->setContentType($view->getContentType());
                 $rawData[$multipleField] = [];
                 $revision->setRawData($rawData);
-                
             }
             $rawData = $revision->getRawData();
             $rawData[$multipleField][] = $multipleValueToAdd;
@@ -642,9 +617,8 @@ class CriteriaController extends AppController
 //             $this->getDataService()->waitForGreen();
             $message = $multipleValueToAdd;
             foreach ($rawData as $key => $value) {
-                if($key != $multipleField && $key != $targetFieldName){
+                if ($key != $multipleField && $key != $targetFieldName) {
                     $message .= ', '.$value;
-                        
                 }
             }
 
@@ -652,61 +626,54 @@ class CriteriaController extends AppController
             
             $this->addFlash('notice', 'A new criteria has been created for '.$targetFieldName.':'.$rawData[$targetFieldName]. ' ('.$message.')');
             return $revision;
-        }
-        else if($result['hits']['total'] == 1) {
+        } else if ($result['hits']['total'] == 1) {
             /**@var Revision $revision*/
             $revision = null;
-            if(isset($loadedRevision[$result['hits']['hits'][0]['_id']])){
+            if (isset($loadedRevision[$result['hits']['hits'][0]['_id']])) {
                 $revision = $loadedRevision[$result['hits']['hits'][0]['_id']];
-            }
-            else{
+            } else {
                 $revision = $this->getDataService()->initNewDraft($view->getContentType()->getName(), $result['hits']['hits'][0]['_id']);
             }
 
             $multipleValueToAdd = $rawData[$multipleField];
             $rawData = $revision->getRawData();
-            if(in_array($multipleValueToAdd, $rawData[$multipleField])){
+            if (in_array($multipleValueToAdd, $rawData[$multipleField])) {
                 $this->addFlash('warning', 'A criteria already exist for '.$multipleField.'='.$multipleValueToAdd);
-            }
-            else {
+            } else {
                 $rawData[$multipleField][] = $multipleValueToAdd;
                 $revision->setRawData($rawData);
                 $message = $multipleValueToAdd;
                 foreach ($rawData as $key => $value) {
-                    if($key != $multipleField && $key != $targetFieldName){
+                    if ($key != $multipleField && $key != $targetFieldName) {
                         $message .= ', '.$value;
-                        
                     }
                 }
                 
                 $this->addFlash('notice', 'A criteria has added for '.$targetFieldName.':'.$rawData[$targetFieldName]. ' ('.$message.')');
             }
             return $revision;
-            
-        }
-        else {
+        } else {
             $message = false;
-            foreach($result['hits']['hits'] as $hit){
-                if($message){
+            foreach ($result['hits']['hits'] as $hit) {
+                if ($message) {
                     $message .= ', ';
-                }
-                else {
+                } else {
                     $message = '';
                 }
                 $message .= $hit['_id'];
             }
             $this->addFlash('error', 'Too many criteria found ('.$result['hits']['total'].'). There is something wrong with this combinaison of criteria!: '.$message);
         }
-        return NULL;
+        return null;
     }
     
     
         
     public function addCriteria($filters, Revision $revision, $criteriaField)
-    {        
+    {
         
         $rawData = $revision->getRawData();
-        if(!isset($rawData[$criteriaField])) {
+        if (!isset($rawData[$criteriaField])) {
             $rawData[$criteriaField] = [];
         }
         $multipleField = $this->getMultipleField($revision->getContentType()->getFieldType()->__get('ems_'.$criteriaField));
@@ -715,41 +682,38 @@ class CriteriaController extends AppController
         foreach ($rawData[$criteriaField] as &$criteriaSet) {
             $found = true;
             foreach ($filters as $criterion => $value) {
-                if($criterion != $multipleField && $value != $criteriaSet[$criterion] ){
+                if ($criterion != $multipleField && $value != $criteriaSet[$criterion]) {
                     $found = false;
                     break;
                 }
             }
-            if($found){
-                
-                if($multipleField && FALSE === array_search($filters[$multipleField], $criteriaSet[$multipleField]) ){
+            if ($found) {
+                if ($multipleField && false === array_search($filters[$multipleField], $criteriaSet[$multipleField])) {
                     $criteriaSet[$multipleField][] = $filters[$multipleField];
-                    if(!$revision->getDraft()){
+                    if (!$revision->getDraft()) {
                         $revision = $this->getDataService()->initNewDraft($revision->getContentType()->getName(), $revision->getOuuid(), $revision);
                     }
                     $revision->setRawData($rawData);
                     $this->addFlash('notice', '<b>Added</b> '.$multipleField.' with value '.$filters[$multipleField].' to '.$revision);
                     return $revision;
-                }
-                else{
+                } else {
                     $this->addFlash('notice', 'Criteria already existing for '.$revision);
                 }
                 break;
             }
         }
         
-        if(!$found){
+        if (!$found) {
             $newCriterion = [];
             foreach ($filters as $criterion => $value) {
-                if($criterion == $multipleField){
+                if ($criterion == $multipleField) {
                     $newCriterion[$criterion] = [$value];
-                }
-                else {
+                } else {
                     $newCriterion[$criterion] = $value;
                 }
             }
             $rawData[$criteriaField][] = $newCriterion;
-            if(!$revision->getDraft()){
+            if (!$revision->getDraft()) {
                 $revision = $this->getDataService()->initNewDraft($revision->getContentType()->getName(), $revision->getOuuid(), $revision);
             }
             $revision->setRawData($rawData);
@@ -776,8 +740,7 @@ class CriteriaController extends AppController
 
         //TODO securtity test
 
-        if($view->getOptions()['criteriaMode'] == 'internal'){
-            
+        if ($view->getOptions()['criteriaMode'] == 'internal') {
             $structuredTarget = explode(":", $target);
             
             $type = $structuredTarget[0];
@@ -789,50 +752,48 @@ class CriteriaController extends AppController
             /**@var Revision $revision*/
             $revision = $this->getDataService()->getNewestRevision($type, $ouuid);
             
-            if($revision->getDraft()) {
+            if ($revision->getDraft()) {
                 $this->addFlash('warning', 'Impossible to update '.$revision. ' has there is a draft in progress');
-                return $this->render( '@EMSCore/ajax/notification.json.twig', [
+                return $this->render('@EMSCore/ajax/notification.json.twig', [
                         'success' => false,
-                ] );
+                ]);
             }
     
             try {
-                if($revision = $this->removeCriteria($filters, $revision, $criteriaField)){
-                    $this->getDataService()->finalizeDraft($revision);                
+                if ($revision = $this->removeCriteria($filters, $revision, $criteriaField)) {
+                    $this->getDataService()->finalizeDraft($revision);
                 }
-    
-    
             } catch (LockedException $e) {
                 $this->addFlash('warning', 'Impossible to update '.$revision. ' has the revision is locked by '.$revision->getLockBy());
-                return $this->render( '@EMSCore/ajax/notification.json.twig', [
+                return $this->render('@EMSCore/ajax/notification.json.twig', [
                         'success' => false,
-                ] );
+                ]);
             }
-        }
-        else {
+        } else {
             $rawData = $filters;
             $targetFieldName = null;
-            if($view->getContentType()->getCategoryField() &&  $category){
+            if ($view->getContentType()->getCategoryField() &&  $category) {
                 $rawData[$view->getContentType()->getCategoryField()] = $category;
             }
-            if(isset($view->getOptions()['targetField'])){
+            if (isset($view->getOptions()['targetField'])) {
                 $pathTargetField = $view->getOptions()['targetField'];
                 $pathTargetField = explode('.', $pathTargetField);
                 $targetFieldName = array_pop($pathTargetField);
                 $rawData[$targetFieldName] = $target;
             }
             $revision = $this->removeCriteriaRevision($view, $rawData, $targetFieldName);
-            if($revision){
+            if ($revision) {
                 $this->getDataService()->finalizeDraft($revision);
             }
         }
         
-        return $this->render( '@EMSCore/ajax/notification.json.twig', [
+        return $this->render('@EMSCore/ajax/notification.json.twig', [
             'success' => true,
-        ] );
+        ]);
     }
         
-    public function removeCriteriaRevision(View $view, array $rawData, $targetFieldName, array $loadedRevision=[]){
+    public function removeCriteriaRevision(View $view, array $rawData, $targetFieldName, array $loadedRevision = [])
+    {
         $multipleField = $this->getMultipleField($view->getContentType()->getFieldType());
     
         $body = [
@@ -862,59 +823,53 @@ class CriteriaController extends AppController
     
         ]);
     
-        if($result['hits']['total'] == 0){
+        if ($result['hits']['total'] == 0) {
             $this->addFlash('warning', 'Criteria hnot found');
-        }
-        else if($result['hits']['total'] == 1) {
+        } else if ($result['hits']['total'] == 1) {
             /**@var Revision $revision*/
             $revision = null;
-            if(isset($loadedRevision[$result['hits']['hits'][0]['_id']])){
+            if (isset($loadedRevision[$result['hits']['hits'][0]['_id']])) {
                 $revision = $loadedRevision[$result['hits']['hits'][0]['_id']];
-            }
-            else{
-                $revision = $this->getDataService()->getNewestRevision($view->getContentType()->getName(), $result['hits']['hits'][0]['_id']);            
+            } else {
+                $revision = $this->getDataService()->getNewestRevision($view->getContentType()->getName(), $result['hits']['hits'][0]['_id']);
             }
             
             $multipleValueToRemove = $rawData[$multipleField];
             $rawData = $revision->getRawData();
-            if(($key = array_search($multipleValueToRemove, $rawData[$multipleField])) !== false) {
+            if (($key = array_search($multipleValueToRemove, $rawData[$multipleField])) !== false) {
                 $revision = $this->getDataService()->initNewDraft($view->getContentType()->getName(), $result['hits']['hits'][0]['_id']);
                 unset($rawData[$multipleField][$key]);
                 $rawData[$multipleField] = array_values($rawData[$multipleField]);
                 $revision->setRawData($rawData);
                 $message = $multipleValueToRemove;
                 foreach ($rawData as $key => $value) {
-                    if($key != $multipleField && $key != $targetFieldName){
+                    if ($key != $multipleField && $key != $targetFieldName) {
                         $message .= ', '.$value;
-                        
                     }
                 }
                 $this->addFlash('notice', 'A criteria has been removed for '.$targetFieldName.':'.$rawData[$targetFieldName]. ' ('.$message.')');
                 return $revision;
-            }
-            else {
+            } else {
                 $this->addFlash('warning', 'The criteria is already missing for '.$targetFieldName.':'.$rawData[$targetFieldName]);
             }
-                
-        }
-        else {
+        } else {
             $message = false;
-            foreach($result['hits']['hits'] as $hit){
-                if($message){
+            foreach ($result['hits']['hits'] as $hit) {
+                if ($message) {
                     $message .= ', ';
-                }
-                else {
+                } else {
                     $message = '';
                 }
                 $message .= $hit['_id'];
             }
             $this->addFlash('error', 'Too many criteria found ('.$result['hits']['total'].'). There is something wrong with this combinaison of criteria!: '.$message);
         }
-        return NULL;
+        return null;
     }
     
-    private function getManager(){
-        if(empty($this->manager)) {
+    private function getManager()
+    {
+        if (empty($this->manager)) {
             $this->manager = $this->getDoctrine()->getManager();
         }
         return $this->manager;
@@ -922,10 +877,10 @@ class CriteriaController extends AppController
     
     
     public function removeCriteria($filters, Revision $revision, $criteriaField)
-    {        
+    {
         
         $rawData = $revision->getRawData();
-        if(!isset($rawData[$criteriaField])) {
+        if (!isset($rawData[$criteriaField])) {
             $rawData[$criteriaField] = [];
         }
         $criteriaFieldType = $revision->getContentType()->getFieldType()->__get('ems_'.$criteriaField);
@@ -935,113 +890,110 @@ class CriteriaController extends AppController
         foreach ($rawData[$criteriaField] as $index => $criteriaSet) {
             $found = true;
             foreach ($filters as $criterion => $value) {
-                if($criterion != $multipleField && $value != $criteriaSet[$criterion] ){
+                if ($criterion != $multipleField && $value != $criteriaSet[$criterion]) {
                     $found = false;
                     break;
                 }
             }
-            if($found){
-                
-                if($multipleField){
+            if ($found) {
+                if ($multipleField) {
                     $indexKey = array_search($filters[$multipleField], $criteriaSet[$multipleField]);
-                    if($indexKey === FALSE){
+                    if ($indexKey === false) {
                         $this->addFlash('notice', 'Criteria not found in multiple key');
-                    }
-                    else {
+                    } else {
                         unset($rawData[$criteriaField][$index][$multipleField][$indexKey]);
                         $rawData[$criteriaField][$index][$multipleField] = array_values($rawData[$criteriaField][$index][$multipleField]);
-                        if(count($rawData[$criteriaField][$index][$multipleField]) == 0){
+                        if (count($rawData[$criteriaField][$index][$multipleField]) == 0) {
                             unset($rawData[$criteriaField][$index]);
                             $rawData[$criteriaField] = array_values($rawData[$criteriaField]);
                         }
 
-                        if(!$revision->getDraft()){
-                            $revision = $this->getDataService()->initNewDraft($revision->getContentType()->getName(), $revision->getOuuid(), $revision);                            
+                        if (!$revision->getDraft()) {
+                            $revision = $this->getDataService()->initNewDraft($revision->getContentType()->getName(), $revision->getOuuid(), $revision);
                         }
                         $revision->setRawData($rawData);
                         $this->addFlash('notice', '<b>Remove</b> '.$multipleField.' with value '.$filters[$multipleField].' from '.$revision);
                         return $revision;
                     }
-                }
-                else{
+                } else {
                     unset($rawData[$criteriaField][$index]);
                     $rawData[$criteriaField][$index] = array_values($rawData[$criteriaField][$index]);
                     
-                    if(!$revision->getDraft()){
+                    if (!$revision->getDraft()) {
                         $revision = $this->getDataService()->initNewDraft($revision->getContentType()->getName(), $revision->getOuuid(), $revision);
                     }
                     $revision->setRawData($rawData);
-                    $this->addFlash('notice', '<b>Remove</b> from '.$revision);    
+                    $this->addFlash('notice', '<b>Remove</b> from '.$revision);
                     return $revision;
                 }
                 break;
             }
         }
         
-        if(!$found){
+        if (!$found) {
             $this->addFlash('notice', 'Criteria not found for '.$revision);
         }
         return false;
     }
     
-    private function addToTable(ObjectChoiceListItem &$choice, array &$table, array &$criterion, array $criteriaNames, array &$criteriaChoiceLists, CriteriaUpdateConfig &$config, array $context = []){
+    private function addToTable(ObjectChoiceListItem &$choice, array &$table, array &$criterion, array $criteriaNames, array &$criteriaChoiceLists, CriteriaUpdateConfig &$config, array $context = [])
+    {
         $criteriaName = array_pop($criteriaNames);
         $criterionList = $criterion[$criteriaName];
-        if(! is_array($criterionList)){
+        if (! is_array($criterionList)) {
             $criterionList = [$criterionList];
         }
         foreach ($criterionList as $value) {
-            if(isset($criteriaChoiceLists[$criteriaName][$value])){
+            if (isset($criteriaChoiceLists[$criteriaName][$value])) {
                 $context[$criteriaName] = $value;
-                if(count($criteriaNames) > 0){
+                if (count($criteriaNames) > 0) {
                     //let see (recursively) if the other criterion applies to find a matching context
                     $this->addToTable($choice, $table, $criterion, $criteriaNames, $criteriaChoiceLists, $config, $context);
-                }
-                else{
+                } else {
                     //all criterion apply the current choice can be added to the table depending the context
-                    if(!isset($table[$context[$config->getRowCriteria()]][$context[$config->getColumnCriteria()]])) {
+                    if (!isset($table[$context[$config->getRowCriteria()]][$context[$config->getColumnCriteria()]])) {
                         $table[$context[$config->getRowCriteria()]][$context[$config->getColumnCriteria()]] = [];
                     }
                     $table[$context[$config->getRowCriteria()]][$context[$config->getColumnCriteria()]][] = $choice;
                 }
             }
         }
-        
     }
     
-    private function getMultipleField(FieldType $criteriaFieldType){
+    private function getMultipleField(FieldType $criteriaFieldType)
+    {
         /**@var FieldType $criteria*/
-        foreach ($criteriaFieldType->getChildren() as $criteria){
-            if(! $criteria->getDeleted()){
-                if($criteria->getType() == ContainerFieldType::class){
+        foreach ($criteriaFieldType->getChildren() as $criteria) {
+            if (! $criteria->getDeleted()) {
+                if ($criteria->getType() == ContainerFieldType::class) {
                     $out = $this->getMultipleField($criteria);
-                    if($out){
+                    if ($out) {
                         return $out;
                     }
-                }
-                else if(isset($criteria->getDisplayOptions()['multiple']) && $criteria->getDisplayOptions()['multiple']){
+                } else if (isset($criteria->getDisplayOptions()['multiple']) && $criteria->getDisplayOptions()['multiple']) {
                     return $criteria->getName();
-                }                
+                }
             }
         }
         return false;
     }
     
     
-    private function findCriterion(DataField $criteriaField, $filters){
+    private function findCriterion(DataField $criteriaField, $filters)
+    {
         /** @var DataField $child */
-        foreach ($criteriaField->getChildren() as $child){
+        foreach ($criteriaField->getChildren() as $child) {
             $found = true;
-            foreach($filters as $filter) {
-                if(strcmp( $filter['value'], $child->__get('ems_'.$filter['name'])->getTextValue() ) != 0){
+            foreach ($filters as $filter) {
+                if (strcmp($filter['value'], $child->__get('ems_'.$filter['name'])->getTextValue()) != 0) {
                     $found = false;
                     break;
                 }
             }
-            if($found){
+            if ($found) {
                 return $child;
             }
-        }    
+        }
         return false;
     }
     
@@ -1052,13 +1004,13 @@ class CriteriaController extends AppController
     public function fieldFilterAction(Request $request)
     {
         /** @var EntityManager $em */
-        $em = $this->getDoctrine ()->getManager ();
+        $em = $this->getDoctrine()->getManager();
         /** @var ContentTypeRepository $repository */
-        $repository = $em->getRepository ( 'EMSCoreBundle:FieldType' );
+        $repository = $em->getRepository('EMSCoreBundle:FieldType');
         
         
         /** @var \EMS\CoreBundle\Entity\FieldType $field */
-        $field = $repository->find ( $request->query->get('targetField'));
+        $field = $repository->find($request->query->get('targetField'));
         
 
         $choices = $field->getDisplayOptions()['choices'];
@@ -1074,7 +1026,7 @@ class CriteriaController extends AppController
         
         foreach ($choices as $idx => $choice) {
             $label = isset($labels[$idx])?$labels[$idx]:$choice;
-            if( !$request->query->get('q') || stristr($choice, $request->query->get('q')) || stristr($label, $request->query->get('q'))) {
+            if (!$request->query->get('q') || stristr($choice, $request->query->get('q')) || stristr($label, $request->query->get('q'))) {
                 $out['items'][] = [
                         'id' => $choice,
                         'text' => $label,

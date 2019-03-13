@@ -7,13 +7,15 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class SubmitEmsType extends SubmitType {
+class SubmitEmsType extends SubmitType
+{
     /**
      *
      * {@inheritdoc}
      *
      */
-    public function getParent() {
+    public function getParent()
+    {
         return SubmitType::class;
     }
     
@@ -22,7 +24,8 @@ class SubmitEmsType extends SubmitType {
      * {@inheritdoc}
      *
      */
-    public function getBlockPrefix() {
+    public function getBlockPrefix()
+    {
         return 'submitems';
     }
     
@@ -31,12 +34,13 @@ class SubmitEmsType extends SubmitType {
      * {@inheritdoc}
      *
      */
-    public function configureOptions(OptionsResolver $resolver) {
-        $resolver->setDefaults ( array (
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults(array (
                 'compound' => false,
                 'icon' => null,
                 'message' => null,
-        ) );
+        ));
     }
     
     /**
@@ -44,7 +48,8 @@ class SubmitEmsType extends SubmitType {
      * {@inheritdoc}
      *
      */
-    public function buildView(FormView $view, FormInterface $form, array $options) {
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
         $view->vars ['icon'] = $options ['icon'];
         $view->vars ['message'] = $options ['message'];
     }

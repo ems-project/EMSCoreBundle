@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Form\DataField;
 
-
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -15,39 +14,44 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\DataField;
 
-class CodeFieldType extends DataFieldType {
+class CodeFieldType extends DataFieldType
+{
     /**
      *
      * {@inheritdoc}
      *
      */
-    public function getLabel(){
+    public function getLabel()
+    {
         return 'Code editor field';
     }
     
     /**
      * Get a icon to visually identify a FieldType
-     * 
+     *
      * @return string
      */
-    public static function getIcon(){
+    public static function getIcon()
+    {
         return 'fa fa-code';
     }
     
     
     /**
-     * 
+     *
      * {@inheritDoc}
      * @see \Symfony\Component\Form\AbstractType::getParent()
      */
-    public function getParent(){
+    public function getParent()
+    {
         return HiddenType::class;
     }
     
     /**
      * {@inheritdoc}
      */
-    public function buildView(FormView $view, FormInterface $form, array $options) {
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
         $fieldType = $options['metadata'];
         
         /*get options for twig context*/
@@ -55,7 +59,7 @@ class CodeFieldType extends DataFieldType {
         $view->vars ['icon'] = $options ['icon'];
         
         $attr = $view->vars['attr'];
-        if(empty($attr['class'])){
+        if (empty($attr['class'])) {
             $attr['class'] = '';
         }
         
@@ -75,7 +79,8 @@ class CodeFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function getBlockPrefix() {
+    public function getBlockPrefix()
+    {
         return 'codefieldtype';
     }
     
@@ -99,24 +104,25 @@ class CodeFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options) {
-        parent::buildOptionsForm ( $builder, $options );
-        $optionsForm = $builder->get ( 'options' );
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    {
+        parent::buildOptionsForm($builder, $options);
+        $optionsForm = $builder->get('options');
         
         // String specific mapping options
-        $optionsForm->get ( 'mappingOptions' )->add ( 'analyzer', AnalyzerPickerType::class);
-        $optionsForm->get ( 'displayOptions' )->add ( 'icon', IconPickerType::class, [
+        $optionsForm->get('mappingOptions')->add('analyzer', AnalyzerPickerType::class);
+        $optionsForm->get('displayOptions')->add('icon', IconPickerType::class, [
                 'required' => false
-        ] )->add ( 'maxLines', IntegerType::class, [
+        ])->add('maxLines', IntegerType::class, [
                 'required' => false,
-        ])->add ( 'height', IntegerType::class, [
+        ])->add('height', IntegerType::class, [
                 'required' => false,
-        ])->add ( 'language', TextType::class, [
+        ])->add('language', TextType::class, [
                 'required' => false,
                 'attr' => [
                         'class' => 'code_editor_mode_ems',
                 ],
-        ])->add ( 'theme', TextType::class, [
+        ])->add('theme', TextType::class, [
                 'required' => false,
                 'attr' => [
                         'class' => 'code_editor_theme_ems',

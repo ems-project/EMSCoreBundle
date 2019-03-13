@@ -8,7 +8,8 @@ use EMS\CoreBundle\Repository\WysiwygStylesSetRepository;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class WysiwygStylesSetService {
+class WysiwygStylesSetService
+{
     /**@var Registry $doctrine */
     private $doctrine;
     /**@var Session $session*/
@@ -16,14 +17,16 @@ class WysiwygStylesSetService {
     /**@var TranslatorInterface $translator */
     private $translator;
     
-    public function __construct(Registry $doctrine, Session $session, TranslatorInterface $translator) {
+    public function __construct(Registry $doctrine, Session $session, TranslatorInterface $translator)
+    {
         $this->doctrine = $doctrine;
         $this->session = $session;
         $this->translator= $translator;
     }
     
     
-    public function getStylesSets(){
+    public function getStylesSets()
+    {
         $em = $this->doctrine->getManager();
         /**@var WysiwygStylesSetRepository */
         $repository = $em->getRepository('EMSCoreBundle:WysiwygStylesSet');
@@ -34,11 +37,12 @@ class WysiwygStylesSetService {
     }
     
     /**
-     * 
+     *
      * @param integer $id
      * @return WysiwygStylesSet|NULL
      */
-    public function get($id){
+    public function get($id)
+    {
         $em = $this->doctrine->getManager();
         /**@var WysiwygStylesSetRepository */
         $repository = $em->getRepository('EMSCoreBundle:WysiwygStylesSet');
@@ -51,10 +55,11 @@ class WysiwygStylesSetService {
     
     
     /**
-     * 
+     *
      * @param WysiwygStylesSet $stylesSet
      */
-    public function save(WysiwygStylesSet $stylesSet){
+    public function save(WysiwygStylesSet $stylesSet)
+    {
         $em = $this->doctrine->getManager();
         $em->persist($stylesSet);
         $em->flush();
@@ -62,16 +67,15 @@ class WysiwygStylesSetService {
     }
     
     /**
-     * 
+     *
      * @param WysiwygStylesSet $stylesSet
      */
-    public function remove(WysiwygStylesSet $stylesSet){
+    public function remove(WysiwygStylesSet $stylesSet)
+    {
         $name = $stylesSet->getName();
         $em = $this->doctrine->getManager();
         $em->remove($stylesSet);
         $em->flush();
         $this->session->getFlashBag()->add('notice', $this->translator->trans('Style set "%name% has been deleted', ['%name%' => $name], 'EMSCoreBundle'));
     }
-    
-
 }

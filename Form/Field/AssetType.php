@@ -7,7 +7,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
-class AssetType extends AbstractType {
+class AssetType extends AbstractType
+{
 
 
     /**
@@ -15,9 +16,10 @@ class AssetType extends AbstractType {
      * {@inheritdoc}
      *
      */
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         
-        $builder->add ( 'sha1', HiddenType::class, [
+        $builder->add('sha1', HiddenType::class, [
             'attr' => [
                     'class' => 'sha1'
             ],
@@ -35,7 +37,6 @@ class AssetType extends AbstractType {
             ],
             'required' => $options['required'],
         ]);
-        
     }
 
     /**
@@ -43,8 +44,8 @@ class AssetType extends AbstractType {
      * {@inheritdoc}
      *
      */
-    public function getBlockPrefix() {
+    public function getBlockPrefix()
+    {
         return 'assettype';
     }
-    
 }

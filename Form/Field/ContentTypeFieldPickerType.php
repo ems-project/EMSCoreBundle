@@ -2,18 +2,19 @@
 
 namespace EMS\CoreBundle\Form\Field;
 
-
 use Symfony\Component\Form\ChoiceList\Factory\ChoiceListFactoryInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ContentTypeFieldPickerType extends SelectPickerType {
+class ContentTypeFieldPickerType extends SelectPickerType
+{
     
     /**@var ChoiceListFactoryInterface $choiceListFactory*/
     private $choiceListFactory;
 
     
-    public function __construct(ChoiceListFactoryInterface $factory){
+    public function __construct(ChoiceListFactoryInterface $factory)
+    {
         $this->choiceListFactory = $factory;
         parent::__construct($factory);
     }
@@ -28,7 +29,7 @@ class ContentTypeFieldPickerType extends SelectPickerType {
     {
         
         /* set the default option value for this kind of compound field */
-        parent::configureOptions ( $resolver );
+        parent::configureOptions($resolver);
         $resolver->setDefaults(array(
             'firstLevelOnly' => false,
             'types' => [],
@@ -40,7 +41,7 @@ class ContentTypeFieldPickerType extends SelectPickerType {
             'choice_label' => function ($value, $key, $index) {
                 return $value->getLabel();
             },
-            'group_by' => function($value, $key, $index) {
+            'group_by' => function ($value, $key, $index) {
                 return null;
             },
             'choice_value' => function ($value) {
@@ -51,6 +52,4 @@ class ContentTypeFieldPickerType extends SelectPickerType {
             
         ));
     }
-
 }
-

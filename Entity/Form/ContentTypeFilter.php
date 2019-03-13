@@ -1,12 +1,13 @@
 <?php
 namespace EMS\CoreBundle\Entity\Form;
 
-
 use EMS\CoreBundle\Entity\ContentType;
+
 /**
  * RebuildIndex
  */
-class ContentTypeFilter{
+class ContentTypeFilter
+{
 
     /**
      * @var ContentType

@@ -12,7 +12,6 @@ use Symfony\Component\HttpFoundation\Request;
 use EMS\CoreBundle\Entity\Filter;
 use EMS\CoreBundle\Form\Form\FilterType;
 
-
 /**
  * @Route("/filter")
  * @author Mathieu De Keyzer <ems@theus.be>
@@ -23,10 +22,11 @@ class FilterController extends AppController
     /**
      * @Route("/", name="ems_filter_index")
      */
-    public function indexAction(Request $request) {
-        return $this->render( '@EMSCore/filter/index.html.twig', [
+    public function indexAction(Request $request)
+    {
+        return $this->render('@EMSCore/filter/index.html.twig', [
                 'paging' => $this->getHelperService()->getPagingTool('EMSCoreBundle:Filter', 'ems_filter_index', 'name'),
-        ] );
+        ]);
     }
     
     /**
@@ -40,22 +40,22 @@ class FilterController extends AppController
         
         $form = $this->createForm(FilterType::class, $filter);
         
-        $form->handleRequest ( $request );
+        $form->handleRequest($request);
         
-        if ($form->isSubmitted () && $form->isValid ()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             /** @var EntityManager $em */
-            $em = $this->getDoctrine ()->getManager ();
+            $em = $this->getDoctrine()->getManager();
             $filter =  $form->getData();
             $em->persist($filter);
             $em->flush($filter);
             
-            return $this->redirectToRoute ( 'ems_filter_index', [
-            ] );
+            return $this->redirectToRoute('ems_filter_index', [
+            ]);
         }
         
-        return $this->render( '@EMSCore/filter/edit.html.twig', [
-                'form' => $form->createView (),
-        ] );
+        return $this->render('@EMSCore/filter/edit.html.twig', [
+                'form' => $form->createView(),
+        ]);
     }
     
     /**
@@ -64,16 +64,17 @@ class FilterController extends AppController
      * @Route("/delete/{filter}", name="ems_filter_delete")
      * @Method({"POST"})
      */
-    public function deleteAction(Filter $filter, Request $request) {
+    public function deleteAction(Filter $filter, Request $request)
+    {
         
         /** @var EntityManager $em */
-        $em = $this->getDoctrine ()->getManager ();
+        $em = $this->getDoctrine()->getManager();
         $em->remove($filter);
         $em->flush();
         
         $this->addFlash('notice', 'The filter has been deleted');
-        return $this->redirectToRoute ( 'ems_filter_index', [
-        ] );
+        return $this->redirectToRoute('ems_filter_index', [
+        ]);
     }
     
     /**
@@ -87,23 +88,21 @@ class FilterController extends AppController
         $filter = new Filter();
         $form= $this->createForm(FilterType::class, $filter);
         
-        $form->handleRequest ( $request );
+        $form->handleRequest($request);
         
-        if ($form->isSubmitted () && $form->isValid ()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             /** @var EntityManager $em */
-            $em = $this->getDoctrine ()->getManager ();
+            $em = $this->getDoctrine()->getManager();
             $filter=  $form->getData();
             $em->persist($filter);
             $em->flush($filter);
             
-            return $this->redirectToRoute ( 'ems_filter_index', [
-            ] );
+            return $this->redirectToRoute('ems_filter_index', [
+            ]);
         }
         
-        return $this->render( '@EMSCore/filter/add.html.twig', [
-                'form' => $form->createView (),
-        ] );
-        
+        return $this->render('@EMSCore/filter/add.html.twig', [
+                'form' => $form->createView(),
+        ]);
     }
 }
-    

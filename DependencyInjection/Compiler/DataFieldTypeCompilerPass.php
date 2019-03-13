@@ -29,7 +29,6 @@ class DataFieldTypeCompilerPass implements CompilerPassInterface
                 $definition->addMethodCall(
                     'addDataFieldType',
                     array(new Reference($id))
-                    
                 );
             }
         }

@@ -191,18 +191,16 @@ class IndexFileCommand extends EmsCommand
             if ($key === $field) {
                 if ($onlyMissingContent && isset($rawData[$key]['_content'])) {
                     //do nothing in this case as a content has been already extracted
-                }
-                else if ($onlyWithIngestedContent && !isset($rawData[$key]['content'])) {
+                } else if ($onlyWithIngestedContent && !isset($rawData[$key]['content'])) {
                     //do nothing in this case as a there is no ingested (binary) content
-                }
-                else {
-                    return $this->migrate($rawData[$key], $output );
+                } else {
+                    return $this->migrate($rawData[$key], $output);
                 }
                 return false;
             }
 
             if (is_array($data)) {
-                if($this->findField($rawData[$key], $field, $output, $onlyWithIngestedContent, $onlyMissingContent)) {
+                if ($this->findField($rawData[$key], $field, $output, $onlyWithIngestedContent, $onlyMissingContent)) {
                     return true;
                 }
             }
@@ -214,19 +212,18 @@ class IndexFileCommand extends EmsCommand
     {
         $updated = false;
         if (!empty($rawData) && !empty($rawData)) {
-
             if (isset($rawData['sha1'])) {
                 $file = $this->fileService->getFile($rawData['sha1']);
 
                 if ((!$file || !file_exists($file)) && isset($rawData['content'])) {
                     $fileContent = base64_decode($rawData['content']);
 
-                    if($rawData['sha1'] === sha1($fileContent)) {
+                    if ($rawData['sha1'] === sha1($fileContent)) {
                         $tempName = $this->fileService->temporaryFilename($rawData['sha1']);
                         file_put_contents($tempName, $fileContent);
 
                         /**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
-                        foreach ($this->fileService->getStorages() as $service){
+                        foreach ($this->fileService->getStorages() as $service) {
                             $service->create($rawData['sha1'], $tempName);
                             $output->writeln('File restored from DB: '.$rawData['sha1']);
                             break;

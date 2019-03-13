@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Repository;
 
-
 /**
  * AuditRepository
  *

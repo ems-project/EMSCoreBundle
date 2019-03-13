@@ -13,22 +13,24 @@ use Symfony\Component\Form\FormBuilderInterface;
  *
  * @author Mathieu De Keyzer <ems@theus.be>
  */
-class MappingOptionsType extends AbstractType {
+class MappingOptionsType extends AbstractType
+{
     
     /**
      *
      * {@inheritdoc}
      *
      */
-    public function buildForm(FormBuilderInterface $builder, array $options) {
-        $builder->add ( 'index', ChoiceType::class, [ 
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('index', ChoiceType::class, [
                 'required' => false,
-                'choices' => [ 
+                'choices' => [
                         'Not defined' => null,
                         'No' => 'no',
                         'Analyzed' => 'analyzed',
-                        'Not Analyzed' => 'not_analyzed' 
-                ] 
-        ] );
+                        'Not Analyzed' => 'not_analyzed'
+                ]
+        ]);
     }
 }

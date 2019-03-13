@@ -53,7 +53,7 @@ class AssetClearCacheCommand extends EmsCommand
 
         $this->formatFlash($output);
 
-        if(! $input->getOption('all') ){
+        if (! $input->getOption('all')) {
             /**@var QuestionHelper $helper*/
             $helper = $this->getHelper('question');
             $question = new ChoiceQuestion(
@@ -66,9 +66,8 @@ class AssetClearCacheCommand extends EmsCommand
             $service = $helper->ask($input, $output, $question);
 
 
-            if( $service != 'All' )
-            {
-                $serviceId = array_search ( $service ,$this->fileService->getStorages() );
+            if ($service != 'All') {
+                $serviceId = array_search($service, $this->fileService->getStorages());
                 $output->writeln('You have just selected: '.$service);
                 $this->fileService->getStorages()[$serviceId]->clearCache();
                 return;
@@ -82,8 +81,7 @@ class AssetClearCacheCommand extends EmsCommand
 
 
         /**@var StorageInterface $storage */
-        foreach ($this->fileService->getStorages() as $storage)
-        {
+        foreach ($this->fileService->getStorages() as $storage) {
             $storage->clearCache();
             $progress->advance();
         }
@@ -92,7 +90,5 @@ class AssetClearCacheCommand extends EmsCommand
         $progress->finish();
         $output->writeln('');
         $output->writeln('<comment>Elasticms assets caches cleared</comment>');
-
     }
-
 }

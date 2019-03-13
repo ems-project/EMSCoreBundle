@@ -21,14 +21,16 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * It's the mother class of all specific DataField used in eMS
  *
  * @author Mathieu De Keyzer <ems@theus.be>
- *        
+ *
  */
-class CriteriaViewType extends ViewType {
+class CriteriaViewType extends ViewType
+{
 
     /** @var Router $router */
     protected $router;
     
-    public function __construct($formFactory, $twig, $client, $router){
+    public function __construct($formFactory, $twig, $client, $router)
+    {
         parent::__construct($formFactory, $twig, $client);
         $this->router = $router;
     }
@@ -38,7 +40,8 @@ class CriteriaViewType extends ViewType {
      * {@inheritdoc}
      *
      */
-    public function getLabel(){
+    public function getLabel()
+    {
         return "Criteria: a view where we can massively content types having critetira";
     }
     
@@ -47,7 +50,8 @@ class CriteriaViewType extends ViewType {
      * {@inheritdoc}
      *
      */
-    public function getName(){
+    public function getName()
+    {
         return "Criteria";
     }
     
@@ -56,30 +60,31 @@ class CriteriaViewType extends ViewType {
      * {@inheritdoc}
      *
      */
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         parent::buildForm($builder, $options);
         
         $builder
-            ->add ( 'criteriaMode', ChoiceType::class, [
+            ->add('criteriaMode', ChoiceType::class, [
                 'label' => 'Criteria mode',
                 'choices' => [
                     'The records of this content type are the criterion of another content type' => 'another',
                     'The criterion of this content type are specifed in a internal collection' => 'internal'
                 ],
                 'expanded' => true,
-            ] )
-            ->add ( 'targetField', TextType::class, [
+            ])
+            ->add('targetField', TextType::class, [
                 'label' => 'The target field of the referenced content type (another content type mode)'
-            ] )
-            ->add ( 'categoryFieldPath', TextType::class, [
-            ] )
-            ->add ( 'criteriaField', TextType::class, [
+            ])
+            ->add('categoryFieldPath', TextType::class, [
+            ])
+            ->add('criteriaField', TextType::class, [
                 'label' => 'The collection field containing the list of criteria (internal collection mode)'
-            ] )->add ( 'criteriaFieldPaths', TextareaType::class, [
+            ])->add('criteriaFieldPaths', TextareaType::class, [
                     'attr' => [
                         'rows' => 6,
                     ]
-            ] );
+            ]);
     }
     
     /**
@@ -87,7 +92,8 @@ class CriteriaViewType extends ViewType {
      * {@inheritdoc}
      *
      */
-    public function getBlockPrefix() {
+    public function getBlockPrefix()
+    {
         return 'criteria_view';
     }
     
@@ -97,7 +103,8 @@ class CriteriaViewType extends ViewType {
      * {@inheritdoc}
      *
      */
-    public function getParameters(View $view, FormFactoryInterface $formFactoty, Request $request) {
+    public function getParameters(View $view, FormFactoryInterface $formFactoty, Request $request)
+    {
         
         $criteriaUpdateConfig = new CriteriaUpdateConfig($view, $request->getSession());
         
@@ -112,7 +119,7 @@ class CriteriaViewType extends ViewType {
         
         
         $categoryField = false;
-        if($view->getContentType()->getCategoryField()) {
+        if ($view->getContentType()->getCategoryField()) {
             $categoryField = $view->getContentType()->getFieldType()->__get('ems_'.$view->getContentType()->getCategoryField());
         }
         
@@ -126,5 +133,4 @@ class CriteriaViewType extends ViewType {
             'form' => $form->createView(),
         ];
     }
-    
 }

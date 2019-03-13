@@ -3,14 +3,12 @@
 
 namespace EMS\CoreBundle\Service;
 
-
 use Elasticsearch\Client;
 use EMS\LocalUserBundle\Entity\User;
 use Symfony\Component\HttpFoundation\Session\Session;
 use EMS\CoreBundle\Form\Field\ObjectChoiceListItem;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-
 
 class ObjectChoiceCacheService
 {
@@ -28,7 +26,8 @@ class ObjectChoiceCacheService
     private $fullyLoaded;
     private $cache;
     
-    public function __construct(Client $client, Session $session, ContentTypeService $contentTypeService, AuthorizationCheckerInterface $authorizationChecker, TokenStorageInterface $tokenStorage) {
+    public function __construct(Client $client, Session $session, ContentTypeService $contentTypeService, AuthorizationCheckerInterface $authorizationChecker, TokenStorageInterface $tokenStorage)
+    {
         $this->client = $client;
         $this->session = $session;
         $this->contentTypeService = $contentTypeService;
@@ -40,17 +39,18 @@ class ObjectChoiceCacheService
     }
     
 
-    public function loadAll($types, $circleOnly = false) {
+    public function loadAll($types, $circleOnly = false)
+    {
         $aliasTypes = [];
         $out = [];
         
         $cts = explode(',', $types);
         $body = [];
         foreach ($cts as $type) {
-            if(!isset($this->fullyLoaded[$type])){
+            if (!isset($this->fullyLoaded[$type])) {
                 $currentType = $this->contentTypeService->getByName($type);
-                if($currentType){
-                    if(!isset($aliasTypes[$currentType->getEnvironment()->getAlias()])){
+                if ($currentType) {
+                    if (!isset($aliasTypes[$currentType->getEnvironment()->getAlias()])) {
                         $aliasTypes[$currentType->getEnvironment()->getAlias()] = [];
                     }
                     $aliasTypes[$currentType->getEnvironment()->getAlias()][] = $type;
@@ -61,7 +61,7 @@ class ObjectChoiceCacheService
                     ];
 
 
-                    if($currentType->getOrderField()) {
+                    if ($currentType->getOrderField()) {
                         $params['body'] = [
                             'sort' => [
                                 $currentType->getOrderField() => [
@@ -72,7 +72,7 @@ class ObjectChoiceCacheService
                         ];
                     }
 
-                    if($circleOnly && !$this->authorizationChecker->isGranted('ROLE_ADMIN')){
+                    if ($circleOnly && !$this->authorizationChecker->isGranted('ROLE_ADMIN')) {
                         /**@var User $user */
                         $user = $this->tokenStorage->getToken()->getUser();
                         $circles = $user->getCircles();
@@ -90,21 +90,19 @@ class ObjectChoiceCacheService
                     $items = $this->client->search($params);
                     //TODO test si > 500...flashbag
 
-                    foreach ($items['hits']['hits'] as $hit){
+                    foreach ($items['hits']['hits'] as $hit) {
                         $listItem = new ObjectChoiceListItem($hit, $this->contentTypeService->getByName($hit['_type']));
                         $out[$listItem->getValue()] = $listItem;
                         $this->cache[$hit['_type']][$hit['_id']] = $listItem;
                     }
-                }
-                else {
+                } else {
                     $this->session->getFlashBag()->add('warning', 'ems was not able to find the content type "'.$type.'"');
-                }                
+                }
                 $this->fullyLoaded[$type] = true;
-            }
-            else {
-                foreach ($this->cache[$type] as $id => $item){
-                    if($item){
-                        $out[$type.':'.$id] = $item;                        
+            } else {
+                foreach ($this->cache[$type] as $id => $item) {
+                    if ($item) {
+                        $out[$type.':'.$id] = $item;
                     }
                 }
             }
@@ -113,68 +111,62 @@ class ObjectChoiceCacheService
         return $out;
     }
     
-    public function load($objectIds, $circleOnly = false) {
+    public function load($objectIds, $circleOnly = false)
+    {
         $out = [];
         $queries = [];
-        foreach ($objectIds as $objectId){
-            if(is_string($objectId) && strpos($objectId, ':') !== false){
+        foreach ($objectIds as $objectId) {
+            if (is_string($objectId) && strpos($objectId, ':') !== false) {
                 $ref = explode(':', $objectId);
-                if(!isset($this->cache[$ref[0]])){
+                if (!isset($this->cache[$ref[0]])) {
                     $this->cache[$ref[0]] = [];
                 }
                 
-                if(isset($this->cache[$ref[0]][$ref[1]])){
-                    if($this->cache[$ref[0]][$ref[1]]) {
-                        $out[$objectId] = $this->cache[$ref[0]][$ref[1]];                        
+                if (isset($this->cache[$ref[0]][$ref[1]])) {
+                    if ($this->cache[$ref[0]][$ref[1]]) {
+                        $out[$objectId] = $this->cache[$ref[0]][$ref[1]];
                     }
-                }
-                else{
-                    if(!isset($this->fullyLoaded[$ref[0]])){
+                } else {
+                    if (!isset($this->fullyLoaded[$ref[0]])) {
                         $contentType = $this->contentTypeService->getByName($ref[0]);
-                        if($contentType){
-
+                        if ($contentType) {
                             $index = $this->contentTypeService->getIndex($contentType);
-                            if($index){
-                                if(!array_key_exists($index, $queries)){
+                            if ($index) {
+                                if (!array_key_exists($index, $queries)) {
                                     $queries[$index] = ['docs' => []];
                                 }
                                 $queries[$index]['docs'][] = [
                                     "_type" => $ref[0],
                                     "_id" => $ref[1],
                                 ];
-                            }
-                            else {
+                            } else {
                                 $this->session->getFlashBag()->add('warning', 'ems was not able to find the alias for the content type "'.$ref[0].'"');
                             }
-                        }
-                        else {
+                        } else {
                             $this->session->getFlashBag()->add('warning', 'ems was not able to find the content type "'.$ref[0].'"');
-                        }                        
+                        }
                     }
                 }
-                
-            }
-            else {
-                if(null !== $objectId && $objectId !== ""){
-                    $this->session->getFlashBag()->add('warning', 'ems was not able to parse the object key "'.$objectId.'"');                    
+            } else {
+                if (null !== $objectId && $objectId !== "") {
+                    $this->session->getFlashBag()->add('warning', 'ems was not able to parse the object key "'.$objectId.'"');
                 }
             }
         }
         
-        foreach ($queries as $alias => $query){
+        foreach ($queries as $alias => $query) {
             $params = [
                     'index' => $alias,
                     'body' => $query
             ];
             $result = $this->client->mget($params);
-            foreach($result['docs'] as $doc){
+            foreach ($result['docs'] as $doc) {
                 $objectId = $doc['_type'].':'.$doc['_id'];
-                if($doc['found']){
+                if ($doc['found']) {
                     $listItem = new ObjectChoiceListItem($doc, $this->contentTypeService->getByName($doc['_type']));
                     $this->cache[$doc['_type']][$doc['_id']] = $listItem;
                     $out[$objectId] = $listItem;
-                }
-                else {
+                } else {
                     $this->cache[$doc['_type']][$doc['_id']] = false;
                     $this->session->getFlashBag()->add('warning', 'ems was not able to find the object key "'.$objectId.'"');
                 }
@@ -182,5 +174,4 @@ class ObjectChoiceCacheService
         }
         return $out;
     }
-    
 }

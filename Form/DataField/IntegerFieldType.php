@@ -7,14 +7,16 @@ use EMS\CoreBundle\Entity\FieldType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class IntegerFieldType extends DataFieldType {
+class IntegerFieldType extends DataFieldType
+{
 
     /**
      *
      * {@inheritdoc}
      *
      */
-    public function getLabel(){
+    public function getLabel()
+    {
         return 'Integer field';
     }
     
@@ -23,7 +25,8 @@ class IntegerFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public static function getIcon(){
+    public static function getIcon()
+    {
         return 'glyphicon glyphicon-sort-by-order';
     }
     
@@ -34,17 +37,17 @@ class IntegerFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function isValid(DataField &$dataField, DataField $parent=null, &$masterRawData=null){
-        if($this->hasDeletedParent($parent))
-        {
+    public function isValid(DataField &$dataField, DataField $parent = null, &$masterRawData = null)
+    {
+        if ($this->hasDeletedParent($parent)) {
             return true;
         }
 
-        $isValid = parent::isValid($dataField, $parent,$masterRawData);
+        $isValid = parent::isValid($dataField, $parent, $masterRawData);
         
         $rawData = $dataField->getRawData();
-        if(! empty($rawData) && !is_numeric($rawData)) {
-            $isValid = FALSE;
+        if (! empty($rawData) && !is_numeric($rawData)) {
+            $isValid = false;
             $dataField->addMessage("Not a integer");
         }
         
@@ -56,19 +59,20 @@ class IntegerFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         
         /** @var FieldType $fieldType */
-        $fieldType = $builder->getOptions () ['metadata'];
+        $fieldType = $builder->getOptions() ['metadata'];
     
-        $builder->add ( 'value', TextType::class, [
+        $builder->add('value', TextType::class, [
                 'label' => (isset($options['label'])?$options['label']:$fieldType->getName()),
                 'required' => false,
                 'disabled'=> $this->isDisabled($options),
                 'attr' => [
                         //'class' => 'spinner',
                 ]
-        ] );
+        ]);
     }
     
     /**
@@ -76,13 +80,14 @@ class IntegerFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public static function buildObjectArray(DataField $data, array &$out) {
-        if (! $data->getFieldType ()->getDeleted ()) {
+    public static function buildObjectArray(DataField $data, array &$out)
+    {
+        if (! $data->getFieldType()->getDeleted()) {
             /**
              * by default it serialize the text value.
              * It must be overrided.
              */
-            $out [$data->getFieldType ()->getName ()] = $data->getIntegerValue();
+            $out [$data->getFieldType()->getName()] = $data->getIntegerValue();
         }
     }
     
@@ -91,9 +96,10 @@ class IntegerFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function generateMapping(FieldType $current, $withPipeline){
+    public function generateMapping(FieldType $current, $withPipeline)
+    {
         return [
-                $current->getName() => $this->elasticsearchService->updateMapping(array_merge(["type" => "integer"],  array_filter($current->getMappingOptions())))
+                $current->getName() => $this->elasticsearchService->updateMapping(array_merge(["type" => "integer"], array_filter($current->getMappingOptions())))
         ];
     }
     
@@ -102,9 +108,10 @@ class IntegerFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options) {
-        parent::buildOptionsForm ( $builder, $options );
-        $optionsForm = $builder->get ( 'options' );
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    {
+        parent::buildOptionsForm($builder, $options);
+        $optionsForm = $builder->get('options');
         
     
 //         // String specific display options
@@ -116,42 +123,44 @@ class IntegerFieldType extends DataFieldType {
     
 //         // String specific mapping options
 //         $optionsForm->get ( 'mappingOptions' )->add ( 'analyzer', AnalyzerPickerType::class);
-    }    
+    }
     
     /**
      *
      * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::getBlockPrefix()
      */
-    public function getBlockPrefix() {
+    public function getBlockPrefix()
+    {
         return 'bypassdatafield';
     }
     
     /**
-     * 
+     *
      * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
      */
-    public function viewTransform(DataField $dataField){
+    public function viewTransform(DataField $dataField)
+    {
         $out = parent::viewTransform($dataField);
         return ['value' => $out];
     }
     
-    public function reverseViewTransform($data, FieldType $fieldType) {
+    public function reverseViewTransform($data, FieldType $fieldType)
+    {
         $temp = $data['value'];
         
         $message = false;
-        if($temp !== null){
-            if(is_numeric($temp)) {
+        if ($temp !== null) {
+            if (is_numeric($temp)) {
                 $temp = intval($temp);
-            }
-            else {
+            } else {
                 $message = 'It is not a integer value';
             }
         }
         
         $out = parent::reverseViewTransform($temp, $fieldType);
-        if($message) {
+        if ($message) {
             $out->addMessage($message);
         }
             

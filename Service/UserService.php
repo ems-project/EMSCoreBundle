@@ -10,7 +10,8 @@ use EMS\CoreBundle\Repository\UserRepositoryInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-class UserService {
+class UserService
+{
     /**@var Registry $doctrine */
     private $doctrine;
     /**@var Session $session*/
@@ -22,7 +23,8 @@ class UserService {
     
     private $securityRoles;
     
-    public function __construct(Registry $doctrine, Session $session, TokenStorageInterface $tokenStorage, $securityRoles) {
+    public function __construct(Registry $doctrine, Session $session, TokenStorageInterface $tokenStorage, $securityRoles)
+    {
         $this->doctrine = $doctrine;
         $this->session = $session;
         $this->tokenStorage = $tokenStorage;
@@ -31,7 +33,8 @@ class UserService {
     }
     
     
-    public function findUsernameByApikey($apiKey){
+    public function findUsernameByApikey($apiKey)
+    {
         $em = $this->doctrine->getManager();
         /**@var \Doctrine\ORM\EntityRepository */
         $repository = $em->getRepository('EMSCoreBundle:AuthToken');
@@ -40,14 +43,14 @@ class UserService {
         $token = $repository->findOneBy([
                 'value' => $apiKey
         ]);
-        if(empty($token)){
+        if (empty($token)) {
             return null;
         }
         return $token->getUser()->getUsername();
-        
     }
     
-    public function getUserById($id) {
+    public function getUserById($id)
+    {
         $em = $this->doctrine->getManager();
         /**@var \Doctrine\ORM\EntityRepository */
         $repository = $em->getRepository('EMSCoreBundle:User');
@@ -58,7 +61,8 @@ class UserService {
         return $user;
     }
     
-    public function findUserByEmail($email) {
+    public function findUserByEmail($email)
+    {
         $em = $this->doctrine->getManager();
         /**@var \Doctrine\ORM\EntityRepository */
         $repository = $em->getRepository('EMSCoreBundle:User');
@@ -69,7 +73,8 @@ class UserService {
         return $user;
     }
     
-    public function updateUser($user) {
+    public function updateUser($user)
+    {
         $em = $this->doctrine->getManager();
         $em->persist($user);
         $em->flush();
@@ -78,7 +83,8 @@ class UserService {
     }
     
     
-    public function getUser($username, $detachIt = true) {
+    public function getUser($username, $detachIt = true)
+    {
         $em = $this->doctrine->getManager();
         /**@var \Doctrine\ORM\EntityRepository */
         $repository = $em->getRepository('EMSCoreBundle:User');
@@ -86,8 +92,8 @@ class UserService {
                 'username' => $username
         ]);
         
-        if(!empty($user) && $detachIt) {
-            $em->detach($user);            
+        if (!empty($user) && $detachIt) {
+            $em->detach($user);
         }
         
         return $user;
@@ -96,8 +102,9 @@ class UserService {
     /**
      * @return User
      */
-    public function getCurrentUser() {
-        if(!$this->currentUser){
+    public function getCurrentUser()
+    {
+        if (!$this->currentUser) {
             $username = $this->tokenStorage->getToken()->getUsername();
             $this->currentUser = $this->getUser($username);
         }
@@ -105,19 +112,19 @@ class UserService {
     }
     
 
-    public  function getExistingRoles()
+    public function getExistingRoles()
     {
         $roleHierarchy = $this->securityRoles; //securityRolesthis->container->getParameter('security.role_hierarchy.roles');
         
         $out = [];
         
-        foreach ($roleHierarchy as $parent => $children){
+        foreach ($roleHierarchy as $parent => $children) {
             foreach ($children as $child) {
-                if(empty($out[$child])){
+                if (empty($out[$child])) {
                     $out[$child] = $child;
                 }
             }
-            if(empty($out[$parent])){
+            if (empty($out[$parent])) {
                 $out[$parent] = $parent;
             }
         }
@@ -130,7 +137,8 @@ class UserService {
         return $out;
     }
     
-    public function getUsersForRoleAndCircles($role, $circles) {
+    public function getUsersForRoleAndCircles($role, $circles)
+    {
         /**@var EntityManagerInterface $em*/
         $em = $this->doctrine->getManager();
         
@@ -141,13 +149,15 @@ class UserService {
     }
     
     
-    public function deleteUser(User $user){
+    public function deleteUser(User $user)
+    {
         /**@var EntityManagerInterface $em*/
         $em = $this->doctrine->getManager();
         $em->remove($user);
     }
     
-    public function getAllUsers() {
+    public function getAllUsers()
+    {
         $em = $this->doctrine->getManager();
         /**@var \Doctrine\ORM\EntityRepository */
         $repository = $em->getRepository('EMSCoreBundle:User');
@@ -156,8 +166,8 @@ class UserService {
         ]);
     }
     
-    public  function getsecurityRoles() {
+    public function getsecurityRoles()
+    {
         return $this->securityRoles;
     }
-
 }

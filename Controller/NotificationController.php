@@ -41,7 +41,7 @@ class NotificationController extends AppController
         /** @var Environment $env */
         $env = $repositoryEnv->findOneByName($environmentName);
         
-        if(!$env) {
+        if (!$env) {
             throw new NotFoundHttpException('Unknown environment');
         }
             
@@ -50,7 +50,7 @@ class NotificationController extends AppController
         /** @var ContentType $ct */
         $ct = $repositoryCt->findOneById($ctId);
         
-        if(!$ct) {
+        if (!$ct) {
             throw new NotFoundHttpException('Unknown content type');
         }
             
@@ -59,15 +59,15 @@ class NotificationController extends AppController
         $repositoryRev = $em->getRepository('EMSCoreBundle:Revision');
         /** @var Revision $revision */
         $revision = $repositoryRev->findByOuuidAndContentTypeAndEnvironnement($ct, $ouuid, $env);
-        if(!$revision) {
+        if (!$revision) {
             throw new NotFoundHttpException('Unknown revision');
         }
         
         $success = $this->getNotificationService()->addNotification($templateId, $revision, $env);
 
-        return $this->render( '@EMSCore/ajax/notification.json.twig', [
+        return $this->render('@EMSCore/ajax/notification.json.twig', [
                 'success' => $success,
-        ] );
+        ]);
     }
     
     
@@ -102,7 +102,7 @@ class NotificationController extends AppController
         $treatNotification = new TreatNotifications();
         $form = $this->createForm(TreatNotificationsType::class, $treatNotification, [
         ]);
-        $form->handleRequest ( $request );
+        $form->handleRequest($request);
         /**@var TreatNotifications $treatNotification*/
         $treatNotification = $form->getNormData();
         $treatNotification->setAccept($form->get('accept')->isClicked());
@@ -119,32 +119,32 @@ class NotificationController extends AppController
 //             $this->addFlash('error', 'You can\'t publish in and unpublish from the same environment '.$unpublishFrom.' !');
 //         }
 //         else {
-            foreach( $treatNotification->getNotifications() as $notificationId => $true ){
-                /**@var Notification $notification*/
-                $notification = $repositoryNotification->find($notificationId);
-                if(empty($notification)) {
-                    $this->addFlash('error', 'Notification #'.$notification.' not found');
-                    continue;
-                }
+        foreach ($treatNotification->getNotifications() as $notificationId => $true) {
+            /**@var Notification $notification*/
+            $notification = $repositoryNotification->find($notificationId);
+            if (empty($notification)) {
+                $this->addFlash('error', 'Notification #'.$notification.' not found');
+                continue;
+            }
                 
-                if(!empty($publishIn)) {
+            if (!empty($publishIn)) {
 //                     $this->getDataService()->lockRevision($notification->getRevision());
-                    $this->getPublishService()->publish($notification->getRevision(), $publishIn);
+                $this->getPublishService()->publish($notification->getRevision(), $publishIn);
 //                     $this->getDataService()->unlockRevision($notification->getRevision());
-                }
+            }
                 
 //                 if(!empty($unpublishFrom)) {
 //                     $this->getPublishService()->unpublish($notification->getRevision(), $unpublishFrom);
 //                 }
                 
-                if($treatNotification->getAccept()){
-                    $this->get('ems.service.notification')->accept($notification, $treatNotification);
-                }
-                
-                if($treatNotification->getReject()){
-                    $this->get('ems.service.notification')->reject($notification, $treatNotification);
-                }
+            if ($treatNotification->getAccept()) {
+                $this->get('ems.service.notification')->accept($notification, $treatNotification);
             }
+                
+            if ($treatNotification->getReject()) {
+                $this->get('ems.service.notification')->reject($notification, $treatNotification);
+            }
+        }
 //         }
         
         
@@ -181,11 +181,11 @@ class NotificationController extends AppController
          $form = $this->createForm(NotificationFormType::class, $notificationFilter, [
                  'method' => 'GET'
          ]);
-         $form->handleRequest ( $request );
+         $form->handleRequest($request);
          
-         if($form->isSubmitted()){
-             $notificationFilter = $form->getData();
-         }
+        if ($form->isSubmitted()) {
+            $notificationFilter = $form->getData();
+        }
          
 
          
@@ -202,24 +202,21 @@ class NotificationController extends AppController
         // for pagination
         $paging_size = $this->getParameter('ems_core.paging_size');
         $lastPage = ceil($count/$paging_size);
-        if(null != $request->query->get('page')){
+        if (null != $request->query->get('page')) {
             $page = $request->query->get('page');
-        }
-        else{
+        } else {
             $page = 1;
         }
         
         $notifications = [];
         $rejectedNotifications = [];
-        if($folder == 'sent') {
+        if ($folder == 'sent') {
             $notifications = $this->getNotificationService()->listSentNotifications(($page-1)*$paging_size, $paging_size, $filters);
             $lastPage = ceil($countSent/$paging_size);
-        }
-        else {
+        } else {
             $notifications = $this->getNotificationService()->listInboxNotifications(($page-1)*$paging_size, $paging_size, $filters);
             $rejectedNotifications = $this->getNotificationService()->listRejectedNotifications(($page-1)*$paging_size, $paging_size, $filters);
             $lastPage = ceil(($countRejected > $countPending?$countRejected:$countPending)/$paging_size);
-                
         }
 
          $treatNotification = new TreatNotifications();

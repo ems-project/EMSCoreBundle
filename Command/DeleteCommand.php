@@ -20,7 +20,7 @@ use Symfony\Component\Console\Helper\ProgressBar;
 
 class DeleteCommand extends ContainerAwareCommand
 {
-    protected  $client;
+    protected $client;
     protected $mapping;
     protected $doctrine;
     protected $logger;
@@ -60,11 +60,11 @@ class DeleteCommand extends ContainerAwareCommand
         $ctRepo = $em->getRepository('EMSCoreBundle:ContentType');
         /** @var ContentType $contentType */
         $contentType = $ctRepo->findOneBy([
-                'name' => $name, 
+                'name' => $name,
                 'deleted'=> 0
                 
         ]);
-        if($contentType){    
+        if ($contentType) {
             /** @var RevisionRepository $revRepo */
             $revRepo = $em->getRepository('EMSCoreBundle:Revision');
             
@@ -73,21 +73,20 @@ class DeleteCommand extends ContainerAwareCommand
             
             $counter = 0;
             $total = $revRepo->countByContentType($contentType);
-            if( $total == 0) {
+            if ($total == 0) {
                 $output->writeln("Content type \"".$name."\" is already empty");
             } else {
-
                 // create a new progress bar
                 $progress = new ProgressBar($output, $total);
                 // start and displays the progress bar
                 $progress->start();
                 
-                while($revRepo->countByContentType($contentType) > 0 ) {
+                while ($revRepo->countByContentType($contentType) > 0) {
                     $revisions = $revRepo->findByContentType($contentType, null, 20);
                     /**@var \EMS\CoreBundle\Entity\Revision $revision */
-                    foreach ($revisions as $revision){
-                        foreach($revision->getEnvironments() as $environment) {
-                            try{
+                    foreach ($revisions as $revision) {
+                        foreach ($revision->getEnvironments() as $environment) {
+                            try {
                                 $client->delete([
                                         'index' => $environment->getAlias(),
                                         'type' => $contentType->getName(),
@@ -102,7 +101,7 @@ class DeleteCommand extends ContainerAwareCommand
                         $notifications = $notRepo->findBy([
                             'revision' => $revision,
                         ]);
-                        foreach ($notifications as $notification){
+                        foreach ($notifications as $notification) {
                             $em->remove($notification);
                         }
                         
@@ -120,16 +119,10 @@ class DeleteCommand extends ContainerAwareCommand
 
                 // ensure that the progress bar is at 100%
                 $progress->finish();
-                $output->writeln(" deleting content type ".$name);    
+                $output->writeln(" deleting content type ".$name);
             }
-            
         } else {
                 $output->writeln("Content type ".$name." not found");
         }
-        
-        
     }
-    
-
-
 }

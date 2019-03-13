@@ -78,7 +78,7 @@ class SearchController extends AppController
         ]);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->getSortOptionService()->create($sortOption);
             return $this->redirectToRoute('ems_search_options_index');
         }
@@ -104,7 +104,7 @@ class SearchController extends AppController
         ]);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->getSearchFieldOptionService()->create($searchFieldOption);
             return $this->redirectToRoute('ems_search_options_index');
         }
@@ -130,7 +130,7 @@ class SearchController extends AppController
         ]);
         $form->handleRequest($request);
         
-        if ($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->getAggregateOptionService()->create($aggregateOption);
             return $this->redirectToRoute('ems_search_options_index');
         }
@@ -154,13 +154,12 @@ class SearchController extends AppController
         $form->handleRequest($request);
         
         if ($form->isSubmitted()) {
-            
-            if($form->get('remove') && $form->get('remove')->isClicked()){
+            if ($form->get('remove') && $form->get('remove')->isClicked()) {
                 $this->getSortOptionService()->remove($sortOption);
                 return $this->redirectToRoute('ems_search_options_index');
             }
             
-            if($form->isSubmitted() && $form->isValid()) {
+            if ($form->isSubmitted() && $form->isValid()) {
                 $this->getSortOptionService()->save($sortOption);
                 return $this->redirectToRoute('ems_search_options_index');
             }
@@ -185,13 +184,12 @@ class SearchController extends AppController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-
-            if($form->get('remove') && $form->get('remove')->isClicked()){
+            if ($form->get('remove') && $form->get('remove')->isClicked()) {
                 $this->getSearchFieldOptionService()->remove($searchFieldOption);
                 return $this->redirectToRoute('ems_search_options_index');
             }
 
-            if($form->isSubmitted() && $form->isValid()) {
+            if ($form->isSubmitted() && $form->isValid()) {
                 $this->getSearchFieldOptionService()->save($searchFieldOption);
                 return $this->redirectToRoute('ems_search_options_index');
             }
@@ -217,13 +215,12 @@ class SearchController extends AppController
         $form->handleRequest($request);
         
         if ($form->isSubmitted()) {
-            
-            if($form->get('remove') && $form->get('remove')->isClicked()){
+            if ($form->get('remove') && $form->get('remove')->isClicked()) {
                 $this->getAggregateOptionService()->remove($option);
                 return $this->redirectToRoute('ems_search_options_index');
             }
             
-            if($form->isSubmitted() && $form->isValid()) {
+            if ($form->isSubmitted() && $form->isValid()) {
                 $this->getAggregateOptionService()->save($option);
                 return $this->redirectToRoute('ems_search_options_index');
             }

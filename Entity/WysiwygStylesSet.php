@@ -41,7 +41,7 @@ class WysiwygStylesSet
      *
      * @ORM\Column(name="name", type="string", length=255)
      */
-    private $name; 
+    private $name;
     
     /**
      * @var string
@@ -64,18 +64,18 @@ class WysiwygStylesSet
     public function updateModified()
     {
         $this->modified = new \DateTime();
-        if(!isset($this->created)){
+        if (!isset($this->created)) {
             $this->created = $this->modified;
         }
-        if(!isset($this->orderKey)){
+        if (!isset($this->orderKey)) {
             $this->orderKey = 0;
         }
     }
     
     /******************************************************************
-     * 
+     *
      * Generated functions
-     * 
+     *
      *******************************************************************/
 
     /**

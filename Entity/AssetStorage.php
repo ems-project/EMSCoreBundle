@@ -233,6 +233,4 @@ class AssetStorage
         $this->context = $context;
         return $this;
     }
-
 }
-

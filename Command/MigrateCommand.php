@@ -60,10 +60,10 @@ class MigrateCommand extends EmsCommand
             ->setName('ems:contenttype:migrate')
             ->setDescription('Migrate a content type from an elasticsearch index')
             ->addArgument(
-                    'elasticsearchIndex',
-                    InputArgument::REQUIRED,
-                    'Elasticsearch index where to find ContentType objects as new source'
-                    )
+                'elasticsearchIndex',
+                InputArgument::REQUIRED,
+                'Elasticsearch index where to find ContentType objects as new source'
+            )
             ->addArgument(
                 'contentTypeNameFrom',
                 InputArgument::REQUIRED,
@@ -110,20 +110,22 @@ class MigrateCommand extends EmsCommand
                 null,
                 InputOption::VALUE_NONE,
                 'The content will be (re)signed during the reindexing process'
-             );
+            );
         ;
     }
     
     
-    private function getSubmitData(Form $form){
+    private function getSubmitData(Form $form)
+    {
         return $this->dataService->getSubmitData($form);
     }
     
     /**
-     * 
+     *
      * @return \EMS\CoreBundle\Entity\Revision
      */
-    private function getEmptyRevision(ContentType $contentType) {
+    private function getEmptyRevision(ContentType $contentType)
+    {
         return $this->dataService->getEmptyRevision($contentType, 'SYSTEM_MIGRATE');
     }
 
@@ -141,7 +143,7 @@ class MigrateCommand extends EmsCommand
         $elasticsearchIndex = $input->getArgument('elasticsearchIndex');
         $contentTypeNameFrom = $input->getArgument('contentTypeNameFrom');
         $contentTypeNameTo = $input->getArgument('contentTypeNameTo');
-        if(!$contentTypeNameTo){
+        if (!$contentTypeNameTo) {
             $contentTypeNameTo = $contentTypeNameFrom;
         }
         $scrollSize= $input->getArgument('scrollSize');
@@ -152,13 +154,13 @@ class MigrateCommand extends EmsCommand
             ->setSize($input->getOption('bulkSize'));
         
         /** @var RevisionRepository $revisionRepository */
-        $revisionRepository = $em->getRepository( 'EMSCoreBundle:Revision' );
+        $revisionRepository = $em->getRepository('EMSCoreBundle:Revision');
         /** @var \EMS\CoreBundle\Repository\ContentTypeRepository $contentTypeRepository */
         $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
 
         /** @var \EMS\CoreBundle\Entity\ContentType $contentTypeTo */
         $contentTypeTo = $contentTypeRepository->findOneBy(array("name" => $contentTypeNameTo, 'deleted' => false));
-        if(!$contentTypeTo) {
+        if (!$contentTypeTo) {
             $output->writeln("<error>Content type ".$contentTypeNameTo." not found</error>");
             exit;
         }
@@ -166,16 +168,16 @@ class MigrateCommand extends EmsCommand
         
         $output->writeln("Start migration of ".$contentTypeTo->getPluralName());
         
-        if($contentTypeTo->getDirty()) {
+        if ($contentTypeTo->getDirty()) {
             $output->writeln("<error>Content type \"".$contentTypeNameTo."\" is dirty. Please clean it first</error>");
             exit;
         }
         
         $indexInDefaultEnv = true;
-        if(strcmp($defaultEnv->getAlias(), $elasticsearchIndex) === 0 && strcmp($contentTypeNameFrom, $contentTypeNameTo) === 0) {
-            if(!$input->getOption('force')) {
+        if (strcmp($defaultEnv->getAlias(), $elasticsearchIndex) === 0 && strcmp($contentTypeNameFrom, $contentTypeNameTo) === 0) {
+            if (!$input->getOption('force')) {
                 $output->writeln("<error>You can not import a content type on himself with the --force option</error>");
-                exit;                
+                exit;
             }
             $indexInDefaultEnv = false;
         }
@@ -203,13 +205,12 @@ class MigrateCommand extends EmsCommand
         $progress->start();
         
         
-        while (isset($arrayElasticsearchIndex['hits']['hits']) && count($arrayElasticsearchIndex['hits']['hits']) > 0){
-            
+        while (isset($arrayElasticsearchIndex['hits']['hits']) && count($arrayElasticsearchIndex['hits']['hits']) > 0) {
             $contentTypeTo = $contentTypeRepository->findOneBy(array("name" => $contentTypeNameTo, 'deleted' => false));
             $defaultEnv = $contentTypeTo->getEnvironment();
 
             foreach ($arrayElasticsearchIndex["hits"]["hits"] as $index => $value) {
-                try{
+                try {
                     $newRevision = $this->getEmptyRevision($contentTypeTo);
                     $newRevision->setOuuid($value['_id']);
                     $until = $newRevision->getLockUntil();
@@ -217,12 +218,11 @@ class MigrateCommand extends EmsCommand
                     
                     /**@var Revision $currentRevision*/
                     $currentRevision = $revisionRepository->getCurrentRevision($contentTypeTo, $value['_id']);
-                    if($currentRevision) {
-                        if($input->getOption('raw')){
+                    if ($currentRevision) {
+                        if ($input->getOption('raw')) {
                             $newRevision->setRawData($value['_source']);
                             $objectArray = $value['_source'];
-                        }
-                        else {
+                        } else {
                             //If there is a current revision, datas in fields that are protected against migration must not be overridden
                             //So we load the datas from the current revision into the next revision
                             $newRevision->setRawData($value['_source']);
@@ -240,7 +240,6 @@ class MigrateCommand extends EmsCommand
                             $newRevision->setRawData($objectArray);
                             
                             unset($revisionType);
-                            
                         }
                         
                         $currentRevision->setEndTime($now);
@@ -250,12 +249,10 @@ class MigrateCommand extends EmsCommand
                         $currentRevision->setLockBy('SYSTEM_MIGRATE');
                         $currentRevision->setLockUntil($until);
                         $em->persist($currentRevision);
-                    }    
-                    else if($input->getOption('raw')){
+                    } else if ($input->getOption('raw')) {
                         $newRevision->setRawData($value['_source']);
                         $objectArray = $value['_source'];
-                    }
-                    else{
+                    } else {
                         $newRevision->setRawData($value['_source']);
                         $revisionType = $this->formFactory->create(RevisionType::class, $newRevision, ['migration' => true, 'raw_data' => $newRevision->getRawData()]);
                         $viewData = $this->getSubmitData($revisionType->get('data'));
@@ -275,14 +272,14 @@ class MigrateCommand extends EmsCommand
                     $this->dataService->setMetaFields($newRevision);
                     
                     
-                    if($indexInDefaultEnv){
+                    if ($indexInDefaultEnv) {
                         $indexConfig = [
                             '_index' => $defaultEnv->getAlias(),
                             '_type' => $contentTypeNameTo,
                             '_id' => $value['_id'],
                         ];
 
-                        if($newRevision->getContentType()->getHavePipelines()){
+                        if ($newRevision->getContentType()->getHavePipelines()) {
                             $indexConfig['pipeline'] = $this->instanceId.$contentTypeNameTo;
                         }
 
@@ -297,11 +294,9 @@ class MigrateCommand extends EmsCommand
                      $revisionRepository->finaliseRevision($contentTypeTo, $value['_id'], $now);
                     //hot fix query: insert into `environment_revision`  select id, 1 from `revision` where `end_time` is null;
                     $revisionRepository->publishRevision($newRevision);
-                }
-                catch(NotLockedException $e){
+                } catch (NotLockedException $e) {
                     $output->writeln("<error>'.$e.'</error>");
-                }
-                catch(CantBeFinalizedException $e){
+                } catch (CantBeFinalizedException $e) {
                     $output->writeln("<error>'.$e.'</error>");
                 }
 
@@ -327,8 +322,6 @@ class MigrateCommand extends EmsCommand
                 "scroll_id" => $scroll_id,  //...using our previously obtained _scroll_id
                 "scroll" => $scrollTimeout, // and the same timeout window
             ]);
-            
-            
         }
         // ensure that the progress bar is at 100%
         $progress->finish();

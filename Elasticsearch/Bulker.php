@@ -176,7 +176,7 @@ class Bulker
      */
     private function logResponse(array $response)
     {
-        foreach($response['items'] as $item) {
+        foreach ($response['items'] as $item) {
             $action = array_shift($item);
 
             if (!isset($action['error'])) {

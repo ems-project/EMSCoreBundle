@@ -4,7 +4,8 @@ namespace EMS\CoreBundle\Form\Field;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class FieldTypePickerType extends SelectPickerType {
+class FieldTypePickerType extends SelectPickerType
+{
     
     private $dataFieldTypes;
     
@@ -35,7 +36,7 @@ class FieldTypePickerType extends SelectPickerType {
             'attr' => [
                     'data-live-search' => true
             ],
-            'choice_attr' => function($category, $key, $index) {
+            'choice_attr' => function ($category, $key, $index) {
                 /** @var \EMS\CoreBundle\Form\DataField\DataFieldType $dataFieldType */
                 $dataFieldType = $this->dataFieldTypes[$index];
                 return [
@@ -43,7 +44,7 @@ class FieldTypePickerType extends SelectPickerType {
                 ];
             },
             'choice_value' => function ($value) {
-               return $value;
+                return $value;
             },
         ));
     }

@@ -5,7 +5,8 @@ namespace EMS\CoreBundle\Form\Field;
 use EMS\CoreBundle\Form\View\ViewType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ViewTypePickerType extends SelectPickerType {
+class ViewTypePickerType extends SelectPickerType
+{
 
     private $viewTypes;
     
@@ -30,7 +31,7 @@ class ViewTypePickerType extends SelectPickerType {
             'attr' => [
                     'data-live-search' => true
             ],
-            'choice_attr' => function($category, $key, $index) {
+            'choice_attr' => function ($category, $key, $index) {
                 /** @var ViewType $viewType */
                 $viewType = $this->viewTypes[$index];
                 return [

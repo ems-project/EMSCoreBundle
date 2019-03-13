@@ -2,41 +2,45 @@
 
 namespace EMS\CoreBundle\Service;
 
-class ElasticsearchService {
+class ElasticsearchService
+{
     
     /**
      * The elasticsearch version as specified in the bundle parameter
-     * 
+     *
      * @var string
      */
     private $version;
     
     /**
      * Constructor
-     * 
+     *
      * @param string $version
      */
     public function __construct($version)
     {
-        $this->version = $version;;
+        $this->version = $version;
+        ;
     }
     
     /**
      * Returns the parameter specified version
-     * 
+     *
      * @return string
      */
-    public function getVersion() {
+    public function getVersion()
+    {
         return $this->version;
     }
     
     /**
      * Compare the paramter specified version with a string
-     * 
+     *
      * @param string $version
      * @return mixed
      */
-    public function compare($version) {
+    public function compare($version)
+    {
         return version_compare($this->version, $version);
     }
 
@@ -44,8 +48,9 @@ class ElasticsearchService {
      * Return a keyword mapping (not analyzed)
      * @return string[]
      */
-    public function getKeywordMapping() {
-        if(version_compare($this->version, '5') > 0){
+    public function getKeywordMapping()
+    {
+        if (version_compare($this->version, '5') > 0) {
             return [
                 'type' => 'keyword',
             ];
@@ -62,26 +67,23 @@ class ElasticsearchService {
      * Convert mapping
      * @return string[]
      */
-    public function convertMapping(array $in) {
+    public function convertMapping(array $in)
+    {
         $out = $in;
-        if(version_compare($this->version, '5') > 0){
-            if(isset($out['analyzer']) && $out['analyzer'] === 'keyword') {
+        if (version_compare($this->version, '5') > 0) {
+            if (isset($out['analyzer']) && $out['analyzer'] === 'keyword') {
                 $out['type'] = 'keyword';
                 unset($out['analyzer']);
                 unset($out['fielddata']);
                 unset($out['index']);
-
-            }
-            elseif(isset($out['index']) && $out['index'] === 'not_analyzed') {
+            } elseif (isset($out['index']) && $out['index'] === 'not_analyzed') {
                 $out['type'] = 'keyword';
                 unset($out['analyzer']);
                 unset($out['fielddata']);
                 unset($out['index']);
-            }
-            elseif(isset($out['type']) && $out['type'] === 'string') {
+            } elseif (isset($out['type']) && $out['type'] === 'string') {
                 $out['type'] = 'text';
-            }
-            elseif(isset($out['type']) && $out['type'] === 'keyword') {
+            } elseif (isset($out['type']) && $out['type'] === 'keyword') {
                 unset($out['analyzer']);
                 unset($out['fielddata']);
                 unset($out['index']);
@@ -95,28 +97,27 @@ class ElasticsearchService {
      * Return a keyword mapping (not analyzed)
      * @return string[]
      */
-    public function updateMapping($mapping) {
+    public function updateMapping($mapping)
+    {
 
-        if(isset($mapping['copy_to']) && !empty($mapping['copy_to']) && is_string($mapping['copy_to'])) {
+        if (isset($mapping['copy_to']) && !empty($mapping['copy_to']) && is_string($mapping['copy_to'])) {
             $mapping['copy_to'] = explode(',', $mapping['copy_to']);
         }
 
-        if(version_compare($this->version, '5') > 0){
-
-            if($mapping['type'] === 'string'){
-                if( (isset($mapping['analyzer']) && $mapping['analyzer'] === 'keyword') || (empty($mapping['analyzer']) && isset($mapping['index']) && $mapping['index'] === 'not_analyzed') ){
+        if (version_compare($this->version, '5') > 0) {
+            if ($mapping['type'] === 'string') {
+                if ((isset($mapping['analyzer']) && $mapping['analyzer'] === 'keyword') || (empty($mapping['analyzer']) && isset($mapping['index']) && $mapping['index'] === 'not_analyzed')) {
                     $mapping['type'] = 'keyword';
                     unset($mapping['analyzer']);
-                }
-                else {
+                } else {
                     $mapping['type'] = 'text';
                 }
             }
 
-            if(isset($mapping['index']) && $mapping['index'] === 'No' ){
+            if (isset($mapping['index']) && $mapping['index'] === 'No') {
                 $mapping['index'] = false;
             }
-            if( isset($mapping['index']) && $mapping['index'] !== false ){
+            if (isset($mapping['index']) && $mapping['index'] !== false) {
                 $mapping['index'] = true;
             }
         }
@@ -124,10 +125,11 @@ class ElasticsearchService {
     }
     
     /**
-     * Return a datetime mapping 
+     * Return a datetime mapping
      * @return string[]
      */
-    public function getDateTimeMapping() {
+    public function getDateTimeMapping()
+    {
         return [
             'type' => 'date',
             'format' => 'date_time_no_millis'
@@ -138,8 +140,9 @@ class ElasticsearchService {
      * Return a not indexed text mapping
      * @return string[]
      */
-    public function getNotIndexedStringMapping() {
-        if(version_compare($this->version, '5') > 0){
+    public function getNotIndexedStringMapping()
+    {
+        if (version_compare($this->version, '5') > 0) {
             return [
                 'type' => 'text',
                 'index' => false,
@@ -155,8 +158,9 @@ class ElasticsearchService {
      * Return a indexed text mapping
      * @return string[]
      */
-    public function getIndexedStringMapping() {
-        if(version_compare($this->version, '5') > 0){
+    public function getIndexedStringMapping()
+    {
+        if (version_compare($this->version, '5') > 0) {
             return [
                 'type' => 'text',
                 'index' => true,
@@ -172,14 +176,15 @@ class ElasticsearchService {
      * Return a indexed text mapping
      * @return string[]
      */
-    public function getLongMapping() {
+    public function getLongMapping()
+    {
         return [
             "type" => "long",
         ];
     }
 
-    public function withAllMapping() {
+    public function withAllMapping()
+    {
         return version_compare($this->version, '5.6') < 0;
     }
-    
 }

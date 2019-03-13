@@ -8,7 +8,8 @@ use EMS\CoreBundle\Repository\WysiwygProfileRepository;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class WysiwygProfileService {
+class WysiwygProfileService
+{
     /**@var Registry $doctrine */
     private $doctrine;
     /**@var Session $session*/
@@ -16,14 +17,16 @@ class WysiwygProfileService {
     /**@var TranslatorInterface $translator */
     private $translator;
     
-    public function __construct(Registry $doctrine, Session $session, TranslatorInterface $translator) {
+    public function __construct(Registry $doctrine, Session $session, TranslatorInterface $translator)
+    {
         $this->doctrine = $doctrine;
         $this->session = $session;
         $this->translator= $translator;
     }
     
     
-    public function getProfiles(){
+    public function getProfiles()
+    {
         $em = $this->doctrine->getManager();
         /**@var WysiwygProfileRepository */
         $repository = $em->getRepository('EMSCoreBundle:WysiwygProfile');
@@ -34,11 +37,12 @@ class WysiwygProfileService {
     }
     
     /**
-     * 
+     *
      * @param integer $id
      * @return WysiwygProfile|NULL
      */
-    public function get($id){
+    public function get($id)
+    {
         $em = $this->doctrine->getManager();
         /**@var WysiwygProfileRepository */
         $repository = $em->getRepository('EMSCoreBundle:WysiwygProfile');
@@ -51,7 +55,8 @@ class WysiwygProfileService {
     
     
     
-    public function saveProfile(WysiwygProfile $profile){
+    public function saveProfile(WysiwygProfile $profile)
+    {
         $em = $this->doctrine->getManager();
         $em->persist($profile);
         $em->flush();
@@ -59,12 +64,11 @@ class WysiwygProfileService {
     }
     
     
-    public function remove(WysiwygProfile $profile){
+    public function remove(WysiwygProfile $profile)
+    {
         $em = $this->doctrine->getManager();
         $em->remove($profile);
         $em->flush();
         $this->session->getFlashBag()->add('notice', $this->translator->trans('Profile has been deleted', [], 'EMSCoreBundle'));
     }
-    
-
 }

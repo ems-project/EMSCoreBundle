@@ -4,7 +4,8 @@ namespace EMS\CoreBundle\Entity\Form;
 /**
  * I18nFilter
  */
-class I18nFilter{
+class I18nFilter
+{
 
     /**
      * @var identifier

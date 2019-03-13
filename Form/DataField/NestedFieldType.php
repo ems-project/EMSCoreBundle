@@ -17,25 +17,28 @@ use EMS\CoreBundle\Form\DataTransformer\DataFieldModelTransformer;
  * It's used to  groups subfields together.
  *
  * @author Mathieu De Keyzer <ems@theus.be>
- *        
+ *
  */
-class NestedFieldType extends DataFieldType {
+class NestedFieldType extends DataFieldType
+{
  
     /**
      *
      * {@inheritdoc}
      *
      */
-    public function getLabel(){
+    public function getLabel()
+    {
         return 'Nested object';
-    }    
+    }
     
     /**
      *
      * {@inheritdoc}
      *
      */
-    public static function getIcon(){
+    public static function getIcon()
+    {
         return 'glyphicon glyphicon-modal-window';
     }
 
@@ -45,10 +48,11 @@ class NestedFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function importData(DataField $dataField, $sourceArray, $isMigration){
+    public function importData(DataField $dataField, $sourceArray, $isMigration)
+    {
         $migrationOptions = $dataField->getFieldType()->getMigrationOptions();
-        if(!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {
-            foreach ($dataField->getChildren() as $child){
+        if (!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {
+            foreach ($dataField->getChildren() as $child) {
                 $child->updateDataValue($sourceArray);
             }
         }
@@ -60,23 +64,23 @@ class NestedFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         /* get the metadata associate */
         /** @var FieldType $fieldType */
-        $fieldType = $builder->getOptions () ['metadata'];
+        $fieldType = $builder->getOptions() ['metadata'];
         
         /** @var FieldType $fieldType */
-        foreach ( $fieldType->getChildren () as $fieldType ) {
-
-            if (! $fieldType->getDeleted ()) {
+        foreach ($fieldType->getChildren() as $fieldType) {
+            if (! $fieldType->getDeleted()) {
                 /* merge the default options with the ones specified by the user */
-                $options = array_merge ( [ 
+                $options = array_merge([
                         'metadata' => $fieldType,
-                        'label' => false 
-                ], $fieldType->getDisplayOptions () );
-                $builder->add ( $fieldType->getName (), $fieldType->getType (), $options );
+                        'label' => false
+                ], $fieldType->getDisplayOptions());
+                $builder->add($fieldType->getName(), $fieldType->getType(), $options);
 
-                $builder->get ( $fieldType->getName () )
+                $builder->get($fieldType->getName())
                     ->addViewTransformer(new DataFieldViewTransformer($fieldType, $this->formRegistry))
                     ->addModelTransformer(new DataFieldModelTransformer($fieldType, $this->formRegistry));
             }
@@ -86,7 +90,8 @@ class NestedFieldType extends DataFieldType {
     
     
     
-    public function getBlockPrefix() {
+    public function getBlockPrefix()
+    {
         return 'container_field_type';
     }
     
@@ -95,9 +100,10 @@ class NestedFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function buildView(FormView $view, FormInterface $form, array $options) {
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
         /* give options for twig context */
-        parent::buildView ( $view, $form, $options );
+        parent::buildView($view, $form, $options);
         $view->vars ['icon'] = $options ['icon'];
         $view->vars ['multiple'] = $options ['multiple'];
     }
@@ -107,12 +113,13 @@ class NestedFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function configureOptions(OptionsResolver $resolver) {
+    public function configureOptions(OptionsResolver $resolver)
+    {
         /* set the default option value for this kind of compound field */
-        parent::configureOptions ( $resolver );
+        parent::configureOptions($resolver);
         /* an optional icon can't be specified ritgh to the container label */
-        $resolver->setDefault ( 'icon', null );
-        $resolver->setDefault ( 'multiple', false );
+        $resolver->setDefault('icon', null);
+        $resolver->setDefault('multiple', false);
     }
     
     /**
@@ -120,26 +127,27 @@ class NestedFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public static function buildObjectArray(DataField $data, array &$out) {
-        if($data->getFieldType () == null){
+    public static function buildObjectArray(DataField $data, array &$out)
+    {
+        if ($data->getFieldType() == null) {
             $tmp = [];
             /** @var DataField $child */
-            foreach ($data->getChildren() as $child){
+            foreach ($data->getChildren() as $child) {
 //                 $className = $child->getFieldType()->getType();
 //                 $class = new $className;
                 $class =$this->formRegistry->getType($child->getFieldType()->getType());
                 $class->buildObjectArray($child, $tmp);
             }
             $out [] = $tmp;
-        }
-        else if (! $data->getFieldType ()->getDeleted ()) {
-            $out [$data->getFieldType ()->getName ()] = [];
+        } else if (! $data->getFieldType()->getDeleted()) {
+            $out [$data->getFieldType()->getName()] = [];
         }
     }
 
 
 
-    public static function isNested(){
+    public static function isNested()
+    {
         return true;
     }
     
@@ -148,7 +156,8 @@ class NestedFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public static function isContainer() {
+    public static function isContainer()
+    {
         /* this kind of compound field may contain children */
         return true;
     }
@@ -158,15 +167,16 @@ class NestedFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options) {
-        parent::buildOptionsForm ( $builder, $options );
-        $optionsForm = $builder->get ( 'options' );
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    {
+        parent::buildOptionsForm($builder, $options);
+        $optionsForm = $builder->get('options');
         // nested doesn't not have that much options in elasticsearch
-        $optionsForm->remove ( 'mappingOptions' );
+        $optionsForm->remove('mappingOptions');
         // an optional icon can't be specified ritgh to the container label
-        $optionsForm->get ( 'displayOptions' )->add ( 'icon', IconPickerType::class, [ 
-                'required' => false 
-        ] );
+        $optionsForm->get('displayOptions')->add('icon', IconPickerType::class, [
+                'required' => false
+        ]);
     }
     
     /**
@@ -174,11 +184,12 @@ class NestedFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function generateMapping(FieldType $current, $withPipeline) {
+    public function generateMapping(FieldType $current, $withPipeline)
+    {
         return [
             $current->getName() => [
                 "type" => "nested",
                 "properties" => [],
-        ]];
+            ]];
     }
 }

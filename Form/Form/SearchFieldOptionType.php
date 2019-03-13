@@ -13,26 +13,27 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 
-
-class SearchFieldOptionType extends AbstractType {
+class SearchFieldOptionType extends AbstractType
+{
     
     /**
      *
      * {@inheritdoc}
      *
      */
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         
         
         $builder
-        ->add ( 'name', IconTextType::class, [
+        ->add('name', IconTextType::class, [
                 'icon' => 'fa fa-tag',
                 'label' => 'Search Field Option\'s name',
-        ] )
-        ->add ( 'field', TextType::class, [
+        ])
+        ->add('field', TextType::class, [
             'label' => 'Search Field',
-        ] )
-        ->add ( 'icon', IconPickerType::class, [
+        ])
+        ->add('icon', IconPickerType::class, [
                 'required' => false,
         ])->add('operators', ChoiceType::class, [
             'multiple' => true,
@@ -47,26 +48,27 @@ class SearchFieldOptionType extends AbstractType {
         ])->add('contentTypes', ContentTypePickerType::class, [
             'multiple' => true,
             'required' => false,
-        ])->add ( 'save', SubmitEmsType::class, [
-                'attr' => [ 
-                        'class' => 'btn-primary btn-sm ' 
+        ])->add('save', SubmitEmsType::class, [
+                'attr' => [
+                        'class' => 'btn-primary btn-sm '
                 ],
-                'icon' => 'fa fa-save' 
-        ] );
+                'icon' => 'fa fa-save'
+        ]);
         
-        if(! $options['createform']){
+        if (! $options['createform']) {
             $builder->add('remove', SubmitEmsType::class, [
                     'attr' => [
                             'class' => 'btn-primary btn-sm '
                     ],
                     'icon' => 'fa fa-trash'
-            ] );
+            ]);
         }
     }
     
-    public function configureOptions(OptionsResolver $resolver){
-        $resolver->setDefaults ( array (
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults(array (
                 'createform' => false,
-        ) );
+        ));
     }
 }

@@ -31,16 +31,14 @@ class TemplateController extends AppController
             'name' => $type,
         ]);
             
-        if(!$contentTypes || count($contentTypes) != 1) {
+        if (!$contentTypes || count($contentTypes) != 1) {
             throw new NotFoundHttpException('Content type not found');
         }
         
         
-        return $this->render( '@EMSCore/template/index.html.twig', [
+        return $this->render('@EMSCore/template/index.html.twig', [
                 'contentType' => $contentTypes[0]
         ]);
-        
-        
     }
     
     /**
@@ -58,18 +56,18 @@ class TemplateController extends AppController
             'name' => $type,
         ]);
             
-        if(!$contentTypes || count($contentTypes) != 1) {
+        if (!$contentTypes || count($contentTypes) != 1) {
             throw new NotFoundHttpException('Content type not found');
         }
         
         $template = new Template();
         $template->setContentType($contentTypes[0]);
         
-        $form = $this->createForm ( TemplateType::class, $template );
+        $form = $this->createForm(TemplateType::class, $template);
         
-        $form->handleRequest ( $request );
+        $form->handleRequest($request);
         
-        if ($form->isSubmitted () && $form->isValid ()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($template);
             $em->flush();
             
@@ -80,12 +78,10 @@ class TemplateController extends AppController
             ]);
         }
         
-        return $this->render( '@EMSCore/template/add.html.twig', [
+        return $this->render('@EMSCore/template/add.html.twig', [
                 'contentType' => $contentTypes[0],
                 'form' => $form->createView()
         ]);
-        
-        
     }
     
     /**
@@ -101,15 +97,15 @@ class TemplateController extends AppController
         /** @var Template $template **/
         $template = $templateRepository->find($id);
             
-        if(!$template) {
+        if (!$template) {
             throw new NotFoundHttpException('Template type not found');
         }
         
-        $form = $this->createForm ( TemplateType::class, $template );
+        $form = $this->createForm(TemplateType::class, $template);
         
-        $form->handleRequest ( $request );
+        $form->handleRequest($request);
         
-        if ($form->isSubmitted () && $form->isValid ()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($template);
             $em->flush();
 
@@ -120,7 +116,7 @@ class TemplateController extends AppController
             ]);
         }
         
-        return $this->render( '@EMSCore/template/edit.html.twig', [
+        return $this->render('@EMSCore/template/edit.html.twig', [
                 'form' => $form->createView(),
                 'template' => $template
         ]);
@@ -140,13 +136,13 @@ class TemplateController extends AppController
         /** @var Template $template **/
         $template = $templateRepository->find($id);
             
-        if(!$template) {
+        if (!$template) {
             throw new NotFoundHttpException('Template type not found');
         }
         
         $em->remove($template);
         $em->flush();
-        $this->addFlash('notice', 'A template has been removed');        
+        $this->addFlash('notice', 'A template has been removed');
             
         return $this->redirectToRoute('template.index', [
                 'type' => $template->getContentType()->getName()

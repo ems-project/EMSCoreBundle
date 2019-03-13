@@ -23,7 +23,8 @@ use Symfony\Component\HttpFoundation\Session\Session;
  * @author Mathieu De Keyzer <ems@theus.be>
  *
  */
-class FileAttachmentFieldType extends DataFieldType {
+class FileAttachmentFieldType extends DataFieldType
+{
     
     /**@var FileService */
     private $fileService;
@@ -32,7 +33,8 @@ class FileAttachmentFieldType extends DataFieldType {
     
     
     
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, FileService $fileService, Session $session) {
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, FileService $fileService, Session $session)
+    {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
         $this->fileService= $fileService;
         $this->session = $session;
@@ -43,7 +45,8 @@ class FileAttachmentFieldType extends DataFieldType {
      *
      * @return string
      */
-    public static function getIcon() {
+    public static function getIcon()
+    {
         return 'fa fa-file-text-o';
     }
 
@@ -52,7 +55,8 @@ class FileAttachmentFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function getLabel(){
+    public function getLabel()
+    {
         return 'File Attachment (indexed) field';
     }
 
@@ -61,25 +65,27 @@ class FileAttachmentFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         /** @var FieldType $fieldType */
         $fieldType = $options ['metadata'];
-        $builder->add ( 'value', AssetType::class, [
+        $builder->add('value', AssetType::class, [
                 'label' => (null != $options ['label']?$options ['label']:$fieldType->getName()),
                 'disabled'=> $this->isDisabled($options),
                 'required' => false,
-        ] );
+        ]);
     }
     
     /**
-     * 
+     *
      * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::modelTransform()
      */
-    public function modelTransform($data, FieldType $fieldType){
-        if(is_array($data)){
-            foreach ($data as $id => $content){
-                if(! in_array($id, ['sha1', 'filename', 'mimetype'], true)) {
+    public function modelTransform($data, FieldType $fieldType)
+    {
+        if (is_array($data)) {
+            foreach ($data as $id => $content) {
+                if (! in_array($id, ['sha1', 'filename', 'mimetype'], true)) {
                     unset($data[$id]);
                 }
             }
@@ -87,27 +93,27 @@ class FileAttachmentFieldType extends DataFieldType {
         return parent::reverseViewTransform($data, $fieldType);
     }
 
-    public function reverseViewTransform($data, FieldType $fieldType) {
+    public function reverseViewTransform($data, FieldType $fieldType)
+    {
         $dataField = parent::reverseViewTransform($data, $fieldType);
-        if(!empty($dataField->getRawData()) && !empty($dataField->getRawData()['value']['sha1'])){
+        if (!empty($dataField->getRawData()) && !empty($dataField->getRawData()['value']['sha1'])) {
             $rawData = $dataField->getRawData()['value'];
             $rawData['content'] = $this->fileService->getBase64($rawData['sha1']);
-            if(!$rawData['content']){
+            if (!$rawData['content']) {
                 $this->session->getFlashBag()->add('warning', 'File not found: '.$rawData['sha1']);
                 $rawData['content'] = "";
             }
             $rawData['filesize'] = $this->fileService->getSize($rawData['sha1']);
-            if(!$rawData['filesize']){
+            if (!$rawData['filesize']) {
                 $rawData['filesize'] = 0;
             }
             
             $dataField->setRawData($rawData);
-        }
-        else{
+        } else {
             $dataField->setRawData(['content' => ""]);
         }
         return $dataField;
-    }    
+    }
     
     
     
@@ -116,20 +122,21 @@ class FileAttachmentFieldType extends DataFieldType {
      * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::getBlockPrefix()
      */
-    public function getBlockPrefix() {
+    public function getBlockPrefix()
+    {
         return 'bypassdatafield';
     }
     
-    public function viewTransform(DataField $dataField) {
+    public function viewTransform(DataField $dataField)
+    {
         
         $rawData = $dataField->getRawData();
         
-        if(!empty($rawData) && !empty($rawData['sha1'])){
+        if (!empty($rawData) && !empty($rawData['sha1'])) {
             unset($rawData['content']);
             unset($rawData['filesize']);
-        }
-        else {
-            $rawData = [];            
+        } else {
+            $rawData = [];
         }
         return ['value' => $rawData];
     }
@@ -140,25 +147,26 @@ class FileAttachmentFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options) {
-        parent::buildOptionsForm ( $builder, $options );
-        $optionsForm = $builder->get ( 'options' );
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    {
+        parent::buildOptionsForm($builder, $options);
+        $optionsForm = $builder->get('options');
         //         $optionsForm->remove ( 'mappingOptions' );
         
         // specific mapping options
-        $optionsForm->get ( 'mappingOptions' )
-        ->add ( 'analyzer', AnalyzerPickerType::class)
-        ->add ( 'copy_to', TextType::class, [
+        $optionsForm->get('mappingOptions')
+        ->add('analyzer', AnalyzerPickerType::class)
+        ->add('copy_to', TextType::class, [
                 'required' => false,
-        ] );
+        ]);
         
-        $optionsForm->get ( 'displayOptions' )
-            ->add ( 'icon', IconPickerType::class, [ 
-                    'required' => false 
-            ] )
-            ->add ( 'imageAssetConfigIdentifier', TextType::class, [
+        $optionsForm->get('displayOptions')
+            ->add('icon', IconPickerType::class, [
+                    'required' => false
+            ])
+            ->add('imageAssetConfigIdentifier', TextType::class, [
                     'required' => false,
-            ] );
+            ]);
     }
 
 
@@ -167,13 +175,14 @@ class FileAttachmentFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public static function buildObjectArray(DataField $data, array &$out) {
-        if (! $data->getFieldType ()->getDeleted ()) {
+    public static function buildObjectArray(DataField $data, array &$out)
+    {
+        if (! $data->getFieldType()->getDeleted()) {
             /**
              * by default it serialize the text value.
              * It can be overrided.
              */
-            $out [$data->getFieldType ()->getName ()] = $data->getRawData();
+            $out [$data->getFieldType()->getName()] = $data->getRawData();
         }
     }
     
@@ -182,17 +191,19 @@ class FileAttachmentFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function configureOptions(OptionsResolver $resolver) {
+    public function configureOptions(OptionsResolver $resolver)
+    {
         /* set the default option value for this kind of compound field */
-        parent::configureOptions ( $resolver );
-        $resolver->setDefault ( 'icon', null );
-        $resolver->setDefault ( 'imageAssetConfigIdentifier', null );
+        parent::configureOptions($resolver);
+        $resolver->setDefault('icon', null);
+        $resolver->setDefault('imageAssetConfigIdentifier', null);
     }
     
     /**
      * {@inheritdoc}
      */
-    public function generateMapping(FieldType $current, $withPipeline){
+    public function generateMapping(FieldType $current, $withPipeline)
+    {
         $mapping = parent::generateMapping($current, $withPipeline);
         $body = [
                 "type" => "nested",
@@ -207,7 +218,7 @@ class FileAttachmentFieldType extends DataFieldType {
                 ],
             ];
         
-        if($withPipeline) {
+        if ($withPipeline) {
 //             $body['properties']['content'] = [
 //                     "type" => "text",
 //                     "index" => "no",
@@ -254,7 +265,8 @@ class FileAttachmentFieldType extends DataFieldType {
     /**
      * {@inheritdoc}
      */
-    public static function generatePipeline(FieldType $current){
+    public static function generatePipeline(FieldType $current)
+    {
         return [
             "attachment" => [
                 'field' => $current->getName().'.content',

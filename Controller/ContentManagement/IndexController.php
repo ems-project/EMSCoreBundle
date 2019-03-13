@@ -23,7 +23,7 @@ class IndexController extends AppController
         $repository = $em->getRepository('EMSCoreBundle:Revision');
         /** @var Revision $revision */
 //         $revisions = $repository->findBy();
-        return $this->render( '@EMSCore/default/coming-soon.html.twig');
+        return $this->render('@EMSCore/default/coming-soon.html.twig');
     }
     
     /**
@@ -39,12 +39,10 @@ class IndexController extends AppController
                     'index' => $index['name'],
                 ]);
                 $this->addFlash('notice', 'Elasticsearch index '.$index['name'].' has been deleted');
-            }
-            catch (Missing404Exception $e){
+            } catch (Missing404Exception $e) {
                 $this->addFlash('warning', 'Elasticsearch index not found');
-            }            
+            }
         }
         return $this->redirectToRoute('ems_environment_index');
     }
-    
 }

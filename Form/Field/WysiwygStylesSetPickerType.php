@@ -6,10 +6,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use EMS\CoreBundle\Service\UserService;
 use EMS\CoreBundle\Service\WysiwygStylesSetService;
 
-class WysiwygStylesSetPickerType extends SelectPickerType {
+class WysiwygStylesSetPickerType extends SelectPickerType
+{
     
     /**
-     * 
+     *
      * @var WysiwygStylesSetService $stylesSetService
      */
     private $stylesSetService;
@@ -32,19 +33,19 @@ class WysiwygStylesSetPickerType extends SelectPickerType {
             'attr' => [
                     'data-live-search' => true
             ],
-            'choice_attr' => function($category, $key, $index) {
+            'choice_attr' => function ($category, $key, $index) {
                 //TODO: it would be nice to translate the roles
                 return [
                         'data-content' => "<div class='text-".$category."'><i class='fa fa-css3'></i>&nbsp;&nbsp;".$key.'</div>'
                 ];
             },
             'choice_value' => function ($value) {
-               return $value;
+                return $value;
             },
         ));
     }
     
-    private  function getExistingStylesSets()
+    private function getExistingStylesSets()
     {
         $stylesSets = $this->stylesSetService->getStylesSets();
         

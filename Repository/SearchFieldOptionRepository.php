@@ -11,7 +11,8 @@ namespace EMS\CoreBundle\Repository;
 class SearchFieldOptionRepository extends \Doctrine\ORM\EntityRepository
 {
     
-    public function findAll(){
+    public function findAll()
+    {
         return parent::findBy([], ['orderKey' => 'asc']);
     }
 }

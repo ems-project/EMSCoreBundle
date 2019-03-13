@@ -4,13 +4,15 @@ namespace EMS\CoreBundle\Form\Field;
 
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
-class SelectPickerType extends ChoiceType {
+class SelectPickerType extends ChoiceType
+{
     /**
      *
      * {@inheritdoc}
      *
      */
-    public function getParent() {
+    public function getParent()
+    {
         return ChoiceType::class;
     }
     
@@ -19,12 +21,14 @@ class SelectPickerType extends ChoiceType {
      * {@inheritdoc}
      *
      */
-    public function getBlockPrefix() {
+    public function getBlockPrefix()
+    {
         return 'selectpicker';
     }
     
 
-    public static function humanize($str) {
+    public static function humanize($str)
+    {
     
         $str = trim(strtolower($str));
         $str = preg_replace('/\_/', ' ', $str);

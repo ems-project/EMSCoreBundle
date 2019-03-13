@@ -13,17 +13,19 @@ use EMS\CoreBundle\Form\DataTransformer\DataFieldModelTransformer;
  * It's used to logically groups subfields together. However a Container is invisible in Elastic search.
  *
  * @author Mathieu De Keyzer <ems@theus.be>
- *        
+ *
  */
-class TabsFieldType extends DataFieldType {
+class TabsFieldType extends DataFieldType
+{
     /**
      *
      * {@inheritdoc}
      *
      */
-    public function getLabel(){
+    public function getLabel()
+    {
         return 'Visual tab container (invisible in Elasticsearch)';
-    }    
+    }
 
 
     /**
@@ -31,7 +33,8 @@ class TabsFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function importData(DataField $dataField, $sourceArray, $isMigration){
+    public function importData(DataField $dataField, $sourceArray, $isMigration)
+    {
         throw new Exception("This method should never be called");
     }
     
@@ -40,7 +43,8 @@ class TabsFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function getBlockPrefix() {
+    public function getBlockPrefix()
+    {
         return 'tabsfieldtype';
     }
     
@@ -49,7 +53,8 @@ class TabsFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public static function getIcon(){
+    public static function getIcon()
+    {
         return 'fa fa-object-group';
     }
     
@@ -59,26 +64,26 @@ class TabsFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         /* get the metadata associate */
         /** @var FieldType $fieldType */
-        $fieldType = $builder->getOptions () ['metadata'];
+        $fieldType = $builder->getOptions() ['metadata'];
         
         /** @var FieldType $fieldType */
-        foreach ( $fieldType->getChildren () as $fieldType ) {
-
-            if (! $fieldType->getDeleted ()) {
+        foreach ($fieldType->getChildren() as $fieldType) {
+            if (! $fieldType->getDeleted()) {
                 /* merge the default options with the ones specified by the user */
-                $options = array_merge ( [ 
+                $options = array_merge([
                         'metadata' => $fieldType,
                         'label' => false ,
                         'migration' => $options['migration'],
                         'raw_data' => $options['raw_data'],
-                ], $fieldType->getDisplayOptions () );
+                ], $fieldType->getDisplayOptions());
                 
-                $builder->add (  $fieldType->getName (), $fieldType->getType (), $options );
+                $builder->add($fieldType->getName(), $fieldType->getType(), $options);
                 
-                $builder->get ( $fieldType->getName () )
+                $builder->get($fieldType->getName())
                     ->addViewTransformer(new DataFieldViewTransformer($fieldType, $this->formRegistry))
                     ->addModelTransformer(new DataFieldModelTransformer($fieldType, $this->formRegistry));
             }
@@ -90,8 +95,8 @@ class TabsFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public static function buildObjectArray(DataField $data, array &$out) {
-        
+    public static function buildObjectArray(DataField $data, array &$out)
+    {
     }
     
     /**
@@ -99,7 +104,8 @@ class TabsFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public static function isContainer() {
+    public static function isContainer()
+    {
         /* this kind of compound field may contain children */
         return true;
     }
@@ -109,14 +115,15 @@ class TabsFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options) {
-        parent::buildOptionsForm ( $builder, $options );
-        $optionsForm = $builder->get ( 'options' );
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    {
+        parent::buildOptionsForm($builder, $options);
+        $optionsForm = $builder->get('options');
         // tabs aren't mapped in elasticsearch
-        $optionsForm->remove ( 'mappingOptions' );
-        $optionsForm->remove ( 'migrationOptions' );
-        $optionsForm->get( 'restrictionOptions' )->remove('mandatory');
-        $optionsForm->get( 'restrictionOptions' )->remove('mandatory_if');
+        $optionsForm->remove('mappingOptions');
+        $optionsForm->remove('migrationOptions');
+        $optionsForm->get('restrictionOptions')->remove('mandatory');
+        $optionsForm->get('restrictionOptions')->remove('mandatory_if');
     }
 
     
@@ -126,7 +133,8 @@ class TabsFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public static function isVirtual(array $option=[]){
+    public static function isVirtual(array $option = [])
+    {
         return true;
     }
     
@@ -135,7 +143,8 @@ class TabsFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public static function getJsonName(FieldType $current){
+    public static function getJsonName(FieldType $current)
+    {
         return null;
     }
     
@@ -144,7 +153,8 @@ class TabsFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function generateMapping(FieldType $current, $withPipeline) {
+    public function generateMapping(FieldType $current, $withPipeline)
+    {
         return [];
     }
 }

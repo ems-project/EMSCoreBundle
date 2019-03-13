@@ -41,7 +41,7 @@ class WysiwygController extends AppController
         if ($form->isSubmitted()) {
             $order = json_decode($form->getData()['items'], true);
             $i = 1;
-            foreach ($order as $id){
+            foreach ($order as $id) {
                 $profile = $this->getWysiwygProfileService()->get($id);
                 $profile->setOrderKey($i++);
                 
@@ -58,7 +58,7 @@ class WysiwygController extends AppController
         if ($formStylesSet->isSubmitted()) {
             $order = json_decode($formStylesSet->getData()['items'], true);
             $i = 1;
-            foreach ($order as $id){
+            foreach ($order as $id) {
                 $stylesSet= $this->getWysiwygStylesSetService()->get($id);
                 $stylesSet->setOrderKey($i++);
                 
@@ -92,16 +92,15 @@ class WysiwygController extends AppController
         ]);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
             $data = json_decode($profile->getConfig(), true);
-            if(json_last_error()){
-                $form->get('config')->addError(New FormError($this->getTranslator()->trans('Format not valid: %msg%', ['%msg%'=>json_last_error_msg()], 'EMSCoreBundle')));
-            }
-            else {
+            if (json_last_error()) {
+                $form->get('config')->addError(new FormError($this->getTranslator()->trans('Format not valid: %msg%', ['%msg%'=>json_last_error_msg()], 'EMSCoreBundle')));
+            } else {
                 $profile->setOrderKey(100+count($this->getWysiwygProfileService()->getProfiles()));
                 $this->getWysiwygProfileService()->saveProfile($profile);
                 return $this->redirectToRoute('ems_wysiwyg_index');
-            }     
+            }
         }
 
         return $this->render('@EMSCore/wysiwygprofile/new.html.twig', array(
@@ -125,12 +124,11 @@ class WysiwygController extends AppController
         ]);
         $form->handleRequest($request);
         
-        if ($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
             $data = json_decode($stylesSet->getConfig(), true);
-            if(json_last_error()){
-                $form->get('config')->addError(New FormError($this->getTranslator()->trans('Format not valid: %msg%', ['%msg%'=>json_last_error_msg()], 'EMSCoreBundle')));
-            }
-            else {
+            if (json_last_error()) {
+                $form->get('config')->addError(new FormError($this->getTranslator()->trans('Format not valid: %msg%', ['%msg%'=>json_last_error_msg()], 'EMSCoreBundle')));
+            } else {
                 $stylesSet->setOrderKey(100+count($this->getWysiwygStylesSetService()->getStylesSets()));
                 $this->getWysiwygStylesSetService()->save($stylesSet);
                 return $this->redirectToRoute('ems_wysiwyg_index');
@@ -154,24 +152,19 @@ class WysiwygController extends AppController
         $form->handleRequest($request);
         
         if ($form->isSubmitted()) {
-            
-            
-            if($form->get('remove') && $form->get('remove')->isClicked()){
+            if ($form->get('remove') && $form->get('remove')->isClicked()) {
                 $this->getWysiwygStylesSetService()->remove($stylesSet);
                 return $this->redirectToRoute('ems_wysiwyg_index');
             }
             
-            if($form->isSubmitted() && $form->isValid()) {
-                
+            if ($form->isSubmitted() && $form->isValid()) {
                 $data = json_decode($stylesSet->getConfig(), true);
-                if(json_last_error()){
-                    $form->get('config')->addError(New FormError($this->getTranslator()->trans('Format not valid: %msg%', ['%msg%'=>json_last_error_msg()], 'EMSCoreBundle')));
-                }
-                else {
+                if (json_last_error()) {
+                    $form->get('config')->addError(new FormError($this->getTranslator()->trans('Format not valid: %msg%', ['%msg%'=>json_last_error_msg()], 'EMSCoreBundle')));
+                } else {
                     $this->getWysiwygStylesSetService()->save($stylesSet);
                     return $this->redirectToRoute('ems_wysiwyg_index');
                 }
-                
             }
         }
         
@@ -192,24 +185,19 @@ class WysiwygController extends AppController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            
-            
-            if($form->get('remove') && $form->get('remove')->isClicked()){
+            if ($form->get('remove') && $form->get('remove')->isClicked()) {
                 $this->getWysiwygProfileService()->remove($profile);
                 return $this->redirectToRoute('ems_wysiwyg_index');
             }
             
-            if($form->isSubmitted() && $form->isValid()) {
-                
+            if ($form->isSubmitted() && $form->isValid()) {
                 $data = json_decode($profile->getConfig(), true);
-                if(json_last_error()){
-                    $form->get('config')->addError(New FormError($this->getTranslator()->trans('Format not valid: %msg%', ['%msg%'=>json_last_error_msg()], 'EMSCoreBundle')));                    
-                }
-                   else {
-                       $this->getWysiwygProfileService()->saveProfile($profile);        
+                if (json_last_error()) {
+                    $form->get('config')->addError(new FormError($this->getTranslator()->trans('Format not valid: %msg%', ['%msg%'=>json_last_error_msg()], 'EMSCoreBundle')));
+                } else {
+                    $this->getWysiwygProfileService()->saveProfile($profile);
                     return $this->redirectToRoute('ems_wysiwyg_index');
                 }
-                
             }
         }
         

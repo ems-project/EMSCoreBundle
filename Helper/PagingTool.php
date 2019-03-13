@@ -2,12 +2,11 @@
 
 namespace EMS\CoreBundle\Helper;
 
-
-
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpFoundation\Request;
 
-class PagingTool {
+class PagingTool
+{
     
     /** @var EntityRepository $repository */
     private $repository;
@@ -19,7 +18,8 @@ class PagingTool {
     private $paginationPath;
     
     
-    public function __construct(Request $request, EntityRepository $repository, $paginationPath, $defaultOrderField, $pageSize) {        
+    public function __construct(Request $request, EntityRepository $repository, $paginationPath, $defaultOrderField, $pageSize)
+    {
         $this->repository = $repository;
         $this->pageSize = $pageSize;
         $this->lastPage = ceil(count($repository->findAll())/$pageSize);
@@ -31,33 +31,38 @@ class PagingTool {
         $this->data = $this->repository->findBy([], [$this->orderField => $this->orderDirection], $pageSize, ($this->page-1)*$this->pageSize);
     }
     
-    public function getData() {
+    public function getData()
+    {
         return $this->data;
     }
     
-    public function getPageSize() {
+    public function getPageSize()
+    {
         return $this->pageSize;
     }
     
-    public function getLastPage() {
+    public function getLastPage()
+    {
         return $this->lastPage;
     }
     
-    public function getPage() {
+    public function getPage()
+    {
         return $this->page;
     }
     
-    public function getOrderDirection() {
+    public function getOrderDirection()
+    {
         return $this->orderDirection;
     }
     
-    public function getOrderField() {
+    public function getOrderField()
+    {
         return $this->orderField;
     }
     
-    public function getPaginationPath() {
+    public function getPaginationPath()
+    {
         return $this->paginationPath;
     }
-    
 }
-    

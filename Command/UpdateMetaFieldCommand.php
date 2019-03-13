@@ -45,7 +45,7 @@ class UpdateMetaFieldCommand extends EmsCommand
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
-    {    
+    {
         $name = $input->getArgument('name');
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
@@ -56,7 +56,7 @@ class UpdateMetaFieldCommand extends EmsCommand
         $revRepo = $em->getRepository('EMSCoreBundle:Revision');
         /** @var Environment $environment */
         $environment = $envRepo->findBy(['name' => $name, 'managed' => true]);
-        if($environment && count($environment) == 1) {
+        if ($environment && count($environment) == 1) {
             $environment = $environment[0];
             
             $page = 0;
@@ -70,7 +70,7 @@ class UpdateMetaFieldCommand extends EmsCommand
             do {
                 /** @var \EMS\CoreBundle\Entity\Revision $revision */
                 foreach ($paginator as $revision) {
-                    try{
+                    try {
                         $this->dataService->setMetaFields($revision);
                         
                         $revision->setLockBy('SYSTEM_UPDATE_META');
@@ -87,13 +87,12 @@ class UpdateMetaFieldCommand extends EmsCommand
     //                     $em->flush();
                         $em->persist($revision);
                          $progress->advance();
-                         if($progress->getProgress() % 20 == 0){
-                             $em->flush();
-                         }
-                    }
-                    catch(NotLockedException $e){
+                        if ($progress->getProgress() % 20 == 0) {
+                            $em->flush();
+                        }
+                    } catch (NotLockedException $e) {
                         $output->writeln("<error>'.$e.'</error>");
-                    }            
+                    }
                 }
                 
                 ++$page;
@@ -101,8 +100,7 @@ class UpdateMetaFieldCommand extends EmsCommand
             } while ($paginator->getIterator()->count());
             
             $progress->finish();
-        }
-        else{
+        } else {
             $output->writeln("WARNING: Environment named ".$name." not found");
         }
     }

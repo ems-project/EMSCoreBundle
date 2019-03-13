@@ -7,13 +7,16 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use EMS\CoreBundle\Repository\AnalyzerRepository;
 use EMS\CoreBundle\Entity\Analyzer;
 
-class AnalyzerPickerType extends SelectPickerType {
+class AnalyzerPickerType extends SelectPickerType
+{
     
     
     /**@var Registry $doctrine */
     private $doctrine;
     
-    public function __construct(Registry $doctrine) {//'@doctrine'
+    public function __construct(Registry $doctrine)
+    {
+//'@doctrine'
         parent::__construct();
         $this->doctrine = $doctrine;
     }
@@ -93,13 +96,13 @@ class AnalyzerPickerType extends SelectPickerType {
             'attr' => [
                     'data-live-search' => true
             ],
-            'choice_attr' => function($category, $key, $index) {
+            'choice_attr' => function ($category, $key, $index) {
                 return [
                         'data-content' => $this->humanize($key)
                 ];
             },
             'choice_value' => function ($value) {
-               return $value;
+                return $value;
             },
         ));
     }

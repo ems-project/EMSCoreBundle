@@ -23,19 +23,21 @@ use EMS\CoreBundle\Form\Field\FileType;
  * @author Mathieu De Keyzer <ems@theus.be>
  *
  */
-class IndexedAssetFieldType extends DataFieldType {
+class IndexedAssetFieldType extends DataFieldType
+{
 
     /**@var FileService */
     private $fileService;
     
     /**
      * {@inheritdoc}
-     * 
+     *
      * @param AuthorizationCheckerInterface $authorizationChecker
      * @param FormRegistryInterface $formRegistry
      * @param FileService $fileService
      */
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, FileService $fileService) {
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, FileService $fileService)
+    {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
         $this->fileService = $fileService;
     }
@@ -45,7 +47,8 @@ class IndexedAssetFieldType extends DataFieldType {
      *
      * @return string
      */
-    public static function getIcon(){
+    public static function getIcon()
+    {
         return 'fa fa-file-text-o';
     }
 
@@ -54,7 +57,8 @@ class IndexedAssetFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function getLabel(){
+    public function getLabel()
+    {
         return 'Indexed file field';
     }
     
@@ -63,7 +67,8 @@ class IndexedAssetFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function getParent() {
+    public function getParent()
+    {
         return FileType::class;
     }
     
@@ -72,25 +77,26 @@ class IndexedAssetFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options) {
-        parent::buildOptionsForm ( $builder, $options );
-        $optionsForm = $builder->get ( 'options' );
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    {
+        parent::buildOptionsForm($builder, $options);
+        $optionsForm = $builder->get('options');
         
         // specific mapping options
-        $optionsForm->get ( 'mappingOptions' )
-        ->add ( 'analyzer', AnalyzerPickerType::class)
-        ->add ( 'copy_to', TextType::class, [
+        $optionsForm->get('mappingOptions')
+        ->add('analyzer', AnalyzerPickerType::class)
+        ->add('copy_to', TextType::class, [
                 'required' => false,
-        ] );
+        ]);
         
         
-        $optionsForm->get ( 'displayOptions' )
-        ->add ( 'icon', IconPickerType::class, [
+        $optionsForm->get('displayOptions')
+        ->add('icon', IconPickerType::class, [
                 'required' => false
-        ] )
-        ->add ( 'imageAssetConfigIdentifier', TextType::class, [
+        ])
+        ->add('imageAssetConfigIdentifier', TextType::class, [
                 'required' => false,
-        ] );
+        ]);
     }
     
     /**
@@ -98,17 +104,19 @@ class IndexedAssetFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function configureOptions(OptionsResolver $resolver) {
+    public function configureOptions(OptionsResolver $resolver)
+    {
         /* set the default option value for this kind of compound field */
-        parent::configureOptions ( $resolver );
-        $resolver->setDefault ( 'icon', null );
-        $resolver->setDefault ( 'imageAssetConfigIdentifier', null );
+        parent::configureOptions($resolver);
+        $resolver->setDefault('icon', null);
+        $resolver->setDefault('imageAssetConfigIdentifier', null);
     }
     
     /**
      * {@inheritdoc}
      */
-    public function generateMapping(FieldType $current, $withPipeline){
+    public function generateMapping(FieldType $current, $withPipeline)
+    {
         $mapping = parent::generateMapping($current, $withPipeline);
         return [
             $current->getName() => [
@@ -129,26 +137,26 @@ class IndexedAssetFieldType extends DataFieldType {
      * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
      */
-    public function reverseViewTransform($data, FieldType $fieldType){
+    public function reverseViewTransform($data, FieldType $fieldType)
+    {
         $dataField = parent::reverseViewTransform($data, $fieldType);
         $this->testDataField($dataField);
         return $dataField;
     }
     
     
-    private function testDataField(DataField $dataField) {
+    private function testDataField(DataField $dataField)
+    {
         $raw = $dataField->getRawData();
         
-        if( (empty($raw) || empty($raw['sha1']))){
-            if(isset($dataField->getFieldType()->getRestrictionOptions()['mandatory']) && $dataField->getFieldType()->getRestrictionOptions()['mandatory']){
-                $dataField->addMessage('This entry is required');                
+        if ((empty($raw) || empty($raw['sha1']))) {
+            if (isset($dataField->getFieldType()->getRestrictionOptions()['mandatory']) && $dataField->getFieldType()->getRestrictionOptions()['mandatory']) {
+                $dataField->addMessage('This entry is required');
             }
             $dataField->setRawData(null);
-        }
-        else if (!$this->fileService->head($raw['sha1'])){
+        } else if (!$this->fileService->head($raw['sha1'])) {
             $dataField->addMessage('File not found on the server try to re-upload it');
-        }
-        else {
+        } else {
             $raw['filesize'] = $this->fileService->getSize($raw['sha1']);
             $dataField->setRawData($raw);
         }
@@ -159,28 +167,28 @@ class IndexedAssetFieldType extends DataFieldType {
      * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
      */
-    public function viewTransform(DataField $dataField){
+    public function viewTransform(DataField $dataField)
+    {
         $out = parent::viewTransform($dataField);
         
-        if(empty($out['sha1'])){
+        if (empty($out['sha1'])) {
             $out = null;
         }
         return $out;
-        
     }
     
     /**
-     * 
+     *
      * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::modelTransform()
      */
-    public function modelTransform($data, FieldType $fieldType){
-        if(is_array($data)){
-            foreach ($data as $id => $content){
-                if(! in_array($id, ['sha1', 'filename', 'filesize', 'mimetype', '_date', '_author', '_language', '_content', '_title'], true)) {
+    public function modelTransform($data, FieldType $fieldType)
+    {
+        if (is_array($data)) {
+            foreach ($data as $id => $content) {
+                if (! in_array($id, ['sha1', 'filename', 'filesize', 'mimetype', '_date', '_author', '_language', '_content', '_title'], true)) {
                     unset($data[$id]);
-                }
-                else if ($id !== 'sha1' && empty($data[$id])) {
+                } else if ($id !== 'sha1' && empty($data[$id])) {
                     unset($data[$id]);
                 }
             }

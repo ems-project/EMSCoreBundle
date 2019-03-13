@@ -73,7 +73,7 @@ class AlignCommand extends EmsCommand
     {
         $this->formatFlash($output);
         
-        if(! $input->getOption('force')){
+        if (! $input->getOption('force')) {
             $output->writeln('<error>Has protection, the force option is mandatory</error>');
             return -1;
         }
@@ -84,18 +84,18 @@ class AlignCommand extends EmsCommand
         $source = $this->environmentService->getAliasByName($sourceName);
         $target = $this->environmentService->getAliasByName($targetName);
 
-        if(!$source){
+        if (!$source) {
             $output->writeln('<error>Source '.$sourceName.' not found</error>');
         }
-        if(!$target){
+        if (!$target) {
             $output->writeln('<error>Target '.$targetName.' not found</error>');
         }
 
-        if(! $source || ! $target){
+        if (! $source || ! $target) {
             return -1;
         }
 
-        if($source === $target) {
+        if ($source === $target) {
             $output->writeln('<error>Target and source are the same environment, it\'s aligned ;-)</error>');
             return -1;
         }
@@ -118,7 +118,7 @@ class AlignCommand extends EmsCommand
         $alreadyAligned = 0;
         $targetIsPreviewEnvironment = [];
 
-        for($from = 0; $from < $total; $from = $from + 50) {
+        for ($from = 0; $from < $total; $from = $from + 50) {
             $scroll = $this->client->search([
                 'index' => $source->getAlias(),
                 'size' => 50,
@@ -135,19 +135,17 @@ class AlignCommand extends EmsCommand
             ]);
 
             $flush = false;
-            foreach ($scroll['hits']['hits'] as &$hit){
+            foreach ($scroll['hits']['hits'] as &$hit) {
                 $revision = $this->data->getRevisionByEnvironment($hit['_id'], $this->contentTypeService->getByName($hit['_type']), $source);
-                if($revision->getDeleted()){
+                if ($revision->getDeleted()) {
                     ++$deletedRevision;
-                }
-                else if($revision->getContentType()->getEnvironment() === $target){
-                    if(!isset($targetIsPreviewEnvironment[$revision->getContentType()->getName()])){
+                } else if ($revision->getContentType()->getEnvironment() === $target) {
+                    if (!isset($targetIsPreviewEnvironment[$revision->getContentType()->getName()])) {
                         $targetIsPreviewEnvironment[$revision->getContentType()->getName()] = 0;
                     }
                     ++$targetIsPreviewEnvironment[$revision->getContentType()->getName()];
-                }
-                else {
-                    if($this->publishService->publish($revision, $target, true) == 0){
+                } else {
+                    if ($this->publishService->publish($revision, $target, true) == 0) {
                         ++ $alreadyAligned;
                         $flush = true;
                     }
@@ -155,7 +153,7 @@ class AlignCommand extends EmsCommand
                 $progress->advance();
             }
             
-            if($flush) {
+            if ($flush) {
                 $output->writeln("");
                 $this->flushFlash($output);
             }
@@ -163,13 +161,13 @@ class AlignCommand extends EmsCommand
 
         $progress->finish();
         $output->writeln('');
-        if($deletedRevision){
+        if ($deletedRevision) {
             $output->writeln('<error>'.$deletedRevision.' deleted revisions were not aligned</error>');
         }
-        if($alreadyAligned){
+        if ($alreadyAligned) {
             $output->writeln(''.$alreadyAligned.' revisions were already aligned');
         }
-        foreach ($targetIsPreviewEnvironment as $ctName => $counter){
+        foreach ($targetIsPreviewEnvironment as $ctName => $counter) {
             $output->writeln('<error>'.$counter.' '.$ctName.' revisions were not aligned as '.$targetName.' is the default environment</error>');
         }
 

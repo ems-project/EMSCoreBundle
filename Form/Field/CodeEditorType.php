@@ -8,7 +8,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\FormInterface;
 
-class CodeEditorType extends AbstractType {
+class CodeEditorType extends AbstractType
+{
 
 
     
@@ -40,11 +41,11 @@ class CodeEditorType extends AbstractType {
      * {@inheritdoc}
      *
      */
-    public function buildView(FormView $view, FormInterface $form, array $options) {
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
         $view->vars ['min_lines'] = $options ['min-lines'];
         $view->vars ['max_lines'] = $options ['max-lines'];
         $view->vars ['language'] = $options ['language'];
         $view->vars ['slug'] = $options ['slug'];
     }
-    
 }

@@ -69,7 +69,7 @@ class SingleTypeIndex
     public function updateModified()
     {
         $this->modified = new \DateTime();
-        if(!isset($this->created)){
+        if (!isset($this->created)) {
             $this->created = $this->modified;
         }
     }
@@ -205,5 +205,4 @@ class SingleTypeIndex
     {
         return $this->contentType;
     }
-
 }

@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Service\Storage;
 
-
 use Exception;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;

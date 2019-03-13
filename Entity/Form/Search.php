@@ -23,14 +23,14 @@ class Search implements JsonSerializable
     
     /**
      * @var SearchFilter $filters
-     * 
+     *
      * @ORM\OneToMany(targetEntity="SearchFilter", mappedBy="search", cascade={"persist", "remove"})
      */
     public $filters;
     
     /**
      * @var string
-     * 
+     *
      * @ORM\Column(name="username", type="string", length=100)
      */
     private $user;
@@ -40,18 +40,18 @@ class Search implements JsonSerializable
      *
      * @ORM\Column(name="environments", type="json_array")
      */
-    public $environments; 
+    public $environments;
 
      /**
      * @var array
      *
      * @ORM\Column(name="contentTypes", type="json_array")
      */
-    public $contentTypes; 
+    public $contentTypes;
     
     /**
      * @var string
-     * 
+     *
      * @ORM\Column(name="name", type="string", length=100)
      */
     private $name;
@@ -74,20 +74,21 @@ class Search implements JsonSerializable
     
     /**
      * @var string $sortBy
-     * 
+     *
      * @ORM\Column(name="sort_by", type="string", length=100, nullable=true)
      */
     public $sortBy;
     
     /**
      * @var string $sortOrder
-     * 
+     *
      * @ORM\Column(name="sort_order", type="string", length=100, nullable=true)
      */
     public $sortOrder;
     
     
-    function __construct(){
+    function __construct()
+    {
         $this->filters = [];//new \Doctrine\Common\Collections\ArrayCollection();
         $this->filters[] = new SearchFilter();
         $this->default = false;
@@ -108,7 +109,7 @@ class Search implements JsonSerializable
 
         $out['filters'] = [];
         /**@var SearchFilter $filter*/
-        foreach ($this->filters as $filter){
+        foreach ($this->filters as $filter) {
             $out['filters'][] = $filter->jsonSerialize();
         }
         return $out;
@@ -351,6 +352,4 @@ class Search implements JsonSerializable
         $this->contentType = $contentType;
         return $this;
     }
-
-
 }

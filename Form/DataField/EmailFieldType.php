@@ -13,20 +13,24 @@ use Symfony\Component\Form\FormBuilderInterface;
  * It's used to logically groups subfields together. However a Container is invisible in Elastic search.
  *
  * @author Mathieu De Keyzer <ems@theus.be>
- *        
+ *
  */
- class EmailFieldType extends DataFieldType {    
+class EmailFieldType extends DataFieldType
+{
+
     
     /**
      * Get a icon to visually identify a FieldType
-     * 
+     *
      * @return string
      */
-    public static function getIcon(){
+    public static function getIcon()
+    {
         return 'fa fa-envelope';
     }
     
-    public function getBlockPrefix() {
+    public function getBlockPrefix()
+    {
         return 'bypassdatafield';
     }
     
@@ -36,7 +40,8 @@ use Symfony\Component\Form\FormBuilderInterface;
      * {@inheritdoc}
      *
      */
-    public function getLabel(){
+    public function getLabel()
+    {
         return 'Email field';
     }
 
@@ -46,7 +51,8 @@ use Symfony\Component\Form\FormBuilderInterface;
      * {@inheritdoc}
      *
      */
-    public function getDefaultOptions($name) {
+    public function getDefaultOptions($name)
+    {
         $out = parent::getDefaultOptions($name);
     
         $out['mappingOptions']['index'] = 'not_analyzed';
@@ -59,17 +65,17 @@ use Symfony\Component\Form\FormBuilderInterface;
      * {@inheritdoc}
      *
      */
-    public function isValid(DataField &$dataField, DataField $parent=null, &$masterRawData=null){
-        if($this->hasDeletedParent($parent))
-        {
+    public function isValid(DataField &$dataField, DataField $parent = null, &$masterRawData = null)
+    {
+        if ($this->hasDeletedParent($parent)) {
             return true;
         }
 
         $isValid = parent::isValid($dataField, $parent, $masterRawData);
         
         $rawData = $dataField->getRawData();
-        if(! empty($rawData) && filter_var($rawData, FILTER_VALIDATE_EMAIL) === false) {
-            $isValid = FALSE;
+        if (! empty($rawData) && filter_var($rawData, FILTER_VALIDATE_EMAIL) === false) {
+            $isValid = false;
             $dataField->addMessage("Not a valid email address");
         }
         
@@ -77,15 +83,16 @@ use Symfony\Component\Form\FormBuilderInterface;
     }
     
     /**
-     * 
+     *
      * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::modelTransform()
      */
-    public function modelTransform($data, FieldType $fieldType) {
-        if(empty($data)) {
+    public function modelTransform($data, FieldType $fieldType)
+    {
+        if (empty($data)) {
             return parent::modelTransform(null, $fieldType);
         }
-        if(is_string($data)){
+        if (is_string($data)) {
             return parent::modelTransform($data, $fieldType);
         }
         $out = parent::modelTransform(null, $fieldType);
@@ -94,20 +101,22 @@ use Symfony\Component\Form\FormBuilderInterface;
     }
     
     /**
-     * 
+     *
      * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
      */
-    public function viewTransform(DataField $dataField) {
+    public function viewTransform(DataField $dataField)
+    {
         return ['value' => parent::viewTransform($dataField)];
     }
     
     /**
-     * 
+     *
      * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
      */
-    public function reverseViewTransform($data, FieldType $fieldType) {
+    public function reverseViewTransform($data, FieldType $fieldType)
+    {
         return parent::reverseViewTransform($data['value'], $fieldType);
     }
     
@@ -116,30 +125,32 @@ use Symfony\Component\Form\FormBuilderInterface;
      * {@inheritdoc}
      *
      */
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         /** @var FieldType $fieldType */
         $fieldType = $options ['metadata'];
-        $builder->add ( 'value', TextType::class, [
+        $builder->add('value', TextType::class, [
                 'label' => (null != $options ['label']?$options ['label']:'Email field type'),
                 'disabled'=> $this->isDisabled($options),
                 'required' => false,
-        ] );
+        ]);
     }
 
-     /**
-      *
-      * {@inheritdoc}
-      *
-      */
-     public function buildOptionsForm(FormBuilderInterface $builder, array $options) {
-         parent::buildOptionsForm ( $builder, $options );
-         $optionsForm = $builder->get ( 'options' );
+    /**
+     *
+     * {@inheritdoc}
+     *
+     */
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    {
+        parent::buildOptionsForm($builder, $options);
+        $optionsForm = $builder->get('options');
 
-         // String specific mapping options
-         $optionsForm->get ( 'mappingOptions' )
-             ->add ( 'analyzer', AnalyzerPickerType::class)
-             ->add ( 'copy_to', TextType::class, [
-                 'required' => false,
-             ]);
-     }
+        // String specific mapping options
+        $optionsForm->get('mappingOptions')
+            ->add('analyzer', AnalyzerPickerType::class)
+            ->add('copy_to', TextType::class, [
+                'required' => false,
+            ]);
+    }
 }

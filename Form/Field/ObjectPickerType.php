@@ -8,12 +8,14 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ObjectPickerType extends Select2Type {
+class ObjectPickerType extends Select2Type
+{
     /**@var ChoiceListFactoryInterface $choiceListFactory*/
     private $choiceListFactory;
 
     
-    public function __construct(ChoiceListFactoryInterface $factory){
+    public function __construct(ChoiceListFactoryInterface $factory)
+    {
         $this->choiceListFactory = $factory;
         parent::__construct($factory);
     }
@@ -28,10 +30,10 @@ class ObjectPickerType extends Select2Type {
     {
         
         /* set the default option value for this kind of compound field */
-        parent::configureOptions ( $resolver );
+        parent::configureOptions($resolver);
         $resolver->setDefaults(array(
             'required' => false,
-            'dynamicLoading' => true,  
+            'dynamicLoading' => true,
             'sortable' => false,
             'choice_loader' => function (Options $options) {
                 $loadAll =     $options->offsetGet('dynamicLoading')?false:true;
@@ -42,14 +44,14 @@ class ObjectPickerType extends Select2Type {
             'choice_label' => function ($value, $key, $index) {
                 return $value->getLabel();
             },
-            'choice_attr' => function($val, $key, $index) {
+            'choice_attr' => function ($val, $key, $index) {
                 if ($val instanceof ObjectChoiceListItem) {
                     return ['title' => $val->getTitle()];
                 }
 
                 return [];
             },
-            'group_by' => function($value, $key, $index) {
+            'group_by' => function ($value, $key, $index) {
                 return $value->getGroup();
             },
             'choice_value' => function ($value) {
@@ -65,10 +67,11 @@ class ObjectPickerType extends Select2Type {
     
     /**
      * Returns the choice list factory (getter function)
-     * 
+     *
      * @return ChoiceListFactoryInterface
      */
-    public function getChoiceListFactory() {
+    public function getChoiceListFactory()
+    {
         return $this->choiceListFactory;
     }
     
@@ -77,7 +80,8 @@ class ObjectPickerType extends Select2Type {
      * {@inheritdoc}
      *
      */
-    public function buildView(FormView $view, FormInterface $form, array $options) {
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
         $view->vars ['attr']['data-type'] = $options['type'];
         $view->vars ['attr']['data-search-id'] = $options['searchId'];
         $view->vars ['attr']['data-circle-only'] = $options['circle-only'];
@@ -90,8 +94,8 @@ class ObjectPickerType extends Select2Type {
      * {@inheritdoc}
      *
      */
-    public function getBlockPrefix() {
+    public function getBlockPrefix()
+    {
         return 'objectpicker';
     }
-    
 }

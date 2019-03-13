@@ -11,21 +11,23 @@ use EMS\CoreBundle\Form\Field\CodeEditorType;
  * It's a coumpound field for field specific extra option.
  *
  */
-class ExtraOptionsType extends AbstractType {
+class ExtraOptionsType extends AbstractType
+{
     
     /**
      *
      * {@inheritdoc}
      *
      */
-    public function buildForm(FormBuilderInterface $builder, array $options) {
-        $builder->add ( 'extra', TextareaType::class, [ 
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('extra', TextareaType::class, [
                 'attr' => [
                     'rows' => 8,
                 ],
                 'required' => false,
-        ] )->add ( 'postProcessing', CodeEditorType::class, [
+        ])->add('postProcessing', CodeEditorType::class, [
                 'required' => false,
-        ] );
+        ]);
     }
 }

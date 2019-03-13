@@ -21,13 +21,13 @@ class FilterType extends AbstractType
             ->add('name', null, array('required' => true))
             ->add('label', null, array('required' => true))
             ->add('options', FilterOptionsType::class)
-            ->add ( 'save', SubmitEmsType::class, [
+            ->add('save', SubmitEmsType::class, [
                     'label' => 'Save',
                     'attr' => [
                             'class' => 'btn btn-primary pull-right'
                     ],
                     'icon' => 'fa fa-save',
-            ] );
+            ]);
     }
     
     /**

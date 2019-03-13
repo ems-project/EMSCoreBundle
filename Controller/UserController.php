@@ -25,22 +25,22 @@ class UserController extends AppController
      */
     public function indexAction(Request $request)
     {
-        return $this->render( '@EMSCore/user/index.html.twig', [
+        return $this->render('@EMSCore/user/index.html.twig', [
                 'paging' => $this->getHelperService()->getPagingTool('EMSCoreBundle:User', 'ems.user.index', 'username'),
-        ] );
+        ]);
     }
     
     
     
     /**
-     * 
+     *
      * @Route("/user/{id}/edit", name="user.edit")
      */
     public function editUserAction($id, Request $request)
     {
         $user = $this->getUserService()->getUserById($id);
         // test if user exist before modified it
-        if(!$user){
+        if (!$user) {
             throw $this->createNotFoundException('user not found');
         }
         
@@ -64,7 +64,7 @@ class UserController extends AppController
             'translation_domain' => EMSCoreBundle::TRANS_DOMAIN
         ))
         ->add('circles', ObjectPickerType::class, [
-            'multiple' => TRUE,
+            'multiple' => true,
             'type' => $this->container->getParameter('ems_core.circles_object'),
             'dynamicLoading' => true,
             'translation_domain' => EMSCoreBundle::TRANS_DOMAIN
@@ -119,13 +119,13 @@ class UserController extends AppController
             'mapped' => true,
             'translation_domain' => EMSCoreBundle::TRANS_DOMAIN
         ))
-        ->add ( 'update', SubmitEmsType::class, [ 
+        ->add('update', SubmitEmsType::class, [
             'attr' => [
                     'class' => 'btn-primary btn-sm '
             ],
             'icon' => 'fa fa-save',
             'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
-        ] )
+        ])
         ->getForm();
         
         $form->handleRequest($request);
@@ -133,9 +133,9 @@ class UserController extends AppController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getUserService()->updateUser($user);
             $this->addFlash(
-                    'notice',
-                    'User was modified!'
-                    );
+                'notice',
+                'User was modified!'
+            );
             return $this->redirectToRoute('ems.user.index');
         }
     
@@ -154,16 +154,16 @@ class UserController extends AppController
     
         $user = $this->getUserService()->getUserById($id);
         // test if user exist before modified it
-        if(!$user){
+        if (!$user) {
             throw $this->createNotFoundException('user not found');
         }
         
         $this->getUserService()->deleteUser($user);
         $this->getDoctrine()->getManager()->flush();
         $this->addFlash(
-                'notice',
-                'User was deleted!'
-                );
+            'notice',
+            'User was deleted!'
+        );
         return $this->redirectToRoute('ems.user.index');
     }
     
@@ -176,25 +176,25 @@ class UserController extends AppController
     
         $user = $this->getUserService()->getUserById($id);
         // test if user exist before modified it
-        if(!$user){
+        if (!$user) {
             throw $this->createNotFoundException('user not found');
         }
         
         $message = "User was ";
         if ($user->isEnabled()) {
-            $user->setEnabled(FALSE);
+            $user->setEnabled(false);
             $message = $message . "disabled !";
         } else {
-            $user->setEnabled(TRUE);
+            $user->setEnabled(true);
             $message = $message . "enabled !";
         }
         
         $this->getUserService()->updateUser($user);
         $this->getDoctrine()->getManager()->flush();
         $this->addFlash(
-                'notice',
-                $message
-                );
+            'notice',
+            $message
+        );
         return $this->redirectToRoute('ems.user.index');
     }
     
@@ -207,24 +207,24 @@ class UserController extends AppController
     
         $user = $this->getUserService()->getUserById($id);
         // test if user exist before modified it
-        if(!$user){
+        if (!$user) {
             throw $this->createNotFoundException('user not found');
         }
         $message = "User was ";
         if ($user-> isLocked()) {
-            $user->setLocked(FALSE);
+            $user->setLocked(false);
             $message = $message . "unlocked !";
         } else {
-            $user->setLocked(TRUE);
+            $user->setLocked(true);
             $message = $message . "locked !";
         }
         
         $this->getUserService()->updateUser($user);
         $this->getDoctrine()->getManager()->flush();
         $this->addFlash(
-                'notice',
-                $message
-                );
+            'notice',
+            $message
+        );
         return $this->redirectToRoute('ems.user.index');
     }
     
@@ -264,33 +264,34 @@ class UserController extends AppController
         $em->persist($user);
         $em->flush();
         
-        return $this->render( '@EMSCore/ajax/notification.json.twig', [
+        return $this->render('@EMSCore/ajax/notification.json.twig', [
                 'success' => true,
-        ] );
+        ]);
     }
     
     /**
      * Test if email or username exist return on add or edit Form
      */
-    private function userExist ($user, $action, $form) {
+    private function userExist($user, $action, $form)
+    {
         $exists = array('email' => $this->getUserService()->findUserByEmail($user->getEmail()), 'username' => $this->getUserService()->getUser($user->getUsername()));
         $messages = array('email' => 'User email already exist!', 'username' => 'Username already exist!');
         foreach ($exists as $key => $value) {
             if ($value instanceof User) {
-                if ($action == 'add' or ($action == 'edit' and $value->getId() != $user->getId()))
-                {
+                if ($action == 'add' or ($action == 'edit' and $value->getId() != $user->getId())) {
                     $this->addFlash(
                         'error',
                         $messages[$key]
-                    );    
-                    return FALSE;
+                    );
+                    return false;
                 }
             }
         }
-        return TRUE;
+        return true;
     }
     
-    private  function getExistingRoles() {
+    private function getExistingRoles()
+    {
         return $this->getUserService()->getExistingRoles();
     }
 }

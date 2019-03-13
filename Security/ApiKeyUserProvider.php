@@ -7,7 +7,9 @@ use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use EMS\CoreBundle\Service\UserService;
 
 class ApiKeyUserProvider implements UserProviderInterface
-{    
+{
+
+    
 
     /**@var UserService $userService*/
     private $userService;
@@ -26,11 +28,13 @@ class ApiKeyUserProvider implements UserProviderInterface
         return $username;
     }
 
-    public function loadUserByUsername($username) {
+    public function loadUserByUsername($username)
+    {
         return $this->userService->getUser($username, false);
     }
 
-    public function refreshUser(UserInterface $user) {
+    public function refreshUser(UserInterface $user)
+    {
         // this is used for storing authentication in the session
         // but in this example, the token is sent in each request,
         // so authentication can be stateless. Throwing this exception
@@ -38,7 +42,8 @@ class ApiKeyUserProvider implements UserProviderInterface
         throw new UnsupportedUserException();
     }
 
-    public function supportsClass($class) {
+    public function supportsClass($class)
+    {
         return 'Symfony\Component\Security\Core\User\User' === $class;
     }
 }

@@ -16,16 +16,18 @@ use Symfony\Component\HttpFoundation\Request;
  * It's the mother class of all specific DataField used in eMS
  *
  * @author Mathieu De Keyzer <ems@theus.be>
- *        
+ *
  */
-class KeywordsViewType extends ViewType {
+class KeywordsViewType extends ViewType
+{
 
     /**
      *
      * {@inheritdoc}
      *
      */
-    public function getLabel(){
+    public function getLabel()
+    {
         return "Keywords: a view where all properties of kind (such as keyword) are listed on a single page";
     }
     
@@ -34,7 +36,8 @@ class KeywordsViewType extends ViewType {
      * {@inheritdoc}
      *
      */
-    public function getName(){
+    public function getName()
+    {
         return "Keywords";
     }
     
@@ -43,18 +46,19 @@ class KeywordsViewType extends ViewType {
      * {@inheritdoc}
      *
      */
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         parent::buildForm($builder, $options);
         $builder
-        ->add ( 'aggsQuery', TextareaType::class, [
+        ->add('aggsQuery', TextareaType::class, [
                 'label' => 'The aggregations Elasticsearch query [Twig]'
-        ] )
-        ->add ( 'template', TextareaType::class, [
+        ])
+        ->add('template', TextareaType::class, [
                 'label' => 'The Twig template used to display each keywords'
-        ] )
-        ->add ( 'pathToBuckets', TextType::class, [
+        ])
+        ->add('pathToBuckets', TextType::class, [
                 'label' => 'The twig path to the buckets array'
-        ] );
+        ]);
     }
     
     /**
@@ -62,7 +66,8 @@ class KeywordsViewType extends ViewType {
      * {@inheritdoc}
      *
      */
-    public function getBlockPrefix() {
+    public function getBlockPrefix()
+    {
         return 'keywords_view';
     }
     
@@ -72,7 +77,8 @@ class KeywordsViewType extends ViewType {
      * {@inheritdoc}
      *
      */
-    public function getParameters(View $view, FormFactoryInterface $formFactoty, Request $request) {
+    public function getParameters(View $view, FormFactoryInterface $formFactoty, Request $request)
+    {
         
         $searchQuery = [
             'index' => $view->getContentType()->getEnvironment()->getAlias(),
@@ -83,7 +89,7 @@ class KeywordsViewType extends ViewType {
         
         $retDoc = $this->client->search($searchQuery);
         
-        foreach ( explode('.', $view->getOptions()['pathToBuckets']) as $attribute ){
+        foreach (explode('.', $view->getOptions()['pathToBuckets']) as $attribute) {
             $retDoc = $retDoc[$attribute];
         }
         
@@ -94,5 +100,4 @@ class KeywordsViewType extends ViewType {
             'environment' => $view->getContentType()->getEnvironment(),
         ];
     }
-    
 }

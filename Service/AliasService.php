@@ -28,20 +28,20 @@ class AliasService
     
     /**
      * [name => [indexes, total, environment, managed]]
-     * 
+     *
      * @var array
      */
     private $aliases = [];
 
     /**
      * [name => [[name => count]]
-     * 
+     *
      * @var array
      */
     private $orphanIndexes = [];
     
     /**
-     * @var bool 
+     * @var bool
      */
     private $isBuild = false;
 
@@ -78,7 +78,7 @@ class AliasService
     
     /**
      * Get all aliases
-     * 
+     *
      * @return array
      */
     public function getAliases()
@@ -149,7 +149,7 @@ class AliasService
     
     /**
      * Aliases without an environment
-     * 
+     *
      * @return array
      */
     public function getUnreferencedAliases()
@@ -163,7 +163,7 @@ class AliasService
 
     /**
      * Indexes without aliases
-     * 
+     *
      * @return array
      */
     public function getOrphanIndexes()
@@ -173,7 +173,7 @@ class AliasService
 
     /**
      * Build orphan indexes, unreferenced aliases
-     * 
+     *
      * @return self
      */
     public function build()
@@ -202,8 +202,6 @@ class AliasService
                 } else {
                     $this->addAlias($alias, $index);
                 }
-                
-                
             }
         }
         
@@ -215,7 +213,7 @@ class AliasService
     /**
      * @param string $alias
      * @param array  $actions
-     * 
+     *
      * @return void
      */
     public function updateAlias($alias, array $actions)
@@ -280,7 +278,7 @@ class AliasService
             'total' => $this->count($name),
             'environment' => isset($env['name']) ? $env['name'] : null,
             'managed' => isset($env['managed']) ? $env['managed'] : $managed,
-        ]; 
+        ];
     }
     
     /**
@@ -301,7 +299,7 @@ class AliasService
      *
      * @return int
      */
-    private function count($name) 
+    private function count($name)
     {
         $result = $this->client->count(['index' => $name]);
         
@@ -310,7 +308,7 @@ class AliasService
 
     /**
      * Filters out indexes that start with .*
-     * 
+     *
      * @return array
      */
     private function getData()
@@ -318,8 +316,8 @@ class AliasService
         $indexesAliases = $this->client->indices()->getAliases();
 
         return array_filter(
-            $indexesAliases, 
-            [$this, 'validIndexName'], 
+            $indexesAliases,
+            [$this, 'validIndexName'],
             \ARRAY_FILTER_USE_KEY
         );
     }

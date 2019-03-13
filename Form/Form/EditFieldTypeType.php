@@ -11,39 +11,40 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class EditFieldTypeType extends AbstractType {
+class EditFieldTypeType extends AbstractType
+{
     /**
      *
      * @param FormBuilderInterface $builder
-     * @param array $options            
+     * @param array $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         
         
         /** @var EditFieldType $editFieldType */
-        $editFieldType = $builder->getData ();
+        $editFieldType = $builder->getData();
 
-        $builder->add ( 'fieldType', FieldTypeType::class, [
+        $builder->add('fieldType', FieldTypeType::class, [
             'data' => $editFieldType->getFieldType(),
             'editSubfields' => false,
         ]);
         
         
-        $builder->add ( 'save', SubmitEmsType::class, [ 
+        $builder->add('save', SubmitEmsType::class, [
             'attr' => [
                 'class' => 'btn-primary btn-sm '
             ],
             'icon' => 'fa fa-save'
-        ] );
-        $builder->add ( 'saveAndClose', SubmitEmsType::class, [
+        ]);
+        $builder->add('saveAndClose', SubmitEmsType::class, [
             'attr' => [
                 'class' => 'btn-primary btn-sm '
             ],
             'icon' => 'fa fa-save'
-        ] );
+        ]);
         
         return parent::buildForm($builder, $options);
-         
     }
     
     /**
@@ -51,8 +52,8 @@ class EditFieldTypeType extends AbstractType {
      * {@inheritdoc}
      *
      */
-    public function configureOptions(OptionsResolver $resolver) {
+    public function configureOptions(OptionsResolver $resolver)
+    {
 //         $resolver->setDefault ( 'twigWithWysiwyg', true );
     }
-    
 }

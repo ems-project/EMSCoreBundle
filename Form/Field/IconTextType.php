@@ -7,24 +7,26 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class IconTextType extends TextType {
+class IconTextType extends TextType
+{
     
     /**
      *
      * {@inheritdoc}
      *
      */
-    public function configureOptions(OptionsResolver $resolver) {
-        $resolver->setDefaults ( array (
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults(array (
                 'compound' => false,
                 'metadata' => null,
                 'icon' => null,
                 'class' => null,
-        ) );
-        $resolver->setDefault ( 'prefixIcon', null );
-        $resolver->setDefault ( 'prefixText', null );
-        $resolver->setDefault ( 'suffixIcon', null );
-        $resolver->setDefault ( 'suffixText', null );
+        ));
+        $resolver->setDefault('prefixIcon', null);
+        $resolver->setDefault('prefixText', null);
+        $resolver->setDefault('suffixIcon', null);
+        $resolver->setDefault('suffixText', null);
     }
     
     /**
@@ -32,7 +34,8 @@ class IconTextType extends TextType {
      * {@inheritdoc}
      *
      */
-    public function buildView(FormView $view, FormInterface $form, array $options) {
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
         $view->vars ['icon'] = $options ['icon'];
         $view->vars ['class'] = $options ['class'];
         $view->vars ['prefixIcon'] = $options ['prefixIcon'];
@@ -46,7 +49,8 @@ class IconTextType extends TextType {
      * {@inheritdoc}
      *
      */
-    public function getParent() {
+    public function getParent()
+    {
         return TextType::class;
     }
     
@@ -55,7 +59,8 @@ class IconTextType extends TextType {
      * {@inheritdoc}
      *
      */
-    public function getBlockPrefix() {
+    public function getBlockPrefix()
+    {
         return 'icontext';
     }
 }

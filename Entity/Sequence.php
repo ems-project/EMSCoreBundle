@@ -60,7 +60,8 @@ class Sequence
     private $version;
     
     
-    public function __construct($name) {
+    public function __construct($name)
+    {
         $this->value = 1;
         $this->version = 0;
         $this->name = $name;
@@ -74,7 +75,7 @@ class Sequence
     {
         $this->modified = new \DateTime();
         ++$this->version;
-        if(!isset($this->created)){
+        if (!isset($this->created)) {
             $this->created = $this->modified;
         }
     }
@@ -207,4 +208,3 @@ class Sequence
         return $this->version;
     }
 }
-

@@ -73,7 +73,8 @@ class Analyzer
     private $orderKey;
     
     
-    public function __construct() {
+    public function __construct()
+    {
         $this->options = [];
         $this->dirty = true;
     }
@@ -85,7 +86,7 @@ class Analyzer
     public function updateModified()
     {
         $this->modified = new \DateTime();
-        if(!isset($this->created)){
+        if (!isset($this->created)) {
             $this->created = $this->modified;
         }
     }
@@ -138,10 +139,9 @@ class Analyzer
         
         
         foreach ($this->options as $key => $data) {
-            if($key != 'type' and !in_array($key, AnalyzerOptionsType::FIELDS_BY_TYPE[$this->options['type']])) {
+            if ($key != 'type' and !in_array($key, AnalyzerOptionsType::FIELDS_BY_TYPE[$this->options['type']])) {
                 unset($this->options[$key]);
-            }
-            else if($this->options[$key] === null) {
+            } else if ($this->options[$key] === null) {
                 unset($this->options[$key]);
             }
         }
@@ -278,4 +278,3 @@ class Analyzer
         return $this->orderKey;
     }
 }
-

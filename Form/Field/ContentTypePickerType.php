@@ -7,7 +7,8 @@ use EMS\CoreBundle\Service\ContentTypeService;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
-class ContentTypePickerType extends ChoiceType {
+class ContentTypePickerType extends ChoiceType
+{
     
     private $choices;
     
@@ -25,7 +26,8 @@ class ContentTypePickerType extends ChoiceType {
      * {@inheritdoc}
      *
      */
-    public function getBlockPrefix() {
+    public function getBlockPrefix()
+    {
         return 'selectpicker';
     }
     
@@ -39,8 +41,8 @@ class ContentTypePickerType extends ChoiceType {
         $this->choices = [];
         $keys = [];
         /**@var ContentType $choice*/
-        foreach ($this->service->getAll() as $choice){
-            $keys[] = $choice->getName();    
+        foreach ($this->service->getAll() as $choice) {
+            $keys[] = $choice->getName();
             $this->choices[$choice->getName()] = $choice;
         }
         parent::configureOptions($resolver);
@@ -50,7 +52,7 @@ class ContentTypePickerType extends ChoiceType {
             'attr' => [
                     'data-live-search' => false
             ],
-            'choice_attr' => function($category, $key, $index) {
+            'choice_attr' => function ($category, $key, $index) {
                 /** @var ContentType $contentType */
                 $contentType = $this->choices[$index];
                 return [
@@ -65,4 +67,3 @@ class ContentTypePickerType extends ChoiceType {
         ));
     }
 }
-

@@ -15,7 +15,8 @@ use function stream_get_contents;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use function unlink;
 
-class FileService {
+class FileService
+{
 
     private $storageServices;
     
@@ -30,47 +31,45 @@ class FileService {
         $this->uploadFolder = $uploadFolder;
         $this->storageServices = [];
 
-        if(!empty($storageFolder))
-        {
-            if(substr($storageFolder, 0, 2) === ('.'.DIRECTORY_SEPARATOR))
-            {
+        if (!empty($storageFolder)) {
+            if (substr($storageFolder, 0, 2) === ('.'.DIRECTORY_SEPARATOR)) {
                 $this->addStorageService(new FileSystemStorage($projectDir.substr($storageFolder, 1)));
-            }
-            else
-            {
+            } else {
                 $this->addStorageService(new FileSystemStorage($storageFolder));
             }
         }
 
-        if($createDbStorageService)
-        {
+        if ($createDbStorageService) {
             $this->addStorageService(new EntityStorage($doctrine, empty($storageFolder)));
         }
 
-        if(!empty($elasticmsRemoteServer))
-        {
+        if (!empty($elasticmsRemoteServer)) {
             $this->addStorageService(new HttpStorage($restClient, $elasticmsRemoteServer.'/data/file/view/', $elasticmsRemoteServer.'/api/file', $elasticmsRemoteAuthkey));
         }
     }
     
-    public function addStorageService($dataField) {
+    public function addStorageService($dataField)
+    {
         $this->storageServices[] = $dataField;
     }
     
-    public function getStorageService($dataFieldTypeId) {
+    public function getStorageService($dataFieldTypeId)
+    {
         return $this->dataFieldTypes[$dataFieldTypeId];
     }
     
-    public function getStorages() {
+    public function getStorages()
+    {
         return $this->storageServices;
     }
 
 
-    public function getBase64($sha1, $cacheContext=false){
+    public function getBase64($sha1, $cacheContext = false)
+    {
         /**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
-        foreach ($this->storageServices as $service){
+        foreach ($this->storageServices as $service) {
             $resource = $service->read($sha1, $cacheContext);
-            if($resource){
+            if ($resource) {
                 $data = stream_get_contents($resource);
                 $base64 = base64_encode($data);
                 return $base64;
@@ -80,11 +79,12 @@ class FileService {
     }
 
 
-    public function getFile($sha1, $cacheContext=false){
+    public function getFile($sha1, $cacheContext = false)
+    {
         /**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
-        foreach ($this->storageServices as $service){
+        foreach ($this->storageServices as $service) {
             $resource = $service->read($sha1, $cacheContext);
-            if($resource){
+            if ($resource) {
                 $filename = tempnam(sys_get_temp_dir(), 'EMS');
                 file_put_contents($filename, $resource);
                 return $filename;
@@ -93,33 +93,36 @@ class FileService {
         return false;
     }
     
-    public function getSize($sha1, $cacheContext=false){
+    public function getSize($sha1, $cacheContext = false)
+    {
         /**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
-        foreach ($this->storageServices as $service){
+        foreach ($this->storageServices as $service) {
             $filesize = $service->getSize($sha1, $cacheContext);
-            if($filesize !== false){
+            if ($filesize !== false) {
                 return $filesize;
             }
         }
         return false;
     }
     
-    public function getLastUpdateDate($sha1, $cacheContext=false){
+    public function getLastUpdateDate($sha1, $cacheContext = false)
+    {
         $out = false;
         /**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
-        foreach ($this->storageServices as $service){
+        foreach ($this->storageServices as $service) {
             $date = $service->getLastUpdateDate($sha1, $cacheContext);
-            if($date && ($out === false || $date < $out)){
+            if ($date && ($out === false || $date < $out)) {
                 $out = $date;
             }
         }
         return $out;
     }
     
-    public function head($sha1, $cacheContext=false){
+    public function head($sha1, $cacheContext = false)
+    {
         /**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
-        foreach ($this->storageServices as $service){
-            if($service->head($sha1, $cacheContext)){
+        foreach ($this->storageServices as $service) {
+            if ($service->head($sha1, $cacheContext)) {
                 return true;
             }
         }
@@ -127,7 +130,7 @@ class FileService {
     }
     
     /**
-     * 
+     *
      * @param string $sha1
      * @param integer $size
      * @param string $name
@@ -137,15 +140,16 @@ class FileService {
      * @throws Conflict409Exception
      * @return UploadedAsset
      */
-    public function initUploadFile($sha1, $size, $name, $type, $user){
-        if(empty($this->storageServices)){
+    public function initUploadFile($sha1, $size, $name, $type, $user)
+    {
+        if (empty($this->storageServices)) {
             throw new StorageServiceMissingException("No storage service have been defined");
         }
         
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
         /** @var UploadedAssetRepository $repository */
-        $repository = $em->getRepository( 'EMSCoreBundle:UploadedAsset' );
+        $repository = $em->getRepository('EMSCoreBundle:UploadedAsset');
         
         
         /**@var UploadedAsset $uploadedAsset*/
@@ -155,7 +159,7 @@ class FileService {
                 'user' => $user,
         ]);
         
-        if(!$uploadedAsset) {
+        if (!$uploadedAsset) {
             $uploadedAsset = new UploadedAsset();
             $uploadedAsset->setSha1($sha1);
             $uploadedAsset->setUser($user);
@@ -168,27 +172,25 @@ class FileService {
         $uploadedAsset->setName($name);
         $uploadedAsset->setAvailable(false);
         
-        if($uploadedAsset->getSize() != $size){
+        if ($uploadedAsset->getSize() != $size) {
             throw new Conflict409Exception("Target size mismatched ".$uploadedAsset->getSize().' '.$size);
         }
         
-        if($this->head($sha1)) {
-            if($this->getSize($sha1) != $size){ //one is a string the other is a number
-                throw new Conflict409Exception("Hash conflict");    
+        if ($this->head($sha1)) {
+            if ($this->getSize($sha1) != $size) { //one is a string the other is a number
+                throw new Conflict409Exception("Hash conflict");
             }
             $uploadedAsset->setUploaded($uploadedAsset->getSize());
             $uploadedAsset->setAvailable(true);
-        }
-        else {
+        } else {
             //Get temporyName
             $filename = $this->temporaryUploadFilename($sha1);
-            if(file_exists($filename)) {
-                if(filesize($filename) !== intval($uploadedAsset->getUploaded()) || $uploadedAsset->getUploaded() == $uploadedAsset->getSize()){
+            if (file_exists($filename)) {
+                if (filesize($filename) !== intval($uploadedAsset->getUploaded()) || $uploadedAsset->getUploaded() == $uploadedAsset->getSize()) {
                     file_put_contents($filename, "");
                     $uploadedAsset->setUploaded(0);
                 }
-            }
-            else {
+            } else {
                 touch($filename);
                 $uploadedAsset->setUploaded(0);
             }
@@ -201,12 +203,13 @@ class FileService {
     }
     
     
-    public function getImages() {
+    public function getImages()
+    {
         
         /** @var EntityManager $em */
-        $em = $this->doctrine->getManager ();
+        $em = $this->doctrine->getManager();
         /** @var UploadedAssetRepository $repository */
-        $repository = $em->getRepository ( 'EMSCoreBundle:UploadedAsset' );
+        $repository = $em->getRepository('EMSCoreBundle:UploadedAsset');
         
 
          $qb = $repository
@@ -222,17 +225,18 @@ class FileService {
         return $result;
     }
         
-    public function uploadFile($name, $type, $filename, $user) {
+    public function uploadFile($name, $type, $filename, $user)
+    {
         
         $sha1 = sha1_file($filename);
         $size = filesize($filename);
         $uploadedAsset = $this->initUploadFile($sha1, $size, $name, $type, $user);
-        if(!$uploadedAsset->getAvailable()) {
+        if (!$uploadedAsset->getAvailable()) {
             $uploadedAsset = $this->saveFile($filename, $uploadedAsset);
         }
         
         /** @var EntityManager $em */
-        $em = $this->doctrine->getManager ();
+        $em = $this->doctrine->getManager();
         $em->persist($uploadedAsset);
         $em->flush($uploadedAsset);
         
@@ -240,15 +244,16 @@ class FileService {
     }
     
     
-    public function addChunk($sha1, $chunk, $user) {
-        if(empty($this->storageServices)){
+    public function addChunk($sha1, $chunk, $user)
+    {
+        if (empty($this->storageServices)) {
             throw new StorageServiceMissingException("No storage service have been defined");
         }
         
         /** @var EntityManager $em */
-        $em = $this->doctrine->getManager ();
+        $em = $this->doctrine->getManager();
         /** @var UploadedAssetRepository $repository */
-        $repository = $em->getRepository ( 'EMSCoreBundle:UploadedAsset' );
+        $repository = $em->getRepository('EMSCoreBundle:UploadedAsset');
         
         
         /**@var UploadedAsset $uploadedAsset*/
@@ -258,13 +263,13 @@ class FileService {
                 'user' => $user,
         ]);
         
-        if(!$uploadedAsset) {
+        if (!$uploadedAsset) {
             throw new NotFoundHttpException('Upload job not found');
         }
         
         
         $filename = $this->temporaryUploadFilename($sha1);
-        if(!file_exists($filename)) {
+        if (!file_exists($filename)) {
             throw new NotFoundHttpException('tempory file not found');
         }
         
@@ -278,7 +283,7 @@ class FileService {
         $em->persist($uploadedAsset);
         $em->flush($uploadedAsset);
         
-        if($uploadedAsset->getUploaded() == $uploadedAsset->getSize()){
+        if ($uploadedAsset->getUploaded() == $uploadedAsset->getSize()) {
             $uploadedAsset = $this->saveFile($filename, $uploadedAsset);
         }
         
@@ -288,10 +293,11 @@ class FileService {
     }
     
     
-    public function create($sha1, $fileName, $cacheContext=false) {
+    public function create($sha1, $fileName, $cacheContext = false)
+    {
         /**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
-        foreach ($this->storageServices as $service){
-            if($service->create($sha1, $fileName, $cacheContext)) {
+        foreach ($this->storageServices as $service) {
+            if ($service->create($sha1, $fileName, $cacheContext)) {
                 unlink($fileName);
                 return true;
             }
@@ -299,8 +305,9 @@ class FileService {
         return false;
     }
     
-    private function saveFile($filename, UploadedAsset $uploadedAsset){
-        if(sha1_file($filename) != $uploadedAsset->getSha1()) {
+    private function saveFile($filename, UploadedAsset $uploadedAsset)
+    {
+        if (sha1_file($filename) != $uploadedAsset->getSha1()) {
 //             throw new Conflict409Exception("Sha1 mismatched ".sha1_file($filename).' '.$uploadedAsset->getSha1());
 //TODO: fix this issue
             $uploadedAsset->setSha1(sha1_file($filename));
@@ -308,8 +315,8 @@ class FileService {
         }
         
         /**@var \EMS\CoreBundle\Service\Storage\StorageInterface $service*/
-        foreach ($this->storageServices as $service){
-            if($service->create($uploadedAsset->getSha1(), $filename)) {
+        foreach ($this->storageServices as $service) {
+            if ($service->create($uploadedAsset->getSha1(), $filename)) {
                 $uploadedAsset->setAvailable(true);
                 unlink($filename);
                 break;
@@ -324,10 +331,11 @@ class FileService {
      * @param string $sha1
      * @return string
      */
-    private function temporaryUploadFilename($sha1) {
-        if($this->uploadFolder){
-            if(!is_dir($this->uploadFolder)) {
-                mkdir ( $this->uploadFolder , 0777, true);
+    private function temporaryUploadFilename($sha1)
+    {
+        if ($this->uploadFolder) {
+            if (!is_dir($this->uploadFolder)) {
+                mkdir($this->uploadFolder, 0777, true);
             }
 
             return $this->uploadFolder.DIRECTORY_SEPARATOR.$sha1;
@@ -340,7 +348,8 @@ class FileService {
      * @param string $sha1
      * @return string
      */
-    public function temporaryFilename($sha1) {
+    public function temporaryFilename($sha1)
+    {
         return sys_get_temp_dir().DIRECTORY_SEPARATOR.$sha1;
     }
 }

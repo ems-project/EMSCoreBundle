@@ -1,29 +1,32 @@
-<?php 
+<?php
 namespace EMS\CoreBundle\Form\Field;
 
-
-
-class ContentTypeFieldChoiceListItem {
+class ContentTypeFieldChoiceListItem
+{
 
     private $label;
     private $value;
     
     
-    public function __construct($value, $label) {
+    public function __construct($value, $label)
+    {
         $this->value = $value;
         $this->label = $label;
-    }    
+    }
     
     
-    public function getValue() {
+    public function getValue()
+    {
         return $this->value;
     }
     
-    public function getLabel() {
+    public function getLabel()
+    {
         return $this->label;
-    }    
+    }
 
-    public function __toString() {
+    public function __toString()
+    {
         return $this->getValue();
     }
 }

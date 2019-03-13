@@ -3,7 +3,6 @@
 
 namespace EMS\CoreBundle\Entity;
 
-
 interface User
 {
     /**

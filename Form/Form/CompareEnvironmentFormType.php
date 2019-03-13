@@ -44,5 +44,4 @@ class CompareEnvironmentFormType extends AbstractType
                 'icon' => 'fa fa-columns'
             ]);
     }
-
 }

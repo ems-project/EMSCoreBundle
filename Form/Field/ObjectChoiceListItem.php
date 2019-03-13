@@ -1,9 +1,10 @@
-<?php 
+<?php
 namespace EMS\CoreBundle\Form\Field;
 
 use EMS\CoreBundle\Entity\ContentType;
 
-class ObjectChoiceListItem {
+class ObjectChoiceListItem
+{
 
     private $label;
     private $title;
@@ -12,43 +13,44 @@ class ObjectChoiceListItem {
     private $color;
     
     
-    public function __construct(array &$object, ContentType $contentType){
+    public function __construct(array &$object, ContentType $contentType)
+    {
         $this->value = $object['_type'].':'.$object['_id'];
         
 
         $this->group = null;
         $this->color = null;
-        if( null !== $contentType && $contentType->getCategoryField() && isset($object['_source'][$contentType->getCategoryField()] )) {
+        if (null !== $contentType && $contentType->getCategoryField() && isset($object['_source'][$contentType->getCategoryField()])) {
             $this->group = $object['_source'][$contentType->getCategoryField()];
         }
         
         $this->label = '<i class="fa fa-question" data-ouuid="'.$this->value.'"></i>&nbsp;&nbsp;'.$this->value;
-        if( null !== $contentType ) {
+        if (null !== $contentType) {
             $this->label = '<i class="'.(null !== $contentType->getIcon()?$contentType->getIcon():'fa fa-question').'" data-ouuid="'.$this->value.'"></i>&nbsp;&nbsp;';
-            if(null !== $contentType->getLabelField() && isset($object['_source'][$contentType->getLabelField()])){
+            if (null !== $contentType->getLabelField() && isset($object['_source'][$contentType->getLabelField()])) {
                 $this->label .= $object['_source'][$contentType->getLabelField()];
                 $this->title = $object['_source'][$contentType->getLabelField()];
-            }
-            else {
+            } else {
                 $this->label .= $this->value;
                 $this->title = $this->value;
             }
             
 
-            if(null !== $contentType->getColorField() && isset($object['_source'][$contentType->getColorField()])){
+            if (null !== $contentType->getColorField() && isset($object['_source'][$contentType->getColorField()])) {
                 $this->color = $object['_source'][$contentType->getColorField()];
             }
         }
-        
-    }    
+    }
     
     
     
-    public function getValue(){
+    public function getValue()
+    {
         return $this->value;
     }
     
-    public function getLabel(){
+    public function getLabel()
+    {
         return $this->label;
     }
 
@@ -57,13 +59,15 @@ class ObjectChoiceListItem {
         return $this->title;
     }
     
-    public function getGroup(){
+    public function getGroup()
+    {
         return $this->group;
-    }    
+    }
     
-    public function getColor(){
+    public function getColor()
+    {
         return $this->color;
-    }    
+    }
 
     public function __toString()
     {

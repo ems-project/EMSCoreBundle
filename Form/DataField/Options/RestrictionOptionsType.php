@@ -13,22 +13,24 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
  *
  * @author Mathieu De Keyzer <ems@theus.be>
  */
-class RestrictionOptionsType extends AbstractType {
+class RestrictionOptionsType extends AbstractType
+{
     
     /**
      *
      * {@inheritdoc}
      *
      */
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         $builder
-        ->add ( 'mandatory', CheckboxType::class, [
+        ->add('mandatory', CheckboxType::class, [
                 'required' => false,
         ])
-        ->add ( 'mandatory_if', TextType::class, [
+        ->add('mandatory_if', TextType::class, [
                 'required' => false,
         ])
-        ->add ( 'minimum_role', RolePickerType::class, [
+        ->add('minimum_role', RolePickerType::class, [
                 'required' => false,
         ])
         ;

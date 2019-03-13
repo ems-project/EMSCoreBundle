@@ -11,7 +11,8 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\SearchFieldOptionRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class SearchFieldOption {
+class SearchFieldOption
+{
     /**
      * @var int
      *
@@ -84,10 +85,10 @@ class SearchFieldOption {
     public function updateModified()
     {
         $this->modified = new \DateTime();
-        if(!isset($this->created)){
+        if (!isset($this->created)) {
             $this->created = $this->modified;
         }
-        if(!isset($this->orderKey)){
+        if (!isset($this->orderKey)) {
             $this->orderKey = 0;
         }
     }
@@ -287,7 +288,4 @@ class SearchFieldOption {
         $this->operators = $operators;
         return $this;
     }
-
-
-
 }

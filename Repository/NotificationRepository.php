@@ -9,6 +9,7 @@ use EMS\CoreBundle\Repository\TemplateRepository;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Environment;
+
 /**
  * NotificationRepository
  *
@@ -20,13 +21,15 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
     /**@var AuthorizationCheckerInterface $authorizationChecker*/
     protected $authorizationChecker;
     
-    public function setAuthorizationChecker(AuthorizationCheckerInterface $authorizationChecker){
+    public function setAuthorizationChecker(AuthorizationCheckerInterface $authorizationChecker)
+    {
         $this->authorizationChecker = $authorizationChecker;
     }
     
     
     
-    public function findByRevionsionOuuidAndEnvironment(Revision $revision, Environment $environment){
+    public function findByRevionsionOuuidAndEnvironment(Revision $revision, Environment $environment)
+    {
         $qb = $this->createQueryBuilder('n')
             ->select('n')
             ->join('EMSCoreBundle:Revision', 'r', 'WITH', 'n.revision = r.id')
@@ -48,11 +51,11 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
         $query = $qb->getQuery();
         
         return $query->getResult();
-
     }
     
     
-    public function countRejectedForUser(User $user, $contentTypes = null, $environments = null, $templates = null) {
+    public function countRejectedForUser(User $user, $contentTypes = null, $environments = null, $templates = null)
+    {
         
         $query = $this->createQueryBuilder('n')
         ->select('COUNT(n)')
@@ -70,11 +73,12 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
     
     /**
      * Count notifications for logged user
-     * 
+     *
      * @param User $user
      * @return int
      */
-    public function countPendingByUserRoleAndCircle(User $user, $contentTypes = null, $environments = null, $templates = null) {
+    public function countPendingByUserRoleAndCircle(User $user, $contentTypes = null, $environments = null, $templates = null)
+    {
         
         $templateIds = $this->getTemplatesIdsForUser($user, $contentTypes);
         
@@ -84,11 +88,11 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
         ->andwhere('n.template IN (:ids)');
         $params = array('status' => "pending", 'ids' => $templateIds);
         
-        if($environments != null){
+        if ($environments != null) {
             $query->andWhere('n.environment IN (:envs)');
-            $params['envs'] = $environments;            
+            $params['envs'] = $environments;
         }
-        if($templates != null){
+        if ($templates != null) {
             $query->andWhere('n.template IN (:templates)');
             $params['templates'] = $templates;
         }
@@ -100,7 +104,8 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
     }
     
     
-    public function countNotificationByUuidAndContentType($ouuid, ContentType $contentType){
+    public function countNotificationByUuidAndContentType($ouuid, ContentType $contentType)
+    {
         $qb = $this->createQueryBuilder('n')
         ->select('count(n)')
         ->join('EMSCoreBundle:Revision', 'r', 'WITH', 'n.revision = r.id')
@@ -127,7 +132,8 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
      * @param User $user
      * @return array Notification
      */
-    public function findByPendingAndRoleAndCircleForUserSent(User $user, $from, $limit, $contentTypes = null, $environments = null, $templates = null) {
+    public function findByPendingAndRoleAndCircleForUserSent(User $user, $from, $limit, $contentTypes = null, $environments = null, $templates = null)
+    {
         $templateIds = $this->getTemplatesIdsForUserFrom($user, $contentTypes);
     
         
@@ -146,11 +152,11 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
                 'false' => false,
             );
         
-        if($environments != null){
+        if ($environments != null) {
             $qb->andWhere('n.environment IN (:envs)');
-            $params['envs'] = $environments;            
+            $params['envs'] = $environments;
         }
-        if($templates != null){
+        if ($templates != null) {
             $qb->andWhere('n.template IN (:templates)');
             $params['templates'] = $templates;
         }
@@ -177,10 +183,10 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
         $results = $query->getResult();
         
         return $results;
-    
     }
 
-    public function countForSent(User $user) {
+    public function countForSent(User $user)
+    {
         $templateIds = $this->getTemplatesIdsForUserFrom($user);
     
     
@@ -197,7 +203,7 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
                 'false' => false,
         );
         
-        if(!empty($templateIds)){
+        if (!empty($templateIds)) {
             $qb->andwhere('n.template IN (:ids)');
             $params['ids'] = $templateIds;
         }
@@ -220,11 +226,11 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
         $result = $qb->getQuery()->getSingleScalarResult();
     
         return $result;
-    
     }
     
     
-    public function findRejectedForUser(User $user, $from, $limit, $contentTypes = null, $environments = null, $templates = null) {
+    public function findRejectedForUser(User $user, $from, $limit, $contentTypes = null, $environments = null, $templates = null)
+    {
     
         $qb = $this->createQueryBuilder('n')
         ->select('n')
@@ -232,11 +238,11 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
         ->andwhere('n.username = :username');
         $params = array('status' => "rejected", 'username' => $user->getUsername());
         
-        if($environments != null){
+        if ($environments != null) {
             $qb->andWhere('n.environment IN (:envs)');
-            $params['envs'] = $environments;            
+            $params['envs'] = $environments;
         }
-        if($templates != null){
+        if ($templates != null) {
             $qb->andWhere('n.template IN (:templates)');
             $params['templates'] = $templates;
         }
@@ -257,7 +263,8 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
      * @param User $user
      * @return array Notification
      */
-    public function findByPendingAndUserRoleAndCircle(User $user, $from, $limit, $contentTypes = null, $environments = null, $templates = null) {
+    public function findByPendingAndUserRoleAndCircle(User $user, $from, $limit, $contentTypes = null, $environments = null, $templates = null)
+    {
     
         $templateIds = $this->getTemplatesIdsForUser($user, $contentTypes);
     
@@ -267,11 +274,11 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
         ->andwhere('n.template IN (:ids)');
         $params = array('status' => "pending", 'ids' => $templateIds);
         
-        if($environments != null){
+        if ($environments != null) {
             $qb->andWhere('n.environment IN (:envs)');
-            $params['envs'] = $environments;            
+            $params['envs'] = $environments;
         }
-        if($templates != null){
+        if ($templates != null) {
             $qb->andWhere('n.template IN (:templates)');
             $params['templates'] = $templates;
         }
@@ -288,90 +295,93 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
     
     /**
      * Limit template by user role and user circles
-     * 
+     *
      * @param User $user
      * @return array() of templateId
      */
-     private function getTemplatesIdsForUser($user, $contentTypes = null) {
-         $circles = $user->getCircles();
+    private function getTemplatesIdsForUser($user, $contentTypes = null)
+    {
+        $circles = $user->getCircles();
          
-         /** @var EntityManager $em */
+        /** @var EntityManager $em */
         $em = $this->getEntityManager();
         
         /** @var TemplateRepository $templateRepoitory */
-         $templateRepoitory = $em->getRepository( 'EMSCoreBundle:Template' );
+        $templateRepoitory = $em->getRepository('EMSCoreBundle:Template');
          
-         $results = $templateRepoitory->findByRenderOptionAndContentType('notification', $contentTypes);
+        $results = $templateRepoitory->findByRenderOptionAndContentType('notification', $contentTypes);
          
-          $templateIds = array();
-         foreach ($results as $template) {
-             
-             $role = $template->getRoleTo();
-             if ($this->authorizationChecker->isGranted($role) || $role === 'not-defined'){
-                 if(empty($template->getCirclesTo())) {
-                     $templateIds[] = $template->getId();
-                 } else {
-                     $commonCircle = array_intersect($circles, $template->getCirclesTo());
-                     if(!empty($commonCircle) || $this->authorizationChecker->isGranted('ROLE_ADMIN')) {
-                         $templateIds[] = $template->getId();
-                     }
-                 }
-             }
-         }
-         return $templateIds;
-     }
+         $templateIds = array();
+        foreach ($results as $template) {
+            $role = $template->getRoleTo();
+            if ($this->authorizationChecker->isGranted($role) || $role === 'not-defined') {
+                if (empty($template->getCirclesTo())) {
+                    $templateIds[] = $template->getId();
+                } else {
+                    $commonCircle = array_intersect($circles, $template->getCirclesTo());
+                    if (!empty($commonCircle) || $this->authorizationChecker->isGranted('ROLE_ADMIN')) {
+                        $templateIds[] = $template->getId();
+                    }
+                }
+            }
+        }
+        return $templateIds;
+    }
     
     /**
      * Limit template by user role and user circles
-     * 
+     *
      * @param User $user
      * @return array() of templateId
      */
-     private function getTemplatesIdsForUserFrom($user, $contentTypes = null) {
-         $circles = $user->getCircles();
+    private function getTemplatesIdsForUserFrom($user, $contentTypes = null)
+    {
+        $circles = $user->getCircles();
          
-         /** @var EntityManager $em */
+        /** @var EntityManager $em */
         $em = $this->getEntityManager();
         
         /** @var TemplateRepository $templateRepoitory */
-         $templateRepoitory = $em->getRepository( 'EMSCoreBundle:Template' );
+        $templateRepoitory = $em->getRepository('EMSCoreBundle:Template');
          
-         $results = $templateRepoitory->findByRenderOptionAndContentType('notification', $contentTypes);
+        $results = $templateRepoitory->findByRenderOptionAndContentType('notification', $contentTypes);
          
-          $templateIds = array();
-          /**@var \EMS\CoreBundle\Entity\Template $template*/
-         foreach ($results as $template) {
-             /**@var \EMS\CoreBundle\Entity\Environment $environment*/
-             foreach ($template->getEnvironments() as $environment){
-                 if(empty($environment->getCircles()) || count(array_intersect($environment->getCircles(), $user->getCircles())) > 0){
-                     $templateIds[] = $template->getId();
-                     break;
-                 }
-             }
-         }
-         return $templateIds;
-     }
+         $templateIds = array();
+         /**@var \EMS\CoreBundle\Entity\Template $template*/
+        foreach ($results as $template) {
+            /**@var \EMS\CoreBundle\Entity\Environment $environment*/
+            foreach ($template->getEnvironments() as $environment) {
+                if (empty($environment->getCircles()) || count(array_intersect($environment->getCircles(), $user->getCircles())) > 0) {
+                    $templateIds[] = $template->getId();
+                    break;
+                }
+            }
+        }
+        return $templateIds;
+    }
      
-     public function findReminders(\DateTime $date){
+    public function findReminders(\DateTime $date)
+    {
          
-         $query = $this->createQueryBuilder('n');
+        $query = $this->createQueryBuilder('n');
          
         $query->select('n')
-            ->where('n.status = :status')
-            ->andwhere($query->expr()->lte('n.emailed', ':datePivot'))
-             ->setParameter('status','pending')
-             ->setParameter('datePivot', $date);
-         return $query->getQuery()->getResult();
-     }
+           ->where('n.status = :status')
+           ->andwhere($query->expr()->lte('n.emailed', ':datePivot'))
+            ->setParameter('status', 'pending')
+            ->setParameter('datePivot', $date);
+        return $query->getQuery()->getResult();
+    }
      
-     public function findResponses(){
-         $query = $this->createQueryBuilder('n')
-            ->select('n')
-            ->where('n.status <> :status')
-            ->andwhere('n.responseEmailed is NULL')
-             ->setParameters([
-                     'status' => 'pending',
-             ]);
-         return $query->getQuery()->getResult();
-     }
+    public function findResponses()
+    {
+        $query = $this->createQueryBuilder('n')
+           ->select('n')
+           ->where('n.status <> :status')
+           ->andwhere('n.responseEmailed is NULL')
+            ->setParameters([
+                    'status' => 'pending',
+            ]);
+        return $query->getQuery()->getResult();
+    }
 }

@@ -17,30 +17,34 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * It's used to logically groups subfields together. However a Container is invisible in Elastic search.
  *
  * @author Mathieu De Keyzer <ems@theus.be>
- *        
+ *
  */
-class ContainerFieldType extends DataFieldType {
+class ContainerFieldType extends DataFieldType
+{
     /**
      *
      * {@inheritdoc}
      *
      */
-    public function getLabel(){
+    public function getLabel()
+    {
         return 'Visual container (invisible in Elasticsearch)';
-    }    
+    }
     
-    public function getBlockPrefix() {
+    public function getBlockPrefix()
+    {
         return 'container_field_type';
     }
     
     
     /**
-     * 
+     *
      * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::postFinalizeTreatment()
      */
-    public function postFinalizeTreatment($type, $id, DataField $dataField, $previousData) {
-        if(!empty($previousData[$dataField->getFieldType()->getName()])) {
+    public function postFinalizeTreatment($type, $id, DataField $dataField, $previousData)
+    {
+        if (!empty($previousData[$dataField->getFieldType()->getName()])) {
             return $previousData[$dataField->getFieldType()->getName()];
         }
         return null;
@@ -51,7 +55,8 @@ class ContainerFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function importData(DataField $dataField, $sourceArray, $isMigration){
+    public function importData(DataField $dataField, $sourceArray, $isMigration)
+    {
         throw new Exception("This method should never be called");
     }
     
@@ -60,7 +65,8 @@ class ContainerFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public static function getIcon(){
+    public static function getIcon()
+    {
         return 'glyphicon glyphicon-modal-window';
     }
     
@@ -70,27 +76,27 @@ class ContainerFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         /* get the metadata associate */
         /** @var FieldType $fieldType */
-        $fieldType = $builder->getOptions () ['metadata'];
+        $fieldType = $builder->getOptions() ['metadata'];
 
         /** @var FieldType $fieldType */
-        foreach ( $fieldType->getChildren () as $child ) {
-
-            if (! $child->getDeleted ()) {
+        foreach ($fieldType->getChildren() as $child) {
+            if (! $child->getDeleted()) {
                 /* merge the default options with the ones specified by the user */
-                $options = array_merge ( [ 
+                $options = array_merge([
                         'metadata' => $child,
                         'label' => false ,
                         'migration' => $options['migration'],
                         'raw_data' =>  $options['raw_data'],
-                ], $child->getDisplayOptions () );
+                ], $child->getDisplayOptions());
                 
-                $builder->add (  $child->getName (), $child->getType (), $options );
+                $builder->add($child->getName(), $child->getType(), $options);
                 
                 
-                $builder->get ( $child->getName () )
+                $builder->get($child->getName())
                     ->addViewTransformer(new DataFieldViewTransformer($child, $this->formRegistry))
                     ->addModelTransformer(new DataFieldModelTransformer($child, $this->formRegistry));
             }
@@ -102,9 +108,10 @@ class ContainerFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function buildView(FormView $view, FormInterface $form, array $options) {
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
         /* give options for twig context */
-        parent::buildView ( $view, $form, $options );
+        parent::buildView($view, $form, $options);
         $view->vars ['icon'] = $options ['icon'];
     }
     
@@ -113,11 +120,12 @@ class ContainerFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function configureOptions(OptionsResolver $resolver) {
+    public function configureOptions(OptionsResolver $resolver)
+    {
         /* set the default option value for this kind of compound field */
-        parent::configureOptions ( $resolver );
+        parent::configureOptions($resolver);
         /* an optional icon can't be specified ritgh to the container label */
-        $resolver->setDefault ( 'icon', null );
+        $resolver->setDefault('icon', null);
     }
     
     /**
@@ -125,8 +133,8 @@ class ContainerFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public static function buildObjectArray(DataField $data, array &$out) {
-        
+    public static function buildObjectArray(DataField $data, array &$out)
+    {
     }
     
     /**
@@ -134,7 +142,8 @@ class ContainerFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public static function isContainer() {
+    public static function isContainer()
+    {
         /* this kind of compound field may contain children */
         return true;
     }
@@ -144,18 +153,19 @@ class ContainerFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options) {
-        parent::buildOptionsForm ( $builder, $options );
-        $optionsForm = $builder->get ( 'options' );
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    {
+        parent::buildOptionsForm($builder, $options);
+        $optionsForm = $builder->get('options');
         // container aren't mapped in elasticsearch
-        $optionsForm->remove ( 'mappingOptions' );
-        $optionsForm->remove ( 'migrationOptions' );
-        $optionsForm->get ( 'restrictionOptions' )->remove('mandatory');
-        $optionsForm->get ( 'restrictionOptions' )->remove('mandatory_if');
+        $optionsForm->remove('mappingOptions');
+        $optionsForm->remove('migrationOptions');
+        $optionsForm->get('restrictionOptions')->remove('mandatory');
+        $optionsForm->get('restrictionOptions')->remove('mandatory_if');
         // an optional icon can't be specified ritgh to the container label
-        $optionsForm->get ( 'displayOptions' )->add ( 'icon', IconPickerType::class, [ 
-                'required' => false 
-        ] );
+        $optionsForm->get('displayOptions')->add('icon', IconPickerType::class, [
+                'required' => false
+        ]);
     }
 
     
@@ -165,7 +175,8 @@ class ContainerFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public static function isVirtual(array $option=[]){
+    public static function isVirtual(array $option = [])
+    {
         return true;
     }
     
@@ -174,7 +185,8 @@ class ContainerFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public static function getJsonName(FieldType $current){
+    public static function getJsonName(FieldType $current)
+    {
         return null;
     }
     
@@ -183,7 +195,8 @@ class ContainerFieldType extends DataFieldType {
      * {@inheritdoc}
      *
      */
-    public function generateMapping(FieldType $current, $withPipeline) {
+    public function generateMapping(FieldType $current, $withPipeline)
+    {
         return [];
     }
 }

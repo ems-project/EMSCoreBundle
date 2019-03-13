@@ -42,7 +42,7 @@ class AggregateOption
      *
      * @ORM\Column(name="name", type="string", length=255)
      */
-    private $name; 
+    private $name;
     
     /**
      * @var string
@@ -73,7 +73,8 @@ class AggregateOption
     private $icon;
     
     
-    public function __construct() {
+    public function __construct()
+    {
         $this->config = '{
     "terms" : { "field" : "'.Mapping::FINALIZED_BY_FIELD.'" }
 }';
@@ -127,18 +128,18 @@ class AggregateOption
     public function updateModified()
     {
         $this->modified = new \DateTime();
-        if(!isset($this->created)){
+        if (!isset($this->created)) {
             $this->created = $this->modified;
         }
-        if(!isset($this->orderKey)){
+        if (!isset($this->orderKey)) {
             $this->orderKey = 0;
         }
     }
     
     /******************************************************************
-     * 
+     *
      * Generated functions
-     * 
+     *
      *******************************************************************/
 
     /**

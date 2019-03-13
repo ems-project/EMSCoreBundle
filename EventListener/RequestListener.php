@@ -1,6 +1,5 @@
-<?php 
+<?php
 namespace EMS\CoreBundle\EventListener;
-
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CoreBundle\Command\AbstractEmsCommand;
@@ -57,7 +56,7 @@ class RequestListener
 
     public function onKernelRequest(GetResponseEvent $event)
     {
-        if($event->getRequest()->get('_route') === $this->userRegistrationRoute && !$this->allowUserRegistration) {
+        if ($event->getRequest()->get('_route') === $this->userRegistrationRoute && !$this->allowUserRegistration) {
             $response = new RedirectResponse($this->router->generate($this->userLoginRoute, [], UrlGeneratorInterface::RELATIVE_PATH));
             $event->setResponse($response);
         }
@@ -65,36 +64,34 @@ class RequestListener
     
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
-        //hide all errors to unauthenticated users        
+        //hide all errors to unauthenticated users
         $exception = $event->getException();
         
         try {
-            if($exception instanceof LockedException || $exception instanceof PrivilegeException) {
+            if ($exception instanceof LockedException || $exception instanceof PrivilegeException) {
                 $this->session->getFlashBag()->add('error', $exception->getMessage());
                 /** @var LockedException $exception */
-                if(null == $exception->getRevision()->getOuuid()){
+                if (null == $exception->getRevision()->getOuuid()) {
                     $response = new RedirectResponse($this->router->generate('data.draft_in_progress', [
                             'contentTypeId' => $exception->getRevision()->getContentType()->getId(),
                     ], UrlGeneratorInterface::RELATIVE_PATH));
-                }
-                else {
+                } else {
                     $response = new RedirectResponse($this->router->generate('data.revisions', [
                             'type' => $exception->getRevision()->getContentType()->getName(),
                             'ouuid'=> $exception->getRevision()->getOuuid()
-                    ], UrlGeneratorInterface::RELATIVE_PATH));                
+                    ], UrlGeneratorInterface::RELATIVE_PATH));
                 }
                 $event->setResponse($response);
             }
-            if($exception instanceof ElasticmsException) {
+            if ($exception instanceof ElasticmsException) {
                 $this->session->getFlashBag()->add('error', $exception->getMessage());
                 $response = new RedirectResponse($this->router->generate('notifications.list', [
                     ]));
                 $event->setResponse($response);
             }
-        }
-        catch(\Exception $e){
-            if(function_exists('dump')){
-                dump($e);                
+        } catch (\Exception $e) {
+            if (function_exists('dump')) {
+                dump($e);
             }
         }
     }
@@ -106,7 +103,7 @@ class RequestListener
         $contentTypes = $repository->findBy([
                 'deleted' => false,
 //                 'rootContentType' => true,
-        ],[
+        ], [
                 'orderKey' => 'ASC'
         ]);
 
@@ -118,14 +115,10 @@ class RequestListener
         ]);
         
         $defaultEnvironments = [];
-        foreach ($contentTypes as $contentType){
+        foreach ($contentTypes as $contentType) {
             $defaultEnvironments[] = $contentType->getName();
         }
 
         $this->twig->addGlobal('defaultEnvironments', $defaultEnvironments);
     }
-
-    
 }
-
-

@@ -30,7 +30,6 @@ class StorageServiceCompilerPass implements CompilerPassInterface
                 $definition->addMethodCall(
                     'addStorageService',
                     array(new Reference($id))
-                    
                 );
             }
         }

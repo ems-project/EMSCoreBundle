@@ -4,7 +4,8 @@ namespace EMS\CoreBundle\Form\Field;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ColorPickerType extends SelectPickerType {
+class ColorPickerType extends SelectPickerType
+{
     
     private $choices = [
          'not-defined' => null,
@@ -36,13 +37,13 @@ class ColorPickerType extends SelectPickerType {
             'attr' => [
                     'data-live-search' => true
             ],
-            'choice_attr' => function($category, $key, $index) {
+            'choice_attr' => function ($category, $key, $index) {
                 return [
                         'data-content' => "<div class='text-".$category."'><i class='fa fa-square'></i>&nbsp;&nbsp;".$this->humanize($key).'</div>'
                 ];
             },
             'choice_value' => function ($value) {
-               return $value;
+                return $value;
             },
         ));
     }

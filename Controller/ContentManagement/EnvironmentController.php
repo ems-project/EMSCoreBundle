@@ -31,14 +31,16 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
-class EnvironmentController extends AppController {
+class EnvironmentController extends AppController
+{
 
     /**
      *
      * @Route("/publisher/align", name="environment.align"))
      * @Security("has_role('ROLE_PUBLISHER')")
      */
-    public function alignAction(Request $request) {
+    public function alignAction(Request $request)
+    {
         
         $data = [];
         $env = [];
@@ -52,16 +54,15 @@ class EnvironmentController extends AppController {
         $form = $this->createForm(CompareEnvironmentFormType::class, $data, [
         ]);
 
-        $form->handleRequest($request);    
+        $form->handleRequest($request);
         $paging_size = $this->getParameter('ems_core.paging_size');
          
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            if($data['environment'] == $data['withEnvironment']){
+            if ($data['environment'] == $data['withEnvironment']) {
                 $form->addError(new FormError("Source and target environments must be different"));
-            }
-            else {
-                if(array_key_exists('alignWith', $request->request->get('compare_environment_form'))){
+            } else {
+                if (array_key_exists('alignWith', $request->request->get('compare_environment_form'))) {
                     $alignTo = [];
                     $alignTo[$request->query->get('withEnvironment')] = $request->query->get('withEnvironment');
                     $alignTo[$request->query->get('environment')] = $request->query->get('environment');
@@ -78,176 +79,166 @@ class EnvironmentController extends AppController {
                     ]);
                     
                     foreach ($revision->getEnvironments() as $item) {
-                        if(array_key_exists($item->getName(), $alignTo)){
+                        if (array_key_exists($item->getName(), $alignTo)) {
                             unset($alignTo[$item->getName()]);
                         }
                     }
 
                     $continue = true;
-                    foreach ($alignTo as $env){
-                        if($revision->getContentType()->getEnvironment()->getName() == $env) {
+                    foreach ($alignTo as $env) {
+                        if ($revision->getContentType()->getEnvironment()->getName() == $env) {
                             $this->addFlash('warning', 'You can not align the default environment for the content type'.$revision->getContentType()->getSingularName());
                             $continue = false;
                             break;
                         }
                         
                         
-                        if(! $this->getAuthorizationChecker()->isGranted($revision->getContentType()->getPublishRole())) {
+                        if (! $this->getAuthorizationChecker()->isGranted($revision->getContentType()->getPublishRole())) {
                             $this->addFlash('warning', 'You can not publish the content type  '.$revision->getContentType()->getSingularName());
                             $continue = false;
                             break;
-                        }        
+                        }
                     }
                     
-                    if($continue) {
-                        foreach ($alignTo as $env){
+                    if ($continue) {
+                        foreach ($alignTo as $env) {
                             $this->getPublishService()->alignRevision($revision->getContentType()->getName(), $revision->getOuuid(), $revision->getEnvironments()->first()->getName(), $env);
                         }
                     }
-                }
-                else if(array_key_exists('alignLeft', $request->request->get('compare_environment_form'))) {
-                    foreach ($request->request->get('compare_environment_form')['item_to_align'] as $item){
+                } else if (array_key_exists('alignLeft', $request->request->get('compare_environment_form'))) {
+                    foreach ($request->request->get('compare_environment_form')['item_to_align'] as $item) {
                         $exploded = explode(':', $item);
-                        if(count($exploded) == 2){
-                            $this->getPublishService()->alignRevision($exploded[0], $exploded[1], $request->query->get('withEnvironment'), $request->query->get('environment'));                    
-                        }
-                        else{
+                        if (count($exploded) == 2) {
+                            $this->getPublishService()->alignRevision($exploded[0], $exploded[1], $request->query->get('withEnvironment'), $request->query->get('environment'));
+                        } else {
                             $this->addFlash('warning', 'Malformed OUUID: '.$item);
                         }
                     }
-                }
-                else if(array_key_exists('alignRight', $request->request->get('compare_environment_form'))) {
-                    foreach ($request->request->get('compare_environment_form')['item_to_align'] as $item){
+                } else if (array_key_exists('alignRight', $request->request->get('compare_environment_form'))) {
+                    foreach ($request->request->get('compare_environment_form')['item_to_align'] as $item) {
                         $exploded = explode(':', $item);
-                        if(count($exploded) == 2){
-                            $this->getPublishService()->alignRevision($exploded[0], $exploded[1], $request->query->get('environment'), $request->query->get('withEnvironment'));                    
-                        }
-                        else{
+                        if (count($exploded) == 2) {
+                            $this->getPublishService()->alignRevision($exploded[0], $exploded[1], $request->query->get('environment'), $request->query->get('withEnvironment'));
+                        } else {
                             $this->addFlash('warning', 'Malformed OUUID: '.$item);
                         }
                     }
-                }
-                else if(array_key_exists('compare', $request->request->get('compare_environment_form'))) {
+                } else if (array_key_exists('compare', $request->request->get('compare_environment_form'))) {
                     $request->query->set('environment', $data['environment']);
                     $request->query->set('withEnvironment', $data['withEnvironment']);
                     $request->query->set('contentTypes', $data['contentTypes']);
-                    $request->query->set('page', 1);                    
+                    $request->query->set('page', 1);
                 }
                 
                 return $this->redirectToRoute('environment.align', $request->query->all());
             }
         }
 
-        if(null != $request->query->get('page')){
+        if (null != $request->query->get('page')) {
             $page = $request->query->get('page');
-        }
-        else{
+        } else {
             $page = 1;
         }
         
         
         
         $contentTypes = $request->query->get('contentTypes', []);
-        if (!$form->isSubmitted()){
+        if (!$form->isSubmitted()) {
             $form->get('contentTypes')->setData($contentTypes);
         }
-        if(empty($contentTypes)){
+        if (empty($contentTypes)) {
             $contentTypes = $form->get('contentTypes')->getConfig()->getOption('choices', []);
         }
         
         $orderField = $request->query->get('orderField', "contenttype");
         $orderDirection = $request->query->get('orderDirection', 'asc');
         
-        if(null != $request->query->get('environment')){
+        if (null != $request->query->get('environment')) {
             $environment = $request->query->get('environment');
-            if (!$form->isSubmitted()){
+            if (!$form->isSubmitted()) {
                 $form->get('environment')->setData($environment);
             }
-        }
-        else{
+        } else {
             $environment = false;
         }
         
-        if(null != $request->query->get('withEnvironment')){
+        if (null != $request->query->get('withEnvironment')) {
             $withEnvironment = $request->query->get('withEnvironment');
 
-            if (!$form->isSubmitted()){
+            if (!$form->isSubmitted()) {
                 $form->get('withEnvironment')->setData($withEnvironment);
             }
-        }
-        else{
+        } else {
             $withEnvironment = false;
         }
         
-        if($environment && $withEnvironment){
+        if ($environment && $withEnvironment) {
             
             /** @var EntityManager $em */
-            $em = $this->getDoctrine ()->getManager ();
+            $em = $this->getDoctrine()->getManager();
             /**@var RevisionRepository $repository*/
-            $repository = $em->getRepository ( 'EMSCoreBundle:Revision' );
+            $repository = $em->getRepository('EMSCoreBundle:Revision');
             
 
             $env = $environmentService->getAliasByName($environment);
             $withEnvi = $environmentService->getAliasByName($withEnvironment);
 
             $total = $repository->countDifferencesBetweenEnvironment($env->getId(), $withEnvi->getId(), $contentTypes);
-            if($total){
+            if ($total) {
                 $contentTypeService = $this->getContentTypeService();
                 $lastPage = ceil($total/$paging_size);
-                if($page > $lastPage){
+                if ($page > $lastPage) {
                     $page = $lastPage;
                 }
-                $results = $repository->compareEnvironment($env->getId(), 
-                                                            $withEnvi->getId(), 
-                                                            $contentTypes,
-                                                            ($page-1)*$paging_size, 
-                                                            $paging_size,
-                                                            $orderField,
-                                                            $orderDirection);
+                $results = $repository->compareEnvironment(
+                    $env->getId(),
+                    $withEnvi->getId(),
+                    $contentTypes,
+                    ($page-1)*$paging_size,
+                    $paging_size,
+                    $orderField,
+                    $orderDirection
+                );
                 for ($index = 0; $index < count($results); $index++) {
                     $results[$index]['contentType'] = $contentTypeService->getByName($results[$index]['content_type_name']);
 //                     $results[$index]['revisionEnvironment'] = $repository->findOneById($results[$index]['rId']);
 //TODO: is it the better options? to concatenate and split things?
                     $minrevid = explode("/", $results[$index]['minrevid']);//1/81522/2017-03-08 14:32:52 => e.id/r.id/r.created
                     $maxrevid = explode("/", $results[$index]['maxrevid']);
-                    if($minrevid[0] == $env->getId()){
+                    if ($minrevid[0] == $env->getId()) {
                         $results[$index]['revisionEnvironment'] = $repository->findOneById($minrevid[1]);
                         $results[$index]['revisionWithEnvironment'] = $repository->findOneById($maxrevid[1]);
                     } else {
                         $results[$index]['revisionEnvironment'] = $repository->findOneById($maxrevid[1]);
                         $results[$index]['revisionWithEnvironment'] = $repository->findOneById($minrevid[1]);
                     }
-                    try{
+                    try {
                         $results[$index]['objectEnvironment'] = $client->get([
                                         'id' => $results[$index]['ouuid'],
                                         'index' => $this->getContentTypeService()->getIndex($results[$index]['contentType'], $env),
                                         'type' => $results[$index]['content_type_name'],
                                 ]);
-                    }
-                    catch (Missing404Exception $e){
+                    } catch (Missing404Exception $e) {
                         $results[$index]['objectEnvironment'] = null;//This revision doesn't exist in this environment, but it's ok.
                     }
-                    try{
+                    try {
                         $results[$index]['objectWithEnvironment'] = $client->get([
                                 'id' => $results[$index]['ouuid'],
                                 'index' => $this->getContentTypeService()->getIndex($results[$index]['contentType'], $withEnvi),
                                 'type' => $results[$index]['content_type_name'],
                         ]);
-                    }
-                    catch (Missing404Exception $e){
+                    } catch (Missing404Exception $e) {
                         $results[$index]['objectWithEnvironment'] = null;//This revision doesn't exist in this environment, but it's ok.
                     }
                 }
-            }
-            else {
+            } else {
                 $page = $lastPage = 1;
                 $this->addFlash('notice', 'Those environments are aligned for these content types');
                 $total = 0;
                 $results = [];
             }
-        }
-        else {
-            $environment = false; 
+        } else {
+            $environment = false;
             $withEnvironment = false;
             $results = false;
             $page = 0;
@@ -255,7 +246,7 @@ class EnvironmentController extends AppController {
             $lastPage = 0;
         }
         
-        return $this->render ( '@EMSCore/environment/align.html.twig', [
+        return $this->render('@EMSCore/environment/align.html.twig', [
                 'form' => $form->createView(),
                  'results' => $results,
                 'lastPage' => $lastPage,
@@ -272,7 +263,7 @@ class EnvironmentController extends AppController {
                  'orderField' => $orderField,
                  'orderDirection' => $orderDirection,
                 'contentTypes' => $this->getContentTypeService()->getAll(),
-         ] );
+         ]);
     }
     
     
@@ -282,144 +273,145 @@ class EnvironmentController extends AppController {
      * @param string $name
      *            alias name
      * @param Request $request
-     * 
+     *
      * @Route("/environment/attach/{name}", name="environment.attach"))
      * @Method({"POST"})
      */
-    public function attachAction($name, Request $request) {
+    public function attachAction($name, Request $request)
+    {
         /** @var  Client $client */
         $client = $this->getElasticsearch();
         try {
-            $indexes = $client->indices ()->get ( [ 
-                    'index' => $name 
-            ] );
+            $indexes = $client->indices()->get([
+                    'index' => $name
+            ]);
                         
-                        if (count($indexes) > 1) {
-                            $this->addFlash('error', 'Can not attach alias with multiple indexes!');
+            if (count($indexes) > 1) {
+                $this->addFlash('error', 'Can not attach alias with multiple indexes!');
                             
-                            return $this->redirectToRoute ('environment.index');
-                        }
+                return $this->redirectToRoute('environment.index');
+            }
                         
-            if (strcmp ( $name, array_keys ( $indexes ) [0] ) != 0) {
+            if (strcmp($name, array_keys($indexes) [0]) != 0) {
                 /** @var EntityManager $em */
-                $em = $this->getDoctrine ()->getManager ();
+                $em = $this->getDoctrine()->getManager();
                 
-                $environmetRepository = $em->getRepository ( 'EMSCoreBundle:Environment' );
-                $anotherObject = $environmetRepository->findBy ( [ 
-                        'name' => $name 
-                ] );
+                $environmetRepository = $em->getRepository('EMSCoreBundle:Environment');
+                $anotherObject = $environmetRepository->findBy([
+                        'name' => $name
+                ]);
                 
-                if (count ( $anotherObject ) == 0) {
-                    $environment = new Environment ();
-                    $environment->setName ( $name );
-                    $environment->setAlias ( $name );
+                if (count($anotherObject) == 0) {
+                    $environment = new Environment();
+                    $environment->setName($name);
+                    $environment->setAlias($name);
                     //TODO: setCircles
-                    $environment->setManaged ( false );
+                    $environment->setManaged(false);
                     
-                    $em->persist ( $environment );
-                    $em->flush ();
+                    $em->persist($environment);
+                    $em->flush();
                     
-                    $this->addFlash ( 'notice', 'Alias ' . $name . ' has been attached.' );
+                    $this->addFlash('notice', 'Alias ' . $name . ' has been attached.');
                     
-                    return $this->redirectToRoute ( 'environment.edit', [ 
-                            'id' => $environment->getId () 
-                    ] );
+                    return $this->redirectToRoute('environment.edit', [
+                            'id' => $environment->getId()
+                    ]);
                 }
             }
-        } catch ( Missing404Exception $e ) {
-            $this->addFlash ( 'error', 'Something went wrong with Elasticsearch: ' . $e->getMessage () . '!' );
+        } catch (Missing404Exception $e) {
+            $this->addFlash('error', 'Something went wrong with Elasticsearch: ' . $e->getMessage() . '!');
         }
         
-        return $this->redirectToRoute ( 'environment.index' );
+        return $this->redirectToRoute('environment.index');
     }
         
         /**
          * Remove unreferenced alias
-         * 
+         *
          * @param string $name
-         * 
+         *
          * @Route("/environment/remove/alias/{name}", name="environment.remove.alias"))
          * @Method({"POST"})
          */
-        public function removeAliasAction($name)
-        {
-            if ($this->getAliasService()->removeAlias($name)) {
-                $this->addFlash ( 'notice', 'Alias ' . $name . ' has been removed.' );
-            }
-            
-            return $this->redirectToRoute ('environment.index');
+    public function removeAliasAction($name)
+    {
+        if ($this->getAliasService()->removeAlias($name)) {
+            $this->addFlash('notice', 'Alias ' . $name . ' has been removed.');
         }
+            
+        return $this->redirectToRoute('environment.index');
+    }
     
     /**
      * Try to remove an evironment if it is empty form an eMS perspective.
      * If it's managed environment the Elasticsearch alias will be also removed.
      *
-     * @param integer $id            
+     * @param integer $id
      * @param Request $request
-     * 
+     *
      * @Route("/environment/remove/{id}", name="environment.remove"))
      * @Method({"POST"})
-     *            
+     *
      */
-    public function removeAction($id, Request $request) {
+    public function removeAction($id, Request $request)
+    {
         /** @var EntityManager $em */
-        $em = $this->getDoctrine ()->getManager ();
+        $em = $this->getDoctrine()->getManager();
         /** @var  EnvironmentRepository $repository */
-        $repository = $em->getRepository ( 'EMSCoreBundle:Environment' );
+        $repository = $em->getRepository('EMSCoreBundle:Environment');
         /** @var  Environment $environment */
-        $environment = $repository->find ( $id );
+        $environment = $repository->find($id);
             
         /** @var  Client $client */
         $client = $this->getElasticsearch();
-        if ($environment->getManaged ()) {
+        if ($environment->getManaged()) {
             try {
-                $indexes = $client->indices ()->get ( [ 
-                        'index' => $environment->getAlias () 
-                ] );
-                $client->indices ()->deleteAlias ( [ 
-                        'name' => $environment->getAlias (),
-                        'index' => array_keys ( $indexes ) [0] 
-                ] );
-            } catch ( Missing404Exception $e ) {
-                $this->addFlash ( 'warning', 'Alias ' . $environment->getAlias () . ' not found in Elasticsearch' );
+                $indexes = $client->indices()->get([
+                        'index' => $environment->getAlias()
+                ]);
+                $client->indices()->deleteAlias([
+                        'name' => $environment->getAlias(),
+                        'index' => array_keys($indexes) [0]
+                ]);
+            } catch (Missing404Exception $e) {
+                $this->addFlash('warning', 'Alias ' . $environment->getAlias() . ' not found in Elasticsearch');
             }
         }
-        if ($environment->getRevisions ()->count () != 0) {
-            $this->addFlash ( 'error', 'The environement ' . $environment->getName () . ' is not empty.' );
+        if ($environment->getRevisions()->count() != 0) {
+            $this->addFlash('error', 'The environement ' . $environment->getName() . ' is not empty.');
         } else {
             $linked = false;
             /**@var ContentType $contentType */
-            foreach ($environment->getContentTypesHavingThisAsDefault() as $contentType){
-                if(!$contentType->getDeleted()){
+            foreach ($environment->getContentTypesHavingThisAsDefault() as $contentType) {
+                if (!$contentType->getDeleted()) {
                     $linked = true;
                     break;
                 }
             }
             
-            if($linked){
-                $this->addFlash ( 'error', 'At least one content type have the environment ' . $environment->getName () . ' has default environment.' );
-            }
-            else {
+            if ($linked) {
+                $this->addFlash('error', 'At least one content type have the environment ' . $environment->getName() . ' has default environment.');
+            } else {
                 /**@var ContentType $contentType */
-                foreach ($environment->getContentTypesHavingThisAsDefault() as $contentType){
+                foreach ($environment->getContentTypesHavingThisAsDefault() as $contentType) {
                     $contentType->getFieldType()->setContentType(null);
                     $em->persist($contentType->getFieldType());
-                    $em->flush ();
+                    $em->flush();
                     $em->remove($contentType);
-                    $em->flush ();
-                }                
-                $em->remove ( $environment );
-                $em->flush ();                
-                $this->addFlash ( 'notice', 'The environment '.$environment->getName().' has been removed' );
+                    $em->flush();
+                }
+                $em->remove($environment);
+                $em->flush();
+                $this->addFlash('notice', 'The environment '.$environment->getName().' has been removed');
             }
-            
         }
         
-        return $this->redirectToRoute ( 'environment.index' );
+        return $this->redirectToRoute('environment.index');
     }
     
     
-    public static function isValidName($name) {
+    public static function isValidName($name)
+    {
         return preg_match('/^[a-z][a-z0-9\-_]*$/', $name) && strlen($name) <= 100;
     }
     
@@ -429,53 +421,54 @@ class EnvironmentController extends AppController {
      * @param Request $request
      *            @Route("/environment/add", name="environment.add"))
      */
-    public function addAction(Request $request) {
-        $environment = new Environment ();
+    public function addAction(Request $request)
+    {
+        $environment = new Environment();
         
-        $form = $this->createFormBuilder ( $environment )->add ( 'name', IconTextType::class, [ 
+        $form = $this->createFormBuilder($environment)->add('name', IconTextType::class, [
                 'icon' => 'fa fa-database',
-                'required' => false 
-        ] )->add ( 'color', ColorPickerType::class, [ 
-                'required' => false 
-        ] )->add ( 'save', SubmitEmsType::class, [ 
+                'required' => false
+        ])->add('color', ColorPickerType::class, [
+                'required' => false
+        ])->add('save', SubmitEmsType::class, [
                 'label' => 'Create',
                 'icon' => 'fa fa-plus',
-                'attr' => [ 
-                        'class' => 'btn btn-primary pull-right' 
-                ] 
-        ] )->getForm ();
+                'attr' => [
+                        'class' => 'btn btn-primary pull-right'
+                ]
+        ])->getForm();
         
-        $form->handleRequest ( $request );
+        $form->handleRequest($request);
         
-        if ($form->isSubmitted ()) {
+        if ($form->isSubmitted()) {
             
             
             /** @var Environment $environment */
-            $environment = $form->getData ();
-            if(!$this->isValidName($environment->getName())) {
+            $environment = $form->getData();
+            if (!$this->isValidName($environment->getName())) {
                 $form->get('name')->addError(new FormError('Must respects the following regex /^[a-z][a-z0-9\-_]*$/'));
             }
             
-            if($form->isValid ()){
+            if ($form->isValid()) {
                 
                 
                 /** @var EntityManager $em */
-                $em = $this->getDoctrine ()->getManager ();
+                $em = $this->getDoctrine()->getManager();
                 
-                $environmetRepository = $em->getRepository ( 'EMSCoreBundle:Environment' );
-                $anotherObject = $environmetRepository->findBy ( [ 
-                        'name' => $environment->getName () 
-                ] );
+                $environmetRepository = $em->getRepository('EMSCoreBundle:Environment');
+                $anotherObject = $environmetRepository->findBy([
+                        'name' => $environment->getName()
+                ]);
                 
-                if (count ( $anotherObject ) != 0) {
+                if (count($anotherObject) != 0) {
                     //TODO: test name format
-                    $form->get ( 'name' )->addError ( new FormError ( 'Another environment named ' . $environment->getName () . ' already exists' ) );
+                    $form->get('name')->addError(new FormError('Another environment named ' . $environment->getName() . ' already exists'));
                 } else {
-                    $environment->setAlias ( $this->getParameter ( 'ems_core.instance_id' ) . $environment->getName () );
-                    $environment->setManaged ( true );
-                    $em = $this->getDoctrine ()->getManager ();
-                    $em->persist ( $environment );
-                    $em->flush ();
+                    $environment->setAlias($this->getParameter('ems_core.instance_id') . $environment->getName());
+                    $environment->setManaged(true);
+                    $em = $this->getDoctrine()->getManager();
+                    $em->persist($environment);
+                    $em->flush();
     
                     $indexName = $environment->getAlias().AppController::getFormatedTimestamp();
                     $this->getElasticsearch()->indices()->create([
@@ -483,8 +476,8 @@ class EnvironmentController extends AppController {
                             'body' => $this->getEnvironmentService()->getIndexAnalysisConfiguration(),
                     ]);
                     
-                    foreach ($this->getContentTypeService()->getAll() as $contentType){
-                        $this->getContentTypeService()->updateMapping($contentType, $indexName);                
+                    foreach ($this->getContentTypeService()->getAll() as $contentType) {
+                        $this->getContentTypeService()->updateMapping($contentType, $indexName);
                     }
                     
                     $this->getElasticsearch()->indices()->putAlias([
@@ -493,15 +486,14 @@ class EnvironmentController extends AppController {
                     ]);
                     
                     $this->addFlash('notice', 'A new environement '.$environment->getName().' has been created');
-                    return $this->redirectToRoute ( 'environment.index' );
-                    
+                    return $this->redirectToRoute('environment.index');
                 }
             }
         }
         
-        return $this->render ( '@EMSCore/environment/add.html.twig', [ 
-                'form' => $form->createView () 
-        ] );
+        return $this->render('@EMSCore/environment/add.html.twig', [
+                'form' => $form->createView()
+        ]);
     }
     
 
@@ -526,12 +518,12 @@ class EnvironmentController extends AppController {
         /** @var Environment $environment */
         $environment = $repository->find($id);
     
-        if(! $environment ){
+        if (! $environment) {
             throw new NotFoundHttpException('Unknow environment');
         }
     
         $options= [];
-        if ($this->getParameter("ems_core.circles_object")){
+        if ($this->getParameter("ems_core.circles_object")) {
             $options['type'] = $this->getParameter("ems_core.circles_object");
         }
         
@@ -546,17 +538,16 @@ class EnvironmentController extends AppController {
             return $this->redirectToRoute('environment.index');
         }
     
-        return $this->render( '@EMSCore/environment/edit.html.twig',[
+        return $this->render('@EMSCore/environment/edit.html.twig', [
                 'environment' => $environment,
                 'form' => $form->createView(),
         ]);
-    
     }
 
 
     /**
      * View environement details (especially the mapping information).
-     * @param integer $id 
+     * @param integer $id
      * @param Request $request
      * @throws NotFoundHttpException
      * @Route("/environment/{id}", name="environment.view"))
@@ -572,7 +563,7 @@ class EnvironmentController extends AppController {
         /** @var Environment $environment */
         $environment = $repository->find($id);
     
-        if(! $environment ){
+        if (! $environment) {
             throw new NotFoundHttpException('Unknow environment');
         }
 
@@ -583,30 +574,29 @@ class EnvironmentController extends AppController {
         $contentTypeRep = $em->getRepository('EMSCoreBundle:ContentType');
         
         
-        try{
+        try {
             $info = $client->indices()->getMapping([
                     'index' => $environment->getAlias(),
-            ]);        
-        }
-        catch (Missing404Exception $e){
+            ]);
+        } catch (Missing404Exception $e) {
             $this->addFlash('error', 'Elasticsearch alias '.$environment->getAlias().' is missing. Consider to rebuild the indexes.');
             $info = false;
         }
     
-        return $this->render( '@EMSCore/environment/view.html.twig',[
+        return $this->render('@EMSCore/environment/view.html.twig', [
                 'environment' => $environment,
                 'info' => $info,
         ]);
-    
     }
     
     /**
      * Go throw all objects defined for a specfic environement and republish them into the index correspond to the environment.
-     * 
+     *
      * @param Environment $environment
      * @param unknown $alias
      */
-    private function reindexAll(Environment $environment, $alias){
+    private function reindexAll(Environment $environment, $alias)
+    {
         
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -614,15 +604,15 @@ class EnvironmentController extends AppController {
         $client = $this->getElasticsearch();
         /** @var \EMS\CoreBundle\Entity\Revision $revision */
         foreach ($environment->getRevisions() as $revision) {
-            if(!$revision->getDeleted()){
-                $objectArray = $this->get('ems.service.mapping')->dataFieldToArray ($revision->getDataField());
+            if (!$revision->getDeleted()) {
+                $objectArray = $this->get('ems.service.mapping')->dataFieldToArray($revision->getDataField());
                 $revision->setRawData($objectArray);
                 $status = $client->index([
                         'index' => $alias,
                         'id' => $revision->getOuuid(),
                         'type' => $revision->getContentType()->getName(),
                         'body' => $this->getDataService()->sign($revision)
-                ]);        
+                ]);
                 $em->persist($revision);
                 $em->flush();
             }
@@ -634,7 +624,7 @@ class EnvironmentController extends AppController {
     
     /**
      * Rebuils a environement in elasticsearch in a new index or not (depending the rebuild option)
-     * 
+     *
      * @param integer $id
      * @param Request $request
      * @throws NotFoundHttpException
@@ -650,7 +640,7 @@ class EnvironmentController extends AppController {
         /** @var Environment $environment */
         $environment = $repository->find($id);
     
-        if(! $environment ){
+        if (! $environment) {
             throw new NotFoundHttpException('Unknow environment');
         }
     
@@ -663,7 +653,7 @@ class EnvironmentController extends AppController {
         if ($form->isSubmitted() && $form->isValid()) {
             $option = $rebuildIndex->getOption();
 
-            switch ($option){
+            switch ($option) {
                 case "newIndex":
                     return $this->startJob('ems.environment.rebuild', [
                             'name'    => $environment->getName(),
@@ -675,26 +665,24 @@ class EnvironmentController extends AppController {
                 default:
                     $this->addFlash('warning', 'Unknow rebuild option: '.$option.'.');
             }
-
         }
     
-        return $this->render( '@EMSCore/environment/rebuild.html.twig',[
+        return $this->render('@EMSCore/environment/rebuild.html.twig', [
                 'environment' => $environment,
                 'form' => $form->createView(),
         ]);
-    
     }
 
     /**
      * List all environments, orphean indexes, unmanaged aliases and referenced environments
-     * 
+     *
      * @param Request $request
      * @Route("/environment", name="environment.index")
      * @Route("/environment", name="ems_environment_index")
      */
     public function indexAction(Request $request)
     {
-        try{
+        try {
             /** @var EntityManager $em */
             $em = $this->getDoctrine()->getManager();
             /** @var EnvironmentRepository $repository */
@@ -705,17 +693,17 @@ class EnvironmentController extends AppController {
             $logger = $this->getLogger();
             $logger->addDebug('For each environments: start');
             
-            $builder = $this->createFormBuilder ( [] )
-            ->add ( 'reorder', SubmitEmsType::class, [
+            $builder = $this->createFormBuilder([])
+            ->add('reorder', SubmitEmsType::class, [
                 'attr' => [
                     'class' => 'btn-primary '
                 ],
                 'label' => 'controller.environment.index.reorder_submit_button',
                 'icon' => 'fa fa-reorder',
                 'translation_domain' => CoreBundle\EMSCoreBundle::TRANS_DOMAIN,
-            ] );
+            ]);
             
-            $names = [];    
+            $names = [];
                         $aliasService = $this->getAliasService();
                         
             $environments = [];//$repository->findAll();
@@ -746,18 +734,17 @@ class EnvironmentController extends AppController {
                     'data' => $names
             ));
             
-            $form = $builder->getForm ();
+            $form = $builder->getForm();
             
             
             
             if ($request->isMethod('POST')) {
                 $form = $request->get('form');
-                if(isset($form['environmentNames']) && is_array($form['environmentNames'])){
+                if (isset($form['environmentNames']) && is_array($form['environmentNames'])) {
                     $counter = 0;
-                    foreach ($form['environmentNames'] as $name){
-                        
+                    foreach ($form['environmentNames'] as $name) {
                         $contentType = $this->getEnvironmentService()->getByName($name);
-                        if($contentType){
+                        if ($contentType) {
                             $contentType->setOrderKey($counter);
                             $em->persist($contentType);
                         }
@@ -771,74 +758,72 @@ class EnvironmentController extends AppController {
                 return $this->redirectToRoute('ems_environment_index');
             }
         
-            return $this->render( '@EMSCore/environment/index.html.twig', [
+            return $this->render('@EMSCore/environment/index.html.twig', [
                     'environments' => $environments,
                     'orphanIndexes' => $aliasService->getOrphanIndexes(),
                     'unreferencedAliases' => $aliasService->getUnreferencedAliases(),
                                         'managedAliases' => $aliasService->getManagedAliases(),
-                    'form' => $form->createView (),
+                    'form' => $form->createView(),
             ]);
-        }
-        catch (\Elasticsearch\Common\Exceptions\NoNodesAvailableException $e){
+        } catch (\Elasticsearch\Common\Exceptions\NoNodesAvailableException $e) {
             return $this->redirectToRoute('elasticsearch.status');
         }
     }
     
     /**
      * Update the alias of an environement to a new index
-     * 
+     *
      * @param Client $client
      * @param string $alias
      * @param string $to
      */
-    private function switchAlias(Client $client, $alias, $to, $newEnv=false){
-        try{
-            
+    private function switchAlias(Client $client, $alias, $to, $newEnv = false)
+    {
+        try {
             sleep(2);
             $result = $client->indices()->getAlias(['name' => $alias]);
-            $index = array_keys ( $result ) [0];
-            $params ['body'] = [ 
-                    'actions' => [ 
-                            [ 
-                                    'remove' => [ 
+            $index = array_keys($result) [0];
+            $params ['body'] = [
+                    'actions' => [
+                            [
+                                    'remove' => [
                                             'index' => $index,
-                                            'alias' => $alias 
+                                            'alias' => $alias
                                     ],
-                                    'add' => [ 
+                                    'add' => [
                                             'index' => $to,
-                                            'alias' => $alias 
-                                    ] 
-                            ] 
-                    ] 
+                                            'alias' => $alias
+                                    ]
+                            ]
+                    ]
             ];
-            $client->indices ()->updateAliases ( $params );
-        }
-        catch(Missing404Exception $e){
-            if(!$newEnv){
-                $this->addFlash ( 'warning', 'Alias '.$alias.' not found' );                
+            $client->indices()->updateAliases($params);
+        } catch (Missing404Exception $e) {
+            if (!$newEnv) {
+                $this->addFlash('warning', 'Alias '.$alias.' not found');
             }
             $client->indices()->putAlias([
                     'index' => $to,
                     'name' => $alias
             ]);
         }
-
     }
     
-    private function getContentTypesList($contentTypeFilter) {
+    private function getContentTypesList($contentTypeFilter)
+    {
         $contentTypeList = "";
-        if(is_object($contentTypeFilter['contentType'])) {
+        if (is_object($contentTypeFilter['contentType'])) {
             $elements = $contentTypeFilter['contentType']->toArray();
-        } else if(is_array($contentTypeFilter['contentType'])){
+        } else if (is_array($contentTypeFilter['contentType'])) {
             $elements = $contentTypeFilter['contentType'];
         }
-        if(isset($elements)){
+        if (isset($elements)) {
             $elementList = [];
             foreach ($elements as $element) {
                 $elementList[] = $element->getId().":".$element->getName();
             }
-            if(!empty($elementList)){
-                $contentTypeList = implode(",",$elementList);
+            if (!empty($elementList)) {
+                $contentTypeList = implode(",", $elementList);
             }
         }
         return $contentTypeList;

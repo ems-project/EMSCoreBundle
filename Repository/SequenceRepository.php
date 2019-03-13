@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Repository;
 
-
 use EMS\CoreBundle\Entity\Sequence;
 use Doctrine\DBAL\LockMode;
 use EMS\CoreBundle\Exception\SequenceException;
@@ -14,13 +13,16 @@ use EMS\CoreBundle\Exception\SequenceException;
  * repository methods below.
  */
 class SequenceRepository extends \Doctrine\ORM\EntityRepository
-{        
+{
+
+        
     /**
      * Get the next value of a sequence for a sequence name
      * @param string $name
      * @return integer
      */
-    public function nextValue($name){
+    public function nextValue($name)
+    {
         
         $qb = $this->createQueryBuilder('s');
         $q = $qb->select('s.value', 's.version', 's.id')
@@ -35,13 +37,12 @@ class SequenceRepository extends \Doctrine\ORM\EntityRepository
         
         
         $out = 0;
-        if(empty($result)) {
+        if (empty($result)) {
             $sequence = new Sequence($name);
             $out = $sequence->getValue();
             $this->_em->persist($sequence);
             $this->_em->flush($sequence);
-        }
-        else {
+        } else {
             $item = $result[0];
             $q = $qb->update()
                 ->set('s.version', 's.version + 1')
@@ -54,7 +55,7 @@ class SequenceRepository extends \Doctrine\ORM\EntityRepository
             
                 $out = $item['value']+1;
             
-            if( $q->execute() != 1){
+            if ($q->execute() != 1) {
                 throw new SequenceException('An error has been detected with the sequence '.$name);
             }
         }
@@ -62,6 +63,4 @@ class SequenceRepository extends \Doctrine\ORM\EntityRepository
         
         return $out;
     }
-    
-    
 }

@@ -23,7 +23,8 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
     /**
      * {@inheritdoc}
      */
-    public function load(array $configs, ContainerBuilder $container) {
+    public function load(array $configs, ContainerBuilder $container)
+    {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
          
@@ -93,17 +94,17 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setDefinition('ems.common.storage.file', $fileAdapter);
     }
 
-    public static function getCoreVersion($rootDir){
+    public static function getCoreVersion($rootDir)
+    {
         $out = false;
         //try to identify the ems core version
-        if(file_exists($rootDir.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'composer.lock')) {
-
+        if (file_exists($rootDir.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'composer.lock')) {
             $lockInfo = json_decode(file_get_contents($rootDir.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'composer.lock'), true);
 
-            if(!empty($lockInfo['packages'])){
-                foreach ($lockInfo['packages'] as $package){
-                    if(!empty($package['name']) && $package['name'] === 'elasticms/core-bundle'){
-                        if(!empty($package['version'])){
+            if (!empty($lockInfo['packages'])) {
+                foreach ($lockInfo['packages'] as $package) {
+                    if (!empty($package['name']) && $package['name'] === 'elasticms/core-bundle') {
+                        if (!empty($package['version'])) {
                             $out = $package['version'];
                         }
                         break;
@@ -114,7 +115,8 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         return $out;
     }
     
-    public function prepend(ContainerBuilder $container) {
+    public function prepend(ContainerBuilder $container)
+    {
 
         // get all bundles
         $bundles = $container->getParameter('kernel.bundles');
@@ -146,7 +148,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
             'application_menu_controller' => isset($configs[0]['application_menu_controller'])?$configs[0]['application_menu_controller']:Configuration::APPLICATION_MENU_CONTROLLER,
         ];
         
-        if(!empty($configs[0]['template_options'])){
+        if (!empty($configs[0]['template_options'])) {
             $globals = array_merge($globals, $configs[0]['template_options']);
         }
         
@@ -160,7 +162,5 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
                 'form_themes' => ["@EMSCore/form/fields.html.twig"],
             ]);
         }
-        
-        
     }
 }

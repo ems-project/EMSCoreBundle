@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Service\Storage;
 
-
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use function file_exists;
@@ -102,7 +101,6 @@ class FileSystemStorage implements StorageInterface
     {
         $file = $this->getPath($hash);
         if (file_exists($file)) {
-
             unlink($file);
         }
         $finder = new Finder();

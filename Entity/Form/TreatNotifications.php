@@ -1,12 +1,11 @@
 <?php
 namespace EMS\CoreBundle\Entity\Form;
 
-
-
 /**
  * TreatNotifications
  */
-class TreatNotifications{
+class TreatNotifications
+{
 
     private $reject;
 
@@ -21,30 +20,36 @@ class TreatNotifications{
     private $notifications;
     
     
-    function __construct() {
+    function __construct()
+    {
     }
 
 //     public function getUnpublishFrom() {
 //         return $this->unpublishFrom;
 //     }
     
-    public function getPublishTo() {
+    public function getPublishTo()
+    {
         return $this->publishTo;
     }
     
-    public function getReject() {
+    public function getReject()
+    {
         return $this->reject;
     }
     
-    public function getAccept() {
+    public function getAccept()
+    {
         return $this->accept;
     }
     
-    public function getResponse() {
+    public function getResponse()
+    {
         return $this->response;
     }
     
-    public function getNotifications() {
+    public function getNotifications()
+    {
         return $this->notifications;
     }
     
@@ -53,29 +58,33 @@ class TreatNotifications{
 //         return $this;
 //     }
     
-    public function setPublishTo($publishTo) {
+    public function setPublishTo($publishTo)
+    {
         $this->publishTo = $publishTo;
         return $this;
     }
     
-    public function setReject($reject) {
+    public function setReject($reject)
+    {
         $this->reject = $reject;
         return $this;
     }
     
-    public function setAccept($accept) {
+    public function setAccept($accept)
+    {
         $this->accept = $accept;
         return $this;
     }
     
-    public function setResponse($response) {
+    public function setResponse($response)
+    {
         $this->response = $response;
         return $this;
     }
     
-    public function setNotifications($notifications) {
+    public function setNotifications($notifications)
+    {
         $this->notifications = $notifications;
         return $this;
     }
-    
 }

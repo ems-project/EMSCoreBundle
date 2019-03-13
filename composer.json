@@ -47,8 +47,13 @@
 			"EMS\\CoreBundle\\" : ""
 		},
 		"exclude-from-classmap" : [
-			"/Tests/"
+			"tests/"
 		]
+	},
+	"autoload-dev" : {
+		"psr-4" : {
+			"EMS\\CoreBundle\\Tests\\" : "tests/"
+		}
 	},
 	"extra" : {
 		"branch-alias" : {

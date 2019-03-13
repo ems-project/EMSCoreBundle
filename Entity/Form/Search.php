@@ -22,25 +22,25 @@ class Search implements JsonSerializable
     private $id;
     
     /**
-	 * @var SearchFilter $filters
-	 * 
+     * @var SearchFilter $filters
+     * 
      * @ORM\OneToMany(targetEntity="SearchFilter", mappedBy="search", cascade={"persist", "remove"})
-	 */
+     */
     public $filters;
-	
-	/**
-	 * @var string
-	 * 
+    
+    /**
+     * @var string
+     * 
      * @ORM\Column(name="username", type="string", length=100)
-	 */
-	private $user;
+     */
+    private $user;
 
      /**
      * @var array
      *
      * @ORM\Column(name="environments", type="json_array")
      */
-	public $environments; 
+    public $environments; 
 
      /**
      * @var array
@@ -48,12 +48,12 @@ class Search implements JsonSerializable
      * @ORM\Column(name="contentTypes", type="json_array")
      */
     public $contentTypes; 
-	
-	/**
-	 * @var string
-	 * 
+    
+    /**
+     * @var string
+     * 
      * @ORM\Column(name="name", type="string", length=100)
-	 */
+     */
     private $name;
     
     /**
@@ -71,29 +71,29 @@ class Search implements JsonSerializable
      */
     private $contentType;
 
-	
-	/**
-	 * @var string $sortBy
-	 * 
+    
+    /**
+     * @var string $sortBy
+     * 
      * @ORM\Column(name="sort_by", type="string", length=100, nullable=true)
-	 */
-	public $sortBy;
-	
-	/**
-	 * @var string $sortOrder
-	 * 
+     */
+    public $sortBy;
+    
+    /**
+     * @var string $sortOrder
+     * 
      * @ORM\Column(name="sort_order", type="string", length=100, nullable=true)
-	 */
-	public $sortOrder;
-	
-	
-	function __construct(){
-		$this->filters = [];//new \Doctrine\Common\Collections\ArrayCollection();
-		$this->filters[] = new SearchFilter();
-		$this->default = false;
-// 		$this->page = 1;
-// 		$this->boolean = "and";
-	}
+     */
+    public $sortOrder;
+    
+    
+    function __construct(){
+        $this->filters = [];//new \Doctrine\Common\Collections\ArrayCollection();
+        $this->filters[] = new SearchFilter();
+        $this->default = false;
+//         $this->page = 1;
+//         $this->boolean = "and";
+    }
 
 
 
@@ -113,7 +113,7 @@ class Search implements JsonSerializable
         }
         return $out;
     }
-	
+    
 
     /**
      * Get id
@@ -182,16 +182,16 @@ class Search implements JsonSerializable
      */
     public function addFilter(\EMS\CoreBundle\Entity\Form\SearchFilter $filter)
     {
-    	$this->filters[] = $filter;
-    	
-    	return $this;
+        $this->filters[] = $filter;
+        
+        return $this;
     }
     
     public function resetFilters(array $filters)
     {
-    	$this->filters = $filters;
-    	
-    	return $this;
+        $this->filters = $filters;
+        
+        return $this;
     }
 
     /**
@@ -295,9 +295,9 @@ class Search implements JsonSerializable
      */
     public function setContentTypes($contentTypes)
     {
-    	$this->contentTypes = $contentTypes;
-    	
-    	return $this;
+        $this->contentTypes = $contentTypes;
+        
+        return $this;
     }
     
     /**
@@ -307,7 +307,7 @@ class Search implements JsonSerializable
      */
     public function getContentTypes()
     {
-    	return $this->contentTypes;
+        return $this->contentTypes;
     }
     
     /**
@@ -319,9 +319,9 @@ class Search implements JsonSerializable
      */
     public function setDefault($default)
     {
-    	$this->default = $default;
-    	
-    	return $this;
+        $this->default = $default;
+        
+        return $this;
     }
     
     /**
@@ -331,7 +331,7 @@ class Search implements JsonSerializable
      */
     public function getDefault()
     {
-    	return $this->default;
+        return $this->default;
     }
 
     /**

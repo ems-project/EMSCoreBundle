@@ -92,7 +92,7 @@ class ManagedAlias
      * @return string
      */
     public function __toString() {
-    	return $this->name;
+        return $this->name;
     }
   
     /**
@@ -101,7 +101,7 @@ class ManagedAlias
      */
     public function updateModified()
     {
-    	$this->modified = new \DateTime();
+        $this->modified = new \DateTime();
     }
     
     /**
@@ -133,7 +133,7 @@ class ManagedAlias
      */
     public function getName()
     {
-    	return $this->name;
+        return $this->name;
     }
 
     /**

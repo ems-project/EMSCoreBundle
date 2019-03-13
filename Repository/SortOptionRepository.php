@@ -10,8 +10,8 @@ namespace EMS\CoreBundle\Repository;
  */
 class SortOptionRepository extends \Doctrine\ORM\EntityRepository
 {
-	
-	public function findAll(){
-		return parent::findBy([], ['orderKey' => 'asc']);
-	}
+    
+    public function findAll(){
+        return parent::findBy([], ['orderKey' => 'asc']);
+    }
 }

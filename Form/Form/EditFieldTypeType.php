@@ -12,24 +12,24 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class EditFieldTypeType extends AbstractType {
-	/**
-	 *
-	 * @param FormBuilderInterface $builder
-	 * @param array $options        	
-	 */
+    /**
+     *
+     * @param FormBuilderInterface $builder
+     * @param array $options            
+     */
     public function buildForm(FormBuilderInterface $builder, array $options) {
-    	
-    	
-		/** @var EditFieldType $editFieldType */
+        
+        
+        /** @var EditFieldType $editFieldType */
         $editFieldType = $builder->getData ();
 
         $builder->add ( 'fieldType', FieldTypeType::class, [
             'data' => $editFieldType->getFieldType(),
             'editSubfields' => false,
         ]);
-		
-		
-		$builder->add ( 'save', SubmitEmsType::class, [ 
+        
+        
+        $builder->add ( 'save', SubmitEmsType::class, [ 
             'attr' => [
                 'class' => 'btn-primary btn-sm '
             ],
@@ -40,19 +40,19 @@ class EditFieldTypeType extends AbstractType {
                 'class' => 'btn-primary btn-sm '
             ],
             'icon' => 'fa fa-save'
-		] );
-		
-		return parent::buildForm($builder, $options);
-		 
-	}
-	
-	/**
-	 *
-	 * {@inheritdoc}
-	 *
-	 */
-	public function configureOptions(OptionsResolver $resolver) {
-// 		$resolver->setDefault ( 'twigWithWysiwyg', true );
-	}
-	
+        ] );
+        
+        return parent::buildForm($builder, $options);
+         
+    }
+    
+    /**
+     *
+     * {@inheritdoc}
+     *
+     */
+    public function configureOptions(OptionsResolver $resolver) {
+//         $resolver->setDefault ( 'twigWithWysiwyg', true );
+    }
+    
 }

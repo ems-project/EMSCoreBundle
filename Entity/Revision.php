@@ -194,7 +194,7 @@ class Revision
      */
     private $sha1;
     
-	/**not persisted field to ensure that they are all there after a submit */
+    /**not persisted field to ensure that they are all there after a submit */
     private $allFieldsAreThere;
     
     /**
@@ -203,60 +203,60 @@ class Revision
      */
     public function updateModified()
     {
-    	$this->modified = new \DateTime();
+        $this->modified = new \DateTime();
         if(!isset($this->created)){
-    		$this->created = $this->modified;
-    	}
-    	if(!isset($this->orderKey)){
-    		$this->orderKey = 0;
-    	}
-    	
-    	if(null == $this->lockBy || null == $this->lockUntil || new \DateTime() > $this->lockUntil){
-    		throw new NotLockedException($this);
-    	}
+            $this->created = $this->modified;
+        }
+        if(!isset($this->orderKey)){
+            $this->orderKey = 0;
+        }
+        
+        if(null == $this->lockBy || null == $this->lockUntil || new \DateTime() > $this->lockUntil){
+            throw new NotLockedException($this);
+        }
     }
     
     private function addVirtualFields(FieldType $fieldType, array $data){
-    	
-    	$out = [];
-    	/**@var FieldType $child*/
-    	foreach ($fieldType->getChildren() as $child){
-    		if(!$child->getDeleted()) {
-    			$type = $child->getType();
-    			if($type::isVirtual($child->getOptions())){
-    				if($type::isContainer()){
-    					$out[$child->getName()]= self::addVirtualFields($child, $data);
-    				}
-    				else {
-    					$out[$child->getName()] = $type::filterSubField($data, $child->getOptions());
-    				}
-    			}
-    			else {
-    				if($type::isContainer()){
-    					if(isset($data[$child->getName()])){
-    						if($type::isCollection()){
-    							if(is_array($data[$child->getName()])){
-    								$out[$child->getName()] = [];
-    								foreach ($data[$child->getName()] as  $idx => $item) {
-    									$out[$child->getName()][$idx] = self::addVirtualFields($child, $item);
-    								}
-    							}
-    						}
-    						else {
-	    						$out[$child->getName()] = self::addVirtualFields($child, $data[$child->getName()]);    							
-    						}
-    					}
-    				}
-    				else {
-    					if(isset($data[$child->getName()]) && null !== $data[$child->getName()]){
-    						$out[$child->getName()] = $data[$child->getName()];
-    					}
-    				}
-    			}
-    			
-    		}
-    	}
-    	return $out;
+        
+        $out = [];
+        /**@var FieldType $child*/
+        foreach ($fieldType->getChildren() as $child){
+            if(!$child->getDeleted()) {
+                $type = $child->getType();
+                if($type::isVirtual($child->getOptions())){
+                    if($type::isContainer()){
+                        $out[$child->getName()]= self::addVirtualFields($child, $data);
+                    }
+                    else {
+                        $out[$child->getName()] = $type::filterSubField($data, $child->getOptions());
+                    }
+                }
+                else {
+                    if($type::isContainer()){
+                        if(isset($data[$child->getName()])){
+                            if($type::isCollection()){
+                                if(is_array($data[$child->getName()])){
+                                    $out[$child->getName()] = [];
+                                    foreach ($data[$child->getName()] as  $idx => $item) {
+                                        $out[$child->getName()][$idx] = self::addVirtualFields($child, $item);
+                                    }
+                                }
+                            }
+                            else {
+                                $out[$child->getName()] = self::addVirtualFields($child, $data[$child->getName()]);                                
+                            }
+                        }
+                    }
+                    else {
+                        if(isset($data[$child->getName()]) && null !== $data[$child->getName()]){
+                            $out[$child->getName()] = $data[$child->getName()];
+                        }
+                    }
+                }
+                
+            }
+        }
+        return $out;
     }
     
     
@@ -266,54 +266,54 @@ class Revision
      * @return array
      */
     public function getData(){
-    	$out = $this->addVirtualFields($this->getContentType()->getFieldType(), $this->rawData);
-    	return $out;
+        $out = $this->addVirtualFields($this->getContentType()->getFieldType(), $this->rawData);
+        return $out;
     }
    
     private function removeVirtualField(FieldType $fieldType, array $data){
-    	$out = [];
-    	/**@var FieldType $child*/
-    	foreach ($fieldType->getChildren() as $child){
-    		if(!$child->getDeleted()) {
-    			$type = $child->getType();
-    			if($type::isVirtual($child->getOptions())){
-    				if(isset($data[$child->getName()]) && !empty($data[$child->getName()])){
-    					if($type::isContainer()){
-    						$out = array_merge_recursive($out, self::removeVirtualField($child, $data[$child->getName()]));    						
-    					}
-    					else {
-    						$out = array_merge_recursive($out, $data[$child->getName()]);
-    					}
-    				}
-    			}
-    			else {
-    				if($type::isContainer()){
-    					if(isset($data[$child->getName()]) && !empty($data[$child->getName()])){
-    						if($type::isCollection()){
-    							$out[$child->getName()] = [];
-    							foreach ($data[$child->getName()] as $itemIdx => $item) {
+        $out = [];
+        /**@var FieldType $child*/
+        foreach ($fieldType->getChildren() as $child){
+            if(!$child->getDeleted()) {
+                $type = $child->getType();
+                if($type::isVirtual($child->getOptions())){
+                    if(isset($data[$child->getName()]) && !empty($data[$child->getName()])){
+                        if($type::isContainer()){
+                            $out = array_merge_recursive($out, self::removeVirtualField($child, $data[$child->getName()]));                            
+                        }
+                        else {
+                            $out = array_merge_recursive($out, $data[$child->getName()]);
+                        }
+                    }
+                }
+                else {
+                    if($type::isContainer()){
+                        if(isset($data[$child->getName()]) && !empty($data[$child->getName()])){
+                            if($type::isCollection()){
+                                $out[$child->getName()] = [];
+                                foreach ($data[$child->getName()] as $itemIdx => $item) {
                                     $out[$child->getName()][$itemIdx] = self::removeVirtualField($child, $item);
-    							}
-    						}
-    						else {
-	    						$out[$child->getName()] = self::removeVirtualField($child, $data[$child->getName()]);    							
-    						}
-    						
-    						if(is_array($out[$child->getName()]) && empty($out[$child->getName()])){
-    							unset($out[$child->getName()]);
-    						}
-    					}
-    				}
-    				else {
-    					if( isset($data[$child->getName()]) && $data[$child->getName()] !== null ){
-    						$out[$child->getName()] = $data[$child->getName()];
-    					}
-    				}
-    			}
-    			
-    		}
-    	}
-    	return $out;
+                                }
+                            }
+                            else {
+                                $out[$child->getName()] = self::removeVirtualField($child, $data[$child->getName()]);                                
+                            }
+                            
+                            if(is_array($out[$child->getName()]) && empty($out[$child->getName()])){
+                                unset($out[$child->getName()]);
+                            }
+                        }
+                    }
+                    else {
+                        if( isset($data[$child->getName()]) && $data[$child->getName()] !== null ){
+                            $out[$child->getName()] = $data[$child->getName()];
+                        }
+                    }
+                }
+                
+            }
+        }
+        return $out;
     }
     
     /**
@@ -323,75 +323,75 @@ class Revision
      * @return \EMS\CoreBundle\Entity\Revision
      */
     public function setData(array $data){
-    	$this->rawData = $this->removeVirtualField($this->getContentType()->getFieldType(), $data);
-    	return $this;
+        $this->rawData = $this->removeVirtualField($this->getContentType()->getFieldType(), $data);
+        return $this;
     }
     
     public function buildObject(){
-    	return [
-    		'_id' => $this->ouuid,
-    		'_type' => $this->contentType->getName(),
-    		'_source' => $this->rawData
-    	];
+        return [
+            '_id' => $this->ouuid,
+            '_type' => $this->contentType->getName(),
+            '_source' => $this->rawData
+        ];
     }
     
     function __construct()
     {
-    	$this->deleted = false;
-    	$this->allFieldsAreThere = false;
+        $this->deleted = false;
+        $this->allFieldsAreThere = false;
         $this->finalizedBy= null;
         $this->finalizedDate= null;
-    	$this->environments = new \Doctrine\Common\Collections\ArrayCollection();
-    	$this->notifications = new \Doctrine\Common\Collections\ArrayCollection();
-    	
-    	$a = func_get_args();
-    	$i = func_num_args();
-    	if($i == 1){
-    		if($a[0] instanceof Revision){
-    			/** @var \Revision $ancestor */
-    			$ancestor = $a[0];
-    			$this->deleted = $ancestor->deleted;
-    			$this->draft = true;
+        $this->environments = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->notifications = new \Doctrine\Common\Collections\ArrayCollection();
+        
+        $a = func_get_args();
+        $i = func_num_args();
+        if($i == 1){
+            if($a[0] instanceof Revision){
+                /** @var \Revision $ancestor */
+                $ancestor = $a[0];
+                $this->deleted = $ancestor->deleted;
+                $this->draft = true;
                 $this->finalizedBy= null;
                 $this->finalizedDate= null;
-    			$this->allFieldsAreThere = $ancestor->allFieldsAreThere;
-    			$this->ouuid = $ancestor->ouuid;
-    			$this->contentType = $ancestor->contentType;
-    			$this->rawData =  $ancestor->rawData;
-    			$this->circles =  $ancestor->circles;
-    			$this->dataField = new DataField($ancestor->dataField);
-    		}
-    	}
-    	//TODO: Refactoring: Dependency injection of the first Datafield in the Revision.
+                $this->allFieldsAreThere = $ancestor->allFieldsAreThere;
+                $this->ouuid = $ancestor->ouuid;
+                $this->contentType = $ancestor->contentType;
+                $this->rawData =  $ancestor->rawData;
+                $this->circles =  $ancestor->circles;
+                $this->dataField = new DataField($ancestor->dataField);
+            }
+        }
+        //TODO: Refactoring: Dependency injection of the first Datafield in the Revision.
     }
     
     public function __toString()
     {
-    	$out = 'New instance';
-    	if($this->ouuid){
-    		$out = $this->ouuid;
-    	}
-    	if($this->contentType) {
-    		$out = $this->contentType->getName().':'.$out;
-    		if(!empty($this->id)) $out .=  '#'.$this->id;
-    	}
-    	
-    	
-    	if($this->contentType && $this->contentType->getLabelField() && $this->rawData && isset($this->rawData[$this->contentType->getLabelField()])){
-    		return $this->rawData[$this->contentType->getLabelField()]." ($out)";
-    	}
-    	return $out;
+        $out = 'New instance';
+        if($this->ouuid){
+            $out = $this->ouuid;
+        }
+        if($this->contentType) {
+            $out = $this->contentType->getName().':'.$out;
+            if(!empty($this->id)) $out .=  '#'.$this->id;
+        }
+        
+        
+        if($this->contentType && $this->contentType->getLabelField() && $this->rawData && isset($this->rawData[$this->contentType->getLabelField()])){
+            return $this->rawData[$this->contentType->getLabelField()]." ($out)";
+        }
+        return $out;
     }
 
     public function getObject($object){
-    	$object = [
-    			'_index' => 'N/A',
-    			'_source' => $object,
-    			'_id' => $this->ouuid,
-    			'_type' => $this->getContentType()->getName()
-    	];
-    	
-    	return $object;
+        $object = [
+                '_index' => 'N/A',
+                '_source' => $object,
+                '_id' => $this->ouuid,
+                '_type' => $this->getContentType()->getName()
+        ];
+        
+        return $object;
     }
 
     /**
@@ -444,8 +444,8 @@ class Revision
      */
     public function setAllFieldsAreThere($allFieldsAreThere)
     {
-    	$this->allFieldsAreThere = !empty($allFieldsAreThere);
-    	return $this;
+        $this->allFieldsAreThere = !empty($allFieldsAreThere);
+        return $this;
     }
     
     /**
@@ -635,9 +635,9 @@ class Revision
      */
     public function setLockBy($lockBy)
     {
-    	$this->lockBy = $lockBy;
-    	
-    	return $this;
+        $this->lockBy = $lockBy;
+        
+        return $this;
     }
     
     /**
@@ -647,7 +647,7 @@ class Revision
      */
     public function getLockBy()
     {
-    	return $this->lockBy;
+        return $this->lockBy;
     }
     
     /**
@@ -659,10 +659,10 @@ class Revision
      */
     public function setRawDataFinalizedBy($finalizedBy)
     {
-    	$this->rawData[Mapping::FINALIZED_BY_FIELD] = $finalizedBy;
-    	$this->tryToFinalizeOn = new \DateTime();
-    	$this->rawData[Mapping::FINALIZATION_DATETIME_FIELD] = ($this->tryToFinalizeOn)->format(\DateTime::ISO8601);
-    	return $this;
+        $this->rawData[Mapping::FINALIZED_BY_FIELD] = $finalizedBy;
+        $this->tryToFinalizeOn = new \DateTime();
+        $this->rawData[Mapping::FINALIZATION_DATETIME_FIELD] = ($this->tryToFinalizeOn)->format(\DateTime::ISO8601);
+        return $this;
     }
     
     /**
@@ -676,8 +676,8 @@ class Revision
     {
         $this->finalizedBy = $finalizedBy;
         $this->finalizedDate = $this->tryToFinalizeOn;
-    	
-    	return $this;
+        
+        return $this;
     }
     
     /**
@@ -687,7 +687,7 @@ class Revision
      */
     public function getFinalizedBy()
     {
-    	return $this->finalizedBy;
+        return $this->finalizedBy;
     }
     
     /**
@@ -699,9 +699,9 @@ class Revision
      */
     public function setDeletedBy($deletedBy)
     {
-    	$this->deletedBy= $deletedBy;
-    	
-    	return $this;
+        $this->deletedBy= $deletedBy;
+        
+        return $this;
     }
     
     /**
@@ -711,7 +711,7 @@ class Revision
      */
     public function getDeletedBy()
     {
-    	return $this->deletedBy;
+        return $this->deletedBy;
     }
 
     /**
@@ -951,9 +951,9 @@ class Revision
     public function setLabelField($labelField)
     {
         
-    	$this->labelField = $labelField;
-    	
-    	return $this;
+        $this->labelField = $labelField;
+        
+        return $this;
     }
     
     /**
@@ -963,7 +963,7 @@ class Revision
      */
     public function getLabelField()
     {
-    	return $this->labelField;
+        return $this->labelField;
     }
     
     /**
@@ -975,9 +975,9 @@ class Revision
      */
     public function setSha1($sha1)
     {
-    	$this->sha1= $sha1;
-    	
-    	return $this;
+        $this->sha1= $sha1;
+        
+        return $this;
     }
     
     /**
@@ -987,7 +987,7 @@ class Revision
      */
     public function getSha1()
     {
-    	return $this->sha1;
+        return $this->sha1;
     }
     
     /**
@@ -999,9 +999,9 @@ class Revision
      */
     public function setCircles($circles)
     {
-    	$this->circles = $circles;
+        $this->circles = $circles;
     
-    	return $this;
+        return $this;
     }
     
     /**
@@ -1011,7 +1011,7 @@ class Revision
      */
     public function getCircles()
     {
-    	return $this->circles;
+        return $this->circles;
     }
 
     /**

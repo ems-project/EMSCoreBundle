@@ -21,114 +21,114 @@ use EMS\CoreBundle\Form\Field\CodeEditorType;
 
 
 class TemplateType extends AbstractType {
-	
-	private $choices;
-	private $service;
-	
-	public function __construct($circleType, EnvironmentService $service)
-	{
-		$this->service = $service;
-		$this->circleType = $circleType;
-		$this->choices = null;
-	}
-	/**
-	 *
-	 * @param FormBuilderInterface $builder        	
-	 * @param array $options        	
-	 */
-	public function buildForm(FormBuilderInterface $builder, array $options) {
-		
-		/** @var Template $template */
-		$template = $builder->getData ();
-		
-		$builder
-		->add ( 'name', IconTextType::class, [
-			'icon' => 'fa fa-tag'
-		] )
-		->add ( 'icon', IconPickerType::class, [
-			'required' => false,
-		])
+    
+    private $choices;
+    private $service;
+    
+    public function __construct($circleType, EnvironmentService $service)
+    {
+        $this->service = $service;
+        $this->circleType = $circleType;
+        $this->choices = null;
+    }
+    /**
+     *
+     * @param FormBuilderInterface $builder            
+     * @param array $options            
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options) {
+        
+        /** @var Template $template */
+        $template = $builder->getData ();
+        
+        $builder
+        ->add ( 'name', IconTextType::class, [
+            'icon' => 'fa fa-tag'
+        ] )
+        ->add ( 'icon', IconPickerType::class, [
+            'required' => false,
+        ])
         ->add ( 'public', CheckboxType::class, [
             'required' => false,
         ])
-		->add ( 'editWithWysiwyg', CheckboxType::class, [
-			'required' => false,
-		])
-		->add ( 'preview', CheckboxType::class, [
-			'required' => false,
-			'label' => 'Preview',
-		])
-		->add('environments', ChoiceType::class, [
-				'attr' => [
-					'class' => 'select2'
-				],
- 				'multiple' => true,
-				'choices' => $this->service->getAll(),
-				'required' => false,
-				'choice_label' => function ($value, $key, $index) {
-					return '<i class="fa fa-square text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getName();
-				},
-				'choice_value' => function ($value) {
-					if($value != null){
-						return $value->getId();					
-					}
-					return $value;
-				},
-		])
-		->add('role', RolePickerType::class)
-		->add ( 'active', CheckboxType::class, [
-				'required' => false,
-				'label' => 'Active',
-		])
-		
-		->add( 'renderOption', RenderOptionType::class, [
-				'required' => true,
-		])
-		->add( 'accumulateInOneFile', CheckboxType::class, [
-				'required' => false,
-		])
-		->add( 'mimeType', TextType::class, [
-				'required' => false,
-		])
-		->add( 'emailContentType', TextType::class, [
-				'required' => false,
-				'label' => 'Content type (ie: text/html)',
-		])
-		->add( 'filename', CodeEditorType::class, [
-				'required' => false,
-				'attr' => [
-				],
-				'slug' => 'template-filename',
-				'max-lines' => 5,
-				'min-lines' => 5,
-		])
-		->add( 'extension', TextType::class, [
-				'required' => false,
-		])
-		->add ( 'body', CodeEditorType::class, [
-				'required' => false,
-				'attr' => [
-				],
-				'slug' => 'template-body'
-		] )
-		->add ( 'header', TextareaType::class, [
-			'required' => false,
-			'attr' => [
-				'rows' => '10',
-			]
-		])
- 		->add('roleCc', RolePickerType::class)
-		->add('roleTo', RolePickerType::class)
-		->add('circlesTo', ObjectPickerType::class, [
-				'required' => false,
-				'type' => $this->circleType,
-				'multiple' => true,
-		])
-		->add( 'responseTemplate', CodeEditorType::class, [
-			'required' => false,
-			'attr' => [
-			],
-			'slug' => 'template-response',
+        ->add ( 'editWithWysiwyg', CheckboxType::class, [
+            'required' => false,
+        ])
+        ->add ( 'preview', CheckboxType::class, [
+            'required' => false,
+            'label' => 'Preview',
+        ])
+        ->add('environments', ChoiceType::class, [
+                'attr' => [
+                    'class' => 'select2'
+                ],
+                 'multiple' => true,
+                'choices' => $this->service->getAll(),
+                'required' => false,
+                'choice_label' => function ($value, $key, $index) {
+                    return '<i class="fa fa-square text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getName();
+                },
+                'choice_value' => function ($value) {
+                    if($value != null){
+                        return $value->getId();                    
+                    }
+                    return $value;
+                },
+        ])
+        ->add('role', RolePickerType::class)
+        ->add ( 'active', CheckboxType::class, [
+                'required' => false,
+                'label' => 'Active',
+        ])
+        
+        ->add( 'renderOption', RenderOptionType::class, [
+                'required' => true,
+        ])
+        ->add( 'accumulateInOneFile', CheckboxType::class, [
+                'required' => false,
+        ])
+        ->add( 'mimeType', TextType::class, [
+                'required' => false,
+        ])
+        ->add( 'emailContentType', TextType::class, [
+                'required' => false,
+                'label' => 'Content type (ie: text/html)',
+        ])
+        ->add( 'filename', CodeEditorType::class, [
+                'required' => false,
+                'attr' => [
+                ],
+                'slug' => 'template-filename',
+                'max-lines' => 5,
+                'min-lines' => 5,
+        ])
+        ->add( 'extension', TextType::class, [
+                'required' => false,
+        ])
+        ->add ( 'body', CodeEditorType::class, [
+                'required' => false,
+                'attr' => [
+                ],
+                'slug' => 'template-body'
+        ] )
+        ->add ( 'header', TextareaType::class, [
+            'required' => false,
+            'attr' => [
+                'rows' => '10',
+            ]
+        ])
+         ->add('roleCc', RolePickerType::class)
+        ->add('roleTo', RolePickerType::class)
+        ->add('circlesTo', ObjectPickerType::class, [
+                'required' => false,
+                'type' => $this->circleType,
+                'multiple' => true,
+        ])
+        ->add( 'responseTemplate', CodeEditorType::class, [
+            'required' => false,
+            'attr' => [
+            ],
+            'slug' => 'template-response',
         ])->add('orientation', ChoiceType::class, [
                 'required' => false,
                 'choices' => [
@@ -162,6 +162,6 @@ class TemplateType extends AbstractType {
                 'class' => 'btn-primary btn-sm '
         ],
             'icon' => 'fa fa-save'
-		] );
-	}
+        ] );
+    }
 }

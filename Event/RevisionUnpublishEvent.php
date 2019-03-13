@@ -8,5 +8,5 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class RevisionUnpublishEvent extends RevisionPublishEvent
 {
-	const NAME = 'revision.unpublish';
+    const NAME = 'revision.unpublish';
 }

@@ -19,67 +19,67 @@ use Elasticsearch\Client;
  *        
  */
 abstract class ViewType extends AbstractType {
-	
-	
-	/**@var \Twig_Environment $twig*/
-	protected $twig;
-	/** @var Client $client */
-	protected $client;
-	/**@var FormFactory*/
-	protected $formFactory;
-	
-	public function __construct($formFactory, $twig, $client){
-		$this->twig = $twig;
-		$this->client = $client;
-		$this->formFactory = $formFactory;
-	}
-	
-	/**
-	 * Get a small description
-	 *
-	 * @return string
-	 */
-	abstract public function getLabel();
-	
-	/**
-	 * Get a better name than the class path
-	 * 
-	 * @return string
-	 */
-	abstract public function getName();
-	
-	/**
-	 * Get arguments that should passed to the associated twig template
-	 * 
-	 * @return array
-	 */
-	abstract public function getParameters(View $view, FormFactoryInterface $formFactoty, Request $request);
-	
-	/**
-	 *
-	 * {@inheritdoc}
-	 *
-	 */
-	public function configureOptions(OptionsResolver $resolver) {
-		$resolver->setDefaults ( array (
-				'view' => null,
-				'label' => $this->getName().' options',
-		) );
-	}
-	
-	/**
-	 * Generate a response for a view
-	 * 
-	 * @param View $view
-	 * @param Request $request
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public function generateResponse(View $view, Request $request) {
-		$response = new Response();
-		$parameters = $this->getParameters($view, $this->formFactory, $request);
-		$response->setContent($this->twig->render('@EMSCore/view/custom/'.$this->getBlockPrefix().'.html.twig', $parameters));
-		return $response;
-	}
-	
-	
+    
+    
+    /**@var \Twig_Environment $twig*/
+    protected $twig;
+    /** @var Client $client */
+    protected $client;
+    /**@var FormFactory*/
+    protected $formFactory;
+    
+    public function __construct($formFactory, $twig, $client){
+        $this->twig = $twig;
+        $this->client = $client;
+        $this->formFactory = $formFactory;
+    }
+    
+    /**
+     * Get a small description
+     *
+     * @return string
+     */
+    abstract public function getLabel();
+    
+    /**
+     * Get a better name than the class path
+     * 
+     * @return string
+     */
+    abstract public function getName();
+    
+    /**
+     * Get arguments that should passed to the associated twig template
+     * 
+     * @return array
+     */
+    abstract public function getParameters(View $view, FormFactoryInterface $formFactoty, Request $request);
+    
+    /**
+     *
+     * {@inheritdoc}
+     *
+     */
+    public function configureOptions(OptionsResolver $resolver) {
+        $resolver->setDefaults ( array (
+                'view' => null,
+                'label' => $this->getName().' options',
+        ) );
+    }
+    
+    /**
+     * Generate a response for a view
+     * 
+     * @param View $view
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function generateResponse(View $view, Request $request) {
+        $response = new Response();
+        $parameters = $this->getParameters($view, $this->formFactory, $request);
+        $response->setContent($this->twig->render('@EMSCore/view/custom/'.$this->getBlockPrefix().'.html.twig', $parameters));
+        return $response;
+    }
+    
+    
 }

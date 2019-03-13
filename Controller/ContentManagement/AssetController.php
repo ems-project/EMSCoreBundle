@@ -34,14 +34,14 @@ class AssetController extends AbstractController
     }
 
     /**
-	 * @Route("/asset/{processor}/{hash}", name="ems_asset_processor")
-	 */
-	public function assetProcessorAction(Request $request, string $processor, string $hash): Response
-	{
-	    return $this->processor->createResponse($request, $processor, $hash, $this->getOptions($processor));
-	}
+     * @Route("/asset/{processor}/{hash}", name="ems_asset_processor")
+     */
+    public function assetProcessorAction(Request $request, string $processor, string $hash): Response
+    {
+        return $this->processor->createResponse($request, $processor, $hash, $this->getOptions($processor));
+    }
 
-	private function getOptions(string $processor): array
+    private function getOptions(string $processor): array
     {
         if (null == $this->configType) {
             return [];

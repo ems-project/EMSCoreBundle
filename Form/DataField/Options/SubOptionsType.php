@@ -15,11 +15,11 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class SubOptionsType extends AbstractType
 {
-	/**
-	 *
-	 * {@inheritdoc}
-	 *
-	 */
-	public function buildForm(FormBuilderInterface $builder, array $options) {
-	}
+    /**
+     *
+     * {@inheritdoc}
+     *
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options) {
+    }
 }

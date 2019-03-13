@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Template
 {
-	
+    
     /**
      * @var int
      *
@@ -137,42 +137,42 @@ class Template
      *
      * @ORM\Column(name="role", type="string")
      */
-   	private $role;
-   	
-   	/**
-   	 * @ORM\ManyToMany(targetEntity="Environment", cascade={"persist"})
-   	 * @ORM\JoinTable(name="environment_template",
+       private $role;
+       
+       /**
+        * @ORM\ManyToMany(targetEntity="Environment", cascade={"persist"})
+        * @ORM\JoinTable(name="environment_template",
      *      joinColumns={@ORM\JoinColumn(name="template_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="environment_id", referencedColumnName="id")}
      *      )
      */
-   	private $environments;
-   	
-   	/** @var string
-   	*
-   	* @ORM\Column(name="role_to", type="string")
-   	*/
-   	private $roleTo;
-   	
-   	/** @var string
-   	*
-   	* @ORM\Column(name="role_cc", type="string")
-   	*/
-   	private $roleCc;
-   	
-   	/**
-   	 * @var \ObjectPickerType
-   	 *
-   	 * @ORM\Column(name="circles_to", type="json_array", nullable=true)
-   	 */
-   	private $circlesTo;
-   	
-   	/**
-   	 * @var string
-   	 *
-   	 * @ORM\Column(name="response_template", type="text", nullable=true)
-   	 */
-   	private $responseTemplate;
+       private $environments;
+       
+       /** @var string
+       *
+       * @ORM\Column(name="role_to", type="string")
+       */
+       private $roleTo;
+       
+       /** @var string
+       *
+       * @ORM\Column(name="role_cc", type="string")
+       */
+       private $roleCc;
+       
+       /**
+        * @var \ObjectPickerType
+        *
+        * @ORM\Column(name="circles_to", type="json_array", nullable=true)
+        */
+       private $circlesTo;
+       
+       /**
+        * @var string
+        *
+        * @ORM\Column(name="response_template", type="text", nullable=true)
+        */
+       private $responseTemplate;
 
     /** @var string
      *
@@ -219,13 +219,13 @@ class Template
      */
     public function updateModified()
     {
-    	$this->modified = new \DateTime();
-        	if(!isset($this->created)){
-    		$this->created = $this->modified;
-    	}
-    	if(!isset($this->orderKey)){
-    		$this->orderKey = 0;
-    	}
+        $this->modified = new \DateTime();
+            if(!isset($this->created)){
+            $this->created = $this->modified;
+        }
+        if(!isset($this->orderKey)){
+            $this->orderKey = 0;
+        }
     }
     
     
@@ -734,7 +734,7 @@ class Template
      * ToString
      */
     public function __toString() {
-    	return $this->name;
+        return $this->name;
     }
     
     /**
@@ -774,18 +774,18 @@ class Template
     /**
      * is Environment Exist
      *
-	 * Use in twig object-views-button.html.twig
-	 *
+     * Use in twig object-views-button.html.twig
+     *
      * @return boolean
      */
     public function isEnvironmentExist($name)
     {
-    	foreach ($this->environments as $environment) {
-    		if( $environment->getname() === $name) {
-    			return true;
-    		}
-    	}
-    	return false;
+        foreach ($this->environments as $environment) {
+            if( $environment->getname() === $name) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

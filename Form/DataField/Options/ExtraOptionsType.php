@@ -12,20 +12,20 @@ use EMS\CoreBundle\Form\Field\CodeEditorType;
  *
  */
 class ExtraOptionsType extends AbstractType {
-	
-	/**
-	 *
-	 * {@inheritdoc}
-	 *
-	 */
-	public function buildForm(FormBuilderInterface $builder, array $options) {
-		$builder->add ( 'extra', TextareaType::class, [ 
-				'attr' => [
-					'rows' => 8,
-				],
-				'required' => false,
-		] )->add ( 'postProcessing', CodeEditorType::class, [
-				'required' => false,
-		] );
-	}
+    
+    /**
+     *
+     * {@inheritdoc}
+     *
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options) {
+        $builder->add ( 'extra', TextareaType::class, [ 
+                'attr' => [
+                    'rows' => 8,
+                ],
+                'required' => false,
+        ] )->add ( 'postProcessing', CodeEditorType::class, [
+                'required' => false,
+        ] );
+    }
 }

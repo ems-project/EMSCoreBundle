@@ -105,13 +105,13 @@ class Job
      */
     public function updateModified()
     {
-    	$this->modified = new \DateTime();
-        	if(!isset($this->created)){
-    		$this->created = $this->modified;
-    	}
-    	if(!isset($this->orderKey)){
-    		$this->orderKey = 0;
-    	}
+        $this->modified = new \DateTime();
+            if(!isset($this->created)){
+            $this->created = $this->modified;
+        }
+        if(!isset($this->orderKey)){
+            $this->orderKey = 0;
+        }
     }
     
  
@@ -147,7 +147,7 @@ class Job
      */
     public function getCreated()
     {
-    	return $this->created;
+        return $this->created;
     }
     
     /**
@@ -157,7 +157,7 @@ class Job
      */
     public function getStarted()
     {
-    	return $this->started;
+        return $this->started;
     }
 
     /**
@@ -241,9 +241,9 @@ class Job
      */
     public function setDone($done)
     {
-    	$this->done = $done;
-    	
-    	return $this;
+        $this->done = $done;
+        
+        return $this;
     }
     
     /**
@@ -255,9 +255,9 @@ class Job
      */
     public function setStarted($started)
     {
-    	$this->started = $started;
-    	
-    	return $this;
+        $this->started = $started;
+        
+        return $this;
     }
 
     /**

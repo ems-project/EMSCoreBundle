@@ -32,54 +32,54 @@ use EMS\CoreBundle\Repository\SequenceRepository;
 
 class AppExtension extends \Twig_Extension
 {
-	private $doctrine;
-	private $userService;
-	private $authorizationChecker;
-	/**@var ContentTypeService $contentTypeService*/
-	private $contentTypeService;
-	/**@var Client $client */
-	private $client;
-	/**@var Router $router*/
-	private $router;
-	/**@var \Twig_Environment $twig*/
-	private $twig;
-	/**@var ObjectChoiceListFactory $objectChoiceListFactory*/
-	private $objectChoiceListFactory;
-	/** @var EnvironmentService */
-	private $environmentService;
-	/** @var Logger */
-	private $logger;
+    private $doctrine;
+    private $userService;
+    private $authorizationChecker;
+    /**@var ContentTypeService $contentTypeService*/
+    private $contentTypeService;
+    /**@var Client $client */
+    private $client;
+    /**@var Router $router*/
+    private $router;
+    /**@var \Twig_Environment $twig*/
+    private $twig;
+    /**@var ObjectChoiceListFactory $objectChoiceListFactory*/
+    private $objectChoiceListFactory;
+    /** @var EnvironmentService */
+    private $environmentService;
+    /** @var Logger */
+    private $logger;
     /**@var FormFactory*/
     protected $formFactory;
     /**@var FileService*/
     protected $fileService;
-	
-	public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, Client $client, Router $router, $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, Logger $logger, FormFactory $formFactory, FileService $fileService)
-	{
-		$this->doctrine = $doctrine;
-		$this->authorizationChecker = $authorizationChecker;
-		$this->userService = $userService;
-		$this->contentTypeService = $contentTypeService;
-		$this->client = $client;
-		$this->router = $router;
-		$this->twig = $twig;
-		$this->objectChoiceListFactory = $objectChoiceListFactory;
-		$this->environmentService = $environmentService;
-		$this->logger = $logger;
-		$this->formFactory = $formFactory;
+    
+    public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, Client $client, Router $router, $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, Logger $logger, FormFactory $formFactory, FileService $fileService)
+    {
+        $this->doctrine = $doctrine;
+        $this->authorizationChecker = $authorizationChecker;
+        $this->userService = $userService;
+        $this->contentTypeService = $contentTypeService;
+        $this->client = $client;
+        $this->router = $router;
+        $this->twig = $twig;
+        $this->objectChoiceListFactory = $objectChoiceListFactory;
+        $this->environmentService = $environmentService;
+        $this->logger = $logger;
+        $this->formFactory = $formFactory;
         $this->fileService = $fileService;
-		
-		//$this->twig->getExtension('Twig_Extension_Core')->setEscaper('csv', array($this, 'csvEscaper'));
-	}
-	
-	
-	/**
-	 * 
-	 * {@inheritDoc}
-	 * @see Twig_Extension::getFunctions()
-	 */
-	public function getFunctions(){
-		return [
+        
+        //$this->twig->getExtension('Twig_Extension_Core')->setEscaper('csv', array($this, 'csvEscaper'));
+    }
+    
+    
+    /**
+     * 
+     * {@inheritDoc}
+     * @see Twig_Extension::getFunctions()
+     */
+    public function getFunctions(){
+        return [
             new \Twig_SimpleFunction('get_content_types', array($this, 'getContentTypes')),
             new \Twig_SimpleFunction('cant_be_finalized', array($this, 'cantBeFinalized')),
             new \Twig_SimpleFunction('get_default_environments', array($this, 'getDefaultEnvironments')),
@@ -96,19 +96,19 @@ class AppExtension extends \Twig_Extension
             new \Twig_SimpleFunction('diff_date', array($this, 'diffDate'), ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('diff_time', array($this, 'diffTime'), ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('is_super', array($this, 'isSuper')),
-		];
-	}
-	
-	/**
-	 * 
-	 * {@inheritDoc}
-	 * @see Twig_Extension::getFilters()
-	 */
-	public function getFilters()
-	{
-		
-		
-		return array(
+        ];
+    }
+    
+    /**
+     * 
+     * {@inheritDoc}
+     * @see Twig_Extension::getFilters()
+     */
+    public function getFilters()
+    {
+        
+        
+        return array(
             new \Twig_SimpleFilter('searches', array($this, 'searchesList')),
             new \Twig_SimpleFilter('url_generator', array($this, 'toAscii')),
             new \Twig_SimpleFilter('dump', array($this, 'dump')),
@@ -151,38 +151,38 @@ class AppExtension extends \Twig_Extension
             new \Twig_SimpleFilter('get_file', array($this, 'getFile')),
             new \Twig_SimpleFilter('get_field_by_path', array($this, 'getFieldByPath')),
             new \Twig_SimpleFilter('json_decode', array($this, 'jsonDecode')),
-				
-		);
-	}
+                
+        );
+    }
 
 
-	public function jsonDecode($json, $assoc = true, $depth = 512, $options = 0) {
-	    return json_decode($json, $assoc, $depth, $options);
+    public function jsonDecode($json, $assoc = true, $depth = 512, $options = 0) {
+        return json_decode($json, $assoc, $depth, $options);
     }
 
 
 
-	public function getFieldByPath(ContentType $contentType, $path, $skipVirtualFields=false) {
-	    return $this->contentTypeService->getChildByPath($contentType->getFieldType(), $path, $skipVirtualFields);
+    public function getFieldByPath(ContentType $contentType, $path, $skipVirtualFields=false) {
+        return $this->contentTypeService->getChildByPath($contentType->getFieldType(), $path, $skipVirtualFields);
     }
 
 
-	public function getFile($hash, $cacheContext=false) {
-	    return $this->fileService->getFile($hash, $cacheContext);
+    public function getFile($hash, $cacheContext=false) {
+        return $this->fileService->getFile($hash, $cacheContext);
     }
 
-	public function getString($rawData, $field){
-	    if(empty($rawData) or !isset($rawData[$field])){
-	        return null;
+    public function getString($rawData, $field){
+        if(empty($rawData) or !isset($rawData[$field])){
+            return null;
         }
         if(is_string($rawData[$field])) {
-	        return $rawData[$field];
+            return $rawData[$field];
         }
         return json_encode($rawData[$field]);
     }
 
 
-	public function diff($a, $b, $compare, $escape=false, $htmlDiff=false, $raw=false)
+    public function diff($a, $b, $compare, $escape=false, $htmlDiff=false, $raw=false)
     {
         $tag = 'span';
         $textClass = '';
@@ -532,105 +532,105 @@ class AppExtension extends \Twig_Extension
     }
 
 
-	/**
-	 * Return a sequence next value
-	 * @param string $name
-	 * @return integer
-	 */
-	public function getSequenceNextValue($name){
-		$em = $this->doctrine->getManager();
-		/**@var SequenceRepository $repo */
-		$repo = $em->getRepository('EMSCoreBundle:Sequence');
-		$out= $repo->nextValue($name);
-		return $out;
-	}
-	
-	public function array_intersect(array $array1, $array2) {
-	    if(! is_array($array2)) {
-	        return [];
-	    }
-	    return array_intersect($array1, $array2);
-	}
-	
-	
-	public function array_merge_recursive(array $array1, array $_ = null) {
-		return array_merge_recursive($array1, $_);
-	}
-	
-	/**
-	 * Convert a tring into an url frendly string
-	 * http://cubiq.org/the-perfect-php-clean-url-generator
-	 * 
-	 * @param string $str
-	 * @return string
-	 */
-	function toAscii($str) {
-		$clean = $str;
-		
-		try {
-			$clean = iconv('UTF-8', 'ASCII//TRANSLIT', $str);					
-		}
-		catch (\Exception $e) {
-			$clean = false;
-		}
-	
-		if ( $clean === false ) {
-			$a = array('À', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Æ', 'Ç', 'È', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Î', 'Ï', 'Ð', 'Ñ', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', 'Ø', 'Ù', 'Ú', 'Û', 'Ü', 'Ý', 'ß', 'à', 'á', 'â', 'ã', 'ä', 'å', 'æ', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ñ', 'ò', 'ó', 'ô', 'õ', 'ö', 'ø', 'ù', 'ú', 'û', 'ü', 'ý', 'ÿ', 'Ā', 'ā', 'Ă', 'ă', 'Ą', 'ą', 'Ć', 'ć', 'Ĉ', 'ĉ', 'Ċ', 'ċ', 'Č', 'č', 'Ď', 'ď', 'Đ', 'đ', 'Ē', 'ē', 'Ĕ', 'ĕ', 'Ė', 'ė', 'Ę', 'ę', 'Ě', 'ě', 'Ĝ', 'ĝ', 'Ğ', 'ğ', 'Ġ', 'ġ', 'Ģ', 'ģ', 'Ĥ', 'ĥ', 'Ħ', 'ħ', 'Ĩ', 'ĩ', 'Ī', 'ī', 'Ĭ', 'ĭ', 'Į', 'į', 'İ', 'ı', 'Ĳ', 'ĳ', 'Ĵ', 'ĵ', 'Ķ', 'ķ', 'Ĺ', 'ĺ', 'Ļ', 'ļ', 'Ľ', 'ľ', 'Ŀ', 'ŀ', 'Ł', 'ł', 'Ń', 'ń', 'Ņ', 'ņ', 'Ň', 'ň', 'ŉ', 'Ō', 'ō', 'Ŏ', 'ŏ', 'Ő', 'ő', 'Œ', 'œ', 'Ŕ', 'ŕ', 'Ŗ', 'ŗ', 'Ř', 'ř', 'Ś', 'ś', 'Ŝ', 'ŝ', 'Ş', 'ş', 'Š', 'š', 'Ţ', 'ţ', 'Ť', 'ť', 'Ŧ', 'ŧ', 'Ũ', 'ũ', 'Ū', 'ū', 'Ŭ', 'ŭ', 'Ů', 'ů', 'Ű', 'ű', 'Ų', 'ų', 'Ŵ', 'ŵ', 'Ŷ', 'ŷ', 'Ÿ', 'Ź', 'ź', 'Ż', 'ż', 'Ž', 'ž', 'ſ', 'ƒ', 'Ơ', 'ơ', 'Ư', 'ư', 'Ǎ', 'ǎ', 'Ǐ', 'ǐ', 'Ǒ', 'ǒ', 'Ǔ', 'ǔ', 'Ǖ', 'ǖ', 'Ǘ', 'ǘ', 'Ǚ', 'ǚ', 'Ǜ', 'ǜ', 'Ǻ', 'ǻ', 'Ǽ', 'ǽ', 'Ǿ', 'ǿ');
-			$b = array('A', 'A', 'A', 'A', 'A', 'A', 'AE', 'C', 'E', 'E', 'E', 'E', 'I', 'I', 'I', 'I', 'D', 'N', 'O', 'O', 'O', 'O', 'O', 'O', 'U', 'U', 'U', 'U', 'Y', 's', 'a', 'a', 'a', 'a', 'a', 'a', 'ae', 'c', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'n', 'o', 'o', 'o', 'o', 'o', 'o', 'u', 'u', 'u', 'u', 'y', 'y', 'A', 'a', 'A', 'a', 'A', 'a', 'C', 'c', 'C', 'c', 'C', 'c', 'C', 'c', 'D', 'd', 'D', 'd', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'G', 'g', 'G', 'g', 'G', 'g', 'G', 'g', 'H', 'h', 'H', 'h', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'IJ', 'ij', 'J', 'j', 'K', 'k', 'L', 'l', 'L', 'l', 'L', 'l', 'L', 'l', 'l', 'l', 'N', 'n', 'N', 'n', 'N', 'n', 'n', 'O', 'o', 'O', 'o', 'O', 'o', 'OE', 'oe', 'R', 'r', 'R', 'r', 'R', 'r', 'S', 's', 'S', 's', 'S', 's', 'S', 's', 'T', 't', 'T', 't', 'T', 't', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'W', 'w', 'Y', 'y', 'Y', 'Z', 'z', 'Z', 'z', 'Z', 'z', 's', 'f', 'O', 'o', 'U', 'u', 'A', 'a', 'I', 'i', 'O', 'o', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'A', 'a', 'AE', 'ae', 'O', 'o');
-			$clean = str_replace($a, $b, $str);
-		}
-		
-		$clean = preg_replace("/[^a-zA-Z0-9\_\|\ \-]/", '', $clean);
-		$clean = strtolower(trim($clean, '-'));
-		$clean = preg_replace("/[\/\_\|\ \-]+/", '-', $clean);
-		
-		return $clean;
-	}
-	
-	function cantBeFinalized($message = null, $code = null, $previous = null) {
-		throw new CantBeFinalizedException($message, $code, $previous);
-	}
-	
-	
-	function macroFct($tempate, $block, $context, $source=null, $compare=false, $compareRawData=null) {
-		return $tempate->{'macro_'.$block}($context, $source, $compare, $compareRawData);
-	}
-	
-	function call_user_func($function){
-		return call_user_func($function);
-	}
-	
-	function search(array $params){
-		return $this->client->search($params);
-	}
+    /**
+     * Return a sequence next value
+     * @param string $name
+     * @return integer
+     */
+    public function getSequenceNextValue($name){
+        $em = $this->doctrine->getManager();
+        /**@var SequenceRepository $repo */
+        $repo = $em->getRepository('EMSCoreBundle:Sequence');
+        $out= $repo->nextValue($name);
+        return $out;
+    }
+    
+    public function array_intersect(array $array1, $array2) {
+        if(! is_array($array2)) {
+            return [];
+        }
+        return array_intersect($array1, $array2);
+    }
+    
+    
+    public function array_merge_recursive(array $array1, array $_ = null) {
+        return array_merge_recursive($array1, $_);
+    }
+    
+    /**
+     * Convert a tring into an url frendly string
+     * http://cubiq.org/the-perfect-php-clean-url-generator
+     * 
+     * @param string $str
+     * @return string
+     */
+    function toAscii($str) {
+        $clean = $str;
+        
+        try {
+            $clean = iconv('UTF-8', 'ASCII//TRANSLIT', $str);                    
+        }
+        catch (\Exception $e) {
+            $clean = false;
+        }
+    
+        if ( $clean === false ) {
+            $a = array('À', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Æ', 'Ç', 'È', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Î', 'Ï', 'Ð', 'Ñ', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', 'Ø', 'Ù', 'Ú', 'Û', 'Ü', 'Ý', 'ß', 'à', 'á', 'â', 'ã', 'ä', 'å', 'æ', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ñ', 'ò', 'ó', 'ô', 'õ', 'ö', 'ø', 'ù', 'ú', 'û', 'ü', 'ý', 'ÿ', 'Ā', 'ā', 'Ă', 'ă', 'Ą', 'ą', 'Ć', 'ć', 'Ĉ', 'ĉ', 'Ċ', 'ċ', 'Č', 'č', 'Ď', 'ď', 'Đ', 'đ', 'Ē', 'ē', 'Ĕ', 'ĕ', 'Ė', 'ė', 'Ę', 'ę', 'Ě', 'ě', 'Ĝ', 'ĝ', 'Ğ', 'ğ', 'Ġ', 'ġ', 'Ģ', 'ģ', 'Ĥ', 'ĥ', 'Ħ', 'ħ', 'Ĩ', 'ĩ', 'Ī', 'ī', 'Ĭ', 'ĭ', 'Į', 'į', 'İ', 'ı', 'Ĳ', 'ĳ', 'Ĵ', 'ĵ', 'Ķ', 'ķ', 'Ĺ', 'ĺ', 'Ļ', 'ļ', 'Ľ', 'ľ', 'Ŀ', 'ŀ', 'Ł', 'ł', 'Ń', 'ń', 'Ņ', 'ņ', 'Ň', 'ň', 'ŉ', 'Ō', 'ō', 'Ŏ', 'ŏ', 'Ő', 'ő', 'Œ', 'œ', 'Ŕ', 'ŕ', 'Ŗ', 'ŗ', 'Ř', 'ř', 'Ś', 'ś', 'Ŝ', 'ŝ', 'Ş', 'ş', 'Š', 'š', 'Ţ', 'ţ', 'Ť', 'ť', 'Ŧ', 'ŧ', 'Ũ', 'ũ', 'Ū', 'ū', 'Ŭ', 'ŭ', 'Ů', 'ů', 'Ű', 'ű', 'Ų', 'ų', 'Ŵ', 'ŵ', 'Ŷ', 'ŷ', 'Ÿ', 'Ź', 'ź', 'Ż', 'ż', 'Ž', 'ž', 'ſ', 'ƒ', 'Ơ', 'ơ', 'Ư', 'ư', 'Ǎ', 'ǎ', 'Ǐ', 'ǐ', 'Ǒ', 'ǒ', 'Ǔ', 'ǔ', 'Ǖ', 'ǖ', 'Ǘ', 'ǘ', 'Ǚ', 'ǚ', 'Ǜ', 'ǜ', 'Ǻ', 'ǻ', 'Ǽ', 'ǽ', 'Ǿ', 'ǿ');
+            $b = array('A', 'A', 'A', 'A', 'A', 'A', 'AE', 'C', 'E', 'E', 'E', 'E', 'I', 'I', 'I', 'I', 'D', 'N', 'O', 'O', 'O', 'O', 'O', 'O', 'U', 'U', 'U', 'U', 'Y', 's', 'a', 'a', 'a', 'a', 'a', 'a', 'ae', 'c', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'n', 'o', 'o', 'o', 'o', 'o', 'o', 'u', 'u', 'u', 'u', 'y', 'y', 'A', 'a', 'A', 'a', 'A', 'a', 'C', 'c', 'C', 'c', 'C', 'c', 'C', 'c', 'D', 'd', 'D', 'd', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'G', 'g', 'G', 'g', 'G', 'g', 'G', 'g', 'H', 'h', 'H', 'h', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'IJ', 'ij', 'J', 'j', 'K', 'k', 'L', 'l', 'L', 'l', 'L', 'l', 'L', 'l', 'l', 'l', 'N', 'n', 'N', 'n', 'N', 'n', 'n', 'O', 'o', 'O', 'o', 'O', 'o', 'OE', 'oe', 'R', 'r', 'R', 'r', 'R', 'r', 'S', 's', 'S', 's', 'S', 's', 'S', 's', 'T', 't', 'T', 't', 'T', 't', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'W', 'w', 'Y', 'y', 'Y', 'Z', 'z', 'Z', 'z', 'Z', 'z', 's', 'f', 'O', 'o', 'U', 'u', 'A', 'a', 'I', 'i', 'O', 'o', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'A', 'a', 'AE', 'ae', 'O', 'o');
+            $clean = str_replace($a, $b, $str);
+        }
+        
+        $clean = preg_replace("/[^a-zA-Z0-9\_\|\ \-]/", '', $clean);
+        $clean = strtolower(trim($clean, '-'));
+        $clean = preg_replace("/[\/\_\|\ \-]+/", '-', $clean);
+        
+        return $clean;
+    }
+    
+    function cantBeFinalized($message = null, $code = null, $previous = null) {
+        throw new CantBeFinalizedException($message, $code, $previous);
+    }
+    
+    
+    function macroFct($tempate, $block, $context, $source=null, $compare=false, $compareRawData=null) {
+        return $tempate->{'macro_'.$block}($context, $source, $compare, $compareRawData);
+    }
+    
+    function call_user_func($function){
+        return call_user_func($function);
+    }
+    
+    function search(array $params){
+        return $this->client->search($params);
+    }
 
-	function debug($message, array $context=[]){
-		$context['twig'] = 'twig';
-		$this->logger->addDebug($message, $context);
-	}
-	
-	function dateDifference($date1, $date2, $detailed=false){
-		$datetime1 = date_create($date1);
-		$datetime2 = date_create($date2);
-		$interval = date_diff($datetime1, $datetime2);
-		if($detailed){
-			return $interval->format('%R%a days %h hours %i minutes');			
-		}
-		return (intval($interval->format('%R%a'))+1).' days';	
-	}
-	
-	function getUser($username){
-		return $this->userService->getUser($username);
-	}
-	
-	function displayname($username){
-		/**@var User $user*/
-		$user = $this->userService->getUser($username);
-		if(!empty($user)){
-			return $user->getDisplayName();
-		}
-		return $username;
-	}
+    function debug($message, array $context=[]){
+        $context['twig'] = 'twig';
+        $this->logger->addDebug($message, $context);
+    }
+    
+    function dateDifference($date1, $date2, $detailed=false){
+        $datetime1 = date_create($date1);
+        $datetime2 = date_create($date2);
+        $interval = date_diff($datetime1, $datetime2);
+        if($detailed){
+            return $interval->format('%R%a days %h hours %i minutes');            
+        }
+        return (intval($interval->format('%R%a'))+1).' days';    
+    }
+    
+    function getUser($username){
+        return $this->userService->getUser($username);
+    }
+    
+    function displayname($username){
+        /**@var User $user*/
+        $user = $this->userService->getUser($username);
+        if(!empty($user)){
+            return $user->getDisplayName();
+        }
+        return $username;
+    }
 
     function srcPath($input, $fileName=false){
         $path = $this->router->generate('ems_file_view', ['sha1' => '__SHA1__'], UrlGeneratorInterface::ABSOLUTE_PATH );
@@ -649,299 +649,299 @@ class AppExtension extends \Twig_Extension
         return $out;
     }
 
-	function internalLinks($input, $fileName=false){
-		$url = $this->router->generate('data.link', ['key'=>'object:'], UrlGeneratorInterface::ABSOLUTE_PATH);
-		$out = preg_replace('/ems:\/\/object:/i', $url, $input);
+    function internalLinks($input, $fileName=false){
+        $url = $this->router->generate('data.link', ['key'=>'object:'], UrlGeneratorInterface::ABSOLUTE_PATH);
+        $out = preg_replace('/ems:\/\/object:/i', $url, $input);
 
         return $this->srcPath($out, $fileName);
-	}
-	
-	
-	function i18n($key, $locale=null){
+    }
+    
+    
+    function i18n($key, $locale=null){
 
-		if(empty($locale)) {
-			$locale = $this->router->getContext()->getParameter('_locale');
-		}
-		/**@var I18nRepository $repo */
-		$repo = $this->doctrine->getManager()->getRepository('EMSCoreBundle:I18n');
-		/**@var I18n $result*/
-		$result = $repo->findOneBy([
-				'identifier' => $key,
-		]);
+        if(empty($locale)) {
+            $locale = $this->router->getContext()->getParameter('_locale');
+        }
+        /**@var I18nRepository $repo */
+        $repo = $this->doctrine->getManager()->getRepository('EMSCoreBundle:I18n');
+        /**@var I18n $result*/
+        $result = $repo->findOneBy([
+                'identifier' => $key,
+        ]);
 
-		if(empty($result)){
-			return $key;
-		}
-		
-		return $result->getContentTextforLocale($locale);
-	}
+        if(empty($result)){
+            return $key;
+        }
+        
+        return $result->getContentTextforLocale($locale);
+    }
 
     /**
      * @param $empty
      * @return bool
      * @deprecated since version 1.8.17 (will be remove with ems 1.9)
      */
-	function is_super($empty) {
-	    //TODO to remove
-	    return $this->isSuper();
-	}
+    function is_super($empty) {
+        //TODO to remove
+        return $this->isSuper();
+    }
 
     /**
      * Test if the user has some superpowers
      * @return bool
      */
-	function isSuper() {
+    function isSuper() {
         return $this->authorizationChecker->isGranted('ROLE_SUPER');
-	}
+    }
 
-	function all_granted($roles, $super=false){
+    function all_granted($roles, $super=false){
         if($super && !$this->isSuper()) {
             return false;
         }
-		foreach ($roles as $role){
-			if(!$this->authorizationChecker->isGranted($role)){
-				return false;
-			}
-		}
-		return true;
-	}
-	
-	function inMyCircles($circles){
-		
-		if(!$circles){
-			return true;
-		}
-		else if ($this->authorizationChecker->isGranted('ROLE_ADMIN')){
-			return true;
-		}
-		else if (is_array($circles)){
-			if(count($circles) > 0){
-				$user = $this->userService->getCurrentUser();
-				return count(array_intersect($circles, $user->getCircles())) > 0;
-			}
-			else {
-				return true;
-			}
-		}
-		else if(is_string($circles)){
+        foreach ($roles as $role){
+            if(!$this->authorizationChecker->isGranted($role)){
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    function inMyCircles($circles){
+        
+        if(!$circles){
+            return true;
+        }
+        else if ($this->authorizationChecker->isGranted('ROLE_ADMIN')){
+            return true;
+        }
+        else if (is_array($circles)){
+            if(count($circles) > 0){
+                $user = $this->userService->getCurrentUser();
+                return count(array_intersect($circles, $user->getCircles())) > 0;
+            }
+            else {
+                return true;
+            }
+        }
+        else if(is_string($circles)){
             $user = $this->userService->getCurrentUser();
-			return in_array($circles, $user->getCircles());
-		}
-		
-		
-		return false;
-	}
-	
-	function objectChoiceLoader($contentTypeName) {
-		return $this->objectChoiceListFactory->createLoader($contentTypeName, true)->loadAll();
-	}
-	
-	function groupedObjectLoader($contentTypeName) {
-		$choices = $this->objectChoiceListFactory->createLoader($contentTypeName, true)->loadAll();
-		$out = [];
-		foreach ($choices as $choice){
-			if(!isset($out[$choice->getGroup()])){
-				$out[$choice->getGroup()] = [];
-			}
-			$out[$choice->getGroup()][] = $choice;
-		}
-		return $out;
-	}
-	
-	function generateFromTemplate($template, array $params=[]){
-		if(empty($template)){
-			return NULL;
-		}
-		try {
-			$out = $this->twig->createTemplate($template)->render($params);
-		}
-		catch (\Exception $e) {
-			$out = "Error in template: ".$e->getMessage();
-		}
-		return $out;
-	}
-	
-	function dataLabel($key, $revisionId=false){
-		$out = $key;
-		$splitted = explode(':', $key);
-		if($splitted && count($splitted) == 2 && strlen($splitted[0]) > 0 && strlen($splitted[1]) > 0 ){
-			$type = $splitted[0];
-			$ouuid =  $splitted[1];
-			
-			$addAttribute = "";
-			
-			/**@var \EMS\CoreBundle\Entity\ContentType $contentType*/
-			$contentType = $this->contentTypeService->getByName($type);
-			if($contentType) {
-				if($contentType->getIcon()){
-					
-					$icon = '<i class="'.$contentType->getIcon().'"></i>&nbsp;&nbsp;';
-				}
-				else{
-					$icon = '<i class="fa fa-book"></i>&nbsp;&nbsp;';
-				}
-				
-				try {
-					$fields = [];
-					if($contentType->getLabelField()){
-						$fields[] = $contentType->getLabelField();
-					}
-					if($contentType->getColorField()){
-						$fields[] = $contentType->getColorField();
-					}
+            return in_array($circles, $user->getCircles());
+        }
+        
+        
+        return false;
+    }
+    
+    function objectChoiceLoader($contentTypeName) {
+        return $this->objectChoiceListFactory->createLoader($contentTypeName, true)->loadAll();
+    }
+    
+    function groupedObjectLoader($contentTypeName) {
+        $choices = $this->objectChoiceListFactory->createLoader($contentTypeName, true)->loadAll();
+        $out = [];
+        foreach ($choices as $choice){
+            if(!isset($out[$choice->getGroup()])){
+                $out[$choice->getGroup()] = [];
+            }
+            $out[$choice->getGroup()][] = $choice;
+        }
+        return $out;
+    }
+    
+    function generateFromTemplate($template, array $params=[]){
+        if(empty($template)){
+            return NULL;
+        }
+        try {
+            $out = $this->twig->createTemplate($template)->render($params);
+        }
+        catch (\Exception $e) {
+            $out = "Error in template: ".$e->getMessage();
+        }
+        return $out;
+    }
+    
+    function dataLabel($key, $revisionId=false){
+        $out = $key;
+        $splitted = explode(':', $key);
+        if($splitted && count($splitted) == 2 && strlen($splitted[0]) > 0 && strlen($splitted[1]) > 0 ){
+            $type = $splitted[0];
+            $ouuid =  $splitted[1];
+            
+            $addAttribute = "";
+            
+            /**@var \EMS\CoreBundle\Entity\ContentType $contentType*/
+            $contentType = $this->contentTypeService->getByName($type);
+            if($contentType) {
+                if($contentType->getIcon()){
+                    
+                    $icon = '<i class="'.$contentType->getIcon().'"></i>&nbsp;&nbsp;';
+                }
+                else{
+                    $icon = '<i class="fa fa-book"></i>&nbsp;&nbsp;';
+                }
+                
+                try {
+                    $fields = [];
+                    if($contentType->getLabelField()){
+                        $fields[] = $contentType->getLabelField();
+                    }
+                    if($contentType->getColorField()){
+                        $fields[] = $contentType->getColorField();
+                    }
 
-					$index = $this->contentTypeService->getIndex($contentType);
-					
-					$result = $this->client->get([
-							'_source' => $fields,
-							'id' => $ouuid,
-							'index' => $index,
-							'type' => $type,
-					]);
-					
-					if($contentType->getLabelField()){
-						$label = $result['_source'][$contentType->getLabelField()];
-						if($label && strlen($label) > 0){
-							$out = $label;
-						}
-					}
-					$out = $icon.$out;
-					
-					if($contentType->getColorField() && $result['_source'][$contentType->getColorField()]){
-						$color = $result['_source'][$contentType->getColorField()];
-						$contrasted = $this->contrastratio($color, '#000000') > $this->contrastratio($color, '#ffffff')?'#000000':'#ffffff';
-						
-						$out = '<span class="" style="color:'.$contrasted.';">'.$out.'</span>';
-						$addAttribute = ' style="background-color: '.$result['_source'][$contentType->getColorField()].';border-color: '.$result['_source'][$contentType->getColorField()].';"';
-						
-					}
-				}
-				catch(\Exception $e) {
-					
-				}
-				
-			}
-		}
-		return $out;
-		
-	}
-		
-	function dataLink($key, $revisionId=false, $diffMod=false){
-		$out = $key;
-		$splitted = explode(':', $key);
-		if($splitted && count($splitted) == 2 && strlen($splitted[0]) > 0 && strlen($splitted[1]) > 0 ){
-			$type = $splitted[0];
-			$ouuid =  $splitted[1];
-			
-			$addAttribute = "";
-			
-			/**@var \EMS\CoreBundle\Entity\ContentType $contentType*/
-			$contentType = $this->contentTypeService->getByName($type);
-			if($contentType) {
-				if($contentType->getIcon()){
-					
-					$icon = '<i class="'.$contentType->getIcon().'"></i>&nbsp;&nbsp;';
-				}
-				else{
-					$icon = '<i class="fa fa-book"></i>&nbsp;&nbsp;';
-				}
-				
-				try {
-				    $fields = [];
-				    if($contentType->getLabelField()){
-				        $fields[] = $contentType->getLabelField();
-				    }
-				    if($contentType->getColorField()){
-				        $fields[] = $contentType->getColorField();
-				    }
+                    $index = $this->contentTypeService->getIndex($contentType);
+                    
+                    $result = $this->client->get([
+                            '_source' => $fields,
+                            'id' => $ouuid,
+                            'index' => $index,
+                            'type' => $type,
+                    ]);
+                    
+                    if($contentType->getLabelField()){
+                        $label = $result['_source'][$contentType->getLabelField()];
+                        if($label && strlen($label) > 0){
+                            $out = $label;
+                        }
+                    }
+                    $out = $icon.$out;
+                    
+                    if($contentType->getColorField() && $result['_source'][$contentType->getColorField()]){
+                        $color = $result['_source'][$contentType->getColorField()];
+                        $contrasted = $this->contrastratio($color, '#000000') > $this->contrastratio($color, '#ffffff')?'#000000':'#ffffff';
+                        
+                        $out = '<span class="" style="color:'.$contrasted.';">'.$out.'</span>';
+                        $addAttribute = ' style="background-color: '.$result['_source'][$contentType->getColorField()].';border-color: '.$result['_source'][$contentType->getColorField()].';"';
+                        
+                    }
+                }
+                catch(\Exception $e) {
+                    
+                }
+                
+            }
+        }
+        return $out;
+        
+    }
+        
+    function dataLink($key, $revisionId=false, $diffMod=false){
+        $out = $key;
+        $splitted = explode(':', $key);
+        if($splitted && count($splitted) == 2 && strlen($splitted[0]) > 0 && strlen($splitted[1]) > 0 ){
+            $type = $splitted[0];
+            $ouuid =  $splitted[1];
+            
+            $addAttribute = "";
+            
+            /**@var \EMS\CoreBundle\Entity\ContentType $contentType*/
+            $contentType = $this->contentTypeService->getByName($type);
+            if($contentType) {
+                if($contentType->getIcon()){
+                    
+                    $icon = '<i class="'.$contentType->getIcon().'"></i>&nbsp;&nbsp;';
+                }
+                else{
+                    $icon = '<i class="fa fa-book"></i>&nbsp;&nbsp;';
+                }
+                
+                try {
+                    $fields = [];
+                    if($contentType->getLabelField()){
+                        $fields[] = $contentType->getLabelField();
+                    }
+                    if($contentType->getColorField()){
+                        $fields[] = $contentType->getColorField();
+                    }
 
                     $index = $this->contentTypeService->getIndex($contentType);
 
-					$result = $this->client->get([
-					    '_source' => $fields,
-						'id' => $ouuid,
-						'index' => $index,
-						'type' => $type,
-					]);
-					
-					if($contentType->getLabelField()){
-						$label = $result['_source'][$contentType->getLabelField()];
-						if($label && strlen($label) > 0){
-							$out = $label;
-						}
-					}
-					$out = $icon.$out;
-					
-					if($contentType->getColorField() && $result['_source'][$contentType->getColorField()]){
-						$color = $result['_source'][$contentType->getColorField()];
-						$contrasted = $this->contrastratio($color, '#000000') > $this->contrastratio($color, '#ffffff')?'#000000':'#ffffff';
-						
-						$out = '<span class="" style="color:'.$contrasted.';">'.$out.'</span>';
-						$addAttribute = ' style="background-color: '.$result['_source'][$contentType->getColorField()].';border-color: '.$result['_source'][$contentType->getColorField()].';"';
-						
-					}
+                    $result = $this->client->get([
+                        '_source' => $fields,
+                        'id' => $ouuid,
+                        'index' => $index,
+                        'type' => $type,
+                    ]);
+                    
+                    if($contentType->getLabelField()){
+                        $label = $result['_source'][$contentType->getLabelField()];
+                        if($label && strlen($label) > 0){
+                            $out = $label;
+                        }
+                    }
+                    $out = $icon.$out;
+                    
+                    if($contentType->getColorField() && $result['_source'][$contentType->getColorField()]){
+                        $color = $result['_source'][$contentType->getColorField()];
+                        $contrasted = $this->contrastratio($color, '#000000') > $this->contrastratio($color, '#ffffff')?'#000000':'#ffffff';
+                        
+                        $out = '<span class="" style="color:'.$contrasted.';">'.$out.'</span>';
+                        $addAttribute = ' style="background-color: '.$result['_source'][$contentType->getColorField()].';border-color: '.$result['_source'][$contentType->getColorField()].';"';
+                        
+                    }
 
-					if($diffMod !== false) {
+                    if($diffMod !== false) {
                         $out = '<'.$diffMod.' class="diffmod">'.$out.'<'.$diffMod.'>';
                     }
-				}
-				catch(\Exception $e) {
-					
-				}
-				
-			}
-			$out = '<a class="btn btn-primary btn-sm" href="'.$this->router->generate('data.revisions', [
-					'type' =>$type,
-					'ouuid' => $ouuid,
-					'revisionId' => $revisionId,
-			], UrlGeneratorInterface::RELATIVE_PATH).'" '.$addAttribute.' >'.$out.'</a>';
-		}
-		return $out;
-	}
-	
-	function propertyPath(FormError $error) {
-		$parent = $error->getOrigin();
-		$out = '';
-		while($parent) {
-			$out = $parent->getName().$out;
-			$parent = $parent->getParent();
-			if($parent) {
-				$out = '_'.$out;
-			}
-		}
-		return $out;
-	}
-	
-	function data($key){
-		$out = $key;
-		$splitted = explode(':', $key);
-		if($splitted && count($splitted) == 2){
-			$type = $splitted[0];
-			$ouuid =  $splitted[1];
-				
-			$addAttribute = "";
-			
-			/**@var \EMS\CoreBundle\Entity\ContentType $contentType*/
-			$contentType = $this->contentTypeService->getByName($type);
-			if($contentType) {
-				try {
-					$result = $this->client->get([
-							'id' => $ouuid,
-							'index' => $contentType->getEnvironment()->getAlias(),
-							'type' => $type,
-					]);
-					
-					return $result['_source'];					
-				}
-				catch (Missing404Exception $e){
-					return false;
-				}
-			}
-		}
-		return false;
-	}
-	
-	function one_granted($roles, $super=false){
+                }
+                catch(\Exception $e) {
+                    
+                }
+                
+            }
+            $out = '<a class="btn btn-primary btn-sm" href="'.$this->router->generate('data.revisions', [
+                    'type' =>$type,
+                    'ouuid' => $ouuid,
+                    'revisionId' => $revisionId,
+            ], UrlGeneratorInterface::RELATIVE_PATH).'" '.$addAttribute.' >'.$out.'</a>';
+        }
+        return $out;
+    }
+    
+    function propertyPath(FormError $error) {
+        $parent = $error->getOrigin();
+        $out = '';
+        while($parent) {
+            $out = $parent->getName().$out;
+            $parent = $parent->getParent();
+            if($parent) {
+                $out = '_'.$out;
+            }
+        }
+        return $out;
+    }
+    
+    function data($key){
+        $out = $key;
+        $splitted = explode(':', $key);
+        if($splitted && count($splitted) == 2){
+            $type = $splitted[0];
+            $ouuid =  $splitted[1];
+                
+            $addAttribute = "";
+            
+            /**@var \EMS\CoreBundle\Entity\ContentType $contentType*/
+            $contentType = $this->contentTypeService->getByName($type);
+            if($contentType) {
+                try {
+                    $result = $this->client->get([
+                            'id' => $ouuid,
+                            'index' => $contentType->getEnvironment()->getAlias(),
+                            'type' => $type,
+                    ]);
+                    
+                    return $result['_source'];                    
+                }
+                catch (Missing404Exception $e){
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+    
+    function one_granted($roles, $super=false){
         if($super && !$this->isSuper()) {
             return false;
         }
@@ -951,172 +951,172 @@ class AppExtension extends \Twig_Extension
             }
         }
         return false;
-	}
-	
-	/**
-	 * Calculate relative luminance in sRGB colour space for use in WCAG 2.0 compliance
-	 * @link http://www.w3.org/TR/WCAG20/#relativeluminancedef
-	 * @param string $col A 3 or 6-digit hex colour string
-	 * @return float
-	 * @author Marcus Bointon <marcus@synchromedia.co.uk>
-	 */
-	function relativeluminance($col) {
-		//Remove any leading #
-		$col = trim($col, '#');
-		//Convert 3-digit to 6-digit
-		if (strlen($col) == 3) {
-			$col = $col[0] . $col[0] . $col[1] . $col[1] . $col[2] . $col[2];
-		}
-		//Convert hex to 0-1 scale
-		$components = array(
-				'r' => hexdec(substr($col, 0, 2)) / 255,
-				'g' => hexdec(substr($col, 2, 2)) / 255,
-				'b' => hexdec(substr($col, 4, 2)) / 255
-		);
-		//Correct for sRGB
-		foreach($components as $c => $v) {
-			if ($v <= 0.03928) {
-				$components[$c] = $v / 12.92;
-			} else {
-				$components[$c] = pow((($v + 0.055) / 1.055), 2.4);
-			}
-		}
-		//Calculate relative luminance using ITU-R BT. 709 coefficients
-		return ($components['r'] * 0.2126) + ($components['g'] * 0.7152) + ($components['b'] * 0.0722);
-	}
-	
-	/**
-	 * Calculate contrast ratio acording to WCAG 2.0 formula
-	 * Will return a value between 1 (no contrast) and 21 (max contrast)
-	 * @link http://www.w3.org/TR/WCAG20/#contrast-ratiodef
-	 * @param string $c1 A 3 or 6-digit hex colour string
-	 * @param string $c2 A 3 or 6-digit hex colour string
-	 * @return float
-	 * @author Marcus Bointon <marcus@synchromedia.co.uk>
-	 */
-	function contrastratio($c1, $c2) {
-		$y1 = $this->relativeluminance($c1);
-		$y2 = $this->relativeluminance($c2);
-		//Arrange so $y1 is lightest
-		if ($y1 < $y2) {
-			$y3 = $y1;
-			$y1 = $y2;
-			$y2 = $y3;
-		}
-		return ($y1 + 0.05) / ($y2 + 0.05);
-	}
-	
-	public function md5($value)
-	{
-    	return md5($value);
-	}
+    }
+    
+    /**
+     * Calculate relative luminance in sRGB colour space for use in WCAG 2.0 compliance
+     * @link http://www.w3.org/TR/WCAG20/#relativeluminancedef
+     * @param string $col A 3 or 6-digit hex colour string
+     * @return float
+     * @author Marcus Bointon <marcus@synchromedia.co.uk>
+     */
+    function relativeluminance($col) {
+        //Remove any leading #
+        $col = trim($col, '#');
+        //Convert 3-digit to 6-digit
+        if (strlen($col) == 3) {
+            $col = $col[0] . $col[0] . $col[1] . $col[1] . $col[2] . $col[2];
+        }
+        //Convert hex to 0-1 scale
+        $components = array(
+                'r' => hexdec(substr($col, 0, 2)) / 255,
+                'g' => hexdec(substr($col, 2, 2)) / 255,
+                'b' => hexdec(substr($col, 4, 2)) / 255
+        );
+        //Correct for sRGB
+        foreach($components as $c => $v) {
+            if ($v <= 0.03928) {
+                $components[$c] = $v / 12.92;
+            } else {
+                $components[$c] = pow((($v + 0.055) / 1.055), 2.4);
+            }
+        }
+        //Calculate relative luminance using ITU-R BT. 709 coefficients
+        return ($components['r'] * 0.2126) + ($components['g'] * 0.7152) + ($components['b'] * 0.0722);
+    }
+    
+    /**
+     * Calculate contrast ratio acording to WCAG 2.0 formula
+     * Will return a value between 1 (no contrast) and 21 (max contrast)
+     * @link http://www.w3.org/TR/WCAG20/#contrast-ratiodef
+     * @param string $c1 A 3 or 6-digit hex colour string
+     * @param string $c2 A 3 or 6-digit hex colour string
+     * @return float
+     * @author Marcus Bointon <marcus@synchromedia.co.uk>
+     */
+    function contrastratio($c1, $c2) {
+        $y1 = $this->relativeluminance($c1);
+        $y2 = $this->relativeluminance($c2);
+        //Arrange so $y1 is lightest
+        if ($y1 < $y2) {
+            $y3 = $y1;
+            $y1 = $y2;
+            $y2 = $y3;
+        }
+        return ($y1 + 0.05) / ($y2 + 0.05);
+    }
+    
+    public function md5($value)
+    {
+        return md5($value);
+    }
 
-	public function searchesList($username)
-	{
-		$searchRepository = $this->doctrine->getRepository('EMSCoreBundle:Form\Search');
-    	$searches = $searchRepository->findBy([
-    		'user' => $username
-    	]);
-    	return $searches;
-	}
+    public function searchesList($username)
+    {
+        $searchRepository = $this->doctrine->getRepository('EMSCoreBundle:Form\Search');
+        $searches = $searchRepository->findBy([
+            'user' => $username
+        ]);
+        return $searches;
+    }
 
-	public function dump($object) {
-		if(function_exists('dump')){
-    		dump($object);
-		}
-	}
+    public function dump($object) {
+        if(function_exists('dump')){
+            dump($object);
+        }
+    }
 
-	public function convertJavaDateFormat($format)
-	{
-		return DateFieldType::convertJavaDateFormat($format);
-	}
+    public function convertJavaDateFormat($format)
+    {
+        return DateFieldType::convertJavaDateFormat($format);
+    }
 
-	public function convertJavascriptDateFormat($format)
-	{
-    	return DateFieldType::convertJavascriptDateFormat($format);
-	}
+    public function convertJavascriptDateFormat($format)
+    {
+        return DateFieldType::convertJavascriptDateFormat($format);
+    }
 
-	public function convertJavascriptDateRangeFormat($format)
-	{
-    	return DateRangeFieldType::convertJavascriptDateRangeFormat($format);
-	}
+    public function convertJavascriptDateRangeFormat($format)
+    {
+        return DateRangeFieldType::convertJavascriptDateRangeFormat($format);
+    }
 
-	public function getTimeFieldTimeFormat($options)
-	{
-    	return TimeFieldType::getFormat($options);
-	}
+    public function getTimeFieldTimeFormat($options)
+    {
+        return TimeFieldType::getFormat($options);
+    }
 
-	public function inArray($needle, $haystack)
-	{
-		return is_int(array_search($needle, $haystack));
-	}
+    public function inArray($needle, $haystack)
+    {
+        return is_int(array_search($needle, $haystack));
+    }
 
-	public function firstInArray($needle, $haystack)
-	{
-		return array_search($needle, $haystack) === 0;
-	}
-	
-	public function getContentType($name){
-		return $this->contentTypeService->getByName($name);
-	}
-	
-	public function getContentTypes(){
-		return $this->contentTypeService->getAll();
-	}
-	
-	public function getDefaultEnvironments(){
-		$defaultEnvironments = [];
-		/**@var Environment $environment*/
-		foreach ($this->environmentService->getAll() as $environment){
-			if($environment->getInDefaultSearch()) {
-				$defaultEnvironments[] = $environment->getName();				
-			}
-		}
-		return $defaultEnvironments;
-	}
-	
-	public function getEnvironment($name){
-		return $this->environmentService->getAliasByName($name);
-	}
+    public function firstInArray($needle, $haystack)
+    {
+        return array_search($needle, $haystack) === 0;
+    }
+    
+    public function getContentType($name){
+        return $this->contentTypeService->getByName($name);
+    }
+    
+    public function getContentTypes(){
+        return $this->contentTypeService->getAll();
+    }
+    
+    public function getDefaultEnvironments(){
+        $defaultEnvironments = [];
+        /**@var Environment $environment*/
+        foreach ($this->environmentService->getAll() as $environment){
+            if($environment->getInDefaultSearch()) {
+                $defaultEnvironments[] = $environment->getName();                
+            }
+        }
+        return $defaultEnvironments;
+    }
+    
+    public function getEnvironment($name){
+        return $this->environmentService->getAliasByName($name);
+    }
 
-	
-	/*
-	 * $arguments should contain 'function' key. Optionally 'options' and/or 'parameters'
-	 */
-	public function soapRequest($wsdl, $arguments = null)
-	{
-		/** @var \SoapClient $soapClient */
-		$soapClient = null;
-		if ($arguments && array_key_exists('options', $arguments)){
-			$soapClient = new \SoapClient($wsdl, $arguments['options']);
-		} else {
-			$soapClient = new \SoapClient($wsdl);
-		}
-		
-		$function = null;
-		if ($arguments && array_key_exists('function', $arguments)){
-			$function = $arguments['function'];
-		} else {
-			//TODO: throw error "argument 'function' is obligator"
-		}
-		
-		$response = null;
-		if ($arguments && array_key_exists('parameters', $arguments)){
-			$response = $soapClient->$function($arguments['parameters']);
-		}else{
-			$response = $soapClient->$function();
-		}
-		
-		return $response;
-		
-	}
-	
-	public function csvEscaper($twig, $name, $charset) {
-		return $name;
-	}
+    
+    /*
+     * $arguments should contain 'function' key. Optionally 'options' and/or 'parameters'
+     */
+    public function soapRequest($wsdl, $arguments = null)
+    {
+        /** @var \SoapClient $soapClient */
+        $soapClient = null;
+        if ($arguments && array_key_exists('options', $arguments)){
+            $soapClient = new \SoapClient($wsdl, $arguments['options']);
+        } else {
+            $soapClient = new \SoapClient($wsdl);
+        }
+        
+        $function = null;
+        if ($arguments && array_key_exists('function', $arguments)){
+            $function = $arguments['function'];
+        } else {
+            //TODO: throw error "argument 'function' is obligator"
+        }
+        
+        $response = null;
+        if ($arguments && array_key_exists('parameters', $arguments)){
+            $response = $soapClient->$function($arguments['parameters']);
+        }else{
+            $response = $soapClient->$function();
+        }
+        
+        return $response;
+        
+    }
+    
+    public function csvEscaper($twig, $name, $charset) {
+        return $name;
+    }
 
-	public function getName()
-	{
-		return 'app_extension';
-	}
+    public function getName()
+    {
+        return 'app_extension';
+    }
 }

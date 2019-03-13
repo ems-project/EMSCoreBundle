@@ -13,35 +13,35 @@ use EMS\CoreBundle\Exception\PerformanceException;
 
 class ObjectChoiceListFactory extends DefaultChoiceListFactory{
 
-	private $client;
-	/**@var Session $session*/
-	private $session;
-	/**@var ContentTypeService $contentTypes*/
-	private $contentTypes;
-	/**@var ObjectChoiceCacheService $objectChoiceCacheService*/
-	private $objectChoiceCacheService;
+    private $client;
+    /**@var Session $session*/
+    private $session;
+    /**@var ContentTypeService $contentTypes*/
+    private $contentTypes;
+    /**@var ObjectChoiceCacheService $objectChoiceCacheService*/
+    private $objectChoiceCacheService;
 
-	/**
+    /**
      * constructor called by the service mechanisme
      */
     public function __construct(
-			ContentTypeService $contentTypes,
-    		ObjectChoiceCacheService $objectChoiceCacheService){
-		$this->contentTypes = $contentTypes;
-		$this->objectChoiceCacheService = $objectChoiceCacheService;
-	}
+            ContentTypeService $contentTypes,
+            ObjectChoiceCacheService $objectChoiceCacheService){
+        $this->contentTypes = $contentTypes;
+        $this->objectChoiceCacheService = $objectChoiceCacheService;
+    }
     
     /**
      * instanciate a ObjectChoiceLoader (with the required services)
      */
     public function createLoader($types = null, $loadAll = false, $circleOnly=false){
-    	if(null === $types || $loadAll === ""){
-    		if($loadAll) {
-    			throw new PerformanceException('Try to load all objects of all content types');
-    		}
-    		$types = $this->contentTypes->getAllTypes();
-    	}
-    	return new ObjectChoiceLoader($this->objectChoiceCacheService, $types, $loadAll, $circleOnly);
+        if(null === $types || $loadAll === ""){
+            if($loadAll) {
+                throw new PerformanceException('Try to load all objects of all content types');
+            }
+            $types = $this->contentTypes->getAllTypes();
+        }
+        return new ObjectChoiceLoader($this->objectChoiceCacheService, $types, $loadAll, $circleOnly);
     }
 
     /**
@@ -49,6 +49,6 @@ class ObjectChoiceListFactory extends DefaultChoiceListFactory{
      */
     public function createListFromLoader(ChoiceLoaderInterface $loader, $value = null)
     {
-    	return $loader->loadChoiceList($value);
+        return $loader->loadChoiceList($value);
     }
 }

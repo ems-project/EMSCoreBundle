@@ -15,14 +15,14 @@ use EMS\CoreBundle\Entity\Environment;
 class EnvironmentRepository extends \Doctrine\ORM\EntityRepository
 {
     public function findAll(){
-    	return $this->findBy([]);
+        return $this->findBy([]);
     }
-    	
+        
     public function findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null){
-    	if(empty($orderBy)){
-    		$orderBy = ['orderKey' => 'asc' ];
-    	}
-    	return parent::findBy($criteria, $orderBy, $limit, $offset);
+        if(empty($orderBy)){
+            $orderBy = ['orderKey' => 'asc' ];
+        }
+        return parent::findBy($criteria, $orderBy, $limit, $offset);
     }
     
     /**
@@ -85,60 +85,60 @@ class EnvironmentRepository extends \Doctrine\ORM\EntityRepository
         
         return $qb->getQuery()->getSingleScalarResult();
     }
-	
-	public function findAvailableEnvironements(Environment $defaultEnv) {
-		/** @var QueryBuilder $qb */
-		$qb = $this->createQueryBuilder('e');
-		$qb->where($qb->expr()->neq('e.id', ':defaultEnvId'));
-		$qb->andWhere($qb->expr()->neq('e.managed', ':false'));
-		$qb->orderBy('e.orderKey', 'ASC');
-		$qb->setParameters([
-				'false' => false,
-				'defaultEnvId' => $defaultEnv->getId()
-		]);
-	
-		return $qb->getQuery()->getResult();
-	}
-	
-	
-	public function findManagedIndexes() {
-		$qb = $this->createQueryBuilder('e');
-		$qb->select('e.alias alias');
-		$qb->where($qb->expr()->eq('e.managed', ':true'));
-		$qb->setParameters([':true' => true]);
-		$qb->orderBy('e.orderKey', 'ASC');
-		return $qb->getQuery()->getResult();
-	}
-	
-	
-	public function findByName($name) {
-		return $this->findOneBy([
-				'deleted' => false,
-				'name' => $name,
-		]);
-	}
-	
+    
+    public function findAvailableEnvironements(Environment $defaultEnv) {
+        /** @var QueryBuilder $qb */
+        $qb = $this->createQueryBuilder('e');
+        $qb->where($qb->expr()->neq('e.id', ':defaultEnvId'));
+        $qb->andWhere($qb->expr()->neq('e.managed', ':false'));
+        $qb->orderBy('e.orderKey', 'ASC');
+        $qb->setParameters([
+                'false' => false,
+                'defaultEnvId' => $defaultEnv->getId()
+        ]);
+    
+        return $qb->getQuery()->getResult();
+    }
+    
+    
+    public function findManagedIndexes() {
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('e.alias alias');
+        $qb->where($qb->expr()->eq('e.managed', ':true'));
+        $qb->setParameters([':true' => true]);
+        $qb->orderBy('e.orderKey', 'ASC');
+        return $qb->getQuery()->getResult();
+    }
+    
+    
+    public function findByName($name) {
+        return $this->findOneBy([
+                'deleted' => false,
+                'name' => $name,
+        ]);
+    }
+    
 
 
-	public function findAllAsAssociativeArray($field){
-		$qb = $this->createQueryBuilder('e');
-		$qb->select('e.'.$field.' key, e.name name, e.color color, e.alias alias, e.managed managed, e.baseUrl baseUrl, e.circles circles, e.extra');
-	
-		$out = [];
-		$result = $qb->getQuery()->getResult();
-		foreach ($result as $record){
-			$out[$record['key']] = [
-					'color' => $record['color'],
-					'name' => $record['name'],
-					'alias' => $record['alias'],
-					'managed' => $record['managed'],
-					'baseUrl' => $record['baseUrl'],
-					'circles' => $record['circles'],
-					'extra' => $record['extra'],
-			];
-		}
-	
-		return $out;
-	}
-	
+    public function findAllAsAssociativeArray($field){
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('e.'.$field.' key, e.name name, e.color color, e.alias alias, e.managed managed, e.baseUrl baseUrl, e.circles circles, e.extra');
+    
+        $out = [];
+        $result = $qb->getQuery()->getResult();
+        foreach ($result as $record){
+            $out[$record['key']] = [
+                    'color' => $record['color'],
+                    'name' => $record['name'],
+                    'alias' => $record['alias'],
+                    'managed' => $record['managed'],
+                    'baseUrl' => $record['baseUrl'],
+                    'circles' => $record['circles'],
+                    'extra' => $record['extra'],
+            ];
+        }
+    
+        return $out;
+    }
+    
 }

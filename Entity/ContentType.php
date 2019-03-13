@@ -86,7 +86,7 @@ class ContentType
      */
     private $extra;
 
-	/**
+    /**
      * @var string
      *
      * @ORM\Column(name="lockBy", type="string", length=100, nullable=true)
@@ -384,28 +384,28 @@ class ContentType
 
     function __construct(){
 
-    	$this->templates = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->templates = new \Doctrine\Common\Collections\ArrayCollection();
         $this->views = new \Doctrine\Common\Collections\ArrayCollection();
         $this->singleTypeIndexes = new \Doctrine\Common\Collections\ArrayCollection();
-    	
-    	$this->dirty = true;
-    	$this->editTwigWithWysiwyg = true;
+        
+        $this->dirty = true;
+        $this->editTwigWithWysiwyg = true;
         $this->webContent = true;
         $this->autoPublish = false;
 
-     	$fieldType = new FieldType();
-     	$fieldType->setName ( 'source' );
-     	$fieldType->setType ( ContainerFieldType::class );
-     	$fieldType->setContentType ( $this );
-     	$this->setFieldType ( $fieldType );
-     	$this->setAskForOuuid( true );
+         $fieldType = new FieldType();
+         $fieldType->setName ( 'source' );
+         $fieldType->setType ( ContainerFieldType::class );
+         $fieldType->setContentType ( $this );
+         $this->setFieldType ( $fieldType );
+         $this->setAskForOuuid( true );
     }
 
 
 
     public function __toString()
     {
-    	return $this->name;
+        return $this->name;
     }
     
     /**
@@ -414,22 +414,22 @@ class ContentType
      */
     public function updateModified()
     {
-    	$this->modified = new \DateTime();
-    	if(!isset($this->created)){
-    		$this->created = $this->modified;
-    	}
+        $this->modified = new \DateTime();
+        if(!isset($this->created)){
+            $this->created = $this->modified;
+        }
         if(!isset($this->deleted)){
-    		$this->deleted = false;
-    	}
+            $this->deleted = false;
+        }
         if(!isset($this->orderKey)){
-    		$this->orderKey = 0;
-    	}
+            $this->orderKey = 0;
+        }
         if(!isset($this->rootContentType)){
-    		$this->rootContentType = true;
-    	}
+            $this->rootContentType = true;
+        }
         if(!isset($this->active)){
-    		$this->active = false;
-    	}
+            $this->active = false;
+        }
     }
     
 
@@ -524,9 +524,9 @@ class ContentType
      */
     public function setIcon($icon)
     {
-    	$this->icon = $icon;
+        $this->icon = $icon;
     
-    	return $this;
+        return $this;
     }
     
     /**
@@ -536,7 +536,7 @@ class ContentType
      */
     public function getIcon()
     {
-    	return $this->icon;
+        return $this->icon;
     }
 
     
@@ -1161,9 +1161,9 @@ class ContentType
      */
     public function setEditTwigWithWysiwyg($editTwigWithWysiwyg)
     {
-    	$this->editTwigWithWysiwyg = $editTwigWithWysiwyg;
-    	
-    	return $this;
+        $this->editTwigWithWysiwyg = $editTwigWithWysiwyg;
+        
+        return $this;
     }
     
     /**
@@ -1173,7 +1173,7 @@ class ContentType
      */
     public function getEditTwigWithWysiwyg()
     {
-    	return $this->editTwigWithWysiwyg;
+        return $this->editTwigWithWysiwyg;
     }
     
     /**
@@ -1185,9 +1185,9 @@ class ContentType
      */
     public function setWebContent($webContent)
     {
-    	$this->webContent= $webContent;
-    	
-    	return $this;
+        $this->webContent= $webContent;
+        
+        return $this;
     }
     
     /**
@@ -1197,7 +1197,7 @@ class ContentType
      */
     public function getWebContent()
     {
-    	return $this->webContent;
+        return $this->webContent;
     }
 
     /**
@@ -1517,9 +1517,9 @@ class ContentType
      */
     public function setViewRole($viewRole)
     {
-    	$this->viewRole = $viewRole;
-    	
-    	return $this;
+        $this->viewRole = $viewRole;
+        
+        return $this;
     }
     
     /**
@@ -1529,7 +1529,7 @@ class ContentType
      */
     public function getViewRole()
     {
-    	return $this->viewRole;
+        return $this->viewRole;
     }
     
     /**
@@ -1541,9 +1541,9 @@ class ContentType
      */
     public function setPublishRole($publishRole)
     {
-    	$this->publishRole = $publishRole;
-    	
-    	return $this;
+        $this->publishRole = $publishRole;
+        
+        return $this;
     }
     
     /**
@@ -1553,7 +1553,7 @@ class ContentType
      */
     public function getPublishRole()
     {
-    	return $this->publishRole;
+        return $this->publishRole;
     }
     
     /**
@@ -1565,9 +1565,9 @@ class ContentType
      */
     public function setTrashRole($trashRole)
     {
-    	$this->trashRole= $trashRole;
-    	
-    	return $this;
+        $this->trashRole= $trashRole;
+        
+        return $this;
     }
     
     /**
@@ -1577,7 +1577,7 @@ class ContentType
      */
     public function getTrashRole()
     {
-    	return $this->trashRole;
+        return $this->trashRole;
     }
 
     /**
@@ -1637,9 +1637,9 @@ class ContentType
      */
     public function setSortOrder($sortOrder)
     {
-    	$this->sortOrder = $sortOrder;
-    	
-    	return $this;
+        $this->sortOrder = $sortOrder;
+        
+        return $this;
     }
     
     /**
@@ -1649,7 +1649,7 @@ class ContentType
      */
     public function getSortOrder()
     {
-    	return $this->sortOrder;
+        return $this->sortOrder;
     }
 
     /**

@@ -26,76 +26,76 @@ class Mapping
     const CORE_VERSION_META_FIELD = 'core_version';
     const INSTANCE_ID_META_FIELD = 'instance_id';
 
-	
-	/** @var FieldTypeType $fieldTypeType */
-	private $fieldTypeType;
-	
-	/** @var ElasticsearchService $elasticsearchService */
-	private $elasticsearchService;
+    
+    /** @var FieldTypeType $fieldTypeType */
+    private $fieldTypeType;
+    
+    /** @var ElasticsearchService $elasticsearchService */
+    private $elasticsearchService;
 
     /**@var string*/
     private $coreVersion;
 
     /**@var string*/
     private $instanceId;
-	
-	/**
-	 * Constructor
-	 * 
-	 * @param FieldTypeType $fieldTypeType
-	 * @param ElasticsearchService $elasticsearchService
-	 */
-	public function __construct(FieldTypeType $fieldTypeType, ElasticsearchService $elasticsearchService, $coreVersion, $instanceId) {
-		$this->fieldTypeType = $fieldTypeType;
-		$this->elasticsearchService = $elasticsearchService;
+    
+    /**
+     * Constructor
+     * 
+     * @param FieldTypeType $fieldTypeType
+     * @param ElasticsearchService $elasticsearchService
+     */
+    public function __construct(FieldTypeType $fieldTypeType, ElasticsearchService $elasticsearchService, $coreVersion, $instanceId) {
+        $this->fieldTypeType = $fieldTypeType;
+        $this->elasticsearchService = $elasticsearchService;
         $this->coreVersion = $coreVersion;
         $this->instanceId = $instanceId;
-	}
-	
-	public function generateMapping(ContentType $contentType, $withPipeline = false){
-		$out = [
-		    "properties" => [],
-		];
+    }
+    
+    public function generateMapping(ContentType $contentType, $withPipeline = false){
+        $out = [
+            "properties" => [],
+        ];
 
-		if($this->elasticsearchService->withAllMapping()) {
+        if($this->elasticsearchService->withAllMapping()) {
             $out['_all'] = [
                 "store" => true,
                 "enabled" => true,
             ];
         }
-		
-		if(null != $contentType->getFieldType()){
-			$out['properties'] = $this->fieldTypeType->generateMapping($contentType->getFieldType(), $withPipeline);
-		}
-		
-		$out['properties'] = array_merge(
-			[
-				Mapping::HASH_FIELD => $this->elasticsearchService->getKeywordMapping(),
-				Mapping::SIGNATURE_FIELD => $this->elasticsearchService->getNotIndexedStringMapping(),
+        
+        if(null != $contentType->getFieldType()){
+            $out['properties'] = $this->fieldTypeType->generateMapping($contentType->getFieldType(), $withPipeline);
+        }
+        
+        $out['properties'] = array_merge(
+            [
+                Mapping::HASH_FIELD => $this->elasticsearchService->getKeywordMapping(),
+                Mapping::SIGNATURE_FIELD => $this->elasticsearchService->getNotIndexedStringMapping(),
                 Mapping::FINALIZED_BY_FIELD => $this->elasticsearchService->getKeywordMapping(),
                 Mapping::CONTENT_TYPE_FIELD => $this->elasticsearchService->getKeywordMapping(),
                 Mapping::FINALIZATION_DATETIME_FIELD => $this->elasticsearchService->getDateTimeMapping(),
                 Mapping::PUBLISHED_DATETIME_FIELD => $this->elasticsearchService->getDateTimeMapping(),
-			],
-			$out['properties']
-		);
+            ],
+            $out['properties']
+        );
 
-		$out['_meta'] = [
+        $out['_meta'] = [
             Mapping::CONTENT_TYPE_META_FIELD => $contentType->getName(),
             Mapping::GENERATOR_META_FIELD => Mapping::GENERATOR_META_FIELD_VALUE,
             Mapping::CORE_VERSION_META_FIELD => $this->coreVersion,
             Mapping::INSTANCE_ID_META_FIELD => $this->instanceId,
         ];
-		
-		
-		return [ $contentType->getName() => $out ];
-	}
+        
+        
+        return [ $contentType->getName() => $out ];
+    }
 
 
 
-	public function dataFieldToArray(DataField $dataField){
-		return $this->fieldTypeType->dataFieldToArray($dataField);
-	}	
-	
-	
+    public function dataFieldToArray(DataField $dataField){
+        return $this->fieldTypeType->dataFieldToArray($dataField);
+    }    
+    
+    
 }

@@ -14,8 +14,8 @@ class DefaultController extends Controller
      */
     public function documentationAction(Request $request)
     {
-    	// replace this example code with whatever you need
-    	return $this->render('@EMSCore/default/documentation.html.twig');
+        // replace this example code with whatever you need
+        return $this->render('@EMSCore/default/documentation.html.twig');
     }
     
 
@@ -24,7 +24,7 @@ class DefaultController extends Controller
      */
     public function comingSoonAction()
     {
-    	// replace this example code with whatever you need
-    	return $this->render('@EMSCore/default/coming-soon.html.twig');
+        // replace this example code with whatever you need
+        return $this->render('@EMSCore/default/coming-soon.html.twig');
     }
 }

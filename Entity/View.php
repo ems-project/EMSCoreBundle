@@ -96,13 +96,13 @@ class View
      */
     public function updateModified()
     {
-    	$this->modified = new \DateTime();
-        	if(!isset($this->created)){
-    		$this->created = $this->modified;
-    	}
-    	if(!isset($this->orderKey)){
-    		$this->orderKey = 0;
-    	}
+        $this->modified = new \DateTime();
+            if(!isset($this->created)){
+            $this->created = $this->modified;
+        }
+        if(!isset($this->orderKey)){
+            $this->orderKey = 0;
+        }
     }
     
     /******************************************************************

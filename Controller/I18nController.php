@@ -27,25 +27,25 @@ class I18nController extends Controller
      */
     public function indexAction(Request $request)
     {
-    	$filters = $request->query->get('i18n_form');
+        $filters = $request->query->get('i18n_form');
 
- 		//TODO: Why do we need to unset these fields ? 
-//  		if (is_array($filters)) {
-//  			unset($filters['filter']);
-//  			unset($filters['_token']);
-//  		}
- 		
-		$i18nFilter = new I18nFilter();
-		
- 		$form = $this->createForm(I18nFormType::class, $i18nFilter, [
- 				'method' => 'GET'
- 		]);
- 		$form->handleRequest ( $request );
- 		
- 		if($form->isSubmitted()){
- 			$i18nFilter = $form->getData();
- 		}
-    	
+         //TODO: Why do we need to unset these fields ? 
+//          if (is_array($filters)) {
+//              unset($filters['filter']);
+//              unset($filters['_token']);
+//          }
+         
+        $i18nFilter = new I18nFilter();
+        
+         $form = $this->createForm(I18nFormType::class, $i18nFilter, [
+                 'method' => 'GET'
+         ]);
+         $form->handleRequest ( $request );
+         
+         if($form->isSubmitted()){
+             $i18nFilter = $form->getData();
+         }
+        
         $em = $this->getDoctrine()->getManager();
         
         $count = $this->getI18nService()->count($filters);
@@ -58,11 +58,11 @@ class I18nController extends Controller
         
         return $this->render('@EMSCore/i18n/index.html.twig', array(
             'i18nkeys' => $i18ns,
-        	'lastPage' => $lastPage,
-        	'paginationPath' => 'i18n_index',
-        	'filterform' => $form->createView(),
-        	'page' => $page,
-        	'paging_size' => $paging_size,
+            'lastPage' => $lastPage,
+            'paginationPath' => 'i18n_index',
+            'filterform' => $form->createView(),
+            'page' => $page,
+            'paging_size' => $paging_size,
         ));
     }
     
@@ -70,7 +70,7 @@ class I18nController extends Controller
      * @return I18nService
      */
     private function getI18nService(){
-    	return $this->get('ems.service.i18n');
+        return $this->get('ems.service.i18n');
     }
 
     /**
@@ -112,20 +112,20 @@ class I18nController extends Controller
     public function editAction(Request $request, I18n $i18n)
     {
 //         $deleteForm = $this->createDeleteForm($i18n);
-		if(empty($i18n->getContent())){
-			$i18n->setContent([
-				[
-					'locale' => '',
-					'text' => '',
-				]
-			]);
-		}
+        if(empty($i18n->getContent())){
+            $i18n->setContent([
+                [
+                    'locale' => '',
+                    'text' => '',
+                ]
+            ]);
+        }
         $editForm = $this->createForm(I18nType::class, $i18n);
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $em = $this->getDoctrine()->getManager();
-			//renumber array elements
+            //renumber array elements
             $i18n->setContent(array_values($i18n->getContent()));
             $em->persist($i18n);
             $em->flush();

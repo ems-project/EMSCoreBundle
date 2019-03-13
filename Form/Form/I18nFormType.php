@@ -22,10 +22,10 @@ class I18nFormType extends AbstractType
         $builder
             ->add('identifier', null, array('required' => false, 'label' => 'Key'))
             ->add('filter', SubmitEmsType::class, [
-            		'attr' => [
-            				'class' => 'btn-primary btn-sm'
-            		],
-            		'icon' => 'fa fa-columns'
+                    'attr' => [
+                            'class' => 'btn-primary btn-sm'
+                    ],
+                    'icon' => 'fa fa-columns'
             ]);
     }
 }

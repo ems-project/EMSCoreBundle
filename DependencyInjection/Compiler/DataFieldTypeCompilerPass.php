@@ -9,29 +9,29 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class DataFieldTypeCompilerPass implements CompilerPassInterface
 {
-	public function process(ContainerBuilder $container)
-	{
-		if (!$container->hasDefinition('ems.form.field.datafieldtypepickertype')) {
-			return;
-		}
-		
-		/** @var Definition $definition */
-		$definition = $container->findDefinition(
-			'ems.form.field.datafieldtypepickertype'
-		);
-		
-		$taggedServices = $container->findTaggedServiceIds(
-			'ems.form.datafieldtype'
-		);
-		
-		foreach ($taggedServices as $id => $tags) {
-			foreach ($tags as $attributes) {
-				$definition->addMethodCall(
-					'addDataFieldType',
-					array(new Reference($id))
-					
-				);
-			}
-		}
-	}
+    public function process(ContainerBuilder $container)
+    {
+        if (!$container->hasDefinition('ems.form.field.datafieldtypepickertype')) {
+            return;
+        }
+        
+        /** @var Definition $definition */
+        $definition = $container->findDefinition(
+            'ems.form.field.datafieldtypepickertype'
+        );
+        
+        $taggedServices = $container->findTaggedServiceIds(
+            'ems.form.datafieldtype'
+        );
+        
+        foreach ($taggedServices as $id => $tags) {
+            foreach ($tags as $attributes) {
+                $definition->addMethodCall(
+                    'addDataFieldType',
+                    array(new Reference($id))
+                    
+                );
+            }
+        }
+    }
 }

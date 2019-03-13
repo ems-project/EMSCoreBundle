@@ -100,23 +100,23 @@ class UploadedAsset
      */
     public function updateModified()
     {
-    	$this->modified = new \DateTime();
-    	if(!isset($this->created)){
-    		$this->created = $this->modified;
-    	}
+        $this->modified = new \DateTime();
+        if(!isset($this->created)){
+            $this->created = $this->modified;
+        }
     }
     
     public function getResponse(){
-    	return [
-    		'sha1' => $this->getSha1(),
-    		'type' => $this->getType(),
-    		'available' => $this->getAvailable(),
-    		'name' => $this->getName(),
-    		'size' => $this->getSize(),
-    		'status' => $this->getStatus(),
-    		'uploaded' => $this->getUploaded(),
-    		'user' => $this->getUser(),
-    	];
+        return [
+            'sha1' => $this->getSha1(),
+            'type' => $this->getType(),
+            'available' => $this->getAvailable(),
+            'name' => $this->getName(),
+            'size' => $this->getSize(),
+            'status' => $this->getStatus(),
+            'uploaded' => $this->getUploaded(),
+            'user' => $this->getUser(),
+        ];
     }
 
     /**

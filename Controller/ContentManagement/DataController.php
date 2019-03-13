@@ -383,9 +383,9 @@ class DataController extends AppController
 
         $this->loadAutoSavedVersion($revision);
 
-// 		$this->getDataService()->loadDataStructure($revision);
+//         $this->getDataService()->loadDataStructure($revision);
 
-// 		$revision->getDataField()->orderChildren();
+//         $revision->getDataField()->orderChildren();
 
 
         $page = $request->query->get('page', 1);
@@ -427,10 +427,10 @@ class DataController extends AppController
             $filter->setOperator('term');
         }
 
-// 		/**@var Form $form*/
-// 		$form = $this->createForm ( SearchFormType::class, $searchForm, [
-// 		    'method' => 'GET',
-// 		] );
+//         /**@var Form $form*/
+//         $form = $this->createForm ( SearchFormType::class, $searchForm, [
+//             'method' => 'GET',
+//         ] );
 
         $refParams = [
             '_source' => false,
@@ -1040,9 +1040,9 @@ class DataController extends AppController
 
     public function finalizeDraft(Revision $revision, \Symfony\Component\Form\Form $form = null, $username = null)
     {
-//		TODO: User validators
-// 		$validator = $this->get('validator');
-// 		$errors = $validator->validate($revision);
+//        TODO: User validators
+//         $validator = $this->get('validator');
+//         $errors = $validator->validate($revision);
 
         return $this->getDataService()->finalizeDraft($revision, $form, $username);
     }
@@ -1094,9 +1094,9 @@ class DataController extends AppController
         }
 
 
-// 		$this->getDataService()->loadDataStructure($revision);
-// 		$this->getDataService()->generateInputValues($revision->getDataField());
-// 		$this->getLogger()->debug('DataField structure generated');
+//         $this->getDataService()->loadDataStructure($revision);
+//         $this->getDataService()->generateInputValues($revision->getDataField());
+//         $this->getLogger()->debug('DataField structure generated');
 
 
         $form = $this->createForm(RevisionType::class, $revision, [
@@ -1167,7 +1167,7 @@ class DataController extends AppController
                 $this->getLogger()->debug('Revision after persist flush');
 
                 if (array_key_exists('publish', $request->request->get('revision'))) {//Finalize
-// 					try{
+//                     try{
                     $revision = $this->finalizeDraft($revision, $form);
                     if (count($form->getErrors()) === 0) {
                         return $this->redirectToRoute('data.revisions', [
@@ -1182,14 +1182,14 @@ class DataController extends AppController
                             'stylesSets' => $this->getWysiwygStylesSetService()->getStylesSets(),
                         ]);
                     }
-// 					}
-// 					catch (\Exception $e){
-// 						$this->addFlash('error', 'The draft has been saved but something when wrong when we tried to publish it. '.$revision->getContentType()->getName().':'.$revision->getOuuid());
-// 						$this->addFlash('error', $e->getMessage());
-// 						return $this->redirectToRoute('revision.edit', [
-// 								'revisionId' => $revisionId,
-// 						]);
-// 					}
+//                     }
+//                     catch (\Exception $e){
+//                         $this->addFlash('error', 'The draft has been saved but something when wrong when we tried to publish it. '.$revision->getContentType()->getName().':'.$revision->getOuuid());
+//                         $this->addFlash('error', $e->getMessage());
+//                         return $this->redirectToRoute('revision.edit', [
+//                                 'revisionId' => $revisionId,
+//                         ]);
+//                     }
 
                 }
             }
@@ -1336,7 +1336,7 @@ class DataController extends AppController
 
                 if (count($anotherObject) != 0) {
                     $form->get('ouuid')->addError(new FormError('Another ' . $contentType->getName() . ' with this identifier already exists'));
-// 					$form->addError(new FormError('Another '.$contentType->getName().' with this identifier already exists'));
+//                     $form->addError(new FormError('Another '.$contentType->getName().' with this identifier already exists'));
                 }
             }
 

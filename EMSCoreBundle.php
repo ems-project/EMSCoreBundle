@@ -13,11 +13,11 @@ class EMSCoreBundle extends Bundle
 {
     const TRANS_DOMAIN = 'EMSCoreBundle';
     
-	public function build(ContainerBuilder $container)
-	{
+    public function build(ContainerBuilder $container)
+    {
         parent::build($container);
-		$container->addCompilerPass(new ViewTypeCompilerPass(), PassConfig::TYPE_OPTIMIZE);
-		$container->addCompilerPass(new DataFieldTypeCompilerPass(), PassConfig::TYPE_OPTIMIZE);
-		$container->addCompilerPass(new StorageServiceCompilerPass(), PassConfig::TYPE_OPTIMIZE);
-	}
+        $container->addCompilerPass(new ViewTypeCompilerPass(), PassConfig::TYPE_OPTIMIZE);
+        $container->addCompilerPass(new DataFieldTypeCompilerPass(), PassConfig::TYPE_OPTIMIZE);
+        $container->addCompilerPass(new StorageServiceCompilerPass(), PassConfig::TYPE_OPTIMIZE);
+    }
 }

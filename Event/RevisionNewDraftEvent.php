@@ -8,5 +8,5 @@ use EMS\CoreBundle\Entity\Revision;
  */
 class RevisionNewDraftEvent extends RevisionEvent
 {
-	const NAME = 'revision.new_draft';
+    const NAME = 'revision.new_draft';
 }

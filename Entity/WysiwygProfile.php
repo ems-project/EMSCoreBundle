@@ -63,13 +63,13 @@ class WysiwygProfile
      */
     public function updateModified()
     {
-    	$this->modified = new \DateTime();
+        $this->modified = new \DateTime();
         if(!isset($this->created)){
-    		$this->created = $this->modified;
-    	}
-    	if(!isset($this->orderKey)){
-    		$this->orderKey = 0;
-    	}
+            $this->created = $this->modified;
+        }
+        if(!isset($this->orderKey)){
+            $this->orderKey = 0;
+        }
     }
     
     /******************************************************************
@@ -169,7 +169,7 @@ class WysiwygProfile
      */
     public function setConfig($config)
     {
-    	$this->config= $config;
+        $this->config= $config;
 
         return $this;
     }
@@ -181,7 +181,7 @@ class WysiwygProfile
      */
     public function getConfig()
     {
-    	return $this->config;
+        return $this->config;
     }
 
     /**

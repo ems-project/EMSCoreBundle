@@ -7,11 +7,11 @@ namespace EMS\CoreBundle\Entity\Form;
  */
 class RebuildIndex
 {
-	/**
-	 * @var string
-	 */
-	private $option;
-	
+    /**
+     * @var string
+     */
+    private $option;
+    
     /**
      * Set the rebuild option
      *
@@ -36,5 +36,5 @@ class RebuildIndex
         return $this->option;
     }
 
-	
+    
 }

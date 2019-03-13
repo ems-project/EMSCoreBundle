@@ -31,16 +31,16 @@ class ReconnectCommand extends ContainerAwareCommand
 
     /**@var EnvironmentService*/
     protected $environmentService;
-	
-	public function __construct(Client $client, ContentTypeService $contentTypeService, EnvironmentService $environmentService)
-	{
+    
+    public function __construct(Client $client, ContentTypeService $contentTypeService, EnvironmentService $environmentService)
+    {
         $this->client = $client;
         $this->contentTypeService = $contentTypeService;
         $this->environmentService = $environmentService;
-		parent::__construct();
-	}
-	
-	protected function configure()
+        parent::__construct();
+    }
+    
+    protected function configure()
     {
         $this
             ->setName('ems:environment:reconnect')

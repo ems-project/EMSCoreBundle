@@ -11,23 +11,23 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ReorderType extends AbstractType
 {
 
-	/**
+    /**
      * @param FormBuilderInterface $builder
      * @param array $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
-    	$builder->add ( 'items', ItemsType::class, [
-    			'result' => $options['result']
-    	]);
-    	
-    	$builder->add ( 'reorder', SubmitEmsType::class, [
-    			'attr' => [
-    					'class' => 'btn-primary '
-    			],
-    			'icon' => 'fa fa-reorder'    			
-    	]);
+        $builder->add ( 'items', ItemsType::class, [
+                'result' => $options['result']
+        ]);
+        
+        $builder->add ( 'reorder', SubmitEmsType::class, [
+                'attr' => [
+                        'class' => 'btn-primary '
+                ],
+                'icon' => 'fa fa-reorder'                
+        ]);
     }   
 
     /**
@@ -36,9 +36,9 @@ class ReorderType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-			'result' => [],
+            'result' => [],
             'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
         ]);
     }
-	
+    
 }

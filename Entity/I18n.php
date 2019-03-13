@@ -57,13 +57,13 @@ class I18n
      */
     public function updateModified()
     {
-    	$this->modified = new \DateTime();
-        	if(!isset($this->created)){
-    		$this->created = $this->modified;
-    	}
-    	if(!isset($this->orderKey)){
-    		$this->orderKey = 0;
-    	}
+        $this->modified = new \DateTime();
+            if(!isset($this->created)){
+            $this->created = $this->modified;
+        }
+        if(!isset($this->orderKey)){
+            $this->orderKey = 0;
+        }
     }
 
 
@@ -157,15 +157,15 @@ class I18n
      */
     public function getContentTextforLocale($locale)
     {
-    	if(!empty($this->content)){
-	    	foreach ($this->content as $translation) {
-	    		if ($translation['locale'] === $locale) {
-	    			return $translation['text'];
-	    		}
-	    	}    		
-    	}
-    	
-    	return "no match found for key" . $this->getIdentifier() .  " with locale " . $locale;
+        if(!empty($this->content)){
+            foreach ($this->content as $translation) {
+                if ($translation['locale'] === $locale) {
+                    return $translation['text'];
+                }
+            }            
+        }
+        
+        return "no match found for key" . $this->getIdentifier() .  " with locale " . $locale;
     }
 
     /**

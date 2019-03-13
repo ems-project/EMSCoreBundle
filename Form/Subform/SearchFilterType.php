@@ -14,14 +14,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SearchFilterType extends AbstractType {
 
-	/**
-	 *
-	 * {@inheritdoc}
-	 *
-	 */
-	public function buildForm(FormBuilderInterface $builder, array $options) {
+    /**
+     *
+     * {@inheritdoc}
+     *
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options) {
 
-	    if($options['is_super'] || empty($options['searchFields'])) {
+        if($options['is_super'] || empty($options['searchFields'])) {
             $builder->add('field', TextType::class, [
                 'required' => false,
             ]);
@@ -41,51 +41,51 @@ class SearchFilterType extends AbstractType {
             ]);
         }
 
-		$builder->add('boost', $options['is_super']?NumberType::class:HiddenType::class, [
-			'required' => false,
-		]);
-		
-		$builder->add('operator', ChoiceType::class, [
-			'choices' => [
-				'Query (and)' => 'query_and',
-				'Query (or)' => 'query_or', 
-				'Match (and)' => 'match_and',
-				'Match (or)' => 'match_or', 
-				'Term' => 'term', 
-			]
-		]);
-		
-		$builder->add('booleanClause', ChoiceType::class, [
-			'choices' => [
-				'Must' => 'must',
-				'Should' => 'should', 
-				'Must not' => 'must_not',
-				'Filter' => 'filter', 
-			]
-		]);
-		
-		$builder->add('pattern', TextType::class, [
-			'required' => false,
-		]);
-	}
-	
-	public function configureOptions(OptionsResolver $resolver)
-	{
-		$resolver->setDefaults([
+        $builder->add('boost', $options['is_super']?NumberType::class:HiddenType::class, [
+            'required' => false,
+        ]);
+        
+        $builder->add('operator', ChoiceType::class, [
+            'choices' => [
+                'Query (and)' => 'query_and',
+                'Query (or)' => 'query_or', 
+                'Match (and)' => 'match_and',
+                'Match (or)' => 'match_or', 
+                'Term' => 'term', 
+            ]
+        ]);
+        
+        $builder->add('booleanClause', ChoiceType::class, [
+            'choices' => [
+                'Must' => 'must',
+                'Should' => 'should', 
+                'Must not' => 'must_not',
+                'Filter' => 'filter', 
+            ]
+        ]);
+        
+        $builder->add('pattern', TextType::class, [
+            'required' => false,
+        ]);
+    }
+    
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
             'data_class' => 'EMS\CoreBundle\Entity\Form\SearchFilter',
             'is_super' => false,
             'searchFields' => [],
             'searchFieldsData' => [],
-		]);
-	}
-	
-	/**
-	 *
-	 * {@inheritdoc}
-	 *
-	 */
-	public function getBlockPrefix() {
-		return 'search_filter';
-	}
-	
+        ]);
+    }
+    
+    /**
+     *
+     * {@inheritdoc}
+     *
+     */
+    public function getBlockPrefix() {
+        return 'search_filter';
+    }
+    
 }

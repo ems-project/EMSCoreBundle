@@ -10,7 +10,7 @@ composer phpcs
 
 If your code is not compliant, you could try fixing it automatically:
 ````bash
-php vendor/squizlabs/php_codesniffer/bin/phpcbf --extensions=php,lib,inc
+composer phpcbf
 ````
 
 Documentation

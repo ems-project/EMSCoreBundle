@@ -208,11 +208,7 @@ class FieldTypeType extends AbstractType
                 $this->logger->debug('not deleted');
                 if ($dataFieldType->isNested()) {
                     $out[$dataFieldType->getJsonName($dataField->getFieldType())] = array_merge($out[$dataFieldType->getJsonName($dataField->getFieldType())], $this->dataFieldToArray($child));
-                }
-//                 else if(isset($jsonName)){
-//                     $out[$jsonName] = array_merge($out[$jsonName], $this->dataFieldToArray($child));
-//                 }
-                else {
+                } else {
                     $out = array_merge($out, $this->dataFieldToArray($child));
                 }
             }

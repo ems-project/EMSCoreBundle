@@ -541,9 +541,8 @@ class ElasticsearchController extends AppController
             $results = $client->search($params);
             
             $this->getLogger()->addDebug('After search api');
-        }
-        //ther is no type matching this request
-        else {
+        } else {
+            //there is no type matching this request
             $results = [
                 'hits' => [
                         'total' => 0,
@@ -651,9 +650,9 @@ class ElasticsearchController extends AppController
                 return $this->render('@EMSCore/elasticsearch/save-search.html.twig', [
                         'form' => $form->createView(),
                 ]);
-            }//Form treatement after the "Delete" button has been pressed (to delete a previous saved search preset)
-            else if ($form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && array_key_exists('delete', $request->query->get('search_form'))) {
-                    $this->addFlash('notice', 'Search has been deleted');
+            } else if ($form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && array_key_exists('delete', $request->query->get('search_form'))) {
+                //Form treatement after the "Delete" button has been pressed (to delete a previous saved search preset)
+                $this->addFlash('notice', 'Search has been deleted');
             }
             
             //Next we want 1. see the results, or 2. export the results

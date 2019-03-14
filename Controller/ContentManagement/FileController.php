@@ -20,44 +20,48 @@ class FileController extends AppController
         $this->requestRuntime = $requestRuntime;
     }
 
-	/**
+    /**
      * @deprecated
-	 * @Route("/data/file/view/{sha1}" , name="ems.file.view", methods={"GET","HEAD"})
-	 * @Route("/data/file/view/{sha1}" , name="ems_file_view", methods={"GET","HEAD"})
-	 * @Route("/api/file/view/{sha1}" , name="ems.api.file.view", methods={"GET","HEAD"})
-	 */
-	public function viewFileAction($sha1, Request $request) {
-	    @trigger_error(sprintf('The "%s::viewFileAction" function is deprecated and should not be used anymore.', FileController::class, AssetController::class), E_USER_DEPRECATED);
-	    return $this->getFile($sha1, ResponseHeaderBag::DISPOSITION_INLINE, $request);
-	}
-	/**
+     * @Route("/data/file/view/{sha1}" , name="ems.file.view", methods={"GET","HEAD"})
+     * @Route("/data/file/view/{sha1}" , name="ems_file_view", methods={"GET","HEAD"})
+     * @Route("/api/file/view/{sha1}" , name="ems.api.file.view", methods={"GET","HEAD"})
+     */
+    public function viewFileAction($sha1, Request $request)
+    {
+        @trigger_error(sprintf('The "%s::viewFileAction" function is deprecated and should not be used anymore.', FileController::class, AssetController::class), E_USER_DEPRECATED);
+        return $this->getFile($sha1, ResponseHeaderBag::DISPOSITION_INLINE, $request);
+    }
+    /**
      * @deprecated
-	 * @Route("/public/file/{sha1}" , name="ems_file_download_public", methods={"GET","HEAD"})
-	 * @Route("/data/file/{sha1}" , name="file.download", methods={"GET","HEAD"})
-	 * @Route("/data/file/{sha1}" , name="ems_file_download", methods={"GET","HEAD"})
-	 * @Route("/api/file/{sha1}" , name="file.api.download", methods={"GET","HEAD"})
-	 */
-	public function downloadFileAction($sha1, Request $request) {
+     * @Route("/public/file/{sha1}" , name="ems_file_download_public", methods={"GET","HEAD"})
+     * @Route("/data/file/{sha1}" , name="file.download", methods={"GET","HEAD"})
+     * @Route("/data/file/{sha1}" , name="ems_file_download", methods={"GET","HEAD"})
+     * @Route("/api/file/{sha1}" , name="file.api.download", methods={"GET","HEAD"})
+     */
+    public function downloadFileAction($sha1, Request $request)
+    {
         @trigger_error(sprintf('The "%s::downloadFileAction" function is deprecated and should not be used anymore.', FileController::class, AssetController::class), E_USER_DEPRECATED);
-		return $this->getFile($sha1, ResponseHeaderBag::DISPOSITION_ATTACHMENT, $request);
-	}
+        return $this->getFile($sha1, ResponseHeaderBag::DISPOSITION_ATTACHMENT, $request);
+    }
 
-	/**
-	 * @Route("/data/file/extract/{sha1}.{_format}" , name="ems_file_extract", defaults={"_format" = "json"}, methods={"GET","HEAD"})
-	 */
-	public function extractFileContent($sha1) {
+    /**
+     * @Route("/data/file/extract/{sha1}.{_format}" , name="ems_file_extract", defaults={"_format" = "json"}, methods={"GET","HEAD"})
+     */
+    public function extractFileContent($sha1)
+    {
 
-		$data = $this->getAssetExtractorService()->extractData($sha1);
+        $data = $this->getAssetExtractorService()->extractData($sha1);
 
-		$response = $this->render( '@EMSCore/ajax/extract-data-file.json.twig', [
-				'success' => true,
-				'data' => $data,
-		] );
-		$response->headers->set('Content-Type', 'application/json');
-		return $response;
-	}
+        $response = $this->render('@EMSCore/ajax/extract-data-file.json.twig', [
+                'success' => true,
+                'data' => $data,
+        ]);
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
+    }
 
-	private function getFile($sha1, $disposition, Request $request){
+    private function getFile($sha1, $disposition, Request $request)
+    {
         @trigger_error(sprintf('The "%s::getFile" function is deprecated and should not be used anymore.', FileController::class, AssetController::class), E_USER_DEPRECATED);
 
         return $this->redirect($this->requestRuntime->assetPath([
@@ -67,31 +71,30 @@ class FileController extends AppController
         ], [
             '_disposition' => $disposition,
         ]));
-	}
+    }
 
 
-	/**
-	 * @Route("/data/file/init-upload/{sha1}/{size}" , name="file.init-upload", defaults={"_format" = "json"}, methods={"POST"})
-	 * @Route("/api/file/init-upload/{sha1}/{size}" , name="file.api.init-upload", defaults={"_format" = "json"}, methods={"POST"})
- 	 */
-	public function initUploadFileAction($sha1, $size, Request $request)
-	{
-		$params = json_decode($request->getContent(), true);
-		$name = isset($params['name']) ? $params['name'] : 'upload.bin';
-		$type = isset($params['type']) ? $params['type'] : 'application/bin';
-		
-		$user = $this->getUser()->getUsername();
-		
-		try {
-			$uploadedAsset = $this->getFileService()->initUploadFile($sha1, $size, $name, $type, $user);
-		}
-		catch (\Exception $e) {
-			$this->addFlash('error', $e->getMessage());
-			return $this->render( '@EMSCore/ajax/notification.json.twig', [
-				'success' => false,
-			]);
-		}
-		
+    /**
+     * @Route("/data/file/init-upload/{sha1}/{size}" , name="file.init-upload", defaults={"_format" = "json"}, methods={"POST"})
+     * @Route("/api/file/init-upload/{sha1}/{size}" , name="file.api.init-upload", defaults={"_format" = "json"}, methods={"POST"})
+     */
+    public function initUploadFileAction($sha1, $size, Request $request)
+    {
+        $params = json_decode($request->getContent(), true);
+        $name = isset($params['name']) ? $params['name'] : 'upload.bin';
+        $type = isset($params['type']) ? $params['type'] : 'application/bin';
+        
+        $user = $this->getUser()->getUsername();
+        
+        try {
+            $uploadedAsset = $this->getFileService()->initUploadFile($sha1, $size, $name, $type, $user);
+        } catch (\Exception $e) {
+            $this->addFlash('error', $e->getMessage());
+            return $this->render('@EMSCore/ajax/notification.json.twig', [
+                'success' => false,
+            ]);
+        }
+        
 
         return $this->render('@EMSCore/ajax/file.json.twig', [
                 'success' => true,

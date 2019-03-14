@@ -14,6 +14,5 @@ class DefaultControllerTest extends WebTestCase
 
         $this->assertTrue($client->getResponse()->isRedirect('/notifications/inbox'));
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
-
     }
 }

@@ -33,24 +33,24 @@ class AssetController extends AbstractController
      * @Route("/data/asset/{hash_config}/{hash}/{filename}" , name="ems_asset", methods={"GET","HEAD"})
      * @Route("/public/asset/{hash_config}/{hash}/{filename}" , name="emsco_asset_public", methods={"GET","HEAD"})
      */
-    public function assetAction(string $hash, string $hash_config, string $filename, Request $request) {
+    public function assetAction(string $hash, string $hash_config, string $filename, Request $request)
+    {
         return $this->processor->getResponse($request, $hash, $hash_config, $filename);
     }
 
 
     /**
      * @deprecated
-	 * @Route("/asset/{processor}/{hash}", name="ems_asset_processor", methods={"GET","HEAD"})
+     * @Route("/asset/{processor}/{hash}", name="ems_asset_processor", methods={"GET","HEAD"})
      */
     public function assetProcessorAction(Request $request, string $processor, string $hash): Response
     {
         @trigger_error(sprintf('The "%s::assetProcessorAction" controller is deprecated. Used "%s::assetAction" instead.', AssetController::class, AssetController::class), E_USER_DEPRECATED);
 
-	    return $this->redirect($this->appExtension->assetPath([
+        return $this->redirect($this->appExtension->assetPath([
             EmsFields::CONTENT_FILE_HASH_FIELD => $hash,
             EmsFields::CONTENT_FILE_NAME_FIELD => $request->query->get('name', 'filename'),
             EmsFields::CONTENT_MIME_TYPE_FIELD => $request->query->get('type', 'application/octet-stream'),
         ], $processor, [], 'emsco_asset_public'));
-
-	}
+    }
 }

@@ -379,57 +379,57 @@ class DataService
     public function createData($ouuid, array $rawdata, ContentType $contentType, $byARealUser = true)
     {
 
-		$now = new \DateTime();
-		$until = $now->add(new \DateInterval($byARealUser?"PT5M":"PT1M"));//+5 minutes
-		$newRevision = new Revision();
-		$newRevision->setContentType($contentType);
-		$newRevision->setOuuid($ouuid);
-		$newRevision->setStartTime($now);
-		$newRevision->setEndTime(null);
-		$newRevision->setDeleted(0);
-		$newRevision->setDraft(1);
-		if($byARealUser) {
-			$newRevision->setLockBy($this->tokenStorage->getToken()->getUsername());			
-		}
-		else {
-			$newRevision->setLockBy('DATA_SERVICE');
-		}
-		$newRevision->setLockUntil($until);
-		$newRevision->setRawData($rawdata);
-		
-		$em = $this->doctrine->getManager();
-		if(!empty($ouuid)){
-			$revisionRepository = $em->getRepository('EMSCoreBundle:Revision');
-			$anotherObject = $revisionRepository->findOneBy([
-					'contentType' => $contentType,
-					'ouuid' => $newRevision->getOuuid(),
-					'endTime' => null
-			]);
-			
-			if(!empty($anotherObject)) {
-				throw new ConflictHttpException('Duplicate OUUID '.$ouuid.' for this content type');
-			}			
-		}
-		
-		$em->persist($newRevision);
-		$em->flush();
-		return $newRevision;
-		
-	}
+        $now = new \DateTime();
+        $until = $now->add(new \DateInterval($byARealUser?"PT5M":"PT1M"));//+5 minutes
+        $newRevision = new Revision();
+        $newRevision->setContentType($contentType);
+        $newRevision->setOuuid($ouuid);
+        $newRevision->setStartTime($now);
+        $newRevision->setEndTime(null);
+        $newRevision->setDeleted(0);
+        $newRevision->setDraft(1);
+        if ($byARealUser) {
+            $newRevision->setLockBy($this->tokenStorage->getToken()->getUsername());
+        } else {
+            $newRevision->setLockBy('DATA_SERVICE');
+        }
+        $newRevision->setLockUntil($until);
+        $newRevision->setRawData($rawdata);
+        
+        $em = $this->doctrine->getManager();
+        if (!empty($ouuid)) {
+            $revisionRepository = $em->getRepository('EMSCoreBundle:Revision');
+            $anotherObject = $revisionRepository->findOneBy([
+                    'contentType' => $contentType,
+                    'ouuid' => $newRevision->getOuuid(),
+                    'endTime' => null
+            ]);
+            
+            if (!empty($anotherObject)) {
+                throw new ConflictHttpException('Duplicate OUUID '.$ouuid.' for this content type');
+            }
+        }
+        
+        $em->persist($newRevision);
+        $em->flush();
+        return $newRevision;
+    }
 
     /**
      * @deprecated
      * @param $array
      * @param int $sort_flags
      */
-	public static function ksortRecursive(&$array, $sort_flags = SORT_REGULAR) {
+    public static function ksortRecursive(&$array, $sort_flags = SORT_REGULAR)
+    {
         @trigger_error("DataService::ksortRecursive is deprecated use the ArrayTool::normalizeArray instead", E_USER_DEPRECATED);
 
-		ArrayTool::normalizeArray($array, $sort_flags);
-	}
-	
-	public function sign(Revision $revision, $silentPublish=false) {
-	    if($silentPublish && $revision->getAutoSave()){
+        ArrayTool::normalizeArray($array, $sort_flags);
+    }
+    
+    public function sign(Revision $revision, $silentPublish = false)
+    {
+        if ($silentPublish && $revision->getAutoSave()) {
             $objectArray = $revision->getAutoSave();
         } else {
             $objectArray = $revision->getRawData();
@@ -1036,7 +1036,7 @@ class DataService
      * Assign data in dataValues based on the elastic index content
      *
      * @param DataField $dataField
-	 * @param array $elasticIndexDatas
+     * @param array $elasticIndexDatas
      * @param bool $isMigration
      *
      */

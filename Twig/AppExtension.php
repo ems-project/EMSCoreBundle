@@ -107,8 +107,8 @@ class AppExtension extends \Twig_Extension
             new TwigFunction('diff_time', array($this, 'diffTime'), ['is_safe' => ['html']]),
             new TwigFunction('is_super', array($this, 'isSuper')),
             new TwigFunction('emsco_asset_path', [$this, 'assetPath'], ['is_safe' => ['html']]),
-		];
-        }
+        ];
+    }
 
 
     /**
@@ -176,7 +176,7 @@ class AppExtension extends \Twig_Extension
      * @param int $referenceType
      * @return string
      */
-    public function assetPath(array $fileField, string $processorIdentifier, array $assetConfig=[], string $route = 'ems_asset', string $fileHashField=EmsFields::CONTENT_FILE_HASH_FIELD, $filenameField=EmsFields::CONTENT_FILE_NAME_FIELD, $mimeTypeField=EmsFields::CONTENT_MIME_TYPE_FIELD, $referenceType = UrlGeneratorInterface::RELATIVE_PATH) : string
+    public function assetPath(array $fileField, string $processorIdentifier, array $assetConfig = [], string $route = 'ems_asset', string $fileHashField = EmsFields::CONTENT_FILE_HASH_FIELD, $filenameField = EmsFields::CONTENT_FILE_NAME_FIELD, $mimeTypeField = EmsFields::CONTENT_MIME_TYPE_FIELD, $referenceType = UrlGeneratorInterface::RELATIVE_PATH) : string
     {
         $config = $assetConfig;
 
@@ -198,15 +198,14 @@ class AppExtension extends \Twig_Extension
 
         if ($result['hits']['total'] == 0) {
             $config['_config_type'] = 'image';
-        }
-        else {
+        } else {
             $config = array_merge($result['hits']['hits'][0]['_source'], $config);
         }
 
         // removes invalid options like _sha1, _finalized_by, ..
-        $config = array_intersect_key( $config, Config::getDefaults());
+        $config = array_intersect_key($config, Config::getDefaults());
         //_published_datetime can also be removed as it has a sense only if the default config is updated
-        if(isset($config['_published_datetime'])) {
+        if (isset($config['_published_datetime'])) {
             unset($config['_published_datetime']);
         }
 
@@ -948,7 +947,7 @@ class AppExtension extends \Twig_Extension
         return $out;
     }
 
-    public function data(string $key, string $index=null)
+    public function data(string $key, string $index = null)
     {
         $out = $key;
         $splitted = explode(':', $key);

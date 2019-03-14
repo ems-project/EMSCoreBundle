@@ -128,10 +128,6 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
 
         if (!empty($configs[0]['template_options'])) {
             $globals = array_merge($globals, $configs[0]['template_options']);
-
-
-
-
         }
 
         if (isset($bundles['TwigBundle'])) {

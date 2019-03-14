@@ -62,7 +62,6 @@ class FileService
         if (!empty($sftpServer) && !empty($sftpPath) && !empty($sftpPath) && !empty($publicKey) && !empty($privateKey)) {
             $this->addStorageService(new SftpStorage($sftpServer, $sftpPath, $sftpUser, $publicKey, $privateKey, true));
         }
-
     }
 
     public function addStorageService($storageAdapter)
@@ -283,7 +282,7 @@ class FileService
     {
         $hash = $this->storageManager->computeFileHash($filename);
         if ($hash != $uploadedAsset->getSha1()) {
-// 			throw new Conflict409Exception("Hash mismatched ".$hash.' >< '.$uploadedAsset->getSha1());
+//          throw new Conflict409Exception("Hash mismatched ".$hash.' >< '.$uploadedAsset->getSha1());
 //TODO: fix this issue by using the CryotJS librairy on the FE JS?
             $uploadedAsset->setSha1($hash);
             $uploadedAsset->setUploaded(filesize($filename));
@@ -338,8 +337,6 @@ class FileService
         $em->flush($uploadedAsset);
 
         if ($uploadedAsset->getUploaded() == $uploadedAsset->getSize()) {
-
-
             $loopCounter = 0;
             foreach ($this->storageManager->getAdapters() as $service) {
                 $handler = $service->read($uploadedAsset->getSha1(), false, false);
@@ -354,9 +351,7 @@ class FileService
                     if ($service->finalizeUpload($hash) && ++$loopCounter >= $this->uploadMinimuNumberOfReplications) {
                         break;
                     }
-
                 }
-
             }
 
             if ($loopCounter === 0) {
@@ -364,7 +359,6 @@ class FileService
                 $em->flush($uploadedAsset);
                 throw new Exception('Was not able to finalize or confirmed the upload in at least one storage service');
             }
-
         }
 
         $em->persist($uploadedAsset);

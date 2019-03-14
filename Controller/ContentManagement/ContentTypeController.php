@@ -911,7 +911,6 @@ class ContentTypeController extends AppController
                 default:
                     $this->addFlash('warning', 'Action not found '.$action);
             }
-
         }
         return $this->redirectToRoute('ems_contenttype_field_edit', [
             'contentType' => $contentType->getId(),

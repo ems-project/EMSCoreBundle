@@ -2,48 +2,50 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use EMS\CoreBundle;
+use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\Controller\AppController;
-use EMS\CoreBundle\Entity\UploadedAsset;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Routing\Annotation\Route;
 
 class FileController extends AppController
 {
-	
-	
+    /** @var RequestRuntime */
+    private $requestRuntime;
+
+    public function __construct(RequestRuntime $requestRuntime)
+    {
+        $this->requestRuntime = $requestRuntime;
+    }
+
 	/**
-	 * @Route("/data/file/view/{sha1}" , name="ems.file.view")
-	 * @Route("/data/file/view/{sha1}" , name="ems_file_view")
-	 * @Route("/api/file/view/{sha1}" , name="ems.api.file.view")
-     * @Method({"GET"})
+     * @deprecated
+	 * @Route("/data/file/view/{sha1}" , name="ems.file.view", methods={"GET","HEAD"})
+	 * @Route("/data/file/view/{sha1}" , name="ems_file_view", methods={"GET","HEAD"})
+	 * @Route("/api/file/view/{sha1}" , name="ems.api.file.view", methods={"GET","HEAD"})
 	 */
 	public function viewFileAction($sha1, Request $request) {
-		return $this->getFile($sha1, ResponseHeaderBag::DISPOSITION_INLINE, $request);
+	    @trigger_error(sprintf('The "%s::viewFileAction" function is deprecated and should not be used anymore.', FileController::class, AssetController::class), E_USER_DEPRECATED);
+	    return $this->getFile($sha1, ResponseHeaderBag::DISPOSITION_INLINE, $request);
 	}
 	/**
-	 * @Route("/public/file/{sha1}" , name="ems_file_download_public")
-	 * @Route("/data/file/{sha1}" , name="file.download")
-	 * @Route("/data/file/{sha1}" , name="ems_file_download")
-	 * @Route("/api/file/{sha1}" , name="file.api.download")
-	 * @Method({"GET"})
+     * @deprecated
+	 * @Route("/public/file/{sha1}" , name="ems_file_download_public", methods={"GET","HEAD"})
+	 * @Route("/data/file/{sha1}" , name="file.download", methods={"GET","HEAD"})
+	 * @Route("/data/file/{sha1}" , name="ems_file_download", methods={"GET","HEAD"})
+	 * @Route("/api/file/{sha1}" , name="file.api.download", methods={"GET","HEAD"})
 	 */
 	public function downloadFileAction($sha1, Request $request) {
+        @trigger_error(sprintf('The "%s::downloadFileAction" function is deprecated and should not be used anymore.', FileController::class, AssetController::class), E_USER_DEPRECATED);
 		return $this->getFile($sha1, ResponseHeaderBag::DISPOSITION_ATTACHMENT, $request);
 	}
 	
 	/**
-	 * @Route("/data/file/extract/{sha1}.{_format}" , name="ems_file_extract", defaults={"_format" = "json"})
-	 * @Method({"GET"})
+	 * @Route("/data/file/extract/{sha1}.{_format}" , name="ems_file_extract", defaults={"_format" = "json"}, methods={"GET","HEAD"})
 	 */
-	public function extractFileContent($sha1, Request $request) {
-//		$name = $request->query->get('name', 'temp');
+	public function extractFileContent($sha1) {
 		
 		$data = $this->getAssetExtractorService()->extractData($sha1);
 		
@@ -56,29 +58,22 @@ class FileController extends AppController
 	}
 	
 	private function getFile($sha1, $disposition, Request $request){
-		$name = $request->query->get('name', 'upload.bin');
-		$type = $request->query->get('type', 'application/bin');
-		
-		$file = $this->getFileService()->getFile($sha1);
-		
-		
-		if(!$file){
-			throw new NotFoundHttpException('Impossible to find the item corresponding to this id: '.$sha1);
-		}
-		
-		$response = new BinaryFileResponse($file);
-		$response->headers->set('Content-Type', $type);
-		$response->setContentDisposition($disposition, $name);
-		
-		return $response;
+        @trigger_error(sprintf('The "%s::getFile" function is deprecated and should not be used anymore.', FileController::class, AssetController::class), E_USER_DEPRECATED);
+
+        return $this->redirect($this->requestRuntime->assetPath([
+            EmsFields::CONTENT_FILE_HASH_FIELD => $sha1,
+            EmsFields::CONTENT_FILE_NAME_FIELD => $request->query->get('name', 'filename'),
+            EmsFields::CONTENT_MIME_TYPE_FIELD => $request->query->get('type', 'application/octet-stream'),
+        ], [
+            '_disposition' => $disposition,
+        ]));
 	}
 	
 	
 	/**
-	 * @Route("/data/file/init-upload/{sha1}/{size}" , name="file.init-upload", defaults={"_format" = "json"})
-	 * @Route("/api/file/init-upload/{sha1}/{size}" , name="file.api.init-upload", defaults={"_format" = "json"})
-     * @Method({"POST"})
-	 */
+	 * @Route("/data/file/init-upload/{sha1}/{size}" , name="file.init-upload", defaults={"_format" = "json"}, methods={"POST"})
+	 * @Route("/api/file/init-upload/{sha1}/{size}" , name="file.api.init-upload", defaults={"_format" = "json"}, methods={"POST"})
+ 	 */
 	public function initUploadFileAction($sha1, $size, Request $request)
 	{
 		$params = json_decode($request->getContent(), true);
@@ -105,8 +100,8 @@ class FileController extends AppController
 	}
 	
 	/**
-	 * @Route("/data/file/upload-chunk/{sha1}", name="file.uploadchunk", defaults={"_format" = "json"})
-	 * @Route("/api/file/upload-chunk/{sha1}", name="file.api.uploadchunk", defaults={"_format" = "json"})
+	 * @Route("/data/file/upload-chunk/{sha1}", name="file.uploadchunk", defaults={"_format" = "json"}, methods={"POST"})
+	 * @Route("/api/file/upload-chunk/{sha1}", name="file.api.uploadchunk", defaults={"_format" = "json"}, methods={"POST"})
 	 */
 	public function uploadChunkAction($sha1, Request $request)
 	{
@@ -134,9 +129,8 @@ class FileController extends AppController
 	
 	
 	/**
-	 * @Route("/images/index" , name="ems_images_index", defaults={"_format": "json"})
-	 * @Route("/api/images" , name="ems_api_images_index", defaults={"_format": "json"})
-	 * @Method({"GET"})
+	 * @Route("/images/index" , name="ems_images_index", defaults={"_format": "json"}, methods={"GET","HEAD"})
+	 * @Route("/api/images" , name="ems_api_images_index", defaults={"_format": "json"}, methods={"GET","HEAD"})
 	 */
 	public function indexImagesAction(Request $request) {
 		$images = $this->getFileService()->getImages();
@@ -147,9 +141,8 @@ class FileController extends AppController
 	
 	
 	/**
-	 * @Route("/file/upload" , name="ems_image_upload_url", defaults={"_format": "json"})
-	 * @Route("/api/file" , name="ems_api_image_upload_url", defaults={"_format": "json"})
-	 * @Method({"POST"})
+	 * @Route("/file/upload" , name="ems_image_upload_url", defaults={"_format": "json"}, methods={"POST"})
+	 * @Route("/api/file" , name="ems_api_image_upload_url", defaults={"_format": "json"}, methods={"POST"})
 	 */
 	public function uploadfileAction(Request $request) {
 		/**@var UploadedFile $file*/

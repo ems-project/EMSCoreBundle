@@ -1,15 +1,12 @@
 <?php
 namespace EMS\CoreBundle\Controller;
 
-use Doctrine\DBAL\Types\TextType;
 use Doctrine\ORM\EntityManager;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\ElasticsearchException;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
-use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\AggregateOption;
 use EMS\CoreBundle\Entity\ContentType;
-use EMS\CoreBundle\Entity\Filter;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\Form\SearchFilter;
 use EMS\CoreBundle\Entity\Template;
@@ -24,7 +21,6 @@ use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;

@@ -96,8 +96,9 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('elasticsearch_version')->defaultValue(self::ELASTICSEARCH_VERSION)->end()
             ->scalarNode('single_type_index')->defaultValue(self::SINGLE_TYPE_INDEX)->end()
             ->scalarNode('save_assets_in_db')->defaultValue(self::SAVE_ASSETS_IN_DB)->end()
-            ->arrayNode('template_options')->defaultValue([])->prototype('variable')->end()
-            ->end()
+            ->scalarNode('s3_bucket')->defaultValue(null)->end()
+            ->variableNode('s3_credentials')->defaultValue([])->end()
+            ->arrayNode('template_options')->defaultValue([])->prototype('variable')->end()->end()
             ->end();
 
         return $treeBuilder;

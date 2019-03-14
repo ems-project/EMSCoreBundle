@@ -2,13 +2,12 @@
 
 namespace EMS\CoreBundle\Repository;
 
-use EMS\CoreBundle\Entity\ContentType;
-use EMS\CoreBundle\Entity\Environment;
-use EMS\CoreBundle\Entity\Revision;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
-use function intval;
+use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\Revision;
 
 /**
  * RevisionRepository

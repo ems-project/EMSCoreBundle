@@ -3,7 +3,6 @@
 namespace EMS\CoreBundle\Form\Subform;
 
 use EMS\CoreBundle\Entity\SearchFieldOption;
-use function json_encode;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;

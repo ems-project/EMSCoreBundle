@@ -12,6 +12,8 @@ class DefaultControllerTest extends WebTestCase
 
         $crawler = $client->request('GET', '/');
 
-        $this->assertContains('Hello World', $client->getResponse()->getContent());
+        $this->assertTrue($client->getResponse()->isRedirect('/notifications/inbox'));
+        $this->assertEquals(302, $client->getResponse()->getStatusCode());
+
     }
 }

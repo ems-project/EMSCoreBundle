@@ -2,18 +2,17 @@
 
 namespace EMS\CoreBundle\Form\DataField;
 
+use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
-use function is_integer;
+use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use EMS\CoreBundle\Entity\DataField;
 
 class ChoiceFieldType extends DataFieldType {
 

@@ -6,9 +6,10 @@ services:
     _defaults:
         public: true
 
-    app.twig_extension:
-        class: EMS\CoreBundle\Twig\AppExtension
-        arguments: ['@doctrine', '@security.authorization_checker', '@ems.service.user', '@ems.service.contenttype', '@app.elasticsearch', '@router', '@twig', '@ems.form.factories.objectChoiceListFactory', '@ems.service.environment', '@logger', '@form.factory', '@ems.service.file' ]
+    app.twig_extension: '@EMS\CoreBundle\Twig\AppExtension'
+    EMS\CoreBundle\Twig\AppExtension:
+        #class: EMS\CoreBundle\Twig\AppExtension
+        arguments: ['@doctrine', '@security.authorization_checker', '@ems.service.user', '@ems.service.contenttype', '@app.elasticsearch', '@router', '@twig', '@ems.form.factories.objectChoiceListFactory', '@ems.service.environment', '@logger', '@form.factory', '@ems.service.file' , '@ems_common.twig.runtime.request', '%ems_core.asset_config_index%', '%ems_core.asset_config_type%']
         #public: false
         tags:
             - { name: twig.extension, priority: -2000 }
@@ -442,7 +443,7 @@ services:
         arguments: []
     ems.service.file:
         class: EMS\CoreBundle\Service\FileService
-        arguments: ['@doctrine', '@ems.service.rest_client', '%kernel.project_dir%', '%ems_core.upload_folder%', '%ems_core.storage_folder%', '%ems_core.save_assets_in_db%', '%ems_core.ems_remote_host%', '%ems_core.ems_remote_authkey%', '%ems_core.sftp_server%', '%ems_core.sftp_path%', '%ems_core.sftp_user%', '%ems_core.private_key%', '%ems_core.public_key%']
+        arguments: ['@doctrine', '@ems_common.storage.manager', '%kernel.project_dir%', '%ems_core.upload_folder%', '%ems_core.storage_folder%', '%ems_core.save_assets_in_db%', '%ems_core.ems_remote_host%', '%ems_core.ems_remote_authkey%', '%ems_core.sftp_server%', '%ems_core.sftp_path%', '%ems_core.sftp_user%', '%ems_core.public_key%', '%ems_core.private_key%', '%ems_core.s3_credentials%', '%ems_core.s3_bucket%']
     ems.service.helper:
         class: EMS\CoreBundle\Service\HelperService
         arguments: ['@doctrine', '@request_stack', '%ems_core.paging_size%']
@@ -563,9 +564,3 @@ services:
         autoconfigure: true
         public: true
         resource: '../../Controller/*'
-
-    EMS\CoreBundle\Controller\ContentManagement\AssetController:
-        autowire: true
-        arguments:
-            $configType: '%ems_core.asset_config_type%'
-            $configIndex: '%ems_core.asset_config_index%'

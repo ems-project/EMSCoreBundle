@@ -2,31 +2,36 @@
 
 namespace EMS\CoreBundle\Service;
 
+use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\ORM\EntityManager;
+use Elasticsearch\Client;
+use Elasticsearch\Common\Exceptions\Missing404Exception;
+use EMS\CommonBundle\Helper\ArrayTool;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\DataField;
-use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Notification;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Event\RevisionFinalizeDraftEvent;
 use EMS\CoreBundle\Event\RevisionNewDraftEvent;
+use EMS\CoreBundle\Event\UpdateRevisionReferersEvent;
+use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Exception\DataStateException;
 use EMS\CoreBundle\Exception\LockedException;
 use EMS\CoreBundle\Exception\PrivilegeException;
+use EMS\CoreBundle\Form\DataField\CollectionFieldType;
 use EMS\CoreBundle\Form\DataField\CollectionItemFieldType;
 use EMS\CoreBundle\Form\DataField\ComputedFieldType;
-use EMS\CoreBundle\Form\DataField\CollectionFieldType;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
-use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\ORM\EntityManager;
-use Elasticsearch\Client;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -34,11 +39,7 @@ use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Form\FormInterface;
-use Elasticsearch\Common\Exceptions\Missing404Exception;
-use EMS\CoreBundle\Event\UpdateRevisionReferersEvent;
-use EMS\CoreBundle\Exception\NotLockedException;
-use EMS\CoreBundle\Exception\CantBeFinalizedException;
+use const E_USER_DEPRECATED;
 
 class DataService
 {
@@ -423,17 +424,16 @@ class DataService
 		return $newRevision;
 		
 	}
-	
+
+    /**
+     * @deprecated
+     * @param $array
+     * @param int $sort_flags
+     */
 	public static function ksortRecursive(&$array, $sort_flags = SORT_REGULAR) {
-		if (!is_array($array)) return false;
-		ksort($array, $sort_flags);
-		foreach ($array as $index => &$arr) {
-			DataService::ksortRecursive($arr, $sort_flags);
-			if(is_array($array[$index]) && empty($array[$index])) {
-				unset($array[$index]);
-			}
-		}
-		return true;
+        @trigger_error("DataService::ksortRecursive is deprecated use the ArrayTool::normalizeArray instead", E_USER_DEPRECATED);
+
+		ArrayTool::normalizeArray($array, $sort_flags);
 	}
 	
 	public function sign(Revision $revision, $silentPublish=false) {
@@ -451,7 +451,7 @@ class DataService
 		if(isset($objectArray[Mapping::SIGNATURE_FIELD])){
 			unset($objectArray[Mapping::SIGNATURE_FIELD]);
 		}
-		DataService::ksortRecursive($objectArray);
+		ArrayTool::normalizeArray($objectArray);
 		$json = json_encode($objectArray);
 
 		$revision->setSha1(sha1($json));
@@ -503,7 +503,7 @@ class DataService
                         'index' => $this->contentTypeService->getIndex($revision->getContentType(), $environment),
                 ])['_source'];
 
-                DataService::ksortRecursive($indexedItem);
+                ArrayTool::normalizeArray($indexedItem);
 
                 if (isset($indexedItem[Mapping::PUBLISHED_DATETIME_FIELD])) {
                     unset($indexedItem[Mapping::PUBLISHED_DATETIME_FIELD]);
@@ -1041,8 +1041,10 @@ class DataService
 	/**
 	 * Assign data in dataValues based on the elastic index content
 	 *
+	 * @param DataField $dataField
 	 * @param array $elasticIndexDatas
-	 * @return $elasticIndexDatas
+	 * @param bool $isMigration
+     *
 	 */
 	public  function updateDataValue(DataField $dataField, Array &$elasticIndexDatas, $isMigration = false){
 		$dataFieldType = $this->formRegistry->getType($dataField->getFieldType()->getType())->getInnerType();

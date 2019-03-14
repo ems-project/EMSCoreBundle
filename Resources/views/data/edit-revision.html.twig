@@ -337,9 +337,9 @@ function initFileUploader(fileHandler, container){
     	    		clearButton.removeClass("disabled");
 
     	    		var urlPattern = previewLink.data('src')
-    	    			.replace(/_asset_hash_/g, $(sha1Input).val())
-    	    			.replace(/_asset_mimetype_/g, $(typeInput).val())
-    	    			.replace(/_asset_name_/g, $(nameInput).val());
+    	    			.replace(/_asset_hash_/g, encodeURIComponent($(sha1Input).val()))
+    	    			.replace(/_asset_mimetype_/g, encodeURIComponent($(typeInput).val()))
+    	    			.replace(/_asset_name_/g, encodeURIComponent($(nameInput).val()));
 
     	    		previewLink.attr('src', urlPattern);
     	    		

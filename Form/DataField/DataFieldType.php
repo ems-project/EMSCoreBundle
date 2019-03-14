@@ -24,7 +24,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 abstract class DataFieldType extends AbstractType
 {
-    
+
     /**@var AuthorizationCheckerInterface $authorizationChecker*/
     protected $authorizationChecker;
     /**@var FormRegistryInterface $formRegistry*/
@@ -39,13 +39,13 @@ abstract class DataFieldType extends AbstractType
         $this->formRegistry = $formRegistry;
         $this->elasticsearchService = $elasticsearchService;
     }
-    
+
     public function getBlockPrefix()
     {
         return 'data_field_type';
     }
-    
-    
+
+
     /**
      * {@inheritdoc}
      */
@@ -53,7 +53,7 @@ abstract class DataFieldType extends AbstractType
     {
         $builder->setDisabled($this->isDisabled($options));
     }
-    
+
     /**
      * Perfom field specfifc post-finalized treatment. It returns the children if it's a container
      *
@@ -67,8 +67,8 @@ abstract class DataFieldType extends AbstractType
     {
         return $previousData;
     }
-    
-    
+
+
     /**
      * form array to DataField
      *
@@ -81,7 +81,7 @@ abstract class DataFieldType extends AbstractType
     public function reverseViewTransform($data, FieldType $fieldType)
     {
         $out = new DataField();
-        
+
         if ((is_string($data) && $data === "") || (is_array($data) && count($data) === 0)) {
             $out->setRawData(null);
         } else {
@@ -90,8 +90,8 @@ abstract class DataFieldType extends AbstractType
         $out->setFieldType($fieldType);
         return $out;
     }
-    
-    
+
+
     /**
      * datafield to form array :
      *
@@ -104,8 +104,8 @@ abstract class DataFieldType extends AbstractType
     {
         return $dataField->getRawData();
     }
-    
-    
+
+
     /**
      * datafield to raw_data array :
      *
@@ -119,8 +119,8 @@ abstract class DataFieldType extends AbstractType
     {
         return $dataField->getRawData();
     }
-    
-    
+
+
     /**
      * raw_data array to datafield:
      *
@@ -136,24 +136,24 @@ abstract class DataFieldType extends AbstractType
         $out->setFieldType($fieldType);
         return $out;
     }
-    
+
     /**@var FormRegistryInterface*/
     public function getFormRegistry()
     {
         return $this->formRegistry;
     }
-    
+
     public function convertInput(DataField $dataField)
     {
         //by default do nothing
     }
-    
+
     public function generateInput(DataField $dataField)
     {
         //by default do nothing
     }
-    
-    
+
+
     public function getDefaultOptions($name)
     {
         return [
@@ -187,11 +187,11 @@ abstract class DataFieldType extends AbstractType
 
         /** @var FieldType $fieldType */
         $fieldType = $options ['metadata'];
-        
+
         $enable = ($options['migration'] && !$fieldType->getMigrationgOption('protected', true)) || $this->authorizationChecker->isGranted($fieldType->getMinimumRole());
         return !$enable;
     }
-    
+
 
     /**
      * Get Elasticsearch subquery
@@ -202,7 +202,7 @@ abstract class DataFieldType extends AbstractType
     {
         throw new \Exception('virtual method should be implemented by child class : '.get_class($this));
     }
-    
+
     /**
      * get the data value(s), as string, for the symfony form) in the context of this field
      *
@@ -221,7 +221,7 @@ abstract class DataFieldType extends AbstractType
         //TODO: should be abstract ??
         throw new \Exception('This function should never be called');
     }
-    
+
     /**
      * get the list of all possible values (if it means something) filter by the values array if not empty
      *
@@ -231,7 +231,7 @@ abstract class DataFieldType extends AbstractType
         //TODO: should be abstract ??
         throw new ContentTypeStructureException('The field '.$fieldType->getName().' of the content type '.$fieldType->getContentType()->getName().' does not have a limited list of values!');
     }
-    
+
     /**
      * Get a icon to visually identify a FieldType
      *
@@ -241,7 +241,7 @@ abstract class DataFieldType extends AbstractType
     {
         return 'fa fa-square';
     }
-    
+
     /**
      *
      * {@inheritdoc}
@@ -262,7 +262,7 @@ abstract class DataFieldType extends AbstractType
                 'helptext' => null,
         ]);
     }
-    
+
     /**
      * See if we can asume that we should find this field directly or if its a more complex type such as file or date range
      * @deprecated
@@ -273,7 +273,7 @@ abstract class DataFieldType extends AbstractType
     {
         return false;
     }
-    
+
     /**
      * Assign data of the dataField based on the elastic index content ($sourceArray)
      *
@@ -288,7 +288,7 @@ abstract class DataFieldType extends AbstractType
         }
         return [$dataField->getFieldType()->getName()];
     }
-    
+
     /**
      *
      * {@inheritDoc}
@@ -311,14 +311,13 @@ abstract class DataFieldType extends AbstractType
             }
         }
     }
-    
-    
+
+
     /**
      * Build an array representing the object, this array is ready to be serialized in json
      * and push in elasticsearch
-     *
-     * @return array
      */
+
     public static function buildObjectArray(DataField $data, array &$out)
     {
         if (! $data->getFieldType()->getDeleted()) {
@@ -329,7 +328,7 @@ abstract class DataFieldType extends AbstractType
             $out [$data->getFieldType()->getName()] = $data->getTextValue();
         }
     }
-    
+
     /**
      * Test if the field may contain sub field.
      *
@@ -341,17 +340,17 @@ abstract class DataFieldType extends AbstractType
     {
         return false;
     }
-    
+
     public static function isNested()
     {
         return false;
     }
-    
+
     public static function isCollection()
     {
         return false;
     }
-    
+
     /**
      * Test if the field is valid.
      *
@@ -365,7 +364,7 @@ abstract class DataFieldType extends AbstractType
 
         return count($dataField->getMessages()) === 0 && $this->isMandatory($dataField, $parent, $masterRawData);
     }
-    
+
     /**
      * Test if the requirment of the field is reached.
      *
@@ -433,7 +432,7 @@ abstract class DataFieldType extends AbstractType
         $builder->add('options', OptionsType::class, [
         ]);
     }
-    
+
     /**
      * return true if the field exist as is in elasticsearch
      *
@@ -443,7 +442,7 @@ abstract class DataFieldType extends AbstractType
     {
         return false;
     }
-    
+
     /**
      * return an array filtered with subfields foir this specfic fieldtype (in case of virtualfield wich is not a container (datarange))
      *
@@ -464,7 +463,7 @@ abstract class DataFieldType extends AbstractType
     {
         return $current->getName();
     }
-    
+
     /**
      * Build an elasticsearch mapping options as an array
      *

@@ -10,6 +10,14 @@
 	"uploaded": {{ (asset.uploaded+0)|json_encode|raw }},
 	"user": {{ asset.user|json_encode|raw }},   
 	"fileName": {{ asset.name|json_encode|raw }},
-    "url": {{path('ems_file_view', {sha1: asset.sha1, name:asset.name , type: asset.type})|json_encode|raw}},
-    
+    "previewUrl": {{ emsco_asset_path(asset.data, 'preview', {}, 'ems_asset',
+    	constant('EMS\\CommonBundle\\Helper\\EmsFields::CONTENT_FILE_HASH_FIELD'),
+    	constant('EMS\\CommonBundle\\Helper\\EmsFields::CONTENT_FILE_NAME_FIELD'),
+    	constant('EMS\\CommonBundle\\Helper\\EmsFields::CONTENT_MIME_TYPE_FIELD'),
+    	constant('Symfony\\Component\\Routing\\Generator\\UrlGeneratorInterface::ABSOLUTE_PATH'))|json_encode|raw }},
+    "url": {{ ems_asset_path(asset.data, {}, 'ems_asset',
+    	constant('EMS\\CommonBundle\\Helper\\EmsFields::CONTENT_FILE_HASH_FIELD'),
+    	constant('EMS\\CommonBundle\\Helper\\EmsFields::CONTENT_FILE_NAME_FIELD'),
+    	constant('EMS\\CommonBundle\\Helper\\EmsFields::CONTENT_MIME_TYPE_FIELD'),
+    	constant('Symfony\\Component\\Routing\\Generator\\UrlGeneratorInterface::ABSOLUTE_PATH'))|json_encode|raw }},
 {% endblock %}

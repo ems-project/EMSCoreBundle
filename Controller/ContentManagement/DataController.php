@@ -11,6 +11,8 @@ use EMS\CoreBundle;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\Form\Search;
+use EMS\CoreBundle\Entity\Form\SearchFilter;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Template;
 use EMS\CoreBundle\Entity\View;
@@ -25,22 +27,17 @@ use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\TemplateRepository;
 use EMS\CoreBundle\Repository\ViewRepository;
-use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\ContentTypeService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use EMS\CoreBundle\Service\DataService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use EMS\CoreBundle\Entity\Form\Search;
-use EMS\CoreBundle\Entity\Form\SearchFilter;
+use Symfony\Component\Routing\Annotation\Route;
 
 class DataController extends AppController
 {
@@ -48,8 +45,10 @@ class DataController extends AppController
     /**
      * @Route("/data/{name}", name="ems_data_default_search"))
      * @Route("/data/{name}", name="data.root"))
+     * @param $name
+     * @return Response
      */
-    public function rootAction($name, Request $request)
+    public function rootAction($name)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -63,7 +62,7 @@ class DataController extends AppController
         ]);
 
         if (!$contentType) {
-            throw NotFoundHttpException('Content type ' . $name . ' not found');
+            throw new NotFoundHttpException('Content type ' . $name . ' not found');
         }
 
 
@@ -104,8 +103,11 @@ class DataController extends AppController
 
     /**
      * @Route("/data/in-my-circles/{name}", name="ems_search_in_my_circles"))
+     *
+     * @param $name
+     * @return Response
      */
-    public function inMyCirclesAction($name, Request $request)
+    public function inMyCirclesAction($name)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -119,7 +121,7 @@ class DataController extends AppController
         ]);
 
         if (!$contentType) {
-            throw NotFoundHttpException('Content type ' . $name . ' not found');
+            throw new NotFoundHttpException('Content type ' . $name . ' not found');
         }
 
         $searchForm = new Search();
@@ -153,9 +155,11 @@ class DataController extends AppController
 
 
     /**
+     * @param ContentType $contentType
+     * @return Response
      * @Route("/data/trash/{contentType}", name="ems_data_trash"))
      */
-    public function trashAction(ContentType $contentType, Request $request)
+    public function trashAction(ContentType $contentType)
     {
         return $this->render('@EMSCore/data/trash.html.twig', [
             'contentType' => $contentType,
@@ -165,11 +169,13 @@ class DataController extends AppController
 
 
     /**
+     * @param ContentType $contentType
+     * @param $ouuid
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
-     * @Route("/data/put-back/{contentType}/{ouuid}", name="ems_data_put_back"))
-     * @Method({"POST"})
+     * @Route("/data/put-back/{contentType}/{ouuid}", name="ems_data_put_back"), methods={"POST"})
      */
-    public function putBackAction(ContentType $contentType, $ouuid, Request $request)
+    public function putBackAction(ContentType $contentType, $ouuid)
     {
         $revId = $this->getDataService()->putBack($contentType, $ouuid);
 
@@ -180,11 +186,13 @@ class DataController extends AppController
 
 
     /**
+     * @param ContentType $contentType
+     * @param $ouuid
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
-     * @Route("/data/empty-trash/{contentType}/{ouuid}", name="ems_data_empty_trash"))
-     * @Method({"POST"})
+     * @Route("/data/empty-trash/{contentType}/{ouuid}", name="ems_data_empty_trash"), methods={"POST"})
      */
-    public function emptyTrashAction(ContentType $contentType, $ouuid, Request $request)
+    public function emptyTrashAction(ContentType $contentType, $ouuid)
     {
         $this->getDataService()->emptyTrash($contentType, $ouuid);
 
@@ -195,9 +203,11 @@ class DataController extends AppController
 
 
     /**
+     * @param $contentTypeId
+     * @return Response
      * @Route("/data/draft/{contentTypeId}", name="data.draft_in_progress"))
      */
-    public function draftInProgressAction($contentTypeId, Request $request)
+    public function draftInProgressAction($contentTypeId)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -226,9 +236,13 @@ class DataController extends AppController
     }
 
     /**
+     * @param $environmentName
+     * @param $type
+     * @param $ouuid
+     * @return Response
      * @Route("/data/view/{environmentName}/{type}/{ouuid}", name="data.view")
      */
-    public function viewDataAction($environmentName, $type, $ouuid, Request $request)
+    public function viewDataAction($environmentName, $type, $ouuid)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -249,6 +263,7 @@ class DataController extends AppController
             'deleted' => false,
         ]);
 
+        /**@var ContentType $contentType */
         $contentType = null;
         if ($contentTypes && count($contentTypes) == 1) {
             $contentType = $contentTypes[0];
@@ -274,11 +289,16 @@ class DataController extends AppController
     }
 
     /**
+     * @param ContentType $contentType
+     * @param $ouuid
+     * @param Environment $environment
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+    /**
      * @Route("/data/revisions-in-environment/{environment}/{type}:{ouuid}", name="data.revision_in_environment", defaults={"deleted":0})
      * @ParamConverter("contentType", options={"mapping": {"type" = "name", "deleted" = "deleted"}})
      * @ParamConverter("environment", options={"mapping": {"environment" = "name"}})
      */
-    public function revisionInEnvironmentDataAction(ContentType $contentType, $ouuid, Environment $environment, Request $request)
+    public function revisionInEnvironmentDataAction(ContentType $contentType, $ouuid, Environment $environment)
     {
         $revision = $this->getDataService()->getRevisionByEnvironment($ouuid, $contentType, $environment);
         if (!$revision) {
@@ -295,7 +315,7 @@ class DataController extends AppController
     /**
      * @Route("/public-key" , name="ems_get_public_key")
      */
-    public function publicKey(Request $request)
+    public function publicKey()
     {
         $response = new Response();
         $response->headers->set('Content-Type', 'text/plain');
@@ -304,6 +324,15 @@ class DataController extends AppController
     }
 
     /**
+     * @param $type
+     * @param $ouuid
+     * @param $revisionId
+     * @param $compareId
+     * @param Request $request
+     * @param DataService $dataService
+     * @return Response
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     *
      * @Route("/data/revisions/{type}:{ouuid}/{revisionId}/{compareId}", defaults={"revisionId": false, "compareId": false} , name="data.revisions")
      * @Route("/data/revisions/{type}:{ouuid}/{revisionId}/{compareId}", defaults={"revisionId": false, "compareId": false} , name="ems_content_revisions_view")
      */
@@ -371,7 +400,7 @@ class DataController extends AppController
         }
 
 
-        if (!$revision || $revision->getOuuid() != $ouuid || $revision->getContentType() != $contentType || $revision->getDeleted()) {
+        if (!$revision || $revision->getOuuid() != $ouuid || $revision->getContentType() !== $contentType || $revision->getDeleted()) {
             throw new NotFoundHttpException('Revision not found');
         }
 
@@ -387,9 +416,9 @@ class DataController extends AppController
 
         $page = $request->query->get('page', 1);
 
-        $revisionsSummary = $repository->getAllRevisionsSummary($ouuid, $contentTypes[0], $page);
-        $lastPage = $repository->revisionsLastPage($ouuid, $contentTypes[0]);
-        $counter = $repository->countRevisions($ouuid, $contentTypes[0]);
+        $revisionsSummary = $repository->getAllRevisionsSummary($ouuid, $contentType, $page);
+        $lastPage = $repository->revisionsLastPage($ouuid, $contentType);
+        $counter = $repository->countRevisions($ouuid, $contentType);
         $firstElemOfPage = $repository->firstElemOfPage($page);
 
         $availableEnv = $em->getRepository('EMSCoreBundle:Environment')->findAvailableEnvironements(
@@ -461,10 +490,9 @@ class DataController extends AppController
     }
 
     /**
-     *
-     * @param unknown $type
-     * @param unknown $ouuid
-     * @param unknown $fromRev
+     * @param $type
+     * @param $ouuid
+     * @param $fromRev
      * @return Revision
      */
     public function initNewDraft($type, $ouuid, $fromRev = null)
@@ -474,9 +502,13 @@ class DataController extends AppController
 
 
     /**
+     * @param $environment
+     * @param $type
+     * @param $ouuid
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
-     * @Route("/data/copy/{environment}/{type}/{ouuid}", name="revision.copy"))
-     * @Method({"GET"})
+     * @Route("/data/copy/{environment}/{type}/{ouuid}", name="revision.copy"), methods={"GET"})
      */
     public function copyAction($environment, $type, $ouuid, Request $request)
     {
@@ -499,11 +531,13 @@ class DataController extends AppController
 
 
     /**
+     * @param $type
+     * @param $ouuid
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
-     * @Route("/data/new-draft/{type}/{ouuid}", name="revision.new-draft"))
-     * @Method({"POST"})
+     * @Route("/data/new-draft/{type}/{ouuid}", name="revision.new-draft"), methods={"POST"})
      */
-    public function newDraftAction($type, $ouuid, Request $request)
+    public function newDraftAction($type, $ouuid)
     {
         return $this->redirectToRoute('revision.edit', [
             'revisionId' => $this->initNewDraft($type, $ouuid)->getId()
@@ -512,11 +546,14 @@ class DataController extends AppController
 
 
     /**
+     * @param $type
+     * @param $ouuid
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @throws Missing404Exception
      *
-     * @Route("/data/delete/{type}/{ouuid}", name="object.delete"))
-     * @Method({"POST"})
+     * @Route("/data/delete/{type}/{ouuid}", name="object.delete"), methods={"POST"})
      */
-    public function deleteAction($type, $ouuid, Request $request)
+    public function deleteAction($type, $ouuid)
     {
         $revision = $this->getDataService()->getNewestRevision($type, $ouuid);
         $contentType = $revision->getContentType();
@@ -555,11 +592,13 @@ class DataController extends AppController
     }
 
     /**
+     * @param $revisionId
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
-     * @Route("/data/draft/discard/{revisionId}", name="revision.discard"))
-     * @Method({"POST"})
+     * @Route("/data/draft/discard/{revisionId}", name="revision.discard"), methods={"POST"})
      */
-    public function discardRevisionAction($revisionId, Request $request)
+    public function discardRevisionAction($revisionId)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -573,7 +612,7 @@ class DataController extends AppController
             throw $this->createNotFoundException('Revision not found');
         }
         if (!$revision->getDraft() || null != $revision->getEndTime()) {
-            throw BadRequestHttpException('Only authorized on a draft');
+            throw new BadRequestHttpException('Only authorized on a draft');
         }
 
 
@@ -586,7 +625,7 @@ class DataController extends AppController
 
         if (null != $ouuid && $hasPreviousRevision) {
             if ($autoPublish) {
-                return $this->reindexRevisionAction($hasPreviousRevision, $request, true);
+                return $this->reindexRevisionAction($hasPreviousRevision, true);
             }
 
             return $this->redirectToRoute('data.revisions', [
@@ -601,11 +640,12 @@ class DataController extends AppController
 
 
     /**
+     * @param Revision $revision
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
-     * @Route("/data/cancel/{revision}", name="revision.cancel"))
-     * @Method({"POST"})
+     * @Route("/data/cancel/{revision}", name="revision.cancel"), methods={"POST"})
      */
-    public function cancelModificationsAction(Revision $revision, Request $request)
+    public function cancelModificationsAction(Revision $revision)
     {
         $contentTypeId = $revision->getContentType()->getId();
         $type = $revision->getContentType()->getName();
@@ -636,10 +676,12 @@ class DataController extends AppController
 
 
     /**
-     * @Route("/data/revision/re-index/{revisionId}", name="revision.reindex"))
-     * @Method({"POST"})
+     * @param $revisionId
+     * @param bool $defaultOnly
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @Route("/data/revision/re-index/{revisionId}", name="revision.reindex"), methods={"POST"})
      */
-    public function reindexRevisionAction($revisionId, Request $request, $defaultOnly = false)
+    public function reindexRevisionAction($revisionId, $defaultOnly = false)
     {
 
         /** @var EntityManager $em */
@@ -673,12 +715,13 @@ class DataController extends AppController
                 if (!$defaultOnly || $environment === $revision->getContentType()->getEnvironment()) {
                     $index = $this->getContentTypeService()->getIndex($revision->getContentType(), $environment);
 
-                    $status = $client->index([
+                    $client->index([
                         'id' => $revision->getOuuid(),
                         'index' => $index,
                         'type' => $revision->getContentType()->getName(),
                         'body' => $objectArray
                     ]);
+                    //TODO: test the result of this index and see if there is a flash message to send
 
                     $this->addFlash('notice', 'Reindexed in ' . $environment->getName());
                 }
@@ -696,6 +739,11 @@ class DataController extends AppController
     }
 
     /**
+     * @param $viewId
+     * @param $public
+     * @param Request $request
+     * @return mixed
+     *
      * @Route("/public/view/{viewId}", name="ems_custom_view_public", defaults={"public": true})
      * @Route("/data/custom-index-view/{viewId}", name="data.customindexview", defaults={"public": false})
      * @Route("/data/custom-index-view/{viewId}", name="ems_custom_view_protected", defaults={"public": false})
@@ -721,11 +769,20 @@ class DataController extends AppController
     }
 
     /**
+     * @param $environmentName
+     * @param $templateId
+     * @param $ouuid
+     * @param $_download
+     * @param $public
+     * @return Response
+     * @throws \Throwable
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Syntax
      * @Route("/public/template/{environmentName}/{templateId}/{ouuid}/{_download}", defaults={"_download": false, "public": true} , name="ems_data_custom_template_public"))
      * @Route("/data/custom-view/{environmentName}/{templateId}/{ouuid}/{_download}", defaults={"_download": false, "public": false} , name="data.customview"))
      * @Route("/data/template/{environmentName}/{templateId}/{ouuid}/{_download}", defaults={"_download": false, "public": false} , name="ems_data_custom_template_protected"))
      */
-    public function customViewAction($environmentName, $templateId, $ouuid, Request $request, $_download, $public)
+    public function customViewAction($environmentName, $templateId, $ouuid, $_download, $public)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -743,7 +800,6 @@ class DataController extends AppController
         /** @var EnvironmentRepository $environmentRepository */
         $environmentRepository = $em->getRepository('EMSCoreBundle:Environment');
 
-        /** @var Environment $environment * */
         $environment = $environmentRepository->findBy([
             'name' => $environmentName,
         ]);
@@ -752,6 +808,7 @@ class DataController extends AppController
             throw new NotFoundHttpException('Environment type not found');
         }
 
+        /** @var Environment $environment **/
         $environment = $environment[0];
 
         /** @var Client $client */
@@ -854,10 +911,12 @@ class DataController extends AppController
     }
 
     /**
-     * @Route("/data/custom-view-job/{environmentName}/{templateId}/{ouuid}", name="ems_job_custom_view")
-     * @method ({
-    "POST"
-    })
+     * @param $environmentName
+     * @param $templateId
+     * @param $ouuid
+     * @return Response
+     * @throws \Throwable
+     * @Route("/data/custom-view-job/{environmentName}/{templateId}/{ouuid}", name="ems_job_custom_view", methods={"POST"})
      */
     public function customViewJobAction($environmentName, $templateId, $ouuid)
     {
@@ -912,13 +971,17 @@ class DataController extends AppController
 
 
     /**
-     * @Route("/data/revision/{revisionId}.json", name="revision.ajaxupdate"), defaults={"_format": "json"})
-     * @Method({"POST"})
+     * @param $revisionId
+     * @param Request $request
+     * @return Response
+     * @throws \Exception
+     * @Route("/data/revision/{revisionId}.json", name="revision.ajaxupdate"), defaults={"_format": "json"}, methods={"POST"}))
      */
     public function ajaxUpdateAction($revisionId, Request $request)
     {
 
         $em = $this->getDoctrine()->getManager();
+        $formErrors = [];
 
         /** @var RevisionRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:Revision');
@@ -987,6 +1050,8 @@ class DataController extends AppController
 
 
     /**
+     * @param Revision $revision
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @Route("/data/draft/finalize/{revision}", name="revision.finalize"))
      */
     public function finalizeDraftAction(Revision $revision)
@@ -1059,6 +1124,10 @@ class DataController extends AppController
     }
 
     /**
+     * @param $revisionId
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @throws \Exception
      * @Route("/data/draft/edit/{revisionId}", name="ems_revision_edit"))
      * @Route("/data/draft/edit/{revisionId}", name="revision.edit"))
      */
@@ -1222,20 +1291,28 @@ class DataController extends AppController
     }
 
     /**
-     * deprecated should removed
-     *
+     * @deprecated
      * @param Revision $revision
-     * @param string $publishEnv
-     * @param string $super
+     * @param $publishEnv
+     * @param $super
+     * @throws CoreBundle\Exception\LockedException
+     * @throws PrivilegeException
      */
     private function lockRevision(Revision $revision, $publishEnv = false, $super = false)
     {
+        @trigger_error(sprintf('The "%s::lockRevision" function is deprecated. Used "%s::lockRevision" instead.', DataController::class, DataService::class), E_USER_DEPRECATED);
+
         $this->getDataService()->lockRevision($revision, $publishEnv, $super);
     }
 
 
     /**
+     * @param ContentType $contentType
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @throws HasNotCircleException
+     * @throws PrivilegeException
+     * @throws \Throwable
      * @Route("/data/add/{contentType}", name="data.add"))
      */
     public function addAction(ContentType $contentType, Request $request)
@@ -1379,10 +1456,11 @@ class DataController extends AppController
     }
 
     /**
-     * @Route("/data/revisions/revert/{id}", name="revision.revert"))
-     * @Method({"POST"})
+     * @param Revision $revision
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @Route("/data/revisions/revert/{id}", name="revision.revert"), methods={"POST"}))
      */
-    public function revertRevisionAction(Revision $revision, Request $request)
+    public function revertRevisionAction(Revision $revision)
     {
         $type = $revision->getContentType()->getName();
         $ouuid = $revision->getOuuid();
@@ -1401,15 +1479,19 @@ class DataController extends AppController
     }
 
     /**
+     * @param $key
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @throws \Doctrine\ORM\NonUniqueResultException
      * @Route("/data/link/{key}", name="data.link")
      */
-    public function linkDataAction($key, Request $request)
+    public function linkDataAction($key)
     {
-        $splitted = explode(':', $key);
-        if ($splitted && count($splitted) == 3) {
-            $category = $splitted[0]; // object or asset
-            $type = $splitted[1];
-            $ouuid = $splitted[2];
+        $category = $type = $ouuid = null;
+        $split = explode(':', $key);
+        if ($split && count($split) == 3) {
+            $category = $split[0]; // object or asset
+            $type = $split[1];
+            $ouuid = $split[2];
         }
 
         if (null != $ouuid && null != $type) {
@@ -1443,18 +1525,19 @@ class DataController extends AppController
                     'type' => $type,
                     'ouuid' => $ouuid,
                 ]);
-            } else if ($category == 'asset') {
+            }
+            if ($category == 'asset') {
                 if (empty($contentType->getAssetField()) && empty($revision->getRawData()[$contentType->getAssetField()])) {
                     throw new NotFoundHttpException('Asset field not found for ' . $revision);
                 }
+
                 return $this->redirectToRoute('file.download', [
                     'sha1' => $revision->getRawData()[$contentType->getAssetField()]['sha1'],
                     'type' => $revision->getRawData()[$contentType->getAssetField()]['mimetype'],
                     'name' => $revision->getRawData()[$contentType->getAssetField()]['filename'],
                 ]);
             }
-        } else {
-            throw new NotFoundHttpException('Impossible to find this item : ' . $key);
         }
+        throw new NotFoundHttpException('Impossible to find this item : ' . $key);
     }
 }

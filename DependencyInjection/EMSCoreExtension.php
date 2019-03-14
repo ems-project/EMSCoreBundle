@@ -2,14 +2,11 @@
 
 namespace EMS\CoreBundle\DependencyInjection;
 
-use EMS\CommonBundle\Storage\Adapter\FileAdapter;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Symfony\Component\DependencyInjection\Loader;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
+use Symfony\Component\DependencyInjection\Loader;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
  * This is the class that loads and manages your bundle configuration.
@@ -19,7 +16,7 @@ use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 class EMSCoreExtension extends Extension implements PrependExtensionInterface
 {
     const TRANS_DOMAIN = 'EMSCoreBundle';
-    
+
     /**
      * {@inheritdoc}
      */
@@ -27,10 +24,10 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
-         
+
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
-        
+
         $container->setParameter('ems_core.from_email', $config['from_email']);
         $container->setParameter('ems_core.instance_id', $config['instance_id']);
         $container->setParameter('ems_core.shortname', $config['shortname']);
@@ -71,27 +68,8 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.sftp_server', $config['sftp_server']);
         $container->setParameter('ems_core.sftp_path', $config['sftp_path']);
         $container->setParameter('ems_core.sftp_user', $config['sftp_user']);
-
-        $this->loadCommonStorageAdapters($config, $container);
-    }
-
-    private function loadCommonStorageAdapters(array $config, ContainerBuilder $container)
-    {
-        if (null === $config['storage_folder']) {
-            return;
-        }
-
-        $cacheAdapter = new Definition(FileAdapter::class);
-        $cacheAdapter->setArguments([ sprintf('%s/cache', $config['storage_folder'])]);
-        $cacheAdapter->addTag('ems_common.storage.cache_adapter');
-
-        $container->setDefinition('ems.common.storage.cache', $cacheAdapter);
-
-        $fileAdapter = new Definition(FileAdapter::class);
-        $fileAdapter->setArguments([$config['storage_folder']]);
-        $fileAdapter->addTag('ems_common.storage.adapter');
-
-        $container->setDefinition('ems.common.storage.file', $fileAdapter);
+        $container->setParameter('ems_core.s3_credentials', $config['s3_credentials']);
+        $container->setParameter('ems_core.s3_bucket', $config['s3_bucket']);
     }
 
     public static function getCoreVersion($rootDir)
@@ -114,7 +92,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         }
         return $out;
     }
-    
+
     public function prepend(ContainerBuilder $container)
     {
 
@@ -122,11 +100,11 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $bundles = $container->getParameter('kernel.bundles');
 
         $coreVersion = $this->getCoreVersion($container->getParameter('kernel.root_dir'));
-        
-        
-        
+
+
+
         $configs = $container->getExtensionConfig($this->getAlias());
-        
+
         $globals = [
             'theme_color' => isset($configs[0]['theme_color'])?$configs[0]['theme_color']:Configuration::THEME_COLOR,
             'ems_name' => isset($configs[0]['name'])?$configs[0]['name']:Configuration::NAME,
@@ -147,15 +125,15 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
             'add_user_route' => isset($configs[0]['add_user_route'])?$configs[0]['add_user_route']:Configuration::ADD_USER_ROUTE,
             'application_menu_controller' => isset($configs[0]['application_menu_controller'])?$configs[0]['application_menu_controller']:Configuration::APPLICATION_MENU_CONTROLLER,
         ];
-        
+
         if (!empty($configs[0]['template_options'])) {
             $globals = array_merge($globals, $configs[0]['template_options']);
+
+
+
+
         }
-        
-        
-        
-        
-        
+
         if (isset($bundles['TwigBundle'])) {
             $container->prependExtensionConfig('twig', [
                 'globals' => $globals,

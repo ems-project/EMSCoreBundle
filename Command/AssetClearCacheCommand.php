@@ -4,10 +4,9 @@
 
 namespace EMS\CoreBundle\Command;
 
-use function array_merge;
 use Elasticsearch\Client;
+use EMS\CommonBundle\Storage\Service\StorageInterface;
 use EMS\CoreBundle\Service\FileService;
-use EMS\CoreBundle\Service\Storage\StorageInterface;
 use Monolog\Logger;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\QuestionHelper;
@@ -16,7 +15,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\HttpFoundation\Session\Session;
-use function count;
 
 class AssetClearCacheCommand extends EmsCommand
 {

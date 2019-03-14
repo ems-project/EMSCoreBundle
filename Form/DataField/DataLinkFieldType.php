@@ -5,10 +5,12 @@ namespace EMS\CoreBundle\Form\DataField;
 use Elasticsearch\Client;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Event\UpdateRevisionReferersEvent;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use EMS\CoreBundle\Form\Field\ObjectChoiceLoader;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
 use EMS\CoreBundle\Service\ElasticsearchService;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -17,9 +19,8 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use EMS\CoreBundle\Event\UpdateRevisionReferersEvent;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-                                                                                    
+
+
 /**
  * Defined a Container content type.
  * It's used to logically groups subfields together. However a Container is invisible in Elastic search.
@@ -30,13 +31,13 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class DataLinkFieldType extends DataFieldType
 {
-     
+
     /**@var Client $client*/
     protected $client;
     /**@var EventDispatcherInterface $dispatcher*/
     protected $dispatcher;
-     
-     
+
+
     /**
      * Contructor
      *
@@ -51,7 +52,7 @@ class DataLinkFieldType extends DataFieldType
         $this->client = $client;
         $this->dispatcher= $dispatcher;
     }
-     
+
     /**
      *
      * {@inheritDoc}
@@ -62,19 +63,19 @@ class DataLinkFieldType extends DataFieldType
         if (!empty($dataField->getFieldType()->getExtraOptions()['updateReferersField'])) {
             $referersToAdd = [];
             $referersToRemove = [];
-             
+
             if (!empty($previousData[$dataField->getFieldType()->getName()])) {
                 $referersToRemove = $previousData[$dataField->getFieldType()->getName()];
             }
             if (!empty($dataField->getRawData())) {
                 $referersToAdd= $dataField->getRawData();
             }
-             
+
             $this->dispatcher->dispatch(UpdateRevisionReferersEvent::NAME, new UpdateRevisionReferersEvent($type, $id, $dataField->getFieldType()->getExtraOptions()['updateReferersField'], $referersToRemove, $referersToAdd));
         }
         return parent::postFinalizeTreatment($type, $id, $dataField, $previousData);
     }
-     
+
     /**
      *
      * {@inheritdoc}
@@ -98,7 +99,7 @@ class DataLinkFieldType extends DataFieldType
         if (strlen($opt['nested'])) {
             $opt['nested'] .= '.';
         }
-        
+
         $data = $dataField->getRawData();
         $out = [];
         if (is_array($data)) {
@@ -114,10 +115,10 @@ class DataLinkFieldType extends DataFieldType
                     ]
             ];
         }
-        
+
         return $out;
     }
-    
+
     /**
      * Get a icon to visually identify a FieldType
      *
@@ -144,7 +145,7 @@ class DataLinkFieldType extends DataFieldType
             }
         }
     }
-    
+
     /**
      *
      * {@inheritdoc}
@@ -155,12 +156,12 @@ class DataLinkFieldType extends DataFieldType
 
         /** @var FieldType $fieldType */
         $fieldType = $options ['metadata'];
-        
+
         //Add an event listener in order to sort existing normData before the merge in MergeCollectionListener
         $listener = function (FormEvent $event) {
             $data = $event->getForm()->getNormData();
             $rawData = $data->getRawData();
-            
+
             if (!empty($rawData)) {
                 usort($rawData, function ($a, $b) use ($event) {
                     if (!empty($event->getData()['value'])) {
@@ -178,7 +179,7 @@ class DataLinkFieldType extends DataFieldType
                 $event->getForm()->setData($rawData);
             }
         };
-        
+
         $builder->add('value', ObjectPickerType::class, [
             'label' => (null != $options ['label']?$options ['label']:$fieldType->getName()),
             'required' => false,
@@ -195,7 +196,7 @@ class DataLinkFieldType extends DataFieldType
             $builder->addEventListener(FormEvents::PRE_SUBMIT, $listener);
         }
     }
-    
+
     /**
      *
      * {@inheritdoc}
@@ -224,15 +225,15 @@ class DataLinkFieldType extends DataFieldType
     public function getDefaultOptions($name)
     {
         $out = parent::getDefaultOptions($name);
-        
+
         $out['displayOptions']['dynamicLoading'] = true;
         $out['mappingOptions']['index'] = 'not_analyzed';
-    
+
         return $out;
     }
-    
-    
-    
+
+
+
     /**
      *
      * {@inheritDoc}
@@ -242,7 +243,7 @@ class DataLinkFieldType extends DataFieldType
     {
         return 'bypassdatafield';
     }
-    
+
     /**
      *
      * {@inheritdoc}
@@ -250,11 +251,11 @@ class DataLinkFieldType extends DataFieldType
      */
     public function getChoiceList(FieldType $fieldType, array $choices)
     {
-        
+
         /**@var ObjectPickerType $objectPickerType*/
         $objectPickerType = $this->formRegistry->getType(ObjectPickerType::class)->getInnerType();
-        
-        
+
+
         /**@var ObjectChoiceLoader $loader */
         $loader = $objectPickerType->getChoiceListFactory()->createLoader($fieldType->getDisplayOptions()['type'], true /*count($choices) == 0 || !$fieldType->getDisplayOptions()['dynamicLoading']*/);
         $all = $loader->loadAll();
@@ -268,7 +269,7 @@ class DataLinkFieldType extends DataFieldType
         }
         return $all;
     }
-    
+
     /**
      *
      * {@inheritdoc}
@@ -278,7 +279,7 @@ class DataLinkFieldType extends DataFieldType
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
-        
+
         // String specific display options
         $optionsForm->get('displayOptions')->add('multiple', CheckboxType::class, [
                 'required' => false,
@@ -293,7 +294,7 @@ class DataLinkFieldType extends DataFieldType
         ])->add('defaultValue', TextType::class, [
                 'required' => false,
         ]);
-        
+
         $optionsForm->get('extraOptions')->add('updateReferersField', TextType::class, [
                 'required' => false,
         ]);
@@ -306,7 +307,7 @@ class DataLinkFieldType extends DataFieldType
                 'required' => false,
             ]);
     }
-    
+
     /**
      *
      * {@inheritDoc}
@@ -342,8 +343,8 @@ class DataLinkFieldType extends DataFieldType
                 $out->setRawData(null);
                 return $out;
             }
-            
-            
+
+
             if (is_array($data)) {
                 if (count($data) == 0) {
                     $out->setRawData(null);
@@ -360,7 +361,7 @@ class DataLinkFieldType extends DataFieldType
         }
         return $out;
     }
-    
+
     /**
      *
      * {@inheritDoc}
@@ -371,7 +372,7 @@ class DataLinkFieldType extends DataFieldType
         $out = parent::viewTransform($dataField);
         return [ 'value' => $out ];
     }
-    
+
     /**
      *
      * {@inheritDoc}

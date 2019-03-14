@@ -4,18 +4,17 @@ namespace EMS\CoreBundle\Form\DataField;
 
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use EMS\CoreBundle\Form\Field\AssetType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 use EMS\CoreBundle\Service\ElasticsearchService;
 use EMS\CoreBundle\Service\FileService;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Form\FormRegistryInterface;
-use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
-    
+    use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 /**
  * Defined a Container content type.
  * It's used to logically groups subfields together. However a Container is invisible in Elastic search.
@@ -25,14 +24,14 @@ use Symfony\Component\HttpFoundation\Session\Session;
  */
 class FileAttachmentFieldType extends DataFieldType
 {
-    
+
     /**@var FileService */
     private $fileService;
     /**@var Session */
     private $session;
-    
-    
-    
+
+
+
     public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, FileService $fileService, Session $session)
     {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
@@ -75,7 +74,7 @@ class FileAttachmentFieldType extends DataFieldType
                 'required' => false,
         ]);
     }
-    
+
     /**
      *
      * {@inheritDoc}
@@ -107,16 +106,16 @@ class FileAttachmentFieldType extends DataFieldType
             if (!$rawData['filesize']) {
                 $rawData['filesize'] = 0;
             }
-            
+
             $dataField->setRawData($rawData);
         } else {
             $dataField->setRawData(['content' => ""]);
         }
         return $dataField;
     }
-    
-    
-    
+
+
+
     /**
      *
      * {@inheritDoc}
@@ -126,12 +125,12 @@ class FileAttachmentFieldType extends DataFieldType
     {
         return 'bypassdatafield';
     }
-    
+
     public function viewTransform(DataField $dataField)
     {
-        
+
         $rawData = $dataField->getRawData();
-        
+
         if (!empty($rawData) && !empty($rawData['sha1'])) {
             unset($rawData['content']);
             unset($rawData['filesize']);
@@ -140,8 +139,8 @@ class FileAttachmentFieldType extends DataFieldType
         }
         return ['value' => $rawData];
     }
-    
-    
+
+
     /**
      *
      * {@inheritdoc}
@@ -152,14 +151,14 @@ class FileAttachmentFieldType extends DataFieldType
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
         //         $optionsForm->remove ( 'mappingOptions' );
-        
+
         // specific mapping options
         $optionsForm->get('mappingOptions')
         ->add('analyzer', AnalyzerPickerType::class)
         ->add('copy_to', TextType::class, [
                 'required' => false,
         ]);
-        
+
         $optionsForm->get('displayOptions')
             ->add('icon', IconPickerType::class, [
                     'required' => false
@@ -185,7 +184,7 @@ class FileAttachmentFieldType extends DataFieldType
             $out [$data->getFieldType()->getName()] = $data->getRawData();
         }
     }
-    
+
     /**
      *
      * {@inheritdoc}
@@ -198,7 +197,7 @@ class FileAttachmentFieldType extends DataFieldType
         $resolver->setDefault('icon', null);
         $resolver->setDefault('imageAssetConfigIdentifier', null);
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -208,16 +207,16 @@ class FileAttachmentFieldType extends DataFieldType
         $body = [
                 "type" => "nested",
                 "properties" => [
-                        "mimetype" => $this->elasticsearchService->getKeywordMapping(),
-                        "sha1" => $this->elasticsearchService->getKeywordMapping(),
-                        "filename" => $this->elasticsearchService->getIndexedStringMapping(),
-                        "filesize" => $this->elasticsearchService->getLongMapping(),
+                        EmsFields::CONTENT_MIME_TYPE_FIELD => $this->elasticsearchService->getKeywordMapping(),
+                        EmsFields::CONTENT_FILE_HASH_FIELD => $this->elasticsearchService->getKeywordMapping(),
+                        EmsFields::CONTENT_FILE_NAME_FIELD => $this->elasticsearchService->getIndexedStringMapping(),
+                        EmsFields::CONTENT_FILE_SIZE_FIELD => $this->elasticsearchService->getLongMapping(),
                         'content' => [
                             "type" => "binary",
                         ],
                 ],
             ];
-        
+
         if ($withPipeline) {
 //             $body['properties']['content'] = [
 //                     "type" => "text",
@@ -229,7 +228,7 @@ class FileAttachmentFieldType extends DataFieldType
 //                             ]
 //                     ]
 //             ];
-            
+
             $body['properties']['attachment'] = [
 //                 "type" => "nested",
                 "properties" => [
@@ -255,13 +254,13 @@ class FileAttachmentFieldType extends DataFieldType
                 ]
             ];
         }
-        
-        
+
+
         return [
             $current->getName() => $body,
         ];
     }
-    
+
     /**
      * {@inheritdoc}
      */

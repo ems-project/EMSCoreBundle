@@ -2,20 +2,21 @@
 
 namespace EMS\CoreBundle\Form\DataField;
 
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
-use EMS\CoreBundle\Form\Field\AssetType;
-use EMS\CoreBundle\Form\Field\IconPickerType;
-use EMS\CoreBundle\Service\ElasticsearchService;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use EMS\CoreBundle\Service\FileService;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Form\FormRegistryInterface;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use EMS\CoreBundle\Form\Field\FileType;
-    
+use EMS\CoreBundle\Form\Field\IconPickerType;
+use EMS\CoreBundle\Service\ElasticsearchService;
+use EMS\CoreBundle\Service\FileService;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormRegistryInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+
+
 /**
  * Defined a Container content type.
  * It's used to logically groups subfields together. However a Container is invisible in Elastic search.
@@ -28,7 +29,7 @@ class IndexedAssetFieldType extends DataFieldType
 
     /**@var FileService */
     private $fileService;
-    
+
     /**
      * {@inheritdoc}
      *
@@ -41,7 +42,7 @@ class IndexedAssetFieldType extends DataFieldType
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
         $this->fileService = $fileService;
     }
-    
+
     /**
      * Get a icon to visually identify a FieldType
      *
@@ -61,7 +62,7 @@ class IndexedAssetFieldType extends DataFieldType
     {
         return 'Indexed file field';
     }
-    
+
     /**
      *
      * {@inheritdoc}
@@ -71,7 +72,7 @@ class IndexedAssetFieldType extends DataFieldType
     {
         return FileType::class;
     }
-    
+
     /**
      *
      * {@inheritdoc}
@@ -81,15 +82,15 @@ class IndexedAssetFieldType extends DataFieldType
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
-        
+
         // specific mapping options
         $optionsForm->get('mappingOptions')
         ->add('analyzer', AnalyzerPickerType::class)
         ->add('copy_to', TextType::class, [
                 'required' => false,
         ]);
-        
-        
+
+
         $optionsForm->get('displayOptions')
         ->add('icon', IconPickerType::class, [
                 'required' => false
@@ -98,7 +99,7 @@ class IndexedAssetFieldType extends DataFieldType
                 'required' => false,
         ]);
     }
-    
+
     /**
      *
      * {@inheritdoc}
@@ -111,7 +112,7 @@ class IndexedAssetFieldType extends DataFieldType
         $resolver->setDefault('icon', null);
         $resolver->setDefault('imageAssetConfigIdentifier', null);
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -122,16 +123,16 @@ class IndexedAssetFieldType extends DataFieldType
             $current->getName() => [
                     "type" => "nested",
                     "properties" => [
-                            "mimetype" => $this->elasticsearchService->getKeywordMapping(),
-                            "sha1" => $this->elasticsearchService->getKeywordMapping(),
-                            "filename" => $this->elasticsearchService->getIndexedStringMapping(),
-                            "filesize" => $this->elasticsearchService->getLongMapping(),
+                            EmsFields::CONTENT_MIME_TYPE_FIELD => $this->elasticsearchService->getKeywordMapping(),
+                            EmsFields::CONTENT_FILE_HASH_FIELD => $this->elasticsearchService->getKeywordMapping(),
+                            EmsFields::CONTENT_FILE_NAME_FIELD => $this->elasticsearchService->getIndexedStringMapping(),
+                            EmsFields::CONTENT_FILE_SIZE_FIELD => $this->elasticsearchService->getLongMapping(),
                             '_content' => $mapping[$current->getName()],
                     ]
             ]
         ];
     }
-    
+
     /**
      *
      * {@inheritDoc}
@@ -143,12 +144,12 @@ class IndexedAssetFieldType extends DataFieldType
         $this->testDataField($dataField);
         return $dataField;
     }
-    
-    
+
+
     private function testDataField(DataField $dataField)
     {
         $raw = $dataField->getRawData();
-        
+
         if ((empty($raw) || empty($raw['sha1']))) {
             if (isset($dataField->getFieldType()->getRestrictionOptions()['mandatory']) && $dataField->getFieldType()->getRestrictionOptions()['mandatory']) {
                 $dataField->addMessage('This entry is required');
@@ -161,7 +162,7 @@ class IndexedAssetFieldType extends DataFieldType
             $dataField->setRawData($raw);
         }
     }
-    
+
     /**
      *
      * {@inheritDoc}
@@ -170,13 +171,13 @@ class IndexedAssetFieldType extends DataFieldType
     public function viewTransform(DataField $dataField)
     {
         $out = parent::viewTransform($dataField);
-        
+
         if (empty($out['sha1'])) {
             $out = null;
         }
         return $out;
     }
-    
+
     /**
      *
      * {@inheritDoc}

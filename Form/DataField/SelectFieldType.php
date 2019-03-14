@@ -13,7 +13,7 @@ use EMS\CoreBundle\Entity\DataField;
 
 class SelectFieldType extends DataFieldType
 {
-    
+
     /**
      *
      * {@inheritdoc}
@@ -23,7 +23,7 @@ class SelectFieldType extends DataFieldType
     {
         return 'Select field';
     }
-    
+
     /**
      * Get a icon to visually identify a FieldType
      *
@@ -33,8 +33,8 @@ class SelectFieldType extends DataFieldType
     {
         return 'fa fa-caret-square-o-down';
     }
-    
-    
+
+
     /**
      *
      * {@inheritdoc}
@@ -42,14 +42,14 @@ class SelectFieldType extends DataFieldType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        
+
         /** @var FieldType $fieldType */
         $fieldType = $builder->getOptions() ['metadata'];
-        
+
         $choices = [];
         $values = explode("\n", str_replace("\r", "", $options['choices']));
         $labels = explode("\n", str_replace("\r", "", $options['labels']));
-        
+
         foreach ($values as $id => $value) {
             if (isset($labels[$id]) && strlen($labels[$id]) > 0) {
                 $choices[$labels[$id]] = $value;
@@ -57,7 +57,7 @@ class SelectFieldType extends DataFieldType
                 $choices[$value] = $value;
             }
         }
-        
+
         $builder->add('value', ChoiceType::class, [
                 'label' => (isset($options['label'])?$options['label']:$fieldType->getName()),
                 'required' => false,
@@ -67,7 +67,7 @@ class SelectFieldType extends DataFieldType
                 'multiple' => $options['multiple'],
         ]);
     }
-    
+
 
     /**
      *
@@ -82,7 +82,7 @@ class SelectFieldType extends DataFieldType
         $resolver->setDefault('labels', []);
         $resolver->setDefault('multiple', false);
     }
-    
+
     /**
      *
      * {@inheritdoc}
@@ -98,7 +98,7 @@ class SelectFieldType extends DataFieldType
             }
         }
     }
-    
+
     /**
      *
      * {@inheritdoc}
@@ -108,7 +108,7 @@ class SelectFieldType extends DataFieldType
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
-        
+
         // String specific display options
         $optionsForm->get('displayOptions')
         ->add('multiple', CheckboxType::class, [
@@ -118,7 +118,7 @@ class SelectFieldType extends DataFieldType
         ])->add('labels', TextareaType::class, [
                 'required' => false,
         ]);
-        
+
         // String specific mapping options
         $optionsForm->get('mappingOptions')->add('analyzer', AnalyzerPickerType::class);
     }
@@ -131,13 +131,13 @@ class SelectFieldType extends DataFieldType
     public function getDefaultOptions($name)
     {
         $out = parent::getDefaultOptions($name);
-        
+
         $out['mappingOptions']['index'] = 'not_analyzed';
-    
+
         return $out;
     }
-    
-    
+
+
     /**
      *
      * {@inheritDoc}
@@ -147,8 +147,8 @@ class SelectFieldType extends DataFieldType
     {
         return 'bypassdatafield';
     }
-    
-    
+
+
     /**
      *
      * {@inheritDoc}
@@ -163,7 +163,7 @@ class SelectFieldType extends DataFieldType
         $out = parent::reverseViewTransform($value, $fieldType);
         return $out;
     }
-    
+
     /**
      *
      * {@inheritDoc}
@@ -187,7 +187,7 @@ class SelectFieldType extends DataFieldType
                     }
                 }
             } else {
-                $dataField->addMessage('Was not able to import the data : '+json_encode($out));
+                $dataField->addMessage('Was not able to import the data : '+json_encode($temp));
                 $out = [];
             }
         } else { //not mutiple
@@ -203,7 +203,7 @@ class SelectFieldType extends DataFieldType
                 $out = "";
             }
         }
-        
+
         return [ 'value' => $out ];
     }
 }

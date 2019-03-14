@@ -23,8 +23,6 @@ use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Service\Mapping;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -36,6 +34,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
 
@@ -715,14 +714,9 @@ class ContentTypeController extends AppController
             $contentType->getFieldType()->setName('source');
 
             if (array_key_exists('save', $inputContentType) || array_key_exists('saveAndUpdateMapping', $inputContentType) || array_key_exists('saveAndClose', $inputContentType) || array_key_exists('saveAndEditStructure', $inputContentType) || array_key_exists('saveAndReorder', $inputContentType)) {
-//                 $contentType->getFieldType ()->updateOrderKeys ();
-//                 $contentType->setDirty ( $contentType->getEnvironment ()->getManaged () );
-
-
                 if (array_key_exists('saveAndUpdateMapping', $inputContentType)) {
                     $this->getContentTypeService()->updateMapping($contentType);
                 }
-//                 exit;
                 $em->persist($contentType);
                 $em->flush();
 
@@ -743,45 +737,6 @@ class ContentTypeController extends AppController
                 return $this->redirectToRoute('contenttype.edit', [
                     'id' => $id
                 ]);
-//             } else {
-//                 if ($this->addNewField ( $inputContentType ['fieldType'], $contentType->getFieldType () )) {
-//                     $contentType->getFieldType ()->updateOrderKeys ();
-
-//                     $em->persist ( $contentType );
-//                     $em->flush ();
-//                     return $this->redirectToRoute ( 'contenttype.edit', [
-//                             'id' => $id
-//                     ] );
-//                 }
-
-//                 else if ($this->addNewSubfield( $inputContentType ['fieldType'], $contentType->getFieldType () )) {
-//                     $contentType->getFieldType ()->updateOrderKeys ();
-//                     $em->persist ( $contentType );
-//                     $em->flush ();
-//                     return $this->redirectToRoute ( 'contenttype.edit', [
-//                             'id' => $id
-//                     ] );
-//                 }
-
-//                 else if ($this->removeField ( $inputContentType ['fieldType'], $contentType->getFieldType () )) {
-//                     $contentType->getFieldType ()->updateOrderKeys ();
-//                     $em->persist ( $contentType );
-//                     $em->flush ();
-//                     $this->addFlash ( 'notice', 'A field has been removed.' );
-//                     return $this->redirectToRoute ( 'contenttype.edit', [
-//                             'id' => $id
-//                     ] );
-//                 }
-
-//                 else if ($this->reorderFields ( $inputContentType ['fieldType'], $contentType->getFieldType () )) {
-//                     // $contentType->getFieldType()->updateOrderKeys();
-//                     $em->persist ( $contentType );
-//                     $em->flush ();
-//                     $this->addFlash ( 'notice', 'Fields have been reordered.' );
-//                     return $this->redirectToRoute ( 'contenttype.edit', [
-//                             'id' => $id
-//                     ] );
-//                 }
             }
         }
 
@@ -823,7 +778,6 @@ class ContentTypeController extends AppController
         $inputContentType = $request->request->get('content_type_structure');
 
         $form = $this->createForm(ContentTypeStructureType::class, $contentType, [
-//             'twigWithWysiwyg' => $contentType->getEditTwigWithWysiwyg()
         ]);
 
         $form->handleRequest($request);
@@ -903,14 +857,6 @@ class ContentTypeController extends AppController
             }
         }
 
-//         /** @var  Client $client */
-//         $client = $this->getElasticsearch();
-
-//         $mapping = $client->indices ()->getMapping ( [
-//                 'index' => $contentType->getEnvironment ()->getAlias (),
-//                 'type' => $contentType->getName ()
-//         ] );
-
         if ($contentType->getDirty()) {
             $this->addFlash('warning', $contentType->getName() . ' is dirty. Consider to update its mapping.');
         }
@@ -918,7 +864,6 @@ class ContentTypeController extends AppController
         return $this->render('@EMSCore/contenttype/structure.html.twig', [
             'form' => $form->createView(),
             'contentType' => $contentType,
-//                 'mapping' => isset ( current ( $mapping ) ['mappings'] [$contentType->getName ()] ['properties'] ) ? current ( $mapping ) ['mappings'] [$contentType->getName ()] ['properties'] : false
         ]);
     }
 
@@ -951,19 +896,14 @@ class ContentTypeController extends AppController
             switch ($action) {
                 case 'subfield':
                     if ($this->isValidName($subFieldName)) {
-//                        dump($field);
                         $child = new FieldType();
-//                        dump($subFieldName);
                         $child->setName($subFieldName);
                         $child->setType(SubfieldType::class);
                         $child->setParent($field);
                         $field->addChild($child);
                         $this->addFlash('notice', 'The subfield ' . $child->getName() . ' has been prepared to be added');
-//                        dump($field);
                         $em->persist($field);
-//                        dump('toto');
                         $em->flush();
-//                        exit;
                     } else {
                         $this->addFlash('error', 'The field\'s name is not valid (format: [a-z][a-z0-9_-]*),'. Mapping::HASH_FIELD.' and '.Mapping::SIGNATURE_FIELD.' are reserved.');
                     }
@@ -972,48 +912,6 @@ class ContentTypeController extends AppController
                     $this->addFlash('warning', 'Action not found '.$action);
             }
 
-
-
-//            if ($out = $this->addNewField($inputContentType ['fieldType'], $contentType->getFieldType())) {
-//                $contentType->getFieldType()->updateOrderKeys();
-//
-//                $em->persist($contentType);
-//                $em->flush();
-//                return $this->redirectToRoute('contenttype.structure', [
-//                    'id' => $contentType->getId(),
-//                    'open' => $out,
-//                ]);
-//            } else if ($out = $this->addNewSubfield($inputContentType ['fieldType'], $contentType->getFieldType())) {
-//                $contentType->getFieldType()->updateOrderKeys();
-//                $em->persist($contentType);
-//                $em->flush();
-//                return $this->redirectToRoute('contenttype.structure', [
-//                    'id' => $contentType->getId(),
-//                    'open' => $out,
-//                ]);
-//            } else if ($out = $this->duplicateField($inputContentType ['fieldType'], $contentType->getFieldType())) {
-//                $contentType->getFieldType()->updateOrderKeys();
-//                $em->persist($contentType);
-//                $em->flush();
-//                return $this->redirectToRoute('contenttype.structure', [
-//                    'id' => $contentType->getId(),
-//                    'open' => $out,
-//                ]);
-//            } else if ($this->removeField($inputContentType ['fieldType'], $contentType->getFieldType())) {
-//                $contentType->getFieldType()->updateOrderKeys();v
-//                $this->addFlash('notice', 'A field has been removed.');
-//                return $this->redirectToRoute('contenttype.structure', [
-//                    'id' => $contentType->getId()
-//                ]);
-//            } else if ($this->reorderFields($inputContentType ['fieldType'], $contentType->getFieldType())) {
-//                // $contentType->getFieldType()->updateOrderKeys();
-//                $em->persist($contentType);
-//                $em->flush();
-//                $this->addFlash('notice', 'Fields have been reordered.');
-//                return $this->redirectToRoute('contenttype.structure', [
-//                    'id' => $contentType->getId()
-//                ]);
-//            }
         }
         return $this->redirectToRoute('ems_contenttype_field_edit', [
             'contentType' => $contentType->getId(),
@@ -1052,8 +950,6 @@ class ContentTypeController extends AppController
         $contentType->setModified(null);
         $contentType->getFieldType()->removeCircularReference();
         $contentType->setEnvironment(null);
-        //$contentType->getTemplates()->clear();
-        //$contentType->getViews()->clear();
 
         //Serialize the CT
         $encoders = array(new JsonEncoder());

@@ -1334,7 +1334,7 @@ class ContentType
     /**
      * Get circlesField
      *
-     * @return array
+     * @return string
      */
     public function getCirclesField()
     {
@@ -1688,7 +1688,7 @@ class ContentType
     }
 
     /**
-     * @return array
+     * @return string
      */
     public function getDefaultValue()
     {

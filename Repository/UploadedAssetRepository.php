@@ -3,7 +3,6 @@
 namespace EMS\CoreBundle\Repository;
 
 use Doctrine\ORM\NonUniqueResultException;
-use function intval;
 
 /**
  * UploadedAssetRepository

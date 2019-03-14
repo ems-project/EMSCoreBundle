@@ -3,32 +3,35 @@ namespace EMS\CoreBundle\Twig;
 
 use Caxy\HtmlDiff\HtmlDiff;
 use DateTime;
-use EMS\CoreBundle\Entity\ContentType;
-use EMS\CoreBundle\Form\DataField\DateFieldType;
-use EMS\CoreBundle\Form\DataField\TimeFieldType;
-use EMS\CoreBundle\Service\FileService;
-use EMS\CoreBundle\Service\UserService;
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use EMS\CoreBundle\Service\ContentTypeService;
 use Elasticsearch\Client;
-use Symfony\Component\Routing\Router;
-use EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory;
-use Symfony\Component\Form\FormError;
-use EMS\CoreBundle\Repository\I18nRepository;
+use Elasticsearch\Common\Exceptions\Missing404Exception;
+use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Storage\Processor\Config;
+use EMS\CommonBundle\Twig\RequestRuntime;
+use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\I18n;
 use EMS\CoreBundle\Entity\User;
-use EMS\CoreBundle\Form\DataField\DateRangeFieldType;
-use EMS\CoreBundle\Service\EnvironmentService;
-use Monolog\Logger;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Form\FormFactory;
-use EMS\CoreBundle\Entity\FieldType;
-use EMS\CoreBundle\Entity\DataField;
-use Elasticsearch\Common\Exceptions\Missing404Exception;
-use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
+use EMS\CoreBundle\Form\DataField\DateFieldType;
+use EMS\CoreBundle\Form\DataField\DateRangeFieldType;
+use EMS\CoreBundle\Form\DataField\TimeFieldType;
+use EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory;
+use EMS\CoreBundle\Repository\I18nRepository;
 use EMS\CoreBundle\Repository\SequenceRepository;
+use EMS\CoreBundle\Service\ContentTypeService;
+use EMS\CoreBundle\Service\EnvironmentService;
+use EMS\CoreBundle\Service\FileService;
+use EMS\CoreBundle\Service\UserService;
+use Monolog\Logger;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormFactory;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\Router;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Twig\TwigFilter;
+use Twig\TwigFunction;
 
 class AppExtension extends \Twig_Extension
 {
@@ -53,8 +56,13 @@ class AppExtension extends \Twig_Extension
     protected $formFactory;
     /**@var FileService*/
     protected $fileService;
-    
-    public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, Client $client, Router $router, $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, Logger $logger, FormFactory $formFactory, FileService $fileService)
+    /**@var RequestRuntime*/
+    protected $commonRequestRuntime;
+    /**@var string*/
+    protected $assetConfigIndex;
+    /**@var string*/
+    protected $assetConfigContentType;
+    public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, Client $client, Router $router, $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, Logger $logger, FormFactory $formFactory, FileService $fileService, RequestRuntime $commonRequestRuntime, string $assetConfigIndex, string $assetConfigContentType)
     {
         $this->doctrine = $doctrine;
         $this->authorizationChecker = $authorizationChecker;
@@ -68,11 +76,12 @@ class AppExtension extends \Twig_Extension
         $this->logger = $logger;
         $this->formFactory = $formFactory;
         $this->fileService = $fileService;
-        
-        //$this->twig->getExtension('Twig_Extension_Core')->setEscaper('csv', array($this, 'csvEscaper'));
+        $this->commonRequestRuntime = $commonRequestRuntime;
+        $this->assetConfigIndex = $assetConfigIndex;
+        $this->assetConfigContentType = $assetConfigContentType;
     }
-    
-    
+
+
     /**
      *
      * {@inheritDoc}
@@ -81,25 +90,27 @@ class AppExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction('get_content_types', array($this, 'getContentTypes')),
-            new \Twig_SimpleFunction('cant_be_finalized', array($this, 'cantBeFinalized')),
-            new \Twig_SimpleFunction('get_default_environments', array($this, 'getDefaultEnvironments')),
-            new \Twig_SimpleFunction('sequence', array($this, 'getSequenceNextValue')),
-            new \Twig_SimpleFunction('diff_text', array($this, 'diffText'), ['is_safe' => ['html']]),
-            new \Twig_SimpleFunction('diff', array($this, 'diff'), ['is_safe' => ['html']]),
-            new \Twig_SimpleFunction('diff_html', array($this, 'diffHtml'), ['is_safe' => ['html']]),
-            new \Twig_SimpleFunction('diff_icon', array($this, 'diffIcon'), ['is_safe' => ['html']]),
-            new \Twig_SimpleFunction('diff_raw', array($this, 'diffRaw'), ['is_safe' => ['html']]),
-            new \Twig_SimpleFunction('diff_color', array($this, 'diffColor'), ['is_safe' => ['html']]),
-            new \Twig_SimpleFunction('diff_boolean', array($this, 'diffBoolean'), ['is_safe' => ['html']]),
-            new \Twig_SimpleFunction('diff_choice', array($this, 'diffChoice'), ['is_safe' => ['html']]),
-            new \Twig_SimpleFunction('diff_data_link', array($this, 'diffDataLink'), ['is_safe' => ['html']]),
-            new \Twig_SimpleFunction('diff_date', array($this, 'diffDate'), ['is_safe' => ['html']]),
-            new \Twig_SimpleFunction('diff_time', array($this, 'diffTime'), ['is_safe' => ['html']]),
-            new \Twig_SimpleFunction('is_super', array($this, 'isSuper')),
-        ];
-    }
-    
+            new TwigFunction('get_content_types', array($this, 'getContentTypes')),
+            new TwigFunction('cant_be_finalized', array($this, 'cantBeFinalized')),
+            new TwigFunction('get_default_environments', array($this, 'getDefaultEnvironments')),
+            new TwigFunction('sequence', array($this, 'getSequenceNextValue')),
+            new TwigFunction('diff_text', array($this, 'diffText'), ['is_safe' => ['html']]),
+            new TwigFunction('diff', array($this, 'diff'), ['is_safe' => ['html']]),
+            new TwigFunction('diff_html', array($this, 'diffHtml'), ['is_safe' => ['html']]),
+            new TwigFunction('diff_icon', array($this, 'diffIcon'), ['is_safe' => ['html']]),
+            new TwigFunction('diff_raw', array($this, 'diffRaw'), ['is_safe' => ['html']]),
+            new TwigFunction('diff_color', array($this, 'diffColor'), ['is_safe' => ['html']]),
+            new TwigFunction('diff_boolean', array($this, 'diffBoolean'), ['is_safe' => ['html']]),
+            new TwigFunction('diff_choice', array($this, 'diffChoice'), ['is_safe' => ['html']]),
+            new TwigFunction('diff_data_link', array($this, 'diffDataLink'), ['is_safe' => ['html']]),
+            new TwigFunction('diff_date', array($this, 'diffDate'), ['is_safe' => ['html']]),
+            new TwigFunction('diff_time', array($this, 'diffTime'), ['is_safe' => ['html']]),
+            new TwigFunction('is_super', array($this, 'isSuper')),
+            new TwigFunction('emsco_asset_path', [$this, 'assetPath'], ['is_safe' => ['html']]),
+		];
+        }
+
+
     /**
      *
      * {@inheritDoc}
@@ -107,53 +118,99 @@ class AppExtension extends \Twig_Extension
      */
     public function getFilters()
     {
-        
-        
+
+
         return array(
-            new \Twig_SimpleFilter('searches', array($this, 'searchesList')),
-            new \Twig_SimpleFilter('url_generator', array($this, 'toAscii')),
-            new \Twig_SimpleFilter('dump', array($this, 'dump')),
-            new \Twig_SimpleFilter('data', array($this, 'data')),
-            new \Twig_SimpleFilter('inArray', array($this, 'inArray')),
-            new \Twig_SimpleFilter('firstInArray', array($this, 'firstInArray')),
-            new \Twig_SimpleFilter('md5', array($this, 'md5')),
-            new \Twig_SimpleFilter('convertJavaDateFormat', array($this, 'convertJavaDateFormat')),
-            new \Twig_SimpleFilter('convertJavascriptDateFormat', array($this, 'convertJavascriptDateFormat')),
-            new \Twig_SimpleFilter('convertJavascriptDateRangeFormat', array($this, 'convertJavascriptDateRangeFormat')),
-            new \Twig_SimpleFilter('getTimeFieldTimeFormat', array($this, 'getTimeFieldTimeFormat')),
-            new \Twig_SimpleFilter('soapRequest', array($this, 'soapRequest')),
-            new \Twig_SimpleFilter('luma', array($this, 'relativeluminance')),
-            new \Twig_SimpleFilter('contrastratio', array($this, 'contrastratio')),
-            new \Twig_SimpleFilter('all_granted', array($this, 'allGranted')),
-            new \Twig_SimpleFilter('one_granted', array($this, 'oneGranted')),
-            new \Twig_SimpleFilter('in_my_circles', array($this, 'inMyCircles')),
-            new \Twig_SimpleFilter('data_link', array($this, 'dataLink')),
-            new \Twig_SimpleFilter('data_label', array($this, 'dataLabel')),
-            new \Twig_SimpleFilter('get_content_type', array($this, 'getContentType')),
-            new \Twig_SimpleFilter('get_environment', array($this, 'getEnvironment')),
-            new \Twig_SimpleFilter('generate_from_template', array($this, 'generateFromTemplate')),
-            new \Twig_SimpleFilter('objectChoiceLoader', array($this, 'objectChoiceLoader')),
-            new \Twig_SimpleFilter('groupedObjectLoader', array($this, 'groupedObjectLoader')),
-            new \Twig_SimpleFilter('propertyPath', array($this, 'propertyPath')),
-            new \Twig_SimpleFilter('is_super', array($this, 'is_super')),
-            new \Twig_SimpleFilter('i18n', array($this, 'i18n')),
-            new \Twig_SimpleFilter('internal_links', array($this, 'internalLinks')),
-            new \Twig_SimpleFilter('src_path', array($this, 'srcPath')),
-            new \Twig_SimpleFilter('get_user', array($this, 'getUser')),
-            new \Twig_SimpleFilter('displayname', array($this, 'displayname')),
-            new \Twig_SimpleFilter('date_difference', array($this, 'dateDifference')),
-            new \Twig_SimpleFilter('debug', array($this, 'debug')),
-            new \Twig_SimpleFilter('search', array($this, 'search')),
-            new \Twig_SimpleFilter('call_user_func', array($this, 'callUserFunc')),
-            new \Twig_SimpleFilter('macro_fct', array($this, 'macroFct')),
-            new \Twig_SimpleFilter('merge_recursive', array($this, 'arrayMergeRecursive')),
-            new \Twig_SimpleFilter('array_intersect', array($this, 'arrayIntersect')),
-            new \Twig_SimpleFilter('get_string', array($this, 'getString')),
-            new \Twig_SimpleFilter('get_file', array($this, 'getFile')),
-            new \Twig_SimpleFilter('get_field_by_path', array($this, 'getFieldByPath')),
-            new \Twig_SimpleFilter('json_decode', array($this, 'jsonDecode')),
-                
+            new TwigFilter('searches', array($this, 'searchesList')),
+            new TwigFilter('url_generator', array($this, 'toAscii')),
+            new TwigFilter('dump', array($this, 'dump')),
+            new TwigFilter('data', array($this, 'data')),
+            new TwigFilter('inArray', array($this, 'inArray')),
+            new TwigFilter('firstInArray', array($this, 'firstInArray')),
+            new TwigFilter('md5', array($this, 'md5')),
+            new TwigFilter('convertJavaDateFormat', array($this, 'convertJavaDateFormat')),
+            new TwigFilter('convertJavascriptDateFormat', array($this, 'convertJavascriptDateFormat')),
+            new TwigFilter('convertJavascriptDateRangeFormat', array($this, 'convertJavascriptDateRangeFormat')),
+            new TwigFilter('getTimeFieldTimeFormat', array($this, 'getTimeFieldTimeFormat')),
+            new TwigFilter('soapRequest', array($this, 'soapRequest')),
+            new TwigFilter('luma', array($this, 'relativeluminance')),
+            new TwigFilter('contrastratio', array($this, 'contrastratio')),
+            new TwigFilter('all_granted', array($this, 'allGranted')),
+            new TwigFilter('one_granted', array($this, 'oneGranted')),
+            new TwigFilter('in_my_circles', array($this, 'inMyCircles')),
+            new TwigFilter('data_link', array($this, 'dataLink')),
+            new TwigFilter('data_label', array($this, 'dataLabel')),
+            new TwigFilter('get_content_type', array($this, 'getContentType')),
+            new TwigFilter('get_environment', array($this, 'getEnvironment')),
+            new TwigFilter('generate_from_template', array($this, 'generateFromTemplate')),
+            new TwigFilter('objectChoiceLoader', array($this, 'objectChoiceLoader')),
+            new TwigFilter('groupedObjectLoader', array($this, 'groupedObjectLoader')),
+            new TwigFilter('propertyPath', array($this, 'propertyPath')),
+            new TwigFilter('is_super', array($this, 'is_super')),
+            new TwigFilter('i18n', array($this, 'i18n')),
+            new TwigFilter('internal_links', array($this, 'internalLinks')),
+            new TwigFilter('src_path', array($this, 'srcPath')),
+            new TwigFilter('get_user', array($this, 'getUser')),
+            new TwigFilter('displayname', array($this, 'displayname')),
+            new TwigFilter('date_difference', array($this, 'dateDifference')),
+            new TwigFilter('debug', array($this, 'debug')),
+            new TwigFilter('search', array($this, 'search')),
+            new TwigFilter('call_user_func', array($this, 'callUserFunc')),
+            new TwigFilter('macro_fct', array($this, 'macroFct')),
+            new TwigFilter('merge_recursive', array($this, 'arrayMergeRecursive')),
+            new TwigFilter('array_intersect', array($this, 'arrayIntersect')),
+            new TwigFilter('get_string', array($this, 'getString')),
+            new TwigFilter('get_file', array($this, 'getFile')),
+            new TwigFilter('get_field_by_path', array($this, 'getFieldByPath')),
+            new TwigFilter('json_decode', array($this, 'jsonDecode')),
+
         );
+    }/**
+     * @param array $fileField
+     * @param string $processorIdentifier
+     * @param array $assetConfig
+     * @param string $route
+     * @param string $fileHashField
+     * @param string $filenameField
+     * @param string $mimeTypeField
+     * @param int $referenceType
+     * @return string
+     */
+    public function assetPath(array $fileField, string $processorIdentifier, array $assetConfig=[], string $route = 'ems_asset', string $fileHashField=EmsFields::CONTENT_FILE_HASH_FIELD, $filenameField=EmsFields::CONTENT_FILE_NAME_FIELD, $mimeTypeField=EmsFields::CONTENT_MIME_TYPE_FIELD, $referenceType = UrlGeneratorInterface::RELATIVE_PATH) : string
+    {
+        $config = $assetConfig;
+
+        $result = $this->client->search([
+            'size' => 1,
+            'type' => $this->assetConfigContentType,
+            'index' => $this->assetConfigIndex ?: $this->environmentService->getByName($this->assetConfigContentType)->getEnvironment()->getAlias(),
+            'body' => '{
+                   "query": {
+                      "term": {
+                         "_identifier": {
+                            "value": ' . json_encode($processorIdentifier) . '
+                         }
+                      }
+                   }
+                }',
+        ]);
+
+
+        if ($result['hits']['total'] == 0) {
+            $config['_config_type'] = 'image';
+        }
+        else {
+            $config = array_merge($result['hits']['hits'][0]['_source'], $config);
+        }
+
+        // removes invalid options like _sha1, _finalized_by, ..
+        $config = array_intersect_key( $config, Config::getDefaults());
+        //_published_datetime can also be removed as it has a sense only if the default config is updated
+        if(isset($config['_published_datetime'])) {
+            unset($config['_published_datetime']);
+        }
+
+        return $this->commonRequestRuntime->assetPath($fileField, $config, $route, $fileHashField, $filenameField, $mimeTypeField, $referenceType);
     }
 
 
@@ -529,7 +586,7 @@ class AppExtension extends \Twig_Extension
         $out= $repo->nextValue($name);
         return $out;
     }
-    
+
     public function arrayIntersect(array $array1, $array2)
     {
         if (! is_array($array2)) {
@@ -537,13 +594,13 @@ class AppExtension extends \Twig_Extension
         }
         return array_intersect($array1, $array2);
     }
-    
-    
+
+
     public function arrayMergeRecursive(array $array1, array $_ = null)
     {
         return array_merge_recursive($array1, $_);
     }
-    
+
     /**
      * Convert a tring into an url frendly string
      * http://cubiq.org/the-perfect-php-clean-url-generator
@@ -554,23 +611,23 @@ class AppExtension extends \Twig_Extension
     public function toAscii($str)
     {
         $clean = $str;
-        
+
         try {
             $clean = iconv('UTF-8', 'ASCII//TRANSLIT', $str);
         } catch (\Exception $e) {
             $clean = false;
         }
-    
+
         if ($clean === false) {
             $a = array('À', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Æ', 'Ç', 'È', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Î', 'Ï', 'Ð', 'Ñ', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', 'Ø', 'Ù', 'Ú', 'Û', 'Ü', 'Ý', 'ß', 'à', 'á', 'â', 'ã', 'ä', 'å', 'æ', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ñ', 'ò', 'ó', 'ô', 'õ', 'ö', 'ø', 'ù', 'ú', 'û', 'ü', 'ý', 'ÿ', 'Ā', 'ā', 'Ă', 'ă', 'Ą', 'ą', 'Ć', 'ć', 'Ĉ', 'ĉ', 'Ċ', 'ċ', 'Č', 'č', 'Ď', 'ď', 'Đ', 'đ', 'Ē', 'ē', 'Ĕ', 'ĕ', 'Ė', 'ė', 'Ę', 'ę', 'Ě', 'ě', 'Ĝ', 'ĝ', 'Ğ', 'ğ', 'Ġ', 'ġ', 'Ģ', 'ģ', 'Ĥ', 'ĥ', 'Ħ', 'ħ', 'Ĩ', 'ĩ', 'Ī', 'ī', 'Ĭ', 'ĭ', 'Į', 'į', 'İ', 'ı', 'Ĳ', 'ĳ', 'Ĵ', 'ĵ', 'Ķ', 'ķ', 'Ĺ', 'ĺ', 'Ļ', 'ļ', 'Ľ', 'ľ', 'Ŀ', 'ŀ', 'Ł', 'ł', 'Ń', 'ń', 'Ņ', 'ņ', 'Ň', 'ň', 'ŉ', 'Ō', 'ō', 'Ŏ', 'ŏ', 'Ő', 'ő', 'Œ', 'œ', 'Ŕ', 'ŕ', 'Ŗ', 'ŗ', 'Ř', 'ř', 'Ś', 'ś', 'Ŝ', 'ŝ', 'Ş', 'ş', 'Š', 'š', 'Ţ', 'ţ', 'Ť', 'ť', 'Ŧ', 'ŧ', 'Ũ', 'ũ', 'Ū', 'ū', 'Ŭ', 'ŭ', 'Ů', 'ů', 'Ű', 'ű', 'Ų', 'ų', 'Ŵ', 'ŵ', 'Ŷ', 'ŷ', 'Ÿ', 'Ź', 'ź', 'Ż', 'ż', 'Ž', 'ž', 'ſ', 'ƒ', 'Ơ', 'ơ', 'Ư', 'ư', 'Ǎ', 'ǎ', 'Ǐ', 'ǐ', 'Ǒ', 'ǒ', 'Ǔ', 'ǔ', 'Ǖ', 'ǖ', 'Ǘ', 'ǘ', 'Ǚ', 'ǚ', 'Ǜ', 'ǜ', 'Ǻ', 'ǻ', 'Ǽ', 'ǽ', 'Ǿ', 'ǿ');
             $b = array('A', 'A', 'A', 'A', 'A', 'A', 'AE', 'C', 'E', 'E', 'E', 'E', 'I', 'I', 'I', 'I', 'D', 'N', 'O', 'O', 'O', 'O', 'O', 'O', 'U', 'U', 'U', 'U', 'Y', 's', 'a', 'a', 'a', 'a', 'a', 'a', 'ae', 'c', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'n', 'o', 'o', 'o', 'o', 'o', 'o', 'u', 'u', 'u', 'u', 'y', 'y', 'A', 'a', 'A', 'a', 'A', 'a', 'C', 'c', 'C', 'c', 'C', 'c', 'C', 'c', 'D', 'd', 'D', 'd', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'G', 'g', 'G', 'g', 'G', 'g', 'G', 'g', 'H', 'h', 'H', 'h', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'IJ', 'ij', 'J', 'j', 'K', 'k', 'L', 'l', 'L', 'l', 'L', 'l', 'L', 'l', 'l', 'l', 'N', 'n', 'N', 'n', 'N', 'n', 'n', 'O', 'o', 'O', 'o', 'O', 'o', 'OE', 'oe', 'R', 'r', 'R', 'r', 'R', 'r', 'S', 's', 'S', 's', 'S', 's', 'S', 's', 'T', 't', 'T', 't', 'T', 't', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'W', 'w', 'Y', 'y', 'Y', 'Z', 'z', 'Z', 'z', 'Z', 'z', 's', 'f', 'O', 'o', 'U', 'u', 'A', 'a', 'I', 'i', 'O', 'o', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'A', 'a', 'AE', 'ae', 'O', 'o');
             $clean = str_replace($a, $b, $str);
         }
-        
+
         $clean = preg_replace("/[^a-zA-Z0-9\_\|\ \-]/", '', $clean);
         $clean = strtolower(trim($clean, '-'));
         $clean = preg_replace("/[\/\_\|\ \-]+/", '-', $clean);
-        
+
         return $clean;
     }
 
@@ -670,7 +727,7 @@ class AppExtension extends \Twig_Extension
         if (empty($result)) {
             return $key;
         }
-        
+
         return $result->getContentTextforLocale($locale);
     }
 
@@ -698,7 +755,7 @@ class AppExtension extends \Twig_Extension
 
     public function inMyCircles($circles)
     {
-        
+
         if (!$circles) {
             return true;
         } else if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
@@ -714,8 +771,8 @@ class AppExtension extends \Twig_Extension
             $user = $this->userService->getCurrentUser();
             return in_array($circles, $user->getCircles());
         }
-        
-        
+
+
         return false;
     }
 
@@ -757,9 +814,9 @@ class AppExtension extends \Twig_Extension
         if ($splitted && count($splitted) == 2 && strlen($splitted[0]) > 0 && strlen($splitted[1]) > 0) {
             $type = $splitted[0];
             $ouuid =  $splitted[1];
-            
+
             $addAttribute = "";
-            
+
             /**@var \EMS\CoreBundle\Entity\ContentType $contentType*/
             $contentType = $this->contentTypeService->getByName($type);
             if ($contentType) {
@@ -768,7 +825,7 @@ class AppExtension extends \Twig_Extension
                 } else {
                     $icon = '<i class="fa fa-book"></i>&nbsp;&nbsp;';
                 }
-                
+
                 try {
                     $fields = [];
                     if ($contentType->getLabelField()) {
@@ -779,14 +836,14 @@ class AppExtension extends \Twig_Extension
                     }
 
                     $index = $this->contentTypeService->getIndex($contentType);
-                    
+
                     $result = $this->client->get([
                             '_source' => $fields,
                             'id' => $ouuid,
                             'index' => $index,
                             'type' => $type,
                     ]);
-                    
+
                     if ($contentType->getLabelField()) {
                         $label = $result['_source'][$contentType->getLabelField()];
                         if ($label && strlen($label) > 0) {
@@ -794,11 +851,11 @@ class AppExtension extends \Twig_Extension
                         }
                     }
                     $out = $icon.$out;
-                    
+
                     if ($contentType->getColorField() && $result['_source'][$contentType->getColorField()]) {
                         $color = $result['_source'][$contentType->getColorField()];
                         $contrasted = $this->contrastratio($color, '#000000') > $this->contrastratio($color, '#ffffff')?'#000000':'#ffffff';
-                        
+
                         $out = '<span class="" style="color:'.$contrasted.';">'.$out.'</span>';
                         $addAttribute = ' style="background-color: '.$result['_source'][$contentType->getColorField()].';border-color: '.$result['_source'][$contentType->getColorField()].';"';
                     }
@@ -816,9 +873,9 @@ class AppExtension extends \Twig_Extension
         if ($splitted && count($splitted) == 2 && strlen($splitted[0]) > 0 && strlen($splitted[1]) > 0) {
             $type = $splitted[0];
             $ouuid =  $splitted[1];
-            
+
             $addAttribute = "";
-            
+
             /**@var \EMS\CoreBundle\Entity\ContentType $contentType*/
             $contentType = $this->contentTypeService->getByName($type);
             if ($contentType) {
@@ -827,7 +884,7 @@ class AppExtension extends \Twig_Extension
                 } else {
                     $icon = '<i class="fa fa-book"></i>&nbsp;&nbsp;';
                 }
-                
+
                 try {
                     $fields = [];
                     if ($contentType->getLabelField()) {
@@ -845,7 +902,7 @@ class AppExtension extends \Twig_Extension
                         'index' => $index,
                         'type' => $type,
                     ]);
-                    
+
                     if ($contentType->getLabelField()) {
                         $label = $result['_source'][$contentType->getLabelField()];
                         if ($label && strlen($label) > 0) {
@@ -853,11 +910,11 @@ class AppExtension extends \Twig_Extension
                         }
                     }
                     $out = $icon.$out;
-                    
+
                     if ($contentType->getColorField() && $result['_source'][$contentType->getColorField()]) {
                         $color = $result['_source'][$contentType->getColorField()];
                         $contrasted = $this->contrastratio($color, '#000000') > $this->contrastratio($color, '#ffffff')?'#000000':'#ffffff';
-                        
+
                         $out = '<span class="" style="color:'.$contrasted.';">'.$out.'</span>';
                         $addAttribute = ' style="background-color: '.$result['_source'][$contentType->getColorField()].';border-color: '.$result['_source'][$contentType->getColorField()].';"';
                     }
@@ -891,26 +948,26 @@ class AppExtension extends \Twig_Extension
         return $out;
     }
 
-    public function data($key)
+    public function data(string $key, string $index=null)
     {
         $out = $key;
         $splitted = explode(':', $key);
         if ($splitted && count($splitted) == 2) {
             $type = $splitted[0];
             $ouuid =  $splitted[1];
-                
-            $addAttribute = "";
-            
+
+
+
             /**@var \EMS\CoreBundle\Entity\ContentType $contentType*/
             $contentType = $this->contentTypeService->getByName($type);
             if ($contentType) {
                 try {
                     $result = $this->client->get([
                             'id' => $ouuid,
-                            'index' => $contentType->getEnvironment()->getAlias(),
+                            'index' => $index?: $contentType->getEnvironment()->getAlias(),
                             'type' => $type,
                     ]);
-                    
+
                     return $result['_source'];
                 } catch (Missing404Exception $e) {
                     return false;
@@ -932,7 +989,7 @@ class AppExtension extends \Twig_Extension
         }
         return false;
     }
-    
+
     /**
      * Calculate relative luminance in sRGB colour space for use in WCAG 2.0 compliance
      * @link http://www.w3.org/TR/WCAG20/#relativeluminancedef
@@ -965,7 +1022,7 @@ class AppExtension extends \Twig_Extension
         //Calculate relative luminance using ITU-R BT. 709 coefficients
         return ($components['r'] * 0.2126) + ($components['g'] * 0.7152) + ($components['b'] * 0.0722);
     }
-    
+
     /**
      * Calculate contrast ratio acording to WCAG 2.0 formula
      * Will return a value between 1 (no contrast) and 21 (max contrast)
@@ -987,7 +1044,7 @@ class AppExtension extends \Twig_Extension
         }
         return ($y1 + 0.05) / ($y2 + 0.05);
     }
-    
+
     public function md5($value)
     {
         return md5($value);
@@ -1038,17 +1095,17 @@ class AppExtension extends \Twig_Extension
     {
         return array_search($needle, $haystack) === 0;
     }
-    
+
     public function getContentType($name)
     {
         return $this->contentTypeService->getByName($name);
     }
-    
+
     public function getContentTypes()
     {
         return $this->contentTypeService->getAll();
     }
-    
+
     public function getDefaultEnvironments()
     {
         $defaultEnvironments = [];
@@ -1060,13 +1117,13 @@ class AppExtension extends \Twig_Extension
         }
         return $defaultEnvironments;
     }
-    
+
     public function getEnvironment($name)
     {
         return $this->environmentService->getAliasByName($name);
     }
 
-    
+
     /*
      * $arguments should contain 'function' key. Optionally 'options' and/or 'parameters'
      */
@@ -1079,24 +1136,24 @@ class AppExtension extends \Twig_Extension
         } else {
             $soapClient = new \SoapClient($wsdl);
         }
-        
+
         $function = null;
         if ($arguments && array_key_exists('function', $arguments)) {
             $function = $arguments['function'];
         } else {
             //TODO: throw error "argument 'function' is obligator"
         }
-        
+
         $response = null;
         if ($arguments && array_key_exists('parameters', $arguments)) {
             $response = $soapClient->$function($arguments['parameters']);
         } else {
             $response = $soapClient->$function();
         }
-        
+
         return $response;
     }
-    
+
     public function csvEscaper($twig, $name, $charset)
     {
         return $name;

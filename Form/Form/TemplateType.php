@@ -21,10 +21,10 @@ use EMS\CoreBundle\Form\Field\CodeEditorType;
 
 class TemplateType extends AbstractType
 {
-    
+
     private $choices;
     private $service;
-    
+    private $circleType;
     public function __construct($circleType, EnvironmentService $service)
     {
         $this->service = $service;
@@ -38,10 +38,10 @@ class TemplateType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        
+
         /** @var Template $template */
         $template = $builder->getData();
-        
+
         $builder
         ->add('name', IconTextType::class, [
             'icon' => 'fa fa-tag'
@@ -81,7 +81,7 @@ class TemplateType extends AbstractType
                 'required' => false,
                 'label' => 'Active',
         ])
-        
+
         ->add('renderOption', RenderOptionType::class, [
                 'required' => true,
         ])

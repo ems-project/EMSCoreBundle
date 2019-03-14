@@ -136,14 +136,14 @@
 		<div class="{% if showA and showB %} col-md-6{% endif %}" >
 			{% if dataField.rawData and dataField.rawData.sha1 is defined %}
 				{% if dataField.rawData.sha1 and dataField.rawData.mimetype starts with 'image/' %}
-					{% set path = path('ems.file.view', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) %}
+					{% set path = emsco_asset_path(dataField.rawData, 'preview') %}
 					{% if dataField.fieldType.displayOptions.imageAssetConfigIdentifier is defined and dataField.fieldType.displayOptions.imageAssetConfigIdentifier %}
-						{% set path = path('ems_asset_processor', {'hash':dataField.rawData.sha1, 'processor': dataField.fieldType.displayOptions.imageAssetConfigIdentifier, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) %}
+                        {% set path = emsco_asset_path(dataField.rawData, dataField.fieldType.displayOptions.imageAssetConfigIdentifier) %}
 					{% endif %}
 				{% if doCompare %}
 					<ins class="diffmod">
                 {% endif %}
-					<a href="{{ path('ems.file.view', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) }}">
+					<a href="{{ ems_asset_path(dataField.rawData) }}">
 						<img src="{{ path }}" class="img-responsive pad  {{ compareColor }}" alt="Image of the field {{ dataField.fieldType.name }}">
 					</a>
 				{% if doCompare %}

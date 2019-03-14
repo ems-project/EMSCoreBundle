@@ -20,18 +20,18 @@ class EnvironmentService
     private $doctrine;
     /**@var Session $session*/
     private $session;
-    
+
     private $environments;
-    
+
     /**@var UserService $userService*/
     private $userService;
-    
+
     /** @var AuthorizationCheckerInterface $authorizationChecker*/
     private $authorizationChecker;
 
     private $singleTypeIndex;
-    
-    
+    private $byId;
+
     public function __construct(Registry $doctrine, Session $session, UserService $userService, AuthorizationCheckerInterface $authorizationChecker, $singleTypeIndex)
     {
         $this->doctrine = $doctrine;
@@ -50,29 +50,29 @@ class EnvironmentService
         }
         return $environment->getAlias().AppController::getFormatedTimestamp();
     }
-    
+
     public function getIndexAnalysisConfiguration()
     {
         $filters = [];
-        
+
         /**@var FilterRepository $filterRepository*/
         $filterRepository= $this->doctrine->getRepository('EMSCoreBundle:Filter');
         /**@var Filter $filter*/
         foreach ($filterRepository->findAll() as $filter) {
             $filters[$filter->getName()] = $filter->getOptions();
         }
-        
+
         $analyzers = [];
-        
+
         /**@var AnalyzerRepository $analyzerRepository*/
         $analyzerRepository= $this->doctrine->getRepository('EMSCoreBundle:Analyzer');
         /**@var Analyzer $analyzer*/
         foreach ($analyzerRepository->findAll() as $analyzer) {
             $analyzers[$analyzer->getName()] = $analyzer->getOptions();
         }
-        
-        
-        
+
+
+
         $out = [
             'index' => [
                 'max_result_window' =>     50000,
@@ -82,10 +82,10 @@ class EnvironmentService
                 ]
             ]
         ];
-        
+
         return $out;
-        
-        
+
+
 //         return '{
 //            "index" : {
 //               "max_result_window" : 50000,
@@ -102,7 +102,7 @@ class EnvironmentService
 //            }
 //         }';
     }
-    
+
     public function getEnvironmentsStats()
     {
         /**@var EnvironmentRepository $repo*/
@@ -115,7 +115,7 @@ class EnvironmentService
 
         return $out;
     }
-    
+
     private function loadEnvironment()
     {
         if ($this->environments === false) {
@@ -129,7 +129,7 @@ class EnvironmentService
             }
         }
     }
-    
+
     /**
      *
      * @param string $name
@@ -139,7 +139,7 @@ class EnvironmentService
     {
         return $this->getByName($name);
     }
-    
+
     /**
      *
      * @param string $name
@@ -153,7 +153,7 @@ class EnvironmentService
         }
         return false;
     }
-    
+
     public function getById($id)
     {
         $this->loadEnvironment();
@@ -167,7 +167,7 @@ class EnvironmentService
     {
         $this->loadEnvironment();
         $out = [];
-        
+
         /**@var Environment $environment*/
         foreach ($this->environments as $index => $environment) {
             if ($environment->getManaged()) {
@@ -186,7 +186,7 @@ class EnvironmentService
         $this->loadEnvironment();
         return $this->environments;
     }
-    
+
     public function getAllInMyCircle()
     {
         $this->loadEnvironment();

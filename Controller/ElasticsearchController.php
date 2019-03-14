@@ -303,6 +303,7 @@ class ElasticsearchController extends AppController
 		// Added for ckeditor adv_link plugin.
 		$assetName = $request->query->get('asset_name', false);
 		$circleOnly = $request->query->get('circle', false);
+		$pageSize = $this->container->getParameter('ems_core.paging_size');
 
 		/** @var EntityManager $em */
 		$em = $this->getDoctrine()->getManager();
@@ -358,6 +359,8 @@ class ElasticsearchController extends AppController
 
                 $params['index'] = $selectedEnvironments;
                 $params['type'] = $search->getContentTypes();
+                $params['size'] = $pageSize;
+                $params['from'] = ($page-1)*$pageSize;
 
                 $results = $client->search($params);
 
@@ -414,8 +417,6 @@ class ElasticsearchController extends AppController
 					}
 				}
 			}
-
-			$pageSize = $this->container->getParameter('ems_core.paging_size');
 			$params = [
 					'index' => array_unique($aliases),
 					'type' => array_unique($types),

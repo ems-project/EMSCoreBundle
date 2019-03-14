@@ -370,7 +370,7 @@ services:
         tags:
             - { name: form.type }
             
-            
+
 ### regular services
     ems.service.mapping:
         class: EMS\CoreBundle\Service\Mapping
@@ -383,8 +383,11 @@ services:
     ems.service.alias:
         class: EMS\CoreBundle\Service\AliasService
         arguments: ['@app.elasticsearch', '@doctrine']
-    ems.service.bulker:
-        class: EMS\CommonBundle\Elasticsearch\Bulk\Bulker
+    ems.elasticsearch.bulker:
+        class: EMS\CoreBundle\Elasticsearch\Bulker
+        arguments: ['@app.elasticsearch', '@logger']
+    ems.elasticsearch.indexer:
+        class: EMS\CoreBundle\Elasticsearch\Indexer
         arguments: ['@app.elasticsearch', '@logger']
     ems.service.environment: '@EMS\CoreBundle\Service\EnvironmentService'
     EMS\CoreBundle\Service\EnvironmentService:
@@ -460,7 +463,7 @@ services:
             -  { name: console.command }
     ems.contenttype.migrate:
         class: EMS\CoreBundle\Command\MigrateCommand
-        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.bulker', '@ems.service.mapping', '@ems.service.data', '@form.factory', '%ems_core.instance_id%', '@session']
+        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.elasticsearch.bulker', '@ems.service.mapping', '@ems.service.data', '@form.factory', '%ems_core.instance_id%', '@session']
         tags:
             -  { name: console.command }
     ems.environment.rebuild:
@@ -544,6 +547,9 @@ services:
         class:  EMS\CoreBundle\Security\ApiKeyAuthenticator
         public: false
 
+    #### aliases
+    EMS\CoreBundle\Elasticsearch\Bulker: '@ems.elasticsearch.bulker'
+    EMS\CoreBundle\Elasticsearch\Indexer: '@ems.elasticsearch.indexer'
 
 
 #### Will be mark as deprecated soon

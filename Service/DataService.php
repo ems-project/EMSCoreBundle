@@ -917,11 +917,11 @@ class DataService
 				'ouuid' => $ouuid,
 				'contentType' => $contentTypes[0]
 		]);
-		
+
 		/** @var Revision $revision */
 		foreach ($revisions as $revision){
 			$this->lockRevision($revision, true);
-				
+
 			/** @var Environment $environment */
 			foreach ($revision->getEnvironments() as $environment){
 				try{

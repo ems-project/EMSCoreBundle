@@ -7,3 +7,5 @@
 *.yml~
 /node_modules/
 /.idea/
+/vendor
+/composer.lock

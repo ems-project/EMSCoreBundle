@@ -179,16 +179,16 @@ class AppExtension extends \Twig_Extension
     public function assetPath(array $fileField, string $processorIdentifier, array $assetConfig = [], string $route = 'ems_asset', string $fileHashField = EmsFields::CONTENT_FILE_HASH_FIELD, $filenameField = EmsFields::CONTENT_FILE_NAME_FIELD, $mimeTypeField = EmsFields::CONTENT_MIME_TYPE_FIELD, $referenceType = UrlGeneratorInterface::RELATIVE_PATH) : string
     {
         $config = $assetConfig;
-        if(!isset($config['_config_type'])) {
+        if (!isset($config['_config_type'])) {
             $config['_config_type'] = 'image';
         }
 
         $environment = null;
-        if(!empty($this->assetConfigContentType) && empty($this->assetConfigIndex)) {
+        if (!empty($this->assetConfigContentType) && empty($this->assetConfigIndex)) {
             $environment = $this->environmentService->getByName($this->assetConfigContentType);
         }
 
-        if(!empty($this->assetConfigContentType) && ( !empty($this->assetConfigIndex) || $environment)){
+        if (!empty($this->assetConfigContentType) && ( !empty($this->assetConfigIndex) || $environment)) {
             $result = $this->client->search([
                 'size' => 1,
                 'type' => $this->assetConfigContentType,

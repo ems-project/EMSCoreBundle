@@ -72,7 +72,6 @@ class DataController extends AppController
         ]);
         /**@var Search $search */
         foreach ($searchs as $search) {
-
             return $this->forward('EMSCoreBundle:Elasticsearch:search', [
                 'query' => null,
             ], [
@@ -381,12 +380,10 @@ class DataController extends AppController
 
         $compareData = false;
         if ($compareId) {
-
             $this->addFlash('warning', 'The compare is a beta functionality');
             /**@var Revision $compareRevision */
             $compareRevision = $repository->findOneById($compareId);
             if ($compareRevision) {
-
                 $compareData = $compareRevision->getRawData();
                 if ($revision->getContentType() === $compareRevision->getContentType() && $revision->getOuuid() == $compareRevision->getOuuid()) {
                     if ($compareRevision->getCreated() <= $revision->getCreated()) {
@@ -412,9 +409,9 @@ class DataController extends AppController
 
         $this->loadAutoSavedVersion($revision);
 
-// 		$this->getDataService()->loadDataStructure($revision);
+//         $this->getDataService()->loadDataStructure($revision);
 
-// 		$revision->getDataField()->orderChildren();
+//         $revision->getDataField()->orderChildren();
 
 
         $page = $request->query->get('page', 1);
@@ -425,7 +422,8 @@ class DataController extends AppController
         $firstElemOfPage = $repository->firstElemOfPage($page);
 
         $availableEnv = $em->getRepository('EMSCoreBundle:Environment')->findAvailableEnvironements(
-            $revision->getContentType()->getEnvironment());
+            $revision->getContentType()->getEnvironment()
+        );
 
 
         $form = $this->createForm(RevisionType::class, $revision, ['raw_data' => $revision->getRawData()]);
@@ -456,10 +454,10 @@ class DataController extends AppController
             $filter->setOperator('term');
         }
 
-// 		/**@var Form $form*/
-// 		$form = $this->createForm ( SearchFormType::class, $searchForm, [
-// 		    'method' => 'GET',
-// 		] );
+//         /**@var Form $form*/
+//         $form = $this->createForm ( SearchFormType::class, $searchForm, [
+//             'method' => 'GET',
+//         ] );
 
         $refParams = [
             '_source' => false,
@@ -570,7 +568,6 @@ class DataController extends AppController
                         $found = true;
                     }
                 } catch (NoResultException $e) {
-
                 }
             }
         }
@@ -627,7 +624,6 @@ class DataController extends AppController
         $hasPreviousRevision = $this->discardDraft($revision);
 
         if (null != $ouuid && $hasPreviousRevision) {
-
             if ($autoPublish) {
                 return $this->reindexRevisionAction($hasPreviousRevision, true);
             }
@@ -664,7 +660,6 @@ class DataController extends AppController
         $em->flush();
 
         if (null != $ouuid) {
-
             if ($revision->getContentType()->isAutoPublish()) {
                 $this->addFlash('warning', 'Elasticms was not able to determine if this draft can be silently published');
             }
@@ -741,7 +736,6 @@ class DataController extends AppController
             'type' => $revision->getContentType()->getName(),
             'revisionId' => $revision->getId(),
         ]);
-
     }
 
     /**
@@ -914,7 +908,6 @@ class DataController extends AppController
             'contentType' => $template->getContentType(),
             'body' => $body
         ]);
-
     }
 
     /**
@@ -1012,7 +1005,6 @@ class DataController extends AppController
             $this->addFlash('error', 'Incomplete request, some fields of the request are missing, please verifiy your server configuration. (i.e.: max_input_vars in php.ini)');
             $this->addFlash('error', 'Your modification are not saved!');
         } else {
-
             $this->lockRevision($revision);
             $this->getLogger()->addDebug('Revision locked');
 
@@ -1087,7 +1079,6 @@ class DataController extends AppController
                     'stylesSets' => $this->getWysiwygStylesSetService()->getStylesSets(),
                 ]);
             }
-
         } catch (\Exception $e) {
             $this->addFlash("error", "This draft (" . $revision->getContentType()->getSingularName() . ($revision->getOuuid() ? ":" . $revision->getOuuid() : "") . ") can't be finalized.");
             $this->addFlash('error', $e->getMessage());
@@ -1105,9 +1096,9 @@ class DataController extends AppController
 
     public function finalizeDraft(Revision $revision, \Symfony\Component\Form\Form $form = null, $username = null)
     {
-//		TODO: User validators
-// 		$validator = $this->get('validator');
-// 		$errors = $validator->validate($revision);
+//        TODO: User validators
+//         $validator = $this->get('validator');
+//         $errors = $validator->validate($revision);
 
         return $this->getDataService()->finalizeDraft($revision, $form, $username);
     }
@@ -1163,9 +1154,9 @@ class DataController extends AppController
         }
 
 
-// 		$this->getDataService()->loadDataStructure($revision);
-// 		$this->getDataService()->generateInputValues($revision->getDataField());
-// 		$this->getLogger()->debug('DataField structure generated');
+//         $this->getDataService()->loadDataStructure($revision);
+//         $this->getDataService()->generateInputValues($revision->getDataField());
+//         $this->getLogger()->debug('DataField structure generated');
 
 
         $form = $this->createForm(RevisionType::class, $revision, [
@@ -1190,7 +1181,6 @@ class DataController extends AppController
 
 
         if ($form->isSubmitted()) {//Save, Finalize or Discard
-
             if (empty($request->request->get('revision')) || empty($request->request->get('revision')['allFieldsAreThere']) || !$request->request->get('revision')['allFieldsAreThere']) {
                 $this->addFlash('error', 'Incomplete request, some fields of the request are missing, please verifiy your server configuration. (i.e.: max_input_vars in php.ini)');
                 return $this->redirectToRoute('data.revisions', [
@@ -1203,7 +1193,6 @@ class DataController extends AppController
 
             $revision->setAutoSave(null);
             if (!array_key_exists('discard', $request->request->get('revision'))) {//Save, Copy, Paste or Finalize
-
                 //Save anyway
                 /** @var Revision $revision */
                 $revision = $form->getData();
@@ -1236,7 +1225,7 @@ class DataController extends AppController
                 $this->getLogger()->debug('Revision after persist flush');
 
                 if (array_key_exists('publish', $request->request->get('revision'))) {//Finalize
-// 					try{
+//                     try{
                     $revision = $this->finalizeDraft($revision, $form);
                     if (count($form->getErrors()) === 0) {
                         return $this->redirectToRoute('data.revisions', [
@@ -1251,15 +1240,14 @@ class DataController extends AppController
                             'stylesSets' => $this->getWysiwygStylesSetService()->getStylesSets(),
                         ]);
                     }
-// 					}
-// 					catch (\Exception $e){
-// 						$this->addFlash('error', 'The draft has been saved but something when wrong when we tried to publish it. '.$revision->getContentType()->getName().':'.$revision->getOuuid());
-// 						$this->addFlash('error', $e->getMessage());
-// 						return $this->redirectToRoute('revision.edit', [
-// 								'revisionId' => $revisionId,
-// 						]);
-// 					}
-
+//                     }
+//                     catch (\Exception $e){
+//                         $this->addFlash('error', 'The draft has been saved but something when wrong when we tried to publish it. '.$revision->getContentType()->getName().':'.$revision->getOuuid());
+//                         $this->addFlash('error', $e->getMessage());
+//                         return $this->redirectToRoute('revision.edit', [
+//                                 'revisionId' => $revisionId,
+//                         ]);
+//                     }
                 }
             }
 
@@ -1271,7 +1259,6 @@ class DataController extends AppController
             }
             //if Save or Discard
             if (null != $revision->getOuuid()) {
-
                 if (count($form->getErrors()) === 0 && $revision->getContentType()->isAutoPublish()) {
                     $this->getPublishService()->silentPublish($revision);
                 }
@@ -1286,7 +1273,6 @@ class DataController extends AppController
                     'contentTypeId' => $revision->getContentType()->getId(),
                 ]);
             }
-
         } else {
             $isValid = $this->getDataService()->isValid($form);
             if (!$isValid) {
@@ -1355,7 +1341,6 @@ class DataController extends AppController
         $revision = new Revision();
 
         if (!empty($contentType->getDefaultValue())) {
-
             $twig = $this->getTwig();
             try {
                 $template = $twig->createTemplate($contentType->getDefaultValue());
@@ -1364,7 +1349,7 @@ class DataController extends AppController
                     'contentType' => $contentType,
                 ]);
                 $raw = json_decode($defaultValue, true);
-                if ($raw === NULL) {
+                if ($raw === null) {
                     $this->addFlash('error', 'elasticms was not able to initiate the default value (json_decode), please check the content type\'s configuration');
                 } else {
                     $revision->setRawData($raw);
@@ -1372,7 +1357,6 @@ class DataController extends AppController
             } catch (\Twig_Error $e) {
                 $this->addFlash('error', 'elasticms was not able to initiate the default value (twig error), please check the content type\'s configuration');
             }
-
         }
 
         $form = $this->createFormBuilder($revision)
@@ -1413,7 +1397,7 @@ class DataController extends AppController
 
                 if (count($anotherObject) != 0) {
                     $form->get('ouuid')->addError(new FormError('Another ' . $contentType->getName() . ' with this identifier already exists'));
-// 					$form->addError(new FormError('Another '.$contentType->getName().' with this identifier already exists'));
+//                     $form->addError(new FormError('Another '.$contentType->getName().' with this identifier already exists'));
                 }
             }
 
@@ -1445,7 +1429,6 @@ class DataController extends AppController
                             $circles = array_merge($circles, $user->getCircles());
                             $revision->setRawData([$contentType->getCirclesField() => $circles]);
                             $revision->setCircles($circles);
-
                         } else {
                             //set first of my circles
                             if (!empty($user->getCircles())) {
@@ -1544,7 +1527,6 @@ class DataController extends AppController
                 ]);
             }
             if ($category == 'asset') {
-
                 if (empty($contentType->getAssetField()) && empty($revision->getRawData()[$contentType->getAssetField()])) {
                     throw new NotFoundHttpException('Asset field not found for ' . $revision);
                 }
@@ -1554,7 +1536,6 @@ class DataController extends AppController
                     'type' => $revision->getRawData()[$contentType->getAssetField()]['mimetype'],
                     'name' => $revision->getRawData()[$contentType->getAssetField()]['filename'],
                 ]);
-
             }
         }
         throw new NotFoundHttpException('Impossible to find this item : ' . $key);

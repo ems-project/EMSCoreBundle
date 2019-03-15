@@ -21,29 +21,29 @@ class Filter
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-	private $id;
-	
-	/**
-	 * @var string
-	 *
-	 * @ORM\Column(name="name", type="string", length=255, unique=true)
-	 */
-	private $name;
-	
-	/**
-	 * @var bool
-	 *
-	 * @ORM\Column(name="dirty", type="boolean")
-	 */
-	private $dirty;
-	
-	/**
-	 * @var string
-	 *
-	 * @ORM\Column(name="label", type="string", length=255)
-	 */
-	private $label;
-	
+    private $id;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=255, unique=true)
+     */
+    private $name;
+    
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="dirty", type="boolean")
+     */
+    private $dirty;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="label", type="string", length=255)
+     */
+    private $label;
+    
     /**
      * @var array
      *
@@ -73,9 +73,10 @@ class Filter
     private $orderKey;
     
     
-    public function __construct() {
-    	$this->options = [];
-    	$this->dirty = true;
+    public function __construct()
+    {
+        $this->options = [];
+        $this->dirty = true;
     }
     
     /**
@@ -84,10 +85,10 @@ class Filter
      */
     public function updateModified()
     {
-    	$this->modified = new \DateTime();
-    	if(!isset($this->created)){
-    		$this->created = $this->modified;
-    	}
+        $this->modified = new \DateTime();
+        if (!isset($this->created)) {
+            $this->created = $this->modified;
+        }
     }
 
 
@@ -110,9 +111,9 @@ class Filter
      */
     public function setName($name)
     {
-    	$this->name = $name;
-    	
-    	return $this;
+        $this->name = $name;
+        
+        return $this;
     }
     
     /**
@@ -122,7 +123,7 @@ class Filter
      */
     public function getName()
     {
-    	return $this->name;
+        return $this->name;
     }
 
     /**
@@ -137,12 +138,11 @@ class Filter
         $this->options = $options;
         
         foreach ($this->options as $key => $data) {
-        	if($key != 'type' and !in_array($key, FilterOptionsType::FIELDS_BY_TYPE[$this->options['type']])) {
-        		unset($this->options[$key]); 
-        	}
-        	else if($this->options[$key] === null) {
-        		unset($this->options[$key]); 
-        	}
+            if ($key != 'type' and !in_array($key, FilterOptionsType::FIELDS_BY_TYPE[$this->options['type']])) {
+                unset($this->options[$key]);
+            } else if ($this->options[$key] === null) {
+                unset($this->options[$key]);
+            }
         }
 
         return $this;
@@ -215,9 +215,9 @@ class Filter
      */
     public function setDirty($dirty)
     {
-    	$this->dirty = $dirty;
-    	
-    	return $this;
+        $this->dirty = $dirty;
+        
+        return $this;
     }
     
     /**
@@ -227,7 +227,7 @@ class Filter
      */
     public function getDirty()
     {
-    	return $this->dirty;
+        return $this->dirty;
     }
     
     /**
@@ -239,9 +239,9 @@ class Filter
      */
     public function setLabel($label)
     {
-    	$this->label = $label;
-    	
-    	return $label;
+        $this->label = $label;
+        
+        return $label;
     }
     
     /**
@@ -251,7 +251,7 @@ class Filter
      */
     public function getLabel()
     {
-    	return $this->label;
+        return $this->label;
     }
     
     /**
@@ -263,9 +263,9 @@ class Filter
      */
     public function setOrderKey($orderKey)
     {
-    	$this->orderKey = $orderKey;
-    	
-    	return $this;
+        $this->orderKey = $orderKey;
+        
+        return $this;
     }
     
     /**
@@ -275,7 +275,6 @@ class Filter
      */
     public function getOrderKey()
     {
-    	return $this->orderKey;
+        return $this->orderKey;
     }
 }
-

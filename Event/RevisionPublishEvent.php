@@ -9,18 +9,18 @@ use EMS\CoreBundle\Entity\Environment;
  */
 class RevisionPublishEvent extends RevisionEvent
 {
-	const NAME = 'revision.publish';
+    const NAME = 'revision.publish';
 
-	protected $environment;
+    protected $environment;
 
-	public function __construct(Revision $revision, Environment $environment)
-	{
-		parent::__construct($revision);
-		$this->environment = $environment;
-	}
+    public function __construct(Revision $revision, Environment $environment)
+    {
+        parent::__construct($revision);
+        $this->environment = $environment;
+    }
 
-	public function getEnvironment()
-	{
-		return $this->environment;
-	}
+    public function getEnvironment()
+    {
+        return $this->environment;
+    }
 }

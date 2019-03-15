@@ -41,7 +41,7 @@ class View
      *
      * @ORM\Column(name="name", type="string", length=255)
      */
-    private $name; 
+    private $name;
 
     /**
      * @var string
@@ -55,7 +55,7 @@ class View
      *
      * @ORM\Column(name="icon", type="string", length=255, nullable=true)
      */
-    private $icon; 
+    private $icon;
     
     /**
      * @var string
@@ -96,19 +96,19 @@ class View
      */
     public function updateModified()
     {
-    	$this->modified = new \DateTime();
-        	if(!isset($this->created)){
-    		$this->created = $this->modified;
-    	}
-    	if(!isset($this->orderKey)){
-    		$this->orderKey = 0;
-    	}
+        $this->modified = new \DateTime();
+        if (!isset($this->created)) {
+            $this->created = $this->modified;
+        }
+        if (!isset($this->orderKey)) {
+            $this->orderKey = 0;
+        }
     }
     
     /******************************************************************
-     * 
+     *
      * Generated functions
-     * 
+     *
      *******************************************************************/
 
     /**
@@ -330,6 +330,4 @@ class View
         $this->public = $public;
         return $this;
     }
-
-
 }

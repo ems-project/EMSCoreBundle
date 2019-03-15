@@ -13,7 +13,6 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CoreBundle\Repository\FilterRepository;
 use EMS\CoreBundle\Entity\Filter;
 
-
 class AnalyzerOptionsType extends AbstractType
 {
 
@@ -50,7 +49,8 @@ class AnalyzerOptionsType extends AbstractType
     private $doctrine;
 
     public function __construct(Registry $doctrine)
-    {//'@doctrine'
+    {
+//'@doctrine'
         $this->doctrine = $doctrine;
     }
 

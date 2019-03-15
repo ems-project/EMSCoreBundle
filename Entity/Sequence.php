@@ -20,14 +20,14 @@ class Sequence
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-	private $id;
-	
-	/**
-	 * @var string
-	 *
-	 * @ORM\Column(name="name", type="string", length=255, unique=true)
-	 */
-	private $name;
+    private $id;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=255, unique=true)
+     */
+    private $name;
 
     /**
      * @var \DateTime
@@ -60,10 +60,11 @@ class Sequence
     private $version;
     
     
-    public function __construct($name) {
-    	$this->value = 1;
-    	$this->version = 0;
-    	$this->name = $name;
+    public function __construct($name)
+    {
+        $this->value = 1;
+        $this->version = 0;
+        $this->name = $name;
     }
     
     /**
@@ -72,11 +73,11 @@ class Sequence
      */
     public function updateModified()
     {
-    	$this->modified = new \DateTime();
-    	++$this->version;
-    	if(!isset($this->created)){
-    		$this->created = $this->modified;
-    	}
+        $this->modified = new \DateTime();
+        ++$this->version;
+        if (!isset($this->created)) {
+            $this->created = $this->modified;
+        }
     }
 
 
@@ -99,9 +100,9 @@ class Sequence
      */
     public function setName($name)
     {
-    	$this->name = $name;
-    	
-    	return $this;
+        $this->name = $name;
+        
+        return $this;
     }
     
     /**
@@ -111,7 +112,7 @@ class Sequence
      */
     public function getName()
     {
-    	return $this->name;
+        return $this->name;
     }
 
     /**
@@ -171,9 +172,9 @@ class Sequence
      */
     public function setValue($value)
     {
-    	$this->value= $value;
-    	
-    	return $this;
+        $this->value= $value;
+        
+        return $this;
     }
     
     /**
@@ -183,7 +184,7 @@ class Sequence
      */
     public function getValue()
     {
-    	return $this->value;
+        return $this->value;
     }
     
     /**
@@ -193,8 +194,8 @@ class Sequence
      */
     public function inc()
     {
-    	$this->value = $this->value + 1;
-    	return $this->value;
+        $this->value = $this->value + 1;
+        return $this->value;
     }
     
     /**
@@ -204,7 +205,6 @@ class Sequence
      */
     public function getVersion()
     {
-    	return $this->version;
+        return $this->version;
     }
 }
-

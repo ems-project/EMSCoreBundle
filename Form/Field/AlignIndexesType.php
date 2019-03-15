@@ -47,7 +47,7 @@ class AlignIndexesType extends SelectPickerType
                 $managedAlias = $choices[$name];
             
                 return [
-                    'data-indexes' => '["'.implode('", "',array_keys($managedAlias->getIndexes())) . '"]',
+                    'data-indexes' => '["'.implode('", "', array_keys($managedAlias->getIndexes())) . '"]',
                     'data-content' => '<span class="text-'.$managedAlias->getColor().'"><i class="fa fa-code-fork"></i>&nbsp;&nbsp;'. $managedAlias->getName().'</span>'
                 ];
             }

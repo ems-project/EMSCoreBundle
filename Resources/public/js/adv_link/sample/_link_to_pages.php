@@ -9,11 +9,11 @@ header('Content-Type: text/html; charset=utf-8');
 
 // encodeURIComponent() is needed when working with accents
 // If not used, generate a JS error in CKEDITOR link plugin
-function encodeURIComponent( $str ){
+function encodeURIComponent($str)
+{
 
-	$revert = array('%21'=>'!', '%2A'=>'*', '%27'=>"'", '%28'=>'(', '%29'=>')');
-	return strtr(rawurlencode($str), $revert);
-
+    $revert = array('%21'=>'!', '%2A'=>'*', '%27'=>"'", '%28'=>'(', '%29'=>')');
+    return strtr(rawurlencode($str), $revert);
 }
 
 
@@ -26,11 +26,11 @@ $a = array();
 
 // foreach ($data as &$el) {
 
-// 	$name = encodeURIComponent($el['title']);
-// 	$link = 'index.php?p='.$el['id'];
-	
-// 	$tmp = array($name, $link);
-// 	array_push($a, $tmp);
+//     $name = encodeURIComponent($el['title']);
+//     $link = 'index.php?p='.$el['id'];
+    
+//     $tmp = array($name, $link);
+//     array_push($a, $tmp);
 // }
 
 
@@ -42,4 +42,3 @@ $a = [['Contact','index.php?p=4'],['About','index.php?p=5'],['Home page','index.
 $string = json_encode($a);
 echo $string;
 exit;
-?>

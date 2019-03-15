@@ -1,12 +1,9 @@
-<?php 
+<?php
 
 namespace EMS\CoreBundle\Form\DataField\Options;
 
-
-
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-
 
 /**
  * Some DataField need a sub suboption form in display
@@ -15,11 +12,12 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class SubOptionsType extends AbstractType
 {
-	/**
-	 *
-	 * {@inheritdoc}
-	 *
-	 */
-	public function buildForm(FormBuilderInterface $builder, array $options) {
-	}
+    /**
+     *
+     * {@inheritdoc}
+     *
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+    }
 }

@@ -7,38 +7,43 @@ use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use EMS\CoreBundle\Service\UserService;
 
 class ApiKeyUserProvider implements UserProviderInterface
-{	
+{
 
-	/**@var UserService $userService*/
-	private $userService;
-	
-	public function __construct(UserService $userService)
-	{
-		$this->userService = $userService;
-	}
-	
-	public function getUsernameForApiKey($apiKey)
-	{
-		// Look up the username based on the token in the database, via
-		// an API call, or do something entirely different
-		$username = $this->userService->findUsernameByApikey($apiKey);
+    
 
-		return $username;
-	}
+    /**@var UserService $userService*/
+    private $userService;
+    
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+    
+    public function getUsernameForApiKey($apiKey)
+    {
+        // Look up the username based on the token in the database, via
+        // an API call, or do something entirely different
+        $username = $this->userService->findUsernameByApikey($apiKey);
 
-	public function loadUserByUsername($username) {
-		return $this->userService->getUser($username, false);
-	}
+        return $username;
+    }
 
-	public function refreshUser(UserInterface $user) {
-		// this is used for storing authentication in the session
-		// but in this example, the token is sent in each request,
-		// so authentication can be stateless. Throwing this exception
-		// is proper to make things stateless
-		throw new UnsupportedUserException();
-	}
+    public function loadUserByUsername($username)
+    {
+        return $this->userService->getUser($username, false);
+    }
 
-	public function supportsClass($class) {
-		return 'Symfony\Component\Security\Core\User\User' === $class;
-	}
+    public function refreshUser(UserInterface $user)
+    {
+        // this is used for storing authentication in the session
+        // but in this example, the token is sent in each request,
+        // so authentication can be stateless. Throwing this exception
+        // is proper to make things stateless
+        throw new UnsupportedUserException();
+    }
+
+    public function supportsClass($class)
+    {
+        return 'Symfony\Component\Security\Core\User\User' === $class;
+    }
 }

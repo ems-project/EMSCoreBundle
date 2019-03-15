@@ -42,7 +42,7 @@ class AggregateOption
      *
      * @ORM\Column(name="name", type="string", length=255)
      */
-    private $name; 
+    private $name;
     
     /**
      * @var string
@@ -73,11 +73,12 @@ class AggregateOption
     private $icon;
     
     
-    public function __construct() {
-    	$this->config = '{
+    public function __construct()
+    {
+        $this->config = '{
     "terms" : { "field" : "'.Mapping::FINALIZED_BY_FIELD.'" }
 }';
-    	$this->template = '{% set fieldName = \''.Mapping::FINALIZED_BY_FIELD.'\' %}
+        $this->template = '{% set fieldName = \''.Mapping::FINALIZED_BY_FIELD.'\' %}
 {% if aggregation.buckets|length > 1  %}
 
 	{% for index in aggregation.buckets %}
@@ -126,19 +127,19 @@ class AggregateOption
      */
     public function updateModified()
     {
-    	$this->modified = new \DateTime();
-        if(!isset($this->created)){
-    		$this->created = $this->modified;
-    	}
-    	if(!isset($this->orderKey)){
-    		$this->orderKey = 0;
-    	}
+        $this->modified = new \DateTime();
+        if (!isset($this->created)) {
+            $this->created = $this->modified;
+        }
+        if (!isset($this->orderKey)) {
+            $this->orderKey = 0;
+        }
     }
     
     /******************************************************************
-     * 
+     *
      * Generated functions
-     * 
+     *
      *******************************************************************/
 
     /**
@@ -232,7 +233,7 @@ class AggregateOption
      */
     public function setConfig($config)
     {
-    	$this->config= $config;
+        $this->config= $config;
 
         return $this;
     }
@@ -244,7 +245,7 @@ class AggregateOption
      */
     public function getTemplate()
     {
-    	return $this->template;
+        return $this->template;
     }
     
     /**
@@ -256,9 +257,9 @@ class AggregateOption
      */
     public function setTemplate($template)
     {
-    	$this->template= $template;
-    	
-    	return $this;
+        $this->template= $template;
+        
+        return $this;
     }
     
     /**
@@ -268,7 +269,7 @@ class AggregateOption
      */
     public function getConfig()
     {
-    	return $this->config;
+        return $this->config;
     }
 
     /**
@@ -304,9 +305,9 @@ class AggregateOption
      */
     public function setIcon($icon)
     {
-    	$this->icon= $icon;
-    	
-    	return $this;
+        $this->icon= $icon;
+        
+        return $this;
     }
     
     /**
@@ -316,6 +317,6 @@ class AggregateOption
      */
     public function getIcon()
     {
-    	return $this->icon;
+        return $this->icon;
     }
 }

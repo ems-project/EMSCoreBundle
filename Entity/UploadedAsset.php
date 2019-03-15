@@ -49,28 +49,28 @@ class UploadedAsset
      *
      * @ORM\Column(name="sha1", type="string", length=40)
      */
-    private $sha1; 
+    private $sha1;
     
     /**
      * @var name
      *
      * @ORM\Column(name="name", type="string", length=1024)
      */
-    private $name; 
+    private $name;
     
     /**
      * @var type
      *
      * @ORM\Column(name="type", type="string", length=1024)
      */
-    private $type; 
+    private $type;
     
     /**
      * @var user
      *
      * @ORM\Column(name="username", type="string", length=255)
      */
-    private $user; 
+    private $user;
 
     /**
      * @var bool
@@ -84,7 +84,7 @@ class UploadedAsset
      *
      * @ORM\Column(name="size", type="bigint")
      */
-    private $size; 
+    private $size;
 
     /**
      * @var int
@@ -101,23 +101,24 @@ class UploadedAsset
      */
     public function updateModified()
     {
-    	$this->modified = new \DateTime();
-    	if(!isset($this->created)){
-    		$this->created = $this->modified;
-    	}
+        $this->modified = new \DateTime();
+        if (!isset($this->created)) {
+            $this->created = $this->modified;
+        }
     }
     
-    public function getResponse(){
-    	return [
-    		'sha1' => $this->getSha1(),
-    		'type' => $this->getType(),
-    		'available' => $this->getAvailable(),
-    		'name' => $this->getName(),
-    		'size' => $this->getSize(),
-    		'status' => $this->getStatus(),
-    		'uploaded' => $this->getUploaded(),
-    		'user' => $this->getUser(),
-    	];
+    public function getResponse()
+    {
+        return [
+            'sha1' => $this->getSha1(),
+            'type' => $this->getType(),
+            'available' => $this->getAvailable(),
+            'name' => $this->getName(),
+            'size' => $this->getSize(),
+            'status' => $this->getStatus(),
+            'uploaded' => $this->getUploaded(),
+            'user' => $this->getUser(),
+        ];
     }
 
     /**

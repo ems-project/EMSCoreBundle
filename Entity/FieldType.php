@@ -106,10 +106,10 @@ class FieldType
      */
     public function updateModified()
     {
-    	$this->modified = new \DateTime();
-    	if(!isset($this->created)){
-    		$this->created = $this->modified;
-    	}
+        $this->modified = new \DateTime();
+        if (!isset($this->created)) {
+            $this->created = $this->modified;
+        }
     }
     
     /**
@@ -119,10 +119,10 @@ class FieldType
     //TODO: Unrecursify this method
     public function updateAncestorReferences($contentType, $parent)
     {
-       	$this->setContentType($contentType);
+           $this->setContentType($contentType);
         $this->setParent($parent);
-        foreach($this->children as $child) {
-        	$child->updateAncestorReferences(NULL, $this);
+        foreach ($this->children as $child) {
+            $child->updateAncestorReferences(null, $this);
         }
     }
 
@@ -150,30 +150,32 @@ class FieldType
         return $this;
     }
 
-    public function updateOrderKeys() {
-    	if(null != $this->children){
-	    	/** @var FieldType $child */
-	    	foreach ( $this->children as $key => $child ) {
-	    		$child->setOrderKey($key);
-	    		$child->updateOrderKeys();
-	    	}    		
-    	}
+    public function updateOrderKeys()
+    {
+        if (null != $this->children) {
+            /** @var FieldType $child */
+            foreach ($this->children as $key => $child) {
+                $child->setOrderKey($key);
+                $child->updateOrderKeys();
+            }
+        }
     }
 
     /**
      * Remove references to parent to prevent circular reference exception
      */
-    public function removeCircularReference() {
-    	if(null != $this->children){
-    		/** @var FieldType $child */
-    		foreach ( $this->children as $key => $child ) {
-    			$child->removeCircularReference();
-    		}
-   			$this->setContentType(NULL);
-   			$this->setCreated(NULL);
-   			$this->setModified(NULL);
-   			$this->setParent(NULL);
-    	}
+    public function removeCircularReference()
+    {
+        if (null != $this->children) {
+            /** @var FieldType $child */
+            foreach ($this->children as $key => $child) {
+                $child->removeCircularReference();
+            }
+               $this->setContentType(null);
+               $this->setCreated(null);
+               $this->setModified(null);
+               $this->setParent(null);
+        }
     }
     
     /**
@@ -181,26 +183,27 @@ class FieldType
      *
      * @return \DateTime
      */
-    public function setDataValue($input, DataField &$dataField) {
-    	throw new \Exception('Deprecated method');
-//     	$type = $this->getType();
-//     	/** @var DataFieldType $dataFieldType */
-//     	$dataFieldType = new $type;
-    	 
-//     	$dataFieldType->setDataValue($input, $dataField, $this->getOptions());
-    	 
+    public function setDataValue($input, DataField &$dataField)
+    {
+        throw new \Exception('Deprecated method');
+//         $type = $this->getType();
+//         /** @var DataFieldType $dataFieldType */
+//         $dataFieldType = new $type;
+         
+//         $dataFieldType->setDataValue($input, $dataField, $this->getOptions());
     }
     
-    public function getFieldsRoles(){
-    	$out = ['ROLE_AUTHOR' => 'ROLE_AUTHOR'];
-    	if(isset($this->getOptions()['restrictionOptions']) && isset($this->getOptions()['restrictionOptions']['minimum_role']) && $this->getOptions()['restrictionOptions']['minimum_role']){
-	    	$out[$this->getOptions()['restrictionOptions']['minimum_role']] = $this->getOptions()['restrictionOptions']['minimum_role'];
-    	}
-    	
-    	foreach ($this->children as $child){
-    		$out = array_merge($out, $child->getFieldsRoles());
-    	}
-    	return $out;
+    public function getFieldsRoles()
+    {
+        $out = ['ROLE_AUTHOR' => 'ROLE_AUTHOR'];
+        if (isset($this->getOptions()['restrictionOptions']) && isset($this->getOptions()['restrictionOptions']['minimum_role']) && $this->getOptions()['restrictionOptions']['minimum_role']) {
+            $out[$this->getOptions()['restrictionOptions']['minimum_role']] = $this->getOptions()['restrictionOptions']['minimum_role'];
+        }
+        
+        foreach ($this->children as $child) {
+            $out = array_merge($out, $child->getFieldsRoles());
+        }
+        return $out;
     }
     
     /**
@@ -208,14 +211,14 @@ class FieldType
      *
      * @return \DateTime
      */
-    public function getDataValue(DataField &$dataField) {
-    	throw new \Exception('Deprecated method');
-//     	$type = $this->getType();
-//     	/** @var DataFieldType $dataFieldType */
-//     	$dataFieldType = new $type;
-    	
-//     	return $dataFieldType->getDataValue($dataField, $this->getOptions());
-    	
+    public function getDataValue(DataField &$dataField)
+    {
+        throw new \Exception('Deprecated method');
+//         $type = $this->getType();
+//         /** @var DataFieldType $dataFieldType */
+//         $dataFieldType = new $type;
+        
+//         return $dataFieldType->getDataValue($dataField, $this->getOptions());
     }
     
     /**
@@ -348,80 +351,89 @@ class FieldType
         return $this->description;
     }
 
-    public function getDisplayOptions(){
-    	$options = $this->getOptions();
-    	if(isset($options['displayOptions'])){
-    		return $options['displayOptions'];
-    	}
-    	return [];
+    public function getDisplayOptions()
+    {
+        $options = $this->getOptions();
+        if (isset($options['displayOptions'])) {
+            return $options['displayOptions'];
+        }
+        return [];
     }
     
     
-    public function getDisplayOption($key, $default = null){
-    	$options = $this->getDisplayOptions();
-    	if(isset($options[$key])){
-    		return $options[$key];
-    	}
-    	return $default;
+    public function getDisplayOption($key, $default = null)
+    {
+        $options = $this->getDisplayOptions();
+        if (isset($options[$key])) {
+            return $options[$key];
+        }
+        return $default;
     }
     
     
-    public function getMappingOption($key, $default = null){
-    	$options = $this->getMappingOptions();
-    	if(isset($options[$key])){
-    		return $options[$key];
-    	}
-    	return $default;
+    public function getMappingOption($key, $default = null)
+    {
+        $options = $this->getMappingOptions();
+        if (isset($options[$key])) {
+            return $options[$key];
+        }
+        return $default;
     }
     
-    public function getMappingOptions(){
-    	$options = $this->getOptions();
-    	if(isset($options['mappingOptions'])){
-    		return $options['mappingOptions'];
-    	}
-    	return [];
-    }
-
-    public function getRestrictionOptions(){
-    	$options = $this->getOptions();
-    	if(isset($options['restrictionOptions'])){
-    		return $options['restrictionOptions'];
-    	}
-    	return [];
-    }
-    
-    
-    
-    public function getMigrationgOption($key, $default = null){
-    	$options = $this->getMigrationOptions();
-    	if(isset($options[$key])){
-    		return $options[$key];
-    	}
-    	return $default;
-    }
-    
-    public function getMigrationOptions(){
-    	$options = $this->getOptions();
-    	if(isset($options['migrationOptions'])){
-    		return $options['migrationOptions'];
-    	}
-    	return [];
+    public function getMappingOptions()
+    {
+        $options = $this->getOptions();
+        if (isset($options['mappingOptions'])) {
+            return $options['mappingOptions'];
+        }
+        return [];
     }
 
-    public function getExtraOptions(){
-    	$options = $this->getOptions();
-    	if(isset($options['extraOptions'])){
-    		return $options['extraOptions'];
-    	}
-    	return [];
+    public function getRestrictionOptions()
+    {
+        $options = $this->getOptions();
+        if (isset($options['restrictionOptions'])) {
+            return $options['restrictionOptions'];
+        }
+        return [];
     }
     
-    public function getMinimumRole(){
-    	$options = $this->getOptions();
-    	if(isset($options['restrictionOptions']) && isset($options['restrictionOptions']['minimum_role'])){
-    		return $options['restrictionOptions']['minimum_role'];
-    	}
-    	return 'ROLE_AUTHOR';
+    
+    
+    public function getMigrationgOption($key, $default = null)
+    {
+        $options = $this->getMigrationOptions();
+        if (isset($options[$key])) {
+            return $options[$key];
+        }
+        return $default;
+    }
+    
+    public function getMigrationOptions()
+    {
+        $options = $this->getOptions();
+        if (isset($options['migrationOptions'])) {
+            return $options['migrationOptions'];
+        }
+        return [];
+    }
+
+    public function getExtraOptions()
+    {
+        $options = $this->getOptions();
+        if (isset($options['extraOptions'])) {
+            return $options['extraOptions'];
+        }
+        return [];
+    }
+    
+    public function getMinimumRole()
+    {
+        $options = $this->getOptions();
+        if (isset($options['restrictionOptions']) && isset($options['restrictionOptions']['minimum_role'])) {
+            return $options['restrictionOptions']['minimum_role'];
+        }
+        return 'ROLE_AUTHOR';
     }
 
 
@@ -432,13 +444,13 @@ class FieldType
      */
     public function getValidChildren()
     {
-    	$out = [];
-    	foreach ($this->children as $child){
-    		if(!$child->getDeleted()){
-    			$out[] = $child;
-    		}
-    	}
-    	return $out;
+        $out = [];
+        foreach ($this->children as $child) {
+            if (!$child->getDeleted()) {
+                $out[] = $child;
+            }
+        }
+        return $out;
     }
     
     /**
@@ -486,39 +498,38 @@ class FieldType
      */
     public function getContentType()
     {
-    	$parent = $this;
-    	while($parent->parent != null){
-    		$parent = $parent->parent;
-    	}
+        $parent = $this;
+        while ($parent->parent != null) {
+            $parent = $parent->parent;
+        }
         return $parent->contentType;
     }
-	
-	/**
-	 * Constructor
-	 */
-	public function __construct() 
-	{
-		$this->children = new \Doctrine\Common\Collections\ArrayCollection ();
-		$this->deleted = false;
-		$this->orderKey = 0;
-		
+    
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->children = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->deleted = false;
+        $this->orderKey = 0;
     }
-	
-// 	/**
-// 	 * Cette focntion clone casse le CollectionFieldType => impossible d'ajouter un record
-// 	 */
-// 	public function __clone() 
-// 	{
-// 		$this->children = new \Doctrine\Common\Collections\ArrayCollection ();
-// 		$this->deleted = $this->deleted;
-// 		$this->orderKey = $this->orderKey;
-// 		$this->created = null;
-// 		$this->modified = null;
-// 		$this->description = $this->description;
-// 		$this->id = 0;
-// 		$this->name = $this->name ;
-// 		$this->options = $this->options;
-// 		$this->type = $this->type;	
+    
+//     /**
+//      * Cette focntion clone casse le CollectionFieldType => impossible d'ajouter un record
+//      */
+//     public function __clone()
+//     {
+//         $this->children = new \Doctrine\Common\Collections\ArrayCollection ();
+//         $this->deleted = $this->deleted;
+//         $this->orderKey = $this->orderKey;
+//         $this->created = null;
+//         $this->modified = null;
+//         $this->description = $this->description;
+//         $this->id = 0;
+//         $this->name = $this->name ;
+//         $this->options = $this->options;
+//         $this->type = $this->type;
 //     }
 
     /**
@@ -527,50 +538,48 @@ class FieldType
      * @return FieldType
      */
     public function __get($key)
-    {  	
-    	if(strpos($key, 'ems_') !== 0){
-     		throw new \Exception('unprotected ems get with key '.$key);
-     	}
-     	else{
-     		$key = substr($key, 4);
-     	}
-    	/** @var FieldType $fieldType */
-    	foreach ($this->getChildren() as $fieldType){
-    		if(!$fieldType->getDeleted() && strcmp($key,  $fieldType->getName()) == 0){
-    			return $fieldType;
-    		}
-    	}
+    {
+        if (strpos($key, 'ems_') !== 0) {
+             throw new \Exception('unprotected ems get with key '.$key);
+        } else {
+            $key = substr($key, 4);
+        }
+        /** @var FieldType $fieldType */
+        foreach ($this->getChildren() as $fieldType) {
+            if (!$fieldType->getDeleted() && strcmp($key, $fieldType->getName()) == 0) {
+                return $fieldType;
+            }
+        }
     
-    	return null;
-    }    
+        return null;
+    }
     
     /**
      * set a child
      *
      * @return DataField
      */
-    public function __set($key, $input )
-    {     	
-    	if(strpos($key, 'ems_') !== 0){
-     		throw new \Exception('unprotected ems get with key '.$key);
-     	}
-     	else{
-     		$key = substr($key, 4);
-     	}
-    	$found = false;
-    	/** @var FieldType $child */
-    	foreach ($this->children as &$child){
-    		if(!$child->getDeleted() && strcmp($key,  $child->getName()) == 0){
-    			$found = true;
-    			$child = $input;
-    			break;
-    		}
-    	}
-    	if(! $found){    		
-	    	$this->children->add($input);
-    	}
-    	 
-    	return $this;
+    public function __set($key, $input)
+    {
+        if (strpos($key, 'ems_') !== 0) {
+             throw new \Exception('unprotected ems get with key '.$key);
+        } else {
+            $key = substr($key, 4);
+        }
+        $found = false;
+        /** @var FieldType $child */
+        foreach ($this->children as &$child) {
+            if (!$child->getDeleted() && strcmp($key, $child->getName()) == 0) {
+                $found = true;
+                $child = $input;
+                break;
+            }
+        }
+        if (! $found) {
+            $this->children->add($input);
+        }
+         
+        return $this;
     }
     
 
@@ -641,20 +650,19 @@ class FieldType
      */
     public function getChildByPath($path)
     {
-    	$elem = explode('.', $path);
-    	if(!empty($elem)){
-	    	/**@var FieldType $child*/
-	    	foreach ($this->children as $child){
-	    		if(!$child->getDeleted() && $child->getName() == $elem[0]){
-	    			if(strpos($path, ".")){
-	    				return $child->getChildByPath(substr($path, strpos($path, ".")+1));
-	    			}
-	    			return $child;
-	    		}
-	    	}
-    		
-    	}
-        return FALSE;
+        $elem = explode('.', $path);
+        if (!empty($elem)) {
+            /**@var FieldType $child*/
+            foreach ($this->children as $child) {
+                if (!$child->getDeleted() && $child->getName() == $elem[0]) {
+                    if (strpos($path, ".")) {
+                        return $child->getChildByPath(substr($path, strpos($path, ".")+1));
+                    }
+                    return $child;
+                }
+            }
+        }
+        return false;
     }
 
     /**

@@ -59,7 +59,7 @@ class SingleTypeIndex
 
     public function __toString()
     {
-    	return $this->name;
+        return $this->name;
     }
     
     /**
@@ -68,10 +68,10 @@ class SingleTypeIndex
      */
     public function updateModified()
     {
-    	$this->modified = new \DateTime();
-    	if(!isset($this->created)){
-    		$this->created = $this->modified;
-    	}
+        $this->modified = new \DateTime();
+        if (!isset($this->created)) {
+            $this->created = $this->modified;
+        }
     }
     
 
@@ -205,5 +205,4 @@ class SingleTypeIndex
     {
         return $this->contentType;
     }
-
 }

@@ -2,10 +2,6 @@
 
 namespace EMS\CoreBundle\Exception;
 
-
-
-
-class SequenceException extends SequenceException
+class SequenceException extends ElasticmsException
 {
-	
 }

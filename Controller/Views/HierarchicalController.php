@@ -29,28 +29,30 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class HierarchicalController extends AppController {
-	
-	
-	
-	/**
-	 * @Route("/views/hierarchical/item/{view}/{key}", name="views.hierarchical.item"))
-	 */
-	public function itemAction(View $view, $key, Request $request) {
-		$ouuid = explode(':', $key);
-		$contentType = $this->getContentTypeService()->getByName($ouuid[0]);
-		$item = $this->getElasticsearch()->get([
-				'index' => $contentType->getEnvironment()->getAlias(),
-				'type' => $ouuid[0],
-				'id' => $ouuid[1],
-		]);
-		
-		return $this->render( '@EMSCore/view/custom/hierarchical_add_item.html.twig', [
-				'data' => $item['_source'],
-				'view' => $view,
-				'contentType' => $contentType,
-				'key' => $ouuid,
-				'child' => $key
-		] );
-	}
+class HierarchicalController extends AppController
+{
+    
+    
+    
+    /**
+     * @Route("/views/hierarchical/item/{view}/{key}", name="views.hierarchical.item"))
+     */
+    public function itemAction(View $view, $key, Request $request)
+    {
+        $ouuid = explode(':', $key);
+        $contentType = $this->getContentTypeService()->getByName($ouuid[0]);
+        $item = $this->getElasticsearch()->get([
+                'index' => $contentType->getEnvironment()->getAlias(),
+                'type' => $ouuid[0],
+                'id' => $ouuid[1],
+        ]);
+        
+        return $this->render('@EMSCore/view/custom/hierarchical_add_item.html.twig', [
+                'data' => $item['_source'],
+                'view' => $view,
+                'contentType' => $contentType,
+                'key' => $ouuid,
+                'child' => $key
+        ]);
+    }
 }

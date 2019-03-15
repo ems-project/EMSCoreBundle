@@ -1,6 +1,20 @@
+CoreBundle
+=============
 
+Coding standards
+----------------
+PHP Code Sniffer is available via composer, the standard used is defined in phpcs.xml.diff:
+````bash
+composer phpcs
+````
 
+If your code is not compliant, you could try fixing it automatically:
+````bash
+composer phpcbf
+````
 
+Documentation
+-------------
 symfony new your_app
 cd your_app
  

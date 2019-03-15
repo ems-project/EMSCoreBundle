@@ -134,6 +134,4 @@ class CacheAssetExtractor
         $this->data = $data;
         return $this;
     }
-
-
 }

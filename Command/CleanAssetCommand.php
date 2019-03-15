@@ -110,7 +110,5 @@ class CleanAssetCommand extends EmsCommand
         if ($filesInUsed) {
             $output->writeln("<comment>$filesInUsed files are referenced $totalCounter times</comment>");
         }
-
     }
-
 }

@@ -26,19 +26,19 @@ use EMS\CoreBundle\Service\EnvironmentService;
 class EnvironmentCommand extends ContainerAwareCommand
 {
 
-	/**@var Logger*/
-	private $logger;
-	/**@var EnvironmentService*/
-	private $environmentService;
+    /**@var Logger*/
+    private $logger;
+    /**@var EnvironmentService*/
+    private $environmentService;
 
-	public function __construct(Logger $logger, EnvironmentService $environmentService )
-	{
-		$this->logger = $logger;
-		$this->environmentService = $environmentService;
-		parent::__construct();
-	}
+    public function __construct(Logger $logger, EnvironmentService $environmentService)
+    {
+        $this->logger = $logger;
+        $this->environmentService = $environmentService;
+        parent::__construct();
+    }
 
-	protected function configure()
+    protected function configure()
     {
         $this
             ->setName('ems:environment:list')
@@ -59,18 +59,15 @@ class EnvironmentCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if($input->hasOption('all')){
+        if ($input->hasOption('all')) {
             $environments = $this->environmentService->getAll();
-        }
-        else {
+        } else {
             $environments = $this->environmentService->getManagedEnvironement();
         }
 
         /** @var Environment $environment */
-        foreach ( $environments as $environment) {
+        foreach ($environments as $environment) {
             $output->writeln($environment->getName());
         }
     }
-
-
 }

@@ -48,7 +48,7 @@ class JobController extends AppController
     public function jobStatusAction(Job $job)
     {
         $theme = new Theme();
-        $converter = new AnsiToHtmlConverter ($theme);
+        $converter = new AnsiToHtmlConverter($theme);
 
         return $this->render('@EMSCore/job/status.html.twig', [
             'job' => $job,

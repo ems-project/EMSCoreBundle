@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Exception;
 
-
 class AssetNotFoundException extends ElasticmsException
 {
     public function __construct($hash)

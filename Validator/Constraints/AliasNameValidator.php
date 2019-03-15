@@ -24,6 +24,6 @@ class AliasNameValidator extends ConstraintValidator
             ;
              
             return;
-        } 
+        }
     }
 }

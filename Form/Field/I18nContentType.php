@@ -7,34 +7,36 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
-class I18nContentType extends AbstractType {
+class I18nContentType extends AbstractType
+{
 
 
-	/**
-	 *
-	 * {@inheritdoc}
-	 *
-	 */
-	public function buildForm(FormBuilderInterface $builder, array $options) {
-		
-		$builder->add ( 'locale', TextType::class, [
-			'required' => true,
-		])
-		->add('text', TextareaType::class, [
-			'required' =>true,
-			'attr' => [
-					'rows' => 4,
-			],
-		]);
-	}
+    /**
+     *
+     * {@inheritdoc}
+     *
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        
+        $builder->add('locale', TextType::class, [
+            'required' => true,
+        ])
+        ->add('text', TextareaType::class, [
+            'required' =>true,
+            'attr' => [
+                    'rows' => 4,
+            ],
+        ]);
+    }
 
-	/**
-	 *
-	 * {@inheritdoc}
-	 *
-	 */
-	public function getBlockPrefix() {
-		return 'i18n_content';
-	}
-	
+    /**
+     *
+     * {@inheritdoc}
+     *
+     */
+    public function getBlockPrefix()
+    {
+        return 'i18n_content';
+    }
 }

@@ -41,7 +41,8 @@
 	},
 	"require-dev" : {
 		"friendsofphp/php-cs-fixer" : "^2.11",
-		"symfony/test-pack": "^1.0"
+		"symfony/test-pack": "^1.0",
+		"squizlabs/php_codesniffer": "3.*"
 	},
 	"autoload" : {
 		"psr-4" : {
@@ -60,5 +61,9 @@
 		"branch-alias" : {
 			"dev-master" : "1.8.x-dev"
 		}
+	},
+	"scripts": {
+		"phpcs": "phpcs --standard=phpcs.xml.dist --extensions=php,lib,inc",
+		"phpcbf": "phpcbf --standard=phpcs.xml.dist --extensions=php,lib,inc"
 	}
 }

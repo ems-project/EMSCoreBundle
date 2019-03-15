@@ -19,14 +19,16 @@ class I18nType extends AbstractType
         $builder
             ->add('identifier', null, array('required' => true))
             ->add(
-            	'content', 
-            	CollectionType::class, array(
-	            	'entry_type'   => I18nContentType::class,
-				    'allow_add' => true,
-	            	'label' => false,
-	            	'delete_empty' => true,
-            		'allow_delete' => true,
-            ));
+                'content',
+                CollectionType::class,
+                array(
+                    'entry_type'   => I18nContentType::class,
+                    'allow_add' => true,
+                    'label' => false,
+                    'delete_empty' => true,
+                    'allow_delete' => true,
+                )
+            );
     }
     
     /**

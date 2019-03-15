@@ -20,7 +20,8 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
     /**
      * {@inheritdoc}
      */
-    public function load(array $configs, ContainerBuilder $container) {
+    public function load(array $configs, ContainerBuilder $container)
+    {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
@@ -71,17 +72,17 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.s3_bucket', $config['s3_bucket']);
     }
 
-    public static function getCoreVersion($rootDir){
+    public static function getCoreVersion($rootDir)
+    {
         $out = false;
         //try to identify the ems core version
-        if(file_exists($rootDir.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'composer.lock')) {
-
+        if (file_exists($rootDir.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'composer.lock')) {
             $lockInfo = json_decode(file_get_contents($rootDir.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'composer.lock'), true);
 
-            if(!empty($lockInfo['packages'])){
-                foreach ($lockInfo['packages'] as $package){
-                    if(!empty($package['name']) && $package['name'] === 'elasticms/core-bundle'){
-                        if(!empty($package['version'])){
+            if (!empty($lockInfo['packages'])) {
+                foreach ($lockInfo['packages'] as $package) {
+                    if (!empty($package['name']) && $package['name'] === 'elasticms/core-bundle') {
+                        if (!empty($package['version'])) {
                             $out = $package['version'];
                         }
                         break;
@@ -92,12 +93,15 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         return $out;
     }
 
-    public function prepend(ContainerBuilder $container) {
+    public function prepend(ContainerBuilder $container)
+    {
 
         // get all bundles
         $bundles = $container->getParameter('kernel.bundles');
 
         $coreVersion = $this->getCoreVersion($container->getParameter('kernel.root_dir'));
+
+
 
         $configs = $container->getExtensionConfig($this->getAlias());
 
@@ -107,10 +111,10 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
             'ems_shortname' => isset($configs[0]['shortname'])?$configs[0]['shortname']:Configuration::SHORTNAME,
             'ems_core_version' => $coreVersion,
             'date_time_format' => isset($configs[0]['date_time_format'])?$configs[0]['date_time_format']:Configuration::DATE_TIME_FORMAT,
-            'paging_size' => isset($configs[0]['paging_size'])?$configs[0]['paging_size']:Configuration::PAGING_SIZE,
-            'circles_object' => isset($configs[0]['circles_object'])?$configs[0]['circles_object']:Configuration::CIRCLES_OBJECT,
-            'datepicker_daysofweek_highlighted' => isset($configs[0]['datepicker_daysofweek_highlighted'])?$configs[0]['datepicker_daysofweek_highlighted']:Configuration::DATEPICKER_DAYSOFWEEK_HIGHLIGHTED,
-            'datepicker_weekstart' => isset($configs[0]['datepicker_weekstart'])?$configs[0]['datepicker_weekstart']:Configuration::DATEPICKER_WEEKSTART,
+               'paging_size' => isset($configs[0]['paging_size'])?$configs[0]['paging_size']:Configuration::PAGING_SIZE,
+               'circles_object' => isset($configs[0]['circles_object'])?$configs[0]['circles_object']:Configuration::CIRCLES_OBJECT,
+               'datepicker_daysofweek_highlighted' => isset($configs[0]['datepicker_daysofweek_highlighted'])?$configs[0]['datepicker_daysofweek_highlighted']:Configuration::DATEPICKER_DAYSOFWEEK_HIGHLIGHTED,
+               'datepicker_weekstart' => isset($configs[0]['datepicker_weekstart'])?$configs[0]['datepicker_weekstart']:Configuration::DATEPICKER_WEEKSTART,
             'datepicker_format' => isset($configs[0]['datepicker_format'])?$configs[0]['datepicker_format']:Configuration::DATEPICKER_FORMAT,
             'date_time_format' => isset($configs[0]['date_time_format'])?$configs[0]['date_time_format']:Configuration::DATE_TIME_FORMAT,
             'allow_user_registration' => isset($configs[0]['allow_user_registration'])?$configs[0]['allow_user_registration']:Configuration::ALLOW_USER_REGISTRATION,
@@ -122,7 +126,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
             'application_menu_controller' => isset($configs[0]['application_menu_controller'])?$configs[0]['application_menu_controller']:Configuration::APPLICATION_MENU_CONTROLLER,
         ];
 
-        if(!empty($configs[0]['template_options'])){
+        if (!empty($configs[0]['template_options'])) {
             $globals = array_merge($globals, $configs[0]['template_options']);
         }
 
@@ -132,7 +136,5 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
                 'form_themes' => ["@EMSCore/form/fields.html.twig"],
             ]);
         }
-
-
     }
 }

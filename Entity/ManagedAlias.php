@@ -13,7 +13,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Table(name="managed_alias")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\ManagedAliasRepository")
  * @ORM\HasLifecycleCallbacks()
- * 
+ *
  * @UniqueEntity(fields={"name"}, message="Name already exists!")
  */
 class ManagedAlias
@@ -29,9 +29,9 @@ class ManagedAlias
     
     /**
      * @var string
-     * 
+     *
      * @EMSAssert\AliasName()
-     * 
+     *
      * @ORM\Column(name="name", type="string", length=255, unique=true)
      */
     private $name;
@@ -91,8 +91,9 @@ class ManagedAlias
     /**
      * @return string
      */
-    public function __toString() {
-    	return $this->name;
+    public function __toString()
+    {
+        return $this->name;
     }
   
     /**
@@ -101,7 +102,7 @@ class ManagedAlias
      */
     public function updateModified()
     {
-    	$this->modified = new \DateTime();
+        $this->modified = new \DateTime();
     }
     
     /**
@@ -133,7 +134,7 @@ class ManagedAlias
      */
     public function getName()
     {
-    	return $this->name;
+        return $this->name;
     }
 
     /**
@@ -194,7 +195,7 @@ class ManagedAlias
 
     /**
      * @param int $total
-     * 
+     *
      * @return ManagedAlias
      */
     public function setTotal($total)

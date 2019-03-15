@@ -126,5 +126,4 @@ class TikaWrapper
     {
         return self::run("--detect", $filename);
     }
-
 }

@@ -145,10 +145,10 @@ class Environment
      */
     public function updateModified()
     {
-    	$this->modified = new \DateTime();
-    	if(!isset($this->created)){
-    		$this->created = $this->modified;
-    	}
+        $this->modified = new \DateTime();
+        if (!isset($this->created)) {
+            $this->created = $this->modified;
+        }
     }
     
     /**
@@ -156,15 +156,16 @@ class Environment
      */
     public function __construct()
     {
-    	$this->revisions = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->revisions = new \Doctrine\Common\Collections\ArrayCollection();
         $this->singleTypeIndexes = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
-	/**
-	 * ToString
-	 */
-    public function __toString() {
-    	return $this->name;
+    /**
+     * ToString
+     */
+    public function __toString()
+    {
+        return $this->name;
     }
     
     /**
@@ -246,7 +247,7 @@ class Environment
      */
     public function getName()
     {
-    	return $this->name;
+        return $this->name;
     }
 
     /**
@@ -482,9 +483,9 @@ class Environment
      */
     public function setCircles($circles)
     {
-    	$this->circles = $circles;
+        $this->circles = $circles;
     
-    	return $this;
+        return $this;
     }
     
     /**
@@ -494,7 +495,7 @@ class Environment
      */
     public function getCircles()
     {
-    	return $this->circles;
+        return $this->circles;
     }
 
     /**
@@ -588,9 +589,9 @@ class Environment
      */
     public function setOrderKey($orderKey)
     {
-    	$this->orderKey = $orderKey;
-    	
-    	return $this;
+        $this->orderKey = $orderKey;
+        
+        return $this;
     }
     
     /**
@@ -600,7 +601,7 @@ class Environment
      */
     public function getOrderKey()
     {
-    	return $this->orderKey;
+        return $this->orderKey;
     }
 
     /**

@@ -92,7 +92,7 @@ class Notification
      */
     private $revision;
 
-   	/**
+       /**
      * @ORM\ManyToOne(targetEntity="Environment")
      * @ORM\JoinColumn(name="environment_id", referencedColumnName="id")
      */
@@ -115,8 +115,9 @@ class Notification
     
     private $counter;
 
-    public function __toString() {
-    	return $this->getTemplate()->getName().'#'.$this->id;
+    public function __toString()
+    {
+        return $this->getTemplate()->getName().'#'.$this->id;
     }
     
     /**
@@ -125,10 +126,10 @@ class Notification
      */
     public function updateModified()
     {
-    	$this->modified = new \DateTime();
-    	if(!isset($this->created)){
-    		$this->created = $this->modified;
-    	}
+        $this->modified = new \DateTime();
+        if (!isset($this->created)) {
+            $this->created = $this->modified;
+        }
     }
 
     /**
@@ -150,9 +151,9 @@ class Notification
      */
     public function setCreated($created)
     {
-    	$this->created = $created;
+        $this->created = $created;
     
-    	return $this;
+        return $this;
     }
     
     /**
@@ -162,7 +163,7 @@ class Notification
      */
     public function getCreated()
     {
-    	return $this->created;
+        return $this->created;
     }
     
     /**
@@ -174,9 +175,9 @@ class Notification
      */
     public function setModified($modified)
     {
-    	$this->modified = $modified;
+        $this->modified = $modified;
     
-    	return $this;
+        return $this;
     }
     
     /**
@@ -186,7 +187,7 @@ class Notification
      */
     public function getModified()
     {
-    	return $this->modified;
+        return $this->modified;
     }
     
 

@@ -12,49 +12,53 @@ use EMS\CoreBundle\Entity\ContentType;
  */
 class ContentTypeRepository extends \Doctrine\ORM\EntityRepository
 {
-	
-	public function findAllAsAssociativeArray(){
-		$qb = $this->createQueryBuilder('ct');
-		$qb->where($qb->expr()->eq('ct.deleted', ':false'));
-		$qb->setParameters([
-			'false' => false,
-		]);
-		
-		$out = [];
-		$result = $qb->getQuery()->getResult();
-		/** @var \EMS\CoreBundle\Entity\ContentType $record */
-		foreach ($result as $record){
-			$out[$record->getName()] = $record;
-		}
-		
-		return $out;
-	}
+    
+    public function findAllAsAssociativeArray()
+    {
+        $qb = $this->createQueryBuilder('ct');
+        $qb->where($qb->expr()->eq('ct.deleted', ':false'));
+        $qb->setParameters([
+            'false' => false,
+        ]);
+        
+        $out = [];
+        $result = $qb->getQuery()->getResult();
+        /** @var \EMS\CoreBundle\Entity\ContentType $record */
+        foreach ($result as $record) {
+            $out[$record->getName()] = $record;
+        }
+        
+        return $out;
+    }
 
 
-	/**
-	 * 
-	 * @param string $name
-	 * @return ContentType
-	 */
-	public function findByName($name) {
-		return $this->findOneBy([
-				'deleted' => false,
-				'name' => $name,
-		]);
-	}
-	
-	public function countContentType() {
-		return $this->createQueryBuilder('a')
-		 ->select('COUNT(a)')
-		 ->getQuery()
-		 ->getSingleScalarResult();
-	}
-	
-	
-	public function maxOrderKey() {
-		return $this->createQueryBuilder('a')
-		 ->select('max(a.orderKey)')
-		 ->getQuery()
-		 ->getSingleScalarResult();
-	}
+    /**
+     *
+     * @param string $name
+     * @return ContentType
+     */
+    public function findByName($name)
+    {
+        return $this->findOneBy([
+                'deleted' => false,
+                'name' => $name,
+        ]);
+    }
+    
+    public function countContentType()
+    {
+        return $this->createQueryBuilder('a')
+         ->select('COUNT(a)')
+         ->getQuery()
+         ->getSingleScalarResult();
+    }
+    
+    
+    public function maxOrderKey()
+    {
+        return $this->createQueryBuilder('a')
+         ->select('max(a.orderKey)')
+         ->getQuery()
+         ->getSingleScalarResult();
+    }
 }

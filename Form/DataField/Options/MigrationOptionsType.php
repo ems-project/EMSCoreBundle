@@ -11,18 +11,20 @@ use Symfony\Component\Form\FormBuilderInterface;
  *
  * @author Mathieu De Keyzer <ems@theus.be>
  */
-class MigrationOptionsType extends AbstractType {
-	
-	/**
-	 *
-	 * {@inheritdoc}
-	 *
-	 */
-	public function buildForm(FormBuilderInterface $builder, array $options) {
-		$builder
-		->add ( 'protected', CheckboxType::class, [
-				'required' => false,
-		])
-		;
-	}
+class MigrationOptionsType extends AbstractType
+{
+    
+    /**
+     *
+     * {@inheritdoc}
+     *
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+        ->add('protected', CheckboxType::class, [
+                'required' => false,
+        ])
+        ;
+    }
 }

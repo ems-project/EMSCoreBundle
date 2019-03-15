@@ -46,9 +46,10 @@ class AuthToken
     /**
      * Constructor: initialize the authentication key
      */
-    function __construct(User $user){
-    	$this->value = base64_encode(random_bytes(50));
-    	$this->user = $user;
+    public function __construct(User $user)
+    {
+        $this->value = base64_encode(random_bytes(50));
+        $this->user = $user;
     }
     
     /**
@@ -57,10 +58,10 @@ class AuthToken
      */
     public function updateModified()
     {
-    	$this->modified = new \DateTime();
-    	if(!isset($this->created)){
-    		$this->created = $this->modified;
-    	}
+        $this->modified = new \DateTime();
+        if (!isset($this->created)) {
+            $this->created = $this->modified;
+        }
     }
 
     /**

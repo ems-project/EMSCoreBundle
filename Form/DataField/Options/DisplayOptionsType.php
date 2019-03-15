@@ -15,27 +15,29 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
  *
  * @author Mathieu De Keyzer <ems@theus.be>
  */
-class DisplayOptionsType extends AbstractType {
-	/**
-	 *
-	 * {@inheritdoc}
-	 *
-	 */
-	public function buildForm(FormBuilderInterface $builder, array $options) {
-		$builder->add ( 'label', IconTextType::class, [ 
-				'required' => false,
-				'icon' => 'fa fa-tag' 
-		] );
-		$builder->add ( 'class', IconTextType::class, [ 
-				'required' => false,
-				'label' => 'Bootstrap class',
-				'icon' => 'fa fa-css3' 
-		] );
-		$builder->add ( 'lastOfRow', CheckboxType::class, [
+class DisplayOptionsType extends AbstractType
+{
+    /**
+     *
+     * {@inheritdoc}
+     *
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('label', IconTextType::class, [
+                'required' => false,
+                'icon' => 'fa fa-tag'
+        ]);
+        $builder->add('class', IconTextType::class, [
+                'required' => false,
+                'label' => 'Bootstrap class',
+                'icon' => 'fa fa-css3'
+        ]);
+        $builder->add('lastOfRow', CheckboxType::class, [
             'required' => false,
             'label' => 'Last item of the row'
-        ] )->add ( 'helptext', TextareaType::class, [
+        ])->add('helptext', TextareaType::class, [
             'required' => false,
-        ] );
-	}
+        ]);
+    }
 }

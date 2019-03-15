@@ -10,5 +10,5 @@ namespace EMS\CoreBundle\Repository;
  */
 interface UserRepositoryInterface
 {
-	public function findForRoleAndCircles($role, $circles);	
+    public function findForRoleAndCircles($role, $circles);
 }

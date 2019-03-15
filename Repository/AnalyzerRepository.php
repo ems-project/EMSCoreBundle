@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Repository;
 
-
 /**
  * AuditRepository
  *
@@ -11,9 +10,10 @@ namespace EMS\CoreBundle\Repository;
  */
 class AnalyzerRepository extends \Doctrine\ORM\EntityRepository
 {
-	public function findByName($name){
-		return $this->findOneBy([
-				'name' => $name,
-		]);
-	}
+    public function findByName($name)
+    {
+        return $this->findOneBy([
+                'name' => $name,
+        ]);
+    }
 }

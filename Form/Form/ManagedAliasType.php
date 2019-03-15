@@ -53,8 +53,8 @@ class ManagedAliasType extends AbstractType
                 'choices' => array_keys($options['indexes']),
                 'choice_label' => function ($val) {
                     return $val;
-                }, 
-                'choice_attr' => function($val, $key, $index) use ($options) {
+                },
+                'choice_attr' => function ($val, $key, $index) use ($options) {
                     return [
                         'class' => 'align-index',
                         'data-count' => $options['indexes'][$val]['count'],

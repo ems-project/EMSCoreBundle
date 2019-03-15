@@ -11,25 +11,24 @@ class TwigElementsController extends AppController
 
     public function sideMenuAction()
     {
-    	$draftCounterGroupedByContentType = [];
+        $draftCounterGroupedByContentType = [];
 
-    	/** @var \EMS\CoreBundle\Repository\RevisionRepository $revisionRepository */
-    	$revisionRepository = $this->getDoctrine()->getRepository('EMSCoreBundle:Revision');
-    	 
-    	$temp = $revisionRepository->draftCounterGroupedByContentType($this->get('ems.service.user')->getCurrentUser()->getCircles(), $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN'));
-    	foreach ($temp as $item){
-    		$draftCounterGroupedByContentType[$item["content_type_id"]] = $item["counter"];
-    	}
+        /** @var \EMS\CoreBundle\Repository\RevisionRepository $revisionRepository */
+        $revisionRepository = $this->getDoctrine()->getRepository('EMSCoreBundle:Revision');
+         
+        $temp = $revisionRepository->draftCounterGroupedByContentType($this->get('ems.service.user')->getCurrentUser()->getCircles(), $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN'));
+        foreach ($temp as $item) {
+            $draftCounterGroupedByContentType[$item["content_type_id"]] = $item["counter"];
+        }
 
-    	try{ 
-	    	$status = $this->getElasticsearch()->cluster()->health()['status'];
-    	}
-	    catch (\Exception $e){
-	    	$status = 'red';
-	    }
-	    
-	    if($status == 'green') {
-	    	try {
+        try {
+            $status = $this->getElasticsearch()->cluster()->health()['status'];
+        } catch (\Exception $e) {
+            $status = 'red';
+        }
+        
+        if ($status == 'green') {
+            try {
                 $cache = new FilesystemCache();
                 if (!$cache->has(TwigElementsController::ASSET_EXTRACTOR_STATUS_CACHE_ID)) {
                     $result = $this->getAssetExtractorService()->hello();
@@ -38,20 +37,20 @@ class TwigElementsController extends AppController
                     $result = $cache->get(TwigElementsController::ASSET_EXTRACTOR_STATUS_CACHE_ID);
                 }
 
-		    	if($result && 200 != $result['code'])
-		    	{
-		    		$status = 'yellow';
-		    	}	    		
-	    	}
-	    	catch (\Exception $e) {
-	    		$status = 'yellow';
-	    	}
-	    }
-    	
-    	return $this->render(
-    		'@EMSCore/elements/side-menu.html.twig', [
-    				'draftCounterGroupedByContentType' => $draftCounterGroupedByContentType,
-    				'status' => $status,
-    	]);
+                if ($result && 200 != $result['code']) {
+                    $status = 'yellow';
+                }
+            } catch (\Exception $e) {
+                $status = 'yellow';
+            }
+        }
+        
+        return $this->render(
+            '@EMSCore/elements/side-menu.html.twig',
+            [
+                    'draftCounterGroupedByContentType' => $draftCounterGroupedByContentType,
+                    'status' => $status,
+            ]
+        );
     }
 }

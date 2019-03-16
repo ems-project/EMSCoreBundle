@@ -174,7 +174,7 @@ class DataService
             throw new LockedException($revision);
         }
 
-        if (!$username && !$this->container->get('app.twig_extension')->one_granted($revision->getContentType()->getFieldType()->getFieldsRoles(), $super)) {
+        if (!$username && !$this->container->get('app.twig_extension')->oneGranted($revision->getContentType()->getFieldType()->getFieldsRoles(), $super)) {
             throw new PrivilegeException($revision);
         }
         //TODO: test circles

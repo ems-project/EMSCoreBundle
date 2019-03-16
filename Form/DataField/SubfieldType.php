@@ -81,7 +81,7 @@ class SubfieldType extends DataFieldType
      * {@inheritdoc}
      *
      */
-    public static function buildObjectArray(DataField $data, array &$out)
+    public function buildObjectArray(DataField $data, array &$out)
     {
         //do nothing as it's a virtual field
     }

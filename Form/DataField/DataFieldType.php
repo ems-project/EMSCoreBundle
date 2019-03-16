@@ -318,7 +318,7 @@ abstract class DataFieldType extends AbstractType
      * and push in elasticsearch
      */
 
-    public static function buildObjectArray(DataField $data, array &$out)
+    public function buildObjectArray(DataField $data, array &$out)
     {
         if (! $data->getFieldType()->getDeleted()) {
             /**

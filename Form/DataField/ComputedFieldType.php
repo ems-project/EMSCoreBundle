@@ -59,7 +59,7 @@ class ComputedFieldType extends DataFieldType
      * {@inheritdoc}
      *
      */
-    public static function buildObjectArray(DataField $data, array &$out)
+    public function buildObjectArray(DataField $data, array &$out)
     {
         if (! $data->getFieldType()->getDeleted()) {
             /**

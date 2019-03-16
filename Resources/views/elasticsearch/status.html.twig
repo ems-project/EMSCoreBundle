@@ -143,20 +143,34 @@
 			<div class="box box box-solid">
 				<div class="box-header with-border bg-{% if tika %}{% if tika.code == 200 %}green{% else %}red{% endif %}{% else %}yellow{% endif %}">
 					<h4 class="box-title">
-							<i class="icon fa fa-external-link fa-2x"></i>
-							{{ 'Tika server'|trans }} {% if tika and tika.code != 200 %}({{tika.code}}){% endif %}</strong>
+						<i class="icon fa fa-external-link fa-2x"></i>
+                        {{ 'Tika server'|trans }} {% if tika and tika.code != 200 %}({{tika.code}}){% endif %}</strong>
 					</h4>
 				</div>
 				<div class="box-body ">
 					<ul class="list-group">
 						<li class="list-group-item">
-							{% if tika %}{{ tika.content }}{% else %}{{ 'Tika server is not configured'|trans }}{% endif %}
+                            {% if tika %}{{ tika.content }}{% else %}{{ 'Tika server is not configured'|trans }}{% endif %}
 						</li>
 					</ul>
 				</div>
 			</div>
 		</div>
     {% endif %}
+    {% if is_granted('ROLE_ADMIN') %}
+		<div class="col-md-12">
+			<div class="box box box-solid">
+				<div class="box-header with-border bg-green">
+					<h4 class="box-title">
+						<i class="icon fa fa-info fa-2x"></i>
+                        {{ 'PHP Info'|trans }}</strong>
+					</h4>
+				</div>
+				<div class="box-body ">{{  call_user_func('phpinfo') }}</div>
+			</div>
+		</div>
+    {% endif %}
+
 </div>
 {% endblock %}
 

@@ -630,7 +630,7 @@ class AppExtension extends \Twig_Extension
             $clean = str_replace($a, $b, $str);
         }
 
-        $clean = preg_replace("/[^a-zA-Z0-9\_\|\ \-]/", '', $clean);
+        $clean = preg_replace("/[^a-zA-Z0-9\_\|\ \-\.]/", '', $clean);
         $clean = strtolower(trim($clean, '-'));
         $clean = preg_replace("/[\/\_\|\ \-]+/", '-', $clean);
 

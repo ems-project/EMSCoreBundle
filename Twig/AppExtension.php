@@ -107,6 +107,7 @@ class AppExtension extends \Twig_Extension
             new TwigFunction('diff_time', array($this, 'diffTime'), ['is_safe' => ['html']]),
             new TwigFunction('is_super', array($this, 'isSuper')),
             new TwigFunction('emsco_asset_path', [$this, 'assetPath'], ['is_safe' => ['html']]),
+            new TwigFunction('call_user_func', array($this, 'callUserFunc')),
         ];
     }
 

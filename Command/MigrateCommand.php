@@ -37,7 +37,7 @@ class MigrateCommand extends EmsCommand
     protected $container;
     protected $dataService;
     /**@var FormFactoryInterface $formFactory*/
-    protected $formRegistry;
+    protected $formFactory;
     
     protected $instanceId;
     

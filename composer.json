@@ -38,7 +38,9 @@
 		"guzzlehttp/guzzle" : "^6.3",
 		"dompdf/dompdf": "^0.8.2",
 		"caxy/php-htmldiff": "^0.1.7",
-		"phpstan/phpstan": "^0.11.4"
+		"phpstan/phpstan": "^0.11.4",
+		"symfony/security": "^4.2",
+		"symfony/translation": "^4.2"
 	},
 	"require-dev" : {
 		"friendsofphp/php-cs-fixer" : "^2.11",

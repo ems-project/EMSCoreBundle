@@ -1052,7 +1052,7 @@ class DataController extends AppController
     /**
      * @param Revision $revision
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
-     * @Route("/data/draft/finalize/{revision}", name="revision.finalize"))
+     * @Route("/data/draft/finalize/{revision}", name="revision.finalize"), methods={"POST"})
      */
     public function finalizeDraftAction(Revision $revision)
     {
@@ -1063,20 +1063,16 @@ class DataController extends AppController
             $form = $this->createForm(RevisionType::class, $revision, ['raw_data' => $revision->getRawData()]);
             if (!empty($revision->getAutoSave())) {
                 $this->addFlash("error", "This draft (" . $revision->getContentType()->getSingularName() . ($revision->getOuuid() ? ":" . $revision->getOuuid() : "") . ") can't be finalized, as an autosave is pending.");
-                return $this->render('@EMSCore/data/edit-revision.html.twig', [
-                    'revision' => $revision,
-                    'form' => $form->createView(),
-                    'stylesSets' => $this->getWysiwygStylesSetService()->getStylesSets(),
+                return $this->redirectToRoute('revision.edit', [
+                    'revisionId' => $revision->getId(),
                 ]);
             }
 
             $revision = $this->getDataService()->finalizeDraft($revision, $form);
             if (count($form->getErrors()) !== 0) {
                 $this->addFlash("error", "This draft (" . $revision->getContentType()->getSingularName() . ($revision->getOuuid() ? ":" . $revision->getOuuid() : "") . ") can't be finalized.");
-                return $this->render('@EMSCore/data/edit-revision.html.twig', [
-                    'revision' => $revision,
-                    'form' => $form->createView(),
-                    'stylesSets' => $this->getWysiwygStylesSetService()->getStylesSets(),
+                return $this->redirectToRoute('revision.edit', [
+                    'revisionId' => $revision->getId(),
                 ]);
             }
         } catch (\Exception $e) {

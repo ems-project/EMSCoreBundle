@@ -1274,6 +1274,10 @@ class DataController extends AppController
             }
         }
 
+        if($revision->getContentType()->isAutoPublish()) {
+            $this->addFlash("warning", sprintf("The auto-save has been disabled as the auto-publish is enabled for this content type. Press Ctrl+S (Cmd+S) in order to publish in %s.", $revision->getContentType()->getEnvironment()->getName()));
+        }
+
         // Call Audit service for log
         $this->get("ems.service.audit")->auditLog('DataController:editRevision', $revision->getRawData());
         $this->getLogger()->debug('Start twig rendering');

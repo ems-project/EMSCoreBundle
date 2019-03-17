@@ -3,7 +3,6 @@
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use EMS\CommonBundle\Helper\EmsFields;
-use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\Controller\AppController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,14 +11,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class FileController extends AppController
 {
-    /** @var RequestRuntime */
-    private $requestRuntime;
-
-    public function __construct(RequestRuntime $requestRuntime)
-    {
-        $this->requestRuntime = $requestRuntime;
-    }
-
     /**
      * @deprecated
      * @Route("/data/file/view/{sha1}" , name="ems.file.view", methods={"GET","HEAD"})

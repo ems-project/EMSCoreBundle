@@ -2,6 +2,7 @@
 namespace EMS\CoreBundle\Controller;
 
 use Elasticsearch\Client;
+use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Service\AliasService;
 use EMS\CoreBundle\Service\AssetService;
@@ -43,10 +44,14 @@ class AppController extends Controller
      */
     private $formRegistry;
 
-    public function __construct(LoggerInterface $logger, FormRegistryInterface $formRegistry)
+    /** @var RequestRuntime */
+    protected $requestRuntime;
+
+    public function __construct(LoggerInterface $logger, FormRegistryInterface $formRegistry, RequestRuntime $requestRuntime)
     {
         $this->logger = $logger;
         $this->formRegistry = $formRegistry;
+        $this->requestRuntime = $requestRuntime;
     }
 
 
@@ -81,7 +86,7 @@ class AppController extends Controller
     {
         return $this->get('ems.service.elasticsearch');
     }
-    
+
     /**
      * @return FileService
      */

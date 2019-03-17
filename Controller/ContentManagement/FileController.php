@@ -19,7 +19,7 @@ class FileController extends AppController
      */
     public function viewFileAction($sha1, Request $request)
     {
-        @trigger_error(sprintf('The "%s::viewFileAction" function is deprecated and should not be used anymore.', FileController::class, AssetController::class), E_USER_DEPRECATED);
+        @trigger_error(sprintf('The "%s::viewFileAction" function is deprecated and should not be used anymore. use "%s::assetAction instead"', FileController::class, AssetController::class), E_USER_DEPRECATED);
         return $this->getFile($sha1, ResponseHeaderBag::DISPOSITION_INLINE, $request);
     }
     /**
@@ -31,7 +31,7 @@ class FileController extends AppController
      */
     public function downloadFileAction($sha1, Request $request)
     {
-        @trigger_error(sprintf('The "%s::downloadFileAction" function is deprecated and should not be used anymore.', FileController::class, AssetController::class), E_USER_DEPRECATED);
+        @trigger_error(sprintf('The "%s::downloadFileAction" function is deprecated and should not be used anymore. use "%s::assetAction instead"', FileController::class, AssetController::class), E_USER_DEPRECATED);
         return $this->getFile($sha1, ResponseHeaderBag::DISPOSITION_ATTACHMENT, $request);
     }
 
@@ -53,7 +53,7 @@ class FileController extends AppController
 
     private function getFile($sha1, $disposition, Request $request)
     {
-        @trigger_error(sprintf('The "%s::getFile" function is deprecated and should not be used anymore.', FileController::class, AssetController::class), E_USER_DEPRECATED);
+        @trigger_error(sprintf('The "%s::getFile" function is deprecated and should not be used anymore. use "%s::assetAction instead"', FileController::class, AssetController::class), E_USER_DEPRECATED);
 
         return $this->redirect($this->requestRuntime->assetPath([
             EmsFields::CONTENT_FILE_HASH_FIELD => $sha1,

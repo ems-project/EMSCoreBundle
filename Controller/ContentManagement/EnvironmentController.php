@@ -590,39 +590,6 @@ class EnvironmentController extends AppController
     }
     
     /**
-     * Go throw all objects defined for a specfic environement and republish them into the index correspond to the environment.
-     *
-     * @param Environment $environment
-     * @param unknown $alias
-     */
-    private function reindexAll(Environment $environment, $alias)
-    {
-        
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-        /** @var  Client $client */
-        $client = $this->getElasticsearch();
-        /** @var \EMS\CoreBundle\Entity\Revision $revision */
-        foreach ($environment->getRevisions() as $revision) {
-            if (!$revision->getDeleted()) {
-                $objectArray = $this->get('ems.service.mapping')->dataFieldToArray($revision->getDataField());
-                $revision->setRawData($objectArray);
-                $status = $client->index([
-                        'index' => $alias,
-                        'id' => $revision->getOuuid(),
-                        'type' => $revision->getContentType()->getName(),
-                        'body' => $this->getDataService()->sign($revision)
-                ]);
-                $em->persist($revision);
-                $em->flush();
-            }
-        }
-            
-        $this->addFlash('notice', count($environment->getRevisions()).' objects have been reindexed in '.$alias);
-    }
-    
-    
-    /**
      * Rebuils a environement in elasticsearch in a new index or not (depending the rebuild option)
      *
      * @param integer $id

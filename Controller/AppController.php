@@ -73,14 +73,6 @@ class AppController extends Controller
     {
         return $this->get('app.elasticsearch');
     }
-
-    /**
-     * @return AssetService
-     */
-    protected function getAssetService()
-    {
-        return $this->get('ems.service.asset');
-    }
     
     /**
      * @return ElasticsearchService

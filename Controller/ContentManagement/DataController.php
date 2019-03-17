@@ -293,7 +293,6 @@ class DataController extends AppController
      * @param $ouuid
      * @param Environment $environment
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
-    /**
      * @Route("/data/revisions-in-environment/{environment}/{type}:{ouuid}", name="data.revision_in_environment", defaults={"deleted":0})
      * @ParamConverter("contentType", options={"mapping": {"type" = "name", "deleted" = "deleted"}})
      * @ParamConverter("environment", options={"mapping": {"environment" = "name"}})
@@ -808,7 +807,7 @@ class DataController extends AppController
             throw new NotFoundHttpException('Environment type not found');
         }
 
-        /** @var Environment $environment **/
+        /** @var Environment $environment */
         $environment = $environment[0];
 
         /** @var Client $client */
@@ -961,15 +960,6 @@ class DataController extends AppController
         return $this->returnJson($success);
     }
 
-    private function loadAutoSavedVersion(Revision $revision)
-    {
-        if (null != $revision->getAutoSave()) {
-            $revision->setRawData($revision->getAutoSave());
-            $this->addFlash('warning', "Data were loaded from an autosave version by " . $revision->getAutoSaveBy() . " at " . $revision->getAutoSaveAt()->format($this->getParameter('ems_core.date_time_format')));
-        }
-    }
-
-
     /**
      * @param $revisionId
      * @param Request $request
@@ -1048,7 +1038,6 @@ class DataController extends AppController
         return $response;
     }
 
-
     /**
      * @param Revision $revision
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
@@ -1097,26 +1086,6 @@ class DataController extends AppController
 //         $errors = $validator->validate($revision);
 
         return $this->getDataService()->finalizeDraft($revision, $form, $username);
-    }
-
-    private function reorderCollection(&$input)
-    {
-        if (is_array($input) && !empty($input)) {
-            $keys = array_keys($input);
-            if (is_int($keys[0])) {
-                sort($keys);
-                $temp = [];
-                $loop0 = 0;
-                foreach ($input as $item) {
-                    $temp[$keys[$loop0]] = $item;
-                    ++$loop0;
-                }
-                $input = $temp;
-            }
-            foreach ($input as &$elem) {
-                $this->reorderCollection($elem);
-            }
-        }
     }
 
     /**
@@ -1274,7 +1243,7 @@ class DataController extends AppController
             }
         }
 
-        if($revision->getContentType()->isAutoPublish()) {
+        if ($revision->getContentType()->isAutoPublish()) {
             $this->addFlash("warning", sprintf("The auto-save has been disabled as the auto-publish is enabled for this content type. Press Ctrl+S (Cmd+S) in order to publish in %s.", $revision->getContentType()->getEnvironment()->getName()));
         }
 
@@ -1287,22 +1256,6 @@ class DataController extends AppController
             'stylesSets' => $this->getWysiwygStylesSetService()->getStylesSets(),
         ]);
     }
-
-    /**
-     * @deprecated
-     * @param Revision $revision
-     * @param $publishEnv
-     * @param $super
-     * @throws CoreBundle\Exception\LockedException
-     * @throws PrivilegeException
-     */
-    private function lockRevision(Revision $revision, $publishEnv = false, $super = false)
-    {
-        @trigger_error(sprintf('The "%s::lockRevision" function is deprecated. Used "%s::lockRevision" instead.', DataController::class, DataService::class), E_USER_DEPRECATED);
-
-        $this->getDataService()->lockRevision($revision, $publishEnv, $super);
-    }
-
 
     /**
      * @param ContentType $contentType
@@ -1537,5 +1490,48 @@ class DataController extends AppController
             }
         }
         throw new NotFoundHttpException('Impossible to find this item : ' . $key);
+    }
+
+    private function loadAutoSavedVersion(Revision $revision)
+    {
+        if (null != $revision->getAutoSave()) {
+            $revision->setRawData($revision->getAutoSave());
+            $this->addFlash('warning', "Data were loaded from an autosave version by " . $revision->getAutoSaveBy() . " at " . $revision->getAutoSaveAt()->format($this->getParameter('ems_core.date_time_format')));
+        }
+    }
+
+    private function reorderCollection(&$input)
+    {
+        if (is_array($input) && !empty($input)) {
+            $keys = array_keys($input);
+            if (is_int($keys[0])) {
+                sort($keys);
+                $temp = [];
+                $loop0 = 0;
+                foreach ($input as $item) {
+                    $temp[$keys[$loop0]] = $item;
+                    ++$loop0;
+                }
+                $input = $temp;
+            }
+            foreach ($input as &$elem) {
+                $this->reorderCollection($elem);
+            }
+        }
+    }
+
+    /**
+     * @deprecated
+     * @param Revision $revision
+     * @param $publishEnv
+     * @param $super
+     * @throws CoreBundle\Exception\LockedException
+     * @throws PrivilegeException
+     */
+    private function lockRevision(Revision $revision, $publishEnv = false, $super = false)
+    {
+        @trigger_error(sprintf('The "%s::lockRevision" function is deprecated. Used "%s::lockRevision" instead.', DataController::class, DataService::class), E_USER_DEPRECATED);
+
+        $this->getDataService()->lockRevision($revision, $publishEnv, $super);
     }
 }

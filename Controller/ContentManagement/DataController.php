@@ -1230,10 +1230,8 @@ class DataController extends AppController
                         ]);
                     } else {
                         //$this->addFlash("warning", "This draft (".$revision->getContentType()->getSingularName().($revision->getOuuid()?":".$revision->getOuuid():"").") can't be finalized.");
-                        return $this->render('@EMSCore/data/edit-revision.html.twig', [
-                            'revision' => $revision,
-                            'form' => $form->createView(),
-                            'stylesSets' => $this->getWysiwygStylesSetService()->getStylesSets(),
+                        return $this->redirectToRoute('revision.edit', [
+                            'revisionId' => $revision->getId(),
                         ]);
                     }
 //                     }

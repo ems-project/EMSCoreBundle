@@ -115,6 +115,4 @@ class Session
         $this->lifetime = $lifetime;
         return $this;
     }
-
-
 }

@@ -2,8 +2,6 @@
 
 namespace EMS\CoreBundle\Repository;
 
-
-
 use Doctrine\ORM\EntityRepository;
 
 /**

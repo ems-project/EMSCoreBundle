@@ -353,7 +353,7 @@ class EnvironmentController extends AppController
      * @Method({"POST"})
      *
      */
-    public function removeAction($id, Request $request)
+    public function removeAction(int $id, Request $request)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -502,12 +502,12 @@ class EnvironmentController extends AppController
 
     /**
      * Edit environement (name and color). It's not allowed to update the elasticsearch alias.
-     * @param unknown $id
+     * @param integer $id
      * @param Request $request
      * @throws NotFoundHttpException
      * @Route("/environment/edit/{id}", name="environment.edit"))
      */
-    public function editAction($id, Request $request)
+    public function editAction(int $id, Request $request)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -552,7 +552,7 @@ class EnvironmentController extends AppController
      * @throws NotFoundHttpException
      * @Route("/environment/{id}", name="environment.view"))
      */
-    public function viewAction($id, Request $request)
+    public function viewAction(int $id, Request $request)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();

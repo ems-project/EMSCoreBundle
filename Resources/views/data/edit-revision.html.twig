@@ -177,10 +177,18 @@ function updateChoiceFieldTypes()
 }
 
 
-function onFormChange(){
+function onFormChange(event = null, ctrlS = false){
     {% if not revision.draft %}
     	return;
     {% endif %}
+
+	{% if revision.contentType.autoPublish %}
+		if(!ctrlS) {
+		    console.log('The auto-save is deactivated!');
+		    return;
+		}
+	{% endif %}
+
 		synch = false;
 
     	updateChoiceFieldTypes();
@@ -885,6 +893,25 @@ $(window).ready(function() {
 	addEventListeners($('form[name={{ form.vars.id }}]'));
 });
 
+$(document).keydown(function(e) {
+
+    var key = undefined;
+    var possible = [ e.key, e.keyIdentifier, e.keyCode, e.which ];
+
+    while (key === undefined && possible.length > 0)
+    {
+        key = possible.pop();
+    }
+
+    if (key && (key == '115' || key == '83' ) && (e.ctrlKey || e.metaKey) && !(e.altKey))
+    {
+        e.preventDefault();
+        onFormChange(e, true);
+        return false;
+    }
+    return true;
+
+});
 
 window.onload = (function() {
 	/** TODO:  quid d'un CKEditor ajouté au vol*/

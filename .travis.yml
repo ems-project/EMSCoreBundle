@@ -34,3 +34,5 @@ script:
   - find -L . -path ./vendor -prune -o -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l
   # Run PHPCS
   - if [[ "$SNIFF" == "1" ]]; then vendor/bin/phpcs . --standard=./phpcs.xml.dist --extensions=php,lib,inc; fi
+  # Run PHPStan
+  - if [[ "$SNIFF" == "1" ]]; then vendor/bin/phpstan analyse .; fi

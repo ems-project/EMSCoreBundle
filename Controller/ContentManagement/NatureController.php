@@ -23,6 +23,7 @@ class NatureController extends AppController
      */
     public function reorderAction(ContentType $contentType, Request $request, ContentTypeService $contentTypeService)
     {
+        @trigger_error(sprintf('The "%s::reorderAction" controller is deprecated. Use a sort view instead.', NatureController::class), E_USER_DEPRECATED);
 
         if ($contentType->getOrderField() == null) {
             $this->addFlash('warning', 'This content type does not have any order field defined');

@@ -17,7 +17,11 @@
 				{% for hit in result.hits.hits %}
 					<li class="list-group-item ui-sortable-handle">
 						<i class="glyphicon glyphicon-move"></i>
-                        {{ (hit._type~':'~hit._id)|data_link }}
+						{% if contentType.labelField %}
+							{{  attribute(hit._source, contentType.labelField) }} ({{ hit._id }})
+						{% else %}
+							{{ hit._id }}
+						{% endif %}
 						{{ form_widget(attribute(form.items, hit._id)) }}
 					</li>
 				{% endfor %}

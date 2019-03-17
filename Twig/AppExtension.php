@@ -139,7 +139,7 @@ class AppExtension extends \Twig_Extension
             new TwigFilter('all_granted', array($this, 'allGranted')),
             new TwigFilter('one_granted', array($this, 'oneGranted')),
             new TwigFilter('in_my_circles', array($this, 'inMyCircles')),
-            new TwigFilter('data_link', array($this, 'dataLink')),
+            new TwigFilter('data_link', array($this, 'dataLink'), ['is_safe' => ['html']]),
             new TwigFilter('data_label', array($this, 'dataLabel')),
             new TwigFilter('get_content_type', array($this, 'getContentType')),
             new TwigFilter('get_environment', array($this, 'getEnvironment')),

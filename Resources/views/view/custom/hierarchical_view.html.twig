@@ -74,6 +74,23 @@ function addListeners(target){
 		event.preventDefault();
 		$(this).closest('li').remove();
 	});
+
+    $(target).find('.button-collapse').click(function(event){
+        event.preventDefault();
+        const $isExpanded = ($(this).attr('aria-expanded') === 'true');
+        $(this).parent().find('> button').attr('aria-expanded', !$isExpanded);
+        let $panel = $(this).closest('li');
+        $panel.find('ol').first().collapse('toggle');
+    });
+
+    $(target).find('.button-collapse-all').click(function(event){
+        event.preventDefault();
+        const $isExpanded = ($(this).attr('aria-expanded') === 'true');
+        let $panel = $(this).closest('li');
+		$panel.find('.button-collapse').attr('aria-expanded', !$isExpanded);
+		$panel.find('.button-collapse-all').attr('aria-expanded', !$isExpanded);
+        $panel.find('ol').collapse('toggle');
+    });
 }
 
 

@@ -6,7 +6,6 @@ use Symfony\Component\EventDispatcher\Event;
 /**
  * Contains information to update 2 side links between objects
  * @author Mathieu De Keyzer <ems@theus.be>
- *
  */
 class UpdateRevisionReferersEvent extends Event
 {
@@ -17,15 +16,8 @@ class UpdateRevisionReferersEvent extends Event
     private $toClean;
     private $toCreate;
     private $type;
-    
-    /**
-     *
-     *
-     * @param sting $targetField
-     * @param array $toCleanOuuids
-     * @param array $toCreateOuuids
-     */
-    public function __construct($type, $id, $targetField, array $toCleanOuuids, array $toCreateOuuids)
+
+    public function __construct(string $type, string $id, string $targetField, array $toCleanOuuids, array $toCreateOuuids)
     {
         $this->type = $type;
         $this->id = $id;

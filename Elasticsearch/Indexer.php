@@ -35,10 +35,10 @@ class Indexer
     {
         $params = ['index' => $name];
         $this->client->indices()->delete($params);
-        $this->logger->info('Deleted index {index}', $params);
+        $this->logger->warning('Deleted index {index}', $params);
     }
 
-    public function create(string $name, Settings $settings, Mappings $mappings): string
+    public function create(string $name, Settings $settings, Mappings $mappings): void
     {
         $body = [];
         if (!$settings->isEmpty()) {
@@ -50,26 +50,37 @@ class Indexer
 
         $this->client->indices()->create(['index' => $name, 'body' => $body,]);
         $this->logger->info('Created index {index}', ['index' => $name]);
-
-        return $name;
     }
 
-    public function atomicSwitch(string $alias, string $index): void
+    /**
+     * When clean is true, the old index will be removed!
+     * Use oldIndexRegex when the alias has multiple indexes attached and you only want to switch aggainst a regex.
+     */
+    public function atomicSwitch(string $alias, string $newIndex, string $removeRegex = null, bool $clean = false): void
     {
-        $params = ['name' => $alias];
         $indices = $this->client->indices();
-        $actions = [['add' => ['index' => $index, 'alias' => $alias]]];
+        $actions = [['add' => ['index' => $newIndex, 'alias' => $alias]]];
+        $delete = [];
 
-        if ($indices->existsAlias($params)) {
-            $infoAlias = $indices->getAlias($params);
+        if ($removeRegex && $indices->existsAlias(['name' => $alias])) {
+            $infoAlias = $indices->getAlias(['name' => $alias]);
 
             foreach (array_keys($infoAlias) as $oldIndex) {
+                if (!preg_match($removeRegex, $oldIndex)) {
+                    continue;
+                }
+
                 $actions[] = ['remove' => ['index' => $oldIndex, 'alias' => $alias]];
+
+                if ($clean) {
+                    $delete[] = $oldIndex;
+                }
             }
         }
 
         $indices->updateAliases(['body' => ['actions' => $actions]]);
+        $this->logger->info('Alias {alias} is now pointing to {index}', ['alias' => $alias, 'index' => $newIndex]);
 
-        $this->logger->info('Alias {alias} is now pointing to {index}', ['alias' => $alias, 'index' => $index]);
+        array_map([$this, 'delete'], $delete);
     }
 }

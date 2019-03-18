@@ -1,5 +1,4 @@
 <?php
-// src/EMS/CoreBundle/Entity/User.php
 
 namespace EMS\CoreBundle\Entity;
 
@@ -30,7 +29,7 @@ interface User
     /**
      * Set circles
      *
-     * @param \ObjectPickerType $circles
+     * @param array $circles
      *
      * @return User
      */

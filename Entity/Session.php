@@ -65,7 +65,7 @@ class Session
     /**
      * @return resource
      */
-    public function getData(): resource
+    public function getData()
     {
         return $this->data;
     }
@@ -74,7 +74,7 @@ class Session
      * @param resource $data
      * @return Session
      */
-    public function setData(resource $data): Session
+    public function setData($data): Session
     {
         $this->data = $data;
         return $this;

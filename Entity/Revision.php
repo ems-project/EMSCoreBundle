@@ -207,9 +207,6 @@ class Revision
         if (!isset($this->created)) {
             $this->created = $this->modified;
         }
-        if (!isset($this->orderKey)) {
-            $this->orderKey = 0;
-        }
         
         if (null == $this->lockBy || null == $this->lockUntil || new \DateTime() > $this->lockUntil) {
             throw new NotLockedException($this);

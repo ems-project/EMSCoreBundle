@@ -90,6 +90,17 @@ class RequestListener
                 $event->setResponse($response);
             }
         } catch (\Exception $e) {
+            /**
+             * Todo: add logger instead of dumping on screen, this throws the following error on PHPStan level 0:
+             *
+             * Function dump not found. Because it is not run in a dev environment. We could add dump to the scope of PHPStan,
+             * but I think it is a good idea to throw errors on dump statements.
+             *
+             * "method_exists" is supported by PHPStan, but is a bad design choice,
+             * However, "function_exists" and "class_exists" are not supported:
+             *
+             * https://github.com/phpstan/phpstan/issues/246
+             **/
             if (function_exists('dump')) {
                 dump($e);
             }

@@ -5,7 +5,7 @@ namespace EMS\CoreBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * DataField
+ * I18n
  *
  * @ORM\Table(name="i18n")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\I18nRepository")
@@ -60,9 +60,6 @@ class I18n
         $this->modified = new \DateTime();
         if (!isset($this->created)) {
             $this->created = $this->modified;
-        }
-        if (!isset($this->orderKey)) {
-            $this->orderKey = 0;
         }
     }
 

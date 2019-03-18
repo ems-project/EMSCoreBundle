@@ -26,7 +26,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     
     
     /**
-     * a retirer???
+     * TODO: a retirer???
      */
     private $orderKey;
 
@@ -76,7 +76,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * @deprecated
      * @param DataField $child
-     * @param unknown $offset
+     * @param int $offset
      * @throws \Exception
      */
     private function initChild(DataField $child, $offset)
@@ -529,23 +529,6 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         if (!in_array($message, $this->messages)) {
             $this->messages[] = $message;
         }
-    }
-
-    /**
-     * Get dataValue, the get of field is delegated to the corresponding fieldType class
-     *
-     * @param \DateTime $dateValue
-     * @deprecated
-     *
-     * @return DataField
-     */
-    public function getDataValue()
-    {
-        throw new Exception('should never came here');
-        if ($this->getFieldType()) {
-            return $this->getFieldType()->getDataValue($this);
-        }
-        return null;
     }
 
     /**

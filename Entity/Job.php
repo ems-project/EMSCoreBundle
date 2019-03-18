@@ -109,12 +109,7 @@ class Job
         if (!isset($this->created)) {
             $this->created = $this->modified;
         }
-        if (!isset($this->orderKey)) {
-            $this->orderKey = 0;
-        }
     }
-    
- 
 
     /**
      * Get id

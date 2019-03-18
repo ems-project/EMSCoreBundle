@@ -161,7 +161,7 @@ class Template
     private $roleCc;
        
        /**
-        * @var \ObjectPickerType
+        * @var array
         *
         * @ORM\Column(name="circles_to", type="json_array", nullable=true)
         */

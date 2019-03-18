@@ -1628,27 +1628,15 @@ class ContentType
     {
         return $this->singularName;
     }
-    
-    /**
-     * Set sortOrder
-     *
-     * @param string $sortOrder
-     *
-     * @return Search
-     */
-    public function setSortOrder($sortOrder)
+
+    public function setSortOrder(string $sortOrder): ContentType
     {
         $this->sortOrder = $sortOrder;
         
         return $this;
     }
-    
-    /**
-     * Get sortOrder
-     *
-     * @return string
-     */
-    public function getSortOrder()
+
+    public function getSortOrder(): string
     {
         return $this->sortOrder;
     }

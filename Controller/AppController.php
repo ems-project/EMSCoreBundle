@@ -2,7 +2,8 @@
 namespace EMS\CoreBundle\Controller;
 
 use Elasticsearch\Client;
-use EMS\CoreBundle\Entity\SearchFieldOption;
+use EMS\CommonBundle\Twig\RequestRuntime;
+use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Service\AliasService;
 use EMS\CoreBundle\Service\AssetService;
 use EMS\CoreBundle\Service\ContentTypeService;
@@ -17,7 +18,6 @@ use EMS\CoreBundle\Service\SearchFieldOptionService;
 use EMS\CoreBundle\Service\SearchService;
 use EMS\CoreBundle\Service\UserService;
 use EMS\CoreBundle\Service\WysiwygProfileService;
-use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -44,10 +44,14 @@ class AppController extends Controller
      */
     private $formRegistry;
 
-    public function __construct(LoggerInterface $logger, FormRegistryInterface $formRegistry)
+    /** @var RequestRuntime */
+    protected $requestRuntime;
+
+    public function __construct(LoggerInterface $logger, FormRegistryInterface $formRegistry, RequestRuntime $requestRuntime)
     {
         $this->logger = $logger;
         $this->formRegistry = $formRegistry;
+        $this->requestRuntime = $requestRuntime;
     }
 
 
@@ -76,21 +80,13 @@ class AppController extends Controller
     }
     
     /**
-     * @return AssetService
-     */
-    protected function getAssetService()
-    {
-        return $this->get('ems.service.asset');
-    }
-    
-    /**
      * @return ElasticsearchService
      */
     protected function getElasticsearchService()
     {
         return $this->get('ems.service.elasticsearch');
     }
-    
+
     /**
      * @return FileService
      */
@@ -146,12 +142,8 @@ class AppController extends Controller
     {
         return $this->get('security.authorization_checker');
     }
-    
-    /**
-     *
-     * @return EncoderFactoryInterface
-     */
-    protected function getSecurityEncoder()
+
+    protected function getSecurityEncoder(): EncoderFactoryInterface
     {
         return $this->get('security.encoder_factory');
     }
@@ -204,14 +196,8 @@ class AppController extends Controller
     {
             return $this->container->get('ems.service.alias')->build();
     }
-    
-    /**
-     *
-     * @param string $fieldTypeNameOrServiceName
-     *
-     * @return DataFieldType
-     */
-    protected function getDataFieldType($fieldTypeNameOrServiceName)
+
+    protected function getDataFieldType(string $fieldTypeNameOrServiceName): DataFieldType
     {
         return $this->formRegistry->getType($fieldTypeNameOrServiceName)->getInnerType();
     }

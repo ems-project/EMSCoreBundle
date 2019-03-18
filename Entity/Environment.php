@@ -4,7 +4,6 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\PrePersist;
 
 /**
  * Environment
@@ -99,7 +98,7 @@ class Environment
     private $revisions;
 
     /**
-     * @var \ObjectPickerType
+     * @var array
      *
      * @ORM\Column(name="circles", type="json_array", nullable=true)
      */
@@ -477,7 +476,7 @@ class Environment
     /**
      * Set circles
      *
-     * @param \ObjectPickerType $circles
+     * @param array $circles
      *
      * @return Environment
      */
@@ -491,7 +490,7 @@ class Environment
     /**
      * Get circles
      *
-     * @return \ObjectPickerType
+     * @return array
      */
     public function getCircles()
     {

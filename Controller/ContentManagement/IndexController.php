@@ -2,12 +2,11 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
+use Elasticsearch\Common\Exceptions\Missing404Exception;
 use EMS\CoreBundle\Controller\AppController;
-use EMS\CoreBundle;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 class IndexController extends AppController

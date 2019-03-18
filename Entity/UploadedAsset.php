@@ -45,21 +45,21 @@ class UploadedAsset
     private $status;
     
     /**
-     * @var sha1
+     * @var string
      *
      * @ORM\Column(name="sha1", type="string", length=40)
      */
     private $sha1;
     
     /**
-     * @var name
+     * @var string
      *
      * @ORM\Column(name="name", type="string", length=1024)
      */
     private $name;
     
     /**
-     * @var type
+     * @var string
      *
      * @ORM\Column(name="type", type="string", length=1024)
      */
@@ -350,7 +350,7 @@ class UploadedAsset
     /**
      * Set sha1
      *
-     * @param binary $sha1
+     * @param string $sha1
      *
      * @return UploadedAsset
      */
@@ -364,7 +364,7 @@ class UploadedAsset
     /**
      * Get sha1
      *
-     * @return binary
+     * @return string
      */
     public function getSha1()
     {

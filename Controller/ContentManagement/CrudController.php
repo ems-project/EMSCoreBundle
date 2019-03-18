@@ -2,15 +2,15 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use EMS\CoreBundle;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Exception\DataStateException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CrudController extends AppController
 {
@@ -186,7 +186,7 @@ class CrudController extends AppController
             if (($e instanceof NotFoundHttpException) or ($e instanceof BadRequestHttpException)) {
                 throw $e;
             } else {
-                $this->addFlash('error', 'The revision ' . $id . ' can not be deleted. Reason: '.$e->getMessage());
+                $this->addFlash('error', 'The revision ' . $ouuid . ' can not be deleted. Reason: '.$e->getMessage());
             }
         }
         return $this->render('@EMSCore/ajax/notification.json.twig', [

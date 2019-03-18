@@ -353,7 +353,7 @@ class EnvironmentController extends AppController
      * @Method({"POST"})
      *
      */
-    public function removeAction($id, Request $request)
+    public function removeAction(int $id, Request $request)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -502,12 +502,12 @@ class EnvironmentController extends AppController
 
     /**
      * Edit environement (name and color). It's not allowed to update the elasticsearch alias.
-     * @param unknown $id
+     * @param integer $id
      * @param Request $request
      * @throws NotFoundHttpException
      * @Route("/environment/edit/{id}", name="environment.edit"))
      */
-    public function editAction($id, Request $request)
+    public function editAction(int $id, Request $request)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -552,7 +552,7 @@ class EnvironmentController extends AppController
      * @throws NotFoundHttpException
      * @Route("/environment/{id}", name="environment.view"))
      */
-    public function viewAction($id, Request $request)
+    public function viewAction(int $id, Request $request)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -588,39 +588,6 @@ class EnvironmentController extends AppController
                 'info' => $info,
         ]);
     }
-    
-    /**
-     * Go throw all objects defined for a specfic environement and republish them into the index correspond to the environment.
-     *
-     * @param Environment $environment
-     * @param unknown $alias
-     */
-    private function reindexAll(Environment $environment, $alias)
-    {
-        
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-        /** @var  Client $client */
-        $client = $this->getElasticsearch();
-        /** @var \EMS\CoreBundle\Entity\Revision $revision */
-        foreach ($environment->getRevisions() as $revision) {
-            if (!$revision->getDeleted()) {
-                $objectArray = $this->get('ems.service.mapping')->dataFieldToArray($revision->getDataField());
-                $revision->setRawData($objectArray);
-                $status = $client->index([
-                        'index' => $alias,
-                        'id' => $revision->getOuuid(),
-                        'type' => $revision->getContentType()->getName(),
-                        'body' => $this->getDataService()->sign($revision)
-                ]);
-                $em->persist($revision);
-                $em->flush();
-            }
-        }
-            
-        $this->addFlash('notice', count($environment->getRevisions()).' objects have been reindexed in '.$alias);
-    }
-    
     
     /**
      * Rebuils a environement in elasticsearch in a new index or not (depending the rebuild option)

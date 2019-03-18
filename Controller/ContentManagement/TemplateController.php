@@ -13,6 +13,7 @@ use EMS\CoreBundle\Form\Form\TemplateType;
 use EMS\CoreBundle\Entity\Template;
 use EMS\CoreBundle\Repository\TemplateRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TemplateController extends AppController
 {

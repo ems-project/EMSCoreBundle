@@ -532,23 +532,6 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     }
 
     /**
-     * Get dataValue, the get of field is delegated to the corresponding fieldType class
-     *
-     * @param \DateTime $dateValue
-     * @deprecated
-     *
-     * @return DataField
-     */
-    public function getDataValue()
-    {
-        throw new \Exception('should never came here');
-        if ($this->getFieldType()) {
-            return $this->getFieldType()->getDataValue($this);
-        }
-        return null;
-    }
-
-    /**
      * Set arrayTextValue
      *
      * @param array $arrayValue

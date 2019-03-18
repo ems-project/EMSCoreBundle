@@ -14,13 +14,7 @@
 			<div class="box-header with-border">
 				<h2 class="box-title">
 					{{ 'Reorganise: '|trans }}
-					<i
-						class="{% if contentType.icon %}{{ contentType.icon }} {% else %} fa fa-question {% endif %} "></i>
-					{% if (contentType.labelField) and (attribute(parent._source, contentType.labelField)  is defined ) %}
-					{{ attribute(parent._source, contentType.labelField) }}
-					{% else %}
-					{{ parent._id }}
-					{% endif %}
+					{{ (parent._type~':'~parent ._id)|data_link }}
 				</h2>
 			</div>
 			<div class="box-body no-padding">

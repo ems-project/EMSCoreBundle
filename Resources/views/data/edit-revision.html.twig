@@ -177,13 +177,13 @@ function updateChoiceFieldTypes()
 }
 
 
-function onFormChange(event = null, ctrlS = false){
+function onFormChange(event = null, allowAutoPublish = false){
     {% if not revision.draft %}
     	return;
     {% endif %}
 
 	{% if revision.contentType.autoPublish %}
-		if(!ctrlS) {
+		if(!allowAutoPublish) {
 		    console.log('The auto-save is deactivated!');
 		    return;
 		}

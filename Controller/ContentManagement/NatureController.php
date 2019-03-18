@@ -36,7 +36,7 @@ class NatureController extends AppController
         $orderField = $contentTypeService->getChildByPath($contentType->getFieldType(), $contentType->getOrderField(), true);
 
         if (!$orderField) {
-            $this->addFlash('warning', 'It was not possible tio fing the order field defined');
+            $this->addFlash('warning', 'It was not possible to find the order field defined');
 
             return $this->redirectToRoute('data.draft_in_progress', [
                 'contentTypeId' => $contentType->getId(),

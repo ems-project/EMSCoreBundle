@@ -1629,14 +1629,14 @@ class ContentType
         return $this->singularName;
     }
 
-    public function setSortOrder(string $sortOrder): ContentType
+    public function setSortOrder(?string $sortOrder): ContentType
     {
         $this->sortOrder = $sortOrder;
         
         return $this;
     }
 
-    public function getSortOrder(): string
+    public function getSortOrder(): ?string
     {
         return $this->sortOrder;
     }

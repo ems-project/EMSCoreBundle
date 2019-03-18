@@ -110,6 +110,13 @@ class MigrateCommand extends EmsCommand
                 null,
                 InputOption::VALUE_NONE,
                 'The content will be (re)signed during the reindexing process'
+            )
+            ->addOption(
+                'searchQuery',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Query used to find elasticsearch records to import',
+                '{"sort":{"_uid":{"order":"asc"}}}'
             );
         ;
     }
@@ -143,6 +150,7 @@ class MigrateCommand extends EmsCommand
         $elasticsearchIndex = $input->getArgument('elasticsearchIndex');
         $contentTypeNameFrom = $input->getArgument('contentTypeNameFrom');
         $contentTypeNameTo = $input->getArgument('contentTypeNameTo');
+        $searchQuery = $input->getOption('searchQuery');
         if (!$contentTypeNameTo) {
             $contentTypeNameTo = $contentTypeNameFrom;
         }
@@ -188,14 +196,7 @@ class MigrateCommand extends EmsCommand
                 'type' => $contentTypeNameFrom,
                 'size' => $scrollSize,
                 "scroll" => $scrollTimeout,
-                'body' => '{
-                       "sort": {
-                          "_uid": {
-                             "order": "asc",
-                             "missing": "_last"
-                          }
-                       }
-                    }',
+                'body' => $searchQuery,
         ]);
         
         $total = $arrayElasticsearchIndex["hits"]["total"];

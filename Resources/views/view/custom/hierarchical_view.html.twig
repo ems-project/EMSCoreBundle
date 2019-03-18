@@ -1,50 +1,46 @@
 {% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
-{% block title %}{{ view.name }} of {{contentType.singularName}}{% endblock %}
-{% block pagetitle %}{{ view.name }} of {{contentType.singularName}}{% endblock %}
+{% block title %}{{ view.name }} of {{ contentType.singularName }}{% endblock %}
+{% block pagetitle %}{{ view.name }} of {{ contentType.singularName }}{% endblock %}
 
 {% block body %}
-
-
-
-
-<div class="row">
-	<div class="col-md-12">
-		<div class="box box-solid">
-			<div class="box-header with-border">
-				<h2 class="box-title">
-					{{ 'Reorganise: '|trans }}
-					{{ (parent._type~':'~parent ._id)|data_link }}
-				</h2>
-			</div>
-			<div class="box-body no-padding">
-				<ol class="sortable vertical" id="root-list">
-                    {% include "@EMSCore/view/custom/hierarchical_item.html.twig" with {
-                		parent: parent._source,
-                		view: view,
-                	} %}
-				</ol>
-			</div>
-			<!-- /.box-body -->
-			{{ form_start(form) }}
-			<div>
-				{% if form.addItem is defined  %}
-				<div class="box-footer">
-					{{ form_row(form.addItem) }}
-				</div>
-				<!-- /.box-footer -->
-				{% endif %}
-				<div class="box-footer">
-					<div class="btn-group">
-						{{ form_widget(form.reorder) }}
-					</div>
-				</div>
-			</div>
-			{{ form_end(form) }}
-			<!-- /.box-footer -->
-		</div>
-	</div>
-</div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-solid">
+                <div class="box-header with-border">
+                    <h2 class="box-title">
+                        {{ 'Reorganise: '|trans }}
+                        {{ (parent._type~':'~parent ._id)|data_link }}
+                    </h2>
+                </div>
+                <div class="box-body no-padding">
+                    <ol class="sortable vertical" id="root-list">
+                        {% include "@EMSCore/view/custom/hierarchical_item.html.twig" with {
+                            parent: parent._source,
+                            view: view,
+                        } %}
+                    </ol>
+                </div>
+                <!-- /.box-body -->
+                {{ form_start(form) }}
+                <div>
+                    {% if form.addItem is defined %}
+                        <div class="box-footer">
+                            {{ form_row(form.addItem) }}
+                        </div>
+                        <!-- /.box-footer -->
+                    {% endif %}
+                    <div class="box-footer">
+                        <div class="btn-group">
+                            {{ form_widget(form.reorder) }}
+                        </div>
+                    </div>
+                </div>
+                {{ form_end(form) }}
+                <!-- /.box-footer -->
+            </div>
+        </div>
+    </div>
 
 
 {% endblock %}
@@ -52,101 +48,102 @@
 
 {% block javascripts %}
     {% include '@EMSCore/app/menu.html.twig' with {
-		'item':  'data-view-'~ contentType.id ~ '-' ~ view.id
-	}%}
+        'item':  'data-view-'~ contentType.id ~ '-' ~ view.id
+    } %}
 
 
-	<script type="text/javascript" src="{{ asset('bundles/emscore/bower/nestedSortable/jquery.mjs.nestedSortable.js') }}"></script>
+    <script type="text/javascript"
+            src="{{ asset('bundles/emscore/bower/nestedSortable/jquery.mjs.nestedSortable.js') }}"></script>
 
-<script type="text/javascript">
-<!--
+    <script type="text/javascript">
+        <!--
 
-//-->
+        //-->
 
-function addListeners(target){
-	$(target).find('a.remove-item').click(function(event){
-		event.preventDefault();
-		$(this).closest('li').remove();
-	});
-
-    $(target).find('.button-collapse').click(function(event){
-        event.preventDefault();
-        const $isExpanded = ($(this).attr('aria-expanded') === 'true');
-        $(this).parent().find('> button').attr('aria-expanded', !$isExpanded);
-        let $panel = $(this).closest('li');
-        $panel.find('ol').first().collapse('toggle');
-    });
-
-    $(target).find('.button-collapse-all').click(function(event){
-        event.preventDefault();
-        const $isExpanded = ($(this).attr('aria-expanded') === 'true');
-        let $panel = $(this).closest('li');
-		$panel.find('.button-collapse').attr('aria-expanded', !$isExpanded);
-		$panel.find('.button-collapse-all').attr('aria-expanded', !$isExpanded);
-        $panel.find('ol').collapse('toggle');
-    });
-}
-
-
-$(document).ready(function(){
-
-	$('.sortable').nestedSortable({
-		forcePlaceholderSize: true,
-		handle: 'div',
-		helper:	'clone',
-		items: 'li',
-		opacity: .6,
-		placeholder: 'placeholder',
-		revert: 250,
-		tabSize: 25,
-		tolerance: 'pointer',
-		toleranceElement: '> div',
-		maxLevels: {% if view.options.maxDepth is defined and view.options.maxDepth and view.options.maxDepth >= 1 %}{{view.options.maxDepth}}{%else%}3{%endif%},
-		expression: /()(.+)/,
-
-		isTree: true,
-		expandOnHover: 700,
-		startCollapsed: true
-	});
-
-	addListeners('.sortable');
-
-	$('#reorganize_reorder').click(function(e){
-// 		e.preventDefault();
-		hiered = $('ol.sortable').nestedSortable('toHierarchy', {startDepthCount: 0});
-		$('#reorganize_structure').val(JSON.stringify(getAssocArray(hiered))).trigger("change");
-		console.log($('#reorganize_structure').val());
-	})
-
-
-	$(".objectpicker").each(function(index){
-		objectPickerListeners($( this ));
-	});
-
-	$('#reorganize_addItem_value').on("select2:select", function(){
-
-		var prototype = "{{ path('views.hierarchical.item', {key: '__key__', view: view.id}) }}";
-
-		if($(this).val().startsWith('{{contentType}}:') && $('li#'+$(this).val().replace(':', '\\:')).length > 0){
-
-			$('#modal-notifications .modal-body').append('<p>{{'This item %ouuid% is already presents in this structure/menu'|trans()}}</p>'.replace('%ouuid%', $(this).val()));
-			$('#modal-notifications').modal('show');
-		}
-		else {
-    		$.get( prototype.replace('__key__', $(this).val()), function( data ) {
-    			var item = $(data);
-    			
-    			$('#root-list').append(item);
-    			item.each(function(index){
-    				addListeners($( this ));
-    					console.log(this);
-              	});
+        function addListeners(target) {
+            $(target).find('a.remove-item').click(function (event) {
+                event.preventDefault();
+                $(this).closest('li').remove();
             });
-		}
 
-		$(this).val(null).trigger("change");;
-	});
-});
+            $(target).find('.button-collapse').click(function (event) {
+                event.preventDefault();
+                const $isExpanded = ($(this).attr('aria-expanded') === 'true');
+                $(this).parent().find('> button').attr('aria-expanded', !$isExpanded);
+                let $panel = $(this).closest('li');
+                $panel.find('ol').first().collapse('toggle');
+            });
 
-</script>
+            $(target).find('.button-collapse-all').click(function (event) {
+                event.preventDefault();
+                const $isExpanded = ($(this).attr('aria-expanded') === 'true');
+                let $panel = $(this).closest('li');
+                $panel.find('.button-collapse').attr('aria-expanded', !$isExpanded);
+                $panel.find('.button-collapse-all').attr('aria-expanded', !$isExpanded);
+                $panel.find('ol').collapse('toggle');
+            });
+        }
+
+
+        $(document).ready(function () {
+
+            $('.sortable').nestedSortable({
+                forcePlaceholderSize: true,
+                handle: 'div',
+                helper: 'clone',
+                items: 'li',
+                opacity: .6,
+                placeholder: 'placeholder',
+                revert: 250,
+                tabSize: 25,
+                tolerance: 'pointer',
+                toleranceElement: '> div',
+                maxLevels: {% if view.options.maxDepth is defined and view.options.maxDepth and view.options.maxDepth >= 1 %}{{ view.options.maxDepth }}{% else %}3{% endif %},
+                expression: /()(.+)/,
+
+                isTree: true,
+                expandOnHover: 700,
+                startCollapsed: true
+            });
+
+            addListeners('.sortable');
+
+            $('#reorganize_reorder').click(function (e) {
+// 		e.preventDefault();
+                hiered = $('ol.sortable').nestedSortable('toHierarchy', {startDepthCount: 0});
+                $('#reorganize_structure').val(JSON.stringify(getAssocArray(hiered))).trigger("change");
+                console.log($('#reorganize_structure').val());
+            })
+
+
+            $(".objectpicker").each(function (index) {
+                objectPickerListeners($(this));
+            });
+
+            $('#reorganize_addItem_value').on("select2:select", function () {
+
+                var prototype = "{{ path('views.hierarchical.item', {key: '__key__', view: view.id}) }}";
+
+                if ($(this).val().startsWith('{{ contentType }}:') && $('li#' + $(this).val().replace(':', '\\:')).length > 0) {
+
+                    $('#modal-notifications .modal-body').append('<p>{{ 'This item %ouuid% is already presents in this structure/menu'|trans() }}</p>'.replace('%ouuid%', $(this).val()));
+                    $('#modal-notifications').modal('show');
+                }
+                else {
+                    $.get(prototype.replace('__key__', $(this).val()), function (data) {
+                        var item = $(data);
+
+                        $('#root-list').append(item);
+                        item.each(function (index) {
+                            addListeners($(this));
+                            console.log(this);
+                        });
+                    });
+                }
+
+                $(this).val(null).trigger("change");
+            });
+        });
+
+    </script>
 {% endblock %}

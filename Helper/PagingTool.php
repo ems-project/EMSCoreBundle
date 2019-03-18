@@ -16,6 +16,7 @@ class PagingTool
     private $orderField;
     private $orderDirection;
     private $paginationPath;
+    private $data;
     
     
     public function __construct(Request $request, EntityRepository $repository, $paginationPath, $defaultOrderField, $pageSize)

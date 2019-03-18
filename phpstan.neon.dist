@@ -2,4 +2,5 @@ parameters:
     excludes_analyse:
         - %currentWorkingDirectory%/vendor/*
         - %currentWorkingDirectory%/DependencyInjection/Configuration.php
+        - %currentWorkingDirectory%/Resources/public/js
     level: 0

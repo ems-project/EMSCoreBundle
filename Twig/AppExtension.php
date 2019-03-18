@@ -1,4 +1,5 @@
 <?php
+
 namespace EMS\CoreBundle\Twig;
 
 use Caxy\HtmlDiff\HtmlDiff;
@@ -35,33 +36,34 @@ use Twig\TwigFunction;
 
 class AppExtension extends \Twig_Extension
 {
+    /**@var FormFactory */
+    protected $formFactory;
+    /**@var FileService */
+    protected $fileService;
+    /**@var RequestRuntime */
+    protected $commonRequestRuntime;
+    /**@var string */
+    protected $assetConfigIndex;
+    /**@var string */
+    protected $assetConfigContentType;
     private $doctrine;
     private $userService;
     private $authorizationChecker;
-    /**@var ContentTypeService $contentTypeService*/
+    /**@var ContentTypeService $contentTypeService */
     private $contentTypeService;
     /**@var Client $client */
     private $client;
-    /**@var Router $router*/
+    /**@var Router $router */
     private $router;
-    /**@var \Twig_Environment $twig*/
+    /**@var \Twig_Environment $twig */
     private $twig;
-    /**@var ObjectChoiceListFactory $objectChoiceListFactory*/
+    /**@var ObjectChoiceListFactory $objectChoiceListFactory */
     private $objectChoiceListFactory;
     /** @var EnvironmentService */
     private $environmentService;
     /** @var Logger */
     private $logger;
-    /**@var FormFactory*/
-    protected $formFactory;
-    /**@var FileService*/
-    protected $fileService;
-    /**@var RequestRuntime*/
-    protected $commonRequestRuntime;
-    /**@var string*/
-    protected $assetConfigIndex;
-    /**@var string*/
-    protected $assetConfigContentType;
+
     public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, Client $client, Router $router, $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, Logger $logger, FormFactory $formFactory, FileService $fileService, RequestRuntime $commonRequestRuntime, string $assetConfigIndex, string $assetConfigContentType)
     {
         $this->doctrine = $doctrine;
@@ -139,8 +141,8 @@ class AppExtension extends \Twig_Extension
             new TwigFilter('all_granted', array($this, 'allGranted')),
             new TwigFilter('one_granted', array($this, 'oneGranted')),
             new TwigFilter('in_my_circles', array($this, 'inMyCircles')),
-            new TwigFilter('data_link', array($this, 'dataLink')),
-            new TwigFilter('data_label', array($this, 'dataLabel')),
+            new TwigFilter('data_link', [$this, 'dataLink'], ['is_safe' => ['html']]),
+            new TwigFilter('data_label', [$this, 'dataLabel'], ['is_safe' => ['html']]),
             new TwigFilter('get_content_type', array($this, 'getContentType')),
             new TwigFilter('get_environment', array($this, 'getEnvironment')),
             new TwigFilter('generate_from_template', array($this, 'generateFromTemplate')),
@@ -166,7 +168,9 @@ class AppExtension extends \Twig_Extension
             new TwigFilter('json_decode', array($this, 'jsonDecode')),
 
         );
-    }/**
+    }
+
+    /**
      * @param array $fileField
      * @param string $processorIdentifier
      * @param array $assetConfig
@@ -177,7 +181,7 @@ class AppExtension extends \Twig_Extension
      * @param int $referenceType
      * @return string
      */
-    public function assetPath(array $fileField, string $processorIdentifier, array $assetConfig = [], string $route = 'ems_asset', string $fileHashField = EmsFields::CONTENT_FILE_HASH_FIELD, $filenameField = EmsFields::CONTENT_FILE_NAME_FIELD, $mimeTypeField = EmsFields::CONTENT_MIME_TYPE_FIELD, $referenceType = UrlGeneratorInterface::RELATIVE_PATH) : string
+    public function assetPath(array $fileField, string $processorIdentifier, array $assetConfig = [], string $route = 'ems_asset', string $fileHashField = EmsFields::CONTENT_FILE_HASH_FIELD, $filenameField = EmsFields::CONTENT_FILE_NAME_FIELD, $mimeTypeField = EmsFields::CONTENT_MIME_TYPE_FIELD, $referenceType = UrlGeneratorInterface::RELATIVE_PATH): string
     {
         $config = $assetConfig;
         if (!isset($config['_config_type'])) {
@@ -189,7 +193,7 @@ class AppExtension extends \Twig_Extension
             $environment = $this->environmentService->getByName($this->assetConfigContentType);
         }
 
-        if (!empty($this->assetConfigContentType) && ( !empty($this->assetConfigIndex) || $environment)) {
+        if (!empty($this->assetConfigContentType) && (!empty($this->assetConfigIndex) || $environment)) {
             $result = $this->client->search([
                 'size' => 1,
                 'type' => $this->assetConfigContentType,
@@ -227,7 +231,6 @@ class AppExtension extends \Twig_Extension
     }
 
 
-
     public function getFieldByPath(ContentType $contentType, $path, $skipVirtualFields = false)
     {
         return $this->contentTypeService->getChildByPath($contentType->getFieldType(), $path, $skipVirtualFields);
@@ -260,13 +263,13 @@ class AppExtension extends \Twig_Extension
         if ($compare && $a !== $b) {
             if ($htmlDiff && $a && $b) {
                 $textClass = 'text-orange';
-                $htmlDiff = new HtmlDiff(($escape?htmlentities($b):$this->internalLinks($b)), ($escape?htmlentities($a):$this->internalLinks($a)));
+                $htmlDiff = new HtmlDiff(($escape ? htmlentities($b) : $this->internalLinks($b)), ($escape ? htmlentities($a) : $this->internalLinks($a)));
                 $textLabel = $htmlDiff->build();
             } else {
                 $textClass = false;
                 if ($b !== null) {
                     $textClass = 'text-red';
-                    $textLabel .= '<del class="diffmod">'.($escape?htmlentities($b):$this->internalLinks($b)).'</del>';
+                    $textLabel .= '<del class="diffmod">' . ($escape ? htmlentities($b) : $this->internalLinks($b)) . '</del>';
                 }
 
                 if ($a !== null) {
@@ -275,12 +278,12 @@ class AppExtension extends \Twig_Extension
                     } else {
                         $textClass = 'text-green';
                     }
-                    $textLabel .= ' <ins class="diffmod">'.($escape?htmlentities($a):$this->internalLinks($a)).'</ins>';
+                    $textLabel .= ' <ins class="diffmod">' . ($escape ? htmlentities($a) : $this->internalLinks($a)) . '</ins>';
                 }
             }
         } else {
             if ($a !== null) {
-                $textLabel = ($escape?htmlentities($a):$this->internalLinks($a));
+                $textLabel = ($escape ? htmlentities($a) : $this->internalLinks($a));
             } else {
 //                $textClass = 'text-gray';
 //                $textLabel = '[not defined]';
@@ -292,12 +295,12 @@ class AppExtension extends \Twig_Extension
         if ($raw) {
             return $textLabel;
         }
-        return '<'.$tag.' class="'.$textClass.'">'.$textLabel.'</'.$tag.'>';
+        return '<' . $tag . ' class="' . $textClass . '">' . $textLabel . '</' . $tag . '>';
     }
 
     public function diffBoolean($rawData, $compare, $fieldName, $compareRawData)
     {
-        $a = $rawData?true:false;
+        $a = $rawData ? true : false;
         $b = isset($compareRawData[$fieldName]) && $compareRawData[$fieldName];
 
         $textClass = '';
@@ -305,18 +308,18 @@ class AppExtension extends \Twig_Extension
             $textClass = 'text-orange';
         }
 
-        return '<span class="'.$textClass.'"><i class="fa fa'.($a?'-check':'').'-square-o"></i></span>';
+        return '<span class="' . $textClass . '"><i class="fa fa' . ($a ? '-check' : '') . '-square-o"></i></span>';
     }
 
     public function diffIcon($rawData, $compare, $fieldName, $compareRawData)
     {
         $b = $a = null;
         if ($rawData) {
-            $a = '<i class="'.$rawData.'"></i> '.$rawData;
+            $a = '<i class="' . $rawData . '"></i> ' . $rawData;
         }
 
         if (isset($compareRawData[$fieldName]) && $compareRawData[$fieldName]) {
-            $b = '<i class="'.$compareRawData[$fieldName].'"></i> '.$compareRawData[$fieldName];
+            $b = '<i class="' . $compareRawData[$fieldName] . '"></i> ' . $compareRawData[$fieldName];
         }
         return $this->diff($a, $b, $compare);
     }
@@ -347,7 +350,7 @@ class AppExtension extends \Twig_Extension
             $a = $rawData;
         } elseif (is_scalar($rawData)) {
             $tag = 'span';
-            if (! empty($b)) {
+            if (!empty($b)) {
                 $insColor = $delColor = 'orange';
             }
             $a = [$rawData];
@@ -363,7 +366,6 @@ class AppExtension extends \Twig_Extension
             } else {
                 $date = new DateTime($item);
             }
-
 
 
             $value = $date->format($format1);
@@ -383,13 +385,13 @@ class AppExtension extends \Twig_Extension
             }
 
             if ($value2) {
-                $value .= ' ('.$value2.')';
+                $value .= ' (' . $value2 . ')';
             }
 
             if (!$compare || $inArray) {
-                $out .= '<'.$tag.' class="">'.htmlentities($value).'</'.$tag.'>';
+                $out .= '<' . $tag . ' class="">' . htmlentities($value) . '</' . $tag . '>';
             } else {
-                $out .= '<'.$tag.' class="text-'.$insColor.'"><ins class="diffmod">'.htmlentities($value).'</ins></'.$tag.'>';
+                $out .= '<' . $tag . ' class="text-' . $insColor . '"><ins class="diffmod">' . htmlentities($value) . '</ins></' . $tag . '>';
             }
         }
 
@@ -417,11 +419,11 @@ class AppExtension extends \Twig_Extension
                 }
 
                 if ($value2) {
-                    $value .= ' ('.$value2.')';
+                    $value .= ' (' . $value2 . ')';
                 }
 
                 if (!$inArray) {
-                    $out .= ' <'.$tag.' class="text-'.$delColor.'"><del class="diffmod">' . htmlentities($value) . '</del></'.$tag.'>';
+                    $out .= ' <' . $tag . ' class="text-' . $delColor . '"><del class="diffmod">' . htmlentities($value) . '</del></' . $tag . '>';
                 }
             }
         }
@@ -446,12 +448,12 @@ class AppExtension extends \Twig_Extension
                 $b = [$compareRawData[$fieldName]];
             }
         }
-        
+
         if (is_array($rawData)) {
             $a = $rawData;
         } elseif (is_scalar($rawData)) {
             $tag = 'span';
-            if (! empty($b)) {
+            if (!empty($b)) {
                 $insColor = $delColor = 'orange';
             }
             $a = [$rawData];
@@ -464,11 +466,11 @@ class AppExtension extends \Twig_Extension
                 if (is_array($choices) && in_array($value, $choices)) {
                     $idx = array_search($value, $choices, true);
                     if (is_array($labels) && array_key_exists($idx, $labels)) {
-                        $value = $labels[$idx].' ('.$value.')';
+                        $value = $labels[$idx] . ' (' . $value . ')';
                     }
                 }
                 if (!in_array($item, $a)) {
-                    $out .= '<'.$tag.' class="text-'.$delColor.'"><del class="diffmod">' . htmlentities($value) . '</del></'.$tag.'>';
+                    $out .= '<' . $tag . ' class="text-' . $delColor . '"><del class="diffmod">' . htmlentities($value) . '</del></' . $tag . '>';
                 }
             }
         }
@@ -478,13 +480,13 @@ class AppExtension extends \Twig_Extension
             if (is_array($choices) && in_array($value, $choices)) {
                 $idx = array_search($value, $choices, true);
                 if (is_array($labels) && array_key_exists($idx, $labels)) {
-                    $value = $this->isSuper() ? $labels[$idx].' ('.$item.')' : $labels[$idx];
+                    $value = $this->isSuper() ? $labels[$idx] . ' (' . $item . ')' : $labels[$idx];
                 }
             }
             if (!$compare || in_array($item, $b)) {
-                $out .= '<'.$tag.' class="" data-ems-id="'.$item.'">'.htmlentities($value).'</'.$tag.'>';
+                $out .= '<' . $tag . ' class="" data-ems-id="' . $item . '">' . htmlentities($value) . '</' . $tag . '>';
             } else {
-                $out .= '<'.$tag.' class="text-'.$insColor.'"><ins class="diffmod">'.htmlentities($value).'</ins></'.$tag.'>';
+                $out .= '<' . $tag . ' class="text-' . $insColor . '"><ins class="diffmod">' . htmlentities($value) . '</ins></' . $tag . '>';
             }
         }
 
@@ -495,11 +497,6 @@ class AppExtension extends \Twig_Extension
 
         return $out;
     }
-
-
-
-
-
 
 
     public function diffDataLink($rawData, $compare, $fieldName, $compareRawData)
@@ -524,16 +521,16 @@ class AppExtension extends \Twig_Extension
         if ($compare) {
             foreach ($b as $item) {
                 if (!in_array($item, $a)) {
-                    $out .= $this->dataLink($item, false, 'del').' ';
+                    $out .= $this->dataLink($item, false, 'del') . ' ';
                 }
             }
         }
 
         foreach ($a as $item) {
             if (!$compare || in_array($item, $b)) {
-                $out .= $this->dataLink($item).' ';
+                $out .= $this->dataLink($item) . ' ';
             } else {
-                $out .= $this->dataLink($item, false, 'ins').' ';
+                $out .= $this->dataLink($item, false, 'ins') . ' ';
             }
         }
 
@@ -546,36 +543,34 @@ class AppExtension extends \Twig_Extension
         $b = $a = null;
         if ($rawData) {
             $color = $rawData;
-            $a = '<span style="background-color: '.$color.'; color: '.($this->contrastratio($color, '#000000') > $this->contrastratio($color, '#ffffff')?'#000000':'#ffffff').';">'.$color.'</span> ';
+            $a = '<span style="background-color: ' . $color . '; color: ' . ($this->contrastratio($color, '#000000') > $this->contrastratio($color, '#ffffff') ? '#000000' : '#ffffff') . ';">' . $color . '</span> ';
         }
 
         if (isset($compareRawData[$fieldName]) && $compareRawData[$fieldName]) {
             $color = $compareRawData[$fieldName];
-            $b = '<span style="background-color: '.$color.'; color: '.($this->contrastratio($color, '#000000') > $this->contrastratio($color, '#ffffff')?'#000000':'#ffffff').';">'.$color.'</span> ';
+            $b = '<span style="background-color: ' . $color . '; color: ' . ($this->contrastratio($color, '#000000') > $this->contrastratio($color, '#ffffff') ? '#000000' : '#ffffff') . ';">' . $color . '</span> ';
         }
         return $this->diff($a, $b, $compare, false, false, true);
     }
 
     public function diffRaw($rawData, $compare, $fieldName, $compareRawData)
     {
-        $b = isset($compareRawData[$fieldName])?$compareRawData[$fieldName]:null;
+        $b = isset($compareRawData[$fieldName]) ? $compareRawData[$fieldName] : null;
         return $this->diff($rawData, $b, $compare);
     }
 
 
-
     public function diffText($rawData, $compare, $fieldName, $compareRawData)
     {
-        $b = isset($compareRawData[$fieldName])?$compareRawData[$fieldName]:null;
+        $b = isset($compareRawData[$fieldName]) ? $compareRawData[$fieldName] : null;
 
         return $this->diff($rawData, $b, $compare, true, true);
     }
 
 
-
     public function diffHtml($rawData, $compare, $fieldName, $compareRawData)
     {
-        $b = isset($compareRawData[$fieldName])?$compareRawData[$fieldName]:null;
+        $b = isset($compareRawData[$fieldName]) ? $compareRawData[$fieldName] : null;
         return $this->diff($rawData, $b, $compare, false, true, true);
     }
 
@@ -590,13 +585,13 @@ class AppExtension extends \Twig_Extension
         $em = $this->doctrine->getManager();
         /**@var SequenceRepository $repo */
         $repo = $em->getRepository('EMSCoreBundle:Sequence');
-        $out= $repo->nextValue($name);
+        $out = $repo->nextValue($name);
         return $out;
     }
 
     public function arrayIntersect(array $array1, $array2)
     {
-        if (! is_array($array2)) {
+        if (!is_array($array2)) {
             return [];
         }
         return array_intersect($array1, $array2);
@@ -646,7 +641,7 @@ class AppExtension extends \Twig_Extension
 
     public function macroFct($tempate, $block, $context, $source = null, $compare = false, $compareRawData = null)
     {
-        return $tempate->{'macro_'.$block}($context, $source, $compare, $compareRawData);
+        return $tempate->{'macro_' . $block}($context, $source, $compare, $compareRawData);
     }
 
     public function callUserFunc($function)
@@ -673,7 +668,7 @@ class AppExtension extends \Twig_Extension
         if ($detailed) {
             return $interval->format('%R%a days %h hours %i minutes');
         }
-        return (intval($interval->format('%R%a'))+1).' days';
+        return (intval($interval->format('%R%a')) + 1) . ' days';
     }
 
     public function getUser($username)
@@ -683,7 +678,7 @@ class AppExtension extends \Twig_Extension
 
     public function displayname($username)
     {
-        /**@var User $user*/
+        /**@var User $user */
         $user = $this->userService->getUser($username);
         if (!empty($user)) {
             return $user->getDisplayName();
@@ -694,14 +689,14 @@ class AppExtension extends \Twig_Extension
     public function srcPath($input, $fileName = false)
     {
         $path = $this->router->generate('ems_file_view', ['sha1' => '__SHA1__'], UrlGeneratorInterface::ABSOLUTE_PATH);
-        $path = substr($path, 0, strlen($path)-8);
-        $out= preg_replace_callback(
+        $path = substr($path, 0, strlen($path) - 8);
+        $out = preg_replace_callback(
             '/(ems:\/\/asset:)([^\n\r"\'\?]*)/i',
             function ($matches) use ($path, $fileName) {
                 if ($fileName) {
                     return $this->fileService->getFile($matches[2]);
                 }
-                return $path.$matches[2];
+                return $path . $matches[2];
             },
             $input
         );
@@ -711,7 +706,7 @@ class AppExtension extends \Twig_Extension
 
     public function internalLinks($input, $fileName = false)
     {
-        $url = $this->router->generate('data.link', ['key'=>'object:'], UrlGeneratorInterface::ABSOLUTE_PATH);
+        $url = $this->router->generate('data.link', ['key' => 'object:'], UrlGeneratorInterface::ABSOLUTE_PATH);
         $out = preg_replace('/ems:\/\/object:/i', $url, $input);
 
         return $this->srcPath($out, $fileName);
@@ -726,9 +721,9 @@ class AppExtension extends \Twig_Extension
         }
         /**@var I18nRepository $repo */
         $repo = $this->doctrine->getManager()->getRepository('EMSCoreBundle:I18n');
-        /**@var I18n $result*/
+        /**@var I18n $result */
         $result = $repo->findOneBy([
-                'identifier' => $key,
+            'identifier' => $key,
         ]);
 
         if (empty($result)) {
@@ -809,7 +804,7 @@ class AppExtension extends \Twig_Extension
         try {
             $out = $this->twig->createTemplate($template)->render($params);
         } catch (\Exception $e) {
-            $out = "Error in template: ".$e->getMessage();
+            $out = "Error in template: " . $e->getMessage();
         }
         return $out;
     }
@@ -820,74 +815,15 @@ class AppExtension extends \Twig_Extension
         $splitted = explode(':', $key);
         if ($splitted && count($splitted) == 2 && strlen($splitted[0]) > 0 && strlen($splitted[1]) > 0) {
             $type = $splitted[0];
-            $ouuid =  $splitted[1];
+            $ouuid = $splitted[1];
 
             $addAttribute = "";
 
-            /**@var \EMS\CoreBundle\Entity\ContentType $contentType*/
+            /**@var \EMS\CoreBundle\Entity\ContentType $contentType */
             $contentType = $this->contentTypeService->getByName($type);
             if ($contentType) {
                 if ($contentType->getIcon()) {
-                    $icon = '<i class="'.$contentType->getIcon().'"></i>&nbsp;&nbsp;';
-                } else {
-                    $icon = '<i class="fa fa-book"></i>&nbsp;&nbsp;';
-                }
-
-                try {
-                    $fields = [];
-                    if ($contentType->getLabelField()) {
-                        $fields[] = $contentType->getLabelField();
-                    }
-                    if ($contentType->getColorField()) {
-                        $fields[] = $contentType->getColorField();
-                    }
-
-                    $index = $this->contentTypeService->getIndex($contentType);
-
-                    $result = $this->client->get([
-                            '_source' => $fields,
-                            'id' => $ouuid,
-                            'index' => $index,
-                            'type' => $type,
-                    ]);
-
-                    if ($contentType->getLabelField()) {
-                        $label = $result['_source'][$contentType->getLabelField()];
-                        if ($label && strlen($label) > 0) {
-                            $out = $label;
-                        }
-                    }
-                    $out = $icon.$out;
-
-                    if ($contentType->getColorField() && $result['_source'][$contentType->getColorField()]) {
-                        $color = $result['_source'][$contentType->getColorField()];
-                        $contrasted = $this->contrastratio($color, '#000000') > $this->contrastratio($color, '#ffffff')?'#000000':'#ffffff';
-
-                        $out = '<span class="" style="color:'.$contrasted.';">'.$out.'</span>';
-                        $addAttribute = ' style="background-color: '.$result['_source'][$contentType->getColorField()].';border-color: '.$result['_source'][$contentType->getColorField()].';"';
-                    }
-                } catch (\Exception $e) {
-                }
-            }
-        }
-        return $out;
-    }
-
-    public function dataLink($key, $revisionId = false, $diffMod = false)
-    {
-        $out = $key;
-        $splitted = explode(':', $key);
-        if ($splitted && count($splitted) == 2 && strlen($splitted[0]) > 0 && strlen($splitted[1]) > 0) {
-            $type = $splitted[0];
-            $ouuid =  $splitted[1];
-
-            $addAttribute = "";
-
-            /**@var \EMS\CoreBundle\Entity\ContentType $contentType*/
-            $contentType = $this->contentTypeService->getByName($type);
-            if ($contentType) {
-                if ($contentType->getIcon()) {
-                    $icon = '<i class="'.$contentType->getIcon().'"></i>&nbsp;&nbsp;';
+                    $icon = '<i class="' . $contentType->getIcon() . '"></i>&nbsp;&nbsp;';
                 } else {
                     $icon = '<i class="fa fa-book"></i>&nbsp;&nbsp;';
                 }
@@ -916,27 +852,86 @@ class AppExtension extends \Twig_Extension
                             $out = $label;
                         }
                     }
-                    $out = $icon.$out;
+                    $out = $icon . $out;
 
                     if ($contentType->getColorField() && $result['_source'][$contentType->getColorField()]) {
                         $color = $result['_source'][$contentType->getColorField()];
-                        $contrasted = $this->contrastratio($color, '#000000') > $this->contrastratio($color, '#ffffff')?'#000000':'#ffffff';
+                        $contrasted = $this->contrastratio($color, '#000000') > $this->contrastratio($color, '#ffffff') ? '#000000' : '#ffffff';
 
-                        $out = '<span class="" style="color:'.$contrasted.';">'.$out.'</span>';
-                        $addAttribute = ' style="background-color: '.$result['_source'][$contentType->getColorField()].';border-color: '.$result['_source'][$contentType->getColorField()].';"';
-                    }
-
-                    if ($diffMod !== false) {
-                        $out = '<'.$diffMod.' class="diffmod">'.$out.'<'.$diffMod.'>';
+                        $out = '<span class="" style="color:' . $contrasted . ';">' . $out . '</span>';
+                        $addAttribute = ' style="background-color: ' . $result['_source'][$contentType->getColorField()] . ';border-color: ' . $result['_source'][$contentType->getColorField()] . ';"';
                     }
                 } catch (\Exception $e) {
                 }
             }
-            $out = '<a class="btn btn-primary btn-sm" href="'.$this->router->generate('data.revisions', [
-                    'type' =>$type,
+        }
+        return $out;
+    }
+
+    public function dataLink($key, $revisionId = false, $diffMod = false)
+    {
+        $out = $key;
+        $splitted = explode(':', $key);
+        if ($splitted && count($splitted) == 2 && strlen($splitted[0]) > 0 && strlen($splitted[1]) > 0) {
+            $type = $splitted[0];
+            $ouuid = $splitted[1];
+
+            $addAttribute = "";
+
+            /**@var \EMS\CoreBundle\Entity\ContentType $contentType */
+            $contentType = $this->contentTypeService->getByName($type);
+            if ($contentType) {
+                if ($contentType->getIcon()) {
+                    $icon = '<i class="' . $contentType->getIcon() . '"></i>&nbsp;&nbsp;';
+                } else {
+                    $icon = '<i class="fa fa-book"></i>&nbsp;&nbsp;';
+                }
+
+                try {
+                    $fields = [];
+                    if ($contentType->getLabelField()) {
+                        $fields[] = $contentType->getLabelField();
+                    }
+                    if ($contentType->getColorField()) {
+                        $fields[] = $contentType->getColorField();
+                    }
+
+                    $index = $this->contentTypeService->getIndex($contentType);
+
+                    $result = $this->client->get([
+                        '_source' => $fields,
+                        'id' => $ouuid,
+                        'index' => $index,
+                        'type' => $type,
+                    ]);
+
+                    if ($contentType->getLabelField()) {
+                        $label = $result['_source'][$contentType->getLabelField()];
+                        if ($label && strlen($label) > 0) {
+                            $out = $label;
+                        }
+                    }
+                    $out = $icon . $out;
+
+                    if ($contentType->getColorField() && $result['_source'][$contentType->getColorField()]) {
+                        $color = $result['_source'][$contentType->getColorField()];
+                        $contrasted = $this->contrastratio($color, '#000000') > $this->contrastratio($color, '#ffffff') ? '#000000' : '#ffffff';
+
+                        $out = '<span class="" style="color:' . $contrasted . ';">' . $out . '</span>';
+                        $addAttribute = ' style="background-color: ' . $result['_source'][$contentType->getColorField()] . ';border-color: ' . $result['_source'][$contentType->getColorField()] . ';"';
+                    }
+
+                    if ($diffMod !== false) {
+                        $out = '<' . $diffMod . ' class="diffmod">' . $out . '<' . $diffMod . '>';
+                    }
+                } catch (\Exception $e) {
+                }
+            }
+            $out = '<a class="btn btn-primary btn-sm" href="' . $this->router->generate('data.revisions', [
+                    'type' => $type,
                     'ouuid' => $ouuid,
                     'revisionId' => $revisionId,
-            ], UrlGeneratorInterface::RELATIVE_PATH).'" '.$addAttribute.' >'.$out.'</a>';
+                ], UrlGeneratorInterface::RELATIVE_PATH) . '" ' . $addAttribute . ' >' . $out . '</a>';
         }
         return $out;
     }
@@ -946,10 +941,10 @@ class AppExtension extends \Twig_Extension
         $parent = $error->getOrigin();
         $out = '';
         while ($parent) {
-            $out = $parent->getName().$out;
+            $out = $parent->getName() . $out;
             $parent = $parent->getParent();
             if ($parent) {
-                $out = '_'.$out;
+                $out = '_' . $out;
             }
         }
         return $out;
@@ -961,18 +956,17 @@ class AppExtension extends \Twig_Extension
         $splitted = explode(':', $key);
         if ($splitted && count($splitted) == 2) {
             $type = $splitted[0];
-            $ouuid =  $splitted[1];
+            $ouuid = $splitted[1];
 
 
-
-            /**@var \EMS\CoreBundle\Entity\ContentType $contentType*/
+            /**@var \EMS\CoreBundle\Entity\ContentType $contentType */
             $contentType = $this->contentTypeService->getByName($type);
             if ($contentType) {
                 try {
                     $result = $this->client->get([
-                            'id' => $ouuid,
-                            'index' => $index?: $contentType->getEnvironment()->getAlias(),
-                            'type' => $type,
+                        'id' => $ouuid,
+                        'index' => $index ?: $contentType->getEnvironment()->getAlias(),
+                        'type' => $type,
                     ]);
 
                     return $result['_source'];
@@ -1014,9 +1008,9 @@ class AppExtension extends \Twig_Extension
         }
         //Convert hex to 0-1 scale
         $components = array(
-                'r' => hexdec(substr($col, 0, 2)) / 255,
-                'g' => hexdec(substr($col, 2, 2)) / 255,
-                'b' => hexdec(substr($col, 4, 2)) / 255
+            'r' => hexdec(substr($col, 0, 2)) / 255,
+            'g' => hexdec(substr($col, 2, 2)) / 255,
+            'b' => hexdec(substr($col, 4, 2)) / 255
         );
         //Correct for sRGB
         foreach ($components as $c => $v) {
@@ -1116,7 +1110,7 @@ class AppExtension extends \Twig_Extension
     public function getDefaultEnvironments()
     {
         $defaultEnvironments = [];
-        /**@var Environment $environment*/
+        /**@var Environment $environment */
         foreach ($this->environmentService->getAll() as $environment) {
             if ($environment->getInDefaultSearch()) {
                 $defaultEnvironments[] = $environment->getName();

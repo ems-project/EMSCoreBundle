@@ -561,12 +561,12 @@ class DataService
      * @param Revision $revision
      * @param \Symfony\Component\Form\Form $form
      * @param string $username
-     * @param booleam $computeFields (allow to sky computedFields compute, i.e during a post-finalize)
+     * @param boolean $computeFields (allow to sky computedFields compute, i.e during a post-finalize)
      * @throws \Exception
      * @throws DataStateException
      * @return \EMS\CoreBundle\Entity\Revision
      */
-    public function finalizeDraft(Revision $revision, \Symfony\Component\Form\Form &$form = null, $username = null, $computeFields = true)
+    public function finalizeDraft(Revision $revision, Form &$form = null, $username = null, $computeFields = true)
     {
         if ($revision->getDeleted()) {
             throw new \Exception("Can not finalized a deleted revision");

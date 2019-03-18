@@ -186,9 +186,9 @@ class ContentTypeService
 
     public function setSingleTypeIndex(Environment $environment, ContentType $contentType, string $name)
     {
-        $this->em = $this->doctrine->getManager();
+        $em = $this->doctrine->getManager();
         /**@var SingleTypeIndexRepository $repository*/
-        $repository = $this->em->getRepository('EMSCoreBundle:SingleTypeIndex');
+        $repository = $em->getRepository('EMSCoreBundle:SingleTypeIndex');
         $repository->setIndexName($environment, $contentType, $name);
     }
 
@@ -199,9 +199,9 @@ class ContentTypeService
         }
 
         if ($this->singleTypeIndex) {
-            $this->em = $this->doctrine->getManager();
+            $em = $this->doctrine->getManager();
             /**@var SingleTypeIndexRepository $repository*/
-            $repository = $this->em->getRepository('EMSCoreBundle:SingleTypeIndex');
+            $repository = $em->getRepository('EMSCoreBundle:SingleTypeIndex');
 
             /**@var SingleTypeIndex $singleTypeIndex*/
             $singleTypeIndex = $repository->getIndexName($contentType, $environment);

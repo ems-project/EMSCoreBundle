@@ -308,11 +308,9 @@ class DataLinkFieldType extends DataFieldType
     }
 
     /**
-     *
      * {@inheritDoc}
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::modelTransform()
      */
-    public function modelTransform($data, FieldType $fieldType)
+    public function modelTransform(array $data, FieldType $fieldType): DataField
     {
         $out = parent::modelTransform($data, $fieldType);
         if ($fieldType->getDisplayOption('multiple', false)) {
@@ -373,11 +371,9 @@ class DataLinkFieldType extends DataFieldType
     }
 
     /**
-     *
      * {@inheritDoc}
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
      */
-    public function reverseViewTransform($data, FieldType $fieldType)
+    public function reverseViewTransform(array $data, FieldType $fieldType): DataField
     {
         $data= (null !== $data&& isset($data['value']))?$data['value']:null;
         $out = parent::reverseViewTransform($data, $fieldType);

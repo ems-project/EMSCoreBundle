@@ -129,11 +129,9 @@ class TextareaFieldType extends DataFieldType
     }
     
     /**
-     *
      * {@inheritDoc}
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
      */
-    public function reverseViewTransform($data, FieldType $fieldType)
+    public function reverseViewTransform(array $data, FieldType $fieldType): DataField
     {
         $value = $data['value'];
         return parent::reverseViewTransform($value, $fieldType);

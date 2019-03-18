@@ -122,13 +122,11 @@ class PasswordFieldType extends DataFieldType
                 'reset_password_value' => false,
             ];
     }
-        
-       /**
-    *
-    * {@inheritDoc}
-    * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
-    */
-    public function reverseViewTransform($data, FieldType $fieldType)
+
+    /**
+     * {@inheritDoc}
+     */
+    public function reverseViewTransform(array $data, FieldType $fieldType): DataField
     {
             $out = $data['password_backup'];
         if ($data['reset_password_value']) {

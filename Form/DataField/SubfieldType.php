@@ -32,11 +32,9 @@ class SubfieldType extends DataFieldType
     }
     
     /**
-     *
      * {@inheritdoc}
-     *
      */
-    public function importData(DataField $dataField, $sourceArray, $isMigration)
+    public function importData(DataField $dataField, array $sourceArray, bool $isMigration): array
     {
         //do nothing as it's a virtual field
     }

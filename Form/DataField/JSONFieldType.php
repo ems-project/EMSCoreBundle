@@ -68,7 +68,7 @@ class JSONFieldType extends DataFieldType
         return [ 'value' => json_encode($dataField->getRawData()) ];
     }
 
-    public function reverseViewTransform($input, FieldType $fieldType)
+    public function reverseViewTransform(array $input, FieldType $fieldType): DataField
     {
         $dataValues = parent::reverseViewTransform($input, $fieldType);
         $options = $fieldType->getOptions();

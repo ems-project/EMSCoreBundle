@@ -155,11 +155,9 @@ class NumberFieldType extends DataFieldType
     }
     
     /**
-     *
      * {@inheritDoc}
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
      */
-    public function reverseViewTransform($data, FieldType $fieldType)
+    public function reverseViewTransform(array $data, FieldType $fieldType): DataField
     {
         $temp = $data['value'];
         

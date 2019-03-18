@@ -281,11 +281,9 @@ class CollectionFieldType extends DataFieldType
     }
     
     /**
-     *
      * {@inheritDoc}
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
      */
-    public function reverseViewTransform($data, FieldType $fieldType)
+    public function reverseViewTransform(array $data, FieldType $fieldType): DataField
     {
         $cleaned = [];
         foreach ($data as $idx => $item) {

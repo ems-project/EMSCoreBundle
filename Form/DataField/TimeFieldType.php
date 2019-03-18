@@ -47,11 +47,9 @@ class TimeFieldType extends DataFieldType
     }
     
     /**
-     *
      * {@inheritdoc}
-     *
      */
-    public function importData(DataField $dataField, $sourceArray, $isMigration)
+    public function importData(DataField $dataField, array $sourceArray, bool $isMigration): array
     {
         $migrationOptions = $dataField->getFieldType()->getMigrationOptions();
         if (!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {
@@ -117,11 +115,9 @@ class TimeFieldType extends DataFieldType
     }
     
     /**
-     *
      * {@inheritdoc}
-     *
      */
-    public function reverseViewTransform($data, FieldType $fieldType)
+    public function reverseViewTransform(array $data, FieldType $fieldType): DataField
     {
         $format = $this->getFormat($fieldType->getOptions());
         $converted = \DateTime::createFromFormat($format, $data);

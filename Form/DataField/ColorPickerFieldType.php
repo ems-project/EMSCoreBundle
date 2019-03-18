@@ -55,7 +55,7 @@ class ColorPickerFieldType extends DataFieldType
         return ColorPickerFullType::class;
     }
     
-    public function modelTransform($data, FieldType $fieldType)
+    public function modelTransform(array $data, FieldType $fieldType): DataField
     {
         $dataField = parent::modelTransform($data, $fieldType);
         if ($data !== null && !is_string($data)) {

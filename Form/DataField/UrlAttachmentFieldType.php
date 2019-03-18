@@ -67,11 +67,9 @@ class UrlAttachmentFieldType extends DataFieldType
     }
     
     /**
-     *
      * {@inheritdoc}
-     *
      */
-    public function reverseViewTransform($data, FieldType $fieldType)
+    public function reverseViewTransform(array $data, FieldType $fieldType): DataField
     {
         /**@var DataField $out*/
         $dataField = parent::reverseViewTransform($data, $fieldType);
@@ -112,11 +110,9 @@ class UrlAttachmentFieldType extends DataFieldType
     
     
     /**
-     *
      * {@inheritDoc}
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::modelTransform()
      */
-    public function modelTransform($data, FieldType $fieldType)
+    public function modelTransform(array $data, FieldType $fieldType): DataField
     {
         if (is_array($data)) {
             foreach ($data as $id => $content) {

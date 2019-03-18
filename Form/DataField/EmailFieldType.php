@@ -83,11 +83,9 @@ class EmailFieldType extends DataFieldType
     }
     
     /**
-     *
      * {@inheritDoc}
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::modelTransform()
      */
-    public function modelTransform($data, FieldType $fieldType)
+    public function modelTransform(array $data, FieldType $fieldType): DataField
     {
         if (empty($data)) {
             return parent::modelTransform(null, $fieldType);
@@ -111,11 +109,9 @@ class EmailFieldType extends DataFieldType
     }
     
     /**
-     *
      * {@inheritDoc}
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
      */
-    public function reverseViewTransform($data, FieldType $fieldType)
+    public function reverseViewTransform(array $data, FieldType $fieldType): DataField
     {
         return parent::reverseViewTransform($data['value'], $fieldType);
     }

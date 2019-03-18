@@ -157,7 +157,7 @@ class CollectionItemFieldType extends DataFieldType
     }
     
     
-    public function reverseViewTransform($data, FieldType $fieldType)
+    public function reverseViewTransform(array $data, FieldType $fieldType): DataField
     {
         //Just an info to say to the parent collection that this rec has been updated by the submit
         $data['_ems_item_reverseViewTransform'] = true;

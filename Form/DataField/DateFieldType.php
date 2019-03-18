@@ -34,7 +34,7 @@ class DateFieldType extends DataFieldType
         return 'fa fa-calendar';
     }
     
-    public function modelTransform($data, FieldType $fieldType)
+    public function modelTransform(array $data, FieldType $fieldType): DataField
     {
         if (empty($data)) {
             return parent::modelTransform([], $fieldType);
@@ -104,7 +104,7 @@ class DateFieldType extends DataFieldType
         return $temp;
     }
     
-    public function reverseViewTransform($data, FieldType $fieldType)
+    public function reverseViewTransform(array $data, FieldType $fieldType): DataField
     {
         $dates = [];
         $format = DateFieldType::convertJavascriptDateFormat($fieldType->getDisplayOption('displayFormat', 'dd/mm/yyyy'));
@@ -134,7 +134,7 @@ class DateFieldType extends DataFieldType
      * {@inheritdoc}
      *
      */
-    public function importData(DataField $dataField, $sourceArray, $isMigration)
+    public function importData(DataField $dataField, array $sourceArray, bool $isMigration): array
     {
         $migrationOptions = $dataField->getFieldType()->getMigrationOptions();
         if (!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {

@@ -73,12 +73,8 @@ abstract class DataFieldType extends AbstractType
      * form array to DataField
      *
      * http://symfony.com/doc/current/form/data_transformers.html#about-model-and-view-transformers
-     *
-     * @param unknown $data
-     * @param FieldType $fieldType
-     * @return \EMS\CoreBundle\Entity\DataField
      */
-    public function reverseViewTransform($data, FieldType $fieldType)
+    public function reverseViewTransform(array $data, FieldType $fieldType): DataField
     {
         $out = new DataField();
 
@@ -125,11 +121,8 @@ abstract class DataFieldType extends AbstractType
      * raw_data array to datafield:
      *
      * http://symfony.com/doc/current/form/data_transformers.html#about-model-and-view-transformers
-     *
-     * @param unknown $data
-     * @return DataField
      */
-    public function modelTransform($data, FieldType $fieldType)
+    public function modelTransform(array $data, FieldType $fieldType): DataField
     {
         $out = new DataField();
         $out->setRawData($data);
@@ -276,11 +269,8 @@ abstract class DataFieldType extends AbstractType
 
     /**
      * Assign data of the dataField based on the elastic index content ($sourceArray)
-     *
-     * @param DataField $dataField
-     * @param unknown $sourceArray
      */
-    public function importData(DataField $dataField, $sourceArray, $isMigration)
+    public function importData(DataField $dataField, array $sourceArray, bool $isMigration): array
     {
         $migrationOptions = $dataField->getFieldType()->getMigrationOptions();
         if (!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {

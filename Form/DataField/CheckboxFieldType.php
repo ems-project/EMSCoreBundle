@@ -33,11 +33,9 @@ class CheckboxFieldType extends DataFieldType
     }
     
     /**
-     *
      * {@inheritdoc}
-     *
      */
-    public function importData(DataField $dataField, $sourceArray, $isMigration)
+    public function importData(DataField $dataField, array $sourceArray, bool $isMigration): array
     {
         $migrationOptions = $dataField->getFieldType()->getMigrationOptions();
         if (!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {
@@ -91,11 +89,9 @@ class CheckboxFieldType extends DataFieldType
     
     
     /**
-     *
      * {@inheritDoc}
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
      */
-    public function reverseViewTransform($data, FieldType $fieldType)
+    public function reverseViewTransform(array $data, FieldType $fieldType): DataField
     {
         $out = parent::reverseViewTransform($data, $fieldType);
         $value = false;

@@ -31,7 +31,7 @@ require('moment');
 // require('morris.js'); //??
 require('pace');
 require('raphael');
-require('select2');
+require('select2/dist/js/select2.full');
 require('slimscroll');
 require('bootstrap-datepicker');
 require('admin-lte');

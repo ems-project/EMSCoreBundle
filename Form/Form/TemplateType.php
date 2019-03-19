@@ -136,11 +136,9 @@ class TemplateType extends AbstractType
                     'Portrait' => 'portrait',
                     'Landscape' => 'landscape',
                 ],
-                'required' => false,
         ])->add('size', ChoiceType::class, [
             'required' => false,
             'choices' => array_combine(array_keys(CPDF::$PAPER_SIZES), array_keys(CPDF::$PAPER_SIZES)),
-            'required' => false,
         ])->add('disposition', ChoiceType::class, [
             'label' => 'File diposition',
             'expanded' => true,

@@ -37,7 +37,9 @@ class RenderOptionType extends ChoiceType
             'choice_loader' => null,
             'choice_label' => null,
             'choice_name' => null,
-            'choice_value' => null,
+            'choice_value' => function ($value) {
+                return $value;
+            },
             'choice_attr' => null,
             'preferred_choices' => array(),
             'group_by' => null,
@@ -50,9 +52,6 @@ class RenderOptionType extends ChoiceType
             // See https://github.com/symfony/symfony/pull/5582
             'data_class' => null,
             'choice_translation_domain' => true,
-            'choice_value' => function ($value) {
-                return $value;
-            },
         ));
     }
 }

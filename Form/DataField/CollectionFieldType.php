@@ -5,9 +5,8 @@ namespace EMS\CoreBundle\Form\DataField;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
-use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\ElasticsearchService;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -29,15 +28,13 @@ use EMS\CoreBundle\Form\Form\EmsCollectionType;
  */
 class CollectionFieldType extends DataFieldType
 {
+    /** @var DataService */
+    private $dataService;
     
-    protected $dataService;
-    
-    
-    
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, $service_container)
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, DataService $dataService)
     {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
-        $this->service_container= $service_container;
+        $this->dataService = $dataService;
     }
     
     
@@ -62,9 +59,7 @@ class CollectionFieldType extends DataFieldType
     }
     
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function importData(DataField $dataField, $sourceArray, $isMigration)
     {
@@ -73,9 +68,7 @@ class CollectionFieldType extends DataFieldType
             if (!is_array($sourceArray)) {
                 $sourceArray = [$sourceArray];
             }
-            
-            $dataService = $this->service_container->get('ems.service.data');
-            
+
             $dataField->getChildren()->clear();
             foreach ($sourceArray as $idx => $item) {
                 $colItem = new DataField();
@@ -88,9 +81,9 @@ class CollectionFieldType extends DataFieldType
                         $grandChild->setOrderKey(0);
                         $grandChild->setParent($colItem);
                         $grandChild->setFieldType($childFieldType);
-                        $dataService->updateDataStructure($childFieldType, $grandChild);
+                        $this->dataService->updateDataStructure($childFieldType, $grandChild);
                         if (is_array($item)) {
-                            $dataService->updateDataValue($grandChild, $item, $isMigration);
+                            $this->dataService->updateDataValue($grandChild, $item, $isMigration);
                         } else {
                             //TODO: add flash message
                         }

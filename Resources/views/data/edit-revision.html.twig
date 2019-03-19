@@ -536,8 +536,9 @@ function addEventListeners(target){
 
 	
 	target.find(".ems-code-editor").each(function(){
-		var pre = $(this).find('pre').get(0);
-		var hiddenField = $(this).find('input');
+		const codeDiv = $(this);
+		var pre = codeDiv.find('pre').get(0);
+		var hiddenField = codeDiv.find('input');
 		var editor = ace.edit(pre);
 		if(hiddenField.data('theme')){
     	    editor.setTheme(hiddenField.data('theme'));
@@ -571,8 +572,27 @@ function addEventListeners(target){
 	    	if(e.action == 'remove'){
     		    onFormChange();
 		    }
-// 	    	console.log(e);
 		});
+
+        editor.commands.addCommand({
+            name: "fullscreen",
+            bindKey: {win: "F11", mac: "Esc"},
+            exec: function(editor) {
+                if (codeDiv.hasClass('panel-fullscreen')) {
+                    editor.setOption("maxLines", maxLines);
+                    codeDiv.removeClass('panel-fullscreen');
+                    editor.setAutoScrollEditorIntoView(false);
+                }
+                else {
+                    editor.setOption("maxLines", Infinity);
+                    codeDiv.addClass('panel-fullscreen');
+                    editor.setAutoScrollEditorIntoView(true);
+                }
+
+                editor.resize();
+
+            }
+        });
 	});
 	
 
@@ -623,18 +643,9 @@ function addEventListeners(target){
 			var ckconfig = {{ app.user.wysiwygProfile.config|raw }};
 		{% elseif app.user.wysiwygOptions %}
 			var ckconfig = {{ app.user.wysiwygOptions|raw }};
-                {% else %}
-                        var ckconfig = {};
+        {% else %}
+            var ckconfig = {};
 		{% endif %}
-
-// 		if(!ckconfig.extraPlugins) {
-// 			ckconfig.extraPlugins = '';
-// 		}
-// 		else {
-// 			ckconfig.extraPlugins += ',';
-// 		}
-		
-// 		ckconfig.extraPlugins += 'image2,imagebrowser,uploadimage';
 
 		ckconfig.imageUploadUrl = ems_upload_url;
 		ckconfig.imageBrowser_listUrl = ems_images_url;

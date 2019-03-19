@@ -2,8 +2,10 @@
 
 namespace EMS\CoreBundle\Service;
 
+use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\TreatNotifications;
 use EMS\CoreBundle\Entity\Notification;
+use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Template;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Event\RevisionFinalizeDraftEvent;
@@ -16,6 +18,7 @@ use Monolog\Logger;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class NotificationService
 {
@@ -154,15 +157,9 @@ class NotificationService
     
     /**
      * Call addNotification when click on a request
-     *
-     * @param unknown $template
-     * @param unknown $revision
      */
-    public function addNotification($templateId, $revision, $environment)
+    public function addNotification(string $templateId, Revision $revision, Environment $environment)
     {
-
-
-        
         $out = false;
         try {
             $em = $this->doctrine->getManager();
@@ -460,9 +457,9 @@ class NotificationService
     {
         $em = $this->doctrine->getManager();
         /** @var NotificationRepository $repository */
-        $this->repository = $em->getRepository('EMSCoreBundle:Notification');
+        $repository = $em->getRepository('EMSCoreBundle:Notification');
         
-        $notifications = $this->repository->findBy([
+        $notifications = $repository->findBy([
             'status' => 'pending',
         ]);
         

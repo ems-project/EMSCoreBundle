@@ -359,14 +359,7 @@ class Notification
         return $this->responseTimestamp;
     }
 
-    /**
-     * Set revision
-     *
-     * @param \EMS\CoreBundle\Entity\Revision $revision
-     *
-     * @return Notification
-     */
-    public function setRevision(\EMS\CoreBundle\Entity\Revision $revision)
+    public function setRevision(Revision $revision): Notification
     {
         $this->revision = $revision;
 
@@ -383,14 +376,7 @@ class Notification
         return $this->revision;
     }
 
-    /**
-     * Set environment
-     *
-     * @param \EMS\CoreBundle\Entity\Environment $environment
-     *
-     * @return Notification
-     */
-    public function setEnvironment(\EMS\CoreBundle\Entity\Environment $environment)
+    public function setEnvironment(Environment $environment): Notification
     {
         $this->environment = $environment;
 

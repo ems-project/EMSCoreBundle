@@ -280,7 +280,10 @@ abstract class DataFieldType extends AbstractType
      * Assign data of the dataField based on the elastic index content ($sourceArray)
      *
      * @param DataField $dataField
-     * @param unknown $sourceArray
+     * @param array $sourceArray
+     * @param bool $isMigration
+     *
+     * @return array
      */
     public function importData(DataField $dataField, $sourceArray, $isMigration)
     {

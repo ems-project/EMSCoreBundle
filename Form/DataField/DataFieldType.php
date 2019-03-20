@@ -126,7 +126,9 @@ abstract class DataFieldType extends AbstractType
      *
      * http://symfony.com/doc/current/form/data_transformers.html#about-model-and-view-transformers
      *
-     * @param unknown $data
+     * @param array $data
+     * @param FieldType $fieldType
+     *
      * @return DataField
      */
     public function modelTransform($data, FieldType $fieldType)

@@ -1,5 +1,5 @@
 <?php
-namespace EMS\CoreBundle\Tests\Service;
+namespace EMS\CoreBundle\Tests\Storage;
 
 use EMS\CommonBundle\Storage\Service\StorageInterface;
 use EMS\CoreBundle\Service\FileService;

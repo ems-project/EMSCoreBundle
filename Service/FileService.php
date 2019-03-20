@@ -71,6 +71,10 @@ class FileService
 
     public function getStorageService(StorageInterface $dataFieldTypeId)
     {
+        /*
+         * @Theus77, please fix this, the function dataFieldTypes() does not exist in this class, neither does dataFieldType().
+         * getStorageService is not references from other classes.
+         */
         return $this->dataFieldTypes($dataFieldTypeId);
     }
 

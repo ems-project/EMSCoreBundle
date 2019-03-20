@@ -10,17 +10,18 @@ class HelperService
 {
     /**@var Registry $doctrine */
     protected $doctrine;
+    private $pagingSize;
+    private $requestStack;
     
-    
-    public function __construct(Registry $doctrine, RequestStack $requestStack, $paging_size)
+    public function __construct(Registry $doctrine, RequestStack $requestStack, $pagingSize)
     {
         $this->doctrine = $doctrine;
-        $this->paging_size = $paging_size;
+        $this->pagingSize = $pagingSize;
         $this->requestStack = $requestStack;
     }
     
     public function getPagingTool($entityName, $route, $defaultOrderField)
     {
-        return new PagingTool($this->requestStack->getCurrentRequest(), $this->doctrine->getRepository($entityName), $route, $defaultOrderField, $this->paging_size);
+        return new PagingTool($this->requestStack->getCurrentRequest(), $this->doctrine->getRepository($entityName), $route, $defaultOrderField, $this->pagingSize);
     }
 }

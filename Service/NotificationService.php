@@ -157,8 +157,14 @@ class NotificationService
     
     /**
      * Call addNotification when click on a request
+     *
+     * @param int $templateId
+     * @param Revision $revision
+     * @param Environment $environment
+     *
+     * @return null|bool
      */
-    public function addNotification(string $templateId, Revision $revision, Environment $environment)
+    public function addNotification($templateId, $revision, $environment)
     {
         $out = false;
         try {

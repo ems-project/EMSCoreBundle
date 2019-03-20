@@ -3,8 +3,8 @@
 	"description" : "The elasticms core bundle",
 	"type" : "symfony-bundle",
 	"authors" : [{
-		    "name" : "Mathieu De Keyzer",
-		    "email" : "mathieu@dekeyzer.net"
+			"name" : "Mathieu De Keyzer",
+			"email" : "mathieu@dekeyzer.net"
 	    },
 		{
 			"name" : "David Meert",

@@ -1060,6 +1060,11 @@ class AppExtension extends \Twig_Extension
         return $searches;
     }
 
+    /**
+     * PHPStan complains about this, we should really consider using the {% dump %} functionality and Symfony StackTrace.
+     * And dump got added in twig 1.5:
+     * https://twig.symfony.com/doc/1.x/functions/dump.html
+     */
     public function dump($object)
     {
         if (function_exists('dump')) {

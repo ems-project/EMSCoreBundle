@@ -90,7 +90,7 @@ class RequestListener
                 $event->setResponse($response);
             }
         } catch (\Exception $e) {
-            $this->logger->log(Logger::ERROR, $e->getMessage(), ['exception' => $e]);
+            $this->logger->error($e->getMessage(), ['exception' => $e]);
         }
     }
     

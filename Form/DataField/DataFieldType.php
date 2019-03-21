@@ -74,7 +74,7 @@ abstract class DataFieldType extends AbstractType
      *
      * http://symfony.com/doc/current/form/data_transformers.html#about-model-and-view-transformers
      *
-     * @param unknown $data
+     * @param array|null|string|integer|float $data
      * @param FieldType $fieldType
      * @return \EMS\CoreBundle\Entity\DataField
      */

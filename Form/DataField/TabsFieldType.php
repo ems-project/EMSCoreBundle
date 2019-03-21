@@ -35,7 +35,7 @@ class TabsFieldType extends DataFieldType
      */
     public function importData(DataField $dataField, $sourceArray, $isMigration)
     {
-        throw new Exception("This method should never be called");
+        throw new \Exception("This method should never be called");
     }
     
     /**

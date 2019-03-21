@@ -5,7 +5,7 @@
 {% block title %}
 	{%- if revision.labelField -%}
 		Edit the {{ revision.contentType.singularName }}: "{{ revision.labelField }}"
-    {%- elseif revision.contentType.labelField and attribute(revision.rawData, revision.contentType.labelField) -%}
+    {%- elseif revision.contentType.labelField and attribute(revision.rawData, revision.contentType.labelField) is defined -%}
 		Edit the {{ revision.contentType.singularName }}: "{{ attribute(revision.rawData, revision.contentType.labelField) }}"
     {%- elseif revision.ouuid -%}
 		Edit the {{ revision.contentType.singularName }}: "{{ revision.ouuid }}"
@@ -17,7 +17,7 @@
 {% block pagetitle %}
     {%- if revision.labelField -%}
 		Edit the {{ revision.contentType.singularName }}: "{{ revision.labelField }}"
-    {%- elseif revision.contentType.labelField and attribute(revision.rawData, revision.contentType.labelField) -%}
+    {%- elseif revision.contentType.labelField and attribute(revision.rawData, revision.contentType.labelField) is defined -%}
 		Edit the {{ revision.contentType.singularName }}: "{{ attribute(revision.rawData, revision.contentType.labelField) }}"
     {%- elseif revision.ouuid -%}
 		Edit the {{ revision.contentType.singularName }}: "{{ revision.ouuid }}"

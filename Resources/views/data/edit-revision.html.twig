@@ -3,25 +3,25 @@
 
 
 {% block title %}
-	{%- if revision.labelField -%}A
-		Edit the {{ revision.contentType.singularName }}: "{{ revision.labelField }}"B
+	{%- if revision.labelField -%}
+		Edit the {{ revision.contentType.singularName }}: "{{ revision.labelField }}"
     {%- elseif revision.contentType.labelField and attribute(revision.rawData, revision.contentType.labelField) -%}
 		Edit the {{ revision.contentType.singularName }}: "{{ attribute(revision.rawData, revision.contentType.labelField) }}"
-    {%- elseif revision.ouuid -%}C
+    {%- elseif revision.ouuid -%}
 		Edit the {{ revision.contentType.singularName }}: "{{ revision.ouuid }}"
-	{%- else -%}D
+	{%- else -%}
 		{{ revision.contentType.singularName }}: new draft
 	{%- endif -%}
 {% endblock %}
 
 {% block pagetitle %}
-    {%- if revision.labelField -%}A
-		Edit the {{ revision.contentType.singularName }}: "{{ revision.labelField }}"B
+    {%- if revision.labelField -%}
+		Edit the {{ revision.contentType.singularName }}: "{{ revision.labelField }}"
     {%- elseif revision.contentType.labelField and attribute(revision.rawData, revision.contentType.labelField) -%}
 		Edit the {{ revision.contentType.singularName }}: "{{ attribute(revision.rawData, revision.contentType.labelField) }}"
-    {%- elseif revision.ouuid -%}C
+    {%- elseif revision.ouuid -%}
 		Edit the {{ revision.contentType.singularName }}: "{{ revision.ouuid }}"
-    {%- else -%}D
+    {%- else -%}
         {{ revision.contentType.singularName }}: new draft
     {%- endif -%}
 {% endblock %}

@@ -126,7 +126,6 @@ class AppExtension extends \Twig_Extension
         return array(
             new TwigFilter('searches', array($this, 'searchesList')),
             new TwigFilter('url_generator', array($this, 'toAscii')),
-            new TwigFilter('dump', array($this, 'dump')),
             new TwigFilter('data', array($this, 'data')),
             new TwigFilter('inArray', array($this, 'inArray')),
             new TwigFilter('firstInArray', array($this, 'firstInArray')),
@@ -1061,15 +1060,12 @@ class AppExtension extends \Twig_Extension
     }
 
     /**
-     * PHPStan complains about this, we should really consider using the {% dump %} functionality and Symfony StackTrace.
-     * And dump got added in twig 1.5:
-     * https://twig.symfony.com/doc/1.x/functions/dump.html
+     * @deprecated
+     * @see https://twig.symfony.com/doc/1.x/functions/dump.html
      */
     public function dump($object)
     {
-        if (function_exists('dump')) {
-            dump($object);
-        }
+        trigger_error('dump is now integrated by default in twig 1.5', E_USER_DEPRECATED);
     }
 
     public function convertJavaDateFormat($format)

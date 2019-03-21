@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityRepository;
+use EMS\CoreBundle\Entity\SortOption;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -43,7 +44,7 @@ abstract class EntityService
     /**
      *
      * @param integer $id
-     * @return SortOption|NULL
+     * @return SortOption|null
      */
     public function getAll()
     {
@@ -63,7 +64,7 @@ abstract class EntityService
     /**
      *
      * @param integer $id
-     * @return SortOption|NULL
+     * @return SortOption|null
      */
     public function get($id)
     {

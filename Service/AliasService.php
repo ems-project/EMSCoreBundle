@@ -104,7 +104,7 @@ class AliasService
     }
     
     /**
-     * @return ManagedAliases[]
+     * @return ManagedAlias[]
      */
     public function getManagedAliases()
     {

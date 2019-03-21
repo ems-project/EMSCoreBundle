@@ -66,7 +66,6 @@ class AuditService
     public function auditLogToDB($action, $rawData, $environment = null)
     {
         try {
-
             $audit = new Audit();
             $audit->setAction($action);
             $audit->setRawData(serialize($rawData));
@@ -79,7 +78,6 @@ class AuditService
             $em = $this->doctrine->getManager();
             $em->persist($audit);
             $em->flush();
-
         } catch (\Exception $e) {
             $this->logger->err('An error occurred in the audit logger: ' . $e->getMessage());
         }

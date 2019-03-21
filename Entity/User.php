@@ -193,4 +193,10 @@ interface User
      * @return boolean
      */
     public function isEnabled();
+
+
+    /**
+     * @return string
+     */
+    public function getUsername();
 }

@@ -105,6 +105,8 @@
 
 var waitingResponse = false;
 var synchAtTheEnd = true;
+var aceConfig = ace.require("ace/config");
+aceConfig.init();
 
 
 $("form[name={{ form.vars.id }}]").submit(function( event ) {
@@ -598,7 +600,7 @@ function addEventListeners(target){
 		    }
 		});
 
-        editor.commands.addCommand({
+        editor.commands.addCommands([{
             name: "fullscreen",
             bindKey: {win: "F11", mac: "Esc"},
             exec: function(editor) {
@@ -616,7 +618,16 @@ function addEventListeners(target){
                 editor.resize();
 
             }
-        });
+        }, {
+            name: "showKeyboardShortcuts",
+            bindKey: {win: "Ctrl-Alt-h", mac: "Command-Alt-h"},
+            exec: function(editor) {
+                aceConfig.loadModule("ace/ext/keybinding_menu", function(module) {
+					module.init(editor);
+					editor.showKeyboardShortcuts();
+				});
+            }
+        }]);
 	});
 	
 

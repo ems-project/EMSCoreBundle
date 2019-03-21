@@ -14,6 +14,7 @@ use EMS\CommonBundle\Storage\Service\StorageInterface;
 use EMS\CommonBundle\Storage\StorageManager;
 use EMS\CommonBundle\Storage\StorageServiceMissingException;
 use EMS\CoreBundle\Entity\UploadedAsset;
+use EMS\CoreBundle\Repository\UploadedAssetRepository;
 use Exception;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -21,11 +22,11 @@ class FileService
 {
 
 
-
-    /**@var Registry*/
+    /**@var Registry */
     private $doctrine;
 
-    private $uploadFolder;/**@var StorageManager */
+    private $uploadFolder;
+    /**@var StorageManager */
     private $storageManager;
 
     /**@var integer */
@@ -69,13 +70,15 @@ class FileService
         $this->storageManager->addAdapter($storageAdapter);
     }
 
-    public function getStorageService(StorageInterface $dataFieldTypeId)
+
+    public function getStorageService(string $storageServiceId): ?StorageInterface
     {
-        /*
-         * @Theus77, please fix this, the function dataFieldTypes() does not exist in this class, neither does dataFieldType().
-         * getStorageService is not references from other classes.
-         */
-        return $this->dataFieldTypes($dataFieldTypeId);
+        foreach ($this->storageManager->getAdapters() as $storageService) {
+            if ($storageService->__toString() == $storageServiceId) {
+                return $storageService;
+            }
+        };
+        return null;
     }
 
     /**
@@ -89,7 +92,7 @@ class FileService
 
     public function getBase64($hash, $cacheContext = false)
     {
-        /**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service*/
+        /**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service */
         foreach ($this->storageManager->getAdapters() as $service) {
             $resource = $service->read($hash, $cacheContext);
             if ($resource) {
@@ -235,8 +238,9 @@ class FileService
 
         if ($size >= $uploadedAsset->getUploaded()) {
             $uploadedAsset->setUploaded(0);
-        }if ($uploadedAsset->getSize() != $size) {
-            throw new Conflict409Exception("Target size mismatched ".$uploadedAsset->getSize().' '.$size);
+        }
+        if ($uploadedAsset->getSize() != $size) {
+            throw new Conflict409Exception("Target size mismatched " . $uploadedAsset->getSize() . ' ' . $size);
         }
 
         if ($this->head($hash)) {
@@ -246,7 +250,7 @@ class FileService
             $uploadedAsset->setUploaded($uploadedAsset->getSize());
             $uploadedAsset->setAvailable(true);
         } else {
-             $this->storageManager->initUploadFile($hash, $size, $name, $type, $this->uploadMinimuNumberOfReplications);
+            $this->storageManager->initUploadFile($hash, $size, $name, $type, $this->uploadMinimuNumberOfReplications);
         }
 
         $em->persist($uploadedAsset);
@@ -254,9 +258,6 @@ class FileService
 
         return $uploadedAsset;
     }
-
-
-
 
 
     public function head($hash, $cacheContext = false)
@@ -280,28 +281,6 @@ class FileService
             }
         }
         return false;
-    }
-
-    private function saveFile($filename, UploadedAsset $uploadedAsset)
-    {
-        $hash = $this->storageManager->computeFileHash($filename);
-        if ($hash != $uploadedAsset->getSha1()) {
-//          throw new Conflict409Exception("Hash mismatched ".$hash.' >< '.$uploadedAsset->getSha1());
-//TODO: fix this issue by using the CryotJS librairy on the FE JS?
-            $uploadedAsset->setSha1($hash);
-            $uploadedAsset->setUploaded(filesize($filename));
-        }
-
-        /**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service */
-        foreach ($this->storageManager->getAdapters() as $service) {
-            if ($service->create($uploadedAsset->getSha1(), $filename)) {
-                $uploadedAsset->setAvailable(true);
-                unlink($filename);
-                break;
-            }
-        }
-
-        return $uploadedAsset;
     }
 
     public function addChunk($hash, $chunk, $user)
@@ -390,5 +369,27 @@ class FileService
     public function temporaryFilename($hash)
     {
         return sys_get_temp_dir() . DIRECTORY_SEPARATOR . $hash;
+    }
+
+    private function saveFile($filename, UploadedAsset $uploadedAsset)
+    {
+        $hash = $this->storageManager->computeFileHash($filename);
+        if ($hash != $uploadedAsset->getSha1()) {
+//          throw new Conflict409Exception("Hash mismatched ".$hash.' >< '.$uploadedAsset->getSha1());
+//TODO: fix this issue by using the CryotJS librairy on the FE JS?
+            $uploadedAsset->setSha1($hash);
+            $uploadedAsset->setUploaded(filesize($filename));
+        }
+
+        /**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service */
+        foreach ($this->storageManager->getAdapters() as $service) {
+            if ($service->create($uploadedAsset->getSha1(), $filename)) {
+                $uploadedAsset->setAvailable(true);
+                unlink($filename);
+                break;
+            }
+        }
+
+        return $uploadedAsset;
     }
 }

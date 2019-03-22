@@ -55,13 +55,15 @@ class FileController extends AppController
     {
         @trigger_error(sprintf('The "%s::getFile" function is deprecated and should not be used anymore. use "%s::assetAction instead"', FileController::class, AssetController::class), E_USER_DEPRECATED);
 
+        $route = $this->getAuthorizationChecker()->isGranted('IS_AUTHENTICATED_FULLY') ? 'ems_asset' : 'emsco_asset_public';
+
         return $this->redirect($this->requestRuntime->assetPath([
             EmsFields::CONTENT_FILE_HASH_FIELD => $sha1,
             EmsFields::CONTENT_FILE_NAME_FIELD => $request->query->get('name', 'filename'),
             EmsFields::CONTENT_MIME_TYPE_FIELD => $request->query->get('type', 'application/octet-stream'),
         ], [
             '_disposition' => $disposition,
-        ]));
+        ], $route));
     }
 
 

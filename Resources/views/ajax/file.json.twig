@@ -2,6 +2,7 @@
 
 {% block body %}
 	"sha1": {{ asset.sha1|json_encode|raw }},
+	"hash": {{ asset.sha1|json_encode|raw }},
 	"type": {{ asset.type|json_encode|raw }},
 	"available": {{ asset.available|json_encode|raw }},
 	"name": {{ asset.name|json_encode|raw }},

@@ -25,6 +25,7 @@ module.exports = {
         'red-light': './Resources/assets/skins/red-light.js',
         'yellow': './Resources/assets/skins/yellow.js',
         'yellow-light': './Resources/assets/skins/yellow-light.js',
+        'app': './Resources/assets/app.js',
     },
     output: {
         path: path.resolve(__dirname, 'Resources/public'),

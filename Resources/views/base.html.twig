@@ -426,16 +426,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <!-- REQUIRED JS SCRIPTS -->
 {%  if webpack %}
 
-    {% if theme_color %}
-        <script src="{{ asset('bundles/emscore/js/'~theme_color~'.bundle.js') }}"></script>
-    {%  else %}
-        <script src="{{ asset('bundles/emscore/js/blue.bundle.js') }}"></script>
-    {%  endif %}
+    <script src="{{ asset('bundles/emscore/js/app.bundle.js') }}"></script>
 
     <!-- CK editor App -->
     <script src="{{ asset('bundles/emscore/bower/ckeditor/ckeditor.js') }}"></script>
     <!-- lazy loading -->
     <script src="{{ asset('bundles/emscore/bower/jquery_lazyload/jquery.lazyload.js') }}"></script>
+
  {% else %}
     <!-- jQuery -->
     <script src="{{ asset('bundles/emscore/bower/jquery/dist/jquery.min.js') }}"></script>

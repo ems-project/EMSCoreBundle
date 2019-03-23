@@ -123,7 +123,7 @@ export default class HashFile {
         const duration = ((new Date()) - this.timeStart) / 1000;
         this.chunkTotal++;
 
-        this.callbackProgress.call(this.callbackContext, ((this.counter / this.fileHandler.size) * 100).toFixed(1), duration, this.counter, this.fileHandler.size, this.chunkTotal, this.chunkReorder);
+        this.callbackProgress.call(this.callbackContext, ((this.counter / this.fileHandler.size) * 100).toFixed(0), duration, this.counter, this.fileHandler.size, this.chunkTotal, this.chunkReorder);
     }
 
     finalHash() {

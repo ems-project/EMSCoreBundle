@@ -1,6 +1,9 @@
+import FileUploader from "../FileUploader/FileUploader";
+
 const $ = require('jquery');
 const jQuery = require('jquery');
 window.CryptoJS = require("crypto-js");
+window.FileUploader = FileUploader;
 
 window.$ = $;
 window.jQuery = $;

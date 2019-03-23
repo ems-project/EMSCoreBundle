@@ -13,7 +13,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
     <!-- stylesheets -->
-    {%- if theme_color %}
+    <link rel="stylesheet" href="{{ asset('bundles/emscore/css/app.bundle.css') }}">
+    {%- if theme_color in  ['blue2'] %}
+        {% dump('bundles/emscore/css/'~theme_color~'.bundle.css') %}
         <link rel="stylesheet" href="{{ asset('bundles/emscore/css/'~theme_color~'.bundle.css') }}">
     {%-  else %}
         <link rel="stylesheet" href="{{ asset('bundles/emscore/css/blue.bundle.css') }}">

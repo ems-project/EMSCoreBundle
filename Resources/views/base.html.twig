@@ -1,9 +1,5 @@
-{% trans_default_domain 'EMSCoreBundle' %}<!DOCTYPE html>
-{% set webpack = (app.environment == 'dev') %}
-<!--
-This is a starter template page. Use this page to start your new project from
-scratch. This page gets rid of all links and provides the needed markup only.
--->
+{%- trans_default_domain 'EMSCoreBundle' -%}
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -52,7 +48,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- Header Navbar -->
     <nav class="navbar navbar-static-top" role="navigation">
       <!-- Sidebar toggle button-->
-      <a href="#" class="sidebar-toggle" data-toggle="{%  if webpack  %}push-menu{% else %}offcanvas{% endif %}" role="button" id="sidebar-toggle-button">
+      <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button" id="sidebar-toggle-button">
         <span class="sr-only">Toggle navigation</span>
       </a>
       <!-- Navbar Right Menu -->
@@ -426,52 +422,19 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <!-- ./wrapper -->
 
 <!-- REQUIRED JS SCRIPTS -->
-{%  if webpack %}
 
-    <script src="{{ asset('bundles/emscore/js/app.bundle.js') }}"></script>
-
-    <!-- CK editor App -->
-    <script src="{{ asset('bundles/emscore/bower/ckeditor/ckeditor.js') }}"></script>
-    <!-- lazy loading -->
-    <script src="{{ asset('bundles/emscore/bower/jquery_lazyload/jquery.lazyload.js') }}"></script>
-
- {% else %}
-    <!-- jQuery -->
-    <script src="{{ asset('bundles/emscore/bower/jquery/dist/jquery.min.js') }}"></script>
-    <!-- jQuery -->
-    <script src="{{ asset('bundles/emscore/bower/jquery-ui/jquery-ui.min.js') }}"></script>
-    <!-- fileinput plugin file -->
-    <script src="{{ asset('bundles/emscore/bower/bootstrap-fileinput/js/fileinput.min.js') }}"></script>
-    <!-- Bootstrap -->
-    <script src="{{ asset('bundles/emscore/bower/bootstrap-sass/assets/javascripts/bootstrap.min.js') }}"></script>
-    <!-- Select2 -->
-    <script src="{{ asset('bundles/emscore/bower/AdminLTE/plugins/select2/select2.full.min.js') }}"></script>
-    <!-- DataTables -->
-    <script src="{{ asset('bundles/emscore/bower/AdminLTE/plugins/datatables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('bundles/emscore/bower/AdminLTE/plugins/datatables/dataTables.bootstrap.min.js') }}"></script>
-    <!-- AdminLTE App -->
-    <script src="{{ asset('bundles/emscore/bower/AdminLTE/dist/js/app.min.js') }}"></script>
-    <!-- CK editor App -->
-    <script src="{{ asset('bundles/emscore/bower/ckeditor/ckeditor.js') }}"></script>
-    <!-- Date picker App -->
-    <script src="{{ asset('bundles/emscore/bower/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
-    <!-- Select Picker App -->
-    <script src="{{ asset('bundles/emscore/bower/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
-    <!-- Color Picker App -->
-    <script src="{{ asset('bundles/emscore/bower/AdminLTE/plugins/colorpicker/bootstrap-colorpicker.min.js') }}"></script>
-    <!-- lazy loading -->
-    <script src="{{ asset('bundles/emscore/bower/jquery_lazyload/jquery.lazyload.js') }}"></script>
-    <!-- timepicker loading -->
-    <script src="{{ asset('bundles/emscore/bower/bootstrap-timepicker/js/bootstrap-timepicker.js') }}"></script>
-    <!-- bootstrap-daterangepicker loading -->
-    <script src="{{ asset('bundles/emscore/bower/daterangepicker/moment.min.js') }}"></script>
-    <script src="{{ asset('bundles/emscore/bower/daterangepicker/daterangepicker.js') }}"></script>
-{% endif %}
+<script src="{{ asset('bundles/emscore/js/app.bundle.js') }}"></script>
+<!-- CK editor App -->
+<script src="{{ asset('bundles/emscore/bower/ckeditor/ckeditor.js') }}"></script>
+<!-- lazy loading -->
+<script src="{{ asset('bundles/emscore/bower/jquery_lazyload/jquery.lazyload.js') }}"></script>
 
 <!-- helper functions -->
 <script src="{{ asset('bundles/emscore/js/helper.js') }}"></script>
 <!-- AjaxRequest -->
 <script src="{{ asset('bundles/emscore/js/AjaxRequest.js') }}"></script>
+
+
 <!-- Variables  -->
 <script>
     var file_init_upload_url = '{{ path('file.init-upload', {
@@ -508,11 +471,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     
 </script>
-<!-- This app -->
 <script src="{{ asset('bundles/emscore/js/jquery.matchHeight.js') }}"></script>
 <script src="{{ asset('bundles/emscore/js/app.js') }}"></script>
-
-
 
 
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
@@ -520,7 +480,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
      user experience. Slimscroll is required when using the
      fixed layout. -->
 
-	{% block javascripts %}{% endblock %}	
-	
+	{% block javascripts %}{% endblock %}
 </body>
 </html>

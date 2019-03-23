@@ -97,8 +97,6 @@
 
 
 {% block javascripts %}
-<script src="{{ asset('bundles/emscore/js/Sha1.js') }}"></script>
-<script src="{{ asset('bundles/emscore/js/FileUploader.js') }}"></script>
 <script src="{{ asset('bundles/emscore/bower/ace-builds/src-min-noconflict/ace.js') }}"></script>
 
 <script type="text/javascript">
@@ -337,14 +335,14 @@ function initFileUploader(fileHandler, container){
 	var languageInput = $(container).find(".language");
 	var contentInput = $(container).find(".content");
 	var titleInput = $(container).find(".title");
-	
+
 
 	previewTab.hide();
 	uploadTab.show();
-	
+
     var fileUploader = new FileUploader({
     	file: fileHandler,
-    	onSha1Available: function(sha1, type, name){
+        onHashAvailable: function(sha1, type, name){
     			$(sha1Input).val(sha1);
     			$(assetHashSignature).empty().append(sha1);
 	    		$(typeInput).val(type);
@@ -358,41 +356,39 @@ function initFileUploader(fileHandler, container){
 	    		$(clearButton).addClass('disabled');
 	    },
 	    onProgress: function(status, progress, remaining){
-		    if(status !== 'Computing sha1' && $(sha1Input).val() !== fileUploader.sha1){
-        		$(sha1Input).val(fileUploader.sha1);
-        		console.log('Sha1 missmatch!');
+		    if(status !== 'Computing hash' && $(sha1Input).val() !== fileUploader.hash){
+        		$(sha1Input).val(fileUploader.hash);
+        		console.log('Sha1 mismatch!');
 		    }
-		    var pourcent = Math.round(progress*100);
-	    		$(progressBar).css('width', pourcent+'%');
-	    		$(progressText).html(status);
-	    		$(progressNumber).html(remaining);
-	    		if(pourcent == 100){
-    	    		viewButton.removeClass("disabled");
-    	    		clearButton.removeClass("disabled");
-
-    	    		var urlPattern = previewLink.data('src')
-    	    			.replace(/_asset_hash_/g, encodeURIComponent($(sha1Input).val()))
-    	    			.replace(/_asset_mimetype_/g, encodeURIComponent($(typeInput).val()))
-    	    			.replace(/_asset_name_/g, encodeURIComponent($(nameInput).val()));
-
-    	    		previewLink.attr('src', urlPattern);
-    	    		
-    	    		previewTab.show();
-    	    		uploadTab.hide();
-
-					if($(contentInput).length) {
-						FileDataExtrator(container);
-					}
-					else {
-        	    		onFormChange();
-					}
-    	    		
-		    	}
+		    const percentage = Math.round(progress*100);
+			$(progressBar).css('width', percentage+'%');
+			$(progressText).html(status);
+			$(progressNumber).html(remaining);
 	    },
+	    onUploaded: function(assetUrl, previewUrl){
+            viewButton.attr('href', assetUrl);
+			previewLink.attr('src', previewUrl);
+			viewButton.removeClass("disabled");
+			clearButton.removeClass("disabled");
+			previewTab.show();
+			uploadTab.hide();
+
+			if($(contentInput).length) {
+				FileDataExtrator(container);
+			}
+			else {
+				onFormChange();
+			}
+        },
 	    onError: function(message, code){
 	    		$(progressBar).css('width', '0%');
 	    		$(progressText).html(message);
-	    		$(progressNumber).html('Error code : '+code);
+	    		if (code === undefined){
+                    $(progressNumber).html('');
+                }
+                else {
+	    			$(progressNumber).html('Error code : '+code);
+				}
 	    		$(sha1Input).val('');
 	    		$(assetHashSignature).empty();
 	    		$(typeInput).val('');
@@ -495,15 +491,6 @@ function addEventListeners(target){
 		'showClose': false,
 		'browseIcon': '<i class="fa fa-upload"></i>&nbsp;',
 		'browseLabel': '{{'Upload file'|trans}}'
-	});
-
-	target.find(".view-asset-button").click(function() {
-		var parent = $(this).closest('.file-uploader-row');
-		var sha1Input = $(parent).find(".sha1");
-		var typeInput = $(parent).find(".type");
-		var nameInput = $(parent).find(".name");
-		var href = $(this).data('href').replace(/__SHA1__/g, sha1Input.val()).replace(/__MIME_TYPE__/g, typeInput.val()).replace(/__FILE_NAME__/g, nameInput.val());
-		$(this).attr('href', href);
 	});
 
 	target.find(".extract-file-info").click(function() {

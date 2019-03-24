@@ -26,13 +26,11 @@ export default class FileUploader {
             this.size = params.file.size;
             this.type = params.file.type;
             this.name = params.file.name;
-            this.algo = params.file.algo;
-            this.algo = params.file.algo;
             this.lastModified = params.file.lastModified;
 
+            this.algo = params.algo;
             this.onError = params.onError;
             this.onHashAvailable = params.onHashAvailable;
-
             this.onUploaded = params.onUploaded;
             this.onProgress = params.onProgress;
 

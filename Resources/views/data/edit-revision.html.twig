@@ -342,6 +342,7 @@ function initFileUploader(fileHandler, container){
 
     var fileUploader = new FileUploader({
     	file: fileHandler,
+        algo: $('body').attr('data-hash-algo'),
         onHashAvailable: function(sha1, type, name){
     			$(sha1Input).val(sha1);
     			$(assetHashSignature).empty().append(sha1);

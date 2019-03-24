@@ -47,7 +47,7 @@ class UploadedAsset
     /**
      * @var string
      *
-     * @ORM\Column(name="sha1", type="string", length=40)
+     * @ORM\Column(name="sha1", type="string", length=128)
      */
     private $sha1;
     

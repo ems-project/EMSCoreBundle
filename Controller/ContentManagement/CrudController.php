@@ -68,24 +68,21 @@ class CrudController extends AppController
         
         try {
             $revision = $this->getDataService()->getNewestRevision($contentType->getName(), $ouuid);
-            
-            $isFound = (isset($revision) && !empty($revision)) ?  true : false;
         } catch (\Exception $e) {
-            $isFound = false;
             if (($e instanceof NotFoundHttpException) or ($e instanceof BadRequestHttpException)) {
                 throw $e;
             } else {
                 $this->addFlash('error', 'The revision for contenttype '. $contentType->getName() .' can not be found. Reason: '.$e->getMessage());
             }
             return $this->render('@EMSCore/ajax/revision.json.twig', [
-                    'success' => $isFound,
+                    'success' => false,
                     'ouuid' => $ouuid,
                     'type' => $contentType->getName(),
             ]);
         }
         
         return $this->render('@EMSCore/ajax/revision.json.twig', [
-                'success' => $isFound,
+                'success' => true,
                 'revision' => $revision->getRawData(),
                 'ouuid' => $revision->getOuuid(),
                 'id' => $revision->getId(),

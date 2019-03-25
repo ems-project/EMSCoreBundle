@@ -233,7 +233,7 @@ class FileService
             $uploadedAsset->setSha1($hash);
             $uploadedAsset->setUser($user);
             $uploadedAsset->setSize($size);
-            $uploadedAsset->setSize($hashAlgo);
+            $uploadedAsset->setHashAlgo($hashAlgo);
             $uploadedAsset->setUploaded(0);
         }
 
@@ -245,6 +245,7 @@ class FileService
         if ($size >= $uploadedAsset->getUploaded()) {
             $uploadedAsset->setUploaded(0);
         }
+
         if ($uploadedAsset->getSize() != $size) {
             throw new Conflict409Exception("Target size mismatched " . $uploadedAsset->getSize() . ' ' . $size);
         }

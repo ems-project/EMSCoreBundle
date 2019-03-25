@@ -97,7 +97,7 @@ class FileController extends AppController
         }
 
         try {
-            $uploadedAsset = $this->getFileService()->initUploadFile($sha1, $size, $name, $type, $user, $algo);
+            $uploadedAsset = $this->getFileService()->initUploadFile($hash, $size, $name, $type, $user, $algo);
         } catch (\Exception $e) {
             $this->addFlash('error', $e->getMessage());
             return $this->render('@EMSCore/ajax/notification.json.twig', [

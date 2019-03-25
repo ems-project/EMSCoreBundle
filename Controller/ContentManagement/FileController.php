@@ -58,28 +58,12 @@ class FileController extends AppController
         $data = $this->getAssetExtractorService()->extractData($sha1);
 
         $response = $this->render('@EMSCore/ajax/extract-data-file.json.twig', [
-                'success' => true,
-                'data' => $data,
+            'success' => true,
+            'data' => $data,
         ]);
         $response->headers->set('Content-Type', 'application/json');
         return $response;
     }
-
-    private function getFile($sha1, $disposition, Request $request)
-    {
-        @trigger_error(sprintf('The "%s::getFile" function is deprecated and should not be used anymore. use "%s::assetAction instead"', FileController::class, AssetController::class), E_USER_DEPRECATED);
-
-        $route = $this->getAuthorizationChecker()->isGranted('IS_AUTHENTICATED_FULLY') ? 'ems_asset' : 'emsco_asset_public';
-
-        return $this->redirect($this->requestRuntime->assetPath([
-            EmsFields::CONTENT_FILE_HASH_FIELD => $sha1,
-            EmsFields::CONTENT_FILE_NAME_FIELD => $request->query->get('name', 'filename'),
-            EmsFields::CONTENT_MIME_TYPE_FIELD => $request->query->get('type', 'application/octet-stream'),
-        ], [
-            '_disposition' => $disposition,
-        ], $route));
-    }
-
 
     /**
      * @param $sha1
@@ -108,10 +92,10 @@ class FileController extends AppController
 
         $user = $this->getUser()->getUsername();
 
-        if (empty($hash) || empty($algo) || (empty($size)  && $size !== 0 )) {
+        if (empty($hash) || empty($algo) || (empty($size) && $size !== 0)) {
             throw new BadRequestHttpException('Bad Request, invalid json parameters');
         }
-        
+
         try {
             $uploadedAsset = $this->getFileService()->initUploadFile($sha1, $size, $name, $type, $user, $algo);
         } catch (\Exception $e) {
@@ -120,7 +104,7 @@ class FileController extends AppController
                 'success' => false,
             ]);
         }
-        
+
 
         return $this->render('@EMSCore/ajax/file.json.twig', [
             'success' => true,
@@ -155,19 +139,16 @@ class FileController extends AppController
         } catch (\Exception $e) {
             $this->addFlash('error', $e->getMessage());
             return $this->render('@EMSCore/ajax/notification.json.twig', [
-                    'success' => false,
+                'success' => false,
             ]);
         }
 
         return $this->render('@EMSCore/ajax/file.json.twig', [
-                'success' => true,
-                'asset' => $uploadedAsset,
-                'apiRoute' => $apiRoute,
+            'success' => true,
+            'asset' => $uploadedAsset,
+            'apiRoute' => $apiRoute,
         ]);
     }
-
-
-
 
     /**
      * @Route("/images/index" , name="ems_images_index", defaults={"_format": "json"}, methods={"GET","HEAD"})
@@ -177,10 +158,9 @@ class FileController extends AppController
     {
         $images = $this->getFileService()->getImages();
         return $this->render('@EMSCore/ajax/images.json.twig', [
-                'images' => $images,
+            'images' => $images,
         ]);
     }
-
 
     /**
      * @param Request $request
@@ -191,7 +171,7 @@ class FileController extends AppController
      */
     public function uploadfileAction(Request $request)
     {
-        /**@var UploadedFile $file*/
+        /**@var UploadedFile $file */
         $file = $request->files->get('upload');
         $type = $request->get('type', false);
 
@@ -213,23 +193,38 @@ class FileController extends AppController
             } catch (\Exception $e) {
                 $this->addFlash('error', $e->getMessage());
                 return $this->render('@EMSCore/ajax/notification.json.twig', [
-                        'success' => false,
+                    'success' => false,
                 ]);
             }
 
 
             return $this->render('@EMSCore/ajax/multipart.json.twig', [
-                    'success' => true,
-                    'asset' => $uploadedAsset,
+                'success' => true,
+                'asset' => $uploadedAsset,
             ]);
         } else if ($file->getError()) {
             $this->addFlash('warning', $file->getError());
             $this->render('@EMSCore/ajax/notification.json.twig', [
-                    'success' => false,
+                'success' => false,
             ]);
         }
         return $this->render('@EMSCore/ajax/notification.json.twig', [
-                'success' => false,
+            'success' => false,
         ]);
+    }
+
+    private function getFile($sha1, $disposition, Request $request)
+    {
+        @trigger_error(sprintf('The "%s::getFile" function is deprecated and should not be used anymore. use "%s::assetAction instead"', FileController::class, AssetController::class), E_USER_DEPRECATED);
+
+        $route = $this->getAuthorizationChecker()->isGranted('IS_AUTHENTICATED_FULLY') ? 'ems_asset' : 'emsco_asset_public';
+
+        return $this->redirect($this->requestRuntime->assetPath([
+            EmsFields::CONTENT_FILE_HASH_FIELD => $sha1,
+            EmsFields::CONTENT_FILE_NAME_FIELD => $request->query->get('name', 'filename'),
+            EmsFields::CONTENT_MIME_TYPE_FIELD => $request->query->get('type', 'application/octet-stream'),
+        ], [
+            '_disposition' => $disposition,
+        ], $route));
     }
 }

@@ -211,8 +211,8 @@ class FileService
             throw new StorageServiceMissingException("No storage service have been defined");
         }
 
-        if (strcasecmp($hashAlgo, $this->storageManager->getHashAlgo()) !== 0 ) {
-            throw new StorageServiceMissingException( sprintf("Hash algorithms mismatch: %s vs. %s", $hashAlgo, $this->storageManager->getHashAlgo()));
+        if (strcasecmp($hashAlgo, $this->storageManager->getHashAlgo()) !== 0) {
+            throw new StorageServiceMissingException(sprintf("Hash algorithms mismatch: %s vs. %s", $hashAlgo, $this->storageManager->getHashAlgo()));
         }
 
         /** @var EntityManager $em */

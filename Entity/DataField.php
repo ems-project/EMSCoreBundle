@@ -54,6 +54,8 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     
     private $messages;
 
+    private $marked;
+
     
     public function setChildrenFieldType(FieldType $fieldType)
     {

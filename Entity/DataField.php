@@ -164,16 +164,14 @@ class DataField implements \ArrayAccess, \IteratorAggregate
 
 
         if ($children) {
-            $temp = new \Doctrine\Common\Collections\ArrayCollection();
+            $temp = new ArrayCollection();
             /** @var FieldType $childField */
             foreach ($children as $childField) {
                 if (!$childField->getDeleted()) {
                     $value = $this->__get('ems_'.$childField->getName());
                     if ($value) {
                         $value->setOrderKey($childField->getOrderKey());
-                        if (isset($value)) {
-                            $temp->add($value);
-                        }
+                        $temp->add($value);
                     }
                 }
             }
@@ -193,7 +191,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
      */
     public function __construct()
     {
-        $this->children = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->children = new ArrayCollection();
         $this->messages = [];
 
         //TODO: should use the clone method

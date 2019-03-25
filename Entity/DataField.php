@@ -423,7 +423,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
      */
     public function setPasswordValue($passwordValue)
     {
-        if (isset($passwordValue)) {
+        if ($passwordValue !== null) {
             $this->setTextValue($passwordValue);
         }
 
@@ -449,7 +449,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
      */
     public function setResetPasswordValue($resetPasswordValue)
     {
-        if (isset($resetPasswordValue) && $resetPasswordValue) {
+        if ($resetPasswordValue !== null && $resetPasswordValue) {
             $this->setTextValue(null);
         }
 

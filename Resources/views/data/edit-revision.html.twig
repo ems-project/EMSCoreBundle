@@ -343,6 +343,7 @@ function initFileUploader(fileHandler, container){
     var fileUploader = new FileUploader({
     	file: fileHandler,
         algo: $('body').attr('data-hash-algo'),
+		initUrl: '{{ path('emsco_file_data_init_upload') }}',
         onHashAvailable: function(sha1, type, name){
     			$(sha1Input).val(sha1);
     			$(assetHashSignature).empty().append(sha1);

@@ -435,10 +435,6 @@
 
 <!-- Variables  -->
 <script>
-    var file_init_upload_url = '{{ path('file.init-upload', {
-    		sha1: '__sha1__',
-    		size: '__size__'
-    	})|raw }}';
     var file_chunk_upload_url = '{{ path('file.uploadchunk', {
     		sha1: '__sha1__'
     	})|raw }}';

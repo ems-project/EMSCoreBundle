@@ -28,6 +28,7 @@ export default class FileUploader {
             this.name = params.file.name;
             this.lastModified = params.file.lastModified;
 
+            this.initUrl = params.initUrl;
             this.algo = params.algo;
             this.onError = params.onError;
             this.onHashAvailable = params.onHashAvailable;
@@ -123,12 +124,8 @@ export default class FileUploader {
                 self.setUploadError(this.statusText, this.status);
             };
 
-            const url = file_init_upload_url
-                .replace('__sha1__', encodeURIComponent(this.hash))
-                .replace('__size__', encodeURIComponent(this.size));
-
-            xmlHttp.open("POST", url, true);
-            const params = JSON.stringify({name: this.name, type: this.type});
+            xmlHttp.open("POST", this.initUrl, true);
+            const params = JSON.stringify({name: this.name, type: this.type, size: this.size, hash: this.hash});
             xmlHttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
 
             xmlHttp.send(params);

@@ -37,6 +37,7 @@ export default class FileUploader {
 
             this.errorDescription = 'N/A';
             this.hash = null;
+            this.chunkUrl = null;
             this.uploaded = 0;
 
             if (!this.type || this.type === '') {
@@ -96,6 +97,8 @@ export default class FileUploader {
 
                     if (fileInfo && fileInfo.uploaded !== undefined) {
                         self.uploaded = fileInfo.uploaded;
+                        self.chunkUrl = fileInfo.chunkUrl;
+
                         if (self.uploaded < self.size) {
                             self.startUpload(self);
                         }
@@ -203,11 +206,8 @@ export default class FileUploader {
                 self.onChunkUploadSuccess(evt)
             };
 
-            const url = file_chunk_upload_url
-                .replace('__sha1__', encodeURIComponent(this.hash));
-
             //init the XHR request
-            xhr.open("POST", url, true);
+            xhr.open("POST", this.chunkUrl, true);
 
             //send form with the XHR
             xhr.send(blob);

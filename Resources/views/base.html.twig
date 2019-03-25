@@ -435,9 +435,6 @@
 
 <!-- Variables  -->
 <script>
-    var file_chunk_upload_url = '{{ path('file.uploadchunk', {
-    		sha1: '__sha1__'
-    	})|raw }}';
     var object_search_url = '{{ path('elasticsearch.api.search')|raw }}';
     var collapse_sidebar_url = '{{ path('user.sidebar-collapse', {collapsed: '__collapsed__'})|raw }}'; 
     var elasticsearch_status_url = "{{ path('elasticsearch.status')|raw }}.json"; 

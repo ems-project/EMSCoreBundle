@@ -88,10 +88,10 @@ class FileController extends AppController
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      *
-     * @Route("/data/file/init-upload/{sha1}/{size}" , name="file.init-upload", defaults={"_format" = "json", $apiRoute=false}, methods={"POST"})
-     * @Route("/api/file/init-upload/{sha1}/{size}" , name="file.api.init-upload", defaults={"_format" = "json", $apiRoute=true}, methods={"POST"})
-     * @Route("/data/file/init-upload" , name="emsco_file_data_init_upload", defaults={"_format" = "json", "sha1" = null, "size" = null, $apiRoute=false}, methods={"POST"})
-     * @Route("/api/file/init-upload" , name="emsco_file_api_init_upload", defaults={"_format" = "json", "sha1" = null, "size" = null, $apiRoute=true}, methods={"POST"})
+     * @Route("/data/file/init-upload/{sha1}/{size}" , name="file.init-upload", defaults={"_format" = "json", "apiRoute"=false}, methods={"POST"})
+     * @Route("/api/file/init-upload/{sha1}/{size}" , name="file.api.init-upload", defaults={"_format" = "json", "apiRoute"=true}, methods={"POST"})
+     * @Route("/data/file/init-upload" , name="emsco_file_data_init_upload", defaults={"_format" = "json", "sha1" = null, "size" = null, "apiRoute"=false}, methods={"POST"})
+     * @Route("/api/file/init-upload" , name="emsco_file_api_init_upload", defaults={"_format" = "json", "sha1" = null, "size" = null, "apiRoute"=true}, methods={"POST"})
      */
     public function initUploadFileAction($sha1, $size, bool $apiRoute, Request $request)
     {
@@ -123,27 +123,35 @@ class FileController extends AppController
         
 
         return $this->render('@EMSCore/ajax/file.json.twig', [
-                'success' => true,
-                'asset' => $uploadedAsset,
-                'apiRoute' => $apiRoute,
+            'success' => true,
+            'asset' => $uploadedAsset,
+            'apiRoute' => $apiRoute,
         ]);
     }
 
     /**
      * @param $sha1
+     * @param $hash
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      *
-     * @Route("/data/file/upload-chunk/{sha1}", name="file.uploadchunk", defaults={"_format" = "json"}, methods={"POST"})
-     * @Route("/api/file/upload-chunk/{sha1}", name="file.api.uploadchunk", defaults={"_format" = "json"}, methods={"POST"})
+     * @Route("/data/file/upload-chunk/{sha1}", name="file.uploadchunk", defaults={"_format" = "json", "hash" = null, "apiRoute"=false}, methods={"POST"})
+     * @Route("/api/file/upload-chunk/{sha1}", name="file.api.uploadchunk", defaults={"_format" = "json", "hash" = null, "apiRoute"=true}, methods={"POST"})
+     * @Route("/data/file/chunk/{hash}", name="emsco_file_data_chunk_upload", defaults={"_format" = "json", "sha1" = null, "apiRoute"=false}, methods={"POST"})
+     * @Route("/api/file/chunk/{hash}", name="emsco_file_api_chunk_upload", defaults={"_format" = "json", "sha1" = null, "apiRoute"=true}, methods={"POST"})
      */
-    public function uploadChunkAction($sha1, Request $request)
+    public function uploadChunkAction($sha1, $hash, $apiRoute, Request $request)
     {
+        if ($sha1) {
+            $hash = $sha1;
+            @trigger_error('You should use the routes emsco_file_data_chunk_upload or emsco_file_api_chunk_upload which use a hash parameter', E_USER_DEPRECATED);
+        }
+
         $chunk = $request->getContent();
         $user = $this->getUser()->getUsername();
 
         try {
-            $uploadedAsset = $this->getFileService()->addChunk($sha1, $chunk, $user);
+            $uploadedAsset = $this->getFileService()->addChunk($hash, $chunk, $user);
         } catch (\Exception $e) {
             $this->addFlash('error', $e->getMessage());
             return $this->render('@EMSCore/ajax/notification.json.twig', [
@@ -154,6 +162,7 @@ class FileController extends AppController
         return $this->render('@EMSCore/ajax/file.json.twig', [
                 'success' => true,
                 'asset' => $uploadedAsset,
+                'apiRoute' => $apiRoute,
         ]);
     }
 

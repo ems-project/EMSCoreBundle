@@ -16,6 +16,7 @@
     	constant('EMS\\CommonBundle\\Helper\\EmsFields::CONTENT_FILE_NAME_FIELD'),
     	constant('EMS\\CommonBundle\\Helper\\EmsFields::CONTENT_MIME_TYPE_FIELD'),
     	constant('Symfony\\Component\\Routing\\Generator\\UrlGeneratorInterface::ABSOLUTE_PATH'))|json_encode|raw }},
+	"chunkUrl": {{ path(apiRoute?'emsco_file_api_chunk_upload':'emsco_file_data_chunk_upload', { hash: asset.sha1 })|json_encode|raw }},
     "url": {{ ems_asset_path(asset.data, {}, 'ems_asset',
     	constant('EMS\\CommonBundle\\Helper\\EmsFields::CONTENT_FILE_HASH_FIELD'),
     	constant('EMS\\CommonBundle\\Helper\\EmsFields::CONTENT_FILE_NAME_FIELD'),

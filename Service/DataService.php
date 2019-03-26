@@ -1203,7 +1203,7 @@ class DataService
             $dataFieldType->isValid($dataField, $parent, $masterRawData);
         }
         $isValid = true;
-        if (isset($dataFieldType) && $dataFieldType->isContainer()) {//If datafield is container or type is null => Container => Recursive
+        if ($dataFieldType !== null && $dataFieldType->isContainer()) {//If datafield is container or type is null => Container => Recursive
             $formChildren = $form->all();
             foreach ($formChildren as $child) {
                 if ($child instanceof \Symfony\Component\Form\Form) {
@@ -1216,7 +1216,7 @@ class DataService
             }
         }
 //           $isValid = $isValid && $dataFieldType->isValid($dataField);
-        if (isset($dataFieldType) && !$dataFieldType->isValid($dataField, $parent)) {
+        if ($dataFieldType !== null && !$dataFieldType->isValid($dataField, $parent)) {
             $isValid = false;
             $form->addError(new FormError("This Field is not valid! ".$dataField->getMessages()[0]));
         }

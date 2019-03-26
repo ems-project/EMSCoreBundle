@@ -384,7 +384,7 @@ abstract class DataFieldType extends AbstractType
             if ($parent === null || !isset($restrictionOptions["mandatory_if"]) || $parent->getRawData() === null || (is_array($masterRawData) && !empty($this->resolve($masterRawData, $parent->getRawData(), $restrictionOptions["mandatory_if"])) )) {
                 //Get rawData
                 $rawData = $dataField->getRawData();
-                if (!isset($rawData) || (is_string($rawData) && $rawData=== "") || (is_array($rawData) && count($rawData) === 0) || $rawData === null) {
+                if ($rawData === null || (is_string($rawData) && $rawData=== "") || (is_array($rawData) && count($rawData) === 0)) {
                     $isValidMadatory = false;
                     $dataField->addMessage("Empty field");
                 }

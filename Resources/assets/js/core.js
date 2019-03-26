@@ -46,6 +46,9 @@ require('bootstrap-fileinput');
 require('webpack-jquery-ui/sortable');
 require('daterangepicker');
 
+require('nestedSortable');
+// in case of issue please check this pull request https://github.com/ilikenwf/nestedSortable/pull/128
+
 $(document).ready(function() {
     console.log('AdminLTE\'s and elasticms\'s scripts loaded');
 });

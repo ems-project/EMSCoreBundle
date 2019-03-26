@@ -2988,6 +2988,11 @@ neo-async@^2.5.0:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.5.2.tgz#489105ce7bc54e709d736b195f82135048c50fcc"
   integrity sha512-vdqTKI9GBIYcAEbFAcpKPErKINfPF5zIuz3/niBfq8WUZjpT2tytLlFVrBgWdOtqI4uaA/Rb6No0hux39XXDuw==
 
+nestedSortable@^1.3.4:
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/nestedSortable/-/nestedSortable-1.3.4.tgz#23bcd4294462ba117c1751ef570ded14cbae3354"
+  integrity sha1-I7zUKURiuhF8F1HvVw3tFMuuM1Q=
+
 nice-try@^1.0.4:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"

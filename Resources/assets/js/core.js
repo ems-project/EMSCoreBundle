@@ -1,7 +1,9 @@
 import FileUploader from "../FileUploader/FileUploader";
 
 const $ = require('jquery');
-const jQuery = require('jquery');
+
+
+// const jQuery = require('jquery');
 window.CryptoJS = require("crypto-js");
 window.FileUploader = FileUploader;
 
@@ -9,6 +11,7 @@ window.$ = $;
 window.jQuery = $;
 
 require('bootstrap');
+
 require('bootstrap-colorpicker');
 // require('bootstrap-daterangepicker');
 require('bootstrap-slider');
@@ -29,6 +32,7 @@ require('jquery');
 require('jquery-knob');
 require('jquery-sparkline');
 require('jquery-ui');
+require("jquery-lazyload");
 require('jvectormap');
 require('moment');
 // require('morris.js'); //??

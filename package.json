@@ -8,6 +8,7 @@
     "datepicker": "^0.0.0",
     "daterangepicker": "^3.0.3",
     "icheck": "^1.0.2",
+    "jquery-lazyload": "^1.9.7",
     "webpack-jquery-ui": "^2.0.1"
   },
   "engines": {

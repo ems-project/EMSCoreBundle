@@ -179,7 +179,7 @@ class FileService
 
         $hash = $this->storageManager->computeFileHash($filename);
         $size = filesize($filename);
-        $uploadedAsset = $this->initUploadFile($hash, $size, $name, $type, $user);
+        $uploadedAsset = $this->initUploadFile($hash, $size, $name, $type, $user, $this->storageManager->getHashAlgo());
         if (!$uploadedAsset->getAvailable()) {
             $uploadedAsset = $this->saveFile($filename, $uploadedAsset);
         }
@@ -198,16 +198,21 @@ class FileService
      * @param $name
      * @param $type
      * @param $user
+     * @param $hashAlgo
      * @return UploadedAsset
      * @throws Conflict409Exception
      * @throws StorageServiceMissingException
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function initUploadFile($hash, $size, $name, $type, $user)
+    public function initUploadFile($hash, $size, $name, $type, $user, $hashAlgo)
     {
         if (empty($this->storageManager->getAdapters())) {
             throw new StorageServiceMissingException("No storage service have been defined");
+        }
+
+        if (strcasecmp($hashAlgo, $this->storageManager->getHashAlgo()) !== 0) {
+            throw new StorageServiceMissingException(sprintf("Hash algorithms mismatch: %s vs. %s", $hashAlgo, $this->storageManager->getHashAlgo()));
         }
 
         /** @var EntityManager $em */
@@ -228,6 +233,7 @@ class FileService
             $uploadedAsset->setSha1($hash);
             $uploadedAsset->setUser($user);
             $uploadedAsset->setSize($size);
+            $uploadedAsset->setHashAlgo($hashAlgo);
             $uploadedAsset->setUploaded(0);
         }
 
@@ -239,6 +245,7 @@ class FileService
         if ($size >= $uploadedAsset->getUploaded()) {
             $uploadedAsset->setUploaded(0);
         }
+
         if ($uploadedAsset->getSize() != $size) {
             throw new Conflict409Exception("Target size mismatched " . $uploadedAsset->getSize() . ' ' . $size);
         }

@@ -793,7 +793,7 @@
               <i class="fa fa-info"></i>
               {{ 'Info'|trans }}
             </button>			
-			<a href="{% if form.vars.value.sha1 is defined and form.vars.value.sha1 %}{{ ems_asset_path(form.vars.value) }}{% endif %}" data-href="{{ path('ems.file.view', {'sha1':'__SHA1__', 'type':'__MIME_TYPE__', 'name':'__FILE_NAME__' }) }}" class="btn btn-small btn-primary view-asset-button {% if not form.children.sha1.vars.value %}disabled{% endif %}" target="_blank" alt="{{'View'|trans}}"><i class="fa fa-eye">&nbsp;{{'View'|trans}}</i></a>
+			<a href="{% if form.vars.value.sha1 is defined and form.vars.value.sha1 %}{{ ems_asset_path(form.vars.value) }}{% endif %}" class="btn btn-small btn-primary view-asset-button {% if not form.children.sha1.vars.value %}disabled{% endif %}" target="_blank" alt="{{'View'|trans}}"><i class="fa fa-eye">&nbsp;{{'View'|trans}}</i></a>
 			<a href="#" class="btn btn-small btn-primary clear-asset-button  {% if not form.children.sha1.vars.value %}disabled{% endif %}" alt="{{'Clear'|trans}}"><i class="fa fa-remove"></i>&nbsp;{{'Clear'|trans}}</a>
 		</div>
 	</div>
@@ -872,7 +872,7 @@
               <i class="fa fa-info"></i>
               {{ 'Info'|trans }}
             </button>			
-			<a href="#" data-href="{{ path('ems.file.view', {'sha1':'__SHA1__', 'type':'__MIME_TYPE__', 'name':'__FILE_NAME__' }) }}" class="btn btn-small btn-primary view-asset-button {% if not form.children.sha1.vars.value %}disabled{% endif %}" target="_blank" alt="{{'View'|trans}}"><i class="fa fa-eye">&nbsp;{{'View'|trans}}</i></a>
+			<a href="#" class="btn btn-small btn-primary view-asset-button {% if not form.children.sha1.vars.value %}disabled{% endif %}" target="_blank" alt="{{'View'|trans}}"><i class="fa fa-eye">&nbsp;{{'View'|trans}}</i></a>
 			<a href="#" class="btn btn-small btn-primary clear-asset-button  {% if not form.children.sha1.vars.value %}disabled{% endif %}" alt="{{'Clear'|trans}}"><i class="fa fa-remove"></i>&nbsp;{{'Clear'|trans}}</a>
 		</div>
 	</div>

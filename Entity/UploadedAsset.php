@@ -47,7 +47,7 @@ class UploadedAsset
     /**
      * @var string
      *
-     * @ORM\Column(name="sha1", type="string", length=40)
+     * @ORM\Column(name="sha1", type="string", length=128)
      */
     private $sha1;
     
@@ -92,6 +92,13 @@ class UploadedAsset
      * @ORM\Column(name="uploaded", type="bigint")
      */
     private $uploaded;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="hash_algo", type="string", length=32, options={"default" : "sha1"})
+     */
+    private $hashAlgo;
     
 
 
@@ -382,6 +389,25 @@ class UploadedAsset
             EmsFields::CONTENT_FILE_SIZE_FIELD => $this->getSize(),
             EmsFields::CONTENT_MIME_TYPE_FIELD => $this->getType(),
             EmsFields::CONTENT_FILE_HASH_FIELD => $this->getSha1(),
+            EmsFields::CONTENT_HASH_ALGO_FIELD => $this->getHashAlgo(),
         ];
+    }
+
+    /**
+     * @return string
+     */
+    public function getHashAlgo(): string
+    {
+        return $this->hashAlgo;
+    }
+
+    /**
+     * @param string $hashAlgo
+     * @return UploadedAsset
+     */
+    public function setHashAlgo(string $hashAlgo): UploadedAsset
+    {
+        $this->hashAlgo = $hashAlgo;
+        return $this;
     }
 }

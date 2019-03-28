@@ -78,6 +78,13 @@ module.exports = {
                     limit: 10000,
                     name: 'media/[name].[ext]',
                 }
+            },
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader',
+                }
             }
         ]
     }

@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@babel/polyfill": "^7.4.0",
     "admin-lte": "^2.3.2",
     "bootstrap-fileinput": "^4.5.0",
     "bootstrap-sass": "3.3.7",
@@ -17,6 +18,10 @@
   },
   "scripts": {},
   "devDependencies": {
+    "@babel/core": "^7.4.0",
+    "@babel/preset-env": "^7.4.2",
+    "@babel/register": "^7.4.0",
+    "babel-loader": "^8.0.5",
     "css-loader": "^1.0.0",
     "file-loader": "^2.0.0",
     "less": "^3.8.1",

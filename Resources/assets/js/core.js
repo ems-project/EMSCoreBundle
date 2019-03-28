@@ -32,10 +32,10 @@ require('jquery');
 require('jquery-knob');
 require('jquery-sparkline');
 require('jquery-ui');
+require('jquery-ui/ui/widgets/sortable');
 require("jquery-lazyload");
 require('jvectormap');
 require('moment');
-// require('morris.js'); //??
 require('pace');
 require('raphael');
 require('select2/dist/js/select2.full');
@@ -43,11 +43,9 @@ require('slimscroll');
 require('bootstrap-datepicker');
 require('admin-lte');
 require('bootstrap-fileinput');
-require('webpack-jquery-ui/sortable');
 require('daterangepicker');
-
 require('nestedSortable');
-// in case of issue please check this pull request https://github.com/ilikenwf/nestedSortable/pull/128
+// require('./jquery.ems.nestedSortable');
 
 $(document).ready(function() {
     console.log('AdminLTE\'s and elasticms\'s scripts loaded');

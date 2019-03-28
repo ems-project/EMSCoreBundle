@@ -44,8 +44,7 @@ require('bootstrap-datepicker');
 require('admin-lte');
 require('bootstrap-fileinput');
 require('daterangepicker');
-require('nestedSortable');
-// require('./jquery.ems.nestedSortable');
+require('./nestedSortable');
 
 $(document).ready(function() {
     console.log('AdminLTE\'s and elasticms\'s scripts loaded');

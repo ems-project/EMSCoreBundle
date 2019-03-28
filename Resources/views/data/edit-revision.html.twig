@@ -201,7 +201,7 @@ function updateChoiceFieldTypes()
 }
 
 
-function onFormChange(event = null, allowAutoPublish = false){
+function onFormChange(event, allowAutoPublish){
     {% if not revision.draft %}
     	return;
     {% endif %}

@@ -1,14 +1,19 @@
 import FileUploader from "../FileUploader/FileUploader";
 
 const $ = require('jquery');
-
-
 // const jQuery = require('jquery');
+window.$ = $;
+window.jQuery = $;
+
+const assetPath = document.querySelector("BODY").getAttribute('data-asset-path') ;
 window.CryptoJS = require("crypto-js");
 window.FileUploader = FileUploader;
 
-window.$ = $;
-window.jQuery = $;
+
+
+const ace = require('ace-builds/src-noconflict/ace');
+window.ace = ace;
+ace.config.set('basePath', assetPath + 'bundles/emscore/js/ace' );
 
 require('bootstrap');
 

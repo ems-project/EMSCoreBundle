@@ -29,7 +29,7 @@
 	
     {%- block extraheader %}{% endblock %}
 </head>
-<body class="hold-transition skin-{{ theme_color }} {% if app.user %}{% if app.user.layoutBoxed %}layout-boxed{% endif %}{% if app.user.sidebarCollapse %} sidebar-collapse{% endif %}{% if app.user.sidebarMini %} sidebar-mini{% endif %}{% endif %}" data-hash-algo="{{ ems_hash_algo|e('html_attr') }}">
+<body class="hold-transition skin-{{ theme_color }} {% if app.user %}{% if app.user.layoutBoxed %}layout-boxed{% endif %}{% if app.user.sidebarCollapse %} sidebar-collapse{% endif %}{% if app.user.sidebarMini %} sidebar-mini{% endif %}{% endif %}" data-hash-algo="{{ ems_hash_algo|e('html_attr') }}" data-asset-path="{{ asset('')|e('html_attr') }}">
 <div class="wrapper">
 
   <!-- Main Header -->

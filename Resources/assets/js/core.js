@@ -52,6 +52,9 @@ require('admin-lte');
 require('bootstrap-fileinput');
 require('daterangepicker');
 require('./nestedSortable');
+window.moment = require('moment');
+require('fullcalendar');
+
 
 $(document).ready(function() {
     console.log('AdminLTE\'s and elasticms\'s scripts loaded');

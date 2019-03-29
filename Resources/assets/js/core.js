@@ -12,6 +12,8 @@ window.FileUploader = FileUploader;
 
 
 const ace = require('ace-builds/src-noconflict/ace');
+require('ace-builds/src-noconflict/ext-modelist');
+require('ace-builds/src-noconflict/ext-themelist');
 window.ace = ace;
 ace.config.set('basePath', assetPath + 'bundles/emscore/js/ace' );
 

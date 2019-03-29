@@ -362,7 +362,7 @@ function initFileUploader(fileHandler, container){
         		$(sha1Input).val(fileUploader.hash);
         		console.log('Sha1 mismatch!');
 		    }
-		    const percentage = Math.round(progress*100);
+		    var percentage = Math.round(progress*100);
 			$(progressBar).css('width', percentage+'%');
 			$(progressText).html(status);
 			$(progressNumber).html(remaining);
@@ -551,7 +551,7 @@ function addEventListeners(target){
 
 	
 	target.find(".ems-code-editor").each(function(){
-		const codeDiv = $(this);
+		var codeDiv = $(this);
 		var pre = codeDiv.find('pre').get(0);
 		var hiddenField = codeDiv.find('input');
 		var editor = ace.edit(pre);
@@ -750,7 +750,7 @@ function addEventListeners(target){
 	target.find(".objectpicker").each(function(index){
 		var type = $( this ).data('type'); 
 		var searchId = $( this ).data('search-id');
-		const circleOnly = $( this ).data('circleOnly');
+		var circleOnly = $( this ).data('circleOnly');
 		var dynamicLoading = $( this ).data('dynamic-loading');
 		var sortable = $( this ).data('sortable'); 
 

@@ -9,7 +9,7 @@ const assetPath = document.querySelector("BODY").getAttribute('data-asset-path')
 window.CryptoJS = require("crypto-js");
 window.FileUploader = FileUploader;
 
-
+window.CKEDITOR_BASEPATH = assetPath + 'bundles/emscore/js/ckeditor/';
 
 const ace = require('ace-builds/src-noconflict/ace');
 require('ace-builds/src-noconflict/ext-modelist');
@@ -25,7 +25,7 @@ require('bootstrap-slider');
 require('bootstrap-select');
 require('bootstrap-timepicker');
 require('chart.js');
-// require('ckeditor');
+require('ckeditor');
 require('datatables.net');
 require('datatables.net-bs');
 require('fastclick');

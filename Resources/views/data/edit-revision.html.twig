@@ -922,8 +922,9 @@ $(window).ready(function() {
     {% endif %}
 
     
-	CKEDITOR.plugins.addExternal('adv_link', '{{ asset("bundles/emscore/js/adv_link/plugin.js") }}', '' );
-	CKEDITOR.plugins.addExternal('div', '{{ asset("bundles/emscore/js/div/plugin.js") }}', '' );
+	CKEDITOR.plugins.addExternal('adv_link', '{{ asset("bundles/emscore/js/cke-plugins/adv_link/plugin.js") }}', '' );
+	CKEDITOR.plugins.addExternal('div', '{{ asset("bundles/emscore/js/cke-plugins/div/plugin.js") }}', '' );
+	CKEDITOR.plugins.addExternal('div', '{{ asset("bundles/emscore/js/cke-plugins/div/plugin.js") }}', '' );
 	addEventListeners($('form[name={{ form.vars.id }}]'));
 });
 

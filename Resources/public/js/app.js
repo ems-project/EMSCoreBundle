@@ -64,14 +64,7 @@ $(document).ready(function() {
 	else if (typeof side_menu_target !== 'undefined') { 
     		$('#'+side_menu_target).parents('li').addClass('active');
 	} 
-	
 
-		
-//	$("#sidebar-toggle-button").click(function(event){
-//		var url = collapse_sidebar_url.replace("__collapsed__", $('body.sidebar-collapse').length == 0?1:0);
-//		ajaxRequest.post( url );
-//	});
-	
 	
 	$('.toggle-button').click(function(){ 
 	    var toggleTex = $(this).data('toggle-contain');

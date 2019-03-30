@@ -53,17 +53,6 @@ $(document).ready(function() {
 		updateStatusFct();
 	}, 180000);
 	//60000 every minute
-	
-	
-	//try to find wich sidemenu elements to activate
-	var currentMenuLink = $('section.sidebar ul.sidebar-menu a[href="'+window.location.pathname + window.location.search+'"]');
-	
-	if(currentMenuLink.length == 1){
-		currentMenuLink.parents('li').addClass('active');
-	}
-	else if (typeof side_menu_target !== 'undefined') { 
-    		$('#'+side_menu_target).parents('li').addClass('active');
-	} 
 
 	
 	$('.toggle-button').click(function(){ 

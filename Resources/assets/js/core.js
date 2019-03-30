@@ -56,7 +56,4 @@ window.moment = require('moment');
 require('fullcalendar');
 require('icheck');
 
-
-$(document).ready(function() {
-    console.log('AdminLTE\'s and elasticms\'s scripts loaded');
-});
+require('./initEms');

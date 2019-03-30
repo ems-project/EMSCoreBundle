@@ -482,6 +482,8 @@ function FileDragHover(e) {
 
 function addEventListeners(target){
 
+    new EmsListeners(target);
+
 
 	target.find(".file-uploader-input").fileinput({
 		'showUpload':false, 

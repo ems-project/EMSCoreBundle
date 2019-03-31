@@ -1,7 +1,6 @@
 import FileUploader from "../FileUploader/FileUploader";
 
 const $ = require('jquery');
-// const jQuery = require('jquery');
 window.$ = $;
 window.jQuery = $;
 
@@ -30,11 +29,9 @@ require('datatables.net');
 require('datatables.net-bs');
 require('fastclick');
 require('flot');
-// require('font-awesome'); //pure css
 require('fullcalendar');
 require('inputmask');
 require('ion-rangeslider');
-// require('ionicons'); //pure css
 require('jquery');
 require('jquery-knob');
 require('jquery-sparkline');
@@ -57,3 +54,4 @@ require('fullcalendar');
 require('icheck');
 
 require('./initEms');
+

@@ -20,7 +20,15 @@ module.exports = {
                 to: 'js/ckeditor',
 
             },
-        ]),
+        ], {
+            ignore: [{
+                dots: true,
+                glob: 'samples/**/*'
+            },{
+                dots: true,
+                glob: 'adapters/**/*'
+            }]
+        }),
         new MiniCssExtractPlugin({
             // Options similar to the same options in webpackOptions.output
             // both options are optional

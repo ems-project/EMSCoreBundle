@@ -1,4 +1,3 @@
-import FileUploader from "../FileUploader/FileUploader";
 
 const $ = require('jquery');
 window.$ = $;
@@ -6,7 +5,13 @@ window.jQuery = $;
 
 const assetPath = document.querySelector("BODY").getAttribute('data-asset-path') ;
 window.CryptoJS = require("crypto-js");
+
+
+import FileUploader from "./FileUploader";
 window.FileUploader = FileUploader;
+import AjaxRequest from "./AjaxRequest";
+window.AjaxRequest = AjaxRequest;
+window.ajaxRequest = new AjaxRequest();
 
 window.CKEDITOR_BASEPATH = assetPath + 'bundles/emscore/js/ckeditor/';
 

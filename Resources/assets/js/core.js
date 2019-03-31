@@ -59,5 +59,6 @@ require('fullcalendar');
 require('icheck');
 require('jquery-match-height');
 
+require('./helpers');
 require('./initEms');
 

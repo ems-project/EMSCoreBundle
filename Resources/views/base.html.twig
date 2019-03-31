@@ -4,9 +4,11 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>{{ ems_shortname|striptags }}: {% block title %}elasticMS{% endblock %}</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+    <title>{{ ems_shortname|striptags }}: {% block title %}elasticMS{% endblock %}</title>
+
 
     <!-- stylesheets -->
     <link rel="stylesheet" href="{{ asset('bundles/emscore/css/app.bundle.css') }}">
@@ -24,9 +26,9 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+	<link rel="icon" sizes="128x128" type="image/png" href="{{ asset('bundles/emscore/images/fav-icon.png') }}?v=11" />
+    <link rel="apple-touch-icon" sizes="128x128" type="image/png" href="{{ asset('bundles/emscore/images/fav-icon.png') }}?v=4">
 
-	<link rel="icon" type="image/png" href="{{ asset('bundles/emscore/favicon.ico') }}?v=8" />
-	
     {%- block extraheader %}{% endblock %}
 </head>
 <body class="hold-transition skin-{{ theme_color }} {% if app.user %}{% if app.user.layoutBoxed %}layout-boxed{% endif %}{% if app.user.sidebarCollapse %} sidebar-collapse{% endif %}{% if app.user.sidebarMini %} sidebar-mini{% endif %}{% endif %}" data-hash-algo="{{ ems_hash_algo|e('html_attr') }}" data-asset-path="{{ asset('')|e('html_attr') }}">

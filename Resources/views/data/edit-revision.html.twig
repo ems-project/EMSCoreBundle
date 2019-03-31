@@ -845,30 +845,9 @@ function addEventListeners(target){
 
 		$( this ).unbind( "change" );
 
-// 		$( this ).on('change', function(event){
-// 			console.log('hello');
-// 			event.preventDefault();
-// 		});
-
-// 		var defaultTime = $( this ).data('default-time');
-// 		//console.log( defaultTime !== false );
-// 		if(defaultTime !== false) {
-// 			if(defaultTime){
-// 				settings.defaultTime = defaultTime;
-// 			}
-// 			else {
-// 				settings.defaultTime = false;
-// 			}
-// 		}
-		//console.log($( this ).val());
-
-		//console.log(settings);
 		$( this ).timepicker(settings).on('changeTime.timepicker', onFormChange);
 
-		
-// 		if(defaultTime === false && !$( this ).val() ) {
-// 			$( this ).timepicker('setTime', new Date() );
-// 		}
+
 	});
 
 
@@ -926,7 +905,7 @@ $(window).ready(function() {
     
 	CKEDITOR.plugins.addExternal('adv_link', '{{ asset("bundles/emscore/js/cke-plugins/adv_link/plugin.js") }}', '' );
 	CKEDITOR.plugins.addExternal('div', '{{ asset("bundles/emscore/js/cke-plugins/div/plugin.js") }}', '' );
-	CKEDITOR.plugins.addExternal('div', '{{ asset("bundles/emscore/js/cke-plugins/div/plugin.js") }}', '' );
+	CKEDITOR.plugins.addExternal('imagebrowser', '{{ asset("bundles/emscore/js/cke-plugins/imagebrowser/plugin.js") }}', '' );
 	addEventListeners($('form[name={{ form.vars.id }}]'));
 });
 

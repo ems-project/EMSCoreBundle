@@ -1,3 +1,5 @@
+'use strict';
+
 /*
  * This function initialized the elasticms admin interface
  *
@@ -31,8 +33,22 @@
         }
     }
 
+    function loadLazyImages() {
+        $("img.lazy").show().lazyload({
+            effect : "fadeIn",
+            threshold : 200
+        });
+    }
+
+    function matchHeight() {
+        $('.match-height').matchHeight();
+    }
+
     $(document).ready(function() {
         activeMenu();
+        loadLazyImages();
+        matchHeight();
     });
+
 
 }));

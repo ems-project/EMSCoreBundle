@@ -88,14 +88,5 @@ $(document).ready(function() {
 });
 
 
-window.onload = function() {
-	$("img.lazy").show().lazyload({
-	    effect : "fadeIn",
-	    threshold : 200
-	});
-
-	$('.match-height').matchHeight();
-};
-
 
 

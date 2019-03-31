@@ -57,6 +57,7 @@ require('./nestedSortable');
 window.moment = require('moment');
 require('fullcalendar');
 require('icheck');
+require('jquery-match-height');
 
 require('./initEms');
 

@@ -155,7 +155,15 @@ class ElasticsearchController extends AppController
             ]);
         }
     }
-    
+
+    /**
+     * @Route("/admin/phpinfo", name="emsco_phpinfo"))
+     */
+    public function phpInfoAction()
+    {
+        phpinfo(); exit;
+    }
+
 
     /**
      * @Route("/elasticsearch/delete-search/{id}", name="elasticsearch.search.delete"))

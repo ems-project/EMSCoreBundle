@@ -158,7 +158,7 @@
 		</div>
     {% endif %}
     {% if is_granted('ROLE_ADMIN') %}
-		<div class="col-md-12">
+		<div class="col-md-6 col-lg-8">
 			<div class="box box box-solid">
 				<div class="box-header with-border bg-green">
 					<h4 class="box-title">
@@ -166,7 +166,7 @@
                         {{ 'PHP Info'|trans }}</strong>
 					</h4>
 				</div>
-				<div class="box-body ">{{  call_user_func('phpinfo') }}</div>
+				<div class="box-body "><a href="{{ path('emsco_phpinfo') }}" class="btn btn-primary">{{ 'emsco.elasticsearch.status.html.goto_phpinfo'|trans }}</a></div>
 			</div>
 		</div>
     {% endif %}

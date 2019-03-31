@@ -27,6 +27,9 @@ module.exports = {
             },{
                 dots: true,
                 glob: 'adapters/**/*'
+            },{
+                dots: true,
+                glob: '.github/**/*'
             }]
         }),
         new MiniCssExtractPlugin({

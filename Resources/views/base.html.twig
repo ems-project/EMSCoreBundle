@@ -12,9 +12,10 @@
 
     <!-- stylesheets -->
     <link rel="stylesheet" href="{{ asset('bundles/emscore/css/app.bundle.css') }}">
-    <link rel="stylesheet" href="{{ asset('bundles/emscore/css/blue.bundle.css') }}">
     {%- if theme_color %}
         <link rel="stylesheet" href="{{ asset('bundles/emscore/css/'~theme_color~'.bundle.css') }}">
+    {%- else -%}
+        <link rel="stylesheet" href="{{ asset('bundles/emscore/css/blue.bundle.css') }}">
     {%-  endif %}
 
     {%- block stylesheets %}{% endblock %}
@@ -26,12 +27,15 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-	<link rel="icon" sizes="128x128" type="image/png" href="{{ asset('bundles/emscore/images/fav-icon.png') }}?v=11" />
-    <link rel="apple-touch-icon" sizes="128x128" type="image/png" href="{{ asset('bundles/emscore/images/fav-icon.png') }}?v=4">
+	<link rel="icon" sizes="128x128" type="image/png" href="{{ asset('bundles/emscore/images/fav-icon.png') }}?v=12" />
+    <link rel="apple-touch-icon" sizes="128x128" type="image/png" href="{{ asset('bundles/emscore/images/fav-icon.png') }}?v=12">
 
     {%- block extraheader %}{% endblock %}
 </head>
-<body class="hold-transition skin-{{ theme_color }} {% if app.user %}{% if app.user.layoutBoxed %}layout-boxed{% endif %}{% if app.user.sidebarCollapse %} sidebar-collapse{% endif %}{% if app.user.sidebarMini %} sidebar-mini{% endif %}{% endif %}" data-hash-algo="{{ ems_hash_algo|e('html_attr') }}" data-asset-path="{{ asset('')|e('html_attr') }}">
+<body class="hold-transition skin-{{ theme_color }} {% if app.user %}{% if app.user.layoutBoxed %}layout-boxed{% endif %}{% if app.user.sidebarCollapse %} sidebar-collapse{% endif %}{% if app.user.sidebarMini %} sidebar-mini{% endif %}{% endif %}"
+      data-hash-algo="{{ ems_hash_algo|e('html_attr') }}"
+      data-status-url="{{ path('elasticsearch.status', {_format: 'json'})|e('html_attr') }}"
+      data-asset-path="{{ asset('')|e('html_attr') }}">
 <div class="wrapper">
 
   <!-- Main Header -->
@@ -428,7 +432,6 @@
 <!-- Variables  -->
 <script>
     var object_search_url = '{{ path('elasticsearch.api.search')|raw }}';
-    var elasticsearch_status_url = "{{ path('elasticsearch.status')|raw }}.json"; 
     var ems_upload_url = "{{ path('ems_image_upload_url')|raw }}";
     var ems_images_url = "{{ path('ems_images_index')|raw }}";
     var file_extract_url = '{{ path('ems_file_extract', { sha1: '__file_identifier__', name: '__file_name__' })|raw }}';

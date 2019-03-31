@@ -83,7 +83,7 @@
 
     //Function to update the cluster status
     function updateStatusFct(){
-        $.getJSON( elasticsearch_status_url )
+        $.getJSON( $('body').attr('data-status-url') )
             .done(function( json ) {
                 $('#status-overview').html(json.body);
             })
@@ -115,9 +115,8 @@
         //cron to update the cluster status
         window.setInterval(function(){
             updateStatusFct();
-        }, 10000);
+        }, 180000);
         //60000 every minute
     });
-
 
 }));

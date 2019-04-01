@@ -14,7 +14,7 @@ class I18nFilter
         return $this;
     }
 
-    public function getIdentifier(): string
+    public function getIdentifier(): ?string
     {
         return $this->identifier;
     }

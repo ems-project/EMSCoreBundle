@@ -4,5 +4,9 @@ import './js/core';
 import './css/app.scss';
 import './css/app.less';
 
-import helloWorld from './js/helloWorld';
-helloWorld();
+
+import EmsListeners from './js/EmsListeners';
+window.EmsListeners = EmsListeners;
+
+new EmsListeners(document);
+

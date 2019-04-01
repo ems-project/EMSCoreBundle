@@ -95,7 +95,7 @@ class WysiwygFieldType extends DataFieldType
         $resolver->setDefault('height', 400);
         $resolver->setDefault('format_tags', 'p;h1;h2;h3;h4;h5;h6;pre;address;div');
         $resolver->setDefault('styles_set', 'default');
-        $resolver->setDefault('content_css', '../../../../bundles/emscore/css/styles.css');
+        $resolver->setDefault('content_css', '../../../../bundles/emscore/css/app.bundle.css');
     }
     
     /**
@@ -161,7 +161,7 @@ class WysiwygFieldType extends DataFieldType
         $out['displayOptions']['height'] = 200;
         $out['displayOptions']['format_tags'] = 'p;h1;h2;h3;h4;h5;h6;pre;address;div';
         $out['displayOptions']['styles_set'] = 'default';
-        $out['displayOptions']['content_css'] = '../../../../bundles/emscore/css/styles.css';
+        $out['displayOptions']['content_css'] = '../../../../bundles/emscore/css/app.bundle.css';
         
         return $out;
     }

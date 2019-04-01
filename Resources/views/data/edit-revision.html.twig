@@ -97,7 +97,6 @@
 
 
 {% block javascripts %}
-<script src="{{ asset('bundles/emscore/bower/ace-builds/src-min-noconflict/ace.js') }}"></script>
 
 <script type="text/javascript">
 
@@ -201,7 +200,7 @@ function updateChoiceFieldTypes()
 }
 
 
-function onFormChange(event = null, allowAutoPublish = false){
+function onFormChange(event, allowAutoPublish){
     {% if not revision.draft %}
     	return;
     {% endif %}
@@ -362,7 +361,7 @@ function initFileUploader(fileHandler, container){
         		$(sha1Input).val(fileUploader.hash);
         		console.log('Sha1 mismatch!');
 		    }
-		    const percentage = Math.round(progress*100);
+		    var percentage = Math.round(progress*100);
 			$(progressBar).css('width', percentage+'%');
 			$(progressText).html(status);
 			$(progressNumber).html(remaining);
@@ -483,6 +482,8 @@ function FileDragHover(e) {
 
 function addEventListeners(target){
 
+    new EmsListeners(target);
+
 
 	target.find(".file-uploader-input").fileinput({
 		'showUpload':false, 
@@ -551,7 +552,7 @@ function addEventListeners(target){
 
 	
 	target.find(".ems-code-editor").each(function(){
-		const codeDiv = $(this);
+		var codeDiv = $(this);
 		var pre = codeDiv.find('pre').get(0);
 		var hiddenField = codeDiv.find('input');
 		var editor = ace.edit(pre);
@@ -750,7 +751,7 @@ function addEventListeners(target){
 	target.find(".objectpicker").each(function(index){
 		var type = $( this ).data('type'); 
 		var searchId = $( this ).data('search-id');
-		const circleOnly = $( this ).data('circleOnly');
+		var circleOnly = $( this ).data('circleOnly');
 		var dynamicLoading = $( this ).data('dynamic-loading');
 		var sortable = $( this ).data('sortable'); 
 
@@ -844,30 +845,9 @@ function addEventListeners(target){
 
 		$( this ).unbind( "change" );
 
-// 		$( this ).on('change', function(event){
-// 			console.log('hello');
-// 			event.preventDefault();
-// 		});
-
-// 		var defaultTime = $( this ).data('default-time');
-// 		//console.log( defaultTime !== false );
-// 		if(defaultTime !== false) {
-// 			if(defaultTime){
-// 				settings.defaultTime = defaultTime;
-// 			}
-// 			else {
-// 				settings.defaultTime = false;
-// 			}
-// 		}
-		//console.log($( this ).val());
-
-		//console.log(settings);
 		$( this ).timepicker(settings).on('changeTime.timepicker', onFormChange);
 
-		
-// 		if(defaultTime === false && !$( this ).val() ) {
-// 			$( this ).timepicker('setTime', new Date() );
-// 		}
+
 	});
 
 
@@ -923,8 +903,9 @@ $(window).ready(function() {
     {% endif %}
 
     
-	CKEDITOR.plugins.addExternal('adv_link', '{{ asset("bundles/emscore/js/adv_link/plugin.js") }}', '' );
-	CKEDITOR.plugins.addExternal('div', '{{ asset("bundles/emscore/js/div/plugin.js") }}', '' );
+	CKEDITOR.plugins.addExternal('adv_link', '{{ asset("bundles/emscore/js/cke-plugins/adv_link/plugin.js") }}', '' );
+	CKEDITOR.plugins.addExternal('div', '{{ asset("bundles/emscore/js/cke-plugins/div/plugin.js") }}', '' );
+	CKEDITOR.plugins.addExternal('imagebrowser', '{{ asset("bundles/emscore/js/cke-plugins/imagebrowser/plugin.js") }}', '' );
 	addEventListeners($('form[name={{ form.vars.id }}]'));
 });
 

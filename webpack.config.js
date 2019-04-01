@@ -1,15 +1,43 @@
 const path = require('path');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     plugins: [
+        new CopyPlugin([
+            {
+                from: './Resources/assets/images',
+                to: 'images'
+            }, {
+                from: './Resources/assets/cke-plugins',
+                to: 'js/cke-plugins'
+            }, {
+                from: './node_modules/ace-builds/src-noconflict',
+                to: 'js/ace',
+            }, {
+                from: './node_modules/ckeditor',
+                to: 'js/ckeditor',
+
+            },
+        ], {
+            ignore: [{
+                dots: true,
+                glob: 'samples/**/*'
+            },{
+                dots: true,
+                glob: 'adapters/**/*'
+            },{
+                dots: true,
+                glob: '.github/**/*'
+            }]
+        }),
         new MiniCssExtractPlugin({
             // Options similar to the same options in webpackOptions.output
             // both options are optional
             filename: "css/[name].bundle.css",
             chunkFilename: "[id].css"
-        })
+        }),
     ],
     context: path.resolve(__dirname, './'),
     entry: {
@@ -77,6 +105,13 @@ module.exports = {
                 options: {
                     limit: 10000,
                     name: 'media/[name].[ext]',
+                }
+            },
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader',
                 }
             }
         ]

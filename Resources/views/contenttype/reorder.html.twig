@@ -65,8 +65,7 @@
 		'item':  'contenttype-list'
 	}%}
 	
-	
-	<script type="text/javascript" src="{{ asset('bundles/emscore/bower/nestedSortable/jquery.mjs.nestedSortable.js') }}"></script>
+
 	
 
 <script type="text/javascript">
@@ -96,7 +95,6 @@ $(document).ready(function(){
 	});
 
 	$('#reorder_reorder').click(function(e){
-// 		e.preventDefault();
 		hiered = $('ol.sortable').nestedSortable('toHierarchy', {startDepthCount: 0});
 		console.log(getAssocArray(hiered));
 		$('#reorder_items').val(JSON.stringify(getAssocArray(hiered))).trigger("change");

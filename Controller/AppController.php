@@ -53,15 +53,6 @@ class AppController extends Controller
         $this->formRegistry = $formRegistry;
         $this->requestRuntime = $requestRuntime;
     }
-
-
-    /**
-     * @Route("/js/app.js", name="app.js"))
-     */
-    public function javascriptAction()
-    {
-        return $this->render('@EMSCore/app/app.js.twig');
-    }
     
     /**
      * @return TranslatorInterface

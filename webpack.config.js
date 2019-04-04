@@ -30,6 +30,9 @@ module.exports = {
             },{
                 dots: true,
                 glob: '.github/**/*'
+            },{
+                dots: true,
+                glob: '**/*.php'
             }]
         }),
         new MiniCssExtractPlugin({

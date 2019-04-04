@@ -22,10 +22,19 @@ export default class EmsListeners {
     }
 
     addCheckBoxListeners() {
+        const self = this;
         jquery(this.target).iCheck({
             checkboxClass: 'icheckbox_square-blue',
             radioClass: 'iradio_square-blue',
             increaseArea: '20%'
+        }).on('ifChecked', function(){
+            if( jquery(this).attr('data-grouped-checkbox-target') ) {
+                jquery(self.target).find(jquery(this).attr('data-grouped-checkbox-target')).iCheck('check');
+            }
+        }).on('ifUnchecked', function(){
+            if( jquery(this).attr('data-grouped-checkbox-target') ) {
+                jquery(self.target).find(jquery(this).attr('data-grouped-checkbox-target')).iCheck('uncheck');
+            }
         });
     }
 

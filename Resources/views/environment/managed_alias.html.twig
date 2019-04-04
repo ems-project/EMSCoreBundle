@@ -72,11 +72,11 @@
             $('#managed_alias_align_indexes').on('change', function() {
                 var data = $(this).find("option:selected").data();
 
-                $('.align-index').prop( "checked", false);
+                $('.align-index').iCheck( "uncheck");
 
                 if (data.indexes !== undefined) {
                     data.indexes.map(function (index) {
-                        $('input[type="checkbox"][value="'+ index +'"]').prop("checked", true);
+                        $('input[type="checkbox"][value="'+ index +'"]').iCheck("check");
                     });
                 }
             });

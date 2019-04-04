@@ -79,8 +79,7 @@
             <th style="width: 10px">#</th>
 
             <th>
-                <a href="#" onclick="javascript: $('.item-to-align').prop('checked', 'checked'); return false;"><i class="fa fa-check-square-o"></i></a>
-                <a href="#" onclick="javascript: $('.item-to-align').prop('checked', false); return false;"><i class="fa fa-square-o"></i></a>
+                <input type="checkbox" data-grouped-checkbox-target=".item-to-align">
             </th>
               {% include '@EMSCore/elements/sortable-th.html.twig' with {
                  'title': 'Content type'|trans,

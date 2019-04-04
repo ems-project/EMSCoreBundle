@@ -104,17 +104,23 @@ class Bulker
     /**
      * @param array $config
      * @param array $body
+     * @param bool  $upsert
      *
      * @return bool
      */
-    public function index(array $config, array $body): bool
+    public function index(array $config, array $body, bool $upsert = false): bool
     {
         if ($this->enableSha1) {
             $body['_sha1'] = sha1(json_encode($body));
         }
 
-        $this->params['body'][] = ['index' => $config];
-        $this->params['body'][] = $body;
+        if ($upsert) {
+            $this->params['body'][] = ['update' => $config];
+            $this->params['body'][] = ['doc' => $body, 'doc_as_upsert' => true];
+        } else {
+            $this->params['body'][] = ['index' => $config];
+            $this->params['body'][] = $body;
+        }
 
         $this->counter++;
 
@@ -124,10 +130,11 @@ class Bulker
     /**
      * @param DocumentInterface $document
      * @param string            $index
+     * @param bool              $upsert
      *
      * @return bool
      */
-    public function indexDocument(DocumentInterface $document, string $index): bool
+    public function indexDocument(DocumentInterface $document, string $index, bool $upsert = false): bool
     {
         $config = [
             '_index' => $index,
@@ -140,7 +147,7 @@ class Bulker
             $body = array_merge(['_contenttype' => $document->getType()], $body);
         }
 
-        return $this->index($config, $body);
+        return $this->index($config, $body, $upsert);
     }
 
     /**
@@ -148,7 +155,7 @@ class Bulker
      *
      * @return bool
      */
-    public function send($force = false): bool
+    public function send(bool $force = false): bool
     {
         if (0 === $this->counter) {
             return false;

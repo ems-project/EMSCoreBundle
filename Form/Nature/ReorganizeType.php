@@ -25,10 +25,13 @@ class ReorganizeType extends AbstractType
     {
         
         $builder->add('structure', HiddenType::class, [
+            'attr' => [
+                'class' => 'reorder-items',
+            ]
         ])
         ->add('reorder', SubmitEmsType::class, [
                 'attr' => [
-                        'class' => 'btn-primary '
+                        'class' => 'btn-primary reorder-button'
                 ],
                 'icon' => 'fa fa-reorder'
         ]);

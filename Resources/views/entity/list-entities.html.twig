@@ -10,7 +10,8 @@
 	<!-- /.box-header -->
 	{% if entities|length %}
 		<div class="box-body no-padding">
-			<ol class="sortable vertical">
+            {{ form_start(form) }}
+			<ol class="nested-sortable vertical">
 				{% for entity in entities %}
 					<li id="{{ entity.id }}" class="mjs-nestedSortable-no-nesting mjs-nestedSortable-leaf">
         				<div class="box-header ui-sortable-handle">
@@ -28,7 +29,6 @@
 					</li>
 				{% endfor %}
 			</ol>
-		    {{ form_start(form) }}
 		    <div>
 		    	<div class="box-footer">
     				<div class="btn-group">

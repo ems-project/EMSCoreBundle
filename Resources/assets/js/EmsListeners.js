@@ -21,7 +21,9 @@ export default class EmsListeners {
         this.addSelect2Listeners();
         this.addCollapsibleCollectionListeners();
         this.addSortableListListeners();
+        this.addNestedSortableListeners();
         this.addCodeEditorListeners();
+        this.addRemoveButtonListeners();
     }
 
     static getAceConfig() {
@@ -110,6 +112,75 @@ export default class EmsListeners {
         }
     }
 
+
+    addNestedSortableListeners() {
+        const nestedList =jquery(this.target).find('.nested-sortable');
+        nestedList.each(function() {
+            const nestedList = jquery(this);
+
+            let maxLevels = nestedList.data('nested-max-level');
+            let isTree = nestedList.data('nested-is-tree');
+
+            if(typeof maxLevels === 'undefined') {
+                maxLevels = 1;
+            }
+            else {
+                maxLevels = Number(maxLevels);
+            }
+
+            if(typeof isTree === 'undefined') {
+                isTree = false;
+            }
+            else {
+                isTree = ( isTree === 'true' );
+            }
+
+            nestedList.nestedSortable({
+                forcePlaceholderSize: true,
+                handle: 'div',
+                helper: 'clone',
+                items: 'li',
+                opacity: .6,
+                placeholder: 'placeholder',
+                revert: 250,
+                tabSize: 25,
+                tolerance: 'pointer',
+                toleranceElement: '> div',
+                maxLevels: maxLevels,
+                expression: /()(.+)/,
+
+                isTree: isTree,
+                expandOnHover: 700,
+                startCollapsed: true
+            });
+        });
+
+        jquery(this.target).find('.reorder-button').on('click', function(e){
+            const form = jquery(this).closest('form');
+            const hierarchy = form.find('.nested-sortable').nestedSortable('toHierarchy', {startDepthCount: 0});
+            form.find('input.reorder-items').val(JSON.stringify(hierarchy)).trigger("change");
+        });
+
+        jquery(this.target).find('.mjs-nestedSortable .button-collapse').click(function (event) {
+            event.preventDefault();
+            const $isExpanded = ($(this).attr('aria-expanded') === 'true');
+            $(this).parent().find('> button').attr('aria-expanded', !$isExpanded);
+            let $panel = $(this).closest('li');
+            $panel.find('ol').first().collapse('toggle');
+        });
+
+        jquery(this.target).find('.mjs-nestedSortable .button-collapse-all').click(function (event) {
+            event.preventDefault();
+            const $isExpanded = ($(this).attr('aria-expanded') === 'true');
+            let $panel = $(this).closest('li');
+            $panel.find('.button-collapse').attr('aria-expanded', !$isExpanded);
+            $panel.find('.button-collapse-all').attr('aria-expanded', !$isExpanded);
+            $panel.find('ol').collapse('toggle');
+        });
+
+
+    }
+
     addSortableListListeners() {
         jquery(this.target).find('ul.sortable').sortable();
     }
@@ -137,6 +208,14 @@ export default class EmsListeners {
         jquery(this.target).find(".select2").select2({
             escapeMarkup: function (markup) { return markup; }
         });
+    }
+
+    addRemoveButtonListeners() {
+        jquery(this.target).find('.remove-item')
+            .on('click', function(event) {
+                event.preventDefault();
+                $(this).closest('li').remove();
+            });
     }
 
     addCollapsibleCollectionListeners() {

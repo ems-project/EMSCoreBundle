@@ -244,9 +244,9 @@ class HierarchicalViewType extends ViewType
             $data = $revision->getRawData();
             $data[$view->getOptions()['field']] = [];
             foreach ($structure as $item) {
-                $data[$view->getOptions()['field']][] = $item['ouuid'];
-                if (explode(':', $item['ouuid'])[0] == $view->getContentType()->getName()) {
-                    $this->reorder($item['ouuid'], $view, $item['children']);
+                $data[$view->getOptions()['field']][] = $item['id'];
+                if (explode(':', $item['id'])[0] == $view->getContentType()->getName()) {
+                    $this->reorder($item['id'], $view, isset($item['children'])?$item['children']:[]);
                 }
             }
             $revision->setRawData($data);

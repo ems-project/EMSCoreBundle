@@ -13,104 +13,49 @@
                         {{ (parent._type~':'~parent ._id)|data_link }}
                     </h2>
                 </div>
-                <div class="box-body no-padding">
-                    <ol class="sortable vertical" id="root-list">
-                        {% include "@EMSCore/view/custom/hierarchical_item.html.twig" with {
-                            parent: parent._source,
-                            view: view,
-                        } %}
-                    </ol>
-                </div>
-                <!-- /.box-body -->
                 {{ form_start(form) }}
-                <div>
-                    {% if form.addItem is defined %}
+                    <div class="box-body no-padding">
+                        <ol class="nested-sortable vertical" id="root-list" data-nested-max-level="{% if view.options.maxDepth is defined and view.options.maxDepth and view.options.maxDepth >= 1 %}{{ view.options.maxDepth }}{% else %}3{% endif %}" data-nested-is-tree="true">
+                            {% include "@EMSCore/view/custom/hierarchical_item.html.twig" with {
+                                parent: parent._source,
+                                view: view,
+                            } %}
+                        </ol>
+                    </div>
+                    <!-- /.box-body -->
+                    <div>
+                        {% if form.addItem is defined %}
+                            <div class="box-footer">
+                                {{ form_row(form.addItem) }}
+                            </div>
+                            <!-- /.box-footer -->
+                        {% endif %}
                         <div class="box-footer">
-                            {{ form_row(form.addItem) }}
-                        </div>
-                        <!-- /.box-footer -->
-                    {% endif %}
-                    <div class="box-footer">
-                        <div class="btn-group">
-                            {{ form_widget(form.reorder) }}
+                            <div class="btn-group">
+                                {{ form_widget(form.reorder) }}
+                            </div>
                         </div>
                     </div>
-                </div>
                 {{ form_end(form) }}
                 <!-- /.box-footer -->
             </div>
         </div>
     </div>
 
+    {% include '@EMSCore/app/menu.html.twig' with {
+        'item':  'data-view-'~ contentType.id ~ '-' ~ view.id
+    } %}
 
 {% endblock %}
 
 
 {% block javascripts %}
-    {% include '@EMSCore/app/menu.html.twig' with {
-        'item':  'data-view-'~ contentType.id ~ '-' ~ view.id
-    } %}
 
 
     <script type="text/javascript">
-        <!--
-
-        //-->
-
-        function addListeners(target) {
-            $(target).find('a.remove-item').click(function (event) {
-                event.preventDefault();
-                $(this).closest('li').remove();
-            });
-
-            $(target).find('.button-collapse').click(function (event) {
-                event.preventDefault();
-                const $isExpanded = ($(this).attr('aria-expanded') === 'true');
-                $(this).parent().find('> button').attr('aria-expanded', !$isExpanded);
-                let $panel = $(this).closest('li');
-                $panel.find('ol').first().collapse('toggle');
-            });
-
-            $(target).find('.button-collapse-all').click(function (event) {
-                event.preventDefault();
-                const $isExpanded = ($(this).attr('aria-expanded') === 'true');
-                let $panel = $(this).closest('li');
-                $panel.find('.button-collapse').attr('aria-expanded', !$isExpanded);
-                $panel.find('.button-collapse-all').attr('aria-expanded', !$isExpanded);
-                $panel.find('ol').collapse('toggle');
-            });
-        }
 
 
         $(document).ready(function () {
-
-            $('.sortable').nestedSortable({
-                forcePlaceholderSize: true,
-                handle: 'div',
-                helper: 'clone',
-                items: 'li',
-                opacity: .6,
-                placeholder: 'placeholder',
-                revert: 250,
-                tabSize: 25,
-                tolerance: 'pointer',
-                toleranceElement: '> div',
-                maxLevels: {% if view.options.maxDepth is defined and view.options.maxDepth and view.options.maxDepth >= 1 %}{{ view.options.maxDepth }}{% else %}3{% endif %},
-                expression: /()(.+)/,
-
-                isTree: true,
-                expandOnHover: 700,
-                startCollapsed: true
-            });
-
-            addListeners('.sortable');
-
-            $('#reorganize_reorder').click(function (e) {
-// 		e.preventDefault();
-                hiered = $('ol.sortable').nestedSortable('toHierarchy', {startDepthCount: 0});
-                $('#reorganize_structure').val(JSON.stringify(getAssocArray(hiered))).trigger("change");
-                console.log($('#reorganize_structure').val());
-            })
 
 
             $(".objectpicker").each(function (index) {
@@ -132,8 +77,7 @@
 
                         $('#root-list').append(item);
                         item.each(function (index) {
-                            addListeners($(this));
-                            console.log(this);
+                            new EmsListeners(this);
                         });
                     });
                 }

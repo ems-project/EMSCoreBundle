@@ -138,13 +138,13 @@ class ContentTypeService
         
         $fieldType->getChildren()->clear();
         foreach ($newStructure as $key => $item) {
-            if (array_key_exists('key_'.$item['ouuid'], $ids)) {
-                $fieldType->getChildren()->add($ids['key_'.$item['ouuid']]);
-                $ids['key_'.$item['ouuid']]->setParent($fieldType);
-                $ids['key_'.$item['ouuid']]->setOrderKey($key);
-                $this->reorderFieldsRecu($ids['key_'.$item['ouuid']], $item['children'], $ids);
+            if (array_key_exists('key_'.$item['id'], $ids)) {
+                $fieldType->getChildren()->add($ids['key_'.$item['id']]);
+                $ids['key_'.$item['id']]->setParent($fieldType);
+                $ids['key_'.$item['id']]->setOrderKey($key);
+                $this->reorderFieldsRecu($ids['key_'.$item['id']], isset($item['children'])?$item['children']:[], $ids);
             } else {
-                $this->session->getFlashBag()->add('warning', $this->translator->trans('Field %id% not found and ignored', ['%id%'=>$item['ouuid']]));
+                $this->session->getFlashBag()->add('warning', $this->translator->trans('Field %id% not found and ignored', ['%id%'=>$item['id']]));
             }
         }
     }

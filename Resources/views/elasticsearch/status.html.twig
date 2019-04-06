@@ -172,12 +172,8 @@
     {% endif %}
 
 </div>
+{% include '@EMSCore/app/menu.html.twig' with {
+	'item':  'elasticsearch-status'
+}%}
 {% endblock %}
-
-
-{% block javascripts %}
-    {% include '@EMSCore/app/menu.html.twig' with {
-		'item':  'elasticsearch-status'
-	}%}
-{% endblock %}	
 

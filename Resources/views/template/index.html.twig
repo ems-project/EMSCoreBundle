@@ -64,11 +64,7 @@
 		</div>
 	</div>
 </div>
-{% endblock %} 
-
-
-{% block javascripts %}
-    {% include '@EMSCore/app/menu.html.twig' with {
-		'item':  'contenttype-list'
-	}%}
+{% include '@EMSCore/app/menu.html.twig' with {
+	'item':  'contenttype-list'
+}%}
 {% endblock %}	

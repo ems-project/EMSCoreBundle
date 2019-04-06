@@ -52,12 +52,7 @@
 		<!-- /.box -->
 	</div>
 </div>
-
-{% endblock %} 
-
-
-{% block javascripts %}
-    {% include '@EMSCore/app/menu.html.twig' with {
-		'item':  'data-add-' ~ contentType.id
-	}%}
+{% include '@EMSCore/app/menu.html.twig' with {
+	'item':  'data-add-' ~ contentType.id
+}%}
 {% endblock %}	

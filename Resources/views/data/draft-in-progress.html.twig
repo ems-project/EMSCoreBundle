@@ -106,11 +106,7 @@
 		<p>There is no draft in progress.</p>
     </div>
 {% endif %}
-{% endblock %}
-
-
-{% block javascripts %}
-    {% include '@EMSCore/app/menu.html.twig' with {
-		'item':  'data-draft-' ~ contentType.id
-	}%}
+{% include '@EMSCore/app/menu.html.twig' with {
+	'item':  'data-draft-' ~ contentType.id
+}%}
 {% endblock %}	

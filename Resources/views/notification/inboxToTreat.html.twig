@@ -9,8 +9,7 @@
 			<tbody>
 				<tr>
 					<th class="" style="">
-	                  	<a href="#" onclick="javascript: $('.item-to-treat').prop('checked', 'checked'); return false;"><i class="fa fa-check-square-o"></i></a> 
-	                  	<a href="#" onclick="javascript: $('.item-to-treat').prop('checked', false); return false;"><i class="fa fa-square-o"></i></a>
+						<input type="checkbox" data-grouped-checkbox-target=".item-to-treat">
 	                  	&nbsp;{{ 'Notification'|trans }}
 					</th>
 					<th>{{ 'Created by'|trans }}</th>
@@ -61,7 +60,7 @@
 
 					<td>
 						<div class="btn-group">
-							<button onclick="javascript: $('.item-to-treat').prop('checked', false); $('#treat_notifications_notifications_{{ notification.id }}').prop('checked', 'checked'); return false;" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#treatNotificationsModal">
+							<button onclick="javascript: $('.item-to-treat').iCheck('uncheck'); $('#treat_notifications_notifications_{{ notification.id }}').iCheck('check'); return false;" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#treatNotificationsModal">
 							  <i class="fa fa-gear"></i> Treat
 							</button>
                             {% include '@EMSCore/elements/object-views-button.html.twig' with {

@@ -16,9 +16,14 @@ export default class EmsListeners {
     }
 
     addListeners() {
-       this.addCheckBoxListeners();
+        this.addCheckBoxListeners();
         this.addSelect2Listeners();
         this.addCollapsibleCollectionListeners();
+        this.addSortableListListners();
+    }
+
+    addSortableListListners() {
+        jquery(this.target).find('ul.sortable').sortable();
     }
 
     addCheckBoxListeners() {

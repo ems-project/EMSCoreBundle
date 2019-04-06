@@ -119,40 +119,8 @@
 
     {{ form_end(form) }}
 
-{% endblock %} 
-
-{% block javascripts %}
-
     {% include '@EMSCore/app/menu.html.twig' with {
         'item':  'contenttype-list'
     } %}
 
-    {% include '@EMSCore/js/code-editor.html.twig' %}
-    <script type="text/javascript">
-        $(window).ready(function () {
-            $(".ems-code-editor").each(function () {
-                var editor = ace.edit(this);
-                if ($(this).data('theme')) {
-                    editor.setTheme($(this).data('theme'));
-                }
-                if ($(this).data('language')) {
-                    editor.session.setMode($(this).data('language'));
-                }
-                var maxLines = 500;
-                if ($(this).data('max-lines') && $(this).data('max-lines') > 0) {
-                    maxLines = $(this).data('max-lines');
-                }
-                editor.setOptions({
-                    readOnly: true,
-                    highlightActiveLine: false,
-                    highlightGutterLine: false,
-                    maxLines: maxLines
-                });
-                editor.renderer.$cursorLayer.element.style.opacity = 0;
-                editor.textInput.getElement().tabIndex = -1;
-                editor.commands.commmandKeyBinding = {};
-            });
-        });
-    </script>
-
-{% endblock %}	
+{% endblock %}

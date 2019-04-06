@@ -44,16 +44,14 @@
 	</div>
 </div>
 
-{% endblock %} 
+{% include '@EMSCore/app/menu.html.twig' with {
+	'item':  'contenttype-index'
+}%}
+{% endblock %}
 
 
 {% block javascripts %}
-    {% include '@EMSCore/app/menu.html.twig' with {
-		'item':  'contenttype-index'
-	}%}
 
-    {% include '@EMSCore/js/code-editor.html.twig' %}
-	
 <script type="text/javascript">
 <!--
 

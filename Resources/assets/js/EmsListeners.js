@@ -1,5 +1,6 @@
 
 import jquery from 'jquery';
+import ace from 'ace-builds/src-noconflict/ace';
 require('icheck');
 
 
@@ -19,10 +20,97 @@ export default class EmsListeners {
         this.addCheckBoxListeners();
         this.addSelect2Listeners();
         this.addCollapsibleCollectionListeners();
-        this.addSortableListListners();
+        this.addSortableListListeners();
+        this.addCodeEditorListeners();
     }
 
-    addSortableListListners() {
+    static getAceConfig() {
+        if(!EmsListeners.aceConfig) {
+            EmsListeners.aceConfig = ace.require("ace/config");
+            EmsListeners.aceConfig.init();
+        }
+        return EmsListeners.aceConfig;
+    }
+
+    addCodeEditorListeners() {
+
+        const codeEditors = this.target.getElementsByClassName('ems-code-editor');
+        for(let i = 0;i < codeEditors.length; i++) {
+
+            const codeDiv = jquery(codeEditors[i]);
+
+            const pre = codeDiv.find('pre').get(0);
+            const hiddenField = codeDiv.find('input');
+
+            let language = hiddenField.data('language');
+            language = language?language:'ace/mode/twig';
+
+            let theme = hiddenField.data('theme');
+            theme = theme?theme:'ace/theme/chrome';
+
+            const editor = ace.edit(pre);
+            editor.setTheme(theme);
+            editor.session.setMode(language);
+
+            let maxLines = 15;
+            if(hiddenField.data('max-lines') && hiddenField.data('max-lines') > 0){
+                maxLines = hiddenField.data('max-lines');
+            }
+
+            if(hiddenField.data('disabled')){
+                editor.setOptions({
+                    readOnly: true,
+                    highlightActiveLine: false,
+                    highlightGutterLine: false,
+                    maxLines: maxLines
+                });
+                editor.renderer.$cursorLayer.element.style.opacity=0;
+                editor.textInput.getElement().tabIndex=-1;
+                editor.commands.commmandKeyBinding={};
+            }
+            else {
+                editor.setOption("maxLines", maxLines);
+            }
+
+            editor.on("change", function(e){
+                hiddenField.val(editor.getValue());
+                if(e.action === 'remove' && typeof onFormChange === "function"){
+                    onFormChange();
+                }
+            });
+
+            editor.commands.addCommands([{
+                name: "fullscreen",
+                bindKey: {win: "F11", mac: "Esc"},
+                exec: function(editor) {
+                    if (codeDiv.hasClass('panel-fullscreen')) {
+                        editor.setOption("maxLines", maxLines);
+                        codeDiv.removeClass('panel-fullscreen');
+                        editor.setAutoScrollEditorIntoView(false);
+                    }
+                    else {
+                        editor.setOption("maxLines", Infinity);
+                        codeDiv.addClass('panel-fullscreen');
+                        editor.setAutoScrollEditorIntoView(true);
+                    }
+
+                    editor.resize();
+
+                }
+            }, {
+                name: "showKeyboardShortcuts",
+                bindKey: {win: "Ctrl-Alt-h", mac: "Command-Alt-h"},
+                exec: function(editor) {
+                    EmsListeners.getAceConfig().loadModule("ace/ext/keybinding_menu", function(module) {
+                        module.init(editor);
+                        editor.showKeyboardShortcuts();
+                    });
+                }
+            }]);
+        }
+    }
+
+    addSortableListListeners() {
         jquery(this.target).find('ul.sortable').sortable();
     }
 

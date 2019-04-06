@@ -315,7 +315,7 @@
 {%- endblock code_editor_label -%}
 
 {% block code_editor_row -%}
-    <div class="form-group ems_code_editor{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %}">
+    <div class="form-group ems-code-editor{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %}">
         {{- form_label(form) -}}
         <div class="">
             {{- form_widget(form) -}}

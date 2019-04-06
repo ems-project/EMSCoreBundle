@@ -45,13 +45,9 @@
 	</div>
 </div>
 
-{% endblock %}
+{% include '@EMSCore/app/menu.html.twig' with {
+	'item':  'wysiwyg-index'
+}%}
 
-
-{% block javascripts %}
-    {% include '@EMSCore/app/menu.html.twig' with {
-		'item':  'wysiwyg-index'
-	}%}
-    {% include '@EMSCore/js/code-editor.html.twig' %}
 {% endblock %}
 	

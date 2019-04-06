@@ -102,8 +102,6 @@
 
 var waitingResponse = false;
 var synchAtTheEnd = true;
-var aceConfig = ace.require("ace/config");
-aceConfig.init();
 
 
 $("form[name={{ form.vars.id }}]").submit(function( event ) {
@@ -482,7 +480,7 @@ function FileDragHover(e) {
 
 function addEventListeners(target){
 
-    new EmsListeners(target);
+    new EmsListeners(target.get(0));
 
 
 	target.find(".file-uploader-input").fileinput({
@@ -549,77 +547,6 @@ function addEventListeners(target){
 		this.addEventListener("dragleave", FileDragHover, false);
 		this.addEventListener("drop", FileSelectHandler, false);
 	});
-
-	
-	target.find(".ems-code-editor").each(function(){
-		var codeDiv = $(this);
-		var pre = codeDiv.find('pre').get(0);
-		var hiddenField = codeDiv.find('input');
-		var editor = ace.edit(pre);
-		if(hiddenField.data('theme')){
-    	    editor.setTheme(hiddenField.data('theme'));
-		}
-		if(hiddenField.data('language')){
-    	    editor.session.setMode(hiddenField.data('language'));
-		}
-		var maxLines = 15;
-		if(hiddenField.data('max-lines') && hiddenField.data('max-lines') > 0){
-			maxLines = hiddenField.data('max-lines');
-		}
-		
-		if(hiddenField.data('disabled')){
-    		editor.setOptions({
-    		    readOnly: true,
-    		    highlightActiveLine: false,
-    		    highlightGutterLine: false,
-			    maxLines: maxLines
-    		});
-    		editor.renderer.$cursorLayer.element.style.opacity=0;
-    		editor.textInput.getElement().tabIndex=-1;
-    		editor.commands.commmandKeyBinding={};
-		}
-		else {
-			editor.setOptions({
-			    maxLines: maxLines
-			});
-		}
-	    editor.on("change", function(e){
-	    	hiddenField.val(editor.getValue());
-	    	if(e.action == 'remove'){
-    		    onFormChange();
-		    }
-		});
-
-        editor.commands.addCommands([{
-            name: "fullscreen",
-            bindKey: {win: "F11", mac: "Esc"},
-            exec: function(editor) {
-                if (codeDiv.hasClass('panel-fullscreen')) {
-                    editor.setOption("maxLines", maxLines);
-                    codeDiv.removeClass('panel-fullscreen');
-                    editor.setAutoScrollEditorIntoView(false);
-                }
-                else {
-                    editor.setOption("maxLines", Infinity);
-                    codeDiv.addClass('panel-fullscreen');
-                    editor.setAutoScrollEditorIntoView(true);
-                }
-
-                editor.resize();
-
-            }
-        }, {
-            name: "showKeyboardShortcuts",
-            bindKey: {win: "Ctrl-Alt-h", mac: "Command-Alt-h"},
-            exec: function(editor) {
-                aceConfig.loadModule("ace/ext/keybinding_menu", function(module) {
-					module.init(editor);
-					editor.showKeyboardShortcuts();
-				});
-            }
-        }]);
-	});
-	
 
 	target.find('.remove-content-button').on('click', function(e) {
 		// prevent the link from creating a "#" on the URL

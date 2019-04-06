@@ -93,6 +93,39 @@
             });
     }
 
+
+    function initCodeEditorThemeAngLanguage(){
+
+        const codeEditorModeField = $('.code_editor_mode_ems');
+        if( codeEditorModeField ){
+            const modeList = ace.require("ace/ext/modelist");
+            let modeListVar = [];
+            for (let index = 0; index < modeList.modes.length; ++index) {
+                modeListVar.push({
+                    id: modeList.modes[index].mode,
+                    text: modeList.modes[index].caption,
+                });
+            }
+            codeEditorModeField.select2({
+                data: modeListVar,
+                placeholder: 'Select a language'
+            });
+
+            const themeList = ace.require("ace/ext/themelist");
+            let themeList_var = [];
+            for (let index = 0; index < themeList.themes.length; ++index) {
+                themeList_var.push({
+                    id: themeList.themes[index].theme,
+                    text: themeList.themes[index].caption+' ('+(themeList.themes[index].isDark?'Dark':'Bright')+')',
+                });
+            }
+            $('.code_editor_theme_ems').select2({
+                data: themeList_var,
+                placeholder: 'Select a theme'
+            });
+        }
+    }
+
     function toggleMenu() {
         $('.toggle-button').click(function(){
             const toggleTex = $(this).data('toggle-contain');
@@ -102,6 +135,12 @@
         });
     }
 
+    function autoOpenModal(queryString) {
+        if(queryString.open) {
+            $('#content_type_structure_fieldType'+queryString.open).modal('show');
+        }
+    }
+
     $(document).ready(function() {
         activeMenu();
         loadLazyImages();
@@ -109,13 +148,14 @@
         closeModalNotification();
         requestJob();
         toggleMenu();
-        window.QueryString = queryString();
-
+        initCodeEditorThemeAngLanguage();
+        autoOpenModal(queryString());
 
         //cron to update the cluster status
         window.setInterval(function(){
             updateStatusFct();
         }, 180000);
+
         //60000 every minute
     });
 

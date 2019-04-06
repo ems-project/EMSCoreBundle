@@ -153,18 +153,3 @@
 </div>
 {% endblock %} 
 
-
-{% block javascripts %}
-    {% include '@EMSCore/app/menu.html.twig' with {
-		'item':  'contenttype-list'
-	}%}
-	
-<script type="text/javascript">
-<!--
-
-//-->
-	$(document).ready(function() {
-		$('ul.sortable').sortable();
-	});
-</script>
-{% endblock %}	

@@ -429,18 +429,4 @@
 
 </div>
 
-{% endblock %} 
-
-{% block javascripts %}
-    {% include '@EMSCore/app/menu.html.twig' with {
-		'item':  'environment-list'
-	}%}	
-    <script type="text/javascript">
-    <!--
-    
-    //-->
-    	$(document).ready(function() {
-    		$('ul.sortable').sortable();
-    	});
-    </script>
-{% endblock %}	
+{% endblock %}

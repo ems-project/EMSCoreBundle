@@ -1,50 +1,33 @@
 {% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}{{ view.name }} of {{contentType.singularName}}{% endblock %}
-{% block pagetitle %}{{ view.name }} of {{contentType.singularName}}{% endblock %} 
-{# {% block subtitle %}<!-- TODO -->{% endblock %} #}
+{% block pagetitle %}{{ view.name }} of {{contentType.singularName}}{% endblock %}
 
 
 {% block body %}
-	
-<div class="row">
-	<div class="col-md-12">
-		<div class="box ">
-			{{ form_start(form) }}
-			<div class="box-body">
-				<ul class="list-group sortable ui-sortable"
-					id="content_type_structure_fieldType_modal_reorder_list">
-				{% for hit in result.hits.hits %}
-					<li class="list-group-item ui-sortable-handle">
-						<i class="glyphicon glyphicon-move"></i>
-                        {{ (hit._type~':'~hit._id)|data_link }}
-						{{ form_widget(attribute(form.items, hit._id)) }}
-					</li>
-				{% endfor %}
-				</ul>
-			</div>
-			<div class="box-footer">
-				<div class="btn-group">
-				    {{ form_widget(form.reorder) }}
+	<div class="row">
+		<div class="col-md-12">
+			<div class="box ">
+                {{ form_start(form) }}
+				<div class="box-body">
+					<ul class="list-group sortable ui-sortable"
+						id="content_type_structure_fieldType_modal_reorder_list">
+                        {% for hit in result.hits.hits %}
+							<li class="list-group-item ui-sortable-handle">
+								<i class="glyphicon glyphicon-move"></i>
+                                {{ (hit._type~':'~hit._id)|data_link }}
+                                {{ form_widget(attribute(form.items, hit._id)) }}
+							</li>
+                        {% endfor %}
+					</ul>
 				</div>
+				<div class="box-footer">
+					<div class="btn-group">
+                        {{ form_widget(form.reorder) }}
+					</div>
+				</div>
+                {{ form_end(form) }}
 			</div>
-			{{ form_end(form) }}
 		</div>
 	</div>
-</div>
 {% endblock %} 
-
-
-{% block javascripts %}
-    {% include '@EMSCore/app/menu.html.twig' with {
-		'item':  'data-view-'~ contentType.id ~ '-' ~ view.id
-	}%}
-<script type="text/javascript">
-<!--
-
-//-->
-	$(document).ready(function() {
-		$('ul.sortable').sortable();
-	});
-</script>
-{% endblock %}	

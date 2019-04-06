@@ -40,9 +40,15 @@ export default class EmsListeners {
         for(let i = 0;i < codeEditors.length; i++) {
 
             const codeDiv = jquery(codeEditors[i]);
+            let pre = codeEditors[i];
+            let hiddenField = codeDiv;
+            let disabled = true;
 
-            const pre = codeDiv.find('pre').get(0);
-            const hiddenField = codeDiv.find('input');
+            if(pre.tagName === 'DIV') {
+                pre = codeDiv.find('pre').get(0);
+                hiddenField = codeDiv.find('input');
+                disabled = hiddenField.data('disabled');
+            }
 
             let language = hiddenField.data('language');
             language = language?language:'ace/mode/twig';
@@ -59,7 +65,7 @@ export default class EmsListeners {
                 maxLines = hiddenField.data('max-lines');
             }
 
-            if(hiddenField.data('disabled')){
+            if(disabled){
                 editor.setOptions({
                     readOnly: true,
                     highlightActiveLine: false,

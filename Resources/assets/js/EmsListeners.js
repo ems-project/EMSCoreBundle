@@ -56,29 +56,18 @@ export default class EmsListeners {
             let theme = hiddenField.data('theme');
             theme = theme?theme:'ace/theme/chrome';
 
-            const editor = ace.edit(pre);
-            editor.setTheme(theme);
-            editor.session.setMode(language);
 
             let maxLines = 15;
             if(hiddenField.data('max-lines') && hiddenField.data('max-lines') > 0){
                 maxLines = hiddenField.data('max-lines');
             }
 
-            if(disabled){
-                editor.setOptions({
-                    readOnly: true,
-                    highlightActiveLine: false,
-                    highlightGutterLine: false,
-                    maxLines: maxLines
-                });
-                editor.renderer.$cursorLayer.element.style.opacity=0;
-                editor.textInput.getElement().tabIndex=-1;
-                editor.commands.commmandKeyBinding={};
-            }
-            else {
-                editor.setOption("maxLines", maxLines);
-            }
+            const editor = ace.edit(pre, {
+                mode: language,
+                readOnly: disabled,
+                maxLines: maxLines,
+                theme: theme
+            });
 
             editor.on("change", function(e){
                 hiddenField.val(editor.getValue());

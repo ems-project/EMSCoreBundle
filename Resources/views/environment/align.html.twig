@@ -264,11 +264,7 @@
 {{ form_rest(form) }}
 {{ form_end(form) }}
 </div>
-{% endblock %} 
-
-
-{% block javascripts %}
-    {% include '@EMSCore/app/menu.html.twig' with {
-		'item':  'environment-align'
-	}%}
+{% include '@EMSCore/app/menu.html.twig' with {
+    'item':  'environment-align'
+}%}
 {% endblock %}	

@@ -13,11 +13,7 @@
 	{% endfor %}
 </div>
 
-{% endblock %} 
-
-
-{% block javascripts %}
-    {% include '@EMSCore/app/menu.html.twig' with {
-		'item':  'data-view-'~ contentType.id ~ '-' ~ view.id
-	}%}
+{% include '@EMSCore/app/menu.html.twig' with {
+	'item':  'data-view-'~ contentType.id ~ '-' ~ view.id
+}%}
 {% endblock %}	

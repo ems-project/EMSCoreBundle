@@ -17,11 +17,8 @@
 		action: 'Save',
 		actionIcon: 'fa-save'
 	} %}
-{% endblock %}
 
-
-{% block javascripts %}
-    {% include '@EMSCore/i18n/javascript.html.twig' with {
-		'item':  'i18n-index'
-	}%}
+{% include '@EMSCore/i18n/javascript.html.twig' with {
+	'item':  'i18n-index'
+}%}
 {% endblock %}	

@@ -70,7 +70,10 @@ class AnalyzerOptionsType extends AbstractType
                 'form.analyzer.type.fingerprint' => 'fingerprint',
                 'form.analyzer.type.custom' => 'custom',
             ],
-            'label' => 'form.analyzer.type'
+            'label' => 'form.analyzer.type',
+            'attr' => [
+                'data-fields-to-display-by-value' => json_encode(AnalyzerOptionsType::FIELDS_BY_TYPE),
+            ]
         ])->add('tokenizer', ChoiceType::class, [
             'attr' => ['class' => 'analyzer_option'],
             'required' => false,

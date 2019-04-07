@@ -57,6 +57,7 @@ module.exports = {
         'yellow': './Resources/assets/skins/yellow.js',
         'yellow-light': './Resources/assets/skins/yellow-light.js',
         'app': './Resources/assets/app.js',
+        'edit-revision': './Resources/assets/edit-revision.js',
     },
     output: {
         path: path.resolve(__dirname, 'Resources/public'),

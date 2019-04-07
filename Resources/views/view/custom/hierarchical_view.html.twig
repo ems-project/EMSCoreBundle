@@ -57,11 +57,6 @@
 
         $(document).ready(function () {
 
-
-            $(".objectpicker").each(function (index) {
-                objectPickerListeners($(this));
-            });
-
             $('#reorganize_addItem_value').on("select2:select", function () {
 
                 var prototype = "{{ path('views.hierarchical.item', {key: '__key__', view: view.id}) }}";

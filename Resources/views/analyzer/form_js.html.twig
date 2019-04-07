@@ -6,27 +6,18 @@
 
 function prepareForm(value){
 	$('.analyzer_option').closest('.form-group').hide();
-
-		switch(value) {
-			{% for key, fields in constant('EMS\\CoreBundle\\Form\\Field\\AnalyzerOptionsType::FIELDS_BY_TYPE') %}
-			case '{{key}}':
-				{% for field in fields %}
-					$('#analyzer_options_{{ field }}').closest('.form-group').show();
-				{% endfor %}
-				break;
-			{% endfor %}
-		}
+	const options = $('#analyzer_options_type').data('fields-to-display-by-value')
+    options[value].forEach(function(element) {
+        $('#analyzer_options_'+element).closest('.form-group').show();
+    });
 }
 
 
 $(window).ready(function() {
-
 	$('#analyzer_options_type').change(function(eventObject){
 		prepareForm($(this).val());
 	});
-
 	prepareForm($('#analyzer_options_type').val())
-	
 });
 
 

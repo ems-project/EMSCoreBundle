@@ -4,6 +4,8 @@
  * This function initialized the elasticms admin interface
  *
  */
+import EmsListeners from "./EmsListeners";
+
 (function(factory) {
     "use strict";
 
@@ -141,6 +143,29 @@
         }
     }
 
+    function initSearchForm() {
+
+        $('#add-search-filter-button').on('click', function(e) {
+            // prevent the link to scroll to the top ("#" anchor)
+            e.preventDefault();
+
+            const $listFilters = $('#list-of-search-filters');
+            const prototype = $listFilters.data('prototype');
+            const index = $listFilters.data('index');
+            // Replace '__name__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            const newForm = $(prototype.replace(/__name__/g, index));
+
+            // increase the index with one for the next item
+            $listFilters.data('index', index + 1);
+
+            //attach listeners to the new DOM element
+            new EmsListeners(newForm.get(0));
+            $listFilters.append(newForm);
+
+        });
+    }
+
     $(document).ready(function() {
         activeMenu();
         loadLazyImages();
@@ -148,6 +173,7 @@
         closeModalNotification();
         requestJob();
         toggleMenu();
+        initSearchForm();
         initCodeEditorThemeAngLanguage();
         autoOpenModal(queryString());
 

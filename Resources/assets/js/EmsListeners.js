@@ -202,6 +202,13 @@ export default class EmsListeners {
                 event.preventDefault();
                 $(this).closest('li').remove();
             });
+
+        jquery(this.target).find('.remove-filter')
+            .on('click', function(event) {
+                event.preventDefault();
+                $(this).closest('.filter-container').remove();
+            });
+
     }
 
     addCollapsibleCollectionListeners() {

@@ -96,6 +96,10 @@
 {% endblock %}
 
 
+{% block frontend_application %}{#ok#}
+	<script src="{{ asset('bundles/emscore/js/edit-revision.bundle.js') }}"></script>
+{% endblock %}
+
 {% block javascripts %}{#last#}
 
 <script type="text/javascript">
@@ -674,87 +678,6 @@ function addEventListeners(target){
 
 		
 	});
-	
-	target.find(".objectpicker").each(function(index){
-		var type = $( this ).data('type'); 
-		var searchId = $( this ).data('search-id');
-		var circleOnly = $( this ).data('circleOnly');
-		var dynamicLoading = $( this ).data('dynamic-loading');
-		var sortable = $( this ).data('sortable'); 
-
-		var params = {
-		  	escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
-		  	templateResult: formatRepo, // omitted for brevity, see the source of this page
-		  	templateSelection: formatRepoSelection, // omitted for brevity, see the source of this page
-		  	allowClear: true,
-		  	//https://github.com/select2/select2/issues/3781
-		  	placeholder: 'Select an object'
-		};
-
-		if($( this ).attr('multiple')) {
-		  	params.closeOnSelect = false;
-		}
-
-		if(dynamicLoading){
-		  	params.minimumInputLength = 1;
-			params.ajax = {
-				url: '{{ path("elasticsearch.api.search") }}',
-		    	dataType: 'json',
-		    	delay: 250,
-		    	data: function (params) {
-		      		return {
-						q: params.term, // search term
-						page: params.page,
-						type: type,
-                        searchId: searchId,
-						circle: circleOnly !== undefined
-			      };
-			    },
-				processResults: function (data, params) {
-					// parse the results into the format expected by Select2
-					// since we are using custom formatting functions we do not need to
-					// alter the remote JSON data, except to indicate that infinite
-					// scrolling can be used
-					params.page = params.page || 1;
-			
-			      	return {
-				        results: data.items,
-				        pagination: {
-				          more: (params.page * 30) < data.total_count
-				        }
-			      	};
-		    	},
-		    	cache: true
-		  	};
-		}
-
-		var select2 = $( this ).select2(params);
-
-		if(sortable){
-    		var selectItem = $(this);
-    		$(this).parent().find("ul.select2-selection__rendered").sortable({
-    			stop: function( event, ui ) {
-    				
-    				//http://stackoverflow.com/questions/45888/what-is-the-most-efficient-way-to-sort-an-html-selects-options-by-value-while
-    				var selected = selectItem.val();
-    				var my_options = selectItem.find("option");
-    				
-    				var ul = $(this);
-    				
-    				my_options.sort(function(a,b) {
-    					var indexA = ul.find("li[title='"+a.title.replace(/\'/g, "\\\'")+"']").index();
-    					var indexB = ul.find("li[title='"+b.title.replace(/\'/g, "\\\'")+"']").index();
-
-    				    if (indexA > indexB) return 1;
-    				    if (indexA < indexB) return -1;
-    				    return 0
-    				});
-    				selectItem.empty().append( my_options );
-    				selectItem.val(selected);
-    			}
-    		});
-		}
-    });	
     
 	target.find(".colorpicker-component").colorpicker();
 

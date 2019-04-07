@@ -35,6 +35,7 @@
 <body class="hold-transition skin-{{ theme_color }} {% if app.user %}{% if app.user.layoutBoxed %}layout-boxed{% endif %}{% if app.user.sidebarCollapse %} sidebar-collapse{% endif %}{% if app.user.sidebarMini %} sidebar-mini{% endif %}{% endif %}"
       data-hash-algo="{{ ems_hash_algo|e('html_attr') }}"
       data-status-url="{{ path('elasticsearch.status', {_format: 'json'})|e('html_attr') }}"
+      data-search-api="{{ path('elasticsearch.api.search')|e('html_attr') }}"
       data-asset-path="{{ asset('')|e('html_attr') }}">
 <div class="wrapper">
 
@@ -427,7 +428,9 @@
 
 
 <!-- centralized webpack javascript -->
-<script src="{{ asset('bundles/emscore/js/app.bundle.js') }}"></script>
+{% block frontend_application %}{#ok#}
+    <script src="{{ asset('bundles/emscore/js/app.bundle.js') }}"></script>
+{% endblock %}
 
 <!-- Variables  -->
 <script>

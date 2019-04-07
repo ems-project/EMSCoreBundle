@@ -96,7 +96,11 @@
 {% endblock %}
 
 
-{% block frontend_application %}{#ok#}
+{% block frontend_application_css %}
+	<link rel="stylesheet" href="{{ asset('bundles/emscore/css/edit-revision.bundle.css') }}">
+{% endblock %}
+
+{% block frontend_application_js %}
 	<script src="{{ asset('bundles/emscore/js/edit-revision.bundle.js') }}"></script>
 {% endblock %}
 

@@ -11,7 +11,9 @@
 
 
     <!-- stylesheets -->
-    <link rel="stylesheet" href="{{ asset('bundles/emscore/css/app.bundle.css') }}">
+    {% block frontend_application_css %}
+        <link rel="stylesheet" href="{{ asset('bundles/emscore/css/app.bundle.css') }}">
+    {% endblock %}
     {%- if theme_color %}
         <link rel="stylesheet" href="{{ asset('bundles/emscore/css/'~theme_color~'.bundle.css') }}">
     {%- else -%}
@@ -428,7 +430,7 @@
 
 
 <!-- centralized webpack javascript -->
-{% block frontend_application %}{#ok#}
+{% block frontend_application_js %}{#ok#}
     <script src="{{ asset('bundles/emscore/js/app.bundle.js') }}"></script>
 {% endblock %}
 

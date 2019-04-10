@@ -48,16 +48,16 @@ import EmsListeners from "./EmsListeners";
 
 
     function closeModalNotification() {
-        $('#modal-notification-close-button').click(function(){
+        $('#modal-notification-close-button').on('click', function(){
             $('#modal-notifications .modal-body').empty();
             $('#modal-notifications').modal('hide');
         });
     }
 
     function requestJob() {
-        $("a.request_job").click(function(e){
+        $("a.request_job").on('click', function(e){
             e.preventDefault();
-            ajaxRequest.post($(e.target).data('url'));
+            window.ajaxRequest.post($(e.target).data('url'));
         });
     }
 
@@ -67,8 +67,8 @@ import EmsListeners from "./EmsListeners";
         let query_string = {};
         const query = window.location.search.substring(1);
         const vars = query.split("&");
-        for (var i=0;i<vars.length;i++) {
-            var pair = vars[i].split("=");
+        for (let i=0;i<vars.length;i++) {
+            const pair = vars[i].split("=");
             // If first entry with this name
             if (typeof query_string[pair[0]] === "undefined") {
                 query_string[pair[0]] = decodeURIComponent(pair[1]);
@@ -129,7 +129,7 @@ import EmsListeners from "./EmsListeners";
     }
 
     function toggleMenu() {
-        $('.toggle-button').click(function(){
+        $('.toggle-button').on('click', function(){
             const toggleTex = $(this).data('toggle-contain');
             const text=$(this).html();
             $(this).html(toggleTex);
@@ -177,6 +177,50 @@ import EmsListeners from "./EmsListeners";
         });
     }
 
+    function initAjaxFormSave() {
+        $('button[data-ajax-save-url]').each(function(){
+            const button = $(this);
+            const form = button.closest('form');
+
+            const ajaxSave = function(event){
+                event.preventDefault();
+
+                const formContent = form.serialize();
+                window.ajaxRequest.post(button.data('ajax-save-url'), formContent)
+                    .success(function(message) {
+                        const response = jQuery.parseJSON( message );
+
+                        $('.has-error').removeClass('has-error');
+
+                        $(response.errors).each(function(index, item){
+                            $('#'+item.propertyPath).parent().addClass('has-error');
+                        });
+                    });
+            };
+
+            button.on('click', ajaxSave);
+
+            $(document).keydown(function(e) {
+                let key = undefined;
+                const possible = [ e.key, e.keyIdentifier, e.keyCode, e.which ];
+
+                while (key === undefined && possible.length > 0)
+                {
+                    key = possible.pop();
+                }
+
+                if (typeof key === "number" && ( 115 === key || 83 === key ) && (e.ctrlKey || e.metaKey) && !(e.altKey))
+                {
+                    ajaxSave(e);
+                    return false;
+                }
+                return true;
+
+            });
+
+        });
+    }
+
     $(document).ready(function() {
         activeMenu();
         loadLazyImages();
@@ -188,6 +232,7 @@ import EmsListeners from "./EmsListeners";
         initCodeEditorThemeAngLanguage();
         autoOpenModal(queryString());
         startPendingJob();
+        initAjaxFormSave();
 
         //cron to update the cluster status
         window.setInterval(function(){

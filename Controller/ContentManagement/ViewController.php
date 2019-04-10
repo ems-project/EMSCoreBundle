@@ -122,7 +122,8 @@ class ViewController extends AppController
         ])
         ->add('save', SubmitEmsType::class, [
                 'attr' => [
-                        'class' => 'btn-primary btn-sm '
+                    'class' => 'btn-primary btn-sm',
+                    'data-ajax-save-url' => $this->generateUrl('view.edit', ['id' => $id, '_format' => 'json']),
                 ],
                 'icon' => 'fa fa-save'
         ])->getForm();
@@ -132,12 +133,6 @@ class ViewController extends AppController
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($view);
             $em->flush();
-
-//             $this->addFlash('notice', 'A view has been updated');
-            
-//             return $this->redirectToRoute('view.index', [
-//                     'type' => $view->getContentType()->getName()
-//             ]);
         }
         
         return $this->render('@EMSCore/view/edit.'.$_format.'.twig', [

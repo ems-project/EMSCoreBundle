@@ -42,25 +42,11 @@
 }%}
 {% endblock fos_user_content %}
 
-{% block javascripts %}
-	<script type="text/javascript">
 
-	$(document).ready(function() {
+{% block frontend_application_css %}
+	<link rel="stylesheet" href="{{ asset('bundles/emscore/css/user-profile.bundle.css') }}">
+{% endblock %}
 
-		$('.datepicker').datepicker({
-			format: '{{ datepicker_format }}',
-			todayBtn: true,
-			todayHighlight: true,
-			weekStart: {{ datepicker_weekstart }},
-			daysOfWeekHighlighted: {{ datepicker_daysofweek_highlighted | json_encode }},
-			daysOfWeekDisabled: [],
-			multidate: false
-		});
-
-	});   
-    </script>
-
-    {% include "@EMSCore/user/wysiwygOptionsJS.html.twig" with {
-		form: form
-	} %}
+{% block frontend_application_js %}
+	<script src="{{ asset('bundles/emscore/js/user-profile.bundle.js') }}"></script>
 {% endblock %}

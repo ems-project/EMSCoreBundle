@@ -59,6 +59,7 @@ module.exports = {
         'app': './Resources/assets/app.js',
         'edit-revision': './Resources/assets/edit-revision.js',
         'managed-alias': './Resources/assets/managed-alias.js',
+        'user-profile': './Resources/assets/user-profile.js',
     },
     output: {
         path: path.resolve(__dirname, 'Resources/public'),

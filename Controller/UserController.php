@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityRepository;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\AuthToken;
 use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -103,12 +104,17 @@ class UserController extends AppController
                 return $er->createQueryBuilder('p')->orderBy('p.orderKey', 'ASC');
             },
             'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
-        ])
-        ->add('wysiwygOptions', TextareaType::class, [
-            'required' => false,
-            'label' => 'WYSIWYG custom options',
             'attr' => [
-                'rows' => 8,
+                'data-live-search' => true,
+                'class' => 'wysiwyg-profile-picker',
+            ],
+        ])
+        ->add('wysiwygOptions',CodeEditorType::class, [
+            'label' => 'WYSIWYG Options',
+            'required' => false,
+            'language' => 'ace/mode/json',
+            'attr' => [
+                'class' => 'wysiwyg-profile-options',
             ],
             'translation_domain' => EMSCoreBundle::TRANS_DOMAIN
         ])

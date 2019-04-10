@@ -58,6 +58,7 @@ module.exports = {
         'yellow-light': './Resources/assets/skins/yellow-light.js',
         'app': './Resources/assets/app.js',
         'edit-revision': './Resources/assets/edit-revision.js',
+        'managed-alias': './Resources/assets/managed-alias.js',
     },
     output: {
         path: path.resolve(__dirname, 'Resources/public'),

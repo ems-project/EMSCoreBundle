@@ -42,6 +42,7 @@ require('jquery-knob');
 require('jquery-sparkline');
 require('jquery-ui');
 require('jquery-ui/ui/widgets/sortable');
+require('jquery-ui/ui/widgets/draggable');
 require("jquery-lazyload");
 require('jvectormap');
 require('moment');

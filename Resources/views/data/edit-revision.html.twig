@@ -43,7 +43,41 @@
         </div>
 	{% endif %}
 
-<div class="box box-primary">
+
+	{%- set stylesSetsConfig = {} -%}
+    {%- if stylesSets is defined %}
+		{#Add custom styles sets (e.g for bootstrap (responsive tables, ...))#}
+        {%- for stylesSet in stylesSets -%}
+			{%- set stylesSetsConfig = stylesSetsConfig|merge([{
+				name: stylesSet.name,
+				config:  stylesSet.config|json_decode
+			}]) -%}
+        {%- endfor -%}
+    {%- endif -%}
+
+<div class="box box-primary" id="revision-primary-box"
+	data-update-mode="
+		{%- if not revision.draft -%}
+			disabled
+		{%- elseif revision.contentType.autoPublish -%}
+			autoPublish
+		{%- else -%}
+			autoSave
+		{%- endif -%}"
+	data-wysiwyg-config="
+		{%- if app.user.wysiwygProfile and app.user.wysiwygProfile.config -%}
+			{{- app.user.wysiwygProfile.config|e('html_attr') -}}
+		{%- elseif app.user.wysiwygOptions -%}
+			{{- app.user.wysiwygOptions|e('html_attr') -}}
+        {%- else -%}
+            {}
+		{%- endif -%}"
+	data-upload-url="{{ path('ems_image_upload_url')|e('html_attr') }}"
+	data-image-url="{{ path('ems_images_index')|e('html_attr') }}"
+	data-styles-sets="{{ stylesSetsConfig|json_encode|e('html_attr') }}"
+	data-init-upload="{{ path('emsco_file_data_init_upload')|e('html_attr') }}"
+	data-file-extract="{{ path('ems_file_extract', { sha1: '__file_identifier__', name: '__file_name__' })|e('html_attr') }}"
+	data-ajax-update="{{ path('revision.ajaxupdate', { revisionId: revision.id })|e('html_attr') }}">
 	<div class="box-header with-border">
 		<h3 class="box-title text-{{ revision.contentType.color }}"><i class="{% if revision.contentType.icon %}{{ revision.contentType.icon }} {% else %} fa fa-question {% endif %} "></i>&nbsp;&nbsp;&nbsp;{{ revision.contentType.singularName }}</h3>
 	</div>
@@ -93,8 +127,17 @@
 		
 </div>
 
-{% endblock %}
+{% if revision.draft %}
+	{% include '@EMSCore/app/menu.html.twig' with {
+		'item':  'data-draft-' ~ revision.contentType.id
+	}%}
+{% else %}
+	{% include '@EMSCore/app/menu.html.twig' with {
+		'item':  'data-index-' ~ revision.contentType.id
+	}%}
+{% endif %}
 
+{% endblock %}
 
 {% block frontend_application_css %}
 	<link rel="stylesheet" href="{{ asset('bundles/emscore/css/edit-revision.bundle.css') }}">
@@ -108,12 +151,21 @@
 
 <script type="text/javascript">
 
-var waitingResponse = false;
-var synchAtTheEnd = true;
+let waitingResponse = false;
+let synch = true;
 
+const primaryBox = $('#revision-primary-box');
+const updateMode = primaryBox.data('update-mode');
+const wysiwygConfig = primaryBox.data('wysiwyg-config');
+const uploadUrl = primaryBox.data('upload-url');
+const imageUrl = primaryBox.data('image-url');
+const stylesSets = primaryBox.data('styles-sets');
+const initUpload = primaryBox.data('init-upload');
+const fileExtract = primaryBox.data('file-extract');
+const assetPath = document.querySelector("BODY").getAttribute('data-asset-path') ;
 
-$("form[name={{ form.vars.id }}]").submit(function( event ) {
-	//disable autosave
+$("form[name=revision]").submit(function( ) {
+	//disable all pending auto-save
 	waitingResponse = true;
 	synch = true;
 });
@@ -121,38 +173,39 @@ $("form[name={{ form.vars.id }}]").submit(function( event ) {
 function updateChoiceFieldTypes()
 {
     $('.ems-choice-field-type').each(function(){
-        var choice = $(this);
-        var collectionName = choice.data('linked-collection');
+        const choice = $(this);
+        const collectionName = choice.data('linked-collection');
         if(collectionName)
         {
 
             $('.collection-panel').each(function()
             {
-                var collectionPanel = $(this);
+                const collectionPanel = $(this);
                 if(collectionPanel.data('name') === collectionName)
                 {
-                    var collectionLabelField = choice.data('collection-label-field');
+                    const collectionLabelField = choice.data('collection-label-field');
 
                     collectionPanel.children('.panel-body').children('.collection-panel-container').children('.collection-item-panel').each(function(){
 
-                        var collectionItem = $(this);
-                        var index = collectionItem.data('index');
-                        var id = collectionItem.data('id');
-                        var label = ' #'+index;
+                        const collectionItem = $(this);
+                        const index = collectionItem.data('index');
+                        const id = collectionItem.data('id');
+                        let label = ' #'+index;
+
                         if(collectionLabelField)
                         {
                             label += ': '+$('#'+id+'_'+collectionLabelField).val();
                         }
 
-                        var multiple = choice.data('multiple');
-                        var expanded = choice.data('expanded');
+                        const multiple = choice.data('multiple');
+                        const expanded = choice.data('expanded');
 
                         if(expanded)
                         {
-                            var option = choice.find('input[value="'+index+'"]');
+                            const option = choice.find('input[value="'+index+'"]');
                             if(option.length)
                             {
-                                var parent = option.closest('.checkbox,.radio');
+                                const parent = option.closest('.checkbox,.radio');
                                 if($('#'+id+'__ems_internal_deleted').val() === 'deleted'){
 									parent.hide();
                                     option.addClass('input-to-hide');
@@ -174,7 +227,7 @@ function updateChoiceFieldTypes()
                         }
                         else
 						{
-                            var option = choice.find('option[value="'+index+'"]');
+                            const option = choice.find('option[value="'+index+'"]');
                             if(option.length)
 							{
                                 if($('#'+id+'__ems_internal_deleted').val() === 'deleted')
@@ -207,65 +260,72 @@ function updateChoiceFieldTypes()
 
 
 function onFormChange(event, allowAutoPublish){
-    {% if not revision.draft %}
-    	return;
-    {% endif %}
 
-	{% if revision.contentType.autoPublish %}
-		if(!allowAutoPublish) {
-		    console.log('The auto-save is deactivated!');
-		    return;
-		}
-	{% endif %}
+
+    if (updateMode === 'disabled') {
+        // console.log('No way to save a finalized revision!');
+        return;
+	}
+	else if (updateMode === 'autoPublish' && !allowAutoPublish) {
+        // console.log('The auto-save is disabled in auto-publish mode!');
+        return;
+    }
+
 
 		synch = false;
 
     	updateChoiceFieldTypes();
 
 
-		if(waitingResponse){
+		if(waitingResponse) {
 			return;
-			//abort the request migth be an option, but it overload the server
-// 			waitingResponse.abort();
+			//abort the request might be an option, but it overloads the server
+			// waitingResponse.abort();
 		}
 
 		synch = true;
-		//update ckeditor's textareas
-		for (var i in CKEDITOR.instances) {
-	        CKEDITOR.instances[i].updateElement();
+		//update ckeditor's text areas
+		for (let i in CKEDITOR.instances) {
+		    if(CKEDITOR.instances.hasOwnProperty(i)) {
+				CKEDITOR.instances[i].updateElement();
+			}
 		}
 		
-		waitingResponse = ajaxRequest.post("{{ path('revision.ajaxupdate', { revisionId: revision.id }) }}", $("form[name={{ form.vars.id }}]").serialize())
+		waitingResponse = window.ajaxRequest.post( primaryBox.data('ajax-update'), $("form[name=revision]").serialize())
 		  .success(function(response) {
 			  $('.has-error').removeClass('has-error');
 			  $('span.help-block').remove();
 			  
 			  $(response.formErrors).each(function(index, item){
 
-				  var target = item.propertyPath;
+				  let target = item.propertyPath;
+				  const targetLabel = $('#'+target+'__label');
+				  const targetError = $('#'+target+'__error');
+				  const targetParent = $('#'+target);
+
 				  if($('#'+item.propertyPath+'_value').length){
 					  target = item.propertyPath+'_value';
 				  }
 
-				  if($('#'+target+'__label').length) {
+				  if(targetLabel.length) {
 
-					  $('#'+target+'__label').addClass('has-error');
-					  if(item.message && $('#'+target+'__error').length > 0) {
-						  $('#'+target+'__error').addClass('has-error');
-						  if($('#'+target+'__error span.help-block').length == 0){
-							  $('#'+target+'__error').append('<span class="help-block"><ul class="list-unstyled"></ul></span>');
+					  targetLabel.addClass('has-error');
+					  if(item.message && targetError.length > 0) {
+						  targetError.addClass('has-error');
+						  if($('#'+target+'__error span.help-block').length === 0){
+							  targetError.append('<span class="help-block"><ul class="list-unstyled"></ul></span>');
 						  }
 						  $('#'+target+'__error'+' span.help-block ul.list-unstyled').append('<li><span class="glyphicon glyphicon-exclamation-sign"></span> '+item.message+'</li>');
 					  }
 				  }
 				  else {
-					  $('#'+target).parents('.form-group').addClass('has-error');
+					  targetParent.parents('.form-group').addClass('has-error');
 					  if(item.message) {
-						  if($('#'+target).parents('.form-group').find(' span.help-block').length == 0){
-							  $('#'+target).parent('.form-group').append('<span class="help-block"><ul class="list-unstyled"><li><span class="glyphicon glyphicon-exclamation-sign"></span> '+item.message+'</li></ul></span>');
+						  if(targetParent.parents('.form-group').find(' span.help-block').length === 0){
+							  targetParent.parent('.form-group').append('<span class="help-block"><ul class="list-unstyled"><li><span class="glyphicon glyphicon-exclamation-sign"></span> '+item.message+'</li></ul></span>');
 						  }
 						  else {
-    			  			  $('#'+target).parents('.form-group').find(' span.help-block ul.list-unstyled').append('<li><span class="glyphicon glyphicon-exclamation-sign"></span> '+item.message+'</li>');							  
+    			  			  targetParent.parents('.form-group').find(' span.help-block ul.list-unstyled').append('<li><span class="glyphicon glyphicon-exclamation-sign"></span> '+item.message+'</li>');
     			  		  }
 					  }
 				  }
@@ -280,75 +340,35 @@ function onFormChange(event, allowAutoPublish){
 		});
 }
 
-function attachObjectPicker(domId) {
-
-	$('#'+domId).find('.cke_dialog_ui_input_select').css('width', '100%');
-	$('#'+domId).find('.cke_dialog_ui_input_select').css('z-index', '20000');
-	$('#'+domId).find('select').select2({
-		ajax: {
-			url: '{{ path("elasticsearch.api.search") }}',
-	    	dataType: 'json',
-	    	delay: 250,
-	    	data: function (params) {
-	      		return {
-		        q: params.term, // search term
-		        page: params.page,
-		        environment: environment,
-		        type: type
-		      };
-		    },
-			processResults: function (data, params) {
-				// parse the results into the format expected by Select2
-				// since we are using custom formatting functions we do not need to
-				// alter the remote JSON data, except to indicate that infinite
-				// scrolling can be used
-				params.page = params.page || 1;
-		
-		      	return {
-			        results: data.items,
-			        pagination: {
-			          more: (params.page * 30) < data.total_count
-			        }
-		      	};
-	    	},
-	    	cache: true
-	  	},
-	  	//escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
-	  	//templateResult: formatRepo, // omitted for brevity, see the source of this page
-	  	//templateSelection: formatRepoSelection, // omitted for brevity, see the source of this page
-	  	minimumInputLength: 1
-	});
-}
-
 function initFileUploader(fileHandler, container){
 
 
-	var sha1Input = $(container).find(".sha1");
-	var typeInput = $(container).find(".type");
-	var nameInput = $(container).find(".name");
-	var progressBar = $(container).find(".progress-bar");
-	var progressText = $(container).find(".progress-text");
-	var progressNumber = $(container).find(".progress-number");
-	var viewButton = $(container).find(".view-asset-button");
-	var clearButton = $(container).find(".clear-asset-button");
-	var previewTab = $(container).find(".asset-preview-tab");
-	var uploadTab = $(container).find(".asset-upload-tab");
-	var previewLink = $(container).find(".img-responsive");
-	var assetHashSignature = $(container).find(".asset-hash-signature");
-	var dateInput = $(container).find(".date");
-	var authorInput = $(container).find(".author");
-	var languageInput = $(container).find(".language");
-	var contentInput = $(container).find(".content");
-	var titleInput = $(container).find(".title");
+	const sha1Input = $(container).find(".sha1");
+    const typeInput = $(container).find(".type");
+    const nameInput = $(container).find(".name");
+    const progressBar = $(container).find(".progress-bar");
+    const progressText = $(container).find(".progress-text");
+    const progressNumber = $(container).find(".progress-number");
+    const viewButton = $(container).find(".view-asset-button");
+    const clearButton = $(container).find(".clear-asset-button");
+    const previewTab = $(container).find(".asset-preview-tab");
+    const uploadTab = $(container).find(".asset-upload-tab");
+    const previewLink = $(container).find(".img-responsive");
+    const assetHashSignature = $(container).find(".asset-hash-signature");
+    const dateInput = $(container).find(".date");
+    const authorInput = $(container).find(".author");
+    const languageInput = $(container).find(".language");
+    const contentInput = $(container).find(".content");
+    const titleInput = $(container).find(".title");
 
 
 	previewTab.hide();
 	uploadTab.show();
 
-    var fileUploader = new FileUploader({
+    const fileUploader = new FileUploader({
     	file: fileHandler,
         algo: $('body').attr('data-hash-algo'),
-		initUrl: '{{ path('emsco_file_data_init_upload') }}',
+		initUrl: initUpload,
         onHashAvailable: function(sha1, type, name){
     			$(sha1Input).val(sha1);
     			$(assetHashSignature).empty().append(sha1);
@@ -367,7 +387,7 @@ function initFileUploader(fileHandler, container){
         		$(sha1Input).val(fileUploader.hash);
         		console.log('Sha1 mismatch!');
 		    }
-		    var percentage = Math.round(progress*100);
+		    const percentage = Math.round(progress*100);
 			$(progressBar).css('width', percentage+'%');
 			$(progressText).html(status);
 			$(progressNumber).html(remaining);
@@ -419,36 +439,36 @@ function FileSelectHandler(e) {
 	FileDragHover(e);
 
 	// fetch FileList object
-	var files = e.target.files || e.dataTransfer.files;
+	const files = e.target.files || e.dataTransfer.files;
 
 	// process all File objects
-	for (var i = 0, f; f = files[i]; i++) {
-		initFileUploader(f, this);
-		break;
+	for (let i = 0; i < files.length; ++i) {
+	    if(files.hasOwnProperty(i)){
+			initFileUploader(files[i], this);
+			break;
+		}
 	}
-
 }
-
 
 //file data extractor
 function FileDataExtrator(container) {
 
-	var sha1Input = $(container).find(".sha1");
-	var nameInput = $(container).find(".name");
+	const sha1Input = $(container).find(".sha1");
+    const nameInput = $(container).find(".name");
 
-	var dateInput = $(container).find(".date");
-	var authorInput = $(container).find(".author");
-	var languageInput = $(container).find(".language");
-	var contentInput = $(container).find(".content");
-	var titleInput = $(container).find(".title");
+    const dateInput = $(container).find(".date");
+    const authorInput = $(container).find(".author");
+    const languageInput = $(container).find(".language");
+    const contentInput = $(container).find(".content");
+    const titleInput = $(container).find(".title");
 
 
-    var progressText = $(container).find(".progress-text");
-    var progressNumber = $(container).find(".progress-number");
-    var previewTab = $(container).find(".asset-preview-tab");
-    var uploadTab = $(container).find(".asset-upload-tab");
+    const progressText = $(container).find(".progress-text");
+    const progressNumber = $(container).find(".progress-number");
+    const previewTab = $(container).find(".asset-preview-tab");
+    const uploadTab = $(container).find(".asset-upload-tab");
 
-    var urlPattern = file_extract_url
+    const urlPattern = fileExtract
     	.replace(/__file_identifier__/g, $(sha1Input).val())
     	.replace(/__file_name__/g, $(nameInput).val());
 
@@ -459,7 +479,7 @@ function FileDataExtrator(container) {
     uploadTab.show();
     previewTab.hide();
 
-	waitingResponse = ajaxRequest.get(urlPattern)
+	waitingResponse = window.ajaxRequest.get(urlPattern)
 		.success(function(response) {
 			$(dateInput).val(response.date);
 			$(authorInput).val(response.author);
@@ -468,8 +488,9 @@ function FileDataExtrator(container) {
 			$(titleInput).val(response.title);
 		})
 		.fail(function() {
-			$($('#modal-notifications').find('.modal-body')).html('Something went wrong while extrating information from file');
-			$('#modal-notifications').modal('show');
+		    const modal = $('#modal-notifications');
+            $(modal.find('.modal-body')).html('Something went wrong while extrating information from file');
+            modal.modal('show');
 		})
 		.always(function() {
             $(progressText).html('');
@@ -499,30 +520,30 @@ function addEventListeners(target){
 		'showCancel': false,
 		'showClose': false,
 		'browseIcon': '<i class="fa fa-upload"></i>&nbsp;',
-		'browseLabel': '{{'Upload file'|trans}}'
+		'browseLabel': 'Upload file'
 	});
 
 	target.find(".extract-file-info").click(function() {
-		var target = $(this).closest('.modal-content');
+		const target = $(this).closest('.modal-content');
 		FileDataExtrator(target);
 	});
 
 	target.find(".clear-asset-button").click(function() {
-		var parent = $(this).closest('.file-uploader-row');
-		var sha1Input = $(parent).find(".sha1");
-		var typeInput = $(parent).find(".type");
-		var nameInput = $(parent).find(".name");
-		var progressBar = $(parent).find(".progress-bar");
-		var progressText = $(parent).find(".progress-text");
-		var progressNumber = $(parent).find(".progress-number");
-		var previewTab = $(parent).find(".asset-preview-tab");
-		var uploadTab = $(parent).find(".asset-upload-tab");
-		var assetHashSignature = $(parent).find(".asset-hash-signature");
-		var dateInput = $(parent).find(".date");
-		var authorInput = $(parent).find(".author");
-		var languageInput = $(parent).find(".language");
-		var contentInput = $(parent).find(".content");
-		var titleInput = $(parent).find(".title");
+		const parent = $(this).closest('.file-uploader-row');
+        const sha1Input = $(parent).find(".sha1");
+        const typeInput = $(parent).find(".type");
+        const nameInput = $(parent).find(".name");
+        const progressBar = $(parent).find(".progress-bar");
+        const progressText = $(parent).find(".progress-text");
+        const progressNumber = $(parent).find(".progress-number");
+        const previewTab = $(parent).find(".asset-preview-tab");
+        const uploadTab = $(parent).find(".asset-upload-tab");
+        const assetHashSignature = $(parent).find(".asset-hash-signature");
+        const dateInput = $(parent).find(".date");
+        const authorInput = $(parent).find(".author");
+        const languageInput = $(parent).find(".language");
+        const contentInput = $(parent).find(".content");
+        const titleInput = $(parent).find(".title");
 
 		$(parent).find(".file-uploader-input").val('');
 		sha1Input.val('');
@@ -559,8 +580,8 @@ function addEventListeners(target){
 	target.find('.remove-content-button').on('click', function(e) {
 		// prevent the link from creating a "#" on the URL
         e.preventDefault();
-        
-        var panel = $(this).closest('.collection-item-panel');
+
+        const panel = $(this).closest('.collection-item-panel');
         panel.find('input._ems_internal_deleted').val('deleted');
         panel.hide();
         onFormChange();
@@ -575,12 +596,12 @@ function addEventListeners(target){
 		// prevent the link from creating a "#" on the URL
         e.preventDefault();
 
-        var panel = $(this).closest('.collection-panel');
-        var index = panel.data('index');
-		var prototype = panel.data('prototype');
+        const panel = $(this).closest('.collection-panel');
+        const index = panel.data('index');
+        const prototype = panel.data('prototype');
      	// Replace '__name__' in the prototype's HTML to
         // instead be a number based on how many items we have
-        var newForm = $(prototype.replace(/__name__/g, index));
+        const newForm = $(prototype.replace(/__name__/g, index));
      	// increase the index with one for the next item
         panel.data('index', index + 1);
 
@@ -597,35 +618,29 @@ function addEventListeners(target){
 
 	target.find('.selectpicker').selectpicker();
 
-	target.find(".ckeditor_ems").each(function(index){
+	target.find(".ckeditor_ems").each(function(){
 
-		{% if app.user.wysiwygProfile and app.user.wysiwygProfile.config %}
-			var ckconfig = {{ app.user.wysiwygProfile.config|raw }};
-		{% elseif app.user.wysiwygOptions %}
-			var ckconfig = {{ app.user.wysiwygOptions|raw }};
-        {% else %}
-            var ckconfig = {};
-		{% endif %}
+		const ckconfig = wysiwygConfig;
 
-		ckconfig.imageUploadUrl = ems_upload_url;
-		ckconfig.imageBrowser_listUrl = ems_images_url;
+		ckconfig.imageUploadUrl = uploadUrl;
+		ckconfig.imageBrowser_listUrl = imageUrl;
 	
-		var height = $( this ).attr('data-height');
+		let height = $( this ).attr('data-height');
 		if(!height){
 			height = 400;
 		}
 
-		var format_tags = $( this ).attr('data-format-tags');
+		const format_tags = $( this ).attr('data-format-tags');
 		if(format_tags){
 			ckconfig.format_tags = format_tags;
 		}
 		
-		var styles_set = $( this ).attr('data-styles-set');
+		const styles_set = $( this ).attr('data-styles-set');
 		if(styles_set){
     		ckconfig.stylesSet = styles_set;
 		}
 		
-		var content_css = $( this ).attr('data-content-css');
+		const content_css = $( this ).attr('data-content-css');
 		if(content_css){
     		ckconfig.contentsCss = content_css;
 		}
@@ -645,36 +660,36 @@ function addEventListeners(target){
 			CKEDITOR.replace(this, ckconfig).on('key', onFormChange );
 		}
 		else {
-			var editor = CKEDITOR.replace( $( this ).attr('id'), ckconfig);
+			CKEDITOR.replace( $( this ).attr('id'), ckconfig);
 		}
 		
 
 		//Set defaults that are compatible with bootstrap for html generated by CKEDITOR (e.g. tables)
 		CKEDITOR.on( 'dialogDefinition', function( ev )
-  		  {
+	  	{
   		     // Take the dialog name and its definition from the event data.
-  		     var dialogName = ev.data.name;
-  		     var dialogDefinition = ev.data.definition;
+			const dialogName = ev.data.name;
+            const dialogDefinition = ev.data.definition;
 
   		     // Check if the definition is from the dialog we're interested in (the "Table" dialog).
-  		     if ( dialogName == 'table' )
+  		     if ( dialogName === 'table' )
   		     {
   		         // Get a reference to the "Table Info" tab.
-  		         var infoTab = dialogDefinition.getContents( 'info' );
-  		         
-  		         var txtBorder = infoTab.get( 'txtBorder');
+                 const infoTab = dialogDefinition.getContents( 'info' );
+
+                 const txtBorder = infoTab.get( 'txtBorder');
 		         txtBorder['default'] = 0;
-		         var txtCellPad = infoTab.get( 'txtCellPad');
+                 const txtCellPad = infoTab.get( 'txtCellPad');
 		         txtCellPad['default'] = "";
-  		       	 var txtCellSpace = infoTab.get( 'txtCellSpace');
+                 const txtCellSpace = infoTab.get( 'txtCellSpace');
   		         txtCellSpace['default'] = "";
-  		       	 var txtWidth = infoTab.get( 'txtWidth' );
+                 const txtWidth = infoTab.get( 'txtWidth' );
 		         txtWidth['default'] = "";
 		         
 		         // Get a reference to the "Table Advanced" tab.
-		         var advancedTab = dialogDefinition.getContents( 'advanced' );
-		         
-		         var advCSSClasses = advancedTab.get( 'advCSSClasses' );
+                 const advancedTab = dialogDefinition.getContents( 'advanced' );
+
+                 const advCSSClasses = advancedTab.get( 'advCSSClasses' );
 		         advCSSClasses['default'] = "table table-bordered";
   		         
   		     }
@@ -687,9 +702,9 @@ function addEventListeners(target){
 
 	target.find(".colorpicker-component").bind('changeColor', onFormChange);
 
-	target.find(".timepicker").each(function(index){
+	target.find(".timepicker").each(function(){
 
-		var settings = {
+        const settings = {
 	            showMeridian: 	$( this ).data('show-meridian'),
 	            explicitMode: 	$( this ).data('explicit-mode'),
         		minuteStep: 	$( this ).data('minute-step'),
@@ -705,38 +720,36 @@ function addEventListeners(target){
 	});
 
 
-	target.find('.datepicker').each(function( index ) {
+	target.find('.datepicker').each(function( ) {
 
 		$(this).unbind('change');
-		var params = {
+        const params = {
 			format: $(this).attr('data-date-format'),
 			todayBtn: true,
 			weekStart: $(this).attr('data-week-start'),
 			daysOfWeekHighlighted: $(this).attr('data-days-of-week-highlighted'),
 			daysOfWeekDisabled: $(this).attr('data-days-of-week-disabled'),
 			todayHighlight: $(this).attr('data-today-highlight')
-		}
+		};
 
-		if($(this).attr('data-multidate') && $(this).attr('data-multidate') != 'false'){
+		if($(this).attr('data-multidate') && $(this).attr('data-multidate') !== 'false'){
 			params.multidate = true;
 		}
 
-	  	$(this).datepicker(params)
+	  	$(this).datepicker(params);
 
 	  	$(this).on('change', onFormChange);
 	});
 
-	target.find('.ems_daterangepicker').each(function( index ) {
+	target.find('.ems_daterangepicker').each(function( ) {
 
-		var options = $(this).data('display-option');
+		const options = $(this).data('display-option');
 		$(this).unbind('change');
 		
 		$(this).daterangepicker(
 			options, 
-			function(start, end, label) {
-// 				console.log(label);
+			function() {
 				onFormChange();
-			    //alert("A new date range was chosen: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
 			});
 	});
 }
@@ -746,34 +759,30 @@ $(window).ready(function() {
 
     updateChoiceFieldTypes();
 
-	{% if stylesSets is defined %}
-    	//Add custom styles sets (e.g for bootstrap (responsive tables, ...))
-    	{% for stylesSet in stylesSets %}
-        	CKEDITOR.stylesSet.add( 
-        			'{{ stylesSet.name|e('js') }}', 
-        			JSON.parse('{{ stylesSet.config|e('js') }}')
-    			);
-    	{% endfor %}
-    {% endif %}
+    for(let i=0; i < stylesSets.length; ++i) {
+        CKEDITOR.stylesSet.add(
+            stylesSets[i].name,
+            stylesSets[i].config
+        );
+	}
 
-    
-	CKEDITOR.plugins.addExternal('adv_link', '{{ asset("bundles/emscore/js/cke-plugins/adv_link/plugin.js") }}', '' );
-	CKEDITOR.plugins.addExternal('div', '{{ asset("bundles/emscore/js/cke-plugins/div/plugin.js") }}', '' );
-	CKEDITOR.plugins.addExternal('imagebrowser', '{{ asset("bundles/emscore/js/cke-plugins/imagebrowser/plugin.js") }}', '' );
-	addEventListeners($('form[name={{ form.vars.id }}]'));
+	CKEDITOR.plugins.addExternal('adv_link', assetPath+'bundles/emscore/js/cke-plugins/adv_link/plugin.js', '' );
+	CKEDITOR.plugins.addExternal('div', assetPath+'bundles/emscore/js/cke-plugins/div/plugin.js', '' );
+	CKEDITOR.plugins.addExternal('imagebrowser', assetPath+'bundles/emscore/js/cke-plugins/imagebrowser/plugin.js', '' );
+	addEventListeners($('form[name=revision]'));
 });
 
 $(document).keydown(function(e) {
 
-    var key = undefined;
-    var possible = [ e.key, e.keyIdentifier, e.keyCode, e.which ];
+    let key = undefined;
+    const possible = [ e.key, e.keyIdentifier, e.keyCode, e.which ];
 
     while (key === undefined && possible.length > 0)
     {
         key = possible.pop();
     }
 
-    if (key && (key == '115' || key == '83' ) && (e.ctrlKey || e.metaKey) && !(e.altKey))
+    if (typeof key === "number" && ( 115 === key || 83 === key ) && (e.ctrlKey || e.metaKey) && !(e.altKey))
     {
         e.preventDefault();
         onFormChange(e, true);
@@ -783,24 +792,7 @@ $(document).keydown(function(e) {
 
 });
 
-window.onload = (function() {
-	/** TODO:  quid d'un CKEditor ajouté au vol*/
-	for (var i in CKEDITOR.instances) {
-        CKEDITOR.instances[i].on('key', onFormChange );
-	}
-});
-
 </script>
-
-	{% if revision.draft %}
-        {% include '@EMSCore/app/menu.html.twig' with {
-			'item':  'data-draft-' ~ revision.contentType.id
-		}%}
-	{% else %}
-        {% include '@EMSCore/app/menu.html.twig' with {
-			'item':  'data-index-' ~ revision.contentType.id
-		}%}
-	{% endif %}
 	
 {% endblock %}	
 

@@ -437,8 +437,6 @@
 <!-- Variables  -->
 <script>
     var object_search_url = '{{ path('elasticsearch.api.search')|raw }}';
-    var ems_upload_url = "{{ path('ems_image_upload_url')|raw }}";
-    var ems_images_url = "{{ path('ems_images_index')|raw }}";
     var file_extract_url = '{{ path('ems_file_extract', { sha1: '__file_identifier__', name: '__file_name__' })|raw }}';
 
 	{% set type_filters = [] %}

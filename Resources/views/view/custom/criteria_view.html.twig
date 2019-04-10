@@ -55,66 +55,17 @@
 	</div>
 </div>
 
-{% endblock %} 
+{% include '@EMSCore/app/menu.html.twig' with {
+	'item':  'data-view-'~ contentType.id ~ '-' ~ view.id
+}%}
+
+{% endblock %}
 
 
-{% block javascripts %}
-    {% include '@EMSCore/app/menu.html.twig' with {
-		'item':  'data-view-'~ contentType.id ~ '-' ~ view.id
-	}%}
-	
-	<script type="text/javascript">
-<!--
+{% block frontend_application_css %}
+	<link rel="stylesheet" href="{{ asset('bundles/emscore/css/criteria-view.bundle.css') }}">
+{% endblock %}
 
-//-->
-
-window.onload = (function() {
-
-
-
-	$('.criteria-filter-columnrow').change(function(event){
-
-		if($('#criteria_filter_columnCriteria option:selected').val() == $('#criteria_filter_rowCriteria  option:selected').val()){
-			if($(this).attr('id') == 'criteria_filter_columnCriteria'){
-				$('#criteria_filter_rowCriteria').val($('#criteria_filter_rowCriteria option:not(:selected)').first().val());
-
-			}
-			else {
-				$('#criteria_filter_columnCriteria').val($('#criteria_filter_columnCriteria option:not(:selected)').first().val());
-
-			}
-		
-		}
-
-		$('div#criterion select').each(function(index){
-			var criterionName = $( this ).closest('div[data-name]').data('name');
-			var colCriteria = $('#criteria_filter_columnCriteria').val();
-			var rowCriteria = $('#criteria_filter_rowCriteria').val();
-
-			var attr = $(this).attr('multiple');
-
-			
-			if(criterionName == colCriteria || criterionName == rowCriteria) {
-				objectPickerListeners($( this ));
-			}
-			else{
-				if($(this).val() && $(this).val().length > 1){
-					$(this).val('');
-				}
-				objectPickerListeners($( this ), 1);
-			}
-
-	 	});
-	});
-
-	$('.criteria-filter-columnrow').trigger('change');
-	
-});
-
-
-
-
-
-
-</script>
-{% endblock %}	
+{% block frontend_application_js %}
+	<script src="{{ asset('bundles/emscore/js/criteria-view.bundle.js') }}"></script>
+{% endblock %}

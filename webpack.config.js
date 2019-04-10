@@ -63,6 +63,7 @@ module.exports = {
         'template': './Resources/assets/template.js',
         'hierarchical': './Resources/assets/hierarchical.js',
         'calendar': './Resources/assets/calendar.js',
+        'criteria-view': './Resources/assets/criteria-view.js',
     },
     output: {
         path: path.resolve(__dirname, 'Resources/public'),

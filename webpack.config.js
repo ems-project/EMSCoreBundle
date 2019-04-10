@@ -60,6 +60,7 @@ module.exports = {
         'edit-revision': './Resources/assets/edit-revision.js',
         'managed-alias': './Resources/assets/managed-alias.js',
         'user-profile': './Resources/assets/user-profile.js',
+        'template': './Resources/assets/template.js',
     },
     output: {
         path: path.resolve(__dirname, 'Resources/public'),

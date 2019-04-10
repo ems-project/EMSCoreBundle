@@ -166,6 +166,17 @@ import EmsListeners from "./EmsListeners";
         });
     }
 
+    function startPendingJob() {
+        $('[data-start-job-url]').each(function(){
+            $.ajax({
+                type: "POST",
+                url: this.getAttribute('data-start-job-url')
+            }).always(function() {
+                location.reload();
+            });
+        });
+    }
+
     $(document).ready(function() {
         activeMenu();
         loadLazyImages();
@@ -176,6 +187,7 @@ import EmsListeners from "./EmsListeners";
         initSearchForm();
         initCodeEditorThemeAngLanguage();
         autoOpenModal(queryString());
+        startPendingJob();
 
         //cron to update the cluster status
         window.setInterval(function(){

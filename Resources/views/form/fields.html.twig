@@ -327,7 +327,7 @@
 
 {% block code_editor_widget %}
     <pre>{{ form.vars.data }}</pre>
-    <input type="hidden" id="{{ form.vars.id }}" name="{{ form.vars.full_name }}" data-language="{{ form.vars.language }}" data-disabled="{{ form.vars.disabled }}" data-min-lines="{{ form.vars.min_lines }}" data-max-lines="{{ form.vars.max_lines }}" value="{{ form.vars.value }}">
+    <input type="hidden" id="{{ form.vars.id }}" class="{{ attr.class|default('') }}"  name="{{ form.vars.full_name }}" data-language="{{ form.vars.language }}" data-disabled="{{ form.vars.disabled }}" data-min-lines="{{ form.vars.min_lines }}" data-max-lines="{{ form.vars.max_lines }}" value="{{ form.vars.value }}">
 {% endblock code_editor_widget %}
 
 {% block datafieldtype_label %}

@@ -31,7 +31,8 @@ class WysiwygStylesSetPickerType extends SelectPickerType
         $resolver->setDefaults(array(
             'choices' => $choices,
             'attr' => [
-                    'data-live-search' => true
+                'data-live-search' => true,
+                'class' => 'wysiwyg-profile-picker',
             ],
             'choice_attr' => function ($category, $key, $index) {
                 //TODO: it would be nice to translate the roles

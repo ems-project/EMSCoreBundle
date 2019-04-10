@@ -17,11 +17,9 @@
 	    	{{ form_row(form.email) }}
 	    	{{ form_row(form.emailNotification) }}
 	    	{{ form_row(form.enabled) }}
-{# 	    	{{ form_row(form.locked) }}#}
 	    	{% if form.circles is defined %}
 	    	    {{ form_row(form.circles) }}
 	    	{% endif %}
-{# 	    	{{ form_row(form.expiresAt) }}#}
 	    	{{ form_row(form.allowedToConfigureWysiwyg) }}
             {% include "@EMSCore/user/wysiwygOptions.html.twig" with {
 				form: form
@@ -38,30 +36,17 @@
 	</div>
 	<!-- /.box -->
 
+    {% include '@EMSCore/app/menu.html.twig' with {
+        'item':  'user-index'
+    }%}
+
 {% endblock body %}
 
-{% block javascripts %}
-	<script type="text/javascript">
 
-	
-	$(document).ready(function() {
-		
-		$('.datepicker').datepicker({
-			format: '{{ datepicker_format }}',
-			todayBtn: true,
-			todayHighlight: true,
-			weekStart: {{ datepicker_weekstart }},
-			daysOfWeekHighlighted: {{ datepicker_daysofweek_highlighted | json_encode }},
-			daysOfWeekDisabled: [],
-			multidate: false
-		});
-	});   
-    </script>
-    {% include '@EMSCore/app/menu.html.twig' with {
-		'item':  'user-index'
-	}%}
+{% block frontend_application_css %}
+	<link rel="stylesheet" href="{{ asset('bundles/emscore/css/user-profile.bundle.css') }}">
+{% endblock %}
 
-    {% include "@EMSCore/user/wysiwygOptionsJS.html.twig" with {
-		form: form
-	} %}
+{% block frontend_application_js %}
+	<script src="{{ asset('bundles/emscore/js/user-profile.bundle.js') }}"></script>
 {% endblock %}

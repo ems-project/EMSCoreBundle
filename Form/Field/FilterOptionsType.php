@@ -47,16 +47,19 @@ class FilterOptionsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('type', ChoiceType::class, [
-                'choices' => [
-                        'Standard' => 'standard',
-                        'Stop' => 'stop',
-                        'Keyword Marker' => 'keyword_marker',
-                        'Stemmer' => 'stemmer',
-                        'Elision' => 'elision',
-                        'ASCII Folding' => 'asciifolding',
-                ],
+            'choices' => [
+                    'Standard' => 'standard',
+                    'Stop' => 'stop',
+                    'Keyword Marker' => 'keyword_marker',
+                    'Stemmer' => 'stemmer',
+                    'Elision' => 'elision',
+                    'ASCII Folding' => 'asciifolding',
+            ],
+            'attr' => [
+                'class' => 'fields-to-display-by-input-value',
+            ],
         ])->add('stopwords', ChoiceType::class, [
-                'attr' => ['class' => 'filter_option'],
+                'attr' => ['class' => 'filter_option fields-to-display-for fields-to-display-for-stop'],
                 'required' => false,
                 'choices' => [
                         'None' => '_none_',
@@ -95,7 +98,7 @@ class FilterOptionsType extends AbstractType
                         'Thai' => '_thai_',
                 ],
         ])->add('name', ChoiceType::class, [
-                'attr' => ['class' => 'filter_option'],
+                'attr' => ['class' => 'filter_option fields-to-display-for fields-to-display-for-stemmer'],
                 'required' => false,
                 'choices' => [
                         'Arabic' => 'arabic',
@@ -155,25 +158,25 @@ class FilterOptionsType extends AbstractType
                         'Turkish' => 'turkish',
                 ],
         ])->add('keywords', TextareaType::class, [
-                'attr' => ['class' => 'filter_option'],
+                'attr' => ['class' => 'filter_option fields-to-display-for fields-to-display-for-keyword_marker'],
                 'required' => false,
         ])->add('keywords_pattern', TextType::class, [
-                'attr' => ['class' => 'filter_option'],
+                'attr' => ['class' => 'filter_option fields-to-display-for fields-to-display-for-keyword_marker'],
                 'required' => false,
         ])->add('ignore_case', CheckboxType::class, [
-                'attr' => ['class' => 'filter_option'],
+                'attr' => ['class' => 'filter_option fields-to-display-for fields-to-display-for-stop fields-to-display-for-keyword_marker'],
                 'required' => false,
         ])->add('remove_trailing', CheckboxType::class, [
-                'attr' => ['class' => 'filter_option'],
+                'attr' => ['class' => 'filter_option fields-to-display-for fields-to-display-for-stop'],
                 'required' => false,
         ])->add('articles_case', CheckboxType::class, [
-                'attr' => ['class' => 'filter_option'],
+                'attr' => ['class' => 'filter_option fields-to-display-for fields-to-display-for-elision'],
                 'required' => false,
         ])->add('preserve_original', CheckboxType::class, [
-                'attr' => ['class' => 'filter_option'],
+                'attr' => ['class' => 'filter_option fields-to-display-for fields-to-display-for-asciifolding'],
                 'required' => false,
         ])->add('articles', TextareaType::class, [
-                'attr' => ['class' => 'filter_option'],
+                'attr' => ['class' => 'filter_option fields-to-display-for fields-to-display-for-elision'],
                 'required' => false,
         ]);
         

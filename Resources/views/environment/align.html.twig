@@ -86,24 +86,11 @@
                  'title': 'Content type'|trans,
                  'field': 'contentype',
             } %}
-{#               {% set href=path(paginationPath, app.request.query.all|merge({'orderField': 'contentype', 'orderDirection': orderCTDirection})) %}#}
-              {#             <th>{% include '@EMSCore/elements/sortable-th.html.twig' with {#}
-{#              'orderHref': href,#}
-{#              'orderDescription': orderCTDescription,#}
-{#              'orderTitle': 'Content type',#}
-{#              'orderIcon': orderCTIcon#}
-{#             } %}</th>#}
               {% include '@EMSCore/elements/sortable-th.html.twig' with {
                  'title': 'Label'|trans,
                  'field': 'label',
             } %}
-{#               {% set href=path(paginationPath, app.request.query.all|merge({'orderField': 'label', 'orderDirection': orderLabelFieldDirection})) %}#}
-              {#             <th>{% include '@EMSCore/elements/sortable-th.html.twig' with {#}
-{#              'orderHref': href,#}
-{#              'orderDescription': orderLabelFieldDescription,#}
-{#              'orderTitle': 'Label',#}
-{#              'orderIcon': orderLabelFieldIcon#}
-{#             } %}</th>#}
+
             <th><span class="badge bg-{{ environments[environment].color }}" title="Circles:">{{ environment }}</span></th>
             <th><span class="badge bg-{{ environments[withEnvironment].color }}" title="Circles:">{{ withEnvironment }}</span></th>
             <th>Actions</th>

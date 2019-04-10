@@ -20,7 +20,11 @@ class FilterType extends AbstractType
         $builder
             ->add('name', null, array('required' => true))
             ->add('label', null, array('required' => true))
-            ->add('options', FilterOptionsType::class)
+            ->add('options', FilterOptionsType::class, [
+                'attr' => [
+                    'class' => 'fields-to-display-by-value'
+                ],
+            ])
             ->add('save', SubmitEmsType::class, [
                     'label' => 'Save',
                     'attr' => [

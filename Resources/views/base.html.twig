@@ -9,7 +9,6 @@
 
     <title>{{ ems_shortname|striptags }}: {% block title %}elasticMS{% endblock %}</title>
 
-
     <!-- stylesheets -->
     {% block frontend_application_css %}
         <link rel="stylesheet" href="{{ asset('bundles/emscore/css/app.bundle.css') }}">
@@ -34,9 +33,27 @@
 
     {%- block extraheader %}{% endblock %}
 </head>
+
+
+{%- set type_filters = [] -%}
+{%- set all_types = false %}
+{%- if get_content_types()|length > 0 -%}
+    {%- for contentType in get_content_types() if contentType.webContent -%}
+        {%- if all_types  -%}
+            {% set all_types = all_types~','~contentType.name -%}
+        {%- else %}
+            {% set all_types = contentType.name -%}
+        {%- endif -%}
+        {%- set type_filters = type_filters|merge([[contentType.singularName, contentType.name ]]) -%}
+    {%- endfor -%}
+{%- endif -%}
+
+{%- set type_filters = [['All content types'|trans, all_types ]]|merge(type_filters) -%}
+
 <body class="hold-transition skin-{{ theme_color }} {% if app.user %}{% if app.user.layoutBoxed %}layout-boxed{% endif %}{% if app.user.sidebarCollapse %} sidebar-collapse{% endif %}{% if app.user.sidebarMini %} sidebar-mini{% endif %}{% endif %}"
       data-hash-algo="{{ ems_hash_algo|e('html_attr') }}"
       data-status-url="{{ path('elasticsearch.status', {_format: 'json'})|e('html_attr') }}"
+      data-wysiwyg-type-filters="{{ type_filters|json_encode|e('html_attr') }}"
       data-search-api="{{ path('elasticsearch.api.search')|e('html_attr') }}"
       data-asset-path="{{ asset('')|e('html_attr') }}">
 <div class="wrapper">
@@ -429,41 +446,17 @@
 <!-- ./wrapper -->
 
 
-<!-- centralized webpack javascript -->
-{% block frontend_application_js %}{#ok#}
-    <script src="{{ asset('bundles/emscore/js/app.bundle.js') }}"></script>
-{% endblock %}
+    <!-- centralized webpack javascript -->
+    {% block frontend_application_js %}{#ok#}
+        <script src="{{ asset('bundles/emscore/js/app.bundle.js') }}"></script>
+    {% endblock %}
 
-<!-- Variables  -->
-<script>
-    var object_search_url = '{{ path('elasticsearch.api.search')|raw }}';
-    var file_extract_url = '{{ path('ems_file_extract', { sha1: '__file_identifier__', name: '__file_name__' })|raw }}';
-
-	{% set type_filters = [] %}
-	{% set all_types = false %}
-	{% if get_content_types()|length > 0 %}
-        {% for contentType in get_content_types() if contentType.webContent %}
-        	{% if all_types  %}
-        	    {% set all_types = all_types~','~contentType.name %}
-            {% else %}
-    	        {% set all_types = contentType.name %}
-            {% endif %}
-            {% set type_filters = type_filters|merge([[contentType.singularName, contentType.name ]]) %}
-        {% endfor %}
-    {% endif %}
-
-    {% set type_filters = [['All content types'|trans, all_types ]]|merge(type_filters) %}
-    
-    var ems_wysiwyg_type_filters = {{ type_filters|json_encode|raw }};
-
-    
-</script>
-
-<!-- Optionally, you can add Slimscroll and FastClick plugins.
-     Both of these plugins are recommended to enhance the
-     user experience. Slimscroll is required when using the
+    <!-- Optionally, you can add Slimscroll and FastClick plugins.
+         Both of these plugins are recommended to enhance the
+         user experience. Slimscroll is required when using the
      fixed layout. -->
 
 	{% block javascripts %}{#ok#}{% endblock %}
+
 </body>
 </html>

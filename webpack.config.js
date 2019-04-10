@@ -65,6 +65,7 @@ module.exports = {
         'calendar': './Resources/assets/calendar.js',
         'criteria-view': './Resources/assets/criteria-view.js',
         'criteria-table': './Resources/assets/criteria-table.js',
+        'i18n': './Resources/assets/i18n.js',
     },
     output: {
         path: path.resolve(__dirname, 'Resources/public'),

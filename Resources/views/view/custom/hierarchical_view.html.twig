@@ -4,7 +4,7 @@
 {% block pagetitle %}{{ view.name }} of {{ contentType.singularName }}{% endblock %}
 
 {% block body %}
-    <div class="row">
+    <div class="row" id="hierarchical-row" data-content-type="{{ contentType|e('html_attr') }}" data-hierarchical-item-url="{{ path('views.hierarchical.item', {key: '__key__', view: view.id})|e('html_attr') }}">
         <div class="col-md-12">
             <div class="box box-solid">
                 <div class="box-header with-border">
@@ -49,37 +49,12 @@
 {% endblock %}
 
 
-{% block javascripts %}
 
 
-    <script type="text/javascript">
+{% block frontend_application_css %}
+    <link rel="stylesheet" href="{{ asset('bundles/emscore/css/hierarchical.bundle.css') }}">
+{% endblock %}
 
-
-        $(document).ready(function () {
-
-            $('#reorganize_addItem_value').on("select2:select", function () {
-
-                var prototype = "{{ path('views.hierarchical.item', {key: '__key__', view: view.id}) }}";
-
-                if ($(this).val().startsWith('{{ contentType }}:') && $('li#' + $(this).val().replace(':', '\\:')).length > 0) {
-
-                    $('#modal-notifications .modal-body').append('<p>{{ 'This item %ouuid% is already presents in this structure/menu'|trans() }}</p>'.replace('%ouuid%', $(this).val()));
-                    $('#modal-notifications').modal('show');
-                }
-                else {
-                    $.get(prototype.replace('__key__', $(this).val()), function (data) {
-                        var item = $(data);
-
-                        $('#root-list').append(item);
-                        item.each(function (index) {
-                            new EmsListeners(this);
-                        });
-                    });
-                }
-
-                $(this).val(null).trigger("change");
-            });
-        });
-
-    </script>
+{% block frontend_application_js %}
+    <script src="{{ asset('bundles/emscore/js/hierarchical.bundle.js') }}"></script>
 {% endblock %}

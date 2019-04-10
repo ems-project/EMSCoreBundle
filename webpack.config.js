@@ -62,6 +62,7 @@ module.exports = {
         'user-profile': './Resources/assets/user-profile.js',
         'template': './Resources/assets/template.js',
         'hierarchical': './Resources/assets/hierarchical.js',
+        'calendar': './Resources/assets/calendar.js',
     },
     output: {
         path: path.resolve(__dirname, 'Resources/public'),

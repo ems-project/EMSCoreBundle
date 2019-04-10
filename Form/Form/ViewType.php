@@ -40,7 +40,7 @@ class ViewType extends AbstractType
         ])
         ->add('create', SubmitEmsType::class, [
                 'attr' => [
-                        'class' => 'btn-primary btn-sm '
+                    'class' => 'btn-primary btn-sm',
                 ],
                 'icon' => 'fa fa-save'
         ]);

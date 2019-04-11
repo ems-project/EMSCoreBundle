@@ -949,9 +949,12 @@ class AppExtension extends \Twig_Extension
         return $out;
     }
 
-    public function data(string $key, string $index = null)
+    public function data($key, string $index = null)
     {
-        $out = $key;
+        if (empty($key)) {
+            return false;
+        }
+
         $splitted = explode(':', $key);
         if ($splitted && count($splitted) == 2) {
             $type = $splitted[0];

@@ -465,11 +465,15 @@ function addEventListeners(target){
         const panel = $(this).closest('.collection-panel');
         const index = panel.data('index');
         const prototype = panel.data('prototype');
-        // Replace '__name__' in the prototype's HTML to
+        const prototypeName = new RegExp(panel.data('prototype-name'), "g");
+        const prototypeLabel = new RegExp(panel.data('prototype-label'), "g");
+
+        // Replace '__label__name__$fieldId__' in the prototype's HTML to
+        // Replace '__name__$fieldId__' in the prototype's HTML to
         // instead be a number based on how many items we have
-        const newForm = $(prototype.replace(/__name__/g, index));
+        const newForm = $(prototype.replace(prototypeLabel, (index+1)).replace(prototypeName, index));
         // increase the index with one for the next item
-        panel.data('index', index + 1);
+        panel.data('index', (index + 1));
 
         addEventListeners(newForm);
 

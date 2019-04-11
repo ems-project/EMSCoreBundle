@@ -355,7 +355,12 @@
 {%- block collectionitemtype_label -%}
 	{% if form.parent.vars.icon is defined %}<i class="{{ form.parent.vars.icon }}"></i>&nbsp;{% endif %}
 	<label>
-		{{ form.parent.vars.singularLabel }} #{{ name|number_format + 1 }}
+		{{- form.parent.vars.singularLabel }} #
+        {%- if name matches '/^\\d+$/' -%}
+            {{- name|number_format + 1 -}}
+		{%- else -%}{# placeholder for the prototype #}
+			{{- form.vars.label -}}
+        {%- endif -%}
 	</label>
 {%- endblock collectionitemtype_label -%}
 
@@ -519,6 +524,8 @@
 	<div class="collection-panel"
 		 data-name="{{ form.vars.name }}"
 		 data-id="{{ form.vars.id }}"
+		 data-prototype-label="{{ form.vars.prototype.vars.label|e('html_attr') }}"
+		 data-prototype-name="{{ form.vars.prototype.vars.name|e('html_attr') }}"
 		data-prototype="{{ form_row(form.vars.prototype)|e }}"
 		{% if (form|last).vars is defined  %}
 			data-index="{{ (form|last).vars.name + 1 }}"

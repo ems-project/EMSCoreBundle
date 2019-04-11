@@ -44,53 +44,7 @@
 	</div>
 </div>
 
-{% endblock %} 
-
-
-{% block javascripts %}
-    {% include '@EMSCore/app/menu.html.twig' with {
-		'item':  'contenttype-index'
-	}%}
-
-    {% include '@EMSCore/js/code-editor.html.twig' %}
-	
-<script type="text/javascript">
-<!--
-
-//-->
-
-window.onload = (function() {
-
-
-	$('#form_save').click(function(event){
-		event.preventDefault();
-		var formContent = $("form[name=form]").serialize();
-		
-		$.post("{{ path('view.edit', { id: view.id, _format: 'json' }) }}", $("form[name={{ form.vars.id }}]").serialize())
-		  .done(function(message) {
-			  var response = jQuery.parseJSON( message );
-
-			  $('.has-error').removeClass('has-error');
-			  
-			  $(response.errors).each(function(index, item){
-				  $('#'+item.propertyPath).parent().addClass('has-error');
-			  });
-		  })
-		  .fail(function() {
-			//alert( "The autosave returns an error! Please try to refresh the page." );
-			$('#data-out-of-sync').modal('show') ;
-		  })
-		  .always(function() {
-			globalWaitingResponse = false;
-		});
-	});
-
-	$(".objectpicker").each(function(index){
-		objectPickerListeners($( this ));
-	});
-	
-});
-
-
-</script>
-{% endblock %}	
+{% include '@EMSCore/app/menu.html.twig' with {
+	'item':  'contenttype-index'
+}%}
+{% endblock %}

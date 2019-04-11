@@ -60,26 +60,15 @@
         </div>
         {{ form_end(form) }}
     </div>
-{% endblock %} 
-
-
-{% block javascripts %}
     {% include '@EMSCore/app/menu.html.twig' with {
         'item':  'environment-managed-alias'
     }%}
-    <script type="text/javascript">
-        $(function() {
-            $('#managed_alias_align_indexes').on('change', function() {
-                var data = $(this).find("option:selected").data();
+{% endblock %}
 
-                $('.align-index').iCheck( "uncheck");
+{% block frontend_application_css %}
+    <link rel="stylesheet" href="{{ asset('bundles/emscore/css/managed-alias.bundle.css') }}">
+{% endblock %}
 
-                if (data.indexes !== undefined) {
-                    data.indexes.map(function (index) {
-                        $('input[type="checkbox"][value="'+ index +'"]').iCheck("check");
-                    });
-                }
-            });
-        });
-    </script>
-{% endblock %}	
+{% block frontend_application_js %}
+    <script src="{{ asset('bundles/emscore/js/managed-alias.bundle.js') }}"></script>
+{% endblock %}

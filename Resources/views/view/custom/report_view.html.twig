@@ -16,13 +16,13 @@
     </div>
     <!-- /.box-body -->
 </div>
+{% include '@EMSCore/app/menu.html.twig' with {
+    'item':  'data-view-'~ contentType.id ~ '-' ~ view.id
+}%}
 
 {% endblock %} 
 
 
 {% block javascripts %}
-    {% include '@EMSCore/app/menu.html.twig' with {
-		'item':  'data-view-'~ contentType.id ~ '-' ~ view.id
-	}%}
     {{ javascript|raw }}
 {% endblock %}	

@@ -50,13 +50,7 @@
 	</div>
 </div>
 
+{% include '@EMSCore/app/menu.html.twig' with {
+	'item':  'wysiwyg-index'
+}%}
 {% endblock %}
-
-
-{% block javascripts %}
-    {% include '@EMSCore/app/menu.html.twig' with {
-		'item':  'wysiwyg-index'
-	}%}
-    {% include '@EMSCore/js/code-editor.html.twig' %}
-{% endblock %}
-	

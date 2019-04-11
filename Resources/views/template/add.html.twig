@@ -19,15 +19,15 @@
 			{{ form_start(form) }}
 				
 				<div class="box-body">
-						{{ form_row(form.name) }}
-						{{ form_row(form.icon) }}
-						{{ form_row(form.public) }}
-						{{ form_row(form.environments) }}
-						{{ form_row(form.body) }}
-						{{ form_row(form.editWithWysiwyg) }}
-						{{ form_row(form.active) }}
-						{{ form_row(form.role) }}
-						{{ form_row(form.renderOption) }}
+					{{ form_row(form.name) }}
+					{{ form_row(form.icon) }}
+					{{ form_row(form.public) }}
+                    {{ form_row(form.environments) }}
+					{{ form_row(form.body) }}
+					{{ form_row(form.editWithWysiwyg) }}
+                    {{ form_row(form.active) }}
+                    {{ form_row(form.role) }}
+                    {{ form_row(form.renderOption) }}
                     <div class="embed">
 						{{ form_row(form.header) }}
 					</div>
@@ -43,11 +43,11 @@
 						{{ form_row(form.extension) }}
 					</div>
 					<div class="notification">
-                        {{ form_row(form.roleTo) }}
-                        {{ form_row(form.roleCc) }}
-                        {{ form_row(form.emailContentType) }}
-                        {{ form_row(form.circlesTo) }}
-                        {{ form_row(form.responseTemplate) }}
+						{{ form_row(form.roleTo) }}
+						{{ form_row(form.roleCc) }}
+						{{ form_row(form.emailContentType) }}
+						{{ form_row(form.circlesTo) }}
+						{{ form_row(form.responseTemplate) }}
 					</div>
 					<div class="pdf">
                         {{ form_row(form.orientation) }}
@@ -65,109 +65,16 @@
 	</div>
 </div>
 
-{% endblock %} 
+{% include '@EMSCore/app/menu.html.twig' with {
+    'item':  'contenttype-index'
+}%}
 
+{% endblock %}
 
-{% block javascripts %}
-    {% include '@EMSCore/app/menu.html.twig' with {
-		'item':  'contenttype-index'
-	}%}
-    {% include '@EMSCore/js/code-editor.html.twig' %}
-	
-		
-<script type="text/javascript">
-$(window).ready(function() {  
+{% block frontend_application_css %}
+    <link rel="stylesheet" href="{{ asset('bundles/emscore/css/template.bundle.css') }}">
+{% endblock %}
 
-
-	// Jira - ELASTICMS-41
-	$('.export').hide();
-	$('.notification').hide();
-    $('.embed').hide();
-    $('.pdf').hide();
-	
-	if ($('#template_renderOption').val() == 'notification'){ 
-		$('.notification').show();
-	} else if ($('#template_renderOption').val() == 'export') {
-		 $('.export').show();
-    } else if ($('#template_renderOption').val() == 'embed') {
-        $('.embed').show();
-    } else if ($('#template_renderOption').val() == 'pdf') {
-        $('.pdf').show();
-    }
-
-
-	$('#template_renderOption').change(function(e){
-
-        console.log($('#template_renderOption').val());
-
-		  if ($(this).val() == 'notification'){
-		      $('.notification').show();
-			  $('.export').hide();
-			  $('.embed').hide();
-			  $('.pdf').hide();
-		  } else if ($(this).val() == 'export'){
-		      $('.export').show();
-		      $('.notification').hide();
-              $('.embed').hide();
-              $('.pdf').hide();
-		  } else if ($(this).val() == 'embed'){
-		      $('.embed').show();
-		      $('.export').hide();
-		      $('.notification').hide();
-		      $('.pdf').hide();
-		  } else if ($(this).val() == 'pdf'){
-		      $('.embed').hide();
-		      $('.export').hide();
-		      $('.notification').hide();
-		      $('.pdf').show();
-		  } else{
-		      $('.export').hide();
-		      $('.notification').hide();
-		      $('.embed').hide();
-		      $('.pdf').hide();
-		  }
-	});
-	
-    var type = $( '#template_circlesTo' ).data('type'); 
-    var dynamicLoading = $( '#template_circlesTo' ).data('dynamic-loading'); 
-
-  $('#template_circlesTo').css('width', '100%');
-  $('#template_circlesTo').css('z-index', '20000');
-  $('#template_circlesTo').select2({
-    ajax: {
-      url: '{{ path("elasticsearch.api.search") }}',
-        dataType: 'json',
-        delay: 250,
-        data: function (params) {
-            return {
-            q: params.term, // search term
-            page: params.page,
-            type: type
-          };
-        },
-      processResults: function (data, params) {
-        // parse the results into the format expected by Select2
-        // since we are using custom formatting functions we do not need to
-        // alter the remote JSON data, except to indicate that infinite
-        // scrolling can be used
-        params.page = params.page || 1;
-    
-            return {
-              results: data.items,
-              pagination: {
-                more: (params.page * 30) < data.total_count
-              }
-            };
-        },
-        cache: true
-      },
-      escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
-      //templateResult: formatRepo, // omitted for brevity, see the source of this page
-      //templateSelection: formatRepoSelection, // omitted for brevity, see the source of this page
-      minimumInputLength: 1
-  });
-});
-	
-</script>
-
-{% endblock %}	
+{% block frontend_application_js %}
+    <script src="{{ asset('bundles/emscore/js/template.bundle.js') }}"></script>
+{% endblock %}

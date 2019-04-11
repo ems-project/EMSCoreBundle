@@ -70,9 +70,12 @@ class AnalyzerOptionsType extends AbstractType
                 'form.analyzer.type.fingerprint' => 'fingerprint',
                 'form.analyzer.type.custom' => 'custom',
             ],
-            'label' => 'form.analyzer.type'
+            'label' => 'form.analyzer.type',
+            'attr' => [
+                'class' => 'fields-to-display-by-input-value',
+            ]
         ])->add('tokenizer', ChoiceType::class, [
-            'attr' => ['class' => 'analyzer_option'],
+            'attr' => ['class' => 'analyzer_option fields-to-display-for fields-to-display-for-custom'],
             'required' => false,
             'choices' => [
                 'form.analyzer.tokenizer.standard' => 'standard',
@@ -90,27 +93,27 @@ class AnalyzerOptionsType extends AbstractType
             ],
             'label' => 'form.analyzer.tokenizer',
         ])->add('max_token_length', IntegerType::class, [
-            'attr' => ['class' => 'analyzer_option'],
+            'attr' => ['class' => 'analyzer_option fields-to-display-for fields-to-display-for-standard'],
             'required' => false,
             'label' => 'form.analyzer.max_token_length',
         ])->add('max_output_size', IntegerType::class, [
-            'attr' => ['class' => 'analyzer_option'],
+            'attr' => ['class' => 'analyzer_option fields-to-display-for fields-to-display-for-fingerprint'],
             'required' => false,
             'label' => 'form.analyzer.max_output_size',
         ])->add('lowercase', CheckboxType::class, [
-            'attr' => ['class' => 'analyzer_option'],
+            'attr' => ['class' => 'analyzer_option fields-to-display-for fields-to-display-for-pattern'],
             'required' => false,
             'label' => 'form.analyzer.lowercase',
         ])->add('pattern', TextType::class, [
-            'attr' => ['class' => 'analyzer_option'],
+            'attr' => ['class' => 'analyzer_option fields-to-display-for fields-to-display-for-pattern'],
             'required' => false,
             'label' => 'form.analyzer.pattern',
         ])->add('separator', TextType::class, [
-            'attr' => ['class' => 'analyzer_option'],
+            'attr' => ['class' => 'analyzer_option fields-to-display-for fields-to-display-for-fingerprint'],
             'required' => false,
             'label' => 'form.analyzer.separator',
         ])->add('flags', ChoiceType::class, [
-            'attr' => ['class' => 'analyzer_option'],
+            'attr' => ['class' => 'analyzer_option fields-to-display-for fields-to-display-for-pattern'],
             'required' => false,
             'label' => 'form.analyzer.flags',
             'choices' => [
@@ -127,14 +130,14 @@ class AnalyzerOptionsType extends AbstractType
             'multiple' => true,
         ])->add('char_filter', ChoiceType::class, [
             'required' => false,
-            'attr' => ['class' => 'analyzer_option'],
+            'attr' => ['class' => 'analyzer_option fields-to-display-for fields-to-display-for-custom'],
             'choices' => [
                 'form.analyzer.char_filter.html_strip' => 'html_strip',
             ],
             'label' => 'form.analyzer.char_filter',
             'multiple' => true,
         ])->add('filter', ChoiceType::class, [
-            'attr' => ['class' => 'analyzer_option'],
+            'attr' => ['class' => 'analyzer_option fields-to-display-for fields-to-display-for-custom'],
             'required' => false,
             'label' => 'form.analyzer.filter',
             'choice_loader' => new CallbackChoiceLoader(function () {
@@ -168,7 +171,7 @@ class AnalyzerOptionsType extends AbstractType
             'multiple' => true,
         ])->add('stopwords', ChoiceType::class, [
             'label' => 'form.analyzer.stopwords',
-            'attr' => ['class' => 'analyzer_option'],
+            'attr' => ['class' => 'analyzer_option fields-to-display-for fields-to-display-for-fingerprint fields-to-display-for-standard fields-to-display-for-pattern fields-to-display-for-fingerprint fields-to-display-for-stop'],
             'required' => false,
             'choices' => [
                 'form.analyzer.stopwords._none_' => '_none_',
@@ -208,7 +211,7 @@ class AnalyzerOptionsType extends AbstractType
             ],
         ])->add('position_increment_gap', IntegerType::class, [
             'label' => 'form.analyzer.position_increment_gap',
-            'attr' => ['class' => 'analyzer_option'],
+            'attr' => ['class' => 'analyzer_option fields-to-display-for fields-to-display-for-custom'],
             'required' => false,
         ]);
     }

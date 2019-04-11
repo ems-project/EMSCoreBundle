@@ -50,6 +50,7 @@ class EmsCollectionType extends CollectionType
                 'allow_add' => true,
                 'allow_delete' => true,
                 'prototype' => true,
+                'prototype_name' => '__name__'.$fieldType->getId().'__',
                 'required' => false,
                 'disabled' => $disabled,
         ]);

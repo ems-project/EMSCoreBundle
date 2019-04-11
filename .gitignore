@@ -2,10 +2,8 @@
 /.settings/
 .DS_Store
 /.project
-/bower
 /.buildpath
 *.yml~
-/node_modules/
 /.idea/
-/vendor
+/node_modules/
 /composer.lock

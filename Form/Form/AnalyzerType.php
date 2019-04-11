@@ -28,6 +28,9 @@ class AnalyzerType extends AbstractType
                 'label' => 'form.analyzer.label'
             ))
             ->add('options', AnalyzerOptionsType::class, [
+                'attr' => [
+                    'class' => 'fields-to-display-by-value'
+                ],
             ])
             ->add('save', SubmitEmsType::class, [
                 'label' => 'form.analyzer.save',

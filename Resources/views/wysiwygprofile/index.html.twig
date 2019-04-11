@@ -20,8 +20,9 @@
 			</div>
 			<!-- /.box-header -->
 			{% if profiles|length %}
+                {{ form_start(form) }}
     			<div class="box-body no-padding">
-    				<ol class="sortable vertical" id="root-list">
+    				<ol class="nested-sortable vertical" id="root-list">
     					{% for profile in profiles %}
     						<li id="{{ profile.id }}" class="mjs-nestedSortable-no-nesting mjs-nestedSortable-leaf">
                 				<div class="box-header ui-sortable-handle">
@@ -32,12 +33,6 @@
     											'label': 'Edit',
     											'icon': 'pencil'
     										}%}
-                                            {#     										{% include '@EMSCore/elements/post-button.html.twig' with {#}
-{#     											'url': path('view.remove', {'id': profile.id}),#}
-{#     											'message': 'Delete the view ' ~ profile.name ~ ' ?',#}
-{#     											'label': 'Delete',#}
-{#     											'icon': 'trash'#}
-{#     										}%}#}
         								</div>
         							</div>
         							<h3 class="box-title">{{ profile.name }}</h3>
@@ -45,33 +40,8 @@
         					</li>
     					{% endfor %}
     				</ol>
-{#     				<div class="table-responsive">#}
-{#     				<table class="table table-condensed table-striped">#}
-{#     					<tbody>#}
-{#     						<tr>#}
-{#     							<th class="text-center" style="width: 20px">&nbsp;</th>#}
-{#     							<th>{{ 'Name'|trans }}</th>#}
-{#     							<th>{{ 'Action'|trans }}</th>#}
-{#     						</tr>#}
-{#     						{% for profile in profiles %}#}
-{#     							<tr>#}
-{#     								<td class="text-center"><i class="fa fa-move"></i></td>#}
-{#     								<td>{{ profile.name }}</td>#}
-{#     								<td>#}
-    								
-{#     									<div class="btn-group">#}
-{#     				                    </div>#}
-    								
-                  
-{#     								</td>#}
-{#     							</tr>#}
-{#     						{% endfor %}#}
-{#     					</tbody>#}
-{#     				</table>#}
-{#     				</div>#}
-					</div>
-					
-        		    {{ form_start(form) }}
+				</div>
+
         		    <div>
         		    	<div class="box-footer">
             				<div class="btn-group">
@@ -100,8 +70,10 @@
 			</div>
 			<!-- /.box-header -->
 			{% if stylesSets|length %}
+
+                {{ form_start(formStylesSet) }}
     			<div class="box-body no-padding">
-    				<ol class="sortable vertical" id="root-list">
+    				<ol class="nested-sortable vertical" id="root-list">
     					{% for stylesSet in stylesSets %}
     						<li id="{{ stylesSet.id }}" class="mjs-nestedSortable-no-nesting mjs-nestedSortable-leaf">
                 				<div class="box-header ui-sortable-handle">
@@ -120,8 +92,6 @@
     					{% endfor %}
     				</ol>
 					</div>
-					
-        		    {{ form_start(formStylesSet) }}
         		    <div>
         		    	<div class="box-footer">
             				<div class="btn-group">
@@ -140,62 +110,4 @@
 		</div>
 	</div>
 </div>
-{% endblock %}
-
-
-{% block javascripts %}
-    <script type="text/javascript">
-    <!--
-    
-    //-->
-
-    $(document).ready(function(){
-    	$('.sortable').nestedSortable({
-    		forcePlaceholderSize: true,
-    		handle: 'div',
-    		helper:	'clone',
-    		items: 'li',
-    		opacity: .6,
-    		placeholder: 'placeholder',
-    		revert: 250,
-    		tabSize: 25,
-    		tolerance: 'pointer',
-    		toleranceElement: '> div',
-    		maxLevels: 1,
-    		expression: /()(.+)/,
-    
-    		isTree: false,
-    		expandOnHover: 700,
-    		startCollapsed: true
-    	});
-
-
-    	$('#reorder_reorder').click(function(e){
-//     		e.preventDefault();
-    		hiered = $('#profiles-box ol.sortable').nestedSortable('toHierarchy', {startDepthCount: 0});
-
-    		var output = [];
-			for (var item in hiered){
-				output.push(hiered[item].id);
-			}
-    		
-    		$('#reorder_items').val(JSON.stringify(output)).trigger("change");
-    	})
-    	
-    	$('#reorder_bis_reorder').click(function(e){
-//     		e.preventDefault();
-    		hiered = $('#styles-set-box  ol.sortable').nestedSortable('toHierarchy', {startDepthCount: 0});
-
-    		var output = [];
-			for (var item in hiered){
-				output.push(hiered[item].id);
-			}
-
-// 			console,log(output); return false;
-    		
-    		$('#reorder_bis_items').val(JSON.stringify(output)).trigger("change");
-    	})
-    });
-    
-    </script>
 {% endblock %}

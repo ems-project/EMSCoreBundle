@@ -29,83 +29,36 @@
 					</a>
 				</div>
 			</div>
-			<div class="box-body no-padding">
-				<ol class="sortable vertical" id="root-list">
-                    {% include "@EMSCore/contenttype/reorder_item.html.twig" with {
-                		parent: contentType.fieldType
-                	} %}
-				</ol>
-			</div>
-			<!-- /.box-body -->
-			{{ form_start(form) }}
-			<div>
-				{% if form.addItem is defined  %}
-				<div class="box-footer">
-					{{ form_row(form.addItem) }}
+            {{ form_start(form) }}
+				<div class="box-body no-padding">
+					<ol class="nested-sortable vertical" id="root-list" data-nested-max-level="15" data-nested-is-tree="true">
+						{% include "@EMSCore/contenttype/reorder_item.html.twig" with {
+							parent: contentType.fieldType
+						} %}
+					</ol>
 				</div>
-				<!-- /.box-footer -->
-				{% endif %}
-				<div class="box-footer">
-					<div class="btn-group">
-						{{ form_widget(form.reorder) }}
+				<!-- /.box-body -->
+				<div>
+					{% if form.addItem is defined  %}
+					<div class="box-footer">
+						{{ form_row(form.addItem) }}
+					</div>
+					<!-- /.box-footer -->
+					{% endif %}
+					<div class="box-footer">
+						<div class="btn-group">
+							{{ form_widget(form.reorder) }}
+						</div>
 					</div>
 				</div>
-			</div>
 			{{ form_end(form) }}
 			<!-- /.box-footer -->
 		</div>
 	</div>
 </div>
 
-{% endblock %} 
+{% include '@EMSCore/app/menu.html.twig' with {
+	'item':  'contenttype-list'
+}%}
 
-{% block javascripts %}
-
-    {% include '@EMSCore/app/menu.html.twig' with {
-		'item':  'contenttype-list'
-	}%}
-	
-
-	
-
-<script type="text/javascript">
-<!--
-
-//-->
-
-$(document).ready(function(){
-
-	$('.sortable').nestedSortable({
-		forcePlaceholderSize: true,
-		handle: 'div',
-		helper:	'clone',
-		items: 'li',
-		opacity: .6,
-		placeholder: 'placeholder',
-		revert: 250,
-		tabSize: 25,
-		tolerance: 'pointer',
-		toleranceElement: '> div',
-		maxLevels: 10,
-		expression: /()(.+)/,
-
-		isTree: true,
-		expandOnHover: 700,
-		startCollapsed: true
-	});
-
-	$('#reorder_reorder').click(function(e){
-		hiered = $('ol.sortable').nestedSortable('toHierarchy', {startDepthCount: 0});
-		console.log(getAssocArray(hiered));
-		$('#reorder_items').val(JSON.stringify(getAssocArray(hiered))).trigger("change");
-		console.log($('#reorder_items').val());
-	})
-
-
-	$(".objectpicker").each(function(index){
-		objectPickerListeners($( this ));
-	});
-});
-</script>
-	
-{% endblock %}	
+{% endblock %}

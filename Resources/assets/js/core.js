@@ -13,6 +13,9 @@ import AjaxRequest from "./AjaxRequest";
 window.AjaxRequest = AjaxRequest;
 window.ajaxRequest = new AjaxRequest();
 
+window.object_search_url = document.querySelector("BODY").getAttribute('data-search-api');
+window.ems_wysiwyg_type_filters = JSON.parse(document.querySelector("BODY").getAttribute('data-wysiwyg-type-filters'));
+
 window.CKEDITOR_BASEPATH = assetPath + 'bundles/emscore/js/ckeditor/';
 
 const ace = require('ace-builds/src-noconflict/ace');
@@ -42,6 +45,7 @@ require('jquery-knob');
 require('jquery-sparkline');
 require('jquery-ui');
 require('jquery-ui/ui/widgets/sortable');
+require('jquery-ui/ui/widgets/draggable');
 require("jquery-lazyload");
 require('jvectormap');
 require('moment');

@@ -90,11 +90,7 @@
 		</div>
 	</div>
 </div>
-{% endblock %} 
-
-
-{% block javascripts %}
-    {% include '@EMSCore/app/menu.html.twig' with {
-		'item':  'job-index'
-	}%}
+{% include '@EMSCore/app/menu.html.twig' with {
+	'item':  'job-index'
+}%}
 {% endblock %}

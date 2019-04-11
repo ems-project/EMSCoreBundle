@@ -21,7 +21,7 @@
               <div class="box-body">
                   {% if info %}
                       <pre class="ems-code-editor" data-language="ace/mode/json"
-                           data-them="ace/theme/chrome">{{ info|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+                           data-theme="ace/theme/chrome" data-max-lines="300">{{ info|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
 					{% else %}
 						Elasticsearch index is missing !
 					{% endif %}
@@ -44,38 +44,5 @@
               </div>
             </form>
           </div>
-
-{% endblock %}
-
-
-
-{% block javascripts %}
-
-    <script type="text/javascript">
-        $(window).ready(function () {
-            $(".ems-code-editor").each(function () {
-                var editor = ace.edit(this);
-                if ($(this).data('theme')) {
-                    editor.setTheme($(this).data('theme'));
-                }
-                if ($(this).data('language')) {
-                    editor.session.setMode($(this).data('language'));
-                }
-                var maxLines = 500;
-                if ($(this).data('max-lines') && $(this).data('max-lines') > 0) {
-                    maxLines = $(this).data('max-lines');
-                }
-                editor.setOptions({
-                    readOnly: true,
-                    highlightActiveLine: false,
-                    highlightGutterLine: false,
-                    maxLines: maxLines
-                });
-                editor.renderer.$cursorLayer.element.style.opacity = 0;
-                editor.textInput.getElement().tabIndex = -1;
-                editor.commands.commmandKeyBinding = {};
-            });
-        });
-    </script>
 
 {% endblock %}

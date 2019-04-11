@@ -45,12 +45,7 @@
 		<!-- /.box -->
 	</div>
 </div>
-
-{% endblock %} 
-
-
-{% block javascripts %}
-    {% include '@EMSCore/app/menu.html.twig' with {
-		'item':  'environment-list'
-	}%}
+{% include '@EMSCore/app/menu.html.twig' with {
+	'item':  'environment-list'
+}%}
 {% endblock %}	

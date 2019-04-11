@@ -4,6 +4,8 @@
  * This function initialized the elasticms admin interface
  *
  */
+import EmsListeners from "./EmsListeners";
+
 (function(factory) {
     "use strict";
 
@@ -46,16 +48,16 @@
 
 
     function closeModalNotification() {
-        $('#modal-notification-close-button').click(function(){
+        $('#modal-notification-close-button').on('click', function(){
             $('#modal-notifications .modal-body').empty();
             $('#modal-notifications').modal('hide');
         });
     }
 
     function requestJob() {
-        $("a.request_job").click(function(e){
+        $("a.request_job").on('click', function(e){
             e.preventDefault();
-            ajaxRequest.post($(e.target).data('url'));
+            window.ajaxRequest.post($(e.target).data('url'));
         });
     }
 
@@ -65,8 +67,8 @@
         let query_string = {};
         const query = window.location.search.substring(1);
         const vars = query.split("&");
-        for (var i=0;i<vars.length;i++) {
-            var pair = vars[i].split("=");
+        for (let i=0;i<vars.length;i++) {
+            const pair = vars[i].split("=");
             // If first entry with this name
             if (typeof query_string[pair[0]] === "undefined") {
                 query_string[pair[0]] = decodeURIComponent(pair[1]);
@@ -93,12 +95,129 @@
             });
     }
 
+
+    function initCodeEditorThemeAngLanguage(){
+
+        const codeEditorModeField = $('.code_editor_mode_ems');
+        if( codeEditorModeField ){
+            const modeList = ace.require("ace/ext/modelist");
+            let modeListVar = [];
+            for (let index = 0; index < modeList.modes.length; ++index) {
+                modeListVar.push({
+                    id: modeList.modes[index].mode,
+                    text: modeList.modes[index].caption,
+                });
+            }
+            codeEditorModeField.select2({
+                data: modeListVar,
+                placeholder: 'Select a language'
+            });
+
+            const themeList = ace.require("ace/ext/themelist");
+            let themeList_var = [];
+            for (let index = 0; index < themeList.themes.length; ++index) {
+                themeList_var.push({
+                    id: themeList.themes[index].theme,
+                    text: themeList.themes[index].caption+' ('+(themeList.themes[index].isDark?'Dark':'Bright')+')',
+                });
+            }
+            $('.code_editor_theme_ems').select2({
+                data: themeList_var,
+                placeholder: 'Select a theme'
+            });
+        }
+    }
+
     function toggleMenu() {
-        $('.toggle-button').click(function(){
+        $('.toggle-button').on('click', function(){
             const toggleTex = $(this).data('toggle-contain');
             const text=$(this).html();
             $(this).html(toggleTex);
             $(this).data('toggle-contain', text);
+        });
+    }
+
+    function autoOpenModal(queryString) {
+        if(queryString.open) {
+            $('#content_type_structure_fieldType'+queryString.open).modal('show');
+        }
+    }
+
+    function initSearchForm() {
+
+        $('#add-search-filter-button').on('click', function(e) {
+            // prevent the link to scroll to the top ("#" anchor)
+            e.preventDefault();
+
+            const $listFilters = $('#list-of-search-filters');
+            const prototype = $listFilters.data('prototype');
+            const index = $listFilters.data('index');
+            // Replace '__name__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            const newForm = $(prototype.replace(/__name__/g, index));
+
+            // increase the index with one for the next item
+            $listFilters.data('index', index + 1);
+
+            //attach listeners to the new DOM element
+            new EmsListeners(newForm.get(0));
+            $listFilters.append(newForm);
+
+        });
+    }
+
+    function startPendingJob() {
+        $('[data-start-job-url]').each(function(){
+            $.ajax({
+                type: "POST",
+                url: this.getAttribute('data-start-job-url')
+            }).always(function() {
+                location.reload();
+            });
+        });
+    }
+
+    function initAjaxFormSave() {
+        $('button[data-ajax-save-url]').each(function(){
+            const button = $(this);
+            const form = button.closest('form');
+
+            const ajaxSave = function(event){
+                event.preventDefault();
+
+                const formContent = form.serialize();
+                window.ajaxRequest.post(button.data('ajax-save-url'), formContent)
+                    .success(function(message) {
+                        const response = jQuery.parseJSON( message );
+
+                        $('.has-error').removeClass('has-error');
+
+                        $(response.errors).each(function(index, item){
+                            $('#'+item.propertyPath).parent().addClass('has-error');
+                        });
+                    });
+            };
+
+            button.on('click', ajaxSave);
+
+            $(document).keydown(function(e) {
+                let key = undefined;
+                const possible = [ e.key, e.keyIdentifier, e.keyCode, e.which ];
+
+                while (key === undefined && possible.length > 0)
+                {
+                    key = possible.pop();
+                }
+
+                if (typeof key === "number" && ( 115 === key || 83 === key ) && (e.ctrlKey || e.metaKey) && !(e.altKey))
+                {
+                    ajaxSave(e);
+                    return false;
+                }
+                return true;
+
+            });
+
         });
     }
 
@@ -109,13 +228,17 @@
         closeModalNotification();
         requestJob();
         toggleMenu();
-        window.QueryString = queryString();
-
+        initSearchForm();
+        initCodeEditorThemeAngLanguage();
+        autoOpenModal(queryString());
+        startPendingJob();
+        initAjaxFormSave();
 
         //cron to update the cluster status
         window.setInterval(function(){
             updateStatusFct();
         }, 180000);
+
         //60000 every minute
     });
 

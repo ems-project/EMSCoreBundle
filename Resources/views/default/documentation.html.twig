@@ -13,10 +13,3 @@
     {{ 'ems.documentation.body'|i18n|raw }}
 
 {% endblock %}
-
-
-{% block javascripts %}
-    {% include '@EMSCore/app/menu.html.twig' with {
-		'item':  'documentation'
-	}%}
-{% endblock %}	

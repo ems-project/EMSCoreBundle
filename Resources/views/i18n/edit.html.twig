@@ -17,11 +17,15 @@
 		action: 'Save',
 		actionIcon: 'fa-save'
 	} %}
-{% endblock %}
-
-
-{% block javascripts %}
-    {% include '@EMSCore/i18n/javascript.html.twig' with {
+	{% include '@EMSCore/app/menu.html.twig' with {
 		'item':  'i18n-index'
 	}%}
-{% endblock %}	
+{% endblock %}
+
+{% block frontend_application_css %}
+	<link rel="stylesheet" href="{{ asset('bundles/emscore/css/i18n.bundle.css') }}">
+{% endblock %}
+
+{% block frontend_application_js %}
+	<script src="{{ asset('bundles/emscore/js/i18n.bundle.js') }}"></script>
+{% endblock %}

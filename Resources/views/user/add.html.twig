@@ -37,89 +37,16 @@
 {{ form_end(form) }}
 </div>
 <!-- /.box -->
+{% include '@EMSCore/app/menu.html.twig' with {
+	'item':  'user-index'
+}%}
 {% endblock fos_user_content %}
 
-{% block javascripts %}
-	<script type="text/javascript">
-	function formatRepo (repo) {
-	    if (repo.loading) return repo.text;
 
-	    var markup = "<div class='select2-result-repository clearfix'>" +
-	      repo.text + "</div>";
-	      
-		return markup;
-	}
-	
-	function formatRepoSelection (repo) {
-	    return repo.text;
-	}
+{% block frontend_application_css %}
+	<link rel="stylesheet" href="{{ asset('bundles/emscore/css/user-profile.bundle.css') }}">
+{% endblock %}
 
-	
-	$(document).ready(function() {
-		
-		$(".objectpicker").each(function(index){
-			var environment = $( this ).data('environment'); 
-			var type = $( this ).data('type'); 
-			var dynamicLoading = $( this ).data('dynamic-loading'); 
-
-			var params = {
-			  	escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
-			  	templateResult: formatRepo, // omitted for brevity, see the source of this page
-			  	templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
-			};
-
-
-			if(dynamicLoading){
-			  	params.minimumInputLength = 1,
-				params.ajax = {
-					url: '{{ path("elasticsearch.api.search") }}',
-			    	dataType: 'json',
-			    	delay: 250,
-			    	data: function (params) {
-			      		return {
-				        q: params.term, // search term
-				        page: params.page,
-				        environment: environment,
-				        type: type
-				      };
-				    },
-					processResults: function (data, params) {
-						// parse the results into the format expected by Select2
-						// since we are using custom formatting functions we do not need to
-						// alter the remote JSON data, except to indicate that infinite
-						// scrolling can be used
-						params.page = params.page || 1;
-				
-				      	return {
-					        results: data.items,
-					        pagination: {
-					          more: (params.page * 30) < data.total_count
-					        }
-				      	};
-			    	},
-			    	cache: true
-			  	};
-			}
-			
-			$( this ).select2(params);
-	    });
-		
-		$('.datepicker').datepicker({
-			format: '{{ datepicker_format }}',
-			todayBtn: true,
-			todayHighlight: true,
-			weekStart: {{ datepicker_weekstart }},
-			daysOfWeekHighlighted: {{ datepicker_daysofweek_highlighted | json_encode }},
-			daysOfWeekDisabled: [],
-			multidate: false
-		});
-	});   
-    </script>
-    {% include '@EMSCore/app/menu.html.twig' with {
-		'item':  'user-index'
-	}%}
-
-    {% include "@EMSCore/user/wysiwygOptionsJS.html.twig" with {
-		form: form
-	} %}
-{% endblock javascripts %}
+{% block frontend_application_js %}
+	<script src="{{ asset('bundles/emscore/js/user-profile.bundle.js') }}"></script>
+{% endblock %}

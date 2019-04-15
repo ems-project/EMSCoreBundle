@@ -539,6 +539,11 @@ services:
         arguments: ['@logger', '@app.elasticsearch', '@session', '@ems.service.file']
         tags:
             - { name: console.command }
+    EMS\CoreBundle\Command\CopyFilesCommand:
+        arguments: ['@ems.service.file', '%ems_core.storage_folder%']
+        tags:
+            - { name: console.command }
+
 #### security services
     api_key_user_provider:
         class: EMS\CoreBundle\Security\ApiKeyUserProvider

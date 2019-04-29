@@ -328,8 +328,6 @@ class ContentTypeService
 
 
     /**
-     *
-     * @param string $name
      * @return ContentType
      */
     public function getAllByAliases()

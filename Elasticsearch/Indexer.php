@@ -38,17 +38,11 @@ class Indexer
         $this->logger->warning('Deleted index {index}', $params);
     }
 
-    public function create(string $name, Settings $settings, Mappings $mappings): void
+    public function create(string $name, array $settings, array $mappings): void
     {
-        $body = [];
-        if (!$settings->isEmpty()) {
-            $body['settings'] = $settings->toArray();
-        }
-        if (!$mappings->isEmpty()) {
-            $body['mappings'] = $mappings->toArray();
-        }
+        $body = \array_filter(['settings' => $settings, 'mappings' => $mappings]);
 
-        $this->client->indices()->create(['index' => $name, 'body' => $body,]);
+        $this->client->indices()->create(['index' => $name, 'body' => $body]);
         $this->logger->info('Created index {index}', ['index' => $name]);
     }
 

@@ -232,7 +232,9 @@ class AliasService
     }
     
     /**
-     * @param string $alias
+     * @param string $name
+     *
+     * @return bool
      */
     public function removeAlias($name)
     {

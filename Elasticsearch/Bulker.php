@@ -44,6 +44,11 @@ class Bulker
     private $enableSha1 = true;
 
     /**
+     * @var array
+     */
+    private $errors;
+
+    /**
      * @param Client          $client
      * @param LoggerInterface $logger
      */
@@ -51,6 +56,22 @@ class Bulker
     {
         $this->client = $client;
         $this->logger = $logger;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasErrors(): bool
+    {
+        return !empty($this->errors);
+    }
+
+    /**
+     * @return array
+     */
+    public function getErrors(): array
+    {
+        return $this->errors;
     }
 
     /**
@@ -172,6 +193,7 @@ class Bulker
             $this->params = ['body' => []];
             $this->counter = 0;
         } catch (\Exception $e) {
+            $this->errors[] = $e;
             $this->logger->critical($e->getMessage());
         }
 
@@ -190,6 +212,7 @@ class Bulker
                 continue; //no error
             }
 
+            $this->errors[] = $action;
             $this->logger->critical('{type} {id} : {error} {reason}', [
                 'type'   => $action['_type'],
                 'id'     => $action['_id'],

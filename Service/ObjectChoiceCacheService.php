@@ -89,7 +89,7 @@ class ObjectChoiceCacheService
                     //TODO test si > 500...flashbag
 
                     foreach ($items['hits']['hits'] as $hit) {
-                        if(!isset($choices[$hit['_type'].':'.$hit['_id']])) {
+                        if (!isset($choices[$hit['_type'].':'.$hit['_id']])) {
                             $listItem = new ObjectChoiceListItem($hit, $this->contentTypeService->getByName($hit['_type']));
                             $choices[$listItem->getValue()] = $listItem;
                             $this->cache[$hit['_type']][$hit['_id']] = $listItem;

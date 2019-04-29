@@ -3,4 +3,6 @@ parameters:
         - %currentWorkingDirectory%/vendor/*
         - %currentWorkingDirectory%/DependencyInjection/Configuration.php
         - %currentWorkingDirectory%/Resources/public/js
+    ignoreErrors:
+        - '#Call to an undefined method [a-zA-Z0-9\\_]+Repository::findOneById().#'
     level: 1

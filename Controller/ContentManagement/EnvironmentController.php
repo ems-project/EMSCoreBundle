@@ -19,6 +19,7 @@ use EMS\CoreBundle\Form\Form\CompareEnvironmentFormType;
 use EMS\CoreBundle\Form\Form\EditEnvironmentType;
 use EMS\CoreBundle\Form\Form\RebuildIndexType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
+use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\EnvironmentService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;

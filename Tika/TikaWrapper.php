@@ -47,7 +47,7 @@ class TikaWrapper
      */
 
     /**
-     * @param $filename
+     * @param string $filename
      * @return string
      */
     public static function getXHTML($filename)
@@ -56,7 +56,7 @@ class TikaWrapper
     }
 
     /**
-     * @param $filename
+     * @param string $filename
      * @return string
      */
     public static function getHTML($filename)
@@ -74,7 +74,7 @@ class TikaWrapper
     }
 
     /**
-     * @param $filename
+     * @param string $filename
      * @return string
      */
     public static function getTextMain($filename)
@@ -83,7 +83,7 @@ class TikaWrapper
     }
 
     /**
-     * @param $filename
+     * @param string $filename
      * @return string
      */
     public static function getMetadata($filename)
@@ -92,7 +92,7 @@ class TikaWrapper
     }
 
     /**
-     * @param $filename
+     * @param string $filename
      * @return string
      */
     public static function getJson($filename)
@@ -101,7 +101,7 @@ class TikaWrapper
     }
 
     /**
-     * @param $filename
+     * @param string $filename
      * @return string
      */
     public static function getXmp($filename)
@@ -110,7 +110,7 @@ class TikaWrapper
     }
 
     /**
-     * @param $filename
+     * @param string $filename
      * @return string
      */
     public static function getLanguage($filename)
@@ -119,7 +119,7 @@ class TikaWrapper
     }
 
     /**
-     * @param $filename
+     * @param string $filename
      * @return string
      */
     public static function getDocumentType($filename)

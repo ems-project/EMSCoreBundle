@@ -91,7 +91,7 @@ class ObjectChoiceList implements ChoiceListInterface
     public function loadAll($types)
     {
         if ($this->loadAll) {
-            $this->choices = $this->objectChoiceCacheService->loadAll($types, $this->circleOnly);
+            $this->objectChoiceCacheService->loadAll($this->choices, $types, $this->circleOnly);
         }
         return $this->choices;
     }

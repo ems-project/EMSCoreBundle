@@ -39,13 +39,11 @@ class ObjectChoiceCacheService
     }
     
 
-    public function loadAll($types, $circleOnly = false)
+    public function loadAll(array &$choices, $types, $circleOnly = false)
     {
         $aliasTypes = [];
-        $out = [];
         
         $cts = explode(',', $types);
-        $body = [];
         foreach ($cts as $type) {
             if (!isset($this->fullyLoaded[$type])) {
                 $currentType = $this->contentTypeService->getByName($type);
@@ -91,9 +89,11 @@ class ObjectChoiceCacheService
                     //TODO test si > 500...flashbag
 
                     foreach ($items['hits']['hits'] as $hit) {
-                        $listItem = new ObjectChoiceListItem($hit, $this->contentTypeService->getByName($hit['_type']));
-                        $out[$listItem->getValue()] = $listItem;
-                        $this->cache[$hit['_type']][$hit['_id']] = $listItem;
+                        if(!isset($choices[$hit['_type'].':'.$hit['_id']])) {
+                            $listItem = new ObjectChoiceListItem($hit, $this->contentTypeService->getByName($hit['_type']));
+                            $choices[$listItem->getValue()] = $listItem;
+                            $this->cache[$hit['_type']][$hit['_id']] = $listItem;
+                        }
                     }
                 } else {
                     $this->session->getFlashBag()->add('warning', 'ems was not able to find the content type "'.$type.'"');
@@ -101,14 +101,12 @@ class ObjectChoiceCacheService
                 $this->fullyLoaded[$type] = true;
             } else {
                 foreach ($this->cache[$type] as $id => $item) {
-                    if ($item) {
-                        $out[$type.':'.$id] = $item;
+                    if ($item && !isset($choices[$type.':'.$id])) {
+                        $choices[$type.':'.$id] = $item;
                     }
                 }
             }
         }
-        
-        return $out;
     }
     
     public function load($objectIds, $circleOnly = false)

@@ -5,4 +5,5 @@ parameters:
         - %currentWorkingDirectory%/Resources/public/js
     ignoreErrors:
         - '#Call to an undefined method [a-zA-Z0-9\\_]+Repository::findOneById().#'
+    reportUnmatchedIgnoredErrors: false
     level: 1

@@ -208,7 +208,7 @@ class JobService
     }
 
     /**
-     * @param $string
+     * @param string $string
      *
      * @return mixed
      */

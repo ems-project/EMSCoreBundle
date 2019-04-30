@@ -111,7 +111,7 @@ abstract class DataFieldType extends AbstractType
      *
      * http://symfony.com/doc/current/form/data_transformers.html#about-model-and-view-transformers
      *
-     * @param DataField $data
+     * @param DataField $dataField
      *
      * @return array|null|string|integer|float
      */
@@ -306,11 +306,11 @@ abstract class DataFieldType extends AbstractType
         $view->vars ['helptext'] = $options ['helptext'];
         $view->vars ['isContainer'] = $this->isContainer();
         if (null == $options['label']) {
-//             /** @var FieldType $fieldType */
-//             $fieldType = $options ['metadata'];
-            $view->vars ['label'] = false;//$fieldType->getName();
+            $view->vars ['label'] = false;
         }
-        if ($form->getErrors()->count() > 0 && !$form->getConfig()->getType()->getInnerType()->isContainer() && $form->has('value')) {
+        /** @var DataFieldType $dataFieldType */
+        $dataFieldType = $form->getConfig()->getType()->getInnerType();
+        if ($form->getErrors()->count() > 0 && !$dataFieldType->isContainer() && $form->has('value')) {
             foreach ($form->getErrors() as $error) {
                 $form->get('value')->addError($error);
             }
@@ -472,8 +472,9 @@ abstract class DataFieldType extends AbstractType
     /**
      * Build an elasticsearch mapping options as an array
      *
-     * @param array $options
      * @param FieldType $current
+     *
+     * @return array
      */
     public function generateMapping(FieldType $current, $withPipeline)
     {

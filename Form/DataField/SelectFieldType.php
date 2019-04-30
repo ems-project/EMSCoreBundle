@@ -183,11 +183,11 @@ class SelectFieldType extends DataFieldType
                     if (is_string($item)) {
                         $out[] = $item;
                     } else {
-                        $dataField->addMessage('Was not able to import the data : '+json_encode($item));
+                        $dataField->addMessage(sprintf('Was not able to import the data : %s', json_encode($item, JSON_PRETTY_PRINT)));
                     }
                 }
             } else {
-                $dataField->addMessage('Was not able to import the data : '+json_encode($temp));
+                $dataField->addMessage(sprintf('Was not able to import the data : %s', json_encode($temp, JSON_PRETTY_PRINT)));
                 $out = [];
             }
         } else { //not mutiple
@@ -197,9 +197,9 @@ class SelectFieldType extends DataFieldType
                 $out = $temp;
             } elseif (is_array($temp) && ! empty($temp) && is_string(array_shift($temp))) {
                 $out = array_shift($temp);
-                $dataField->addMessage('Only the first item has been imported : '+json_encode($temp));
+                $dataField->addMessage(sprintf('Only the first item has been imported : %s ', json_encode($temp, JSON_PRETTY_PRINT)));
             } else {
-                $dataField->addMessage('Was not able to import the data : '+json_encode($temp));
+                $dataField->addMessage(sprintf('Was not able to import the data : %s', json_encode($temp, JSON_PRETTY_PRINT)));
                 $out = "";
             }
         }

@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Repository;
 
+use Doctrine\ORM\EntityManager;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Notification;
 use EMS\CoreBundle\Entity\User;

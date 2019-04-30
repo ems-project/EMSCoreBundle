@@ -1,6 +1,7 @@
 <?php
 namespace EMS\CoreBundle\Entity\Form;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 
@@ -22,7 +23,7 @@ class Search implements JsonSerializable
     private $id;
     
     /**
-     * @var SearchFilter $filters
+     * @var Collection $filters
      *
      * @ORM\OneToMany(targetEntity="SearchFilter", mappedBy="search", cascade={"persist", "remove"})
      */

@@ -226,7 +226,7 @@ class FieldTypeType extends AbstractType
         /** @var FieldType $child */
         foreach ($fieldType->getChildren() as $child) {
             if (! $child->getDeleted()) {
-                if (isset($jsonName)) {
+                if ($jsonName !== null) {
                     if (isset($mapping[$jsonName]["properties"])) {
                         if (isset($mapping[$jsonName]["properties"]["attachment"]["properties"]["content"])) {
                             $mapping[$jsonName]["properties"]["attachment"]["properties"]["content"]= array_merge_recursive($mapping[$jsonName]["properties"]["attachment"]["properties"]["content"], $this->generateMapping($child, $withPipeline));

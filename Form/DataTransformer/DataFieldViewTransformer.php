@@ -21,9 +21,9 @@ class DataFieldViewTransformer implements DataTransformerInterface
     }
 
     /**
-     * Transforms a DataField into an associative array.
+     * Transforms from Norm to View (DataField to array).
      *
-     * @param  DataField|null $issue
+     * @param  DataField $data
      * @return string|array
      */
     public function transform($data)
@@ -35,10 +35,10 @@ class DataFieldViewTransformer implements DataTransformerInterface
     }
 
     /**
-     * Transforms a string (number) to an object (issue).
+     * Transforms from View to Norm (array to DataField).
      *
-     * @param  $data from the Form
-     * @return DataField|null
+     * @param  array|null|string|integer|float $data from the Form
+     * @return DataField
      */
     public function reverseTransform($data)
     {

@@ -42,10 +42,9 @@ class AppExtension extends \Twig_Extension
     protected $fileService;
     /**@var RequestRuntime */
     protected $commonRequestRuntime;
-    /**@var string */
-    protected $assetConfigIndex;
-    /**@var string */
-    protected $assetConfigContentType;
+    /**@var array */
+    protected $assetConfig;
+
     private $doctrine;
     private $userService;
     private $authorizationChecker;
@@ -64,7 +63,7 @@ class AppExtension extends \Twig_Extension
     /** @var Logger */
     private $logger;
 
-    public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, Client $client, Router $router, $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, Logger $logger, FormFactory $formFactory, FileService $fileService, RequestRuntime $commonRequestRuntime, string $assetConfigIndex, string $assetConfigContentType)
+    public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, Client $client, Router $router, $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, Logger $logger, FormFactory $formFactory, FileService $fileService, RequestRuntime $commonRequestRuntime, array $assetConfig)
     {
         $this->doctrine = $doctrine;
         $this->authorizationChecker = $authorizationChecker;
@@ -79,8 +78,7 @@ class AppExtension extends \Twig_Extension
         $this->formFactory = $formFactory;
         $this->fileService = $fileService;
         $this->commonRequestRuntime = $commonRequestRuntime;
-        $this->assetConfigIndex = $assetConfigIndex;
-        $this->assetConfigContentType = $assetConfigContentType;
+        $this->assetConfig = $assetConfig;
     }
 
 
@@ -187,34 +185,13 @@ class AppExtension extends \Twig_Extension
             $config['_config_type'] = 'image';
         }
 
-        $environment = null;
-        if (!empty($this->assetConfigContentType) && empty($this->assetConfigIndex)) {
-            $environment = $this->environmentService->getByName($this->assetConfigContentType);
-        }
-
-        if (!empty($this->assetConfigContentType) && (!empty($this->assetConfigIndex) || $environment)) {
-            $result = $this->client->search([
-                'size' => 1,
-                'type' => $this->assetConfigContentType,
-                'index' => $this->assetConfigIndex ?: $environment->getAlias(),
-                'body' => '{
-                   "query": {
-                      "term": {
-                         "_identifier": {
-                            "value": ' . json_encode($processorIdentifier) . '
-                         }
-                      }
-                   }
-                }',
-            ]);
-
-            if ($result['hits']['total'] != 0) {
-                $config = array_merge($result['hits']['hits'][0]['_source'], $config);
-            }
+        if (isset($this->assetConfig[$processorIdentifier])) {
+            $config = array_merge($this->assetConfig[$processorIdentifier], $config);
         }
 
         // removes invalid options like _sha1, _finalized_by, ..
         $config = array_intersect_key($config, Config::getDefaults());
+
         //_published_datetime can also be removed as it has a sense only if the default config is updated
         if (isset($config['_published_datetime'])) {
             unset($config['_published_datetime']);

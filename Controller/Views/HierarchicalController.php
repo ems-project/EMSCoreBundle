@@ -41,8 +41,9 @@ class HierarchicalController extends AppController
     {
         $ouuid = explode(':', $key);
         $contentType = $this->getContentTypeService()->getByName($ouuid[0]);
+        $index = $this->getContentTypeService()->getIndex($contentType);
         $item = $this->getElasticsearch()->get([
-                'index' => $contentType->getEnvironment()->getAlias(),
+                'index' => $index,
                 'type' => $ouuid[0],
                 'id' => $ouuid[1],
         ]);

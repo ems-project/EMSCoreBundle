@@ -10,6 +10,7 @@ use EMS\CoreBundle\Form\DataField\DataLinkFieldType;
 use EMS\CoreBundle\Form\Field\ContentTypeFieldPickerType;
 use EMS\CoreBundle\Form\Nature\ReorganizeType;
 use EMS\CoreBundle\Form\View\ViewType;
+use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -34,17 +35,23 @@ class HierarchicalViewType extends ViewType
     
     /**@var Session $session*/
     protected $session;
+
     /**@var DataService */
     protected $dataService;
+
     /**@var Router */
     protected $router;
+
+    /**@var ContentTypeService */
+    protected $contentTypeService;
     
-    public function __construct($formFactory, $twig, $client, Session $session, DataService $dataService, Router $router)
+    public function __construct($formFactory, $twig, $client, Session $session, DataService $dataService, Router $router, ContentTypeService $contentTypeService)
     {
         parent::__construct($formFactory, $twig, $client);
         $this->session= $session;
         $this->dataService = $dataService;
         $this->router= $router;
+        $this->contentTypeService= $contentTypeService;
     }
 
     /**
@@ -181,11 +188,13 @@ class HierarchicalViewType extends ViewType
         if (count($parentId) != 2) {
             throw new NotFoundHttpException('Parent menu not found: '.$view->getOptions()['parent']);
         }
-        
+
+        $index = $this->contentTypeService->getIndex($view->getContentType());
+
         $parent = null;
         try {
             $parent= $this->client->get([
-                    'index' => $view->getContentType()->getEnvironment()->getAlias(),
+                    'index' => $index,
                     'type' => $parentId[0],
                     'id' => $parentId[1],
             ]);
@@ -196,7 +205,7 @@ class HierarchicalViewType extends ViewType
         if (empty($parent)) {
             throw new NotFoundHttpException('Parent menu not found: '.$view->getOptions()['parent']);
         }
-        
+
         
         $data = [];
         

@@ -964,10 +964,11 @@ class AppExtension extends \Twig_Extension
             /**@var \EMS\CoreBundle\Entity\ContentType $contentType */
             $contentType = $this->contentTypeService->getByName($type);
             if ($contentType) {
+                $singleTypeIndex = $this->contentTypeService->getIndex($contentType);
                 try {
                     $result = $this->client->get([
                         'id' => $ouuid,
-                        'index' => $index ?: $contentType->getEnvironment()->getAlias(),
+                        'index' => $index ?? $singleTypeIndex,
                         'type' => $type,
                     ]);
 

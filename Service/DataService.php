@@ -238,7 +238,7 @@ class DataService
         return $this->propagateDataToComputedFieldRecursive($form, $objectArray, $contentType, $type, $ouuid, $migration, $objectArray, '');
     }
 
-    private function propagateDataToComputedFieldRecursive(Form $form, array& $objectArray, ContentType $contentType, $type, $ouuid, $migration, &$parent, $path)
+    private function propagateDataToComputedFieldRecursive(FormInterface $form, array& $objectArray, ContentType $contentType, $type, $ouuid, $migration, &$parent, $path)
     {
         $found = false;
         /** @var DataField $dataField*/
@@ -327,10 +327,8 @@ class DataService
             //$this->session->getFlashBag()->add('warning', 'Error to parse the post processing script of field '.$dataField->getFieldType()->getName().': ');
         }
 
-        if ($dataFieldType->isContainer()) {
+        if ($dataFieldType->isContainer() && $form instanceof \IteratorAggregate) {
 
-            /** @var Form $form*/
-            /** @var Form $child*/
             foreach ($form->getIterator() as $child) {
 
                /**@var DataFieldType $childType */

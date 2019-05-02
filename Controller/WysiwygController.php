@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\ClickableInterface;
 use Symfony\Component\HttpFoundation\Request;
 use EMS\CoreBundle\Entity\WysiwygProfile;
 use EMS\CoreBundle\Form\Form\WysiwygProfileType;
@@ -152,7 +153,7 @@ class WysiwygController extends AppController
         $form->handleRequest($request);
         
         if ($form->isSubmitted()) {
-            if ($form->get('remove') && $form->get('remove')->isClicked()) {
+            if ($form->get('remove') instanceof ClickableInterface  && $form->get('remove')->isClicked()) {
                 $this->getWysiwygStylesSetService()->remove($stylesSet);
                 return $this->redirectToRoute('ems_wysiwyg_index');
             }
@@ -181,11 +182,11 @@ class WysiwygController extends AppController
      */
     public function editProfileAction(Request $request, WysiwygProfile $profile)
     {
-        $form= $this->createForm(WysiwygProfileType::class, $profile);
+        $form = $this->createForm(WysiwygProfileType::class, $profile);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            if ($form->get('remove') && $form->get('remove')->isClicked()) {
+            if ($form->get('remove') instanceof ClickableInterface && $form->get('remove')->isClicked()) {
                 $this->getWysiwygProfileService()->remove($profile);
                 return $this->redirectToRoute('ems_wysiwyg_index');
             }

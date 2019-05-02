@@ -251,7 +251,7 @@ class AggregateOption
     /**
      * Set template
      *
-     * @param string $config
+     * @param string $template
      *
      * @return AggregateOption
      */

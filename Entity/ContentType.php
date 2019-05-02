@@ -1558,9 +1558,9 @@ class ContentType
     }
     
     /**
-     * Set publishRole
+     * Set trashRole
      *
-     * @param string $publishRole
+     * @param string $trashRole
      *
      * @return ContentType
      */

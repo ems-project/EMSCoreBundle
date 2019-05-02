@@ -6,5 +6,6 @@ parameters:
     ignoreErrors:
         - '#Call to an undefined method [a-zA-Z0-9\\_]+Repository::findOneById().#'
         - '#Call to an undefined method [a-zA-Z0-9\\_]+Repository::findOneByName().#'
+        - '#Call to an undefined method [a-zA-Z0-9\\_]+Repository::findByContentType().#'
     reportUnmatchedIgnoredErrors: false
-    level: 1
+    level: 2

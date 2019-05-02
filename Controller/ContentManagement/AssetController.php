@@ -25,7 +25,7 @@ class AssetController extends AbstractController
 
     /**
      * @param string $hash
-     * @param string hash_config
+     * @param string $hash_config
      * @param string $filename
      * @param Request $request
      * @return Response

@@ -212,7 +212,7 @@ class AppController extends Controller
      */
     protected function startJob($service, $arguments)
     {
-        /** @var $jobService JobService */
+        /** @var JobService $jobService */
         $jobService = $this->container->get('ems.service.job');
         $job = $jobService->createService($this->getUser(), $service, $arguments);
 

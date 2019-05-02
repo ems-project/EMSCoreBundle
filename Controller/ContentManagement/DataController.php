@@ -41,11 +41,10 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class DataController extends AppController
 {
-
     /**
      * @Route("/data/{name}", name="ems_data_default_search"))
      * @Route("/data/{name}", name="data.root"))
-     * @param $name
+     * @param string $name
      * @return Response
      */
     public function rootAction($name)
@@ -104,7 +103,7 @@ class DataController extends AppController
     /**
      * @Route("/data/in-my-circles/{name}", name="ems_search_in_my_circles"))
      *
-     * @param $name
+     * @param string $name
      * @return Response
      */
     public function inMyCirclesAction($name)
@@ -170,7 +169,7 @@ class DataController extends AppController
 
     /**
      * @param ContentType $contentType
-     * @param $ouuid
+     * @param string $ouuid
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
      * @Route("/data/put-back/{contentType}/{ouuid}", name="ems_data_put_back"), methods={"POST"})
@@ -187,7 +186,7 @@ class DataController extends AppController
 
     /**
      * @param ContentType $contentType
-     * @param $ouuid
+     * @param string $ouuid
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
      * @Route("/data/empty-trash/{contentType}/{ouuid}", name="ems_data_empty_trash"), methods={"POST"})
@@ -203,7 +202,7 @@ class DataController extends AppController
 
 
     /**
-     * @param $contentTypeId
+     * @param int $contentTypeId
      * @return Response
      * @Route("/data/draft/{contentTypeId}", name="data.draft_in_progress"))
      */
@@ -236,9 +235,9 @@ class DataController extends AppController
     }
 
     /**
-     * @param $environmentName
-     * @param $type
-     * @param $ouuid
+     * @param string $environmentName
+     * @param string $type
+     * @param string $ouuid
      * @return Response
      * @Route("/data/view/{environmentName}/{type}/{ouuid}", name="data.view")
      */
@@ -290,7 +289,7 @@ class DataController extends AppController
 
     /**
      * @param ContentType $contentType
-     * @param $ouuid
+     * @param string $ouuid
      * @param Environment $environment
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @Route("/data/revisions-in-environment/{environment}/{type}:{ouuid}", name="data.revision_in_environment", defaults={"deleted":0})
@@ -323,10 +322,10 @@ class DataController extends AppController
     }
 
     /**
-     * @param $type
-     * @param $ouuid
-     * @param $revisionId
-     * @param $compareId
+     * @param string $type
+     * @param string $ouuid
+     * @param int $revisionId
+     * @param int $compareId
      * @param Request $request
      * @param DataService $dataService
      * @return Response
@@ -419,8 +418,9 @@ class DataController extends AppController
         $lastPage = $repository->revisionsLastPage($ouuid, $contentType);
         $counter = $repository->countRevisions($ouuid, $contentType);
         $firstElemOfPage = $repository->firstElemOfPage($page);
-
-        $availableEnv = $em->getRepository('EMSCoreBundle:Environment')->findAvailableEnvironements(
+        /** @var EnvironmentRepository $envRepository */
+        $envRepository = $em->getRepository('EMSCoreBundle:Environment');
+        $availableEnv = $envRepository->findAvailableEnvironements(
             $revision->getContentType()->getEnvironment()
         );
 
@@ -489,9 +489,9 @@ class DataController extends AppController
     }
 
     /**
-     * @param $type
-     * @param $ouuid
-     * @param $fromRev
+     * @param string $type
+     * @param string $ouuid
+     * @param ?Revision $fromRev
      * @return Revision
      */
     public function initNewDraft($type, $ouuid, $fromRev = null)
@@ -501,9 +501,9 @@ class DataController extends AppController
 
 
     /**
-     * @param $environment
-     * @param $type
-     * @param $ouuid
+     * @param string $environment
+     * @param string $type
+     * @param string $ouuid
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
@@ -530,8 +530,8 @@ class DataController extends AppController
 
 
     /**
-     * @param $type
-     * @param $ouuid
+     * @param string $type
+     * @param string $ouuid
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
      * @Route("/data/new-draft/{type}/{ouuid}", name="revision.new-draft"), methods={"POST"})
@@ -545,8 +545,8 @@ class DataController extends AppController
 
 
     /**
-     * @param $type
-     * @param $ouuid
+     * @param string $type
+     * @param string $ouuid
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @throws Missing404Exception
      *
@@ -591,10 +591,11 @@ class DataController extends AppController
     }
 
     /**
-     * @param $revisionId
-     * @param Request $request
+     * @param int $revisionId
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
+     * @throws CoreBundle\Exception\LockedException
+     * @throws PrivilegeException
      * @Route("/data/draft/discard/{revisionId}", name="revision.discard"), methods={"POST"})
      */
     public function discardRevisionAction($revisionId)
@@ -675,9 +676,11 @@ class DataController extends AppController
 
 
     /**
-     * @param $revisionId
+     * @param int $revisionId
      * @param bool $defaultOnly
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @throws CoreBundle\Exception\LockedException
+     * @throws PrivilegeException
      * @Route("/data/revision/re-index/{revisionId}", name="revision.reindex"), methods={"POST"})
      */
     public function reindexRevisionAction($revisionId, $defaultOnly = false)
@@ -738,8 +741,8 @@ class DataController extends AppController
     }
 
     /**
-     * @param $viewId
-     * @param $public
+     * @param int $viewId
+     * @param bool $public
      * @param Request $request
      * @return mixed
      *
@@ -754,8 +757,8 @@ class DataController extends AppController
         /** @var ViewRepository $viewRepository */
         $viewRepository = $em->getRepository('EMSCoreBundle:View');
 
-        $view = $viewRepository->find($viewId);
         /** @var View $view * */
+        $view = $viewRepository->find($viewId);
 
         if (!$view || ($public && !$view->isPublic())) {
             throw new NotFoundHttpException('View type not found');
@@ -768,11 +771,11 @@ class DataController extends AppController
     }
 
     /**
-     * @param $environmentName
-     * @param $templateId
-     * @param $ouuid
-     * @param $_download
-     * @param $public
+     * @param string $environmentName
+     * @param int $templateId
+     * @param string $ouuid
+     * @param bool $_download
+     * @param bool $public
      * @return Response
      * @throws \Throwable
      * @throws \Twig_Error_Loader
@@ -910,9 +913,9 @@ class DataController extends AppController
     }
 
     /**
-     * @param $environmentName
-     * @param $templateId
-     * @param $ouuid
+     * @param string $environmentName
+     * @param int $templateId
+     * @param string $ouuid
      * @return Response
      * @throws \Throwable
      * @Route("/data/custom-view-job/{environmentName}/{templateId}/{ouuid}", name="ems_job_custom_view", methods={"POST"})
@@ -961,7 +964,7 @@ class DataController extends AppController
     }
 
     /**
-     * @param $revisionId
+     * @param int $revisionId
      * @param Request $request
      * @return Response
      * @throws \Exception
@@ -996,7 +999,7 @@ class DataController extends AppController
             $this->addFlash('error', 'Your modification are not saved!');
         } else {
             $this->lockRevision($revision);
-            $this->getLogger()->addDebug('Revision locked');
+            $this->getLogger()->debug('Revision locked');
 
             $backup = $revision->getRawData();
             $form = $this->createForm(RevisionType::class, $revision, ['raw_data' => $revision->getRawData()]);
@@ -1089,7 +1092,7 @@ class DataController extends AppController
     }
 
     /**
-     * @param $revisionId
+     * @param int $revisionId
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @throws \Exception
@@ -1430,7 +1433,7 @@ class DataController extends AppController
     }
 
     /**
-     * @param $key
+     * @param string $key
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @throws \Doctrine\ORM\NonUniqueResultException
      * @Route("/data/link/{key}", name="data.link")
@@ -1523,8 +1526,8 @@ class DataController extends AppController
     /**
      * @deprecated
      * @param Revision $revision
-     * @param $publishEnv
-     * @param $super
+     * @param bool $publishEnv
+     * @param bool $super
      * @throws CoreBundle\Exception\LockedException
      * @throws PrivilegeException
      */

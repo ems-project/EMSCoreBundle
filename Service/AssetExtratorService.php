@@ -65,7 +65,7 @@ class AssetExtratorService
     }
 
     /**
-     * @param string $sha1
+     * @param string $hash
      * @return array|mixed
      * @throws AssetNotFoundException
      */

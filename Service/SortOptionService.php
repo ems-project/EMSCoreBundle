@@ -2,8 +2,6 @@
 
 namespace EMS\CoreBundle\Service;
 
-use EMS\CoreBundle\Entity\SortOption;
-
 class SortOptionService extends EntityService
 {
     

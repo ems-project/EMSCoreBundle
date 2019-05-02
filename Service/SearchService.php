@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Service;
 
 use EMS\CoreBundle\Entity\Form\Search;
+use EMS\CoreBundle\Entity\Form\SearchFilter;
 
 class SearchService
 {

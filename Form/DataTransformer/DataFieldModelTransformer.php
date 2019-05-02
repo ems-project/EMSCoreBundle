@@ -21,10 +21,10 @@ class DataFieldModelTransformer implements DataTransformerInterface
     }
 
     /**
-     * Transforms a DataField into an associative array.
+     * Transforms from Model to Norm (array to Datafield).
      *
-     * @param  DataField|null $issue
-     * @return string|array
+     * @param  array $data
+     * @return DataField
      */
     public function transform($data)
     {
@@ -35,10 +35,10 @@ class DataFieldModelTransformer implements DataTransformerInterface
     }
 
     /**
-     * Transforms a string (number) to an object (issue).
+     * Transforms from Norm to Model (DataField to array).
      *
-     * @param  $data from the Form
-     * @return DataField|null
+     * @param  DataField $data
+     * @return array|float|int|string|null
      */
     public function reverseTransform($data)
     {

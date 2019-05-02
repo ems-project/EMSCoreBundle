@@ -22,6 +22,7 @@ use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Form\ClickableInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -37,11 +38,9 @@ class ElasticsearchController extends AppController
     /**
      * Create an alias for an index
      *
-     * @param string indexName
-     * @param Request $request
      * @Route("/elasticsearch/alias/add/{name}", name="elasticsearch.alias.add"))
      */
-    public function addAliasAction($name, Request $request)
+    public function addAliasAction(string $name, Request $request)
     {
 
         /** @var  Client $client */
@@ -294,8 +293,7 @@ class ElasticsearchController extends AppController
      */
     public function searchApiAction(Request $request)
     {
-
-        $this->getLogger()->addDebug('At the begin of search api action');
+        $this->getLogger()->debug('At the begin of search api action');
         $pattern = $request->query->get('q');
         $page = $request->query->get('page', 1);
         $environments = $request->query->get('environment');
@@ -540,10 +538,10 @@ class ElasticsearchController extends AppController
             /** @var \Elasticsearch\Client $client */
             $client = $this->getElasticsearch();
 
-            $this->getLogger()->addDebug('Before search api');
+            $this->getLogger()->debug('Before search api');
             $results = $client->search($params);
 
-            $this->getLogger()->addDebug('After search api');
+            $this->getLogger()->debug('After search api');
         } else {
             //there is no type matching this request
             $results = [
@@ -625,7 +623,10 @@ class ElasticsearchController extends AppController
 
             $form->handleRequest($request);
 
-            $openSearchForm = $form->get('search')->isClicked();
+            $openSearchForm = false;
+            if ($form->get('search') instanceof ClickableInterface) {
+                $openSearchForm = $form->get('search')->isClicked();
+            }
 
             //Form treatement after the "Save" button has been pressed (= ask for a name to save the search preset)
             if ($form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && array_key_exists('save', $request->query->get('search_form'))) {

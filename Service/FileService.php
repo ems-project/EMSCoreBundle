@@ -106,7 +106,7 @@ class FileService
 
     /**
      * @deprecated
-     * @param $hash
+     * @param string $hash
      * @param bool $cacheContext
      * @return bool|string
      */
@@ -193,12 +193,12 @@ class FileService
     }
 
     /**
-     * @param $hash
-     * @param $size
-     * @param $name
-     * @param $type
-     * @param $user
-     * @param $hashAlgo
+     * @param string $hash
+     * @param integer $size
+     * @param string $name
+     * @param string $type
+     * @param string $user
+     * @param string $hashAlgo
      * @return UploadedAsset
      * @throws Conflict409Exception
      * @throws StorageServiceMissingException

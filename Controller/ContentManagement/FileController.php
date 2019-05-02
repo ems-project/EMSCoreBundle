@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class FileController extends AppController
 {
     /**
-     * @param $sha1
+     * @param string $sha1
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @deprecated
@@ -29,7 +29,7 @@ class FileController extends AppController
     }
 
     /**
-     * @param $sha1
+     * @param string $sha1
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @deprecated
@@ -46,7 +46,7 @@ class FileController extends AppController
     }
 
     /**
-     * @param $sha1
+     * @param string $sha1
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \EMS\CoreBundle\Exception\AssetNotFoundException
      *
@@ -66,8 +66,8 @@ class FileController extends AppController
     }
 
     /**
-     * @param $sha1
-     * @param $size
+     * @param string $sha1
+     * @param int $size
      * @param bool $apiRoute
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
@@ -114,8 +114,9 @@ class FileController extends AppController
     }
 
     /**
-     * @param $sha1
-     * @param $hash
+     * @param string $sha1
+     * @param string $hash
+     * @param bool $apiRoute
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      *

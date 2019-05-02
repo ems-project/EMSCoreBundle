@@ -45,10 +45,6 @@ class AliasService
      */
     private $isBuild = false;
 
-    /**
-     * @param Client   $client
-     * @param Registry $registry
-     */
     public function __construct(Client $client, Registry $doctrine)
     {
         $this->client = $client;
@@ -236,7 +232,9 @@ class AliasService
     }
     
     /**
-     * @param string $alias
+     * @param string $name
+     *
+     * @return bool
      */
     public function removeAlias($name)
     {

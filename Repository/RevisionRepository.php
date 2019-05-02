@@ -45,7 +45,7 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
-     * @param $hash
+     * @param string $hash
      * @return int
      * @throws \Doctrine\DBAL\DBALException
      */
@@ -94,7 +94,7 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
-     * @param $ouuid
+     * @param string $ouuid
      * @param ContentType $contentType
      * @param Environment $environment
      * @return mixed
@@ -193,8 +193,8 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
-     * @param $source
-     * @param $target
+     * @param string $source
+     * @param string $target
      * @param array $contentTypes
      * @return mixed
      * @throws NonUniqueResultException
@@ -219,9 +219,9 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      *
-     * @param $source
-     * @param $target
-     * @param $contentTypes
+     * @param string $source
+     * @param string $target
+     * @param array $contentTypes
      * @return \Doctrine\ORM\QueryBuilder
      */
     private function getCompareQueryBuilder($source, $target, $contentTypes)
@@ -248,11 +248,11 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
-     * @param $source
-     * @param $target
+     * @param string $source
+     * @param string $target
      * @param array $contentTypes
-     * @param $from
-     * @param $limit
+     * @param int $from
+     * @param int $limit
      * @param string $orderField
      * @param string $orderDirection
      * @return mixed
@@ -292,7 +292,7 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
-     * @param $ouuid
+     * @param string $ouuid
      * @param ContentType $contentType
      * @return mixed
      * @throws NonUniqueResultException
@@ -310,7 +310,7 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
-     * @param $ouuid
+     * @param string $ouuid
      * @param ContentType $contentType
      * @return float|int
      * @throws NonUniqueResultException
@@ -321,7 +321,7 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
-     * @param $page
+     * @param int $page
      * @return float|int
      */
     public function firstElemOfPage($page)
@@ -331,7 +331,7 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
 
 
     /**
-     * @param $ouuid
+     * @param string $ouuid
      * @param ContentType $contentType
      * @param int $page
      * @return mixed
@@ -369,7 +369,7 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * @param ContentType $contentType
-     * @param $ouuid
+     * @param string $ouuid
      * @param Environment $env
      * @return null
      * @throws NonUniqueResultException
@@ -398,7 +398,7 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
-     * @param $revisionId
+     * @param string $revisionId
      * @return mixed
      */
     public function unlockRevision($revisionId)
@@ -414,8 +414,8 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
-     * @param $revisionId
-     * @param $username
+     * @param string $revisionId
+     * @param string $username
      * @param \DateTime $lockUntil
      * @return mixed
      */
@@ -433,7 +433,7 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * @param ContentType $contentType
-     * @param $ouuid
+     * @param string $ouuid
      * @param \DateTime $now
      * @return mixed
      */
@@ -454,7 +454,7 @@ class RevisionRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * @param ContentType $contentType
-     * @param $ouuid
+     * @param string $ouuid
      * @return Revision|null
      */
     public function getCurrentRevision(ContentType $contentType, $ouuid)

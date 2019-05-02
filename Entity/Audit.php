@@ -116,9 +116,9 @@ class Audit
     }
 
     /**
-     * Set rowData
+     * Set rawData
      *
-     * @param string $rowData
+     * @param string $rawData
      *
      * @return Audit
      */

@@ -340,7 +340,7 @@ class Revision
         $i = func_num_args();
         if ($i == 1) {
             if ($a[0] instanceof Revision) {
-                /** @var \Revision $ancestor */
+                /** @var Revision $ancestor */
                 $ancestor = $a[0];
                 $this->deleted = $ancestor->deleted;
                 $this->draft = true;

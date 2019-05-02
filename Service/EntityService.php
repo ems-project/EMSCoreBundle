@@ -42,8 +42,6 @@ abstract class EntityService
     }
     
     /**
-     *
-     * @param integer $id
      * @return SortOption|null
      */
     public function getAll()
@@ -52,7 +50,6 @@ abstract class EntityService
     }
     
     /**
-     *
      * @return \Doctrine\Common\Persistence\ObjectRepository
      */
     private function getRepository()
@@ -76,7 +73,9 @@ abstract class EntityService
     
     public function create($entity)
     {
-        $count = $this->getRepository()->createQueryBuilder('a')
+        /** @var EntityRepository $repository */
+        $repository = $this->getRepository();
+        $count = $repository->createQueryBuilder('a')
             ->select('COUNT(a)')
             ->getQuery()
             ->getSingleScalarResult();

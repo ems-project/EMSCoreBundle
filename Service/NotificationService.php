@@ -14,6 +14,7 @@ use EMS\CoreBundle\Event\RevisionPublishEvent;
 use EMS\CoreBundle\Event\RevisionUnpublishEvent;
 use EMS\CoreBundle\Repository\NotificationRepository;
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use EMS\CoreBundle\Repository\TemplateRepository;
 use Monolog\Logger;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\Container;
@@ -170,7 +171,7 @@ class NotificationService
         try {
             $em = $this->doctrine->getManager();
             
-            /** @var RevisionRepository $repository */
+            /** @var TemplateRepository $repository */
             $repository = $em->getRepository('EMSCoreBundle:Template');
             /** @var Template $template */
             $template = $repository->findOneById($templateId);

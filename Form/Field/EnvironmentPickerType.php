@@ -32,16 +32,7 @@ class EnvironmentPickerType extends ChoiceType
     
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-//         $this->choices = [];
         $keys = [];
-        
-        
-        
-//         /**@var Environment $choice*/
-//         foreach ($this->service->getAllInMyCircle() as $choice){
-//             $this->choices[$choice->getName()] = $choice;
-//         }
-        
         $environments = null;
         
         if ($options['inMyCircle']) {
@@ -77,7 +68,7 @@ class EnvironmentPickerType extends ChoiceType
                     'data-live-search' => false
             ],
             'choice_attr' => function ($category, $key, $index) {
-                /** @var \EMS\CoreBundle\Form\DataField\DataFieldType $dataFieldType */
+                /** @var Environment $dataFieldType */
                 $dataFieldType = $this->choices[$index];
                 return [
                         'data-content' => '<span class="text-'.$dataFieldType->getColor().'"><i class="fa fa-square"></i>&nbsp;&nbsp;'.$dataFieldType->getName().'</span>'

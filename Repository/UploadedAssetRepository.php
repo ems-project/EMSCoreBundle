@@ -35,7 +35,7 @@ class UploadedAssetRepository extends \Doctrine\ORM\EntityRepository
 
 
     /**
-     * @param $page
+     * @param integer $page
      * @return array
      */
     public function getHashes($page)
@@ -55,7 +55,7 @@ class UploadedAssetRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
-     * @param $hash
+     * @param string $hash
      * @return mixed
      */
     public function dereference($hash)

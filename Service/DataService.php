@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\QueryBuilder;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use EMS\CommonBundle\Helper\ArrayTool;
@@ -240,13 +241,14 @@ class DataService
     private function propagateDataToComputedFieldRecursive(FormInterface $form, array& $objectArray, ContentType $contentType, $type, $ouuid, $migration, &$parent, $path)
     {
         $found = false;
-        /**@var DataField $dataField*/
+        /** @var DataField $dataField*/
         $dataField = $form->getNormData();
 
-        /**@var DataFieldType $dataFieldType */
+        /** @var DataFieldType $dataFieldType */
         $dataFieldType = $form->getConfig()->getType()->getInnerType();
 
         $options = $dataField->getFieldType()->getOptions();
+
         if (!$dataFieldType::isVirtual(!$options?[]:$options)) {
             $path .= ($path == ''?'':'.').$form->getConfig()->getName();
         }
@@ -325,9 +327,7 @@ class DataService
             //$this->session->getFlashBag()->add('warning', 'Error to parse the post processing script of field '.$dataField->getFieldType()->getName().': ');
         }
 
-        if ($dataFieldType->isContainer()) {
-
-            /**@var Form $child*/
+        if ($dataFieldType->isContainer() && $form instanceof \IteratorAggregate) {
             foreach ($form->getIterator() as $child) {
 
                /**@var DataFieldType $childType */
@@ -417,7 +417,7 @@ class DataService
 
     /**
      * @deprecated
-     * @param $array
+     * @param array $array
      * @param int $sort_flags
      */
     public static function ksortRecursive(&$array, $sort_flags = SORT_REGULAR)
@@ -681,9 +681,12 @@ class DataService
      */
     public function postFinalizeTreatment($type, $id, Form $form, $previousObjectArray)
     {
+        /** @var Form $subForm */
         foreach ($form->all() as $subForm) {
             if ($subForm->getNormData() instanceof DataField) {
-                $childrenPreviousData = $subForm->getConfig()->getType()->getInnerType()->postFinalizeTreatment($type, $id, $subForm->getNormData(), $previousObjectArray);
+                /** @var DataFieldType $dataFieldType */
+                $dataFieldType = $subForm->getConfig()->getType()->getInnerType();
+                $childrenPreviousData = $dataFieldType->postFinalizeTreatment($type, $id, $subForm->getNormData(), $previousObjectArray);
                 $this->postFinalizeTreatment($type, $id, $subForm, $childrenPreviousData);
             }
         }
@@ -694,7 +697,7 @@ class DataService
      * @param string $type
      * @param string $ouuid
      * @throws NotFoundHttpException
-     * @throws Exception
+     * @throws \Exception
      * @return \EMS\CoreBundle\Entity\Revision
      */
     public function getNewestRevision($type, $ouuid)

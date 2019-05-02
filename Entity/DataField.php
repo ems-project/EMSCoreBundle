@@ -83,15 +83,13 @@ class DataField implements \ArrayAccess, \IteratorAggregate
      */
     private function initChild(DataField $child, $offset)
     {
-
         throw new \Exception('deprecate');
     }
     
     public function offsetSet($offset, $value)
     {
         $this->initChild($value, $offset);
-        /** @var DataField $value */
-        return $this->children->offsetSet($offset, $value);
+        $this->children->offsetSet($offset, $value);
     }
     
     public function offsetExists($offset)
@@ -107,7 +105,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     
     public function offsetUnset($offset)
     {
-        return $this->children->offsetUnset($offset);
+        $this->children->offsetUnset($offset);
     }
     
     public function offsetGet($offset)
@@ -131,8 +129,12 @@ class DataField implements \ArrayAccess, \IteratorAggregate
      */
     public function isDataFieldValid(ExecutionContextInterface $context)
     {
-        //TODO: why is it not working?
-        $context->addViolationAt('textValue', 'Haaaaha', array(), null);
+        //TODO: why is it not working? See https://stackoverflow.com/a/25265360
+        //Transformed: (but not used??)
+        $context
+            ->buildViolation('Haaaaha')
+            ->atPath('textValue')
+            ->addViolation();
     }
     
     public function propagateOuuid($ouuid)
@@ -257,78 +259,29 @@ class DataField implements \ArrayAccess, \IteratorAggregate
 
         return $this;
     }
-    
+
+    /**
+     * @deprecated
+     *
+     * @throws \Exception
+     */
     public function updateDataStructure(FieldType $meta)
     {
         throw new \Exception('Deprecated method');
-//         //no need to generate the structure for subfields (
-//         $isContainer = true;
-
-//         if(null !== $this->getFieldType()){
-//             $type = $this->getFieldType()->getType();
-//             $datFieldType = new $type;
-//             $isContainer = $datFieldType->isContainer();
-//         }
-
-//         if($isContainer){
-//             /** @var FieldType $field */
-//             foreach ($meta->getChildren() as $field){
-//                 //no need to generate the structure for delete field
-//                 if(!$field->getDeleted()){
-//                     $child = $this->__get('ems_'.$field->getName());
-//                     if(null == $child){
-//                         $child = new DataField();
-//                         $child->setFieldType($field);
-//                         $child->setOrderKey($field->getOrderKey());
-//                         $child->setParent($this);
-//                         $this->addChild($child);
-//                         if(isset($field->getDisplayOptions()['defaultValue'])){
-//                             $child->setEncodedText($field->getDisplayOptions()['defaultValue']);
-//                         }
-//                     }
-//                     if( strcmp($field->getType(), CollectionFieldType::class) != 0 ) {
-//                         $child->updateDataStructure($field);
-//                     }
-//                 }
-//             }
-//         }
     }
-    
-    
+
+
     /**
      * Assign data in dataValues based on the elastic index content
      *
      * @param array $elasticIndexDatas
-     * @return $elasticIndexDatas
+     * @deprecated
+
+     * @throws \Exception
      */
-    public function updateDataValue(Array &$elasticIndexDatas, $isMigration = false)
+    public function updateDataValue(array &$elasticIndexDatas, $isMigration = false)
     {
         throw new \Exception('Deprecated method');
-//         $dataFieldTypeClassName = $this->fieldType->getType();
-//         /** @var DataFieldType $dataFieldType */
-//         $dataFieldType = new $dataFieldTypeClassName();
-//         $fieldName = $dataFieldType->getJsonName($this->fieldType);
-//         if(NULL === $fieldName) {//Virtual container
-//             /** @var DataField $child */
-//             foreach ($this->children as $child){
-//                 $child->updateDataValue($elasticIndexDatas, $isMigration);
-//             }
-//         }
-//         else {
-//             if($dataFieldType->isVirtualField($this->getFieldType()->getOptions()))  {
-//                 $treatedFields = $dataFieldType->importData($this, $elasticIndexDatas, $isMigration);
-//                 foreach($treatedFields as $fieldName){
-//                     unset($elasticIndexDatas[$fieldName]);
-//                 }
-//             }
-//             else if(array_key_exists($fieldName, $elasticIndexDatas)){
-//                 $treatedFields = $dataFieldType->importData($this, $elasticIndexDatas[$fieldName], $isMigration);
-//                 foreach($treatedFields as $fieldName){
-//                     unset($elasticIndexDatas[$fieldName]);
-//                 }
-//             }
-
-//         }
     }
     
     public function linkFieldType(PersistentCollection $fieldTypes)
@@ -380,9 +333,10 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Set textValue
      *
-     * @param string $textValue
+     * @param string $rawData
      *
      * @return DataField
+     * @throws DataFormatException
      */
     public function setTextValue($rawData)
     {
@@ -467,13 +421,13 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     }
 
 
-
     /**
      * Set floatValue
      *
-     * @param float $floatValue
+     * @param float $rawData
      *
      * @return DataField
+     * @throws DataFormatException
      */
     public function setFloatValue($rawData)
     {
@@ -502,14 +456,13 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     }
 
 
-
-
     /**
      * Set dataValue, the set of field is delegated to the corresponding fieldType class
      *
-     * @param \DateTime $dateValue
+     * @param \DateTime $inputString
      *
      * @return DataField
+     * @throws \Exception
      */
     public function setDataValue($inputString)
     {
@@ -534,9 +487,10 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Set arrayTextValue
      *
-     * @param array $arrayValue
+     * @param array $rawData
      *
      * @return DataField
+     * @throws DataFormatException
      */
     public function setArrayTextValue($rawData)
     {
@@ -604,7 +558,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Set integerValue
      *
-     * @param integer $integerValue
+     * @param integer $rawData
      *
      * @return DataField
      */
@@ -657,9 +611,10 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Set booleanValue
      *
-     * @param boolean $booleanValue
+     * @param boolean $rawData
      *
      * @return DataField
+     * @throws DataFormatException
      */
     public function setBooleanValue($rawData)
     {
@@ -857,9 +812,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     }
 
     /**
-     * Set rawData
-     *
-     * @param array $rawData
+     * @param object $inputValue
      *
      * @return DataField
      */

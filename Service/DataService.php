@@ -328,7 +328,6 @@ class DataService
         }
 
         if ($dataFieldType->isContainer() && $form instanceof \IteratorAggregate) {
-
             foreach ($form->getIterator() as $child) {
 
                /**@var DataFieldType $childType */

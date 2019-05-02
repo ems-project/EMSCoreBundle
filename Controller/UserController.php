@@ -259,27 +259,6 @@ class UserController extends AppController
         ]);
     }
 
-    /**
-     * Test if email or username exist return on add or edit Form
-     */
-    private function userExist($user, $action, $form)
-    {
-        $exists = array('email' => $this->getUserService()->findUserByEmail($user->getEmail()), 'username' => $this->getUserService()->getUser($user->getUsername()));
-        $messages = array('email' => 'User email already exist!', 'username' => 'Username already exist!');
-        foreach ($exists as $key => $value) {
-            if ($value instanceof User) {
-                if ($action == 'add' or ($action == 'edit' and $value->getId() != $user->getId())) {
-                    $this->addFlash(
-                        'error',
-                        $messages[$key]
-                    );
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
     private function getExistingRoles()
     {
         return $this->getUserService()->getExistingRoles();

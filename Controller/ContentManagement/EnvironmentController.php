@@ -177,7 +177,7 @@ class EnvironmentController extends AppController
             
             /** @var EntityManager $em */
             $em = $this->getDoctrine()->getManager();
-            /**@var RevisionRepository $repository*/
+            /** @var RevisionRepository $repository*/
             $repository = $em->getRepository('EMSCoreBundle:Revision');
             
 
@@ -659,7 +659,7 @@ class EnvironmentController extends AppController
             $client = $this->getElasticsearch();
 
             $logger = $this->getLogger();
-            $logger->addDebug('For each environments: start');
+            $logger->debug('For each environments: start');
             
             $builder = $this->createFormBuilder([])
             ->add('reorder', SubmitEmsType::class, [
@@ -691,7 +691,7 @@ class EnvironmentController extends AppController
                 $environments[] = $environment;
                 $names[] = $environment->getName();
             }
-            $logger->addDebug('For each environments: done');
+            $logger->debug('For each environments: done');
             
             $builder->add('environmentNames', CollectionType::class, array(
                     // each entry in the array will be an "email" field

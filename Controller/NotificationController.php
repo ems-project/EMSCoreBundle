@@ -12,9 +12,11 @@ use EMS\CoreBundle\Form\Form\NotificationFormType;
 use EMS\CoreBundle\Form\Form\TreatNotificationsType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
+use EMS\CoreBundle\Repository\NotificationRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Form\ClickableInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -104,20 +106,19 @@ class NotificationController extends AppController
         $form->handleRequest($request);
         /**@var TreatNotifications $treatNotification*/
         $treatNotification = $form->getNormData();
-        $treatNotification->setAccept($form->get('accept')->isClicked());
-        $treatNotification->setReject($form->get('reject')->isClicked());
+        if ($form->get('accept') instanceof ClickableInterface) {
+            $treatNotification->setAccept($form->get('accept')->isClicked());
+        }
+        if ($form->get('reject') instanceof ClickableInterface) {
+            $treatNotification->setReject($form->get('reject')->isClicked());
+        }
 
 
         $em = $this->getDoctrine()->getManager();
         $repositoryNotification = $em->getRepository('EMSCoreBundle:Notification');
         
         $publishIn = $this->getEnvironmentService()->getAliasByName($treatNotification->getPublishTo());
-//         $unpublishFrom  = $this->getEnvironmentService()->getAliasByName($treatNotification->getUnpublishfrom());
-        
-//         if(!empty($publishIn) && !empty($unpublishFrom) && $publishIn == $unpublishFrom) {
-//             $this->addFlash('error', 'You can\'t publish in and unpublish from the same environment '.$unpublishFrom.' !');
-//         }
-//         else {
+
         foreach ($treatNotification->getNotifications() as $notificationId => $true) {
             /**@var Notification $notification*/
             $notification = $repositoryNotification->find($notificationId);
@@ -127,15 +128,9 @@ class NotificationController extends AppController
             }
                 
             if (!empty($publishIn)) {
-//                     $this->getDataService()->lockRevision($notification->getRevision());
                 $this->getPublishService()->publish($notification->getRevision(), $publishIn);
-//                     $this->getDataService()->unlockRevision($notification->getRevision());
             }
-                
-//                 if(!empty($unpublishFrom)) {
-//                     $this->getPublishService()->unpublish($notification->getRevision(), $unpublishFrom);
-//                 }
-                
+
             if ($treatNotification->getAccept()) {
                 $this->get('ems.service.notification')->accept($notification, $treatNotification);
             }
@@ -144,8 +139,6 @@ class NotificationController extends AppController
                 $this->get('ems.service.notification')->reject($notification, $treatNotification);
             }
         }
-//         }
-        
         
         return $this->redirectToRoute('notifications.inbox');
     }
@@ -158,6 +151,7 @@ class NotificationController extends AppController
     {
         // TODO use a servce to pass authorization_checker to repositoryNotification.
         $em = $this->getDoctrine()->getManager();
+        /** @var NotificationRepository $repositoryNotification */
         $repositoryNotification = $em->getRepository('EMSCoreBundle:Notification');
         $repositoryNotification->setAuthorizationChecker($this->get('security.authorization_checker'));
         
@@ -190,6 +184,7 @@ class NotificationController extends AppController
          
         //TODO: use a servce to pass authorization_checker to repositoryNotification.
         $em = $this->getDoctrine()->getManager();
+        /** @var NotificationRepository $repositoryNotification */
         $repositoryNotification = $em->getRepository('EMSCoreBundle:Notification');
         $repositoryNotification->setAuthorizationChecker($this->get('security.authorization_checker'));
 

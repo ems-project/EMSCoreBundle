@@ -12,6 +12,7 @@ use EMS\CoreBundle\Form\Form\ReorderTerType;
 use EMS\CoreBundle\Form\Form\ReorderType;
 use EMS\CoreBundle\Form\Form\SearchFieldOptionType;
 use EMS\CoreBundle\Form\Form\SortOptionType;
+use Symfony\Component\Form\ClickableInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -154,7 +155,7 @@ class SearchController extends AppController
         $form->handleRequest($request);
         
         if ($form->isSubmitted()) {
-            if ($form->get('remove') && $form->get('remove')->isClicked()) {
+            if ($form->get('remove') instanceof ClickableInterface && $form->get('remove')->isClicked()) {
                 $this->getSortOptionService()->remove($sortOption);
                 return $this->redirectToRoute('ems_search_options_index');
             }
@@ -184,7 +185,7 @@ class SearchController extends AppController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            if ($form->get('remove') && $form->get('remove')->isClicked()) {
+            if ($form->get('remove') instanceof ClickableInterface && $form->get('remove')->isClicked()) {
                 $this->getSearchFieldOptionService()->remove($searchFieldOption);
                 return $this->redirectToRoute('ems_search_options_index');
             }
@@ -215,7 +216,7 @@ class SearchController extends AppController
         $form->handleRequest($request);
         
         if ($form->isSubmitted()) {
-            if ($form->get('remove') && $form->get('remove')->isClicked()) {
+            if ($form->get('remove') instanceof ClickableInterface && $form->get('remove')->isClicked()) {
                 $this->getAggregateOptionService()->remove($option);
                 return $this->redirectToRoute('ems_search_options_index');
             }

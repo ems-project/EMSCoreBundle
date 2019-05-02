@@ -9,7 +9,7 @@ services:
     app.twig_extension: '@EMS\CoreBundle\Twig\AppExtension'
     EMS\CoreBundle\Twig\AppExtension:
         #class: EMS\CoreBundle\Twig\AppExtension
-        arguments: ['@doctrine', '@security.authorization_checker', '@ems.service.user', '@ems.service.contenttype', '@app.elasticsearch', '@router', '@twig', '@ems.form.factories.objectChoiceListFactory', '@ems.service.environment', '@logger', '@form.factory', '@ems.service.file' , '@ems_common.twig.runtime.request', '%ems_core.asset_config_index%', '%ems_core.asset_config_type%']
+        arguments: ['@doctrine', '@security.authorization_checker', '@ems.service.user', '@ems.service.contenttype', '@app.elasticsearch', '@router', '@twig', '@ems.form.factories.objectChoiceListFactory', '@ems.service.environment', '@logger', '@form.factory', '@ems.service.file' , '@ems_common.twig.runtime.request', '%ems_core.asset_config%']
         #public: false
         tags:
             - { name: twig.extension, priority: -2000 }
@@ -261,7 +261,7 @@ services:
             - { name: form.type }
     ems.view.hierarchical:
         class: EMS\CoreBundle\Form\View\HierarchicalViewType
-        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@session', '@ems.service.data', '@router']
+        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@session', '@ems.service.data', '@router', '@ems.service.contenttype']
         tags:
             - { name: ems.form.viewtype, alias: hierarchical }
             - { name: form.type }

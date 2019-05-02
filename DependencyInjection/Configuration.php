@@ -37,8 +37,7 @@ class Configuration implements ConfigurationInterface
     const APPLICATION_MENU_CONTROLLER = null;
     const PRIVATE_KEY = null;
     const PUBLIC_KEY = null;
-    const ASSET_CONFIG_TYPE = null;
-    const ASSET_CONFIG_INDEX = null;
+    const ASSET_CONFIG = [];
     const TIKA_SERVER = null;
     const ELASTICSEARCH_VERSION = '5.4';
     const SINGLE_TYPE_INDEX = false;
@@ -81,8 +80,7 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('user_registration_route')->defaultValue(self::USER_REGISTRATION_ROUTE)->end()
             ->scalarNode('add_user_route')->defaultValue(self::ADD_USER_ROUTE)->end()
             ->scalarNode('application_menu_controller')->defaultValue(self::APPLICATION_MENU_CONTROLLER)->end()
-            ->scalarNode('asset_config_type')->defaultValue(self::ASSET_CONFIG_TYPE)->end()
-            ->scalarNode('asset_config_index')->defaultValue(self::ASSET_CONFIG_INDEX)->end()
+            ->variableNode('asset_config')->defaultValue(self::ASSET_CONFIG)->end()
             ->scalarNode('private_key')->defaultValue(self::PRIVATE_KEY)->end()
             ->scalarNode('public_key')->defaultValue(self::PUBLIC_KEY)->end()
             ->scalarNode('upload_folder')->defaultValue(null)->end()

@@ -83,11 +83,6 @@ class SearchFilter implements JsonSerializable
         $out = false;
         if ($this->field || $this->pattern) {
             $field = $this->field;
-//             if($this->field){
-//                 $path = explode('.', $this->field);
-//                 $field = $path[count($path)-1];
-//             }
-            
             
             switch ($this->operator) {
                 case 'match_and':
@@ -142,18 +137,6 @@ class SearchFilter implements JsonSerializable
                         ]
                     ];
                     break;
-            }
-            
-            if ($this->field) {
-                $path = explode('.', $this->field);
-                for ($i=count($path)-2; $i >= 0; --$i) {
-                    $out = [
-                        "nested" => [
-                                "path" => $path[$i],
-                                "query" => $out,
-                        ]
-                    ];
-                }
             }
         }
         

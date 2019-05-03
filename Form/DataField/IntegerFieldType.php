@@ -112,6 +112,10 @@ class IntegerFieldType extends DataFieldType
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
+
+        $optionsForm->get('mappingOptions')->add('copy_to', TextType::class, [
+            'required' => false,
+        ]);
         
     
 //         // String specific display options

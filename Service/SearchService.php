@@ -27,7 +27,7 @@ class SearchService
                 continue;
             }
 
-            if ($nestedPath = $this->getNestedPath($filter->getField(), $mapping)) {
+            if ($filter->getField() && ($nestedPath = $this->getNestedPath($filter->getField(), $mapping))) {
                 $esFilter = $this->nestFilter($nestedPath, $esFilter);
             }
 

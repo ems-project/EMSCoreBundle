@@ -766,7 +766,7 @@ class ElasticsearchController extends AppController
             $aggregateOptions = $this->getAggregateOptionService()->getAll();
             /**@var AggregateOption $option */
             foreach ($aggregateOptions as $id => $option) {
-                $body['aggs']['agg_' . $id] = json_decode($option->getConfig(), true);
+                $body['aggs']['agg_' . $id] = $option->getConfig();
             }
 
 

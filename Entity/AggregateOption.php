@@ -266,10 +266,20 @@ class AggregateOption
      * Get config
      *
      * @return string
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    /**
+     * Decode config
+     *
+     * @return array
      *
      * @see https://github.com/elastic/elasticsearch-php/issues/660
      */
-    public function getConfig()
+    public function getConfigDecoded(): array
     {
         $recursiveCheck = function (array &$json) use (&$recursiveCheck) {
             foreach ($json as $field => &$data) {
@@ -286,6 +296,8 @@ class AggregateOption
 
         return $json;
     }
+
+
 
     /**
      * Set orderKey

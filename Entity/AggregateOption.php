@@ -273,6 +273,33 @@ class AggregateOption
     }
 
     /**
+     * Decode config
+     *
+     * @return array
+     *
+     * @see https://github.com/elastic/elasticsearch-php/issues/660
+     */
+    public function getConfigDecoded(): array
+    {
+        $recursiveCheck = function (array &$json) use (&$recursiveCheck) {
+            foreach ($json as $field => &$data) {
+                if ($field === 'reverse_nested' && empty($data)) {
+                    $data = new \stdClass();
+                } elseif (\is_array($data)) {
+                    $recursiveCheck($data);
+                }
+            }
+        };
+
+        $json = \json_decode($this->config, true);
+        $recursiveCheck($json);
+
+        return $json;
+    }
+
+
+
+    /**
      * Set orderKey
      *
      * @param integer $orderKey

@@ -374,7 +374,7 @@ services:
 ### regular services
     ems.service.mapping:
         class: EMS\CoreBundle\Service\Mapping
-        arguments: ['@ems.form.fieldtype.fieldtypetype', '@ems.service.elasticsearch', '%ems_core.version%', '%ems_core.instance_id%']
+        arguments: ['@app.elasticsearch', '@EMS\CoreBundle\Service\EnvironmentService', '@ems.form.fieldtype.fieldtypetype', '@ems.service.elasticsearch', '%ems_core.version%', '%ems_core.instance_id%']
     EMS\CoreBundle\Service\DataService:
         class: EMS\CoreBundle\Service\DataService
         arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '%ems_core.lock_time%', '@app.elasticsearch', '@ems.service.mapping', '%ems_core.instance_id%', '@session', '@form.factory', '@service_container', '@form.registry', '@event_dispatcher', '@ems.service.contenttype', '%ems_core.private_key%']
@@ -440,7 +440,7 @@ services:
         arguments: ["@ems.service.rest_client", '@session', '@doctrine', '@ems.service.file', '%ems_core.tika_server%']
     ems.service.search:
         class: EMS\CoreBundle\Service\SearchService
-        arguments: []
+        arguments: ['@ems.service.mapping']
     ems.service.file:
         class: EMS\CoreBundle\Service\FileService
         arguments: ['@doctrine', '@ems_common.storage.manager', '%kernel.project_dir%', '%ems_core.upload_folder%', '%ems_core.storage_folder%', '%ems_core.save_assets_in_db%', '%ems_core.ems_remote_host%', '%ems_core.ems_remote_authkey%', '%ems_core.sftp_server%', '%ems_core.sftp_path%', '%ems_core.sftp_user%', '%ems_core.public_key%', '%ems_core.private_key%', '%ems_core.s3_credentials%', '%ems_core.s3_bucket%']

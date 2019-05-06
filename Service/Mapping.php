@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Elasticsearch\Client;
 use EMS\CoreBundle\DependencyInjection\EMSCoreExtension;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\ContentType;
@@ -24,7 +25,11 @@ class Mapping
     const CORE_VERSION_META_FIELD = 'core_version';
     const INSTANCE_ID_META_FIELD = 'instance_id';
 
-    
+    /** @var Client */
+    private $client;
+    /** @var EnvironmentService */
+    private $environmentService;
+
     /** @var FieldTypeType $fieldTypeType */
     private $fieldTypeType;
     
@@ -43,8 +48,10 @@ class Mapping
      * @param FieldTypeType $fieldTypeType
      * @param ElasticsearchService $elasticsearchService
      */
-    public function __construct(FieldTypeType $fieldTypeType, ElasticsearchService $elasticsearchService, $coreVersion, $instanceId)
+    public function __construct(Client $client, EnvironmentService $environmentService, FieldTypeType $fieldTypeType, ElasticsearchService $elasticsearchService, $coreVersion, $instanceId)
     {
+        $this->client = $client;
+        $this->environmentService = $environmentService;
         $this->fieldTypeType = $fieldTypeType;
         $this->elasticsearchService = $elasticsearchService;
         $this->coreVersion = $coreVersion;
@@ -91,10 +98,38 @@ class Mapping
         return [ $contentType->getName() => $out ];
     }
 
-
-
     public function dataFieldToArray(DataField $dataField)
     {
         return $this->fieldTypeType->dataFieldToArray($dataField);
+    }
+
+    public function getMapping(array $environmentNames): ?array
+    {
+        $indices = $this->client->indices();
+        $indexes = [];
+
+        foreach ($environmentNames as $name) {
+            $env = $this->environmentService->getByName($name);
+
+            if ($env && $indices->exists(['index' => $env->getAlias()])) {
+                $indexes[] = $env->getAlias();
+            }
+        }
+
+        $result = [];
+
+        if (empty($indexes)) {
+            return $result;
+        }
+
+        $mappings = $indices->getMapping(['index' => $indexes]);
+
+        foreach ($mappings as $index) {
+            foreach ($index['mappings'] as $type => $mapping) {
+                $result = \array_merge_recursive($mapping['properties'], $result);
+            }
+        }
+
+        return $result;
     }
 }

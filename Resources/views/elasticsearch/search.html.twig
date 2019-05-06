@@ -159,10 +159,10 @@
     			</div>
     		</div>
 		{% endif %}
-		
+
 		
 		{% for id, option in aggregateOptions %}
-			{% if attribute(results.aggregations, 'agg_'~id) is defined and attribute(results.aggregations, 'agg_'~id).buckets|length > 0 %}
+			{% if attribute(results.aggregations, 'agg_'~id) is defined and (attribute(results.aggregations, 'agg_'~id).buckets|default([])|length > 0 or attribute(results.aggregations, 'agg_'~id).doc_count|default(0) > 0) %}
 			 	<div class="box">
             		<div class="box-header">
             			<h3 class="box-title"><i class="fa fa-filter"></i> {{ option.name }}</h3>
@@ -180,8 +180,6 @@
         		</div>
         	{% endif %}
 	    {% endfor %}
-		
-		
 		
 		<div class="box">
 			<div class="box-header">

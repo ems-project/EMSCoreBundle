@@ -512,7 +512,7 @@ class DataController extends AppController
     public function copyAction($environment, $type, $ouuid, Request $request)
     {
         $contentType = $this->getContentTypeService()->getByName($type);
-        if(!$contentType) {
+        if (!$contentType) {
             throw new NotFoundHttpException('Content type ' . $type . ' not found');
         }
 

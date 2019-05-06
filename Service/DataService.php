@@ -921,7 +921,7 @@ class DataService
             foreach ($revision->getEnvironments() as $environment) {
                 try {
                     $this->client->delete([
-                            'index' => $environment->getAlias(),
+                            'index' => $this->contentTypeService->getIndex($revision->getContentType()),
                             'type' => $revision->getContentType()->getName(),
                             'id' => $revision->getOuuid(),
                     ]);

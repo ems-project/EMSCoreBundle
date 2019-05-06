@@ -4,10 +4,13 @@
 namespace EMS\CoreBundle\Command;
 
 use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use Elasticsearch\Client;
+use EMS\CoreBundle\Service\ContentTypeService;
+use EMS\CoreBundle\Service\EnvironmentService;
 use Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -25,14 +28,22 @@ class DeleteCommand extends ContainerAwareCommand
     protected $doctrine;
     protected $logger;
     protected $container;
-    
-    public function __construct(Registry $doctrine, Logger $logger, Client $client, $mapping, $container)
+
+    /**@var ContentTypeService*/
+    private $contentTypeService;
+
+    /**@var EnvironmentService*/
+    private $environmentService;
+
+    public function __construct(Registry $doctrine, Logger $logger, Client $client, $mapping, $container, ContentTypeService $contentTypeService, EnvironmentService $environmentService)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
         $this->client = $client;
         $this->mapping = $mapping;
         $this->container = $container;
+        $this->contentTypeService = $contentTypeService;
+        $this->environmentService = $environmentService;
         parent::__construct();
     }
     
@@ -80,6 +91,12 @@ class DeleteCommand extends ContainerAwareCommand
                 $progress = new ProgressBar($output, $total);
                 // start and displays the progress bar
                 $progress->start();
+
+                $environmentsIndex = [];
+                /**@var Environment $environment*/
+                foreach ($this->environmentService->getManagedEnvironement() as $environment) {
+                    $environmentsIndex[$environment->getName()] = $this->contentTypeService->getIndex($contentType, $environment);
+                }
                 
                 while ($revRepo->countByContentType($contentType) > 0) {
                     $revisions = $revRepo->findByContentType($contentType, null, 20);
@@ -88,7 +105,7 @@ class DeleteCommand extends ContainerAwareCommand
                         foreach ($revision->getEnvironments() as $environment) {
                             try {
                                 $client->delete([
-                                        'index' => $environment->getAlias(),
+                                        'index' => $environmentsIndex[$environment->getName()],
                                         'type' => $contentType->getName(),
                                         'id' => $revision->getOuuid(),
                                 ]);

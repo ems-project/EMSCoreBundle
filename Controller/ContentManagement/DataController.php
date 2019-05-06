@@ -511,9 +511,13 @@ class DataController extends AppController
      */
     public function copyAction($environment, $type, $ouuid, Request $request)
     {
-        $envObj = $this->getEnvironmentService()->getByName($environment);
+        $contentType = $this->getContentTypeService()->getByName($type);
+        if (!$contentType) {
+            throw new NotFoundHttpException('Content type ' . $type . ' not found');
+        }
+
         $dataRaw = $this->getElasticsearch()->get([
-            'index' => $envObj->getAlias(),
+            'index' => $this->getContentTypeService()->getIndex($contentType),
             'id' => $ouuid,
             'type' => $type,
         ]);

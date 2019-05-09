@@ -128,7 +128,7 @@ class ChoiceFieldType extends DataFieldType
             'data-collection-label-field' => $options['collection_label_field'],
             'data-multiple' => $options['multiple'],
             'data-expanded' => $options['expanded'],
-            'class' => 'ems-choice-field-type',
+            'class' => 'ems-choice-field-type' . ($options['select2'] ? ' select2' : ''),
         ];
     }
     
@@ -146,6 +146,7 @@ class ChoiceFieldType extends DataFieldType
         $resolver->setDefault('labels', []);
         $resolver->setDefault('multiple', false);
         $resolver->setDefault('expanded', false);
+        $resolver->setDefault('select2', false);
         $resolver->setDefault('linked_collection', false);
         $resolver->setDefault('collection_label_field', false);
     }
@@ -164,7 +165,9 @@ class ChoiceFieldType extends DataFieldType
         $optionsForm->get('displayOptions')->add('multiple', CheckboxType::class, [
                 'required' => false,
         ])->add('expanded', CheckboxType::class, [
-                'required' => false,
+            'required' => false,
+        ])->add('select2', CheckboxType::class, [
+            'required' => false,
         ])->add('choices', TextareaType::class, [
                 'required' => false,
         ])->add('labels', TextareaType::class, [

@@ -90,6 +90,15 @@ class View
         $this->public = false;
     }
 
+    public function __clone()
+    {
+        if ($this->id) {
+            $this->id = null;
+            $this->created = null;
+            $this->modified = null;
+        }
+    }
+
     /**
      * @ORM\PrePersist
      * @ORM\PreUpdate

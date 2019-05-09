@@ -95,10 +95,13 @@ class ElasticsearchController extends AppController
             $status = $client->cluster()->health();
 
 
-            return $this->render('@EMSCore/elasticsearch/status.' . $_format . '.twig', [
+            $response = $this->render('@EMSCore/elasticsearch/status.' . $_format . '.twig', [
                 'status' => $status,
                 'globalStatus' => $status['status'],
             ]);
+
+            $response->headers->set('Access-Control-Allow-Origin', '*');
+            return $response;
         } catch (\Exception $e) {
             throw new ServiceUnavailableHttpException('Due to ' . $e->getMessage());
         }

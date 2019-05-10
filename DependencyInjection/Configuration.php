@@ -97,6 +97,7 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('s3_bucket')->defaultValue(null)->end()
             ->variableNode('s3_credentials')->defaultValue([])->end()
             ->arrayNode('template_options')->defaultValue([])->prototype('variable')->end()->end()
+            ->scalarNode('health_check_allow_origin')->defaultValue(null)->end()
             ->end();
 
         return $treeBuilder;

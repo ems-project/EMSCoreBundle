@@ -100,7 +100,11 @@ class ElasticsearchController extends AppController
                 'globalStatus' => $status['status'],
             ]);
 
-            $response->headers->set('Access-Control-Allow-Origin', '*');
+            $allowOrigin = $this->getParameter('ems_core.health_check_allow_origin');
+            if (!empty($allowOrigin)) {
+                $response->headers->set('Access-Control-Allow-Origin', $allowOrigin);
+            }
+
             return $response;
         } catch (\Exception $e) {
             throw new ServiceUnavailableHttpException('Due to ' . $e->getMessage());

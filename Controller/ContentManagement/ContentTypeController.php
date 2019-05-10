@@ -23,16 +23,19 @@ use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Service\Mapping;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\Form\Button;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -96,9 +99,6 @@ class ContentTypeController extends AppController
      * Activate (make it available for authors) a content type.
      * Checks that the content isn't dirty (as far as eMS knows the Mapping in Elasticsearch is up-to-date).
      *
-     * @param integer $id
-     * @param Request $request
-     *
      * @Route("/content-type/activate/{contentType}", name="contenttype.activate"))
      * @Method({"POST"})
      */
@@ -122,9 +122,6 @@ class ContentTypeController extends AppController
 
     /**
      * Desctivate (make it unavailable for authors) a content type.
-     *
-     * @param integer $id
-     * @param Request $request
      *
      * @Route("/content-type/desactivate/{contentType}", name="contenttype.desactivate"))
      * @Method({"POST"})
@@ -206,6 +203,7 @@ class ContentTypeController extends AppController
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var ContentType $contentTypeAdded */
             $contentTypeAdded = $form->getData();
+            /** @var ContentTypeRepository $contentTypeRepository */
             $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
 
             $contentTypes = $contentTypeRepository->findBy([
@@ -357,6 +355,7 @@ class ContentTypeController extends AppController
 
         /** @var EnvironmentRepository $environmetRepository */
         $environmetRepository = $em->getRepository('EMSCoreBundle:Environment');
+        /** @var ContentTypeRepository $contentTypeRepository */
         $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
 
         if ($request->isMethod('POST')) {
@@ -473,15 +472,13 @@ class ContentTypeController extends AppController
     /**
      * Edit a content type; generic information, but Nothing impacting its structure or it's mapping
      *
-     * @param FieldType $field
-     * @param ContentType $contenttype
-     * @param Request $request
      * @Route("/content-type/{contentType}/field/{field}", name="ems_contenttype_field_edit"))
      */
     public function editFieldAction(ContentType $contentType, FieldType $field, Request $request)
     {
         $editFieldType = new EditFieldType($field);
 
+        /** @var Form $form */
         $form = $this->createForm(EditFieldTypeType::class, $editFieldType);
 
         $form->handleRequest($request);
@@ -492,7 +489,9 @@ class ContentTypeController extends AppController
                 $subFieldName = $form->get('fieldType')->get('ems:internal:add:subfield:name')->getData();
             }
 
-            return $this->treatFieldSubmit($contentType, $field, $form->getClickedButton()->getName(), $subFieldName);
+            /** @var Button $clickable */
+            $clickable = $form->getClickedButton();
+            return $this->treatFieldSubmit($contentType, $field, $clickable->getName(), $subFieldName);
         }
 
         return $this->render('@EMSCore/contenttype/field.html.twig', [
@@ -922,8 +921,6 @@ class ContentTypeController extends AppController
     /**
      * Migrate a content type from its default index
      *
-     * @param integer $id
-     * @param Request $request
      * @Method({"POST"})
      * @Route("/content-type/migrate/{contentType}", name="contenttype.migrate"))
      */
@@ -938,8 +935,6 @@ class ContentTypeController extends AppController
     /**
      * Export a content type in Json format
      *
-     * @param integer $id
-     * @param Request $request
      * @Route("/content-type/export/{contentType}.{_format}", defaults={"_format" = "json"}, name="contenttype.export"))
      */
     public function exportAction(ContentType $contentType, Request $request)

@@ -216,7 +216,7 @@ class RebuildCommand extends EmsCommand
      * Update the alias of an environement to a new index
      *
      * @param string $alias
-     * @param string $to
+     * @param array $toIndexes
      */
     private function switchAlias($alias, $toIndexes, OutputInterface $output, $newEnv = false)
     {

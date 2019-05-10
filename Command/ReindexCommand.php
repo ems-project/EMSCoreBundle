@@ -1,6 +1,5 @@
 <?php
 
-// src/EMS/CoreBundle/Command/GreetCommand.php
 namespace EMS\CoreBundle\Command;
 
 use EMS\CoreBundle\Entity\Environment;
@@ -124,9 +123,9 @@ class ReindexCommand extends EmsCommand
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @param ContentType $contentType
-     * @param $index
+     * @param string $index
      * @param OutputInterface $output
      * @param bool $signData
      * @param int $bulkSize

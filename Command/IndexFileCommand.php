@@ -4,7 +4,10 @@ namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\DBAL\Connection;
+use Doctrine\ORM\EntityManager;
 use Elasticsearch\Client;
+use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\AssetExtratorService;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\FileService;
@@ -112,13 +115,9 @@ class IndexFileCommand extends EmsCommand
 
         $onlyWithIngestedContent = $input->getOption('only-with-ingested-content');
         $onlyMissingContent = $input->getOption('missing-content-only');
-        /**
-         * @var EntityManager $em
-         */
+        /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
-        /**
-         * @var RevisionRepository $revisionRepository
-         */
+        /** @var RevisionRepository $revisionRepository */
         $revisionRepository = $em->getRepository('EMSCoreBundle:Revision');
 
         $total = $revisionRepository->countByContentType($contentType);
@@ -135,9 +134,7 @@ class IndexFileCommand extends EmsCommand
         while (true) {
             $revisions = $revisionRepository->findBy(['contentType' => $contentType], ['id' => 'asc'], $limit, $offset);
 
-            /**
-             * @var Revision $revision
-             */
+            /** @var Revision $revision */
             foreach ($revisions as $revision) {
                 $update = false;
                 $rawData = $revision->getRawData();

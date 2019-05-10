@@ -13,11 +13,10 @@ If your code is not compliant, you could try fixing it automatically:
 composer phpcbf
 ````
 
-PHPStan is configured at level 0, you can check for errors locally using:
+PHPStan is configured at level 2, you can check for errors locally using:
 `````bash
 composer phpstan
 `````
-Level 0 contains 400+ errors, travis integration is not yet activated.
 
 Documentation
 -------------

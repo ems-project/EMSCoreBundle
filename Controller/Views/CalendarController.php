@@ -81,6 +81,7 @@ class CalendarController extends AppController
         $form->handleRequest($request);
         
         $search = $form->getData();
+        /**@var Search $search*/
         $search->setEnvironments([$view->getContentType()->getName()]);
 
         $body = $this->getSearchService()->generateSearchBody($search);

@@ -18,6 +18,9 @@ class AssetExtratorService
     
     /**@var string */
     private $tikaServer;
+
+    /**@var string */
+    private $projectDir;
     
     /**@var RestClientService $rest*/
     private $rest;
@@ -30,19 +33,31 @@ class AssetExtratorService
 
     /**@var FileService */
     private $fileService;
+
+    /**@var TikaWrapper */
+    private $tikaWrapper;
     
     
     /**
      *
      * @param string $tikaServer
      */
-    public function __construct(RestClientService $rest, Session $session, Registry $doctrine, FileService $fileService, $tikaServer)
+    public function __construct(RestClientService $rest, Session $session, Registry $doctrine, FileService $fileService, string $tikaServer, string $projectDir)
     {
         $this->tikaServer = $tikaServer;
+        $this->projectDir = $projectDir;
         $this->rest = $rest;
         $this->session = $session;
         $this->doctrine = $doctrine;
         $this->fileService = $fileService;
+        $this->tikaWrapper = null;
+    }
+
+    private function getTikaWrapper() {
+        if ($this->tikaWrapper === null) {
+            $this->tikaWrapper = new TikaWrapper($this->projectDir.'/var/tika-app-1.14.jar');
+        }
+        return $this->tikaWrapper;
     }
     
     public function hello()
@@ -59,7 +74,7 @@ class AssetExtratorService
             file_put_contents($temp_file, "elasticms's built in TikaWrapper : àêïôú");
             return [
                 'code' => 200,
-                'content' => $this->cleanString(TikaWrapper::getText($temp_file)),
+                'content' => $this->cleanString($this->getTikaWrapper()->getText($temp_file)),
             ];
         }
     }
@@ -121,9 +136,9 @@ class AssetExtratorService
             }
         } else {
             try {
-                $out = AssetExtratorService::convertMetaToArray(TikaWrapper::getMetadata($file));
+                $out = AssetExtratorService::convertMetaToArray($this->getTikaWrapper()->getMetadata($file));
                 if (!isset($out['content'])) {
-                    $text = TikaWrapper::getText($file);
+                    $text = $this->getTikaWrapper()->getText($file);
                     if (!mb_check_encoding($text)) {
                         $text = mb_convert_encoding($text, mb_internal_encoding(), 'ASCII');
                     }
@@ -131,7 +146,7 @@ class AssetExtratorService
                     $out['content'] =  $text;
                 }
                 if (!isset($out['language'])) {
-                    $out['language'] = AssetExtratorService::cleanString(TikaWrapper::getLanguage($file));
+                    $out['language'] = AssetExtratorService::cleanString($this->getTikaWrapper()->getLanguage($file));
                 }
             } catch (\Exception $e) {
                 $this->session->getFlashBag()->add('error', 'Error with Tika: '.$e->getMessage());

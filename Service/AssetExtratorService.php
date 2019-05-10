@@ -7,6 +7,7 @@ use EMS\CoreBundle\Entity\CacheAssetExtractor;
 use EMS\CoreBundle\Exception\AssetNotFoundException;
 use Symfony\Component\HttpFoundation\Session\Session;
 use EMS\CoreBundle\Tika\TikaWrapper;
+use Throwable;
 
 class AssetExtratorService
 {
@@ -55,7 +56,18 @@ class AssetExtratorService
 
     private function getTikaWrapper() {
         if ($this->tikaWrapper === null) {
-            $this->tikaWrapper = new TikaWrapper($this->projectDir.'/var/tika-app-1.14.jar');
+
+            $filename = $this->projectDir.'/var/tika-app.jar';
+            if(! file_exists($filename)) {
+                try {
+                    file_put_contents($filename, fopen("http://apache.belnet.be/tika/tika-app-1.20.jar", 'r'));
+                }
+                catch (Throwable $e) {
+                    throw new \Exception(sprintf("Tika's jar not found: %s", $e->getMessage()));
+                }
+            }
+
+            $this->tikaWrapper = new TikaWrapper($filename);
         }
         return $this->tikaWrapper;
     }

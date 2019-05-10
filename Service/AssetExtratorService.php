@@ -62,22 +62,21 @@ class AssetExtratorService
     /**
      * @throws \Exception
      */
-    private function getTikaWrapper() : ?TikaWrapper {
+    private function getTikaWrapper() : ?TikaWrapper
+    {
         if ($this->tikaWrapper === null) {
-
             $filename = $this->projectDir.'/var/tika-app.jar';
-            if(! file_exists($filename) && $this->tikaDownloadUrl) {
+            if (! file_exists($filename) && $this->tikaDownloadUrl) {
                 try {
                     file_put_contents($filename, fopen($this->tikaDownloadUrl, 'r'));
-                }
-                catch (Throwable $e) {
-                    if(file_exists($filename)) {
+                } catch (Throwable $e) {
+                    if (file_exists($filename)) {
                         unlink($filename);
                     }
                 }
             }
 
-            if(! file_exists($filename) ) {
+            if (! file_exists($filename)) {
                 throw new Exception("Tika's jar not found");
             }
 

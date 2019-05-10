@@ -23,7 +23,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ViewController extends AppController
 {
     /**
-     * @param $type
+     * @param string $type
      * @return Response
      *
      * @Route("/view/{type}", name="view.index")

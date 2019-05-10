@@ -10,6 +10,7 @@
     <exclude-pattern>*/LICENSE</exclude-pattern>
     <exclude-pattern>*/php*\.*</exclude-pattern>
     <exclude-pattern>*/README\.md</exclude-pattern>
+    <exclude-pattern>*/node_modules</exclude-pattern>
 
     <arg name="basepath" value="."/>
     <arg name="colors"/>

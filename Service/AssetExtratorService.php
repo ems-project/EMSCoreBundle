@@ -5,8 +5,10 @@ namespace EMS\CoreBundle\Service;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CoreBundle\Entity\CacheAssetExtractor;
 use EMS\CoreBundle\Exception\AssetNotFoundException;
+use Exception;
 use Symfony\Component\HttpFoundation\Session\Session;
 use EMS\CoreBundle\Tika\TikaWrapper;
+use Throwable;
 
 class AssetExtratorService
 {
@@ -18,6 +20,12 @@ class AssetExtratorService
     
     /**@var string */
     private $tikaServer;
+
+    /**@var string */
+    private $projectDir;
+
+    /**@var string */
+    private $tikaDownloadUrl;
     
     /**@var RestClientService $rest*/
     private $rest;
@@ -30,22 +38,57 @@ class AssetExtratorService
 
     /**@var FileService */
     private $fileService;
+
+    /**@var TikaWrapper */
+    private $tikaWrapper;
     
     
     /**
      *
      * @param string $tikaServer
      */
-    public function __construct(RestClientService $rest, Session $session, Registry $doctrine, FileService $fileService, $tikaServer)
+    public function __construct(RestClientService $rest, Session $session, Registry $doctrine, FileService $fileService, ?string $tikaServer, string $projectDir, ?string $tikaDownloadUrl)
     {
         $this->tikaServer = $tikaServer;
+        $this->projectDir = $projectDir;
         $this->rest = $rest;
         $this->session = $session;
         $this->doctrine = $doctrine;
         $this->fileService = $fileService;
+        $this->tikaWrapper = null;
+        $this->tikaDownloadUrl = $tikaDownloadUrl;
     }
-    
-    public function hello()
+
+    /**
+     * @throws \Exception
+     */
+    private function getTikaWrapper() : ?TikaWrapper
+    {
+        if ($this->tikaWrapper === null) {
+            $filename = $this->projectDir.'/var/tika-app.jar';
+            if (! file_exists($filename) && $this->tikaDownloadUrl) {
+                try {
+                    file_put_contents($filename, fopen($this->tikaDownloadUrl, 'r'));
+                } catch (Throwable $e) {
+                    if (file_exists($filename)) {
+                        unlink($filename);
+                    }
+                }
+            }
+
+            if (! file_exists($filename)) {
+                throw new Exception("Tika's jar not found");
+            }
+
+            $this->tikaWrapper = new TikaWrapper($filename);
+        }
+        return $this->tikaWrapper;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function hello():array
     {
         if (! empty($this->tikaServer)) {
             $client = $this->rest->getClient($this->tikaServer);
@@ -59,7 +102,7 @@ class AssetExtratorService
             file_put_contents($temp_file, "elasticms's built in TikaWrapper : àêïôú");
             return [
                 'code' => 200,
-                'content' => $this->cleanString(TikaWrapper::getText($temp_file)),
+                'content' => $this->cleanString($this->getTikaWrapper()->getText($temp_file)),
             ];
         }
     }
@@ -115,15 +158,15 @@ class AssetExtratorService
                 ]);
                 
                 $out['content'] = $result->getBody()->__toString();
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->session->getFlashBag()->add('error', 'elasticms encountered an issue while extracting file data: '.$e->getMessage());
                 $canBePersisted = false;
             }
         } else {
             try {
-                $out = AssetExtratorService::convertMetaToArray(TikaWrapper::getMetadata($file));
+                $out = AssetExtratorService::convertMetaToArray($this->getTikaWrapper()->getMetadata($file));
                 if (!isset($out['content'])) {
-                    $text = TikaWrapper::getText($file);
+                    $text = $this->getTikaWrapper()->getText($file);
                     if (!mb_check_encoding($text)) {
                         $text = mb_convert_encoding($text, mb_internal_encoding(), 'ASCII');
                     }
@@ -131,9 +174,9 @@ class AssetExtratorService
                     $out['content'] =  $text;
                 }
                 if (!isset($out['language'])) {
-                    $out['language'] = AssetExtratorService::cleanString(TikaWrapper::getLanguage($file));
+                    $out['language'] = AssetExtratorService::cleanString($this->getTikaWrapper()->getLanguage($file));
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->session->getFlashBag()->add('error', 'Error with Tika: '.$e->getMessage());
                 $canBePersisted = false;
             }
@@ -146,7 +189,7 @@ class AssetExtratorService
                 $cacheData->setData($out);
                 $manager->persist($cacheData);
                 $manager->flush($cacheData);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->session->getFlashBag()->add('warning', 'Asset extractor was not able to save in its cache: '.$e->getMessage());
             }
         }

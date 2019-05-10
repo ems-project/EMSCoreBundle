@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Controller\ContentManagement;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Controller\AppController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -15,7 +16,7 @@ class FileController extends AppController
     /**
      * @param string $sha1
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      * @deprecated
      *
      * @Route("/data/file/view/{sha1}" , name="ems.file.view", methods={"GET","HEAD"})

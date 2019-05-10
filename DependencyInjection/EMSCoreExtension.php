@@ -70,6 +70,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.s3_credentials', $config['s3_credentials']);
         $container->setParameter('ems_core.s3_bucket', $config['s3_bucket']);
         $container->setParameter('ems_core.health_check_allow_origin', $config['health_check_allow_origin']);
+        $container->setParameter('ems_core.tika_download_url', $config['tika_download_url']);
     }
 
     public static function getCoreVersion($rootDir)

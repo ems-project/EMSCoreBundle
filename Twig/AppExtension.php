@@ -740,13 +740,13 @@ class AppExtension extends \Twig_Extension
             return true;
         } else if (is_array($circles)) {
             if (count($circles) > 0) {
-                $user = $this->userService->getCurrentUser();
+                $user = $this->userService->getCurrentUser(UserService::DONT_DETACH);
                 return count(array_intersect($circles, $user->getCircles())) > 0;
             } else {
                 return true;
             }
         } else if (is_string($circles)) {
-            $user = $this->userService->getCurrentUser();
+            $user = $this->userService->getCurrentUser(UserService::DONT_DETACH);
             return in_array($circles, $user->getCircles());
         }
 

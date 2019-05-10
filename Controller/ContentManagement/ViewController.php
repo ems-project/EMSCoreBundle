@@ -101,8 +101,8 @@ class ViewController extends AppController
     }
 
     /**
-     * @param $id
-     * @param $_format
+     * @param string $id
+     * @param string $_format
      * @param Request $request
      * @return Response
      * @throws ORMException
@@ -180,7 +180,7 @@ class ViewController extends AppController
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @return RedirectResponse
      * @throws ORMException
      * @throws OptimisticLockException

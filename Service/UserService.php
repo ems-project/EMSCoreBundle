@@ -101,10 +101,7 @@ class UserService
         return $user;
     }
     
-    /**
-     * @return User
-     */
-    public function getCurrentUser($detach = true)
+    public function getCurrentUser(bool $detach = true): User
     {
         if (!$this->currentUser) {
             $username = $this->tokenStorage->getToken()->getUsername();

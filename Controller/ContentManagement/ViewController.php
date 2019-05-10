@@ -116,7 +116,7 @@ class ViewController extends AppController
         /** @var ViewRepository $viewRepository */
         $viewRepository = $em->getRepository('EMSCoreBundle:View');
 
-        /** @var View $view * */
+        /** @var View $view */
         $view = $viewRepository->find($id);
 
         if (!$view) {
@@ -195,7 +195,7 @@ class ViewController extends AppController
         /** @var ViewRepository $viewRepository */
         $viewRepository = $em->getRepository('EMSCoreBundle:View');
 
-        /** @var View $view * */
+        /** @var View $view */
         $view = $viewRepository->find($id);
 
         if (!$view) {

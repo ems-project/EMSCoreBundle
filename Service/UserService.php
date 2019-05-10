@@ -22,6 +22,8 @@ class UserService
     private $currentUser;
     
     private $securityRoles;
+
+    const DONT_DETACH = false;
     
     public function __construct(Registry $doctrine, Session $session, TokenStorageInterface $tokenStorage, $securityRoles)
     {
@@ -99,14 +101,11 @@ class UserService
         return $user;
     }
     
-    /**
-     * @return User
-     */
-    public function getCurrentUser()
+    public function getCurrentUser(bool $detach = true): User
     {
         if (!$this->currentUser) {
             $username = $this->tokenStorage->getToken()->getUsername();
-            $this->currentUser = $this->getUser($username);
+            $this->currentUser = $this->getUser($username, $detach);
         }
         return $this->currentUser;
     }

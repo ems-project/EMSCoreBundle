@@ -98,6 +98,7 @@ class Configuration implements ConfigurationInterface
             ->variableNode('s3_credentials')->defaultValue([])->end()
             ->arrayNode('template_options')->defaultValue([])->prototype('variable')->end()->end()
             ->scalarNode('health_check_allow_origin')->defaultValue(null)->end()
+            ->scalarNode('tika_download_url')->defaultValue(null)->end()
             ->end();
 
         return $treeBuilder;

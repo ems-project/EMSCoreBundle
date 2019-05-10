@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Service;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CoreBundle\Entity\CacheAssetExtractor;
 use EMS\CoreBundle\Exception\AssetNotFoundException;
+use Exception;
 use Symfony\Component\HttpFoundation\Session\Session;
 use EMS\CoreBundle\Tika\TikaWrapper;
 use Throwable;
@@ -22,6 +23,9 @@ class AssetExtratorService
 
     /**@var string */
     private $projectDir;
+
+    /**@var string */
+    private $tikaDownloadUrl;
     
     /**@var RestClientService $rest*/
     private $rest;
@@ -43,7 +47,7 @@ class AssetExtratorService
      *
      * @param string $tikaServer
      */
-    public function __construct(RestClientService $rest, Session $session, Registry $doctrine, FileService $fileService, string $tikaServer, string $projectDir)
+    public function __construct(RestClientService $rest, Session $session, Registry $doctrine, FileService $fileService, ?string $tikaServer, string $projectDir, ?string $tikaDownloadUrl)
     {
         $this->tikaServer = $tikaServer;
         $this->projectDir = $projectDir;
@@ -52,27 +56,40 @@ class AssetExtratorService
         $this->doctrine = $doctrine;
         $this->fileService = $fileService;
         $this->tikaWrapper = null;
+        $this->tikaDownloadUrl = $tikaDownloadUrl;
     }
 
-    private function getTikaWrapper() {
+    /**
+     * @throws \Exception
+     */
+    private function getTikaWrapper() : ?TikaWrapper {
         if ($this->tikaWrapper === null) {
 
             $filename = $this->projectDir.'/var/tika-app.jar';
-            if(! file_exists($filename)) {
+            if(! file_exists($filename) && $this->tikaDownloadUrl) {
                 try {
-                    file_put_contents($filename, fopen("http://apache.belnet.be/tika/tika-app-1.20.jar", 'r'));
+                    file_put_contents($filename, fopen($this->tikaDownloadUrl, 'r'));
                 }
                 catch (Throwable $e) {
-                    throw new \Exception(sprintf("Tika's jar not found: %s", $e->getMessage()));
+                    if(file_exists($filename)) {
+                        unlink($filename);
+                    }
                 }
+            }
+
+            if(! file_exists($filename) ) {
+                throw new Exception("Tika's jar not found");
             }
 
             $this->tikaWrapper = new TikaWrapper($filename);
         }
         return $this->tikaWrapper;
     }
-    
-    public function hello()
+
+    /**
+     * @throws Exception
+     */
+    public function hello():array
     {
         if (! empty($this->tikaServer)) {
             $client = $this->rest->getClient($this->tikaServer);
@@ -142,7 +159,7 @@ class AssetExtratorService
                 ]);
                 
                 $out['content'] = $result->getBody()->__toString();
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->session->getFlashBag()->add('error', 'elasticms encountered an issue while extracting file data: '.$e->getMessage());
                 $canBePersisted = false;
             }
@@ -160,7 +177,7 @@ class AssetExtratorService
                 if (!isset($out['language'])) {
                     $out['language'] = AssetExtratorService::cleanString($this->getTikaWrapper()->getLanguage($file));
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->session->getFlashBag()->add('error', 'Error with Tika: '.$e->getMessage());
                 $canBePersisted = false;
             }
@@ -173,7 +190,7 @@ class AssetExtratorService
                 $cacheData->setData($out);
                 $manager->persist($cacheData);
                 $manager->flush($cacheData);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->session->getFlashBag()->add('warning', 'Asset extractor was not able to save in its cache: '.$e->getMessage());
             }
         }

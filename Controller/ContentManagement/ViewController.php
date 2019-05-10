@@ -51,7 +51,7 @@ class ViewController extends AppController
     }
 
     /**
-     * @param $type
+     * @param string $type
      * @param Request $request
      * @return RedirectResponse|Response
      * @throws ORMException

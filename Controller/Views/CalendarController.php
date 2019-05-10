@@ -1,14 +1,12 @@
 <?php
 namespace EMS\CoreBundle\Controller\Views;
 
-use EMS\CoreBundle;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Form\SearchFormType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 class CalendarController extends AppController
@@ -83,6 +81,8 @@ class CalendarController extends AppController
         $form->handleRequest($request);
         
         $search = $form->getData();
+        /**@var Search $search*/
+        $search->setEnvironments([$view->getContentType()->getName()]);
 
         $body = $this->getSearchService()->generateSearchBody($search);
         

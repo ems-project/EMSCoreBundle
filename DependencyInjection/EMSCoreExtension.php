@@ -69,6 +69,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.sftp_user', $config['sftp_user']);
         $container->setParameter('ems_core.s3_credentials', $config['s3_credentials']);
         $container->setParameter('ems_core.s3_bucket', $config['s3_bucket']);
+        $container->setParameter('ems_core.health_check_allow_origin', $config['health_check_allow_origin']);
     }
 
     public static function getCoreVersion($rootDir)

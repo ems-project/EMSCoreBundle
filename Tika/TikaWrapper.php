@@ -11,16 +11,26 @@ use SplFileInfo;
  */
 class TikaWrapper
 {
+
+    /**@var string */
+    private $tikaJar;
+
+    public function __construct(string $tikaJar)
+    {
+        $this->tikaJar = $tikaJar;
+    }
+
     /**
      * @param string $option
      * @param string $fileName
      * @return string
      * @throws \RuntimeException
      */
-    protected static function run($option, $fileName)
+    protected function run($option, $fileName)
     {
         $file = new SplFileInfo($fileName);
-        $shellCommand = 'java -jar tika-app-1.14.jar ' . $option . ' "' . $file->getRealPath() . '"';
+        $shellCommand = sprintf('java -jar %s %s "%s"', $this->tikaJar, $option, $file->getRealPath())
+        ;
 
         $process = new Process($shellCommand);
         $process->setWorkingDirectory(__DIR__);
@@ -37,9 +47,9 @@ class TikaWrapper
      * @param string $fileName
      * @return int
      */
-    public static function getWordCount($fileName)
+    public function getWordCount($fileName)
     {
-        return str_word_count(self::getText($fileName));
+        return str_word_count($this->getText($fileName));
     }
 
     /**
@@ -50,80 +60,80 @@ class TikaWrapper
      * @param string $filename
      * @return string
      */
-    public static function getXHTML($filename)
+    public function getXHTML($filename)
     {
-        return self::run("--xml", $filename);
+        return $this->run("--xml", $filename);
     }
 
     /**
      * @param string $filename
      * @return string
      */
-    public static function getHTML($filename)
+    public function getHTML($filename)
     {
-        return self::run("--html", $filename);
+        return $this->run("--html", $filename);
     }
 
     /**
      * @param string $filename
      * @return string
      */
-    public static function getText($filename)
+    public function getText($filename)
     {
-        return self::run("--text", $filename);
+        return $this->run("--text", $filename);
     }
 
     /**
      * @param string $filename
      * @return string
      */
-    public static function getTextMain($filename)
+    public function getTextMain($filename)
     {
-        return self::run("--text-main", $filename);
+        return $this->run("--text-main", $filename);
     }
 
     /**
      * @param string $filename
      * @return string
      */
-    public static function getMetadata($filename)
+    public function getMetadata($filename)
     {
-        return self::run("--metadata", $filename);
+        return $this->run("--metadata", $filename);
     }
 
     /**
      * @param string $filename
      * @return string
      */
-    public static function getJson($filename)
+    public function getJson($filename)
     {
-        return self::run("--json", $filename);
+        return $this->run("--json", $filename);
     }
 
     /**
      * @param string $filename
      * @return string
      */
-    public static function getXmp($filename)
+    public function getXmp($filename)
     {
-        return self::run("--xmp", $filename);
+        return $this->run("--xmp", $filename);
     }
 
     /**
      * @param string $filename
      * @return string
      */
-    public static function getLanguage($filename)
+    public function getLanguage($filename)
     {
-        return self::run("--language", $filename);
+        return $this->run("--language", $filename);
     }
 
     /**
      * @param string $filename
      * @return string
      */
-    public static function getDocumentType($filename)
+    public function getDocumentType($filename)
     {
-        return self::run("--detect", $filename);
+        return $this->run("--detect", $filename);
     }
 }

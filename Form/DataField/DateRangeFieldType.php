@@ -112,29 +112,26 @@ class DateRangeFieldType extends DataFieldType
         return $dataField;
     }
 
-    
+
     /**
+     * @throws \Exception
      *
-     * {@inheritdoc}
-     *
-     * @param array $data
-     * @param array $option
-     * @return boolean
+     * @return array
      */
     public static function filterSubField(array $data, array $option)
     {
         if (!$option['mappingOptions']['nested']) {
-            $out = [];
+            $range = [];
             $fromDateMachineName = $option['mappingOptions']['fromDateMachineName'];
             $toDateMachineName = $option['mappingOptions']['toDateMachineName'];
             if (isset($data[$fromDateMachineName])) {
-                $out[$fromDateMachineName] = $data[$fromDateMachineName];
+                $range[$fromDateMachineName] = $data[$fromDateMachineName];
             }
             if (isset($data[$toDateMachineName])) {
-                $out[$toDateMachineName] = $data[$toDateMachineName];
+                $range[$toDateMachineName] = $data[$toDateMachineName];
             }
             
-            return $out;
+            return $range;
         }
         return parent::filterSubField($data, $option);
     }

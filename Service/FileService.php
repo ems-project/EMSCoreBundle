@@ -221,7 +221,7 @@ class FileService
         $repository = $em->getRepository('EMSCoreBundle:UploadedAsset');
 
 
-        /**@var UploadedAsset $uploadedAsset */
+        /** @var UploadedAsset $uploadedAsset */
         $uploadedAsset = $repository->findOneBy([
             'sha1' => $hash,
             'available' => false,

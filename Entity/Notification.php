@@ -147,7 +147,7 @@ class Notification
      *
      * @param \DateTime $created
      *
-     * @return Revision
+     * @return Notification
      */
     public function setCreated($created)
     {
@@ -171,7 +171,7 @@ class Notification
      *
      * @param \DateTime $modified
      *
-     * @return Revision
+     * @return Notification
      */
     public function setModified($modified)
     {

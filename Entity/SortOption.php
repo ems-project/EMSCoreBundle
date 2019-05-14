@@ -249,7 +249,7 @@ class SortOption
     /**
      * Set icon
      *
-     * @param boolean $icon
+     * @param string $icon
      *
      * @return SortOption
      */
@@ -263,7 +263,7 @@ class SortOption
     /**
      * Get icon
      *
-     * @return boolean
+     * @return string
      */
     public function getIcon()
     {

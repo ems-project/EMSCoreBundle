@@ -23,7 +23,7 @@ class Search implements JsonSerializable
     private $id;
     
     /**
-     * @var Collection $filters
+     * @var array $filters
      *
      * @ORM\OneToMany(targetEntity="SearchFilter", mappedBy="search", cascade={"persist", "remove"})
      */

@@ -440,17 +440,17 @@ class FieldType
     /**
      * Get only valid children
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return array
      */
     public function getValidChildren()
     {
-        $out = [];
+        $valid = [];
         foreach ($this->children as $child) {
             if (!$child->getDeleted()) {
-                $out[] = $child;
+                $valid[] = $child;
             }
         }
-        return $out;
+        return $valid;
     }
     
     /**
@@ -535,7 +535,9 @@ class FieldType
     /**
      * get a child
      *
-     * @return FieldType
+     * @throws \Exception
+     *
+     * @return FieldType|null
      */
     public function __get($key)
     {
@@ -553,16 +555,18 @@ class FieldType
     
         return null;
     }
-    
+
     /**
      * set a child
      *
-     * @return DataField
+     * @throws \Exception
+     *
+     * @return FieldType
      */
     public function __set($key, $input)
     {
         if (strpos($key, 'ems_') !== 0) {
-             throw new \Exception('unprotected ems get with key '.$key);
+             throw new \Exception('unprotected ems set with key '.$key);
         } else {
             $key = substr($key, 4);
         }
@@ -645,7 +649,8 @@ class FieldType
     /**
      * Get child by path
      *
-     * @return FieldType
+     * @return FieldType|false
+     *
      * @deprecated it's not clear if its the mapping of the rawdata or of the formdata (with ou without the virtual fields) see the same function in the contenttypeservice
      */
     public function getChildByPath($path)

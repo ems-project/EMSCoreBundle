@@ -138,7 +138,7 @@ class ElasticsearchService
 
     /**
      * Return a not indexed text mapping
-     * @return string[]
+     * @return array
      */
     public function getNotIndexedStringMapping()
     {
@@ -156,7 +156,7 @@ class ElasticsearchService
 
     /**
      * Return a indexed text mapping
-     * @return string[]
+     * @return array
      */
     public function getIndexedStringMapping()
     {

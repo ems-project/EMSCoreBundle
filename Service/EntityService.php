@@ -42,11 +42,13 @@ abstract class EntityService
     }
     
     /**
-     * @return SortOption|null
+     * @return SortOption[]
      */
     public function getAll()
     {
-        return $this->getRepository()->findAll();
+        /** @var SortOption[] $items */
+        $items = $this->getRepository()->findAll();
+        return $items;
     }
     
     /**
@@ -65,9 +67,8 @@ abstract class EntityService
      */
     public function get($id)
     {
-        
+        /** @var SortOption|null $item */
         $item = $this->getRepository()->find($id);
-        
         return $item;
     }
     

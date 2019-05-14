@@ -261,7 +261,7 @@ class UploadedAsset
     /**
      * Set user
      *
-     * @param string $user
+     * @param User $user
      *
      * @return UploadedAsset
      */
@@ -275,7 +275,7 @@ class UploadedAsset
     /**
      * Get user
      *
-     * @return string
+     * @return User
      */
     public function getUser()
     {

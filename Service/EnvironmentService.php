@@ -143,7 +143,7 @@ class EnvironmentService
     /**
      *
      * @param string $name
-     * @return Environment
+     * @return Environment|false
      */
     public function getByName($name)
     {

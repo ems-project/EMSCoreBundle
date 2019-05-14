@@ -72,7 +72,7 @@ class Job
     private $progress;
     
     /**
-     * @var string
+     * @var array
      *
      * @ORM\Column(name="arguments", type="json_array", nullable=true)
      */
@@ -148,7 +148,7 @@ class Job
     /**
      * Get started
      *
-     * @return \DateTime
+     * @return bool
      */
     public function getStarted()
     {

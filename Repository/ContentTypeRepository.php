@@ -35,14 +35,17 @@ class ContentTypeRepository extends \Doctrine\ORM\EntityRepository
     /**
      *
      * @param string $name
-     * @return ContentType
+     * @return ContentType|null
      */
     public function findByName($name)
     {
-        return $this->findOneBy([
-                'deleted' => false,
-                'name' => $name,
+        /** @var ContentType|null $contentType */
+        $contentType = $this->findOneBy([
+            'deleted' => false,
+            'name' => $name,
         ]);
+
+        return $contentType;
     }
     
     public function countContentType()

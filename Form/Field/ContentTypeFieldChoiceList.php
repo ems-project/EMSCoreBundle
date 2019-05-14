@@ -37,15 +37,15 @@ class ContentTypeFieldChoiceList implements ChoiceListInterface
     }
     
     /**
-     * {@inheritdoc}
+     * @return array
      */
     public function getStructuredValues()
     {
-        $out = [[]];
+        $values = [];
         foreach ($this->choices as $key => $choice) {
-            $out[0][$key] = $key;
+            $values[$key] = $key;
         }
-        return $out;
+        return [$values];
     }
     
     /**

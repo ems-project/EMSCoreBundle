@@ -19,7 +19,7 @@ class ContentTypeFilter
      *
      * @param ContentType $contentType
      *
-     * @return NotificationFilter
+     * @return ContentTypeFilter
      */
     public function setContentType($contentType)
     {

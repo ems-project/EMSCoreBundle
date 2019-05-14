@@ -203,7 +203,7 @@ class NotificationService
                 /**@var Notification $alreadyPending*/
                 $alreadyPending = $alreadyPending[0];
                 $this->session->getFlashBag()->add('warning', 'Another notification '.$template.' is already pending for '.$revision.' in '.$environment.' by '. $alreadyPending->getUsername());
-                return;
+                return null;
             }
             
             $notification->setTemplate($template);

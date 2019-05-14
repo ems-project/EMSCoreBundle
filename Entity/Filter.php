@@ -107,7 +107,7 @@ class Filter
      *
      * @param string $name
      *
-     * @return Analyzer
+     * @return Filter
      */
     public function setName($name)
     {
@@ -131,7 +131,7 @@ class Filter
      *
      * @param array $options
      *
-     * @return Analyzer
+     * @return Filter
      */
     public function setOptions($options)
     {
@@ -163,7 +163,7 @@ class Filter
      *
      * @param \DateTime $created
      *
-     * @return Analyzer
+     * @return Filter
      */
     public function setCreated($created)
     {
@@ -187,7 +187,7 @@ class Filter
      *
      * @param \DateTime $modified
      *
-     * @return Analyzer
+     * @return Filter
      */
     public function setModified($modified)
     {
@@ -211,7 +211,7 @@ class Filter
      *
      * @param boolean $dirty
      *
-     * @return ContentType
+     * @return Filter
      */
     public function setDirty($dirty)
     {
@@ -235,7 +235,7 @@ class Filter
      *
      * @param string $label
      *
-     * @return ContentType
+     * @return Filter
      */
     public function setLabel($label)
     {

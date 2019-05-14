@@ -451,7 +451,9 @@ abstract class DataFieldType extends AbstractType
     /**
      * return an array filtered with subfields foir this specfic fieldtype (in case of virtualfield wich is not a container (datarange))
      *
-     * @return boolean
+     * @throws \Exception
+     *
+     * @return array
      */
     public static function filterSubField(array $data, array $option)
     {
@@ -462,7 +464,7 @@ abstract class DataFieldType extends AbstractType
      * Return the json path
      *
      * @param FieldType $current
-     * @return string
+     * @return string|null
      */
     public static function getJsonName(FieldType $current)
     {

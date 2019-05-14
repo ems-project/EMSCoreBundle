@@ -261,7 +261,7 @@ class SearchFilter implements JsonSerializable
     /**
      * Set booleanClause
      *
-     * @param boolean $booleanClause
+     * @param string $booleanClause
      *
      * @return SearchFilter
      */
@@ -275,7 +275,7 @@ class SearchFilter implements JsonSerializable
     /**
      * Get booleanClause
      *
-     * @return boolean
+     * @return string
      */
     public function getBooleanClause()
     {

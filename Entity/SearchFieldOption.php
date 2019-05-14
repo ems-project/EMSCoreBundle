@@ -114,7 +114,7 @@ class SearchFieldOption
      *
      * @param \DateTime $created
      *
-     * @return SortOption
+     * @return SearchFieldOption
      */
     public function setCreated($created)
     {
@@ -138,7 +138,7 @@ class SearchFieldOption
      *
      * @param \DateTime $modified
      *
-     * @return SortOption
+     * @return SearchFieldOption
      */
     public function setModified($modified)
     {
@@ -162,7 +162,7 @@ class SearchFieldOption
      *
      * @param string $name
      *
-     * @return SortOption
+     * @return SearchFieldOption
      */
     public function setName($name)
     {
@@ -186,7 +186,7 @@ class SearchFieldOption
      *
      * @param string $field
      *
-     * @return SortOption
+     * @return SearchFieldOption
      */
     public function setField($field)
     {
@@ -210,7 +210,7 @@ class SearchFieldOption
      *
      * @param integer $orderKey
      *
-     * @return SortOption
+     * @return SearchFieldOption
      */
     public function setOrderKey($orderKey)
     {
@@ -232,9 +232,9 @@ class SearchFieldOption
     /**
      * Set icon
      *
-     * @param boolean $icon
+     * @param string $icon
      *
-     * @return SortOption
+     * @return SearchFieldOption
      */
     public function setIcon($icon)
     {
@@ -246,7 +246,7 @@ class SearchFieldOption
     /**
      * Get icon
      *
-     * @return boolean
+     * @return string
      */
     public function getIcon()
     {

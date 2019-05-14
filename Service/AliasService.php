@@ -85,10 +85,11 @@ class AliasService
     /**
      * @param int $id
      *
-     * @return ManagedAlias
+     * @return ManagedAlias|null
      */
     public function getManagedAlias($id)
     {
+        /** @var ManagedAlias|null $managedAlias */
         $managedAlias = $this->managedAliasRepo->find($id);
         
         if ($this->hasAlias($managedAlias->getAlias())) {

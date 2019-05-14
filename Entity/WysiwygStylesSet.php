@@ -93,7 +93,7 @@ class WysiwygStylesSet
      *
      * @param \DateTime $created
      *
-     * @return WysiwygProfile
+     * @return WysiwygStylesSet
      */
     public function setCreated($created)
     {
@@ -117,7 +117,7 @@ class WysiwygStylesSet
      *
      * @param \DateTime $modified
      *
-     * @return WysiwygProfile
+     * @return WysiwygStylesSet
      */
     public function setModified($modified)
     {
@@ -141,7 +141,7 @@ class WysiwygStylesSet
      *
      * @param string $name
      *
-     * @return WysiwygProfile
+     * @return WysiwygStylesSet
      */
     public function setName($name)
     {
@@ -165,7 +165,7 @@ class WysiwygStylesSet
      *
      * @param string $config
      *
-     * @return WysiwygProfile
+     * @return WysiwygStylesSet
      */
     public function setConfig($config)
     {
@@ -189,7 +189,7 @@ class WysiwygStylesSet
      *
      * @param integer $orderKey
      *
-     * @return WysiwygProfile
+     * @return WysiwygStylesSet
      */
     public function setOrderKey($orderKey)
     {

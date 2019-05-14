@@ -18,28 +18,29 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class ContentTypeService
 {
-    /**@var Registry $doctrine */
+    /** @var Registry $doctrine */
     protected $doctrine;
-    /**@var Session $session*/
+
+    /** @var Session $session*/
     protected $session;
     
-    /**@var Mapping*/
+    /** @var Mapping*/
     private $mappingService;
     
-    /**@var Client*/
+    /** @var Client*/
     private $client;
     
-    /**@var EnvironmentService $environmentService */
+    /** @var EnvironmentService $environmentService */
     private $environmentService;
     
-    /**@var FormRegistryInterface $formRegistry*/
+    /** @var FormRegistryInterface $formRegistry*/
     private $formRegistry;
     
-    /**@var TranslatorInterface $translator*/
+    /** @var TranslatorInterface $translator*/
     private $translator;
     
     private $instanceId;
-    
+
     protected $orderedContentTypes;
 
     protected $contentTypeArrayByName;
@@ -67,7 +68,11 @@ class ContentTypeService
     /**
      * Get child by path
      *
-     * @return FieldType
+     * @param FieldType $fieldType
+     * @param string $path
+     * @param bool $skipVirtualFields
+     *
+     * @return FieldType|false
      */
     public function getChildByPath(FieldType $fieldType, $path, $skipVirtualFields = false)
     {
@@ -78,15 +83,15 @@ class ContentTypeService
                 if (!$child->getDeleted()) {
                     $type = $child->getType();
                     if ($skipVirtualFields && $type::isVirtual($child->getOptions())) {
-                        $out = $this->getChildByPath($child, $path, $skipVirtualFields);
-                        if ($out) {
-                            return $out;
+                        $fieldTypeByPath = $this->getChildByPath($child, $path, $skipVirtualFields);
+                        if ($fieldTypeByPath) {
+                            return $fieldTypeByPath;
                         }
                     } else if ($child->getName() == $elem[0]) {
                         if (strpos($path, ".")) {
-                            $out = $this->getChildByPath($fieldType, substr($path, strpos($path, ".")+1), $skipVirtualFields);
-                            if ($out) {
-                                return $out;
+                            $fieldTypeByPath = $this->getChildByPath($fieldType, substr($path, strpos($path, ".")+1), $skipVirtualFields);
+                            if ($fieldTypeByPath) {
+                                return $fieldTypeByPath;
                             }
                         }
                         return $child;
@@ -312,36 +317,33 @@ class ContentTypeService
     }
     
     /**
-     *
      * @param string $name
-     * @return ContentType
+     *
+     * @return ContentType|false
      */
     public function getByName($name)
     {
         $this->loadEnvironment();
-        if (isset($this->contentTypeArrayByName[$name])) {
-            return $this->contentTypeArrayByName[$name];
-        }
-        return false;
+        return $this->contentTypeArrayByName[$name] ?? false;
     }
 
 
 
     /**
-     * @return ContentType
+     * @return array
      */
     public function getAllByAliases()
     {
         $this->loadEnvironment();
-        $out = [];
+        $contentTypeAliases = [];
         /**@var ContentType $contentType */
         foreach ($this->orderedContentTypes as $contentType) {
-            if (!isset($out[$contentType->getEnvironment()->getAlias()])) {
-                $out[$contentType->getEnvironment()->getAlias()] = [];
+            if (!isset($contentTypeAliases[$contentType->getEnvironment()->getAlias()])) {
+                $contentTypeAliases[$contentType->getEnvironment()->getAlias()] = [];
             }
-            $out[$contentType->getEnvironment()->getAlias()][$contentType->getName()] = $contentType;
+            $contentTypeAliases[$contentType->getEnvironment()->getAlias()][$contentType->getName()] = $contentType;
         }
-        return $out;
+        return $contentTypeAliases;
     }
     
     

@@ -203,13 +203,13 @@ class Search implements JsonSerializable
      */
     public function removeFilter(\EMS\CoreBundle\Entity\Form\SearchFilter $filter)
     {
-        $this->filters->removeElement($filter);
+        $this->filters = \array_diff($this->filters, [$filter]);
     }
 
     /**
      * Get filters
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return array
      */
     public function getFilters()
     {

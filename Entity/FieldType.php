@@ -73,7 +73,7 @@ class FieldType
     private $description;
 
     /**
-     * @var string
+     * @var array
      *
      * @ORM\Column(name="options", type="json_array", nullable=true)
      */
@@ -673,7 +673,7 @@ class FieldType
     /**
      * Set options
      *
-     * @param string $options
+     * @param array $options
      *
      * @return FieldType
      */
@@ -687,7 +687,7 @@ class FieldType
     /**
      * Get options
      *
-     * @return string
+     * @return array
      */
     public function getOptions()
     {

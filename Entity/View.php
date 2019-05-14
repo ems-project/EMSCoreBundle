@@ -58,7 +58,7 @@ class View
     private $icon;
     
     /**
-     * @var string
+     * @var array
      *
      * @ORM\Column(name="options", type="json_array", nullable=true)
      */
@@ -253,7 +253,7 @@ class View
     /**
      * Set options
      *
-     * @param string $options
+     * @param array $options
      *
      * @return View
      */
@@ -267,7 +267,7 @@ class View
     /**
      * Get options
      *
-     * @return string
+     * @return array
      */
     public function getOptions()
     {

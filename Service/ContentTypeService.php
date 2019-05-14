@@ -171,10 +171,10 @@ class ContentTypeService
     {
         
         $pipelines = [];
-        /**@var \EMS\CoreBundle\Entity\FieldType $child */
+        /** @var \EMS\CoreBundle\Entity\FieldType $child */
         foreach ($fieldType->getChildren() as $child) {
             if (!$child->getDeleted()) {
-                /**@var \EMS\CoreBundle\Form\DataField\DataFieldType $dataFieldType */
+                /** @var \EMS\CoreBundle\Form\DataField\DataFieldType $dataFieldType */
                 $dataFieldType = $this->formRegistry->getType($child->getType())->getInnerType();
                 $pipeline = $dataFieldType->generatePipeline($child);
                 if ($pipeline) {
@@ -192,7 +192,7 @@ class ContentTypeService
     public function setSingleTypeIndex(Environment $environment, ContentType $contentType, string $name)
     {
         $em = $this->doctrine->getManager();
-        /**@var SingleTypeIndexRepository $repository*/
+        /** @var SingleTypeIndexRepository $repository*/
         $repository = $em->getRepository('EMSCoreBundle:SingleTypeIndex');
         $repository->setIndexName($environment, $contentType, $name);
     }
@@ -205,10 +205,10 @@ class ContentTypeService
 
         if ($this->singleTypeIndex) {
             $em = $this->doctrine->getManager();
-            /**@var SingleTypeIndexRepository $repository*/
+            /** @var SingleTypeIndexRepository $repository*/
             $repository = $em->getRepository('EMSCoreBundle:SingleTypeIndex');
 
-            /**@var SingleTypeIndex $singleTypeIndex*/
+            /** @var SingleTypeIndex $singleTypeIndex*/
             $singleTypeIndex = $repository->getIndexName($contentType, $environment);
             return $singleTypeIndex->getName();
         }

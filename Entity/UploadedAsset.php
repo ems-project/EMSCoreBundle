@@ -66,7 +66,7 @@ class UploadedAsset
     private $type;
     
     /**
-     * @var User
+     * @var string
      *
      * @ORM\Column(name="username", type="string", length=255)
      */
@@ -261,7 +261,7 @@ class UploadedAsset
     /**
      * Set user
      *
-     * @param User $user
+     * @param string $user
      *
      * @return UploadedAsset
      */
@@ -275,7 +275,7 @@ class UploadedAsset
     /**
      * Get user
      *
-     * @return User
+     * @return string
      */
     public function getUser()
     {

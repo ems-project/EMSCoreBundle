@@ -93,9 +93,9 @@ class View
     public function __clone()
     {
         if ($this->id) {
-            unset($this->id);
-            unset($this->created);
-            unset($this->modified);
+            $this->id = null;
+            $this->created = null;
+            $this->modified = null;
         }
     }
 

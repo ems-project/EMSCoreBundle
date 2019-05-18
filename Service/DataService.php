@@ -19,6 +19,7 @@ use EMS\CoreBundle\Event\RevisionNewDraftEvent;
 use EMS\CoreBundle\Event\UpdateRevisionReferersEvent;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Exception\DataStateException;
+use EMS\CoreBundle\Exception\HasNotCircleException;
 use EMS\CoreBundle\Exception\LockedException;
 use EMS\CoreBundle\Exception\PrivilegeException;
 use EMS\CoreBundle\Form\DataField\CollectionFieldType;
@@ -80,6 +81,8 @@ class DataService
     protected $dispatcher;
     /**@var ContentTypeService */
     protected $contentTypeService;
+    /**@var UserService */
+    protected $userService;
 
     public function __construct(
         Registry $doctrine,
@@ -114,6 +117,7 @@ class DataService
         $this->formRegistry = $formRegistry;
         $this->dispatcher= $dispatcher;
         $this->contentTypeService = $contentTypeService;
+        $this->userService = $container->get('ems.service.user');
 
         $this->public_key = null;
         $this->private_key = null;
@@ -739,6 +743,28 @@ class DataService
             throw new NotFoundHttpException('Revision not found for ouuid '.$ouuid.' and contenttype '.$type);
         } else {
             throw new \Exception('Too much newest revisions available for ouuid '.$ouuid.' and contenttype '.$type);
+        }
+    }
+
+    public function hasCreateRights(ContentType $contentType) {
+
+        $userCircles = $this->userService->getCurrentUser()->getCircles();
+        $environment = $contentType->getEnvironment();
+        $environmentCircles = $environment->getCircles();
+        if (!$this->authorizationChecker->isGranted('ROLE_ADMIN') && !empty($environmentCircles)) {
+            if (empty($userCircles)) {
+                throw new HasNotCircleException($environment);
+            }
+            $found = false;
+            foreach ($userCircles as $userCircle) {
+                if (in_array($userCircle, $environmentCircles)) {
+                    $found = true;
+                    break;
+                }
+            }
+            if (!$found) {
+                throw new HasNotCircleException($environment);
+            }
         }
     }
 

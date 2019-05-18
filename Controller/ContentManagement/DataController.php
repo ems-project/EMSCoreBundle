@@ -32,12 +32,14 @@ use EMS\CoreBundle\Service\DataService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Throwable;
 
 class DataController extends AppController
 {
@@ -1267,32 +1269,16 @@ class DataController extends AppController
     /**
      * @param ContentType $contentType
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @return RedirectResponse|Response
      * @throws HasNotCircleException
      * @throws PrivilegeException
-     * @throws \Throwable
+     * @throws Throwable
+     *
      * @Route("/data/add/{contentType}", name="data.add"))
      */
-    public function addAction(ContentType $contentType, Request $request)
+    public function addAction(ContentType $contentType, Request $request, DataService $dataService)
     {
-        $userCircles = $this->getUser()->getCircles();
-        $environment = $contentType->getEnvironment();
-        $environmentCircles = $environment->getCircles();
-        if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN') && !empty($environmentCircles)) {
-            if (empty($userCircles)) {
-                throw new HasNotCircleException($environment);
-            }
-            $found = false;
-            foreach ($userCircles as $userCircle) {
-                if (in_array($userCircle, $environmentCircles)) {
-                    $found = true;
-                    break;
-                }
-            }
-            if (!$found) {
-                throw new HasNotCircleException($environment);
-            }
-        }
+        $dataService->hasCreateRights($contentType);
 
         $em = $this->getDoctrine()->getManager();
 
@@ -1303,7 +1289,7 @@ class DataController extends AppController
             try {
                 $template = $twig->createTemplate($contentType->getDefaultValue());
                 $defaultValue = $template->render([
-                    'environment' => $environment,
+                    'environment' => $contentType->getEnvironment(),
                     'contentType' => $contentType,
                 ]);
                 $raw = json_decode($defaultValue, true);

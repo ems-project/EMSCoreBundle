@@ -44,7 +44,6 @@ use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use const E_USER_DEPRECATED;
 
 class DataService
 {
@@ -188,14 +187,14 @@ class DataService
         //TODO: test circles
 
 
-        $this->revRepository->lockRevision($revision->getId(), $lockerUsername, new \DateTime($this->lockTime));
+        $this->revRepository->lockRevision($revision->getId(), $lockerUsername, new DateTime($this->lockTime));
 
         $revision->setLockBy($lockerUsername);
         if ($username) {
             //lock by a console script
-            $revision->setLockUntil(new \DateTime("+30 seconds"));
+            $revision->setLockUntil(new DateTime("+30 seconds"));
         } else {
-            $revision->setLockUntil(new \DateTime($this->lockTime));
+            $revision->setLockUntil(new DateTime($this->lockTime));
         }
 
         $em->flush();
@@ -749,7 +748,8 @@ class DataService
         }
     }
 
-    public function newDocument(ContentType $contentType, ?string $ouuid = null) {
+    public function newDocument(ContentType $contentType, ?string $ouuid = null, ?array $rawData = null)
+    {
         $this->hasCreateRights($contentType);
         $revisionRepository = $this->em->getRepository('EMSCoreBundle:Revision');
 
@@ -774,6 +774,16 @@ class DataService
                 }
             } catch (\Twig_Error $e) {
                 $this->session->getFlashBag()->add('error', 'elasticms was not able to initiate the default value (twig error), please check the content type\'s configuration');
+            }
+        }
+
+        if ($rawData) {
+            $rawData = array_diff_key($rawData, Mapping::MAPPING_INTERNAL_FIELDS);
+
+            if ($revision->getRawData()) {
+                $revision->setRawData(array_replace_recursive($rawData, $revision->getRawData()));
+            } else {
+                $revision->setRawData($rawData);
             }
         }
 
@@ -823,7 +833,8 @@ class DataService
         return $revision;
     }
 
-    public function hasCreateRights(ContentType $contentType) {
+    public function hasCreateRights(ContentType $contentType)
+    {
 
         $userCircles = $this->userService->getCurrentUser()->getCircles();
         $environment = $contentType->getEnvironment();
@@ -1388,7 +1399,7 @@ class DataService
             $em = $this->doctrine->getManager();
             $this->lockRevision($revision, false, false);
 
-            $now = new \DateTime();
+            $now = new DateTime();
 
             $newDraft = new Revision($revision);
 

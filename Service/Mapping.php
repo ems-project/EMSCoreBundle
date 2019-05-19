@@ -19,6 +19,15 @@ class Mapping
     const SIGNATURE_FIELD = '_signature';
     const CONTENT_TYPE_FIELD = '_contenttype';
 
+    const MAPPING_INTERNAL_FIELDS = [
+        Mapping::PUBLISHED_DATETIME_FIELD => Mapping::PUBLISHED_DATETIME_FIELD,
+        Mapping::FINALIZATION_DATETIME_FIELD => Mapping::FINALIZATION_DATETIME_FIELD,
+        Mapping::FINALIZED_BY_FIELD => Mapping::FINALIZED_BY_FIELD,
+        Mapping::HASH_FIELD => Mapping::HASH_FIELD,
+        Mapping::SIGNATURE_FIELD => Mapping::SIGNATURE_FIELD,
+        Mapping::CONTENT_TYPE_FIELD => Mapping::CONTENT_TYPE_FIELD,
+    ];
+
     const CONTENT_TYPE_META_FIELD = 'content_type';
     const GENERATOR_META_FIELD = 'generator';
     const GENERATOR_META_FIELD_VALUE = 'elasticms';

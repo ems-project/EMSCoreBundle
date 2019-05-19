@@ -51,7 +51,7 @@
   </ul>
 </div>
 {% else %}
-	<a  class="btn btn-sm btn-danger" href="{{ url }}"
+	<a  class="{% if btnClass is defined %}{{ btnClass }}{% else %}btn btn-sm btn-danger{% endif %}" href="{{ url }}"
 		onclick=" 
 		{% if destinationFormName is defined %}
 		var f = document.getElementById('{{ destinationFormName }}');

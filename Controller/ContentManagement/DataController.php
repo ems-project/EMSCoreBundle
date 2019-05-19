@@ -507,6 +507,50 @@ class DataController extends AppController
      * @param string $environment
      * @param string $type
      * @param string $ouuid
+     * @param DataService $dataService
+     * @return RedirectResponse
+     * @throws DuplicateOuuidException
+     * @throws NotFoundHttpException
+     *
+     * @Route("/data/duplicate/{environment}/{type}/{ouuid}", name="emsco_duplicate_revision"), methods={"POST"})
+     */
+    public function duplicateAction(string $environment, string $type, string $ouuid, DataService $dataService)
+    {
+        $contentType = $this->getContentTypeService()->getByName($type);
+        if (!$contentType) {
+            throw new NotFoundHttpException('Content type ' . $type . ' not found');
+        }
+
+        $dataRaw = $this->getElasticsearch()->get([
+            'index' => $this->getContentTypeService()->getIndex($contentType),
+            'id' => $ouuid,
+            'type' => $type,
+        ]);
+
+        if ($contentType->getAskForOuuid()) {
+            $this->addFlash('warning', sprintf('The data of this document can be used to initiate a new document (duplicate) as the option "Ask fo OUUID is turned on for the content type %s', $contentType->getSingularName()));
+
+            return $this->redirectToRoute('data.view', [
+                'environmentName' => $environment,
+                'type' => $type,
+                'ouuid' => $ouuid,
+            ]);
+        }
+
+        $revision = $dataService->newDocument($contentType, null, $dataRaw['_source']);
+
+        $this->addFlash('notice', 'A document has been duplicated');
+
+        return $this->redirectToRoute('ems_revision_edit', [
+            'revisionId' => $revision->getId()
+        ]);
+    }
+
+
+    /**
+     * @param string $environment
+     * @param string $type
+     * @param string $ouuid
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
@@ -1304,13 +1348,11 @@ class DataController extends AppController
             /** @var Revision $revision */
             $revision = $form->getData();
             try {
-
                 $revision = $dataService->newDocument($contentType, $revision->getOuuid());
 
                 return $this->redirectToRoute('revision.edit', [
                     'revisionId' => $revision->getId()
                 ]);
-
             } catch (DuplicateOuuidException $e) {
                 $form->get('ouuid')->addError(new FormError('Another ' . $contentType->getName() . ' with this identifier already exists'));
             }

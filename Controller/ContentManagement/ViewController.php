@@ -109,7 +109,7 @@ class ViewController extends AppController
      * @throws OptimisticLockException
      * @Route("/view/edit/{id}.{_format}", name="view.edit", defaults={"_format": "html"})
      */
-    public function editAction($id, $_format, Request $request)
+    public function editAction(string $id, string $_format, Request $request)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -149,9 +149,21 @@ class ViewController extends AppController
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($view);
             $em->flush();
+
+            $this->addFlash('notice', sprintf('View %s has been updated', $view->getName()));
+
+            if ($_format === 'json') {
+                return $this->render('@EMSCore/ajax/notification.json.twig', [
+                    'success' => true,
+                ]);
+            }
+
+            return $this->redirectToRoute('view.index', [
+                'type' => $view->getContentType()->getName()
+            ]);
         }
 
-        return $this->render('@EMSCore/view/edit.' . $_format . '.twig', [
+        return $this->render('@EMSCore/view/edit.html.twig', [
             'form' => $form->createView(),
             'view' => $view
         ]);

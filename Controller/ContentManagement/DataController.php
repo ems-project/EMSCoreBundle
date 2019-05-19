@@ -905,7 +905,10 @@ class DataController extends AppController
             $dompdf->render();
 
             // Output the generated PDF to Browser
-            $dompdf->stream();
+            $dompdf->stream($template->getFilename() ?? "document.pdf", [
+                'compress' => 1,
+                'Attachment' => ($template->getDisposition() && $template->getDisposition() === 'attachment')?1:0,
+            ]);
             exit;
         }
         if ($_download || (strcmp($template->getRenderOption(), RenderOptionType::EXPORT) === 0 && !$template->getPreview())) {

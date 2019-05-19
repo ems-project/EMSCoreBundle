@@ -2,7 +2,16 @@
 
 {% block title %}Edit template {{ template.name }} for {{template.contentType.name}}{% endblock %}
 {% block pagetitle %}Edit template {{ template.name }} for {{template.contentType.name}}{% endblock %} 
-{% block subtitle %}{% endblock %} 
+{% block subtitle %}{% endblock %}
+
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><a href="{{ path("contenttype.index") }}"><i class="fa fa-cubes"></i> Content Types</a></li>
+		<li><a href="{{ path("contenttype.edit", {id: template.contentType.id}) }}"><i class="{{ template.contentType.icon }}"></i> Edit {{ template.contentType.singularName }}</a></li>
+		<li><a href="{{ path("template.index", {type: template.contentType.name}) }}">{{ 'Templates'|trans }}</a></li>
+		<li class="active">{{ template.name }}</li>
+	</ol>
+{% endblock %}
 
 
 {% block body %}

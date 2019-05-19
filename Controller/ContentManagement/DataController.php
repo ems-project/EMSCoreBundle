@@ -40,6 +40,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Throwable;
+use EMS\CoreBundle\Exception\DuplicateOuuidException;
 
 class DataController extends AppController
 {
@@ -1280,29 +1281,7 @@ class DataController extends AppController
     {
         $dataService->hasCreateRights($contentType);
 
-        $em = $this->getDoctrine()->getManager();
-
         $revision = new Revision();
-
-        if (!empty($contentType->getDefaultValue())) {
-            $twig = $this->getTwig();
-            try {
-                $template = $twig->createTemplate($contentType->getDefaultValue());
-                $defaultValue = $template->render([
-                    'environment' => $contentType->getEnvironment(),
-                    'contentType' => $contentType,
-                ]);
-                $raw = json_decode($defaultValue, true);
-                if ($raw === null) {
-                    $this->addFlash('error', 'elasticms was not able to initiate the default value (json_decode), please check the content type\'s configuration');
-                } else {
-                    $revision->setRawData($raw);
-                }
-            } catch (\Twig_Error $e) {
-                $this->addFlash('error', 'elasticms was not able to initiate the default value (twig error), please check the content type\'s configuration');
-            }
-        }
-
         $form = $this->createFormBuilder($revision)
             ->add('ouuid', IconTextType::class, [
                 'attr' => [
@@ -1321,75 +1300,19 @@ class DataController extends AppController
 
         $form->handleRequest($request);
 
-
         if (($form->isSubmitted() && $form->isValid()) || !$contentType->getAskForOuuid()) {
             /** @var Revision $revision */
             $revision = $form->getData();
+            try {
 
-            if (!$this->get('security.authorization_checker')->isGranted($contentType->getCreateRole())) {
-                throw new PrivilegeException($revision);
-            }
-
-
-            if (null != $revision->getOuuid()) {
-                $revisionRepository = $em->getRepository('EMSCoreBundle:Revision');
-                $anotherObject = $revisionRepository->findBy([
-                    'contentType' => $contentType,
-                    'ouuid' => $revision->getOuuid(),
-                    'endTime' => null
-                ]);
-
-                if (count($anotherObject) != 0) {
-                    $form->get('ouuid')->addError(new FormError('Another ' . $contentType->getName() . ' with this identifier already exists'));
-//                     $form->addError(new FormError('Another '.$contentType->getName().' with this identifier already exists'));
-                }
-            }
-
-            if (($form->isSubmitted() && $form->isValid()) || !$contentType->getAskForOuuid()) {
-                $now = new \DateTime('now');
-                $revision->setContentType($contentType);
-                $revision->setDraft(true);
-                $revision->setDeleted(false);
-                $revision->setStartTime($now);
-                $revision->setEndTime(null);
-                $revision->setLockBy($this->getUser()->getUsername());
-                $revision->setLockUntil(new \DateTime($this->getParameter('ems_core.lock_time')));
-
-                if ($contentType->getCirclesField()) {
-                    $fieldType = $contentType->getFieldType()->getChildByPath($contentType->getCirclesField());
-                    if ($fieldType) {
-                        /**@var \EMS\CoreBundle\Entity\User $user */
-                        $user = $this->getUser();
-                        $options = $fieldType->getDisplayOptions();
-                        if (isset($options['multiple']) && $options['multiple']) {
-                            //merge all my circles with the default value
-                            $circles = [];
-                            if (isset($options['defaultValue'])) {
-                                $circles = json_decode($options['defaultValue']);
-                                if (!is_array($circles)) {
-                                    $circles = [$circles];
-                                }
-                            }
-                            $circles = array_merge($circles, $user->getCircles());
-                            $revision->setRawData([$contentType->getCirclesField() => $circles]);
-                            $revision->setCircles($circles);
-                        } else {
-                            //set first of my circles
-                            if (!empty($user->getCircles())) {
-                                $revision->setRawData([$contentType->getCirclesField() => $user->getCircles()[0]]);
-                                $revision->setCircles([$user->getCircles()[0]]);
-                            }
-                        }
-                    }
-                }
-                $this->getDataService()->setMetaFields($revision);
-
-                $em->persist($revision);
-                $em->flush();
+                $revision = $dataService->newDocument($contentType, $revision->getOuuid());
 
                 return $this->redirectToRoute('revision.edit', [
                     'revisionId' => $revision->getId()
                 ]);
+
+            } catch (DuplicateOuuidException $e) {
+                $form->get('ouuid')->addError(new FormError('Another ' . $contentType->getName() . ' with this identifier already exists'));
             }
         }
 

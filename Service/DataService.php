@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Service;
 
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
@@ -14,11 +15,13 @@ use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Notification;
 use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Event\RevisionFinalizeDraftEvent;
 use EMS\CoreBundle\Event\RevisionNewDraftEvent;
 use EMS\CoreBundle\Event\UpdateRevisionReferersEvent;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Exception\DataStateException;
+use EMS\CoreBundle\Exception\DuplicateOuuidException;
 use EMS\CoreBundle\Exception\HasNotCircleException;
 use EMS\CoreBundle\Exception\LockedException;
 use EMS\CoreBundle\Exception\PrivilegeException;
@@ -744,6 +747,80 @@ class DataService
         } else {
             throw new \Exception('Too much newest revisions available for ouuid '.$ouuid.' and contenttype '.$type);
         }
+    }
+
+    public function newDocument(ContentType $contentType, ?string $ouuid = null) {
+        $this->hasCreateRights($contentType);
+        $revisionRepository = $this->em->getRepository('EMSCoreBundle:Revision');
+
+        $revision = new Revision();
+
+        if (null !== $ouuid && $revisionRepository->countRevisions($ouuid, $contentType)) {
+            throw new DuplicateOuuidException();
+        }
+
+        if (!empty($contentType->getDefaultValue())) {
+            try {
+                $template = $this->twig->createTemplate($contentType->getDefaultValue());
+                $defaultValue = $template->render([
+                    'environment' => $contentType->getEnvironment(),
+                    'contentType' => $contentType,
+                ]);
+                $raw = json_decode($defaultValue, true);
+                if ($raw === null) {
+                    $this->session->getFlashBag()->add('error', 'elasticms was not able to initiate the default value (json_decode), please check the content type\'s configuration');
+                } else {
+                    $revision->setRawData($raw);
+                }
+            } catch (\Twig_Error $e) {
+                $this->session->getFlashBag()->add('error', 'elasticms was not able to initiate the default value (twig error), please check the content type\'s configuration');
+            }
+        }
+
+
+        $now = new DateTime('now');
+        $revision->setContentType($contentType);
+        $revision->setDraft(true);
+        $revision->setOuuid($ouuid);
+        $revision->setDeleted(false);
+        $revision->setStartTime($now);
+        $revision->setEndTime(null);
+        $revision->setLockBy($this->userService->getCurrentUser()->getUsername());
+        $revision->setLockUntil(new DateTime($this->lockTime));
+
+        if ($contentType->getCirclesField()) {
+            $fieldType = $contentType->getFieldType()->geChildByPath($contentType->getCirclesField());
+            if ($fieldType) {
+                /**@var User $user */
+                $user = $this->userService->getCurrentUser();
+                $options = $fieldType->getDisplayOptions();
+                if (isset($options['multiple']) && $options['multiple']) {
+                    //merge all my circles with the default value
+                    $circles = [];
+                    if (isset($options['defaultValue'])) {
+                        $circles = json_decode($options['defaultValue']);
+                        if (!is_array($circles)) {
+                            $circles = [$circles];
+                        }
+                    }
+                    $circles = array_merge($circles, $user->getCircles());
+                    $revision->setRawData([$contentType->getCirclesField() => $circles]);
+                    $revision->setCircles($circles);
+                } else {
+                    //set first of my circles
+                    if (!empty($user->getCircles())) {
+                        $revision->setRawData([$contentType->getCirclesField() => $user->getCircles()[0]]);
+                        $revision->setCircles([$user->getCircles()[0]]);
+                    }
+                }
+            }
+        }
+        $this->setMetaFields($revision);
+
+        $this->em->persist($revision);
+        $this->em->flush();
+
+        return $revision;
     }
 
     public function hasCreateRights(ContentType $contentType) {

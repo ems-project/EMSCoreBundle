@@ -799,7 +799,7 @@ class DataService
         $revision->setLockUntil(new DateTime($this->lockTime));
 
         if ($contentType->getCirclesField()) {
-            $fieldType = $contentType->getFieldType()->geChildByPath($contentType->getCirclesField());
+            $fieldType = $contentType->getFieldType()->getChildByPath($contentType->getCirclesField());
             if ($fieldType) {
                 /**@var User $user */
                 $user = $this->userService->getCurrentUser();

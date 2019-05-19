@@ -47,14 +47,6 @@ class TemplateType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
-        $submitAttr = [
-            'class' => 'btn-primary btn-sm ',
-        ];
-        if ($options['ajax-save-url']) {
-            $submitAttr['data-ajax-save-url'] = $options['ajax-save-url'];
-        }
-
         $builder
         ->add('name', IconTextType::class, [
             'icon' => 'fa fa-tag'
@@ -169,9 +161,21 @@ class TemplateType extends AbstractType
             'attr' => [
             ],
         ])
-        ->add('save', SubmitEmsType::class, [
-            'attr' => $submitAttr,
+        ->add('saveAndClose', SubmitEmsType::class, [
+            'attr' => [
+                'class' => 'btn-primary btn-sm ',
+            ],
             'icon' => 'fa fa-save'
         ]);
+
+        if ($options['ajax-save-url']) {
+            $builder->add('save', SubmitEmsType::class, [
+                'attr' => [
+                    'class' => 'btn-primary btn-sm ',
+                    'data-ajax-save-url' => $options['ajax-save-url'],
+                ],
+                'icon' => 'fa fa-save'
+            ]);
+        }
     }
 }

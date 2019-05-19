@@ -142,7 +142,14 @@ class ViewController extends AppController
                     'data-ajax-save-url' => $this->generateUrl('view.edit', ['id' => $id, '_format' => 'json']),
                 ],
                 'icon' => 'fa fa-save'
-            ])->getForm();
+            ])
+            ->add('saveAndClose', SubmitEmsType::class, [
+                'attr' => [
+                    'class' => 'btn-primary btn-sm',
+                ],
+                'icon' => 'fa fa-save'
+            ])
+            ->getForm();
 
         $form->handleRequest($request);
 

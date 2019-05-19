@@ -36,7 +36,12 @@
 				</div>
 				<!-- /.box-body -->
 				<div class="box-footer">
-					{{ form_widget(form.save) }}
+					<div class="btn-group">
+						{%  if form.save is defined %}
+							{{ form_widget(form.save) }}
+						{% endif %}
+						{{ form_widget(form.saveAndClose) }}
+					</div>
 				</div>
 			{{ form_end(form) }}
 

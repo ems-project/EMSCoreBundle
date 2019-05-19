@@ -7,8 +7,9 @@
 {% block breadcrumb %}
 	<ol class="breadcrumb">
 		<li><a href="{{ path("contenttype.index") }}"><i class="fa fa-cubes"></i> Content Types</a></li>
+		<li><a href="{{ path("contenttype.edit", {id: view.contentType.id}) }}"><i class="{{ view.contentType.icon }}"></i> Edit {{ view.contentType.singularName }}</a></li>
 		<li><a href="{{ path("view.index", {type: view.contentType.name}) }}"><i class="fa fa-tv"></i> Views</a></li>
-		<li class="active">edit</li>
+		<li class="active">{{ view.name }}</li>
 	</ol>
 {% endblock %}
 

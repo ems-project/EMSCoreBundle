@@ -95,7 +95,7 @@ class TemplateController extends AppController
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @param Request $request
      * @param string $_format
      * @return Response
@@ -104,7 +104,7 @@ class TemplateController extends AppController
      *
      * @Route("/template/edit/{id}.{_format}", name="template.edit", defaults={"_format": "html"}, methods={"GET","HEAD", "POST"})
      */
-    public function editAction($id, Request $request, string $_format)
+    public function editAction(int $id, Request $request, string $_format)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();

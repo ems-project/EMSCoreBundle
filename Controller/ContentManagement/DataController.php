@@ -32,12 +32,14 @@ use EMS\CoreBundle\Service\DataService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use EMS\CoreBundle\Exception\DuplicateOuuidException;
 
 class DataController extends AppController
 {
@@ -504,6 +506,50 @@ class DataController extends AppController
      * @param string $environment
      * @param string $type
      * @param string $ouuid
+     * @param DataService $dataService
+     * @return RedirectResponse
+     * @throws DuplicateOuuidException
+     * @throws NotFoundHttpException
+     *
+     * @Route("/data/duplicate/{environment}/{type}/{ouuid}", name="emsco_duplicate_revision"), methods={"POST"})
+     */
+    public function duplicateAction(string $environment, string $type, string $ouuid, DataService $dataService)
+    {
+        $contentType = $this->getContentTypeService()->getByName($type);
+        if (!$contentType) {
+            throw new NotFoundHttpException('Content type ' . $type . ' not found');
+        }
+
+        $dataRaw = $this->getElasticsearch()->get([
+            'index' => $this->getContentTypeService()->getIndex($contentType),
+            'id' => $ouuid,
+            'type' => $type,
+        ]);
+
+        if ($contentType->getAskForOuuid()) {
+            $this->addFlash('warning', sprintf('The data of this document can be used to initiate a new document (duplicate) as the option "Ask fo OUUID is turned on for the content type %s', $contentType->getSingularName()));
+
+            return $this->redirectToRoute('data.view', [
+                'environmentName' => $environment,
+                'type' => $type,
+                'ouuid' => $ouuid,
+            ]);
+        }
+
+        $revision = $dataService->newDocument($contentType, null, $dataRaw['_source']);
+
+        $this->addFlash('notice', 'A document has been duplicated');
+
+        return $this->redirectToRoute('ems_revision_edit', [
+            'revisionId' => $revision->getId()
+        ]);
+    }
+
+
+    /**
+     * @param string $environment
+     * @param string $type
+     * @param string $ouuid
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
@@ -858,7 +904,10 @@ class DataController extends AppController
             $dompdf->render();
 
             // Output the generated PDF to Browser
-            $dompdf->stream();
+            $dompdf->stream($template->getFilename() ?? "document.pdf", [
+                'compress' => 1,
+                'Attachment' => ($template->getDisposition() && $template->getDisposition() === 'attachment')?1:0,
+            ]);
             exit;
         }
         if ($_download || (strcmp($template->getRenderOption(), RenderOptionType::EXPORT) === 0 && !$template->getPreview())) {
@@ -1267,56 +1316,18 @@ class DataController extends AppController
     /**
      * @param ContentType $contentType
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @return RedirectResponse|Response
      * @throws HasNotCircleException
      * @throws PrivilegeException
      * @throws \Throwable
+     *
      * @Route("/data/add/{contentType}", name="data.add"))
      */
-    public function addAction(ContentType $contentType, Request $request)
+    public function addAction(ContentType $contentType, Request $request, DataService $dataService)
     {
-        $userCircles = $this->getUser()->getCircles();
-        $environment = $contentType->getEnvironment();
-        $environmentCircles = $environment->getCircles();
-        if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN') && !empty($environmentCircles)) {
-            if (empty($userCircles)) {
-                throw new HasNotCircleException($environment);
-            }
-            $found = false;
-            foreach ($userCircles as $userCircle) {
-                if (in_array($userCircle, $environmentCircles)) {
-                    $found = true;
-                    break;
-                }
-            }
-            if (!$found) {
-                throw new HasNotCircleException($environment);
-            }
-        }
-
-        $em = $this->getDoctrine()->getManager();
+        $dataService->hasCreateRights($contentType);
 
         $revision = new Revision();
-
-        if (!empty($contentType->getDefaultValue())) {
-            $twig = $this->getTwig();
-            try {
-                $template = $twig->createTemplate($contentType->getDefaultValue());
-                $defaultValue = $template->render([
-                    'environment' => $environment,
-                    'contentType' => $contentType,
-                ]);
-                $raw = json_decode($defaultValue, true);
-                if ($raw === null) {
-                    $this->addFlash('error', 'elasticms was not able to initiate the default value (json_decode), please check the content type\'s configuration');
-                } else {
-                    $revision->setRawData($raw);
-                }
-            } catch (\Twig_Error $e) {
-                $this->addFlash('error', 'elasticms was not able to initiate the default value (twig error), please check the content type\'s configuration');
-            }
-        }
-
         $form = $this->createFormBuilder($revision)
             ->add('ouuid', IconTextType::class, [
                 'attr' => [
@@ -1335,75 +1346,17 @@ class DataController extends AppController
 
         $form->handleRequest($request);
 
-
         if (($form->isSubmitted() && $form->isValid()) || !$contentType->getAskForOuuid()) {
             /** @var Revision $revision */
             $revision = $form->getData();
-
-            if (!$this->get('security.authorization_checker')->isGranted($contentType->getCreateRole())) {
-                throw new PrivilegeException($revision);
-            }
-
-
-            if (null != $revision->getOuuid()) {
-                $revisionRepository = $em->getRepository('EMSCoreBundle:Revision');
-                $anotherObject = $revisionRepository->findBy([
-                    'contentType' => $contentType,
-                    'ouuid' => $revision->getOuuid(),
-                    'endTime' => null
-                ]);
-
-                if (count($anotherObject) != 0) {
-                    $form->get('ouuid')->addError(new FormError('Another ' . $contentType->getName() . ' with this identifier already exists'));
-//                     $form->addError(new FormError('Another '.$contentType->getName().' with this identifier already exists'));
-                }
-            }
-
-            if (($form->isSubmitted() && $form->isValid()) || !$contentType->getAskForOuuid()) {
-                $now = new \DateTime('now');
-                $revision->setContentType($contentType);
-                $revision->setDraft(true);
-                $revision->setDeleted(false);
-                $revision->setStartTime($now);
-                $revision->setEndTime(null);
-                $revision->setLockBy($this->getUser()->getUsername());
-                $revision->setLockUntil(new \DateTime($this->getParameter('ems_core.lock_time')));
-
-                if ($contentType->getCirclesField()) {
-                    $fieldType = $contentType->getFieldType()->getChildByPath($contentType->getCirclesField());
-                    if ($fieldType) {
-                        /**@var \EMS\CoreBundle\Entity\User $user */
-                        $user = $this->getUser();
-                        $options = $fieldType->getDisplayOptions();
-                        if (isset($options['multiple']) && $options['multiple']) {
-                            //merge all my circles with the default value
-                            $circles = [];
-                            if (isset($options['defaultValue'])) {
-                                $circles = json_decode($options['defaultValue']);
-                                if (!is_array($circles)) {
-                                    $circles = [$circles];
-                                }
-                            }
-                            $circles = array_merge($circles, $user->getCircles());
-                            $revision->setRawData([$contentType->getCirclesField() => $circles]);
-                            $revision->setCircles($circles);
-                        } else {
-                            //set first of my circles
-                            if (!empty($user->getCircles())) {
-                                $revision->setRawData([$contentType->getCirclesField() => $user->getCircles()[0]]);
-                                $revision->setCircles([$user->getCircles()[0]]);
-                            }
-                        }
-                    }
-                }
-                $this->getDataService()->setMetaFields($revision);
-
-                $em->persist($revision);
-                $em->flush();
+            try {
+                $revision = $dataService->newDocument($contentType, $revision->getOuuid());
 
                 return $this->redirectToRoute('revision.edit', [
                     'revisionId' => $revision->getId()
                 ]);
+            } catch (DuplicateOuuidException $e) {
+                $form->get('ouuid')->addError(new FormError('Another ' . $contentType->getName() . ' with this identifier already exists'));
             }
         }
 

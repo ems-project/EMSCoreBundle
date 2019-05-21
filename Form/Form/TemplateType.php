@@ -3,7 +3,8 @@
 namespace EMS\CoreBundle\Form\Form;
 
 use Dompdf\Adapter\CPDF;
-use EMS\CoreBundle\Entity\Template;
+use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 use EMS\CoreBundle\Form\Field\IconTextType;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
@@ -17,7 +18,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use EMS\CoreBundle\Form\Field\CodeEditorType;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TemplateType extends AbstractType
 {
@@ -31,6 +32,14 @@ class TemplateType extends AbstractType
         $this->circleType = $circleType;
         $this->choices = null;
     }
+
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        parent::configureOptions($resolver);
+        $resolver->setDefault('ajax-save-url', null);
+    }
+
     /**
      *
      * @param FormBuilderInterface $builder
@@ -38,10 +47,6 @@ class TemplateType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
-        /** @var Template $template */
-        $template = $builder->getData();
-
         $builder
         ->add('name', IconTextType::class, [
             'icon' => 'fa fa-tag'
@@ -66,10 +71,10 @@ class TemplateType extends AbstractType
                  'multiple' => true,
                 'choices' => $this->service->getAll(),
                 'required' => false,
-                'choice_label' => function ($value, $key, $index) {
+                'choice_label' => function (Environment $value) {
                     return '<i class="fa fa-square text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getName();
                 },
-                'choice_value' => function ($value) {
+                'choice_value' => function (Environment $value) {
                     if ($value != null) {
                         return $value->getId();
                     }
@@ -156,11 +161,21 @@ class TemplateType extends AbstractType
             'attr' => [
             ],
         ])
-        ->add('save', SubmitEmsType::class, [
+        ->add('saveAndClose', SubmitEmsType::class, [
             'attr' => [
-                'class' => 'btn-primary btn-sm '
+                'class' => 'btn-primary btn-sm ',
             ],
             'icon' => 'fa fa-save'
         ]);
+
+        if ($options['ajax-save-url']) {
+            $builder->add('save', SubmitEmsType::class, [
+                'attr' => [
+                    'class' => 'btn-primary btn-sm ',
+                    'data-ajax-save-url' => $options['ajax-save-url'],
+                ],
+                'icon' => 'fa fa-save'
+            ]);
+        }
     }
 }

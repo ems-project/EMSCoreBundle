@@ -2,25 +2,28 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use EMS\CoreBundle\Controller\AppController;
-use EMS\CoreBundle;
-use EMS\CoreBundle\Repository\ContentTypeRepository;
 use Doctrine\ORM\EntityManager;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
-use EMS\CoreBundle\Form\Form\TemplateType;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
+use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\Template;
+use EMS\CoreBundle\Form\Form\TemplateType;
+use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\TemplateRepository;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TemplateController extends AppController
 {
     /**
-     * @Route("/template/{type}", name="template.index")
+     * @return Response
+     *
+     * @Route("/template/{type}", name="template.index", methods={"GET","HEAD"})
      */
-    public function indexAction($type, Request $request)
+    public function indexAction(string $type): Response
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -41,11 +44,13 @@ class TemplateController extends AppController
                 'contentType' => $contentTypes[0]
         ]);
     }
-    
+
     /**
-     * @Route("/template/add/{type}", name="template.add")
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @Route("/template/add/{type}", name="template.add", methods={"GET","HEAD", "POST"})
      */
-    public function addAction($type, Request $request)
+    public function addAction(string $type, Request $request): Response
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -84,11 +89,14 @@ class TemplateController extends AppController
                 'form' => $form->createView()
         ]);
     }
-    
+
     /**
-     * @Route("/template/edit/{id}", name="template.edit")
+     * @throws ORMException
+     * @throws OptimisticLockException
+     *
+     * @Route("/template/edit/{id}.{_format}", name="template.edit", defaults={"_format": "html"}, methods={"GET","HEAD", "POST"})
      */
-    public function editAction($id, Request $request)
+    public function editAction(int $id, Request $request, string $_format): Response
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -102,7 +110,9 @@ class TemplateController extends AppController
             throw new NotFoundHttpException('Template type not found');
         }
         
-        $form = $this->createForm(TemplateType::class, $template);
+        $form = $this->createForm(TemplateType::class, $template, [
+            'ajax-save-url' => $this->generateUrl('template.edit', ['id' => $id, '_format' => 'json'])
+        ]);
         
         $form->handleRequest($request);
         
@@ -110,10 +120,26 @@ class TemplateController extends AppController
             $em->persist($template);
             $em->flush();
 
-            $this->addFlash('notice', 'A template has been updated');
-            
+            $this->addFlash('notice', sprintf('Template %s has been updated', $template->getName()));
+
+            if ($_format === 'json') {
+                return $this->render('@EMSCore/ajax/notification.json.twig', [
+                    'success' => true,
+                ]);
+            }
+
             return $this->redirectToRoute('template.index', [
                     'type' => $template->getContentType()->getName()
+            ]);
+        }
+
+        if ($_format === 'json') {
+            foreach ($form->getErrors() as $error) {
+                $this->addFlash('error', $error->getMessage());
+            }
+
+            return $this->render('@EMSCore/ajax/notification.json.twig', [
+                'success' => $form->isValid(),
             ]);
         }
         
@@ -122,12 +148,13 @@ class TemplateController extends AppController
                 'template' => $template
         ]);
     }
-    
+
     /**
-     * @Route("/template/remove/{id}", name="template.remove")
-     * @Method({"POST"})
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @Route("/template/remove/{id}", name="template.remove", methods={"POST"})
      */
-    public function removeAction($id, Request $request)
+    public function removeAction(string $id): RedirectResponse
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();

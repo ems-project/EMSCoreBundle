@@ -331,10 +331,8 @@ class Revision
     {
         $this->deleted = false;
         $this->allFieldsAreThere = false;
-        unset($this->finalizedBy);
-        unset($this->finalizedDate);
-        $this->environments = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->notifications = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->environments = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
         
         $a = func_get_args();
         $i = func_num_args();
@@ -344,8 +342,6 @@ class Revision
                 $ancestor = $a[0];
                 $this->deleted = $ancestor->deleted;
                 $this->draft = true;
-                unset($this->finalizedBy);
-                unset($this->finalizedDate);
                 $this->allFieldsAreThere = $ancestor->allFieldsAreThere;
                 $this->ouuid = $ancestor->ouuid;
                 $this->contentType = $ancestor->contentType;

@@ -39,7 +39,6 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Throwable;
 use EMS\CoreBundle\Exception\DuplicateOuuidException;
 
 class DataController extends AppController
@@ -1320,7 +1319,7 @@ class DataController extends AppController
      * @return RedirectResponse|Response
      * @throws HasNotCircleException
      * @throws PrivilegeException
-     * @throws Throwable
+     * @throws \Throwable
      *
      * @Route("/data/add/{contentType}", name="data.add"))
      */

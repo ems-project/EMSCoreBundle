@@ -188,7 +188,10 @@ import EmsListeners from "./EmsListeners";
                 const formContent = form.serialize();
                 window.ajaxRequest.post(button.data('ajax-save-url'), formContent)
                     .success(function(message) {
-                        const response = jQuery.parseJSON( message );
+                        let response = message;
+                        if ( ! response instanceof Object ) {
+                            response = jQuery.parseJSON( message );
+                        }
 
                         $('.has-error').removeClass('has-error');
 

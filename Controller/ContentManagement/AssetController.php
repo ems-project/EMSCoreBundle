@@ -3,11 +3,13 @@
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Storage\NotFoundException;
 use EMS\CommonBundle\Storage\Processor\Processor;
 use EMS\CoreBundle\Twig\AppExtension;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class AssetController extends AbstractController
@@ -35,7 +37,11 @@ class AssetController extends AbstractController
      */
     public function assetAction(string $hash, string $hash_config, string $filename, Request $request)
     {
-        return $this->processor->getResponse($request, $hash, $hash_config, $filename);
+        try {
+            return $this->processor->getResponse($request, $hash, $hash_config, $filename);
+        } catch (NotFoundException $e) {
+            throw new NotFoundHttpException(sprintf('File %s/%s/%s not found', $hash_config, $hash, $filename));
+        }
     }
 
 

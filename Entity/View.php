@@ -93,9 +93,9 @@ class View
     public function __clone()
     {
         if ($this->id) {
-            $this->id = null;
-            $this->created = null;
-            $this->modified = null;
+            $now = new \DateTime('now');
+            $this->created = $now;
+            $this->modified = $now;
         }
     }
 

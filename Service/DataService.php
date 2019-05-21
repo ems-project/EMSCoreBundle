@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Service;
 
-use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
@@ -187,14 +186,14 @@ class DataService
         //TODO: test circles
 
 
-        $this->revRepository->lockRevision($revision->getId(), $lockerUsername, new DateTime($this->lockTime));
+        $this->revRepository->lockRevision($revision->getId(), $lockerUsername, new \DateTime($this->lockTime));
 
         $revision->setLockBy($lockerUsername);
         if ($username) {
             //lock by a console script
-            $revision->setLockUntil(new DateTime("+30 seconds"));
+            $revision->setLockUntil(new \DateTime("+30 seconds"));
         } else {
-            $revision->setLockUntil(new DateTime($this->lockTime));
+            $revision->setLockUntil(new \DateTime($this->lockTime));
         }
 
         $em->flush();
@@ -788,7 +787,7 @@ class DataService
         }
 
 
-        $now = new DateTime('now');
+        $now = new \DateTime('now');
         $revision->setContentType($contentType);
         $revision->setDraft(true);
         $revision->setOuuid($ouuid);
@@ -796,7 +795,7 @@ class DataService
         $revision->setStartTime($now);
         $revision->setEndTime(null);
         $revision->setLockBy($this->userService->getCurrentUser()->getUsername());
-        $revision->setLockUntil(new DateTime($this->lockTime));
+        $revision->setLockUntil(new \DateTime($this->lockTime));
 
         if ($contentType->getCirclesField()) {
             $fieldType = $contentType->getFieldType()->getChildByPath($contentType->getCirclesField());
@@ -1399,7 +1398,7 @@ class DataService
             $em = $this->doctrine->getManager();
             $this->lockRevision($revision, false, false);
 
-            $now = new DateTime();
+            $now = new \DateTime();
 
             $newDraft = new Revision($revision);
 

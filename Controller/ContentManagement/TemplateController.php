@@ -19,12 +19,11 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class TemplateController extends AppController
 {
     /**
-     * @param string $type
      * @return Response
      *
      * @Route("/template/{type}", name="template.index", methods={"GET","HEAD"})
      */
-    public function indexAction(string $type)
+    public function indexAction(string $type): Response
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -47,14 +46,11 @@ class TemplateController extends AppController
     }
 
     /**
-     * @param string $type
-     * @param Request $request
-     * @return RedirectResponse|Response
      * @throws ORMException
      * @throws OptimisticLockException
      * @Route("/template/add/{type}", name="template.add", methods={"GET","HEAD", "POST"})
      */
-    public function addAction(string $type, Request $request)
+    public function addAction(string $type, Request $request): Response
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -95,16 +91,12 @@ class TemplateController extends AppController
     }
 
     /**
-     * @param int $id
-     * @param Request $request
-     * @param string $_format
-     * @return Response
      * @throws ORMException
      * @throws OptimisticLockException
      *
      * @Route("/template/edit/{id}.{_format}", name="template.edit", defaults={"_format": "html"}, methods={"GET","HEAD", "POST"})
      */
-    public function editAction(int $id, Request $request, string $_format)
+    public function editAction(int $id, Request $request, string $_format): Response
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -140,6 +132,16 @@ class TemplateController extends AppController
                     'type' => $template->getContentType()->getName()
             ]);
         }
+
+        if ($_format === 'json') {
+            foreach ($form->getErrors() as $error) {
+                $this->addFlash('error', $error->getMessage());
+            }
+
+            return $this->render('@EMSCore/ajax/notification.json.twig', [
+                'success' => $form->isValid(),
+            ]);
+        }
         
         return $this->render('@EMSCore/template/edit.html.twig', [
                 'form' => $form->createView(),
@@ -148,13 +150,11 @@ class TemplateController extends AppController
     }
 
     /**
-     * @param string $id
-     * @return RedirectResponse
      * @throws ORMException
      * @throws OptimisticLockException
      * @Route("/template/remove/{id}", name="template.remove", methods={"POST"})
      */
-    public function removeAction(string $id)
+    public function removeAction(string $id): RedirectResponse
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();

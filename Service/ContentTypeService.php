@@ -15,6 +15,13 @@ use Symfony\Component\Form\FormRegistryInterface;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Serializer;
+use EMS\CoreBundle\Entity\Helper\JsonNormalizer;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\File\File;
+use EMS\CoreBundle\Repository\ContentTypeRepository;
 
 class ContentTypeService
 {
@@ -408,5 +415,61 @@ class ContentTypeService
     {
         $this->loadEnvironment();
         return implode(',', array_keys($this->contentTypeArrayByName));
+    }
+    
+    /**
+     * Export a content type in Json format
+     *
+     */
+    public function createContentTypeFromJson(File $jsonFile, Environment $environment)
+    {
+        $em = $this->doctrine->getManager();
+        /** @var ContentTypeRepository $contentTypeRepository */
+        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
+        $fileContent = file_get_contents($jsonFile->getRealPath());
+        
+        $encoders = array(new JsonEncoder());
+        $normalizers = array(new JsonNormalizer());
+        $serializer = new Serializer($normalizers, $encoders);
+        /**@var ContentType $contentType */
+        $contentType = $serializer->deserialize(
+            $fileContent,
+            "EMS\CoreBundle\Entity\ContentType",
+            'json'
+        );
+        $contentType->setEnvironment($environment);
+        $contentType->setActive(false);
+        $contentType->setDirty(true);
+        $contentType->getFieldType()->updateAncestorReferences($contentType, null);
+        $contentType->setOrderKey($contentTypeRepository->maxOrderKey() + 1);
+        
+        $this->persist($contentType);
+        return $contentType->getId();
+    }
+    
+    /**
+     * Export a content type in Json format
+     */
+    public function exportToJson(ContentType $contentType)
+    {
+        //Sanitize the CT
+        $contentType->setCreated(null);
+        $contentType->setModified(null);
+        $contentType->getFieldType()->removeCircularReference();
+        $contentType->setEnvironment(null);
+        
+        //Serialize the CT
+        $encoders = array(new JsonEncoder());
+        $normalizers = array(new JsonNormalizer());
+        $serializer = new Serializer($normalizers, $encoders);
+        $jsonContent = $serializer->serialize($contentType, 'json');
+        $response = new Response($jsonContent);
+        $diposition = $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $contentType->getName() . '.json'
+        );
+        
+        $response->headers->set('Content-Disposition', $diposition);
+        return $response;
     }
 }

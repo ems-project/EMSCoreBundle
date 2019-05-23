@@ -944,6 +944,9 @@ class Template implements \JsonSerializable
         unset($data['modified']);
         unset($data['environments']);
 
-        return ['__jsonclass__' => [__CLASS__, $constructorArguments]];
+        return [
+            '__jsonclass__' => [__CLASS__, $constructorArguments],
+            $data
+        ];
     }
 }

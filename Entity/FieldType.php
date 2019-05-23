@@ -711,6 +711,9 @@ class FieldType implements \JsonSerializable
 
         $data['children'] = $this->getValidChildren();
 
-        return ['__jsonclass__' => [__CLASS__, $constructorArguments]];
+        return [
+            '__jsonclass__' => [__CLASS__, $constructorArguments],
+            $data
+        ];
     }
 }

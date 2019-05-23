@@ -1724,6 +1724,9 @@ class ContentType implements \JsonSerializable
         $data = get_object_vars($this);
         unset($data['id']);
 
-        return ['__jsonclass__' => [__CLASS__, $constructorArguments]];
+        return [
+            '__jsonclass__' => [__CLASS__, $constructorArguments],
+            $data
+        ];
     }
 }

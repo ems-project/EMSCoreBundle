@@ -4,6 +4,8 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Entity\Helper\JsonClass;
+use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 
 /**
  * Environment
@@ -12,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\EnvironmentRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class Environment
+class Environment extends JsonDeserializer implements \JsonSerializable
 {
     /**
      * @var int
@@ -21,121 +23,121 @@ class Environment
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="created", type="datetime")
      */
-    private $created;
+    protected $created;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="modified", type="datetime")
      */
-    private $modified;
+    protected $modified;
 
     /**
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, unique=true)
      */
-    private $name;
+    protected $name;
 
     /**
      * @var string
      *
      * @ORM\Column(name="alias", type="string", length=255)
      */
-    private $alias;
+    protected $alias;
     
     /**
      * @var array
      */
-    private $indexes;
+    protected $indexes;
     
     /**
      * @var string
      */
-    private $total;
+    protected $total;
     
     /**
      * @var integer
      */
-    private $counter;
+    protected $counter;
     
     /**
      * @var integer
      */
-    private $deletedRevision;
+    protected $deletedRevision;
     
     /**
      * @var string
      *
      * @ORM\Column(name="color", type="string", length=50, nullable=true)
      */
-    private $color;
+    protected $color;
     
     /**
      * @var string
      *
      * @ORM\Column(name="baseUrl", type="string", length=1024, nullable=true)
      */
-    private $baseUrl;
+    protected $baseUrl;
     
     /**
      * @var bool
      *
      * @ORM\Column(name="managed", type="boolean")
      */
-    private $managed;
+    protected $managed;
 
     /**
      * @ORM\ManyToMany(targetEntity="Revision", mappedBy="environments")
      */
-    private $revisions;
+    protected $revisions;
 
     /**
      * @var array
      *
      * @ORM\Column(name="circles", type="json_array", nullable=true)
      */
-    private $circles;
+    protected $circles;
     
     /**
      * @var bool
      *
      * @ORM\Column(name="in_default_search", type="boolean", nullable=true)
      */
-    private $inDefaultSearch;
+    protected $inDefaultSearch;
 
     /**
      * @var string
      *
      * @ORM\Column(name="extra", type="text", nullable=true)
      */
-    private $extra;
+    protected $extra;
     
 
     /**
      * @ORM\OneToMany(targetEntity="ContentType", mappedBy="environment", cascade={"remove"})
      */
-    private $contentTypesHavingThisAsDefault;
+    protected $contentTypesHavingThisAsDefault;
     
     /**
      * @var int
      *
      * @ORM\Column(name="order_key", type="integer", nullable=true)
      */
-    private $orderKey;
+    protected $orderKey;
 
     /**
      * @ORM\OneToMany(targetEntity="SingleTypeIndex", mappedBy="environment", cascade={"persist", "remove"})
      * @ORM\OrderBy({"name" = "ASC"})
      */
-    private $singleTypeIndexes;
+    protected $singleTypeIndexes;
     
     
     /**
@@ -635,5 +637,20 @@ class Environment
     public function getSingleTypeIndexes()
     {
         return $this->singleTypeIndexes;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize()
+    {
+        $json = new JsonClass(get_object_vars($this), __CLASS__);
+        $json->removeProperty('id');
+
+        return $json;
     }
 }

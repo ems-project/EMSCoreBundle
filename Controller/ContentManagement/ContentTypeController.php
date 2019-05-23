@@ -10,6 +10,7 @@ use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Form\EditFieldType;
+use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonNormalizer;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Form\DataField\SubfieldType;
@@ -230,15 +231,10 @@ class ContentTypeController extends AppController
                     $file = $request->files->get('form')['import'];
                     $fileContent = file_get_contents($file->getRealPath());
 
-                    $encoders = array(new JsonEncoder());
-                    $normalizers = array(new JsonNormalizer());
-                    $serializer = new Serializer($normalizers, $encoders);
+                    $json = JsonClass::fromJsonString($fileContent);
                     /**@var ContentType $contentType */
-                    $contentType = $serializer->deserialize(
-                        $fileContent,
-                        "EMS\CoreBundle\Entity\ContentType",
-                        'json'
-                    );
+                    $contentType = $json->jsonDeserialize();
+
                     $contentType->setName($name);
                     $contentType->setSingularName($singularName);
                     $contentType->setPluralName($pluralName);
@@ -939,17 +935,8 @@ class ContentTypeController extends AppController
      */
     public function exportAction(ContentType $contentType, Request $request)
     {
-        //Sanitize the CT
-        $contentType->setCreated(null);
-        $contentType->setModified(null);
-        $contentType->getFieldType()->removeCircularReference();
-        $contentType->setEnvironment(null);
+        $jsonContent = \json_encode($contentType);
 
-        //Serialize the CT
-        $encoders = array(new JsonEncoder());
-        $normalizers = array(new JsonNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-        $jsonContent = $serializer->serialize($contentType, 'json');
         $response = new Response($jsonContent);
         $diposition = $response->headers->makeDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,

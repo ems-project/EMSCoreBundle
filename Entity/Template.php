@@ -3,6 +3,8 @@
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Entity\Helper\JsonClass;
+use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 
 /**
  * DataField
@@ -11,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\TemplateRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class Template
+class Template extends JsonDeserializer implements \JsonSerializable
 {
     
     /**
@@ -21,82 +23,82 @@ class Template
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="created", type="datetime")
      */
-    private $created;
+    protected $created;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="modified", type="datetime")
      */
-    private $modified;
+    protected $modified;
 
     /**
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
      */
-    private $name;
+    protected $name;
 
     /**
      * @var string
      *
      * @ORM\Column(name="icon", type="string", length=255, nullable=true)
      */
-    private $icon;
+    protected $icon;
     
     /**
      * @var string
      *
      * @ORM\Column(name="body", type="text", nullable=true)
      */
-    private $body;
+    protected $body;
     
     /**
      * @var string
      *
      * @ORM\Column(name="header", type="text", nullable=true)
      */
-    private $header;
+    protected $header;
     
     /**
      * @var bool
      *
      * @ORM\Column(name="edit_with_wysiwyg", type="boolean")
      */
-    private $editWithWysiwyg;
+    protected $editWithWysiwyg;
     
     /** @var string
      *
      * @ORM\Column(name="render_option", type="string")
      */
-    private $renderOption;
+    protected $renderOption;
     
     /**
      * @var int
      *
      * @ORM\Column(name="orderKey", type="integer")
      */
-    private $orderKey;
+    protected $orderKey;
 
     /**
      * @ORM\ManyToOne(targetEntity="ContentType", inversedBy="templates")
      * @ORM\JoinColumn(name="content_type_id", referencedColumnName="id")
      */
-    private $contentType;
+    protected $contentType;
     
     /**
      * @var bool
      *
      * @ORM\Column(name="accumulate_in_one_file", type="boolean")
      */
-    private $accumulateInOneFile;
+    protected $accumulateInOneFile;
     
     /** @var string
 
@@ -105,39 +107,39 @@ class Template
      *
      * @ORM\Column(name="preview", type="boolean")
      */
-    private $preview;
+    protected $preview;
     
     /** @var string
      *
      * @ORM\Column(name="mime_type", type="string", nullable=true)
      */
-    private $mimeType;
+    protected $mimeType;
     
     /** @var string
      *
      * @ORM\Column(name="filename", type="text", nullable=true)
      */
-    private $filename;
+    protected $filename;
     
     /** @var string
      *
      * @ORM\Column(name="extension", type="string", nullable=true)
      */
-    private $extension;
+    protected $extension;
     
     /**
      * @var bool
      *
      * @ORM\Column(name="active", type="boolean")
      */
-    private $active;
+    protected $active;
     
     /**
      * @var string
      *
      * @ORM\Column(name="role", type="string")
      */
-    private $role;
+    protected $role;
        
        /**
         * @ORM\ManyToMany(targetEntity="Environment", cascade={"persist"})
@@ -146,72 +148,72 @@ class Template
      *      inverseJoinColumns={@ORM\JoinColumn(name="environment_id", referencedColumnName="id")}
      *      )
      */
-    private $environments;
+    protected $environments;
        
        /** @var string
        *
        * @ORM\Column(name="role_to", type="string")
        */
-    private $roleTo;
+    protected $roleTo;
        
        /** @var string
        *
        * @ORM\Column(name="role_cc", type="string")
        */
-    private $roleCc;
+    protected $roleCc;
        
        /**
         * @var array
         *
         * @ORM\Column(name="circles_to", type="json_array", nullable=true)
         */
-    private $circlesTo;
+    protected $circlesTo;
        
        /**
         * @var string
         *
         * @ORM\Column(name="response_template", type="text", nullable=true)
         */
-    private $responseTemplate;
+    protected $responseTemplate;
 
     /** @var string
      *
      * @ORM\Column(name="email_content_type", type="string", nullable=true)
      */
-    private $emailContentType;
+    protected $emailContentType;
 
     /** @var string
      *
      * @ORM\Column(name="allow_origin", type="string", nullable=true)
      */
-    private $allowOrigin;
+    protected $allowOrigin;
 
     /** @var string
      *
      * @ORM\Column(name="disposition", type="string", length=20, nullable=true)
      */
-    private $disposition;
+    protected $disposition;
 
     /**
      * @var string
      *
      * @ORM\Column(name="orientation", type="string", length=20, nullable=true)
      */
-    private $orientation;
+    protected $orientation;
 
     /**
      * @var string
      *
      * @ORM\Column(name="size", type="string", length=20, nullable=true)
      */
-    private $size;
+    protected $size;
 
     /**
      * @var bool
      *
      * @ORM\Column(name="public", type="boolean", options={"default" : 0})
      */
-    private $public;
+    protected $public;
 
     /**
      * @ORM\PrePersist
@@ -925,5 +927,23 @@ class Template
     {
         $this->disposition = $disposition;
         return $this;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize()
+    {
+        $json = new JsonClass(get_object_vars($this), __CLASS__);
+        $json->removeProperty('id');
+        $json->removeProperty('created');
+        $json->removeProperty('modified');
+        $json->removeProperty('environments');
+
+        return $json;
     }
 }

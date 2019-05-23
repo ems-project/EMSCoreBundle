@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\FieldTypeRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class FieldType
+class FieldType implements \JsonSerializable
 {
     /**
      * @var int
@@ -95,6 +95,7 @@ class FieldType
     private $parent;
 
     /**
+     * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="FieldType", mappedBy="parent", cascade={"persist", "remove"})
      * @ORM\OrderBy({"orderKey" = "ASC"})
      */
@@ -510,7 +511,7 @@ class FieldType
      */
     public function __construct()
     {
-        $this->children = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->children = new ArrayCollection();
         $this->deleted = false;
         $this->orderKey = 0;
     }
@@ -639,7 +640,7 @@ class FieldType
     /**
      * Get children
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\ArrayCollection
      */
     public function getChildren()
     {
@@ -692,5 +693,24 @@ class FieldType
     public function getOptions()
     {
         return $this->options;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize()
+    {
+        $constructorArguments = [];
+
+        $data = get_object_vars($this);
+        unset($data['id']);
+
+        $data['children'] = $this->getValidChildren();
+
+        return ['__jsonclass__' => [__CLASS__, $constructorArguments]];
     }
 }

@@ -12,7 +12,7 @@ use EMS\CoreBundle\Form\DataField\ContainerFieldType;
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\ContentTypeRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class ContentType
+class ContentType implements \JsonSerializable
 {
     /**
      * @var int
@@ -71,7 +71,7 @@ class ContentType
      * @ORM\Column(name="description", type="text", nullable=true)
      */
     private $description;
-    
+
     /**
      * @var string
      *
@@ -92,69 +92,69 @@ class ContentType
      * @ORM\Column(name="lockBy", type="string", length=100, nullable=true)
      */
     private $lockBy;
-    
+
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="lockUntil", type="datetime", nullable=true)
      */
     private $lockUntil;
-    
+
     /**
      * @var array
      *
      * @ORM\Column(name="circles_field", type="string", length=100, nullable=true)
      */
     private $circlesField;
-    
+
     /**
      * @var bool
      *
      * @ORM\Column(name="deleted", type="boolean")
      */
     private $deleted;
-    
+
     /**
      * @var bool
      *
      * @ORM\Column(name="have_pipelines", type="boolean", nullable=true)
      */
     private $havePipelines;
-    
+
     /**
      * @var bool
      *
      * @ORM\Column(name="ask_for_ouuid", type="boolean")
      */
     private $askForOuuid;
-    
+
     /**
      * @var bool
      *
      * @ORM\Column(name="dirty", type="boolean")
      */
     private $dirty;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="color", type="string", length=50, nullable=true)
      */
     private $color;
-    
+
     /**
      * @ORM\OneToOne(targetEntity="FieldType", cascade={"persist"})
      * @ORM\JoinColumn(name="field_types_id", referencedColumnName="id")
      */
     private $fieldType;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="labelField", type="string", length=100, nullable=true)
      */
     private $labelField;
-    
+
     /**
      * @var string
      *
@@ -175,154 +175,154 @@ class ContentType
      * @ORM\Column(name="userField", type="string", length=100, nullable=true)
      */
     private $userField;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="dateField", type="string", length=100, nullable=true)
      */
     private $dateField;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="startDateField", type="string", length=100, nullable=true)
      */
     private $startDateField;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="endDateField", type="string", length=100, nullable=true)
      */
     private $endDateField;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="locationField", type="string", length=100, nullable=true)
      */
     private $locationField;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="referer_field_name", type="string", length=100, nullable=true)
      */
     private $refererFieldName;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="category_field", type="string", length=100, nullable=true)
      */
     private $categoryField;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="ouuidField", type="string", length=100, nullable=true)
      */
     private $ouuidField;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="imageField", type="string", length=100, nullable=true)
      */
     private $imageField;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="videoField", type="string", length=100, nullable=true)
      */
     private $videoField;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="email_field", type="string", length=100, nullable=true)
      */
     private $emailField;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="asset_field", type="string", length=100, nullable=true)
      */
     private $assetField;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="order_field", type="string", length=100, nullable=true)
      */
     private $orderField;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="sort_by", type="string", length=100, nullable=true)
      */
     private $sortBy;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="sort_order", type="string", length=4, nullable=true, options={"default" : "asc"})
      */
     private $sortOrder;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="create_role", type="string", length=100, nullable=true)
      */
     private $createRole;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="edit_role", type="string", length=100, nullable=true)
      */
     private $editRole;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="view_role", type="string", length=100, nullable=true)
      */
     private $viewRole;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="publish_role", type="string", length=100, nullable=true)
      */
     private $publishRole;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="trash_role", type="string", length=100, nullable=true)
      */
     private $trashRole;
-    
+
     /**
      * @var int
      *
      * @ORM\Column(name="orderKey", type="integer")
      */
     private $orderKey;
-    
+
     /**
      * @var bool
      *
      * @ORM\Column(name="rootContentType", type="boolean")
      */
     private $rootContentType;
-    
+
     /**
      * @var bool
      *
@@ -343,7 +343,7 @@ class ContentType
      * @ORM\Column(name="auto_publish", type="boolean", options={"default" : 0})
      */
     private $autoPublish;
-    
+
     /**
      * @var bool
      *
@@ -356,7 +356,7 @@ class ContentType
      * @ORM\JoinColumn(name="environment_id", referencedColumnName="id")
      */
     private $environment;
-    
+
     /**
      * @ORM\OneToMany(targetEntity="Template", mappedBy="contentType", cascade={"persist", "remove"})
      * @ORM\OrderBy({"orderKey" = "ASC"})
@@ -388,27 +388,26 @@ class ContentType
         $this->templates = new \Doctrine\Common\Collections\ArrayCollection();
         $this->views = new \Doctrine\Common\Collections\ArrayCollection();
         $this->singleTypeIndexes = new \Doctrine\Common\Collections\ArrayCollection();
-        
+
         $this->dirty = true;
         $this->editTwigWithWysiwyg = true;
         $this->webContent = true;
         $this->autoPublish = false;
 
-         $fieldType = new FieldType();
-         $fieldType->setName('source');
-         $fieldType->setType(ContainerFieldType::class);
-         $fieldType->setContentType($this);
-         $this->setFieldType($fieldType);
-         $this->setAskForOuuid(true);
+        $fieldType = new FieldType();
+        $fieldType->setName('source');
+        $fieldType->setType(ContainerFieldType::class);
+        $fieldType->setContentType($this);
+        $this->setFieldType($fieldType);
+        $this->setAskForOuuid(true);
     }
-
 
 
     public function __toString()
     {
         return $this->name;
     }
-    
+
     /**
      * @ORM\PrePersist
      * @ORM\PreUpdate
@@ -432,7 +431,7 @@ class ContentType
             $this->active = false;
         }
     }
-    
+
 
     /**
      * Get id
@@ -526,10 +525,10 @@ class ContentType
     public function setIcon($icon)
     {
         $this->icon = $icon;
-    
+
         return $this;
     }
-    
+
     /**
      * Get icon
      *
@@ -540,7 +539,7 @@ class ContentType
         return $this->icon;
     }
 
-    
+
     /**
      * Set description
      *
@@ -1152,7 +1151,7 @@ class ContentType
     {
         return $this->dirty;
     }
-    
+
     /**
      * Set editTwigWithWysiwyg
      *
@@ -1163,10 +1162,10 @@ class ContentType
     public function setEditTwigWithWysiwyg($editTwigWithWysiwyg)
     {
         $this->editTwigWithWysiwyg = $editTwigWithWysiwyg;
-        
+
         return $this;
     }
-    
+
     /**
      * Get editTwigWithWysiwyg
      *
@@ -1176,7 +1175,7 @@ class ContentType
     {
         return $this->editTwigWithWysiwyg;
     }
-    
+
     /**
      * Set webContent
      *
@@ -1186,11 +1185,11 @@ class ContentType
      */
     public function setWebContent($webContent)
     {
-        $this->webContent= $webContent;
-        
+        $this->webContent = $webContent;
+
         return $this;
     }
-    
+
     /**
      * Get webContent
      *
@@ -1327,7 +1326,7 @@ class ContentType
     public function setCirclesField($circlesField)
     {
         $this->circlesField = $circlesField;
-    
+
         return $this;
     }
 
@@ -1508,7 +1507,7 @@ class ContentType
     {
         return $this->refererFieldName;
     }
-    
+
     /**
      * Set viewRole
      *
@@ -1519,10 +1518,10 @@ class ContentType
     public function setViewRole($viewRole)
     {
         $this->viewRole = $viewRole;
-        
+
         return $this;
     }
-    
+
     /**
      * Get viewRole
      *
@@ -1532,7 +1531,7 @@ class ContentType
     {
         return $this->viewRole;
     }
-    
+
     /**
      * Set publishRole
      *
@@ -1543,10 +1542,10 @@ class ContentType
     public function setPublishRole($publishRole)
     {
         $this->publishRole = $publishRole;
-        
+
         return $this;
     }
-    
+
     /**
      * Get publishRole
      *
@@ -1556,7 +1555,7 @@ class ContentType
     {
         return $this->publishRole;
     }
-    
+
     /**
      * Set trashRole
      *
@@ -1566,11 +1565,11 @@ class ContentType
      */
     public function setTrashRole($trashRole)
     {
-        $this->trashRole= $trashRole;
-        
+        $this->trashRole = $trashRole;
+
         return $this;
     }
-    
+
     /**
      * Get trashRole
      *
@@ -1632,7 +1631,7 @@ class ContentType
     public function setSortOrder(?string $sortOrder): ContentType
     {
         $this->sortOrder = $sortOrder;
-        
+
         return $this;
     }
 
@@ -1709,5 +1708,22 @@ class ContentType
     {
         $this->autoPublish = $autoPublish;
         return $this;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize()
+    {
+        $constructorArguments = [];
+
+        $data = get_object_vars($this);
+        unset($data['id']);
+
+        return ['__jsonclass__' => [__CLASS__, $constructorArguments]];
     }
 }

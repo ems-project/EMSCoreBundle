@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\LinkRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class View
+class View implements \JsonSerializable
 {
     /**
      * @var int
@@ -338,5 +338,24 @@ class View
     {
         $this->public = $public;
         return $this;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize()
+    {
+        $constructorArguments = [];
+
+        $data = get_object_vars($this);
+        unset($data['id']);
+        unset($data['created']);
+        unset($data['modified']);
+
+        return ['__jsonclass__' => [__CLASS__, $constructorArguments]];
     }
 }

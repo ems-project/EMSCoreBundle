@@ -940,16 +940,17 @@ class ContentTypeController extends AppController
     public function exportAction(ContentType $contentType, Request $request)
     {
         //Sanitize the CT
-        $contentType->setCreated(null);
-        $contentType->setModified(null);
-        $contentType->getFieldType()->removeCircularReference();
-        $contentType->setEnvironment(null);
+//        $contentType->setCreated(null);
+//        $contentType->setModified(null);
+//        $contentType->getFieldType()->removeCircularReference();
+//        $contentType->setEnvironment(null);
 
         //Serialize the CT
-        $encoders = array(new JsonEncoder());
-        $normalizers = array(new JsonNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-        $jsonContent = $serializer->serialize($contentType, 'json');
+//        $encoders = array(new JsonEncoder());
+//        $normalizers = array(new JsonNormalizer());
+//        $serializer = new Serializer($normalizers, $encoders);
+//        $jsonContent = $serializer->serialize($contentType, 'json');
+        $jsonContent = \json_encode($contentType);
         $response = new Response($jsonContent);
         $diposition = $response->headers->makeDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,

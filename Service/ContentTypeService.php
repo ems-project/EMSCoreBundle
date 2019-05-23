@@ -435,7 +435,8 @@ class ContentTypeService
         return $contentType;
     }
     
-    public function createContentType (ContentType $contentType): ContentType {
+    public function createContentType(ContentType $contentType): ContentType
+    {
         $em = $this->doctrine->getManager();
         /** @var ContentTypeRepository $contentTypeRepository */
         $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');

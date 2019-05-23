@@ -18,8 +18,6 @@ use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
 use EMS\CoreBundle\Entity\Helper\JsonNormalizer;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\File\File;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Exception\ContentTypeAlreadyExistException;
@@ -418,7 +416,7 @@ class ContentTypeService
         return implode(',', array_keys($this->contentTypeArrayByName));
     }
     
-    public function readJson(File $jsonFile, Environment $environment): ContentType
+    public function initFromJson(File $jsonFile, Environment $environment): ContentType
     {
         $fileContent = file_get_contents($jsonFile->getRealPath());
        
@@ -435,7 +433,7 @@ class ContentTypeService
         return $contentType;
     }
     
-    public function createContentType(ContentType $contentType): ContentType
+    public function persistAsNew(ContentType $contentType): ContentType
     {
         $em = $this->doctrine->getManager();
         /** @var ContentTypeRepository $contentTypeRepository */

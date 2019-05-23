@@ -10,7 +10,6 @@ use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Form\EditFieldType;
-use EMS\CoreBundle\Entity\Helper\JsonNormalizer;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Form\DataField\SubfieldType;
 use EMS\CoreBundle\Form\Field\IconTextType;
@@ -38,8 +37,6 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Serializer;
 
 /**
  * Operations on content types such as CRUD but alose rebuild index.
@@ -229,14 +226,13 @@ class ContentTypeController extends AppController
                     /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $file */
                     $file = $request->files->get('form')['import'];
                     
-                    $contentType = $this->getContentTypeService()->readJson($file, $environment);
+                    $contentType = $this->getContentTypeService()->initFromJson($file, $environment);
                     
                     $contentType->setName($name);
                     $contentType->setSingularName($singularName);
                     $contentType->setPluralName($pluralName);
-                    $contentType->setEnvironment($environment);
                  
-                    $contentType = $this->getContentTypeService()->createContentType($contentType);
+                    $contentType = $this->getContentTypeService()->persistAsNew($contentType);
                 } else {
                     $contentType = $contentTypeAdded;
                     $contentType->setAskForOuuid(false);

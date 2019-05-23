@@ -3,6 +3,14 @@
 {% block title %}List view for {{ contentType.name }}{% endblock %}
 {% block pagetitle %}List view for content type {{ contentType.name }}{% endblock %} 
 
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><a href="{{ path("contenttype.index") }}"><i class="fa fa-cubes"></i> Content Types</a></li>
+		<li><a href="{{ path("contenttype.edit", {id: contentType.id}) }}"><i class="{{ contentType.icon }}"></i> Edit {{ contentType.singularName }}</a></li>
+		<li class="active">{{ 'Views'|trans }}</li>
+	</ol>
+{% endblock %}
+
 
 {% block body %}
 <div class="row">

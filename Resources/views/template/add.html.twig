@@ -5,6 +5,16 @@
 {% block subtitle %}{% endblock %} 
 
 
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><a href="{{ path("contenttype.index") }}"><i class="fa fa-cubes"></i> Content Types</a></li>
+		<li><a href="{{ path("contenttype.edit", {id: contentType.id}) }}"><i class="{{ contentType.icon }}"></i> Edit {{ contentType.singularName }}</a></li>
+		<li><a href="{{ path("template.index", {type: contentType.name}) }}">{{ 'Templates'|trans }}</a></li>
+		<li class="active">{{ 'Add'|trans }}</li>
+	</ol>
+{% endblock %}
+
+
 {% block body %}
 
 <div class="row">
@@ -56,7 +66,12 @@
 				</div>
 				<!-- /.box-body -->
 				<div class="box-footer">
-					{{ form_widget(form.save) }}
+					<div class="btn-group">
+						{%  if form.save is defined %}
+							{{ form_widget(form.save) }}
+						{% endif %}
+						{{ form_widget(form.saveAndClose) }}
+					</div>
 				</div>
 			{{ form_end(form) }}
 

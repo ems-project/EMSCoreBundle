@@ -438,6 +438,20 @@ class ContentTypeService
             'json'
         );
         $contentType->setEnvironment($environment);
+
+        return $contentType;
+    }
+    
+    public function createContentType(ContentType $contentType): ContentType
+    {
+        $em = $this->doctrine->getManager();
+        /** @var ContentTypeRepository $contentTypeRepository */
+        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
+        
+        if ($this->getByName($contentType->getName())) {
+            throw new ContentTypeAlreadyExistException('Another content type named ' . $contentType->getName() . ' already exists');
+        }
+
         $contentType->setActive(false);
         $contentType->setDirty(true);
         $contentType->getFieldType()->updateAncestorReferences($contentType, null);

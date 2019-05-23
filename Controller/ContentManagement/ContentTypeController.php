@@ -228,27 +228,15 @@ class ContentTypeController extends AppController
                     $environment = $contentTypeAdded->getEnvironment();
                     /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $file */
                     $file = $request->files->get('form')['import'];
-                    $fileContent = file_get_contents($file->getRealPath());
-
-                    $encoders = array(new JsonEncoder());
-                    $normalizers = array(new JsonNormalizer());
-                    $serializer = new Serializer($normalizers, $encoders);
-                    /**@var ContentType $contentType */
-                    $contentType = $serializer->deserialize(
-                        $fileContent,
-                        "EMS\CoreBundle\Entity\ContentType",
-                        'json'
-                    );
+                    
+                    $contentType = $this->getContentTypeService()->readJson($file, $environment);
+                    
                     $contentType->setName($name);
                     $contentType->setSingularName($singularName);
                     $contentType->setPluralName($pluralName);
                     $contentType->setEnvironment($environment);
-                    $contentType->setActive(false);
-                    $contentType->setDirty(true);
-                    $contentType->getFieldType()->updateAncestorReferences($contentType, null);
-                    $contentType->setOrderKey($contentTypeRepository->maxOrderKey() + 1);
-
-                    $em->persist($contentType);
+                 
+                    $contentType = $this->getContentTypeService()->createContentType($contentType);
                 } else {
                     $contentType = $contentTypeAdded;
                     $contentType->setAskForOuuid(false);
@@ -939,17 +927,7 @@ class ContentTypeController extends AppController
      */
     public function exportAction(ContentType $contentType, Request $request)
     {
-        //Sanitize the CT
-        $contentType->setCreated(null);
-        $contentType->setModified(null);
-        $contentType->getFieldType()->removeCircularReference();
-        $contentType->setEnvironment(null);
-
-        //Serialize the CT
-        $encoders = array(new JsonEncoder());
-        $normalizers = array(new JsonNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-        $jsonContent = $serializer->serialize($contentType, 'json');
+        $jsonContent = $this->getContentTypeService()->exportToJson($contentType);
         $response = new Response($jsonContent);
         $diposition = $response->headers->makeDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,

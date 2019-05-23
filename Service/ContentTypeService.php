@@ -22,6 +22,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\File\File;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
+use EMS\CoreBundle\Exception\ContentTypeAlreadyExistException;
 
 class ContentTypeService
 {
@@ -417,17 +418,10 @@ class ContentTypeService
         return implode(',', array_keys($this->contentTypeArrayByName));
     }
     
-    /**
-     * Export a content type in Json format
-     *
-     */
-    public function createContentTypeFromJson(File $jsonFile, Environment $environment)
+    public function readJson(File $jsonFile, Environment $environment): ContentType
     {
-        $em = $this->doctrine->getManager();
-        /** @var ContentTypeRepository $contentTypeRepository */
-        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
         $fileContent = file_get_contents($jsonFile->getRealPath());
-        
+       
         $encoders = array(new JsonEncoder());
         $normalizers = array(new JsonNormalizer());
         $serializer = new Serializer($normalizers, $encoders);
@@ -438,18 +432,27 @@ class ContentTypeService
             'json'
         );
         $contentType->setEnvironment($environment);
+        return $contentType;
+    }
+    
+    public function createContentType (ContentType $contentType): ContentType {
+        $em = $this->doctrine->getManager();
+        /** @var ContentTypeRepository $contentTypeRepository */
+        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
+        
+        if ($this->getByName($contentType->getName())) {
+            throw new ContentTypeAlreadyExistException('Another content type named ' . $contentType->getName() . ' already exists');
+        }
+        
         $contentType->setActive(false);
         $contentType->setDirty(true);
         $contentType->getFieldType()->updateAncestorReferences($contentType, null);
         $contentType->setOrderKey($contentTypeRepository->maxOrderKey() + 1);
         
         $this->persist($contentType);
-        return $contentType->getId();
+        return $contentType;
     }
     
-    /**
-     * Export a content type in Json format
-     */
     public function exportToJson(ContentType $contentType)
     {
         //Sanitize the CT
@@ -463,13 +466,7 @@ class ContentTypeService
         $normalizers = array(new JsonNormalizer());
         $serializer = new Serializer($normalizers, $encoders);
         $jsonContent = $serializer->serialize($contentType, 'json');
-        $response = new Response($jsonContent);
-        $diposition = $response->headers->makeDisposition(
-            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            $contentType->getName() . '.json'
-        );
         
-        $response->headers->set('Content-Disposition', $diposition);
-        return $response;
+        return $jsonContent;
     }
 }

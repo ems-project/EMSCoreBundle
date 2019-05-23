@@ -39,8 +39,6 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Serializer;
 
 /**
  * Operations on content types such as CRUD but alose rebuild index.
@@ -229,22 +227,14 @@ class ContentTypeController extends AppController
                     $environment = $contentTypeAdded->getEnvironment();
                     /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $file */
                     $file = $request->files->get('form')['import'];
-                    $fileContent = file_get_contents($file->getRealPath());
 
-                    $json = JsonClass::fromJsonString($fileContent);
-                    /**@var ContentType $contentType */
-                    $contentType = $json->jsonDeserialize();
-
+                    $contentType = $this->getContentTypeService()->initFromJson($file, $environment);
+                    
                     $contentType->setName($name);
                     $contentType->setSingularName($singularName);
                     $contentType->setPluralName($pluralName);
-                    $contentType->setEnvironment($environment);
-                    $contentType->setActive(false);
-                    $contentType->setDirty(true);
-                    $contentType->getFieldType()->updateAncestorReferences($contentType, null);
-                    $contentType->setOrderKey($contentTypeRepository->maxOrderKey() + 1);
-
-                    $em->persist($contentType);
+                 
+                    $contentType = $this->getContentTypeService()->persistAsNew($contentType);
                 } else {
                     $contentType = $contentTypeAdded;
                     $contentType->setAskForOuuid(false);

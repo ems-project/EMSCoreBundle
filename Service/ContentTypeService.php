@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\NoResultException;
+use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\SingleTypeIndex;
 use EMS\CoreBundle\Repository\FieldTypeRepository;
 use EMS\CoreBundle\Repository\SingleTypeIndexRepository;
@@ -18,8 +19,6 @@ use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
 use EMS\CoreBundle\Entity\Helper\JsonNormalizer;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\File\File;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 
@@ -416,33 +415,20 @@ class ContentTypeService
         $this->loadEnvironment();
         return implode(',', array_keys($this->contentTypeArrayByName));
     }
-    
-    /**
-     * Export a content type in Json format
-     *
-     */
-    public function createContentTypeFromJson(File $jsonFile, Environment $environment)
+
+    public function initFromJson(File $jsonFile, Environment $environment): ContentType
     {
-        $em = $this->doctrine->getManager();
-        /** @var ContentTypeRepository $contentTypeRepository */
-        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
         $fileContent = file_get_contents($jsonFile->getRealPath());
-        
-        $encoders = array(new JsonEncoder());
-        $normalizers = array(new JsonNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
+
+        $json = JsonClass::fromJsonString($fileContent);
         /**@var ContentType $contentType */
-        $contentType = $serializer->deserialize(
-            $fileContent,
-            "EMS\CoreBundle\Entity\ContentType",
-            'json'
-        );
+        $contentType = $json->jsonDeserialize();
         $contentType->setEnvironment($environment);
 
         return $contentType;
     }
     
-    public function createContentType(ContentType $contentType): ContentType
+    public function persistAsNew(ContentType $contentType): ContentType
     {
         $em = $this->doctrine->getManager();
         /** @var ContentTypeRepository $contentTypeRepository */
@@ -458,7 +444,7 @@ class ContentTypeService
         $contentType->setOrderKey($contentTypeRepository->maxOrderKey() + 1);
         
         $this->persist($contentType);
-        return $contentType->getId();
+        return $contentType;
     }
     
     /**

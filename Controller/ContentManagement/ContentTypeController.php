@@ -942,7 +942,7 @@ class ContentTypeController extends AppController
         //Sanitize the CT
 //        $contentType->setCreated(null);
 //        $contentType->setModified(null);
-//        $contentType->getFieldType()->removeCircularReference();
+        $contentType->getFieldType()->removeCircularReference();
 //        $contentType->setEnvironment(null);
 
         //Serialize the CT

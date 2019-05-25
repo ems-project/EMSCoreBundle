@@ -96,6 +96,16 @@ class ExportViewType extends ViewType
                         'Attachment' => 'attachment',
                         'Inline' => 'inline',
                 ]
+        ])
+        ->add('export_type', ChoiceType::class, [
+                'label' => 'Export type',
+                'expanded' => false,
+                'attr' => [
+                ],
+                'choices' => [
+                        'Raw (HTML, XML, JSON, ...)' => null,
+                        'PDF (dompdf)' => 'dompdf',
+                ]
         ]);
     }
     

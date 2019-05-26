@@ -1183,11 +1183,6 @@ class DataController extends AppController
         }
 
 
-//         $this->getDataService()->loadDataStructure($revision);
-//         $this->getDataService()->generateInputValues($revision->getDataField());
-//         $this->getLogger()->debug('DataField structure generated');
-
-
         $form = $this->createForm(RevisionType::class, $revision, [
             'has_clipboard' => $request->getSession()->has('ems_clipboard'),
             'has_copy' => $this->getAuthorizationChecker()->isGranted('ROLE_COPY_PASTE'),

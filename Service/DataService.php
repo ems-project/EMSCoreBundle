@@ -8,6 +8,7 @@ use Doctrine\ORM\QueryBuilder;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use EMS\CommonBundle\Helper\ArrayTool;
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\Environment;
@@ -31,6 +32,7 @@ use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
+use Monolog\Logger;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
@@ -84,6 +86,8 @@ class DataService
     protected $contentTypeService;
     /**@var UserService */
     protected $userService;
+    /**@var Logger */
+    protected $logger;
 
     public function __construct(
         Registry $doctrine,
@@ -99,9 +103,11 @@ class DataService
         FormRegistryInterface $formRegistry,
         EventDispatcherInterface $dispatcher,
         ContentTypeService $contentTypeService,
-        $privateKey
+        $privateKey,
+        Logger $logger
     ) {
         $this->doctrine = $doctrine;
+        $this->logger = $logger;
         $this->authorizationChecker = $authorizationChecker;
         $this->tokenStorage = $tokenStorage;
         $this->lockTime = $lockTime;
@@ -662,6 +668,15 @@ class DataService
 
             $this->unlockRevision($revision, $username);
             $this->dispatcher->dispatch(RevisionFinalizeDraftEvent::NAME, new RevisionFinalizeDraftEvent($revision));
+
+
+            $this->logger->addNotice('log.data.revision.finalized', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                EmsFields::LOG_ENVIRONMENT_FIELD => $revision->getContentType()->getEnvironment()->getName(),
+                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
+                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+            ]);
 
             try {
                 $this->postFinalizeTreatment($revision->getContentType()->getName(), $revision->getOuuid(), $form->get('data'), $previousObjectArray);

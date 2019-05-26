@@ -361,3 +361,4 @@ log:
   data:
     revision:
       reindex: The revision %revision_id% has been reindex in %environment% for the document ems://object:%contenttype%:%ouuid%
+      finalized: The revision %revision_id% has been finalized in %environment% for the document ems://object:%contenttype%:%ouuid%

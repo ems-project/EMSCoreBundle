@@ -18,6 +18,7 @@ use EMS\CoreBundle\Entity\Form\SearchFilter;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Template;
 use EMS\CoreBundle\Entity\View;
+use EMS\CoreBundle\Exception\DuplicateOuuidException;
 use EMS\CoreBundle\Exception\HasNotCircleException;
 use EMS\CoreBundle\Exception\PrivilegeException;
 use EMS\CoreBundle\Form\Field\IconTextType;
@@ -42,7 +43,6 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use EMS\CoreBundle\Exception\DuplicateOuuidException;
 
 class DataController extends AppController
 {
@@ -311,8 +311,7 @@ class DataController extends AppController
                 'ouuid' => $ouuid,
                 'revisionId' => $revision->getId(),
             ]);
-        }
-        catch(NoResultException $e) {
+        } catch (NoResultException $e) {
             $logger->warning('log.data.revision.not_found_in_environment', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                 EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
@@ -610,23 +609,31 @@ class DataController extends AppController
     /**
      * @param string $type
      * @param string $ouuid
+     * @param DataService $dataService
+     * @param LoggerInterface $logger
      * @return RedirectResponse
      * @throws Missing404Exception
-     *
+     * @throws \Exception
      * @Route("/data/delete/{type}/{ouuid}", name="object.delete"), methods={"POST"})
      */
-    public function deleteAction($type, $ouuid)
+    public function deleteAction(string $type, string $ouuid, DataService $dataService, LoggerInterface $logger)
     {
-        $revision = $this->getDataService()->getNewestRevision($type, $ouuid);
+        $revision = $dataService->getNewestRevision($type, $ouuid);
         $contentType = $revision->getContentType();
         $found = false;
         foreach ($this->getEnvironmentService()->getAll() as $environment) {
             /**@var Environment $environment */
             if ($environment !== $revision->getContentType()->getEnvironment()) {
                 try {
-                    $sibling = $this->getDataService()->getRevisionByEnvironment($ouuid, $revision->getContentType(), $environment);
+                    $sibling = $dataService->getRevisionByEnvironment($ouuid, $revision->getContentType(), $environment);
                     if ($sibling) {
-                        $this->addFlash('warning', 'A revision as been found in ' . $environment->getName() . '. Consider to unpublish it first.');
+                        $logger->warning('log.data.revision.cant_delete_has_published', [
+                            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                            'published_in' => $environment->getName(),
+                            EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
+                            EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                            EmsFields::LOG_REVISION_ID_FIELD => $sibling->getId(),
+                        ]);
                         $found = true;
                     }
                 } catch (NoResultException $e) {
@@ -641,7 +648,7 @@ class DataController extends AppController
             ]);
         }
 
-        $this->getDataService()->delete($type, $ouuid);
+        $dataService->delete($type, $ouuid);
 
         return $this->redirectToRoute('data.draft_in_progress', [
             'contentTypeId' => $contentType->getId(),
@@ -1282,7 +1289,7 @@ class DataController extends AppController
             }
 
             //if Save or Discard
-            if(!array_key_exists('publish', $request->request->get('revision'))) {
+            if (!array_key_exists('publish', $request->request->get('revision'))) {
                 if (null != $revision->getOuuid()) {
                     if (count($form->getErrors()) === 0 && $revision->getContentType()->isAutoPublish()) {
                         $this->getPublishService()->silentPublish($revision);

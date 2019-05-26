@@ -361,6 +361,7 @@ emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's c
 log:
   data:
     revision:
+      cant_delete_has_published: The document ems://object:%contenttype%:%ouuid% can't be deleted as the revision ems://revision:%revision_id% is published in %published_in%
       compare_beta: The comparaison tools between two revisions is a beta functionality
       reindex: The revision %revision_id% has been reindex in %environment% for the document ems://object:%contenttype%:%ouuid%
       finalized: The revision %revision_id% has been finalized in %environment% for the document ems://object:%contenttype%:%ouuid%

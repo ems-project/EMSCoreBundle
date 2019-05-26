@@ -357,9 +357,11 @@ view.macros.data-field-type.collection_added_items: '{1} One %singular% has been
 view.macros.data-field-type.collection_removed_items: '{1} One %singular% has been removed|]1,Inf[ %count% %plural% have been removed'
 data.edit_revision.save_draft: Save draft
 emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's configuration
+
 log:
   data:
     revision:
+      compare_beta: The comparaison tools between two revisions is a beta functionality
       reindex: The revision %revision_id% has been reindex in %environment% for the document ems://object:%contenttype%:%ouuid%
       finalized: The revision %revision_id% has been finalized in %environment% for the document ems://object:%contenttype%:%ouuid%
       not_found_in_environment: It's impossible to identify a revision for the document ems://object:%contenttype%:%ouuid% in the environment %environment%

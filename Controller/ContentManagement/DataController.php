@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Dompdf\Dompdf;
 use Elasticsearch\Client;
@@ -340,13 +341,14 @@ class DataController extends AppController
      * @param int $compareId
      * @param Request $request
      * @param DataService $dataService
+     * @param LoggerInterface $logger
      * @return Response
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NonUniqueResultException
      *
      * @Route("/data/revisions/{type}:{ouuid}/{revisionId}/{compareId}", defaults={"revisionId": false, "compareId": false} , name="data.revisions")
      * @Route("/data/revisions/{type}:{ouuid}/{revisionId}/{compareId}", defaults={"revisionId": false, "compareId": false} , name="ems_content_revisions_view")
      */
-    public function revisionsDataAction($type, $ouuid, $revisionId, $compareId, Request $request, DataService $dataService)
+    public function revisionsDataAction($type, $ouuid, $revisionId, $compareId, Request $request, DataService $dataService, LoggerInterface $logger)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -390,7 +392,8 @@ class DataController extends AppController
 
         $compareData = false;
         if ($compareId) {
-            $this->addFlash('warning', 'The compare is a beta functionality');
+            $logger->warning('log.data.revision.compare_beta', []);
+
             /**@var Revision $compareRevision */
             $compareRevision = $repository->findOneById($compareId);
             if ($compareRevision) {
@@ -1403,7 +1406,7 @@ class DataController extends AppController
     /**
      * @param string $key
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NonUniqueResultException
      * @Route("/data/link/{key}", name="data.link")
      */
     public function linkDataAction($key)

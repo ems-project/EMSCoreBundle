@@ -295,23 +295,31 @@ class DataController extends AppController
      * @param ContentType $contentType
      * @param string $ouuid
      * @param Environment $environment
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @param LoggerInterface $logger
+     * @return RedirectResponse
      * @Route("/data/revisions-in-environment/{environment}/{type}:{ouuid}", name="data.revision_in_environment", defaults={"deleted":0})
      * @ParamConverter("contentType", options={"mapping": {"type" = "name", "deleted" = "deleted"}})
      * @ParamConverter("environment", options={"mapping": {"environment" = "name"}})
      */
-    public function revisionInEnvironmentDataAction(ContentType $contentType, $ouuid, Environment $environment)
+    public function revisionInEnvironmentDataAction(ContentType $contentType, string $ouuid, Environment $environment, LoggerInterface $logger)
     {
-        $revision = $this->getDataService()->getRevisionByEnvironment($ouuid, $contentType, $environment);
-        if (!$revision) {
-            $this->addFlash('warning', 'No revision found in ' . $environment->getName() . ' for ' . $contentType->getName() . ':' . $ouuid);
+        try {
+            $revision = $this->getDataService()->getRevisionByEnvironment($ouuid, $contentType, $environment);
+            return $this->redirectToRoute('data.revisions', [
+                'type' => $contentType->getName(),
+                'ouuid' => $ouuid,
+                'revisionId' => $revision->getId(),
+            ]);
+        }
+        catch(NoResultException $e) {
+            $logger->warning('log.data.revision.not_found_in_environment', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
+                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
+                EmsFields::LOG_OUUID_FIELD => $ouuid,
+            ]);
             return $this->redirectToRoute('data.draft_in_progress', ['contentTypeId' => $contentType->getId()]);
         }
-        return $this->redirectToRoute('data.revisions', [
-            'type' => $contentType->getName(),
-            'ouuid' => $ouuid,
-            'revisionId' => $revision->getId(),
-        ]);
     }
 
     /**

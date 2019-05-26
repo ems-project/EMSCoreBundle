@@ -564,3 +564,14 @@ services:
         autoconfigure: true
         public: true
         resource: '../../Controller/*'
+
+### Loggers ####
+    ems_common.monolog.ems_handler:
+        class: EMS\CommonBundle\Logger\LoggerManager
+        arguments: ['info', '%ems_core.instance_id%', 'ems_core', '@app.elasticsearch', '@security.helper']
+        tags:
+            - { name: kernel.cache_warmer }
+            - { name: kernel.event_listener, event: kernel.terminate }
+    ems_common.monolog.flash_handler:
+        class: EMS\CommonBundle\Logger\FlashMessageManager
+        arguments: ['@session', '@translator', 'EMSCoreBundle']

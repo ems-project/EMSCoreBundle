@@ -1087,6 +1087,7 @@ class DataController extends AppController
 
             $form->handleRequest($request);
             $revision->setAutoSave($revision->getRawData());
+            $objectArray = $revision->getRawData();
             $revision->setRawData($backup);
 
 
@@ -1097,6 +1098,8 @@ class DataController extends AppController
             $em->flush();
 
             $this->getDataService()->isValid($form);
+            $this->getDataService()->propagateDataToComputedField($form->get('data'), $objectArray, $revision->getContentType(), $revision->getContentType()->getName(), $revision->getOuuid());
+
             $formErrors = $form->getErrors(true, true);
 
             if ($formErrors->count() === 0 && $revision->getContentType()->isAutoPublish()) {
@@ -1270,27 +1273,31 @@ class DataController extends AppController
                     }
                 }
             }
+
             //if paste or copy
-            else if (array_key_exists('paste', $request->request->get('revision')) || array_key_exists('copy', $request->request->get('revision'))) {//Paste or copy
+            if (array_key_exists('paste', $request->request->get('revision')) || array_key_exists('copy', $request->request->get('revision'))) {//Paste or copy
                 return $this->redirectToRoute('revision.edit', [
                     'revisionId' => $revisionId,
                 ]);
             }
-            //if Save or Discard
-            else if (null != $revision->getOuuid()) {
-                if (count($form->getErrors()) === 0 && $revision->getContentType()->isAutoPublish()) {
-                    $this->getPublishService()->silentPublish($revision);
-                }
 
-                return $this->redirectToRoute('data.revisions', [
-                    'ouuid' => $revision->getOuuid(),
-                    'type' => $revision->getContentType()->getName(),
-                    'revisionId' => $revision->getId(),
-                ]);
-            } else {
-                return $this->redirectToRoute('data.draft_in_progress', [
-                    'contentTypeId' => $revision->getContentType()->getId(),
-                ]);
+            //if Save or Discard
+            if(!array_key_exists('publish', $request->request->get('revision'))) {
+                if (null != $revision->getOuuid()) {
+                    if (count($form->getErrors()) === 0 && $revision->getContentType()->isAutoPublish()) {
+                        $this->getPublishService()->silentPublish($revision);
+                    }
+
+                    return $this->redirectToRoute('data.revisions', [
+                        'ouuid' => $revision->getOuuid(),
+                        'type' => $revision->getContentType()->getName(),
+                        'revisionId' => $revision->getId(),
+                    ]);
+                } else {
+                    return $this->redirectToRoute('data.draft_in_progress', [
+                        'contentTypeId' => $revision->getContentType()->getId(),
+                    ]);
+                }
             }
         } else {
             $isValid = $this->getDataService()->isValid($form);
@@ -1306,6 +1313,10 @@ class DataController extends AppController
         // Call Audit service for log
         $this->get("ems.service.audit")->auditLog('DataController:editRevision', $revision->getRawData());
         $this->getLogger()->debug('Start twig rendering');
+
+        $objectArray = $revision->getRawData();
+        $this->getDataService()->propagateDataToComputedField($form->get('data'), $objectArray, $revision->getContentType(), $revision->getContentType()->getName(), $revision->getOuuid());
+
         return $this->render('@EMSCore/data/edit-revision.html.twig', [
             'revision' => $revision,
             'form' => $form->createView(),

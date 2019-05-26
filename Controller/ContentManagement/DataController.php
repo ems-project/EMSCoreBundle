@@ -175,7 +175,7 @@ class DataController extends AppController
     /**
      * @param ContentType $contentType
      * @param string $ouuid
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      *
      * @Route("/data/put-back/{contentType}/{ouuid}", name="ems_data_put_back"), methods={"POST"})
      */
@@ -192,7 +192,7 @@ class DataController extends AppController
     /**
      * @param ContentType $contentType
      * @param string $ouuid
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      *
      * @Route("/data/empty-trash/{contentType}/{ouuid}", name="ems_data_empty_trash"), methods={"POST"})
      */
@@ -326,7 +326,7 @@ class DataController extends AppController
     /**
      * @Route("/public-key" , name="ems_get_public_key")
      */
-    public function publicKey()
+    public function publicKey():Response
     {
         $response = new Response();
         $response->headers->set('Content-Type', 'text/plain');
@@ -564,7 +564,7 @@ class DataController extends AppController
      * @param string $type
      * @param string $ouuid
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      *
      * @Route("/data/copy/{environment}/{type}/{ouuid}", name="revision.copy"), methods={"GET"})
      */
@@ -595,7 +595,7 @@ class DataController extends AppController
     /**
      * @param string $type
      * @param string $ouuid
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      *
      * @Route("/data/new-draft/{type}/{ouuid}", name="revision.new-draft"), methods={"POST"})
      */
@@ -610,7 +610,7 @@ class DataController extends AppController
     /**
      * @param string $type
      * @param string $ouuid
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      * @throws Missing404Exception
      *
      * @Route("/data/delete/{type}/{ouuid}", name="object.delete"), methods={"POST"})
@@ -655,7 +655,7 @@ class DataController extends AppController
 
     /**
      * @param int $revisionId
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      *
      * @throws CoreBundle\Exception\LockedException
      * @throws PrivilegeException
@@ -704,7 +704,7 @@ class DataController extends AppController
 
     /**
      * @param Revision $revision
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      *
      * @Route("/data/cancel/{revision}", name="revision.cancel"), methods={"POST"})
      */
@@ -741,7 +741,7 @@ class DataController extends AppController
     /**
      * @param int $revisionId
      * @param bool $defaultOnly
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      * @throws CoreBundle\Exception\LockedException
      * @throws PrivilegeException
      * @Route("/data/revision/re-index/{revisionId}", name="revision.reindex"), methods={"POST"})
@@ -1118,7 +1118,7 @@ class DataController extends AppController
 
     /**
      * @param Revision $revision
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @return RedirectResponse|Response
      * @Route("/data/draft/finalize/{revision}", name="revision.finalize"), methods={"POST"})
      */
     public function finalizeDraftAction(Revision $revision)
@@ -1169,7 +1169,7 @@ class DataController extends AppController
     /**
      * @param int $revisionId
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @return RedirectResponse|Response
      * @throws \Exception
      * @Route("/data/draft/edit/{revisionId}", name="ems_revision_edit"))
      * @Route("/data/draft/edit/{revisionId}", name="revision.edit"))
@@ -1379,7 +1379,7 @@ class DataController extends AppController
 
     /**
      * @param Revision $revision
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      * @Route("/data/revisions/revert/{id}", name="revision.revert"), methods={"POST"}))
      */
     public function revertRevisionAction(Revision $revision)
@@ -1402,7 +1402,7 @@ class DataController extends AppController
 
     /**
      * @param string $key
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      * @throws NonUniqueResultException
      * @Route("/data/link/{key}", name="data.link")
      */

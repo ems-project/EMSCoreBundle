@@ -292,7 +292,7 @@ class DataService
                 } catch (\Exception $e) {
                     if ($e->getPrevious() && $e->getPrevious() instanceof CantBeFinalizedException) {
                         if (!$migration) {
-                            throw $e->getPrevious();
+                            $form->addError(new FormError($e->getPrevious()->getMessage()));
                         }
                     } else {
                         $this->session->getFlashBag()->add('warning', 'Error to parse the post processing script of field '.$dataField->getFieldType()->getName().': '.$e->getMessage());
@@ -322,7 +322,7 @@ class DataService
                         }
                     } catch (\Exception $e) {
                         if ($e->getPrevious() && $e->getPrevious() instanceof CantBeFinalizedException) {
-                            throw $e->getPrevious();
+                            $form->addError(new FormError($e->getPrevious()->getMessage()));
                         }
                         $this->session->getFlashBag()->add('warning', 'Error to parse the computed field '.$dataField->getFieldType()->getName().': '.$e->getMessage());
                     }
@@ -683,9 +683,6 @@ class DataService
             } catch (\Exception $e) {
                 $this->session->getFlashBag()->add('warning', 'Error while finalize post processing of '.$revision.': '.$e->getMessage());
             }
-        } else {
-            $form->addError(new FormError("This Form is not valid!"));
-            $this->session->getFlashBag()->add('error', 'The revision ' . $revision . ' can not be finalized');
         }
         return $revision;
     }

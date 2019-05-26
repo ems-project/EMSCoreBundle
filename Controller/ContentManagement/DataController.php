@@ -1267,31 +1267,17 @@ class DataController extends AppController
                             'ouuid' => $revision->getOuuid(),
                             'type' => $revision->getContentType()->getName(),
                         ]);
-                    } else {
-                        //$this->addFlash("warning", "This draft (".$revision->getContentType()->getSingularName().($revision->getOuuid()?":".$revision->getOuuid():"").") can't be finalized.");
-                        return $this->redirectToRoute('revision.edit', [
-                            'revisionId' => $revision->getId(),
-                        ]);
                     }
-//                     }
-//                     catch (\Exception $e){
-//                         $this->addFlash('error', 'The draft has been saved but something when wrong when we tried to publish it. '.$revision->getContentType()->getName().':'.$revision->getOuuid());
-//                         $this->addFlash('error', $e->getMessage());
-//                         return $this->redirectToRoute('revision.edit', [
-//                                 'revisionId' => $revisionId,
-//                         ]);
-//                     }
                 }
             }
-
             //if paste or copy
-            if (array_key_exists('paste', $request->request->get('revision')) || array_key_exists('copy', $request->request->get('revision'))) {//Paste or copy
+            else if (array_key_exists('paste', $request->request->get('revision')) || array_key_exists('copy', $request->request->get('revision'))) {//Paste or copy
                 return $this->redirectToRoute('revision.edit', [
                     'revisionId' => $revisionId,
                 ]);
             }
             //if Save or Discard
-            if (null != $revision->getOuuid()) {
+            else if (null != $revision->getOuuid()) {
                 if (count($form->getErrors()) === 0 && $revision->getContentType()->isAutoPublish()) {
                     $this->getPublishService()->silentPublish($revision);
                 }

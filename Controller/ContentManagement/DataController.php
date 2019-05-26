@@ -7,6 +7,7 @@ use Doctrine\ORM\NoResultException;
 use Dompdf\Dompdf;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
@@ -29,6 +30,7 @@ use EMS\CoreBundle\Repository\TemplateRepository;
 use EMS\CoreBundle\Repository\ViewRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
+use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormError;
@@ -648,7 +650,7 @@ class DataController extends AppController
      * @throws PrivilegeException
      * @Route("/data/draft/discard/{revisionId}", name="revision.discard"), methods={"POST"})
      */
-    public function discardRevisionAction($revisionId)
+    public function discardRevisionAction(LoggerInterface $logger, $revisionId)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -675,7 +677,7 @@ class DataController extends AppController
 
         if (null != $ouuid && $hasPreviousRevision) {
             if ($autoPublish) {
-                return $this->reindexRevisionAction($hasPreviousRevision, true);
+                return $this->reindexRevisionAction($logger, $hasPreviousRevision, true);
             }
 
             return $this->redirectToRoute('data.revisions', [
@@ -733,7 +735,7 @@ class DataController extends AppController
      * @throws PrivilegeException
      * @Route("/data/revision/re-index/{revisionId}", name="revision.reindex"), methods={"POST"})
      */
-    public function reindexRevisionAction($revisionId, $defaultOnly = false)
+    public function reindexRevisionAction(LoggerInterface $logger, $revisionId, $defaultOnly = false)
     {
 
         /** @var EntityManager $em */
@@ -775,7 +777,13 @@ class DataController extends AppController
                     ]);
                     //TODO: test the result of this index and see if there is a flash message to send
 
-                    $this->addFlash('notice', 'Reindexed in ' . $environment->getName());
+                    $logger->addNotice('log.data.revision.reindex', [
+                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                        EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
+                        EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
+                        EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                        EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                    ]);
                 }
             }
             $em->persist($revision);

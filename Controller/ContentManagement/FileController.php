@@ -4,9 +4,13 @@ namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Controller\AppController;
+use EMS\CoreBundle\Exception\AssetNotFoundException;
+use EMS\CoreBundle\Service\FileService;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -32,7 +36,7 @@ class FileController extends AppController
     /**
      * @param string $sha1
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      * @deprecated
      *
      * @Route("/public/file/{sha1}" , name="ems_file_download_public", methods={"GET","HEAD"})
@@ -48,8 +52,8 @@ class FileController extends AppController
 
     /**
      * @param string $sha1
-     * @return \Symfony\Component\HttpFoundation\Response
-     * @throws \EMS\CoreBundle\Exception\AssetNotFoundException
+     * @return Response
+     * @throws AssetNotFoundException
      *
      * @Route("/data/file/extract/{sha1}.{_format}" , name="ems_file_extract", defaults={"_format" = "json"}, methods={"GET","HEAD"})
      */
@@ -71,14 +75,16 @@ class FileController extends AppController
      * @param int $size
      * @param bool $apiRoute
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param FileService $fileService
+     * @param LoggerInterface $logger
+     * @return Response
      *
      * @Route("/data/file/init-upload/{sha1}/{size}" , name="file.init-upload", defaults={"_format" = "json", "apiRoute"=false}, methods={"POST"})
      * @Route("/api/file/init-upload/{sha1}/{size}" , name="file.api.init-upload", defaults={"_format" = "json", "apiRoute"=true}, methods={"POST"})
      * @Route("/data/file/init-upload" , name="emsco_file_data_init_upload", defaults={"_format" = "json", "sha1" = null, "size" = null, "apiRoute"=false}, methods={"POST"})
      * @Route("/api/file/init-upload" , name="emsco_file_api_init_upload", defaults={"_format" = "json", "sha1" = null, "size" = null, "apiRoute"=true}, methods={"POST"})
      */
-    public function initUploadFileAction($sha1, $size, bool $apiRoute, Request $request)
+    public function initUploadFileAction($sha1, $size, bool $apiRoute, Request $request, FileService $fileService, LoggerInterface $logger)
     {
         if ($sha1 || $size) {
             @trigger_error('You should use the routes emsco_file_data_init_upload or emsco_file_api_init_upload which doesn\'t require url parameters', E_USER_DEPRECATED);
@@ -98,9 +104,13 @@ class FileController extends AppController
         }
 
         try {
-            $uploadedAsset = $this->getFileService()->initUploadFile($hash, $size, $name, $type, $user, $algo);
+            $uploadedAsset = $fileService->initUploadFile($hash, $size, $name, $type, $user, $algo);
         } catch (\Exception $e) {
-            $this->addFlash('error', $e->getMessage());
+            $logger->error('log.error',[
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+            ]);
+
             return $this->render('@EMSCore/ajax/notification.json.twig', [
                 'success' => false,
             ]);
@@ -119,14 +129,16 @@ class FileController extends AppController
      * @param string $hash
      * @param bool $apiRoute
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param FileService $fileService
+     * @param LoggerInterface $logger
+     * @return Response
      *
      * @Route("/data/file/upload-chunk/{sha1}", name="file.uploadchunk", defaults={"_format" = "json", "hash" = null, "apiRoute"=false}, methods={"POST"})
      * @Route("/api/file/upload-chunk/{sha1}", name="file.api.uploadchunk", defaults={"_format" = "json", "hash" = null, "apiRoute"=true}, methods={"POST"})
      * @Route("/data/file/chunk/{hash}", name="emsco_file_data_chunk_upload", defaults={"_format" = "json", "sha1" = null, "apiRoute"=false}, methods={"POST"})
      * @Route("/api/file/chunk/{hash}", name="emsco_file_api_chunk_upload", defaults={"_format" = "json", "sha1" = null, "apiRoute"=true}, methods={"POST"})
      */
-    public function uploadChunkAction($sha1, $hash, $apiRoute, Request $request)
+    public function uploadChunkAction($sha1, $hash, $apiRoute, Request $request, FileService $fileService, LoggerInterface $logger)
     {
         if ($sha1) {
             $hash = $sha1;
@@ -137,9 +149,13 @@ class FileController extends AppController
         $user = $this->getUser()->getUsername();
 
         try {
-            $uploadedAsset = $this->getFileService()->addChunk($hash, $chunk, $user);
+            $uploadedAsset = $fileService->addChunk($hash, $chunk, $user);
         } catch (\Exception $e) {
-            $this->addFlash('error', $e->getMessage());
+            $logger->error('log.error',[
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+            ]);
+
             return $this->render('@EMSCore/ajax/notification.json.twig', [
                 'success' => false,
             ]);
@@ -153,12 +169,15 @@ class FileController extends AppController
     }
 
     /**
+     * @param FileService $fileService
+     * @return Response
+     *
      * @Route("/images/index" , name="ems_images_index", defaults={"_format": "json"}, methods={"GET","HEAD"})
      * @Route("/api/images" , name="ems_api_images_index", defaults={"_format": "json"}, methods={"GET","HEAD"})
      */
-    public function indexImagesAction()
+    public function indexImagesAction(FileService $fileService)
     {
-        $images = $this->getFileService()->getImages();
+        $images = $fileService->getImages();
         return $this->render('@EMSCore/ajax/images.json.twig', [
             'images' => $images,
         ]);
@@ -166,12 +185,14 @@ class FileController extends AppController
 
     /**
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param FileService $fileService
+     * @param LoggerInterface $logger
+     * @return Response
      *
      * @Route("/file/upload" , name="ems_image_upload_url", defaults={"_format": "json"}, methods={"POST"})
      * @Route("/api/file" , name="ems_api_image_upload_url", defaults={"_format": "json"}, methods={"POST"})
      */
-    public function uploadfileAction(Request $request)
+    public function uploadfileAction(Request $request, FileService $fileService, LoggerInterface $logger)
     {
         /**@var UploadedFile $file */
         $file = $request->files->get('upload');
@@ -191,9 +212,13 @@ class FileController extends AppController
             $user = $this->getUser()->getUsername();
 
             try {
-                $uploadedAsset = $this->getFileService()->uploadFile($name, $type, $file->getRealPath(), $user);
+                $uploadedAsset = $fileService->uploadFile($name, $type, $file->getRealPath(), $user);
             } catch (\Exception $e) {
-                $this->addFlash('error', $e->getMessage());
+                $logger->error('log.error',[
+                    EmsFields::LOG_EXCEPTION_FIELD => $e,
+                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                ]);
+
                 return $this->render('@EMSCore/ajax/notification.json.twig', [
                     'success' => false,
                 ]);

@@ -359,6 +359,7 @@ data.edit_revision.save_draft: Save draft
 emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's configuration
 
 log:
+  error: This page/action has encountered an error: %error_message%
   data:
     revision:
       cant_delete_has_published: The document ems://object:%contenttype%:%ouuid% can't be deleted as the revision ems://revision:%revision_id% is published in %published_in%

@@ -23,17 +23,12 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class NotificationService
 {
-    
-    // index elasticSerach
-    private $index;
     /**@var Registry $doctrine */
     private $doctrine;
     /**@var UserService $userService*/
     private $userService;
     /**@var Logger $logger*/
     private $logger;
-    /**@var AuditService $auditService*/
-    private $auditService;
     /**@var Session $session*/
     private $session;
     /**@var Container $container*/
@@ -50,14 +45,12 @@ class NotificationService
     private $dryRun;
 
     
-    public function __construct($index, Registry $doctrine, UserService $userService, Logger $logger, AuditService $auditService, Session $session, Container $container, DataService $dataService, $sender, \Twig_Environment $twig)
+    public function __construct(Registry $doctrine, UserService $userService, Logger $logger, Session $session, Container $container, DataService $dataService, $sender, \Twig_Environment $twig)
     {
-        $this->index = $index;
         $this->doctrine = $doctrine;
         $this->userService = $userService;
         $this->dataService = $dataService;
         $this->logger = $logger;
-        $this->auditService = $auditService;
         $this->session = $session;
         $this->container = $container;
         $this->twig = $twig;

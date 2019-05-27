@@ -43,9 +43,6 @@ class PublishService
 
     /**@var DataService $dataService*/
     protected $dataService;
-
-    /**@var AuditService $auditService*/
-    protected $auditService;
     
     /**@var UserService $userService*/
     protected $userService;
@@ -69,7 +66,6 @@ class PublishService
         ContentTypeService $contentTypeService,
         EnvironmentService $environmentService,
         DataService $dataService,
-        AuditService $auditService,
         UserService $userService,
         EventDispatcherInterface $dispatcher,
         LoggerInterface $logger
@@ -87,7 +83,6 @@ class PublishService
         $this->contentTypeService = $contentTypeService;
         $this->environmentService = $environmentService;
         $this->dataService = $dataService;
-        $this->auditService = $auditService;
         $this->userService = $userService;
         $this->dispatcher= $dispatcher;
         $this->logger= $logger;

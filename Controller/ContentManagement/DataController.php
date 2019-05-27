@@ -1321,10 +1321,9 @@ class DataController extends AppController
         $objectArray = $revision->getRawData();
         $this->getDataService()->propagateDataToComputedField($form->get('data'), $objectArray, $revision->getContentType(), $revision->getContentType()->getName(), $revision->getOuuid());
 
-        if($revision->getOuuid()) {
+        if ($revision->getOuuid()) {
             $messageLog = "log.data.revision.start_edit";
-        }
-        else {
+        } else {
             $messageLog = "log.data.revision.start_edit_new_document";
         }
         $logger->info($messageLog, [

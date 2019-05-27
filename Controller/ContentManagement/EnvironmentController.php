@@ -31,6 +31,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class EnvironmentController extends AppController
 {
@@ -795,5 +797,23 @@ class EnvironmentController extends AppController
             }
         }
         return $contentTypeList;
+    }
+    
+    /**
+     * Export a Environment in Json format
+     *
+     * @Route("/environment/export/{environment}.{_format}", defaults={"_format" = "json"}, name="environment.export"))
+     */
+    public function exportAction(Environment $environment, Request $request)
+    {
+        $jsonContent = $this->getEnvironmentService()->exportToJson($environment);
+        $response = new Response($jsonContent);
+        $diposition = $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $environment->getName() . '.json'
+            );
+        
+        $response->headers->set('Content-Disposition', $diposition);
+        return $response;
     }
 }

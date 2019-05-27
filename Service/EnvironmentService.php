@@ -13,6 +13,9 @@ use EMS\CoreBundle\Repository\FilterRepository;
 use EMS\CoreBundle\Entity\Filter;
 use EMS\CoreBundle\Repository\AnalyzerRepository;
 use EMS\CoreBundle\Entity\Analyzer;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Serializer;
+use EMS\CoreBundle\Entity\Helper\JsonNormalizer;
 
 class EnvironmentService
 {
@@ -200,5 +203,21 @@ class EnvironmentService
             }
         }
         return $out;
+    }
+    
+    public function exportToJson(Environment $environment)
+    {
+        //Sanitize the CT
+        //$contentType->setCreated(null);
+        //$contentType->setModified(null);
+        //$contentType->getFieldType()->removeCircularReference();
+        
+        //Serialize the CT
+        $encoders = array(new JsonEncoder());
+        $normalizers = array(new JsonNormalizer());
+        $serializer = new Serializer($normalizers, $encoders);
+        $jsonContent = $serializer->serialize($environment, 'json');
+        
+        return $jsonContent;
     }
 }

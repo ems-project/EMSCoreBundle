@@ -1181,7 +1181,7 @@ class DataController extends AppController
      * @Route("/data/draft/edit/{revisionId}", name="ems_revision_edit"))
      * @Route("/data/draft/edit/{revisionId}", name="revision.edit"))
      */
-    public function editRevisionAction($revisionId, Request $request)
+    public function editRevisionAction($revisionId, Request $request, LoggerInterface $logger)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -1317,12 +1317,22 @@ class DataController extends AppController
             $this->addFlash("warning", sprintf("The auto-save has been disabled as the auto-publish is enabled for this content type. Press Ctrl+S (Cmd+S) in order to publish in %s.", $revision->getContentType()->getEnvironment()->getName()));
         }
 
-        // Call Audit service for log
-        $this->get("ems.service.audit")->auditLog('DataController:editRevision', $revision->getRawData());
-        $this->getLogger()->debug('Start twig rendering');
 
         $objectArray = $revision->getRawData();
         $this->getDataService()->propagateDataToComputedField($form->get('data'), $objectArray, $revision->getContentType(), $revision->getContentType()->getName(), $revision->getOuuid());
+
+        if($revision->getOuuid()) {
+            $messageLog = "log.data.revision.start_edit";
+        }
+        else {
+            $messageLog = "log.data.revision.start_edit_new_document";
+        }
+        $logger->info($messageLog, [
+            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+            EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
+            EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+            EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+        ]);
 
         return $this->render('@EMSCore/data/edit-revision.html.twig', [
             'revision' => $revision,

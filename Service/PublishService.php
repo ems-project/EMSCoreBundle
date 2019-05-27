@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Service;
 
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Event\RevisionPublishEvent;
@@ -9,8 +10,10 @@ use EMS\CoreBundle\Event\RevisionUnpublishEvent;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Elasticsearch\Client;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpKernel\Log\Logger;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -50,6 +53,9 @@ class PublishService
     
     /**@var EventDispatcherInterface*/
     protected $dispatcher;
+
+    /**@var LoggerInterface*/
+    protected $logger;
     
     
     public function __construct(
@@ -66,7 +72,8 @@ class PublishService
         DataService $dataService,
         AuditService $auditService,
         UserService $userService,
-        EventDispatcherInterface $dispatcher
+        EventDispatcherInterface $dispatcher,
+        LoggerInterface $logger
     ) {
         $this->doctrine = $doctrine;
         $this->authorizationChecker = $authorizationChecker;
@@ -84,6 +91,7 @@ class PublishService
         $this->auditService = $auditService;
         $this->userService = $userService;
         $this->dispatcher= $dispatcher;
+        $this->logger= $logger;
     }
     
     public function alignRevision($type, $ouuid, $envirronmentSource, $envirronmentTarget)
@@ -225,7 +233,13 @@ class PublishService
         }
 
         if (!$command) {
-            $this->auditService->auditLog('PublishService:publish', $revision->getRawData(), $environment->getName());
+            $this->logger->info('log.data.revision.publish', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                EmsFields::LOG_OPERATION_FIELD => $already?EmsFields::LOG_OPERATION_UPDATE:EmsFields::LOG_OPERATION_CREATE,
+                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
+            ]);
         }
         
         return $already?0:1;
@@ -275,7 +289,13 @@ class PublishService
             }
         }
         if (!$command) {
-            $this->auditService->auditLog('PublishService:unpublish', $revision->getRawData(), $environment->getName());
+            $this->logger->info('log.data.revision.unpublish', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
+                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
+            ]);
         }
     }
 }

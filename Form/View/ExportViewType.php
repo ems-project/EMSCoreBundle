@@ -140,7 +140,7 @@ class ExportViewType extends ViewType
     {
         $parameters = $this->getParameters($view, $this->formFactory, $request);
 
-        if (isset($view->getOptions()['export_type']) or $view->getOptions()['export_type'] === 'dompdf') {
+        if (isset($view->getOptions()['export_type']) || $view->getOptions()['export_type'] === 'dompdf') {
             // instantiate and use the dompdf class
             $dompdf = new Dompdf();
             $dompdf->loadHtml($parameters['render']);

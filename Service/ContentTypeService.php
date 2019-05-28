@@ -7,6 +7,7 @@ use Doctrine\ORM\NoResultException;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\SingleTypeIndex;
 use EMS\CoreBundle\Exception\ContentTypeAlreadyExistException;
+use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\FieldTypeRepository;
 use EMS\CoreBundle\Repository\SingleTypeIndexRepository;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -17,6 +18,7 @@ use Symfony\Component\Form\FormRegistryInterface;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\HttpFoundation\File\File;
 
 class ContentTypeService
 {

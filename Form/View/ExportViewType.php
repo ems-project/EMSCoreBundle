@@ -157,7 +157,7 @@ class ExportViewType extends ViewType
             // Output the generated PDF to Browser
             $dompdf->stream($parameters['filename'] ?? "document.pdf", [
                 'compress' => 1,
-                'Attachment' => ( isset($view->getOptions()['disposition'])  && $view->getOptions()['disposition']  === 'attachment')?1:0,
+                'Attachment' => ( isset($view->getOptions()['disposition'])  && $view->getOptions()['disposition'] === 'attachment')?1:0,
             ]);
             exit;
         }

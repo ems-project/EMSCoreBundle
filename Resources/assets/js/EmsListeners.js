@@ -246,13 +246,18 @@ export default class EmsListeners {
                     dataType: 'json',
                     delay: 250,
                     data: function (params) {
-                        return {
+                        let data = {
                             q: params.term, // search term
                             page: params.page,
                             type: type,
-                            searchId: searchId,
-                            circle: circleOnly !== undefined
+                            searchId: searchId
                         };
+
+                        if (circleOnly !== undefined) {
+                            data.circle = circleOnly;
+                        }
+
+                        return data;
                     },
                     processResults: function (data, params) {
                         // parse the results into the format expected by Select2

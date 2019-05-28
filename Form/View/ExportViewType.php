@@ -147,8 +147,8 @@ class ExportViewType extends ViewType
 
             // (Optional) Setup the paper size and orientation
             $dompdf->setPaper(
-                (isset($view->getOptions()['pdf_size']) and $view->getOptions()['pdf_size']) ? $view->getOptions()['pdf_size'] : 'A4',
-                (isset($view->getOptions()['pdf_orientation']) and $view->getOptions()['pdf_orientation']) ? $view->getOptions()['pdf_orientation'] : 'portrait'
+                (isset($view->getOptions()['pdf_size']) && $view->getOptions()['pdf_size']) ? $view->getOptions()['pdf_size'] : 'A4',
+                (isset($view->getOptions()['pdf_orientation']) && $view->getOptions()['pdf_orientation']) ? $view->getOptions()['pdf_orientation'] : 'portrait'
             );
 
             // Render the HTML as PDF

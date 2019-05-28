@@ -17,11 +17,6 @@ use Symfony\Component\Form\FormRegistryInterface;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use Symfony\Component\Translation\TranslatorInterface;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Serializer;
-use EMS\CoreBundle\Entity\Helper\JsonNormalizer;
-use Symfony\Component\HttpFoundation\File\File;
-use EMS\CoreBundle\Repository\ContentTypeRepository;
 
 class ContentTypeService
 {
@@ -428,13 +423,13 @@ class ContentTypeService
 
         return $contentType;
     }
-    
+
     public function persistAsNew(ContentType $contentType): ContentType
     {
         $em = $this->doctrine->getManager();
         /** @var ContentTypeRepository $contentTypeRepository */
         $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
-        
+
         if ($this->getByName($contentType->getName())) {
             throw new ContentTypeAlreadyExistException('Another content type named ' . $contentType->getName() . ' already exists');
         }
@@ -443,7 +438,7 @@ class ContentTypeService
         $contentType->setDirty(true);
         $contentType->getFieldType()->updateAncestorReferences($contentType, null);
         $contentType->setOrderKey($contentTypeRepository->maxOrderKey() + 1);
-        
+
         $this->persist($contentType);
         return $contentType;
     }

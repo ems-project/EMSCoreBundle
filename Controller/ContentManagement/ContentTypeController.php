@@ -11,7 +11,6 @@ use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Form\EditFieldType;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
-use EMS\CoreBundle\Entity\Helper\JsonNormalizer;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Form\DataField\SubfieldType;
 use EMS\CoreBundle\Form\Field\IconTextType;
@@ -229,11 +228,11 @@ class ContentTypeController extends AppController
                     $file = $request->files->get('form')['import'];
 
                     $contentType = $this->getContentTypeService()->deserializeJson($file, $environment);
-                    
+
                     $contentType->setName($name);
                     $contentType->setSingularName($singularName);
                     $contentType->setPluralName($pluralName);
-                 
+
                     $contentType = $this->getContentTypeService()->persistAsNew($contentType);
                 } else {
                     $contentType = $contentTypeAdded;

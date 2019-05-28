@@ -940,10 +940,21 @@ class Template extends JsonDeserializer implements \JsonSerializable
     {
         $json = new JsonClass(get_object_vars($this), __CLASS__);
         $json->removeProperty('id');
-        $json->removeProperty('created');
-        $json->removeProperty('modified');
         $json->removeProperty('environments');
 
         return $json;
+    }
+
+    protected function deserializeProperty(string $name, $value)
+    {
+        switch ($name) {
+            case 'environments':
+                foreach ($this->deserializeArray($value) as $environment) {
+                    $this->addEnvironment($environment);
+                }
+                break;
+            default:
+                parent::deserializeProperty($name, $value);
+        }
     }
 }

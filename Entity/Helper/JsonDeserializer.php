@@ -20,6 +20,7 @@ abstract class JsonDeserializer
         switch ($name) {
             case 'created':
             case 'modified':
+            case 'lockUntil':
                 $this->{$name} = $this->convertToDateTime($value);
                 break;
             default:

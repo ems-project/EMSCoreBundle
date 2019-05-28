@@ -228,7 +228,7 @@ class ContentTypeController extends AppController
                     /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $file */
                     $file = $request->files->get('form')['import'];
 
-                    $contentType = $this->getContentTypeService()->initFromJson($file, $environment);
+                    $contentType = $this->getContentTypeService()->deserializeJson($file, $environment);
                     
                     $contentType->setName($name);
                     $contentType->setSingularName($singularName);

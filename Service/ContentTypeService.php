@@ -6,6 +6,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\NoResultException;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\SingleTypeIndex;
+use EMS\CoreBundle\Exception\ContentTypeAlreadyExistException;
 use EMS\CoreBundle\Repository\FieldTypeRepository;
 use EMS\CoreBundle\Repository\SingleTypeIndexRepository;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -416,7 +417,7 @@ class ContentTypeService
         return implode(',', array_keys($this->contentTypeArrayByName));
     }
 
-    public function initFromJson(File $jsonFile, Environment $environment): ContentType
+    public function deserializeJson(File $jsonFile, Environment $environment): ContentType
     {
         $fileContent = file_get_contents($jsonFile->getRealPath());
 
@@ -445,31 +446,5 @@ class ContentTypeService
         
         $this->persist($contentType);
         return $contentType;
-    }
-    
-    /**
-     * Export a content type in Json format
-     */
-    public function exportToJson(ContentType $contentType)
-    {
-        //Sanitize the CT
-        $contentType->setCreated(null);
-        $contentType->setModified(null);
-        $contentType->getFieldType()->removeCircularReference();
-        $contentType->setEnvironment(null);
-        
-        //Serialize the CT
-        $encoders = array(new JsonEncoder());
-        $normalizers = array(new JsonNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-        $jsonContent = $serializer->serialize($contentType, 'json');
-        $response = new Response($jsonContent);
-        $diposition = $response->headers->makeDisposition(
-            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            $contentType->getName() . '.json'
-        );
-        
-        $response->headers->set('Content-Disposition', $diposition);
-        return $response;
     }
 }

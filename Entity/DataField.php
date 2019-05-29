@@ -31,7 +31,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     private $orderKey;
 
     /**
-     * @var FieldType
+     * @var DataField
      */
     private $parent;
     
@@ -304,7 +304,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * get a child
      *
-     * @return DataField
+     * @return null|DataField
      */
     public function __get($key)
     {
@@ -350,7 +350,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Get textValue
      *
-     * @return string
+     * @return null|string
      */
     public function getTextValue()
     {
@@ -413,7 +413,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Get resetPasswordValue
      *
-     * @return string
+     * @return bool
      */
     public function getResetPasswordValue()
     {
@@ -441,7 +441,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Get floatValue
      *
-     * @return float
+     * @return null|float
      */
     public function getFloatValue()
     {
@@ -512,24 +512,29 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Get arrayValue
      *
-     * @return string
+     * @return null|array
      */
     public function getArrayTextValue()
     {
-        $out = $this->rawData;
-        if ($out !== null) {
-            if (!is_array($out)) {
-                $this->addMessage('Array expected from the DB: '.print_r($this->rawData, true));
-                return null;
-            }
-            foreach ($out as $idx => $item) {
-                if (!is_string($item)) {
-                    $this->addMessage('String expected for the item '.$idx.' from the DB: '.print_r($this->rawData, true));
-                    $out[$idx] = "";
-                }
+        if ($this->rawData === null) {
+            return null;
+        }
+
+        if (!is_array($this->rawData)) {
+            $this->addMessage('Array expected from the DB: '.print_r($this->rawData, true));
+            return null;
+        }
+
+        $textValue = $this->rawData;
+
+        foreach ($textValue as $idx => $item) {
+            if (!is_string($item)) {
+                $this->addMessage('String expected for the item '.$idx.' from the DB: '.print_r($this->rawData, true));
+                $textValue[$idx] = "";
             }
         }
-        return $out;
+
+        return $textValue;
     }
 
     /**
@@ -579,7 +584,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Get booleanValue
      *
-     * @return boolean
+     * @return null|bool
      */
     public function getBooleanValue()
     {

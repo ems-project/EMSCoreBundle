@@ -57,7 +57,7 @@ class Environment
     private $indexes;
     
     /**
-     * @var string
+     * @var int
      */
     private $total;
     
@@ -275,7 +275,7 @@ class Environment
     /**
      * Set total
      *
-     * @param integer $total
+     * @param int $total
      *
      * @return Environment
      */
@@ -289,7 +289,7 @@ class Environment
     /**
      * Get total
      *
-     * @return integer
+     * @return int
      */
     public function getTotal()
     {

@@ -101,7 +101,7 @@ class ContentType
     private $lockUntil;
     
     /**
-     * @var array
+     * @var string
      *
      * @ORM\Column(name="circles_field", type="string", length=100, nullable=true)
      */
@@ -664,7 +664,7 @@ class ContentType
     /**
      * Set labelField
      *
-     * @param integer $labelField
+     * @param string $labelField
      *
      * @return ContentType
      */
@@ -678,7 +678,7 @@ class ContentType
     /**
      * Get labelField
      *
-     * @return integer
+     * @return string
      */
     public function getLabelField()
     {
@@ -688,7 +688,7 @@ class ContentType
     /**
      * Set parentField
      *
-     * @param integer $parentField
+     * @param string $parentField
      *
      * @return ContentType
      */
@@ -702,7 +702,7 @@ class ContentType
     /**
      * Get parentField
      *
-     * @return integer
+     * @return string
      */
     public function getParentField()
     {
@@ -712,7 +712,7 @@ class ContentType
     /**
      * Set dateField
      *
-     * @param integer $dateField
+     * @param string $dateField
      *
      * @return ContentType
      */
@@ -726,7 +726,7 @@ class ContentType
     /**
      * Get dateField
      *
-     * @return integer
+     * @return string
      */
     public function getDateField()
     {
@@ -736,7 +736,7 @@ class ContentType
     /**
      * Set endDateField
      *
-     * @param integer $endDateField
+     * @param string $endDateField
      *
      * @return ContentType
      */
@@ -750,7 +750,7 @@ class ContentType
     /**
      * Get endDateField
      *
-     * @return integer
+     * @return string
      */
     public function getEndDateField()
     {
@@ -760,7 +760,7 @@ class ContentType
     /**
      * Set locationField
      *
-     * @param integer $locationField
+     * @param string $locationField
      *
      * @return ContentType
      */
@@ -774,7 +774,7 @@ class ContentType
     /**
      * Get locationField
      *
-     * @return integer
+     * @return string
      */
     public function getLocationField()
     {
@@ -784,7 +784,7 @@ class ContentType
     /**
      * Set ouuidField
      *
-     * @param integer $ouuidField
+     * @param string $ouuidField
      *
      * @return ContentType
      */
@@ -798,7 +798,7 @@ class ContentType
     /**
      * Get ouuidField
      *
-     * @return integer
+     * @return string
      */
     public function getOuuidField()
     {
@@ -808,7 +808,7 @@ class ContentType
     /**
      * Set imageField
      *
-     * @param integer $imageField
+     * @param string $imageField
      *
      * @return ContentType
      */
@@ -822,7 +822,7 @@ class ContentType
     /**
      * Get imageField
      *
-     * @return integer
+     * @return string
      */
     public function getImageField()
     {
@@ -832,7 +832,7 @@ class ContentType
     /**
      * Set videoField
      *
-     * @param integer $videoField
+     * @param string $videoField
      *
      * @return ContentType
      */
@@ -846,7 +846,7 @@ class ContentType
     /**
      * Get videoField
      *
-     * @return integer
+     * @return string
      */
     public function getVideoField()
     {
@@ -928,7 +928,7 @@ class ContentType
     /**
      * Set startDateField
      *
-     * @param integer $startDateField
+     * @param string $startDateField
      *
      * @return ContentType
      */
@@ -942,7 +942,7 @@ class ContentType
     /**
      * Get startDateField
      *
-     * @return integer
+     * @return string
      */
     public function getStartDateField()
     {
@@ -1320,7 +1320,7 @@ class ContentType
     /**
      * Set circlesField
      *
-     * @param array $circlesField
+     * @param string $circlesField
      *
      * @return ContentType
      */
@@ -1684,7 +1684,7 @@ class ContentType
     }
 
     /**
-     * @param array $defaultValue
+     * @param string $defaultValue
      * @return ContentType
      */
     public function setDefaultValue($defaultValue)

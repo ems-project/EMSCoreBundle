@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Controller\ContentManagement;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\Analyzer;
 use EMS\CoreBundle\Form\Form\AnalyzerType;
@@ -60,6 +61,7 @@ class AnalyzerController extends AppController
             $logger->notice('log.analyzer.updated', [
                 'analyzer_name' => $analyzer->getName(),
                 'analyzer_id' => $analyzer->getId(),
+                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
             ]);
             
             return $this->redirectToRoute('ems_analyzer_index', [
@@ -94,6 +96,7 @@ class AnalyzerController extends AppController
         $logger->notice('log.analyzer.deleted', [
             'analyzer_name' => $name,
             'analyzer_id' => $id,
+            EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
         ]);
 
         return $this->redirectToRoute('ems_analyzer_index', [
@@ -128,6 +131,7 @@ class AnalyzerController extends AppController
                 $logger->notice('log.analyzer.created', [
                     'analyzer_name' => $analyzer->getName(),
                     'analyzer_id' => $analyzer->getId(),
+                    EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
                 ]);
 
                 return $this->redirectToRoute('ems_analyzer_index', [

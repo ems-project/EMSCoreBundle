@@ -33,6 +33,11 @@ class EnvironmentRepository extends EntityRepository
         return parent::findOneBy(['name' => $name]);
     }
 
+    public function findOneById(string $id) : ?Environment
+    {
+        return parent::findOneBy(['id' => $id]);
+    }
+
     public function findAllAliases()
     {
         $qb = $this->createQueryBuilder('e', 'e.alias');

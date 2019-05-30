@@ -49,6 +49,20 @@ class RevisionRepository extends EntityRepository
     }
 
     /**
+     * @param int $id
+     * @return Revision
+     * @throws NoResultException
+     * @throws NonUniqueResultException
+     */
+    public function findOneById(int $id) : Revision
+    {
+        $qb = $this->createQueryBuilder('r')
+            ->where('r.id = :id')
+            ->setParameter('id', $id);
+        return $qb->getQuery()->getSingleResult();
+    }
+
+    /**
      * @param string $hash
      * @return int
      * @throws DBALException

@@ -4,6 +4,8 @@ namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
@@ -32,6 +34,7 @@ use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
+use Exception;
 use Monolog\Logger;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Form;
@@ -131,7 +134,7 @@ class DataService
         if (! empty($privateKey)) {
             try {
                 $this->private_key = openssl_pkey_get_private(file_get_contents($privateKey));
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->session->getFlashBag()->add('warning', 'ems was not able to load the certificat: '.$e->getMessage());
             }
         }
@@ -238,6 +241,8 @@ class DataService
      * @param ContentType $contentType
      * @param Environment $environment
      * @return Revision
+     * @throws NoResultException
+     * @throws NonUniqueResultException
      */
     public function getRevisionByEnvironment($ouuid, ContentType $contentType, Environment $environment)
     {
@@ -289,7 +294,7 @@ class DataService
                             $this->session->getFlashBag()->add('warning', 'Error to JSON parse the result of the post processing script of field '.$dataField->getFieldType()->getName().' (|json_encode|raw): '.$out);
                         }
                     }
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     if ($e->getPrevious() && $e->getPrevious() instanceof CantBeFinalizedException) {
                         if (!$migration) {
                             $form->addError(new FormError($e->getPrevious()->getMessage()));
@@ -320,7 +325,7 @@ class DataService
                         } else {
                             $out = trim($out);
                         }
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         if ($e->getPrevious() && $e->getPrevious() instanceof CantBeFinalizedException) {
                             $form->addError(new FormError($e->getPrevious()->getMessage()));
                         }
@@ -548,7 +553,7 @@ class DataService
                 } else {
                     $this->session->getFlashBag()->add('warning', 'Sha1 not defined in '.$environment->getName().' for '.$revision->getContentType()->getName().':'.$revision->getOuuid());
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->session->getFlashBag()->add('warning', 'Issue with content indexed in '.$environment->getName().':'.$e->getMessage().' for '.$revision->getContentType()->getName().':'.$revision->getOuuid());
             }
         }
@@ -570,17 +575,20 @@ class DataService
      * Try to finalize a revision
      *
      * @param Revision $revision
-     * @param \Symfony\Component\Form\Form $form
+     * @param FormInterface $form
      * @param string $username
      * @param boolean $computeFields (allow to sky computedFields compute, i.e during a post-finalize)
-     * @throws \Exception
+     * @return Revision
      * @throws DataStateException
-     * @return \EMS\CoreBundle\Entity\Revision
+     * @throws Exception
      */
-    public function finalizeDraft(Revision $revision, Form &$form = null, $username = null, $computeFields = true)
+    public function finalizeDraft(Revision $revision, FormInterface &$form = null, $username = null, $computeFields = true)
     {
+//        TODO: User validators
+//         $validator = $this->get('validator');
+//         $errors = $validator->validate($revision);
         if ($revision->getDeleted()) {
-            throw new \Exception("Can not finalized a deleted revision");
+            throw new Exception("Can not finalized a deleted revision");
         }
         if (null == $form && empty($username)) {
             if ($revision->getDatafield() == null) {
@@ -680,7 +688,7 @@ class DataService
 
             try {
                 $this->postFinalizeTreatment($revision->getContentType()->getName(), $revision->getOuuid(), $form->get('data'), $previousObjectArray);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->session->getFlashBag()->add('warning', 'Error while finalize post processing of '.$revision.': '.$e->getMessage());
             }
         }
@@ -713,9 +721,9 @@ class DataService
      *
      * @param string $type
      * @param string $ouuid
+     * @return Revision
+     *@throws Exception
      * @throws NotFoundHttpException
-     * @throws \Exception
-     * @return \EMS\CoreBundle\Entity\Revision
      */
     public function getNewestRevision($type, $ouuid)
     {
@@ -755,7 +763,7 @@ class DataService
         } elseif (count($revisions) == 0) {
             throw new NotFoundHttpException('Revision not found for ouuid '.$ouuid.' and contenttype '.$type);
         } else {
-            throw new \Exception('Too much newest revisions available for ouuid '.$ouuid.' and contenttype '.$type);
+            throw new Exception('Too much newest revisions available for ouuid '.$ouuid.' and contenttype '.$type);
         }
     }
 
@@ -1259,7 +1267,7 @@ class DataService
 
     /**
      *
-     * @return \EMS\CoreBundle\Entity\Revision
+     * @return Revision
      */
     public function getEmptyRevision(ContentType $contentType, $user)
     {
@@ -1296,7 +1304,7 @@ class DataService
         return $out.'</ul>';
     }
 
-    public function isValid(\Symfony\Component\Form\Form &$form, DataField $parent = null, &$masterRawData = null)
+    public function isValid(FormInterface &$form, DataField $parent = null, &$masterRawData = null)
     {
         if ($form->getName() == '_ems_internal_deleted' && $parent != null && $parent->getFieldType() != null && $parent->getFieldType()->getType() == CollectionItemFieldType::class) {
             return true;
@@ -1319,7 +1327,7 @@ class DataService
             /** @var DataField $dataField */
             $dataField = $viewData;
         } else {
-            throw new \Exception("Unforeseen type of viewData");
+            throw new Exception("Unforeseen type of viewData");
         }
 
         if ($dataField->getFieldType() !== null && $dataField->getFieldType()->getType() !== null) {
@@ -1387,12 +1395,12 @@ class DataService
                 $revision = $revisions[0];
                 return $revision;
             } else {
-                throw new \Exception('Revision for ouuid '.$id.' and contenttype '.$type.' with end time '.$revisions[0]->getEndTime());
+                throw new Exception('Revision for ouuid '.$id.' and contenttype '.$type.' with end time '.$revisions[0]->getEndTime());
             }
         } elseif (count($revisions) == 0) {
             throw new NotFoundHttpException('Revision not found for id '.$id.' and contenttype '.$type);
         } else {
-            throw new \Exception('Too much newest revisions available for ouuid '.$id.' and contenttype '.$type);
+            throw new Exception('Too much newest revisions available for ouuid '.$id.' and contenttype '.$type);
         }
     }
 
@@ -1401,7 +1409,7 @@ class DataService
      * @param Revision $revision
      * @param array $rawData
      * @param string $replaceOrMerge
-     * @return \EMS\CoreBundle\Entity\Revision
+     * @return Revision
      */
     public function replaceData(Revision $revision, array $rawData, $replaceOrMerge = "replace")
     {

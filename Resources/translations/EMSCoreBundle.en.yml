@@ -100,7 +100,6 @@ Remove: Remove
 'Reorder Environment': 'Reorder Environment'
 'Reorder the content type "%content_type%"': 'Reorder the content type "%content_type%"'
 'Reorganise: ': 'Reorganise: '
-'Reorganise:': 'Reorganise:'
 'Search options': 'Search options'
 'Select a language': 'Select a language'
 'Select a theme': 'Select a theme'
@@ -356,14 +355,44 @@ view.contenttype.reorder_item.edit_main_container_button: 'Edit the main contain
 view.macros.data-field-type.collection_added_items: '{1} One %singular% has been added|]1,Inf[ %count% %plural% have been added'
 view.macros.data-field-type.collection_removed_items: '{1} One %singular% has been removed|]1,Inf[ %count% %plural% have been removed'
 data.edit_revision.save_draft: Save draft
-emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's configuration
+emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's configurations and versions
 
 log:
+  view:
+    not_found: 'View %view_id% not found'
+  template:
+    twig:
+      error: 'Error during the Twig generation of ems://template:%template_id%'
   error: 'This page/action has encountered an error: %error_message%'
   data:
+    job:
+      initialize_failed: 'A job %template_name% has failed for the document ems://object:%contenttype%:%ouuid% in the environment %environment%'
+      started: 'A job %template_name% has been started for the document ems://object:%contenttype%:%ouuid% in the environment %environment%'
+    document:
+      copy: 'The content of the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has copied into the clipboard'
+      paste: 'Clipboard''s content has been paste in the document ems://object:%contenttype%:%ouuid%'
+      duplicated: 'The document ems://object:%contenttype%:%ouuid% has been used to initiate a new document'
+      cant_duplicate_when_waiting_ouuid: 'It''s impossible to duplicate the document ems://object:%contenttype%:%ouuid% has the content type %contenttype% requests first an OUUID'
+      compare: 'Compare the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% with the revision ems://revision:%compare_revision_id% of the document ems://object:%compare_contenttype%:%compare_ouuid%'
     revision:
-      cant_delete_has_published: The document ems://object:%contenttype%:%ouuid% can't be deleted as the revision ems://revision:%revision_id% is published in %published_in%
-      compare_beta: The comparaison tools between two revisions is a beta functionality
-      reindex: The revision %revision_id% has been reindex in %environment% for the document ems://object:%contenttype%:%ouuid%
-      finalized: The revision %revision_id% has been finalized in %environment% for the document ems://object:%contenttype%:%ouuid%
-      not_found_in_environment: It's impossible to identify a revision for the document ems://object:%contenttype%:%ouuid% in the environment %environment%
+      load_from_auto_save: 'Data were loaded from an auto-saved version for the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid%'
+      auto_save_off_with_auto_publish: 'The auto-save has been disabled as the auto-publish is enabled for the content type %contenttype%. Press Ctrl+S (Cmd+S) in order to publish in %environment%'
+      can_finalized: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% cant''t be finalized as it is'
+      only_super_can_finalize_an_archive: 'Only a super user can finalize an archived revision'
+      can_finalized_error: 'The document ems://object:%contenttype%:%ouuid% can''t be finalized due to an error: %error_message%'
+      can_finalized_as_invalid: '{1} The document ems://object:%contenttype%:%ouuid% can''t be finalized has there is one error |]1,Inf[ The document ems://object:%contenttype%:%ouuid% can''t be finalized as there is %count% errors'
+      can_finalized_as_pending_auto_save: 'The document ems://object:%contenttype%:%ouuid% can''t be finalized as an auto save is pending'
+      not_completed_request: 'Incomplete request! It''s not possible to save the document ems://object:%contenttype%:%ouuid%. Please check your PHP/Web configuration (i.e.: max_input_vars in php.ini)'
+      ajax_update_on_finalized: 'It''s impossible to save the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has this revision is already finalized'
+      auto_publish_rollback: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has been silently published back in %environment%'
+      reindex_failed_in: 'The document ems://object:%contenttype%:%ouuid% has encountered an exception during its reindexing in %environment%'
+      new_draft_from_revision: 'A new draft has been initiated, from the revision ems://revision:%revision_id%, for the document ems://object:%contenttype%:%ouuid%'
+      compare_revision_not_found: 'Impossible to compare the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% with the revision id %compare_revision_id% as this revision does not exists'
+      compare_more_recent: 'Compare the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% with the revision ems://revision:%compare_revision_id%, wich one is more recent'
+      compare: 'Compare the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% with the revision ems://revision:%compare_revision_id%'
+      reindex_failed: 'The document ems://object:%contenttype%:%ouuid% has encountered an exception during its reindexing %error_message%'
+      cant_delete_has_published: 'The document ems://object:%contenttype%:%ouuid% can''t be deleted as the revision ems://revision:%revision_id% is published in %published_in%'
+      compare_beta: 'The comparaison tools between two revisions is a beta functionality'
+      reindex: 'The revision ems://revision:%revision_id% has been reindex in %environment% for the document ems://object:%contenttype%:%ouuid%'
+      finalized: 'The revision ems://revision:%revision_id% has been finalized in %environment% for the document ems://object:%contenttype%:%ouuid%'
+      not_found_in_environment: 'It''s impossible to identify a revision for the document ems://object:%contenttype%:%ouuid% in the environment %environment%'

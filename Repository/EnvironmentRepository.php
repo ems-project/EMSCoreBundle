@@ -18,7 +18,7 @@ class EnvironmentRepository extends \Doctrine\ORM\EntityRepository
     {
         return $this->findBy([]);
     }
-        
+
     public function findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
     {
         if (empty($orderBy)) {
@@ -26,7 +26,12 @@ class EnvironmentRepository extends \Doctrine\ORM\EntityRepository
         }
         return parent::findBy($criteria, $orderBy, $limit, $offset);
     }
-    
+
+    public function findOneByName(string $name)
+    {
+        return parent::findOneBy(['name' => $name]);
+    }
+
     /**
      * @return array
      */

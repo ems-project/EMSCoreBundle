@@ -358,8 +358,9 @@ data.edit_revision.save_draft: Save draft
 
 emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's configurations and versions
 
-
 log:
+  file:
+    upload_error: 'Error during file upload: %error_message%'
   contenttype:
     action_not_found: 'Action not found on the content type %contenttype%'
     mapping:

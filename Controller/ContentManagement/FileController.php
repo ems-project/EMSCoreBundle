@@ -6,6 +6,7 @@ use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Exception\AssetNotFoundException;
 use EMS\CoreBundle\Service\FileService;
+use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -105,7 +106,7 @@ class FileController extends AppController
 
         try {
             $uploadedAsset = $fileService->initUploadFile($hash, $size, $name, $type, $user, $algo);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $logger->error('log.error', [
                 EmsFields::LOG_EXCEPTION_FIELD => $e,
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
@@ -150,7 +151,7 @@ class FileController extends AppController
 
         try {
             $uploadedAsset = $fileService->addChunk($hash, $chunk, $user);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $logger->error('log.error', [
                 EmsFields::LOG_EXCEPTION_FIELD => $e,
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
@@ -192,7 +193,7 @@ class FileController extends AppController
      * @Route("/file/upload" , name="ems_image_upload_url", defaults={"_format": "json"}, methods={"POST"})
      * @Route("/api/file" , name="ems_api_image_upload_url", defaults={"_format": "json"}, methods={"POST"})
      */
-    public function uploadfileAction(Request $request, FileService $fileService, LoggerInterface $logger)
+    public function uploadFileAction(Request $request, FileService $fileService, LoggerInterface $logger)
     {
         /**@var UploadedFile $file */
         $file = $request->files->get('upload');
@@ -204,7 +205,7 @@ class FileController extends AppController
             if ($type === false) {
                 try {
                     $type = $file->getMimeType();
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $type = 'application/bin';
                 }
             }
@@ -213,7 +214,7 @@ class FileController extends AppController
 
             try {
                 $uploadedAsset = $fileService->uploadFile($name, $type, $file->getRealPath(), $user);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $logger->error('log.error', [
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
@@ -230,7 +231,9 @@ class FileController extends AppController
                 'asset' => $uploadedAsset,
             ]);
         } else if ($file->getError()) {
-            $this->addFlash('warning', $file->getError());
+            $logger->warning('log.file.upload_error', [
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $file->getError()
+            ]);
             $this->render('@EMSCore/ajax/notification.json.twig', [
                 'success' => false,
             ]);

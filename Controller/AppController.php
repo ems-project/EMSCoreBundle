@@ -31,6 +31,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Translation\TranslatorInterface;
+use Twig_Environment;
 
 class AppController extends Controller
 {
@@ -148,7 +149,7 @@ class AppController extends Controller
     }
     
     /**
-     * @return \Twig_Environment
+     * @return Twig_Environment
      */
     protected function getTwig()
     {
@@ -206,7 +207,7 @@ class AppController extends Controller
 
     /**
      * @param string $service
-     * @param string $arguments
+     * @param array $arguments
      *
      * @return RedirectResponse
      */

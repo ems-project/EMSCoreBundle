@@ -121,7 +121,7 @@ class AnalyzerController extends AppController
             /** @var EntityManager $em */
             $em = $this->getDoctrine()->getManager();
             $analyzer =  $form->getData();
-            if($analyzer instanceof Analyzer) {
+            if ($analyzer instanceof Analyzer) {
                 $em->persist($analyzer);
                 $em->flush($analyzer);
 
@@ -132,7 +132,6 @@ class AnalyzerController extends AppController
 
                 return $this->redirectToRoute('ems_analyzer_index', [
                 ]);
-
             }
         }
         

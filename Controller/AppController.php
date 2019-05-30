@@ -187,10 +187,10 @@ class AppController extends Controller
     protected function getDataFieldType(string $fieldTypeNameOrServiceName): DataFieldType
     {
         $dataFieldType = $$this->formRegistry->getType($fieldTypeNameOrServiceName)->getInnerType();
-        if($dataFieldType instanceof DataFieldType){
+        if ($dataFieldType instanceof DataFieldType) {
             return $dataFieldType;
         }
-        throw new ElasticmsException(sprintf('Expecting a DataFieldType instance, got a %s', get_class($dataFieldType) ) );
+        throw new ElasticmsException(sprintf('Expecting a DataFieldType instance, got a %s', get_class($dataFieldType)));
     }
     
     /**

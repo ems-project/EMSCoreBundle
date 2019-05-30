@@ -106,7 +106,7 @@ class FileController extends AppController
         try {
             $uploadedAsset = $fileService->initUploadFile($hash, $size, $name, $type, $user, $algo);
         } catch (\Exception $e) {
-            $logger->error('log.error',[
+            $logger->error('log.error', [
                 EmsFields::LOG_EXCEPTION_FIELD => $e,
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
             ]);
@@ -151,7 +151,7 @@ class FileController extends AppController
         try {
             $uploadedAsset = $fileService->addChunk($hash, $chunk, $user);
         } catch (\Exception $e) {
-            $logger->error('log.error',[
+            $logger->error('log.error', [
                 EmsFields::LOG_EXCEPTION_FIELD => $e,
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
             ]);
@@ -214,7 +214,7 @@ class FileController extends AppController
             try {
                 $uploadedAsset = $fileService->uploadFile($name, $type, $file->getRealPath(), $user);
             } catch (\Exception $e) {
-                $logger->error('log.error',[
+                $logger->error('log.error', [
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                 ]);

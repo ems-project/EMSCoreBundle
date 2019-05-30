@@ -358,6 +358,10 @@ data.edit_revision.save_draft: Save draft
 emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's configurations and versions
 
 log:
+  analyzer:
+    deleted: 'The analyzer %analyzer_name% has been deleted'
+    created: 'The analyzer %analyzer_name% has been created'
+    updated: 'The analyzer %analyzer_name% has been updated'
   view:
     not_found: 'View %view_id% not found'
   template:

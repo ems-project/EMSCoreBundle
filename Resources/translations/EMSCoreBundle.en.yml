@@ -355,9 +355,34 @@ view.contenttype.reorder_item.edit_main_container_button: 'Edit the main contain
 view.macros.data-field-type.collection_added_items: '{1} One %singular% has been added|]1,Inf[ %count% %plural% have been added'
 view.macros.data-field-type.collection_removed_items: '{1} One %singular% has been removed|]1,Inf[ %count% %plural% have been removed'
 data.edit_revision.save_draft: Save draft
+
 emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's configurations and versions
 
+
 log:
+  contenttype:
+    action_not_found: 'Action not found on the content type %contenttype%'
+    mapping:
+      not_found: 'Content type %contenttype%''s mapping not found'
+    not_found: 'Content type %contenttype% not found'
+    field:
+      reordered: 'The the subfields of the field %field_name% have been reordered'
+      deleted: 'The field %field_name% has been deleted'
+      name_mandatory: 'The field name is mandatory'
+      name_not_valid: 'The field is not valid : (format: %field_format%)'
+      added: 'A field %field_name% has been added'
+    subfield:
+      name_mandatory: 'The subfield name is mandatory'
+      name_not_valid: 'The subfield is not valid : (format: %field_format%)'
+      added: 'A subfield %field_name% has been added'
+    unreferenced_not_found: 'Unreferenced content type not found'
+    referenced: 'The content type %contenttype% has been referenced'
+    reordered: 'Content types have been reordered'
+    created_failed: 'Some required fields are missing'
+    dirty: 'The content type %contenttype% is dirty (its mapping might be out-of date), try to update its mapping'
+    deleted: 'The content type %contenttype% has been deleted'
+    created: 'The content type %contenttype% has been created'
+    updated: 'The content type %contenttype% has been updated'
   analyzer:
     deleted: 'The analyzer %analyzer_name% has been deleted'
     created: 'The analyzer %analyzer_name% has been created'

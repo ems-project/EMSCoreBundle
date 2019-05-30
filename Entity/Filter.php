@@ -241,7 +241,7 @@ class Filter
     {
         $this->label = $label;
         
-        return $label;
+        return $this;
     }
     
     /**

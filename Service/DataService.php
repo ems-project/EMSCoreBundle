@@ -1256,10 +1256,17 @@ class DataService
     public function getSubmitData(FormInterface $form)
     {
         $out = $form->getViewData();
-        /**@var Form $subform*/
-        foreach ($form->getIterator() as $subform) {
-            if ($subform->getConfig()->getCompound()) {
-                $out[$subform->getName()] = $this->getSubmitData($subform);
+
+        if ($form instanceof Form) {
+            $iteratedOn = $form->getIterator();
+        } else {
+            $iteratedOn = $form->all();
+        }
+
+        /**@var FormInterface $subForm*/
+        foreach ($iteratedOn as $subForm) {
+            if ($subForm->getConfig()->getCompound()) {
+                $out[$subForm->getName()] = $this->getSubmitData($subForm);
             }
         }
         return $out;

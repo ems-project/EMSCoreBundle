@@ -58,6 +58,21 @@ class ContentTypeRepository extends EntityRepository
     }
 
     /**
+     *
+     * @param int $id
+     * @return ContentType|null
+     */
+    public function findById($id)
+    {
+        /** @var ContentType|null $contentType */
+        $contentType = $this->findOneBy([
+            'id' => $id,
+        ]);
+
+        return $contentType;
+    }
+
+    /**
      * @return int
      * @throws NonUniqueResultException
      */

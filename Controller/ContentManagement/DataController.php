@@ -444,7 +444,7 @@ class DataController extends AppController
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                    'compare_revision_id' => $compareRevision->getId(),
+                    'compare_revision_id' => $compareId,
                 ]);
             }
         }

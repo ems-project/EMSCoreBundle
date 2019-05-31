@@ -210,8 +210,8 @@ class RebuildCommand extends EmsCommand
     /**
      * Update the alias of an environment to a new index
      *
-     * @param $alias
-     * @param $toIndexes
+     * @param string $alias
+     * @param string $toIndexes
      * @param OutputInterface $output
      * @param bool $newEnv
      */

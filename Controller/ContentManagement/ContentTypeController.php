@@ -70,7 +70,7 @@ class ContentTypeController extends AppController
      * Logically delete a content type.
      * GET calls aren't supported.
      *
-     * @param $id
+     * @param int $id
      *            identifier of the content type to delete
      *
      * @param LoggerInterface $logger
@@ -87,7 +87,7 @@ class ContentTypeController extends AppController
         $repository = $em->getRepository('EMSCoreBundle:ContentType');
 
         /** @var ContentType $contentType */
-        $contentType = $repository->find($id);
+        $contentType = $repository->findById($id);
 
         if (!$contentType) {
             throw new NotFoundHttpException('Content Type not found');
@@ -759,7 +759,7 @@ class ContentTypeController extends AppController
     /**
      * Edit a content type; generic information, but Nothing impacting its structure or it's mapping
      *
-     * @param $id
+     * @param int $id
      * @param Request $request
      * @param LoggerInterface $logger
      * @return RedirectResponse|Response
@@ -775,11 +775,11 @@ class ContentTypeController extends AppController
         $repository = $em->getRepository('EMSCoreBundle:ContentType');
 
         /** @var ContentType $contentType */
-        $contentType = $repository->find($id);
+        $contentType = $repository->findById($id);
 
         if (!$contentType) {
             $logger->error('log.contenttype.not_found', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                EmsFields::LOG_CONTENTTYPE_FIELD => $id,
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
             ]);
 
@@ -861,7 +861,7 @@ class ContentTypeController extends AppController
      * Edit a content type structure; add subfields.
      * Each times that a content type strucuture is saved the flag dirty is turned on.
      *
-     * @param $id
+     * @param int $id
      * @param Request $request
      * @param LoggerInterface $logger
      * @return RedirectResponse|Response
@@ -878,11 +878,11 @@ class ContentTypeController extends AppController
         $repository = $em->getRepository('EMSCoreBundle:ContentType');
 
         /** @var ContentType $contentType */
-        $contentType = $repository->find($id);
+        $contentType = $repository->findById($id);
 
         if (!$contentType) {
             $logger->error('log.contenttype.not_found', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                EmsFields::LOG_CONTENTTYPE_FIELD => $id,
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
             ]);
 
@@ -987,8 +987,8 @@ class ContentTypeController extends AppController
     /**
      * @param ContentType $contentType
      * @param FieldType $field
-     * @param $action
-     * @param $subFieldName
+     * @param string $action
+     * @param string $subFieldName
      * @param LoggerInterface $logger
      * @return RedirectResponse
      * @throws ElasticmsException

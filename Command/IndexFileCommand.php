@@ -198,10 +198,10 @@ class IndexFileCommand extends EmsCommand
 
     /**
      * @param array $rawData
-     * @param $field
+     * @param string $field
      * @param OutputInterface $output
-     * @param $onlyWithIngestedContent
-     * @param $onlyMissingContent
+     * @param bool $onlyWithIngestedContent
+     * @param bool $onlyMissingContent
      * @return bool
      * @throws AssetNotFoundException
      */

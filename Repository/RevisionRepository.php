@@ -23,7 +23,8 @@ class RevisionRepository extends EntityRepository
 {
     
 
-    public function findByContentType(ContentType $contentType, $orderBy = null, $limit = null, $offset = null){
+    public function findByContentType(ContentType $contentType, $orderBy = null, $limit = null, $offset = null)
+    {
         return $this->findBy([
                 'contentType' => $contentType
             ], $orderBy, $limit, $offset);

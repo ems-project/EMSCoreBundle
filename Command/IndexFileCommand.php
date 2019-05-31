@@ -329,11 +329,9 @@ class IndexFileCommand extends EmsCommand
         $size = $stmt->fetchAll();
 
 
-        if(is_array($size) && isset($size[0]['size']))
-        {
+        if (is_array($size) && isset($size[0]['size'])) {
             $row = "The database size is {$size[0]['size']} MB";
-        } else
-        {
+        } else {
             $row = 'Undefined';
         }
 

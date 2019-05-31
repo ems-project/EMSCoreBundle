@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\Environment;
+use Throwable;
 
 /**
  * EnvironmentRepository
@@ -33,7 +34,7 @@ class EnvironmentRepository extends EntityRepository
         return parent::findOneBy(['name' => $name]);
     }
 
-    public function findOneById(string $id) : ?Environment
+    public function findOneById(string $id)
     {
         return parent::findOneBy(['id' => $id]);
     }
@@ -77,7 +78,7 @@ class EnvironmentRepository extends EntityRepository
 
         try {
             return $qb->getQuery()->getSingleScalarResult();
-        } catch (NonUniqueResultException $e) {
+        } catch (Throwable $e) {
             return 0;
         }
     }

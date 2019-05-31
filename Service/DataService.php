@@ -1253,7 +1253,7 @@ class DataService
 
 
 
-    public function getSubmitData(Form $form)
+    public function getSubmitData(FormInterface $form)
     {
         $out = $form->getViewData();
         /**@var Form $subform*/

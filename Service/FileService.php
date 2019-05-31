@@ -112,6 +112,7 @@ class FileService
      */
     public function getFile($hash, $cacheContext = false)
     {
+        //TODO: instead of always to make a new copy, copy it once in the symfony cache folder
         $resource = $this->getResource($hash, $cacheContext);
         if ($resource) {
             $filename = tempnam(sys_get_temp_dir(), 'EMS');

@@ -217,7 +217,10 @@ class AppController extends Controller
         $jobService = $this->container->get('ems.service.job');
         $job = $jobService->createService($this->getUser(), $service, $arguments);
 
-        $this->addFlash('notice', 'A job has been prepared');
+        $this->logger->notice('log.job.prepared', [
+            'command' => $service,
+            'job_id' => $job->getId(),
+        ]);
         
         return $this->redirectToRoute('job.status', [
             'job' => $job->getId(),

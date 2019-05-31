@@ -359,6 +359,8 @@ data.edit_revision.save_draft: Save draft
 emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's configurations and versions
 
 log:
+  job:
+    prepared: 'A job ems://job:%job_id% has been prepared (%command%)'
   user:
     api_key: 'New API key for the user %user_display_name%: %api_key%'
     locked: 'The user %user_display_name% has been locked'

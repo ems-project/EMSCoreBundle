@@ -359,6 +359,14 @@ data.edit_revision.save_draft: Save draft
 emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's configurations and versions
 
 log:
+  user:
+    api_key: 'New API key for the user %user_display_name%: %api_key%'
+    locked: 'The user %user_display_name% has been locked'
+    unlocked: 'The user %user_display_name% has been unlocked'
+    disabled: 'The user %user_display_name% has been disabled'
+    enabled: 'The user %user_display_name% has been enabled'
+    deleted: 'The user %user_display_name% has been deleted'
+    updated: 'The user %user_display_name% has been updated'
   reindex:
     revision:
       error: 'En error occurred while indexing the document ems://object:%contenttype%:%ouuid%'

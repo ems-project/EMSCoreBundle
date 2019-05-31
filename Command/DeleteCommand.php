@@ -3,23 +3,27 @@
 // src/EMS/CoreBundle/Command/GreetCommand.php
 namespace EMS\CoreBundle\Command;
 
-use EMS\CoreBundle\Entity\ContentType;
-use EMS\CoreBundle\Entity\Environment;
-use EMS\CoreBundle\Repository\ContentTypeRepository;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Elasticsearch\Client;
+use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Repository\ContentTypeRepository;
+use EMS\CoreBundle\Repository\NotificationRepository;
+use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use EMS\CoreBundle\Repository\RevisionRepository;
-use Elasticsearch\Common\Exceptions\Missing404Exception;
-use EMS\CoreBundle\Repository\NotificationRepository;
-use Symfony\Component\Console\Helper\ProgressBar;
+use Throwable;
 
 class DeleteCommand extends ContainerAwareCommand
 {
@@ -59,6 +63,14 @@ class DeleteCommand extends ContainerAwareCommand
             );
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int|void|null
+     * @throws NonUniqueResultException
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         
@@ -100,7 +112,7 @@ class DeleteCommand extends ContainerAwareCommand
                 
                 while ($revRepo->countByContentType($contentType) > 0) {
                     $revisions = $revRepo->findByContentType($contentType, null, 20);
-                    /**@var \EMS\CoreBundle\Entity\Revision $revision */
+                    /**@var Revision $revision */
                     foreach ($revisions as $revision) {
                         foreach ($revision->getEnvironments() as $environment) {
                             try {
@@ -109,7 +121,7 @@ class DeleteCommand extends ContainerAwareCommand
                                         'type' => $contentType->getName(),
                                         'id' => $revision->getOuuid(),
                                 ]);
-                            } catch (Missing404Exception $e) {
+                            } catch (Throwable $e) {
                                 //Deleting something that is not present shouldn't make problem.
                             }
                             $revision->removeEnvironment($environment);

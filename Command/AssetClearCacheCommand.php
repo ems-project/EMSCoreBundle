@@ -7,14 +7,13 @@ namespace EMS\CoreBundle\Command;
 use Elasticsearch\Client;
 use EMS\CommonBundle\Storage\Service\StorageInterface;
 use EMS\CoreBundle\Service\FileService;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\HttpFoundation\Session\Session;
 
 class AssetClearCacheCommand extends EmsCommand
 {
@@ -26,10 +25,10 @@ class AssetClearCacheCommand extends EmsCommand
     protected $fileService;
 
 
-    public function __construct(Logger $logger, Client $client, Session $session, FileService $fileService)
+    public function __construct(LoggerInterface $logger, Client $client, FileService $fileService)
     {
         $this->fileService = $fileService;
-        parent::__construct($logger, $client, $session);
+        parent::__construct($logger, $client);
     }
 
     protected function configure()
@@ -49,7 +48,7 @@ class AssetClearCacheCommand extends EmsCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
-        $this->formatFlash($output);
+        $this->formatStyles($output);
 
         if (! $input->getOption('all')) {
             /**@var QuestionHelper $helper*/

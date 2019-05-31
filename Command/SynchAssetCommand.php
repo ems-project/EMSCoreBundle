@@ -19,7 +19,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\HttpFoundation\Session\Session;
 
 class SynchAssetCommand extends EmsCommand
 {
@@ -54,13 +53,13 @@ class SynchAssetCommand extends EmsCommand
     const PAGE_SIZE = 10;
 
 
-    public function __construct(Logger $logger, Client $client, Session $session, Registry $doctrine, ContentTypeService $contentTypeService, AssetExtratorService $extractorService, FileService $fileService)
+    public function __construct(Logger $logger, Client $client, Registry $doctrine, ContentTypeService $contentTypeService, AssetExtratorService $extractorService, FileService $fileService)
     {
         $this->doctrine = $doctrine;
         $this->contentTypeService = $contentTypeService;
         $this->extractorService = $extractorService;
         $this->fileService = $fileService;
-        parent::__construct($logger, $client, $session);
+        parent::__construct($logger, $client);
     }
 
     protected function configure()
@@ -84,7 +83,7 @@ class SynchAssetCommand extends EmsCommand
         /** @var UploadedAssetRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:UploadedAsset');
 
-        $this->formatFlash($output);
+        $this->formatStyles($output);
 
         if (count($this->fileService->getStorages()) < 2) {
             $output->writeln('<error>There is nothing to synchronize as there is less than 2 storage services</error>');

@@ -359,6 +359,10 @@ data.edit_revision.save_draft: Save draft
 emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's configurations and versions
 
 log:
+  reindex:
+    revision:
+      error: 'En error occurred while indexing the document ems://object:%contenttype%:%ouuid%'
+      deleted_but_referenced: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% is marked as deleted but is still  referenced in %environment%'
   file:
     upload_error: 'Error during file upload: %error_message%'
   contenttype:

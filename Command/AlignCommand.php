@@ -3,22 +3,18 @@
 // src/EMS/CoreBundle/Command/GreetCommand.php
 namespace EMS\CoreBundle\Command;
 
-use EMS\CoreBundle\Entity\Environment;
-use EMS\CoreBundle\Entity\Revision;
+use Doctrine\Bundle\DoctrineBundle\Registry;
+use Elasticsearch\Client;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\PublishService;
-use Doctrine\Bundle\DoctrineBundle\Registry;
-use Elasticsearch\Client;
-use Monolog\Logger;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 
 class AlignCommand extends EmsCommand
 {
@@ -31,7 +27,7 @@ class AlignCommand extends EmsCommand
     /**@var PublishService */
     private $publishService;
 
-    public function __construct(Registry $doctrine, Logger $logger, Client $client, DataService $data, ContentTypeService $contentTypeService, EnvironmentService $environmentService, PublishService $publishService, $session)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, Client $client, DataService $data, ContentTypeService $contentTypeService, EnvironmentService $environmentService, PublishService $publishService)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
@@ -40,8 +36,7 @@ class AlignCommand extends EmsCommand
         $this->contentTypeService = $contentTypeService;
         $this->environmentService = $environmentService;
         $this->publishService = $publishService;
-        $this->session = $session;
-        parent::__construct($logger, $client, $session);
+        parent::__construct($logger, $client);
     }
 
     protected function configure()
@@ -69,9 +64,16 @@ class AlignCommand extends EmsCommand
         ;
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int|void|null
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->formatFlash($output);
+        $this->formatStyles($output);
         
         if (! $input->getOption('force')) {
             $output->writeln('<error>Has protection, the force option is mandatory</error>');
@@ -155,7 +157,6 @@ class AlignCommand extends EmsCommand
             
             if ($flush) {
                 $output->writeln("");
-                $this->flushFlash($output);
             }
         }
 

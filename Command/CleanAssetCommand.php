@@ -10,11 +10,10 @@ use EMS\CommonBundle\Storage\Service\StorageInterface;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\UploadedAssetRepository;
 use EMS\CoreBundle\Service\FileService;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\HttpFoundation\Session\Session;
 
 class CleanAssetCommand extends EmsCommand
 {
@@ -36,11 +35,11 @@ class CleanAssetCommand extends EmsCommand
      */
     protected $fileService;
 
-    public function __construct(Logger $logger, Client $client, Session $session, Registry $doctrine, FileService $fileService)
+    public function __construct(LoggerInterface $logger, Client $client, Registry $doctrine, FileService $fileService)
     {
         $this->doctrine = $doctrine;
         $this->fileService = $fileService;
-        parent::__construct($logger, $client, $session);
+        parent::__construct($logger, $client);
     }
 
     protected function configure()
@@ -66,7 +65,7 @@ class CleanAssetCommand extends EmsCommand
         /** @var RevisionRepository $revRepo */
         $revRepo = $em->getRepository('EMSCoreBundle:Revision');
 
-        $this->formatFlash($output);
+        $this->formatStyles($output);
 
         // create a new progress bar
         $progress = new ProgressBar($output, $repository->countHashes());

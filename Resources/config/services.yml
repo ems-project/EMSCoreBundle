@@ -455,37 +455,37 @@ services:
 ### command services ###
     ems.environment.ems:
         class: EMS\CoreBundle\Command\EmsCommand
-        arguments: ['@logger', '@app.elasticsearch', '@session']
+        arguments: ['@logger', '@app.elasticsearch']
         tags:
             -  { name: console.command }
     ems.contenttype.migrate:
         class: EMS\CoreBundle\Command\MigrateCommand
-        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.elasticsearch.bulker', '@ems.service.mapping', '@ems.service.data', '@form.factory', '%ems_core.instance_id%', '@session']
+        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.elasticsearch.bulker', '@ems.service.mapping', '@ems.service.data', '@form.factory', '%ems_core.instance_id%']
         tags:
             -  { name: console.command }
     ems.environment.rebuild:
         class: EMS\CoreBundle\Command\RebuildCommand
-        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.mapping', '@service_container', '@session', '%ems_core.instance_id%', '%ems_core.single_type_index%']
+        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.mapping', '@ems.service.contenttype', '@ems.service.environment', '@ems.environment.reindex', '%ems_core.instance_id%', '%ems_core.single_type_index%']
         tags:
             -  { name: console.command }
     ems.environment.recompute:
         class: EMS\CoreBundle\Command\RecomputeCommand
-        arguments: ['@ems.service.data', '@doctrine', '@form.factory', '@ems.service.publish', '@logger', '@app.elasticsearch', '@session', '@ems.service.contenttype']
+        arguments: ['@ems.service.data', '@doctrine', '@form.factory', '@ems.service.publish', '@logger', '@app.elasticsearch', '@ems.service.contenttype']
         tags:
             -  { name: console.command }
     ems.environment.updatemetafield:
         class: EMS\CoreBundle\Command\UpdateMetaFieldCommand
-        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@session', '@ems.service.data']
+        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.data']
         tags:
             -  { name: console.command }
     ems.environment.align:
         class: EMS\CoreBundle\Command\AlignCommand
-        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.data', '@ems.service.contenttype', '@ems.service.environment', '@ems.service.publish', '@session']
+        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.data', '@ems.service.contenttype', '@ems.service.environment', '@ems.service.publish']
         tags:
             -  { name: console.command }
     ems.environment.reindex:
         class: EMS\CoreBundle\Command\ReindexCommand
-        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.mapping', '@service_container', '%ems_core.instance_id%', '@session', '@ems.service.data']
+        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.mapping', '@service_container', '%ems_core.instance_id%', '@ems.service.data']
         tags:
             -  { name: console.command }
     ems.contenttype.delete:
@@ -511,7 +511,7 @@ services:
             -  { name: console.command }
     ems.revisions.index-file-fields:
         class: EMS\CoreBundle\Command\IndexFileCommand
-        arguments: ['@logger', '@app.elasticsearch', '@session', '@doctrine', '@ems.service.contenttype', '@ems.service.asset_extractor', '@ems.service.file']
+        arguments: ['@logger', '@app.elasticsearch', '@doctrine', '@ems.service.contenttype', '@ems.service.asset_extractor', '@ems.service.file']
         tags:
             -  { name: console.command }
     ems.environment.reconnect:
@@ -525,15 +525,15 @@ services:
         tags:
             -  { name: console.command }
     EMS\CoreBundle\Command\SynchAssetCommand:
-        arguments: ['@logger', '@app.elasticsearch', '@session', '@doctrine', '@ems.service.contenttype', '@ems.service.asset_extractor', '@ems.service.file']
+        arguments: ['@logger', '@app.elasticsearch', '@doctrine', '@ems.service.contenttype', '@ems.service.asset_extractor', '@ems.service.file']
         tags:
             - { name: console.command }
     EMS\CoreBundle\Command\CleanAssetCommand:
-        arguments: ['@logger', '@app.elasticsearch', '@session', '@doctrine', '@ems.service.file']
+        arguments: ['@logger', '@app.elasticsearch', '@doctrine', '@ems.service.file']
         tags:
             - { name: console.command }
     EMS\CoreBundle\Command\AssetClearCacheCommand:
-        arguments: ['@logger', '@app.elasticsearch', '@session', '@ems.service.file']
+        arguments: ['@logger', '@app.elasticsearch', '@ems.service.file']
         tags:
             - { name: console.command }
 #### security services

@@ -5,12 +5,13 @@ namespace EMS\CoreBundle\Controller;
 use EMS\CoreBundle\Entity\I18n;
 use EMS\CoreBundle\Form\Form\I18nType;
 use EMS\CoreBundle\Service\I18nService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use EMS\CoreBundle\Entity\Form\I18nFilter;
 use EMS\CoreBundle\Form\Form\I18nFormType;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * I18n controller.
@@ -21,19 +22,14 @@ class I18nController extends Controller
 {
     /**
      * Lists all I18n entities.
+     * @param Request $request
+     * @return Response
      *
-     * @Route("/", name="i18n_index")
-     * @Method("GET")
+     * @Route("/", name="i18n_index", methods={"GET"})
      */
     public function indexAction(Request $request)
     {
         $filters = $request->query->get('i18n_form');
-
-         //TODO: Why do we need to unset these fields ?
-//          if (is_array($filters)) {
-//              unset($filters['filter']);
-//              unset($filters['_token']);
-//          }
          
         $i18nFilter = new I18nFilter();
         
@@ -43,10 +39,8 @@ class I18nController extends Controller
          $form->handleRequest($request);
          
         if ($form->isSubmitted()) {
-            $i18nFilter = $form->getData();
+            $form->getData();
         }
-        
-        $em = $this->getDoctrine()->getManager();
         
         $count = $this->getI18nService()->count($filters);
         // for pagination
@@ -76,14 +70,15 @@ class I18nController extends Controller
 
     /**
      * Creates a new I18n entity.
+     * @param Request $request
+     * @return RedirectResponse|Response
      *
-     * @Route("/new", name="i18n_new")
-     * @Method({"GET", "POST"})
+     * @Route("/new", name="i18n_new", methods={"GET","POST"})
      */
     public function newAction(Request $request)
     {
         $i18n = new I18n();
-        $content = $i18n->getContent();
+        $i18n->getContent();
         
         $i18n->setContent(array(array('locale' => "", 'text' => "")));
         
@@ -106,9 +101,11 @@ class I18nController extends Controller
 
     /**
      * Displays a form to edit an existing I18n entity.
+     * @param Request $request
+     * @param I18n $i18n
+     * @return RedirectResponse|Response
      *
-     * @Route("/{id}/edit", name="i18n_edit")
-     * @Method({"GET", "POST"})
+     * @Route("/{id}/edit", name="i18n_edit", methods={"GET", "POST"})
      */
     public function editAction(Request $request, I18n $i18n)
     {
@@ -141,12 +138,13 @@ class I18nController extends Controller
     }
 
     /**
-     * Deletes a I18n entity.
+     * Deletes a I18n entity
+     * @param I18n $i18n
+     * @return RedirectResponse
      *
-     * @Route("/{id}", name="i18n_delete")
-     * @Method("POST")
+     * @Route("/{id}", name="i18n_delete", methods={"POST"})
      */
-    public function deleteAction(Request $request, I18n $i18n)
+    public function deleteAction(I18n $i18n)
     {
         $this->getI18nService()->delete($i18n);
 

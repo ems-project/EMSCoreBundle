@@ -427,6 +427,9 @@ log:
     created: 'The analyzer %analyzer_name% has been created'
     updated: 'The analyzer %analyzer_name% has been updated'
   view:
+    created: 'A new view %view_name% has been created'
+    updated: 'A new view %view_name% has been updated'
+    deleted: 'A new view %view_name% has been deleted'
     criteria:
       not_found: 'Criteria not found for the field %field_name%'
       too_many_criteria: 'Too many criteria found (%total%). There is something wrong with this combination of criteria!: %message%'

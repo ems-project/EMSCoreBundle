@@ -2,15 +2,14 @@
 
 namespace EMS\CoreBundle\Form\View;
 
-use Elasticsearch\Client;
-use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
-use EMS\CoreBundle\Form\View\ViewType;
+use Exception;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Throwable;
 
 /**
  * It's the mother class of all specific DataField used in eMS
@@ -21,31 +20,16 @@ use Symfony\Component\HttpFoundation\Request;
 class ReportViewType extends ViewType
 {
 
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public function getLabel()
     {
         return "Report: perform an elasticsearch query and generate a report with a twig template";
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public function getName()
     {
         return "Report";
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         parent::buildForm($builder, $options);
@@ -86,14 +70,15 @@ class ReportViewType extends ViewType
     {
         return 'report_view';
     }
-    
 
     /**
-     *
-     * {@inheritdoc}
-     *
+     * @param View $view
+     * @param FormFactoryInterface $formFactory
+     * @param Request $request
+     * @return array|mixed
+     * @throws Throwable
      */
-    public function getParameters(View $view, FormFactoryInterface $formFactoty, Request $request)
+    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request)
     {
 
         try {
@@ -102,7 +87,7 @@ class ReportViewType extends ViewType
                     'contentType' => $view->getContentType(),
                     'environment' => $view->getContentType()->getEnvironment(),
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $renderQuery = "{}";
         }
         
@@ -125,7 +110,7 @@ class ReportViewType extends ViewType
                 'environment' => $view->getContentType()->getEnvironment(),
                 'result' => $result,
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $render = "Something went wrong with the template of the view ".$view->getName()." for the content type ".$view->getContentType()->getName()." (".$e->getMessage().")";
         }
         try {
@@ -135,7 +120,7 @@ class ReportViewType extends ViewType
                 'environment' => $view->getContentType()->getEnvironment(),
                 'result' => $result,
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $javascript = "";
         }
         try {
@@ -145,7 +130,7 @@ class ReportViewType extends ViewType
                 'environment' => $view->getContentType()->getEnvironment(),
                 'result' => $result,
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $header = "";
         }
 

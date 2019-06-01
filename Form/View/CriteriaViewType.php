@@ -8,14 +8,18 @@ use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\View\Criteria\CriteriaFilterType;
 use EMS\CoreBundle\Form\View\ViewType;
 use Elasticsearch\Client;
+use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Twig_Environment;
 
 /**
  * It's the mother class of all specific DataField used in eMS
@@ -29,9 +33,9 @@ class CriteriaViewType extends ViewType
     /** @var Router $router */
     protected $router;
     
-    public function __construct($formFactory, $twig, $client, $router)
+    public function __construct(FormFactory $formFactory, Twig_Environment $twig, Client $client, LoggerInterface $logger, Router $router)
     {
-        parent::__construct($formFactory, $twig, $client);
+        parent::__construct($formFactory, $twig, $client, $logger);
         $this->router = $router;
     }
     
@@ -96,25 +100,26 @@ class CriteriaViewType extends ViewType
     {
         return 'criteria_view';
     }
-    
 
     /**
-     *
-     * {@inheritdoc}
-     *
+     * @param View $view
+     * @param FormFactoryInterface $formFactory
+     * @param Request $request
+     * @return array|mixed
+     * @throws Exception
      */
-    public function getParameters(View $view, FormFactoryInterface $formFactoty, Request $request)
+    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request)
     {
         
-        $criteriaUpdateConfig = new CriteriaUpdateConfig($view, $request->getSession());
+        $criteriaUpdateConfig = new CriteriaUpdateConfig($view, $this->logger);
         
-        $form = $formFactoty->create(CriteriaFilterType::class, $criteriaUpdateConfig, [
+        $form = $formFactory->create(CriteriaFilterType::class, $criteriaUpdateConfig, [
                 'view' => $view,
                 'action' => $this->router->generate('views.criteria.table', [
                     'view' =>     $view->getId(),
                 ], UrlGeneratorInterface::RELATIVE_PATH),
         ]);
-        
+
         $form->handleRequest($request);
         
         

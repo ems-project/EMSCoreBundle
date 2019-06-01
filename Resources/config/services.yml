@@ -237,49 +237,49 @@ services:
             - { name: form.type }
     ems.view.keywords:
         class: EMS\CoreBundle\Form\View\KeywordsViewType
-        arguments: ['@form.factory', '@twig', '@app.elasticsearch']
+        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger']
         tags:
             - { name: ems.form.viewtype, alias: keywords }
             - { name: form.type }
     ems.view.criteria:
         class: EMS\CoreBundle\Form\View\CriteriaViewType
-        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@router']
+        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger', '@router']
         tags:
             - { name: ems.form.viewtype, alias: criteria }
             - { name: form.type }
     ems.view.export:
         class: EMS\CoreBundle\Form\View\ExportViewType
-        arguments: ['@form.factory', '@twig', '@app.elasticsearch']
+        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger']
         tags:
             - { name: ems.form.viewtype, alias: export }
             - { name: form.type }
     ems.view.sorter:
         class: EMS\CoreBundle\Form\View\SorterViewType
-        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@session', '@ems.service.data', '@router']
+        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger', '@session', '@ems.service.data', '@router']
         tags:
             - { name: ems.form.viewtype, alias: sorter }
             - { name: form.type }
     ems.view.hierarchical:
         class: EMS\CoreBundle\Form\View\HierarchicalViewType
-        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@session', '@ems.service.data', '@router', '@ems.service.contenttype']
+        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger', '@session', '@ems.service.data', '@router', '@ems.service.contenttype']
         tags:
             - { name: ems.form.viewtype, alias: hierarchical }
             - { name: form.type }
     ems.view.report:
         class: EMS\CoreBundle\Form\View\ReportViewType
-        arguments: ['@form.factory', '@twig', '@app.elasticsearch']
+        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger']
         tags:
             - { name: ems.form.viewtype, alias: report }
             - { name: form.type }
     ems.view.calendar:
         class: EMS\CoreBundle\Form\View\CalendarViewType
-        arguments: ['@form.factory', '@twig', '@app.elasticsearch']
+        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger']
         tags:
             - { name: ems.form.viewtype, alias: calendar }
             - { name: form.type }
     ems.view.gallery:
         class: EMS\CoreBundle\Form\View\GalleryViewType
-        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@ems.service.search']
+        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger', '@ems.service.search']
         tags:
             - { name: ems.form.viewtype, alias: gallery }
             - { name: form.type }

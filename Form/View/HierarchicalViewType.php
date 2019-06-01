@@ -9,12 +9,14 @@ use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\DataField\DataLinkFieldType;
 use EMS\CoreBundle\Form\Field\ContentTypeFieldPickerType;
 use EMS\CoreBundle\Form\Nature\ReorganizeType;
-use EMS\CoreBundle\Form\View\ViewType;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
+use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,6 +25,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Router;
+use Twig_Environment;
 
 /**
  * It's the mother class of all specific DataField used in eMS
@@ -45,9 +48,9 @@ class HierarchicalViewType extends ViewType
     /**@var ContentTypeService */
     protected $contentTypeService;
     
-    public function __construct($formFactory, $twig, $client, Session $session, DataService $dataService, Router $router, ContentTypeService $contentTypeService)
+    public function __construct(FormFactory $formFactory, Twig_Environment $twig, Client $client, LoggerInterface $logger, Session $session, DataService $dataService, Router $router, ContentTypeService $contentTypeService)
     {
-        parent::__construct($formFactory, $twig, $client);
+        parent::__construct($formFactory, $twig, $client, $logger);
         $this->session= $session;
         $this->dataService = $dataService;
         $this->router= $router;
@@ -167,7 +170,7 @@ class HierarchicalViewType extends ViewType
      * {@inheritdoc}
      *
      */
-    public function getParameters(View $view, FormFactoryInterface $formFactoty, Request $request)
+    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request)
     {
         
         return [];
@@ -198,7 +201,7 @@ class HierarchicalViewType extends ViewType
                     'type' => $parentId[0],
                     'id' => $parentId[1],
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new NotFoundHttpException('Parent menu not found: '.$view->getOptions()['parent']);
         }
         
@@ -221,7 +224,7 @@ class HierarchicalViewType extends ViewType
             $structure = json_decode($data['structure'], true);
 
             $this->reorder($view->getOptions()['parent'], $view, $structure);
-            
+
             $this->session->getFlashBag()->add('notice', 'The '.$view->getContentType()->getPluralName().' have been reorganized');
             
             
@@ -260,7 +263,7 @@ class HierarchicalViewType extends ViewType
             }
             $revision->setRawData($data);
             $this->dataService->finalizeDraft($revision);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->session->getFlashBag()->add('warning', 'It was impossible to update the item '.$itemKey.': '.$e->getMessage());
         }
     }

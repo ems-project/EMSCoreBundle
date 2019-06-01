@@ -2,10 +2,9 @@
 
 namespace EMS\CoreBundle\Form\View;
 
-use Elasticsearch\Client;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
-use EMS\CoreBundle\Form\View\ViewType;
+use Exception;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -14,6 +13,7 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Throwable;
 
 /**
  * An export view plugin
@@ -108,12 +108,13 @@ class ExportViewType extends ViewType
     {
         return 'export_view';
     }
-    
-    
+
+
     /**
-     *
-     * {@inheritDoc}
-     * @see \EMS\CoreBundle\Form\View\ViewType::generateResponse()
+     * @param View $view
+     * @param Request $request
+     * @return Response
+     * @throws Throwable
      */
     public function generateResponse(View $view, Request $request)
     {
@@ -138,13 +139,15 @@ class ExportViewType extends ViewType
         
         return $response;
     }
-    
+
     /**
-     *
-     * {@inheritdoc}
-     *
+     * @param View $view
+     * @param FormFactoryInterface $formFactory
+     * @param Request $request
+     * @return array|mixed
+     * @throws Throwable
      */
-    public function getParameters(View $view, FormFactoryInterface $formFactoty, Request $request)
+    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request)
     {
         
         try {
@@ -153,7 +156,7 @@ class ExportViewType extends ViewType
                     'contentType' => $view->getContentType(),
                     'environment' => $view->getContentType()->getEnvironment(),
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $renderQuery = "{}";
         }
         
@@ -176,7 +179,7 @@ class ExportViewType extends ViewType
                     'environment' => $view->getContentType()->getEnvironment(),
                     'result' => $result,
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $render = "Something went wrong with the template of the view ".$view->getName()." for the content type ".$view->getContentType()->getName()." (".$e->getMessage().")";
         }
         
@@ -187,7 +190,7 @@ class ExportViewType extends ViewType
                     'environment' => $view->getContentType()->getEnvironment(),
                     'result' => $result,
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $filename = "Something went wrong with the template of the view ".$view->getName()." for the content type ".$view->getContentType()->getName()." (".$e->getMessage().")";
         }
         

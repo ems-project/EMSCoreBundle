@@ -6,6 +6,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityRepository;
 use EMS\CoreBundle\Entity\SortOption;
 use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Translation\TranslatorInterface;
 use EMS\CoreBundle\DependencyInjection\EMSCoreExtension;
@@ -30,9 +31,9 @@ abstract class EntityService
     abstract protected function getEntityName();
     
     
-    public function reorder(Form $reorderform)
+    public function reorder(FormInterface $reorderForm)
     {
-        $order = json_decode($reorderform->getData()['items'], true);
+        $order = json_decode($reorderForm->getData()['items'], true);
         $i = 1;
         foreach ($order as $id) {
             $item = $this->get($id);

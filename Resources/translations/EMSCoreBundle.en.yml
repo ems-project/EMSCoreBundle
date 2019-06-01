@@ -357,7 +357,10 @@ view.macros.data-field-type.collection_removed_items: '{1} One %singular% has be
 data.edit_revision.save_draft: Save draft
 
 emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's configurations and versions
-
+search:
+  sort_option_label: 'Sort Option'
+  search_field_option_label: 'Search Field Option'
+  aggregate_option_label: 'Aggregate Option'
 log:
   revision_error: 'Error "%error_message%" with the document ems://object:%contenttype%:%ouuid%'
   crud:

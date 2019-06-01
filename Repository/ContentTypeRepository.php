@@ -14,7 +14,10 @@ use EMS\CoreBundle\Entity\ContentType;
  */
 class ContentTypeRepository extends EntityRepository
 {
-    
+
+    /**
+     * @return ContentType[]
+     */
     public function findAllAsAssociativeArray()
     {
         $qb = $this->createQueryBuilder('ct');

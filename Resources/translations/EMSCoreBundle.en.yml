@@ -359,6 +359,19 @@ data.edit_revision.save_draft: Save draft
 emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's configurations and versions
 
 log:
+  elasticsearch:
+    template_error: 'There is something wrong with the template %template_name%'
+    template_filename_error: 'There is something wrong with the template %template_name%''s filename'
+    limit_exceded: 'The search results are limited to the first 50.000 items'
+    search_deleted: 'A search has been deleted'
+    index_not_found: 'Index %index_name% not found'
+    index_deleted': 'The index %index_name% has been deleted'
+    default_search: 'This search has been defined as default search'
+    default_search_for_content_type: 'This search has been defined as default search form for the content type %contenttype%'
+    cluster_red: 'There is something wrong with the cluster, actions are required now!'
+    cluster_yellow: 'There is something wrong with the cluster, status color: %color_status%'
+    alias_added: 'A new alias "%alias_name%" has been added to the index "%index_name%"'
+    not_able_to_deserialize_filters: 'Error during the deserialization of the filters'
   notification:
     notification_not_found: 'Notification #%notification_id% not found'
   nature:

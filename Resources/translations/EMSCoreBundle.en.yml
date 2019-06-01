@@ -359,6 +359,10 @@ data.edit_revision.save_draft: Save draft
 emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's configurations and versions
 
 log:
+  managed_alias:
+    created: 'Managed alias %managed_alias_name% has been created'
+    updated: 'Managed alias %managed_alias_name% has been updated'
+    deleted: 'Managed alias %managed_alias_name% has been deleteddeleted'
   filter:
     deleted: 'The filter %filter_name% has been deleted'
   elasticsearch:

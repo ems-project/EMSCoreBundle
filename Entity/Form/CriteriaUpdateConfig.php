@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Entity\Form;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\View;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * RebuildIndex
@@ -23,7 +24,7 @@ class CriteriaUpdateConfig
     private $session;
 
 
-    public function __construct(View $view, Session $session)
+    public function __construct(View $view, SessionInterface $session)
     {
         
         $this->session = $session;

@@ -355,8 +355,11 @@ view.contenttype.reorder_item.edit_main_container_button: 'Edit the main contain
 view.macros.data-field-type.collection_added_items: '{1} One %singular% has been added|]1,Inf[ %count% %plural% have been added'
 view.macros.data-field-type.collection_removed_items: '{1} One %singular% has been removed|]1,Inf[ %count% %plural% have been removed'
 data.edit_revision.save_draft: Save draft
-
 emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's configurations and versions
+
+
+wysiwyg:
+  invalid_config_format: 'Format not valid: %msg%'
 search:
   sort_option_label: 'Sort Option'
   search_field_option_label: 'Search Field Option'

@@ -2,7 +2,9 @@
 
 namespace EMS\CoreBundle\Exception;
 
-class ElasticmsException extends \Exception
+use Exception;
+
+class ElasticmsException extends Exception
 {
     
 }

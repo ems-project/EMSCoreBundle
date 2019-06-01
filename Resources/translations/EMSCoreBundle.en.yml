@@ -359,6 +359,7 @@ data.edit_revision.save_draft: Save draft
 emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's configurations and versions
 
 log:
+  revision_error: 'Error "%error_message%" with the document ems://object:%contenttype%:%ouuid%'
   crud:
     create_error: 'The revision for contenttype %contenttype% can not be created, reason: %error_message%'
     read_error: 'The revision for contenttype %contenttype% can not be found, reason: %error_message%'

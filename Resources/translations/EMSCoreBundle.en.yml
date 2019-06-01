@@ -432,12 +432,14 @@ log:
       locked_revision: 'Impossible to update the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% as the revision is locked by %locked_by%'
       update_privilege_issue: 'You are not authorized to update the document ems://object:%contenttype%:%ouuid%'
       document_key_not_found: 'Document reference "%document_reference%" not found for the document ems://object:%contenttype%:%ouuid%'
-      too_many_criteria: 'Some criteria were not loaded!!!! There is more than %total% criteria for this view. Leave this view and be more restrictive with your filters.'
       update_not_authorized: 'You don''t have enough privileges to use this view to updates criterion'
       field_not_found: 'Field path %field_path% not found'
       draft_in_progress: '{0} A draft is in progress for the document ems://object:%contenttype%:%ouuid%, it''s not possible to update it|{1} There is one drafts in progress. You won’t be able to update it from here.|]1,Inf[ There are %count% drafts in progress. You won’t be able to update them from here.'
     not_found: 'View %view_id% not found'
   template:
+    added: 'A new template %template_name% has been created'
+    updated: 'The template %template_name% has been updated'
+    deleted: 'The template %template_name% has been deleted'
     twig:
       error: 'Error during the Twig generation of ems://template:%template_id%'
   error: 'This page/action has encountered an error: %error_message%'

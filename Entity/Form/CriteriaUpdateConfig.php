@@ -3,8 +3,7 @@ namespace EMS\CoreBundle\Entity\Form;
 
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\View;
-use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * RebuildIndex
@@ -20,14 +19,14 @@ class CriteriaUpdateConfig
     
     private $criterion;
     
-    /**@var Session */
-    private $session;
+    /**@var LoggerInterface */
+    private $logger;
 
 
-    public function __construct(View $view, SessionInterface $session)
+    public function __construct(View $view, LoggerInterface $logger)
     {
         
-        $this->session = $session;
+        $this->logger = $logger;
         $this->criterion = [];
         $contentType = $view->getContentType();
         
@@ -58,7 +57,9 @@ class CriteriaUpdateConfig
                 $dataField->setFieldType($child);
                 $this->criterion[$child->getName()] = $dataField;
             } else {
-                $this->session->getFlashBag()->add('warning', 'Field path not found '.$path);
+                $this->logger->warning('log.view.criteria.field_not_found', [
+                    'field_path' => $path
+                ]);
             }
         }
     }

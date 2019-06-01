@@ -419,7 +419,23 @@ log:
     deleted: 'The analyzer %analyzer_name% has been deleted'
     created: 'The analyzer %analyzer_name% has been created'
     updated: 'The analyzer %analyzer_name% has been updated'
+
   view:
+    criteria:
+      not_found: 'Criteria not found for the field %field_name%'
+      too_many_criteria: 'Too many criteria found (%total%). There is something wrong with this combination of criteria!: %message%'
+      added: 'A criteria has been added for field %field_name% with value %field_data%'
+      already_exists: 'A criteria already exist for field %field_name% with value %field_data%'
+      removed: 'A criteria has been removed for field %field_name% with value %field_data%'
+      already_missing: 'A criteria is already missing for field %field_name% with value %field_data%'
+      new_criteria: 'A new criteria has been created for %target_field_name%:%target_field_data%'
+      locked_revision: 'Impossible to update the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% as the revision is locked by %locked_by%'
+      update_privilege_issue: 'You are not authorized to update the document ems://object:%contenttype%:%ouuid%'
+      document_key_not_found: 'Document reference "%document_reference%" not found for the document ems://object:%contenttype%:%ouuid%'
+      too_many_criteria: 'Some criteria were not loaded!!!! There is more than %total% criteria for this view. Leave this view and be more restrictive with your filters.'
+      update_not_authorized: 'You don''t have enough privileges to use this view to updates criterion'
+      field_not_found: 'Field path %field_path% not found'
+      draft_in_progress: '{0} A draft is in progress for the document ems://object:%contenttype%:%ouuid%, it''s not possible to update it|{1} There is one drafts in progress. You won’t be able to update it from here.|]1,Inf[ There are %count% drafts in progress. You won’t be able to update them from here.'
     not_found: 'View %view_id% not found'
   template:
     twig:
@@ -430,7 +446,7 @@ log:
       initialize_failed: 'A job %template_name% has failed for the document ems://object:%contenttype%:%ouuid% in the environment %environment%'
       started: 'A job %template_name% has been started for the document ems://object:%contenttype%:%ouuid% in the environment %environment%'
     document:
-      copy: 'The content of the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has copied into the clipboard'
+      copy: 'The content of the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has been copied into the clipboard'
       paste: 'Clipboard''s content has been paste in the document ems://object:%contenttype%:%ouuid%'
       duplicated: 'The document ems://object:%contenttype%:%ouuid% has been used to initiate a new document'
       cant_duplicate_when_waiting_ouuid: 'It''s impossible to duplicate the document ems://object:%contenttype%:%ouuid% has the content type %contenttype% requests first an OUUID'

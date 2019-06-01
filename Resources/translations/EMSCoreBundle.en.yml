@@ -357,7 +357,20 @@ view.macros.data-field-type.collection_removed_items: '{1} One %singular% has be
 data.edit_revision.save_draft: Save draft
 emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's configurations and versions
 
-
+form:
+  data_field:
+    collection:
+      import_not_an_array: 'Some data were not imported for the collection field %field_name% as is was not an array'
+    file_attachment:
+      file_not_found: 'File not found with the hash "%file_hash%"'
+  view:
+    sorter:
+      too_many_documents: 'This content type have to much document (%total%) to be reorder them all in once'
+      error_with_document: 'It was impossible to update the document ems://object:%contenttype%:%ouuid% : %error_message%'
+      ordered: 'The %contenttype%''s documents have been ordered with the view "%view_name%"'
+    hierarchical:
+      error_with_document: 'It was impossible to update the document ems://object:%contenttype%:%ouuid% : %error_message%'
+      reorganized: 'The %contenttype%''s documents have been reorganized with the view "%view_name%"'
 wysiwyg:
   invalid_config_format: 'Format not valid: %msg%'
 search:

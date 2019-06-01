@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Form\View;
 
 use Elasticsearch\Client;
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\View;
@@ -57,31 +58,16 @@ class HierarchicalViewType extends ViewType
         $this->contentTypeService= $contentTypeService;
     }
 
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public function getLabel()
     {
         return "Hierarchical: manage a menu structure (based on a ES query)";
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public function getName()
     {
         return "Hierarchical";
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         parent::buildForm($builder, $options);
@@ -154,33 +140,18 @@ class HierarchicalViewType extends ViewType
         ));
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public function getBlockPrefix()
     {
         return 'hierarchical_view';
     }
     
 
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request)
     {
         
         return [];
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public function generateResponse(View $view, Request $request)
     {
         
@@ -225,9 +196,10 @@ class HierarchicalViewType extends ViewType
 
             $this->reorder($view->getOptions()['parent'], $view, $structure);
 
-            $this->session->getFlashBag()->add('notice', 'The '.$view->getContentType()->getPluralName().' have been reorganized');
-            
-            
+            $this->logger->notice('form.view.hierarchical.reorganized', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $view->getContentType()->getName(),
+                'view_name' => $view->getName(),
+            ]);
             
             return new RedirectResponse($this->router->generate('data.draft_in_progress', [
                     'contentTypeId' => $view->getContentType()->getId(),
@@ -264,7 +236,12 @@ class HierarchicalViewType extends ViewType
             $revision->setRawData($data);
             $this->dataService->finalizeDraft($revision);
         } catch (Exception $e) {
-            $this->session->getFlashBag()->add('warning', 'It was impossible to update the item '.$itemKey.': '.$e->getMessage());
+            $this->logger->warning('form.view.hierarchical.error_with_document', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $type,
+                EmsFields::LOG_OUUID_FIELD => $ouuid,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+            ]);
         }
     }
 }

@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Form\View;
 
 use Elasticsearch\Client;
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\ContentTypeFieldPickerType;
@@ -46,31 +47,16 @@ class SorterViewType extends ViewType
         $this->router= $router;
     }
 
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public function getLabel()
     {
         return "Sorter: order a sub set (based on a ES query)";
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public function getName()
     {
         return "Sorter";
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         parent::buildForm($builder, $options);
@@ -107,11 +93,6 @@ class SorterViewType extends ViewType
                 ]]);
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public function getBlockPrefix()
     {
         return 'sorter_view';
@@ -160,7 +141,9 @@ class SorterViewType extends ViewType
         $result = $this->client->search($searchQuery);
         
         if ($result['hits']['total'] > $searchQuery['size']) {
-            $this->session->getFlashBag()->add('warning', 'This content type have to much elements to reorder them all in once');
+            $this->logger->warning('form.view.sorter.too_many_documents', [
+                'total' => $result['hits']['total'],
+            ]);
         }
         
         $data = [];
@@ -168,7 +151,6 @@ class SorterViewType extends ViewType
         $form = $this->formFactory->create(ReorderType::class, $data, [
                 'result' => $result,
         ]);
-        
         
         $form->handleRequest($request);
         
@@ -182,14 +164,19 @@ class SorterViewType extends ViewType
                     $revision->setRawData($data);
                     $this->dataService->finalizeDraft($revision);
                 } catch (Throwable $e) {
-                    $this->session->getFlashBag()->add('warning', 'It was impossible to update the item '.$itemKey.': '.$e->getMessage());
+                    $this->logger->warning('form.view.sorter.error_with_document', [
+                        EmsFields::LOG_CONTENTTYPE_FIELD => $view->getContentType()->getName(),
+                        EmsFields::LOG_OUUID_FIELD => $itemKey,
+                        EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                        EmsFields::LOG_EXCEPTION_FIELD => $e,
+                    ]);
                 }
             }
-            
-            $this->session->getFlashBag()->add('notice', 'The '.$view->getContentType()->getPluralName().' have been reordered');
-            
-            
-            
+            $this->logger->notice('form.view.hierarchical.ordered', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $view->getContentType()->getName(),
+                'view_name' => $view->getName(),
+            ]);
+
             return new RedirectResponse($this->router->generate('data.draft_in_progress', [
                     'contentTypeId' => $view->getContentType()->getId(),
             ], UrlGeneratorInterface::RELATIVE_PATH));

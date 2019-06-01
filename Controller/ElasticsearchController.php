@@ -616,8 +616,8 @@ class ElasticsearchController extends AppController
      * @throws Twig_Error_Loader
      * @throws Twig_Error_Syntax
      *
-     * @Route("/search, name="ems_search"))
-     * @Route("/search, name="elasticsearch.search"))
+     * @Route("/search", name="ems_search")
+     * @Route("/search", name="elasticsearch.search")
      */
     public function searchAction(Request $request)
     {

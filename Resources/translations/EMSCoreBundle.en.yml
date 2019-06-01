@@ -359,6 +359,23 @@ data.edit_revision.save_draft: Save draft
 emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's configurations and versions
 
 log:
+  environment:
+    rebuild_unknown_option: 'Impossible to rebuild the environment %environment% due to unknown option "%option%"'
+    alia_missing: 'The alias for the environment %environment% is missing, consider to rebuild a brand new alias'
+    updated: 'The environment %environment% has been updated'
+    reordered: 'The environments have been reordered'
+    created: 'The environment %environment% has been created'
+    deleted: 'The environment %environment% has been deleted'
+    is_default: 'The environment %environment% is used as default environment for at least one content type'
+    not_empty: 'The environment %environment% is not empty'
+    alias_not_found: 'Alias %alias% not found'
+    alias_removed: 'The alias %alias% has been removed'
+    alias_attached: 'The alias %alias% has been attached'
+    cant_attach_xti_alias_to_environment: 'Can''t attach %alias% as it''s an alias with multiple indexes'
+    aligned: 'Environment %environment% and %with_environment% are aligned for those content types'
+    wrong_ouuid: 'Malformed OUUID %ouuid%'
+    dont_have_publish_role: 'You don''t have enough privileges to publish "%contenttype%" documents'
+    cant_align_default_environment: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% cant''t be published in %environment% has it''s  the %contenttype% default environment'
   job:
     prepared: 'A job ems://job:%job_id% has been prepared (%command%)'
   user:

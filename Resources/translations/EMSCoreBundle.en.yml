@@ -427,6 +427,9 @@ log:
     created: 'The analyzer %analyzer_name% has been created'
     updated: 'The analyzer %analyzer_name% has been updated'
   view:
+    calendar:
+      from_date_is_missing: 'From date is missing!'
+      document_not_found: 'The document ems://object:%contenttype%:%ouuid% is missing'
     created: 'A new view %view_name% has been created'
     updated: 'A new view %view_name% has been updated'
     deleted: 'A new view %view_name% has been deleted'

@@ -359,6 +359,8 @@ data.edit_revision.save_draft: Save draft
 emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's configurations and versions
 
 log:
+  notification:
+    notification_not_found: 'Notification #%notification_id% not found'
   nature:
     order_field_not_defined: 'The content type %contenttype% does not have any order field defined'
     order_field_is_missing: 'The order field %order_field_name% is missing for the content type %contenttype%'

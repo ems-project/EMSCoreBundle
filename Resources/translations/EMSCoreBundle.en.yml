@@ -359,6 +359,9 @@ data.edit_revision.save_draft: Save draft
 emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's configurations and versions
 
 log:
+  index:
+    delete_orphan_index: 'Elasticsearch index %index_name% has been deleted'
+    index_not_found: 'Elasticsearch index %index_name% not found'
   managed_alias:
     created: 'Managed alias %managed_alias_name% has been created'
     updated: 'Managed alias %managed_alias_name% has been updated'

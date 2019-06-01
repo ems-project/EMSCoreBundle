@@ -359,6 +359,14 @@ data.edit_revision.save_draft: Save draft
 emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's configurations and versions
 
 log:
+  crud:
+    create_error: 'The revision for contenttype %contenttype% can not be created, reason: %error_message%'
+    read_error: 'The revision for contenttype %contenttype% can not be found, reason: %error_message%'
+    finalize_error: 'The revision ems://revision:%revision_id% for content type %contenttype% can not be finalized, reason: %error_message%'
+    discard_error: 'The revision ems://revision:%revision_id% for contenttype %contenttype% can not be discarded, reason: %error_message%'
+    delete_error: 'The revision ems://revision:%revision_id% for contenttype %contenttype% can not be deleted, reason: %error_message%'
+    replace_error: 'The revision ems://revision:%revision_id% for contenttype %contenttype% can not be replaced/updated, reason: %error_message%'
+    merge_error: 'The revision ems://revision:%revision_id% for contenttype %contenttype% can not be merged/updated, reason: %error_message%'
   index:
     delete_orphan_index: 'Elasticsearch index %index_name% has been deleted'
     index_not_found: 'Elasticsearch index %index_name% not found'

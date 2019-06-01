@@ -734,7 +734,7 @@ class CriteriaController extends AppController
     /**
      * @param array $filters
      * @param Revision $revision
-     * @param $criteriaField
+     * @param string $criteriaField
      * @return bool|Revision
      * @throws Exception
      */
@@ -924,7 +924,6 @@ class CriteriaController extends AppController
         ]);
     
         if ($result['hits']['total'] == 0) {
-
             $this->getLogger()->warning('log.view.criteria.not_found', [
                 'field_name' => $targetFieldName,
             ]);

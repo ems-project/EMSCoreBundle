@@ -359,6 +359,13 @@ data.edit_revision.save_draft: Save draft
 emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's configurations and versions
 
 log:
+  nature:
+    order_field_not_defined: 'The content type %contenttype% does not have any order field defined'
+    order_field_is_missing: 'The order field %order_field_name% is missing for the content type %contenttype%'
+    not_authorized: 'Your user does not have privileges to to reorder the content type %contenttype%'
+    too_many_documents: 'The content type %contenttype% have to much documents (%total%) to be reorder all at once'
+    issue_with_document: 'It was impossible to reorder the document ems://object:%contenttype%:%ouuid%: %error_message%'
+    reordered: 'The content type %contenttype%''s documents have been reordered'
   environment:
     rebuild_unknown_option: 'Impossible to rebuild the environment %environment% due to unknown option "%option%"'
     alia_missing: 'The alias for the environment %environment% is missing, consider to rebuild a brand new alias'
@@ -419,7 +426,6 @@ log:
     deleted: 'The analyzer %analyzer_name% has been deleted'
     created: 'The analyzer %analyzer_name% has been created'
     updated: 'The analyzer %analyzer_name% has been updated'
-
   view:
     criteria:
       not_found: 'Criteria not found for the field %field_name%'

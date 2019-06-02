@@ -378,15 +378,15 @@ class RevisionRepository extends EntityRepository
     /**
      * @param Revision $revision
      * @param Environment|null $env
-     * @return null
+     * @return null|Revision
      * @throws NonUniqueResultException
      */
     public function findByOuuidContentTypeAndEnvironnement(Revision $revision, Environment $env = null)
     {
-        if (!isset($env)) {
+        if (!$env) {
             $env = $revision->getContentType()->getEnvironment();
         }
-        
+
         return $this->findByOuuidAndContentTypeAndEnvironnement($revision->getContentType(), $revision->getOuuid(), $env);
     }
 
@@ -394,7 +394,7 @@ class RevisionRepository extends EntityRepository
      * @param ContentType $contentType
      * @param string $ouuid
      * @param Environment $env
-     * @return null
+     * @return null|Revision
      * @throws NonUniqueResultException
      */
     public function findByOuuidAndContentTypeAndEnvironnement(ContentType $contentType, $ouuid, Environment $env)

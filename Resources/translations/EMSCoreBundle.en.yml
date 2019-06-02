@@ -357,6 +357,32 @@ view.macros.data-field-type.collection_removed_items: '{1} One %singular% has be
 data.edit_revision.save_draft: Save draft
 emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's configurations and versions
 
+
+service:
+  data:
+    update_referrers_error: 'It was impossible to update referrers of the document ems://object:%contenttype%:%ouuid%'
+    not_a_draft: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% is already finalized'
+    unknown_update_type: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has not been replaced or replaced as the update type "%update_type%" is unknown'
+    data_not_consumed: '{1} A data of this revision was not consumed: %data%|]1,Inf[ Some data (%count%} of this revision were not consumed: %data%'
+    deleted: 'The document ems://object:%contenttype%:%ouuid% has been deleted'
+    already_unpublished: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% was already deleted from %environment%'
+    unpublished: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has been unpublished from %environment%'
+    default_value_template_error: 'It was not possible to initiate the default value (compile template) for the content type %contenttype%, please check the content type''s configuration'
+    default_value_error: 'It was not possible to initiate the default value (json_decode) for the content type %contenttype%, please check the content type''s configuration'
+    cant_be_finalized: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% cant''t be finalized as it is'
+    post_finalize_failed: 'Error while finalize the post processing of the document ems://object:%contenttype%:%ouuid% : %error_message%'
+    integrity_failed: 'Issue in %environment% while checking integrity of the document ems://object:%contenttype%:%ouuid%: %error_message%'
+    not_a_data_field: 'Unexpected %field_name% field in the revision form'
+    computed_hash_mismatch: 'Computed hash mismatch in %environment% for document ems://object:%contenttype%:%ouuid%, computed hash: %computed_hash%, DB hash: %db_hash%'
+    hash_missing: 'Hash missing in %environment% for document ems://object:%contenttype%:%ouuid%'
+    revision_not_signed: 'Revision not signed in %environment% for document ems://object:%contenttype%:%ouuid%'
+    check_signature_failed': 'Signature mismatch in %environment% for the revision ems://revision:%revisions_id% of the document ems://object:%contenttype%:%ouuid%'
+    hash_mismatch: 'Hash mismatch in %environment% for the revision ems://revision:%revisions_id% of the document ems://object:%contenttype%:%ouuid%, hash in the index %index_hash%, hash in the DB %db_hash%'
+    not_able_to_sign: 'It was not possible to sign the revisions''s data for the document ems://object:%contenttype%:%ouuid% : %error_message%'
+    error_check_signature: 'Error checking signature in %environment% the revisions''s data for the document ems://object:%contenttype%:%ouuid% : %error_message%'
+    template_parse_error: 'Error to parse the computed field %computed_field_name%: %error_message%'
+    json_parse_post_processing_error: 'Error to JSON parse the result of the post processing script of field %field_name% (|json_encode|raw): %template%'
+    not_able_to_load_the_private_key: 'It''s impossible to load the private key %private_key_filename% : %error_message%'
 form:
   data_field:
     collection:

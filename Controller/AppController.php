@@ -7,7 +7,7 @@ use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Service\AggregateOptionService;
 use EMS\CoreBundle\Service\AliasService;
-use EMS\CoreBundle\Service\AssetExtratorService;
+use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\AssetService;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
@@ -250,7 +250,7 @@ class AppController extends Controller
     
     /**
      *
-     * @return AssetExtratorService
+     * @return AssetExtractorService
      */
     public function getAssetExtractorService()
     {

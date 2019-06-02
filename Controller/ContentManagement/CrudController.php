@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Throwable;
 
 class CrudController extends AppController
 {
@@ -41,7 +42,6 @@ class CrudController extends AppController
         
         try {
             $newRevision = $this->getDataService()->createData($ouuid, $rawdata, $contentType);
-            $isCreated = (isset($newRevision)) ?  true : false;
         } catch (Exception $e) {
             if (($e instanceof NotFoundHttpException) or ($e instanceof BadRequestHttpException)) {
                 throw $e;
@@ -52,16 +52,15 @@ class CrudController extends AppController
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
                 ]);
             }
-            $isCreated = false;
             return $this->render('@EMSCore/ajax/notification.json.twig', [
-                    'success' => $isCreated,
+                    'success' => false,
                     'ouuid' => $ouuid,
                     'type' => $contentType->getName(),
             ]);
         }
         
         return $this->render('@EMSCore/ajax/notification.json.twig', [
-                'success' => $isCreated,
+                'success' => true,
                 'revision_id' => $newRevision->getId(),
                 'ouuid' => $newRevision->getOuuid(),
         ]);
@@ -107,10 +106,11 @@ class CrudController extends AppController
     }
 
     /**
-     * @param string $id
+     * @param int $id
      * @param ContentType $contentType
      * @return Response
      * @throws DataStateException
+     * @throws Throwable
      *
      * @Route("/api/data/{name}/finalize/{id}", defaults={"_format": "json"}, methods={"POST"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})

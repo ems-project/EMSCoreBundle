@@ -15,7 +15,7 @@ use EMS\CommonBundle\Storage\Service\StorageInterface;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Exception\AssetNotFoundException;
 use EMS\CoreBundle\Repository\RevisionRepository;
-use EMS\CoreBundle\Service\AssetExtratorService;
+use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\FileService;
 use Exception;
@@ -45,7 +45,7 @@ class IndexFileCommand extends EmsCommand
     /**
      *
      *
-     * @var AssetExtratorService
+     * @var AssetExtractorService
      */
     protected $extractorService;
     protected $databaseName;
@@ -58,7 +58,7 @@ class IndexFileCommand extends EmsCommand
     protected $fileService;
 
 
-    public function __construct(Logger $logger, Client $client, Registry $doctrine, ContentTypeService $contentTypeService, AssetExtratorService $extractorService, FileService $fileService)
+    public function __construct(Logger $logger, Client $client, Registry $doctrine, ContentTypeService $contentTypeService, AssetExtractorService $extractorService, FileService $fileService)
     {
         $this->doctrine = $doctrine;
         $this->contentTypeService = $contentTypeService;

@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityManager;
 use Elasticsearch\Client;
 use EMS\CommonBundle\Storage\Service\StorageInterface;
 use EMS\CoreBundle\Repository\UploadedAssetRepository;
-use EMS\CoreBundle\Service\AssetExtratorService;
+use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\FileService;
 use Monolog\Logger;
@@ -38,7 +38,7 @@ class SynchAssetCommand extends EmsCommand
     /**
      *
      *
-     * @var AssetExtratorService
+     * @var AssetExtractorService
      */
     protected $extractorService;
     protected $databaseName;
@@ -53,7 +53,7 @@ class SynchAssetCommand extends EmsCommand
     const PAGE_SIZE = 10;
 
 
-    public function __construct(Logger $logger, Client $client, Registry $doctrine, ContentTypeService $contentTypeService, AssetExtratorService $extractorService, FileService $fileService)
+    public function __construct(Logger $logger, Client $client, Registry $doctrine, ContentTypeService $contentTypeService, AssetExtractorService $extractorService, FileService $fileService)
     {
         $this->doctrine = $doctrine;
         $this->contentTypeService = $contentTypeService;

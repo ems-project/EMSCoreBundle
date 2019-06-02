@@ -433,7 +433,7 @@ services:
     ems.service.rest_client:
         class: EMS\CoreBundle\Service\RestClientService
     ems.service.asset_extractor:
-        class: EMS\CoreBundle\Service\AssetExtratorService
+        class: EMS\CoreBundle\Service\AssetExtractorService
         arguments: ["@ems.service.rest_client", '@logger', '@doctrine', '@ems.service.file', '%ems_core.tika_server%', '%kernel.project_dir%', '%ems_core.tika_download_url%']
     ems.service.search:
         class: EMS\CoreBundle\Service\SearchService

@@ -11,7 +11,7 @@ use Exception;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
-class AssetExtratorService
+class AssetExtractorService
 {
     
     const CONTENT_EP = '/tika';
@@ -169,7 +169,7 @@ class AssetExtratorService
             }
         } else {
             try {
-                $out = AssetExtratorService::convertMetaToArray($this->getTikaWrapper()->getMetadata($file));
+                $out = AssetExtractorService::convertMetaToArray($this->getTikaWrapper()->getMetadata($file));
                 if (!isset($out['content'])) {
                     $text = $this->getTikaWrapper()->getText($file);
                     if (!mb_check_encoding($text)) {
@@ -179,7 +179,7 @@ class AssetExtratorService
                     $out['content'] =  $text;
                 }
                 if (!isset($out['language'])) {
-                    $out['language'] = AssetExtratorService::cleanString($this->getTikaWrapper()->getLanguage($file));
+                    $out['language'] = AssetExtractorService::cleanString($this->getTikaWrapper()->getLanguage($file));
                 }
             } catch (Exception $e) {
                 $this->logger->error('service.asset_extractor.extract_error', [

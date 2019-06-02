@@ -115,7 +115,7 @@ class DataService
      * @param Registry $doctrine
      * @param AuthorizationCheckerInterface $authorizationChecker
      * @param TokenStorageInterface $tokenStorage
-     * @param $lockTime
+     * @param string $lockTime
      * @param Client $client
      * @param Mapping $mapping
      * @param string $instanceId
@@ -134,7 +134,7 @@ class DataService
         Registry $doctrine,
         AuthorizationCheckerInterface $authorizationChecker,
         TokenStorageInterface $tokenStorage,
-        $lockTime,
+        string $lockTime,
         Client $client,
         Mapping $mapping,
         string $instanceId,
@@ -303,13 +303,13 @@ class DataService
      * @param FormInterface $form
      * @param array $objectArray
      * @param ContentType $contentType
-     * @param $type
-     * @param $ouuid
+     * @param string $type
+     * @param string $ouuid|null
      * @param bool $migration
      * @return bool
      * @throws Throwable
      */
-    public function propagateDataToComputedField(FormInterface $form, array& $objectArray, ContentType $contentType, $type, $ouuid, $migration = false)
+    public function propagateDataToComputedField(FormInterface $form, array& $objectArray, ContentType $contentType, string $type, ?string $ouuid, bool $migration = false)
     {
         return $this->propagateDataToComputedFieldRecursive($form, $objectArray, $contentType, $type, $ouuid, $migration, $objectArray, '');
     }
@@ -318,15 +318,15 @@ class DataService
      * @param FormInterface $form
      * @param array $objectArray
      * @param ContentType $contentType
-     * @param $type
-     * @param $ouuid
-     * @param $migration
-     * @param $parent
-     * @param $path
+     * @param string $type
+     * @param string $ouuid|null
+     * @param bool $migration
+     * @param array|null $parent
+     * @param string $path
      * @return bool
      * @throws Throwable
      */
-    private function propagateDataToComputedFieldRecursive(FormInterface $form, array& $objectArray, ContentType $contentType, $type, $ouuid, $migration, &$parent, $path)
+    private function propagateDataToComputedFieldRecursive(FormInterface $form, array& $objectArray, ContentType $contentType, string $type, ?string $ouuid, bool $migration, ?array &$parent, string $path)
     {
         $found = false;
         /** @var DataField $dataField*/
@@ -456,7 +456,13 @@ class DataService
         if (!empty($dataField->getFieldType()) && !empty($dataField->getFieldType()->getType())) {
                 /**@var DataFieldType $dataFieldType*/
             $dataFieldType = $this->formRegistry->getType($dataField->getFieldType()->getType())->getInnerType();
-            $dataFieldType->convertInput($dataField);
+            if ($dataFieldType instanceof DataFieldType) {
+                $dataFieldType->convertInput($dataField);
+            } else {
+                $this->logger->warning('service.data.not_a_data_field', [
+                    'field_name' => $dataField->getFieldType()->getName()
+                ]);
+            }
         }
     }
 
@@ -467,14 +473,19 @@ class DataService
             $this->generateInputValues($child);
         }
         if (!empty($dataField->getFieldType()) && !empty($dataField->getFieldType()->getType())) {
-            /**@var DataFieldType $dataFieldType*/
             $dataFieldType = $this->formRegistry->getType($dataField->getFieldType()->getType())->getInnerType();
-            $dataFieldType->generateInput($dataField);
+            if ($dataFieldType instanceof  DataFieldType) {
+                $dataFieldType->generateInput($dataField);
+            } else {
+                $this->logger->warning('service.data.not_a_data_field', [
+                    'field_name' => $dataField->getFieldType()->getName()
+                ]);
+            }
         }
     }
 
     /**
-     * @param $ouuid
+     * @param string $ouuid
      * @param array $rawdata
      * @param ContentType $contentType
      * @param bool $byARealUser
@@ -639,7 +650,7 @@ class DataService
                                 EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
                                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                             ]);
-                        } elseif($ok !== 1) { //1 means signature is ok
+                        } elseif ($ok !== 1) { //1 means signature is ok
                             $this->logger->warning('service.data.error_check_signature', [
                                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
@@ -927,6 +938,7 @@ class DataService
     public function newDocument(ContentType $contentType, ?string $ouuid = null, ?array $rawData = null)
     {
         $this->hasCreateRights($contentType);
+        /** @var RevisionRepository $revisionRepository */
         $revisionRepository = $this->em->getRepository('EMSCoreBundle:Revision');
 
         $revision = new Revision();
@@ -1074,10 +1086,10 @@ class DataService
     }
 
     /**
-     * @param $type
-     * @param $ouuid
-     * @param null $fromRev
-     * @param null $username
+     * @param string $type
+     * @param string $ouuid
+     * @param Revision|null $fromRev
+     * @param string|null $username
      * @return Revision
      * @throws LockedException
      * @throws PrivilegeException
@@ -1205,8 +1217,8 @@ class DataService
     }
 
     /**
-     * @param $type
-     * @param $ouuid
+     * @param string $type
+     * @param string $ouuid
      * @throws LockedException
      * @throws Missing404Exception
      * @throws ORMException
@@ -1277,9 +1289,8 @@ class DataService
             $em->persist($revision);
         }
         $this->logger->notice('service.data.deleted', [
-            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-            EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-            EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+            EmsFields::LOG_CONTENTTYPE_FIELD => $type,
+            EmsFields::LOG_OUUID_FIELD => $ouuid,
             EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
         ]);
         $em->flush();
@@ -1287,7 +1298,7 @@ class DataService
 
     /**
      * @param ContentType $contentType
-     * @param $ouuid
+     * @param string $ouuid
      * @throws LockedException
      * @throws ORMException
      * @throws OptimisticLockException
@@ -1319,7 +1330,7 @@ class DataService
 
     /**
      * @param ContentType $contentType
-     * @param $ouuid
+     * @param string $ouuid
      * @return int|null
      * @throws LockedException
      * @throws ORMException
@@ -1372,10 +1383,9 @@ class DataService
         if (null !== $dataField->getFieldType()) {
             $dataFieldType = $this->formRegistry->getType($dataField->getFieldType()->getType())->getInnerType();
 
-            if($dataFieldType instanceof DataFieldType) {
+            if ($dataFieldType instanceof DataFieldType) {
                 $isContainer = $dataFieldType->isContainer();
-            }
-            else {
+            } else {
                 $this->logger->warning('service.data.not_a_data_field', [
                     'field_name' => $dataField->getFieldType()->getName()
                 ]);
@@ -1417,7 +1427,7 @@ class DataService
     public function updateDataValue(DataField $dataField, Array &$elasticIndexDatas, $isMigration = false)
     {
         $dataFieldType = $this->formRegistry->getType($dataField->getFieldType()->getType())->getInnerType();
-        if($dataFieldType instanceof DataFieldType) {
+        if ($dataFieldType instanceof DataFieldType) {
             $fieldName = $dataFieldType->getJsonName($dataField->getFieldType());
             if (null === $fieldName) {//Virtual container
                 /** @var DataField $child */
@@ -1437,8 +1447,7 @@ class DataService
                     }
                 }
             }
-        }
-        else {
+        } else {
             $this->logger->warning('service.data.not_a_data_field', [
                 'field_name' => $dataField->getFieldType()->getName()
             ]);
@@ -1535,7 +1544,7 @@ class DataService
 
     /**
      * @param ContentType $contentType
-     * @param $user
+     * @param string $user
      * @return Revision
      * @throws Exception
      */
@@ -1631,7 +1640,7 @@ class DataService
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @param ContentType $type
      * @return Revision
      * @throws Exception
@@ -1701,7 +1710,6 @@ class DataService
                 $newRawData = array_merge($revision->getRawData(), $rawData);
                 $newDraft->setRawData($newRawData);
             } else {
-
                 $this->logger->error('service.data.unknown_update_type', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),

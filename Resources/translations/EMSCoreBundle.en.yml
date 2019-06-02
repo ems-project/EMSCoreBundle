@@ -359,6 +359,10 @@ emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's c
 
 
 service:
+  entity:
+    created: '%entity_type% %entity_name% has been created'
+    deleted: '%entity_type% %entity_name% has been deleted'
+    updated: '%entity_type% %entity_name% has been updated'
   notification:
     treated: '%notification_name% for document ems://object:%contenttype%:%ouuid% in %environment% has been %status%'
     send: '%notification_name% for document ems://object:%contenttype%:%ouuid% in %environment% has been send'

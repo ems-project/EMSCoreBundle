@@ -359,6 +359,9 @@ emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's c
 
 
 service:
+  asset_extractor:
+    extract_error: 'An issue has been raised while extracting information from the asset/file ems://asset:%file_hash% : %error_message%'
+    persist_error: 'An issue has been raised while persisting the information extracted from the asset/file ems://asset:%file_hash% : %error_message%'
   data:
     update_referrers_error: 'It was impossible to update referrers of the document ems://object:%contenttype%:%ouuid%'
     not_a_draft: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% is already finalized'

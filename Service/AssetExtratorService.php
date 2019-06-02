@@ -3,11 +3,12 @@
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\CacheAssetExtractor;
 use EMS\CoreBundle\Exception\AssetNotFoundException;
-use Exception;
-use Symfony\Component\HttpFoundation\Session\Session;
 use EMS\CoreBundle\Tika\TikaWrapper;
+use Exception;
+use Psr\Log\LoggerInterface;
 use Throwable;
 
 class AssetExtratorService
@@ -30,8 +31,8 @@ class AssetExtratorService
     /**@var RestClientService $rest*/
     private $rest;
     
-    /**@var Session $session*/
-    private $session;
+    /**@var LoggerInterface */
+    private $logger;
 
     /**@var Registry $doctrine */
     private $doctrine;
@@ -43,16 +44,12 @@ class AssetExtratorService
     private $tikaWrapper;
     
     
-    /**
-     *
-     * @param string $tikaServer
-     */
-    public function __construct(RestClientService $rest, Session $session, Registry $doctrine, FileService $fileService, ?string $tikaServer, string $projectDir, ?string $tikaDownloadUrl)
+    public function __construct(RestClientService $rest, LoggerInterface $logger, Registry $doctrine, FileService $fileService, ?string $tikaServer, string $projectDir, ?string $tikaDownloadUrl)
     {
         $this->tikaServer = $tikaServer;
         $this->projectDir = $projectDir;
         $this->rest = $rest;
-        $this->session = $session;
+        $this->logger = $logger;
         $this->doctrine = $doctrine;
         $this->fileService = $fileService;
         $this->tikaWrapper = null;
@@ -60,7 +57,8 @@ class AssetExtratorService
     }
 
     /**
-     * @throws \Exception
+     * @return TikaWrapper|null
+     * @throws Exception
      */
     private function getTikaWrapper() : ?TikaWrapper
     {
@@ -86,6 +84,7 @@ class AssetExtratorService
     }
 
     /**
+     * @return array
      * @throws Exception
      */
     public function hello():array
@@ -109,10 +108,11 @@ class AssetExtratorService
 
     /**
      * @param string $hash
-     * @return array|mixed
+     * @param string|null $file
+     * @return array|false|mixed
      * @throws AssetNotFoundException
      */
-    public function extractData($hash, $file = null)
+    public function extractData(string $hash, string $file = null)
     {
 
         $manager = $this->doctrine->getManager();
@@ -159,7 +159,12 @@ class AssetExtratorService
                 
                 $out['content'] = $result->getBody()->__toString();
             } catch (Exception $e) {
-                $this->session->getFlashBag()->add('error', 'elasticms encountered an issue while extracting file data: '.$e->getMessage());
+                $this->logger->error('service.asset_extractor.extract_error', [
+                    'file_hash' => $hash,
+                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                    EmsFields::LOG_EXCEPTION_FIELD => $e,
+                    'tika' => 'server',
+                ]);
                 $canBePersisted = false;
             }
         } else {
@@ -177,7 +182,12 @@ class AssetExtratorService
                     $out['language'] = AssetExtratorService::cleanString($this->getTikaWrapper()->getLanguage($file));
                 }
             } catch (Exception $e) {
-                $this->session->getFlashBag()->add('error', 'Error with Tika: '.$e->getMessage());
+                $this->logger->error('service.asset_extractor.extract_error', [
+                    'file_hash' => $hash,
+                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                    EmsFields::LOG_EXCEPTION_FIELD => $e,
+                    'tika' => 'jar',
+                ]);
                 $canBePersisted = false;
             }
         }
@@ -190,12 +200,17 @@ class AssetExtratorService
                 $manager->persist($cacheData);
                 $manager->flush($cacheData);
             } catch (Exception $e) {
-                $this->session->getFlashBag()->add('warning', 'Asset extractor was not able to save in its cache: '.$e->getMessage());
+                $this->logger->warning('service.asset_extractor.persist_error', [
+                    'file_hash' => $hash,
+                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                    EmsFields::LOG_EXCEPTION_FIELD => $e,
+                    'tika' => 'jar',
+                ]);
             }
         }
         return $out;
     }
-    
+
     private static function cleanString($string)
     {
         if (!mb_check_encoding($string)) {
@@ -203,7 +218,7 @@ class AssetExtratorService
         }
         return preg_replace("/\n/", "", (preg_replace("/\r/", "", $string)));
     }
-    
+
     private static function convertMetaToArray($data)
     {
         if (!mb_check_encoding($data)) {
@@ -217,6 +232,6 @@ class AssetExtratorService
             $matches,
             PREG_PATTERN_ORDER
         );
-        return array_combine($matches[1], $matches[2]);
+        return (array_combine($matches[1], $matches[2]) ?? null);
     }
 }

@@ -359,6 +359,13 @@ emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's c
 
 
 service:
+  notification:
+    treated: '%notification_name% for document ems://object:%contenttype%:%ouuid% in %environment% has been %status%'
+    send: '%notification_name% for document ems://object:%contenttype%:%ouuid% in %environment% has been send'
+    send_error: 'Error while sending notification (%notification_id%) : %error_message%'
+    another_one_is_pending: 'Another notification %notification_name% is already pending for document ems://object:%contenttype%:%ouuid% in %environment% by %notification_username%'
+    notification_will_be_lost_finalize: 'An "%notification_name%" notification will be lost for this %contenttype% document (%ouuid%) on finalize'
+    update: 'A "%notification_name%" notification has been %notification_status% for a "%contenttype%" document (%ouuid%)'
   wysiwyg_styles_set:
     deleted: 'Style set "%wysiwyg_styles_set_name% has been deleted'
     updated: 'Style set "%wysiwyg_styles_set_name% has been updated'

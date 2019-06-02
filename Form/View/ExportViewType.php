@@ -5,6 +5,8 @@ namespace EMS\CoreBundle\Form\View;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
 use Exception;
+use Dompdf\Adapter\CPDF;
+use Dompdf\Dompdf;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -96,6 +98,27 @@ class ExportViewType extends ViewType
                         'Attachment' => 'attachment',
                         'Inline' => 'inline',
                 ]
+        ])
+        ->add('export_type', ChoiceType::class, [
+                'label' => 'Export type',
+                'expanded' => false,
+                'attr' => [
+                ],
+                'choices' => [
+                        'Raw (HTML, XML, JSON, ...)' => null,
+                        'PDF (dompdf)' => 'dompdf',
+                ]
+        ])
+        ->add('pdf_orientation', ChoiceType::class, [
+            'required' => false,
+            'choices' => [
+                'Portrait' => 'portrait',
+                'Landscape' => 'landscape',
+            ],
+        ])
+        ->add('pdf_size', ChoiceType::class, [
+            'required' => false,
+            'choices' => array_combine(array_keys(CPDF::$PAPER_SIZES), array_keys(CPDF::$PAPER_SIZES)),
         ]);
     }
     
@@ -118,9 +141,32 @@ class ExportViewType extends ViewType
      */
     public function generateResponse(View $view, Request $request)
     {
-        $response = new Response();
         $parameters = $this->getParameters($view, $this->formFactory, $request);
-        
+
+        if (isset($view->getOptions()['export_type']) || $view->getOptions()['export_type'] === 'dompdf') {
+            // instantiate and use the dompdf class
+            $dompdf = new Dompdf();
+            $dompdf->loadHtml($parameters['render']);
+
+            // (Optional) Setup the paper size and orientation
+            $dompdf->setPaper(
+                (isset($view->getOptions()['pdf_size']) && $view->getOptions()['pdf_size']) ? $view->getOptions()['pdf_size'] : 'A4',
+                (isset($view->getOptions()['pdf_orientation']) && $view->getOptions()['pdf_orientation']) ? $view->getOptions()['pdf_orientation'] : 'portrait'
+            );
+
+            // Render the HTML as PDF
+            $dompdf->render();
+
+            // Output the generated PDF to Browser
+            $dompdf->stream($parameters['filename'] ?? "document.pdf", [
+                'compress' => 1,
+                'Attachment' => ( isset($view->getOptions()['disposition'])  && $view->getOptions()['disposition'] === 'attachment')?1:0,
+            ]);
+            exit;
+        }
+
+        $response = new Response();
+
         if (!empty($view->getOptions()['disposition'])) {
             $attachment = ResponseHeaderBag::DISPOSITION_ATTACHMENT;
             if ($view->getOptions()['disposition'] == 'inline') {
@@ -134,12 +180,12 @@ class ExportViewType extends ViewType
         if ($parameters['allow_origin']) {
             $response->headers->set('Access-Control-Allow-Origin', $parameters['allow_origin']);
         }
-        
+
         $response->setContent($parameters['render']);
         
         return $response;
     }
-
+  
     /**
      * @param View $view
      * @param FormFactoryInterface $formFactory
@@ -156,7 +202,7 @@ class ExportViewType extends ViewType
                     'contentType' => $view->getContentType(),
                     'environment' => $view->getContentType()->getEnvironment(),
             ]);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             $renderQuery = "{}";
         }
         
@@ -179,7 +225,7 @@ class ExportViewType extends ViewType
                     'environment' => $view->getContentType()->getEnvironment(),
                     'result' => $result,
             ]);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             $render = "Something went wrong with the template of the view ".$view->getName()." for the content type ".$view->getContentType()->getName()." (".$e->getMessage().")";
         }
         
@@ -190,7 +236,7 @@ class ExportViewType extends ViewType
                     'environment' => $view->getContentType()->getEnvironment(),
                     'result' => $result,
             ]);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             $filename = "Something went wrong with the template of the view ".$view->getName()." for the content type ".$view->getContentType()->getName()." (".$e->getMessage().")";
         }
         

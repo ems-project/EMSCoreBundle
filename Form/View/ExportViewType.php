@@ -2,11 +2,10 @@
 
 namespace EMS\CoreBundle\Form\View;
 
-use EMS\CoreBundle\Entity\View;
-use EMS\CoreBundle\Form\Field\CodeEditorType;
-use Exception;
 use Dompdf\Adapter\CPDF;
 use Dompdf\Dompdf;
+use EMS\CoreBundle\Entity\View;
+use EMS\CoreBundle\Form\Field\CodeEditorType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;

@@ -359,6 +359,9 @@ emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's c
 
 
 service:
+  wysiwyg_styles_set:
+    deleted: 'Style set "%wysiwyg_styles_set_name% has been deleted'
+    updated: 'Style set "%wysiwyg_styles_set_name% has been updated'
   object_choice_cache:
     contenttype_not_found: 'Content type %contenttype% not found'
     alias_not_found: 'Alias not found for content type %contenttype%'

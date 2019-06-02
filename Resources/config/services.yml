@@ -412,7 +412,7 @@ services:
         arguments: ['@doctrine', '@session', '@translator']
     ems.service.wysiwyg_styles_set:
         class: EMS\CoreBundle\Service\WysiwygStylesSetService
-        arguments: ['@doctrine', '@session', '@translator']
+        arguments: ['@doctrine', '@logger', '@translator']
     ems.service.objectchoicecache:
         class: EMS\CoreBundle\Service\ObjectChoiceCacheService
         arguments: ['@app.elasticsearch', '@logger', '@ems.service.contenttype', '@security.authorization_checker', '@security.token_storage']

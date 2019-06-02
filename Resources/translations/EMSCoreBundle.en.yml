@@ -359,6 +359,10 @@ emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's c
 
 
 service:
+  object_choice_cache:
+    contenttype_not_found: 'Content type %contenttype% not found'
+    alias_not_found: 'Alias not found for content type %contenttype%'
+    object_key_not_found: 'Object key %object_key% not found'
   publish:
     unpublished: 'The revision ems:revision:%revisions_id% of the document ems://object:%contenttype%:%ouuid% has been unpublished from %environment%'
     already_unpublished: 'The revision ems:revision:%revisions_id% of the document ems://object:%contenttype%:%ouuid% was already unpublished from %environment%'

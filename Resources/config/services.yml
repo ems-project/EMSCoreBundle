@@ -400,7 +400,7 @@ services:
         arguments: ['@doctrine', '@session', '@security.token_storage', '%security.role_hierarchy.roles%']
     ems.service.wysiwyg_profile:
         class: EMS\CoreBundle\Service\WysiwygProfileService
-        arguments: ['@doctrine', '@session', '@translator']
+        arguments: ['@doctrine', '@logger', '@translator']
     ems.service.aggregate_option:
         class: EMS\CoreBundle\Service\AggregateOptionService
         arguments: ['@doctrine', '@logger', '@translator']

@@ -359,6 +359,9 @@ emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's c
 
 
 service:
+  wysiwyg_profile:
+    updated: 'Profile %profile_name% has been updated'
+    deleted: 'Profile %profile_name% has been deleted'
   entity:
     created: '%entity_type% %entity_name% has been created'
     deleted: '%entity_type% %entity_name% has been deleted'

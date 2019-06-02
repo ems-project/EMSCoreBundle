@@ -44,7 +44,7 @@ use Exception;
 use IteratorAggregate;
 use Monolog\Logger;
 use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -99,7 +99,7 @@ class DataService
     protected $appTwig;
     /** @var FormRegistryInterface */
     protected $formRegistry;
-    /** @var EventDispatcherInterface */
+    /** @var EventDispatcher */
     protected $dispatcher;
     /** @var ContentTypeService */
     protected $contentTypeService;
@@ -110,26 +110,6 @@ class DataService
     /** @var StorageManager */
     private $storageManager;
 
-    /**
-     * DataService constructor.
-     * @param Registry $doctrine
-     * @param AuthorizationCheckerInterface $authorizationChecker
-     * @param TokenStorageInterface $tokenStorage
-     * @param string $lockTime
-     * @param Client $client
-     * @param Mapping $mapping
-     * @param string $instanceId
-     * @param Session $session
-     * @param FormFactoryInterface $formFactory
-     * @param Container $container
-     * @param FormRegistryInterface $formRegistry
-     * @param EventDispatcherInterface $dispatcher
-     * @param ContentTypeService $contentTypeService
-     * @param string $privateKey
-     * @param Logger $logger
-     * @param StorageManager $storageManager
-     * @throws Exception
-     */
     public function __construct(
         Registry $doctrine,
         AuthorizationCheckerInterface $authorizationChecker,
@@ -142,7 +122,7 @@ class DataService
         FormFactoryInterface $formFactory,
         Container $container,
         FormRegistryInterface $formRegistry,
-        EventDispatcherInterface $dispatcher,
+        $dispatcher,
         ContentTypeService $contentTypeService,
         string $privateKey,
         Logger $logger,

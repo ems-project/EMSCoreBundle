@@ -86,7 +86,7 @@ class ObjectChoiceCacheService
                     }
 
                     $items = $this->client->search($params);
-                    //TODO test si > 500...flashbag
+                    //TODO test si > 500... logger
 
                     foreach ($items['hits']['hits'] as $hit) {
                         if (!isset($choices[$hit['_type'].':'.$hit['_id']])) {

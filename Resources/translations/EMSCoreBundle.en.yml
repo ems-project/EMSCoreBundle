@@ -357,7 +357,11 @@ view.macros.data-field-type.collection_removed_items: '{1} One %singular% has be
 data.edit_revision.save_draft: Save draft
 emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's configurations and versions
 
-
+command:
+  reindex:
+    environment_not_found: 'Environment named "%environment%" not found'
+    start: 'Start reindexing %contenttype% in %environment%'
+    end: 'The content type %contenttype%''s documents have been reindexed in %environment% (index: %index%)'
 service:
   contenttype:
     should_reindex: 'You should try to rebuild the indexes for  %contenttype%. Message from Elasticsearch; %elasticsearch_error_type% : %elasticsearch_error_reason%'

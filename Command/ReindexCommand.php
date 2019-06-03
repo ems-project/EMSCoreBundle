@@ -135,7 +135,12 @@ class ReindexCommand extends EmsCommand
      */
     public function reindex($name, ContentType $contentType, $index, OutputInterface $output, $signData = true, $bulkSize = 1000)
     {
-        $this->logger->info('Execute the ReindexCommand');
+        $this->logger->notice('command.reindex.start', [
+            EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
+            EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+            EmsFields::LOG_ENVIRONMENT_FIELD => $name,
+        ]);
+
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
         
@@ -223,7 +228,22 @@ class ReindexCommand extends EmsCommand
             $output->writeln('');
 
             $output->writeln(' '.$this->count.' objects are re-indexed in '.$index.' ('.$this->deleted.' not indexed as deleted, '.$this->error.' with indexing error)');
+
+            $this->logger->notice('command.reindex.end', [
+                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                EmsFields::LOG_ENVIRONMENT_FIELD => $name,
+                'index' => $index,
+                'deleted' => $this->deleted,
+                'with_error' => $this->error,
+                'total' => $this->count,
+            ]);
         } else {
+            $this->logger->warning('command.reindex.environment_not_found', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                EmsFields::LOG_ENVIRONMENT_FIELD => $name,
+            ]);
+
             $output->writeln("WARNING: Environment named ".$name." not found");
         }
     }

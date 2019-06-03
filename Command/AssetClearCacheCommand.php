@@ -17,11 +17,7 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 
 class AssetClearCacheCommand extends EmsCommand
 {
-    /**
-     *
-     *
-     * @var FileService
-     */
+    /** @var FileService */
     protected $fileService;
 
 

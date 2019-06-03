@@ -187,7 +187,7 @@ class AppController extends Controller
      */
     protected function getDataFieldType(string $fieldTypeNameOrServiceName): DataFieldType
     {
-        $dataFieldType = $$this->formRegistry->getType($fieldTypeNameOrServiceName)->getInnerType();
+        $dataFieldType = $this->formRegistry->getType($fieldTypeNameOrServiceName)->getInnerType();
         if ($dataFieldType instanceof DataFieldType) {
             return $dataFieldType;
         }

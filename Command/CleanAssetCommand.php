@@ -17,22 +17,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CleanAssetCommand extends EmsCommand
 {
-    /**
-     * @var int
-     */
+    /** @var int*/
     const PAGE_SIZE = 10;
 
-    /**
-     *
-     *
-     * @var Registry
-     */
+    /** @var Registry */
     protected $doctrine;
-    /**
-     *
-     *
-     * @var FileService
-     */
+
+    /** @var FileService */
     protected $fileService;
 
     public function __construct(LoggerInterface $logger, Client $client, Registry $doctrine, FileService $fileService)
@@ -50,12 +41,6 @@ class CleanAssetCommand extends EmsCommand
     }
 
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|null|void
-     * @throws DBALException
-     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         /** @var EntityManager $em */

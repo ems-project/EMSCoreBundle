@@ -9,11 +9,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class AuthTokenController extends AppController
 {
     /**
-     * @param Request $request
-     * @return Response
      * @Route("/auth-token", name="auth-token", defaults={"_format": "json"}, methods={"POST"})
      */
-    public function postAuthTokensAction(Request $request)
+    public function postAuthTokensAction(Request $request) : Response
     {
         $loginInfo = json_decode($request->getContent(), true);
         

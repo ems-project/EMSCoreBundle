@@ -338,9 +338,8 @@ class DataController extends AppController
 
     /**
      * @Route("/public-key" , name="ems_get_public_key")
-     * @return Response
      */
-    public function publicKey():Response
+    public function publicKey() : Response
     {
         $response = new Response();
         $response->headers->set('Content-Type', 'text/plain');

@@ -1,14 +1,11 @@
 <?php
 namespace EMS\CoreBundle\Controller\Views;
 
-use DateInterval;
-use DateTime;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Form\SearchFormType;
-use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -33,16 +30,16 @@ class CalendarController extends AppController
                 $field = $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['dateRangeField']);
                 
 
-                /**@var DateTime $from */
-                /**@var DateTime $to */
-                $from = new DateTime($request->request->get('start', false));
+                /** @var \DateTime $from */
+                /** @var \DateTime $to */
+                $from = new \DateTime($request->request->get('start', false));
                 if ($from) {
                     $to = $request->request->get('end', false);
                     if (!$to) {
                         $to = clone $from;
-                        $to->add(new DateInterval("PT23H59M"));
+                        $to->add(new \DateInterval("PT23H59M"));
                     } else {
-                        $to = new DateTime($to);
+                        $to = new \DateTime($to);
                     }
                     
                     $input = [
@@ -69,7 +66,7 @@ class CalendarController extends AppController
             return $this->render('@EMSCore/view/custom/calendar_replan.json.twig', [
                     'success' => true,
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->getLogger()->error('log.error', [
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                 EmsFields::LOG_EXCEPTION_FIELD => $e,
@@ -84,7 +81,7 @@ class CalendarController extends AppController
      * @param View $view
      * @param Request $request
      * @return Response
-     * @throws Exception
+     * @throws \Exception
      *
      * @Route("/views/calendar/search/{view}.json", name="views.calendar.search", defaults={"_format": "json"}, methods={"GET"})
      */
@@ -103,10 +100,10 @@ class CalendarController extends AppController
 
         $body = $this->getSearchService()->generateSearchBody($search);
         
-        /**@var DateTime $from */
-        /**@var DateTime $to */
-        $from = new DateTime($request->query->get('from'));
-        $to = new DateTime($request->query->get('to'));
+        /**@var \DateTime $from */
+        /**@var \DateTime $to */
+        $from = new \DateTime($request->query->get('from'));
+        $to = new \DateTime($request->query->get('to'));
         $field = $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['dateRangeField']);
         
         if (empty($body['query']['bool']['must'])) {

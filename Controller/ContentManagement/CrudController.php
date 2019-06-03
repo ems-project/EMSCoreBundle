@@ -198,7 +198,6 @@ class CrudController extends AppController
      */
     public function deleteAction($ouuid, ContentType $contentType)
     {
-    
         $isDeleted = false;
         if (!$contentType->getEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not delete content for a managed content type');
@@ -206,20 +205,18 @@ class CrudController extends AppController
     
         try {
             $this->getDataService()->delete($contentType->getName(), $ouuid);
-            try {
-                $this->getDataService()->getNewestRevision($contentType->getName(), $ouuid);
-            } catch (Exception $exception) {
-                if ($exception instanceof NotFoundHttpException) {
-                    $isDeleted = true;
-                }
-            }
+            $this->getLogger()->notice('log.crud.deleted', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                EmsFields::LOG_OUUID_FIELD => $ouuid,
+            ]);
+            $isDeleted = true;
         } catch (Exception $e) {
-            $isDeleted = false;
-            if (($e instanceof NotFoundHttpException) or ($e instanceof BadRequestHttpException)) {
+            if (($e instanceof NotFoundHttpException) || ($e instanceof BadRequestHttpException)) {
                 throw $e;
             } else {
                 $this->getLogger()->error('log.crud.delete_error', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                    EmsFields::LOG_OUUID_FIELD => $ouuid,
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
                 ]);

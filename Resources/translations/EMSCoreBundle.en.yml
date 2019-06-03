@@ -449,6 +449,7 @@ search:
 log:
   revision_error: 'Error "%error_message%" with the document ems://object:%contenttype%:%ouuid%'
   crud:
+    deleted: 'The document ems://object:%contenttype%:%ouuid% has been deleted'
     create_error: 'The revision for contenttype %contenttype% can not be created, reason: %error_message%'
     read_error: 'The revision for contenttype %contenttype% can not be found, reason: %error_message%'
     finalize_error: 'The revision ems://revision:%revision_id% for content type %contenttype% can not be finalized, reason: %error_message%'

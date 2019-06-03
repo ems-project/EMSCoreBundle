@@ -1772,7 +1772,7 @@ class DataService
                 }
             } catch (LockedException $e) {
                 $this->logger->error('service.data.update_referrers_error', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $$key[0],
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $key[0],
                     EmsFields::LOG_OUUID_FIELD => $key[1],
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
@@ -1799,7 +1799,7 @@ class DataService
                 }
             } catch (LockedException $e) {
                 $this->logger->error('service.data.update_referrers_error', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $$key[0],
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $key[0],
                     EmsFields::LOG_OUUID_FIELD => $key[1],
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),

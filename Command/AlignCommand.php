@@ -64,13 +64,6 @@ class AlignCommand extends EmsCommand
         ;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|void|null
-     * @throws \Doctrine\ORM\NoResultException
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->formatStyles($output);

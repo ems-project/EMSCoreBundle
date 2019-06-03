@@ -3,14 +3,17 @@
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ManagedAlias;
 use EMS\CoreBundle\Form\Form\ManagedAliasType;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/environment/managed-alias")
@@ -19,6 +22,9 @@ class ManagedAliasController extends AppController
 {
     /**
      * @param Request $request
+     * @return RedirectResponse|Response
+     * @throws ORMException
+     * @throws OptimisticLockException
      *
      * @Route("/add", name="environment_add_managed_alias")
      */
@@ -31,7 +37,9 @@ class ManagedAliasController extends AppController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->save($managedAlias, $this->getIndexActions($form));
 
-            $this->addFlash('notice', sprintf('Managed alias %s has been created', $managedAlias->getName()));
+            $this->getLogger()->notice('log.managed_alias.created', [
+                'managed_alias_name' => $managedAlias->getName()
+            ]);
             return $this->redirectToRoute('environment.index');
         }
 
@@ -40,10 +48,13 @@ class ManagedAliasController extends AppController
             'form' => $form->createView(),
         ]);
     }
-    
+
     /**
      * @param Request $request
-     * @param string  $id
+     * @param string $id
+     * @return RedirectResponse|Response
+     * @throws ORMException
+     * @throws OptimisticLockException
      *
      * @Route("/edit/{id}", requirements={"id": "\d+"}, name="environment_edit_managed_alias")
      */
@@ -60,8 +71,9 @@ class ManagedAliasController extends AppController
         
         if ($form->isSubmitted() && $form->isValid()) {
             $this->save($managedAlias, $this->getIndexActions($form));
-            
-            $this->addFlash('notice', sprintf('Managed alias %s has been updated', $managedAlias->getName()));
+            $this->getLogger()->notice('log.managed_alias.updated', [
+                'managed_alias_name' => $managedAlias->getName()
+            ]);
             
             return $this->redirectToRoute('environment.index');
         }
@@ -71,12 +83,14 @@ class ManagedAliasController extends AppController
             'form' => $form->createView(),
         ]);
     }
-    
+
     /**
      * @param string $id
+     * @return RedirectResponse
+     * @throws ORMException
+     * @throws OptimisticLockException
      *
-     * @Route("/remove/{id}", requirements={"id": "\d+"}, name="environment_remove_managed_alias")
-     * @Method({"POST"})
+     * @Route("/remove/{id}", requirements={"id": "\d+"}, name="environment_remove_managed_alias", methods={"POST"})
      */
     public function removeAction($id)
     {
@@ -89,16 +103,20 @@ class ManagedAliasController extends AppController
             $em = $this->getDoctrine()->getManager();
             $em->remove($managedAlias);
             $em->flush();
-            
-            $this->addFlash('notice', sprintf('The managed %s has been removed', $managedAlias->getName()));
+            $this->getLogger()->notice('log.managed_alias.deleted', [
+                'managed_alias_name' => $managedAlias->getName()
+            ]);
         }
         
         return $this->redirectToRoute('environment.index');
     }
-    
+
     /**
      * @param ManagedAlias $managedAlias
-     * @param array        $actions
+     * @param array $actions
+     * @throws ORMException
+     * @throws OptimisticLockException
+     *
      */
     private function save(ManagedAlias $managedAlias, array $actions)
     {
@@ -112,11 +130,11 @@ class ManagedAliasController extends AppController
     }
     
     /**
-     * @param Form $form
+     * @param FormInterface $form
      *
      * @return array
      */
-    private function getIndexActions(Form $form)
+    private function getIndexActions(FormInterface $form)
     {
         $actions = [];
         $submitted = $form->get('indexes')->getData();

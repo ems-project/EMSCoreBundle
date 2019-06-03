@@ -2,7 +2,8 @@
 
 namespace EMS\CoreBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use EMS\CoreBundle\Repository\RevisionRepository;
+use Exception;
 use Symfony\Component\Cache\Simple\FilesystemCache;
 
 class TwigElementsController extends AppController
@@ -13,7 +14,7 @@ class TwigElementsController extends AppController
     {
         $draftCounterGroupedByContentType = [];
 
-        /** @var \EMS\CoreBundle\Repository\RevisionRepository $revisionRepository */
+        /** @var RevisionRepository $revisionRepository */
         $revisionRepository = $this->getDoctrine()->getRepository('EMSCoreBundle:Revision');
          
         $temp = $revisionRepository->draftCounterGroupedByContentType($this->get('ems.service.user')->getCurrentUser()->getCircles(), $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN'));
@@ -23,7 +24,7 @@ class TwigElementsController extends AppController
 
         try {
             $status = $this->getElasticsearch()->cluster()->health()['status'];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $status = 'red';
         }
         
@@ -40,7 +41,7 @@ class TwigElementsController extends AppController
                 if ($result && 200 != $result['code']) {
                     $status = 'yellow';
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $status = 'yellow';
             }
         }

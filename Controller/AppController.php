@@ -3,35 +3,35 @@ namespace EMS\CoreBundle\Controller;
 
 use Elasticsearch\Client;
 use EMS\CommonBundle\Twig\RequestRuntime;
+use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
+use EMS\CoreBundle\Service\AggregateOptionService;
 use EMS\CoreBundle\Service\AliasService;
+use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\AssetService;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
+use EMS\CoreBundle\Service\ElasticsearchService;
 use EMS\CoreBundle\Service\EnvironmentService;
-use EMS\CoreBundle\Service\FileService;
 use EMS\CoreBundle\Service\HelperService;
 use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\NotificationService;
 use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\SearchFieldOptionService;
+use EMS\CoreBundle\Service\SearchOptionService;
 use EMS\CoreBundle\Service\SearchService;
+use EMS\CoreBundle\Service\SortOptionService;
 use EMS\CoreBundle\Service\UserService;
 use EMS\CoreBundle\Service\WysiwygProfileService;
+use EMS\CoreBundle\Service\WysiwygStylesSetService;
 use Psr\Log\LoggerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormRegistryInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Translation\TranslatorInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use EMS\CoreBundle\Service\AssetExtratorService;
-use EMS\CoreBundle\Service\WysiwygStylesSetService;
-use EMS\CoreBundle\Service\ElasticsearchService;
-use EMS\CoreBundle\Service\AggregateOptionService;
-use EMS\CoreBundle\Service\SearchOptionService;
-use EMS\CoreBundle\Service\SortOptionService;
+use Twig_Environment;
 
 class AppController extends Controller
 {
@@ -76,14 +76,6 @@ class AppController extends Controller
     protected function getElasticsearchService()
     {
         return $this->get('ems.service.elasticsearch');
-    }
-
-    /**
-     * @return FileService
-     */
-    protected function getFileService()
-    {
-        return $this->get('ems.service.file');
     }
     
     /**
@@ -157,7 +149,7 @@ class AppController extends Controller
     }
     
     /**
-     * @return \Twig_Environment
+     * @return Twig_Environment
      */
     protected function getTwig()
     {
@@ -180,7 +172,7 @@ class AppController extends Controller
         return $this->container->get('ems.service.helper');
     }
         
-        /**
+    /**
      * @return AliasService
      */
     protected function getAliasService()
@@ -188,9 +180,18 @@ class AppController extends Controller
             return $this->container->get('ems.service.alias')->build();
     }
 
+    /**
+     * @param string $fieldTypeNameOrServiceName
+     * @return DataFieldType
+     * @throws ElasticmsException
+     */
     protected function getDataFieldType(string $fieldTypeNameOrServiceName): DataFieldType
     {
-        return $this->formRegistry->getType($fieldTypeNameOrServiceName)->getInnerType();
+        $dataFieldType = $this->formRegistry->getType($fieldTypeNameOrServiceName)->getInnerType();
+        if ($dataFieldType instanceof DataFieldType) {
+            return $dataFieldType;
+        }
+        throw new ElasticmsException(sprintf('Expecting a DataFieldType instance, got a %s', get_class($dataFieldType)));
     }
     
     /**
@@ -206,7 +207,7 @@ class AppController extends Controller
 
     /**
      * @param string $service
-     * @param string $arguments
+     * @param array $arguments
      *
      * @return RedirectResponse
      */
@@ -216,7 +217,10 @@ class AppController extends Controller
         $jobService = $this->container->get('ems.service.job');
         $job = $jobService->createService($this->getUser(), $service, $arguments);
 
-        $this->addFlash('notice', 'A job has been prepared');
+        $this->logger->notice('log.job.prepared', [
+            'command' => $service,
+            'job_id' => $job->getId(),
+        ]);
         
         return $this->redirectToRoute('job.status', [
             'job' => $job->getId(),
@@ -246,7 +250,7 @@ class AppController extends Controller
     
     /**
      *
-     * @return AssetExtratorService
+     * @return AssetExtractorService
      */
     public function getAssetExtractorService()
     {
@@ -289,9 +293,6 @@ class AppController extends Controller
         return $this->get('ems.service.environment');
     }
 
-    /**
-     *
-     */
     protected function returnJson($success, $template = '@EMSCore/ajax/notification.json.twig')
     {
         $response = $this->render($template, [

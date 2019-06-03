@@ -81,5 +81,6 @@ class ReconnectCommand extends ContainerAwareCommand
                 }
             }
         }
+        return 0;
     }
 }

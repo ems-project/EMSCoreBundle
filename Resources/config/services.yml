@@ -40,7 +40,7 @@ services:
             - { name: form.type }
     ems.fieldtype.collection:
         class: EMS\CoreBundle\Form\DataField\CollectionFieldType
-        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@ems.service.data']
+        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@ems.service.data', '@logger']
         tags:
             - { name: ems.form.datafieldtype, alias: collection }
             - { name: form.type }
@@ -142,7 +142,7 @@ services:
             - { name: form.type }
     ems.fieldtype.fileattachement:
         class: EMS\CoreBundle\Form\DataField\FileAttachmentFieldType
-        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@ems.service.file', '@session']
+        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@ems.service.file', '@logger']
         tags:
             - { name: ems.form.datafieldtype, alias: file_attachment }
             - { name: form.type }
@@ -237,49 +237,49 @@ services:
             - { name: form.type }
     ems.view.keywords:
         class: EMS\CoreBundle\Form\View\KeywordsViewType
-        arguments: ['@form.factory', '@twig', '@app.elasticsearch']
+        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger']
         tags:
             - { name: ems.form.viewtype, alias: keywords }
             - { name: form.type }
     ems.view.criteria:
         class: EMS\CoreBundle\Form\View\CriteriaViewType
-        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@router']
+        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger', '@router']
         tags:
             - { name: ems.form.viewtype, alias: criteria }
             - { name: form.type }
     ems.view.export:
         class: EMS\CoreBundle\Form\View\ExportViewType
-        arguments: ['@form.factory', '@twig', '@app.elasticsearch']
+        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger']
         tags:
             - { name: ems.form.viewtype, alias: export }
             - { name: form.type }
     ems.view.sorter:
         class: EMS\CoreBundle\Form\View\SorterViewType
-        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@session', '@ems.service.data', '@router']
+        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger', '@session', '@ems.service.data', '@router']
         tags:
             - { name: ems.form.viewtype, alias: sorter }
             - { name: form.type }
     ems.view.hierarchical:
         class: EMS\CoreBundle\Form\View\HierarchicalViewType
-        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@session', '@ems.service.data', '@router', '@ems.service.contenttype']
+        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger', '@session', '@ems.service.data', '@router', '@ems.service.contenttype']
         tags:
             - { name: ems.form.viewtype, alias: hierarchical }
             - { name: form.type }
     ems.view.report:
         class: EMS\CoreBundle\Form\View\ReportViewType
-        arguments: ['@form.factory', '@twig', '@app.elasticsearch']
+        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger']
         tags:
             - { name: ems.form.viewtype, alias: report }
             - { name: form.type }
     ems.view.calendar:
         class: EMS\CoreBundle\Form\View\CalendarViewType
-        arguments: ['@form.factory', '@twig', '@app.elasticsearch']
+        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger']
         tags:
             - { name: ems.form.viewtype, alias: calendar }
             - { name: form.type }
     ems.view.gallery:
         class: EMS\CoreBundle\Form\View\GalleryViewType
-        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@ems.service.search']
+        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger', '@ems.service.search']
         tags:
             - { name: ems.form.viewtype, alias: gallery }
             - { name: form.type }
@@ -377,7 +377,7 @@ services:
         arguments: ['@app.elasticsearch', '@EMS\CoreBundle\Service\EnvironmentService', '@ems.form.fieldtype.fieldtypetype', '@ems.service.elasticsearch', '%ems_core.version%', '%ems_core.instance_id%']
     EMS\CoreBundle\Service\DataService:
         class: EMS\CoreBundle\Service\DataService
-        arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '%ems_core.lock_time%', '@app.elasticsearch', '@ems.service.mapping', '%ems_core.instance_id%', '@session', '@form.factory', '@service_container', '@form.registry', '@event_dispatcher', '@ems.service.contenttype', '%ems_core.private_key%']
+        arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '%ems_core.lock_time%', '@app.elasticsearch', '@ems.service.mapping', '%ems_core.instance_id%', '@session', '@form.factory', '@service_container', '@form.registry', '@event_dispatcher', '@ems.service.contenttype', '%ems_core.private_key%', '@logger', '@ems_common.storage.manager']
         tags:
             - { name: kernel.event_listener, event: ems_core.revision.update_referers, method: updateReferers, priority: 0 }
     ems.service.alias:
@@ -394,37 +394,34 @@ services:
         arguments: ['@doctrine', '@session', '@ems.service.user', '@security.authorization_checker', '%ems_core.single_type_index%']
     ems.service.contenttype: '@EMS\CoreBundle\Service\ContentTypeService'
     EMS\CoreBundle\Service\ContentTypeService:
-        arguments: ['@doctrine', '@session', '@ems.service.mapping', '@app.elasticsearch', '@ems.service.environment', '@form.registry', '@translator', '%ems_core.instance_id%', '%ems_core.single_type_index%']
+        arguments: ['@doctrine', '@logger', '@ems.service.mapping', '@app.elasticsearch', '@ems.service.environment', '@form.registry', '@translator', '%ems_core.instance_id%', '%ems_core.single_type_index%']
     ems.service.user:
         class: EMS\CoreBundle\Service\UserService
         arguments: ['@doctrine', '@session', '@security.token_storage', '%security.role_hierarchy.roles%']
     ems.service.wysiwyg_profile:
         class: EMS\CoreBundle\Service\WysiwygProfileService
-        arguments: ['@doctrine', '@session', '@translator']
+        arguments: ['@doctrine', '@logger', '@translator']
     ems.service.aggregate_option:
         class: EMS\CoreBundle\Service\AggregateOptionService
-        arguments: ['@doctrine', '@session', '@translator']
+        arguments: ['@doctrine', '@logger', '@translator']
     ems.service.sort_option:
         class: EMS\CoreBundle\Service\SortOptionService
-        arguments: ['@doctrine', '@session', '@translator']
+        arguments: ['@doctrine', '@logger', '@translator']
     ems.service.search_field_option:
         class: EMS\CoreBundle\Service\SearchFieldOptionService
-        arguments: ['@doctrine', '@session', '@translator']
+        arguments: ['@doctrine', '@logger', '@translator']
     ems.service.wysiwyg_styles_set:
         class: EMS\CoreBundle\Service\WysiwygStylesSetService
-        arguments: ['@doctrine', '@session', '@translator']
+        arguments: ['@doctrine', '@logger', '@translator']
     ems.service.objectchoicecache:
         class: EMS\CoreBundle\Service\ObjectChoiceCacheService
-        arguments: ['@app.elasticsearch', '@session', '@ems.service.contenttype', '@security.authorization_checker', '@security.token_storage']
-    ems.service.audit:
-        class: EMS\CoreBundle\Service\AuditService
-        arguments: ['%ems_core.audit_index%', '@doctrine', '@app.elasticsearch', '@ems.service.user', '@logger']
+        arguments: ['@app.elasticsearch', '@logger', '@ems.service.contenttype', '@security.authorization_checker', '@security.token_storage']
     ems.service.publish:
         class: EMS\CoreBundle\Service\PublishService
-        arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '%ems_core.lock_time%', '@app.elasticsearch', '@ems.service.mapping', '%ems_core.instance_id%', '@session', '@ems.service.contenttype', '@ems.service.environment', '@ems.service.data', '@ems.service.audit', '@ems.service.user', '@event_dispatcher']
+        arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '%ems_core.lock_time%', '@app.elasticsearch', '@ems.service.mapping', '%ems_core.instance_id%', '@session', '@ems.service.contenttype', '@ems.service.environment', '@ems.service.data', '@ems.service.user', '@event_dispatcher', '@logger']
     ems.service.notification:
         class: EMS\CoreBundle\Service\NotificationService
-        arguments: ['%ems_core.audit_index%', '@doctrine', '@ems.service.user', '@logger', '@ems.service.audit', '@session', '@service_container', '@ems.service.data', '%ems_core.from_email%', '@twig']
+        arguments: ['@doctrine', '@ems.service.user', '@logger', '@session', '@service_container', '@ems.service.data', '%ems_core.from_email%', '@twig']
         tags:
             - { name: kernel.event_listener, event: revision.new_draft, method: newDraftEvent, priority: 0 }
             - { name: kernel.event_listener, event: revision.finalize_draft, method: finalizeDraftEvent, priority: 0 }
@@ -436,8 +433,8 @@ services:
     ems.service.rest_client:
         class: EMS\CoreBundle\Service\RestClientService
     ems.service.asset_extractor:
-        class: EMS\CoreBundle\Service\AssetExtratorService
-        arguments: ["@ems.service.rest_client", '@session', '@doctrine', '@ems.service.file', '%ems_core.tika_server%', '%kernel.project_dir%', '%ems_core.tika_download_url%']
+        class: EMS\CoreBundle\Service\AssetExtractorService
+        arguments: ["@ems.service.rest_client", '@logger', '@doctrine', '@ems.service.file', '%ems_core.tika_server%', '%kernel.project_dir%', '%ems_core.tika_download_url%']
     ems.service.search:
         class: EMS\CoreBundle\Service\SearchService
         arguments: ['@ems.service.mapping']
@@ -458,37 +455,37 @@ services:
 ### command services ###
     ems.environment.ems:
         class: EMS\CoreBundle\Command\EmsCommand
-        arguments: ['@logger', '@app.elasticsearch', '@session']
+        arguments: ['@logger', '@app.elasticsearch']
         tags:
             -  { name: console.command }
     ems.contenttype.migrate:
         class: EMS\CoreBundle\Command\MigrateCommand
-        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.elasticsearch.bulker', '@ems.service.mapping', '@ems.service.data', '@form.factory', '%ems_core.instance_id%', '@session']
+        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.elasticsearch.bulker', '@ems.service.mapping', '@ems.service.data', '@form.factory', '%ems_core.instance_id%']
         tags:
             -  { name: console.command }
     ems.environment.rebuild:
         class: EMS\CoreBundle\Command\RebuildCommand
-        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.mapping', '@service_container', '@session', '%ems_core.instance_id%', '%ems_core.single_type_index%']
+        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.mapping', '@ems.service.contenttype', '@ems.service.environment', '@ems.environment.reindex', '%ems_core.instance_id%', '%ems_core.single_type_index%']
         tags:
             -  { name: console.command }
     ems.environment.recompute:
         class: EMS\CoreBundle\Command\RecomputeCommand
-        arguments: ['@ems.service.data', '@doctrine', '@form.factory', '@ems.service.publish', '@logger', '@app.elasticsearch', '@session', '@ems.service.contenttype']
+        arguments: ['@ems.service.data', '@doctrine', '@form.factory', '@ems.service.publish', '@logger', '@app.elasticsearch', '@ems.service.contenttype']
         tags:
             -  { name: console.command }
     ems.environment.updatemetafield:
         class: EMS\CoreBundle\Command\UpdateMetaFieldCommand
-        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@session', '@ems.service.data']
+        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.data']
         tags:
             -  { name: console.command }
     ems.environment.align:
         class: EMS\CoreBundle\Command\AlignCommand
-        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.data', '@ems.service.contenttype', '@ems.service.environment', '@ems.service.publish', '@session']
+        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.data', '@ems.service.contenttype', '@ems.service.environment', '@ems.service.publish']
         tags:
             -  { name: console.command }
     ems.environment.reindex:
         class: EMS\CoreBundle\Command\ReindexCommand
-        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.mapping', '@service_container', '%ems_core.instance_id%', '@session', '@ems.service.data']
+        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.mapping', '@service_container', '%ems_core.instance_id%', '@ems.service.data']
         tags:
             -  { name: console.command }
     ems.contenttype.delete:
@@ -514,7 +511,7 @@ services:
             -  { name: console.command }
     ems.revisions.index-file-fields:
         class: EMS\CoreBundle\Command\IndexFileCommand
-        arguments: ['@logger', '@app.elasticsearch', '@session', '@doctrine', '@ems.service.contenttype', '@ems.service.asset_extractor', '@ems.service.file']
+        arguments: ['@logger', '@app.elasticsearch', '@doctrine', '@ems.service.contenttype', '@ems.service.asset_extractor', '@ems.service.file']
         tags:
             -  { name: console.command }
     ems.environment.reconnect:
@@ -528,15 +525,15 @@ services:
         tags:
             -  { name: console.command }
     EMS\CoreBundle\Command\SynchAssetCommand:
-        arguments: ['@logger', '@app.elasticsearch', '@session', '@doctrine', '@ems.service.contenttype', '@ems.service.asset_extractor', '@ems.service.file']
+        arguments: ['@logger', '@app.elasticsearch', '@doctrine', '@ems.service.contenttype', '@ems.service.asset_extractor', '@ems.service.file']
         tags:
             - { name: console.command }
     EMS\CoreBundle\Command\CleanAssetCommand:
-        arguments: ['@logger', '@app.elasticsearch', '@session', '@doctrine', '@ems.service.file']
+        arguments: ['@logger', '@app.elasticsearch', '@doctrine', '@ems.service.file']
         tags:
             - { name: console.command }
     EMS\CoreBundle\Command\AssetClearCacheCommand:
-        arguments: ['@logger', '@app.elasticsearch', '@session', '@ems.service.file']
+        arguments: ['@logger', '@app.elasticsearch', '@ems.service.file']
         tags:
             - { name: console.command }
 #### security services
@@ -564,3 +561,14 @@ services:
         autoconfigure: true
         public: true
         resource: '../../Controller/*'
+
+### Loggers ####
+    ems_common.monolog.ems_handler:
+        class: EMS\CommonBundle\Logger\ElasticsearchLogger
+        arguments: ['info', '%ems_core.instance_id%', '', 'ems_core', '@app.elasticsearch', '@security.helper']
+        tags:
+            - { name: kernel.cache_warmer }
+            - { name: kernel.event_listener, event: kernel.terminate }
+    ems_common.monolog.flash_handler:
+        class: EMS\CommonBundle\Logger\FlashMessageLogger
+        arguments: ['@session', '@translator', 'EMSCoreBundle']

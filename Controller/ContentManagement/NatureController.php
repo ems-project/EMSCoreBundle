@@ -2,11 +2,16 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Form\Nature\ReorderType;
 use EMS\CoreBundle\Service\ContentTypeService;
+use EMS\CoreBundle\Service\DataService;
+use Exception;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class NatureController extends AppController
@@ -18,7 +23,7 @@ class NatureController extends AppController
      * @param ContentType $contentType
      * @param Request $request
      * @param ContentTypeService $contentTypeService
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return RedirectResponse|Response
      * @Route("/content-type/nature/reorder/{contentType}", name="nature.reorder"))
      */
     public function reorderAction(ContentType $contentType, Request $request, ContentTypeService $contentTypeService)
@@ -26,7 +31,9 @@ class NatureController extends AppController
         @trigger_error(sprintf('The "%s::reorderAction" controller is deprecated. Use a sort view instead.', NatureController::class), E_USER_DEPRECATED);
 
         if ($contentType->getOrderField() == null) {
-            $this->addFlash('warning', 'This content type does not have any order field defined');
+            $this->getLogger()->warning('log.nature.order_field_not_defined', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+            ]);
 
             return $this->redirectToRoute('data.draft_in_progress', [
                 'contentTypeId' => $contentType->getId(),
@@ -36,7 +43,10 @@ class NatureController extends AppController
         $orderField = $contentTypeService->getChildByPath($contentType->getFieldType(), $contentType->getOrderField(), true);
 
         if (!$orderField) {
-            $this->addFlash('warning', 'It was not possible to find the order field defined');
+            $this->getLogger()->warning('log.nature.order_field_is_missing', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                'order_field_name' => $contentType->getOrderField(),
+            ]);
 
             return $this->redirectToRoute('data.draft_in_progress', [
                 'contentTypeId' => $contentType->getId(),
@@ -45,7 +55,10 @@ class NatureController extends AppController
 
 
         if ($orderField->getRestrictionOptions()['minimum_role'] != null && !$this->isGranted($orderField->getRestrictionOptions()['minimum_role'])) {
-            $this->addFlash('warning', 'Your user does not right to edit the order field');
+            $this->getLogger()->warning('log.nature.not_authorized', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                'order_field_name' => $contentType->getOrderField(),
+            ]);
 
             return $this->redirectToRoute('data.draft_in_progress', [
                 'contentTypeId' => $contentType->getId(),
@@ -62,7 +75,11 @@ class NatureController extends AppController
         ]);
 
         if ($result['hits']['total'] > $this::MAX_ELEM) {
-            $this->addFlash('warning', 'This content type have to much elements to reorder them all in once');
+            $this->getLogger()->error('log.nature.too_many_documents', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                'order_field_name' => $contentType->getOrderField(),
+                'total' => $result['hits']['total'],
+            ]);
         }
 
         $data = [];
@@ -75,7 +92,7 @@ class NatureController extends AppController
         $form->handleRequest($request);
 
 
-        /** @var \EMS\CoreBundle\Service\DataService $dataService */
+        /** @var DataService $dataService */
         $dataService = $this->getDataService();
         $counter = 1;
 
@@ -87,12 +104,19 @@ class NatureController extends AppController
                     $data[$contentType->getOrderField()] = $counter++;
                     $revision->setRawData($data);
                     $dataService->finalizeDraft($revision);
-                } catch (\Exception $e) {
-                    $this->addFlash('warning', 'It was impossible to update the item ' . $itemKey . ': ' . $e->getMessage());
+                } catch (Exception $e) {
+                    $this->getLogger()->warning('log.nature.issue_with_document', [
+                        EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                        EmsFields::LOG_OUUID_FIELD => $itemKey,
+                        EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                        EmsFields::LOG_EXCEPTION_FIELD => $e,
+                    ]);
                 }
             }
 
-            $this->addFlash('notice', 'The ' . $contentType->getPluralName() . ' have been reordered');
+            $this->getLogger()->notice('log.nature.reordered', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+            ]);
 
             return $this->redirectToRoute('data.draft_in_progress', [
                 'contentTypeId' => $contentType->getId(),

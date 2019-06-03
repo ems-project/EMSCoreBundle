@@ -6,20 +6,24 @@ use EMS\CoreBundle;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\Job;
 use EMS\CoreBundle\Form\Form\JobType;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Exception;
 use SensioLabs\AnsiConverter\AnsiToHtmlConverter;
 use SensioLabs\AnsiConverter\Theme\Theme;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Routing\Annotation\Route;
 
 class JobController extends AppController
 {
     /**
+     * @param Request $request
+     * @return Response
      * @Route("/admin/job", name="job.index"))
      */
     public function indexAction(Request $request)
@@ -43,6 +47,8 @@ class JobController extends AppController
     }
 
     /**
+     * @param Job $job
+     * @return Response
      * @Route("/job/status/{job}", name="job.status"))
      */
     public function jobStatusAction(Job $job)
@@ -57,6 +63,8 @@ class JobController extends AppController
     }
 
     /**
+     * @param Request $request
+     * @return RedirectResponse|Response
      * @Route("/admin/job/add", name="job.add"))
      */
     public function createAction(Request $request)
@@ -79,8 +87,9 @@ class JobController extends AppController
     }
 
     /**
-     * @Route("/admin/job/delete/{job}", name="job.delete"))
-     * @Method({"POST"})
+     * @param Job $job
+     * @return RedirectResponse
+     * @Route("/admin/job/delete/{job}", name="job.delete", methods={"POST"})
      */
     public function deleteAction(Job $job)
     {
@@ -90,8 +99,8 @@ class JobController extends AppController
     }
 
     /**
-     * @Route("/admin/job/clean", name="job.clean"))
-     * @Method({"POST"})
+     * @return RedirectResponse
+     * @Route("/admin/job/clean", name="job.clean", methods={"POST"})
      */
     public function cleanAction()
     {
@@ -102,9 +111,11 @@ class JobController extends AppController
 
     /**
      * Ajax action called on the status page
+     * @param Job $job
+     * @param Request $request
+     * @return JsonResponse
      *
-     * @Route("/admin/job/start/{job}", name="job.start"))
-     * @Method({"POST"})
+     * @Route("/admin/job/start/{job}", name="job.start", methods={"POST"})
      */
     public function startJobAction(Job $job, Request $request)
     {
@@ -133,7 +144,7 @@ class JobController extends AppController
                 $output->writeln('<error>Service not found</error>');
             } catch (InvalidArgumentException $e) {
                 $output->writeln('<error>' . $e->getMessage() . '</error>');
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $output->writeln('An exception has been raised!');
                 $output->writeln('Exception:' . $e->getMessage());
             }

@@ -5,22 +5,22 @@ namespace EMS\CoreBundle\Service;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CoreBundle\Entity\WysiwygStylesSet;
 use EMS\CoreBundle\Repository\WysiwygStylesSetRepository;
-use Symfony\Component\HttpFoundation\Session\Session;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class WysiwygStylesSetService
 {
     /**@var Registry $doctrine */
     private $doctrine;
-    /**@var Session $session*/
-    private $session;
+    /**@var LoggerInterface $logger*/
+    private $logger;
     /**@var TranslatorInterface $translator */
     private $translator;
     
-    public function __construct(Registry $doctrine, Session $session, TranslatorInterface $translator)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, TranslatorInterface $translator)
     {
         $this->doctrine = $doctrine;
-        $this->session = $session;
+        $this->logger = $logger;
         $this->translator= $translator;
     }
     
@@ -63,7 +63,9 @@ class WysiwygStylesSetService
         $em = $this->doctrine->getManager();
         $em->persist($stylesSet);
         $em->flush();
-        $this->session->getFlashBag()->add('notice', $this->translator->trans('Style set "%name%" has been updated', ['%name%' => $stylesSet->getName()], 'EMSCoreBundle'));
+        $this->logger->notice('service.wysiwyg_styles_set.updated', [
+            'wysiwyg_styles_set_name' => $stylesSet->getName()
+        ]);
     }
     
     /**
@@ -76,6 +78,8 @@ class WysiwygStylesSetService
         $em = $this->doctrine->getManager();
         $em->remove($stylesSet);
         $em->flush();
-        $this->session->getFlashBag()->add('notice', $this->translator->trans('Style set "%name% has been deleted', ['%name%' => $name], 'EMSCoreBundle'));
+        $this->logger->notice('service.wysiwyg_styles_set.deleted', [
+            'wysiwyg_styles_set_name' => $name,
+        ]);
     }
 }

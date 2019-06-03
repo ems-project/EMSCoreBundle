@@ -2,8 +2,12 @@
 
 namespace EMS\CoreBundle\Command;
 
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Common\Persistence\Mapping\MappingException;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use EMS\CoreBundle\Entity\ContentType;
@@ -14,7 +18,9 @@ use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\PublishService;
+use Exception;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,7 +28,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\HttpFoundation\Session\Session;
 
 class RecomputeCommand extends EmsCommand
 {
@@ -73,10 +78,9 @@ class RecomputeCommand extends EmsCommand
         PublishService $publishService,
         LoggerInterface $logger,
         Client $client,
-        Session $session,
         ContentTypeService $contentTypeService
     ) {
-        parent::__construct($logger, $client, $session);
+        parent::__construct($logger, $client);
 
         $this->dataService = $dataService;
         $this->formFactory = $formFactory;
@@ -89,9 +93,6 @@ class RecomputeCommand extends EmsCommand
         $this->revisionRepository = $em->getRepository(Revision::class);
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function configure()
     {
         $this
@@ -108,7 +109,13 @@ class RecomputeCommand extends EmsCommand
     }
 
     /**
-     * @inheritdoc
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int|void|null
+     * @throws MappingException
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -119,7 +126,7 @@ class RecomputeCommand extends EmsCommand
 
         /** @var $contentType ContentType */
         if (null === $contentType = $this->contentTypeRepository->findOneBy(['name' => $input->getArgument('contentType')])) {
-            throw new \RuntimeException('invalid content type');
+            throw new RuntimeException('invalid content type');
         }
 
         if (!$input->getOption('continue') || $input->getOption('cron')) {
@@ -176,7 +183,7 @@ class RecomputeCommand extends EmsCommand
                 $this->dataService->propagateDataToComputedField($revisionType->get('data'), $objectArray, $contentType, $contentType->getName(), $newRevision->getOuuid(), true);
                 $newRevision->setRawData($objectArray);
 
-                $revision->close(new \DateTime('now'));
+                $revision->close(new DateTime('now'));
                 $newRevision->setDraft(false);
 
                 $this->dataService->sign($revision);
@@ -212,7 +219,6 @@ class RecomputeCommand extends EmsCommand
                 $this->em->commit();
             }
             $this->em->clear(Revision::class);
-            $this->flushFlash($output);
         } while ($paginator->getIterator()->count());
 
         $progress->finish();
@@ -220,8 +226,11 @@ class RecomputeCommand extends EmsCommand
 
     /**
      * @param OutputInterface $output
-     * @param ContentType     $contentType
-     * @param bool            $force
+     * @param ContentType $contentType
+     * @param bool $force
+     * @param bool $ifEmpty
+     * @param bool $id
+     * @throws Exception
      */
     private function lock(OutputInterface $output, ContentType $contentType, $force = false, $ifEmpty = false, $id = false)
     {

@@ -2,13 +2,10 @@
 
 namespace EMS\CoreBundle\Form\View;
 
-use EMS\CoreBundle\Entity\DataField;
-use EMS\CoreBundle\Form\View\ViewType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Elasticsearch\Client;
 use EMS\CoreBundle\Entity\View;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -72,12 +69,7 @@ class KeywordsViewType extends ViewType
     }
     
 
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
-    public function getParameters(View $view, FormFactoryInterface $formFactoty, Request $request)
+    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request)
     {
         
         $searchQuery = [

@@ -4,6 +4,8 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Entity\Helper\JsonClass;
+use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 
 /**
  * FieldType
@@ -12,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\FieldTypeRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class FieldType
+class FieldType extends JsonDeserializer implements \JsonSerializable
 {
     /**
      * @var int
@@ -21,48 +23,48 @@ class FieldType
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="created", type="datetime")
      */
-    private $created;
+    protected $created;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="modified", type="datetime")
      */
-    private $modified;
+    protected $modified;
 
     /**
      * @var string
      *
      * @ORM\Column(name="type", type="string", length=255)
      */
-    private $type;
+    protected $type;
 
     /**
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
      */
-    private $name;
+    protected $name;
 
     /**
      * @ORM\OneToOne(targetEntity="ContentType")
      * @ORM\JoinColumn(name="content_type_id", referencedColumnName="id")
      */
-    private $contentType;
+    protected $contentType;
     
     /**
      * @var bool
      *
      * @ORM\Column(name="deleted", type="boolean")
      */
-    private $deleted;
+    protected $deleted;
 
 
     /**
@@ -70,21 +72,21 @@ class FieldType
      *
      * @ORM\Column(name="description", type="text", nullable=true)
      */
-    private $description;
+    protected $description;
 
     /**
      * @var array
      *
      * @ORM\Column(name="options", type="json_array", nullable=true)
      */
-    private $options;
+    protected $options;
 
     /**
      * @var int
      *
      * @ORM\Column(name="orderKey", type="integer")
      */
-    private $orderKey;
+    protected $orderKey;
 
     /**
      * @var FieldType
@@ -92,13 +94,14 @@ class FieldType
      * @ORM\ManyToOne(targetEntity="FieldType", inversedBy="children", cascade={"persist"})
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id")
      */
-    private $parent;
+    protected $parent;
 
     /**
+     * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="FieldType", mappedBy="parent", cascade={"persist", "remove"})
      * @ORM\OrderBy({"orderKey" = "ASC"})
      */
-    private $children;
+    protected $children;
     
     /**
      * @ORM\PrePersist
@@ -172,8 +175,6 @@ class FieldType
                 $child->removeCircularReference();
             }
                $this->setContentType(null);
-               $this->setCreated(null);
-               $this->setModified(null);
                $this->setParent(null);
         }
     }
@@ -510,7 +511,7 @@ class FieldType
      */
     public function __construct()
     {
-        $this->children = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->children = new ArrayCollection();
         $this->deleted = false;
         $this->orderKey = 0;
     }
@@ -639,7 +640,7 @@ class FieldType
     /**
      * Get children
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\ArrayCollection
      */
     public function getChildren()
     {
@@ -692,5 +693,34 @@ class FieldType
     public function getOptions()
     {
         return $this->options;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize()
+    {
+        $json = new JsonClass(get_object_vars($this), __CLASS__);
+        $json->removeProperty('id');
+        $json->updateProperty('children', $this->getValidChildren());
+
+        return $json;
+    }
+
+    protected function deserializeProperty(string $name, $value)
+    {
+        switch ($name) {
+            case 'children':
+                foreach ($this->deserializeArray($value) as $child) {
+                    $this->addChild($child);
+                }
+                break;
+            default:
+                parent::deserializeProperty($name, $value);
+        }
     }
 }

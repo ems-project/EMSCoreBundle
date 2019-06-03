@@ -70,7 +70,8 @@
 	},
 	"extra" : {
 		"branch-alias" : {
-			"dev-master" : "1.8.x-dev"
+			"dev-master" : "1.8.x-dev",
+			"dev-demo" : "1.9.x-dev"
 		}
 	},
 	"scripts": {

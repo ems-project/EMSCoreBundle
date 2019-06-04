@@ -3,20 +3,27 @@
 namespace EMS\CoreBundle\Elasticsearch;
 
 use Elasticsearch\Client;
-use EMS\CoreBundle\Elasticsearch\Index\Mappings;
-use EMS\CoreBundle\Elasticsearch\Index\Settings;
+use EMS\CommonBundle\Elasticsearch\Factory;
 use Psr\Log\LoggerInterface;
 
 class Indexer
 {
-    /** @var Client */
-    private $client;
+    /** @var Factory */
+    private $factory;
+    /** @var array */
+    private $options;
     /** @var LoggerInterface */
     private $logger;
 
-    public function __construct(Client $client, LoggerInterface $logger)
+    /**
+     * @param Factory         $factory
+     * @param array           $options
+     * @param LoggerInterface $logger
+     */
+    public function __construct(Factory $factory, array $options, LoggerInterface $logger)
     {
-        $this->client = $client;
+        $this->factory = $factory;
+        $this->options = $options;
         $this->logger = $logger;
     }
 
@@ -28,13 +35,13 @@ class Indexer
 
     public function exists(string $name): bool
     {
-        return $this->client->indices()->exists(['index' => $name]);
+        return $this->getClient()->indices()->exists(['index' => $name]);
     }
 
     public function delete(string $name): void
     {
         $params = ['index' => $name];
-        $this->client->indices()->delete($params);
+        $this->getClient()->indices()->delete($params);
         $this->logger->warning('Deleted index {index}', $params);
     }
 
@@ -42,7 +49,7 @@ class Indexer
     {
         $body = \array_filter(['settings' => $settings, 'mappings' => $mappings]);
 
-        $this->client->indices()->create(['index' => $name, 'body' => $body]);
+        $this->getClient()->indices()->create(['index' => $name, 'body' => $body]);
         $this->logger->info('Created index {index}', ['index' => $name]);
     }
 
@@ -52,7 +59,7 @@ class Indexer
      */
     public function atomicSwitch(string $alias, string $newIndex, string $removeRegex = null, bool $clean = false): void
     {
-        $indices = $this->client->indices();
+        $indices = $this->getClient()->indices();
         $actions = [['add' => ['index' => $newIndex, 'alias' => $alias]]];
         $delete = [];
 
@@ -76,5 +83,10 @@ class Indexer
         $this->logger->info('Alias {alias} is now pointing to {index}', ['alias' => $alias, 'index' => $newIndex]);
 
         array_map([$this, 'delete'], $delete);
+    }
+
+    private function getClient(): Client
+    {
+        return $this->factory->fromConfig($this->options);
     }
 }

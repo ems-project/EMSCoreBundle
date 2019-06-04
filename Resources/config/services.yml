@@ -385,10 +385,16 @@ services:
         arguments: ['@app.elasticsearch', '@doctrine']
     ems.elasticsearch.bulker:
         class: EMS\CoreBundle\Elasticsearch\Bulker
-        arguments: ['@app.elasticsearch', '@logger']
+        arguments:
+            - '@ems_common.elasticsearch.factory'
+            - { hosts: "%ems_core.elasticsearch_cluster%" }
+            - '@logger'
     ems.elasticsearch.indexer:
         class: EMS\CoreBundle\Elasticsearch\Indexer
-        arguments: ['@app.elasticsearch', '@logger']
+        arguments:
+            - '@ems_common.elasticsearch.factory'
+            - { hosts: "%ems_core.elasticsearch_cluster%" }
+            - '@logger'
     ems.service.environment: '@EMS\CoreBundle\Service\EnvironmentService'
     EMS\CoreBundle\Service\EnvironmentService:
         arguments: ['@doctrine', '@session', '@ems.service.user', '@security.authorization_checker', '%ems_core.single_type_index%']

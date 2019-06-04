@@ -1,6 +1,5 @@
 <?php
 
-// src/EMS/CoreBundle/Command/GreetCommand.php
 namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -16,7 +15,7 @@ use EMS\CoreBundle\Repository\FieldTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\TemplateRepository;
 use EMS\CoreBundle\Repository\ViewRepository;
-use Psr\Log\Test\LoggerInterfaceTest;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -29,7 +28,7 @@ class CleanDeletedContentTypeCommand extends ContainerAwareCommand
     protected $logger;
     protected $container;
 
-    public function __construct(Registry $doctrine, LoggerInterfaceTest $logger, Client $client, $mapping, $container)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, Client $client, $mapping, $container)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;

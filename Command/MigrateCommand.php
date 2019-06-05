@@ -3,16 +3,21 @@
 namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Common\Persistence\Mapping\MappingException;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Elasticsearch\Client;
+use EMS\CoreBundle\Elasticsearch\Bulker;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Exception\NotLockedException;
 use EMS\CoreBundle\Form\Form\RevisionType;
+use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\Mapping;
-use EMS\CoreBundle\Elasticsearch\Bulker;
 use Monolog\Logger;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
@@ -20,10 +25,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\HttpFoundation\Session\Session;
-use EMS\CoreBundle\Exception\CantBeFinalizedException;
+use Symfony\Component\Form\FormInterface;
 
 class MigrateCommand extends EmsCommand
 {
@@ -41,7 +44,7 @@ class MigrateCommand extends EmsCommand
     
     protected $instanceId;
     
-    public function __construct(Registry $doctrine, Logger $logger, Client $client, Bulker $bulker, $mapping, DataService $dataService, FormFactoryInterface $formFactory, $instanceId, Session $session)
+    public function __construct(Registry $doctrine, Logger $logger, Client $client, Bulker $bulker, $mapping, DataService $dataService, FormFactoryInterface $formFactory, $instanceId)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
@@ -51,7 +54,7 @@ class MigrateCommand extends EmsCommand
         $this->dataService = $dataService;
         $this->formFactory= $formFactory;
         $this->instanceId = $instanceId;
-        parent::__construct($logger, $client, $session);
+        parent::__construct($logger, $client);
     }
     
     protected function configure()
@@ -122,20 +125,24 @@ class MigrateCommand extends EmsCommand
     }
     
     
-    private function getSubmitData(Form $form)
+    private function getSubmitData(FormInterface $form)
     {
         return $this->dataService->getSubmitData($form);
     }
     
-    /**
-     *
-     * @return \EMS\CoreBundle\Entity\Revision
-     */
     private function getEmptyRevision(ContentType $contentType)
     {
         return $this->dataService->getEmptyRevision($contentType, 'SYSTEM_MIGRATE');
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int|void|null
+     * @throws MappingException
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         /** @var EntityManager $em */
@@ -163,10 +170,10 @@ class MigrateCommand extends EmsCommand
         
         /** @var RevisionRepository $revisionRepository */
         $revisionRepository = $em->getRepository('EMSCoreBundle:Revision');
-        /** @var \EMS\CoreBundle\Repository\ContentTypeRepository $contentTypeRepository */
+        /** @var ContentTypeRepository $contentTypeRepository */
         $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
 
-        /** @var \EMS\CoreBundle\Entity\ContentType $contentTypeTo */
+        /** @var ContentType $contentTypeTo */
         $contentTypeTo = $contentTypeRepository->findOneBy(array("name" => $contentTypeNameTo, 'deleted' => false));
         if (!$contentTypeTo) {
             $output->writeln("<error>Content type ".$contentTypeNameTo." not found</error>");
@@ -301,8 +308,6 @@ class MigrateCommand extends EmsCommand
                     $output->writeln("<error>'.$e.'</error>");
                 }
 
-                $this->flushFlash($output);
-
 
                 // advance the progress bar 1 unit
                 $progress->advance();
@@ -327,7 +332,6 @@ class MigrateCommand extends EmsCommand
         // ensure that the progress bar is at 100%
         $progress->finish();
         $output->writeln("");
-        $this->flushFlash($output);
         $output->writeln("Migration done");
     }
 }

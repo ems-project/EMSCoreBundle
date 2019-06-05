@@ -3,26 +3,26 @@
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityRepository;
 use EMS\CoreBundle\Entity\SortOption;
-use Symfony\Component\Form\Form;
-use Symfony\Component\HttpFoundation\Session\Session;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Translation\TranslatorInterface;
-use EMS\CoreBundle\DependencyInjection\EMSCoreExtension;
 
 abstract class EntityService
 {
     /**@var Registry $doctrine */
     protected $doctrine;
-    /**@var Session $session*/
-    protected $session;
+    /**@var LoggerInterface*/
+    protected $logger;
     /**@var TranslatorInterface $translator */
     protected $translator;
     
-    public function __construct(Registry $doctrine, Session $session, TranslatorInterface $translator)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, TranslatorInterface $translator)
     {
         $this->doctrine = $doctrine;
-        $this->session = $session;
+        $this->logger = $logger;
         $this->translator= $translator;
     }
     
@@ -30,9 +30,9 @@ abstract class EntityService
     abstract protected function getEntityName();
     
     
-    public function reorder(Form $reorderform)
+    public function reorder(FormInterface $reorderForm)
     {
-        $order = json_decode($reorderform->getData()['items'], true);
+        $order = json_decode($reorderForm->getData()['items'], true);
         $i = 1;
         foreach ($order as $id) {
             $item = $this->get($id);
@@ -52,7 +52,7 @@ abstract class EntityService
     }
     
     /**
-     * @return \Doctrine\Common\Persistence\ObjectRepository
+     * @return ObjectRepository
      */
     private function getRepository()
     {
@@ -71,7 +71,8 @@ abstract class EntityService
         $item = $this->getRepository()->find($id);
         return $item;
     }
-    
+
+
     public function create($entity)
     {
         /** @var EntityRepository $repository */
@@ -83,13 +84,20 @@ abstract class EntityService
         
         $entity->setOrderKey(100+$count);
         $this->update($entity);
-        $this->session->getFlashBag()->add('notice', $this->translator->trans('%type% %name% has been created', ['%type%' => $this->getEntityName(), '%name%' => $entity->getName()], EMSCoreExtension::TRANS_DOMAIN));
+
+        $this->logger->notice('service.entity.created', [
+            'entity_type' => $this->getEntityName(),
+            'entity_name' => $entity->getName(),
+        ]);
     }
     
     public function save($entity)
     {
         $this->update($entity);
-        $this->session->getFlashBag()->add('notice', $this->translator->trans('%type% %name% has been updated', ['%type%' => $this->getEntityName(), '%name%' => $entity->getName()], EMSCoreExtension::TRANS_DOMAIN));
+        $this->logger->notice('service.entity.updated', [
+            'entity_type' => $this->getEntityName(),
+            'entity_name' => $entity->getName(),
+        ]);
     }
     
     private function update($entity)
@@ -104,6 +112,9 @@ abstract class EntityService
         $em = $this->doctrine->getManager();
         $em->remove($entity);
         $em->flush();
-        $this->session->getFlashBag()->add('notice', $this->translator->trans('%type% %name% has been deleted', ['%type%' => $this->getEntityName(), '%name%' => $entity->getName()], EMSCoreExtension::TRANS_DOMAIN));
+        $this->logger->notice('service.entity.deleted', [
+            'entity_type' => $this->getEntityName(),
+            'entity_name' => $entity->getName(),
+        ]);
     }
 }

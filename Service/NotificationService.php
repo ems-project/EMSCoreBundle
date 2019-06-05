@@ -2,6 +2,8 @@
 
 namespace EMS\CoreBundle\Service;
 
+use DateTime;
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\TreatNotifications;
 use EMS\CoreBundle\Entity\Notification;
@@ -15,25 +17,25 @@ use EMS\CoreBundle\Event\RevisionUnpublishEvent;
 use EMS\CoreBundle\Repository\NotificationRepository;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CoreBundle\Repository\TemplateRepository;
+use Exception;
 use Monolog\Logger;
+use Swift_Message;
+use Swift_TransportException;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Throwable;
+use Twig_Environment;
 
 class NotificationService
 {
-    
-    // index elasticSerach
-    private $index;
     /**@var Registry $doctrine */
     private $doctrine;
     /**@var UserService $userService*/
     private $userService;
     /**@var Logger $logger*/
     private $logger;
-    /**@var AuditService $auditService*/
-    private $auditService;
     /**@var Session $session*/
     private $session;
     /**@var Container $container*/
@@ -41,7 +43,7 @@ class NotificationService
     /**@var DataService $dataService*/
     private $dataService;
     private $sender;
-    /**@var \Twig_Environment $twig*/
+    /**@var Twig_Environment $twig*/
     private $twig;
     
     //** non-service members **
@@ -50,14 +52,12 @@ class NotificationService
     private $dryRun;
 
     
-    public function __construct($index, Registry $doctrine, UserService $userService, Logger $logger, AuditService $auditService, Session $session, Container $container, DataService $dataService, $sender, \Twig_Environment $twig)
+    public function __construct(Registry $doctrine, UserService $userService, Logger $logger, Session $session, Container $container, DataService $dataService, $sender, Twig_Environment $twig)
     {
-        $this->index = $index;
         $this->doctrine = $doctrine;
         $this->userService = $userService;
         $this->dataService = $dataService;
         $this->logger = $logger;
-        $this->auditService = $auditService;
         $this->session = $session;
         $this->container = $container;
         $this->twig = $twig;
@@ -122,7 +122,12 @@ class NotificationService
         
         /**@var Notification $notification*/
         foreach ($notifications as $notification) {
-            $this->session->getFlashBag()->add('warning', 'An "'.$notification->getTemplate()->getName().'" notification will be lost for this '.$event->getRevision()->getContentType()->getSingularName().' object ('.$event->getRevision()->getOuuid().' ) on finalize');
+            $this->logger->warning('service.notification.notification_will_be_lost_finalize', [
+                'notification_name' => $notification->getTemplate()->getName(),
+                EmsFields::LOG_CONTENTTYPE_FIELD => $event->getRevision()->getContentType(),
+                EmsFields::LOG_OUUID_FIELD => $event->getRevision()->getOuuid(),
+                EmsFields::LOG_REVISION_ID_FIELD => $event->getRevision()->getId(),
+            ]);
         }
     }
 
@@ -149,9 +154,34 @@ class NotificationService
         $em = $this->doctrine->getManager();
         $em->persist($notification);
         $em->flush();
-        
-        $this->session->getFlashBag()->add($level, 'A "'.$notification->getTemplate()->getName().'" notification has been '.$status.' for a "'.$notification->getRevision()->getContentType()->getSingularName().'" object ('.$notification->getRevision()->getOuuid().')');
-        
+
+        if ($level === 'error') {
+            $this->logger->error('service.notification.update', [
+                'notification_name' => $notification->getTemplate()->getName(),
+                EmsFields::LOG_CONTENTTYPE_FIELD => $notification->getRevision()->getContentType(),
+                EmsFields::LOG_OUUID_FIELD => $notification->getRevision()->getOuuid(),
+                EmsFields::LOG_REVISION_ID_FIELD => $notification->getRevision()->getId(),
+                'notification_status' => $status,
+            ]);
+        } else if ($level === 'warning') {
+            $this->logger->warning('service.notification.update', [
+                'notification_name' => $notification->getTemplate()->getName(),
+                EmsFields::LOG_CONTENTTYPE_FIELD => $notification->getRevision()->getContentType(),
+                EmsFields::LOG_OUUID_FIELD => $notification->getRevision()->getOuuid(),
+                EmsFields::LOG_REVISION_ID_FIELD => $notification->getRevision()->getId(),
+                'notification_status' => $status,
+            ]);
+        } else {
+            $this->logger->notice('service.notification.update', [
+                'notification_name' => $notification->getTemplate()->getName(),
+                EmsFields::LOG_CONTENTTYPE_FIELD => $notification->getRevision()->getContentType(),
+                EmsFields::LOG_OUUID_FIELD => $notification->getRevision()->getOuuid(),
+                EmsFields::LOG_REVISION_ID_FIELD => $notification->getRevision()->getId(),
+                'notification_status' => $status,
+            ]);
+        }
+
+
         return $this;
     }
     
@@ -202,12 +232,19 @@ class NotificationService
             if (! empty($alreadyPending)) {
                 /**@var Notification $alreadyPending*/
                 $alreadyPending = $alreadyPending[0];
-                $this->session->getFlashBag()->add('warning', 'Another notification '.$template.' is already pending for '.$revision.' in '.$environment.' by '. $alreadyPending->getUsername());
+                $this->logger->warning('service.notification.another_one_is_pending', [
+                    'notification_name' => $notification->getTemplate()->getName(),
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $notification->getRevision()->getContentType(),
+                    EmsFields::LOG_OUUID_FIELD => $notification->getRevision()->getOuuid(),
+                    EmsFields::LOG_REVISION_ID_FIELD => $notification->getRevision()->getId(),
+                    EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
+                    'notification_username' => $alreadyPending->getUsername(),
+                ]);
                 return null;
             }
             
             $notification->setTemplate($template);
-            $sentTimestamp = new \DateTime();
+            $sentTimestamp = new DateTime();
             $notification->setSentTimestamp($sentTimestamp);
             
             $notification->setEnvironment($environment);
@@ -220,21 +257,31 @@ class NotificationService
 
             try {
                 $this->sendEmail($notification);
-            } catch (\Exception $e) {
+            } catch (Throwable $e) {
             }
-            
-            $this->session->getFlashBag()->add('notice', '<i class="'.$template->getIcon().'"></i> '.$template->getName().' for '.$revision.' in '.$environment->getName());
+
+            $this->logger->notice('service.notification.send', [
+                'notification_name' => $notification->getTemplate()->getName(),
+                EmsFields::LOG_CONTENTTYPE_FIELD => $notification->getRevision()->getContentType(),
+                EmsFields::LOG_OUUID_FIELD => $notification->getRevision()->getOuuid(),
+                EmsFields::LOG_REVISION_ID_FIELD => $notification->getRevision()->getId(),
+                EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
+            ]);
             $out = true;
-        } catch (\Exception $e) {
-            $this->session->getFlashBag()->add('error', '<i class="fa fa-ban"></i> An error occured while sending a notification');
-            $this->logger->err('An error occured: '.$e->getMessage());
+        } catch (Exception $e) {
+            $this->logger->error('service.notification.send_error', [
+                'notification_id' => $templateId,
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+            ]);
         }
         return $out;
     }
-    
+
     /**
      * Call to display notifications in header menu
      *
+     * @param ?array $filters
      * @return int
      */
     public function menuNotification($filters = null)
@@ -317,11 +364,16 @@ class NotificationService
         
         return $notifications;
     }
-    
+
     /**
      * Call to generate list of notifications
      *
-     * @return array Notification
+     * @param int $from
+     * @param int $limit
+     * @param ?array $filters
+     * @return array
+     *
+     * @return Notification[]
      */
     public function listInboxNotifications($from, $limit, $filters = null)
     {
@@ -355,11 +407,14 @@ class NotificationService
             
         return $notifications;
     }
-    
+
     /**
      * Call to generate list of notifications
      *
-     * @return array Notification
+     * @param int $from
+     * @param int $limit
+     * @param ?array $filters
+     * @return Notification[]
      */
     public function listArchivesNotifications($from, $limit, $filters = null)
     {
@@ -393,11 +448,14 @@ class NotificationService
             
         return $notifications;
     }
-    
+
     /**
      * Call to generate list of notifications
      *
-     * @return array Notification
+     * @param int $from
+     * @param int $limit
+     * @param ?array $filters
+     * @return Notification[]
      */
     public function listSentNotifications($from, $limit, $filters = null)
     {
@@ -435,7 +493,7 @@ class NotificationService
     private function response(Notification $notification, TreatNotifications $treatNotifications, $status)
     {
         $notification->setResponseText($treatNotifications->getResponse());
-        $notification->setResponseTimestamp(new \DateTime());
+        $notification->setResponseTimestamp(new DateTime());
         $notification->setResponseBy($this->userService->getCurrentUser()->getUsername());
         $notification->setStatus($status);
         $em = $this->doctrine->getManager();
@@ -444,10 +502,17 @@ class NotificationService
 
         try {
             $this->sendEmail($notification);
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
         }
-        
-        $this->session->getFlashBag()->add('notice', '<i class="'.$notification->getTemplate()->getIcon().'"></i> '.$notification->getTemplate()->getName().' for '.$notification->getRevision().' has been '.$notification->getStatus());
+
+        $this->logger->notice('service.notification.treated', [
+            'notification_name' => $notification->getTemplate()->getName(),
+            EmsFields::LOG_CONTENTTYPE_FIELD => $notification->getRevision()->getContentType(),
+            EmsFields::LOG_OUUID_FIELD => $notification->getRevision()->getOuuid(),
+            EmsFields::LOG_REVISION_ID_FIELD => $notification->getRevision()->getId(),
+            EmsFields::LOG_ENVIRONMENT_FIELD => $notification->getEnvironment()->getName(),
+            'status' => $notification->getStatus(),
+        ]);
     }
 
     public function accept(Notification $notification, TreatNotifications $treatNotifications)
@@ -458,23 +523,6 @@ class NotificationService
     public function reject(Notification $notification, TreatNotifications $treatNotifications)
     {
         $this->response($notification, $treatNotifications, 'rejected');
-    }
-
-    private function buildBodyPart(User $user, Template $template, $as)
-    {
-        $em = $this->doctrine->getManager();
-        /** @var NotificationRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Notification');
-        
-        $notifications = $repository->findBy([
-            'status' => 'pending',
-        ]);
-        
-        foreach ($notifications as $notification) {
-            if ($this->output) {
-                $this->output->writeln('found'.$notification);
-            }
-        }
     }
     
     public static function usersToEmailAddresses($users)
@@ -488,7 +536,11 @@ class NotificationService
         }
         return $out;
     }
-    
+
+    /**
+     * @param Notification $notification
+     * @throws Throwable
+     */
     public function sendEmail(Notification $notification)
     {
         
@@ -500,7 +552,7 @@ class NotificationService
         $toUsers = $this->usersToEmailAddresses($this->userService->getUsersForRoleAndCircles($notification->getTemplate()->getRoleTo(), $toCircles));
         $ccUsers = $this->usersToEmailAddresses($this->userService->getUsersForRoleAndCircles($notification->getTemplate()->getRoleCc(), $toCircles));
 
-        $message = (new \Swift_Message());
+        $message = (new Swift_Message());
         
         $params = [
                 'notification' => $notification,
@@ -514,7 +566,7 @@ class NotificationService
             //it's a notification
             try {
                 $body = $this->twig->createTemplate($notification->getTemplate()->getBody())->render($params);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $body = "Error in body template: ".$e->getMessage();
             }
             
@@ -523,12 +575,12 @@ class NotificationService
                 ->setTo($toUsers)
                 ->setCc(array_unique(array_merge($ccUsers, $fromUser)))
                 ->setBody($body, empty($notification->getTemplate()->getEmailContentType())?'text/html':$notification->getTemplate()->getEmailContentType());
-            $notification->setEmailed(new \DateTime());
+            $notification->setEmailed(new DateTime());
         } else {
             //it's a notification
             try {
                 $body = $this->twig->createTemplate($notification->getTemplate()->getResponseTemplate())->render($params);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $body = "Error in response template: ".$e->getMessage();
             }
             
@@ -538,7 +590,7 @@ class NotificationService
                 ->setTo($fromUser)
                 ->setCc(array_unique(array_merge($ccUsers, $toUsers)))
                 ->setBody($body, 'text/html');
-            $notification->setResponseEmailed(new \DateTime());
+            $notification->setResponseEmailed(new DateTime());
         }
         
         if (!$this->dryRun) {
@@ -549,7 +601,7 @@ class NotificationService
                 $mailer->send($message);
                 $em->persist($notification);
                 $em->flush();
-            } catch (\Swift_TransportException $e) {
+            } catch (Swift_TransportException $e) {
             }
         }
     }

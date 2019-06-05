@@ -1,19 +1,23 @@
 <?php
 namespace EMS\CoreBundle\Controller\Views;
 
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Form\SearchFormType;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 class CalendarController extends AppController
 {
     /**
-     * @Route("/views/calendar/replan/{view}.json", name="views.calendar.replan", defaults={"_format": "json"}))
-     * @Method({"POST"})
+     * @param View $view
+     * @param Request $request
+     * @return Response
+     *
+     * @Route("/views/calendar/replan/{view}.json", name="views.calendar.replan", defaults={"_format": "json"}, methods={"POST"})
      */
     public function updateAction(View $view, Request $request)
     {
@@ -26,8 +30,8 @@ class CalendarController extends AppController
                 $field = $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['dateRangeField']);
                 
 
-                /**@var \DateTime $from */
-                /**@var \DateTime $to */
+                /** @var \DateTime $from */
+                /** @var \DateTime $to */
                 $from = new \DateTime($request->request->get('start', false));
                 if ($from) {
                     $to = $request->request->get('end', false);
@@ -52,24 +56,34 @@ class CalendarController extends AppController
                     $revision->setRawData($rawData);
                     $this->getDataService()->finalizeDraft($revision);
                 } else {
-                    $this->addFlash('warning', 'From date missing?!');
+                    $this->getLogger()->warning('log.view.calendar.from_date_is_missing', [
+                    ]);
                 }
             } else {
-                $this->addFlash('warning', 'Object '.$ouuid.' not found');
+                $this->getLogger()->warning('log.view.calendar.document_not_found', [
+                ]);
             }
             return $this->render('@EMSCore/view/custom/calendar_replan.json.twig', [
                     'success' => true,
             ]);
         } catch (\Exception $e) {
-            $this->addFlash('error', 'Exception: '.$e->getMessage());
+            $this->getLogger()->error('log.error', [
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+            ]);
             return $this->render('@EMSCore/ajax/notification.json.twig', [
                 'success' => false,
             ]);
         }
     }
+
     /**
-     * @Route("/views/calendar/search/{view}.json", name="views.calendar.search", defaults={"_format": "json"}))
-     * @Method({"GET"})
+     * @param View $view
+     * @param Request $request
+     * @return Response
+     * @throws \Exception
+     *
+     * @Route("/views/calendar/search/{view}.json", name="views.calendar.search", defaults={"_format": "json"}, methods={"GET"})
      */
     public function searchAction(View $view, Request $request)
     {

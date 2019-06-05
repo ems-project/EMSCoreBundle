@@ -2,24 +2,31 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Exception\DataStateException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Annotation\Route;
+use Throwable;
 
 class CrudController extends AppController
 {
-    
+
     /**
-     * @Route("/api/data/{name}/create/{ouuid}", defaults={"ouuid": null, "_format": "json"})
-     * @Route("/api/data/{name}/draft/{ouuid}", defaults={"ouuid": null, "_format": "json"})
+     * @param string $ouuid
+     * @param ContentType $contentType
+     * @param Request $request
+     * @return Response
+     *
+     * @Route("/api/data/{name}/create/{ouuid}", defaults={"ouuid": null, "_format": "json"}, methods={"POST"})
+     * @Route("/api/data/{name}/draft/{ouuid}", defaults={"ouuid": null, "_format": "json"}, methods={"POST"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
-     * @Method({"POST"})
      */
     public function createAction($ouuid, ContentType $contentType, Request $request)
     {
@@ -35,44 +42,53 @@ class CrudController extends AppController
         
         try {
             $newRevision = $this->getDataService()->createData($ouuid, $rawdata, $contentType);
-            $isCreated = (isset($newRevision)) ?  true : false;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             if (($e instanceof NotFoundHttpException) or ($e instanceof BadRequestHttpException)) {
                 throw $e;
             } else {
-                $this->addFlash('error', 'The revision for contenttype '. $contentType->getName() .' can not be created. Reason:'.$e->getMessage());
+                $this->getLogger()->error('log.crud.create_error', [
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                    EmsFields::LOG_EXCEPTION_FIELD => $e,
+                ]);
             }
-            $isCreated = false;
             return $this->render('@EMSCore/ajax/notification.json.twig', [
-                    'success' => $isCreated,
+                    'success' => false,
                     'ouuid' => $ouuid,
                     'type' => $contentType->getName(),
             ]);
         }
         
         return $this->render('@EMSCore/ajax/notification.json.twig', [
-                'success' => $isCreated,
+                'success' => true,
                 'revision_id' => $newRevision->getId(),
                 'ouuid' => $newRevision->getOuuid(),
         ]);
     }
-    
+
     /**
-     * @Route("/api/data/{name}/{ouuid}", defaults={"ouuid": null, "_format": "json"})
-     * @Route("/api/data/{name}/get/{ouuid}", defaults={"ouuid": null, "_format": "json"})
+     * @param string $ouuid
+     * @param ContentType $contentType
+     * @return Response
+     *
+     * @Route("/api/data/{name}/{ouuid}", defaults={"ouuid": null, "_format": "json"}, methods={"GET"})
+     * @Route("/api/data/{name}/get/{ouuid}", defaults={"ouuid": null, "_format": "json"}, methods={"GET"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
-     * @Method({"GET"})
      */
     public function getAction($ouuid, ContentType $contentType)
     {
         
         try {
             $revision = $this->getDataService()->getNewestRevision($contentType->getName(), $ouuid);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             if (($e instanceof NotFoundHttpException) or ($e instanceof BadRequestHttpException)) {
                 throw $e;
             } else {
-                $this->addFlash('error', 'The revision for contenttype '. $contentType->getName() .' can not be found. Reason: '.$e->getMessage());
+                $this->getLogger()->error('log.crud.read_error', [
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                    EmsFields::LOG_EXCEPTION_FIELD => $e,
+                ]);
             }
             return $this->render('@EMSCore/ajax/revision.json.twig', [
                     'success' => false,
@@ -88,13 +104,18 @@ class CrudController extends AppController
                 'id' => $revision->getId(),
         ]);
     }
-    
+
     /**
-     * @Route("/api/data/{name}/finalize/{id}", defaults={"_format": "json"})
+     * @param int $id
+     * @param ContentType $contentType
+     * @return Response
+     * @throws DataStateException
+     * @throws Throwable
+     *
+     * @Route("/api/data/{name}/finalize/{id}", defaults={"_format": "json"}, methods={"POST"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
-     * @Method({"POST"})
      */
-    public function finalizeAction($id, ContentType $contentType, Request $request)
+    public function finalizeAction($id, ContentType $contentType)
     {
         
         if (!$contentType->getEnvironment()->getManaged()) {
@@ -109,23 +130,30 @@ class CrudController extends AppController
             $newRevision = $this->getDataService()->finalizeDraft($revision);
             $out['success'] = !$newRevision->getDraft();
             $out['ouuid'] = $newRevision->getOuuid();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             if (($e instanceof NotFoundHttpException) or ($e instanceof DataStateException)) {
                 throw $e;
             } else {
-                $this->addFlash('error', 'The revision ' . $id . ' for contenttype '. $contentType->getName() .' can not be finalized. Reason: '.$e->getMessage());
+                $this->getLogger()->error('log.crud.finalize_error', [
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                    EmsFields::LOG_EXCEPTION_FIELD => $e,
+                ]);
             }
             $out['success'] = false;
         }
         return $this->render('@EMSCore/ajax/notification.json.twig', $out);
     }
-    
+
     /**
-     * @Route("/api/data/{name}/discard/{id}", defaults={"_format": "json"})
+     * @param string $id
+     * @param ContentType $contentType
+     * @return Response
+     *
+     * @Route("/api/data/{name}/discard/{id}", defaults={"_format": "json"}, methods={"POST"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
-     * @Method({"POST"})
      */
-    public function discardAction($id, ContentType $contentType, Request $request)
+    public function discardAction($id, ContentType $contentType)
     {
     
         if (!$contentType->getEnvironment()->getManaged()) {
@@ -136,12 +164,16 @@ class CrudController extends AppController
             $revision = $this->getDataService()->getRevisionById($id, $contentType);
             $this->getDataService()->discardDraft($revision);
             $isDiscard = ($revision->getId() != $id) ? true : false;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $isDiscard = false;
             if (($e instanceof NotFoundHttpException) or ($e instanceof BadRequestHttpException)) {
                 throw $e;
             } else {
-                 $this->addFlash('error', 'The revision ' . $id . ' for contenttype '. $contentType->getName() .' can not be discarded. Reason: '.$e->getMessage());
+                $this->getLogger()->error('log.crud.discard_error', [
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                    EmsFields::LOG_EXCEPTION_FIELD => $e,
+                ]);
             }
             return $this->render('@EMSCore/ajax/notification.json.twig', [
                     'success' => $isDiscard,
@@ -155,15 +187,17 @@ class CrudController extends AppController
                 'revision_id' => $revision->getId(),
         ]);
     }
-    
+
     /**
-     * @Route("/api/data/{name}/delete/{ouuid}", defaults={"_format": "json"})
+     * @param string $ouuid
+     * @param ContentType $contentType
+     * @return Response
+     *
+     * @Route("/api/data/{name}/delete/{ouuid}", defaults={"_format": "json"}, methods={"POST"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
-     * @Method({"POST"})
      */
-    public function deleteAction($ouuid, ContentType $contentType, Request $request)
+    public function deleteAction($ouuid, ContentType $contentType)
     {
-    
         $isDeleted = false;
         if (!$contentType->getEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not delete content for a managed content type');
@@ -171,19 +205,21 @@ class CrudController extends AppController
     
         try {
             $this->getDataService()->delete($contentType->getName(), $ouuid);
-            try {
-                $revision = $this->getDataService()->getNewestRevision($contentType->getName(), $ouuid);
-            } catch (\Exception $exception) {
-                if ($exception instanceof NotFoundHttpException) {
-                    $isDeleted = true;
-                }
-            }
-        } catch (\Exception $e) {
-            $isDeleted = false;
-            if (($e instanceof NotFoundHttpException) or ($e instanceof BadRequestHttpException)) {
+            $this->getLogger()->notice('log.crud.deleted', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                EmsFields::LOG_OUUID_FIELD => $ouuid,
+            ]);
+            $isDeleted = true;
+        } catch (Exception $e) {
+            if (($e instanceof NotFoundHttpException) || ($e instanceof BadRequestHttpException)) {
                 throw $e;
             } else {
-                $this->addFlash('error', 'The revision ' . $ouuid . ' can not be deleted. Reason: '.$e->getMessage());
+                $this->getLogger()->error('log.crud.delete_error', [
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                    EmsFields::LOG_OUUID_FIELD => $ouuid,
+                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                    EmsFields::LOG_EXCEPTION_FIELD => $e,
+                ]);
             }
         }
         return $this->render('@EMSCore/ajax/notification.json.twig', [
@@ -192,11 +228,15 @@ class CrudController extends AppController
                 'type' => $contentType->getName(),
         ]);
     }
-    
+
     /**
-     * @Route("/api/data/{name}/replace/{ouuid}", defaults={"_format": "json"})
+     * @param string $ouuid
+     * @param ContentType $contentType
+     * @param Request $request
+     * @return Response
+     *
+     * @Route("/api/data/{name}/replace/{ouuid}", defaults={"_format": "json"}, methods={"POST"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
-     * @Method({"POST"})
      */
     public function replaceAction($ouuid, ContentType $contentType, Request $request)
     {
@@ -214,12 +254,16 @@ class CrudController extends AppController
             $revision = $this->getDataService()->getNewestRevision($contentType->getName(), $ouuid);
             $newDraft = $this->getDataService()->replaceData($revision, $rawdata);
             $isReplaced = ($revision->getId() != $newDraft->getId()) ? true : false;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $isReplaced = false;
             if ($e instanceof NotFoundHttpException) {
                 throw $e;
             } else {
-                 $this->addFlash('error', 'The revision ' . $ouuid . ' for contenttype '. $contentType->getName() .' can not be replaced. Reason: '.$e->getMessage());
+                $this->getLogger()->error('log.crud.replace_error', [
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                    EmsFields::LOG_EXCEPTION_FIELD => $e,
+                ]);
             }
             return $this->render('@EMSCore/ajax/notification.json.twig', [
                     'success' => $isReplaced,
@@ -235,11 +279,15 @@ class CrudController extends AppController
                 'revision_id' => $newDraft->getId(),
         ]);
     }
-    
+
     /**
-     * @Route("/api/data/{name}/merge/{ouuid}", defaults={"_format": "json"})
+     * @param string $ouuid
+     * @param ContentType $contentType
+     * @param Request $request
+     * @return Response
+     *
+     * @Route("/api/data/{name}/merge/{ouuid}", defaults={"_format": "json"}, methods={"POST"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
-     * @Method({"POST"})
      */
     public function mergeAction($ouuid, ContentType $contentType, Request $request)
     {
@@ -257,11 +305,15 @@ class CrudController extends AppController
             $revision = $this->getDataService()->getNewestRevision($contentType->getName(), $ouuid);
             $newDraft = $this->getDataService()->replaceData($revision, $rawdata, "merge");
             $isMerged = ($revision->getId() != $newDraft->getId()) ? true : false;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             if ($e instanceof NotFoundHttpException) {
                  throw $e;
             } else {
-                 $this->addFlash('error', 'The revision ' . $ouuid . ' for contenttype '. $contentType->getName() .' can not be merged. Reason: '.$e->getMessage());
+                $this->getLogger()->error('log.crud.merge_error', [
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                    EmsFields::LOG_EXCEPTION_FIELD => $e,
+                ]);
             }
             $isMerged = false;
             return $this->render('@EMSCore/ajax/notification.json.twig', [
@@ -278,22 +330,26 @@ class CrudController extends AppController
                 'revision_id' => $newDraft->getId(),
         ]);
     }
-    
+
     /**
-     * @Route("/api/test", defaults={"_format": "json"}, name="api.test")
-     * @Method({"GET"})
+     * @return Response
+     *
+     * @Route("/api/test", defaults={"_format": "json"}, name="api.test", methods={"GET"})
      */
-    public function testAction(Request $request)
+    public function testAction()
     {
         return $this->render('@EMSCore/ajax/notification.json.twig', [
                 'success' => true,
         ]);
     }
-    
+
     /**
-     * @Route("/api/meta/{name}", defaults={"_format": "json"})
+     * @param ContentType $contentType
+     * @return Response
+     *
+     * @Route("/api/meta/{name}", defaults={"_format": "json"}, methods={"GET"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
-     * @Method({"GET"})
+     *
      */
     public function getContentTypeInfo(ContentType $contentType)
     {

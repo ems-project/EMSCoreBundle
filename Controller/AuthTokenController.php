@@ -2,19 +2,16 @@
 namespace EMS\CoreBundle\Controller;
 
 use EMS\CoreBundle\Entity\AuthToken;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 class AuthTokenController extends AppController
 {
     /**
-     * @Route("/auth-token", name="auth-token", defaults={"_format": "json"})
-     * @Method({"POST"})
+     * @Route("/auth-token", name="auth-token", defaults={"_format": "json"}, methods={"POST"})
      */
-    public function postAuthTokensAction(Request $request)
+    public function postAuthTokensAction(Request $request) : Response
     {
         $loginInfo = json_decode($request->getContent(), true);
         

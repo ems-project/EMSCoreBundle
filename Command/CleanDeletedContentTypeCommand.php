@@ -1,22 +1,24 @@
 <?php
 
-// src/EMS/CoreBundle/Command/GreetCommand.php
 namespace EMS\CoreBundle\Command;
 
-use EMS\CoreBundle\Entity\ContentType;
-use EMS\CoreBundle\Repository\ContentTypeRepository;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Elasticsearch\Client;
-use Monolog\Logger;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Entity\Template;
+use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\FieldTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\TemplateRepository;
 use EMS\CoreBundle\Repository\ViewRepository;
-use EMS\CoreBundle\Entity\Revision;
+use Psr\Log\LoggerInterface;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class CleanDeletedContentTypeCommand extends ContainerAwareCommand
 {
@@ -26,7 +28,7 @@ class CleanDeletedContentTypeCommand extends ContainerAwareCommand
     protected $logger;
     protected $container;
 
-    public function __construct(Registry $doctrine, Logger $logger, Client $client, $mapping, $container)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, Client $client, $mapping, $container)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
@@ -43,13 +45,19 @@ class CleanDeletedContentTypeCommand extends ContainerAwareCommand
             ->setDescription('Clean all deleted content types');
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int|void|null
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
-        /** @var  Client $client */
-        $client = $this->client;
+
         /** @var ContentTypeRepository $ctRepo */
         $ctRepo = $em->getRepository('EMSCoreBundle:ContentType');
         /** @var FieldTypeRepository $fieldRepo */
@@ -101,7 +109,7 @@ class CleanDeletedContentTypeCommand extends ContainerAwareCommand
 
             $templates = $templateRepo->findBy(['contentType' => $contentType]);
             $output->writeln('Remove '.count($templates).' assosiated templates');
-            /**@var \EMS\CoreBundle\Entity\Template $template*/
+            /**@var Template $template*/
             foreach ($templates as $template) {
                 $em->remove($template);
                 $em->flush($template);

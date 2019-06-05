@@ -2,6 +2,8 @@
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Entity\Helper\JsonClass;
+use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Form\DataField\ContainerFieldType;
 
 /**
@@ -11,7 +13,7 @@ use EMS\CoreBundle\Form\DataField\ContainerFieldType;
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\SingleTypeIndexRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class SingleTypeIndex
+class SingleTypeIndex extends JsonDeserializer implements \JsonSerializable
 {
     /**
      * @var int
@@ -20,28 +22,28 @@ class SingleTypeIndex
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="created", type="datetime")
      */
-    private $created;
+    protected $created;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="modified", type="datetime")
      */
-    private $modified;
+    protected $modified;
 
     /**
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
      */
-    private $name;
+    protected $name;
 
     /**
      * @var ContentType
@@ -49,13 +51,13 @@ class SingleTypeIndex
      * @ORM\ManyToOne(targetEntity="ContentType", inversedBy="singleTypeIndexes")
      * @ORM\JoinColumn(name="content_type_id", referencedColumnName="id")
      */
-    private $contentType;
+    protected $contentType;
 
     /**
      * @ORM\ManyToOne(targetEntity="Environment", inversedBy="singleTypeIndexes")
      * @ORM\JoinColumn(name="environment_id", referencedColumnName="id")
      */
-    private $environment;
+    protected $environment;
 
     public function __toString()
     {
@@ -204,5 +206,21 @@ class SingleTypeIndex
     public function getContentType()
     {
         return $this->contentType;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize()
+    {
+        $json = new JsonClass(get_object_vars($this), __CLASS__);
+        $json->removeProperty('id');
+        $json->removeProperty('environment');
+
+        return $json;
     }
 }

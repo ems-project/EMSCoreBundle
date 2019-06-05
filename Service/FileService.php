@@ -92,7 +92,7 @@ class FileService
 
     public function getBase64($hash, $cacheContext = false)
     {
-        /**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service */
+        /**@var StorageInterface $service */
         foreach ($this->storageManager->getAdapters() as $service) {
             $resource = $service->read($hash, $cacheContext);
             if ($resource) {
@@ -105,13 +105,13 @@ class FileService
     }
 
     /**
-     * @deprecated
      * @param string $hash
      * @param bool $cacheContext
      * @return bool|string
      */
     public function getFile($hash, $cacheContext = false)
     {
+        //TODO: instead of always to make a new copy, copy it once in the symfony cache folder
         $resource = $this->getResource($hash, $cacheContext);
         if ($resource) {
             $filename = tempnam(sys_get_temp_dir(), 'EMS');
@@ -123,7 +123,7 @@ class FileService
 
     public function getResource($hash, $cacheContext = false)
     {
-        /**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service */
+        /**@var StorageInterface $service */
         foreach ($this->storageManager->getAdapters() as $service) {
             $resource = $service->read($hash, $cacheContext);
             if ($resource) {
@@ -142,7 +142,7 @@ class FileService
     public function getLastUpdateDate(string $hash, ?string $context = null): ?\DateTime
     {
         $out = null;
-        /**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service */
+        /**@var StorageInterface $service */
         foreach ($this->storageManager->getAdapters() as $service) {
             $date = $service->getLastUpdateDate($hash, $context);
             if ($date && ($out === null || $date < $out)) {
@@ -269,7 +269,7 @@ class FileService
 
     public function head($hash, $cacheContext = false)
     {
-        /**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service */
+        /**@var StorageInterface $service */
         foreach ($this->storageManager->getAdapters() as $service) {
             if ($service->head($hash, $cacheContext)) {
                 return true;
@@ -280,7 +280,7 @@ class FileService
 
     public function getSize($hash, $cacheContext = false)
     {
-        /**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service */
+        /**@var StorageInterface $service */
         foreach ($this->storageManager->getAdapters() as $service) {
             $filesize = $service->getSize($hash, $cacheContext);
             if ($filesize !== false) {
@@ -358,7 +358,7 @@ class FileService
 
     public function create($hash, $fileName, $cacheContext = false)
     {
-        /**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service */
+        /**@var StorageInterface $service */
         foreach ($this->storageManager->getAdapters() as $service) {
             if ($service->create($hash, $fileName, $cacheContext)) {
                 unlink($fileName);
@@ -388,7 +388,7 @@ class FileService
             $uploadedAsset->setUploaded(filesize($filename));
         }
 
-        /**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service */
+        /**@var StorageInterface $service */
         foreach ($this->storageManager->getAdapters() as $service) {
             if ($service->create($uploadedAsset->getSha1(), $filename)) {
                 $uploadedAsset->setAvailable(true);

@@ -1,23 +1,25 @@
 <?php
 
-// src/EMS/CoreBundle/Command/GreetCommand.php
 namespace EMS\CoreBundle\Command;
 
-use EMS\CoreBundle\Entity\Environment;
-use EMS\CoreBundle\Repository\JobRepository;
-use EMS\CoreBundle\Service\DataService;
+use DateInterval;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Elasticsearch\Client;
+use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Exception\NotLockedException;
+use EMS\CoreBundle\Repository\EnvironmentRepository;
+use EMS\CoreBundle\Repository\RevisionRepository;
+use EMS\CoreBundle\Service\DataService;
 use Monolog\Logger;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\HttpFoundation\Session\Session;
-use EMS\CoreBundle\Repository\RevisionRepository;
-use EMS\CoreBundle\Exception\NotLockedException;
-use EMS\CoreBundle\Repository\EnvironmentRepository;
 
 class UpdateMetaFieldCommand extends EmsCommand
 {
@@ -25,11 +27,11 @@ class UpdateMetaFieldCommand extends EmsCommand
     /**@var DataService */
     protected $dataService;
     
-    public function __construct(Registry $doctrine, Logger $logger, Client $client, Session $session, DataService $dataService)
+    public function __construct(Registry $doctrine, Logger $logger, Client $client, DataService $dataService)
     {
         $this->doctrine = $doctrine;
         $this->dataService = $dataService;
-        parent::__construct($logger, $client, $session);
+        parent::__construct($logger, $client);
     }
     
     protected function configure()
@@ -44,6 +46,13 @@ class UpdateMetaFieldCommand extends EmsCommand
             );
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int|void|null
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $name = $input->getArgument('name');
@@ -68,23 +77,16 @@ class UpdateMetaFieldCommand extends EmsCommand
             $progress->start();
             
             do {
-                /** @var \EMS\CoreBundle\Entity\Revision $revision */
+                /** @var Revision $revision */
                 foreach ($paginator as $revision) {
                     try {
                         $this->dataService->setMetaFields($revision);
                         
                         $revision->setLockBy('SYSTEM_UPDATE_META');
-                        $now = new \DateTime();
-                        $until = $now->add(new \DateInterval("PT5M"));//+5 minutes
+                        $now = new DateTime();
+                        $until = $now->add(new DateInterval("PT5M"));//+5 minutes
                         $revision->setLockUntil($until);
                         
-    //                    echo $revision->getId()." => ".$revision->getLabelField()."\n";
-                        
-    //                     $query = 'UPDATE \EMS\CoreBundle\Entity\Revision r SET r.labelField = \''.str_replace ( "'", "&#39;", $revision->getLabelField()).'\' WHERE r.id = '.$revision->getId();
-    //                    echo $query."\n";
-    //                      $em->createQuery($query)->getResult();
-    //                     $em->persist($revision);
-    //                     $em->flush();
                         $em->persist($revision);
                          $progress->advance();
                         if ($progress->getProgress() % 20 == 0) {

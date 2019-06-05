@@ -3,6 +3,8 @@
 // src/EMS/CoreBundle/Command/GreetCommand.php
 namespace EMS\CoreBundle\Command;
 
+use DateInterval;
+use DateTime;
 use EMS\CoreBundle\Entity\Notification;
 use EMS\CoreBundle\Repository\NotificationRepository;
 use EMS\CoreBundle\Service\NotificationService;
@@ -102,8 +104,8 @@ class SendNotificationsCommand extends ContainerAwareCommand
         
         //Send all reminders
         
-        $date = new \DateTime();
-        $date->sub(new \DateInterval($this->notificationPendingTimeout));
+        $date = new DateTime();
+        $date->sub(new DateInterval($this->notificationPendingTimeout));
         $notifications = $notificationRepository->findReminders($date);
         
         if (!empty($notifications)) {

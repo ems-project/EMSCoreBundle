@@ -47,6 +47,10 @@ class AssetController extends AbstractController
 
     /**
      * @deprecated
+     * @param Request $request
+     * @param string $processor
+     * @param string $hash
+     * @return Response
      * @Route("/asset/{processor}/{hash}", name="ems_asset_processor", methods={"GET","HEAD"})
      */
     public function assetProcessorAction(Request $request, string $processor, string $hash): Response

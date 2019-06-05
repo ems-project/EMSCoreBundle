@@ -3,6 +3,8 @@
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Entity\Helper\JsonClass;
+use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Form\Field\AnalyzerOptionsType;
 
 /**
@@ -12,7 +14,7 @@ use EMS\CoreBundle\Form\Field\AnalyzerOptionsType;
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\AnalyzerRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class Analyzer
+class Analyzer extends JsonDeserializer implements \JsonSerializable
 {
     /**
      * @var int
@@ -21,56 +23,56 @@ class Analyzer
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
     
     /**
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, unique=true)
      */
-    private $name;
+    protected $name;
     
     /**
      * @var bool
      *
      * @ORM\Column(name="dirty", type="boolean")
      */
-    private $dirty;
+    protected $dirty;
     
     /**
      * @var string
      *
      * @ORM\Column(name="label", type="string", length=255)
      */
-    private $label;
+    protected $label;
     
     /**
      * @var array
      *
      * @ORM\Column(name="options", type="json_array")
      */
-    private $options;
+    protected $options;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="created", type="datetime")
      */
-    private $created;
+    protected $created;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="modified", type="datetime")
      */
-    private $modified;
+    protected $modified;
     
     /**
      * @var int
      *
      * @ORM\Column(name="order_key", type="integer", nullable=true)
      */
-    private $orderKey;
+    protected $orderKey;
     
     
     public function __construct()
@@ -276,5 +278,20 @@ class Analyzer
     public function getOrderKey()
     {
         return $this->orderKey;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize()
+    {
+        $json = new JsonClass(get_object_vars($this), __CLASS__);
+        $json->removeProperty('id');
+
+        return $json;
     }
 }

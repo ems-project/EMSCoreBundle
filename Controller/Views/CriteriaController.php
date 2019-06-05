@@ -1,15 +1,20 @@
 <?php
 namespace EMS\CoreBundle\Controller\Views;
 
-use EMS\CoreBundle;
+use Doctrine\ORM\EntityManager;
+use Elasticsearch\Client;
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Controller\AppController;
-use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Form\CriteriaUpdateConfig;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\View;
+use EMS\CoreBundle\Exception\ContentTypeStructureException;
+use EMS\CoreBundle\Exception\DataStateException;
+use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Exception\LockedException;
+use EMS\CoreBundle\Exception\PerformanceException;
 use EMS\CoreBundle\Form\DataField\ContainerFieldType;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory;
@@ -17,33 +22,28 @@ use EMS\CoreBundle\Form\Field\ObjectChoiceListItem;
 use EMS\CoreBundle\Form\View\Criteria\CriteriaFilterType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
-use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\EntityManager;
-use Elasticsearch\Client;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Exception;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class CriteriaController extends AppController
 {
-    
-    /**@var ObjectManager*/
-    private $manager;
-    
-    
+
     /**
-     * @Route("/views/criteria/align/{view}", name="views.criteria.align"))
-     * @Method({"POST"})
+     * @param View $view
+     * @param Request $request
+     * @return Response
+     * @throws DataStateException
+     * @throws Exception
+     *
+     * @Route("/views/criteria/align/{view}", name="views.criteria.align"), methods={"POST"})
      */
     public function alignAction(View $view, Request $request)
     {
-                
-        $criteriaUpdateConfig = new CriteriaUpdateConfig($view, $request->getSession());
+        $criteriaUpdateConfig = new CriteriaUpdateConfig($view, $this->getLogger());
         $form = $this->createForm(CriteriaFilterType::class, $criteriaUpdateConfig, [
                 'view' => $view,
         ]);
@@ -52,7 +52,7 @@ class CriteriaController extends AppController
         /** @var CriteriaUpdateConfig $criteriaUpdateConfig */
         $criteriaUpdateConfig = $form->getData();
         
-        $tables = $this->generateCriteriaTable($view, $criteriaUpdateConfig, $request);
+        $tables = $this->generateCriteriaTable($view, $criteriaUpdateConfig);
         $params = explode(':', $request->request->all()['alignOn']);
         
         $isRowAlign = ($params[0]=='row');
@@ -209,10 +209,14 @@ class CriteriaController extends AppController
         }
         return $authorized;
     }
-    
+
     /**
-     * @Route("/views/criteria/table/{view}", name="views.criteria.table"))
-      * @Method({"GET", "POST"})
+     * @param View $view
+     * @param Request $request
+     * @return Response
+     * @throws Exception
+     *
+     * @Route("/views/criteria/table/{view}", name="views.criteria.table"), methods={"GET", "POST"})
      */
     public function generateCriteriaTableAction(View $view, Request $request)
     {
@@ -225,11 +229,9 @@ class CriteriaController extends AppController
         
         foreach ($counters as $counter) {
             if ($counter['content_type_id'] == $view->getContentType()->getId()) {
-                if ($counter['counter'] > 1) {
-                    $this->addFlash('warning', 'There are '.$counter['counter'].' drafts in progress. You won’t be able to update them from here.');
-                } else {
-                    $this->addFlash('warning', 'There is one drafts in progress. You won’t be able to update it from here.');
-                }
+                $this->getLogger()->warning('log.view.criteria.draft_in_progress', [
+                    'count' => $counter['counter'],
+                ]);
             }
         }
         
@@ -280,7 +282,7 @@ class CriteriaController extends AppController
             $criteriaField = $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['criteriaField']);
         } else if ($view->getOptions()['criteriaMode'] == 'another') {
         } else {
-            throw new \Exception('Should never happen');
+            throw new Exception('Should never happen');
         }
         
         $columnField = null;
@@ -291,7 +293,7 @@ class CriteriaController extends AppController
         $authorized = $this->isAuthorized($criteriaField) && $this->getAuthorizationChecker()->isGranted($view->getContentType()->getEditRole());
         
         foreach ($fieldPaths as $path) {
-            /**@var \EMS\CoreBundle\Entity\FieldType $child*/
+            /**@var FieldType $child*/
             $child = $criteriaField->getChildByPath($path);
             if ($child) {
                 if ($child->getName() == $criteriaUpdateConfig->getColumnCriteria()) {
@@ -304,10 +306,11 @@ class CriteriaController extends AppController
             }
         }
         if (!$authorized) {
-            $this->addFlash('notice', 'Your are not allowed to update data via this view');
+            $this->getLogger()->notice('log.view.criteria.update_not_authorized', [
+            ]);
         }
         
-        $tables = $this->generateCriteriaTable($view, $criteriaUpdateConfig, $request);
+        $tables = $this->generateCriteriaTable($view, $criteriaUpdateConfig);
         
         return $this->render('@EMSCore/view/custom/criteria_table.html.twig', [
             'table' => $tables['table'],
@@ -324,21 +327,30 @@ class CriteriaController extends AppController
             'form' => $form->createView(),
         ]);
     }
-    
-    
-    public function generateCriteriaTable(View $view, CriteriaUpdateConfig $criteriaUpdateConfig, Request $request)
+
+
+    /**
+     * @param View $view
+     * @param CriteriaUpdateConfig $criteriaUpdateConfig
+     * @return array
+     * @throws ContentTypeStructureException
+     * @throws ElasticmsException
+     * @throws PerformanceException
+     * @throws Exception
+     */
+    public function generateCriteriaTable(View $view, CriteriaUpdateConfig $criteriaUpdateConfig)
     {
         /** @var Client $client */
         $client = $this->getElasticsearch();
         
         $contentType = $view->getContentType();
         
-        $criteriaField = $contentType->getFieldType();
+//        $criteriaField = $contentType->getFieldType();
         
         $criteriaFieldName = false;
         if ($view->getOptions()['criteriaMode'] == 'internal') {
             $criteriaFieldName = $view->getOptions()['criteriaField'];
-            $criteriaField = $contentType->getFieldType()->getChildByPath($criteriaFieldName);
+//            $criteriaField = $contentType->getFieldType()->getChildByPath($criteriaFieldName);
         }
         
         $body = [
@@ -353,7 +365,7 @@ class CriteriaController extends AppController
         $categoryChoiceList = false;
         if ($criteriaUpdateConfig->getCategory()) {
             $dataField = $criteriaUpdateConfig->getCategory();
-            if ($dataField->getRawData() && strlen($dataField->getRawData()) > 0) {
+            if ($dataField->getRawData() && strlen($dataField->getTextValue()) > 0) {
                 $categoryFieldTypeName = $dataField->getFieldType()->getType();
                 /**@var DataFieldType $categoryFieldType */
                 $categoryFieldType = $this->getDataFieldType($categoryFieldTypeName);
@@ -394,14 +406,12 @@ class CriteriaController extends AppController
                 ]
             ];
         }
-
-        
-        /** @var \EMS\CoreBundle\Entity\FieldType $columnField */
-        $columnField = $criteriaField->getChildByPath($criteriaUpdateConfig->getColumnCriteria());
-        
-
-        /** @var \EMS\CoreBundle\Entity\FieldType $rowField */
-        $rowField = $criteriaField->getChildByPath($criteriaUpdateConfig->getRowCriteria());
+//        /** @var FieldType $columnField */
+//        $columnField = $criteriaField->getChildByPath($criteriaUpdateConfig->getColumnCriteria());
+//
+//
+//        /** @var FieldType $rowField */
+//        $rowField = $criteriaField->getChildByPath($criteriaUpdateConfig->getRowCriteria());
                 
         $table = [];
         /**@var ObjectChoiceListItem $rowItem*/
@@ -421,7 +431,9 @@ class CriteriaController extends AppController
         ]);
 
         if ($result['hits']['total']>count($result['hits']['hits'])) {
-            $this->addFlash('error', 'Some criteria were not loaded!!!! There is more than '.count($result['hits']['hits']). ' criteria for this view. Leave this view and be more restrictive with your filters.');
+            $this->getLogger()->error('log.view.criteria.too_many_criteria', [
+                'total' => count($result['hits']['hits']),
+            ]);
         }
         
         $targetField = false;
@@ -457,10 +469,14 @@ class CriteriaController extends AppController
                 } else if ($view->getOptions()['criteriaMode'] == 'another') {
                     $this->addToTable($choice, $table, $item['_source'], array_keys($criteriaChoiceLists), $criteriaChoiceLists, $criteriaUpdateConfig);
                 } else {
-                    throw new \Exception('Should never happen');
+                    throw new Exception('Should never happen');
                 }
             } else {
-                $this->addFlash('warning', "ems was not able to find the object key \"".$value."\" from ".$item['_type'].':'.$item['_id']);
+                $this->getLogger()->warning('log.view.criteria.document_key_not_found', [
+                    'document_reference' => $value,
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $item['_type'],
+                    EmsFields::LOG_OUUID_FIELD => $item['_id'],
+                ]);
             }
         }
         
@@ -471,12 +487,16 @@ class CriteriaController extends AppController
             'targetContentType' => $targetContentType,
         ];
     }
-    
-    
+
+
     /**
+     * @param View $view
+     * @param Request $request
+     * @return Response
+     * @throws DataStateException
+     * @throws Exception
      *
-     * @Route("/views/criteria/addCriterion/{view}", name="views.criteria.add"))
-     * @Method({"POST"})
+     * @Route("/views/criteria/addCriterion/{view}", name="views.criteria.add", methods={"POST"})
      */
     public function addCriteriaAction(View $view, Request $request)
     {
@@ -493,16 +513,18 @@ class CriteriaController extends AppController
             $type = $structuredTarget[0];
             $ouuid = $structuredTarget[1];
             
-            /**@var Session $session */
-            $session = $this->get('session');
-            
             /**@var Revision $revision*/
             $revision = $this->getDataService()->getNewestRevision($type, $ouuid);
             
             
             $authorized = $this->getAuthorizationChecker()->isGranted($view->getContentType()->getEditRole());
             if (!$authorized) {
-                $this->addFlash('warning', 'You are not authorized to update '.$revision);
+                $this->getLogger()->warning('log.view.criteria.update_privilege_issue', [
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                ]);
+
                 return $this->render('@EMSCore/ajax/notification.json.twig', [
                         'success' => false,
                 ]);
@@ -510,7 +532,12 @@ class CriteriaController extends AppController
             
             
             if ($revision->getDraft()) {
-                $this->addFlash('warning', 'Impossible to update '.$revision. ' has there is a draft in progress');
+                $this->getLogger()->warning('log.view.criteria.draft_in_progress', [
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                    'count' => 0,
+                ]);
                 return $this->render('@EMSCore/ajax/notification.json.twig', [
                         'success' => false,
                 ]);
@@ -522,7 +549,13 @@ class CriteriaController extends AppController
                     $this->getDataService()->finalizeDraft($revision);
                 }
             } catch (LockedException $e) {
-                $this->addFlash('warning', 'Impossible to update '.$revision. ' has the revision is locked by '.$revision->getLockBy());
+                $this->getLogger()->warning('log.view.criteria.locked_revision', [
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                    'count' => 0,
+                    'locked_by' => $revision->getLockBy(),
+                ]);
                 return $this->render('@EMSCore/ajax/notification.json.twig', [
                         'success' => false,
                 ]);
@@ -549,9 +582,16 @@ class CriteriaController extends AppController
                 'success' => true,
         ]);
     }
-    
-    
-        
+
+
+    /**
+     * @param View $view
+     * @param array $rawData
+     * @param string $targetFieldName
+     * @param array $loadedRevision
+     * @return bool|Revision|mixed|null
+     * @throws DataStateException
+     */
     public function addCriteriaRevision(View $view, array $rawData, $targetFieldName, array $loadedRevision = [])
     {
         $multipleField = $this->getMultipleField($view->getContentType()->getFieldType());
@@ -623,8 +663,16 @@ class CriteriaController extends AppController
             }
 
             $revision = $this->getDataService()->finalizeDraft($revision);
-            
-            $this->addFlash('notice', 'A new criteria has been created for '.$targetFieldName.':'.$rawData[$targetFieldName]. ' ('.$message.')');
+
+            $this->getLogger()->notice('log.view.criteria.new_criteria', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                'target_field_name' => $targetFieldName,
+                'target_field_data' => $rawData[$targetFieldName],
+                'message' => $message,
+            ]);
+
             return $revision;
         } else if ($result['hits']['total'] == 1) {
             /**@var Revision $revision*/
@@ -638,7 +686,13 @@ class CriteriaController extends AppController
             $multipleValueToAdd = $rawData[$multipleField];
             $rawData = $revision->getRawData();
             if (in_array($multipleValueToAdd, $rawData[$multipleField])) {
-                $this->addFlash('warning', 'A criteria already exist for '.$multipleField.'='.$multipleValueToAdd);
+                $this->getLogger()->warning('log.view.criteria.already_exists', [
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                    'field_name' => $multipleField,
+                    'field_data' => $multipleValueToAdd,
+                ]);
             } else {
                 $rawData[$multipleField][] = $multipleValueToAdd;
                 $revision->setRawData($rawData);
@@ -648,8 +702,14 @@ class CriteriaController extends AppController
                         $message .= ', '.$value;
                     }
                 }
-                
-                $this->addFlash('notice', 'A criteria has added for '.$targetFieldName.':'.$rawData[$targetFieldName]. ' ('.$message.')');
+                $this->getLogger()->notice('log.view.criteria.added', [
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                    'field_name' => $targetFieldName,
+                    'field_data' => $rawData[$targetFieldName],
+                    'message' => $message,
+                ]);
             }
             return $revision;
         } else {
@@ -662,13 +722,22 @@ class CriteriaController extends AppController
                 }
                 $message .= $hit['_id'];
             }
-            $this->addFlash('error', 'Too many criteria found ('.$result['hits']['total'].'). There is something wrong with this combinaison of criteria!: '.$message);
+            $this->getLogger()->error('log.view.criteria.too_may_criteria', [
+                'total' => $result['hits']['total'],
+                'message' => $message,
+            ]);
         }
         return null;
     }
-    
-    
-        
+
+
+    /**
+     * @param array $filters
+     * @param Revision $revision
+     * @param string $criteriaField
+     * @return bool|Revision
+     * @throws Exception
+     */
     public function addCriteria($filters, Revision $revision, $criteriaField)
     {
         
@@ -694,10 +763,22 @@ class CriteriaController extends AppController
                         $revision = $this->getDataService()->initNewDraft($revision->getContentType()->getName(), $revision->getOuuid(), $revision);
                     }
                     $revision->setRawData($rawData);
-                    $this->addFlash('notice', '<b>Added</b> '.$multipleField.' with value '.$filters[$multipleField].' to '.$revision);
+                    $this->getLogger()->notice('log.view.criteria.added', [
+                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                        EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                        EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                        'field_name' => $multipleField,
+                        'field_data' => $filters[$multipleField],
+                    ]);
                     return $revision;
                 } else {
-                    $this->addFlash('notice', 'Criteria already existing for '.$revision);
+                    $this->getLogger()->notice('log.view.criteria.already_exists', [
+                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                        EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                        EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                        'field_name' => $multipleField,
+                        'field_data' => $filters[$multipleField],
+                    ]);
                 }
                 break;
             }
@@ -717,18 +798,21 @@ class CriteriaController extends AppController
                 $revision = $this->getDataService()->initNewDraft($revision->getContentType()->getName(), $revision->getOuuid(), $revision);
             }
             $revision->setRawData($rawData);
-            
-            $this->addFlash('notice', '<b>Added</b> to '.$revision);
+
             return $revision;
         }
         return false;
     }
-    
-    
+
+
     /**
+     * @param View $view
+     * @param Request $request
+     * @return Response
+     * @throws DataStateException
+     * @throws Exception
      *
-     * @Route("/views/criteria/removeCriterion/{view}", name="views.criteria.remove"))
-     * @Method({"POST"})
+     * @Route("/views/criteria/removeCriterion/{view}", name="views.criteria.remove", methods={"POST"})
      */
     public function removeCriteriaAction(View $view, Request $request)
     {
@@ -746,14 +830,16 @@ class CriteriaController extends AppController
             $type = $structuredTarget[0];
             $ouuid = $structuredTarget[1];
             
-            /**@var Session $session */
-            $session = $this->get('session');
-            
             /**@var Revision $revision*/
             $revision = $this->getDataService()->getNewestRevision($type, $ouuid);
             
             if ($revision->getDraft()) {
-                $this->addFlash('warning', 'Impossible to update '.$revision. ' has there is a draft in progress');
+                $this->getLogger()->warning('log.view.criteria.draft_in_progress', [
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                    'count' => 0,
+                ]);
                 return $this->render('@EMSCore/ajax/notification.json.twig', [
                         'success' => false,
                 ]);
@@ -764,7 +850,13 @@ class CriteriaController extends AppController
                     $this->getDataService()->finalizeDraft($revision);
                 }
             } catch (LockedException $e) {
-                $this->addFlash('warning', 'Impossible to update '.$revision. ' has the revision is locked by '.$revision->getLockBy());
+                $this->getLogger()->warning('log.view.criteria.locked_revision', [
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                    'count' => 0,
+                    'locked_by' => $revision->getLockBy(),
+                ]);
                 return $this->render('@EMSCore/ajax/notification.json.twig', [
                         'success' => false,
                 ]);
@@ -791,7 +883,15 @@ class CriteriaController extends AppController
             'success' => true,
         ]);
     }
-        
+
+    /**
+     * @param View $view
+     * @param array $rawData
+     * @param string $targetFieldName
+     * @param array $loadedRevision
+     * @return Revision|mixed|null
+     * @throws Exception
+     */
     public function removeCriteriaRevision(View $view, array $rawData, $targetFieldName, array $loadedRevision = [])
     {
         $multipleField = $this->getMultipleField($view->getContentType()->getFieldType());
@@ -824,7 +924,9 @@ class CriteriaController extends AppController
         ]);
     
         if ($result['hits']['total'] == 0) {
-            $this->addFlash('warning', 'Criteria hnot found');
+            $this->getLogger()->warning('log.view.criteria.not_found', [
+                'field_name' => $targetFieldName,
+            ]);
         } else if ($result['hits']['total'] == 1) {
             /**@var Revision $revision*/
             $revision = null;
@@ -847,10 +949,22 @@ class CriteriaController extends AppController
                         $message .= ', '.$value;
                     }
                 }
-                $this->addFlash('notice', 'A criteria has been removed for '.$targetFieldName.':'.$rawData[$targetFieldName]. ' ('.$message.')');
+                $this->getLogger()->warning('log.view.criteria.removed', [
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                    'field_name' => $targetFieldName,
+                    'field_data' => $rawData[$targetFieldName],
+                ]);
                 return $revision;
             } else {
-                $this->addFlash('warning', 'The criteria is already missing for '.$targetFieldName.':'.$rawData[$targetFieldName]);
+                $this->getLogger()->warning('log.view.criteria.already_missing', [
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                    'field_name' => $targetFieldName,
+                    'field_data' => $rawData[$targetFieldName],
+                ]);
             }
         } else {
             $message = false;
@@ -862,20 +976,21 @@ class CriteriaController extends AppController
                 }
                 $message .= $hit['_id'];
             }
-            $this->addFlash('error', 'Too many criteria found ('.$result['hits']['total'].'). There is something wrong with this combinaison of criteria!: '.$message);
+            $this->getLogger()->notice('log.view.criteria.too_many_criteria', [
+                'total' => $result['hits']['total'],
+                'message' => $message,
+            ]);
         }
         return null;
     }
-    
-    private function getManager()
-    {
-        if (empty($this->manager)) {
-            $this->manager = $this->getDoctrine()->getManager();
-        }
-        return $this->manager;
-    }
-    
-    
+
+    /**
+     * @param array $filters
+     * @param Revision $revision
+     * @param string $criteriaField
+     * @return bool|Revision
+     * @throws Exception
+     */
     public function removeCriteria($filters, Revision $revision, $criteriaField)
     {
         
@@ -899,7 +1014,9 @@ class CriteriaController extends AppController
                 if ($multipleField) {
                     $indexKey = array_search($filters[$multipleField], $criteriaSet[$multipleField]);
                     if ($indexKey === false) {
-                        $this->addFlash('notice', 'Criteria not found in multiple key');
+                        $this->getLogger()->notice('log.view.criteria.not_found', [
+                            'field_name' => $multipleField,
+                        ]);
                     } else {
                         unset($rawData[$criteriaField][$index][$multipleField][$indexKey]);
                         $rawData[$criteriaField][$index][$multipleField] = array_values($rawData[$criteriaField][$index][$multipleField]);
@@ -912,7 +1029,13 @@ class CriteriaController extends AppController
                             $revision = $this->getDataService()->initNewDraft($revision->getContentType()->getName(), $revision->getOuuid(), $revision);
                         }
                         $revision->setRawData($rawData);
-                        $this->addFlash('notice', '<b>Remove</b> '.$multipleField.' with value '.$filters[$multipleField].' from '.$revision);
+                        $this->getLogger()->notice('log.view.criteria.removed', [
+                            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                            EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                            EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                            'field_name' => $multipleField,
+                            'field_data' => $filters[$multipleField],
+                        ]);
                         return $revision;
                     }
                 } else {
@@ -923,7 +1046,12 @@ class CriteriaController extends AppController
                         $revision = $this->getDataService()->initNewDraft($revision->getContentType()->getName(), $revision->getOuuid(), $revision);
                     }
                     $revision->setRawData($rawData);
-                    $this->addFlash('notice', '<b>Remove</b> from '.$revision);
+                    $this->getLogger()->notice('log.view.criteria.removed', [
+                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                        EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                        EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                        'field_name' => $multipleField,
+                    ]);
                     return $revision;
                 }
                 break;
@@ -931,7 +1059,11 @@ class CriteriaController extends AppController
         }
         
         if (!$found) {
-            $this->addFlash('notice', 'Criteria not found for '.$revision);
+            $this->getLogger()->notice('log.view.criteria.document_key_not_found', [
+                'document_reference' => $criteriaField,
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType(),
+                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+            ]);
         }
         return false;
     }
@@ -977,27 +1109,10 @@ class CriteriaController extends AppController
         }
         return false;
     }
-    
-    
-    private function findCriterion(DataField $criteriaField, $filters)
-    {
-        /** @var DataField $child */
-        foreach ($criteriaField->getChildren() as $child) {
-            $found = true;
-            foreach ($filters as $filter) {
-                if (strcmp($filter['value'], $child->__get('ems_'.$filter['name'])->getTextValue()) != 0) {
-                    $found = false;
-                    break;
-                }
-            }
-            if ($found) {
-                return $child;
-            }
-        }
-        return false;
-    }
-    
+
     /**
+     * @param Request $request
+     * @return Response
      *
      * @Route("/views/criteria/fieldFilter", name="views.criteria.fieldFilter"))
      */
@@ -1009,7 +1124,7 @@ class CriteriaController extends AppController
         $repository = $em->getRepository('EMSCoreBundle:FieldType');
         
         
-        /** @var \EMS\CoreBundle\Entity\FieldType $field */
+        /** @var FieldType $field */
         $field = $repository->find($request->query->get('targetField'));
         
 

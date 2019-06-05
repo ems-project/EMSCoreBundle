@@ -4,32 +4,17 @@ namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use EMS\CoreBundle\Controller\AppController;
-use EMS\CoreBundle\Repository\RevisionRepository;
-use Doctrine\ORM\EntityManager;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Routing\Annotation\Route;
 
 class IndexController extends AppController
 {
     /**
-     * @Route("/indexes/content-type/{contentTypeId}/{alias}", name="index.content-type")
+     * @return RedirectResponse
+     *
+     * @Route("/indexes/detele-orphans", name="ems_delete_ophean_indexes", methods={"POST"})
      */
-    public function reindexContentTypeAction($contentTypeId, $alias)
-    {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-        /** @var RevisionRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Revision');
-        /** @var Revision $revision */
-//         $revisions = $repository->findBy();
-        return $this->render('@EMSCore/default/coming-soon.html.twig');
-    }
-    
-    /**
-     * @Route("/indexes/detele-orphans", name="ems_delete_ophean_indexes")
-     * @Method({"POST"})
-     */
-    public function deleteOphansIndexesAction()
+    public function deleteOrphansIndexesAction()
     {
         $client = $this->getElasticsearch();
         foreach ($this->getAliasService()->getOrphanIndexes() as $index) {
@@ -37,9 +22,13 @@ class IndexController extends AppController
                 $client->indices()->delete([
                     'index' => $index['name'],
                 ]);
-                $this->addFlash('notice', 'Elasticsearch index '.$index['name'].' has been deleted');
+                $this->getLogger()->notice('log.index.delete_orphan_index', [
+                    'index_name' => $index['name'],
+                ]);
             } catch (Missing404Exception $e) {
-                $this->addFlash('warning', 'Elasticsearch index not found');
+                $this->getLogger()->notice('log.index.index_not_found', [
+                    'index_name' => $index['name'],
+                ]);
             }
         }
         return $this->redirectToRoute('ems_environment_index');

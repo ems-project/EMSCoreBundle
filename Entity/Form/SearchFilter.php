@@ -152,10 +152,10 @@ class SearchFilter implements JsonSerializable
     {
         return $this->pattern;
     }
+
     /**
-     * Set pattern
-     *
      * @param string $pattern
+     * @return SearchFilter
      */
     public function setPattern($pattern)
     {
@@ -176,6 +176,7 @@ class SearchFilter implements JsonSerializable
      * Set field
      *
      * @param string $field
+     * @return SearchFilter
      */
     public function setField($field)
     {

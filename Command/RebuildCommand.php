@@ -214,7 +214,7 @@ class RebuildCommand extends EmsCommand
      * Update the alias of an environment to a new index
      *
      * @param string $alias
-     * @param string $toIndexes
+     * @param array $toIndexes
      * @param OutputInterface $output
      * @param bool $newEnv
      */
@@ -233,7 +233,6 @@ class RebuildCommand extends EmsCommand
                 ];
             }
 
-
             foreach ($toIndexes as $index) {
                 $params ['body']['actions'][] = [
                     'add' => [
@@ -244,7 +243,7 @@ class RebuildCommand extends EmsCommand
             }
 
             $this->client->indices()->updateAliases($params);
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             if (!$newEnv) {
                 $output->writeln('WARNING : Alias '.$alias.' not found');
             }

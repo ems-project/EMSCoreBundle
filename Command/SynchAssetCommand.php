@@ -87,7 +87,7 @@ class SynchAssetCommand extends EmsCommand
 
         if (count($this->fileService->getStorages()) < 2) {
             $output->writeln('<error>There is nothing to synchronize as there is less than 2 storage services</error>');
-            return;
+            return null;
         }
 
         $serviceId = count($this->fileService->getStorages());

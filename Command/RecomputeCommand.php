@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Command;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Persistence\Mapping\MappingException;
+use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -32,7 +33,7 @@ use Symfony\Component\Form\FormFactoryInterface;
 class RecomputeCommand extends EmsCommand
 {
     /**
-     * @var EntityManager
+     * @var ObjectManager
      */
     private $em;
 
@@ -120,6 +121,10 @@ class RecomputeCommand extends EmsCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if (! $this->em instanceof EntityManager) {
+            $output->writeln('The entity manager might not be configured correctly');
+            return null;
+        }
         $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
         $this->em->getConnection()->setAutoCommit(false);
 

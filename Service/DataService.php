@@ -129,7 +129,8 @@ class DataService
         StorageManager $storageManager,
         Twig_Environment $twig,
         AppExtension $appExtension,
-        UserService $userService
+        UserService $userService,
+        RevisionRepository $revisionRepository
     ) {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
@@ -140,7 +141,7 @@ class DataService
         $this->mapping = $mapping;
         $this->instanceId = $instanceId;
         $this->em = $this->doctrine->getManager();
-        $this->revRepository = $this->em->getRepository('EMSCoreBundle:Revision');
+        $this->revRepository = $revisionRepository;
         $this->session = $session;
         $this->formFactory = $formFactory;
         $this->container = $container;

@@ -433,7 +433,8 @@ services:
             - { name: kernel.event_listener, event: revision.finalize_draft, method: finalizeDraftEvent, priority: 0 }
             - { name: kernel.event_listener, event: revision.publish, method: publishEvent, priority: 0 }
             - { name: kernel.event_listener, event: revision.unpublish, method: unpublishEvent, priority: 0 }
-    ems.service.i18n:
+    ems.service.i18n: '@EMS\CoreBundle\Service\I18nService'
+    EMS\CoreBundle\Service\I18nService:
         class: EMS\CoreBundle\Service\I18nService
         arguments: ['@doctrine']
     ems.service.rest_client:
@@ -550,7 +551,7 @@ services:
         class:  EMS\CoreBundle\Security\ApiKeyAuthenticator
         public: false
 
-    #### aliases
+#### aliases
     EMS\CoreBundle\Elasticsearch\Bulker: '@ems.elasticsearch.bulker'
     EMS\CoreBundle\Elasticsearch\Indexer: '@ems.elasticsearch.indexer'
 

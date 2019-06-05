@@ -185,7 +185,7 @@ class DataService
      * @param Revision $revision
      * @param Environment $publishEnv
      * @param bool $super
-     * @param null $username
+     * @param string|null $username
      * @throws LockedException
      * @throws PrivilegeException
      * @throws Exception
@@ -1089,13 +1089,13 @@ class DataService
 
         /** @var ContentTypeRepository $contentTypeRepo */
         $contentTypeRepo = $em->getRepository('EMSCoreBundle:ContentType');
-        /** @var ContentType $contentType */
+        /** @var ContentType|null $contentType */
         $contentType = $contentTypeRepo->findOneBy([
                 'name' => $type,
                 'deleted' => false,
         ]);
 
-        if (!$contentType) {
+        if ($contentType === null) {
             throw new NotFoundHttpException('ContentType '.$type.' Not found');
         }
 
@@ -1156,9 +1156,6 @@ class DataService
         /** @var RevisionRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:Revision');
 
-        if (!$revision) {
-            throw new NotFoundHttpException('Revision not found');
-        }
         if (!$revision->getDraft() || null != $revision->getEndTime()) {
             throw new BadRequestHttpException('Only authorized on a draft');
         }
@@ -1598,7 +1595,7 @@ class DataService
             $dataFieldType->isValid($dataField, $parent, $masterRawData);
         }
         $isValid = true;
-        if ($dataFieldType && $dataFieldType->isContainer()) {//If dataField is container or type is null => Container => Recursive
+        if ($dataFieldType !== null && $dataFieldType->isContainer()) {//If dataField is container or type is null => Container => Recursive
             $formChildren = $form->all();
             foreach ($formChildren as $child) {
                 if ($child instanceof FormInterface) {

@@ -3,7 +3,7 @@
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Persistence\ObjectManager;
 use EMS\CoreBundle\Command\JobOutput;
 use EMS\CoreBundle\Entity\Job;
 use EMS\CoreBundle\Repository\JobRepository;
@@ -21,7 +21,7 @@ class JobService
     private $doctrine;
 
     /**
-     * @var EntityManager
+     * @var ObjectManager
      */
     private $em;
 
@@ -45,11 +45,11 @@ class JobService
      * @param KernelInterface $kernel
      * @param LoggerInterface $logger
      */
-    public function __construct(Registry $doctrine, KernelInterface $kernel, LoggerInterface $logger)
+    public function __construct(Registry $doctrine, KernelInterface $kernel, LoggerInterface $logger, JobRepository $jobRepository)
     {
         $this->doctrine = $doctrine;
         $this->em = $doctrine->getManager();
-        $this->repository = $this->em->getRepository(Job::class);
+        $this->repository = $jobRepository;
         $this->kernel = $kernel;
         $this->logger = $logger;
     }

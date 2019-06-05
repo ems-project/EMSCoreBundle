@@ -200,7 +200,7 @@ class PublishService
      * @param Revision $revision
      * @param Environment $environment
      * @param bool $command
-     * @return bool
+     * @return int
      * @throws NonUniqueResultException
      * @throws DBALException
      */

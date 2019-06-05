@@ -203,24 +203,19 @@ class NotificationService
             
             /** @var TemplateRepository $repository */
             $repository = $em->getRepository('EMSCoreBundle:Template');
-            /** @var Template $template */
+            /** @var Template|null $template */
             $template = $repository->findOneById($templateId);
             
-            if (!$template) {
+            if ($template === null) {
                 throw new NotFoundHttpException('Unknown template');
             }
 
-            
-
             $notification =  new Notification();
-            
             $notification->setStatus('pending');
             
             $em = $this->doctrine->getManager();
             /** @var NotificationRepository $repository */
             $repository = $em->getRepository('EMSCoreBundle:Notification');
-            
-            
             
             $alreadyPending = $repository->findBy([
                     'template' => $template,

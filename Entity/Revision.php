@@ -86,7 +86,7 @@ class Revision
     private $startTime;
 
     /**
-     * @var \DateTime
+     * @var \DateTime|null
      *
      * @ORM\Column(name="end_time", type="datetime", nullable=true)
      */
@@ -586,7 +586,7 @@ class Revision
     /**
      * Get endTime
      *
-     * @return \DateTime
+     * @return \DateTime|null
      */
     public function getEndTime()
     {

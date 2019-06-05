@@ -12,6 +12,7 @@ use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\SingleTypeIndex;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
+use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\SingleTypeIndexRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormRegistryInterface;
@@ -43,10 +44,10 @@ class ContentTypeService
     private $instanceId;
 
     /** @var ContentType[]  */
-    protected $orderedContentTypes;
+    protected $orderedContentTypes = [];
 
     /** @var ContentType[]  */
-    protected $contentTypeArrayByName;
+    protected $contentTypeArrayByName = [];
 
     /** @var bool */
     protected $singleTypeIndex;
@@ -57,8 +58,6 @@ class ContentTypeService
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
-        $this->orderedContentTypes = null;
-        $this->contentTypeArrayByName = null;
         $this->mappingService = $mappingService;
         $this->client = $client;
         $this->environmentService = $environmentService;
@@ -108,10 +107,12 @@ class ContentTypeService
     
     private function loadEnvironment()
     {
-        if ($this->orderedContentTypes === null) {
-            $this->orderedContentTypes = $this->doctrine->getManager()->getRepository('EMSCoreBundle:ContentType')->findBy(['deleted' => false], ['orderKey' => 'ASC']);
+        if ($this->orderedContentTypes === []) {
+            /** @var ContentTypeRepository $contentTypeRepository */
+            $contentTypeRepository = $this->doctrine->getManager()->getRepository('EMSCoreBundle:ContentType');
+            $this->orderedContentTypes = $contentTypeRepository->findBy(['deleted' => false], ['orderKey' => 'ASC']);
             $this->contentTypeArrayByName = [];
-            /**@var ContentType $contentType */
+            /** @var ContentType $contentType */
             foreach ($this->orderedContentTypes as $contentType) {
                 $this->contentTypeArrayByName[$contentType->getName()] = $contentType;
             }

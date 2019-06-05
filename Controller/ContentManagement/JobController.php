@@ -6,6 +6,7 @@ use EMS\CoreBundle;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\Job;
 use EMS\CoreBundle\Form\Form\JobType;
+use EMS\CoreBundle\Service\JobService;
 use Exception;
 use SensioLabs\AnsiConverter\AnsiToHtmlConverter;
 use SensioLabs\AnsiConverter\Theme\Theme;
@@ -22,13 +23,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class JobController extends AppController
 {
     /**
-     * @param Request $request
-     * @return Response
      * @Route("/admin/job", name="job.index"))
      */
-    public function indexAction(Request $request)
+    public function indexAction(Request $request, JobService $jobService)
     {
-        $jobService = $this->getJobService();
         $size = $this->container->getParameter('ems_core.paging_size');
 
         $page = $request->query->get('page', 1);
@@ -67,14 +65,14 @@ class JobController extends AppController
      * @return RedirectResponse|Response
      * @Route("/admin/job/add", name="job.add"))
      */
-    public function createAction(Request $request)
+    public function createAction(Request $request, JobService $jobService)
     {
         $form = $this->createForm(JobType::class, []);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $command = $form->get('command')->getData();
-            $job = $this->getJobService()->createCommand($this->getUser(), $command);
+            $job = $jobService->createCommand($this->getUser(), $command);
 
             return $this->redirectToRoute('job.status', [
                 'job' => $job->getId(),
@@ -91,9 +89,9 @@ class JobController extends AppController
      * @return RedirectResponse
      * @Route("/admin/job/delete/{job}", name="job.delete", methods={"POST"})
      */
-    public function deleteAction(Job $job)
+    public function deleteAction(Job $job, JobService $jobService)
     {
-        $this->getJobService()->delete($job);
+        $jobService->delete($job);
 
         return $this->redirectToRoute('job.index');
     }
@@ -102,9 +100,9 @@ class JobController extends AppController
      * @return RedirectResponse
      * @Route("/admin/job/clean", name="job.clean", methods={"POST"})
      */
-    public function cleanAction()
+    public function cleanAction(JobService $jobService)
     {
-        $this->getJobService()->clean();
+        $jobService->clean();
 
         return $this->redirectToRoute('job.index');
     }
@@ -117,7 +115,7 @@ class JobController extends AppController
      *
      * @Route("/admin/job/start/{job}", name="job.start", methods={"POST"})
      */
-    public function startJobAction(Job $job, Request $request)
+    public function startJobAction(Job $job, Request $request, JobService $jobService)
     {
         if ($job->getUser() != $this->getUser()->getUsername()) {
             throw new AccessDeniedHttpException();
@@ -128,8 +126,6 @@ class JobController extends AppController
         if ($job->getStarted() && $job->getDone()) {
             return new JsonResponse('job already done');
         }
-
-        $jobService = $this->getJobService();
 
         if (null !== $job->getService()) {
             $output = $jobService->start($job);
@@ -155,13 +151,5 @@ class JobController extends AppController
         }
 
         return new JsonResponse('job started');
-    }
-
-    /**
-     * @return CoreBundle\Service\JobService
-     */
-    private function getJobService()
-    {
-        return $this->container->get('ems.service.job');
     }
 }

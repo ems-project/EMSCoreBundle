@@ -438,12 +438,17 @@ class DataService
             $dataFieldType = $this->formRegistry->getType($dataField->getFieldType()->getType())->getInnerType();
             if ($dataFieldType instanceof DataFieldType) {
                 $dataFieldType->convertInput($dataField);
-            } else {
+            } else if (! DataService::isInternalField($dataField->getFieldType()->getName())) {
                 $this->logger->warning('service.data.not_a_data_field', [
                     'field_name' => $dataField->getFieldType()->getName()
                 ]);
             }
         }
+    }
+
+    public static function isInternalField(string $fieldName)
+    {
+        return in_array($fieldName, ['_ems_internal_deleted', 'remove_collection_item']);
     }
 
     public function generateInputValues(DataField $dataField)
@@ -456,7 +461,7 @@ class DataService
             $dataFieldType = $this->formRegistry->getType($dataField->getFieldType()->getType())->getInnerType();
             if ($dataFieldType instanceof  DataFieldType) {
                 $dataFieldType->generateInput($dataField);
-            } else {
+            } else if (! DataService::isInternalField($dataField->getFieldType()->getName())) {
                 $this->logger->warning('service.data.not_a_data_field', [
                     'field_name' => $dataField->getFieldType()->getName()
                 ]);
@@ -1365,7 +1370,7 @@ class DataService
 
             if ($dataFieldType instanceof DataFieldType) {
                 $isContainer = $dataFieldType->isContainer();
-            } else {
+            } else if (! DataService::isInternalField($dataField->getFieldType()->getName())) {
                 $this->logger->warning('service.data.not_a_data_field', [
                     'field_name' => $dataField->getFieldType()->getName()
                 ]);
@@ -1427,7 +1432,7 @@ class DataService
                     }
                 }
             }
-        } else {
+        } else if (! DataService::isInternalField($dataField->getFieldType()->getName())) {
             $this->logger->warning('service.data.not_a_data_field', [
                 'field_name' => $dataField->getFieldType()->getName()
             ]);
@@ -1579,9 +1584,11 @@ class DataService
         }
 
         if (! $viewData instanceof DataField) {
-            $this->logger->warning('service.data.not_a_data_field', [
-                'field_name' => $form->getName()
-            ]);
+            if (! DataService::isInternalField($form->getName())) {
+                $this->logger->warning('service.data.not_a_data_field', [
+                    'field_name' => $form->getName()
+                ]);
+            }
             return true;
         }
 

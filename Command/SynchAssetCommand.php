@@ -140,8 +140,8 @@ class SynchAssetCommand extends EmsCommand
                         }
                     } else {
                         /**@var StorageInterface $storage */
-                        $storage = $this->fileService->getStorages()[$serviceId];
-                        if (! $storage->head($hash['hash'])) {
+                        $storage = $this->fileService->getStorageService($serviceId);
+                        if ($storage !== null && ! $storage->head($hash['hash'])) {
                             if (!$storage->create($hash['hash'], $file)) {
                                 $output->writeln('');
                                 $output->writeln('<comment>EMS was not able to synchronize on the service '.$storage.'</comment>');

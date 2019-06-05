@@ -89,7 +89,6 @@ class FileService
         return $this->storageManager->getAdapters();
     }
 
-
     public function getBase64($hash, $cacheContext = false)
     {
         /**@var StorageInterface $service */

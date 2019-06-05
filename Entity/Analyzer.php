@@ -213,7 +213,7 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable
      *
      * @param boolean $dirty
      *
-     * @return ContentType
+     * @return Analyzer
      */
     public function setDirty($dirty)
     {
@@ -243,7 +243,7 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable
     {
         $this->label = $label;
         
-        return $label;
+        return $this;
     }
     
     /**

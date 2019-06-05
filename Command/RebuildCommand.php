@@ -13,6 +13,7 @@ use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
+use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\JobRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
@@ -107,103 +108,105 @@ class RebuildCommand extends EmsCommand
         /** @var  Client $client */
         $client = $this->client;
         $name = $input->getArgument('name');
-        /** @var JobRepository $envRepo */
+        /** @var EnvironmentRepository $envRepo */
         $envRepo = $em->getRepository('EMSCoreBundle:Environment');
+
         /** @var Environment $environment */
-        $environment = $envRepo->findBy(['name' => $name, 'managed' => true]);
-        if ($environment && count($environment) == 1) {
-            $environment = $environment[0];
-            if ($environment->getAlias() != $this->instanceId.$environment->getName()) {
-                $environment->setAlias($this->instanceId.$environment->getName());
-                $em->persist($environment);
-                $em->flush();
-                $output->writeln("Alias has been aligned to ".$environment->getAlias());
-            }
+        $environment = $envRepo->findOneBy(['name' => $name, 'managed' => true]);
 
-            $singleIndexName = $indexName = $environment->getAlias().AppController::getFormatedTimestamp();
-            $indexes = [];
+        if ($environment === null) {
+            $output->writeln("WARNING: Environment named ".$name." not found");
+            return null;
+        }
 
+        if ($environment->getAlias() != $this->instanceId.$environment->getName()) {
+            $environment->setAlias($this->instanceId.$environment->getName());
+            $em->persist($environment);
+            $em->flush();
+            $output->writeln("Alias has been aligned to ".$environment->getAlias());
+        }
 
-            /** @var ContentTypeRepository $contentTypeRepository */
-            $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
-            $contentTypes = $contentTypeRepository->findAll();
-            /** @var ContentType $contentType */
-
-            $indexDefaultConfig = $this->environmentService->getIndexAnalysisConfiguration();
-            if (!$this->singleTypeIndex) {
-                $client->indices()->create([
-                    'index' => $indexName,
-                    'body' => $indexDefaultConfig,
-                ]);
-
-                $output->writeln('A new index '.$indexName.' has been created');
-                if (! $input->getOption('yellow-ok')) {
-                    $this->waitForGreen($output);
-                }
-            }
-
-            $output->writeln(count($contentTypes).' content types will be re-indexed');
-
-            $countContentType = 1;
-
-            /** @var ContentType $contentType */
-            foreach ($contentTypes as $contentType) {
-                if (!$contentType->getDeleted() && $contentType->getEnvironment() && $contentType->getEnvironment()->getManaged()) {
-                    if ($this->singleTypeIndex) {
-                        $indexName = $this->environmentService->getNewIndexName($environment, $contentType);
-                        $indexes[] = $indexName;
-                        $client->indices()->create([
-                            'index' => $indexName,
-                            'body' => $indexDefaultConfig,
-                        ]);
-
-                        $output->writeln('A new index '.$indexName.' has been created');
-                        if (! $input->getOption('yellow-ok')) {
-                            $this->waitForGreen($output);
-                        }
-                    }
-
-                    $this->contentTypeService->updateMapping($contentType, $indexName);
-                    $output->writeln('A mapping has been defined for '.$contentType->getSingularName());
-
-                    if ($this->singleTypeIndex) {
-                        $this->reindexCommand->reindex($name, $contentType, $indexName, $output, $signData, $input->getOption('bulk-size'));
-                    }
-                    $this->contentTypeService->setSingleTypeIndex($environment, $contentType, $indexName);
-
-                    if ($this->singleTypeIndex) {
-                        $output->writeln('');
-                        $output->writeln($contentType->getPluralName() . ' have been re-indexed ' . $countContentType . '/' . count($contentTypes));
-                    }
-                    ++$countContentType;
-                }
-            }
+        $singleIndexName = $indexName = $environment->getAlias().AppController::getFormatedTimestamp();
+        $indexes = [];
 
 
-            if (!$this->singleTypeIndex) {
-                /** @var ContentType $contentType */
-                foreach ($contentTypes as $contentType) {
-                    if (!$contentType->getDeleted() && $contentType->getEnvironment() && $contentType->getEnvironment()->getManaged()) {
-                        $this->reindexCommand->reindex($name, $contentType, $indexName, $output, $signData, $input->getOption('bulk-size'));
-                        $output->writeln('');
-                        $output->writeln($contentType->getPluralName() . ' have been re-indexed ');
-                    }
-                }
-            }
+        /** @var ContentTypeRepository $contentTypeRepository */
+        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
+        $contentTypes = $contentTypeRepository->findAll();
+        /** @var ContentType $contentType */
 
+        $indexDefaultConfig = $this->environmentService->getIndexAnalysisConfiguration();
+        if (!$this->singleTypeIndex) {
+            $client->indices()->create([
+                'index' => $indexName,
+                'body' => $indexDefaultConfig,
+            ]);
+
+            $output->writeln('A new index '.$indexName.' has been created');
             if (! $input->getOption('yellow-ok')) {
                 $this->waitForGreen($output);
             }
-            if (empty($indexes)) {
-                $indexes = [$singleIndexName];
+        }
+
+        $output->writeln(count($contentTypes).' content types will be re-indexed');
+
+        $countContentType = 1;
+
+        /** @var ContentType $contentType */
+        foreach ($contentTypes as $contentType) {
+            if (!$contentType->getDeleted() && $contentType->getEnvironment() && $contentType->getEnvironment()->getManaged()) {
+                if ($this->singleTypeIndex) {
+                    $indexName = $this->environmentService->getNewIndexName($environment, $contentType);
+                    $indexes[] = $indexName;
+                    $client->indices()->create([
+                        'index' => $indexName,
+                        'body' => $indexDefaultConfig,
+                    ]);
+
+                    $output->writeln('A new index '.$indexName.' has been created');
+                    if (! $input->getOption('yellow-ok')) {
+                        $this->waitForGreen($output);
+                    }
+                }
+
+                $this->contentTypeService->updateMapping($contentType, $indexName);
+                $output->writeln('A mapping has been defined for '.$contentType->getSingularName());
+
+                if ($this->singleTypeIndex) {
+                    $this->reindexCommand->reindex($name, $contentType, $indexName, $output, $signData, $input->getOption('bulk-size'));
+                }
+                $this->contentTypeService->setSingleTypeIndex($environment, $contentType, $indexName);
+
+                if ($this->singleTypeIndex) {
+                    $output->writeln('');
+                    $output->writeln($contentType->getPluralName() . ' have been re-indexed ' . $countContentType . '/' . count($contentTypes));
+                }
+                ++$countContentType;
             }
-            $this->switchAlias($environment->getAlias(), $indexes, $output, true);
-            $output->writeln('The alias <info>'.$environment->getName().'</info> is now pointing to :');
-            foreach ($indexes as $index) {
-                $output->writeln('     - '.$index);
+        }
+
+
+        if (!$this->singleTypeIndex) {
+            /** @var ContentType $contentType */
+            foreach ($contentTypes as $contentType) {
+                if (!$contentType->getDeleted() && $contentType->getEnvironment() && $contentType->getEnvironment()->getManaged()) {
+                    $this->reindexCommand->reindex($name, $contentType, $indexName, $output, $signData, $input->getOption('bulk-size'));
+                    $output->writeln('');
+                    $output->writeln($contentType->getPluralName() . ' have been re-indexed ');
+                }
             }
-        } else {
-            $output->writeln("WARNING: Environment named ".$name." not found");
+        }
+
+        if (! $input->getOption('yellow-ok')) {
+            $this->waitForGreen($output);
+        }
+        if (empty($indexes)) {
+            $indexes = [$singleIndexName];
+        }
+        $this->switchAlias($environment->getAlias(), $indexes, $output, true);
+        $output->writeln('The alias <info>'.$environment->getName().'</info> is now pointing to :');
+        foreach ($indexes as $index) {
+            $output->writeln('     - '.$index);
         }
     }
 

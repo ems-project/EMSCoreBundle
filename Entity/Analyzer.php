@@ -237,7 +237,7 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable
      *
      * @param string $label
      *
-     * @return ContentType
+     * @return Analyzer
      */
     public function setLabel($label)
     {

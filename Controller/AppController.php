@@ -55,6 +55,7 @@ class AppController extends Controller
     }
     
     /**
+     * @deprecated use dependency injection
      * @return TranslatorInterface
      */
     protected function getTranslator()
@@ -63,6 +64,7 @@ class AppController extends Controller
     }
     
     /**
+     * @deprecated use dependency injection
      * @return Client
      */
     protected function getElasticsearch()
@@ -71,6 +73,7 @@ class AppController extends Controller
     }
     
     /**
+     * @deprecated use dependency injection
      * @return ElasticsearchService
      */
     protected function getElasticsearchService()
@@ -79,6 +82,7 @@ class AppController extends Controller
     }
     
     /**
+     * @deprecated use dependency injection
      * @return WysiwygProfileService
      */
     protected function getWysiwygProfileService()
@@ -87,6 +91,7 @@ class AppController extends Controller
     }
     
     /**
+     * @deprecated use dependency injection
      * @return SortOptionService
      */
     protected function getSortOptionService()
@@ -95,6 +100,7 @@ class AppController extends Controller
     }
 
     /**
+     * @deprecated use dependency injection
      * @return AggregateOptionService
      */
     protected function getAggregateOptionService()
@@ -103,6 +109,7 @@ class AppController extends Controller
     }
 
     /**
+     * @deprecated use dependency injection
      * @return SearchFieldOptionService
      */
     protected function getSearchFieldOptionService()
@@ -111,6 +118,7 @@ class AppController extends Controller
     }
     
     /**
+     * @deprecated use dependency injection
      * @return WysiwygStylesSetService
      */
     protected function getWysiwygStylesSetService()
@@ -119,6 +127,7 @@ class AppController extends Controller
     }
 
     /**
+     * @deprecated use dependency injection
      * @return AuthorizationChecker
      */
     protected function getAuthorizationChecker()
@@ -126,12 +135,17 @@ class AppController extends Controller
         return $this->get('security.authorization_checker');
     }
 
-    protected function getSecurityEncoder(): EncoderFactoryInterface
+    /**
+     * @deprecated use dependency injection
+     * @return EncoderFactoryInterface
+     */
+    protected function getSecurityEncoder()
     {
         return $this->get('security.encoder_factory');
     }
     
     /**
+     * @deprecated use dependency injection
      * @return UserService
      */
     protected function getUserService()
@@ -141,6 +155,7 @@ class AppController extends Controller
 
     
     /**
+     * @deprecated use dependency injection
      * @return NotificationService
      */
     protected function getNotificationService()
@@ -149,6 +164,7 @@ class AppController extends Controller
     }
     
     /**
+     * @deprecated use dependency injection
      * @return Twig_Environment
      */
     protected function getTwig()
@@ -157,6 +173,7 @@ class AppController extends Controller
     }
     
     /**
+     * @deprecated use dependency injection
      * @return SearchService
      */
     protected function getSearchService()
@@ -165,6 +182,7 @@ class AppController extends Controller
     }
     
     /**
+     * @deprecated use dependency injection
      * @return HelperService
      */
     protected function getHelperService()
@@ -173,11 +191,12 @@ class AppController extends Controller
     }
         
     /**
+     * @deprecated use dependency injection
      * @return AliasService
      */
     protected function getAliasService()
     {
-            return $this->container->get('ems.service.alias')->build();
+        return $this->container->get('ems.service.alias')->build();
     }
 
     /**
@@ -195,10 +214,8 @@ class AppController extends Controller
     }
     
     /**
-     * Get the injected logger
-     *
+     * @deprecated use dependency injection
      * @return LoggerInterface
-     *
      */
     protected function getLogger()
     {
@@ -249,7 +266,7 @@ class AppController extends Controller
 
     
     /**
-     *
+     * @deprecated use dependency injection
      * @return AssetExtractorService
      */
     public function getAssetExtractorService()
@@ -258,7 +275,7 @@ class AppController extends Controller
     }
     
     /**
-     *
+     * @deprecated use dependency injection
      * @return DataService
      */
     public function getDataService()
@@ -267,7 +284,7 @@ class AppController extends Controller
     }
     
     /**
-     *
+     * @deprecated use dependency injection
      * @return PublishService
      */
     public function getPublishService()
@@ -276,7 +293,7 @@ class AppController extends Controller
     }
 
     /**
-     *
+     * @deprecated use dependency injection
      * @return ContentTypeService
      */
     public function getContentTypeService()
@@ -285,7 +302,7 @@ class AppController extends Controller
     }
     
     /**
-     *
+     * @deprecated use dependency injection
      * @return EnvironmentService
      */
     public function getEnvironmentService()

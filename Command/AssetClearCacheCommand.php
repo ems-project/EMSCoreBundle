@@ -63,7 +63,7 @@ class AssetClearCacheCommand extends EmsCommand
                 $serviceId = array_search($service, $this->fileService->getStorages());
                 $output->writeln('You have just selected: '.$service);
                 $this->fileService->getStorages()[$serviceId]->clearCache();
-                return;
+                return null;
             }
         }
 

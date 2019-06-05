@@ -126,7 +126,10 @@ class DataService
         ContentTypeService $contentTypeService,
         string $privateKey,
         Logger $logger,
-        StorageManager $storageManager
+        StorageManager $storageManager,
+        Twig_Environment $twig,
+        AppExtension $appExtension,
+        UserService $userService
     ) {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
@@ -141,13 +144,13 @@ class DataService
         $this->session = $session;
         $this->formFactory = $formFactory;
         $this->container = $container;
-        $this->twig = $container->get('twig');
-        $this->appTwig = $container->get('app.twig_extension');
+        $this->twig = $twig;
+        $this->appTwig = $appExtension;
         $this->formRegistry = $formRegistry;
         $this->dispatcher= $dispatcher;
         $this->storageManager= $storageManager;
         $this->contentTypeService = $contentTypeService;
-        $this->userService = $container->get('ems.service.user');
+        $this->userService = $userService;
 
         $this->public_key = null;
         $this->private_key = null;

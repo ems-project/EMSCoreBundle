@@ -84,7 +84,7 @@ class ContentTypeRepository extends EntityRepository
         return $this->createQueryBuilder('a')
          ->select('COUNT(a)')
          ->getQuery()
-         ->getSingleScalarResult();
+         ->getSingleScalarResult() ?? 0;
     }
 
 
@@ -97,6 +97,6 @@ class ContentTypeRepository extends EntityRepository
         return $this->createQueryBuilder('a')
          ->select('max(a.orderKey)')
          ->getQuery()
-         ->getSingleScalarResult();
+         ->getSingleScalarResult() ?? 0;
     }
 }

@@ -478,7 +478,7 @@ services:
             -  { name: console.command }
     ems.environment.recompute:
         class: EMS\CoreBundle\Command\RecomputeCommand
-        arguments: ['@ems.service.data', '@doctrine', '@form.factory', '@ems.service.publish', '@logger', '@app.elasticsearch', '@ems.service.contenttype']
+        arguments: ['@ems.service.data', '@doctrine', '@form.factory', '@ems.service.publish', '@logger', '@app.elasticsearch', '@ems.service.contenttype', '@EMS\CoreBundle\Repository\ContentTypeRepository', '@EMS\CoreBundle\Repository\RevisionRepository']
         tags:
             -  { name: console.command }
     ems.environment.updatemetafield:

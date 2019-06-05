@@ -78,7 +78,9 @@ class RecomputeCommand extends EmsCommand
         PublishService $publishService,
         LoggerInterface $logger,
         Client $client,
-        ContentTypeService $contentTypeService
+        ContentTypeService $contentTypeService,
+        ContentTypeRepository $contentTypeRepository,
+        RevisionRepository $revisionRepository
     ) {
         parent::__construct($logger, $client);
 
@@ -87,10 +89,9 @@ class RecomputeCommand extends EmsCommand
         $this->publishService = $publishService;
         $this->contentTypeService = $contentTypeService;
 
-        $em = $doctrine->getManager();
-        $this->em = $em;
-        $this->contentTypeRepository = $em->getRepository(ContentType::class);
-        $this->revisionRepository = $em->getRepository(Revision::class);
+        $this->em = $doctrine->getManager();
+        $this->contentTypeRepository = $contentTypeRepository;
+        $this->revisionRepository = $revisionRepository;
     }
 
     protected function configure()

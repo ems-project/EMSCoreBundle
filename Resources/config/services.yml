@@ -503,7 +503,7 @@ services:
             -  { name: console.command }
     ems.contenttype.lock:
         class: EMS\CoreBundle\Command\LockCommand
-        arguments: ['@doctrine']
+        arguments: ['@EMS\CoreBundle\Repository\ContentTypeRepository', '@EMS\CoreBundle\Repository\RevisionRepository']
         tags:
             -  { name: console.command }
 
@@ -580,3 +580,15 @@ services:
     ems_common.monolog.flash_handler:
         class: EMS\CommonBundle\Logger\FlashMessageLogger
         arguments: ['@session', '@translator', 'EMSCoreBundle']
+
+### Repositories ###
+    EMS\CoreBundle\Repository\ContentTypeRepository:
+        class: Doctrine\ORM\EntityRepository
+        factory: ['@doctrine.orm.default_entity_manager', getRepository]
+        arguments:
+            - EMS\CoreBundle\Entity\ContentType
+    EMS\CoreBundle\Repository\RevisionRepository:
+        class: Doctrine\ORM\EntityRepository
+        factory: ['@doctrine.orm.default_entity_manager', getRepository]
+        arguments:
+            - EMS\CoreBundle\Entity\Revision

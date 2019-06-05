@@ -29,13 +29,12 @@ class LockCommand extends Command
      */
     private $revisionRepository;
 
-    public function __construct(Registry $doctrine)
+    public function __construct(ContentTypeRepository $contentTypeRepository, RevisionRepository $revisionRepository)
     {
         parent::__construct();
 
-        $em = $doctrine->getManager();
-        $this->contentTypeRepository = $em->getRepository(ContentType::class);
-        $this->revisionRepository = $em->getRepository(Revision::class);
+        $this->contentTypeRepository = $contentTypeRepository;
+        $this->revisionRepository = $revisionRepository;
     }
 
     protected function configure()

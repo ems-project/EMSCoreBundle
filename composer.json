@@ -53,7 +53,7 @@
 		"symfony/test-pack": "^1.0",
 		"squizlabs/php_codesniffer": "3.*",
 		"phpunit/phpunit" : "^5.7",
-		"phpstan/phpstan": "^0.11.4"
+		"phpstan/phpstan": "^0.11.8"
 	},
 	"autoload" : {
 		"psr-4" : {

@@ -64,9 +64,9 @@ class DataService
 {
     const ALGO = OPENSSL_ALGO_SHA1;
 
-    /** @var string */
+    /** @var resource|false|null */
     private $private_key;
-    /** @var string */
+    /** @var string|null */
     private $public_key;
     /** @var string */
     protected $lockTime;

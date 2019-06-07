@@ -1036,6 +1036,8 @@ class DataController extends AppController
             }
             if (null != $template->getAllowOrigin()) {
                 header("Access-Control-Allow-Origin: " . $template->getAllowOrigin());
+                header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept, Accept-Language, If-None-Match, If-Modified-Since');
+                header('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS');
             }
 
             $output = $body->render([

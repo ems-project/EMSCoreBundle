@@ -64,46 +64,46 @@ class UpdateMetaFieldCommand extends EmsCommand
         /** @var RevisionRepository $revRepo */
         $revRepo = $em->getRepository('EMSCoreBundle:Revision');
         /** @var Environment $environment */
-        $environment = $envRepo->findBy(['name' => $name, 'managed' => true]);
-        if ($environment && count($environment) == 1) {
-            $environment = $environment[0];
-            
-            $page = 0;
-            $paginator = $revRepo->getRevisionsPaginatorPerEnvironment($environment, $page);
+        $environment = $envRepo->findOneBy(['name' => $name, 'managed' => true]);
 
-            // create a new progress bar
-            $progress = new ProgressBar($output, $paginator->count());
-            // start and displays the progress bar
-            $progress->start();
-            
-            do {
-                /** @var Revision $revision */
-                foreach ($paginator as $revision) {
-                    try {
-                        $this->dataService->setMetaFields($revision);
-                        
-                        $revision->setLockBy('SYSTEM_UPDATE_META');
-                        $now = new DateTime();
-                        $until = $now->add(new DateInterval("PT5M"));//+5 minutes
-                        $revision->setLockUntil($until);
-                        
-                        $em->persist($revision);
-                         $progress->advance();
-                        if ($progress->getProgress() % 20 == 0) {
-                            $em->flush();
-                        }
-                    } catch (NotLockedException $e) {
-                        $output->writeln("<error>'.$e.'</error>");
-                    }
-                }
-                
-                ++$page;
-                $paginator = $revRepo->getRevisionsPaginatorPerEnvironment($environment, $page);
-            } while ($paginator->getIterator()->count());
-            
-            $progress->finish();
-        } else {
+        if ($environment === null) {
             $output->writeln("WARNING: Environment named ".$name." not found");
+            return null;
         }
+
+        $page = 0;
+        $paginator = $revRepo->getRevisionsPaginatorPerEnvironment($environment, $page);
+
+        // create a new progress bar
+        $progress = new ProgressBar($output, $paginator->count());
+        // start and displays the progress bar
+        $progress->start();
+
+        do {
+            /** @var Revision $revision */
+            foreach ($paginator as $revision) {
+                try {
+                    $this->dataService->setMetaFields($revision);
+
+                    $revision->setLockBy('SYSTEM_UPDATE_META');
+                    $now = new DateTime();
+                    $until = $now->add(new DateInterval("PT5M"));//+5 minutes
+                    $revision->setLockUntil($until);
+
+                    $em->persist($revision);
+                     $progress->advance();
+                    if ($progress->getProgress() % 20 == 0) {
+                        $em->flush();
+                    }
+                } catch (NotLockedException $e) {
+                    $output->writeln("<error>'.$e.'</error>");
+                }
+            }
+
+            ++$page;
+            $paginator = $revRepo->getRevisionsPaginatorPerEnvironment($environment, $page);
+        } while ($paginator->getIterator()->count());
+
+        $progress->finish();
     }
 }

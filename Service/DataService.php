@@ -64,9 +64,9 @@ class DataService
 {
     const ALGO = OPENSSL_ALGO_SHA1;
 
-    /** @var string */
+    /** @var resource|false|null */
     private $private_key;
-    /** @var string */
+    /** @var string|null */
     private $public_key;
     /** @var string */
     protected $lockTime;
@@ -126,7 +126,11 @@ class DataService
         ContentTypeService $contentTypeService,
         string $privateKey,
         Logger $logger,
-        StorageManager $storageManager
+        StorageManager $storageManager,
+        Twig_Environment $twig,
+        AppExtension $appExtension,
+        UserService $userService,
+        RevisionRepository $revisionRepository
     ) {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
@@ -137,17 +141,17 @@ class DataService
         $this->mapping = $mapping;
         $this->instanceId = $instanceId;
         $this->em = $this->doctrine->getManager();
-        $this->revRepository = $this->em->getRepository('EMSCoreBundle:Revision');
+        $this->revRepository = $revisionRepository;
         $this->session = $session;
         $this->formFactory = $formFactory;
         $this->container = $container;
-        $this->twig = $container->get('twig');
-        $this->appTwig = $container->get('app.twig_extension');
+        $this->twig = $twig;
+        $this->appTwig = $appExtension;
         $this->formRegistry = $formRegistry;
         $this->dispatcher= $dispatcher;
         $this->storageManager= $storageManager;
         $this->contentTypeService = $contentTypeService;
-        $this->userService = $container->get('ems.service.user');
+        $this->userService = $userService;
 
         $this->public_key = null;
         $this->private_key = null;
@@ -181,7 +185,7 @@ class DataService
      * @param Revision $revision
      * @param Environment $publishEnv
      * @param bool $super
-     * @param null $username
+     * @param string|null $username
      * @throws LockedException
      * @throws PrivilegeException
      * @throws Exception
@@ -438,12 +442,17 @@ class DataService
             $dataFieldType = $this->formRegistry->getType($dataField->getFieldType()->getType())->getInnerType();
             if ($dataFieldType instanceof DataFieldType) {
                 $dataFieldType->convertInput($dataField);
-            } else {
+            } else if (! DataService::isInternalField($dataField->getFieldType()->getName())) {
                 $this->logger->warning('service.data.not_a_data_field', [
                     'field_name' => $dataField->getFieldType()->getName()
                 ]);
             }
         }
+    }
+
+    public static function isInternalField(string $fieldName)
+    {
+        return in_array($fieldName, ['_ems_internal_deleted', 'remove_collection_item']);
     }
 
     public function generateInputValues(DataField $dataField)
@@ -456,7 +465,7 @@ class DataService
             $dataFieldType = $this->formRegistry->getType($dataField->getFieldType()->getType())->getInnerType();
             if ($dataFieldType instanceof  DataFieldType) {
                 $dataFieldType->generateInput($dataField);
-            } else {
+            } else if (! DataService::isInternalField($dataField->getFieldType()->getName())) {
                 $this->logger->warning('service.data.not_a_data_field', [
                     'field_name' => $dataField->getFieldType()->getName()
                 ]);
@@ -1085,13 +1094,13 @@ class DataService
 
         /** @var ContentTypeRepository $contentTypeRepo */
         $contentTypeRepo = $em->getRepository('EMSCoreBundle:ContentType');
-        /** @var ContentType $contentType */
+        /** @var ContentType|null $contentType */
         $contentType = $contentTypeRepo->findOneBy([
                 'name' => $type,
                 'deleted' => false,
         ]);
 
-        if (!$contentType) {
+        if ($contentType === null) {
             throw new NotFoundHttpException('ContentType '.$type.' Not found');
         }
 
@@ -1152,9 +1161,6 @@ class DataService
         /** @var RevisionRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:Revision');
 
-        if (!$revision) {
-            throw new NotFoundHttpException('Revision not found');
-        }
         if (!$revision->getDraft() || null != $revision->getEndTime()) {
             throw new BadRequestHttpException('Only authorized on a draft');
         }
@@ -1365,7 +1371,7 @@ class DataService
 
             if ($dataFieldType instanceof DataFieldType) {
                 $isContainer = $dataFieldType->isContainer();
-            } else {
+            } else if (! DataService::isInternalField($dataField->getFieldType()->getName())) {
                 $this->logger->warning('service.data.not_a_data_field', [
                     'field_name' => $dataField->getFieldType()->getName()
                 ]);
@@ -1427,7 +1433,7 @@ class DataService
                     }
                 }
             }
-        } else {
+        } else if (! DataService::isInternalField($dataField->getFieldType()->getName())) {
             $this->logger->warning('service.data.not_a_data_field', [
                 'field_name' => $dataField->getFieldType()->getName()
             ]);
@@ -1579,9 +1585,11 @@ class DataService
         }
 
         if (! $viewData instanceof DataField) {
-            $this->logger->warning('service.data.not_a_data_field', [
-                'field_name' => $form->getName()
-            ]);
+            if (! DataService::isInternalField($form->getName())) {
+                $this->logger->warning('service.data.not_a_data_field', [
+                    'field_name' => $form->getName()
+                ]);
+            }
             return true;
         }
 
@@ -1594,7 +1602,7 @@ class DataService
             $dataFieldType->isValid($dataField, $parent, $masterRawData);
         }
         $isValid = true;
-        if ($dataFieldType && $dataFieldType->isContainer()) {//If dataField is container or type is null => Container => Recursive
+        if ($dataFieldType !== null && $dataFieldType->isContainer()) {//If dataField is container or type is null => Container => Recursive
             $formChildren = $form->all();
             foreach ($formChildren as $child) {
                 if ($child instanceof FormInterface) {

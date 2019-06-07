@@ -22,12 +22,9 @@ class I18nController extends Controller
 {
     /**
      * Lists all I18n entities.
-     * @param Request $request
-     * @return Response
-     *
      * @Route("/", name="i18n_index", methods={"GET"})
      */
-    public function indexAction(Request $request)
+    public function indexAction(Request $request, I18nService $i18nService)
     {
         $filters = $request->query->get('i18n_form');
          
@@ -42,13 +39,13 @@ class I18nController extends Controller
             $form->getData();
         }
         
-        $count = $this->getI18nService()->count($filters);
+        $count = $i18nService->count($filters);
         // for pagination
         $paging_size = $this->getParameter('ems_core.paging_size');
         $lastPage = ceil($count/$paging_size);
         $page = $request->query->get('page', 1);
         
-        $i18ns = $this->getI18nService()->findAll(($page-1)*$paging_size, $paging_size, $filters);
+        $i18ns = $i18nService->findAll(($page-1)*$paging_size, $paging_size, $filters);
         
         return $this->render('@EMSCore/i18n/index.html.twig', array(
             'i18nkeys' => $i18ns,
@@ -58,14 +55,6 @@ class I18nController extends Controller
             'page' => $page,
             'paging_size' => $paging_size,
         ));
-    }
-    
-    /**
-     * @return I18nService
-     */
-    private function getI18nService()
-    {
-        return $this->get('ems.service.i18n');
     }
 
     /**
@@ -144,9 +133,9 @@ class I18nController extends Controller
      *
      * @Route("/{id}", name="i18n_delete", methods={"POST"})
      */
-    public function deleteAction(I18n $i18n)
+    public function deleteAction(I18n $i18n, I18nService $i18nService)
     {
-        $this->getI18nService()->delete($i18n);
+        $i18nService->delete($i18n);
 
         return $this->redirectToRoute('i18n_index');
     }

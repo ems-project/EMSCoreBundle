@@ -81,77 +81,79 @@ class DeleteCommand extends ContainerAwareCommand
         $name = $input->getArgument('name');
         /** @var ContentTypeRepository $ctRepo */
         $ctRepo = $em->getRepository('EMSCoreBundle:ContentType');
-        /** @var ContentType $contentType */
+        /** @var ContentType|null $contentType */
         $contentType = $ctRepo->findOneBy([
                 'name' => $name,
                 'deleted'=> 0
                 
         ]);
-        if ($contentType) {
-            /** @var RevisionRepository $revRepo */
-            $revRepo = $em->getRepository('EMSCoreBundle:Revision');
-            
-            /** @var NotificationRepository $notRepo */
-            $notRepo = $em->getRepository('EMSCoreBundle:Notification');
-            
-            $counter = 0;
-            $total = $revRepo->countByContentType($contentType);
-            if ($total == 0) {
-                $output->writeln("Content type \"".$name."\" is already empty");
-            } else {
-                // create a new progress bar
-                $progress = new ProgressBar($output, $total);
-                // start and displays the progress bar
-                $progress->start();
 
-                $environmentsIndex = [];
-                /**@var Environment $environment*/
-                foreach ($this->environmentService->getManagedEnvironement() as $environment) {
-                    $environmentsIndex[$environment->getName()] = $this->contentTypeService->getIndex($contentType, $environment);
-                }
-                
-                while ($revRepo->countByContentType($contentType) > 0) {
-                    $revisions = $revRepo->findByContentType($contentType, null, 20);
-                    /**@var Revision $revision */
-                    foreach ($revisions as $revision) {
-                        foreach ($revision->getEnvironments() as $environment) {
-                            try {
-                                $client->delete([
-                                        'index' => $environmentsIndex[$environment->getName()],
-                                        'type' => $contentType->getName(),
-                                        'id' => $revision->getOuuid(),
-                                ]);
-                            } catch (Throwable $e) {
-                                //Deleting something that is not present shouldn't make problem.
-                            }
-                            $revision->removeEnvironment($environment);
-                        }
-                        ++$counter;
-                        $notifications = $notRepo->findBy([
-                            'revision' => $revision,
-                        ]);
-                        foreach ($notifications as $notification) {
-                            $em->remove($notification);
-                        }
-                        
-                        $em->remove($revision);
+        if ($contentType === null) {
+            $output->writeln("Content type ".$name." not found");
+            return null;
+        }
 
-                        // advance the progress bar 1 unit
-                        $progress->advance();
-                        $em->flush();
-//                         $em->clear($revision);
-                    }
-                    
-                    unset($revisions);
-                }
-                
+        /** @var RevisionRepository $revRepo */
+        $revRepo = $em->getRepository('EMSCoreBundle:Revision');
 
-                // ensure that the progress bar is at 100%
-                $progress->finish();
-                $output->writeln(" deleting content type ".$name);
-            }
+        /** @var NotificationRepository $notRepo */
+        $notRepo = $em->getRepository('EMSCoreBundle:Notification');
+
+        $counter = 0;
+        $total = $revRepo->countByContentType($contentType);
+        if ($total == 0) {
+            $output->writeln("Content type \"".$name."\" is already empty");
         } else {
-                $output->writeln("Content type ".$name." not found");
+            // create a new progress bar
+            $progress = new ProgressBar($output, $total);
+            // start and displays the progress bar
+            $progress->start();
+
+            $environmentsIndex = [];
+            /**@var Environment $environment*/
+            foreach ($this->environmentService->getManagedEnvironement() as $environment) {
+                $environmentsIndex[$environment->getName()] = $this->contentTypeService->getIndex($contentType, $environment);
+            }
+
+            while ($revRepo->countByContentType($contentType) > 0) {
+                $revisions = $revRepo->findByContentType($contentType, null, 20);
+                /**@var Revision $revision */
+                foreach ($revisions as $revision) {
+                    foreach ($revision->getEnvironments() as $environment) {
+                        try {
+                            $client->delete([
+                                    'index' => $environmentsIndex[$environment->getName()],
+                                    'type' => $contentType->getName(),
+                                    'id' => $revision->getOuuid(),
+                            ]);
+                        } catch (Throwable $e) {
+                            //Deleting something that is not present shouldn't make problem.
+                        }
+                        $revision->removeEnvironment($environment);
+                    }
+                    ++$counter;
+                    $notifications = $notRepo->findBy([
+                        'revision' => $revision,
+                    ]);
+                    foreach ($notifications as $notification) {
+                        $em->remove($notification);
+                    }
+
+                    $em->remove($revision);
+
+                    // advance the progress bar 1 unit
+                    $progress->advance();
+                    $em->flush();
+//                         $em->clear($revision);
+                }
+
+                unset($revisions);
+            }
+
+
+            // ensure that the progress bar is at 100%
+            $progress->finish();
+            $output->writeln(" deleting content type ".$name);
         }
     }
 }

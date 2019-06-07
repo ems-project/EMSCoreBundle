@@ -89,7 +89,6 @@ class FileService
         return $this->storageManager->getAdapters();
     }
 
-
     public function getBase64($hash, $cacheContext = false)
     {
         /**@var StorageInterface $service */
@@ -221,14 +220,14 @@ class FileService
         $repository = $em->getRepository('EMSCoreBundle:UploadedAsset');
 
 
-        /** @var UploadedAsset $uploadedAsset */
+        /** @var UploadedAsset|null $uploadedAsset */
         $uploadedAsset = $repository->findOneBy([
             'sha1' => $hash,
             'available' => false,
             'user' => $user,
         ]);
 
-        if (!$uploadedAsset) {
+        if ($uploadedAsset === null) {
             $uploadedAsset = new UploadedAsset();
             $uploadedAsset->setSha1($hash);
             $uploadedAsset->setUser($user);

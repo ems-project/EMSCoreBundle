@@ -32,7 +32,7 @@ class RevisionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
-        /** @var Revision $revision */
+        /** @var Revision|null $revision */
         $revision = $builder->getData();
         $contentType = $options['content_type'] ? $options['content_type'] : $revision->getContentType();
 
@@ -71,7 +71,7 @@ class RevisionType extends AbstractType
             ]);
         }
         
-        if ($revision && $revision->getDraft()) {
+        if ($revision !== null && $revision->getDraft()) {
             $builder->add('publish', SubmitEmsType::class, [
                 'attr' => [
                         'class' => 'btn-primary btn-sm '

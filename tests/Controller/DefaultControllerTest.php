@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 class DefaultControllerTest extends WebTestCase
 {
@@ -11,8 +12,10 @@ class DefaultControllerTest extends WebTestCase
         $client = static::createClient();
 
         $crawler = $client->request('GET', '/');
+        /** @var Response $response */
+        $response = $client->getResponse();
 
-        $this->assertTrue($client->getResponse()->isRedirect('/notifications/inbox'));
-        $this->assertEquals(302, $client->getResponse()->getStatusCode());
+        $this->assertTrue($response->isRedirect('/notifications/inbox'));
+        $this->assertEquals(302, $response->getStatusCode());
     }
 }

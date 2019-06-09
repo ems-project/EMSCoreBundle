@@ -34,7 +34,9 @@ class TikaWrapper
 
         $process = new Process($shellCommand);
         $process->setWorkingDirectory(__DIR__);
-        $process->run();
+        $process->run(function(){}, [
+            'LANG' => 'en_US.utf-8'
+        ]);
 
         if (!$process->isSuccessful()) {
             throw new \RuntimeException($process->getErrorOutput());

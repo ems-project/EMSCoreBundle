@@ -34,7 +34,8 @@ class TikaWrapper
 
         $process = new Process($shellCommand);
         $process->setWorkingDirectory(__DIR__);
-        $process->run(function(){}, [
+        $process->run(function () {
+        }, [
             'LANG' => 'en_US.utf-8'
         ]);
 

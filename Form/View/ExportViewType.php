@@ -174,10 +174,12 @@ class ExportViewType extends ViewType
             $disposition = $response->headers->makeDisposition($attachment, $parameters['filename']);
             $response->headers->set('Content-Disposition', $disposition);
         }
-        
+
         $response->headers->set('Content-Type', $parameters['mimetype']);
         if ($parameters['allow_origin']) {
             $response->headers->set('Access-Control-Allow-Origin', $parameters['allow_origin']);
+            $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept, Accept-Language, If-None-Match, If-Modified-Since');
+            $response->headers->set('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS');
         }
 
         $response->setContent($parameters['render']);

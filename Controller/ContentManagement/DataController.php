@@ -1036,6 +1036,8 @@ class DataController extends AppController
             }
             if (null != $template->getAllowOrigin()) {
                 header("Access-Control-Allow-Origin: " . $template->getAllowOrigin());
+                header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept, Accept-Language, If-None-Match, If-Modified-Since');
+                header('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS');
             }
 
             $output = $body->render([
@@ -1401,10 +1403,16 @@ class DataController extends AppController
                 if (array_key_exists('publish', $request->request->get('revision'))) {//Finalize
                     $revision = $dataService->finalizeDraft($revision, $form);
                     if (count($form->getErrors()) === 0) {
-                        return $this->redirectToRoute('data.revisions', [
-                            'ouuid' => $revision->getOuuid(),
-                            'type' => $revision->getContentType()->getName(),
-                        ]);
+                        if ($revision->getOuuid()) {
+                            return $this->redirectToRoute('data.revisions', [
+                                'ouuid' => $revision->getOuuid(),
+                                'type' => $revision->getContentType()->getName(),
+                            ]);
+                        } else {
+                            return $this->redirectToRoute('revision.edit', [
+                                'revisionId' => $revision->getId(),
+                            ]);
+                        }
                     }
                 }
             }

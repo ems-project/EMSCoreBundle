@@ -63,10 +63,6 @@ class AssetExtractorService implements CacheWarmerInterface
      */
     private function getTikaWrapper() : ?TikaWrapper
     {
-        if (! empty($this->tikaServer)) {
-            return null;
-        }
-
         if ($this->tikaWrapper === null) {
             $filename = $this->projectDir.'/var/tika-app.jar';
             if (! file_exists($filename) && $this->tikaDownloadUrl) {
@@ -247,6 +243,8 @@ class AssetExtractorService implements CacheWarmerInterface
 
     public function warmUp($cacheDir)
     {
-        $this->getTikaWrapper();
+        if (empty($this->tikaServer)) {
+            $this->getTikaWrapper();
+        }
     }
 }

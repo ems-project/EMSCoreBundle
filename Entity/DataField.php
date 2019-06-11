@@ -727,7 +727,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Get fieldType
      *
-     * @return \EMS\CoreBundle\Entity\FieldType
+     * @return \EMS\CoreBundle\Entity\FieldType|null
      */
     public function getFieldType()
     {

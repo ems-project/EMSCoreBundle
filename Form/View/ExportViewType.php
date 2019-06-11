@@ -14,6 +14,7 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Throwable;
 
 /**
  * An export view plugin
@@ -129,12 +130,13 @@ class ExportViewType extends ViewType
     {
         return 'export_view';
     }
-    
-    
+
+
     /**
-     *
-     * {@inheritDoc}
-     * @see \EMS\CoreBundle\Form\View\ViewType::generateResponse()
+     * @param View $view
+     * @param Request $request
+     * @return Response
+     * @throws Throwable
      */
     public function generateResponse(View $view, Request $request)
     {
@@ -172,18 +174,27 @@ class ExportViewType extends ViewType
             $disposition = $response->headers->makeDisposition($attachment, $parameters['filename']);
             $response->headers->set('Content-Disposition', $disposition);
         }
-        
+
         $response->headers->set('Content-Type', $parameters['mimetype']);
         if ($parameters['allow_origin']) {
             $response->headers->set('Access-Control-Allow-Origin', $parameters['allow_origin']);
+            $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept, Accept-Language, If-None-Match, If-Modified-Since');
+            $response->headers->set('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS');
         }
 
         $response->setContent($parameters['render']);
         
         return $response;
     }
-    
-    public function getParameters(View $view, FormFactoryInterface $formFactoty, Request $request)
+  
+    /**
+     * @param View $view
+     * @param FormFactoryInterface $formFactory
+     * @param Request $request
+     * @return array|mixed
+     * @throws Throwable
+     */
+    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request)
     {
         
         try {

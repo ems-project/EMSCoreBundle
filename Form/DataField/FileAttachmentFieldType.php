@@ -10,11 +10,11 @@ use EMS\CoreBundle\Form\Field\AssetType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 use EMS\CoreBundle\Service\ElasticsearchService;
 use EMS\CoreBundle\Service\FileService;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormRegistryInterface;
-use Symfony\Component\HttpFoundation\Session\Session;
-    use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
@@ -29,16 +29,16 @@ class FileAttachmentFieldType extends DataFieldType
 
     /**@var FileService */
     private $fileService;
-    /**@var Session */
-    private $session;
+    /**@var LoggerInterface */
+    private $logger;
 
 
 
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, FileService $fileService, Session $session)
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, FileService $fileService, LoggerInterface $logger)
     {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
         $this->fileService= $fileService;
-        $this->session = $session;
+        $this->logger = $logger;
     }
 
     /**
@@ -51,21 +51,11 @@ class FileAttachmentFieldType extends DataFieldType
         return 'fa fa-file-text-o';
     }
 
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public function getLabel()
     {
         return 'File Attachment (indexed) field';
     }
 
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         /** @var FieldType $fieldType */
@@ -77,11 +67,6 @@ class FileAttachmentFieldType extends DataFieldType
         ]);
     }
 
-    /**
-     *
-     * {@inheritDoc}
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::modelTransform()
-     */
     public function modelTransform($data, FieldType $fieldType)
     {
         if (is_array($data)) {
@@ -101,7 +86,9 @@ class FileAttachmentFieldType extends DataFieldType
             $rawData = $dataField->getRawData()['value'];
             $rawData['content'] = $this->fileService->getBase64($rawData['sha1']);
             if (!$rawData['content']) {
-                $this->session->getFlashBag()->add('warning', 'File not found: '.$rawData['sha1']);
+                $this->logger->warning('form.data_field.file_attachment.file_not_found', [
+                    'file_hash' => $rawData[EmsFields::CONTENT_FILE_HASH_FIELD],
+                ]);
                 $rawData['content'] = "";
             }
             $rawData['filesize'] = $this->fileService->getSize($rawData['sha1']);
@@ -116,13 +103,6 @@ class FileAttachmentFieldType extends DataFieldType
         return $dataField;
     }
 
-
-
-    /**
-     *
-     * {@inheritDoc}
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::getBlockPrefix()
-     */
     public function getBlockPrefix()
     {
         return 'bypassdatafield';
@@ -143,11 +123,6 @@ class FileAttachmentFieldType extends DataFieldType
     }
 
 
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options)
     {
         parent::buildOptionsForm($builder, $options);
@@ -171,11 +146,6 @@ class FileAttachmentFieldType extends DataFieldType
     }
 
 
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public function buildObjectArray(DataField $data, array &$out)
     {
         if (! $data->getFieldType()->getDeleted()) {
@@ -187,11 +157,6 @@ class FileAttachmentFieldType extends DataFieldType
         }
     }
 
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public function configureOptions(OptionsResolver $resolver)
     {
         /* set the default option value for this kind of compound field */
@@ -200,9 +165,6 @@ class FileAttachmentFieldType extends DataFieldType
         $resolver->setDefault('imageAssetConfigIdentifier', null);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generateMapping(FieldType $current, $withPipeline)
     {
         $mapping = parent::generateMapping($current, $withPipeline);
@@ -263,9 +225,6 @@ class FileAttachmentFieldType extends DataFieldType
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function generatePipeline(FieldType $current)
     {
         return [

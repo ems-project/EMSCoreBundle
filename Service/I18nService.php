@@ -2,10 +2,10 @@
 
 namespace EMS\CoreBundle\Service;
 
+use Doctrine\Common\Persistence\ObjectManager;
 use EMS\CoreBundle\Entity\I18n;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CoreBundle\Repository\I18nRepository;
-use Doctrine\ORM\EntityManager;
 
 class I18nService
 {
@@ -14,14 +14,14 @@ class I18nService
     private $doctrine;
     /** @var I18nRepository $repository */
     private $repository;
-    /** @var EntityManager $manager */
+    /** @var ObjectManager $manager */
     private $manager;
     
-    public function __construct(Registry $doctrine)
+    public function __construct(Registry $doctrine, I18nRepository $i18nRepository)
     {
         $this->doctrine = $doctrine;
         $this->manager = $this->doctrine->getManager();
-        $this->repository = $this->manager->getRepository('EMSCoreBundle:I18n');
+        $this->repository = $i18nRepository;
     }
 
     public function count($filters = null)

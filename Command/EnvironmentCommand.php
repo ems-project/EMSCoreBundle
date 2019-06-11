@@ -3,35 +3,23 @@
 // src/EMS/CoreBundle/Command/GreetCommand.php
 namespace EMS\CoreBundle\Command;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\ORM\EntityManager;
-use Elasticsearch\Client;
-use EMS\CoreBundle\Controller\AppController;
-use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
-use EMS\CoreBundle\Repository\JobRepository;
-use EMS\CoreBundle\Service\ContentTypeService;
-use Monolog\Logger;
+use EMS\CoreBundle\Service\EnvironmentService;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Helper\ProgressBar;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\HttpFoundation\Session\Session;
-use EMS\CoreBundle\Service\EnvironmentService;
 
 class EnvironmentCommand extends ContainerAwareCommand
 {
 
-    /**@var Logger*/
+    /**@var LoggerInterface */
     private $logger;
     /**@var EnvironmentService*/
     private $environmentService;
 
-    public function __construct(Logger $logger, EnvironmentService $environmentService)
+    public function __construct(LoggerInterface $logger, EnvironmentService $environmentService)
     {
         $this->logger = $logger;
         $this->environmentService = $environmentService;

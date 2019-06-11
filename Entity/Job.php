@@ -93,7 +93,7 @@ class Job
     private $service;
 
     /**
-     * @var string
+     * @var null|string
      *
      * @ORM\Column(name="command", type="string", length=255, nullable=true)
      */
@@ -378,7 +378,7 @@ class Job
     /**
      * Get command
      *
-     * @return string
+     * @return string|null
      */
     public function getCommand()
     {

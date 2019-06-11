@@ -100,7 +100,6 @@ Remove: Remove
 'Reorder Environment': 'Reorder Environment'
 'Reorder the content type "%content_type%"': 'Reorder the content type "%content_type%"'
 'Reorganise: ': 'Reorganise: '
-'Reorganise:': 'Reorganise:'
 'Search options': 'Search options'
 'Select a language': 'Select a language'
 'Select a theme': 'Select a theme'
@@ -356,4 +355,261 @@ view.contenttype.reorder_item.edit_main_container_button: 'Edit the main contain
 view.macros.data-field-type.collection_added_items: '{1} One %singular% has been added|]1,Inf[ %count% %plural% have been added'
 view.macros.data-field-type.collection_removed_items: '{1} One %singular% has been removed|]1,Inf[ %count% %plural% have been removed'
 data.edit_revision.save_draft: Save draft
-emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's configuration
+emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's configurations and versions
+
+command:
+  reindex:
+    environment_not_found: 'Environment named "%environment%" not found'
+    start: 'Start reindexing %contenttype% in %environment%'
+    end: 'The content type %contenttype%''s documents have been reindexed in %environment% (index: %index%)'
+service:
+  contenttype:
+    should_reindex: 'You should try to rebuild the indexes for  %contenttype%. Message from Elasticsearch; %elasticsearch_error_type% : %elasticsearch_error_reason%'
+    mappings_error: 'Mappings update for %contenttype% in %environments% failed : %elasticsearch_dump%'
+    mappings_updated: 'Mappings successfully updated/created for %contenttype% in %environments%'
+    pipelines_error: 'elasticms was not able to generate pipelines for the content type %contenttype%, they are disabled. Please consider to update your elasticsearch cluster (>=5.0). %elasticsearch_error_type% : %elasticsearch_error_reason%'
+    pipelines: 'Pipelines have been updated/created for %contenttype%'
+    reordered: 'Content type "%contenttype% has been reordered'
+    field_not_found: 'Field %field_id% not found and ignored'
+  wysiwyg_profile:
+    updated: 'Profile %profile_name% has been updated'
+    deleted: 'Profile %profile_name% has been deleted'
+  entity:
+    created: '%entity_type% %entity_name% has been created'
+    deleted: '%entity_type% %entity_name% has been deleted'
+    updated: '%entity_type% %entity_name% has been updated'
+  notification:
+    treated: '%notification_name% for document ems://object:%contenttype%:%ouuid% in %environment% has been %status%'
+    send: '%notification_name% for document ems://object:%contenttype%:%ouuid% in %environment% has been send'
+    send_error: 'Error while sending notification (%notification_id%) : %error_message%'
+    another_one_is_pending: 'Another notification %notification_name% is already pending for document ems://object:%contenttype%:%ouuid% in %environment% by %notification_username%'
+    notification_will_be_lost_finalize: 'An "%notification_name%" notification will be lost for this %contenttype% document (%ouuid%) on finalize'
+    update: 'A "%notification_name%" notification has been %notification_status% for a "%contenttype%" document (%ouuid%)'
+  wysiwyg_styles_set:
+    deleted: 'Style set "%wysiwyg_styles_set_name% has been deleted'
+    updated: 'Style set "%wysiwyg_styles_set_name% has been updated'
+  object_choice_cache:
+    contenttype_not_found: 'Content type %contenttype% not found'
+    alias_not_found: 'Alias not found for content type %contenttype%'
+    object_key_not_found: 'Object key %object_key% not found'
+  publish:
+    unpublished: 'The revision ems:revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has been unpublished from %environment%'
+    already_unpublished: 'The revision ems:revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% was already unpublished from %environment%'
+    published: 'The revision ems:revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has been published in %environment%'
+    already_published: 'The revision ems:revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% is already published in %environment%'
+    publish_draft_error: 'A draft of the document ems://object:%contenttype%:%ouuid% can''t be published in %environment% : %error_message%'
+    draft_published: 'A draft of the document ems://object:%contenttype%:%ouuid% has been published in %environment%'
+    not_in_circles: 'You can not (un)publish the content type %contenttype% as you don''t share any circle'
+    not_authorized: 'You can not (un)publish the content type %contenttype%'
+    revision_not_found_in_source: 'Missing revision in the environment %environment% for the document ems://object:%contenttype%:%ouuid%'
+    not_in_default_environment: 'You can not (un)publish in the default environment %environment% of the document ems://object:%contenttype%:%ouuid%'
+  asset_extractor:
+    extract_error: 'An issue has been raised while extracting information from the asset/file ems://asset:%file_hash% : %error_message%'
+    persist_error: 'An issue has been raised while persisting the information extracted from the asset/file ems://asset:%file_hash% : %error_message%'
+  data:
+    update_referrers_error: 'It was impossible to update referrers of the document ems://object:%contenttype%:%ouuid%'
+    not_a_draft: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% is already finalized'
+    unknown_update_type: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has not been replaced or replaced as the update type "%update_type%" is unknown'
+    data_not_consumed: '{1} A data of this revision was not consumed: %data%|]1,Inf[ Some data (%count%} of this revision were not consumed: %data%'
+    deleted: 'The document ems://object:%contenttype%:%ouuid% has been deleted'
+    already_unpublished: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% was already deleted from %environment%'
+    unpublished: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has been unpublished from %environment%'
+    default_value_template_error: 'It was not possible to initiate the default value (compile template) for the content type %contenttype%, please check the content type''s configuration'
+    default_value_error: 'It was not possible to initiate the default value (json_decode) for the content type %contenttype%, please check the content type''s configuration'
+    cant_be_finalized: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% cant''t be finalized as it is'
+    post_finalize_failed: 'Error while finalize the post processing of the document ems://object:%contenttype%:%ouuid% : %error_message%'
+    integrity_failed: 'Issue in %environment% while checking integrity of the document ems://object:%contenttype%:%ouuid%: %error_message%'
+    not_a_data_field: 'Unexpected %field_name% field in the revision form'
+    computed_hash_mismatch: 'Computed hash mismatch in %environment% for document ems://object:%contenttype%:%ouuid%, computed hash: %computed_hash%, DB hash: %db_hash%'
+    hash_missing: 'Hash missing in %environment% for document ems://object:%contenttype%:%ouuid%'
+    revision_not_signed: 'Revision not signed in %environment% for document ems://object:%contenttype%:%ouuid%'
+    check_signature_failed': 'Signature mismatch in %environment% for the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid%'
+    hash_mismatch: 'Hash mismatch in %environment% for the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid%, hash in the index %index_hash%, hash in the DB %db_hash%'
+    not_able_to_sign: 'It was not possible to sign the revisions''s data for the document ems://object:%contenttype%:%ouuid% : %error_message%'
+    error_check_signature: 'Error checking signature in %environment% the revisions''s data for the document ems://object:%contenttype%:%ouuid% : %error_message%'
+    template_parse_error: 'Error to parse the computed field %computed_field_name%: %error_message%'
+    json_parse_post_processing_error: 'Error to JSON parse the result of the post processing script of field %field_name% (|json_encode|raw): %template%'
+    not_able_to_load_the_private_key: 'It''s impossible to load the private key %private_key_filename% : %error_message%'
+form:
+  data_field:
+    collection:
+      import_not_an_array: 'Some data were not imported for the collection field %field_name% as is was not an array'
+    file_attachment:
+      file_not_found: 'File not found with the hash "%file_hash%"'
+  view:
+    sorter:
+      too_many_documents: 'This content type have to much document (%total%) to be reorder them all in once'
+      error_with_document: 'It was impossible to update the document ems://object:%contenttype%:%ouuid% : %error_message%'
+      ordered: 'The %contenttype%''s documents have been ordered with the view "%view_name%"'
+    hierarchical:
+      error_with_document: 'It was impossible to update the document ems://object:%contenttype%:%ouuid% : %error_message%'
+      reorganized: 'The %contenttype%''s documents have been reorganized with the view "%view_name%"'
+wysiwyg:
+  invalid_config_format: 'Format not valid: %msg%'
+search:
+  sort_option_label: 'Sort Option'
+  search_field_option_label: 'Search Field Option'
+  aggregate_option_label: 'Aggregate Option'
+log:
+  revision_error: 'Error "%error_message%" with the document ems://object:%contenttype%:%ouuid%'
+  crud:
+    deleted: 'The document ems://object:%contenttype%:%ouuid% has been deleted'
+    create_error: 'The revision for contenttype %contenttype% can not be created, reason: %error_message%'
+    read_error: 'The revision for contenttype %contenttype% can not be found, reason: %error_message%'
+    finalize_error: 'The revision ems://revision:%revision_id% for content type %contenttype% can not be finalized, reason: %error_message%'
+    discard_error: 'The revision ems://revision:%revision_id% for contenttype %contenttype% can not be discarded, reason: %error_message%'
+    delete_error: 'The revision ems://revision:%revision_id% for contenttype %contenttype% can not be deleted, reason: %error_message%'
+    replace_error: 'The revision ems://revision:%revision_id% for contenttype %contenttype% can not be replaced/updated, reason: %error_message%'
+    merge_error: 'The revision ems://revision:%revision_id% for contenttype %contenttype% can not be merged/updated, reason: %error_message%'
+  index:
+    delete_orphan_index: 'Elasticsearch index %index_name% has been deleted'
+    index_not_found: 'Elasticsearch index %index_name% not found'
+  managed_alias:
+    created: 'Managed alias %managed_alias_name% has been created'
+    updated: 'Managed alias %managed_alias_name% has been updated'
+    deleted: 'Managed alias %managed_alias_name% has been deleteddeleted'
+  filter:
+    deleted: 'The filter %filter_name% has been deleted'
+  elasticsearch:
+    template_error: 'There is something wrong with the template %template_name%'
+    template_filename_error: 'There is something wrong with the template %template_name%''s filename'
+    limit_exceded: 'The search results are limited to the first 50.000 items'
+    search_deleted: 'A search has been deleted'
+    index_not_found: 'Index %index_name% not found'
+    index_deleted': 'The index %index_name% has been deleted'
+    default_search: 'This search has been defined as default search'
+    default_search_for_content_type: 'This search has been defined as default search form for the content type %contenttype%'
+    cluster_red: 'There is something wrong with the cluster, actions are required now!'
+    cluster_yellow: 'There is something wrong with the cluster, status color: %color_status%'
+    alias_added: 'A new alias "%alias_name%" has been added to the index "%index_name%"'
+    not_able_to_deserialize_filters: 'Error during the deserialization of the filters'
+  notification:
+    notification_not_found: 'Notification #%notification_id% not found'
+  nature:
+    order_field_not_defined: 'The content type %contenttype% does not have any order field defined'
+    order_field_is_missing: 'The order field %order_field_name% is missing for the content type %contenttype%'
+    not_authorized: 'Your user does not have privileges to to reorder the content type %contenttype%'
+    too_many_documents: 'The content type %contenttype% have to much documents (%total%) to be reorder all at once'
+    issue_with_document: 'It was impossible to reorder the document ems://object:%contenttype%:%ouuid%: %error_message%'
+    reordered: 'The content type %contenttype%''s documents have been reordered'
+  environment:
+    rebuild_unknown_option: 'Impossible to rebuild the environment %environment% due to unknown option "%option%"'
+    alia_missing: 'The alias for the environment %environment% is missing, consider to rebuild a brand new alias'
+    updated: 'The environment %environment% has been updated'
+    reordered: 'The environments have been reordered'
+    created: 'The environment %environment% has been created'
+    deleted: 'The environment %environment% has been deleted'
+    is_default: 'The environment %environment% is used as default environment for at least one content type'
+    not_empty: 'The environment %environment% is not empty'
+    alias_not_found: 'Alias %alias% not found'
+    alias_removed: 'The alias %alias% has been removed'
+    alias_attached: 'The alias %alias% has been attached'
+    cant_attach_xti_alias_to_environment: 'Can''t attach %alias% as it''s an alias with multiple indexes'
+    aligned: 'Environment %environment% and %with_environment% are aligned for those content types'
+    wrong_ouuid: 'Malformed OUUID %ouuid%'
+    dont_have_publish_role: 'You don''t have enough privileges to publish "%contenttype%" documents'
+    cant_align_default_environment: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% cant''t be published in %environment% has it''s  the %contenttype% default environment'
+  job:
+    prepared: 'A job ems://job:%job_id% has been prepared (%command%)'
+  user:
+    api_key: 'New API key for the user %user_display_name%: %api_key%'
+    locked: 'The user %user_display_name% has been locked'
+    unlocked: 'The user %user_display_name% has been unlocked'
+    disabled: 'The user %user_display_name% has been disabled'
+    enabled: 'The user %user_display_name% has been enabled'
+    deleted: 'The user %user_display_name% has been deleted'
+    updated: 'The user %user_display_name% has been updated'
+  reindex:
+    revision:
+      error: 'En error occurred while indexing the document ems://object:%contenttype%:%ouuid%'
+      deleted_but_referenced: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% is marked as deleted but is still  referenced in %environment%'
+  file:
+    upload_error: 'Error during file upload: %error_message%'
+  contenttype:
+    action_not_found: 'Action not found on the content type %contenttype%'
+    mapping:
+      not_found: 'Content type %contenttype%''s mapping not found'
+    not_found: 'Content type %contenttype% not found'
+    field:
+      reordered: 'The the subfields of the field %field_name% have been reordered'
+      deleted: 'The field %field_name% has been deleted'
+      name_mandatory: 'The field name is mandatory'
+      name_not_valid: 'The field is not valid : (format: %field_format%)'
+      added: 'A field %field_name% has been added'
+    subfield:
+      name_mandatory: 'The subfield name is mandatory'
+      name_not_valid: 'The subfield is not valid : (format: %field_format%)'
+      added: 'A subfield %field_name% has been added'
+    unreferenced_not_found: 'Unreferenced content type not found'
+    referenced: 'The content type %contenttype% has been referenced'
+    reordered: 'Content types have been reordered'
+    created_failed: 'Some required fields are missing'
+    dirty: 'The content type %contenttype% is dirty (its mapping might be out-of date), try to update its mapping'
+    deleted: 'The content type %contenttype% has been deleted'
+    created: 'The content type %contenttype% has been created'
+    updated: 'The content type %contenttype% has been updated'
+  analyzer:
+    deleted: 'The analyzer %analyzer_name% has been deleted'
+    created: 'The analyzer %analyzer_name% has been created'
+    updated: 'The analyzer %analyzer_name% has been updated'
+  view:
+    calendar:
+      from_date_is_missing: 'From date is missing!'
+      document_not_found: 'The document ems://object:%contenttype%:%ouuid% is missing'
+    created: 'A new view %view_name% has been created'
+    updated: 'A new view %view_name% has been updated'
+    deleted: 'A new view %view_name% has been deleted'
+    criteria:
+      not_found: 'Criteria not found for the field %field_name%'
+      too_many_criteria: 'Too many criteria found (%total%). There is something wrong with this combination of criteria!: %message%'
+      added: 'A criteria has been added for field %field_name% with value %field_data%'
+      already_exists: 'A criteria already exist for field %field_name% with value %field_data%'
+      removed: 'A criteria has been removed for field %field_name% with value %field_data%'
+      already_missing: 'A criteria is already missing for field %field_name% with value %field_data%'
+      new_criteria: 'A new criteria has been created for %target_field_name%:%target_field_data%'
+      locked_revision: 'Impossible to update the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% as the revision is locked by %locked_by%'
+      update_privilege_issue: 'You are not authorized to update the document ems://object:%contenttype%:%ouuid%'
+      document_key_not_found: 'Document reference "%document_reference%" not found for the document ems://object:%contenttype%:%ouuid%'
+      update_not_authorized: 'You don''t have enough privileges to use this view to updates criterion'
+      field_not_found: 'Field path %field_path% not found'
+      draft_in_progress: '{0} A draft is in progress for the document ems://object:%contenttype%:%ouuid%, it''s not possible to update it|{1} There is one drafts in progress. You won’t be able to update it from here.|]1,Inf[ There are %count% drafts in progress. You won’t be able to update them from here.'
+    not_found: 'View %view_id% not found'
+  template:
+    added: 'A new template %template_name% has been created'
+    updated: 'The template %template_name% has been updated'
+    deleted: 'The template %template_name% has been deleted'
+    twig:
+      error: 'Error during the Twig generation of ems://template:%template_id%'
+  error: 'This page/action has encountered an error: %error_message%'
+  data:
+    job:
+      initialize_failed: 'A job %template_name% has failed for the document ems://object:%contenttype%:%ouuid% in the environment %environment%'
+      started: 'A job %template_name% has been started for the document ems://object:%contenttype%:%ouuid% in the environment %environment%'
+    document:
+      copy: 'The content of the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has been copied into the clipboard'
+      paste: 'Clipboard''s content has been paste in the document ems://object:%contenttype%:%ouuid%'
+      duplicated: 'The document ems://object:%contenttype%:%ouuid% has been used to initiate a new document'
+      cant_duplicate_when_waiting_ouuid: 'It''s impossible to duplicate the document ems://object:%contenttype%:%ouuid% has the content type %contenttype% requests first an OUUID'
+      compare: 'Compare the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% with the revision ems://revision:%compare_revision_id% of the document ems://object:%compare_contenttype%:%compare_ouuid%'
+    revision:
+      load_from_auto_save: 'Data were loaded from an auto-saved version for the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid%'
+      auto_save_off_with_auto_publish: 'The auto-save has been disabled as the auto-publish is enabled for the content type %contenttype%. Press Ctrl+S (Cmd+S) in order to publish in %environment%'
+      can_finalized: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% cant''t be finalized as it is'
+      only_super_can_finalize_an_archive: 'Only a super user can finalize an archived revision'
+      can_finalized_error: 'The document ems://object:%contenttype%:%ouuid% can''t be finalized due to an error: %error_message%'
+      can_finalized_as_invalid: '{1} The document ems://object:%contenttype%:%ouuid% can''t be finalized has there is one error |]1,Inf[ The document ems://object:%contenttype%:%ouuid% can''t be finalized as there is %count% errors'
+      can_finalized_as_pending_auto_save: 'The document ems://object:%contenttype%:%ouuid% can''t be finalized as an auto save is pending'
+      not_completed_request: 'Incomplete request! It''s not possible to save the document ems://object:%contenttype%:%ouuid%. Please check your PHP/Web configuration (i.e.: max_input_vars in php.ini)'
+      ajax_update_on_finalized: 'It''s impossible to save the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has this revision is already finalized'
+      auto_publish_rollback: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has been silently published back in %environment%'
+      reindex_failed_in: 'The document ems://object:%contenttype%:%ouuid% has encountered an exception during its reindexing in %environment%'
+      new_draft_from_revision: 'A new draft has been initiated, from the revision ems://revision:%revision_id%, for the document ems://object:%contenttype%:%ouuid%'
+      compare_revision_not_found: 'Impossible to compare the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% with the revision id %compare_revision_id% as this revision does not exists'
+      compare_more_recent: 'Compare the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% with the revision ems://revision:%compare_revision_id%, wich one is more recent'
+      compare: 'Compare the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% with the revision ems://revision:%compare_revision_id%'
+      reindex_failed: 'The document ems://object:%contenttype%:%ouuid% has encountered an exception during its reindexing %error_message%'
+      cant_delete_has_published: 'The document ems://object:%contenttype%:%ouuid% can''t be deleted as the revision ems://revision:%revision_id% is published in %published_in%'
+      compare_beta: 'The comparaison tools between two revisions is a beta functionality'
+      reindex: 'The revision ems://revision:%revision_id% has been reindex in %environment% for the document ems://object:%contenttype%:%ouuid%'
+      finalized: 'The revision ems://revision:%revision_id% has been finalized in %environment% for the document ems://object:%contenttype%:%ouuid%'
+      not_found_in_environment: 'It''s impossible to identify a revision for the document ems://object:%contenttype%:%ouuid% in the environment %environment%'

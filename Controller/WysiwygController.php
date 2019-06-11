@@ -2,10 +2,9 @@
 
 namespace EMS\CoreBundle\Controller;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use EMS\CoreBundle\EMSCoreBundle;
 use Symfony\Component\Form\ClickableInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use EMS\CoreBundle\Entity\WysiwygProfile;
 use EMS\CoreBundle\Form\Form\WysiwygProfileType;
@@ -14,6 +13,8 @@ use EMS\CoreBundle\Form\Form\ReorderType;
 use EMS\CoreBundle\Entity\WysiwygStylesSet;
 use EMS\CoreBundle\Form\Form\WysiwygStylesSetType;
 use EMS\CoreBundle\Form\Form\ReorderBisType;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Wysiwyg controller.
@@ -22,14 +23,13 @@ use EMS\CoreBundle\Form\Form\ReorderBisType;
  */
 class WysiwygController extends AppController
 {
-    
-    
-    
+
     /**
      * Lists all Wysiwyg options.
+     * @param Request $request
+     * @return RedirectResponse|Response
      *
-     * @Route("/", name="ems_wysiwyg_index")
-     * @Method({"GET", "POST"})
+     * @Route("/", name="ems_wysiwyg_index", methods={"GET", "POST"})
      */
     public function indexAction(Request $request)
     {
@@ -76,13 +76,14 @@ class WysiwygController extends AppController
                 'formStylesSet' => $formStylesSet->createView(),
         ));
     }
-    
+
 
     /**
      * Creates a new WYSIWYG profile entity.
+     * @param Request $request
+     * @return RedirectResponse|Response
      *
-     * @Route("/profile/new", name="ems_wysiwyg_profile_new")
-     * @Method({"GET", "POST"})
+     * @Route("/profile/new", name="ems_wysiwyg_profile_new", methods={"GET", "POST"})
      */
     public function newProfileAction(Request $request)
     {
@@ -94,9 +95,9 @@ class WysiwygController extends AppController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = json_decode($profile->getConfig(), true);
+            json_decode($profile->getConfig(), true);
             if (json_last_error()) {
-                $form->get('config')->addError(new FormError($this->getTranslator()->trans('Format not valid: %msg%', ['%msg%'=>json_last_error_msg()], 'EMSCoreBundle')));
+                $form->get('config')->addError(new FormError($this->getTranslator()->trans('wysiwyg.invalid_config_format', ['%msg%'=>json_last_error_msg()], EMSCoreBundle::TRANS_DOMAIN)));
             } else {
                 $profile->setOrderKey(100+count($this->getWysiwygProfileService()->getProfiles()));
                 $this->getWysiwygProfileService()->saveProfile($profile);
@@ -108,13 +109,14 @@ class WysiwygController extends AppController
             'form' => $form->createView(),
         ));
     }
-    
-    
+
+
     /**
      * Creates a new WYSIWYG Styles Set entity.
+     * @param Request $request
+     * @return RedirectResponse|Response
      *
-     * @Route("/styles-set/new", name="ems_wysiwyg_styles_set_new")
-     * @Method({"GET", "POST"})
+     * @Route("/styles-set/new", name="ems_wysiwyg_styles_set_new", methods={"GET", "POST"})
      */
     public function newStylesSetAction(Request $request)
     {
@@ -126,9 +128,9 @@ class WysiwygController extends AppController
         $form->handleRequest($request);
         
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = json_decode($stylesSet->getConfig(), true);
+            json_decode($stylesSet->getConfig(), true);
             if (json_last_error()) {
-                $form->get('config')->addError(new FormError($this->getTranslator()->trans('Format not valid: %msg%', ['%msg%'=>json_last_error_msg()], 'EMSCoreBundle')));
+                $form->get('config')->addError(new FormError($this->getTranslator()->trans('wysiwyg.invalid_config_format', ['%msg%'=>json_last_error_msg()], 'EMSCoreBundle')));
             } else {
                 $stylesSet->setOrderKey(100+count($this->getWysiwygStylesSetService()->getStylesSets()));
                 $this->getWysiwygStylesSetService()->save($stylesSet);
@@ -140,12 +142,14 @@ class WysiwygController extends AppController
                 'form' => $form->createView(),
         ));
     }
-    
+
     /**
      * Displays a form to edit an existing WysiwygStylesSet entity.
+     * @param Request $request
+     * @param WysiwygStylesSet $stylesSet
+     * @return RedirectResponse|Response
      *
-     * @Route("/styles-set/{id}", name="ems_wysiwyg_styles_set_edit")
-     * @Method({"GET", "POST"})
+     * @Route("/styles-set/{id}", name="ems_wysiwyg_styles_set_edit", methods={"GET", "POST"})
      */
     public function editStylesSetAction(Request $request, WysiwygStylesSet $stylesSet)
     {
@@ -153,15 +157,16 @@ class WysiwygController extends AppController
         $form->handleRequest($request);
         
         if ($form->isSubmitted()) {
-            if ($form->get('remove') instanceof ClickableInterface  && $form->get('remove')->isClicked()) {
+            $removedButton = $form->get('remove');
+            if ($removedButton instanceof ClickableInterface  && $removedButton->isClicked()) {
                 $this->getWysiwygStylesSetService()->remove($stylesSet);
                 return $this->redirectToRoute('ems_wysiwyg_index');
             }
             
             if ($form->isSubmitted() && $form->isValid()) {
-                $data = json_decode($stylesSet->getConfig(), true);
+                json_decode($stylesSet->getConfig(), true);
                 if (json_last_error()) {
-                    $form->get('config')->addError(new FormError($this->getTranslator()->trans('Format not valid: %msg%', ['%msg%'=>json_last_error_msg()], 'EMSCoreBundle')));
+                    $form->get('config')->addError(new FormError($this->getTranslator()->trans('wysiwyg.invalid_config_format', ['%msg%'=>json_last_error_msg()], 'EMSCoreBundle')));
                 } else {
                     $this->getWysiwygStylesSetService()->save($stylesSet);
                     return $this->redirectToRoute('ems_wysiwyg_index');
@@ -176,9 +181,11 @@ class WysiwygController extends AppController
 
     /**
      * Displays a form to edit an existing WysiwygProfile entity.
+     * @param Request $request
+     * @param WysiwygProfile $profile
+     * @return RedirectResponse|Response
      *
-     * @Route("/profile/{id}", name="ems_wysiwyg_profile_edit")
-     * @Method({"GET", "POST"})
+     * @Route("/profile/{id}", name="ems_wysiwyg_profile_edit", methods={"GET", "POST"})
      */
     public function editProfileAction(Request $request, WysiwygProfile $profile)
     {
@@ -186,15 +193,16 @@ class WysiwygController extends AppController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            if ($form->get('remove') instanceof ClickableInterface && $form->get('remove')->isClicked()) {
+            $removeButton = $form->get('remove');
+            if ($removeButton instanceof ClickableInterface && $removeButton->isClicked()) {
                 $this->getWysiwygProfileService()->remove($profile);
                 return $this->redirectToRoute('ems_wysiwyg_index');
             }
             
             if ($form->isSubmitted() && $form->isValid()) {
-                $data = json_decode($profile->getConfig(), true);
+                json_decode($profile->getConfig(), true);
                 if (json_last_error()) {
-                    $form->get('config')->addError(new FormError($this->getTranslator()->trans('Format not valid: %msg%', ['%msg%'=>json_last_error_msg()], 'EMSCoreBundle')));
+                    $form->get('config')->addError(new FormError($this->getTranslator()->trans('wysiwyg.invalid_config_format', ['%msg%'=>json_last_error_msg()], 'EMSCoreBundle')));
                 } else {
                     $this->getWysiwygProfileService()->saveProfile($profile);
                     return $this->redirectToRoute('ems_wysiwyg_index');

@@ -3,11 +3,23 @@
 namespace EMS\CoreBundle\Elasticsearch;
 
 use Elasticsearch\Client;
+use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
 use EMS\CommonBundle\Elasticsearch\DocumentInterface;
+use EMS\CommonBundle\Elasticsearch\Factory;
 use Psr\Log\LoggerInterface;
 
 class Bulker
 {
+    /**
+     * @var Factory
+     */
+    private $factory;
+
+    /**
+     * @var array
+     */
+    private $options;
+
     /**
      * @var Client
      */
@@ -49,13 +61,17 @@ class Bulker
     private $errors;
 
     /**
-     * @param Client          $client
+     * @param Factory         $factory
+     * @param array           $options
      * @param LoggerInterface $logger
      */
-    public function __construct(Client $client, LoggerInterface $logger)
+    public function __construct(Factory $factory, array $options, LoggerInterface $logger)
     {
-        $this->client = $client;
+        $this->factory = $factory;
+        $this->options = $options;
         $this->logger = $logger;
+
+        $this->client = $this->getClient();
     }
 
     /**
@@ -173,10 +189,13 @@ class Bulker
 
     /**
      * @param bool $force
+     * @param bool $retry
      *
      * @return bool
+     *
+     * @throws NoNodesAvailableException
      */
-    public function send(bool $force = false): bool
+    public function send(bool $force = false, bool $retry = false): bool
     {
         if (0 === $this->counter) {
             return false;
@@ -192,12 +211,26 @@ class Bulker
 
             $this->params = ['body' => []];
             $this->counter = 0;
+            unset($response);
+        } catch (NoNodesAvailableException $e) {
+            if (!$retry) {
+                $this->logger->info('No nodes available trying new client');
+                $this->client = $this->getClient();
+                return $this->send($force, true);
+            } else {
+                throw $e;
+            }
         } catch (\Exception $e) {
             $this->errors[] = $e;
             $this->logger->critical($e->getMessage());
         }
 
         return true;
+    }
+
+    private function getClient(): Client
+    {
+        return $this->factory->fromConfig($this->options);
     }
 
     /**

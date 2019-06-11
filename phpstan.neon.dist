@@ -3,9 +3,10 @@ parameters:
         - %currentWorkingDirectory%/vendor/*
         - %currentWorkingDirectory%/DependencyInjection/Configuration.php
         - %currentWorkingDirectory%/Resources/public/js
+        - %currentWorkingDirectory%/Controller/AppController.php
     ignoreErrors:
         - '#Call to an undefined method [a-zA-Z0-9\\_]+Repository::findOneById().#'
         - '#Call to an undefined method [a-zA-Z0-9\\_]+Repository::findOneByName().#'
         - '#Call to an undefined method [a-zA-Z0-9\\_]+Repository::findByContentType().#'
     reportUnmatchedIgnoredErrors: false
-    level: 2
+    level: 3

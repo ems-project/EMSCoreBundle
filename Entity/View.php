@@ -3,6 +3,8 @@
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Entity\Helper\JsonClass;
+use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 
 /**
  * DataField
@@ -11,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\LinkRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class View
+class View extends JsonDeserializer implements \JsonSerializable
 {
     /**
      * @var int
@@ -20,69 +22,69 @@ class View
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="created", type="datetime")
      */
-    private $created;
+    protected $created;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="modified", type="datetime")
      */
-    private $modified;
+    protected $modified;
 
     /**
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
      */
-    private $name;
+    protected $name;
 
     /**
      * @var string
      *
      * @ORM\Column(name="type", type="string", length=255)
      */
-    private $type;
+    protected $type;
 
     /**
      * @var string
      *
      * @ORM\Column(name="icon", type="string", length=255, nullable=true)
      */
-    private $icon;
+    protected $icon;
     
     /**
      * @var array
      *
      * @ORM\Column(name="options", type="json_array", nullable=true)
      */
-    private $options;
+    protected $options;
     
     /**
      * @var int
      *
      * @ORM\Column(name="orderKey", type="integer")
      */
-    private $orderKey;
+    protected $orderKey;
 
     /**
      * @ORM\ManyToOne(targetEntity="ContentType", inversedBy="views")
      * @ORM\JoinColumn(name="content_type_id", referencedColumnName="id")
      */
-    private $contentType;
+    protected $contentType;
 
     /**
      * @var bool
      *
      * @ORM\Column(name="public", type="boolean", options={"default" : 0})
      */
-    private $public;
+    protected $public;
 
 
     public function __construct()
@@ -338,5 +340,22 @@ class View
     {
         $this->public = $public;
         return $this;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize()
+    {
+        $json = new JsonClass(get_object_vars($this), __CLASS__);
+        $json->removeProperty('id');
+        $json->removeProperty('created');
+        $json->removeProperty('modified');
+
+        return $json;
     }
 }

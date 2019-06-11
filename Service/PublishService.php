@@ -2,13 +2,20 @@
 
 namespace EMS\CoreBundle\Service;
 
+use DateTime;
+use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Statement;
+use Doctrine\ORM\NonUniqueResultException;
+use Elasticsearch\Client;
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Event\RevisionPublishEvent;
 use EMS\CoreBundle\Event\RevisionUnpublishEvent;
 use EMS\CoreBundle\Repository\RevisionRepository;
-use Doctrine\Bundle\DoctrineBundle\Registry;
-use Elasticsearch\Client;
+use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -41,15 +48,15 @@ class PublishService
 
     /**@var DataService $dataService*/
     protected $dataService;
-
-    /**@var AuditService $auditService*/
-    protected $auditService;
     
     /**@var UserService $userService*/
     protected $userService;
     
     /**@var EventDispatcherInterface*/
     protected $dispatcher;
+
+    /**@var LoggerInterface*/
+    protected $logger;
     
     
     public function __construct(
@@ -64,9 +71,9 @@ class PublishService
         ContentTypeService $contentTypeService,
         EnvironmentService $environmentService,
         DataService $dataService,
-        AuditService $auditService,
         UserService $userService,
-        EventDispatcherInterface $dispatcher
+        EventDispatcherInterface $dispatcher,
+        LoggerInterface $logger
     ) {
         $this->doctrine = $doctrine;
         $this->authorizationChecker = $authorizationChecker;
@@ -81,22 +88,38 @@ class PublishService
         $this->contentTypeService = $contentTypeService;
         $this->environmentService = $environmentService;
         $this->dataService = $dataService;
-        $this->auditService = $auditService;
         $this->userService = $userService;
         $this->dispatcher= $dispatcher;
+        $this->logger= $logger;
     }
-    
-    public function alignRevision($type, $ouuid, $envirronmentSource, $envirronmentTarget)
+
+    /**
+     * @param string $type
+     * @param string $ouuid
+     * @param string $environmentSource
+     * @param string $environmentTarget
+     * @throws DBALException
+     * @throws NonUniqueResultException
+     */
+    public function alignRevision($type, $ouuid, $environmentSource, $environmentTarget)
     {
-        if ($this->contentTypeService->getByName($type)->getEnvironment()->getName() == $envirronmentTarget) {
-            $this->session->getFlashBag()->add('warning', 'You can not align the default environment for '.$type.':'.$ouuid);
+        if ($this->contentTypeService->getByName($type)->getEnvironment()->getName() === $environmentTarget) {
+            $this->logger->warning('service.publish.not_in_default_environment', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $type,
+                EmsFields::LOG_OUUID_FIELD => $ouuid,
+                EmsFields::LOG_ENVIRONMENT_FIELD  => $environmentTarget,
+            ]);
             return;
         }
         $contentType = $this->contentTypeService->getByName($type);
             
             
         if (! $this->authorizationChecker->isGranted($contentType->getPublishRole())) {
-            $this->session->getFlashBag()->add('warning', 'You can not publish the content type  '.$contentType->getSingularName());
+            $this->logger->warning('service.publish.not_authorized', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $type,
+                EmsFields::LOG_OUUID_FIELD => $ouuid,
+                EmsFields::LOG_ENVIRONMENT_FIELD  => $environmentTarget,
+            ]);
             return;
         }
             
@@ -104,13 +127,17 @@ class PublishService
         $revision = $this->revRepository->findByOuuidAndContentTypeAndEnvironnement(
             $contentType,
             $ouuid,
-            $this->environmentService->getByName($envirronmentSource)
+            $this->environmentService->getByName($environmentSource)
         );
     
         if (!$revision) {
-            $this->session->getFlashBag()->add('warning', 'Missing revision in the environment '.$envirronmentSource.' for '.$type.':'.$ouuid);
+            $this->logger->warning('service.publish.revision_not_found_in_source', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $type,
+                EmsFields::LOG_OUUID_FIELD => $ouuid,
+                EmsFields::LOG_ENVIRONMENT_FIELD  => $environmentTarget,
+            ]);
         } else {
-            $target = $this->environmentService->getByName($envirronmentTarget);
+            $target = $this->environmentService->getByName($environmentTarget);
             
             $toClean = $this->revRepository->findByOuuidAndContentTypeAndEnvironnement(
                 $contentType,
@@ -118,7 +145,7 @@ class PublishService
                 $target
             );
             
-            if ($toClean != $revision) {
+            if ($toClean !== $revision) {
                 if ($toClean) {
                     $this->unpublish($toClean, $target);
                 }
@@ -137,7 +164,7 @@ class PublishService
             $body = $this->dataService->sign($revision, true);
             $index = $this->contentTypeService->getIndex($revision->getContentType());
 
-            $body[Mapping::PUBLISHED_DATETIME_FIELD] = (new \DateTime())->format(\DateTime::ISO8601);
+            $body[Mapping::PUBLISHED_DATETIME_FIELD] = (new DateTime())->format(DateTime::ISO8601);
             $config =[
                 'id' => $revision->getOuuid(),
                 'index' => $index,
@@ -151,31 +178,62 @@ class PublishService
             }
 
             $this->client->index($config);
-
-            $this->session->getFlashBag()->add('notice', 'An new draft/autosave has been published in '.$revision->getContentType()->getEnvironment()->getName());
-        } catch (\Exception $e) {
-            $this->session->getFlashBag()->add('warning', 'Elasticms was not able to publish draft/autosave in '.$revision->getContentType()->getEnvironment()->getName());
+            $this->logger->notice('service.publish.draft_published', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                EmsFields::LOG_ENVIRONMENT_FIELD  => $revision->getContentType()->getEnvironment()->getName(),
+                EmsFields::LOG_OPERATION_DELETE => EmsFields::LOG_OPERATION_UPDATE,
+            ]);
+        } catch (Exception $e) {
+            $this->logger->warning('service.publish.publish_draft_error', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                EmsFields::LOG_ENVIRONMENT_FIELD  => $revision->getContentType()->getEnvironment()->getName(),
+                EmsFields::LOG_OPERATION_DELETE => EmsFields::LOG_OPERATION_UPDATE,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+            ]);
         }
     }
-    
+
+    /**
+     * @param Revision $revision
+     * @param Environment $environment
+     * @param bool $command
+     * @return int
+     * @throws NonUniqueResultException
+     * @throws DBALException
+     */
     public function publish(Revision $revision, Environment $environment, $command = false)
     {
         if (!$command) {
             $user = $this->userService->getCurrentUser();
             if (!empty($environment->getCircles()) && !$this->authorizationChecker->isGranted('ROLE_ADMIN') && empty(array_intersect($environment->getCircles(), $user->getCircles()))) {
-                $this->session->getFlashBag()->add('warning', 'You are not allowed to publish in the environment '.$environment);
-                return;
+                $this->logger->warning('service.publish.not_in_circles', [
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                    EmsFields::LOG_ENVIRONMENT_FIELD  => $environment->getName(),
+                ]);
+                return 0;
             }
             
             if (! $this->authorizationChecker->isGranted($revision->getContentType()->getPublishRole())) {
-                $this->session->getFlashBag()->add('warning', 'You can not publish the content type  '.$revision->getContentType()->getSingularName());
-                return;
+                $this->logger->warning('service.publish.not_authorized', [
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                    EmsFields::LOG_ENVIRONMENT_FIELD  => $environment->getName(),
+                ]);
+                return 0;
             }
         }
         
-        if ($revision->getContentType()->getEnvironment() == $environment && !empty($revision->getEndTime())) {
-            $this->session->getFlashBag()->add('warning', 'You can\'t publish in the default environment of the content type something else than the last revision: '.$revision);
-            return;
+        if ($revision->getContentType()->getEnvironment() === $environment && !empty($revision->getEndTime())) {
+            $this->logger->warning('service.publish.not_in_default_environment', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                EmsFields::LOG_ENVIRONMENT_FIELD  => $environment->getName(),
+            ]);
+            return 0;
         }
 
         $item = $this->revRepository->findByOuuidContentTypeAndEnvironnement($revision, $environment);
@@ -183,10 +241,16 @@ class PublishService
         $connection = $this->doctrine->getConnection();
         
         $already = false;
-        if ($item == $revision) {
+        if ($item === $revision) {
             $already = true;
-            $this->session->getFlashBag()->add('notice', 'The revision '.$revision.' is already specified as published in '.$environment);
+            $this->logger->notice('service.publish.already_published', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                EmsFields::LOG_ENVIRONMENT_FIELD  => $environment->getName(),
+                EmsFields::LOG_REVISION_ID_FIELD  => $environment->getId(),
+            ]);
         } else if ($item) {
+            /** @var Statement $statement */
             $statement = $connection->prepare("delete from environment_revision where environment_id = :envId and revision_id = :revId");
             $statement->bindValue('envId', $environment->getId());
             $statement->bindValue('revId', $item->getId());
@@ -196,7 +260,7 @@ class PublishService
         $body = $this->dataService->sign($revision);
         $index = $this->contentTypeService->getIndex($revision->getContentType(), $environment);
 
-        $body[Mapping::PUBLISHED_DATETIME_FIELD] = (new \DateTime())->format(\DateTime::ISO8601);
+        $body[Mapping::PUBLISHED_DATETIME_FIELD] = (new DateTime())->format(DateTime::ISO8601);
         $config =[
                 'id' => $revision->getOuuid(),
                 'index' => $index,
@@ -209,73 +273,121 @@ class PublishService
             $config['pipeline'] = $this->instanceId.$revision->getContentType()->getName();
         }
 
-        $status = $this->client->index($config);
+        $this->client->index($config);
         
         if (!$already) {
-            $connection = $this->doctrine->getConnection();
+            /** @var Statement $statement */
             $statement = $connection->prepare("insert into environment_revision (environment_id, revision_id) VALUES(:envId, :revId)");
             $statement->bindValue('envId', $environment->getId());
             $statement->bindValue('revId', $revision->getId());
             $statement->execute();
             if (!$command) {
-                $this->session->getFlashBag()->add('notice', 'Revision '.$revision.' has been published in '.$environment);
+                $this->logger->notice('service.publish.published', [
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                    EmsFields::LOG_ENVIRONMENT_FIELD  => $environment->getName(),
+                    EmsFields::LOG_REVISION_ID_FIELD  => $environment->getId(),
+                ]);
             }
 
             $this->dispatcher->dispatch(RevisionPublishEvent::NAME, new RevisionPublishEvent($revision, $environment));
         }
 
         if (!$command) {
-            $this->auditService->auditLog('PublishService:publish', $revision->getRawData(), $environment->getName());
+            $this->logger->info('log.data.revision.publish', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                EmsFields::LOG_OPERATION_FIELD => $already?EmsFields::LOG_OPERATION_UPDATE:EmsFields::LOG_OPERATION_CREATE,
+                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
+            ]);
         }
         
         return $already?0:1;
     }
-    
+
+    /**
+     * @param Revision $revision
+     * @param Environment $environment
+     * @param bool $command
+     * @throws DBALException
+     */
     public function unpublish(Revision $revision, Environment $environment, $command = false)
     {
         
         if (!$command) {
             $user = $this->userService->getCurrentUser();
             if (!empty($environment->getCircles() && !$this->authorizationChecker->isGranted('ROLE_ADMIN') && empty(array_intersect($environment->getCircles(), $user->getCircles())))) {
-                $this->session->getFlashBag()->add('warning', 'You are not allowed to unpublish from the environment '.$environment);
+                $this->logger->warning('service.publish.not_in_circles', [
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                    EmsFields::LOG_ENVIRONMENT_FIELD  => $environment->getName(),
+                ]);
                 return;
             }
             
             
             if (! $this->authorizationChecker->isGranted($revision->getContentType()->getPublishRole())) {
-                $this->session->getFlashBag()->add('warning', 'You can not unpublish the content type  '.$revision->getContentType()->getSingularName());
+                $this->logger->warning('service.publish.not_authorized', [
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                    EmsFields::LOG_ENVIRONMENT_FIELD  => $environment->getName(),
+                    EmsFields::LOG_REVISION_ID_FIELD  => $environment->getId(),
+                ]);
                 return;
             }
         }
         
-        if ($revision->getContentType()->getEnvironment() == $environment) {
-            $this->session->getFlashBag()->add('warning', 'You can\'t unpublish from the default environment of the content type '.$revision->getContentType());
+        if ($revision->getContentType()->getEnvironment() === $environment) {
+            $this->logger->warning('service.publish.not_in_default_environment', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                EmsFields::LOG_ENVIRONMENT_FIELD  => $environment->getName(),
+                EmsFields::LOG_REVISION_ID_FIELD  => $environment->getId(),
+            ]);
             return;
         }
         
 
         $connection = $this->doctrine->getConnection();
+        /** @var Statement $statement */
         $statement = $connection->prepare("delete from environment_revision where environment_id = :envId and revision_id = :revId");
         $statement->bindValue('envId', $environment->getId());
         $statement->bindValue('revId', $revision->getId());
         $statement->execute();
         
         try {
-            $status = $this->client->delete([
+            $this->client->delete([
                     'id' => $revision->getOuuid(),
                     'index' => $environment->getAlias(),
                     'type' => $revision->getContentType()->getName(),
             ]);
-            $this->session->getFlashBag()->add('notice', 'The object '.$revision.' has been unpublished from environment '.$environment->getName());
+            $this->logger->notice('service.publish.unpublished', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                EmsFields::LOG_ENVIRONMENT_FIELD  => $environment->getName(),
+                EmsFields::LOG_REVISION_ID_FIELD  => $environment->getId(),
+            ]);
 
             $this->dispatcher->dispatch(RevisionUnpublishEvent::NAME, new RevisionUnpublishEvent($revision, $environment));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             if (!$revision->getDeleted()) {
-                $this->session->getFlashBag()->add('warning', 'The object '.$revision.' was already unpublished from environment '.$environment->getName());
+                $this->logger->warning('service.publish.already_unpublished', [
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                    EmsFields::LOG_ENVIRONMENT_FIELD  => $environment->getName(),
+                    EmsFields::LOG_REVISION_ID_FIELD  => $environment->getId(),
+                ]);
             }
         }
         if (!$command) {
-            $this->auditService->auditLog('PublishService:unpublish', $revision->getRawData(), $environment->getName());
+            $this->logger->info('log.data.revision.unpublish', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
+                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
+            ]);
         }
     }
 }

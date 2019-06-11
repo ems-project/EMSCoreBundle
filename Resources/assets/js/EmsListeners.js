@@ -1,4 +1,3 @@
-
 import jquery from 'jquery';
 import ace from 'ace-builds/src-noconflict/ace';
 require('icheck');
@@ -7,7 +6,7 @@ require('icheck');
 export default class EmsListeners {
 
     constructor(target) {
-        if(target === undefined) {
+        if (target === undefined) {
             console.log('Impossible to add ems listeners as no target is defined');
             return;
         }
@@ -30,12 +29,12 @@ export default class EmsListeners {
 
     addFieldsToDisplayByValue() {
         const elements = this.target.getElementsByClassName('fields-to-display-by-input-value');
-        for(let i = 0;i < elements.length; i++) {
+        for (let i = 0; i < elements.length; i++) {
             const fieldsToDisplay = elements[i].closest('.fields-to-display-by-value').getElementsByClassName('fields-to-display-for');
-            elements[i].onchange = function (){
+            elements[i].onchange = function() {
                 const value = elements[i].value;
-                for(let j = 0;j < fieldsToDisplay.length; j++) {
-                    fieldsToDisplay[j].closest('.form-group').style.display = (fieldsToDisplay[j].classList.contains('fields-to-display-for-'+value)?'block':'none');
+                for (let j = 0; j < fieldsToDisplay.length; j++) {
+                    fieldsToDisplay[j].closest('.form-group').style.display = (fieldsToDisplay[j].classList.contains('fields-to-display-for-' + value) ? 'block' : 'none');
                 }
             }
             elements[i].onchange();
@@ -43,7 +42,7 @@ export default class EmsListeners {
     }
 
     static getAceConfig() {
-        if(!EmsListeners.aceConfig) {
+        if (!EmsListeners.aceConfig) {
             EmsListeners.aceConfig = ace.require("ace/config");
             EmsListeners.aceConfig.init();
         }
@@ -53,28 +52,28 @@ export default class EmsListeners {
     addCodeEditorListeners() {
 
         const codeEditors = this.target.getElementsByClassName('ems-code-editor');
-        for(let i = 0;i < codeEditors.length; i++) {
+        for (let i = 0; i < codeEditors.length; i++) {
 
             const codeDiv = jquery(codeEditors[i]);
             let pre = codeEditors[i];
             let hiddenField = codeDiv;
             let disabled = true;
 
-            if(pre.tagName === 'DIV') {
+            if (pre.tagName === 'DIV') {
                 pre = codeDiv.find('pre').get(0);
                 hiddenField = codeDiv.find('input');
                 disabled = hiddenField.data('disabled');
             }
 
             let language = hiddenField.data('language');
-            language = language?language:'ace/mode/twig';
+            language = language ? language : 'ace/mode/twig';
 
             let theme = hiddenField.data('theme');
-            theme = theme?theme:'ace/theme/chrome';
+            theme = theme ? theme : 'ace/theme/chrome';
 
 
             let maxLines = 15;
-            if(hiddenField.data('max-lines') && hiddenField.data('max-lines') > 0){
+            if (hiddenField.data('max-lines') && hiddenField.data('max-lines') > 0) {
                 maxLines = hiddenField.data('max-lines');
             }
 
@@ -85,23 +84,22 @@ export default class EmsListeners {
                 theme: theme
             });
 
-            editor.on("change", function(e){
+            editor.on("change", function(e) {
                 hiddenField.val(editor.getValue());
-                if(e.action === 'remove' && typeof onFormChange === "function"){
+                if (e.action === 'remove' && typeof onFormChange === "function") {
                     onFormChange();
                 }
             });
 
             editor.commands.addCommands([{
                 name: "fullscreen",
-                bindKey: {win: "F11", mac: "Esc"},
+                bindKey: { win: "F11", mac: "Esc" },
                 exec: function(editor) {
                     if (codeDiv.hasClass('panel-fullscreen')) {
                         editor.setOption("maxLines", maxLines);
                         codeDiv.removeClass('panel-fullscreen');
                         editor.setAutoScrollEditorIntoView(false);
-                    }
-                    else {
+                    } else {
                         editor.setOption("maxLines", Infinity);
                         codeDiv.addClass('panel-fullscreen');
                         editor.setAutoScrollEditorIntoView(true);
@@ -112,7 +110,7 @@ export default class EmsListeners {
                 }
             }, {
                 name: "showKeyboardShortcuts",
-                bindKey: {win: "Ctrl-Alt-h", mac: "Command-Alt-h"},
+                bindKey: { win: "Ctrl-Alt-h", mac: "Command-Alt-h" },
                 exec: function(editor) {
                     EmsListeners.getAceConfig().loadModule("ace/ext/keybinding_menu", function(module) {
                         module.init(editor);
@@ -132,18 +130,16 @@ export default class EmsListeners {
             let maxLevels = nestedList.data('nested-max-level');
             let isTree = nestedList.data('nested-is-tree');
 
-            if(typeof maxLevels === 'undefined') {
+            if (typeof maxLevels === 'undefined') {
                 maxLevels = 1;
-            }
-            else {
+            } else {
                 maxLevels = Number(maxLevels);
             }
 
-            if(typeof isTree === 'undefined') {
+            if (typeof isTree === 'undefined') {
                 isTree = false;
-            }
-            else {
-                isTree = ( isTree === 'true' );
+            } else {
+                isTree = (isTree === 'true');
             }
 
             nestedList.nestedSortable({
@@ -166,13 +162,13 @@ export default class EmsListeners {
             });
         });
 
-        jquery(this.target).find('.reorder-button').on('click', function(){
+        jquery(this.target).find('.reorder-button').on('click', function() {
             const form = jquery(this).closest('form');
-            const hierarchy = form.find('.nested-sortable').nestedSortable('toHierarchy', {startDepthCount: 0});
+            const hierarchy = form.find('.nested-sortable').nestedSortable('toHierarchy', { startDepthCount: 0 });
             form.find('input.reorder-items').val(JSON.stringify(hierarchy)).trigger("change");
         });
 
-        jquery(this.target).find('.mjs-nestedSortable .button-collapse').click(function (event) {
+        jquery(this.target).find('.mjs-nestedSortable .button-collapse').click(function(event) {
             event.preventDefault();
             const $isExpanded = ($(this).attr('aria-expanded') === 'true');
             $(this).parent().find('> button').attr('aria-expanded', !$isExpanded);
@@ -180,7 +176,7 @@ export default class EmsListeners {
             $panel.find('ol').first().collapse('toggle');
         });
 
-        jquery(this.target).find('.mjs-nestedSortable .button-collapse-all').click(function (event) {
+        jquery(this.target).find('.mjs-nestedSortable .button-collapse-all').click(function(event) {
             event.preventDefault();
             const $isExpanded = ($(this).attr('aria-expanded') === 'true');
             let $panel = $(this).closest('li');
@@ -202,12 +198,12 @@ export default class EmsListeners {
             checkboxClass: 'icheckbox_square-blue',
             radioClass: 'iradio_square-blue',
             increaseArea: '20%'
-        }).on('ifChecked', function(){
-            if( jquery(this).attr('data-grouped-checkbox-target') ) {
+        }).on('ifChecked', function() {
+            if (jquery(this).attr('data-grouped-checkbox-target')) {
                 jquery(self.target).find(jquery(this).attr('data-grouped-checkbox-target')).iCheck('check');
             }
-        }).on('ifUnchecked', function(){
-            if( jquery(this).attr('data-grouped-checkbox-target') ) {
+        }).on('ifUnchecked', function() {
+            if (jquery(this).attr('data-grouped-checkbox-target')) {
                 jquery(self.target).find(jquery(this).attr('data-grouped-checkbox-target')).iCheck('uncheck');
             }
         });
@@ -217,7 +213,7 @@ export default class EmsListeners {
     addObjectPickerListeners() {
         const searchApiUrl = $('body').data('search-api');
 
-        jquery(this.target).find(".objectpicker").each(function(){
+        jquery(this.target).find(".objectpicker").each(function() {
             const selectItem = jquery(this);
 
             const type = selectItem.data('type');
@@ -227,7 +223,7 @@ export default class EmsListeners {
             const sortable = selectItem.data('sortable');
 
             const params = {
-                escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+                escapeMarkup: function(markup) { return markup; }, // let our custom formatter work
                 templateResult: formatRepo, // omitted for brevity, see the source of this page
                 templateSelection: formatRepoSelection, // omitted for brevity, see the source of this page
                 allowClear: true,
@@ -235,17 +231,17 @@ export default class EmsListeners {
                 placeholder: 'Select a document'
             };
 
-            if(selectItem.attr('multiple')) {
+            if (selectItem.attr('multiple')) {
                 params.closeOnSelect = false;
             }
 
-            if(dynamicLoading){
+            if (dynamicLoading) {
                 params.minimumInputLength = 1;
                 params.ajax = {
                     url: searchApiUrl,
                     dataType: 'json',
                     delay: 250,
-                    data: function (params) {
+                    data: function(params) {
                         let data = {
                             q: params.term, // search term
                             page: params.page,
@@ -259,7 +255,7 @@ export default class EmsListeners {
 
                         return data;
                     },
-                    processResults: function (data, params) {
+                    processResults: function(data, params) {
                         // parse the results into the format expected by Select2
                         // since we are using custom formatting functions we do not need to
                         // alter the remote JSON data, except to indicate that infinite
@@ -279,9 +275,9 @@ export default class EmsListeners {
 
             selectItem.select2(params);
 
-            if(sortable){
+            if (sortable) {
                 selectItem.parent().find("ul.select2-selection__rendered").sortable({
-                    stop: function( ) {
+                    stop: function() {
 
                         //http://stackoverflow.com/questions/45888/what-is-the-most-efficient-way-to-sort-an-html-selects-options-by-value-while
                         const selected = selectItem.val();
@@ -289,15 +285,15 @@ export default class EmsListeners {
 
                         const ul = $(this);
 
-                        my_options.sort(function(a,b) {
-                            const indexA = ul.find("li[title='"+a.title.replace(/\'/g, "\\\'")+"']").index();
-                            const indexB = ul.find("li[title='"+b.title.replace(/\'/g, "\\\'")+"']").index();
+                        my_options.sort(function(a, b) {
+                            const indexA = ul.find("li[title='" + a.title.replace(/\'/g, "\\\'") + "']").index();
+                            const indexB = ul.find("li[title='" + b.title.replace(/\'/g, "\\\'") + "']").index();
 
                             if (indexA > indexB) return 1;
                             if (indexA < indexB) return -1;
                             return 0
                         });
-                        selectItem.empty().append( my_options );
+                        selectItem.empty().append(my_options);
                         selectItem.val(selected);
                     }
                 });
@@ -309,7 +305,7 @@ export default class EmsListeners {
         //Initialize Select2 Elements
         jquery(this.target).find(".select2").select2({
             allowClear: true,
-            escapeMarkup: function (markup) { return markup; }
+            escapeMarkup: function(markup) { return markup; }
         });
     }
 

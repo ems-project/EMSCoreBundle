@@ -120,7 +120,57 @@
 				{% endif %}
 			</div>
 		</div>
+
+
+		<!-- Modal -->
+		<div id="reorder-modal" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+
+				<!-- Modal content-->
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="box-title">
+							{{ 'Reorganise: '|trans }}
+						</h4>
+					</div>
+					<div class="modal-body">
+
+						<div class="row" id="hierarchical-row" data-content-type="" data-hierarchical-item-url="">
+							<div class="col-md-12">
+								<div class="box box-solid">
+									<div class="box-body no-padding">
+										<ol class="nested-sortable vertical" id="root-list" data-nested-max-level="1" data-nested-is-tree="true">
+										</ol>
+									</div>
+									<!-- /.box-body -->
+									<div class="box-footer">
+										<div id="reorganize_addItem" name="reorganize[addItem]" >
+											<div class="form-group">
+												<label class="" for="reorganize_addItem_value">Add item</label>
+												<select id="reorganize_addItem_value" name="reorganize[addItem][value]" data-type="" data-search-id=""  data-dynamic-loading="data-dynamic-loading"   class="objectpicker form-control"><option value=""></option></select>
+											</div>
+										</div>
+									</div>
+									<!-- /.box-footer -->
+								</div>
+							</div>
+						</div>
+							
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary reorder-modal-save" >{{ 'Save'|trans }}</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">{{ 'Cancel'|trans }}</button>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+		
 		{{ form_end(form) }}
+
+		
 		
 
 		

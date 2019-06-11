@@ -34,6 +34,7 @@ class ObjectPickerType extends Select2Type
         $resolver->setDefaults(array(
             'required' => false,
             'dynamicLoading' => true,
+            'modal' => false,
             'sortable' => false,
             'choice_loader' => function (Options $options) {
                 $loadAll =     $options->offsetGet('dynamicLoading')?false:true;
@@ -87,6 +88,7 @@ class ObjectPickerType extends Select2Type
         $view->vars ['attr']['data-circle-only'] = $options['circle-only'];
         $view->vars ['attr']['data-dynamic-loading'] = $options['dynamicLoading'];
         $view->vars ['attr']['data-sortable'] = $options['sortable'];
+        $view->vars ['attr']['data-modal'] = $options['modal'];
     }
     
     /**

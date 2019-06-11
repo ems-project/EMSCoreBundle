@@ -9,6 +9,7 @@ use EMS\CoreBundle\Event\UpdateRevisionReferersEvent;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use EMS\CoreBundle\Form\Field\ObjectChoiceLoader;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
+use EMS\CoreBundle\Form\Field\ObjectChoiceList;
 use EMS\CoreBundle\Service\ElasticsearchService;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -179,17 +180,18 @@ class DataLinkFieldType extends DataFieldType
             }
         };
 
-        $builder->add('value', ObjectPickerType::class, [
-            'label' => (null != $options ['label']?$options ['label']:$fieldType->getName()),
-            'required' => false,
-            'disabled'=> $this->isDisabled($options),
-            'multiple' => $options['multiple'],
-            'type' => $options['type'],
-            'searchId' => $options['searchId'],
-            'dynamicLoading' => $options['dynamicLoading'],
-            'sortable' => $options['sortable'],
-            'circle-only' => ($fieldType->getContentType() && $fieldType->getContentType()->getCirclesField() === $fieldType->getName())
-        ]);
+            $builder->add('value', ObjectPickerType::class, [
+                'label' => (null != $options ['label']?$options ['label']:$fieldType->getName()),
+                'required' => false,
+                'disabled'=> $this->isDisabled($options),
+                'multiple' => $options['multiple'],
+                'modal' => $options['modal'],
+                'type' => $options['type'],
+                'searchId' => $options['searchId'],
+                'dynamicLoading' => $options['dynamicLoading'],
+                'sortable' => $options['sortable'],
+                'circle-only' => ($fieldType->getContentType() && $fieldType->getContentType()->getCirclesField() === $fieldType->getName())
+            ]);
 
         if ($options['sortable']) {
             $builder->addEventListener(FormEvents::PRE_SUBMIT, $listener);
@@ -205,6 +207,7 @@ class DataLinkFieldType extends DataFieldType
     {
         /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);
+        $resolver->setDefault('modal', false);
         $resolver->setDefault('multiple', false);
         $resolver->setDefault('type', null);
         $resolver->setDefault('searchId', null);
@@ -285,6 +288,8 @@ class DataLinkFieldType extends DataFieldType
         ])->add('dynamicLoading', CheckboxType::class, [
                 'required' => false,
         ])->add('sortable', CheckboxType::class, [
+                'required' => false,
+        ])->add('modal', CheckboxType::class, [
                 'required' => false,
         ])->add('type', TextType::class, [
             'required' => false,

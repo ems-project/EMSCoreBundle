@@ -9,9 +9,10 @@ use EMS\CoreBundle\Exception\AssetNotFoundException;
 use EMS\CoreBundle\Tika\TikaWrapper;
 use Exception;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 use Throwable;
 
-class AssetExtractorService
+class AssetExtractorService implements CacheWarmerInterface
 {
     
     const CONTENT_EP = '/tika';
@@ -137,7 +138,7 @@ class AssetExtractorService
 
         $out = [];
         $canBePersisted = true;
-        if ($this->tikaServer) {
+        if (! empty($this->tikaServer)) {
             try {
                 $client = $this->rest->getClient($this->tikaServer);
                 $body = file_get_contents($file);
@@ -233,5 +234,17 @@ class AssetExtractorService
             PREG_PATTERN_ORDER
         );
         return (array_combine($matches[1], $matches[2]) ?? null);
+    }
+
+    public function isOptional()
+    {
+        return false;
+    }
+
+    public function warmUp($cacheDir)
+    {
+        if (empty($this->tikaServer)) {
+            $this->getTikaWrapper();
+        }
     }
 }

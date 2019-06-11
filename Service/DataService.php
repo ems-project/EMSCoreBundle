@@ -540,7 +540,7 @@ class DataService
             $objectArray = $revision->getRawData();
         }
 
-        $objectArray['_contenttype'] = $revision->getContentType()->getName();
+        $objectArray[Mapping::CONTENT_TYPE_FIELD] = $revision->getContentType()->getName();
         if (isset($objectArray[Mapping::HASH_FIELD])) {
             unset($objectArray[Mapping::HASH_FIELD]);
         }

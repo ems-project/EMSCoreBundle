@@ -31,7 +31,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     private $orderKey;
 
     /**
-     * @var DataField
+     * @var DataField|null
      */
     private $parent;
     
@@ -633,7 +633,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
 
     /**
      *
-     * @return \EMS\CoreBundle\Entity\DataField
+     * @return DataField
      */
     public function getRootDataField()
     {
@@ -737,11 +737,11 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Set parent
      *
-     * @param \EMS\CoreBundle\Entity\DataField $parent
+     * @param DataField $parent
      *
      * @return DataField
      */
-    public function setParent(\EMS\CoreBundle\Entity\DataField $parent = null)
+    public function setParent(DataField $parent = null)
     {
         $this->parent = $parent;
 
@@ -751,7 +751,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Get parent
      *
-     * @return \EMS\CoreBundle\Entity\DataField
+     * @return DataField|null
      */
     public function getParent()
     {
@@ -761,11 +761,11 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Add child
      *
-     * @param \EMS\CoreBundle\Entity\DataField $child
+     * @param DataField $child
      *
      * @return DataField
      */
-    public function addChild(\EMS\CoreBundle\Entity\DataField $child)
+    public function addChild(DataField $child)
     {
         $this->children[] = $child;
 
@@ -775,9 +775,9 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Remove child
      *
-     * @param \EMS\CoreBundle\Entity\DataField $child
+     * @param DataField $child
      */
-    public function removeChild(\EMS\CoreBundle\Entity\DataField $child)
+    public function removeChild(DataField $child)
     {
         $this->children->removeElement($child);
     }
@@ -795,7 +795,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Set rawData
      *
-     * @param array $rawData
+     * @param array|null|string|integer|float $rawData
      *
      * @return DataField
      */
@@ -809,7 +809,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Get rawData
      *
-     * @return array
+     * @return array|null|string|integer|float
      */
     public function getRawData()
     {

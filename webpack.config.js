@@ -5,32 +5,30 @@ const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     plugins: [
-        new CopyPlugin([
-            {
-                from: './Resources/assets/images',
-                to: 'images'
-            }, {
-                from: './Resources/assets/cke-plugins',
-                to: 'js/cke-plugins'
-            }, {
-                from: './node_modules/ace-builds/src-noconflict',
-                to: 'js/ace',
-            }, {
-                from: './node_modules/ckeditor',
-                to: 'js/ckeditor',
+        new CopyPlugin([{
+            from: './Resources/assets/images',
+            to: 'images'
+        }, {
+            from: './Resources/assets/cke-plugins',
+            to: 'js/cke-plugins'
+        }, {
+            from: './node_modules/ace-builds/src-noconflict',
+            to: 'js/ace',
+        }, {
+            from: './node_modules/ckeditor',
+            to: 'js/ckeditor',
 
-            },
-        ], {
+        }, ], {
             ignore: [{
                 dots: true,
                 glob: 'samples/**/*'
-            },{
+            }, {
                 dots: true,
                 glob: 'adapters/**/*'
-            },{
+            }, {
                 dots: true,
                 glob: '.github/**/*'
-            },{
+            }, {
                 dots: true,
                 glob: '**/*.php'
             }]
@@ -73,8 +71,7 @@ module.exports = {
         //publicPath: '../bundles/emscore/',
     },
     module: {
-        rules: [
-            {
+        rules: [{
                 test: /\.less$/,
                 use: [{
                     loader: MiniCssExtractPlugin.loader,
@@ -83,7 +80,7 @@ module.exports = {
                         // by default it use publicPath in webpackOptions.output
                         publicPath: '../'
                     }
-                },{
+                }, {
                     loader: 'css-loader', // translates CSS into CommonJS
                     options: {
                         sourceMap: true
@@ -101,7 +98,7 @@ module.exports = {
                             // by default it use publicPath in webpackOptions.output
                             publicPath: '../'
                         }
-                    },{
+                    }, {
                         loader: 'css-loader',
                         options: {
                             sourceMap: true

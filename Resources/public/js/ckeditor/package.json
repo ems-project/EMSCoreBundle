@@ -1,12 +1,38 @@
 {
-  "name": "ckeditor",
-  "version": "4.11.4",
-  "description": "JavaScript WYSIWYG web text editor.",
-  "main": "ckeditor.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ckeditor/ckeditor-releases.git"
+  "_from": "ckeditor@^4.11.2",
+  "_id": "ckeditor@4.11.4",
+  "_inBundle": false,
+  "_integrity": "sha1-XtvCNYCPng9WLo5kLusE+hsBtjM=",
+  "_location": "/ckeditor",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "ckeditor@^4.11.2",
+    "name": "ckeditor",
+    "escapedName": "ckeditor",
+    "rawSpec": "^4.11.2",
+    "saveSpec": null,
+    "fetchSpec": "^4.11.2"
   },
+  "_requiredBy": [
+    "/admin-lte"
+  ],
+  "_resolved": "http://albanil01.smals.be:8081/artifactory/api/npm/npm.virtual/ckeditor/-/ckeditor-4.11.4.tgz",
+  "_shasum": "5edbc235808f9e0f562e8e642eeb04fa1b01b633",
+  "_spec": "ckeditor@^4.11.2",
+  "_where": "C:\\laragon\\www\\EMSCoreBundle\\node_modules\\admin-lte",
+  "author": {
+    "name": "CKSource",
+    "url": "http://cksource.com/"
+  },
+  "bugs": {
+    "url": "http://dev.ckeditor.com"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "JavaScript WYSIWYG web text editor.",
+  "homepage": "http://ckeditor.com",
   "keywords": [
     "ckeditor",
     "fckeditor",
@@ -17,10 +43,12 @@
     "text",
     "javascript"
   ],
-  "author": "CKSource (http://cksource.com/)",
   "license": "(GPL-2.0 OR LGPL-2.1 OR MPL-1.1)",
-  "bugs": {
-    "url": "http://dev.ckeditor.com"
+  "main": "ckeditor.js",
+  "name": "ckeditor",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ckeditor/ckeditor-releases.git"
   },
-  "homepage": "http://ckeditor.com"
+  "version": "4.11.4"
 }

@@ -13,7 +13,7 @@ class ObjectChoiceListItem
     private $color;
     
     
-    public function __construct(array &$object, ContentType $contentType)
+    public function __construct(array &$object, ?ContentType $contentType)
     {
         $this->value = $object['_type'].':'.$object['_id'];
         
@@ -34,7 +34,7 @@ class ObjectChoiceListItem
                 $this->label .= $this->value;
                 $this->title = $this->value;
             }
-            
+
 
             if (null !== $contentType->getColorField() && isset($object['_source'][$contentType->getColorField()])) {
                 $this->color = $object['_source'][$contentType->getColorField()];

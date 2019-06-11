@@ -359,7 +359,7 @@ class Revision
         if ($this->ouuid) {
             $out = $this->ouuid;
         }
-        if ($this->contentType) {
+        if ($this->contentType !== null) {
             $out = $this->contentType->getName().':'.$out;
             if (!empty($this->id)) {
                 $out .=  '#'.$this->id;
@@ -367,7 +367,7 @@ class Revision
         }
         
         
-        if ($this->contentType && $this->contentType->getLabelField() && $this->rawData && isset($this->rawData[$this->contentType->getLabelField()])) {
+        if ($this->contentType !== null && $this->contentType->getLabelField() && $this->rawData && isset($this->rawData[$this->contentType->getLabelField()])) {
             return $this->rawData[$this->contentType->getLabelField()]." ($out)";
         }
         return $out;

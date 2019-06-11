@@ -330,19 +330,8 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         return null;
     }
 
-    /**
-     * Set textValue
-     *
-     * @param string $rawData
-     *
-     * @return DataField
-     * @throws DataFormatException
-     */
-    public function setTextValue($rawData)
+    public function setTextValue(?string $rawData): DataField
     {
-        if ($rawData !== null && !is_string($rawData)) {
-            throw new DataFormatException('String expected: '.print_r($rawData, true));
-        }
         $this->rawData = $rawData;
         return $this;
     }
@@ -371,7 +360,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Set passwordValue
      *
-     * @param string $passwordValue
+     * @param null|string $passwordValue
      *
      * @return DataField
      */
@@ -420,20 +409,8 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         return false;
     }
 
-
-    /**
-     * Set floatValue
-     *
-     * @param float $rawData
-     *
-     * @return DataField
-     * @throws DataFormatException
-     */
-    public function setFloatValue($rawData)
+    public function setFloatValue(?float $rawData): DataField
     {
-        if ($rawData !== null && !is_finite($rawData)) {
-            throw new DataFormatException('Float or double expected: '.print_r($rawData, true));
-        }
         $this->rawData = $rawData;
         return $this;
     }
@@ -484,20 +461,10 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         }
     }
 
-    /**
-     * Set arrayTextValue
-     *
-     * @param array $rawData
-     *
-     * @return DataField
-     * @throws DataFormatException
-     */
-    public function setArrayTextValue($rawData)
+    public function setArrayTextValue(?array $rawData): DataField
     {
         if ($rawData === null) {
             $this->rawData = null;
-        } else if (!is_array($rawData)) {
-            throw new DataFormatException('Array expected: '.print_r($rawData, true));
         } else {
             foreach ($rawData as $item) {
                 if (!is_string($item)) {
@@ -563,7 +530,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Set integerValue
      *
-     * @param integer $rawData
+     * @param null|string|int $rawData
      *
      * @return DataField
      */
@@ -613,19 +580,8 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         return $out;
     }
 
-    /**
-     * Set booleanValue
-     *
-     * @param boolean $rawData
-     *
-     * @return DataField
-     * @throws DataFormatException
-     */
-    public function setBooleanValue($rawData)
+    public function setBooleanValue(?bool $rawData): DataField
     {
-        if ($rawData !== null && !is_bool($rawData)) {
-            throw new DataFormatException('Boolean expected: '.$rawData);
-        }
         $this->rawData = $rawData;
 
         return $this;

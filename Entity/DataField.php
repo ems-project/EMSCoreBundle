@@ -538,7 +538,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     {
         if ($rawData === null || is_int($rawData)) {
             $this->rawData = $rawData;
-        } else if (intval($rawData) || $rawData === 0 || $rawData === '0') {
+        } else if (intval($rawData) || $rawData === '0') {
             $this->rawData = intval($rawData);
         } else {
             $this->addMessage('Integer expected: '.print_r($rawData, true));

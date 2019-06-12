@@ -25,44 +25,40 @@ class CalendarController extends AppController
             $ouuid = $request->request->get('ouuid', false);
             $type = $view->getContentType()->getName();
             $revision = $this->getDataService()->initNewDraft($type, $ouuid);
-            if ($revision) {
-                $rawData = $revision->getRawData();
-                $field = $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['dateRangeField']);
-                
 
-                /** @var \DateTime $from */
-                /** @var \DateTime $to */
-                $from = new \DateTime($request->request->get('start', false));
-                if ($from) {
-                    $to = $request->request->get('end', false);
-                    if (!$to) {
-                        $to = clone $from;
-                        $to->add(new \DateInterval("PT23H59M"));
-                    } else {
-                        $to = new \DateTime($to);
-                    }
-                    
-                    $input = [
-                            $field->getMappingOptions()['fromDateMachineName'] => $from->format('c'),
-                            $field->getMappingOptions()['toDateMachineName'] => $to->format('c'),
-                    ];
-                    
-                    if ($field->getMappingOptions()['nested']) {
-                        $rawData[$field->getName()] = $input;
-                    } else {
-                        $rawData = array_merge($rawData, $input);
-                    }
-                    
-                    $revision->setRawData($rawData);
-                    $this->getDataService()->finalizeDraft($revision);
+            $rawData = $revision->getRawData();
+            $field = $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['dateRangeField']);
+
+            /** @var \DateTime $from */
+            /** @var \DateTime $to */
+            $from = new \DateTime($request->request->get('start', false));
+            if ($from) {
+                $to = $request->request->get('end', false);
+                if (!$to) {
+                    $to = clone $from;
+                    $to->add(new \DateInterval("PT23H59M"));
                 } else {
-                    $this->getLogger()->warning('log.view.calendar.from_date_is_missing', [
-                    ]);
+                    $to = new \DateTime($to);
                 }
+
+                $input = [
+                        $field->getMappingOptions()['fromDateMachineName'] => $from->format('c'),
+                        $field->getMappingOptions()['toDateMachineName'] => $to->format('c'),
+                ];
+
+                if ($field->getMappingOptions()['nested']) {
+                    $rawData[$field->getName()] = $input;
+                } else {
+                    $rawData = array_merge($rawData, $input);
+                }
+
+                $revision->setRawData($rawData);
+                $this->getDataService()->finalizeDraft($revision);
             } else {
-                $this->getLogger()->warning('log.view.calendar.document_not_found', [
+                $this->getLogger()->warning('log.view.calendar.from_date_is_missing', [
                 ]);
             }
+
             return $this->render('@EMSCore/view/custom/calendar_replan.json.twig', [
                     'success' => true,
             ]);

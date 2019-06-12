@@ -9,4 +9,4 @@ parameters:
         - '#Call to an undefined method [a-zA-Z0-9\\_]+Repository::findOneByName().#'
         - '#Call to an undefined method [a-zA-Z0-9\\_]+Repository::findByContentType().#'
     reportUnmatchedIgnoredErrors: false
-    level: 3
+    level: 4

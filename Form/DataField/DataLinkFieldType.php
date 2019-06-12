@@ -380,6 +380,10 @@ class DataLinkFieldType extends DataFieldType
     public function reverseViewTransform($data, FieldType $fieldType)
     {
         $data= (null !== $data&& isset($data['value']))?$data['value']:null;
+        if (\is_array($data)) {
+            $data = \array_values($data);
+        }
+
         $out = parent::reverseViewTransform($data, $fieldType);
         return $out;
     }

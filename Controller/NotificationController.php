@@ -45,28 +45,28 @@ class NotificationController extends AppController
         
         /** @var EnvironmentRepository $repositoryEnv */
         $repositoryEnv = $em->getRepository('EMSCoreBundle:Environment');
-        /** @var Environment $env */
+        /** @var Environment|null $env */
         $env = $repositoryEnv->findOneByName($environmentName);
         
-        if (!$env) {
+        if ($env === null) {
             throw new NotFoundHttpException('Unknown environment');
         }
             
         /** @var ContentTypeRepository $repositoryCt */
         $repositoryCt = $em->getRepository('EMSCoreBundle:ContentType');
-        /** @var ContentType $ct */
+        /** @var ContentType|null $ct */
         $ct = $repositoryCt->findById($ctId);
         
-        if (!$ct) {
+        if ($ct === null) {
             throw new NotFoundHttpException('Content type not found');
         }
             
         
         /** @var RevisionRepository $repositoryRev */
         $repositoryRev = $em->getRepository('EMSCoreBundle:Revision');
-        /** @var Revision $revision */
+        /** @var Revision|null $revision */
         $revision = $repositoryRev->findByOuuidAndContentTypeAndEnvironnement($ct, $ouuid, $env);
-        if (!$revision) {
+        if ($revision === null) {
             throw new NotFoundHttpException('Unknown revision');
         }
         

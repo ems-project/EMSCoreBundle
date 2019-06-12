@@ -133,7 +133,7 @@ class EnvironmentService
     /**
      *
      * @param string $name
-     * @return Environment
+     * @return Environment|false
      */
     public function getAliasByName($name)
     {

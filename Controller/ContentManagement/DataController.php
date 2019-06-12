@@ -699,10 +699,10 @@ class DataController extends AppController
 
         /** @var RevisionRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:Revision');
-        /** @var Revision $revision */
+        /** @var Revision|null $revision */
         $revision = $repository->find($revisionId);
 
-        if (!$revision) {
+        if ($revision === null) {
             throw $this->createNotFoundException('Revision not found');
         }
         if (!$revision->getDraft() || null != $revision->getEndTime()) {
@@ -797,10 +797,10 @@ class DataController extends AppController
 
         /** @var RevisionRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:Revision');
-        /** @var Revision $revision */
+        /** @var Revision|null $revision */
         $revision = $repository->find($revisionId);
 
-        if (!$revision) {
+        if ($revision === null) {
             throw $this->createNotFoundException('Revision not found');
         }
 
@@ -885,10 +885,10 @@ class DataController extends AppController
         /** @var ViewRepository $viewRepository */
         $viewRepository = $em->getRepository('EMSCoreBundle:View');
 
-        /** @var View $view * */
+        /** @var View|null $view * */
         $view = $viewRepository->find($viewId);
 
-        if (!$view || ($public && !$view->isPublic())) {
+        if ($view === null || ($public && !$view->isPublic())) {
             throw new NotFoundHttpException($translator->trans('log.view.not_found', [
                 '%view_id%' => $viewId,
             ], EMSCoreBundle::TRANS_DOMAIN));
@@ -926,10 +926,10 @@ class DataController extends AppController
         /** @var TemplateRepository $templateRepository */
         $templateRepository = $em->getRepository('EMSCoreBundle:Template');
 
-        /** @var Template $template * */
+        /** @var Template|null $template * */
         $template = $templateRepository->find($templateId);
 
-        if (!$template || ($public && !$template->isPublic())) {
+        if ($template === null || ($public && !$template->isPublic())) {
             throw new NotFoundHttpException('Template type not found');
         }
 
@@ -1072,12 +1072,12 @@ class DataController extends AppController
     public function customViewJobAction($environmentName, $templateId, $ouuid, LoggerInterface $logger)
     {
         $em = $this->getDoctrine()->getManager();
-        /** @var CoreBundle\Entity\Template $template * */
+        /** @var Template|null $template * */
         $template = $em->getRepository(Template::class)->find($templateId);
         /** @var Environment $env */
         $env = $em->getRepository(Environment::class)->findOneByName($environmentName);
 
-        if (!$template || !$env) {
+        if ($template === null || !$env) {
             throw new NotFoundHttpException();
         }
 
@@ -1141,10 +1141,10 @@ class DataController extends AppController
 
         /** @var RevisionRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:Revision');
-        /** @var Revision $revision */
+        /** @var Revision|null $revision */
         $revision = $repository->find($revisionId);
 
-        if (!$revision) {
+        if ($revision === null) {
             throw new NotFoundHttpException('Revision not found');
         }
 
@@ -1297,10 +1297,10 @@ class DataController extends AppController
 
         /** @var RevisionRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:Revision');
-        /** @var Revision $revision */
+        /** @var Revision|null $revision */
         $revision = $repository->find($revisionId);
 
-        if (!$revision) {
+        if ($revision === null) {
             throw new NotFoundHttpException('Unknown revision');
         }
 

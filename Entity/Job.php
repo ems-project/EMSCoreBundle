@@ -86,7 +86,7 @@ class Job
     private $user;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="service", type="string", length=255, nullable=true)
      */
@@ -354,7 +354,7 @@ class Job
     /**
      * Get service
      *
-     * @return string
+     * @return string|null
      */
     public function getService()
     {

@@ -478,10 +478,7 @@ class ElasticsearchController extends AppController
             if (preg_match('/^[a-z][a-z0-9\-_]*:/i', $pattern, $matches)) {
                 $filterType = substr($matches[0], 0, strlen($matches[0]) - 1);
                 if (in_array($filterType, $types, true)) {
-                    $pattern = substr($pattern, strlen($matches[0]));
-                    if ($pattern === false) {
-                        $pattern = '';
-                    }
+                    $pattern = (string) substr($pattern, strlen($matches[0]));
                     $params['type'] = $filterType;
                 }
             }

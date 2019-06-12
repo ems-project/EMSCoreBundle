@@ -173,9 +173,9 @@ class MigrateCommand extends EmsCommand
         /** @var ContentTypeRepository $contentTypeRepository */
         $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
 
-        /** @var ContentType $contentTypeTo */
+        /** @var ContentType|null $contentTypeTo */
         $contentTypeTo = $contentTypeRepository->findOneBy(array("name" => $contentTypeNameTo, 'deleted' => false));
-        if (!$contentTypeTo) {
+        if ($contentTypeTo === null) {
             $output->writeln("<error>Content type ".$contentTypeNameTo." not found</error>");
             exit;
         }

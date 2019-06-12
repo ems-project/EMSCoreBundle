@@ -396,7 +396,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     /**
      * Get managed
      *
-     * @return boolean
+     * @return bool
      */
     public function getManaged()
     {

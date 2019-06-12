@@ -558,10 +558,10 @@ class EnvironmentController extends AppController
         /** @var EnvironmentRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:Environment');
     
-        /** @var Environment $environment */
+        /** @var Environment|null $environment */
         $environment = $repository->find($id);
     
-        if (! $environment) {
+        if ($environment === null) {
             throw new NotFoundHttpException('Unknow environment');
         }
     
@@ -605,10 +605,10 @@ class EnvironmentController extends AppController
         /** @var EnvironmentRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:Environment');
         
-        /** @var Environment $environment */
+        /** @var Environment|null $environment */
         $environment = $repository->find($id);
     
-        if (! $environment) {
+        if ($environment === null) {
             throw new NotFoundHttpException('Unknow environment');
         }
 
@@ -651,10 +651,10 @@ class EnvironmentController extends AppController
         /** @var EnvironmentRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:Environment');
     
-        /** @var Environment $environment */
+        /** @var Environment|null $environment */
         $environment = $repository->find($id);
     
-        if (! $environment) {
+        if ($environment === null) {
             throw new NotFoundHttpException('Unknow environment');
         }
     

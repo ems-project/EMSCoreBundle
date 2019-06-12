@@ -1,6 +1,5 @@
 <?php
 
-// src/EMS/CoreBundle/Command/GreetCommand.php
 namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -111,7 +110,7 @@ class RebuildCommand extends EmsCommand
         /** @var EnvironmentRepository $envRepo */
         $envRepo = $em->getRepository('EMSCoreBundle:Environment');
 
-        /** @var Environment $environment */
+        /** @var Environment|null $environment */
         $environment = $envRepo->findOneBy(['name' => $name, 'managed' => true]);
 
         if ($environment === null) {
@@ -189,7 +188,7 @@ class RebuildCommand extends EmsCommand
         if (!$this->singleTypeIndex) {
             /** @var ContentType $contentType */
             foreach ($contentTypes as $contentType) {
-                if (!$contentType->getDeleted() && $contentType->getEnvironment() && $contentType->getEnvironment()->getManaged()) {
+                if (!$contentType->getDeleted() && $contentType->getEnvironment() !== null && $contentType->getEnvironment()->getManaged()) {
                     $this->reindexCommand->reindex($name, $contentType, $indexName, $output, $signData, $input->getOption('bulk-size'));
                     $output->writeln('');
                     $output->writeln($contentType->getPluralName() . ' have been re-indexed ');

@@ -114,10 +114,10 @@ class TemplateController extends AppController
         /** @var TemplateRepository $templateRepository */
         $templateRepository = $em->getRepository('EMSCoreBundle:Template');
         
-        /** @var Template $template **/
+        /** @var Template|null $template **/
         $template = $templateRepository->find($id);
             
-        if (!$template) {
+        if ($template === null) {
             throw new NotFoundHttpException('Template type not found');
         }
         
@@ -179,10 +179,10 @@ class TemplateController extends AppController
         /** @var TemplateRepository $templateRepository */
         $templateRepository = $em->getRepository('EMSCoreBundle:Template');
         
-        /** @var Template $template **/
+        /** @var Template|null $template **/
         $template = $templateRepository->find($id);
             
-        if (!$template) {
+        if ($template === null) {
             throw new NotFoundHttpException('Template type not found');
         }
         

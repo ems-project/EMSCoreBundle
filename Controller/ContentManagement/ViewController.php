@@ -118,10 +118,10 @@ class ViewController extends AppController
         /** @var ViewRepository $viewRepository */
         $viewRepository = $em->getRepository('EMSCoreBundle:View');
 
-        /** @var View $view */
+        /** @var View|null $view */
         $view = $viewRepository->find($id);
 
-        if (!$view) {
+        if ($view === null) {
             throw new NotFoundHttpException('View type not found');
         }
 
@@ -218,10 +218,10 @@ class ViewController extends AppController
         /** @var ViewRepository $viewRepository */
         $viewRepository = $em->getRepository('EMSCoreBundle:View');
 
-        /** @var View $view */
+        /** @var View|null $view */
         $view = $viewRepository->find($id);
 
-        if (!$view) {
+        if ($view === null) {
             throw new NotFoundHttpException('View not found');
         }
 

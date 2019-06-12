@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Exception\NotLockedException;
 use EMS\CoreBundle\Service\Mapping;
 
@@ -54,7 +55,7 @@ class Revision
     private $deleted;
 
     /**
-     * @var ContentType
+     * @var ContentType|null
      *
      * @ORM\ManyToOne(targetEntity="ContentType")
      * @ORM\JoinColumn(name="content_type_id", referencedColumnName="id")
@@ -359,7 +360,7 @@ class Revision
         if ($this->ouuid) {
             $out = $this->ouuid;
         }
-        if ($this->contentType) {
+        if ($this->contentType !== null) {
             $out = $this->contentType->getName().':'.$out;
             if (!empty($this->id)) {
                 $out .=  '#'.$this->id;
@@ -367,7 +368,7 @@ class Revision
         }
         
         
-        if ($this->contentType && $this->contentType->getLabelField() && $this->rawData && isset($this->rawData[$this->contentType->getLabelField()])) {
+        if ($this->contentType !== null && $this->contentType->getLabelField() && $this->rawData && isset($this->rawData[$this->contentType->getLabelField()])) {
             return $this->rawData[$this->contentType->getLabelField()]." ($out)";
         }
         return $out;
@@ -732,11 +733,11 @@ class Revision
     /**
      * Set contentType
      *
-     * @param \EMS\CoreBundle\Entity\ContentType $contentType
+     * @param ContentType $contentType
      *
      * @return Revision
      */
-    public function setContentType(\EMS\CoreBundle\Entity\ContentType $contentType = null)
+    public function setContentType(ContentType $contentType = null)
     {
         $this->contentType = $contentType;
 
@@ -746,7 +747,7 @@ class Revision
     /**
      * Get contentType
      *
-     * @return \EMS\CoreBundle\Entity\ContentType
+     * @return ContentType|null
      */
     public function getContentType()
     {

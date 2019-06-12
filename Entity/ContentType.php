@@ -3,6 +3,7 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Form\DataField\ContainerFieldType;
@@ -61,7 +62,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     protected $singularName;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="icon", type="string", length=100, nullable=true)
      */
@@ -354,6 +355,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     protected $active;
 
     /**
+     * @var null|Environment
      * @ORM\ManyToOne(targetEntity="Environment", inversedBy="contentTypesHavingThisAsDefault")
      * @ORM\JoinColumn(name="environment_id", referencedColumnName="id")
      */
@@ -534,7 +536,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Get icon
      *
-     * @return string
+     * @return string|null
      */
     public function getIcon()
     {
@@ -1085,11 +1087,11 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Set environment
      *
-     * @param \EMS\CoreBundle\Entity\Environment $environment
+     * @param Environment $environment
      *
      * @return ContentType
      */
-    public function setEnvironment(\EMS\CoreBundle\Entity\Environment $environment = null)
+    public function setEnvironment(Environment $environment = null)
     {
         $this->environment = $environment;
 
@@ -1099,7 +1101,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Get environment
      *
-     * @return \EMS\CoreBundle\Entity\Environment
+     * @return Environment|null
      */
     public function getEnvironment()
     {

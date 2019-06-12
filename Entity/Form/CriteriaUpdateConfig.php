@@ -10,13 +10,15 @@ use Psr\Log\LoggerInterface;
  */
 class CriteriaUpdateConfig
 {
-
+    /** @var string */
     private $columnCriteria;
-    
+
+    /** @var string */
     private $rowCriteria;
 
+    /** @var null|DataField */
     private $category;
-    
+
     private $criterion;
     
     /**@var LoggerInterface */

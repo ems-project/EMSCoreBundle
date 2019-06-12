@@ -870,7 +870,9 @@ class DataService
      *
      * @param string $type
      * @param string $ouuid
+     *
      * @return Revision
+     *
      * @throws Exception
      * @throws NotFoundHttpException
      */
@@ -1079,7 +1081,9 @@ class DataService
      * @param string $ouuid
      * @param Revision|null $fromRev
      * @param string|null $username
+     *
      * @return Revision
+     *
      * @throws LockedException
      * @throws PrivilegeException
      * @throws ORMException

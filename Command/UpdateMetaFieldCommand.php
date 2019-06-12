@@ -63,7 +63,7 @@ class UpdateMetaFieldCommand extends EmsCommand
         $envRepo = $em->getRepository('EMSCoreBundle:Environment');
         /** @var RevisionRepository $revRepo */
         $revRepo = $em->getRepository('EMSCoreBundle:Revision');
-        /** @var Environment $environment */
+        /** @var Environment|null $environment */
         $environment = $envRepo->findOneBy(['name' => $name, 'managed' => true]);
 
         if ($environment === null) {

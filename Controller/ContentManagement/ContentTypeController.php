@@ -87,10 +87,10 @@ class ContentTypeController extends AppController
         /** @var ContentTypeRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:ContentType');
 
-        /** @var ContentType $contentType */
+        /** @var ContentType|null $contentType */
         $contentType = $repository->findById($id);
 
-        if (!$contentType) {
+        if ($contentType === null) {
             throw new NotFoundHttpException('Content Type not found');
         }
 
@@ -770,10 +770,10 @@ class ContentTypeController extends AppController
         /** @var ContentTypeRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:ContentType');
 
-        /** @var ContentType $contentType */
+        /** @var ContentType|null $contentType */
         $contentType = $repository->findById($id);
 
-        if (!$contentType) {
+        if ($contentType === null) {
             $logger->error('log.contenttype.not_found', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $id,
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
@@ -873,10 +873,10 @@ class ContentTypeController extends AppController
         /** @var ContentTypeRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:ContentType');
 
-        /** @var ContentType $contentType */
+        /** @var ContentType|null $contentType */
         $contentType = $repository->findById($id);
 
-        if (!$contentType) {
+        if ($contentType === null) {
             $logger->error('log.contenttype.not_found', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $id,
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,

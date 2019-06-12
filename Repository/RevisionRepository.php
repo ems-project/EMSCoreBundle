@@ -120,7 +120,7 @@ class RevisionRepository extends EntityRepository
      * @param string $ouuid
      * @param ContentType $contentType
      * @param Environment $environment
-     * @return mixed
+     * @return Revision
      * @throws NonUniqueResultException
      * @throws NoResultException
      */

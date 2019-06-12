@@ -648,16 +648,14 @@ class DataController extends AppController
             if ($environment !== $revision->getContentType()->getEnvironment()) {
                 try {
                     $sibling = $dataService->getRevisionByEnvironment($ouuid, $revision->getContentType(), $environment);
-                    if ($sibling) {
-                        $logger->warning('log.data.revision.cant_delete_has_published', [
-                            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                            'published_in' => $environment->getName(),
-                            EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
-                            EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                            EmsFields::LOG_REVISION_ID_FIELD => $sibling->getId(),
-                        ]);
-                        $found = true;
-                    }
+                    $logger->warning('log.data.revision.cant_delete_has_published', [
+                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                        'published_in' => $environment->getName(),
+                        EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
+                        EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                        EmsFields::LOG_REVISION_ID_FIELD => $sibling->getId(),
+                    ]);
+                    $found = true;
                 } catch (NoResultException $e) {
                 }
             }
@@ -1074,10 +1072,10 @@ class DataController extends AppController
         $em = $this->getDoctrine()->getManager();
         /** @var Template|null $template * */
         $template = $em->getRepository(Template::class)->find($templateId);
-        /** @var Environment $env */
+        /** @var Environment|null $env */
         $env = $em->getRepository(Environment::class)->findOneByName($environmentName);
 
-        if ($template === null || !$env) {
+        if ($template === null || $env === null) {
             throw new NotFoundHttpException();
         }
 

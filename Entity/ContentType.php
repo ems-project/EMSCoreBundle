@@ -62,7 +62,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     protected $singularName;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="icon", type="string", length=100, nullable=true)
      */
@@ -536,7 +536,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Get icon
      *
-     * @return string
+     * @return string|null
      */
     public function getIcon()
     {

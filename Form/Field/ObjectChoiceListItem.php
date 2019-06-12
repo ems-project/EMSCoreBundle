@@ -26,7 +26,8 @@ class ObjectChoiceListItem
         
         $this->label = '<i class="fa fa-question" data-ouuid="'.$this->value.'"></i>&nbsp;&nbsp;'.$this->value;
         if (null !== $contentType) {
-            $this->label = '<i class="'.(null !== $contentType->getIcon()?$contentType->getIcon():'fa fa-question').'" data-ouuid="'.$this->value.'"></i>&nbsp;&nbsp;';
+            $icon = null !== $contentType->getIcon() ? $contentType->getIcon() : 'fa fa-question';
+            $this->label = sprintf('<i class="%s" data-ouuid="%s"></i>&nbsp;&nbsp;', $icon, $this->value);
             if (null !== $contentType->getLabelField() && isset($object['_source'][$contentType->getLabelField()])) {
                 $this->label .= $object['_source'][$contentType->getLabelField()];
                 $this->title = $object['_source'][$contentType->getLabelField()];

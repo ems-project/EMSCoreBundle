@@ -408,9 +408,9 @@ class DataController extends AppController
         if ($compareId) {
             $logger->warning('log.data.revision.compare_beta', []);
 
-            /**@var Revision $compareRevision */
-            $compareRevision = $repository->findOneById($compareId);
-            if ($compareRevision) {
+            try {
+                /**@var Revision $compareRevision */
+                $compareRevision = $repository->findOneById($compareId);
                 $compareData = $compareRevision->getRawData();
                 if ($revision->getContentType() === $compareRevision->getContentType() && $revision->getOuuid() == $compareRevision->getOuuid()) {
                     if ($compareRevision->getCreated() <= $revision->getCreated()) {
@@ -438,7 +438,7 @@ class DataController extends AppController
                         'compare_revision_id' => $compareRevision->getId(),
                     ]);
                 }
-            } else {
+            } catch (\Throwable $e) {
                 $logger->warning('log.data.revision.compare_revision_not_found', [
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),

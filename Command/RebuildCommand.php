@@ -110,7 +110,7 @@ class RebuildCommand extends EmsCommand
         /** @var EnvironmentRepository $envRepo */
         $envRepo = $em->getRepository('EMSCoreBundle:Environment');
 
-        /** @var Environment $environment */
+        /** @var Environment|null $environment */
         $environment = $envRepo->findOneBy(['name' => $name, 'managed' => true]);
 
         if ($environment === null) {

@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Exception\NotLockedException;
 use EMS\CoreBundle\Service\Mapping;
 
@@ -54,7 +55,7 @@ class Revision
     private $deleted;
 
     /**
-     * @var ContentType
+     * @var ContentType|null
      *
      * @ORM\ManyToOne(targetEntity="ContentType")
      * @ORM\JoinColumn(name="content_type_id", referencedColumnName="id")
@@ -732,11 +733,11 @@ class Revision
     /**
      * Set contentType
      *
-     * @param \EMS\CoreBundle\Entity\ContentType $contentType
+     * @param ContentType $contentType
      *
      * @return Revision
      */
-    public function setContentType(\EMS\CoreBundle\Entity\ContentType $contentType = null)
+    public function setContentType(ContentType $contentType = null)
     {
         $this->contentType = $contentType;
 
@@ -746,7 +747,7 @@ class Revision
     /**
      * Get contentType
      *
-     * @return \EMS\CoreBundle\Entity\ContentType
+     * @return ContentType|null
      */
     public function getContentType()
     {

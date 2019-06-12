@@ -31,7 +31,6 @@ class CalendarController extends AppController
 
             /** @var \DateTime $from */
             $from = new \DateTime($request->request->get('start', false));
-            /** @var \DateTime $to */
             $to = $request->request->get('end', false);
             if (!$to) {
                 $to = clone $from;

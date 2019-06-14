@@ -625,22 +625,21 @@ function addEventListeners(target) {
             $('#root-list').append(output);
             $(this).val(null).trigger("change");
             addEventListeners(output);
+
         }
     });
 
     target.find(".reorder-modal-save").click(function(e) {
         e.preventDefault();
-        addEventListeners($('#reorder-modal .modal-body ol'));
         let hiddenSelect = $('#reorder-modal').data('select-id');
         let orderedItems = $('#root-list li');
 
         $('#' + hiddenSelect).empty();
         orderedItems.each(function() {
             $('#' + hiddenSelect).append(`<option value="${$(this).attr('id')}" selected="selected" title="${$(this).text().trim()}">
-                                                &lt;i class="fa fa-question" data-ouuid="${$(this).attr('id')}"&gt;&lt;/i&gt;&amp;nbsp;&amp;nbsp${$(this).text().trim()}
-                                            </option>`);
+                                            &lt;i class="fa fa-question" data-ouuid="${$(this).attr('id')}"&gt;&lt;/i&gt&amp;nbsp;&amp;nbsp${$(this).text().trim()}
+                                          </option>`);
         });
-
         $('#reorder-modal').modal('hide');
     });
 

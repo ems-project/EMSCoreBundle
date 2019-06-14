@@ -112,7 +112,7 @@
 {%- endblock select2_widget %}
 
 {% block reorder_modal_widget -%}
-{#    {% set attr = attr|merge({class: (attr.class|default('') ~ ' hidden')|trim}) %}#}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' hidden')|trim}) %}
     <button type="button" class="reorder-modal-btn btn btn-primary" data-toggle="modal" data-target="#reorder-modal">
         {{ 'Reorganise'|trans }}
     </button>

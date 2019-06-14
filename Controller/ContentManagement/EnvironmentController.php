@@ -313,13 +313,6 @@ class EnvironmentController extends AppController
                     'index' => $name
             ]);
                         
-            if (count($indexes) > 1) {
-                $this->getLogger()->error('log.environment.cant_attach_xti_alias_to_environment', [
-                    'alias' => $name,
-                ]);
-                return $this->redirectToRoute('environment.index');
-            }
-                        
             if (strcmp($name, array_keys($indexes) [0]) != 0) {
                 /** @var EntityManager $em */
                 $em = $this->getDoctrine()->getManager();
@@ -565,10 +558,10 @@ class EnvironmentController extends AppController
         /** @var EnvironmentRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:Environment');
     
-        /** @var Environment $environment */
+        /** @var Environment|null $environment */
         $environment = $repository->find($id);
     
-        if (! $environment) {
+        if ($environment === null) {
             throw new NotFoundHttpException('Unknow environment');
         }
     
@@ -612,10 +605,10 @@ class EnvironmentController extends AppController
         /** @var EnvironmentRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:Environment');
         
-        /** @var Environment $environment */
+        /** @var Environment|null $environment */
         $environment = $repository->find($id);
     
-        if (! $environment) {
+        if ($environment === null) {
             throw new NotFoundHttpException('Unknow environment');
         }
 
@@ -658,10 +651,10 @@ class EnvironmentController extends AppController
         /** @var EnvironmentRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:Environment');
     
-        /** @var Environment $environment */
+        /** @var Environment|null $environment */
         $environment = $repository->find($id);
     
-        if (! $environment) {
+        if ($environment === null) {
             throw new NotFoundHttpException('Unknow environment');
         }
     

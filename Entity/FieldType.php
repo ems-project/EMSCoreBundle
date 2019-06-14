@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 
@@ -481,11 +482,11 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     /**
      * Set contentType
      *
-     * @param \EMS\CoreBundle\Entity\ContentType $contentType
+     * @param ContentType $contentType
      *
      * @return FieldType
      */
-    public function setContentType(\EMS\CoreBundle\Entity\ContentType $contentType = null)
+    public function setContentType(ContentType $contentType = null)
     {
         $this->contentType = $contentType;
 
@@ -495,7 +496,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     /**
      * Get contentType
      *
-     * @return \EMS\CoreBundle\Entity\ContentType
+     * @return null|ContentType
      */
     public function getContentType()
     {

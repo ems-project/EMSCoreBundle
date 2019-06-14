@@ -540,7 +540,7 @@ class DataService
             $objectArray = $revision->getRawData();
         }
 
-        $objectArray['_contenttype'] = $revision->getContentType()->getName();
+        $objectArray[Mapping::CONTENT_TYPE_FIELD] = $revision->getContentType()->getName();
         if (isset($objectArray[Mapping::HASH_FIELD])) {
             unset($objectArray[Mapping::HASH_FIELD]);
         }
@@ -870,7 +870,9 @@ class DataService
      *
      * @param string $type
      * @param string $ouuid
+     *
      * @return Revision
+     *
      * @throws Exception
      * @throws NotFoundHttpException
      */
@@ -1079,7 +1081,9 @@ class DataService
      * @param string $ouuid
      * @param Revision|null $fromRev
      * @param string|null $username
+     *
      * @return Revision
+     *
      * @throws LockedException
      * @throws PrivilegeException
      * @throws ORMException

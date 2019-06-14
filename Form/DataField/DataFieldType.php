@@ -126,7 +126,7 @@ abstract class DataFieldType extends AbstractType
      *
      * http://symfony.com/doc/current/form/data_transformers.html#about-model-and-view-transformers
      *
-     * @param array $data
+     * @param array|null|string|integer|float $data
      * @param FieldType $fieldType
      *
      * @return DataField
@@ -280,7 +280,7 @@ abstract class DataFieldType extends AbstractType
      * Assign data of the dataField based on the elastic index content ($sourceArray)
      *
      * @param DataField $dataField
-     * @param array $sourceArray
+     * @param string|array $sourceArray
      * @param bool $isMigration
      *
      * @return array

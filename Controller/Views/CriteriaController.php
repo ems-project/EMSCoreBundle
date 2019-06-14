@@ -108,7 +108,7 @@ class CriteriaController extends AppController
                             } else {
                                 $rawData = $filters;
                                 $targetFieldName = null;
-                                if ($view->getContentType()->getCategoryField() &&  $criteriaUpdateConfig->getCategory()) {
+                                if ($view->getContentType()->getCategoryField() &&  $criteriaUpdateConfig->getCategory() !== null) {
                                     $rawData[$view->getContentType()->getCategoryField()] = $criteriaUpdateConfig->getCategory()->getRawData();
                                 }
                                 if (isset($view->getOptions()['targetField'])) {
@@ -164,7 +164,7 @@ class CriteriaController extends AppController
                             } else {
                                 $rawData = $filters;
                                 $targetFieldName = null;
-                                if ($view->getContentType()->getCategoryField() &&  $criteriaUpdateConfig->getCategory()) {
+                                if ($view->getContentType()->getCategoryField() &&  $criteriaUpdateConfig->getCategory() !== null) {
                                     $rawData[$view->getContentType()->getCategoryField()] = $criteriaUpdateConfig->getCategory()->getRawData();
                                 }
                                 if (isset($view->getOptions()['targetField'])) {
@@ -363,7 +363,7 @@ class CriteriaController extends AppController
         ];
         
         $categoryChoiceList = false;
-        if ($criteriaUpdateConfig->getCategory()) {
+        if ($criteriaUpdateConfig->getCategory() !== null) {
             $dataField = $criteriaUpdateConfig->getCategory();
             if ($dataField->getRawData() && strlen($dataField->getTextValue()) > 0) {
                 $categoryFieldTypeName = $dataField->getFieldType()->getType();

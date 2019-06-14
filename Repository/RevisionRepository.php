@@ -120,7 +120,7 @@ class RevisionRepository extends EntityRepository
      * @param string $ouuid
      * @param ContentType $contentType
      * @param Environment $environment
-     * @return mixed
+     * @return Revision
      * @throws NonUniqueResultException
      * @throws NoResultException
      */
@@ -399,8 +399,6 @@ class RevisionRepository extends EntityRepository
      */
     public function findByOuuidAndContentTypeAndEnvironnement(ContentType $contentType, $ouuid, Environment $env)
     {
-    
-        
         $qb = $this->createQueryBuilder('r');
         $qb->join('r.environments', 'e');
         $qb->where('r.ouuid = :ouuid and e.id = :envId and r.contentType = :contentTypeId');

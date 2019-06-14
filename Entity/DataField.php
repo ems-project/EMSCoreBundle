@@ -31,7 +31,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     private $orderKey;
 
     /**
-     * @var DataField
+     * @var DataField|null
      */
     private $parent;
     
@@ -330,19 +330,8 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         return null;
     }
 
-    /**
-     * Set textValue
-     *
-     * @param string $rawData
-     *
-     * @return DataField
-     * @throws DataFormatException
-     */
-    public function setTextValue($rawData)
+    public function setTextValue(?string $rawData): DataField
     {
-        if ($rawData !== null && !is_string($rawData)) {
-            throw new DataFormatException('String expected: '.print_r($rawData, true));
-        }
         $this->rawData = $rawData;
         return $this;
     }
@@ -371,7 +360,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Set passwordValue
      *
-     * @param string $passwordValue
+     * @param null|string $passwordValue
      *
      * @return DataField
      */
@@ -420,20 +409,8 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         return false;
     }
 
-
-    /**
-     * Set floatValue
-     *
-     * @param float $rawData
-     *
-     * @return DataField
-     * @throws DataFormatException
-     */
-    public function setFloatValue($rawData)
+    public function setFloatValue(?float $rawData): DataField
     {
-        if ($rawData !== null && !is_finite($rawData)) {
-            throw new DataFormatException('Float or double expected: '.print_r($rawData, true));
-        }
         $this->rawData = $rawData;
         return $this;
     }
@@ -484,20 +461,10 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         }
     }
 
-    /**
-     * Set arrayTextValue
-     *
-     * @param array $rawData
-     *
-     * @return DataField
-     * @throws DataFormatException
-     */
-    public function setArrayTextValue($rawData)
+    public function setArrayTextValue(?array $rawData): DataField
     {
         if ($rawData === null) {
             $this->rawData = null;
-        } else if (!is_array($rawData)) {
-            throw new DataFormatException('Array expected: '.print_r($rawData, true));
         } else {
             foreach ($rawData as $item) {
                 if (!is_string($item)) {
@@ -563,7 +530,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Set integerValue
      *
-     * @param integer $rawData
+     * @param null|string|int $rawData
      *
      * @return DataField
      */
@@ -571,7 +538,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     {
         if ($rawData === null || is_int($rawData)) {
             $this->rawData = $rawData;
-        } else if (intval($rawData) || $rawData === 0 || $rawData === '0') {
+        } else if (intval($rawData) || $rawData === '0') {
             $this->rawData = intval($rawData);
         } else {
             $this->addMessage('Integer expected: '.print_r($rawData, true));
@@ -613,19 +580,8 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         return $out;
     }
 
-    /**
-     * Set booleanValue
-     *
-     * @param boolean $rawData
-     *
-     * @return DataField
-     * @throws DataFormatException
-     */
-    public function setBooleanValue($rawData)
+    public function setBooleanValue(?bool $rawData): DataField
     {
-        if ($rawData !== null && !is_bool($rawData)) {
-            throw new DataFormatException('Boolean expected: '.$rawData);
-        }
         $this->rawData = $rawData;
 
         return $this;
@@ -633,7 +589,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
 
     /**
      *
-     * @return \EMS\CoreBundle\Entity\DataField
+     * @return DataField
      */
     public function getRootDataField()
     {
@@ -737,11 +693,11 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Set parent
      *
-     * @param \EMS\CoreBundle\Entity\DataField $parent
+     * @param DataField $parent
      *
      * @return DataField
      */
-    public function setParent(\EMS\CoreBundle\Entity\DataField $parent = null)
+    public function setParent(DataField $parent = null)
     {
         $this->parent = $parent;
 
@@ -751,7 +707,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Get parent
      *
-     * @return \EMS\CoreBundle\Entity\DataField
+     * @return DataField|null
      */
     public function getParent()
     {
@@ -761,11 +717,11 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Add child
      *
-     * @param \EMS\CoreBundle\Entity\DataField $child
+     * @param DataField $child
      *
      * @return DataField
      */
-    public function addChild(\EMS\CoreBundle\Entity\DataField $child)
+    public function addChild(DataField $child)
     {
         $this->children[] = $child;
 
@@ -775,9 +731,9 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Remove child
      *
-     * @param \EMS\CoreBundle\Entity\DataField $child
+     * @param DataField $child
      */
-    public function removeChild(\EMS\CoreBundle\Entity\DataField $child)
+    public function removeChild(DataField $child)
     {
         $this->children->removeElement($child);
     }
@@ -795,7 +751,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Set rawData
      *
-     * @param array $rawData
+     * @param array|null|string|integer|float $rawData
      *
      * @return DataField
      */
@@ -809,7 +765,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     /**
      * Get rawData
      *
-     * @return array
+     * @return array|null|string|integer|float
      */
     public function getRawData()
     {

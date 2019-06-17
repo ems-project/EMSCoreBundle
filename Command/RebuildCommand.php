@@ -71,7 +71,13 @@ class RebuildCommand extends EmsCommand
                 'sign-data',
                 null,
                 InputOption::VALUE_NONE,
-                'The content will be (re)signed during the rebuilding process'
+                'Deprecated: the data are signed by default'
+            )
+            ->addOption(
+                'dont-sign',
+                null,
+                InputOption::VALUE_NONE,
+                'Don\'t (re)signed the documents during the rebuilding process'
             )
             ->addOption(
                 'bulk-size',
@@ -98,9 +104,13 @@ class RebuildCommand extends EmsCommand
         if (! $input->getOption('yellow-ok')) {
             $this->waitForGreen($output);
         }
-        
-        
-        $signData= $input->getOption('sign-data');
+
+        if ($input->getOption('sign-data')) {
+            $this->logger->warning('command.rebuild.sign-data');
+            $output->writeln('The option --sign-data is deprecated');
+        }
+
+        $signData = !$input->getOption('dont-sign');
 
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();

@@ -28,8 +28,12 @@ abstract class JsonDeserializer
         }
     }
 
-    protected function convertToDateTime(array $value): \DateTime
+    protected function convertToDateTime(?array $value): ?\DateTime
     {
+        if ($value === null) {
+            return null;
+        }
+        
         $time = $value['date'];
         $zone = new \DateTimeZone($value['timezone']);
         return new \DateTime($time, $zone);

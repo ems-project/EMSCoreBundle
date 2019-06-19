@@ -182,14 +182,14 @@ class PublishService
                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                 EmsFields::LOG_ENVIRONMENT_FIELD  => $revision->getContentType()->getEnvironment()->getName(),
-                EmsFields::LOG_OPERATION_DELETE => EmsFields::LOG_OPERATION_UPDATE,
+                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
             ]);
         } catch (Exception $e) {
             $this->logger->warning('service.publish.publish_draft_error', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                 EmsFields::LOG_ENVIRONMENT_FIELD  => $revision->getContentType()->getEnvironment()->getName(),
-                EmsFields::LOG_OPERATION_DELETE => EmsFields::LOG_OPERATION_UPDATE,
+                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                 EmsFields::LOG_EXCEPTION_FIELD => $e,
             ]);

@@ -17,23 +17,17 @@ abstract class JsonDeserializer
 
     protected function deserializeProperty(string $name, $value)
     {
-        switch ($name) {
-            case 'created':
-            case 'modified':
-            case 'lockUntil':
-                $this->{$name} = $this->convertToDateTime($value);
-                break;
-            default:
-                $this->{$name} = $value;
+        $dateFields = ['created', 'modified', 'lockUntil'];
+
+        if ($value !== null && \in_array($name, $dateFields)) {
+            $value = $this->convertToDateTime($value);
         }
+
+        $this->{$name} = $value;
     }
 
-    protected function convertToDateTime(?array $value): ?\DateTime
+    protected function convertToDateTime(array $value): \DateTime
     {
-        if ($value === null) {
-            return null;
-        }
-        
         $time = $value['date'];
         $zone = new \DateTimeZone($value['timezone']);
         return new \DateTime($time, $zone);

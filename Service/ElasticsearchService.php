@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 class ElasticsearchService
 {
 
-    /** @var string */
+    /** @var ?string */
     private $cachedVersion;
 
     /** @var LoggerInterface */
@@ -36,7 +36,7 @@ class ElasticsearchService
      */
     public function getVersion()
     {
-        if($this->cachedVersion === null) {
+        if ($this->cachedVersion === null) {
             $this->cachedVersion = $this->client->info()['version']['number'];
         }
         return $this->cachedVersion;
@@ -76,7 +76,6 @@ class ElasticsearchService
         }
 
         return new Document($contentType->getName(), $ouuid, $result['hits']['hits'][0]['_source']);
-
     }
 
 

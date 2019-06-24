@@ -47,6 +47,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -1201,6 +1202,10 @@ class DataController extends AppController
 
             $this->getDataService()->isValid($form);
             $this->getDataService()->propagateDataToComputedField($form->get('data'), $objectArray, $revision->getContentType(), $revision->getContentType()->getName(), $revision->getOuuid());
+            $session = $request->getSession();
+            if ($session instanceof Session){
+                $session->getFlashBag()->set('warning', []);
+            }
 
             $formErrors = $form->getErrors(true, true);
 

@@ -407,6 +407,7 @@ service:
     extract_error: 'An issue has been raised while extracting information from the asset/file ems://asset:%file_hash% : %error_message%'
     persist_error: 'An issue has been raised while persisting the information extracted from the asset/file ems://asset:%file_hash% : %error_message%'
   data:
+    cant_finalize_field: 'Error with the field "%field_display%": "%error_message%"'
     update_referrers_error: 'It was impossible to update referrers of the document ems://object:%contenttype%:%ouuid%'
     not_a_draft: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% is already finalized'
     unknown_update_type: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has not been replaced or replaced as the update type "%update_type%" is unknown'
@@ -416,7 +417,7 @@ service:
     unpublished: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has been unpublished from %environment%'
     default_value_template_error: 'It was not possible to initiate the default value (compile template) for the content type %contenttype%, please check the content type''s configuration'
     default_value_error: 'It was not possible to initiate the default value (json_decode) for the content type %contenttype%, please check the content type''s configuration'
-    cant_be_finalized: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% can''t be finalized as it is'
+    cant_be_finalized: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% can''t be finalized as it is (see previous warnings)'
     post_finalize_failed: 'Error while finalize the post processing of the document ems://object:%contenttype%:%ouuid% : %error_message%'
     integrity_failed: 'Issue in %environment% while checking integrity of the document ems://object:%contenttype%:%ouuid%: %error_message%'
     not_a_data_field: 'Unexpected %field_name% field in the revision form'

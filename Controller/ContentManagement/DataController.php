@@ -919,7 +919,7 @@ class DataController extends AppController
      * @Route("/data/custom-view/{environmentName}/{templateId}/{ouuid}/{_download}", defaults={"_download": false, "public": false} , name="data.customview"))
      * @Route("/data/template/{environmentName}/{templateId}/{ouuid}/{_download}", defaults={"_download": false, "public": false} , name="ems_data_custom_template_protected"))
      */
-    public function customViewAction($environmentName, $templateId, $ouuid, $_download, $public, LoggerInterface $logger, TranslatorInterface $translator)
+    public function customViewAction($environmentName, $templateId, $ouuid, $_download, $public, LoggerInterface $logger, TranslatorInterface $translator, ElasticsearchService $elasticsearchService)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -948,14 +948,7 @@ class DataController extends AppController
         /** @var Environment $environment */
         $environment = $environment[0];
 
-        /** @var Client $client */
-        $client = $this->getElasticsearch();
-
-        $object = $client->get([
-            'index' => $environment->getAlias(),
-            'type' => $template->getContentType()->getName(),
-            'id' => $ouuid
-        ]);
+        $object = $elasticsearchService->get($environment, $template->getContentType(), $ouuid);
 
         $twig = $this->getTwig();
 
@@ -977,7 +970,7 @@ class DataController extends AppController
                 'environment' => $environment,
                 'contentType' => $template->getContentType(),
                 'object' => $object,
-                'source' => $object['_source'],
+                'source' => $object->getSource(),
                 '_download' => ($_download || !$template->getPreview()),
             ]);
 
@@ -1022,7 +1015,7 @@ class DataController extends AppController
                     'environment' => $environment,
                     'contentType' => $template->getContentType(),
                     'object' => $object,
-                    'source' => $object['_source'],
+                    'source' => $object->getSource(),
                 ]);
                 $filename = preg_replace('~[\r\n]+~', '', $filename);
             }
@@ -1045,7 +1038,7 @@ class DataController extends AppController
                 'environment' => $environment,
                 'contentType' => $template->getContentType(),
                 'object' => $object,
-                'source' => $object['_source'],
+                'source' => $object->getSource(),
             ]);
             echo $output;
 

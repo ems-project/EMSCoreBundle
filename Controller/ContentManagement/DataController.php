@@ -50,6 +50,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Throwable;
 use Twig\Error\LoaderError;
@@ -1107,7 +1108,7 @@ class DataController extends AppController
             ]);
             return $this->returnJsonResponse($request, true, [
                 'jobId' => $job->getId(),
-                'jobUrl' => $this->generateUrl('emsco_job_start', ['job' => $job->getId()]),
+                'jobUrl' => $this->generateUrl('emsco_job_start', ['job' => $job->getId()], UrlGeneratorInterface::RELATIVE_PATH),
             ]);
         } catch (Exception $e) {
             $logger->error('log.data.job.initialize_failed', [

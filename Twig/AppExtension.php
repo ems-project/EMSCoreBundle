@@ -15,6 +15,7 @@ use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\I18n;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
+use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Form\DataField\DateFieldType;
 use EMS\CoreBundle\Form\DataField\DateRangeFieldType;
 use EMS\CoreBundle\Form\DataField\TimeFieldType;
@@ -929,7 +930,7 @@ class AppExtension extends \Twig_Extension
     public function data($key, string $index = null)
     {
         if (empty($key)) {
-            return false;
+            return null;
         }
 
         $splitted = explode(':', $key);
@@ -937,25 +938,44 @@ class AppExtension extends \Twig_Extension
             $type = $splitted[0];
             $ouuid = $splitted[1];
 
-
             /**@var \EMS\CoreBundle\Entity\ContentType $contentType */
             $contentType = $this->contentTypeService->getByName($type);
             if ($contentType) {
                 $singleTypeIndex = $this->contentTypeService->getIndex($contentType);
-                try {
-                    $result = $this->client->get([
-                        'id' => $ouuid,
-                        'index' => $index ?? $singleTypeIndex,
-                        'type' => $type,
-                    ]);
 
-                    return $result['_source'];
-                } catch (Missing404Exception $e) {
-                    return false;
+                $body = [
+                    'index' => $index ?? $singleTypeIndex,
+                    'body' => [
+                        'query' => [
+                            'bool' => [
+                                'must' => [['term' => ['_id' => $ouuid]]],
+                                'minimum_should_match' => 1,
+                                'should' => [
+                                    ['term' => ['_type' => $type]],
+                                    ['term' => ['_contenttype' => $type]],
+                                ]
+
+                            ]
+                        ]
+                    ]
+
+                ];
+
+                $result = $this->client->search($body);
+                $total = $result['hits']['total'];
+
+                if (1 === $total) {
+                    return $result['hits']['hits'][0]['_source'];
                 }
+
+                if ($total > 1) {
+                    throw new ElasticmsException(\sprintf('Multiple hits for ems key "%s" (%d) on alias/index "%s"', $key, $total, $index));
+                }
+
+                return null; //zero hits
             }
         }
-        return false;
+        return null;
     }
 
     public function oneGranted($roles, $super = false)

@@ -1203,7 +1203,7 @@ class DataController extends AppController
             $this->getDataService()->isValid($form);
             $this->getDataService()->propagateDataToComputedField($form->get('data'), $objectArray, $revision->getContentType(), $revision->getContentType()->getName(), $revision->getOuuid());
             $session = $request->getSession();
-            if ($session instanceof Session){
+            if ($session instanceof Session) {
                 $session->getFlashBag()->set('warning', []);
             }
 

@@ -3,6 +3,11 @@
 namespace EMS\CoreBundle\Service;
 
 use Elasticsearch\Client;
+use EMS\CommonBundle\Common\Document;
+use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Environment;
+use Psr\Log\LoggerInterface;
 
 class ElasticsearchService
 {
@@ -10,13 +15,17 @@ class ElasticsearchService
     /** @var string */
     private $cachedVersion;
 
+    /** @var LoggerInterface */
+    private $logger;
+
 
     /** @var Client */
     private $client;
 
-    public function __construct(Client $client)
+    public function __construct(Client $client, LoggerInterface $logger)
     {
         $this->client = $client;
+        $this->logger = $logger;
         $this->cachedVersion = null;
     }
 
@@ -32,7 +41,45 @@ class ElasticsearchService
         }
         return $this->cachedVersion;
     }
-    
+
+
+    public function get(Environment $environment, ContentType $contentType, $ouuid)
+    {
+        $result = $this->client->search([
+            'index' => $environment->getAlias(),
+            'body' => [
+                'query' => [
+                    'bool' => [
+                        'must' => [['term' => ['_id' => $ouuid]]],
+                        'minimum_should_match' => 1,
+                        'should' => [
+                            ['term' => ['_type' => $contentType->getName()]],
+                            ['term' => ['_contenttype' => $contentType->getName()]],
+                        ],
+                    ],
+                ],
+                'size' => 1,
+            ]
+        ]);
+
+        if (0 === $result['hits']['total']) {
+            return null;
+        }
+
+        if (1 !== $result['hits']['total']) {
+            $this->logger->error('log.elasticsearch.too_many_document_result', [
+                'total' =>$result['hits']['total'],
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                EmsFields::LOG_OUUID_FIELD => $ouuid,
+                EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
+            ]);
+        }
+
+        return new Document($contentType->getName(), $ouuid, $result['hits']['hits'][0]['_source']);
+
+    }
+
+
     /**
      * Compare the parameter specified version with a string
      *

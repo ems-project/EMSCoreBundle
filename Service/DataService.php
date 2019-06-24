@@ -356,6 +356,11 @@ class DataService
                 if ($e->getPrevious() && $e->getPrevious() instanceof CantBeFinalizedException) {
                     if (!$migration) {
                         $form->addError(new FormError($e->getPrevious()->getMessage()));
+                        $this->logger->warning('service.data.cant_finalize_field', [
+                            'field_name' => $dataField->getFieldType()->getName(),
+                            'field_display' => isset($dataField->getFieldType()->getDisplayOptions()['label']) && !empty($dataField->getFieldType()->getDisplayOptions()['label']) ? $dataField->getFieldType()->getDisplayOptions()['label'] : $dataField->getFieldType()->getName(),
+                            EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getPrevious()->getMessage(),
+                        ]);
                     }
                 } else {
                     $this->logger->warning('service.data.json_parse_post_processing_error', [
@@ -834,7 +839,7 @@ class DataService
                 ]);
             }
         } else {
-            $this->logger->error('service.data.cant_be_finalized', [
+            $this->logger->warning('service.data.cant_be_finalized', [
                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                 EmsFields::LOG_ENVIRONMENT_FIELD => $revision->getContentType()->getEnvironment()->getName(),

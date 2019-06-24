@@ -558,6 +558,7 @@ services:
     EMS\CoreBundle\Elasticsearch\Bulker: '@ems.elasticsearch.bulker'
     EMS\CoreBundle\Elasticsearch\Indexer: '@ems.elasticsearch.indexer'
     EMS\CoreBundle\Service\FileService: '@ems.service.file'
+    EMS\CoreBundle\Service\ElasticsearchService: '@ems.service.elasticsearch'
 
 
 #### Will be mark as deprecated soon

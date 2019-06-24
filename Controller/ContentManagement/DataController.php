@@ -36,6 +36,7 @@ use EMS\CoreBundle\Repository\TemplateRepository;
 use EMS\CoreBundle\Repository\ViewRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
+use EMS\CoreBundle\Service\ElasticsearchService;
 use EMS\CoreBundle\Service\Mapping;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -1067,7 +1068,7 @@ class DataController extends AppController
      * @throws Throwable
      * @Route("/data/custom-view-job/{environmentName}/{templateId}/{ouuid}", name="ems_job_custom_view", methods={"POST"})
      */
-    public function customViewJobAction($environmentName, $templateId, $ouuid, LoggerInterface $logger)
+    public function customViewJobAction($environmentName, $templateId, $ouuid, LoggerInterface $logger, ElasticsearchService $esService )
     {
         $em = $this->getDoctrine()->getManager();
         /** @var Template|null $template * */
@@ -1079,19 +1080,15 @@ class DataController extends AppController
             throw new NotFoundHttpException();
         }
 
-        $object = $this->getElasticsearch()->get([
-            'index' => $env->getAlias(),
-            'type' => $template->getContentType()->getName(),
-            'id' => $ouuid,
-        ]);
+        $document = $esService->get($env, $template->getContentType(), $ouuid);
 
         $success = false;
         try {
             $command = $this->getTwig()->createTemplate($template->getBody())->render([
                 'environment' => $env->getName(),
                 'contentType' => $template->getContentType(),
-                'object' => $object,
-                'source' => $object['_source'],
+                'object' => $document,
+                'source' => $document->getSource(),
             ]);
 
             /** @var CoreBundle\Service\JobService $jobService */

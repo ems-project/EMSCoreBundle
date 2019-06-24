@@ -8,6 +8,7 @@ use EMS\CoreBundle\Entity\Job;
 use EMS\CoreBundle\Form\Form\JobType;
 use EMS\CoreBundle\Service\JobService;
 use Exception;
+use Psr\Log\LoggerInterface;
 use SensioLabs\AnsiConverter\AnsiToHtmlConverter;
 use SensioLabs\AnsiConverter\Theme\Theme;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
@@ -114,8 +115,9 @@ class JobController extends AppController
      * @return JsonResponse
      *
      * @Route("/admin/job/start/{job}", name="job.start", methods={"POST"})
+     * @Route("/job/start/{job}", name="emsco_job_start", methods={"POST"})
      */
-    public function startJobAction(Job $job, Request $request, JobService $jobService)
+    public function startJobAction(Job $job, Request $request, JobService $jobService, LoggerInterface $logger)
     {
         if ($job->getUser() != $this->getUser()->getUsername()) {
             throw new AccessDeniedHttpException();
@@ -136,6 +138,9 @@ class JobController extends AppController
                 $input = new ArrayInput($job->getArguments());
                 $command->run($input, $output);
                 $output->writeln('Job done');
+                $logger->notice('log.data.job.done', [
+                    'job_id' => $job->getId(),
+                ]);
             } catch (ServiceNotFoundException $e) {
                 $output->writeln('<error>Service not found</error>');
             } catch (InvalidArgumentException $e) {
@@ -148,8 +153,14 @@ class JobController extends AppController
             $jobService->finish($job, $output);
         } else {
             $jobService->run($job);
+            $logger->notice('log.data.job.done', [
+                'job_id' => $job->getId(),
+            ]);
         }
 
-        return new JsonResponse('job started');
+        return $this->returnJsonResponse($request, true, [
+            'message' => 'job started',
+            'job_id' => $job->getId(),
+        ]);
     }
 }

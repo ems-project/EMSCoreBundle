@@ -1064,11 +1064,12 @@ class DataController extends AppController
      * @param int $templateId
      * @param string $ouuid
      * @param LoggerInterface $logger
+     * @param ElasticsearchService $esService
      * @return Response
      * @throws Throwable
      * @Route("/data/custom-view-job/{environmentName}/{templateId}/{ouuid}", name="ems_job_custom_view", methods={"POST"})
      */
-    public function customViewJobAction($environmentName, $templateId, $ouuid, LoggerInterface $logger, ElasticsearchService $esService )
+    public function customViewJobAction($environmentName, $templateId, $ouuid, LoggerInterface $logger, ElasticsearchService $esService, Request $request )
     {
         $em = $this->getDoctrine()->getManager();
         /** @var Template|null $template * */
@@ -1095,15 +1096,18 @@ class DataController extends AppController
             $jobService = $this->get('ems.service.job');
             $job = $jobService->createCommand($this->getUser(), $command);
 
-            $jobService->run($job);
-
             $success = true;
-            $logger->notice('log.data.job.started', [
+            $logger->notice('log.data.job.initialized', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $template->getContentType()->getName(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
                 EmsFields::LOG_OUUID_FIELD => $ouuid,
                 'template_id' => $template->getId(),
+                'job_id' => $job->getId(),
                 'template_name' => $template->getName(),
+            ]);
+            return $this->returnJsonResponse($request, true, [
+                'jobId' => $job->getId(),
+                'jobUrl' => $this->generateUrl('emsco_job_start', ['job' => $job->getId()]),
             ]);
         } catch (Exception $e) {
             $logger->error('log.data.job.initialize_failed', [

@@ -28,6 +28,8 @@ use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -308,6 +310,25 @@ class AppController extends Controller
     public function getEnvironmentService()
     {
         return $this->get('ems.service.environment');
+    }
+
+
+
+    protected function returnJsonResponse(Request $request, bool $success, array $body = [])
+    {
+        $body['success'] = $success;
+        $body['acknowledged'] = true;
+        foreach (['notice', 'warning', 'error'] as $level) {
+            $messages = $request->getSession()->getFlashBag()->get($level);
+            if (!empty($messages)) {
+                $body[$level] = $messages;
+            }
+        }
+
+        $response = new Response();
+        $response->setContent(json_encode($body));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
 
     protected function returnJson($success, $template = '@EMSCore/ajax/notification.json.twig')

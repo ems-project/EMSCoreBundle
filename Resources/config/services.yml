@@ -455,7 +455,7 @@ services:
         arguments: ['@doctrine', '@request_stack', '%ems_core.paging_size%']
     ems.service.elasticsearch:
         class: EMS\CoreBundle\Service\ElasticsearchService
-        arguments: ['@app.elasticsearch']
+        arguments: ['@app.elasticsearch', '@logger']
     ems.service.job: '@EMS\CoreBundle\Service\JobService'
     EMS\CoreBundle\Service\JobService:
         class: EMS\CoreBundle\Service\JobService

@@ -584,7 +584,9 @@ log:
   error: 'This page/action has encountered an error: %error_message%'
   data:
     job:
+      done: 'The job %job_id% is done'
       initialize_failed: 'A job %template_name% has failed for the document ems://object:%contenttype%:%ouuid% in the environment %environment%'
+      initialized: 'A job %template_name% has been initialized for the document ems://object:%contenttype%:%ouuid% in the environment %environment%'
       started: 'A job %template_name% has been started for the document ems://object:%contenttype%:%ouuid% in the environment %environment%'
     document:
       copy: 'The content of the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has been copied into the clipboard'

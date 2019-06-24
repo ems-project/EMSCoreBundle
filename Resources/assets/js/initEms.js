@@ -57,7 +57,10 @@ import EmsListeners from "./EmsListeners";
     function requestJob() {
         $("a.request_job").on('click', function(e){
             e.preventDefault();
-            window.ajaxRequest.post($(e.target).data('url'));
+            window.ajaxRequest.post($(e.target).data('url'))
+                .success(function(message) {
+                    window.ajaxRequest.post(message.jobUrl);
+                });
         });
     }
 

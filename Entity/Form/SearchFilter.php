@@ -110,22 +110,26 @@ class SearchFilter implements JsonSerializable
                 case 'query_and':
                     $out = [
                         "query_string" => [
-                            "default_field" => $field?$field:"_all",
                             "query" =>  $this->pattern?$this->pattern:"*",
                             "default_operator" => "AND",
                             "boost" => $this->boost?$this->boost:1,
                         ]
                     ];
+                    if (!empty($field)) {
+                        $out['query_string']['default_field'] = $field;
+                    }
                     break;
                 case 'query_or':
                     $out = [
                         "query_string" => [
-                            "default_field" => $field?$field:"_all",
                             "query" =>  $this->pattern?$this->pattern:"*",
                             "default_operator" => "OR",
                             "boost" => $this->boost?$this->boost:1,
                         ]
                     ];
+                    if (!empty($field)) {
+                        $out['query_string']['default_field'] = $field;
+                    }
                     break;
                 case 'term':
                     $out = [

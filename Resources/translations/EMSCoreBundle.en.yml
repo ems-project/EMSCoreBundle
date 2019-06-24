@@ -416,7 +416,7 @@ service:
     unpublished: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has been unpublished from %environment%'
     default_value_template_error: 'It was not possible to initiate the default value (compile template) for the content type %contenttype%, please check the content type''s configuration'
     default_value_error: 'It was not possible to initiate the default value (json_decode) for the content type %contenttype%, please check the content type''s configuration'
-    cant_be_finalized: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% cant''t be finalized as it is'
+    cant_be_finalized: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% can''t be finalized as it is'
     post_finalize_failed: 'Error while finalize the post processing of the document ems://object:%contenttype%:%ouuid% : %error_message%'
     integrity_failed: 'Issue in %environment% while checking integrity of the document ems://object:%contenttype%:%ouuid%: %error_message%'
     not_a_data_field: 'Unexpected %field_name% field in the revision form'
@@ -597,7 +597,7 @@ log:
     revision:
       load_from_auto_save: 'Data were loaded from an auto-saved version for the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid%'
       auto_save_off_with_auto_publish: 'The auto-save has been disabled as the auto-publish is enabled for the content type %contenttype%. Press Ctrl+S (Cmd+S) in order to publish in %environment%'
-      can_finalized: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% cant''t be finalized as it is'
+      can_finalized: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% can''t be finalized as it is'
       only_super_can_finalize_an_archive: 'Only a super user can finalize an archived revision'
       can_finalized_error: 'The document ems://object:%contenttype%:%ouuid% can''t be finalized due to an error: %error_message%'
       can_finalized_as_invalid: '{1} The document ems://object:%contenttype%:%ouuid% can''t be finalized has there is one error |]1,Inf[ The document ems://object:%contenttype%:%ouuid% can''t be finalized as there is %count% errors'

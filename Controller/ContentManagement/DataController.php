@@ -673,8 +673,8 @@ class DataController extends AppController
 
         $dataService->delete($type, $ouuid);
 
-        return $this->redirectToRoute('data.draft_in_progress', [
-            'contentTypeId' => $contentType->getId(),
+        return $this->redirectToRoute('data.root', [
+            'name' => $type,
         ]);
     }
 

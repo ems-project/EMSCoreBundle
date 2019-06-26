@@ -1254,9 +1254,10 @@ class DataService
             foreach ($revision->getEnvironments() as $environment) {
                 try {
                     $this->client->delete([
-                            'index' => $this->contentTypeService->getIndex($revision->getContentType()),
-                            'type' => $revision->getContentType()->getName(),
-                            'id' => $revision->getOuuid(),
+                        'index' => $this->contentTypeService->getIndex($revision->getContentType()),
+                        'type' => $revision->getContentType()->getName(),
+                        'id' => $revision->getOuuid(),
+                        'refresh' => true,
                     ]);
                     $this->logger->notice('service.data.unpublished', [
                         EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),

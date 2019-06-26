@@ -36,6 +36,7 @@ use EMS\CoreBundle\Repository\TemplateRepository;
 use EMS\CoreBundle\Repository\ViewRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
+use EMS\CoreBundle\Service\ElasticsearchService;
 use EMS\CoreBundle\Service\Mapping;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -46,9 +47,11 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Throwable;
 use Twig\Error\LoaderError;
@@ -916,7 +919,7 @@ class DataController extends AppController
      * @Route("/data/custom-view/{environmentName}/{templateId}/{ouuid}/{_download}", defaults={"_download": false, "public": false} , name="data.customview"))
      * @Route("/data/template/{environmentName}/{templateId}/{ouuid}/{_download}", defaults={"_download": false, "public": false} , name="ems_data_custom_template_protected"))
      */
-    public function customViewAction($environmentName, $templateId, $ouuid, $_download, $public, LoggerInterface $logger, TranslatorInterface $translator)
+    public function customViewAction($environmentName, $templateId, $ouuid, $_download, $public, LoggerInterface $logger, TranslatorInterface $translator, ElasticsearchService $elasticsearchService)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -945,14 +948,7 @@ class DataController extends AppController
         /** @var Environment $environment */
         $environment = $environment[0];
 
-        /** @var Client $client */
-        $client = $this->getElasticsearch();
-
-        $object = $client->get([
-            'index' => $environment->getAlias(),
-            'type' => $template->getContentType()->getName(),
-            'id' => $ouuid
-        ]);
+        $object = $elasticsearchService->get($environment, $template->getContentType(), $ouuid);
 
         $twig = $this->getTwig();
 
@@ -974,7 +970,7 @@ class DataController extends AppController
                 'environment' => $environment,
                 'contentType' => $template->getContentType(),
                 'object' => $object,
-                'source' => $object['_source'],
+                'source' => $object->getSource(),
                 '_download' => ($_download || !$template->getPreview()),
             ]);
 
@@ -1019,7 +1015,7 @@ class DataController extends AppController
                     'environment' => $environment,
                     'contentType' => $template->getContentType(),
                     'object' => $object,
-                    'source' => $object['_source'],
+                    'source' => $object->getSource(),
                 ]);
                 $filename = preg_replace('~[\r\n]+~', '', $filename);
             }
@@ -1042,7 +1038,7 @@ class DataController extends AppController
                 'environment' => $environment,
                 'contentType' => $template->getContentType(),
                 'object' => $object,
-                'source' => $object['_source'],
+                'source' => $object->getSource(),
             ]);
             echo $output;
 
@@ -1063,11 +1059,12 @@ class DataController extends AppController
      * @param int $templateId
      * @param string $ouuid
      * @param LoggerInterface $logger
+     * @param ElasticsearchService $esService
      * @return Response
      * @throws Throwable
      * @Route("/data/custom-view-job/{environmentName}/{templateId}/{ouuid}", name="ems_job_custom_view", methods={"POST"})
      */
-    public function customViewJobAction($environmentName, $templateId, $ouuid, LoggerInterface $logger)
+    public function customViewJobAction($environmentName, $templateId, $ouuid, LoggerInterface $logger, ElasticsearchService $esService, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         /** @var Template|null $template * */
@@ -1079,34 +1076,33 @@ class DataController extends AppController
             throw new NotFoundHttpException();
         }
 
-        $object = $this->getElasticsearch()->get([
-            'index' => $env->getAlias(),
-            'type' => $template->getContentType()->getName(),
-            'id' => $ouuid,
-        ]);
+        $document = $esService->get($env, $template->getContentType(), $ouuid);
 
         $success = false;
         try {
             $command = $this->getTwig()->createTemplate($template->getBody())->render([
                 'environment' => $env->getName(),
                 'contentType' => $template->getContentType(),
-                'object' => $object,
-                'source' => $object['_source'],
+                'object' => $document,
+                'source' => $document->getSource(),
             ]);
 
             /** @var CoreBundle\Service\JobService $jobService */
             $jobService = $this->get('ems.service.job');
             $job = $jobService->createCommand($this->getUser(), $command);
 
-            $jobService->run($job);
-
             $success = true;
-            $logger->notice('log.data.job.started', [
+            $logger->notice('log.data.job.initialized', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $template->getContentType()->getName(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
                 EmsFields::LOG_OUUID_FIELD => $ouuid,
                 'template_id' => $template->getId(),
+                'job_id' => $job->getId(),
                 'template_name' => $template->getName(),
+            ]);
+            return $this->returnJsonResponse($request, true, [
+                'jobId' => $job->getId(),
+                'jobUrl' => $this->generateUrl('emsco_job_start', ['job' => $job->getId()], UrlGeneratorInterface::RELATIVE_PATH),
             ]);
         } catch (Exception $e) {
             $logger->error('log.data.job.initialize_failed', [
@@ -1199,6 +1195,10 @@ class DataController extends AppController
 
             $this->getDataService()->isValid($form);
             $this->getDataService()->propagateDataToComputedField($form->get('data'), $objectArray, $revision->getContentType(), $revision->getContentType()->getName(), $revision->getOuuid());
+            $session = $request->getSession();
+            if ($session instanceof Session) {
+                $session->getFlashBag()->set('warning', []);
+            }
 
             $formErrors = $form->getErrors(true, true);
 

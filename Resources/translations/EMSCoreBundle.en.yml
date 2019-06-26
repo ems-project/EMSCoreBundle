@@ -407,6 +407,7 @@ service:
     extract_error: 'An issue has been raised while extracting information from the asset/file ems://asset:%file_hash% : %error_message%'
     persist_error: 'An issue has been raised while persisting the information extracted from the asset/file ems://asset:%file_hash% : %error_message%'
   data:
+    cant_finalize_field: 'Error with the field "%field_display%": "%error_message%"'
     update_referrers_error: 'It was impossible to update referrers of the document ems://object:%contenttype%:%ouuid%'
     not_a_draft: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% is already finalized'
     unknown_update_type: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has not been replaced or replaced as the update type "%update_type%" is unknown'
@@ -416,7 +417,7 @@ service:
     unpublished: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has been unpublished from %environment%'
     default_value_template_error: 'It was not possible to initiate the default value (compile template) for the content type %contenttype%, please check the content type''s configuration'
     default_value_error: 'It was not possible to initiate the default value (json_decode) for the content type %contenttype%, please check the content type''s configuration'
-    cant_be_finalized: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% cant''t be finalized as it is'
+    cant_be_finalized: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% can''t be finalized as it is (see previous warnings)'
     post_finalize_failed: 'Error while finalize the post processing of the document ems://object:%contenttype%:%ouuid% : %error_message%'
     integrity_failed: 'Issue in %environment% while checking integrity of the document ems://object:%contenttype%:%ouuid%: %error_message%'
     not_a_data_field: 'Unexpected %field_name% field in the revision form'
@@ -471,6 +472,7 @@ log:
   filter:
     deleted: 'The filter %filter_name% has been deleted'
   elasticsearch:
+    too_many_document_result: 'Found %total% results for the document %contenttype%:%ouuid% in the environment %environment%'
     template_error: 'There is something wrong with the template %template_name%'
     template_filename_error: 'There is something wrong with the template %template_name%''s filename'
     limit_exceded: 'The search results are limited to the first 50.000 items'
@@ -583,7 +585,9 @@ log:
   error: 'This page/action has encountered an error: %error_message%'
   data:
     job:
+      done: 'The job %job_id% is done'
       initialize_failed: 'A job %template_name% has failed for the document ems://object:%contenttype%:%ouuid% in the environment %environment%'
+      initialized: 'A job %template_name% has been initialized for the document ems://object:%contenttype%:%ouuid% in the environment %environment%'
       started: 'A job %template_name% has been started for the document ems://object:%contenttype%:%ouuid% in the environment %environment%'
     document:
       copy: 'The content of the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has been copied into the clipboard'
@@ -594,7 +598,7 @@ log:
     revision:
       load_from_auto_save: 'Data were loaded from an auto-saved version for the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid%'
       auto_save_off_with_auto_publish: 'The auto-save has been disabled as the auto-publish is enabled for the content type %contenttype%. Press Ctrl+S (Cmd+S) in order to publish in %environment%'
-      can_finalized: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% cant''t be finalized as it is'
+      can_finalized: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% can''t be finalized as it is'
       only_super_can_finalize_an_archive: 'Only a super user can finalize an archived revision'
       can_finalized_error: 'The document ems://object:%contenttype%:%ouuid% can''t be finalized due to an error: %error_message%'
       can_finalized_as_invalid: '{1} The document ems://object:%contenttype%:%ouuid% can''t be finalized has there is one error |]1,Inf[ The document ems://object:%contenttype%:%ouuid% can''t be finalized as there is %count% errors'

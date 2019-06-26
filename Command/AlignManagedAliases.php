@@ -27,7 +27,7 @@ class AlignManagedAliases extends ContainerAwareCommand
     {
         $this
             ->setName('ems:managedalias:align')
-            ->setDescription('Align a managed alias indexes to another')
+            ->setDescription('Align a managed alias to another')
             ->addArgument(
                 'source',
                 InputArgument::REQUIRED,

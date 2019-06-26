@@ -81,7 +81,7 @@ class AliasService
     {
         return $this->aliases;
     }
-    
+
     /**
      * @param int $id
      *
@@ -91,12 +91,27 @@ class AliasService
     {
         /** @var ManagedAlias|null $managedAlias */
         $managedAlias = $this->managedAliasRepo->find($id);
-        
+
         if ($this->hasAlias($managedAlias->getAlias())) {
             $alias = $this->getAlias($managedAlias->getAlias());
             $managedAlias->setIndexes($alias['indexes']);
         }
-        
+
+        return $managedAlias;
+    }
+
+    public function getManagedAliasByName(string $name)
+    {
+        /** @var ManagedAlias|null $managedAlias */
+        $managedAlias = $this->managedAliasRepo->findOneBy([
+            'name' => $name,
+        ]);
+
+        if ($this->hasAlias($managedAlias->getAlias())) {
+            $alias = $this->getAlias($managedAlias->getAlias());
+            $managedAlias->setIndexes($alias['indexes']);
+        }
+
         return $managedAlias;
     }
     

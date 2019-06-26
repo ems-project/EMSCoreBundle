@@ -43,9 +43,33 @@ class AlignManagedAliases extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
-        $source = $input->getArgument('source');
-        $target = $input->getArgument('target');
-        $output->writeln(sprintf("The alias %s will be aligned to the alias %s", $target, $source));
-        $output->writeln(sprintf("The alias %s has been aligned to the alias %s", $target, $source));
+        $sourceName = $input->getArgument('source');
+        $targetName = $input->getArgument('target');
+
+        $this->aliasService->build();
+        $source = $this->aliasService->getManagedAliasByName($sourceName);
+        $target = $this->aliasService->getManagedAliasByName($targetName);
+
+        $actions = [
+            'add' => [],
+            'remove' => [],
+        ];
+        foreach ($source->getIndexes() as $index) {
+            if (!isset($target->getIndexes()[$index['name']])) {
+                $actions['add'][] = $index['name'];
+            }
+        }
+        foreach ($target->getIndexes() as $index) {
+            if (!isset($source->getIndexes()[$index['name']])) {
+                $actions['remove'][] = $index['name'];
+            }
+        }
+
+        if (empty($actions['add']) && empty($actions['remove'])) {
+            $output->writeln(sprintf("The alias %s was already aligned to the alias %s", $targetName, $sourceName));
+            return 0;
+        }
+        $this->aliasService->updateAlias($target->getAlias(), $actions);
+        $output->writeln(sprintf("The alias %s has been aligned to the alias %s", $targetName, $sourceName));
     }
 }

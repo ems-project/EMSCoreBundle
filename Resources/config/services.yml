@@ -546,6 +546,14 @@ services:
         arguments: ['@logger', '@app.elasticsearch', '@ems.service.file']
         tags:
             - { name: console.command }
+    EMS\CoreBundle\Command\AlignManagedAliases:
+        arguments: ['@logger', '@ems.service.alias']
+        tags:
+            - { name: console.command }
+    EMS\CoreBundle\Command\ManagedAliases:
+        arguments: ['@logger', '@ems.service.alias']
+        tags:
+            - { name: console.command }
 #### security services
     api_key_user_provider:
         class: EMS\CoreBundle\Security\ApiKeyUserProvider

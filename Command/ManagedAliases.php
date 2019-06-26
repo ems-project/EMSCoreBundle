@@ -45,6 +45,5 @@ class ManagedAliases extends ContainerAwareCommand
                 }
             }
         }
-
     }
 }

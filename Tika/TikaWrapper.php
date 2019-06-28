@@ -29,10 +29,8 @@ class TikaWrapper
     protected function run($option, $fileName)
     {
         $file = new SplFileInfo($fileName);
-        $shellCommand = sprintf('java -jar %s %s "%s"', $this->tikaJar, $option, $file->getRealPath())
-        ;
 
-        $process = new Process($shellCommand);
+        $process = new Process(['java', '-jar', $this->tikaJar, $option, $file->getRealPath()]);
         $process->setWorkingDirectory(__DIR__);
         $process->run(function () {
         }, [

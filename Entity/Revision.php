@@ -120,7 +120,7 @@ class Revision
     private $tryToFinalizeOn;
     
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="deleted_by", type="string", length=255, nullable=true)
      */
@@ -501,7 +501,7 @@ class Revision
     /**
      * Set deleted
      *
-     * @param boolean $deleted
+     * @param bool $deleted
      *
      * @return Revision
      */
@@ -573,7 +573,7 @@ class Revision
     /**
      * Set endTime
      *
-     * @param \DateTime $endTime
+     * @param \DateTime|null $endTime
      *
      * @return Revision
      */
@@ -597,7 +597,7 @@ class Revision
     /**
      * Set draft
      *
-     * @param boolean $draft
+     * @param bool $draft
      *
      * @return Revision
      */
@@ -685,13 +685,13 @@ class Revision
     /**
      * Set deletedBy
      *
-     * @param string $deletedBy
+     * @param string|null $deletedBy
      *
      * @return Revision
      */
     public function setDeletedBy($deletedBy)
     {
-        $this->deletedBy= $deletedBy;
+        $this->deletedBy = $deletedBy;
         
         return $this;
     }
@@ -699,7 +699,7 @@ class Revision
     /**
      * Get deletedBy
      *
-     * @return string
+     * @return string|null
      */
     public function getDeletedBy()
     {

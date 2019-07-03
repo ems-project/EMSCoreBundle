@@ -496,8 +496,8 @@ class DataService
         $newRevision->setOuuid($ouuid);
         $newRevision->setStartTime($now);
         $newRevision->setEndTime(null);
-        $newRevision->setDeleted(0);
-        $newRevision->setDraft(1);
+        $newRevision->setDeleted(false);
+        $newRevision->setDraft(true);
         if ($byARealUser) {
             $newRevision->setLockBy($this->tokenStorage->getToken()->getUsername());
         } else {

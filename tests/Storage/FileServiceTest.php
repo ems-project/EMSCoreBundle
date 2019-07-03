@@ -49,7 +49,7 @@ class FileServiceTest extends WebTestCase
 
         $ctx = hash_init('sha1');
         $handler = $storage->read($hash);
-        $this->assertNotFalse($handler);
+        $this->assertNotNull($handler);
         while (!feof($handler)) {
             hash_update($ctx, fread($handler, 8192));
         }

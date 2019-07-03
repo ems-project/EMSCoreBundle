@@ -419,7 +419,7 @@ class RevisionRepository extends EntityRepository
     }
 
     /**
-     * @param string $revisionId
+     * @param int $revisionId
      * @return mixed
      */
     public function unlockRevision($revisionId)
@@ -435,7 +435,7 @@ class RevisionRepository extends EntityRepository
     }
 
     /**
-     * @param string $revisionId
+     * @param int $revisionId
      * @param string $username
      * @param \DateTime $lockUntil
      * @return mixed

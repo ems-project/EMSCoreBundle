@@ -355,8 +355,49 @@ view.contenttype.reorder_item.edit_main_container_button: 'Edit the main contain
 view.macros.data-field-type.collection_added_items: '{1} One %singular% has been added|]1,Inf[ %count% %plural% have been added'
 view.macros.data-field-type.collection_removed_items: '{1} One %singular% has been removed|]1,Inf[ %count% %plural% have been removed'
 data.edit_revision.save_draft: Save draft
-emsco.elasticsearch.status.html.goto_phpinfo: Displays information about PHP's configurations and versions
 
+
+
+emsco:
+  elasticsearch:
+    status:
+      html:
+        goto_phpinfo: Displays information about PHP's configurations and versions
+search_options:
+  title: Search options
+aggregateoption:
+  add: Add an aggregate option
+  missing: No aggregate option defined
+  index:
+    title: Aggregates
+    subtitle: Expert mode
+sortoption:
+  add: Add a sort option
+  missing: No sort option defined
+  index:
+    title: Sort option
+searchfieldoption:
+  add: Add a search field option
+  missing: No search field option defined
+  index:
+    title: Search field option
+    subtitle: Expert mode
+analyzer:
+  add: Add an analyzer option
+  missing: No aggregate option defined
+  index:
+    title: Analyzers
+    subtitle: Expert mode
+side-menu:
+  mappings-options: Mappings
+  filters-options: Filters
+  analyzers-options: Analyzers
+  aggs-options: Aggregations
+  searchs-options: Saved searchs
+  searchs-fields: Search fields
+  sorts-options: Sort fields
+  queries-options: Queries
+  search_options: Search options
 command:
   reindex:
     environment_not_found: 'Environment named "%environment%" not found'

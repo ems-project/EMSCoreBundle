@@ -567,6 +567,10 @@ services:
     EMS\CoreBundle\Elasticsearch\Indexer: '@ems.elasticsearch.indexer'
     EMS\CoreBundle\Service\FileService: '@ems.service.file'
     EMS\CoreBundle\Service\ElasticsearchService: '@ems.service.elasticsearch'
+    EMS\CoreBundle\Service\HelperService: '@ems.service.helper'
+    EMS\CoreBundle\Service\AggregateOptionService: '@ems.service.aggregate_option'
+    EMS\CoreBundle\Service\SortOptionService: '@ems.service.sort_option'
+    EMS\CoreBundle\Service\SearchFieldOptionService: '@ems.service.search_field_option'
 
 
 #### Will be mark as deprecated soon

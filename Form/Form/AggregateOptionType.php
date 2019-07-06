@@ -38,7 +38,7 @@ class AggregateOptionType extends AbstractType
         ])
         ->add('save', SubmitEmsType::class, [
                 'attr' => [
-                        'class' => 'btn-primary btn-sm '
+                        'class' => 'btn-danger btn-sm '
                 ],
                 'icon' => 'fa fa-save'
         ]);
@@ -46,7 +46,7 @@ class AggregateOptionType extends AbstractType
         if (! $options['createform']) {
             $builder->add('remove', SubmitEmsType::class, [
                     'attr' => [
-                            'class' => 'btn-primary btn-sm '
+                            'class' => 'btn-danger btn-sm '
                     ],
                     'icon' => 'fa fa-trash'
             ]);

@@ -188,52 +188,72 @@
 
             {% if is_granted('ROLE_ADMIN') %}
                 <!-- Sidebar Menu -->
-                <ul class="sidebar-menu">
+                <ul class="sidebar-menu" data-widget="tree">
                     <li class="header">Admin</li>
-                    <li class="treeview">
+                    <li class="">
                         <a href="{{ path('contenttype.index') }}" id="menu-contenttype-list">
                             <i class="fa fa-sitemap"></i> <span>Content Types</span>
                         </a>
                     </li>
-                    <li class="treeview">
+                    <li class="">
                         <a href="{{ path('environment.index') }}" id="menu-environment-list">
                             <i class="fa fa-database"></i> <span>Environments</span>
                         </a>
                     </li>
-                    <li class="treeview">
+                    <li class="">
                         <a href="{{ path('ems.user.index') }}" id="menu-user-index">
                             <i class="fa fa-users"></i> <span>Users</span>
                         </a>
                     </li>
-                    <li class="treeview">
+                    <li class="">
                         <a href="{{ path('ems_wysiwyg_index') }}" id="menu-wysiwyg-index">
                             <i class="fa fa-edit"></i> <span>{{ 'WYSIWYG'|trans }}</span>
                         </a>
                     </li>
-                    <li class="treeview">
-                        <a href="{{ path('ems_search_options_index') }}" id="menu-wysiwyg-index">
-                            <i class="fa fa-search"></i> <span>{{ 'Search'|trans }}</span>
-                        </a>
-                    </li>
-                    <li class="treeview">
+                    <li class="">
                         <a href="{{ path('i18n_index') }}" id="menu-i18n-index">
                             <i class="fa fa-language"></i> <span>I18N</span>
                         </a>
                     </li>
-                    <li class="treeview">
+                    <li class="">
                         <a href="{{ path('job.index') }}" id="menu-job-index">
                             <i class="fa fa-terminal"></i> <span>Jobs</span>
                         </a>
                     </li>
+
                     <li class="treeview">
-                        <a href="{{ path('ems_analyzer_index') }}" id="menu-analyzer-index">
-                            <i class="fa fa-signal"></i> <span>{{ 'Analyzers'|trans }}</span>
+                        <a href="{{ path('ems_search_options_index') }}" class="">
+                            <i class="fa fa-search"></i> <span>{{ 'side-menu.search_options'|trans }}</span>
+                            <i class="fa fa-angle-left pull-right"></i>
+
                         </a>
-                    </li>
-                    <li class="treeview">
-                        <a href="{{ path('ems_filter_index') }}" id="menu-filter-index">
-                            <i class="fa fa-filter"></i> <span>{{ 'Filters'|trans }}</span>
-                        </a>
+                        <ul class="treeview-menu">
+                            <li class="">
+                                <a href="{{ path('ems_sortoption_index') }}" id="menu-sort-index">
+                                    <i class="fa fa-sort"></i> <span>{{ 'side-menu.sorts-options'|trans }}</span>
+                                </a>
+                            </li>
+                            <li class="">
+                                <a href="{{ path('ems_searchfieldoption_index') }}" id="menu-searchfield-index">
+                                    <i class="fa fa-search"></i> <span>{{ 'side-menu.searchs-fields'|trans }}</span>
+                                </a>
+                            </li>
+                            <li class="">
+                                <a href="{{ path('ems_aggregateoption_index') }}" id="menu-aggs-index">
+                                    <i class="fa fa-object-group"></i> <span>{{ 'side-menu.aggs-options'|trans }}</span>
+                                </a>
+                            </li>
+                            <li class="">
+                                <a href="{{ path('ems_analyzer_index') }}" id="menu-analyzer-index">
+                                    <i class="fa fa-signal"></i> <span>{{ 'side-menu.analyzers-options'|trans }}</span>
+                                </a>
+                            </li>
+                            <li class="">
+                                <a href="{{ path('ems_filter_index') }}" id="menu-filter-index">
+                                    <i class="fa fa-filter"></i> <span>{{ 'side-menu.filters-options'|trans }}</span>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             {% endif %}{# end role admin #}

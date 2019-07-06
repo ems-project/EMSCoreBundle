@@ -1,0 +1,34 @@
+{% extends '@EMSCore/base.html.twig' %}
+{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}{{ indexView.titleKey|trans }}{% endblock %}
+{% block pagetitle %}{{ indexView.titleKey|trans }}{% endblock %}
+{% block subtitle %}<small>{{ indexView.subTitleKey|trans }}</small>{% endblock %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{{ path(indexView.indexRoute) }}"><i class="{{ indexView.icon }}"></i> {{ indexView.titleKey|trans }}</li></a>
+    </ol>
+{% endblock %}
+
+
+{% block body %}
+
+<div class="row">
+
+	<div class="col-md-8 col-md-offset-2">
+		{% include '@EMSCore/entity/list-entities.html.twig' with {
+			'entities': options,
+			'icon': indexView.icon,
+			'title': indexView.titleKey|trans,
+			'add_label': indexView.addKey|trans,
+			'missing_label': indexView.missingKey|trans,
+			'add_route': indexView.addRoute,
+			'edit_route': indexView.editRoute,
+			'form': reorderForm
+		}%}
+	</div>
+</div>
+
+
+{% endblock %}

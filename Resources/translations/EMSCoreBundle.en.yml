@@ -376,6 +376,12 @@ sortoption:
   missing: No sort option defined
   index:
     title: Sort option
+queryoption:
+  add: Add a query option
+  missing: No query option defined
+  index:
+    title: Query option
+    subtitle: Create your own advance elasticsearch queries
 searchfieldoption:
   add: Add a search field option
   missing: No search field option defined
@@ -489,6 +495,7 @@ form:
 wysiwyg:
   invalid_config_format: 'Format not valid: %msg%'
 search:
+  query_option_label: 'Query option'
   sort_option_label: 'Sort Option'
   search_field_option_label: 'Search Field Option'
   aggregate_option_label: 'Aggregate Option'

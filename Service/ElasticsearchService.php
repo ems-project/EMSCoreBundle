@@ -3,7 +3,7 @@
 namespace EMS\CoreBundle\Service;
 
 use Elasticsearch\Client;
-use EMS\ClientHelperBundle\Exception\SingleResultException;
+use EMS\CoreBundle\Exception\SingleResultException;
 use EMS\CommonBundle\Common\Document;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\ContentType;
@@ -65,7 +65,7 @@ class ElasticsearchService
 
         if (0 === $result['hits']['total']) {
             $this->logger->error('log.elasticsearch.too_few_document_result', [
-                'total' =>$result['hits']['total'],
+                'total' => $result['hits']['total'],
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                 EmsFields::LOG_OUUID_FIELD => $ouuid,
                 EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
@@ -75,7 +75,7 @@ class ElasticsearchService
 
         if (1 !== $result['hits']['total']) {
             $this->logger->error('log.elasticsearch.too_many_document_result', [
-                'total' =>$result['hits']['total'],
+                'total' => $result['hits']['total'],
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                 EmsFields::LOG_OUUID_FIELD => $ouuid,
                 EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),

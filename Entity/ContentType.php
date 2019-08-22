@@ -3,7 +3,6 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Form\DataField\ContainerFieldType;
@@ -1728,7 +1727,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
         $json = new JsonClass(get_object_vars($this), __CLASS__);
         $json->removeProperty('id');
         $json->removeProperty('environment');
-
+        $json->handlePersistentCollections('templates', 'views', 'singleTypeIndexes');
         return $json;
     }
 
@@ -1736,19 +1735,25 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     {
         switch ($name) {
             case 'templates':
+                /** @var Template $template */
                 foreach ($this->deserializeArray($value) as $template) {
                     $this->addTemplate($template);
+                    $template->setContentType($this);
                 }
                 break;
             case 'views':
+                /** @var View $view */
                 foreach ($this->deserializeArray($value) as $view) {
                     $this->addView($view);
+                    $view->setContentType($this);
                 }
                 break;
 
             case 'singleTypeIndexes':
+                /** @var SingleTypeIndex $index */
                 foreach ($this->deserializeArray($value) as $index) {
                     $this->addSingleTypeIndex($index);
+                    $index->setContentType($this);
                 }
                 break;
             default:

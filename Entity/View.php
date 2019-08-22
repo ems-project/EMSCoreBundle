@@ -355,7 +355,7 @@ class View extends JsonDeserializer implements \JsonSerializable
         $json->removeProperty('id');
         $json->removeProperty('created');
         $json->removeProperty('modified');
-
+        $json->removeProperty('contentType');
         return $json;
     }
 }

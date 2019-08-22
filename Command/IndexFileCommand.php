@@ -110,7 +110,7 @@ class IndexFileCommand extends EmsCommand
     {
         $output->writeln("Please do a backup of your DB first!");
         $helper = $this->getHelper('question');
-        $question= new ConfirmationQuestion('Continue?', false);
+        $question = new ConfirmationQuestion('Continue?', false);
 
         if (!$helper->ask($input, $output, $question)) {
             return;
@@ -251,7 +251,7 @@ class IndexFileCommand extends EmsCommand
                         /**@var StorageInterface $service*/
                         foreach ($this->fileService->getStorages() as $service) {
                             $service->create($rawData['sha1'], $tempName);
-                            $output->writeln('File restored from DB: '.$rawData['sha1']);
+                            $output->writeln('File restored from DB: ' . $rawData['sha1']);
                             break;
                         }
 
@@ -294,7 +294,7 @@ class IndexFileCommand extends EmsCommand
                         }
                     }
                 } else {
-                    $output->writeln('File not found:'.$rawData['sha1']);
+                    $output->writeln('File not found:' . $rawData['sha1']);
                 }
             }
         }

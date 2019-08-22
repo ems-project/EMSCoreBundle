@@ -74,6 +74,6 @@ class UpdateRevisionReferersEvent extends Event
     
     public function getRefererOuuid()
     {
-        return $this->getType().':'.$this->getId();
+        return $this->getType() . ':' . $this->getId();
     }
 }

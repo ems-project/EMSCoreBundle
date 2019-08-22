@@ -72,7 +72,7 @@ class TemplateType extends AbstractType
                 'choices' => $this->service->getAll(),
                 'required' => false,
                 'choice_label' => function (Environment $value) {
-                    return '<i class="fa fa-square text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getName();
+                    return '<i class="fa fa-square text-' . $value->getColor() . '"></i>&nbsp;&nbsp;' . $value->getName();
                 },
                 'choice_value' => function (Environment $value) {
                     if ($value != null) {

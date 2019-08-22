@@ -80,10 +80,10 @@ class AlignCommand extends EmsCommand
         $target = $this->environmentService->getAliasByName($targetName);
 
         if (!$source) {
-            $output->writeln('<error>Source '.$sourceName.' not found</error>');
+            $output->writeln('<error>Source ' . $sourceName . ' not found</error>');
         }
         if (!$target) {
-            $output->writeln('<error>Target '.$targetName.' not found</error>');
+            $output->writeln('<error>Target ' . $targetName . ' not found</error>');
         }
 
         if (! $source || ! $target) {
@@ -102,7 +102,7 @@ class AlignCommand extends EmsCommand
             'size' => 0,
         ])['hits']['total'];
 
-        $output->writeln('The source environment contains '.$total.' elements, start aligning environments...');
+        $output->writeln('The source environment contains ' . $total . ' elements, start aligning environments...');
 
         // create a new progress bar
         $progress = new ProgressBar($output, $total);
@@ -156,13 +156,13 @@ class AlignCommand extends EmsCommand
         $progress->finish();
         $output->writeln('');
         if ($deletedRevision) {
-            $output->writeln('<error>'.$deletedRevision.' deleted revisions were not aligned</error>');
+            $output->writeln('<error>' . $deletedRevision . ' deleted revisions were not aligned</error>');
         }
         if ($alreadyAligned) {
-            $output->writeln(''.$alreadyAligned.' revisions were already aligned');
+            $output->writeln('' . $alreadyAligned . ' revisions were already aligned');
         }
         foreach ($targetIsPreviewEnvironment as $ctName => $counter) {
-            $output->writeln('<error>'.$counter.' '.$ctName.' revisions were not aligned as '.$targetName.' is the default environment</error>');
+            $output->writeln('<error>' . $counter . ' ' . $ctName . ' revisions were not aligned as ' . $targetName . ' is the default environment</error>');
         }
 
         $output->writeln('Environments are aligned.');

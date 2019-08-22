@@ -23,13 +23,13 @@ class PagingTool
     {
         $this->repository = $repository;
         $this->pageSize = $pageSize;
-        $this->lastPage = ceil(count($repository->findAll())/$pageSize);
+        $this->lastPage = ceil(count($repository->findAll()) / $pageSize);
         $this->page = $request->query->get('page', 1);
-        $this->orderField= $request->query->get('orderField', $defaultOrderField);
-        $this->orderDirection= $request->query->get('orderDirection', 'asc');
+        $this->orderField = $request->query->get('orderField', $defaultOrderField);
+        $this->orderDirection = $request->query->get('orderDirection', 'asc');
         $this->paginationPath = $paginationPath;
         
-        $this->data = $this->repository->findBy([], [$this->orderField => $this->orderDirection], $pageSize, ($this->page-1)*$this->pageSize);
+        $this->data = $this->repository->findBy([], [$this->orderField => $this->orderDirection], $pageSize, ($this->page - 1) * $this->pageSize);
     }
     
     public function getData()

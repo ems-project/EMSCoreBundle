@@ -76,7 +76,7 @@ class RequestListener
                 } else {
                     $response = new RedirectResponse($this->router->generate('data.revisions', [
                             'type' => $exception->getRevision()->getContentType()->getName(),
-                            'ouuid'=> $exception->getRevision()->getOuuid()
+                            'ouuid' => $exception->getRevision()->getOuuid()
                     ], UrlGeneratorInterface::RELATIVE_PATH));
                 }
                 $event->setResponse($response);

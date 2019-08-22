@@ -53,10 +53,10 @@ class SequenceRepository extends \Doctrine\ORM\EntityRepository
                 ->setParameter('version', $item['version'])
                 ->getQuery();
             
-                $out = $item['value']+1;
+                $out = $item['value'] + 1;
             
             if ($q->execute() != 1) {
-                throw new SequenceException('An error has been detected with the sequence '.$name);
+                throw new SequenceException('An error has been detected with the sequence ' . $name);
             }
         }
         $this->_em->commit();

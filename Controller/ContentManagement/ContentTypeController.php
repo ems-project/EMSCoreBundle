@@ -497,7 +497,7 @@ class ContentTypeController extends AppController
                     return '_ems_' . $child->getName() . '_modal_options';
                 } else {
                     $logger->error('log.contenttype.field.name_not_valid', [
-                        'field_format' => '/[a-z][a-z0-9_-]*/ !'.Mapping::HASH_FIELD.' !'.Mapping::HASH_FIELD
+                        'field_format' => '/[a-z][a-z0-9_-]*/ !' . Mapping::HASH_FIELD . ' !' . Mapping::HASH_FIELD
                     ]);
                 }
             } else {
@@ -634,7 +634,7 @@ class ContentTypeController extends AppController
                     return 'first_ems_' . $new->getName() . '_modal_options';
                 } else {
                     $logger->error('log.contenttype.field.name_not_valid', [
-                        'field_format' => '/[a-z][a-z0-9_-]*/ !'.Mapping::HASH_FIELD.' !'.Mapping::HASH_FIELD
+                        'field_format' => '/[a-z][a-z0-9_-]*/ !' . Mapping::HASH_FIELD . ' !' . Mapping::HASH_FIELD
                     ]);
                 }
             } else {
@@ -1039,7 +1039,7 @@ class ContentTypeController extends AppController
                         }
                     } else {
                         $logger->error('log.contenttype.field.name_not_valid', [
-                            'field_format' => '/[a-z][a-z0-9_-]*/ !'.Mapping::HASH_FIELD.' !'.Mapping::HASH_FIELD
+                            'field_format' => '/[a-z][a-z0-9_-]*/ !' . Mapping::HASH_FIELD . ' !' . Mapping::HASH_FIELD
                         ]);
                     }
                     break;

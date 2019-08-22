@@ -13,7 +13,7 @@ class PrivilegeException extends \Exception
     {
         $this->revision = $revision;
         if ($revision->getContentType()) {
-            $message = $message." ".$revision->getContentType()->getName().":".$revision->getOuuid();
+            $message = $message . " " . $revision->getContentType()->getName() . ":" . $revision->getOuuid();
         } else {
             throw new \Exception($message);
         }

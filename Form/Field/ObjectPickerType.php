@@ -36,7 +36,7 @@ class ObjectPickerType extends Select2Type
             'dynamicLoading' => true,
             'sortable' => false,
             'choice_loader' => function (Options $options) {
-                $loadAll =     $options->offsetGet('dynamicLoading')?false:true;
+                $loadAll =     $options->offsetGet('dynamicLoading') ? false : true;
                 $circleOnly =     $options->offsetGet('circle-only');
 
                 return $this->choiceListFactory->createLoader($options->offsetGet('type'), $loadAll, $circleOnly);

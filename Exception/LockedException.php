@@ -10,7 +10,7 @@ class LockedException extends \Exception
     public function __construct(Revision $revision)
     {
         $this->revision = $revision;
-        $message = "Revision ".$revision->getStartTime()->format("c")." of the object ".$revision->getContentType()->getName().":".$revision->getOuuid()." is locked by ".$revision->getLockBy()." until ".$revision->getLockUntil()->format("c");
+        $message = "Revision " . $revision->getStartTime()->format("c") . " of the object " . $revision->getContentType()->getName() . ":" . $revision->getOuuid() . " is locked by " . $revision->getLockBy() . " until " . $revision->getLockUntil()->format("c");
         parent::__construct($message, 0, null);
     }
     

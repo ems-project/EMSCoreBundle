@@ -150,7 +150,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     
     public function __toString()
     {
-        if (null!== $this->rawData && is_string($this->rawData)) {
+        if (null !== $this->rawData && is_string($this->rawData)) {
             return $this->rawData;
         }
         return json_encode($this->rawData);
@@ -172,7 +172,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
             /** @var FieldType $childField */
             foreach ($children as $childField) {
                 if (!$childField->getDeleted()) {
-                    $value = $this->__get('ems_'.$childField->getName());
+                    $value = $this->__get('ems_' . $childField->getName());
                     if ($value) {
                         $value->setOrderKey($childField->getOrderKey());
                         $temp->add($value);
@@ -220,7 +220,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     public function __set($key, $input)
     {
         if (strpos($key, 'ems_') !== 0) {
-             throw new \Exception('unprotected ems set with key '.$key);
+             throw new \Exception('unprotected ems set with key ' . $key);
         } else {
             $key = substr($key, 4);
         }
@@ -236,7 +236,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
 
             if (null === $this->getFieldType()) {
                 if (null === $this->getParent()) {
-                    throw new \Exception('null parent !!!!!! '.$key);
+                    throw new \Exception('null parent !!!!!! ' . $key);
                 } else {
                     $this->updateDataStructure($this->getParent()->getFieldType());
                 }
@@ -251,10 +251,10 @@ class DataField implements \ArrayAccess, \IteratorAggregate
                 }
             }
             if (! $found) {
-                throw new \Exception('__set an unknow kind of field '.$key);
+                throw new \Exception('__set an unknow kind of field ' . $key);
             }
         } else {
-            throw new \Exception('__set a DataField wich is not a valid object'.$key);
+            throw new \Exception('__set a DataField wich is not a valid object' . $key);
         }
 
         return $this;
@@ -310,7 +310,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     {
 
         if (strpos($key, 'ems_') !== 0) {
-            throw new \Exception('unprotected ems get with key '.$key);
+            throw new \Exception('unprotected ems get with key ' . $key);
         } else {
             $key = substr($key, 4);
         }
@@ -352,7 +352,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
                 $this->addMessage('String expected, single string in array instead');
                 return $this->rawData[0];
             }
-            $this->addMessage('String expected from the DB: '.print_r($this->rawData, true));
+            $this->addMessage('String expected from the DB: ' . print_r($this->rawData, true));
         }
         return $this->rawData;
     }
@@ -427,7 +427,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         }
 
         if ($this->rawData !== null && !is_finite($this->rawData)) {
-            throw new DataFormatException('Float or double expected: '.print_r($this->rawData, true));
+            throw new DataFormatException('Float or double expected: ' . print_r($this->rawData, true));
         }
         return $this->rawData;
     }
@@ -468,7 +468,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         } else {
             foreach ($rawData as $item) {
                 if (!is_string($item)) {
-                    throw new DataFormatException('String expected: '.print_r($item, true));
+                    throw new DataFormatException('String expected: ' . print_r($item, true));
                 }
             }
             $this->rawData = $rawData;
@@ -488,7 +488,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         }
 
         if (!is_array($this->rawData)) {
-            $this->addMessage('Array expected from the DB: '.print_r($this->rawData, true));
+            $this->addMessage('Array expected from the DB: ' . print_r($this->rawData, true));
             return null;
         }
 
@@ -496,7 +496,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
 
         foreach ($textValue as $idx => $item) {
             if (!is_string($item)) {
-                $this->addMessage('String expected for the item '.$idx.' from the DB: '.print_r($this->rawData, true));
+                $this->addMessage('String expected for the item ' . $idx . ' from the DB: ' . print_r($this->rawData, true));
                 $textValue[$idx] = "";
             }
         }
@@ -512,7 +512,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     public function getIntegerValue()
     {
         if (is_array($this->rawData)) {
-            $this->addMessage('Integer expected array found: '.print_r($this->rawData, true));
+            $this->addMessage('Integer expected array found: ' . print_r($this->rawData, true));
             return count($this->rawData); //empty array means null/empty
         }
 
@@ -523,7 +523,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
 //             return $this->rawData;
 //             throw new DataFormatException('Integer expected: '.print_r($this->rawData, true));
         }
-        $this->addMessage('Integer expected: '.print_r($this->rawData, true));
+        $this->addMessage('Integer expected: ' . print_r($this->rawData, true));
         return $this->rawData;
     }
 
@@ -541,7 +541,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         } else if (intval($rawData) || $rawData === '0') {
             $this->rawData = intval($rawData);
         } else {
-            $this->addMessage('Integer expected: '.print_r($rawData, true));
+            $this->addMessage('Integer expected: ' . print_r($rawData, true));
             $this->rawData = $rawData;
         }
 
@@ -560,7 +560,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         }
 
         if ($this->rawData !== null && !is_bool($this->rawData)) {
-            throw new DataFormatException('Boolean expected: '.print_r($this->rawData, true));
+            throw new DataFormatException('Boolean expected: ' . print_r($this->rawData, true));
         }
         return $this->rawData;
     }
@@ -570,7 +570,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         $out = [];
         if ($this->rawData !== null) {
             if (!is_array($this->rawData)) {
-                throw new DataFormatException('Array expected: '.print_r($this->rawData, true));
+                throw new DataFormatException('Array expected: ' . print_r($this->rawData, true));
             }
             foreach ($this->rawData as $item) {
                 /**@var \DateTime $converted*/

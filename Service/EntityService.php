@@ -23,7 +23,7 @@ abstract class EntityService
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
-        $this->translator= $translator;
+        $this->translator = $translator;
     }
     
     abstract protected function getRepositoryIdentifier();
@@ -82,7 +82,7 @@ abstract class EntityService
             ->getQuery()
             ->getSingleScalarResult();
         
-        $entity->setOrderKey(100+$count);
+        $entity->setOrderKey(100 + $count);
         $this->update($entity);
 
         $this->logger->notice('service.entity.created', [

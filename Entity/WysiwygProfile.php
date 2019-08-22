@@ -169,7 +169,7 @@ class WysiwygProfile
      */
     public function setConfig($config)
     {
-        $this->config= $config;
+        $this->config = $config;
 
         return $this;
     }

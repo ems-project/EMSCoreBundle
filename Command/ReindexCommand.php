@@ -101,7 +101,7 @@ class ReindexCommand extends EmsCommand
         $this->formatStyles($output);
         $name = $input->getArgument('name');
         $index = $input->getArgument('index');
-        $signData= !$input->getOption('sign-data');
+        $signData = !$input->getOption('sign-data');
 
 
 
@@ -166,7 +166,7 @@ class ReindexCommand extends EmsCommand
 
 
             $output->writeln('');
-            $output->writeln('Start reindex '.$contentType->getName());
+            $output->writeln('Start reindex ' . $contentType->getName());
             // create a new progress bar
             $progress = new ProgressBar($output, $paginator->count());
             // start and displays the progress bar
@@ -188,7 +188,7 @@ class ReindexCommand extends EmsCommand
                         }
 
                         if (empty($bulk) && $revision->getContentType()->getHavePipelines()) {
-                            $bulk['pipeline'] = $this->instanceId.$revision->getContentType()->getName();
+                            $bulk['pipeline'] = $this->instanceId . $revision->getContentType()->getName();
                         }
 
                         $bulk['body'][] = [
@@ -206,7 +206,7 @@ class ReindexCommand extends EmsCommand
 
 
                     $progress->advance();
-                    if (count($bulk['body']) >= (2*$bulkSize)) {
+                    if (count($bulk['body']) >= (2 * $bulkSize)) {
                         $this->treatBulkResponse($this->client->bulk($bulk));
                         unset($bulk);
                         $bulk = [];
@@ -227,7 +227,7 @@ class ReindexCommand extends EmsCommand
             $progress->finish();
             $output->writeln('');
 
-            $output->writeln(' '.$this->count.' objects are re-indexed in '.$index.' ('.$this->deleted.' not indexed as deleted, '.$this->error.' with indexing error)');
+            $output->writeln(' ' . $this->count . ' objects are re-indexed in ' . $index . ' (' . $this->deleted . ' not indexed as deleted, ' . $this->error . ' with indexing error)');
 
             $this->logger->notice('command.reindex.end', [
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
@@ -244,7 +244,7 @@ class ReindexCommand extends EmsCommand
                 EmsFields::LOG_ENVIRONMENT_FIELD => $name,
             ]);
 
-            $output->writeln("WARNING: Environment named ".$name." not found");
+            $output->writeln("WARNING: Environment named " . $name . " not found");
         }
     }
     

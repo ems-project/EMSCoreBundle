@@ -18,7 +18,7 @@
     <arg value="np"/>
 
     <!-- Include the whole PS2 standard -->
-    <rule ref="PSR2" />
+    <rule ref="PSR12" />
 
     <!-- Private methods MUST not be prefixed with an underscore -->
     <rule ref="PSR2.Methods.MethodDeclaration.Underscore">

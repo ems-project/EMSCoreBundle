@@ -87,11 +87,11 @@ class CleanDeletedContentTypeCommand extends ContainerAwareCommand
 
         /** @var ContentType $contentType */
         $contentTypes = $ctRepo->findBy([
-                'deleted'=> true
+                'deleted' => true
         ]);
 
         foreach ($contentTypes as $contentType) {
-            $output->writeln('Remove deleted content type '.$contentType->getName());
+            $output->writeln('Remove deleted content type ' . $contentType->getName());
             //remove field types
             if ($contentType->getFieldType()) {
                 $contentType->unsetFieldType();
@@ -99,24 +99,24 @@ class CleanDeletedContentTypeCommand extends ContainerAwareCommand
             }
             $em->flush($contentType);
             $fields = $fieldRepo->findBy([
-                'contentType'=> $contentType
+                'contentType' => $contentType
             ]);
 
-            $output->writeln('Remove '.count($fields).' assosiated fields');
+            $output->writeln('Remove ' . count($fields) . ' assosiated fields');
             foreach ($fields as $field) {
                 $em->remove($field);
                 $em->flush($field);
             }
 
             $revisions = $revisionRepo->findBy(['contentType' => $contentType]);
-            $output->writeln('Remove '.count($revisions).' assosiated revisions');
+            $output->writeln('Remove ' . count($revisions) . ' assosiated revisions');
             foreach ($revisions as $revision) {
                 $em->remove($revision);
                 $em->flush($revision);
             }
 
             $templates = $templateRepo->findBy(['contentType' => $contentType]);
-            $output->writeln('Remove '.count($templates).' assosiated templates');
+            $output->writeln('Remove ' . count($templates) . ' assosiated templates');
             /**@var Template $template*/
             foreach ($templates as $template) {
                 $em->remove($template);
@@ -124,7 +124,7 @@ class CleanDeletedContentTypeCommand extends ContainerAwareCommand
             }
 
             $views = $viewRepo->findBy(['contentType' => $contentType]);
-            $output->writeln('Remove '.count($views).' assosiated views');
+            $output->writeln('Remove ' . count($views) . ' assosiated views');
             foreach ($views as $view) {
                 $em->remove($view);
                 $em->flush($view);
@@ -140,7 +140,7 @@ class CleanDeletedContentTypeCommand extends ContainerAwareCommand
         $output->writeln('Remove deleted revisions');
         /** @var Revision $revision */
         $revisions = $revisionRepo->findBy([
-                'deleted'=> true
+                'deleted' => true
         ]);
         foreach ($revisions as $revision) {
             $em->remove($revision);

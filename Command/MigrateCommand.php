@@ -52,7 +52,7 @@ class MigrateCommand extends EmsCommand
         $this->bulker = $bulker;
         $this->mapping = $mapping;
         $this->dataService = $dataService;
-        $this->formFactory= $formFactory;
+        $this->formFactory = $formFactory;
         $this->instanceId = $instanceId;
         parent::__construct($logger, $client);
     }
@@ -152,7 +152,7 @@ class MigrateCommand extends EmsCommand
         $em->getConnection()->getConfiguration()->setSQLLogger(null);
         
         
-        $signData= $input->getOption('sign-data');
+        $signData = $input->getOption('sign-data');
         
         $elasticsearchIndex = $input->getArgument('elasticsearchIndex');
         $contentTypeNameFrom = $input->getArgument('contentTypeNameFrom');
@@ -161,7 +161,7 @@ class MigrateCommand extends EmsCommand
         if (!$contentTypeNameTo) {
             $contentTypeNameTo = $contentTypeNameFrom;
         }
-        $scrollSize= $input->getArgument('scrollSize');
+        $scrollSize = $input->getArgument('scrollSize');
         $scrollTimeout = $input->getArgument('scrollTimeout');
 
         $this->bulker
@@ -176,15 +176,15 @@ class MigrateCommand extends EmsCommand
         /** @var ContentType|null $contentTypeTo */
         $contentTypeTo = $contentTypeRepository->findOneBy(array("name" => $contentTypeNameTo, 'deleted' => false));
         if ($contentTypeTo === null) {
-            $output->writeln("<error>Content type ".$contentTypeNameTo." not found</error>");
+            $output->writeln("<error>Content type " . $contentTypeNameTo . " not found</error>");
             exit;
         }
         $defaultEnv = $contentTypeTo->getEnvironment();
         
-        $output->writeln("Start migration of ".$contentTypeTo->getPluralName());
+        $output->writeln("Start migration of " . $contentTypeTo->getPluralName());
         
         if ($contentTypeTo->getDirty()) {
-            $output->writeln("<error>Content type \"".$contentTypeNameTo."\" is dirty. Please clean it first</error>");
+            $output->writeln("<error>Content type \"" . $contentTypeNameTo . "\" is dirty. Please clean it first</error>");
             exit;
         }
         
@@ -288,10 +288,10 @@ class MigrateCommand extends EmsCommand
                         ];
 
                         if ($newRevision->getContentType()->getHavePipelines()) {
-                            $indexConfig['pipeline'] = $this->instanceId.$contentTypeNameTo;
+                            $indexConfig['pipeline'] = $this->instanceId . $contentTypeNameTo;
                         }
 
-                        $body = $signData?$this->dataService->sign($newRevision):$newRevision->getRawData();
+                        $body = $signData ? $this->dataService->sign($newRevision) : $newRevision->getRawData();
 
                         $this->bulker->index($indexConfig, $body);
                     }
@@ -324,7 +324,7 @@ class MigrateCommand extends EmsCommand
             
             //https://www.elastic.co/guide/en/elasticsearch/client/php-api/current/_search_operations.html#_scrolling
             $scroll_id = $arrayElasticsearchIndex['_scroll_id'];
-            $arrayElasticsearchIndex= $this->client->scroll([
+            $arrayElasticsearchIndex = $this->client->scroll([
                 "scroll_id" => $scroll_id,  //...using our previously obtained _scroll_id
                 "scroll" => $scrollTimeout, // and the same timeout window
             ]);

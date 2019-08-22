@@ -44,9 +44,9 @@ class RevisionRepository extends EntityRepository
         ->where('e.id = :eid')
         //->andWhere($qb->expr()->eq('r.deleted', ':false')
         ->setMaxResults(50)
-        ->setFirstResult($page*50)
+        ->setFirstResult($page * 50)
         ->orderBy('r.id', 'asc')
-        ->setParameters(['eid'=> $env->getId()]);
+        ->setParameters(['eid' => $env->getId()]);
         
         $paginator = new Paginator($qb->getQuery());
         
@@ -107,9 +107,9 @@ class RevisionRepository extends EntityRepository
         ->where('e.id = :eid')
         ->andWhere('r.contentType = :ct')
         ->setMaxResults(50)
-        ->setFirstResult($page*50)
+        ->setFirstResult($page * 50)
         ->orderBy('r.id', 'asc')
-        ->setParameters(['eid'=> $env->getId(), 'ct' => $contentType]);
+        ->setParameters(['eid' => $env->getId(), 'ct' => $contentType]);
         
         $paginator = new Paginator($qb->getQuery());
         
@@ -163,8 +163,8 @@ class RevisionRepository extends EntityRepository
             $inCircles = $qb->expr()->orX();
             $inCircles->add($qb->expr()->isNull('r.circles'));
             foreach ($circles as $counter => $circle) {
-                $inCircles->add($qb->expr()->like('r.circles', ':circle'.$counter));
-                $parameters['circle'.$counter] = '%'.$circle.'%';
+                $inCircles->add($qb->expr()->like('r.circles', ':circle' . $counter));
+                $parameters['circle' . $counter] = '%' . $circle . '%';
             }
             $and->add($inCircles);
         }
@@ -201,8 +201,8 @@ class RevisionRepository extends EntityRepository
             $inCircles = $qb->expr()->orX();
             $inCircles->add($qb->expr()->isNull('r.circles'));
             foreach ($circles as $counter => $circle) {
-                $inCircles->add($qb->expr()->like('r.circles', ':circle'.$counter));
-                $parameters['circle'.$counter] = '%'.$circle.'%';
+                $inCircles->add($qb->expr()->like('r.circles', ':circle' . $counter));
+                $parameters['circle' . $counter] = '%' . $circle . '%';
             }
             $and->add($inCircles);
         }
@@ -260,12 +260,12 @@ class RevisionRepository extends EntityRepository
         ->orHaving('count(r.id) = 1')
         ->orHaving('max(r.id) <> min(r.id)')
         ->setParameters([
-                'source'=>$source,
-                'target'=>$target,
-                'false'=>false,
+                'source' => $source,
+                'target' => $target,
+                'false' => false,
         ]);
         if (!empty($contentTypes)) {
-            $qb->andWhere('c.name in (\''.implode("','", $contentTypes).'\')');
+            $qb->andWhere('c.name in (\'' . implode("','", $contentTypes) . '\')');
         }
         return $qb;
     }
@@ -340,7 +340,7 @@ class RevisionRepository extends EntityRepository
      */
     public function revisionsLastPage($ouuid, ContentType $contentType)
     {
-        return floor($this->countRevisions($ouuid, $contentType)/5.0)+1;
+        return floor($this->countRevisions($ouuid, $contentType) / 5.0) + 1;
     }
 
     /**
@@ -349,7 +349,7 @@ class RevisionRepository extends EntityRepository
      */
     public function firstElemOfPage($page)
     {
-        return ($page-1)*5;
+        return ($page - 1) * 5;
     }
 
 
@@ -367,7 +367,7 @@ class RevisionRepository extends EntityRepository
         $qb->where($qb->expr()->eq('r.ouuid', ':ouuid'));
         $qb->andWhere($qb->expr()->eq('r.contentType', ':contentType'));
         $qb->setMaxResults(5);
-        $qb->setFirstResult(($page-1)*5);
+        $qb->setFirstResult(($page - 1) * 5);
         $qb->orderBy('r.created', 'DESC');
         $qb->setParameter('ouuid', $ouuid);
         $qb->setParameter('contentType', $contentType);
@@ -410,7 +410,7 @@ class RevisionRepository extends EntityRepository
         
         $out = $qb->getQuery()->getResult();
         if (count($out) > 1) {
-            throw new NonUniqueResultException($ouuid.' is publish multiple times in '.$env->getName());
+            throw new NonUniqueResultException($ouuid . ' is publish multiple times in ' . $env->getName());
         }
         if (empty($out)) {
             return null;
@@ -618,7 +618,7 @@ class RevisionRepository extends EntityRepository
             ->andWhere($qb->expr()->eq('r.lockBy', ':username'))
             ->andWhere($qb->expr()->isNull('r.endTime'))
             ->setMaxResults($limit)
-            ->setFirstResult($page*$limit)
+            ->setFirstResult($page * $limit)
             ->orderBy('r.id', 'asc')
             ->setParameters([
                 'content_type' => $contentType,

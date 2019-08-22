@@ -69,7 +69,7 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
                 continue;
             }
 
-            $property = lcfirst((strtolower(substr($reflectionMethod->getName(), 0, 3)) === 'get')?substr($reflectionMethod->getName(), 3):substr($reflectionMethod->getName(), 2));
+            $property = lcfirst((strtolower(substr($reflectionMethod->getName(), 0, 3)) === 'get') ? substr($reflectionMethod->getName(), 3) : substr($reflectionMethod->getName(), 2));
             $value = $reflectionMethod->invoke($object);
             if ($property == "deleted" && $value == true) {
                 break;

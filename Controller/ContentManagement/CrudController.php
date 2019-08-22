@@ -298,7 +298,7 @@ class CrudController extends AppController
     
         $rawdata = json_decode($request->getContent(), true);
         if (empty($rawdata)) {
-            throw new BadRequestHttpException('Not a valid JSON message for revision ' . $ouuid . ' and contenttype '. $contentType->getName());
+            throw new BadRequestHttpException('Not a valid JSON message for revision ' . $ouuid . ' and contenttype ' . $contentType->getName());
         }
     
         try {

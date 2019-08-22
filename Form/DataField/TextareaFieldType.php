@@ -54,9 +54,9 @@ class TextareaFieldType extends DataFieldType
                         'rows' => $options['rows'],
                         'placeholder' => $options['placeholder'],
                 ],
-                'label' => (null != $options ['label']?$options ['label']:$fieldType->getName()),
+                'label' => (null != $options ['label'] ? $options ['label'] : $fieldType->getName()),
                 'required' => false,
-                'disabled'=> $this->isDisabled($options),
+                'disabled' => $this->isDisabled($options),
         ]);
     }
 

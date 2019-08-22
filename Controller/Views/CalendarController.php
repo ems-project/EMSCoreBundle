@@ -27,7 +27,7 @@ class CalendarController extends AppController
             $revision = $this->getDataService()->initNewDraft($type, $ouuid);
 
             $rawData = $revision->getRawData();
-            $field = $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['dateRangeField']);
+            $field = $view->getContentType()->getFieldType()->__get('ems_' . $view->getOptions()['dateRangeField']);
 
             /** @var \DateTime $from */
             $from = new \DateTime($request->request->get('start', false));
@@ -94,7 +94,7 @@ class CalendarController extends AppController
         /**@var \DateTime $to */
         $from = new \DateTime($request->query->get('from'));
         $to = new \DateTime($request->query->get('to'));
-        $field = $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['dateRangeField']);
+        $field = $view->getContentType()->getFieldType()->__get('ems_' . $view->getOptions()['dateRangeField']);
         
         if (empty($body['query']['bool']['must'])) {
             $body['query']['bool']['must'] = [];
@@ -105,7 +105,7 @@ class CalendarController extends AppController
                     'path' => $field->getName(),
                     'query' => [
                         'range' => [
-                                $field->getName().'.'.$field->getMappingOptions()['fromDateMachineName'] => ['lte' => $to->format('c')]
+                                $field->getName() . '.' . $field->getMappingOptions()['fromDateMachineName'] => ['lte' => $to->format('c')]
                         ]
                     ]
                 ]
@@ -115,7 +115,7 @@ class CalendarController extends AppController
                     'path' => $field->getName(),
                     'query' => [
                         'range' => [
-                                $field->getName().'.'.$field->getMappingOptions()['toDateMachineName'] => ['gte' => $from->format('c')]
+                                $field->getName() . '.' . $field->getMappingOptions()['toDateMachineName'] => ['gte' => $from->format('c')]
                         ]
                     ]
                 ]
@@ -147,7 +147,7 @@ class CalendarController extends AppController
         return $this->render('@EMSCore/view/custom/calendar_search.json.twig', [
                 'success' => true,
                 'data' => $data,
-                'field' => $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['dateRangeField']),
+                'field' => $view->getContentType()->getFieldType()->__get('ems_' . $view->getOptions()['dateRangeField']),
                 'contentType' => $view->getContentType(),
                 'environment' => $view->getContentType()->getEnvironment(),
         ]);

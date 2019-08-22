@@ -76,9 +76,9 @@ class AggregateOption
     public function __construct()
     {
         $this->config = '{
-    "terms" : { "field" : "'.Mapping::FINALIZED_BY_FIELD.'" }
+    "terms" : { "field" : "' . Mapping::FINALIZED_BY_FIELD . '" }
 }';
-        $this->template = '{% set fieldName = \''.Mapping::FINALIZED_BY_FIELD.'\' %}
+        $this->template = '{% set fieldName = \'' . Mapping::FINALIZED_BY_FIELD . '\' %}
 {% if aggregation.buckets|length > 1  %}
 
 	{% for index in aggregation.buckets %}
@@ -233,7 +233,7 @@ class AggregateOption
      */
     public function setConfig($config)
     {
-        $this->config= $config;
+        $this->config = $config;
 
         return $this;
     }
@@ -257,7 +257,7 @@ class AggregateOption
      */
     public function setTemplate($template)
     {
-        $this->template= $template;
+        $this->template = $template;
         
         return $this;
     }
@@ -332,7 +332,7 @@ class AggregateOption
      */
     public function setIcon($icon)
     {
-        $this->icon= $icon;
+        $this->icon = $icon;
         
         return $this;
     }

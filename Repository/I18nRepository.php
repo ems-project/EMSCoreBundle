@@ -17,7 +17,7 @@ class I18nRepository extends \Doctrine\ORM\EntityRepository
         
         if ($identifier != null) {
             $qb->where('i.identifier LIKE :identifier')
-            ->setParameter('identifier', '%' . $identifier .'%');
+            ->setParameter('identifier', '%' . $identifier . '%');
         }
         
         return $qb->getQuery()
@@ -32,7 +32,7 @@ class I18nRepository extends \Doctrine\ORM\EntityRepository
         
         if ($identifier != null) {
             $qb->where('i.identifier LIKE :identifier')
-            ->setParameter('identifier', '%' . $identifier .'%');
+            ->setParameter('identifier', '%' . $identifier . '%');
         }
         
         $qb->orderBy('i.identifier', 'ASC')

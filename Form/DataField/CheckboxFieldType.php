@@ -41,7 +41,7 @@ class CheckboxFieldType extends DataFieldType
     {
         $migrationOptions = $dataField->getFieldType()->getMigrationOptions();
         if (!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {
-            $dataField->setBooleanValue($sourceArray?true:false);
+            $dataField->setBooleanValue($sourceArray ? true : false);
         }
         return [$dataField->getFieldType()->getName()];
     }
@@ -58,8 +58,8 @@ class CheckboxFieldType extends DataFieldType
         $fieldType = $builder->getOptions() ['metadata'];
     
         $builder->add('value', CheckboxType::class, [
-                'label' => ($options['question_label'] ?$options['question_label']:(isset($options['label'])?$options['label']:false)),
-                'disabled'=> $this->isDisabled($options),
+                'label' => ($options['question_label'] ? $options['question_label'] : (isset($options['label']) ? $options['label'] : false)),
+                'disabled' => $this->isDisabled($options),
                 'required' => false,
         ]);
     }
@@ -72,7 +72,7 @@ class CheckboxFieldType extends DataFieldType
     public function viewTransform(DataField $dataField)
     {
         $out = parent::viewTransform($dataField);
-        return [ 'value' => (($out !== null && !empty($out) && $out)?true:false) ];
+        return [ 'value' => (($out !== null && !empty($out) && $out) ? true : false) ];
     }
     
     

@@ -50,7 +50,7 @@ class PasswordFieldType extends DataFieldType
         $fieldType = $options ['metadata'];
         $builder->add('password_value', PasswordType::class, [
                                 'label' => false,
-                'disabled'=> $this->isDisabled($options),
+                'disabled' => $this->isDisabled($options),
                 'required' => false,
                 'attr' => [
                         'autocomplete' => "new-password" //http://stackoverflow.com/questions/18531437/stop-google-chrome-auto-fill-the-input
@@ -59,7 +59,7 @@ class PasswordFieldType extends DataFieldType
         
         $builder->add('reset_password_value', CheckboxType::class, [
                 'label' => 'Reset the password',
-                'disabled'=> $this->isDisabled($options),
+                'disabled' => $this->isDisabled($options),
                 'required' => false,
         ]);
     }

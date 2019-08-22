@@ -66,7 +66,7 @@ class SendNotificationsCommand extends ContainerAwareCommand
         /**@var Notification $item*/
         foreach ($resultSet as $idx => $item) {
             if ($output->isVerbose()) {
-                $output->writeln(($idx+1).'/'.$count.' : '.$item.' for '.$item->getRevision());
+                $output->writeln(($idx + 1) . '/' . $count . ' : ' . $item . ' for ' . $item->getRevision());
             }
             
             $this->notificationService->sendEmail($item);
@@ -85,7 +85,7 @@ class SendNotificationsCommand extends ContainerAwareCommand
     {
         $output->writeln('Sending pending notification and response emails to enabled users');
         
-        $this->notificationService->setOutput($output->isVerbose()?$output:null);
+        $this->notificationService->setOutput($output->isVerbose() ? $output : null);
         $this->notificationService->setDryRun($input->getOption('dry-run'));
         
         $em = $this->doctrine->getManager();

@@ -23,7 +23,7 @@ class I18nContentType extends AbstractType
             'required' => true,
         ])
         ->add('text', TextareaType::class, [
-            'required' =>true,
+            'required' => true,
             'attr' => [
                     'rows' => 4,
             ],

@@ -18,7 +18,7 @@ class WysiwygStylesSetPickerType extends SelectPickerType
     public function __construct(WysiwygStylesSetService$stylesSetService)
     {
         parent::__construct();
-        $this->stylesSetService= $stylesSetService;
+        $this->stylesSetService = $stylesSetService;
     }
 
     /**
@@ -37,7 +37,7 @@ class WysiwygStylesSetPickerType extends SelectPickerType
             'choice_attr' => function ($category, $key, $index) {
                 //TODO: it would be nice to translate the roles
                 return [
-                        'data-content' => "<div class='text-".$category."'><i class='fa fa-css3'></i>&nbsp;&nbsp;".$key.'</div>'
+                        'data-content' => "<div class='text-" . $category . "'><i class='fa fa-css3'></i>&nbsp;&nbsp;" . $key . '</div>'
                 ];
             },
             'choice_value' => function ($value) {

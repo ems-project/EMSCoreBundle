@@ -49,7 +49,7 @@ class DataLinkFieldType extends DataFieldType
     {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
         $this->client = $client;
-        $this->dispatcher= $dispatcher;
+        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -67,7 +67,7 @@ class DataLinkFieldType extends DataFieldType
                 $referersToRemove = $previousData[$dataField->getFieldType()->getName()];
             }
             if (!empty($dataField->getRawData())) {
-                $referersToAdd= $dataField->getRawData();
+                $referersToAdd = $dataField->getRawData();
             }
 
             $this->dispatcher->dispatch(UpdateRevisionReferersEvent::NAME, new UpdateRevisionReferersEvent($type, $id, $dataField->getFieldType()->getExtraOptions()['updateReferersField'], $referersToRemove, $referersToAdd));
@@ -104,13 +104,13 @@ class DataLinkFieldType extends DataFieldType
         if (is_array($data)) {
             $out = [
                 'terms' => [
-                        $opt['nested'].$dataField->getFieldType()->getName() => $data
+                        $opt['nested'] . $dataField->getFieldType()->getName() => $data
                 ]
             ];
         } else {
             $out = [
                     'term' => [
-                            $opt['nested'].$dataField->getFieldType()->getName() => $data
+                            $opt['nested'] . $dataField->getFieldType()->getName() => $data
                     ]
             ];
         }
@@ -180,9 +180,9 @@ class DataLinkFieldType extends DataFieldType
         };
 
         $builder->add('value', ObjectPickerType::class, [
-            'label' => (null != $options ['label']?$options ['label']:$fieldType->getName()),
+            'label' => (null != $options ['label'] ? $options ['label'] : $fieldType->getName()),
             'required' => false,
-            'disabled'=> $this->isDisabled($options),
+            'disabled' => $this->isDisabled($options),
             'multiple' => $options['multiple'],
             'type' => $options['type'],
             'searchId' => $options['searchId'],
@@ -324,14 +324,14 @@ class DataLinkFieldType extends DataFieldType
                     if (is_string($item)) {
                         $temp[] = $item;
                     } else {
-                        $out->addMessage('Some data was not able to be imported: '.json_encode($item));
+                        $out->addMessage('Some data was not able to be imported: ' . json_encode($item));
                     }
                 }
             } elseif (is_string($data)) {
                 $temp[] = $data;
                 $out->addMessage('Data converted into array');
             } else {
-                $out->addMessage('Data was not able to be imported: '.json_encode($data));
+                $out->addMessage('Data was not able to be imported: ' . json_encode($data));
             }
             $out->setRawData($temp);
         } else {
@@ -355,7 +355,7 @@ class DataLinkFieldType extends DataFieldType
                 }
             } else {
                 $out->setRawData(null);
-                $out->addMessage('Data was not able to be imported: '.json_encode($data));
+                $out->addMessage('Data was not able to be imported: ' . json_encode($data));
             }
         }
         return $out;
@@ -379,7 +379,7 @@ class DataLinkFieldType extends DataFieldType
      */
     public function reverseViewTransform($data, FieldType $fieldType)
     {
-        $data= (null !== $data && isset($data['value']))?$data['value']:null;
+        $data = (null !== $data && isset($data['value'])) ? $data['value'] : null;
         if (\is_array($data)) {
             $data = \array_values($data);
         }

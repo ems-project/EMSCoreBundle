@@ -948,8 +948,7 @@ class DataController extends AppController
         /** @var Environment $environment */
         $environment = $environment[0];
 
-        $document
-            = $elasticsearchService->get($environment, $template->getContentType(), $ouuid);
+        $document = $elasticsearchService->get($environment, $template->getContentType(), $ouuid);
 
         $twig = $this->getTwig();
 

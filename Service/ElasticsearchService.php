@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Service;
 
 use Elasticsearch\Client;
+use EMS\ClientHelperBundle\Exception\SingleResultException;
 use EMS\CommonBundle\Common\Document;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\ContentType;
@@ -43,7 +44,7 @@ class ElasticsearchService
     }
 
 
-    public function get(Environment $environment, ContentType $contentType, $ouuid)
+    public function get(Environment $environment, ContentType $contentType, $ouuid): Document
     {
         $result = $this->client->search([
             'index' => $environment->getAlias(),
@@ -63,7 +64,13 @@ class ElasticsearchService
         ]);
 
         if (0 === $result['hits']['total']) {
-            return null;
+            $this->logger->error('log.elasticsearch.too_few_document_result', [
+                'total' =>$result['hits']['total'],
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                EmsFields::LOG_OUUID_FIELD => $ouuid,
+                EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
+            ]);
+            throw new SingleResultException('Expected one result, got 0');
         }
 
         if (1 !== $result['hits']['total']) {
@@ -73,6 +80,7 @@ class ElasticsearchService
                 EmsFields::LOG_OUUID_FIELD => $ouuid,
                 EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
             ]);
+            throw new SingleResultException(sprintf('Expected one result, got %s', $result['hits']['total']));
         }
 
         return new Document($contentType->getName(), $ouuid, $result['hits']['hits'][0]['_source']);

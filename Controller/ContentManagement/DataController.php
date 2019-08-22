@@ -948,7 +948,7 @@ class DataController extends AppController
         /** @var Environment $environment */
         $environment = $environment[0];
 
-        $object = $elasticsearchService->get($environment, $template->getContentType(), $ouuid);
+        $document = $elasticsearchService->get($environment, $template->getContentType(), $ouuid);
 
         $twig = $this->getTwig();
 
@@ -969,8 +969,8 @@ class DataController extends AppController
             $output = $body->render([
                 'environment' => $environment,
                 'contentType' => $template->getContentType(),
-                'object' => $object,
-                'source' => $object->getSource(),
+                'object' => $document,
+                'source' => $document->getSource(),
                 '_download' => ($_download || !$template->getPreview()),
             ]);
 
@@ -1014,8 +1014,8 @@ class DataController extends AppController
                 $filename = $filename->render([
                     'environment' => $environment,
                     'contentType' => $template->getContentType(),
-                    'object' => $object,
-                    'source' => $object->getSource(),
+                    'object' => $document,
+                    'source' => $document->getSource(),
                 ]);
                 $filename = preg_replace('~[\r\n]+~', '', $filename);
             }
@@ -1037,8 +1037,8 @@ class DataController extends AppController
             $output = $body->render([
                 'environment' => $environment,
                 'contentType' => $template->getContentType(),
-                'object' => $object,
-                'source' => $object->getSource(),
+                'object' => $document,
+                'source' => $document->getSource(),
             ]);
             echo $output;
 
@@ -1047,7 +1047,7 @@ class DataController extends AppController
 
         return $this->render('@EMSCore/data/custom-view.html.twig', [
             'template' => $template,
-            'object' => $object,
+            'object' => $document,
             'environment' => $environment,
             'contentType' => $template->getContentType(),
             'body' => $body

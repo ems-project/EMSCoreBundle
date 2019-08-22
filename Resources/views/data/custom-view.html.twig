@@ -1,14 +1,14 @@
 {% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
-{% block title %}View {{ template.name }} of the {{ object._type }} : {{ object._id }}{% endblock %}
+{% block title %}View {{ template.name }} of the {{ object.type }} : {{ object.ouuid }}{% endblock %}
 {% block pagetitle %}
 	<i class="{% if contentType.icon %}{{ contentType.icon }} {% else %} fa fa-question {% endif %} "></i>
-	View {{ template.name }} of the {{ object._type }} : 
+	View {{ template.name }} of the {{ object.type }} :
 	
 	{% if (contentType.labelField) and (attribute(attribute(object, '_source'), contentType.labelField)  is defined ) %}
-		{{ attribute(attribute(object, '_source'), contentType.labelField) }}<small>{{ object._id }}</small>
+		{{ attribute(attribute(object, '_source'), contentType.labelField) }}<small>{{ object.ouuid }}</small>
 	{% else %}
-		{{ object._id }}
+		{{ object.ouuid }}
 	{% endif %}
 					
 	
@@ -25,7 +25,7 @@
 				environment: environment,
 				contentType: contentType,
 				object: object,
-				source: object._source
+				source: object.source
 			})|raw }}
 {% endif %}
 {% endblock %} 
@@ -46,7 +46,7 @@
 										environment: environment,
 										contentType: contentType,
 										object: object,
-										source: object._source,
+										source: object.source,
                         				_download: false
 									})|raw }}
 
@@ -61,7 +61,7 @@
 											environment: environment,
 											contentType: contentType,
 											object: object,
-											source: object._source
+											source: object.source
 										}) }}
 				{% endif %}
 			</div>
@@ -80,7 +80,7 @@
                                 'url':  path(template.public?'ems_data_custom_template_public':'ems_data_custom_template_protected', {
                                     'environmentName': environment.name ,
                                     'templateId': template.id,
-                                    'ouuid': object._id,
+                                    'ouuid': object.ouuid,
                                     '_download': true}),
                                 'label': 'Download PDF',
                                 'icon': 'file-pdf-o',
@@ -92,7 +92,7 @@
 													'url':  path(template.public?'ems_data_custom_template_public':'ems_data_custom_template_protected', {
 															'environmentName': environment.name , 
 															'templateId': template.id, 
-															'ouuid': object._id,
+															'ouuid': object.ouuid,
 															'_download': true}),
 													'label': 'Download',
 													'icon': 'download',

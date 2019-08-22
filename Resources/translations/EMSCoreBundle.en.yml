@@ -473,6 +473,7 @@ log:
     deleted: 'The filter %filter_name% has been deleted'
   elasticsearch:
     too_many_document_result: 'Found %total% results for the document %contenttype%:%ouuid% in the environment %environment%'
+    too_few_document_result: 'Found %total% results for the document %contenttype%:%ouuid% in the environment %environment%'
     template_error: 'There is something wrong with the template %template_name%'
     template_filename_error: 'There is something wrong with the template %template_name%''s filename'
     limit_exceded: 'The search results are limited to the first 50.000 items'

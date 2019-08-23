@@ -13,7 +13,6 @@ use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Form\EditFieldType;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
-use EMS\CoreBundle\Entity\Helper\JsonNormalizer;
 use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Form\DataField\SubfieldType;
@@ -267,7 +266,7 @@ class ContentTypeController extends AppController
                     $contentType->setDirty(true);
                     $contentType->getFieldType()->updateAncestorReferences($contentType, null);
                     $contentType->setOrderKey($contentTypeRepository->maxOrderKey() + 1);
-
+                    
                     $em->persist($contentType);
                 } else {
                     $contentType = $contentTypeAdded;

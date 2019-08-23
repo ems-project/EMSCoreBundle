@@ -2,6 +2,8 @@
 
 namespace EMS\CoreBundle\Entity\Helper;
 
+use Doctrine\ORM\PersistentCollection;
+
 class JsonClass implements \JsonSerializable
 {
     /** @var string */
@@ -43,6 +45,22 @@ class JsonClass implements \JsonSerializable
     public function updateProperty(string $name, $value)
     {
         $this->properties[$name] = $value;
+    }
+
+    public function hasProperty(string $name): bool
+    {
+        return array_key_exists($name, $this->properties);
+    }
+
+    public function handlePersistentCollections(...$properties)
+    {
+        foreach ($properties as $property) {
+            if (! $this->hasProperty($property) || ! $this->properties[$property] instanceof PersistentCollection) {
+                continue;
+            }
+            $value = $this->properties[$property]->toArray();
+            $this->updateProperty($property, $value);
+        }
     }
 
     /**

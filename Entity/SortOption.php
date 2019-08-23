@@ -183,7 +183,7 @@ class SortOption
      */
     public function setField($field)
     {
-        $this->field= $field;
+        $this->field = $field;
         
         return $this;
     }
@@ -231,7 +231,7 @@ class SortOption
      */
     public function setInverted($inverted)
     {
-        $this->inverted= $inverted;
+        $this->inverted = $inverted;
         
         return $this;
     }
@@ -255,7 +255,7 @@ class SortOption
      */
     public function setIcon($icon)
     {
-        $this->icon= $icon;
+        $this->icon = $icon;
         
         return $this;
     }

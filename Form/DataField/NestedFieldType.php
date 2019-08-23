@@ -135,7 +135,7 @@ class NestedFieldType extends DataFieldType
             foreach ($data->getChildren() as $child) {
 //                 $className = $child->getFieldType()->getType();
 //                 $class = new $className;
-                $class =$this->formRegistry->getType($child->getFieldType()->getType());
+                $class = $this->formRegistry->getType($child->getFieldType()->getType());
                 $class->buildObjectArray($child, $tmp);
             }
             $out [] = $tmp;

@@ -226,12 +226,12 @@ class NotificationController extends AppController
 
         $rejectedNotifications = [];
         if ($folder == 'sent') {
-            $notifications = $this->getNotificationService()->listSentNotifications(($page-1)*$paging_size, $paging_size, $filters);
-            $lastPage = ceil($countSent/$paging_size);
+            $notifications = $this->getNotificationService()->listSentNotifications(($page - 1) * $paging_size, $paging_size, $filters);
+            $lastPage = ceil($countSent / $paging_size);
         } else {
-            $notifications = $this->getNotificationService()->listInboxNotifications(($page-1)*$paging_size, $paging_size, $filters);
-            $rejectedNotifications = $this->getNotificationService()->listRejectedNotifications(($page-1)*$paging_size, $paging_size, $filters);
-            $lastPage = ceil(($countRejected > $countPending?$countRejected:$countPending)/$paging_size);
+            $notifications = $this->getNotificationService()->listInboxNotifications(($page - 1) * $paging_size, $paging_size, $filters);
+            $rejectedNotifications = $this->getNotificationService()->listRejectedNotifications(($page - 1) * $paging_size, $paging_size, $filters);
+            $lastPage = ceil(($countRejected > $countPending ? $countRejected : $countPending) / $paging_size);
         }
 
          $treatNotification = new TreatNotifications();
@@ -247,7 +247,7 @@ class NotificationController extends AppController
                 'counter' => $count,
                 'notifications' => $notifications,
                 'lastPage' => $lastPage,
-                'paginationPath' => 'notifications.'.$folder,
+                'paginationPath' => 'notifications.' . $folder,
                 'page' => $page,
                 'form' => $form->createView(),
                 'treatform' => $treatForm->createView(),

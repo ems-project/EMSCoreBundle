@@ -101,14 +101,14 @@ class FilterController extends AppController
     public function addAction(Request $request)
     {
         $filter = new Filter();
-        $form= $this->createForm(FilterType::class, $filter);
+        $form = $this->createForm(FilterType::class, $filter);
         
         $form->handleRequest($request);
         
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var EntityManager $em */
             $em = $this->getDoctrine()->getManager();
-            $filter=  $form->getData();
+            $filter =  $form->getData();
             $em->persist($filter);
             $em->flush($filter);
             

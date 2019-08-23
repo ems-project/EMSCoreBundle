@@ -562,25 +562,25 @@ class NotificationService
             try {
                 $body = $this->twig->createTemplate($notification->getTemplate()->getBody())->render($params);
             } catch (Exception $e) {
-                $body = "Error in body template: ".$e->getMessage();
+                $body = "Error in body template: " . $e->getMessage();
             }
             
-            $message->setSubject($notification->getTemplate().' for '.$notification->getRevision())
+            $message->setSubject($notification->getTemplate() . ' for ' . $notification->getRevision())
                 ->setFrom($this->sender['address'], $this->sender['sender_name'])
                 ->setTo($toUsers)
                 ->setCc(array_unique(array_merge($ccUsers, $fromUser)))
-                ->setBody($body, empty($notification->getTemplate()->getEmailContentType())?'text/html':$notification->getTemplate()->getEmailContentType());
+                ->setBody($body, empty($notification->getTemplate()->getEmailContentType()) ? 'text/html' : $notification->getTemplate()->getEmailContentType());
             $notification->setEmailed(new DateTime());
         } else {
             //it's a notification
             try {
                 $body = $this->twig->createTemplate($notification->getTemplate()->getResponseTemplate())->render($params);
             } catch (Exception $e) {
-                $body = "Error in response template: ".$e->getMessage();
+                $body = "Error in response template: " . $e->getMessage();
             }
             
             //it's a reminder
-            $message->setSubject($notification->getTemplate().' for '.$notification->getRevision().' has been '.$notification->getStatus())
+            $message->setSubject($notification->getTemplate() . ' for ' . $notification->getRevision() . ' has been ' . $notification->getStatus())
                 ->setFrom($this->sender['address'], $this->sender['sender_name'])
                 ->setTo($fromUser)
                 ->setCc(array_unique(array_merge($ccUsers, $toUsers)))

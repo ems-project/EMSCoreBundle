@@ -33,7 +33,7 @@ class PublishController extends AppController
         
         return $this->redirectToRoute('data.revisions', [
                 'ouuid' => $revisionId->getOuuid(),
-                'type'=> $revisionId->getContentType()->getName(),
+                'type' => $revisionId->getContentType()->getName(),
                 'revisionId' => $revisionId->getId(),
         ]);
     }
@@ -50,7 +50,7 @@ class PublishController extends AppController
         
         return $this->redirectToRoute('data.revisions', [
                 'ouuid' => $revisionId->getOuuid(),
-                'type'=> $revisionId->getContentType()->getName(),
+                'type' => $revisionId->getContentType()->getName(),
                 'revisionId' => $revisionId->getId(),
         ]);
     }

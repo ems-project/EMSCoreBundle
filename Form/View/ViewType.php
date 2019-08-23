@@ -73,7 +73,7 @@ abstract class ViewType extends AbstractType
     {
         $resolver->setDefaults(array (
                 'view' => null,
-                'label' => $this->getName().' options',
+                'label' => $this->getName() . ' options',
         ));
     }
 
@@ -93,7 +93,7 @@ abstract class ViewType extends AbstractType
     {
         $response = new Response();
         $parameters = $this->getParameters($view, $this->formFactory, $request);
-        $response->setContent($this->twig->render('@EMSCore/view/custom/'.$this->getBlockPrefix().'.html.twig', $parameters));
+        $response->setContent($this->twig->render('@EMSCore/view/custom/' . $this->getBlockPrefix() . '.html.twig', $parameters));
         return $response;
     }
 }

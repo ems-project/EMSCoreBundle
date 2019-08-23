@@ -106,7 +106,7 @@ class SynchAssetCommand extends EmsCommand
 
             if ($service != 'All') {
                 $serviceId = array_search($service, $this->fileService->getStorages());
-                $output->writeln('You have just selected: '.$service.' ('.$serviceId.')');
+                $output->writeln('You have just selected: ' . $service . ' (' . $serviceId . ')');
             }
         }
 
@@ -134,7 +134,7 @@ class SynchAssetCommand extends EmsCommand
                             if (! $storage->head($hash['hash'])) {
                                 if (!$storage->create($hash['hash'], $file)) {
                                     $output->writeln('');
-                                    $output->writeln('<comment>EMS was not able to synchronize on the service '.$storage.'</comment>');
+                                    $output->writeln('<comment>EMS was not able to synchronize on the service ' . $storage . '</comment>');
                                 }
                             }
                         }
@@ -144,7 +144,7 @@ class SynchAssetCommand extends EmsCommand
                         if ($storage !== null && ! $storage->head($hash['hash'])) {
                             if (!$storage->create($hash['hash'], $file)) {
                                 $output->writeln('');
-                                $output->writeln('<comment>EMS was not able to synchronize on the service '.$storage.'</comment>');
+                                $output->writeln('<comment>EMS was not able to synchronize on the service ' . $storage . '</comment>');
                             }
                         }
                     }
@@ -152,7 +152,7 @@ class SynchAssetCommand extends EmsCommand
                     unlink($file);
                 } else {
                     $output->writeln('');
-                    $output->writeln('<comment>File not found '.$hash['hash'].'</comment>');
+                    $output->writeln('<comment>File not found ' . $hash['hash'] . '</comment>');
                     ++$fileNotFound;
                 }
 
@@ -163,7 +163,7 @@ class SynchAssetCommand extends EmsCommand
         $progress->finish();
         $output->writeln('');
         if ($fileNotFound) {
-            $output->writeln('<comment>'.$fileNotFound.' files not found</comment>');
+            $output->writeln('<comment>' . $fileNotFound . ' files not found</comment>');
         }
     }
 }

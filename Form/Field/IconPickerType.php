@@ -836,7 +836,7 @@ class IconPickerType extends SelectPickerType
             ],
             'choice_attr' => function ($category, $key, $index) {
                 return [
-                        'data-content' => "<i class='".$category."'></i>&nbsp;".$this->humanize($key)
+                        'data-content' => "<i class='" . $category . "'></i>&nbsp;" . $this->humanize($key)
                 ];
             },
             'choice_value' => function ($value) {

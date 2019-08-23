@@ -54,9 +54,9 @@ class ObjectChoiceCacheService
                     }
                     $aliasTypes[$currentType->getEnvironment()->getAlias()][] = $type;
                     $params = [
-                            'size'=>  '500',
-                            'index'=> $currentType->getEnvironment()->getAlias(),
-                            'type'=> $type,
+                            'size' =>  '500',
+                            'index' => $currentType->getEnvironment()->getAlias(),
+                            'type' => $type,
                     ];
 
 
@@ -90,7 +90,7 @@ class ObjectChoiceCacheService
                     //TODO test si > 500... logger
 
                     foreach ($items['hits']['hits'] as $hit) {
-                        if (!isset($choices[$hit['_type'].':'.$hit['_id']])) {
+                        if (!isset($choices[$hit['_type'] . ':' . $hit['_id']])) {
                             $listItem = new ObjectChoiceListItem($hit, $this->contentTypeService->getByName($hit['_type']));
                             $choices[$listItem->getValue()] = $listItem;
                             $this->cache[$hit['_type']][$hit['_id']] = $listItem;
@@ -104,8 +104,8 @@ class ObjectChoiceCacheService
                 $this->fullyLoaded[$type] = true;
             } else {
                 foreach ($this->cache[$type] as $id => $item) {
-                    if ($item && !isset($choices[$type.':'.$id])) {
-                        $choices[$type.':'.$id] = $item;
+                    if ($item && !isset($choices[$type . ':' . $id])) {
+                        $choices[$type . ':' . $id] = $item;
                     }
                 }
             }
@@ -168,7 +168,7 @@ class ObjectChoiceCacheService
             ];
             $result = $this->client->mget($params);
             foreach ($result['docs'] as $doc) {
-                $objectId = $doc['_type'].':'.$doc['_id'];
+                $objectId = $doc['_type'] . ':' . $doc['_id'];
                 if ($doc['found']) {
                     $listItem = new ObjectChoiceListItem($doc, $this->contentTypeService->getByName($doc['_type']));
                     $this->cache[$doc['_type']][$doc['_id']] = $listItem;

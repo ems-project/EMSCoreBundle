@@ -209,7 +209,7 @@ class EnvironmentController extends AppController
             $total = $repository->countDifferencesBetweenEnvironment($env->getId(), $withEnvi->getId(), $contentTypes);
             if ($total) {
                 $contentTypeService = $this->getContentTypeService();
-                $lastPage = ceil($total/$paging_size);
+                $lastPage = ceil($total / $paging_size);
                 if ($page > $lastPage) {
                     $page = $lastPage;
                 }
@@ -217,7 +217,7 @@ class EnvironmentController extends AppController
                     $env->getId(),
                     $withEnvi->getId(),
                     $contentTypes,
-                    ($page-1)*$paging_size,
+                    ($page - 1) * $paging_size,
                     $paging_size,
                     $orderField,
                     $orderDirection
@@ -345,7 +345,7 @@ class EnvironmentController extends AppController
         } catch (Missing404Exception $e) {
             $this->getLogger()->error('log.error', [
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                EmsFields::LOG_EXCEPTION_FIELD=> $e,
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
             ]);
         }
         
@@ -510,7 +510,7 @@ class EnvironmentController extends AppController
                     $em->persist($environment);
                     $em->flush();
     
-                    $indexName = $environment->getAlias().AppController::getFormatedTimestamp();
+                    $indexName = $environment->getAlias() . AppController::getFormatedTimestamp();
                     $this->getElasticsearch()->indices()->create([
                             'index' => $indexName,
                             'body' => $this->getEnvironmentService()->getIndexAnalysisConfiguration(),
@@ -565,7 +565,7 @@ class EnvironmentController extends AppController
             throw new NotFoundHttpException('Unknow environment');
         }
     
-        $options= [];
+        $options = [];
         if ($this->getParameter("ems_core.circles_object")) {
             $options['type'] = $this->getParameter("ems_core.circles_object");
         }
@@ -622,8 +622,8 @@ class EnvironmentController extends AppController
         } catch (Missing404Exception $e) {
             $this->getLogger()->error('log.environment.alias_missing', [
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                EmsFields::LOG_EXCEPTION_FIELD=> $e,
-                EmsFields::LOG_ENVIRONMENT_FIELD=> $environment->getName(),
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
                 'alias' => $environment->getAlias(),
             ]);
             $info = false;

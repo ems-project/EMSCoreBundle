@@ -79,7 +79,7 @@ class UrlAttachmentFieldType extends DataFieldType
             if ($dataField->getFieldType()->getRestrictionOptions()['mandatory']) {
                 $dataField->addMessage('This entry is required');
             }
-            $dataField->setRawData(['_url'=>null, '_content' => ""]);
+            $dataField->setRawData(['_url' => null, '_content' => ""]);
         } elseif (is_string($data)) {
             try {
                 $content = file_get_contents($data);
@@ -141,7 +141,7 @@ class UrlAttachmentFieldType extends DataFieldType
                 if (is_string($out['_url'])) {
                     return $out['_url'];
                 }
-                $data->addMessage('Non supported input data : '.json_encode($out));
+                $data->addMessage('Non supported input data : ' . json_encode($out));
             }
         }
          
@@ -264,8 +264,8 @@ class UrlAttachmentFieldType extends DataFieldType
     {
         return [
                 "attachment" => [
-                        'field' => $current->getName().'._content',
-                        'target_field' => $current->getName().'._attachment',
+                        'field' => $current->getName() . '._content',
+                        'target_field' => $current->getName() . '._attachment',
                         'indexed_chars' => 1000000,
                 ]
         ];

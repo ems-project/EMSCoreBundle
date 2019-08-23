@@ -52,10 +52,10 @@ class HierarchicalViewType extends ViewType
     public function __construct(FormFactory $formFactory, Twig_Environment $twig, Client $client, LoggerInterface $logger, Session $session, DataService $dataService, Router $router, ContentTypeService $contentTypeService)
     {
         parent::__construct($formFactory, $twig, $client, $logger);
-        $this->session= $session;
+        $this->session = $session;
         $this->dataService = $dataService;
-        $this->router= $router;
-        $this->contentTypeService= $contentTypeService;
+        $this->router = $router;
+        $this->contentTypeService = $contentTypeService;
     }
 
     public function getLabel()
@@ -160,24 +160,24 @@ class HierarchicalViewType extends ViewType
         }
         $parentId = explode(':', $view->getOptions()['parent']);
         if (count($parentId) != 2) {
-            throw new NotFoundHttpException('Parent menu not found: '.$view->getOptions()['parent']);
+            throw new NotFoundHttpException('Parent menu not found: ' . $view->getOptions()['parent']);
         }
 
         $index = $this->contentTypeService->getIndex($view->getContentType());
 
         $parent = null;
         try {
-            $parent= $this->client->get([
+            $parent = $this->client->get([
                     'index' => $index,
                     'type' => $parentId[0],
                     'id' => $parentId[1],
             ]);
         } catch (Exception $e) {
-            throw new NotFoundHttpException('Parent menu not found: '.$view->getOptions()['parent']);
+            throw new NotFoundHttpException('Parent menu not found: ' . $view->getOptions()['parent']);
         }
         
         if (empty($parent)) {
-            throw new NotFoundHttpException('Parent menu not found: '.$view->getOptions()['parent']);
+            throw new NotFoundHttpException('Parent menu not found: ' . $view->getOptions()['parent']);
         }
 
         
@@ -208,7 +208,7 @@ class HierarchicalViewType extends ViewType
         
         
         $response = new Response();
-        $response->setContent($this->twig->render('@EMSCore/view/custom/'.$this->getBlockPrefix().'.html.twig', [
+        $response->setContent($this->twig->render('@EMSCore/view/custom/' . $this->getBlockPrefix() . '.html.twig', [
                 'parent' => $parent,
                 'view' => $view,
                 'form' => $form->createView(),
@@ -230,7 +230,7 @@ class HierarchicalViewType extends ViewType
             foreach ($structure as $item) {
                 $data[$view->getOptions()['field']][] = $item['id'];
                 if (explode(':', $item['id'])[0] == $view->getContentType()->getName()) {
-                    $this->reorder($item['id'], $view, isset($item['children'])?$item['children']:[]);
+                    $this->reorder($item['id'], $view, isset($item['children']) ? $item['children'] : []);
                 }
             }
             $revision->setRawData($data);

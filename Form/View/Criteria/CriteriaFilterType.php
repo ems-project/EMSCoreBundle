@@ -37,7 +37,7 @@ class CriteriaFilterType extends AbstractType
 
             $criteriaField = $view->getContentType()->getFieldType();
             if ($view->getOptions()['criteriaMode'] == 'internal') {
-                $criteriaField = $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['criteriaField']);
+                $criteriaField = $view->getContentType()->getFieldType()->__get('ems_' . $view->getOptions()['criteriaField']);
             } else if ($view->getOptions()['criteriaMode'] == 'another') {
             } else {
                 throw new Exception('Should never happen');
@@ -53,7 +53,7 @@ class CriteriaFilterType extends AbstractType
                 /**@var FieldType $child*/
                 $child = $criteriaField->getChildByPath($path);
                 if ($child) {
-                    $label = $child->getDisplayOptions()['label']?$child->getDisplayOptions()['label']:$child->getName();
+                    $label = $child->getDisplayOptions()['label'] ? $child->getDisplayOptions()['label'] : $child->getName();
                     $choices[$label] = $child->getName();
                     $defaultRow = $defaultColumn;
                     $defaultColumn = $child->getName();

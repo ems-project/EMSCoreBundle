@@ -37,7 +37,7 @@ class FileAttachmentFieldType extends DataFieldType
     public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, FileService $fileService, LoggerInterface $logger)
     {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
-        $this->fileService= $fileService;
+        $this->fileService = $fileService;
         $this->logger = $logger;
     }
 
@@ -61,8 +61,8 @@ class FileAttachmentFieldType extends DataFieldType
         /** @var FieldType $fieldType */
         $fieldType = $options ['metadata'];
         $builder->add('value', AssetType::class, [
-                'label' => (null != $options ['label']?$options ['label']:$fieldType->getName()),
-                'disabled'=> $this->isDisabled($options),
+                'label' => (null != $options ['label'] ? $options ['label'] : $fieldType->getName()),
+                'disabled' => $this->isDisabled($options),
                 'required' => false,
         ]);
     }
@@ -229,8 +229,8 @@ class FileAttachmentFieldType extends DataFieldType
     {
         return [
             "attachment" => [
-                'field' => $current->getName().'.content',
-                'target_field' => $current->getName().'.attachment',
+                'field' => $current->getName() . '.content',
+                'target_field' => $current->getName() . '.attachment',
                 'indexed_chars' => 1000000,
             ]
         ];

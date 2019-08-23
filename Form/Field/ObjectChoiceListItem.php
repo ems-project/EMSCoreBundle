@@ -15,7 +15,7 @@ class ObjectChoiceListItem
     
     public function __construct(array &$object, ?ContentType $contentType)
     {
-        $this->value = $object['_type'].':'.$object['_id'];
+        $this->value = $object['_type'] . ':' . $object['_id'];
         
 
         $this->group = null;
@@ -24,7 +24,7 @@ class ObjectChoiceListItem
             $this->group = $object['_source'][$contentType->getCategoryField()];
         }
         
-        $this->label = '<i class="fa fa-question" data-ouuid="'.$this->value.'"></i>&nbsp;&nbsp;'.$this->value;
+        $this->label = '<i class="fa fa-question" data-ouuid="' . $this->value . '"></i>&nbsp;&nbsp;' . $this->value;
         if (null !== $contentType) {
             $icon = null !== $contentType->getIcon() ? $contentType->getIcon() : 'fa fa-question';
             $this->label = sprintf('<i class="%s" data-ouuid="%s"></i>&nbsp;&nbsp;', $icon, $this->value);

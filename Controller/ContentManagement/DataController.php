@@ -987,7 +987,7 @@ class DataController extends AppController
             // Output the generated PDF to Browser
             $dompdf->stream($template->getFilename() ?? "document.pdf", [
                 'compress' => 1,
-                'Attachment' => ($template->getDisposition() && $template->getDisposition() === 'attachment')?1:0,
+                'Attachment' => ($template->getDisposition() && $template->getDisposition() === 'attachment') ? 1 : 0,
             ]);
             exit;
         }
@@ -1304,7 +1304,7 @@ class DataController extends AppController
 
         $dataService->lockRevision($revision);
 
-        if ($revision->getEndTime() &&! $this->isGranted('ROLE_SUPER')) {
+        if ($revision->getEndTime() && ! $this->isGranted('ROLE_SUPER')) {
             throw new ElasticmsException($translator->trans('log.data.revision.only_super_can_finalize_an_archive', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),

@@ -35,7 +35,7 @@ class ViewTypePickerType extends SelectPickerType
                 /** @var ViewType $viewType */
                 $viewType = $this->viewTypes[$index];
                 return [
-                        'data-content' => "<div class='text-".$category."'><i class='fa fa-square'></i>&nbsp;&nbsp;".$viewType->getLabel().'</div>'
+                        'data-content' => "<div class='text-" . $category . "'><i class='fa fa-square'></i>&nbsp;&nbsp;" . $viewType->getLabel() . '</div>'
                 ];
             },
             'choice_value' => function ($value) {

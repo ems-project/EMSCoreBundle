@@ -89,8 +89,8 @@ class PublishService
         $this->environmentService = $environmentService;
         $this->dataService = $dataService;
         $this->userService = $userService;
-        $this->dispatcher= $dispatcher;
-        $this->logger= $logger;
+        $this->dispatcher = $dispatcher;
+        $this->logger = $logger;
     }
 
     /**
@@ -165,7 +165,7 @@ class PublishService
             $index = $this->contentTypeService->getIndex($revision->getContentType());
 
             $body[Mapping::PUBLISHED_DATETIME_FIELD] = (new DateTime())->format(DateTime::ISO8601);
-            $config =[
+            $config = [
                 'id' => $revision->getOuuid(),
                 'index' => $index,
                 'type' => $revision->getContentType()->getName(),
@@ -174,7 +174,7 @@ class PublishService
 
 
             if ($revision->getContentType()->getHavePipelines()) {
-                $config['pipeline'] = $this->instanceId.$revision->getContentType()->getName();
+                $config['pipeline'] = $this->instanceId . $revision->getContentType()->getName();
             }
 
             $this->client->index($config);
@@ -261,7 +261,7 @@ class PublishService
         $index = $this->contentTypeService->getIndex($revision->getContentType(), $environment);
 
         $body[Mapping::PUBLISHED_DATETIME_FIELD] = (new DateTime())->format(DateTime::ISO8601);
-        $config =[
+        $config = [
                 'id' => $revision->getOuuid(),
                 'index' => $index,
                 'type' => $revision->getContentType()->getName(),
@@ -270,7 +270,7 @@ class PublishService
         
         
         if ($revision->getContentType()->getHavePipelines()) {
-            $config['pipeline'] = $this->instanceId.$revision->getContentType()->getName();
+            $config['pipeline'] = $this->instanceId . $revision->getContentType()->getName();
         }
 
         $this->client->index($config);
@@ -296,14 +296,14 @@ class PublishService
         if (!$command) {
             $this->logger->info('log.data.revision.publish', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                EmsFields::LOG_OPERATION_FIELD => $already?EmsFields::LOG_OPERATION_UPDATE:EmsFields::LOG_OPERATION_CREATE,
+                EmsFields::LOG_OPERATION_FIELD => $already ? EmsFields::LOG_OPERATION_UPDATE : EmsFields::LOG_OPERATION_CREATE,
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                 EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
             ]);
         }
         
-        return $already?0:1;
+        return $already ? 0 : 1;
     }
 
     /**

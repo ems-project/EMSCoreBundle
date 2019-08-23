@@ -42,10 +42,10 @@ class I18nController extends Controller
         $count = $i18nService->count($filters);
         // for pagination
         $paging_size = $this->getParameter('ems_core.paging_size');
-        $lastPage = ceil($count/$paging_size);
+        $lastPage = ceil($count / $paging_size);
         $page = $request->query->get('page', 1);
         
-        $i18ns = $i18nService->findAll(($page-1)*$paging_size, $paging_size, $filters);
+        $i18ns = $i18nService->findAll(($page - 1) * $paging_size, $paging_size, $filters);
         
         return $this->render('@EMSCore/i18n/index.html.twig', array(
             'i18nkeys' => $i18ns,

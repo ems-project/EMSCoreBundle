@@ -40,7 +40,7 @@ class FieldTypePickerType extends SelectPickerType
                 /** @var \EMS\CoreBundle\Form\DataField\DataFieldType $dataFieldType */
                 $dataFieldType = $this->dataFieldTypes[$index];
                 return [
-                        'data-content' => '<div class="text-'.$category.'"><i class="'.$dataFieldType->getIcon().'"></i>&nbsp;&nbsp;'.$dataFieldType->getLabel().'</div>'
+                        'data-content' => '<div class="text-' . $category . '"><i class="' . $dataFieldType->getIcon() . '"></i>&nbsp;&nbsp;' . $dataFieldType->getLabel() . '</div>'
                 ];
             },
             'choice_value' => function ($value) {

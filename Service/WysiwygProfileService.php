@@ -21,7 +21,7 @@ class WysiwygProfileService
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
-        $this->translator= $translator;
+        $this->translator = $translator;
     }
     
     

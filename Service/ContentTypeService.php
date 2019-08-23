@@ -63,7 +63,7 @@ class ContentTypeService
         $this->environmentService = $environmentService;
         $this->formRegistry = $formRegistry;
         $this->instanceId = $instanceId;
-        $this->translator= $translator;
+        $this->translator = $translator;
         $this->singleTypeIndex = $singleTypeIndex;
     }
 
@@ -92,7 +92,7 @@ class ContentTypeService
                         }
                     } else if ($child->getName() == $elem[0]) {
                         if (strpos($path, ".")) {
-                            $fieldTypeByPath = $this->getChildByPath($fieldType, substr($path, strpos($path, ".")+1), $skipVirtualFields);
+                            $fieldTypeByPath = $this->getChildByPath($fieldType, substr($path, strpos($path, ".") + 1), $skipVirtualFields);
                             if ($fieldTypeByPath) {
                                 return $fieldTypeByPath;
                             }
@@ -139,7 +139,7 @@ class ContentTypeService
         foreach ($fieldType->getChildren() as $child) {
             $out = array_merge($out, $this->listAllFields($child));
         }
-        $out['key_'.$fieldType->getId()] = $fieldType;
+        $out['key_' . $fieldType->getId()] = $fieldType;
         return $out;
     }
     
@@ -148,11 +148,11 @@ class ContentTypeService
         
         $fieldType->getChildren()->clear();
         foreach ($newStructure as $key => $item) {
-            if (array_key_exists('key_'.$item['id'], $ids)) {
-                $fieldType->getChildren()->add($ids['key_'.$item['id']]);
-                $ids['key_'.$item['id']]->setParent($fieldType);
-                $ids['key_'.$item['id']]->setOrderKey($key);
-                $this->reorderFieldsRecu($ids['key_'.$item['id']], isset($item['children'])?$item['children']:[], $ids);
+            if (array_key_exists('key_' . $item['id'], $ids)) {
+                $fieldType->getChildren()->add($ids['key_' . $item['id']]);
+                $ids['key_' . $item['id']]->setParent($fieldType);
+                $ids['key_' . $item['id']]->setOrderKey($key);
+                $this->reorderFieldsRecu($ids['key_' . $item['id']], isset($item['children']) ? $item['children'] : [], $ids);
             } else {
                 $this->logger->warning('service.contenttype.field_not_found', [
                     'field_id' => $item['id'],
@@ -235,11 +235,11 @@ class ContentTypeService
                 $pipelines = $this->generatePipeline($contentType->getFieldType());
                 if (!empty($pipelines)) {
                     $body = [
-                            "description" => "Extract attachment information for the content type ".$contentType->getName(),
+                            "description" => "Extract attachment information for the content type " . $contentType->getName(),
                             "processors" => $pipelines,
                     ];
                     $this->client->ingest()->putPipeline([
-                            'id' => $this->instanceId.$contentType->getName(),
+                            'id' => $this->instanceId . $contentType->getName(),
                             'body' => $body
                     ]);
                     $contentType->setHavePipelines(true);

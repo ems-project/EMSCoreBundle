@@ -84,12 +84,12 @@ class DeleteCommand extends ContainerAwareCommand
         /** @var ContentType|null $contentType */
         $contentType = $ctRepo->findOneBy([
                 'name' => $name,
-                'deleted'=> 0
+                'deleted' => 0
                 
         ]);
 
         if ($contentType === null) {
-            $output->writeln("Content type ".$name." not found");
+            $output->writeln("Content type " . $name . " not found");
             return null;
         }
 
@@ -102,7 +102,7 @@ class DeleteCommand extends ContainerAwareCommand
         $counter = 0;
         $total = $revRepo->countByContentType($contentType);
         if ($total == 0) {
-            $output->writeln("Content type \"".$name."\" is already empty");
+            $output->writeln("Content type \"" . $name . "\" is already empty");
         } else {
             // create a new progress bar
             $progress = new ProgressBar($output, $total);
@@ -153,7 +153,7 @@ class DeleteCommand extends ContainerAwareCommand
 
             // ensure that the progress bar is at 100%
             $progress->finish();
-            $output->writeln(" deleting content type ".$name);
+            $output->writeln(" deleting content type " . $name);
         }
     }
 }

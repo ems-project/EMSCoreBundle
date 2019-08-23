@@ -148,8 +148,8 @@ class DataService
         $this->twig = $twig;
         $this->appTwig = $appExtension;
         $this->formRegistry = $formRegistry;
-        $this->dispatcher= $dispatcher;
-        $this->storageManager= $storageManager;
+        $this->dispatcher = $dispatcher;
+        $this->storageManager = $storageManager;
         $this->contentTypeService = $contentTypeService;
         $this->userService = $userService;
 
@@ -193,7 +193,7 @@ class DataService
     public function lockRevision(Revision $revision, Environment $publishEnv = null, $super = false, $username = null)
     {
 
-        if (!empty($publishEnv) && !$this->authorizationChecker->isGranted($revision->getContentType()->getPublishRole()?:'ROLE_PUBLISHER')) {
+        if (!empty($publishEnv) && !$this->authorizationChecker->isGranted($revision->getContentType()->getPublishRole() ?: 'ROLE_PUBLISHER')) {
             throw new PrivilegeException($revision, 'You don\'t have publisher role for this content');
         }
         if (!empty($publishEnv) && is_object($publishEnv) && !empty($publishEnv->getCircles()) && !$this->authorizationChecker->isGranted('ROLE_ADMIN') && !$this->appTwig->inMyCircles($publishEnv->getCircles())) {
@@ -208,7 +208,7 @@ class DataService
         /**@var Notification $notification*/
         foreach ($revision->getNotifications() as $notification) {
             if ($notification->getStatus() === Notification::PENDING && !$this->authorizationChecker->isGranted($notification->getTemplate()->getRole())) {
-                throw new PrivilegeException($revision, 'A pending "'.$notification->getTemplate()->getName().'" notification is locking this content');
+                throw new PrivilegeException($revision, 'A pending "' . $notification->getTemplate()->getName() . '" notification is locking this content');
             }
         }
 
@@ -321,8 +321,8 @@ class DataService
 
         $options = $dataField->getFieldType()->getOptions();
 
-        if (!$dataFieldType::isVirtual(!$options?[]:$options)) {
-            $path .= ($path == ''?'':'.').$form->getConfig()->getName();
+        if (!$dataFieldType::isVirtual(!$options ? [] : $options)) {
+            $path .= ($path == '' ? '' : '.') . $form->getConfig()->getName();
         }
 
         $extraOption = $dataField->getFieldType()->getExtraOptions();
@@ -425,7 +425,7 @@ class DataService
                     foreach ($child->all() as $collectionChild) {
                         if (isset($objectArray[$fieldName])) {
                             foreach ($objectArray[$fieldName] as &$elementsArray) {
-                                $found = $this->propagateDataToComputedFieldRecursive($collectionChild, $elementsArray, $contentType, $type, $ouuid, $migration, $parent, $path.($path == ''?'':'.').$fieldName) || $found;
+                                $found = $this->propagateDataToComputedFieldRecursive($collectionChild, $elementsArray, $contentType, $type, $ouuid, $migration, $parent, $path . ($path == '' ? '' : '.') . $fieldName) || $found;
                             }
                         }
                     }
@@ -490,7 +490,7 @@ class DataService
     {
 
         $now = new DateTime();
-        $until = $now->add(new DateInterval($byARealUser?"PT5M":"PT1M"));//+5 minutes
+        $until = $now->add(new DateInterval($byARealUser ? "PT5M" : "PT1M"));//+5 minutes
         $newRevision = new Revision();
         $newRevision->setContentType($contentType);
         $newRevision->setOuuid($ouuid);
@@ -516,7 +516,7 @@ class DataService
             ]);
             
             if (!empty($anotherObject)) {
-                throw new ConflictHttpException('Duplicate OUUID '.$ouuid.' for this content type');
+                throw new ConflictHttpException('Duplicate OUUID ' . $ouuid . ' for this content type');
             }
         }
         
@@ -580,9 +580,9 @@ class DataService
     public function getPublicKey()
     {
         if ($this->private_key && empty($this->public_key)) {
-            $certificate= openssl_pkey_get_private($this->private_key);
+            $certificate = openssl_pkey_get_private($this->private_key);
             $details = openssl_pkey_get_details($certificate);
-            $this->public_key =$details['key'];
+            $this->public_key = $details['key'];
         }
         return $this->public_key;
     }
@@ -590,7 +590,7 @@ class DataService
     public function getCertificateInfo()
     {
         if ($this->private_key) {
-            $certificate= openssl_pkey_get_private($this->private_key);
+            $certificate = openssl_pkey_get_private($this->private_key);
             $details = openssl_pkey_get_details($certificate);
             return $details;
         }
@@ -631,7 +631,7 @@ class DataService
                     unset($indexedItem[Mapping::HASH_FIELD]);
 
                     if (isset($indexedItem[Mapping::SIGNATURE_FIELD])) {
-                        $binary_signature= base64_decode($indexedItem[Mapping::SIGNATURE_FIELD]);
+                        $binary_signature = base64_decode($indexedItem[Mapping::SIGNATURE_FIELD]);
                         unset($indexedItem[Mapping::SIGNATURE_FIELD]);
                         $data = json_encode($indexedItem);
 
@@ -785,7 +785,7 @@ class DataService
             ];
 
             if ($revision->getContentType()->getHavePipelines()) {
-                $config['pipeline'] = $this->instanceId.$revision->getContentType()->getName();
+                $config['pipeline'] = $this->instanceId . $revision->getContentType()->getName();
             }
 
             if (empty($revision->getOuuid())) {
@@ -913,12 +913,12 @@ class DataService
             if ($revisions[0] instanceof Revision && null == $revisions[0]->getEndTime()) {
                 return $revisions[0];
             } else {
-                throw new NotFoundHttpException('Revision for ouuid '.$ouuid.' and contenttype '.$type.' with end time '.$revisions[0]->getEndTime());
+                throw new NotFoundHttpException('Revision for ouuid ' . $ouuid . ' and contenttype ' . $type . ' with end time ' . $revisions[0]->getEndTime());
             }
         } elseif (count($revisions) == 0) {
-            throw new NotFoundHttpException('Revision not found for ouuid '.$ouuid.' and contenttype '.$type);
+            throw new NotFoundHttpException('Revision not found for ouuid ' . $ouuid . ' and contenttype ' . $type);
         } else {
-            throw new Exception('Too much newest revisions available for ouuid '.$ouuid.' and contenttype '.$type);
+            throw new Exception('Too much newest revisions available for ouuid ' . $ouuid . ' and contenttype ' . $type);
         }
     }
 
@@ -1062,7 +1062,7 @@ class DataService
     {
         $objectArray = $revision->getRawData();
         if (!empty($revision->getContentType()->getCirclesField()) && isset($objectArray[$revision->getContentType()->getCirclesField()])  && !empty($objectArray[$revision->getContentType()->getCirclesField()])) {
-            $revision->setCircles(is_array($objectArray[$revision->getContentType()->getCirclesField()])?$objectArray[$revision->getContentType()->getCirclesField()]:[$objectArray[$revision->getContentType()->getCirclesField()]]);
+            $revision->setCircles(is_array($objectArray[$revision->getContentType()->getCirclesField()]) ? $objectArray[$revision->getContentType()->getCirclesField()] : [$objectArray[$revision->getContentType()->getCirclesField()]]);
         } else {
             $revision->setCircles(null);
         }
@@ -1110,7 +1110,7 @@ class DataService
         ]);
 
         if ($contentType === null) {
-            throw new NotFoundHttpException('ContentType '.$type.' Not found');
+            throw new NotFoundHttpException('ContentType ' . $type . ' Not found');
         }
 
 
@@ -1393,7 +1393,7 @@ class DataService
             foreach ($meta->getChildren() as $field) {
                 //no need to generate the structure for delete field
                 if (!$field->getDeleted()) {
-                    $child = $dataField->__get('ems_'.$field->getName());
+                    $child = $dataField->__get('ems_' . $field->getName());
                     if (null == $child) {
                         $child = new DataField();
                         $child->setFieldType($field);
@@ -1420,7 +1420,7 @@ class DataService
      * @param bool $isMigration
      *
      */
-    public function updateDataValue(DataField $dataField, Array &$elasticIndexDatas, $isMigration = false)
+    public function updateDataValue(DataField $dataField, array &$elasticIndexDatas, $isMigration = false)
     {
         $dataFieldType = $this->formRegistry->getType($dataField->getFieldType()->getType())->getInnerType();
         if ($dataFieldType instanceof DataFieldType) {
@@ -1509,7 +1509,7 @@ class DataService
         if ($finalizedBy !== false) {
             $objectArray[Mapping::FINALIZED_BY_FIELD] = $finalizedBy;
         }
-        if ($finalizationDate!== false) {
+        if ($finalizationDate !== false) {
             $objectArray[Mapping::FINALIZATION_DATETIME_FIELD] = $finalizationDate;
         }
 
@@ -1567,7 +1567,7 @@ class DataService
     {
         $out = '<ul>';
         foreach ($array as $id => $item) {
-            $out .= '<li>'.$id.':';
+            $out .= '<li>' . $id . ':';
             if (is_array($item)) {
                 $out .= DataService::arrayToHtml($item);
             } else {
@@ -1575,7 +1575,7 @@ class DataService
             }
             $out .= '</li>';
         }
-        return $out.'</ul>';
+        return $out . '</ul>';
     }
 
     /**
@@ -1627,7 +1627,7 @@ class DataService
 //           $isValid = $isValid && $dataFieldType->isValid($dataField);
         if ($dataFieldType !== null && !$dataFieldType->isValid($dataField, $parent)) {
             $isValid = false;
-            $form->addError(new FormError("This Field is not valid! ".$dataField->getMessages()[0]));
+            $form->addError(new FormError("This Field is not valid! " . $dataField->getMessages()[0]));
         }
 
         if ($form->getErrors(true, true)->count() > 0) {
@@ -1674,12 +1674,12 @@ class DataService
                 $revision = $revisions[0];
                 return $revision;
             } else {
-                throw new Exception('Revision for ouuid '.$id.' and contenttype '.$type.' with end time '.$revisions[0]->getEndTime());
+                throw new Exception('Revision for ouuid ' . $id . ' and contenttype ' . $type . ' with end time ' . $revisions[0]->getEndTime());
             }
         } elseif (count($revisions) == 0) {
-            throw new NotFoundHttpException('Revision not found for id '.$id.' and contenttype '.$type);
+            throw new NotFoundHttpException('Revision not found for id ' . $id . ' and contenttype ' . $type);
         } else {
-            throw new Exception('Too much newest revisions available for ouuid '.$id.' and contenttype '.$type);
+            throw new Exception('Too much newest revisions available for ouuid ' . $id . ' and contenttype ' . $type);
         }
     }
 

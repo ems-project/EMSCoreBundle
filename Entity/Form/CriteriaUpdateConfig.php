@@ -43,7 +43,7 @@ class CriteriaUpdateConfig
         $criteriaField = $rootFieldType;
         
         if ($view->getOptions()['criteriaMode'] == 'internal') {
-            $criteriaField = $rootFieldType->__get('ems_'.$view->getOptions()['criteriaField']);
+            $criteriaField = $rootFieldType->__get('ems_' . $view->getOptions()['criteriaField']);
         } else if ($view->getOptions()['criteriaMode'] == 'another') {
         } else {
             throw new \Exception('Should never happen');

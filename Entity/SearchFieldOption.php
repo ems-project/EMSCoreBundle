@@ -190,7 +190,7 @@ class SearchFieldOption
      */
     public function setField($field)
     {
-        $this->field= $field;
+        $this->field = $field;
         
         return $this;
     }
@@ -238,7 +238,7 @@ class SearchFieldOption
      */
     public function setIcon($icon)
     {
-        $this->icon= $icon;
+        $this->icon = $icon;
         
         return $this;
     }

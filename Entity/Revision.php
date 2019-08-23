@@ -224,7 +224,7 @@ class Revision
                 $type = $child->getType();
                 if ($type::isVirtual($child->getOptions())) {
                     if ($type::isContainer()) {
-                        $out[$child->getName()]= self::addVirtualFields($child, $data);
+                        $out[$child->getName()] = self::addVirtualFields($child, $data);
                     } else {
                         $out[$child->getName()] = $type::filterSubField($data, $child->getOptions());
                     }
@@ -361,15 +361,15 @@ class Revision
             $out = $this->ouuid;
         }
         if ($this->contentType !== null) {
-            $out = $this->contentType->getName().':'.$out;
+            $out = $this->contentType->getName() . ':' . $out;
             if (!empty($this->id)) {
-                $out .=  '#'.$this->id;
+                $out .=  '#' . $this->id;
             }
         }
         
         
         if ($this->contentType !== null && $this->contentType->getLabelField() && $this->rawData && isset($this->rawData[$this->contentType->getLabelField()])) {
-            return $this->rawData[$this->contentType->getLabelField()]." ($out)";
+            return $this->rawData[$this->contentType->getLabelField()] . " ($out)";
         }
         return $out;
     }
@@ -967,7 +967,7 @@ class Revision
      */
     public function setSha1($sha1)
     {
-        $this->sha1= $sha1;
+        $this->sha1 = $sha1;
         
         return $this;
     }

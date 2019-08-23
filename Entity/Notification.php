@@ -117,7 +117,7 @@ class Notification
 
     public function __toString()
     {
-        return $this->getTemplate()->getName().'#'.$this->id;
+        return $this->getTemplate()->getName() . '#' . $this->id;
     }
     
     /**

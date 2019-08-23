@@ -100,7 +100,7 @@ class GalleryViewType extends ViewType
 
         $search = new Search();
         if ($request->query->get('search_form', false) === false) {
-            $search->getFilters()[0]->setField($view->getOptions()['imageField'].'.sha1');
+            $search->getFilters()[0]->setField($view->getOptions()['imageField'] . '.sha1');
             $search->getFilters()[0]->setBooleanClause('must');
         }
         
@@ -132,8 +132,8 @@ class GalleryViewType extends ViewType
         
         return [
             'view' => $view,
-            'field' => $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['imageField']),
-            'imageAssetConfigIdentifier' => $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['imageAssetConfigIdentifier']),
+            'field' => $view->getContentType()->getFieldType()->__get('ems_' . $view->getOptions()['imageField']),
+            'imageAssetConfigIdentifier' => $view->getContentType()->getFieldType()->__get('ems_' . $view->getOptions()['imageAssetConfigIdentifier']),
             'contentType' => $view->getContentType(),
             'environment' => $view->getContentType()->getEnvironment(),
             'form' => $form->createView(),

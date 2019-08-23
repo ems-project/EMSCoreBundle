@@ -20,7 +20,7 @@ class RevisionType extends AbstractType
     
     public function __construct(FormRegistryInterface $formRegistry)
     {
-        $this->formRegistry =$formRegistry;
+        $this->formRegistry = $formRegistry;
     }
     
     

@@ -544,7 +544,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     public function __get($key)
     {
         if (strpos($key, 'ems_') !== 0) {
-             throw new \Exception('unprotected ems get with key '.$key);
+             throw new \Exception('unprotected ems get with key ' . $key);
         } else {
             $key = substr($key, 4);
         }
@@ -568,7 +568,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     public function __set($key, $input)
     {
         if (strpos($key, 'ems_') !== 0) {
-             throw new \Exception('unprotected ems set with key '.$key);
+             throw new \Exception('unprotected ems set with key ' . $key);
         } else {
             $key = substr($key, 4);
         }
@@ -663,7 +663,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
             foreach ($this->children as $child) {
                 if (!$child->getDeleted() && $child->getName() == $elem[0]) {
                     if (strpos($path, ".")) {
-                        return $child->getChildByPath(substr($path, strpos($path, ".")+1));
+                        return $child->getChildByPath(substr($path, strpos($path, ".") + 1));
                     }
                     return $child;
                 }

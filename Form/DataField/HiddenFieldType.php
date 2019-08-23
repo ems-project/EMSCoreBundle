@@ -36,7 +36,7 @@ class HiddenFieldType extends DataFieldType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
             $builder->add('value', HiddenType::class, [
-                    'disabled'=> $this->isDisabled($options),
+                    'disabled' => $this->isDisabled($options),
             ]);
     }
     

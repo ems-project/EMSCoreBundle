@@ -42,9 +42,9 @@ class SorterViewType extends ViewType
     public function __construct(FormFactory $formFactory, Twig_Environment $twig, Client $client, LoggerInterface $logger, Session $session, DataService $dataService, Router $router)
     {
         parent::__construct($formFactory, $twig, $client, $logger);
-        $this->session= $session;
+        $this->session = $session;
         $this->dataService = $dataService;
-        $this->router= $router;
+        $this->router = $router;
     }
 
     public function getLabel()
@@ -185,7 +185,7 @@ class SorterViewType extends ViewType
         
         
         $response = new Response();
-        $response->setContent($this->twig->render('@EMSCore/view/custom/'.$this->getBlockPrefix().'.html.twig', [
+        $response->setContent($this->twig->render('@EMSCore/view/custom/' . $this->getBlockPrefix() . '.html.twig', [
                 'result' => $result,
                 'view' => $view,
                 'form' => $form->createView(),

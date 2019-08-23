@@ -159,7 +159,7 @@ class ExportViewType extends ViewType
             // Output the generated PDF to Browser
             $dompdf->stream($parameters['filename'] ?? "document.pdf", [
                 'compress' => 1,
-                'Attachment' => ( isset($view->getOptions()['disposition'])  && $view->getOptions()['disposition'] === 'attachment')?1:0,
+                'Attachment' => ( isset($view->getOptions()['disposition'])  && $view->getOptions()['disposition'] === 'attachment') ? 1 : 0,
             ]);
             exit;
         }
@@ -227,7 +227,7 @@ class ExportViewType extends ViewType
                     'result' => $result,
             ]);
         } catch (\Throwable $e) {
-            $render = "Something went wrong with the template of the view ".$view->getName()." for the content type ".$view->getContentType()->getName()." (".$e->getMessage().")";
+            $render = "Something went wrong with the template of the view " . $view->getName() . " for the content type " . $view->getContentType()->getName() . " (" . $e->getMessage() . ")";
         }
         
         try {
@@ -238,14 +238,14 @@ class ExportViewType extends ViewType
                     'result' => $result,
             ]);
         } catch (\Throwable $e) {
-            $filename = "Something went wrong with the template of the view ".$view->getName()." for the content type ".$view->getContentType()->getName()." (".$e->getMessage().")";
+            $filename = "Something went wrong with the template of the view " . $view->getName() . " for the content type " . $view->getContentType()->getName() . " (" . $e->getMessage() . ")";
         }
         
         return [
                 'render' => $render,
                 'filename' => $filename,
-                'mimetype' => empty($view->getOptions()['mimetype'])?'application/bin':$view->getOptions()['mimetype'],
-                'allow_origin' => empty($view->getOptions()['allow_origin'])?null:$view->getOptions()['allow_origin'],
+                'mimetype' => empty($view->getOptions()['mimetype']) ? 'application/bin' : $view->getOptions()['mimetype'],
+                'allow_origin' => empty($view->getOptions()['allow_origin']) ? null : $view->getOptions()['allow_origin'],
                 'view' => $view,
                 'contentType' => $view->getContentType(),
                 'environment' => $view->getContentType()->getEnvironment(),

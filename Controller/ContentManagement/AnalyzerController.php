@@ -47,7 +47,7 @@ class AnalyzerController extends AppController
     public function editAction(Analyzer $analyzer, Request $request, LoggerInterface $logger) : Response
     {
         
-        $form= $this->createForm(AnalyzerType::class, $analyzer);
+        $form = $this->createForm(AnalyzerType::class, $analyzer);
         
         $form->handleRequest($request);
         
@@ -116,7 +116,7 @@ class AnalyzerController extends AppController
     public function addAction(Request $request, LoggerInterface $logger) : Response
     {
         $analyzer = new Analyzer();
-        $form= $this->createForm(AnalyzerType::class, $analyzer);
+        $form = $this->createForm(AnalyzerType::class, $analyzer);
         
         $form->handleRequest($request);
         

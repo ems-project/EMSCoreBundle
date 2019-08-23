@@ -55,8 +55,8 @@ class CriteriaController extends AppController
         $tables = $this->generateCriteriaTable($view, $criteriaUpdateConfig);
         $params = explode(':', $request->request->all()['alignOn']);
         
-        $isRowAlign = ($params[0]=='row');
-        $key = $params[1].':'.$params[2];
+        $isRowAlign = ($params[0] == 'row');
+        $key = $params[1] . ':' . $params[2];
         
         $filters = [];
         $criteriaField = $view->getOptions()['criteriaField'];
@@ -71,7 +71,7 @@ class CriteriaController extends AppController
         
         foreach ($tables['table'] as $rowId => $row) {
             foreach ($row as $colId => $col) {
-                $alignWith = $tables['table'][$isRowAlign?$key:$rowId][$isRowAlign?$colId:$key];
+                $alignWith = $tables['table'][$isRowAlign ? $key : $rowId][$isRowAlign ? $colId : $key];
                 if (!empty($col)) {
                     /**@var ObjectChoiceListItem $toremove*/
                     foreach ($col as $toremove) {
@@ -242,7 +242,7 @@ class CriteriaController extends AppController
                 'view' => $view,
                 'attr' => [
                     'id' =>  'criteria_filter',
-                        'action' => $this->generateUrl('data.customindexview', ['viewId'=>$view->getId()], UrlGeneratorInterface::RELATIVE_PATH),
+                        'action' => $this->generateUrl('data.customindexview', ['viewId' => $view->getId()], UrlGeneratorInterface::RELATIVE_PATH),
                 ],
         ]);
         
@@ -279,7 +279,7 @@ class CriteriaController extends AppController
         
         $criteriaField = $view->getContentType()->getFieldType();
         if ($view->getOptions()['criteriaMode'] == 'internal') {
-            $criteriaField = $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['criteriaField']);
+            $criteriaField = $view->getContentType()->getFieldType()->__get('ems_' . $view->getOptions()['criteriaField']);
         } else if ($view->getOptions()['criteriaMode'] == 'another') {
         } else {
             throw new Exception('Should never happen');
@@ -430,7 +430,7 @@ class CriteriaController extends AppController
             'size' => 500, //is it enough?
         ]);
 
-        if ($result['hits']['total']>count($result['hits']['hits'])) {
+        if ($result['hits']['total'] > count($result['hits']['hits'])) {
             $this->getLogger()->error('log.view.criteria.too_many_criteria', [
                 'total' => count($result['hits']['hits']),
             ]);
@@ -452,7 +452,7 @@ class CriteriaController extends AppController
         $loader = $objectChoiceListFactory->createLoader($loaderTypes, false);
         
         foreach ($result['hits']['hits'] as $item) {
-            $value = $item['_type'].':'.$item['_id'];
+            $value = $item['_type'] . ':' . $item['_id'];
             if ($targetField) {
                 $value = $item['_source'][$targetField->getName()];
             }
@@ -658,7 +658,7 @@ class CriteriaController extends AppController
             $message = $multipleValueToAdd;
             foreach ($rawData as $key => $value) {
                 if ($key != $multipleField && $key != $targetFieldName) {
-                    $message .= ', '.$value;
+                    $message .= ', ' . $value;
                 }
             }
 
@@ -699,7 +699,7 @@ class CriteriaController extends AppController
                 $message = $multipleValueToAdd;
                 foreach ($rawData as $key => $value) {
                     if ($key != $multipleField && $key != $targetFieldName) {
-                        $message .= ', '.$value;
+                        $message .= ', ' . $value;
                     }
                 }
                 $this->getLogger()->notice('log.view.criteria.added', [
@@ -745,7 +745,7 @@ class CriteriaController extends AppController
         if (!isset($rawData[$criteriaField])) {
             $rawData[$criteriaField] = [];
         }
-        $multipleField = $this->getMultipleField($revision->getContentType()->getFieldType()->__get('ems_'.$criteriaField));
+        $multipleField = $this->getMultipleField($revision->getContentType()->getFieldType()->__get('ems_' . $criteriaField));
         
         $found = false;
         foreach ($rawData[$criteriaField] as &$criteriaSet) {
@@ -946,7 +946,7 @@ class CriteriaController extends AppController
                 $message = $multipleValueToRemove;
                 foreach ($rawData as $key => $value) {
                     if ($key != $multipleField && $key != $targetFieldName) {
-                        $message .= ', '.$value;
+                        $message .= ', ' . $value;
                     }
                 }
                 $this->getLogger()->warning('log.view.criteria.removed', [
@@ -998,7 +998,7 @@ class CriteriaController extends AppController
         if (!isset($rawData[$criteriaField])) {
             $rawData[$criteriaField] = [];
         }
-        $criteriaFieldType = $revision->getContentType()->getFieldType()->__get('ems_'.$criteriaField);
+        $criteriaFieldType = $revision->getContentType()->getFieldType()->__get('ems_' . $criteriaField);
         $multipleField = $this->getMultipleField($criteriaFieldType);
         
         $found = false;
@@ -1140,7 +1140,7 @@ class CriteriaController extends AppController
         ];
         
         foreach ($choices as $idx => $choice) {
-            $label = isset($labels[$idx])?$labels[$idx]:$choice;
+            $label = isset($labels[$idx]) ? $labels[$idx] : $choice;
             if (!$request->query->get('q') || stristr($choice, $request->query->get('q')) || stristr($label, $request->query->get('q'))) {
                 $out['items'][] = [
                         'id' => $choice,

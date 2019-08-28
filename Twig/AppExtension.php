@@ -157,7 +157,6 @@ class AppExtension extends \Twig_Extension
             new TwigFilter('debug', array($this, 'debug')),
             new TwigFilter('search', array($this, 'search')),
             new TwigFilter('call_user_func', array($this, 'callUserFunc')),
-            new TwigFilter('macro_fct', array($this, 'macroFct')),
             new TwigFilter('merge_recursive', array($this, 'arrayMergeRecursive')),
             new TwigFilter('array_intersect', array($this, 'arrayIntersect')),
             new TwigFilter('get_string', array($this, 'getString')),
@@ -613,12 +612,6 @@ class AppExtension extends \Twig_Extension
     public function cantBeFinalized($message = null, $code = null, $previous = null)
     {
         throw new CantBeFinalizedException($message, $code, $previous);
-    }
-
-
-    public function macroFct($tempate, $block, $context, $source = null, $compare = false, $compareRawData = null)
-    {
-        return $tempate->{'macro_' . $block}($context, $source, $compare, $compareRawData);
     }
 
     public function callUserFunc($function)

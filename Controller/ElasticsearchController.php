@@ -720,6 +720,7 @@ class ElasticsearchController extends AppController
 
                 $searchArray['filters'] = null;
 
+                /** @var Search $search */
                 $search = $serializer->deserialize(json_encode($searchArray), Search::class, 'json');
                 foreach ($filtersArray as $rawFilter) {
                     $jsonFilter = json_encode($rawFilter);

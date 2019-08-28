@@ -780,7 +780,7 @@ class ContentTypeController extends AppController
                 'index' => $contentType->getEnvironment()->getAlias(),
                 'type' => $contentType->getName()
             ]);
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             $logger->warning('log.contenttype.mapping.not_found', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,

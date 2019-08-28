@@ -433,7 +433,7 @@ class ContentTypeService
         $meta = JsonClass::fromJsonString($json);
         $contentType = $meta->jsonDeserialize();
         if (!$contentType instanceof ContentType) {
-            throw new \Exception(sprintf('ContentType expected for import, got %s',$meta->getClass()));
+            throw new \Exception(sprintf('ContentType expected for import, got %s', $meta->getClass()));
         }
         $contentType->setEnvironment($environment);
 

@@ -4,28 +4,21 @@ namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\NoResultException;
-use EMS\CoreBundle\Entity\Helper\JsonClass;
-use EMS\CoreBundle\Entity\SingleTypeIndex;
-use EMS\CoreBundle\Exception\ContentTypeAlreadyExistException;
-use EMS\CoreBundle\Repository\ContentTypeRepository;
-use EMS\CoreBundle\Repository\FieldTypeRepository;
-use EMS\CoreBundle\Repository\SingleTypeIndexRepository;
-use Symfony\Component\HttpFoundation\Session\Session;
-use EMS\CoreBundle\Entity\ContentType;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\BadRequest400Exception;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\SingleTypeIndex;
+use EMS\CoreBundle\Exception\ContentTypeAlreadyExistException;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\SingleTypeIndexRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\Translation\TranslatorInterface;
-use Symfony\Component\HttpFoundation\File\File;
 
 class ContentTypeService
 {
@@ -435,26 +428,26 @@ class ContentTypeService
         return implode(',', array_keys($this->contentTypeArrayByName));
     }
 
-    public function deserializeJson(File $jsonFile, Environment $environment): ContentType
+    public function contentTypeFromJson(string $json, Environment $environment): ContentType
     {
-        $fileContent = file_get_contents($jsonFile->getRealPath());
-
-        $json = JsonClass::fromJsonString($fileContent);
-        /**@var ContentType $contentType */
-        $contentType = $json->jsonDeserialize();
+        $meta = JsonClass::fromJsonString($json);
+        $contentType = $meta->jsonDeserialize();
+        if (!$contentType instanceof ContentType) {
+            throw new \Exception(sprintf('ContentType expected for import, got %s',$meta->getClass()));
+        }
         $contentType->setEnvironment($environment);
 
         return $contentType;
     }
 
-    public function persistAsNew(ContentType $contentType): ContentType
+    public function importContentType(ContentType $contentType): ContentType
     {
         $em = $this->doctrine->getManager();
         /** @var ContentTypeRepository $contentTypeRepository */
         $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
 
         if ($this->getByName($contentType->getName())) {
-            throw new ContentTypeAlreadyExistException('Another content type named ' . $contentType->getName() . ' already exists');
+            throw new ContentTypeAlreadyExistException('ContentType with name ' . $contentType->getName() . ' already exists');
         }
 
         $contentType->setActive(false);

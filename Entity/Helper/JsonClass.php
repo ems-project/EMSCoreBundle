@@ -37,12 +37,17 @@ class JsonClass implements \JsonSerializable
         );
     }
 
-    public function removeProperty(string $name)
+    public function getClass(): string
+    {
+        return $this->class;
+    }
+
+    public function removeProperty(string $name): void
     {
         unset($this->properties[$name]);
     }
 
-    public function updateProperty(string $name, $value)
+    public function updateProperty(string $name, $value): void
     {
         $this->properties[$name] = $value;
     }
@@ -52,7 +57,7 @@ class JsonClass implements \JsonSerializable
         return array_key_exists($name, $this->properties);
     }
 
-    public function handlePersistentCollections(...$properties)
+    public function handlePersistentCollections(...$properties): void
     {
         foreach ($properties as $property) {
             if (! $this->hasProperty($property) || ! $this->properties[$property] instanceof PersistentCollection) {

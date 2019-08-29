@@ -24,6 +24,7 @@ use EMS\CoreBundle\Form\Form\EditFieldTypeType;
 use EMS\CoreBundle\Form\Form\ReorderType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
+use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\Mapping;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\Button;
@@ -249,16 +250,13 @@ class ContentTypeController extends AppController
                     $environment = $contentTypeAdded->getEnvironment();
                     /** @var UploadedFile $file */
                     $file = $request->files->get('form')['import'];
-//                    $contentType = $this->getContentTypeService()->deserializeJson($file, $environment);
-                    $json = JsonClass::fromJsonString($fileContent);
-                    /**@var ContentType $contentType */
-                    $contentType = $json->jsonDeserialize();
+                    $json = file_get_contents($file->getRealPath());
 
+                    $contentType = $this->getContentTypeService()->contentTypeFromJson($json, $environment);
                     $contentType->setName($name);
                     $contentType->setSingularName($singularName);
                     $contentType->setPluralName($pluralName);
-
-                    $contentType = $this->getContentTypeService()->persistAsNew($contentType);
+                    $contentType = $this->getContentTypeService()->importContentType($contentType);
                 } else {
                     $contentType = $contentTypeAdded;
                     $contentType->setAskForOuuid(false);

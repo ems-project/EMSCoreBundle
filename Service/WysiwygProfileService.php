@@ -5,23 +5,23 @@ namespace EMS\CoreBundle\Service;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CoreBundle\Entity\WysiwygProfile;
 use EMS\CoreBundle\Repository\WysiwygProfileRepository;
-use Symfony\Component\HttpFoundation\Session\Session;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class WysiwygProfileService
 {
     /**@var Registry $doctrine */
     private $doctrine;
-    /**@var Session $session*/
-    private $session;
+    /**@var LoggerInterface $logger*/
+    private $logger;
     /**@var TranslatorInterface $translator */
     private $translator;
     
-    public function __construct(Registry $doctrine, Session $session, TranslatorInterface $translator)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, TranslatorInterface $translator)
     {
         $this->doctrine = $doctrine;
-        $this->session = $session;
-        $this->translator= $translator;
+        $this->logger = $logger;
+        $this->translator = $translator;
     }
     
     
@@ -60,7 +60,9 @@ class WysiwygProfileService
         $em = $this->doctrine->getManager();
         $em->persist($profile);
         $em->flush();
-        $this->session->getFlashBag()->add('notice', $this->translator->trans('Profile %name% has been updated', ['%name%' => $profile->getName()], 'EMSCoreBundle'));
+        $this->logger->notice('service.wysiwyg_profile.updated', [
+            'profile_name' => $profile->getName(),
+        ]);
     }
     
     
@@ -69,6 +71,8 @@ class WysiwygProfileService
         $em = $this->doctrine->getManager();
         $em->remove($profile);
         $em->flush();
-        $this->session->getFlashBag()->add('notice', $this->translator->trans('Profile has been deleted', [], 'EMSCoreBundle'));
+        $this->logger->notice('service.wysiwyg_profile.deleted', [
+            'profile_name' => $profile->getName(),
+        ]);
     }
 }

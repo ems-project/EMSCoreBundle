@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityManager;
 use Elasticsearch\Client;
 use EMS\CommonBundle\Storage\Service\StorageInterface;
 use EMS\CoreBundle\Repository\UploadedAssetRepository;
-use EMS\CoreBundle\Service\AssetExtratorService;
+use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\FileService;
 use Monolog\Logger;
@@ -19,7 +19,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\HttpFoundation\Session\Session;
 
 class SynchAssetCommand extends EmsCommand
 {
@@ -39,7 +38,7 @@ class SynchAssetCommand extends EmsCommand
     /**
      *
      *
-     * @var AssetExtratorService
+     * @var AssetExtractorService
      */
     protected $extractorService;
     protected $databaseName;
@@ -54,13 +53,13 @@ class SynchAssetCommand extends EmsCommand
     const PAGE_SIZE = 10;
 
 
-    public function __construct(Logger $logger, Client $client, Session $session, Registry $doctrine, ContentTypeService $contentTypeService, AssetExtratorService $extractorService, FileService $fileService)
+    public function __construct(Logger $logger, Client $client, Registry $doctrine, ContentTypeService $contentTypeService, AssetExtractorService $extractorService, FileService $fileService)
     {
         $this->doctrine = $doctrine;
         $this->contentTypeService = $contentTypeService;
         $this->extractorService = $extractorService;
         $this->fileService = $fileService;
-        parent::__construct($logger, $client, $session);
+        parent::__construct($logger, $client);
     }
 
     protected function configure()
@@ -84,11 +83,11 @@ class SynchAssetCommand extends EmsCommand
         /** @var UploadedAssetRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:UploadedAsset');
 
-        $this->formatFlash($output);
+        $this->formatStyles($output);
 
         if (count($this->fileService->getStorages()) < 2) {
             $output->writeln('<error>There is nothing to synchronize as there is less than 2 storage services</error>');
-            return;
+            return null;
         }
 
         $serviceId = count($this->fileService->getStorages());
@@ -107,7 +106,7 @@ class SynchAssetCommand extends EmsCommand
 
             if ($service != 'All') {
                 $serviceId = array_search($service, $this->fileService->getStorages());
-                $output->writeln('You have just selected: '.$service.' ('.$serviceId.')');
+                $output->writeln('You have just selected: ' . $service . ' (' . $serviceId . ')');
             }
         }
 
@@ -135,17 +134,17 @@ class SynchAssetCommand extends EmsCommand
                             if (! $storage->head($hash['hash'])) {
                                 if (!$storage->create($hash['hash'], $file)) {
                                     $output->writeln('');
-                                    $output->writeln('<comment>EMS was not able to synchronize on the service '.$storage.'</comment>');
+                                    $output->writeln('<comment>EMS was not able to synchronize on the service ' . $storage . '</comment>');
                                 }
                             }
                         }
                     } else {
                         /**@var StorageInterface $storage */
-                        $storage = $this->fileService->getStorages()[$serviceId];
-                        if (! $storage->head($hash['hash'])) {
+                        $storage = $this->fileService->getStorageService($serviceId);
+                        if ($storage !== null && ! $storage->head($hash['hash'])) {
                             if (!$storage->create($hash['hash'], $file)) {
                                 $output->writeln('');
-                                $output->writeln('<comment>EMS was not able to synchronize on the service '.$storage.'</comment>');
+                                $output->writeln('<comment>EMS was not able to synchronize on the service ' . $storage . '</comment>');
                             }
                         }
                     }
@@ -153,7 +152,7 @@ class SynchAssetCommand extends EmsCommand
                     unlink($file);
                 } else {
                     $output->writeln('');
-                    $output->writeln('<comment>File not found '.$hash['hash'].'</comment>');
+                    $output->writeln('<comment>File not found ' . $hash['hash'] . '</comment>');
                     ++$fileNotFound;
                 }
 
@@ -164,7 +163,7 @@ class SynchAssetCommand extends EmsCommand
         $progress->finish();
         $output->writeln('');
         if ($fileNotFound) {
-            $output->writeln('<comment>'.$fileNotFound.' files not found</comment>');
+            $output->writeln('<comment>' . $fileNotFound . ' files not found</comment>');
         }
     }
 }

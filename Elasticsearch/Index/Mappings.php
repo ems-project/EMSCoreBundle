@@ -12,7 +12,7 @@ class Mappings
     public function __construct(array $languageAnalyzers = [])
     {
         foreach ($languageAnalyzers as $language => $analyzer) {
-            $this->defaultProperties['all_'.$language] = [
+            $this->defaultProperties['all_' . $language] = [
                 'type' => 'text',
                 'store' => true,
                 'analyzer' => $analyzer,

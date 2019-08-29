@@ -37,7 +37,7 @@ class AssetFieldType extends DataFieldType
     public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, FileService $fileService)
     {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
-        $this->fileService= $fileService;
+        $this->fileService = $fileService;
     }
     
     /**

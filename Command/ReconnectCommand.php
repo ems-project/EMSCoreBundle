@@ -72,14 +72,15 @@ class ReconnectCommand extends ContainerAwareCommand
                     $contentType = $this->contentTypeService->getByName($typeMapping['_meta']['content_type']);
                     if ($contentType) {
                         $this->contentTypeService->setSingleTypeIndex($environment, $contentType, $index);
-                        $output->writeln('Index found for content type: '.$typeMapping['_meta']['content_type']);
+                        $output->writeln('Index found for content type: ' . $typeMapping['_meta']['content_type']);
                     } else {
-                        $output->writeln('Content type not found: '.$typeMapping['_meta']['content_type']);
+                        $output->writeln('Content type not found: ' . $typeMapping['_meta']['content_type']);
                     }
                 } else {
-                    $output->writeln('This mapping was not defined be elasticms: '.$type);
+                    $output->writeln('This mapping was not defined be elasticms: ' . $type);
                 }
             }
         }
+        return 0;
     }
 }

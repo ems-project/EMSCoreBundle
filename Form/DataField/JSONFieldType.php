@@ -52,9 +52,9 @@ class JSONFieldType extends DataFieldType
                 'attr' => [
                         'rows' => $options['rows'],
                 ],
-                'label' => (null != $options ['label']?$options ['label']:$fieldType->getName()),
+                'label' => (null != $options ['label'] ? $options ['label'] : $fieldType->getName()),
                 'required' => false,
-                'disabled'=> $this->isDisabled($options),
+                'disabled' => $this->isDisabled($options),
         ]);
     }
     

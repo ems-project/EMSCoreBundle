@@ -2,29 +2,22 @@
 namespace EMS\CoreBundle\EventListener;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Command\AbstractEmsCommand;
-use EMS\CoreBundle\Command\JobOutput;
 use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Exception\LockedException;
 use EMS\CoreBundle\Exception\PrivilegeException;
+use Exception;
 use Monolog\Logger;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Exception\InvalidArgumentException;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
-use Symfony\Component\Routing\Exception\ResourceNotFoundException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class RequestListener
 {
@@ -69,7 +62,12 @@ class RequestListener
         
         try {
             if ($exception instanceof LockedException || $exception instanceof PrivilegeException) {
-                $this->session->getFlashBag()->add('error', $exception->getMessage());
+                $this->logger->error('log.revision_error', [
+                    EmsFields::LOG_CONTENTTYPE_FIELD =>  $exception->getRevision()->getContentType(),
+                    EmsFields::LOG_OUUID_FIELD =>  $exception->getRevision()->getOuuid(),
+                    EmsFields::LOG_ERROR_MESSAGE_FIELD =>  $exception->getMessage(),
+                    EmsFields::LOG_EXCEPTION_FIELD =>  $exception,
+                ]);
                 /** @var LockedException $exception */
                 if (null == $exception->getRevision()->getOuuid()) {
                     $response = new RedirectResponse($this->router->generate('data.draft_in_progress', [
@@ -78,19 +76,25 @@ class RequestListener
                 } else {
                     $response = new RedirectResponse($this->router->generate('data.revisions', [
                             'type' => $exception->getRevision()->getContentType()->getName(),
-                            'ouuid'=> $exception->getRevision()->getOuuid()
+                            'ouuid' => $exception->getRevision()->getOuuid()
                     ], UrlGeneratorInterface::RELATIVE_PATH));
                 }
                 $event->setResponse($response);
             }
             if ($exception instanceof ElasticmsException) {
-                $this->session->getFlashBag()->add('error', $exception->getMessage());
+                $this->logger->error('log.error', [
+                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $exception->getMessage(),
+                    EmsFields::LOG_EXCEPTION_FIELD => $exception,
+                ]);
                 $response = new RedirectResponse($this->router->generate('notifications.list', [
                     ]));
                 $event->setResponse($response);
             }
-        } catch (\Exception $e) {
-            $this->logger->error($e->getMessage(), ['exception' => $e]);
+        } catch (Exception $e) {
+            $this->logger->error('log.error', [
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+            ]);
         }
     }
     

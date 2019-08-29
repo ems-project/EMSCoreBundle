@@ -269,7 +269,7 @@
 	                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
 	                <h4><i class="icon fa fa-warning"></i> Warning! </h4>
 	                {% for flash_message in warning %}
-					    <div class="flash-notice">
+					    <div class="flash-warning">
 					       {{ flash_message|raw }}
 					    </div>
 					{% endfor %}
@@ -282,7 +282,7 @@
 	                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
 	                <h4><i class="icon fa fa-ban"></i> Error! </h4>
 	                {% for flash_message in error %}
-					    <div class="flash-notice">
+					    <div class="flash-error">
 					       {{ flash_message|raw }}
 					    </div>
 					{% endfor %}

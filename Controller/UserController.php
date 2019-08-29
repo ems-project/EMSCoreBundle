@@ -4,28 +4,31 @@ namespace EMS\CoreBundle\Controller;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\AuthToken;
-use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 class UserController extends AppController
 {
     /**
      * @Route("/user", name="ems.user.index"))
+     * @return Response
      */
-    public function indexAction(Request $request)
+    public function indexAction()
     {
         return $this->render('@EMSCore/user/index.html.twig', [
             'paging' => $this->getHelperService()->getPagingTool('EMSCoreBundle:User', 'ems.user.index', 'username'),
@@ -34,10 +37,14 @@ class UserController extends AppController
 
 
     /**
+     * @param int $id
+     * @param Request $request
+     * @param LoggerInterface $logger
+     * @return RedirectResponse|Response
      *
      * @Route("/user/{id}/edit", name="user.edit")
      */
-    public function editUserAction($id, Request $request)
+    public function editUserAction($id, Request $request, LoggerInterface $logger)
     {
         $user = $this->getUserService()->getUserById($id);
         // test if user exist before modified it
@@ -122,10 +129,11 @@ class UserController extends AppController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getUserService()->updateUser($user);
-            $this->addFlash(
-                'notice',
-                'User was modified!'
-            );
+            $logger->notice('log.user.updated', [
+                'username_managed' => $user->getUsername(),
+                'user_display_name' => $user->getDisplayName(),
+                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
+            ]);
             return $this->redirectToRoute('ems.user.index');
         }
 
@@ -136,32 +144,41 @@ class UserController extends AppController
     }
 
     /**
+     * @param int $id
+     * @param LoggerInterface $logger
+     * @return RedirectResponse
      *
      * @Route("/user/{id}/delete", name="user.delete")
      */
-    public function removeUserAction($id, Request $request)
+    public function removeUserAction($id, LoggerInterface $logger)
     {
-
         $user = $this->getUserService()->getUserById($id);
         // test if user exist before modified it
         if (!$user) {
             throw $this->createNotFoundException('user not found');
         }
 
+        $username = $user->getUsername();
+        $displayName = $user->getDisplayName();
         $this->getUserService()->deleteUser($user);
         $this->getDoctrine()->getManager()->flush();
-        $this->addFlash(
-            'notice',
-            'User was deleted!'
-        );
+
+        $logger->notice('log.user.deleted', [
+            'username_managed' => $username,
+            'user_display_name' => $displayName,
+            EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
+        ]);
         return $this->redirectToRoute('ems.user.index');
     }
 
     /**
+     * @param int $id
+     * @param LoggerInterface $logger
+     * @return RedirectResponse
      *
      * @Route("/user/{id}/enabling", name="user.enabling")
      */
-    public function enablingUserAction($id, Request $request)
+    public function enablingUserAction($id, LoggerInterface $logger)
     {
 
         $user = $this->getUserService()->getUserById($id);
@@ -170,29 +187,34 @@ class UserController extends AppController
             throw $this->createNotFoundException('user not found');
         }
 
-        $message = "User was ";
         if ($user->isEnabled()) {
             $user->setEnabled(false);
-            $message = $message . "disabled !";
+            $message = "log.user.disabled";
         } else {
             $user->setEnabled(true);
-            $message = $message . "enabled !";
+            $message = "log.user.enabled";
         }
 
         $this->getUserService()->updateUser($user);
         $this->getDoctrine()->getManager()->flush();
-        $this->addFlash(
-            'notice',
-            $message
-        );
+
+        $logger->notice($message, [
+            'username_managed' => $user->getUsername(),
+            'user_display_name' => $user->getDisplayName(),
+            EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
+        ]);
+
         return $this->redirectToRoute('ems.user.index');
     }
 
     /**
+     * @param int $id
+     * @param LoggerInterface $logger
+     * @return RedirectResponse
      *
      * @Route("/user/{id}/locking", name="user.locking")
      */
-    public function lockingUserAction($id, Request $request)
+    public function lockingUserAction($id, LoggerInterface $logger)
     {
 
         $user = $this->getUserService()->getUserById($id);
@@ -200,30 +222,36 @@ class UserController extends AppController
         if (!$user) {
             throw $this->createNotFoundException('user not found');
         }
-        $message = "User was ";
+
         if ($user->isLocked()) {
             $user->setLocked(false);
-            $message = $message . "unlocked !";
+            $message = "log.user.unlocked";
         } else {
             $user->setLocked(true);
-            $message = $message . "locked !";
+            $message = "log.user.locked";
         }
 
         $this->getUserService()->updateUser($user);
         $this->getDoctrine()->getManager()->flush();
-        $this->addFlash(
-            'notice',
-            $message
-        );
+
+        $logger->notice($message, [
+            'username_managed' => $user->getUsername(),
+            'user_display_name' => $user->getDisplayName(),
+            EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
+        ]);
         return $this->redirectToRoute('ems.user.index');
     }
 
     /**
+     * @param string $username
+     * @param LoggerInterface $logger
+     * @return RedirectResponse
+     * @throws ORMException
+     * @throws OptimisticLockException
      *
-     * @Route("/user/{username}/apikey", name="EMS_user_apikey")
-     * @Method({"POST"})
+     * @Route("/user/{username}/apikey", name="EMS_user_apikey", methods={"POST"})
      */
-    public function apiKeyAction($username, Request $request)
+    public function apiKeyAction($username, LoggerInterface $logger)
     {
         $user = $this->getUserService()->getUser($username, false);
 
@@ -234,17 +262,26 @@ class UserController extends AppController
         $em->persist($authToken);
         $em->flush();
 
-        $this->addFlash('notice', 'Here is a new API key for user ' . $user->getUsername() . ' ' . $authToken->getValue());
+        //TODO: Hide the key in the logs?
+        $logger->notice('log.user.api_key', [
+            'username_managed' => $user->getUsername(),
+            'user_display_name' => $user->getDisplayName(),
+            'api_key' => $authToken->getValue(),
+            EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
+        ]);
 
         return $this->redirectToRoute('ems.user.index');
     }
 
     /**
+     * @param bool $collapsed
+     * @return Response
+     * @throws ORMException
+     * @throws OptimisticLockException
      *
-     * @Route("/profile/sidebar-collapse/{collapsed}", name="user.sidebar-collapse")
-     * @Method({"POST"})
+     * @Route("/profile/sidebar-collapse/{collapsed}", name="user.sidebar-collapse", methods={"POST"})
      */
-    public function sidebarCollapseAction($collapsed, Request $request)
+    public function sidebarCollapseAction($collapsed)
     {
         $user = $this->getUserService()->getUser($this->getUserService()->getCurrentUser()->getUsername(), false);
         $user->setSidebarCollapse($collapsed);

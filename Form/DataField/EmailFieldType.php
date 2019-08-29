@@ -96,7 +96,7 @@ class EmailFieldType extends DataFieldType
             return parent::modelTransform($data, $fieldType);
         }
         $out = parent::modelTransform(null, $fieldType);
-        $out->addMessage('ems was not able to import the data: '.json_encode($data));
+        $out->addMessage('ems was not able to import the data: ' . json_encode($data));
         return $out;
     }
     
@@ -130,8 +130,8 @@ class EmailFieldType extends DataFieldType
         /** @var FieldType $fieldType */
         $fieldType = $options ['metadata'];
         $builder->add('value', TextType::class, [
-                'label' => (null != $options ['label']?$options ['label']:'Email field type'),
-                'disabled'=> $this->isDisabled($options),
+                'label' => (null != $options ['label'] ? $options ['label'] : 'Email field type'),
+                'disabled' => $this->isDisabled($options),
                 'required' => false,
         ]);
     }

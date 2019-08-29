@@ -93,7 +93,7 @@ class SearchFormType extends AbstractType
                     'choices' => $sortFields,
                     'choice_attr' => function ($category, $key, $index) use ($sortFieldIcons) {
                         return [
-                            'data-content' => '<span class=""><i class="'.($sortFieldIcons[$index]?:'fa fa-square').'"></i>&nbsp;&nbsp;'.$key.'</span>'
+                            'data-content' => '<span class=""><i class="' . ($sortFieldIcons[$index] ?: 'fa fa-square') . '"></i>&nbsp;&nbsp;' . $key . '</span>'
                         ];
                     },
                     'attr' => [
@@ -110,7 +110,7 @@ class SearchFormType extends AbstractType
                     ],
                     'choice_attr' => function ($category, $key, $index) {
                         return [
-                            'data-content' => '<span class=""><i class="fa fa-sort-'.$index.'"></i>&nbsp;&nbsp;'.$key.'</span>'
+                            'data-content' => '<span class=""><i class="fa fa-sort-' . $index . '"></i>&nbsp;&nbsp;' . $key . '</span>'
                         ];
                     },
                     'attr' => [

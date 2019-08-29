@@ -41,7 +41,7 @@ class SearchService
         if (null != $search->getSortBy() && strlen($search->getSortBy()) > 0) {
             $body["sort"] = [
                 $search->getSortBy() => array_filter([
-                    'order' => (empty($search->getSortOrder())?'asc': $search->getSortOrder()),
+                    'order' => (empty($search->getSortOrder()) ? 'asc' : $search->getSortOrder()),
                     'missing' => '_last',
                     'unmapped_type' => 'long',
                     'nested_path' => $this->getNestedPath($search->getSortBy(), $mapping),
@@ -55,7 +55,7 @@ class SearchService
     {
         $path = explode('.', $nestedPath);
 
-        for ($i=count($path); $i > 0; --$i) {
+        for ($i = count($path); $i > 0; --$i) {
             $esFilter = [
                 "nested" => [
                     "path" => \implode('.', \array_slice($path, 0, $i)),

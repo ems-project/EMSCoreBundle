@@ -59,7 +59,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     protected $indexes;
     
     /**
-     * @var string
+     * @var int
      */
     protected $total;
     
@@ -277,7 +277,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     /**
      * Set total
      *
-     * @param integer $total
+     * @param int $total
      *
      * @return Environment
      */
@@ -291,7 +291,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     /**
      * Get total
      *
-     * @return integer
+     * @return int
      */
     public function getTotal()
     {
@@ -396,7 +396,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     /**
      * Get managed
      *
-     * @return boolean
+     * @return bool
      */
     public function getManaged()
     {

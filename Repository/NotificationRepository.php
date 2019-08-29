@@ -168,8 +168,8 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
         
         $counter = 0;
         foreach ($user->getCircles() as $circle) {
-            $orCircles->add('r.circles like :circle_'.$counter);
-            $params['circle_'.$counter] = '%'.$circle.'%';
+            $orCircles->add('r.circles like :circle_' . $counter);
+            $params['circle_' . $counter] = '%' . $circle . '%';
             ++$counter;
         }
 
@@ -214,8 +214,8 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
     
         $counter = 0;
         foreach ($user->getCircles() as $circle) {
-            $orCircles->add('r.circles like :circle_'.$counter);
-            $params['circle_'.$counter] = '%'.$circle.'%';
+            $orCircles->add('r.circles like :circle_' . $counter);
+            $params['circle_' . $counter] = '%' . $circle . '%';
             ++$counter;
         }
     

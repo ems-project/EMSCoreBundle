@@ -2,11 +2,10 @@
 
 namespace EMS\CoreBundle\Form\View;
 
-use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Form\SearchFormType;
-use EMS\CoreBundle\Form\View\ViewType;
+use Exception;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -81,19 +80,21 @@ class CalendarViewType extends ViewType
     {
         return 'calendar_view';
     }
-    
+
 
     /**
-     *
-     * {@inheritdoc}
-     *
+     * @param View $view
+     * @param FormFactoryInterface $formFactory
+     * @param Request $request
+     * @return array|mixed
+     * @throws Exception
      */
-    public function getParameters(View $view, FormFactoryInterface $formFactoty, Request $request)
+    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request)
     {
         
 
         $search = new Search();
-        $form = $formFactoty->create(SearchFormType::class, $search, [
+        $form = $formFactory->create(SearchFormType::class, $search, [
                 'method' => 'GET',
                 'light' => true,
         ]);
@@ -102,7 +103,7 @@ class CalendarViewType extends ViewType
         
         return [
             'view' => $view,
-            'field' => $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['dateRangeField']),
+            'field' => $view->getContentType()->getFieldType()->__get('ems_' . $view->getOptions()['dateRangeField']),
             'contentType' => $view->getContentType(),
             'environment' => $view->getContentType()->getEnvironment(),
             'form' => $form->createView(),

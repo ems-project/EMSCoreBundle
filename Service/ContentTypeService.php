@@ -14,9 +14,16 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use EMS\CoreBundle\Entity\ContentType;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\BadRequest400Exception;
-use Symfony\Component\Form\FormRegistryInterface;
+use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Entity\SingleTypeIndex;
+use EMS\CoreBundle\Form\DataField\DataFieldType;
+use EMS\CoreBundle\Repository\ContentTypeRepository;
+use EMS\CoreBundle\Repository\SingleTypeIndexRepository;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\HttpFoundation\File\File;
 
@@ -25,8 +32,8 @@ class ContentTypeService
     /** @var Registry $doctrine */
     protected $doctrine;
 
-    /** @var Session $session*/
-    protected $session;
+    /** @var LoggerInterface */
+    protected $logger;
     
     /** @var Mapping*/
     private $mappingService;
@@ -45,26 +52,27 @@ class ContentTypeService
     
     private $instanceId;
 
-    protected $orderedContentTypes;
+    /** @var ContentType[]  */
+    protected $orderedContentTypes = [];
 
-    protected $contentTypeArrayByName;
+    /** @var ContentType[]  */
+    protected $contentTypeArrayByName = [];
 
+    /** @var bool */
     protected $singleTypeIndex;
 
 
 
-    public function __construct(Registry $doctrine, Session $session, Mapping $mappingService, Client $client, EnvironmentService $environmentService, FormRegistryInterface $formRegistry, TranslatorInterface $translator, $instanceId, $singleTypeIndex)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, Mapping $mappingService, Client $client, EnvironmentService $environmentService, FormRegistryInterface $formRegistry, TranslatorInterface $translator, $instanceId, $singleTypeIndex)
     {
         $this->doctrine = $doctrine;
-        $this->session = $session;
-        $this->orderedContentTypes = false;
-        $this->contentTypeArrayByName = false;
+        $this->logger = $logger;
         $this->mappingService = $mappingService;
         $this->client = $client;
         $this->environmentService = $environmentService;
         $this->formRegistry = $formRegistry;
         $this->instanceId = $instanceId;
-        $this->translator= $translator;
+        $this->translator = $translator;
         $this->singleTypeIndex = $singleTypeIndex;
     }
 
@@ -93,7 +101,7 @@ class ContentTypeService
                         }
                     } else if ($child->getName() == $elem[0]) {
                         if (strpos($path, ".")) {
-                            $fieldTypeByPath = $this->getChildByPath($fieldType, substr($path, strpos($path, ".")+1), $skipVirtualFields);
+                            $fieldTypeByPath = $this->getChildByPath($fieldType, substr($path, strpos($path, ".") + 1), $skipVirtualFields);
                             if ($fieldTypeByPath) {
                                 return $fieldTypeByPath;
                             }
@@ -108,10 +116,12 @@ class ContentTypeService
     
     private function loadEnvironment()
     {
-        if ($this->orderedContentTypes === false) {
-            $this->orderedContentTypes = $this->doctrine->getManager()->getRepository('EMSCoreBundle:ContentType')->findBy(['deleted' => false], ['orderKey' => 'ASC']);
+        if ($this->orderedContentTypes === []) {
+            /** @var ContentTypeRepository $contentTypeRepository */
+            $contentTypeRepository = $this->doctrine->getManager()->getRepository('EMSCoreBundle:ContentType');
+            $this->orderedContentTypes = $contentTypeRepository->findBy(['deleted' => false], ['orderKey' => 'ASC']);
             $this->contentTypeArrayByName = [];
-            /**@var ContentType $contentType */
+            /** @var ContentType $contentType */
             foreach ($this->orderedContentTypes as $contentType) {
                 $this->contentTypeArrayByName[$contentType->getName()] = $contentType;
             }
@@ -138,7 +148,7 @@ class ContentTypeService
         foreach ($fieldType->getChildren() as $child) {
             $out = array_merge($out, $this->listAllFields($child));
         }
-        $out['key_'.$fieldType->getId()] = $fieldType;
+        $out['key_' . $fieldType->getId()] = $fieldType;
         return $out;
     }
     
@@ -147,13 +157,15 @@ class ContentTypeService
         
         $fieldType->getChildren()->clear();
         foreach ($newStructure as $key => $item) {
-            if (array_key_exists('key_'.$item['id'], $ids)) {
-                $fieldType->getChildren()->add($ids['key_'.$item['id']]);
-                $ids['key_'.$item['id']]->setParent($fieldType);
-                $ids['key_'.$item['id']]->setOrderKey($key);
-                $this->reorderFieldsRecu($ids['key_'.$item['id']], isset($item['children'])?$item['children']:[], $ids);
+            if (array_key_exists('key_' . $item['id'], $ids)) {
+                $fieldType->getChildren()->add($ids['key_' . $item['id']]);
+                $ids['key_' . $item['id']]->setParent($fieldType);
+                $ids['key_' . $item['id']]->setOrderKey($key);
+                $this->reorderFieldsRecu($ids['key_' . $item['id']], isset($item['children']) ? $item['children'] : [], $ids);
             } else {
-                $this->session->getFlashBag()->add('warning', $this->translator->trans('Field %id% not found and ignored', ['%id%'=>$item['id']]));
+                $this->logger->warning('service.contenttype.field_not_found', [
+                    'field_id' => $item['id'],
+                ]);
             }
         }
     }
@@ -167,18 +179,20 @@ class ContentTypeService
         
         $em->persist($contentType);
         $em->flush();
-        
-        $this->session->getFlashBag()->add('notice', $this->translator->trans('Content type "%name% has been reordered', ['%name%'=>$contentType->getSingularName()]));
+
+        $this->logger->notice('service.contenttype.reordered', [
+            EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+        ]);
     }
     
     private function generatePipeline(FieldType $fieldType)
     {
         
         $pipelines = [];
-        /** @var \EMS\CoreBundle\Entity\FieldType $child */
+        /** @var FieldType $child */
         foreach ($fieldType->getChildren() as $child) {
             if (!$child->getDeleted()) {
-                /** @var \EMS\CoreBundle\Form\DataField\DataFieldType $dataFieldType */
+                /** @var DataFieldType $dataFieldType */
                 $dataFieldType = $this->formRegistry->getType($child->getType())->getInnerType();
                 $pipeline = $dataFieldType->generatePipeline($child);
                 if ($pipeline) {
@@ -230,15 +244,18 @@ class ContentTypeService
                 $pipelines = $this->generatePipeline($contentType->getFieldType());
                 if (!empty($pipelines)) {
                     $body = [
-                            "description" => "Extract attachment information for the content type ".$contentType->getName(),
+                            "description" => "Extract attachment information for the content type " . $contentType->getName(),
                             "processors" => $pipelines,
                     ];
                     $this->client->ingest()->putPipeline([
-                            'id' => $this->instanceId.$contentType->getName(),
+                            'id' => $this->instanceId . $contentType->getName(),
                             'body' => $body
                     ]);
                     $contentType->setHavePipelines(true);
-                    $this->session->getFlashBag()->add('notice', 'Pipelines updated/created for '.$contentType->getName());
+
+                    $this->logger->notice('service.contenttype.pipelines', [
+                        EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                    ]);
                 }
             }
         } catch (BadRequest400Exception $e) {
@@ -247,15 +264,21 @@ class ContentTypeService
             if (!empty($e->getPrevious())) {
                 $message = json_decode($e->getPrevious()->getMessage(), true);
             }
-            $this->session->getFlashBag()->add('error', '<p><strong>elasticms was not able to generate pipelines, they are disabled</strong> Please consider to update your elasticsearch cluster (>=5.0) and/or install the ingest attachment plugin (bin/elasticsearch-plugin install ingest-attachment)</p>
-					<p>Message from Elasticsearch: <b>' . $message['error']['type']. '</b>'.$message['error']['reason'] . '</p>');
+
+            $this->logger->error('service.contenttype.pipelines_error', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                'elasticsearch_error_type' => $message['error']['type'],
+                'elasticsearch_error_reason' => $message['error']['reason'],
+            ]);
         }
 
         try {
             $body = $this->environmentService->getIndexAnalysisConfiguration();
             if (!$envs) {
                 $envs = array_reduce($this->environmentService->getManagedEnvironement(), function ($envs, $item) use ($contentType, $body) {
-                    /**@var \EMS\CoreBundle\Entity\Environment $item*/
+                    /**@var Environment $item*/
                     try {
                         $index = $this->getIndex($contentType, $item);
                     } catch (NoResultException $e) {
@@ -266,12 +289,12 @@ class ContentTypeService
                     $indexExist = $this->client->indices()->exists(['index' => $index]);
 
                     if (!$indexExist) {
-                        $result = $this->client->indices()->create([
+                        $this->client->indices()->create([
                             'index' => $index,
                             'body' => $body,
                         ]);
 
-                        $result = $this->client->indices()->putAlias([
+                        $this->client->indices()->putAlias([
                             'index' => $index,
                             'name' => $item->getAlias(),
                         ]);
@@ -295,13 +318,17 @@ class ContentTypeService
                 ]);
                 if (isset($out ['acknowledged']) && $out ['acknowledged']) {
                     $contentType->setDirty(false);
-                    if ($this->session->isStarted()) {
-                        $this->session->getFlashBag()->add('notice', 'Mappings successfully updated/created for '.$contentType->getName().' in '.$envs);
-                    }
+                    $this->logger->notice('service.contenttype.mappings_updated', [
+                        EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                        'environments' => $envs,
+                    ]);
                 } else {
                     $contentType->setDirty(true);
-                    $this->session->getFlashBag()->add('warning', '<p><strong>Something went wrong. Try again</strong></p>
-						<p>Message from Elasticsearch: ' . print_r($out, true) . '</p>');
+                    $this->logger->warning('service.contenttype.mappings_error', [
+                        EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                        'environments' => $envs,
+                        'elasticsearch_dump' => print_r($out, true),
+                    ]);
                 }
             }
 
@@ -315,8 +342,13 @@ class ContentTypeService
             if (!empty($e->getPrevious())) {
                 $message = json_decode($e->getPrevious()->getMessage(), true);
             }
-            $this->session->getFlashBag()->add('error', '<p><strong>You should try to rebuild the indexes for '.$contentType->getName().'</strong></p>
-					<p>Message from Elasticsearch: <b>' . $message['error']['type']. '</b>'.$message['error']['reason'] . '</p>');
+
+            $this->logger->error('service.contenttype.should_reindex', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                'environments' => $envs,
+                'elasticsearch_error_type' => $message['error']['type'],
+                'elasticsearch_error_reason' => $message['error']['reason'],
+            ]);
         }
     }
     
@@ -350,10 +382,7 @@ class ContentTypeService
         return $contentTypeAliases;
     }
     
-    
-    /**
-     *
-     */
+
     public function getAllDefaultEnvironmentNames()
     {
         $this->loadEnvironment();
@@ -366,10 +395,7 @@ class ContentTypeService
         }
         return array_keys($out);
     }
-    
-    /**
-     *
-     */
+
     public function getAllAliases()
     {
         $this->loadEnvironment();
@@ -382,17 +408,13 @@ class ContentTypeService
         }
         return implode(',', $out);
     }
-    /**
-     *
-     */
+
     public function getAll()
     {
         $this->loadEnvironment();
         return $this->orderedContentTypes;
     }
-    /**
-     *
-     */
+
     public function getAllNames()
     {
         $this->loadEnvironment();
@@ -405,7 +427,6 @@ class ContentTypeService
     }
 
     /**
-     *
      * @return string
      */
     public function getAllTypes()

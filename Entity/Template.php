@@ -940,8 +940,8 @@ class Template extends JsonDeserializer implements \JsonSerializable
     {
         $json = new JsonClass(get_object_vars($this), __CLASS__);
         $json->removeProperty('id');
+        $json->removeProperty('contentType');
         $json->removeProperty('environments');
-
         return $json;
     }
 

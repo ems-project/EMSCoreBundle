@@ -3,8 +3,10 @@
 namespace EMS\CoreBundle\Form\View\Criteria;
 
 use EMS\CoreBundle\Entity\DataField;
+use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use Exception;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -20,11 +22,10 @@ use Symfony\Component\Form\CallbackTransformer;
  */
 class CriteriaFilterType extends AbstractType
 {
-    
     /**
-     *
-     * {@inheritdoc}
-     *
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     * @throws Exception
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -36,10 +37,10 @@ class CriteriaFilterType extends AbstractType
 
             $criteriaField = $view->getContentType()->getFieldType();
             if ($view->getOptions()['criteriaMode'] == 'internal') {
-                $criteriaField = $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['criteriaField']);
+                $criteriaField = $view->getContentType()->getFieldType()->__get('ems_' . $view->getOptions()['criteriaField']);
             } else if ($view->getOptions()['criteriaMode'] == 'another') {
             } else {
-                throw new \Exception('Should never happen');
+                throw new Exception('Should never happen');
             }
             
             $choices = [];
@@ -49,10 +50,10 @@ class CriteriaFilterType extends AbstractType
             $fieldPaths = preg_split("/\\r\\n|\\r|\\n/", $view->getOptions()['criteriaFieldPaths']);
             
             foreach ($fieldPaths as $path) {
-                /**@var \EMS\CoreBundle\Entity\FieldType $child*/
+                /**@var FieldType $child*/
                 $child = $criteriaField->getChildByPath($path);
                 if ($child) {
-                    $label = $child->getDisplayOptions()['label']?$child->getDisplayOptions()['label']:$child->getName();
+                    $label = $child->getDisplayOptions()['label'] ? $child->getDisplayOptions()['label'] : $child->getName();
                     $choices[$label] = $child->getName();
                     $defaultRow = $defaultColumn;
                     $defaultColumn = $child->getName();
@@ -128,7 +129,7 @@ class CriteriaFilterType extends AbstractType
             $fieldPaths = preg_split("/\\r\\n|\\r|\\n/", $view->getOptions()['criteriaFieldPaths']);
             
             foreach ($fieldPaths as $path) {
-                /**@var \EMS\CoreBundle\Entity\FieldType $child*/
+                /**@var FieldType $child*/
                 $child = $criteriaField->getChildByPath($path);
                 if ($child) {
                     $childOptions = $child->getOptions();

@@ -57,7 +57,7 @@ class DateFieldType extends DataFieldType
             return parent::modelTransform($dates, $fieldType);
         }
         $out = parent::modelTransform(null, $fieldType);
-        $out->addMessage('Was not able to import:'.json_encode($data));
+        $out->addMessage('Was not able to import:' . json_encode($data));
         return $out;
     }
     
@@ -153,7 +153,7 @@ class DateFieldType extends DataFieldType
                 if ($dateObject) {
                     $data[] = $dateObject->format(\DateTime::ISO8601);
                 } else {
-                    $dataField->addMessage("Bad date format:".$child);
+                    $dataField->addMessage("Bad date format:" . $child);
                 }
             }
             $dataField->setRawData($data);
@@ -191,9 +191,9 @@ class DateFieldType extends DataFieldType
         $fieldType = $builder->getOptions() ['metadata'];
     
         $builder->add('value', TextType::class, [
-                'label' => (isset($options['label'])?$options['label']:$fieldType->getName()),
+                'label' => (isset($options['label']) ? $options['label'] : $fieldType->getName()),
                 'required' => false,
-                'disabled'=> $this->isDisabled($options),
+                'disabled' => $this->isDisabled($options),
                 'attr' => [
                     'class' => 'datepicker',
                     'data-date-format' => $fieldType->getDisplayOptions()['displayFormat'],
@@ -201,7 +201,7 @@ class DateFieldType extends DataFieldType
                     'data-week-start' => $fieldType->getDisplayOptions()['weekStart'],
                     'data-days-of-week-highlighted' => $fieldType->getDisplayOptions()['daysOfWeekHighlighted'],
                     'data-days-of-week-disabled' => $fieldType->getDisplayOptions()['daysOfWeekDisabled'],
-                    'data-multidate' => $fieldType->getDisplayOptions()['multidate']?"true":"false",
+                    'data-multidate' => $fieldType->getDisplayOptions()['multidate'] ? "true" : "false",
                 ]
         ]);
     }

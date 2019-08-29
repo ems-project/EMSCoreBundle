@@ -13,10 +13,13 @@ If your code is not compliant, you could try fixing it automatically:
 composer phpcbf
 ````
 
-PHPStan is configured at level 2, you can check for errors locally using:
+PHPStan is configured at level 3, you can check for errors locally using:
 `````bash
 composer phpstan
 `````
+
+Controller/ApplController.php is excluded 
+Please take some time to refactor the deprecated functions to use dependency injection instead of getting services from the container
 
 Documentation
 -------------

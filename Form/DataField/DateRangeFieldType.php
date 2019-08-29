@@ -206,9 +206,9 @@ class DateRangeFieldType extends DataFieldType
         $fieldType = $builder->getOptions() ['metadata'];
         
         $builder->add('value', IconTextType::class, [
-                'label' => (null != $options ['label']?$options ['label']:$fieldType->getName()),
+                'label' => (null != $options ['label'] ? $options ['label'] : $fieldType->getName()),
                 'required' => false,
-                'disabled'=> $this->isDisabled($options),
+                'disabled' => $this->isDisabled($options),
                 'icon' => $options['icon'],
                 'attr' => [
                     'class' => 'ems_daterangepicker',
@@ -226,8 +226,8 @@ class DateRangeFieldType extends DataFieldType
     {
         $out = parent::getDefaultOptions($name);
         
-        $out['mappingOptions']['toDateMachineName'] = $name.'_to_date';
-        $out['mappingOptions']['fromDateMachineName'] = $name.'_from_date';
+        $out['mappingOptions']['toDateMachineName'] = $name . '_to_date';
+        $out['mappingOptions']['fromDateMachineName'] = $name . '_from_date';
         $out['mappingOptions']['nested'] = true;
         $out['mappingOptions']['index'] = null;
         $out['displayOptions']['timePickerIncrement'] = 5;

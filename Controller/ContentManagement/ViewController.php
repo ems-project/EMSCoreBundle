@@ -87,7 +87,9 @@ class ViewController extends AppController
             $em->persist($view);
             $em->flush();
 
-            $this->addFlash('notice', 'A new view has been created');
+            $this->getLogger()->notice('log.view.created', [
+                'view_name' => $view->getName(),
+            ]);
 
             return $this->redirectToRoute('view.edit', [
                 'id' => $view->getId()
@@ -116,10 +118,10 @@ class ViewController extends AppController
         /** @var ViewRepository $viewRepository */
         $viewRepository = $em->getRepository('EMSCoreBundle:View');
 
-        /** @var View $view */
+        /** @var View|null $view */
         $view = $viewRepository->find($id);
 
-        if (!$view) {
+        if ($view === null) {
             throw new NotFoundHttpException('View type not found');
         }
 
@@ -157,7 +159,9 @@ class ViewController extends AppController
             $em->persist($view);
             $em->flush();
 
-            $this->addFlash('notice', sprintf('View %s has been updated', $view->getName()));
+            $this->getLogger()->notice('log.view.updated', [
+                'view_name' => $view->getName(),
+            ]);
 
             if ($_format === 'json') {
                 return $this->render('@EMSCore/ajax/notification.json.twig', [
@@ -214,17 +218,19 @@ class ViewController extends AppController
         /** @var ViewRepository $viewRepository */
         $viewRepository = $em->getRepository('EMSCoreBundle:View');
 
-        /** @var View $view */
+        /** @var View|null $view */
         $view = $viewRepository->find($id);
 
-        if (!$view) {
+        if ($view === null) {
             throw new NotFoundHttpException('View not found');
         }
 
         $em->remove($view);
         $em->flush();
 
-        $this->addFlash('notice', 'A view has been removed');
+        $this->getLogger()->notice('log.view.deleted', [
+            'view_name' => $view->getName(),
+        ]);
 
         return $this->redirectToRoute('view.index', [
             'type' => $view->getContentType()->getName()

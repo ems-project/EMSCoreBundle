@@ -25,7 +25,6 @@ class Configuration implements ConfigurationInterface
     const DATEPICKER_FORMAT = 'dd/mm/yyyy';
     const DATEPICKER_WEEKSTART = 1;
     const DATEPICKER_DAYSOFWEEK_HIGHLIGHTED = [0, 6];
-    const AUDIT_INDEX = null;
     const NOTIFICATION_PENDING_TIMEOUT = 'P0Y0M15DT0H0M0S';
     const ALLOW_USER_REGISTRATION = false;
     const LOCK_TIME = '+1 minutes';
@@ -70,7 +69,6 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('sender_name')->defaultValue(self::FROM_EMAIL_NAME)->end()
             ->end()
             ->end()
-            ->scalarNode('audit_index')->defaultValue(self::AUDIT_INDEX)->end()
             ->scalarNode('notification_pending_timeout')->defaultValue(self::NOTIFICATION_PENDING_TIMEOUT)->end()
             ->scalarNode('allow_user_registration')->defaultValue(self::ALLOW_USER_REGISTRATION)->end()
             ->scalarNode('lock_time')->defaultValue(self::LOCK_TIME)->end()

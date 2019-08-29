@@ -88,10 +88,10 @@ class SearchFilter implements JsonSerializable
                 case 'match_and':
                     $out = [
                         "match" => [
-                                $field?$field:"_all" => [
-                                "query" =>  $this->pattern?$this->pattern:"",
+                                $field ? $field : "_all" => [
+                                "query" =>  $this->pattern ? $this->pattern : "",
                                 "operator" => "AND",
-                                "boost" => $this->boost?$this->boost:1,
+                                "boost" => $this->boost ? $this->boost : 1,
                                 ]
                         ]
                     ];
@@ -99,10 +99,10 @@ class SearchFilter implements JsonSerializable
                 case 'match_or':
                     $out = [
                         "match" => [
-                                $field?$field:"_all" => [
-                                "query" =>  $this->pattern?$this->pattern:"",
+                                $field ? $field : "_all" => [
+                                "query" =>  $this->pattern ? $this->pattern : "",
                                 "operator" => "OR",
-                                "boost" => $this->boost?$this->boost:1,
+                                "boost" => $this->boost ? $this->boost : 1,
                                 ]
                         ]
                     ];
@@ -110,29 +110,33 @@ class SearchFilter implements JsonSerializable
                 case 'query_and':
                     $out = [
                         "query_string" => [
-                            "default_field" => $field?$field:"_all",
-                            "query" =>  $this->pattern?$this->pattern:"*",
+                            "query" =>  $this->pattern ? $this->pattern : "*",
                             "default_operator" => "AND",
-                            "boost" => $this->boost?$this->boost:1,
+                            "boost" => $this->boost ? $this->boost : 1,
                         ]
                     ];
+                    if (!empty($field)) {
+                        $out['query_string']['default_field'] = $field;
+                    }
                     break;
                 case 'query_or':
                     $out = [
                         "query_string" => [
-                            "default_field" => $field?$field:"_all",
-                            "query" =>  $this->pattern?$this->pattern:"*",
+                            "query" =>  $this->pattern ? $this->pattern : "*",
                             "default_operator" => "OR",
-                            "boost" => $this->boost?$this->boost:1,
+                            "boost" => $this->boost ? $this->boost : 1,
                         ]
                     ];
+                    if (!empty($field)) {
+                        $out['query_string']['default_field'] = $field;
+                    }
                     break;
                 case 'term':
                     $out = [
                         "term" => [
-                            $field?$field:"_all" => [
-                                "value" => $this->pattern?$this->pattern:"*",
-                                "boost" => $this->boost?$this->boost:1,
+                            $field ? $field : "_all" => [
+                                "value" => $this->pattern ? $this->pattern : "*",
+                                "boost" => $this->boost ? $this->boost : 1,
                             ]
                         ]
                     ];
@@ -152,10 +156,10 @@ class SearchFilter implements JsonSerializable
     {
         return $this->pattern;
     }
+
     /**
-     * Set pattern
-     *
      * @param string $pattern
+     * @return SearchFilter
      */
     public function setPattern($pattern)
     {
@@ -176,6 +180,7 @@ class SearchFilter implements JsonSerializable
      * Set field
      *
      * @param string $field
+     * @return SearchFilter
      */
     public function setField($field)
     {

@@ -6,6 +6,8 @@ use Doctrine\ORM\EntityManager;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\ElasticsearchException;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
+use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\AggregateOption;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Form\Search;
@@ -20,17 +22,26 @@ use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Exception;
 use Symfony\Component\Form\ClickableInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use Throwable;
+use Twig\Error\LoaderError;
+use Twig\Error\SyntaxError;
+use Twig_Error;
+use Twig_Error_Loader;
+use Twig_Error_Syntax;
 use ZipStream\ZipStream;
 
 class ElasticsearchController extends AppController
@@ -38,6 +49,9 @@ class ElasticsearchController extends AppController
     /**
      * Create an alias for an index
      *
+     * @param string $name
+     * @param Request $request
+     * @return RedirectResponse|Response
      * @Route("/elasticsearch/alias/add/{name}", name="elasticsearch.alias.add"))
      */
     public function addAliasAction(string $name, Request $request)
@@ -45,7 +59,6 @@ class ElasticsearchController extends AppController
 
         /** @var  Client $client */
         $client = $this->getElasticsearch();
-        $result = $client->indices()->getAlias(['index' => $name]);
 
         $form = $this->createFormBuilder([])->add('name', IconTextType::class, [
             'icon' => 'fa fa-key',
@@ -73,7 +86,10 @@ class ElasticsearchController extends AppController
             ];
 
             $client->indices()->updateAliases($params);
-            $this->addFlash('notice', 'A new alias "' . $form->get('name')->getData() . '" has been added to the index "' . $name . '"');
+            $this->getLogger()->notice('log.elasticsearch.alias_added', [
+                'alias_name' => $form->get('name')->getData(),
+                'index_name' => $name,
+            ]);
 
             return $this->redirectToRoute("environment.index");
         }
@@ -86,6 +102,9 @@ class ElasticsearchController extends AppController
     }
 
     /**
+     * @param string $_format
+     * @return Response
+     *
      * @Route("/health_check.{_format}", defaults={"_format": "html"}, name="health-check")
      */
     public function healthCheckAction($_format)
@@ -106,12 +125,15 @@ class ElasticsearchController extends AppController
             }
 
             return $response;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new ServiceUnavailableHttpException('Due to ' . $e->getMessage());
         }
     }
 
     /**
+     * @param string $_format
+     * @return Response
+     *
      * @Route("/status.{_format}", defaults={"_format": "html"}, name="elasticsearch.status"))
      */
     public function statusAction($_format)
@@ -119,13 +141,13 @@ class ElasticsearchController extends AppController
         try {
             $client = $this->getElasticsearch();
             $status = $client->cluster()->health();
-            $certificatInfo = $this->getDataService()->getCertificateInfo();
+            $certificateInformation = $this->getDataService()->getCertificateInfo();
 
             $globalStatus = 'green';
             $tika = null;
             try {
                 $tika = ($this->getAssetExtractorService()->hello());
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $globalStatus = 'yellow';
                 $tika = [
                     'code' => 500,
@@ -136,27 +158,25 @@ class ElasticsearchController extends AppController
             if ('html' === $_format && 'green' !== $status['status']) {
                 $globalStatus = $status['status'];
                 if ('red' === $status['status']) {
-                    $this->addFlash(
-                        'error',
-                        'There is something wrong with the cluster! Actions are required now.'
-                    );
+                    $this->getLogger()->error('log.elasticsearch.cluster_red', [
+                        'color_status' => $status['status'],
+                    ]);
                 } else {
-                    $this->addFlash(
-                        'warning',
-                        'There is something wrong with the cluster. Status: <strong>' . $status['status'] . '</strong>.'
-                    );
+                    $this->getLogger()->warning('log.elasticsearch.cluster_yellow', [
+                        'color_status' => $status['status'],
+                    ]);
                 }
             }
 
             return $this->render('@EMSCore/elasticsearch/status.' . $_format . '.twig', [
                 'status' => $status,
-                'certificate' => $certificatInfo,
+                'certificate' => $certificateInformation,
                 'tika' => $tika,
                 'globalStatus' => $globalStatus,
                 'info' => $client->info(),
                 'specifiedVersion' => $this->getElasticsearchService()->getVersion(),
             ]);
-        } catch (\Elasticsearch\Common\Exceptions\NoNodesAvailableException $e) {
+        } catch (NoNodesAvailableException $e) {
             return $this->render('@EMSCore/elasticsearch/no-nodes-available.' . $_format . '.twig', [
                 'cluster' => $this->getParameter('ems_core.elasticsearch_cluster'),
             ]);
@@ -174,9 +194,12 @@ class ElasticsearchController extends AppController
 
 
     /**
+     * @param int $id
+     * @return RedirectResponse
+     *
      * @Route("/elasticsearch/delete-search/{id}", name="elasticsearch.search.delete"))
      */
-    public function deleteSearchAction($id, Request $request)
+    public function deleteSearchAction($id)
     {
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('EMSCoreBundle:Form\Search');
@@ -193,8 +216,10 @@ class ElasticsearchController extends AppController
     }
 
     /**
-     * @Route("/quick-search", name="ems_quick_search"))
-     * @Method("GET")
+     * @param Request $request
+     * @return Response
+     *
+     * @Route("/quick-search", name="ems_quick_search", methods={"GET"})
      */
     public function quickSearchAction(Request $request)
     {
@@ -233,10 +258,13 @@ class ElasticsearchController extends AppController
 
 
     /**
-     * @Route("/elasticsearch/set-default-search/{id}/{contentType}", defaults={"contentType": false}, name="ems_search_set_default_search_from"))
-     * @Method("POST")
+     * @param int $id
+     * @param string $contentType
+     * @return RedirectResponse
+     *
+     * @Route("/elasticsearch/set-default-search/{id}/{contentType}", defaults={"contentType": false}, name="ems_search_set_default_search_from", methods={"POST"})
      */
-    public function setDefaultSearchAction($id, $contentType, Request $request)
+    public function setDefaultSearchAction($id, $contentType)
     {
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('EMSCoreBundle:Form\Search');
@@ -256,7 +284,9 @@ class ElasticsearchController extends AppController
             $search->setContentType($contentType);
             $em->persist($search);
             $em->flush();
-            $this->addFlash('notice', 'This search has been defined as default search form for ' . $contentType->getSingularName());
+            $this->getLogger()->notice('log.elasticsearch.default_search_for_content_type', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+            ]);
         } else {
             $searchs = $repository->findBy([
                 'default' => true,
@@ -270,32 +300,43 @@ class ElasticsearchController extends AppController
             $search->setDefault(true);
             $em->persist($search);
             $em->flush();
-            $this->addFlash('notice', 'This search has been defined as default search form');
+            $this->getLogger()->notice('log.elasticsearch.default_search', [
+            ]);
         }
 
         return $this->redirectToRoute("elasticsearch.search", ['searchId' => $id]);
     }
 
     /**
+     * @param string $name
+     * @return RedirectResponse
+     *
      * @Route("/elasticsearch/index/delete/{name}", name="elasticsearch.index.delete"))
      */
-    public function deleteIndexAction($name, Request $request)
+    public function deleteIndexAction($name)
     {
         /** @var  Client $client */
         $client = $this->getElasticsearch();
         try {
-            $indexes = $client->indices()->get(['index' => $name]);
             $client->indices()->delete([
-                'index' => $name
+                'index' => $name,
             ]);
-            $this->addFlash('notice', 'Elasticsearch index ' . $name . ' has been deleted');
+
+            $this->getLogger()->notice('log.elasticsearch.index_deleted', [
+                'index_name' => $name,
+            ]);
         } catch (Missing404Exception $e) {
-            $this->addFlash('warning', 'Elasticsearch index not found');
+            $this->getLogger()->warning('log.elasticsearch.index_not_found', [
+                'index_name' => $name,
+            ]);
         }
         return $this->redirectToRoute('environment.index');
     }
 
     /**
+     * @param Request $request
+     * @return Response
+     *
      * @Route("/search.json", name="elasticsearch.api.search"))
      */
     public function searchApiAction(Request $request)
@@ -349,7 +390,7 @@ class ElasticsearchController extends AppController
                 $body = $this->getSearchService()->generateSearchBody($search);
                 $params['body'] = $body;
 
-                /** @var \Elasticsearch\Client $client */
+                /** @var Client $client */
                 $client = $this->getElasticsearch();
 
 
@@ -437,10 +478,7 @@ class ElasticsearchController extends AppController
             if (preg_match('/^[a-z][a-z0-9\-_]*:/i', $pattern, $matches)) {
                 $filterType = substr($matches[0], 0, strlen($matches[0]) - 1);
                 if (in_array($filterType, $types, true)) {
-                    $pattern = substr($pattern, strlen($matches[0]));
-                    if ($pattern === false) {
-                        $pattern = '';
-                    }
+                    $pattern = (string) substr($pattern, strlen($matches[0]));
                     $params['type'] = $filterType;
                 }
             }
@@ -542,7 +580,7 @@ class ElasticsearchController extends AppController
             //http://blog.alterphp.com/2012/08/how-to-deal-with-asynchronous-request.html
             $request->getSession()->save();
 
-            /** @var \Elasticsearch\Client $client */
+            /** @var Client $client */
             $client = $this->getElasticsearch();
 
             $this->getLogger()->debug('Before search api');
@@ -567,10 +605,18 @@ class ElasticsearchController extends AppController
     }
 
     /**
-     * @Route("/search/{query}", defaults={"query"=null}, name="ems_search"))
-     * @Route("/search/{query}", defaults={"query"=null}, name="elasticsearch.search"))
+     * @param Request $request
+     * @return RedirectResponse|Response
+     * @throws Throwable
+     * @throws LoaderError
+     * @throws SyntaxError
+     * @throws Twig_Error_Loader
+     * @throws Twig_Error_Syntax
+     *
+     * @Route("/search", name="ems_search")
+     * @Route("/search", name="elasticsearch.search")
      */
-    public function searchAction($query, Request $request)
+    public function searchAction(Request $request)
     {
         try {
             $search = new Search();
@@ -631,14 +677,15 @@ class ElasticsearchController extends AppController
             $form->handleRequest($request);
 
             $openSearchForm = false;
-            if ($form->get('search') instanceof ClickableInterface) {
-                $openSearchForm = $form->get('search')->isClicked();
+            $searchButton = $form->get('search');
+            if ($searchButton instanceof ClickableInterface) {
+                $openSearchForm = $searchButton->isClicked();
             }
 
-            //Form treatement after the "Save" button has been pressed (= ask for a name to save the search preset)
+            //Form treatment after the "Save" button has been pressed (= ask for a name to save the search preset)
             if ($form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && array_key_exists('save', $request->query->get('search_form'))) {
                 $form = $this->createFormBuilder($search)
-                    ->add('name', \Symfony\Component\Form\Extension\Core\Type\TextType::class)
+                    ->add('name', TextType::class)
                     ->add('save_search', SubmitEmsType::class, [
                         'label' => 'Save',
                         'attr' => [
@@ -652,8 +699,10 @@ class ElasticsearchController extends AppController
                     'form' => $form->createView(),
                 ]);
             } else if ($form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && array_key_exists('delete', $request->query->get('search_form'))) {
-                //Form treatement after the "Delete" button has been pressed (to delete a previous saved search preset)
-                $this->addFlash('notice', 'Search has been deleted');
+                //Form treatment after the "Delete" button has been pressed (to delete a previous saved search preset)
+
+                $this->getLogger()->notice('log.elasticsearch.search_deleted', [
+                ]);
             }
 
             //Next we want 1. see the results, or 2. export the results
@@ -675,16 +724,19 @@ class ElasticsearchController extends AppController
                 foreach ($filtersArray as $rawFilter) {
                     $jsonFilter = json_encode($rawFilter);
                     $filter = $serializer->deserialize($jsonFilter, SearchFilter::class, 'json');
-                    $search->addFilter($filter);
+                    if ($filter instanceof SearchFilter) {
+                        $search->addFilter($filter);
+                    } else {
+                        $this->getLogger()->warning('log.elasticsearch.not_able_to_deserialize_filters', [
+                            'json_filters' => $jsonFilter,
+                        ]);
+                    }
                 }
             } else {
                 $search = $form->getData();
             }
 
-
             $body = $this->getSearchService()->generateSearchBody($search);
-
-//
 
             /** @var EntityManager $em */
             $em = $this->getDoctrine()->getManager();
@@ -699,7 +751,7 @@ class ElasticsearchController extends AppController
 
             $environments = $environmentRepository->findAllAsAssociativeArray('alias');
 
-            /** @var \Elasticsearch\Client $client */
+            /** @var Client $client */
             $client = $this->getElasticsearch();
 
             $assocAliases = $client->indices()->getAliases();
@@ -782,13 +834,18 @@ class ElasticsearchController extends AppController
             try {
                 $results = $client->search($params);
                 if ($results['hits']['total'] > 50000) {
-                    $this->addFlash('warning', 'The search results are limited to the first 50.000 items');
+                    $this->getLogger()->warning('log.elasticsearch.limit_exceded', [
+                        'total' => $results['hits']['total'],
+                    ]);
                     $lastPage = ceil(50000 / $this->container->getParameter('ems_core.paging_size'));
                 } else {
                     $lastPage = ceil($results['hits']['total'] / $this->container->getParameter('ems_core.paging_size'));
                 }
             } catch (ElasticsearchException $e) {
-                $this->addFlash('warning', $e->getMessage());
+                $this->getLogger()->warning('log.error', [
+                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                    EmsFields::LOG_EXCEPTION_FIELD => $e,
+                ]);
                 $lastPage = 0;
                 $results = ['hits' => ['total' => 0]];
             }
@@ -797,15 +854,13 @@ class ElasticsearchController extends AppController
             $currentFilters = $request->query;
             $currentFilters->remove('search_form[_token]');
 
-            //Form treatement after the "Export results" button has been pressed (= ask for a "content type" <-> "template" mapping)
+            //Form treatment after the "Export results" button has been pressed (= ask for a "content type" <-> "template" mapping)
             if ($form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && array_key_exists('exportResults', $request->query->get('search_form'))) {
                 //Store all the content types present in the current resultset
                 $contentTypes = $this->getAllContentType($results);
 
                 /**@var ContentTypeService $contenttypeService */
                 $contenttypeService = $this->getContentTypeService();
-                /**@var EnvironmentService $environmentService */
-                $environmentService = $this->getEnvironmentService();
 
                 //Check for each content type that an export template is available.
                 //If no export template is defined, ignore the content type.
@@ -854,9 +909,9 @@ class ElasticsearchController extends AppController
                 }
             }
 
-            //Form treatement after the "Mass export" button has been pressed (= download all the results with the given preset)
+            //Form treatment after the "Mass export" button has been pressed (= download all the results with the given preset)
             if ($request->query->get('form') && array_key_exists('massExport', $request->query->get('form'))) {
-                //TODO: ? CANNOT DO THE ISVALID CHECK HERE :(
+                //TODO: ? CANNOT DO THE IS VALID CHECK HERE :(
 
                 //Load the selected templates for each content type
                 /** @var EntityManager $em */
@@ -865,16 +920,16 @@ class ElasticsearchController extends AppController
                 /** @var ContentTypeRepository $repository */
                 $templateRepository = $em->getRepository('EMSCoreBundle:Template');
 
-                $templateChoises = $request->query->get('form');
+                $templateChoices = $request->query->get('form');
 
                 $templateMapping = [];
                 $templateBodyMapping = [];
 
                 $twig = $this->getTwig();
                 $errorList = [];
-                foreach ($templateChoises as $contentName => $templateChoise) {
+                foreach ($templateChoices as $contentName => $templateChoice) {
                     if ('search-data' != $contentName && 'massExport' != $contentName && '_token' != $contentName) {
-                        $template = $templateRepository->find($templateChoise);
+                        $template = $templateRepository->find($templateChoice);
 
                         if ($template) {
                             $templateMapping[$contentName] = $template;
@@ -884,11 +939,14 @@ class ElasticsearchController extends AppController
                                 //Asked by dame
                                 //If there is an error in the twig the user will get an 500 error page, this solution is not perfect but at least the template is tested
                                 $body = $twig->createTemplate($template->getBody());
-                            } catch (\Twig_Error $e) {
-                                $this->addFlash('error', 'There is something wrong with the template ' . $template->getName());
+                            } catch (Twig_Error $e) {
+                                $this->getLogger()->error('log.elasticsearch.template_error', [
+                                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                                    EmsFields::LOG_EXCEPTION_FIELD => $e,
+                                    'template_name' => $template->getName(),
+                                ]);
                                 $body = $twig->createTemplate('error in the template!');
                                 $errorList[] = "Error in template->getBody() for: " . $template->getName();
-                                continue;
                             }
 
                             $templateBodyMapping[$contentName] = $body;
@@ -901,13 +959,9 @@ class ElasticsearchController extends AppController
                 }
 
                 //Create the file for each result and accumulate in a zip stream
-                $extime = ini_get('max_execution_time');
                 ini_set('max_execution_time', 0);
 
-                $fileTime = date("D, d M Y H:i:s T");
                 $zip = new ZipStream("eMSExport.zip");
-
-                $contentTypes = $this->getAllContentType($results);
 
                 $resultsSize = count($results['hits']['hits']);
                 $loop = [];
@@ -941,8 +995,12 @@ class ElasticsearchController extends AppController
                         if (null != $template->getFilename()) {
                             try {
                                 $filename = $twig->createTemplate($template->getFilename());
-                            } catch (\Twig_Error $e) {
-                                $this->addFlash('error', 'There is something wrong with the template filename field ' . $template->getName());
+                            } catch (Twig_Error $e) {
+                                $this->getLogger()->error('log.elasticsearch.template_filename_error', [
+                                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                                    EmsFields::LOG_EXCEPTION_FIELD => $e,
+                                    'template_name' => $template->getName(),
+                                ]);
                                 $filename = $result['_id'];
                                 $errorList[] = "Error in template->getFilename() for: " . $filename;
                                 continue;
@@ -966,9 +1024,12 @@ class ElasticsearchController extends AppController
                                 'object' => $result,
                                 'source' => $result['_source'],
                             ]);
-                        } catch (\Twig_Error $e) {
-                            $this->addFlash('error', 'There is something wrong with the template filename field ' . $template->getName());
-                            $content = "There was an error rendering the content";
+                        } catch (Twig_Error $e) {
+                            $this->getLogger()->error('log.elasticsearch.template_filename_error', [
+                                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                                'template_name' => $template->getName(),
+                            ]);
                             $errorList[] = "Error in templateBody->render() for: " . $filename;
                             continue;
                         }
@@ -983,7 +1044,6 @@ class ElasticsearchController extends AppController
                         }
                     } else {
                         //JSON export
-
                         $zip->addFile($result['_type'] . ' ' . $result['_id'] . '.json', json_encode($result['_source']));
                     }
                 }
@@ -1013,7 +1073,7 @@ class ElasticsearchController extends AppController
                 'sortOptions' => $this->getSortOptionService()->getAll(),
                 'aggregateOptions' => $aggregateOptions,
             ]);
-        } catch (\Elasticsearch\Common\Exceptions\NoNodesAvailableException $e) {
+        } catch (NoNodesAvailableException $e) {
             return $this->redirectToRoute('elasticsearch.status');
         }
     }

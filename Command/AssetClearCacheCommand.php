@@ -7,29 +7,24 @@ namespace EMS\CoreBundle\Command;
 use Elasticsearch\Client;
 use EMS\CommonBundle\Storage\Service\StorageInterface;
 use EMS\CoreBundle\Service\FileService;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\HttpFoundation\Session\Session;
 
 class AssetClearCacheCommand extends EmsCommand
 {
-    /**
-     *
-     *
-     * @var FileService
-     */
+    /** @var FileService */
     protected $fileService;
 
 
-    public function __construct(Logger $logger, Client $client, Session $session, FileService $fileService)
+    public function __construct(LoggerInterface $logger, Client $client, FileService $fileService)
     {
         $this->fileService = $fileService;
-        parent::__construct($logger, $client, $session);
+        parent::__construct($logger, $client);
     }
 
     protected function configure()
@@ -49,7 +44,7 @@ class AssetClearCacheCommand extends EmsCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
-        $this->formatFlash($output);
+        $this->formatStyles($output);
 
         if (! $input->getOption('all')) {
             /**@var QuestionHelper $helper*/
@@ -66,9 +61,12 @@ class AssetClearCacheCommand extends EmsCommand
 
             if ($service != 'All') {
                 $serviceId = array_search($service, $this->fileService->getStorages());
-                $output->writeln('You have just selected: '.$service);
-                $this->fileService->getStorages()[$serviceId]->clearCache();
-                return;
+                $output->writeln('You have just selected: ' . $service);
+                $storage = $this->fileService->getStorageService($serviceId);
+                if ($storage !== null) {
+                    $storage->clearCache();
+                }
+                return null;
             }
         }
 

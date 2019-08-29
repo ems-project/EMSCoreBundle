@@ -5,19 +5,19 @@ namespace EMS\CoreBundle\Form\DataField;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
+use EMS\CoreBundle\Form\Form\EmsCollectionType;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\ElasticsearchService;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Form\FormRegistryInterface;
-use EMS\CoreBundle\Form\DataTransformer\DataFieldTransformer;
-use EMS\CoreBundle\Form\Form\EmsCollectionType;
 
 /**
  * Defined a Container content type.
@@ -30,37 +30,27 @@ class CollectionFieldType extends DataFieldType
 {
     /** @var DataService */
     private $dataService;
+    /** @var LoggerInterface */
+    private $logger;
     
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, DataService $dataService)
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, DataService $dataService, LoggerInterface $logger)
     {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
         $this->dataService = $dataService;
+        $this->logger = $logger;
     }
     
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public function getLabel()
     {
         return 'Collection (manage array of children types)';
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public static function getIcon()
     {
         return 'fa fa-plus fa-rotate';
     }
     
-    /**
-     * {@inheritdoc}
-     */
     public function importData(DataField $dataField, $sourceArray, $isMigration)
     {
         $migrationOptions = $dataField->getFieldType()->getMigrationOptions();
@@ -85,7 +75,10 @@ class CollectionFieldType extends DataFieldType
                         if (is_array($item)) {
                             $this->dataService->updateDataValue($grandChild, $item, $isMigration);
                         } else {
-                            //TODO: add flash message
+                            $this->logger->warning('form.data_field.collection.import_not_an_array', [
+                                'import_data' => $item,
+                                'field_name' => $dataField->getFieldType()->getName(),
+                            ]);
                         }
                         
                         $colItem->addChild($grandChild);
@@ -99,22 +92,11 @@ class CollectionFieldType extends DataFieldType
         return [$dataField->getFieldType()->getName()];
     }
     
-    
-    /**
-     *
-     * {@inheritDoc}
-     * @see \Symfony\Component\Form\AbstractType::getParent()
-     */
     public function getParent()
     {
         return EmsCollectionType::class;
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         /* give options for twig context */
@@ -126,11 +108,6 @@ class CollectionFieldType extends DataFieldType
         $view->vars ['collapsible'] = $options ['collapsible'];
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public function configureOptions(OptionsResolver $resolver)
     {
         /* set the default option value for this kind of compound field */
@@ -143,11 +120,6 @@ class CollectionFieldType extends DataFieldType
         $resolver->setDefault('itemBootstrapClass', null);
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public static function isContainer()
     {
         /* this kind of compound field may contain children */
@@ -159,9 +131,6 @@ class CollectionFieldType extends DataFieldType
         return true;
     }
     
-    /**
-     * {@inheritdoc}
-     */
     public function isValid(DataField &$dataField, DataField $parent = null, &$masterRawData = null)
     {
         if ($this->hasDeletedParent($parent)) {
@@ -178,13 +147,13 @@ class CollectionFieldType extends DataFieldType
             if ($restrictionOptions['min'] == 1) {
                 $dataField->addMessage("At least 1 item is required");
             } else {
-                $dataField->addMessage("At least ".$restrictionOptions['min']." items are required");
+                $dataField->addMessage("At least " . $restrictionOptions['min'] . " items are required");
             }
             $isValid = false;
         }
         
         if (!empty($restrictionOptions['max']) && count($dataField->getRawData()) > $restrictionOptions['max']) {
-            $dataField->addMessage("Too many items (max ".$restrictionOptions['max'].")");
+            $dataField->addMessage("Too many items (max " . $restrictionOptions['max'] . ")");
             $isValid = false;
         }
         
@@ -192,11 +161,6 @@ class CollectionFieldType extends DataFieldType
         return $isValid;
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options)
     {
         parent::buildOptionsForm($builder, $options);
@@ -233,11 +197,6 @@ class CollectionFieldType extends DataFieldType
         $optionsForm->get('restrictionOptions')->remove('mandatory_if');
     }
 
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public function buildObjectArray(DataField $data, array &$out)
     {
         if (! $data->getFieldType()->getDeleted()) {
@@ -246,32 +205,17 @@ class CollectionFieldType extends DataFieldType
     }
     
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public function getBlockPrefix()
     {
         return 'collectionfieldtype';
     }
 
 
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public static function getJsonName(FieldType $current)
     {
         return $current->getName();
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public function generateMapping(FieldType $current, $withPipeline)
     {
         return [$current->getName() => [
@@ -280,11 +224,6 @@ class CollectionFieldType extends DataFieldType
         ]];
     }
     
-    /**
-     *
-     * {@inheritDoc}
-     * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
-     */
     public function reverseViewTransform($data, FieldType $fieldType)
     {
         $cleaned = [];

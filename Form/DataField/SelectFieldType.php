@@ -59,9 +59,9 @@ class SelectFieldType extends DataFieldType
         }
 
         $builder->add('value', ChoiceType::class, [
-                'label' => (isset($options['label'])?$options['label']:$fieldType->getName()),
+                'label' => (isset($options['label']) ? $options['label'] : $fieldType->getName()),
                 'required' => false,
-                'disabled'=> $this->isDisabled($options),
+                'disabled' => $this->isDisabled($options),
                 'choices' => $choices,
                 'empty_data'  => null,
                 'multiple' => $options['multiple'],

@@ -2,11 +2,14 @@
 
 namespace EMS\CoreBundle\Command;
 
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
+use Exception;
+use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,21 +29,14 @@ class LockCommand extends Command
      */
     private $revisionRepository;
 
-    /**
-     * @inheritdoc
-     */
-    public function __construct(Registry $doctrine)
+    public function __construct(ContentTypeRepository $contentTypeRepository, RevisionRepository $revisionRepository)
     {
         parent::__construct();
 
-        $em = $doctrine->getManager();
-        $this->contentTypeRepository = $em->getRepository(ContentType::class);
-        $this->revisionRepository = $em->getRepository(Revision::class);
+        $this->contentTypeRepository = $contentTypeRepository;
+        $this->revisionRepository = $revisionRepository;
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function configure()
     {
         $this
@@ -56,21 +52,24 @@ class LockCommand extends Command
     }
 
     /**
-     * @inheritdoc
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int|void|null
+     * @throws Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         /** @var $contentType ContentType */
         if (null === $contentType = $this->contentTypeRepository->findOneBy(['name' => $input->getArgument('contentType')])) {
-            throw new \RuntimeException('invalid content type');
+            throw new RuntimeException('invalid content type');
         }
         if (!$time = strtotime($input->getArgument('time'))) {
-            throw new \RuntimeException('invalid time');
+            throw new RuntimeException('invalid time');
         }
         $by = $input->getOption('user');
         $force = $input->getOption('force');
 
-        $until = new \DateTime();
+        $until = new DateTime();
         $until->setTimestamp($time);
 
         $io = new SymfonyStyle($input, $output);
@@ -85,7 +84,7 @@ class LockCommand extends Command
         if (0 === $rows) {
             $io->error('no revisions locked, try force?');
         } else {
-            $io->success(vsprintf('%slocked %d %s revisions until %s by %s', [
+            $io->success(vsprintf('%s locked %d %s revisions until %s by %s', [
                 ($force ? 'FORCE ' : ''),
                 $rows,
                 $contentType->getName(),

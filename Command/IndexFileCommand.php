@@ -2,15 +2,23 @@
 
 namespace EMS\CoreBundle\Command;
 
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Elasticsearch\Client;
+use EMS\CommonBundle\Storage\Service\StorageInterface;
 use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Exception\AssetNotFoundException;
 use EMS\CoreBundle\Repository\RevisionRepository;
-use EMS\CoreBundle\Service\AssetExtratorService;
+use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\FileService;
+use Exception;
 use Monolog\Logger;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
@@ -18,7 +26,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
-use Symfony\Component\HttpFoundation\Session\Session;
 
 class IndexFileCommand extends EmsCommand
 {
@@ -38,7 +45,7 @@ class IndexFileCommand extends EmsCommand
     /**
      *
      *
-     * @var AssetExtratorService
+     * @var AssetExtractorService
      */
     protected $extractorService;
     protected $databaseName;
@@ -51,13 +58,13 @@ class IndexFileCommand extends EmsCommand
     protected $fileService;
 
 
-    public function __construct(Logger $logger, Client $client, Session $session, Registry $doctrine, ContentTypeService $contentTypeService, AssetExtratorService $extractorService, FileService $fileService)
+    public function __construct(Logger $logger, Client $client, Registry $doctrine, ContentTypeService $contentTypeService, AssetExtractorService $extractorService, FileService $fileService)
     {
         $this->doctrine = $doctrine;
         $this->contentTypeService = $contentTypeService;
         $this->extractorService = $extractorService;
         $this->fileService = $fileService;
-        parent::__construct($logger, $client, $session);
+        parent::__construct($logger, $client);
     }
 
     protected function configure()
@@ -90,11 +97,20 @@ class IndexFileCommand extends EmsCommand
     }
 
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int|void|null
+     * @throws NonUniqueResultException
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws Exception
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln("Please do a backup of your DB first!");
         $helper = $this->getHelper('question');
-        $question= new ConfirmationQuestion('Continue?', false);
+        $question = new ConfirmationQuestion('Continue?', false);
 
         if (!$helper->ask($input, $output, $question)) {
             return;
@@ -110,7 +126,7 @@ class IndexFileCommand extends EmsCommand
 
         $contentType = $this->contentTypeService->getByName($contentTypeName);
         if (!$contentType) {
-            throw new \Exception('Content type not found');
+            throw new Exception('Content type not found');
         }
 
         $onlyWithIngestedContent = $input->getOption('only-with-ingested-content');
@@ -152,7 +168,7 @@ class IndexFileCommand extends EmsCommand
 
                 if ($update) {
                     $revision->setLockBy('SYSTEM_MIGRATE');
-                    $date = new \DateTime();
+                    $date = new DateTime();
                     $date->modify('+5 minutes');
                     $revision->setLockUntil($date);
                     $em->persist($revision);
@@ -173,7 +189,6 @@ class IndexFileCommand extends EmsCommand
 
         $progress->finish();
         $output->writeln("");
-        $this->flushFlash($output);
         $output->writeln("Migration done");
         $output->writeln("Please rebuild your environments and update your field type");
 
@@ -181,6 +196,15 @@ class IndexFileCommand extends EmsCommand
         $this->dbSize($output);
     }
 
+    /**
+     * @param array $rawData
+     * @param string $field
+     * @param OutputInterface $output
+     * @param bool $onlyWithIngestedContent
+     * @param bool $onlyMissingContent
+     * @return bool
+     * @throws AssetNotFoundException
+     */
     private function findField(array &$rawData, $field, OutputInterface $output, $onlyWithIngestedContent, $onlyMissingContent)
     {
         foreach ($rawData as $key => $data) {
@@ -204,6 +228,12 @@ class IndexFileCommand extends EmsCommand
         return false;
     }
 
+    /**
+     * @param array $rawData
+     * @param OutputInterface $output
+     * @return bool
+     * @throws AssetNotFoundException
+     */
     private function migrate(array &$rawData, OutputInterface $output)
     {
         $updated = false;
@@ -218,10 +248,10 @@ class IndexFileCommand extends EmsCommand
                         $tempName = $this->fileService->temporaryFilename($rawData['sha1']);
                         file_put_contents($tempName, $fileContent);
 
-                        /**@var \EMS\CommonBundle\Storage\Service\StorageInterface $service*/
+                        /**@var StorageInterface $service*/
                         foreach ($this->fileService->getStorages() as $service) {
                             $service->create($rawData['sha1'], $tempName);
-                            $output->writeln('File restored from DB: '.$rawData['sha1']);
+                            $output->writeln('File restored from DB: ' . $rawData['sha1']);
                             break;
                         }
 
@@ -264,21 +294,24 @@ class IndexFileCommand extends EmsCommand
                         }
                     }
                 } else {
-                    $output->writeln('File not found:'.$rawData['sha1']);
+                    $output->writeln('File not found:' . $rawData['sha1']);
                 }
             }
         }
         return $updated;
     }
 
+    /**
+     * @param OutputInterface $output
+     * @throws DBALException
+     * @throws Exception
+     */
     private function dbSize(OutputInterface $output)
     {
-
         /**
          * @var EntityManager $em
          */
         $em = $this->doctrine->getManager();
-        $query = '';
 
         /**@var Connection $connection */
         $connection = $this->doctrine->getConnection();
@@ -287,17 +320,21 @@ class IndexFileCommand extends EmsCommand
         if (in_array($connection->getDriver()->getName(), ['pdo_pgsql'])) {
             $query = "SELECT pg_size_pretty(pg_database_size('$dbName')) AS size";
         } elseif (in_array($connection->getDriver()->getName(), ['pdo_mysql'])) {
-            $query = "SELECT
-			SUM(data_length + index_length)/1024/1024 AS size
-			FROM information_schema.TABLES
-			WHERE table_schema='$dbName'
-			GROUP BY table_schema";
+            $query = "SELECT SUM(data_length + index_length)/1024/1024 AS size FROM information_schema.TABLES WHERE table_schema='$dbName' GROUP BY table_schema";
         } else {
-            throw new \Exception('Not supported driver');
+            throw new Exception('Not supported driver');
         }
         $stmt = $em->getConnection()->prepare($query);
         $stmt->execute();
         $size = $stmt->fetchAll();
-        $output->writeln($size[0]['size']);
+
+
+        if (is_array($size) && isset($size[0]['size'])) {
+            $row = "The database size is {$size[0]['size']} MB";
+        } else {
+            $row = 'Undefined';
+        }
+
+        $output->writeln($row);
     }
 }

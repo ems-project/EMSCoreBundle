@@ -61,7 +61,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     protected $singularName;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="icon", type="string", length=100, nullable=true)
      */
@@ -103,7 +103,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     protected $lockUntil;
 
     /**
-     * @var array
+     * @var string
      *
      * @ORM\Column(name="circles_field", type="string", length=100, nullable=true)
      */
@@ -354,6 +354,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     protected $active;
 
     /**
+     * @var null|Environment
      * @ORM\ManyToOne(targetEntity="Environment", inversedBy="contentTypesHavingThisAsDefault")
      * @ORM\JoinColumn(name="environment_id", referencedColumnName="id")
      */
@@ -534,7 +535,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Get icon
      *
-     * @return string
+     * @return string|null
      */
     public function getIcon()
     {
@@ -665,7 +666,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Set labelField
      *
-     * @param integer $labelField
+     * @param string $labelField
      *
      * @return ContentType
      */
@@ -679,7 +680,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Get labelField
      *
-     * @return integer
+     * @return string
      */
     public function getLabelField()
     {
@@ -689,7 +690,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Set parentField
      *
-     * @param integer $parentField
+     * @param string $parentField
      *
      * @return ContentType
      */
@@ -703,7 +704,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Get parentField
      *
-     * @return integer
+     * @return string
      */
     public function getParentField()
     {
@@ -713,7 +714,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Set dateField
      *
-     * @param integer $dateField
+     * @param string $dateField
      *
      * @return ContentType
      */
@@ -727,7 +728,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Get dateField
      *
-     * @return integer
+     * @return string
      */
     public function getDateField()
     {
@@ -737,7 +738,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Set endDateField
      *
-     * @param integer $endDateField
+     * @param string $endDateField
      *
      * @return ContentType
      */
@@ -751,7 +752,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Get endDateField
      *
-     * @return integer
+     * @return string
      */
     public function getEndDateField()
     {
@@ -761,7 +762,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Set locationField
      *
-     * @param integer $locationField
+     * @param string $locationField
      *
      * @return ContentType
      */
@@ -775,7 +776,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Get locationField
      *
-     * @return integer
+     * @return string
      */
     public function getLocationField()
     {
@@ -785,7 +786,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Set ouuidField
      *
-     * @param integer $ouuidField
+     * @param string $ouuidField
      *
      * @return ContentType
      */
@@ -799,7 +800,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Get ouuidField
      *
-     * @return integer
+     * @return string
      */
     public function getOuuidField()
     {
@@ -809,7 +810,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Set imageField
      *
-     * @param integer $imageField
+     * @param string $imageField
      *
      * @return ContentType
      */
@@ -823,7 +824,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Get imageField
      *
-     * @return integer
+     * @return string
      */
     public function getImageField()
     {
@@ -833,7 +834,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Set videoField
      *
-     * @param integer $videoField
+     * @param string $videoField
      *
      * @return ContentType
      */
@@ -847,7 +848,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Get videoField
      *
-     * @return integer
+     * @return string
      */
     public function getVideoField()
     {
@@ -929,7 +930,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Set startDateField
      *
-     * @param integer $startDateField
+     * @param string $startDateField
      *
      * @return ContentType
      */
@@ -943,7 +944,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Get startDateField
      *
-     * @return integer
+     * @return string
      */
     public function getStartDateField()
     {
@@ -1085,11 +1086,11 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Set environment
      *
-     * @param \EMS\CoreBundle\Entity\Environment $environment
+     * @param Environment $environment
      *
      * @return ContentType
      */
-    public function setEnvironment(\EMS\CoreBundle\Entity\Environment $environment = null)
+    public function setEnvironment(Environment $environment = null)
     {
         $this->environment = $environment;
 
@@ -1099,7 +1100,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Get environment
      *
-     * @return \EMS\CoreBundle\Entity\Environment
+     * @return Environment|null
      */
     public function getEnvironment()
     {
@@ -1321,7 +1322,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Set circlesField
      *
-     * @param array $circlesField
+     * @param string $circlesField
      *
      * @return ContentType
      */
@@ -1685,7 +1686,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * @param array $defaultValue
+     * @param string $defaultValue
      * @return ContentType
      */
     public function setDefaultValue($defaultValue)
@@ -1726,7 +1727,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
         $json = new JsonClass(get_object_vars($this), __CLASS__);
         $json->removeProperty('id');
         $json->removeProperty('environment');
-
+        $json->handlePersistentCollections('templates', 'views', 'singleTypeIndexes');
         return $json;
     }
 
@@ -1734,19 +1735,25 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     {
         switch ($name) {
             case 'templates':
+                /** @var Template $template */
                 foreach ($this->deserializeArray($value) as $template) {
                     $this->addTemplate($template);
+                    $template->setContentType($this);
                 }
                 break;
             case 'views':
+                /** @var View $view */
                 foreach ($this->deserializeArray($value) as $view) {
                     $this->addView($view);
+                    $view->setContentType($this);
                 }
                 break;
 
             case 'singleTypeIndexes':
+                /** @var SingleTypeIndex $index */
                 foreach ($this->deserializeArray($value) as $index) {
                     $this->addSingleTypeIndex($index);
+                    $index->setContentType($this);
                 }
                 break;
             default:

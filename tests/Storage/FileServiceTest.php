@@ -31,12 +31,12 @@ class FileServiceTest extends WebTestCase
 
         $string1 = 'foo';
         $string2 = 'bar';
-        $hash = sha1($string1.$string2);
+        $hash = sha1($string1 . $string2);
         if ($storage->head($hash)) {
             $storage->remove($hash);
         }
 
-        $this->assertTrue($storage->initUpload($hash, strlen($string1.$string2), 'test.bin', 'application/bin'));
+        $this->assertTrue($storage->initUpload($hash, strlen($string1 . $string2), 'test.bin', 'application/bin'));
         $this->assertTrue($storage->addChunk($hash, $string1));
         $this->assertTrue($storage->addChunk($hash, $string2));
         $this->assertTrue($storage->finalizeUpload($hash));
@@ -49,7 +49,7 @@ class FileServiceTest extends WebTestCase
 
         $ctx = hash_init('sha1');
         $handler = $storage->read($hash);
-        $this->assertNotFalse($handler);
+        $this->assertNotNull($handler);
         while (!feof($handler)) {
             hash_update($ctx, fread($handler, 8192));
         }
@@ -60,7 +60,7 @@ class FileServiceTest extends WebTestCase
         $contextName = 'test';
 
         if ($storage->supportCacheStore()) {
-            $this->assertTrue($storage->initUpload($hash, strlen($string1.$string2), 'test.bin', 'application/bin', $contextName));
+            $this->assertTrue($storage->initUpload($hash, strlen($string1 . $string2), 'test.bin', 'application/bin', $contextName));
             $this->assertTrue($storage->addChunk($hash, $string1, $contextName));
             $this->assertTrue($storage->addChunk($hash, $string2, $contextName));
             $this->assertTrue($storage->finalizeUpload($hash, $contextName));
@@ -76,13 +76,13 @@ class FileServiceTest extends WebTestCase
 
         $tempFile = tempnam(sys_get_temp_dir(), 'ems_core_test');
         $this->assertNotFalse($tempFile);
-        $this->assertNotFalse(file_put_contents($tempFile, $string1.$string2));
+        $this->assertNotFalse(file_put_contents($tempFile, $string1 . $string2));
         $this->assertEquals($hash, hash_file('sha1', $tempFile));
 
         $this->assertTrue($storage->create($hash, $tempFile));
         $this->assertTrue($storage->head($hash));
 
-        $this->assertEquals(strlen($string1.$string2), $storage->getSize($hash));
+        $this->assertEquals(strlen($string1 . $string2), $storage->getSize($hash));
 
         $storage->remove($hash);
         unlink($tempFile);

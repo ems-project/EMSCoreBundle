@@ -39,7 +39,7 @@ class ColorPickerType extends SelectPickerType
             ],
             'choice_attr' => function ($category, $key, $index) {
                 return [
-                        'data-content' => "<div class='text-".$category."'><i class='fa fa-square'></i>&nbsp;&nbsp;".$this->humanize($key).'</div>'
+                        'data-content' => "<div class='text-" . $category . "'><i class='fa fa-square'></i>&nbsp;&nbsp;" . $this->humanize($key) . '</div>'
                 ];
             },
             'choice_value' => function ($value) {

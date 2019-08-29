@@ -55,9 +55,9 @@ class NumberFieldType extends DataFieldType
         $fieldType = $builder->getOptions() ['metadata'];
     
         $builder->add('value', TextType::class, [
-                'label' => (isset($options['label'])?$options['label']:$fieldType->getName()),
+                'label' => (isset($options['label']) ? $options['label'] : $fieldType->getName()),
                 'required' => false,
-                'disabled'=> $this->isDisabled($options),
+                'disabled' => $this->isDisabled($options),
         ]);
     }
 
@@ -168,7 +168,7 @@ class NumberFieldType extends DataFieldType
             if (is_numeric($temp)) {
                 $temp = doubleval($temp);
             } else {
-                $message = 'It is not a float value:'.$temp;
+                $message = 'It is not a float value:' . $temp;
             }
         }
         

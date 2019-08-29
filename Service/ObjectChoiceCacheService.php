@@ -4,9 +4,10 @@
 namespace EMS\CoreBundle\Service;
 
 use Elasticsearch\Client;
-use EMS\LocalUserBundle\Entity\User;
-use Symfony\Component\HttpFoundation\Session\Session;
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Form\Field\ObjectChoiceListItem;
+use EMS\LocalUserBundle\Entity\User;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -14,8 +15,8 @@ class ObjectChoiceCacheService
 {
     /**@Client $client*/
     private $client;
-    /**@var Session $session*/
-    private $session;
+    /**@var LoggerInterface $logger*/
+    private $logger;
     /**@var ContentTypeService $contentTypeService*/
     private $contentTypeService;
     /**@var AuthorizationCheckerInterface $authorizationChecker*/
@@ -26,10 +27,10 @@ class ObjectChoiceCacheService
     private $fullyLoaded;
     private $cache;
     
-    public function __construct(Client $client, Session $session, ContentTypeService $contentTypeService, AuthorizationCheckerInterface $authorizationChecker, TokenStorageInterface $tokenStorage)
+    public function __construct(Client $client, LoggerInterface $logger, ContentTypeService $contentTypeService, AuthorizationCheckerInterface $authorizationChecker, TokenStorageInterface $tokenStorage)
     {
         $this->client = $client;
-        $this->session = $session;
+        $this->logger = $logger;
         $this->contentTypeService = $contentTypeService;
         $this->authorizationChecker = $authorizationChecker;
         $this->tokenStorage = $tokenStorage;
@@ -53,9 +54,9 @@ class ObjectChoiceCacheService
                     }
                     $aliasTypes[$currentType->getEnvironment()->getAlias()][] = $type;
                     $params = [
-                            'size'=>  '500',
-                            'index'=> $currentType->getEnvironment()->getAlias(),
-                            'type'=> $type,
+                            'size' =>  '500',
+                            'index' => $currentType->getEnvironment()->getAlias(),
+                            'type' => $type,
                     ];
 
 
@@ -86,23 +87,25 @@ class ObjectChoiceCacheService
                     }
 
                     $items = $this->client->search($params);
-                    //TODO test si > 500...flashbag
+                    //TODO test si > 500... logger
 
                     foreach ($items['hits']['hits'] as $hit) {
-                        if (!isset($choices[$hit['_type'].':'.$hit['_id']])) {
+                        if (!isset($choices[$hit['_type'] . ':' . $hit['_id']])) {
                             $listItem = new ObjectChoiceListItem($hit, $this->contentTypeService->getByName($hit['_type']));
                             $choices[$listItem->getValue()] = $listItem;
                             $this->cache[$hit['_type']][$hit['_id']] = $listItem;
                         }
                     }
                 } else {
-                    $this->session->getFlashBag()->add('warning', 'ems was not able to find the content type "'.$type.'"');
+                    $this->logger->warning('service.object_choice_cache.contenttype_not_found', [
+                        EmsFields::LOG_CONTENTTYPE_FIELD => $type,
+                    ]);
                 }
                 $this->fullyLoaded[$type] = true;
             } else {
                 foreach ($this->cache[$type] as $id => $item) {
-                    if ($item && !isset($choices[$type.':'.$id])) {
-                        $choices[$type.':'.$id] = $item;
+                    if ($item && !isset($choices[$type . ':' . $id])) {
+                        $choices[$type . ':' . $id] = $item;
                     }
                 }
             }
@@ -138,16 +141,22 @@ class ObjectChoiceCacheService
                                     "_id" => $ref[1],
                                 ];
                             } else {
-                                $this->session->getFlashBag()->add('warning', 'ems was not able to find the alias for the content type "'.$ref[0].'"');
+                                $this->logger->warning('service.object_choice_cache.alias_not_found', [
+                                    EmsFields::LOG_CONTENTTYPE_FIELD => $ref[0],
+                                ]);
                             }
                         } else {
-                            $this->session->getFlashBag()->add('warning', 'ems was not able to find the content type "'.$ref[0].'"');
+                            $this->logger->warning('service.object_choice_cache.contenttype_not_found', [
+                                EmsFields::LOG_CONTENTTYPE_FIELD => $ref[0],
+                            ]);
                         }
                     }
                 }
             } else {
                 if (null !== $objectId && $objectId !== "") {
-                    $this->session->getFlashBag()->add('warning', 'ems was not able to parse the object key "'.$objectId.'"');
+                    $this->logger->warning('service.object_choice_cache.object_key_not_found', [
+                        'object_key' => $objectId,
+                    ]);
                 }
             }
         }
@@ -159,14 +168,16 @@ class ObjectChoiceCacheService
             ];
             $result = $this->client->mget($params);
             foreach ($result['docs'] as $doc) {
-                $objectId = $doc['_type'].':'.$doc['_id'];
+                $objectId = $doc['_type'] . ':' . $doc['_id'];
                 if ($doc['found']) {
                     $listItem = new ObjectChoiceListItem($doc, $this->contentTypeService->getByName($doc['_type']));
                     $this->cache[$doc['_type']][$doc['_id']] = $listItem;
                     $out[$objectId] = $listItem;
                 } else {
                     $this->cache[$doc['_type']][$doc['_id']] = false;
-                    $this->session->getFlashBag()->add('warning', 'ems was not able to find the object key "'.$objectId.'"');
+                    $this->logger->warning('service.object_choice_cache.object_key_not_found', [
+                        'object_key' => $objectId,
+                    ]);
                 }
             }
         }

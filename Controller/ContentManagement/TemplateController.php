@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Controller\ContentManagement;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\Template;
 use EMS\CoreBundle\Form\Form\TemplateType;
@@ -19,6 +20,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class TemplateController extends AppController
 {
     /**
+     * @param string $type
      * @return Response
      *
      * @Route("/template/{type}", name="template.index", methods={"GET","HEAD"})
@@ -46,8 +48,12 @@ class TemplateController extends AppController
     }
 
     /**
+     * @param string $type
+     * @param Request $request
+     * @return Response
      * @throws ORMException
      * @throws OptimisticLockException
+     *
      * @Route("/template/add/{type}", name="template.add", methods={"GET","HEAD", "POST"})
      */
     public function addAction(string $type, Request $request): Response
@@ -76,8 +82,9 @@ class TemplateController extends AppController
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($template);
             $em->flush();
-            
-            $this->addFlash('notice', 'A new template has been created');
+            $this->getLogger()->notice('log.template.added', [
+                'template_name' => $template->getName(),
+            ]);
             
             return $this->redirectToRoute('template.index', [
                     'type' => $type
@@ -91,6 +98,10 @@ class TemplateController extends AppController
     }
 
     /**
+     * @param int $id
+     * @param Request $request
+     * @param string $_format
+     * @return Response
      * @throws ORMException
      * @throws OptimisticLockException
      *
@@ -103,10 +114,10 @@ class TemplateController extends AppController
         /** @var TemplateRepository $templateRepository */
         $templateRepository = $em->getRepository('EMSCoreBundle:Template');
         
-        /** @var Template $template **/
+        /** @var Template|null $template **/
         $template = $templateRepository->find($id);
             
-        if (!$template) {
+        if ($template === null) {
             throw new NotFoundHttpException('Template type not found');
         }
         
@@ -120,7 +131,9 @@ class TemplateController extends AppController
             $em->persist($template);
             $em->flush();
 
-            $this->addFlash('notice', sprintf('Template %s has been updated', $template->getName()));
+            $this->getLogger()->notice('log.template.updated', [
+                'template_name' => $template->getName(),
+            ]);
 
             if ($_format === 'json') {
                 return $this->render('@EMSCore/ajax/notification.json.twig', [
@@ -135,7 +148,9 @@ class TemplateController extends AppController
 
         if ($_format === 'json') {
             foreach ($form->getErrors() as $error) {
-                $this->addFlash('error', $error->getMessage());
+                $this->getLogger()->error('log.error', [
+                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $error->getMessage(),
+                ]);
             }
 
             return $this->render('@EMSCore/ajax/notification.json.twig', [
@@ -150,8 +165,11 @@ class TemplateController extends AppController
     }
 
     /**
+     * @param string $id
+     * @return RedirectResponse
      * @throws ORMException
      * @throws OptimisticLockException
+     *
      * @Route("/template/remove/{id}", name="template.remove", methods={"POST"})
      */
     public function removeAction(string $id): RedirectResponse
@@ -161,16 +179,19 @@ class TemplateController extends AppController
         /** @var TemplateRepository $templateRepository */
         $templateRepository = $em->getRepository('EMSCoreBundle:Template');
         
-        /** @var Template $template **/
+        /** @var Template|null $template **/
         $template = $templateRepository->find($id);
             
-        if (!$template) {
+        if ($template === null) {
             throw new NotFoundHttpException('Template type not found');
         }
         
         $em->remove($template);
         $em->flush();
-        $this->addFlash('notice', 'A template has been removed');
+
+        $this->getLogger()->notice('log.template.deleted', [
+            'template_name' => $template->getName(),
+        ]);
             
         return $this->redirectToRoute('template.index', [
                 'type' => $template->getContentType()->getName()

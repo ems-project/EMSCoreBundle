@@ -95,22 +95,22 @@ class ChoiceFieldType extends DataFieldType
             $idx = 0;
             if (isset($options['raw_data'][$options['linked_collection']]) && is_array($options['raw_data'][$options['linked_collection']])) {
                 foreach ($options['raw_data'][$options['linked_collection']] as $idx => $child) {
-                    $choices['#'.$idx.': '.((isset($child[$options['collection_label_field']]) && $child[$options['collection_label_field']] !== null)?$child[$options['collection_label_field']]:'')] = $idx;
+                    $choices['#' . $idx . ': ' . ((isset($child[$options['collection_label_field']]) && $child[$options['collection_label_field']] !== null) ? $child[$options['collection_label_field']] : '')] = $idx;
                 }
                 ++$idx;
             }
 
             $this->fakeIndex = $idx;
 
-            for ($i=0; $i < 50; ++$i) {
-                $choices['[ems_hide_input]'.($idx+$i)] = $idx+$i;
+            for ($i = 0; $i < 50; ++$i) {
+                $choices['[ems_hide_input]' . ($idx + $i)] = $idx + $i;
             }
         }
         
         $builder->add('value', ChoiceType::class, [
-                'label' => (isset($options['label'])?$options['label']:$fieldType->getName()),
+                'label' => (isset($options['label']) ? $options['label'] : $fieldType->getName()),
                 'required' => false,
-                'disabled'=> $this->isDisabled($options),
+                'disabled' => $this->isDisabled($options),
                 'choices' => $choices,
                 'empty_data'  => null,
                 'multiple' => $options['multiple'],
@@ -242,11 +242,11 @@ class ChoiceFieldType extends DataFieldType
                     if (is_string($item) || is_integer($item)) {
                         $out[] = $item;
                     } else {
-                        $dataField->addMessage('Was not able to import the data : '.json_encode($item));
+                        $dataField->addMessage('Was not able to import the data : ' . json_encode($item));
                     }
                 }
             } else {
-                $dataField->addMessage('Was not able to import the data : '.json_encode($out));
+                $dataField->addMessage('Was not able to import the data : ' . json_encode($out));
                 $out = [];
             }
         } else { //not mutiple
@@ -256,9 +256,9 @@ class ChoiceFieldType extends DataFieldType
                 $out = $temp;
             } elseif (is_array($temp) && $temp != null && (is_string(array_shift($temp)) || is_integer(array_shift($temp)))) {
                 $out = array_shift($temp);
-                $dataField->addMessage('Only the first item has been imported : '.json_encode($temp));
+                $dataField->addMessage('Only the first item has been imported : ' . json_encode($temp));
             } else {
-                $dataField->addMessage('Was not able to import the data : '.json_encode($temp));
+                $dataField->addMessage('Was not able to import the data : ' . json_encode($temp));
                 $out = "";
             }
         }

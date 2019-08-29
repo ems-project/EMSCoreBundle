@@ -45,11 +45,11 @@ class AliasService
      */
     private $isBuild = false;
 
-    public function __construct(Client $client, Registry $doctrine)
+    public function __construct(Client $client, EnvironmentRepository $environmentRepository, ManagedAliasRepository $managedAliasRepository)
     {
         $this->client = $client;
-        $this->envRepo = $doctrine->getRepository(Environment::class);
-        $this->managedAliasRepo = $doctrine->getRepository(ManagedAlias::class);
+        $this->envRepo = $environmentRepository;
+        $this->managedAliasRepo = $managedAliasRepository;
     }
 
     /**
@@ -81,7 +81,7 @@ class AliasService
     {
         return $this->aliases;
     }
-    
+
     /**
      * @param int $id
      *
@@ -91,12 +91,27 @@ class AliasService
     {
         /** @var ManagedAlias|null $managedAlias */
         $managedAlias = $this->managedAliasRepo->find($id);
-        
+
         if ($this->hasAlias($managedAlias->getAlias())) {
             $alias = $this->getAlias($managedAlias->getAlias());
             $managedAlias->setIndexes($alias['indexes']);
         }
-        
+
+        return $managedAlias;
+    }
+
+    public function getManagedAliasByName(string $name)
+    {
+        /** @var ManagedAlias|null $managedAlias */
+        $managedAlias = $this->managedAliasRepo->findOneBy([
+            'name' => $name,
+        ]);
+
+        if ($this->hasAlias($managedAlias->getAlias())) {
+            $alias = $this->getAlias($managedAlias->getAlias());
+            $managedAlias->setIndexes($alias['indexes']);
+        }
+
         return $managedAlias;
     }
     

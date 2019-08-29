@@ -35,8 +35,6 @@
 							class=" badge bg-{{ status.status }}">{{ info.name }}</span></li>
 						<li class="list-group-item">{{ 'Elasticsearch\'s version'|trans }}<span
 							class=" badge bg-{{ status.status }}">{{ info.version.number }}</span></li>
-						<li class="list-group-item">{{ 'Specified version'|trans }}<span
-							class=" badge bg-{% if info.version.number starts with specifiedVersion %}green{% else %}red{% endif %}">{{ specifiedVersion }}</span></li>
 						<li class="list-group-item">{{ 'Lucene\'s version'|trans }}<span
 							class=" badge bg-{{ status.status }}">{{ info.version.lucene_version }}</span></li>
 						<li class="list-group-item">{{ 'Build date'|trans }}<span

@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 
@@ -481,11 +482,11 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     /**
      * Set contentType
      *
-     * @param \EMS\CoreBundle\Entity\ContentType $contentType
+     * @param ContentType $contentType
      *
      * @return FieldType
      */
-    public function setContentType(\EMS\CoreBundle\Entity\ContentType $contentType = null)
+    public function setContentType(ContentType $contentType = null)
     {
         $this->contentType = $contentType;
 
@@ -495,7 +496,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     /**
      * Get contentType
      *
-     * @return \EMS\CoreBundle\Entity\ContentType
+     * @return null|ContentType
      */
     public function getContentType()
     {
@@ -543,7 +544,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     public function __get($key)
     {
         if (strpos($key, 'ems_') !== 0) {
-             throw new \Exception('unprotected ems get with key '.$key);
+             throw new \Exception('unprotected ems get with key ' . $key);
         } else {
             $key = substr($key, 4);
         }
@@ -567,7 +568,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     public function __set($key, $input)
     {
         if (strpos($key, 'ems_') !== 0) {
-             throw new \Exception('unprotected ems set with key '.$key);
+             throw new \Exception('unprotected ems set with key ' . $key);
         } else {
             $key = substr($key, 4);
         }
@@ -662,7 +663,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
             foreach ($this->children as $child) {
                 if (!$child->getDeleted() && $child->getName() == $elem[0]) {
                     if (strpos($path, ".")) {
-                        return $child->getChildByPath(substr($path, strpos($path, ".")+1));
+                        return $child->getChildByPath(substr($path, strpos($path, ".") + 1));
                     }
                     return $child;
                 }

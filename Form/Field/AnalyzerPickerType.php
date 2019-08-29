@@ -74,7 +74,7 @@ class AnalyzerPickerType extends SelectPickerType
                 'Not defined' => null,
                 'Built-in' => $built_in,
                 'Languages' => $languages,
-                'Customized' =>[
+                'Customized' => [
                 ],
         ];
         
@@ -92,7 +92,7 @@ class AnalyzerPickerType extends SelectPickerType
         parent::configureOptions($resolver);
         $resolver->setDefaults(array(
             'required' => false,
-            'choices' =>$choices,
+            'choices' => $choices,
             'attr' => [
                     'data-live-search' => true
             ],

@@ -1,19 +1,23 @@
 <?php
 namespace EMS\CoreBundle\Controller\Views;
 
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Form\SearchFormType;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 class CalendarController extends AppController
 {
     /**
-     * @Route("/views/calendar/replan/{view}.json", name="views.calendar.replan", defaults={"_format": "json"}))
-     * @Method({"POST"})
+     * @param View $view
+     * @param Request $request
+     * @return Response
+     *
+     * @Route("/views/calendar/replan/{view}.json", name="views.calendar.replan", defaults={"_format": "json"}, methods={"POST"})
      */
     public function updateAction(View $view, Request $request)
     {
@@ -21,55 +25,55 @@ class CalendarController extends AppController
             $ouuid = $request->request->get('ouuid', false);
             $type = $view->getContentType()->getName();
             $revision = $this->getDataService()->initNewDraft($type, $ouuid);
-            if ($revision) {
-                $rawData = $revision->getRawData();
-                $field = $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['dateRangeField']);
-                
 
-                /**@var \DateTime $from */
-                /**@var \DateTime $to */
-                $from = new \DateTime($request->request->get('start', false));
-                if ($from) {
-                    $to = $request->request->get('end', false);
-                    if (!$to) {
-                        $to = clone $from;
-                        $to->add(new \DateInterval("PT23H59M"));
-                    } else {
-                        $to = new \DateTime($to);
-                    }
-                    
-                    $input = [
-                            $field->getMappingOptions()['fromDateMachineName'] => $from->format('c'),
-                            $field->getMappingOptions()['toDateMachineName'] => $to->format('c'),
-                    ];
-                    
-                    if ($field->getMappingOptions()['nested']) {
-                        $rawData[$field->getName()] = $input;
-                    } else {
-                        $rawData = array_merge($rawData, $input);
-                    }
-                    
-                    $revision->setRawData($rawData);
-                    $this->getDataService()->finalizeDraft($revision);
-                } else {
-                    $this->addFlash('warning', 'From date missing?!');
-                }
+            $rawData = $revision->getRawData();
+            $field = $view->getContentType()->getFieldType()->__get('ems_' . $view->getOptions()['dateRangeField']);
+
+            /** @var \DateTime $from */
+            $from = new \DateTime($request->request->get('start', false));
+            $to = $request->request->get('end', false);
+            if (!$to) {
+                $to = clone $from;
+                $to->add(new \DateInterval("PT23H59M"));
             } else {
-                $this->addFlash('warning', 'Object '.$ouuid.' not found');
+                $to = new \DateTime($to);
             }
+
+            $input = [
+                    $field->getMappingOptions()['fromDateMachineName'] => $from->format('c'),
+                    $field->getMappingOptions()['toDateMachineName'] => $to->format('c'),
+            ];
+
+            if ($field->getMappingOptions()['nested']) {
+                $rawData[$field->getName()] = $input;
+            } else {
+                $rawData = array_merge($rawData, $input);
+            }
+
+            $revision->setRawData($rawData);
+            $this->getDataService()->finalizeDraft($revision);
+
             return $this->render('@EMSCore/view/custom/calendar_replan.json.twig', [
                     'success' => true,
             ]);
         } catch (\Exception $e) {
-            $this->addFlash('error', 'Exception: '.$e->getMessage());
+            $this->getLogger()->error('log.error', [
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+            ]);
             return $this->render('@EMSCore/ajax/notification.json.twig', [
                 'success' => false,
             ]);
         }
     }
+
     /**
-     * @Route("/views/calendar/search/{view}.json", name="views.calendar.search", defaults={"_format": "json"}))
-     * @Method({"GET"})
+     * @param View $view
+     * @param Request $request
+     * @return Response
+     * @throws \Exception
+     *
+     * @Route("/views/calendar/search/{view}.json", name="views.calendar.search", defaults={"_format": "json"}, methods={"GET"})
      */
     public function searchAction(View $view, Request $request)
     {
@@ -90,7 +94,7 @@ class CalendarController extends AppController
         /**@var \DateTime $to */
         $from = new \DateTime($request->query->get('from'));
         $to = new \DateTime($request->query->get('to'));
-        $field = $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['dateRangeField']);
+        $field = $view->getContentType()->getFieldType()->__get('ems_' . $view->getOptions()['dateRangeField']);
         
         if (empty($body['query']['bool']['must'])) {
             $body['query']['bool']['must'] = [];
@@ -101,7 +105,7 @@ class CalendarController extends AppController
                     'path' => $field->getName(),
                     'query' => [
                         'range' => [
-                                $field->getName().'.'.$field->getMappingOptions()['fromDateMachineName'] => ['lte' => $to->format('c')]
+                                $field->getName() . '.' . $field->getMappingOptions()['fromDateMachineName'] => ['lte' => $to->format('c')]
                         ]
                     ]
                 ]
@@ -111,7 +115,7 @@ class CalendarController extends AppController
                     'path' => $field->getName(),
                     'query' => [
                         'range' => [
-                                $field->getName().'.'.$field->getMappingOptions()['toDateMachineName'] => ['gte' => $from->format('c')]
+                                $field->getName() . '.' . $field->getMappingOptions()['toDateMachineName'] => ['gte' => $from->format('c')]
                         ]
                     ]
                 ]
@@ -143,7 +147,7 @@ class CalendarController extends AppController
         return $this->render('@EMSCore/view/custom/calendar_search.json.twig', [
                 'success' => true,
                 'data' => $data,
-                'field' => $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['dateRangeField']),
+                'field' => $view->getContentType()->getFieldType()->__get('ems_' . $view->getOptions()['dateRangeField']),
                 'contentType' => $view->getContentType(),
                 'environment' => $view->getContentType()->getEnvironment(),
         ]);

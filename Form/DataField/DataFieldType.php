@@ -126,7 +126,7 @@ abstract class DataFieldType extends AbstractType
      *
      * http://symfony.com/doc/current/form/data_transformers.html#about-model-and-view-transformers
      *
-     * @param array $data
+     * @param array|null|string|integer|float $data
      * @param FieldType $fieldType
      *
      * @return DataField
@@ -202,7 +202,7 @@ abstract class DataFieldType extends AbstractType
      */
     public function getElasticsearchQuery(DataField $dataField, array $options = [])
     {
-        throw new \Exception('virtual method should be implemented by child class : '.get_class($this));
+        throw new \Exception('virtual method should be implemented by child class : ' . get_class($this));
     }
 
     /**
@@ -231,7 +231,7 @@ abstract class DataFieldType extends AbstractType
     public function getChoiceList(FieldType $fieldType, array $choices)
     {
         //TODO: should be abstract ??
-        throw new ContentTypeStructureException('The field '.$fieldType->getName().' of the content type '.$fieldType->getContentType()->getName().' does not have a limited list of values!');
+        throw new ContentTypeStructureException('The field ' . $fieldType->getName() . ' of the content type ' . $fieldType->getContentType()->getName() . ' does not have a limited list of values!');
     }
 
     /**
@@ -280,7 +280,7 @@ abstract class DataFieldType extends AbstractType
      * Assign data of the dataField based on the elastic index content ($sourceArray)
      *
      * @param DataField $dataField
-     * @param array $sourceArray
+     * @param string|array $sourceArray
      * @param bool $isMigration
      *
      * @return array
@@ -377,20 +377,20 @@ abstract class DataFieldType extends AbstractType
      */
     public function isMandatory(DataField &$dataField, DataField $parent = null, &$masterRawData = null)
     {
-        $isValidMadatory = true;
+        $isValidMandatory = true;
         //Get FieldType mandatory option
         $restrictionOptions = $dataField->getFieldType()->getRestrictionOptions();
         if (isset($restrictionOptions["mandatory"]) && true == $restrictionOptions["mandatory"]) {
-            if ($parent === null || !isset($restrictionOptions["mandatory_if"]) || $parent->getRawData() === null || (is_array($masterRawData) && !empty($this->resolve($masterRawData, $parent->getRawData(), $restrictionOptions["mandatory_if"])) )) {
+            if ($parent === null || !isset($restrictionOptions["mandatory_if"]) || $parent->getRawData() === null || !empty($this->resolve($masterRawData ?? [], $parent->getRawData(), $restrictionOptions["mandatory_if"]))) {
                 //Get rawData
                 $rawData = $dataField->getRawData();
-                if ($rawData === null || (is_string($rawData) && $rawData=== "") || (is_array($rawData) && count($rawData) === 0)) {
-                    $isValidMadatory = false;
+                if ($rawData === null || (is_string($rawData) && $rawData === "") || (is_array($rawData) && count($rawData) === 0)) {
+                    $isValidMandatory = false;
                     $dataField->addMessage("Empty field");
                 }
             }
         }
-        return $isValidMadatory;
+        return $isValidMandatory;
     }
 
     public static function resolve(array $rawData, array $parentRawData, $path, $default = null)
@@ -420,7 +420,7 @@ abstract class DataFieldType extends AbstractType
         if (isset($parent->getRawData()['_ems_internal_deleted']) && $parent->getRawData()['_ems_internal_deleted'] == 'deleted') {
             return true;
         }
-        return $parent->getParent()?$this->hasDeletedParent($parent->getParent()):false;
+        return $parent->getParent() ? $this->hasDeletedParent($parent->getParent()) : false;
     }
 
     /**

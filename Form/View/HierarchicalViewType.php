@@ -3,18 +3,21 @@
 namespace EMS\CoreBundle\Form\View;
 
 use Elasticsearch\Client;
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\DataField\DataLinkFieldType;
 use EMS\CoreBundle\Form\Field\ContentTypeFieldPickerType;
 use EMS\CoreBundle\Form\Nature\ReorganizeType;
-use EMS\CoreBundle\Form\View\ViewType;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
+use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,6 +26,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Router;
+use Twig_Environment;
 
 /**
  * It's the mother class of all specific DataField used in eMS
@@ -45,40 +49,25 @@ class HierarchicalViewType extends ViewType
     /**@var ContentTypeService */
     protected $contentTypeService;
     
-    public function __construct($formFactory, $twig, $client, Session $session, DataService $dataService, Router $router, ContentTypeService $contentTypeService)
+    public function __construct(FormFactory $formFactory, Twig_Environment $twig, Client $client, LoggerInterface $logger, Session $session, DataService $dataService, Router $router, ContentTypeService $contentTypeService)
     {
-        parent::__construct($formFactory, $twig, $client);
-        $this->session= $session;
+        parent::__construct($formFactory, $twig, $client, $logger);
+        $this->session = $session;
         $this->dataService = $dataService;
-        $this->router= $router;
-        $this->contentTypeService= $contentTypeService;
+        $this->router = $router;
+        $this->contentTypeService = $contentTypeService;
     }
 
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public function getLabel()
     {
         return "Hierarchical: manage a menu structure (based on a ES query)";
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public function getName()
     {
         return "Hierarchical";
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         parent::buildForm($builder, $options);
@@ -151,33 +140,18 @@ class HierarchicalViewType extends ViewType
         ));
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public function getBlockPrefix()
     {
         return 'hierarchical_view';
     }
     
 
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
-    public function getParameters(View $view, FormFactoryInterface $formFactoty, Request $request)
+    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request)
     {
         
         return [];
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
     public function generateResponse(View $view, Request $request)
     {
         
@@ -186,24 +160,24 @@ class HierarchicalViewType extends ViewType
         }
         $parentId = explode(':', $view->getOptions()['parent']);
         if (count($parentId) != 2) {
-            throw new NotFoundHttpException('Parent menu not found: '.$view->getOptions()['parent']);
+            throw new NotFoundHttpException('Parent menu not found: ' . $view->getOptions()['parent']);
         }
 
         $index = $this->contentTypeService->getIndex($view->getContentType());
 
         $parent = null;
         try {
-            $parent= $this->client->get([
+            $parent = $this->client->get([
                     'index' => $index,
                     'type' => $parentId[0],
                     'id' => $parentId[1],
             ]);
-        } catch (\Exception $e) {
-            throw new NotFoundHttpException('Parent menu not found: '.$view->getOptions()['parent']);
+        } catch (Exception $e) {
+            throw new NotFoundHttpException('Parent menu not found: ' . $view->getOptions()['parent']);
         }
         
         if (empty($parent)) {
-            throw new NotFoundHttpException('Parent menu not found: '.$view->getOptions()['parent']);
+            throw new NotFoundHttpException('Parent menu not found: ' . $view->getOptions()['parent']);
         }
 
         
@@ -221,10 +195,11 @@ class HierarchicalViewType extends ViewType
             $structure = json_decode($data['structure'], true);
 
             $this->reorder($view->getOptions()['parent'], $view, $structure);
-            
-            $this->session->getFlashBag()->add('notice', 'The '.$view->getContentType()->getPluralName().' have been reorganized');
-            
-            
+
+            $this->logger->notice('form.view.hierarchical.reorganized', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $view->getContentType()->getName(),
+                'view_name' => $view->getName(),
+            ]);
             
             return new RedirectResponse($this->router->generate('data.draft_in_progress', [
                     'contentTypeId' => $view->getContentType()->getId(),
@@ -233,7 +208,7 @@ class HierarchicalViewType extends ViewType
         
         
         $response = new Response();
-        $response->setContent($this->twig->render('@EMSCore/view/custom/'.$this->getBlockPrefix().'.html.twig', [
+        $response->setContent($this->twig->render('@EMSCore/view/custom/' . $this->getBlockPrefix() . '.html.twig', [
                 'parent' => $parent,
                 'view' => $view,
                 'form' => $form->createView(),
@@ -255,13 +230,18 @@ class HierarchicalViewType extends ViewType
             foreach ($structure as $item) {
                 $data[$view->getOptions()['field']][] = $item['id'];
                 if (explode(':', $item['id'])[0] == $view->getContentType()->getName()) {
-                    $this->reorder($item['id'], $view, isset($item['children'])?$item['children']:[]);
+                    $this->reorder($item['id'], $view, isset($item['children']) ? $item['children'] : []);
                 }
             }
             $revision->setRawData($data);
             $this->dataService->finalizeDraft($revision);
-        } catch (\Exception $e) {
-            $this->session->getFlashBag()->add('warning', 'It was impossible to update the item '.$itemKey.': '.$e->getMessage());
+        } catch (Exception $e) {
+            $this->logger->warning('form.view.hierarchical.error_with_document', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $type,
+                EmsFields::LOG_OUUID_FIELD => $ouuid,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+            ]);
         }
     }
 }

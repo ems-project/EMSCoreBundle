@@ -3,16 +3,21 @@
 namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Common\Persistence\Mapping\MappingException;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Elasticsearch\Client;
+use EMS\CoreBundle\Elasticsearch\Bulker;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Exception\NotLockedException;
 use EMS\CoreBundle\Form\Form\RevisionType;
+use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\Mapping;
-use EMS\CoreBundle\Elasticsearch\Bulker;
 use Monolog\Logger;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
@@ -20,10 +25,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\HttpFoundation\Session\Session;
-use EMS\CoreBundle\Exception\CantBeFinalizedException;
+use Symfony\Component\Form\FormInterface;
 
 class MigrateCommand extends EmsCommand
 {
@@ -41,7 +44,7 @@ class MigrateCommand extends EmsCommand
     
     protected $instanceId;
     
-    public function __construct(Registry $doctrine, Logger $logger, Client $client, Bulker $bulker, $mapping, DataService $dataService, FormFactoryInterface $formFactory, $instanceId, Session $session)
+    public function __construct(Registry $doctrine, Logger $logger, Client $client, Bulker $bulker, $mapping, DataService $dataService, FormFactoryInterface $formFactory, $instanceId)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
@@ -49,9 +52,9 @@ class MigrateCommand extends EmsCommand
         $this->bulker = $bulker;
         $this->mapping = $mapping;
         $this->dataService = $dataService;
-        $this->formFactory= $formFactory;
+        $this->formFactory = $formFactory;
         $this->instanceId = $instanceId;
-        parent::__construct($logger, $client, $session);
+        parent::__construct($logger, $client);
     }
     
     protected function configure()
@@ -122,20 +125,24 @@ class MigrateCommand extends EmsCommand
     }
     
     
-    private function getSubmitData(Form $form)
+    private function getSubmitData(FormInterface $form)
     {
         return $this->dataService->getSubmitData($form);
     }
     
-    /**
-     *
-     * @return \EMS\CoreBundle\Entity\Revision
-     */
     private function getEmptyRevision(ContentType $contentType)
     {
         return $this->dataService->getEmptyRevision($contentType, 'SYSTEM_MIGRATE');
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int|void|null
+     * @throws MappingException
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         /** @var EntityManager $em */
@@ -145,7 +152,7 @@ class MigrateCommand extends EmsCommand
         $em->getConnection()->getConfiguration()->setSQLLogger(null);
         
         
-        $signData= $input->getOption('sign-data');
+        $signData = $input->getOption('sign-data');
         
         $elasticsearchIndex = $input->getArgument('elasticsearchIndex');
         $contentTypeNameFrom = $input->getArgument('contentTypeNameFrom');
@@ -154,7 +161,7 @@ class MigrateCommand extends EmsCommand
         if (!$contentTypeNameTo) {
             $contentTypeNameTo = $contentTypeNameFrom;
         }
-        $scrollSize= $input->getArgument('scrollSize');
+        $scrollSize = $input->getArgument('scrollSize');
         $scrollTimeout = $input->getArgument('scrollTimeout');
 
         $this->bulker
@@ -163,21 +170,21 @@ class MigrateCommand extends EmsCommand
         
         /** @var RevisionRepository $revisionRepository */
         $revisionRepository = $em->getRepository('EMSCoreBundle:Revision');
-        /** @var \EMS\CoreBundle\Repository\ContentTypeRepository $contentTypeRepository */
+        /** @var ContentTypeRepository $contentTypeRepository */
         $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
 
-        /** @var \EMS\CoreBundle\Entity\ContentType $contentTypeTo */
+        /** @var ContentType|null $contentTypeTo */
         $contentTypeTo = $contentTypeRepository->findOneBy(array("name" => $contentTypeNameTo, 'deleted' => false));
-        if (!$contentTypeTo) {
-            $output->writeln("<error>Content type ".$contentTypeNameTo." not found</error>");
+        if ($contentTypeTo === null) {
+            $output->writeln("<error>Content type " . $contentTypeNameTo . " not found</error>");
             exit;
         }
         $defaultEnv = $contentTypeTo->getEnvironment();
         
-        $output->writeln("Start migration of ".$contentTypeTo->getPluralName());
+        $output->writeln("Start migration of " . $contentTypeTo->getPluralName());
         
         if ($contentTypeTo->getDirty()) {
-            $output->writeln("<error>Content type \"".$contentTypeNameTo."\" is dirty. Please clean it first</error>");
+            $output->writeln("<error>Content type \"" . $contentTypeNameTo . "\" is dirty. Please clean it first</error>");
             exit;
         }
         
@@ -281,10 +288,10 @@ class MigrateCommand extends EmsCommand
                         ];
 
                         if ($newRevision->getContentType()->getHavePipelines()) {
-                            $indexConfig['pipeline'] = $this->instanceId.$contentTypeNameTo;
+                            $indexConfig['pipeline'] = $this->instanceId . $contentTypeNameTo;
                         }
 
-                        $body = $signData?$this->dataService->sign($newRevision):$newRevision->getRawData();
+                        $body = $signData ? $this->dataService->sign($newRevision) : $newRevision->getRawData();
 
                         $this->bulker->index($indexConfig, $body);
                     }
@@ -300,8 +307,6 @@ class MigrateCommand extends EmsCommand
                 } catch (CantBeFinalizedException $e) {
                     $output->writeln("<error>'.$e.'</error>");
                 }
-
-                $this->flushFlash($output);
 
 
                 // advance the progress bar 1 unit
@@ -319,7 +324,7 @@ class MigrateCommand extends EmsCommand
             
             //https://www.elastic.co/guide/en/elasticsearch/client/php-api/current/_search_operations.html#_scrolling
             $scroll_id = $arrayElasticsearchIndex['_scroll_id'];
-            $arrayElasticsearchIndex= $this->client->scroll([
+            $arrayElasticsearchIndex = $this->client->scroll([
                 "scroll_id" => $scroll_id,  //...using our previously obtained _scroll_id
                 "scroll" => $scrollTimeout, // and the same timeout window
             ]);
@@ -327,7 +332,6 @@ class MigrateCommand extends EmsCommand
         // ensure that the progress bar is at 100%
         $progress->finish();
         $output->writeln("");
-        $this->flushFlash($output);
         $output->writeln("Migration done");
     }
 }

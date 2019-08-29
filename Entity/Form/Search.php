@@ -178,11 +178,11 @@ class Search implements JsonSerializable
     /**
      * Add filter
      *
-     * @param \EMS\CoreBundle\Entity\Form\SearchFilter $filter
+     * @param SearchFilter $filter
      *
      * @return Search
      */
-    public function addFilter(\EMS\CoreBundle\Entity\Form\SearchFilter $filter)
+    public function addFilter(SearchFilter $filter)
     {
         $this->filters[] = $filter;
         
@@ -199,9 +199,9 @@ class Search implements JsonSerializable
     /**
      * Remove filter
      *
-     * @param \EMS\CoreBundle\Entity\Form\SearchFilter $filter
+     * @param SearchFilter $filter
      */
-    public function removeFilter(\EMS\CoreBundle\Entity\Form\SearchFilter $filter)
+    public function removeFilter(SearchFilter $filter)
     {
         $this->filters = \array_diff($this->filters, [$filter]);
     }
@@ -209,7 +209,7 @@ class Search implements JsonSerializable
     /**
      * Get filters
      *
-     * @return array
+     * @return SearchFilter[]
      */
     public function getFilters()
     {

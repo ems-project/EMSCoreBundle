@@ -46,9 +46,9 @@ class EnvironmentService
     public function getNewIndexName(Environment $environment, ContentType $contentType)
     {
         if ($this->singleTypeIndex) {
-            return $environment->getAlias().'_'.$contentType->getName().AppController::getFormatedTimestamp();
+            return $environment->getAlias() . '_' . $contentType->getName() . AppController::getFormatedTimestamp();
         }
-        return $environment->getAlias().AppController::getFormatedTimestamp();
+        return $environment->getAlias() . AppController::getFormatedTimestamp();
     }
 
     public function getIndexAnalysisConfiguration()
@@ -56,7 +56,7 @@ class EnvironmentService
         $filters = [];
 
         /**@var FilterRepository $filterRepository*/
-        $filterRepository= $this->doctrine->getRepository('EMSCoreBundle:Filter');
+        $filterRepository = $this->doctrine->getRepository('EMSCoreBundle:Filter');
         /**@var Filter $filter*/
         foreach ($filterRepository->findAll() as $filter) {
             $filters[$filter->getName()] = $filter->getOptions();
@@ -65,7 +65,7 @@ class EnvironmentService
         $analyzers = [];
 
         /**@var AnalyzerRepository $analyzerRepository*/
-        $analyzerRepository= $this->doctrine->getRepository('EMSCoreBundle:Analyzer');
+        $analyzerRepository = $this->doctrine->getRepository('EMSCoreBundle:Analyzer');
         /**@var Analyzer $analyzer*/
         foreach ($analyzerRepository->findAll() as $analyzer) {
             $analyzers[$analyzer->getName()] = $analyzer->getOptions();
@@ -133,7 +133,7 @@ class EnvironmentService
     /**
      *
      * @param string $name
-     * @return Environment
+     * @return Environment|false
      */
     public function getAliasByName($name)
     {

@@ -2,8 +2,9 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use EMS\CoreBundle\Controller\AppController;
-use EMS\CoreBundle;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\Search;
@@ -11,43 +12,55 @@ use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\Field\EnvironmentPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\Form\SearchFormType;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Annotation\Route;
 
 class PublishController extends AppController
 {
     /**
+     * @param Revision $revisionId
+     * @param Environment $envId
+     * @return RedirectResponse
      * @Route("/publish/to/{revisionId}/{envId}", name="revision.publish_to"))
      */
-    public function publishToAction(Revision $revisionId, Environment $envId, Request $request)
+    public function publishToAction(Revision $revisionId, Environment $envId)
     {
         $this->getPublishService()->publish($revisionId, $envId);
         
         return $this->redirectToRoute('data.revisions', [
                 'ouuid' => $revisionId->getOuuid(),
-                'type'=> $revisionId->getContentType()->getName(),
+                'type' => $revisionId->getContentType()->getName(),
                 'revisionId' => $revisionId->getId(),
         ]);
     }
-    
+
     /**
+     * @param Revision $revisionId
+     * @param Environment $envId
+     * @return RedirectResponse
      * @Route("/revision/unpublish/{revisionId}/{envId}", name="revision.unpublish"))
      */
-    public function unpublishAction(Revision $revisionId, Environment $envId, Request $request)
+    public function unpublishAction(Revision $revisionId, Environment $envId)
     {
         $this->getPublishService()->unpublish($revisionId, $envId);
         
         return $this->redirectToRoute('data.revisions', [
                 'ouuid' => $revisionId->getOuuid(),
-                'type'=> $revisionId->getContentType()->getName(),
+                'type' => $revisionId->getContentType()->getName(),
                 'revisionId' => $revisionId->getId(),
         ]);
     }
-    
+
     /**
+     * @param Request $request
+     * @return RedirectResponse|Response
+     * @throws NoResultException
+     * @throws NonUniqueResultException
+     *
      * @Route("/publish/search-result", name="search.publish", defaults={"deleted": 0, "managed": 1})
      * @Security("has_role('ROLE_PUBLISHER')")
      */

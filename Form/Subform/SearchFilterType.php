@@ -41,7 +41,7 @@ class SearchFilterType extends AbstractType
             ]);
         }
 
-        $builder->add('boost', $options['is_super']?NumberType::class:HiddenType::class, [
+        $builder->add('boost', $options['is_super'] ? NumberType::class : HiddenType::class, [
             'required' => false,
         ]);
         

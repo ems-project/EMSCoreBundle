@@ -48,7 +48,7 @@ class NotificationFormType extends AbstractType
             },
             'choice_label' => function ($value, $key, $index) {
                 /**@var Template $value*/
-                return '<i class="'.$value->getContentType()->getIcon().' text-'.$value->getContentType()->getColor().'"></i>&nbsp;&nbsp;'.$value->getName().' for '.$value->getContentType()->getSingularName();
+                return '<i class="' . $value->getContentType()->getIcon() . ' text-' . $value->getContentType()->getColor() . '"></i>&nbsp;&nbsp;' . $value->getName() . ' for ' . $value->getContentType()->getSingularName();
             },
             'multiple' => true,
             'required' => false,
@@ -73,7 +73,7 @@ class NotificationFormType extends AbstractType
                 'choices' => $this->service->getAll(),
                 'required' => false,
                 'choice_label' => function ($value, $key, $index) {
-                    return '<i class="fa fa-square text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getName();
+                    return '<i class="fa fa-square text-' . $value->getColor() . '"></i>&nbsp;&nbsp;' . $value->getName();
                 },
                 'choice_value' => function ($value) {
                     if ($value != null) {
@@ -92,7 +92,7 @@ class NotificationFormType extends AbstractType
                     ->orderBy('ct.orderKey');
                 },
                 'choice_label' => function ($value, $key, $index) {
-                    return '<i class="'.$value->getIcon().' text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getSingularName();
+                    return '<i class="' . $value->getIcon() . ' text-' . $value->getColor() . '"></i>&nbsp;&nbsp;' . $value->getSingularName();
                 },
                 'multiple' => true,
                 'required' => false,

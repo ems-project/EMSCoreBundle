@@ -450,7 +450,7 @@ class ContentTypeService
             throw new ContentTypeAlreadyExistException('ContentType with name ' . $contentType->getName() . ' already exists');
         }
 
-        $contentType->reset($contentTypeRepository->maxOrderKey() + 1);
+        $contentType->reset($contentTypeRepository->nextOrderKey());
         $this->persist($contentType);
         return $contentType;
     }

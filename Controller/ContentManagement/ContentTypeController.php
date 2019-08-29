@@ -263,7 +263,7 @@ class ContentTypeController extends AppController
                     $contentType->setViewRole('ROLE_AUTHOR');
                     $contentType->setEditRole('ROLE_AUTHOR');
                     $contentType->setCreateRole('ROLE_AUTHOR');
-                    $contentType->setOrderKey($contentTypeRepository->maxOrderKey() + 1);
+                    $contentType->setOrderKey($contentTypeRepository->nextOrderKey());
                     $em->persist($contentType);
                 }
                 $em->flush();

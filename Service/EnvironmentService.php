@@ -54,6 +54,13 @@ class EnvironmentService
         foreach ($environments as $environment) {
             $this->environments[$environment->getName()] = $environment;
         }
+
+        return $this->environments;
+    }
+
+    public function getEnvironmentNames(): array
+    {
+        return array_keys($this->getEnvironments());
     }
 
     public function getEnvironmentsById(): array
@@ -67,6 +74,8 @@ class EnvironmentService
         foreach ($environments as $environment) {
             $this->environmentsById[$environment->getId()] = $environment;
         }
+
+        return $this->environmentsById;
     }
 
     public function getNewIndexName(Environment $environment, ContentType $contentType)

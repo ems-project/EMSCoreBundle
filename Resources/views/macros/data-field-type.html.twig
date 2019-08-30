@@ -1,13 +1,27 @@
 {% trans_default_domain 'EMSCoreBundle' %}
 
-{%  macro renderDataField(dataField, source, compare, compareRawData) %}
-{% import _self as macros %}
-	{{ macros|macro_fct(dataField.fieldType.type|replace({'\\': '_'}), dataField, source, compare, compareRawData) }}
-	{{ macros.messages(dataField) }}
+{% macro renderDataField(dataField, source, compare, compareRawData) %}
+	{{ _self.renderDataFieldBlock(dataField, source, compare, compareRawData) }}
+	{{ _self.messages(dataField) }}
 {% endmacro %}
 
+{% macro renderDataFieldBlock(dataField, source, compare, compareRawData, blockName = '') %}
+	{% if blockName is same as('') %}
+		{% set blockName = dataField.fieldType.type|replace({'\\': '_'}) %}
+	{% endif %}
 
-{%  macro messages(dataField) %}
+	{% with {
+		'dataField': dataField,
+		'source': source,
+		'compare': compare,
+		'compareRawData': compareRawData
+		}
+	%}
+		{{ block(blockName) }}
+	{% endwith %}
+{% endmacro %}
+
+{% macro messages(dataField) %}
 	{% if dataField.messages|length > 0 %}
 		<div class="callout callout-warning">
 			{% if dataField.messages|length == 1 %}
@@ -23,10 +37,11 @@
 	{% endif %}
 {% endmacro %}
 
-{% macro EMS_CoreBundle_Form_DataField_CopyToFieldType(dataField, source, compare, compareRawData) %}
-{% endmacro %}
 
-{% macro EMS_CoreBundle_Form_DataField_UrlAttachmentFieldType(dataField, source, compare, compareRawData) %}
+{% block EMS_CoreBundle_Form_DataField_CopyToFieldType %}
+{% endblock %}
+
+{% block EMS_CoreBundle_Form_DataField_UrlAttachmentFieldType %}
 
 	<div class="panel-heading">
 		<h3 class="panel-title">
@@ -58,20 +73,18 @@
 		{% endif %}
 		
 	</div>
-{% endmacro %}
+{% endblock %}
 
-{% macro EMS_CoreBundle_Form_DataField_FileAttachmentFieldType(dataField, source, compare, compareRawData) %}
-{% import _self as macros %}
-	{{ macros.EMS_CoreBundle_Form_DataField_AssetFieldType(dataField, source, compare, compareRawData) }}
-{% endmacro %}
+{% block EMS_CoreBundle_Form_DataField_FileAttachmentFieldType %}
+	{{ _self.renderDataFieldBlock(dataField, source, compare, compareRawData, 'EMS_CoreBundle_Form_DataField_AssetFieldType') }}
+{% endblock %}
 
-{% macro EMS_CoreBundle_Form_DataField_IndexedAssetFieldType(dataField, source, compare, compareRawData) %}
-{% import _self as macros %}
-	{{ macros.EMS_CoreBundle_Form_DataField_AssetFieldType(dataField, source, compare, compareRawData) }}
-{% endmacro %}
+{% block EMS_CoreBundle_Form_DataField_IndexedAssetFieldType %}
+	{{ _self.renderDataFieldBlock(dataField, source, compare, compareRawData, 'EMS_CoreBundle_Form_DataField_AssetFieldType') }}
+{% endblock %}
 
 
-{% macro EMS_CoreBundle_Form_DataField_AssetFieldType(dataField, source, compare, compareRawData) %}
+{% block EMS_CoreBundle_Form_DataField_AssetFieldType %}
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<h3 class="panel-title">
@@ -247,11 +260,10 @@
 			</div>
 		{% endif %}
 </div>
-{% endmacro %}
+{% endblock %}
 
 
-{% macro EMS_CoreBundle_Form_DataField_CollectionFieldType(dataField, source, compare, compareRawData) %}
-{% import _self as macros %}
+{% block EMS_CoreBundle_Form_DataField_CollectionFieldType %}
 	{% set collapsible = dataField.fieldType.displayOptions.collapsible|default(false) %}
 	{% set compareCollectionRawData = (attribute(compareRawData, dataField.fieldType.name) is defined?attribute(compareRawData, dataField.fieldType.name):null) %}
 	{% set diffCount = dataField.children|length - compareCollectionRawData|length %}
@@ -314,7 +326,7 @@
 							<div class="row">
 								{% for grandchild in child.children %}
 									<div class="{% if grandchild.fieldType.displayOptions.class is defined and grandchild.fieldType.displayOptions.class  %}{{ grandchild.fieldType.displayOptions.class }}{%else%}col-md-12{% endif %}">
-										{{ macros|macro_fct(grandchild.fieldType.type|replace({'\\': '_'}), grandchild, source, compare, (attribute(compareCollectionRawData, idx) is defined?attribute(compareCollectionRawData, idx):null) ) }}
+										{{ _self.renderDataFieldBlock(grandchild, source, compare, (attribute(compareCollectionRawData, idx) is defined?attribute(compareCollectionRawData, idx):null)) }}
 									</div>
 									{% if grandchild.fieldType.displayOptions.lastOfRow is defined and grandchild.fieldType.displayOptions.lastOfRow %}
 										</div><div class="row">
@@ -327,11 +339,10 @@
 			{% endfor %}
 		</div>
 	</div>
-	{{ macros.messages(dataField) }}
-{% endmacro %}
+	{{ _self.messages(dataField) }}
+{% endblock %}
 
-{% macro EMS_CoreBundle_Form_DataField_ContainerFieldType(dataField, source, compare, compareRawData) %}
-{% import _self as macros %}
+{% block EMS_CoreBundle_Form_DataField_ContainerFieldType %}
     {% if dataField.fieldType.displayOptions.label is defined and dataField.fieldType.displayOptions.label %}
     	<div class="panel panel-default">
 			<div class="panel-heading">
@@ -353,7 +364,7 @@
 		{% for child in dataField.children if not child.fieldType.deleted %}
 		
 			<div class="{% if child.fieldType.displayOptions.class is defined and child.fieldType.displayOptions.class  %}{{ child.fieldType.displayOptions.class }}{%else%}col-md-12{% endif %}">
-				{{ macros|macro_fct(child.fieldType.type|replace({'\\': '_'}), child, source, compare, compareRawData) }}
+				{{ _self.renderDataFieldBlock(child, source, compare, compareRawData) }}
 			</div>
 			{% if child.fieldType.displayOptions.lastOfRow is defined and child.fieldType.displayOptions.lastOfRow %}
 				</div><div class="row">
@@ -364,11 +375,10 @@
     		</div>
 		</div>
 	{% endif %}
-	{{ macros.messages(dataField) }}
-{% endmacro %}
+	{{ _self.messages(dataField) }}
+{% endblock %}
 
-{% macro EMS_CoreBundle_Form_DataField_NestedFieldType(dataField, source, compare, compareRawData) %}
-{% import _self as macros %}
+{% block EMS_CoreBundle_Form_DataField_NestedFieldType %}
     {% if dataField.fieldType.displayOptions.label is defined %}
     	<div class="panel panel-default">
 			<div class="panel-heading">
@@ -393,7 +403,7 @@
 
     {% for child in dataField.children if not child.fieldType.deleted %}
 	<div class="{% if child.fieldType.displayOptions.class is defined and child.fieldType.displayOptions.class  %}{{ child.fieldType.displayOptions.class }}{%else%}col-md-12{% endif %}">
-				{{ macros|macro_fct(child.fieldType.type|replace({'\\': '_'}), child, source, compare, compareSubRawData) }}
+				{{ _self.renderDataFieldBlock(child, source, compare, compareSubRawData) }}
 			</div>
 			{% if child.fieldType.displayOptions.lastOfRow is defined and child.fieldType.displayOptions.lastOfRow %}
 				</div><div class="row">
@@ -404,11 +414,10 @@
     		</div>
 		</div>
 	{% endif %}
-	{{ macros.messages(dataField) }}
-{% endmacro %}
+	{{ _self.messages(dataField) }}
+{% endblock %}
 
-{% macro EMS_CoreBundle_Form_DataField_TabsFieldType(dataField, source, compare, compareRawData) %}
-{% import _self as macros %}
+{% block EMS_CoreBundle_Form_DataField_TabsFieldType %}
 	<div class="nav-tabs-custom">
 		<ul class="nav nav-tabs">
             {% for child in dataField.children if not child.fieldType.deleted %}
@@ -429,18 +438,17 @@
             <div class="tab-content">
             	{% for child in dataField.children if not child.fieldType.deleted %}
 	              <div class="tab-pane{% if loop.index == 1%} active{% endif %}" id="item_{{ dataField.fieldType.id~'_'~loop.index }}__tab">
-	              	{{ macros|macro_fct(child.fieldType.type|replace({'\\': '_'}), child, source, compare, compareRawData) }}
+					{{ _self.renderDataFieldBlock(child, source, compare, compareRawData) }}
 	              </div>
               {% endfor %}
             </div>
             <!-- /.tab-content -->
          </div>  
-	{{ macros.messages(dataField) }}
-{% endmacro %}
+	{{ _self.messages(dataField) }}
+{% endblock %}
 
 
-{% macro EMS_CoreBundle_Form_DataField_DataLinkFieldType(dataField, source, compare, compareRawData) %}
-{% import _self as macros %}
+{% block EMS_CoreBundle_Form_DataField_DataLinkFieldType %}
 	<dl>
 		{% if dataField.fieldType.displayOptions.label is defined %}
 			<dt>{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}</dt>
@@ -451,11 +459,10 @@
             {{ diff_data_link(dataField.rawData, compare, dataField.fieldType.name, compareRawData) }}
 		</dd>
 	</dl>
-	{{ macros.messages(dataField) }}
-{% endmacro %}
+	{{ _self.messages(dataField) }}
+{% endblock %}
 
-{% macro EMS_CoreBundle_Form_DataField_SelectFieldType(dataField, source, compare, compareRawData) %}
-{% import _self as macros %}
+{% block EMS_CoreBundle_Form_DataField_SelectFieldType %}
 	<dl>
 		{% if dataField.fieldType.displayOptions.label is defined %}
 			<dt>{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}</dt>
@@ -471,11 +478,10 @@
 		
 		</dd>
 	</dl>
-	{{ macros.messages(dataField) }}
-{% endmacro %}
+	{{ _self.messages(dataField) }}
+{% endblock %}
 
-{% macro EMS_CoreBundle_Form_DataField_OuuidFieldType(dataField, source, compare, compareRawData) %}
-{% import _self as macros %}
+{% block EMS_CoreBundle_Form_DataField_OuuidFieldType %}
 	<dl>
 		{% if dataField.fieldType.displayOptions.label is defined %}
 			<dt>{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}</dt>
@@ -484,11 +490,10 @@
 		{% endif %}
 		<dd>{{ diff_text(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}</dd>
 	</dl>
-	{{ macros.messages(dataField) }}
-{% endmacro %}
+	{{ _self.messages(dataField) }}
+{% endblock %}
 
-{% macro EMS_CoreBundle_Form_DataField_ComputedFieldType(dataField, source, compare, compareRawData) %}
-{% import _self as macros %}
+{% block EMS_CoreBundle_Form_DataField_ComputedFieldType %}
 	{% set doCompare = compare and dataField.rawData|json_encode is not same as( (attribute(compareRawData, dataField.fieldType.name) is defined?attribute(compareRawData, dataField.fieldType.name):null)|json_encode  )  %}
     {% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
 	<dl>
@@ -521,11 +526,10 @@
 			{% endif %}
 		</dd>
 	</dl>
-	{{ macros.messages(dataField) }}
-{% endmacro %}
+	{{ _self.messages(dataField) }}
+{% endblock %}
 
-{% macro EMS_CoreBundle_Form_DataField_TextStringFieldType(dataField, source, compare, compareRawData) %}
-{% import _self as macros %}
+{% block EMS_CoreBundle_Form_DataField_TextStringFieldType %}
 	<dl>
 		{% if dataField.fieldType.displayOptions.label is defined %}
 			<dt>{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}</dt>
@@ -534,11 +538,10 @@
 		{% endif %}
 		<dd>{{ diff_text(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}</dd>
 	</dl>
-	{{ macros.messages(dataField) }}
-{% endmacro %}
+	{{ _self.messages(dataField) }}
+{% endblock %}
 
-{% macro EMS_CoreBundle_Form_DataField_TextareaFieldType(dataField, source, compare, compareRawData) %}
-{% import _self as macros %}
+{% block EMS_CoreBundle_Form_DataField_TextareaFieldType %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -555,11 +558,10 @@
 			</div>
 		</dd>
 	</dl>
-	{{ macros.messages(dataField) }}
-{% endmacro %}
+	{{ _self.messages(dataField) }}
+{% endblock %}
 
-{% macro EMS_CoreBundle_Form_DataField_JSONFieldType(dataField, source, compare, compareRawData) %}
-{% import _self as macros %}
+{% block EMS_CoreBundle_Form_DataField_JSONFieldType %}
     {% set doCompare = compare and dataField.rawData|json_encode is not same as( (attribute(compareRawData, dataField.fieldType.name) is defined?attribute(compareRawData, dataField.fieldType.name):null)|json_encode )  %}
     {% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
     <dl>
@@ -583,11 +585,10 @@
             </div>
         </dd>
     </dl>
-    {{ macros.messages(dataField) }}
-{% endmacro %}
+    {{ _self.messages(dataField) }}
+{% endblock %}
 
-{% macro EMS_CoreBundle_Form_DataField_WysiwygFieldType(dataField, source, compare, compareRawData) %}
-{% import _self as macros %}
+{% block EMS_CoreBundle_Form_DataField_WysiwygFieldType %}
     {% set doCompare = compare and dataField.rawData is not same as( compareRawData|get_string(dataField.fieldType.name) )  %}
 	{% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
 	<dl>
@@ -606,11 +607,10 @@
 			</div>
 		</dd>
 	</dl>
-	{{ macros.messages(dataField) }}
-{% endmacro %}
+	{{ _self.messages(dataField) }}
+{% endblock %}
 
-{% macro EMS_CoreBundle_Form_DataField_CodeFieldType(dataField, source, compare, compareRawData) %}
-{% import _self as macros %}
+{% block EMS_CoreBundle_Form_DataField_CodeFieldType %}
     {% set doCompare = compare and dataField.rawData is not same as( compareRawData|get_string(dataField.fieldType.name) )  %}
     {% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
 	<dl>
@@ -634,11 +634,10 @@
 			</div>
 		</dd>
 	</dl>
-	{{ macros.messages(dataField) }}
-{% endmacro %}
+	{{ _self.messages(dataField) }}
+{% endblock %}
 
-{% macro EMS_CoreBundle_Form_DataField_PasswordFieldType(dataField, source, compare, compareRawData) %}
-{% import _self as macros %}
+{% block EMS_CoreBundle_Form_DataField_PasswordFieldType %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -670,11 +669,10 @@
 			{% endif %}
 		</dd>
 	</dl>
-	{{ macros.messages(dataField) }}
-{% endmacro %}
+	{{ _self.messages(dataField) }}
+{% endblock %}
 
-{% macro EMS_CoreBundle_Form_DataField_EmailFieldType(dataField, source, compare, compareRawData) %}
-{% import _self as macros %}
+{% block EMS_CoreBundle_Form_DataField_EmailFieldType %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -687,11 +685,10 @@
             {{ diff_text(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
 		</dd>
 	</dl>
-	{{ macros.messages(dataField) }}
-{% endmacro %}
+	{{ _self.messages(dataField) }}
+{% endblock %}
 
-{% macro EMS_CoreBundle_Form_DataField_IconFieldType(dataField, source, compare, compareRawData) %}
-{% import _self as macros %}
+{% block EMS_CoreBundle_Form_DataField_IconFieldType %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -704,11 +701,10 @@
             {{ diff_icon(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
 		</dd>
 	</dl>
-	{{ macros.messages(dataField) }}
-{% endmacro %}
+	{{ _self.messages(dataField) }}
+{% endblock %}
 
-{% macro EMS_CoreBundle_Form_DataField_ColorPickerFieldType(dataField, source, compare, compareRawData) %}
-{% import _self as macros %}
+{% block EMS_CoreBundle_Form_DataField_ColorPickerFieldType %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -721,14 +717,13 @@
             {{ diff_color(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
 		</dd>
 	</dl>
-	{{ macros.messages(dataField) }}
-{% endmacro %}
+	{{ _self.messages(dataField) }}
+{% endblock %}
 
 
 
 
-{% macro EMS_CoreBundle_Form_DataField_RadioFieldType(dataField, source, compare, compareRawData) %}
-{% import _self as macros %}
+{% block EMS_CoreBundle_Form_DataField_RadioFieldType %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -744,11 +739,10 @@
             {{ diff_choice(dataField.rawData, labels, choices, compare, dataField.fieldType.name, compareRawData) }}
 		</dd>
 	</dl>
-	{{ macros.messages(dataField) }}
-{% endmacro %}
+	{{ _self.messages(dataField) }}
+{% endblock %}
 
-{% macro EMS_CoreBundle_Form_DataField_ChoiceFieldType(dataField, source, compare, compareRawData) %}
-{% import _self as macros %}
+{% block EMS_CoreBundle_Form_DataField_ChoiceFieldType %}
     <dl>
 		<dt class="">
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -782,11 +776,10 @@
 			</ul>
 		</dd>
 	</dl>
-	{{ macros.messages(dataField) }}
-{% endmacro %}
+	{{ _self.messages(dataField) }}
+{% endblock %}
 
-{% macro EMS_CoreBundle_Form_DataField_CheckboxFieldType(dataField, source, compare, compareRawData) %}
-{% import _self as macros %}
+{% block EMS_CoreBundle_Form_DataField_CheckboxFieldType %}
     {% set doCompare = compare and dataField.rawData is not same as( attribute(compareRawData, dataField.fieldType.name) is defined ? attribute(compareRawData, dataField.fieldType.name) : null )  %}
     {% set color = not doCompare ? '' : 'bg-orange' %}
 	<dl>
@@ -804,11 +797,10 @@
 			{% endif %}
 		</dd>
 	</dl>
-	{{ macros.messages(dataField) }}
-{% endmacro %}
+	{{ _self.messages(dataField) }}
+{% endblock %}
 
-{% macro EMS_CoreBundle_Form_DataField_NumberFieldType(dataField, source, compare, compareRawData) %}
-{% import _self as macros %}
+{% block EMS_CoreBundle_Form_DataField_NumberFieldType %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -821,11 +813,10 @@
             {{ diff_raw(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
 		</dd>
 	</dl>
-	{{ macros.messages(dataField) }}
-{% endmacro %}
+	{{ _self.messages(dataField) }}
+{% endblock %}
 
-{% macro EMS_CoreBundle_Form_DataField_IntegerFieldType(dataField, source, compare, compareRawData) %}
-{% import _self as macros %}
+{% block EMS_CoreBundle_Form_DataField_IntegerFieldType %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -838,11 +829,10 @@
             {{ diff_raw(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
 		</dd>
 	</dl>
-	{{ macros.messages(dataField) }}
-{% endmacro %}
+	{{ _self.messages(dataField) }}
+{% endblock %}
 
-{% macro EMS_CoreBundle_Form_DataField_DateFieldType(dataField, source, compare, compareRawData) %}
-{% import _self as macros %}
+{% block EMS_CoreBundle_Form_DataField_DateFieldType %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -858,11 +848,10 @@
 			</ul>
 		</dd>
 	</dl>
-	{{ macros.messages(dataField) }}
-{% endmacro %}
+	{{ _self.messages(dataField) }}
+{% endblock %}
 
-{% macro EMS_CoreBundle_Form_DataField_DateRangeFieldType(dataField, source, compare, compareRawData) %}
-{% import _self as macros %}
+{% block EMS_CoreBundle_Form_DataField_DateRangeFieldType %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -923,11 +912,10 @@
 			</ul>
 		</dd>
 	</dl>
-	{{ macros.messages(dataField) }}
-{% endmacro %}
+	{{ _self.messages(dataField) }}
+{% endblock %}
 
-{% macro EMS_CoreBundle_Form_DataField_TimeFieldType(dataField, source, compare, compareRawData) %}
-{% import _self as macros %}
+{% block EMS_CoreBundle_Form_DataField_TimeFieldType %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
@@ -940,5 +928,5 @@
             {{ diff_time(dataField.rawData, compare, dataField.fieldType.name, compareRawData, dataField.fieldType.options|getTimeFieldTimeFormat, dataField.fieldType.mappingOptions.format|convertJavaDateFormat) }}
 		</dd>
 	</dl>
-	{{ macros.messages(dataField) }}
-{% endmacro %}
+	{{ _self.messages(dataField) }}
+{% endblock %}

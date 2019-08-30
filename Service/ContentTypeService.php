@@ -10,7 +10,9 @@ use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\SingleTypeIndex;
+use EMS\CoreBundle\Exception\ContentTypeAlreadyExistException;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\SingleTypeIndexRepository;
@@ -373,7 +375,7 @@ class ContentTypeService
         return $contentTypeAliases;
     }
     
-    
+
     public function getAllDefaultEnvironmentNames()
     {
         $this->loadEnvironment();
@@ -386,7 +388,7 @@ class ContentTypeService
         }
         return array_keys($out);
     }
-    
+
     public function getAllAliases()
     {
         $this->loadEnvironment();
@@ -424,5 +426,32 @@ class ContentTypeService
     {
         $this->loadEnvironment();
         return implode(',', array_keys($this->contentTypeArrayByName));
+    }
+
+    public function contentTypeFromJson(string $json, Environment $environment): ContentType
+    {
+        $meta = JsonClass::fromJsonString($json);
+        $contentType = $meta->jsonDeserialize();
+        if (!$contentType instanceof ContentType) {
+            throw new \Exception(sprintf('ContentType expected for import, got %s', $meta->getClass()));
+        }
+        $contentType->setEnvironment($environment);
+
+        return $contentType;
+    }
+
+    public function importContentType(ContentType $contentType): ContentType
+    {
+        $em = $this->doctrine->getManager();
+        /** @var ContentTypeRepository $contentTypeRepository */
+        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
+
+        if ($this->getByName($contentType->getName())) {
+            throw new ContentTypeAlreadyExistException('ContentType with name ' . $contentType->getName() . ' already exists');
+        }
+
+        $contentType->reset($contentTypeRepository->nextOrderKey());
+        $this->persist($contentType);
+        return $contentType;
     }
 }

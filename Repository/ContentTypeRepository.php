@@ -92,11 +92,13 @@ class ContentTypeRepository extends EntityRepository
      * @return int
      * @throws NonUniqueResultException
      */
-    public function maxOrderKey() : int
+    public function nextOrderKey() : int
     {
-        return $this->createQueryBuilder('a')
+        $max = $this->createQueryBuilder('a')
          ->select('max(a.orderKey)')
          ->getQuery()
          ->getSingleScalarResult() ?? 0;
+
+        return $max + 1;
     }
 }

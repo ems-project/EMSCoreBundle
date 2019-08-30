@@ -1713,6 +1713,14 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
         return $this;
     }
 
+    public function reset(int $nextOrderKey): void
+    {
+        $this->setActive(false);
+        $this->setDirty(true);
+        $this->getFieldType()->updateAncestorReferences($this, null);
+        $this->setOrderKey($nextOrderKey);
+    }
+
     /**
      * Specify data which should be serialized to JSON
      * @link https://php.net/manual/en/jsonserializable.jsonserialize.php

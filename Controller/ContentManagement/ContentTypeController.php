@@ -24,6 +24,7 @@ use EMS\CoreBundle\Form\Form\EditFieldTypeType;
 use EMS\CoreBundle\Form\Form\ReorderType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
+use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\Mapping;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\Button;
@@ -43,9 +44,6 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Serializer;
-use Throwable;
 
 /**
  * Operations on content types such as CRUD but alose rebuild index.
@@ -252,29 +250,20 @@ class ContentTypeController extends AppController
                     $environment = $contentTypeAdded->getEnvironment();
                     /** @var UploadedFile $file */
                     $file = $request->files->get('form')['import'];
-                    $fileContent = file_get_contents($file->getRealPath());
+                    $json = file_get_contents($file->getRealPath());
 
-                    $json = JsonClass::fromJsonString($fileContent);
-                    /**@var ContentType $contentType */
-                    $contentType = $json->jsonDeserialize();
-
+                    $contentType = $this->getContentTypeService()->contentTypeFromJson($json, $environment);
                     $contentType->setName($name);
                     $contentType->setSingularName($singularName);
                     $contentType->setPluralName($pluralName);
-                    $contentType->setEnvironment($environment);
-                    $contentType->setActive(false);
-                    $contentType->setDirty(true);
-                    $contentType->getFieldType()->updateAncestorReferences($contentType, null);
-                    $contentType->setOrderKey($contentTypeRepository->maxOrderKey() + 1);
-                    
-                    $em->persist($contentType);
+                    $contentType = $this->getContentTypeService()->importContentType($contentType);
                 } else {
                     $contentType = $contentTypeAdded;
                     $contentType->setAskForOuuid(false);
                     $contentType->setViewRole('ROLE_AUTHOR');
                     $contentType->setEditRole('ROLE_AUTHOR');
                     $contentType->setCreateRole('ROLE_AUTHOR');
-                    $contentType->setOrderKey($contentTypeRepository->maxOrderKey() + 1);
+                    $contentType->setOrderKey($contentTypeRepository->nextOrderKey());
                     $em->persist($contentType);
                 }
                 $em->flush();
@@ -791,7 +780,7 @@ class ContentTypeController extends AppController
                 'index' => $contentType->getEnvironment()->getAlias(),
                 'type' => $contentType->getName()
             ]);
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             $logger->warning('log.contenttype.mapping.not_found', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,

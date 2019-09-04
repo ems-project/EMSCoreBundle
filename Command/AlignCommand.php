@@ -141,7 +141,7 @@ class AlignCommand extends EmsCommand
                     ++$targetIsPreviewEnvironment[$revision->getContentType()->getName()];
                 } else {
                     if ($this->publishService->publish($revision, $target, true) == 0) {
-                        ++ $alreadyAligned;
+                        ++$alreadyAligned;
                         $flush = true;
                     }
                 }

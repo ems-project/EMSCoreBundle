@@ -554,6 +554,10 @@ services:
         arguments: ['@logger', '@ems.service.alias']
         tags:
             - { name: console.command }
+    EMS\CoreBundle\Command\ExtractAssetCommand:
+        arguments: ['@logger', '@app.elasticsearch', '@ems.service.asset_extractor', '@ems_common.storage.manager']
+        tags:
+            - { name: console.command }
 #### security services
     api_key_user_provider:
         class: EMS\CoreBundle\Security\ApiKeyUserProvider

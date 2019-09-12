@@ -171,7 +171,6 @@ class EnvironmentService
 
     public function getManagedEnvironement()
     {
-        /** @var Environment $environment*/
         return array_filter($this->getEnvironments(), function (Environment $environment) {
             return $environment->getManaged();
         });

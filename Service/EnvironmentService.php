@@ -175,7 +175,7 @@ class EnvironmentService
             return $environment->getManaged();
         });
     }
-
+
     /**
      * @deprecated use getEnvironments directly!
      * @return boolean|array

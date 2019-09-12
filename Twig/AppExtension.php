@@ -6,7 +6,6 @@ use Caxy\HtmlDiff\HtmlDiff;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Elasticsearch\Client;
-use Elasticsearch\Common\Exceptions\Missing404Exception;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Storage\Processor\Config;
 use EMS\CommonBundle\Twig\RequestRuntime;
@@ -63,8 +62,10 @@ class AppExtension extends \Twig_Extension
     private $environmentService;
     /** @var Logger */
     private $logger;
+    /** @var \Swift_Mailer */
+    private $mailer;
 
-    public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, Client $client, Router $router, $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, Logger $logger, FormFactory $formFactory, FileService $fileService, RequestRuntime $commonRequestRuntime, array $assetConfig)
+    public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, Client $client, Router $router, $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, Logger $logger, FormFactory $formFactory, FileService $fileService, RequestRuntime $commonRequestRuntime, \Swift_Mailer $mailer, array $assetConfig)
     {
         $this->doctrine = $doctrine;
         $this->authorizationChecker = $authorizationChecker;
@@ -79,6 +80,7 @@ class AppExtension extends \Twig_Extension
         $this->formFactory = $formFactory;
         $this->fileService = $fileService;
         $this->commonRequestRuntime = $commonRequestRuntime;
+        $this->mailer = $mailer;
         $this->assetConfig = $assetConfig;
     }
 
@@ -109,9 +111,9 @@ class AppExtension extends \Twig_Extension
             new TwigFunction('is_super', array($this, 'isSuper')),
             new TwigFunction('emsco_asset_path', [$this, 'assetPath'], ['is_safe' => ['html']]),
             new TwigFunction('call_user_func', array($this, 'callUserFunc')),
+            new TwigFunction('emsco_send_email', array($this, 'sendEmail')),
         ];
     }
-
 
     /**
      *
@@ -165,6 +167,24 @@ class AppExtension extends \Twig_Extension
             new TwigFilter('json_decode', array($this, 'jsonDecode')),
 
         );
+    }
+
+    public function sendEmail(string $title, string $fromEmail, string $toEmail, string $htmlBody, string $textBody = null, string $ccEmail = null)
+    {
+        $message = (new \Swift_Message($title))
+            ->setFrom($fromEmail)
+            ->setTo($toEmail)
+            ->setBody($htmlBody, 'text/html');
+
+        if ($textBody !== null) {
+            $message->addPart($textBody, 'text/plain');
+        }
+
+        if ($ccEmail !== null) {
+            $message->setCc($ccEmail);
+        }
+
+        $this->mailer->send($message);
     }
 
     /**

@@ -407,7 +407,7 @@ service:
     extract_error: 'An issue has been raised while extracting information from the asset/file ems://asset:%file_hash% : %error_message%'
     persist_error: 'An issue has been raised while persisting the information extracted from the asset/file ems://asset:%file_hash% : %error_message%'
   data:
-    cant_finalize_field: 'Error with the field "%field_display%": "%error_message%"'
+    cant_finalize_field: '%error_message%'
     update_referrers_error: 'It was impossible to update referrers of the document ems://object:%contenttype%:%ouuid%'
     not_a_draft: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% is already finalized'
     unknown_update_type: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% has not been replaced or replaced as the update type "%update_type%" is unknown'

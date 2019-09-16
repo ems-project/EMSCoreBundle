@@ -111,6 +111,7 @@ class AppExtension extends \Twig_Extension
             new TwigFunction('is_super', array($this, 'isSuper')),
             new TwigFunction('emsco_asset_path', [$this, 'assetPath'], ['is_safe' => ['html']]),
             new TwigFunction('call_user_func', array($this, 'callUserFunc')),
+            new TwigFunction('emsco_generate_email', array($this, 'generateEmailMessage')),
             new TwigFunction('emsco_send_email', array($this, 'sendEmail')),
         ];
     }
@@ -169,21 +170,13 @@ class AppExtension extends \Twig_Extension
         );
     }
 
-    public function sendEmail(string $title, string $fromEmail, string $toEmail, string $htmlBody, string $textBody = null, string $ccEmail = null)
+    public function generateEmailMessage(string $title)
     {
-        $message = (new \Swift_Message($title))
-            ->setFrom($fromEmail)
-            ->setTo($toEmail)
-            ->setBody($htmlBody, 'text/html');
+        return (new \Swift_Message($title));
+    }
 
-        if ($textBody !== null) {
-            $message->addPart($textBody, 'text/plain');
-        }
-
-        if ($ccEmail !== null) {
-            $message->setCc($ccEmail);
-        }
-
+    public function sendEmail(\Swift_Message $message)
+    {
         $this->mailer->send($message);
     }
 

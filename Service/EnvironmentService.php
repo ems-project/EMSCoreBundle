@@ -195,7 +195,7 @@ class EnvironmentService
         };
 
         $user = $this->userService->getCurrentUser();
-        return array_filter($this->getEnvironments(), function ($name, $environment) use ($user) {
+        return array_filter($this->getEnvironments(), function ($environment) use ($user) {
             /** @var Environment $environment*/
             if (empty($environment->getCircles())) {
                 return true;

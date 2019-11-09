@@ -4851,7 +4851,7 @@ div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:las
 }
 /*# sourceMappingURL=bootstrap-colorpicker.css.map */
 /*!
- * Datepicker for Bootstrap v1.8.0 (https://github.com/uxsolutions/bootstrap-datepicker)
+ * Datepicker for Bootstrap v1.9.0 (https://github.com/uxsolutions/bootstrap-datepicker)
  *
  * Licensed under the Apache License v2.0 (http://www.apache.org/licenses/LICENSE-2.0)
  */
@@ -18724,6 +18724,10 @@ button.button-collapse-all[aria-expanded=false]:after {
   bottom: 0;
   overflow: auto;
   background-color: rgba(200, 200, 200, 0.95); }
+
+.asset-preview-tab img {
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAABmJLR0QAigCKAIrj2uckAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4wsJCwMIf3+JBwAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAAAKElEQVQY02Ps6upqYEACpaWlyFwGJgYCgHIFjP///0dxQ3d3N73dAAACSAiqa5FRWQAAAABJRU5ErkJggg==);
+  background-repeat: repeat; }
 
 /*!
  *   AdminLTE v2.4.8

@@ -85,3 +85,8 @@ button.button-collapse-all[aria-expanded=false]:after {
   overflow: auto;
   background-color: rgba(200, 200, 200, .95);
 }
+
+.asset-preview-tab img {
+  background-image: url('../images/background-img.png');
+  background-repeat: repeat;
+}

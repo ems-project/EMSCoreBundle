@@ -87,14 +87,20 @@ class Search implements JsonSerializable
      */
     public $sortOrder;
 
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="minimum_should_match", type="integer", options={"default" : 1})
+     */
+    protected $minimumShouldMatch;
+
 
     public function __construct()
     {
-        $this->filters = [];//new \Doctrine\Common\Collections\ArrayCollection();
+        $this->filters = [];
         $this->filters[] = new SearchFilter();
         $this->default = false;
-//         $this->page = 1;
-//         $this->boolean = "and";
+        $this->minimumShouldMatch = 1;
     }
 
 
@@ -106,6 +112,7 @@ class Search implements JsonSerializable
             'contentTypes' => $this->contentTypes,
             'sortBy' => $this->sortBy,
             'sortOrder' => $this->sortOrder,
+            'minimumShouldMatch' => $this->minimumShouldMatch,
         ];
 
         $out['filters'] = [];
@@ -351,6 +358,24 @@ class Search implements JsonSerializable
     public function setContentType($contentType)
     {
         $this->contentType = $contentType;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMinimumShouldMatch(): int
+    {
+        return $this->minimumShouldMatch;
+    }
+
+    /**
+     * @param int $minimumShouldMatch
+     * @return Search
+     */
+    public function setMinimumShouldMatch(int $minimumShouldMatch): Search
+    {
+        $this->minimumShouldMatch = $minimumShouldMatch;
         return $this;
     }
 }

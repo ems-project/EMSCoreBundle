@@ -10,7 +10,6 @@ use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\Subform\SearchFilterType;
 use EMS\CoreBundle\Service\SearchFieldOptionService;
 use EMS\CoreBundle\Service\SortOptionService;
-use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;

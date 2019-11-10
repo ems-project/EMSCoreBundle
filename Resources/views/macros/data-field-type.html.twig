@@ -124,7 +124,7 @@
 	<div class="panel-body row">
 
     {% if showB %}
-		<div class="{% if showA and showB %} col-md-6{% endif %}" >
+		<div class="{% if showA and showB %} col-md-6{% endif %} asset-preview-tab" >
 
             {% if attribute(compareRawData, dataField.fieldType.name).mimetype starts with 'image/' %}
                 {% set path = path('ems.file.view', {'sha1':attribute(compareRawData, dataField.fieldType.name).sha1, 'type':attribute(compareRawData, dataField.fieldType.name).mimetype, 'name':attribute(compareRawData, dataField.fieldType.name).filename }) %}
@@ -146,7 +146,7 @@
 		</div>
     {% endif %}
 	{% if showA %}
-		<div class="{% if showA and showB %} col-md-6{% endif %}" >
+		<div class="{% if showA and showB %} col-md-6{% endif %} asset-preview-tab" >
 			{% if dataField.rawData and dataField.rawData.sha1 is defined %}
 				{% if dataField.rawData.sha1 and dataField.rawData.mimetype starts with 'image/' %}
 					{% set path = emsco_asset_path(dataField.rawData, 'preview') %}

@@ -376,15 +376,19 @@ class ElasticsearchController extends AppController
                 $em->detach($search);
                 $search->resetFilters($search->getFilters()->getValues());
 
-                $query = $pattern;
-                if (!empty($pattern) && substr($pattern, strlen($pattern) - 1) != ' ') {
-                    $query .= '*';
+                $queryString = $pattern;
+                if (!empty($pattern) && ! in_array(substr($pattern, strlen($pattern) - 1), [' ', '?', '*', '.', '/'])) {
+                    $queryString .= '*';
                 }
 
                 /**@var SearchFilter $filter */
                 foreach ($search->getFilters() as &$filter) {
                     if (empty($filter->getPattern())) {
-                        $filter->setPattern($query);
+                        if (in_array($filter->getOperator(), ['query_and', 'query_or'])) {
+                            $filter->setPattern($queryString);
+                        } else {
+                            $filter->setPattern($pattern);
+                        }
                     }
                 }
                 $body = $this->getSearchService()->generateSearchBody($search);
@@ -533,15 +537,17 @@ class ElasticsearchController extends AppController
                     $em->detach($search);
                     $search->resetFilters($search->getFilters()->getValues());
 
-                    $query = $pattern;
-                    if (!empty($pattern) && substr($pattern, strlen($pattern) - 1) != ' ') {
-                        $query .= '*';
+                    $queryString = $pattern;
+                    if (!empty($pattern) && ! in_array(substr($pattern, strlen($pattern) - 1), [' ', '?', '*', '.', '/'])) {
+                        $queryString .= '*';
                     }
 
                     /**@var SearchFilter $filter */
                     foreach ($search->getFilters() as &$filter) {
-                        if (empty($filter->getPattern())) {
-                            $filter->setPattern($query);
+                        if (in_array($filter->getOperator(), ['query_and', 'query_or'])) {
+                            $filter->setPattern($queryString);
+                        } else {
+                            $filter->setPattern($pattern);
                         }
                     }
                     $body = $this->getSearchService()->generateSearchBody($search);

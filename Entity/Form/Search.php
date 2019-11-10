@@ -361,18 +361,11 @@ class Search implements JsonSerializable
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getMinimumShouldMatch(): int
     {
         return $this->minimumShouldMatch;
     }
 
-    /**
-     * @param int $minimumShouldMatch
-     * @return Search
-     */
     public function setMinimumShouldMatch(int $minimumShouldMatch): Search
     {
         $this->minimumShouldMatch = $minimumShouldMatch;

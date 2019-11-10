@@ -64,6 +64,13 @@
 							</div>  
 					{{ form_widget(form.filters) }}
 				</div>
+				<div class="row">
+					{% if form.minimumShouldMatch is defined %}
+						<div class=" col-md-3 col-xs-6">
+							{{ form_row(form.minimumShouldMatch) }}
+						</div>
+					{% endif %}
+				</div>
 			</div>
 				
 			<div class="box-footer">

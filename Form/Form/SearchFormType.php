@@ -10,9 +10,11 @@ use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\Subform\SearchFilterType;
 use EMS\CoreBundle\Service\SearchFieldOptionService;
 use EMS\CoreBundle\Service\SortOptionService;
+use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -104,20 +106,28 @@ class SearchFormType extends AbstractType
 
 
             $builder->add('sortOrder', ChoiceType::class, [
-                    'choices' => [
-                            'Ascending' => 'asc',
-                            'Descending' => 'desc',
-                    ],
-                    'choice_attr' => function ($category, $key, $index) {
-                        return [
-                            'data-content' => '<span class=""><i class="fa fa-sort-' . $index . '"></i>&nbsp;&nbsp;' . $key . '</span>'
-                        ];
-                    },
-                    'attr' => [
-                        'class' => 'selectpicker',
-                    ],
-                    'required' => false,
+                'choices' => [
+                    'Ascending' => 'asc',
+                    'Descending' => 'desc',
+                ],
+                'choice_attr' => function ($category, $key, $index) {
+                    return [
+                        'data-content' => '<span class=""><i class="fa fa-sort-' . $index . '"></i>&nbsp;&nbsp;' . $key . '</span>'
+                    ];
+                },
+                'attr' => [
+                    'class' => 'selectpicker',
+                ],
+                'required' => false,
             ]);
+
+            $builder->add('minimumShouldMatch', IntegerType::class, [
+                'required' => false,
+                'attr' => [
+                    'min' => 0
+                ]
+            ]);
+
             $builder->add('search', SubmitEmsType::class, [
                     'attr' => [
                             'class' => 'btn-primary btn-md'

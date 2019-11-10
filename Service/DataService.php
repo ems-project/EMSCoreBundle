@@ -372,7 +372,7 @@ class DataService
             }
         }
         if ($form->getConfig()->getType()->getInnerType() instanceof ComputedFieldType) {
-            $template = $dataField->getFieldType()->getDisplayOptions()['valueTemplate'];
+            $template = $dataField->getFieldType()->getDisplayOptions()['valueTemplate'] ?? '';
 
             $out = null;
             if (!empty($template)) {

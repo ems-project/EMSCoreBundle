@@ -44,6 +44,7 @@ class SearchFieldOptionType extends AbstractType
                 'Match (and)' => 'match_and',
                 'Match (or)' => 'match_or',
                 'Term' => 'term',
+                'Match phrase' => 'match_phrase',
             ]
         ])->add('contentTypes', ContentTypePickerType::class, [
             'multiple' => true,

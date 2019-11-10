@@ -503,7 +503,7 @@
 			<dt>{{ dataField.fieldType.name }}</dt>
 		{% endif %}
 		<dd>
-            {% if dataField.fieldType.displayOptions.displayTemplate %}
+            {% if dataField.fieldType.displayOptions.displayTemplate is defined and dataField.fieldType.displayOptions.displayTemplate %}
             	{% if doCompare  %}
 					<div class="panel-body {{ color }}">
 						<div class="col-md-6">{% if attribute(compareRawData, dataField.fieldType.name) is defined %}{{ dataField.fieldType.displayOptions.displayTemplate|generate_from_template({data: attribute(compareRawData, dataField.fieldType.name), dataField: dataField})|raw }}{% endif %}</div>

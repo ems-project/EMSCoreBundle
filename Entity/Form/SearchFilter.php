@@ -103,6 +103,13 @@ class SearchFilter implements JsonSerializable
                         ]
                     ];
                     break;
+                case 'match_phrase_prefix':
+                    $out = [
+                        "match_phrase_prefix" => [
+                            $field ?? "_all" => [ "query" => $this->pattern ?? ""]
+                        ]
+                    ];
+                    break;
                 case 'match_or':
                     $out = [
                         "match" => [
@@ -144,6 +151,15 @@ class SearchFilter implements JsonSerializable
                             $field ? $field : "_all" => [
                                 "value" => $this->pattern ?? "*",
                                 "boost" => $this->boost ?? 1,
+                            ]
+                        ]
+                    ];
+                    break;
+                case 'prefix':
+                    $out = [
+                        "prefix" => [
+                            $field ? $field : "_all" => [
+                                "value" => $this->pattern ?? "*",
                             ]
                         ]
                     ];

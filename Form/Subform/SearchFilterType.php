@@ -52,7 +52,9 @@ class SearchFilterType extends AbstractType
                 'Match (and)' => 'match_and',
                 'Match (or)' => 'match_or',
                 'Term' => 'term',
+                'Prefix' => 'prefix',
                 'Match phrase' => 'match_phrase',
+                'Match phrase prefix' => 'match_phrase_prefix',
             ]
         ]);
         

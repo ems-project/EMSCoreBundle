@@ -122,6 +122,7 @@ class SearchFormType extends AbstractType
 
             $builder->add('minimumShouldMatch', IntegerType::class, [
                 'required' => false,
+                'empty_data' => '1',
                 'attr' => [
                     'min' => 0
                 ]

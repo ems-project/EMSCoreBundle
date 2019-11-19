@@ -293,9 +293,9 @@ class DataService
      * @return bool
      * @throws Throwable
      */
-    public function propagateDataToComputedField(FormInterface $form, array& $objectArray, ContentType $contentType, string $type, ?string $ouuid, bool $migration = false)
+    public function propagateDataToComputedField(FormInterface $form, array& $objectArray, ContentType $contentType, string $type, ?string $ouuid, bool $migration = false, bool $finalize = true)
     {
-        return $this->propagateDataToComputedFieldRecursive($form, $objectArray, $contentType, $type, $ouuid, $migration, $objectArray, '');
+        return $this->propagateDataToComputedFieldRecursive($form, $objectArray, $contentType, $type, $ouuid, $migration, $finalize, $objectArray, '');
     }
 
     /**
@@ -310,7 +310,7 @@ class DataService
      * @return bool
      * @throws Throwable
      */
-    private function propagateDataToComputedFieldRecursive(FormInterface $form, array& $objectArray, ContentType $contentType, string $type, ?string $ouuid, bool $migration, ?array &$parent, string $path)
+    private function propagateDataToComputedFieldRecursive(FormInterface $form, array& $objectArray, ContentType $contentType, string $type, ?string $ouuid, bool $migration, bool $finalize, ?array &$parent, string $path)
     {
         $found = false;
         /** @var DataField $dataField*/
@@ -336,6 +336,7 @@ class DataService
                     'migration' => $migration,
                     'parent' => $parent,
                     'path' => $path,
+                    'finalize' => $finalize,
                 ]);
                 $out = trim($out);
 
@@ -385,6 +386,7 @@ class DataService
                         'migration' => $migration,
                         'parent' => $parent,
                         'path' => $path,
+                        'finalize' => $finalize,
                     ]);
 
                     if ($dataField->getFieldType()->getDisplayOptions()['json']) {
@@ -425,12 +427,12 @@ class DataService
                     foreach ($child->all() as $collectionChild) {
                         if (isset($objectArray[$fieldName])) {
                             foreach ($objectArray[$fieldName] as &$elementsArray) {
-                                $found = $this->propagateDataToComputedFieldRecursive($collectionChild, $elementsArray, $contentType, $type, $ouuid, $migration, $parent, $path . ($path == '' ? '' : '.') . $fieldName) || $found;
+                                $found = $this->propagateDataToComputedFieldRecursive($collectionChild, $elementsArray, $contentType, $type, $ouuid, $migration, $finalize, $parent, $path . ($path == '' ? '' : '.') . $fieldName) || $found;
                             }
                         }
                     }
                 } elseif ($childType instanceof DataFieldType) {
-                    $found = $this->propagateDataToComputedFieldRecursive($child, $objectArray, $contentType, $type, $ouuid, $migration, $parent, $path) || $found;
+                    $found = $this->propagateDataToComputedFieldRecursive($child, $objectArray, $contentType, $type, $ouuid, $migration, $finalize, $parent, $path) || $found;
                 }
             }
         }
@@ -1591,7 +1593,7 @@ class DataService
 
         if ($viewData instanceof Revision) {
             $topLevelDataFieldForm = $form->get('data');
-            return $this->isValid($topLevelDataFieldForm);
+            return $this->isValid($topLevelDataFieldForm, $parent, $masterRawData);
         }
 
         if (! $viewData instanceof DataField) {
@@ -1624,8 +1626,7 @@ class DataService
                 $form->addError(new FormError("At least one field is not valid!"));
             }
         }
-//           $isValid = $isValid && $dataFieldType->isValid($dataField);
-        if ($dataFieldType !== null && !$dataFieldType->isValid($dataField, $parent)) {
+        if ($dataFieldType !== null && !$dataFieldType->isValid($dataField, $parent, $masterRawData)) {
             $isValid = false;
             $form->addError(new FormError("This Field is not valid! " . $dataField->getMessages()[0]));
         }

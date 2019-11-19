@@ -1194,6 +1194,8 @@ class DataController extends AppController
             $em->flush();
 
             $dataService->isValid($form);
+            $dataService->propagateDataToComputedField($form->get('data'), $objectArray, $revision->getContentType(), $revision->getContentType()->getName(), $revision->getOuuid(), false, false);
+
             $session = $request->getSession();
             if ($session instanceof Session) {
                 $session->getFlashBag()->set('warning', []);
@@ -1463,6 +1465,7 @@ class DataController extends AppController
 
 
         $objectArray = $revision->getRawData();
+        $dataService->propagateDataToComputedField($form->get('data'), $objectArray, $revision->getContentType(), $revision->getContentType()->getName(), $revision->getOuuid(), false, false);
 
         if ($revision->getOuuid()) {
             $messageLog = "log.data.revision.start_edit";

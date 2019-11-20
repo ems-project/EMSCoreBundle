@@ -143,7 +143,7 @@ class CollectionFieldType extends DataFieldType
         
         $restrictionOptions = $dataField->getFieldType()->getRestrictionOptions();
         
-        if (!empty($restrictionOptions['min']) && count($dataField->getRawData()) < $restrictionOptions['min']) {
+        if (!empty($restrictionOptions['min']) && ($dataField->getRawData() === null ? 0 : count($dataField->getRawData())) < $restrictionOptions['min']) {
             if ($restrictionOptions['min'] == 1) {
                 $dataField->addMessage("At least 1 item is required");
             } else {

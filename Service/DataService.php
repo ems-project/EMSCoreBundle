@@ -857,34 +857,36 @@ class DataService
                 $fieldForm = $fieldForm->getOrigin()->getParent();
             }
 
-            if ($fieldForm->getNormData() instanceof DataField) {
-                /** @var DataField $dataField */
-                $dataField = $fieldForm->getNormData();
-                if (! empty($dataField->getMessages())) {
-                    if (sizeof($dataField->getMessages()) === 1) {
-                        $errorMessage = $dataField->getMessages()[0];
-                    } else {
-                        $errorMessage = sprintf('["%s"]', \implode('","', $dataField->getMessages()));
-                    }
+            if (!$fieldForm->getNormData() instanceof DataField) {
+                continue;
+            }
+            /** @var DataField $dataField */
+            $dataField = $fieldForm->getNormData();
+            if (empty($dataField->getMessages())) {
+                continue;
+            }
+            if (sizeof($dataField->getMessages()) === 1) {
+                $errorMessage = $dataField->getMessages()[0];
+            } else {
+                $errorMessage = sprintf('["%s"]', \implode('","', $dataField->getMessages()));
+            }
 
-                    $fieldName = $fieldForm->getNormData()->getFieldType()->getDisplayOption('label', $fieldForm->getNormData()->getFieldType()->getName());
-                    $errorPath = '';
+            $fieldName = $fieldForm->getNormData()->getFieldType()->getDisplayOption('label', $fieldForm->getNormData()->getFieldType()->getName());
+            $errorPath = '';
 
-                    $parent = $fieldForm;
-                    while (($parent = $parent->getParent()) !== null) {
-                        if ($parent->getNormData() instanceof DataField && $parent->getNormData()->getFieldType()->getParent() !== null) {
-                            $errorPath .= $parent->getNormData()->getFieldType()->getDisplayOption('label', $parent->getNormData()->getFieldType()->getName()) . ' > ';
-                        }
-                    }
-                    $errorPath .= $fieldName;
-
-                    $this->logger->warning('service.data.error_with_fields', [
-                        EmsFields::LOG_ERROR_MESSAGE_FIELD => $errorMessage,
-                        EmsFields::LOG_FIELD_IN_ERROR_FIELD => $fieldName,
-                        EmsFields::LOG_PATH_IN_ERROR_FIELD => $errorPath,
-                    ]);
+            $parent = $fieldForm;
+            while (($parent = $parent->getParent()) !== null) {
+                if ($parent->getNormData() instanceof DataField && $parent->getNormData()->getFieldType()->getParent() !== null) {
+                    $errorPath .= $parent->getNormData()->getFieldType()->getDisplayOption('label', $parent->getNormData()->getFieldType()->getName()) . ' > ';
                 }
             }
+            $errorPath .= $fieldName;
+
+            $this->logger->warning('service.data.error_with_fields', [
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $errorMessage,
+                EmsFields::LOG_FIELD_IN_ERROR_FIELD => $fieldName,
+                EmsFields::LOG_PATH_IN_ERROR_FIELD => $errorPath,
+            ]);
         }
 
         $this->logger->warning('service.data.cant_be_finalized', [

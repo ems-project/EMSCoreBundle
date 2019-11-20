@@ -293,9 +293,9 @@ class DataService
      * @return bool
      * @throws Throwable
      */
-    public function propagateDataToComputedField(FormInterface $form, array& $objectArray, ContentType $contentType, string $type, ?string $ouuid, bool $migration = false)
+    public function propagateDataToComputedField(FormInterface $form, array& $objectArray, ContentType $contentType, string $type, ?string $ouuid, bool $migration = false, bool $finalize = true)
     {
-        return $this->propagateDataToComputedFieldRecursive($form, $objectArray, $contentType, $type, $ouuid, $migration, $objectArray, '');
+        return $this->propagateDataToComputedFieldRecursive($form, $objectArray, $contentType, $type, $ouuid, $migration, $finalize, $objectArray, '');
     }
 
     /**
@@ -310,7 +310,7 @@ class DataService
      * @return bool
      * @throws Throwable
      */
-    private function propagateDataToComputedFieldRecursive(FormInterface $form, array& $objectArray, ContentType $contentType, string $type, ?string $ouuid, bool $migration, ?array &$parent, string $path)
+    private function propagateDataToComputedFieldRecursive(FormInterface $form, array& $objectArray, ContentType $contentType, string $type, ?string $ouuid, bool $migration, bool $finalize, ?array &$parent, string $path)
     {
         $found = false;
         /** @var DataField $dataField*/
@@ -336,6 +336,7 @@ class DataService
                     'migration' => $migration,
                     'parent' => $parent,
                     'path' => $path,
+                    'finalize' => $finalize,
                 ]);
                 $out = trim($out);
 
@@ -385,6 +386,7 @@ class DataService
                         'migration' => $migration,
                         'parent' => $parent,
                         'path' => $path,
+                        'finalize' => $finalize,
                     ]);
 
                     if ($dataField->getFieldType()->getDisplayOptions()['json']) {
@@ -425,12 +427,12 @@ class DataService
                     foreach ($child->all() as $collectionChild) {
                         if (isset($objectArray[$fieldName])) {
                             foreach ($objectArray[$fieldName] as &$elementsArray) {
-                                $found = $this->propagateDataToComputedFieldRecursive($collectionChild, $elementsArray, $contentType, $type, $ouuid, $migration, $parent, $path . ($path == '' ? '' : '.') . $fieldName) || $found;
+                                $found = $this->propagateDataToComputedFieldRecursive($collectionChild, $elementsArray, $contentType, $type, $ouuid, $migration, $finalize, $parent, $path . ($path == '' ? '' : '.') . $fieldName) || $found;
                             }
                         }
                     }
                 } elseif ($childType instanceof DataFieldType) {
-                    $found = $this->propagateDataToComputedFieldRecursive($child, $objectArray, $contentType, $type, $ouuid, $migration, $parent, $path) || $found;
+                    $found = $this->propagateDataToComputedFieldRecursive($child, $objectArray, $contentType, $type, $ouuid, $migration, $finalize, $parent, $path) || $found;
                 }
             }
         }
@@ -775,7 +777,7 @@ class DataService
 
         $objectArray = $this->sign($revision);
 
-        if (empty($form) || $this->isValid($form)) {
+        if (empty($form) || $this->isValid($form, $revision->getContentType()->getParentField(), $objectArray)) {
             $objectArray[Mapping::PUBLISHED_DATETIME_FIELD] = (new DateTime())->format(DateTime::ISO8601);
 
             $config = [
@@ -839,14 +841,60 @@ class DataService
                 ]);
             }
         } else {
-            $this->logger->warning('service.data.cant_be_finalized', [
-                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                EmsFields::LOG_ENVIRONMENT_FIELD => $revision->getContentType()->getEnvironment()->getName(),
-                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-            ]);
+            $this->logFormErrors($revision, $form);
         }
         return $revision;
+    }
+
+    private function logFormErrors(Revision $revision, FormInterface $form)
+    {
+        $formErrors = $form->getErrors(true, true);
+        /** @var FormError $formError */
+        foreach ($formErrors as $formError) {
+            $fieldForm = $formError->getOrigin();
+            $dataField = null;
+            while ($fieldForm !== null && !$fieldForm->getNormData() instanceof DataField) {
+                $fieldForm = $fieldForm->getOrigin()->getParent();
+            }
+
+            if (!$fieldForm->getNormData() instanceof DataField) {
+                continue;
+            }
+            /** @var DataField $dataField */
+            $dataField = $fieldForm->getNormData();
+            if (empty($dataField->getMessages())) {
+                continue;
+            }
+            if (sizeof($dataField->getMessages()) === 1) {
+                $errorMessage = $dataField->getMessages()[0];
+            } else {
+                $errorMessage = sprintf('["%s"]', \implode('","', $dataField->getMessages()));
+            }
+
+            $fieldName = $fieldForm->getNormData()->getFieldType()->getDisplayOption('label', $fieldForm->getNormData()->getFieldType()->getName());
+            $errorPath = '';
+
+            $parent = $fieldForm;
+            while (($parent = $parent->getParent()) !== null) {
+                if ($parent->getNormData() instanceof DataField && $parent->getNormData()->getFieldType()->getParent() !== null) {
+                    $errorPath .= $parent->getNormData()->getFieldType()->getDisplayOption('label', $parent->getNormData()->getFieldType()->getName()) . ' > ';
+                }
+            }
+            $errorPath .= $fieldName;
+
+            $this->logger->warning('service.data.error_with_fields', [
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $errorMessage,
+                EmsFields::LOG_FIELD_IN_ERROR_FIELD => $fieldName,
+                EmsFields::LOG_PATH_IN_ERROR_FIELD => $errorPath,
+            ]);
+        }
+
+        $this->logger->warning('service.data.cant_be_finalized', [
+            EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+            EmsFields::LOG_ENVIRONMENT_FIELD => $revision->getContentType()->getEnvironment()->getName(),
+            EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+        ]);
     }
 
 
@@ -1591,7 +1639,7 @@ class DataService
 
         if ($viewData instanceof Revision) {
             $topLevelDataFieldForm = $form->get('data');
-            return $this->isValid($topLevelDataFieldForm);
+            return $this->isValid($topLevelDataFieldForm, $parent, $masterRawData);
         }
 
         if (! $viewData instanceof DataField) {
@@ -1624,8 +1672,7 @@ class DataService
                 $form->addError(new FormError("At least one field is not valid!"));
             }
         }
-//           $isValid = $isValid && $dataFieldType->isValid($dataField);
-        if ($dataFieldType !== null && !$dataFieldType->isValid($dataField, $parent)) {
+        if ($dataFieldType !== null && !$dataFieldType->isValid($dataField, $parent, $masterRawData)) {
             $isValid = false;
             $form->addError(new FormError("This Field is not valid! " . $dataField->getMessages()[0]));
         }

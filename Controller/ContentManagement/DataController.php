@@ -1193,7 +1193,9 @@ class DataController extends AppController
             $em->persist($revision);
             $em->flush();
 
-            $dataService->isValid($form);
+            $dataService->isValid($form, $revision->getContentType()->getParentField(), $objectArray);
+            $dataService->propagateDataToComputedField($form->get('data'), $objectArray, $revision->getContentType(), $revision->getContentType()->getName(), $revision->getOuuid(), false, false);
+
             $session = $request->getSession();
             if ($session instanceof Session) {
                 $session->getFlashBag()->set('warning', []);
@@ -1440,7 +1442,8 @@ class DataController extends AppController
                 }
             }
         } else {
-            $isValid = $this->getDataService()->isValid($form);
+            $objectArray = $revision->getRawData();
+            $isValid = $this->getDataService()->isValid($form, $revision->getContentType()->getParentField(), $objectArray);
             if (!$isValid) {
                 $logger->warning('log.data.revision.can_finalized', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
@@ -1463,6 +1466,7 @@ class DataController extends AppController
 
 
         $objectArray = $revision->getRawData();
+        $dataService->propagateDataToComputedField($form->get('data'), $objectArray, $revision->getContentType(), $revision->getContentType()->getName(), $revision->getOuuid(), false, false);
 
         if ($revision->getOuuid()) {
             $messageLog = "log.data.revision.start_edit";

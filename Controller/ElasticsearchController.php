@@ -544,12 +544,10 @@ class ElasticsearchController extends AppController
 
                     /**@var SearchFilter $filter */
                     foreach ($search->getFilters() as &$filter) {
-                        if (empty($filter->getPattern())) {
-                            if (in_array($filter->getOperator(), ['query_and', 'query_or'])) {
-                                $filter->setPattern($queryString);
-                            } else {
-                                $filter->setPattern($pattern);
-                            }
+                        if (in_array($filter->getOperator(), ['query_and', 'query_or'])) {
+                            $filter->setPattern($queryString);
+                        } else {
+                            $filter->setPattern($pattern);
                         }
                     }
                     $body = $this->getSearchService()->generateSearchBody($search);

@@ -22,6 +22,12 @@ use Symfony\Component\Form\FormFactoryInterface;
 class ExportCommand extends EmsCommand
 {
 
+    const EXPORT_JSON_FORMATS = 'json';
+    const EXPORT_XML_FORMATS = 'xml';
+    const EXPORT_MERGED_JSON_FORMATS = 'merged-json';
+    const EXPORT_MERGED_XML_FORMATS = 'merged-xml';
+    const EXPORT_FORMATS = [ExportCommand::EXPORT_JSON_FORMATS, ExportCommand::EXPORT_JSON_FORMATS, ExportCommand::EXPORT_MERGED_JSON_FORMATS, ExportCommand::EXPORT_MERGED_XML_FORMATS];
+
     /** @var Client  */
     protected $client;
     /** @var Logger  */
@@ -56,7 +62,7 @@ class ExportCommand extends EmsCommand
             ->addArgument(
                 'format',
                 InputArgument::OPTIONAL,
-                'The format of the output: json, xml, merge-json, merge-xml or the id of the content type\' template',
+                sprintf('The format of the output: %s or the id of the content type\' template', \implode(', ', self::EXPORT_FORMATS)),
                 'json'
             )
             ->addArgument(
@@ -65,8 +71,9 @@ class ExportCommand extends EmsCommand
                 'The query to run',
                 '{}'
             )
-            ->addArgument(
+            ->addOption(
                 'index',
+                null,
                 InputArgument::OPTIONAL,
                 'The index to use for the query, it will use the default environemnt index if not defined'
             )
@@ -76,24 +83,19 @@ class ExportCommand extends EmsCommand
                 InputOption::VALUE_NONE,
                 'Replace internal OUUIDs by business values'
             )
-            ->addArgument(
+            ->addOption(
                 'scrollSize',
+                null,
                 InputArgument::OPTIONAL,
                 'Size of the elasticsearch scroll request',
                 100
             )
-            ->addArgument(
+            ->addOption(
                 'scrollTimeout',
+                null,
                 InputArgument::OPTIONAL,
                 'Time to migrate "scrollSize" items i.e. 30s or 2m',
                 '1m'
-            )
-            ->addOption(
-                'source',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Query used to find elasticsearch records to import',
-                '{"sort":{"_uid":{"order":"asc"}}}'
             );
     }
 
@@ -101,14 +103,14 @@ class ExportCommand extends EmsCommand
     {
 
         $contentTypeName = $input->getArgument('contentTypeName');
-        $scrollSize = $input->getArgument('scrollSize');
-        $scrollTimeout = $input->getArgument('scrollTimeout');
+        $scrollSize = $input->getOption('scrollSize');
+        $scrollTimeout = $input->getOption('scrollTimeout');
         $contentType = $this->contentTypeService->getByName($contentTypeName);
         if (! $contentType instanceof ContentType) {
             $output->writeln(sprintf("WARNING: Content type named %s not found", $contentType));
             return null;
         }
-        $index = $input->getArgument('index');
+        $index = $input->getOption('index');
         if ($index === null) {
             $index = $contentType->getEnvironment()->getAlias();
         }
@@ -118,7 +120,7 @@ class ExportCommand extends EmsCommand
             'type' => $contentTypeName,
             'size' => $scrollSize,
             "scroll" => $scrollTimeout,
-            'body' => $input->getArgument('query'),
+            'body' => \json_decode($input->getArgument('query')),
         ]);
 
 

@@ -93,6 +93,16 @@ class ContentTypeType extends AbstractType
                 'types' => [
                         'nested',
                 ]]);
+            $builder->add('businessIdField', ContentTypeFieldPickerType::class, [
+                    'required' => false,
+                    'firstLevelOnly' => false,
+                    'mapping' => $mapping,
+                    'types' => [
+                            'keyword',
+                            'date',
+                            'integer',
+                            'string', //TODO: backward compatibility with ES2 To remove?
+                    ]]);
             $builder->add('sortBy', ContentTypeFieldPickerType::class, [
                     'required' => false,
                     'firstLevelOnly' => false,

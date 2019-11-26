@@ -473,6 +473,11 @@ services:
         arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.elasticsearch.bulker', '@ems.service.mapping', '@ems.service.data', '@form.factory', '%ems_core.instance_id%']
         tags:
             -  { name: console.command }
+    ems.contenttype.export:
+        class: EMS\CoreBundle\Command\ExportCommand
+        arguments: ['@logger', '@app.elasticsearch', '@ems.service.data', '@ems.service.contenttype', '%ems_core.instance_id%']
+        tags:
+            -  { name: console.command }
     ems.environment.rebuild:
         class: EMS\CoreBundle\Command\RebuildCommand
         arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.mapping', '@ems.service.contenttype', '@ems.service.environment', '@ems.environment.reindex', '%ems_core.instance_id%', '%ems_core.single_type_index%']

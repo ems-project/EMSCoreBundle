@@ -1786,6 +1786,4 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
         $this->businessIdField = $businessIdField;
         return $this;
     }
-
-
 }

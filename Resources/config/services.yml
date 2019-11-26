@@ -456,6 +456,9 @@ services:
     ems.service.elasticsearch:
         class: EMS\CoreBundle\Service\ElasticsearchService
         arguments: ['@app.elasticsearch', '@logger']
+    ems.service.template:
+        class: EMS\CoreBundle\Service\TemplateService
+        arguments: ['@doctrine', '@logger', '@twig']
     ems.service.job: '@EMS\CoreBundle\Service\JobService'
     EMS\CoreBundle\Service\JobService:
         class: EMS\CoreBundle\Service\JobService
@@ -475,7 +478,7 @@ services:
             -  { name: console.command }
     ems.contenttype.export:
         class: EMS\CoreBundle\Command\ExportCommand
-        arguments: ['@logger', '@app.elasticsearch', '@ems.service.data', '@ems.service.contenttype', '%ems_core.instance_id%']
+        arguments: ['@logger', '@app.elasticsearch', '@ems.service.template', '@ems.service.data', '@ems.service.contenttype', '@ems.service.environment', '%ems_core.instance_id%']
         tags:
             -  { name: console.command }
     ems.environment.rebuild:

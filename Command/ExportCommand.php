@@ -4,46 +4,47 @@
 namespace EMS\CoreBundle\Command;
 
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Elasticsearch\Client;
-use EMS\CoreBundle\Elasticsearch\Bulker;
+use EMS\CommonBundle\Common\Document;
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
-use EMS\CoreBundle\Service\Mapping;
+use EMS\CoreBundle\Service\EnvironmentService;
+use EMS\CoreBundle\Service\TemplateService;
 use Monolog\Logger;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Form\FormFactoryInterface;
+use Twig_Error;
+use ZipArchive;
 
 class ExportCommand extends EmsCommand
 {
-
-    const EXPORT_JSON_FORMATS = 'json';
-    const EXPORT_XML_FORMATS = 'xml';
-    const EXPORT_MERGED_JSON_FORMATS = 'merged-json';
-    const EXPORT_MERGED_XML_FORMATS = 'merged-xml';
-    const EXPORT_FORMATS = [ExportCommand::EXPORT_JSON_FORMATS, ExportCommand::EXPORT_JSON_FORMATS, ExportCommand::EXPORT_MERGED_JSON_FORMATS, ExportCommand::EXPORT_MERGED_XML_FORMATS];
-
     /** @var Client  */
     protected $client;
     /** @var Logger  */
     protected $logger;
     /** @var DataService  */
     protected $dataService;
+    /** @var EnvironmentService  */
+    protected $environmentService;
     /** @var ContentTypeService  */
     protected $contentTypeService;
+    /** @var TemplateService  */
+    protected $templateService;
     /** @var string */
     protected $instanceId;
 
-    public function __construct(Logger $logger, Client $client, DataService $dataService, ContentTypeService $contentTypeService, string $instanceId)
+    public function __construct(Logger $logger, Client $client, TemplateService $templateService, DataService $dataService, ContentTypeService $contentTypeService, EnvironmentService $environmentService, string $instanceId)
     {
         $this->logger = $logger;
+        $this->templateService = $templateService;
         $this->client = $client;
         $this->dataService = $dataService;
+        $this->environmentService = $environmentService;
         $this->instanceId = $instanceId;
         $this->contentTypeService = $contentTypeService;
         parent::__construct($logger, $client);
@@ -62,7 +63,7 @@ class ExportCommand extends EmsCommand
             ->addArgument(
                 'format',
                 InputArgument::OPTIONAL,
-                sprintf('The format of the output: %s or the id of the content type\' template', \implode(', ', self::EXPORT_FORMATS)),
+                sprintf('The format of the output: %s or the id of the content type\' template', \implode(', ', TemplateService::EXPORT_FORMATS)),
                 'json'
             )
             ->addArgument(
@@ -72,10 +73,10 @@ class ExportCommand extends EmsCommand
                 '{}'
             )
             ->addOption(
-                'index',
+                'environment',
                 null,
                 InputArgument::OPTIONAL,
-                'The index to use for the query, it will use the default environemnt index if not defined'
+                'The environment to use for the query, it will use the default environment if not defined'
             )
             ->addOption(
                 'withBusinessId',
@@ -103,6 +104,7 @@ class ExportCommand extends EmsCommand
     {
 
         $contentTypeName = $input->getArgument('contentTypeName');
+        $format = $input->getArgument('format');
         $scrollSize = $input->getOption('scrollSize');
         $scrollTimeout = $input->getOption('scrollTimeout');
         $contentType = $this->contentTypeService->getByName($contentTypeName);
@@ -110,9 +112,16 @@ class ExportCommand extends EmsCommand
             $output->writeln(sprintf("WARNING: Content type named %s not found", $contentType));
             return null;
         }
-        $index = $input->getOption('index');
-        if ($index === null) {
+        $environmentName = $input->getOption('environment');
+        if ($environmentName === null) {
             $index = $contentType->getEnvironment()->getAlias();
+        } else {
+            $environment = $this->environmentService->getByName($environmentName);
+            if ($environment === false) {
+                $output->writeln(sprintf("WARNING: Environment named %s not found", $environmentName));
+                return null;
+            }
+            $index = $environment->getAlias();
         }
 
         $arrayElasticsearchIndex = $this->client->search([
@@ -123,13 +132,81 @@ class ExportCommand extends EmsCommand
             'body' => \json_decode($input->getArgument('query')),
         ]);
 
-
         $total = $arrayElasticsearchIndex["hits"]["total"];
         $progress = new ProgressBar($output, $total);
         $progress->start();
 
+        $outZipPath = \tempnam(\sys_get_temp_dir(), 'emsExport') . '.zip';
+        $zip = new ZipArchive();
+        $zip->open($outZipPath, ZIPARCHIVE::CREATE);
+        $extension = '';
+        if (!in_array($format, TemplateService::EXPORT_FORMATS)) {
+            $this->templateService->init($format);
+            $useTemplate = true;
+            $accumulateInOneFile = $this->templateService->getTemplate()->getAccumulateInOneFile();
+            if ($this->templateService->getTemplate()->getExtension() !== null) {
+                $extension = '.' . $this->templateService->getTemplate()->getExtension();
+            }
+        } else {
+            $accumulateInOneFile = in_array($format, [TemplateService::MERGED_JSON_FORMAT, TemplateService::MERGED_XML_FORMAT]);
+            $useTemplate = false;
+            if (\strpos($format, TemplateService::JSON_FORMAT) !== false) {
+                $extension = '.json';
+            } elseif (\strpos($format, TemplateService::XML_FORMAT) !== false) {
+                $extension = '.xml';
+            } else {
+                $output->writeln(sprintf("WARNING: Format %s not found", $format));
+                return null;
+            }
+        }
+
+
+        $accumulatedContent = [];
+        $errorList = [];
+
         while (isset($arrayElasticsearchIndex['hits']['hits']) && count($arrayElasticsearchIndex['hits']['hits']) > 0) {
             foreach ($arrayElasticsearchIndex["hits"]["hits"] as $index => $value) {
+                if ($contentType->getBusinessIdField() !== null && isset($value['_source'][$contentType->getBusinessIdField()])) {
+                    $filename = $value['_source'][$contentType->getBusinessIdField()] . $extension;
+                } else {
+                    $filename = $value['_id'] . $extension;
+                }
+
+                if ($useTemplate) {
+                    try {
+                        $document = new Document($contentTypeName, $value['_id'], $value['_source']);
+                        $content = $this->templateService->render($document, $contentType, 'ssss');
+                    } catch (Twig_Error $e) {
+                        $this->logger->error('log.command.export.template_error', [
+                            EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                            EmsFields::LOG_EXCEPTION_FIELD => $e,
+                            'template_id' => $format,
+                        ]);
+                        $errorList[] = "Error in rendering template for: " . $filename;
+                        continue;
+                    }
+                } else {
+                    if ($accumulateInOneFile) {
+                        $content = $value['_source'];
+                    } elseif (\strpos($format, TemplateService::JSON_FORMAT) !== false) {
+                        $content = \json_encode($value['_source']);
+                    } elseif (\strpos($format, TemplateService::XML_FORMAT) !== false) {
+                        $content = $this->templateService->getXml($contentType, $value['_source'], false, $value['_id']);
+                    }
+                    else {
+                        $this->logger->error('log.command.export.unknow_format', [
+                            'format' => $format,
+                        ]);
+                        $errorList[] = "Unknow format: " . $format;
+                        continue;
+                    }
+                }
+
+                if ($accumulateInOneFile) {
+                    $accumulatedContent[$value['_id']] = $content;
+                } else {
+                    $zip->addFromString($filename, $content);
+                }
                 $progress->advance();
             }
 
@@ -140,8 +217,27 @@ class ExportCommand extends EmsCommand
             ]);
         }
 
+        if ($accumulateInOneFile) {
+            if ($useTemplate) {
+                $accumulatedContent = implode('', $accumulatedContent);
+            } elseif (\strpos($format, TemplateService::JSON_FORMAT) !== false) {
+                $accumulatedContent = \json_encode($accumulatedContent);
+            } elseif (\strpos($format, TemplateService::XML_FORMAT) !== false) {
+                $accumulatedContent = $this->templateService->getXml($contentType, $accumulatedContent, true);
+            } else {
+                $output->writeln(sprintf("WARNING: Format %s not found", $format));
+                return null;
+            }
+            $zip->addFromString('emsExport' . $extension, $accumulatedContent);
+        }
+
+        if (sizeof($errorList) > 0) {
+            $zip->addFromString("All-Errors.txt", implode("\n", $errorList));
+        }
+
+        $zip->close();
         $progress->finish();
         $output->writeln("");
-        $output->writeln("Migration done");
+        $output->writeln("Export done " . $outZipPath);
     }
 }

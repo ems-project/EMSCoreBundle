@@ -1776,18 +1776,11 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
         }
     }
 
-    /**
-     * @return string
-     */
-    public function getBusinessIdField(): string
+    public function getBusinessIdField(): ?string
     {
         return $this->businessIdField;
     }
 
-    /**
-     * @param string $businessIdField
-     * @return ContentType
-     */
     public function setBusinessIdField(string $businessIdField): ContentType
     {
         $this->businessIdField = $businessIdField;

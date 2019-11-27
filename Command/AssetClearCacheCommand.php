@@ -66,7 +66,7 @@ class AssetClearCacheCommand extends EmsCommand
                 if ($storage !== null) {
                     $storage->clearCache();
                 }
-                return null;
+                return 0;
             }
         }
 

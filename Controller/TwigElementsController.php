@@ -5,7 +5,6 @@ namespace EMS\CoreBundle\Controller;
 use Elasticsearch\Client;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\AssetExtractorService;
-use Exception;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\Simple\FilesystemCache;
 
@@ -27,36 +26,40 @@ class TwigElementsController extends AppController
 
         try {
             $status = $client->cluster()->health()['status'];
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $status = 'red';
         }
-        
-        if ($status == 'green') {
-            try {
-                $cache = new FilesystemAdapter('', 600);
-                $cachedStatus = $cache->getItem(TwigElementsController::ASSET_EXTRACTOR_STATUS_CACHE_ID);
-                if ($cachedStatus->isHit()) {
-                    $result = $assetExtractorService->hello();
-                    $cachedStatus->set($result);
-                } else {
-                    $result = $cachedStatus->get();
-                    $cache->save($cachedStatus);
-                }
 
-                if ($result && 200 != $result['code']) {
-                    $status = 'yellow';
-                }
-            } catch (Exception $e) {
-                $status = 'yellow';
-            }
+
+        if ($status === 'green') {
+            $status = $this->getAssetExtractorStatus($assetExtractorService);
         }
-        
         return $this->render(
             '@EMSCore/elements/side-menu.html.twig',
             [
-                    'draftCounterGroupedByContentType' => $draftCounterGroupedByContentType,
-                    'status' => $status,
+                'draftCounterGroupedByContentType' => $draftCounterGroupedByContentType,
+                'status' => $status,
             ]
         );
+    }
+
+    private function getAssetExtractorStatus(AssetExtractorService $assetExtractorService)
+    {
+        try {
+            $cache = new FilesystemAdapter('', 60);
+            $cachedStatus = $cache->getItem(TwigElementsController::ASSET_EXTRACTOR_STATUS_CACHE_ID . 'jddj');
+            if (!$cachedStatus->isHit()) {
+                $cachedStatus->set($assetExtractorService->hello());
+                $cache->save($cachedStatus);
+            }
+            $result = $cachedStatus->get();
+
+            if (($result['code'] ?? 500) === 200) {
+                return 'green';
+            }
+        } catch (\Exception $e) {
+        }
+
+        return 'yellow';
     }
 }

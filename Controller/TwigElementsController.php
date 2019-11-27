@@ -2,15 +2,18 @@
 
 namespace EMS\CoreBundle\Controller;
 
+use Elasticsearch\Client;
 use EMS\CoreBundle\Repository\RevisionRepository;
+use EMS\CoreBundle\Service\AssetExtractorService;
 use Exception;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\Simple\FilesystemCache;
 
 class TwigElementsController extends AppController
 {
     const ASSET_EXTRACTOR_STATUS_CACHE_ID = 'status.asset_extractor.result';
 
-    public function sideMenuAction()
+    public function sideMenuAction(AssetExtractorService $assetExtractorService, Client $client)
     {
         $draftCounterGroupedByContentType = [];
 
@@ -23,19 +26,21 @@ class TwigElementsController extends AppController
         }
 
         try {
-            $status = $this->getElasticsearch()->cluster()->health()['status'];
+            $status = $client->cluster()->health()['status'];
         } catch (Exception $e) {
             $status = 'red';
         }
         
         if ($status == 'green') {
             try {
-                $cache = new FilesystemCache();
-                if (!$cache->has(TwigElementsController::ASSET_EXTRACTOR_STATUS_CACHE_ID)) {
-                    $result = $this->getAssetExtractorService()->hello();
-                    $cache->set(TwigElementsController::ASSET_EXTRACTOR_STATUS_CACHE_ID, $result, 600);
+                $cache = new FilesystemAdapter('', 600);
+                $cachedStatus = $cache->getItem(TwigElementsController::ASSET_EXTRACTOR_STATUS_CACHE_ID);
+                if ($cachedStatus->isHit()) {
+                    $result = $assetExtractorService->hello();
+                    $cachedStatus->set($result);
                 } else {
-                    $result = $cache->get(TwigElementsController::ASSET_EXTRACTOR_STATUS_CACHE_ID);
+                    $result = $cachedStatus->get();
+                    $cache->save($cachedStatus);
                 }
 
                 if ($result && 200 != $result['code']) {

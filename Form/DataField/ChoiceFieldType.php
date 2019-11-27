@@ -179,7 +179,11 @@ class ChoiceFieldType extends DataFieldType
         ]);
         
         // String specific mapping options
-        $optionsForm->get('mappingOptions')->add('analyzer', AnalyzerPickerType::class);
+        $optionsForm->get('mappingOptions')
+            ->add('analyzer', AnalyzerPickerType::class)
+            ->add('copy_to', TextType::class, [
+                'required' => false,
+            ]);
     }
 
     /**

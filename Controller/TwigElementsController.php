@@ -47,7 +47,7 @@ class TwigElementsController extends AppController
     {
         try {
             $cache = new FilesystemAdapter('', 60);
-            $cachedStatus = $cache->getItem(TwigElementsController::ASSET_EXTRACTOR_STATUS_CACHE_ID . 'jddj');
+            $cachedStatus = $cache->getItem(TwigElementsController::ASSET_EXTRACTOR_STATUS_CACHE_ID);
             if (!$cachedStatus->isHit()) {
                 $cachedStatus->set($assetExtractorService->hello());
                 $cache->save($cachedStatus);

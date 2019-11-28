@@ -53,12 +53,10 @@ class Indexer
         $this->logger->info('Created index {index}', ['index' => $name]);
     }
 
-    public function update(string $name, array $settings, array $mappings): void
+    public function update(string $name, array $mappings, string $type): void
     {
-        $body = \array_filter(['settings' => $settings, 'mappings' => $mappings]);
-
-        $this->getClient()->indices()->putMapping(['index' => $name, 'body' => $body]);
-        $this->logger->info('Updated index {index}', ['index' => $name]);
+        $this->getClient()->indices()->putMapping(['index' => $name, 'body' => $mappings, 'type' => $type]);
+        $this->logger->info('Update index {index}\'s mapping', ['index' => $name]);
     }
 
     /**

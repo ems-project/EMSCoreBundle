@@ -53,6 +53,12 @@ class Indexer
         $this->logger->info('Created index {index}', ['index' => $name]);
     }
 
+    public function update(string $name, array $mappings, string $type): void
+    {
+        $this->getClient()->indices()->putMapping(['index' => $name, 'body' => $mappings, 'type' => $type]);
+        $this->logger->info('Update index {index}\'s mapping', ['index' => $name]);
+    }
+
     /**
      * When clean is true, the old index will be removed!
      * Use oldIndexRegex when the alias has multiple indexes attached and you only want to switch aggainst a regex.

@@ -25,7 +25,7 @@ use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\FileService;
 use EMS\CoreBundle\Service\UserService;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -60,12 +60,12 @@ class AppExtension extends \Twig_Extension
     private $objectChoiceListFactory;
     /** @var EnvironmentService */
     private $environmentService;
-    /** @var Logger */
+    /** @var LoggerInterface */
     private $logger;
     /** @var \Swift_Mailer */
     private $mailer;
 
-    public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, Client $client, Router $router, $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, Logger $logger, FormFactory $formFactory, FileService $fileService, RequestRuntime $commonRequestRuntime, \Swift_Mailer $mailer, array $assetConfig)
+    public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, Client $client, Router $router, $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, LoggerInterface $logger, FormFactory $formFactory, FileService $fileService, RequestRuntime $commonRequestRuntime, \Swift_Mailer $mailer, array $assetConfig)
     {
         $this->doctrine = $doctrine;
         $this->authorizationChecker = $authorizationChecker;
@@ -83,7 +83,6 @@ class AppExtension extends \Twig_Extension
         $this->mailer = $mailer;
         $this->assetConfig = $assetConfig;
     }
-
 
     /**
      *
@@ -640,7 +639,7 @@ class AppExtension extends \Twig_Extension
     public function debug($message, array $context = [])
     {
         $context['twig'] = 'twig';
-        $this->logger->addDebug($message, $context);
+        $this->logger->debug($message, $context);
     }
 
     public function dateDifference($date1, $date2, $detailed = false)

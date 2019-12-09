@@ -65,6 +65,7 @@ dom.importCssString(cssText);
 
 module.exports.overlayPage = function overlayPage(editor, contentElement, callback) {
     var closer = document.createElement('div');
+    var ignoreFocusOut = false;
 
     function documentEscListener(e) {
         if (e.keyCode === 27) {
@@ -76,17 +77,28 @@ module.exports.overlayPage = function overlayPage(editor, contentElement, callba
         if (!closer) return;
         document.removeEventListener('keydown', documentEscListener);
         closer.parentNode.removeChild(closer);
-        editor.focus();
+        if (editor) {
+            editor.focus();
+        }
         closer = null;
         callback && callback();
+    }
+    function setIgnoreFocusOut(ignore) {
+        ignoreFocusOut = ignore;
+        if (ignore) {
+            closer.style.pointerEvents = "none";
+            contentElement.style.pointerEvents = "auto";
+        }
     }
 
     closer.style.cssText = 'margin: 0; padding: 0; ' +
         'position: fixed; top:0; bottom:0; left:0; right:0;' +
         'z-index: 9990; ' +
-        'background-color: rgba(0, 0, 0, 0.3);';
-    closer.addEventListener('click', function() {
-        close();
+        (editor ? 'background-color: rgba(0, 0, 0, 0.3);' : '');
+    closer.addEventListener('click', function(e) {
+        if (!ignoreFocusOut) {
+            close();
+        }
     });
     document.addEventListener('keydown', documentEscListener);
 
@@ -96,9 +108,12 @@ module.exports.overlayPage = function overlayPage(editor, contentElement, callba
 
     closer.appendChild(contentElement);
     document.body.appendChild(closer);
-    editor.blur();
+    if (editor) {
+        editor.blur();
+    }
     return {
-        close: close
+        close: close,
+        setIgnoreFocusOut: setIgnoreFocusOut
     };
 };
 
@@ -153,7 +168,6 @@ var supportedModes = {
     Apex:        ["apex|cls|trigger|tgr"],
     AQL:         ["aql"],
     BatchFile:   ["bat|cmd"],
-    Bro:         ["bro"],
     C_Cpp:       ["cpp|c|cc|cxx|h|hh|hpp|ino"],
     C9Search:    ["c9search_results"],
     Crystal:     ["cr"],
@@ -298,6 +312,7 @@ var supportedModes = {
     XML:         ["xml|rdf|rss|wsdl|xslt|atom|mathml|mml|xul|xbl|xaml"],
     XQuery:      ["xq"],
     YAML:        ["yaml|yml"],
+    Zeek:        ["zeek|bro"],
     Django:      ["html"]
 };
 
@@ -394,13 +409,14 @@ exports.themes = themeData.map(function(data) {
 
 });
 
-ace.define("ace/ext/options",["require","exports","module","ace/ext/menu_tools/overlay_page","ace/lib/dom","ace/lib/oop","ace/lib/event_emitter","ace/ext/modelist","ace/ext/themelist"], function(require, exports, module) {
+ace.define("ace/ext/options",["require","exports","module","ace/ext/menu_tools/overlay_page","ace/lib/dom","ace/lib/oop","ace/config","ace/lib/event_emitter","ace/ext/modelist","ace/ext/themelist"], function(require, exports, module) {
 "use strict";
 var overlayPage = require('./menu_tools/overlay_page').overlayPage;
 
  
 var dom = require("../lib/dom");
 var oop = require("../lib/oop");
+var config = require("../config");
 var EventEmitter = require("../lib/event_emitter").EventEmitter;
 var buildDom = dom.buildDom;
 
@@ -605,7 +621,8 @@ var OptionPanel = function(editor, element) {
                 ["table", {id: "more-controls"}, 
                     this.renderOptionGroup(optionGroups.More)
                 ]
-            ]]
+            ]],
+            ["tr", null, ["td", {colspan: 2}, "version " + config.version]]
         ], this.container);
     };
     
@@ -743,7 +760,7 @@ exports.OptionPanel = OptionPanel;
 
 ace.define("ace/ext/settings_menu",["require","exports","module","ace/ext/options","ace/ext/menu_tools/overlay_page","ace/editor"], function(require, exports, module) {
 "use strict";
-var OptionPanel = require("ace/ext/options").OptionPanel;
+var OptionPanel = require("./options").OptionPanel;
 var overlayPage = require('./menu_tools/overlay_page').overlayPage;
 function showSettingsMenu(editor) {
     if (!document.getElementById('ace_settingsmenu')) {
@@ -754,8 +771,8 @@ function showSettingsMenu(editor) {
         options.container.querySelector("select,input,button,checkbox").focus();
     }
 }
-module.exports.init = function(editor) {
-    var Editor = require("ace/editor").Editor;
+module.exports.init = function() {
+    var Editor = require("../editor").Editor;
     Editor.prototype.showSettingsMenu = function() {
         showSettingsMenu(this);
     };

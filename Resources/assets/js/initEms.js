@@ -60,6 +60,11 @@ import EmsListeners from "./EmsListeners";
             window.ajaxRequest.post($(e.target).data('url'))
                 .success(function(message) {
                     window.ajaxRequest.post(message.jobUrl);
+                    $('ul#commands-log').prepend('<li title="Job '+message.jobId+'">'
+                        +'<a href="'+message.url+'" >'
+                        +'Job #'+message.jobId
+                        +'</a>'
+                        +'</li>');
                 });
         });
     }

@@ -48,7 +48,8 @@ class JobController extends AppController
     /**
      * @param Job $job
      * @return Response
-     * @Route("/job/status/{job}", name="job.status"))
+     * @Route("/job/status/{job}", name="job.status")
+     * @Route("/job/status/{job}", name="emsco_job_status")
      */
     public function jobStatusAction(Job $job)
     {

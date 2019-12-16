@@ -10,21 +10,32 @@
 	<div class="col-md-3">
 		<div class="box ">
 			<div class="box-header with-border">
-				<i class="fa fa-warning"></i>
-				<h3 class="box-title">Notice</h3>
+				<i class="fa fa-info"></i>
+				<h3 class="box-title">Meta information</h3>
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
-				<p>
-					If this page takes too long to display, please consider to review your server 
-					configuration. More information in the Symfony documentation :
-					<a href="http://symfony.com/doc/current/components/http_kernel/introduction.html#the-kernel-terminate-event">
-						"The kernel.terminate Event"
-					</a>
+				<strong><i class="fa fa-clock-o margin-r-5"></i> Started</strong>
+				<p class="text-muted">
+					{{ job.created|date(date_time_format) }}
 				</p>
-				<p>
-					Another option is to use the Symfony console.
+
+				<hr>
+				<strong><i class="fa fa-user margin-r-5"></i> By</strong>
+				<p class="text-muted">
+					{{ job.user|displayname }}
 				</p>
+				<hr>
+				<strong><i class="fa fa-terminal margin-r-5"></i> Comand</strong>
+				<p class="text-muted">
+					{{ job.command }}
+				</p>
+				<hr>
+				<strong><i class="fa fa-clock-o margin-r-5"></i> Last update</strong>
+				<p class="text-muted">
+					{{ job.modified|date(date_time_format) }}
+				</p>
+
 			</div>
 			<!-- /.box-body -->
 		</div>
@@ -68,22 +79,26 @@
 				<!-- /.box-body -->
 				<div class="box-footer">
 					<div class="btn-group">
-                        {% include '@EMSCore/elements/get-button.html.twig' with {
-							'url':  path('job.status', {'job': job.id}),
-							'label': 'Refresh page',
-							'icon': 'refresh'
-						}%}
-                        {% include '@EMSCore/elements/get-button.html.twig' with {
-							'url':  path('job.index'),
-							'label': 'Job\'s list',
-							'icon': 'chevron-circle-right'
-						}%}
-                        {% include '@EMSCore/elements/post-button.html.twig' with {
-							'url':  path('job.delete', {'job': job.id}),
-							'message': 'Do you confirm ?',
-							'label': 'Delete',
-							'icon': 'trash'
-						}%}
+						{% if not job.done %}
+							{% include '@EMSCore/elements/get-button.html.twig' with {
+								'url':  path('job.status', {'job': job.id}),
+								'label': 'Refresh page',
+								'icon': 'refresh'
+							}%}
+						{% endif %}
+						{% if is_granted('ROLE_ADMIN') %}
+							{% include '@EMSCore/elements/get-button.html.twig' with {
+								'url':  path('job.index'),
+								'label': 'Job\'s list',
+								'icon': 'chevron-circle-right'
+							}%}
+							{% include '@EMSCore/elements/post-button.html.twig' with {
+								'url':  path('job.delete', {'job': job.id}),
+								'message': 'Do you confirm ?',
+								'label': 'Delete',
+								'icon': 'trash'
+							}%}
+						{% endif %}
 					</div>
 				</div>
 

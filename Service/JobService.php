@@ -67,6 +67,16 @@ class JobService
         $this->em->flush();
     }
 
+    public function findByUser($user)
+    {
+        $doneJobs = $this->repository->findBy([
+            'user' => $user,
+        ], [
+            'created' => 'DESC',
+        ], 20);
+        return $doneJobs;
+    }
+
     /**
      * @return int
      */

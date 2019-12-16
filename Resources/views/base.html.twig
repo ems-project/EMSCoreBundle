@@ -340,6 +340,11 @@
       <div class="tab-pane" id="control-sidebar-settings-tab">
           <h3 class="control-sidebar-heading">Last commands</h3>
           <ul class="control-sidebar-menu" id="commands-log">
+              {% if app.user %}
+                  {{ render(controller('EMSCoreBundle:TwigElements:jobs', {
+                      'username' : app.user.username
+                  } ) ) }}
+              {% endif %}
           </ul>
       </div>
       <!-- /.tab-pane -->

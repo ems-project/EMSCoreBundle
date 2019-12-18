@@ -12,7 +12,7 @@ class IndexController extends AppController
     /**
      * @return RedirectResponse
      *
-     * @Route("/indexes/detele-orphans", name="ems_delete_ophean_indexes", methods={"POST"})
+     * @Route("/indexes/delete-orphans", name="ems_delete_ophean_indexes", methods={"POST"})
      */
     public function deleteOrphansIndexesAction()
     {

@@ -478,6 +478,11 @@ services:
         arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.mapping', '@ems.service.contenttype', '@ems.service.environment', '@ems.environment.reindex', '%ems_core.instance_id%', '%ems_core.single_type_index%']
         tags:
             -  { name: console.command }
+    ems.delete.orphans:
+        class: EMS\CoreBundle\Command\DeleteOrphanIndexesCommand
+        arguments: ['@logger', '@app.elasticsearch', '@ems.service.environment', '@ems.service.alias']
+        tags:
+            -  { name: console.command }
     ems.environment.recompute:
         class: EMS\CoreBundle\Command\RecomputeCommand
         arguments: ['@ems.service.data', '@doctrine', '@form.factory', '@ems.service.publish', '@logger', '@app.elasticsearch', '@ems.service.contenttype', '@EMS\CoreBundle\Repository\ContentTypeRepository', '@EMS\CoreBundle\Repository\RevisionRepository']

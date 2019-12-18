@@ -67,7 +67,7 @@ class JobService
         $this->em->flush();
     }
 
-    public function findByUser(string $user)
+    public function findByUser(string $user) : array
     {
         $doneJobs = $this->repository->findBy([
             'user' => $user,

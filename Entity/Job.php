@@ -95,7 +95,7 @@ class Job
     /**
      * @var null|string
      *
-     * @ORM\Column(name="command", type="string", length=255, nullable=true)
+     * @ORM\Column(name="command", type="string", length=2000, nullable=true)
      */
     private $command;
     

@@ -7,6 +7,7 @@ use EMS\CoreBundle\Service\AliasService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Elasticsearch\Common\Exceptions\Missing404Exception;
 
 class DeleteOrphanIndexesCommand extends EmsCommand
 {
@@ -35,12 +36,19 @@ class DeleteOrphanIndexesCommand extends EmsCommand
     {
         $this->aliasService->build();
         foreach ($this->aliasService->getOrphanIndexes() as $index) {
+            $this->deleteOrphanIndex($index, $output);
+        }
+    }
+
+    private function deleteOrphanIndex($index, OutputInterface $output)
+    {
+        try {
             $this->client->indices()->delete([
                 'index' => $index['name'],
             ]);
-            $this->logger->notice('log.index.delete_orphan_index', [
-                'index_name' => $index['name'],
-            ]);
+            $output->writeln('The index with name ' . $index['name'] . ' has been deleted.');
+        } catch (Missing404Exception $e) {
+            $output->writeln('The index with name ' . $index['name'] . ' was not found and could not be deleted. Continuing cleaning...');
         }
     }
 }

@@ -40,7 +40,7 @@ class DeleteOrphanIndexesCommand extends EmsCommand
         }
     }
 
-    private function deleteOrphanIndex($index)
+    private function deleteOrphanIndex(array $index)
     {
         try {
             $this->client->indices()->delete([
@@ -50,7 +50,7 @@ class DeleteOrphanIndexesCommand extends EmsCommand
                 'index_name' => $index['name'],
             ]);
         } catch (Missing404Exception $e) {
-            $this->logger->notice('log.index.index_not_found', [
+            $this->logger->warning('log.index.index_not_found', [
                 'index_name' => $index['name'],
             ]);
         }

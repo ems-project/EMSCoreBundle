@@ -36,19 +36,23 @@ class DeleteOrphanIndexesCommand extends EmsCommand
     {
         $this->aliasService->build();
         foreach ($this->aliasService->getOrphanIndexes() as $index) {
-            $this->deleteOrphanIndex($index, $output);
+            $this->deleteOrphanIndex($index);
         }
     }
 
-    private function deleteOrphanIndex($index, OutputInterface $output)
+    private function deleteOrphanIndex($index)
     {
         try {
             $this->client->indices()->delete([
                 'index' => $index['name'],
             ]);
-            $output->writeln('The index with name ' . $index['name'] . ' has been deleted.');
+            $this->logger->notice('log.index.delete_orphan_index', [
+                'index_name' => $index['name'],
+            ]);
         } catch (Missing404Exception $e) {
-            $output->writeln('The index with name ' . $index['name'] . ' was not found and could not be deleted. Continuing cleaning...');
+            $this->logger->notice('log.index.index_not_found', [
+                'index_name' => $index['name'],
+            ]);
         }
     }
 }

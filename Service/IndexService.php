@@ -1,13 +1,11 @@
 <?php
 
-
 namespace EMS\CoreBundle\Service;
 
 use Elasticsearch\Client;
-use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Psr\Log\LoggerInterface;
 
-class IndexService
+final class IndexService
 {
     /** @var AliasService */
     private $aliasService;
@@ -23,7 +21,7 @@ class IndexService
         $this->logger = $logger;
     }
 
-    public function deleteOrphanIndexes()
+    public function deleteOrphanIndexes(): void
     {
         foreach ($this->aliasService->getOrphanIndexes() as $index) {
             try {
@@ -33,7 +31,7 @@ class IndexService
                 $this->logger->notice('log.index.delete_orphan_index', [
                     'index_name' => $index['name'],
                 ]);
-            } catch (Missing404Exception $e) {
+            } catch (\RuntimeException $e) {
                 $this->logger->notice('log.index.index_not_found', [
                     'index_name' => $index['name'],
                 ]);

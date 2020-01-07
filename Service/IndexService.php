@@ -23,6 +23,7 @@ final class IndexService
 
     public function deleteOrphanIndexes(): void
     {
+        $this->aliasService->build();
         foreach ($this->aliasService->getOrphanIndexes() as $index) {
             try {
                 $this->elasticSearchClient->indices()->delete([

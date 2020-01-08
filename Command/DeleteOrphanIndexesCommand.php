@@ -12,14 +12,10 @@ class DeleteOrphanIndexesCommand extends EmsCommand
 {
     /** @var LoggerInterface */
     protected $logger;
-    /** @var Client */
-    protected $client;
+    /** @var IndexService */
+    protected $indexService;
 
     protected static $defaultName = 'ems:delete:orphans';
-    /**
-     * @var IndexService
-     */
-    private $indexService;
 
     public function __construct(LoggerInterface $logger, Client $client, IndexService $indexService)
     {

@@ -383,6 +383,11 @@ services:
     ems.service.alias:
         class: EMS\CoreBundle\Service\AliasService
         arguments: ['@app.elasticsearch', '@EMS\CoreBundle\Repository\EnvironmentRepository', '@EMS\CoreBundle\Repository\ManagedAliasRepository']
+    EMS\CoreBundle\Service\AliasService: '@ems.service.alias'
+    ems.service.index:
+        class: EMS\CoreBundle\Service\IndexService
+        arguments: ['@ems.service.alias', '@app.elasticsearch', '@logger']
+    EMS\CoreBundle\Service\IndexService: '@ems.service.index'
     ems.elasticsearch.bulker:
         class: EMS\CoreBundle\Elasticsearch\Bulker
         arguments:
@@ -476,6 +481,11 @@ services:
     ems.environment.rebuild:
         class: EMS\CoreBundle\Command\RebuildCommand
         arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.mapping', '@ems.service.contenttype', '@ems.service.environment', '@ems.environment.reindex', '%ems_core.instance_id%', '%ems_core.single_type_index%']
+        tags:
+            -  { name: console.command }
+    ems.delete.orphans:
+        class: EMS\CoreBundle\Command\DeleteOrphanIndexesCommand
+        arguments: ['@logger', '@app.elasticsearch', '@ems.service.index']
         tags:
             -  { name: console.command }
     ems.environment.recompute:

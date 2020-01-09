@@ -91,7 +91,7 @@ class Indexer
         array_map([$this, 'delete'], $delete);
     }
 
-    public function getClient(): Client
+    private function getClient(): Client
     {
         return $this->factory->fromConfig($this->options);
     }

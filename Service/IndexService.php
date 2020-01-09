@@ -10,14 +10,14 @@ final class IndexService
     /** @var AliasService */
     private $aliasService;
     /** @var Client */
-    private $elasticSearchClient;
+    private $client;
     /** @var LoggerInterface */
     private $logger;
 
-    public function __construct(AliasService $aliasService, Client $elasticSearchClient, LoggerInterface $logger)
+    public function __construct(AliasService $aliasService, Client $client, LoggerInterface $logger)
     {
         $this->aliasService = $aliasService;
-        $this->elasticSearchClient = $elasticSearchClient;
+        $this->client = $client;
         $this->logger = $logger;
     }
 
@@ -26,7 +26,7 @@ final class IndexService
         $this->aliasService->build();
         foreach ($this->aliasService->getOrphanIndexes() as $index) {
             try {
-                $this->elasticSearchClient->indices()->delete([
+                $this->client->indices()->delete([
                     'index' => $index['name'],
                 ]);
                 $this->logger->notice('log.index.delete_orphan_index', [

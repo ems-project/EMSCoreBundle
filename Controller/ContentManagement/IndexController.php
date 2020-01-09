@@ -24,8 +24,7 @@ class IndexController extends AppController
         LoggerInterface $logger,
         FormRegistryInterface $formRegistry,
         RequestRuntime $requestRuntime
-    )
-    {
+    ) {
         $this->logger = $logger;
         parent::__construct($logger, $formRegistry, $requestRuntime);
         $this->indexService = $indexService;

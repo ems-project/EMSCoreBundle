@@ -95,4 +95,9 @@ class Indexer
     {
         return $this->factory->fromConfig($this->options);
     }
+
+    public function getAliases($params = array()): array
+    {
+        return $this->getClient()->indices()->getAliases($params);
+    }
 }

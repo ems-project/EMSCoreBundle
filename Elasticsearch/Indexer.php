@@ -91,13 +91,13 @@ class Indexer
         array_map([$this, 'delete'], $delete);
     }
 
+    public function getAliases(string $indexName): array
+    {
+        return $this->getClient()->indices()->getAliases(['index' => $indexName]);
+    }
+
     private function getClient(): Client
     {
         return $this->factory->fromConfig($this->options);
-    }
-
-    public function getAliases($params = array()): array
-    {
-        return $this->getClient()->indices()->getAliases($params);
     }
 }

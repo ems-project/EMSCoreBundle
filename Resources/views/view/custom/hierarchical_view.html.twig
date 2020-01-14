@@ -32,10 +32,14 @@
                         {% endif %}
                         <div class="box-footer">
                             <div class="btn-group">
-                                {{ form_widget(form.reorder) }}
-                                <a href="{{ path('search.publish', { 'search_form[environments][0]': environment.name, 'search_form[contentTypes][0]': parent._type } )  }}" class="btn btn-primary">
-                                    <span class="glyphicon glyphicon-open"></span>&nbsp;Publish
-                                </a>
+                                {% if not reordered %}
+                                    {{ form_widget(form.reorder) }}
+                                {% else %}
+                                    {{ form_widget(form.reorder, { 'attr': {'class': 'hidden'} }) }}
+                                    <a href="{{ path('search.publish', { 'search_form[environments][0]': environment.name, 'search_form[contentTypes][0]': parent._type } )  }}" class="btn btn-primary">
+                                        <span class="glyphicon glyphicon-open"></span>&nbsp;Publish
+                                    </a>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

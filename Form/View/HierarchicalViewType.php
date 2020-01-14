@@ -36,7 +36,7 @@ use Twig_Environment;
  */
 class HierarchicalViewType extends ViewType
 {
-    
+
     /**@var Session $session*/
     protected $session;
 
@@ -48,7 +48,7 @@ class HierarchicalViewType extends ViewType
 
     /**@var ContentTypeService */
     protected $contentTypeService;
-    
+
     public function __construct(FormFactory $formFactory, Twig_Environment $twig, Client $client, LoggerInterface $logger, Session $session, DataService $dataService, Router $router, ContentTypeService $contentTypeService)
     {
         parent::__construct($formFactory, $twig, $client, $logger);
@@ -182,7 +182,7 @@ class HierarchicalViewType extends ViewType
 
         
         $data = [];
-        
+
         $form = $this->formFactory->create(ReorganizeType::class, $data, [
                 'view' => $view,
         ]);
@@ -200,13 +200,13 @@ class HierarchicalViewType extends ViewType
                 EmsFields::LOG_CONTENTTYPE_FIELD => $view->getContentType()->getName(),
                 'view_name' => $view->getName(),
             ]);
-            
-            return new RedirectResponse($this->router->generate('data.draft_in_progress', [
-                    'contentTypeId' => $view->getContentType()->getId(),
-            ], UrlGeneratorInterface::RELATIVE_PATH));
+
+            return new RedirectResponse($this->router->generate('data.customindexview', [
+                    'viewId' => $view->getId(),
+                    'reordered' => true
+            ]));
         }
-        
-        
+
         $response = new Response();
         $response->setContent($this->twig->render('@EMSCore/view/custom/' . $this->getBlockPrefix() . '.html.twig', [
                 'parent' => $parent,
@@ -214,6 +214,7 @@ class HierarchicalViewType extends ViewType
                 'form' => $form->createView(),
                 'contentType' => $view->getContentType(),
                 'environment' => $view->getContentType()->getEnvironment(),
+                'reordered' => $request->get('reordered')
         ]));
         return $response;
     }

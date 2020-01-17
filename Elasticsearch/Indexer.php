@@ -93,7 +93,7 @@ class Indexer
 
     public function getAliasesByIndex(string $indexName): array
     {
-        return $this->getClient()->indices()->getAliases(['index' => $indexName]);
+        return $this->getClient()->indices()->getAlias(['index' => $indexName]);
     }
 
     private function getClient(): Client

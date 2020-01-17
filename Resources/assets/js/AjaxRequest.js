@@ -22,7 +22,7 @@ export default class AjaxRequest {
         if(messages) {
         	for (let index = 0; index < messages.length; ++index) {
         		const message = $($.parseHTML(messages[index]));
-        		$('#system-messages ul.menu').append('<li title="'+message.text()+'">'
+        		$('ul#activity-log').append('<li title="'+message.text()+'">'
                         +'<a href="#" onclick="$(this).parent().remove(); ajaxRequest.updateCounter(); return false;" class="'+color+'">'
                         +messages[index]
                         +'</a>'
@@ -220,9 +220,9 @@ export default class AjaxRequest {
     }
     
     static updateCounter(){
-    	const numberOfElem = $('#system-messages ul.menu >li').length;
+    	const numberOfElem = $('ul#activity-log >li').length;
     	if(numberOfElem) {
-    		$('#system-messages >a >span').text(numberOfElem);    		
+    		$('#system-messages >a >span').text(numberOfElem);
     	}
     	else {
     		$('#system-messages >a >span').empty();

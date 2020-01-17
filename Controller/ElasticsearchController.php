@@ -351,7 +351,7 @@ class ElasticsearchController extends AppController
         // Added for ckeditor adv_link plugin.
         $assetName = $request->query->get('asset_name', false);
         $circleOnly = $request->query->get('circle', false);
-        $pageSize = $this->container->getParameter('ems_core.paging_size');
+        $pageSize = 30;
 
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();

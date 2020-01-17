@@ -5,8 +5,8 @@ namespace EMS\CoreBundle\Controller;
 use Elasticsearch\Client;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\AssetExtractorService;
+use EMS\CoreBundle\Service\JobService;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
-use Symfony\Component\Cache\Simple\FilesystemCache;
 
 class TwigElementsController extends AppController
 {
@@ -39,6 +39,16 @@ class TwigElementsController extends AppController
             [
                 'draftCounterGroupedByContentType' => $draftCounterGroupedByContentType,
                 'status' => $status,
+            ]
+        );
+    }
+
+    public function jobsAction(string $username, JobService $jobService)
+    {
+        return $this->render(
+            '@EMSCore/elements/jobs-list.html.twig',
+            [
+                'jobs' => $jobService->findByUser($username),
             ]
         );
     }

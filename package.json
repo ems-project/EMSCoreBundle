@@ -6,6 +6,7 @@
     "bootstrap-fileinput": "^4.5.0",
     "bootstrap-sass": "3.4.1",
     "bootstrap-select": "^1.13.2",
+    "bootstrap-timepicker": "^0.5.2",
     "crypto-js": "^3.1.9-1",
     "datepicker": "^0.0.0",
     "daterangepicker": "^3.0.3",

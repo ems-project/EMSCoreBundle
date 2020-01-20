@@ -169,29 +169,32 @@ function onFormChange(event, allowAutoPublish){
                 const targetError = $('#'+target+'__error');
                 const targetParent = $('#'+target);
 
-                if($('#'+item.propertyPath+'_value').length){
+                if($('#'+item.propertyPath+'_value').length && $('#' + item.propertyPath + '_value').prop('nodeName') == 'TEXTAREA'){
                     target = item.propertyPath+'_value';
                 }
 
                 if(targetLabel.length) {
+                    const targetParent = $('#' + target);
 
-                    targetLabel.addClass('has-error');
-                    if(item.message && targetError.length > 0) {
-                        targetError.addClass('has-error');
-                        if($('#'+target+'__error span.help-block').length === 0){
-                            targetError.append('<span class="help-block"><ul class="list-unstyled"></ul></span>');
+
+                    if (targetLabel.length) {
+                        targetLabel.closest('div.form-group').addClass('has-error');
+                        if (item.message && targetError.length > 0) {
+                            targetError.addClass('has-error');
+                            if ($('#' + target + '__error span.help-block').length === 0) {
+                                targetError.append('<span class="help-block"><ul class="list-unstyled"></ul></span>');
+                            }
+                            $('#' + target + '__error span.help-block ul.list-unstyled').append('<li><span class="glyphicon glyphicon-exclamation-sign"></span> ' + item.message + '</li>');
                         }
-                        $('#'+target+'__error'+' span.help-block ul.list-unstyled').append('<li><span class="glyphicon glyphicon-exclamation-sign"></span> '+item.message+'</li>');
-                    }
-                }
-                else {
-                    targetParent.parents('.form-group').addClass('has-error');
-                    if(item.message) {
-                        if(targetParent.parents('.form-group').find(' span.help-block').length === 0){
-                            targetParent.parent('.form-group').append('<span class="help-block"><ul class="list-unstyled"><li><span class="glyphicon glyphicon-exclamation-sign"></span> '+item.message+'</li></ul></span>');
-                        }
-                        else {
-                            targetParent.parents('.form-group').find(' span.help-block ul.list-unstyled').append('<li><span class="glyphicon glyphicon-exclamation-sign"></span> '+item.message+'</li>');
+                    } else {
+                        $('#' + target).closest('div.form-group').addClass('has-error');
+                        targetParent.parents('.form-group').addClass('has-error');
+                        if (item.message) {
+                            if (targetParent.parents('.form-group').find(' span.help-block').length === 0) {
+                                targetParent.parent('.form-group').append('<span class="help-block"><ul class="list-unstyled"><li><span class="glyphicon glyphicon-exclamation-sign"></span> ' + item.message + '</li></ul></span>');
+                            } else {
+                                targetParent.parents('.form-group').find(' span.help-block ul.list-unstyled').append('<li><span class="glyphicon glyphicon-exclamation-sign"></span> ' + item.message + '</li>');
+                            }
                         }
                     }
                 }
@@ -665,4 +668,3 @@ $(document).keydown(function(e) {
     return true;
 
 });
-

@@ -22,7 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Twig_Error;
 use ZipArchive;
 
-class ExportCommand extends EmsCommand
+class ExportDocumentsCommand extends EmsCommand
 {
     /** @var Client  */
     protected $client;
@@ -229,8 +229,8 @@ class ExportCommand extends EmsCommand
 
             $scroll_id = $arrayElasticsearchIndex['_scroll_id'];
             $arrayElasticsearchIndex = $this->client->scroll([
-                "scroll_id" => $scroll_id,  //...using our previously obtained _scroll_id
-                "scroll" => $scrollTimeout, // and the same timeout window
+                "scroll_id" => $scroll_id,
+                "scroll" => $scrollTimeout,
             ]);
         }
 

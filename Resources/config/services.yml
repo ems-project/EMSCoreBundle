@@ -478,7 +478,7 @@ services:
             -  { name: console.command }
     ems.contenttype.export:
         class: EMS\CoreBundle\Command\ExportCommand
-        arguments: ['@logger', '@app.elasticsearch', '@ems.service.template', '@ems.service.data', '@ems.service.contenttype', '@ems.service.environment', '%ems_core.instance_id%']
+        arguments: ['@logger', '@app.elasticsearch', '@ems.service.template', '@ems.service.data', '@ems.service.contenttype', '@ems.service.environment', '@EMS\CommonBundle\Twig\RequestRuntime', '%ems_core.instance_id%']
         tags:
             -  { name: console.command }
     ems.environment.rebuild:

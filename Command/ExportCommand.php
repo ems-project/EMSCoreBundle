@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Command;
 use Elasticsearch\Client;
 use EMS\CommonBundle\Common\Document;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
@@ -35,10 +36,12 @@ class ExportCommand extends EmsCommand
     protected $contentTypeService;
     /** @var TemplateService  */
     protected $templateService;
+    /** @var RequestRuntime  */
+    protected $runtime;
     /** @var string */
     protected $instanceId;
 
-    public function __construct(Logger $logger, Client $client, TemplateService $templateService, DataService $dataService, ContentTypeService $contentTypeService, EnvironmentService $environmentService, string $instanceId)
+    public function __construct(Logger $logger, Client $client, TemplateService $templateService, DataService $dataService, ContentTypeService $contentTypeService, EnvironmentService $environmentService, RequestRuntime $runtime, string $instanceId)
     {
         $this->logger = $logger;
         $this->templateService = $templateService;
@@ -47,6 +50,7 @@ class ExportCommand extends EmsCommand
         $this->environmentService = $environmentService;
         $this->instanceId = $instanceId;
         $this->contentTypeService = $contentTypeService;
+        $this->runtime = $runtime;
         parent::__construct($logger, $client);
     }
 
@@ -97,6 +101,13 @@ class ExportCommand extends EmsCommand
                 InputArgument::OPTIONAL,
                 'Time to migrate "scrollSize" items i.e. 30s or 2m',
                 '1m'
+            )
+            ->addOption(
+                'baseUrl',
+                null,
+                InputArgument::OPTIONAL,
+                'Base url of the application (in order to generate a link)',
+                null
             );
     }
 
@@ -107,6 +118,8 @@ class ExportCommand extends EmsCommand
         $format = $input->getArgument('format');
         $scrollSize = $input->getOption('scrollSize');
         $scrollTimeout = $input->getOption('scrollTimeout');
+        $withBusinessId = $input->getOption('withBusinessId');
+        $baseUrl = $input->getOption('baseUrl');
         $contentType = $this->contentTypeService->getByName($contentTypeName);
         if (! $contentType instanceof ContentType) {
             $output->writeln(sprintf("WARNING: Content type named %s not found", $contentType));
@@ -172,7 +185,11 @@ class ExportCommand extends EmsCommand
                     $filename = $value['_id'] . $extension;
                 }
 
-                $document = $this->dataService->hitToBusinessDocument($contentType, $value);
+                if ($withBusinessId) {
+                    $document = $this->dataService->hitToBusinessDocument($contentType, $value);
+                } else {
+                    $document = new Document($contentType->getName(), $value['_id'], $value['_source']);
+                }
 
                 if ($useTemplate) {
                     try {
@@ -239,5 +256,13 @@ class ExportCommand extends EmsCommand
         $progress->finish();
         $output->writeln("");
         $output->writeln("Export done " . $outZipPath);
+
+        if ($baseUrl !== null) {
+            $output->writeln("URL: " . $baseUrl . '/' . $this->runtime->assetPath([
+                EmsFields::CONTENT_FILE_NAME_FIELD_ => 'export.zip',
+            ], [
+                EmsFields::ASSET_CONFIG_FILE_NAMES => [$outZipPath],
+            ]));
+        }
     }
 }

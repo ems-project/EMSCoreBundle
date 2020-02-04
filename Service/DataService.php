@@ -14,6 +14,8 @@ use Doctrine\ORM\ORMException;
 use Doctrine\ORM\QueryBuilder;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
+use EMS\CommonBundle\Common\Document;
+use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Helper\ArrayTool;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Storage\StorageManager;
@@ -36,6 +38,7 @@ use EMS\CoreBundle\Exception\PrivilegeException;
 use EMS\CoreBundle\Form\DataField\CollectionFieldType;
 use EMS\CoreBundle\Form\DataField\ComputedFieldType;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
+use EMS\CoreBundle\Form\DataField\DataLinkFieldType;
 use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
@@ -72,6 +75,8 @@ class DataService
     protected $lockTime;
     /** @var string */
     protected $instanceId;
+    /** @var array */
+    private $cacheBusinessKey = [];
 
     /** @var Twig_Environment */
     protected $twig;
@@ -296,6 +301,114 @@ class DataService
     public function propagateDataToComputedField(FormInterface $form, array& $objectArray, ContentType $contentType, string $type, ?string $ouuid, bool $migration = false, bool $finalize = true)
     {
         return $this->propagateDataToComputedFieldRecursive($form, $objectArray, $contentType, $type, $ouuid, $migration, $finalize, $objectArray, '');
+    }
+
+    public function getBusinessIds(array $keys): array
+    {
+        $items = [];
+        $businessKeys = [];
+        foreach ($keys as $key) {
+            if (isset($this->cacheBusinessKey[$key])) {
+                $businessKeys[$key] = $this->cacheBusinessKey[$key];
+            } else {
+                $link = EMSLink::fromText($key);
+                $items[$link->getContentType()][] = $link->getOuuid();
+                $businessKeys[$key] = $key;
+            }
+        }
+
+        foreach ($items as $contentType => $ouuids) {
+            $contentType = $this->contentTypeService->getByName($contentType);
+            if ($contentType instanceof ContentType && $contentType->getBusinessIdField() && count($ouuids) > 0) {
+                $result = $this->client->search([
+                    'index' => $contentType->getEnvironment()->getAlias(),
+                    'body' => [
+                        'size' => sizeof($ouuids),
+                        '_source' => $contentType->getBusinessIdField(),
+                        'query' => [
+                            'bool' => [
+                                'must' => [
+                                    [
+                                        'term' => [
+                                            '_contenttype' => $contentType->getName()
+                                        ]
+                                    ],
+                                    [
+                                        'terms' => [
+                                            '_id' => $ouuids
+                                        ]
+                                    ],
+                                ]
+                            ]
+                        ]
+
+                    ]
+                ]);
+                foreach ($result['hits']['hits'] as $hits) {
+                    $businessKeys[$contentType->getName() . ':' . $hits['_id']] = $hits['_source'][$contentType->getBusinessIdField()];
+                }
+            }
+        }
+        return array_values($businessKeys);
+    }
+
+    public function getBusinessId(string $key): ?string
+    {
+        return $this->getBusinessIds([$key])[0] ?? null;
+    }
+
+    public function hitToBusinessDocument(ContentType $contentType, array $hit)
+    {
+        $revision = $this->getEmptyRevision($contentType, null);
+        $revision->setRawData($hit['_source']);
+        $revision->setOuuid($hit['_id']);
+        $revisionType = $this->formFactory->create(RevisionType::class, $revision, ['migration' => false, 'raw_data' => $revision->getRawData()]);
+        $result = $this->walkRecursive($revisionType->get('data'), $hit['_source'], function (string $name, $data, DataFieldType $dataFieldType) {
+            if ($data !== null) {
+                if ($dataFieldType->isVirtual()) {
+                    return $data;
+                }
+
+                if ($dataFieldType instanceof DataLinkFieldType) {
+                    if (is_string($data)) {
+                        return [$name => $this->getBusinessId($data)];
+                    }
+                    return [$name => $this->getBusinessIds($data)];
+                }
+
+                return [$name => $data];
+            }
+            return [];
+        });
+        unset($revisionType);
+        return new Document($contentType->getName(), $hit['_id'], $result);
+    }
+
+    private function walkRecursive(FormInterface $form, $rawData, callable $callback)
+    {
+        /** @var DataFieldType $dataFieldType */
+        $dataFieldType = $form->getConfig()->getType()->getInnerType();
+
+        if (!$dataFieldType->isContainer()) {
+            return $callback($form->getName(), $rawData, $dataFieldType);
+        }
+
+        $output = [];
+        if ($form instanceof IteratorAggregate) {
+            /** @var FormInterface $child */
+            foreach ($form->getIterator() as $child) {
+                /**@var DataFieldType $childType */
+                $childType = $child->getConfig()->getType()->getInnerType();
+                if ($childType instanceof DataFieldType) {
+                    $childData = $rawData;
+                    if (!$childType->isVirtual()) {
+                        $childData = $rawData[$child->getName()] ?? null;
+                    }
+                    $output = array_merge($output, $this->walkRecursive($child, $childData, $callback));
+                }
+            }
+        }
+        return $callback($form->getName(), $output, $dataFieldType);
     }
 
     /**

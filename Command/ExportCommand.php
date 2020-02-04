@@ -172,9 +172,10 @@ class ExportCommand extends EmsCommand
                     $filename = $value['_id'] . $extension;
                 }
 
+                $document = $this->dataService->hitToBusinessDocument($contentType, $value);
+
                 if ($useTemplate) {
                     try {
-                        $document = new Document($contentTypeName, $value['_id'], $value['_source']);
                         $content = $this->templateService->render($document, $contentType, 'ssss');
                     } catch (Twig_Error $e) {
                         $this->logger->error('log.command.export.template_error', [
@@ -187,13 +188,12 @@ class ExportCommand extends EmsCommand
                     }
                 } else {
                     if ($accumulateInOneFile) {
-                        $content = $value['_source'];
+                        $content = $document->getSource();
                     } elseif (\strpos($format, TemplateService::JSON_FORMAT) !== false) {
-                        $content = \json_encode($value['_source']);
+                        $content = \json_encode($document->getSource());
                     } elseif (\strpos($format, TemplateService::XML_FORMAT) !== false) {
-                        $content = $this->templateService->getXml($contentType, $value['_source'], false, $value['_id']);
-                    }
-                    else {
+                        $content = $this->templateService->getXml($contentType, $document->getSource(), false, $document->getOuuid());
+                    } else {
                         $this->logger->error('log.command.export.unknow_format', [
                             'format' => $format,
                         ]);

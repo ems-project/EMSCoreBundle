@@ -9,7 +9,8 @@ use EMS\CommonBundle\Common\Document;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Template;
 use Psr\Log\LoggerInterface;
-use Twig_Environment;
+use Twig\Environment;
+use Twig\TemplateWrapper;
 
 class TemplateService
 {
@@ -27,7 +28,7 @@ class TemplateService
     /**@var Registry */
     private $doctrine;
 
-    /**@var Twig_Environment */
+    /**@var Environment */
     private $twig;
 
     /** @var Template */
@@ -36,7 +37,7 @@ class TemplateService
     /** @var ?TemplateWrapper */
     private $twigTemplate;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, Twig_Environment $twig)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, Environment $twig)
     {
         $this->twig = $twig;
         $this->doctrine = $doctrine;

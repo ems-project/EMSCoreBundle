@@ -110,6 +110,13 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     protected $circlesField;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="business_id_field", type="string", length=100, nullable=true)
+     */
+    protected $businessIdField;
+
+    /**
      * @var bool
      *
      * @ORM\Column(name="deleted", type="boolean")
@@ -1767,5 +1774,16 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
             default:
                 parent::deserializeProperty($name, $value);
         }
+    }
+
+    public function getBusinessIdField(): ?string
+    {
+        return $this->businessIdField;
+    }
+
+    public function setBusinessIdField(string $businessIdField): ContentType
+    {
+        $this->businessIdField = $businessIdField;
+        return $this;
     }
 }

@@ -2,15 +2,17 @@
 
 namespace EMS\CoreBundle\Controller;
 
+use Elasticsearch\Client;
 use EMS\CoreBundle\Repository\RevisionRepository;
-use Exception;
-use Symfony\Component\Cache\Simple\FilesystemCache;
+use EMS\CoreBundle\Service\AssetExtractorService;
+use EMS\CoreBundle\Service\JobService;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 class TwigElementsController extends AppController
 {
     const ASSET_EXTRACTOR_STATUS_CACHE_ID = 'status.asset_extractor.result';
 
-    public function sideMenuAction()
+    public function sideMenuAction(AssetExtractorService $assetExtractorService, Client $client)
     {
         $draftCounterGroupedByContentType = [];
 
@@ -23,35 +25,51 @@ class TwigElementsController extends AppController
         }
 
         try {
-            $status = $this->getElasticsearch()->cluster()->health()['status'];
-        } catch (Exception $e) {
+            $status = $client->cluster()->health()['status'];
+        } catch (\Exception $e) {
             $status = 'red';
         }
-        
-        if ($status == 'green') {
-            try {
-                $cache = new FilesystemCache();
-                if (!$cache->has(TwigElementsController::ASSET_EXTRACTOR_STATUS_CACHE_ID)) {
-                    $result = $this->getAssetExtractorService()->hello();
-                    $cache->set(TwigElementsController::ASSET_EXTRACTOR_STATUS_CACHE_ID, $result, 600);
-                } else {
-                    $result = $cache->get(TwigElementsController::ASSET_EXTRACTOR_STATUS_CACHE_ID);
-                }
 
-                if ($result && 200 != $result['code']) {
-                    $status = 'yellow';
-                }
-            } catch (Exception $e) {
-                $status = 'yellow';
-            }
+
+        if ($status === 'green') {
+            $status = $this->getAssetExtractorStatus($assetExtractorService);
         }
-        
         return $this->render(
             '@EMSCore/elements/side-menu.html.twig',
             [
-                    'draftCounterGroupedByContentType' => $draftCounterGroupedByContentType,
-                    'status' => $status,
+                'draftCounterGroupedByContentType' => $draftCounterGroupedByContentType,
+                'status' => $status,
             ]
         );
+    }
+
+    public function jobsAction(string $username, JobService $jobService)
+    {
+        return $this->render(
+            '@EMSCore/elements/jobs-list.html.twig',
+            [
+                'jobs' => $jobService->findByUser($username),
+            ]
+        );
+    }
+
+    private function getAssetExtractorStatus(AssetExtractorService $assetExtractorService)
+    {
+        try {
+            $cache = new FilesystemAdapter('', 60);
+            $cachedStatus = $cache->getItem(TwigElementsController::ASSET_EXTRACTOR_STATUS_CACHE_ID);
+            if (!$cachedStatus->isHit()) {
+                $cachedStatus->set($assetExtractorService->hello());
+                $cache->save($cachedStatus);
+            }
+            $result = $cachedStatus->get();
+
+            if (($result['code'] ?? 500) === 200) {
+                return 'green';
+            }
+        } catch (\Exception $e) {
+        }
+
+        return 'yellow';
     }
 }

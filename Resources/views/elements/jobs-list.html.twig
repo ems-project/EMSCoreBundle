@@ -1,0 +1,5 @@
+{%  for job in jobs %}
+    <li title="Job {{ job.id }}">
+        <a href="{{ path('emsco_job_status', { job: job.id }) }}">Job #{{ job.id }}</a>
+    </li>
+{% endfor %}

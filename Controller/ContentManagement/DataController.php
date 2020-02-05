@@ -1102,7 +1102,8 @@ class DataController extends AppController
             ]);
             return $this->returnJsonResponse($request, true, [
                 'jobId' => $job->getId(),
-                'jobUrl' => $this->generateUrl('emsco_job_start', ['job' => $job->getId()], UrlGeneratorInterface::RELATIVE_PATH),
+                'jobUrl' => $this->generateUrl('emsco_job_start', ['job' => $job->getId()], UrlGeneratorInterface::ABSOLUTE_PATH),
+                'url' => $this->generateUrl('emsco_job_status', ['job' => $job->getId()], UrlGeneratorInterface::ABSOLUTE_PATH),
             ]);
         } catch (Exception $e) {
             $logger->error('log.data.job.initialize_failed', [

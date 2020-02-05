@@ -204,6 +204,7 @@ class ContentTypeType extends AbstractType
         ]);
 
         $builder->add('rootContentType');
+        $builder->add('viewRole', RolePickerType::class);
         
         if ($contentType->getEnvironment()->getManaged()) {
             $builder->add('defaultValue', CodeEditorType::class, [
@@ -215,7 +216,6 @@ class ContentTypeType extends AbstractType
             ]);
             $builder->add('createRole', RolePickerType::class);
             $builder->add('editRole', RolePickerType::class);
-            $builder->add('viewRole', RolePickerType::class);
             $builder->add('publishRole', RolePickerType::class);
             $builder->add('trashRole', RolePickerType::class);
             $builder->add('orderField');

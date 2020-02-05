@@ -17,6 +17,7 @@ use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Form\Field\IconTextType;
 use EMS\CoreBundle\Form\Field\RenderOptionType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Form\Form\ExportDocumentsType;
 use EMS\CoreBundle\Form\Form\SearchFormType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
@@ -614,6 +615,15 @@ class ElasticsearchController extends AppController
 
     /**
      * @param Request $request
+     *
+     * @Route("/search/export", name="emsco_search_export", methods={"POST"})
+     */
+    public function exportAction(Request $request)
+    {
+    }
+
+    /**
+     * @param Request $request
      * @return RedirectResponse|Response
      * @throws Throwable
      * @throws LoaderError
@@ -875,36 +885,45 @@ class ElasticsearchController extends AppController
                 //If no export template is defined, ignore the content type.
                 //If one or more export templates are defined, allow choice of the template to be dynamic
                 $form = null;
+                $exportForms = [];
+                $encoders = array(new JsonEncoder());
+                $normalizers = array(new ObjectNormalizer());
+                $serializer = new Serializer($normalizers, $encoders);
+                $jsonSearch = $serializer->serialize($search, 'json');
+
                 foreach ($contentTypes as $name) {
                     /** @var ContentType $contentType */
                     $contentType = $types[$name];
 
                     $templateChoices = ['JSON export' => 0];
+                    $formatChoices = ['JSON export' => 'json'];
                     /** @var Template $template */
                     foreach ($contentType->getTemplates() as $template) {
                         if (RenderOptionType::EXPORT == $template->getRenderOption() && $template->getBody()) {
                             $templateChoices[$template->getName()] = $template->getId();
+                            $formatChoices[$template->getName()] = $template->getId();
                         }
                     }
 
-                    if (!empty($templateChoices)) {
-                        if (!$form) {
-                            $encoders = array(new JsonEncoder());
-                            $normalizers = array(new ObjectNormalizer());
-                            $serializer = new Serializer($normalizers, $encoders);
-                            $jsonSearch = $serializer->serialize($search, 'json');
+                    $exportForm = $this->createForm(ExportDocumentsType::class, [
+                        'action' => $this->generateUrl('emsco_search_export'),
+                        'contentType' => $contentType,
+                        'query' => json_encode($body),
+                        'formats' => $formatChoices,
+                    ]);
 
-                            $form = $this->createFormBuilder()
-                                ->setMethod('GET')
-                                ->add('search-data', HiddenType::class, array(
-                                    'data' => $jsonSearch,
-                                ));
-                        }
-                        $form->add($name, ChoiceType::class, array(
-                            'label' => 'Export template for ' . $contenttypeService->getByName($name)->getPluralName(),
-                            'choices' => $templateChoices,
-                        ));
+                    $exportForms[] = $exportForm->createView();
+                    if (!$form) {
+                        $form = $this->createFormBuilder()
+                            ->setMethod('GET')
+                            ->add('search-data', HiddenType::class, array(
+                                'data' => $jsonSearch,
+                            ));
                     }
+                    $form->add($name, ChoiceType::class, array(
+                        'label' => 'Export template for ' . $contenttypeService->getByName($name)->getPluralName(),
+                        'choices' => $templateChoices,
+                    ));
                 }
 
                 if ($form) {
@@ -912,6 +931,7 @@ class ElasticsearchController extends AppController
                     $form->handlerequest($request);
                     return $this->render('@EMSCore/elasticsearch/export-search.html.twig', [
                         'form' => $form->createView(),
+                        'exportForms' => $exportForms,
                     ]);
                 } else {
                     return $this->render('@EMSCore/elasticsearch/export-search.html.twig');

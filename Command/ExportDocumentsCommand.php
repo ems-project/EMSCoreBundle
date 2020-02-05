@@ -123,7 +123,7 @@ class ExportDocumentsCommand extends EmsCommand
         $contentType = $this->contentTypeService->getByName($contentTypeName);
         if (! $contentType instanceof ContentType) {
             $output->writeln(sprintf("WARNING: Content type named %s not found", $contentType));
-            return null;
+            return -1;
         }
         $environmentName = $input->getOption('environment');
         if ($environmentName === null) {
@@ -132,7 +132,7 @@ class ExportDocumentsCommand extends EmsCommand
             $environment = $this->environmentService->getByName($environmentName);
             if ($environment === false) {
                 $output->writeln(sprintf("WARNING: Environment named %s not found", $environmentName));
-                return null;
+                return -1;
             }
             $index = $environment->getAlias();
         }
@@ -169,7 +169,7 @@ class ExportDocumentsCommand extends EmsCommand
                 $extension = '.xml';
             } else {
                 $output->writeln(sprintf("WARNING: Format %s not found", $format));
-                return null;
+                return -1;
             }
         }
 
@@ -243,7 +243,7 @@ class ExportDocumentsCommand extends EmsCommand
                 $accumulatedContent = $this->templateService->getXml($contentType, $accumulatedContent, true);
             } else {
                 $output->writeln(sprintf("WARNING: Format %s not found", $format));
-                return null;
+                return -1;
             }
             $zip->addFromString('emsExport' . $extension, $accumulatedContent);
         }

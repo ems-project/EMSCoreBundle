@@ -636,7 +636,7 @@ class ElasticsearchController extends AppController
             $exportDocuments->getFormat(),
             $exportDocuments->getQuery(),
             $exportDocuments->isWithBusinessKey() ? '--withBusinessId' : '',
-            $request->getSchemeAndHttpHost()
+            '//' . $request->getHttpHost()
         );
 
         $job = $jobService->createCommand($this->getUser(), $command);

@@ -256,10 +256,11 @@ class ExportDocumentsCommand extends EmsCommand
         $zip->close();
         $progress->finish();
         $output->writeln("");
-        $output->writeln("Export done " . $outZipPath);
 
-        if ($baseUrl !== null) {
-            $output->writeln("URL: " . $baseUrl . $this->runtime->assetPath(
+        if ($baseUrl === null) {
+            $output->writeln("Export: " . $outZipPath);
+        } else {
+            $output->writeln("Export: " . $baseUrl . $this->runtime->assetPath(
                 [
                 EmsFields::CONTENT_FILE_NAME_FIELD_ => 'export.zip',
                 ],

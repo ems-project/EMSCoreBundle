@@ -56,8 +56,17 @@ class JobController extends AppController
         $theme = new Theme();
         $converter = new AnsiToHtmlConverter($theme);
 
+        $status = preg_replace_callback(
+            '/\/\/(?P<host>[\w\d-\.]+(:[0-9]+)?)(?P<baseurl>(\/[\w\d-\._]+)+\/)(?P<target>[\w\d-\._]+)/',
+            function ($matches) {
+                return sprintf('<a href="//%s%s%s">%s</a>', $matches['host'], $matches['baseurl'], $matches['target'], $matches['target']);
+            },
+            $job->getStatus()
+        );
+
         return $this->render('@EMSCore/job/status.html.twig', [
             'job' => $job,
+            'status' => $status,
             'output' => $converter->convert($job->getOutput())
         ]);
     }

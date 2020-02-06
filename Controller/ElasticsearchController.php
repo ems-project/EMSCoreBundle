@@ -899,35 +899,11 @@ class ElasticsearchController extends AppController
 
             //Form treatment after the "Export results" button has been pressed (= ask for a "content type" <-> "template" mapping)
             if ($form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && array_key_exists('exportResults', $request->query->get('search_form'))) {
-                //Store all the content types present in the current resultset
-                $contentTypes = $this->getAllContentType($results);
-
-                /**@var ContentTypeService $contenttypeService */
-                $contenttypeService = $this->getContentTypeService();
-
-                //Check for each content type that an export template is available.
-                //If no export template is defined, ignore the content type.
-                //If one or more export templates are defined, allow choice of the template to be dynamic
-                $form = null;
                 $exportForms = [];
-                $encoders = array(new JsonEncoder());
-                $normalizers = array(new ObjectNormalizer());
-                $serializer = new Serializer($normalizers, $encoders);
-                $jsonSearch = $serializer->serialize($search, 'json');
-
+                $contentTypes = $this->getAllContentType($results);
                 foreach ($contentTypes as $name) {
                     /** @var ContentType $contentType */
                     $contentType = $types[$name];
-
-                    $templateChoices = ['JSON export' => 0];
-                    $formatChoices = ['JSON export' => 'json'];
-                    /** @var Template $template */
-                    foreach ($contentType->getTemplates() as $template) {
-                        if (RenderOptionType::EXPORT == $template->getRenderOption() && $template->getBody()) {
-                            $templateChoices[$template->getName()] = $template->getId();
-                            $formatChoices[$template->getName()] = $template->getId();
-                        }
-                    }
 
                     $exportForm = $this->createForm(ExportDocumentsType::class, new ExportDocuments(
                         $contentType,
@@ -936,176 +912,11 @@ class ElasticsearchController extends AppController
                     ));
 
                     $exportForms[] = $exportForm->createView();
-                    if (!$form) {
-                        $form = $this->createFormBuilder()
-                            ->setMethod('GET')
-                            ->add('search-data', HiddenType::class, array(
-                                'data' => $jsonSearch,
-                            ));
-                    }
-                    $form->add($name, ChoiceType::class, array(
-                        'label' => 'Export template for ' . $contenttypeService->getByName($name)->getPluralName(),
-                        'choices' => $templateChoices,
-                    ));
                 }
 
-                if ($form) {
-                    $form = $form->add('massExport', SubmitType::class)->getForm();
-                    $form->handlerequest($request);
-                    return $this->render('@EMSCore/elasticsearch/export-search.html.twig', [
-                        'form' => $form->createView(),
-                        'exportForms' => $exportForms,
-                    ]);
-                } else {
-                    return $this->render('@EMSCore/elasticsearch/export-search.html.twig');
-                }
-            }
-
-            //Form treatment after the "Mass export" button has been pressed (= download all the results with the given preset)
-            if ($request->query->get('form') && array_key_exists('massExport', $request->query->get('form'))) {
-                //TODO: ? CANNOT DO THE IS VALID CHECK HERE :(
-
-                //Load the selected templates for each content type
-                /** @var EntityManager $em */
-                $em = $this->getDoctrine()->getManager();
-
-                /** @var ContentTypeRepository $repository */
-                $templateRepository = $em->getRepository('EMSCoreBundle:Template');
-
-                $templateChoices = $request->query->get('form');
-
-                $templateMapping = [];
-                $templateBodyMapping = [];
-
-                $twig = $this->getTwig();
-                $errorList = [];
-                foreach ($templateChoices as $contentName => $templateChoice) {
-                    if ('search-data' != $contentName && 'massExport' != $contentName && '_token' != $contentName) {
-                        $template = $templateRepository->find($templateChoice);
-
-                        if ($template) {
-                            $templateMapping[$contentName] = $template;
-
-                            try {
-                                //TODO why is the body generated and passed to the twig file while the twig file does not use it?
-                                //Asked by dame
-                                //If there is an error in the twig the user will get an 500 error page, this solution is not perfect but at least the template is tested
-                                $body = $twig->createTemplate($template->getBody());
-                            } catch (Twig_Error $e) {
-                                $this->getLogger()->error('log.elasticsearch.template_error', [
-                                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                                    EmsFields::LOG_EXCEPTION_FIELD => $e,
-                                    'template_name' => $template->getName(),
-                                ]);
-                                $body = $twig->createTemplate('error in the template!');
-                                $errorList[] = "Error in template->getBody() for: " . $template->getName();
-                            }
-
-                            $templateBodyMapping[$contentName] = $body;
-                        } else {
-                            //Default JSON export
-                            $templateMapping[$contentName] = null;
-                            $templateBodyMapping[$contentName] = null;
-                        }
-                    }
-                }
-
-                //Create the file for each result and accumulate in a zip stream
-                ini_set('max_execution_time', 0);
-
-                $zip = new ZipStream("eMSExport.zip");
-
-                $resultsSize = count($results['hits']['hits']);
-                $loop = [];
-                $accumulatedContent = "";
-                foreach ($results['hits']['hits'] as $result) {
-                    if (array_key_exists('first', $loop)) {
-                        $loop['first'] = false;
-                    } else {
-                        $loop['first'] = true;
-                    }
-                    if (array_key_exists('index0', $loop)) {
-                        $loop['index0'] = $loop['index0'] + 1;
-                    } else {
-                        $loop['index0'] = 0;
-                    }
-                    if (array_key_exists('index1', $loop)) {
-                        $loop['index1'] = $loop['index1'] + 1;
-                    } else {
-                        $loop['index1'] = 1;
-                    }
-                    $loop['last'] = $resultsSize == $loop['index1'];
-
-                    $name = $result['_type'];
-
-                    $template = $templateMapping[$name];
-                    $body = $templateBodyMapping[$name];
-
-
-                    if ($template) {
-                        $filename = $result['_id'];
-                        if (null != $template->getFilename()) {
-                            try {
-                                $filename = $twig->createTemplate($template->getFilename());
-                            } catch (Twig_Error $e) {
-                                $this->getLogger()->error('log.elasticsearch.template_filename_error', [
-                                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                                    EmsFields::LOG_EXCEPTION_FIELD => $e,
-                                    'template_name' => $template->getName(),
-                                ]);
-                                $filename = $result['_id'];
-                                $errorList[] = "Error in template->getFilename() for: " . $filename;
-                                continue;
-                            }
-                            $filename = $filename->render([
-                                'loop' => $loop,
-                                'contentType' => $template->getContentType(),
-                                'object' => $result,
-                                'source' => $result['_source'],
-                            ]);
-                            $filename = preg_replace('~[\r\n]+~', '', $filename);
-                        }
-                        if (null != $template->getExtension()) {
-                            $filename = $filename . '.' . $template->getExtension();
-                        }
-
-                        try {
-                            $content = $body->render([
-                                'loop' => $loop,
-                                'contentType' => $template->getContentType(),
-                                'object' => $result,
-                                'source' => $result['_source'],
-                            ]);
-                        } catch (Twig_Error $e) {
-                            $this->getLogger()->error('log.elasticsearch.template_filename_error', [
-                                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                                EmsFields::LOG_EXCEPTION_FIELD => $e,
-                                'template_name' => $template->getName(),
-                            ]);
-                            $errorList[] = "Error in templateBody->render() for: " . $filename;
-                            continue;
-                        }
-
-                        if ($template->getAccumulateInOneFile()) {
-                            $accumulatedContent = $accumulatedContent . $content;
-                            if ($loop['last']) {
-                                $zip->addFile($template->getName() . '.' . $template->getExtension(), $accumulatedContent);
-                            }
-                        } else {
-                            $zip->addFile($filename, $content);
-                        }
-                    } else {
-                        //JSON export
-                        $zip->addFile($result['_type'] . ' ' . $result['_id'] . '.json', json_encode($result['_source']));
-                    }
-                }
-
-                if (!empty($errorList)) {
-                    $zip->addFile("All-Errors.txt", implode("\n", $errorList));
-                }
-
-                $zip->finish();
-                exit;
+                return $this->render('@EMSCore/elasticsearch/export-search.html.twig', [
+                    'exportForms' => $exportForms,
+                ]);
             }
 
             return $this->render('@EMSCore/elasticsearch/search.html.twig', [

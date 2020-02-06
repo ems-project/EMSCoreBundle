@@ -7,23 +7,15 @@ use EMS\CoreBundle\Entity\Form\ExportDocuments;
 use EMS\CoreBundle\Entity\Template;
 use EMS\CoreBundle\Form\Field\RenderOptionType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ExportDocumentsType extends AbstractType
 {
-    public function __construct()
-    {
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         /** @var ExportDocuments $data */
@@ -33,7 +25,6 @@ class ExportDocumentsType extends AbstractType
         /** @var Template $template */
         foreach ($data->getContentType()->getTemplates() as $template) {
             if (RenderOptionType::EXPORT == $template->getRenderOption() && $template->getBody()) {
-                $templateChoices[$template->getName()] = $template->getId();
                 $formatChoices[$template->getName()] = $template->getId();
             }
         }
@@ -54,14 +45,5 @@ class ExportDocumentsType extends AbstractType
                 'attr' => ['class' => 'btn-primary btn-sm '],
                 'icon' => 'glyphicon glyphicon-export'
             ]);
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults([
-        ]);
     }
 }

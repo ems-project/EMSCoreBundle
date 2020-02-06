@@ -10,6 +10,7 @@ use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\AggregateOption;
 use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Form\ExportDocuments;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\Form\SearchFilter;
 use EMS\CoreBundle\Entity\Template;
@@ -23,6 +24,7 @@ use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
+use EMS\CoreBundle\Service\JobService;
 use Exception;
 use Symfony\Component\Form\ClickableInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -616,10 +618,32 @@ class ElasticsearchController extends AppController
     /**
      * @param Request $request
      *
-     * @Route("/search/export", name="emsco_search_export", methods={"POST"})
+     * @param JobService $jobService
+     * @return RedirectResponse
+     * @Route("/search/export/{contentType}", name="emsco_search_export", methods={"POST"})
      */
-    public function exportAction(Request $request)
+    public function exportAction(Request $request, JobService $jobService, ContentType $contentType)
     {
+        $exportDocuments = new ExportDocuments($contentType, $this->generateUrl('emsco_search_export', ['contentType' => $contentType]), '{}');
+        $form = $this->createForm(ExportDocumentsType::class, $exportDocuments);
+        $form->handleRequest($request);
+
+        /** @var ExportDocuments */
+        $exportDocuments = $form->getData();
+        $command = sprintf(
+            "ems:contenttype:export %s %s '%s' %s --baseUrl=%s",
+            $contentType->getName(),
+            $exportDocuments->getFormat(),
+            $exportDocuments->getQuery(),
+            $exportDocuments->isWithBusinessKey() ? '--withBusinessId' : '',
+            $request->getSchemeAndHttpHost()
+        );
+
+        $job = $jobService->createCommand($this->getUser(), $command);
+
+        return $this->redirectToRoute('job.status', [
+            'job' => $job->getId(),
+        ]);
     }
 
     /**
@@ -905,12 +929,11 @@ class ElasticsearchController extends AppController
                         }
                     }
 
-                    $exportForm = $this->createForm(ExportDocumentsType::class, [
-                        'action' => $this->generateUrl('emsco_search_export'),
-                        'contentType' => $contentType,
-                        'query' => json_encode($body),
-                        'formats' => $formatChoices,
-                    ]);
+                    $exportForm = $this->createForm(ExportDocumentsType::class, new ExportDocuments(
+                        $contentType,
+                        $this->generateUrl('emsco_search_export', ['contentType' => $contentType->getId()]),
+                        json_encode($body)
+                    ));
 
                     $exportForms[] = $exportForm->createView();
                     if (!$form) {

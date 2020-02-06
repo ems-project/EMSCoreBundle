@@ -2,7 +2,12 @@
 
 namespace EMS\CoreBundle\Form\Form;
 
+use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Form\ExportDocuments;
+use EMS\CoreBundle\Entity\Template;
+use EMS\CoreBundle\Form\Field\RenderOptionType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -21,21 +26,31 @@ class ExportDocumentsType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        /** @var ExportDocuments $data */
         $data = $builder->getData();
+
+        $formatChoices = ['JSON export' => 'json'];
+        /** @var Template $template */
+        foreach ($data->getContentType()->getTemplates() as $template) {
+            if (RenderOptionType::EXPORT == $template->getRenderOption() && $template->getBody()) {
+                $templateChoices[$template->getName()] = $template->getId();
+                $formatChoices[$template->getName()] = $template->getId();
+            }
+        }
         
         $builder
-            ->setAction($data['action'])
+            ->setAction($data->getAction())
             ->add('query', HiddenType::class, [
-                'data' => $data['query'],
+                'data' => $data->getQuery(),
             ])
             ->add('format', ChoiceType::class, [
-                'choices' => $data['formats'],
+                'choices' => $formatChoices,
             ])
             ->add('withBusinessKey', CheckboxType::class, [
                 'data' => true,
             ])
             ->add('export', SubmitEmsType::class, [
-                'label' => 'Export ' . $data['contentType']->getPluralName(),
+                'label' => 'Export ' . $data->getContentType()->getPluralName(),
                 'attr' => ['class' => 'btn-primary btn-sm '],
                 'icon' => 'glyphicon glyphicon-export'
             ]);

@@ -19,6 +19,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig_Error;
 use ZipArchive;
 
@@ -258,11 +259,19 @@ class ExportDocumentsCommand extends EmsCommand
         $output->writeln("Export done " . $outZipPath);
 
         if ($baseUrl !== null) {
-            $output->writeln("URL: " . $baseUrl . '/' . $this->runtime->assetPath([
+            $output->writeln("URL: " . $baseUrl . $this->runtime->assetPath(
+                [
                 EmsFields::CONTENT_FILE_NAME_FIELD_ => 'export.zip',
-            ], [
+                ],
+                [
                 EmsFields::ASSET_CONFIG_FILE_NAMES => [$outZipPath],
-            ]));
+                ],
+                'ems_asset',
+                EmsFields::CONTENT_FILE_HASH_FIELD,
+                EmsFields::CONTENT_FILE_NAME_FIELD,
+                EmsFields::CONTENT_MIME_TYPE_FIELD,
+                UrlGeneratorInterface::ABSOLUTE_PATH
+            ));
         }
     }
 }

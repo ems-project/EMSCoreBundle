@@ -20,7 +20,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Twig_Error;
+use Twig\Error\Error;
 use ZipArchive;
 
 class ExportDocumentsCommand extends EmsCommand
@@ -195,7 +195,7 @@ class ExportDocumentsCommand extends EmsCommand
                 if ($useTemplate) {
                     try {
                         $content = $this->templateService->render($document, $contentType, 'ssss');
-                    } catch (Twig_Error $e) {
+                    } catch (Error $e) {
                         $this->logger->error('log.command.export.template_error', [
                             EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                             EmsFields::LOG_EXCEPTION_FIELD => $e,
@@ -273,5 +273,6 @@ class ExportDocumentsCommand extends EmsCommand
                 UrlGeneratorInterface::ABSOLUTE_PATH
             ));
         }
+        return 0;
     }
 }

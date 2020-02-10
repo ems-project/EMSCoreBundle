@@ -616,10 +616,6 @@ class ElasticsearchController extends AppController
     }
 
     /**
-     * @param Request $request
-     *
-     * @param JobService $jobService
-     * @return RedirectResponse
      * @Route("/search/export/{contentType}", name="emsco_search_export", methods={"POST"})
      */
     public function exportAction(Request $request, JobService $jobService, ContentType $contentType)
@@ -647,14 +643,6 @@ class ElasticsearchController extends AppController
     }
 
     /**
-     * @param Request $request
-     * @return RedirectResponse|Response
-     * @throws Throwable
-     * @throws LoaderError
-     * @throws SyntaxError
-     * @throws Twig_Error_Loader
-     * @throws Twig_Error_Syntax
-     *
      * @Route("/search", name="ems_search")
      * @Route("/search", name="elasticsearch.search")
      */

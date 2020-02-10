@@ -139,15 +139,16 @@ class JobController extends AppController
             return new JsonResponse('job already done');
         }
 
+        set_time_limit(0);
         if (null !== $job->getService()) {
             $output = $jobService->start($job);
 
             try {
+                $output->writeln('Job running');
                 /** @var CoreBundle\Command\EmsCommand $command */
                 $command = $this->container->get($job->getService());
                 $input = new ArrayInput($job->getArguments());
                 $command->run($input, $output);
-                $output->writeln('Job done');
                 $logger->notice('log.data.job.done', [
                     'job_id' => $job->getId(),
                 ]);

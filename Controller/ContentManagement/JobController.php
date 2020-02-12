@@ -47,16 +47,14 @@ class JobController extends AppController
     }
 
     /**
-     * @param Job $job
      * @return Response
      * @Route("/job/status/{job}", name="job.status")
      * @Route("/job/status/{job}", name="emsco_job_status")
      */
-    public function jobStatusAction(Job $job)
+    public function jobStatusAction(Job $job, Encoder $encoder)
     {
         $theme = new Theme();
         $converter = new AnsiToHtmlConverter($theme);
-        $encoder = new Encoder();
 
         return $this->render('@EMSCore/job/status.html.twig', [
             'job' => $job,

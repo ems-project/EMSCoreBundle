@@ -81,6 +81,7 @@
 	"scripts": {
 		"phpcs": "phpcs --standard=phpcs.xml.dist --extensions=php,lib,inc",
 		"phpcbf": "phpcbf --standard=phpcs.xml.dist --extensions=php,lib,inc",
-		"phpstan": "phpstan analyse ."
+		"phpstan": "phpstan analyse .",
+		"phpunit": "phpunit"
 	}
 }

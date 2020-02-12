@@ -197,7 +197,6 @@ class JobService
         $this->em->persist($job);
         $this->em->flush();
 
-        $output->writeln('Job done');
         $this->logger->info('Job ' . $job->getCommand() . ' completed.');
     }
 

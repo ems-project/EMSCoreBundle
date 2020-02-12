@@ -616,6 +616,7 @@ class ElasticsearchController extends AppController
     }
 
     /**
+     * @return RedirectResponse
      * @Route("/search/export/{contentType}", name="emsco_search_export", methods={"POST"})
      */
     public function exportAction(Request $request, JobService $jobService, ContentType $contentType)
@@ -643,6 +644,8 @@ class ElasticsearchController extends AppController
     }
 
     /**
+     * @return RedirectResponse|Response
+     * @throws Throwable
      * @Route("/search", name="ems_search")
      * @Route("/search", name="elasticsearch.search")
      */

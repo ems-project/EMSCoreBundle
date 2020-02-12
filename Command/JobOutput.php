@@ -38,6 +38,8 @@ class JobOutput extends Output
     {
         $this->job->setStatus($message);
         $this->job->setOutput($this->job->getOutput() . $this->getFormatter()->format($message) . ($newline ? PHP_EOL : ''));
-        $this->doctrine->getManager()->persist($this->job);
+        $manager = $this->doctrine->getManager();
+        $manager->persist($this->job);
+        $manager->flush();
     }
 }

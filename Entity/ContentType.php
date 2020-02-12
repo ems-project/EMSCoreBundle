@@ -1,6 +1,7 @@
 <?php
 namespace EMS\CoreBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
@@ -395,9 +396,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     public function __construct()
     {
 
-        $this->templates = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->views = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->singleTypeIndexes = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->templates = new ArrayCollection();
+        $this->views = new ArrayCollection();
+        $this->singleTypeIndexes = new ArrayCollection();
 
         $this->dirty = true;
         $this->editTwigWithWysiwyg = true;
@@ -1067,11 +1068,11 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Set fieldType
      *
-     * @param \EMS\CoreBundle\Entity\FieldType $fieldType
+     * @param FieldType $fieldType
      *
      * @return ContentType
      */
-    public function setFieldType(\EMS\CoreBundle\Entity\FieldType $fieldType = null)
+    public function setFieldType(FieldType $fieldType = null)
     {
         $this->fieldType = $fieldType;
 
@@ -1213,11 +1214,11 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Add template
      *
-     * @param \EMS\CoreBundle\Entity\Template $template
+     * @param Template $template
      *
      * @return ContentType
      */
-    public function addTemplate(\EMS\CoreBundle\Entity\Template $template)
+    public function addTemplate(Template $template)
     {
         $this->templates[] = $template;
 
@@ -1227,9 +1228,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Remove template
      *
-     * @param \EMS\CoreBundle\Entity\Template $template
+     * @param Template $template
      */
-    public function removeTemplate(\EMS\CoreBundle\Entity\Template $template)
+    public function removeTemplate(Template $template)
     {
         $this->templates->removeElement($template);
     }
@@ -1247,11 +1248,11 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Add view
      *
-     * @param \EMS\CoreBundle\Entity\View $view
+     * @param View $view
      *
      * @return ContentType
      */
-    public function addView(\EMS\CoreBundle\Entity\View $view)
+    public function addView(View $view)
     {
         $this->views[] = $view;
 
@@ -1261,9 +1262,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * Remove view
      *
-     * @param \EMS\CoreBundle\Entity\View $view
+     * @param View $view
      */
-    public function removeView(\EMS\CoreBundle\Entity\View $view)
+    public function removeView(View $view)
     {
         $this->views->removeElement($view);
     }

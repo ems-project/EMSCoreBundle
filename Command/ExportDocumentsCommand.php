@@ -19,7 +19,8 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Twig_Error;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Twig\Error\Error;
 use ZipArchive;
 
 class ExportDocumentsCommand extends EmsCommand
@@ -194,7 +195,7 @@ class ExportDocumentsCommand extends EmsCommand
                 if ($useTemplate) {
                     try {
                         $content = $this->templateService->render($document, $contentType, 'ssss');
-                    } catch (Twig_Error $e) {
+                    } catch (Error $e) {
                         $this->logger->error('log.command.export.template_error', [
                             EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                             EmsFields::LOG_EXCEPTION_FIELD => $e,
@@ -255,14 +256,24 @@ class ExportDocumentsCommand extends EmsCommand
         $zip->close();
         $progress->finish();
         $output->writeln("");
-        $output->writeln("Export done " . $outZipPath);
 
-        if ($baseUrl !== null) {
-            $output->writeln("URL: " . $baseUrl . '/' . $this->runtime->assetPath([
+        if ($baseUrl === null) {
+            $output->writeln("Export: " . $outZipPath);
+        } else {
+            $output->writeln("Export: " . $baseUrl . $this->runtime->assetPath(
+                [
                 EmsFields::CONTENT_FILE_NAME_FIELD_ => 'export.zip',
-            ], [
+                ],
+                [
                 EmsFields::ASSET_CONFIG_FILE_NAMES => [$outZipPath],
-            ]));
+                ],
+                'ems_asset',
+                EmsFields::CONTENT_FILE_HASH_FIELD,
+                EmsFields::CONTENT_FILE_NAME_FIELD,
+                EmsFields::CONTENT_MIME_TYPE_FIELD,
+                UrlGeneratorInterface::ABSOLUTE_PATH
+            ));
         }
+        return 0;
     }
 }

@@ -54,7 +54,7 @@
 			
 			            <div class="info-box-content">
 			              <span class="info-box-text">Started on {{ job.created|date(date_time_format) }}</span>
-			              <span class="info-box-number">{{ job.status }}</span>
+			              <span class="info-box-number">{{ status|raw }}</span>
 			
 			              <div class="progress">
 			                <div class="progress-bar" style="width: {{ job.progress }}%"></div>

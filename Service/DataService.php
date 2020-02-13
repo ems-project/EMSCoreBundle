@@ -345,7 +345,7 @@ class DataService
                     ]
                 ]);
                 foreach ($result['hits']['hits'] as $hits) {
-                    $businessKeys[$contentType->getName() . ':' . $hits['_id']] = $hits['_source'][$contentType->getBusinessIdField()];
+                    $businessKeys[$contentType->getName() . ':' . $hits['_id']] = $hits['_source'][$contentType->getBusinessIdField()] ?? $hits['_id'];
                 }
             }
         }

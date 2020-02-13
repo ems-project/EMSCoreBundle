@@ -363,7 +363,7 @@ class DataService
         $revision->setRawData($hit['_source']);
         $revision->setOuuid($hit['_id']);
         $revisionType = $this->formFactory->create(RevisionType::class, $revision, ['migration' => false, 'raw_data' => $revision->getRawData()]);
-        $result = $this->walkRecursive($revisionType->get('data'), $hit['_source'], function (string $name, $data, DataFieldType $dataFieldType) {
+        $result = $this->walkRecursive($revisionType->get('data'), $hit['_source'], function (string $name, $data, DataFieldType $dataFieldType, DataField $dataField) {
             if ($data !== null) {
                 if ($dataFieldType->isVirtual()) {
                     return $data;
@@ -384,13 +384,15 @@ class DataService
         return new Document($contentType->getName(), $hit['_id'], $result);
     }
 
-    private function walkRecursive(FormInterface $form, $rawData, callable $callback)
+    public function walkRecursive(FormInterface $form, $rawData, callable $callback)
     {
         /** @var DataFieldType $dataFieldType */
         $dataFieldType = $form->getConfig()->getType()->getInnerType();
+        /** @var DataField $dataField */
+        $dataField = $form->getNormData();
 
         if (!$dataFieldType->isContainer()) {
-            return $callback($form->getName(), $rawData, $dataFieldType);
+            return $callback($form->getName(), $rawData, $dataFieldType, $dataField);
         }
 
         $output = [];
@@ -408,7 +410,7 @@ class DataService
                 }
             }
         }
-        return $callback($form->getName(), $output, $dataFieldType);
+        return $callback($form->getName(), $output, $dataFieldType, $dataField);
     }
 
     /**

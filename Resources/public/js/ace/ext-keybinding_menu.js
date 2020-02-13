@@ -65,7 +65,6 @@ dom.importCssString(cssText);
 
 module.exports.overlayPage = function overlayPage(editor, contentElement, callback) {
     var closer = document.createElement('div');
-    var ignoreFocusOut = false;
 
     function documentEscListener(e) {
         if (e.keyCode === 27) {
@@ -77,28 +76,17 @@ module.exports.overlayPage = function overlayPage(editor, contentElement, callba
         if (!closer) return;
         document.removeEventListener('keydown', documentEscListener);
         closer.parentNode.removeChild(closer);
-        if (editor) {
-            editor.focus();
-        }
+        editor.focus();
         closer = null;
         callback && callback();
-    }
-    function setIgnoreFocusOut(ignore) {
-        ignoreFocusOut = ignore;
-        if (ignore) {
-            closer.style.pointerEvents = "none";
-            contentElement.style.pointerEvents = "auto";
-        }
     }
 
     closer.style.cssText = 'margin: 0; padding: 0; ' +
         'position: fixed; top:0; bottom:0; left:0; right:0;' +
         'z-index: 9990; ' +
-        (editor ? 'background-color: rgba(0, 0, 0, 0.3);' : '');
-    closer.addEventListener('click', function(e) {
-        if (!ignoreFocusOut) {
-            close();
-        }
+        'background-color: rgba(0, 0, 0, 0.3);';
+    closer.addEventListener('click', function() {
+        close();
     });
     document.addEventListener('keydown', documentEscListener);
 
@@ -108,12 +96,9 @@ module.exports.overlayPage = function overlayPage(editor, contentElement, callba
 
     closer.appendChild(contentElement);
     document.body.appendChild(closer);
-    if (editor) {
-        editor.blur();
-    }
+    editor.blur();
     return {
-        close: close,
-        setIgnoreFocusOut: setIgnoreFocusOut
+        close: close
     };
 };
 
@@ -152,7 +137,7 @@ module.exports.getEditorKeybordShortcuts = function(editor) {
 
 ace.define("ace/ext/keybinding_menu",["require","exports","module","ace/editor","ace/ext/menu_tools/overlay_page","ace/ext/menu_tools/get_editor_keyboard_shortcuts"], function(require, exports, module) {
     "use strict";
-    var Editor = require("../editor").Editor;
+    var Editor = require("ace/editor").Editor;
     function showKeyboardShortcuts (editor) {
         if(!document.getElementById('kbshortcutmenu')) {
             var overlayPage = require('./menu_tools/overlay_page').overlayPage;

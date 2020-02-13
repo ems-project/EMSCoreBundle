@@ -5,9 +5,7 @@ var oop = require("../lib/oop");
 
 var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
 
-var CsoundPreprocessorHighlightRules = function(embeddedRulePrefix) {
-
-    this.embeddedRulePrefix = embeddedRulePrefix === undefined ? "" : embeddedRulePrefix;
+var CsoundPreprocessorHighlightRules = function() {
 
     this.semicolonComments = {
         token : "comment.line.semicolon.csound",
@@ -86,17 +84,6 @@ var CsoundPreprocessorHighlightRules = function(embeddedRulePrefix) {
         }, {
             token : "keyword.preprocessor.csound",
             regex : /#include/,
-            push  : [
-                this.comments,
-                {
-                    token : "string.csound",
-                    regex : /([^ \t])(?:.*?\1)/,
-                    next  : "pop"
-                }
-            ]
-        }, {
-            token : "keyword.preprocessor.csound",
-            regex : /#includestr/,
             push  : [
                 this.comments,
                 {
@@ -224,12 +211,6 @@ oop.inherits(CsoundPreprocessorHighlightRules, TextHighlightRules);
 (function() {
 
     this.pushRule = function(params) {
-        if (Array.isArray(params.next)) {
-            for (var i = 0; i < params.next.length; i++) {
-                params.next[i] = this.embeddedRulePrefix + params.next[i];
-            }
-        }
-
         return {
             regex : params.regex, onMatch: function(value, currentState, stack, line) {
                 if (stack.length === 0)
@@ -244,23 +225,34 @@ oop.inherits(CsoundPreprocessorHighlightRules, TextHighlightRules);
                 this.next = stack[stack.length - 1];
                 return params.token;
             },
-
             get next() { return Array.isArray(params.next) ? params.next[params.next.length - 1] : params.next; },
             set next(next) {
-                if (!Array.isArray(params.next)) {
+                if (Array.isArray(params.next)) {
+                    var oldNext = params.next[params.next.length - 1];
+                    var oldNextIndex = oldNext.length - 1;
+                    var newNextIndex = next.length - 1;
+                    if (newNextIndex > oldNextIndex) {
+                        while (oldNextIndex >= 0 && newNextIndex >= 0) {
+                            if (oldNext.charAt(oldNextIndex) !== next.charAt(newNextIndex)) {
+                                var prefix = next.substr(0, newNextIndex);
+                                for (var i = 0; i < params.next.length; i++) {
+                                    params.next[i] = prefix + params.next[i];
+                                }
+                                break;
+                            }
+                            oldNextIndex--;
+                            newNextIndex--;
+                        }
+                    }
+                } else {
                     params.next = next;
                 }
             },
-
             get token() { return params.token; }
         };
     };
 
     this.popRule = function(params) {
-        if (params.next) {
-            params.next = this.embeddedRulePrefix + params.next;
-        }
-
         return {
             regex : params.regex, onMatch: function(value, currentState, stack, line) {
                 stack.pop();
@@ -287,9 +279,9 @@ var oop = require("../lib/oop");
 
 var CsoundPreprocessorHighlightRules = require("./csound_preprocessor_highlight_rules").CsoundPreprocessorHighlightRules;
 
-var CsoundScoreHighlightRules = function(embeddedRulePrefix) {
+var CsoundScoreHighlightRules = function() {
 
-    CsoundPreprocessorHighlightRules.call(this, embeddedRulePrefix);
+    CsoundPreprocessorHighlightRules.call(this);
 
     this.quotedStringContents.push({
         token : "invalid.illegal.csound-score",

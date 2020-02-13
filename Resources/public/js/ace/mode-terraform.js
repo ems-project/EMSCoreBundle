@@ -52,12 +52,12 @@ var TerraformHighlightRules = function () {
                 regex: "^\\s*(locals|terraform)\\s*{"
             },
             {
-                token: "paren.lparen",
+                token: "paren.lpar",
                 regex: "[[({]"
             },
 
             {
-                token: "paren.rparen",
+                token: "paren.rpar",
                 regex: "[\\])}]"
             },
             {include: "constants"},
@@ -164,11 +164,11 @@ var TerraformHighlightRules = function () {
         ],
         "parenthesis": [
             {
-                token: "paren.lparen",
+                token: "paren.lpar",
                 regex: "\\["
             },
             {
-                token: "paren.rparen",
+                token: "paren.rpar",
                 regex: "\\]"
             }
         ]

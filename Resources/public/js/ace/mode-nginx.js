@@ -8,31 +8,31 @@ var NginxHighlightRules = function () {
 
     this.$rules = {
         "start": [{
-            token: ["storage.type", "text", "string.regexp", "paren.lparen"],
+            token: ["storage.type", "text", "string.regexp", "paren.lpar"],
             regex: "\\b(location)(\\s+)([\\^]?~[\\*]?\\s+.*?)({)"
         }, {
-            token: ["storage.type", "text", "text", "paren.lparen"],
+            token: ["storage.type", "text", "text", "paren.lpar"],
             regex: "\\b(location|match|upstream)(\\s+)(.*?)({)"
         }, {
-            token: ["storage.type", "text", "string", "text", "variable", "text", "paren.lparen"],
+            token: ["storage.type", "text", "string", "text", "variable", "text", "paren.lpar"],
             regex: '\\b(split_clients|map)(\\s+)(\\".*\\")(\\s+)(\\$[\\w_]+)(\\s*)({)'
         }, {
-            token: ["storage.type", "text", "paren.lparen"],
+            token: ["storage.type", "text", "paren.lpar"],
             regex: "\\b(http|events|server|mail|stream)(\\s*)({)"
         }, {
-            token: ["storage.type", "text", "variable", "text", "variable", "text", "paren.lparen"],
+            token: ["storage.type", "text", "variable", "text", "variable", "text", "paren.lpar"],
             regex: '\\b(geo|map)(\\s+)(\\$[\\w_]+)?(\\s*)(\\$[\\w_]+)(\\s*)({)'
         }, {
-            token: "paren.rparen",
+            token: "paren.rpar",
             regex: "(})"
         }, {
-            token: "paren.lparen",
+            token: "paren.lpar",
             regex: "({)"
         }, {
-            token: ["storage.type", "text", "paren.lparen"],
+            token: ["storage.type", "text", "paren.lpar"],
             regex: "\\b(if)(\\s+)(\\()",
             push: [{
-                token: "paren.rparen",
+                token: "paren.rpar",
                 regex: "\\)|$",
                 next: "pop"
             }, {
@@ -275,7 +275,6 @@ var Mode = function () {
     TextMode.call(this);
     this.HighlightRules = NginxHighlightRules;
     this.foldingRules = new CStyleFoldMode();
-    this.$behaviour = this.$defaultBehaviour;
 };
 
 oop.inherits(Mode, TextMode);

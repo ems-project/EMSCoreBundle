@@ -354,7 +354,7 @@ class DataService
 
     public function getBusinessId(string $key): ?string
     {
-        return $this->getBusinessIds([$key])[0] ?? null;
+        return $this->getBusinessIds([$key])[0] ?? $key;
     }
 
     public function hitToBusinessDocument(ContentType $contentType, array $hit)

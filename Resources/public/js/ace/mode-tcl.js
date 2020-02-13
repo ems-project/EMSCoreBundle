@@ -230,9 +230,6 @@ var TclHighlightRules = function() {
                 token : "paren.rparen",
                 regex : "[\\])}]"
             }, {
-                token : "paren.lparen",
-                regex : "[[({]"
-            }, {
                 token : "support.function",
                 regex : "!|\\$|%|&|\\*|\\-\\-|\\-|\\+\\+|\\+|~|===|==|=|!=|!==|<=|>=|<<=|>>=|>>>=|<>|<|>|!|&&|\\|\\||\\?\\:|\\*=|%=|\\+=|\\-=|&=|\\^=|{\\*}|;|::"
             }, {

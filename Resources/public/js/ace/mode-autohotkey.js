@@ -46,9 +46,7 @@ var AutoHotKeyHighlightRules = function() {
          { token: 'keyword.operator.ahk',
            regex: '=|==|<>|:=|<|>|\\*|\\/|\\+|:|\\?|\\-' },
          { token: 'punctuation.ahk',
-           regex: /#|`|::|,|%/ },
-         { token: 'paren',
-           regex: /[{}()]/ },
+           regex: '#|`|::|,|\\{|\\}|\\(|\\)|\\%' },
          { token: 
             [ 'punctuation.quote.double',
               'string.quoted.ahk',

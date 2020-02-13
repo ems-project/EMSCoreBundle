@@ -30,7 +30,7 @@ var PuppetHighlightRules = function () {
                 regex: "\\b([a-zA-Z_]+)(\\s+=>)"
             },
             {
-                token: ["exported.resource.puppet", "keyword.name.resource.puppet", "paren.lparen"],
+                token: ["exported.resource.puppet", "keyword.name.resource.puppet", "paren.lpar"],
                 regex: "(\\@\\@)?(\\s*[a-zA-Z_]*)(\\s*\\{)"
             },
             {
@@ -65,11 +65,11 @@ var PuppetHighlightRules = function () {
             },
 
             {
-                token: "paren.lparen",
+                token: "paren.lpar",
                 regex: "[[({]"
             },
             {
-                token: "paren.rparen",
+                token: "paren.rpar",
                 regex: "[\\])}]"
             },
             {include: "variable"},

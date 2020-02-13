@@ -194,7 +194,7 @@ class ExportDocumentsCommand extends EmsCommand
 
                 if ($useTemplate) {
                     try {
-                        $content = $this->templateService->render($document, $contentType, 'ssss');
+                        $content = $this->templateService->render($document, $contentType, $environmentName);
                     } catch (Error $e) {
                         $this->logger->error('log.command.export.template_error', [
                             EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),

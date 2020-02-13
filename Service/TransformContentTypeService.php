@@ -7,6 +7,7 @@ use EMS\CommonBundle\Common\Document;
 use EMS\CoreBundle\ContentTransformer\ContentTransformContext;
 use EMS\CoreBundle\ContentTransformer\ContentTransformInterface;
 use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Form\Form\RevisionType;
 use IteratorAggregate;
@@ -62,24 +63,27 @@ class TransformContentTypeService
                 $revision = $this->dataService->initNewDraft($document->getContentType(), $document->getOuuid(), null, 'TRANSFORM_CONTENT');
                 $revisionType = $this->formFactory->create(RevisionType::class, $revision);
 
-                $result = $this->walkRecursive($revisionType->get('data'), $hit['_source'], function (string $name, $data, DataFieldType $dataFieldType) use (&$isChanged) {
-                    $transformer = $this->getTransformer($dataFieldType);
+                $result = $this->dataService->walkRecursive($revisionType->get('data'), $hit['_source'], function (string $name, $data, DataFieldType $dataFieldType, DataField $dataField) use (&$isChanged) {
+                    if($data === null) {
+                        return [];
+                    }
 
-                    $contentTransformContext = new ContentTransformContext([$dataFieldType]);
-                    if ($transformer->canTransform($contentTransformContext)) {
+                    $transformer = $this->getTransformer($dataField);
+                    if (!empty($transformer) && $transformer->canTransform(new ContentTransformContext([$dataFieldType]))) {
                         $dataTransformed = $transformer->transform($data);
                         if ($transformer->changed($dataTransformed)) {
                             $isChanged = true;
+                            return [$name => $dataTransformed];
                         }
-                        return [$name => $dataTransformed];
                     }
 
                     return [$name => $data];
                 });
 
                 if (!$isChanged) {
-                    $this->dataService->discardDraft($revision);
+                    $this->dataService->discardDraft($revision, false, 'TRANSFORM_CONTENT');
                     yield $document;
+                    continue;
                 }
 
                 $data = $revision->getRawData();
@@ -96,40 +100,14 @@ class TransformContentTypeService
         }
     }
 
-    private function getTransformer(DataFieldType $dataFieldType): ContentTransformInterface
+    private function getTransformer(DataField $dataField): ?ContentTransformInterface
     {
-        $transformerClass = 'App\ContentTransformer\Instructions\ContentRemover';
+        $transformerClass = $dataField->getFieldType()->getMigrationgOption('transformer');
+        if ($transformerClass === null) {
+            return null;
+        }
 
         return new $transformerClass();
-    }
-
-    private function walkRecursive(FormInterface $form, $rawData, callable $callback): array
-    {
-        /** @var DataFieldType $dataFieldType */
-        $dataFieldType = $form->getConfig()->getType()->getInnerType();
-
-        if (!$dataFieldType->isContainer()) {
-            return $callback($form->getName(), $rawData, $dataFieldType);
-        }
-
-        $output = [];
-
-        if ($form instanceof IteratorAggregate) {
-            /** @var FormInterface $child */
-            foreach ($form->getIterator() as $child) {
-                /**@var DataFieldType $childType */
-                $childType = $child->getConfig()->getType()->getInnerType();
-                if ($childType instanceof DataFieldType) {
-                    $childData = $rawData;
-                    if (!$childType->isVirtual()) {
-                        $childData = $rawData[$child->getName()] ?? null;
-                    }
-                    $output = array_merge($output, $this->walkRecursive($child, $childData, $callback));
-                }
-            }
-        }
-
-        return $callback($form->getName(), $output, $dataFieldType);
     }
 
     public function getTotal(ContentType $contentType): int

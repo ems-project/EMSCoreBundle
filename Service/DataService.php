@@ -1323,9 +1323,9 @@ class DataService
      * @throws OptimisticLockException
      * @throws PrivilegeException
      */
-    public function discardDraft(Revision $revision)
+    public function discardDraft(Revision $revision, $super = false, $username = null)
     {
-        $this->lockRevision($revision);
+        $this->lockRevision($revision, null, $super, $username);
 
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();

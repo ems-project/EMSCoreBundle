@@ -166,4 +166,111 @@ HTML;
 
         $this->assertEquals($output, $inputChanged);
     }
+
+    public function testClassRemovableStyleWithinBulletPoints()
+    {
+        $input = <<<HTML
+<div class="message alert">
+    <ol>
+        <li>Lorem</li>
+        <li><strong>Ipsum</strong></li>
+        <li><span class="removable-style-newWord">Dolor</span></li>
+        <li>Sit</li>
+        <li><em>Amet</em></li>
+    </ol>
+</div> 
+HTML;
+        $output = <<<HTML
+<div class="message alert">
+    <ol>
+        <li>Lorem</li>
+        <li><strong>Ipsum</strong></li>
+        <li>Dolor</li>
+        <li>Sit</li>
+        <li><em>Amet</em></li>
+    </ol>
+</div>
+HTML;
+
+        $htmlStylesRemover = new HtmlStylesRemover();
+        $inputChanged = $htmlStylesRemover->transform($input);
+
+        $this->assertEquals($output, $inputChanged);
+    }
+
+    public function testClassRemovableStyleWithinBulletPoints2()
+    {
+        $input = <<<HTML
+<div class="removable-style-newContent">
+    <ul>
+        <li>Consectetur</li>
+        <li><em>Adipiscing</em></li>
+        <li>Elit</li>
+    </ul>
+</div> 
+HTML;
+        $output = <<<HTML
+<ul>
+    <li>Consectetur</li>
+    <li><em>Adipiscing</em></li>
+    <li>Elit</li>
+</ul>
+HTML;
+
+        $htmlStylesRemover = new HtmlStylesRemover();
+        $inputChanged = $htmlStylesRemover->transform($input);
+
+        $this->assertEquals($output, $inputChanged);
+    }
+
+    public function testClassRemovableStyleWithinTable()
+    {
+        $input = <<<HTML
+<table class="table table-bordered">
+    <tbody>
+        <tr>
+            <td>Lorem</td>
+            <td>Ipsum</td>
+            <td><strong><em><span class="removable-style-deletedWord">Condimentum</span></em></strong></td>
+        </tr>
+        <tr>
+            <td>Dolor</td>
+            <td><strong>Sit</strong></td>
+            <td>Sapien</td>
+        </tr>
+        <tr>
+            <td>Amet</td>
+            <td>Elit</td>
+            <td><span class="removable-style-deletedWord">Natoque</span></td>
+        </tr>
+    </tbody>
+</table>
+HTML;
+        $output = <<<HTML
+<table class="table table-bordered">
+    <tbody>
+        <tr>
+            <td>Lorem</td>
+            <td>Ipsum</td>
+            <td><strong><em>Condimentum</em></strong></td>
+        </tr>
+        <tr>
+            <td>Dolor</td>
+            <td><strong>Sit</strong></td>
+            <td>Sapien</td>
+        </tr>
+        <tr>
+            <td>Amet</td>
+            <td>Elit</td>
+            <td>Natoque</td>
+        </tr>
+    </tbody>
+</table>
+HTML;
+
+        $htmlStylesRemover = new HtmlStylesRemover();
+        $inputChanged = $htmlStylesRemover->transform($input);
+
+        $this->assertEquals($output, $inputChanged);
+    }
 }

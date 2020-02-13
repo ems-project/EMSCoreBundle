@@ -468,6 +468,9 @@ services:
     EMS\CoreBundle\Service\JobService:
         class: EMS\CoreBundle\Service\JobService
         arguments: ['@doctrine', '@kernel', '@logger', '@EMS\CoreBundle\Repository\JobRepository']
+    ems.service.transformcontenttype:
+        class: EMS\CoreBundle\Service\TransformContentTypeService
+        arguments: ['@logger', '@app.elasticsearch', '@ems.service.contenttype', '@ems.service.data', '@form.factory']
 
         
 ### command services ###
@@ -576,6 +579,12 @@ services:
         arguments: ['@logger', '@app.elasticsearch', '@ems.service.asset_extractor', '@ems_common.storage.manager']
         tags:
             - { name: console.command }
+    ems.contenttype.transform:
+        class: EMS\CoreBundle\Command\TransformContentTypeCommand
+        arguments: ['@logger', '@app.elasticsearch', '@ems.service.contenttype', '@ems.service.transformcontenttype']
+        tags:
+            - { name: console.command }
+
 #### security services
     api_key_user_provider:
         class: EMS\CoreBundle\Security\ApiKeyUserProvider

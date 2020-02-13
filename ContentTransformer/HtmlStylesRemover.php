@@ -7,16 +7,16 @@ use EMS\CoreBundle\Form\DataField\WysiwygFieldType;
 class HtmlStylesRemover implements ContentTransformInterface
 {
     /** @var string */
-    private $input;
+    protected $input;
 
     /** @var string */
     private $classNamePrefix;
 
     /** @var \DOMDocument */
-    private $doc;
+    protected $doc;
 
     /** @var \DOMXPath */
-    private $xpath;
+    protected $xpath;
 
     public function __construct(string $classNamePrefix = 'removable-style-')
     {
@@ -56,7 +56,7 @@ class HtmlStylesRemover implements ContentTransformInterface
         return true;
     }
 
-    private function removeHtmlStyles(): ?string
+    protected function removeHtmlStyles(): ?string
     {
         while ($node = $this->xpath->query("//*[contains(concat(' ', normalize-space(@class), ' '), '{$this->classNamePrefix}')]")->item(0)) {
             $node->parentNode->replaceChild(
@@ -83,11 +83,11 @@ class HtmlStylesRemover implements ContentTransformInterface
         return $fragment;
     }
 
-    private function initDocument(string $input): \DOMDocument
+    protected function initDocument(string $input): \DOMDocument
     {
         $doc = new \DOMDocument();
-        $doc->formatOutput = true;
         $doc->preserveWhiteSpace = false;
+        $doc->formatOutput = true;
 
         $doc->loadHtml(
             $this->addTemporaryWrapper($input),

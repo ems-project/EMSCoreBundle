@@ -28,10 +28,10 @@ var NimHighlightRules = function () {
             token: ["identifier", "keyword.operator", "support.function"],
             regex: "(" + identifier + ")([.]{1})(" + identifier + ")(?=\\()"
         }, {//pragmas
-            token: "paren.lparen",
+            token: "paren.lpar",
             regex: "(\\{\\.)",
             next: [{
-                token: "paren.rparen",
+                token: "paren.rpar",
                 regex: '(\\.\\}|\\})',
                 next: "start"
             }, {
@@ -46,10 +46,10 @@ var NimHighlightRules = function () {
                 token: "keyword.operator",
                 regex: /[=:.]/
             }, {
-                token: "paren.lparen",
+                token: "paren.lpar",
                 regex: /[[(]/
             }, {
-                token: "paren.rparen",
+                token: "paren.rpar",
                 regex: /[\])]/
             }, {
                 include: "math"
@@ -86,10 +86,10 @@ var NimHighlightRules = function () {
             token: ["keyword.operator", "text", "storage.type"],
             regex: "([:])(\\s+)(" + identifier + ")(?=$|\\)|\\[|,|\\s+=|;|\\s+\\{)"
         }, {
-            token: "paren.lparen",
+            token: "paren.lpar",
             regex: /\[\.|{\||\(\.|\[:|[[({`]/
         }, {
-            token: "paren.rparen",
+            token: "paren.rpar",
             regex: /\.\)|\|}|\.]|[\])}]/
         }, {
             token: "keyword.operator",
@@ -338,7 +338,6 @@ var Mode = function () {
     TextMode.call(this);
     this.HighlightRules = NimHighlightRules;
     this.foldingRules = new CStyleFoldMode();
-    this.$behaviour = this.$defaultBehaviour;
 };
 
 oop.inherits(Mode, TextMode);

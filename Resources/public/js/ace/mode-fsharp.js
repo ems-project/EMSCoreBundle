@@ -108,11 +108,11 @@ var FSharpHighlightRules = function () {
                 regex: "\\+\\.|\\-\\.|\\*\\.|\\/\\.|#|;;|\\+|\\-|\\*|\\*\\*\\/|\\/\\/|%|<<|>>|&|\\||\\^|~|<|>|<=|=>|==|!=|<>|<-|=|\\(\\*\\)"
             },
             {
-                token: "paren.lparen",
+                token: "paren.lpar",
                 regex: "[[({]"
             },
             {
-                token: "paren.rparen",
+                token: "paren.rpar",
                 regex: "[\\])}]"
             }
         ],

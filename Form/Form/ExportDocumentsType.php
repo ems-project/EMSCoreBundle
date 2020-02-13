@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Form\Form;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Form\ExportDocuments;
 use EMS\CoreBundle\Entity\Template;
+use EMS\CoreBundle\Form\Field\EnvironmentPickerType;
 use EMS\CoreBundle\Form\Field\RenderOptionType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
@@ -37,8 +38,11 @@ class ExportDocumentsType extends AbstractType
             ->add('format', ChoiceType::class, [
                 'choices' => $formatChoices,
             ])
+            ->add('environment', EnvironmentPickerType::class, [
+            ])
             ->add('withBusinessKey', CheckboxType::class, [
                 'data' => true,
+                'required' => false,
             ])
             ->add('export', SubmitEmsType::class, [
                 'label' => 'Export ' . $data->getContentType()->getPluralName(),

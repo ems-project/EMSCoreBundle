@@ -177,6 +177,12 @@ class ExportDocumentsCommand extends EmsCommand
 
         $accumulatedContent = [];
         $errorList = [];
+        $loop = [
+            'first' => true,
+            'index' => 1,
+            'index0' => 0,
+            'last' => ($total === 1)
+        ];
 
         while (isset($arrayElasticsearchIndex['hits']['hits']) && count($arrayElasticsearchIndex['hits']['hits']) > 0) {
             foreach ($arrayElasticsearchIndex["hits"]["hits"] as $index => $value) {
@@ -194,7 +200,9 @@ class ExportDocumentsCommand extends EmsCommand
 
                 if ($useTemplate) {
                     try {
-                        $content = $this->templateService->render($document, $contentType, $environmentName);
+                        $content = $this->templateService->render($document, $contentType, $environmentName, [
+                            'loop' => $loop,
+                        ]);
                     } catch (Error $e) {
                         $this->logger->error('log.command.export.template_error', [
                             EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
@@ -226,6 +234,10 @@ class ExportDocumentsCommand extends EmsCommand
                     $zip->addFromString($filename, $content);
                 }
                 $progress->advance();
+                ++$loop['index0'];
+                ++$loop['index'];
+                $loop['first'] = false;
+                $loop['last'] = ($total === $loop['index']);
             }
 
             $scroll_id = $arrayElasticsearchIndex['_scroll_id'];

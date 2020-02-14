@@ -15,6 +15,8 @@ class ExportDocuments
     private $withBusinessKey = false;
     /** @var ContentType */
     private $contentType;
+    /** @var string */
+    private $environment;
 
 
     public function __construct(ContentType $contentType, string $action = '', string $query = '{}')
@@ -76,6 +78,17 @@ class ExportDocuments
     public function setContentType(ContentType $contentType): ExportDocuments
     {
         $this->contentType = $contentType;
+        return $this;
+    }
+
+    public function getEnvironment(): ?string
+    {
+        return $this->environment;
+    }
+
+    public function setEnvironment(string $environment): ExportDocuments
+    {
+        $this->environment = $environment;
         return $this;
     }
 }

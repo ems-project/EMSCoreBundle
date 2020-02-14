@@ -345,7 +345,7 @@ class DataService
                     ]
                 ]);
                 foreach ($result['hits']['hits'] as $hits) {
-                    $businessKeys[$contentType->getName() . ':' . $hits['_id']] = $hits['_source'][$contentType->getBusinessIdField()];
+                    $businessKeys[$contentType->getName() . ':' . $hits['_id']] = $hits['_source'][$contentType->getBusinessIdField()] ?? $hits['_id'];
                 }
             }
         }
@@ -354,7 +354,7 @@ class DataService
 
     public function getBusinessId(string $key): ?string
     {
-        return $this->getBusinessIds([$key])[0] ?? null;
+        return $this->getBusinessIds([$key])[0] ?? $key;
     }
 
     public function hitToBusinessDocument(ContentType $contentType, array $hit)

@@ -628,11 +628,12 @@ class ElasticsearchController extends AppController
         /** @var ExportDocuments */
         $exportDocuments = $form->getData();
         $command = sprintf(
-            "ems:contenttype:export %s %s '%s' %s --baseUrl=%s",
+            "ems:contenttype:export %s %s '%s'%s --environment=%s --baseUrl=%s",
             $contentType->getName(),
             $exportDocuments->getFormat(),
             $exportDocuments->getQuery(),
-            $exportDocuments->isWithBusinessKey() ? '--withBusinessId' : '',
+            $exportDocuments->isWithBusinessKey() ? ' --withBusinessId' : '',
+            $exportDocuments->getEnvironment(),
             '//' . $request->getHttpHost()
         );
 

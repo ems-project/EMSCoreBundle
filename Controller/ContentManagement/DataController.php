@@ -492,14 +492,19 @@ class DataController extends AppController
         $searchForm->setSortOrder('asc');
 
         $filter = $searchForm->getFilters()[0];
-        $filter->setBooleanClause('must');
+        $filter->setBooleanClause('should');
         $filter->setField($revision->getContentType()->getRefererFieldName());
         $filter->setPattern($type . ':' . $ouuid);
-        if (empty($revision->getContentType()->getRefererFieldName())) {
-            $filter->setOperator('match_and');
-        } else {
-            $filter->setOperator('term');
-        }
+        $filter->setOperator('term');
+
+        $filter = new SearchFilter();
+        $filter->setBooleanClause('should');
+        $filter->setField($revision->getContentType()->getRefererFieldName());
+        $filter->setPattern($type . ':' . $ouuid);
+        $filter->setOperator('match_and');
+        $searchForm->addFilter($filter);
+
+        $searchForm->setMinimumShouldMatch(1);
 
         $refParams = [
             '_source' => false,
@@ -515,7 +520,6 @@ class DataController extends AppController
             'availableEnv' => $availableEnv,
             'object' => $revision->getObject($objectArray),
             'referrers' => $client->search($refParams),
-            'referrersFilter' => $filter,
             'page' => $page,
             'lastPage' => $lastPage,
             'counter' => $counter,
@@ -523,6 +527,7 @@ class DataController extends AppController
             'dataFields' => $dataFields,
             'compareData' => $compareData,
             'compareId' => $compareId,
+            'referrersForm' => $searchForm,
         ]);
     }
 

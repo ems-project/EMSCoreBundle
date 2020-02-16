@@ -494,13 +494,13 @@ class DataController extends AppController
         $filter = $searchForm->getFilters()[0];
         $filter->setBooleanClause('should');
         $filter->setField($revision->getContentType()->getRefererFieldName());
-        $filter->setPattern($type . ':' . $ouuid);
+        $filter->setPattern(sprintf('%s:%s', $type, $ouuid));
         $filter->setOperator('term');
 
         $filter = new SearchFilter();
         $filter->setBooleanClause('should');
         $filter->setField($revision->getContentType()->getRefererFieldName());
-        $filter->setPattern($type . ':' . $ouuid);
+        $filter->setPattern(sprintf('"%s:%s"', $type, $ouuid));
         $filter->setOperator('match_and');
         $searchForm->addFilter($filter);
 

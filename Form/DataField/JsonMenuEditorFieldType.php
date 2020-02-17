@@ -55,9 +55,7 @@ class JsonMenuEditorFieldType extends DataFieldType
         }
 
         $attr['data-locales'] = $options['locales'];
-        $attr['data-language'] = $options['language'];
         $attr['data-maxDepth'] = $options['maxDepth'];
-        $attr['data-theme'] = $options['theme'];
         $attr['data-disabled'] = !$this->authorizationChecker->isGranted($fieldType->getMinimumRole());
         $attr['class'] .= ' code_editor_ems';
 

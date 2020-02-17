@@ -361,6 +361,7 @@
 		{%- else -%}{# placeholder for the prototype #}
 			{{- form.vars.label -}}
         {%- endif -%}
+		<span class="collection-label-field"></span>
 	</label>
 {%- endblock collectionitemtype_label -%}
 
@@ -524,6 +525,7 @@
 	<div class="collection-panel"
 		 data-name="{{ form.vars.name }}"
 		 data-id="{{ form.vars.id }}"
+		 data-label-field="{{ form.vars.labelField|e('html_attr') }}"
 		 data-prototype-label="{{ form.vars.prototype.vars.label|e('html_attr') }}"
 		 data-prototype-name="{{ form.vars.prototype.vars.name|e('html_attr') }}"
 		data-prototype="{{ form_row(form.vars.prototype)|e }}"

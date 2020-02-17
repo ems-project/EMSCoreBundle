@@ -21,7 +21,7 @@
   "_resolved": "https://registry.npmjs.org/ckeditor/-/ckeditor-4.12.1.tgz",
   "_shasum": "954a7b028dd611e44ba51cc7c2fe051cf1052186",
   "_spec": "ckeditor@^4.11.2",
-  "_where": "/Users/theus/git/EMSCoreBundle/node_modules/admin-lte",
+  "_where": "C:\\dev\\prj\\EMSCoreBundle\\node_modules\\admin-lte",
   "author": {
     "name": "CKSource",
     "url": "http://cksource.com/"

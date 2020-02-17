@@ -29,6 +29,22 @@ $("form[name=revision]").submit(function( ) {
     synch = true;
 });
 
+function updateCollectionLabel()
+{
+    $('.collection-panel').each(function() {
+        const collectionPanel = $(this);
+        const fieldLabel = collectionPanel.data('label-field');
+        if (fieldLabel) {
+            $(this).children(':first').children(':first').children().each(function(){
+                let val = $(this).find('input[name*='+fieldLabel+']').val();
+                if (typeof val !== 'undefined') {
+                    $(this).find('.collection-label-field').html(' | ' + val)
+                }
+            });
+        }
+    });
+}
+
 function updateChoiceFieldTypes()
 {
     $('.ems-choice-field-type').each(function(){
@@ -134,6 +150,7 @@ function onFormChange(event, allowAutoPublish){
     synch = false;
 
     updateChoiceFieldTypes();
+    updateCollectionLabel();
 
 
     if(waitingResponse) {
@@ -628,6 +645,7 @@ function addEventListeners(target){
 $(window).ready(function() {
 
     updateChoiceFieldTypes();
+    updateCollectionLabel();
 
     for(let i=0; i < stylesSets.length; ++i) {
         CKEDITOR.stylesSet.add(

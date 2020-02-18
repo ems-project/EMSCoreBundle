@@ -18729,6 +18729,12 @@ button.button-collapse-all[aria-expanded=false]:after {
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAABmJLR0QAigCKAIrj2uckAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4wsJCwMIf3+JBwAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAAAKElEQVQY02Ps6upqYEACpaWlyFwGJgYCgHIFjP///0dxQ3d3N73dAAACSAiqa5FRWQAAAABJRU5ErkJggg==);
   background-repeat: repeat; }
 
+div.box-body p {
+  overflow-x: auto; }
+
+div.console {
+  overflow-x: auto; }
+
 /*!
  *   AdminLTE v2.4.8
  *   Author: Almsaeed Studio

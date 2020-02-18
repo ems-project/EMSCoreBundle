@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
+use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\Job;
@@ -46,19 +47,19 @@ class JobController extends AppController
     }
 
     /**
-     * @param Job $job
      * @return Response
      * @Route("/job/status/{job}", name="job.status")
      * @Route("/job/status/{job}", name="emsco_job_status")
      */
-    public function jobStatusAction(Job $job)
+    public function jobStatusAction(Job $job, Encoder $encoder)
     {
         $theme = new Theme();
         $converter = new AnsiToHtmlConverter($theme);
 
         return $this->render('@EMSCore/job/status.html.twig', [
             'job' => $job,
-            'output' => $converter->convert($job->getOutput())
+            'status' => $encoder->encodeUrl($job->getStatus()),
+            'output' => $encoder->encodeUrl($converter->convert($job->getOutput()))
         ]);
     }
 
@@ -130,15 +131,16 @@ class JobController extends AppController
             return new JsonResponse('job already done');
         }
 
+        set_time_limit(0);
         if (null !== $job->getService()) {
             $output = $jobService->start($job);
 
             try {
+                $output->writeln('Job running');
                 /** @var CoreBundle\Command\EmsCommand $command */
                 $command = $this->container->get($job->getService());
                 $input = new ArrayInput($job->getArguments());
                 $command->run($input, $output);
-                $output->writeln('Job done');
                 $logger->notice('log.data.job.done', [
                     'job_id' => $job->getId(),
                 ]);

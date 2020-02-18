@@ -182,18 +182,18 @@ function onFormChange(event, allowAutoPublish){
                  * @param {{propertyPath:string}} item
                  */
                 let target = item.propertyPath;
-                const targetLabel = $('#'+target+'__label');
-                const targetError = $('#'+target+'__error');
-                const targetParent = $('#'+target);
+                const targetLabel = $('#' + target + '__label');
+                const targetError = $('#' + target + '__error');
 
-                if($('#'+item.propertyPath+'_value').length){
+                let propPath = $('#'+item.propertyPath+'_value');
+                if(propPath.length && propPath.prop('nodeName') === 'TEXTAREA'){
                     target = item.propertyPath+'_value';
                 }
 
-                if(targetLabel.length) {
-
-                    targetLabel.addClass('has-error');
-                    if(item.message && targetError.length > 0) {
+                const targetParent = $('#' + target);
+                if (targetLabel.length) {
+                    targetLabel.closest('div.form-group').addClass('has-error');
+                    if (item.message && targetError.length > 0) {
                         targetError.addClass('has-error');
                         if($('#'+target+'__error span.help-block').length === 0){
                             targetError.append('<span class="help-block"><ul class="list-unstyled"></ul></span>');
@@ -202,6 +202,7 @@ function onFormChange(event, allowAutoPublish){
                     }
                 }
                 else {
+                    $('#' + target).closest('div.form-group').addClass('has-error');
                     targetParent.parents('.form-group').addClass('has-error');
                     if(item.message) {
                         if(targetParent.parents('.form-group').find(' span.help-block').length === 0){

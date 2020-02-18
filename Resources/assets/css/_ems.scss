@@ -90,3 +90,11 @@ button.button-collapse-all[aria-expanded=false]:after {
   background-image: url('../images/background-img.png');
   background-repeat: repeat;
 }
+
+div.box-body p {
+  overflow-x: auto;
+}
+
+div.console {
+  overflow-x: auto;
+}

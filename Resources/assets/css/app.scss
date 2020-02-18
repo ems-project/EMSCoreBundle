@@ -13,7 +13,7 @@ $ionicons-font-path: $node-modules-path + "ionicons/dist/fonts/";
 @import "jquery_ui";
 @import "ckeditor";
 @import "bootstrap_fix";
-@import "~bootstrap-timepicker/css/bootstrap-timepicker.css";
+@import "~admin-lte/plugins/timepicker/bootstrap-timepicker.css";
 @import "~fullcalendar/dist/fullcalendar.css";
 @import "~select2/src/scss/core";
 ////@import "AdminLTE"; >> see less

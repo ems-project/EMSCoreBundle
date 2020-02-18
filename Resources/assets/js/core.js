@@ -30,7 +30,7 @@ require('bootstrap-colorpicker');
 // require('bootstrap-daterangepicker');
 require('bootstrap-slider');
 require('bootstrap-select');
-require('bootstrap-timepicker');
+require('admin-lte/plugins/timepicker/bootstrap-timepicker');
 require('chart.js');
 require('ckeditor');
 require('datatables.net');

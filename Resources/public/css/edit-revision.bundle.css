@@ -146,9 +146,9 @@
 }
 
 /*!
- * FullCalendar v3.10.0
+ * FullCalendar v3.10.1
  * Docs & License: https://fullcalendar.io/
- * (c) 2018 Adam Shaw
+ * (c) 2019 Adam Shaw
  */
 .fc {
   direction: ltr;
@@ -18311,6 +18311,12 @@ ul.navbar-nav > .user-menu > .dropdown-menu > li.user-header {
 .ion-md-woman:before {
   content: "\F3AA"; }
 
+@keyframes bs-notify-fadeOut {
+  0% {
+    opacity: 0.9; }
+  100% {
+    opacity: 0; } }
+
 select.bs-select-hidden,
 .bootstrap-select > select.bs-select-hidden,
 select.selectpicker {
@@ -18354,10 +18360,10 @@ select.selectpicker {
   .has-error .bootstrap-select .dropdown-toggle,
   .error .bootstrap-select .dropdown-toggle,
   .bootstrap-select.is-invalid .dropdown-toggle,
-  .was-validated .bootstrap-select .selectpicker:invalid + .dropdown-toggle {
+  .was-validated .bootstrap-select select:invalid + .dropdown-toggle {
     border-color: #b94a48; }
   .bootstrap-select.is-valid .dropdown-toggle,
-  .was-validated .bootstrap-select .selectpicker:valid + .dropdown-toggle {
+  .was-validated .bootstrap-select select:valid + .dropdown-toggle {
     border-color: #28a745; }
   .bootstrap-select.fit-width {
     width: auto !important; }
@@ -18531,6 +18537,8 @@ select.selectpicker {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box; }
+    .bootstrap-select .dropdown-menu .notify.fadeOut {
+      animation: 300ms linear 750ms forwards bs-notify-fadeOut; }
 
 .bootstrap-select .no-results {
   padding: 3px;
@@ -18736,11 +18744,12 @@ div.console {
   overflow-x: auto; }
 
 /*!
- *   AdminLTE v2.4.8
- *   Author: Almsaeed Studio
- *	 Website: Almsaeed Studio <https://adminlte.io>
- *   License: Open source - MIT
- *           Please visit http://opensource.org/licenses/MIT for more information
+ * AdminLTE v2.4.18
+ * 
+ *   Author:  Colorlib
+ *   Support: <https://github.com/ColorlibHQ/AdminLTE/issues>
+ *   Repository: git://github.com/ColorlibHQ/AdminLTE.git
+ *   License: MIT <http://opensource.org/licenses/MIT>
  */
 /*
  * Core: General Layout Style
@@ -18823,9 +18832,14 @@ body {
   }
 }
 .content-wrapper {
-  min-height: 100%;
+  min-height: calc(100vh - 101px);
   background-color: #ecf0f5;
   z-index: 800;
+}
+@media (max-width: 767px) {
+  .content-wrapper {
+    min-height: calc(100vh - 151px);
+  }
 }
 .main-footer {
   background: #fff;
@@ -18999,6 +19013,13 @@ a:focus {
 .main-header .sidebar-toggle:active {
   background: transparent;
 }
+.main-header .sidebar-toggle.fa5 {
+  font-family: "Font Awesome 5 Free";
+}
+.main-header .sidebar-toggle.fa5:before {
+  content: "\F0C9";
+  font-weight: 900;
+}
 .main-header .sidebar-toggle .icon-bar {
   display: none;
 }
@@ -19032,11 +19053,39 @@ a:focus {
   font-weight: 300;
   overflow: hidden;
 }
+.main-header .logo img {
+  padding: 4px;
+  object-fit: contain;
+  margin: 0 auto;
+}
 .main-header .logo .logo-lg {
   display: block;
 }
+.main-header .logo .logo-lg img {
+  max-width: 200px;
+  max-height: 50px;
+}
+.main-header .logo .logo-lg .brandlogo-image {
+  margin-top: 8px;
+  margin-right: 10px;
+  margin-left: -5px;
+}
 .main-header .logo .logo-mini {
   display: none;
+}
+.main-header .logo .logo-mini img {
+  max-width: 50px;
+  max-height: 50px;
+}
+.main-header .logo .logo-mini .brandlogo-image {
+  margin-top: 8px;
+  margin-right: 10px;
+  margin-left: 10px;
+}
+.main-header .logo .brandlogo-image {
+  float: left;
+  height: 34px;
+  width: auto;
 }
 .main-header .navbar-brand {
   color: #fff;
@@ -19329,6 +19378,7 @@ a:focus {
   .sidebar-mini.sidebar-collapse .sidebar-menu > li > a > span,
   .sidebar-mini.sidebar-collapse .sidebar-menu > li > .treeview-menu,
   .sidebar-mini.sidebar-collapse .sidebar-menu > li > a > .pull-right,
+  .sidebar-mini.sidebar-collapse .sidebar-menu > li > a > span > .pull-right,
   .sidebar-mini.sidebar-collapse .sidebar-menu li.header {
     display: none !important;
     -webkit-transform: translateZ(0);
@@ -19442,6 +19492,11 @@ a:focus {
 .control-sidebar.control-sidebar-open,
 .control-sidebar.control-sidebar-open + .control-sidebar-bg {
   right: 0;
+}
+.control-sidebar-hold-transition .control-sidebar-bg,
+.control-sidebar-hold-transition .control-sidebar,
+.control-sidebar-hold-transition .content-wrapper {
+  transition: none;
 }
 .control-sidebar-open .control-sidebar-bg,
 .control-sidebar-open .control-sidebar {
@@ -20483,9 +20538,9 @@ a:focus {
   margin-right: 5px;
 }
 .box-header > .box-tools {
-  position: absolute;
-  right: 10px;
-  top: 5px;
+  float: right;
+  margin-top: -5px;
+  margin-bottom: -5px;
 }
 .box-header > .box-tools [data-toggle="tooltip"] {
   position: relative;
@@ -21833,6 +21888,16 @@ table.text-center th {
 .treeview-menu > li > a > .fa-angle-down {
   width: auto;
 }
+.treeview > ul.treeview-menu {
+  overflow: hidden;
+  height: auto;
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+}
+.treeview.menu-open > ul.treeview-menu {
+  overflow: visible;
+  height: auto;
+}
 /*
  * Page: Mailbox
  * -------------
@@ -21985,6 +22050,7 @@ table.text-center th {
 }
 .login-page,
 .register-page {
+  height: auto;
   background: #d2d6de;
 }
 .login-box,
@@ -24169,6 +24235,27 @@ fieldset[disabled] .btn-yahoo.focus {
 .chart svg,
 .chart canvas {
   width: 100% !important;
+}
+hr {
+  border-top: 1px solid #555555;
+}
+#red .slider-selection {
+  background: #f56954;
+}
+#blue .slider-selection {
+  background: #3c8dbc;
+}
+#green .slider-selection {
+  background: #00a65a;
+}
+#yellow .slider-selection {
+  background: #f39c12;
+}
+#aqua .slider-selection {
+  background: #00c0ef;
+}
+#purple .slider-selection {
+  background: #932ab6;
 }
 /*
  * Misc: print

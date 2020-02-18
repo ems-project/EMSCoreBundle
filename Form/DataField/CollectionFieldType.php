@@ -106,6 +106,7 @@ class CollectionFieldType extends DataFieldType
         $view->vars ['itemBootstrapClass'] = $options ['itemBootstrapClass'];
         $view->vars ['sortable'] = $options ['sortable'];
         $view->vars ['collapsible'] = $options ['collapsible'];
+        $view->vars ['labelField'] = $options ['labelField'];
     }
     
     public function configureOptions(OptionsResolver $resolver)
@@ -118,6 +119,7 @@ class CollectionFieldType extends DataFieldType
         $resolver->setDefault('collapsible', false);
         $resolver->setDefault('sortable', false);
         $resolver->setDefault('itemBootstrapClass', null);
+        $resolver->setDefault('labelField', null);
     }
     
     public static function isContainer()
@@ -178,6 +180,8 @@ class CollectionFieldType extends DataFieldType
         $optionsForm->get('displayOptions')->add('singularLabel', TextType::class, [
                 'required' => false
         ])->add('itemBootstrapClass', TextType::class, [
+                'required' => false
+        ])->add('labelField', TextType::class, [
                 'required' => false
         ])->add('icon', IconPickerType::class, [
                 'required' => false

@@ -24,11 +24,34 @@ div.table-responsive {
 	white-space: nowrap;
 }
 
-ol.vertical li {
+ol.vertical {
+  border: 1px solid #cccccc;
+  padding: 8px;
+
+  li {
     display: block;
-    margin: 7px;
-    padding: 7px;
+    margin-top: 6px;
+
     border: 1px solid #cccccc;
+
+    & > div > span.input-group {
+      margin-right: -1px;
+      margin-left: -1px;
+      margin-top: -1px;
+      margin-bottom: 8px;
+    }
+
+    &.mjs-nestedSortable-no-nesting > div > span.input-group {
+      margin-bottom: -2px;
+    }
+  }
+
+  & ol {
+    border-top: 0;
+    padding-left: 30px;
+    padding-right: 8px;
+    padding-bottom: 8px;
+  }
 }
 
 .mjs-nestedSortable-error {

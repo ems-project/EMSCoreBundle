@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Form\DataField;
 
+use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -43,23 +44,25 @@ class JsonMenuEditorFieldType extends DataFieldType
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
+        parent::buildView($view, $form, $options);
+
+        /** @var FieldType */
         $fieldType = $options['metadata'];
 
-        /*get options for twig context*/
-        parent::buildView($view, $form, $options);
-        $view->vars ['icon'] = $options ['icon'];
-
-        $attr = $view->vars['attr'];
-        if (empty($attr['class'])) {
-            $attr['class'] = '';
-        }
-
-        $attr['data-locales'] = $options['locales'];
-        $attr['data-maxDepth'] = $options['maxDepth'];
-        $attr['data-disabled'] = !$this->authorizationChecker->isGranted($fieldType->getMinimumRole());
+        $attr = \array_merge(
+            [
+                'class' => ''
+            ],
+            $view->vars['attr'],
+            [
+                'data-disabled' => !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
+                'data-locales' => $options['locales'],
+                'data-maxDepth' => $options['maxDepth'],
+            ]);
         $attr['class'] .= ' code_editor_ems';
 
         $view->vars ['attr'] = $attr;
+        $view->vars ['icon'] = $options ['icon'];
     }
 
 
@@ -76,7 +79,6 @@ class JsonMenuEditorFieldType extends DataFieldType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        /*set the default option value for this kind of compound field*/
         parent::configureOptions($resolver);
         $resolver->setDefault('icon', null);
         $resolver->setDefault('locales', null);
@@ -94,7 +96,6 @@ class JsonMenuEditorFieldType extends DataFieldType
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
 
-        // String specific mapping options
         $optionsForm->get('mappingOptions')->add('analyzer', AnalyzerPickerType::class);
         $optionsForm->get('displayOptions')->add('icon', IconPickerType::class, [
             'required' => false

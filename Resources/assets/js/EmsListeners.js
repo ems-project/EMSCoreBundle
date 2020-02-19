@@ -177,7 +177,12 @@ export default class EmsListeners {
             const $isExpanded = ($(this).attr('aria-expanded') === 'true');
             $(this).parent().find('> button').attr('aria-expanded', !$isExpanded);
             let $panel = $(this).closest('li');
-            $panel.find('ol').first().collapse('toggle');
+            if ($isExpanded) {
+                $panel.find('ol').first().show();
+            }
+            else {
+                $panel.find('ol').first().hide();
+            }
         });
 
         jquery(this.target).find('.mjs-nestedSortable .button-collapse-all').click(function (event) {
@@ -186,7 +191,12 @@ export default class EmsListeners {
             let $panel = $(this).closest('li');
             $panel.find('.button-collapse').attr('aria-expanded', !$isExpanded);
             $panel.find('.button-collapse-all').attr('aria-expanded', !$isExpanded);
-            $panel.find('ol').collapse('toggle');
+            if ($isExpanded) {
+                $panel.find('ol').show();
+            }
+            else {
+                $panel.find('ol').hide();
+            }
         });
 
 

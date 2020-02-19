@@ -2,6 +2,7 @@
 import jquery from 'jquery';
 import ace from 'ace-builds/src-noconflict/ace';
 require('icheck');
+import JsonMenuEditor from './JsonMenuEditor';
 
 
 export default class EmsListeners {
@@ -18,6 +19,7 @@ export default class EmsListeners {
 
     addListeners() {
         this.addCheckBoxListeners();
+        this.addJsonMenuEditorListeners();
         this.addSelect2Listeners();
         this.addCollapsibleCollectionListeners();
         this.addSortableListListeners();
@@ -320,6 +322,12 @@ export default class EmsListeners {
         jquery(this.target).find(".select2").select2({
             allowClear: true,
             escapeMarkup: function (markup) { return markup; }
+        });
+    }
+
+    addJsonMenuEditorListeners() {
+        jquery(this.target).find(".json_menu_editor_fieldtype").each(function(){
+            new JsonMenuEditor(this);
         });
     }
 

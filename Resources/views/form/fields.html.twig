@@ -732,7 +732,7 @@
 
 				<span class="input-group">
 					<span class="input-group-addon" ><i class="fa {% if item.type|default('node') == 'node' %}fa-folder{% else %}fa-file-text{% endif %}"></i></span>
-					<input type="text" class="form-control itemLabel" placeholder="{{ 'field_type.json_menu_editor.item_label_placeholder'|trans }}" value="{{ item.label|default('') }}">
+					<input type="text" class="form-control itemLabel ignore-ems-update" placeholder="{{ 'field_type.json_menu_editor.item_label_placeholder'|trans }}" value="{{ item.label|default('') }}">
 					<span class="input-group-btn">
 						{% if item.type|default('node') == 'node' %}
 							<a type="button" class="btn btn-primary json_menu_sortable_add_item_button" data-toggle="tooltip" title="{{ 'field_type.json_menu_editor.add_item'|trans }}">

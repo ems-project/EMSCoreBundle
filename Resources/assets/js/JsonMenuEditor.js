@@ -99,7 +99,7 @@ export default class JsonMenuEditor {
 
     relocate() {
         const hierarchy = this.nestedSortable.nestedSortable('toHierarchy', {startDepthCount: 0});
-        this.parent.find('input').first().val(JSON.stringify(hierarchy)).trigger("change");
+        this.parent.find('input').first().val(JSON.stringify(hierarchy)).trigger("input").trigger("change");
     }
 
 

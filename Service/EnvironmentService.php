@@ -93,7 +93,7 @@ class EnvironmentService
             $em->persist($environment);
             $em->flush();
         } catch (\Exception $e) {
-            dump($e->getMessage());
+            $this->logger->error($e->getMessage());
         }
 
         $indexName = $environment->getAlias() . AppController::getFormatedTimestamp();

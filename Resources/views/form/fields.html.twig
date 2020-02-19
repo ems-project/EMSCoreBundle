@@ -712,6 +712,84 @@
 {% endblock codefieldtype_row %}
 
 
+{% block json_menu_editor_fieldtype_row %}
+	<div class="form-group {% if form.vars.errors|length %} has-error{% endif %} json_menu_editor_fieldtype">
+		{{ form_label(form) }}
+		{{ form_widget(form) }}
+		{{ form_errors(form) }}
+	</div>
+	<!-- /.form group -->
+{% endblock json_menu_editor_fieldtype_row %}
+
+
+
+{% block json_menu_editor_fieldtype_node %}
+	{% for item in children %}
+		<li id="{{ item.id }}" data-type="{{ item.type|default('node') }}" data-label="{{ item.label|default('') }}"  class="nestedSortable mjs-nestedSortable{% if item.type|default('node') != 'node' %}-no-nesting{% endif %}">
+			<div class="nestedSortable">
+
+				<span class="input-group">
+					<span class="input-group-addon" ><i class="fa {% if item.type|default('node') == 'node' %}fa-folder{% else %}fa-file-text{% endif %}"></i></span>
+					<input type="text" class="form-control itemLabel" placeholder="{{ 'field_type.json_menu_editor.item_label_placeholder'|trans }}" value="{{ item.label|default('') }}">
+					<span class="input-group-btn">
+						{% if item.type|default('node') == 'node' %}
+							<a type="button" class="btn btn-primary json_menu_sortable_add_item_button" data-toggle="tooltip" title="{{ 'field_type.json_menu_editor.add_item'|trans }}">
+								<i class="fa fa-file-text-o"></i>
+								<span class="sr-only">{{ 'field_type.json_menu_editor.add_item'|trans }}</span>
+							</a>
+							<a type="button" class="btn btn-primary json_menu_sortable_add_node_button" data-toggle="tooltip" title="{{ 'field_type.json_menu_editor.add_node'|trans }}">
+								<i class="fa fa-folder-o"></i>
+								<span class="sr-only">{{ 'field_type.json_menu_editor.add_node'|trans }}</span>
+							</a>
+						{% endif %}
+						<a type="button" class="btn btn-danger json_menu_sortable_remove_button" data-toggle="tooltip" title="{{ 'field_type.json_menu_editor.delete_item'|trans }}">
+							<i class="fa fa-trash"></i>
+							<span class="sr-only">{{ 'field_type.json_menu_editor.delete_item'|trans }}</span>
+						</a>
+						{% if item.type|default('node') == 'node' %}
+							<button href="#" type="button" title="{{ 'field_type.json_menu_editor.collapse_button'|trans }}" aria-expanded="false" class="btn btn-default button-collapse"></button>
+							<button type="#" title="{{ 'field_type.json_menu_editor.collapse_all_button'|trans }}" aria-expanded="false" class="btn btn-default button-collapse-all"></button>
+						{% endif %}
+					</span>
+				</span>
+
+			</div>
+			{% if item.type|default('node') == 'node' and item.children|default({})|length > 0 %}
+				<ol>
+					{% set children = item.children %}
+					{{ block('json_menu_editor_fieldtype_node') }}
+				</ol>
+			{% endif %}
+		</li>
+	{% endfor %}
+{% endblock json_menu_editor_fieldtype_node %}
+
+
+{% block json_menu_editor_fieldtype_widget %}
+	{{  form_widget(form) }}
+	<div class="json_menu_editor_fieldtype_widget">
+		<ol class="json_menu_sortable vertical">
+			{% set children =  form.vars.data.rawData |default('[]')|json_decode %}
+			{{ block('json_menu_editor_fieldtype_node') }}
+		</ol>
+		<div class="input-group">
+			<span class="input-group-btn">
+                {% set children =  [{ id: '%uuid%', type: 'item', label: '%label%'}] %}
+				<button data-prototype="{{ block('json_menu_editor_fieldtype_node')|e('html_attr') }}" class="btn btn-default json_menu_sortable_add_button json_menu_sortable_main_add_item_button" type="button">
+					<span class="fa fa-file-text-o" aria-hidden="true"></span>
+					{{ 'field_type.json_menu_editor.add_item'|trans }}
+				</button>
+                {% set children =  [{ id: '%uuid%', type: 'node', label: '%label%'}] %}
+				<button data-prototype="{{ block('json_menu_editor_fieldtype_node')|e('html_attr') }}" class="btn btn-default json_menu_sortable_add_button json_menu_sortable_main_add_node_button" type="button">
+					<span class="fa fa-folder-o" aria-hidden="true"></span>
+					{{ 'field_type.json_menu_editor.add_node'|trans }}
+				</button>
+			</span>
+		</div>
+	</div>
+{% endblock json_menu_editor_fieldtype_widget %}
+
+
 {% block datefieldtype_row %}
 <div class="form-group">
 	<div id="{{ form.vars.id}}__label">

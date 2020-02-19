@@ -58,7 +58,8 @@ class JsonMenuEditorFieldType extends DataFieldType
                 'data-disabled' => !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
                 'data-locales' => $options['locales'],
                 'data-maxDepth' => $options['maxDepth'],
-            ]);
+            ]
+        );
         $attr['class'] .= ' code_editor_ems';
 
         $view->vars ['attr'] = $attr;

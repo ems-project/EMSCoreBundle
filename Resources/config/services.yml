@@ -402,7 +402,7 @@ services:
             - '@logger'
     ems.service.environment: '@EMS\CoreBundle\Service\EnvironmentService'
     EMS\CoreBundle\Service\EnvironmentService:
-        arguments: ['@doctrine', '@session', '@ems.service.user', '@security.authorization_checker', '%ems_core.single_type_index%']
+        arguments: ['@doctrine', '@session', '@ems.service.user', '@security.authorization_checker', '@service_container', '@logger', '@app.elasticsearch', '%ems_core.single_type_index%']
     ems.service.contenttype: '@EMS\CoreBundle\Service\ContentTypeService'
     EMS\CoreBundle\Service\ContentTypeService:
         arguments: ['@doctrine', '@logger', '@ems.service.mapping', '@app.elasticsearch', '@ems.service.environment', '@form.registry', '@translator', '%ems_core.instance_id%', '%ems_core.single_type_index%']
@@ -576,6 +576,12 @@ services:
         arguments: ['@logger', '@app.elasticsearch', '@ems.service.asset_extractor', '@ems_common.storage.manager']
         tags:
             - { name: console.command }
+    ems.environment.create:
+        class: EMS\CoreBundle\Command\CreateEnvironmentCommand
+        arguments: ['@logger', '@ems.service.environment']
+        tags:
+            - { name: console.command }
+
 #### security services
     api_key_user_provider:
         class: EMS\CoreBundle\Security\ApiKeyUserProvider

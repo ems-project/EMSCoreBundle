@@ -81,6 +81,7 @@ export default class JsonMenuEditor {
         this.addListerners(element);
         new EmsListeners(element.get(0));
         this.relocate();
+        this.setFocus(uuid);
     }
 
     addElement(target, event) {
@@ -93,6 +94,11 @@ export default class JsonMenuEditor {
         this.addListerners(element);
         new EmsListeners(element.get(0));
         this.relocate();
+        this.setFocus(uuid);
+    }
+
+    setFocus(uuid) {
+        jquery('#'+uuid).find('input').focus();
     }
 
     relocate() {

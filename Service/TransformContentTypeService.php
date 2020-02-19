@@ -64,7 +64,7 @@ class TransformContentTypeService
                 $revisionType = $this->formFactory->create(RevisionType::class, $revision);
 
                 $result = $this->dataService->walkRecursive($revisionType->get('data'), $hit['_source'], function (string $name, $data, DataFieldType $dataFieldType, DataField $dataField) use (&$isChanged) {
-                    if($data === null) {
+                    if ($data === null) {
                         return [];
                     }
 

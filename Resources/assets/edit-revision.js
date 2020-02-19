@@ -27,6 +27,7 @@ $("form[name=revision]").submit(function( ) {
     //disable all pending auto-save
     waitingResponse = true;
     synch = true;
+    $('#data-out-of-sync').remove();
 });
 
 function updateCollectionLabel()

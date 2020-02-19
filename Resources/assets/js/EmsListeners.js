@@ -174,7 +174,12 @@ export default class EmsListeners {
             form.find('input.reorder-items').val(JSON.stringify(hierarchy)).trigger("change");
         });
 
-        jquery(this.target).find('.mjs-nestedSortable .button-collapse').click(function (event) {
+        let findCollapseButtonPrefix = '.mjs-nestedSortable ';
+        if (jquery(this.target).hasClass('mjs-nestedSortable')) {
+            findCollapseButtonPrefix = '';
+        }
+
+        jquery(this.target).find(findCollapseButtonPrefix+'.button-collapse').click(function (event) {
             event.preventDefault();
             const $isExpanded = ($(this).attr('aria-expanded') === 'true');
             $(this).parent().find('> button').attr('aria-expanded', !$isExpanded);
@@ -187,7 +192,7 @@ export default class EmsListeners {
             }
         });
 
-        jquery(this.target).find('.mjs-nestedSortable .button-collapse-all').click(function (event) {
+        jquery(this.target).find(findCollapseButtonPrefix+'.button-collapse-all').click(function (event) {
             event.preventDefault();
             const $isExpanded = ($(this).attr('aria-expanded') === 'true');
             let $panel = $(this).closest('li');

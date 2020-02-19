@@ -8,7 +8,6 @@ export default class JsonMenuEditor {
     constructor(target) {
         const self = this;
         this.parent = jquery(target);
-        this.relocateInProgress = false;
         this.nestedSortable = this.parent.find('ol.json_menu_sortable').nestedSortable({
             handle: 'div.nestedSortable',
             items: 'li.nestedSortable',
@@ -50,9 +49,6 @@ export default class JsonMenuEditor {
 
     updateLabel(target, event) {
         jquery(target).closest('li').data('label', jquery(target).val());
-        if (this.relocateInProgress === true) {
-            return;
-        }
         this.relocate();
     }
 
@@ -102,10 +98,8 @@ export default class JsonMenuEditor {
     }
 
     relocate() {
-        this.relocateInProgress = true;
         const hierarchy = this.nestedSortable.nestedSortable('toHierarchy', {startDepthCount: 0});
         this.parent.find('input').first().val(JSON.stringify(hierarchy)).trigger("change");
-        this.relocateInProgress = false;
     }
 
 

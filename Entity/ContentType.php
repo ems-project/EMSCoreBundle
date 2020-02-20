@@ -392,6 +392,20 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
      */
     public $defaultValue;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="translationField", type="string", length=100, nullable=true)
+     */
+    protected $translationField;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="localeField", type="string", length=100, nullable=true)
+     */
+    protected $localeField;
+
 
     public function __construct()
     {
@@ -1786,5 +1800,27 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     {
         $this->businessIdField = $businessIdField;
         return $this;
+    }
+
+    public function setTranslationField(string $translationField): ContentType
+    {
+        $this->translationField = $translationField;
+        return $this;
+    }
+
+    public function getTranslationField(): ?string
+    {
+        return $this->translationField;
+    }
+
+    public function setLocaleField(string $localeField): ContentType
+    {
+        $this->localeField = $localeField;
+        return $this;
+    }
+
+    public function getLocaleField(): ?string
+    {
+        return $this->localeField;
     }
 }

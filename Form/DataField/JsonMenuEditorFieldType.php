@@ -46,8 +46,10 @@ class JsonMenuEditorFieldType extends DataFieldType
     {
         parent::buildView($view, $form, $options);
 
-        /** @var FieldType */
-        $fieldType = $options['metadata'];
+        $disabled = true;
+        if ($options['metadata'] instanceof FieldType) {
+            $disabled = !$this->authorizationChecker->isGranted($options['metadata']->getMinimumRole());
+        }
 
         $attr = \array_merge(
             [
@@ -55,15 +57,15 @@ class JsonMenuEditorFieldType extends DataFieldType
             ],
             $view->vars['attr'],
             [
-                'data-disabled' => !$this->authorizationChecker->isGranted($fieldType->getMinimumRole()),
+                'data-disabled' => $disabled,
                 'data-locales' => $options['locales'],
                 'data-maxDepth' => $options['maxDepth'],
             ]
         );
         $attr['class'] .= ' code_editor_ems';
 
-        $view->vars ['attr'] = $attr;
-        $view->vars ['icon'] = $options ['icon'];
+        $view->vars['attr'] = $attr;
+        $view->vars['icon'] = $options['icon'];
     }
 
 

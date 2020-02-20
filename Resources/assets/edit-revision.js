@@ -21,6 +21,7 @@ const imageUrl = primaryBox.data('image-url');
 const stylesSets = primaryBox.data('styles-sets');
 const initUpload = primaryBox.data('init-upload');
 const fileExtract = primaryBox.data('file-extract');
+const fileExtractForced = primaryBox.data('file-extract-forced');
 const assetPath = document.querySelector("BODY").getAttribute('data-asset-path') ;
 
 $("form[name=revision]").submit(function( ) {
@@ -336,7 +337,7 @@ function FileSelectHandler(e) {
 }
 
 //file data extractor
-function FileDataExtrator(container) {
+function FileDataExtrator(container, forced=false) {
 
     const sha1Input = $(container).find(".sha1");
     const nameInput = $(container).find(".name");
@@ -353,7 +354,7 @@ function FileDataExtrator(container) {
     const previewTab = $(container).find(".asset-preview-tab");
     const uploadTab = $(container).find(".asset-upload-tab");
 
-    const urlPattern = fileExtract
+    const urlPattern = (forced?fileExtractForced:fileExtract)
         .replace(/__file_identifier__/g, $(sha1Input).val())
         .replace(/__file_name__/g, $(nameInput).val());
 
@@ -410,7 +411,7 @@ function addEventListeners(target){
 
     target.find(".extract-file-info").click(function() {
         const target = $(this).closest('.modal-content');
-        FileDataExtrator(target);
+        FileDataExtrator(target, true);
     });
 
     target.find(".clear-asset-button").click(function() {

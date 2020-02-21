@@ -10,10 +10,8 @@ use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Form\Form\RevisionType;
-use IteratorAggregate;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\Form\FormInterface;
 
 class TransformContentTypeService
 {
@@ -32,8 +30,7 @@ class TransformContentTypeService
     /** @var FormFactoryInterface */
     private $formFactory;
 
-    /** @var int */
-    private $chunk;
+    const DEFAULT_SCROLL_SIZE = 100;
 
     public function __construct(
         LoggerInterface $logger,
@@ -47,16 +44,15 @@ class TransformContentTypeService
         $this->contentTypeService = $contentTypeService;
         $this->dataService = $dataService;
         $this->formFactory = $formFactory;
-        $this->chunk = 100;
     }
 
     public function transform(ContentType $contentType): \Generator
     {
         $total = $this->getTotal($contentType);
-        for ($from = 0; $from < $total; $from = $from + $this->chunk) {
+        for ($from = 0; $from < $total; $from = $from + self::DEFAULT_SCROLL_SIZE) {
             $scroll = $this->getScroll($contentType, $from);
 
-            foreach ($scroll['hits']['hits'] as &$hit) {
+            foreach ($scroll['hits']['hits'] as $hit) {
                 $isChanged = false;
                 $document = new Document($contentType->getName(), $hit['_id'], $hit['_source']);
 
@@ -69,9 +65,11 @@ class TransformContentTypeService
                     }
 
                     $transformer = $this->getTransformer($dataField);
-                    if (!empty($transformer) && $transformer->canTransform(new ContentTransformContext([$dataFieldType]))) {
-                        $dataTransformed = $transformer->transform($data);
-                        if ($transformer->changed($dataTransformed)) {
+                    $contentTransformContext = ContentTransformContext::fromDataFieldType(\get_class($dataFieldType), $data);
+                    if (!empty($transformer) && $transformer->canTransform($contentTransformContext)) {
+                        $dataTransformed = $transformer->transform($contentTransformContext);
+                        $contentTransformContext->setTransformedData($dataTransformed);
+                        if ($transformer->changed($contentTransformContext)) {
                             $isChanged = true;
                             return [$name => $dataTransformed];
                         }
@@ -120,7 +118,7 @@ class TransformContentTypeService
     {
         return $this->client->search([
             'index' => $this->contentTypeService->getIndex($contentType),
-            'size' => $this->chunk,
+            'size' => self::DEFAULT_SCROLL_SIZE,
             'from' => $from,
             'body' => [
                 'query' => [

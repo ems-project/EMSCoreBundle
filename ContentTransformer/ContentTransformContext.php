@@ -2,11 +2,9 @@
 
 namespace EMS\CoreBundle\ContentTransformer;
 
-use EMS\CoreBundle\Form\DataField\DataFieldType;
-
 class ContentTransformContext
 {
-    /** @var DataFieldType */
+    /** @var string */
     private $dataFieldType;
 
     /** @var mixed */
@@ -19,7 +17,7 @@ class ContentTransformContext
     {
     }
 
-    static public function fromDataFieldType(DataFieldType $dataFieldType, $data): self
+    static public function fromDataFieldType(string $dataFieldType, $data): self
     {
         $context = new self();
         $context->dataFieldType = $dataFieldType;
@@ -27,7 +25,7 @@ class ContentTransformContext
         return $context;
     }
 
-    public function getDataFieldType(): DataFieldType
+    public function getDataFieldType(): string
     {
         return $this->dataFieldType;
     }

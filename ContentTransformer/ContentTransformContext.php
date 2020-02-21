@@ -2,18 +2,54 @@
 
 namespace EMS\CoreBundle\ContentTransformer;
 
+use EMS\CoreBundle\Form\DataField\DataFieldType;
+
 class ContentTransformContext
 {
-    /** @var array $context */
-    private $context;
+    /** @var DataFieldType */
+    private $dataFieldType;
 
-    public function __construct(array $context)
+    /** @var mixed */
+    private $data;
+
+    /** @var mixed */
+    private $transformedData;
+
+    private function __construct()
     {
-        $this->context = $context;
     }
 
-    public function get(): array
+    static public function fromDataFieldType(DataFieldType $dataFieldType, $data): self
     {
-        return $this->context;
+        $context = new self();
+        $context->dataFieldType = $dataFieldType;
+        $context->data = $data;
+        return $context;
+    }
+
+    public function getDataFieldType(): DataFieldType
+    {
+        return $this->dataFieldType;
+    }
+
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTransformedData()
+    {
+        return $this->transformedData;
+    }
+
+    /**
+     * @param mixed $transformedData
+     */
+    public function setTransformedData($transformedData): void
+    {
+        $this->transformedData = $transformedData;
     }
 }

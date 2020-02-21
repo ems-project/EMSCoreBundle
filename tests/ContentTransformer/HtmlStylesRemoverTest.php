@@ -2,11 +2,22 @@
 
 namespace EMS\CoreBundle\Tests\ContentTransformer;
 
+use EMS\CoreBundle\ContentTransformer\ContentTransformContext;
+use EMS\CoreBundle\Form\DataField\WysiwygFieldType;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use EMS\CoreBundle\ContentTransformer\HtmlStylesRemover;
 
 class HtmlStylesRemoverTest extends WebTestCase
 {
+    private function assertEqualsInputOutPut($input, $output)
+    {
+        $contentTransformContext = ContentTransformContext::fromDataFieldType('testFieldType', $input);
+        $htmlStylesRemover = new HtmlStylesRemover();
+        $inputChanged = $htmlStylesRemover->transform($contentTransformContext);
+
+        $this->assertEquals($output, $inputChanged);
+    }
+
     public function testRemoveSimpleInline()
     {
         $input = <<<HTML
@@ -16,10 +27,7 @@ HTML;
 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
 HTML;
 
-        $htmlStylesRemover = new HtmlStylesRemover();
-        $inputChanged = $htmlStylesRemover->transform($input);
-
-        $this->assertEquals($output, $inputChanged);
+        $this->assertEqualsInputOutPut($input, $output);
     }
 
     public function testRemoveSimpleBlock()
@@ -31,10 +39,7 @@ HTML;
 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
 HTML;
 
-        $htmlStylesRemover = new HtmlStylesRemover();
-        $inputChanged = $htmlStylesRemover->transform($input);
-
-        $this->assertEquals($output, $inputChanged);
+        $this->assertEqualsInputOutPut($input, $output);
     }
 
     public function testInlineNestedInAlertBlock()
@@ -46,10 +51,7 @@ HTML;
 <div class="message alert">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
 HTML;
 
-        $htmlStylesRemover = new HtmlStylesRemover();
-        $inputChanged = $htmlStylesRemover->transform($input);
-
-        $this->assertEquals($output, $inputChanged);
+        $this->assertEqualsInputOutPut($input, $output);
     }
 
     public function testBlockNestedInReadmoreBlock()
@@ -69,10 +71,7 @@ HTML;
 </div>
 HTML;
 
-        $htmlStylesRemover = new HtmlStylesRemover();
-        $inputChanged = $htmlStylesRemover->transform($input);
-
-        $this->assertEquals($output, $inputChanged);
+        $this->assertEqualsInputOutPut($input, $output);
     }
 
     public function testSpanToRemoveFollowedByEmOrStrong()
@@ -86,10 +85,7 @@ HTML;
 <div class="response">In quis <strong>eleifend </strong>nisi. Vestibulum porttitor.</div>
 HTML;
 
-        $htmlStylesRemover = new HtmlStylesRemover();
-        $inputChanged = $htmlStylesRemover->transform($input);
-
-        $this->assertEquals($output, $inputChanged);
+        $this->assertEqualsInputOutPut($input, $output);
     }
 
     public function testSpanToRemoveWithStrongInsideIt()
@@ -101,10 +97,7 @@ HTML;
 <p>In quis <strong>eleifend </strong>nisi. Vestibulum porttitor.</p>
 HTML;
 
-        $htmlStylesRemover = new HtmlStylesRemover();
-        $inputChanged = $htmlStylesRemover->transform($input);
-
-        $this->assertEquals($output, $inputChanged);
+        $this->assertEqualsInputOutPut($input, $output);
     }
 
     public function testDivToRemoveWithTagsInsideIt()
@@ -116,10 +109,7 @@ HTML;
 <p>In sed dolor quis nulla <strong>accumsan </strong>ornare; In id <u>libero</u> sed <em>sapien semper</em> tristique sit amet eu mauris.</p>
 HTML;
 
-        $htmlStylesRemover = new HtmlStylesRemover();
-        $inputChanged = $htmlStylesRemover->transform($input);
-
-        $this->assertEquals($output, $inputChanged);
+        $this->assertEqualsInputOutPut($input, $output);
     }
 
     public function testDivToRemoveWithSpanToRemoveInsideItWithOtherTags()
@@ -131,10 +121,7 @@ HTML;
 <p>In sed dolor quis nulla <strong>accumsan </strong>ornare; In id <u>libero</u> sed <em>sapien semper</em> tristique sit amet eu mauris.</p>
 HTML;
 
-        $htmlStylesRemover = new HtmlStylesRemover();
-        $inputChanged = $htmlStylesRemover->transform($input);
-
-        $this->assertEquals($output, $inputChanged);
+        $this->assertEqualsInputOutPut($input, $output);
     }
 
     public function testDivtoRemoveWithSpanToRemoveInsideItWithOtherTagsBis()
@@ -146,10 +133,7 @@ HTML;
 <p>Lo<strong>rem ipsum dolor sit amet, <em>consectetur </em>ad</strong>ipiscing elit.</p>
 HTML;
 
-        $htmlStylesRemover = new HtmlStylesRemover();
-        $inputChanged = $htmlStylesRemover->transform($input);
-
-        $this->assertEquals($output, $inputChanged);
+        $this->assertEqualsInputOutPut($input, $output);
     }
 
     public function testSpanToRemoveWithAnotherSpanInsideIt()
@@ -161,10 +145,7 @@ HTML;
 <p>Nam <span class="hidden">lobortis </span>dolor eget felis</p>
 HTML;
 
-        $htmlStylesRemover = new HtmlStylesRemover();
-        $inputChanged = $htmlStylesRemover->transform($input);
-
-        $this->assertEquals($output, $inputChanged);
+        $this->assertEqualsInputOutPut($input, $output);
     }
 
     public function testClassRemovableStyleWithinBulletPoints()
@@ -192,10 +173,7 @@ HTML;
 </div>
 HTML;
 
-        $htmlStylesRemover = new HtmlStylesRemover();
-        $inputChanged = $htmlStylesRemover->transform($input);
-
-        $this->assertEquals($output, $inputChanged);
+        $this->assertEqualsInputOutPut($input, $output);
     }
 
     public function testClassRemovableStyleWithinBulletPoints2()
@@ -217,10 +195,7 @@ HTML;
 </ul>
 HTML;
 
-        $htmlStylesRemover = new HtmlStylesRemover();
-        $inputChanged = $htmlStylesRemover->transform($input);
-
-        $this->assertEquals($output, $inputChanged);
+        $this->assertEqualsInputOutPut($input, $output);
     }
 
     public function testClassRemovableStyleWithinTable()
@@ -268,9 +243,6 @@ HTML;
 </table>
 HTML;
 
-        $htmlStylesRemover = new HtmlStylesRemover();
-        $inputChanged = $htmlStylesRemover->transform($input);
-
-        $this->assertEquals($output, $inputChanged);
+        $this->assertEqualsInputOutPut($input, $output);
     }
 }

@@ -581,7 +581,7 @@ services:
             - { name: console.command }
     ems.contenttype.transform:
         class: EMS\CoreBundle\Command\TransformContentTypeCommand
-        arguments: ['@logger', '@app.elasticsearch', '@ems.service.contenttype', '@ems.service.transformcontenttype']
+        arguments: ['@logger', '@ems.service.contenttype', '@ems.service.transformcontenttype']
         tags:
             - { name: console.command }
 

@@ -23,33 +23,27 @@ class HtmlStylesRemover implements ContentTransformInterface
         $this->classNamePrefix = $classNamePrefix;
     }
 
-    public function canTransform(ContentTransformContext $contentTransformContext = null): bool
+    public function canTransform(ContentTransformContext $contentTransformContext): bool
     {
-        if (!$contentTransformContext) {
+        if (!$contentTransformContext->getDataFieldType() instanceof WysiwygFieldType) {
             return false;
         }
 
-        foreach ($contentTransformContext->get() as $dataFieldType) {
-            if (!$dataFieldType instanceof WysiwygFieldType) {
-                return false;
-            }
-
-            return true;
-        }
+        return true;
     }
 
-    public function transform(string $input): string
+    public function transform(ContentTransformContext $contentTransformContext): string
     {
-        $this->input = $input;
-        $this->doc = $this->initDocument($input);
+        $this->input = $contentTransformContext->getData();
+        $this->doc = $this->initDocument($this->input);
         $this->xpath = new \DOMXPath($this->doc);
 
         return $this->removeHtmlStyles();
     }
 
-    public function changed(string $output): bool
+    public function changed(ContentTransformContext $contentTransformContext): bool
     {
-        if ($this->input === $output) {
+        if ($this->input === $contentTransformContext->getTransformedData()) {
             return false;
         }
 

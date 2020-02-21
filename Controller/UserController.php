@@ -259,7 +259,13 @@ class UserController extends AppController
 
         $roles = $user->getRoles();
         if (!in_array('ROLE_API', $roles)) {
-            throw new \RuntimeException('The user "' . $username . '" does not have the permission to use API functionalities.');
+
+            $logger->error('log.user.cannot_request_api_key', [
+                'user' => $username,
+                'initiator' => $this->getUserService()->getCurrentUser()->getUsername()
+            ]);
+
+            throw new \RuntimeException(sprintf('The user %s  does not have the permission to use API functionalities.', $username));
         }
 
         $authToken = new AuthToken($user);

@@ -154,6 +154,9 @@ class EnvironmentService
         return array_keys($this->getEnvironments());
     }
 
+    /**
+     * @deprecated  https://github.com/ems-project/EMSCoreBundle/issues/281
+     */
     public function getNotSnapshotEnvironments(): array
     {
         if ($this->notSnapshotEnvironments !== []) {
@@ -170,6 +173,9 @@ class EnvironmentService
         return $this->notSnapshotEnvironments;
     }
 
+    /**
+     * @deprecated  https://github.com/ems-project/EMSCoreBundle/issues/281
+     */
     public function getNotSnapshotEnvironmentsNames(): array
     {
         return array_keys($this->getNotSnapshotEnvironments());
@@ -317,7 +323,10 @@ class EnvironmentService
         });
     }
 
-    public function clearCache()
+    /**
+     * @deprecated  https://github.com/ems-project/EMSCoreBundle/issues/281
+     */
+    public function clearCache(): void
     {
         $this->environments = [];
         $this->notSnapshotEnvironments = [];

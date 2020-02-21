@@ -208,8 +208,6 @@ class AlignCommand extends Command
         if ($sourceName === null) {
             $message = 'Source environment not provided';
             $this->setSourceArgument($input, $message);
-            $this->checkSource($input);
-            return;
         }
 
         $source = $this->environmentService->getAliasByName($sourceName);
@@ -241,8 +239,6 @@ class AlignCommand extends Command
         if ($targetName === null) {
             $message = 'Target environment not provided';
             $this->setTargetArgument($input, $message);
-            $this->checkTarget($input);
-            return;
         }
 
         $target = $this->environmentService->getAliasByName($targetName);

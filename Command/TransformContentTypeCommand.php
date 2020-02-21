@@ -6,14 +6,14 @@ use Elasticsearch\Client;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\TransformContentTypeService;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class TransformContentTypeCommand extends EmsCommand
+class TransformContentTypeCommand extends Command
 {
     protected static $defaultName = 'ems:contenttype:transform';
 
@@ -32,13 +32,13 @@ class TransformContentTypeCommand extends EmsCommand
     const ARGUMENT_CONTENTTYPE_NAME = 'contentTypeName';
     const OPTION_STRICT = 'strict';
 
-    public function __construct(LoggerInterface $logger, Client $client, ContentTypeService $contentTypeService, TransformContentTypeService $transformContentTypeService)
+    public function __construct(LoggerInterface $logger, ContentTypeService $contentTypeService, TransformContentTypeService $transformContentTypeService)
     {
         $this->logger = $logger;
         $this->contentTypeService = $contentTypeService;
         $this->transformContentTypeService = $transformContentTypeService;
 
-        parent::__construct($logger, $client);
+        parent::__construct();
     }
 
     protected function configure()
@@ -101,8 +101,6 @@ class TransformContentTypeCommand extends EmsCommand
         if (null === $contentTypeName) {
             $message = 'The content type name is not provided';
             $this->setContentTypeNameArgument($input, $message);
-            $this->checkContentTypeNameArgument($input);
-            return;
         }
 
         $contentType = $this->contentTypeService->getByName($contentTypeName);

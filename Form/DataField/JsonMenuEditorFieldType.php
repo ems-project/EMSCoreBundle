@@ -59,13 +59,15 @@ class JsonMenuEditorFieldType extends DataFieldType
             [
                 'data-disabled' => $disabled,
                 'data-locales' => $options['locales'],
-                'data-maxDepth' => $options['maxDepth'],
+                'data-max-depth' => $options['maxDepth'],
             ]
         );
         $attr['class'] .= ' code_editor_ems';
 
         $view->vars['attr'] = $attr;
         $view->vars['icon'] = $options['icon'];
+        $view->vars['item_types'] = $options['itemTypes'];
+        $view->vars['node_types'] = $options['nodeTypes'];
     }
 
 
@@ -86,7 +88,8 @@ class JsonMenuEditorFieldType extends DataFieldType
         $resolver->setDefault('icon', null);
         $resolver->setDefault('locales', null);
         $resolver->setDefault('maxDepth', 15);
-        $resolver->setDefault('types', false);
+        $resolver->setDefault('itemTypes', 'item');
+        $resolver->setDefault('nodeTypes', 'node');
     }
 
     /**
@@ -104,9 +107,9 @@ class JsonMenuEditorFieldType extends DataFieldType
             'required' => false
         ])->add('maxDepth', IntegerType::class, [
             'required' => false,
-        ])->add('locales', TextType::class, [
+        ])->add('nodeTypes', TextType::class, [
             'required' => false,
-        ])->add('types', TextType::class, [
+        ])->add('itemTypes', TextType::class, [
             'required' => false,
         ]);
     }

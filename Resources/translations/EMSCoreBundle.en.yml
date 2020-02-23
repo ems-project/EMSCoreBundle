@@ -625,8 +625,10 @@ log:
 field_type:
   json_menu_editor:
     item_label_placeholder: 'Define a label for this entry'
-    add_item: 'Add a new document'
-    add_node: 'Add a new node'
+    add_item: 'Add a new item %singular%'
+    add_node: 'Add a new node %singular%'
     delete_item: 'Delete this entry'
-    collapse_button: 'Collapse'
-    collapse_all_button: 'Collapse all'
+    collapse_button: 'Expand/Collapse'
+    collapse_all_button: 'Expand/Collapse all'
+    move_item: 'Move'
+    add: 'Add'

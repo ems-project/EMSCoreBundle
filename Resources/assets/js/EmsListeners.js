@@ -174,7 +174,12 @@ export default class EmsListeners {
             form.find('input.reorder-items').val(JSON.stringify(hierarchy)).trigger("change");
         });
 
-        let findCollapseButtonPrefix = '.mjs-nestedSortable ';
+        let findCollapseButtonPrefix = '.json_menu_editor_fieldtype_widget ';
+
+        if (jquery(this.target).find(findCollapseButtonPrefix).length === 0) {
+            findCollapseButtonPrefix = '.mjs-nestedSortable ';
+        }
+
         if (jquery(this.target).hasClass('mjs-nestedSortable')) {
             findCollapseButtonPrefix = '';
         }
@@ -183,7 +188,7 @@ export default class EmsListeners {
             event.preventDefault();
             const $isExpanded = ($(this).attr('aria-expanded') === 'true');
             $(this).parent().find('> button').attr('aria-expanded', !$isExpanded);
-            let $panel = $(this).closest('li');
+            let $panel = $(this).closest('.collapsible-container');
             if ($isExpanded) {
                 $panel.find('ol').first().show();
             }
@@ -195,14 +200,14 @@ export default class EmsListeners {
         jquery(this.target).find(findCollapseButtonPrefix+'.button-collapse-all').click(function (event) {
             event.preventDefault();
             const $isExpanded = ($(this).attr('aria-expanded') === 'true');
-            let $panel = $(this).closest('li');
+            let $panel = $(this).closest('.collapsible-container');
             $panel.find('.button-collapse').attr('aria-expanded', !$isExpanded);
             $panel.find('.button-collapse-all').attr('aria-expanded', !$isExpanded);
             if ($isExpanded) {
-                $panel.find('ol').show();
+                $panel.find('ol').not('.not-collapsible').show();
             }
             else {
-                $panel.find('ol').hide();
+                $panel.find('ol').not('.not-collapsible').hide();
             }
         });
 

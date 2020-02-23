@@ -28,7 +28,7 @@ ol.vertical {
   border: 1px solid #cccccc;
   padding: 8px;
 
-  li {
+  & > li, ol > li {
     display: block;
     margin-top: 6px;
 
@@ -85,11 +85,11 @@ button.button-collapse[aria-expanded=false]:after {
   content: "\f107";
 }
 
-button.button-collapse-all[aria-expanded=true]:after {
+button.button-collapse-all[aria-expanded=true]:before {
   font-family: FontAwesome;
   content: "\f102";
 }
-button.button-collapse-all[aria-expanded=false]:after {
+button.button-collapse-all[aria-expanded=false]:before {
   font-family: FontAwesome;
   content: "\f103";
 }

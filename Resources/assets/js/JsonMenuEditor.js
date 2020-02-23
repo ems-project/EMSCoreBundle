@@ -8,8 +8,11 @@ export default class JsonMenuEditor {
     constructor(target) {
         const self = this;
         this.parent = jquery(target);
+        this.hiddenField = this.parent.find('input').first();
+
+
         this.nestedSortable = this.parent.find('ol.json_menu_sortable').nestedSortable({
-            handle: 'div.nestedSortable',
+            handle: 'a.json_menu_sortable_handle_button',
             items: 'li.nestedSortable',
             isTree: true,
             expression: /()(.+)/,
@@ -25,21 +28,17 @@ export default class JsonMenuEditor {
     addListerners(target) {
         const jTarget = jquery(target);
         const self = this;
-        jTarget.find('.json_menu_sortable_add_button')
-            .on('click', function(event) {
-                self.addElement(this, event);
-            });
         jTarget.find('.json_menu_sortable_remove_button')
             .on('click', function(event) {
                 self.removeElement(this, event);
             });
         jTarget.find('.json_menu_sortable_add_item_button')
             .on('click', function(event) {
-                self.addItem(this, event, '.json_menu_sortable_main_add_item_button');
+                self.addItem(this, event, 'prototype-item');
             });
         jTarget.find('.json_menu_sortable_add_node_button')
             .on('click', function(event) {
-                self.addItem(this, event, '.json_menu_sortable_main_add_node_button');
+                self.addItem(this, event, 'prototype-node');
             });
         jTarget.find('input.itemLabel')
             .on('input', function(event) {
@@ -60,32 +59,23 @@ export default class JsonMenuEditor {
 
     addItem(target, event, prototypeTarget) {
         event.preventDefault();
+        let prototype = this.parent.find('.json_menu_editor_fieldtype_widget').data(prototypeTarget);
 
-        const prototype = this.parent.find(prototypeTarget).data('prototype');
         const uuid = uuidv4();
-        const html = prototype.replace(/%uuid%/g, uuid).replace(/%label%/g, '');
+        const html = prototype.replace(/%uuid%/g, uuid).replace(/%label%/g, '').replace(/%icon%/g, jquery(target).data('icon')).replace(/%content-type%/g, jquery(target).data('content-type'));
 
+        let list = jquery(target).closest('.input-group').closest('li');
+        if (list.length == 0) {
+            list = this.parent.find('.json_menu_editor_fieldtype_widget');
+        }
 
-        if (jquery(target).closest('li').children('ol').length > 0) {
-            jquery(target).closest('li').children('ol').append(html);
+        if (list.children('ol').length > 0) {
+            list.children('ol').append(html);
         }
         else {
-            jquery(target).closest('li').append('<ol>'+html+'</ol>');
+            list.append('<ol>'+html+'</ol>');
         }
 
-        const element = jquery('#'+uuid);
-        this.addListerners(element);
-        new EmsListeners(element.get(0));
-        this.relocate();
-        this.setFocus(uuid);
-    }
-
-    addElement(target, event) {
-        event.preventDefault();
-        const prototype = jquery(target).data('prototype');
-        const uuid = uuidv4();
-        const html = prototype.replace(/%uuid%/g, uuid).replace(/%label%/g, '');
-        this.parent.find('ol.json_menu_sortable').append(html);
         const element = jquery('#'+uuid);
         this.addListerners(element);
         new EmsListeners(element.get(0));
@@ -99,7 +89,7 @@ export default class JsonMenuEditor {
 
     relocate() {
         const hierarchy = this.nestedSortable.nestedSortable('toHierarchy', {startDepthCount: 0});
-        this.parent.find('input').first().val(JSON.stringify(hierarchy)).trigger("input").trigger("change");
+        this.hiddenField.val(JSON.stringify(hierarchy)).trigger("input").trigger("change");
     }
 
 

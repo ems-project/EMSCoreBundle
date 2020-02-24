@@ -52,16 +52,19 @@ class FileController extends AppController
     }
 
     /**
-     * @param string $sha1
-     * @return Response
-     * @throws AssetNotFoundException
-     *
+     * @Route("/data/file/extract/forced/{sha1}.{_format}" , name="ems_file_extract_forced", defaults={"_format" = "json"}, methods={"GET","HEAD"})
+     */
+    public function extractFileContentForced(string $sha1) : Response
+    {
+        return $this->extractFileContent($sha1, true);
+    }
+
+    /**
      * @Route("/data/file/extract/{sha1}.{_format}" , name="ems_file_extract", defaults={"_format" = "json"}, methods={"GET","HEAD"})
      */
-    public function extractFileContent($sha1)
+    public function extractFileContent(string $sha1, bool $forced = false) : Response
     {
-
-        $data = $this->getAssetExtractorService()->extractData($sha1);
+        $data = $this->getAssetExtractorService()->extractData($sha1, null, $forced);
 
         $response = $this->render('@EMSCore/ajax/extract-data-file.json.twig', [
             'success' => true,

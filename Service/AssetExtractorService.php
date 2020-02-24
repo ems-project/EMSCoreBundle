@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use EMS\CommonBundle\Common\Converter;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\CacheAssetExtractor;
 use EMS\CoreBundle\Exception\AssetNotFoundException;
@@ -10,6 +11,8 @@ use EMS\CoreBundle\Tika\TikaWrapper;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
+use Symfony\Component\HttpKernel\DataCollector\MemoryDataCollector;
+use Symfony\Component\Validator\Constraints\FileValidator;
 use Throwable;
 
 class AssetExtractorService implements CacheWarmerInterface
@@ -108,12 +111,10 @@ class AssetExtractorService implements CacheWarmerInterface
     }
 
     /**
-     * @param string $hash
-     * @param string|null $file
      * @return array|false|mixed
      * @throws AssetNotFoundException
      */
-    public function extractData(string $hash, string $file = null)
+    public function extractData(string $hash, string $file = null, bool $forced = false)
     {
 
         $manager = $this->doctrine->getManager();
@@ -134,6 +135,14 @@ class AssetExtractorService implements CacheWarmerInterface
 
         if (!$file || !file_exists($file)) {
             throw new AssetNotFoundException($hash);
+        }
+
+        if (!$forced && filesize($file) > (2 * 1024 * 1024)) {
+            $this->logger->warning('log.warning.asset_extract.file_to_large', [
+                'filesize' => Converter::formatBytes(filesize($file)),
+                'max_size' => '2 MB',
+            ]);
+            return [];
         }
 
         $out = [];

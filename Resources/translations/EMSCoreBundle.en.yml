@@ -456,6 +456,9 @@ search:
   search_field_option_label: 'Search Field Option'
   aggregate_option_label: 'Aggregate Option'
 log:
+  warning:
+    asset_extract:
+      file_to_large: 'As this file is larger (%filesize%) than %max_size% its content has not been automatically extracted. You can either force the extraction or specify it manually in the "Info" menu.'
   revision_error: 'Error "%error_message%" with the document ems://object:%contenttype%:%ouuid%'
   crud:
     deleted: 'The document ems://object:%contenttype%:%ouuid% has been deleted'

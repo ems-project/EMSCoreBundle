@@ -55,6 +55,31 @@ class AlignCommand extends EmsCommand
                 InputArgument::REQUIRED,
                 'Environment target name'
             )
+            ->addArgument(
+                'scrollSize',
+                InputArgument::OPTIONAL,
+                'Size of the elasticsearch scroll request',
+                100
+            )
+            ->addArgument(
+                'scrollTimeout',
+                InputArgument::OPTIONAL,
+                'Time to migrate "scrollSize" items i.e. 30s or 2m',
+                '1m'
+            )
+            ->addArgument(
+                'contentType',
+                InputArgument::OPTIONAL,
+                'The content type you wish to align',
+                '1m'
+            )
+            ->addOption(
+                'searchQuery',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Query used to find elasticsearch records to import',
+                ''
+            )
             ->addOption(
                 'force',
                 null,
@@ -75,6 +100,10 @@ class AlignCommand extends EmsCommand
 
         $sourceName = $input->getArgument('source');
         $targetName = $input->getArgument('target');
+        $scrollSize = $input->getArgument('scrollSize');
+        $scrollTimeout = $input->getArgument('scrollTimeout');
+        $searchQuery = $input->getOption('searchQuery');
+        $contentType = $input->getArgument('contentType');
 
         $source = $this->environmentService->getAliasByName($sourceName);
         $target = $this->environmentService->getAliasByName($targetName);
@@ -97,10 +126,15 @@ class AlignCommand extends EmsCommand
 
         $this->logger->info('Execute the AlignCommand');
 
-        $total = $this->client->search([
+        $arrayElasticsearchIndex = $this->client->search([
             'index' => $source->getAlias(),
-            'size' => 0,
-        ])['hits']['total'];
+            'type' => $contentType,
+            'size' => $scrollSize,
+            "scroll" => $scrollTimeout,
+            'body' => $searchQuery,
+        ]);
+
+        $total = $arrayElasticsearchIndex['hits']['total'];
 
         $output->writeln('The source environment contains ' . $total . ' elements, start aligning environments...');
 
@@ -113,24 +147,9 @@ class AlignCommand extends EmsCommand
         $alreadyAligned = 0;
         $targetIsPreviewEnvironment = [];
 
-        for ($from = 0; $from < $total; $from = $from + 50) {
-            $scroll = $this->client->search([
-                'index' => $source->getAlias(),
-                'size' => 50,
-                'from' => $from,
-                'body' => '{
-                       "sort": {
-                          "_uid": {
-                             "order": "asc",
-                             "missing": "_last"
-                          }
-                       }
-                    }',
-                //'preference' => '_primary', //http://stackoverflow.com/questions/10836142/elasticsearch-duplicate-results-with-paging
-            ]);
-
+        while (isset($arrayElasticsearchIndex['hits']['hits']) && count($arrayElasticsearchIndex['hits']['hits']) > 0) {
             $flush = false;
-            foreach ($scroll['hits']['hits'] as &$hit) {
+            foreach ($arrayElasticsearchIndex['hits']['hits'] as &$hit) {
                 $revision = $this->data->getRevisionByEnvironment($hit['_id'], $this->contentTypeService->getByName($hit['_type']), $source);
                 if ($revision->getDeleted()) {
                     ++$deletedRevision;
@@ -147,10 +166,16 @@ class AlignCommand extends EmsCommand
                 }
                 $progress->advance();
             }
-            
+
             if ($flush) {
                 $output->writeln("");
             }
+
+            $scroll_id = $arrayElasticsearchIndex['_scroll_id'];
+            $arrayElasticsearchIndex = $this->client->scroll([
+                "scroll_id" => $scroll_id,  //...using our previously obtained _scroll_id
+                "scroll" => $scrollTimeout, // and the same timeout window
+            ]);
         }
 
         $progress->finish();

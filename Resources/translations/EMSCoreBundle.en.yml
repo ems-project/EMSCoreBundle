@@ -622,3 +622,13 @@ log:
       reindex: 'The revision ems://revision:%revision_id% has been reindex in %environment% for the document ems://object:%contenttype%:%ouuid%'
       finalized: 'The revision ems://revision:%revision_id% has been finalized in %environment% for the document ems://object:%contenttype%:%ouuid%'
       not_found_in_environment: 'It''s impossible to identify a revision for the document ems://object:%contenttype%:%ouuid% in the environment %environment%'
+field_type:
+  json_menu_editor:
+    item_label_placeholder: 'Define a label for this entry'
+    add_item: 'Add a new item %singular%'
+    add_node: 'Add a new node %singular%'
+    delete_item: 'Delete this entry'
+    collapse_button: 'Expand/Collapse'
+    collapse_all_button: 'Expand/Collapse all'
+    move_item: 'Move'
+    add: 'Add'

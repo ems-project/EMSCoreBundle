@@ -17,7 +17,7 @@ class ContentTransformContext
     {
     }
 
-    static public function fromDataFieldType(string $dataFieldType, $data): self
+    public static function fromDataFieldType(string $dataFieldType, $data): self
     {
         $context = new self();
         $context->dataFieldType = $dataFieldType;

@@ -97,22 +97,6 @@ class EnvironmentService
             $this->logger->error($e->getMessage());
         }
 
-        $indexName = $environment->getAlias() . AppController::getFormatedTimestamp();
-        $this->client->indices()->create([
-            'index' => $indexName,
-            'body' => $this->getIndexAnalysisConfiguration(),
-        ]);
-
-        $contentTypeService = $this->container->get('ems.service.contenttype');
-        foreach ($contentTypeService->getAll() as $contentType) {
-            $contentTypeService->updateMapping($contentType, $indexName);
-        }
-
-        $this->client->indices()->putAlias([
-            'index' => $indexName,
-            'name' => $environment->getAlias()
-        ]);
-
         $this->logger->notice('log.environment.created', [
             EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
         ]);

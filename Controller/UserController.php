@@ -259,7 +259,6 @@ class UserController extends AppController
 
         $roles = $user->getRoles();
         if (!in_array('ROLE_API', $roles)) {
-
             $logger->error('log.user.cannot_request_api_key', [
                 'user' => $username,
                 'initiator' => $this->getUserService()->getCurrentUser()->getUsername()

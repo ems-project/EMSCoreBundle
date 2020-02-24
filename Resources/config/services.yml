@@ -104,6 +104,12 @@ services:
         tags:
             - { name: ems.form.datafieldtype, alias: code }
             - { name: form.type }
+    ems.fieldtype.json_menu_editor:
+        class: EMS\CoreBundle\Form\DataField\JsonMenuEditorFieldType
+        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch']
+        tags:
+            - { name: ems.form.datafieldtype, alias: code }
+            - { name: form.type }
     ems.fieldtype.textarea:
         class: EMS\CoreBundle\Form\DataField\TextareaFieldType
         arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch']

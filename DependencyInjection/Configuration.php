@@ -90,7 +90,7 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('ems_remote_authkey')->defaultValue(null)->end()
             ->scalarNode('tika_server')->defaultValue(self::TIKA_SERVER)->end()
             ->scalarNode('elasticsearch_version')->defaultValue(self::ELASTICSEARCH_VERSION)->end()
-            ->scalarNode('single_type_index')->defaultValue(self::SINGLE_TYPE_INDEX)->end()
+            ->booleanNode('single_type_index')->defaultValue(self::SINGLE_TYPE_INDEX)->end()
             ->scalarNode('save_assets_in_db')->defaultValue(self::SAVE_ASSETS_IN_DB)->end()
             ->scalarNode('s3_bucket')->defaultValue(null)->end()
             ->variableNode('s3_credentials')->defaultValue([])->end()

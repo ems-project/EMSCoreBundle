@@ -104,8 +104,6 @@ class CreateEnvironmentCommand extends Command
         if (null === $environmentName) {
             $message = 'The environment name is not provided';
             $this->setEnvironmentNameArgument($input, $message);
-            $this->checkEnvironmentNameArgument($input);
-            return;
         }
 
         if (false === $this->environmentService->validateEnvironmentName($environmentName)) {

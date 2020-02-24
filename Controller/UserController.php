@@ -9,9 +9,11 @@ use Doctrine\ORM\ORMException;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\AuthToken;
+use EMS\CoreBundle\Exception\PrivilegeException;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use http\Exception\RuntimeException;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -254,6 +256,16 @@ class UserController extends AppController
     public function apiKeyAction($username, LoggerInterface $logger)
     {
         $user = $this->getUserService()->getUser($username, false);
+
+        $roles = $user->getRoles();
+        if (!in_array('ROLE_API', $roles)) {
+            $logger->error('log.user.cannot_request_api_key', [
+                'user' => $username,
+                'initiator' => $this->getUserService()->getCurrentUser()->getUsername()
+            ]);
+
+            throw new \RuntimeException(sprintf('The user %s  does not have the permission to use API functionalities.', $username));
+        }
 
         $authToken = new AuthToken($user);
 

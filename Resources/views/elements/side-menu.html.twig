@@ -91,8 +91,13 @@
 	          		{% endif %}
 	          	</a>
 	          	<ul class="treeview-menu">
-					
-	            	<li class=""><a id="menu-data-index-{{ contentType.id }}" href="{{ path('ems_data_default_search', {'name':contentType.name}) }}"><i class="fa fa-search"></i> Search {{ contentType.pluralName }}</a></li>
+					{% if contentType.defaultSearchLinkDisplay %}
+	            	<li class="">
+                        <a id="menu-data-index-{{ contentType.id }}" href="{{ path('ems_data_default_search', {'name':contentType.name}) }}">
+                            <i class="fa fa-search"></i> Search {{ contentType.pluralName }}
+                        </a>
+                    </li>
+                    {% endif %}
 	          		
 	          		{% if contentType.circlesField and app.user.circles|length > 0 %}
 
@@ -135,7 +140,7 @@
 	          			</a></li>
 	            	{% endif %}
 	            	
-	            	{% if not contentType.createRole or is_granted(contentType.createRole) %}
+	            	{% if (not contentType.createRole or is_granted(contentType.createRole)) and contentType.defaultCreateLinkDisplay %}
 						<li class=""><a id="menu-data-add-{{ contentType.id }}" href="{{ path('data.add', { contentType: contentType.id }) }}">
 							<i class="fa fa-plus"></i>
 	          				New {{ contentType.singularName }}

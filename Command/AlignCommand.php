@@ -27,6 +27,9 @@ class AlignCommand extends EmsCommand
     /**@var PublishService */
     private $publishService;
 
+    const DEFAULT_SCROLL_SIZE = '100';
+    const DEFAULT_SCROLL_TIMEOUT = '1m';
+
     public function __construct(Registry $doctrine, LoggerInterface $logger, Client $client, DataService $data, ContentTypeService $contentTypeService, EnvironmentService $environmentService, PublishService $publishService)
     {
         $this->doctrine = $doctrine;
@@ -59,19 +62,18 @@ class AlignCommand extends EmsCommand
                 'scrollSize',
                 InputArgument::OPTIONAL,
                 'Size of the elasticsearch scroll request',
-                100
+                self::DEFAULT_SCROLL_SIZE
             )
             ->addArgument(
                 'scrollTimeout',
                 InputArgument::OPTIONAL,
                 'Time to migrate "scrollSize" items i.e. 30s or 2m',
-                '1m'
+                self::DEFAULT_SCROLL_TIMEOUT
             )
             ->addArgument(
                 'contentType',
                 InputArgument::OPTIONAL,
-                'The content type you wish to align',
-                '1m'
+                'The content type you wish to align'
             )
             ->addOption(
                 'searchQuery',
@@ -130,7 +132,7 @@ class AlignCommand extends EmsCommand
             'index' => $source->getAlias(),
             'type' => $contentType,
             'size' => $scrollSize,
-            "scroll" => $scrollTimeout,
+            'scroll' => $scrollTimeout,
             'body' => $searchQuery,
         ]);
 
@@ -138,9 +140,7 @@ class AlignCommand extends EmsCommand
 
         $output->writeln('The source environment contains ' . $total . ' elements, start aligning environments...');
 
-        // create a new progress bar
         $progress = new ProgressBar($output, $total);
-        // start and displays the progress bar
         $progress->start();
 
         $deletedRevision = 0;
@@ -149,7 +149,7 @@ class AlignCommand extends EmsCommand
 
         while (isset($arrayElasticsearchIndex['hits']['hits']) && count($arrayElasticsearchIndex['hits']['hits']) > 0) {
             $flush = false;
-            foreach ($arrayElasticsearchIndex['hits']['hits'] as &$hit) {
+            foreach ($arrayElasticsearchIndex['hits']['hits'] as $hit) {
                 $revision = $this->data->getRevisionByEnvironment($hit['_id'], $this->contentTypeService->getByName($hit['_type']), $source);
                 if ($revision->getDeleted()) {
                     ++$deletedRevision;
@@ -171,10 +171,9 @@ class AlignCommand extends EmsCommand
                 $output->writeln("");
             }
 
-            $scroll_id = $arrayElasticsearchIndex['_scroll_id'];
             $arrayElasticsearchIndex = $this->client->scroll([
-                "scroll_id" => $scroll_id,  //...using our previously obtained _scroll_id
-                "scroll" => $scrollTimeout, // and the same timeout window
+                'scroll_id' => $arrayElasticsearchIndex['_scroll_id'],
+                'scroll' => $scrollTimeout,
             ]);
         }
 

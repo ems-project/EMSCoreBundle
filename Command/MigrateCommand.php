@@ -321,15 +321,11 @@ class MigrateCommand extends EmsCommand
 
             $this->bulker->send(true);
 
-            
-            //https://www.elastic.co/guide/en/elasticsearch/client/php-api/current/_search_operations.html#_scrolling
-            $scroll_id = $arrayElasticsearchIndex['_scroll_id'];
             $arrayElasticsearchIndex = $this->client->scroll([
-                "scroll_id" => $scroll_id,  //...using our previously obtained _scroll_id
-                "scroll" => $scrollTimeout, // and the same timeout window
+                'scroll_id' => $arrayElasticsearchIndex['_scroll_id'],
+                'scroll' => $scrollTimeout,
             ]);
         }
-        // ensure that the progress bar is at 100%
         $progress->finish();
         $output->writeln("");
         $output->writeln("Migration done");

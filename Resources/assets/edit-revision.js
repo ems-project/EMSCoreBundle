@@ -473,10 +473,9 @@ function addEventListeners(target){
         onFormChange();
     });
 
-    target.find("input").keypress(onFormChange);
-    target.find("input").change(onFormChange);
-    target.find("select").change(onFormChange);
-    target.find("textarea").keypress(onFormChange);
+    target.find("input").not(".ignore-ems-update").on('input', onFormChange);
+    target.find("select").not(".ignore-ems-update").on('change', onFormChange);
+    target.find("textarea").not(".ignore-ems-update").on('input', onFormChange);
 
     target.find('.add-content-button').on('click', function(e) {
         // prevent the link from creating a "#" on the URL

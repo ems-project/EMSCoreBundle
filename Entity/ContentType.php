@@ -406,6 +406,20 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
      */
     protected $localeField;
 
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="defaultSearchLinkDisplay", type="boolean", options={"default" : 1})
+     */
+    protected $defaultSearchLinkDisplay = true;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="defaultCreateLinkDisplay", type="boolean", options={"default" : 1})
+     */
+    protected $defaultCreateLinkDisplay = true;
+
 
     public function __construct()
     {
@@ -1822,5 +1836,27 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     public function getLocaleField(): ?string
     {
         return $this->localeField;
+    }
+
+    public function setDefaultSearchLinkDisplay(bool $defaultSearchLinkDisplay): ContentType
+    {
+        $this->defaultSearchLinkDisplay = $defaultSearchLinkDisplay;
+        return $this;
+    }
+
+    public function getDefaultSearchLinkDisplay(): bool
+    {
+        return $this->defaultSearchLinkDisplay;
+    }
+
+    public function setDefaultCreateLinkDisplay(bool $defaultCreateLinkDisplay): ContentType
+    {
+        $this->defaultCreateLinkDisplay = $defaultCreateLinkDisplay;
+        return $this;
+    }
+
+    public function getDefaultCreateLinkDisplay(): bool
+    {
+        return $this->defaultCreateLinkDisplay;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Command;
 
+use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -21,16 +22,20 @@ class CreateEnvironmentCommand extends Command
     /** @var EnvironmentService */
     protected $environmentService;
 
+    /** @var DataService */
+    protected $dataService;
+
     /** @var SymfonyStyle */
     private $io;
 
     const ARGUMENT_ENV_NAME = 'name';
     const OPTION_STRICT = 'strict';
 
-    public function __construct(LoggerInterface $logger, EnvironmentService $environmentService)
+    public function __construct(LoggerInterface $logger, EnvironmentService $environmentService, DataService $dataService)
     {
         $this->logger = $logger;
         $this->environmentService = $environmentService;
+        $this->dataService = $dataService;
         parent::__construct();
     }
 
@@ -75,7 +80,14 @@ class CreateEnvironmentCommand extends Command
 
         $this->io->note(\sprintf('Creation of the environment "%s"...', $environmentName));
         try {
-            $this->environmentService->createEnvironment($environmentName);
+            $environment = $this->environmentService->createEnvironment($environmentName);
+        } catch (\Exception $e) {
+            $this->io->error($e->getMessage());
+            return -1;
+        }
+
+        try {
+            $this->dataService->createAndMapIndex($environment);
         } catch (\Exception $e) {
             $this->io->error($e->getMessage());
             return -1;

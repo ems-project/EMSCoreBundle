@@ -7,9 +7,6 @@ use EMS\CoreBundle\Form\DataField\WysiwygFieldType;
 class HtmlStylesRemover implements ContentTransformInterface
 {
     /** @var string */
-    protected $input;
-
-    /** @var string */
     private $classNamePrefix;
 
     /** @var \DOMDocument */
@@ -25,29 +22,15 @@ class HtmlStylesRemover implements ContentTransformInterface
 
     public function canTransform(ContentTransformContext $contentTransformContext): bool
     {
-        if (!$contentTransformContext->getDataFieldType() instanceof WysiwygFieldType) {
-            return false;
-        }
-
-        return true;
+        return $contentTransformContext->getDataFieldType() === WysiwygFieldType::class;
     }
 
     public function transform(ContentTransformContext $contentTransformContext): string
     {
-        $this->input = $contentTransformContext->getData();
-        $this->doc = $this->initDocument($this->input);
+        $this->doc = $this->initDocument($contentTransformContext->getData());
         $this->xpath = new \DOMXPath($this->doc);
 
         return $this->removeHtmlStyles();
-    }
-
-    public function changed(ContentTransformContext $contentTransformContext): bool
-    {
-        if ($this->input === $contentTransformContext->getTransformedData()) {
-            return false;
-        }
-
-        return true;
     }
 
     protected function removeHtmlStyles(): ?string

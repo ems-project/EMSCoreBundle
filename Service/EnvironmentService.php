@@ -54,6 +54,7 @@ class EnvironmentService
     private $contentTypeService;
      * */
 
+    /** @var bool */
     private $singleTypeIndex;
 
     public function __construct(
@@ -64,7 +65,7 @@ class EnvironmentService
         Container $container,
         Logger $logger,
         Client $client,
-        $singleTypeIndex
+        bool $singleTypeIndex
     ) {
         $this->doctrine = $doctrine;
         $this->session = $session;

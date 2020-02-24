@@ -69,7 +69,7 @@ class TransformContentTypeService
                     if (!empty($transformer) && $transformer->canTransform($contentTransformContext)) {
                         $dataTransformed = $transformer->transform($contentTransformContext);
                         $contentTransformContext->setTransformedData($dataTransformed);
-                        if ($transformer->changed($contentTransformContext)) {
+                        if ($contentTransformContext->hasChanges()) {
                             $isChanged = true;
                             return [$name => $dataTransformed];
                         }

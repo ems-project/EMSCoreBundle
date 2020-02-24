@@ -7,6 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
+use EMS\CoreBundle\Form\DataField\DataFieldType;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * FieldType
@@ -723,5 +725,22 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
             default:
                 parent::deserializeProperty($name, $value);
         }
+    }
+
+    public function filterDisplayOptions(DataFieldType $dataFieldType)
+    {
+        $optionsResolver = new OptionsResolver();
+        $dataFieldType->configureOptions($optionsResolver);
+        $defineOptions = $optionsResolver->getDefinedOptions();
+        $defineOptions[] = 'label';
+
+        $filtered = array_filter(
+            $this->getDisplayOptions(),
+            function ($value) use ($defineOptions) {
+                return in_array($value, $defineOptions);
+            },
+            ARRAY_FILTER_USE_KEY
+        );
+        $this->options['displayOptions'] = $filtered;
     }
 }

@@ -63,14 +63,15 @@ class TemplateService
         return $this;
     }
 
-    public function render(Document $document, ContentType $contentType, string $environment): string
+    public function render(Document $document, ContentType $contentType, string $environment, array $extraContext = []): string
     {
-        return $this->twigTemplate->render([
+        $context = array_merge($extraContext, [
             'environment' => $environment,
             'contentType' => $contentType,
             'object' => $document,
             'source' => $document->getSource(),
         ]);
+        return $this->twigTemplate->render($context);
     }
 
     public function getXml(ContentType $contentType, array $source, bool $arrayOfDocument, ?string $ouuid = null)

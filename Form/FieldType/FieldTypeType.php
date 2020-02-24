@@ -34,7 +34,7 @@ class FieldTypeType extends AbstractType
         $this->formRegistry = $formRegistry;
         $this->logger = $logger;
     }
-    
+
 
     /**
      * @param FormBuilderInterface $builder
@@ -49,7 +49,7 @@ class FieldTypeType extends AbstractType
 
         /** @var DataFieldType $dataFieldType */
         $dataFieldType = $this->formRegistry->getType($fieldType->getType())->getInnerType();
-        
+        $fieldType->filterDisplayOptions($dataFieldType);
         
         $dataFieldType->buildOptionsForm($builder, $options);
         

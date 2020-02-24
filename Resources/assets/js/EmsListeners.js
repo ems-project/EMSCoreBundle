@@ -2,6 +2,7 @@
 import jquery from 'jquery';
 import ace from 'ace-builds/src-noconflict/ace';
 require('icheck');
+import JsonMenuEditor from './JsonMenuEditor';
 
 
 export default class EmsListeners {
@@ -18,6 +19,7 @@ export default class EmsListeners {
 
     addListeners() {
         this.addCheckBoxListeners();
+        this.addJsonMenuEditorListeners();
         this.addSelect2Listeners();
         this.addCollapsibleCollectionListeners();
         this.addSortableListListeners();
@@ -172,21 +174,41 @@ export default class EmsListeners {
             form.find('input.reorder-items').val(JSON.stringify(hierarchy)).trigger("change");
         });
 
-        jquery(this.target).find('.mjs-nestedSortable .button-collapse').click(function (event) {
+        let findCollapseButtonPrefix = '.json_menu_editor_fieldtype_widget ';
+
+        if (jquery(this.target).find(findCollapseButtonPrefix).length === 0) {
+            findCollapseButtonPrefix = '.mjs-nestedSortable ';
+        }
+
+        if (jquery(this.target).hasClass('mjs-nestedSortable')) {
+            findCollapseButtonPrefix = '';
+        }
+
+        jquery(this.target).find(findCollapseButtonPrefix+'.button-collapse').click(function (event) {
             event.preventDefault();
             const $isExpanded = ($(this).attr('aria-expanded') === 'true');
             $(this).parent().find('> button').attr('aria-expanded', !$isExpanded);
-            let $panel = $(this).closest('li');
-            $panel.find('ol').first().collapse('toggle');
+            let $panel = $(this).closest('.collapsible-container');
+            if ($isExpanded) {
+                $panel.find('ol').first().show();
+            }
+            else {
+                $panel.find('ol').first().hide();
+            }
         });
 
-        jquery(this.target).find('.mjs-nestedSortable .button-collapse-all').click(function (event) {
+        jquery(this.target).find(findCollapseButtonPrefix+'.button-collapse-all').click(function (event) {
             event.preventDefault();
             const $isExpanded = ($(this).attr('aria-expanded') === 'true');
-            let $panel = $(this).closest('li');
+            let $panel = $(this).closest('.collapsible-container');
             $panel.find('.button-collapse').attr('aria-expanded', !$isExpanded);
             $panel.find('.button-collapse-all').attr('aria-expanded', !$isExpanded);
-            $panel.find('ol').collapse('toggle');
+            if ($isExpanded) {
+                $panel.find('ol').not('.not-collapsible').show();
+            }
+            else {
+                $panel.find('ol').not('.not-collapsible').hide();
+            }
         });
 
 
@@ -310,6 +332,12 @@ export default class EmsListeners {
         jquery(this.target).find(".select2").select2({
             allowClear: true,
             escapeMarkup: function (markup) { return markup; }
+        });
+    }
+
+    addJsonMenuEditorListeners() {
+        jquery(this.target).find(".json_menu_editor_fieldtype").each(function(){
+            new JsonMenuEditor(this);
         });
     }
 

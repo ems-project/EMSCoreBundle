@@ -3,8 +3,12 @@
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Elasticsearch\Client;
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
+use Monolog\Logger;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use EMS\CoreBundle\Entity\Environment;
@@ -18,11 +22,16 @@ class EnvironmentService
 {
     /**@var Registry $doctrine */
     private $doctrine;
+
     /**@var Session $session*/
     private $session;
 
     /** @var array */
     private $environments = [];
+
+    /** @var array */
+    private $notSnapshotEnvironments = [];
+
     /** @var array */
     private $environmentsById = [];
 
@@ -32,15 +41,81 @@ class EnvironmentService
     /** @var AuthorizationCheckerInterface $authorizationChecker*/
     private $authorizationChecker;
 
+    /**@var Container $container*/
+    private $container;
+
+    /** @var Logger */
+    private $logger;
+
+    /**@var Client */
+    private $client;
+
+    /** @var ContentTypeService
+    private $contentTypeService;
+     * */
+
+    /** @var bool */
     private $singleTypeIndex;
 
-    public function __construct(Registry $doctrine, Session $session, UserService $userService, AuthorizationCheckerInterface $authorizationChecker, $singleTypeIndex)
-    {
+    public function __construct(
+        Registry $doctrine,
+        Session $session,
+        UserService $userService,
+        AuthorizationCheckerInterface $authorizationChecker,
+        Container $container,
+        Logger $logger,
+        Client $client,
+        bool $singleTypeIndex
+    ) {
         $this->doctrine = $doctrine;
         $this->session = $session;
         $this->userService = $userService;
         $this->authorizationChecker = $authorizationChecker;
+        $this->container = $container;
+        $this->logger = $logger;
+        $this->client = $client;
         $this->singleTypeIndex = $singleTypeIndex;
+    }
+
+    public function createEnvironment(string $name, $snapshot = false): Environment
+    {
+        if (!$this->validateEnvironmentName($name)) {
+            throw new \Exception('An environment name must respects the following regex /^[a-z][a-z0-9\-_]*$/');
+        }
+
+        $environment = new Environment();
+        $environment->setName($name);
+        $environment->setAlias($this->container->getParameter('ems_core.instance_id') . $environment->getName());
+        $environment->setManaged(true);
+        $environment->setSnapshot($snapshot);
+
+        try {
+            $em = $this->doctrine->getManager();
+            $em->persist($environment);
+            $em->flush();
+        } catch (\Exception $e) {
+            $this->logger->error($e->getMessage());
+        }
+
+        $this->logger->notice('log.environment.created', [
+            EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
+        ]);
+
+        return $environment;
+    }
+
+    public function validateEnvironmentName(string $name): bool
+    {
+        return \preg_match('/^[a-z][a-z0-9\-_]*$/', $name) && strlen($name) <= 100;
+    }
+
+    public function setSnapshotTag(Environment $environment, bool $value = true): void
+    {
+        $environment->setSnapshot($value);
+
+        $em = $this->doctrine->getManager();
+        $em->persist($environment);
+        $em->flush();
     }
 
     public function getEnvironments(): array
@@ -50,6 +125,7 @@ class EnvironmentService
         }
 
         $environments = $this->doctrine->getManager()->getRepository('EMSCoreBundle:Environment')->findAll();
+
         /** @var Environment $environment */
         foreach ($environments as $environment) {
             $this->environments[$environment->getName()] = $environment;
@@ -61,6 +137,33 @@ class EnvironmentService
     public function getEnvironmentNames(): array
     {
         return array_keys($this->getEnvironments());
+    }
+
+    /**
+     * @deprecated  https://github.com/ems-project/EMSCoreBundle/issues/281
+     */
+    public function getNotSnapshotEnvironments(): array
+    {
+        if ($this->notSnapshotEnvironments !== []) {
+            return $this->notSnapshotEnvironments;
+        }
+
+        $environments = $this->doctrine->getManager()->getRepository('EMSCoreBundle:Environment')->findBy(['snapshot' => false]);
+
+        /** @var Environment $environment */
+        foreach ($environments as $environment) {
+            $this->notSnapshotEnvironments[$environment->getName()] = $environment;
+        }
+
+        return $this->notSnapshotEnvironments;
+    }
+
+    /**
+     * @deprecated  https://github.com/ems-project/EMSCoreBundle/issues/281
+     */
+    public function getNotSnapshotEnvironmentsNames(): array
+    {
+        return array_keys($this->getNotSnapshotEnvironments());
     }
 
     public function getEnvironmentsById(): array
@@ -203,5 +306,15 @@ class EnvironmentService
 
             return count(array_intersect($user->getCircles(), $environment->getCircles())) >= 1;
         });
+    }
+
+    /**
+     * @deprecated  https://github.com/ems-project/EMSCoreBundle/issues/281
+     */
+    public function clearCache(): void
+    {
+        $this->environments = [];
+        $this->notSnapshotEnvironments = [];
+        $this->environmentsById = [];
     }
 }

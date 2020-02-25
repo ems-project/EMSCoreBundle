@@ -1494,16 +1494,9 @@ class DataController extends AppController
     }
 
     /**
-     * @param ContentType $contentType
-     * @param Request $request
-     * @param DataService $dataService
-     * @param LoggerInterface $logger
-     * @return RedirectResponse|Response
-     * @throws HasNotCircleException
-     * @throws Throwable
      * @Route("/data/add/{contentType}", name="data.add.jsoncontent"), methods={"POST"}
      */
-    public function addWithJsonContentAction(ContentType $contentType, Request $request, DataService $dataService, LoggerInterface $logger)
+    public function addWithJsonContentAction(ContentType $contentType, Request $request, DataService $dataService, LoggerInterface $logger): RedirectResponse
     {
         $dataService->hasCreateRights($contentType);
 
@@ -1524,6 +1517,10 @@ class DataController extends AppController
                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                 EmsFields::LOG_EXCEPTION_FIELD => $e,
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+            ]);
+
+            return $this->redirectToRoute('data.root', [
+                'name' => $contentType->getName()
             ]);
         }
     }

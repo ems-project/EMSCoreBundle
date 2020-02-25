@@ -1499,6 +1499,60 @@ class DataController extends AppController
      * @param DataService $dataService
      * @return RedirectResponse|Response
      * @throws HasNotCircleException
+     * @throws Throwable
+     * @Route("/data/add/{contentType}/{translationId}/{locale}", name="data.add.translated"))
+     */
+    public function addTranslatedAction(ContentType $contentType, Request $request, DataService $dataService)
+    {
+        $dataService->hasCreateRights($contentType);
+
+        $revision = new Revision();
+
+        $form = $this->createFormBuilder($revision)
+            ->add('ouuid', IconTextType::class, [
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'Auto-generated if left empty'
+                ],
+                'required' => false
+            ])
+            ->add('save', SubmitType::class, [
+                'label' => 'Create ' . $contentType->getName() . ' draft',
+                'attr' => [
+                    'class' => 'btn btn-primary pull-right'
+                ]
+            ])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if (($form->isSubmitted() && $form->isValid()) || !$contentType->getAskForOuuid()) {
+            /** @var Revision $revision */
+            $revision = $form->getData();
+            try {
+                $revision = $dataService->newDocument($contentType, $revision->getOuuid());
+
+                return $this->redirectToRoute('revision.edit', [
+                    'revisionId' => $revision->getId()
+                ]);
+            } catch (DuplicateOuuidException $e) {
+                $form->get('ouuid')->addError(new FormError('Another ' . $contentType->getName() . ' with this identifier already exists'));
+            }
+        }
+
+        return $this->render('@EMSCore/data/add.html.twig', [
+            'contentType' => $contentType,
+            'form' => $form->createView(),
+        ]);
+
+    }
+
+    /**
+     * @param ContentType $contentType
+     * @param Request $request
+     * @param DataService $dataService
+     * @return RedirectResponse|Response
+     * @throws HasNotCircleException
      * @Route("/data/add/{contentType}", name="data.add"))
      */
     public function addAction(ContentType $contentType, Request $request, DataService $dataService)
@@ -1542,23 +1596,6 @@ class DataController extends AppController
             'contentType' => $contentType,
             'form' => $form->createView(),
         ]);
-    }
-
-    /**
-     * @param ContentType $contentType
-     * @param Request $request
-     * @param DataService $dataService
-     * @return RedirectResponse|Response
-     * @throws HasNotCircleException
-     * @throws Throwable
-     * @Route("/data/add/{contentType}/{translationId}/{locale}", name="data.add.translated"))
-     */
-    public function addTranslatedAction(ContentType $contentType, Request $request, DataService $dataService)
-    {
-        $dataService->hasCreateRights($contentType);
-
-        $revision = new Revision();
-
     }
 
     /**

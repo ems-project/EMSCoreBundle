@@ -91,14 +91,14 @@
 	          		{% endif %}
 	          	</a>
 	          	<ul class="treeview-menu">
-					{% if is_granted(contentType.searchLinkDisplayRole) %}
-	            	<li class="">
+                    {% if is_granted(contentType.searchLinkDisplayRole) %}
+                    <li class="">
                         <a id="menu-data-index-{{ contentType.id }}" href="{{ path('ems_data_default_search', {'name':contentType.name}) }}">
                             <i class="fa fa-search"></i> Search {{ contentType.pluralName }}
                         </a>
                     </li>
                     {% endif %}
-	          		
+
 	          		{% if contentType.circlesField and app.user.circles|length > 0 %}
 
 		            	{% set label = contentType.circlesField %}
@@ -132,22 +132,22 @@
 	          			</a></li>
 	            	{% endif %}
 	            	{% if contentType.environment.managed %}
-	            	
+
 	            	{% if contentType.orderField and (contentType.fieldType.__get('ems_'~contentType.orderField).options.restrictionOptions.minimum_role is not defined or is_granted(contentType.fieldType.__get('ems_'~contentType.orderField).options.restrictionOptions.minimum_role)) %}
 	          			<li class=""><a id="menu-data-reorder-{{ contentType.id }}" href="{{ path('nature.reorder', { contentType: contentType.id } ) }}">
 	          				<i class="fa fa-sort"></i>
 	          				<span>Reorder</span>
 	          			</a></li>
 	            	{% endif %}
-	            	
+
 	            	{% if (not contentType.createRole or is_granted(contentType.createRole)) and is_granted(contentType.createLinkDisplayRole) %}
 						<li class=""><a id="menu-data-add-{{ contentType.id }}" href="{{ path('data.add', { contentType: contentType.id }) }}">
 							<i class="fa fa-plus"></i>
 	          				New {{ contentType.singularName }}
 						</a></li>
 					{% endif %}
-	            	
-	            	
+
+
                     {% if is_granted(contentType.trashRole) %}
 						<li class="">
 							<a id="menu-data-trash-{{ contentType.id }}" href="{{ path('ems_data_trash', { contentType: contentType.id }) }}">
@@ -156,8 +156,8 @@
 							</a>
 						</li>
                     {% endif %}
-	            	
-	            	
+
+
 	            	{% endif %}
 	          	</ul>
 	          </li>

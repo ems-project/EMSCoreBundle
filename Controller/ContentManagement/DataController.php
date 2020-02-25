@@ -1545,6 +1545,23 @@ class DataController extends AppController
     }
 
     /**
+     * @param ContentType $contentType
+     * @param Request $request
+     * @param DataService $dataService
+     * @return RedirectResponse|Response
+     * @throws HasNotCircleException
+     * @throws Throwable
+     * @Route("/data/add/{contentType}/{translationId}/{locale}", name="data.add.translated"))
+     */
+    public function addTranslatedAction(ContentType $contentType, Request $request, DataService $dataService)
+    {
+        $dataService->hasCreateRights($contentType);
+
+        $revision = new Revision();
+
+    }
+
+    /**
      * @param Revision $revision
      * @param DataService $dataService
      * @param LoggerInterface $logger

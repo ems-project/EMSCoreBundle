@@ -1497,54 +1497,35 @@ class DataController extends AppController
      * @param ContentType $contentType
      * @param Request $request
      * @param DataService $dataService
+     * @param LoggerInterface $logger
      * @return RedirectResponse|Response
      * @throws HasNotCircleException
      * @throws Throwable
-     * @Route("/data/add/{contentType}/{translationId}/{locale}", name="data.add.translated"))
+     * @Route("/data/add/{contentType}", name="data.add.jsoncontent"), methods={"POST"}
      */
-    public function addTranslatedAction(ContentType $contentType, Request $request, DataService $dataService)
+    public function addWithJsonContentAction(ContentType $contentType, Request $request, DataService $dataService, LoggerInterface $logger)
     {
         $dataService->hasCreateRights($contentType);
 
+        $jsonContent = \json_decode($request->getContent());
         $revision = new Revision();
 
-        $form = $this->createFormBuilder($revision)
-            ->add('ouuid', IconTextType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'Auto-generated if left empty'
-                ],
-                'required' => false
-            ])
-            ->add('save', SubmitType::class, [
-                'label' => 'Create ' . $contentType->getName() . ' draft',
-                'attr' => [
-                    'class' => 'btn btn-primary pull-right'
-                ]
-            ])
-            ->getForm();
+        try {
+            $revision = $dataService->newDocument($contentType, $revision->getOuuid(), $jsonContent);
 
-        $form->handleRequest($request);
-
-        if (($form->isSubmitted() && $form->isValid()) || !$contentType->getAskForOuuid()) {
-            /** @var Revision $revision */
-            $revision = $form->getData();
-            try {
-                $revision = $dataService->newDocument($contentType, $revision->getOuuid());
-
-                return $this->redirectToRoute('revision.edit', [
-                    'revisionId' => $revision->getId()
-                ]);
-            } catch (DuplicateOuuidException $e) {
-                $form->get('ouuid')->addError(new FormError('Another ' . $contentType->getName() . ' with this identifier already exists'));
-            }
+            return $this->redirectToRoute('revision.edit', [
+                'revisionId' => $revision->getId()
+            ]);
+        } catch (DuplicateOuuidException $e) {
+            $logger->error('log.data.revision.add_with_json_error', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
+                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+            ]);
         }
-
-        return $this->render('@EMSCore/data/add.html.twig', [
-            'contentType' => $contentType,
-            'form' => $form->createView(),
-        ]);
-
     }
 
     /**

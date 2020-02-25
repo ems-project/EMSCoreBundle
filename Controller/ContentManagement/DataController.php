@@ -1494,6 +1494,38 @@ class DataController extends AppController
     }
 
     /**
+     * @Route("/data/add/{contentType}", name="data.add.jsoncontent"), methods={"POST"}
+     */
+    public function addWithJsonContentAction(ContentType $contentType, Request $request, DataService $dataService, LoggerInterface $logger): RedirectResponse
+    {
+        $dataService->hasCreateRights($contentType);
+
+        $jsonContent = \json_decode($request->getContent());
+        $revision = new Revision();
+
+        try {
+            $revision = $dataService->newDocument($contentType, $revision->getOuuid(), $jsonContent);
+
+            return $this->redirectToRoute('revision.edit', [
+                'revisionId' => $revision->getId()
+            ]);
+        } catch (DuplicateOuuidException $e) {
+            $logger->error('log.data.revision.add_with_json_error', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
+                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+            ]);
+
+            return $this->redirectToRoute('data.root', [
+                'name' => $contentType->getName()
+            ]);
+        }
+    }
+
+    /**
      * @param ContentType $contentType
      * @param Request $request
      * @param DataService $dataService

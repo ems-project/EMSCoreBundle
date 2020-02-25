@@ -1,39 +1,34 @@
 {% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
-{% block title %}View {{ template.name }} of the {{ object.type }} : {{ object.ouuid }}{% endblock %}
+{% set label = object.ouuid %}
+{% if (contentType.labelField) and (attribute(object.source, contentType.labelField)  is defined ) %}
+	{% set label = attribute(object.source, contentType.labelField) %}
+{% endif %}
+
+{% block title %}{{ 'data.custom-view.pagetitle'|trans({ '%name%':template.name, '%contentType%': contentType.singularName, '%label%': label, '%environment%': environment.name|humanize  }) }}{% endblock %}
 {% block pagetitle %}
 	<i class="{% if contentType.icon %}{{ contentType.icon }} {% else %} fa fa-question {% endif %} "></i>
-	View {{ template.name }} of the {{ object.type }} :
-	
-	{% if (contentType.labelField) and (attribute(attribute(object, '_source'), contentType.labelField)  is defined ) %}
-		{{ attribute(attribute(object, '_source'), contentType.labelField) }}<small>{{ object.ouuid }}</small>
-	{% else %}
-		{{ object.ouuid }}
-	{% endif %}
-					
-	
-	 as indexed in 
-	<span class="badge bg-{{ environment.color|raw }}">{{ environment.name|humanize }}</span>
+	{{ block('title') }}
 {% endblock %} 
 
 {% block subtitle %}{% endblock %} 
 
 
 {% block extraheader %}
-{% if template.header is defined and template.body %}
+	{% if template.header is defined and template.body %}
 		{{ template.header|generate_from_template({
 				environment: environment,
 				contentType: contentType,
 				object: object,
 				source: object.source
 			})|raw }}
-{% endif %}
+	{% endif %}
 {% endblock %} 
 
 
 
 {% block body %}
-    {% import "@EMSCore/macros/data-field-type.html.twig" as macros %}
+{% import "@EMSCore/macros/data-field-type.html.twig" as macros %}
 <div class="row">
 	<div class="col-xs-12">
 		<div class="box">
@@ -43,12 +38,12 @@
 			<div class="box-body">
 				{%  if template.body and (template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::EMBED') or template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::EXPORT') or template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::PDF')) %}
 					{{ template.body|generate_from_template({
-										environment: environment,
-										contentType: contentType,
-										object: object,
-										source: object.source,
-                        				_download: false
-									})|raw }}
+						environment: environment,
+						contentType: contentType,
+						object: object,
+						source: object.source,
+						_download: false
+					})|raw }}
 
 				{% else %}
 					{{ 'Template is missing'|trans }}
@@ -58,11 +53,11 @@
 				{% if template.filename and template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::EXPORT') %}
 					<br/><br/>
 					{{ template.filename|generate_from_template({
-											environment: environment,
-											contentType: contentType,
-											object: object,
-											source: object.source
-										}) }}
+						environment: environment,
+						contentType: contentType,
+						object: object,
+						source: object.source
+					}) }}
 				{% endif %}
 			</div>
 			<!-- /.box-body -->
@@ -89,15 +84,15 @@
 						{% endif %}
 						{% if template.body and template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::EXPORT') %}
                             {% include '@EMSCore/elements/get-button.html.twig' with {
-													'url':  path(template.public?'ems_data_custom_template_public':'ems_data_custom_template_protected', {
-															'environmentName': environment.name , 
-															'templateId': template.id, 
-															'ouuid': object.ouuid,
-															'_download': true}),
-													'label': 'Download',
-													'icon': 'download',
-													'target': '_blank'
-												}%}
+								'url':  path(template.public?'ems_data_custom_template_public':'ems_data_custom_template_protected', {
+										'environmentName': environment.name ,
+										'templateId': template.id,
+										'ouuid': object.ouuid,
+										'_download': true}),
+								'label': 'Download',
+								'icon': 'download',
+								'target': '_blank'
+							}%}
 						{% endif %}
 					</div>
 				</div>

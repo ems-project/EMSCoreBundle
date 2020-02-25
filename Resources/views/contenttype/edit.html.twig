@@ -32,8 +32,6 @@
                         {% endif %}
                         {{ form_row(form.webContent) }}
                         {{ form_row(form.editTwigWithWysiwyg) }}
-                        {{ form_row(form.defaultSearchLinkDisplay) }}
-                        {{ form_row(form.defaultCreateLinkDisplay) }}
                         {{ form_row(form.singularName) }}
                         {{ form_row(form.pluralName) }}
                         {{ form_row(form.viewRole) }}
@@ -42,6 +40,8 @@
                             {{ form_row(form.editRole) }}
                             {{ form_row(form.publishRole) }}
                             {{ form_row(form.trashRole) }}
+                            {{ form_row(form.searchLinkDisplayRole) }}
+                            {{ form_row(form.createLinkDisplayRole) }}
                         {% endif %}
                         {{ form_row(form.icon) }}
                         {{ form_row(form.color) }}

@@ -217,14 +217,6 @@ class ContentTypeType extends AbstractType
 
         $builder->add('rootContentType');
         $builder->add('viewRole', RolePickerType::class);
-        $builder->add('defaultSearchLinkDisplay', CheckboxType::class, [
-            'label' => 'Display the search link in main navigation',
-            'required' => false,
-        ]);
-        $builder->add('defaultCreateLinkDisplay', CheckboxType::class, [
-            'label' => 'Display the creation link in main navigation',
-            'required' => false,
-        ]);
         
         if ($contentType->getEnvironment()->getManaged()) {
             $builder->add('defaultValue', CodeEditorType::class, [
@@ -238,6 +230,14 @@ class ContentTypeType extends AbstractType
             $builder->add('editRole', RolePickerType::class);
             $builder->add('publishRole', RolePickerType::class);
             $builder->add('trashRole', RolePickerType::class);
+
+            $builder->add('searchLinkDisplayRole', RolePickerType::class, [
+                'label' => 'Display the search link in main navigation'
+            ]);
+            $builder->add('createLinkDisplayRole', RolePickerType::class, [
+                'label' => 'Display the creation link in main navigation'
+            ]);
+
             $builder->add('orderField');
             $builder->add('saveAndEditStructure', SubmitEmsType::class, [
                     'attr' => [

@@ -91,7 +91,7 @@
 	          		{% endif %}
 	          	</a>
 	          	<ul class="treeview-menu">
-					{% if contentType.defaultSearchLinkDisplay %}
+					{% if is_granted(contentType.searchLinkDisplayRole) %}
 	            	<li class="">
                         <a id="menu-data-index-{{ contentType.id }}" href="{{ path('ems_data_default_search', {'name':contentType.name}) }}">
                             <i class="fa fa-search"></i> Search {{ contentType.pluralName }}
@@ -140,7 +140,7 @@
 	          			</a></li>
 	            	{% endif %}
 	            	
-	            	{% if (not contentType.createRole or is_granted(contentType.createRole)) and contentType.defaultCreateLinkDisplay %}
+	            	{% if (not contentType.createRole or is_granted(contentType.createRole)) and is_granted(contentType.createLinkDisplayRole) %}
 						<li class=""><a id="menu-data-add-{{ contentType.id }}" href="{{ path('data.add', { contentType: contentType.id }) }}">
 							<i class="fa fa-plus"></i>
 	          				New {{ contentType.singularName }}

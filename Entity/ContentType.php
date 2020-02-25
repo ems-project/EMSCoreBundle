@@ -407,18 +407,18 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     protected $localeField;
 
     /**
-     * @var bool
+     * @var string
      *
-     * @ORM\Column(name="defaultSearchLinkDisplay", type="boolean", options={"default" : 1})
+     * @ORM\Column(name="searchLinkDisplayRole", type="string", options={"default" : "ROLE_USER"})
      */
-    protected $defaultSearchLinkDisplay = true;
+    protected $searchLinkDisplayRole = 'ROLE_USER';
 
     /**
-     * @var bool
+     * @var string
      *
-     * @ORM\Column(name="defaultCreateLinkDisplay", type="boolean", options={"default" : 1})
+     * @ORM\Column(name="createLinkDisplayRole", type="string", options={"default" : "ROLE_USER"})
      */
-    protected $defaultCreateLinkDisplay = true;
+    protected $createLinkDisplayRole = 'ROLE_USER';
 
 
     public function __construct()
@@ -1838,25 +1838,25 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
         return $this->localeField;
     }
 
-    public function setDefaultSearchLinkDisplay(bool $defaultSearchLinkDisplay): ContentType
+    public function setSearchLinkDisplayRole(string $searchLinkDisplayRole): ContentType
     {
-        $this->defaultSearchLinkDisplay = $defaultSearchLinkDisplay;
+        $this->searchLinkDisplayRole = $searchLinkDisplayRole;
         return $this;
     }
 
-    public function getDefaultSearchLinkDisplay(): bool
+    public function getSearchLinkDisplayRole(): string
     {
-        return $this->defaultSearchLinkDisplay;
+        return $this->searchLinkDisplayRole;
     }
 
-    public function setDefaultCreateLinkDisplay(bool $defaultCreateLinkDisplay): ContentType
+    public function setCreateLinkDisplayRole(string $createLinkDisplayRole): ContentType
     {
-        $this->defaultCreateLinkDisplay = $defaultCreateLinkDisplay;
+        $this->createLinkDisplayRole = $createLinkDisplayRole;
         return $this;
     }
 
-    public function getDefaultCreateLinkDisplay(): bool
+    public function getCreateLinkDisplayRole(): string
     {
-        return $this->defaultCreateLinkDisplay;
+        return $this->createLinkDisplayRole;
     }
 }

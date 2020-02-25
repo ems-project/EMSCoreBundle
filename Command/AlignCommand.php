@@ -70,17 +70,12 @@ class AlignCommand extends EmsCommand
                 'Time to migrate "scrollSize" items i.e. 30s or 2m',
                 self::DEFAULT_SCROLL_TIMEOUT
             )
-            ->addArgument(
-                'contentType',
-                InputArgument::OPTIONAL,
-                'The content type you wish to align'
-            )
             ->addOption(
                 'searchQuery',
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'Query used to find elasticsearch records to import',
-                ''
+                '{}'
             )
             ->addOption(
                 'force',
@@ -105,7 +100,6 @@ class AlignCommand extends EmsCommand
         $scrollSize = $input->getArgument('scrollSize');
         $scrollTimeout = $input->getArgument('scrollTimeout');
         $searchQuery = $input->getOption('searchQuery');
-        $contentType = $input->getArgument('contentType');
 
         $source = $this->environmentService->getAliasByName($sourceName);
         $target = $this->environmentService->getAliasByName($targetName);
@@ -130,7 +124,6 @@ class AlignCommand extends EmsCommand
 
         $arrayElasticsearchIndex = $this->client->search([
             'index' => $source->getAlias(),
-            'type' => $contentType,
             'size' => $scrollSize,
             'scroll' => $scrollTimeout,
             'body' => $searchQuery,
@@ -147,7 +140,7 @@ class AlignCommand extends EmsCommand
         $alreadyAligned = 0;
         $targetIsPreviewEnvironment = [];
 
-        while (isset($arrayElasticsearchIndex['hits']['hits']) && count($arrayElasticsearchIndex['hits']['hits']) > 0) {
+        while ( $arrayElasticsearchIndex['hits']['hits'] ?? 0 > 0 ) {
             $flush = false;
             foreach ($arrayElasticsearchIndex['hits']['hits'] as $hit) {
                 $revision = $this->data->getRevisionByEnvironment($hit['_id'], $this->contentTypeService->getByName($hit['_type']), $source);

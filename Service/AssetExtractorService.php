@@ -149,7 +149,7 @@ class AssetExtractorService implements CacheWarmerInterface
         $canBePersisted = true;
         if (! empty($this->tikaServer)) {
             try {
-                $client = $this->rest->getClient($this->tikaServer);
+                $client = $this->rest->getClient($this->tikaServer, $forced ? 900 : 30);
                 $body = file_get_contents($file);
                 $result = $client->put(self::META_EP, [
                         'body' => $body,

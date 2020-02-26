@@ -140,7 +140,7 @@ class AlignCommand extends EmsCommand
         $alreadyAligned = 0;
         $targetIsPreviewEnvironment = [];
 
-        while ( count($arrayElasticsearchIndex['hits']['hits'] ?? []) > 0)
+        while ( count($arrayElasticsearchIndex['hits']['hits'] ?? []) > 0) {
             $flush = false;
             foreach ($arrayElasticsearchIndex['hits']['hits'] as $hit) {
                 $revision = $this->data->getRevisionByEnvironment($hit['_id'], $this->contentTypeService->getByName($hit['_type']), $source);

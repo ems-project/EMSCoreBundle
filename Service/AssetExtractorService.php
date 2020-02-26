@@ -137,10 +137,10 @@ class AssetExtractorService implements CacheWarmerInterface
             throw new AssetNotFoundException($hash);
         }
 
-        if (!$forced && filesize($file) > (2 * 1024 * 1024)) {
+        if (!$forced && filesize($file) > (3 * 1024 * 1024)) {
             $this->logger->warning('log.warning.asset_extract.file_to_large', [
                 'filesize' => Converter::formatBytes(filesize($file)),
-                'max_size' => '2 MB',
+                'max_size' => '3 MB',
             ]);
             return [];
         }
@@ -149,7 +149,7 @@ class AssetExtractorService implements CacheWarmerInterface
         $canBePersisted = true;
         if (! empty($this->tikaServer)) {
             try {
-                $client = $this->rest->getClient($this->tikaServer);
+                $client = $this->rest->getClient($this->tikaServer, $forced ? 900 : 30);
                 $body = file_get_contents($file);
                 $result = $client->put(self::META_EP, [
                         'body' => $body,

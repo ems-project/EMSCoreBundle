@@ -4,7 +4,7 @@ namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Controller\AppController;
-use EMS\CoreBundle\Exception\AssetNotFoundException;
+use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\FileService;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -54,17 +54,25 @@ class FileController extends AppController
     /**
      * @Route("/data/file/extract/forced/{sha1}.{_format}" , name="ems_file_extract_forced", defaults={"_format" = "json"}, methods={"GET","HEAD"})
      */
-    public function extractFileContentForced(string $sha1) : Response
+    public function extractFileContentForced(AssetExtractorService $assetExtractorService, Request $request, string $sha1) : Response
     {
-        return $this->extractFileContent($sha1, true);
+        return $this->extractFileContent($assetExtractorService, $request, $sha1, true);
     }
 
     /**
      * @Route("/data/file/extract/{sha1}.{_format}" , name="ems_file_extract", defaults={"_format" = "json"}, methods={"GET","HEAD"})
      */
-    public function extractFileContent(string $sha1, bool $forced = false) : Response
+    public function extractFileContent(AssetExtractorService $assetExtractorService, Request $request, string $sha1, bool $forced = false) : Response
     {
-        $data = $this->getAssetExtractorService()->extractData($sha1, null, $forced);
+        if ($request->hasSession()) {
+            $session = $request->getSession();
+
+            if ($session->isStarted()) {
+                $session->save();
+            }
+        }
+
+        $data = $assetExtractorService->extractData($sha1, null, $forced);
 
         $response = $this->render('@EMSCore/ajax/extract-data-file.json.twig', [
             'success' => true,

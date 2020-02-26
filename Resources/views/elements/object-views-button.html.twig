@@ -1,4 +1,7 @@
-{% trans_default_domain 'EMSCoreBundle' %}{% if contentType %}
+{% trans_default_domain 'EMSCoreBundle' %}
+{%- set ouuid = object.ouuid|default(object._id is defined ? object._id : '') -%}
+{%- set source = object.source|default(object._source is defined ? object._source : []) -%}
+{%- if contentType -%}
 	<div class="btn-group">
 		<button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
 			<i class="fa fa-eye"></i>
@@ -17,7 +20,7 @@
 										environment: environment,
 										contentType: contentType,
 										object: object,
-										source: object._source
+										source: source
 									}) %}
 
     							<li class="{% if not link %}disabled{% endif %}"><a href="{{ link }}" target="_blank">
@@ -27,7 +30,7 @@
     							</a></li>
 
 						{% elseif template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::NOTIFICATION') %}
-							{% if ( is_granted(template.role) and ((attribute(object._source, contentType.circlesField) is not defined) or (object._source and attribute(object._source, contentType.circlesField)|in_my_circles) or (environment.circles|in_my_circles and is_granted('ROLE_PUBLISHER')) ) ) %}
+							{% if ( is_granted(template.role) and ((attribute(source, contentType.circlesField) is not defined) or (source and attribute(source, contentType.circlesField)|in_my_circles) or (environment.circles|in_my_circles and is_granted('ROLE_PUBLISHER')) ) ) %}
 								<li><a href='#' class="request_notification" onclick="requestNotification(this, {{template.id}}, '{{environment.name}}', '{{contentType.id}}' , '{{ouuid}}'); return false;" href="#" data-url="{{ path('notification.ajaxnotification', {'objectId' : ouuid}) }}">
 									<i class="{{ template.icon|raw }}"></i>
 									{{ template.name }}
@@ -43,7 +46,7 @@
 						{% else %}{#  #}
 							<li><a href="{{ path(template.public?'ems_data_custom_template_public':'ems_data_custom_template_protected', {
 										environmentName: environment.name,
-										ouuid: object._id,
+										ouuid: ouuid,
 										templateId: template.id}) }}" >
 								<i class="{{ template.icon|raw }}"></i>
 								{{ template.name }}
@@ -57,7 +60,7 @@
 				
 				{% if environment.managed %}
 					<li>
-						<a href="{{ path('data.revision_in_environment', {'type': object._type, 'ouuid': object._id, 'environment':environment.name } ) }}" >
+						<a href="{{ path('data.revision_in_environment', {'type': contentType.name, 'ouuid': ouuid, 'environment':environment.name } ) }}" >
 							<i class="fa fa-archive"></i>
 							Corresponding revision
 						</a>
@@ -65,7 +68,7 @@
 				{% endif %}
 				{% if is_granted('ROLE_COPY_PASTE') %}
 					<li>
-						<a href="{{ path('revision.copy', {'environment': environment.name, 'type': contentType.name, 'ouuid': object._id} ) }}">
+						<a href="{{ path('revision.copy', {'environment': environment.name, 'type': contentType.name, 'ouuid': ouuid} ) }}">
 							<i class="fa fa-copy"></i>
 							{{ 'Copy data'|trans }}
 						</a>
@@ -73,7 +76,7 @@
 					{% if not contentType.askForOuuid  %}
 						<li>
 							{% include '@EMSCore/elements/post-button.html.twig' with {
-								'url': path('emsco_duplicate_revision', {'environment': environment.name, 'type': contentType.name, 'ouuid': object._id}),
+								'url': path('emsco_duplicate_revision', {'environment': environment.name, 'type': contentType.name, 'ouuid': ouuid}),
 								'label': 'Duplicate',
 								'icon': 'clone',
 								'btnClass': ''
@@ -81,7 +84,7 @@
 						</li>
 					{% endif %}
 					<li>
-						<a href="{{ path('data.view', {'environmentName': environment.name, 'type': contentType.name, 'ouuid': object._id} ) }}">
+						<a href="{{ path('data.view', {'environmentName': environment.name, 'type': contentType.name, 'ouuid': ouuid} ) }}">
 							<i class="fa fa-th"></i>
 							{{ 'Raw view'|trans }}
 						</a>
@@ -94,7 +97,7 @@
 	</div>
 {% else %}
 
-		<a class="btn btn-sm btn-primary " href="{{ path('data.view', {'environmentName': environment.name, 'type': object._type, 'ouuid': object._id} ) }}">
+		<a class="btn btn-sm btn-primary " href="{{ path('data.view', {'environmentName': environment.name, 'type': contentType.name, 'ouuid': object.ouuid} ) }}">
 			<span class="entity">&infin;</span>Raw view
 		</a>
 {% endif %}	

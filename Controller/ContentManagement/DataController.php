@@ -1494,35 +1494,58 @@ class DataController extends AppController
     }
 
     /**
-     * @Route("/data/add/{contentType}", name="data.add.jsoncontent"), methods={"POST"}
+     * @Route("/data/duplicate-json/{contentType}/{ouuid}", name="emsco_data_duplicate_with_jsoncontent"), methods={"POST"}
      */
-    public function addWithJsonContentAction(ContentType $contentType, Request $request, DataService $dataService, LoggerInterface $logger): RedirectResponse
+    public function duplicateWithJsonContentAction(ContentType $contentType, string $ouuid, Request $request, DataService $dataService, LoggerInterface $logger): RedirectResponse
     {
-        $dataService->hasCreateRights($contentType);
+        $content = $request->get('JSON_BODY', null);
+        $jsonContent = \json_decode($content, true);
+        $jsonContent = \array_merge($dataService->getNewestRevision($contentType->getName(), $ouuid)->getRawData(), $jsonContent);
+        return $this->intNewDocumentFromArray($contentType, $dataService, $logger, $jsonContent);
+    }
 
-        $jsonContent = \json_decode($request->getContent());
-        $revision = new Revision();
-
-        try {
-            $revision = $dataService->newDocument($contentType, $revision->getOuuid(), $jsonContent);
-
-            return $this->redirectToRoute('revision.edit', [
-                'revisionId' => $revision->getId()
-            ]);
-        } catch (DuplicateOuuidException $e) {
+    /**
+     * @Route("/data/add-json/{contentType}", name="emsco_data_add_from_jsoncontent"), methods={"POST"}
+     */
+    public function addFromJsonContentAction(ContentType $contentType, Request $request, DataService $dataService, LoggerInterface $logger): RedirectResponse
+    {
+        $content = $request->get('JSON_BODY', null);
+        $jsonContent = \json_decode($content, true);
+        if ($jsonContent === null) {
             $logger->error('log.data.revision.add_with_json_error', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
-                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                EmsFields::LOG_EXCEPTION_FIELD => $e,
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
             ]);
 
             return $this->redirectToRoute('data.root', [
                 'name' => $contentType->getName()
             ]);
         }
+        return $this->intNewDocumentFromArray($contentType, $dataService, $logger, $jsonContent);
+    }
+
+    private function intNewDocumentFromArray(ContentType $contentType, DataService $dataService, LoggerInterface $logger, array $rawData): RedirectResponse
+    {
+        $dataService->hasCreateRights($contentType);
+
+        try {
+            $revision = $dataService->newDocument($contentType, null, $rawData);
+
+            return $this->redirectToRoute('revision.edit', [
+                'revisionId' => $revision->getId()
+            ]);
+        } catch (\Exception $e) {
+            $logger->error('log.data.revision.add_with_json_error', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+            ]);
+        }
+
+        return $this->redirectToRoute('data.root', [
+            'name' => $contentType->getName()
+        ]);
     }
 
     /**

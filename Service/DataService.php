@@ -851,7 +851,7 @@ class DataService
     public function finalizeDraft(Revision $revision, FormInterface &$form = null, $username = null, $computeFields = true)
     {
         if ($revision->getDeleted()) {
-            throw new Exception("Can not finalized a deleted revision");
+            throw new CantBeFinalizedException("Cannot finalized a deleted revision");
         }
         if (null == $form && empty($username)) {
             if ($revision->getDatafield() == null) {
@@ -862,6 +862,11 @@ class DataService
             $builder = $this->formFactory->createBuilder(RevisionType::class, $revision, ['raw_data' => $revision->getRawData()]);
             $form = $builder->getForm();
         }
+
+        if ($this->checkIfTranslationExist($revision, $form)) {
+            throw new CantBeFinalizedException("Cannot finalized this revision because this translation already exist");
+        }
+
 
         if (empty($username)) {
             $username = $this->tokenStorage->getToken()->getUsername();
@@ -964,6 +969,67 @@ class DataService
             $this->logFormErrors($revision, $form);
         }
         return $revision;
+    }
+
+    private function checkIfTranslationExist(Revision $revision, FormInterface $form): bool
+    {
+        $localeFieldName = $revision->getContentType()->getLocaleField();
+        $translationFieldName = $revision->getContentType()->getTranslationField();
+
+        if ($localeFieldName === null || $translationFieldName === null) {
+            return false;
+        }
+
+        if (!isset($form->get('data')->getData()[$localeFieldName]) || !isset($form->get('data')->getData()[$translationFieldName])) {
+            return false;
+        }
+
+        $locale = $form->get('data')->getData()[$localeFieldName];
+        $translation = $form->get('data')->getData()[$translationFieldName];
+
+        $result = $this->client->search([
+            'index' => $revision->getContentType()->getEnvironment()->getAlias(),
+            'body' => [
+                'query' => [
+                    'bool' => [
+                        'must_not' => [
+                            [
+                                'term' => [
+                                    '_id' => $revision->getOuuid()
+                                ]
+                            ]
+                        ],
+                        'must' => [
+                            [
+                                'term' => [
+                                    '_contenttype' => $revision->getContentType()->getName()
+                                ]
+                            ],
+                            [
+                                'term' => [
+                                    $localeFieldName => [
+                                        'value' => $locale
+                                    ]
+                                ],
+                            ],
+                            [
+                                'term' => [
+                                    $translationFieldName => [
+                                        'value' => $translation
+                                    ]
+                                ],
+                            ],
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+
+        if ($result['hits']['total'] === 0) {
+            return false;
+        }
+
+        return true;
     }
 
     private function logFormErrors(Revision $revision, FormInterface $form)

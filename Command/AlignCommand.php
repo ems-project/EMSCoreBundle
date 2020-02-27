@@ -44,11 +44,28 @@ class AlignCommand extends Command
     /** @var SymfonyStyle */
     private $io;
 
+    /** @var string */
+    private $scrollSize;
+
+    /** @var string */
+    private $scrollTimeout;
+
+    /** @var string */
+    private $searchQuery;
+
     const ARGUMENT_SOURCE = 'source';
     const ARGUMENT_TARGET = 'target';
+    const ARGUMENT_SCROLL_SIZE = 'scrollSize';
+    const ARGUMENT_SCROLL_TIMEOUT = 'scrollTimeout';
+
     const OPTION_FORCE = 'force';
+    const OPTION_SEARCH_QUERY = 'searchQuery';
     const OPTION_SNAPSHOT = 'snapshot';
     const OPTION_STRICT = 'strict';
+
+    const DEFAULT_SCROLL_SIZE = '100';
+    const DEFAULT_SCROLL_TIMEOUT = '1m';
+    const DEFAULT_SEARCH_QUERY = '{}';
 
     public function __construct(Registry $doctrine, LoggerInterface $logger, Client $client, DataService $data, ContentTypeService $contentTypeService, EnvironmentService $environmentService, PublishService $publishService)
     {
@@ -79,6 +96,25 @@ class AlignCommand extends Command
                 InputArgument::REQUIRED,
                 'Environment target name'
             )
+            ->addArgument(
+                self::ARGUMENT_SCROLL_SIZE,
+                InputArgument::OPTIONAL,
+                'Size of the elasticsearch scroll request',
+                self::DEFAULT_SCROLL_SIZE
+            )
+            ->addArgument(
+                self::ARGUMENT_SCROLL_TIMEOUT,
+                InputArgument::OPTIONAL,
+                'Time to migrate "scrollSize" items i.e. 30s or 2m',
+                self::DEFAULT_SCROLL_TIMEOUT
+            )
+            ->addOption(
+                self::OPTION_SEARCH_QUERY,
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Query used to find elasticsearch records to import',
+                self::DEFAULT_SEARCH_QUERY
+            )
             ->addOption(
                 self::OPTION_FORCE,
                 null,
@@ -104,6 +140,10 @@ class AlignCommand extends Command
     {
         $this->io = new SymfonyStyle($input, $output);
         $this->io->title('Align environments');
+
+        $this->scrollSize = $input->getArgument(self::ARGUMENT_SCROLL_SIZE);
+        $this->scrollTimeout = $input->getArgument(self::ARGUMENT_SCROLL_TIMEOUT);
+        $this->searchQuery = $input->getOption(self::OPTION_SEARCH_QUERY);
     }
 
     protected function interact(InputInterface $input, OutputInterface $output)
@@ -132,10 +172,14 @@ class AlignCommand extends Command
         $source = $this->environmentService->getAliasByName($sourceName);
         $target = $this->environmentService->getAliasByName($targetName);
 
-        $total = $this->client->search([
+        $arrayElasticsearchIndex = $this->client->search([
             'index' => $source->getAlias(),
-            'size' => 0,
-        ])['hits']['total'];
+            'size' => $this->scrollSize,
+            'scroll' => $this->scrollTimeout,
+            'body' => $this->searchQuery,
+        ]);
+
+        $total = $arrayElasticsearchIndex['hits']['total'];
 
         $this->io->note(\sprintf('The source environment contains %s elements, start aligning environments...', $total));
 
@@ -145,23 +189,8 @@ class AlignCommand extends Command
         $alreadyAligned = 0;
         $targetIsPreviewEnvironment = [];
 
-        for ($from = 0; $from < $total; $from = $from + 50) {
-            $scroll = $this->client->search([
-                'index' => $source->getAlias(),
-                'size' => 50,
-                'from' => $from,
-                'body' => '{
-                       "sort": {
-                          "_uid": {
-                             "order": "asc",
-                             "missing": "_last"
-                          }
-                       }
-                    }',
-                //'preference' => '_primary', //http://stackoverflow.com/questions/10836142/elasticsearch-duplicate-results-with-paging
-            ]);
-
-            foreach ($scroll['hits']['hits'] as &$hit) {
+        while (count($arrayElasticsearchIndex['hits']['hits'] ?? []) > 0) {
+            foreach ($arrayElasticsearchIndex['hits']['hits'] as $hit) {
                 $revision = $this->data->getRevisionByEnvironment($hit['_id'], $this->contentTypeService->getByName($hit['_type']), $source);
                 if ($revision->getDeleted()) {
                     ++$deletedRevision;
@@ -177,6 +206,11 @@ class AlignCommand extends Command
                 }
                 $this->io->progressAdvance();
             }
+
+            $arrayElasticsearchIndex = $this->client->scroll([
+                'scroll_id' => $arrayElasticsearchIndex['_scroll_id'],
+                'scroll' => $this->scrollTimeout,
+            ]);
         }
 
         $this->io->progressFinish();
@@ -208,6 +242,7 @@ class AlignCommand extends Command
         if ($sourceName === null) {
             $message = 'Source environment not provided';
             $this->setSourceArgument($input, $message);
+            return;
         }
 
         $source = $this->environmentService->getAliasByName($sourceName);
@@ -239,6 +274,7 @@ class AlignCommand extends Command
         if ($targetName === null) {
             $message = 'Target environment not provided';
             $this->setTargetArgument($input, $message);
+            return;
         }
 
         $target = $this->environmentService->getAliasByName($targetName);

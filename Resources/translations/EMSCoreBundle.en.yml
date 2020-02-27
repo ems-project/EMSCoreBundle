@@ -455,6 +455,7 @@ search:
   sort_option_label: 'Sort Option'
   search_field_option_label: 'Search Field Option'
   aggregate_option_label: 'Aggregate Option'
+
 log:
   warning:
     asset_extract:
@@ -604,6 +605,8 @@ log:
       cant_duplicate_when_waiting_ouuid: 'It''s impossible to duplicate the document ems://object:%contenttype%:%ouuid% has the content type %contenttype% requests first an OUUID'
       compare: 'Compare the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% with the revision ems://revision:%compare_revision_id% of the document ems://object:%compare_contenttype%:%compare_ouuid%'
     revision:
+      add_from_json_error: 'It was not possible to initiate a new %contenttype% document due to an internal error'
+      init_document_from_array: 'It was not possible to initiate a new %contenttype% document due to an internal error'
       load_from_auto_save: 'Data were loaded from an auto-saved version for the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid%'
       auto_save_off_with_auto_publish: 'The auto-save has been disabled as the auto-publish is enabled for the content type %contenttype%. Press Ctrl+S (Cmd+S) in order to publish in %environment%'
       can_finalized: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% can''t be finalized as it is'

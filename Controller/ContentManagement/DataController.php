@@ -1512,7 +1512,7 @@ class DataController extends AppController
         $content = $request->get('JSON_BODY', null);
         $jsonContent = \json_decode($content, true);
         if ($jsonContent === null) {
-            $logger->error('log.data.revision.add_with_json_error', [
+            $logger->error('log.data.revision.add_from_json_error', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
             ]);
@@ -1535,7 +1535,7 @@ class DataController extends AppController
                 'revisionId' => $revision->getId()
             ]);
         } catch (\Exception $e) {
-            $logger->error('log.data.revision.add_with_json_error', [
+            $logger->error('log.data.revision.init_document_from_array', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
                 EmsFields::LOG_EXCEPTION_FIELD => $e,

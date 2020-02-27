@@ -1545,7 +1545,6 @@ class DataController extends AppController
                 'name' => $contentType->getName()
             ]);
         }
-
     }
 
     /**

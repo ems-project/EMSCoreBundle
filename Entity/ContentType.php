@@ -1827,7 +1827,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
         return $this->translationField;
     }
 
-    public function setLocaleField(string $localeField): ContentType
+    public function setLocaleField(?string $localeField): ContentType
     {
         $this->localeField = $localeField;
         return $this;

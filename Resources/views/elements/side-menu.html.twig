@@ -92,31 +92,31 @@
 	          	</a>
 	          	<ul class="treeview-menu">
                     {% if is_granted(contentType.searchLinkDisplayRole) %}
-                    <li class="">
-                        <a id="menu-data-index-{{ contentType.id }}" href="{{ path('ems_data_default_search', {'name':contentType.name}) }}">
-                            <i class="fa fa-search"></i> Search {{ contentType.pluralName }}
-                        </a>
-                    </li>
+                        <li class="">
+                            <a id="menu-data-index-{{ contentType.id }}" href="{{ path('ems_data_default_search', {'name':contentType.name}) }}">
+                                <i class="fa fa-search"></i> Search {{ contentType.pluralName }}
+                            </a>
+                        </li>
+
+                        {% if contentType.circlesField and app.user.circles|length > 0 %}
+
+                            {% set label = contentType.circlesField %}
+                            {% set circleField = contentType|get_field_by_path(contentType.circlesField, true) %}
+
+                            {% if circleField and circleField.options.displayOptions.type is defined  %}
+                                {% set circleContenttype = circleField.options.displayOptions.type|get_content_type %}
+                                {% if circleContenttype %}
+                                    {% if app.user.circles|length > 1 %}
+                                        {% set label = circleContenttype.pluralName %}
+                                    {% else %}
+                                        {% set label = circleContenttype.singularName %}
+                                    {% endif %}
+                                    <li class=""><a id="menu-data-index-{{ contentType.id }}" href="{{ path('ems_search_in_my_circles', {'name':contentType.name} ) }}"><i class="{{ circleContenttype.icon }}"></i> In my {{ label }}</a></li>
+                                {% endif %}
+                            {% endif %}
+
+                        {% endif %}
                     {% endif %}
-
-	          		{% if contentType.circlesField and app.user.circles|length > 0 %}
-
-		            	{% set label = contentType.circlesField %}
-		            	{% set circleField = contentType|get_field_by_path(contentType.circlesField, true) %}
-
-						{% if circleField and circleField.options.displayOptions.type is defined  %}
-		            		{% set circleContenttype = circleField.options.displayOptions.type|get_content_type %}
-		            		{% if circleContenttype %}
-								{% if app.user.circles|length > 1 %}
-					            	{% set label = circleContenttype.pluralName %}
-								{% else %}
-					            	{% set label = circleContenttype.singularName %}
-								{% endif %}
-	            		        <li class=""><a id="menu-data-index-{{ contentType.id }}" href="{{ path('ems_search_in_my_circles', {'name':contentType.name} ) }}"><i class="{{ circleContenttype.icon }}"></i> In my {{ label }}</a></li>
-							{% endif %}
-						{% endif %}
-
-	            	{% endif %}
 	            	{% for view in contentType.views %}
 	            		<li>
 	            			<a id="menu-data-view-{{ contentType.id }}-{{ view.id }}" href="{{ path(view.public?'ems_custom_view_public':'ems_custom_view_protected', { viewId: view.id }) }}">

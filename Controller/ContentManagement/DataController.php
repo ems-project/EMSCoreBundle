@@ -1541,11 +1541,11 @@ class DataController extends AppController
                 EmsFields::LOG_EXCEPTION_FIELD => $e,
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
             ]);
+            return $this->redirectToRoute('data.root', [
+                'name' => $contentType->getName()
+            ]);
         }
 
-        return $this->redirectToRoute('data.root', [
-            'name' => $contentType->getName()
-        ]);
     }
 
     /**

@@ -33,6 +33,7 @@ use Symfony\Component\Routing\Router;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
+use EMS\CoreBundle\Repository\RevisionRepository;
 
 class AppExtension extends \Twig_Extension
 {
@@ -64,8 +65,10 @@ class AppExtension extends \Twig_Extension
     private $logger;
     /** @var \Swift_Mailer */
     private $mailer;
+    /** @var RevisionRepository */
+    private $revisionRepository;
 
-    public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, Client $client, Router $router, $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, LoggerInterface $logger, FormFactory $formFactory, FileService $fileService, RequestRuntime $commonRequestRuntime, \Swift_Mailer $mailer, array $assetConfig)
+    public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, Client $client, Router $router, $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, LoggerInterface $logger, FormFactory $formFactory, FileService $fileService, RequestRuntime $commonRequestRuntime, \Swift_Mailer $mailer, array $assetConfig, RevisionRepository $revisionRepository)
     {
         $this->doctrine = $doctrine;
         $this->authorizationChecker = $authorizationChecker;
@@ -82,6 +85,7 @@ class AppExtension extends \Twig_Extension
         $this->commonRequestRuntime = $commonRequestRuntime;
         $this->mailer = $mailer;
         $this->assetConfig = $assetConfig;
+        $this->revisionRepository = $revisionRepository;
     }
 
     /**
@@ -122,8 +126,6 @@ class AppExtension extends \Twig_Extension
      */
     public function getFilters()
     {
-
-
         return array(
             new TwigFilter('searches', array($this, 'searchesList')),
             new TwigFilter('url_generator', array($this, 'toAscii')),
@@ -165,7 +167,7 @@ class AppExtension extends \Twig_Extension
             new TwigFilter('get_file', array($this, 'getFile')),
             new TwigFilter('get_field_by_path', array($this, 'getFieldByPath')),
             new TwigFilter('json_decode', array($this, 'jsonDecode')),
-
+            new TwigFilter('get_revision_id', array($this, 'getRevisionId')),
         );
     }
 
@@ -218,12 +220,17 @@ class AppExtension extends \Twig_Extension
         return json_decode($json, $assoc, $depth, $options);
     }
 
+    public function getRevisionId($ouuid, $env, $contentType)
+    {
+        $contentType = $this->getContentType($contentType)->getId();
+        $env = $this->getEnvironment($env)->getId();
+        return $this->revisionRepository->findIdByOuuidAndContentTypeAndEnvironment($ouuid, $contentType, $env)->getId() ?? null;
+    }
 
     public function getFieldByPath(ContentType $contentType, $path, $skipVirtualFields = false)
     {
         return $this->contentTypeService->getChildByPath($contentType->getFieldType(), $path, $skipVirtualFields);
     }
-
 
     public function getFile($hash, $cacheContext = false)
     {

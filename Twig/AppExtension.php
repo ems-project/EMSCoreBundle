@@ -22,6 +22,7 @@ use EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory;
 use EMS\CoreBundle\Repository\I18nRepository;
 use EMS\CoreBundle\Repository\SequenceRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
+use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\FileService;
 use EMS\CoreBundle\Service\UserService;
@@ -65,10 +66,10 @@ class AppExtension extends \Twig_Extension
     private $logger;
     /** @var \Swift_Mailer */
     private $mailer;
-    /** @var RevisionRepository */
-    private $revisionRepository;
+    /** @var DataService */
+    private $dataService;
 
-    public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, Client $client, Router $router, $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, LoggerInterface $logger, FormFactory $formFactory, FileService $fileService, RequestRuntime $commonRequestRuntime, \Swift_Mailer $mailer, array $assetConfig, RevisionRepository $revisionRepository)
+    public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, Client $client, Router $router, $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, LoggerInterface $logger, FormFactory $formFactory, FileService $fileService, RequestRuntime $commonRequestRuntime, \Swift_Mailer $mailer, array $assetConfig, DataService $dataService)
     {
         $this->doctrine = $doctrine;
         $this->authorizationChecker = $authorizationChecker;
@@ -85,7 +86,7 @@ class AppExtension extends \Twig_Extension
         $this->commonRequestRuntime = $commonRequestRuntime;
         $this->mailer = $mailer;
         $this->assetConfig = $assetConfig;
-        $this->revisionRepository = $revisionRepository;
+        $this->dataService = $dataService;
     }
 
     /**
@@ -224,7 +225,7 @@ class AppExtension extends \Twig_Extension
     {
         $contentType = $this->getContentType($contentType)->getId();
         $env = $this->getEnvironment($env)->getId();
-        return $this->revisionRepository->findIdByOuuidAndContentTypeAndEnvironment($ouuid, $contentType, $env)->getId() ?? null;
+        return $this->dataService->findIdByOuuidAndContentTypeAndEnvironment($ouuid, $contentType, $env)->getId() ?? null;
     }
 
     public function getFieldByPath(ContentType $contentType, $path, $skipVirtualFields = false)

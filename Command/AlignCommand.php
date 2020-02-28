@@ -277,7 +277,8 @@ class AlignCommand extends Command
             return;
         }
 
-        $target = $this->environmentService->getAliasByName($targetName);
+        $this->environmentService->clearCache();
+        $target = $this->environmentService->getByName($targetName);
         if ($target === false) {
             $message = \sprintf('Target environment "%s" not found', $targetName);
             $this->setTargetArgument($input, $message);

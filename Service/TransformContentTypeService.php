@@ -63,13 +63,16 @@ class TransformContentTypeService
                     if ($data === null) {
                         return [];
                     }
+                    if ($dataFieldType->isVirtual()) {
+                        return $data;
+                    }
 
                     $transformer = $this->getTransformer($dataField);
                     $contentTransformContext = ContentTransformContext::fromDataFieldType(\get_class($dataFieldType), $data);
                     if (!empty($transformer) && $transformer->canTransform($contentTransformContext)) {
                         $dataTransformed = $transformer->transform($contentTransformContext);
                         $contentTransformContext->setTransformedData($dataTransformed);
-                        if ($contentTransformContext->hasChanges()) {
+                        if ($transformer->hasChanges($contentTransformContext)) {
                             $isChanged = true;
                             return [$name => $dataTransformed];
                         }
@@ -84,13 +87,12 @@ class TransformContentTypeService
                     continue;
                 }
 
-                $data = $revision->getRawData();
-
-                foreach ($result['data'] as $key => $value) {
-                    $data[$key] = $value;
+                $rawData = $revision->getRawData();
+                foreach ($result as $key => $value) {
+                    $rawData[$key] = $value;
                 }
 
-                $revision->setRawData($data);
+                $revision->setRawData($rawData);
 
                 $this->dataService->finalizeDraft($revision, $revisionType, 'TRANSFORM_CONTENT');
                 yield $document;

@@ -25,11 +25,6 @@ class ContentTransformContext
         return $context;
     }
 
-    public function hasChanges(): bool
-    {
-        return $this->data !== $this->transformedData;
-    }
-
     public function getDataFieldType(): string
     {
         return $this->dataFieldType;

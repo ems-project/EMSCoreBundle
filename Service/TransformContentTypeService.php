@@ -57,8 +57,19 @@ class TransformContentTypeService
                 $isChanged = false;
                 $ouuid = $hit['_id'];
                 $revision = $this->dataService->getNewestRevision($contentType->getName(), $ouuid);
-                $revisionType = $this->formFactory->create(RevisionType::class, $revision);
 
+                if ($revision->getDraft()) {
+                    $this->logger->warning('service.data.transform_content_tyoe.cant_process_draft', [
+                        EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                        EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                        EmsFields::LOG_ENVIRONMENT_FIELD => $contentType->getEnvironment()->getName(),
+                        EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                    ]);
+                    yield $revision;
+                    continue;
+                }
+
+                $revisionType = $this->formFactory->create(RevisionType::class, $revision);
                 $result = $this->dataService->walkRecursive($revisionType->get('data'), $hit['_source'], function (string $name, $data, DataFieldType $dataFieldType, DataField $dataField) use (&$isChanged) {
                     if ($data === null) {
                         return [];

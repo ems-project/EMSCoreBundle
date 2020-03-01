@@ -3,7 +3,6 @@
 namespace EMS\CoreBundle\Service;
 
 use Elasticsearch\Client;
-use EMS\CommonBundle\Common\Document;
 use EMS\CoreBundle\ContentTransformer\ContentTransformContext;
 use EMS\CoreBundle\ContentTransformer\ContentTransformInterface;
 use EMS\CoreBundle\Entity\ContentType;
@@ -54,9 +53,8 @@ class TransformContentTypeService
 
             foreach ($scroll['hits']['hits'] as $hit) {
                 $isChanged = false;
-                $document = new Document($contentType->getName(), $hit['_id'], $hit['_source']);
-
-                $revision = $this->dataService->initNewDraft($document->getContentType(), $document->getOuuid(), null, 'TRANSFORM_CONTENT');
+                $ouuid = $hit['_id'];
+                $revision = $this->dataService->getNewestRevision($contentType->getName(), $ouuid);
                 $revisionType = $this->formFactory->create(RevisionType::class, $revision);
 
                 $result = $this->dataService->walkRecursive($revisionType->get('data'), $hit['_source'], function (string $name, $data, DataFieldType $dataFieldType, DataField $dataField) use (&$isChanged) {
@@ -82,20 +80,14 @@ class TransformContentTypeService
                 });
 
                 if (!$isChanged) {
-                    $this->dataService->discardDraft($revision, false, 'TRANSFORM_CONTENT');
-                    yield $document;
+                    yield $revision;
                     continue;
                 }
 
-                $rawData = $revision->getRawData();
-                foreach ($result as $key => $value) {
-                    $rawData[$key] = $value;
-                }
-
-                $revision->setRawData($rawData);
-
+                $revision = $this->dataService->initNewDraft($contentType->getName(), $ouuid, null, 'TRANSFORM_CONTENT');
+                $revision->setRawData($result);
                 $this->dataService->finalizeDraft($revision, $revisionType, 'TRANSFORM_CONTENT');
-                yield $document;
+                yield $revision;
             }
         }
     }

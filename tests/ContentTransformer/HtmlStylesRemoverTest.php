@@ -33,7 +33,7 @@ HTML;
     public function testRemoveSimpleBlock()
     {
         $input = <<<HTML
-<div class="removable-style-deletedContent"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p></div>
+<div class="removable-tag-deletedContent"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p></div>
 HTML;
         $output = <<<HTML
 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
@@ -45,7 +45,7 @@ HTML;
     public function testInlineNestedInAlertBlock()
     {
         $input = <<<HTML
-<div class="message alert">Lorem ipsum dolor sit amet, <span class="removable-style-deletedWord">consectetur </span>adipiscing elit.</div>
+<div class="message alert">Lorem ipsum dolor sit amet, <span class="removable-tag-deletedWord">consectetur </span>adipiscing elit.</div>
 HTML;
         $output = <<<HTML
 <div class="message alert">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
@@ -74,15 +74,35 @@ HTML;
         $this->assertEqualsInputOutPut($input, $output);
     }
 
+    public function testBlockNestedInReadmoreBlockWithoutP()
+    {
+        $input = <<<HTML
+<div class="readMoreContent">
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p> <!-- parent -->
+    <div class="removable-style-newContent">In quis eleifend nisi. Vestibulum porttitor.</div> <!-- first child -->
+    <p>Curabitur non eleifend felis.</p> <!-- second child -->
+</div>
+HTML;
+        $output = <<<HTML
+<div class="readMoreContent">
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p> <!-- parent -->
+    <p>In quis eleifend nisi. Vestibulum porttitor.</p> <!-- first child -->
+    <p>Curabitur non eleifend felis.</p> <!-- second child -->
+</div>
+HTML;
+
+        $this->assertEqualsInputOutPut($input, $output);
+    }
+
     public function testSpanToRemoveFollowedByEmOrStrong()
     {
         $input = <<<HTML
-<div class="question">Lorem <span class="removable-style-deletedWord">ipsum dolor sit amet</span>, <em>consectetur </em>adipiscing elit.</div>
-<div class="response">In quis <strong>eleifend </strong>nisi. <span class="removable-style-deletedWord">Vestibulum </span>porttitor.</div>
+<div class="question">Lorem <span class="removable-tag-deletedWord">ipsum dolor sit amet</span>, <em>consectetur </em>adipiscing elit.</div>
+<div class="response">In quis <strong>eleifend </strong>nisi. <span class="removable-tag-deletedWord">Vestibulum </span>porttitor.</div>
 HTML;
         $output = <<<HTML
 <div class="question">Lorem ipsum dolor sit amet, <em>consectetur </em>adipiscing elit.</div>
-<div class="response">In quis <strong>eleifend </strong>nisi. Vestibulum porttitor.</div>
+<div class="response">In quis <strong>eleifend </strong>nisi. porttitor.</div>
 HTML;
 
         $this->assertEqualsInputOutPut($input, $output);
@@ -115,10 +135,10 @@ HTML;
     public function testDivToRemoveWithSpanToRemoveInsideItWithOtherTags()
     {
         $input = <<<HTML
-<div class="removable-style-deletedContent"><p>In sed dolor quis nulla <strong>accumsan </strong>ornare; In id <u>libero</u> sed <em>sapien semper</em> tristique sit amet eu <span class="removable-style-deletedWord">mauris</span>.</p></div>
+<div class="removable-tag-deletedContent"><p>In sed dolor quis nulla <strong>accumsan </strong>ornare; In id <u>libero</u> sed <em>sapien semper</em> tristique sit amet eu <span class="removable-tag-deletedWord">mauris</span>.</p></div>
 HTML;
         $output = <<<HTML
-<p>In sed dolor quis nulla <strong>accumsan </strong>ornare; In id <u>libero</u> sed <em>sapien semper</em> tristique sit amet eu mauris.</p>
+
 HTML;
 
         $this->assertEqualsInputOutPut($input, $output);
@@ -139,10 +159,10 @@ HTML;
     public function testSpanToRemoveWithAnotherSpanInsideIt()
     {
         $input = <<<HTML
-<p><span class="removable-style-deletedWord">Nam <span class="hidden">lobortis </span>dolor ege</span>t felis</p>
+<p><span class="removable-tag-deletedWord">Nam <span class="hidden">lobortis </span>dolor ege</span>t felis</p>
 HTML;
         $output = <<<HTML
-<p>Nam <span class="hidden">lobortis </span>dolor eget felis</p>
+<p>t felis</p>
 HTML;
 
         $this->assertEqualsInputOutPut($input, $output);
@@ -206,7 +226,7 @@ HTML;
         <tr>
             <td>Lorem</td>
             <td>Ipsum</td>
-            <td><strong><em><span class="removable-style-deletedWord">Condimentum</span></em></strong></td>
+            <td><strong><em><span class="removable-tag-deletedWord">Condimentum</span></em></strong></td>
         </tr>
         <tr>
             <td>Dolor</td>
@@ -216,7 +236,7 @@ HTML;
         <tr>
             <td>Amet</td>
             <td>Elit</td>
-            <td><span class="removable-style-deletedWord">Natoque</span></td>
+            <td><span class="removable-tag-deletedWord">Natoque</span></td>
         </tr>
     </tbody>
 </table>
@@ -227,7 +247,6 @@ HTML;
         <tr>
             <td>Lorem</td>
             <td>Ipsum</td>
-            <td><strong><em>Condimentum</em></strong></td>
         </tr>
         <tr>
             <td>Dolor</td>
@@ -237,7 +256,6 @@ HTML;
         <tr>
             <td>Amet</td>
             <td>Elit</td>
-            <td>Natoque</td>
         </tr>
     </tbody>
 </table>

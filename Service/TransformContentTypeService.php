@@ -3,12 +3,14 @@
 namespace EMS\CoreBundle\Service;
 
 use Elasticsearch\Client;
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\ContentTransformer\ContentTransformContext;
 use EMS\CoreBundle\ContentTransformer\ContentTransformInterface;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Form\Form\RevisionType;
+use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 
@@ -84,9 +86,21 @@ class TransformContentTypeService
                     continue;
                 }
 
-                $revision = $this->dataService->initNewDraft($contentType->getName(), $ouuid, null, 'TRANSFORM_CONTENT');
-                $revision->setRawData($result);
-                $this->dataService->finalizeDraft($revision, $revisionType, 'TRANSFORM_CONTENT');
+
+                try {
+                    $revision = $this->dataService->initNewDraft($contentType->getName(), $ouuid, null, 'TRANSFORM_CONTENT');
+                    $revision->setRawData($result);
+                    $this->dataService->finalizeDraft($revision, $revisionType, 'TRANSFORM_CONTENT');
+                } catch (Exception $e) {
+                    $this->logger->error('service.data.transform_content_tyoe.errer_on_save', [
+                        EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                        EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                        EmsFields::LOG_ENVIRONMENT_FIELD => $contentType->getEnvironment()->getName(),
+                        EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                        EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                        EmsFields::LOG_EXCEPTION_FIELD => $e,
+                    ]);
+                }
                 yield $revision;
             }
         }

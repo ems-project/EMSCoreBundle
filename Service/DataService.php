@@ -1984,10 +1984,8 @@ class DataService
         }
     }
 
-    public function findIdByOuuidAndContentTypeAndEnvironment($ouuid, $contentType, $env)
+    public function getIdByOuuidAndContentTypeAndEnvironment($ouuid, $contentType, $env)
     {
         return $this->revRepository->findIdByOuuidAndContentTypeAndEnvironment($ouuid, $contentType, $env) ?? null;
     }
-
-
 }

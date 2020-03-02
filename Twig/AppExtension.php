@@ -225,7 +225,7 @@ class AppExtension extends \Twig_Extension
     {
         $contentType = $this->getContentType($contentType)->getId();
         $env = $this->getEnvironment($env)->getId();
-        return $this->dataService->findIdByOuuidAndContentTypeAndEnvironment($ouuid, $contentType, $env)->getId() ?? null;
+        return $this->dataService->getIdByOuuidAndContentTypeAndEnvironment($ouuid, $contentType, $env)->getId() ?? null;
     }
 
     public function getFieldByPath(ContentType $contentType, $path, $skipVirtualFields = false)

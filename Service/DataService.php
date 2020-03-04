@@ -1984,7 +1984,7 @@ class DataService
         }
     }
 
-    public function getIdByOuuidAndContentTypeAndEnvironment($ouuid, $contentType, $env)
+    public function getIdByOuuidAndContentTypeAndEnvironment(string $ouuid, int $contentType, int $env) : ?Revision
     {
         return $this->revRepository->findIdByOuuidAndContentTypeAndEnvironment($ouuid, $contentType, $env) ?? null;
     }

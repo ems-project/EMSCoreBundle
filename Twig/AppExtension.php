@@ -34,7 +34,6 @@ use Symfony\Component\Routing\Router;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
-use EMS\CoreBundle\Repository\RevisionRepository;
 
 class AppExtension extends \Twig_Extension
 {

@@ -419,13 +419,9 @@ class RevisionRepository extends EntityRepository
     }
 
     /**
-     * @param string $ouuid
-     * @param int $contentType
-     * @param int $env
-     * @return null|Revision
      * @throws NonUniqueResultException
      */
-    public function findIdByOuuidAndContentTypeAndEnvironment(string $ouuid, int $contentType, int $env)
+    public function findIdByOuuidAndContentTypeAndEnvironment(string $ouuid, int $contentType, int $env) : ?Revision
     {
         $qb = $this->createQueryBuilder('r');
         $qb->join('r.environments', 'e');
@@ -443,7 +439,7 @@ class RevisionRepository extends EntityRepository
         if (empty($out)) {
             return null;
         }
-        return $out[0];
+        return $out[0] ?? null;
     }
 
     /**

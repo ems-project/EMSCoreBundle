@@ -2038,4 +2038,32 @@ class DataService
 
         return $rows;
     }
+
+    public function unlockAllContentTypesRevisions(string $by): int
+    {
+        $rows = 0;
+        $contentTypes = $this->contentTypeService->getAll();
+        foreach ($contentTypes as $contentType) {
+            $rows += $this->unlockContentTypeRevisions($contentType, $by);
+        }
+
+        return $rows;
+    }
+
+    public function unlockContentTypeRevisions(ContentType $contentType, string $by): int
+    {
+        $rows = 0;
+        try {
+            $rows += $this->revRepository->unlockContentTypeRevisionsbyUser($contentType, $by);
+        } catch (LockedException $e) {
+            $this->logger->error('service.data.unlock_revisions_error', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                EmsFields::LOG_USERNAME_FIELD => $by,
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+            ]);
+        }
+
+        return  $rows;
+    }
 }

@@ -595,6 +595,11 @@ services:
         arguments: ['@logger', '@ems.service.environment', '@ems.service.data']
         tags:
             - { name: console.command }
+    ems.revisions.unlock:
+        class: EMS\CoreBundle\Command\UnlockRevisionsCommand
+        arguments: ['@logger', '@ems.service.data', '@ems.service.contenttype']
+        tags:
+            - { name: console.command }
 
 #### security services
     api_key_user_provider:

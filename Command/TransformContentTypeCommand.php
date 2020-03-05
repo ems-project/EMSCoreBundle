@@ -15,22 +15,23 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class TransformContentTypeCommand extends Command
 {
+    /** @var string */
     protected static $defaultName = 'ems:contenttype:transform';
-
     /** @var LoggerInterface */
     protected $logger;
-
     /** @var ContentTypeService */
     protected $contentTypeService;
-
     /** @var TransformContentTypeService */
     protected $transformContentTypeService;
-
     /** @var SymfonyStyle */
     private $io;
+    /** @var string */
+    private $user;
 
     const ARGUMENT_CONTENTTYPE_NAME = 'contentTypeName';
+    const ARGUMENT_USER = 'user';
     const OPTION_STRICT = 'strict';
+    const DEFAULT_USER = 'TRANSFORM_CONTENT';
 
     public function __construct(LoggerInterface $logger, ContentTypeService $contentTypeService, TransformContentTypeService $transformContentTypeService)
     {
@@ -50,6 +51,12 @@ class TransformContentTypeCommand extends Command
                 InputArgument::REQUIRED,
                 'Content Type name'
             )
+            ->addArgument(
+                self::ARGUMENT_USER,
+                InputArgument::OPTIONAL,
+                'The user name: the user must correspond to the lock user.',
+                self::DEFAULT_USER
+            )
             ->addOption(
                 self::OPTION_STRICT,
                 null,
@@ -67,10 +74,11 @@ class TransformContentTypeCommand extends Command
 
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
-        $this->logger->info('Interact with TransformContentType command');
-
         $this->io->section('Check environment name argument');
-        $this->checkContentTypeNameArgument($input);
+        $this->checkContentTypeArgument($input);
+        $this->checkUserArgument($input);
+
+        $this->user = $input->getArgument(self::ARGUMENT_USER);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -81,7 +89,7 @@ class TransformContentTypeCommand extends Command
         $contentType = $this->contentTypeService->getByName($contentTypeName);
 
         $total = $this->transformContentTypeService->getTotal($contentType);
-        $hits = $this->transformContentTypeService->transform($contentType);
+        $hits = $this->transformContentTypeService->transform($contentType, $this->user);
 
         $this->io->note(\sprintf('Start transformation of "%s"', $contentType->getPluralName()));
 
@@ -95,24 +103,25 @@ class TransformContentTypeCommand extends Command
         return 0;
     }
 
-    private function checkContentTypeNameArgument(InputInterface $input)
+    private function checkContentTypeArgument(InputInterface $input)
     {
         $contentTypeName = $input->getArgument(self::ARGUMENT_CONTENTTYPE_NAME);
         if (null === $contentTypeName) {
             $message = 'The content type name is not provided';
-            $this->setContentTypeNameArgument($input, $message);
+            $this->setContentTypeArgument($input, $message);
+            return;
         }
 
         $contentType = $this->contentTypeService->getByName($contentTypeName);
         if (false === $contentType) {
             $message = \sprintf('The content type "%s" not found', $contentTypeName);
-            $this->setContentTypeNameArgument($input, $message);
-            $this->checkContentTypeNameArgument($input);
+            $this->setContentTypeArgument($input, $message);
+            $this->checkContentTypeArgument($input);
             return;
         }
     }
 
-    private function setContentTypeNameArgument(InputInterface $input, string $message): void
+    private function setContentTypeArgument(InputInterface $input, string $message): void
     {
         if ($input->getOption(self::OPTION_STRICT)) {
             $this->logger->error($message);
@@ -122,5 +131,27 @@ class TransformContentTypeCommand extends Command
         $this->io->caution($message);
         $contentTypeName = $this->io->choice('Select an existing content type', $this->contentTypeService->getAllNames());
         $input->setArgument(self::ARGUMENT_CONTENTTYPE_NAME, $contentTypeName);
+    }
+
+    private function checkUserArgument(InputInterface $input): void
+    {
+        $user = $input->getArgument(self::ARGUMENT_USER);
+        if (null === $user) {
+            $message = 'The user name is not provided';
+            $this->setUserArgument($input, $message);
+            return;
+        }
+    }
+
+    private function setUserArgument(InputInterface $input, string $message): void
+    {
+        if ($input->getOption(self::OPTION_STRICT)) {
+            $this->logger->error($message);
+            throw new \Exception($message);
+        }
+
+        $this->io->caution($message);
+        $user = $this->io->ask('Insert a user name: the user must correspond to the "lock user"');
+        $input->setArgument(self::ARGUMENT_USER, $user);
     }
 }

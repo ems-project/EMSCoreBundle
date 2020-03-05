@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command;
 
-use Elasticsearch\Client;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\TransformContentTypeService;
 use Psr\Log\LoggerInterface;
@@ -13,7 +14,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class TransformContentTypeCommand extends Command
+final class TransformContentTypeCommand extends Command
 {
     /** @var string */
     protected static $defaultName = 'ems:contenttype:transform';

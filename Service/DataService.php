@@ -2010,4 +2010,32 @@ class DataService
             'name' => $environment->getAlias()
         ]);
     }
+
+    public function lockAllContentTypesRevisions(\DateTime $until, string $by): int
+    {
+        $rows = 0;
+        $contentTypes = $this->contentTypeService->getAll();
+        foreach ($contentTypes as $contentType) {
+            $rows += $this->lockContentTypeRevisions($contentType, $until, $by);
+        }
+
+        return $rows;
+    }
+
+    public function lockContentTypeRevisions(ContentType $contentType, \DateTime $until, string $by): int
+    {
+        $rows = 0;
+        try {
+            $rows += $this->revRepository->lockRevisions($contentType, $until, $by, true, false);
+        } catch (LockedException $e) {
+            $this->logger->error('service.data.lock_revisions_error', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                EmsFields::LOG_USERNAME_FIELD => $by,
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+            ]);
+        }
+
+        return $rows;
+    }
 }

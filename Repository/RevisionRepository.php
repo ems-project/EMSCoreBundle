@@ -609,6 +609,34 @@ class RevisionRepository extends EntityRepository
         return $qbUpdate->getQuery()->execute();
     }
 
+    public function unlockContentTypeRevisionsbyUser(ContentType $contentType, string $by): int
+    {
+        $params = ['content_type' => $contentType, 'by' => $by, 'null' => null];
+
+        /** @var QueryBuilder $qbSelect */
+        $qbSelect = $this->createQueryBuilder('s');
+        $qbSelect
+            ->select('s.id')
+            ->andWhere($qbSelect->expr()->eq('s.contentType', ':content_type'))
+            ->andWhere($qbSelect->expr()->eq('s.lockBy', ':by'))
+            ->andWhere($qbSelect->expr()->isNull('s.endTime'))
+            ->andWhere($qbSelect->expr()->eq('s.deleted', $qbSelect->expr()->literal(false)))
+            ->andWhere($qbSelect->expr()->eq('s.draft', $qbSelect->expr()->literal(false)))
+        ;
+
+        /** @var QueryBuilder $qbUpdate */
+        $qbUpdate = $this->createQueryBuilder('u');
+        $qbUpdate
+            ->update()
+            ->set('u.lockBy', ':null')
+            ->set('u.lockUntil', ':null')
+            ->andWhere($qbUpdate->expr()->in('u.id', $qbSelect->getDQL()))
+            ->setParameters($params)
+        ;
+
+        return $qbUpdate->getQuery()->execute();
+    }
+
     public function findAllLockedRevisions(ContentType $contentType, string $lockBy, int $page = 0, int $limit = 50) : Paginator
     {
         /** @var QueryBuilder $qb */

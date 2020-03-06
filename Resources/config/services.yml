@@ -610,7 +610,6 @@ services:
 
     ems.service.revision:
         alias: 'EMS\CoreBundle\Service\RevisionService'
-        public: true
 
     #activate autowiring on core bundle controller
     EMS\CoreBundle\Controller\:

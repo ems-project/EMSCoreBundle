@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command;
 
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\TransformContentTypeService;
 use Psr\Log\LoggerInterface;
@@ -26,10 +27,12 @@ final class TransformContentTypeCommand extends Command
     protected $transformContentTypeService;
     /** @var SymfonyStyle */
     private $io;
+    /** @var ContentType */
+    private $contentType;
     /** @var string */
     private $user;
 
-    const ARGUMENT_CONTENTTYPE_NAME = 'contentTypeName';
+    const ARGUMENT_CONTENT_TYPE = 'content-type';
     const ARGUMENT_USER = 'user';
     const OPTION_STRICT = 'strict';
     const DEFAULT_USER = 'TRANSFORM_CONTENT';
@@ -46,9 +49,9 @@ final class TransformContentTypeCommand extends Command
     protected function configure()
     {
         $this
-            ->setDescription('Transform the Content Type defined')
+            ->setDescription('Transform the content-type defined')
             ->addArgument(
-                self::ARGUMENT_CONTENTTYPE_NAME,
+                self::ARGUMENT_CONTENT_TYPE,
                 InputArgument::REQUIRED,
                 'Content Type name'
             )
@@ -79,6 +82,7 @@ final class TransformContentTypeCommand extends Command
         $this->checkContentTypeArgument($input);
         $this->checkUserArgument($input);
 
+        $this->contentType = $this->contentTypeService->getByName($input->getArgument(self::ARGUMENT_CONTENT_TYPE));
         $this->user = $input->getArgument(self::ARGUMENT_USER);
     }
 
@@ -86,13 +90,10 @@ final class TransformContentTypeCommand extends Command
     {
         $this->logger->info('Execute the TransformContentType command');
 
-        $contentTypeName = $input->getArgument('contentTypeName');
-        $contentType = $this->contentTypeService->getByName($contentTypeName);
+        $total = $this->transformContentTypeService->getTotal($this->contentType);
+        $hits = $this->transformContentTypeService->transform($this->contentType, $this->user);
 
-        $total = $this->transformContentTypeService->getTotal($contentType);
-        $hits = $this->transformContentTypeService->transform($contentType, $this->user);
-
-        $this->io->note(\sprintf('Start transformation of "%s"', $contentType->getPluralName()));
+        $this->io->note(\sprintf('Start transformation of "%s"', $this->contentType->getPluralName()));
 
         $this->io->progressStart($total);
         foreach ($hits as $hit) {
@@ -100,25 +101,22 @@ final class TransformContentTypeCommand extends Command
         }
         $this->io->progressFinish();
 
-        $this->io->success(\sprintf('Transformation of "%s" content type done', $contentType->getPluralName()));
+        $this->io->success(\sprintf('Transformation of "%s" content type done', $this->contentType->getPluralName()));
         return 0;
     }
 
     private function checkContentTypeArgument(InputInterface $input): void
     {
-        $contentTypeName = $input->getArgument(self::ARGUMENT_CONTENTTYPE_NAME);
-        if (null === $contentTypeName) {
+        if (null === $input->getArgument(self::ARGUMENT_CONTENT_TYPE)) {
             $message = 'The content type name is not provided';
             $this->setContentTypeArgument($input, $message);
-            return;
         }
 
-        $contentType = $this->contentTypeService->getByName($contentTypeName);
-        if (false === $contentType) {
+        $contentTypeName = $input->getArgument(self::ARGUMENT_CONTENT_TYPE);
+        if (false === $this->contentTypeService->getByName($contentTypeName)) {
             $message = \sprintf('The content type "%s" not found', $contentTypeName);
             $this->setContentTypeArgument($input, $message);
             $this->checkContentTypeArgument($input);
-            return;
         }
     }
 
@@ -131,16 +129,14 @@ final class TransformContentTypeCommand extends Command
 
         $this->io->caution($message);
         $contentTypeName = $this->io->choice('Select an existing content type', $this->contentTypeService->getAllNames());
-        $input->setArgument(self::ARGUMENT_CONTENTTYPE_NAME, $contentTypeName);
+        $input->setArgument(self::ARGUMENT_CONTENT_TYPE, $contentTypeName);
     }
 
     private function checkUserArgument(InputInterface $input): void
     {
-        $user = $input->getArgument(self::ARGUMENT_USER);
-        if (null === $user) {
+        if (null === $input->getArgument(self::ARGUMENT_USER)) {
             $message = 'The user name is not provided';
             $this->setUserArgument($input, $message);
-            return;
         }
     }
 
@@ -152,7 +148,16 @@ final class TransformContentTypeCommand extends Command
         }
 
         $this->io->caution($message);
-        $user = $this->io->ask('Insert a user name: the user must correspond to the "lock user"');
+        $user = $this->io->ask(
+            'Insert a user name: the user must correspond to the "lock user"',
+            null,
+            function ($user) {
+                if (empty($user)) {
+                    throw new \RuntimeException('User cannot be empty.');
+                }
+                return $user;
+            }
+        );
         $input->setArgument(self::ARGUMENT_USER, $user);
     }
 }

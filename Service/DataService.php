@@ -2013,9 +2013,8 @@ class DataService
 
     public function lockAllRevisions(\DateTime $until, string $by): int
     {
-        $rows = 0;
         try {
-            $rows += $this->revRepository->lockAllRevisions($until, $by);
+            return $this->revRepository->lockAllRevisions($until, $by);
         } catch (LockedException $e) {
             $this->logger->error('service.data.lock_revisions_error', [
                 EmsFields::LOG_USERNAME_FIELD => $by,
@@ -2023,15 +2022,12 @@ class DataService
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
             ]);
         }
-
-        return $rows;
     }
 
     public function lockRevisions(ContentType $contentType, \DateTime $until, string $by): int
     {
-        $rows = 0;
         try {
-            $rows += $this->revRepository->lockRevisions($contentType, $until, $by, true, false);
+            return $this->revRepository->lockRevisions($contentType, $until, $by, true, false);
         } catch (LockedException $e) {
             $this->logger->error('service.data.lock_revisions_error', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
@@ -2040,15 +2036,12 @@ class DataService
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
             ]);
         }
-
-        return $rows;
     }
 
     public function unlockAllRevisions(string $by): int
     {
-        $rows = 0;
         try {
-            $rows += $this->revRepository->unlockAllRevisions($by);
+            return $this->revRepository->unlockAllRevisions($by);
         } catch (LockedException $e) {
             $this->logger->error('service.data.unlock_revisions_error', [
                 EmsFields::LOG_USERNAME_FIELD => $by,
@@ -2056,15 +2049,12 @@ class DataService
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
             ]);
         }
-
-        return  $rows;
     }
 
     public function unlockRevisions(ContentType $contentType, string $by): int
     {
-        $rows = 0;
         try {
-            $rows += $this->revRepository->unlockRevisions($contentType, $by);
+            return $this->revRepository->unlockRevisions($contentType, $by);
         } catch (LockedException $e) {
             $this->logger->error('service.data.unlock_revisions_error', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
@@ -2073,8 +2063,6 @@ class DataService
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
             ]);
         }
-
-        return  $rows;
     }
 
     public function getAllDrafts(): array

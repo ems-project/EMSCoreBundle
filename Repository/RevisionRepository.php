@@ -673,4 +673,15 @@ class RevisionRepository extends EntityRepository
             'modified' => 'asc'
         ]);
     }
+
+    public function findAllDrafts(): array
+    {
+        return $this->findBy([
+            'draft' => true,
+            'deleted' => false,
+            'endTime' => null,
+        ], [
+            'modified' => 'asc'
+        ]);
+    }
 }

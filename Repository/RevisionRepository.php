@@ -421,7 +421,7 @@ class RevisionRepository extends EntityRepository
     /**
      * @throws NonUniqueResultException
      */
-    public function findIdByOuuidAndContentTypeAndEnvironment(string $ouuid, int $contentType, int $env) : ?Revision
+    public function findIdByOuuidAndContentTypeAndEnvironment(string $ouuid, int $contentType, int $env) : ?array
     {
         $qb = $this->createQueryBuilder('r');
         $qb->join('r.environments', 'e');
@@ -432,13 +432,11 @@ class RevisionRepository extends EntityRepository
             'contentTypeId' => $contentType
         ]);
 
-        $out = $qb->getQuery()->getResult();
+        $out = $qb->getQuery()->getArrayResult();
         if (count($out) > 1) {
             throw new NonUniqueResultException($ouuid . ' is publish multiple times in ' . $env);
         }
-        if (empty($out)) {
-            return null;
-        }
+
         return $out[0] ?? null;
     }
 

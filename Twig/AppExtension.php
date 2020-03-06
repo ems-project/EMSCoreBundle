@@ -65,10 +65,8 @@ class AppExtension extends \Twig_Extension
     private $logger;
     /** @var \Swift_Mailer */
     private $mailer;
-    /** @var DataService */
-    private $dataService;
 
-    public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, Client $client, Router $router, $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, LoggerInterface $logger, FormFactory $formFactory, FileService $fileService, RequestRuntime $commonRequestRuntime, \Swift_Mailer $mailer, array $assetConfig, DataService $dataService)
+    public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, Client $client, Router $router, $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, LoggerInterface $logger, FormFactory $formFactory, FileService $fileService, RequestRuntime $commonRequestRuntime, \Swift_Mailer $mailer, array $assetConfig)
     {
         $this->doctrine = $doctrine;
         $this->authorizationChecker = $authorizationChecker;
@@ -85,7 +83,6 @@ class AppExtension extends \Twig_Extension
         $this->commonRequestRuntime = $commonRequestRuntime;
         $this->mailer = $mailer;
         $this->assetConfig = $assetConfig;
-        $this->dataService = $dataService;
     }
 
     /**
@@ -167,7 +164,7 @@ class AppExtension extends \Twig_Extension
             new TwigFilter('get_file', array($this, 'getFile')),
             new TwigFilter('get_field_by_path', array($this, 'getFieldByPath')),
             new TwigFilter('json_decode', array($this, 'jsonDecode')),
-            new TwigFilter('get_revision_id', array($this, 'getRevisionId')),
+            new TwigFilter('get_revision_id', [RevisionRuntime::class, 'getRevisionId']),
         );
     }
 
@@ -218,13 +215,6 @@ class AppExtension extends \Twig_Extension
     public function jsonDecode($json, $assoc = true, $depth = 512, $options = 0)
     {
         return json_decode($json, $assoc, $depth, $options);
-    }
-
-    public function getRevisionId($ouuid, $env, $contentType)
-    {
-        $contentType = $this->getContentType($contentType)->getId();
-        $env = $this->getEnvironment($env)->getId();
-        return $this->dataService->getIdByOuuidAndContentTypeAndEnvironment($ouuid, $contentType, $env)->getId() ?? null;
     }
 
     public function getFieldByPath(ContentType $contentType, $path, $skipVirtualFields = false)

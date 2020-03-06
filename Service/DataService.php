@@ -100,6 +100,8 @@ class DataService
     protected $formFactory;
     /** @var Container  */
     protected $container;
+    /** @var AppExtension */
+    protected $appTwig;
     /** @var FormRegistryInterface */
     protected $formRegistry;
     /** @var EventDispatcher */
@@ -131,6 +133,7 @@ class DataService
         Logger $logger,
         StorageManager $storageManager,
         Twig_Environment $twig,
+        AppExtension $appExtension,
         UserService $userService,
         RevisionRepository $revisionRepository
     ) {
@@ -148,6 +151,7 @@ class DataService
         $this->formFactory = $formFactory;
         $this->container = $container;
         $this->twig = $twig;
+        $this->appTwig = $appExtension;
         $this->formRegistry = $formRegistry;
         $this->dispatcher = $dispatcher;
         $this->storageManager = $storageManager;
@@ -197,11 +201,11 @@ class DataService
         if (!empty($publishEnv) && !$this->authorizationChecker->isGranted($revision->getContentType()->getPublishRole() ?: 'ROLE_PUBLISHER')) {
             throw new PrivilegeException($revision, 'You don\'t have publisher role for this content');
         }
-        if (!empty($publishEnv) && is_object($publishEnv) && !empty($publishEnv->getCircles()) && !$this->authorizationChecker->isGranted('ROLE_ADMIN') && !$this->container->get('app.twig_extension')->inMyCircles($publishEnv->getCircles())) {
+        if (!empty($publishEnv) && is_object($publishEnv) && !empty($publishEnv->getCircles()) && !$this->authorizationChecker->isGranted('ROLE_ADMIN') && !$this->appTwig->inMyCircles($publishEnv->getCircles())) {
             throw new PrivilegeException($revision, 'You don\'t share any circle with this content');
         }
         if (empty($publishEnv) && !empty($revision->getContentType()->getCirclesField()) && !empty($revision->getRawData()[$revision->getContentType()->getCirclesField()])) {
-            if (!$this->container->get('app.twig_extension')->inMyCircles($revision->getRawData()[$revision->getContentType()->getCirclesField()])) {
+            if (!$this->appTwig->inMyCircles($revision->getRawData()[$revision->getContentType()->getCirclesField()])) {
                 throw new PrivilegeException($revision);
             }
         }
@@ -1984,7 +1988,7 @@ class DataService
         }
     }
 
-    public function getIdByOuuidAndContentTypeAndEnvironment(string $ouuid, int $contentType, int $env) : ?Revision
+    public function getIdByOuuidAndContentTypeAndEnvironment(string $ouuid, int $contentType, int $env) : ?array
     {
         return $this->revRepository->findIdByOuuidAndContentTypeAndEnvironment($ouuid, $contentType, $env) ?? null;
     }

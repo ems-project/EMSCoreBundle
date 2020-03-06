@@ -1,33 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Twig;
 
-use EMS\CoreBundle\Service\ContentTypeService;
-use EMS\CoreBundle\Service\DataService;
-use EMS\CoreBundle\Service\EnvironmentService;
+use EMS\CoreBundle\Service\RevisionService;
 use Twig\Extension\RuntimeExtensionInterface;
-
 
 class RevisionRuntime implements RuntimeExtensionInterface
 {
-    /**@var ContentTypeService */
-    private $contentTypeService;
-    /** @var DataService */
-    private $dataService;
-    /** @var EnvironmentService */
-    private $environmentService;
+    /** @var RevisionService */
+    private $revisionService;
 
-    public function __construct(ContentTypeService $contentTypeService, DataService $dataService, EnvironmentService $environmentService)
+    public function __construct(RevisionService $revisionService)
     {
-        $this->contentTypeService = $contentTypeService;
-        $this->dataService = $dataService;
-        $this->environmentService = $environmentService;
+        $this->revisionService = $revisionService;
     }
 
     public function getRevisionId($ouuid, $env, $contentType)
     {
-        $contentType = $this->contentTypeService->getByName($contentType)->getId();
-        $env = $this->environmentService->getAliasByName($env)->getId();
-        return $this->dataService->getIdByOuuidAndContentTypeAndEnvironment($ouuid, $contentType, $env)['id'] ?? null;
+        return $this->revisionService->getIdByOuuidAndContentTypeAndEnvironment($ouuid, $contentType, $env)['id'] ?? null;
     }
 }

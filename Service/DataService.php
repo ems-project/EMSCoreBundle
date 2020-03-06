@@ -1987,9 +1987,4 @@ class DataService
             }
         }
     }
-
-    public function getIdByOuuidAndContentTypeAndEnvironment(string $ouuid, int $contentType, int $env) : ?array
-    {
-        return $this->revRepository->findIdByOuuidAndContentTypeAndEnvironment($ouuid, $contentType, $env) ?? null;
-    }
 }

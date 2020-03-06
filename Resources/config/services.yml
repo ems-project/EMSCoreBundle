@@ -16,7 +16,7 @@ services:
     app.twig_extension_revision: '@EMS\CoreBundle\Twig\RevisionRuntime'
     EMS\CoreBundle\Twig\RevisionRuntime:
         #class: EMS\CoreBundle\Twig\RevisionRuntime
-        arguments: ['@ems.service.contenttype', '@ems.service.data', '@ems.service.environment']
+        arguments: ['@ems.service.revision']
         #public: false
         tags:
             - { name: twig.runtime, priority: -2000 }
@@ -387,6 +387,9 @@ services:
         arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '%ems_core.lock_time%', '@app.elasticsearch', '@ems.service.mapping', '%ems_core.instance_id%', '@session', '@form.factory', '@service_container', '@form.registry', '@event_dispatcher', '@ems.service.contenttype', '%ems_core.private_key%', '@logger', '@ems_common.storage.manager', '@twig', '@app.twig_extension', '@ems.service.user', '@EMS\CoreBundle\Repository\RevisionRepository']
         tags:
             - { name: kernel.event_listener, event: ems_core.revision.update_referers, method: updateReferers, priority: 0 }
+    EMS\CoreBundle\Service\RevisionService:
+        class: EMS\CoreBundle\Service\RevisionService
+        arguments: ['@ems.service.contenttype', '@ems.service.environment', '@EMS\CoreBundle\Repository\RevisionRepository']
     ems.service.alias:
         class: EMS\CoreBundle\Service\AliasService
         arguments: ['@app.elasticsearch', '@EMS\CoreBundle\Repository\EnvironmentRepository', '@EMS\CoreBundle\Repository\ManagedAliasRepository']
@@ -605,6 +608,9 @@ services:
         alias: 'EMS\CoreBundle\Service\DataService'
         public: true
 
+    ems.service.revision:
+        alias: 'EMS\CoreBundle\Service\RevisionService'
+        public: true
 
     #activate autowiring on core bundle controller
     EMS\CoreBundle\Controller\:

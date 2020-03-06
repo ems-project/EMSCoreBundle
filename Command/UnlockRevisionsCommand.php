@@ -35,7 +35,7 @@ final class UnlockRevisionsCommand extends Command
     private $all;
 
     private const ARGUMENT_USER = 'user';
-    private const ARGUMENT_CONTENT_TYPE = 'content-type';
+    private const ARGUMENT_CONTENT_TYPE = 'contentType';
     private const OPTION_ALL = 'all';
     private const OPTION_STRICT = 'strict';
 

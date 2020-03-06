@@ -32,7 +32,7 @@ final class TransformContentTypeCommand extends Command
     /** @var string */
     private $user;
 
-    const ARGUMENT_CONTENT_TYPE = 'content-type';
+    const ARGUMENT_CONTENT_TYPE = 'contentType';
     const ARGUMENT_USER = 'user';
     const OPTION_STRICT = 'strict';
     const DEFAULT_USER = 'TRANSFORM_CONTENT';

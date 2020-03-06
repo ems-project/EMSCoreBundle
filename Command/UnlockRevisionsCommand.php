@@ -91,6 +91,10 @@ final class UnlockRevisionsCommand extends Command
         $this->checkContentTypeArgument($input);
 
         $this->user = $input->getArgument(self::ARGUMENT_USER);
+
+        if (!$this->all) {
+            $this->contentType = $this->contentTypeService->getByName($input->getArgument(self::ARGUMENT_CONTENT_TYPE));
+        }
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -113,11 +117,9 @@ final class UnlockRevisionsCommand extends Command
 
     private function checkUserArgument(InputInterface $input): void
     {
-        $user = $input->getArgument(self::ARGUMENT_USER);
-        if (null === $user) {
+        if (null === $input->getArgument(self::ARGUMENT_USER)) {
             $message = 'The user name is not provided';
             $this->setUserArgument($input, $message);
-            return;
         }
     }
 
@@ -129,7 +131,16 @@ final class UnlockRevisionsCommand extends Command
         }
 
         $this->io->caution($message);
-        $user = $this->io->ask('Insert a user name: the user must correspond to the "lock user"');
+        $user = $this->io->ask(
+            'Insert a user name: the user must correspond to the "lock user"',
+            null,
+            function ($user) {
+                if (empty($user)) {
+                    throw new \RuntimeException('User cannot be empty.');
+                }
+                return $user;
+            }
+        );
         $input->setArgument(self::ARGUMENT_USER, $user);
     }
 
@@ -139,22 +150,17 @@ final class UnlockRevisionsCommand extends Command
             return;
         }
 
-        $contentTypeName = $input->getArgument(self::ARGUMENT_CONTENT_TYPE);
-        if (null === $contentTypeName) {
+        if (null === $input->getArgument(self::ARGUMENT_CONTENT_TYPE)) {
             $message = 'The content type name is not provided';
             $this->setContentTypeArgument($input, $message);
-            return;
         }
 
-        $contentType = $this->contentTypeService->getByName($contentTypeName);
-        if (false === $contentType) {
+        $contentTypeName = $input->getArgument(self::ARGUMENT_CONTENT_TYPE);
+        if (false === $this->contentTypeService->getByName($contentTypeName)) {
             $message = \sprintf('The content type "%s" not found', $contentTypeName);
             $this->setContentTypeArgument($input, $message);
             $this->checkContentTypeArgument($input);
-            return;
         }
-
-        $this->contentType = $contentType;
     }
 
     private function setContentTypeArgument(InputInterface $input, string $message): void

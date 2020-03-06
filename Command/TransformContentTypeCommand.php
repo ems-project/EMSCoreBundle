@@ -104,7 +104,7 @@ final class TransformContentTypeCommand extends Command
         return 0;
     }
 
-    private function checkContentTypeArgument(InputInterface $input)
+    private function checkContentTypeArgument(InputInterface $input): void
     {
         $contentTypeName = $input->getArgument(self::ARGUMENT_CONTENTTYPE_NAME);
         if (null === $contentTypeName) {

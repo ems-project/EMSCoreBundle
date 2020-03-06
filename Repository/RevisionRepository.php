@@ -613,7 +613,6 @@ class RevisionRepository extends EntityRepository
     {
         $params = ['content_type' => $contentType, 'by' => $by, 'null' => null];
 
-        /** @var QueryBuilder $qbSelect */
         $qbSelect = $this->createQueryBuilder('s');
         $qbSelect
             ->select('s.id')
@@ -624,7 +623,6 @@ class RevisionRepository extends EntityRepository
             ->andWhere($qbSelect->expr()->eq('s.draft', $qbSelect->expr()->literal(false)))
         ;
 
-        /** @var QueryBuilder $qbUpdate */
         $qbUpdate = $this->createQueryBuilder('u');
         $qbUpdate
             ->update()

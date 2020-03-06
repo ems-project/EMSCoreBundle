@@ -654,4 +654,16 @@ class RevisionRepository extends EntityRepository
 
         return new Paginator($qb->getQuery());
     }
+
+    public function findDraftsByContentType(ContentType $contentType): array
+    {
+        return $this->findBy([
+            'contentType' => $contentType,
+            'draft' => true,
+            'deleted' => false,
+            'endTime' => null,
+        ], [
+            'modified' => 'asc'
+        ]);
+    }
 }

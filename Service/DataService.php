@@ -2072,21 +2072,9 @@ class DataService
         $draftedRevisions = [];
         $contentTypes = $this->contentTypeService->getAll();
         foreach ($contentTypes as $contentType) {
-            $draftedRevisions = \array_merge($draftedRevisions, $this->getContentTypeDraftedRevisions($contentType));
+            $draftedRevisions = \array_merge($draftedRevisions, $this->revRepository->findDraftsByContentType($contentType));
         }
 
         return $draftedRevisions;
-    }
-
-    public function getContentTypeDraftedRevisions(ContentType $contentType): array
-    {
-        return $this->revRepository->findBy([
-            'contentType' => $contentType,
-            'draft' => true,
-            'deleted' => false,
-            'endTime' => null,
-        ], [
-            'modified' => 'asc'
-        ]);
     }
 }

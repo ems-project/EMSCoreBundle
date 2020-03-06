@@ -97,9 +97,9 @@ final class UnlockRevisionsCommand extends Command
     {
         try {
             if ($this->all) {
-                $count = $this->dataService->unlockAllContentTypesRevisions($this->user);
+                $count = $this->dataService->unlockAllRevisions($this->user);
             } else {
-                $count = $this->dataService->unlockContentTypeRevisions($this->contentType, $this->user);
+                $count = $this->dataService->unlockRevisions($this->contentType, $this->user);
             }
         } catch (\Exception $e) {
             $this->io->error($e->getMessage());

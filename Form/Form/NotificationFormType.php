@@ -32,12 +32,6 @@ class NotificationFormType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        
-        //TODO: why is this here?
-        //http://symfony.com/doc/current/cookbook/form/dynamic_form_modification.html#cookbook-dynamic-form-modification-suppressing-form-validation
-        //$builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
-        //    $event->stopPropagation();
-        //}, 900);
 
         $builder->add('template', EntityType::class, [
             'class' => 'EMSCoreBundle:Template',
@@ -70,7 +64,7 @@ class NotificationFormType extends AbstractType
                 'choice_translation_domain' => false,
                 'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
 
-                'choices' => $this->service->getAll(),
+                'choices' => $this->service->getEnvironments(),
                 'required' => false,
                 'choice_label' => function ($value, $key, $index) {
                     return '<i class="fa fa-square text-' . $value->getColor() . '"></i>&nbsp;&nbsp;' . $value->getName();

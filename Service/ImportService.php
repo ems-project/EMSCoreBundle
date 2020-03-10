@@ -33,9 +33,9 @@ class ImportService
         $this->instanceId = $instanceId;
     }
 
-    public function initDocumentImporter(ContentType $contentType, string $lockUser, bool $rawImport, bool $signData, bool $indexInDefaultEnv, int $bulkSize) : DocumentImporter
+    public function initDocumentImporter(ContentType $contentType, string $lockUser, bool $rawImport, bool $signData, bool $indexInDefaultEnv, int $bulkSize, bool $finalize, bool $force) : DocumentImporter
     {
         $entityManager = $this->doctrine->getManager();
-        return new DocumentImporter($this->dataService, $entityManager, $this->formFactory, $this->bulker, $this->instanceId, $contentType, $lockUser, $rawImport, $signData, $indexInDefaultEnv, $bulkSize);
+        return new DocumentImporter($this->dataService, $entityManager, $this->formFactory, $this->bulker, $this->instanceId, $contentType, $lockUser, $rawImport, $signData, $indexInDefaultEnv, $bulkSize, $finalize, $force);
     }
 }

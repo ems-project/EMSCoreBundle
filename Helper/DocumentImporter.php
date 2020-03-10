@@ -9,6 +9,7 @@ use EMS\CoreBundle\Elasticsearch\Bulker;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
@@ -47,8 +48,12 @@ class DocumentImporter
     private $bulkSize;
     /** @var string  */
     private $instanceId;
+    /** @var bool */
+    private $finalize;
+    /** @var bool */
+    private $force;
 
-    public function __construct(DataService $dataService, EntityManager $entityManager, FormFactoryInterface $formFactory, Bulker $bulker, string $instanceId, string $contentTypeName, string $lockUser, bool $rawImport, bool $signData, bool $indexInDefaultEnv, int $bulkSize)
+    public function __construct(DataService $dataService, EntityManager $entityManager, FormFactoryInterface $formFactory, Bulker $bulker, string $instanceId, string $contentTypeName, string $lockUser, bool $rawImport, bool $signData, bool $indexInDefaultEnv, int $bulkSize, bool $finalize, bool $force)
     {
         $this->contentTypeName = $contentTypeName;
         $this->indexInDefaultEnv = $indexInDefaultEnv;
@@ -57,14 +62,18 @@ class DocumentImporter
         $this->lockUser = $lockUser;
         $this->rawImport = $rawImport;
         $this->bulkSize = $bulkSize;
+        $this->finalize = $finalize;
         $this->dataService = $dataService;
         $this->bulker = $bulker;
         $this->entityManager = $entityManager;
         $this->formFactory = $formFactory;
+        $this->force = $force;
 
         //https://stackoverflow.com/questions/9699185/memory-leaks-symfony2-doctrine2-exceed-memory-limit
         //https://stackoverflow.com/questions/13093689/is-there-a-way-to-free-the-memory-allotted-to-a-symfony-2-form-object
         $this->entityManager->getConnection()->getConfiguration()->setSQLLogger(null);
+
+        $this->bulker->setEnableSha1(false);
 
 
         $repository = $entityManager->getRepository('EMSCoreBundle:Revision');
@@ -113,7 +122,7 @@ class DocumentImporter
 
     private function submitData(Revision $revision, Revision $previousRevision = null)
     {
-        $revisionType = $this->formFactory->create(RevisionType::class, $revision, ['migration' => true, 'raw_data' => $revision->getRawData()]);
+        $revisionType = $this->formFactory->create(RevisionType::class, $revision, ['migration' => true, 'with_warning' => false, 'raw_data' => $revision->getRawData()]);
         $viewData = $this->dataService->getSubmitData($revisionType->get('data'));
 
         $revisionType->setData($previousRevision);
@@ -132,11 +141,22 @@ class DocumentImporter
     public function importDocument(string $ouuid, array $rawData)
     {
         $newRevision = $this->dataService->getEmptyRevision($this->contentType, $this->lockUser);
+        if (!$this->finalize) {
+            $newRevision->removeEnvironment($this->environment);
+        }
         $newRevision->setOuuid($ouuid);
         $newRevision->setRawData($rawData);
 
         $currentRevision = $this->revisionRepository->getCurrentRevision($this->contentType, $ouuid);
 
+        if ($currentRevision && $currentRevision->getDraft()) {
+            if (!$this->force) {
+                throw new CantBeFinalizedException(sprintf('A draft is already in progress for document %s:%s. Use the force option to override this issue.', $this->contentTypeName, $ouuid));
+            }
+
+            $this->dataService->discardDraft($currentRevision, true, $this->lockUser);
+            $currentRevision = $this->revisionRepository->getCurrentRevision($this->contentType, $ouuid);
+        }
         if (!$this->rawImport) {
             $this->submitData($newRevision, $currentRevision ?? $this->dataService->getEmptyRevision($this->contentType, $this->lockUser));
         }
@@ -145,7 +165,9 @@ class DocumentImporter
             $currentRevision->setEndTime($newRevision->getStartTime());
             $currentRevision->setDraft(false);
             $currentRevision->setAutoSave(null);
-            $currentRevision->removeEnvironment($this->environment);
+            if ($this->finalize) {
+                $currentRevision->removeEnvironment($this->environment);
+            }
             $currentRevision->setLockBy($this->lockUser);
             $currentRevision->setLockUntil($newRevision->getLockUntil());
             $this->entityManager->persist($currentRevision);
@@ -153,7 +175,7 @@ class DocumentImporter
 
         $this->dataService->setMetaFields($newRevision);
 
-        if ($this->indexInDefaultEnv) {
+        if ($this->indexInDefaultEnv && $this->finalize) {
             $indexConfig = [
                 '_index' => $this->environment->getAlias(),
                 '_type' => $this->contentType->getName(),
@@ -168,10 +190,10 @@ class DocumentImporter
             $this->bulker->index($indexConfig, $body);
         }
 
-        $newRevision->setDraft(false);
+        $newRevision->setDraft(!$this->finalize);
         $this->entityManager->persist($newRevision);
-        $this->revisionRepository->finaliseRevision($this->contentType, $ouuid, $newRevision->getStartTime());
-        $this->revisionRepository->publishRevision($newRevision);
+        $this->revisionRepository->finaliseRevision($this->contentType, $ouuid, $newRevision->getStartTime(), $this->lockUser);
+        $this->revisionRepository->publishRevision($newRevision, $newRevision->getDraft());
         $this->entityManager->flush();
     }
 }

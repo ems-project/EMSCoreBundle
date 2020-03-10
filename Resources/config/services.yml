@@ -493,6 +493,11 @@ services:
         arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.import']
         tags:
             -  { name: console.command }
+    ems.document.import:
+        class: EMS\CoreBundle\Command\ImportCommand
+        arguments: ['@logger', '@app.elasticsearch', '@ems.service.contenttype', '@ems.service.import', '@ems.service.data']
+        tags:
+            -  { name: console.command }
     ems.contenttype.export:
         class: EMS\CoreBundle\Command\ExportDocumentsCommand
         arguments: ['@logger', '@app.elasticsearch', '@ems.service.template', '@ems.service.data', '@ems.service.contenttype', '@ems.service.environment', '@EMS\CommonBundle\Twig\RequestRuntime', '%ems_core.instance_id%']

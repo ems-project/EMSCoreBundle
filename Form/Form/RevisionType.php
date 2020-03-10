@@ -40,6 +40,7 @@ class RevisionType extends AbstractType
                 'metadata' => $contentType->getFieldType(),
                 'error_bubbling' => false,
                 'migration' => $options['migration'],
+                'with_warning' => $options['with_warning'],
                 'raw_data' => $options['raw_data'],
         ])->add('save', SubmitEmsType::class, [
                 'attr' => [
@@ -100,6 +101,7 @@ class RevisionType extends AbstractType
                 'has_clipboard' => false,
                 'has_copy' => false,
                 'migration' => false,
+                'with_warning' => true,
                 'translation_domain' => 'EMSCoreBundle',
                 'raw_data' => [],
         ));

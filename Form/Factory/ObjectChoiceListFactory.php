@@ -35,7 +35,7 @@ class ObjectChoiceListFactory extends DefaultChoiceListFactory
     /**
      * instanciate a ObjectChoiceLoader (with the required services)
      */
-    public function createLoader($types = null, $loadAll = false, $circleOnly = false)
+    public function createLoader($types = null, $loadAll = false, $circleOnly = false, bool $withWarning = true)
     {
         if (null === $types || $loadAll === "") {
             if ($loadAll) {
@@ -43,7 +43,7 @@ class ObjectChoiceListFactory extends DefaultChoiceListFactory
             }
             $types = $this->contentTypes->getAllTypes();
         }
-        return new ObjectChoiceLoader($this->objectChoiceCacheService, $types, $loadAll, $circleOnly);
+        return new ObjectChoiceLoader($this->objectChoiceCacheService, $types, $loadAll, $circleOnly, $withWarning);
     }
 
     /**

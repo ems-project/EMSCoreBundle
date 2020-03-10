@@ -78,6 +78,8 @@ class DataService
     protected $instanceId;
     /** @var array */
     private $cacheBusinessKey = [];
+    /** @var array */
+    private $cacheOuuids = [];
 
     /** @var Twig_Environment */
     protected $twig;
@@ -347,10 +349,21 @@ class DataService
                             ]
                         ]
 
-                    ]
+                    ],
+                    'size' => 100,
+                    "scroll" => "1m"
                 ]);
-                foreach ($result['hits']['hits'] as $hits) {
-                    $businessKeys[$contentType->getName() . ':' . $hits['_id']] = $hits['_source'][$contentType->getBusinessIdField()] ?? $hits['_id'];
+
+                while (count($result['hits']['hits'] ?? []) > 0) {
+                    foreach ($result['hits']['hits'] as $hits) {
+                        $dataLink = $contentType->getName() . ':' . $hits['_id'];
+                        $businessKeys[$dataLink] = $hits['_source'][$contentType->getBusinessIdField()] ?? $hits['_id'];
+                        $this->cacheBusinessKey[$dataLink] = $businessKeys[$dataLink];
+                    }
+                    $result = $this->client->scroll([
+                        'scroll_id' => $result['_scroll_id'],
+                        'scroll' =>  "1m",
+                    ]);
                 }
             }
         }
@@ -2009,5 +2022,102 @@ class DataService
             'index' => $indexName,
             'name' => $environment->getAlias()
         ]);
+    }
+
+    public function getDataLinks(string $contentTypesCommaList, array $businessIds): array
+    {
+        $items = [];
+        $ouuids = [];
+        foreach ($businessIds as $businessId) {
+            if (isset($this->cacheOuuids[$contentTypesCommaList][$businessId])) {
+                $ouuids[$businessId] = $this->cacheOuuids[$contentTypesCommaList][$businessId];
+            } else {
+                $items[] = $businessId;
+                $ouuids[$businessId] = $businessId;
+            }
+        }
+
+        foreach ($this->contentTypeService->getByNames(explode(',', $contentTypesCommaList)) as $contentType) {
+            if ($contentType->getBusinessIdField() && count($ouuids) > 0) {
+                $result = $this->client->search([
+                    'index' => $contentType->getEnvironment()->getAlias(),
+                    'body' => [
+                        'size' => sizeof($ouuids),
+                        '_source' => $contentType->getBusinessIdField(),
+                        'query' => [
+                            'bool' => [
+                                'must' => [
+                                    [
+                                        'term' => [
+                                            '_contenttype' => $contentType->getName()
+                                        ]
+                                    ],
+                                    [
+                                        'terms' => [
+                                            $contentType->getBusinessIdField() => $items
+                                        ]
+                                    ],
+                                ]
+                            ]
+                        ]
+
+                    ],
+                    'size' => 100,
+                    "scroll" => "1m"
+                ]);
+
+                while (count($result['hits']['hits'] ?? []) > 0) {
+                    foreach ($result['hits']['hits'] as $hits) {
+                        $key = sprintf('%s:%s', $contentType->getName(), $hits['_id']);
+                        $ouuids[$hits['_source'][$contentType->getBusinessIdField()]] = $key;
+                        $this->cacheOuuids[$contentTypesCommaList][$contentType->getBusinessIdField()] = $key;
+                    }
+                    $result = $this->client->scroll([
+                        'scroll_id' => $result['_scroll_id'],
+                        'scroll' =>  "1m",
+                    ]);
+                }
+            }
+        }
+        return array_values($ouuids);
+    }
+
+    public function getDataLink(string $contentTypesCommaList, string $businessId): ?string
+    {
+        return $this->getDataLinks($contentTypesCommaList, [$businessId])[0] ?? $businessId;
+    }
+
+
+
+    public function hitFromBusinessIdToDataLink(ContentType $contentType, string $ouuid, array $rawData) : Document
+    {
+        $revision = $this->getEmptyRevision($contentType, null);
+        $revision->setRawData($rawData);
+        $revision->setOuuid($ouuid);
+        $revisionType = $this->formFactory->create(RevisionType::class, $revision, ['migration' => true, 'raw_data' => $revision->getRawData(), 'with_warning' => false]);
+        $result = $this->walkRecursive($revisionType->get('data'), $rawData, function (string $name, $data, DataFieldType $dataFieldType, DataField $dataField) {
+            if ($data !== null && (!is_array($data) || count($data) > 0)) {
+                if ($dataFieldType->isVirtual()) {
+                    return $data;
+                }
+
+                if (!$dataFieldType instanceof DataLinkFieldType) {
+                    return [$name => $data];
+                }
+
+                $typesList = $dataField->getFieldType()->getDisplayOption('type');
+                if ($typesList == null) {
+                    return [$name => $data];
+                }
+
+                if (is_string($data)) {
+                    return [$name => $this->getDataLink($typesList, $data)];
+                }
+                return [$name => $this->getDataLinks($typesList, $data)];
+            }
+            return [];
+        });
+        unset($revisionType);
+        return new Document($contentType->getName(), $ouuid, $result);
     }
 }

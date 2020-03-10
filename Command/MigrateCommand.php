@@ -78,7 +78,7 @@ class MigrateCommand extends EmsCommand
                 'force',
                 null,
                 InputOption::VALUE_NONE,
-                'Allow to import from the default environment'
+                'Allow to import from the default environment and/or to cancel draft revision'
             )
             ->addOption(
                 'raw',
@@ -98,6 +98,12 @@ class MigrateCommand extends EmsCommand
                 InputOption::VALUE_OPTIONAL,
                 'Query used to find elasticsearch records to import',
                 '{"sort":{"_uid":{"order":"asc"}}}'
+            )
+            ->addOption(
+                'dont-finalize',
+                null,
+                InputOption::VALUE_NONE,
+                'Don\'t finalize document'
             );
     }
 
@@ -113,6 +119,7 @@ class MigrateCommand extends EmsCommand
         $forceImport = $input->getOption('force');
         $signData = $input->getOption('sign-data');
         $searchQuery = $input->getOption('searchQuery');
+        $finalize = !$input->getOption('dont-finalize');
 
         if ($contentTypeNameTo === null) {
             $contentTypeNameTo = $contentTypeNameFrom;
@@ -156,7 +163,7 @@ class MigrateCommand extends EmsCommand
 
         $progress = new ProgressBar($output, $arrayElasticsearchIndex["hits"]["total"]);
         $progress->start();
-        $importer = $this->importService->initDocumentImporter($contentTypeTo, 'SYSTEM_MIGRATE', $rawImport, $signData, $indexInDefaultEnv, $bulkSize);
+        $importer = $this->importService->initDocumentImporter($contentTypeTo, 'SYSTEM_MIGRATE', $rawImport, $signData, $indexInDefaultEnv, $bulkSize, $finalize, $forceImport);
         
         while (isset($arrayElasticsearchIndex['hits']['hits']) && count($arrayElasticsearchIndex['hits']['hits']) > 0) {
             foreach ($arrayElasticsearchIndex["hits"]["hits"] as $index => $value) {

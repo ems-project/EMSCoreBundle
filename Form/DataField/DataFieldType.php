@@ -260,6 +260,7 @@ abstract class DataFieldType extends AbstractType
                 'required' => false,
                 'translation_domain' => false,
                 'migration' => false,
+                'with_warning' => true,
                 'raw_data' => [],
                 'helptext' => null,
         ]);

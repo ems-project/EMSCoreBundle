@@ -35,11 +35,13 @@ class ObjectPickerType extends Select2Type
             'required' => false,
             'dynamicLoading' => true,
             'sortable' => false,
+            'with_warning' => true,
             'choice_loader' => function (Options $options) {
                 $loadAll =     $options->offsetGet('dynamicLoading') ? false : true;
                 $circleOnly =     $options->offsetGet('circle-only');
+                $withWarning =     $options->offsetGet('with_warning');
 
-                return $this->choiceListFactory->createLoader($options->offsetGet('type'), $loadAll, $circleOnly);
+                return $this->choiceListFactory->createLoader($options->offsetGet('type'), $loadAll, $circleOnly, $withWarning);
             },
             'choice_label' => function ($value, $key, $index) {
                 return $value->getLabel();

@@ -40,7 +40,7 @@ class ObjectChoiceCacheService
     }
     
 
-    public function loadAll(array &$choices, $types, $circleOnly = false)
+    public function loadAll(array &$choices, $types, bool $circleOnly = false, bool $withWarning = true)
     {
         $aliasTypes = [];
         
@@ -96,7 +96,7 @@ class ObjectChoiceCacheService
                             $this->cache[$hit['_type']][$hit['_id']] = $listItem;
                         }
                     }
-                } else {
+                } elseif ($withWarning) {
                     $this->logger->warning('service.object_choice_cache.contenttype_not_found', [
                         EmsFields::LOG_CONTENTTYPE_FIELD => $type,
                     ]);
@@ -112,7 +112,7 @@ class ObjectChoiceCacheService
         }
     }
     
-    public function load($objectIds, $circleOnly = false)
+    public function load($objectIds, bool $circleOnly = false, bool $withWarning = true)
     {
         $out = [];
         $queries = [];
@@ -140,12 +140,12 @@ class ObjectChoiceCacheService
                                     "_type" => $ref[0],
                                     "_id" => $ref[1],
                                 ];
-                            } else {
+                            } elseif ($withWarning) {
                                 $this->logger->warning('service.object_choice_cache.alias_not_found', [
                                     EmsFields::LOG_CONTENTTYPE_FIELD => $ref[0],
                                 ]);
                             }
-                        } else {
+                        } elseif ($withWarning) {
                             $this->logger->warning('service.object_choice_cache.contenttype_not_found', [
                                 EmsFields::LOG_CONTENTTYPE_FIELD => $ref[0],
                             ]);
@@ -153,7 +153,7 @@ class ObjectChoiceCacheService
                     }
                 }
             } else {
-                if (null !== $objectId && $objectId !== "") {
+                if (null !== $objectId && $objectId !== "" && $withWarning) {
                     $this->logger->warning('service.object_choice_cache.object_key_not_found', [
                         'object_key' => $objectId,
                     ]);
@@ -175,9 +175,11 @@ class ObjectChoiceCacheService
                     $out[$objectId] = $listItem;
                 } else {
                     $this->cache[$doc['_type']][$doc['_id']] = false;
-                    $this->logger->warning('service.object_choice_cache.object_key_not_found', [
-                        'object_key' => $objectId,
-                    ]);
+                    if ($withWarning) {
+                        $this->logger->warning('service.object_choice_cache.object_key_not_found', [
+                            'object_key' => $objectId,
+                        ]);
+                    }
                 }
             }
         }

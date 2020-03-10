@@ -356,6 +356,16 @@ class ContentTypeService
         return $this->contentTypeArrayByName[$name] ?? false;
     }
 
+    public function getByNames(array $names) : array
+    {
+        $this->loadEnvironment();
+        $contentTypes = [];
+        foreach ($names as $name) {
+            $contentTypes[] = $this->contentTypeArrayByName[$name] ?? null;
+        }
+        return $contentTypes;
+    }
+
 
 
     /**

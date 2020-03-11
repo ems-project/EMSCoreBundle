@@ -932,10 +932,10 @@
 
 
 {% block filetype_row %}
-<div class="panel panel-default file-uploader-row">
+<div class="panel panel-default file-uploader-row" {% if form.vars.meta_fields %}data-meta-fields{% endif %}>
 	<div class="panel-heading">
 		<h3 class="panel-title">
-			<i class="fa fa-file-o"></i> 				
+			<i class="fa fa-file-o"></i>
 			{{ form_label(form) }}
 		</h3>
 	</div>
@@ -956,10 +956,12 @@
               </div>
               <div class="modal-footer">
 				<div class="btn-group">
-        			<button type="button" class="btn btn-small btn-primary extract-file-info" >
-                    	<i class="fa fa-bolt"></i>
-                        {{ 'Extract content'|trans }}
-                    </button>			
+					{% if form.vars.meta_fields %}
+						<button type="button" class="btn btn-small btn-primary extract-file-info" >
+							<i class="fa fa-bolt"></i>
+							{{ 'Extract content'|trans }}
+						</button>
+					{% endif %}
                     <button type="button" class="btn btn-small btn-primary " data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
                 </div>
               </div>
@@ -982,10 +984,10 @@
         </div>
         <div role="tabpanel" class="tab-pane asset-preview-tab {% if form.vars.value.sha1 is defined and form.vars.value.sha1 %}active{% endif %}" id="asset-preview-tab-{{ form.vars.id }}">
         	<div class="text-center">
-            	<img 
+            	<img
             		data-src="{{ path('ems_asset_processor', {'hash':'_asset_hash_', 'processor': 'preview', 'type':'_asset_mimetype_', 'name': '_asset_name_' }) }}"
-            		{% if form.vars.value.sha1 is defined and form.vars.value.sha1 %} 
-            			src="{{ path('ems_asset_processor', {'hash':form.vars.value.sha1, 'processor': 'preview', 'type':form.vars.value.mimetype, 'name':form.vars.value.filename }) }}" 
+            		{% if form.vars.value.sha1 is defined and form.vars.value.sha1 %}
+            			src="{{ path('ems_asset_processor', {'hash':form.vars.value.sha1, 'processor': 'preview', 'type':form.vars.value.mimetype, 'name':form.vars.value.filename }) }}"
             		{% endif %}
             		class="img-responsive center-block" alt="Preview of the field {{ form_label(form)|striptags }}"
             	>
@@ -1001,7 +1003,7 @@
 			<button type="button" class="btn btn-small btn-primary asset-details" data-toggle="modal" data-target="#asst-details-{{ form.vars.id }}">
               <i class="fa fa-info"></i>
               {{ 'Info'|trans }}
-            </button>			
+            </button>
 			<a href="#" class="btn btn-small btn-primary view-asset-button {% if not form.children.sha1.vars.value %}disabled{% endif %}" target="_blank" alt="{{'View'|trans}}"><i class="fa fa-eye">&nbsp;{{'View'|trans}}</i></a>
 			<a href="#" class="btn btn-small btn-primary clear-asset-button  {% if not form.children.sha1.vars.value %}disabled{% endif %}" alt="{{'Clear'|trans}}"><i class="fa fa-remove"></i>&nbsp;{{'Clear'|trans}}</a>
 		</div>

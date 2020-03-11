@@ -10,6 +10,7 @@ use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\ImportService;
 use Monolog\Logger;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
-class ImportCommand extends EmsCommand
+class DocumentCommand extends Command
 {
     protected static $defaultName = 'ems:make:document';
 
@@ -28,13 +29,20 @@ class ImportCommand extends EmsCommand
     private $contentTypeService;
     /** @var DataService */
     private $dataService;
+    /** @var Logger */
+    private $logger;
+    /** @var Client */
+    private $client;
 
     public function __construct(Logger $logger, Client $client, ContentTypeService $contentTypeService, ImportService $importService, DataService $dataService)
     {
         $this->contentTypeService = $contentTypeService;
         $this->importService = $importService;
         $this->dataService = $dataService;
-        parent::__construct($logger, $client);
+        $this->dataService = $dataService;
+        $this->logger = $logger;
+        $this->client = $client;
+        parent::__construct();
     }
     
     protected function configure()

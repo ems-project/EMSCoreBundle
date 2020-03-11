@@ -40,7 +40,7 @@ class ImportCommand extends EmsCommand
     protected function configure()
     {
         $this
-            ->setDescription('Import a bunch of json files from a zip file')
+            ->setDescription('Import json files from a zip file as content type\'s documents')
             ->addArgument(
                 'contentTypeName',
                 InputArgument::REQUIRED,

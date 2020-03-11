@@ -145,8 +145,16 @@ class ImportCommand extends EmsCommand
             $rawData = json_decode(file_get_contents($file), true);
             $ouuid = basename($file->getFilename(), '.json');
             if ($replaceBusinessKey) {
-                $dataLink = explode(':', $this->dataService->getDataLink($contentType->getName(), $ouuid));
-                $ouuid = array_pop($dataLink);
+                $dataLink = $this->dataService->getDataLink($contentType->getName(), $ouuid);
+                if ($dataLink === $ouuid) {
+                    //TODO: Should test if a document already exist with the business key as ouuid
+                    //TODO: Check that a document doesn't already exist with the hash value (it has to be new)
+                    //TODO: meaby use a UUID generator? Or allow elasticsearch to generate one
+                    $ouuid = sha1($dataLink);
+                } else {
+                    $dataLink = explode(':', $dataLink);
+                    $ouuid = array_pop($dataLink);
+                }
             }
 
             $document = $this->dataService->hitFromBusinessIdToDataLink($contentType, $ouuid, $rawData);

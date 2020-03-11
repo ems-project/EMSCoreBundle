@@ -100,14 +100,11 @@ class DocumentCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $contentTypeName = $input->getArgument('contentTypeName');
-        $archiveFilename = $input->getArgument('archive');
-        $bulkSize = $input->getOption('bulkSize');
-        $rawImport = $input->getOption('raw');
-        $signData = !$input->getOption('dont-sign-data');
-        $finalize = !$input->getOption('dont-finalize');
-        $force = $input->getOption('force');
-        $replaceBusinessKey = $input->getOption('businessKey');
+        list($contentTypeName, $archiveFilename) = $input->getArguments();
+        list($bulkSize, $rawImport, $dontSignData, $force, $dontFinalize, $replaceBusinessKey) = $input->getOptions();
+
+        $signData = !$dontSignData;
+        $finalize = !$dontFinalize;
 
 
         $contentType = $this->contentTypeService->getByName($contentTypeName);

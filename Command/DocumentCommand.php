@@ -6,18 +6,17 @@ use Elasticsearch\Client;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Exception\NotLockedException;
+use EMS\CoreBundle\Helper\Archive;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\ImportService;
 use Monolog\Logger;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
 class DocumentCommand extends Command
@@ -68,7 +67,7 @@ class DocumentCommand extends Command
             ->addArgument(
                 'archive',
                 InputArgument::REQUIRED,
-                'Zip file containing the json files'
+                'The archive (zip file or directory) containing the json files'
             )
             ->addOption(
                 'bulkSize',
@@ -157,22 +156,11 @@ class DocumentCommand extends Command
 
         $this->io->section(sprintf('Start importing %s from %s', $this->contentType->getPluralName(), $this->archiveFilename));
 
-        $zip = new \ZipArchive();
-        if ($zip->open($this->archiveFilename) !== true) {
-            $this->io->error(sprintf('Archive file %s can not be open', $this->archiveFilename));
-            return -1;
-        }
-
-        $workingDirectory = tempnam(sys_get_temp_dir(), 'ImportCommand');
-        $filesystem = new Filesystem();
-        $filesystem->remove($workingDirectory);
-        $filesystem->mkdir($workingDirectory);
-
-        $zip->extractTo($workingDirectory);
-        $zip->close();
+        $archive = new Archive();
+        $directory = $archive->extractToDirectory($this->archiveFilename);
 
         $finder = new Finder();
-        $finder->files()->in($workingDirectory)->name('*.json');
+        $finder->files()->in($directory)->name('*.json');
         $progress = $this->io->createProgressBar($finder->count());
         $progress->start();
         $importer = $this->importService->initDocumentImporter($this->contentType, 'SYSTEM_IMPORT', $rawImport, $signData, true, $bulkSize, $finalize, $force);

@@ -176,7 +176,7 @@ class MigrateCommand extends EmsCommand
                 }
                 $progress->advance();
             }
-            $importer->clearAndSend();
+            $importer->flushAndSend();
 
             $arrayElasticsearchIndex = $this->client->scroll([
                 'scroll_id' => $arrayElasticsearchIndex['_scroll_id'],

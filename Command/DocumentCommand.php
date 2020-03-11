@@ -9,7 +9,7 @@ use EMS\CoreBundle\Exception\NotLockedException;
 use EMS\CoreBundle\Helper\Archive;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
-use EMS\CoreBundle\Service\ImportService;
+use EMS\CoreBundle\Service\DocumentService;
 use Monolog\Logger;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -24,8 +24,8 @@ class DocumentCommand extends Command
     const ARGUMENT_CONTENTTYPE = 'contentTypeName';
     protected static $defaultName = 'ems:make:document';
 
-    /** @var ImportService */
-    private $importService;
+    /** @var DocumentService */
+    private $documentService;
     /** @var ContentTypeService */
     private $contentTypeService;
     /** @var DataService */
@@ -43,10 +43,10 @@ class DocumentCommand extends Command
     /** @var bool */
     private $ready;
 
-    public function __construct(Logger $logger, Client $client, ContentTypeService $contentTypeService, ImportService $importService, DataService $dataService)
+    public function __construct(Logger $logger, Client $client, ContentTypeService $contentTypeService, DocumentService $documentService, DataService $dataService)
     {
         $this->contentTypeService = $contentTypeService;
-        $this->importService = $importService;
+        $this->documentService = $documentService;
         $this->dataService = $dataService;
         $this->dataService = $dataService;
         $this->logger = $logger;
@@ -163,7 +163,7 @@ class DocumentCommand extends Command
         $finder->files()->in($directory)->name('*.json');
         $progress = $this->io->createProgressBar($finder->count());
         $progress->start();
-        $importer = $this->importService->initDocumentImporter($this->contentType, 'SYSTEM_IMPORT', $rawImport, $signData, true, $bulkSize, $finalize, $force);
+        $importer = $this->documentService->initDocumentImporter($this->contentType, 'SYSTEM_IMPORT', $rawImport, $signData, true, $bulkSize, $finalize, $force);
 
         $loopIndex = 0;
         foreach ($finder as $file) {

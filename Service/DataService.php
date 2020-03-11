@@ -76,8 +76,11 @@ class DataService
     protected $lockTime;
     /** @var string */
     protected $instanceId;
+
+    //TODO: service should be stateless
     /** @var array */
     private $cacheBusinessKey = [];
+    //TODO: service should be stateless
     /** @var array */
     private $cacheOuuids = [];
 

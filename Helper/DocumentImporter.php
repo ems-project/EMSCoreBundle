@@ -139,7 +139,8 @@ class DocumentImporter
 
         if ($currentRevision && $currentRevision->getDraft()) {
             if (!$this->force) {
-                throw new CantBeFinalizedException('a draft is already in progress for the document', 0, null, $newRevision);
+                //TODO: activate the newRevision when it's available
+                throw new CantBeFinalizedException('a draft is already in progress for the document', 0, null/*, $newRevision*/);
             }
 
             $this->dataService->discardDraft($currentRevision, true, $this->lockUser);

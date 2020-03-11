@@ -67,6 +67,7 @@ use Twig_Error;
 class DataService
 {
     const ALGO = OPENSSL_ALGO_SHA1;
+    protected const SCROLL_TIMEOUT = '1m';
 
     /** @var resource|false|null */
     private $private_key;
@@ -354,7 +355,7 @@ class DataService
 
                     ],
                     'size' => 100,
-                    "scroll" => "1m"
+                    "scroll" => self::SCROLL_TIMEOUT
                 ]);
 
                 while (count($result['hits']['hits'] ?? []) > 0) {
@@ -365,7 +366,7 @@ class DataService
                     }
                     $result = $this->client->scroll([
                         'scroll_id' => $result['_scroll_id'],
-                        'scroll' =>  "1m",
+                        'scroll' =>  self::SCROLL_TIMEOUT,
                     ]);
                 }
             }
@@ -2067,7 +2068,7 @@ class DataService
 
                     ],
                     'size' => 100,
-                    "scroll" => "1m"
+                    "scroll" => self::SCROLL_TIMEOUT,
                 ]);
 
                 while (count($result['hits']['hits'] ?? []) > 0) {
@@ -2078,7 +2079,7 @@ class DataService
                     }
                     $result = $this->client->scroll([
                         'scroll_id' => $result['_scroll_id'],
-                        'scroll' =>  "1m",
+                        'scroll' =>  self::SCROLL_TIMEOUT,
                     ]);
                 }
             }

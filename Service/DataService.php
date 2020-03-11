@@ -2037,7 +2037,8 @@ class DataService
             }
         }
 
-        foreach ($this->contentTypeService->getByNames(explode(',', $contentTypesCommaList)) as $contentType) {
+        foreach (explode(',', $contentTypesCommaList) as $contentTypeName) {
+            $contentType = $this->contentTypeService->getByName($contentTypeName);
             if ($contentType->getBusinessIdField() && count($ouuids) > 0) {
                 $result = $this->client->search([
                     'index' => $contentType->getEnvironment()->getAlias(),

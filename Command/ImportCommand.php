@@ -169,12 +169,12 @@ class ImportCommand extends EmsCommand
 
             ++$loopIndex;
             if ($loopIndex % $bulkSize == 0) {
-                $importer->clearAndSend();
+                $importer->flushAndSend();
                 $loopIndex = 0;
             }
             $progress->advance();
         }
-        $importer->clearAndSend(true);
+        $importer->flushAndSend();
         $progress->finish();
         $output->writeln("");
         $output->writeln("Import done");

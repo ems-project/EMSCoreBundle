@@ -90,33 +90,21 @@ class DocumentImporter
 
         $this->bulker->setSize($this->bulkSize);
 
-        $this->initEntities();
-    }
-
-    public function clearAndSend($lastCall = false)
-    {
-        $this->entityManager->flush();
-        $this->revisionRepository->clear();
-        $this->contentTypeRepository->clear();
-        $this->entityManager->clear();
-        unset($this->environment);
-        unset($this->contentType);
-
-        $this->bulker->send(true);
-
-        if (!$lastCall) {
-            $this->initEntities();
-        }
-    }
-
-    private function initEntities()
-    {
         $contentType = $this->contentTypeRepository->findOneBy(array("name" => $this->contentTypeName, 'deleted' => false));
         if (! $contentType instanceof ContentType) {
             throw new \Exception(sprintf('Content type %s not found', $this->contentTypeName));
         }
         $this->contentType = $contentType;
         $this->environment = $this->contentType->getEnvironment();
+    }
+
+    public function flushAndSend()
+    {
+        $this->entityManager->flush();
+
+        if ($this->finalize) {
+            $this->bulker->send(true);
+        }
     }
 
 
@@ -151,7 +139,7 @@ class DocumentImporter
 
         if ($currentRevision && $currentRevision->getDraft()) {
             if (!$this->force) {
-                throw new CantBeFinalizedException(sprintf('A draft is already in progress for document %s:%s. Use the force option to override this issue.', $this->contentTypeName, $ouuid));
+                throw new CantBeFinalizedException('a draft is already in progress for the document', 0, null, $newRevision);
             }
 
             $this->dataService->discardDraft($currentRevision, true, $this->lockUser);

@@ -6,18 +6,22 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use Elasticsearch\Client;
 use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Exception\NotLockedException;
 use EMS\CoreBundle\Service\DocumentService;
 use Monolog\Logger;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class MigrateCommand extends EmsCommand
+class MigrateCommand extends Command
 {
+    protected static $defaultName = 'ems:contenttype:migrate';
+
     /** @var Client  */
     protected $client;
 
@@ -27,18 +31,67 @@ class MigrateCommand extends EmsCommand
     /** @var DocumentService */
     private $documentService;
 
+    /** @var string */
+    private $elasticsearchIndex;
+
+    /** @var string */
+    private $contentTypeNameFrom;
+
+    /** @var string */
+    private $contentTypeNameTo;
+
+    /** @var int */
+    private $scrollSize;
+
+    /** @var string */
+    private $scrollTimeout;
+
+    /** @var boolean */
+    private $ready;
+
+    /** @var boolean */
+    private $indexInDefaultEnv;
+
+    /** @var Environment */
+    private $defaultEnv;
+
+    /** @var ContentType */
+    private $contentTypeTo;
+
+    /** @var int */
+    private $bulkSize;
+
+    /** @var bool */
+    private $forceImport;
+
+    /** @var bool */
+    private $rawImport;
+
+    /** @var bool */
+    private $signData;
+
+    /** @var string */
+    private $searchQuery;
+
+    /** @var bool */
+    private $finalize;
+
+    /** @var Logger */
+    private $logger;
+
     public function __construct(Registry $doctrine, Logger $logger, Client $client, DocumentService $documentService)
     {
         $this->doctrine = $doctrine;
+        $this->ready = false;
         $this->client = $client;
+        $this->logger = $logger;
         $this->documentService = $documentService;
-        parent::__construct($logger, $client);
+        parent::__construct();
     }
-    
+
     protected function configure()
     {
         $this
-            ->setName('ems:contenttype:migrate')
             ->setDescription('Migrate a content type from an elasticsearch index')
             ->addArgument(
                 'elasticsearchIndex',
@@ -61,18 +114,18 @@ class MigrateCommand extends EmsCommand
                 'Size of the elasticsearch scroll request',
                 100
             )
+            ->addArgument(
+                'scrollTimeout',
+                InputArgument::OPTIONAL,
+                'Time to migrate "scrollSize" items i.e. 30s or 2m',
+                '1m'
+            )
             ->addOption(
                 'bulkSize',
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'Size of the elasticsearch bulk request',
                 500
-            )
-            ->addArgument(
-                'scrollTimeout',
-                InputArgument::OPTIONAL,
-                'Time to migrate "scrollSize" items i.e. 30s or 2m',
-                '1m'
             )
             ->addOption(
                 'force',
@@ -107,22 +160,16 @@ class MigrateCommand extends EmsCommand
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $elasticsearchIndex = $input->getArgument('elasticsearchIndex');
-        $contentTypeNameFrom = $input->getArgument('contentTypeNameFrom');
-        $contentTypeNameTo = $input->getArgument('contentTypeNameTo');
-        $scrollSize = $input->getArgument('scrollSize');
-        $bulkSize = $input->getOption('bulkSize');
-        $scrollTimeout = $input->getArgument('scrollTimeout');
-        $rawImport = $input->getOption('raw');
-        $forceImport = $input->getOption('force');
-        $signData = $input->getOption('sign-data');
-        $searchQuery = $input->getOption('searchQuery');
-        $finalize = !$input->getOption('dont-finalize');
+        $arguments = array_values($input->getArguments());
+        array_shift($arguments);
+        list($this->elasticsearchIndex, $this->contentTypeNameFrom, $this->contentTypeNameTo, $this->scrollSize, $this->scrollTimeout) = $arguments;
 
-        if ($contentTypeNameTo === null) {
-            $contentTypeNameTo = $contentTypeNameFrom;
+        list($this->bulkSize, $this->forceImport, $this->rawImport, $this->signData, $this->searchQuery, $this->finalize) = $input->getOptions();
+
+        if ($this->contentTypeNameTo === null) {
+            $this->contentTypeNameTo = $this->contentTypeNameFrom;
         }
 
         /** @var EntityManager $em */
@@ -130,40 +177,50 @@ class MigrateCommand extends EmsCommand
         $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
 
         /** @var ContentType|null $contentTypeTo */
-        $contentTypeTo = $contentTypeRepository->findOneBy(array("name" => $contentTypeNameTo, 'deleted' => false));
-        if ($contentTypeTo === null) {
-            $output->writeln("<error>Content type " . $contentTypeNameTo . " not found</error>");
-            exit;
+        $contentTypeTo = $contentTypeRepository->findOneBy(array("name" => $this->contentTypeNameTo, 'deleted' => false));
+        if ($contentTypeTo === null || !$contentTypeTo instanceof ContentType) {
+            $output->writeln("<error>Content type " . $this->contentTypeNameTo . " not found</error>");
+            return;
         }
-        $defaultEnv = $contentTypeTo->getEnvironment();
-        
-        $output->writeln("Start migration of " . $contentTypeTo->getPluralName());
-        
-        if ($contentTypeTo->getDirty()) {
-            $output->writeln("<error>Content type \"" . $contentTypeNameTo . "\" is dirty. Please clean it first</error>");
-            exit;
-        }
-        
-        $indexInDefaultEnv = true;
-        if (strcmp($defaultEnv->getAlias(), $elasticsearchIndex) === 0 && strcmp($contentTypeNameFrom, $contentTypeNameTo) === 0) {
-            if (!$forceImport) {
-                $output->writeln("<error>You can not import a content type on himself with the --force option</error>");
-                exit;
-            }
-            $indexInDefaultEnv = false;
+        $this->contentTypeTo = $contentTypeTo;
+        $this->defaultEnv = $contentTypeTo->getEnvironment();
+
+        if ($this->contentTypeTo->getDirty()) {
+            $output->writeln("<error>Content type \"" . $this->contentTypeNameTo . "\" is dirty. Please clean it first</error>");
+            return;
         }
 
+        $this->indexInDefaultEnv = true;
+        if (strcmp($this->defaultEnv->getAlias(), $this->elasticsearchIndex) === 0 && strcmp($this->contentTypeNameFrom, $this->contentTypeNameTo) === 0) {
+            if (!$this->forceImport) {
+                $output->writeln("<error>You can not import a content type on himself with the --force option</error>");
+                return;
+            }
+            $this->indexInDefaultEnv = false;
+        }
+
+        $this->ready = true;
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        if ($this->ready) {
+            return -1;
+        }
+        
+        $output->writeln("Start migration of " . $this->contentTypeTo->getPluralName());
+
         $arrayElasticsearchIndex = $this->client->search([
-                'index' => $elasticsearchIndex,
-                'type' => $contentTypeNameFrom,
-                'size' => $scrollSize,
-                "scroll" => $scrollTimeout,
-                'body' => $searchQuery,
+                'index' => $this->elasticsearchIndex,
+                'type' => $this->contentTypeNameFrom,
+                'size' => $this->scrollSize,
+                "scroll" => $this->scrollTimeout,
+                'body' => $this->searchQuery,
         ]);
 
         $progress = new ProgressBar($output, $arrayElasticsearchIndex["hits"]["total"]);
         $progress->start();
-        $importer = $this->documentService->initDocumentImporter($contentTypeTo, 'SYSTEM_MIGRATE', $rawImport, $signData, $indexInDefaultEnv, $bulkSize, $finalize, $forceImport);
+        $importer = $this->documentService->initDocumentImporter($this->contentTypeTo, 'SYSTEM_MIGRATE', $this->rawImport, $this->signData, $this->indexInDefaultEnv, $this->bulkSize, $this->finalize, $this->forceImport);
         
         while (isset($arrayElasticsearchIndex['hits']['hits']) && count($arrayElasticsearchIndex['hits']['hits']) > 0) {
             foreach ($arrayElasticsearchIndex["hits"]["hits"] as $index => $value) {
@@ -180,7 +237,7 @@ class MigrateCommand extends EmsCommand
 
             $arrayElasticsearchIndex = $this->client->scroll([
                 'scroll_id' => $arrayElasticsearchIndex['_scroll_id'],
-                'scroll' => $scrollTimeout,
+                'scroll' => $this->scrollTimeout,
             ]);
         }
         $progress->finish();

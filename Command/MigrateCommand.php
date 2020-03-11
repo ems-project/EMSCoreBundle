@@ -8,7 +8,7 @@ use Elasticsearch\Client;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Exception\NotLockedException;
-use EMS\CoreBundle\Service\ImportService;
+use EMS\CoreBundle\Service\DocumentService;
 use Monolog\Logger;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
@@ -24,14 +24,14 @@ class MigrateCommand extends EmsCommand
     /** @var Registry  */
     protected $doctrine;
 
-    /** @var ImportService */
-    private $importService;
+    /** @var DocumentService */
+    private $documentService;
 
-    public function __construct(Registry $doctrine, Logger $logger, Client $client, ImportService $importService)
+    public function __construct(Registry $doctrine, Logger $logger, Client $client, DocumentService $documentService)
     {
         $this->doctrine = $doctrine;
         $this->client = $client;
-        $this->importService = $importService;
+        $this->documentService = $documentService;
         parent::__construct($logger, $client);
     }
     
@@ -163,7 +163,7 @@ class MigrateCommand extends EmsCommand
 
         $progress = new ProgressBar($output, $arrayElasticsearchIndex["hits"]["total"]);
         $progress->start();
-        $importer = $this->importService->initDocumentImporter($contentTypeTo, 'SYSTEM_MIGRATE', $rawImport, $signData, $indexInDefaultEnv, $bulkSize, $finalize, $forceImport);
+        $importer = $this->documentService->initDocumentImporter($contentTypeTo, 'SYSTEM_MIGRATE', $rawImport, $signData, $indexInDefaultEnv, $bulkSize, $finalize, $forceImport);
         
         while (isset($arrayElasticsearchIndex['hits']['hits']) && count($arrayElasticsearchIndex['hits']['hits']) > 0) {
             foreach ($arrayElasticsearchIndex["hits"]["hits"] as $index => $value) {

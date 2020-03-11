@@ -10,7 +10,7 @@ use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Helper\DocumentImporter;
 use Symfony\Component\Form\FormFactoryInterface;
 
-class ImportService
+class DocumentService
 {
 
     /** @var DataService */

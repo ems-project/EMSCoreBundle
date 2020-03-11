@@ -22,6 +22,7 @@ use Symfony\Component\Finder\Finder;
 
 class DocumentCommand extends Command
 {
+    const ARGUMENT_CONTENTTYPE = 'contentTypeName';
     protected static $defaultName = 'ems:make:document';
 
     /** @var ImportService */
@@ -36,6 +37,12 @@ class DocumentCommand extends Command
     private $client;
     /** @var SymfonyStyle */
     private $io;
+    /** @var ContentType */
+    private $contentType;
+    /** @var string */
+    private $archiveFilename;
+    /** @var bool */
+    private $ready;
 
     public function __construct(Logger $logger, Client $client, ContentTypeService $contentTypeService, ImportService $importService, DataService $dataService)
     {
@@ -45,6 +52,7 @@ class DocumentCommand extends Command
         $this->dataService = $dataService;
         $this->logger = $logger;
         $this->client = $client;
+        $this->ready = false;
         parent::__construct();
     }
     
@@ -53,7 +61,7 @@ class DocumentCommand extends Command
         $this
             ->setDescription('Import json files from a zip file as content type\'s documents')
             ->addArgument(
-                'contentTypeName',
+                self::ARGUMENT_CONTENTTYPE,
                 InputArgument::REQUIRED,
                 'Content type name to import into'
             )
@@ -105,40 +113,53 @@ class DocumentCommand extends Command
     {
         $this->io = new SymfonyStyle($input, $output);
     }
-
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function interact(InputInterface $input, OutputInterface $output)
     {
         $arguments = array_values($input->getArguments());
         array_shift($arguments);
         list($contentTypeName, $archiveFilename) = $arguments;
+
+        $this->io->title('Make documents');
+        $this->io->section('Checking input');
+
+
+        $contentType = $this->contentTypeService->getByName($contentTypeName);
+        if (!$contentType instanceof ContentType) {
+            $this->io->error(sprintf('Content type %s not found', $contentTypeName));
+            return;
+        }
+
+        if ($contentType->getDirty()) {
+            $this->io->error(sprintf('Content type %s is dirty. Please clean it first', $contentTypeName));
+            return;
+        }
+        $this->contentType = $contentType;
+
+        if (!file_exists($archiveFilename)) {
+            $this->io->error(sprintf('Archive file %s does not exist', $archiveFilename));
+            return;
+        }
+        $this->archiveFilename = $archiveFilename;
+        $this->ready = true;
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        if (!$this->ready) {
+            return -1;
+        }
+
         $options = array_values($input->getOptions());
         list($bulkSize, $rawImport, $dontSignData, $force, $dontFinalize, $replaceBusinessKey) = $options;
 
         $signData = !$dontSignData;
         $finalize = !$dontFinalize;
 
-
-        $contentType = $this->contentTypeService->getByName($contentTypeName);
-        if (!$contentType instanceof ContentType) {
-            $this->io->error(sprintf('Content type %s not found', $contentTypeName));
-            return -1;
-        }
-
-        if ($contentType->getDirty()) {
-            $this->io->error(sprintf('Content type %s is dirty. Please clean it first', $contentTypeName));
-            return -1;
-        }
-
-        if (!file_exists($archiveFilename)) {
-            $this->io->error(sprintf('Archive file %s does not exist', $archiveFilename));
-            return -1;
-        }
-
-        $this->io->writeln(sprintf('Start importing %s from %s', $contentType->getPluralName(), $archiveFilename));
+        $this->io->section(sprintf('Start importing %s from %s', $this->contentType->getPluralName(), $this->archiveFilename));
 
         $zip = new \ZipArchive();
-        if ($zip->open($archiveFilename) !== true) {
-            $this->io->error(sprintf('Archive file %s can not be open', $archiveFilename));
+        if ($zip->open($this->archiveFilename) !== true) {
+            $this->io->error(sprintf('Archive file %s can not be open', $this->archiveFilename));
             return -1;
         }
 
@@ -154,14 +175,14 @@ class DocumentCommand extends Command
         $finder->files()->in($workingDirectory)->name('*.json');
         $progress = $this->io->createProgressBar($finder->count());
         $progress->start();
-        $importer = $this->importService->initDocumentImporter($contentType, 'SYSTEM_IMPORT', $rawImport, $signData, true, $bulkSize, $finalize, $force);
+        $importer = $this->importService->initDocumentImporter($this->contentType, 'SYSTEM_IMPORT', $rawImport, $signData, true, $bulkSize, $finalize, $force);
 
         $loopIndex = 0;
         foreach ($finder as $file) {
             $rawData = json_decode(file_get_contents($file), true);
             $ouuid = basename($file->getFilename(), '.json');
             if ($replaceBusinessKey) {
-                $dataLink = $this->dataService->getDataLink($contentType->getName(), $ouuid);
+                $dataLink = $this->dataService->getDataLink($this->contentType->getName(), $ouuid);
                 if ($dataLink === $ouuid) {
                     //TODO: Should test if a document already exist with the business key as ouuid
                     //TODO: Check that a document doesn't already exist with the hash value (it has to be new)
@@ -173,7 +194,7 @@ class DocumentCommand extends Command
                 }
             }
 
-            $document = $this->dataService->hitFromBusinessIdToDataLink($contentType, $ouuid, $rawData);
+            $document = $this->dataService->hitFromBusinessIdToDataLink($this->contentType, $ouuid, $rawData);
 
             try {
                 $importer->importDocument($document->getOuuid(), $document->getSource());

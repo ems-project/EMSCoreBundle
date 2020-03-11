@@ -453,12 +453,10 @@ class RevisionRepository extends EntityRepository
     }
 
     /**
-     * @param ContentType $contentType
      * @param string $ouuid
-     * @param \DateTime $now
      * @return mixed
      */
-    public function finaliseRevision(ContentType $contentType, $ouuid, \DateTime $now, string $lockUser = 'SYSTEM_MIGRATE')
+    public function finaliseRevision(ContentType $contentType, $ouuid, \DateTime $now, string $lockUser)
     {
         $qb = $this->createQueryBuilder('r')->update()
             ->set('r.endTime', '?1')

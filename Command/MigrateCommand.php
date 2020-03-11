@@ -3,7 +3,6 @@
 namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\ORM\EntityManager;
 use Elasticsearch\Client;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
@@ -13,7 +12,6 @@ use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Service\DocumentService;
 use Monolog\Logger;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -239,12 +237,12 @@ class MigrateCommand extends Command
         ]);
 
         $progress = $this->io->createProgressBar($arrayElasticsearchIndex["hits"]["total"]);
-        $importer = $this->documentService->initDocumentImporter($this->contentTypeTo, 'SYSTEM_MIGRATE', $this->rawImport, $this->signData, $this->indexInDefaultEnv, $this->bulkSize, $this->finalize, $this->forceImport);
+        $importerContext = $this->documentService->initDocumentImporterContext($this->contentTypeTo, 'SYSTEM_MIGRATE', $this->rawImport, $this->signData, $this->indexInDefaultEnv, $this->bulkSize, $this->finalize, $this->forceImport);
         
         while (isset($arrayElasticsearchIndex['hits']['hits']) && count($arrayElasticsearchIndex['hits']['hits']) > 0) {
             foreach ($arrayElasticsearchIndex["hits"]["hits"] as $index => $value) {
                 try {
-                    $importer->importDocument($value['_id'], $value['_source']);
+                    $this->documentService->importDocument($importerContext, $value['_id'], $value['_source']);
                 } catch (NotLockedException $e) {
                     $this->io->error($e);
                 } catch (CantBeFinalizedException $e) {
@@ -252,7 +250,7 @@ class MigrateCommand extends Command
                 }
                 $progress->advance();
             }
-            $importer->flushAndSend();
+            $this->documentService->flushAndSend($importerContext);
 
             $arrayElasticsearchIndex = $this->client->scroll([
                 'scroll_id' => $arrayElasticsearchIndex['_scroll_id'],

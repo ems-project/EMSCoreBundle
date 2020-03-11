@@ -184,11 +184,14 @@ class MigrateCommand extends Command
 
     protected function interact(InputInterface $input, OutputInterface $output)
     {
+        $this->io->title('Start migration');
+        $this->io->section('Checking input');
         $arguments = array_values($input->getArguments());
         array_shift($arguments);
         list($this->elasticsearchIndex, $this->contentTypeNameFrom, $this->contentTypeNameTo, $this->scrollSize, $this->scrollTimeout) = $arguments;
 
-        list($this->bulkSize, $this->forceImport, $this->rawImport, $this->signData, $this->searchQuery, $this->finalize) = $input->getOptions();
+        $options = array_values($input->getOptions());
+        list($this->bulkSize, $this->forceImport, $this->rawImport, $this->signData, $this->searchQuery, $this->finalize) = $options;
 
         if ($this->contentTypeNameTo === null) {
             $this->contentTypeNameTo = $this->contentTypeNameFrom;
@@ -196,21 +199,21 @@ class MigrateCommand extends Command
 
         $contentTypeTo = $this->contentTypeRepository->findOneBy(array("name" => $this->contentTypeNameTo, 'deleted' => false));
         if ($contentTypeTo === null || !$contentTypeTo instanceof ContentType) {
-            $output->writeln("<error>Content type " . $this->contentTypeNameTo . " not found</error>");
+            $this->io->error(sprintf('Content type "%s" not found', $this->contentTypeNameTo));
             return;
         }
         $this->contentTypeTo = $contentTypeTo;
         $this->defaultEnv = $this->contentTypeTo->getEnvironment();
 
         if ($this->contentTypeTo->getDirty()) {
-            $output->writeln("<error>Content type \"" . $this->contentTypeNameTo . "\" is dirty. Please clean it first</error>");
+            $this->io->error(sprintf('Content type "%s" is dirty. Please clean it first', $this->contentTypeNameTo));
             return;
         }
 
         $this->indexInDefaultEnv = true;
         if (strcmp($this->defaultEnv->getAlias(), $this->elasticsearchIndex) === 0 && strcmp($this->contentTypeNameFrom, $this->contentTypeNameTo) === 0) {
             if (!$this->forceImport) {
-                $output->writeln("<error>You can not import a content type on himself with the --force option</error>");
+                $this->io->error('You can not import a content type on himself with the --force option');
                 return;
             }
             $this->indexInDefaultEnv = false;
@@ -221,11 +224,11 @@ class MigrateCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if ($this->ready) {
+        if (!$this->ready) {
             return -1;
         }
-        
-        $output->writeln("Start migration of " . $this->contentTypeTo->getPluralName());
+
+        $this->io->section(sprintf('Start migration of %s', $this->contentTypeTo->getPluralName()));
 
         $arrayElasticsearchIndex = $this->client->search([
                 'index' => $this->elasticsearchIndex,
@@ -235,8 +238,7 @@ class MigrateCommand extends Command
                 'body' => $this->searchQuery,
         ]);
 
-        $progress = new ProgressBar($output, $arrayElasticsearchIndex["hits"]["total"]);
-        $progress->start();
+        $progress = $this->io->createProgressBar($arrayElasticsearchIndex["hits"]["total"]);
         $importer = $this->documentService->initDocumentImporter($this->contentTypeTo, 'SYSTEM_MIGRATE', $this->rawImport, $this->signData, $this->indexInDefaultEnv, $this->bulkSize, $this->finalize, $this->forceImport);
         
         while (isset($arrayElasticsearchIndex['hits']['hits']) && count($arrayElasticsearchIndex['hits']['hits']) > 0) {
@@ -244,9 +246,9 @@ class MigrateCommand extends Command
                 try {
                     $importer->importDocument($value['_id'], $value['_source']);
                 } catch (NotLockedException $e) {
-                    $output->writeln("<error>'.$e.'</error>");
+                    $this->io->error($e);
                 } catch (CantBeFinalizedException $e) {
-                    $output->writeln("<error>'.$e.'</error>");
+                    $this->io->error($e);
                 }
                 $progress->advance();
             }
@@ -258,7 +260,7 @@ class MigrateCommand extends Command
             ]);
         }
         $progress->finish();
-        $output->writeln("");
-        $output->writeln("Migration done");
+        $this->io->writeln("");
+        $this->io->writeln("Migration done");
     }
 }

@@ -289,6 +289,12 @@ services:
         tags:
             - { name: ems.form.viewtype, alias: gallery }
             - { name: form.type }
+    ems.view.importer:
+        class: EMS\CoreBundle\Form\View\ImporterViewType
+        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger', '@ems.service.file', '@ems.service.job', '@security.token_storage', '@router']
+        tags:
+            - { name: ems.form.viewtype, alias: importer }
+            - { name: form.type }
 #### End list available ems views ###
     ems.form.factories.objectChoiceListFactory:
         class: EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory

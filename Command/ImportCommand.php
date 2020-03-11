@@ -17,7 +17,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
-use ZipArchive;
 
 class ImportCommand extends EmsCommand
 {
@@ -120,7 +119,7 @@ class ImportCommand extends EmsCommand
         
         $output->writeln(sprintf('Start importing %s from %s', $contentType->getPluralName(), $archiveFilename));
 
-        $zip = new ZipArchive();
+        $zip = new \ZipArchive();
         if ($zip->open($archiveFilename) !== true) {
             $output->writeln(sprintf('<error>Archive file %s can not be open.</error>', $archiveFilename));
             return -1;

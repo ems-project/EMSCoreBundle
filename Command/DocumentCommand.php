@@ -112,6 +112,7 @@ class DocumentCommand extends Command
     {
         $this->io = new SymfonyStyle($input, $output);
     }
+
     protected function interact(InputInterface $input, OutputInterface $output)
     {
         $arguments = array_values($input->getArguments());

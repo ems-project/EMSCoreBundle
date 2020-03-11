@@ -3,17 +3,24 @@ import jquery from 'jquery';
 import ace from 'ace-builds/src-noconflict/ace';
 require('icheck');
 import JsonMenuEditor from './JsonMenuEditor';
+import FileUploader from "./FileUploader";
 
 
 export default class EmsListeners {
 
-    constructor(target) {
+    constructor(target, onChangeCallback=null) {
         if(target === undefined) {
             console.log('Impossible to add ems listeners as no target is defined');
             return;
         }
 
         this.target = target;
+        this.onChangeCallback = onChangeCallback;
+        const primaryBox = $('body');
+        this.initUpload = primaryBox.data('init-upload');
+        this.fileExtract = primaryBox.data('file-extract');
+        this.fileExtractForced = primaryBox.data('file-extract-forced');
+        this.hashAlgo = primaryBox.data('hash-algo');
         this.addListeners();
     }
 
@@ -28,6 +35,7 @@ export default class EmsListeners {
         this.addRemoveButtonListeners();
         this.addObjectPickerListeners();
         this.addFieldsToDisplayByValue();
+        this.addFileUploaderListerners();
     }
 
     addFieldsToDisplayByValue() {
@@ -53,7 +61,7 @@ export default class EmsListeners {
     }
 
     addCodeEditorListeners() {
-
+        const self = this;
         const codeEditors = this.target.getElementsByClassName('ems-code-editor');
         for(let i = 0;i < codeEditors.length; i++) {
 
@@ -89,8 +97,8 @@ export default class EmsListeners {
 
             editor.on("change", function(e){
                 hiddenField.val(editor.getValue());
-                if(e.action === 'remove' && typeof onFormChange === "function"){
-                    onFormChange();
+                if(typeof self.onChangeCallback === "function") {
+                    self.onChangeCallback();
                 }
             });
 
@@ -212,6 +220,250 @@ export default class EmsListeners {
         });
 
 
+    }
+
+
+    initFileUploader(fileHandler, container){
+        const mainDiv = $(container);
+        const metaFields = (typeof mainDiv.data('meta-fields') !== 'undefined');
+        const sha1Input = mainDiv.find(".sha1");
+        const typeInput = mainDiv.find(".type");
+        const nameInput = mainDiv.find(".name");
+        const progressBar = mainDiv.find(".progress-bar");
+        const progressText = mainDiv.find(".progress-text");
+        const progressNumber = mainDiv.find(".progress-number");
+        const viewButton = mainDiv.find(".view-asset-button");
+        const clearButton = mainDiv.find(".clear-asset-button");
+        const previewTab = mainDiv.find(".asset-preview-tab");
+        const uploadTab = mainDiv.find(".asset-upload-tab");
+        const previewLink = mainDiv.find(".img-responsive");
+        const assetHashSignature = mainDiv.find(".asset-hash-signature");
+        const dateInput = mainDiv.find(".date");
+        const authorInput = mainDiv.find(".author");
+        const languageInput = mainDiv.find(".language");
+        const contentInput = mainDiv.find(".content");
+        const titleInput = mainDiv.find(".title");
+        const self = this;
+
+
+        previewTab.hide();
+        uploadTab.show();
+
+        const fileUploader = new FileUploader({
+            file: fileHandler,
+            algo: this.hashAlgo,
+            initUrl: this.initUpload,
+            emsListener: this,
+            onHashAvailable: function(sha1, type, name){
+                $(sha1Input).val(sha1);
+                $(assetHashSignature).empty().append(sha1);
+                $(typeInput).val(type);
+                $(nameInput).val(name);
+                $(dateInput).val('');
+                $(authorInput).val('');
+                $(languageInput).val('');
+                $(contentInput).val('');
+                $(titleInput).val('');
+                $(viewButton).addClass('disabled');
+                $(clearButton).addClass('disabled');
+            },
+            onProgress: function(status, progress, remaining){
+                if(status !== 'Computing hash' && $(sha1Input).val() !== fileUploader.hash){
+                    $(sha1Input).val(fileUploader.hash);
+                    console.log('Sha1 mismatch!');
+                }
+                const percentage = Math.round(progress*100);
+                $(progressBar).css('width', percentage+'%');
+                $(progressText).html(status);
+                $(progressNumber).html(remaining);
+            },
+            onUploaded: function(assetUrl, previewUrl){
+                viewButton.attr('href', assetUrl);
+                previewLink.attr('src', previewUrl);
+                viewButton.removeClass("disabled");
+                clearButton.removeClass("disabled");
+                previewTab.show();
+                uploadTab.hide();
+
+                console.log(self.onChangeCallback);
+
+                if(metaFields && $(contentInput).length) {
+                    self.fileDataExtrator(container);
+                }
+                else if(typeof self.onChangeCallback === "function"){
+                    self.onChangeCallback();
+                }
+            },
+            onError: function(message, code){
+                $(progressBar).css('width', '0%');
+                $(progressText).html(message);
+                if (code === undefined){
+                    $(progressNumber).html('');
+                }
+                else {
+                    $(progressNumber).html('Error code : '+code);
+                }
+                $(sha1Input).val('');
+                $(assetHashSignature).empty();
+                $(typeInput).val('');
+                $(nameInput).val('');
+                $(dateInput).val('');
+                $(authorInput).val('');
+                $(languageInput).val('');
+                $(contentInput).val('');
+                $(titleInput).val('');
+                $(viewButton).addClass('disabled');
+                $(clearButton).addClass('disabled');
+            },
+        });
+    }
+
+
+    fileSelectHandler(e) {
+
+        // cancel event and hover styling
+        this.fileDragHover(e);
+
+        // fetch FileList object
+        const files = e.target.files || e.dataTransfer.files;
+
+        // process all File objects
+        for (let i = 0; i < files.length; ++i) {
+            if(files.hasOwnProperty(i)){
+                this.initFileUploader(files[i], this);
+                break;
+            }
+        }
+    }
+
+
+    fileDataExtrator(container, forced=false) {
+        const self = this;
+
+        const sha1Input = $(container).find(".sha1");
+        const nameInput = $(container).find(".name");
+
+        const dateInput = $(container).find(".date");
+        const authorInput = $(container).find(".author");
+        const languageInput = $(container).find(".language");
+        const contentInput = $(container).find(".content");
+        const titleInput = $(container).find(".title");
+
+
+        const progressText = $(container).find(".progress-text");
+        const progressNumber = $(container).find(".progress-number");
+        const previewTab = $(container).find(".asset-preview-tab");
+        const uploadTab = $(container).find(".asset-upload-tab");
+
+        const urlPattern = (forced?this.fileExtractForced:this.fileExtract)
+            .replace(/__file_identifier__/g, $(sha1Input).val())
+            .replace(/__file_name__/g, $(nameInput).val());
+
+
+
+        $(progressText).html('Extracting information from asset...');
+        $(progressNumber).html('');
+        uploadTab.show();
+        previewTab.hide();
+
+        const waitingResponse = window.ajaxRequest.get(urlPattern)
+            .success(function(response) {
+                $(dateInput).val(response.date);
+                $(authorInput).val(response.author);
+                $(languageInput).val(response.language);
+                $(contentInput).val(response.content);
+                $(titleInput).val(response.title);
+            })
+            .fail(function() {
+                const modal = $('#modal-notifications');
+                $(modal.find('.modal-body')).html('Something went wrong while extrating information from file');
+                modal.modal('show');
+            })
+            .always(function() {
+                $(progressText).html('');
+                uploadTab.hide();
+                previewTab.show();
+                if(typeof self.onChangeCallback === "function") {
+                    self.onChangeCallback();
+                }
+            });
+
+    }
+
+    fileDragHover(e) {
+        e.stopPropagation();
+        e.preventDefault();
+    }
+
+
+    addFileUploaderListerners() {
+        const target = jquery(this.target);
+        const self = this;
+
+        target.find(".file-uploader-input").fileinput({
+            'showUpload':false,
+            'showCaption': false,
+            'showPreview': false,
+            'showRemove': false,
+            'showCancel': false,
+            'showClose': false,
+            'browseIcon': '<i class="fa fa-upload"></i>&nbsp;',
+            'browseLabel': 'Upload file'
+        });
+
+        target.find(".extract-file-info").click(function() {
+            const target = $(this).closest('.modal-content');
+            self.fileDataExtrator(target, true);
+        });
+
+        target.find(".clear-asset-button").click(function() {
+            const parent = $(this).closest('.file-uploader-row');
+            const sha1Input = $(parent).find(".sha1");
+            const typeInput = $(parent).find(".type");
+            const nameInput = $(parent).find(".name");
+            const progressBar = $(parent).find(".progress-bar");
+            const progressText = $(parent).find(".progress-text");
+            const progressNumber = $(parent).find(".progress-number");
+            const previewTab = $(parent).find(".asset-preview-tab");
+            const uploadTab = $(parent).find(".asset-upload-tab");
+            const assetHashSignature = $(parent).find(".asset-hash-signature");
+            const dateInput = $(parent).find(".date");
+            const authorInput = $(parent).find(".author");
+            const languageInput = $(parent).find(".language");
+            const contentInput = $(parent).find(".content");
+            const titleInput = $(parent).find(".title");
+
+            $(parent).find(".file-uploader-input").val('');
+            sha1Input.val('');
+            assetHashSignature.empty();
+            typeInput.val('');
+            nameInput.val('');
+            $(dateInput).val('');
+            $(authorInput).val('');
+            $(languageInput).val('');
+            $(contentInput).val('');
+            $(titleInput).val('');
+            $(progressBar).css('width', '0%');
+            $(progressText).html('');
+            $(progressNumber).html('');
+            previewTab.hide();
+            uploadTab.show();
+            $(parent).find('.view-asset-button').addClass('disabled');
+            $(this).addClass('disabled');
+            return false
+        });
+
+        target.find(".file-uploader-input").change(function(){
+            self.initFileUploader($(this)[0].files[0], $(this).closest(".file-uploader-row"));
+        });
+
+
+        target.find(".file-uploader-row").each(function(){
+            // file drop
+            this.addEventListener("dragover", self.fileDragHover, false);
+            this.addEventListener("dragleave", self.fileDragHover, false);
+            this.addEventListener("drop", self.fileSelectHandler, false);
+        });
     }
 
     addSortableListListeners() {

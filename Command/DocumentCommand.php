@@ -16,6 +16,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
@@ -33,6 +34,8 @@ class DocumentCommand extends Command
     private $logger;
     /** @var Client */
     private $client;
+    /** @var SymfonyStyle */
+    private $io;
 
     public function __construct(Logger $logger, Client $client, ContentTypeService $contentTypeService, ImportService $importService, DataService $dataService)
     {
@@ -98,10 +101,18 @@ class DocumentCommand extends Command
             );
     }
 
+    protected function initialize(InputInterface $input, OutputInterface $output)
+    {
+        $this->io = new SymfonyStyle($input, $output);
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        list($contentTypeName, $archiveFilename) = $input->getArguments();
-        list($bulkSize, $rawImport, $dontSignData, $force, $dontFinalize, $replaceBusinessKey) = $input->getOptions();
+        $arguments = array_values($input->getArguments());
+        array_shift($arguments);
+        list($contentTypeName, $archiveFilename) = $arguments;
+        $options = array_values($input->getOptions());
+        list($bulkSize, $rawImport, $dontSignData, $force, $dontFinalize, $replaceBusinessKey) = $options;
 
         $signData = !$dontSignData;
         $finalize = !$dontFinalize;
@@ -109,25 +120,25 @@ class DocumentCommand extends Command
 
         $contentType = $this->contentTypeService->getByName($contentTypeName);
         if (!$contentType instanceof ContentType) {
-            $output->writeln(sprintf('<error>Content type %s not found</error>', $contentTypeName));
+            $this->io->error(sprintf('Content type %s not found', $contentTypeName));
             return -1;
         }
 
         if ($contentType->getDirty()) {
-            $output->writeln(sprintf('<error>Content type %s is dirty. Please clean it first.</error>', $contentTypeName));
+            $this->io->error(sprintf('Content type %s is dirty. Please clean it first', $contentTypeName));
             return -1;
         }
 
         if (!file_exists($archiveFilename)) {
-            $output->writeln(sprintf('<error>Archive file %s does not exist.</error>', $archiveFilename));
+            $this->io->error(sprintf('Archive file %s does not exist', $archiveFilename));
             return -1;
         }
-        
-        $output->writeln(sprintf('Start importing %s from %s', $contentType->getPluralName(), $archiveFilename));
+
+        $this->io->writeln(sprintf('Start importing %s from %s', $contentType->getPluralName(), $archiveFilename));
 
         $zip = new \ZipArchive();
         if ($zip->open($archiveFilename) !== true) {
-            $output->writeln(sprintf('<error>Archive file %s can not be open.</error>', $archiveFilename));
+            $this->io->error(sprintf('Archive file %s can not be open', $archiveFilename));
             return -1;
         }
 
@@ -141,7 +152,7 @@ class DocumentCommand extends Command
 
         $finder = new Finder();
         $finder->files()->in($workingDirectory)->name('*.json');
-        $progress = new ProgressBar($output, $finder->count());
+        $progress = $this->io->createProgressBar($finder->count());
         $progress->start();
         $importer = $this->importService->initDocumentImporter($contentType, 'SYSTEM_IMPORT', $rawImport, $signData, true, $bulkSize, $finalize, $force);
 
@@ -167,9 +178,9 @@ class DocumentCommand extends Command
             try {
                 $importer->importDocument($document->getOuuid(), $document->getSource());
             } catch (NotLockedException $e) {
-                $output->writeln("<error>'.$e.'</error>");
+                $this->io->error($e);
             } catch (CantBeFinalizedException $e) {
-                $output->writeln("<error>'.$e.'</error>");
+                $this->io->error($e);
             }
 
             ++$loopIndex;
@@ -181,7 +192,7 @@ class DocumentCommand extends Command
         }
         $importer->flushAndSend();
         $progress->finish();
-        $output->writeln("");
-        $output->writeln("Import done");
+        $this->io->writeln("");
+        $this->io->writeln("Import done");
     }
 }

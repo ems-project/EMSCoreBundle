@@ -9,6 +9,7 @@ use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Exception\NotLockedException;
+use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Service\DocumentService;
 use Monolog\Logger;
 use Symfony\Component\Console\Command\Command;
@@ -17,6 +18,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 class MigrateCommand extends Command
 {
@@ -78,6 +80,12 @@ class MigrateCommand extends Command
 
     /** @var Logger */
     private $logger;
+
+    /** @var ContentTypeRepository */
+    private $contentTypeRepository;
+
+    /** @var SymfonyStyle */
+    private $io;
 
     public function __construct(Registry $doctrine, Logger $logger, Client $client, DocumentService $documentService)
     {
@@ -160,6 +168,20 @@ class MigrateCommand extends Command
             );
     }
 
+    protected function initialize(InputInterface $input, OutputInterface $output)
+    {
+        $this->io = new SymfonyStyle($input, $output);
+
+        $em = $this->doctrine->getManager();
+        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
+        if (! $contentTypeRepository instanceof ContentTypeRepository) {
+            throw new \Exception('Wrong ContentTypeRepository repository instance');
+        }
+
+        $this->contentTypeRepository = $contentTypeRepository;
+    }
+
+
     protected function interact(InputInterface $input, OutputInterface $output)
     {
         $arguments = array_values($input->getArguments());
@@ -172,18 +194,13 @@ class MigrateCommand extends Command
             $this->contentTypeNameTo = $this->contentTypeNameFrom;
         }
 
-        /** @var EntityManager $em */
-        $em = $this->doctrine->getManager();
-        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
-
-        /** @var ContentType|null $contentTypeTo */
-        $contentTypeTo = $contentTypeRepository->findOneBy(array("name" => $this->contentTypeNameTo, 'deleted' => false));
+        $contentTypeTo = $this->contentTypeRepository->findOneBy(array("name" => $this->contentTypeNameTo, 'deleted' => false));
         if ($contentTypeTo === null || !$contentTypeTo instanceof ContentType) {
             $output->writeln("<error>Content type " . $this->contentTypeNameTo . " not found</error>");
             return;
         }
         $this->contentTypeTo = $contentTypeTo;
-        $this->defaultEnv = $contentTypeTo->getEnvironment();
+        $this->defaultEnv = $this->contentTypeTo->getEnvironment();
 
         if ($this->contentTypeTo->getDirty()) {
             $output->writeln("<error>Content type \"" . $this->contentTypeNameTo . "\" is dirty. Please clean it first</error>");

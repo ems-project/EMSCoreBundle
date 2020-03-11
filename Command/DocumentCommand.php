@@ -164,7 +164,7 @@ class DocumentCommand extends Command
         $finder->files()->in($directory)->name('*.json');
         $progress = $this->io->createProgressBar($finder->count());
         $progress->start();
-        $importer = $this->documentService->initDocumentImporter($this->contentType, 'SYSTEM_IMPORT', $rawImport, $signData, true, $bulkSize, $finalize, $force);
+        $importerContext = $this->documentService->initDocumentImporterContext($this->contentType, 'SYSTEM_IMPORT', $rawImport, $signData, true, $bulkSize, $finalize, $force);
 
         $loopIndex = 0;
         foreach ($finder as $file) {
@@ -186,7 +186,7 @@ class DocumentCommand extends Command
             $document = $this->dataService->hitFromBusinessIdToDataLink($this->contentType, $ouuid, $rawData);
 
             try {
-                $importer->importDocument($document->getOuuid(), $document->getSource());
+                $this->documentService->importDocument($importerContext, $document->getOuuid(), $document->getSource());
             } catch (NotLockedException $e) {
                 $this->io->error($e);
             } catch (CantBeFinalizedException $e) {
@@ -195,12 +195,12 @@ class DocumentCommand extends Command
 
             ++$loopIndex;
             if ($loopIndex % $bulkSize == 0) {
-                $importer->flushAndSend();
+                $this->documentService->flushAndSend($importerContext);
                 $loopIndex = 0;
             }
             $progress->advance();
         }
-        $importer->flushAndSend();
+        $this->documentService->flushAndSend($importerContext);
         $progress->finish();
         $this->io->writeln("");
         $this->io->writeln("Import done");

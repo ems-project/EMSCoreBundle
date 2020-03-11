@@ -20,6 +20,8 @@ use Symfony\Component\Finder\Finder;
 
 class ImportCommand extends EmsCommand
 {
+    protected static $defaultName = 'ems:make:document';
+
     /** @var ImportService */
     private $importService;
     /** @var ContentTypeService */
@@ -38,7 +40,6 @@ class ImportCommand extends EmsCommand
     protected function configure()
     {
         $this
-            ->setName('ems:document:import')
             ->setDescription('Import a bunch of json files from a zip file')
             ->addArgument(
                 'contentTypeName',

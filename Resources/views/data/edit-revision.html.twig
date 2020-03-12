@@ -77,6 +77,7 @@
 	data-styles-sets="{{ stylesSetsConfig|json_encode|e('html_attr') }}"
 	data-init-upload="{{ path('emsco_file_data_init_upload')|e('html_attr') }}"
 	data-file-extract="{{ path('ems_file_extract', { sha1: '__file_identifier__', name: '__file_name__' })|e('html_attr') }}"
+	data-file-extract-forced="{{ path('ems_file_extract_forced', { sha1: '__file_identifier__', name: '__file_name__' })|e('html_attr') }}"
 	data-ajax-update="{{ path('revision.ajaxupdate', { revisionId: revision.id })|e('html_attr') }}">
 	<div class="box-header with-border">
 		<h3 class="box-title text-{{ revision.contentType.color }}"><i class="{% if revision.contentType.icon %}{{ revision.contentType.icon }} {% else %} fa fa-question {% endif %} "></i>&nbsp;&nbsp;&nbsp;{{ revision.contentType.singularName }}</h3>

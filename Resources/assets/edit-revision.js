@@ -21,13 +21,31 @@ const imageUrl = primaryBox.data('image-url');
 const stylesSets = primaryBox.data('styles-sets');
 const initUpload = primaryBox.data('init-upload');
 const fileExtract = primaryBox.data('file-extract');
+const fileExtractForced = primaryBox.data('file-extract-forced');
 const assetPath = document.querySelector("BODY").getAttribute('data-asset-path') ;
 
 $("form[name=revision]").submit(function( ) {
     //disable all pending auto-save
     waitingResponse = true;
     synch = true;
+    $('#data-out-of-sync').remove();
 });
+
+function updateCollectionLabel()
+{
+    $('.collection-panel').each(function() {
+        const collectionPanel = $(this);
+        const fieldLabel = collectionPanel.data('label-field');
+        if (fieldLabel) {
+            $(this).children(':first').children(':first').children().each(function(){
+                let val = $(this).find('input[name*='+fieldLabel+']').val();
+                if (typeof val !== 'undefined') {
+                    $(this).find('.collection-label-field').html(' | ' + val)
+                }
+            });
+        }
+    });
+}
 
 function updateChoiceFieldTypes()
 {
@@ -134,6 +152,7 @@ function onFormChange(event, allowAutoPublish){
     synch = false;
 
     updateChoiceFieldTypes();
+    updateCollectionLabel();
 
 
     if(waitingResponse) {
@@ -318,7 +337,7 @@ function FileSelectHandler(e) {
 }
 
 //file data extractor
-function FileDataExtrator(container) {
+function FileDataExtrator(container, forced=false) {
 
     const sha1Input = $(container).find(".sha1");
     const nameInput = $(container).find(".name");
@@ -335,7 +354,7 @@ function FileDataExtrator(container) {
     const previewTab = $(container).find(".asset-preview-tab");
     const uploadTab = $(container).find(".asset-upload-tab");
 
-    const urlPattern = fileExtract
+    const urlPattern = (forced?fileExtractForced:fileExtract)
         .replace(/__file_identifier__/g, $(sha1Input).val())
         .replace(/__file_name__/g, $(nameInput).val());
 
@@ -392,7 +411,7 @@ function addEventListeners(target){
 
     target.find(".extract-file-info").click(function() {
         const target = $(this).closest('.modal-content');
-        FileDataExtrator(target);
+        FileDataExtrator(target, true);
     });
 
     target.find(".clear-asset-button").click(function() {
@@ -629,6 +648,7 @@ function addEventListeners(target){
 $(window).ready(function() {
 
     updateChoiceFieldTypes();
+    updateCollectionLabel();
 
     for(let i=0; i < stylesSets.length; ++i) {
         CKEDITOR.stylesSet.add(

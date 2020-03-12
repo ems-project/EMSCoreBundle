@@ -27,6 +27,9 @@ class AlignCommand extends EmsCommand
     /**@var PublishService */
     private $publishService;
 
+    const DEFAULT_SCROLL_SIZE = '100';
+    const DEFAULT_SCROLL_TIMEOUT = '1m';
+
     public function __construct(Registry $doctrine, LoggerInterface $logger, Client $client, DataService $data, ContentTypeService $contentTypeService, EnvironmentService $environmentService, PublishService $publishService)
     {
         $this->doctrine = $doctrine;
@@ -55,6 +58,25 @@ class AlignCommand extends EmsCommand
                 InputArgument::REQUIRED,
                 'Environment target name'
             )
+            ->addArgument(
+                'scrollSize',
+                InputArgument::OPTIONAL,
+                'Size of the elasticsearch scroll request',
+                self::DEFAULT_SCROLL_SIZE
+            )
+            ->addArgument(
+                'scrollTimeout',
+                InputArgument::OPTIONAL,
+                'Time to migrate "scrollSize" items i.e. 30s or 2m',
+                self::DEFAULT_SCROLL_TIMEOUT
+            )
+            ->addOption(
+                'searchQuery',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Query used to find elasticsearch records to import',
+                '{}'
+            )
             ->addOption(
                 'force',
                 null,
@@ -75,6 +97,9 @@ class AlignCommand extends EmsCommand
 
         $sourceName = $input->getArgument('source');
         $targetName = $input->getArgument('target');
+        $scrollSize = $input->getArgument('scrollSize');
+        $scrollTimeout = $input->getArgument('scrollTimeout');
+        $searchQuery = $input->getOption('searchQuery');
 
         $source = $this->environmentService->getAliasByName($sourceName);
         $target = $this->environmentService->getAliasByName($targetName);
@@ -97,40 +122,27 @@ class AlignCommand extends EmsCommand
 
         $this->logger->info('Execute the AlignCommand');
 
-        $total = $this->client->search([
+        $arrayElasticsearchIndex = $this->client->search([
             'index' => $source->getAlias(),
-            'size' => 0,
-        ])['hits']['total'];
+            'size' => $scrollSize,
+            'scroll' => $scrollTimeout,
+            'body' => $searchQuery,
+        ]);
+
+        $total = $arrayElasticsearchIndex['hits']['total'];
 
         $output->writeln('The source environment contains ' . $total . ' elements, start aligning environments...');
 
-        // create a new progress bar
         $progress = new ProgressBar($output, $total);
-        // start and displays the progress bar
         $progress->start();
 
         $deletedRevision = 0;
         $alreadyAligned = 0;
         $targetIsPreviewEnvironment = [];
 
-        for ($from = 0; $from < $total; $from = $from + 50) {
-            $scroll = $this->client->search([
-                'index' => $source->getAlias(),
-                'size' => 50,
-                'from' => $from,
-                'body' => '{
-                       "sort": {
-                          "_uid": {
-                             "order": "asc",
-                             "missing": "_last"
-                          }
-                       }
-                    }',
-                //'preference' => '_primary', //http://stackoverflow.com/questions/10836142/elasticsearch-duplicate-results-with-paging
-            ]);
-
+        while (count($arrayElasticsearchIndex['hits']['hits'] ?? []) > 0) {
             $flush = false;
-            foreach ($scroll['hits']['hits'] as &$hit) {
+            foreach ($arrayElasticsearchIndex['hits']['hits'] as $hit) {
                 $revision = $this->data->getRevisionByEnvironment($hit['_id'], $this->contentTypeService->getByName($hit['_type']), $source);
                 if ($revision->getDeleted()) {
                     ++$deletedRevision;
@@ -147,10 +159,15 @@ class AlignCommand extends EmsCommand
                 }
                 $progress->advance();
             }
-            
+
             if ($flush) {
                 $output->writeln("");
             }
+
+            $arrayElasticsearchIndex = $this->client->scroll([
+                'scroll_id' => $arrayElasticsearchIndex['_scroll_id'],
+                'scroll' => $scrollTimeout,
+            ]);
         }
 
         $progress->finish();

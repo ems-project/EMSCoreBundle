@@ -400,7 +400,7 @@ services:
         tags:
             - { name: kernel.event_listener, event: ems_core.revision.update_referers, method: updateReferers, priority: 0 }
     EMS\CoreBundle\Service\RevisionService:
-        class: EMS\CoreBundle\Service\RevisionService
+        class: EMS\CoreBundle\Service\Revision\RevisionService
         arguments: ['@ems.service.contenttype', '@ems.service.environment', '@EMS\CoreBundle\Repository\RevisionRepository']
     ems.service.alias:
         class: EMS\CoreBundle\Service\AliasService
@@ -504,6 +504,17 @@ services:
         arguments: ['@logger', '@app.elasticsearch']
         tags:
             -  { name: console.command }
+    ems.command.revision.copy:
+        class: EMS\CoreBundle\Command\RevisionCopyCommand
+        arguments: ['@ems.factory.revision_copy_request','@ems.service.revision_copy']
+        tags:
+            - { name: console.command }
+    ems.factory.revision_copy_request:
+        class: EMS\CoreBundle\Service\Revision\Copy\CopyRequestFactory
+        arguments: ['@ems.service.environment']
+    ems.service.revision_copy:
+        class: EMS\CoreBundle\Service\Revision\Copy\CopyService
+        arguments: ['@ems.service.elasticsearch', '@logger']
     ems.contenttype.migrate:
         class: EMS\CoreBundle\Command\MigrateCommand
         arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.document']

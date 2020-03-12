@@ -241,4 +241,26 @@ class ElasticsearchService
     {
         return version_compare($this->getVersion(), '5.6') < 0;
     }
+
+    public function scroll(Environment $environment, array $query, string $timeout = '30s'): iterable
+    {
+        $response = $this->client->search([
+            'scroll' => $timeout,
+            'index' => $environment->getAlias(),
+            'body' => $query,
+        ]);
+
+        while (isset($response['hits']['hits']) && count($response['hits']['hits']) > 0) {
+            $scrollId = $response['_scroll_id'];
+
+            foreach ($response['hits']['hits'] as $hit) {
+                yield $hit;
+            }
+
+            $response = $this->client->scroll([
+                'scroll_id' => $scrollId,
+                'scroll' => $timeout
+            ]);
+        }
+    }
 }

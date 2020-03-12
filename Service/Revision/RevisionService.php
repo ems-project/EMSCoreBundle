@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Service;
+namespace EMS\CoreBundle\Service\Revision;
 
 use EMS\CoreBundle\Repository\RevisionRepository;
+use EMS\CoreBundle\Service\ContentTypeService;
+use EMS\CoreBundle\Service\EnvironmentService;
 
 class RevisionService
 {

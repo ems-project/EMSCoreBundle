@@ -74,7 +74,7 @@ class MigrateCommand extends Command
     private $searchQuery;
 
     /** @var bool */
-    private $finalize;
+    private $dontFinalize;
 
     /** @var Logger */
     private $logger;
@@ -189,7 +189,7 @@ class MigrateCommand extends Command
         list($this->elasticsearchIndex, $this->contentTypeNameFrom, $this->contentTypeNameTo, $this->scrollSize, $this->scrollTimeout) = $arguments;
 
         $options = array_values($input->getOptions());
-        list($this->bulkSize, $this->forceImport, $this->rawImport, $this->signData, $this->searchQuery, $this->finalize) = $options;
+        list($this->bulkSize, $this->forceImport, $this->rawImport, $this->signData, $this->searchQuery, $this->dontFinalize) = $options;
 
         if ($this->contentTypeNameTo === null) {
             $this->contentTypeNameTo = $this->contentTypeNameFrom;
@@ -237,7 +237,7 @@ class MigrateCommand extends Command
         ]);
 
         $progress = $this->io->createProgressBar($arrayElasticsearchIndex["hits"]["total"]);
-        $importerContext = $this->documentService->initDocumentImporterContext($this->contentTypeTo, 'SYSTEM_MIGRATE', $this->rawImport, $this->signData, $this->indexInDefaultEnv, $this->bulkSize, $this->finalize, $this->forceImport);
+        $importerContext = $this->documentService->initDocumentImporterContext($this->contentTypeTo, 'SYSTEM_MIGRATE', $this->rawImport, $this->signData, $this->indexInDefaultEnv, $this->bulkSize, !$this->dontFinalize, $this->forceImport);
         
         while (isset($arrayElasticsearchIndex['hits']['hits']) && count($arrayElasticsearchIndex['hits']['hits']) > 0) {
             foreach ($arrayElasticsearchIndex["hits"]["hits"] as $index => $value) {

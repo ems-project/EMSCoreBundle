@@ -96,6 +96,7 @@ class AppExtension extends \Twig_Extension
             new TwigFunction('get_content_types', array($this, 'getContentTypes')),
             new TwigFunction('cant_be_finalized', array($this, 'cantBeFinalized')),
             new TwigFunction('get_default_environments', array($this, 'getDefaultEnvironments')),
+            new TwigFunction('emsco_get_environments', array($this, 'getEnvironments')),
             new TwigFunction('sequence', array($this, 'getSequenceNextValue')),
             new TwigFunction('diff_text', array($this, 'diffText'), ['is_safe' => ['html']]),
             new TwigFunction('diff', array($this, 'diff'), ['is_safe' => ['html']]),
@@ -1121,6 +1122,11 @@ class AppExtension extends \Twig_Extension
             }
         }
         return $defaultEnvironments;
+    }
+
+    public function getEnvironments()
+    {
+        return $this->environmentService->getEnvironments();
     }
 
     public function getEnvironment($name)

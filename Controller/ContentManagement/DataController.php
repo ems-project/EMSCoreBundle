@@ -1494,6 +1494,60 @@ class DataController extends AppController
     }
 
     /**
+     * @Route("/data/duplicate-json/{contentType}/{ouuid}", name="emsco_data_duplicate_with_jsoncontent"), methods={"POST"}
+     */
+    public function duplicateWithJsonContentAction(ContentType $contentType, string $ouuid, Request $request, DataService $dataService, LoggerInterface $logger): RedirectResponse
+    {
+        $content = $request->get('JSON_BODY', null);
+        $jsonContent = \json_decode($content, true);
+        $jsonContent = \array_merge($dataService->getNewestRevision($contentType->getName(), $ouuid)->getRawData(), $jsonContent);
+        return $this->intNewDocumentFromArray($contentType, $dataService, $logger, $jsonContent);
+    }
+
+    /**
+     * @Route("/data/add-json/{contentType}", name="emsco_data_add_from_jsoncontent"), methods={"POST"}
+     */
+    public function addFromJsonContentAction(ContentType $contentType, Request $request, DataService $dataService, LoggerInterface $logger): RedirectResponse
+    {
+        $content = $request->get('JSON_BODY', null);
+        $jsonContent = \json_decode($content, true);
+        if ($jsonContent === null) {
+            $logger->error('log.data.revision.add_from_json_error', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
+            ]);
+
+            return $this->redirectToRoute('data.root', [
+                'name' => $contentType->getName()
+            ]);
+        }
+        return $this->intNewDocumentFromArray($contentType, $dataService, $logger, $jsonContent);
+    }
+
+    private function intNewDocumentFromArray(ContentType $contentType, DataService $dataService, LoggerInterface $logger, array $rawData): RedirectResponse
+    {
+        $dataService->hasCreateRights($contentType);
+
+        try {
+            $revision = $dataService->newDocument($contentType, null, $rawData);
+
+            return $this->redirectToRoute('revision.edit', [
+                'revisionId' => $revision->getId()
+            ]);
+        } catch (\Exception $e) {
+            $logger->error('log.data.revision.init_document_from_array', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+            ]);
+            return $this->redirectToRoute('data.root', [
+                'name' => $contentType->getName()
+            ]);
+        }
+    }
+
+    /**
      * @param ContentType $contentType
      * @param Request $request
      * @param DataService $dataService

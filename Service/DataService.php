@@ -19,6 +19,7 @@ use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Helper\ArrayTool;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Storage\StorageManager;
+use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\Environment;
@@ -117,6 +118,8 @@ class DataService
     protected $logger;
     /** @var StorageManager */
     private $storageManager;
+    /** @var EnvironmentService */
+    private $environmentService;
 
     public function __construct(
         Registry $doctrine,
@@ -138,7 +141,8 @@ class DataService
         Twig_Environment $twig,
         AppExtension $appExtension,
         UserService $userService,
-        RevisionRepository $revisionRepository
+        RevisionRepository $revisionRepository,
+        EnvironmentService $environmentService
     ) {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
@@ -160,6 +164,7 @@ class DataService
         $this->storageManager = $storageManager;
         $this->contentTypeService = $contentTypeService;
         $this->userService = $userService;
+        $this->environmentService = $environmentService;
 
         $this->public_key = null;
         $this->private_key = null;
@@ -1989,5 +1994,23 @@ class DataService
                 ]);
             }
         }
+    }
+
+    public function createAndMapIndex(Environment $environment): void
+    {
+        $indexName = $environment->getAlias() . AppController::getFormatedTimestamp();
+        $this->client->indices()->create([
+            'index' => $indexName,
+            'body' => $this->environmentService->getIndexAnalysisConfiguration(),
+        ]);
+
+        foreach ($this->contentTypeService->getAll() as $contentType) {
+            $this->contentTypeService->updateMapping($contentType, $indexName);
+        }
+
+        $this->client->indices()->putAlias([
+            'index' => $indexName,
+            'name' => $environment->getAlias()
+        ]);
     }
 }

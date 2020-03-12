@@ -91,27 +91,32 @@
 	          		{% endif %}
 	          	</a>
 	          	<ul class="treeview-menu">
-					
-	            	<li class=""><a id="menu-data-index-{{ contentType.id }}" href="{{ path('ems_data_default_search', {'name':contentType.name}) }}"><i class="fa fa-search"></i> Search {{ contentType.pluralName }}</a></li>
-	          		
-	          		{% if contentType.circlesField and app.user.circles|length > 0 %}
+                    {% if is_granted(contentType.searchLinkDisplayRole) %}
+                        <li class="">
+                            <a id="menu-data-index-{{ contentType.id }}" href="{{ path('ems_data_default_search', {'name':contentType.name}) }}">
+                                <i class="fa fa-search"></i> Search {{ contentType.pluralName }}
+                            </a>
+                        </li>
 
-		            	{% set label = contentType.circlesField %}
-		            	{% set circleField = contentType|get_field_by_path(contentType.circlesField, true) %}
+                        {% if contentType.circlesField and app.user.circles|length > 0 %}
 
-						{% if circleField and circleField.options.displayOptions.type is defined  %}
-		            		{% set circleContenttype = circleField.options.displayOptions.type|get_content_type %}
-		            		{% if circleContenttype %}
-								{% if app.user.circles|length > 1 %}
-					            	{% set label = circleContenttype.pluralName %}
-								{% else %}
-					            	{% set label = circleContenttype.singularName %}
-								{% endif %}
-	            		        <li class=""><a id="menu-data-index-{{ contentType.id }}" href="{{ path('ems_search_in_my_circles', {'name':contentType.name} ) }}"><i class="{{ circleContenttype.icon }}"></i> In my {{ label }}</a></li>
-							{% endif %}
-						{% endif %}
+                            {% set label = contentType.circlesField %}
+                            {% set circleField = contentType|get_field_by_path(contentType.circlesField, true) %}
 
-	            	{% endif %}
+                            {% if circleField and circleField.options.displayOptions.type is defined  %}
+                                {% set circleContenttype = circleField.options.displayOptions.type|get_content_type %}
+                                {% if circleContenttype %}
+                                    {% if app.user.circles|length > 1 %}
+                                        {% set label = circleContenttype.pluralName %}
+                                    {% else %}
+                                        {% set label = circleContenttype.singularName %}
+                                    {% endif %}
+                                    <li class=""><a id="menu-data-index-{{ contentType.id }}" href="{{ path('ems_search_in_my_circles', {'name':contentType.name} ) }}"><i class="{{ circleContenttype.icon }}"></i> In my {{ label }}</a></li>
+                                {% endif %}
+                            {% endif %}
+
+                        {% endif %}
+                    {% endif %}
 	            	{% for view in contentType.views %}
 	            		<li>
 	            			<a id="menu-data-view-{{ contentType.id }}-{{ view.id }}" href="{{ path(view.public?'ems_custom_view_public':'ems_custom_view_protected', { viewId: view.id }) }}">
@@ -127,22 +132,22 @@
 	          			</a></li>
 	            	{% endif %}
 	            	{% if contentType.environment.managed %}
-	            	
+
 	            	{% if contentType.orderField and (contentType.fieldType.__get('ems_'~contentType.orderField).options.restrictionOptions.minimum_role is not defined or is_granted(contentType.fieldType.__get('ems_'~contentType.orderField).options.restrictionOptions.minimum_role)) %}
 	          			<li class=""><a id="menu-data-reorder-{{ contentType.id }}" href="{{ path('nature.reorder', { contentType: contentType.id } ) }}">
 	          				<i class="fa fa-sort"></i>
 	          				<span>Reorder</span>
 	          			</a></li>
 	            	{% endif %}
-	            	
-	            	{% if not contentType.createRole or is_granted(contentType.createRole) %}
+
+	            	{% if (not contentType.createRole or is_granted(contentType.createRole)) and is_granted(contentType.createLinkDisplayRole) %}
 						<li class=""><a id="menu-data-add-{{ contentType.id }}" href="{{ path('data.add', { contentType: contentType.id }) }}">
 							<i class="fa fa-plus"></i>
 	          				New {{ contentType.singularName }}
 						</a></li>
 					{% endif %}
-	            	
-	            	
+
+
                     {% if is_granted(contentType.trashRole) %}
 						<li class="">
 							<a id="menu-data-trash-{{ contentType.id }}" href="{{ path('ems_data_trash', { contentType: contentType.id }) }}">
@@ -151,8 +156,8 @@
 							</a>
 						</li>
                     {% endif %}
-	            	
-	            	
+
+
 	            	{% endif %}
 	          	</ul>
 	          </li>

@@ -410,6 +410,8 @@ service:
     extract_error: 'An issue has been raised while extracting information from the asset/file ems://asset:%file_hash% : %error_message%'
     persist_error: 'An issue has been raised while persisting the information extracted from the asset/file ems://asset:%file_hash% : %error_message%'
   data:
+    transform_content_type:
+      cant_process_draft: 'The document ems://object:%contenttype%:%ouuid% can''t be transformed as it''s last revision ems://revision:%revision_id% is in draft mode'
     error_with_fields: 'The field %path% is in error with the message %error_message%'
     cant_finalize_field: '%error_message%'
     update_referrers_error: 'It was impossible to update referrers of the document ems://object:%contenttype%:%ouuid%'

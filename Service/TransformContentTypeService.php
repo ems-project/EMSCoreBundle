@@ -59,7 +59,7 @@ class TransformContentTypeService
                 $revision = $this->dataService->getNewestRevision($contentType->getName(), $ouuid);
 
                 if ($revision->getDraft()) {
-                    $this->logger->warning('service.data.transform_content_tyoe.cant_process_draft', [
+                    $this->logger->warning('service.data.transform_content_type.cant_process_draft', [
                         EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                         EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                         EmsFields::LOG_ENVIRONMENT_FIELD => $contentType->getEnvironment()->getName(),

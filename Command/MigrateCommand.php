@@ -137,7 +137,7 @@ class MigrateCommand extends Command
                 'force',
                 null,
                 InputOption::VALUE_NONE,
-                'Allow to import from the default environment and/or to cancel draft revision'
+                'Allow to import from the default environment and to draft revision'
             )
             ->addOption(
                 'raw',

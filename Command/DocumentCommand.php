@@ -44,6 +44,7 @@ class DocumentCommand extends Command
     const ARGUMENT_ARCHIVE = 'archive';
 
     const ARGUMENT_CONTENTTYPE = 'contentTypeName';
+    const ARGUMENT_ARCHIVE = 'archive';
 
     public function __construct(Logger $logger, Client $client, ContentTypeService $contentTypeService, DocumentService $documentService, DataService $dataService)
     {

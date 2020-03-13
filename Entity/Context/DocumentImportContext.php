@@ -20,40 +20,40 @@ class DocumentImportContext
     /** @var string */
     private $lockUser;
     /** @var bool */
-    private $rawImport;
+    private $shouldRawImport;
     /** @var EntityManager */
     private $entityManager;
     /** @var RevisionRepository */
     private $revisionRepository;
     /** @var bool */
-    private $indexInDefaultEnv;
+    private $shouldIndexInDefaultEnv;
     /** @var bool */
-    private $signData;
+    private $shouldSignData;
     /** @var ContentTypeRepository */
     private $contentTypeRepository;
     /** @var Environment */
     private $environment;
     /** @var bool */
-    private $finalize;
+    private $shouldFinalize;
     /** @var bool */
-    private $force;
+    private $shouldForce;
 
-    public function __construct(EntityManager $entityManager, string $contentTypeName, string $lockUser, bool $rawImport, bool $signData, bool $indexInDefaultEnv, bool $finalize, bool $force)
+    public function __construct(EntityManager $entityManager, string $contentTypeName, string $lockUser, bool $shouldRawImport, bool $signData, bool $shouldIndexInDefaultEnv, bool $shouldFinalize, bool $shouldForceImport)
     {
         $this->contentTypeName = $contentTypeName;
-        $this->indexInDefaultEnv = $indexInDefaultEnv;
-        $this->signData = $signData;
+        $this->shouldIndexInDefaultEnv = $shouldIndexInDefaultEnv;
+        $this->shouldSignData = $signData;
         $this->lockUser = $lockUser;
-        $this->rawImport = $rawImport;
-        $this->finalize = $finalize;
+        $this->shouldRawImport = $shouldRawImport;
+        $this->shouldFinalize = $shouldFinalize;
         $this->entityManager = $entityManager;
-        $this->force = $force;
+        $this->shouldForce = $shouldForceImport;
 
         $this->entityManager->getConnection()->getConfiguration()->setSQLLogger(null);
 
         $repository = $this->entityManager->getRepository('EMSCoreBundle:Revision');
         if (! $repository instanceof RevisionRepository) {
-            throw new \Exception('Can not get the RevisionRepository');
+            throw new \Exception('Can not get the RevisionReposisitory');
         }
         $this->revisionRepository = $repository;
 
@@ -86,9 +86,9 @@ class DocumentImportContext
         return $this->lockUser;
     }
 
-    public function isRawImport(): bool
+    public function shouldRawImport(): bool
     {
-        return $this->rawImport;
+        return $this->shouldRawImport;
     }
 
     public function getEntityManager(): EntityManager
@@ -101,14 +101,14 @@ class DocumentImportContext
         return $this->revisionRepository;
     }
 
-    public function isIndexInDefaultEnv(): bool
+    public function shouldIndexInDefaultEnv(): bool
     {
-        return $this->indexInDefaultEnv;
+        return $this->shouldIndexInDefaultEnv;
     }
 
-    public function isSignData(): bool
+    public function shouldSignData(): bool
     {
-        return $this->signData;
+        return $this->shouldSignData;
     }
 
     public function getContentTypeRepository(): ContentTypeRepository
@@ -121,13 +121,13 @@ class DocumentImportContext
         return $this->environment;
     }
 
-    public function isFinalize(): bool
+    public function shouldFinalize(): bool
     {
-        return $this->finalize;
+        return $this->shouldFinalize;
     }
 
-    public function isForce(): bool
+    public function shouldForce(): bool
     {
-        return $this->force;
+        return $this->shouldForce;
     }
 }

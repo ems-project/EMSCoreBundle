@@ -47,9 +47,6 @@ class MigrateCommand extends Command
     private $scrollTimeout;
 
     /** @var boolean */
-    private $ready;
-
-    /** @var boolean */
     private $indexInDefaultEnv;
 
     /** @var Environment */
@@ -94,7 +91,6 @@ class MigrateCommand extends Command
     public function __construct(Registry $doctrine, Logger $logger, Client $client, DocumentService $documentService)
     {
         $this->doctrine = $doctrine;
-        $this->ready = false;
         $this->client = $client;
         $this->logger = $logger;
         $this->documentService = $documentService;
@@ -208,33 +204,29 @@ class MigrateCommand extends Command
         $contentTypeTo = $this->contentTypeRepository->findOneBy(array("name" => $this->contentTypeNameTo, 'deleted' => false));
         if ($contentTypeTo === null || !$contentTypeTo instanceof ContentType) {
             $this->io->error(sprintf('Content type "%s" not found', $this->contentTypeNameTo));
-            return;
+            return -1;
         }
         $this->contentTypeTo = $contentTypeTo;
         $this->defaultEnv = $this->contentTypeTo->getEnvironment();
 
         if ($this->contentTypeTo->getDirty()) {
             $this->io->error(sprintf('Content type "%s" is dirty. Please clean it first', $this->contentTypeNameTo));
-            return;
+            return -1;
         }
 
         $this->indexInDefaultEnv = true;
         if (strcmp($this->defaultEnv->getAlias(), $this->elasticsearchIndex) === 0 && strcmp($this->contentTypeNameFrom, $this->contentTypeNameTo) === 0) {
             if (!$this->forceImport) {
                 $this->io->error('You can not import a content type on himself with the --force option');
-                return;
+                return -1;
             }
             $this->indexInDefaultEnv = false;
         }
-
-        $this->ready = true;
+        return 0;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (!$this->ready) {
-            return -1;
-        }
 
         $this->io->section(sprintf('Start migration of %s', $this->contentTypeTo->getPluralName()));
 

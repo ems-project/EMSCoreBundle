@@ -21,7 +21,6 @@ use Symfony\Component\Finder\Finder;
 
 class DocumentCommand extends Command
 {
-    const ARGUMENT_CONTENTTYPE = 'contentTypeName';
     protected static $defaultName = 'ems:make:document';
 
     /** @var DocumentService */
@@ -42,6 +41,8 @@ class DocumentCommand extends Command
     private $archiveFilename;
     /** @var bool */
     private $ready;
+
+    const ARGUMENT_CONTENTTYPE = 'contentTypeName';
 
     public function __construct(Logger $logger, Client $client, ContentTypeService $contentTypeService, DocumentService $documentService, DataService $dataService)
     {

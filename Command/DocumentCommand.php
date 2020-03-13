@@ -39,8 +39,6 @@ class DocumentCommand extends Command
     private $contentType;
     /** @var string */
     private $archiveFilename;
-    /** @var bool */
-    private $ready;
 
     const ARGUMENT_CONTENTTYPE = 'contentTypeName';
     const ARGUMENT_ARCHIVE = 'archive';
@@ -53,7 +51,6 @@ class DocumentCommand extends Command
         $this->dataService = $dataService;
         $this->logger = $logger;
         $this->client = $client;
-        $this->ready = false;
         parent::__construct();
     }
     
@@ -127,28 +124,26 @@ class DocumentCommand extends Command
         $contentType = $this->contentTypeService->getByName($contentTypeName);
         if (!$contentType instanceof ContentType) {
             $this->io->error(sprintf('Content type %s not found', $contentTypeName));
-            return;
+            return -1;
         }
 
         if ($contentType->getDirty()) {
             $this->io->error(sprintf('Content type %s is dirty. Please clean it first', $contentTypeName));
-            return;
+            return -1;
         }
         $this->contentType = $contentType;
 
         if (!file_exists($archiveFilename)) {
             $this->io->error(sprintf('Archive file %s does not exist', $archiveFilename));
-            return;
+            return -1;
         }
         $this->archiveFilename = $archiveFilename;
-        $this->ready = true;
+
+        return 0;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (!$this->ready) {
-            return -1;
-        }
 
         $options = array_values($input->getOptions());
         list($bulkSize, $rawImport, $dontSignData, $force, $dontFinalize, $replaceBusinessKey) = $options;

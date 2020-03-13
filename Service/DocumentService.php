@@ -12,6 +12,8 @@ use EMS\CoreBundle\Entity\Context\DocumentImportContext;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Form\Form\RevisionType;
+use EMS\CoreBundle\Repository\ContentTypeRepository;
+use EMS\CoreBundle\Repository\RevisionRepository;
 use Symfony\Component\Form\FormFactoryInterface;
 
 class DocumentService
@@ -27,6 +29,12 @@ class DocumentService
     private $bulker;
     /** @var string */
     private $instanceId;
+    /** @var EntityManager */
+    private $entityManager;
+    /** @var RevisionRepository */
+    private $revisionRepository;
+    /** @var ContentTypeRepository */
+    private $contentTypeRepository;
 
     public function __construct(Registry $doctrine, DataService $dataService, FormFactoryInterface $formFactory, Bulker $bulker, string $instanceId)
     {
@@ -39,19 +47,35 @@ class DocumentService
 
     public function initDocumentImporterContext(ContentType $contentType, string $lockUser, bool $rawImport, bool $signData, bool $indexInDefaultEnv, int $bulkSize, bool $finalize, bool $force) : DocumentImportContext
     {
-        $entityManager = $this->doctrine->getManager();
-        if ($entityManager instanceof EntityManager) {
-            $entityManager->getConnection()->getConfiguration()->setSQLLogger(null);
+        $manager = $this->doctrine->getManager();
+        if (!$manager instanceof EntityManager) {
+            throw new \Exception('Can not get the Entity Manager');
         }
+        $this->entityManager = $manager;
+        $this->entityManager->getConnection()->getConfiguration()->setSQLLogger(null);
         $this->bulker->setEnableSha1(false);
         $this->bulker->setSize($bulkSize);
-        return new DocumentImportContext($entityManager, $contentType, $lockUser, $rawImport, $signData, $indexInDefaultEnv, $finalize, $force);
+
+        $repository = $this->entityManager->getRepository('EMSCoreBundle:Revision');
+        if (! $repository instanceof RevisionRepository) {
+            throw new \Exception('Can not get the Revision Repository');
+        }
+
+        $this->revisionRepository = $repository;
+
+        $repository = $this->entityManager->getRepository('EMSCoreBundle:ContentType');
+        if (! $repository instanceof ContentTypeRepository) {
+            throw new \Exception('Can not get the ContentType Repository');
+        }
+        $this->contentTypeRepository = $repository;
+
+        return new DocumentImportContext($contentType, $lockUser, $rawImport, $signData, $indexInDefaultEnv, $finalize, $force);
     }
 
 
     public function flushAndSend(DocumentImportContext $documentImportContext)
     {
-        $documentImportContext->getEntityManager()->flush();
+        $this->entityManager->flush();
         if ($documentImportContext->shouldFinalize()) {
             $this->bulker->send(true);
         }
@@ -85,7 +109,7 @@ class DocumentService
         $newRevision->setOuuid($ouuid);
         $newRevision->setRawData($rawData);
 
-        $currentRevision = $documentImportContext->getRevisionRepository()->getCurrentRevision($documentImportContext->getContentType(), $ouuid);
+        $currentRevision = $this->revisionRepository->getCurrentRevision($documentImportContext->getContentType(), $ouuid);
 
         if ($currentRevision && $currentRevision->getDraft()) {
             if (!$documentImportContext->shouldForce()) {
@@ -94,7 +118,7 @@ class DocumentService
             }
 
             $this->dataService->discardDraft($currentRevision, true, $documentImportContext->getLockUser());
-            $currentRevision = $documentImportContext->getRevisionRepository()->getCurrentRevision($documentImportContext->getContentType(), $ouuid);
+            $currentRevision = $this->revisionRepository->getCurrentRevision($documentImportContext->getContentType(), $ouuid);
         }
         if (!$documentImportContext->shouldRawImport()) {
             $this->submitData($documentImportContext, $newRevision, $currentRevision ?? $this->dataService->getEmptyRevision($documentImportContext->getContentType(), $documentImportContext->getLockUser()));
@@ -109,7 +133,7 @@ class DocumentService
             }
             $currentRevision->setLockBy($documentImportContext->getLockUser());
             $currentRevision->setLockUntil($newRevision->getLockUntil());
-            $documentImportContext->getEntityManager()->persist($currentRevision);
+            $this->entityManager->persist($currentRevision);
         }
 
         $this->dataService->setMetaFields($newRevision);
@@ -130,9 +154,9 @@ class DocumentService
         }
 
         $newRevision->setDraft(!$documentImportContext->shouldFinalize());
-        $documentImportContext->getEntityManager()->persist($newRevision);
-        $documentImportContext->getRevisionRepository()->finaliseRevision($documentImportContext->getContentType(), $ouuid, $newRevision->getStartTime(), $documentImportContext->getLockUser());
-        $documentImportContext->getRevisionRepository()->publishRevision($newRevision, $newRevision->getDraft());
-        $documentImportContext->getEntityManager()->flush();
+        $this->entityManager->persist($newRevision);
+        $this->revisionRepository->finaliseRevision($documentImportContext->getContentType(), $ouuid, $newRevision->getStartTime(), $documentImportContext->getLockUser());
+        $this->revisionRepository->publishRevision($newRevision, $newRevision->getDraft());
+        $this->entityManager->flush();
     }
 }

@@ -39,6 +39,7 @@ class DocumentService
     public function initDocumentImporterContext(ContentType $contentType, string $lockUser, bool $rawImport, bool $signData, bool $indexInDefaultEnv, int $bulkSize, bool $finalize, bool $force) : DocumentImportContext
     {
         $entityManager = $this->doctrine->getManager();
+        $entityManager->getConnection()->getConfiguration()->setSQLLogger(null);
         $this->bulker->setEnableSha1(false);
         $this->bulker->setSize($bulkSize);
         return new DocumentImportContext($entityManager, $contentType, $lockUser, $rawImport, $signData, $indexInDefaultEnv, $finalize, $force);

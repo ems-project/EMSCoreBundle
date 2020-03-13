@@ -43,6 +43,7 @@ class DocumentCommand extends Command
     private $ready;
 
     const ARGUMENT_CONTENTTYPE = 'contentTypeName';
+    const ARGUMENT_ARCHIVE = 'archive';
 
     public function __construct(Logger $logger, Client $client, ContentTypeService $contentTypeService, DocumentService $documentService, DataService $dataService)
     {
@@ -66,7 +67,7 @@ class DocumentCommand extends Command
                 'Content type name to import into'
             )
             ->addArgument(
-                'archive',
+                self::ARGUMENT_ARCHIVE,
                 InputArgument::REQUIRED,
                 'The archive (zip file or directory) containing the json files'
             )
@@ -116,9 +117,8 @@ class DocumentCommand extends Command
 
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $arguments = array_values($input->getArguments());
-        array_shift($arguments);
-        list($contentTypeName, $archiveFilename) = $arguments;
+        $contentTypeName = $input->getArgument(self::ARGUMENT_CONTENTTYPE);
+        $archiveFilename = $input->getArgument(self::ARGUMENT_ARCHIVE);
 
         $this->io->title('Make documents');
         $this->io->section('Checking input');

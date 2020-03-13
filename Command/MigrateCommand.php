@@ -94,6 +94,14 @@ class MigrateCommand extends Command
         $this->client = $client;
         $this->logger = $logger;
         $this->documentService = $documentService;
+
+        $em = $this->doctrine->getManager();
+        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
+        if (! $contentTypeRepository instanceof ContentTypeRepository) {
+            throw new \Exception('Wrong ContentTypeRepository repository instance');
+        }
+
+        $this->contentTypeRepository = $contentTypeRepository;
         parent::__construct();
     }
 
@@ -171,14 +179,6 @@ class MigrateCommand extends Command
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         $this->io = new SymfonyStyle($input, $output);
-
-        $em = $this->doctrine->getManager();
-        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
-        if (! $contentTypeRepository instanceof ContentTypeRepository) {
-            throw new \Exception('Wrong ContentTypeRepository repository instance');
-        }
-
-        $this->contentTypeRepository = $contentTypeRepository;
     }
 
 

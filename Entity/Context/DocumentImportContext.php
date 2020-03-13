@@ -49,8 +49,6 @@ class DocumentImportContext
         $this->entityManager = $entityManager;
         $this->shouldForce = $shouldForceImport;
 
-        $this->entityManager->getConnection()->getConfiguration()->setSQLLogger(null);
-
         $repository = $this->entityManager->getRepository('EMSCoreBundle:Revision');
         if (! $repository instanceof RevisionRepository) {
             throw new \Exception('Can not get the RevisionReposisitory');

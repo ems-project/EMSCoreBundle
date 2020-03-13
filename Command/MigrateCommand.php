@@ -85,6 +85,12 @@ class MigrateCommand extends Command
     /** @var SymfonyStyle */
     private $io;
 
+    const ARGUMENT_ELASTICSEARCH_INDEX = 'elasticsearchIndex';
+    const ARGUMENT_CONTENTTYPE_NAME_FROM = 'contentTypeNameFrom';
+    const ARGUMENT_CONTENTTYPE_NAME_TO = 'contentTypeNameTo';
+    const ARGUMENT_SCROLL_SIZE = 'scrollSize';
+    const ARGUMENT_SCROLL_TIMEOUT = 'scrollTimeout';
+
     public function __construct(Registry $doctrine, Logger $logger, Client $client, DocumentService $documentService)
     {
         $this->doctrine = $doctrine;
@@ -100,28 +106,28 @@ class MigrateCommand extends Command
         $this
             ->setDescription('Migrate a content type from an elasticsearch index')
             ->addArgument(
-                'elasticsearchIndex',
+                self::ARGUMENT_ELASTICSEARCH_INDEX,
                 InputArgument::REQUIRED,
                 'Elasticsearch index where to find ContentType objects as new source'
             )
             ->addArgument(
-                'contentTypeNameFrom',
+                self::ARGUMENT_CONTENTTYPE_NAME_FROM,
                 InputArgument::REQUIRED,
                 'Content type name to migrate from'
             )
             ->addArgument(
-                'contentTypeNameTo',
+                self::ARGUMENT_CONTENTTYPE_NAME_TO,
                 InputArgument::OPTIONAL,
                 'Content type name to migrate into (default same as from)'
             )
             ->addArgument(
-                'scrollSize',
+                self::ARGUMENT_SCROLL_SIZE,
                 InputArgument::OPTIONAL,
                 'Size of the elasticsearch scroll request',
                 100
             )
             ->addArgument(
-                'scrollTimeout',
+                self::ARGUMENT_SCROLL_TIMEOUT,
                 InputArgument::OPTIONAL,
                 'Time to migrate "scrollSize" items i.e. 30s or 2m',
                 '1m'
@@ -184,9 +190,13 @@ class MigrateCommand extends Command
     {
         $this->io->title('Start migration');
         $this->io->section('Checking input');
-        $arguments = array_values($input->getArguments());
-        array_shift($arguments);
-        list($this->elasticsearchIndex, $this->contentTypeNameFrom, $this->contentTypeNameTo, $this->scrollSize, $this->scrollTimeout) = $arguments;
+
+        $this->elasticsearchIndex = $input->getArgument(self::ARGUMENT_ELASTICSEARCH_INDEX);
+        $this->contentTypeNameFrom = $input->getArgument(self::ARGUMENT_CONTENTTYPE_NAME_FROM);
+        $this->contentTypeNameTo = $input->getArgument(self::ARGUMENT_CONTENTTYPE_NAME_TO);
+        $this->scrollSize = intval($input->getArgument(self::ARGUMENT_SCROLL_SIZE));
+        $this->scrollTimeout = $input->getArgument(self::ARGUMENT_SCROLL_TIMEOUT);
+
 
         $options = array_values($input->getOptions());
         list($this->bulkSize, $this->forceImport, $this->rawImport, $this->signData, $this->searchQuery, $this->dontFinalize) = $options;

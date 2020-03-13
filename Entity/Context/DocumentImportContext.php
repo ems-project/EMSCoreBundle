@@ -16,21 +16,13 @@ class DocumentImportContext
     /** @var ContentType */
     private $contentType;
     /** @var string */
-    private $contentTypeName;
-    /** @var string */
     private $lockUser;
     /** @var bool */
     private $shouldRawImport;
-    /** @var EntityManager */
-    private $entityManager;
-    /** @var RevisionRepository */
-    private $revisionRepository;
     /** @var bool */
     private $shouldIndexInDefaultEnv;
     /** @var bool */
     private $shouldSignData;
-    /** @var ContentTypeRepository */
-    private $contentTypeRepository;
     /** @var Environment */
     private $environment;
     /** @var bool */
@@ -38,45 +30,21 @@ class DocumentImportContext
     /** @var bool */
     private $shouldForce;
 
-    public function __construct(EntityManager $entityManager, string $contentTypeName, string $lockUser, bool $shouldRawImport, bool $signData, bool $shouldIndexInDefaultEnv, bool $shouldFinalize, bool $shouldForceImport)
+    public function __construct(ContentType $contentType, string $lockUser, bool $shouldRawImport, bool $signData, bool $shouldIndexInDefaultEnv, bool $shouldFinalize, bool $shouldForceImport)
     {
-        $this->contentTypeName = $contentTypeName;
+        $this->contentType = $contentType;
         $this->shouldIndexInDefaultEnv = $shouldIndexInDefaultEnv;
         $this->shouldSignData = $signData;
         $this->lockUser = $lockUser;
         $this->shouldRawImport = $shouldRawImport;
         $this->shouldFinalize = $shouldFinalize;
-        $this->entityManager = $entityManager;
         $this->shouldForce = $shouldForceImport;
-
-        $repository = $this->entityManager->getRepository('EMSCoreBundle:Revision');
-        if (! $repository instanceof RevisionRepository) {
-            throw new \Exception('Can not get the RevisionReposisitory');
-        }
-        $this->revisionRepository = $repository;
-
-        $repository = $this->entityManager->getRepository('EMSCoreBundle:ContentType');
-        if (! $repository instanceof ContentTypeRepository) {
-            throw new \Exception('Can not get the ContentTypeRepository');
-        }
-        $this->contentTypeRepository = $repository;
-
-        $contentType = $this->contentTypeRepository->findOneBy(array("name" => $this->contentTypeName, 'deleted' => false));
-        if (! $contentType instanceof ContentType) {
-            throw new \Exception(sprintf('Content type %s not found', $this->contentTypeName));
-        }
-        $this->contentType = $contentType;
         $this->environment = $this->contentType->getEnvironment();
     }
 
     public function getContentType(): ContentType
     {
         return $this->contentType;
-    }
-
-    public function getContentTypeName(): string
-    {
-        return $this->contentTypeName;
     }
 
     public function getLockUser(): string
@@ -89,16 +57,6 @@ class DocumentImportContext
         return $this->shouldRawImport;
     }
 
-    public function getEntityManager(): EntityManager
-    {
-        return $this->entityManager;
-    }
-
-    public function getRevisionRepository(): RevisionRepository
-    {
-        return $this->revisionRepository;
-    }
-
     public function shouldIndexInDefaultEnv(): bool
     {
         return $this->shouldIndexInDefaultEnv;
@@ -107,11 +65,6 @@ class DocumentImportContext
     public function shouldSignData(): bool
     {
         return $this->shouldSignData;
-    }
-
-    public function getContentTypeRepository(): ContentTypeRepository
-    {
-        return $this->contentTypeRepository;
     }
 
     public function getEnvironment(): Environment

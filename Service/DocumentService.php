@@ -48,7 +48,7 @@ class DocumentService
     public function flushAndSend(DocumentImportContext $documentImportContext)
     {
         $documentImportContext->getEntityManager()->flush();
-        if ($documentImportContext->isFinalize()) {
+        if ($documentImportContext->shouldFinalize()) {
             $this->bulker->send(true);
         }
     }
@@ -75,7 +75,7 @@ class DocumentService
     public function importDocument(DocumentImportContext $documentImportContext, string $ouuid, array $rawData)
     {
         $newRevision = $this->dataService->getEmptyRevision($documentImportContext->getContentType(), $documentImportContext->getLockUser());
-        if (!$documentImportContext->isFinalize()) {
+        if (!$documentImportContext->shouldFinalize()) {
             $newRevision->removeEnvironment($documentImportContext->getEnvironment());
         }
         $newRevision->setOuuid($ouuid);
@@ -84,7 +84,7 @@ class DocumentService
         $currentRevision = $documentImportContext->getRevisionRepository()->getCurrentRevision($documentImportContext->getContentType(), $ouuid);
 
         if ($currentRevision && $currentRevision->getDraft()) {
-            if (!$documentImportContext->isForce()) {
+            if (!$documentImportContext->shouldForce()) {
                 //TODO: activate the newRevision when it's available
                 throw new CantBeFinalizedException('a draft is already in progress for the document', 0, null/*, $newRevision*/);
             }
@@ -92,7 +92,7 @@ class DocumentService
             $this->dataService->discardDraft($currentRevision, true, $documentImportContext->getLockUser());
             $currentRevision = $documentImportContext->getRevisionRepository()->getCurrentRevision($documentImportContext->getContentType(), $ouuid);
         }
-        if (!$documentImportContext->isRawImport()) {
+        if (!$documentImportContext->shouldRawImport()) {
             $this->submitData($documentImportContext, $newRevision, $currentRevision ?? $this->dataService->getEmptyRevision($documentImportContext->getContentType(), $documentImportContext->getLockUser()));
         }
 
@@ -100,7 +100,7 @@ class DocumentService
             $currentRevision->setEndTime($newRevision->getStartTime());
             $currentRevision->setDraft(false);
             $currentRevision->setAutoSave(null);
-            if ($documentImportContext->isFinalize()) {
+            if ($documentImportContext->shouldFinalize()) {
                 $currentRevision->removeEnvironment($documentImportContext->getEnvironment());
             }
             $currentRevision->setLockBy($documentImportContext->getLockUser());
@@ -110,7 +110,7 @@ class DocumentService
 
         $this->dataService->setMetaFields($newRevision);
 
-        if ($documentImportContext->isIndexInDefaultEnv() && $documentImportContext->isFinalize()) {
+        if ($documentImportContext->shouldIndexInDefaultEnv() && $documentImportContext->shouldFinalize()) {
             $indexConfig = [
                 '_index' => $documentImportContext->getEnvironment()->getAlias(),
                 '_type' => $documentImportContext->getContentType()->getName(),
@@ -120,12 +120,12 @@ class DocumentService
             if ($newRevision->getContentType()->getHavePipelines()) {
                 $indexConfig['pipeline'] = $this->instanceId . $documentImportContext->getContentType()->getName();
             }
-            $body = $documentImportContext->isSignData() ? $this->dataService->sign($newRevision) : $newRevision->getRawData();
+            $body = $documentImportContext->shouldSignData() ? $this->dataService->sign($newRevision) : $newRevision->getRawData();
 
             $this->bulker->index($indexConfig, $body);
         }
 
-        $newRevision->setDraft(!$documentImportContext->isFinalize());
+        $newRevision->setDraft(!$documentImportContext->shouldFinalize());
         $documentImportContext->getEntityManager()->persist($newRevision);
         $documentImportContext->getRevisionRepository()->finaliseRevision($documentImportContext->getContentType(), $ouuid, $newRevision->getStartTime(), $documentImportContext->getLockUser());
         $documentImportContext->getRevisionRepository()->publishRevision($newRevision, $newRevision->getDraft());

@@ -111,7 +111,7 @@ class ImporterViewType extends ViewType
 
 
             $command = sprintf(
-                "ems:document:import %s %s%s%s%s%s%s",
+                "ems:make:document %s %s%s%s%s%s%s",
                 $view->getContentType()->getName(),
                 $filename,
                 $view->getOptions()['rawImport'] ?? false ? ' --raw' : '',
@@ -128,7 +128,7 @@ class ImporterViewType extends ViewType
         }
 
         $response = new Response();
-        $response->setContent($this->twig->render('@EMSCore/view/custom/importer_view.html.twig', [
+        $response->setContent($this->twig->render('@EMSCore/view/custom/simple_form_view.html.twig', [
             'view' => $view,
             'form' => $form->createView(),
             'contentType' => $view->getContentType(),

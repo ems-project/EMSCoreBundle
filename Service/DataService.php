@@ -920,7 +920,7 @@ class DataService
                 $config['id'] = $revision->getOuuid();
                 $this->client->index($config);
 
-                $item = $repository->findByOuuidContentTypeAndEnvironnement($revision);
+                $item = $repository->findByOuuidContentTypeAndEnvironment($revision);
                 if ($item) {
                     $this->lockRevision($item, null, false, $username);
                     $previousObjectArray = $item->getRawData();

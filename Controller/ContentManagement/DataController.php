@@ -1665,7 +1665,7 @@ class DataController extends AppController
             }
 
             /**@var Revision $revision */
-            $revision = $repository->findByOuuidAndContentTypeAndEnvironnement($contentType, $ouuid, $contentType->getEnvironment());
+            $revision = $repository->findByOuuidAndContentTypeAndEnvironment($contentType, $ouuid, $contentType->getEnvironment());
 
             if (!$revision) {
                 throw new NotFoundHttpException('Impossible to find this item : ' . $ouuid);

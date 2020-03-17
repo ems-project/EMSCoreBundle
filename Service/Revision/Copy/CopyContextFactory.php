@@ -7,7 +7,7 @@ namespace EMS\CoreBundle\Service\Revision\Copy;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Service\EnvironmentService;
 
-final class CopyRequestFactory
+final class CopyContextFactory
 {
     /** @var EnvironmentService */
     private $environmentService;
@@ -17,10 +17,10 @@ final class CopyRequestFactory
         $this->environmentService = $environmentService;
     }
 
-    public function fromJSON(string $environmentName, string $searchJSON, string $mergeJSON = null): CopyRequest
+    public function fromJSON(string $environmentName, string $searchJSON, string $mergeJSON = null): CopyContext
     {
         $environment = $this->getEnvironment($environmentName);
-        $copyRequest = new CopyRequest($environment, $this->jsonDecode($searchJSON));
+        $copyRequest = new CopyContext($environment, $this->jsonDecode($searchJSON));
 
         if ($mergeJSON) {
             $copyRequest->setMerge($this->jsonDecode($mergeJSON));

@@ -407,6 +407,25 @@ class Revision
         return $draft;
     }
 
+    public function clone(): self
+    {
+        $clone = clone $this;
+        $clone->id = null;
+        $clone->ouuid = null;
+        $clone->autoSaveAt = null;
+        $clone->autoSaveBy = null;
+        $clone->autoSave = null;
+        $clone->lockBy = null;
+        $clone->lockUntil = null;
+        $clone->finalizedBy = null;
+        $clone->finalizedDate = null;
+        $clone->startTime = new \DateTime('now');
+        $clone->environments = new ArrayCollection(); //clear publications
+        $clone->notifications = new ArrayCollection(); //clear notifications
+
+        return $clone;
+    }
+
     /**
      * Close a revision
      *

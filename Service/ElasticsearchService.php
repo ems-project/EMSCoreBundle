@@ -3,6 +3,10 @@
 namespace EMS\CoreBundle\Service;
 
 use Elasticsearch\Client;
+use EMS\CommonBundle\Elasticsearch\Request\RequestInterface;
+use EMS\CommonBundle\Elasticsearch\Request\ScrollRequest;
+use EMS\CommonBundle\Elasticsearch\Response\Response;
+use EMS\CommonBundle\Elasticsearch\Response\ResponseInterface;
 use EMS\CoreBundle\Exception\SingleResultException;
 use EMS\CommonBundle\Common\Document;
 use EMS\CommonBundle\Helper\EmsFields;
@@ -242,25 +246,20 @@ class ElasticsearchService
         return version_compare($this->getVersion(), '5.6') < 0;
     }
 
-    public function scroll(Environment $environment, array $query, string $timeout = '30s'): iterable
+    /**
+     * @return iterable|ResponseInterface[]
+     */
+    public function scroll(RequestInterface $request): iterable
     {
-        $response = $this->client->search([
-            'scroll' => $timeout,
-            'index' => $environment->getAlias(),
-            'body' => $query,
-        ]);
+        $response = new Response($this->client->search($request->toArray()));
 
-        while (isset($response['hits']['hits']) && count($response['hits']['hits']) > 0) {
-            $scrollId = $response['_scroll_id'];
+        while ($response->hasDocuments()) {
+            yield $response;
 
-            foreach ($response['hits']['hits'] as $hit) {
-                yield $hit;
-            }
-
-            $response = $this->client->scroll([
-                'scroll_id' => $scrollId,
-                'scroll' => $timeout
-            ]);
+            $response = new Response($this->client->scroll([
+                'scroll_id' =>  $response->getScrollId(),
+                'scroll' => $request->getScroll()
+            ]));
         }
     }
 }

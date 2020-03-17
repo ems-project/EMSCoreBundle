@@ -4,30 +4,30 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service\Revision;
 
+use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
+use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\RevisionRepository;
-use EMS\CoreBundle\Service\ContentTypeService;
-use EMS\CoreBundle\Service\EnvironmentService;
 
 class RevisionService
 {
-    /** @var ContentTypeService */
-    private $contentTypeService;
-    /** @var EnvironmentService */
-    private $environmentService;
     /** @var RevisionRepository */
     private $revisionRepository;
 
-    public function __construct(ContentTypeService $contentTypeService, EnvironmentService $environmentService, RevisionRepository $revisionRepository)
+    public function __construct(RevisionRepository $revisionRepository)
     {
-        $this->contentTypeService = $contentTypeService;
-        $this->environmentService = $environmentService;
         $this->revisionRepository = $revisionRepository;
     }
 
-    public function getIdByOuuidAndContentTypeAndEnvironment(string $ouuid, string $contentType, string $env) : ?array
+    public function getCurrentRevisionForDocument(DocumentInterface $document): ?Revision
     {
-        $contentType = $this->contentTypeService->getByName($contentType)->getId();
-        $env = $this->environmentService->getAliasByName($env)->getId();
-        return $this->revisionRepository->findIdByOuuidAndContentTypeAndEnvironment($ouuid, (int) $contentType, (int) $env) ?? null;
+        return $this->revisionRepository->findCurrentByOuuidAndContentTypeName(
+            $document->getId(),
+            $document->getContentType()
+        );
+    }
+
+    public function getCurrentRevisionByOuuidAndContentType(string $ouuid, string $contentType): ?Revision
+    {
+        return $this->revisionRepository->findCurrentByOuuidAndContentTypeName($ouuid, $contentType);
     }
 }

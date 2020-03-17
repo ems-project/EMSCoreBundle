@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service\Revision\Copy;
 
+use EMS\CommonBundle\Elasticsearch\Request\Request;
+use EMS\CommonBundle\Elasticsearch\Request\RequestInterface;
 use EMS\CoreBundle\Entity\Environment;
 
-final class CopyRequest
+final class CopyContext
 {
     /** @var Environment */
     private $environment;
@@ -21,19 +23,9 @@ final class CopyRequest
         $this->searchQuery = $searchQuery;
     }
 
-    public function getEnvironment(): Environment
+    public function makeRequest(): RequestInterface
     {
-        return $this->environment;
-    }
-
-    public function getMerge(): array
-    {
-        return $this->merge;
-    }
-
-    public function getSearchQuery(): array
-    {
-        return $this->searchQuery;
+        return new Request($this->environment->getAlias(), $this->searchQuery);
     }
 
     public function setMerge(array $merge): void

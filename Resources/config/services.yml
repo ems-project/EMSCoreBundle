@@ -15,9 +15,10 @@ services:
             - { name: twig.extension, priority: -2000 }
     app.twig_extension_revision: '@EMS\CoreBundle\Twig\RevisionRuntime'
     EMS\CoreBundle\Twig\RevisionRuntime:
-        #class: EMS\CoreBundle\Twig\RevisionRuntime
-        arguments: ['@ems.service.revision']
-        #public: false
+        arguments:
+            - '@ems.service.contenttype'
+            - '@ems.service.environment'
+            - '@ems.service.revision'
         tags:
             - { name: twig.runtime, priority: -2000 }
     app.listener.request:
@@ -401,7 +402,7 @@ services:
             - { name: kernel.event_listener, event: ems_core.revision.update_referers, method: updateReferers, priority: 0 }
     EMS\CoreBundle\Service\RevisionService:
         class: EMS\CoreBundle\Service\Revision\RevisionService
-        arguments: ['@ems.service.contenttype', '@ems.service.environment', '@EMS\CoreBundle\Repository\RevisionRepository']
+        arguments: ['@EMS\CoreBundle\Repository\RevisionRepository']
     ems.service.alias:
         class: EMS\CoreBundle\Service\AliasService
         arguments: ['@app.elasticsearch', '@EMS\CoreBundle\Repository\EnvironmentRepository', '@EMS\CoreBundle\Repository\ManagedAliasRepository']
@@ -506,15 +507,20 @@ services:
             -  { name: console.command }
     ems.command.revision.copy:
         class: EMS\CoreBundle\Command\RevisionCopyCommand
-        arguments: ['@ems.factory.revision_copy_request','@ems.service.revision_copy']
+        arguments:
+            - '@ems.factory.revision_copy_context'
+            - '@ems.service.revision_copy'
+            - '@ems.service.elasticsearch'
         tags:
             - { name: console.command }
-    ems.factory.revision_copy_request:
-        class: EMS\CoreBundle\Service\Revision\Copy\CopyRequestFactory
+    ems.factory.revision_copy_context:
+        class: EMS\CoreBundle\Service\Revision\Copy\CopyContextFactory
         arguments: ['@ems.service.environment']
     ems.service.revision_copy:
         class: EMS\CoreBundle\Service\Revision\Copy\CopyService
-        arguments: ['@ems.service.elasticsearch', '@logger']
+        arguments:
+            - '@EMS\CoreBundle\Service\DataService'
+            - '@ems.service.revision'
     ems.contenttype.migrate:
         class: EMS\CoreBundle\Command\MigrateCommand
         arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.document']

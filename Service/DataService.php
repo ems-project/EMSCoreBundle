@@ -868,12 +868,12 @@ class DataService
      * @throws Exception
      * @throws Throwable
      */
-    public function finalizeDraft(Revision $revision, FormInterface &$form = null, $username = null, $computeFields = true)
+    public function finalizeDraft(Revision $revision, FormInterface &$form = null, string $username = null, bool $computeFields = true)
     {
         if ($revision->getDeleted()) {
             throw new Exception("Can not finalized a deleted revision");
         }
-        if (null == $form && empty($username)) {
+        if (null == $form) {
             if ($revision->getDatafield() == null) {
                 $this->loadDataStructure($revision);
             }
@@ -887,7 +887,6 @@ class DataService
             $username = $this->tokenStorage->getToken()->getUsername();
         }
         $this->lockRevision($revision, null, false, $username);
-
 
         $em = $this->doctrine->getManager();
 
@@ -916,6 +915,7 @@ class DataService
         $revision->setRawDataFinalizedBy($username);
 
         $objectArray = $this->sign($revision);
+
 
         if (empty($form) || $this->isValid($form, $revision->getContentType()->getParentField(), $objectArray)) {
             $objectArray[Mapping::PUBLISHED_DATETIME_FIELD] = (new DateTime())->format(DateTime::ISO8601);
@@ -1653,6 +1653,8 @@ class DataService
         //$revision->getDataField()->updateDataStructure($this->formRegistry, $revision->getContentType()->getFieldType());
         $object = $revision->getRawData();
         $this->updateDataValue($data, $object);
+        unset($object[Mapping::CONTENT_TYPE_FIELD]);
+        unset($object[Mapping::HASH_FIELD]);
         unset($object[Mapping::FINALIZED_BY_FIELD]);
         unset($object[Mapping::FINALIZATION_DATETIME_FIELD]);
         if (count($object) > 0) {

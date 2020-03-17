@@ -4,38 +4,46 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service\Revision\Copy;
 
-use EMS\CoreBundle\Service\ElasticsearchService;
-use Psr\Log\LoggerInterface;
+use EMS\CommonBundle\Elasticsearch\Document\DocumentCollectionInterface;
+use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Service\DataService;
+use EMS\CoreBundle\Service\Revision\RevisionService;
 
 final class CopyService
 {
-    /** @var ElasticsearchService */
-    private $elasticsearchService;
-    /** @var LoggerInterface */
-    private $logger;
+    /** @var DataService */
+    private $dataService;
+    /** @var RevisionService */
+    private $revisionService;
 
-    public function __construct(
-        ElasticsearchService $elasticsearchService,
-        LoggerInterface $logger
-    ) {
-        $this->elasticsearchService = $elasticsearchService;
-        $this->logger = $logger;
+    public function __construct(DataService $dataService, RevisionService $revisionService)
+    {
+        $this->dataService = $dataService;
+        $this->revisionService = $revisionService;
     }
 
-    public function copy(CopyRequest $request)
+    /**
+     * @return \Generator|Revision[]
+     */
+    public function copyFromDocuments(DocumentCollectionInterface $documents): \Generator
     {
-        foreach ($this->searchDocuments($request) as $hit) {
-            //todo copy...
+        foreach ($documents as $document) {
+            $revision = $this->revisionService->getCurrentRevisionForDocument($document);
+
+            if (null === $revision) {
+                continue;
+            }
+
+            $copiedRevision = $revision->clone();
+            $this->finalizeRevision($copiedRevision);
+
+            yield $revision;
         }
     }
 
-    public function setLogger(LoggerInterface $logger): void
+    private function finalizeRevision(Revision $copiedRevision): void
     {
-        $this->logger = $logger;
-    }
-
-    private function searchDocuments(CopyRequest $request): iterable
-    {
-        return $this->elasticsearchService->scroll($request->getEnvironment(), $request->getSearchQuery());
+        $form = null;
+        $this->dataService->finalizeDraft($copiedRevision,$form , 'copy_service');
     }
 }

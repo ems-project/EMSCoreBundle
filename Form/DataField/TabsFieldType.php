@@ -78,6 +78,7 @@ class TabsFieldType extends DataFieldType
                         'metadata' => $fieldType,
                         'label' => false ,
                         'migration' => $options['migration'],
+                        'with_warning' => $options['with_warning'],
                         'raw_data' => $options['raw_data'],
                 ], $fieldType->getDisplayOptions());
                 

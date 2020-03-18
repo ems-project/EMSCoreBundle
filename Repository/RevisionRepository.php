@@ -455,12 +455,10 @@ class RevisionRepository extends EntityRepository
     }
 
     /**
-     * @param ContentType $contentType
      * @param string $ouuid
-     * @param \DateTime $now
      * @return mixed
      */
-    public function finaliseRevision(ContentType $contentType, $ouuid, \DateTime $now)
+    public function finaliseRevision(ContentType $contentType, $ouuid, \DateTime $now, string $lockUser)
     {
         $qb = $this->createQueryBuilder('r')->update()
             ->set('r.endTime', '?1')
@@ -471,7 +469,7 @@ class RevisionRepository extends EntityRepository
             ->setParameter(1, $now, Type::DATETIME)
             ->setParameter(2, $contentType)
             ->setParameter(3, $ouuid)
-            ->setParameter(4, "SYSTEM_MIGRATE");
+            ->setParameter(4, $lockUser);
             return $qb->getQuery()->execute();
     }
 
@@ -498,20 +496,16 @@ class RevisionRepository extends EntityRepository
         }
     }
 
-    /**
-     * @param Revision $revision
-     * @return mixed
-     */
-    public function publishRevision(Revision $revision)
+    public function publishRevision(Revision $revision, bool $draft = false)
     {
         $qb = $this->createQueryBuilder('r')->update()
-        ->set('r.draft', ':false')
+        ->set('r.draft', ':draft')
         ->set('r.lockBy', "null")
         ->set('r.lockUntil', "null")
         ->set('r.endTime', "null")
         ->where('r.id = :id')
         ->setParameters([
-                'false' => false,
+                'draft' => $draft,
                 'id' => $revision->getId()
             ]);
         

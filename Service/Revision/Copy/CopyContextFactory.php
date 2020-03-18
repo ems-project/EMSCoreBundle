@@ -17,12 +17,12 @@ final class CopyContextFactory
         $this->environmentService = $environmentService;
     }
 
-    public function fromJSON(string $environmentName, string $searchJSON, string $mergeJSON = null): CopyContext
+    public function fromJSON(string $environmentName, string $searchJSON, string $mergeJSON = ''): CopyContext
     {
         $environment = $this->getEnvironment($environmentName);
         $copyRequest = new CopyContext($environment, $this->jsonDecode($searchJSON));
 
-        if ($mergeJSON) {
+        if ('' !== $mergeJSON) {
             $copyRequest->setMerge($this->jsonDecode($mergeJSON));
         }
 
@@ -44,7 +44,7 @@ final class CopyContextFactory
     {
         $decoded = \json_decode($json, true);
 
-        if ($decoded === null || json_last_error() !== JSON_ERROR_NONE) {
+        if (null === $decoded || json_last_error() !== JSON_ERROR_NONE) {
             throw new \InvalidArgumentException(sprintf('Invalid JSON %s (%s)', $json, json_last_error_msg()));
         }
 

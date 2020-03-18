@@ -868,7 +868,7 @@ class DataService
      * @throws Exception
      * @throws Throwable
      */
-    public function finalizeDraft(Revision $revision, FormInterface &$form = null, string $username = null, bool $computeFields = true)
+    public function finalizeDraft(Revision $revision, ?FormInterface &$form = null, ?string $username = null, bool $computeFields = true)
     {
         if ($revision->getDeleted()) {
             throw new Exception("Can not finalized a deleted revision");

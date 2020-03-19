@@ -11,14 +11,19 @@ class ObjectChoiceList implements ChoiceListInterface
 
     private $types;
     private $choices;
+    /** @var bool */
     private $loadAll;
+    /** @var bool */
     private $circleOnly;
+    /** @var bool */
+    private $withWarning;
 
     public function __construct(
         ObjectChoiceCacheService $objectChoiceCacheService,
         $types = false,
-        $loadAll = false,
-        $circleOnly = false
+        bool $loadAll = false,
+        bool $circleOnly = false,
+        bool $withWarning = true
     ) {
         
         $this->objectChoiceCacheService = $objectChoiceCacheService;
@@ -26,6 +31,7 @@ class ObjectChoiceList implements ChoiceListInterface
         $this->types = $types;
         $this->loadAll = $loadAll;
         $this->circleOnly = $circleOnly;
+        $this->withWarning = $withWarning;
     }
     
     public function getTypes()
@@ -75,7 +81,7 @@ class ObjectChoiceList implements ChoiceListInterface
      */
     public function getChoicesForValues(array $choices)
     {
-        $this->choices = $this->objectChoiceCacheService->load($choices, $this->circleOnly);
+        $this->choices = $this->objectChoiceCacheService->load($choices, $this->circleOnly, $this->withWarning);
         return array_keys($this->choices);
     }
     
@@ -84,14 +90,14 @@ class ObjectChoiceList implements ChoiceListInterface
      */
     public function getValuesForChoices(array $choices)
     {
-        $this->choices = $this->objectChoiceCacheService->load($choices, $this->circleOnly);
+        $this->choices = $this->objectChoiceCacheService->load($choices, $this->circleOnly, $this->withWarning);
         return array_keys($this->choices);
     }
     
     public function loadAll($types)
     {
         if ($this->loadAll) {
-            $this->objectChoiceCacheService->loadAll($this->choices, $types, $this->circleOnly);
+            $this->objectChoiceCacheService->loadAll($this->choices, $types, $this->circleOnly, $this->withWarning);
         }
         return $this->choices;
     }
@@ -103,7 +109,7 @@ class ObjectChoiceList implements ChoiceListInterface
      */
     public function loadChoices(array $choices)
     {
-        $this->choices = $this->objectChoiceCacheService->load($choices, $this->circleOnly);
+        $this->choices = $this->objectChoiceCacheService->load($choices, $this->circleOnly, $this->withWarning);
         return $this->choices;
     }
 }

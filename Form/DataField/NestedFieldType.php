@@ -76,6 +76,8 @@ class NestedFieldType extends DataFieldType
                 /* merge the default options with the ones specified by the user */
                 $options = array_merge([
                         'metadata' => $fieldType,
+                        'migration' => $options['migration'],
+                        'with_warning' => $options['with_warning'],
                         'label' => false
                 ], $fieldType->getDisplayOptions());
                 $builder->add($fieldType->getName(), $fieldType->getType(), $options);

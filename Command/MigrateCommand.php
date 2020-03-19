@@ -3,85 +3,138 @@
 namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\Common\Persistence\Mapping\MappingException;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Elasticsearch\Client;
-use EMS\CoreBundle\Elasticsearch\Bulker;
 use EMS\CoreBundle\Entity\ContentType;
-use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Exception\NotLockedException;
-use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
-use EMS\CoreBundle\Repository\RevisionRepository;
-use EMS\CoreBundle\Service\DataService;
-use EMS\CoreBundle\Service\Mapping;
+use EMS\CoreBundle\Service\DocumentService;
 use Monolog\Logger;
-use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
-class MigrateCommand extends EmsCommand
+class MigrateCommand extends Command
 {
+    protected static $defaultName = 'ems:contenttype:migrate';
+
+    /** @var Client  */
     protected $client;
-    /** @var Bulker */
-    protected $bulker;
-    /**@var Mapping */
-    protected $mapping;
+
+    /** @var Registry  */
     protected $doctrine;
-    protected $logger;
-    protected $container;
-    protected $dataService;
-    /**@var FormFactoryInterface $formFactory*/
-    protected $formFactory;
-    
-    protected $instanceId;
-    
-    public function __construct(Registry $doctrine, Logger $logger, Client $client, Bulker $bulker, $mapping, DataService $dataService, FormFactoryInterface $formFactory, $instanceId)
+
+    /** @var DocumentService */
+    private $documentService;
+
+    /** @var string */
+    private $elasticsearchIndex;
+
+    /** @var string */
+    private $contentTypeNameFrom;
+
+    /** @var string */
+    private $contentTypeNameTo;
+
+    /** @var int */
+    private $scrollSize;
+
+    /** @var string */
+    private $scrollTimeout;
+
+    /** @var boolean */
+    private $indexInDefaultEnv;
+
+    /** @var Environment */
+    private $defaultEnv;
+
+    /** @var ContentType */
+    private $contentTypeTo;
+
+    /** @var int */
+    private $bulkSize;
+
+    /** @var bool */
+    private $forceImport;
+
+    /** @var bool */
+    private $rawImport;
+
+    /** @var bool */
+    private $signData;
+
+    /** @var string */
+    private $searchQuery;
+
+    /** @var bool */
+    private $dontFinalize;
+
+    /** @var Logger */
+    private $logger;
+
+    /** @var ContentTypeRepository */
+    private $contentTypeRepository;
+
+    /** @var SymfonyStyle */
+    private $io;
+
+    const ARGUMENT_ELASTICSEARCH_INDEX = 'elasticsearchIndex';
+    const ARGUMENT_CONTENTTYPE_NAME_FROM = 'contentTypeNameFrom';
+    const ARGUMENT_CONTENTTYPE_NAME_TO = 'contentTypeNameTo';
+    const ARGUMENT_SCROLL_SIZE = 'scrollSize';
+    const ARGUMENT_SCROLL_TIMEOUT = 'scrollTimeout';
+
+    public function __construct(Registry $doctrine, Logger $logger, Client $client, DocumentService $documentService)
     {
         $this->doctrine = $doctrine;
-        $this->logger = $logger;
         $this->client = $client;
-        $this->bulker = $bulker;
-        $this->mapping = $mapping;
-        $this->dataService = $dataService;
-        $this->formFactory = $formFactory;
-        $this->instanceId = $instanceId;
-        parent::__construct($logger, $client);
+        $this->logger = $logger;
+        $this->documentService = $documentService;
+
+        $em = $this->doctrine->getManager();
+        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
+        if (! $contentTypeRepository instanceof ContentTypeRepository) {
+            throw new \Exception('Wrong ContentTypeRepository repository instance');
+        }
+
+        $this->contentTypeRepository = $contentTypeRepository;
+        parent::__construct();
     }
-    
+
     protected function configure()
     {
         $this
-            ->setName('ems:contenttype:migrate')
             ->setDescription('Migrate a content type from an elasticsearch index')
             ->addArgument(
-                'elasticsearchIndex',
+                self::ARGUMENT_ELASTICSEARCH_INDEX,
                 InputArgument::REQUIRED,
                 'Elasticsearch index where to find ContentType objects as new source'
             )
             ->addArgument(
-                'contentTypeNameFrom',
+                self::ARGUMENT_CONTENTTYPE_NAME_FROM,
                 InputArgument::REQUIRED,
                 'Content type name to migrate from'
             )
             ->addArgument(
-                'contentTypeNameTo',
+                self::ARGUMENT_CONTENTTYPE_NAME_TO,
                 InputArgument::OPTIONAL,
                 'Content type name to migrate into (default same as from)'
             )
             ->addArgument(
-                'scrollSize',
+                self::ARGUMENT_SCROLL_SIZE,
                 InputArgument::OPTIONAL,
                 'Size of the elasticsearch scroll request',
                 100
+            )
+            ->addArgument(
+                self::ARGUMENT_SCROLL_TIMEOUT,
+                InputArgument::OPTIONAL,
+                'Time to migrate "scrollSize" items i.e. 30s or 2m',
+                '1m'
             )
             ->addOption(
                 'bulkSize',
@@ -90,17 +143,11 @@ class MigrateCommand extends EmsCommand
                 'Size of the elasticsearch bulk request',
                 500
             )
-            ->addArgument(
-                'scrollTimeout',
-                InputArgument::OPTIONAL,
-                'Time to migrate "scrollSize" items i.e. 30s or 2m',
-                '1m'
-            )
             ->addOption(
                 'force',
                 null,
                 InputOption::VALUE_NONE,
-                'Allow to import from the default environment'
+                'Allow to import from the default environment and to draft revision'
             )
             ->addOption(
                 'raw',
@@ -120,214 +167,100 @@ class MigrateCommand extends EmsCommand
                 InputOption::VALUE_OPTIONAL,
                 'Query used to find elasticsearch records to import',
                 '{"sort":{"_uid":{"order":"asc"}}}'
+            )
+            ->addOption(
+                'dont-finalize',
+                null,
+                InputOption::VALUE_NONE,
+                'Don\'t finalize document'
             );
-        ;
-    }
-    
-    
-    private function getSubmitData(FormInterface $form)
-    {
-        return $this->dataService->getSubmitData($form);
-    }
-    
-    private function getEmptyRevision(ContentType $contentType)
-    {
-        return $this->dataService->getEmptyRevision($contentType, 'SYSTEM_MIGRATE');
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|void|null
-     * @throws MappingException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
+    protected function initialize(InputInterface $input, OutputInterface $output)
+    {
+        $this->io = new SymfonyStyle($input, $output);
+    }
+
+
+    protected function interact(InputInterface $input, OutputInterface $output)
+    {
+        $this->io->title('Start migration');
+        $this->io->section('Checking input');
+
+        $this->elasticsearchIndex = $input->getArgument(self::ARGUMENT_ELASTICSEARCH_INDEX);
+        $this->contentTypeNameFrom = $input->getArgument(self::ARGUMENT_CONTENTTYPE_NAME_FROM);
+        $this->contentTypeNameTo = $input->getArgument(self::ARGUMENT_CONTENTTYPE_NAME_TO);
+        $this->scrollSize = intval($input->getArgument(self::ARGUMENT_SCROLL_SIZE));
+        $this->scrollTimeout = $input->getArgument(self::ARGUMENT_SCROLL_TIMEOUT);
+
+
+        $options = array_values($input->getOptions());
+        list($this->bulkSize, $this->forceImport, $this->rawImport, $this->signData, $this->searchQuery, $this->dontFinalize) = $options;
+
+        if ($this->contentTypeNameTo === null) {
+            $this->contentTypeNameTo = $this->contentTypeNameFrom;
+        }
+
+        $contentTypeTo = $this->contentTypeRepository->findOneBy(array("name" => $this->contentTypeNameTo, 'deleted' => false));
+        if ($contentTypeTo === null || !$contentTypeTo instanceof ContentType) {
+            $this->io->error(sprintf('Content type "%s" not found', $this->contentTypeNameTo));
+            return -1;
+        }
+        $this->contentTypeTo = $contentTypeTo;
+        $this->defaultEnv = $this->contentTypeTo->getEnvironment();
+
+        if ($this->contentTypeTo->getDirty()) {
+            $this->io->error(sprintf('Content type "%s" is dirty. Please clean it first', $this->contentTypeNameTo));
+            return -1;
+        }
+
+        $this->indexInDefaultEnv = true;
+        if (strcmp($this->defaultEnv->getAlias(), $this->elasticsearchIndex) === 0 && strcmp($this->contentTypeNameFrom, $this->contentTypeNameTo) === 0) {
+            if (!$this->forceImport) {
+                $this->io->error('You can not import a content type on himself with the --force option');
+                return -1;
+            }
+            $this->indexInDefaultEnv = false;
+        }
+        return 0;
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        /** @var EntityManager $em */
-        $em = $this->doctrine->getManager();
-        //https://stackoverflow.com/questions/9699185/memory-leaks-symfony2-doctrine2-exceed-memory-limit
-        //https://stackoverflow.com/questions/13093689/is-there-a-way-to-free-the-memory-allotted-to-a-symfony-2-form-object
-        $em->getConnection()->getConfiguration()->setSQLLogger(null);
-        
-        
-        $signData = $input->getOption('sign-data');
-        
-        $elasticsearchIndex = $input->getArgument('elasticsearchIndex');
-        $contentTypeNameFrom = $input->getArgument('contentTypeNameFrom');
-        $contentTypeNameTo = $input->getArgument('contentTypeNameTo');
-        $searchQuery = $input->getOption('searchQuery');
-        if (!$contentTypeNameTo) {
-            $contentTypeNameTo = $contentTypeNameFrom;
-        }
-        $scrollSize = $input->getArgument('scrollSize');
-        $scrollTimeout = $input->getArgument('scrollTimeout');
 
-        $this->bulker
-            ->setLogger(new ConsoleLogger($output))
-            ->setSize($input->getOption('bulkSize'));
-        
-        /** @var RevisionRepository $revisionRepository */
-        $revisionRepository = $em->getRepository('EMSCoreBundle:Revision');
-        /** @var ContentTypeRepository $contentTypeRepository */
-        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
+        $this->io->section(sprintf('Start migration of %s', $this->contentTypeTo->getPluralName()));
 
-        /** @var ContentType|null $contentTypeTo */
-        $contentTypeTo = $contentTypeRepository->findOneBy(array("name" => $contentTypeNameTo, 'deleted' => false));
-        if ($contentTypeTo === null) {
-            $output->writeln("<error>Content type " . $contentTypeNameTo . " not found</error>");
-            exit;
-        }
-        $defaultEnv = $contentTypeTo->getEnvironment();
-        
-        $output->writeln("Start migration of " . $contentTypeTo->getPluralName());
-        
-        if ($contentTypeTo->getDirty()) {
-            $output->writeln("<error>Content type \"" . $contentTypeNameTo . "\" is dirty. Please clean it first</error>");
-            exit;
-        }
-        
-        $indexInDefaultEnv = true;
-        if (strcmp($defaultEnv->getAlias(), $elasticsearchIndex) === 0 && strcmp($contentTypeNameFrom, $contentTypeNameTo) === 0) {
-            if (!$input->getOption('force')) {
-                $output->writeln("<error>You can not import a content type on himself with the --force option</error>");
-                exit;
-            }
-            $indexInDefaultEnv = false;
-        }
-
-        //https://www.elastic.co/guide/en/elasticsearch/client/php-api/current/_search_operations.html#_scrolling
         $arrayElasticsearchIndex = $this->client->search([
-                'index' => $elasticsearchIndex,
-                'type' => $contentTypeNameFrom,
-                'size' => $scrollSize,
-                "scroll" => $scrollTimeout,
-                'body' => $searchQuery,
+                'index' => $this->elasticsearchIndex,
+                'type' => $this->contentTypeNameFrom,
+                'size' => $this->scrollSize,
+                "scroll" => $this->scrollTimeout,
+                'body' => $this->searchQuery,
         ]);
-        
-        $total = $arrayElasticsearchIndex["hits"]["total"];
-        // create a new progress bar
-        $progress = new ProgressBar($output, $total);
-        // start and displays the progress bar
-        $progress->start();
-        
+
+        $progress = $this->io->createProgressBar($arrayElasticsearchIndex["hits"]["total"]);
+        $importerContext = $this->documentService->initDocumentImporterContext($this->contentTypeTo, 'SYSTEM_MIGRATE', $this->rawImport, $this->signData, $this->indexInDefaultEnv, $this->bulkSize, !$this->dontFinalize, $this->forceImport);
         
         while (isset($arrayElasticsearchIndex['hits']['hits']) && count($arrayElasticsearchIndex['hits']['hits']) > 0) {
-            $contentTypeTo = $contentTypeRepository->findOneBy(array("name" => $contentTypeNameTo, 'deleted' => false));
-            $defaultEnv = $contentTypeTo->getEnvironment();
-
             foreach ($arrayElasticsearchIndex["hits"]["hits"] as $index => $value) {
                 try {
-                    $newRevision = $this->getEmptyRevision($contentTypeTo);
-                    $newRevision->setOuuid($value['_id']);
-                    $until = $newRevision->getLockUntil();
-                    $now = $newRevision->getStartTime();
-                    
-                    /**@var Revision $currentRevision*/
-                    $currentRevision = $revisionRepository->getCurrentRevision($contentTypeTo, $value['_id']);
-                    if ($currentRevision) {
-                        if ($input->getOption('raw')) {
-                            $newRevision->setRawData($value['_source']);
-                            $objectArray = $value['_source'];
-                        } else {
-                            //If there is a current revision, datas in fields that are protected against migration must not be overridden
-                            //So we load the datas from the current revision into the next revision
-                            $newRevision->setRawData($value['_source']);
-                            $revisionType = $this->formFactory->create(RevisionType::class, $newRevision, ['migration' => true, 'raw_data' => $newRevision->getRawData()]);
-                            $viewData = $this->getSubmitData($revisionType->get('data'));
-                            
-                            $revisionType->setData($currentRevision);
-                            
-                            $revisionType->submit(['data' => $viewData]);
-                            $data = $revisionType->get('data')->getData();
-                            $newRevision->setData($data);
-                            $objectArray = $newRevision->getRawData();
-
-                            $this->dataService->propagateDataToComputedField($revisionType->get('data'), $objectArray, $contentTypeTo, $contentTypeTo->getName(), $value['_id'], true);
-                            $newRevision->setRawData($objectArray);
-                            
-                            unset($revisionType);
-                        }
-                        
-                        $currentRevision->setEndTime($now);
-                        $currentRevision->setDraft(false);
-                        $currentRevision->setAutoSave(null);
-                        $currentRevision->removeEnvironment($defaultEnv);
-                        $currentRevision->setLockBy('SYSTEM_MIGRATE');
-                        $currentRevision->setLockUntil($until);
-                        $em->persist($currentRevision);
-                    } else if ($input->getOption('raw')) {
-                        $newRevision->setRawData($value['_source']);
-                        $objectArray = $value['_source'];
-                    } else {
-                        $newRevision->setRawData($value['_source']);
-                        $revisionType = $this->formFactory->create(RevisionType::class, $newRevision, ['migration' => true, 'raw_data' => $newRevision->getRawData()]);
-                        $viewData = $this->getSubmitData($revisionType->get('data'));
-                        
-                        $revisionType->setData($this->getEmptyRevision($contentTypeTo));
-                        $revisionType->submit(['data' => $viewData]);
-                        $data = $revisionType->get('data')->getData();
-                        $newRevision->setData($data);
-                        $objectArray = $newRevision->getRawData();
-                        
-                        $this->dataService->propagateDataToComputedField($revisionType->get('data'), $objectArray, $contentTypeTo, $contentTypeTo->getName(), $value['_id'], true);
-                        $newRevision->setRawData($objectArray);
-                        
-                        unset($revisionType);
-                    }
-                    
-                    $this->dataService->setMetaFields($newRevision);
-                    
-                    
-                    if ($indexInDefaultEnv) {
-                        $indexConfig = [
-                            '_index' => $defaultEnv->getAlias(),
-                            '_type' => $contentTypeNameTo,
-                            '_id' => $value['_id'],
-                        ];
-
-                        if ($newRevision->getContentType()->getHavePipelines()) {
-                            $indexConfig['pipeline'] = $this->instanceId . $contentTypeNameTo;
-                        }
-
-                        $body = $signData ? $this->dataService->sign($newRevision) : $newRevision->getRawData();
-
-                        $this->bulker->index($indexConfig, $body);
-                    }
-                    
-                    $newRevision->setDraft(false);
-                    //TODO: Test if client->index OK
-                    $em->persist($newRevision);
-                     $revisionRepository->finaliseRevision($contentTypeTo, $value['_id'], $now);
-                    //hot fix query: insert into `environment_revision`  select id, 1 from `revision` where `end_time` is null;
-                    $revisionRepository->publishRevision($newRevision);
+                    $this->documentService->importDocument($importerContext, $value['_id'], $value['_source']);
                 } catch (NotLockedException $e) {
-                    $output->writeln("<error>'.$e.'</error>");
+                    $this->io->error($e);
                 } catch (CantBeFinalizedException $e) {
-                    $output->writeln("<error>'.$e.'</error>");
+                    $this->io->error($e);
                 }
-
-
-                // advance the progress bar 1 unit
                 $progress->advance();
-                $em->flush();
             }
-            $revisionRepository->clear();
-            $contentTypeRepository->clear();
-            $em->clear();
-            unset($defaultEnv);
-            unset($contentTypeTo);
-
-            $this->bulker->send(true);
+            $this->documentService->flushAndSend($importerContext);
 
             $arrayElasticsearchIndex = $this->client->scroll([
                 'scroll_id' => $arrayElasticsearchIndex['_scroll_id'],
-                'scroll' => $scrollTimeout,
+                'scroll' => $this->scrollTimeout,
             ]);
         }
         $progress->finish();
-        $output->writeln("");
-        $output->writeln("Migration done");
+        $this->io->writeln("");
+        $this->io->writeln("Migration done");
     }
 }

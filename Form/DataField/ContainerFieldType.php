@@ -90,9 +90,10 @@ class ContainerFieldType extends DataFieldType
                         'metadata' => $child,
                         'label' => false ,
                         'migration' => $options['migration'],
+                        'with_warning' => $options['with_warning'],
                         'raw_data' =>  $options['raw_data'],
                 ], $child->getDisplayOptions());
-                
+
                 $builder->add($child->getName(), $child->getType(), $options);
                 
                 

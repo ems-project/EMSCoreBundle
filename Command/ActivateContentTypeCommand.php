@@ -71,7 +71,7 @@ class ActivateContentTypeCommand extends Command
             );
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         /** @var array $types */
         $types = $input->getArgument(self::ARGUMENT_CONTENTTYPES);

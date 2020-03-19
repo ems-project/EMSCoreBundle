@@ -381,63 +381,43 @@ class RevisionRepository extends EntityRepository
      * @return null|Revision
      * @throws NonUniqueResultException
      */
-    public function findByOuuidContentTypeAndEnvironnement(Revision $revision, Environment $env = null)
+    public function findByOuuidContentTypeAndEnvironment(Revision $revision, Environment $env = null)
     {
         if (!$env) {
             $env = $revision->getContentType()->getEnvironment();
         }
 
-        return $this->findByOuuidAndContentTypeAndEnvironnement($revision->getContentType(), $revision->getOuuid(), $env);
+        return $this->findByOuuidAndContentTypeAndEnvironment($revision->getContentType(), $revision->getOuuid(), $env);
     }
 
     /**
-     * @param ContentType $contentType
-     * @param string $ouuid
-     * @param Environment $env
-     * @return null|Revision
      * @throws NonUniqueResultException
      */
-    public function findByOuuidAndContentTypeAndEnvironnement(ContentType $contentType, $ouuid, Environment $env)
+    public function findByOuuidAndContentTypeAndEnvironment(ContentType $contentType, $ouuid, Environment $env): ?Revision
     {
         $qb = $this->createQueryBuilder('r');
-        $qb->join('r.environments', 'e');
-        $qb->where('r.ouuid = :ouuid and e.id = :envId and r.contentType = :contentTypeId');
-        $qb->setParameters([
+        $qb
+            ->join('r.environments', 'e')
+            ->andWhere($qb->expr()->eq('r.ouuid', ':ouuid'))
+            ->andWhere($qb->expr()->eq('e.id', ':envId'))
+            ->andWhere($qb->expr()->eq('r.contentType', ':contentTypeId'))
+            ->setParameters([
                 'ouuid' => $ouuid,
                 'envId' => $env->getId(),
                 'contentTypeId' => $contentType->getId()
-        ]);
+            ]);
         
-        $out = $qb->getQuery()->getResult();
-        if (count($out) > 1) {
+        $result = $qb->getQuery()->getResult();
+
+        if (count($result) > 1) {
             throw new NonUniqueResultException($ouuid . ' is publish multiple times in ' . $env->getName());
         }
-        if (empty($out)) {
-            return null;
-        }
-        return $out[0];
-    }
 
-    /**
-     * @throws NonUniqueResultException
-     */
-    public function findIdByOuuidAndContentTypeAndEnvironment(string $ouuid, int $contentType, int $env) : ?array
-    {
-        $qb = $this->createQueryBuilder('r');
-        $qb->join('r.environments', 'e');
-        $qb->where('r.ouuid = :ouuid and e.id = :envId and r.contentType = :contentTypeId');
-        $qb->setParameters([
-            'ouuid' => $ouuid,
-            'envId' => $env,
-            'contentTypeId' => $contentType
-        ]);
-
-        $out = $qb->getQuery()->getArrayResult();
-        if (count($out) > 1) {
-            throw new NonUniqueResultException($ouuid . ' is publish multiple times in ' . $env);
+        if (isset($result[0]) && $result[0] instanceof Revision) {
+            return $result[0];
         }
 
-        return $out[0] ?? null;
+        return null;
     }
 
     /**

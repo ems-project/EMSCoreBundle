@@ -26,8 +26,6 @@ class ActivateContentTypeCommand extends Command
     private $logger;
     /** @var bool */
     private $deactivate;
-    /** @var bool */
-    private $force;
 
     const ARGUMENT_CONTENTTYPES = 'contenttypes';
     const OPTION_ALL = 'all';
@@ -75,11 +73,12 @@ class ActivateContentTypeCommand extends Command
     {
         /** @var array $types */
         $types = $input->getArgument(self::ARGUMENT_CONTENTTYPES);
+        $force = $input->getOption(self::FORCE);
 
         foreach ($types as $type) {
             try {
                 $contentType = $this->contentTypeService->getByName($type);
-                if ($contentType->getDirty() && !$this->deactivate && !$this->force) {
+                if ($contentType->getDirty() && !$this->deactivate && !$force) {
                     $this->io->error(sprintf('Content type %s is dirty please update it\'s mapping or use the force flag', $contentType->getName()));
                     continue;
                 }
@@ -102,6 +101,7 @@ class ActivateContentTypeCommand extends Command
 
     protected function interact(InputInterface $input, OutputInterface $output)
     {
+        $this->deactivate = $input->getOption(self::DEACTIVATE);
         $this->io->title($this->deactivate ? 'Deactivate contenttypes' : 'Activate contenttypes');
         $this->io->section('Checking input');
 
@@ -115,8 +115,6 @@ class ActivateContentTypeCommand extends Command
         if ($input->getOption(self::OPTION_ALL)) {
             $this->optionAll($input);
         }
-        $this->deactivate = $input->getOption(self::DEACTIVATE);
-        $this->force = $input->getOption(self::FORCE);
     }
 
     private function chooseTypes(InputInterface $input, OutputInterface $output): void

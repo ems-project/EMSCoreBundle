@@ -18,13 +18,11 @@ class ImporterType extends AbstractType
     {
         $builder
            ->add('archive', FileType::class, [
-               'attr' => [
-               ],
                'meta_fields' => false,
            ])
            ->add('import', SubmitEmsType::class, [
                'attr' => [
-                       'class' => 'btn-danger'
+                   'class' => 'btn-danger'
                ],
                'icon' => 'glyphicon glyphicon-import'
            ]);

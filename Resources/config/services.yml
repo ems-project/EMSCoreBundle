@@ -614,6 +614,11 @@ services:
         arguments: ['@logger', '@ems.service.contenttype', '@ems.service.transformcontenttype']
         tags:
             - { name: console.command }
+    ems.contenttype.activate:
+        class: EMS\CoreBundle\Command\ActivateContentTypeCommand
+        arguments: ['@logger', '@ems.service.contenttype']
+        tags:
+            - { name: console.command }
     ems.environment.create:
         class: EMS\CoreBundle\Command\CreateEnvironmentCommand
         arguments: ['@logger', '@ems.service.environment', '@ems.service.data']

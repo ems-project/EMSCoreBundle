@@ -2,12 +2,10 @@
 
 namespace EMS\CoreBundle\Form\View;
 
-use EMS\CoreBundle\Entity\DataField;
+use Elasticsearch\Client;
 use EMS\CoreBundle\Entity\Form\CriteriaUpdateConfig;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\View\Criteria\CriteriaFilterType;
-use EMS\CoreBundle\Form\View\ViewType;
-use Elasticsearch\Client;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
@@ -21,15 +19,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig_Environment;
 
-/**
- * It's the mother class of all specific DataField used in eMS
- *
- * @author Mathieu De Keyzer <ems@theus.be>
- *
- */
 class CriteriaViewType extends ViewType
 {
-
     /** @var Router $router */
     protected $router;
     
@@ -39,32 +30,17 @@ class CriteriaViewType extends ViewType
         $this->router = $router;
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
-    public function getLabel()
+    public function getLabel() : string
     {
         return "Criteria: a view where we can massively content types having critetira";
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
-    public function getName()
+    public function getName() : string
     {
         return "Criteria";
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options) : void
     {
         parent::buildForm($builder, $options);
         
@@ -91,24 +67,12 @@ class CriteriaViewType extends ViewType
             ]);
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix() : string
     {
         return 'criteria_view';
     }
 
-    /**
-     * @param View $view
-     * @param FormFactoryInterface $formFactory
-     * @param Request $request
-     * @return array|mixed
-     * @throws Exception
-     */
-    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request)
+    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request) : array
     {
         
         $criteriaUpdateConfig = new CriteriaUpdateConfig($view, $this->logger);

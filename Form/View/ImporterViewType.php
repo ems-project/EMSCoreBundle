@@ -21,15 +21,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Twig\Environment;
 
-/**
- * It's the mother class of all specific DataField used in eMS
- *
- * @author Mathieu De Keyzer <ems@theus.be>
- *
- */
 class ImporterViewType extends ViewType
 {
-
     /**
      * @var FileService
      */
@@ -56,17 +49,17 @@ class ImporterViewType extends ViewType
         $this->router = $router;
     }
 
-    public function getLabel()
+    public function getLabel() : string
     {
         return "Importer: form to import a zip file containing JSON files";
     }
 
-    public function getName()
+    public function getName() : string
     {
         return "Importer";
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options) : void
     {
         parent::buildForm($builder, $options);
         $builder
@@ -93,12 +86,12 @@ class ImporterViewType extends ViewType
     }
 
 
-    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request)
+    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request) : array
     {
         return [];
     }
 
-    public function generateResponse(View $view, Request $request)
+    public function generateResponse(View $view, Request $request) : Response
     {
         $form = $this->formFactory->create(ImporterType::class, [
             'view' => $view,

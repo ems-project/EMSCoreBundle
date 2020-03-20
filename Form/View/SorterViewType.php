@@ -23,12 +23,6 @@ use Symfony\Component\Routing\Router;
 use Throwable;
 use Twig_Environment;
 
-/**
- * It's the mother class of all specific DataField used in eMS
- *
- * @author Mathieu De Keyzer <ems@theus.be>
- *
- */
 class SorterViewType extends ViewType
 {
     
@@ -47,17 +41,17 @@ class SorterViewType extends ViewType
         $this->router = $router;
     }
 
-    public function getLabel()
+    public function getLabel() : string
     {
         return "Sorter: order a sub set (based on a ES query)";
     }
     
-    public function getName()
+    public function getName() : string
     {
         return "Sorter";
     }
     
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options) : void
     {
         parent::buildForm($builder, $options);
         
@@ -93,19 +87,19 @@ class SorterViewType extends ViewType
                 ]]);
     }
     
-    public function getBlockPrefix()
+    public function getBlockPrefix() : string
     {
         return 'sorter_view';
     }
     
 
-    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request)
+    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request) : array
     {
         
         return [];
     }
     
-    public function generateResponse(View $view, Request $request)
+    public function generateResponse(View $view, Request $request) : Response
     {
         
         try {
@@ -180,7 +174,6 @@ class SorterViewType extends ViewType
             return new RedirectResponse($this->router->generate('data.draft_in_progress', [
                     'contentTypeId' => $view->getContentType()->getId(),
             ], UrlGeneratorInterface::RELATIVE_PATH));
-//             return $this->redirectToRoute();
         }
         
         

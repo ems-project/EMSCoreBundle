@@ -560,8 +560,6 @@ class RevisionRepository extends EntityRepository
 
     public function lockRevisions(?ContentType $contentType, \DateTime $until, $by, $force = false, $id = false): int
     {
-        $params = ['by' => $by, 'until' => $until];
-
         $qbSelect = $this->createQueryBuilder('s');
         $qbSelect
             ->select('s.id')
@@ -570,9 +568,16 @@ class RevisionRepository extends EntityRepository
             ->andWhere($qbSelect->expr()->eq('s.draft', $qbSelect->expr()->literal(false)))
         ;
 
+        $qbUpdate = $this->createQueryBuilder('r');
+        $qbUpdate
+            ->update()
+            ->set('r.lockBy', ':by')
+            ->set('r.lockUntil', ':until')
+            ->setParameters(['by' => $by, 'until' => $until]);
+
         if (null !== $contentType) {
-            $params['content_type'] = $contentType;
             $qbSelect->andWhere($qbSelect->expr()->eq('s.contentType', ':content_type'));
+            $qbUpdate->setParameters(['content_type' => $contentType]);
         }
 
         if (!$force) {
@@ -580,24 +585,17 @@ class RevisionRepository extends EntityRepository
                 $qbSelect->expr()->lt('s.lockUntil', ':now'),
                 $qbSelect->expr()->isNull('s.lockUntil')
             ));
-
-            $params['now'] = new \DateTime();
+            $qbUpdate->setParameters(['now' => new \DateTime()]);
         }
 
         if ($id) {
             $qbSelect->andWhere(
                 $qbSelect->expr()->eq('s.ouuid', ':content_id')
             );
-            $params['content_id'] = $id;
+            $qbUpdate->setParameters(['content_id' => $id]);
         }
 
-        $qbUpdate = $this->createQueryBuilder('r');
-        $qbUpdate
-            ->update()
-            ->set('r.lockBy', ':by')
-            ->set('r.lockUntil', ':until')
-            ->andWhere($qbUpdate->expr()->in('r.id', $qbSelect->getDQL()))
-            ->setParameters($params);
+        $qbUpdate->andWhere($qbUpdate->expr()->in('r.id', $qbSelect->getDQL()));
 
         return $qbUpdate->getQuery()->execute();
     }
@@ -618,23 +616,20 @@ class RevisionRepository extends EntityRepository
             ->andWhere($qbSelect->expr()->eq('s.draft', $qbSelect->expr()->literal(false)))
         ;
 
-        if (null !== $contentType) {
-            $qbSelect->andWhere($qbSelect->expr()->eq('s.contentType', ':content_type'));
-        }
-
         $qbUpdate = $this->createQueryBuilder('u');
         $qbUpdate
             ->update()
             ->set('u.lockBy', ':null')
             ->set('u.lockUntil', ':null')
-            ->andWhere($qbUpdate->expr()->in('u.id', $qbSelect->getDQL()))
             ->setParameters(['by' => $by, 'null' => null])
         ;
 
         if (null !== $contentType) {
+            $qbSelect->andWhere($qbSelect->expr()->eq('s.contentType', ':content_type'));
             $qbUpdate->setParameters(['content_type' => $contentType]);
         }
 
+        $qbUpdate->andWhere($qbUpdate->expr()->in('u.id', $qbSelect->getDQL()));
         return $qbUpdate->getQuery()->execute();
     }
 

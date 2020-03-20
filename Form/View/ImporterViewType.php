@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Twig_Environment;
+use Twig\Environment;
 
 /**
  * It's the mother class of all specific DataField used in eMS
@@ -47,7 +47,7 @@ class ImporterViewType extends ViewType
      */
     private $router;
 
-    public function __construct(FormFactory $formFactory, Twig_Environment $twig, Client $client, LoggerInterface $logger, FileService $fileService, JobService $jobService, TokenStorageInterface $security, Router $router)
+    public function __construct(FormFactory $formFactory, Environment $twig, Client $client, LoggerInterface $logger, FileService $fileService, JobService $jobService, TokenStorageInterface $security, Router $router)
     {
         parent::__construct($formFactory, $twig, $client, $logger);
         $this->fileService = $fileService;

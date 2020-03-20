@@ -609,8 +609,6 @@ class RevisionRepository extends EntityRepository
 
     public function unlockRevisions(?ContentType $contentType, string $by): int
     {
-        $params = ['by' => $by, 'null' => null];
-
         $qbSelect = $this->createQueryBuilder('s');
         $qbSelect
             ->select('s.id')
@@ -621,7 +619,6 @@ class RevisionRepository extends EntityRepository
         ;
 
         if (null !== $contentType) {
-            $params['content_type'] = $contentType;
             $qbSelect->andWhere($qbSelect->expr()->eq('s.contentType', ':content_type'));
         }
 
@@ -631,8 +628,12 @@ class RevisionRepository extends EntityRepository
             ->set('u.lockBy', ':null')
             ->set('u.lockUntil', ':null')
             ->andWhere($qbUpdate->expr()->in('u.id', $qbSelect->getDQL()))
-            ->setParameters($params)
+            ->setParameters(['by' => $by, 'null' => null])
         ;
+
+        if (null !== $contentType) {
+            $qbUpdate->setParameters(['content_type' => $contentType]);
+        }
 
         return $qbUpdate->getQuery()->execute();
     }

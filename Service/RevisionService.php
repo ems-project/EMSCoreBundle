@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service;
 
-use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\RevisionRepository;
 
-final class RevisionService
+class RevisionService
 {
     /** @var ContentTypeService */
     private $contentTypeService;
@@ -23,15 +22,10 @@ final class RevisionService
         $this->revisionRepository = $revisionRepository;
     }
 
-    public function getByOuuidAndContentTypeAndEnvironment(string $ouuid, string $contentType, string $env): ?Revision
+    public function getIdByOuuidAndContentTypeAndEnvironment(string $ouuid, string $contentType, string $env) : ?array
     {
-        $contentType = $this->contentTypeService->getByName($contentType);
-        $environment = $this->environmentService->getAliasByName($env);
-
-        return $this->revisionRepository->findByOuuidAndContentTypeAndEnvironment(
-            $contentType,
-            $ouuid,
-            $environment
-        );
+        $contentType = $this->contentTypeService->getByName($contentType)->getId();
+        $env = $this->environmentService->getAliasByName($env)->getId();
+        return $this->revisionRepository->findIdByOuuidAndContentTypeAndEnvironment($ouuid, (int) $contentType, (int) $env) ?? null;
     }
 }

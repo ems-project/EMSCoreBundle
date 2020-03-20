@@ -32,10 +32,10 @@ final class TransformContentTypeCommand extends Command
     /** @var string */
     private $user;
 
-    const ARGUMENT_CONTENT_TYPE = 'contentType';
-    const ARGUMENT_USER = 'user';
-    const OPTION_STRICT = 'strict';
-    const DEFAULT_USER = 'TRANSFORM_CONTENT';
+    private const ARGUMENT_CONTENT_TYPE = 'contentType';
+    private const ARGUMENT_USER = 'user';
+    private const OPTION_STRICT = 'strict';
+    private const DEFAULT_USER = 'TRANSFORM_CONTENT';
 
     public function __construct(LoggerInterface $logger, ContentTypeService $contentTypeService, TransformContentTypeService $transformContentTypeService)
     {

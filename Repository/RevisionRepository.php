@@ -663,26 +663,31 @@ class RevisionRepository extends EntityRepository
         return new Paginator($qb->getQuery());
     }
 
-    public function findDraftsByContentType(ContentType $contentType): array
+    public function findDraftsByContentType(ContentType $contentType):  array
     {
-        return $this->findBy([
-            'contentType' => $contentType,
-            'draft' => true,
-            'deleted' => false,
-            'endTime' => null,
-        ], [
-            'modified' => 'asc'
-        ]);
+        $qbSelect = $this->createQueryBuilder('s');
+        $qbSelect
+            ->andWhere($qbSelect->expr()->eq('s.contentType', ':content_type'))
+            ->andWhere($qbSelect->expr()->eq('s.draft', $qbSelect->expr()->literal(true)))
+            ->andWhere($qbSelect->expr()->eq('s.deleted', $qbSelect->expr()->literal(false)))
+            ->andWhere($qbSelect->expr()->isNull('s.endTime'))
+            ->orderBy('s.id', 'asc')
+            ->setParameters(['content_type' => $contentType])
+        ;
+
+        return $qbSelect->getQuery()->execute();
     }
 
-    public function findAllDrafts(): array
+    public function findAllDrafts():  array
     {
-        return $this->findBy([
-            'draft' => true,
-            'deleted' => false,
-            'endTime' => null,
-        ], [
-            'modified' => 'asc'
-        ]);
+        $qbSelect = $this->createQueryBuilder('s');
+        $qbSelect
+            ->andWhere($qbSelect->expr()->eq('s.draft', $qbSelect->expr()->literal(true)))
+            ->andWhere($qbSelect->expr()->eq('s.deleted', $qbSelect->expr()->literal(false)))
+            ->andWhere($qbSelect->expr()->isNull('s.endTime'))
+            ->orderBy('s.id', 'asc')
+        ;
+
+        return $qbSelect->getQuery()->execute();
     }
 }

@@ -188,6 +188,7 @@ class DataLinkFieldType extends DataFieldType
             'searchId' => $options['searchId'],
             'dynamicLoading' => $options['dynamicLoading'],
             'sortable' => $options['sortable'],
+            'with_warning' => $options['with_warning'],
             'circle-only' => ($fieldType->getContentType() && $fieldType->getContentType()->getCirclesField() === $fieldType->getName())
         ]);
 

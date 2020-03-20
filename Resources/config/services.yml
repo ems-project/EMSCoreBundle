@@ -13,6 +13,13 @@ services:
         #public: false
         tags:
             - { name: twig.extension, priority: -2000 }
+    app.twig_extension_revision: '@EMS\CoreBundle\Twig\RevisionRuntime'
+    EMS\CoreBundle\Twig\RevisionRuntime:
+        #class: EMS\CoreBundle\Twig\RevisionRuntime
+        arguments: ['@ems.service.revision']
+        #public: false
+        tags:
+            - { name: twig.runtime, priority: -2000 }
     app.listener.request:
         class: EMS\CoreBundle\EventListener\RequestListener
         arguments: ['@twig', '@doctrine', '@logger', '@router', '@service_container', '@security.authorization_checker', '@session', '%ems_core.allow_user_registration%', '%ems_core.user_login_route%', '%ems_core.user_registration_route%']
@@ -386,6 +393,9 @@ services:
         arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '%ems_core.lock_time%', '@app.elasticsearch', '@ems.service.mapping', '%ems_core.instance_id%', '@session', '@form.factory', '@service_container', '@form.registry', '@event_dispatcher', '@ems.service.contenttype', '%ems_core.private_key%', '@logger', '@ems_common.storage.manager', '@twig', '@app.twig_extension', '@ems.service.user', '@EMS\CoreBundle\Repository\RevisionRepository', '@ems.service.environment']
         tags:
             - { name: kernel.event_listener, event: ems_core.revision.update_referers, method: updateReferers, priority: 0 }
+    EMS\CoreBundle\Service\RevisionService:
+        class: EMS\CoreBundle\Service\RevisionService
+        arguments: ['@ems.service.contenttype', '@ems.service.environment', '@EMS\CoreBundle\Repository\RevisionRepository']
     ems.service.alias:
         class: EMS\CoreBundle\Service\AliasService
         arguments: ['@app.elasticsearch', '@EMS\CoreBundle\Repository\EnvironmentRepository', '@EMS\CoreBundle\Repository\ManagedAliasRepository']
@@ -477,8 +487,11 @@ services:
     ems.service.transformcontenttype:
         class: EMS\CoreBundle\Service\TransformContentTypeService
         arguments: ['@logger', '@app.elasticsearch', '@ems.service.contenttype', '@ems.service.data', '@form.factory']
+    ems.service.document:
+        class: EMS\CoreBundle\Service\DocumentService
+        arguments: ['@doctrine', '@ems.service.data', '@form.factory', '@ems.elasticsearch.bulker', '%ems_core.instance_id%']
 
-        
+
 ### command services ###
     ems.environment.ems:
         class: EMS\CoreBundle\Command\EmsCommand
@@ -487,7 +500,12 @@ services:
             -  { name: console.command }
     ems.contenttype.migrate:
         class: EMS\CoreBundle\Command\MigrateCommand
-        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.elasticsearch.bulker', '@ems.service.mapping', '@ems.service.data', '@form.factory', '%ems_core.instance_id%']
+        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.document']
+        tags:
+            -  { name: console.command }
+    ems.make.document:
+        class: EMS\CoreBundle\Command\DocumentCommand
+        arguments: ['@logger', '@app.elasticsearch', '@ems.service.contenttype', '@ems.service.document', '@ems.service.data']
         tags:
             -  { name: console.command }
     ems.contenttype.export:
@@ -590,6 +608,11 @@ services:
         arguments: ['@logger', '@ems.service.contenttype', '@ems.service.transformcontenttype']
         tags:
             - { name: console.command }
+    ems.contenttype.activate:
+        class: EMS\CoreBundle\Command\ActivateContentTypeCommand
+        arguments: ['@logger', '@ems.service.contenttype']
+        tags:
+            - { name: console.command }
     ems.environment.create:
         class: EMS\CoreBundle\Command\CreateEnvironmentCommand
         arguments: ['@logger', '@ems.service.environment', '@ems.service.data']
@@ -623,6 +646,8 @@ services:
         alias: 'EMS\CoreBundle\Service\DataService'
         public: true
 
+    ems.service.revision:
+        alias: 'EMS\CoreBundle\Service\RevisionService'
 
     #activate autowiring on core bundle controller
     EMS\CoreBundle\Controller\:

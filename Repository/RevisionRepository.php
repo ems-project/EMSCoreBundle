@@ -381,41 +381,65 @@ class RevisionRepository extends EntityRepository
      * @return null|Revision
      * @throws NonUniqueResultException
      */
-    public function findByOuuidContentTypeAndEnvironnement(Revision $revision, Environment $env = null)
+    public function findByOuuidContentTypeAndEnvironment(Revision $revision, Environment $env = null)
     {
         if (!$env) {
             $env = $revision->getContentType()->getEnvironment();
         }
 
-        return $this->findByOuuidAndContentTypeAndEnvironnement($revision->getContentType(), $revision->getOuuid(), $env);
+        return $this->findByOuuidAndContentTypeAndEnvironment($revision->getContentType(), $revision->getOuuid(), $env);
     }
 
     /**
-     * @param ContentType $contentType
-     * @param string $ouuid
-     * @param Environment $env
-     * @return null|Revision
      * @throws NonUniqueResultException
      */
-    public function findByOuuidAndContentTypeAndEnvironnement(ContentType $contentType, $ouuid, Environment $env)
+    public function findByOuuidAndContentTypeAndEnvironment(ContentType $contentType, $ouuid, Environment $env): ?Revision
+    {
+        $qb = $this->createQueryBuilder('r');
+        $qb
+            ->join('r.environments', 'e')
+            ->andWhere($qb->expr()->eq('r.ouuid', ':ouuid'))
+            ->andWhere($qb->expr()->eq('e.id', ':envId'))
+            ->andWhere($qb->expr()->eq('r.contentType', ':contentTypeId'))
+            ->setParameters([
+                'ouuid' => $ouuid,
+                'envId' => $env->getId(),
+                'contentTypeId' => $contentType->getId()
+            ]);
+        
+        $result = $qb->getQuery()->getResult();
+
+        if (count($result) > 1) {
+            throw new NonUniqueResultException($ouuid . ' is publish multiple times in ' . $env->getName());
+        }
+
+        if (isset($result[0]) && $result[0] instanceof Revision) {
+            return $result[0];
+        }
+
+        return null;
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function findIdByOuuidAndContentTypeAndEnvironment(string $ouuid, int $contentType, int $env) : ?array
     {
         $qb = $this->createQueryBuilder('r');
         $qb->join('r.environments', 'e');
         $qb->where('r.ouuid = :ouuid and e.id = :envId and r.contentType = :contentTypeId');
         $qb->setParameters([
-                'ouuid' => $ouuid,
-                'envId' => $env->getId(),
-                'contentTypeId' => $contentType->getId()
+            'ouuid' => $ouuid,
+            'envId' => $env,
+            'contentTypeId' => $contentType
         ]);
-        
-        $out = $qb->getQuery()->getResult();
+
+        $out = $qb->getQuery()->getArrayResult();
         if (count($out) > 1) {
-            throw new NonUniqueResultException($ouuid . ' is publish multiple times in ' . $env->getName());
+            throw new NonUniqueResultException($ouuid . ' is publish multiple times in ' . $env);
         }
-        if (empty($out)) {
-            return null;
-        }
-        return $out[0];
+
+        return $out[0] ?? null;
     }
 
     /**
@@ -453,12 +477,10 @@ class RevisionRepository extends EntityRepository
     }
 
     /**
-     * @param ContentType $contentType
      * @param string $ouuid
-     * @param \DateTime $now
      * @return mixed
      */
-    public function finaliseRevision(ContentType $contentType, $ouuid, \DateTime $now)
+    public function finaliseRevision(ContentType $contentType, $ouuid, \DateTime $now, string $lockUser)
     {
         $qb = $this->createQueryBuilder('r')->update()
             ->set('r.endTime', '?1')
@@ -469,7 +491,7 @@ class RevisionRepository extends EntityRepository
             ->setParameter(1, $now, Type::DATETIME)
             ->setParameter(2, $contentType)
             ->setParameter(3, $ouuid)
-            ->setParameter(4, "SYSTEM_MIGRATE");
+            ->setParameter(4, $lockUser);
             return $qb->getQuery()->execute();
     }
 
@@ -496,20 +518,16 @@ class RevisionRepository extends EntityRepository
         }
     }
 
-    /**
-     * @param Revision $revision
-     * @return mixed
-     */
-    public function publishRevision(Revision $revision)
+    public function publishRevision(Revision $revision, bool $draft = false)
     {
         $qb = $this->createQueryBuilder('r')->update()
-        ->set('r.draft', ':false')
+        ->set('r.draft', ':draft')
         ->set('r.lockBy', "null")
         ->set('r.lockUntil', "null")
         ->set('r.endTime', "null")
         ->where('r.id = :id')
         ->setParameters([
-                'false' => false,
+                'draft' => $draft,
                 'id' => $revision->getId()
             ]);
         

@@ -24,21 +24,13 @@ use Twig\Environment;
 
 class ImporterViewType extends ViewType
 {
-    /**
-     * @var FileService
-     */
+    /** @var FileService */
     private $fileService;
-    /**
-     * @var JobService
-     */
+    /** @var JobService */
     private $jobService;
-    /**
-     * @var TokenStorageInterface
-     */
+    /** @var TokenStorageInterface */
     private $security;
-    /**
-     * @var Router
-     */
+    /** @var Router */
     private $router;
 
     public function __construct(FormFactory $formFactory, Environment $twig, Client $client, LoggerInterface $logger, FileService $fileService, JobService $jobService, TokenStorageInterface $security, Router $router)

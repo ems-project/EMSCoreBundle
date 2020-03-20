@@ -75,7 +75,7 @@ class CollectionItemFieldType extends DataFieldType
                 'class' => '_ems_internal_deleted',
             ],
         ]);
-        
+
         /** @var FieldType $fieldType */
         foreach ($fieldType->getChildren() as $fieldType) {
             if (! $fieldType->getDeleted()) {
@@ -84,6 +84,7 @@ class CollectionItemFieldType extends DataFieldType
                         'metadata' => $fieldType,
                         'label' => false,
                         'migration' => $options['migration'],
+                        'with_warning' => $options['with_warning'],
                         'raw_data' =>  $options['raw_data'],
                 ], $fieldType->getDisplayOptions());
                 $builder->add($fieldType->getName(), $fieldType->getType(), $options);

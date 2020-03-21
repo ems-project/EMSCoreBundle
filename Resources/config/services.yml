@@ -511,7 +511,7 @@ services:
             -  { name: console.command }
     ems.make.document:
         class: EMS\CoreBundle\Command\DocumentCommand
-        arguments: ['@logger', '@app.elasticsearch', '@ems.service.contenttype', '@ems.service.import', '@ems.service.data']
+        arguments: ['@logger', '@app.elasticsearch', '@ems.service.contenttype', '@ems.service.document', '@ems.service.data']
         tags:
             -  { name: console.command }
     ems.contenttype.export:

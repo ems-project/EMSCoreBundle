@@ -15,9 +15,10 @@ services:
             - { name: twig.extension, priority: -2000 }
     app.twig_extension_revision: '@EMS\CoreBundle\Twig\RevisionRuntime'
     EMS\CoreBundle\Twig\RevisionRuntime:
-        #class: EMS\CoreBundle\Twig\RevisionRuntime
-        arguments: ['@ems.service.revision']
-        #public: false
+        arguments:
+            - '@ems.service.contenttype'
+            - '@ems.service.environment'
+            - '@ems.service.revision'
         tags:
             - { name: twig.runtime, priority: -2000 }
     app.listener.request:
@@ -399,9 +400,9 @@ services:
         arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '%ems_core.lock_time%', '@app.elasticsearch', '@ems.service.mapping', '%ems_core.instance_id%', '@session', '@form.factory', '@service_container', '@form.registry', '@event_dispatcher', '@ems.service.contenttype', '%ems_core.private_key%', '@logger', '@ems_common.storage.manager', '@twig', '@app.twig_extension', '@ems.service.user', '@EMS\CoreBundle\Repository\RevisionRepository', '@ems.service.environment']
         tags:
             - { name: kernel.event_listener, event: ems_core.revision.update_referers, method: updateReferers, priority: 0 }
-    EMS\CoreBundle\Service\RevisionService:
-        class: EMS\CoreBundle\Service\RevisionService
-        arguments: ['@ems.service.contenttype', '@ems.service.environment', '@EMS\CoreBundle\Repository\RevisionRepository']
+    ems.service.revision:
+        class: EMS\CoreBundle\Service\Revision\RevisionService
+        arguments: ['@EMS\CoreBundle\Repository\RevisionRepository']
     ems.service.alias:
         class: EMS\CoreBundle\Service\AliasService
         arguments: ['@app.elasticsearch', '@EMS\CoreBundle\Repository\EnvironmentRepository', '@EMS\CoreBundle\Repository\ManagedAliasRepository']
@@ -504,6 +505,22 @@ services:
         arguments: ['@logger', '@app.elasticsearch']
         tags:
             -  { name: console.command }
+    ems.command.revision.copy:
+        class: EMS\CoreBundle\Command\RevisionCopyCommand
+        arguments:
+            - '@ems.factory.revision_copy_context'
+            - '@ems.service.revision_copy'
+            - '@ems.service.elasticsearch'
+        tags:
+            - { name: console.command }
+    ems.factory.revision_copy_context:
+        class: EMS\CoreBundle\Service\Revision\Copy\CopyContextFactory
+        arguments: ['@ems.service.environment']
+    ems.service.revision_copy:
+        class: EMS\CoreBundle\Service\Revision\Copy\CopyService
+        arguments:
+            - '@EMS\CoreBundle\Service\DataService'
+            - '@ems.service.revision'
     ems.contenttype.migrate:
         class: EMS\CoreBundle\Command\MigrateCommand
         arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.document']
@@ -651,9 +668,6 @@ services:
     ems.service.data:
         alias: 'EMS\CoreBundle\Service\DataService'
         public: true
-
-    ems.service.revision:
-        alias: 'EMS\CoreBundle\Service\RevisionService'
 
     #activate autowiring on core bundle controller
     EMS\CoreBundle\Controller\:

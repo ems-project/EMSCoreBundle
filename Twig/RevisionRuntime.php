@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Twig;
 
-use EMS\CoreBundle\Service\RevisionService;
+use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Service\Revision\RevisionService;
 use Twig\Extension\RuntimeExtensionInterface;
 
 class RevisionRuntime implements RuntimeExtensionInterface
@@ -17,8 +18,8 @@ class RevisionRuntime implements RuntimeExtensionInterface
         $this->revisionService = $revisionService;
     }
 
-    public function getRevisionId($ouuid, $env, $contentType)
+    public function getRevision(string $ouuid, string $contentTypeName): ?Revision
     {
-        return $this->revisionService->getIdByOuuidAndContentTypeAndEnvironment($ouuid, $contentType, $env)['id'] ?? null;
+        return $this->revisionService->getCurrentRevisionByOuuidAndContentType($ouuid, $contentTypeName);
     }
 }

@@ -47,7 +47,7 @@ class TransformContentTypeService
         $this->formFactory = $formFactory;
     }
 
-    public function transform(ContentType $contentType): \Generator
+    public function transform(ContentType $contentType, string $user): \Generator
     {
         $total = $this->getTotal($contentType);
         for ($from = 0; $from < $total; $from = $from + self::DEFAULT_SCROLL_SIZE) {
@@ -97,11 +97,10 @@ class TransformContentTypeService
                     continue;
                 }
 
-
                 try {
-                    $revision = $this->dataService->initNewDraft($contentType->getName(), $ouuid, null, 'TRANSFORM_CONTENT');
+                    $revision = $this->dataService->initNewDraft($contentType->getName(), $ouuid, null, $user);
                     $revision->setRawData($result);
-                    $this->dataService->finalizeDraft($revision, $revisionType, 'TRANSFORM_CONTENT');
+                    $this->dataService->finalizeDraft($revision, $revisionType, $user);
                 } catch (Exception $e) {
                     $this->logger->error('service.data.transform_content_tyoe.errer_on_save', [
                         EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),

@@ -2128,4 +2128,63 @@ class DataService
         unset($revisionType);
         return new Document($contentType->getName(), $ouuid, $result);
     }
+
+    public function lockAllRevisions(\DateTime $until, string $by): int
+    {
+        try {
+            return $this->revRepository->lockAllRevisions($until, $by);
+        } catch (LockedException $e) {
+            $this->logger->error('service.data.lock_revisions_error', [
+                EmsFields::LOG_USERNAME_FIELD => $by,
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function lockRevisions(ContentType $contentType, \DateTime $until, string $by): int
+    {
+        try {
+            return $this->revRepository->lockRevisions($contentType, $until, $by, true, false);
+        } catch (LockedException $e) {
+            $this->logger->error('service.data.lock_revisions_error', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                EmsFields::LOG_USERNAME_FIELD => $by,
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function unlockAllRevisions(string $by): int
+    {
+        try {
+            return $this->revRepository->unlockAllRevisions($by);
+        } catch (LockedException $e) {
+            $this->logger->error('service.data.unlock_revisions_error', [
+                EmsFields::LOG_USERNAME_FIELD => $by,
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function unlockRevisions(ContentType $contentType, string $by): int
+    {
+        try {
+            return $this->revRepository->unlockRevisions($contentType, $by);
+        } catch (LockedException $e) {
+            $this->logger->error('service.data.unlock_revisions_error', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                EmsFields::LOG_USERNAME_FIELD => $by,
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function getAllDrafts(): array
+    {
+        return $this->revRepository->findAllDrafts();
+    }
 }

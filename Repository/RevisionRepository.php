@@ -576,55 +576,84 @@ class RevisionRepository extends EntityRepository
         }
     }
 
-    /**
-     * @param ContentType $contentType
-     * @param \DateTime $until
-     * @param string $by
-     * @param bool $force
-     *
-     * @param bool $id
-     * @return int affected rows
-     * @throws \Exception
-     */
-    public function lockRevisions(ContentType $contentType, \DateTime $until, $by, $force = false, $id = false)
+    public function lockRevisions(?ContentType $contentType, \DateTime $until, $by, $force = false, $id = false): int
     {
-        $params = ['by' => $by, 'until' => $until, 'content_type' => $contentType];
-
-        /** @var QueryBuilder $qbSelect */
         $qbSelect = $this->createQueryBuilder('s');
         $qbSelect
             ->select('s.id')
-            ->andWhere($qbSelect->expr()->eq('s.contentType', ':content_type'))
             ->andWhere($qbSelect->expr()->isNull('s.endTime'))
             ->andWhere($qbSelect->expr()->eq('s.deleted', $qbSelect->expr()->literal(false)))
             ->andWhere($qbSelect->expr()->eq('s.draft', $qbSelect->expr()->literal(false)))
         ;
-
-        if (!$force) {
-            $qbSelect->andWhere($qbSelect->expr()->orX(
-                $qbSelect->expr()->lt('s.lockUntil', ':now'),
-                $qbSelect->expr()->isNull('s.lockUntil')
-            ));
-
-            $params['now'] = new \DateTime();
-        }
-
-        if ($id) {
-            $qbSelect->andWhere(
-                $qbSelect->expr()->eq('s.ouuid', ':content_id')
-            );
-            $params['content_id'] = $id;
-        }
 
         $qbUpdate = $this->createQueryBuilder('r');
         $qbUpdate
             ->update()
             ->set('r.lockBy', ':by')
             ->set('r.lockUntil', ':until')
-            ->andWhere($qbUpdate->expr()->in('r.id', $qbSelect->getDQL()))
-            ->setParameters($params);
+            ->setParameters(['by' => $by, 'until' => $until]);
+
+        if (null !== $contentType) {
+            $qbSelect->andWhere($qbSelect->expr()->eq('s.contentType', ':content_type'));
+            $qbUpdate->setParameter('content_type', $contentType);
+        }
+
+        if (!$force) {
+            $qbSelect->andWhere($qbSelect->expr()->orX(
+                $qbSelect->expr()->lt('s.lockUntil', ':now'),
+                $qbSelect->expr()->isNull('s.lockUntil')
+            ));
+            $qbUpdate->setParameter('now', new \DateTime());
+        }
+
+        if ($id) {
+            $qbSelect->andWhere(
+                $qbSelect->expr()->eq('s.ouuid', ':content_id')
+            );
+            $qbUpdate->setParameter('content_id', $id);
+        }
+
+        $qbUpdate->andWhere($qbUpdate->expr()->in('r.id', $qbSelect->getDQL()));
 
         return $qbUpdate->getQuery()->execute();
+    }
+
+    public function lockAllRevisions(\DateTime $until, string $by): int
+    {
+        return $this->lockRevisions(null, $until, $by, true, false);
+    }
+
+    public function unlockRevisions(?ContentType $contentType, string $by): int
+    {
+        $qbSelect = $this->createQueryBuilder('s');
+        $qbSelect
+            ->select('s.id')
+            ->andWhere($qbSelect->expr()->eq('s.lockBy', ':by'))
+            ->andWhere($qbSelect->expr()->isNull('s.endTime'))
+            ->andWhere($qbSelect->expr()->eq('s.deleted', $qbSelect->expr()->literal(false)))
+            ->andWhere($qbSelect->expr()->eq('s.draft', $qbSelect->expr()->literal(false)))
+        ;
+
+        $qbUpdate = $this->createQueryBuilder('u');
+        $qbUpdate
+            ->update()
+            ->set('u.lockBy', ':null')
+            ->set('u.lockUntil', ':null')
+            ->setParameters(['by' => $by, 'null' => null])
+        ;
+
+        if (null !== $contentType) {
+            $qbSelect->andWhere($qbSelect->expr()->eq('s.contentType', ':content_type'));
+            $qbUpdate->setParameter('content_type', $contentType);
+        }
+
+        $qbUpdate->andWhere($qbUpdate->expr()->in('u.id', $qbSelect->getDQL()));
+        return $qbUpdate->getQuery()->execute();
+    }
+
+    public function unlockAllRevisions(string $by): int
+    {
+        return $this->unlockRevisions(null, $by);
     }
 
     public function findAllLockedRevisions(ContentType $contentType, string $lockBy, int $page = 0, int $limit = 50) : Paginator
@@ -645,5 +674,33 @@ class RevisionRepository extends EntityRepository
         ;
 
         return new Paginator($qb->getQuery());
+    }
+
+    public function findDraftsByContentType(ContentType $contentType):  array
+    {
+        $qbSelect = $this->createQueryBuilder('s');
+        $qbSelect
+            ->andWhere($qbSelect->expr()->eq('s.contentType', ':content_type'))
+            ->andWhere($qbSelect->expr()->eq('s.draft', $qbSelect->expr()->literal(true)))
+            ->andWhere($qbSelect->expr()->eq('s.deleted', $qbSelect->expr()->literal(false)))
+            ->andWhere($qbSelect->expr()->isNull('s.endTime'))
+            ->orderBy('s.id', 'asc')
+            ->setParameters(['content_type' => $contentType])
+        ;
+
+        return $qbSelect->getQuery()->execute();
+    }
+
+    public function findAllDrafts():  array
+    {
+        $qbSelect = $this->createQueryBuilder('s');
+        $qbSelect
+            ->andWhere($qbSelect->expr()->eq('s.draft', $qbSelect->expr()->literal(true)))
+            ->andWhere($qbSelect->expr()->eq('s.deleted', $qbSelect->expr()->literal(false)))
+            ->andWhere($qbSelect->expr()->isNull('s.endTime'))
+            ->orderBy('s.id', 'asc')
+        ;
+
+        return $qbSelect->getQuery()->execute();
     }
 }

@@ -18,7 +18,7 @@ use EMS\CoreBundle\Service\Mapping;
 class Revision
 {
     /**
-     * @var int
+     * @var null|int
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
@@ -41,7 +41,7 @@ class Revision
     private $modified;
 
     /**
-     * @var \DateTime
+     * @var null|\DateTime
      *
      * @ORM\Column(name="auto_save_at", type="datetime", nullable=true)
      */
@@ -73,7 +73,7 @@ class Revision
     private $version;
     
     /**
-     * @var string
+     * @var null|string
      *
      * @ORM\Column(name="ouuid", type="string", length=255, nullable=true, options={"collation":"utf8_bin"})
      */
@@ -101,14 +101,14 @@ class Revision
     private $draft;
     
     /**
-     * @var string
+     * @var null|string
      *
      * @ORM\Column(name="finalized_by", type="string", length=255, nullable=true)
      */
     private $finalizedBy;
 
     /**
-     * @var \DateTime
+     * @var null|\DateTime
      *
      * @ORM\Column(name="finalized_date", type="datetime", nullable=true)
      */
@@ -127,21 +127,21 @@ class Revision
     private $deletedBy;
     
     /**
-     * @var string
+     * @var null|string
      *
      * @ORM\Column(name="lock_by", type="string", length=255, nullable=true)
      */
     private $lockBy;
 
     /**
-     * @var string
+     * @var null|string
      *
      * @ORM\Column(name="auto_save_by", type="string", length=255, nullable=true)
      */
     private $autoSaveBy;
 
     /**
-     * @var \DateTime
+     * @var null|\DateTime
      *
      * @ORM\Column(name="lock_until", type="datetime", nullable=true)
      */
@@ -168,7 +168,7 @@ class Revision
     private $rawData;
 
     /**
-     * @var array
+     * @var null|array
      *
      * @ORM\Column(name="auto_save", type="json_array", nullable=true)
      */

@@ -16,12 +16,6 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Twig_Environment;
 
-/**
- * It's the mother class of all specific DataField used in eMS
- *
- * @author Mathieu De Keyzer <ems@theus.be>
- *
- */
 class GalleryViewType extends ViewType
 {
     
@@ -34,32 +28,17 @@ class GalleryViewType extends ViewType
         $this->searchService = $searchService;
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
-    public function getLabel()
+    public function getLabel() : string
     {
         return "Gallery: a view where you can browse images";
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
-    public function getName()
+    public function getName() : string
     {
         return "Gallery";
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options) : void
     {
         parent::buildForm($builder, $options);
         $builder->add('imageField', TextType::class, [
@@ -76,25 +55,13 @@ class GalleryViewType extends ViewType
         ]);
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix() : string
     {
         return 'gallery_view';
     }
 
 
-    /**
-     * @param View $view
-     * @param FormFactoryInterface $formFactory
-     * @param Request $request
-     * @return array|mixed
-     * @throws Exception
-     */
-    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request)
+    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request) : array
     {
         
 

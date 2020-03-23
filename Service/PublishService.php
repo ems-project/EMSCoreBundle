@@ -236,7 +236,7 @@ class PublishService
             return 0;
         }
 
-        $item = $this->revRepository->findByOuuidContentTypeAndEnvironnement($revision, $environment);
+        $item = $this->revRepository->findByOuuidContentTypeAndEnvironment($revision, $environment);
         
         $connection = $this->doctrine->getConnection();
         

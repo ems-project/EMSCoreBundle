@@ -44,6 +44,6 @@ final class CopyService
     private function finalizeRevision(Revision $copiedRevision): void
     {
         $form = null;
-        $this->dataService->finalizeDraft($copiedRevision,$form , 'copy_service');
+        $this->dataService->finalizeDraft($copiedRevision, $form, 'copy_service');
     }
 }

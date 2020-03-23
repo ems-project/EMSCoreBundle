@@ -595,7 +595,7 @@ class RevisionRepository extends EntityRepository
 
         if (null !== $contentType) {
             $qbSelect->andWhere($qbSelect->expr()->eq('s.contentType', ':content_type'));
-            $qbUpdate->setParameters(['content_type' => $contentType]);
+            $qbUpdate->setParameter('content_type', $contentType);
         }
 
         if (!$force) {
@@ -603,14 +603,14 @@ class RevisionRepository extends EntityRepository
                 $qbSelect->expr()->lt('s.lockUntil', ':now'),
                 $qbSelect->expr()->isNull('s.lockUntil')
             ));
-            $qbUpdate->setParameters(['now' => new \DateTime()]);
+            $qbUpdate->setParameter('now', new \DateTime());
         }
 
         if ($id) {
             $qbSelect->andWhere(
                 $qbSelect->expr()->eq('s.ouuid', ':content_id')
             );
-            $qbUpdate->setParameters(['content_id' => $id]);
+            $qbUpdate->setParameter('content_id', $id);
         }
 
         $qbUpdate->andWhere($qbUpdate->expr()->in('r.id', $qbSelect->getDQL()));
@@ -644,7 +644,7 @@ class RevisionRepository extends EntityRepository
 
         if (null !== $contentType) {
             $qbSelect->andWhere($qbSelect->expr()->eq('s.contentType', ':content_type'));
-            $qbUpdate->setParameters(['content_type' => $contentType]);
+            $qbUpdate->setParameter('content_type', $contentType);
         }
 
         $qbUpdate->andWhere($qbUpdate->expr()->in('u.id', $qbSelect->getDQL()));

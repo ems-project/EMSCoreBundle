@@ -35,6 +35,7 @@ final class RevisionCopyCommand extends Command implements CommandInterface
 
     private const ARG_ENVIRONMENT_NAME = 'environment';
     private const ARG_JSON_SEARCH_QUERY = 'json_search_query';
+    private const ARG_JSON_MERGE = 'json_merge';
     private const OPTION_BULK_SIZE = 'bulk-size';
 
     public function __construct(
@@ -62,6 +63,11 @@ final class RevisionCopyCommand extends Command implements CommandInterface
                 InputArgument::REQUIRED,
                 'JSON search query (escaped)'
             )
+            ->addArgument(
+                self::ARG_JSON_MERGE,
+                InputArgument::OPTIONAL,
+                'JSON merge for copied revisions'
+            )
             ->addOption(
                 self::OPTION_BULK_SIZE,
                 null,
@@ -82,7 +88,8 @@ final class RevisionCopyCommand extends Command implements CommandInterface
     {
         $copyContext = $this->copyContextFactory->fromJSON(
             $input->getArgument(self::ARG_ENVIRONMENT_NAME),
-            $input->getArgument(self::ARG_JSON_SEARCH_QUERY)
+            $input->getArgument(self::ARG_JSON_SEARCH_QUERY),
+            $input->getArgument(self::ARG_JSON_MERGE) ?? ''
         );
 
         $request = $copyContext->makeRequest();
@@ -107,7 +114,7 @@ final class RevisionCopyCommand extends Command implements CommandInterface
     {
         $progressBar = $this->io->createProgressBar($documents->count());
 
-        foreach ($this->copyService->copyFromDocuments($documents) as $copiedRevision) {
+        foreach ($this->copyService->copyFromDocuments($copyContext, $documents) as $copiedRevision) {
             $this->copies[] = $copiedRevision;
             $progressBar->advance();
         }

@@ -1104,6 +1104,7 @@ class DataController extends AppController
                 'template_id' => $template->getId(),
                 'job_id' => $job->getId(),
                 'template_name' => $template->getName(),
+                'environment' => $env->getName()
             ]);
             return $this->returnJsonResponse($request, true, [
                 'jobId' => $job->getId(),

@@ -25,7 +25,7 @@ final class CopyService
     /**
      * @return \Generator|Revision[]
      */
-    public function copyFromDocuments(DocumentCollectionInterface $documents): \Generator
+    public function copyFromDocuments(CopyContext $copyContext, DocumentCollectionInterface $documents): \Generator
     {
         foreach ($documents as $document) {
             $revision = $this->revisionService->getCurrentRevisionForDocument($document);
@@ -35,6 +35,8 @@ final class CopyService
             }
 
             $copiedRevision = $revision->clone();
+            $copiedRevision->setRawData(array_merge($copiedRevision->getRawData(), $copyContext->getMerge()));
+
             $this->finalizeRevision($copiedRevision);
 
             yield $revision;

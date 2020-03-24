@@ -21,6 +21,12 @@ final class CopyContext
     {
         $this->environment = $environment;
         $this->searchQuery = $searchQuery;
+        $this->merge = [];
+    }
+
+    public function getMerge(): array
+    {
+        return $this->merge;
     }
 
     public function makeRequest(): RequestInterface

@@ -6,6 +6,13 @@ services:
     _defaults:
         public: true
 
+    EMS\CommonBundle\Contracts\Elasticsearch\ClientInterface: '@ems.elasticsearch.client'
+    ems.elasticsearch.client:
+        class: EMS\CommonBundle\Contracts\Elasticsearch\ClientInterface
+        factory: 'ems_common.elasticsearch.client_factory:fromConfig'
+        arguments:
+            - { hosts: "%ems_core.elasticsearch_cluster%" }
+
     app.twig_extension: '@EMS\CoreBundle\Twig\AppExtension'
     EMS\CoreBundle\Twig\AppExtension:
         #class: EMS\CoreBundle\Twig\AppExtension

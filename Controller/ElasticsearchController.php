@@ -142,8 +142,7 @@ class ElasticsearchController extends AppController
     public function statusAction($_format)
     {
         try {
-            $client = $this->getElasticsearch();
-            $status = $client->cluster()->health();
+            $health = $this->elasticsearchClient->getHealth();
             $certificateInformation = $this->getDataService()->getCertificateInfo();
 
             $globalStatus = 'green';
@@ -158,26 +157,25 @@ class ElasticsearchController extends AppController
                 ];
             }
 
-            if ('html' === $_format && 'green' !== $status['status']) {
-                $globalStatus = $status['status'];
-                if ('red' === $status['status']) {
+            if ('html' === $_format && !$health->isGreen()) {
+                $globalStatus = $health->getStatus();
+                if ('red' === $globalStatus) {
                     $this->getLogger()->error('log.elasticsearch.cluster_red', [
-                        'color_status' => $status['status'],
+                        'color_status' => $health['status'],
                     ]);
                 } else {
                     $this->getLogger()->warning('log.elasticsearch.cluster_yellow', [
-                        'color_status' => $status['status'],
+                        'color_status' => $health['status'],
                     ]);
                 }
             }
 
             return $this->render('@EMSCore/elasticsearch/status.' . $_format . '.twig', [
-                'status' => $status,
+                'health' => $health,
                 'certificate' => $certificateInformation,
                 'tika' => $tika,
                 'globalStatus' => $globalStatus,
-                'info' => $client->info(),
-                'specifiedVersion' => $this->getElasticsearchService()->getVersion(),
+                'info' => $this->elasticsearchClient->getInfo()
             ]);
         } catch (NoNodesAvailableException $e) {
             return $this->render('@EMSCore/elasticsearch/no-nodes-available.' . $_format . '.twig', [

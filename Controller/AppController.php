@@ -2,6 +2,7 @@
 namespace EMS\CoreBundle\Controller;
 
 use Elasticsearch\Client;
+use EMS\CommonBundle\Contracts\Elasticsearch\ClientInterface;
 use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
@@ -37,6 +38,8 @@ use Twig_Environment;
 
 class AppController extends Controller
 {
+    /** @var ClientInterface */
+    protected $elasticsearchClient;
 
     /**@var LoggerInterface*/
     private $logger;
@@ -49,8 +52,13 @@ class AppController extends Controller
     /** @var RequestRuntime */
     protected $requestRuntime;
 
-    public function __construct(LoggerInterface $logger, FormRegistryInterface $formRegistry, RequestRuntime $requestRuntime)
-    {
+    public function __construct(
+        ClientInterface $elasticsearchClient,
+        LoggerInterface $logger,
+        FormRegistryInterface $formRegistry,
+        RequestRuntime $requestRuntime
+    ) {
+        $this->elasticsearchClient = $elasticsearchClient;
         $this->logger = $logger;
         $this->formRegistry = $formRegistry;
         $this->requestRuntime = $requestRuntime;
@@ -72,15 +80,6 @@ class AppController extends Controller
     protected function getElasticsearch()
     {
         return $this->get('app.elasticsearch');
-    }
-    
-    /**
-     * @deprecated use dependency injection
-     * @return ElasticsearchService
-     */
-    protected function getElasticsearchService()
-    {
-        return $this->get('ems.service.elasticsearch');
     }
     
     /**

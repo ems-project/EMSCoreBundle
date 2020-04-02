@@ -17,63 +17,62 @@
 <div class="row">
 	<div class="col-md-6 col-lg-4">
 		<div class="box box box-solid">
-			<div class="box-header with-border bg-{{ status.status }}">
+			<div class="box-header with-border bg-{{ health.status }}">
 				<h4 class="box-title">
 						<i
 							class="icon fa fa-cubes fa-2x"></i>
-						Cluster name: <strong>{{ status.cluster_name }}</strong>
+						Cluster name: <strong>{{ info.clusterName }}</strong>
 				</h4>
 			</div>
 			<div class="box-body ">
 				<ul class="list-group">
-					{% if info is defined and info %}
-						<li class="list-group-item">{{ 'Cluster\'s UUID'|trans }}<span
-							class=" badge bg-{{ status.status }}">{{ info.cluster_uuid }}</span></li>
-						<li class="list-group-item">{{ 'Tagline'|trans }}<span
-							class=" badge bg-{{ status.status }}">{{ info.tagline }}</span></li>
-						<li class="list-group-item">{{ 'Node\'s name'|trans }}<span
-							class=" badge bg-{{ status.status }}">{{ info.name }}</span></li>
-						<li class="list-group-item">{{ 'Elasticsearch\'s version'|trans }}<span
-							class=" badge bg-{{ status.status }}">{{ info.version.number }}</span></li>
-						<li class="list-group-item">{{ 'Lucene\'s version'|trans }}<span
-							class=" badge bg-{{ status.status }}">{{ info.version.lucene_version }}</span></li>
-						<li class="list-group-item">{{ 'Build date'|trans }}<span
-							class=" badge bg-{{ status.status }}">{{ info.version.build_date|date(date_time_format) }}</span></li>
-					{% endif %}
+					<li class="list-group-item">{{ 'Cluster\'s UUID'|trans }}<span
+						class=" badge bg-{{ health.status }}">{{ info.clusterUuid }}</span></li>
+					<li class="list-group-item">{{ 'Tagline'|trans }}<span
+						class=" badge bg-{{ health.status }}">{{ info.tagLine }}</span></li>
+					<li class="list-group-item">{{ 'Node\'s name'|trans }}<span
+						class=" badge bg-{{ health.status }}">{{ info.nodeName }}</span></li>
+					<li class="list-group-item">{{ 'Elasticsearch\'s version'|trans }}<span
+						class=" badge bg-{{ health.status }}">{{ info.versionNumber }}</span></li>
+					<li class="list-group-item">{{ 'Lucene\'s version'|trans }}<span
+						class=" badge bg-{{ health.status }}">{{ info.VersionNumberLucene }}</span></li>
+					<li class="list-group-item">{{ 'Build date'|trans }}<span
+						class=" badge bg-{{ health.status }}">{{ info.versionBuildDate|date(date_time_format) }}</span></li>
+
 					<li class="list-group-item">Number of nodes <span
-						class=" badge bg-{{ status.status }}">{{ status.number_of_nodes }}</span></li>
+						class=" badge bg-{{ health.status }}">{{ health.numberOfNodes }}</span></li>
 					<li class="list-group-item">Number of data nodes <span
-						class=" badge bg-{{ status.status }}">{{
-							status.number_of_data_nodes }}</span></li>
+						class=" badge bg-{{ health.status }}">{{
+							health.numberOfDataNodes }}</span></li>
 					<li class="list-group-item">Active primary shards <span
-						class=" badge bg-{{ status.status }}">{{
-							status.active_primary_shards }}</span></li>
+						class=" badge bg-{{ health.status }}">{{
+							health.activePrimaryShards }}</span></li>
 					<li class="list-group-item">Active shards <span
-						class=" badge bg-{{ status.status }}">{{ status.active_shards }}</span></li>
+						class=" badge bg-{{ health.status }}">{{ health.activeShards }}</span></li>
 					<li class="list-group-item">Relocating shards <span
-						class=" badge bg-{{ status.status }}">{{ status.relocating_shards
+						class=" badge bg-{{ health.status }}">{{ health.relocatingShards
 							}}</span></li>
 					<li class="list-group-item">Initializing shards <span
-						class=" badge bg-{{ status.status }}">{{
-							status.initializing_shards }}</span></li>
+						class=" badge bg-{{ health.status }}">{{
+							health.initializingShards }}</span></li>
 					<li class="list-group-item">Unassigned shards <span
-						class=" badge bg-{{ status.status }}">{{ status.unassigned_shards
+						class=" badge bg-{{ health.status }}">{{ health.unassignedShards
 							}}</span></li>
 					<li class="list-group-item">Delayed unassigned shards <span
-						class=" badge bg-{{ status.status }}">{{
-							status.delayed_unassigned_shards }}</span></li>
+						class=" badge bg-{{ health.status }}">{{
+							health.delayedUnassignedShards }}</span></li>
 					<li class="list-group-item">Number of pending tasks <span
-						class=" badge bg-{{ status.status }}">{{
-							status.number_of_pending_tasks }}</span></li>
+						class=" badge bg-{{ health.status }}">{{
+							health.numberOfPendingTasks }}</span></li>
 					<li class="list-group-item">Number of in flight fetch <span
-						class=" badge bg-{{ status.status }}">{{
-							status.number_of_in_flight_fetch }}</span></li>
+						class=" badge bg-{{ health.status }}">{{
+							health.numberOfInFlightFetch }}</span></li>
 					<li class="list-group-item">Task max waiting in queue <span
-						class=" badge bg-{{ status.status }}">{{
-							status.task_max_waiting_in_queue_millis }} ms</span></li>
+						class=" badge bg-{{ health.status }}">{{
+							health.taskMaxWaitingInQueueMillis }} ms</span></li>
 					<li class="list-group-item">Active shards percent as number <span
-						class=" badge bg-{{ status.status }}">{{
-							status.active_shards_percent_as_number }}</span></li>
+						class=" badge bg-{{ health.status }}">{{
+							health.activeShardsPercentAsNumber }}</span></li>
 
 				</ul>
 			</div>
@@ -101,34 +100,34 @@
     					<li class="list-group-item">{{ 'Certificate is missing'|trans }}</li>
                     {% endif %}
 {# 					<li class="list-group-item">Active primary shards <span#}
-{# 						class=" badge bg-{{ status.status }}">{{#}
-{# 							status.active_primary_shards }}</span></li>#}
+{# 						class=" badge bg-{{ health.status }}">{{#}
+{# 							health.active_primary_shards }}</span></li>#}
 {# 					<li class="list-group-item">Active shards <span#}
-{# 						class=" badge bg-{{ status.status }}">{{ status.active_shards }}</span></li>#}
+{# 						class=" badge bg-{{ health.status }}">{{ health.active_shards }}</span></li>#}
 {# 					<li class="list-group-item">Relocating shards <span#}
-{# 						class=" badge bg-{{ status.status }}">{{ status.relocating_shards#}
+{# 						class=" badge bg-{{ health.status }}">{{ health.relocating_shards#}
 {# 							}}</span></li>#}
 {# 					<li class="list-group-item">Initializing shards <span#}
-{# 						class=" badge bg-{{ status.status }}">{{#}
-{# 							status.initializing_shards }}</span></li>#}
+{# 						class=" badge bg-{{ health.status }}">{{#}
+{# 							health.initializing_shards }}</span></li>#}
 {# 					<li class="list-group-item">Unassigned shards <span#}
-{# 						class=" badge bg-{{ status.status }}">{{ status.unassigned_shards#}
+{# 						class=" badge bg-{{ health.status }}">{{ health.unassigned_shards#}
 {# 							}}</span></li>#}
 {# 					<li class="list-group-item">Delayed unassigned shards <span#}
-{# 						class=" badge bg-{{ status.status }}">{{#}
-{# 							status.delayed_unassigned_shards }}</span></li>#}
+{# 						class=" badge bg-{{ health.status }}">{{#}
+{# 							health.delayed_unassigned_shards }}</span></li>#}
 {# 					<li class="list-group-item">Number of pending tasks <span#}
-{# 						class=" badge bg-{{ status.status }}">{{#}
-{# 							status.number_of_pending_tasks }}</span></li>#}
+{# 						class=" badge bg-{{ health.status }}">{{#}
+{# 							health.number_of_pending_tasks }}</span></li>#}
 {# 					<li class="list-group-item">Number of in flight fetch <span#}
-{# 						class=" badge bg-{{ status.status }}">{{#}
-{# 							status.number_of_in_flight_fetch }}</span></li>#}
+{# 						class=" badge bg-{{ health.status }}">{{#}
+{# 							health.number_of_in_flight_fetch }}</span></li>#}
 {# 					<li class="list-group-item">Task max waiting in queue <span#}
-{# 						class=" badge bg-{{ status.status }}">{{#}
-{# 							status.task_max_waiting_in_queue_millis }} ms</span></li>#}
+{# 						class=" badge bg-{{ health.status }}">{{#}
+{# 							health.task_max_waiting_in_queue_millis }} ms</span></li>#}
 {# 					<li class="list-group-item">Active shards percent as number <span#}
-{# 						class=" badge bg-{{ status.status }}">{{#}
-{# 							status.active_shards_percent_as_number }}</span></li>#}
+{# 						class=" badge bg-{{ health.status }}">{{#}
+{# 							health.active_shards_percent_as_number }}</span></li>#}
 
 				</ul>
 			</div>
@@ -164,7 +163,7 @@
                         {{ 'PHP Info'|trans }}</strong>
 					</h4>
 				</div>
-				<div class="box-body "><a href="{{ path('emsco_phpinfo') }}" class="btn btn-primary">{{ 'emsco.elasticsearch.status.html.goto_phpinfo'|trans }}</a></div>
+				<div class="box-body "><a href="{{ path('emsco_phpinfo') }}" class="btn btn-primary">{{ 'emsco.elasticsearch.health.html.goto_phpinfo'|trans }}</a></div>
 			</div>
 		</div>
     {% endif %}

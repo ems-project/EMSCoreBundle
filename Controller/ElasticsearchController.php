@@ -59,10 +59,6 @@ class ElasticsearchController extends AppController
      */
     public function addAliasAction(string $name, Request $request)
     {
-
-        /** @var  Client $client */
-        $client = $this->getElasticsearch();
-
         $form = $this->createFormBuilder([])->add('name', IconTextType::class, [
             'icon' => 'fa fa-key',
             'required' => true
@@ -77,18 +73,8 @@ class ElasticsearchController extends AppController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $params ['body'] = [
-                'actions' => [
-                    [
-                        'add' => [
-                            'index' => $name,
-                            'alias' => $form->get('name')->getData(),
-                        ]
-                    ]
-                ]
-            ];
+            $this->elasticsearchClient->addAlias($form->get('name')->getData(), $name);
 
-            $client->indices()->updateAliases($params);
             $this->getLogger()->notice('log.elasticsearch.alias_added', [
                 'alias_name' => $form->get('name')->getData(),
                 'index_name' => $name,
@@ -113,13 +99,11 @@ class ElasticsearchController extends AppController
     public function healthCheckAction($_format)
     {
         try {
-            $client = $this->getElasticsearch();
-            $status = $client->cluster()->health();
-
+            $health = $this->elasticsearchClient->getHealth();
 
             $response = $this->render('@EMSCore/elasticsearch/status.' . $_format . '.twig', [
-                'status' => $status,
-                'globalStatus' => $status['status'],
+                'health' => $health,
+                'globalStatus' => $health->getStatus(),
             ]);
 
             $allowOrigin = $this->getParameter('ems_core.health_check_allow_origin');
@@ -316,12 +300,8 @@ class ElasticsearchController extends AppController
      */
     public function deleteIndexAction($name)
     {
-        /** @var  Client $client */
-        $client = $this->getElasticsearch();
         try {
-            $client->indices()->delete([
-                'index' => $name,
-            ]);
+            $this->elasticsearchClient->removeIndex($name);
 
             $this->getLogger()->notice('log.elasticsearch.index_deleted', [
                 'index_name' => $name,

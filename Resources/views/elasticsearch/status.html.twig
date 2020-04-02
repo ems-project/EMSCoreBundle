@@ -21,24 +21,25 @@
 				<h4 class="box-title">
 						<i
 							class="icon fa fa-cubes fa-2x"></i>
-						Cluster name: <strong>{{ info.clusterName }}</strong>
+						Cluster name: <strong>{{ health.clusterName }}</strong>
 				</h4>
 			</div>
 			<div class="box-body ">
 				<ul class="list-group">
-					<li class="list-group-item">{{ 'Cluster\'s UUID'|trans }}<span
-						class=" badge bg-{{ health.status }}">{{ info.clusterUuid }}</span></li>
-					<li class="list-group-item">{{ 'Tagline'|trans }}<span
-						class=" badge bg-{{ health.status }}">{{ info.tagLine }}</span></li>
-					<li class="list-group-item">{{ 'Node\'s name'|trans }}<span
-						class=" badge bg-{{ health.status }}">{{ info.nodeName }}</span></li>
-					<li class="list-group-item">{{ 'Elasticsearch\'s version'|trans }}<span
-						class=" badge bg-{{ health.status }}">{{ info.versionNumber }}</span></li>
-					<li class="list-group-item">{{ 'Lucene\'s version'|trans }}<span
-						class=" badge bg-{{ health.status }}">{{ info.VersionNumberLucene }}</span></li>
-					<li class="list-group-item">{{ 'Build date'|trans }}<span
-						class=" badge bg-{{ health.status }}">{{ info.versionBuildDate|date(date_time_format) }}</span></li>
-
+					{% if info is defined and info %}
+						<li class="list-group-item">{{ 'Cluster\'s UUID'|trans }}<span
+							class=" badge bg-{{ health.status }}">{{ info.clusterUuid }}</span></li>
+						<li class="list-group-item">{{ 'Tagline'|trans }}<span
+							class=" badge bg-{{ health.status }}">{{ info.tagLine }}</span></li>
+						<li class="list-group-item">{{ 'Node\'s name'|trans }}<span
+							class=" badge bg-{{ health.status }}">{{ info.nodeName }}</span></li>
+						<li class="list-group-item">{{ 'Elasticsearch\'s version'|trans }}<span
+							class=" badge bg-{{ health.status }}">{{ info.versionNumber }}</span></li>
+						<li class="list-group-item">{{ 'Lucene\'s version'|trans }}<span
+							class=" badge bg-{{ health.status }}">{{ info.VersionNumberLucene }}</span></li>
+						<li class="list-group-item">{{ 'Build date'|trans }}<span
+							class=" badge bg-{{ health.status }}">{{ info.versionBuildDate|date(date_time_format) }}</span></li>
+					{% endif %}
 					<li class="list-group-item">Number of nodes <span
 						class=" badge bg-{{ health.status }}">{{ health.numberOfNodes }}</span></li>
 					<li class="list-group-item">Number of data nodes <span

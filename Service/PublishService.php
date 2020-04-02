@@ -124,7 +124,7 @@ class PublishService
         }
             
             
-        $revision = $this->revRepository->findByOuuidAndContentTypeAndEnvironnement(
+        $revision = $this->revRepository->findByOuuidAndContentTypeAndEnvironment(
             $contentType,
             $ouuid,
             $this->environmentService->getByName($environmentSource)
@@ -139,7 +139,7 @@ class PublishService
         } else {
             $target = $this->environmentService->getByName($environmentTarget);
             
-            $toClean = $this->revRepository->findByOuuidAndContentTypeAndEnvironnement(
+            $toClean = $this->revRepository->findByOuuidAndContentTypeAndEnvironment(
                 $contentType,
                 $ouuid,
                 $target
@@ -236,7 +236,7 @@ class PublishService
             return 0;
         }
 
-        $item = $this->revRepository->findByOuuidContentTypeAndEnvironnement($revision, $environment);
+        $item = $this->revRepository->findByOuuidContentTypeAndEnvironment($revision, $environment);
         
         $connection = $this->doctrine->getConnection();
         

@@ -28,12 +28,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Router;
 use Twig_Environment;
 
-/**
- * It's the mother class of all specific DataField used in eMS
- *
- * @author Mathieu De Keyzer <ems@theus.be>
- *
- */
 class HierarchicalViewType extends ViewType
 {
     
@@ -58,17 +52,17 @@ class HierarchicalViewType extends ViewType
         $this->contentTypeService = $contentTypeService;
     }
 
-    public function getLabel()
+    public function getLabel() : string
     {
         return "Hierarchical: manage a menu structure (based on a ES query)";
     }
     
-    public function getName()
+    public function getName() : string
     {
         return "Hierarchical";
     }
     
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options) : void
     {
         parent::buildForm($builder, $options);
         
@@ -140,19 +134,19 @@ class HierarchicalViewType extends ViewType
         ));
     }
     
-    public function getBlockPrefix()
+    public function getBlockPrefix() : string
     {
         return 'hierarchical_view';
     }
     
 
-    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request)
+    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request) : array
     {
         
         return [];
     }
     
-    public function generateResponse(View $view, Request $request)
+    public function generateResponse(View $view, Request $request) : Response
     {
         
         if (empty($view->getOptions()['parent'])) {
@@ -218,7 +212,7 @@ class HierarchicalViewType extends ViewType
         return $response;
     }
     
-    public function reorder($itemKey, View $view, $structure)
+    public function reorder($itemKey, View $view, $structure) : void
     {
         $temp = explode(':', $itemKey);
         $type = $temp[0];

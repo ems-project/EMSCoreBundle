@@ -45,6 +45,7 @@ class EmsCollectionType extends CollectionType
                 'entry_options' => [
                     'metadata' => $fieldType,
                     'migration' => $options['migration'],
+                    'with_warning' => $options['with_warning'],
                     'raw_data' =>  $options['raw_data'],
                 ],
                 'allow_add' => true,

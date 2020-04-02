@@ -11,26 +11,20 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Throwable;
 
-/**
- * It's the mother class of all specific DataField used in eMS
- *
- * @author Mathieu De Keyzer <ems@theus.be>
- *
- */
 class ReportViewType extends ViewType
 {
 
-    public function getLabel()
+    public function getLabel() : string
     {
         return "Report: perform an elasticsearch query and generate a report with a twig template";
     }
     
-    public function getName()
+    public function getName() : string
     {
         return "Report";
     }
     
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options) : void
     {
         parent::buildForm($builder, $options);
         $builder
@@ -61,24 +55,12 @@ class ReportViewType extends ViewType
         ]);
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix() : string
     {
         return 'report_view';
     }
 
-    /**
-     * @param View $view
-     * @param FormFactoryInterface $formFactory
-     * @param Request $request
-     * @return array|mixed
-     * @throws Throwable
-     */
-    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request)
+    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request) : array
     {
 
         try {

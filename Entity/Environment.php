@@ -95,6 +95,13 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     protected $managed;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(name="snapshot", type="boolean", options={"default": false})
+     */
+    protected $snapshot = false;
+
+    /**
      * @ORM\ManyToMany(targetEntity="Revision", mappedBy="environments")
      */
     protected $revisions;
@@ -401,6 +408,30 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     public function getManaged()
     {
         return $this->managed;
+    }
+
+    /**
+     * Set snapshot
+     *
+     * @param boolean $snapshot
+     *
+     * @return Environment
+     */
+    public function setSnapshot($snapshot)
+    {
+        $this->snapshot = $snapshot;
+
+        return $this;
+    }
+
+    /**
+     * Get snapshot
+     *
+     * @return bool
+     */
+    public function getSnapshot()
+    {
+        return $this->snapshot;
     }
 
     /**

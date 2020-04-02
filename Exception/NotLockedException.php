@@ -19,4 +19,9 @@ class NotLockedException extends \Exception
     {
         return $this->revision;
     }
+
+    public function __toString()
+    {
+        return parent::getMessage();
+    }
 }

@@ -9,41 +9,20 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- * It's the mother class of all specific DataField used in eMS
- *
- * @author Mathieu De Keyzer <ems@theus.be>
- *
- */
 class KeywordsViewType extends ViewType
 {
 
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
-    public function getLabel()
+    public function getLabel() : string
     {
         return "Keywords: a view where all properties of kind (such as keyword) are listed on a single page";
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
-    public function getName()
+    public function getName() : string
     {
         return "Keywords";
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options) : void
     {
         parent::buildForm($builder, $options);
         $builder
@@ -58,24 +37,18 @@ class KeywordsViewType extends ViewType
         ]);
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix() : string
     {
         return 'keywords_view';
     }
     
 
-    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request)
+    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request) : array
     {
         
         $searchQuery = [
             'index' => $view->getContentType()->getEnvironment()->getAlias(),
             'type' => $view->getContentType()->getName(),
-//             'search_type' => 'count',
             'body' => $view->getOptions()['aggsQuery']
         ];
         

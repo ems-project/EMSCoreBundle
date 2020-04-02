@@ -18,7 +18,7 @@ use EMS\CoreBundle\Service\Mapping;
 class Revision
 {
     /**
-     * @var int
+     * @var null|int
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
@@ -41,7 +41,7 @@ class Revision
     private $modified;
 
     /**
-     * @var \DateTime
+     * @var null|\DateTime
      *
      * @ORM\Column(name="auto_save_at", type="datetime", nullable=true)
      */
@@ -73,7 +73,7 @@ class Revision
     private $version;
     
     /**
-     * @var string
+     * @var null|string
      *
      * @ORM\Column(name="ouuid", type="string", length=255, nullable=true, options={"collation":"utf8_bin"})
      */
@@ -101,14 +101,14 @@ class Revision
     private $draft;
     
     /**
-     * @var string
+     * @var null|string
      *
      * @ORM\Column(name="finalized_by", type="string", length=255, nullable=true)
      */
     private $finalizedBy;
 
     /**
-     * @var \DateTime
+     * @var null|\DateTime
      *
      * @ORM\Column(name="finalized_date", type="datetime", nullable=true)
      */
@@ -127,21 +127,21 @@ class Revision
     private $deletedBy;
     
     /**
-     * @var string
+     * @var null|string
      *
      * @ORM\Column(name="lock_by", type="string", length=255, nullable=true)
      */
     private $lockBy;
 
     /**
-     * @var string
+     * @var null|string
      *
      * @ORM\Column(name="auto_save_by", type="string", length=255, nullable=true)
      */
     private $autoSaveBy;
 
     /**
-     * @var \DateTime
+     * @var null|\DateTime
      *
      * @ORM\Column(name="lock_until", type="datetime", nullable=true)
      */
@@ -168,7 +168,7 @@ class Revision
     private $rawData;
 
     /**
-     * @var array
+     * @var null|array
      *
      * @ORM\Column(name="auto_save", type="json_array", nullable=true)
      */
@@ -407,6 +407,25 @@ class Revision
         return $draft;
     }
 
+    public function clone(): self
+    {
+        $clone = clone $this;
+        $clone->id = null;
+        $clone->ouuid = null;
+        $clone->autoSaveAt = null;
+        $clone->autoSaveBy = null;
+        $clone->autoSave = null;
+        $clone->lockBy = null;
+        $clone->lockUntil = null;
+        $clone->finalizedBy = null;
+        $clone->finalizedDate = null;
+        $clone->startTime = new \DateTime('now');
+        $clone->environments = new ArrayCollection(); //clear publications
+        $clone->notifications = new ArrayCollection(); //clear notifications
+
+        return $clone;
+    }
+
     /**
      * Close a revision
      *
@@ -439,13 +458,8 @@ class Revision
         $this->allFieldsAreThere = !empty($allFieldsAreThere);
         return $this;
     }
-    
-    /**
-     * Get id
-     *
-     * @return int
-     */
-    public function getId()
+
+    public function getId() : ?int
     {
         return $this->id;
     }

@@ -65,7 +65,7 @@ class NotificationController extends AppController
         /** @var RevisionRepository $repositoryRev */
         $repositoryRev = $em->getRepository('EMSCoreBundle:Revision');
         /** @var Revision|null $revision */
-        $revision = $repositoryRev->findByOuuidAndContentTypeAndEnvironnement($ct, $ouuid, $env);
+        $revision = $repositoryRev->findByOuuidAndContentTypeAndEnvironment($ct, $ouuid, $env);
         if ($revision === null) {
             throw new NotFoundHttpException('Unknown revision');
         }

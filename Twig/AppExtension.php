@@ -22,6 +22,7 @@ use EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory;
 use EMS\CoreBundle\Repository\I18nRepository;
 use EMS\CoreBundle\Repository\SequenceRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
+use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\FileService;
 use EMS\CoreBundle\Service\UserService;
@@ -95,6 +96,7 @@ class AppExtension extends \Twig_Extension
             new TwigFunction('get_content_types', array($this, 'getContentTypes')),
             new TwigFunction('cant_be_finalized', array($this, 'cantBeFinalized')),
             new TwigFunction('get_default_environments', array($this, 'getDefaultEnvironments')),
+            new TwigFunction('emsco_get_environments', array($this, 'getEnvironments')),
             new TwigFunction('sequence', array($this, 'getSequenceNextValue')),
             new TwigFunction('diff_text', array($this, 'diffText'), ['is_safe' => ['html']]),
             new TwigFunction('diff', array($this, 'diff'), ['is_safe' => ['html']]),
@@ -122,8 +124,6 @@ class AppExtension extends \Twig_Extension
      */
     public function getFilters()
     {
-
-
         return array(
             new TwigFilter('searches', array($this, 'searchesList')),
             new TwigFilter('url_generator', array($this, 'toAscii')),
@@ -165,7 +165,7 @@ class AppExtension extends \Twig_Extension
             new TwigFilter('get_file', array($this, 'getFile')),
             new TwigFilter('get_field_by_path', array($this, 'getFieldByPath')),
             new TwigFilter('json_decode', array($this, 'jsonDecode')),
-
+            new TwigFilter('get_revision_id', [RevisionRuntime::class, 'getRevisionId']),
         );
     }
 
@@ -218,12 +218,10 @@ class AppExtension extends \Twig_Extension
         return json_decode($json, $assoc, $depth, $options);
     }
 
-
     public function getFieldByPath(ContentType $contentType, $path, $skipVirtualFields = false)
     {
         return $this->contentTypeService->getChildByPath($contentType->getFieldType(), $path, $skipVirtualFields);
     }
-
 
     public function getFile($hash, $cacheContext = false)
     {
@@ -1124,6 +1122,11 @@ class AppExtension extends \Twig_Extension
             }
         }
         return $defaultEnvironments;
+    }
+
+    public function getEnvironments()
+    {
+        return $this->environmentService->getEnvironments();
     }
 
     public function getEnvironment($name)

@@ -16,41 +16,19 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Throwable;
 
-/**
- * An export view plugin
- *
- * @author Mathieu De Keyzer <ems@theus.be>
- *
- */
 class ExportViewType extends ViewType
 {
-    
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
-    public function getLabel()
+    public function getLabel() : string
     {
         return "Export: perform an elasticsearch query and generate a export with a twig template";
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
-    public function getName()
+    public function getName() : string
     {
         return "Export";
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options) : void
     {
         parent::buildForm($builder, $options);
         $builder
@@ -121,24 +99,13 @@ class ExportViewType extends ViewType
         ]);
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix() : string
     {
         return 'export_view';
     }
 
 
-    /**
-     * @param View $view
-     * @param Request $request
-     * @return Response
-     * @throws Throwable
-     */
-    public function generateResponse(View $view, Request $request)
+    public function generateResponse(View $view, Request $request) : Response
     {
         $parameters = $this->getParameters($view, $this->formFactory, $request);
 
@@ -187,14 +154,7 @@ class ExportViewType extends ViewType
         return $response;
     }
   
-    /**
-     * @param View $view
-     * @param FormFactoryInterface $formFactory
-     * @param Request $request
-     * @return array|mixed
-     * @throws Throwable
-     */
-    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request)
+    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request) : array
     {
         
         try {

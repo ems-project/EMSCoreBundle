@@ -12,7 +12,6 @@ use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\AssetService;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
-use EMS\CoreBundle\Service\ElasticsearchService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\HelperService;
 use EMS\CoreBundle\Service\JobService;

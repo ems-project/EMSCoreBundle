@@ -65,25 +65,25 @@ class NatureController extends AppController
             ]);
         }
 
-        $search = $this->elasticsearchClient->searchByContentType(
+        $searchResponse = $this->elasticsearchClient->searchByContentType(
             $contentType->getEnvironment()->getAlias(),
             $contentType->getName(),
             ['sort' => $contentType->getOrderField()],
             self::MAX_ELEM
         );
 
-        if ($search->getTotal() > self::MAX_ELEM) {
+        if ($searchResponse->getTotal() > self::MAX_ELEM) {
             $this->getLogger()->error('log.nature.too_many_documents', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                 'order_field_name' => $contentType->getOrderField(),
-                'total' => $search->getTotal(),
+                'total' => $searchResponse->getTotal(),
             ]);
         }
 
         $data = [];
 
         $form = $this->createForm(ReorderType::class, $data, [
-            'result' => $search->toArray(),
+            'result' => $searchResponse->toArray(),
         ]);
 
 
@@ -124,7 +124,7 @@ class NatureController extends AppController
         return $this->render('@EMSCore/nature/reorder.html.twig', [
             'contentType' => $contentType,
             'form' => $form->createView(),
-            'result' => $search->toArray(),
+            'result' => $searchResponse->toArray(),
         ]);
     }
 }

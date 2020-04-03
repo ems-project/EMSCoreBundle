@@ -515,9 +515,9 @@ services:
     ems.command.revision.copy:
         class: EMS\CoreBundle\Command\RevisionCopyCommand
         arguments:
+            - '@ems.elasticsearch.client'
             - '@ems.factory.revision_copy_context'
             - '@ems.service.revision_copy'
-            - '@ems.service.elasticsearch'
         tags:
             - { name: console.command }
     ems.factory.revision_copy_context:

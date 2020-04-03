@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service\Revision\Copy;
 
-use EMS\CommonBundle\Elasticsearch\Document\DocumentCollectionInterface;
+use EMS\CommonBundle\Contracts\Elasticsearch\Document\DocumentCollectionInterface;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\Revision\RevisionService;

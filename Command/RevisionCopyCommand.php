@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command;
 
 use EMS\CommonBundle\Command\CommandInterface;
-use EMS\CommonBundle\Elasticsearch\Document\DocumentCollectionInterface;
+use EMS\CommonBundle\Contracts\Elasticsearch\ClientInterface;
+use EMS\CommonBundle\Contracts\Elasticsearch\Document\DocumentCollectionInterface;
 use EMS\CoreBundle\Entity\Revision;
-use EMS\CoreBundle\Service\ElasticsearchService;
 use EMS\CoreBundle\Service\Revision\Copy\CopyContext;
 use EMS\CoreBundle\Service\Revision\Copy\CopyContextFactory;
 use EMS\CoreBundle\Service\Revision\Copy\CopyService;
@@ -20,12 +20,12 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class RevisionCopyCommand extends Command implements CommandInterface
 {
+    /** @var ClientInterface */
+    private $client;
     /** @var CopyContextFactory */
     private $copyContextFactory;
     /** @var CopyService */
     private $copyService;
-    /** @var ElasticsearchService */
-    private $elasticsearchService;
     /** @var SymfonyStyle */
     private $io;
     /** @var Revision[] */
@@ -39,14 +39,14 @@ final class RevisionCopyCommand extends Command implements CommandInterface
     private const OPTION_BULK_SIZE = 'bulk-size';
 
     public function __construct(
+        ClientInterface $client,
         CopyContextFactory $copyRequestFactory,
-        CopyService $copyService,
-        ElasticsearchService $elasticsearchService
+        CopyService $copyService
     ) {
         parent::__construct();
+        $this->client = $client;
         $this->copyContextFactory = $copyRequestFactory;
         $this->copyService = $copyService;
-        $this->elasticsearchService = $elasticsearchService;
     }
 
     protected function configure()
@@ -92,10 +92,9 @@ final class RevisionCopyCommand extends Command implements CommandInterface
             $input->getArgument(self::ARG_JSON_MERGE) ?? ''
         );
 
-        $request = $copyContext->makeRequest();
-        $request->setSize((int) $input->getOption(self::OPTION_BULK_SIZE));
+        $size = (int) $input->getOption(self::OPTION_BULK_SIZE);
 
-        foreach ($this->elasticsearchService->scroll($request) as $i => $response) {
+        foreach ($this->client->scroll($copyContext->getIndex(), $copyContext->getBody(), $size) as $i => $response) {
             if (0 === $i) {
                 $this->io->note(sprintf('Found %s documents', $response->getTotal()));
             }

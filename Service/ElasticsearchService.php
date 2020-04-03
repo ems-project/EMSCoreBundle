@@ -3,10 +3,6 @@
 namespace EMS\CoreBundle\Service;
 
 use Elasticsearch\Client;
-use EMS\CommonBundle\Elasticsearch\Request\RequestInterface;
-use EMS\CommonBundle\Elasticsearch\Request\ScrollRequest;
-use EMS\CommonBundle\Elasticsearch\Response\Response;
-use EMS\CommonBundle\Elasticsearch\Response\ResponseInterface;
 use EMS\CoreBundle\Exception\SingleResultException;
 use EMS\CommonBundle\Common\Document;
 use EMS\CommonBundle\Helper\EmsFields;
@@ -244,22 +240,5 @@ class ElasticsearchService
     public function withAllMapping()
     {
         return version_compare($this->getVersion(), '5.6') < 0;
-    }
-
-    /**
-     * @return iterable|ResponseInterface[]
-     */
-    public function scroll(RequestInterface $request): iterable
-    {
-        $scrollResponse = new Response($this->client->search($request->toArray()));
-
-        while ($scrollResponse->hasDocuments()) {
-            yield $scrollResponse;
-
-            $scrollResponse = new Response($this->client->scroll([
-                'scroll_id' =>  $scrollResponse->getScrollId(),
-                'scroll' => $request->getScroll()
-            ]));
-        }
     }
 }

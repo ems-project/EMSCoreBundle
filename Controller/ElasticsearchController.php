@@ -145,11 +145,11 @@ class ElasticsearchController extends AppController
                 $globalStatus = $health->getStatus();
                 if ('red' === $globalStatus) {
                     $this->getLogger()->error('log.elasticsearch.cluster_red', [
-                        'color_status' => $health['status'],
+                        'color_status' => $globalStatus,
                     ]);
                 } else {
                     $this->getLogger()->warning('log.elasticsearch.cluster_yellow', [
-                        'color_status' => $health['status'],
+                        'color_status' => $globalStatus,
                     ]);
                 }
             }

@@ -349,9 +349,6 @@ class ElasticsearchController extends AppController
                 'id' => $searchId,
             ]);
 
-            $params = [];
-
-
             /**@var Search $search */
             if ($search) {
                 $em->detach($search);
@@ -372,32 +369,25 @@ class ElasticsearchController extends AppController
                         }
                     }
                 }
-                $body = $this->getSearchService()->generateSearchBody($search);
-                $params['body'] = $body;
 
-                /** @var Client $client */
-                $client = $this->getElasticsearch();
+                $searchRequest = $this->elasticsearchClient->createSearchRequest();
+                $searchRequest
+                    ->setContentTypes($search->getContentTypes())
+                    ->setBody($this->getSearchService()->generateSearchBody($search))
+                    ->setSize($pageSize)
+                    ->setPage($page);
 
-
-                $selectedEnvironments = [];
                 if (!empty($search->getEnvironments())) {
                     foreach ($search->getEnvironments() as $envName) {
                         $temp = $this->getEnvironmentService()->getAliasByName($envName);
                         if ($temp) {
-                            $selectedEnvironments[] = $temp->getAlias();
+                            $searchRequest->addIndex($temp->getAlias());
                         }
                     }
                 }
 
-                $params['index'] = $selectedEnvironments;
-                $params['type'] = $search->getContentTypes();
-                $params['size'] = $pageSize;
-                $params['from'] = ($page - 1) * $pageSize;
-
-                $results = $client->search($params);
-
                 return $this->render('@EMSCore/elasticsearch/search.json.twig', [
-                    'results' => $results,
+                    'results' => $this->elasticsearchClient->searchByRequest($searchRequest)->toArray(),
                     'types' => $allTypes,
                 ]);
             }

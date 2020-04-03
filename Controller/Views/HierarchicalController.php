@@ -22,14 +22,11 @@ class HierarchicalController extends AppController
         $ouuid = explode(':', $key);
         $contentType = $this->getContentTypeService()->getByName($ouuid[0]);
         $index = $this->getContentTypeService()->getIndex($contentType);
-        $item = $this->getElasticsearch()->get([
-                'index' => $index,
-                'type' => $ouuid[0],
-                'id' => $ouuid[1],
-        ]);
+
+        $document = $this->elasticsearchClient->getDocument($index, $contentType, $ouuid[1]);
         
         return $this->render('@EMSCore/view/custom/hierarchical_add_item.html.twig', [
-                'data' => $item['_source'],
+                'data' => $document ? $document->getSource()->toArray() : [],
                 'view' => $view,
                 'contentType' => $contentType,
                 'key' => $ouuid,

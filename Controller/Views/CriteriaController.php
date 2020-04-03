@@ -340,9 +340,6 @@ class CriteriaController extends AppController
      */
     public function generateCriteriaTable(View $view, CriteriaUpdateConfig $criteriaUpdateConfig)
     {
-        /** @var Client $client */
-        $client = $this->getElasticsearch();
-        
         $contentType = $view->getContentType();
         
 //        $criteriaField = $contentType->getFieldType();
@@ -422,17 +419,17 @@ class CriteriaController extends AppController
                 $table[$rowItem->getValue()][$columnItem->getValue()] = null;
             }
         }
-        
-        $result = $client->search([
-            'index' => $contentType->getEnvironment()->getAlias(),
-            'type' => $contentType->getName(),
-            'body' => $body,
-            'size' => 500, //is it enough?
-        ]);
 
-        if ($result['hits']['total'] > count($result['hits']['hits'])) {
+        $searchResponse = $this->elasticsearchClient->searchByContentType(
+            $contentType->getEnvironment()->getAlias(),
+            $contentType->getName(),
+            $body,
+            500
+        );
+
+        if ($searchResponse->getTotal() > $searchResponse->getTotalDocuments()) {
             $this->getLogger()->error('log.view.criteria.too_many_criteria', [
-                'total' => count($result['hits']['hits']),
+                'total' => $searchResponse->getTotalDocuments(),
             ]);
         }
         
@@ -451,10 +448,11 @@ class CriteriaController extends AppController
         $objectChoiceListFactory = $this->get('ems.form.factories.objectChoiceListFactory');
         $loader = $objectChoiceListFactory->createLoader($loaderTypes, false);
         
-        foreach ($result['hits']['hits'] as $item) {
-            $value = $item['_type'] . ':' . $item['_id'];
+        foreach ($searchResponse->getDocumentCollection() as $document) {
+            $source = $document->getSource();
+            $value = $document->getEmsId();
             if ($targetField) {
-                $value = $item['_source'][$targetField->getName()];
+                $value = $source->get($targetField->getName());
             }
             
             $choices = $loader->loadChoiceList()->loadChoices([$value]);
@@ -463,19 +461,19 @@ class CriteriaController extends AppController
                 $choice = $choices[$value];
                 
                 if ($view->getOptions()['criteriaMode'] == 'internal') {
-                    foreach ($item['_source'][$criteriaFieldName] as $criterion) {
+                    foreach ($source->get($criteriaFieldName, []) as $criterion) {
                         $this->addToTable($choice, $table, $criterion, array_keys($criteriaChoiceLists), $criteriaChoiceLists, $criteriaUpdateConfig);
                     }
                 } else if ($view->getOptions()['criteriaMode'] == 'another') {
-                    $this->addToTable($choice, $table, $item['_source'], array_keys($criteriaChoiceLists), $criteriaChoiceLists, $criteriaUpdateConfig);
+                    $this->addToTable($choice, $table, $source->toArray(), array_keys($criteriaChoiceLists), $criteriaChoiceLists, $criteriaUpdateConfig);
                 } else {
                     throw new Exception('Should never happen');
                 }
             } else {
                 $this->getLogger()->warning('log.view.criteria.document_key_not_found', [
                     'document_reference' => $value,
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $item['_type'],
-                    EmsFields::LOG_OUUID_FIELD => $item['_id'],
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $document->getContentType(),
+                    EmsFields::LOG_OUUID_FIELD => $document->getId(),
                 ]);
             }
         }
@@ -617,15 +615,14 @@ class CriteriaController extends AppController
                 ];
             }
         }
-        
-        $result = $this->getElasticsearch()->search([
-            'body' => $body,
-            'index' => $view->getContentType()->getEnvironment()->getAlias(),
-            'type' => $view->getContentType()->getName()
-                
-        ]);
-        
-        if ($result['hits']['total'] == 0) {
+
+        $searchResponse = $this->elasticsearchClient->searchByContentType(
+            $view->getContentType()->getEnvironment()->getAlias(),
+            $view->getContentType()->getName(),
+            $body
+        );
+
+        if (!$searchResponse->hasDocuments()) {
             $revision = false;
             foreach ($loadedRevision as $item) {
                 $found = true;
@@ -674,13 +671,15 @@ class CriteriaController extends AppController
             ]);
 
             return $revision;
-        } else if ($result['hits']['total'] == 1) {
+        } else if ($searchResponse->getTotal() == 1) {
             /**@var Revision $revision*/
             $revision = null;
-            if (isset($loadedRevision[$result['hits']['hits'][0]['_id']])) {
-                $revision = $loadedRevision[$result['hits']['hits'][0]['_id']];
+            $firstId = $searchResponse->getDocumentCollection()->first()->getId();
+
+            if (isset($loadedRevision[$firstId])) {
+                $revision = $loadedRevision[$firstId];
             } else {
-                $revision = $this->getDataService()->initNewDraft($view->getContentType()->getName(), $result['hits']['hits'][0]['_id']);
+                $revision = $this->getDataService()->initNewDraft($view->getContentType()->getName(), $firstId);
             }
 
             $multipleValueToAdd = $rawData[$multipleField];
@@ -713,18 +712,9 @@ class CriteriaController extends AppController
             }
             return $revision;
         } else {
-            $message = false;
-            foreach ($result['hits']['hits'] as $hit) {
-                if ($message) {
-                    $message .= ', ';
-                } else {
-                    $message = '';
-                }
-                $message .= $hit['_id'];
-            }
             $this->getLogger()->error('log.view.criteria.too_may_criteria', [
-                'total' => $result['hits']['total'],
-                'message' => $message,
+                'total' => $searchResponse->getTotal(),
+                'message' => implode(', ', $searchResponse->getDocumentCollection()->getIds()),
             ]);
         }
         return null;
@@ -915,31 +905,32 @@ class CriteriaController extends AppController
                     ]
             ];
         }
-        
-        $result = $this->getElasticsearch()->search([
-                'body' => $body,
-                'index' => $view->getContentType()->getEnvironment()->getAlias(),
-                'type' => $view->getContentType()->getName()
-    
-        ]);
-    
-        if ($result['hits']['total'] == 0) {
+
+        $searchResponse = $this->elasticsearchClient->searchByContentType(
+            $view->getContentType()->getEnvironment()->getAlias(),
+            $view->getContentType()->getName(),
+            $body
+        );
+
+        if (!$searchResponse->hasDocuments()) {
             $this->getLogger()->warning('log.view.criteria.not_found', [
                 'field_name' => $targetFieldName,
             ]);
-        } else if ($result['hits']['total'] == 1) {
+        } else if ($searchResponse->getTotal() == 1) {
             /**@var Revision $revision*/
             $revision = null;
-            if (isset($loadedRevision[$result['hits']['hits'][0]['_id']])) {
-                $revision = $loadedRevision[$result['hits']['hits'][0]['_id']];
+            $firstId = $searchResponse->getDocumentCollection()->first()->getId();
+
+            if (isset($loadedRevision[$firstId])) {
+                $revision = $loadedRevision[$firstId];
             } else {
-                $revision = $this->getDataService()->getNewestRevision($view->getContentType()->getName(), $result['hits']['hits'][0]['_id']);
+                $revision = $this->getDataService()->getNewestRevision($view->getContentType()->getName(), $firstId);
             }
             
             $multipleValueToRemove = $rawData[$multipleField];
             $rawData = $revision->getRawData();
             if (($key = array_search($multipleValueToRemove, $rawData[$multipleField])) !== false) {
-                $revision = $this->getDataService()->initNewDraft($view->getContentType()->getName(), $result['hits']['hits'][0]['_id']);
+                $revision = $this->getDataService()->initNewDraft($view->getContentType()->getName(), $firstId);
                 unset($rawData[$multipleField][$key]);
                 $rawData[$multipleField] = array_values($rawData[$multipleField]);
                 $revision->setRawData($rawData);
@@ -967,18 +958,9 @@ class CriteriaController extends AppController
                 ]);
             }
         } else {
-            $message = false;
-            foreach ($result['hits']['hits'] as $hit) {
-                if ($message) {
-                    $message .= ', ';
-                } else {
-                    $message = '';
-                }
-                $message .= $hit['_id'];
-            }
             $this->getLogger()->notice('log.view.criteria.too_many_criteria', [
-                'total' => $result['hits']['total'],
-                'message' => $message,
+                'total' => $searchResponse->getTotal(),
+                'message' => implode(', ', $searchResponse->getDocumentCollection()->getIds()),
             ]);
         }
         return null;

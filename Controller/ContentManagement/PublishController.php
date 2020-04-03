@@ -102,38 +102,36 @@ class PublishController extends AppController
         $body = $this->getSearchService()->generateSearchBody($search);
         $form = $builder->getForm();
         $form->handleRequest($request);
-        
-        $counter = $this->getElasticsearch()->search([
-                'type' => $contentType->getName(),
-                'index' => $environment->getAlias(),
-                'body' => $body,
-                'size' => 0,
-        ]);
-        
-        $total = $counter['hits']['total'];
-        
-    
-        
-        
+
+        $total = $this->elasticsearchClient->searchByContentType(
+            $environment->getAlias(),
+            $contentType->getName(),
+            $body,
+            0
+        )->getTotal();
+
         if ($form->isSubmitted()) {
             $toEnvironment = $this->getEnvironmentService()->getAliasByName($form->get('toEnvironment')->getData());
             $body['sort'] = ['_uid' => 'asc'];
-            for ($from = 0; $from < $total; $from = $from + 50) {
-                $scroll = $this->getElasticsearch()->search([
-                    'type' => $contentType->getName(),
-                    'index' => $environment->getAlias(),
-                    'size' => 50,
-                    'from' => $from,
-                    //'preference' => '_primary', //http://stackoverflow.com/questions/10836142/elasticsearch-duplicate-results-with-paging
-                ]);
-                
-                foreach ($scroll['hits']['hits'] as $hit) {
-                    $revision = $this->getDataService()->getRevisionByEnvironment($hit['_id'], $this->getContentTypeService()->getByName($hit['_type']), $environment);
+            $scroll = $this->elasticsearchClient->scrollByContentType(
+                $environment->getAlias(),
+                $contentType->getName(),
+                $body,
+                50
+            );
+
+            foreach ($scroll as $searchResponse) {
+                foreach ($searchResponse->getDocumentCollection() as $document) {
+                    $revision = $this->getDataService()->getRevisionByEnvironment(
+                        $document->getId(),
+                        $this->getContentTypeService()->getByName($document->getContentType()),
+                        $environment
+                    );
                     $this->getPublishService()->publish($revision, $toEnvironment);
                 }
             }
             
-             return $this->redirectToRoute('elasticsearch.search', $requestBis->query->all());
+            return $this->redirectToRoute('elasticsearch.search', $requestBis->query->all());
         }
             
     

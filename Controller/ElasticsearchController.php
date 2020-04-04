@@ -370,8 +370,8 @@ class ElasticsearchController extends AppController
                     }
                 }
 
-                $searchRequest = $this->elasticsearchClient->createSearchRequest();
-                $searchRequest
+                $searchRequestSearchId = $this->elasticsearchClient->createSearchRequest();
+                $searchRequestSearchId
                     ->setContentTypes($search->getContentTypes())
                     ->setBody($this->getSearchService()->generateSearchBody($search))
                     ->setSize($pageSize)
@@ -381,13 +381,13 @@ class ElasticsearchController extends AppController
                     foreach ($search->getEnvironments() as $envName) {
                         $temp = $this->getEnvironmentService()->getAliasByName($envName);
                         if ($temp) {
-                            $searchRequest->addIndex($temp->getAlias());
+                            $searchRequestSearchId->addIndex($temp->getAlias());
                         }
                     }
                 }
 
                 return $this->render('@EMSCore/elasticsearch/search.json.twig', [
-                    'results' => $this->elasticsearchClient->searchByRequest($searchRequest)->toArray(),
+                    'results' => $this->elasticsearchClient->searchByRequest($searchRequestSearchId)->toArray(),
                     'types' => $allTypes,
                 ]);
             }
@@ -434,19 +434,20 @@ class ElasticsearchController extends AppController
                     }
                 }
             }
-            $params = [
-                'index' => array_unique($aliases),
-                'type' => array_unique($types),
-                'size' => $pageSize,
-                'from' => ($page - 1) * $pageSize,
-                'body' => [
-                    'query' => [
-                        'bool' => [
-                            'must' => []
-                        ]
+
+            $searchRequest = $this->elasticsearchClient->createSearchRequest();
+            $searchRequest
+                ->setIndexes($aliases)
+                ->setContentTypes($types)
+                ->setSize($pageSize)
+                ->setPage($page);
+
+            $body = [
+                'query' => [
+                    'bool' => [
+                        'must' => []
                     ]
                 ]
-
             ];
 
             $matches = [];
@@ -454,7 +455,7 @@ class ElasticsearchController extends AppController
                 $filterType = substr($matches[0], 0, strlen($matches[0]) - 1);
                 if (in_array($filterType, $types, true)) {
                     $pattern = (string) substr($pattern, strlen($matches[0]));
-                    $params['type'] = $filterType;
+                    $searchRequest->setContentTypes([$filterType]);
                 }
             }
 
@@ -469,7 +470,7 @@ class ElasticsearchController extends AppController
                     $ouuids[] = $matches['ouuid'];
                 }
 
-                $params['body']['query']['bool']['must'][] = [
+                $body['query']['bool']['must'][] = [
                     'terms' => [
                         '_id' => $ouuids,
                     ]
@@ -480,7 +481,7 @@ class ElasticsearchController extends AppController
             $patterns = explode(' ', $pattern);
 
             for ($i = 0; $i < (count($patterns) - 1); ++$i) {
-                $params['body']['query']['bool']['must'][] = [
+                $body['query']['bool']['must'][] = [
                     'query_string' => [
                         'default_field' => '_all',
                         'query' => $patterns[$i],
@@ -488,7 +489,7 @@ class ElasticsearchController extends AppController
                 ];
             }
 
-            $params['body']['query']['bool']['must'][] = [
+            $body['query']['bool']['must'][] = [
                 'query_string' => [
                     'default_field' => '_all',
                     'query' => '*' . $patterns[$i] . '*',
@@ -524,13 +525,12 @@ class ElasticsearchController extends AppController
                         }
                     }
                     $body = $this->getSearchService()->generateSearchBody($search);
-                    $params['body'] = $body;
                 } else {
                     /**@var ContentTypeService $contentTypeService */
                     $contentTypeService = $this->getContentTypeService();
                     $contentType = $contentTypeService->getByName($types[0]);
                     if ($contentType && $contentType->getOrderField()) {
-                        $params['body']['sort'] = [
+                        $body['sort'] = [
                             $contentType->getOrderField() => [
                                 'order' => 'asc',
                                 'missing' => '_last',
@@ -541,11 +541,11 @@ class ElasticsearchController extends AppController
 
 
                 if ($contentType && $contentType->getLabelField()) {
-                    $params['_source'] = [$contentType->getLabelField()];
+                    $searchRequest->setSourceIncludes([$contentType->getLabelField()]);
                 }
 
                 if ($category && $contentType && $contentType->getCategoryField()) {
-                    $params['body']['query']['bool']['must'][] = [
+                    $body['query']['bool']['must'][] = [
                         'term' => [
                             $contentType->getCategoryField() => [
                                 'value' => $category
@@ -559,12 +559,8 @@ class ElasticsearchController extends AppController
             //http://blog.alterphp.com/2012/08/how-to-deal-with-asynchronous-request.html
             $request->getSession()->save();
 
-            /** @var Client $client */
-            $client = $this->getElasticsearch();
-
             $this->getLogger()->debug('Before search api');
-            $results = $client->search($params);
-
+            $results = $this->elasticsearchClient->searchByRequest($searchRequest)->toArray();
             $this->getLogger()->debug('After search api');
         } else {
             //there is no type matching this request

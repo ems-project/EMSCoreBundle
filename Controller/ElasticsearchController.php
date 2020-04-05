@@ -560,6 +560,7 @@ class ElasticsearchController extends AppController
             $request->getSession()->save();
 
             $this->getLogger()->debug('Before search api');
+            $searchRequest->setBody($body);
             $results = $this->elasticsearchClient->searchByRequest($searchRequest)->toArray();
             $this->getLogger()->debug('After search api');
         } else {

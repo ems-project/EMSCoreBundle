@@ -621,6 +621,7 @@ class CriteriaController extends AppController
             $view->getContentType()->getName(),
             $body
         );
+        $firstDocument = $searchResponse->getDocumentCollection()->first();
 
         if (!$searchResponse->hasDocuments()) {
             $revision = false;
@@ -671,10 +672,10 @@ class CriteriaController extends AppController
             ]);
 
             return $revision;
-        } else if ($searchResponse->getTotal() == 1) {
+        } else if ($searchResponse->getTotal() == 1 && $firstDocument !== null) {
             /**@var Revision $revision*/
             $revision = null;
-            $firstId = $searchResponse->getDocumentCollection()->first()->getId();
+            $firstId = $firstDocument->getId();
 
             if (isset($loadedRevision[$firstId])) {
                 $revision = $loadedRevision[$firstId];
@@ -911,15 +912,16 @@ class CriteriaController extends AppController
             $view->getContentType()->getName(),
             $body
         );
+        $firstDocument = $searchResponse->getDocumentCollection()->first();
 
         if (!$searchResponse->hasDocuments()) {
             $this->getLogger()->warning('log.view.criteria.not_found', [
                 'field_name' => $targetFieldName,
             ]);
-        } else if ($searchResponse->getTotal() == 1) {
+        } else if ($searchResponse->getTotal() == 1 && $firstDocument !== null) {
             /**@var Revision $revision*/
             $revision = null;
-            $firstId = $searchResponse->getDocumentCollection()->first()->getId();
+            $firstId = $firstDocument->getId();
 
             if (isset($loadedRevision[$firstId])) {
                 $revision = $loadedRevision[$firstId];

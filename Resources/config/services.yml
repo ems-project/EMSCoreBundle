@@ -6,6 +6,13 @@ services:
     _defaults:
         public: true
 
+    EMS\CommonBundle\Contracts\Elasticsearch\ClientInterface: '@ems.elasticsearch.client'
+    ems.elasticsearch.client:
+        class: EMS\CommonBundle\Contracts\Elasticsearch\ClientInterface
+        factory: 'ems_common.elasticsearch.client_factory:fromConfig'
+        arguments:
+            - { hosts: "%ems_core.elasticsearch_cluster%" }
+
     app.twig_extension: '@EMS\CoreBundle\Twig\AppExtension'
     EMS\CoreBundle\Twig\AppExtension:
         #class: EMS\CoreBundle\Twig\AppExtension
@@ -508,9 +515,9 @@ services:
     ems.command.revision.copy:
         class: EMS\CoreBundle\Command\RevisionCopyCommand
         arguments:
+            - '@ems.elasticsearch.client'
             - '@ems.factory.revision_copy_context'
             - '@ems.service.revision_copy'
-            - '@ems.service.elasticsearch'
         tags:
             - { name: console.command }
     ems.factory.revision_copy_context:

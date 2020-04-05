@@ -2,11 +2,11 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use Elasticsearch\Client;
 use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Service\AliasService;
 use EMS\CoreBundle\Service\IndexService;
+use GuzzleHttp\ClientInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -20,13 +20,14 @@ class IndexController extends AppController
     private $indexService;
 
     public function __construct(
+        ClientInterface $elasticsearchClient,
         IndexService $indexService,
         LoggerInterface $logger,
         FormRegistryInterface $formRegistry,
         RequestRuntime $requestRuntime
     ) {
         $this->logger = $logger;
-        parent::__construct($logger, $formRegistry, $requestRuntime);
+        parent::__construct($elasticsearchClient, $logger, $formRegistry, $requestRuntime);
         $this->indexService = $indexService;
     }
 

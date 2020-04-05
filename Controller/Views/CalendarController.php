@@ -132,21 +132,17 @@ class CalendarController extends AppController
                 ]
             ];
         }
-        
-        
-        $searchQuery = [
-                'index' => $view->getContentType()->getEnvironment()->getAlias(),
-                'type' => $view->getContentType()->getName(),
-                "from" => 0,
-                "size" => 1000,
-                "body" => $body,
-        ];
-        
-        $data = $this->getElasticsearch()->search($searchQuery);
-        
+
+        $searchResponse = $this->elasticsearchClient->searchByContentType(
+            $view->getContentType()->getEnvironment()->getAlias(),
+            $view->getContentType()->getName(),
+            $body,
+            1000
+        );
+
         return $this->render('@EMSCore/view/custom/calendar_search.json.twig', [
                 'success' => true,
-                'data' => $data,
+                'data' => $searchResponse->toArray(),
                 'field' => $view->getContentType()->getFieldType()->__get('ems_' . $view->getOptions()['dateRangeField']),
                 'contentType' => $view->getContentType(),
                 'environment' => $view->getContentType()->getEnvironment(),

@@ -478,11 +478,6 @@ class DataController extends AppController
 
         $dataFields = $this->getDataService()->getDataFieldsStructure($form->get('data'));
 
-
-        /** @var Client $client */
-        $client = $this->getElasticsearch();
-
-
         $searchForm = new Search();
         $searchForm->setContentTypes($this->getContentTypeService()->getAllNames());
         $searchForm->setEnvironments($this->getContentTypeService()->getAllDefaultEnvironmentNames());
@@ -504,20 +499,21 @@ class DataController extends AppController
 
         $searchForm->setMinimumShouldMatch(1);
 
-        $refParams = [
-            '_source' => false,
-            'type' => $searchForm->getContentTypes(),
-            'index' => $revision->getContentType()->getEnvironment()->getAlias(),
-            'size' => 100,
-            'body' => $this->getSearchService()->generateSearchBody($searchForm),
-        ];
+        $searchRequest = $this->elasticsearchClient->createSearchRequest();
+        $searchRequest
+            ->setSourceDisabled(true)
+            ->setSourceIncludes(['month', 'report'])
+            ->setContentTypes($searchForm->getContentTypes())
+            ->setIndexes([$revision->getContentType()->getEnvironment()->getAlias()])
+            ->setSize(100)
+            ->setBody($this->getSearchService()->generateSearchBody($searchForm));
 
         return $this->render('@EMSCore/data/revisions-data.html.twig', [
             'revision' => $revision,
             'revisionsSummary' => $revisionsSummary,
             'availableEnv' => $availableEnv,
             'object' => $revision->getObject($objectArray),
-            'referrers' => $client->search($refParams),
+            'referrers' => $this->elasticsearchClient->searchByRequest($searchRequest)->toArray(),
             'page' => $page,
             'lastPage' => $lastPage,
             'counter' => $counter,

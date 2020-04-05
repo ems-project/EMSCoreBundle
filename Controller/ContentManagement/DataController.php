@@ -543,11 +543,11 @@ class DataController extends AppController
             throw new NotFoundHttpException('Content type ' . $type . ' not found');
         }
 
-        $dataRaw = $this->getElasticsearch()->get([
-            'index' => $this->getContentTypeService()->getIndex($contentType),
-            'id' => $ouuid,
-            'type' => $type,
-        ]);
+        $dataRaw = $this->elasticsearchClient->getDocument(
+            $this->getContentTypeService()->getIndex($contentType),
+            $type,
+            $ouuid
+        )->toArray();
 
         if ($contentType->getAskForOuuid()) {
             $logger->warning('log.data.document.cant_duplicate_when_waiting_ouuid', [
@@ -592,11 +592,11 @@ class DataController extends AppController
             throw new NotFoundHttpException('Content type ' . $type . ' not found');
         }
 
-        $dataRaw = $this->getElasticsearch()->get([
-            'index' => $this->getContentTypeService()->getIndex($contentType),
-            'id' => $ouuid,
-            'type' => $type,
-        ]);
+        $dataRaw = $this->elasticsearchClient->getDocument(
+            $this->getContentTypeService()->getIndex($contentType),
+            $type,
+            $ouuid
+        )->toArray();
 
         $request->getSession()->set('ems_clipboard', $dataRaw['_source']);
 

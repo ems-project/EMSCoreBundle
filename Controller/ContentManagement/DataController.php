@@ -501,7 +501,7 @@ class DataController extends AppController
 
         $searchRequest = $this->elasticsearchClient->createSearchRequest();
         $searchRequest
-            ->setSourceDisabled(true)
+            ->disableSource()
             ->setSourceIncludes(['month', 'report'])
             ->setContentTypes($searchForm->getContentTypes())
             ->setIndexes([$revision->getContentType()->getEnvironment()->getAlias()])

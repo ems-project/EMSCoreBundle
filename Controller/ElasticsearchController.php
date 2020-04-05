@@ -779,7 +779,6 @@ class ElasticsearchController extends AppController
             $searchRequest = $this->elasticsearchClient->createSearchRequest();
             $searchRequest
                 ->setSourceExcludes(['*.content', '*.attachement'])
-                ->setVersion(true)
                 ->setIndexes(empty($selectedEnvironments) ? array_keys($environments) : $selectedEnvironments)
                 ->setContentTypes(empty($search->getContentTypes()) ? array_keys($types) : array_values($search->getContentTypes()))
                 ->setSize($this->container->getParameter('ems_core.paging_size'))

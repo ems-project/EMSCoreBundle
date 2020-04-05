@@ -290,13 +290,11 @@ class DataController extends AppController
         }
 
         try {
-            /** @var Client $client */
-            $client = $this->getElasticsearch();
-            $result = $client->get([
-                'index' => $this->getContentTypeService()->getIndex($contentType, $environments[0]),
-                'type' => $type,
-                'id' => $ouuid,
-            ]);
+            $result = $this->elasticsearchClient->getDocument(
+                $this->getContentTypeService()->getIndex($contentType, $environments[0]),
+                $type,
+                $ouuid
+            )->toArray();
         } catch (Throwable $e) {
             throw new NotFoundHttpException($type . ' not found');
         }

@@ -5,27 +5,25 @@ use EMS\CoreBundle\Entity\AuthToken;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 
 class AuthTokenController extends AppController
 {
     /**
      * @Route("/auth-token", name="auth-token", defaults={"_format": "json"}, methods={"POST"})
      */
-    public function postAuthTokensAction(Request $request) : Response
+    public function postAuthTokensAction(Request $request, EncoderFactoryInterface $encoderFactory) : Response
     {
         $loginInfo = json_decode($request->getContent(), true);
-        
 
         $userService = $this->getUserService();
-        $factory = $this->getSecurityEncoder();
-        
         $user = $userService->getUser($loginInfo['username'], false);
         
         if (empty($user)) { //le user n'est pas trouvés
             return $this->invalidCredentials();
         }
         
-        $encoder = $factory->getEncoder($user);
+        $encoder = $encoderFactory->getEncoder($user);
         
         if ($encoder->isPasswordValid($user->getPassword(), $loginInfo['password'], $user->getSalt())) {
             $authToken = new AuthToken($user);

@@ -1,6 +1,8 @@
 CoreBundle
 =============
 
+[Api documentation](../master/Resources/doc/api.md)
+
 Coding standards
 ----------------
 PHP Code Sniffer is available via composer, the standard used is defined in phpcs.xml.diff:

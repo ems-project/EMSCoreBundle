@@ -241,7 +241,7 @@ class FileController extends AppController
                 'success' => true,
                 'asset' => $uploadedAsset,
             ]);
-        } else if ($file->getError()) {
+        } else if ($file && !$file->getError()) {
             $logger->warning('log.file.upload_error', [
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $file->getError()
             ]);

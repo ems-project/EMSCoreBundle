@@ -210,7 +210,7 @@ class FileController extends AppController
         $file = $request->files->get('upload');
         $type = $request->get('type', false);
 
-        if ($file && !$file->getError()) {
+        if ($file && $file->getError()) {
             $name = $file->getClientOriginalName();
 
             if ($type === false) {
@@ -241,7 +241,7 @@ class FileController extends AppController
                 'success' => true,
                 'asset' => $uploadedAsset,
             ]);
-        } else if ($file && !$file->getError()) {
+        } else if ($file && $file->getError()) {
             $logger->warning('log.file.upload_error', [
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $file->getError()
             ]);

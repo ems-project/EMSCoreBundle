@@ -595,7 +595,7 @@ class AppExtension extends \Twig_Extension
      */
     public function toAscii(string $str) : string
     {
-        @trigger_error(sprintf('The "url_generator" Twig filter and the "%s::toAscii" function is deprecated. Used emsco_webalize filter or "%s::webalize" function instead.', AppExtension::class, AppExtension::class, E_USER_DEPRECATED));
+        @trigger_error(sprintf('The "url_generator" Twig filter and the "%s::toAscii" function is deprecated. Used emsco_webalize filter or "%s::webalize" function instead.', AppExtension::class, AppExtension::class), E_USER_DEPRECATED);
         return $this->webalize($str);
     }
 

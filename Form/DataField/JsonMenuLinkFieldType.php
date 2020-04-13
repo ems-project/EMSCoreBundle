@@ -79,7 +79,10 @@ class JsonMenuLinkFieldType extends DataFieldType
                     $label = htmlentities($hit['_source'][$contentType->getLabelField()]);
                 }
                 $label = sprintf('<i class="%s"></i> %s <span class="sr-only">(%s)</span> /', $icon, $label, $hit['_id']);
-                $choices[$label] = $hit['_id'];
+
+                if ($options['allow_link_to_root'] ?? false) {
+                    $choices[$label] = $hit['_id'];
+                }
 
                 $jsonMenu = $this->decoder->jsonMenuDecode($hit['_source'][$options['json_menu_field']] ?? '{}', '/');
                 foreach ($jsonMenu->getUids() as $uid) {
@@ -119,6 +122,7 @@ class JsonMenuLinkFieldType extends DataFieldType
         /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);
         $resolver->setDefault('expanded', false);
+        $resolver->setDefault('allow_link_to_root', false);
         $resolver->setDefault('json_menu_content_type', false);
         $resolver->setDefault('json_menu_field', false);
         $resolver->setDefault('query', false);
@@ -130,6 +134,8 @@ class JsonMenuLinkFieldType extends DataFieldType
         $optionsForm = $builder->get('options');
 
         $optionsForm->get('displayOptions')->add('expanded', CheckboxType::class, [
+            'required' => false,
+        ])->add('allow_link_to_root', CheckboxType::class, [
             'required' => false,
         ])->add('json_menu_content_type', ContentTypePickerType::class, [
             'required' => false,

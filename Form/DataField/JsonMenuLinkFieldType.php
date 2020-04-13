@@ -108,7 +108,7 @@ class JsonMenuLinkFieldType extends DataFieldType
         $view->vars ['attr'] = [
             'data-multiple' => true,
             'data-expanded' => $options['expanded'],
-            'class' => '' . ($options['select2'] ? ' select2' : ''),
+            'class' => 'select2',
         ];
     }
 
@@ -117,7 +117,6 @@ class JsonMenuLinkFieldType extends DataFieldType
         /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);
         $resolver->setDefault('expanded', false);
-        $resolver->setDefault('select2', false);
         $resolver->setDefault('json_menu_content_type', false);
         $resolver->setDefault('json_menu_field', false);
         $resolver->setDefault('query', false);
@@ -129,8 +128,6 @@ class JsonMenuLinkFieldType extends DataFieldType
         $optionsForm = $builder->get('options');
 
         $optionsForm->get('displayOptions')->add('expanded', CheckboxType::class, [
-            'required' => false,
-        ])->add('select2', CheckboxType::class, [
             'required' => false,
         ])->add('json_menu_content_type', ContentTypePickerType::class, [
             'required' => false,

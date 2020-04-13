@@ -19,6 +19,7 @@ use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Helper\ArrayTool;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Storage\StorageManager;
+use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\Environment;
@@ -63,9 +64,13 @@ use Throwable;
 use Twig_Environment;
 use Twig_Error;
 
+/**
+ * @todo Move Revision related logic to RevisionService
+ */
 class DataService
 {
     const ALGO = OPENSSL_ALGO_SHA1;
+    protected const SCROLL_TIMEOUT = '1m';
 
     /** @var resource|false|null */
     private $private_key;
@@ -75,8 +80,13 @@ class DataService
     protected $lockTime;
     /** @var string */
     protected $instanceId;
+
+    //TODO: service should be stateless
     /** @var array */
     private $cacheBusinessKey = [];
+    //TODO: service should be stateless
+    /** @var array */
+    private $cacheOuuids = [];
 
     /** @var Twig_Environment */
     protected $twig;
@@ -114,6 +124,8 @@ class DataService
     protected $logger;
     /** @var StorageManager */
     private $storageManager;
+    /** @var EnvironmentService */
+    private $environmentService;
 
     public function __construct(
         Registry $doctrine,
@@ -135,7 +147,8 @@ class DataService
         Twig_Environment $twig,
         AppExtension $appExtension,
         UserService $userService,
-        RevisionRepository $revisionRepository
+        RevisionRepository $revisionRepository,
+        EnvironmentService $environmentService
     ) {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
@@ -157,6 +170,7 @@ class DataService
         $this->storageManager = $storageManager;
         $this->contentTypeService = $contentTypeService;
         $this->userService = $userService;
+        $this->environmentService = $environmentService;
 
         $this->public_key = null;
         $this->private_key = null;
@@ -342,10 +356,21 @@ class DataService
                             ]
                         ]
 
-                    ]
+                    ],
+                    'size' => 100,
+                    "scroll" => self::SCROLL_TIMEOUT
                 ]);
-                foreach ($result['hits']['hits'] as $hits) {
-                    $businessKeys[$contentType->getName() . ':' . $hits['_id']] = $hits['_source'][$contentType->getBusinessIdField()] ?? $hits['_id'];
+
+                while (count($result['hits']['hits'] ?? []) > 0) {
+                    foreach ($result['hits']['hits'] as $hits) {
+                        $dataLink = $contentType->getName() . ':' . $hits['_id'];
+                        $businessKeys[$dataLink] = $hits['_source'][$contentType->getBusinessIdField()] ?? $hits['_id'];
+                        $this->cacheBusinessKey[$dataLink] = $businessKeys[$dataLink];
+                    }
+                    $result = $this->client->scroll([
+                        'scroll_id' => $result['_scroll_id'],
+                        'scroll' =>  self::SCROLL_TIMEOUT,
+                    ]);
                 }
             }
         }
@@ -843,12 +868,12 @@ class DataService
      * @throws Exception
      * @throws Throwable
      */
-    public function finalizeDraft(Revision $revision, FormInterface &$form = null, $username = null, $computeFields = true)
+    public function finalizeDraft(Revision $revision, ?FormInterface &$form = null, ?string $username = null, bool $computeFields = true)
     {
         if ($revision->getDeleted()) {
             throw new Exception("Can not finalized a deleted revision");
         }
-        if (null == $form && empty($username)) {
+        if (null == $form) {
             if ($revision->getDatafield() == null) {
                 $this->loadDataStructure($revision);
             }
@@ -862,7 +887,6 @@ class DataService
             $username = $this->tokenStorage->getToken()->getUsername();
         }
         $this->lockRevision($revision, null, false, $username);
-
 
         $em = $this->doctrine->getManager();
 
@@ -892,6 +916,7 @@ class DataService
 
         $objectArray = $this->sign($revision);
 
+
         if (empty($form) || $this->isValid($form, $revision->getContentType()->getParentField(), $objectArray)) {
             $objectArray[Mapping::PUBLISHED_DATETIME_FIELD] = (new DateTime())->format(DateTime::ISO8601);
 
@@ -912,7 +937,7 @@ class DataService
                 $config['id'] = $revision->getOuuid();
                 $this->client->index($config);
 
-                $item = $repository->findByOuuidContentTypeAndEnvironnement($revision);
+                $item = $repository->findByOuuidContentTypeAndEnvironment($revision);
                 if ($item) {
                     $this->lockRevision($item, null, false, $username);
                     $previousObjectArray = $item->getRawData();
@@ -1628,6 +1653,8 @@ class DataService
         //$revision->getDataField()->updateDataStructure($this->formRegistry, $revision->getContentType()->getFieldType());
         $object = $revision->getRawData();
         $this->updateDataValue($data, $object);
+        unset($object[Mapping::CONTENT_TYPE_FIELD]);
+        unset($object[Mapping::HASH_FIELD]);
         unset($object[Mapping::FINALIZED_BY_FIELD]);
         unset($object[Mapping::FINALIZATION_DATETIME_FIELD]);
         if (count($object) > 0) {
@@ -1986,5 +2013,180 @@ class DataService
                 ]);
             }
         }
+    }
+
+    public function createAndMapIndex(Environment $environment): void
+    {
+        $indexName = $environment->getAlias() . AppController::getFormatedTimestamp();
+        $this->client->indices()->create([
+            'index' => $indexName,
+            'body' => $this->environmentService->getIndexAnalysisConfiguration(),
+        ]);
+
+        foreach ($this->contentTypeService->getAll() as $contentType) {
+            $this->contentTypeService->updateMapping($contentType, $indexName);
+        }
+
+        $this->client->indices()->putAlias([
+            'index' => $indexName,
+            'name' => $environment->getAlias()
+        ]);
+    }
+
+    public function getDataLinks(string $contentTypesCommaList, array $businessIds): array
+    {
+        $items = [];
+        $ouuids = [];
+        foreach ($businessIds as $businessId) {
+            if (isset($this->cacheOuuids[$contentTypesCommaList][$businessId])) {
+                $ouuids[$businessId] = $this->cacheOuuids[$contentTypesCommaList][$businessId];
+            } else {
+                $items[] = $businessId;
+                $ouuids[$businessId] = $businessId;
+            }
+        }
+
+        foreach (explode(',', $contentTypesCommaList) as $contentTypeName) {
+            $contentType = $this->contentTypeService->getByName($contentTypeName);
+            if ($contentType->getBusinessIdField() && count($ouuids) > 0) {
+                $result = $this->client->search([
+                    'index' => $contentType->getEnvironment()->getAlias(),
+                    'body' => [
+                        'size' => sizeof($ouuids),
+                        '_source' => $contentType->getBusinessIdField(),
+                        'query' => [
+                            'bool' => [
+                                'must' => [
+                                    [
+                                        'term' => [
+                                            '_contenttype' => $contentType->getName()
+                                        ]
+                                    ],
+                                    [
+                                        'terms' => [
+                                            $contentType->getBusinessIdField() => $items
+                                        ]
+                                    ],
+                                ]
+                            ]
+                        ]
+
+                    ],
+                    'size' => 100,
+                    "scroll" => self::SCROLL_TIMEOUT,
+                ]);
+
+                while (count($result['hits']['hits'] ?? []) > 0) {
+                    foreach ($result['hits']['hits'] as $hits) {
+                        $key = sprintf('%s:%s', $contentType->getName(), $hits['_id']);
+                        $ouuids[$hits['_source'][$contentType->getBusinessIdField()]] = $key;
+                        $this->cacheOuuids[$contentTypesCommaList][$contentType->getBusinessIdField()] = $key;
+                    }
+                    $result = $this->client->scroll([
+                        'scroll_id' => $result['_scroll_id'],
+                        'scroll' =>  self::SCROLL_TIMEOUT,
+                    ]);
+                }
+            }
+        }
+        return array_values($ouuids);
+    }
+
+    public function getDataLink(string $contentTypesCommaList, string $businessId): ?string
+    {
+        return $this->getDataLinks($contentTypesCommaList, [$businessId])[0] ?? $businessId;
+    }
+
+
+
+    public function hitFromBusinessIdToDataLink(ContentType $contentType, string $ouuid, array $rawData) : Document
+    {
+        $revision = $this->getEmptyRevision($contentType, null);
+        $revision->setRawData($rawData);
+        $revision->setOuuid($ouuid);
+        $revisionType = $this->formFactory->create(RevisionType::class, $revision, ['migration' => true, 'raw_data' => $revision->getRawData(), 'with_warning' => false]);
+        $result = $this->walkRecursive($revisionType->get('data'), $rawData, function (string $name, $data, DataFieldType $dataFieldType, DataField $dataField) {
+            if ($data !== null && (!is_array($data) || count($data) > 0)) {
+                if ($dataFieldType->isVirtual()) {
+                    return $data;
+                }
+
+                if (!$dataFieldType instanceof DataLinkFieldType) {
+                    return [$name => $data];
+                }
+
+                $typesList = $dataField->getFieldType()->getDisplayOption('type');
+                if ($typesList == null) {
+                    return [$name => $data];
+                }
+
+                if (is_string($data)) {
+                    return [$name => $this->getDataLink($typesList, $data)];
+                }
+                return [$name => $this->getDataLinks($typesList, $data)];
+            }
+            return [];
+        });
+        unset($revisionType);
+        return new Document($contentType->getName(), $ouuid, $result);
+    }
+
+    public function lockAllRevisions(\DateTime $until, string $by): int
+    {
+        try {
+            return $this->revRepository->lockAllRevisions($until, $by);
+        } catch (LockedException $e) {
+            $this->logger->error('service.data.lock_revisions_error', [
+                EmsFields::LOG_USERNAME_FIELD => $by,
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function lockRevisions(ContentType $contentType, \DateTime $until, string $by): int
+    {
+        try {
+            return $this->revRepository->lockRevisions($contentType, $until, $by, true, false);
+        } catch (LockedException $e) {
+            $this->logger->error('service.data.lock_revisions_error', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                EmsFields::LOG_USERNAME_FIELD => $by,
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function unlockAllRevisions(string $by): int
+    {
+        try {
+            return $this->revRepository->unlockAllRevisions($by);
+        } catch (LockedException $e) {
+            $this->logger->error('service.data.unlock_revisions_error', [
+                EmsFields::LOG_USERNAME_FIELD => $by,
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function unlockRevisions(ContentType $contentType, string $by): int
+    {
+        try {
+            return $this->revRepository->unlockRevisions($contentType, $by);
+        } catch (LockedException $e) {
+            $this->logger->error('service.data.unlock_revisions_error', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                EmsFields::LOG_USERNAME_FIELD => $by,
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function getAllDrafts(): array
+    {
+        return $this->revRepository->findAllDrafts();
     }
 }

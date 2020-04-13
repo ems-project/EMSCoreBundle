@@ -13,41 +13,20 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- * It's the mother class of all specific DataField used in eMS
- *
- * @author Mathieu De Keyzer <ems@theus.be>
- *
- */
 class CalendarViewType extends ViewType
 {
 
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
-    public function getLabel()
+    public function getLabel() : string
     {
         return "Calendar: a view where you can planify your object";
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
-    public function getName()
+    public function getName() : string
     {
         return "Calendar";
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options) : void
     {
         parent::buildForm($builder, $options);
         $builder->add('dateRangeField', TextType::class, [
@@ -71,25 +50,13 @@ class CalendarViewType extends ViewType
         ]);
     }
     
-    /**
-     *
-     * {@inheritdoc}
-     *
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix() : string
     {
         return 'calendar_view';
     }
 
 
-    /**
-     * @param View $view
-     * @param FormFactoryInterface $formFactory
-     * @param Request $request
-     * @return array|mixed
-     * @throws Exception
-     */
-    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request)
+    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request) : array
     {
         
 

@@ -5,7 +5,6 @@ import './css/app.scss';
 import './css/app.less';
 
 
-import FileUploader from './js/FileUploader';
 import EmsListeners from './js/EmsListeners';
 window.EmsListeners = EmsListeners;
 
@@ -19,9 +18,6 @@ const wysiwygConfig = primaryBox.data('wysiwyg-config');
 const uploadUrl = primaryBox.data('upload-url');
 const imageUrl = primaryBox.data('image-url');
 const stylesSets = primaryBox.data('styles-sets');
-const initUpload = primaryBox.data('init-upload');
-const fileExtract = primaryBox.data('file-extract');
-const fileExtractForced = primaryBox.data('file-extract-forced');
 const assetPath = document.querySelector("BODY").getAttribute('data-asset-path') ;
 
 $("form[name=revision]").submit(function( ) {
@@ -226,242 +222,9 @@ function onFormChange(event, allowAutoPublish){
         });
 }
 
-function initFileUploader(fileHandler, container){
-
-
-    const sha1Input = $(container).find(".sha1");
-    const typeInput = $(container).find(".type");
-    const nameInput = $(container).find(".name");
-    const progressBar = $(container).find(".progress-bar");
-    const progressText = $(container).find(".progress-text");
-    const progressNumber = $(container).find(".progress-number");
-    const viewButton = $(container).find(".view-asset-button");
-    const clearButton = $(container).find(".clear-asset-button");
-    const previewTab = $(container).find(".asset-preview-tab");
-    const uploadTab = $(container).find(".asset-upload-tab");
-    const previewLink = $(container).find(".img-responsive");
-    const assetHashSignature = $(container).find(".asset-hash-signature");
-    const dateInput = $(container).find(".date");
-    const authorInput = $(container).find(".author");
-    const languageInput = $(container).find(".language");
-    const contentInput = $(container).find(".content");
-    const titleInput = $(container).find(".title");
-
-
-    previewTab.hide();
-    uploadTab.show();
-
-    const fileUploader = new FileUploader({
-        file: fileHandler,
-        algo: $('body').attr('data-hash-algo'),
-        initUrl: initUpload,
-        onHashAvailable: function(sha1, type, name){
-            $(sha1Input).val(sha1);
-            $(assetHashSignature).empty().append(sha1);
-            $(typeInput).val(type);
-            $(nameInput).val(name);
-            $(dateInput).val('');
-            $(authorInput).val('');
-            $(languageInput).val('');
-            $(contentInput).val('');
-            $(titleInput).val('');
-            $(viewButton).addClass('disabled');
-            $(clearButton).addClass('disabled');
-        },
-        onProgress: function(status, progress, remaining){
-            if(status !== 'Computing hash' && $(sha1Input).val() !== fileUploader.hash){
-                $(sha1Input).val(fileUploader.hash);
-                console.log('Sha1 mismatch!');
-            }
-            const percentage = Math.round(progress*100);
-            $(progressBar).css('width', percentage+'%');
-            $(progressText).html(status);
-            $(progressNumber).html(remaining);
-        },
-        onUploaded: function(assetUrl, previewUrl){
-            viewButton.attr('href', assetUrl);
-            previewLink.attr('src', previewUrl);
-            viewButton.removeClass("disabled");
-            clearButton.removeClass("disabled");
-            previewTab.show();
-            uploadTab.hide();
-
-            if($(contentInput).length) {
-                FileDataExtrator(container);
-            }
-            else {
-                onFormChange();
-            }
-        },
-        onError: function(message, code){
-            $(progressBar).css('width', '0%');
-            $(progressText).html(message);
-            if (code === undefined){
-                $(progressNumber).html('');
-            }
-            else {
-                $(progressNumber).html('Error code : '+code);
-            }
-            $(sha1Input).val('');
-            $(assetHashSignature).empty();
-            $(typeInput).val('');
-            $(nameInput).val('');
-            $(dateInput).val('');
-            $(authorInput).val('');
-            $(languageInput).val('');
-            $(contentInput).val('');
-            $(titleInput).val('');
-            $(viewButton).addClass('disabled');
-            $(clearButton).addClass('disabled');
-        },
-    });
-}
-
-
-//file selection
-function FileSelectHandler(e) {
-
-    // cancel event and hover styling
-    FileDragHover(e);
-
-    // fetch FileList object
-    const files = e.target.files || e.dataTransfer.files;
-
-    // process all File objects
-    for (let i = 0; i < files.length; ++i) {
-        if(files.hasOwnProperty(i)){
-            initFileUploader(files[i], this);
-            break;
-        }
-    }
-}
-
-//file data extractor
-function FileDataExtrator(container, forced=false) {
-
-    const sha1Input = $(container).find(".sha1");
-    const nameInput = $(container).find(".name");
-
-    const dateInput = $(container).find(".date");
-    const authorInput = $(container).find(".author");
-    const languageInput = $(container).find(".language");
-    const contentInput = $(container).find(".content");
-    const titleInput = $(container).find(".title");
-
-
-    const progressText = $(container).find(".progress-text");
-    const progressNumber = $(container).find(".progress-number");
-    const previewTab = $(container).find(".asset-preview-tab");
-    const uploadTab = $(container).find(".asset-upload-tab");
-
-    const urlPattern = (forced?fileExtractForced:fileExtract)
-        .replace(/__file_identifier__/g, $(sha1Input).val())
-        .replace(/__file_name__/g, $(nameInput).val());
-
-
-
-    $(progressText).html('Extracting information from asset...');
-    $(progressNumber).html('');
-    uploadTab.show();
-    previewTab.hide();
-
-    waitingResponse = window.ajaxRequest.get(urlPattern)
-        .success(function(response) {
-            $(dateInput).val(response.date);
-            $(authorInput).val(response.author);
-            $(languageInput).val(response.language);
-            $(contentInput).val(response.content);
-            $(titleInput).val(response.title);
-        })
-        .fail(function() {
-            const modal = $('#modal-notifications');
-            $(modal.find('.modal-body')).html('Something went wrong while extrating information from file');
-            modal.modal('show');
-        })
-        .always(function() {
-            $(progressText).html('');
-            uploadTab.hide();
-            previewTab.show();
-        });
-
-}
-
-//file drag hover
-function FileDragHover(e) {
-    e.stopPropagation();
-    e.preventDefault();
-    //e.target.className = (e.type == "dragover" ? "hover" : "");
-}
-
 function addEventListeners(target){
 
-    new EmsListeners(target.get(0));
-
-
-    target.find(".file-uploader-input").fileinput({
-        'showUpload':false,
-        'showCaption': false,
-        'showPreview': false,
-        'showRemove': false,
-        'showCancel': false,
-        'showClose': false,
-        'browseIcon': '<i class="fa fa-upload"></i>&nbsp;',
-        'browseLabel': 'Upload file'
-    });
-
-    target.find(".extract-file-info").click(function() {
-        const target = $(this).closest('.modal-content');
-        FileDataExtrator(target, true);
-    });
-
-    target.find(".clear-asset-button").click(function() {
-        const parent = $(this).closest('.file-uploader-row');
-        const sha1Input = $(parent).find(".sha1");
-        const typeInput = $(parent).find(".type");
-        const nameInput = $(parent).find(".name");
-        const progressBar = $(parent).find(".progress-bar");
-        const progressText = $(parent).find(".progress-text");
-        const progressNumber = $(parent).find(".progress-number");
-        const previewTab = $(parent).find(".asset-preview-tab");
-        const uploadTab = $(parent).find(".asset-upload-tab");
-        const assetHashSignature = $(parent).find(".asset-hash-signature");
-        const dateInput = $(parent).find(".date");
-        const authorInput = $(parent).find(".author");
-        const languageInput = $(parent).find(".language");
-        const contentInput = $(parent).find(".content");
-        const titleInput = $(parent).find(".title");
-
-        $(parent).find(".file-uploader-input").val('');
-        sha1Input.val('');
-        assetHashSignature.empty();
-        typeInput.val('');
-        nameInput.val('');
-        $(dateInput).val('');
-        $(authorInput).val('');
-        $(languageInput).val('');
-        $(contentInput).val('');
-        $(titleInput).val('');
-        $(progressBar).css('width', '0%');
-        $(progressText).html('');
-        $(progressNumber).html('');
-        previewTab.hide();
-        uploadTab.show();
-        $(parent).find('.view-asset-button').addClass('disabled');
-        $(this).addClass('disabled');
-        return false
-    });
-
-    target.find(".file-uploader-input").change(function(){
-        initFileUploader($(this)[0].files[0], $(this).closest(".file-uploader-row"));
-    });
-
-
-    target.find(".file-uploader-row").each(function(){
-        // file drop
-        this.addEventListener("dragover", FileDragHover, false);
-        this.addEventListener("dragleave", FileDragHover, false);
-        this.addEventListener("drop", FileSelectHandler, false);
-    });
+    new EmsListeners(target.get(0), onFormChange);
 
     target.find('.remove-content-button').on('click', function(e) {
         // prevent the link from creating a "#" on the URL
@@ -473,10 +236,9 @@ function addEventListeners(target){
         onFormChange();
     });
 
-    target.find("input").keypress(onFormChange);
-    target.find("input").change(onFormChange);
-    target.find("select").change(onFormChange);
-    target.find("textarea").keypress(onFormChange);
+    target.find("input").not(".ignore-ems-update").on('input', onFormChange);
+    target.find("select").not(".ignore-ems-update").on('change', onFormChange);
+    target.find("textarea").not(".ignore-ems-update").on('input', onFormChange);
 
     target.find('.add-content-button').on('click', function(e) {
         // prevent the link from creating a "#" on the URL

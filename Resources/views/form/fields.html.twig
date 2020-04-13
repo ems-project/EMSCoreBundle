@@ -714,6 +714,127 @@
 {% endblock codefieldtype_row %}
 
 
+{% block json_menu_editor_fieldtype_row %}
+	<div class="form-group {% if form.vars.errors|length %} has-error{% endif %} json_menu_editor_fieldtype">
+		{{ form_label(form) }}
+		{{ form_widget(form) }}
+		{{ form_errors(form) }}
+	</div>
+	<!-- /.form group -->
+{% endblock json_menu_editor_fieldtype_row %}
+
+
+
+{% block json_menu_editor_fieldtype_node %}
+	{% for item in children %}
+		{% set contentType = item.contentType|default('')|get_content_type %}
+		{% if contentType %}
+			{% set item = item|merge({
+				icon: contentType.icon,
+				contentType: contentType.name
+			}) %}
+		{% endif %}
+		<li id="{{ item.id }}" data-type="{{ item.type|default('node') }}" data-label="{{ item.label|default('') }}" data-content-type="{{ item.contentType|default('node') }}" class="collapsible-container nestedSortable mjs-nestedSortable{% if item.type|default('node') != 'node' %}-no-nesting{% endif %}">
+			<div class="nestedSortable">
+				<span class="input-group">
+					{% if item.type|default('node') == 'node' %}
+						<span class="input-group-btn">
+							<button href="#" type="button" title="{{ 'field_type.json_menu_editor.collapse_button'|trans }}" aria-expanded="false" class="btn btn-default button-collapse"></button>
+						</span>
+					{% endif %}
+					<span class="input-group-addon" >
+                        <i class="{% if item.icon|default(false) %}{{ item.icon }}{% elseif item.type|default('node') == 'node' %}fa fa-folder{% else %}fa fa-file-text{% endif %}"></i>
+                    </span>
+					<input type="text" class="form-control itemLabel ignore-ems-update" placeholder="{{ 'field_type.json_menu_editor.item_label_placeholder'|trans }}" value="{{ item.label|default('') }}">
+					<span class="input-group-btn">
+						<a type="button" class="btn btn-primary json_menu_sortable_handle_button" title="{{ 'field_type.json_menu_editor.move_item'|trans }}">
+							<i class="fa fa-arrows"></i>
+							<span class="">{{ 'field_type.json_menu_editor.move_item'|trans }}</span>
+						</a>
+						{% if item.type|default('node') == 'node' %}
+                            {{ addMenu }}
+						{% endif %}
+						<a type="button" class="btn btn-danger json_menu_sortable_remove_button" title="{{ 'field_type.json_menu_editor.delete_item'|trans }}">
+							<i class="fa fa-trash"></i>
+							<span class="sr-only">{{ 'field_type.json_menu_editor.delete_item'|trans }}</span>
+						</a>
+					</span>
+				</span>
+
+			</div>
+			{% if item.type|default('node') == 'node' and item.children|default({})|length > 0 %}
+				<ol>
+					{% set children = item.children %}
+					{{ block('json_menu_editor_fieldtype_node') }}
+				</ol>
+			{% endif %}
+		</li>
+	{% endfor %}
+{% endblock json_menu_editor_fieldtype_node %}
+
+
+{% block json_menu_editor_fieldtype_widget %}
+	{{  form_widget(form) }}
+    {% set nodeTypes =  form.vars.node_types|split(',') %}
+    {% set itemTypes =  form.vars.item_types|split(',') %}
+
+    {% set addMenu %}
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="fa fa-plus"></span>
+            {{ 'field_type.json_menu_editor.add'|trans }}
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            {% for type in itemTypes %}
+                {% set contentType = type|get_content_type %}
+                {% if contentType %}
+                    {% set contentTypeIcon = contentType.icon|default('fa fa-file')  %}
+                    <li>
+                        <a type="button" class="json_menu_sortable_add_item_button" data-content-type="{{ type|e('html_attr') }}" data-icon="{{ contentTypeIcon|e('html_attr') }}">
+                            <i class="{{ contentTypeIcon }}"></i>
+                            {{ 'field_type.json_menu_editor.add_item'|trans({'%singular%': contentType.singularName}) }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            {% for type in nodeTypes %}
+                {% set contentType = type|get_content_type %}
+                {% if contentType %}
+                    {% set contentTypeIcon = contentType.icon|default('fa fa-folder')  %}
+                    <li>
+                        <a type="button" class="json_menu_sortable_add_node_button" data-content-type="{{ type|e('html_attr') }}" data-icon="{{ contentTypeIcon|e('html_attr') }}">
+                            <i class="{{ contentTypeIcon }}"></i>
+                            {{ 'field_type.json_menu_editor.add_node'|trans({'%singular%': contentType.singularName}) }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% endset %}
+
+
+	<div class="json_menu_editor_fieldtype_widget collapsible-container"
+		{% set children =  [{ id: '%uuid%', type: 'item', label: '%label%', icon: '%icon%', contentType: '%content-type%'}] %}
+		 data-prototype-item="{{ block('json_menu_editor_fieldtype_node')|e('html_attr') }}"
+		{% set children =  [{ id: '%uuid%', type: 'node', label: '%label%', icon: '%icon%', contentType: '%content-type%'}] %}
+		 data-prototype-node="{{ block('json_menu_editor_fieldtype_node')|e('html_attr') }}">
+		<div class="input-group">
+				<span class="input-group-btn">
+					<button type="#" title="{{ 'field_type.json_menu_editor.collapse_all_button'|trans }}" aria-expanded="false" class="btn btn-default button-collapse-all">
+					</button>
+                    {{ addMenu }}
+				</span>
+		</div>
+		<ol class="json_menu_sortable vertical not-collapsible">
+			{% set children =  form.vars.data.rawData |default('[]')|json_decode %}
+			{{ block('json_menu_editor_fieldtype_node') }}
+		</ol>
+		<div class="input-group">
+		</div>
+	</div>
+{% endblock json_menu_editor_fieldtype_widget %}
+
+
 {% block datefieldtype_row %}
 <div class="form-group">
 	<div id="{{ form.vars.id}}__label">
@@ -811,10 +932,10 @@
 
 
 {% block filetype_row %}
-<div class="panel panel-default file-uploader-row">
+<div class="panel panel-default file-uploader-row" {% if form.vars.meta_fields %}data-meta-fields{% endif %}>
 	<div class="panel-heading">
 		<h3 class="panel-title">
-			<i class="fa fa-file-o"></i> 				
+			<i class="fa fa-file-o"></i>
 			{{ form_label(form) }}
 		</h3>
 	</div>
@@ -835,10 +956,12 @@
               </div>
               <div class="modal-footer">
 				<div class="btn-group">
-        			<button type="button" class="btn btn-small btn-primary extract-file-info" >
-                    	<i class="fa fa-bolt"></i>
-                        {{ 'Extract content'|trans }}
-                    </button>			
+					{% if form.vars.meta_fields %}
+						<button type="button" class="btn btn-small btn-primary extract-file-info" >
+							<i class="fa fa-bolt"></i>
+							{{ 'Extract content'|trans }}
+						</button>
+					{% endif %}
                     <button type="button" class="btn btn-small btn-primary " data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
                 </div>
               </div>
@@ -861,10 +984,10 @@
         </div>
         <div role="tabpanel" class="tab-pane asset-preview-tab {% if form.vars.value.sha1 is defined and form.vars.value.sha1 %}active{% endif %}" id="asset-preview-tab-{{ form.vars.id }}">
         	<div class="text-center">
-            	<img 
+            	<img
             		data-src="{{ path('ems_asset_processor', {'hash':'_asset_hash_', 'processor': 'preview', 'type':'_asset_mimetype_', 'name': '_asset_name_' }) }}"
-            		{% if form.vars.value.sha1 is defined and form.vars.value.sha1 %} 
-            			src="{{ path('ems_asset_processor', {'hash':form.vars.value.sha1, 'processor': 'preview', 'type':form.vars.value.mimetype, 'name':form.vars.value.filename }) }}" 
+            		{% if form.vars.value.sha1 is defined and form.vars.value.sha1 %}
+            			src="{{ path('ems_asset_processor', {'hash':form.vars.value.sha1, 'processor': 'preview', 'type':form.vars.value.mimetype, 'name':form.vars.value.filename }) }}"
             		{% endif %}
             		class="img-responsive center-block" alt="Preview of the field {{ form_label(form)|striptags }}"
             	>
@@ -880,7 +1003,7 @@
 			<button type="button" class="btn btn-small btn-primary asset-details" data-toggle="modal" data-target="#asst-details-{{ form.vars.id }}">
               <i class="fa fa-info"></i>
               {{ 'Info'|trans }}
-            </button>			
+            </button>
 			<a href="#" class="btn btn-small btn-primary view-asset-button {% if not form.children.sha1.vars.value %}disabled{% endif %}" target="_blank" alt="{{'View'|trans}}"><i class="fa fa-eye">&nbsp;{{'View'|trans}}</i></a>
 			<a href="#" class="btn btn-small btn-primary clear-asset-button  {% if not form.children.sha1.vars.value %}disabled{% endif %}" alt="{{'Clear'|trans}}"><i class="fa fa-remove"></i>&nbsp;{{'Clear'|trans}}</a>
 		</div>

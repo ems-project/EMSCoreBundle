@@ -410,6 +410,8 @@ service:
     extract_error: 'An issue has been raised while extracting information from the asset/file ems://asset:%file_hash% : %error_message%'
     persist_error: 'An issue has been raised while persisting the information extracted from the asset/file ems://asset:%file_hash% : %error_message%'
   data:
+    transform_content_type:
+      cant_process_draft: 'The document ems://object:%contenttype%:%ouuid% can''t be transformed as it''s last revision ems://revision:%revision_id% is in draft mode'
     error_with_fields: 'The field %path% is in error with the message %error_message%'
     cant_finalize_field: '%error_message%'
     update_referrers_error: 'It was impossible to update referrers of the document ems://object:%contenttype%:%ouuid%'
@@ -455,6 +457,7 @@ search:
   sort_option_label: 'Sort Option'
   search_field_option_label: 'Search Field Option'
   aggregate_option_label: 'Aggregate Option'
+
 log:
   warning:
     asset_extract:
@@ -604,6 +607,8 @@ log:
       cant_duplicate_when_waiting_ouuid: 'It''s impossible to duplicate the document ems://object:%contenttype%:%ouuid% has the content type %contenttype% requests first an OUUID'
       compare: 'Compare the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% with the revision ems://revision:%compare_revision_id% of the document ems://object:%compare_contenttype%:%compare_ouuid%'
     revision:
+      add_from_json_error: 'It was not possible to initiate a new %contenttype% document due to an internal error'
+      init_document_from_array: 'It was not possible to initiate a new %contenttype% document due to an internal error'
       load_from_auto_save: 'Data were loaded from an auto-saved version for the revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid%'
       auto_save_off_with_auto_publish: 'The auto-save has been disabled as the auto-publish is enabled for the content type %contenttype%. Press Ctrl+S (Cmd+S) in order to publish in %environment%'
       can_finalized: 'The revision ems://revision:%revision_id% of the document ems://object:%contenttype%:%ouuid% can''t be finalized as it is'
@@ -628,3 +633,13 @@ log:
 data:
   custom-view:
     pagetitle: 'View %name% of the %contentType% "%label%" as indexed in %environment%'
+field_type:
+  json_menu_editor:
+    item_label_placeholder: 'Define a label for this entry'
+    add_item: 'Add a new item %singular%'
+    add_node: 'Add a new node %singular%'
+    delete_item: 'Delete this entry'
+    collapse_button: 'Expand/Collapse'
+    collapse_all_button: 'Expand/Collapse all'
+    move_item: 'Move'
+    add: 'Add'

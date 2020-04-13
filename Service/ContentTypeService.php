@@ -356,8 +356,6 @@ class ContentTypeService
         return $this->contentTypeArrayByName[$name] ?? false;
     }
 
-
-
     /**
      * @return array
      */

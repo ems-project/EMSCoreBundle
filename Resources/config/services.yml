@@ -13,6 +13,14 @@ services:
         #public: false
         tags:
             - { name: twig.extension, priority: -2000 }
+    app.twig_extension_revision: '@EMS\CoreBundle\Twig\RevisionRuntime'
+    EMS\CoreBundle\Twig\RevisionRuntime:
+        arguments:
+            - '@ems.service.contenttype'
+            - '@ems.service.environment'
+            - '@ems.service.revision'
+        tags:
+            - { name: twig.runtime, priority: -2000 }
     app.listener.request:
         class: EMS\CoreBundle\EventListener\RequestListener
         arguments: ['@twig', '@doctrine', '@logger', '@router', '@service_container', '@security.authorization_checker', '@session', '%ems_core.allow_user_registration%', '%ems_core.user_login_route%', '%ems_core.user_registration_route%']
@@ -100,6 +108,12 @@ services:
             - { name: form.type }
     ems.fieldtype.code:
         class: EMS\CoreBundle\Form\DataField\CodeFieldType
+        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch']
+        tags:
+            - { name: ems.form.datafieldtype, alias: code }
+            - { name: form.type }
+    ems.fieldtype.json_menu_editor:
+        class: EMS\CoreBundle\Form\DataField\JsonMenuEditorFieldType
         arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch']
         tags:
             - { name: ems.form.datafieldtype, alias: code }
@@ -283,6 +297,12 @@ services:
         tags:
             - { name: ems.form.viewtype, alias: gallery }
             - { name: form.type }
+    ems.view.importer:
+        class: EMS\CoreBundle\Form\View\ImporterViewType
+        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger', '@ems.service.file', '@ems.service.job', '@security.token_storage', '@router']
+        tags:
+            - { name: ems.form.viewtype, alias: importer }
+            - { name: form.type }
 #### End list available ems views ###
     ems.form.factories.objectChoiceListFactory:
         class: EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory
@@ -377,9 +397,12 @@ services:
         arguments: ['@app.elasticsearch', '@EMS\CoreBundle\Service\EnvironmentService', '@ems.form.fieldtype.fieldtypetype', '@ems.service.elasticsearch', '%ems_core.version%', '%ems_core.instance_id%']
     EMS\CoreBundle\Service\DataService:
         class: EMS\CoreBundle\Service\DataService
-        arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '%ems_core.lock_time%', '@app.elasticsearch', '@ems.service.mapping', '%ems_core.instance_id%', '@session', '@form.factory', '@service_container', '@form.registry', '@event_dispatcher', '@ems.service.contenttype', '%ems_core.private_key%', '@logger', '@ems_common.storage.manager', '@twig', '@app.twig_extension', '@ems.service.user', '@EMS\CoreBundle\Repository\RevisionRepository']
+        arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '%ems_core.lock_time%', '@app.elasticsearch', '@ems.service.mapping', '%ems_core.instance_id%', '@session', '@form.factory', '@service_container', '@form.registry', '@event_dispatcher', '@ems.service.contenttype', '%ems_core.private_key%', '@logger', '@ems_common.storage.manager', '@twig', '@app.twig_extension', '@ems.service.user', '@EMS\CoreBundle\Repository\RevisionRepository', '@ems.service.environment']
         tags:
             - { name: kernel.event_listener, event: ems_core.revision.update_referers, method: updateReferers, priority: 0 }
+    ems.service.revision:
+        class: EMS\CoreBundle\Service\Revision\RevisionService
+        arguments: ['@EMS\CoreBundle\Repository\RevisionRepository']
     ems.service.alias:
         class: EMS\CoreBundle\Service\AliasService
         arguments: ['@app.elasticsearch', '@EMS\CoreBundle\Repository\EnvironmentRepository', '@EMS\CoreBundle\Repository\ManagedAliasRepository']
@@ -402,7 +425,7 @@ services:
             - '@logger'
     ems.service.environment: '@EMS\CoreBundle\Service\EnvironmentService'
     EMS\CoreBundle\Service\EnvironmentService:
-        arguments: ['@doctrine', '@session', '@ems.service.user', '@security.authorization_checker', '%ems_core.single_type_index%']
+        arguments: ['@doctrine', '@session', '@ems.service.user', '@security.authorization_checker', '@service_container', '@logger', '@app.elasticsearch', '%ems_core.single_type_index%']
     ems.service.contenttype: '@EMS\CoreBundle\Service\ContentTypeService'
     EMS\CoreBundle\Service\ContentTypeService:
         arguments: ['@doctrine', '@logger', '@ems.service.mapping', '@app.elasticsearch', '@ems.service.environment', '@form.registry', '@translator', '%ems_core.instance_id%', '%ems_core.single_type_index%']
@@ -468,17 +491,44 @@ services:
     EMS\CoreBundle\Service\JobService:
         class: EMS\CoreBundle\Service\JobService
         arguments: ['@doctrine', '@kernel', '@logger', '@EMS\CoreBundle\Repository\JobRepository']
+    ems.service.transformcontenttype:
+        class: EMS\CoreBundle\Service\TransformContentTypeService
+        arguments: ['@logger', '@app.elasticsearch', '@ems.service.contenttype', '@ems.service.data', '@form.factory']
+    ems.service.document:
+        class: EMS\CoreBundle\Service\DocumentService
+        arguments: ['@doctrine', '@ems.service.data', '@form.factory', '@ems.elasticsearch.bulker', '%ems_core.instance_id%']
 
-        
+
 ### command services ###
     ems.environment.ems:
         class: EMS\CoreBundle\Command\EmsCommand
         arguments: ['@logger', '@app.elasticsearch']
         tags:
             -  { name: console.command }
+    ems.command.revision.copy:
+        class: EMS\CoreBundle\Command\RevisionCopyCommand
+        arguments:
+            - '@ems.factory.revision_copy_context'
+            - '@ems.service.revision_copy'
+            - '@ems.service.elasticsearch'
+        tags:
+            - { name: console.command }
+    ems.factory.revision_copy_context:
+        class: EMS\CoreBundle\Service\Revision\Copy\CopyContextFactory
+        arguments: ['@ems.service.environment']
+    ems.service.revision_copy:
+        class: EMS\CoreBundle\Service\Revision\Copy\CopyService
+        arguments:
+            - '@EMS\CoreBundle\Service\DataService'
+            - '@ems.service.revision'
     ems.contenttype.migrate:
         class: EMS\CoreBundle\Command\MigrateCommand
-        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.elasticsearch.bulker', '@ems.service.mapping', '@ems.service.data', '@form.factory', '%ems_core.instance_id%']
+        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.document']
+        tags:
+            -  { name: console.command }
+    ems.make.document:
+        class: EMS\CoreBundle\Command\DocumentCommand
+        arguments: ['@logger', '@app.elasticsearch', '@ems.service.contenttype', '@ems.service.document', '@ems.service.data']
         tags:
             -  { name: console.command }
     ems.contenttype.export:
@@ -576,6 +626,27 @@ services:
         arguments: ['@logger', '@app.elasticsearch', '@ems.service.asset_extractor', '@ems_common.storage.manager']
         tags:
             - { name: console.command }
+    ems.contenttype.transform:
+        class: EMS\CoreBundle\Command\TransformContentTypeCommand
+        arguments: ['@logger', '@ems.service.contenttype', '@ems.service.transformcontenttype']
+        tags:
+            - { name: console.command }
+    ems.contenttype.activate:
+        class: EMS\CoreBundle\Command\ActivateContentTypeCommand
+        arguments: ['@logger', '@ems.service.contenttype']
+        tags:
+            - { name: console.command }
+    ems.environment.create:
+        class: EMS\CoreBundle\Command\CreateEnvironmentCommand
+        arguments: ['@logger', '@ems.service.environment', '@ems.service.data']
+        tags:
+            - { name: console.command }
+    ems.revisions.unlock:
+        class: EMS\CoreBundle\Command\UnlockRevisionsCommand
+        arguments: ['@logger', '@ems.service.data', '@ems.service.contenttype']
+        tags:
+            - { name: console.command }
+
 #### security services
     api_key_user_provider:
         class: EMS\CoreBundle\Security\ApiKeyUserProvider
@@ -597,7 +668,6 @@ services:
     ems.service.data:
         alias: 'EMS\CoreBundle\Service\DataService'
         public: true
-
 
     #activate autowiring on core bundle controller
     EMS\CoreBundle\Controller\:

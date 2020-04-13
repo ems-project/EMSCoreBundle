@@ -392,6 +392,34 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
      */
     public $defaultValue;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="translationField", type="string", length=100, nullable=true)
+     */
+    protected $translationField;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="localeField", type="string", length=100, nullable=true)
+     */
+    protected $localeField;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="searchLinkDisplayRole", type="string", options={"default" : "ROLE_USER"})
+     */
+    protected $searchLinkDisplayRole = 'ROLE_USER';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="createLinkDisplayRole", type="string", options={"default" : "ROLE_USER"})
+     */
+    protected $createLinkDisplayRole = 'ROLE_USER';
+
 
     public function __construct()
     {
@@ -1786,5 +1814,49 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     {
         $this->businessIdField = $businessIdField;
         return $this;
+    }
+
+    public function setTranslationField(string $translationField): ContentType
+    {
+        $this->translationField = $translationField;
+        return $this;
+    }
+
+    public function getTranslationField(): ?string
+    {
+        return $this->translationField;
+    }
+
+    public function setLocaleField(?string $localeField): ContentType
+    {
+        $this->localeField = $localeField;
+        return $this;
+    }
+
+    public function getLocaleField(): ?string
+    {
+        return $this->localeField;
+    }
+
+    public function setSearchLinkDisplayRole(string $searchLinkDisplayRole): ContentType
+    {
+        $this->searchLinkDisplayRole = $searchLinkDisplayRole;
+        return $this;
+    }
+
+    public function getSearchLinkDisplayRole(): string
+    {
+        return $this->searchLinkDisplayRole;
+    }
+
+    public function setCreateLinkDisplayRole(string $createLinkDisplayRole): ContentType
+    {
+        $this->createLinkDisplayRole = $createLinkDisplayRole;
+        return $this;
+    }
+
+    public function getCreateLinkDisplayRole(): string
+    {
+        return $this->createLinkDisplayRole;
     }
 }

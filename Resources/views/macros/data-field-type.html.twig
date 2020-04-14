@@ -835,6 +835,45 @@
 	{{ _self.messages(dataField) }}
 {% endblock %}
 
+{% block EMS_CoreBundle_Form_DataField_JsonMenuLinkFieldType %}
+	<dl>
+		<dt>
+			{% if dataField.fieldType.displayOptions.label is defined %}
+				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
+			{% else %}
+				{{ dataField.fieldType.name }}
+			{% endif %}
+		</dt>
+		<dd>
+			<ul>
+				{%  set contentType = dataField.fieldType.displayOptions.json_menu_content_type|default('')|get_content_type %}
+				{% set choices = {} %}
+				{% set labels = {} %}
+				{% if contentType %}
+					{%  set hits = {
+						index: contentType.environment.alias,
+						type: contentType.name,
+						body: dataField.fieldType.displayOptions.query|default('{}')
+					}|search.hits.hits %}
+					{%  for hit in hits %}
+						{% set label = attribute(hit._source, contentType.labelField|default(false))|default(hit._id) ~ ' /'  %}
+						{% set choices = choices|merge([hit._id]) %}
+						{% set labels = labels|merge([label]) %}
+						{% set menu = attribute(hit._source, dataField.fieldType.displayOptions.json_menu_field|default(''))|default('{}')|ems_json_menu_decode %}
+						{%  for uid in menu.uids %}
+							{% set choices = choices|merge([uid]) %}
+							{% set labels = labels|merge([label ~ menu.getSlug(uid)]) %}
+						{% endfor %}
+					{% endfor %}
+				{% endif %}
+
+				{{ diff_choice(dataField.rawData, labels, choices, compare, dataField.fieldType.name, compareRawData) }}
+			</ul>
+		</dd>
+	</dl>
+	{{ _self.messages(dataField) }}
+{% endblock %}
+
 {% block EMS_CoreBundle_Form_DataField_CheckboxFieldType %}
     {% set doCompare = compare and dataField.rawData is not same as( attribute(compareRawData, dataField.fieldType.name) is defined ? attribute(compareRawData, dataField.fieldType.name) : null )  %}
     {% set color = not doCompare ? '' : 'bg-orange' %}

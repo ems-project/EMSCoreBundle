@@ -199,4 +199,16 @@ interface User
      * @return string
      */
     public function getUsername();
+
+
+    /**
+     * @return array
+     */
+    public function getRoles();
+
+
+    /**
+     * @return string
+     */
+    public function getEmail();
 }

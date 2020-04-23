@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Controller\ContentManagement;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Exception\DataStateException;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -356,6 +357,27 @@ class CrudController extends AppController
         return $this->render('@EMSCore/ajax/contenttype_info.json.twig', [
                 'success' => true,
                 'contentType' => $contentType,
+        ]);
+    }
+
+    /**
+     * @Route("/api/user-profile", defaults={"_format": "json"}, methods={"GET"})
+     */
+    public function getUserProfile()
+    {
+        $user = $this->getUser();
+        if (! $user instanceof User) {
+            throw new \RuntimeException('User profile class not recognized');
+        }
+        if (! $user->isEnabled()) {
+            throw new \RuntimeException('User disabled');
+        }
+
+        return $this->json([
+            'username' => $user->getUsername(),
+            'displayName' => $user->getDisplayName(),
+            'roles' => $user->getRoles(),
+            'email' => $user->getEmail(),
         ]);
     }
 }

@@ -10,6 +10,7 @@ use EMS\CoreBundle\Exception\DataStateException;
 use EMS\CoreBundle\Service\UserService;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -364,7 +365,7 @@ class CrudController extends AppController
     /**
      * @Route("/api/user-profile", defaults={"_format": "json"}, methods={"GET"})
      */
-    public function getUserProfile()
+    public function getUserProfile() : JsonResponse
     {
         $user = $this->getUser();
         if (! $user instanceof User) {
@@ -386,7 +387,7 @@ class CrudController extends AppController
     /**
      * @Route("/api/user-profiles", defaults={"_format": "json"}, methods={"GET"})
      */
-    public function getUserProfiles(UserService $userService)
+    public function getUserProfiles(UserService $userService) : JsonResponse
     {
         $users = [];
         foreach ($userService->getAllUsers() as $user) {

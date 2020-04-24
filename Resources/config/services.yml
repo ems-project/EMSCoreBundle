@@ -667,6 +667,7 @@ services:
     EMS\CoreBundle\Service\FileService: '@ems.service.file'
     EMS\CoreBundle\Service\ElasticsearchService: '@ems.service.elasticsearch'
     EMS\CoreBundle\Service\AssetExtractorService: '@ems.service.asset_extractor'
+    EMS\CoreBundle\Service\UserService: '@ems.service.user'
     EMS\CommonBundle\Helper\Text\Encoder: '@ems_common.text.encoder'
 
 

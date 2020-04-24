@@ -7,6 +7,7 @@ use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Exception\DataStateException;
+use EMS\CoreBundle\Service\UserService;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
@@ -378,6 +379,27 @@ class CrudController extends AppController
             'displayName' => $user->getDisplayName(),
             'roles' => $user->getRoles(),
             'email' => $user->getEmail(),
+            'circles' => $user->getCircles(),
         ]);
+    }
+
+    /**
+     * @Route("/api/user-profiles", defaults={"_format": "json"}, methods={"GET"})
+     */
+    public function getUserProfiles(UserService $userService)
+    {
+        $users = [];
+        foreach ($userService->getAllUsers() as $user) {
+            if ($user->isEnabled()) {
+                $users[] = [
+                    'username' => $user->getUsername(),
+                    'displayName' => $user->getDisplayName(),
+                    'roles' => $user->getRoles(),
+                    'email' => $user->getEmail(),
+                    'circles' => $user->getCircles(),
+                ];
+            }
+        }
+        return $this->json($users);
     }
 }

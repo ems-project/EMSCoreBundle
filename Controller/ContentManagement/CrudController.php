@@ -3,13 +3,17 @@
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Exception\DataStateException;
 use EMS\CoreBundle\Service\UserService;
 use Exception;
+use Psr\Log\LoggerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,6 +24,15 @@ use Throwable;
 
 class CrudController extends AppController
 {
+
+    /** @var UserService */
+    private $userService;
+
+    public function __construct(LoggerInterface $logger, FormRegistryInterface $formRegistry, RequestRuntime $requestRuntime, UserService $userService)
+    {
+        parent::__construct($logger, $formRegistry, $requestRuntime);
+        $this->userService = $userService;
+    }
 
     /**
      * @param string $ouuid
@@ -33,16 +46,16 @@ class CrudController extends AppController
      */
     public function createAction($ouuid, ContentType $contentType, Request $request)
     {
-        
+
         if (!$contentType->getEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not create content for a managed content type');
         }
-        
+
         $rawdata = json_decode($request->getContent(), true);
         if (empty($rawdata)) {
             throw new BadRequestHttpException('Not a valid JSON message');
         }
-        
+
         try {
             $newRevision = $this->getDataService()->createData($ouuid, $rawdata, $contentType);
         } catch (Exception $e) {
@@ -61,7 +74,7 @@ class CrudController extends AppController
                     'type' => $contentType->getName(),
             ]);
         }
-        
+
         return $this->render('@EMSCore/ajax/notification.json.twig', [
                 'success' => true,
                 'revision_id' => $newRevision->getId(),
@@ -80,7 +93,7 @@ class CrudController extends AppController
      */
     public function getAction($ouuid, ContentType $contentType)
     {
-        
+
         try {
             $revision = $this->getDataService()->getNewestRevision($contentType->getName(), $ouuid);
         } catch (Exception $e) {
@@ -99,7 +112,7 @@ class CrudController extends AppController
                     'type' => $contentType->getName(),
             ]);
         }
-        
+
         return $this->render('@EMSCore/ajax/revision.json.twig', [
                 'success' => true,
                 'revision' => $revision->getRawData(),
@@ -120,11 +133,11 @@ class CrudController extends AppController
      */
     public function finalizeAction($id, ContentType $contentType)
     {
-        
+
         if (!$contentType->getEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not finalize content for a managed content type');
         }
-        
+
         $out = [
             'success' => 'false',
         ];
@@ -158,11 +171,11 @@ class CrudController extends AppController
      */
     public function discardAction($id, ContentType $contentType)
     {
-    
+
         if (!$contentType->getEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not discard content for a managed content type');
         }
-    
+
         try {
             $revision = $this->getDataService()->getRevisionById($id, $contentType);
             $this->getDataService()->discardDraft($revision);
@@ -205,7 +218,7 @@ class CrudController extends AppController
         if (!$contentType->getEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not delete content for a managed content type');
         }
-    
+
         try {
             $this->getDataService()->delete($contentType->getName(), $ouuid);
             $this->getLogger()->notice('log.crud.deleted', [
@@ -243,16 +256,16 @@ class CrudController extends AppController
      */
     public function replaceAction($ouuid, ContentType $contentType, Request $request)
     {
-    
+
         if (!$contentType->getEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not replace content for a managed content type');
         }
-        
+
         $rawdata = json_decode($request->getContent(), true);
         if (empty($rawdata)) {
             throw new BadRequestHttpException('Not a valid JSON message');
         }
-        
+
         try {
             $revision = $this->getDataService()->getNewestRevision($contentType->getName(), $ouuid);
             $newDraft = $this->getDataService()->replaceData($revision, $rawdata);
@@ -294,16 +307,16 @@ class CrudController extends AppController
      */
     public function mergeAction($ouuid, ContentType $contentType, Request $request)
     {
-    
+
         if (!$contentType->getEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not merge content for a managed content type');
         }
-    
+
         $rawdata = json_decode($request->getContent(), true);
         if (empty($rawdata)) {
             throw new BadRequestHttpException('Not a valid JSON message for revision ' . $ouuid . ' and contenttype ' . $contentType->getName());
         }
-    
+
         try {
             $revision = $this->getDataService()->getNewestRevision($contentType->getName(), $ouuid);
             $newDraft = $this->getDataService()->replaceData($revision, $rawdata, "merge");
@@ -386,11 +399,12 @@ class CrudController extends AppController
 
     /**
      * @Route("/api/user-profiles", defaults={"_format": "json"}, methods={"GET"})
+     * @IsGranted("ROLE_ADMIN")
      */
-    public function getUserProfiles(UserService $userService) : JsonResponse
+    public function getUserProfiles() : JsonResponse
     {
         $users = [];
-        foreach ($userService->getAllUsers() as $user) {
+        foreach ($this->userService->getAllUsers() as $user) {
             if ($user->isEnabled()) {
                 $users[] = [
                     'username' => $user->getUsername(),

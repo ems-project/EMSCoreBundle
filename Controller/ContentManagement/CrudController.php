@@ -375,6 +375,10 @@ class CrudController extends AppController
         ]);
     }
 
+
+    /**
+     * @return array{username:string, displayName:string, roles:array<string>, email:string, circles:array<string>}
+     */
     private function userToApiUserArray(User $user): array
     {
         return [

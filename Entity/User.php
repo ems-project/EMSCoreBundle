@@ -201,6 +201,9 @@ interface User
     public function getUsername();
 
 
+    /**
+     * @return array<string>
+     */
     public function getRoles(): array;
 
 

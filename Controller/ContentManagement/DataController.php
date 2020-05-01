@@ -53,6 +53,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Validator\Constraints\Regex;
 use Throwable;
 use Twig\Error\LoaderError;
 use Twig\Error\SyntaxError;
@@ -1563,6 +1564,12 @@ class DataController extends AppController
         $revision = new Revision();
         $form = $this->createFormBuilder($revision)
             ->add('ouuid', IconTextType::class, [
+                'constraints' => [ new Regex([
+                    'pattern' => '/[\/]++/',
+                    'match' => false,
+                    'message' => 'Ouuid field can not contain a "/".'
+                    ])
+                ],
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'Auto-generated if left empty'

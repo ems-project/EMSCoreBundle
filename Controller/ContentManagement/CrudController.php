@@ -378,7 +378,7 @@ class CrudController extends AppController
     /**
      * @Route("/api/user-profile", defaults={"_format": "json"}, methods={"GET"})
      */
-    public function getUserProfile() : JsonResponse
+    public function getUserProfile(): JsonResponse
     {
         $user = $this->getUser();
         if (! $user instanceof User) {

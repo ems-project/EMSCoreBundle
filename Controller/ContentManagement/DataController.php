@@ -1565,9 +1565,9 @@ class DataController extends AppController
         $form = $this->createFormBuilder($revision)
             ->add('ouuid', IconTextType::class, [
                 'constraints' => [ new Regex([
-                    'pattern' => '/[\/]++/',
-                    'match' => false,
-                    'message' => 'Ouuid field can not contain a "/".'
+                    'pattern' => '/^[A-Za-z0-9_\.\-~]*$/',
+                    'match' => true,
+                    'message' => 'Ouuid has an unauthorized character.'
                     ])
                 ],
                 'attr' => [

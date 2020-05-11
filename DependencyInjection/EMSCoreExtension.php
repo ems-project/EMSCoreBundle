@@ -191,4 +191,15 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
             $container->setParameter($reference, $value);
         }
     }
+
+    /**
+     * @param array<string, mixed> $ldapConfig
+     */
+    private function loadLdap(ContainerBuilder $container, array $ldapConfig): void
+    {
+        foreach ($ldapConfig as $name => $value) {
+            $reference = sprintf('ems_core.ldap.%s', $name);
+            $container->setParameter($reference, $value);
+        }
+    }
 }

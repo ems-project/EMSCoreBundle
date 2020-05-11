@@ -211,7 +211,6 @@ class DataService
      */
     public function lockRevision(Revision $revision, Environment $publishEnv = null, $super = false, $username = null)
     {
-
         if (!empty($publishEnv) && !$this->authorizationChecker->isGranted($revision->getContentType()->getPublishRole() ?: 'ROLE_PUBLISHER')) {
             throw new PrivilegeException($revision, 'You don\'t have publisher role for this content');
         }
@@ -1285,7 +1284,6 @@ class DataService
      */
     public function initNewDraft($type, $ouuid, $fromRev = null, $username = null)
     {
-
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
 

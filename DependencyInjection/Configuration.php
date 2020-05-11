@@ -97,6 +97,18 @@ class Configuration implements ConfigurationInterface
             ->arrayNode('template_options')->defaultValue([])->prototype('variable')->end()->end()
             ->scalarNode('health_check_allow_origin')->defaultValue(null)->end()
             ->scalarNode('tika_download_url')->defaultValue(null)->end()
+            ->arrayNode('ldap')
+            ->children()
+            ->scalarNode('base_dn')->end()
+            ->scalarNode('search_dn')->end()
+            ->scalarNode('search_password')->end()
+            ->variableNode('default_roles')->end()
+            ->scalarNode('uid_key')->end()
+            ->scalarNode('filter')->end()
+            ->scalarNode('password_attribute')->end()
+            ->variableNode('extra_fields')->end()
+            ->scalarNode('email_field')->end()
+            ->end()
             ->end();
 
         return $treeBuilder;

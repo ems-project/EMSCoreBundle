@@ -1591,7 +1591,6 @@ class DataController extends AppController
             $revision = $form->getData();
             try {
                 $revision = $dataService->newDocument($contentType, $revision->getOuuid());
-
                 return $this->redirectToRoute('revision.edit', [
                     'revisionId' => $revision->getId()
                 ]);

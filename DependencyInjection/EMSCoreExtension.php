@@ -70,6 +70,8 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.s3_bucket', $config['s3_bucket']);
         $container->setParameter('ems_core.health_check_allow_origin', $config['health_check_allow_origin']);
         $container->setParameter('ems_core.tika_download_url', $config['tika_download_url']);
+
+        $this->loadLdap($container, $config['ldap'] ?? []);
     }
 
     public static function getCoreVersion($rootDir)
@@ -134,6 +136,17 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
                 'globals' => $globals,
                 'form_themes' => ["@EMSCore/form/fields.html.twig"],
             ]);
+        }
+    }
+
+    /**
+     * @param array<string, mixed> $ldapConfig
+     */
+    private function loadLdap(ContainerBuilder $container, array $ldapConfig): void
+    {
+        foreach ($ldapConfig as $name => $value) {
+            $reference = sprintf('ems_core.ldap.%s', $name);
+            $container->setParameter($reference, $value);
         }
     }
 }

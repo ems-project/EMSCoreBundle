@@ -660,6 +660,19 @@ services:
     apikey_authenticator:
         class:  EMS\CoreBundle\Security\ApiKeyAuthenticator
         public: false
+    ems.ldap_user_provider:
+        class: EMS\CoreBundle\Security\CoreLdapUserProvider
+        arguments:
+            $emailField: '%ems_core.ldap.email_field%'
+            $ldap: '@Symfony\Component\Ldap\Ldap'
+            $baseDn: '%ems_core.ldap.base_dn%'
+            $searchDn: '%ems_core.ldap.search_dn%'
+            $searchPassword: '%ems_core.ldap.search_password%'
+            $defaultRoles: '%ems_core.ldap.default_roles%'
+            $uidKey: '%ems_core.ldap.uid_key%'
+            $filter: '%ems_core.ldap.filter%'
+            $passwordAttribute: '%ems_core.ldap.password_attribute%'
+            $extraFields: '%ems_core.ldap.extra_fields%'
 
 #### aliases
     EMS\CoreBundle\Elasticsearch\Bulker: '@ems.elasticsearch.bulker'

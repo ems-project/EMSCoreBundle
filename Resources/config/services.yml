@@ -664,6 +664,7 @@ services:
         class: EMS\CoreBundle\Security\CoreLdapUserProvider
         arguments:
             $emailField: '%ems_core.ldap.email_field%'
+            $userService: '@ems.service.user'
             $ldap: '@Symfony\Component\Ldap\Ldap'
             $baseDn: '%ems_core.ldap.base_dn%'
             $searchDn: '%ems_core.ldap.search_dn%'

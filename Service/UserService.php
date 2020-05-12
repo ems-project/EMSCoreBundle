@@ -118,7 +118,6 @@ class UserService
 
         if (null === $this->currentUser && $token->getUser() instanceof CoreLdapUser) {
             $this->currentUser = $token->getUser();
-            return $this->currentUser;
         }
 
         return $this->currentUser;

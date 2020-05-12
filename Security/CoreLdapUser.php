@@ -157,8 +157,6 @@ final class CoreLdapUser implements UserInterface, User
         return $this->hasRole(FOSUserInterface::ROLE_SUPER_ADMIN);
     }
 
-    //Required by the EMS User (interface)
-
     /**
      * @param array<string> $circles
      */

@@ -3,8 +3,8 @@
 namespace EMS\CoreBundle\Security;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Service\UserService;
-use EMS\LocalUserBundle\Entity\User;
 use Symfony\Component\Ldap\Entry;
 use Symfony\Component\Ldap\LdapInterface;
 use Symfony\Component\Ldap\Security\LdapUser as SymfonyLdapUser;
@@ -36,14 +36,20 @@ class CoreLdapUserProvider extends LdapUserProvider
     /**
      * @param string $username
      */
-    protected function loadUser($username, Entry $entry): UserInterface
+    protected function loadUser($username, Entry $entry): User
     {
         $authenticatedUser = parent::loadUser($username, $entry);
+        /** @var User $dbUser */
         $dbUser = $this->userService->getUser($username, false);
 
-        if (!$dbUser instanceof UserInterface) {
+        if (!$dbUser instanceof User) {
             $ldapUser = CoreLdapUser::fromLdap($authenticatedUser, $this->emailField);
-            return User::fromLdap($ldapUser);
+            $ldapUser->randomizePassword();
+            $em = $this->doctrine->getEntityManager();
+            $em->persist($ldapUser);
+            $em->flush();
+
+            return $ldapUser;
         }
 
         return $dbUser;

@@ -6,6 +6,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Service\UserService;
+use EMS\LocalUserBundle\Entity\User;
 use Symfony\Component\Ldap\Entry;
 use Symfony\Component\Ldap\LdapInterface;
 use Symfony\Component\Ldap\Security\LdapUser as SymfonyLdapUser;

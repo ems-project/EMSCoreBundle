@@ -4201,61 +4201,6 @@ parameters:
 			path: Entity/WysiwygStylesSet.php
 
 		-
-			message: "#^Property EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:\\$twig has no typehint specified\\.$#"
-			count: 1
-			path: EventListener/RequestListener.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:\\$doctrine has no typehint specified\\.$#"
-			count: 1
-			path: EventListener/RequestListener.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:\\$logger has no typehint specified\\.$#"
-			count: 1
-			path: EventListener/RequestListener.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:\\$router has no typehint specified\\.$#"
-			count: 1
-			path: EventListener/RequestListener.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:\\$container has no typehint specified\\.$#"
-			count: 1
-			path: EventListener/RequestListener.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:\\$authorizationChecker has no typehint specified\\.$#"
-			count: 1
-			path: EventListener/RequestListener.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:\\$session has no typehint specified\\.$#"
-			count: 1
-			path: EventListener/RequestListener.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:\\$allowUserRegistration has no typehint specified\\.$#"
-			count: 1
-			path: EventListener/RequestListener.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:\\$userLoginRoute has no typehint specified\\.$#"
-			count: 1
-			path: EventListener/RequestListener.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:\\$userRegistrationRoute has no typehint specified\\.$#"
-			count: 1
-			path: EventListener/RequestListener.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:__construct\\(\\) has parameter \\$allowUserRegistration with no typehint specified\\.$#"
-			count: 1
-			path: EventListener/RequestListener.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:__construct\\(\\) has parameter \\$session with no value type specified in iterable type Symfony\\\\Component\\\\HttpFoundation\\\\Session\\\\Session\\.$#"
 			count: 1
 			path: EventListener/RequestListener.php
@@ -4284,6 +4229,61 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:provideTemplateTwigObjects\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: EventListener/RequestListener.php
+
+		-
+			message: "#^Property EMS\\\\CoreBundle\\\\Event\\\\RevisionEvent\\:\\:\\$revision has no typehint specified\\.$#"
+			count: 1
+			path: Event/RevisionEvent.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\RevisionEvent\\:\\:getRevision\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: Event/RevisionEvent.php
+
+		-
+			message: "#^Property EMS\\\\CoreBundle\\\\Event\\\\RevisionPublishEvent\\:\\:\\$environment has no typehint specified\\.$#"
+			count: 1
+			path: Event/RevisionPublishEvent.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\RevisionPublishEvent\\:\\:getEnvironment\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: Event/RevisionPublishEvent.php
+
+		-
+			message: "#^Property EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:\\$toClean type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: Event/UpdateRevisionReferersEvent.php
+
+		-
+			message: "#^Property EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:\\$toCreate type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: Event/UpdateRevisionReferersEvent.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:__construct\\(\\) has parameter \\$toCleanOuuids with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: Event/UpdateRevisionReferersEvent.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:__construct\\(\\) has parameter \\$toCreateOuuids with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: Event/UpdateRevisionReferersEvent.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:getToCleanOuuids\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: Event/UpdateRevisionReferersEvent.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:getToCreateOuuids\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: Event/UpdateRevisionReferersEvent.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:getRefererOuuid\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: Event/UpdateRevisionReferersEvent.php
 
 		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Event\\\\RevisionEvent\\:\\:\\$revision has no typehint specified\\.$#"

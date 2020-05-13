@@ -15,6 +15,8 @@ use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
  */
 final class User extends BaseUser implements UserInterface
 {
+    public static function fromLdap(UserInterface $ldapUser, string $emailField): CoreLdapUser;
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")

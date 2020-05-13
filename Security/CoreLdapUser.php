@@ -17,22 +17,22 @@ final class CoreLdapUser implements UserInterface, User
 {
     /** @var \DateTime */
     private $created;
-
+    /** @var array<string> */
+    private $circles;
     /** @var string */
     private $email;
-
+    /** @var bool */
+    private $enabled;
     /** @var Entry */
     private $entry;
-
+    /** @var \DateTime */
+    private $modified;
     /** @var string|null */
     private $password;
-
     /** @var array<Role|string> */
     private $roles;
-
     /** @var string|null */
     private $salt;
-
     /** @var string */
     private $username;
 
@@ -45,14 +45,16 @@ final class CoreLdapUser implements UserInterface, User
         return (string) $this->getUsername();
     }
 
-    public static function fromLdap(UserInterface $ldapUser, string $emailField): self
+    public static function fromLdap(UserInterface $ldapUser, string $emailField): CoreLdapUser
     {
         if (! $ldapUser instanceof SymfonyLdapUser) {
             throw new \RuntimeException(\sprintf('Could not create ldap user. Instance should be of type %s', SymfonyLdapUser::class));
         }
 
         $user = new static();
-        $user->created = new \DateTime('now');
+        $user->circles = [];
+        $user->created = $user->modified = new \DateTime('now');
+        $user->enabled = true;
         $user->email = $ldapUser->getExtraFields()[$emailField] ?? '';
         $user->entry = $ldapUser->getEntry();
         $user->password = $ldapUser->getPassword();
@@ -60,7 +62,14 @@ final class CoreLdapUser implements UserInterface, User
         $user->salt = $ldapUser->getSalt();
         $user->username = $ldapUser->getUsername();
 
+
         return $user;
+    }
+
+
+    public function randomizePassword(): void
+    {
+        $this->password = \sha1(\random_bytes(10));
     }
 
     public function eraseCredentials(): void

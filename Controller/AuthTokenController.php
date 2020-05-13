@@ -1,56 +1,43 @@
 <?php
 namespace EMS\CoreBundle\Controller;
 
-use EMS\CoreBundle\Entity\AuthToken;
+use EMS\CoreBundle\Security\Authenticator;
+use EMS\CoreBundle\Security\Credentials;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
+use Twig\Environment;
 
-class AuthTokenController extends AppController
+class AuthTokenController
 {
+    /** @var Authenticator */
+    private $authenticator;
+    /** @var Environment */
+    private $twig;
+
+    public function __construct(Authenticator $authenticator, Environment $twig)
+    {
+        $this->authenticator = $authenticator;
+        $this->twig = $twig;
+    }
+
     /**
      * @Route("/auth-token", name="auth-token", defaults={"_format": "json"}, methods={"POST"})
      */
-    public function postAuthTokensAction(Request $request, EncoderFactoryInterface $encoderFactory) : Response
+    public function postAuthTokensAction(Request $request): Response
     {
-        $loginInfo = json_decode($request->getContent(), true);
-
-        $userService = $this->getUserService();
-        $user = $userService->getUser($loginInfo['username'], false);
-        
-        if (empty($user)) { //le user n'est pas trouvés
-            return $this->invalidCredentials();
+        try {
+            $token = Credentials::usernamePasswordToken($request, Credentials::DEFAULT_PROVIDER_KEY);
+            $authToken = $this->authenticator->generateAuthToken($token);
+        } catch (\Exception $exception) {
+            return $this->authenticator->failedResponse();
         }
-        
-        $encoder = $encoderFactory->getEncoder($user);
-        
-        if ($encoder->isPasswordValid($user->getPassword(), $loginInfo['password'], $user->getSalt())) {
-            $authToken = new AuthToken($user);
-            
-            $em = $this->getDoctrine()->getManager();
 
-            $em->persist($authToken);
-            $em->flush();
-
-            return $this->render('@EMSCore/ajax/auth-token.json.twig', [
-                    'authToken' => $authToken,
-                    'success' => true,
-            ]);
-        } else { // Le mot de passe n'est pas correct
-            return $this->invalidCredentials();
-        }
-    }
-
-    private function invalidCredentials()
-    {
-        $response = new Response();
-        $response->headers->set('Content-Type', 'application/json');
-        $response->setContent(json_encode([
-            'success' => false,
-            'acknowledged' => true,
-            'error' => ['Unauthorized Error'],
-        ]))->setStatusCode(401);
-        return $response;
+        return $this->authenticator->successResponse(
+            $this->twig->render('@EMSCore/ajax/auth-token.json.twig', [
+                'authToken' => $authToken,
+                'success' => true,
+            ])
+        );
     }
 }

@@ -1181,16 +1181,6 @@ parameters:
 			path: ContentTransformer/HtmlStylesRemover.php
 
 		-
-			message: "#^Parameter \\#1 \\$json of function json_decode expects string, resource\\|string given\\.$#"
-			count: 1
-			path: Controller/AuthTokenController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\AuthTokenController\\:\\:invalidCredentials\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: Controller/AuthTokenController.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ContentManagement\\\\ContentTypeController\\:\\:isValidName\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: Controller/ContentManagement/ContentTypeController.php

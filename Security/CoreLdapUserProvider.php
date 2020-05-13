@@ -2,8 +2,9 @@
 
 namespace EMS\CoreBundle\Security;
 
-use EMS\CoreBundle\Entity\User;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CoreBundle\Service\UserService;
+use EMS\LocalUserBundle\Entity\User;
 use Symfony\Component\Ldap\Entry;
 use Symfony\Component\Ldap\LdapInterface;
 use Symfony\Component\Ldap\Security\LdapUser as SymfonyLdapUser;
@@ -13,9 +14,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class CoreLdapUserProvider extends LdapUserProvider
 {
+    /** @var Registry */
+    private $doctrine;
     /** @var string */
     private $emailField;
-
     /** @var UserService */
     private $userService;
 
@@ -23,9 +25,10 @@ class CoreLdapUserProvider extends LdapUserProvider
      * @param array<string> $defaultRoles
      * @param array<string> $extraFields
      */
-    public function __construct(string $emailField, UserService $userService, LdapInterface $ldap, string $baseDn, string $searchDn = null, string $searchPassword = null, array $defaultRoles = [], string $uidKey = null, string $filter = null, string $passwordAttribute = null, array $extraFields = [])
+    public function __construct(Registry $doctrine, string $emailField, UserService $userService, LdapInterface $ldap, string $baseDn, string $searchDn = null, string $searchPassword = null, array $defaultRoles = [], string $uidKey = null, string $filter = null, string $passwordAttribute = null, array $extraFields = [])
     {
         parent::__construct($ldap, $baseDn, $searchDn, $searchPassword, $defaultRoles, $uidKey, $filter, $passwordAttribute, $extraFields);
+        $this->doctrine = $doctrine;
         $this->emailField = $emailField;
         $this->userService = $userService;
     }
@@ -39,7 +42,8 @@ class CoreLdapUserProvider extends LdapUserProvider
         $dbUser = $this->userService->getUser($username, false);
 
         if (!$dbUser instanceof UserInterface) {
-            return CoreLdapUser::fromLdap($authenticatedUser, $this->emailField);
+            $ldapUser = CoreLdapUser::fromLdap($authenticatedUser, $this->emailField);
+            return User::fromLdap($ldapUser);
         }
 
         return $dbUser;

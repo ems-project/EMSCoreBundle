@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace EMS\CoreBundle\Security;
 
-use Doctrine\Common\Collections\Collection;
 use EMS\CoreBundle\Entity\AuthToken;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\WysiwygProfile;

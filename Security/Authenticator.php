@@ -29,7 +29,7 @@ class Authenticator
 
     public function authenticate(UsernamePasswordToken $token): void
     {
-        $user = $this->userService->getUser($token->getUsername());
+        $user = $this->userService->getUser($token->getUsername(), false);
         if (empty($user)) {
             throw new \RuntimeException("User not found");
         }

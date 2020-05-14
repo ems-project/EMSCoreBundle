@@ -3,7 +3,7 @@
 namespace EMS\CoreBundle\Security;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Entity\Userinterface;
 use EMS\CoreBundle\Service\UserService;
 use Symfony\Component\Ldap\Entry;
 use Symfony\Component\Ldap\LdapInterface;
@@ -36,13 +36,13 @@ class CoreLdapUserProvider extends LdapUserProvider
     /**
      * @param string $username
      */
-    protected function loadUser($username, Entry $entry): User
+    protected function loadUser($username, Entry $entry): Userinterface
     {
         $authenticatedUser = parent::loadUser($username, $entry);
-        /** @var User $dbUser */
+        /** @var Userinterface $dbUser */
         $dbUser = $this->userService->getUser($username, false);
 
-        if (!$dbUser instanceof User) {
+        if (!$dbUser instanceof Userinterface) {
             $ldapUser = CoreLdapUser::fromLdap($authenticatedUser, $this->emailField);
             $ldapUser->randomizePassword();
             $em = $this->doctrine->getEntityManager();
@@ -61,7 +61,7 @@ class CoreLdapUserProvider extends LdapUserProvider
             return CoreLdapUser::fromLdap(new SymfonyLdapUser($user->getEntry(), $user->getUsername(), $user->getPassword(), $user->getRoles()), $this->emailField);
         }
 
-        if (!$user instanceof User) {
+        if (!$user instanceof Userinterface) {
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
         }
 

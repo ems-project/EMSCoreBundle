@@ -12,7 +12,7 @@ use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\I18n;
-use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Entity\Userinterface;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Form\DataField\DateFieldType;
@@ -651,7 +651,7 @@ class AppExtension extends \Twig_Extension
 
     public function displayname($username)
     {
-        /**@var User $user */
+        /**@var Userinterface $user */
         $user = $this->userService->getUser($username);
         if (!empty($user)) {
             return $user->getDisplayName();

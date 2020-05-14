@@ -137,6 +137,48 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
                 'form_themes' => ["@EMSCore/form/fields.html.twig"],
             ]);
         }
+
+        $this->prependLocalUser($container, $configs, $bundles);
+    }
+
+    /**
+     * @param array<mixed> $configs
+     * @param mixed $bundles
+     */
+    private function prependLocalUser(ContainerBuilder $container, array $configs, $bundles): void
+    {
+        if (isset($bundles['DoctrineBundle'])) {
+            $container->prependExtensionConfig('doctrine', [
+                'orm' => [
+                    'resolve_target_entities' => [
+                        'EMS\CoreBundle\Entity\Userinterface' => 'EMS\LocalUserBundle\Entity\User'
+                    ]
+                ],
+            ]);
+        }
+
+        $fromEmail = [
+            'address' => 'noreply@example.com',
+            'sender_name' => 'elasticms',
+        ];
+
+        if(isset($configs[0]['from_email'])){
+            $fromEmail = $configs[0]['from_email'];
+        }
+
+        if (isset($bundles['FOSUserBundle'])) {
+            $container->prependExtensionConfig('fos_user', [
+                'db_driver' => 'orm',
+                'from_email' => $fromEmail,
+                'firewall_name' => 'main',
+                'user_class' => 'EMS\LocalUserBundle\Entity\User',
+                'profile' => [
+                    'form' => [
+                        'type' => 'EMS\LocalUserBundle\Form\UserProfileType'
+                    ]
+                ]
+            ]);
+        }
     }
 
     /**

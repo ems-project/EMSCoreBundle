@@ -9,7 +9,7 @@ use EMS\CoreBundle\Entity\Form\TreatNotifications;
 use EMS\CoreBundle\Entity\Notification;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Template;
-use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Entity\Userinterface;
 use EMS\CoreBundle\Event\RevisionFinalizeDraftEvent;
 use EMS\CoreBundle\Event\RevisionNewDraftEvent;
 use EMS\CoreBundle\Event\RevisionPublishEvent;
@@ -523,7 +523,7 @@ class NotificationService
     public static function usersToEmailAddresses($users)
     {
         $out = [];
-        /**@var User $user*/
+        /**@var Userinterface $user*/
         foreach ($users as $user) {
             if ($user->getEmailNotification() && $user->isEnabled()) {
                 $out[$user->getEmail()] = $user->getDisplayName();

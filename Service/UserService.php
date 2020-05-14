@@ -5,7 +5,7 @@ namespace EMS\CoreBundle\Service;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManagerInterface;
 use EMS\CoreBundle\Entity\AuthToken;
-use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Entity\Userinterface;
 use EMS\CoreBundle\Security\CoreLdapUser;
 use EMS\CoreBundle\Repository\UserRepositoryInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -20,7 +20,7 @@ class UserService
     /**@var TokenStorageInterface $tokenStorage */
     private $tokenStorage;
 
-    /** @var User|null */
+    /** @var Userinterface|null */
     private $currentUser;
     
     private $securityRoles;
@@ -103,7 +103,7 @@ class UserService
         return $user;
     }
     
-    public function getCurrentUser(bool $detach = true): User
+    public function getCurrentUser(bool $detach = true): Userinterface
     {
         if ($this->currentUser) {
             return $this->currentUser;
@@ -161,7 +161,7 @@ class UserService
     }
     
     
-    public function deleteUser(User $user)
+    public function deleteUser(Userinterface $user)
     {
         /**@var EntityManagerInterface $em*/
         $em = $this->doctrine->getManager();

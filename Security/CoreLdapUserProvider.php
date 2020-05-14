@@ -40,7 +40,7 @@ class CoreLdapUserProvider extends LdapUserProvider
     /**
      * @param string $username
      */
-    protected function loadUser($username, Entry $entry): User
+    protected function loadUser($username, Entry $entry): Userinterface
     {
         $authenticatedUser = parent::loadUser($username, $entry);
         /** @var UserInterface|null $dbUser */

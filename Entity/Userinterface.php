@@ -219,7 +219,7 @@ final class User extends BaseUser implements UserInterface
      *
      * @param array $circles
      *
-     * @return User
+     * @return Userinterface
      */
     public function setCircles($circles)
     {
@@ -233,7 +233,7 @@ final class User extends BaseUser implements UserInterface
      *
      * @param string $displayName
      *
-     * @return User
+     * @return Userinterface
      */
     public function setDisplayName($displayName)
     {
@@ -260,7 +260,7 @@ final class User extends BaseUser implements UserInterface
      *
      * @param boolean $allowedToConfigureWysiwyg
      *
-     * @return User
+     * @return Userinterface
      */
     public function setAllowedToConfigureWysiwyg($allowedToConfigureWysiwyg)
     {
@@ -284,7 +284,7 @@ final class User extends BaseUser implements UserInterface
      *
      * @param WysiwygProfile $wysiwygProfile
      *
-     * @return User
+     * @return Userinterface
      */
     public function setWysiwygProfile(WysiwygProfile $wysiwygProfile)
     {
@@ -308,7 +308,7 @@ final class User extends BaseUser implements UserInterface
      *
      * @param string $wysiwygOptions
      *
-     * @return User
+     * @return Userinterface
      */
     public function setWysiwygOptions($wysiwygOptions)
     {
@@ -332,7 +332,7 @@ final class User extends BaseUser implements UserInterface
      *
      * @param boolean $layoutBoxed
      *
-     * @return User
+     * @return Userinterface
      */
     public function setLayoutBoxed($layoutBoxed)
     {
@@ -356,7 +356,7 @@ final class User extends BaseUser implements UserInterface
      *
      * @param boolean $sidebarMini
      *
-     * @return User
+     * @return Userinterface
      */
     public function setSidebarMini($sidebarMini)
     {
@@ -380,7 +380,7 @@ final class User extends BaseUser implements UserInterface
      *
      * @param boolean $sidebarCollapse
      *
-     * @return User
+     * @return Userinterface
      */
     public function setSidebarCollapse($sidebarCollapse)
     {
@@ -404,7 +404,7 @@ final class User extends BaseUser implements UserInterface
      *
      * @param \EMS\CoreBundle\Entity\AuthToken $authToken
      *
-     * @return User
+     * @return Userinterface
      */
     public function addAuthToken(\EMS\CoreBundle\Entity\AuthToken $authToken)
     {

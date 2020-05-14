@@ -3,11 +3,11 @@
 namespace EMS\CoreBundle\Entity;
 
 use EMS\CoreBundle\Security\CoreLdapUser;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 
 interface Userinterface
 {
-    public static function fromLdap(UserInterface $ldapUser, string $emailField): CoreLdapUser;
+    public static function fromLdap(SymfonyUserInterface $ldapUser, string $emailField): CoreLdapUser;
 
     /**
      * Get created

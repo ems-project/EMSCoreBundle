@@ -10,7 +10,7 @@ use Symfony\Component\Ldap\LdapInterface;
 use Symfony\Component\Ldap\Security\LdapUser as SymfonyLdapUser;
 use Symfony\Component\Ldap\Security\LdapUserProvider;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 
 class CoreLdapUserProvider extends LdapUserProvider
 {
@@ -55,7 +55,7 @@ class CoreLdapUserProvider extends LdapUserProvider
         return $dbUser;
     }
 
-    public function refreshUser(UserInterface $user): UserInterface
+    public function refreshUser(SymfonyUserInterface $user): SymfonyUserInterface
     {
         if ($user instanceof CoreLdapUser) {
             return CoreLdapUser::fromLdap(new SymfonyLdapUser($user->getEntry(), $user->getUsername(), $user->getPassword(), $user->getRoles()), $this->emailField);
@@ -67,7 +67,7 @@ class CoreLdapUserProvider extends LdapUserProvider
 
         $refreshedUser = $this->userService->getUser($user->getUsername(), false);
 
-        if (!$refreshedUser instanceof UserInterface) {
+        if (!$refreshedUser instanceof SymfonyUserInterface) {
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($refreshedUser)));
         }
 

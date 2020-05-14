@@ -151,7 +151,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
             $container->prependExtensionConfig('doctrine', [
                 'orm' => [
                     'resolve_target_entities' => [
-                        'EMS\CoreBundle\Entity\UserInterface' => 'EMS\LocalUserBundle\Entity\User'
+                        'EMS\CoreBundle\Entity\UserInterface' => 'EMS\CoreBundle\Entity\User'
                     ]
                 ],
             ]);
@@ -171,10 +171,10 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
                 'db_driver' => 'orm',
                 'from_email' => $fromEmail,
                 'firewall_name' => 'main',
-                'user_class' => 'EMS\LocalUserBundle\Entity\User',
+                'user_class' => 'EMS\CoreBundle\Entity\User',
                 'profile' => [
                     'form' => [
-                        'type' => 'EMS\LocalUserBundle\Form\UserProfileType'
+                        'type' => 'EMS\CoreBundle\Form\UserProfileType'
                     ]
                 ]
             ]);

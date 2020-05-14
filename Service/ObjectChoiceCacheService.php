@@ -6,7 +6,7 @@ namespace EMS\CoreBundle\Service;
 use Elasticsearch\Client;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Form\Field\ObjectChoiceListItem;
-use EMS\LocalUserBundle\Entity\User;
+use EMS\CoreBundle\Entity\User;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;

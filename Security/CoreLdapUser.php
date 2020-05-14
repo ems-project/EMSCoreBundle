@@ -5,15 +5,15 @@ declare(strict_types = 1);
 namespace EMS\CoreBundle\Security;
 
 use EMS\CoreBundle\Entity\AuthToken;
-use EMS\CoreBundle\Entity\Userinterface;
+use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Entity\WysiwygProfile;
 use FOS\UserBundle\Model\UserInterface as FOSUserInterface;
 use Symfony\Component\Ldap\Entry;
 use Symfony\Component\Ldap\Security\LdapUser as SymfonyLdapUser;
 use Symfony\Component\Security\Core\Role\Role;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 
-final class CoreLdapUser implements UserInterface, Userinterface
+final class CoreLdapUser implements SymfonyUserInterface, UserInterface
 {
     /** @var \DateTime */
     private $created;
@@ -45,7 +45,7 @@ final class CoreLdapUser implements UserInterface, Userinterface
         return (string) $this->getUsername();
     }
 
-    public static function fromLdap(UserInterface $ldapUser, string $emailField): CoreLdapUser
+    public static function fromLdap(SymfonyUserInterface $ldapUser, string $emailField): CoreLdapUser
     {
         if (! $ldapUser instanceof SymfonyLdapUser) {
             throw new \RuntimeException(\sprintf('Could not create ldap user. Instance should be of type %s', SymfonyLdapUser::class));

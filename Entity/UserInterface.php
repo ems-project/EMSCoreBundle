@@ -5,7 +5,7 @@ namespace EMS\CoreBundle\Entity;
 use EMS\CoreBundle\Security\CoreLdapUser;
 use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 
-interface Userinterface
+interface UserInterface
 {
     public static function fromLdap(SymfonyUserInterface $ldapUser, string $emailField): CoreLdapUser;
 
@@ -36,7 +36,7 @@ interface Userinterface
      *
      * @param array $circles
      *
-     * @return Userinterface
+     * @return UserInterface
      */
     public function setCircles($circles);
 
@@ -45,7 +45,7 @@ interface Userinterface
      *
      * @param string $displayName
      *
-     * @return Userinterface
+     * @return UserInterface
      */
     public function setDisplayName($displayName);
 
@@ -61,7 +61,7 @@ interface Userinterface
      *
      * @param boolean $allowedToConfigureWysiwyg
      *
-     * @return Userinterface
+     * @return UserInterface
      */
     public function setAllowedToConfigureWysiwyg($allowedToConfigureWysiwyg);
 
@@ -77,7 +77,7 @@ interface Userinterface
      *
      * @param WysiwygProfile $wysiwygProfile
      *
-     * @return Userinterface
+     * @return UserInterface
      */
     public function setWysiwygProfile(WysiwygProfile $wysiwygProfile = null);
 
@@ -93,7 +93,7 @@ interface Userinterface
      *
      * @param string $wysiwygOptions
      *
-     * @return Userinterface
+     * @return UserInterface
      */
     public function setWysiwygOptions($wysiwygOptions);
 
@@ -109,7 +109,7 @@ interface Userinterface
      *
      * @param boolean $layoutBoxed
      *
-     * @return Userinterface
+     * @return UserInterface
      */
     public function setLayoutBoxed($layoutBoxed);
 
@@ -125,7 +125,7 @@ interface Userinterface
      *
      * @param boolean $sidebarMini
      *
-     * @return Userinterface
+     * @return UserInterface
      */
     public function setSidebarMini($sidebarMini);
     
@@ -142,7 +142,7 @@ interface Userinterface
      *
      * @param boolean $emailNotification
      *
-     * @return Userinterface
+     * @return UserInterface
      */
     public function setEmailNotification($emailNotification);
     
@@ -158,7 +158,7 @@ interface Userinterface
      *
      * @param boolean $sidebarCollapse
      *
-     * @return Userinterface
+     * @return UserInterface
      */
     public function setSidebarCollapse($sidebarCollapse);
 
@@ -174,7 +174,7 @@ interface Userinterface
      *
      * @param \EMS\CoreBundle\Entity\AuthToken $authToken
      *
-     * @return Userinterface
+     * @return UserInterface
      */
     public function addAuthToken(\EMS\CoreBundle\Entity\AuthToken $authToken);
 

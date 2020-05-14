@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace EMS\CoreBundle\Security;
 
 use EMS\CoreBundle\Entity\AuthToken;
-use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Entity\Userinterface;
 use EMS\CoreBundle\Entity\WysiwygProfile;
 use FOS\UserBundle\Model\UserInterface as FOSUserInterface;
 use Symfony\Component\Ldap\Entry;
@@ -13,7 +13,7 @@ use Symfony\Component\Ldap\Security\LdapUser as SymfonyLdapUser;
 use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-final class CoreLdapUser implements UserInterface, User
+final class CoreLdapUser implements UserInterface, Userinterface
 {
     /** @var \DateTime */
     private $created;

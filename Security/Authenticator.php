@@ -4,7 +4,7 @@ namespace EMS\CoreBundle\Security;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CoreBundle\Entity\AuthToken;
-use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Entity\Userinterface;
 use EMS\CoreBundle\Service\UserService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -72,15 +72,15 @@ class Authenticator
         return $response;
     }
 
-    private function getUser(UsernamePasswordToken $token): User
+    private function getUser(UsernamePasswordToken $token): Userinterface
     {
         if (!$token->getUser() instanceof UserInterface) {
             $this->authenticate($token);
         }
 
         $user = $token->getUser();
-        if (!$user instanceof User) {
-            throw new \RuntimeException(sprintf('User should be of type %s', User::class));
+        if (!$user instanceof Userinterface) {
+            throw new \RuntimeException(sprintf('User should be of type %s', Userinterface::class));
         }
         return $user;
     }

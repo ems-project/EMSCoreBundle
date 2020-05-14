@@ -26,7 +26,7 @@ use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Notification;
 use EMS\CoreBundle\Entity\Revision;
-use EMS\CoreBundle\Entity\Userinterface;
+use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Event\RevisionFinalizeDraftEvent;
 use EMS\CoreBundle\Event\RevisionNewDraftEvent;
 use EMS\CoreBundle\Event\UpdateRevisionReferersEvent;
@@ -1180,7 +1180,7 @@ class DataService
         if ($contentType->getCirclesField()) {
             $fieldType = $contentType->getFieldType()->getChildByPath($contentType->getCirclesField());
             if ($fieldType) {
-                /**@var Userinterface $user */
+                /**@var UserInterface $user */
                 $user = $this->userService->getCurrentUser();
                 $options = $fieldType->getDisplayOptions();
                 if (isset($options['multiple']) && $options['multiple']) {

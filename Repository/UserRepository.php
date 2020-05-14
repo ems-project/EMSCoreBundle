@@ -21,7 +21,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserRepos
 			])->getQuery()->getResult();
 			
 		if(!empty($circles)){
-			/**@var \EMS\CoreBundle\Entity\Userinterface $user*/
+			/**@var \EMS\CoreBundle\Entity\UserInterface $user*/
 			foreach ($resultSet as $idx => $user){
 				if(empty(array_intersect($circles, $user->getCircles()))){
 					unset($resultSet[$idx]);

@@ -151,7 +151,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
             $container->prependExtensionConfig('doctrine', [
                 'orm' => [
                     'resolve_target_entities' => [
-                        'EMS\CoreBundle\Entity\Userinterface' => 'EMS\LocalUserBundle\Entity\User'
+                        'EMS\CoreBundle\Entity\UserInterface' => 'EMS\LocalUserBundle\Entity\User'
                     ]
                 ],
             ]);

@@ -2,13 +2,8 @@
 
 namespace EMS\CoreBundle\Entity;
 
-use EMS\CoreBundle\Security\CoreLdapUser;
-use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
-
 interface UserInterface
 {
-    public static function fromLdap(SymfonyUserInterface $ldapUser, string $emailField): CoreLdapUser;
-
     /**
      * Get created
      *
@@ -79,7 +74,7 @@ interface UserInterface
      *
      * @return UserInterface
      */
-    public function setWysiwygProfile(WysiwygProfile $wysiwygProfile = null);
+    public function setWysiwygProfile(WysiwygProfile $wysiwygProfile);
 
     /**
      * Get wysiwygProfile

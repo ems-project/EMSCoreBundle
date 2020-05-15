@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Entity;
 use EMS\CoreBundle\Security\CoreLdapUser;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 
 /**
  * @ORM\Entity
@@ -12,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\UserRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class User extends BaseUser implements UserInterface
+final class User extends BaseUser implements UserInterface
 {
     /**
      * @ORM\Id
@@ -36,8 +37,8 @@ class User extends BaseUser implements UserInterface
     private $modified;
     
     /**
-     * @var \ObjectPickerType
-     * 
+     * @var array
+     *
      * @ORM\Column(name="circles", type="json_array", nullable=true)
      */
     private $circles;
@@ -122,13 +123,13 @@ class User extends BaseUser implements UserInterface
      */
     public function updateModified()
     {
-    	$this->modified = new \DateTime();
-    	if(!isset($this->created)){
-    		$this->created = $this->modified;
-    	}
+        $this->modified = new \DateTime();
+        if (!isset($this->created)) {
+            $this->created = $this->modified;
+        }
     }
 
-    public static function fromLdap(CoreLdapUser $ldapUser): self
+    public static function fromCoreLdap(CoreLdapUser $ldapUser): self
     {
         $user = new static();
         $user->username = $ldapUser->getUsername();
@@ -150,7 +151,7 @@ class User extends BaseUser implements UserInterface
      */
     public function getCreated()
     {
-    	return $this->created;
+        return $this->created;
     }
     
     /**
@@ -160,7 +161,7 @@ class User extends BaseUser implements UserInterface
      */
     public function getModified()
     {
-    	return $this->modified;
+        return $this->modified;
     }
 
     /**
@@ -170,7 +171,7 @@ class User extends BaseUser implements UserInterface
      */
     public function getCircles()
     {
-    	return $this->circles;
+        return $this->circles;
     }
     
     /**
@@ -180,7 +181,7 @@ class User extends BaseUser implements UserInterface
      */
     public function getExpiresAt()
     {
-    	return $this->expiresAt;
+        return $this->expiresAt;
     }
     
     /**
@@ -214,15 +215,15 @@ class User extends BaseUser implements UserInterface
     /**
      * Set circles
      *
-     * @param \ObjectPickerType $circles
+     * @param array $circles
      *
      * @return User
      */
     public function setCircles($circles)
     {
-    	$this->circles = $circles;
+        $this->circles = $circles;
     
-    	return $this;
+        return $this;
     }
 
     /**
@@ -246,8 +247,9 @@ class User extends BaseUser implements UserInterface
      */
     public function getDisplayName()
     {
-    	if(empty($this->displayName))
-    		return $this->getUsername();
+        if (empty($this->displayName)) {
+            return $this->getUsername();
+        }
         return $this->displayName;
     }
 
@@ -282,7 +284,7 @@ class User extends BaseUser implements UserInterface
      *
      * @return User
      */
-    public function setWysiwygProfile(WysiwygProfile $wysiwygProfile = null)
+    public function setWysiwygProfile(WysiwygProfile $wysiwygProfile)
     {
         $this->wysiwygProfile = $wysiwygProfile;
 
@@ -439,9 +441,9 @@ class User extends BaseUser implements UserInterface
      */
     public function setEmailNotification($emailNotification)
     {
-    	$this->emailNotification = $emailNotification;
-    	
-    	return $this;
+        $this->emailNotification = $emailNotification;
+        
+        return $this;
     }
     
     /**
@@ -451,7 +453,7 @@ class User extends BaseUser implements UserInterface
      */
     public function getEmailNotification()
     {
-    	return $this->emailNotification;
+        return $this->emailNotification;
     }
     
     /**
@@ -461,6 +463,6 @@ class User extends BaseUser implements UserInterface
      */
     public function isEnabled()
     {
-    	return $this->enabled;
+        return $this->enabled;
     }
 }

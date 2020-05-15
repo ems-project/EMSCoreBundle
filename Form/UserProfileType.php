@@ -12,49 +12,52 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 
-class UserProfileType extends AbstractType {
-	
-	/**@var TokenStorageInterface */
-	private $tokenStorage;
-	
-	public function __construct(TokenStorageInterface $tokenStorage) {
-		$this->tokenStorage = $tokenStorage;
-	}
-	
-	
-	/**
-	 *
-	 * @param FormBuilderInterface $builder        	
-	 * @param array $options        	
-	 */
-	public function buildForm(FormBuilderInterface $builder, array $options) {
+class UserProfileType extends AbstractType
+{
+    
+    /**@var TokenStorageInterface */
+    private $tokenStorage;
+    
+    public function __construct(TokenStorageInterface $tokenStorage)
+    {
+        $this->tokenStorage = $tokenStorage;
+    }
+    
+    
+    /**
+     *
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
 
-		$builder
-			->add ('displayName')
-			->add ('emailNotification', CheckboxType::class, [
-					'required' => false,
-			])
-			->add ('layoutBoxed')
-			->add ('sidebarMini')
-			->add ('sidebarCollapse')
-			->remove('username');
-		
-// 		if($this->tokenStorage->getToken()->getUser()->getAllowedToConfigureWysiwyg()){
-			$builder
-				->add('wysiwygProfile', EntityType::class, [
-					'required' => false,
-					'label' => 'WYSIWYG profile',
-					'class' => 'EMSCoreBundle:WysiwygProfile',
-					'choice_label' => 'name',
-					'query_builder' => function (EntityRepository $er) {
-						return $er->createQueryBuilder('p')->orderBy('p.orderKey', 'ASC');
-					},
+        $builder
+            ->add('displayName')
+            ->add('emailNotification', CheckboxType::class, [
+                    'required' => false,
+            ])
+            ->add('layoutBoxed')
+            ->add('sidebarMini')
+            ->add('sidebarCollapse')
+            ->remove('username');
+        
+//      if($this->tokenStorage->getToken()->getUser()->getAllowedToConfigureWysiwyg()){
+            $builder
+                ->add('wysiwygProfile', EntityType::class, [
+                    'required' => false,
+                    'label' => 'WYSIWYG profile',
+                    'class' => 'EMSCoreBundle:WysiwygProfile',
+                    'choice_label' => 'name',
+                    'query_builder' => function (EntityRepository $er) {
+                        return $er->createQueryBuilder('p')->orderBy('p.orderKey', 'ASC');
+                    },
                     'attr' => [
                         'data-live-search' => true,
                         'class' => 'wysiwyg-profile-picker',
                     ],
-				])
-				->add('wysiwygOptions', CodeEditorType::class, [
+                ])
+                ->add('wysiwygOptions', CodeEditorType::class, [
                     'label' => 'WYSIWYG Options',
                     'required' => false,
                     'language' => 'ace/mode/json',
@@ -62,8 +65,8 @@ class UserProfileType extends AbstractType {
                         'class' => 'wysiwyg-profile-options',
                     ],
                 ]);
-// 		}
-	}
+//      }
+    }
 
 
 
@@ -76,10 +79,9 @@ class UserProfileType extends AbstractType {
         parent::configureOptions($resolver);
         $resolver->setDefault('translation_domain', EMSCoreBundle::TRANS_DOMAIN);
     }
-	
-	public function getParent()
-	{
-		return 'FOS\UserBundle\Form\Type\ProfileFormType';
-	}
-	
+    
+    public function getParent()
+    {
+        return 'FOS\UserBundle\Form\Type\ProfileFormType';
+    }
 }

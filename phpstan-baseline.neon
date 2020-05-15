@@ -1887,11 +1887,26 @@ parameters:
 
 		-
 			message: "#^Call to an undefined method Psr\\\\Container\\\\ContainerInterface\\:\\:getParameter\\(\\)\\.$#"
-			count: 1
+			count: 2
 			path: Controller/UserController.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\UserController\\:\\:getExistingRoles\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: Controller/UserController.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\UserController\\:\\:userExist\\(\\) has parameter \\$action with no typehint specified\\.$#"
+			count: 1
+			path: Controller/UserController.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\UserController\\:\\:userExist\\(\\) has parameter \\$form with no typehint specified\\.$#"
+			count: 1
+			path: Controller/UserController.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\UserController\\:\\:userExist\\(\\) has parameter \\$user with no typehint specified\\.$#"
 			count: 1
 			path: Controller/UserController.php
 
@@ -2387,11 +2402,6 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\AuthToken\\:\\:updateModified\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: Entity/AuthToken.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\AuthToken\\:\\:\\$user \\(EMS\\\\CoreBundle\\\\Entity\\\\User\\) does not accept EMS\\\\CoreBundle\\\\Entity\\\\User\\|null\\.$#"
 			count: 1
 			path: Entity/AuthToken.php
 
@@ -4096,13 +4106,33 @@ parameters:
 			path: Entity/UploadedAsset.php
 
 		-
+			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\User\\:\\:\\$circles type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: Entity/User.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\User\\:\\:updateModified\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: Entity/User.php
+
+		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\User\\:\\:getCircles\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: Entity/User.php
+
+		-
+			message: "#^Access to an undefined property EMS\\\\CoreBundle\\\\Entity\\\\User\\:\\:\\$expiresAt\\.$#"
 			count: 1
 			path: Entity/User.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\User\\:\\:setCircles\\(\\) has parameter \\$circles with no value type specified in iterable type array\\.$#"
 			count: 1
+			path: Entity/User.php
+
+		-
+			message: "#^Access to an undefined property EMS\\\\CoreBundle\\\\Entity\\\\User\\:\\:\\$authTokens\\.$#"
+			count: 3
 			path: Entity/User.php
 
 		-
@@ -4114,6 +4144,26 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\User\\:\\:getAuthTokens\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
 			count: 1
 			path: Entity/User.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\UserInterface\\:\\:getCircles\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: Entity/UserInterface.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\UserInterface\\:\\:setCircles\\(\\) has parameter \\$circles with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: Entity/UserInterface.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\UserInterface\\:\\:removeAuthToken\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: Entity/UserInterface.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\UserInterface\\:\\:getAuthTokens\\(\\) return type with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
+			count: 1
+			path: Entity/UserInterface.php
 
 		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\View\\:\\:\\$options type has no value type specified in iterable type array\\.$#"
@@ -9676,6 +9726,21 @@ parameters:
 			path: Form/Subform/SearchFilterType.php
 
 		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\UserProfileType\\:\\:buildForm\\(\\) has parameter \\$builder with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormBuilderInterface\\.$#"
+			count: 1
+			path: Form/UserProfileType.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\UserProfileType\\:\\:buildForm\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: Form/UserProfileType.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\UserProfileType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: Form/UserProfileType.php
+
+		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\View\\\\CalendarViewType\\:\\:buildForm\\(\\) has parameter \\$builder with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormBuilderInterface\\.$#"
 			count: 1
 			path: Form/View/CalendarViewType.php
@@ -10539,6 +10604,21 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\UploadedAssetRepository\\:\\:getHashes\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Repository/UploadedAssetRepository.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\UserRepository\\:\\:findForRoleAndCircles\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: Repository/UserRepository.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\UserRepository\\:\\:findForRoleAndCircles\\(\\) has parameter \\$circles with no typehint specified\\.$#"
+			count: 1
+			path: Repository/UserRepository.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\UserRepository\\:\\:findForRoleAndCircles\\(\\) has parameter \\$role with no typehint specified\\.$#"
+			count: 1
+			path: Repository/UserRepository.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\UserRepositoryInterface\\:\\:findForRoleAndCircles\\(\\) has no return typehint specified\\.$#"

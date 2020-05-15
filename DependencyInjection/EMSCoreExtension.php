@@ -162,7 +162,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
             'sender_name' => 'elasticms',
         ];
 
-        if(isset($configs[0]['from_email'])){
+        if (isset($configs[0]['from_email'])) {
             $fromEmail = $configs[0]['from_email'];
         }
 

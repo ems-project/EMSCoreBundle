@@ -13,6 +13,7 @@ use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Repository\WysiwygProfileRepository;
+use FOS\UserBundle\Model\UserManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -41,8 +42,8 @@ class UserController extends AppController
     }
 
     /**
-     *
      * @Route("/user/add", name="user.add")
+     * @return Response
      */
     public function addUserAction(Request $request)
     {
@@ -54,11 +55,9 @@ class UserController extends AppController
         /** @var WysiwygProfileRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:WysiwygProfile');
         $result = $repository->findBy([], ['orderKey' => 'asc'], 1);
-        if(count($result) > 0){
+        if (count($result) > 0) {
             $user->setWysiwygProfile($result[0]);
         }
-
-
 
         $form = $this->createFormBuilder($user)
             ->add('username', null, array('label' => 'form.username', 'translation_domain' => 'FOSUserBundle'))
@@ -92,7 +91,7 @@ class UserController extends AppController
 
         if ($circleObject = $this->container->getParameter('ems_core.circles_object')) {
             $form->add('circles', ObjectPickerType::class, [
-                'multiple' => TRUE,
+                'multiple' => true,
                 'type' => $circleObject,
                 'dynamicLoading' => false
 
@@ -104,25 +103,25 @@ class UserController extends AppController
             'expanded' => true,
             'multiple' => true,
             'mapped' => true,))
-            ->add ( 'create', SubmitEmsType::class, [
+            ->add('create', SubmitEmsType::class, [
                 'attr' => [
                     'class' => 'btn-primary btn-sm '
                 ],
                 'icon' => 'fa fa-plus',
-            ] )
+            ])
             ->getForm();
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var $userManager \FOS\UserBundle\Model\UserManagerInterface */
+            /** @var UserManagerInterface $userManager */
             $userManager = $this->get('fos_user.user_manager');
 
-            $continue = TRUE;
+            $continue = true;
             $continue = $this->userExist($user, 'add', $form);
 
             if ($continue) {
-                $user->setEnabled(TRUE);
+                $user->setEnabled(true);
                 $userManager->updateUser($user);
                 $this->addFlash(
                     'notice',
@@ -416,23 +415,23 @@ class UserController extends AppController
     /**
      * Test if email or username exist return on add or edit Form
      */
-    private function userExist ($user, $action, $form) {
-        /** @var $userManager \FOS\UserBundle\Model\UserManagerInterface */
+    private function userExist($user, $action, $form): bool
+    {
+        /** @var UserManagerInterface $userManager */
         $userManager = $this->get('fos_user.user_manager');
         $exists = array('email' => $userManager->findUserByEmail($user->getEmail()), 'username' => $userManager->findUserByUsername($user->getUsername()));
         $messages = array('email' => 'User email already exist!', 'username' => 'Username already exist!');
         foreach ($exists as $key => $value) {
             if ($value instanceof User) {
-                if ($action == 'add' or ($action == 'edit' and $value->getId() != $user->getId()))
-                {
+                if ($action == 'add' or ($action == 'edit' and $value->getId() != $user->getId())) {
                     $this->addFlash(
                         'error',
                         $messages[$key]
                     );
-                    return FALSE;
+                    return false;
                 }
             }
         }
-        return TRUE;
+        return true;
     }
 }

@@ -32,6 +32,5 @@ class Version20160609000457 extends AbstractMigration
 
         $this->addSql('ALTER TABLE content_type DROP create_role');
         $this->addSql('ALTER TABLE content_type DROP edit_role');
-
     }
 }

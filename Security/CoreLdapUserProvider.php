@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Security;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Service\UserService;
 use Symfony\Component\Ldap\Entry;
@@ -39,20 +40,23 @@ class CoreLdapUserProvider extends LdapUserProvider
     protected function loadUser($username, Entry $entry): UserInterface
     {
         $authenticatedUser = parent::loadUser($username, $entry);
-        /** @var UserInterface $dbUser */
+        /** @var UserInterface|null $dbUser */
         $dbUser = $this->userService->getUser($username, false);
 
-        if (!$dbUser instanceof UserInterface) {
-            $ldapUser = CoreLdapUser::fromLdap($authenticatedUser, $this->emailField);
-            $ldapUser->randomizePassword();
-            $em = $this->doctrine->getEntityManager();
-            $em->persist($ldapUser);
-            $em->flush();
-
-            return $ldapUser;
+        if ($dbUser instanceof UserInterface) {
+            return $dbUser;
         }
 
-        return $dbUser;
+        $ldapUser = CoreLdapUser::fromLdap($authenticatedUser, $this->emailField);
+        $ldapUser->randomizePassword();
+        $newUser = User::fromCoreLdap($ldapUser);
+
+        $em = $this->doctrine->getEntityManager();
+        $em->persist($newUser);
+        $em->flush();
+
+        return $newUser;
+
     }
 
     public function refreshUser(SymfonyUserInterface $user): SymfonyUserInterface

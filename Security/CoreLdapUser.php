@@ -152,7 +152,7 @@ final class CoreLdapUser implements SymfonyUserInterface, UserInterface
 
     public function hasRole(string $role): bool
     {
-        return in_array(strtoupper($role), $this->getRoles(), true);
+        return \in_array(\strtoupper($role), $this->getRoles(), true);
     }
 
     public function isEnabled(): bool

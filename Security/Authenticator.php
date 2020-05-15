@@ -79,7 +79,7 @@ class Authenticator
 
         $user = $token->getUser();
         if (!$user instanceof UserInterface) {
-            throw new \RuntimeException(sprintf('User should be of type %s', UserInterface::class));
+            throw new \RuntimeException(\sprintf('User should be of type %s', UserInterface::class));
         }
         return $user;
     }

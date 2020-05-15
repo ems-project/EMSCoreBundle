@@ -56,7 +56,6 @@ class CoreLdapUserProvider extends LdapUserProvider
         $em->flush();
 
         return $newUser;
-
     }
 
     public function refreshUser(SymfonyUserInterface $user): SymfonyUserInterface

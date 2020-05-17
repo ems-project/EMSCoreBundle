@@ -11,9 +11,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ContentTypeUpdateType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    /**
+     * @param FormBuilderInterface<AbstractType> $builder
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-
         $builder->add('json', FileType::class, [
             'label_format' => 'form.contenttype.json_update.%name%'
         ]);
@@ -24,10 +26,10 @@ class ContentTypeUpdateType extends AbstractType
             ],
             'icon' => 'fa fa-save'
         ]);
-        return parent::buildForm($builder, $options);
+        parent::buildForm($builder, $options);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'translation_domain' => EMSCoreBundle::TRANS_DOMAIN

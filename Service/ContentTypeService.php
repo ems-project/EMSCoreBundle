@@ -106,7 +106,7 @@ class ContentTypeService
         }
         return false;
     }
-    
+
     private function loadEnvironment()
     {
         if ($this->orderedContentTypes === []) {
@@ -426,10 +426,10 @@ class ContentTypeService
         return implode(',', array_keys($this->contentTypeArrayByName));
     }
 
-    public function contentTypeFromJson(string $json, Environment $environment): ContentType
+    public function contentTypeFromJson(string $json, Environment $environment, ContentType $contentType = null): ContentType
     {
         $meta = JsonClass::fromJsonString($json);
-        $contentType = $meta->jsonDeserialize();
+        $contentType = $meta->jsonDeserialize($contentType);
         if (!$contentType instanceof ContentType) {
             throw new \Exception(sprintf('ContentType expected for import, got %s', $meta->getClass()));
         }

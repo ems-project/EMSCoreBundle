@@ -20,11 +20,17 @@ final class CoreLdapUser implements SymfonyUserInterface, UserInterface
     /** @var array<string> */
     private $circles;
     /** @var string */
+    private $displayName;
+    /** @var string */
     private $email;
     /** @var bool */
     private $enabled;
     /** @var Entry */
     private $entry;
+    /** @var string */
+    private $givenName;
+    /** @var string */
+    private $lastName;
     /** @var \DateTime */
     private $modified;
     /** @var string|null */
@@ -45,7 +51,7 @@ final class CoreLdapUser implements SymfonyUserInterface, UserInterface
         return (string) $this->getUsername();
     }
 
-    public static function fromLdap(SymfonyUserInterface $ldapUser, string $emailField): CoreLdapUser
+    public static function fromLdap(SymfonyUserInterface $ldapUser, LdapExtraFields $extraFields): CoreLdapUser
     {
         if (! $ldapUser instanceof SymfonyLdapUser) {
             throw new \RuntimeException(\sprintf('Could not create ldap user. Instance should be of type %s', SymfonyLdapUser::class));
@@ -54,9 +60,12 @@ final class CoreLdapUser implements SymfonyUserInterface, UserInterface
         $user = new static();
         $user->circles = [];
         $user->created = $user->modified = new \DateTime('now');
+        $user->displayName = $extraFields->getDisplayName($ldapUser);
         $user->enabled = true;
-        $user->email = $ldapUser->getExtraFields()[$emailField] ?? '';
+        $user->email = $extraFields->getEmail($ldapUser);
         $user->entry = $ldapUser->getEntry();
+        $user->givenName = $extraFields->getGivenName($ldapUser);
+        $user->lastName = $extraFields->getLastName($ldapUser);
         $user->password = $ldapUser->getPassword();
         $user->roles = $ldapUser->getRoles();
         $user->salt = $ldapUser->getSalt();
@@ -92,7 +101,7 @@ final class CoreLdapUser implements SymfonyUserInterface, UserInterface
 
     public function getDisplayName(): string
     {
-        return $this->getUsername();
+        return $this->displayName;
     }
 
     public function getEmail(): string
@@ -105,9 +114,19 @@ final class CoreLdapUser implements SymfonyUserInterface, UserInterface
         return $this->entry;
     }
 
+    public function getGivenName(): string
+    {
+        return $this->givenName;
+    }
+
     public function getLastLogin(): \DateTime
     {
         return $this->getCreated();
+    }
+
+    public function getLastName(): string
+    {
+        return $this->lastName;
     }
 
     public function getLayoutBoxed(): bool

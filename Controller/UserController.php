@@ -423,7 +423,7 @@ class UserController extends AppController
         $messages = array('email' => 'User email already exist!', 'username' => 'Username already exist!');
         foreach ($exists as $key => $value) {
             if ($value instanceof User) {
-                if ($action == 'add' or ($action == 'edit' and $value->getId() != $user->getId())) {
+                if ($action === 'add' || ($action === 'edit' && $value->getId() !== $user->getId())) {
                     $this->addFlash(
                         'error',
                         $messages[$key]

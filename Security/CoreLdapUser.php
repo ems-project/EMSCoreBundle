@@ -51,17 +51,19 @@ final class CoreLdapUser implements SymfonyUserInterface, UserInterface
             throw new \RuntimeException(\sprintf('Could not create ldap user. Instance should be of type %s', SymfonyLdapUser::class));
         }
 
+        $now = new \DateTime('now');
+
         $user = new static();
         $user->circles = [];
-        $user->created = $user->modified = new \DateTime('now');
+        $user->created = $now;
         $user->enabled = true;
         $user->email = $ldapUser->getExtraFields()[$emailField] ?? '';
         $user->entry = $ldapUser->getEntry();
+        $user->modified = $now;
         $user->password = $ldapUser->getPassword();
         $user->roles = $ldapUser->getRoles();
         $user->salt = $ldapUser->getSalt();
         $user->username = $ldapUser->getUsername();
-
 
         return $user;
     }

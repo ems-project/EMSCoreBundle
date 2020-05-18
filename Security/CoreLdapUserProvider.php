@@ -26,7 +26,7 @@ class CoreLdapUserProvider extends LdapUserProvider
      * @param array<string> $defaultRoles
      * @param array<string> $extraFields
      */
-    public function __construct(Registry $doctrine, LdapExtraFields $extraFieldsService, UserService $userService, LdapInterface $ldap, string $baseDn, string $searchDn = null, string $searchPassword = null, array $defaultRoles = [], string $uidKey = null, string $filter = null, string $passwordAttribute = null, array $extraFields = [])
+    public function __construct(Registry $doctrine, LdapExtraFields $extraFieldsService, UserService $userService, LdapInterface $ldap, string $baseDn, ?string $searchDn = null, ?string $searchPassword = null, array $defaultRoles = [], ?string $uidKey = null, ?string $filter = null, ?string $passwordAttribute = null, array $extraFields = [])
     {
         parent::__construct($ldap, $baseDn, $searchDn, $searchPassword, $defaultRoles, $uidKey, $filter, $passwordAttribute, $extraFields);
         $this->doctrine = $doctrine;
@@ -61,7 +61,7 @@ class CoreLdapUserProvider extends LdapUserProvider
     public function refreshUser(SymfonyUserInterface $user): SymfonyUserInterface
     {
         if ($user instanceof CoreLdapUser) {
-            return CoreLdapUser::fromLdap(new SymfonyLdapUser($user->getEntry(), $user->getUsername(), $user->getPassword(), $user->getRoles()), $this->emailField);
+            return CoreLdapUser::fromLdap(new SymfonyLdapUser($user->getEntry(), $user->getUsername(), $user->getPassword(), $user->getRoles()), $this->extraFields);
         }
 
         if (!$user instanceof UserInterface) {

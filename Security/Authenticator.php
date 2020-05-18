@@ -67,7 +67,7 @@ class Authenticator
     {
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
-        $response->setContent($content)->setStatusCode(401);
+        $response->setContent($content)->setStatusCode(200);
         return $response;
     }
 

@@ -117,7 +117,6 @@ class UserController extends AppController
             /** @var UserManagerInterface $userManager */
             $userManager = $this->get('fos_user.user_manager');
 
-            $continue = true;
             $continue = $this->userExist($user, 'add', $form);
 
             if ($continue) {

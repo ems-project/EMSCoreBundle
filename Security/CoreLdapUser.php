@@ -71,7 +71,6 @@ final class CoreLdapUser implements SymfonyUserInterface, UserInterface
         $user->salt = $ldapUser->getSalt();
         $user->username = $ldapUser->getUsername();
 
-
         return $user;
     }
 

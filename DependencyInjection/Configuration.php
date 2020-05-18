@@ -108,6 +108,9 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('password_attribute')->end()
             ->variableNode('extra_fields')->end()
             ->scalarNode('email_field')->end()
+            ->scalarNode('display_name_field')->end()
+            ->scalarNode('given_name_field')->end()
+            ->scalarNode('last_name_field')->end()
             ->end()
             ->end();
 

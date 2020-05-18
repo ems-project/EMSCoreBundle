@@ -666,7 +666,7 @@ services:
         class: EMS\CoreBundle\Security\CoreLdapUserProvider
         arguments:
             $doctrine: '@doctrine'
-            $emailField: '%ems_core.ldap.email_field%'
+            $extraFieldsService: '@EMS\CoreBundle\Security\LdapExtraFields'
             $userService: '@ems.service.user'
             $ldap: '@Symfony\Component\Ldap\Ldap'
             $baseDn: '%ems_core.ldap.base_dn%'
@@ -677,6 +677,12 @@ services:
             $filter: '%ems_core.ldap.filter%'
             $passwordAttribute: '%ems_core.ldap.password_attribute%'
             $extraFields: '%ems_core.ldap.extra_fields%'
+    EMS\CoreBundle\Security\LdapExtraFields:
+        arguments:
+            $email: '%ems_core.ldap.email_field%'
+            $displayName: '%ems_core.ldap.display_name_field%'
+            $givenName: '%ems_core.ldap.given_name_field%'
+            $lastName: '%ems_core.ldap.last_name_field%'
 
 #### UserProfile from LocalUserBundle
     ems.form.userprofile:

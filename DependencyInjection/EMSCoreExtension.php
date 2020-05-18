@@ -71,7 +71,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.health_check_allow_origin', $config['health_check_allow_origin']);
         $container->setParameter('ems_core.tika_download_url', $config['tika_download_url']);
 
-        $this->loadLdap($container, $config['ldap'] ?? []);
+        $this->loadLdap($container, $loader, $config['ldap'] ?? []);
     }
 
     public static function getCoreVersion($rootDir)
@@ -184,8 +184,13 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
     /**
      * @param array<string, mixed> $ldapConfig
      */
-    private function loadLdap(ContainerBuilder $container, array $ldapConfig): void
+    private function loadLdap(ContainerBuilder $container, Loader\YamlFileLoader $loader, array $ldapConfig): void
     {
+        if ($ldapConfig === []) {
+            return;
+        }
+
+        $loader->load('ldap.yml');
         foreach ($ldapConfig as $name => $value) {
             $reference = sprintf('ems_core.ldap.%s', $name);
             $container->setParameter($reference, $value);

@@ -103,7 +103,7 @@ final class CoreLdapUser implements SymfonyUserInterface, UserInterface
 
     public function getDisplayName(): string
     {
-        return $this->getUsername();
+        return $this->displayName;
     }
 
     public function getEmail(): string

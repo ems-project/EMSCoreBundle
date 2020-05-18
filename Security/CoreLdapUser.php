@@ -57,20 +57,22 @@ final class CoreLdapUser implements SymfonyUserInterface, UserInterface
             throw new \RuntimeException(\sprintf('Could not create ldap user. Instance should be of type %s', SymfonyLdapUser::class));
         }
 
+        $now = new \DateTime('now');
+
         $user = new static();
         $user->circles = [];
-        $user->created = $user->modified = new \DateTime('now');
+        $user->created = $now;
         $user->displayName = $extraFields->getDisplayName($ldapUser);
         $user->enabled = true;
         $user->email = $extraFields->getEmail($ldapUser);
         $user->entry = $ldapUser->getEntry();
+        $user->modified = $now;
         $user->givenName = $extraFields->getGivenName($ldapUser);
         $user->lastName = $extraFields->getLastName($ldapUser);
         $user->password = $ldapUser->getPassword();
         $user->roles = $ldapUser->getRoles();
         $user->salt = $ldapUser->getSalt();
         $user->username = $ldapUser->getUsername();
-
 
         return $user;
     }
@@ -101,7 +103,7 @@ final class CoreLdapUser implements SymfonyUserInterface, UserInterface
 
     public function getDisplayName(): string
     {
-        return $this->displayName;
+        return $this->getUsername();
     }
 
     public function getEmail(): string
@@ -114,19 +116,9 @@ final class CoreLdapUser implements SymfonyUserInterface, UserInterface
         return $this->entry;
     }
 
-    public function getGivenName(): string
-    {
-        return $this->givenName;
-    }
-
     public function getLastLogin(): \DateTime
     {
         return $this->getCreated();
-    }
-
-    public function getLastName(): string
-    {
-        return $this->lastName;
     }
 
     public function getLayoutBoxed(): bool
@@ -171,7 +163,7 @@ final class CoreLdapUser implements SymfonyUserInterface, UserInterface
 
     public function hasRole(string $role): bool
     {
-        return in_array(strtoupper($role), $this->getRoles(), true);
+        return \in_array(\strtoupper($role), $this->getRoles(), true);
     }
 
     public function isEnabled(): bool

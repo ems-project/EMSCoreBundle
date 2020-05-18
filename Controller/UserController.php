@@ -117,7 +117,6 @@ class UserController extends AppController
             /** @var UserManagerInterface $userManager */
             $userManager = $this->get('fos_user.user_manager');
 
-            $continue = true;
             $continue = $this->userExist($user, 'add', $form);
 
             if ($continue) {
@@ -423,7 +422,7 @@ class UserController extends AppController
         $messages = array('email' => 'User email already exist!', 'username' => 'Username already exist!');
         foreach ($exists as $key => $value) {
             if ($value instanceof User) {
-                if ($action == 'add' or ($action == 'edit' and $value->getId() != $user->getId())) {
+                if ($action === 'add' || ($action === 'edit' && $value->getId() !== $user->getId())) {
                     $this->addFlash(
                         'error',
                         $messages[$key]

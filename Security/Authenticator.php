@@ -67,7 +67,7 @@ class Authenticator
     {
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
-        $response->setContent($content)->setStatusCode(401);
+        $response->setContent($content)->setStatusCode(200);
         return $response;
     }
 
@@ -79,7 +79,7 @@ class Authenticator
 
         $user = $token->getUser();
         if (!$user instanceof UserInterface) {
-            throw new \RuntimeException(sprintf('User should be of type %s', UserInterface::class));
+            throw new \RuntimeException(\sprintf('User should be of type %s', UserInterface::class));
         }
         return $user;
     }

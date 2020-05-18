@@ -15,7 +15,7 @@ class Credentials
 
     public static function usernamePasswordToken(Request$request, string $providerKey): UsernamePasswordToken
     {
-        $loginInfo = json_decode((string) $request->getContent(), true);
+        $loginInfo = \json_decode((string) $request->getContent(), true);
 
         $username = $loginInfo['username'] ?? '';
         $password = $loginInfo['password'] ?? '';

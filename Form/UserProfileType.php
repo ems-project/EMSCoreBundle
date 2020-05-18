@@ -42,30 +42,28 @@ class UserProfileType extends AbstractType
             ->add('sidebarCollapse')
             ->remove('username');
         
-//      if($this->tokenStorage->getToken()->getUser()->getAllowedToConfigureWysiwyg()){
-            $builder
-                ->add('wysiwygProfile', EntityType::class, [
-                    'required' => false,
-                    'label' => 'WYSIWYG profile',
-                    'class' => 'EMSCoreBundle:WysiwygProfile',
-                    'choice_label' => 'name',
-                    'query_builder' => function (EntityRepository $er) {
-                        return $er->createQueryBuilder('p')->orderBy('p.orderKey', 'ASC');
-                    },
-                    'attr' => [
-                        'data-live-search' => true,
-                        'class' => 'wysiwyg-profile-picker',
-                    ],
-                ])
-                ->add('wysiwygOptions', CodeEditorType::class, [
-                    'label' => 'WYSIWYG Options',
-                    'required' => false,
-                    'language' => 'ace/mode/json',
-                    'attr' => [
-                        'class' => 'wysiwyg-profile-options',
-                    ],
-                ]);
-//      }
+        $builder
+            ->add('wysiwygProfile', EntityType::class, [
+                'required' => false,
+                'label' => 'WYSIWYG profile',
+                'class' => 'EMSCoreBundle:WysiwygProfile',
+                'choice_label' => 'name',
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('p')->orderBy('p.orderKey', 'ASC');
+                },
+                'attr' => [
+                    'data-live-search' => true,
+                    'class' => 'wysiwyg-profile-picker',
+                ],
+            ])
+            ->add('wysiwygOptions', CodeEditorType::class, [
+                'label' => 'WYSIWYG Options',
+                'required' => false,
+                'language' => 'ace/mode/json',
+                'attr' => [
+                    'class' => 'wysiwyg-profile-options',
+                ],
+            ]);
     }
 
 

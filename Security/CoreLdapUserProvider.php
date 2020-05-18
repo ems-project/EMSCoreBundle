@@ -17,8 +17,8 @@ class CoreLdapUserProvider extends LdapUserProvider
 {
     /** @var Registry */
     private $doctrine;
-    /** @var string */
-    private $emailField;
+    /** @var LdapExtraFields */
+    private $extraFields;
     /** @var UserService */
     private $userService;
 
@@ -29,11 +29,11 @@ class CoreLdapUserProvider extends LdapUserProvider
      * @param array<string> $defaultRoles
      * @param array<string> $extraFields
      */
-    public function __construct(Registry $doctrine, string $emailField, UserService $userService, LdapInterface $ldap, string $baseDn, string $searchDn = null, string $searchPassword = null, array $defaultRoles = [], string $uidKey = null, string $filter = null, string $passwordAttribute = null, array $extraFields = [])
+    public function __construct(Registry $doctrine, LdapExtraFields $extraFieldsService, UserService $userService, LdapInterface $ldap, string $baseDn, string $searchDn = null, string $searchPassword = null, array $defaultRoles = [], string $uidKey = null, string $filter = null, string $passwordAttribute = null, array $extraFields = [])
     {
         parent::__construct($ldap, $baseDn, $searchDn, $searchPassword, $defaultRoles, $uidKey, $filter, $passwordAttribute, $extraFields);
         $this->doctrine = $doctrine;
-        $this->emailField = $emailField;
+        $this->extraFields = $extraFieldsService;
         $this->userService = $userService;
     }
 
@@ -50,7 +50,7 @@ class CoreLdapUserProvider extends LdapUserProvider
             return $dbUser;
         }
 
-        $ldapUser = CoreLdapUser::fromLdap($authenticatedUser, $this->emailField);
+        $ldapUser = CoreLdapUser::fromLdap($authenticatedUser, $this->extraFields);
         $ldapUser->randomizePassword();
         $newUser = User::fromCoreLdap($ldapUser);
 
@@ -80,7 +80,7 @@ class CoreLdapUserProvider extends LdapUserProvider
         return $refreshedUser;
     }
 
-    public function supportsClass($class)
+    public function supportsClass($class): bool
     {
         return CoreLdapUser::class === $class;
     }

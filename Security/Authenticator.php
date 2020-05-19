@@ -7,11 +7,14 @@ use EMS\CoreBundle\Entity\AuthToken;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Service\UserService;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 
 class Authenticator
 {
+    /** @var AuthenticationManagerInterface */
+    private $authenticationManager;
     /** @var Registry */
     private $doctrine;
     /** @var EncoderFactoryInterface */
@@ -19,28 +22,31 @@ class Authenticator
     /** @var UserService */
     private $userService;
 
-    public function __construct(Registry $doctrine, EncoderFactoryInterface $encoderFactory, UserService $userService)
+    public function __construct(Registry $doctrine, EncoderFactoryInterface $encoderFactory, UserService $userService, AuthenticationManagerInterface $authenticationManager)
     {
+        $this->authenticationManager = $authenticationManager;
         $this->doctrine = $doctrine;
         $this->encoderFactory = $encoderFactory;
         $this->userService = $userService;
     }
 
-    public function authenticate(UsernamePasswordToken $token): void
+    public function authenticate(TokenInterface $token): TokenInterface
     {
-        $user = $this->userService->getUser($token->getUsername(), false);
-        if (empty($user)) {
-            throw new \RuntimeException("User not found");
-        }
+        return $this->authenticationManager->authenticate($token);
 
-        $encoder = $this->encoderFactory->getEncoder($user);
-        if ($encoder->isPasswordValid($user->getPassword(), $token->getCredentials(), $user->getSalt())) {
-            $token->eraseCredentials();
-            $token->setUser($user);
-        }
+//        $user = $this->userService->getUser($token->getUsername(), false);
+//        if (empty($user)) {
+//            throw new \RuntimeException("User not found");
+//        }
+//
+//        $encoder = $this->encoderFactory->getEncoder($user);
+//        if ($encoder->isPasswordValid($user->getPassword(), $token->getCredentials(), $user->getSalt())) {
+//            $token->eraseCredentials();
+//            $token->setUser($user);
+//        }
     }
 
-    public function generateAuthToken(UsernamePasswordToken $token): AuthToken
+    public function generateAuthToken(TokenInterface $token): AuthToken
     {
         $authToken = new AuthToken($this->getUser($token));
 
@@ -71,10 +77,10 @@ class Authenticator
         return $response;
     }
 
-    private function getUser(UsernamePasswordToken $token): UserInterface
+    private function getUser(TokenInterface $token): UserInterface
     {
         if (!$token->getUser() instanceof UserInterface) {
-            $this->authenticate($token);
+            $token = $this->authenticate($token);
         }
 
         $user = $token->getUser();

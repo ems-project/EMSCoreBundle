@@ -62,10 +62,13 @@ final class CoreLdapUser implements SymfonyUserInterface, UserInterface
         $user = new static();
         $user->circles = [];
         $user->created = $now;
+        $user->displayName = $extraFields->getDisplayName($ldapUser);
         $user->enabled = true;
         $user->email = $extraFields->getEmail($ldapUser);
         $user->entry = $ldapUser->getEntry();
         $user->modified = $now;
+        $user->givenName = $extraFields->getGivenName($ldapUser);
+        $user->lastName = $extraFields->getLastName($ldapUser);
         $user->password = $ldapUser->getPassword();
         $user->roles = $ldapUser->getRoles();
         $user->salt = $ldapUser->getSalt();

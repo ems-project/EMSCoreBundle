@@ -4201,37 +4201,7 @@ parameters:
 			path: Entity/WysiwygStylesSet.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:__construct\\(\\) has parameter \\$session with no value type specified in iterable type Symfony\\\\Component\\\\HttpFoundation\\\\Session\\\\Session\\.$#"
-			count: 1
-			path: EventListener/RequestListener.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:__construct\\(\\) has parameter \\$userLoginRoute with no typehint specified\\.$#"
-			count: 1
-			path: EventListener/RequestListener.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:__construct\\(\\) has parameter \\$userRegistrationRoute with no typehint specified\\.$#"
-			count: 1
-			path: EventListener/RequestListener.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:onKernelRequest\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: EventListener/RequestListener.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:onKernelException\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: EventListener/RequestListener.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:provideTemplateTwigObjects\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: EventListener/RequestListener.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Event\\\\RevisionEvent\\:\\:\\$revision has no typehint specified\\.$#"
+			message: "#^Property EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:\\$twig has no typehint specified\\.$#"
 			count: 1
 			path: EventListener/RequestListener.php
 
@@ -4282,6 +4252,36 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:__construct\\(\\) has parameter \\$allowUserRegistration with no typehint specified\\.$#"
+			count: 1
+			path: EventListener/RequestListener.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:__construct\\(\\) has parameter \\$session with no value type specified in iterable type Symfony\\\\Component\\\\HttpFoundation\\\\Session\\\\Session\\.$#"
+			count: 1
+			path: EventListener/RequestListener.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:__construct\\(\\) has parameter \\$userLoginRoute with no typehint specified\\.$#"
+			count: 1
+			path: EventListener/RequestListener.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:__construct\\(\\) has parameter \\$userRegistrationRoute with no typehint specified\\.$#"
+			count: 1
+			path: EventListener/RequestListener.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:onKernelRequest\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: EventListener/RequestListener.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:onKernelException\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: EventListener/RequestListener.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:provideTemplateTwigObjects\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: EventListener/RequestListener.php
 

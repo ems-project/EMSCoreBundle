@@ -505,7 +505,7 @@ services:
         arguments: ['@doctrine', '@ems.service.data', '@form.factory', '@ems.elasticsearch.bulker', '%ems_core.instance_id%']
     ems.security.authenticator:
         class: EMS\CoreBundle\Security\Authenticator
-        arguments: ['@doctrine', '@security.encoder_factory', '@ems.service.user', '@security.authentication.provider.ldap_bind.main']
+        arguments: [ '@security.authentication.manager', '@doctrine', '@ems.service.user']
 
 ### command services ###
     ems.environment.ems:

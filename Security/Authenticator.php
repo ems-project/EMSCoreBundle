@@ -9,7 +9,6 @@ use EMS\CoreBundle\Service\UserService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 
 class Authenticator
 {
@@ -17,33 +16,19 @@ class Authenticator
     private $authenticationManager;
     /** @var Registry */
     private $doctrine;
-    /** @var EncoderFactoryInterface */
-    private $encoderFactory;
     /** @var UserService */
     private $userService;
 
-    public function __construct(Registry $doctrine, EncoderFactoryInterface $encoderFactory, UserService $userService, AuthenticationManagerInterface $authenticationManager)
+    public function __construct(AuthenticationManagerInterface $authenticationManager, Registry $doctrine, UserService $userService)
     {
         $this->authenticationManager = $authenticationManager;
         $this->doctrine = $doctrine;
-        $this->encoderFactory = $encoderFactory;
         $this->userService = $userService;
     }
 
     public function authenticate(TokenInterface $token): TokenInterface
     {
         return $this->authenticationManager->authenticate($token);
-
-//        $user = $this->userService->getUser($token->getUsername(), false);
-//        if (empty($user)) {
-//            throw new \RuntimeException("User not found");
-//        }
-//
-//        $encoder = $this->encoderFactory->getEncoder($user);
-//        if ($encoder->isPasswordValid($user->getPassword(), $token->getCredentials(), $user->getSalt())) {
-//            $token->eraseCredentials();
-//            $token->setUser($user);
-//        }
     }
 
     public function generateAuthToken(TokenInterface $token): AuthToken

@@ -2,8 +2,7 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
+use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
@@ -12,12 +11,16 @@ use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\Field\EnvironmentPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\Form\SearchFormType;
+use EMS\CoreBundle\Service\ContentTypeService;
+use EMS\CoreBundle\Service\EnvironmentService;
+use EMS\CoreBundle\Service\JobService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class PublishController extends AppController
 {
@@ -56,15 +59,10 @@ class PublishController extends AppController
     }
 
     /**
-     * @param Request $request
-     * @return RedirectResponse|Response
-     * @throws NoResultException
-     * @throws NonUniqueResultException
-     *
      * @Route("/publish/search-result", name="search.publish", defaults={"deleted": 0, "managed": 1})
      * @Security("has_role('ROLE_PUBLISHER')")
      */
-    public function publishSearchResult(Request $request)
+    public function publishSearchResult(Request $request, JobService $jobService, EnvironmentService $EnvironmentService, ContentTypeService $contentTypeService): Response
     {
         $search = new Search();
         $searchForm = $this->createForm(SearchFormType::class, $search, [
@@ -74,18 +72,23 @@ class PublishController extends AppController
         
         $requestBis->setMethod('GET');
         $searchForm->handleRequest($requestBis);
-        
-        /**@var Environment $environment */
-        /**@var ContentType $contentType */
-        if (count($search->getEnvironments()) != 1 && $this->getEnvironmentService()->getAliasByName($search->getEnvironments()[0])) {
+
+        if (count($search->getEnvironments()) != 1) {
             throw new NotFoundHttpException('Environment not found');
         }
-        if (count($search->getContentTypes()) != 1 && $contentType = $this->getContentTypeService()->getByName($search->getContentTypes()[0])) {
+        if (count($search->getContentTypes()) != 1) {
             throw new NotFoundHttpException('Content type not found');
         }
-        
-        $environment = $this->getEnvironmentService()->getAliasByName($search->getEnvironments()[0]);
-        $contentType = $this->getContentTypeService()->getByName($search->getContentTypes()[0]);
+
+        $environment = $EnvironmentService->getAliasByName($search->getEnvironments()[0]);
+        $contentType = $contentTypeService->getByName($search->getContentTypes()[0]);
+
+        if (!$environment instanceof Environment) {
+            throw new NotFoundHttpException('Environment not found');
+        }
+        if (!$contentType instanceof ContentType) {
+            throw new NotFoundHttpException('Content type not found');
+        }
         
         $data = [];
         $builder = $this->createFormBuilder($data);
@@ -102,9 +105,9 @@ class PublishController extends AppController
         $body = $this->getSearchService()->generateSearchBody($search);
         $form = $builder->getForm();
         $form->handleRequest($request);
-        
+
+        $body['query']['bool']['must'] = array_merge($body['query']['bool']['must'] ?? [], [['term' => [EMSSource::FIELD_CONTENT_TYPE => $contentType->getName()]]]);
         $counter = $this->getElasticsearch()->search([
-                'type' => $contentType->getName(),
                 'index' => $environment->getAlias(),
                 'body' => $body,
                 'size' => 0,
@@ -112,32 +115,26 @@ class PublishController extends AppController
         
         $total = $counter['hits']['total'];
         
-    
-        
-        
         if ($form->isSubmitted()) {
-            $toEnvironment = $this->getEnvironmentService()->getAliasByName($form->get('toEnvironment')->getData());
-            $body['sort'] = ['_uid' => 'asc'];
-            for ($from = 0; $from < $total; $from = $from + 50) {
-                $scroll = $this->getElasticsearch()->search([
-                    'type' => $contentType->getName(),
-                    'index' => $environment->getAlias(),
-                    'size' => 50,
-                    'from' => $from,
-                    //'preference' => '_primary', //http://stackoverflow.com/questions/10836142/elasticsearch-duplicate-results-with-paging
-                ]);
-                
-                foreach ($scroll['hits']['hits'] as $hit) {
-                    $revision = $this->getDataService()->getRevisionByEnvironment($hit['_id'], $this->getContentTypeService()->getByName($hit['_type']), $environment);
-                    $this->getPublishService()->publish($revision, $toEnvironment);
-                }
+            $command = sprintf(
+                "ems:environment:align %s %s --force --searchQuery=%s",
+                $environment->getName(),
+                $form->get('toEnvironment')->getData(),
+                \json_encode($body)
+            );
+
+            $user = $this->getUser();
+
+
+            if (!$user instanceof UserInterface) {
+                throw new NotFoundHttpException('User not found');
             }
-            
-             return $this->redirectToRoute('elasticsearch.search', $requestBis->query->all());
+
+            $job = $jobService->createCommand($user, $command);
+            return $this->redirectToRoute('job.status', [
+                'job' => $job->getId(),
+            ]);
         }
-            
-    
-        
         
         return $this->render('@EMSCore/publish/publish-search-result.html.twig', [
                 'form' => $form->createView(),

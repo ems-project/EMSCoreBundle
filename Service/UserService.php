@@ -5,7 +5,8 @@ namespace EMS\CoreBundle\Service;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManagerInterface;
 use EMS\CoreBundle\Entity\AuthToken;
-use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Entity\UserInterface;
+use EMS\CoreBundle\Security\CoreLdapUser;
 use EMS\CoreBundle\Repository\UserRepositoryInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -18,7 +19,8 @@ class UserService
     private $session;
     /**@var TokenStorageInterface $tokenStorage */
     private $tokenStorage;
-    
+
+    /** @var UserInterface|null */
     private $currentUser;
     
     private $securityRoles;
@@ -101,12 +103,23 @@ class UserService
         return $user;
     }
     
-    public function getCurrentUser(bool $detach = true): User
+    public function getCurrentUser(bool $detach = true): UserInterface
     {
-        if (!$this->currentUser) {
-            $username = $this->tokenStorage->getToken()->getUsername();
-            $this->currentUser = $this->getUser($username, $detach);
+        if ($this->currentUser) {
+            return $this->currentUser;
         }
+
+        $token = $this->tokenStorage->getToken();
+        if (null === $token) {
+            throw new \RuntimeException('Token is null, could not get the currentUser from token.');
+        }
+        $username = $token->getUsername();
+        $this->currentUser = $this->getUser($username, $detach);
+
+        if (null === $this->currentUser && $token->getUser() instanceof CoreLdapUser) {
+            $this->currentUser = $token->getUser();
+        }
+
         return $this->currentUser;
     }
     
@@ -148,7 +161,7 @@ class UserService
     }
     
     
-    public function deleteUser(User $user)
+    public function deleteUser(UserInterface $user)
     {
         /**@var EntityManagerInterface $em*/
         $em = $this->doctrine->getManager();

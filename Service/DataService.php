@@ -26,7 +26,7 @@ use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Notification;
 use EMS\CoreBundle\Entity\Revision;
-use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Event\RevisionFinalizeDraftEvent;
 use EMS\CoreBundle\Event\RevisionNewDraftEvent;
 use EMS\CoreBundle\Event\UpdateRevisionReferersEvent;
@@ -211,7 +211,6 @@ class DataService
      */
     public function lockRevision(Revision $revision, Environment $publishEnv = null, $super = false, $username = null)
     {
-
         if (!empty($publishEnv) && !$this->authorizationChecker->isGranted($revision->getContentType()->getPublishRole() ?: 'ROLE_PUBLISHER')) {
             throw new PrivilegeException($revision, 'You don\'t have publisher role for this content');
         }
@@ -1181,7 +1180,7 @@ class DataService
         if ($contentType->getCirclesField()) {
             $fieldType = $contentType->getFieldType()->getChildByPath($contentType->getCirclesField());
             if ($fieldType) {
-                /**@var User $user */
+                /**@var UserInterface $user */
                 $user = $this->userService->getCurrentUser();
                 $options = $fieldType->getDisplayOptions();
                 if (isset($options['multiple']) && $options['multiple']) {
@@ -1285,7 +1284,6 @@ class DataService
      */
     public function initNewDraft($type, $ouuid, $fromRev = null, $username = null)
     {
-
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
 

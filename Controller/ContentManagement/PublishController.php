@@ -122,6 +122,7 @@ class PublishController extends AppController
                 $scroll = $this->getElasticsearch()->search([
                     'type' => $contentType->getName(),
                     'index' => $environment->getAlias(),
+                    'body' => $body,
                     'size' => 50,
                     'from' => $from,
                     //'preference' => '_primary', //http://stackoverflow.com/questions/10836142/elasticsearch-duplicate-results-with-paging

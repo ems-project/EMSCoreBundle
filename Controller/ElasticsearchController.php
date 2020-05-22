@@ -14,7 +14,7 @@ use EMS\CoreBundle\Entity\Form\ExportDocuments;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\Form\SearchFilter;
 use EMS\CoreBundle\Entity\Template;
-use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Form\Field\IconTextType;
 use EMS\CoreBundle\Form\Field\RenderOptionType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
@@ -491,7 +491,7 @@ class ElasticsearchController extends AppController
             }
 
             if ($circleOnly && !$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
-                /**@var User $user */
+                /**@var UserInterface $user */
                 $user = $this->getUser();
                 $circles = $user->getCircles();
 

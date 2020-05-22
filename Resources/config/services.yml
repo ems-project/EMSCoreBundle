@@ -503,7 +503,9 @@ services:
     ems.service.document:
         class: EMS\CoreBundle\Service\DocumentService
         arguments: ['@doctrine', '@ems.service.data', '@form.factory', '@ems.elasticsearch.bulker', '%ems_core.instance_id%']
-
+    ems.security.authenticator:
+        class: EMS\CoreBundle\Security\Authenticator
+        arguments: [ '@security.authentication.manager', '@doctrine', '@ems.service.user']
 
 ### command services ###
     ems.environment.ems:
@@ -661,6 +663,13 @@ services:
         class:  EMS\CoreBundle\Security\ApiKeyAuthenticator
         public: false
 
+#### UserProfile from LocalUserBundle
+    ems.form.userprofile:
+        class: EMS\CoreBundle\Form\UserProfileType
+        arguments: ['@security.token_storage']
+        tags:
+            - { name: form.type }
+
 #### aliases
     EMS\CoreBundle\Elasticsearch\Bulker: '@ems.elasticsearch.bulker'
     EMS\CoreBundle\Elasticsearch\Indexer: '@ems.elasticsearch.indexer'
@@ -681,6 +690,9 @@ services:
         autoconfigure: true
         public: true
         resource: '../../Controller/*'
+
+    EMS\CoreBundle\Controller\AuthTokenController:
+        arguments: ['@ems.security.authenticator', '@twig']
 
 ### Loggers ####
     ems_common.monolog.ems_handler:

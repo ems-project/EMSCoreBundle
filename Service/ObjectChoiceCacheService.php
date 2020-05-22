@@ -5,8 +5,8 @@ namespace EMS\CoreBundle\Service;
 
 use Elasticsearch\Client;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Form\Field\ObjectChoiceListItem;
-use EMS\LocalUserBundle\Entity\User;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -72,7 +72,7 @@ class ObjectChoiceCacheService
                     }
 
                     if ($circleOnly && !$this->authorizationChecker->isGranted('ROLE_ADMIN')) {
-                        /**@var User $user */
+                        /** @var UserInterface $user */
                         $user = $this->tokenStorage->getToken()->getUser();
                         $circles = $user->getCircles();
                         $ouuids = [];

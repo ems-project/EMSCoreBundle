@@ -679,11 +679,17 @@
 						<pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ compareRawData|get_string(dataField.fieldType.name)|json_decode|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
 						<pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ dataField.rawData|json_decode|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
 					{% else %}
-						{% set jsonMenuItems = dataField.rawData|ems_json_menu_decode.structure %}
+						{% set jsonMenuItems = dataField.rawData|default('{}')|ems_json_menu_decode.structure %}
 						<div class="json_menu_editor_fieldtype_widget collapsible-container">
-							<ol class="vertical">
-								{{ block('recursiveJsonMenu') }}
-							</ol>
+							{% if not dataField.rawData|default(false) %}
+								<span class="text-gray">[not defined]</span>
+							{% elseif jsonMenuItems|length > 0 %}
+								<ol class="vertical">
+									{{ block('recursiveJsonMenu') }}
+								</ol>
+							{% else %}
+								<span class="text-gray">[empty]</span>
+							{%  endif %}
 						</div>
 					{% endif %}
 				</div>

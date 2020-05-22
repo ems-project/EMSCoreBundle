@@ -1,0 +1,46 @@
+{% trans_default_domain 'FOSUserBundle' %}
+
+{{ form_start(form, { 'action': path('fos_user_profile_edit'), 'attr': { 'class': 'fos_user_profile_edit' } }) }}
+	
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+		<div class="box box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">Edit your profile</h3>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            <form class="form-horizontal">
+              <div class="box-body">
+              	{{ form_row(form.displayName) }}
+              	{{ form_row(form.email) }}
+              	{{ form_row(form.emailNotification) }}
+              	{{ form_row(form.current_password) }}
+              	{{ form_row(form.current_password) }}
+              	
+              	{{ form_row(form.layoutBoxed) }}
+              	{{ form_row(form.sidebarMini) }}
+              	{{ form_row(form.sidebarCollapse) }}
+              	
+              	{% if form.wysiwygProfile is defined %}
+		    		{% include "@EMSCore/user/wysiwygOptions.html.twig" with {
+						form: form
+					} %}
+				{% endif %}	
+              </div>
+              <!-- /.box-body -->
+              <div class="box-footer">
+              
+			   	{{ form_row(form._token) }}
+			   	
+			   	<input type="submit" value="Update" class="btn btn-primary"/>
+			   	
+			   	<a href="{{ path('fos_user_profile_show') }}" class="btn pull-right btn-default">Cancel</a>
+              </div>
+              <!-- /.box-footer -->
+            </form>
+          </div>
+      </div>
+</div>
+
+{{ form_end(form) }}

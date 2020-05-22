@@ -1,7 +1,11 @@
+includes:
+    - phpstan-baseline.neon
+
 parameters:
     excludes_analyse:
         - %currentWorkingDirectory%/vendor/*
         - %currentWorkingDirectory%/DependencyInjection/Configuration.php
+        - %currentWorkingDirectory%/Resources/DoctrineMigrations
         - %currentWorkingDirectory%/Resources/public/js
         - %currentWorkingDirectory%/Controller/AppController.php
     ignoreErrors:
@@ -9,4 +13,5 @@ parameters:
         - '#Call to an undefined method [a-zA-Z0-9\\_]+Repository::findOneByName().#'
         - '#Call to an undefined method [a-zA-Z0-9\\_]+Repository::findByContentType().#'
     reportUnmatchedIgnoredErrors: false
-    level: 4
+    level: 8
+    inferPrivatePropertyTypeFromConstructor: true

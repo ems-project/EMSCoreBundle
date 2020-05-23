@@ -74,9 +74,13 @@ class ContentTypeController extends AppController
         $form->handleRequest($request);
 
         $jsonUpdate = $form->getData();
-        if ($form->isSubmitted() && $form->isValid() && $jsonUpdate instanceof ContentTypeJsonUpdate && $jsonUpdate->getJson() instanceof UploadedFile) {
-            $updatedContentType = $contentTypeService->contentTypeFromJson(\file_get_contents($jsonUpdate->getJson()->getRealPath()), $contentType->getEnvironment(), $contentType);
-            $contentTypeService->persist($updatedContentType);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $json = \file_get_contents($jsonUpdate->getJson()->getRealPath());
+            if (! \is_string($json)) {
+                throw new NotFoundHttpException('JSON file not found');
+            }
+
+            $contentTypeService->updateFromJson($contentType, $json, $jsonUpdate->isDeleteExitingTemplates(), $jsonUpdate->isDeleteExitingViews());
             return $this->redirectToRoute('contenttype.edit', [
                 'id' => $contentType->getId()
             ]);
@@ -275,6 +279,12 @@ class ContentTypeController extends AppController
                     $file = $request->files->get('form')['import'];
                     $json = file_get_contents($file->getRealPath());
 
+                    if (! \is_string($json)) {
+                        throw new NotFoundHttpException('JSON file not found');
+                    }
+                    if (! $environment instanceof Environment) {
+                        throw new NotFoundHttpException('Environment not found');
+                    }
                     $contentType = $this->getContentTypeService()->contentTypeFromJson($json, $environment);
                     $contentType->setName($name);
                     $contentType->setSingularName($singularName);

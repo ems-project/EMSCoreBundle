@@ -438,9 +438,14 @@ service:
     json_parse_post_processing_error: 'Error to JSON parse the result of the post processing script of field %field_name% (|json_encode|raw): %template%'
     not_able_to_load_the_private_key: 'It''s impossible to load the private key %private_key_filename% : %error_message%'
 
+contenttype:
+  action:
+    update_from_json: 'Update from JSON'
 form:
   contenttype:
     json_update:
+      deleteExitingTemplates: 'Delete existing templates'
+      deleteExitingViews: 'Delete existing views'
       json: 'Content Type''s JSON file'
       mimetype: 'Media Type'
       filename: 'Filename'

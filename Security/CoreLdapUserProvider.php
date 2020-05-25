@@ -11,10 +11,13 @@ use Symfony\Component\Ldap\LdapInterface;
 use Symfony\Component\Ldap\Security\LdapUser as SymfonyLdapUser;
 use Symfony\Component\Ldap\Security\LdapUserProvider;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
+use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 
 class CoreLdapUserProvider extends LdapUserProvider
 {
+    /** @var string */
+    private $baseDn;
     /** @var Registry */
     private $doctrine;
     /** @var LdapExtraFields */
@@ -29,6 +32,7 @@ class CoreLdapUserProvider extends LdapUserProvider
     public function __construct(Registry $doctrine, LdapExtraFields $extraFieldsService, UserService $userService, LdapInterface $ldap, string $baseDn, ?string $searchDn = null, ?string $searchPassword = null, array $defaultRoles = [], ?string $uidKey = null, ?string $filter = null, ?string $passwordAttribute = null, array $extraFields = [])
     {
         parent::__construct($ldap, $baseDn, $searchDn, $searchPassword, $defaultRoles, $uidKey, $filter, $passwordAttribute, $extraFields);
+        $this->baseDn = $baseDn;
         $this->doctrine = $doctrine;
         $this->extraFields = $extraFieldsService;
         $this->userService = $userService;
@@ -58,6 +62,15 @@ class CoreLdapUserProvider extends LdapUserProvider
         return $newUser;
     }
 
+    public function loadUserByUsername($username)
+    {
+        if (! $this->isProviderConfigured()) {
+            throw new UsernameNotFoundException();
+        }
+
+        return parent::loadUserByUsername($username);
+    }
+
     public function refreshUser(SymfonyUserInterface $user): SymfonyUserInterface
     {
         if ($user instanceof CoreLdapUser) {
@@ -79,6 +92,15 @@ class CoreLdapUserProvider extends LdapUserProvider
 
     public function supportsClass($class): bool
     {
+        if (! $this->isProviderConfigured()) {
+            return false;
+        }
+
         return CoreLdapUser::class === $class;
+    }
+
+    private function isProviderConfigured(): bool
+    {
+        return "" === $this->baseDn ? false : true;
     }
 }

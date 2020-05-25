@@ -11,6 +11,7 @@ use Symfony\Component\Ldap\LdapInterface;
 use Symfony\Component\Ldap\Security\LdapUser as SymfonyLdapUser;
 use Symfony\Component\Ldap\Security\LdapUserProvider;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
+use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 
 class CoreLdapUserProvider extends LdapUserProvider
@@ -56,6 +57,15 @@ class CoreLdapUserProvider extends LdapUserProvider
         $em->flush();
 
         return $newUser;
+    }
+
+    public function loadUserByUsername($username)
+    {
+        try {
+            return parent::loadUserByUsername($username);
+        } catch (\Exception $exception) {
+            throw new UsernameNotFoundException();
+        }
     }
 
     public function refreshUser(SymfonyUserInterface $user): SymfonyUserInterface

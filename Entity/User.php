@@ -35,21 +35,21 @@ final class User extends BaseUser implements UserInterface
      * @ORM\Column(name="modified", type="datetime")
      */
     private $modified;
-    
+
     /**
      * @var array
      *
      * @ORM\Column(name="circles", type="json_array", nullable=true)
      */
     private $circles;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="display_name", type="string", length=255, nullable=true)
      */
     private $displayName;
-    
+
     /**
      * @var bool
      *
@@ -71,14 +71,14 @@ final class User extends BaseUser implements UserInterface
      * @ORM\Column(name="wysiwyg_options", type="text", nullable=true)
      */
     private $wysiwygOptions;
-    
+
     /**
      * @var bool
      *
      * @ORM\Column(name="layout_boxed", type="boolean")
      */
     private $layoutBoxed;
-    
+
     /**
      * @var bool
      *
@@ -106,11 +106,11 @@ final class User extends BaseUser implements UserInterface
 //      */
 //     private $authTokens;
 
-    
+
     public function __construct()
     {
         parent::__construct();
-        
+
         $this->layoutBoxed = false;
         $this->sidebarCollapse = false;
         $this->sidebarMini = true;
@@ -145,6 +145,22 @@ final class User extends BaseUser implements UserInterface
     }
 
     /**
+     * @return array{id: int, username:string, displayName:string, roles:array<string>, email:string, circles:array<string>, lastLogin: ?string}
+     */
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'username' => $this->getUsername(),
+            'displayName' => $this->getDisplayName(),
+            'roles' => $this->getRoles(),
+            'email' => $this->getEmail(),
+            'circles' => $this->getCircles(),
+            'lastLogin' => $this->getLastLogin() !== null ? $this->getLastLogin()->format('c') : null,
+        ];
+    }
+
+    /**
      * Get created
      *
      * @return \DateTime
@@ -153,7 +169,7 @@ final class User extends BaseUser implements UserInterface
     {
         return $this->created;
     }
-    
+
     /**
      * Get modified
      *
@@ -173,7 +189,7 @@ final class User extends BaseUser implements UserInterface
     {
         return $this->circles;
     }
-    
+
     /**
      * Get expiresAt
      *
@@ -183,7 +199,7 @@ final class User extends BaseUser implements UserInterface
     {
         return $this->expiresAt;
     }
-    
+
     /**
      * Set created
      *
@@ -211,7 +227,7 @@ final class User extends BaseUser implements UserInterface
 
         return $this;
     }
-    
+
     /**
      * Set circles
      *
@@ -222,7 +238,7 @@ final class User extends BaseUser implements UserInterface
     public function setCircles($circles)
     {
         $this->circles = $circles;
-    
+
         return $this;
     }
 
@@ -430,8 +446,8 @@ final class User extends BaseUser implements UserInterface
     {
         return $this->authTokens;
     }
-    
-    
+
+
     /**
      * Set emailNotification
      *
@@ -442,10 +458,10 @@ final class User extends BaseUser implements UserInterface
     public function setEmailNotification($emailNotification)
     {
         $this->emailNotification = $emailNotification;
-        
+
         return $this;
     }
-    
+
     /**
      * Get emailNotification
      *
@@ -455,7 +471,7 @@ final class User extends BaseUser implements UserInterface
     {
         return $this->emailNotification;
     }
-    
+
     /**
      * Is enabled
      *

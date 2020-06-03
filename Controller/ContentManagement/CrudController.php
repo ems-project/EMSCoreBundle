@@ -388,7 +388,7 @@ class CrudController extends AppController
             throw new \RuntimeException('User disabled');
         }
 
-        return $this->json($this->userService->toArray($user));
+        return $this->json($user->toArray());
     }
 
     /**
@@ -400,7 +400,7 @@ class CrudController extends AppController
         $users = [];
         foreach ($this->userService->getAllUsers() as $user) {
             if ($user->isEnabled()) {
-                $users[] = $this->userService->toArray($user);
+                $users[] = $user->toArray();
             }
         }
         return $this->json($users);

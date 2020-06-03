@@ -183,20 +183,4 @@ class UserService
     {
         return $this->securityRoles;
     }
-
-    /**
-     * @return array{username:string, displayName:string, roles:array<string>, email:string, circles:array<string>}
-     */
-    public function toArray(User $user): array
-    {
-        return [
-            'id' => $user->getId(),
-            'username' => $user->getUsername(),
-            'displayName' => $user->getDisplayName(),
-            'roles' => $user->getRoles(),
-            'email' => $user->getEmail(),
-            'circles' => $user->getCircles(),
-            'lastLogin' => $user->getLastLogin() !== null ? $user->getLastLogin()->format('c') : null,
-        ];
-    }
 }

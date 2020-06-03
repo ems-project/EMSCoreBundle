@@ -145,6 +145,22 @@ final class User extends BaseUser implements UserInterface
     }
 
     /**
+     * @return array{id: int, username:string, displayName:string, roles:array<string>, email:string, circles:array<string>, lastLogin: ?string}
+     */
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'username' => $this->getUsername(),
+            'displayName' => $this->getDisplayName(),
+            'roles' => $this->getRoles(),
+            'email' => $this->getEmail(),
+            'circles' => $this->getCircles(),
+            'lastLogin' => $this->getLastLogin() !== null ? $this->getLastLogin()->format('c') : null,
+        ];
+    }
+
+    /**
      * Get created
      *
      * @return \DateTime

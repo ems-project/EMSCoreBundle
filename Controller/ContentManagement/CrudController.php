@@ -375,21 +375,6 @@ class CrudController extends AppController
         ]);
     }
 
-
-    /**
-     * @return array{username:string, displayName:string, roles:array<string>, email:string, circles:array<string>}
-     */
-    private function userToApiUserArray(User $user): array
-    {
-        return [
-            'username' => $user->getUsername(),
-            'displayName' => $user->getDisplayName(),
-            'roles' => $user->getRoles(),
-            'email' => $user->getEmail(),
-            'circles' => $user->getCircles(),
-        ];
-    }
-
     /**
      * @Route("/api/user-profile", defaults={"_format": "json"}, methods={"GET"})
      */
@@ -403,7 +388,7 @@ class CrudController extends AppController
             throw new \RuntimeException('User disabled');
         }
 
-        return $this->json($this->userToApiUserArray($user));
+        return $this->json($this->userService->userToApiUserArray($user));
     }
 
     /**
@@ -415,7 +400,7 @@ class CrudController extends AppController
         $users = [];
         foreach ($this->userService->getAllUsers() as $user) {
             if ($user->isEnabled()) {
-                $users[] = $this->userToApiUserArray($user);
+                $users[] = $this->userService->userToApiUserArray($user);
             }
         }
         return $this->json($users);

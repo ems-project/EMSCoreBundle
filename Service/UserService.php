@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Service;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManagerInterface;
 use EMS\CoreBundle\Entity\AuthToken;
+use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Security\CoreLdapUser;
 use EMS\CoreBundle\Repository\UserRepositoryInterface;
@@ -181,5 +182,19 @@ class UserService
     public function getsecurityRoles()
     {
         return $this->securityRoles;
+    }
+
+    /**
+     * @return array{username:string, displayName:string, roles:array<string>, email:string, circles:array<string>}
+     */
+    public function userToApiUserArray(User $user): array
+    {
+        return [
+            'username' => $user->getUsername(),
+            'displayName' => $user->getDisplayName(),
+            'roles' => $user->getRoles(),
+            'email' => $user->getEmail(),
+            'circles' => $user->getCircles(),
+        ];
     }
 }

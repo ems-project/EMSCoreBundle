@@ -388,19 +388,19 @@ class CrudController extends AppController
             throw new \RuntimeException('User disabled');
         }
 
-        return $this->json($this->userService->userToApiUserArray($user));
+        return $this->json($this->userService->toArray($user));
     }
 
     /**
      * @Route("/api/user-profiles", defaults={"_format": "json"}, methods={"GET"})
-     * @IsGranted("ROLE_ADMIN")
+     * @IsGranted("ROLE_USER_MGMT", "ROLE_ADMIN")
      */
     public function getUserProfiles() : JsonResponse
     {
         $users = [];
         foreach ($this->userService->getAllUsers() as $user) {
             if ($user->isEnabled()) {
-                $users[] = $this->userService->userToApiUserArray($user);
+                $users[] = $this->userService->toArray($user);
             }
         }
         return $this->json($users);

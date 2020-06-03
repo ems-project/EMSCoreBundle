@@ -168,7 +168,7 @@ class UserService
         $em = $this->doctrine->getManager();
         $em->remove($user);
     }
-    
+
     public function getAllUsers()
     {
         $em = $this->doctrine->getManager();
@@ -187,14 +187,16 @@ class UserService
     /**
      * @return array{username:string, displayName:string, roles:array<string>, email:string, circles:array<string>}
      */
-    public function userToApiUserArray(User $user): array
+    public function toArray(User $user): array
     {
         return [
+            'id' => $user->getId(),
             'username' => $user->getUsername(),
             'displayName' => $user->getDisplayName(),
             'roles' => $user->getRoles(),
             'email' => $user->getEmail(),
             'circles' => $user->getCircles(),
+            'lastLogin' => $user->getLastLogin() !== null ? $user->getLastLogin()->format('c') : null,
         ];
     }
 }

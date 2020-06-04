@@ -13,7 +13,7 @@ use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\UserRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-final class User extends BaseUser implements UserInterface
+class User extends BaseUser implements UserInterface
 {
     /**
      * @ORM\Id
@@ -131,7 +131,7 @@ final class User extends BaseUser implements UserInterface
 
     public static function fromCoreLdap(CoreLdapUser $ldapUser): self
     {
-        $user = new static();
+        $user = new self();
         $user->username = $ldapUser->getUsername();
         $user->roles = $ldapUser->getRoles();
         $user->created = $user->modified = new \DateTime('now');

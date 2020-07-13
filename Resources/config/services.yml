@@ -506,6 +506,9 @@ services:
     ems.security.authenticator:
         class: EMS\CoreBundle\Security\Authenticator
         arguments: [ '@security.authentication.manager', '@doctrine', '@ems.service.user']
+    ems.form_submission:
+        class: EMS\CoreBundle\Service\FormSubmission\FormSubmissionService
+        arguments: ['@doctrine']
 
 ### command services ###
     ems.environment.ems:
@@ -692,6 +695,8 @@ services:
         public: true
         resource: '../../Controller/*'
 
+    EMS\CoreBundle\Controller\Api\FormSubmissionController:
+        arguments: ['@ems.form_submission','@logger']
     EMS\CoreBundle\Controller\AuthTokenController:
         arguments: ['@ems.security.authenticator', '@twig']
 

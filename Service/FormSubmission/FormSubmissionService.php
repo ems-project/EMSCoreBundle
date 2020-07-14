@@ -19,7 +19,7 @@ final class FormSubmissionService
     }
 
     /**
-     * @return array{submission_id: int|null}
+     * @return array{submission_id: string}
      */
     public function submit(SubmitRequest $submitRequest): array
     {

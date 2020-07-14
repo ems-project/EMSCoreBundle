@@ -8,16 +8,19 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20200713151817 extends AbstractMigration
+final class Version20200714084731 extends AbstractMigration
 {
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
 
-        $this->addSql('CREATE TABLE form_submission (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, name VARCHAR(255) NOT NULL, locale VARCHAR(2) NOT NULL, data CLOB NOT NULL --(DC2Type:json)
-        )');
-        $this->addSql('CREATE TABLE form_submission_file (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, form_submission_id INTEGER DEFAULT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, file BLOB NOT NULL, filename VARCHAR(255) NOT NULL, form_field VARCHAR(255) NOT NULL, mime_type VARCHAR(1024) NOT NULL, size BIGINT NOT NULL)');
+        $this->addSql('CREATE TABLE form_submission (id CHAR(36) NOT NULL --(DC2Type:uuid)
+        , created DATETIME NOT NULL, modified DATETIME NOT NULL, name VARCHAR(255) NOT NULL, instance VARCHAR(255) NOT NULL, locale VARCHAR(2) NOT NULL, data CLOB NOT NULL --(DC2Type:json)
+        , PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE form_submission_file (id CHAR(36) NOT NULL --(DC2Type:uuid)
+        , form_submission_id CHAR(36) DEFAULT NULL --(DC2Type:uuid)
+        , created DATETIME NOT NULL, modified DATETIME NOT NULL, file BLOB NOT NULL, filename VARCHAR(255) NOT NULL, form_field VARCHAR(255) NOT NULL, mime_type VARCHAR(1024) NOT NULL, size BIGINT NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_AEFF00A6422B0E0C ON form_submission_file (form_submission_id)');
         $this->addSql('DROP INDEX tuple_index');
         $this->addSql('CREATE TEMPORARY TABLE __temp__revision AS SELECT id, content_type_id, created, modified, auto_save_at, deleted, version, start_time, end_time, draft, lock_by, auto_save_by, lock_until, labelField, finalized_by, sha1, deleted_by, finalized_date, raw_data, auto_save, circles, ouuid FROM revision');

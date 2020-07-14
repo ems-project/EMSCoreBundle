@@ -8,6 +8,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Service\FormSubmission\SubmitRequest;
+use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 /**
  * @ORM\Table(name="form_submission")
@@ -17,11 +20,12 @@ use EMS\CoreBundle\Service\FormSubmission\SubmitRequest;
 class FormSubmission
 {
     /**
-     * @var null|int
+     * @var UuidInterface
      *
-     * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="uuid", unique=true)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
      */
     private $id;
 
@@ -49,6 +53,13 @@ class FormSubmission
     /**
      * @var string
      *
+     * @ORM\Column(name="instance", type="string", length=255)
+     */
+    private $instance;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="locale", type="string", length=2)
      */
     private $locale;
@@ -69,9 +80,14 @@ class FormSubmission
 
     public function __construct(SubmitRequest $submitRequest)
     {
-        $this->created = new \DateTime();
-        $this->modified = new \DateTime();
+        $now = new \DateTime();
+
+        $this->id = Uuid::uuid4();
+        $this->created = $now;
+        $this->modified = $now;
+
         $this->name = $submitRequest->getFormName();
+        $this->instance = $submitRequest->getInstance();
         $this->locale = $submitRequest->getLocale();
         $this->data = $submitRequest->getData();
 
@@ -82,9 +98,9 @@ class FormSubmission
         }
     }
 
-    public function getId(): ?int
+    public function getId(): string
     {
-        return $this->id;
+        return $this->id->toString();
     }
 
     /**

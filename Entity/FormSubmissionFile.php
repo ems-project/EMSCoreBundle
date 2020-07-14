@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 /**
  * @ORM\Table(name="form_submission_file")
@@ -14,11 +17,12 @@ use Doctrine\ORM\Mapping as ORM;
 class FormSubmissionFile
 {
     /**
-     * @var null|int
+     * @var UuidInterface
      *
-     * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="uuid", unique=true)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
      */
     private $id;
 
@@ -82,8 +86,11 @@ class FormSubmissionFile
      */
     public function __construct(FormSubmission $formSubmission, array $file)
     {
-        $this->created = new \DateTime();
-        $this->modified = new \DateTime();
+        $now = new \DateTime();
+
+        $this->id = Uuid::uuid4();
+        $this->created = $now;
+        $this->modified = $now;
 
         $this->formSubmission = $formSubmission;
         $this->file = base64_decode($file['base64']);

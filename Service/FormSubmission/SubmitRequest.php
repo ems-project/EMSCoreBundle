@@ -13,6 +13,8 @@ final class SubmitRequest
     /** @var string */
     private $formName;
     /** @var string */
+    private $instance;
+    /** @var string */
     private $locale;
     /** @var array<mixed> */
     private $data;
@@ -30,6 +32,7 @@ final class SubmitRequest
         $submit = $this->resolveJson($json);
 
         $this->formName = $submit['form_name'];
+        $this->instance = $submit['instance'];
         $this->locale = $submit['locale'];
         $this->data = $submit['data'];
         $this->files = $submit['files'];
@@ -38,6 +41,11 @@ final class SubmitRequest
     public function getFormName(): string
     {
         return $this->formName;
+    }
+
+    public function getInstance(): string
+    {
+        return $this->instance;
     }
 
     public function getLocale(): string
@@ -64,13 +72,13 @@ final class SubmitRequest
     /**
      * @param array<mixed> $json
      *
-     * @return array{form_name: string, locale: string, data: array, files: array}
+     * @return array{form_name: string, instance: string, locale: string, data: array, files: array}
      */
     private function resolveJson(array $json): array
     {
         $jsonResolver = new OptionsResolver();
         $jsonResolver
-            ->setRequired(['form_name', 'locale', 'data'])
+            ->setRequired(['form_name', 'locale', 'data', 'instance'])
             ->setDefault('files', [])
             ->setAllowedTypes('form_name', 'string')
             ->setAllowedTypes('locale', 'string')
@@ -79,7 +87,7 @@ final class SubmitRequest
         ;
 
         try {
-            /** @var array{form_name: string, locale: string, data: array, files: array} $json */
+            /** @var array{form_name: string, instance: string, locale: string, data: array, files: array} $json */
             $json = $jsonResolver->resolve($json);
 
             $fileResolver = new OptionsResolver();

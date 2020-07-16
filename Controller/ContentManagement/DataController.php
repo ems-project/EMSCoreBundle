@@ -1565,9 +1565,9 @@ class DataController extends AppController
         $form = $this->createFormBuilder($revision)
             ->add('ouuid', IconTextType::class, [
                 'constraints' => [ new Regex([
-                    'pattern' => '/[\/]++/',
-                    'match' => false,
-                    'message' => 'Ouuid field can not contain a "/".'
+                    'pattern' => '/^[A-Za-z0-9_\.\-~]*$/',
+                    'match' => true,
+                    'message' => 'Ouuid has an unauthorized character.'
                     ])
                 ],
                 'attr' => [
@@ -1591,7 +1591,6 @@ class DataController extends AppController
             $revision = $form->getData();
             try {
                 $revision = $dataService->newDocument($contentType, $revision->getOuuid());
-
                 return $this->redirectToRoute('revision.edit', [
                     'revisionId' => $revision->getId()
                 ]);

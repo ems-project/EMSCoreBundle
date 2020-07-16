@@ -503,7 +503,12 @@ services:
     ems.service.document:
         class: EMS\CoreBundle\Service\DocumentService
         arguments: ['@doctrine', '@ems.service.data', '@form.factory', '@ems.elasticsearch.bulker', '%ems_core.instance_id%']
-
+    ems.security.authenticator:
+        class: EMS\CoreBundle\Security\Authenticator
+        arguments: [ '@security.authentication.manager', '@doctrine', '@ems.service.user']
+    ems.form_submission:
+        class: EMS\CoreBundle\Service\FormSubmission\FormSubmissionService
+        arguments: ['@doctrine']
 
 ### command services ###
     ems.environment.ems:
@@ -661,12 +666,20 @@ services:
         class:  EMS\CoreBundle\Security\ApiKeyAuthenticator
         public: false
 
+#### UserProfile from LocalUserBundle
+    ems.form.userprofile:
+        class: EMS\CoreBundle\Form\UserProfileType
+        arguments: ['@security.token_storage']
+        tags:
+            - { name: form.type }
+
 #### aliases
     EMS\CoreBundle\Elasticsearch\Bulker: '@ems.elasticsearch.bulker'
     EMS\CoreBundle\Elasticsearch\Indexer: '@ems.elasticsearch.indexer'
     EMS\CoreBundle\Service\FileService: '@ems.service.file'
     EMS\CoreBundle\Service\ElasticsearchService: '@ems.service.elasticsearch'
     EMS\CoreBundle\Service\AssetExtractorService: '@ems.service.asset_extractor'
+    EMS\CoreBundle\Service\UserService: '@ems.service.user'
     EMS\CommonBundle\Helper\Text\Encoder: '@ems_common.text.encoder'
 
 
@@ -681,6 +694,11 @@ services:
         autoconfigure: true
         public: true
         resource: '../../Controller/*'
+
+    EMS\CoreBundle\Controller\Api\FormSubmissionController:
+        arguments: ['@ems.form_submission','@logger']
+    EMS\CoreBundle\Controller\AuthTokenController:
+        arguments: ['@ems.security.authenticator', '@twig']
 
 ### Loggers ####
     ems_common.monolog.ems_handler:

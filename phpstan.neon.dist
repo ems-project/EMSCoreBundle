@@ -5,6 +5,7 @@ parameters:
     excludes_analyse:
         - %currentWorkingDirectory%/vendor/*
         - %currentWorkingDirectory%/DependencyInjection/Configuration.php
+        - %currentWorkingDirectory%/Resources/DoctrineMigrations
         - %currentWorkingDirectory%/Resources/public/js
         - %currentWorkingDirectory%/Controller/AppController.php
     ignoreErrors:

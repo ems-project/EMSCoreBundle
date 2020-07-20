@@ -67,7 +67,7 @@ class FormSubmission
     /**
      * @var array<string, mixed>
      *
-     * @ORM\Column(name="data", type="json")
+     * @ORM\Column(name="data", type="json_array")
      */
     private $data;
 

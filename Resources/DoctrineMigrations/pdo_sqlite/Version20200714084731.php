@@ -16,7 +16,7 @@ final class Version20200714084731 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
 
         $this->addSql('CREATE TABLE form_submission (id CHAR(36) NOT NULL --(DC2Type:uuid)
-        , created DATETIME NOT NULL, modified DATETIME NOT NULL, name VARCHAR(255) NOT NULL, instance VARCHAR(255) NOT NULL, locale VARCHAR(2) NOT NULL, data CLOB NOT NULL --(DC2Type:json)
+        , created DATETIME NOT NULL, modified DATETIME NOT NULL, name VARCHAR(255) NOT NULL, instance VARCHAR(255) NOT NULL, locale VARCHAR(2) NOT NULL, data CLOB NOT NULL --(DC2Type:json_array)
         , PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE form_submission_file (id CHAR(36) NOT NULL --(DC2Type:uuid)
         , form_submission_id CHAR(36) DEFAULT NULL --(DC2Type:uuid)

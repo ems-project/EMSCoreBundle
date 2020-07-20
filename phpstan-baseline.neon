@@ -211,8 +211,8 @@ parameters:
 			path: Command/AssetClearCacheCommand.php
 
 		-
-			message: "#^Parameter \\#1 \\$storageServiceId of method EMS\\\\CoreBundle\\\\Service\\\\FileService\\:\\:getStorageService\\(\\) expects string, int\\|string\\|false given\\.$#"
-			count: 1
+			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\StorageInterface\\:\\:clearCache\\(\\)\\.$#"
+			count: 2
 			path: Command/AssetClearCacheCommand.php
 
 		-
@@ -492,6 +492,11 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$patterns of method Symfony\\\\Component\\\\Finder\\\\Finder\\:\\:name\\(\\) expects array\\<string\\>\\|string, array\\<string\\>\\|string\\|null given\\.$#"
+			count: 1
+			path: Command/ExtractAssetCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$filename of method EMS\\\\CommonBundle\\\\Storage\\\\StorageManager\\:\\:computeFileHash\\(\\) expects string, string\\|false given\\.$#"
 			count: 1
 			path: Command/ExtractAssetCommand.php
 
@@ -1046,11 +1051,6 @@ parameters:
 			path: Command/SynchAssetCommand.php
 
 		-
-			message: "#^Parameter \\#1 \\$storageServiceId of method EMS\\\\CoreBundle\\\\Service\\\\FileService\\:\\:getStorageService\\(\\) expects string, int\\|string\\|false given\\.$#"
-			count: 1
-			path: Command/SynchAssetCommand.php
-
-		-
 			message: "#^Parameter \\#1 \\$filename of function unlink expects string, string\\|true given\\.$#"
 			count: 1
 			path: Command/SynchAssetCommand.php
@@ -1176,7 +1176,7 @@ parameters:
 			path: ContentTransformer/HtmlStylesRemover.php
 
 		-
-			message: "#^Cannot call method removeChild\\(\\) on DOMNode\\|null\\.$#"
+			message: "#^Cannot call method removeChild\\(\\) on DOMElement\\|null\\.$#"
 			count: 1
 			path: ContentTransformer/HtmlStylesRemover.php
 
@@ -1241,7 +1241,7 @@ parameters:
 			path: Controller/ContentManagement/ContentTypeController.php
 
 		-
-			message: "#^Parameter \\#1 \\$orderKey of method EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\:\\:setOrderKey\\(\\) expects int, int\\|string\\|false given\\.$#"
+			message: "#^Parameter \\#1 \\$orderKey of method EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\:\\:setOrderKey\\(\\) expects int, false given\\.$#"
 			count: 1
 			path: Controller/ContentManagement/ContentTypeController.php
 
@@ -3331,11 +3331,6 @@ parameters:
 			path: Entity/Form/Search.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\Search\\:\\:jsonSerialize\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: Entity/Form/Search.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\Search\\:\\:resetFilters\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: Entity/Form/Search.php
@@ -3372,11 +3367,6 @@ parameters:
 
 		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\SearchFilter\\:\\:\\$search has no typehint specified\\.$#"
-			count: 1
-			path: Entity/Form/SearchFilter.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\SearchFilter\\:\\:jsonSerialize\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: Entity/Form/SearchFilter.php
 
@@ -4344,11 +4334,6 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Exception\\\\AssetNotFoundException\\:\\:__construct\\(\\) has parameter \\$hash with no typehint specified\\.$#"
 			count: 1
 			path: Exception/AssetNotFoundException.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Exception\\\\CantBeFinalizedException\\:\\:__construct\\(\\) has parameter \\$code with no typehint specified\\.$#"
-			count: 1
-			path: Exception/CantBeFinalizedException.php
 
 		-
 			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
@@ -11251,6 +11236,11 @@ parameters:
 			path: Service/DataService.php
 
 		-
+			message: "#^Parameter \\#1 \\$string of method EMS\\\\CommonBundle\\\\Storage\\\\StorageManager\\:\\:computeStringHash\\(\\) expects string, string\\|false given\\.$#"
+			count: 2
+			path: Service/DataService.php
+
+		-
 			message: "#^Parameter \\#1 \\$data of function openssl_sign expects string, string\\|false given\\.$#"
 			count: 1
 			path: Service/DataService.php
@@ -11891,6 +11881,11 @@ parameters:
 			path: Service/FileService.php
 
 		-
+			message: "#^Class EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\EntityStorage constructor invoked with 2 parameters, 1 required\\.$#"
+			count: 1
+			path: Service/FileService.php
+
+		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\FileService\\:\\:addStorageService\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: Service/FileService.php
@@ -11916,6 +11911,16 @@ parameters:
 			path: Service/FileService.php
 
 		-
+			message: "#^If condition is always true\\.$#"
+			count: 3
+			path: Service/FileService.php
+
+		-
+			message: "#^Parameter \\#1 \\$source of function stream_get_contents expects resource, Psr\\\\Http\\\\Message\\\\StreamInterface given\\.$#"
+			count: 1
+			path: Service/FileService.php
+
+		-
 			message: "#^Parameter \\#1 \\$str of function base64_encode expects string, string\\|false given\\.$#"
 			count: 1
 			path: Service/FileService.php
@@ -11937,6 +11942,11 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\FileService\\:\\:getResource\\(\\) has parameter \\$hash with no typehint specified\\.$#"
+			count: 1
+			path: Service/FileService.php
+
+		-
+			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\StorageInterface\\:\\:getLastUpdateDate\\(\\)\\.$#"
 			count: 1
 			path: Service/FileService.php
 
@@ -11991,6 +12001,11 @@ parameters:
 			path: Service/FileService.php
 
 		-
+			message: "#^Method EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\StorageInterface\\:\\:head\\(\\) invoked with 2 parameters, 1 required\\.$#"
+			count: 1
+			path: Service/FileService.php
+
+		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\FileService\\:\\:getSize\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: Service/FileService.php
@@ -12002,6 +12017,11 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\FileService\\:\\:getSize\\(\\) has parameter \\$hash with no typehint specified\\.$#"
+			count: 1
+			path: Service/FileService.php
+
+		-
+			message: "#^Method EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\StorageInterface\\:\\:getSize\\(\\) invoked with 2 parameters, 1 required\\.$#"
 			count: 1
 			path: Service/FileService.php
 
@@ -12046,7 +12066,12 @@ parameters:
 			path: Service/FileService.php
 
 		-
-			message: "#^Parameter \\#2 \\$cacheContext of method EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\StorageInterface\\:\\:read\\(\\) expects string\\|null, false given\\.$#"
+			message: "#^Method EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\StorageInterface\\:\\:read\\(\\) invoked with 3 parameters, 1\\-2 required\\.$#"
+			count: 1
+			path: Service/FileService.php
+
+		-
+			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Storage\\\\StorageManager\\:\\:computeResourceHash\\(\\)\\.$#"
 			count: 1
 			path: Service/FileService.php
 
@@ -12067,6 +12092,11 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\FileService\\:\\:create\\(\\) has parameter \\$hash with no typehint specified\\.$#"
+			count: 1
+			path: Service/FileService.php
+
+		-
+			message: "#^Method EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\StorageInterface\\:\\:create\\(\\) invoked with 3 parameters, 2 required\\.$#"
 			count: 1
 			path: Service/FileService.php
 
@@ -13251,6 +13281,11 @@ parameters:
 			path: Twig/AppExtension.php
 
 		-
+			message: "#^Parameter \\#1 \\$key of function array_key_exists expects int\\|string, int\\|string\\|false given\\.$#"
+			count: 2
+			path: Twig/AppExtension.php
+
+		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Twig\\\\AppExtension\\:\\:diffDataLink\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: Twig/AppExtension.php
@@ -13996,17 +14031,52 @@ parameters:
 			path: tests/Storage/FileServiceTest.php
 
 		-
-			message: "#^Parameter \\#1 \\$fp of function feof expects resource, resource\\|null given\\.$#"
+			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\StorageInterface\\:\\:getLastUpdateDate\\(\\)\\.$#"
 			count: 1
 			path: tests/Storage/FileServiceTest.php
 
 		-
-			message: "#^Parameter \\#1 \\$fp of function fread expects resource, resource\\|null given\\.$#"
+			message: "#^Parameter \\#1 \\$fp of function feof expects resource, Psr\\\\Http\\\\Message\\\\StreamInterface given\\.$#"
+			count: 1
+			path: tests/Storage/FileServiceTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$fp of function fread expects resource, Psr\\\\Http\\\\Message\\\\StreamInterface given\\.$#"
 			count: 1
 			path: tests/Storage/FileServiceTest.php
 
 		-
 			message: "#^Parameter \\#2 \\$data of function hash_update expects string, string\\|false given\\.$#"
+			count: 1
+			path: tests/Storage/FileServiceTest.php
+
+		-
+			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\StorageInterface\\:\\:supportCacheStore\\(\\)\\.$#"
+			count: 1
+			path: tests/Storage/FileServiceTest.php
+
+		-
+			message: "#^Method EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\StorageInterface\\:\\:initUpload\\(\\) invoked with 5 parameters, 4 required\\.$#"
+			count: 1
+			path: tests/Storage/FileServiceTest.php
+
+		-
+			message: "#^Method EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\StorageInterface\\:\\:addChunk\\(\\) invoked with 3 parameters, 2 required\\.$#"
+			count: 2
+			path: tests/Storage/FileServiceTest.php
+
+		-
+			message: "#^Method EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\StorageInterface\\:\\:finalizeUpload\\(\\) invoked with 2 parameters, 1 required\\.$#"
+			count: 1
+			path: tests/Storage/FileServiceTest.php
+
+		-
+			message: "#^Method EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\StorageInterface\\:\\:head\\(\\) invoked with 2 parameters, 1 required\\.$#"
+			count: 2
+			path: tests/Storage/FileServiceTest.php
+
+		-
+			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\StorageInterface\\:\\:clearCache\\(\\)\\.$#"
 			count: 1
 			path: tests/Storage/FileServiceTest.php
 

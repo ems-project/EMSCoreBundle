@@ -147,6 +147,4 @@ class FormSubmission
         $this->processId = $processId;
         return $this;
     }
-
-
 }

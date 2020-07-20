@@ -116,6 +116,10 @@
                             {{ form_widget(form.saveAndEditStructure) }}
                             {{ form_widget(form.saveAndReorder) }}
                         {% endif %}
+                        <a href="{{ path('emsco_contenttype_update_from_json', {contentType: contentType.id}) }}" class="btn btn-sm btn-primary">
+                            <i class="fa fa-refresh"></i>
+                            {{ 'contenttype.action.update_from_json'|trans }}
+                        </a>
                     </div>
                 </div>
             </div>

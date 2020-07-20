@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Entity\Helper;
 
 use Doctrine\ORM\PersistentCollection;
+use EMS\CoreBundle\Entity\ContentType;
 
 class JsonClass implements \JsonSerializable
 {
@@ -84,10 +85,13 @@ class JsonClass implements \JsonSerializable
         ];
     }
 
-    public function jsonDeserialize()
+    public function jsonDeserialize(object $object = null)
     {
         $reflectionClass = new \ReflectionClass($this->class);
-        $instance = $reflectionClass->newInstance(...$this->constructorArguments);
+        $instance = $object;
+        if ($instance === null) {
+            $instance = $reflectionClass->newInstance(...$this->constructorArguments);
+        }
 
         foreach ($this->properties as $name => $value) {
             if (! $reflectionClass->hasProperty($name)) {

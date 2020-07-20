@@ -11,8 +11,8 @@ use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Entity\Form\ContentTypeJsonUpdate;
 use EMS\CoreBundle\Entity\Form\EditFieldType;
-use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Form\DataField\SubfieldType;
@@ -20,6 +20,7 @@ use EMS\CoreBundle\Form\Field\IconTextType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\Form\ContentTypeStructureType;
 use EMS\CoreBundle\Form\Form\ContentTypeType;
+use EMS\CoreBundle\Form\Form\ContentTypeUpdateType;
 use EMS\CoreBundle\Form\Form\EditFieldTypeType;
 use EMS\CoreBundle\Form\Form\ReorderType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
@@ -63,6 +64,32 @@ class ContentTypeController extends AppController
         return preg_match('/^[a-z][a-z0-9\-_]*$/i', $name) && strlen($name) <= 100;
     }
 
+    /**
+     * @Route("/content-type/json-update/{contentType}", name="emsco_contenttype_update_from_json"))
+     */
+    public function updateFromJsonAction(ContentType $contentType, Request $request, ContentTypeService $contentTypeService): Response
+    {
+        $jsonUpdate = new ContentTypeJsonUpdate();
+        $form = $this->createForm(ContentTypeUpdateType::class, $jsonUpdate);
+        $form->handleRequest($request);
+
+        $jsonUpdate = $form->getData();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $json = \file_get_contents($jsonUpdate->getJson()->getRealPath());
+            if (! \is_string($json)) {
+                throw new NotFoundHttpException('JSON file not found');
+            }
+
+            $contentTypeService->updateFromJson($contentType, $json, $jsonUpdate->isDeleteExitingTemplates(), $jsonUpdate->isDeleteExitingViews());
+            return $this->redirectToRoute('contenttype.edit', [
+                'id' => $contentType->getId()
+            ]);
+        }
+        return $this->render('@EMSCore/contenttype/json_update.html.twig', [
+            'form' => $form->createView(),
+            'contentType' => $contentType,
+        ]);
+    }
 
     /**
      * Logically delete a content type.
@@ -252,6 +279,12 @@ class ContentTypeController extends AppController
                     $file = $request->files->get('form')['import'];
                     $json = file_get_contents($file->getRealPath());
 
+                    if (! \is_string($json)) {
+                        throw new NotFoundHttpException('JSON file not found');
+                    }
+                    if (! $environment instanceof Environment) {
+                        throw new NotFoundHttpException('Environment not found');
+                    }
                     $contentType = $this->getContentTypeService()->contentTypeFromJson($json, $environment);
                     $contentType->setName($name);
                     $contentType->setSingularName($singularName);

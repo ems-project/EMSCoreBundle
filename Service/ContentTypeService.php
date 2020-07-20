@@ -15,9 +15,13 @@ use EMS\CoreBundle\Entity\SingleTypeIndex;
 use EMS\CoreBundle\Exception\ContentTypeAlreadyExistException;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
+use EMS\CoreBundle\Repository\FieldTypeRepository;
 use EMS\CoreBundle\Repository\SingleTypeIndexRepository;
+use EMS\CoreBundle\Repository\TemplateRepository;
+use EMS\CoreBundle\Repository\ViewRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormRegistryInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class ContentTypeService
@@ -106,7 +110,7 @@ class ContentTypeService
         }
         return false;
     }
-    
+
     private function loadEnvironment()
     {
         if ($this->orderedContentTypes === []) {
@@ -426,10 +430,30 @@ class ContentTypeService
         return implode(',', array_keys($this->contentTypeArrayByName));
     }
 
-    public function contentTypeFromJson(string $json, Environment $environment): ContentType
+
+    public function updateFromJson(ContentType $contentType, string $json, bool $isDeleteExitingTemplates, bool $isDeleteExitingViews): void
+    {
+        $this->deleteFields($contentType);
+        if ($isDeleteExitingTemplates) {
+            $this->deleteTemplates($contentType);
+        }
+        if ($isDeleteExitingViews) {
+            $this->deleteViews($contentType);
+        }
+
+        $environment = $contentType->getEnvironment();
+        if (! $environment instanceof Environment) {
+            throw new NotFoundHttpException('Environment not found');
+        }
+
+        $updatedContentType = $this->contentTypeFromJson($json, $environment, $contentType);
+        $this->importContentType($updatedContentType);
+    }
+
+    public function contentTypeFromJson(string $json, Environment $environment, ContentType $contentType = null): ContentType
     {
         $meta = JsonClass::fromJsonString($json);
-        $contentType = $meta->jsonDeserialize();
+        $contentType = $meta->jsonDeserialize($contentType);
         if (!$contentType instanceof ContentType) {
             throw new \Exception(sprintf('ContentType expected for import, got %s', $meta->getClass()));
         }
@@ -438,13 +462,65 @@ class ContentTypeService
         return $contentType;
     }
 
+    private function deleteFields(ContentType $contentType): void
+    {
+        $em = $this->doctrine->getManager();
+        $contentType->unsetFieldType();
+        /** @var FieldTypeRepository $fieldRepo */
+        $fieldRepo = $em->getRepository('EMSCoreBundle:FieldType');
+        $fields = $fieldRepo->findBy([
+            'contentType' => $contentType
+        ]);
+        foreach ($fields as $field) {
+            $em->remove($field);
+        }
+        $em->flush();
+    }
+
+    private function deleteTemplates(ContentType $contentType): void
+    {
+        $em = $this->doctrine->getManager();
+        foreach ($contentType->getTemplates() as $template) {
+            $contentType->removeTemplate($template);
+        }
+        /** @var TemplateRepository $templateRepo */
+        $templateRepo = $em->getRepository('EMSCoreBundle:Template');
+        $templates = $templateRepo->findBy([
+            'contentType' => $contentType
+        ]);
+        foreach ($templates as $template) {
+            $em->remove($template);
+        }
+
+        $em->flush();
+    }
+
+    private function deleteViews(ContentType $contentType): void
+    {
+        $em = $this->doctrine->getManager();
+        foreach ($contentType->getViews() as $view) {
+            $contentType->removeView($view);
+        }
+        /** @var ViewRepository $viewRepo */
+        $viewRepo = $em->getRepository('EMSCoreBundle:View');
+        $views = $viewRepo->findBy([
+            'contentType' => $contentType
+        ]);
+        foreach ($views as $view) {
+            $em->remove($view);
+        }
+
+        $em->flush();
+    }
+
     public function importContentType(ContentType $contentType): ContentType
     {
         $em = $this->doctrine->getManager();
         /** @var ContentTypeRepository $contentTypeRepository */
         $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
 
-        if ($this->getByName($contentType->getName())) {
+        $previousContentType =  $this->getByName($contentType->getName());
+        if ($previousContentType instanceof ContentType && $previousContentType->getId() !== $contentType->getId()) {
             throw new ContentTypeAlreadyExistException('ContentType with name ' . $contentType->getName() . ' already exists');
         }
 

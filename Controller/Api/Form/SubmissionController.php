@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Controller\Api;
+namespace EMS\CoreBundle\Controller\Api\Form;
 
 use EMS\CoreBundle\Service\FormSubmission\FormSubmissionException;
 use EMS\CoreBundle\Service\FormSubmission\FormSubmissionService;
@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-final class FormSubmissionController extends AbstractController
+final class SubmissionController extends AbstractController
 {
     /** @var FormSubmissionService */
     private $formSubmissionService;
@@ -28,7 +28,7 @@ final class FormSubmissionController extends AbstractController
     }
 
     /**
-     * @Route("/api/form-submission", defaults={"_format": "json"}, methods={"POST"})
+     * @Route("/api/form/submission", defaults={"_format": "json"}, methods={"POST"})
      */
     public function submit(Request $request): Response
     {

@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\Api\Form;
 
-use EMS\CoreBundle\Service\FormSubmission\FormSubmissionException;
-use EMS\CoreBundle\Service\FormSubmission\FormSubmissionService;
-use EMS\CoreBundle\Service\FormSubmission\SubmitRequest;
-use EMS\CoreBundle\Service\FormVerification\FormVerificationService;
+use EMS\CoreBundle\Service\Form\Verification\CreateVerificationRequest;
+use EMS\CoreBundle\Service\Form\Verification\FormVerificationException;
+use EMS\CoreBundle\Service\Form\Verification\FormVerificationService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,9 +14,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/api/form/verification")
- */
 final class VerificationController extends AbstractController
 {
     /** @var FormVerificationService */
@@ -25,22 +21,21 @@ final class VerificationController extends AbstractController
     /** @var LoggerInterface */
     private $logger;
 
-    public function __construct(LoggerInterface $logger)
+    public function __construct(FormVerificationService $formVerificationService, LoggerInterface $logger)
     {
-        $this->formVerificationService = new FormVerificationService();
+        $this->formVerificationService = $formVerificationService;
         $this->logger = $logger;
     }
 
     /**
-     * @Route("", defaults={"_format": "json"}, methods={"POST"})
+     * @Route("/api/forms/verifications", defaults={"_format": "json"}, methods={"POST"})
      */
-    public function generate(Request $request): Response
+    public function createVerification(Request $request): Response
     {
         try {
-            $json = \json_decode($request->getContent(), true);
-            $code = $this->formVerificationService->generateCode($json['value']);
-
-            return new JsonResponse(['code' => $code]);
+            return new JsonResponse($this->formVerificationService->create(new CreateVerificationRequest($request)));
+        } catch (FormVerificationException $e) {
+            return new JsonResponse(['message' => $e->getMessage()], $e->getHttpCode());
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage(), ['exception' => $e]);
             return new JsonResponse([], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -48,12 +43,19 @@ final class VerificationController extends AbstractController
     }
 
     /**
-     * @Route("/{value}/{code}", requirements={"value"=".+", "code"=".+"}, defaults={"_format": "json"}, methods={"GET"})
+     * @Route("/api/forms/verifications", defaults={"_format": "json"}, methods={"GET"})
      */
-    public function verify(string $value, string $code): Response
+    public function getVerification(Request $request): Response
     {
         try {
-            return new JsonResponse(['valid' => $this->formVerificationService->verify($value, $code)]);
+            $value = $request->get('value', null);
+            if (null === $value) {
+                throw new FormVerificationException('value is required!');
+            }
+
+            return new JsonResponse($this->formVerificationService->get($value));
+        } catch (FormVerificationException $e) {
+            return new JsonResponse(['message' => $e->getMessage()], $e->getHttpCode());
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage(), ['exception' => $e]);
             return new JsonResponse([], Response::HTTP_INTERNAL_SERVER_ERROR);

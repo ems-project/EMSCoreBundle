@@ -7,7 +7,7 @@ namespace EMS\CoreBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use EMS\CoreBundle\Service\FormSubmission\SubmitRequest;
+use EMS\CoreBundle\Service\Form\Submission\FormSubmissionRequest;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -92,7 +92,7 @@ class FormSubmission
      */
     private $processId;
 
-    public function __construct(SubmitRequest $submitRequest)
+    public function __construct(FormSubmissionRequest $submitRequest)
     {
         $now = new \DateTime();
 

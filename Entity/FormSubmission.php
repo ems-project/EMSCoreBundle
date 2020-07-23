@@ -67,7 +67,7 @@ class FormSubmission
     /**
      * @var array<string, mixed>
      *
-     * @ORM\Column(name="data", type="json")
+     * @ORM\Column(name="data", type="json_array")
      */
     private $data;
 
@@ -77,6 +77,20 @@ class FormSubmission
      * @ORM\OneToMany(targetEntity="FormSubmissionFile", mappedBy="formSubbmission", cascade={"persist", "remove"})
      */
     protected $files;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="process_try_counter", type="integer", nullable=true)
+     */
+    private $processTryCounter;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="process_id", type="string", length=255, nullable=true)
+     */
+    private $processId;
 
     public function __construct(SubmitRequest $submitRequest)
     {
@@ -110,5 +124,27 @@ class FormSubmission
     public function updateModified(): void
     {
         $this->modified = new \DateTime();
+    }
+
+    public function getProcessTryCounter(): ?int
+    {
+        return $this->processTryCounter;
+    }
+
+    public function setProcessTryCounter(int $processTryCounter): FormSubmission
+    {
+        $this->processTryCounter = $processTryCounter;
+        return $this;
+    }
+
+    public function getProcessId(): ?string
+    {
+        return $this->processId;
+    }
+
+    public function setProcessId(string $processId): FormSubmission
+    {
+        $this->processId = $processId;
+        return $this;
     }
 }

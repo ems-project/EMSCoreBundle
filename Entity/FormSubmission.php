@@ -7,7 +7,7 @@ namespace EMS\CoreBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use EMS\CoreBundle\Service\FormSubmission\SubmitRequest;
+use EMS\CoreBundle\Service\Form\Submission\FormSubmissionRequest;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -81,7 +81,7 @@ class FormSubmission
     /**
      * @var int
      *
-     * @ORM\Column(name="process_try_counter", type="integer", nullable=true)
+     * @ORM\Column(name="process_try_counter", type="integer", nullable=false, options={"default": 0})
      */
     private $processTryCounter;
 
@@ -92,7 +92,7 @@ class FormSubmission
      */
     private $processId;
 
-    public function __construct(SubmitRequest $submitRequest)
+    public function __construct(FormSubmissionRequest $submitRequest)
     {
         $now = new \DateTime();
 
@@ -126,7 +126,7 @@ class FormSubmission
         $this->modified = new \DateTime();
     }
 
-    public function getProcessTryCounter(): ?int
+    public function getProcessTryCounter(): int
     {
         return $this->processTryCounter;
     }

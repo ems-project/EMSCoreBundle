@@ -193,7 +193,7 @@
 						<i class="fa fa-info"></i>
 						{{ 'Info'|trans }}
 					</button>
-					<a href="{{ path('file.download', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) }}" class="btn btn-small btn-primary"><i class="fa fa-download"></i>&nbsp;{{'Download'|trans}}</a>
+					<a href="{{ ems_asset_path(dataField.rawData, {'_disposition':'attachment'}) }}" class="btn btn-small btn-primary"><i class="fa fa-download"></i>&nbsp;{{'Download'|trans}}</a>
 					{#<a href="{{ path('ems.file.view', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) }}" class="btn btn-small btn-primary"><i class="fa fa-eye"></i>&nbsp;{{'View'|trans}}</a>#}
 				</div>
 				<div class="modal" tabindex="-1" role="dialog" id="indexed-details-revision_{{ tempId }}">

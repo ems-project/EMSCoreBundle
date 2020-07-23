@@ -99,6 +99,7 @@ class FormSubmission
         $this->id = Uuid::uuid4();
         $this->created = $now;
         $this->modified = $now;
+        $this->processTryCounter = 0;
 
         $this->name = $submitRequest->getFormName();
         $this->instance = $submitRequest->getInstance();

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Service\FormSubmission;
+namespace EMS\CoreBundle\Service\Form\Submission;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\Exception\ExceptionInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-final class SubmitRequest
+final class FormSubmissionRequest
 {
     /** @var string */
     private $formName;

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Controller\Api;
+namespace EMS\CoreBundle\Controller\Api\Form;
 
-use EMS\CoreBundle\Service\FormSubmission\FormSubmissionException;
-use EMS\CoreBundle\Service\FormSubmission\FormSubmissionService;
-use EMS\CoreBundle\Service\FormSubmission\SubmitRequest;
+use EMS\CoreBundle\Service\Form\Submission\FormSubmissionException;
+use EMS\CoreBundle\Service\Form\Submission\FormSubmissionService;
+use EMS\CoreBundle\Service\Form\Submission\FormSubmissionRequest;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-final class FormSubmissionController extends AbstractController
+final class SubmissionController extends AbstractController
 {
     /** @var FormSubmissionService */
     private $formSubmissionService;
@@ -28,14 +28,12 @@ final class FormSubmissionController extends AbstractController
     }
 
     /**
-     * @Route("/api/form-submission", defaults={"_format": "json"}, methods={"POST"})
+     * @Route("/api/forms/submissions", defaults={"_format": "json"}, methods={"POST"})
      */
     public function submit(Request $request): Response
     {
         try {
-            $submitRequest = new SubmitRequest($request);
-
-            return new JsonResponse($this->formSubmissionService->submit($submitRequest));
+            return new JsonResponse($this->formSubmissionService->submit(new FormSubmissionRequest($request)));
         } catch (FormSubmissionException $e) {
             return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         } catch (\Exception $e) {

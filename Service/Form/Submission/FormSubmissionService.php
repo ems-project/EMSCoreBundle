@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Service\FormSubmission;
+namespace EMS\CoreBundle\Service\Form\Submission;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Persistence\ObjectManager;
@@ -21,7 +21,7 @@ final class FormSubmissionService
     /**
      * @return array{submission_id: string}
      */
-    public function submit(SubmitRequest $submitRequest): array
+    public function submit(FormSubmissionRequest $submitRequest): array
     {
         $formSubmission = new FormSubmission($submitRequest);
 

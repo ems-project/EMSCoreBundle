@@ -81,7 +81,7 @@ class FormSubmission
     /**
      * @var int
      *
-     * @ORM\Column(name="process_try_counter", type="integer", nullable=true)
+     * @ORM\Column(name="process_try_counter", type="integer", nullable=false, options={"default": 0})
      */
     private $processTryCounter;
 
@@ -126,7 +126,7 @@ class FormSubmission
         $this->modified = new \DateTime();
     }
 
-    public function getProcessTryCounter(): ?int
+    public function getProcessTryCounter(): int
     {
         return $this->processTryCounter;
     }

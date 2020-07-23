@@ -331,7 +331,7 @@ class FileService
                 $handler = $service->read($uploadedAsset->getSha1(), false, false);
 
                 if ($handler) {
-                    $computedHash = $this->storageManager->computeResourceHash($handler);
+                    $computedHash = $this->storageManager->computeStringHash($handler->getContents());
 
                     if ($computedHash != $uploadedAsset->getSha1()) {
                         throw new Conflict409Exception("Hash mismatched " . $computedHash . ' ' . $uploadedAsset->getSha1());

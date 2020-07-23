@@ -12071,11 +12071,6 @@ parameters:
 			path: Service/FileService.php
 
 		-
-			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Storage\\\\StorageManager\\:\\:computeResourceHash\\(\\)\\.$#"
-			count: 1
-			path: Service/FileService.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\FileService\\:\\:create\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: Service/FileService.php

@@ -507,8 +507,11 @@ services:
         class: EMS\CoreBundle\Security\Authenticator
         arguments: [ '@security.authentication.manager', '@doctrine', '@ems.service.user']
     ems.form_submission:
-        class: EMS\CoreBundle\Service\FormSubmission\FormSubmissionService
+        class: EMS\CoreBundle\Service\Form\Submission\FormSubmissionService
         arguments: ['@doctrine']
+    ems.form_verification:
+        class: EMS\CoreBundle\Service\Form\Verification\FormVerificationService
+        arguments: ['@ems.repository.form_verification']
 
 ### command services ###
     ems.environment.ems:
@@ -695,8 +698,11 @@ services:
         public: true
         resource: '../../Controller/*'
 
-    EMS\CoreBundle\Controller\Api\FormSubmissionController:
+    EMS\CoreBundle\Controller\Api\Form\SubmissionController:
         arguments: ['@ems.form_submission','@logger']
+    EMS\CoreBundle\Controller\Api\Form\VerificationController:
+        arguments: ['@ems.form_verification', '@logger']
+        tags: ['controller.service_arguments']
     EMS\CoreBundle\Controller\AuthTokenController:
         arguments: ['@ems.security.authenticator', '@twig']
 
@@ -742,3 +748,7 @@ services:
         factory: ['@doctrine.orm.default_entity_manager', getRepository]
         arguments:
             - EMS\CoreBundle\Entity\Revision
+    ems.repository.form_verification:
+        class: EMS\CoreBundle\Repository\FormVerificationRepository
+        arguments:
+            - '@doctrine'

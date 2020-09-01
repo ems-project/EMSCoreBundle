@@ -78,10 +78,11 @@ final class FormSubmissionService
 
     public function process(FormSubmission $formSubmission, UserInterface $user): void
     {
-        if ($user instanceof User) {
-            $formSubmission->process($user);
+        if (!$user instanceof User) {
+            throw new \Exception('Invalid user passed for processing!');
         }
 
+        $formSubmission->process($user);
         $this->repository->save($formSubmission);
     }
 

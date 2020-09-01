@@ -8,11 +8,11 @@ use EMS\CoreBundle\Form\Submission\ProcessType;
 use EMS\CoreBundle\Service\Form\Submission\FormSubmissionService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -25,8 +25,6 @@ final class SubmissionController extends AbstractController
     private $translator;
     /** @var LoggerInterface */
     private $logger;
-
-    private const BUFFER_SIZE = 8192;
 
     public function __construct(
         FormSubmissionService $formSubmissionService,
@@ -80,19 +78,9 @@ final class SubmissionController extends AbstractController
     {
         try {
             $formSubmission = $this->formSubmissionService->get($id);
-            $stream = $this->formSubmissionService->createDownloadStream($formSubmission);
+            $download = $this->formSubmissionService->createDownload($formSubmission);
 
-            $response = new StreamedResponse(function () use ($stream) {
-                if ($stream->isSeekable() && $stream->tell() > 0) {
-                    $stream->rewind();
-                }
-
-                while (!$stream->eof()) {
-                    echo $stream->read(self::BUFFER_SIZE);
-                }
-                $stream->close();
-            });
-
+            $response = new BinaryFileResponse($download);
             $response->headers->set('Content-Type', 'application/zip');
             $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
                 ResponseHeaderBag::DISPOSITION_ATTACHMENT,

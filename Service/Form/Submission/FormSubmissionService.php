@@ -7,8 +7,6 @@ namespace EMS\CoreBundle\Service\Form\Submission;
 use EMS\CoreBundle\Entity\FormSubmission;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Repository\FormSubmissionRepository;
-use GuzzleHttp\Psr7\Stream;
-use Psr\Http\Message\StreamInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -33,7 +31,7 @@ final class FormSubmissionService
         return $submission;
     }
 
-    public function createDownloadStream(FormSubmission $formSubmission): StreamInterface
+    public function createDownload(FormSubmission $formSubmission): string
     {
         $filesystem = new Filesystem();
         $tempFile = $filesystem->tempnam(\sys_get_temp_dir(), 'ems_form');
@@ -61,11 +59,7 @@ final class FormSubmissionService
 
         $zip->close();
 
-        if (false === $fopen = \fopen($tempFile, 'r')) {
-            throw new \Exception('could not open file!');
-        }
-
-        return new Stream($fopen);
+        return $tempFile;
     }
 
     /**

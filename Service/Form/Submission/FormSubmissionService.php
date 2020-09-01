@@ -46,6 +46,19 @@ final class FormSubmissionService
             $zip->addFromString('data.json', $rawJson);
         }
 
+        foreach ($formSubmission->getFiles() as $file) {
+            $formFile = $file->getFile();
+
+            if (!is_resource($formFile)) {
+                continue;
+            }
+
+            $formFileContents = stream_get_contents($formFile);
+            if (is_string($formFileContents)) {
+                $zip->addFromString($file->getFilename(), $formFileContents);
+            }
+        }
+
         $zip->close();
 
         if (false === $fopen = \fopen($tempFile, 'r')) {

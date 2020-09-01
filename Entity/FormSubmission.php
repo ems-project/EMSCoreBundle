@@ -74,7 +74,7 @@ class FormSubmission
     /**
      * @var Collection<int, FormSubmissionFile>
      *
-     * @ORM\OneToMany(targetEntity="FormSubmissionFile", mappedBy="formSubmission", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="FormSubmissionFile", mappedBy="formSubmission", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     protected $files;
 
@@ -143,7 +143,7 @@ class FormSubmission
     }
 
     /**
-     * @return Collection<int, FormSubmissionFile>
+     * @return Collection<int, FormSubmissionFile>|FormSubmissionFile[]
      */
     public function getFiles(): Collection
     {
@@ -175,6 +175,7 @@ class FormSubmission
         $this->data = null;
         $this->processTryCounter = 1;
         $this->processBy = $user->getUsername();
+        $this->files->clear();
     }
 
     public function getProcessTryCounter(): int

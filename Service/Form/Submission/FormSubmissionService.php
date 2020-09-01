@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Service\Form\Submission;
 
 use EMS\CoreBundle\Entity\FormSubmission;
-use EMS\CoreBundle\Entity\UserInterface;
+use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Repository\FormSubmissionRepository;
 use GuzzleHttp\Psr7\Stream;
 use Psr\Http\Message\StreamInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 final class FormSubmissionService
 {
@@ -39,7 +40,12 @@ final class FormSubmissionService
 
         $zip = new \ZipArchive();
         $zip->open($tempFile, \ZipArchive::CREATE);
-        $zip->addFromString('data.json', json_encode($formSubmission->getData()));
+
+        $rawJson = \json_encode($formSubmission->getData());
+        if (is_string($rawJson)) {
+            $zip->addFromString('data.json', $rawJson);
+        }
+
         $zip->close();
 
         if (false === $fopen = \fopen($tempFile, 'r')) {
@@ -49,6 +55,9 @@ final class FormSubmissionService
         return new Stream($fopen);
     }
 
+    /**
+     * @return FormSubmission[]
+     */
     public function getUnprocessed(): array
     {
         return $this->repository->findAllUnprocessed();
@@ -56,7 +65,10 @@ final class FormSubmissionService
 
     public function process(FormSubmission $formSubmission, UserInterface $user): void
     {
-        $formSubmission->process($user);
+        if ($user instanceof User) {
+            $formSubmission->process($user);
+        }
+
         $this->repository->save($formSubmission);
     }
 

@@ -65,7 +65,7 @@ class FormSubmission
     private $locale;
 
     /**
-     * @var array<string, mixed>
+     * @var null|array<string, mixed>
      *
      * @ORM\Column(name="data", type="json_array", nullable=true)
      */
@@ -134,11 +134,17 @@ class FormSubmission
         $this->modified = new \DateTime();
     }
 
-    public function getData(): array
+    /**
+     * @return null|array<string, mixed>
+     */
+    public function getData(): ?array
     {
         return $this->data;
     }
 
+    /**
+     * @return Collection<int, FormSubmissionFile>
+     */
     public function getFiles(): Collection
     {
         return $this->files;
@@ -164,7 +170,7 @@ class FormSubmission
         return $this->created;
     }
 
-    public function process(UserInterface $user): void
+    public function process(User $user): void
     {
         $this->data = null;
         $this->processTryCounter = 1;

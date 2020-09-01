@@ -9,13 +9,12 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 final class ProcessType extends AbstractType
 {
-    /** @var UrlGenerator */
+    /** @var RouterInterface */
     private $router;
 
     public function __construct(RouterInterface $router)
@@ -23,6 +22,10 @@ final class ProcessType extends AbstractType
         $this->router = $router;
     }
 
+    /**
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<mixed>                $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder

@@ -22,6 +22,9 @@ class FormSubmissionRepository extends ServiceEntityRepository
         return $submission instanceof FormSubmission ? $submission : null;
     }
 
+    /**
+     * @return FormSubmission[]
+     */
     public function findAllUnprocessed(): array
     {
         $qb = $this->createQueryBuilder('fs');

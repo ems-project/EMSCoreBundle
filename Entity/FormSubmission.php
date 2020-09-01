@@ -67,14 +67,14 @@ class FormSubmission
     /**
      * @var array<string, mixed>
      *
-     * @ORM\Column(name="data", type="json_array")
+     * @ORM\Column(name="data", type="json_array", nullable=true)
      */
     private $data;
 
     /**
      * @var Collection<int, FormSubmissionFile>
      *
-     * @ORM\OneToMany(targetEntity="FormSubmissionFile", mappedBy="formSubbmission", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="FormSubmissionFile", mappedBy="formSubmission", cascade={"persist", "remove"})
      */
     protected $files;
 
@@ -91,6 +91,13 @@ class FormSubmission
      * @ORM\Column(name="process_id", type="string", length=255, nullable=true)
      */
     private $processId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="process_by", type="string", length=255, nullable=true)
+     */
+    private $processBy;
 
     public function __construct(FormSubmissionRequest $submitRequest)
     {
@@ -125,6 +132,43 @@ class FormSubmission
     public function updateModified(): void
     {
         $this->modified = new \DateTime();
+    }
+
+    public function getData(): array
+    {
+        return $this->data;
+    }
+
+    public function getFiles(): Collection
+    {
+        return $this->files;
+    }
+
+    public function getInstance(): string
+    {
+        return $this->instance;
+    }
+
+    public function getLocale(): string
+    {
+        return $this->locale;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getCreated(): \Datetime
+    {
+        return $this->created;
+    }
+
+    public function process(UserInterface $user): void
+    {
+        $this->data = null;
+        $this->processTryCounter = 1;
+        $this->processBy = $user->getUsername();
     }
 
     public function getProcessTryCounter(): int

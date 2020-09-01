@@ -1,0 +1,96 @@
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}{{ 'form_submissions.title'|trans }}{% endblock %}
+{% block subtitle %}{% endblock %}
+{% block pagetitle %}{{ 'form_submissions.title'|trans }} {{ 'form_submissions.overview'|trans }}{% endblock %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li>
+            <i class="fa fa-list-alt"></i> {{ 'form_submissions.title'|trans }}
+        </li>
+        <li>
+            {{ 'form_submissions.overview'|trans }}
+        </li>
+    </ol>
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+                <div class="box-body">
+                    {{ block('submissionsTable') }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block submissionsTable %}
+<div class="table-responsive">
+    <table id="tbl-form-submissions" class="table table-condensed table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Form</th>
+                <th>Instance</th>
+                <th>Locale</th>
+                <th>Created</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in submissions %}
+                <tr>
+                    <td>{{ s.id }}</td>
+                    <td>{{ s.name|i18n }}</td>
+                    <td>{{ s.instance|i18n }}</td>
+                    <td>{{ s.locale }}</td>
+                    <td>{{ s.created|date('d-m-Y H:i:s') }}</td>
+                    <td>
+                        <a href="{{ path('form.submissions.download', {'id': s.id}) }}" class="btn btn-sm btn-primary">
+                            <i class="fa fa-download"></i>&nbsp; {{ 'form_submissions.download'|trans }}
+                        </a>
+                        <a data-toggle="modal" data-submission-id="{{ s.id }}" class="open-confirm-process btn btn-sm btn-success" href="#confirm-process">
+                            <i class="fa fa-check"></i>&nbsp; {{ 'form_submissions.process.button'|trans }}
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="modal fade" id="confirm-process" tabindex="-1" role="dialog" aria-labelledby="confirm-process-title">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="confirm-process-title">{{ 'form_submissions.process.confirm_title'|trans }}</h4>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info alert-dismissible">{{ 'form_submissions.process.confirm_body'|trans|nl2br }}</div>
+            </div>
+            {{ form_start(formProcess) }}
+                <div class="modal-footer">
+                    {{  form_widget(formProcess.submissionId) }}
+                    {{  form_widget(formProcess.save, {'attr': { 'class': 'btn btn-success' }, 'label': 'form_submissions.process.confirm_title'|trans }) }}
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            {{ form_end(formProcess) }}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $('#tbl-form-submissions').DataTable({
+            aaSorting: []
+        });
+        $(document).on("click", ".open-confirm-process", function () {
+            $("#process_submissionId").val($(this).data('submission-id'));
+        });
+    </script>
+{% endblock %}

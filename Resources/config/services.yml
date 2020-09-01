@@ -249,6 +249,10 @@ services:
         arguments: ['@security.authorization_checker']
         tags:
             - { name: form.type }
+    EMS\CoreBundle\Form\Submission\ProcessType:
+        arguments: ['@router']
+        tags:
+            - { name: form.type }
 
 #### Begin list available ems views type ###
     EMS\CoreBundle\Form\Form\SearchFormType:
@@ -508,7 +512,7 @@ services:
         arguments: [ '@security.authentication.manager', '@doctrine', '@ems.service.user']
     ems.form_submission:
         class: EMS\CoreBundle\Service\Form\Submission\FormSubmissionService
-        arguments: ['@doctrine']
+        arguments: ['@ems.repository.form_submission']
     ems.form_verification:
         class: EMS\CoreBundle\Service\Form\Verification\FormVerificationService
         arguments: ['@ems.repository.form_verification']
@@ -705,6 +709,9 @@ services:
         tags: ['controller.service_arguments']
     EMS\CoreBundle\Controller\AuthTokenController:
         arguments: ['@ems.security.authenticator', '@twig']
+    EMS\CoreBundle\Controller\Form\SubmissionController:
+        arguments: ['@ems.form_submission', '@translator', '@logger']
+        tags: ['controller.service_arguments']
 
 ### Loggers ####
     ems_common.monolog.ems_handler:
@@ -748,6 +755,10 @@ services:
         factory: ['@doctrine.orm.default_entity_manager', getRepository]
         arguments:
             - EMS\CoreBundle\Entity\Revision
+    ems.repository.form_submission:
+        class: EMS\CoreBundle\Repository\FormSubmissionRepository
+        arguments:
+            - '@doctrine'
     ems.repository.form_verification:
         class: EMS\CoreBundle\Repository\FormVerificationRepository
         arguments:

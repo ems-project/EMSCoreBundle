@@ -49,7 +49,7 @@ class FormSubmissionFile
     private $formSubmission;
 
     /**
-     * @var string
+     * @var string|resource
      *
      * @ORM\Column(name="file", type="blob")
      */
@@ -107,5 +107,18 @@ class FormSubmissionFile
     public function updateModified(): void
     {
         $this->modified = new \DateTime();
+    }
+
+    /**
+     * @return null|resource
+     */
+    public function getFile()
+    {
+        return \is_resource($this->file) ? $this->file : null;
+    }
+
+    public function getFilename(): string
+    {
+        return $this->filename;
     }
 }

@@ -177,6 +177,18 @@
         </li>
       </ul>	
     {% endif %}
+
+    {% if is_granted('ROLE_FORM_CRM') %}
+        <!-- Sidebar Menu -->
+        <ul class="sidebar-menu">
+            <li class="header">{{ 'form_submissions.title'|trans }}</li>
+            <li class="treeview">
+                <a href="{{ path('form.submissions') }}" id="menu-environment-align">
+                    <i class="fa fa-list-alt"></i> <span>{{ 'form_submissions.overview'|trans }}</span>
+                </a>
+            </li>
+        </ul>
+    {% endif %}
 	  
 	{% if is_granted('ROLE_ADMIN') %}
       <!-- Sidebar Menu -->

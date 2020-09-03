@@ -2,10 +2,10 @@
 
 namespace EMS\CoreBundle\Entity;
 
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Security\CoreLdapUser;
 use FOS\UserBundle\Model\User as BaseUser;
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 
 /**
  * @ORM\Entity
@@ -100,11 +100,13 @@ class User extends BaseUser implements UserInterface
      */
     private $sidebarCollapse;
 
-//     /**
-//      * @ORM\OneToMany(targetEntity="AuthToken", mappedBy="user", cascade={"remove"})
-//      * @ORM\OrderBy({"created" = "ASC"})
-//      */
-//     private $authTokens;
+     /**
+      * @var Collection<int,AuthToken>
+      *
+      * @ORM\OneToMany(targetEntity="AuthToken", mappedBy="user", cascade={"remove"})
+      * @ORM\OrderBy({"created" = "ASC"})
+      */
+    private $authTokens;
 
 
     public function __construct()
@@ -440,7 +442,7 @@ class User extends BaseUser implements UserInterface
     /**
      * Get authTokens
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getAuthTokens()
     {

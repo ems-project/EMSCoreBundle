@@ -96,12 +96,14 @@ class UserService
         $user = $repository->findOneBy([
                 'username' => $username
         ]);
-        
-        if (!empty($user) && $detachIt) {
-            $em->detach($user);
+
+        if (empty($user) || !$detachIt) {
+            return $user;
         }
-        
-        return $user;
+
+        $clone = clone $user;
+        $em->detach($clone);
+        return $clone;
     }
     
     public function getCurrentUser(bool $detach = true): UserInterface

@@ -37,7 +37,7 @@ class AuthToken
     protected $modified;
 
     /**
-     * @ORM\ManyToOne(targetEntity="UserInterface", inversedBy="authTokens")
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="authTokens")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      * @var UserInterface
      */

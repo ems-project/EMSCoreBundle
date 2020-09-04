@@ -4121,11 +4121,6 @@ parameters:
 			path: Entity/User.php
 
 		-
-			message: "#^Access to an undefined property EMS\\\\CoreBundle\\\\Entity\\\\User\\:\\:\\$authTokens\\.$#"
-			count: 3
-			path: Entity/User.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\User\\:\\:removeAuthToken\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: Entity/User.php

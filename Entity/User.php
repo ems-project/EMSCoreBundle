@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Security\CoreLdapUser;
@@ -116,7 +117,12 @@ class User extends BaseUser implements UserInterface
         $this->layoutBoxed = false;
         $this->sidebarCollapse = false;
         $this->sidebarMini = true;
-        // your own logic
+        $this->authTokens = new ArrayCollection();
+    }
+
+    public function __clone()
+    {
+        $this->authTokens = new ArrayCollection();
     }
 
     /**

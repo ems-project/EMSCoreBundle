@@ -14,7 +14,6 @@ final class Version20200911073341 extends AbstractMigration
     {
         $this->addSql('ALTER TABLE form_submission ADD label VARCHAR(255) DEFAULT NULL');
         $this->addSql('ALTER TABLE form_submission ADD deadline_date VARCHAR(255) DEFAULT NULL');
-
     }
 
     public function down(Schema $schema) : void

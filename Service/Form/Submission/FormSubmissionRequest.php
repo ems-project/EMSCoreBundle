@@ -42,7 +42,6 @@ final class FormSubmissionRequest
         $this->files = $submit['files'];
         $this->label = $submit['label'] ?? '';
         $this->deadlineDate = $submit['deadline_date'] ?? '';
-
     }
 
     public function getFormName(): string

@@ -15,7 +15,6 @@ final class Version20200911091519 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
         $this->addSql('ALTER TABLE form_submission ADD label VARCHAR(255) DEFAULT NULL');
         $this->addSql('ALTER TABLE form_submission ADD deadline_date VARCHAR(255) DEFAULT NULL');
-
     }
 
     public function down(Schema $schema) : void
@@ -23,6 +22,5 @@ final class Version20200911091519 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
         $this->addSql('ALTER TABLE form_submission DROP label');
         $this->addSql('ALTER TABLE form_submission DROP deadline_date');
-
     }
 }

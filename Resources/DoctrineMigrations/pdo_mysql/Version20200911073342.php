@@ -15,7 +15,6 @@ final class Version20200911073342 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
         $this->addSql('ALTER TABLE form_submission ADD label VARCHAR(255) DEFAULT NULL');
         $this->addSql('ALTER TABLE form_submission ADD deadline_date VARCHAR(255) DEFAULT NULL');
-
     }
 
     public function down(Schema $schema) : void

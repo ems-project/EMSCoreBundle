@@ -10,7 +10,6 @@ use EMS\CoreBundle\Repository\FormSubmissionRepository;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-
 final class FormSubmissionService
 {
     /** @var FormSubmissionRepository */

@@ -90,7 +90,7 @@ class FormSubmission
      *
      * @ORM\Column(name="deadline_date", type="string", length=255)
      */
-    private $deadline_date;
+    private $deadlineDate;
 
     /**
      * @var int
@@ -130,7 +130,7 @@ class FormSubmission
         $this->files = new ArrayCollection();
 
         $this->label = $submitRequest->getLabel();
-        $this->deadline_date = $submitRequest->getDeadlineDate();
+        $this->deadlineDate = $submitRequest->getDeadlineDate();
 
         foreach ($submitRequest->getFiles() as $file) {
             $this->files->add(new FormSubmissionFile($this, $file));
@@ -189,7 +189,7 @@ class FormSubmission
 
     public function getDeadlineDate(): string
     {
-        return $this->deadline_date;
+        return $this->deadlineDate;
     }
 
     public function getCreated(): \Datetime

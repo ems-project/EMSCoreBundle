@@ -51,13 +51,13 @@
                     <td>{{ s.instance|i18n }}</td>
                     <td>{{ s.locale }}</td>
                     <td>{{ s.created|date('d-m-Y H:i:s') }}</td>
-                    <td>{{ s.deadline_date }}</td>
+                    <td>{{ s.deadlineDate }}</td>
                     <td>
                         <a href="{{ path('form.submissions.download', {'id': s.id}) }}" class="btn btn-sm btn-primary">
                             <i class="fa fa-download"></i>&nbsp; {{ 'form_submissions.download'|trans }}
                         </a>
                         <a data-toggle="modal" data-submission-id="{{ s.id }}" class="open-confirm-process btn btn-sm btn-success" href="#confirm-process">
-                            <i class="fa fa-check"></i>&nbsp; {{ 'form_submissions.process.button'|i18n }}
+                            <i class="fa fa-check"></i>&nbsp; {{ 'form_submissions.process.button'|trans }}
                         </a>
                     </td>
                 </tr>
@@ -70,15 +70,15 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="confirm-process-title">{{ 'form_submissions.process.confirm_title'|i18n }}</h4>
+                <h4 class="modal-title" id="confirm-process-title">{{ 'form_submissions.process.confirm_title'|trans }}</h4>
             </div>
             <div class="modal-body">
-                <div class="alert alert-info alert-dismissible">{{ 'form_submissions.process.confirm_body'|i18n|nl2br }}</div>
+                <div class="alert alert-info alert-dismissible">{{ 'form_submissions.process.confirm_body'|trans|nl2br }}</div>
             </div>
             {{ form_start(formProcess) }}
                 <div class="modal-footer">
                     {{  form_widget(formProcess.submissionId) }}
-                    {{  form_widget(formProcess.save, {'attr': { 'class': 'btn btn-success' }, 'label': 'form_submissions.process.confirm_title'|i18n }) }}
+                    {{  form_widget(formProcess.save, {'attr': { 'class': 'btn btn-success' }, 'label': 'form_submissions.process.confirm_title'|trans }) }}
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                 </div>
             {{ form_end(formProcess) }}

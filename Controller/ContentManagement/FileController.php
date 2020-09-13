@@ -28,7 +28,7 @@ class FileController extends AppController
      * @Route("/data/file/view/{sha1}" , name="ems_file_view", methods={"GET","HEAD"})
      * @Route("/api/file/view/{sha1}" , name="ems.api.file.view", methods={"GET","HEAD"})
      */
-    public function viewFileAction($sha1, Request $request)
+    public function viewFileAction($sha1, Request $request, FileService $fileService)
     {
         @trigger_error(sprintf('The "%s::viewFileAction" function is deprecated and should not be used anymore. use "%s::assetAction instead"', FileController::class, AssetController::class), E_USER_DEPRECATED);
         return $this->getFile($sha1, ResponseHeaderBag::DISPOSITION_INLINE, $request);
@@ -45,7 +45,7 @@ class FileController extends AppController
      * @Route("/data/file/{sha1}" , name="ems_file_download", methods={"GET","HEAD"})
      * @Route("/api/file/{sha1}" , name="file.api.download", methods={"GET","HEAD"})
      */
-    public function downloadFileAction($sha1, Request $request)
+    public function downloadFileAction($sha1, Request $request, FileService $fileService)
     {
         @trigger_error(sprintf('The "%s::downloadFileAction" function is deprecated and should not be used anymore. use "%s::assetAction instead"', FileController::class, AssetController::class), E_USER_DEPRECATED);
         return $this->getFile($sha1, ResponseHeaderBag::DISPOSITION_ATTACHMENT, $request);

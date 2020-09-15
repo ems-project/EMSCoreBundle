@@ -149,6 +149,8 @@ class UserService
         $out['ROLE_DEFAULT_SEARCH'] = 'ROLE_DEFAULT_SEARCH';
         $out['ROLE_SUPER'] = 'ROLE_SUPER';
         $out['ROLE_API'] = 'ROLE_API';
+        $out['ROLE_USER_READ'] = 'ROLE_USER_READ';
+        $out['ROLE_USER_ADMIN'] = 'ROLE_USER_ADMIN';
         return $out;
     }
     

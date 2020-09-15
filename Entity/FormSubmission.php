@@ -79,6 +79,20 @@ class FormSubmission
     protected $files;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="label", type="string", length=255)
+     */
+    private $label;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="deadline_date", type="string", length=255)
+     */
+    private $deadlineDate;
+
+    /**
      * @var int
      *
      * @ORM\Column(name="process_try_counter", type="integer", nullable=false, options={"default": 0})
@@ -114,6 +128,9 @@ class FormSubmission
         $this->data = $submitRequest->getData();
 
         $this->files = new ArrayCollection();
+
+        $this->label = $submitRequest->getLabel();
+        $this->deadlineDate = $submitRequest->getDeadlineDate();
 
         foreach ($submitRequest->getFiles() as $file) {
             $this->files->add(new FormSubmissionFile($this, $file));
@@ -163,6 +180,16 @@ class FormSubmission
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function getLabel(): string
+    {
+        return $this->label;
+    }
+
+    public function getDeadlineDate(): string
+    {
+        return $this->deadlineDate;
     }
 
     public function getCreated(): \Datetime

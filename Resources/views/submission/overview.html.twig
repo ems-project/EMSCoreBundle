@@ -33,10 +33,12 @@
         <thead>
             <tr>
                 <th>Id</th>
+                <th>Label</th>
                 <th>Form</th>
                 <th>Instance</th>
                 <th>Locale</th>
                 <th>Created</th>
+                <th>Deadline</th>
                 <th></th>
             </tr>
         </thead>
@@ -44,10 +46,12 @@
             {% for s in submissions %}
                 <tr>
                     <td>{{ s.id }}</td>
+                    <td>{{ s.label }}</td>
                     <td>{{ s.name|i18n }}</td>
                     <td>{{ s.instance|i18n }}</td>
                     <td>{{ s.locale }}</td>
                     <td>{{ s.created|date('d-m-Y H:i:s') }}</td>
+                    <td>{{ s.deadlineDate }}</td>
                     <td>
                         <a href="{{ path('form.submissions.download', {'id': s.id}) }}" class="btn btn-sm btn-primary">
                             <i class="fa fa-download"></i>&nbsp; {{ 'form_submissions.download'|trans }}

@@ -664,10 +664,10 @@ form_submissions:
     overview: Overview
     download: Download
     process:
-      button: Process
-      confirm_title: Confirm processing
-      success: Form submission with id "%id%" has been processed!
-      error: Form proccesing failed!
+      button: Delete Submission
+      confirm_title: Confirm deletion
+      success: Form submission with id "%id%" has been deleted!
+      error: Form deletion failed!
       confirm_body: |
           After confirmation you can NOT download the form data anymore!
-          Are you sure, you want to process the form submission?
+          Are you sure, you want to delete the form submission?

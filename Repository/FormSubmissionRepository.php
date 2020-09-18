@@ -40,4 +40,10 @@ class FormSubmissionRepository extends ServiceEntityRepository
         $this->_em->persist($formSubmission);
         $this->_em->flush();
     }
+
+    public function remove(FormSubmission $formSubmission): void
+    {
+        $this->_em->remove($formSubmission);
+        $this->_em->flush();
+    }
 }

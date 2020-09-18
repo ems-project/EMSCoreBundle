@@ -91,4 +91,14 @@ final class FormSubmissionService
 
         return ['submission_id' => $formSubmission->getId()];
     }
+
+    public function removeExpiredSubmissions()
+    {
+        foreach ($this->repository->findAll() as $submission) {
+            $deadline = $submission->getDeadlineDate();
+            if (is_string($deadline) && strtotime($deadline) > 0 && strtotime($deadline) < time()) {
+                $this->repository->remove($submission);
+            }
+        }
+    }
 }

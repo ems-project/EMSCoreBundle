@@ -187,7 +187,7 @@ class FormSubmission
         return $this->label;
     }
 
-    public function getDeadlineDate(): string
+    public function getDeadlineDate(): ?string
     {
         return $this->deadlineDate;
     }

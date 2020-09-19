@@ -33,7 +33,9 @@ class RemoveExpiredSubmissionsCommand extends EmsCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->formSubmissionService->removeExpiredSubmissions();
-        dd('OK');
+        $removedCount = $this->formSubmissionService->removeExpiredSubmissions();
+
+        $this->logger->notice(sprintf('%d submissions were removed', $removedCount));
+        $output->writeln(sprintf('%d submissions were removed', $removedCount));
     }
 }

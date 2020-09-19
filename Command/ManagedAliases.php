@@ -32,7 +32,7 @@ class ManagedAliases extends ContainerAwareCommand
             ->addOption('detailed', null, InputOption::VALUE_NONE, 'List all indexes in each managed alias');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->aliasService->build();
         $detailed = $input->getOption('detailed');
@@ -45,5 +45,7 @@ class ManagedAliases extends ContainerAwareCommand
                 }
             }
         }
+
+        return 0;
     }
 }

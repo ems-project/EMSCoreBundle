@@ -30,11 +30,13 @@ class RemoveExpiredSubmissionsCommand extends EmsCommand
         $this->setDescription('Removes all form submissions that passed their deadline');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $removedCount = $this->formSubmissionService->removeExpiredSubmissions();
 
         $this->logger->notice(\sprintf('%d submissions were removed', $removedCount));
         $output->writeln(\sprintf('%d submissions were removed', $removedCount));
+
+        return 0;
     }
 }

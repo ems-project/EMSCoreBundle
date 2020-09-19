@@ -97,7 +97,6 @@ final class FormSubmissionService
         $removedCount = 0;
 
         foreach ($this->repository->findAll() as $submission) {
-
             $deadline = $submission->getDeadlineDate();
             if (!\is_string($deadline)) {
                 continue;

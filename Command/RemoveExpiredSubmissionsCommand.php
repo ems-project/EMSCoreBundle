@@ -10,19 +10,18 @@ use EMS\CoreBundle\Service\Form\Submission\FormSubmissionService;
 
 class RemoveExpiredSubmissionsCommand extends EmsCommand
 {
+    /** @var FormSubmissionService */
+    protected $formSubmissionService;
+
     /** @var LoggerInterface */
     protected $logger;
 
     protected static $defaultName = 'ems:submissions:remove-expired';
-    /**
-     * @var FormSubmissionService
-     */
-    private $formSubmissionService;
 
-    public function __construct(LoggerInterface $logger, Client $client, FormSubmissionService $formSubmissionService)
+    public function __construct(Client $client, FormSubmissionService $formSubmissionService, LoggerInterface $logger)
     {
-        $this->logger = $logger;
         $this->formSubmissionService = $formSubmissionService;
+        $this->logger = $logger;
         parent::__construct($logger, $client);
     }
 
@@ -35,7 +34,7 @@ class RemoveExpiredSubmissionsCommand extends EmsCommand
     {
         $removedCount = $this->formSubmissionService->removeExpiredSubmissions();
 
-        $this->logger->notice(sprintf('%d submissions were removed', $removedCount));
-        $output->writeln(sprintf('%d submissions were removed', $removedCount));
+        $this->logger->notice(\sprintf('%d submissions were removed', $removedCount));
+        $output->writeln(\sprintf('%d submissions were removed', $removedCount));
     }
 }

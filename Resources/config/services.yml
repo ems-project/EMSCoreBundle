@@ -571,7 +571,7 @@ services:
             -  { name: console.command }
     ems.environment.removeexpiredsubmissions:
         class: EMS\CoreBundle\Command\RemoveExpiredSubmissionsCommand
-        arguments: ['@logger', '@app.elasticsearch', '@ems.form_submission']
+        arguments: ['@app.elasticsearch', '@ems.form_submission', '@logger']
         tags:
             -  { name: console.command }
     ems.environment.updatemetafield:

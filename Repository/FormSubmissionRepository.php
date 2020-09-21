@@ -7,7 +7,6 @@ namespace EMS\CoreBundle\Repository;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use EMS\CoreBundle\Entity\FormSubmission;
-use phpDocumentor\Reflection\Types\Void_;
 
 class FormSubmissionRepository extends ServiceEntityRepository
 {

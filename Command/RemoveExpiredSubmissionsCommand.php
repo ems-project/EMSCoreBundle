@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Command;
 
-use Elasticsearch\Client;
 use EMS\CommonBundle\Command\CommandInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;

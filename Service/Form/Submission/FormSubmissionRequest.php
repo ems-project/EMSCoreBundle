@@ -22,7 +22,7 @@ final class FormSubmissionRequest
     private $files;
     /** @var string */
     private $label;
-    /** @var \DateTime|null */
+    /** @var \DateTime|false */
     private $deadlineDate;
 
     public function __construct(Request $request)

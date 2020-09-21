@@ -41,7 +41,7 @@ final class FormSubmissionRequest
         $this->data = $submit['data'];
         $this->files = $submit['files'];
         $this->label = $submit['label'] ?? '';
-        $this->deadlineDate = strtotime($submit['deadline_date']) ?? null;
+        $this->deadlineDate = \DateTime::createFromFormat('m/d/Y', $submit['deadline_date']) ?? null;
     }
 
     public function getFormName(): string

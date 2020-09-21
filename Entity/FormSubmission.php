@@ -86,9 +86,9 @@ class FormSubmission
     private $label;
 
     /**
-     * @var string
+     * @var \DateTime
      *
-     * @ORM\Column(name="deadline_date", type="string", length=255)
+     * @ORM\Column(name="deadline_date", type="date")
      */
     private $deadlineDate;
 
@@ -187,7 +187,7 @@ class FormSubmission
         return $this->label;
     }
 
-    public function getDeadlineDate(): ?string
+    public function getDeadlineDate(): ?\DateTime
     {
         return $this->deadlineDate;
     }

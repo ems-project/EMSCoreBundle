@@ -96,18 +96,12 @@ final class FormSubmissionService
     {
         $removedCount = 0;
 
-        foreach ($this->repository->findAll() as $submission) {
-            $deadline = $submission->getDeadlineDate();
-            if (!\is_string($deadline)) {
-                continue;
-            }
-
-            $expireTimestamp = \strtotime($deadline);
-            if ($expireTimestamp > 0 && $expireTimestamp < \time()) {
-                $this->repository->remove($submission);
-                $removedCount++;
-            }
+        foreach ($this->repository->getAllOutdatedSubmission() as $submission) {
+            $this->repository->remove($submission);
+            $removedCount++;
         }
+
+        $this->repository->flush();
 
         return $removedCount;
     }

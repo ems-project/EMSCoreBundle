@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Repository;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use EMS\CoreBundle\Entity\FormSubmission;
+use phpDocumentor\Reflection\Types\Void_;
 
 class FormSubmissionRepository extends ServiceEntityRepository
 {
@@ -35,6 +36,18 @@ class FormSubmissionRepository extends ServiceEntityRepository
         return $qb->getQuery()->getArrayResult();
     }
 
+    /**
+     * @return FormSubmission[]
+     */
+    public function getAllOutdatedSubmission()
+    {
+        $qb = $this->createQueryBuilder('fs');
+        $qb->andWhere('fs.deadlineDate < :olderThan')
+            ->setParameter('olderThan', new \DateTime());
+
+        return $qb->getQuery()->getResult();
+    }
+
     public function save(FormSubmission $formSubmission): void
     {
         $this->_em->persist($formSubmission);
@@ -44,6 +57,10 @@ class FormSubmissionRepository extends ServiceEntityRepository
     public function remove(FormSubmission $formSubmission): void
     {
         $this->_em->remove($formSubmission);
+    }
+
+    public function flush(): void
+    {
         $this->_em->flush();
     }
 }

@@ -3,12 +3,14 @@
 namespace EMS\CoreBundle\Command;
 
 use Elasticsearch\Client;
+use EMS\CommonBundle\Command\CommandInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use EMS\CoreBundle\Service\Form\Submission\FormSubmissionService;
+use Symfony\Component\Console\Command\Command;
 
-class RemoveExpiredSubmissionsCommand extends EmsCommand
+class RemoveExpiredSubmissionsCommand extends Command implements CommandInterface
 {
     /** @var FormSubmissionService */
     protected $formSubmissionService;
@@ -18,11 +20,11 @@ class RemoveExpiredSubmissionsCommand extends EmsCommand
 
     protected static $defaultName = 'ems:submissions:remove-expired';
 
-    public function __construct(Client $client, FormSubmissionService $formSubmissionService, LoggerInterface $logger)
+    public function __construct(FormSubmissionService $formSubmissionService, LoggerInterface $logger)
     {
         $this->formSubmissionService = $formSubmissionService;
         $this->logger = $logger;
-        parent::__construct($logger, $client);
+        parent::__construct();
     }
 
     protected function configure(): void

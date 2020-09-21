@@ -82,7 +82,7 @@ final class FormSubmissionRequest
 
     public function getDeadlineDate(): ?\DateTime
     {
-        return $this->deadlineDate ?? null;
+        return $this->deadlineDate !== false ? $this->deadlineDate : null;
     }
 
     /**

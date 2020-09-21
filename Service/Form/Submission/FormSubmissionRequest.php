@@ -22,7 +22,7 @@ final class FormSubmissionRequest
     private $files;
     /** @var string */
     private $label;
-    /** @var string */
+    /** @var \DateTime */
     private $deadlineDate;
 
     public function __construct(Request $request)
@@ -80,7 +80,7 @@ final class FormSubmissionRequest
         return $this->label;
     }
 
-    public function getDeadlineDate(): string
+    public function getDeadlineDate(): ?\DateTime
     {
         return $this->deadlineDate;
     }

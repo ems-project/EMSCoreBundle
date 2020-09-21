@@ -86,7 +86,7 @@ class FormSubmission
     private $label;
 
     /**
-     * @var \DateTime
+     * @var \DateTime|null
      *
      * @ORM\Column(name="deadline_date", type="date")
      */

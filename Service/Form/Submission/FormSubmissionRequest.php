@@ -22,7 +22,7 @@ final class FormSubmissionRequest
     private $files;
     /** @var string */
     private $label;
-    /** @var \DateTime */
+    /** @var \DateTime|null */
     private $deadlineDate;
 
     public function __construct(Request $request)
@@ -41,7 +41,7 @@ final class FormSubmissionRequest
         $this->data = $submit['data'];
         $this->files = $submit['files'];
         $this->label = $submit['label'] ?? '';
-        $this->deadlineDate = $submit['deadline_date'] ?? '';
+        $this->deadlineDate = strtotime($submit['deadline_date']) ?? null;
     }
 
     public function getFormName(): string

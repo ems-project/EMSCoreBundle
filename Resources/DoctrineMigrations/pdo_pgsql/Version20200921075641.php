@@ -12,6 +12,7 @@ final class Version20200921075641 extends AbstractMigration
 {
     public function up(Schema $schema) : void
     {
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
         $this->addSql('ALTER TABLE form_submission DROP COLUMN deadline_date ;');
         $this->addSql('ALTER TABLE form_submission ADD deadline_date DATE DEFAULT NULL');
     }
@@ -19,5 +20,7 @@ final class Version20200921075641 extends AbstractMigration
     public function down(Schema $schema) : void
     {
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+        $this->addSql('ALTER TABLE form_submission DROP COLUMN deadline_date ;');
+        $this->addSql('ALTER TABLE form_submission ADD deadline_date VARCHAR(255) DEFAULT NULL');
     }
 }

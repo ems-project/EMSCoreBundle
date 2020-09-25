@@ -643,15 +643,18 @@
 		<li id="{{ item.id }}" data-type="{{ item.id }}" class="collapsible-container">
 			<div class="nestedSortable">
 				<div class="box-header with-border">
-					{% if item.type|default('node') == 'node' and item.children|default({})|length > 0 %}
+					{% if item.children|default({})|length > 0 %}
 						<button href="#" type="button" title="{{ 'field_type.json_menu_editor.collapse_button'|trans }}" aria-expanded="false" class="btn btn-default button-collapse"></button>
 						&nbsp;
 					{% endif %}
-                    <i class="{{ item.contentType|get_content_type.icon }}"></i>
+					{% if item.contentType is defined %}<i class="{{ item.contentType|get_content_type.icon }}"></i>{% endif %}
+					{% if nestedIcons is defined and attribute(nestedIcons, item.type) is defined %}
+						<i class="{{ attribute(nestedIcons, item.type) }}"></i>
+					{% endif %}
 					<h3 class="box-title">{{ item.label|default('') }}</h3>
 				</div>
 			</div>
-			{% if item.type|default('node') == 'node' and item.children|default({})|length > 0 %}
+			{% if item.children|default({})|length > 0 %}
 				<ol>
 					{% set jsonMenuItems = item.children %}
 					{{ block('recursiveJsonMenu') }}
@@ -662,6 +665,48 @@
 {% endblock %}
 
 {% block EMS_CoreBundle_Form_DataField_JsonMenuEditorFieldType %}
+	{% set doCompare = compare and dataField.rawData is not same as( compareRawData|get_string(dataField.fieldType.name) )  %}
+	{% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
+	<dl>
+		<dt>
+			{% if dataField.fieldType.displayOptions.label is defined %}
+				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
+			{% else %}
+				{{ dataField.fieldType.name }}
+			{% endif %}
+		</dt>
+		<dd>
+			<div class="panel panel-default">
+				<div class="panel-body {{ color }}">
+					{% if doCompare  %}
+						<pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ compareRawData|get_string(dataField.fieldType.name)|json_decode|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+						<pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ dataField.rawData|json_decode|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+					{% else %}
+						{% set jsonMenuItems = dataField.rawData|default('{}')|ems_json_menu_decode.structure %}
+						<div class="json_menu_editor_fieldtype_widget collapsible-container">
+							{% if not dataField.rawData|default(false) %}
+								<span class="text-gray">[not defined]</span>
+							{% elseif jsonMenuItems|length > 0 %}
+								<ol class="vertical">
+									{{ block('recursiveJsonMenu') }}
+								</ol>
+							{% else %}
+								<span class="text-gray">[empty]</span>
+							{%  endif %}
+						</div>
+					{% endif %}
+				</div>
+			</div>
+		</dd>
+	</dl>
+	{{ _self.messages(dataField) }}
+{% endblock %}
+
+{% block EMS_CoreBundle_Form_DataField_JsonMenuNestedEditorFieldType %}
+	{% set nestedIcons = [] %}
+	{% for node in dataField.fieldType.getJsonMenuNestedNodeChildren() %}
+		{% set nestedIcons = nestedIcons|merge({ (node.name) : node.displayOption('icon') }) %}
+	{% endfor %}
 	{% set doCompare = compare and dataField.rawData is not same as( compareRawData|get_string(dataField.fieldType.name) )  %}
 	{% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
 	<dl>

@@ -358,6 +358,14 @@ abstract class DataFieldType extends AbstractType
     }
 
     /**
+     * Should the children be mapped?
+     */
+    public static function hasMappedChildren()
+    {
+        return true;
+    }
+
+    /**
      * Test if the field is valid.
      *
      * @return boolean

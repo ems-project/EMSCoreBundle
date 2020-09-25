@@ -456,6 +456,21 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         }
         return $valid;
     }
+
+    /**
+     * @return iterable|FieldType[]
+     */
+    public function getJsonMenuNestedNodeChildren(): iterable
+    {
+        foreach ($this->children as $child) {
+            /** @var $child FieldType */
+            if ($child->getDeleted() || !call_user_func(sprintf('%s::isContainer',  $child->getType())) ) {
+                continue;
+            }
+
+            yield $child;
+        }
+    }
     
     /**
      * Set orderKey

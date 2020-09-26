@@ -512,7 +512,7 @@ services:
         arguments: [ '@security.authentication.manager', '@doctrine', '@ems.service.user']
     ems.form_submission:
         class: EMS\CoreBundle\Service\Form\Submission\FormSubmissionService
-        arguments: ['@ems.repository.form_submission']
+        arguments: ['@ems.repository.form_submission', '@mailer']
     ems.form_verification:
         class: EMS\CoreBundle\Service\Form\Verification\FormVerificationService
         arguments: ['@ems.repository.form_verification']
@@ -567,6 +567,11 @@ services:
     ems.environment.recompute:
         class: EMS\CoreBundle\Command\RecomputeCommand
         arguments: ['@ems.service.data', '@doctrine', '@form.factory', '@ems.service.publish', '@logger', '@app.elasticsearch', '@ems.service.contenttype', '@EMS\CoreBundle\Repository\ContentTypeRepository', '@EMS\CoreBundle\Repository\RevisionRepository']
+        tags:
+            -  { name: console.command }
+    ems.environment.emailsubmissions:
+        class: EMS\CoreBundle\Command\EmailSubmissionsCommand
+        arguments: ['@ems.form_submission', '@logger']
         tags:
             -  { name: console.command }
     ems.environment.updatemetafield:

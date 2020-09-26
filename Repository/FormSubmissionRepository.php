@@ -35,6 +35,22 @@ class FormSubmissionRepository extends ServiceEntityRepository
         return $qb->getQuery()->getArrayResult();
     }
 
+    /**
+     * @param string $formInstance
+     * @return FormSubmission[]
+     */
+    public function findFormInstanceSubmissions(string $formInstance): array
+    {
+        $qb = $this->createQueryBuilder('fs');
+        $qb
+            ->andWhere($qb->expr()->isNotNull('fs.data'))
+            ->andWhere('fs.name = :name')
+            ->orderBy('fs.created', 'desc')
+            ->setParameter('name', $formInstance);
+
+        return $qb->getQuery()->getArrayResult();
+    }
+
     public function save(FormSubmission $formSubmission): void
     {
         $this->_em->persist($formSubmission);

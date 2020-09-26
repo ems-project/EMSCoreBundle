@@ -6,7 +6,6 @@ use EMS\CommonBundle\Command\CommandInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use EMS\CoreBundle\Service\Form\Submission\FormSubmissionService;
 use Symfony\Component\Console\Command\Command;
@@ -32,6 +31,7 @@ class EmailSubmissionsCommand extends Command implements CommandInterface
     {
         $this->setDescription('Send a list of all submissions to the specified email address')
             ->addArgument('formInstance', InputArgument::REQUIRED, 'Which form submissions do you want to list?')
+            ->addArgument('templateId', InputArgument::REQUIRED, 'Which template (id) do you want to use?')
             ->addArgument(
                 'emails',
                 InputArgument::IS_ARRAY | InputArgument::REQUIRED,
@@ -42,11 +42,13 @@ class EmailSubmissionsCommand extends Command implements CommandInterface
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $formInstance = $input->getArgument('formInstance');
+        $templateId = $input->getArgument('templateId');
         $emails = $input->getArgument('emails');
+
 
         $submissions = $this->formSubmissionService->getFormInstanceSubmissions($formInstance);
 
-        $this->formSubmissionService->mailSubmissions($submissions, $formInstance, $emails);
+        $this->formSubmissionService->mailSubmissions($submissions, $formInstance, $templateId, $emails);
 
         $this->logger->notice(\sprintf('Submission list for %s was sent', $formInstance));
         $output->writeln(\sprintf('Submission list for %s was sent', $formInstance));

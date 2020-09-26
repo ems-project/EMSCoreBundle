@@ -7,7 +7,9 @@ namespace EMS\CoreBundle\Service\Form\Submission;
 use EMS\CoreBundle\Entity\FormSubmission;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Repository\FormSubmissionRepository;
+use EMS\CoreBundle\Service\TemplateService;
 use FOS\UserBundle\Mailer\Mailer;
+use http\Exception\InvalidArgumentException;
 use Swift_Mailer;
 use Swift_Message;
 use Symfony\Component\Filesystem\Filesystem;
@@ -21,10 +23,14 @@ final class FormSubmissionService
     /** @var Mailer */
     private $mailer;
 
-    public function __construct(FormSubmissionRepository $repository, Swift_Mailer $mailer)
+    /** @var TemplateService */
+    private $templateService;
+
+    public function __construct(FormSubmissionRepository $repository, Swift_Mailer $mailer, TemplateService $templateService)
     {
         $this->repository = $repository;
         $this->mailer = $mailer;
+        $this->templateService = $templateService;
     }
 
     public function get(string $id): FormSubmission
@@ -89,14 +95,16 @@ final class FormSubmissionService
     /**
      * @param array $submissions
      * @param string $formInstance
+     * @param string $templateId
+     * @param array $emails
      */
-    public function mailSubmissions(array $submissions, string $formInstance, array $emails): void
+    public function mailSubmissions(array $submissions, string $formInstance, string $templateId, array $emails): void
     {
         $message = (new Swift_Message());
         $message->setSubject(sprintf('Form submissions for %s', $formInstance))
             ->setFrom('reporting@elasticms.test', 'ElasticMS')
             ->setTo($emails)
-            ->setBody($this->generateMailBody($submissions), 'text/html');
+            ->setBody($this->generateMailBody($submissions, $templateId), 'text/html');
 
         $this->mailer->send($message);
     }
@@ -123,34 +131,47 @@ final class FormSubmissionService
         return ['submission_id' => $formSubmission->getId()];
     }
 
-    private function generateMailBody(array $submissions): string
+    private function generateMailBody(array $submissions, string $templateId): string
     {
         if ($submissions === []) {
             return 'There are no submissions for this form';
         }
 
-        $body = '<!DOCTYPE html><html lang="en"><head><title>Submissions</title><meta charset="utf-8"></head><body><table>';
-        $body .= '<tr><th>Date</th><th>Label</th><th>DeadlineDate</th><th>Data</th></tr>';
-        foreach ($submissions as $submission){
-            $data = '';
+        try {
+            $template = $this->templateService->init($templateId)->getTemplate()->getBody();
+        } catch (\Exception $e) {
+            $template = "Error in body template: " . $e->getMessage();
+        }
+
+        $rows = '<tr>
+                    <th>Label</th>
+                    <th>SubmissionDate</th>
+                    <th>DeadlineDate</th>';
+        // Generate headers
+        foreach ($submissions[0]['data'] as $key => $value){
+            if (is_string($value)) {
+                $rows .= '<th>' . $key . '</th>';
+            }
+        }
+        $rows .= '</tr>';
+
+        // Generate rows with values
+        foreach ($submissions as $submission) {
             $createdDate = $submission['created'] ? $submission['created']->format('d/m/Y H:i:s') : '';
             $deadlineDate = $submission['deadlineDate'] ? $submission['deadlineDate']->format('d/m/Y H:i:s'): '';
 
-            foreach ($submission['data'] as $key => $value) {
+            $rows .= '<tr>';
+            $rows .= '<td>' . $submission['label'] . '</td>';
+            $rows .= '<td>' . $createdDate . '</td>';
+            $rows .= '<td>' . $deadlineDate . '</td>';
+            foreach ($submission['data'] as $key => $value){
                 if (is_string($value)) {
-                    $data .= $key . ': ' . $value . '<br>';
+                    $rows .= '<td>' . $value . '</td>';
                 }
             }
-
-            $body .= '<tr>
-                <td>' . $createdDate . '</td>
-                <td>' . $submission['label'] . '</td>
-                <td>' . $deadlineDate . '</td>
-                <td>' . $data . '</td>
-            </tr>';
+            $rows .= '</tr>';
         }
-        $body .= '</table></body></html>';
 
-        return $body;
+        return preg_replace('/%replace%/', $rows, $template);
     }
 }

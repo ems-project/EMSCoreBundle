@@ -8,8 +8,7 @@ use EMS\CoreBundle\Entity\FormSubmission;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Repository\FormSubmissionRepository;
 use EMS\CoreBundle\Service\TemplateService;
-use FOS\UserBundle\Mailer\Mailer;
-use http\Exception\InvalidArgumentException;
+use phpDocumentor\Reflection\Exception\PcreException;
 use Swift_Mailer;
 use Swift_Message;
 use Symfony\Component\Filesystem\Filesystem;
@@ -20,7 +19,7 @@ final class FormSubmissionService
     /** @var FormSubmissionRepository */
     private $repository;
 
-    /** @var Mailer */
+    /** @var Swift_Mailer */
     private $mailer;
 
     /** @var TemplateService */
@@ -93,10 +92,10 @@ final class FormSubmissionService
     }
 
     /**
-     * @param array $submissions
+     * @param array<mixed> $submissions
      * @param string $formInstance
      * @param string $templateId
-     * @param array $emails
+     * @param array<string> $emails
      */
     public function mailSubmissions(array $submissions, string $formInstance, string $templateId, array $emails): void
     {
@@ -131,7 +130,12 @@ final class FormSubmissionService
         return ['submission_id' => $formSubmission->getId()];
     }
 
-    private function generateMailBody(array $submissions, string $templateId): string
+    /**
+     * @param array<array> $submissions
+     * @param string $templateId
+     * @return string|null
+     */
+    private function generateMailBody(array $submissions, string $templateId): ?string
     {
         if ($submissions === []) {
             return 'There are no submissions for this form';
@@ -148,7 +152,7 @@ final class FormSubmissionService
                     <th>SubmissionDate</th>
                     <th>DeadlineDate</th>';
         // Generate headers
-        foreach ($submissions[0]['data'] as $key => $value){
+        foreach ($submissions[0]['data'] as $key => $value) {
             if (is_string($value)) {
                 $rows .= '<th>' . $key . '</th>';
             }
@@ -158,13 +162,13 @@ final class FormSubmissionService
         // Generate rows with values
         foreach ($submissions as $submission) {
             $createdDate = $submission['created'] ? $submission['created']->format('d/m/Y H:i:s') : '';
-            $deadlineDate = $submission['deadlineDate'] ? $submission['deadlineDate']->format('d/m/Y H:i:s'): '';
+            $deadlineDate = $submission['deadlineDate'] ? $submission['deadlineDate']->format('d/m/Y H:i:s') : '';
 
             $rows .= '<tr>';
             $rows .= '<td>' . $submission['label'] . '</td>';
             $rows .= '<td>' . $createdDate . '</td>';
             $rows .= '<td>' . $deadlineDate . '</td>';
-            foreach ($submission['data'] as $key => $value){
+            foreach ($submission['data'] as $key => $value) {
                 if (is_string($value)) {
                     $rows .= '<td>' . $value . '</td>';
                 }

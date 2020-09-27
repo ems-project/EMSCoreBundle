@@ -41,8 +41,8 @@ class EmailSubmissionsCommand extends Command implements CommandInterface
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $formInstance = strval($input->getArgument('formInstance'));
-        $templateId = strval($input->getArgument('templateId'));
+        $formInstance = \strval($input->getArgument('formInstance'));
+        $templateId = \strval($input->getArgument('templateId'));
         $emails = (array) $input->getArgument('emails');
 
         $submissions = $this->formSubmissionService->getFormInstanceSubmissions($formInstance);

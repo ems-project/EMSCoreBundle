@@ -8,7 +8,6 @@ use EMS\CoreBundle\Entity\FormSubmission;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Repository\FormSubmissionRepository;
 use EMS\CoreBundle\Service\TemplateService;
-use phpDocumentor\Reflection\Exception\PcreException;
 use Swift_Mailer;
 use Swift_Message;
 use Symfony\Component\Filesystem\Filesystem;
@@ -24,6 +23,9 @@ final class FormSubmissionService
 
     /** @var TemplateService */
     private $templateService;
+
+    const EMAIL_FROM = 'reporting@elasticms.test';
+    const NAME_FROM = 'ElasticMS';
 
     public function __construct(FormSubmissionRepository $repository, Swift_Mailer $mailer, TemplateService $templateService)
     {
@@ -101,7 +103,7 @@ final class FormSubmissionService
     {
         $message = (new Swift_Message());
         $message->setSubject(sprintf('Form submissions for %s', $formInstance))
-            ->setFrom('reporting@elasticms.test', 'ElasticMS')
+            ->setFrom(self::EMAIL_FROM, self::NAME_FROM)
             ->setTo($emails)
             ->setBody($this->generateMailBody($submissions, $templateId), 'text/html');
 

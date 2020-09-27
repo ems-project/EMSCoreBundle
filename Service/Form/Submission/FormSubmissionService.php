@@ -160,8 +160,7 @@ final class FormSubmissionService
             }
         }
         $rows .= '</tr>';
-
-        // Generate rows with values
+        
         foreach ($submissions as $submission) {
             $createdDate = $submission['created'] ? $submission['created']->format('d/m/Y H:i:s') : '';
             $deadlineDate = $submission['deadlineDate'] ? $submission['deadlineDate']->format('d/m/Y H:i:s') : '';

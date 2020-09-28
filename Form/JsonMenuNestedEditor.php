@@ -16,8 +16,10 @@ use Symfony\Component\Form\FormView;
  */
 final class JsonMenuNestedEditor
 {
-    private FieldType $fieldType;
-    private FormFactoryInterface $formFactory;
+    /** @var FieldType */
+    private $fieldType;
+    /** @var FormFactoryInterface  */
+    private $formFactory;
 
     public function __construct(FieldType $fieldType, FormFactoryInterface $formFactory)
     {

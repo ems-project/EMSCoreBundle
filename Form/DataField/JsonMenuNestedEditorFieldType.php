@@ -17,7 +17,8 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class JsonMenuNestedEditorFieldType extends JsonMenuEditorFieldType
 {
-    private FormFactoryInterface $formFactory;
+    /** @var FormFactoryInterface */
+    private $formFactory;
 
     public function __construct(
         FormFactoryInterface $formFactory,

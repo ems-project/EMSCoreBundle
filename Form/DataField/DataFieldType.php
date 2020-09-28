@@ -360,7 +360,7 @@ abstract class DataFieldType extends AbstractType
     /**
      * Should the children be mapped?
      */
-    public static function hasMappedChildren()
+    public static function hasMappedChildren(): bool
     {
         return true;
     }

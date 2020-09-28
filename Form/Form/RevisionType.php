@@ -25,7 +25,11 @@ class RevisionType extends AbstractType
         $this->formRegistry = $formRegistry;
     }
 
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    /**
+     * @param FormInterface<FormInterface> $form
+     * @param array<mixed>                 $options
+     */
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $jsonMenuNestedEditors = [];
 
@@ -39,6 +43,8 @@ class RevisionType extends AbstractType
     }
 
     /**
+     * @param FormInterface<FormInterface> $form
+     *
      * @return iterable|FormInterface[]
      */
     private function allChildren(FormInterface $form): iterable

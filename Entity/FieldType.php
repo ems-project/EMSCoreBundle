@@ -463,8 +463,10 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     public function getJsonMenuNestedNodeChildren(): iterable
     {
         foreach ($this->children as $child) {
-            /** @var $child FieldType */
-            if ($child->getDeleted() || !call_user_func(sprintf('%s::isContainer',  $child->getType())) ) {
+            /** @var FieldType $child */
+            $type = $child->getType();
+
+            if ($child->getDeleted() || !$type::isContainer()) {
                 continue;
             }
 

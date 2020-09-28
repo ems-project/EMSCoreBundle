@@ -30,6 +30,9 @@ final class JsonMenuNestedEditor
         return $this->fieldType->getName();
     }
 
+    /**
+     * @return array<string, array{'name': string, 'label': string, 'icon': mixed, 'formName': string}>
+     */
     public function getNodes(): array
     {
         $nodeTypes = [];
@@ -79,7 +82,9 @@ final class JsonMenuNestedEditor
     }
 
     /**
-     * @return array|string
+     * @param array<int, string> $path
+     *
+     * @return mixed
      */
     private function createStructure(FieldType $fieldType, string $formName, array $path)
     {
@@ -93,7 +98,12 @@ final class JsonMenuNestedEditor
             $type = $child->getType();
 
             if ($type::isContainer() && !$type::isNested()) {
-                $out = array_merge_recursive($out, $this->createStructure($child, $formName, array_merge($path, [$child->getName()])));
+                $containerStructure = $this->createStructure($child, $formName, array_merge($path, [$child->getName()]));
+
+                if (is_array($containerStructure)) {
+                    $out = array_merge_recursive($out, $containerStructure);
+                }
+
             } else {
                 $out[$child->getName()] = $this->createStructure($child, $formName, array_merge($path, [$child->getName()]));
             }

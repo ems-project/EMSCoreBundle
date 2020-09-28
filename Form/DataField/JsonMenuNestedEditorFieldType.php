@@ -23,8 +23,8 @@ class JsonMenuNestedEditorFieldType extends JsonMenuEditorFieldType
         FormFactoryInterface $formFactory,
         AuthorizationCheckerInterface $authorizationChecker,
         FormRegistryInterface $formRegistry,
-        ElasticsearchService $elasticsearchService)
-    {
+        ElasticsearchService $elasticsearchService
+    ) {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
 
         $this->formFactory = $formFactory;
@@ -40,7 +40,7 @@ class JsonMenuNestedEditorFieldType extends JsonMenuEditorFieldType
         return true;
     }
 
-    public static function hasMappedChildren()
+    public static function hasMappedChildren(): bool
     {
         return false;
     }
@@ -50,7 +50,7 @@ class JsonMenuNestedEditorFieldType extends JsonMenuEditorFieldType
         return 'json_menu_nested_editor_fieldtype';
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
 
@@ -66,12 +66,23 @@ class JsonMenuNestedEditorFieldType extends JsonMenuEditorFieldType
             });
     }
 
-    public function generateMapping(FieldType $current, $withPipeline)
+    /**
+     * @param bool $withPipeline
+     *
+     * @return array<string, array{'type': 'string'}>
+     */
+    public function generateMapping(FieldType $current, $withPipeline): array
     {
         return [$current->getName() => ['type' => 'string']];
     }
 
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    /**
+     * @param FormInterface<FormInterface> $form
+     * @param array<mixed>                 $options
+     *
+     * @param array<mixed> $options
+     */
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         parent::buildView($view, $form, $options);
 

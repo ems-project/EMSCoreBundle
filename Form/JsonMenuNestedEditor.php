@@ -105,7 +105,6 @@ final class JsonMenuNestedEditor
                 if (is_array($containerStructure)) {
                     $out = array_merge_recursive($out, $containerStructure);
                 }
-
             } else {
                 $out[$child->getName()] = $this->createStructure($child, $formName, array_merge($path, [$child->getName()]));
             }

@@ -16,10 +16,8 @@ use Symfony\Component\Form\FormView;
  */
 final class JsonMenuNestedEditor
 {
-    /** @var FieldType */
-    private $fieldType;
-    /** @var FormFactoryInterface */
-    private $formFactory;
+    private FieldType $fieldType;
+    private FormFactoryInterface $formFactory;
 
     public function __construct(FieldType $fieldType, FormFactoryInterface $formFactory)
     {
@@ -80,6 +78,9 @@ final class JsonMenuNestedEditor
         return sprintf('form_%s_%s', $this->fieldType->getName(), $node->getName());
     }
 
+    /**
+     * @return array|string
+     */
     private function createStructure(FieldType $fieldType, string $formName, array $path)
     {
         $out = [];

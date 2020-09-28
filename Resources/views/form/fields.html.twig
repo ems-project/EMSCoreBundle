@@ -1345,7 +1345,7 @@
 					</div>
 					<div class="modal-body">
 						{%- for nodeForm in editor.nodeForms -%}
-							{{ form_start(nodeForm, {'attr': { 'data-structure': nodeForm.vars.structure|json_encode } }) }}
+							{{ form_start(nodeForm, {'attr': { 'class': 'json-nested-form', 'data-structure': nodeForm.vars.structure|json_encode } }) }}
 							{{ form(nodeForm) }}
 							{{ form_end(nodeForm) }}
 						{%- endfor -%}

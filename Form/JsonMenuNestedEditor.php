@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Form;
 
 use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Form\DataField\DataLinkFieldType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -98,7 +99,13 @@ final class JsonMenuNestedEditor
         }
 
         if (\count($out) === 0) {
-            return sprintf('%s[%s]', $formName, implode('][', $path));
+            $formPath = sprintf('%s[%s]', $formName, implode('][', $path));
+
+            if ($fieldType->getType() === DataLinkFieldType::class) {
+                $formPath .= '[value]';
+            }
+
+            return $formPath;
         }
 
         return $out;

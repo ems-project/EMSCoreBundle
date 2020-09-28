@@ -121,6 +121,9 @@ export default class JsonMenuEditor {
         const self = this;
         let nestedModal = $('#json-menu-nested-modal-'+this.name);
         nestedModal.find('form, .btn-action').hide();
+        nestedModal.find('input, select, textarea').each(function (){
+            $(this).addClass('ignore-ems-update');
+        });
         nestedModal
             .on('show.bs.modal', function () {
                 let target =  $(this).data('target');
@@ -129,9 +132,10 @@ export default class JsonMenuEditor {
                 let form = $(this).find(`form[name=${node.formName}]`);
                 let nodeIcon = node.icon ? `<i class="${node.icon}"></i>` : '';
 
-                $(this).find(`.btn-${action}`).show();
-
-                if (action === 'edit') {
+                if (action === 'add') {
+                    form.find('.objectpicker').each(function (){ $(this).val('').trigger('change'); });
+                    form.find('.ckeditor_ems').each(function (){ CKEDITOR.instances[$(this).attr('id')].setData(null); });
+                } else if (action === 'edit') {
                     let object = target.closest('li').data('object');
                     let label = target.closest('li').data('label');
 
@@ -139,6 +143,7 @@ export default class JsonMenuEditor {
                     self.setNestedFormData(form, object);
                 }
 
+                $(this).find(`.btn-${action}`).show();
                 form.show();
                 $(this).find('.modal-title').html(`${nodeIcon} <span>${action} ${node.label}</span>`);
             })
@@ -170,7 +175,7 @@ export default class JsonMenuEditor {
                 });
             } else if (action === 'edit') {
                 target.closest('li').data('label', label).data('object', object);
-                target.closest('li').find('.itemLabel').val(label);
+                target.closest('li').find('.itemLabel:first').val(label);
                 self.relocate();
             }
 
@@ -183,15 +188,20 @@ export default class JsonMenuEditor {
     setNestedFormData(form, data)
     {
         function recursiveSetData(data, structure) {
-            for (let k in data) {
-                if (!structure.hasOwnProperty(k)) {
-                    continue;
-                }
+            for (let s in structure) {
+                if (typeof structure[s] === 'object' && data[s] !== null) {
+                    recursiveSetData(data[s], structure[s]);
+                } else {
+                    let element = form.find(`[name='${structure[s]}']`);
+                    let value = data && data.hasOwnProperty(s) ? data[s] : null;
 
-                if (typeof data[k] === 'object' && data[k] !== null) {
-                    recursiveSetData(data[k], structure[k]);
-                } else if (data.hasOwnProperty(k)) {
-                    form.find(`[name='${structure[k]}']`).val(data[k]);
+                    if (element.hasClass('ckeditor_ems')) {
+                        CKEDITOR.instances[element.attr('id')].setData(value);
+                    } else if (element.hasClass('objectpicker')) {
+                        element.val(value).trigger('change');
+                    } else {
+                        element.val(value);
+                    }
                 }
             }
         }
@@ -209,7 +219,14 @@ export default class JsonMenuEditor {
                         delete structure[k];
                     }
                 } else if (structure.hasOwnProperty(k)) {
-                    let fieldValue = form.find(`[name='${structure[k]}']`).val();
+                    let element = form.find(`[name='${structure[k]}']`);
+                    let fieldValue = false;
+
+                    if (element.hasClass('ckeditor_ems')) {
+                        fieldValue = CKEDITOR.instances[element.attr('id')].getData();
+                    } else {
+                        fieldValue = element.val();
+                    }
 
                     if (fieldValue) {
                         structure[k] = fieldValue;

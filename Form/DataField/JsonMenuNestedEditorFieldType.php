@@ -5,8 +5,12 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Form\DataField;
 
 use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
+use EMS\CoreBundle\Form\Field\IconPickerType;
 use EMS\CoreBundle\Form\JsonMenuNestedEditor;
 use EMS\CoreBundle\Service\ElasticsearchService;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormRegistryInterface;
@@ -15,7 +19,7 @@ use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-class JsonMenuNestedEditorFieldType extends JsonMenuEditorFieldType
+class JsonMenuNestedEditorFieldType extends DataFieldType
 {
     /** @var FormFactoryInterface */
     private $formFactory;
@@ -34,6 +38,11 @@ class JsonMenuNestedEditorFieldType extends JsonMenuEditorFieldType
     public function getLabel()
     {
         return 'JSON menu nested editor field';
+    }
+
+    public function getParent()
+    {
+        return HiddenType::class;
     }
 
     public static function isContainer()
@@ -56,9 +65,9 @@ class JsonMenuNestedEditorFieldType extends JsonMenuEditorFieldType
         parent::configureOptions($resolver);
 
         $formFactory = $this->formFactory;
-
         $resolver
             ->setDefault('json_menu_nested_editor', null)
+            ->setDefault('icon', null)
             ->setNormalizer('json_menu_nested_editor', function (Options $options) use ($formFactory) {
                 /** @var FieldType $fieldType */
                 $fieldType = $options['metadata'];
@@ -80,13 +89,31 @@ class JsonMenuNestedEditorFieldType extends JsonMenuEditorFieldType
     /**
      * @param FormInterface<FormInterface> $form
      * @param array<mixed>                 $options
-     *
-     * @param array<mixed> $options
+     */
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    {
+        parent::buildOptionsForm($builder, $options);
+
+        $builder->get('options')->get('mappingOptions')->add('analyzer', AnalyzerPickerType::class);
+        $builder->get('options')->get('displayOptions')->add('icon', IconPickerType::class, [
+            'required' => false
+        ]);
+    }
+
+    /**
+     * @param FormInterface<FormInterface> $form
+     * @param array<mixed>                 $options
      */
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         parent::buildView($view, $form, $options);
 
+        $disabled = true;
+        if ($options['metadata'] instanceof FieldType) {
+            $disabled = !$this->authorizationChecker->isGranted($options['metadata']->getMinimumRole());
+        }
+
+        $view->vars['disabled'] = $disabled;
         $view->vars['json_menu_nested_editor'] = $options['json_menu_nested_editor'];
     }
 }

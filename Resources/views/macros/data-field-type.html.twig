@@ -925,6 +925,36 @@
 	{{ _self.messages(dataField) }}
 {% endblock %}
 
+{% block EMS_CoreBundle_Form_DataField_JsonMenuNestedLinkFieldType %}
+	{%- set fieldOptions = dataField.fieldType.options.displayOptions -%}
+	<dl>
+		<dt>
+			{%- if dataField.fieldType.displayOptions.label is defined -%}
+				{{- dataField.fieldType.displayOptions.label -}}{%- if is_super() -%}({{- dataField.fieldType.name -}}){%- endif -%}
+			{%- else -%}
+				{{- dataField.fieldType.name-}}
+			{%- endif -%}
+		</dt>
+		<dd>
+			<ul>
+				{%- set choices = {} -%}
+				{%- set labels = {} -%}
+				{%- set hits = {
+					index: dataField.fieldType.contentType.environment.alias,
+					body: dataField.fieldType.displayOptions.query|default('{}')
+				}|search.hits.hits -%}
+				{%- for h in hits -%}
+					{% set menu = attribute(h._source, fieldOptions.json_menu_nested_field|default())|default('{}')|ems_json_menu_nested_decode %}
+					{% set choices = menu.toArray()|map(i => i.id) %}
+					{% set labels = menu.toArray()|map(i => i.path|map(i => i.label)|join(' > ')) %}
+				{%- endfor -%}
+				{{ diff_choice(dataField.rawData, labels, choices, compare, dataField.fieldType.name, compareRawData) }}
+			</ul>
+		</dd>
+	</dl>
+	{{ _self.messages(dataField) }}
+{% endblock %}
+
 {% block EMS_CoreBundle_Form_DataField_CheckboxFieldType %}
     {% set doCompare = compare and dataField.rawData is not same as( attribute(compareRawData, dataField.fieldType.name) is defined ? attribute(compareRawData, dataField.fieldType.name) : null )  %}
     {% set color = not doCompare ? '' : 'bg-orange' %}

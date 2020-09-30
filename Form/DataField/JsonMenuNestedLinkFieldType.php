@@ -1,0 +1,207 @@
+<?php
+
+namespace EMS\CoreBundle\Form\DataField;
+
+use Elasticsearch\Client;
+use EMS\CommonBundle\Json\Decoder;
+use EMS\CommonBundle\Json\JsonMenuNested;
+use EMS\CoreBundle\Entity\DataField;
+use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
+use EMS\CoreBundle\Form\Field\CodeEditorType;
+use EMS\CoreBundle\Service\ContentTypeService;
+use EMS\CoreBundle\Service\ElasticsearchService;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormRegistryInterface;
+use Symfony\Component\Form\FormView;
+use Symfony\Component\OptionsResolver\Options;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+
+class JsonMenuNestedLinkFieldType extends DataFieldType
+{
+    /** @var Client */
+    private $client;
+    /** @var ContentTypeService */
+    private $contentTypeService;
+    /** @var Decoder */
+    private $decoder;
+
+    public function __construct(
+        AuthorizationCheckerInterface $authorizationChecker,
+        FormRegistryInterface $formRegistry,
+        ElasticsearchService $elasticsearchService,
+        Client $client,
+        Decoder $decoder
+    ) {
+        parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
+        $this->client = $client;
+        $this->decoder = $decoder;
+    }
+
+    public function getLabel()
+    {
+        return 'JSON menu nested link field';
+    }
+    
+    public static function getIcon()
+    {
+        return 'fa fa-link';
+    }
+
+    public function buildObjectArray(DataField $data, array &$out)
+    {
+        if (! $data->getFieldType()->getDeleted()) {
+            $out [$data->getFieldType()->getName()] = $data->getArrayTextValue();
+        }
+    }
+    
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        /** @var FieldType $fieldType */
+        $fieldType = $builder->getOptions()['metadata'];
+        $choices = [];
+
+        $allowTypes = $options['json_menu_nested_types'];
+
+
+        $result = $this->client->search([
+            'index' => $fieldType->getContentType()->getEnvironment()->getAlias(),
+            'body' => $options['query'],
+        ]);
+
+        foreach ($result['hits']['hits'] as $hit) {
+            $json = $hit['_source'][$options['json_menu_nested_field']] ?? false;
+
+            if (!$json) {
+                continue;
+            }
+
+            $menu = $this->decoder->jsonMenuNestedDecode($json);
+
+            foreach ($menu as $item) {
+                if (\count($allowTypes) > 0 && !in_array($item->getType(), $allowTypes)) {
+                    continue;
+                }
+
+                $label = implode(' > ', array_map(function (JsonMenuNested $p) {
+                    return $p->getLabel();
+                }, $item->getPath()));
+
+                $choices[$label] = $item->getId();
+            }
+        }
+        
+        $builder->add('value', ChoiceType::class, [
+            'label' => (isset($options['label']) ? $options['label'] : $fieldType->getName()),
+            'required' => false,
+            'disabled' => $this->isDisabled($options),
+            'choices' => $choices,
+            'empty_data'  => null,
+            'multiple' => $options['multiple'],
+            'expanded' => $options['expanded'],
+        ]);
+    }
+
+
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        parent::buildView($view, $form, $options);
+        $view->vars ['attr'] = [
+            'data-multiple' => $options['multiple'],
+            'data-expanded' => $options['expanded'],
+            'class' => 'select2',
+        ];
+    }
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        parent::configureOptions($resolver);
+
+        $resolver
+            ->setDefaults([
+                'multiple' => false,
+                'expanded' => false,
+                'json_menu_nested_types' => null,
+                'json_menu_nested_field' => null,
+                'query' => null,
+            ])
+            ->setNormalizer('json_menu_nested_types', function (Options $options, $value) {
+                return \explode(',', $value);
+            })
+        ;
+    }
+    
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    {
+        parent::buildOptionsForm($builder, $options);
+        $optionsForm = $builder->get('options');
+
+        $optionsForm->get('displayOptions')
+            ->add('expanded', CheckboxType::class, ['required' => false])
+            ->add('multiple', CheckboxType::class, ['required' => false])
+            ->add('json_menu_nested_types', TextType::class, ['required' => false])
+            ->add('json_menu_nested_field', TextType::class, ['required' => true])
+            ->add('query', CodeEditorType::class, ['required' => false, 'language' => 'ace/mode/json'])
+        ;
+
+        $builder->get('options')->get('mappingOptions')
+            ->add('analyzer', AnalyzerPickerType::class)
+            ->add('copy_to', TextType::class, [
+                'required' => false,
+            ]);
+    }
+
+    public function getDefaultOptions($name)
+    {
+        $out = parent::getDefaultOptions($name);
+        $out['mappingOptions']['index'] = 'not_analyzed';
+        return $out;
+    }
+    
+    public function getBlockPrefix()
+    {
+        return 'ems_choice';
+    }
+
+    public function reverseViewTransform($data, FieldType $fieldType)
+    {
+        $value = null;
+        if (isset($data['value'])) {
+            $value = $data['value'];
+        }
+        return parent::reverseViewTransform($value, $fieldType);
+    }
+    
+    public function viewTransform(DataField $dataField)
+    {
+        $temp = parent::viewTransform($dataField);
+
+        if (empty($temp)) {
+            return [ 'value' => [] ];
+        }
+
+        if (is_string($temp)) {
+            return [ 'value' => [$temp]];
+        }
+
+        if (is_array($temp)) {
+            $out = [];
+            foreach ($temp as $item) {
+                if (is_string($item) || is_integer($item)) {
+                    $out[] = $item;
+                } else {
+                    $dataField->addMessage('Was not able to import the data : ' . json_encode($temp));
+                }
+            }
+            return [ 'value' => $out ];
+        }
+
+        $dataField->addMessage('Was not able to import the data : ' . json_encode($temp));
+        return ['value' => []];
+    }
+}

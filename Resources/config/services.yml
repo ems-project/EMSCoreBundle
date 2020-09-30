@@ -192,7 +192,13 @@ services:
             - { name: form.type }
     ems.fieldtype.json_menu_link:
         class: EMS\CoreBundle\Form\DataField\JsonMenuLinkFieldType
-        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@ems.service.contenttype', '@app.elasticsearch', '@ems_common.text.decoder']
+        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@ems.service.contenttype', '@app.elasticsearch', '@ems_common.json.decoder']
+        tags:
+            - { name: ems.form.datafieldtype, alias: choice }
+            - { name: form.type }
+    ems.fieldtype.json_menu_nested_link:
+        class: EMS\CoreBundle\Form\DataField\JsonMenuNestedLinkFieldType
+        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@app.elasticsearch', '@ems_common.json.decoder']
         tags:
             - { name: ems.form.datafieldtype, alias: choice }
             - { name: form.type }

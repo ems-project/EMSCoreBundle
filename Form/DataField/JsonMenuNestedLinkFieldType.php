@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Form\DataField;
 
+use Doctrine\Common\Collections\Collection;
 use Elasticsearch\Client;
 use EMS\CommonBundle\Json\Decoder;
 use EMS\CommonBundle\Json\JsonMenuNested;
@@ -43,34 +44,55 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
         $this->decoder = $decoder;
     }
 
-    public function getLabel()
+    public function getLabel(): string
     {
         return 'JSON menu nested link field';
     }
     
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'fa fa-link';
     }
 
-    public function buildObjectArray(DataField $data, array &$out)
+    /**
+     * @param DataField<DataField> $data
+     * @param array<mixed>         $out
+     */
+    public function buildObjectArray(DataField $data, array &$out): void
     {
-        if (! $data->getFieldType()->getDeleted()) {
-            $out [$data->getFieldType()->getName()] = $data->getArrayTextValue();
+        $fieldType = $data->getFieldType();
+
+        if (null === $fieldType) {
+            return;
+        }
+
+        if (!$fieldType->getDeleted()) {
+            $out [$fieldType->getName()] = $data->getArrayTextValue();
         }
     }
-    
-    public function buildForm(FormBuilderInterface $builder, array $options)
+
+    /**
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<mixed>                               $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
         $fieldType = $builder->getOptions()['metadata'];
         $choices = [];
-
         $allowTypes = $options['json_menu_nested_types'];
 
+        if (null !== $contentType = $fieldType->getContentType()) {
+            $env = $contentType->getEnvironment();
+            $index = $env ? $env->getAlias() : null;
+        }
+
+        if (!isset($index)) {
+            return;
+        }
 
         $result = $this->client->search([
-            'index' => $fieldType->getContentType()->getEnvironment()->getAlias(),
+            'index' => $index,
             'body' => $options['query'],
         ]);
 
@@ -107,8 +129,11 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
         ]);
     }
 
-
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    /**
+     * @param FormInterface<FormInterface> $form
+     * @param array<mixed>                 $options
+     */
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         parent::buildView($view, $form, $options);
         $view->vars ['attr'] = [
@@ -118,7 +143,7 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
         ];
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
 
@@ -135,8 +160,12 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
             })
         ;
     }
-    
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+
+    /**
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<mixed>                               $options
+     */
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
@@ -156,19 +185,29 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
             ]);
     }
 
-    public function getDefaultOptions($name)
+    /**
+     * @param string $name
+     *
+     * @return array<mixed>
+     */
+    public function getDefaultOptions($name): array
     {
         $out = parent::getDefaultOptions($name);
         $out['mappingOptions']['index'] = 'not_analyzed';
         return $out;
     }
     
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'ems_choice';
     }
 
-    public function reverseViewTransform($data, FieldType $fieldType)
+    /**
+     * @param array<mixed> $data
+     *
+     * @return DataField<DataField>
+     */
+    public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $value = null;
         if (isset($data['value'])) {
@@ -176,7 +215,12 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
         }
         return parent::reverseViewTransform($value, $fieldType);
     }
-    
+
+    /**
+     * @param DataField<DataField> $dataField
+     *
+     * @return array<mixed>
+     */
     public function viewTransform(DataField $dataField)
     {
         $temp = parent::viewTransform($dataField);

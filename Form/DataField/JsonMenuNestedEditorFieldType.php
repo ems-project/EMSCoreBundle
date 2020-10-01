@@ -35,17 +35,17 @@ class JsonMenuNestedEditorFieldType extends DataFieldType
         $this->formFactory = $formFactory;
     }
 
-    public function getLabel()
+    public function getLabel(): string
     {
         return 'JSON menu nested editor field';
     }
 
-    public function getParent()
+    public function getParent(): string
     {
         return HiddenType::class;
     }
 
-    public static function isContainer()
+    public static function isContainer(): bool
     {
         return true;
     }
@@ -55,7 +55,7 @@ class JsonMenuNestedEditorFieldType extends DataFieldType
         return false;
     }
 
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'json_menu_nested_editor_fieldtype';
     }
@@ -87,10 +87,10 @@ class JsonMenuNestedEditorFieldType extends DataFieldType
     }
 
     /**
-     * @param FormInterface<FormInterface> $form
-     * @param array<mixed>                 $options
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<mixed>                               $options
      */
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options)
+    public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
 

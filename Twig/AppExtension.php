@@ -7,10 +7,9 @@ use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Elasticsearch\Client;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CommonBundle\Storage\Processor\Config;
-use EMS\CommonBundle\Twig\CommonExtension;
 use EMS\CommonBundle\Twig\RequestRuntime;
-use EMS\CommonBundle\Twig\TextRuntime;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\I18n;
@@ -24,7 +23,6 @@ use EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory;
 use EMS\CoreBundle\Repository\I18nRepository;
 use EMS\CoreBundle\Repository\SequenceRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
-use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\FileService;
 use EMS\CoreBundle\Service\UserService;
@@ -168,8 +166,8 @@ class AppExtension extends \Twig_Extension
             new TwigFilter('json_decode', array($this, 'jsonDecode')),
             new TwigFilter('get_revision_id', [RevisionRuntime::class, 'getRevisionId']),
             //deprecated
-            new TwigFilter('url_generator', [TextRuntime::class, 'webalize'], ['deprecated' => true]),
-            new TwigFilter('emsco_webalize', [TextRuntime::class, 'webalize'], ['deprecated' => true]),
+            new TwigFilter('url_generator', [Encoder::class, 'webalize'], ['deprecated' => true]),
+            new TwigFilter('emsco_webalize', [Encoder::class, 'webalize'], ['deprecated' => true]),
         );
     }
 

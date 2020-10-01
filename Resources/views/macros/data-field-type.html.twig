@@ -639,12 +639,13 @@
 
 {% set jsonMenuItems = {} %}
 {% block recursiveJsonMenu %}
+	{% set defaultClose = defaultClose|default(false) %}
 	{% for item in jsonMenuItems %}
 		<li id="{{ item.id }}" data-type="{{ item.id }}" class="collapsible-container">
 			<div class="nestedSortable">
 				<div class="box-header with-border">
 					{% if item.children|default({})|length > 0 %}
-						<button href="#" type="button" title="{{ 'field_type.json_menu_editor.collapse_button'|trans }}" aria-expanded="false" class="btn btn-default button-collapse"></button>
+						<button href="#" type="button" title="{{ 'field_type.json_menu_editor.collapse_button'|trans }}" aria-expanded="{{  defaultClose ? 'true' : 'false' }}" class="btn btn-default button-collapse"></button>
 						&nbsp;
 					{% endif %}
 					{% if item.contentType is defined %}<i class="{{ item.contentType|get_content_type.icon }}"></i>{% endif %}
@@ -655,7 +656,7 @@
 				</div>
 			</div>
 			{% if item.children|default({})|length > 0 %}
-				<ol>
+				<ol {{ defaultClose ? 'style="display: none;"' }}>
 					{% set jsonMenuItems = item.children %}
 					{{ block('recursiveJsonMenu') }}
 				</ol>
@@ -730,6 +731,7 @@
 								<span class="text-gray">[not defined]</span>
 							{% elseif jsonMenuItems|length > 0 %}
 								<ol class="vertical">
+									{% set defaultClose = true %}
 									{{ block('recursiveJsonMenu') }}
 								</ol>
 							{% else %}

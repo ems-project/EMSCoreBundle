@@ -790,7 +790,7 @@
                 {% if contentType %}
                     {% set contentTypeIcon = contentType.icon|default('fa fa-file')  %}
                     <li>
-                        <a type="button" class="json_menu_sortable_add_item_button" data-content-type="{{ type|e('html_attr') }}" data-icon="{{ contentTypeIcon|e('html_attr') }}">
+                        <a type="button" class="json_menu_sortable_add_item_button" data-label="" data-content-type="{{ type|e('html_attr') }}" data-icon="{{ contentTypeIcon|e('html_attr') }}">
                             <i class="{{ contentTypeIcon }}"></i>
                             {{ 'field_type.json_menu_editor.add_item'|trans({'%singular%': contentType.singularName}) }}
                         </a>
@@ -802,7 +802,7 @@
                 {% if contentType %}
                     {% set contentTypeIcon = contentType.icon|default('fa fa-folder')  %}
                     <li>
-                        <a type="button" class="json_menu_sortable_add_node_button" data-content-type="{{ type|e('html_attr') }}" data-icon="{{ contentTypeIcon|e('html_attr') }}">
+                        <a type="button" class="json_menu_sortable_add_node_button" data-label="" data-content-type="{{ type|e('html_attr') }}" data-icon="{{ contentTypeIcon|e('html_attr') }}">
                             <i class="{{ contentTypeIcon }}"></i>
                             {{ 'field_type.json_menu_editor.add_node'|trans({'%singular%': contentType.singularName}) }}
                         </a>
@@ -814,9 +814,9 @@
 
 
 	<div class="json_menu_editor_fieldtype_widget collapsible-container"
-		{% set children =  [{ id: '%uuid%', type: 'item', label: '%label%', icon: '%icon%', contentType: '%content-type%'}] %}
+		{% set children =  [{ id: '%uuid%', type: 'item', label: '%label%', icon: '%icon%', contentType: '%contentType%'}] %}
 		 data-prototype-item="{{ block('json_menu_editor_fieldtype_node')|e('html_attr') }}"
-		{% set children =  [{ id: '%uuid%', type: 'node', label: '%label%', icon: '%icon%', contentType: '%content-type%'}] %}
+		{% set children =  [{ id: '%uuid%', type: 'node', label: '%label%', icon: '%icon%', contentType: '%contentType%'}] %}
 		 data-prototype-node="{{ block('json_menu_editor_fieldtype_node')|e('html_attr') }}">
 		<div class="input-group">
 				<span class="input-group-btn">
@@ -834,6 +834,97 @@
 	</div>
 {% endblock json_menu_editor_fieldtype_widget %}
 
+{% block json_menu_nested_editor_fieldtype_row %}
+	<div class="form-group {% if form.vars.errors|length %} has-error{% endif %} json_menu_editor_fieldtype json_menu_nested_editor"
+		data-name="{{ form.vars.name }}">
+		{{ form_label(form) }}
+		{{ form_widget(form) }}
+		{{ form_errors(form) }}
+	</div>
+{% endblock json_menu_nested_editor_fieldtype_row %}
+
+{% block json_menu_nested_editor_fieldtype_widget %}
+	{{  form_widget(form) }}
+	{%- set editor = form.vars.json_menu_nested_editor -%}
+	{%- set nodes = editor.nodes -%}
+	{% set addMenu %}
+		{% if nodes|length > 0 %}
+			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<span class="fa fa-plus"></span>
+				{{ 'field_type.json_menu_editor.add'|trans }}
+				<span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu">
+				{% for node in nodes %}
+					<li>
+						<a type="button" class="json_menu_nested_add_item_button" data-action="add" data-node="{{ node|json_encode }}">
+							{%- if node.icon|default(false) -%}<i class="{{ node.icon }}"></i>{%- endif -%}
+							{{ 'field_type.json_menu_editor.add_item'|trans({'%singular%': node.label}) }}
+						</a>
+					</li>
+				{% endfor %}
+			</ul>
+		{% endif %}
+	{% endset %}
+	<div class="json_menu_editor_fieldtype_widget collapsible-container"
+		 data-prototype-nested="{{ block('json_menu_editor_nested_node')|e('html_attr') }}">
+		<div class="input-group">
+			<span class="input-group-btn">
+				{{ addMenu }}
+			</span>
+		</div>
+		<ol class="json_menu_sortable vertical not-collapsible">
+			{%- for child in form.vars.data.rawData|default('[]')|json_decode -%}
+				{% set node = attribute(nodes, child.type|default(''))|default([]) %}
+				{{ block('json_menu_editor_nested_node') }}
+			{%- endfor -%}
+		</ol>
+	</div>
+{% endblock json_menu_nested_editor_fieldtype_widget %}
+
+{%- block json_menu_editor_nested_node -%}
+	<li id="{{ child.id|default('%uuid%') }}" class="collapsible-container nestedSortable mjs-nestedSortable"
+		data-label="{{ child.label|default('%label%') }}"
+		{% if child.object is defined %}data-object="{{ child.object|json_encode }}"{% endif %}
+		data-type="{{ child.type|default('%type%') }}">
+		<div class="nestedSortable">
+			<span class="input-group">
+				<span class="input-group-addon" >
+					<i class="{{ node.icon|default('%icon%') }}"></i>
+				</span>
+				<input type="text" class="form-control itemLabel ignore-ems-update" placeholder="{{ 'field_type.json_menu_editor.item_label_placeholder'|trans }}" value="{{ child.label|default('%label%') }}" readonly>
+				<span class="input-group-btn">
+					{{ addMenu }}
+					<a type="button" class="btn btn-primary json_menu_nested_edit_item_button"
+					   data-action="edit"
+					   {% if node is defined %}data-node="{{ node|json_encode }}"{% endif %}
+					   title="{{- 'field_type.json_menu_editor.edit'|trans -}}">
+						<i class="fa fa-pencil"></i>
+						<span class="">{{ 'field_type.json_menu_editor.edit'|trans }}</span>
+					</a>
+					<a type="button" class="btn btn-primary json_menu_sortable_handle_button"
+					   title="{{- 'field_type.json_menu_editor.move_item'|trans -}}">
+						<i class="fa fa-arrows"></i>
+						<span class="">{{ 'field_type.json_menu_editor.move_item'|trans }}</span>
+					</a>
+					<a type="button" class="btn btn-danger json_menu_sortable_remove_button"
+					   title="{{- 'field_type.json_menu_editor.delete_item'|trans -}}">
+						<i class="fa fa-trash"></i>
+						<span class="sr-only">{{- 'field_type.json_menu_editor.delete_item'|trans -}}</span>
+					</a>
+				</span>
+			</span>
+		</div>
+		{% if child is defined and child.children|default([])|length > 0 %}
+			<ol>
+				{%- for child in child.children -%}
+					{% set node = attribute(nodes, child.type|default(''))|default([]) %}
+					{{ block('json_menu_editor_nested_node') }}
+				{%- endfor -%}
+			</ol>
+		{% endif %}
+	</li>
+{%- endblock json_menu_editor_nested_node -%}
 
 {% block datefieldtype_row %}
 <div class="form-group">
@@ -1241,6 +1332,35 @@
 		{{- form_errors(form) -}}
 	</div>             
 {%- endblock i18n_content_row %}
+
+{%- block form_end -%}
+	{{ parent() }}
+	{%- for editor in form.vars.all_json_menu_nested_editor|default([]) -%}
+		<div id="json-menu-nested-modal-{{ editor.name }}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="jsonNestedModal-{{ editor.name }}">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title" id="json-menu-nested-modal"></h4>
+					</div>
+					<div class="modal-body">
+						{%- for nodeForm in editor.nodeForms -%}
+							{{ form_start(nodeForm, {'attr': { 'class': 'json-nested-form', 'data-structure': nodeForm.vars.structure|json_encode } }) }}
+							{{ form(nodeForm) }}
+							{{ form_end(nodeForm) }}
+						{%- endfor -%}
+					</div>
+					<div class="modal-footer">
+						<div class="btn-group">
+							<button type="button" class="btn-add btn-action btn btn-primary"><i class="fa fa-plus"></i>&nbsp;Add</button>
+							<button type="button" class="btn-edit  btn-action btn btn-primary"><i class="fa fa-save"></i>&nbsp;Save</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	{%- endfor -%}
+{%- endblock -%}
 
 {# Errors #}
 

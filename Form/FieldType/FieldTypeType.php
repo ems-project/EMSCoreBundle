@@ -223,6 +223,10 @@ class FieldTypeType extends AbstractType
         $mapping = $dataFieldType->generateMapping($fieldType, $withPipeline);
         $jsonName = $dataFieldType->getJsonName($fieldType);
 
+        if (!$dataFieldType::hasMappedChildren()) {
+            return $mapping;
+        }
+
         /** @var FieldType $child */
         foreach ($fieldType->getChildren() as $child) {
             if (! $child->getDeleted()) {

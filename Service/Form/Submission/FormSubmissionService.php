@@ -8,18 +8,14 @@ use EMS\CoreBundle\Entity\FormSubmission;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Repository\FormSubmissionRepository;
 use EMS\CoreBundle\Service\TemplateService;
-use Swift_Mailer;
-use Swift_Message;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Twig\Environment;
 
 final class FormSubmissionService
 {
     /** @var FormSubmissionRepository */
     private $repository;
-
-    /** @var Swift_Mailer */
-    private $mailer;
 
     /** @var TemplateService */
     private $templateService;
@@ -27,11 +23,11 @@ final class FormSubmissionService
     const EMAIL_FROM = 'reporting@elasticms.test';
     const NAME_FROM = 'ElasticMS';
 
-    public function __construct(FormSubmissionRepository $repository, Swift_Mailer $mailer, TemplateService $templateService)
+    public function __construct(FormSubmissionRepository $repository, TemplateService $templateService, Environment $twig)
     {
         $this->repository = $repository;
-        $this->mailer = $mailer;
         $this->templateService = $templateService;
+        $this->twig = $twig;
     }
 
     public function get(string $id): FormSubmission
@@ -85,29 +81,20 @@ final class FormSubmissionService
     }
 
     /**
+     * @return FormSubmission[]
+     */
+    public function getAllFormSubmissions(): array
+    {
+        return $this->repository->findAllFormSubmissions();
+    }
+
+    /**
      * @param string $formInstance
      * @return FormSubmission[]
      */
     public function getFormInstanceSubmissions(string $formInstance): array
     {
         return $this->repository->findFormInstanceSubmissions($formInstance);
-    }
-
-    /**
-     * @param array<mixed> $submissions
-     * @param string $formInstance
-     * @param string $templateId
-     * @param array<string> $emails
-     */
-    public function mailSubmissions(array $submissions, string $formInstance, string $templateId, array $emails): void
-    {
-        $message = (new Swift_Message());
-        $message->setSubject(sprintf('Form submissions for %s', $formInstance))
-            ->setFrom(self::EMAIL_FROM, self::NAME_FROM)
-            ->setTo($emails)
-            ->setBody($this->generateMailBody($submissions, $templateId), 'text/html');
-
-        $this->mailer->send($message);
     }
 
     public function process(FormSubmission $formSubmission, UserInterface $user): void
@@ -137,46 +124,43 @@ final class FormSubmissionService
      * @param string $templateId
      * @return string|null
      */
-    private function generateMailBody(array $submissions, string $templateId): ?string
+    public function generateMailBody(array $submissions, string $templateId): ?string
     {
         if ($submissions === []) {
             return 'There are no submissions for this form';
         }
 
         try {
-            $template = $this->templateService->init($templateId)->getTemplate()->getBody();
+            $template = $this->twig->createTemplate($this->templateService->init($templateId)->getTemplate()->getBody());
+            // $template = $this->templateService->init($templateId)->getTemplate()->getBody();
         } catch (\Exception $e) {
             $template = "Error in body template: " . $e->getMessage();
         }
 
-        $rows = '<tr>
-                    <th>Label</th>
-                    <th>SubmissionDate</th>
-                    <th>DeadlineDate</th>';
-        // Generate headers
-        foreach ($submissions[0]['data'] as $key => $value) {
-            if (is_string($value)) {
-                $rows .= '<th>' . $key . '</th>';
-            }
-        }
-        $rows .= '</tr>';
-        
-        foreach ($submissions as $submission) {
-            $createdDate = $submission['created'] ? $submission['created']->format('d/m/Y H:i:s') : '';
-            $deadlineDate = $submission['deadlineDate'] ? $submission['deadlineDate']->format('d/m/Y H:i:s') : '';
+        return $template->render(array('submissions' => $submissions));
 
-            $rows .= '<tr>';
-            $rows .= '<td>' . $submission['label'] . '</td>';
-            $rows .= '<td>' . $createdDate . '</td>';
-            $rows .= '<td>' . $deadlineDate . '</td>';
-            foreach ($submission['data'] as $key => $value) {
-                if (is_string($value)) {
-                    $rows .= '<td>' . $value . '</td>';
-                }
-            }
-            $rows .= '</tr>';
-        }
 
-        return preg_replace('/%replace%/', $rows, $template);
+            /*        <table border="1">
+                            <tr>
+                                <th>Label</th>
+                                <th>Submission Date</th>
+                                <th>Deadline Date</th>
+                                {% for key, value in submissions.0.data %}
+                                    <th> {{ key }}</th>
+                                {% endfor %}
+                            </tr>
+                            {% for submission in submissions %}
+                                <tr>
+                                    <td>{{ submission.label }}</td>
+                                    <td>{{ submission.created|date('Y-m-d') }}</td>
+                                    <td>{{ submission.deadlineDate|date('Y-m-d') }}</td>
+                                    {% for key, value in submission.data %}
+                                        {% if value  is not iterable %}
+                                            <td>{{ value }}</td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                </table> */
     }
 }

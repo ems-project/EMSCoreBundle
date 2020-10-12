@@ -25,6 +25,8 @@ class EmailSubmissionsCommand extends Command implements CommandInterface
 
     protected static $defaultName = 'ems:submissions:email';
 
+    const TITLE = 'Form submissions';
+
     public function __construct(FormSubmissionService $formSubmissionService, LoggerInterface $logger, MailerService $mailerService)
     {
         $this->formSubmissionService = $formSubmissionService;
@@ -64,7 +66,7 @@ class EmailSubmissionsCommand extends Command implements CommandInterface
 
         $body = $this->formSubmissionService->generateMailBody($submissions, $templateId);
 
-        $this->mailerService->sendMail($emails, 'Form submissions', $body);
+        $this->mailerService->sendMail($emails, self::TITLE, $body);
 
         $this->logger->notice('Submission list was sent');
         $output->writeln('Submission list was sent');

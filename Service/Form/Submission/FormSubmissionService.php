@@ -11,6 +11,7 @@ use EMS\CoreBundle\Service\TemplateService;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Twig\Environment;
+use Twig\TemplateWrapper;
 
 final class FormSubmissionService
 {
@@ -20,8 +21,8 @@ final class FormSubmissionService
     /** @var TemplateService */
     private $templateService;
 
-    const EMAIL_FROM = 'reporting@elasticms.test';
-    const NAME_FROM = 'ElasticMS';
+    /** @var Environment */
+    private $twig;
 
     public function __construct(FormSubmissionRepository $repository, TemplateService $templateService, Environment $twig)
     {
@@ -108,6 +109,7 @@ final class FormSubmissionService
     }
 
     /**
+     * @param FormSubmissionRequest $submitRequest
      * @return array{submission_id: string}
      */
     public function submit(FormSubmissionRequest $submitRequest): array
@@ -120,11 +122,11 @@ final class FormSubmissionService
     }
 
     /**
-     * @param array<array> $submissions
+     * @param array<FormSubmission> $submissions
      * @param string $templateId
-     * @return string|null
+     * @return string
      */
-    public function generateMailBody(array $submissions, string $templateId): ?string
+    public function generateMailBody(array $submissions, string $templateId): string
     {
         if ($submissions === []) {
             return 'There are no submissions for this form';
@@ -132,35 +134,34 @@ final class FormSubmissionService
 
         try {
             $template = $this->twig->createTemplate($this->templateService->init($templateId)->getTemplate()->getBody());
-            // $template = $this->templateService->init($templateId)->getTemplate()->getBody();
         } catch (\Exception $e) {
-            $template = "Error in body template: " . $e->getMessage();
+            $template = $this->twig->createTemplate("Error in body template: " . $e->getMessage());
         }
 
-        return $template->render(array('submissions' => $submissions));
+        return $template->render(['submissions' => $submissions]);
 
 
-            /*        <table border="1">
-                            <tr>
-                                <th>Label</th>
-                                <th>Submission Date</th>
-                                <th>Deadline Date</th>
-                                {% for key, value in submissions.0.data %}
-                                    <th> {{ key }}</th>
-                                {% endfor %}
-                            </tr>
-                            {% for submission in submissions %}
-                                <tr>
-                                    <td>{{ submission.label }}</td>
-                                    <td>{{ submission.created|date('Y-m-d') }}</td>
-                                    <td>{{ submission.deadlineDate|date('Y-m-d') }}</td>
-                                    {% for key, value in submission.data %}
-                                        {% if value  is not iterable %}
-                                            <td>{{ value }}</td>
-                                        {% endif %}
-                                    {% endfor %}
-                                </tr>
-                            {% endfor %}
-                </table> */
+        /*  <table border="1">
+               <tr>
+                   <th>Label</th>
+                   <th>Submission Date</th>
+                   <th>Deadline Date</th>
+                   {% for key, value in submissions.0.data %}
+                      <th> {{ key }}</th>
+                   {% endfor %}
+                </tr>
+                {% for submission in submissions %}
+                    <tr>
+                       <td>{{ submission.label }}</td>
+                       <td>{{ submission.created|date('Y-m-d') }}</td>
+                       <td>{{ submission.deadlineDate|date('Y-m-d') }}</td>
+                       {% for key, value in submission.data %}
+                          {% if value  is not iterable %}
+                             <td>{{ value }}</td>
+                          {% endif %}
+                       {% endfor %}
+                    </tr>
+                {% endfor %}
+             </table> */
     }
 }

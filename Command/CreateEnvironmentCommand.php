@@ -77,6 +77,10 @@ class CreateEnvironmentCommand extends Command
 
         $this->io->section('Execute');
         $environmentName = $input->getArgument(self::ARGUMENT_ENV_NAME);
+        if (!is_string($environmentName)) {
+            throw new \RuntimeException('Environment name as to be a string');
+        }
+
 
         $this->io->note(\sprintf('Creation of the environment "%s"...', $environmentName));
         try {
@@ -114,6 +118,9 @@ class CreateEnvironmentCommand extends Command
         }
 
         $environment = $this->environmentService->getAliasByName($environmentName);
+        if (!is_string($environmentName)) {
+            throw new \RuntimeException('Environment name as to be a string');
+        }
         if ($environment) {
             $message = \sprintf('The environment "%s" already exist', $environmentName);
             $this->setEnvironmentNameArgument($input, $message);

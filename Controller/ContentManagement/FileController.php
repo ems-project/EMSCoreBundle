@@ -3,52 +3,40 @@
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use EMS\CommonBundle\Helper\EmsFields;
-use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\FileService;
 use Exception;
 use Psr\Log\LoggerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
-class FileController extends AppController
+class FileController extends AbstractController
 {
+
     /**
-     * @param string $sha1
-     * @param Request $request
-     * @return RedirectResponse
-     * @deprecated
-     *
      * @Route("/data/file/view/{sha1}" , name="ems.file.view", methods={"GET","HEAD"})
      * @Route("/data/file/view/{sha1}" , name="ems_file_view", methods={"GET","HEAD"})
      * @Route("/api/file/view/{sha1}" , name="ems.api.file.view", methods={"GET","HEAD"})
      */
-    public function viewFileAction($sha1, Request $request, FileService $fileService)
+    public function viewFileAction(string $sha1, Request $request, FileService $fileService): Response
     {
-        @trigger_error(sprintf('The "%s::viewFileAction" function is deprecated and should not be used anymore. use "%s::assetAction instead"', FileController::class, AssetController::class), E_USER_DEPRECATED);
-        return $this->getFile($sha1, ResponseHeaderBag::DISPOSITION_INLINE, $request);
+        return $fileService->getStreamResponse($sha1, ResponseHeaderBag::DISPOSITION_INLINE, $request);
     }
 
     /**
-     * @param string $sha1
-     * @param Request $request
-     * @return RedirectResponse
-     * @deprecated
-     *
      * @Route("/public/file/{sha1}" , name="ems_file_download_public", methods={"GET","HEAD"})
      * @Route("/data/file/{sha1}" , name="file.download", methods={"GET","HEAD"})
      * @Route("/data/file/{sha1}" , name="ems_file_download", methods={"GET","HEAD"})
      * @Route("/api/file/{sha1}" , name="file.api.download", methods={"GET","HEAD"})
      */
-    public function downloadFileAction($sha1, Request $request, FileService $fileService)
+    public function downloadFileAction(string $sha1, Request $request, FileService $fileService): Response
     {
-        @trigger_error(sprintf('The "%s::downloadFileAction" function is deprecated and should not be used anymore. use "%s::assetAction instead"', FileController::class, AssetController::class), E_USER_DEPRECATED);
-        return $this->getFile($sha1, ResponseHeaderBag::DISPOSITION_ATTACHMENT, $request);
+        return $fileService->getStreamResponse($sha1, ResponseHeaderBag::DISPOSITION_ATTACHMENT, $request);
     }
 
     /**
@@ -252,20 +240,5 @@ class FileController extends AppController
         return $this->render('@EMSCore/ajax/notification.json.twig', [
             'success' => false,
         ]);
-    }
-
-    private function getFile($sha1, $disposition, Request $request)
-    {
-        @trigger_error(sprintf('The "%s::getFile" function is deprecated and should not be used anymore. use "%s::assetAction instead"', FileController::class, AssetController::class), E_USER_DEPRECATED);
-
-        $route = $this->getAuthorizationChecker()->isGranted('IS_AUTHENTICATED_FULLY') ? 'ems_asset' : 'emsco_asset_public';
-
-        return $this->redirect($this->requestRuntime->assetPath([
-            EmsFields::CONTENT_FILE_HASH_FIELD => $sha1,
-            EmsFields::CONTENT_FILE_NAME_FIELD => $request->query->get('name', 'filename'),
-            EmsFields::CONTENT_MIME_TYPE_FIELD => $request->query->get('type', 'application/octet-stream'),
-        ], [
-            '_disposition' => $disposition,
-        ], $route));
     }
 }

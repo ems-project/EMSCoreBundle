@@ -5,6 +5,8 @@ namespace EMS\CoreBundle\Service;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use Elasticsearch\Common\Exceptions\Conflict409Exception;
+use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Storage\Processor\Processor;
 use EMS\CommonBundle\Storage\Service\EntityStorage;
 use EMS\CommonBundle\Storage\Service\FileSystemStorage;
 use EMS\CommonBundle\Storage\Service\HttpStorage;
@@ -16,6 +18,8 @@ use EMS\CommonBundle\Storage\StorageServiceMissingException;
 use EMS\CoreBundle\Entity\UploadedAsset;
 use EMS\CoreBundle\Repository\UploadedAssetRepository;
 use Exception;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class FileService
@@ -32,11 +36,15 @@ class FileService
     /**@var integer */
     private $uploadMinimuNumberOfReplications;
 
-    public function __construct(Registry $doctrine, StorageManager $storageManager, string $projectDir, string $uploadFolder, string $storageFolder, bool $createDbStorageService, string $elasticmsRemoteServer, string $elasticmsRemoteAuthkey, string $sftpServer, string $sftpPath, string $sftpUser, string $publicKey, string $privateKey, array $s3Credentials = null, string $s3Bucket = null)
+    /**@var Processor */
+    private $processor;
+
+    public function __construct(Registry $doctrine, StorageManager $storageManager, Processor $processor, string $projectDir, string $uploadFolder, string $storageFolder, bool $createDbStorageService, string $elasticmsRemoteServer, string $elasticmsRemoteAuthkey, string $sftpServer, string $sftpPath, string $sftpUser, string $publicKey, string $privateKey, array $s3Credentials = null, string $s3Bucket = null)
     {
         $this->doctrine = $doctrine;
         $this->uploadFolder = $uploadFolder;
         $this->storageManager = $storageManager;
+        $this->processor = $processor;
         $this->uploadMinimuNumberOfReplications = 10;
 
         if ($storageFolder && !empty($storageFolder)) {
@@ -93,7 +101,12 @@ class FileService
     {
         /**@var StorageInterface $service */
         foreach ($this->storageManager->getAdapters() as $service) {
-            $resource = $service->read($hash, $cacheContext);
+            try {
+                $resource = $service->read($hash, $cacheContext);
+            } catch (NotFoundHttpException $e) {
+                continue;
+            }
+
             if ($resource) {
                 $data = stream_get_contents($resource);
                 $base64 = base64_encode($data);
@@ -124,12 +137,27 @@ class FileService
     {
         /**@var StorageInterface $service */
         foreach ($this->storageManager->getAdapters() as $service) {
-            $resource = $service->read($hash, $cacheContext);
+            try {
+                $resource = $service->read($hash, $cacheContext);
+            } catch (NotFoundHttpException $e) {
+                continue;
+            }
+
             if ($resource) {
                 return $resource;
             }
         }
         return false;
+    }
+
+    public function getStreamResponse(string $sha1, string $disposition, Request $request): Response
+    {
+        $config = $this->processor->configFactory($sha1, [
+            EmsFields::ASSET_CONFIG_MIME_TYPE => $request->query->get('type', 'application/octet-stream'),
+            EmsFields::ASSET_CONFIG_DISPOSITION => $disposition
+        ]);
+        $filename = $request->query->get('name', 'filename');
+        return $this->processor->getStreamedResponse($request, $config, $filename, true);
     }
 
     /**
@@ -328,7 +356,11 @@ class FileService
         if ($uploadedAsset->getUploaded() == $uploadedAsset->getSize()) {
             $loopCounter = 0;
             foreach ($this->storageManager->getAdapters() as $service) {
-                $handler = $service->read($uploadedAsset->getSha1(), false, false);
+                try {
+                    $handler = $service->read($uploadedAsset->getSha1(), false);
+                } catch (NotFoundHttpException $e) {
+                    continue;
+                }
 
                 if ($handler) {
                     $computedHash = $this->storageManager->computeStringHash($handler->getContents());

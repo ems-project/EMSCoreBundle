@@ -13,6 +13,7 @@ use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\TemplateService;
+use http\Exception\RuntimeException;
 use Monolog\Logger;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
@@ -117,6 +118,9 @@ class ExportDocumentsCommand extends EmsCommand
 
         $contentTypeName = $input->getArgument('contentTypeName');
         $format = $input->getArgument('format');
+        if (!is_string($format)) {
+            throw new \RuntimeException('Format as to be a string');
+        }
         $scrollSize = $input->getOption('scrollSize');
         $scrollTimeout = $input->getOption('scrollTimeout');
         $withBusinessId = $input->getOption('withBusinessId');
@@ -127,9 +131,18 @@ class ExportDocumentsCommand extends EmsCommand
             return -1;
         }
         $environmentName = $input->getOption('environment');
+
         if ($environmentName === null) {
-            $index = $contentType->getEnvironment()->getAlias();
+            $environment = $contentType->getEnvironment();
+            if ($environment === null) {
+                throw new \RuntimeException('Environment not found');
+            }
+            $index = $environment->getAlias();
+            $environmentName = $environment->getName();
         } else {
+            if (!is_string($environmentName)) {
+                throw new \RuntimeException('Environment name as to be a string');
+            }
             $environment = $this->environmentService->getByName($environmentName);
             if ($environment === false) {
                 $output->writeln(sprintf("WARNING: Environment named %s not found", $environmentName));

@@ -669,7 +669,7 @@ class ContentTypeController extends AppController
                 if (!$child->getDeleted()) {
                     $out = $this->duplicateField($formArray ['ems_' . $child->getName()], $child, $logger);
                     if ($out !== false) {
-                        if (substr($out, 0, 5) == 'first') {
+                        if (is_string($out) && substr($out, 0, 5) == 'first') {
                             return substr($out, 5);
                         }
                         return '_ems_' . $child->getName() . $out;

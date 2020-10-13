@@ -101,7 +101,12 @@ class FileService
     {
         /**@var StorageInterface $service */
         foreach ($this->storageManager->getAdapters() as $service) {
-            $resource = $service->read($hash, $cacheContext);
+            try {
+                $resource = $service->read($hash, $cacheContext);
+            } catch (NotFoundHttpException $e) {
+                continue;
+            }
+
             if ($resource) {
                 $data = stream_get_contents($resource);
                 $base64 = base64_encode($data);
@@ -132,7 +137,12 @@ class FileService
     {
         /**@var StorageInterface $service */
         foreach ($this->storageManager->getAdapters() as $service) {
-            $resource = $service->read($hash, $cacheContext);
+            try {
+                $resource = $service->read($hash, $cacheContext);
+            } catch (NotFoundHttpException $e) {
+                continue;
+            }
+
             if ($resource) {
                 return $resource;
             }
@@ -346,7 +356,11 @@ class FileService
         if ($uploadedAsset->getUploaded() == $uploadedAsset->getSize()) {
             $loopCounter = 0;
             foreach ($this->storageManager->getAdapters() as $service) {
-                $handler = $service->read($uploadedAsset->getSha1(), false, false);
+                try {
+                    $handler = $service->read($uploadedAsset->getSha1(), false);
+                } catch (NotFoundHttpException $e) {
+                    continue;
+                }
 
                 if ($handler) {
                     $computedHash = $this->storageManager->computeStringHash($handler->getContents());

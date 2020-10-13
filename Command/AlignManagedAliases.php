@@ -45,6 +45,12 @@ class AlignManagedAliases extends ContainerAwareCommand
 
         $sourceName = $input->getArgument('source');
         $targetName = $input->getArgument('target');
+        if (!is_string($targetName)) {
+            throw new \RuntimeException('Target name as to be a string');
+        }
+        if (!is_string($sourceName)) {
+            throw new \RuntimeException('Source name as to be a string');
+        }
 
         $this->aliasService->build();
         $source = $this->aliasService->getManagedAliasByName($sourceName);

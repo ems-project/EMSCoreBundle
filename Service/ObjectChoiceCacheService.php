@@ -137,8 +137,18 @@ class ObjectChoiceCacheService
                                     $queries[$index] = ['docs' => []];
                                 }
                                 $queries[$index]['docs'][] = [
-                                    "_type" => $ref[0],
-                                    "_id" => $ref[1],
+                                    '_type' => $ref[0],
+                                    '_id' => $ref[1],
+                                    'body' => [
+                                        'query' => [
+                                            'bool' => [
+                                                'must' => [
+                                                    [ 'term' => ['_contenttype' => $ref[0]]],
+                                                    [ 'term' => ['_id' => $ref[1]]]
+                                                ]
+                                            ]
+                                        ]
+                                    ]
                                 ];
                             } elseif ($withWarning) {
                                 $this->logger->warning('service.object_choice_cache.alias_not_found', [
@@ -160,21 +170,22 @@ class ObjectChoiceCacheService
                 }
             }
         }
-        
+
         foreach ($queries as $alias => $query) {
-            $params = [
+            foreach ($query['docs'] as $docItem) {
+                $params = [
                     'index' => $alias,
-                    'body' => $query
-            ];
-            $result = $this->client->mget($params);
-            foreach ($result['docs'] as $doc) {
-                $objectId = $doc['_type'] . ':' . $doc['_id'];
-                if ($doc['found']) {
+                    'body' => $docItem['body']
+                ];
+                $objectId = $docItem['_type'] . ':' . $docItem['_id'];
+                $result = $this->client->search($params);
+                if ($result['hits']['total'] === 1) {
+                    $doc = $result['hits']['hits'][0];
                     $listItem = new ObjectChoiceListItem($doc, $this->contentTypeService->getByName($doc['_type']));
                     $this->cache[$doc['_type']][$doc['_id']] = $listItem;
                     $out[$objectId] = $listItem;
                 } else {
-                    $this->cache[$doc['_type']][$doc['_id']] = false;
+                    $this->cache[$docItem['_type']][$docItem['_id']] = false;
                     if ($withWarning) {
                         $this->logger->warning('service.object_choice_cache.object_key_not_found', [
                             'object_key' => $objectId,

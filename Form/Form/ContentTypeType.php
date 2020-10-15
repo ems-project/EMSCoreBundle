@@ -12,6 +12,7 @@ use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -133,6 +134,20 @@ class ContentTypeType extends AbstractType
                 ]
             ]);
             $builder->add('localeField');
+
+            $builder->add('versionTags', CollectionType::class, [
+                'entry_type' => TextType::class,
+                'attr' => [
+                    'data-entry-remove-class' => 'btn btn-danger',
+                ],
+                'entry_options' => [
+                    'label' => false,
+                    'attr' => ['style' => 'width: 150px; float: left;']
+                ],
+                'allow_add' => true,
+                'allow_delete' => true,
+                'block_prefix' => 'tags'
+            ]);
         }
         
         

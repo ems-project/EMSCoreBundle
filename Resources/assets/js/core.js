@@ -12,6 +12,8 @@ window.FileUploader = FileUploader;
 import AjaxRequest from "./AjaxRequest";
 window.AjaxRequest = AjaxRequest;
 window.ajaxRequest = new AjaxRequest();
+import sfCollection from '@a2lix/symfony-collection/src/a2lix_sf_collection';
+window.a2lix_lib = sfCollection;
 
 window.object_search_url = document.querySelector("BODY").getAttribute('data-search-api');
 window.ems_wysiwyg_type_filters = JSON.parse(document.querySelector("BODY").getAttribute('data-wysiwyg-type-filters'));

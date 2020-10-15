@@ -105,6 +105,23 @@
                         </div>
                     {% endif %}
 
+                    <div class="col-md-8">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                    <i class="fa fa-tags"></i> Versioning
+                                    <a class="toggle-button pull-right" role="button" data-toggle="collapse"
+                                       href="#versioning" aria-expanded="false" aria-controls="mapping-info"
+                                       data-toggle-contain="Hide <i class=&quot;fa fa-chevron-down&quot;></i>">
+                                        Show <i class="fa fa-chevron-right"></i>
+                                    </a>
+                                </h3>
+                            </div>
+                            <div class="panel-body collapse" id="versioning">
+                                {{ form_row(form.versionTags) }}
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <!-- /.box-body -->
                 <div class="box-footer">
@@ -132,4 +149,20 @@
         'item':  'contenttype-list'
     } %}
 
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function(event) {
+            a2lix_lib.sfCollection.init({
+                collectionsSelector: '#content_type_versionTags',
+                manageRemoveEntry: true,
+                lang: {
+                    add: 'Add version',
+                    remove: 'X'
+                }
+            });
+        });
+    </script>
 {% endblock %}

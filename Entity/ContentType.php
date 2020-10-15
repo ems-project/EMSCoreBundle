@@ -420,6 +420,10 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
      */
     protected $createLinkDisplayRole = 'ROLE_USER';
 
+    /**
+     * @ORM\Column(name="version_tags", type="json_array", nullable=true)
+     */
+    protected $versionTags = [];
 
     public function __construct()
     {
@@ -1853,5 +1857,15 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     public function getCreateLinkDisplayRole(): string
     {
         return $this->createLinkDisplayRole;
+    }
+
+    public function getVersionTags(): array
+    {
+        return $this->versionTags;
+    }
+
+    public function setVersionTags($versionTags): void
+    {
+        $this->versionTags = $versionTags;
     }
 }

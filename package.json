@@ -32,6 +32,7 @@
     "watch": "webpack --mode development --watch"
   },
   "devDependencies": {
+    "@a2lix/symfony-collection": "^0.4.0",
     "@babel/core": "^7.4.0",
     "@babel/preset-env": "^7.4.2",
     "@babel/register": "^7.4.0",

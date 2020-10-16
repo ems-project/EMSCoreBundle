@@ -27,6 +27,7 @@ export default class JsonMenuEditor {
         });
 
         this.addListeners(target);
+        this.updateCollapseButtons();
     }
 
     addListeners(target) {
@@ -90,7 +91,7 @@ export default class JsonMenuEditor {
             item.find('.json_menu_nested_edit_item_button').data('node', data.node);
         }
 
-        let list = $target.closest('.input-group').closest('li');
+        let list = $target.closest('.nestedSortable').closest('li');
         if (list.length === 0) {
             list = this.parent.find('.json_menu_editor_fieldtype_widget');
         }
@@ -100,6 +101,7 @@ export default class JsonMenuEditor {
         } else {
             list.append($("<ol></ol>").append(item));
         }
+        list.find('.button-collapse:first').attr('aria-expanded', false);
 
         const element = jquery('#'+uuid);
         this.addListeners(element);
@@ -112,7 +114,20 @@ export default class JsonMenuEditor {
         jquery('#'+uuid).find('input').focus();
     }
 
+    updateCollapseButtons() {
+        this.parent.find('li.nestedSortable').each(function () {
+            let $button = $(this).find('.button-collapse:first');
+
+            if ($(this).find('ol:first li').length === 0) {
+                $button.css('display', 'none');
+            } else {
+                $button.show();
+            }
+        });
+    }
+
     relocate() {
+        this.updateCollapseButtons();
         const hierarchy = this.nestedSortable.nestedSortable('toHierarchy', {startDepthCount: 0});
         this.hiddenField.val(JSON.stringify(hierarchy)).trigger("input").trigger("change");
     }

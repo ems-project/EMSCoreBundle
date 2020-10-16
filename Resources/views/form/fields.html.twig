@@ -887,43 +887,44 @@
 		data-label="{{ child.label|default('%label%') }}"
 		{% if child.object is defined %}data-object="{{ child.object|json_encode }}"{% endif %}
 		data-type="{{ child.type|default('%type%') }}">
-		<div class="nestedSortable">
-			<span class="input-group">
-				<span class="input-group-addon" >
-					<i class="{{ node.icon|default('%icon%') }}"></i>
-				</span>
-				<input type="text" class="form-control itemLabel ignore-ems-update" placeholder="{{ 'field_type.json_menu_editor.item_label_placeholder'|trans }}" value="{{ child.label|default('%label%') }}" readonly>
-				<span class="input-group-btn">
+		<div class="nestedSortable clearfix">
+			<span>
+				<button style="display:none;" class="btn btn-default btn-sm button-collapse" role="button" aria-expanded="true"></button>
+			</span>
+			<span><i class="{{ node.icon|default('%icon%') }}"></i></span>
+			<span>{{ child.label|default('%label%') }}</span>
+			<span class="pull-right">
+				<div class="btn-group btn-group-sm">
 					{{ addMenu }}
-					<a type="button" class="btn btn-primary json_menu_nested_edit_item_button"
+					<button type="button" class="btn btn-primary json_menu_nested_edit_item_button"
 					   data-action="edit"
 					   {% if node is defined %}data-node="{{ node|json_encode }}"{% endif %}
 					   title="{{- 'field_type.json_menu_editor.edit'|trans -}}">
 						<i class="fa fa-pencil"></i>
 						<span class="">{{ 'field_type.json_menu_editor.edit'|trans }}</span>
-					</a>
+					</button>
 					<a type="button" class="btn btn-primary json_menu_sortable_handle_button"
 					   title="{{- 'field_type.json_menu_editor.move_item'|trans -}}">
 						<i class="fa fa-arrows"></i>
 						<span class="">{{ 'field_type.json_menu_editor.move_item'|trans }}</span>
 					</a>
-					<a type="button" class="btn btn-danger json_menu_sortable_remove_button"
+					<button type="button" class="btn btn-danger json_menu_sortable_remove_button"
 					   title="{{- 'field_type.json_menu_editor.delete_item'|trans -}}">
 						<i class="fa fa-trash"></i>
 						<span class="sr-only">{{- 'field_type.json_menu_editor.delete_item'|trans -}}</span>
-					</a>
-				</span>
+					</button>
+				</div>
 			</span>
 		</div>
 		{% if child is defined and child.children|default([])|length > 0 %}
-			<ol>
+			<ol style="display:none;">
 				{%- for child in child.children -%}
 					{% set node = attribute(nodes, child.type|default(''))|default([]) %}
 					{{ block('json_menu_editor_nested_node') }}
 				{%- endfor -%}
 			</ol>
 		{% endif %}
-	</li>
+    </li>
 {%- endblock json_menu_editor_nested_node -%}
 
 {% block datefieldtype_row %}

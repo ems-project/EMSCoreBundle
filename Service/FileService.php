@@ -113,7 +113,7 @@ class FileService
         return false;
     }
 
-    public function getFile(string $hash): string
+    public function getFile(string $hash): ?string
     {
         $filename = \sprintf('%s%sEMS_cached_%s', sys_get_temp_dir(), DIRECTORY_SEPARATOR, $hash);
         if (\file_exists($filename) && $this->storageManager->computeFileHash($filename) === $hash) {
@@ -122,7 +122,7 @@ class FileService
         $stream = $this->getResource($hash);
 
         if ($stream === null) {
-            throw new NotFoundHttpException(sprintf('File %s not found', $hash));
+            return null;
         }
 
         if (!$handle = \fopen($filename, 'w')) {

@@ -102,16 +102,12 @@ class FileService
         /**@var StorageInterface $service */
         foreach ($this->storageManager->getAdapters() as $service) {
             try {
-                $resource = $service->read($hash);
+                $stream = $service->read($hash);
             } catch (NotFoundHttpException $e) {
                 continue;
             }
 
-            if ($resource) {
-                $data = stream_get_contents($resource);
-                $base64 = base64_encode($data);
-                return $base64;
-            }
+            return \base64_encode($stream->getContents());
         }
         return false;
     }

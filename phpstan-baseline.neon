@@ -11251,11 +11251,6 @@ parameters:
 			path: Service/DataService.php
 
 		-
-			message: "#^Parameter \\#1 \\$key of function openssl_pkey_get_details expects resource, resource\\|false given\\.$#"
-			count: 2
-			path: Service/DataService.php
-
-		-
 			message: "#^Cannot access offset 'key' on array\\|false\\.$#"
 			count: 1
 			path: Service/DataService.php
@@ -11903,11 +11898,6 @@ parameters:
 		-
 			message: "#^If condition is always true\\.$#"
 			count: 3
-			path: Service/FileService.php
-
-		-
-			message: "#^Parameter \\#1 \\$source of function stream_get_contents expects resource, Psr\\\\Http\\\\Message\\\\StreamInterface given\\.$#"
-			count: 1
 			path: Service/FileService.php
 
 		-
@@ -13992,16 +13982,6 @@ parameters:
 
 		-
 			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\StorageInterface\\:\\:getLastUpdateDate\\(\\)\\.$#"
-			count: 1
-			path: tests/Storage/FileServiceTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$fp of function feof expects resource, Psr\\\\Http\\\\Message\\\\StreamInterface given\\.$#"
-			count: 1
-			path: tests/Storage/FileServiceTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$fp of function fread expects resource, Psr\\\\Http\\\\Message\\\\StreamInterface given\\.$#"
 			count: 1
 			path: tests/Storage/FileServiceTest.php
 

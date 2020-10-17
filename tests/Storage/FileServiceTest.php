@@ -47,13 +47,13 @@ class FileServiceTest extends WebTestCase
         $this->assertNotNull($storage->getLastUpdateDate($hash));
 
 
-        $ctx = hash_init('sha1');
-        $handler = $storage->read($hash);
-        $this->assertNotNull($handler);
-        while (!feof($handler)) {
-            hash_update($ctx, fread($handler, 8192));
+        $ctx = \hash_init('sha1');
+        $stream = $storage->read($hash);
+        $this->assertNotNull($stream);
+        while (!$stream->eof()) {
+            \hash_update($ctx, $stream->read(8192));
         }
-        $computedHash = hash_final($ctx);
+        $computedHash = \hash_final($ctx);
 
         $this->assertEquals($hash, $computedHash);
 

@@ -146,16 +146,6 @@ parameters:
 			path: Command/AlignManagedAliases.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Command\\\\CleanAssetCommand\\:\\:configure\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: Command/CleanAssetCommand.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Command\\\\CleanAssetCommand\\:\\:execute\\(\\) should return int but return statement is missing\\.$#"
-			count: 1
-			path: Command/CleanAssetCommand.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Command\\\\CleanDeletedContentTypeCommand\\:\\:configure\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: Command/CleanDeletedContentTypeCommand.php

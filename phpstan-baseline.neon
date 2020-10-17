@@ -4056,21 +4056,6 @@ parameters:
 			path: Entity/Template.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\UploadedAsset\\:\\:updateModified\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: Entity/UploadedAsset.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\UploadedAsset\\:\\:getResponse\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: Entity/UploadedAsset.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\UploadedAsset\\:\\:getData\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Entity/UploadedAsset.php
-
-		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\User\\:\\:\\$circles type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Entity/User.php
@@ -10523,11 +10508,6 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\TemplateRepository\\:\\:findByRenderOptionAndContentType\\(\\) has parameter \\$contentTypes with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Repository/TemplateRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\UploadedAssetRepository\\:\\:getHashes\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Repository/UploadedAssetRepository.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\UserRepository\\:\\:findForRoleAndCircles\\(\\) has no return typehint specified\\.$#"

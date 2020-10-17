@@ -36,10 +36,9 @@ class UploadedAssetRepository extends \Doctrine\ORM\EntityRepository
 
 
     /**
-     * @param integer $page
-     * @return array
+     * @return array<array{hash:string}>
      */
-    public function getHashes($page)
+    public function getHashes(int $page): array
     {
         $qb = $this->createQueryBuilder('ua');
         $qb->select('ua.sha1 as hash')
@@ -52,7 +51,14 @@ class UploadedAssetRepository extends \Doctrine\ORM\EntityRepository
             ':true' => true
         ]);
 
-        return $qb->getQuery()->getArrayResult();
+        $out = [];
+        foreach ($qb->getQuery()->getArrayResult() as $record) {
+            if (isset($record['hash']) && is_string($record['hash'])) {
+                $out[] = ['hash' => $record['hash']];
+            }
+        }
+
+        return $out;
     }
 
     /**

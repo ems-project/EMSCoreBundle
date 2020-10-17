@@ -11995,41 +11995,6 @@ parameters:
 			path: Service/HelperService.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\I18nService\\:\\:count\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: Service/I18nService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\I18nService\\:\\:count\\(\\) has parameter \\$filters with no typehint specified\\.$#"
-			count: 1
-			path: Service/I18nService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\I18nService\\:\\:delete\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: Service/I18nService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\I18nService\\:\\:findAll\\(\\) has parameter \\$filters with no typehint specified\\.$#"
-			count: 1
-			path: Service/I18nService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\I18nService\\:\\:findAll\\(\\) has parameter \\$from with no typehint specified\\.$#"
-			count: 1
-			path: Service/I18nService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\I18nService\\:\\:findAll\\(\\) has parameter \\$limit with no typehint specified\\.$#"
-			count: 1
-			path: Service/I18nService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\I18nService\\:\\:findAll\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Service/I18nService.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\JobService\\:\\:clean\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: Service/JobService.php

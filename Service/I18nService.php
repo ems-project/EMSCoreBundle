@@ -24,7 +24,10 @@ class I18nService
         $this->repository = $i18nRepository;
     }
 
-    public function count($filters = null)
+    /**
+     * @param array<string>|null $filters
+     */
+    public function count(array $filters = null): int
     {
         $identifier = null;
         
@@ -34,16 +37,17 @@ class I18nService
         return $this->repository->countWithFilter($identifier);
     }
 
-    public function delete(I18n $i18n)
+    public function delete(I18n $i18n): void
     {
         $this->manager->remove($i18n);
         $this->manager->flush();
     }
-    
+
     /**
+     * @param array<string>|null $filters
      * @return iterable|I18n[]
      */
-    public function findAll($from, $limit, $filters = null): iterable
+    public function findAll(int $from, int $limit, array $filters = null): iterable
     {
         $identifier = null;
         

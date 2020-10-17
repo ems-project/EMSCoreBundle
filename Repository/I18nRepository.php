@@ -7,7 +7,7 @@ use EMS\CoreBundle\Entity\I18n;
 
 class I18nRepository extends EntityRepository
 {
-    public function countWithFilter(string $identifier): int
+    public function countWithFilter(?string $identifier): int
     {
         $qb = $this->createQueryBuilder('i')
         ->select('COUNT(i)');
@@ -24,7 +24,7 @@ class I18nRepository extends EntityRepository
     /**
      * @return iterable|I18n[]
      */
-    public function findByWithFilter(int $limit, int $from, string $identifier): iterable
+    public function findByWithFilter(int $limit, int $from, ?string $identifier): iterable
     {
         
         $qb = $this->createQueryBuilder('i')

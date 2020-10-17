@@ -18,6 +18,7 @@ use EMS\CommonBundle\Storage\StorageServiceMissingException;
 use EMS\CoreBundle\Entity\UploadedAsset;
 use EMS\CoreBundle\Repository\UploadedAssetRepository;
 use Exception;
+use http\Exception\RuntimeException;
 use Psr\Http\Message\StreamInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,6 +41,9 @@ class FileService
     /**@var Processor */
     private $processor;
 
+    /**
+     * @param array{version?:string,credentials?:array{key:string,secret:string},region?:string}|null $s3Credentials
+     */
     public function __construct(Registry $doctrine, StorageManager $storageManager, Processor $processor, string $projectDir, string $uploadFolder, string $storageFolder, bool $createDbStorageService, string $elasticmsRemoteServer, string $elasticmsRemoteAuthkey, string $sftpServer, string $sftpPath, string $sftpUser, string $publicKey, string $privateKey, array $s3Credentials = null, string $s3Bucket = null)
     {
         $this->doctrine = $doctrine;
@@ -74,7 +78,7 @@ class FileService
         }
     }
 
-    public function addStorageService($storageAdapter)
+    public function addStorageService(StorageInterface $storageAdapter): void
     {
         $this->storageManager->addAdapter($storageAdapter);
     }
@@ -98,7 +102,7 @@ class FileService
         return $this->storageManager->getAdapters();
     }
 
-    public function getBase64($hash)
+    public function getBase64(string $hash): ?string
     {
         /**@var StorageInterface $service */
         foreach ($this->storageManager->getAdapters() as $service) {
@@ -110,7 +114,7 @@ class FileService
 
             return \base64_encode($stream->getContents());
         }
-        return false;
+        return null;
     }
 
     public function getFile(string $hash): ?string
@@ -141,18 +145,13 @@ class FileService
         return $filename;
     }
 
-    public function getResource($hash): ?StreamInterface
+    public function getResource(string $hash): ?StreamInterface
     {
         /**@var StorageInterface $service */
         foreach ($this->storageManager->getAdapters() as $service) {
             try {
-                $resource = $service->read($hash);
+                return $service->read($hash);
             } catch (NotFoundHttpException $e) {
-                continue;
-            }
-
-            if ($resource) {
-                return $resource;
             }
         }
         return null;
@@ -168,14 +167,16 @@ class FileService
         return $this->processor->getStreamedResponse($request, $config, $filename, true);
     }
 
-    public function getImages()
+    /**
+     * @return UploadedAsset[]|iterable
+     */
+    public function getImages():iterable
     {
 
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
         /** @var UploadedAssetRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:UploadedAsset');
-
 
         $qb = $repository
             ->createQueryBuilder('a')->where('a.type like :image')
@@ -184,17 +185,17 @@ class FileService
             ->groupBy('a.type, a.name, a.sha1, a.user');
 
         $query = $qb->getQuery();
-
-
-        $result = $query->getResult();
-        return $result;
+        return $query->getResult();
     }
 
-    public function uploadFile($name, $type, $filename, $user)
+    public function uploadFile(string $name, string $type, string $filename, string $user): UploadedAsset
     {
 
         $hash = $this->storageManager->computeFileHash($filename);
-        $size = filesize($filename);
+        $size = \filesize($filename);
+        if ($size === false) {
+            throw new \RuntimeException(sprintf('Can\'t get file size of %s', $filename));
+        }
         $uploadedAsset = $this->initUploadFile($hash, $size, $name, $type, $user, $this->storageManager->getHashAlgo());
         if (!$uploadedAsset->getAvailable()) {
             $uploadedAsset = $this->saveFile($filename, $uploadedAsset);
@@ -208,20 +209,7 @@ class FileService
         return $uploadedAsset;
     }
 
-    /**
-     * @param string $hash
-     * @param integer $size
-     * @param string $name
-     * @param string $type
-     * @param string $user
-     * @param string $hashAlgo
-     * @return UploadedAsset
-     * @throws Conflict409Exception
-     * @throws StorageServiceMissingException
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     */
-    public function initUploadFile($hash, $size, $name, $type, $user, $hashAlgo)
+    public function initUploadFile(string $hash, int $size, string $name, string $type, string $user, string $hashAlgo): UploadedAsset
     {
         if (empty($this->storageManager->getAdapters())) {
             throw new StorageServiceMissingException("No storage service have been defined");
@@ -283,7 +271,7 @@ class FileService
     }
 
 
-    public function head($hash)
+    public function head(string $hash): bool
     {
         /**@var StorageInterface $service */
         foreach ($this->storageManager->getAdapters() as $service) {
@@ -306,7 +294,7 @@ class FileService
         throw new NotFoundHttpException(sprintf('File %s not found', $hash));
     }
 
-    public function addChunk($hash, $chunk, $user)
+    public function addChunk(string $hash, string $chunk, string $user): UploadedAsset
     {
         if (empty($this->storageManager->getAdapters())) {
             throw new StorageServiceMissingException("No storage service have been defined");
@@ -318,14 +306,9 @@ class FileService
         $repository = $em->getRepository('EMSCoreBundle:UploadedAsset');
 
 
-        /**@var UploadedAsset $uploadedAsset */
-        $uploadedAsset = $repository->findOneBy([
-            'sha1' => $hash,
-            'available' => false,
-            'user' => $user,
-        ]);
+        $uploadedAsset = $repository->getInProgress($hash, $user);
 
-        if (!$uploadedAsset) {
+        if ($uploadedAsset === null) {
             throw new NotFoundHttpException('Upload job not found');
         }
 
@@ -351,16 +334,14 @@ class FileService
                     continue;
                 }
 
-                if ($handler) {
-                    $computedHash = $this->storageManager->computeStringHash($handler->getContents());
+                $computedHash = $this->storageManager->computeStringHash($handler->getContents());
 
-                    if ($computedHash != $uploadedAsset->getSha1()) {
-                        throw new Conflict409Exception("Hash mismatched " . $computedHash . ' ' . $uploadedAsset->getSha1());
-                    }
+                if ($computedHash != $uploadedAsset->getSha1()) {
+                    throw new Conflict409Exception("Hash mismatched " . $computedHash . ' ' . $uploadedAsset->getSha1());
+                }
 
-                    if ($service->finalizeUpload($hash) && ++$loopCounter >= $this->uploadMinimuNumberOfReplications) {
-                        break;
-                    }
+                if ($service->finalizeUpload($hash) && ++$loopCounter >= $this->uploadMinimuNumberOfReplications) {
+                    break;
                 }
             }
 
@@ -387,12 +368,7 @@ class FileService
         return false;
     }
 
-    /**
-     * return temporary filename
-     * @param string $hash
-     * @return string
-     */
-    public function temporaryFilename($hash)
+    public function temporaryFilename(string $hash): string
     {
         return sys_get_temp_dir() . DIRECTORY_SEPARATOR . $hash;
     }

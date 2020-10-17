@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Repository;
 
 use Doctrine\ORM\NonUniqueResultException;
+use EMS\CoreBundle\Entity\UploadedAsset;
 
 /**
  * UploadedAssetRepository
@@ -75,5 +76,18 @@ class UploadedAssetRepository extends \Doctrine\ORM\EntityRepository
         ]);
 
         return $qb->getQuery()->execute();
+    }
+
+    public function getInProgress(string $hash, string $user): ?UploadedAsset
+    {
+        $uploadedAsset = $this->findOneBy([
+            'sha1' => $hash,
+            'available' => false,
+            'user' => $user,
+        ]);
+        if ($uploadedAsset === null || $uploadedAsset instanceof UploadedAsset) {
+            return $uploadedAsset;
+        }
+        throw new \RuntimeException(\sprintf('Unexpected class object %s', get_class($uploadedAsset)));
     }
 }

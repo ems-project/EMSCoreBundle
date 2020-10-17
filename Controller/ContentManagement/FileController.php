@@ -7,6 +7,7 @@ use EMS\CoreBundle\Exception\AssetNotFoundException;
 use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\FileService;
 use Exception;
+use http\Exception\RuntimeException;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -152,6 +153,11 @@ class FileController extends AbstractController
         }
 
         $chunk = $request->getContent();
+
+        if (!is_string($chunk)) {
+            throw new RuntimeException('Unexpected body request');
+        }
+
         $user = $this->getUser()->getUsername();
 
         try {

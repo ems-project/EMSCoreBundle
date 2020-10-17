@@ -112,7 +112,6 @@ class AssetExtractorService implements CacheWarmerInterface
 
     /**
      * @return array|false|mixed
-     * @throws AssetNotFoundException
      */
     public function extractData(string $hash, string $file = null, bool $forced = false)
     {
@@ -129,7 +128,7 @@ class AssetExtractorService implements CacheWarmerInterface
             return $cacheData->getData();
         }
 
-        if (!$file || !file_exists($file)) {
+        if ($file === null || !\file_exists($file)) {
             $file = $this->fileService->getFile($hash);
         }
 
@@ -150,7 +149,7 @@ class AssetExtractorService implements CacheWarmerInterface
         if (! empty($this->tikaServer)) {
             try {
                 $client = $this->rest->getClient($this->tikaServer, $forced ? 900 : 30);
-                $body = file_get_contents($file);
+                $body = \file_get_contents($file);
                 $result = $client->put(self::META_EP, [
                         'body' => $body,
                         'headers' => [
@@ -158,7 +157,7 @@ class AssetExtractorService implements CacheWarmerInterface
                         ],
                 ]);
                 
-                $out = json_decode($result->getBody()->__toString(), true);
+                $out = \json_decode($result->getBody()->__toString(), true);
                 
                 $result = $client->put(self::CONTENT_EP, [
                         'body' => $body,

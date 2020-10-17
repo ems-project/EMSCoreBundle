@@ -501,11 +501,6 @@ parameters:
 			path: Command/ExtractAssetCommand.php
 
 		-
-			message: "#^Parameter \\#2 \\$file of method EMS\\\\CoreBundle\\\\Service\\\\AssetExtractorService\\:\\:extractData\\(\\) expects string\\|null, string\\|false given\\.$#"
-			count: 1
-			path: Command/ExtractAssetCommand.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Command\\\\ExtractAssetCommand\\:\\:execute\\(\\) should return int but return statement is missing\\.$#"
 			count: 1
 			path: Command/ExtractAssetCommand.php
@@ -557,11 +552,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$filename of function file_exists expects string, string\\|true given\\.$#"
-			count: 1
-			path: Command/IndexFileCommand.php
-
-		-
-			message: "#^Parameter \\#2 \\$file of method EMS\\\\CoreBundle\\\\Service\\\\AssetExtractorService\\:\\:extractData\\(\\) expects string\\|null, string\\|true given\\.$#"
 			count: 1
 			path: Command/IndexFileCommand.php
 
@@ -1588,21 +1578,6 @@ parameters:
 		-
 			message: "#^Cannot call method getUsername\\(\\) on object\\|null\\.$#"
 			count: 3
-			path: Controller/ContentManagement/FileController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ContentManagement\\\\FileController\\:\\:getFile\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: Controller/ContentManagement/FileController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ContentManagement\\\\FileController\\:\\:getFile\\(\\) has parameter \\$disposition with no typehint specified\\.$#"
-			count: 1
-			path: Controller/ContentManagement/FileController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ContentManagement\\\\FileController\\:\\:getFile\\(\\) has parameter \\$sha1 with no typehint specified\\.$#"
-			count: 1
 			path: Controller/ContentManagement/FileController.php
 
 		-

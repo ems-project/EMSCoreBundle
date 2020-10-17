@@ -11896,11 +11896,6 @@ parameters:
 			path: Service/FileService.php
 
 		-
-			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\StorageInterface\\:\\:getLastUpdateDate\\(\\)\\.$#"
-			count: 1
-			path: Service/FileService.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\FileService\\:\\:getImages\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: Service/FileService.php
@@ -11947,21 +11942,6 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\StorageInterface\\:\\:head\\(\\) invoked with 2 parameters, 1 required\\.$#"
-			count: 1
-			path: Service/FileService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\FileService\\:\\:getSize\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: Service/FileService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\FileService\\:\\:getSize\\(\\) has parameter \\$hash with no typehint specified\\.$#"
-			count: 1
-			path: Service/FileService.php
-
-		-
-			message: "#^Method EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\StorageInterface\\:\\:getSize\\(\\) invoked with 2 parameters, 1 required\\.$#"
 			count: 1
 			path: Service/FileService.php
 
@@ -13952,11 +13932,6 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\Storage\\\\FileServiceTest\\:\\:verifyStorageService\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: tests/Storage/FileServiceTest.php
-
-		-
-			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\StorageInterface\\:\\:getLastUpdateDate\\(\\)\\.$#"
 			count: 1
 			path: tests/Storage/FileServiceTest.php
 

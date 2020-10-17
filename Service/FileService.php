@@ -168,25 +168,6 @@ class FileService
         return $this->processor->getStreamedResponse($request, $config, $filename, true);
     }
 
-    /**
-     * @param string $hash
-     * @param string|null $context
-     *
-     * @return null|\DateTime
-     */
-    public function getLastUpdateDate(string $hash, ?string $context = null): ?\DateTime
-    {
-        $out = null;
-        /**@var StorageInterface $service */
-        foreach ($this->storageManager->getAdapters() as $service) {
-            $date = $service->getLastUpdateDate($hash, $context);
-            if ($date && ($out === null || $date < $out)) {
-                $out = $date;
-            }
-        }
-        return $out;
-    }
-
     public function getImages()
     {
 
@@ -313,16 +294,16 @@ class FileService
         return false;
     }
 
-    public function getSize($hash)
+    public function getSize(string $hash): int
     {
         /**@var StorageInterface $service */
         foreach ($this->storageManager->getAdapters() as $service) {
-            $filesize = $service->getSize($hash);
-            if ($filesize !== false) {
-                return $filesize;
+            try {
+                return $service->getSize($hash);
+            } catch (NotFoundHttpException $e) {
             }
         }
-        return false;
+        throw new NotFoundHttpException(sprintf('File %s not found', $hash));
     }
 
     public function addChunk($hash, $chunk, $user)
@@ -417,21 +398,18 @@ class FileService
         return sys_get_temp_dir() . DIRECTORY_SEPARATOR . $hash;
     }
 
-    private function saveFile($filename, UploadedAsset $uploadedAsset)
+    private function saveFile(string $filename, UploadedAsset $uploadedAsset): UploadedAsset
     {
         $hash = $this->storageManager->computeFileHash($filename);
         if ($hash != $uploadedAsset->getSha1()) {
-//          throw new Conflict409Exception("Hash mismatched ".$hash.' >< '.$uploadedAsset->getSha1());
-//TODO: fix this issue by using the CryotJS librairy on the FE JS?
-            $uploadedAsset->setSha1($hash);
-            $uploadedAsset->setUploaded(filesize($filename));
+            throw new Conflict409Exception(sprintf('Hash mismatched %s >< %s', $hash, $uploadedAsset->getSha1()));
         }
 
         /**@var StorageInterface $service */
         foreach ($this->storageManager->getAdapters() as $service) {
             if ($service->create($uploadedAsset->getSha1(), $filename)) {
                 $uploadedAsset->setAvailable(true);
-                unlink($filename);
+                \unlink($filename);
                 break;
             }
         }

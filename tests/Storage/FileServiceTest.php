@@ -44,9 +44,6 @@ class FileServiceTest extends WebTestCase
 
         $this->assertTrue($storage->head($hash));
 
-        $this->assertNotNull($storage->getLastUpdateDate($hash));
-
-
         $ctx = \hash_init('sha1');
         $stream = $storage->read($hash);
         $this->assertNotNull($stream);

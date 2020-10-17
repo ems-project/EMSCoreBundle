@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class FileServiceTest extends WebTestCase
 {
-    public function testStorageServices()
+    public function testStorageServices(): void
     {
         self::bootKernel();
 
@@ -15,6 +15,9 @@ class FileServiceTest extends WebTestCase
 
         /**@var FileService $fileService */
         $fileService = self::$container->get('ems.service.file');
+        if (!$fileService instanceof FileService) {
+            throw new \RuntimeException('FileService not found');
+        }
 
         /**@var StorageInterface $storage*/
         foreach ($fileService->getStorages() as $storage) {
@@ -24,7 +27,7 @@ class FileServiceTest extends WebTestCase
         }
     }
 
-    private function verifyStorageService(StorageInterface $storage)
+    private function verifyStorageService(StorageInterface $storage): void
     {
 
         $this->assertTrue($storage->health());
@@ -59,9 +62,12 @@ class FileServiceTest extends WebTestCase
         }
 
 
-        $tempFile = tempnam(sys_get_temp_dir(), 'ems_core_test');
-        $this->assertNotFalse($tempFile);
-        $this->assertNotFalse(file_put_contents($tempFile, $string1 . $string2));
+        $tempFile = \tempnam(sys_get_temp_dir(), 'ems_core_test');
+        if (!\is_string($tempFile)) {
+            throw new \RuntimeException('Impossible to generate temporary filename');
+        }
+        $this->assertNotFalse($tempFile !== false);
+        $this->assertNotFalse(file_put_contents($tempFile, $string1 . $string2) !== false);
         $this->assertEquals($hash, hash_file('sha1', $tempFile));
 
         $this->assertTrue($storage->create($hash, $tempFile));

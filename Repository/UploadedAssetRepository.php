@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Repository;
 
 use Doctrine\ORM\NonUniqueResultException;
+use EMS\CoreBundle\Entity\UploadedAsset;
 
 /**
  * UploadedAssetRepository
@@ -35,10 +36,9 @@ class UploadedAssetRepository extends \Doctrine\ORM\EntityRepository
 
 
     /**
-     * @param integer $page
-     * @return array
+     * @return array<array{hash:string}>
      */
-    public function getHashes($page)
+    public function getHashes(int $page): array
     {
         $qb = $this->createQueryBuilder('ua');
         $qb->select('ua.sha1 as hash')
@@ -51,7 +51,14 @@ class UploadedAssetRepository extends \Doctrine\ORM\EntityRepository
             ':true' => true
         ]);
 
-        return $qb->getQuery()->getArrayResult();
+        $out = [];
+        foreach ($qb->getQuery()->getArrayResult() as $record) {
+            if (isset($record['hash']) && is_string($record['hash'])) {
+                $out[] = ['hash' => $record['hash']];
+            }
+        }
+
+        return $out;
     }
 
     /**
@@ -75,5 +82,18 @@ class UploadedAssetRepository extends \Doctrine\ORM\EntityRepository
         ]);
 
         return $qb->getQuery()->execute();
+    }
+
+    public function getInProgress(string $hash, string $user): ?UploadedAsset
+    {
+        $uploadedAsset = $this->findOneBy([
+            'sha1' => $hash,
+            'available' => false,
+            'user' => $user,
+        ]);
+        if ($uploadedAsset === null || $uploadedAsset instanceof UploadedAsset) {
+            return $uploadedAsset;
+        }
+        throw new \RuntimeException(\sprintf('Unexpected class object %s', get_class($uploadedAsset)));
     }
 }

@@ -11,41 +11,37 @@ use EMS\CoreBundle\Tika\TikaWrapper;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
-use Symfony\Component\HttpKernel\DataCollector\MemoryDataCollector;
-use Symfony\Component\Validator\Constraints\FileValidator;
-use Throwable;
 
 class AssetExtractorService implements CacheWarmerInterface
 {
+
+    private const CONTENT_EP = '/tika';
+    private const HELLO_EP = '/tika';
+    private const META_EP = '/meta';
     
-    const CONTENT_EP = '/tika';
-    const HELLO_EP = '/tika';
-    const META_EP = '/meta';
-    
-    
-    /**@var string */
+    /** @var ?string */
     private $tikaServer;
 
-    /**@var string */
+    /** @var string */
     private $projectDir;
 
-    /**@var string */
+    /** @var ?string */
     private $tikaDownloadUrl;
     
-    /**@var RestClientService $rest*/
+    /** @var RestClientService $rest*/
     private $rest;
     
-    /**@var LoggerInterface */
+    /** @var LoggerInterface */
     private $logger;
 
-    /**@var Registry $doctrine */
+    /** @var Registry $doctrine */
     private $doctrine;
 
-    /**@var FileService */
+    /** @var FileService */
     private $fileService;
 
-    /**@var TikaWrapper */
-    private $tikaWrapper;
+    /** @var ?TikaWrapper */
+    private $wrapper = null;
     
     
     public function __construct(RestClientService $rest, LoggerInterface $logger, Registry $doctrine, FileService $fileService, ?string $tikaServer, string $projectDir, ?string $tikaDownloadUrl)
@@ -56,40 +52,36 @@ class AssetExtractorService implements CacheWarmerInterface
         $this->logger = $logger;
         $this->doctrine = $doctrine;
         $this->fileService = $fileService;
-        $this->tikaWrapper = null;
         $this->tikaDownloadUrl = $tikaDownloadUrl;
     }
 
-    /**
-     * @return TikaWrapper|null
-     * @throws Exception
-     */
-    private function getTikaWrapper() : ?TikaWrapper
+    private function getTikaWrapper(): TikaWrapper
     {
-        if ($this->tikaWrapper === null) {
-            $filename = $this->projectDir . '/var/tika-app.jar';
-            if (! file_exists($filename) && $this->tikaDownloadUrl) {
-                try {
-                    file_put_contents($filename, fopen($this->tikaDownloadUrl, 'r'));
-                } catch (Throwable $e) {
-                    if (file_exists($filename)) {
-                        unlink($filename);
-                    }
+        if ($this->wrapper instanceof TikaWrapper) {
+            return $this->wrapper;
+        }
+
+        $filename = $this->projectDir . '/var/tika-app.jar';
+        if (! \file_exists($filename) && $this->tikaDownloadUrl) {
+            try {
+                \file_put_contents($filename, \fopen($this->tikaDownloadUrl, 'r'));
+            } catch (\Throwable $e) {
+                if (\file_exists($filename)) {
+                    \unlink($filename);
                 }
             }
-
-            if (! file_exists($filename)) {
-                throw new Exception("Tika's jar not found");
-            }
-
-            $this->tikaWrapper = new TikaWrapper($filename);
         }
-        return $this->tikaWrapper;
+
+        if (! file_exists($filename)) {
+            throw new \RuntimeException("Tika's jar not found");
+        }
+
+        $this->wrapper = new TikaWrapper($filename);
+        return $this->wrapper;
     }
 
     /**
-     * @return array
-     * @throws Exception
+     * @return array{code:int,content:string}
      */
     public function hello():array
     {
@@ -101,18 +93,20 @@ class AssetExtractorService implements CacheWarmerInterface
                     'content' => $result->getBody()->__toString(),
             ];
         } else {
-            $temp_file = tempnam(sys_get_temp_dir(), 'TikaWrapperTest');
-            file_put_contents($temp_file, "elasticms's built in TikaWrapper : àêïôú");
+            $temporaryName = \tempnam(\sys_get_temp_dir(), 'TikaWrapperTest');
+            if ($temporaryName === false) {
+                throw new \RuntimeException('It was possible to generate a temporary filename');
+            }
+            \file_put_contents($temporaryName, "elasticms's built in TikaWrapper : àêïôú");
             return [
                 'code' => 200,
-                'content' => $this->cleanString($this->getTikaWrapper()->getText($temp_file)),
+                'content' => $this->cleanString($this->getTikaWrapper()->getText($temporaryName)),
             ];
         }
     }
 
     /**
      * @return array|false|mixed
-     * @throws AssetNotFoundException
      */
     public function extractData(string $hash, string $file = null, bool $forced = false)
     {
@@ -125,11 +119,11 @@ class AssetExtractorService implements CacheWarmerInterface
             'hash' => $hash
         ]);
 
-        if (! empty($cacheData)) {
+        if ($cacheData instanceof CacheAssetExtractor) {
             return $cacheData->getData();
         }
 
-        if (!$file || !file_exists($file)) {
+        if ($file === null || !\file_exists($file)) {
             $file = $this->fileService->getFile($hash);
         }
 
@@ -137,9 +131,13 @@ class AssetExtractorService implements CacheWarmerInterface
             throw new AssetNotFoundException($hash);
         }
 
+        $filesize = \filesize($file);
+        if ($filesize === false) {
+            throw new \RuntimeException('Not able to get asset size');
+        }
         if (!$forced && filesize($file) > (3 * 1024 * 1024)) {
             $this->logger->warning('log.warning.asset_extract.file_to_large', [
-                'filesize' => Converter::formatBytes(filesize($file)),
+                'filesize' => Converter::formatBytes($filesize),
                 'max_size' => '3 MB',
             ]);
             return [];
@@ -150,7 +148,7 @@ class AssetExtractorService implements CacheWarmerInterface
         if (! empty($this->tikaServer)) {
             try {
                 $client = $this->rest->getClient($this->tikaServer, $forced ? 900 : 30);
-                $body = file_get_contents($file);
+                $body = \file_get_contents($file);
                 $result = $client->put(self::META_EP, [
                         'body' => $body,
                         'headers' => [
@@ -158,7 +156,7 @@ class AssetExtractorService implements CacheWarmerInterface
                         ],
                 ]);
                 
-                $out = json_decode($result->getBody()->__toString(), true);
+                $out = \json_decode($result->getBody()->__toString(), true);
                 
                 $result = $client->put(self::CONTENT_EP, [
                         'body' => $body,
@@ -208,7 +206,7 @@ class AssetExtractorService implements CacheWarmerInterface
                 $cacheData->setHash($hash);
                 $cacheData->setData($out);
                 $manager->persist($cacheData);
-                $manager->flush($cacheData);
+                $manager->flush();
             } catch (Exception $e) {
                 $this->logger->warning('service.asset_extractor.persist_error', [
                     'file_hash' => $hash,
@@ -221,28 +219,41 @@ class AssetExtractorService implements CacheWarmerInterface
         return $out;
     }
 
-    private static function cleanString($string)
+    private static function cleanString(string $string): string
     {
-        if (!mb_check_encoding($string)) {
-            $string = mb_convert_encoding($string, mb_internal_encoding(), 'ASCII');
+        if (!\mb_check_encoding($string)) {
+            $string = \mb_convert_encoding($string, mb_internal_encoding(), 'ASCII');
         }
-        return preg_replace("/\n/", "", (preg_replace("/\r/", "", $string)));
+        if (!is_string($string)) {
+            throw new \RuntimeException('Unexpected issue while multi byte encoded data');
+        }
+        return \preg_replace('/\n|\r/', '', $string) ?? '';
     }
 
-    private static function convertMetaToArray($data)
+    /**
+     * @return array<string, string>
+     */
+    private static function convertMetaToArray(string $data): array
     {
-        if (!mb_check_encoding($data)) {
-            $data = mb_convert_encoding($data, mb_internal_encoding(), 'ASCII');
+        if (!\mb_check_encoding($data)) {
+            $data = \mb_convert_encoding($data, \mb_internal_encoding(), 'ASCII');
         }
-        $cleaned = (preg_replace("/\r/", "", $data));
+        $cleaned = \preg_replace("/\r/", "", $data);
+        if ($cleaned === null) {
+            throw new \RuntimeException('It was possible to parse meta information');
+        }
         $matches = [];
-        preg_match_all(
+        \preg_match_all(
             "/^(.*): (.*)$/m",
             $cleaned,
             $matches,
             PREG_PATTERN_ORDER
         );
-        return (array_combine($matches[1], $matches[2]) ?? null);
+        $metaArray = \array_combine($matches[1], $matches[2]);
+        if ($metaArray === false) {
+            return [];
+        }
+        return $metaArray;
     }
 
     public function isOptional()
@@ -250,7 +261,7 @@ class AssetExtractorService implements CacheWarmerInterface
         return false;
     }
 
-    public function warmUp($cacheDir)
+    public function warmUp($cacheDir): void
     {
         if (empty($this->tikaServer)) {
             $this->getTikaWrapper();

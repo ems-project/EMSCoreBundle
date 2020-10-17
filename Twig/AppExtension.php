@@ -225,9 +225,9 @@ class AppExtension extends \Twig_Extension
         return $this->contentTypeService->getChildByPath($contentType->getFieldType(), $path, $skipVirtualFields);
     }
 
-    public function getFile($hash, $cacheContext = false)
+    public function getFile($hash)
     {
-        return $this->fileService->getFile($hash, $cacheContext);
+        return $this->fileService->getFile($hash);
     }
 
     public function getString($rawData, $field)

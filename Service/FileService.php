@@ -18,6 +18,7 @@ use EMS\CommonBundle\Storage\StorageServiceMissingException;
 use EMS\CoreBundle\Entity\UploadedAsset;
 use EMS\CoreBundle\Repository\UploadedAssetRepository;
 use Exception;
+use Psr\Http\Message\StreamInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -112,23 +113,35 @@ class FileService
         return false;
     }
 
-    /**
-     * @param string $hash
-     * @return bool|string
-     */
-    public function getFile($hash)
+    public function getFile(string $hash): string
     {
-        //TODO: instead of always to make a new copy, copy it once in the symfony cache folder
-        $resource = $this->getResource($hash);
-        if ($resource) {
-            $filename = tempnam(sys_get_temp_dir(), 'EMS');
-            file_put_contents($filename, $resource);
+        $filename = \sprintf('%s%sEMS_cached_%s', sys_get_temp_dir(), DIRECTORY_SEPARATOR, $hash);
+        if (\file_exists($filename) && $this->storageManager->computeFileHash($filename) === $hash) {
             return $filename;
         }
-        return false;
+        $stream = $this->getResource($hash);
+
+        if ($stream === null) {
+            throw new NotFoundHttpException(sprintf('File %s not found', $hash));
+        }
+
+        if (!$handle = \fopen($filename, 'w')) {
+            throw new \RuntimeException(sprintf('Can\'t open a temporary file %s', $filename));
+        }
+
+        while (!$stream->eof()) {
+            if (\fwrite($handle, $stream->read(8192)) === false) {
+                throw new \RuntimeException(sprintf('Can\'t write in temporary file %s', $filename));
+            }
+        }
+
+        if (\fclose($handle) === false) {
+            throw new \RuntimeException(sprintf('Can\'t close the temporary file %s', $filename));
+        }
+        return $filename;
     }
 
-    public function getResource($hash)
+    public function getResource($hash): ?StreamInterface
     {
         /**@var StorageInterface $service */
         foreach ($this->storageManager->getAdapters() as $service) {
@@ -142,7 +155,7 @@ class FileService
                 return $resource;
             }
         }
-        return false;
+        return null;
     }
 
     public function getStreamResponse(string $sha1, string $disposition, Request $request): Response

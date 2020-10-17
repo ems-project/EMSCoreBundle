@@ -31,7 +31,7 @@ class I18nService
         if ($filters != null && isset($filters['identifier']) && !empty($filters['identifier'])) {
             $identifier = $filters['identifier'];
         }
-        return $this->repository->count($identifier);
+        return $this->repository->countWithFilter($identifier);
     }
 
     public function delete(I18n $i18n)
@@ -41,11 +41,9 @@ class I18nService
     }
     
     /**
-     * Call to generate list of i18n keys
-     *
-     * @return array Notification
+     * @return iterable|I18n[]
      */
-    public function findAll($from, $limit, $filters = null)
+    public function findAll($from, $limit, $filters = null): iterable
     {
         $identifier = null;
         

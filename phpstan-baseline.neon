@@ -10164,37 +10164,6 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\FilterRepository\\:\\:findByName\\(\\) has parameter \\$name with no typehint specified\\.$#"
 			count: 1
 			path: Repository/FilterRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\I18nRepository\\:\\:count\\(\\) has parameter \\$identifier with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Repository/I18nRepository.php
-
-		-
-			message: "#^Binary operation \"\\.\" between '%' and array results in an error\\.$#"
-			count: 1
-			path: Repository/I18nRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\I18nRepository\\:\\:findByWithFilter\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: Repository/I18nRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\I18nRepository\\:\\:findByWithFilter\\(\\) has parameter \\$from with no typehint specified\\.$#"
-			count: 1
-			path: Repository/I18nRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\I18nRepository\\:\\:findByWithFilter\\(\\) has parameter \\$identifier with no typehint specified\\.$#"
-			count: 1
-			path: Repository/I18nRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\I18nRepository\\:\\:findByWithFilter\\(\\) has parameter \\$limit with no typehint specified\\.$#"
-			count: 1
-			path: Repository/I18nRepository.php
-
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\ManagedAliasRepository\\:\\:findAllAliases\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1

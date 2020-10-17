@@ -62,7 +62,7 @@ class FileService
 
 
         if ($createDbStorageService) {
-            $this->addStorageService(new EntityStorage($doctrine, true));
+            $this->addStorageService(new EntityStorage($doctrine));
         }
 
         if (!empty($elasticmsRemoteServer)) {
@@ -376,12 +376,11 @@ class FileService
         return $uploadedAsset;
     }
 
-    public function create($hash, $fileName)
+    public function create(string $hash, string $fileName): bool
     {
-        /**@var StorageInterface $service */
         foreach ($this->storageManager->getAdapters() as $service) {
             if ($service->create($hash, $fileName)) {
-                unlink($fileName);
+                \unlink($fileName);
                 return true;
             }
         }

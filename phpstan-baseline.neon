@@ -10801,11 +10801,6 @@ parameters:
 			path: Service/AssetExtractorService.php
 
 		-
-			message: "#^Method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:flush\\(\\) invoked with 1 parameter, 0 required\\.$#"
-			count: 1
-			path: Service/AssetExtractorService.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\AssetExtractorService\\:\\:cleanString\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: Service/AssetExtractorService.php
@@ -11846,11 +11841,6 @@ parameters:
 			path: Service/FileService.php
 
 		-
-			message: "#^Class EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\EntityStorage constructor invoked with 2 parameters, 1 required\\.$#"
-			count: 1
-			path: Service/FileService.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\FileService\\:\\:addStorageService\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: Service/FileService.php
@@ -11941,11 +11931,6 @@ parameters:
 			path: Service/FileService.php
 
 		-
-			message: "#^Method EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\StorageInterface\\:\\:head\\(\\) invoked with 2 parameters, 1 required\\.$#"
-			count: 1
-			path: Service/FileService.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\FileService\\:\\:addChunk\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: Service/FileService.php
@@ -11983,31 +11968,6 @@ parameters:
 		-
 			message: "#^Call to an undefined method object\\:\\:getSha1\\(\\)\\.$#"
 			count: 3
-			path: Service/FileService.php
-
-		-
-			message: "#^Method EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\StorageInterface\\:\\:read\\(\\) invoked with 3 parameters, 1\\-2 required\\.$#"
-			count: 1
-			path: Service/FileService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\FileService\\:\\:create\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: Service/FileService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\FileService\\:\\:create\\(\\) has parameter \\$fileName with no typehint specified\\.$#"
-			count: 1
-			path: Service/FileService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\FileService\\:\\:create\\(\\) has parameter \\$hash with no typehint specified\\.$#"
-			count: 1
-			path: Service/FileService.php
-
-		-
-			message: "#^Method EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\StorageInterface\\:\\:create\\(\\) invoked with 3 parameters, 2 required\\.$#"
-			count: 1
 			path: Service/FileService.php
 
 		-
@@ -13943,26 +13903,6 @@ parameters:
 		-
 			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\StorageInterface\\:\\:supportCacheStore\\(\\)\\.$#"
 			count: 1
-			path: tests/Storage/FileServiceTest.php
-
-		-
-			message: "#^Method EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\StorageInterface\\:\\:initUpload\\(\\) invoked with 5 parameters, 4 required\\.$#"
-			count: 1
-			path: tests/Storage/FileServiceTest.php
-
-		-
-			message: "#^Method EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\StorageInterface\\:\\:addChunk\\(\\) invoked with 3 parameters, 2 required\\.$#"
-			count: 2
-			path: tests/Storage/FileServiceTest.php
-
-		-
-			message: "#^Method EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\StorageInterface\\:\\:finalizeUpload\\(\\) invoked with 2 parameters, 1 required\\.$#"
-			count: 1
-			path: tests/Storage/FileServiceTest.php
-
-		-
-			message: "#^Method EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\StorageInterface\\:\\:head\\(\\) invoked with 2 parameters, 1 required\\.$#"
-			count: 2
 			path: tests/Storage/FileServiceTest.php
 
 		-

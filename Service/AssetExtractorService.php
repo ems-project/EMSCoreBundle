@@ -207,7 +207,7 @@ class AssetExtractorService implements CacheWarmerInterface
                 $cacheData->setHash($hash);
                 $cacheData->setData($out);
                 $manager->persist($cacheData);
-                $manager->flush($cacheData);
+                $manager->flush();
             } catch (Exception $e) {
                 $this->logger->warning('service.asset_extractor.persist_error', [
                     'file_hash' => $hash,

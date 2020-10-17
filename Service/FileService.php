@@ -97,12 +97,12 @@ class FileService
         return $this->storageManager->getAdapters();
     }
 
-    public function getBase64($hash, $cacheContext = false)
+    public function getBase64($hash)
     {
         /**@var StorageInterface $service */
         foreach ($this->storageManager->getAdapters() as $service) {
             try {
-                $resource = $service->read($hash, $cacheContext);
+                $resource = $service->read($hash);
             } catch (NotFoundHttpException $e) {
                 continue;
             }
@@ -118,13 +118,12 @@ class FileService
 
     /**
      * @param string $hash
-     * @param bool $cacheContext
      * @return bool|string
      */
-    public function getFile($hash, $cacheContext = false)
+    public function getFile($hash)
     {
         //TODO: instead of always to make a new copy, copy it once in the symfony cache folder
-        $resource = $this->getResource($hash, $cacheContext);
+        $resource = $this->getResource($hash);
         if ($resource) {
             $filename = tempnam(sys_get_temp_dir(), 'EMS');
             file_put_contents($filename, $resource);
@@ -133,12 +132,12 @@ class FileService
         return false;
     }
 
-    public function getResource($hash, $cacheContext = false)
+    public function getResource($hash)
     {
         /**@var StorageInterface $service */
         foreach ($this->storageManager->getAdapters() as $service) {
             try {
-                $resource = $service->read($hash, $cacheContext);
+                $resource = $service->read($hash);
             } catch (NotFoundHttpException $e) {
                 continue;
             }
@@ -294,22 +293,22 @@ class FileService
     }
 
 
-    public function head($hash, $cacheContext = false)
+    public function head($hash)
     {
         /**@var StorageInterface $service */
         foreach ($this->storageManager->getAdapters() as $service) {
-            if ($service->head($hash, $cacheContext)) {
+            if ($service->head($hash)) {
                 return true;
             }
         }
         return false;
     }
 
-    public function getSize($hash, $cacheContext = false)
+    public function getSize($hash)
     {
         /**@var StorageInterface $service */
         foreach ($this->storageManager->getAdapters() as $service) {
-            $filesize = $service->getSize($hash, $cacheContext);
+            $filesize = $service->getSize($hash);
             if ($filesize !== false) {
                 return $filesize;
             }
@@ -387,11 +386,11 @@ class FileService
         return $uploadedAsset;
     }
 
-    public function create($hash, $fileName, $cacheContext = false)
+    public function create($hash, $fileName)
     {
         /**@var StorageInterface $service */
         foreach ($this->storageManager->getAdapters() as $service) {
-            if ($service->create($hash, $fileName, $cacheContext)) {
+            if ($service->create($hash, $fileName)) {
                 unlink($fileName);
                 return true;
             }

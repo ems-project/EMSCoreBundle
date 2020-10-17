@@ -11896,11 +11896,6 @@ parameters:
 			path: Service/FileService.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\FileService\\:\\:getBase64\\(\\) has parameter \\$cacheContext with no typehint specified\\.$#"
-			count: 1
-			path: Service/FileService.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\FileService\\:\\:getBase64\\(\\) has parameter \\$hash with no typehint specified\\.$#"
 			count: 1
 			path: Service/FileService.php
@@ -11927,11 +11922,6 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\FileService\\:\\:getResource\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: Service/FileService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\FileService\\:\\:getResource\\(\\) has parameter \\$cacheContext with no typehint specified\\.$#"
 			count: 1
 			path: Service/FileService.php
 
@@ -11986,11 +11976,6 @@ parameters:
 			path: Service/FileService.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\FileService\\:\\:head\\(\\) has parameter \\$cacheContext with no typehint specified\\.$#"
-			count: 1
-			path: Service/FileService.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\FileService\\:\\:head\\(\\) has parameter \\$hash with no typehint specified\\.$#"
 			count: 1
 			path: Service/FileService.php
@@ -12002,11 +11987,6 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\FileService\\:\\:getSize\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: Service/FileService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\FileService\\:\\:getSize\\(\\) has parameter \\$cacheContext with no typehint specified\\.$#"
 			count: 1
 			path: Service/FileService.php
 
@@ -12067,11 +12047,6 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\FileService\\:\\:create\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: Service/FileService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\FileService\\:\\:create\\(\\) has parameter \\$cacheContext with no typehint specified\\.$#"
 			count: 1
 			path: Service/FileService.php
 
@@ -13042,11 +13017,6 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Twig\\\\AppExtension\\:\\:getFile\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: Twig/AppExtension.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Twig\\\\AppExtension\\:\\:getFile\\(\\) has parameter \\$cacheContext with no typehint specified\\.$#"
 			count: 1
 			path: Twig/AppExtension.php
 

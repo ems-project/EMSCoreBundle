@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Exception\AssetNotFoundException;
 use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\FileService;
 use Exception;
@@ -13,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class FileController extends AbstractController
@@ -60,7 +62,11 @@ class FileController extends AbstractController
             }
         }
 
-        $data = $assetExtractorService->extractData($sha1, null, $forced);
+        try {
+            $data = $assetExtractorService->extractData($sha1, null, $forced);
+        } catch (AssetNotFoundException $e) {
+            throw new NotFoundHttpException(sprintf('Asset %s not found', $sha1));
+        }
 
         $response = $this->render('@EMSCore/ajax/extract-data-file.json.twig', [
             'success' => true,

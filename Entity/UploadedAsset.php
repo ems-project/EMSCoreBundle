@@ -106,15 +106,18 @@ class UploadedAsset
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    public function updateModified()
+    public function updateModified(): void
     {
         $this->modified = new \DateTime();
         if (!isset($this->created)) {
             $this->created = $this->modified;
         }
     }
-    
-    public function getResponse()
+
+    /**
+     * @return array{sha1:string, type:string, available:bool, name:string, size:int, status:string, uploaded:int, user:string}
+     */
+    public function getResponse(): array
     {
         return [
             'sha1' => $this->getSha1(),
@@ -379,8 +382,7 @@ class UploadedAsset
     }
 
     /**
-     * Convert an UploadedAsset entity into a associative array just like it will be indexed in elasticsearch
-     * @return array
+     * @return array{filename:string,filesize:int,mimetype:string,sha1:string,_hash_algo:string}
      */
     public function getData():array
     {

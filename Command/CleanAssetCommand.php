@@ -33,7 +33,7 @@ class CleanAssetCommand extends EmsCommand
         parent::__construct($logger, $client);
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('ems:asset:clean')
@@ -94,5 +94,6 @@ class CleanAssetCommand extends EmsCommand
         if ($filesInUsed) {
             $output->writeln("<comment>$filesInUsed files are referenced $totalCounter times</comment>");
         }
+        return 0;
     }
 }

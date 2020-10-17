@@ -648,10 +648,6 @@ services:
         arguments: ['@logger', '@app.elasticsearch', '@doctrine', '@ems.service.file']
         tags:
             - { name: console.command }
-    EMS\CoreBundle\Command\AssetClearCacheCommand:
-        arguments: ['@logger', '@app.elasticsearch', '@ems.service.file']
-        tags:
-            - { name: console.command }
     EMS\CoreBundle\Command\AlignManagedAliases:
         arguments: ['@logger', '@ems.service.alias']
         tags:

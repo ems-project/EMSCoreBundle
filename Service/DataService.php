@@ -725,8 +725,11 @@ class DataService
     public function getPublicKey()
     {
         if ($this->private_key && empty($this->public_key)) {
-            $certificate = openssl_pkey_get_private($this->private_key);
-            $details = openssl_pkey_get_details($certificate);
+            $certificate = \openssl_pkey_get_private($this->private_key);
+            if ($certificate === false) {
+                throw new \RuntimeException('Private key not found');
+            }
+            $details = \openssl_pkey_get_details($certificate);
             $this->public_key = $details['key'];
         }
         return $this->public_key;
@@ -736,8 +739,10 @@ class DataService
     {
         if ($this->private_key) {
             $certificate = openssl_pkey_get_private($this->private_key);
-            $details = openssl_pkey_get_details($certificate);
-            return $details;
+            if ($certificate === false) {
+                throw new \RuntimeException('Private key not found');
+            }
+            return openssl_pkey_get_details($certificate);
         }
         return null;
     }

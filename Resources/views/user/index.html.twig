@@ -156,6 +156,14 @@
 					</tbody>
 				</table>
 				</div>
+                {% if paging.lastPage > 1 %}
+                    <div class="box-footer">
+                        {% include '@EMSCore/elements/pagination.html.twig' with {
+                            'paging': paging,
+                            'showAlwaysFirstAndLast': false
+                        } %}
+                    </div>
+                {% endif %}
 			</div>
 			<!-- /.box-body -->
 		</div>

@@ -198,11 +198,14 @@ ROLE_SUPER_PUBLISHER: 'Super Publisher'
 ROLE_SUPER_USER: 'Super User'
 ROLE_SUPER_WEBMASTER: 'Super Webmaster'
 ROLE_USER: User
+ROLE_USER_READ: User read
+ROLE_USER_ADMIN: User Administrator
 ROLE_WEBMASTER: Webmaster
 Roles: Roles
 ROLE_REVIEWER: Reviewer
 ROLE_SUPER: Super user
 ROLE_TRADUCTOR: Traductor
+ROLE_FORM_CRM: Form CRM
 Save: Save
 Search: Search
 Should: Should
@@ -437,7 +440,21 @@ service:
     template_parse_error: 'Error to parse the computed field %computed_field_name%: %error_message%'
     json_parse_post_processing_error: 'Error to JSON parse the result of the post processing script of field %field_name% (|json_encode|raw): %template%'
     not_able_to_load_the_private_key: 'It''s impossible to load the private key %private_key_filename% : %error_message%'
+
+contenttype:
+  action:
+    update_from_json: 'Update from JSON'
 form:
+  contenttype:
+    json_update:
+      deleteExitingTemplates: 'Delete existing templates'
+      deleteExitingViews: 'Delete existing views'
+      json: 'Content Type''s JSON file'
+      mimetype: 'Media Type'
+      filename: 'Filename'
+      update: 'Update content type from JSON'
+      title: 'Update the content type "%content_type%"'
+      subtitle: 'from a Content Type''s JSON file'
   data_field:
     collection:
       import_not_an_array: 'Some data were not imported for the collection field %field_name% as is was not an array'
@@ -643,3 +660,17 @@ field_type:
     collapse_all_button: 'Expand/Collapse all'
     move_item: 'Move'
     add: 'Add'
+    edit: 'Edit'
+
+form_submissions:
+    title: Form Submissions
+    overview: Overview
+    download: Download
+    process:
+      button: Delete Submission
+      confirm_title: Confirm deletion
+      success: Form submission with id "%id%" has been deleted!
+      error: Form deletion failed!
+      confirm_body: |
+          After confirmation you can NOT download the form data anymore!
+          Are you sure, you want to delete the form submission?

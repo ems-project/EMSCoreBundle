@@ -116,6 +116,12 @@ class DocumentCommand extends Command
     {
         $contentTypeName = $input->getArgument(self::ARGUMENT_CONTENTTYPE);
         $archiveFilename = $input->getArgument(self::ARGUMENT_ARCHIVE);
+        if (!is_string($contentTypeName)) {
+            throw new \RuntimeException('Content Type name as to be a string');
+        }
+        if (!is_string($archiveFilename)) {
+            throw new \RuntimeException('Archive Filename as to be a string');
+        }
 
         $this->io->title('Make documents');
         $this->io->section('Checking input');

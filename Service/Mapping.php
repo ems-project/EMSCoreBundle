@@ -2,10 +2,7 @@
 
 namespace EMS\CoreBundle\Service;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Elasticsearch\Client;
-use EMS\CoreBundle\DependencyInjection\EMSCoreExtension;
-use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Form\FieldType\FieldTypeType;

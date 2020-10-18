@@ -2,8 +2,9 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
+use Doctrine\ORM\NonUniqueResultException;
+use Elasticsearch\Client;
 use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
-use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\Search;
@@ -14,7 +15,10 @@ use EMS\CoreBundle\Form\Form\SearchFormType;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\JobService;
+use EMS\CoreBundle\Service\PublishService;
+use EMS\CoreBundle\Service\SearchService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,38 +26,52 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class PublishController extends AppController
+class PublishController extends AbstractController
 {
     /**
-     * @param Revision $revisionId
-     * @param Environment $envId
-     * @return RedirectResponse
      * @Route("/publish/to/{revisionId}/{envId}", name="revision.publish_to"))
      */
-    public function publishToAction(Revision $revisionId, Environment $envId)
+    public function publishToAction(Revision $revisionId, Environment $envId, PublishService $publishService): Response
     {
-        $this->getPublishService()->publish($revisionId, $envId);
+        $contentType = $revisionId->getContentType();
+        if ($contentType === null) {
+            throw new \RuntimeException('Content type not found');
+        }
+        if ($contentType->getDeleted()) {
+            throw new \RuntimeException('Content type deleted');
+        }
+
+        try {
+            $publishService->publish($revisionId, $envId);
+        } catch (NonUniqueResultException $e) {
+            throw new NotFoundHttpException('Revision not found');
+        }
 
         return $this->redirectToRoute('data.revisions', [
             'ouuid' => $revisionId->getOuuid(),
-            'type' => $revisionId->getContentType()->getName(),
+            'type' => $contentType->getName(),
             'revisionId' => $revisionId->getId(),
         ]);
     }
 
     /**
-     * @param Revision $revisionId
-     * @param Environment $envId
-     * @return RedirectResponse
      * @Route("/revision/unpublish/{revisionId}/{envId}", name="revision.unpublish"))
      */
-    public function unpublishAction(Revision $revisionId, Environment $envId)
+    public function unPublishAction(Revision $revisionId, Environment $envId, PublishService $publishService): RedirectResponse
     {
-        $this->getPublishService()->unpublish($revisionId, $envId);
+        $contentType = $revisionId->getContentType();
+        if ($contentType === null) {
+            throw new \RuntimeException('Content type not found');
+        }
+        if ($contentType->getDeleted()) {
+            throw new \RuntimeException('Content type deleted');
+        }
+
+        $publishService->unpublish($revisionId, $envId);
 
         return $this->redirectToRoute('data.revisions', [
             'ouuid' => $revisionId->getOuuid(),
-            'type' => $revisionId->getContentType()->getName(),
+            'type' => $contentType->getName(),
             'revisionId' => $revisionId->getId(),
         ]);
     }
@@ -62,7 +80,7 @@ class PublishController extends AppController
      * @Route("/publish/search-result", name="search.publish", defaults={"deleted": 0, "managed": 1})
      * @Security("has_role('ROLE_PUBLISHER')")
      */
-    public function publishSearchResult(Request $request, JobService $jobService, EnvironmentService $EnvironmentService, ContentTypeService $contentTypeService): Response
+    public function publishSearchResult(Request $request, JobService $jobService, EnvironmentService $EnvironmentService, ContentTypeService $contentTypeService, SearchService $searchService, Client $client): Response
     {
         $search = new Search();
         $searchForm = $this->createForm(SearchFormType::class, $search, [
@@ -73,10 +91,10 @@ class PublishController extends AppController
         $requestBis->setMethod('GET');
         $searchForm->handleRequest($requestBis);
 
-        if (count($search->getEnvironments()) != 1) {
+        if (count($search->getEnvironments()) !== 1) {
             throw new NotFoundHttpException('Environment not found');
         }
-        if (count($search->getContentTypes()) != 1) {
+        if (count($search->getContentTypes()) !== 1) {
             throw new NotFoundHttpException('Content type not found');
         }
 
@@ -102,12 +120,12 @@ class PublishController extends AppController
             'icon' => 'glyphicon glyphicon-open'
         ]);
 
-        $body = $this->getSearchService()->generateSearchBody($search);
+        $body = $searchService->generateSearchBody($search);
         $form = $builder->getForm();
         $form->handleRequest($request);
 
         $body['query']['bool']['must'] = array_merge($body['query']['bool']['must'] ?? [], [['term' => [EMSSource::FIELD_CONTENT_TYPE => $contentType->getName()]]]);
-        $counter = $this->getElasticsearch()->search([
+        $counter = $client->search([
             'index' => $environment->getAlias(),
             'body' => $body,
             'size' => 0,

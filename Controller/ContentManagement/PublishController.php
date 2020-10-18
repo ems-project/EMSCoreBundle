@@ -33,11 +33,11 @@ class PublishController extends AppController
     public function publishToAction(Revision $revisionId, Environment $envId)
     {
         $this->getPublishService()->publish($revisionId, $envId);
-        
+
         return $this->redirectToRoute('data.revisions', [
-                'ouuid' => $revisionId->getOuuid(),
-                'type' => $revisionId->getContentType()->getName(),
-                'revisionId' => $revisionId->getId(),
+            'ouuid' => $revisionId->getOuuid(),
+            'type' => $revisionId->getContentType()->getName(),
+            'revisionId' => $revisionId->getId(),
         ]);
     }
 
@@ -50,11 +50,11 @@ class PublishController extends AppController
     public function unpublishAction(Revision $revisionId, Environment $envId)
     {
         $this->getPublishService()->unpublish($revisionId, $envId);
-        
+
         return $this->redirectToRoute('data.revisions', [
-                'ouuid' => $revisionId->getOuuid(),
-                'type' => $revisionId->getContentType()->getName(),
-                'revisionId' => $revisionId->getId(),
+            'ouuid' => $revisionId->getOuuid(),
+            'type' => $revisionId->getContentType()->getName(),
+            'revisionId' => $revisionId->getId(),
         ]);
     }
 
@@ -66,10 +66,10 @@ class PublishController extends AppController
     {
         $search = new Search();
         $searchForm = $this->createForm(SearchFormType::class, $search, [
-                'method' => 'GET',
+            'method' => 'GET',
         ]);
         $requestBis = clone $request;
-        
+
         $requestBis->setMethod('GET');
         $searchForm->handleRequest($requestBis);
 
@@ -89,32 +89,32 @@ class PublishController extends AppController
         if (!$contentType instanceof ContentType) {
             throw new NotFoundHttpException('Content type not found');
         }
-        
+
         $data = [];
         $builder = $this->createFormBuilder($data);
         $builder->add('toEnvironment', EnvironmentPickerType::class, [
             'managedOnly' => true,
             'ignore' => [$environment->getName()],
         ])->add('publish', SubmitEmsType::class, [
-                'attr' => [
-                        'class' => 'btn-primary btn-md'
-                ],
-                'icon' => 'glyphicon glyphicon-open'
+            'attr' => [
+                'class' => 'btn-primary btn-md'
+            ],
+            'icon' => 'glyphicon glyphicon-open'
         ]);
-        
+
         $body = $this->getSearchService()->generateSearchBody($search);
         $form = $builder->getForm();
         $form->handleRequest($request);
 
         $body['query']['bool']['must'] = array_merge($body['query']['bool']['must'] ?? [], [['term' => [EMSSource::FIELD_CONTENT_TYPE => $contentType->getName()]]]);
         $counter = $this->getElasticsearch()->search([
-                'index' => $environment->getAlias(),
-                'body' => $body,
-                'size' => 0,
+            'index' => $environment->getAlias(),
+            'body' => $body,
+            'size' => 0,
         ]);
-        
+
         $total = $counter['hits']['total'];
-        
+
         if ($form->isSubmitted()) {
             $command = sprintf(
                 "ems:environment:align %s %s --force --searchQuery=%s",
@@ -135,12 +135,12 @@ class PublishController extends AppController
                 'job' => $job->getId(),
             ]);
         }
-        
+
         return $this->render('@EMSCore/publish/publish-search-result.html.twig', [
-                'form' => $form->createView(),
-                'fromEnvironment' => $environment,
-                'contentType' => $contentType,
-                'counter' => $total,
+            'form' => $form->createView(),
+            'fromEnvironment' => $environment,
+            'contentType' => $contentType,
+            'counter' => $total,
         ]);
     }
 }

@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Service;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManagerInterface;
 use EMS\CoreBundle\Entity\AuthToken;
+use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Security\CoreLdapUser;
 use EMS\CoreBundle\Repository\UserRepositoryInterface;
@@ -95,12 +96,14 @@ class UserService
         $user = $repository->findOneBy([
                 'username' => $username
         ]);
-        
-        if (!empty($user) && $detachIt) {
-            $em->detach($user);
+
+        if (empty($user) || !$detachIt) {
+            return $user;
         }
-        
-        return $user;
+
+        $clone = clone $user;
+        $em->detach($clone);
+        return $clone;
     }
     
     public function getCurrentUser(bool $detach = true): UserInterface
@@ -146,6 +149,8 @@ class UserService
         $out['ROLE_DEFAULT_SEARCH'] = 'ROLE_DEFAULT_SEARCH';
         $out['ROLE_SUPER'] = 'ROLE_SUPER';
         $out['ROLE_API'] = 'ROLE_API';
+        $out['ROLE_USER_READ'] = 'ROLE_USER_READ';
+        $out['ROLE_USER_ADMIN'] = 'ROLE_USER_ADMIN';
         return $out;
     }
     
@@ -167,7 +172,7 @@ class UserService
         $em = $this->doctrine->getManager();
         $em->remove($user);
     }
-    
+
     public function getAllUsers()
     {
         $em = $this->doctrine->getManager();

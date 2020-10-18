@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\DependencyInjection;
 
+use Ramsey\Uuid\Doctrine\UuidType;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
@@ -135,6 +136,16 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
             $container->prependExtensionConfig('twig', [
                 'globals' => $globals,
                 'form_themes' => ["@EMSCore/form/fields.html.twig"],
+            ]);
+        }
+
+        if (isset($bundles['DoctrineBundle'])) {
+            $container->prependExtensionConfig('doctrine', [
+                'dbal' => [
+                    'types' => [
+                        'uuid' => UuidType::class
+                    ]
+                ]
             ]);
         }
 

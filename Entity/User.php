@@ -2,10 +2,11 @@
 
 namespace EMS\CoreBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Security\CoreLdapUser;
 use FOS\UserBundle\Model\User as BaseUser;
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 
 /**
  * @ORM\Entity
@@ -13,7 +14,7 @@ use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\UserRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-final class User extends BaseUser implements UserInterface
+class User extends BaseUser implements UserInterface
 {
     /**
      * @ORM\Id
@@ -35,21 +36,21 @@ final class User extends BaseUser implements UserInterface
      * @ORM\Column(name="modified", type="datetime")
      */
     private $modified;
-    
+
     /**
      * @var array
      *
      * @ORM\Column(name="circles", type="json_array", nullable=true)
      */
     private $circles;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="display_name", type="string", length=255, nullable=true)
      */
     private $displayName;
-    
+
     /**
      * @var bool
      *
@@ -71,14 +72,14 @@ final class User extends BaseUser implements UserInterface
      * @ORM\Column(name="wysiwyg_options", type="text", nullable=true)
      */
     private $wysiwygOptions;
-    
+
     /**
      * @var bool
      *
      * @ORM\Column(name="layout_boxed", type="boolean")
      */
     private $layoutBoxed;
-    
+
     /**
      * @var bool
      *
@@ -100,21 +101,28 @@ final class User extends BaseUser implements UserInterface
      */
     private $sidebarCollapse;
 
-//     /**
-//      * @ORM\OneToMany(targetEntity="AuthToken", mappedBy="user", cascade={"remove"})
-//      * @ORM\OrderBy({"created" = "ASC"})
-//      */
-//     private $authTokens;
+     /**
+      * @var Collection<int,AuthToken>
+      *
+      * @ORM\OneToMany(targetEntity="AuthToken", mappedBy="user", cascade={"remove"})
+      * @ORM\OrderBy({"created" = "ASC"})
+      */
+    private $authTokens;
 
-    
+
     public function __construct()
     {
         parent::__construct();
-        
+
         $this->layoutBoxed = false;
         $this->sidebarCollapse = false;
         $this->sidebarMini = true;
-        // your own logic
+        $this->authTokens = new ArrayCollection();
+    }
+
+    public function __clone()
+    {
+        $this->authTokens = new ArrayCollection();
     }
 
     /**
@@ -131,7 +139,7 @@ final class User extends BaseUser implements UserInterface
 
     public static function fromCoreLdap(CoreLdapUser $ldapUser): self
     {
-        $user = new static();
+        $user = new self();
         $user->username = $ldapUser->getUsername();
         $user->roles = $ldapUser->getRoles();
         $user->created = $user->modified = new \DateTime('now');
@@ -145,6 +153,22 @@ final class User extends BaseUser implements UserInterface
     }
 
     /**
+     * @return array{id: int, username:string, displayName:string, roles:array<string>, email:string, circles:array<string>, lastLogin: ?string}
+     */
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'username' => $this->getUsername(),
+            'displayName' => $this->getDisplayName(),
+            'roles' => $this->getRoles(),
+            'email' => $this->getEmail(),
+            'circles' => $this->getCircles(),
+            'lastLogin' => $this->getLastLogin() !== null ? $this->getLastLogin()->format('c') : null,
+        ];
+    }
+
+    /**
      * Get created
      *
      * @return \DateTime
@@ -153,7 +177,7 @@ final class User extends BaseUser implements UserInterface
     {
         return $this->created;
     }
-    
+
     /**
      * Get modified
      *
@@ -173,7 +197,7 @@ final class User extends BaseUser implements UserInterface
     {
         return $this->circles;
     }
-    
+
     /**
      * Get expiresAt
      *
@@ -183,7 +207,7 @@ final class User extends BaseUser implements UserInterface
     {
         return $this->expiresAt;
     }
-    
+
     /**
      * Set created
      *
@@ -211,7 +235,7 @@ final class User extends BaseUser implements UserInterface
 
         return $this;
     }
-    
+
     /**
      * Set circles
      *
@@ -222,7 +246,7 @@ final class User extends BaseUser implements UserInterface
     public function setCircles($circles)
     {
         $this->circles = $circles;
-    
+
         return $this;
     }
 
@@ -424,14 +448,14 @@ final class User extends BaseUser implements UserInterface
     /**
      * Get authTokens
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getAuthTokens()
     {
         return $this->authTokens;
     }
-    
-    
+
+
     /**
      * Set emailNotification
      *
@@ -442,10 +466,10 @@ final class User extends BaseUser implements UserInterface
     public function setEmailNotification($emailNotification)
     {
         $this->emailNotification = $emailNotification;
-        
+
         return $this;
     }
-    
+
     /**
      * Get emailNotification
      *
@@ -455,7 +479,7 @@ final class User extends BaseUser implements UserInterface
     {
         return $this->emailNotification;
     }
-    
+
     /**
      * Is enabled
      *

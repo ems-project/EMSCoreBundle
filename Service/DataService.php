@@ -455,6 +455,10 @@ class DataService
         /** @var DataField $dataField*/
         $dataField = $form->getNormData();
 
+        if (!$dataField instanceof DataField) {
+            return true;
+        }
+
         /** @var DataFieldType $dataFieldType */
         $dataFieldType = $form->getConfig()->getType()->getInnerType();
 

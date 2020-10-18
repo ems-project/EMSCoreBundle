@@ -116,7 +116,13 @@ services:
         class: EMS\CoreBundle\Form\DataField\JsonMenuEditorFieldType
         arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch']
         tags:
-            - { name: ems.form.datafieldtype, alias: code }
+            - { name: ems.form.datafieldtype, alias: json_menu }
+            - { name: form.type }
+    ems.fieldtype.json_menu_nested_editor:
+        class: EMS\CoreBundle\Form\DataField\JsonMenuNestedEditorFieldType
+        arguments: ['@form.factory', '@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch']
+        tags:
+            - { name: ems.form.datafieldtype, alias: json_menu_nested }
             - { name: form.type }
     ems.fieldtype.textarea:
         class: EMS\CoreBundle\Form\DataField\TextareaFieldType
@@ -186,9 +192,15 @@ services:
             - { name: form.type }
     ems.fieldtype.json_menu_link:
         class: EMS\CoreBundle\Form\DataField\JsonMenuLinkFieldType
-        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@ems.service.contenttype', '@app.elasticsearch', '@ems_common.text.decoder']
+        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@ems.service.contenttype', '@app.elasticsearch', '@ems_common.json.decoder']
         tags:
-            - { name: ems.form.datafieldtype, alias: choice }
+            - { name: ems.form.datafieldtype, alias: json_menu_link }
+            - { name: form.type }
+    ems.fieldtype.json_menu_nested_link:
+        class: EMS\CoreBundle\Form\DataField\JsonMenuNestedLinkFieldType
+        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@app.elasticsearch', '@ems_common.json.decoder']
+        tags:
+            - { name: ems.form.datafieldtype, alias: json_menu_nested_link }
             - { name: form.type }
     ems.fieldtype.checkbox:
         class: EMS\CoreBundle\Form\DataField\CheckboxFieldType
@@ -247,6 +259,10 @@ services:
     ems.exteneded.collectiontype:
         class: EMS\CoreBundle\Form\Form\EmsCollectionType
         arguments: ['@security.authorization_checker']
+        tags:
+            - { name: form.type }
+    EMS\CoreBundle\Form\Submission\ProcessType:
+        arguments: ['@router']
         tags:
             - { name: form.type }
 
@@ -483,7 +499,7 @@ services:
         arguments: ['@ems.service.mapping']
     ems.service.file:
         class: EMS\CoreBundle\Service\FileService
-        arguments: ['@doctrine', '@ems_common.storage.manager', '%kernel.project_dir%', '%ems_core.upload_folder%', '%ems_core.storage_folder%', '%ems_core.save_assets_in_db%', '%ems_core.ems_remote_host%', '%ems_core.ems_remote_authkey%', '%ems_core.sftp_server%', '%ems_core.sftp_path%', '%ems_core.sftp_user%', '%ems_core.public_key%', '%ems_core.private_key%', '%ems_core.s3_credentials%', '%ems_core.s3_bucket%']
+        arguments: ['@doctrine', '@ems_common.storage.manager', '@ems_common.storage.processor', '%kernel.project_dir%', '%ems_core.upload_folder%', '%ems_core.storage_folder%', '%ems_core.save_assets_in_db%', '%ems_core.ems_remote_host%', '%ems_core.ems_remote_authkey%', '%ems_core.sftp_server%', '%ems_core.sftp_path%', '%ems_core.sftp_user%', '%ems_core.public_key%', '%ems_core.private_key%', '%ems_core.s3_credentials%', '%ems_core.s3_bucket%']
     ems.service.helper:
         class: EMS\CoreBundle\Service\HelperService
         arguments: ['@doctrine', '@request_stack', '%ems_core.paging_size%']
@@ -506,6 +522,12 @@ services:
     ems.security.authenticator:
         class: EMS\CoreBundle\Security\Authenticator
         arguments: [ '@security.authentication.manager', '@doctrine', '@ems.service.user']
+    ems.form_submission:
+        class: EMS\CoreBundle\Service\Form\Submission\FormSubmissionService
+        arguments: ['@ems.repository.form_submission']
+    ems.form_verification:
+        class: EMS\CoreBundle\Service\Form\Verification\FormVerificationService
+        arguments: ['@ems.repository.form_verification']
 
 ### command services ###
     ems.environment.ems:
@@ -676,6 +698,7 @@ services:
     EMS\CoreBundle\Service\FileService: '@ems.service.file'
     EMS\CoreBundle\Service\ElasticsearchService: '@ems.service.elasticsearch'
     EMS\CoreBundle\Service\AssetExtractorService: '@ems.service.asset_extractor'
+    EMS\CoreBundle\Service\UserService: '@ems.service.user'
     EMS\CommonBundle\Helper\Text\Encoder: '@ems_common.text.encoder'
 
 
@@ -691,8 +714,16 @@ services:
         public: true
         resource: '../../Controller/*'
 
+    EMS\CoreBundle\Controller\Api\Form\SubmissionController:
+        arguments: ['@ems.form_submission','@logger']
+    EMS\CoreBundle\Controller\Api\Form\VerificationController:
+        arguments: ['@ems.form_verification', '@logger']
+        tags: ['controller.service_arguments']
     EMS\CoreBundle\Controller\AuthTokenController:
         arguments: ['@ems.security.authenticator', '@twig']
+    EMS\CoreBundle\Controller\Form\SubmissionController:
+        arguments: ['@ems.form_submission', '@translator', '@logger']
+        tags: ['controller.service_arguments']
 
 ### Loggers ####
     ems_common.monolog.ems_handler:
@@ -736,3 +767,11 @@ services:
         factory: ['@doctrine.orm.default_entity_manager', getRepository]
         arguments:
             - EMS\CoreBundle\Entity\Revision
+    ems.repository.form_submission:
+        class: EMS\CoreBundle\Repository\FormSubmissionRepository
+        arguments:
+            - '@doctrine'
+    ems.repository.form_verification:
+        class: EMS\CoreBundle\Repository\FormVerificationRepository
+        arguments:
+            - '@doctrine'

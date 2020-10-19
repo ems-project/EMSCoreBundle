@@ -99,7 +99,7 @@ class FileController extends AbstractController
         }
 
         $requestContent = $request->getContent();
-        if (!is_string($requestContent)) {
+        if (!\is_string($requestContent)) {
             throw new \RuntimeException('Unexpected body content');
         }
 
@@ -118,7 +118,7 @@ class FileController extends AbstractController
 
         try {
             $uploadedAsset = $fileService->initUploadFile($hash, $size, $name, $type, $user, $algo);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $logger->error('log.error', [
                 EmsFields::LOG_EXCEPTION_FIELD => $e,
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
@@ -160,15 +160,15 @@ class FileController extends AbstractController
 
         $chunk = $request->getContent();
 
-        if (!is_string($chunk)) {
-            throw new RuntimeException('Unexpected body request');
+        if (!\is_string($chunk)) {
+            throw new \RuntimeException('Unexpected body request');
         }
 
         $user = $this->getUsername();
 
         try {
             $uploadedAsset = $fileService->addChunk($hash, $chunk, $user);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $logger->error('log.error', [
                 EmsFields::LOG_EXCEPTION_FIELD => $e,
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
@@ -231,7 +231,7 @@ class FileController extends AbstractController
 
             try {
                 $uploadedAsset = $fileService->uploadFile($name, $type, $file->getRealPath(), $user);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $logger->error('log.error', [
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),

@@ -640,10 +640,6 @@ services:
         arguments: ['@logger', '@app.elasticsearch', '@doctrine', '@ems.service.file']
         tags:
             - { name: console.command }
-    EMS\CoreBundle\Command\AssetClearCacheCommand:
-        arguments: ['@logger', '@app.elasticsearch', '@ems.service.file']
-        tags:
-            - { name: console.command }
     EMS\CoreBundle\Command\AlignManagedAliases:
         arguments: ['@logger', '@ems.service.alias']
         tags:
@@ -700,6 +696,9 @@ services:
     EMS\CoreBundle\Service\AssetExtractorService: '@ems.service.asset_extractor'
     EMS\CoreBundle\Service\UserService: '@ems.service.user'
     EMS\CommonBundle\Helper\Text\Encoder: '@ems_common.text.encoder'
+    EMS\CoreBundle\Service\SearchService: '@ems.service.search'
+    EMS\CoreBundle\Service\PublishService: '@ems.service.publish'
+
 
 
 #### Will be mark as deprecated soon

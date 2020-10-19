@@ -1416,41 +1416,6 @@ parameters:
 			path: Controller/ContentManagement/NatureController.php
 
 		-
-			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 2
-			path: Controller/ContentManagement/PublishController.php
-
-		-
-			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|false\\.$#"
-			count: 1
-			path: Controller/ContentManagement/PublishController.php
-
-		-
-			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|false\\.$#"
-			count: 2
-			path: Controller/ContentManagement/PublishController.php
-
-		-
-			message: "#^Cannot call method getAlias\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|false\\.$#"
-			count: 2
-			path: Controller/ContentManagement/PublishController.php
-
-		-
-			message: "#^Parameter \\#2 \\$contentType of method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:getRevisionByEnvironment\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\ContentType, EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|false given\\.$#"
-			count: 1
-			path: Controller/ContentManagement/PublishController.php
-
-		-
-			message: "#^Parameter \\#3 \\$environment of method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:getRevisionByEnvironment\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\Environment, EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|false given\\.$#"
-			count: 1
-			path: Controller/ContentManagement/PublishController.php
-
-		-
-			message: "#^Parameter \\#2 \\$environment of method EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:publish\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\Environment, EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|false given\\.$#"
-			count: 1
-			path: Controller/ContentManagement/PublishController.php
-
-		-
 			message: "#^Call to an undefined method Symfony\\\\Component\\\\Form\\\\FormError\\|Symfony\\\\Component\\\\Form\\\\FormErrorIterator\\:\\:getMessage\\(\\)\\.$#"
 			count: 1
 			path: Controller/ContentManagement/TemplateController.php

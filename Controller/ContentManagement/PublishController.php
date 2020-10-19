@@ -80,7 +80,7 @@ class PublishController extends AbstractController
      * @Route("/publish/search-result", name="search.publish", defaults={"deleted": 0, "managed": 1})
      * @Security("has_role('ROLE_PUBLISHER')")
      */
-    public function publishSearchResult(Request $request, JobService $jobService, EnvironmentService $EnvironmentService, ContentTypeService $contentTypeService, SearchService $searchService, Client $client): Response
+    public function publishSearchResult(Request $request, JobService $jobService, EnvironmentService $environmentService, ContentTypeService $contentTypeService, SearchService $searchService, Client $client): Response
     {
         $search = new Search();
         $searchForm = $this->createForm(SearchFormType::class, $search, [
@@ -98,7 +98,7 @@ class PublishController extends AbstractController
             throw new NotFoundHttpException('Content type not found');
         }
 
-        $environment = $EnvironmentService->getAliasByName($search->getEnvironments()[0]);
+        $environment = $environmentService->getAliasByName($search->getEnvironments()[0]);
         $contentType = $contentTypeService->getByName($search->getContentTypes()[0]);
 
         if (!$environment instanceof Environment) {

@@ -127,7 +127,7 @@ class AssetExtractorService implements CacheWarmerInterface
             $file = $this->fileService->getFile($hash);
         }
 
-        if (!$file || !file_exists($file)) {
+        if (!$file || !\file_exists($file)) {
             throw new AssetNotFoundException($hash);
         }
 
@@ -135,7 +135,7 @@ class AssetExtractorService implements CacheWarmerInterface
         if ($filesize === false) {
             throw new \RuntimeException('Not able to get asset size');
         }
-        if (!$forced && filesize($file) > (3 * 1024 * 1024)) {
+        if (!$forced && \filesize($file) > (3 * 1024 * 1024)) {
             $this->logger->warning('log.warning.asset_extract.file_to_large', [
                 'filesize' => Converter::formatBytes($filesize),
                 'max_size' => '3 MB',

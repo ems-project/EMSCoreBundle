@@ -94,15 +94,6 @@ final class FormSubmissionService
 
     public function removeExpiredSubmissions(): int
     {
-        $removedCount = 0;
-
-        foreach ($this->repository->getAllOutdatedSubmission() as $submission) {
-            $this->repository->remove($submission);
-            $removedCount++;
-        }
-
-        $this->repository->flush();
-
-        return $removedCount;
+        return $this->repository->removeAllOutdatedSubmission();
     }
 }

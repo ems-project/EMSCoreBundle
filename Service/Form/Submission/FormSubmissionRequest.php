@@ -22,7 +22,7 @@ final class FormSubmissionRequest
     private $files;
     /** @var string */
     private $label;
-    /** @var \DateTime|false */
+    /** @var \DateTime|null */
     private $expireDate;
 
     public function __construct(Request $request)
@@ -41,7 +41,8 @@ final class FormSubmissionRequest
         $this->data = $submit['data'];
         $this->files = $submit['files'];
         $this->label = $submit['label'] ?? '';
-        $this->expireDate = \DateTime::createFromFormat('m/d/Y', $submit['expire_date']) ?? null;
+        $formattedDate = \DateTime::createFromFormat('c', $submit['expire_date']);
+        $this->expireDate = $formattedDate != false ? $formattedDate : null;
     }
 
     public function getFormName(): string
@@ -82,7 +83,7 @@ final class FormSubmissionRequest
 
     public function getExpireDate(): ?\DateTime
     {
-        return $this->expireDate !== false ? $this->expireDate : null;
+        return $this->expireDate;
     }
 
     /**

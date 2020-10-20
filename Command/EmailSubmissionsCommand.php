@@ -38,7 +38,6 @@ class EmailSubmissionsCommand extends Command implements CommandInterface
     protected function configure(): void
     {
         $this->setDescription('Send a list of form submissions to the specified email address or addresses')
-            ->addArgument('templateId', InputArgument::REQUIRED, 'Which template (id) do you want to use?')
             ->addArgument(
                 'emails',
                 InputArgument::IS_ARRAY | InputArgument::REQUIRED,
@@ -54,7 +53,6 @@ class EmailSubmissionsCommand extends Command implements CommandInterface
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $templateId = \strval($input->getArgument('templateId'));
         $emails = (array) $input->getArgument('emails');
         $formInstance = \strval($input->getOption('formInstance'));
 
@@ -64,7 +62,7 @@ class EmailSubmissionsCommand extends Command implements CommandInterface
             $submissions = $this->formSubmissionService->getAllFormSubmissions();
         }
 
-        $body = $this->formSubmissionService->generateMailBody($submissions, $templateId);
+        $body = $this->formSubmissionService->generateMailBody($submissions);
 
         $this->mailerService->sendMail($emails, self::TITLE, $body);
 

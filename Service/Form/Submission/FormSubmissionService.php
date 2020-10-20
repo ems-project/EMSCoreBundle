@@ -123,45 +123,20 @@ final class FormSubmissionService
 
     /**
      * @param array<FormSubmission> $submissions
-     * @param string $templateId
      * @return string
      */
-    public function generateMailBody(array $submissions, string $templateId): string
+    public function generateMailBody(array $submissions): string
     {
         if ($submissions === []) {
             return 'There are no submissions for this form';
         }
 
         try {
-            $template = $this->twig->createTemplate($this->templateService->init($templateId)->getTemplate()->getBody());
+            $template = $this->twig->render('@EMSCore/email/submissions.email.twig', ['submissions' => $submissions]);
         } catch (\Exception $e) {
-            $template = $this->twig->createTemplate("Error in body template: " . $e->getMessage());
+            $template = $this->twig->createTemplate("Error in body template: " . $e->getMessage())->render();
         }
 
-        return $template->render(['submissions' => $submissions]);
-
-
-        /*  <table border="1">
-               <tr>
-                   <th>Label</th>
-                   <th>Submission Date</th>
-                   <th>Deadline Date</th>
-                   {% for key, value in submissions.0.data %}
-                      <th> {{ key }}</th>
-                   {% endfor %}
-                </tr>
-                {% for submission in submissions %}
-                    <tr>
-                       <td>{{ submission.label }}</td>
-                       <td>{{ submission.created|date('Y-m-d') }}</td>
-                       <td>{{ submission.deadlineDate|date('Y-m-d') }}</td>
-                       {% for key, value in submission.data %}
-                          {% if value  is not iterable %}
-                             <td>{{ value }}</td>
-                          {% endif %}
-                       {% endfor %}
-                    </tr>
-                {% endfor %}
-             </table> */
+        return $template;
     }
 }

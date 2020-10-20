@@ -41,7 +41,7 @@ class FormSubmissionRepository extends ServiceEntityRepository
     public function getAllOutdatedSubmission()
     {
         $qb = $this->createQueryBuilder('fs');
-        $qb->andWhere('fs.deadlineDate < :olderThan')
+        $qb->andWhere('fs.expireDate < :olderThan')
             ->setParameter('olderThan', new \DateTime());
 
         return $qb->getQuery()->getResult();

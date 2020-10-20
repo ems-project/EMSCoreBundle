@@ -88,9 +88,9 @@ class FormSubmission
     /**
      * @var \DateTime|null
      *
-     * @ORM\Column(name="deadline_date", type="date")
+     * @ORM\Column(name="expire_date", type="date")
      */
-    private $deadlineDate;
+    private $expireDate;
 
     /**
      * @var int
@@ -130,7 +130,7 @@ class FormSubmission
         $this->files = new ArrayCollection();
 
         $this->label = $submitRequest->getLabel();
-        $this->deadlineDate = $submitRequest->getDeadlineDate();
+        $this->expireDate = $submitRequest->getExpireDate();
 
         foreach ($submitRequest->getFiles() as $file) {
             $this->files->add(new FormSubmissionFile($this, $file));
@@ -187,9 +187,9 @@ class FormSubmission
         return $this->label;
     }
 
-    public function getDeadlineDate(): ?\DateTime
+    public function getExpireDate(): ?\DateTime
     {
-        return $this->deadlineDate;
+        return $this->expireDate;
     }
 
     public function getCreated(): \Datetime

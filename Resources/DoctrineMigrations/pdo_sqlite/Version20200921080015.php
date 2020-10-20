@@ -13,14 +13,14 @@ final class Version20200921080015 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
-        $this->addSql('ALTER TABLE form_submission DROP COLUMN deadline_date ;');
-        $this->addSql('ALTER TABLE form_submission ADD deadline_date DATE DEFAULT NULL');
+        $this->addSql('ALTER TABLE form_submission DROP COLUMN expire_date ;');
+        $this->addSql('ALTER TABLE form_submission ADD expire_date DATE DEFAULT NULL');
     }
 
     public function down(Schema $schema) : void
     {
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
-        $this->addSql('ALTER TABLE form_submission DROP COLUMN deadline_date ;');
-        $this->addSql('ALTER TABLE form_submission ADD deadline_date VARCHAR(255) DEFAULT NULL');
+        $this->addSql('ALTER TABLE form_submission DROP COLUMN expire_date ;');
+        $this->addSql('ALTER TABLE form_submission ADD expire_date VARCHAR(255) DEFAULT NULL');
     }
 }

@@ -28,7 +28,7 @@ class RemoveExpiredSubmissionsCommand extends Command implements CommandInterfac
 
     protected function configure(): void
     {
-        $this->setDescription('Removes all form submissions that passed their deadline');
+        $this->setDescription('Removes all form submissions that are expired');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

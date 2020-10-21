@@ -81,23 +81,17 @@
                         style="color: #3a383a; font-family: Georgia, serif; font-size: 18px; line-height: 27px; padding-top: 5px;">
                         <table border="1">
                             <tr>
+                                <th>ID</th>
                                 <th>Label</th>
                                 <th>Submission Date</th>
                                 <th>Expiry Date</th>
-                                {% for key, value in submissions.0.data %}
-                                    <th> {{ key }}</th>
-                                {% endfor %}
                             </tr>
                             {% for submission in submissions %}
                                 <tr>
+                                    <td>{{ submission.id }}</td>
                                     <td>{{ submission.label }}</td>
                                     <td>{{ submission.created|date('d/m/Y') }}</td>
                                     <td>{{ submission.expireDate|date('d/m/Y') }}</td>
-                                    {% for key, value in submission.data %}
-                                        {% if value  is not iterable %}
-                                            <td>{{ value }}</td>
-                                        {% endif %}
-                                    {% endfor %}
                                 </tr>
                             {% endfor %}
                         </table>

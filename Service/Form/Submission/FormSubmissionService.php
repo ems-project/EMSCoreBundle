@@ -50,7 +50,10 @@ final class FormSubmissionService
         $zip = new \ZipArchive();
         $zip->open($tempFile, \ZipArchive::CREATE);
 
-        $rawJson = \json_encode($formSubmission->getData());
+        $data = $formSubmission->getData();
+        $data['id'] = $formSubmission->getId();
+
+        $rawJson = \json_encode($data);
         if (is_string($rawJson)) {
             $zip->addFromString('data.json', $rawJson);
         }

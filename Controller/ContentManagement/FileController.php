@@ -3,52 +3,44 @@
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use EMS\CommonBundle\Helper\EmsFields;
-use EMS\CoreBundle\Controller\AppController;
+use EMS\CoreBundle\Entity\UserInterface;
+use EMS\CoreBundle\Exception\AssetNotFoundException;
 use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\FileService;
 use Exception;
+use http\Exception\RuntimeException;
 use Psr\Log\LoggerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
-class FileController extends AppController
+class FileController extends AbstractController
 {
+
     /**
-     * @param string $sha1
-     * @param Request $request
-     * @return RedirectResponse
-     * @deprecated
-     *
      * @Route("/data/file/view/{sha1}" , name="ems.file.view", methods={"GET","HEAD"})
      * @Route("/data/file/view/{sha1}" , name="ems_file_view", methods={"GET","HEAD"})
      * @Route("/api/file/view/{sha1}" , name="ems.api.file.view", methods={"GET","HEAD"})
      */
-    public function viewFileAction($sha1, Request $request, FileService $fileService)
+    public function viewFileAction(string $sha1, Request $request, FileService $fileService): Response
     {
-        @trigger_error(sprintf('The "%s::viewFileAction" function is deprecated and should not be used anymore. use "%s::assetAction instead"', FileController::class, AssetController::class), E_USER_DEPRECATED);
-        return $this->getFile($sha1, ResponseHeaderBag::DISPOSITION_INLINE, $request);
+        return $fileService->getStreamResponse($sha1, ResponseHeaderBag::DISPOSITION_INLINE, $request);
     }
 
     /**
-     * @param string $sha1
-     * @param Request $request
-     * @return RedirectResponse
-     * @deprecated
-     *
      * @Route("/public/file/{sha1}" , name="ems_file_download_public", methods={"GET","HEAD"})
      * @Route("/data/file/{sha1}" , name="file.download", methods={"GET","HEAD"})
      * @Route("/data/file/{sha1}" , name="ems_file_download", methods={"GET","HEAD"})
      * @Route("/api/file/{sha1}" , name="file.api.download", methods={"GET","HEAD"})
      */
-    public function downloadFileAction($sha1, Request $request, FileService $fileService)
+    public function downloadFileAction(string $sha1, Request $request, FileService $fileService): Response
     {
-        @trigger_error(sprintf('The "%s::downloadFileAction" function is deprecated and should not be used anymore. use "%s::assetAction instead"', FileController::class, AssetController::class), E_USER_DEPRECATED);
-        return $this->getFile($sha1, ResponseHeaderBag::DISPOSITION_ATTACHMENT, $request);
+        return $fileService->getStreamResponse($sha1, ResponseHeaderBag::DISPOSITION_ATTACHMENT, $request);
     }
 
     /**
@@ -72,7 +64,11 @@ class FileController extends AppController
             }
         }
 
-        $data = $assetExtractorService->extractData($sha1, null, $forced);
+        try {
+            $data = $assetExtractorService->extractData($sha1, null, $forced);
+        } catch (AssetNotFoundException $e) {
+            throw new NotFoundHttpException(sprintf('Asset %s not found', $sha1));
+        }
 
         $response = $this->render('@EMSCore/ajax/extract-data-file.json.twig', [
             'success' => true,
@@ -102,14 +98,19 @@ class FileController extends AppController
             @trigger_error('You should use the routes emsco_file_data_init_upload or emsco_file_api_init_upload which doesn\'t require url parameters', E_USER_DEPRECATED);
         }
 
-        $params = json_decode($request->getContent(), true);
+        $requestContent = $request->getContent();
+        if (!\is_string($requestContent)) {
+            throw new \RuntimeException('Unexpected body content');
+        }
+
+        $params = json_decode($requestContent, true);
         $name = isset($params['name']) ? $params['name'] : 'upload.bin';
         $type = isset($params['type']) ? $params['type'] : 'application/bin';
         $hash = isset($params['hash']) ? $params['hash'] : $sha1;
         $size = isset($params['size']) ? $params['size'] : $size;
         $algo = isset($params['algo']) ? $params['algo'] : 'sha1';
-
-        $user = $this->getUser()->getUsername();
+        
+        $user = $this->getUsername();
 
         if (empty($hash) || empty($algo) || (empty($size) && $size !== 0)) {
             throw new BadRequestHttpException('Bad Request, invalid json parameters');
@@ -117,7 +118,7 @@ class FileController extends AppController
 
         try {
             $uploadedAsset = $fileService->initUploadFile($hash, $size, $name, $type, $user, $algo);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $logger->error('log.error', [
                 EmsFields::LOG_EXCEPTION_FIELD => $e,
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
@@ -158,11 +159,16 @@ class FileController extends AppController
         }
 
         $chunk = $request->getContent();
-        $user = $this->getUser()->getUsername();
+
+        if (!\is_string($chunk)) {
+            throw new \RuntimeException('Unexpected body request');
+        }
+
+        $user = $this->getUsername();
 
         try {
             $uploadedAsset = $fileService->addChunk($hash, $chunk, $user);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $logger->error('log.error', [
                 EmsFields::LOG_EXCEPTION_FIELD => $e,
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
@@ -221,11 +227,11 @@ class FileController extends AppController
                 }
             }
 
-            $user = $this->getUser()->getUsername();
+            $user = $this->getUsername();
 
             try {
                 $uploadedAsset = $fileService->uploadFile($name, $type, $file->getRealPath(), $user);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $logger->error('log.error', [
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
@@ -254,18 +260,12 @@ class FileController extends AppController
         ]);
     }
 
-    private function getFile($sha1, $disposition, Request $request)
+    private function getUsername(): string
     {
-        @trigger_error(sprintf('The "%s::getFile" function is deprecated and should not be used anymore. use "%s::assetAction instead"', FileController::class, AssetController::class), E_USER_DEPRECATED);
-
-        $route = $this->getAuthorizationChecker()->isGranted('IS_AUTHENTICATED_FULLY') ? 'ems_asset' : 'emsco_asset_public';
-
-        return $this->redirect($this->requestRuntime->assetPath([
-            EmsFields::CONTENT_FILE_HASH_FIELD => $sha1,
-            EmsFields::CONTENT_FILE_NAME_FIELD => $request->query->get('name', 'filename'),
-            EmsFields::CONTENT_MIME_TYPE_FIELD => $request->query->get('type', 'application/octet-stream'),
-        ], [
-            '_disposition' => $disposition,
-        ], $route));
+        $userObject = $this->getUser();
+        if (!$userObject instanceof UserInterface) {
+            throw new \RuntimeException(sprintf('Unexpected User class %s', $userObject === null ? 'null' : get_class($userObject)));
+        }
+        return $userObject->getUsername();
     }
 }

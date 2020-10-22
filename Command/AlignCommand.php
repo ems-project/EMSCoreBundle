@@ -167,6 +167,12 @@ class AlignCommand extends Command
 
         $sourceName = $input->getArgument(self::ARGUMENT_SOURCE);
         $targetName = $input->getArgument(self::ARGUMENT_TARGET);
+        if (!is_string($targetName)) {
+            throw new \RuntimeException('Target name as to be a string');
+        }
+        if (!is_string($sourceName)) {
+            throw new \RuntimeException('Source name as to be a string');
+        }
 
         $this->environmentService->clearCache();
         $source = $this->environmentService->getAliasByName($sourceName);
@@ -244,6 +250,9 @@ class AlignCommand extends Command
             $this->setSourceArgument($input, $message);
             return;
         }
+        if (!is_string($sourceName)) {
+            throw new \RuntimeException('Source name as to be a string');
+        }
 
         $source = $this->environmentService->getAliasByName($sourceName);
         if ($source === false) {
@@ -276,6 +285,9 @@ class AlignCommand extends Command
             $this->setTargetArgument($input, $message);
             return;
         }
+        if (!is_string($targetName)) {
+            throw new \RuntimeException('Target name as to be a string');
+        }
 
         $this->environmentService->clearCache();
         $target = $this->environmentService->getByName($targetName);
@@ -294,6 +306,9 @@ class AlignCommand extends Command
         }
 
         $sourceName = $input->getArgument(self::ARGUMENT_SOURCE);
+        if (!is_string($sourceName)) {
+            throw new \RuntimeException('Source name as to be a string');
+        }
         $source = $this->environmentService->getAliasByName($sourceName);
 
         if ($source === $target) {

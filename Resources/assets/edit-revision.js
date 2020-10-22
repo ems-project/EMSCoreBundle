@@ -308,7 +308,7 @@ function addEventListeners(target){
         CKEDITOR.dtd.$removeEmpty.i = 0;
 
 
-        if (!CKEDITOR.instances[$( this ).attr('id')]) {
+        if (!CKEDITOR.instances[$( this ).attr('id')] && $(this).hasClass('ignore-ems-update') === false) {
             CKEDITOR.replace(this, ckconfig).on('key', onFormChange );
         }
         else {
@@ -423,6 +423,9 @@ $(window).ready(function() {
     CKEDITOR.plugins.addExternal('div', assetPath+'bundles/emscore/js/cke-plugins/div/plugin.js', '' );
     CKEDITOR.plugins.addExternal('imagebrowser', assetPath+'bundles/emscore/js/cke-plugins/imagebrowser/plugin.js', '' );
     addEventListeners($('form[name=revision]'));
+    $('form.json-nested-form').each(function() {
+        addEventListeners($(this));
+    });
 });
 
 $(document).keydown(function(e) {

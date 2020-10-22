@@ -238,8 +238,10 @@ class Revision
                                         $out[$child->getName()][$idx] = self::addVirtualFields($child, $item);
                                     }
                                 }
-                            } else {
+                            } elseif (\is_array($data[$child->getName()])) {
                                 $out[$child->getName()] = self::addVirtualFields($child, $data[$child->getName()]);
+                            } else {
+                                $out[$child->getName()] = $data[$child->getName()];
                             }
                         }
                     } else {
@@ -281,7 +283,7 @@ class Revision
                         }
                     }
                 } else {
-                    if ($type::isContainer()) {
+                    if ($type::isContainer() && \is_array($data[$child->getName()])) {
                         if (isset($data[$child->getName()]) && !empty($data[$child->getName()])) {
                             if ($type::isCollection()) {
                                 $out[$child->getName()] = [];

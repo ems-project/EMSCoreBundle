@@ -7,6 +7,7 @@ use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Elasticsearch\Client;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CommonBundle\Storage\Processor\Config;
 use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\Entity\ContentType;
@@ -22,7 +23,6 @@ use EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory;
 use EMS\CoreBundle\Repository\I18nRepository;
 use EMS\CoreBundle\Repository\SequenceRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
-use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\FileService;
 use EMS\CoreBundle\Service\UserService;
@@ -126,8 +126,6 @@ class AppExtension extends \Twig_Extension
     {
         return array(
             new TwigFilter('searches', array($this, 'searchesList')),
-            new TwigFilter('url_generator', array($this, 'toAscii')),
-            new TwigFilter('emsco_webalize', array($this, 'webalize')),
             new TwigFilter('data', array($this, 'data')),
             new TwigFilter('inArray', array($this, 'inArray')),
             new TwigFilter('firstInArray', array($this, 'firstInArray')),
@@ -167,6 +165,9 @@ class AppExtension extends \Twig_Extension
             new TwigFilter('get_field_by_path', array($this, 'getFieldByPath')),
             new TwigFilter('json_decode', array($this, 'jsonDecode')),
             new TwigFilter('get_revision_id', [RevisionRuntime::class, 'getRevisionId']),
+            //deprecated
+            new TwigFilter('url_generator', [Encoder::class, 'webalize'], ['deprecated' => true]),
+            new TwigFilter('emsco_webalize', [Encoder::class, 'webalize'], ['deprecated' => true]),
         );
     }
 
@@ -224,9 +225,9 @@ class AppExtension extends \Twig_Extension
         return $this->contentTypeService->getChildByPath($contentType->getFieldType(), $path, $skipVirtualFields);
     }
 
-    public function getFile($hash, $cacheContext = false)
+    public function getFile($hash)
     {
-        return $this->fileService->getFile($hash, $cacheContext);
+        return $this->fileService->getFile($hash);
     }
 
     public function getString($rawData, $field)
@@ -588,28 +589,6 @@ class AppExtension extends \Twig_Extension
     public function arrayMergeRecursive(array $array1, array $_ = null)
     {
         return array_merge_recursive($array1, $_);
-    }
-
-    /**
-     * @deprecated
-     */
-    public function toAscii(string $str) : string
-    {
-        @trigger_error(sprintf('The "url_generator" Twig filter and the "%s::toAscii" function is deprecated. Used emsco_webalize filter or "%s::webalize" function instead.', AppExtension::class, AppExtension::class), E_USER_DEPRECATED);
-        return $this->webalize($str);
-    }
-
-    public function webalize(string $str) : string
-    {
-        $a = array('À', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Æ', 'Ç', 'È', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Î', 'Ï', 'Ð', 'Ñ', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', 'Ø', 'Ù', 'Ú', 'Û', 'Ü', 'Ý', 'ß', 'à', 'á', 'â', 'ã', 'ä', 'å', 'æ', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ñ', 'ò', 'ó', 'ô', 'õ', 'ö', 'ø', 'ù', 'ú', 'û', 'ü', 'ý', 'ÿ', 'Ā', 'ā', 'Ă', 'ă', 'Ą', 'ą', 'Ć', 'ć', 'Ĉ', 'ĉ', 'Ċ', 'ċ', 'Č', 'č', 'Ď', 'ď', 'Đ', 'đ', 'Ē', 'ē', 'Ĕ', 'ĕ', 'Ė', 'ė', 'Ę', 'ę', 'Ě', 'ě', 'Ĝ', 'ĝ', 'Ğ', 'ğ', 'Ġ', 'ġ', 'Ģ', 'ģ', 'Ĥ', 'ĥ', 'Ħ', 'ħ', 'Ĩ', 'ĩ', 'Ī', 'ī', 'Ĭ', 'ĭ', 'Į', 'į', 'İ', 'ı', 'Ĳ', 'ĳ', 'Ĵ', 'ĵ', 'Ķ', 'ķ', 'Ĺ', 'ĺ', 'Ļ', 'ļ', 'Ľ', 'ľ', 'Ŀ', 'ŀ', 'Ł', 'ł', 'Ń', 'ń', 'Ņ', 'ņ', 'Ň', 'ň', 'ŉ', 'Ō', 'ō', 'Ŏ', 'ŏ', 'Ő', 'ő', 'Œ', 'œ', 'Ŕ', 'ŕ', 'Ŗ', 'ŗ', 'Ř', 'ř', 'Ś', 'ś', 'Ŝ', 'ŝ', 'Ş', 'ş', 'Š', 'š', 'Ţ', 'ţ', 'Ť', 'ť', 'Ŧ', 'ŧ', 'Ũ', 'ũ', 'Ū', 'ū', 'Ŭ', 'ŭ', 'Ů', 'ů', 'Ű', 'ű', 'Ų', 'ų', 'Ŵ', 'ŵ', 'Ŷ', 'ŷ', 'Ÿ', 'Ź', 'ź', 'Ż', 'ż', 'Ž', 'ž', 'ſ', 'ƒ', 'Ơ', 'ơ', 'Ư', 'ư', 'Ǎ', 'ǎ', 'Ǐ', 'ǐ', 'Ǒ', 'ǒ', 'Ǔ', 'ǔ', 'Ǖ', 'ǖ', 'Ǘ', 'ǘ', 'Ǚ', 'ǚ', 'Ǜ', 'ǜ', 'Ǻ', 'ǻ', 'Ǽ', 'ǽ', 'Ǿ', 'ǿ', '\'');
-        $b = array('A', 'A', 'A', 'A', 'A', 'A', 'AE', 'C', 'E', 'E', 'E', 'E', 'I', 'I', 'I', 'I', 'D', 'N', 'O', 'O', 'O', 'O', 'O', 'O', 'U', 'U', 'U', 'U', 'Y', 's', 'a', 'a', 'a', 'a', 'a', 'a', 'ae', 'c', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'n', 'o', 'o', 'o', 'o', 'o', 'o', 'u', 'u', 'u', 'u', 'y', 'y', 'A', 'a', 'A', 'a', 'A', 'a', 'C', 'c', 'C', 'c', 'C', 'c', 'C', 'c', 'D', 'd', 'D', 'd', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'G', 'g', 'G', 'g', 'G', 'g', 'G', 'g', 'H', 'h', 'H', 'h', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'IJ', 'ij', 'J', 'j', 'K', 'k', 'L', 'l', 'L', 'l', 'L', 'l', 'L', 'l', 'l', 'l', 'N', 'n', 'N', 'n', 'N', 'n', 'n', 'O', 'o', 'O', 'o', 'O', 'o', 'OE', 'oe', 'R', 'r', 'R', 'r', 'R', 'r', 'S', 's', 'S', 's', 'S', 's', 'S', 's', 'T', 't', 'T', 't', 'T', 't', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'W', 'w', 'Y', 'y', 'Y', 'Z', 'z', 'Z', 'z', 'Z', 'z', 's', 'f', 'O', 'o', 'U', 'u', 'A', 'a', 'I', 'i', 'O', 'o', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'A', 'a', 'AE', 'ae', 'O', 'o', ' ');
-        $clean = str_replace($a, $b, $str);
-
-        $clean = preg_replace("/[^a-zA-Z0-9\_\|\ \-\.]/", '', $clean);
-        $clean = strtolower(trim($clean, '-'));
-        $clean = preg_replace("/[\/\_\|\ \-]+/", '-', $clean);
-
-        return $clean;
     }
 
     public function cantBeFinalized($message = null, $code = null, $previous = null)

@@ -59,7 +59,9 @@ class ExtractAssetCommand extends EmsCommand
         /** @var SplFileInfo $file */
         foreach ($fileIterator as $file) {
             $hash = $this->storageManager->computeFileHash($file->getRealPath());
-            $this->extractorService->extractData($hash, $file->getRealPath());
+            if (\is_string($file->getRealPath())) {
+                $this->extractorService->extractData($hash, $file->getRealPath());
+            }
             $progress->advance();
         }
         $progress->finish();

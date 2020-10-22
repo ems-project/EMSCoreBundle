@@ -201,6 +201,10 @@ class MigrateCommand extends Command
             $this->contentTypeNameTo = $this->contentTypeNameFrom;
         }
 
+        if (!is_string($this->contentTypeNameTo)) {
+            throw new \RuntimeException('Content type To name as to be a string');
+        }
+
         $contentTypeTo = $this->contentTypeRepository->findOneBy(array("name" => $this->contentTypeNameTo, 'deleted' => false));
         if ($contentTypeTo === null || !$contentTypeTo instanceof ContentType) {
             $this->io->error(sprintf('Content type "%s" not found', $this->contentTypeNameTo));

@@ -736,12 +736,8 @@ class AppExtension extends \Twig_Extension
         } else if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
             return true;
         } else if (is_array($circles)) {
-            if (count($circles) > 0) {
-                $user = $this->userService->getCurrentUser(UserService::DONT_DETACH);
-                return count(array_intersect($circles, $user->getCircles())) > 0;
-            } else {
-                return true;
-            }
+            $user = $this->userService->getCurrentUser(UserService::DONT_DETACH);
+            return count(array_intersect($circles, $user->getCircles())) > 0;
         } else if (is_string($circles)) {
             $user = $this->userService->getCurrentUser(UserService::DONT_DETACH);
             return in_array($circles, $user->getCircles());
@@ -786,7 +782,7 @@ class AppExtension extends \Twig_Extension
     {
         $out = $key;
         $splitted = explode(':', $key);
-        if ($splitted && count($splitted) == 2 && strlen($splitted[0]) > 0 && strlen($splitted[1]) > 0) {
+        if (count($splitted) == 2 && strlen($splitted[0]) > 0 && strlen($splitted[1]) > 0) {
             $type = $splitted[0];
             $ouuid = $splitted[1];
 
@@ -845,7 +841,7 @@ class AppExtension extends \Twig_Extension
     {
         $out = $key;
         $splitted = explode(':', $key);
-        if ($splitted && count($splitted) == 2 && strlen($splitted[0]) > 0 && strlen($splitted[1]) > 0) {
+        if (count($splitted) == 2 && strlen($splitted[0]) > 0 && strlen($splitted[1]) > 0) {
             $type = $splitted[0];
             $ouuid = $splitted[1];
 
@@ -930,7 +926,7 @@ class AppExtension extends \Twig_Extension
         }
 
         $splitted = explode(':', $key);
-        if ($splitted && count($splitted) == 2) {
+        if (count($splitted) == 2) {
             $type = $splitted[0];
             $ouuid = $splitted[1];
 

@@ -218,7 +218,7 @@ class DataService
             throw new PrivilegeException($revision, 'You don\'t share any circle with this content');
         }
         if (empty($publishEnv) && !empty($revision->getContentType()->getCirclesField()) && !empty($revision->getRawData()[$revision->getContentType()->getCirclesField()])) {
-            if (!$this->appTwig->inMyCircles($revision->getRawData()[$revision->getContentType()->getCirclesField()])) {
+            if (!$this->appTwig->inMyCircles($revision->getRawData()[$revision->getContentType()->getCirclesField()] ?? [])) {
                 throw new PrivilegeException($revision);
             }
         }

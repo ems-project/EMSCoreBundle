@@ -707,23 +707,26 @@ class AppExtension extends \Twig_Extension
         return true;
     }
 
-    public function inMyCircles($circles)
+    /**
+     * @param string|string[] $circles
+     */
+    public function inMyCircles($circles): bool
     {
-
-        if (!$circles) {
+        if ($circles === '' || count($circles)) {
             return true;
-        } else if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
-            return true;
-        } else if (is_array($circles)) {
-            $user = $this->userService->getCurrentUser(UserService::DONT_DETACH);
-            return count(array_intersect($circles, $user->getCircles())) > 0;
-        } else if (is_string($circles)) {
-            $user = $this->userService->getCurrentUser(UserService::DONT_DETACH);
-            return in_array($circles, $user->getCircles());
         }
 
+        if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
+            return true;
+        }
 
-        return false;
+        if (\is_array($circles)) {
+            $user = $this->userService->getCurrentUser(UserService::DONT_DETACH);
+            return \count(\array_intersect($circles, $user->getCircles())) > 0;
+        }
+
+        $user = $this->userService->getCurrentUser(UserService::DONT_DETACH);
+        return \in_array($circles, $user->getCircles());
     }
 
     public function objectChoiceLoader($contentTypeName)
@@ -757,13 +760,13 @@ class AppExtension extends \Twig_Extension
         return $out;
     }
 
-    public function dataLabel($key, $revisionId = false)
+    public function dataLabel(string $key)
     {
         $out = $key;
-        $splitted = explode(':', $key);
-        if (count($splitted) == 2 && strlen($splitted[0]) > 0 && strlen($splitted[1]) > 0) {
-            $type = $splitted[0];
-            $ouuid = $splitted[1];
+        $exploded = explode(':', $key);
+        if (count($exploded) == 2 && strlen($exploded[0]) > 0 && strlen($exploded[1]) > 0) {
+            $type = $exploded[0];
+            $ouuid = $exploded[1];
 
             $addAttribute = "";
 
@@ -816,7 +819,7 @@ class AppExtension extends \Twig_Extension
         return $out;
     }
 
-    public function dataLink($key, $revisionId = false, $diffMod = false)
+    public function dataLink(string $key, $revisionId = false, $diffMod = false)
     {
         $out = $key;
         $splitted = explode(':', $key);
@@ -904,10 +907,10 @@ class AppExtension extends \Twig_Extension
             return null;
         }
 
-        $splitted = explode(':', $key);
-        if (count($splitted) == 2) {
-            $type = $splitted[0];
-            $ouuid = $splitted[1];
+        $exploded = explode(':', $key);
+        if (count($exploded) === 2) {
+            $type = $exploded[0];
+            $ouuid = $exploded[1];
 
             /**@var \EMS\CoreBundle\Entity\ContentType $contentType */
             $contentType = $this->contentTypeService->getByName($type);

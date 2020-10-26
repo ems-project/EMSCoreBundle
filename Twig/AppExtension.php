@@ -712,7 +712,7 @@ class AppExtension extends \Twig_Extension
      */
     public function inMyCircles($circles): bool
     {
-        if ($circles === '' || count($circles)) {
+        if (\is_array($circles) && count($circles) === 0) {
             return true;
         }
 

@@ -805,13 +805,8 @@ class AppExtension extends AbstractExtension
             return true;
         }
 
-        if (\is_array($circles)) {
-            $user = $this->userService->getCurrentUser(UserService::DONT_DETACH);
-            return \count(\array_intersect($circles, $user->getCircles())) > 0;
-        }
-
         $user = $this->userService->getCurrentUser(UserService::DONT_DETACH);
-        return \in_array($circles, $user->getCircles());
+        return \count(\array_intersect($circles, $user->getCircles())) > 0;
     }
 
     /**

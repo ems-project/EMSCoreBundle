@@ -1197,13 +1197,13 @@ class DataService
                     $circles = $raw[$contentType->getCirclesField()] ?? [];
                     if (isset($options['defaultValue'])) {
                         $defaultValue = json_decode($options['defaultValue']);
-                        if (!is_array($defaultValue)) {
+                        if (!\is_array($defaultValue)) {
                             $defaultValue = [$defaultValue];
                         }
-                        $circles = array_merge($circles, $defaultValue);
+                        $circles = \array_merge($circles, $defaultValue);
                     }
-                    $circles = array_merge($circles, $user->getCircles());
-                    $revision->setRawData(array_merge($revision->getRawData(), [$contentType->getCirclesField() => $circles]));
+                    $circles = \array_merge($circles, $user->getCircles());
+                    $revision->setRawData(\array_merge($revision->getRawData(), [$contentType->getCirclesField() => $circles]));
                     $revision->setCircles($circles);
                 } else {
                     //set first of my circles

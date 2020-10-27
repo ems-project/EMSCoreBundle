@@ -1647,7 +1647,7 @@ class DataController extends AppController
         $category = $type = $ouuid = null;
         $split = \explode(':', $key);
 
-        if (\count($split) == 3) {
+        if (\count($split) === 3) {
             $category = $split[0]; // object or asset
             $type = $split[1];
             $ouuid = $split[2];

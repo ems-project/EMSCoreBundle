@@ -56,7 +56,7 @@ class ExportDocumentsCommand extends EmsCommand
         parent::__construct($logger, $client);
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('ems:contenttype:export')
@@ -113,18 +113,24 @@ class ExportDocumentsCommand extends EmsCommand
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         $contentTypeName = $input->getArgument('contentTypeName');
+        if (!is_string($contentTypeName)) {
+            throw new \RuntimeException('Unexpected content type name argument');
+        }
         $format = $input->getArgument('format');
         if (!is_string($format)) {
-            throw new \RuntimeException('Format as to be a string');
+            throw new \RuntimeException('Unexpected format argument');
         }
         $scrollSize = $input->getOption('scrollSize');
         $scrollTimeout = $input->getOption('scrollTimeout');
         $withBusinessId = $input->getOption('withBusinessId');
         $baseUrl = $input->getOption('baseUrl');
+        if ($baseUrl !== null && !\is_string($baseUrl)) {
+            throw new \RuntimeException('Unexpected base url option');
+        }
         $contentType = $this->contentTypeService->getByName($contentTypeName);
         if (! $contentType instanceof ContentType) {
             $output->writeln(sprintf("WARNING: Content type named %s not found", $contentType));
@@ -150,13 +156,17 @@ class ExportDocumentsCommand extends EmsCommand
             }
             $index = $environment->getAlias();
         }
+        $query = $input->getArgument('query');
+        if (!\is_string($query)) {
+            throw new \RuntimeException('Unexpected query argument');
+        }
 
         $arrayElasticsearchIndex = $this->client->search([
             'index' => $index,
             'type' => $contentTypeName,
             'size' => $scrollSize,
             "scroll" => $scrollTimeout,
-            'body' => \json_decode($input->getArgument('query')),
+            'body' => \json_decode($query),
         ]);
 
         $total = $arrayElasticsearchIndex["hits"]["total"];

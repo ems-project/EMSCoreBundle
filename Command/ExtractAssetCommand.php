@@ -29,7 +29,7 @@ class ExtractAssetCommand extends EmsCommand
         parent::__construct($logger, $client);
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('ems:asset:extract')
@@ -47,23 +47,38 @@ class ExtractAssetCommand extends EmsCommand
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $name = $input->getArgument('name');
+        if (!\is_string($name)) {
+            throw new \RuntimeException('Unexpected name argument');
+        }
+        $path = $input->getArgument('path');
+        if (!\is_string($path)) {
+            throw new \RuntimeException('Unexpected path argument');
+        }
+
         $finder = new Finder();
-        $fileIterator = $finder->in($input->getArgument('path'))->files()->name($input->getArgument('name'));
+        $fileIterator = $finder->in($path)->files()->name($name);
 
         $progress = new ProgressBar($output, $fileIterator->count());
-        // start and displays the progress bar
         $progress->start();
 
         /** @var SplFileInfo $file */
         foreach ($fileIterator as $file) {
-            $hash = $this->storageManager->computeFileHash($file->getRealPath());
+            $realPath = $file->getRealPath();
+            if ($realPath === false) {
+                $progress->advance();
+                continue;
+            }
+
+            $hash = $this->storageManager->computeFileHash($realPath);
             if (\is_string($file->getRealPath())) {
-                $this->extractorService->extractData($hash, $file->getRealPath());
+                $this->extractorService->extractData($hash, $realPath);
             }
             $progress->advance();
         }
         $progress->finish();
+        return 0;
     }
 }

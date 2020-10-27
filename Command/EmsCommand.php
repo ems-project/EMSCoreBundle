@@ -12,9 +12,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class EmsCommand extends ContainerAwareCommand
 {
-    /**@var Client*/
+    /** @var Client*/
     protected $client;
-    /**@var Logger*/
+    /** @var LoggerInterface*/
     protected $logger;
     
     public function __construct(LoggerInterface $logger, Client $client)
@@ -25,19 +25,20 @@ class EmsCommand extends ContainerAwareCommand
         parent::__construct();
     }
     
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('ems:waitforgreen')
             ->setDescription('Wait that the elasticsearch cluster is back to green');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->waitForGreen($output);
+        return 0;
     }
     
-    protected function formatStyles(OutputInterface &$output)
+    protected function formatStyles(OutputInterface &$output): void
     {
         $output->getFormatter()->setStyle('error', new OutputFormatterStyle('red', 'yellow', array('bold')));
         $output->getFormatter()->setStyle('comment', new OutputFormatterStyle('yellow', null, array('bold')));
@@ -45,7 +46,7 @@ class EmsCommand extends ContainerAwareCommand
     }
     
 
-    protected function waitForGreen(OutputInterface $output)
+    protected function waitForGreen(OutputInterface $output): void
     {
         $output->write('Waiting for green...');
         $this->client->cluster()->health(['wait_for_status' => 'green']);

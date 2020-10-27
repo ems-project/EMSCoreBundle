@@ -2,9 +2,7 @@
 
 namespace EMS\CoreBundle\Command;
 
-use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\Common\Persistence\Mapping\MappingException;
 use Doctrine\ORM\EntityManager;
 use Elasticsearch\Client;
 use EMS\CommonBundle\Helper\EmsFields;
@@ -17,6 +15,7 @@ use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\Mapping;
 use Monolog\Logger;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -25,20 +24,28 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ReindexCommand extends EmsCommand
 {
+    /** @var Client  */
     protected $client;
+    /** @var Mapping */
     protected $mapping;
+    /** @var Registry  */
     protected $doctrine;
+    /** @var Logger  */
     protected $logger;
+    /** @var ContainerInterface */
     protected $container;
-    /**@var DataService*/
+    /** @var DataService*/
     protected $dataService;
+    /** @var string  */
     private $instanceId;
-    
+    /** @var int  */
     private $count;
+    /** @var int  */
     private $deleted;
+    /** @var int  */
     private $error;
     
-    public function __construct(Registry $doctrine, Logger $logger, Client $client, $mapping, $container, $instanceId, DataService $dataService)
+    public function __construct(Registry $doctrine, Logger $logger, Client $client, Mapping $mapping, ContainerInterface $container, string $instanceId, DataService $dataService)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
@@ -54,7 +61,7 @@ class ReindexCommand extends EmsCommand
         $this->error = 0;
     }
     
-    protected function configure()
+    protected function configure(): void
     {
         $this->logger->info('Configure the ReindexCommand');
         $this
@@ -90,18 +97,20 @@ class ReindexCommand extends EmsCommand
             );
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|null|void
-     * @throws MappingException
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->formatStyles($output);
         $name = $input->getArgument('name');
         $index = $input->getArgument('index');
-        $signData = !$input->getOption('sign-data');
+        $signData = $input->getOption('sign-data') === true;
+
+        if (!is_string($name)) {
+            throw new \RuntimeException('Unexpected content type name');
+        }
+        if (!is_string($index)) {
+            throw new \RuntimeException('Unexpected index name');
+        }
+
 
 
 
@@ -118,22 +127,19 @@ class ReindexCommand extends EmsCommand
         }
 
 
+        $bulkSize = \intval($input->getOption('bulk-size'));
+        if ($bulkSize === 0) {
+            throw new \RuntimeException('Unexpected bulk size argument');
+        }
+
         /**@var ContentType $contentType*/
         foreach ($contentTypes as $contentType) {
-            $this->reindex($name, $contentType, $index, $output, $signData, $input->getOption('bulk-size'));
+            $this->reindex($name, $contentType, $index, $output, $signData, $bulkSize);
         }
+        return 0;
     }
 
-    /**
-     * @param string $name
-     * @param ContentType $contentType
-     * @param string $index
-     * @param OutputInterface $output
-     * @param bool $signData
-     * @param int $bulkSize
-     * @throws MappingException
-     */
-    public function reindex($name, ContentType $contentType, $index, OutputInterface $output, $signData = true, $bulkSize = 1000)
+    public function reindex(string $name, ContentType $contentType, string $index, OutputInterface $output, bool $signData = true, int $bulkSize = 1000): void
     {
         $this->logger->notice('command.reindex.start', [
             EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
@@ -167,9 +173,7 @@ class ReindexCommand extends EmsCommand
 
             $output->writeln('');
             $output->writeln('Start reindex ' . $contentType->getName());
-            // create a new progress bar
             $progress = new ProgressBar($output, $paginator->count());
-            // start and displays the progress bar
             $progress->start();
             do {
                 /** @var Revision $revision */
@@ -177,7 +181,7 @@ class ReindexCommand extends EmsCommand
                     if ($revision->getDeleted()) {
                         ++$this->deleted;
                         $this->logger->warning('log.reindex.revision.deleted_but_referenced', [
-                            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                            EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                             EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                             EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
                             EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
@@ -187,8 +191,8 @@ class ReindexCommand extends EmsCommand
                             $this->dataService->sign($revision);
                         }
 
-                        if (empty($bulk) && $revision->getContentType()->getHavePipelines()) {
-                            $bulk['pipeline'] = $this->instanceId . $revision->getContentType()->getName();
+                        if (empty($bulk) && $contentType->getHavePipelines()) {
+                            $bulk['pipeline'] = $this->instanceId . $contentType->getName();
                         }
 
                         $bulk['body'][] = [
@@ -200,13 +204,13 @@ class ReindexCommand extends EmsCommand
                             ];
 
                         $rawData = $revision->getRawData();
-                        $rawData[Mapping::PUBLISHED_DATETIME_FIELD] =  (new DateTime())->format(DateTime::ISO8601);
+                        $rawData[Mapping::PUBLISHED_DATETIME_FIELD] =  (new \DateTime())->format(\DateTime::ISO8601);
                         $bulk['body'][] = $rawData;
                     }
 
 
                     $progress->advance();
-                    if (count($bulk['body']) >= (2 * $bulkSize)) {
+                    if (count($bulk['body'] ?? []) >= (2 * $bulkSize)) {
                         $this->treatBulkResponse($this->client->bulk($bulk));
                         unset($bulk);
                         $bulk = [];
@@ -217,7 +221,8 @@ class ReindexCommand extends EmsCommand
 
                 ++$page;
                 $paginator = $revRepo->getRevisionsPaginatorPerEnvironmentAndContentType($environment, $contentType, $page);
-            } while ($paginator->getIterator()->count());
+                $iterator = $paginator->getIterator();
+            } while ($iterator instanceof \ArrayIterator && $iterator->count());
 
 
             if (count($bulk)) {
@@ -247,8 +252,11 @@ class ReindexCommand extends EmsCommand
             $output->writeln("WARNING: Environment named " . $name . " not found");
         }
     }
-    
-    public function treatBulkResponse($response)
+
+    /**
+     * @param array<mixed> $response
+     */
+    public function treatBulkResponse(array $response): void
     {
         foreach ($response['items'] as $item) {
             if (isset($item['index']['error'])) {

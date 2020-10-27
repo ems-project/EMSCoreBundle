@@ -39,7 +39,7 @@ class ActivateContentTypeCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         parent::configure();
         $fileNames = implode(', ', $this->contentTypeService->getAllNames());
@@ -69,15 +69,18 @@ class ActivateContentTypeCommand extends Command
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        /** @var array $types */
+        /** @var string[] $types */
         $types = $input->getArgument(self::ARGUMENT_CONTENTTYPES);
         $force = $input->getOption(self::FORCE);
 
         foreach ($types as $type) {
             try {
                 $contentType = $this->contentTypeService->getByName($type);
+                if ($contentType === false) {
+                    throw new \RuntimeException('Content Type not found');
+                }
                 if ($contentType->getDirty() && !$this->deactivate && !$force) {
                     $this->io->error(sprintf('Content type %s is dirty please update it\'s mapping or use the force flag', $contentType->getName()));
                     continue;
@@ -92,21 +95,24 @@ class ActivateContentTypeCommand extends Command
                 $this->io->error($e->getMessage());
             }
         }
+        return 0;
     }
 
-    protected function initialize(InputInterface $input, OutputInterface $output)
+    protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
     }
 
-    protected function interact(InputInterface $input, OutputInterface $output)
+    protected function interact(InputInterface $input, OutputInterface $output): void
     {
-        $this->deactivate = $input->getOption(self::DEACTIVATE);
+        $this->deactivate = $input->getOption(self::DEACTIVATE) === true;
         $this->io->title($this->deactivate ? 'Deactivate contenttypes' : 'Activate contenttypes');
         $this->io->section('Checking input');
 
-        /** @var array $types */
         $types = $input->getArgument(self::ARGUMENT_CONTENTTYPES);
+        if ($types === null || \is_string($types)) {
+            throw new \RuntimeException('Unexpected content type names');
+        }
 
         if (!$input->getOption(self::OPTION_ALL) && count($types) == 0) {
             $this->chooseTypes($input, $output);

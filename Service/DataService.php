@@ -2099,7 +2099,7 @@ class DataService
         return array_values($ouuids);
     }
 
-    public function getDataLink(string $contentTypesCommaList, string $businessId): ?string
+    public function getDataLink(string $contentTypesCommaList, string $businessId): string
     {
         return $this->getDataLinks($contentTypesCommaList, [$businessId])[0] ?? $businessId;
     }

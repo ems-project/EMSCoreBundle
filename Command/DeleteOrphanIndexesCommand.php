@@ -24,13 +24,14 @@ class DeleteOrphanIndexesCommand extends EmsCommand
         parent::__construct($logger, $client);
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setDescription('Removes all orphan indexes');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->indexService->deleteOrphanIndexes();
+        return 0;
     }
 }

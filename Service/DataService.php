@@ -1194,7 +1194,7 @@ class DataService
                 $options = $fieldType->getDisplayOptions();
                 if (isset($options['multiple']) && $options['multiple']) {
                     //merge all my circles with the default value
-                    $circles = $raw[$contentType->getCirclesField()] ?? [];
+                    $circles = $revision->getRawData()[$contentType->getCirclesField()] ?? [];
                     if (isset($options['defaultValue'])) {
                         $defaultValue = json_decode($options['defaultValue']);
                         if (!\is_array($defaultValue)) {

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\Revision;
 
-use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Exception\ElasticmsException;
@@ -12,6 +11,7 @@ use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\PublishService;
+use EMS\CoreBundle\Service\Revision\LoggingContext;
 use EMS\CoreBundle\Service\WysiwygStylesSetService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -68,12 +68,11 @@ class EditController extends AbstractController
         $this->dataService->lockRevision($revision);
 
         if ($revision->getEndTime() && ! $this->isGranted('ROLE_SUPER')) {
-            throw new ElasticmsException($this->translator->trans('log.data.revision.only_super_can_finalize_an_archive', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
-                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-            ], EMSCoreBundle::TRANS_DOMAIN));
+            throw new ElasticmsException($this->translator->trans(
+                'log.data.revision.only_super_can_finalize_an_archive',
+                LoggingContext::read($revision),
+                EMSCoreBundle::TRANS_DOMAIN
+            ));
         }
 
         if ($request->isMethod('GET')) {
@@ -103,12 +102,7 @@ class EditController extends AbstractController
 
         if ($form->isSubmitted()) {//Save, Finalize or Discard
             if (empty($request->request->get('revision')) || empty($request->request->get('revision')['allFieldsAreThere']) || !$request->request->get('revision')['allFieldsAreThere']) {
-                $this->logger->error('log.data.revision.not_completed_request', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                    EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
-                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                ]);
+                $this->logger->error('log.data.revision.not_completed_request', LoggingContext::read($revision));
 
                 return $this->redirectToRoute('data.revisions', [
                     'ouuid' => $revision->getOuuid(),
@@ -130,24 +124,14 @@ class EditController extends AbstractController
                 $objectArray = $revision->getRawData();
 
                 if (array_key_exists('paste', $request->request->get('revision'))) {//Paste
-                    $this->logger->notice('log.data.revision.paste', [
-                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                        EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                        EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-                        EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                    ]);
+                    $this->logger->notice('log.data.revision.paste', LoggingContext::update($revision));
                     $objectArray = array_merge($objectArray, $request->getSession()->get('ems_clipboard', []));
                     $this->logger->debug('Paste data have been merged');
                 }
 
                 if (array_key_exists('copy', $request->request->get('revision'))) {//Copy
                     $request->getSession()->set('ems_clipboard', $objectArray);
-                    $this->logger->notice('log.data.document.copy', [
-                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                        EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                        EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-                        EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                    ]);
+                    $this->logger->notice('log.data.document.copy', LoggingContext::update($revision));
                 }
 
                 $revision->setRawData($objectArray);
@@ -207,23 +191,12 @@ class EditController extends AbstractController
             $objectArray = $revision->getRawData();
             $isValid = $this->dataService->isValid($form, $revision->getContentType()->getParentField(), $objectArray);
             if (!$isValid) {
-                $this->logger->warning('log.data.revision.can_finalized', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                    EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                ]);
+                $this->logger->warning('log.data.revision.can_finalized', LoggingContext::update($revision));
             }
         }
 
         if ($revision->getContentType()->isAutoPublish()) {
-            $this->logger->warning('log.data.revision.auto_save_off_with_auto_publish', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                EmsFields::LOG_ENVIRONMENT_FIELD => $revision->getContentType()->getEnvironment()->getName(),
-            ]);
+            $this->logger->warning('log.data.revision.auto_save_off_with_auto_publish', LoggingContext::update($revision));
         }
 
 
@@ -235,12 +208,7 @@ class EditController extends AbstractController
         } else {
             $messageLog = "log.data.revision.start_edit_new_document";
         }
-        $this->logger->info($messageLog, [
-            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-            EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
-            EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-            EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-        ]);
+        $this->logger->info($messageLog, LoggingContext::read($revision));
 
         return $this->render('@EMSCore/data/edit-revision.html.twig', [
             'revision' => $revision,
@@ -253,12 +221,7 @@ class EditController extends AbstractController
     {
         if (null != $revision->getAutoSave()) {
             $revision->setRawData($revision->getAutoSave());
-            $this->logger->warning('log.data.revision.load_from_auto_save', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
-                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-            ]);
+            $this->logger->warning('log.data.revision.load_from_auto_save', LoggingContext::read($revision));
         }
     }
 

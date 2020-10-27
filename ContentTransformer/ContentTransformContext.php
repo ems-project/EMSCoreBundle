@@ -17,6 +17,9 @@ class ContentTransformContext
     {
     }
 
+    /**
+     * @param mixed $data
+     */
     public static function fromDataFieldType(string $dataFieldType, $data): self
     {
         $context = new self();
@@ -30,6 +33,9 @@ class ContentTransformContext
         return $this->dataFieldType;
     }
 
+    /**
+     * @return mixed
+     */
     public function getData()
     {
         return $this->data;

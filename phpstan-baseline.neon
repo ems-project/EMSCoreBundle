@@ -1,46 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\ContentTransformer\\\\ContentTransformContext\\:\\:fromDataFieldType\\(\\) has parameter \\$data with no typehint specified\\.$#"
-			count: 1
-			path: ContentTransformer/ContentTransformContext.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\ContentTransformer\\\\ContentTransformContext\\:\\:getData\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: ContentTransformer/ContentTransformContext.php
-
-		-
-			message: "#^Cannot call method item\\(\\) on DOMNodeList\\|false\\.$#"
-			count: 1
-			path: ContentTransformer/HtmlStylesRemover.php
-
-		-
-			message: "#^Cannot call method replaceChild\\(\\) on DOMNode\\|null\\.$#"
-			count: 1
-			path: ContentTransformer/HtmlStylesRemover.php
-
-		-
-			message: "#^Cannot call method createDocumentFragment\\(\\) on DOMDocument\\|null\\.$#"
-			count: 1
-			path: ContentTransformer/HtmlStylesRemover.php
-
-		-
-			message: "#^Parameter \\#1 \\$html of method EMS\\\\CoreBundle\\\\ContentTransformer\\\\HtmlStylesRemover\\:\\:outputHtmlFormat\\(\\) expects string, string\\|false given\\.$#"
-			count: 1
-			path: ContentTransformer/HtmlStylesRemover.php
-
-		-
-			message: "#^Cannot access property \\$parentNode on DOMElement\\|null\\.$#"
-			count: 1
-			path: ContentTransformer/HtmlStylesRemover.php
-
-		-
-			message: "#^Cannot call method removeChild\\(\\) on DOMElement\\|null\\.$#"
-			count: 1
-			path: ContentTransformer/HtmlStylesRemover.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ContentManagement\\\\ContentTypeController\\:\\:isValidName\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: Controller/ContentManagement/ContentTypeController.php

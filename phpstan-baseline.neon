@@ -9950,10 +9950,6 @@ parameters:
 			count: 2
 			path: Service/DataService.php
 
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:newDocument\\(\\) has parameter \\$rawData with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Service/DataService.php
 
 		-
 			message: "#^Parameter \\#1 \\$ouuid of method EMS\\\\CoreBundle\\\\Entity\\\\Revision\\:\\:setOuuid\\(\\) expects string, string\\|null given\\.$#"

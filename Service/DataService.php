@@ -1121,7 +1121,7 @@ class DataService
     /**
      * @param ContentType $contentType
      * @param string|null $ouuid
-     * @param array|null $rawData
+     * @param array<mixed>|null $rawData
      * @return Revision
      * @throws DuplicateOuuidException
      * @throws HasNotCircleException
@@ -1194,15 +1194,16 @@ class DataService
                 $options = $fieldType->getDisplayOptions();
                 if (isset($options['multiple']) && $options['multiple']) {
                     //merge all my circles with the default value
-                    $circles = [];
+                    $circles = $raw[$contentType->getCirclesField()] ?? [];
                     if (isset($options['defaultValue'])) {
-                        $circles = json_decode($options['defaultValue']);
-                        if (!is_array($circles)) {
-                            $circles = [$circles];
+                        $defaultValue = json_decode($options['defaultValue']);
+                        if (!is_array($defaultValue)) {
+                            $defaultValue = [$defaultValue];
                         }
+                        $circles = array_merge($circles, $defaultValue);
                     }
                     $circles = array_merge($circles, $user->getCircles());
-                    $revision->setRawData([$contentType->getCirclesField() => $circles]);
+                    $revision->setRawData(array_merge($revision->getRawData(), [$contentType->getCirclesField() => $circles]));
                     $revision->setCircles($circles);
                 } else {
                     //set first of my circles

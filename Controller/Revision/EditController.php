@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\Revision;
 
+use EMS\CommonBundle\Storage\NotFoundException;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Exception\ElasticmsException;
@@ -67,6 +68,10 @@ class EditController extends AbstractController
 
         $this->dataService->lockRevision($revision);
 
+        if (null === $contentType = $revision->getContentType()) {
+            throw new NotFoundException('ContentType not found!');
+        }
+
         if ($revision->getEndTime() && ! $this->isGranted('ROLE_SUPER')) {
             throw new ElasticmsException($this->translator->trans(
                 'log.data.revision.only_super_can_finalize_an_archive',
@@ -75,8 +80,9 @@ class EditController extends AbstractController
             ));
         }
 
-        if ($request->isMethod('GET')) {
-            $this->loadAutoSavedVersion($revision);
+        if ($request->isMethod('GET') && null != $revision->getAutoSave()) {
+            $revision->setRawData($revision->getAutoSave());
+            $this->logger->warning('log.data.revision.load_from_auto_save', LoggingContext::read($revision));
         }
 
         $form = $this->createForm(RevisionType::class, $revision, [
@@ -84,59 +90,52 @@ class EditController extends AbstractController
             'has_copy' => $this->isGranted('ROLE_COPY_PASTE'),
             'raw_data' => $revision->getRawData(),
         ]);
-
         $this->logger->debug('Revision\'s form created');
 
+        /** @var array<string, mixed> $requestRevision */
+        $requestRevision = $request->request->get('revision', []);
 
         /**little trick to reorder collection*/
-        $requestRevision = $request->request->get('revision');
         $this->reorderCollection($requestRevision);
         $request->request->set('revision', $requestRevision);
         /**end little trick to reorder collection*/
 
-
         $form->handleRequest($request);
-
         $this->logger->debug('Revision request form handled');
 
-
         if ($form->isSubmitted()) {//Save, Finalize or Discard
-            if (empty($request->request->get('revision')) || empty($request->request->get('revision')['allFieldsAreThere']) || !$request->request->get('revision')['allFieldsAreThere']) {
+            $allFieldsAreThere = $requestRevision['allFieldsAreThere'] ?? false;
+            if (empty($requestRevision) || !$allFieldsAreThere) {
                 $this->logger->error('log.data.revision.not_completed_request', LoggingContext::read($revision));
 
                 return $this->redirectToRoute('data.revisions', [
                     'ouuid' => $revision->getOuuid(),
-                    'type' => $revision->getContentType()->getName(),
+                    'type' => $contentType->getName(),
                     'revisionId' => $revision->getId(),
                 ]);
             }
 
-
-            $revision->setAutoSave(null);
-            if (!array_key_exists('discard', $request->request->get('revision'))) {//Save, Copy, Paste or Finalize
+            $revision->setAutoSave([]);
+            if (!isset($requestRevision['discard'])) {//Save, Copy, Paste or Finalize
                 //Save anyway
                 /** @var Revision $revision */
                 $revision = $form->getData();
+                $objectArray = $revision->getRawData();
 
                 $this->logger->debug('Revision extracted from the form');
 
-
-                $objectArray = $revision->getRawData();
-
-                if (array_key_exists('paste', $request->request->get('revision'))) {//Paste
+                if (isset($requestRevision['paste'])) {
                     $this->logger->notice('log.data.revision.paste', LoggingContext::update($revision));
                     $objectArray = array_merge($objectArray, $request->getSession()->get('ems_clipboard', []));
                     $this->logger->debug('Paste data have been merged');
                 }
 
-                if (array_key_exists('copy', $request->request->get('revision'))) {//Copy
+                if (isset($requestRevision['copy'])) {
                     $request->getSession()->set('ems_clipboard', $objectArray);
                     $this->logger->notice('log.data.document.copy', LoggingContext::update($revision));
                 }
 
                 $revision->setRawData($objectArray);
-
-
                 $this->dataService->setMetaFields($revision);
 
                 $this->logger->debug('Revision before persist');
@@ -145,13 +144,13 @@ class EditController extends AbstractController
 
                 $this->logger->debug('Revision after persist flush');
 
-                if (array_key_exists('publish', $request->request->get('revision'))) {//Finalize
+                if (isset($requestRevision['publish'])) {//Finalize
                     $revision = $this->dataService->finalizeDraft($revision, $form);
                     if (count($form->getErrors()) === 0) {
                         if ($revision->getOuuid()) {
                             return $this->redirectToRoute('data.revisions', [
                                 'ouuid' => $revision->getOuuid(),
-                                'type' => $revision->getContentType()->getName(),
+                                'type' => $contentType->getName(),
                             ]);
                         } else {
                             return $this->redirectToRoute('revision.edit', [
@@ -162,53 +161,48 @@ class EditController extends AbstractController
                 }
             }
 
-            //if paste or copy
-            if (array_key_exists('paste', $request->request->get('revision')) || array_key_exists('copy', $request->request->get('revision'))) {//Paste or copy
-                return $this->redirectToRoute('revision.edit', [
-                    'revisionId' => $revisionId,
-                ]);
+            if (isset($requestRevision['paste']) || isset($requestRevision['copy'])) {
+                return $this->redirectToRoute('revision.edit', ['revisionId' => $revisionId]);
             }
 
             //if Save or Discard
-            if (!array_key_exists('publish', $request->request->get('revision'))) {
+            if (!isset($requestRevision['publish'])) {
                 if (null != $revision->getOuuid()) {
-                    if (count($form->getErrors()) === 0 && $revision->getContentType()->isAutoPublish()) {
+                    if (count($form->getErrors()) === 0 && $contentType->isAutoPublish()) {
                         $this->publishService->silentPublish($revision);
                     }
 
                     return $this->redirectToRoute('data.revisions', [
                         'ouuid' => $revision->getOuuid(),
-                        'type' => $revision->getContentType()->getName(),
+                        'type' => $contentType->getName(),
                         'revisionId' => $revision->getId(),
                     ]);
                 } else {
                     return $this->redirectToRoute('data.draft_in_progress', [
-                        'contentTypeId' => $revision->getContentType()->getId(),
+                        'contentTypeId' => $contentType->getId(),
                     ]);
                 }
             }
         } else {
             $objectArray = $revision->getRawData();
-            $isValid = $this->dataService->isValid($form, $revision->getContentType()->getParentField(), $objectArray);
+            $isValid = $this->dataService->isValid($form, $contentType->getParentField(), $objectArray);
             if (!$isValid) {
                 $this->logger->warning('log.data.revision.can_finalized', LoggingContext::update($revision));
             }
         }
 
-        if ($revision->getContentType()->isAutoPublish()) {
+        if ($contentType->isAutoPublish()) {
             $this->logger->warning('log.data.revision.auto_save_off_with_auto_publish', LoggingContext::update($revision));
         }
 
-
         $objectArray = $revision->getRawData();
-        $this->dataService->propagateDataToComputedField($form->get('data'), $objectArray, $revision->getContentType(), $revision->getContentType()->getName(), $revision->getOuuid(), false, false);
+        $this->dataService->propagateDataToComputedField($form->get('data'), $objectArray, $contentType, $contentType->getName(), $revision->getOuuid(), false, false);
 
         if ($revision->getOuuid()) {
-            $messageLog = "log.data.revision.start_edit";
+            $this->logger->info('log.data.revision.start_edit', LoggingContext::read($revision));
         } else {
-            $messageLog = "log.data.revision.start_edit_new_document";
+            $this->logger->info('log.data.revision.start_edit_new_document', LoggingContext::read($revision));
         }
-        $this->logger->info($messageLog, LoggingContext::read($revision));
 
         return $this->render('@EMSCore/data/edit-revision.html.twig', [
             'revision' => $revision,
@@ -217,31 +211,28 @@ class EditController extends AbstractController
         ]);
     }
 
-    private function loadAutoSavedVersion(Revision $revision)
+    /**
+     * @param mixed $input
+     */
+    private function reorderCollection(&$input): void
     {
-        if (null != $revision->getAutoSave()) {
-            $revision->setRawData($revision->getAutoSave());
-            $this->logger->warning('log.data.revision.load_from_auto_save', LoggingContext::read($revision));
+        if (!\is_array($input) || empty($input)) {
+            return;
         }
-    }
 
-    private function reorderCollection(&$input)
-    {
-        if (is_array($input) && !empty($input)) {
-            $keys = array_keys($input);
-            if (is_int($keys[0])) {
-                sort($keys);
-                $temp = [];
-                $loop0 = 0;
-                foreach ($input as $item) {
-                    $temp[$keys[$loop0]] = $item;
-                    ++$loop0;
-                }
-                $input = $temp;
+        $keys = \array_keys($input);
+        if (\is_int($keys[0])) {
+            sort($keys);
+            $temp = [];
+            $loop0 = 0;
+            foreach ($input as $item) {
+                $temp[$keys[$loop0]] = $item;
+                ++$loop0;
             }
-            foreach ($input as &$elem) {
-                $this->reorderCollection($elem);
-            }
+            $input = $temp;
+        }
+        foreach ($input as &$elem) {
+            $this->reorderCollection($elem);
         }
     }
 }

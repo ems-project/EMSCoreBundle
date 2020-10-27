@@ -9,6 +9,7 @@ use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\DataService;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Form\FormInterface;
 
 class RevisionService
 {
@@ -31,7 +32,9 @@ class RevisionService
 
     public function find(int $revisionId): ?Revision
     {
-        return $this->revisionRepository->find($revisionId);
+        $revision = $this->revisionRepository->find($revisionId);
+
+        return $revision instanceof Revision ? $revision : null;
     }
 
     public function getCurrentRevisionForDocument(DocumentInterface $document): ?Revision
@@ -58,5 +61,27 @@ class RevisionService
         $this->logger->debug('Revision before persist');
         $this->revisionRepository->save($revision);
         $this->logger->debug('Revision after persist flush');
+    }
+
+    /**
+     * @param array<mixed> $rawData
+     */
+    public function saveVersion(Revision $revision, array $rawData, string $version = null): Revision
+    {
+        if (!$revision->hasVersionTags() || $version === null) { //silent publish
+            $this->save($revision, $rawData);
+            $this->dataService->finalizeDraft($revision);
+            return $revision;
+        }
+
+        $newVersion = $revision->clone();
+        $this->dataService->lockRevision($newVersion);
+
+        $this->save($newVersion, $rawData);
+        $this->dataService->finalizeDraft($newVersion);
+
+        $this->dataService->discardDraft($revision); //discard draft previous version
+
+        return $newVersion;
     }
 }

@@ -226,6 +226,13 @@ function addEventListeners(target){
 
     new EmsListeners(target.get(0), onFormChange);
 
+    target.find('button#btn-publish-version').on('click', function(e) {
+        e.preventDefault();
+        $('#publish-version-modal').modal('show');
+
+        console.debug("cool");
+    });
+
     target.find('.remove-content-button').on('click', function(e) {
         // prevent the link from creating a "#" on the URL
         e.preventDefault();

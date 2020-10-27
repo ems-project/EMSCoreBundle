@@ -36,11 +36,19 @@ final class LoggingContext
      */
     private static function context(Revision $revision): array
     {
-        return [
-            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+        $context = [
             EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
             EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-            EmsFields::LOG_ENVIRONMENT_FIELD => $revision->getContentType()->getEnvironment()->getName(),
         ];
+
+        if ($contentType = $revision->getContentType()) {
+            $context[EmsFields::LOG_CONTENTTYPE_FIELD] = $contentType->getName();
+
+            if ($environment = $contentType->getEnvironment()) {
+                $context[EmsFields::LOG_ENVIRONMENT_FIELD] = $environment->getName();
+            }
+        }
+
+        return $context;
     }
 }

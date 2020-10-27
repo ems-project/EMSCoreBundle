@@ -132,21 +132,28 @@ class EditController extends AbstractController
                     $this->logger->notice('log.data.document.copy', LoggingContext::update($revision));
                 }
 
-                $this->revisionService->save($revision, $objectArray);
+                if (isset($requestRevision['publish_version'])) {
+                    $versionTag = $form->get('publish_version_tags')->getData();
+                    $revision = $this->revisionService->saveVersion($revision, $objectArray, $versionTag);
+                } else {
+                    $this->revisionService->save($revision, $objectArray);
+                }
 
                 if (isset($requestRevision['publish'])) {//Finalize
                     $revision = $this->dataService->finalizeDraft($revision, $form);
-                    if (count($form->getErrors()) === 0) {
-                        if ($revision->getOuuid()) {
-                            return $this->redirectToRoute('data.revisions', [
-                                'ouuid' => $revision->getOuuid(),
-                                'type' => $contentType->getName(),
-                            ]);
-                        } else {
-                            return $this->redirectToRoute('revision.edit', [
-                                'revisionId' => $revision->getId(),
-                            ]);
-                        }
+                }
+
+                if ((isset($requestRevision['publish']) || isset($requestRevision['publish_version']))
+                    && count($form->getErrors()) === 0) {
+                    if ($revision->getOuuid()) {
+                        return $this->redirectToRoute('data.revisions', [
+                            'ouuid' => $revision->getOuuid(),
+                            'type' => $contentType->getName(),
+                        ]);
+                    } else {
+                        return $this->redirectToRoute('revision.edit', [
+                            'revisionId' => $revision->getId(),
+                        ]);
                     }
                 }
             }

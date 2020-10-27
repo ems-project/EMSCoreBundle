@@ -1073,4 +1073,9 @@ class Revision
         $this->finalizedDate = $finalizedDate;
         return $this;
     }
+
+    public function hasVersionTags() : bool
+    {
+        return $this->contentType ? $this->contentType->hasVersionTags() : false;
+    }
 }

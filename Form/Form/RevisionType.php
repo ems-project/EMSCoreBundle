@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Form\Form;
 
 use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Form\Field\Select2Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -107,13 +108,31 @@ class RevisionType extends AbstractType
         }
         
         if ($revision !== null && $revision->getDraft()) {
-            $builder->add('publish', SubmitEmsType::class, [
-                'attr' => [
+            $contentType = $revision->getContentType();
+            $environment = $contentType ? $contentType->getEnvironment() : null;
+
+            if (null !== $environment && null !== $contentType && $contentType->hasVersionTags()) {
+                $builder
+                    ->add('publish_version_tags', Select2Type::class, [
+                        'placeholder' => 'Silent',
+                        'choices' => array_combine($contentType->getVersionTags(), $contentType->getVersionTags()),
+                        'mapped' => false,
+                        'required' => false,
+                    ])
+                    ->add('publish_version', SubmitEmsType::class, [
+                        'attr' => ['class' => 'btn-primary btn-sm'],
+                        'icon' => 'glyphicon glyphicon-open' ,
+                        'label' => sprintf('Publish in %s', $environment->getName())
+                    ]);
+            } else {
+                $builder->add('publish', SubmitEmsType::class, [
+                    'attr' => [
                         'class' => 'btn-primary btn-sm '
-                ],
-                'icon' => 'glyphicon glyphicon-open' ,
-                'label' => 'Finalize draft'
-            ]);
+                    ],
+                    'icon' => 'glyphicon glyphicon-open' ,
+                    'label' => 'Finalize draft'
+                ]);
+            }
         }
         $builder->add('allFieldsAreThere', HiddenType::class, [
                  'data' => true,

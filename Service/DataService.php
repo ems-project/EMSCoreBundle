@@ -925,7 +925,7 @@ class DataService
         $objectArray = $this->sign($revision);
 
 
-        if (empty($form) || $this->isValid($form, $revision->getContentType()->getParentField(), $objectArray)) {
+        if (empty($form) || $this->isValid($form, null, $objectArray)) {
             $objectArray[Mapping::PUBLISHED_DATETIME_FIELD] = (new DateTime())->format(DateTime::ISO8601);
 
             $config = [

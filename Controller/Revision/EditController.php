@@ -182,7 +182,7 @@ class EditController extends AbstractController
             }
         } else {
             $objectArray = $revision->getRawData();
-            $isValid = $this->dataService->isValid($form, $contentType->getParentField(), $objectArray);
+            $isValid = $this->dataService->isValid($form, null, $objectArray);
             if (!$isValid) {
                 $this->logger->warning('log.data.revision.can_finalized', LoggingContext::update($revision));
             }

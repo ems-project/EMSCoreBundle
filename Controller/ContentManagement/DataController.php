@@ -1201,7 +1201,7 @@ class DataController extends AppController
             $em->persist($revision);
             $em->flush();
 
-            $dataService->isValid($form, $revision->getContentType()->getParentField(), $objectArray);
+            $dataService->isValid($form, null, $objectArray);
             $dataService->propagateDataToComputedField($form->get('data'), $objectArray, $revision->getContentType(), $revision->getContentType()->getName(), $revision->getOuuid(), false, false);
 
             $session = $request->getSession();

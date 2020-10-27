@@ -175,13 +175,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * @var string
      *
-     * @ORM\Column(name="parentField", type="string", length=100, nullable=true)
-     */
-    protected $parentField;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="userField", type="string", length=100, nullable=true)
      */
     protected $userField;
@@ -727,30 +720,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     public function getLabelField()
     {
         return $this->labelField;
-    }
-
-    /**
-     * Set parentField
-     *
-     * @param string $parentField
-     *
-     * @return ContentType
-     */
-    public function setParentField($parentField)
-    {
-        $this->parentField = $parentField;
-
-        return $this;
-    }
-
-    /**
-     * Get parentField
-     *
-     * @return string
-     */
-    public function getParentField()
-    {
-        return $this->parentField;
     }
 
     /**

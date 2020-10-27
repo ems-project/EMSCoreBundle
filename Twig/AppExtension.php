@@ -857,10 +857,19 @@ class AppExtension extends AbstractExtension
     public function dataLabel(string $key): string
     {
         $out = $key;
+<<<<<<< HEAD
         $exploded = explode(':', $key);
         if (count($exploded) == 2 && strlen($exploded[0]) > 0 && strlen($exploded[1]) > 0) {
             $type = $exploded[0];
             $ouuid = $exploded[1];
+=======
+        $splitted = explode(':', $key);
+        if (count($splitted) == 2 && strlen($splitted[0]) > 0 && strlen($splitted[1]) > 0) {
+            $type = $splitted[0];
+            $ouuid = $splitted[1];
+
+            $addAttribute = "";
+>>>>>>> 4d1bd5f51bf0b91ca81eda27c52cdd23e8cf42aa
 
             /**@var \EMS\CoreBundle\Entity\ContentType $contentType */
             $contentType = $this->contentTypeService->getByName($type);
@@ -913,10 +922,17 @@ class AppExtension extends AbstractExtension
     public function dataLink(string $key, string $revisionId = null, string $diffMod = null): string
     {
         $out = $key;
+<<<<<<< HEAD
         $exploded = explode(':', $key);
         if (count($exploded) == 2 && strlen($exploded[0]) > 0 && strlen($exploded[1]) > 0) {
             $type = $exploded[0];
             $ouuid = $exploded[1];
+=======
+        $splitted = explode(':', $key);
+        if (count($splitted) == 2 && strlen($splitted[0]) > 0 && strlen($splitted[1]) > 0) {
+            $type = $splitted[0];
+            $ouuid = $splitted[1];
+>>>>>>> 4d1bd5f51bf0b91ca81eda27c52cdd23e8cf42aa
 
             $addAttribute = "";
 
@@ -1001,10 +1017,17 @@ class AppExtension extends AbstractExtension
             return null;
         }
 
+<<<<<<< HEAD
         $exploded = explode(':', $key);
         if (count($exploded) === 2) {
             $type = $exploded[0];
             $ouuid = $exploded[1];
+=======
+        $splitted = explode(':', $key);
+        if (count($splitted) == 2) {
+            $type = $splitted[0];
+            $ouuid = $splitted[1];
+>>>>>>> 4d1bd5f51bf0b91ca81eda27c52cdd23e8cf42aa
 
             /**@var \EMS\CoreBundle\Entity\ContentType $contentType */
             $contentType = $this->contentTypeService->getByName($type);

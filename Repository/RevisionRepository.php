@@ -36,6 +36,12 @@ class RevisionRepository extends EntityRepository
                 'contentType' => $contentType
             ], $orderBy, $limit, $offset);
     }
+
+    public function save(Revision $revision): void
+    {
+        $this->_em->persist($revision);
+        $this->_em->flush();
+    }
     
     /**
      *

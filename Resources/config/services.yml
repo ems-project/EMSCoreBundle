@@ -424,7 +424,7 @@ services:
             - { name: kernel.event_listener, event: ems_core.revision.update_referers, method: updateReferers, priority: 0 }
     ems.service.revision:
         class: EMS\CoreBundle\Service\Revision\RevisionService
-        arguments: ['@EMS\CoreBundle\Repository\RevisionRepository']
+        arguments: ['@ems.service.data', '@logger', '@EMS\CoreBundle\Repository\RevisionRepository']
     ems.service.alias:
         class: EMS\CoreBundle\Service\AliasService
         arguments: ['@app.elasticsearch', '@EMS\CoreBundle\Repository\EnvironmentRepository', '@EMS\CoreBundle\Repository\ManagedAliasRepository']
@@ -732,7 +732,7 @@ services:
         arguments: ['@ems.form_verification', '@logger']
         tags: ['controller.service_arguments']
     EMS\CoreBundle\Controller\Revision\EditController:
-        arguments: [ '@ems.service.data', '@logger', '@ems.service.publish', '@translator', '@ems.service.wysiwyg_styles_set']
+        arguments: [ '@ems.service.data', '@logger', '@ems.service.publish', '@ems.service.revision',, '@translator', '@ems.service.wysiwyg_styles_set']
     EMS\CoreBundle\Controller\AuthTokenController:
         arguments: ['@ems.security.authenticator', '@twig']
     EMS\CoreBundle\Controller\Form\SubmissionController:

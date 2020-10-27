@@ -9,10 +9,10 @@ use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Form\Form\RevisionType;
-use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\Revision\LoggingContext;
+use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\CoreBundle\Service\WysiwygStylesSetService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,6 +30,8 @@ class EditController extends AbstractController
     private $logger;
     /** @var PublishService */
     private $publishService;
+    /** @var RevisionService */
+    private $revisionService;
     /** @var TranslatorInterface */
     private $translator;
     /** @var WysiwygStylesSetService */
@@ -39,12 +41,14 @@ class EditController extends AbstractController
         DataService $dataService,
         LoggerInterface $logger,
         PublishService $publishService,
+        RevisionService $revisionService,
         TranslatorInterface $translator,
         WysiwygStylesSetService $wysiwygStylesSetService
     ) {
         $this->dataService = $dataService;
         $this->logger = $logger;
         $this->publishService = $publishService;
+        $this->revisionService = $revisionService;
         $this->translator = $translator;
         $this->wysiwygStylesSetService = $wysiwygStylesSetService;
     }
@@ -55,14 +59,7 @@ class EditController extends AbstractController
      */
     public function editRevision(int $revisionId, Request $request): Response
     {
-        $em = $this->getDoctrine()->getManager();
-
-        /** @var RevisionRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Revision');
-        /** @var Revision|null $revision */
-        $revision = $repository->find($revisionId);
-
-        if ($revision === null) {
+        if (null === $revision = $this->revisionService->find($revisionId)) {
             throw new NotFoundHttpException('Unknown revision');
         }
 
@@ -135,14 +132,7 @@ class EditController extends AbstractController
                     $this->logger->notice('log.data.document.copy', LoggingContext::update($revision));
                 }
 
-                $revision->setRawData($objectArray);
-                $this->dataService->setMetaFields($revision);
-
-                $this->logger->debug('Revision before persist');
-                $em->persist($revision);
-                $em->flush();
-
-                $this->logger->debug('Revision after persist flush');
+                $this->revisionService->save($revision, $objectArray);
 
                 if (isset($requestRevision['publish'])) {//Finalize
                     $revision = $this->dataService->finalizeDraft($revision, $form);

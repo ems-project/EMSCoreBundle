@@ -731,6 +731,8 @@ services:
     EMS\CoreBundle\Controller\Api\Form\VerificationController:
         arguments: ['@ems.form_verification', '@logger']
         tags: ['controller.service_arguments']
+    EMS\CoreBundle\Controller\Revision\EditController:
+        arguments: [ '@ems.service.data', '@logger', '@ems.service.publish', '@translator', '@ems.service.wysiwyg_styles_set']
     EMS\CoreBundle\Controller\AuthTokenController:
         arguments: ['@ems.security.authenticator', '@twig']
     EMS\CoreBundle\Controller\Form\SubmissionController:

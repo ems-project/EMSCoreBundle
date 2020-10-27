@@ -15,3 +15,5 @@ parameters:
     reportUnmatchedIgnoredErrors: false
     level: 8
     inferPrivatePropertyTypeFromConstructor: true
+    parallel:
+        maximumNumberOfProcesses: 2

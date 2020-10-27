@@ -116,7 +116,13 @@ services:
         class: EMS\CoreBundle\Form\DataField\JsonMenuEditorFieldType
         arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch']
         tags:
-            - { name: ems.form.datafieldtype, alias: code }
+            - { name: ems.form.datafieldtype, alias: json_menu }
+            - { name: form.type }
+    ems.fieldtype.json_menu_nested_editor:
+        class: EMS\CoreBundle\Form\DataField\JsonMenuNestedEditorFieldType
+        arguments: ['@form.factory', '@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch']
+        tags:
+            - { name: ems.form.datafieldtype, alias: json_menu_nested }
             - { name: form.type }
     ems.fieldtype.textarea:
         class: EMS\CoreBundle\Form\DataField\TextareaFieldType
@@ -186,9 +192,15 @@ services:
             - { name: form.type }
     ems.fieldtype.json_menu_link:
         class: EMS\CoreBundle\Form\DataField\JsonMenuLinkFieldType
-        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@ems.service.contenttype', '@app.elasticsearch', '@ems_common.text.decoder']
+        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@ems.service.contenttype', '@app.elasticsearch', '@ems_common.json.decoder']
         tags:
-            - { name: ems.form.datafieldtype, alias: choice }
+            - { name: ems.form.datafieldtype, alias: json_menu_link }
+            - { name: form.type }
+    ems.fieldtype.json_menu_nested_link:
+        class: EMS\CoreBundle\Form\DataField\JsonMenuNestedLinkFieldType
+        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@app.elasticsearch', '@ems_common.json.decoder']
+        tags:
+            - { name: ems.form.datafieldtype, alias: json_menu_nested_link }
             - { name: form.type }
     ems.fieldtype.checkbox:
         class: EMS\CoreBundle\Form\DataField\CheckboxFieldType
@@ -487,7 +499,7 @@ services:
         arguments: ['@ems.service.mapping']
     ems.service.file:
         class: EMS\CoreBundle\Service\FileService
-        arguments: ['@doctrine', '@ems_common.storage.manager', '%kernel.project_dir%', '%ems_core.upload_folder%', '%ems_core.storage_folder%', '%ems_core.save_assets_in_db%', '%ems_core.ems_remote_host%', '%ems_core.ems_remote_authkey%', '%ems_core.sftp_server%', '%ems_core.sftp_path%', '%ems_core.sftp_user%', '%ems_core.public_key%', '%ems_core.private_key%', '%ems_core.s3_credentials%', '%ems_core.s3_bucket%']
+        arguments: ['@doctrine', '@ems_common.storage.manager', '@ems_common.storage.processor', '%kernel.project_dir%', '%ems_core.upload_folder%', '%ems_core.storage_folder%', '%ems_core.save_assets_in_db%', '%ems_core.ems_remote_host%', '%ems_core.ems_remote_authkey%', '%ems_core.sftp_server%', '%ems_core.sftp_path%', '%ems_core.sftp_user%', '%ems_core.public_key%', '%ems_core.private_key%', '%ems_core.s3_credentials%', '%ems_core.s3_bucket%']
     ems.service.helper:
         class: EMS\CoreBundle\Service\HelperService
         arguments: ['@doctrine', '@request_stack', '%ems_core.paging_size%']
@@ -628,10 +640,6 @@ services:
         arguments: ['@logger', '@app.elasticsearch', '@doctrine', '@ems.service.file']
         tags:
             - { name: console.command }
-    EMS\CoreBundle\Command\AssetClearCacheCommand:
-        arguments: ['@logger', '@app.elasticsearch', '@ems.service.file']
-        tags:
-            - { name: console.command }
     EMS\CoreBundle\Command\AlignManagedAliases:
         arguments: ['@logger', '@ems.service.alias']
         tags:
@@ -688,6 +696,9 @@ services:
     EMS\CoreBundle\Service\AssetExtractorService: '@ems.service.asset_extractor'
     EMS\CoreBundle\Service\UserService: '@ems.service.user'
     EMS\CommonBundle\Helper\Text\Encoder: '@ems_common.text.encoder'
+    EMS\CoreBundle\Service\SearchService: '@ems.service.search'
+    EMS\CoreBundle\Service\PublishService: '@ems.service.publish'
+
 
 
 #### Will be mark as deprecated soon

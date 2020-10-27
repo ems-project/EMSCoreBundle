@@ -660,6 +660,7 @@ field_type:
     collapse_all_button: 'Expand/Collapse all'
     move_item: 'Move'
     add: 'Add'
+    edit: 'Edit'
 
 form_submissions:
     title: Form Submissions

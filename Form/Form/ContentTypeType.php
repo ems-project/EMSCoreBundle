@@ -135,19 +135,34 @@ class ContentTypeType extends AbstractType
             ]);
             $builder->add('localeField');
 
-            $builder->add('versionTags', CollectionType::class, [
-                'entry_type' => TextType::class,
-                'attr' => [
-                    'data-entry-remove-class' => 'btn btn-danger',
-                ],
-                'entry_options' => [
-                    'label' => false,
-                    'attr' => ['style' => 'width: 150px; float: left;']
-                ],
-                'allow_add' => true,
-                'allow_delete' => true,
-                'block_prefix' => 'tags'
-            ]);
+            $builder
+                ->add('versionDateFromField', ContentTypeFieldPickerType::class, [
+                    'required' => false,
+                    'firstLevelOnly' => false,
+                    'label' => 'From date field',
+                    'mapping' => $mapping,
+                    'types' => ['date']
+                ])
+                ->add('versionDateToField', ContentTypeFieldPickerType::class, [
+                    'required' => false,
+                    'firstLevelOnly' => false,
+                    'label' => 'To date field',
+                    'mapping' => $mapping,
+                    'types' => ['date']
+                ])
+                ->add('versionTags', CollectionType::class, [
+                    'entry_type' => TextType::class,
+                    'attr' => [
+                        'data-entry-remove-class' => 'btn btn-danger',
+                    ],
+                    'entry_options' => [
+                        'label' => false,
+                        'attr' => ['style' => 'width: 150px; float: left;']
+                    ],
+                    'allow_add' => true,
+                    'allow_delete' => true,
+                    'block_prefix' => 'tags'
+                ]);
         }
         
         

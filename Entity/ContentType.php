@@ -420,6 +420,21 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
      */
     protected $versionTags = [];
 
+    /**
+     * @var null|string
+     *
+     * @ORM\Column(name="version_date_from_field", type="string", length=100, nullable=true)
+     */
+    protected $versionDateFromField;
+
+    /**
+     * @var null|string
+     *
+     * @ORM\Column(name="version_date_to_field", type="string", length=100, nullable=true)
+     */
+    protected $versionDateToField;
+
+
     public function __construct()
     {
 
@@ -1849,5 +1864,25 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     public function setVersionTags(array $versionTags): void
     {
         $this->versionTags = $versionTags;
+    }
+
+    public function getVersionDateFromField(): ?string
+    {
+        return $this->versionDateFromField;
+    }
+
+    public function setVersionDateFromField(?string $versionDateFromField): void
+    {
+        $this->versionDateFromField = $versionDateFromField;
+    }
+
+    public function getVersionDateToField(): ?string
+    {
+        return $this->versionDateToField;
+    }
+
+    public function setVersionDateToField(?string $versionDateToField): void
+    {
+        $this->versionDateToField = $versionDateToField;
     }
 }

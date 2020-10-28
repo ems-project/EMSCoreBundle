@@ -42,66 +42,66 @@ use Twig\TwigFunction;
 class AppExtension extends AbstractExtension
 {
     /** @var FormFactory */
-protected $formFactory;
+    protected $formFactory;
     /** @var FileService */
-protected $fileService;
+    protected $fileService;
     /** @var RequestRuntime */
-protected $commonRequestRuntime;
+    protected $commonRequestRuntime;
     /** @var array<mixed> */
-protected $assetConfig;
+    protected $assetConfig;
     /** @var Registry */
-private $doctrine;
+    private $doctrine;
     /** @var UserService */
-private $userService;
+    private $userService;
     /** @var AuthorizationCheckerInterface */
-private $authorizationChecker;
+    private $authorizationChecker;
     /** @var ContentTypeService $contentTypeService */
-private $contentTypeService;
+    private $contentTypeService;
     /** @var Client $client */
-private $client;
+    private $client;
     /** @var Router $router */
-private $router;
+    private $router;
     /** @var TwigEnvironment $twig */
-private $twig;
+    private $twig;
     /** @var ObjectChoiceListFactory $objectChoiceListFactory */
-private $objectChoiceListFactory;
+    private $objectChoiceListFactory;
     /** @var EnvironmentService */
-private $environmentService;
+    private $environmentService;
     /** @var LoggerInterface */
-private $logger;
+    private $logger;
     /** @var \Swift_Mailer */
-private $mailer;
+    private $mailer;
 
     /**
      * @param array<mixed> $assetConfig
      */
-public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, Client $client, Router $router, TwigEnvironment $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, LoggerInterface $logger, FormFactory $formFactory, FileService $fileService, RequestRuntime $commonRequestRuntime, \Swift_Mailer $mailer, array $assetConfig)
-{
-    $this->doctrine = $doctrine;
-    $this->authorizationChecker = $authorizationChecker;
-    $this->userService = $userService;
-    $this->contentTypeService = $contentTypeService;
-    $this->client = $client;
-    $this->router = $router;
-    $this->twig = $twig;
-    $this->objectChoiceListFactory = $objectChoiceListFactory;
-    $this->environmentService = $environmentService;
-    $this->logger = $logger;
-    $this->formFactory = $formFactory;
-    $this->fileService = $fileService;
-    $this->commonRequestRuntime = $commonRequestRuntime;
-    $this->mailer = $mailer;
-    $this->assetConfig = $assetConfig;
-}
+    public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, Client $client, Router $router, TwigEnvironment $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, LoggerInterface $logger, FormFactory $formFactory, FileService $fileService, RequestRuntime $commonRequestRuntime, \Swift_Mailer $mailer, array $assetConfig)
+    {
+        $this->doctrine = $doctrine;
+        $this->authorizationChecker = $authorizationChecker;
+        $this->userService = $userService;
+        $this->contentTypeService = $contentTypeService;
+        $this->client = $client;
+        $this->router = $router;
+        $this->twig = $twig;
+        $this->objectChoiceListFactory = $objectChoiceListFactory;
+        $this->environmentService = $environmentService;
+        $this->logger = $logger;
+        $this->formFactory = $formFactory;
+        $this->fileService = $fileService;
+        $this->commonRequestRuntime = $commonRequestRuntime;
+        $this->mailer = $mailer;
+        $this->assetConfig = $assetConfig;
+    }
 
     /**
      *
      * {@inheritDoc}
      * @see Twig_Extension::getFunctions()
      */
-public function getFunctions()
-{
-    return [
+    public function getFunctions()
+    {
+        return [
         new TwigFunction('get_content_types', array($this, 'getContentTypes')),
         new TwigFunction('cant_be_finalized', array($this, 'cantBeFinalized')),
         new TwigFunction('get_default_environments', array($this, 'getDefaultEnvironments')),
@@ -123,17 +123,17 @@ public function getFunctions()
         new TwigFunction('call_user_func', array($this, 'callUserFunc')),
         new TwigFunction('emsco_generate_email', array($this, 'generateEmailMessage')),
         new TwigFunction('emsco_send_email', array($this, 'sendEmail')),
-    ];
-}
+        ];
+    }
 
     /**
      *
      * {@inheritDoc}
      * @see Twig_Extension::getFilters()
      */
-public function getFilters()
-{
-    return array(
+    public function getFilters()
+    {
+        return array(
         new TwigFilter('searches', array($this, 'searchesList')),
         new TwigFilter('data', array($this, 'data')),
         new TwigFilter('inArray', array($this, 'inArray')),
@@ -177,18 +177,18 @@ public function getFilters()
         //deprecated
         new TwigFilter('url_generator', [Encoder::class, 'webalize'], ['deprecated' => true]),
         new TwigFilter('emsco_webalize', [Encoder::class, 'webalize'], ['deprecated' => true]),
-    );
-}
+        );
+    }
 
-public function generateEmailMessage(string $title): \Swift_Message
-{
-    return (new \Swift_Message($title));
-}
+    public function generateEmailMessage(string $title): \Swift_Message
+    {
+        return (new \Swift_Message($title));
+    }
 
-public function sendEmail(\Swift_Message $message): void
-{
-    $this->mailer->send($message);
-}
+    public function sendEmail(\Swift_Message $message): void
+    {
+        $this->mailer->send($message);
+    }
 
     /**
      * @param array<mixed> $fileField
@@ -201,236 +201,196 @@ public function sendEmail(\Swift_Message $message): void
      * @param int $referenceType
      * @return string
      */
-public function assetPath(array $fileField, string $processorIdentifier, array $assetConfig = [], string $route = 'ems_asset', string $fileHashField = EmsFields::CONTENT_FILE_HASH_FIELD, string $filenameField = EmsFields::CONTENT_FILE_NAME_FIELD, string $mimeTypeField = EmsFields::CONTENT_MIME_TYPE_FIELD, $referenceType = UrlGeneratorInterface::RELATIVE_PATH): string
-{
-    $config = $assetConfig;
-    if (!isset($config['_config_type'])) {
-        $config['_config_type'] = 'image';
+    public function assetPath(array $fileField, string $processorIdentifier, array $assetConfig = [], string $route = 'ems_asset', string $fileHashField = EmsFields::CONTENT_FILE_HASH_FIELD, string $filenameField = EmsFields::CONTENT_FILE_NAME_FIELD, string $mimeTypeField = EmsFields::CONTENT_MIME_TYPE_FIELD, $referenceType = UrlGeneratorInterface::RELATIVE_PATH): string
+    {
+        $config = $assetConfig;
+        if (!isset($config['_config_type'])) {
+            $config['_config_type'] = 'image';
+        }
+
+        if (isset($this->assetConfig[$processorIdentifier])) {
+            $config = \array_merge($this->assetConfig[$processorIdentifier], $config);
+        }
+
+        // removes invalid options like _sha1, _finalized_by, ..
+        $config = \array_intersect_key($config, Config::getDefaults());
+
+        //_published_datetime can also be removed as it has a sense only if the default config is updated
+        if (isset($config['_published_datetime'])) {
+            unset($config['_published_datetime']);
+        }
+
+        return $this->commonRequestRuntime->assetPath($fileField, $config, $route, $fileHashField, $filenameField, $mimeTypeField, $referenceType);
     }
-
-    if (isset($this->assetConfig[$processorIdentifier])) {
-        $config = \array_merge($this->assetConfig[$processorIdentifier], $config);
-    }
-
-    // removes invalid options like _sha1, _finalized_by, ..
-    $config = \array_intersect_key($config, Config::getDefaults());
-
-    //_published_datetime can also be removed as it has a sense only if the default config is updated
-    if (isset($config['_published_datetime'])) {
-        unset($config['_published_datetime']);
-    }
-
-    return $this->commonRequestRuntime->assetPath($fileField, $config, $route, $fileHashField, $filenameField, $mimeTypeField, $referenceType);
-}
 
     /**
      * @return mixed
      */
-public function jsonDecode(string $json, bool $assoc = true, int $depth = 512, int $options = 0)
-{
-    return \json_decode($json, $assoc, $depth, $options);
-}
-
-public function getFieldByPath(ContentType $contentType, string $path, bool $skipVirtualFields = false): ?FieldType
-{
-    $fieldType = $this->contentTypeService->getChildByPath($contentType->getFieldType(), $path, $skipVirtualFields);
-    if ($fieldType === false) {
-        return null;
+    public function jsonDecode(string $json, bool $assoc = true, int $depth = 512, int $options = 0)
+    {
+        return \json_decode($json, $assoc, $depth, $options);
     }
-    return $fieldType;
-}
 
-public function getFile(string $hash): ?string
-{
-    return $this->fileService->getFile($hash);
-}
+    public function getFieldByPath(ContentType $contentType, string $path, bool $skipVirtualFields = false): ?FieldType
+    {
+        $fieldType = $this->contentTypeService->getChildByPath($contentType->getFieldType(), $path, $skipVirtualFields);
+        if ($fieldType === false) {
+            return null;
+        }
+        return $fieldType;
+    }
+
+    public function getFile(string $hash): ?string
+    {
+        return $this->fileService->getFile($hash);
+    }
 
     /**
      * @param array<mixed> $rawData
      */
-public function getString(array $rawData, string $field): ?string
-{
-    if (empty($rawData) or !isset($rawData[$field])) {
-        return null;
+    public function getString(array $rawData, string $field): ?string
+    {
+        if (empty($rawData) or !isset($rawData[$field])) {
+            return null;
+        }
+        if (\is_string($rawData[$field])) {
+            return $rawData[$field];
+        }
+        $encoded = \json_encode($rawData[$field]);
+        if ($encoded === false) {
+            throw new \RuntimeException('Failure on json encode');
+        }
+        return $encoded;
     }
-    if (\is_string($rawData[$field])) {
-        return $rawData[$field];
-    }
-    $encoded = \json_encode($rawData[$field]);
-    if ($encoded === false) {
-        throw new \RuntimeException('Failure on json encode');
-    }
-    return $encoded;
-}
 
-public function diff(?string $a, ?string $b, bool $compare, bool $escape = false, bool $htmlDiff = false, bool $raw = false): string
-{
-    $tag = 'span';
-    $textClass = '';
-    $textLabel = '';
+    public function diff(?string $a, ?string $b, bool $compare, bool $escape = false, bool $htmlDiff = false, bool $raw = false): string
+    {
+        $tag = 'span';
+        $textClass = '';
+        $textLabel = '';
 
-    if ($compare && $a !== $b) {
-        if ($htmlDiff && $a && $b) {
-            $textClass = 'text-orange';
-            $htmlDiff = new HtmlDiff(($escape ? htmlentities($b) : $this->internalLinks($b)) ?? '', ($escape ? htmlentities($a) : $this->internalLinks($a)) ?? '');
-            $textLabel = $htmlDiff->build();
-        } else {
-            $textClass = false;
-            if ($b !== null) {
-                $textClass = 'text-red';
-                $textLabel .= '<del class="diffmod">' . ($escape ? htmlentities($b) : $this->internalLinks($b)) . '</del>';
-            }
-
-            if ($a !== null) {
-                if ($textClass) {
-                    $textClass = 'text-orange';
-                } else {
-                    $textClass = 'text-green';
+        if ($compare && $a !== $b) {
+            if ($htmlDiff && $a && $b) {
+                $textClass = 'text-orange';
+                $htmlDiff = new HtmlDiff(($escape ? htmlentities($b) : $this->internalLinks($b)) ?? '', ($escape ? htmlentities($a) : $this->internalLinks($a)) ?? '');
+                $textLabel = $htmlDiff->build();
+            } else {
+                $textClass = false;
+                if ($b !== null) {
+                    $textClass = 'text-red';
+                    $textLabel .= '<del class="diffmod">' . ($escape ? htmlentities($b) : $this->internalLinks($b)) . '</del>';
                 }
-                $textLabel .= ' <ins class="diffmod">' . ($escape ? htmlentities($a) : $this->internalLinks($a)) . '</ins>';
+
+                if ($a !== null) {
+                    if ($textClass) {
+                        $textClass = 'text-orange';
+                    } else {
+                        $textClass = 'text-green';
+                    }
+                    $textLabel .= ' <ins class="diffmod">' . ($escape ? htmlentities($a) : $this->internalLinks($a)) . '</ins>';
+                }
+            }
+        } else {
+            if ($a !== null) {
+                $textLabel = ($escape ? htmlentities($a) : $this->internalLinks($a));
+            } else {
+    //                $textClass = 'text-gray';
+    //                $textLabel = '[not defined]';
+    //                $tag = 'span';
+                return '<span class="text-gray">[not defined]</span>';
             }
         }
-    } else {
-        if ($a !== null) {
-            $textLabel = ($escape ? htmlentities($a) : $this->internalLinks($a));
-        } else {
-//                $textClass = 'text-gray';
-//                $textLabel = '[not defined]';
-//                $tag = 'span';
-            return '<span class="text-gray">[not defined]</span>';
+
+        if ($raw) {
+            return $textLabel ?? '';
         }
+        return '<' . $tag . ' class="' . $textClass . '">' . $textLabel . '</' . $tag . '>';
     }
-
-    if ($raw) {
-        return $textLabel ?? '';
-    }
-    return '<' . $tag . ' class="' . $textClass . '">' . $textLabel . '</' . $tag . '>';
-}
 
     /**
      * @param mixed|null $rawData
      * @param mixed|null $compareRawData
      */
-public function diffBoolean($rawData, bool $compare, string $fieldName, $compareRawData): string
-{
-    $a = $rawData ? true : false;
-    $b = isset($compareRawData[$fieldName]) && $compareRawData[$fieldName];
+    public function diffBoolean($rawData, bool $compare, string $fieldName, $compareRawData): string
+    {
+        $a = $rawData ? true : false;
+        $b = isset($compareRawData[$fieldName]) && $compareRawData[$fieldName];
 
-    $textClass = '';
-    if ($compare && $a !== $b) {
-        $textClass = 'text-orange';
+        $textClass = '';
+        if ($compare && $a !== $b) {
+            $textClass = 'text-orange';
+        }
+
+        return '<span class="' . $textClass . '"><i class="fa fa' . ($a ? '-check' : '') . '-square-o"></i></span>';
     }
-
-    return '<span class="' . $textClass . '"><i class="fa fa' . ($a ? '-check' : '') . '-square-o"></i></span>';
-}
 
     /**
      * @param mixed|null $rawData
      * @param mixed|null $compareRawData
      */
-public function diffIcon($rawData, bool $compare, string $fieldName, $compareRawData): string
-{
-    $b = $a = null;
-    if ($rawData) {
-        $a = '<i class="' . $rawData . '"></i> ' . $rawData;
-    }
+    public function diffIcon($rawData, bool $compare, string $fieldName, $compareRawData): string
+    {
+        $b = $a = null;
+        if ($rawData) {
+            $a = '<i class="' . $rawData . '"></i> ' . $rawData;
+        }
 
-    if (isset($compareRawData[$fieldName]) && $compareRawData[$fieldName]) {
-        $b = '<i class="' . $compareRawData[$fieldName] . '"></i> ' . $compareRawData[$fieldName];
+        if (isset($compareRawData[$fieldName]) && $compareRawData[$fieldName]) {
+            $b = '<i class="' . $compareRawData[$fieldName] . '"></i> ' . $compareRawData[$fieldName];
+        }
+        return $this->diff($a, $b, $compare);
     }
-    return $this->diff($a, $b, $compare);
-}
 
     /**
      * @param mixed|null $rawData
      * @param mixed|null$compareRawData
      */
-public function diffTime($rawData, bool $compare, string $fieldName, $compareRawData, string $format1, string $format2): string
-{
-    return $this->diffDate($rawData, $compare, $fieldName, $compareRawData, $format1, $format2, TimeFieldType::STOREFORMAT);
-}
+    public function diffTime($rawData, bool $compare, string $fieldName, $compareRawData, string $format1, string $format2): string
+    {
+        return $this->diffDate($rawData, $compare, $fieldName, $compareRawData, $format1, $format2, TimeFieldType::STOREFORMAT);
+    }
 
     /**
      * @param mixed|null $rawData
      * @param mixed|null $compareRawData
      */
-public function diffDate($rawData, bool $compare, string $fieldName, $compareRawData, string $format1, string $format2 = null, string $internalFormat = null): string
-{
-    $b = $a = [];
-    $out = "";
-    $tag = 'li';
-    $insColor = 'green';
-    $delColor = 'red';
+    public function diffDate($rawData, bool $compare, string $fieldName, $compareRawData, string $format1, string $format2 = null, string $internalFormat = null): string
+    {
+        $b = $a = [];
+        $out = "";
+        $tag = 'li';
+        $insColor = 'green';
+        $delColor = 'red';
 
-    if (isset($compareRawData[$fieldName])) {
-        if (is_array($compareRawData[$fieldName])) {
-            $b = $compareRawData[$fieldName];
-        } elseif (is_scalar($compareRawData[$fieldName])) {
-            $b = [$compareRawData[$fieldName]];
-        }
-    }
-
-    if (is_array($rawData)) {
-        $a = $rawData;
-    } elseif (is_scalar($rawData)) {
-        $tag = 'span';
-        if (!empty($b)) {
-            $insColor = $delColor = 'orange';
-        }
-        $a = [$rawData];
-    }
-
-    $formatedA = [];
-
-    foreach ($a as $item) {
-        if ($item instanceof \DateTime) {
-            $date = $item;
-        } elseif ($internalFormat) {
-            $date = \DateTime::createFromFormat($internalFormat, $item);
-        } else {
-            $date = new \DateTime($item);
+        if (isset($compareRawData[$fieldName])) {
+            if (is_array($compareRawData[$fieldName])) {
+                $b = $compareRawData[$fieldName];
+            } elseif (is_scalar($compareRawData[$fieldName])) {
+                $b = [$compareRawData[$fieldName]];
+            }
         }
 
-        if ($date === false) {
-            throw new \RuntimeException('Unexpected date format');
+        if (is_array($rawData)) {
+            $a = $rawData;
+        } elseif (is_scalar($rawData)) {
+            $tag = 'span';
+            if (!empty($b)) {
+                $insColor = $delColor = 'orange';
+            }
+            $a = [$rawData];
         }
 
-        $value = $date->format($format1);
-        $value2 = null;
+        $formatedA = [];
 
-        if ($internalFormat !== null) {
-            $internal = $date->format($internalFormat);
-            $formatedA[] = $internal;
-            $inArray = in_array($internal, $b);
-        } elseif ($format2 !== null) {
-            $value2 = $date->format($format2);
-            $formatedA[] = $value2;
-            $inArray = in_array($item, $b);
-        } else {
-            $formatedA[] = $value;
-            $inArray = in_array($value, $b);
-        }
-
-        if ($value2) {
-            $value .= ' (' . $value2 . ')';
-        }
-
-        if (!$compare || $inArray) {
-            $out .= '<' . $tag . ' class="">' . htmlentities($value) . '</' . $tag . '>';
-        } else {
-            $out .= '<' . $tag . ' class="text-' . $insColor . '"><ins class="diffmod">' . htmlentities($value) . '</ins></' . $tag . '>';
-        }
-    }
-
-    if ($compare) {
-        foreach ($b as $item) {
+        foreach ($a as $item) {
             if ($item instanceof \DateTime) {
                 $date = $item;
             } elseif ($internalFormat) {
                 $date = \DateTime::createFromFormat($internalFormat, $item);
             } else {
-                $date = new DateTime($item);
+                $date = new \DateTime($item);
             }
+
             if ($date === false) {
                 throw new \RuntimeException('Unexpected date format');
             }
@@ -440,27 +400,67 @@ public function diffDate($rawData, bool $compare, string $fieldName, $compareRaw
 
             if ($internalFormat !== null) {
                 $internal = $date->format($internalFormat);
-                $inArray = in_array($internal, $formatedA);
+                $formatedA[] = $internal;
+                $inArray = in_array($internal, $b);
             } elseif ($format2 !== null) {
                 $value2 = $date->format($format2);
-                $inArray = in_array($item, $formatedA);
+                $formatedA[] = $value2;
+                $inArray = in_array($item, $b);
             } else {
-                $inArray = in_array($value, $formatedA);
+                $formatedA[] = $value;
+                $inArray = in_array($value, $b);
             }
 
             if ($value2) {
                 $value .= ' (' . $value2 . ')';
             }
 
-            if (!$inArray) {
-                $out .= ' <' . $tag . ' class="text-' . $delColor . '"><del class="diffmod">' . htmlentities($value) . '</del></' . $tag . '>';
+            if (!$compare || $inArray) {
+                $out .= '<' . $tag . ' class="">' . htmlentities($value) . '</' . $tag . '>';
+            } else {
+                $out .= '<' . $tag . ' class="text-' . $insColor . '"><ins class="diffmod">' . htmlentities($value) . '</ins></' . $tag . '>';
             }
         }
+
+        if ($compare) {
+            foreach ($b as $item) {
+                if ($item instanceof \DateTime) {
+                    $date = $item;
+                } elseif ($internalFormat) {
+                    $date = \DateTime::createFromFormat($internalFormat, $item);
+                } else {
+                    $date = new DateTime($item);
+                }
+                if ($date === false) {
+                    throw new \RuntimeException('Unexpected date format');
+                }
+
+                $value = $date->format($format1);
+                $value2 = null;
+
+                if ($internalFormat !== null) {
+                    $internal = $date->format($internalFormat);
+                    $inArray = in_array($internal, $formatedA);
+                } elseif ($format2 !== null) {
+                    $value2 = $date->format($format2);
+                    $inArray = in_array($item, $formatedA);
+                } else {
+                    $inArray = in_array($value, $formatedA);
+                }
+
+                if ($value2) {
+                    $value .= ' (' . $value2 . ')';
+                }
+
+                if (!$inArray) {
+                    $out .= ' <' . $tag . ' class="text-' . $delColor . '"><del class="diffmod">' . htmlentities($value) . '</del></' . $tag . '>';
+                }
+            }
+        }
+
+
+        return $out;
     }
-
-
-    return $out;
-}
 
     /**
      * @param mixed|null $rawData
@@ -468,388 +468,388 @@ public function diffDate($rawData, bool $compare, string $fieldName, $compareRaw
      * @param array<mixed>|null $choices
      * @param mixed|null $compareRawData
      */
-public function diffChoice($rawData, ?array $labels, ?array $choices, bool $compare, string $fieldName, $compareRawData): string
-{
-    $b = $a = [];
-    $out = "";
-    $tag = 'li';
-    $insColor = 'green';
-    $delColor = 'red';
+    public function diffChoice($rawData, ?array $labels, ?array $choices, bool $compare, string $fieldName, $compareRawData): string
+    {
+        $b = $a = [];
+        $out = "";
+        $tag = 'li';
+        $insColor = 'green';
+        $delColor = 'red';
 
-    if (isset($compareRawData[$fieldName])) {
-        if (is_array($compareRawData[$fieldName])) {
-            $b = $compareRawData[$fieldName];
-        } elseif (is_scalar($compareRawData[$fieldName])) {
-            $b = [$compareRawData[$fieldName]];
+        if (isset($compareRawData[$fieldName])) {
+            if (is_array($compareRawData[$fieldName])) {
+                $b = $compareRawData[$fieldName];
+            } elseif (is_scalar($compareRawData[$fieldName])) {
+                $b = [$compareRawData[$fieldName]];
+            }
         }
-    }
 
-    if (is_array($rawData)) {
-        $a = $rawData;
-    } elseif (is_scalar($rawData)) {
-        $tag = 'span';
-        if (!empty($b)) {
-            $insColor = $delColor = 'orange';
+        if (is_array($rawData)) {
+            $a = $rawData;
+        } elseif (is_scalar($rawData)) {
+            $tag = 'span';
+            if (!empty($b)) {
+                $insColor = $delColor = 'orange';
+            }
+            $a = [$rawData];
         }
-        $a = [$rawData];
-    }
 
 
-    if ($compare) {
-        foreach ($b as $item) {
-            $value = $item;
-            if (\is_array($choices) && \in_array($value, $choices)) {
-                $idx = array_search($value, $choices, true);
-                if ($idx !== false && \is_array($labels) && \array_key_exists($idx, $labels)) {
-                    $value = $labels[$idx] . ' (' . $value . ')';
+        if ($compare) {
+            foreach ($b as $item) {
+                $value = $item;
+                if (\is_array($choices) && \in_array($value, $choices)) {
+                    $idx = array_search($value, $choices, true);
+                    if ($idx !== false && \is_array($labels) && \array_key_exists($idx, $labels)) {
+                        $value = $labels[$idx] . ' (' . $value . ')';
+                    }
+                }
+                if (!\in_array($item, $a)) {
+                    $out .= '<' . $tag . ' class="text-' . $delColor . '"><del class="diffmod">' . \htmlentities($value) . '</del></' . $tag . '>';
                 }
             }
-            if (!\in_array($item, $a)) {
-                $out .= '<' . $tag . ' class="text-' . $delColor . '"><del class="diffmod">' . \htmlentities($value) . '</del></' . $tag . '>';
+        }
+
+        foreach ($a as $item) {
+            $value = $item;
+            if (\is_array($choices) && \in_array($value, $choices)) {
+                $idx = \array_search($value, $choices, true);
+                if ($idx !== false && \is_array($labels) && \array_key_exists($idx, $labels)) {
+                    $value = $this->isSuper() ? $labels[$idx] . ' (' . $item . ')' : $labels[$idx];
+                }
+            }
+            if (!$compare || in_array($item, $b)) {
+                $out .= '<' . $tag . ' class="" data-ems-id="' . $item . '">' . \htmlentities($value) . '</' . $tag . '>';
+            } else {
+                $out .= '<' . $tag . ' class="text-' . $insColor . '"><ins class="diffmod">' . htmlentities($value) . '</ins></' . $tag . '>';
             }
         }
-    }
 
-    foreach ($a as $item) {
-        $value = $item;
-        if (\is_array($choices) && \in_array($value, $choices)) {
-            $idx = \array_search($value, $choices, true);
-            if ($idx !== false && \is_array($labels) && \array_key_exists($idx, $labels)) {
-                $value = $this->isSuper() ? $labels[$idx] . ' (' . $item . ')' : $labels[$idx];
-            }
+
+        if (empty($out)) {
+            $out = '<span class="text-gray">[empty]</span>';
         }
-        if (!$compare || in_array($item, $b)) {
-            $out .= '<' . $tag . ' class="" data-ems-id="' . $item . '">' . \htmlentities($value) . '</' . $tag . '>';
-        } else {
-            $out .= '<' . $tag . ' class="text-' . $insColor . '"><ins class="diffmod">' . htmlentities($value) . '</ins></' . $tag . '>';
-        }
+
+        return $out;
     }
-
-
-    if (empty($out)) {
-        $out = '<span class="text-gray">[empty]</span>';
-    }
-
-    return $out;
-}
 
 
     /**
      * @param mixed|null $rawData
      * @param mixed|null $compareRawData
      */
-public function diffDataLink($rawData, bool $compare, string $fieldName, $compareRawData): string
-{
-    $b = $a = [];
-    $out = "";
+    public function diffDataLink($rawData, bool $compare, string $fieldName, $compareRawData): string
+    {
+        $b = $a = [];
+        $out = "";
 
-    if (is_array($rawData)) {
-        $a = $rawData;
-    } elseif (is_scalar($rawData)) {
-        $a = [$rawData];
-    }
-
-    if (isset($compareRawData[$fieldName])) {
-        if (is_array($compareRawData[$fieldName])) {
-            $b = $compareRawData[$fieldName];
-        } elseif (is_scalar($compareRawData[$fieldName])) {
-            $b = [$compareRawData[$fieldName]];
+        if (is_array($rawData)) {
+            $a = $rawData;
+        } elseif (is_scalar($rawData)) {
+            $a = [$rawData];
         }
-    }
 
-    if ($compare) {
-        foreach ($b as $item) {
-            if (!in_array($item, $a)) {
-                $out .= $this->dataLink($item, null, 'del') . ' ';
+        if (isset($compareRawData[$fieldName])) {
+            if (is_array($compareRawData[$fieldName])) {
+                $b = $compareRawData[$fieldName];
+            } elseif (is_scalar($compareRawData[$fieldName])) {
+                $b = [$compareRawData[$fieldName]];
             }
         }
-    }
 
-    foreach ($a as $item) {
-        if (!$compare || in_array($item, $b)) {
-            $out .= $this->dataLink($item) . ' ';
-        } else {
-            $out .= $this->dataLink($item, null, 'ins') . ' ';
+        if ($compare) {
+            foreach ($b as $item) {
+                if (!in_array($item, $a)) {
+                    $out .= $this->dataLink($item, null, 'del') . ' ';
+                }
+            }
         }
+
+        foreach ($a as $item) {
+            if (!$compare || in_array($item, $b)) {
+                $out .= $this->dataLink($item) . ' ';
+            } else {
+                $out .= $this->dataLink($item, null, 'ins') . ' ';
+            }
+        }
+
+
+        return $out;
     }
-
-
-    return $out;
-}
 
     /**
      * @param mixed|null $rawData
      * @param mixed|null  $compareRawData
      */
-public function diffColor($rawData, bool $compare, string $fieldName, $compareRawData): string
-{
-    $b = $a = null;
-    if ($rawData) {
-        $color = $rawData;
-        $a = '<span style="background-color: ' . $color . '; color: ' . ($this->contrastRatio($color, '#000000') > $this->contrastRatio($color, '#ffffff') ? '#000000' : '#ffffff') . ';">' . $color . '</span> ';
-    }
+    public function diffColor($rawData, bool $compare, string $fieldName, $compareRawData): string
+    {
+        $b = $a = null;
+        if ($rawData) {
+            $color = $rawData;
+            $a = '<span style="background-color: ' . $color . '; color: ' . ($this->contrastRatio($color, '#000000') > $this->contrastRatio($color, '#ffffff') ? '#000000' : '#ffffff') . ';">' . $color . '</span> ';
+        }
 
-    if (isset($compareRawData[$fieldName]) && $compareRawData[$fieldName]) {
-        $color = $compareRawData[$fieldName];
-        $b = '<span style="background-color: ' . $color . '; color: ' . ($this->contrastRatio($color, '#000000') > $this->contrastRatio($color, '#ffffff') ? '#000000' : '#ffffff') . ';">' . $color . '</span> ';
+        if (isset($compareRawData[$fieldName]) && $compareRawData[$fieldName]) {
+            $color = $compareRawData[$fieldName];
+            $b = '<span style="background-color: ' . $color . '; color: ' . ($this->contrastRatio($color, '#000000') > $this->contrastRatio($color, '#ffffff') ? '#000000' : '#ffffff') . ';">' . $color . '</span> ';
+        }
+        return $this->diff($a, $b, $compare, false, false, true);
     }
-    return $this->diff($a, $b, $compare, false, false, true);
-}
 
     /**
      * @param mixed|null $rawData
      * @param mixed|null $compareRawData
      */
-public function diffRaw($rawData, bool $compare, string $fieldName, $compareRawData): string
-{
-    $b = isset($compareRawData[$fieldName]) ? $compareRawData[$fieldName] : null;
-    return $this->diff($rawData, $b, $compare);
-}
-
-    /**
-     * @param mixed|null $rawData
-     * @param mixed|null $compareRawData
-     */
-public function diffText($rawData, bool $compare, string $fieldName, $compareRawData): string
-{
-    $b = isset($compareRawData[$fieldName]) ? $compareRawData[$fieldName] : null;
-
-    return $this->diff($rawData, $b, $compare, true, true);
-}
-
-    /**
-     * @param mixed|null $rawData
-     * @param mixed|null $compareRawData
-     */
-public function diffHtml($rawData, bool $compare, string $fieldName, $compareRawData): string
-{
-    $b = isset($compareRawData[$fieldName]) ? $compareRawData[$fieldName] : null;
-    return $this->diff($rawData, $b, $compare, false, true, true);
-}
-
-
-public function getSequenceNextValue(string $name): int
-{
-    $em = $this->doctrine->getManager();
-    $repo = $em->getRepository('EMSCoreBundle:Sequence');
-    if (!$repo instanceof SequenceRepository) {
-        throw new \RuntimeException('Unexpected repository');
+    public function diffRaw($rawData, bool $compare, string $fieldName, $compareRawData): string
+    {
+        $b = isset($compareRawData[$fieldName]) ? $compareRawData[$fieldName] : null;
+        return $this->diff($rawData, $b, $compare);
     }
-    return $repo->nextValue($name);
-}
+
+    /**
+     * @param mixed|null $rawData
+     * @param mixed|null $compareRawData
+     */
+    public function diffText($rawData, bool $compare, string $fieldName, $compareRawData): string
+    {
+        $b = isset($compareRawData[$fieldName]) ? $compareRawData[$fieldName] : null;
+
+        return $this->diff($rawData, $b, $compare, true, true);
+    }
+
+    /**
+     * @param mixed|null $rawData
+     * @param mixed|null $compareRawData
+     */
+    public function diffHtml($rawData, bool $compare, string $fieldName, $compareRawData): string
+    {
+        $b = isset($compareRawData[$fieldName]) ? $compareRawData[$fieldName] : null;
+        return $this->diff($rawData, $b, $compare, false, true, true);
+    }
+
+
+    public function getSequenceNextValue(string $name): int
+    {
+        $em = $this->doctrine->getManager();
+        $repo = $em->getRepository('EMSCoreBundle:Sequence');
+        if (!$repo instanceof SequenceRepository) {
+            throw new \RuntimeException('Unexpected repository');
+        }
+        return $repo->nextValue($name);
+    }
 
     /**
      * @param array<mixed> $array1
      * @param array<mixed> $array2
      * @return array<mixed>
      */
-public function arrayIntersect(array $array1, array $array2): array
-{
-    return \array_intersect($array1, $array2);
-}
+    public function arrayIntersect(array $array1, array $array2): array
+    {
+        return \array_intersect($array1, $array2);
+    }
 
     /**
      * @param array<mixed> ...$arrays
      * @return array<mixed>
      */
-public function arrayMergeRecursive(array ...$arrays): array
-{
-    return \array_merge_recursive($arrays);
-}
+    public function arrayMergeRecursive(array ...$arrays): array
+    {
+        return \array_merge_recursive($arrays);
+    }
 
-public function cantBeFinalized(string $message = '', int $code = 0, \Throwable $previous = null): void
-{
-    throw new CantBeFinalizedException($message, $code, $previous);
-}
+    public function cantBeFinalized(string $message = '', int $code = 0, \Throwable $previous = null): void
+    {
+        throw new CantBeFinalizedException($message, $code, $previous);
+    }
 
     /**
      * @param mixed $function
      * @param mixed ...$parameter
      * @return mixed
      */
-public function callUserFunc($function, ...$parameter)
-{
-    return \call_user_func($function, $parameter);
-}
+    public function callUserFunc($function, ...$parameter)
+    {
+        return \call_user_func($function, $parameter);
+    }
 
     /**
      * @param array<mixed> $params
      * @return array<mixed>
      */
-public function search(array $params): array
-{
-    return $this->client->search($params);
-}
+    public function search(array $params): array
+    {
+        return $this->client->search($params);
+    }
 
     /**
      * @param array<mixed> $context
      */
-public function debug(string $message, array $context = []): void
-{
-    $context['twig'] = 'twig';
-    $this->logger->debug($message, $context);
-}
-
-public function dateDifference(string $date1, string $date2, bool $detailed = false): string
-{
-    $datetime1 = \date_create($date1);
-    $datetime2 = \date_create($date2);
-
-    if ($datetime1 === false || $datetime2 === false) {
-        throw new \RuntimeException('Unexpected date format');
+    public function debug(string $message, array $context = []): void
+    {
+        $context['twig'] = 'twig';
+        $this->logger->debug($message, $context);
     }
 
-    $interval = \date_diff($datetime1, $datetime2);
-    if ($detailed) {
-        return $interval->format('%R%a days %h hours %i minutes');
-    }
-    return (\intval($interval->format('%R%a')) + 1) . ' days';
-}
+    public function dateDifference(string $date1, string $date2, bool $detailed = false): string
+    {
+        $datetime1 = \date_create($date1);
+        $datetime2 = \date_create($date2);
 
-public function getUser(string $username): ?UserInterface
-{
-    $user = $this->userService->getUser($username);
-    if ($user === null || $user instanceof UserInterface) {
-        return $user;
-    }
-    throw new \RuntimeException('Unexpected user object');
-}
+        if ($datetime1 === false || $datetime2 === false) {
+            throw new \RuntimeException('Unexpected date format');
+        }
 
-public function displayName(string $username): string
-{
-    /**@var UserInterface $user */
-    $user = $this->userService->getUser($username);
-    if (!empty($user)) {
-        return $user->getDisplayName();
-    }
-    return $username;
-}
-
-public function srcPath(string $input, string $fileName = null): ?string
-{
-    $path = $this->router->generate('ems_file_view', ['sha1' => '__SHA1__'], UrlGeneratorInterface::ABSOLUTE_PATH);
-    $path = substr($path, 0, strlen($path) - 8);
-    return preg_replace_callback(
-        '/(ems:\/\/asset:)([^\n\r"\'\?]*)/i',
-        function ($matches) use ($path, $fileName) {
-            if ($fileName) {
-                return $this->fileService->getFile($matches[2]);
-            }
-            return $path . $matches[2];
-        },
-        $input
-    );
-}
-
-public function internalLinks(string $input, string $fileName = null): ?string
-{
-    $url = $this->router->generate('data.link', ['key' => 'object:'], UrlGeneratorInterface::ABSOLUTE_PATH);
-    $out = preg_replace('/ems:\/\/object:/i', $url, $input);
-
-    if ($out === null) {
-        throw new \RuntimeException('Unexpected null value');
+        $interval = \date_diff($datetime1, $datetime2);
+        if ($detailed) {
+            return $interval->format('%R%a days %h hours %i minutes');
+        }
+        return (\intval($interval->format('%R%a')) + 1) . ' days';
     }
 
-    return $this->srcPath($out, $fileName);
-}
-
-
-public function i18n(string $key, string $locale = null): string
-{
-    if (empty($locale)) {
-        $locale = $this->router->getContext()->getParameter('_locale');
+    public function getUser(string $username): ?UserInterface
+    {
+        $user = $this->userService->getUser($username);
+        if ($user === null || $user instanceof UserInterface) {
+            return $user;
+        }
+        throw new \RuntimeException('Unexpected user object');
     }
-    /**@var I18nRepository $repo */
-    $repo = $this->doctrine->getManager()->getRepository('EMSCoreBundle:I18n');
-    $result = $repo->findOneBy([
+
+    public function displayName(string $username): string
+    {
+        /**@var UserInterface $user */
+        $user = $this->userService->getUser($username);
+        if (!empty($user)) {
+            return $user->getDisplayName();
+        }
+        return $username;
+    }
+
+    public function srcPath(string $input, string $fileName = null): ?string
+    {
+        $path = $this->router->generate('ems_file_view', ['sha1' => '__SHA1__'], UrlGeneratorInterface::ABSOLUTE_PATH);
+        $path = substr($path, 0, strlen($path) - 8);
+        return preg_replace_callback(
+            '/(ems:\/\/asset:)([^\n\r"\'\?]*)/i',
+            function ($matches) use ($path, $fileName) {
+                if ($fileName) {
+                    return $this->fileService->getFile($matches[2]);
+                }
+                return $path . $matches[2];
+            },
+            $input
+        );
+    }
+
+    public function internalLinks(string $input, string $fileName = null): ?string
+    {
+        $url = $this->router->generate('data.link', ['key' => 'object:'], UrlGeneratorInterface::ABSOLUTE_PATH);
+        $out = preg_replace('/ems:\/\/object:/i', $url, $input);
+
+        if ($out === null) {
+            throw new \RuntimeException('Unexpected null value');
+        }
+
+        return $this->srcPath($out, $fileName);
+    }
+
+
+    public function i18n(string $key, string $locale = null): string
+    {
+        if (empty($locale)) {
+            $locale = $this->router->getContext()->getParameter('_locale');
+        }
+        /**@var I18nRepository $repo */
+        $repo = $this->doctrine->getManager()->getRepository('EMSCoreBundle:I18n');
+        $result = $repo->findOneBy([
         'identifier' => $key,
-    ]);
+        ]);
 
-    if ($result instanceof I18n) {
-        return $result->getContentTextforLocale($locale);
+        if ($result instanceof I18n) {
+            return $result->getContentTextforLocale($locale);
+        }
+        return $key;
     }
-    return $key;
-}
 
-public function isSuper(): bool
-{
-    return $this->authorizationChecker->isGranted('ROLE_SUPER');
-}
+    public function isSuper(): bool
+    {
+        return $this->authorizationChecker->isGranted('ROLE_SUPER');
+    }
 
     /**
      * @param string[] $roles
      */
-public function allGranted(array $roles, bool $super = false): bool
-{
-    if ($super && !$this->isSuper()) {
-        return false;
-    }
-    foreach ($roles as $role) {
-        if (!$this->authorizationChecker->isGranted($role)) {
+    public function allGranted(array $roles, bool $super = false): bool
+    {
+        if ($super && !$this->isSuper()) {
             return false;
         }
+        foreach ($roles as $role) {
+            if (!$this->authorizationChecker->isGranted($role)) {
+                return false;
+            }
+        }
+        return true;
     }
-    return true;
-}
 
     /**
      * @param string[] $circles
      */
-public function inMyCircles(array $circles): bool
-{
-    if (\is_array($circles) && count($circles) === 0) {
-        return true;
-    }
+    public function inMyCircles(array $circles): bool
+    {
+        if (\is_array($circles) && count($circles) === 0) {
+            return true;
+        }
 
-    if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
-        return true;
-    }
+        if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
+            return true;
+        }
 
-    $user = $this->userService->getCurrentUser(UserService::DONT_DETACH);
-    return \count(\array_intersect($circles, $user->getCircles())) > 0;
-}
+        $user = $this->userService->getCurrentUser(UserService::DONT_DETACH);
+        return \count(\array_intersect($circles, $user->getCircles())) > 0;
+    }
 
     /**
      * @return array<string>
      */
-public function objectChoiceLoader(string $contentTypeName): array
-{
-    return $this->objectChoiceListFactory->createLoader($contentTypeName, true)->loadAll();
-}
+    public function objectChoiceLoader(string $contentTypeName): array
+    {
+        return $this->objectChoiceListFactory->createLoader($contentTypeName, true)->loadAll();
+    }
 
     /**
      * @return array<array<string>|string>
      */
-public function groupedObjectLoader(string $contentTypeName): array
-{
-    $choices = $this->objectChoiceListFactory->createLoader($contentTypeName, true)->loadAll();
-    $out = [];
-    foreach ($choices as $choice) {
-        if (!isset($out[$choice->getGroup()])) {
-            $out[$choice->getGroup()] = [];
+    public function groupedObjectLoader(string $contentTypeName): array
+    {
+        $choices = $this->objectChoiceListFactory->createLoader($contentTypeName, true)->loadAll();
+        $out = [];
+        foreach ($choices as $choice) {
+            if (!isset($out[$choice->getGroup()])) {
+                $out[$choice->getGroup()] = [];
+            }
+            $out[$choice->getGroup()][] = $choice;
         }
-        $out[$choice->getGroup()][] = $choice;
+        return $out;
     }
-    return $out;
-}
 
     /**
      * @param array<mixed> $params
      */
-public function generateFromTemplate(string $template, array $params = []): ?string
-{
-    if (empty($template)) {
-        return null;
+    public function generateFromTemplate(string $template, array $params = []): ?string
+    {
+        if (empty($template)) {
+            return null;
+        }
+        try {
+            $out = $this->twig->createTemplate($template)->render($params);
+        } catch (\Exception $e) {
+            $out = "Error in template: " . $e->getMessage();
+        }
+        return $out;
     }
-    try {
-        $out = $this->twig->createTemplate($template)->render($params);
-    } catch (\Exception $e) {
-        $out = "Error in template: " . $e->getMessage();
-    }
-    return $out;
-}
 
-public function dataLabel(string $key): string
+    public function dataLabel(string $key): string
     {
         $out = $key;
         $splitted = explode(':', $key);

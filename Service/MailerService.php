@@ -2,17 +2,32 @@
 
 namespace EMS\CoreBundle\Service;
 
+use http\Env;
 use Swift_Mailer;
 use Swift_Message;
 
 class MailerService
 {
+    /** @var array<string> */
+    private $fromMail;
+
+    /** @var string */
+    private $fromName;
+
     /** @var Swift_Mailer */
     private $mailer;
 
-    public function __construct(Swift_Mailer $mailer)
+    /**
+     * MailerService constructor.
+     * @param Swift_Mailer $mailer
+     * @param array<string> $fromMail
+     * @param string $fromName
+     */
+    public function __construct(Swift_Mailer $mailer, array $fromMail, string $fromName)
     {
         $this->mailer = $mailer;
+        $this->fromMail = $fromMail;
+        $this->fromName = $fromName;
     }
 
     /**
@@ -24,7 +39,7 @@ class MailerService
     {
         $message = (new Swift_Message());
         $message->setSubject($title)
-            ->setFrom(getenv('EMS_FROM_EMAIL_ADDRESS'), getenv('EMS_FROM_EMAIL_NAME'))
+            ->setFrom($this->fromMail, $this->fromName)
             ->setTo($emails)
             ->setBody($body, 'text/html');
 

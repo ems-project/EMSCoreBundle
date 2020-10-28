@@ -89,7 +89,7 @@ final class FormSubmissionService
      */
     public function getAllFormSubmissions(): array
     {
-        return $this->repository->findAllFormSubmissions();
+        return $this->repository->findFormSubmissions();
     }
 
     /**

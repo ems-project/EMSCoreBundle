@@ -93,12 +93,12 @@ final class FormSubmissionService
     }
 
     /**
-     * @param string $formInstance
+     * @param string|null $formInstance
      * @return FormSubmission[]
      */
-    public function getFormInstanceSubmissions(string $formInstance): array
+    public function getFormSubmissions(?string $formInstance = null): array
     {
-        return $this->repository->findFormInstanceSubmissions($formInstance);
+        return $this->repository->findFormSubmissions($formInstance);
     }
 
     public function process(FormSubmission $formSubmission, UserInterface $user): void
@@ -126,20 +126,16 @@ final class FormSubmissionService
 
     /**
      * @param array<FormSubmission> $submissions
-     * @return string
      */
     public function generateMailBody(array $submissions): string
     {
-        if ($submissions === []) {
-            return 'There are no submissions for this form';
-        }
-
         try {
-            $template = $this->twig->render('@EMSCore/email/submissions.email.twig', ['submissions' => $submissions]);
+            if ($submissions === []) {
+                return $this->twig->createTemplate('There are no submissions for this form')->render();
+            }
+            return $this->twig->render('@EMSCore/email/submissions.email.twig', ['submissions' => $submissions]);
         } catch (\Exception $e) {
-            $template = $this->twig->createTemplate("Error in body template: " . $e->getMessage())->render();
+            return $this->twig->createTemplate("Error in body template: " . $e->getMessage())->render();
         }
-
-        return $template;
     }
 }

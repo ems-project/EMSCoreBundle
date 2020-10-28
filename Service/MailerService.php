@@ -7,9 +7,6 @@ use Swift_Message;
 
 class MailerService
 {
-    const EMAIL_FROM = 'reporting@elasticms.test';
-    const NAME_FROM = 'ElasticMS';
-
     /** @var Swift_Mailer */
     private $mailer;
 
@@ -27,7 +24,7 @@ class MailerService
     {
         $message = (new Swift_Message());
         $message->setSubject($title)
-            ->setFrom(self::EMAIL_FROM, self::NAME_FROM)
+            ->setFrom(getenv('EMS_FROM_EMAIL_ADDRESS'), getenv('EMS_FROM_EMAIL_NAME'))
             ->setTo($emails)
             ->setBody($body, 'text/html');
 

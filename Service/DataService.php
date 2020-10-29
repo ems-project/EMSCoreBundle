@@ -1188,7 +1188,11 @@ class DataService
 
         if ($contentType->getCirclesField()) {
             if (isset($revision->getRawData()[$contentType->getCirclesField()])) {
-                $revision->setCircles($revision->getRawData()[$contentType->getCirclesField()]);
+                if (\is_array($revision->getRawData()[$contentType->getCirclesField()])) {
+                    $revision->setCircles($revision->getRawData()[$contentType->getCirclesField()]);
+                } else {
+                    $revision->setCircles([$revision->getRawData()[$contentType->getCirclesField()]]);
+                }
             } else {
                 $fieldType = $contentType->getFieldType()->getChildByPath($contentType->getCirclesField());
                 if ($fieldType) {

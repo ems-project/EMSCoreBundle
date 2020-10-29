@@ -507,13 +507,9 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set circles
-     *
-     * @param array $circles
-     *
-     * @return Environment
+     * @param string[] $circles
      */
-    public function setCircles($circles)
+    public function setCircles(array $circles): Environment
     {
         $this->circles = $circles;
     
@@ -521,11 +517,9 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
     
     /**
-     * Get circles
-     *
-     * @return array
+     * @return string[]
      */
-    public function getCircles()
+    public function getCircles(): array
     {
         return $this->circles;
     }

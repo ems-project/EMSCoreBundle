@@ -23,7 +23,7 @@ class AlignManagedAliases extends ContainerAwareCommand
         parent::__construct();
     }
     
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('ems:managedalias:align')
@@ -40,7 +40,7 @@ class AlignManagedAliases extends ContainerAwareCommand
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         $sourceName = $input->getArgument('source');
@@ -77,5 +77,6 @@ class AlignManagedAliases extends ContainerAwareCommand
         }
         $this->aliasService->updateAlias($target->getAlias(), $actions);
         $output->writeln(sprintf("The alias %s has been aligned to the alias %s", $targetName, $sourceName));
+        return 0;
     }
 }

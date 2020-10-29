@@ -22,4 +22,10 @@ class RevisionRuntime implements RuntimeExtensionInterface
     {
         return $this->revisionService->getCurrentRevisionByOuuidAndContentType($ouuid, $contentTypeName);
     }
+
+    public function getRevisionId(string $ouuid, string $contentTypeName): ?int
+    {
+        $revision = $this->revisionService->getCurrentRevisionByOuuidAndContentType($ouuid, $contentTypeName);
+        return $revision ? $revision->getId() : null;
+    }
 }

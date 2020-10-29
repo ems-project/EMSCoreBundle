@@ -400,6 +400,16 @@ function addEventListeners(target){
         $(this).on('change', onFormChange);
     });
 
+    target.find('.datetime-picker').each(function( ) {
+        let $element = $(this);
+        $element.unbind('change');
+        $element.datetimepicker({
+            keepInvalid: true, //otherwise daysOfWeekDisabled or disabledHours will not work!
+            extraFormats: [moment.ISO_8601]
+        });
+        $element.on('change', onFormChange);
+    });
+
     target.find('.ems_daterangepicker').each(function( ) {
 
         const options = $(this).data('display-option');

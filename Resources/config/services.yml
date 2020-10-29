@@ -226,6 +226,12 @@ services:
         tags:
             - { name: ems.form.datafieldtype, alias: date }
             - { name: form.type }
+    ems.fieldtype.date_time:
+        class: EMS\CoreBundle\Form\DataField\DateTimeFieldType
+        arguments: [ '@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch' ]
+        tags:
+            - { name: ems.form.datafieldtype, alias: date_time }
+            - { name: form.type }
     ems.fieldtype.daterange:
         class: EMS\CoreBundle\Form\DataField\DateRangeFieldType
         arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch']

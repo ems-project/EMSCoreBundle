@@ -1029,6 +1029,24 @@
 	{{ _self.messages(dataField) }}
 {% endblock %}
 
+{% block EMS_CoreBundle_Form_DataField_DateTimeFieldType %}
+	<dl>
+		<dt>
+			{% if dataField.fieldType.displayOptions.label is defined %}
+				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
+			{% else %}
+				{{ dataField.fieldType.name|raw }}
+			{% endif %}
+		</dt>
+		<dd>
+			<ul>
+				{{ diff_date(dataField.rawData, compare, dataField.fieldType.name, compareRawData, dataField.fieldType.displayOption('parseFormat', 'd/m/Y H:i:s')) }}
+			</ul>
+		</dd>
+	</dl>
+	{{ _self.messages(dataField) }}
+{% endblock %}
+
 {% block EMS_CoreBundle_Form_DataField_DateRangeFieldType %}
 	<dl>
 		<dt>

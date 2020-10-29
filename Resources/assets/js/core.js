@@ -56,6 +56,7 @@ require('raphael');
 require('select2/dist/js/select2.full');
 require('slimscroll');
 require('bootstrap-datepicker');
+require('eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker');
 require('admin-lte');
 require('bootstrap-fileinput');
 require('daterangepicker');

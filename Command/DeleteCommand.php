@@ -1,13 +1,9 @@
 <?php
 
-// src/EMS/CoreBundle/Command/GreetCommand.php
 namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Elasticsearch\Client;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
@@ -17,29 +13,33 @@ use EMS\CoreBundle\Repository\NotificationRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
+use EMS\CoreBundle\Service\Mapping;
 use Monolog\Logger;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Psr\Container\ContainerInterface;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Throwable;
 
-class DeleteCommand extends ContainerAwareCommand
+class DeleteCommand extends Command
 {
+    /** @var Client  */
     protected $client;
+    /** @var Mapping  */
     protected $mapping;
+    /** @var Registry  */
     protected $doctrine;
+    /** @var Logger  */
     protected $logger;
+    /** @var ContainerInterface  */
     protected $container;
-
     /**@var ContentTypeService*/
     private $contentTypeService;
-
     /**@var EnvironmentService*/
     private $environmentService;
 
-    public function __construct(Registry $doctrine, Logger $logger, Client $client, $mapping, $container, ContentTypeService $contentTypeService, EnvironmentService $environmentService)
+    public function __construct(Registry $doctrine, Logger $logger, Client $client, Mapping $mapping, ContainerInterface $container, ContentTypeService $contentTypeService, EnvironmentService $environmentService)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
@@ -51,7 +51,7 @@ class DeleteCommand extends ContainerAwareCommand
         parent::__construct();
     }
     
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('ems:contenttype:delete')
@@ -63,15 +63,7 @@ class DeleteCommand extends ContainerAwareCommand
             );
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|void|null
-     * @throws NonUniqueResultException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         
         /** @var EntityManager $em */
@@ -79,6 +71,9 @@ class DeleteCommand extends ContainerAwareCommand
         /** @var  Client $client */
         $client = $this->client;
         $name = $input->getArgument('name');
+        if (!\is_string($name)) {
+            throw new \RuntimeException('Unexpected content type name argument');
+        }
         /** @var ContentTypeRepository $ctRepo */
         $ctRepo = $em->getRepository('EMSCoreBundle:ContentType');
         /** @var ContentType|null $contentType */
@@ -88,9 +83,9 @@ class DeleteCommand extends ContainerAwareCommand
                 
         ]);
 
-        if ($contentType === null) {
+        if (!$contentType instanceof ContentType) {
             $output->writeln("Content type " . $name . " not found");
-            return null;
+            return -1;
         }
 
         /** @var RevisionRepository $revRepo */
@@ -104,9 +99,7 @@ class DeleteCommand extends ContainerAwareCommand
         if ($total == 0) {
             $output->writeln("Content type \"" . $name . "\" is already empty");
         } else {
-            // create a new progress bar
             $progress = new ProgressBar($output, $total);
-            // start and displays the progress bar
             $progress->start();
 
             $environmentsIndex = [];
@@ -126,7 +119,7 @@ class DeleteCommand extends ContainerAwareCommand
                                     'type' => $contentType->getName(),
                                     'id' => $revision->getOuuid(),
                             ]);
-                        } catch (Throwable $e) {
+                        } catch (\Throwable $e) {
                             //Deleting something that is not present shouldn't make problem.
                         }
                         $revision->removeEnvironment($environment);
@@ -140,20 +133,16 @@ class DeleteCommand extends ContainerAwareCommand
                     }
 
                     $em->remove($revision);
-
-                    // advance the progress bar 1 unit
                     $progress->advance();
                     $em->flush();
-//                         $em->clear($revision);
                 }
 
                 unset($revisions);
             }
 
-
-            // ensure that the progress bar is at 100%
             $progress->finish();
             $output->writeln(" deleting content type " . $name);
         }
+        return 0;
     }
 }

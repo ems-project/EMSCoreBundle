@@ -24,69 +24,55 @@ class MigrateCommand extends Command
 
     /** @var Client  */
     protected $client;
-
     /** @var Registry  */
     protected $doctrine;
-
     /** @var DocumentService */
     private $documentService;
-
     /** @var string */
     private $elasticsearchIndex;
-
     /** @var string */
     private $contentTypeNameFrom;
-
     /** @var string */
     private $contentTypeNameTo;
-
     /** @var int */
     private $scrollSize;
-
     /** @var string */
     private $scrollTimeout;
-
     /** @var boolean */
     private $indexInDefaultEnv;
-
     /** @var Environment */
     private $defaultEnv;
-
     /** @var ContentType */
     private $contentTypeTo;
-
     /** @var int */
     private $bulkSize;
-
     /** @var bool */
     private $forceImport;
-
     /** @var bool */
     private $rawImport;
-
     /** @var bool */
     private $signData;
-
     /** @var string */
     private $searchQuery;
-
     /** @var bool */
     private $dontFinalize;
-
     /** @var Logger */
     private $logger;
-
     /** @var ContentTypeRepository */
     private $contentTypeRepository;
-
     /** @var SymfonyStyle */
     private $io;
 
-    const ARGUMENT_ELASTICSEARCH_INDEX = 'elasticsearchIndex';
+    /** @var string  */
     const ARGUMENT_CONTENTTYPE_NAME_FROM = 'contentTypeNameFrom';
+    /** @var string  */
     const ARGUMENT_CONTENTTYPE_NAME_TO = 'contentTypeNameTo';
+    /** @var string  */
     const ARGUMENT_SCROLL_SIZE = 'scrollSize';
+    /** @var string  */
     const ARGUMENT_SCROLL_TIMEOUT = 'scrollTimeout';
+    /** @var string  */
+    const ARGUMENT_ELASTICSEARCH_INDEX = 'elasticsearchIndex';
 
     public function __construct(Registry $doctrine, Logger $logger, Client $client, DocumentService $documentService)
     {
@@ -105,7 +91,7 @@ class MigrateCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Migrate a content type from an elasticsearch index')
@@ -128,7 +114,7 @@ class MigrateCommand extends Command
                 self::ARGUMENT_SCROLL_SIZE,
                 InputArgument::OPTIONAL,
                 'Size of the elasticsearch scroll request',
-                100
+                '100'
             )
             ->addArgument(
                 self::ARGUMENT_SCROLL_TIMEOUT,
@@ -141,7 +127,7 @@ class MigrateCommand extends Command
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'Size of the elasticsearch bulk request',
-                500
+                '500'
             )
             ->addOption(
                 'force',
@@ -176,34 +162,49 @@ class MigrateCommand extends Command
             );
     }
 
-    protected function initialize(InputInterface $input, OutputInterface $output)
+    protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
     }
 
 
-    protected function interact(InputInterface $input, OutputInterface $output)
+    protected function interact(InputInterface $input, OutputInterface $output): int
     {
         $this->io->title('Start migration');
         $this->io->section('Checking input');
 
-        $this->elasticsearchIndex = $input->getArgument(self::ARGUMENT_ELASTICSEARCH_INDEX);
-        $this->contentTypeNameFrom = $input->getArgument(self::ARGUMENT_CONTENTTYPE_NAME_FROM);
-        $this->contentTypeNameTo = $input->getArgument(self::ARGUMENT_CONTENTTYPE_NAME_TO);
+        $elasticsearchIndex = $input->getArgument(self::ARGUMENT_ELASTICSEARCH_INDEX);
+        if (!\is_string($elasticsearchIndex)) {
+            throw new \RuntimeException('Unexpected index name');
+        }
+        $this->elasticsearchIndex = $elasticsearchIndex;
+        $contentTypeNameFrom = $input->getArgument(self::ARGUMENT_CONTENTTYPE_NAME_FROM);
+        if (!\is_string($contentTypeNameFrom)) {
+            throw new \RuntimeException('Unexpected Content type From name');
+        }
+        $this->contentTypeNameFrom = $contentTypeNameFrom;
+        $contentTypeNameTo = $input->getArgument(self::ARGUMENT_CONTENTTYPE_NAME_TO);
+        if ($contentTypeNameTo === null) {
+            $contentTypeNameTo = $this->contentTypeNameFrom;
+        }
+        if (!\is_string($contentTypeNameTo)) {
+            throw new \RuntimeException('Unexpected Content type To name');
+        }
+        $this->contentTypeNameTo = $contentTypeNameTo;
         $this->scrollSize = intval($input->getArgument(self::ARGUMENT_SCROLL_SIZE));
-        $this->scrollTimeout = $input->getArgument(self::ARGUMENT_SCROLL_TIMEOUT);
+        if ($this->scrollSize === 0) {
+            throw new \RuntimeException('Unexpected scroll size argument');
+        }
+        $scrollTimeout = $input->getArgument(self::ARGUMENT_SCROLL_TIMEOUT);
+        if (!\is_string($scrollTimeout)) {
+            throw new \RuntimeException('Unexpected scroll timeout argument');
+        }
+        $this->scrollTimeout = $scrollTimeout;
 
 
         $options = array_values($input->getOptions());
         list($this->bulkSize, $this->forceImport, $this->rawImport, $this->signData, $this->searchQuery, $this->dontFinalize) = $options;
 
-        if ($this->contentTypeNameTo === null) {
-            $this->contentTypeNameTo = $this->contentTypeNameFrom;
-        }
-
-        if (!is_string($this->contentTypeNameTo)) {
-            throw new \RuntimeException('Content type To name as to be a string');
-        }
 
         $contentTypeTo = $this->contentTypeRepository->findOneBy(array("name" => $this->contentTypeNameTo, 'deleted' => false));
         if ($contentTypeTo === null || !$contentTypeTo instanceof ContentType) {
@@ -211,7 +212,11 @@ class MigrateCommand extends Command
             return -1;
         }
         $this->contentTypeTo = $contentTypeTo;
-        $this->defaultEnv = $this->contentTypeTo->getEnvironment();
+        $defaultEnv = $this->contentTypeTo->getEnvironment();
+        if ($defaultEnv === null) {
+            throw new \RuntimeException('Unexpected null environment');
+        }
+        $this->defaultEnv = $defaultEnv;
 
         if ($this->contentTypeTo->getDirty()) {
             $this->io->error(sprintf('Content type "%s" is dirty. Please clean it first', $this->contentTypeNameTo));
@@ -229,7 +234,7 @@ class MigrateCommand extends Command
         return 0;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         $this->io->section(sprintf('Start migration of %s', $this->contentTypeTo->getPluralName()));
@@ -266,5 +271,6 @@ class MigrateCommand extends Command
         $progress->finish();
         $this->io->writeln("");
         $this->io->writeln("Migration done");
+        return 0;
     }
 }

@@ -1187,29 +1187,23 @@ class DataService
         $revision->setLockUntil(new DateTime($this->lockTime));
 
         if ($contentType->getCirclesField()) {
-            $fieldType = $contentType->getFieldType()->getChildByPath($contentType->getCirclesField());
-            if ($fieldType) {
-                /**@var UserInterface $user */
-                $user = $this->userService->getCurrentUser();
-                $options = $fieldType->getDisplayOptions();
-                if (isset($options['multiple']) && $options['multiple']) {
-                    //merge all my circles with the default value
-                    $circles = $revision->getRawData()[$contentType->getCirclesField()] ?? [];
-                    if (isset($options['defaultValue'])) {
-                        $defaultValue = json_decode($options['defaultValue']);
-                        if (!\is_array($defaultValue)) {
-                            $defaultValue = [$defaultValue];
+            if (isset($revision->getRawData()[$contentType->getCirclesField()])) {
+                $revision->setCircles($revision->getRawData()[$contentType->getCirclesField()]);
+            } else {
+                $fieldType = $contentType->getFieldType()->getChildByPath($contentType->getCirclesField());
+                if ($fieldType) {
+                    /**@var UserInterface $user */
+                    $user = $this->userService->getCurrentUser();
+                    $options = $fieldType->getDisplayOptions();
+                    if (isset($options['multiple']) && $options['multiple']) {
+                        $revision->setRawData(\array_merge($revision->getRawData(), [$contentType->getCirclesField() => $user->getCircles()]));
+                        $revision->setCircles($user->getCircles());
+                    } else {
+                        //set first of my circles
+                        if (!empty($user->getCircles())) {
+                            $revision->setRawData(\array_merge($revision->getRawData(), [$contentType->getCirclesField() => $user->getCircles()[0]]));
+                            $revision->setCircles([$user->getCircles()[0]]);
                         }
-                        $circles = \array_merge($circles, $defaultValue);
-                    }
-                    $circles = \array_merge($circles, $user->getCircles());
-                    $revision->setRawData(\array_merge($revision->getRawData(), [$contentType->getCirclesField() => $circles]));
-                    $revision->setCircles($circles);
-                } else {
-                    //set first of my circles
-                    if (!empty($user->getCircles())) {
-                        $revision->setRawData([$contentType->getCirclesField() => $user->getCircles()[0]]);
-                        $revision->setCircles([$user->getCircles()[0]]);
                     }
                 }
             }

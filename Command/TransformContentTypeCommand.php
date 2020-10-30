@@ -46,7 +46,7 @@ final class TransformContentTypeCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Transform the content-type defined')
@@ -70,7 +70,7 @@ final class TransformContentTypeCommand extends Command
         ;
     }
 
-    protected function initialize(InputInterface $input, OutputInterface $output)
+    protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
         $this->io->title('Transform content-type');
@@ -82,8 +82,20 @@ final class TransformContentTypeCommand extends Command
         $this->checkContentTypeArgument($input);
         $this->checkUserArgument($input);
 
-        $this->contentType = $this->contentTypeService->getByName($input->getArgument(self::ARGUMENT_CONTENT_TYPE));
-        $this->user = $input->getArgument(self::ARGUMENT_USER);
+        $contentTypeName = $input->getArgument(self::ARGUMENT_CONTENT_TYPE);
+        if (!\is_string($contentTypeName)) {
+            throw new \RuntimeException('Unexpected content type name');
+        }
+        $contentType = $this->contentTypeService->getByName($contentTypeName);
+        if ($contentType === false) {
+            throw new \RuntimeException('Unexpected content type name');
+        }
+        $this->contentType = $contentType;
+        $user = $input->getArgument(self::ARGUMENT_USER);
+        if (!\is_string($user)) {
+            throw new \RuntimeException('Unexpected user name');
+        }
+        $this->user = $user;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -113,6 +125,10 @@ final class TransformContentTypeCommand extends Command
         }
 
         $contentTypeName = $input->getArgument(self::ARGUMENT_CONTENT_TYPE);
+        if (!is_string($contentTypeName)) {
+            throw new \RuntimeException('Content type name as to be a string');
+        }
+
         if (false === $this->contentTypeService->getByName($contentTypeName)) {
             $message = \sprintf('The content type "%s" not found', $contentTypeName);
             $this->setContentTypeArgument($input, $message);

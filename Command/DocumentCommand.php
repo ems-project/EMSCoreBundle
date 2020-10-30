@@ -21,8 +21,8 @@ use Symfony\Component\Finder\Finder;
 
 class DocumentCommand extends Command
 {
+    /** @var string  */
     protected static $defaultName = 'ems:make:document';
-
     /** @var DocumentService */
     private $documentService;
     /** @var ContentTypeService */
@@ -39,8 +39,9 @@ class DocumentCommand extends Command
     private $contentType;
     /** @var string */
     private $archiveFilename;
-
+    /** @var string  */
     const ARGUMENT_CONTENTTYPE = 'contentTypeName';
+    /** @var string  */
     const ARGUMENT_ARCHIVE = 'archive';
 
     public function __construct(Logger $logger, Client $client, ContentTypeService $contentTypeService, DocumentService $documentService, DataService $dataService)
@@ -54,7 +55,7 @@ class DocumentCommand extends Command
         parent::__construct();
     }
     
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Import json files from a zip file as content type\'s documents')
@@ -107,15 +108,21 @@ class DocumentCommand extends Command
             );
     }
 
-    protected function initialize(InputInterface $input, OutputInterface $output)
+    protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
     }
 
-    protected function interact(InputInterface $input, OutputInterface $output)
+    protected function interact(InputInterface $input, OutputInterface $output): void
     {
         $contentTypeName = $input->getArgument(self::ARGUMENT_CONTENTTYPE);
         $archiveFilename = $input->getArgument(self::ARGUMENT_ARCHIVE);
+        if (!is_string($contentTypeName)) {
+            throw new \RuntimeException('Content Type name as to be a string');
+        }
+        if (!is_string($archiveFilename)) {
+            throw new \RuntimeException('Archive Filename as to be a string');
+        }
 
         $this->io->title('Make documents');
         $this->io->section('Checking input');
@@ -123,26 +130,21 @@ class DocumentCommand extends Command
 
         $contentType = $this->contentTypeService->getByName($contentTypeName);
         if (!$contentType instanceof ContentType) {
-            $this->io->error(sprintf('Content type %s not found', $contentTypeName));
-            return -1;
+            throw new \RuntimeException(sprintf('Content type %s not found', $contentTypeName));
         }
 
         if ($contentType->getDirty()) {
-            $this->io->error(sprintf('Content type %s is dirty. Please clean it first', $contentTypeName));
-            return -1;
+            throw new \RuntimeException(sprintf('Content type %s is dirty. Please clean it first', $contentTypeName));
         }
         $this->contentType = $contentType;
 
         if (!file_exists($archiveFilename)) {
-            $this->io->error(sprintf('Archive file %s does not exist', $archiveFilename));
-            return -1;
+            throw new \RuntimeException(sprintf('Archive file %s does not exist', $archiveFilename));
         }
         $this->archiveFilename = $archiveFilename;
-
-        return 0;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         $options = array_values($input->getOptions());
@@ -164,7 +166,12 @@ class DocumentCommand extends Command
 
         $loopIndex = 0;
         foreach ($finder as $file) {
-            $rawData = json_decode(file_get_contents($file), true);
+            $content = \file_get_contents($file);
+            if ($content === false) {
+                $progress->advance();
+                continue;
+            }
+            $rawData = json_decode($content, true);
             $ouuid = basename($file->getFilename(), '.json');
             if ($replaceBusinessKey) {
                 $dataLink = $this->dataService->getDataLink($this->contentType->getName(), $ouuid);
@@ -200,5 +207,6 @@ class DocumentCommand extends Command
         $progress->finish();
         $this->io->writeln("");
         $this->io->writeln("Import done");
+        return 0;
     }
 }

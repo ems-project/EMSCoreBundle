@@ -3,7 +3,7 @@
 namespace EMS\CoreBundle\Form\DataField;
 
 use Elasticsearch\Client;
-use EMS\CommonBundle\Helper\Text\Decoder;
+use EMS\CommonBundle\Json\Decoder;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;

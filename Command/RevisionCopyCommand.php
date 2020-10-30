@@ -49,7 +49,7 @@ final class RevisionCopyCommand extends Command implements CommandInterface
         $this->elasticsearchService = $elasticsearchService;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Copy revisions from search query')
@@ -86,14 +86,32 @@ final class RevisionCopyCommand extends Command implements CommandInterface
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $environmentName = $input->getArgument(self::ARG_ENVIRONMENT_NAME);
+        $searchQuery = $input->getArgument(self::ARG_JSON_SEARCH_QUERY);
+        $jsonMerge = $input->getArgument(self::ARG_JSON_MERGE) ?? '';
+
+        if (!\is_string($environmentName)) {
+            throw new \RuntimeException('Unexpected environment name');
+        }
+        if (!\is_string($searchQuery)) {
+            throw new \RuntimeException('Unexpected search query');
+        }
+        if (!\is_string($jsonMerge)) {
+            throw new \RuntimeException('Unexpected JSON merge');
+        }
+
         $copyContext = $this->copyContextFactory->fromJSON(
-            $input->getArgument(self::ARG_ENVIRONMENT_NAME),
-            $input->getArgument(self::ARG_JSON_SEARCH_QUERY),
-            $input->getArgument(self::ARG_JSON_MERGE) ?? ''
+            $environmentName,
+            $searchQuery,
+            $jsonMerge
         );
 
         $request = $copyContext->makeRequest();
-        $request->setSize((int) $input->getOption(self::OPTION_BULK_SIZE));
+        $size = \intval($input->getOption(self::OPTION_BULK_SIZE));
+        if ($size === 0) {
+            throw new \RuntimeException('Unexpected bulk size argument');
+        }
+        $request->setSize($size);
 
         foreach ($this->elasticsearchService->scroll($request) as $i => $response) {
             if (0 === $i) {

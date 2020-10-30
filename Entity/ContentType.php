@@ -1181,12 +1181,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
         return $this;
     }
 
-    /**
-     * Get dirty
-     *
-     * @return boolean
-     */
-    public function getDirty()
+    public function getDirty(): bool
     {
         return $this->dirty;
     }

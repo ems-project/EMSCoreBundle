@@ -33,7 +33,7 @@ class CleanAssetCommand extends EmsCommand
         parent::__construct($logger, $client);
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('ems:asset:clean')
@@ -41,7 +41,7 @@ class CleanAssetCommand extends EmsCommand
     }
 
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
@@ -52,9 +52,7 @@ class CleanAssetCommand extends EmsCommand
 
         $this->formatStyles($output);
 
-        // create a new progress bar
         $progress = new ProgressBar($output, $repository->countHashes());
-        // start and displays the progress bar
         $progress->start();
 
         $page = 0;
@@ -94,5 +92,6 @@ class CleanAssetCommand extends EmsCommand
         if ($filesInUsed) {
             $output->writeln("<comment>$filesInUsed files are referenced $totalCounter times</comment>");
         }
+        return 0;
     }
 }

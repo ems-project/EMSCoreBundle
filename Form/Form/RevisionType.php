@@ -5,6 +5,8 @@ namespace EMS\CoreBundle\Form\Form;
 use EMS\CoreBundle\Entity\Revision;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -22,8 +24,40 @@ class RevisionType extends AbstractType
     {
         $this->formRegistry = $formRegistry;
     }
-    
-    
+
+    /**
+     * @param FormInterface<FormInterface> $form
+     * @param array<mixed>                 $options
+     */
+    public function buildView(FormView $view, FormInterface $form, array $options): void
+    {
+        $jsonMenuNestedEditors = [];
+
+        foreach ($this->allChildren($form) as $child) {
+            if ($child->getConfig()->hasOption('json_menu_nested_editor')) {
+                $jsonMenuNestedEditors[] = $child->getConfig()->getOption('json_menu_nested_editor');
+            }
+        }
+
+        $view->vars['all_json_menu_nested_editor'] = $jsonMenuNestedEditors;
+    }
+
+    /**
+     * @param FormInterface<FormInterface> $form
+     *
+     * @return iterable|FormInterface[]
+     */
+    private function allChildren(FormInterface $form): iterable
+    {
+        foreach ($form->all() as $element) {
+            yield $element;
+
+            foreach ($this->allChildren($element) as $child) {
+                yield $child;
+            }
+        }
+    }
+
     /**
      *
      * {@inheritdoc}

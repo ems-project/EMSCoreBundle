@@ -13,6 +13,7 @@ use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\TemplateService;
+use http\Exception\RuntimeException;
 use Monolog\Logger;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
@@ -55,7 +56,7 @@ class ExportDocumentsCommand extends EmsCommand
         parent::__construct($logger, $client);
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('ems:contenttype:export')
@@ -112,24 +113,42 @@ class ExportDocumentsCommand extends EmsCommand
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         $contentTypeName = $input->getArgument('contentTypeName');
+        if (!is_string($contentTypeName)) {
+            throw new \RuntimeException('Unexpected content type name argument');
+        }
         $format = $input->getArgument('format');
+        if (!is_string($format)) {
+            throw new \RuntimeException('Unexpected format argument');
+        }
         $scrollSize = $input->getOption('scrollSize');
         $scrollTimeout = $input->getOption('scrollTimeout');
         $withBusinessId = $input->getOption('withBusinessId');
         $baseUrl = $input->getOption('baseUrl');
+        if ($baseUrl !== null && !\is_string($baseUrl)) {
+            throw new \RuntimeException('Unexpected base url option');
+        }
         $contentType = $this->contentTypeService->getByName($contentTypeName);
         if (! $contentType instanceof ContentType) {
             $output->writeln(sprintf("WARNING: Content type named %s not found", $contentType));
             return -1;
         }
         $environmentName = $input->getOption('environment');
+
         if ($environmentName === null) {
-            $index = $contentType->getEnvironment()->getAlias();
+            $environment = $contentType->getEnvironment();
+            if ($environment === null) {
+                throw new \RuntimeException('Environment not found');
+            }
+            $index = $environment->getAlias();
+            $environmentName = $environment->getName();
         } else {
+            if (!is_string($environmentName)) {
+                throw new \RuntimeException('Environment name as to be a string');
+            }
             $environment = $this->environmentService->getByName($environmentName);
             if ($environment === false) {
                 $output->writeln(sprintf("WARNING: Environment named %s not found", $environmentName));
@@ -137,13 +156,17 @@ class ExportDocumentsCommand extends EmsCommand
             }
             $index = $environment->getAlias();
         }
+        $query = $input->getArgument('query');
+        if (!\is_string($query)) {
+            throw new \RuntimeException('Unexpected query argument');
+        }
 
         $arrayElasticsearchIndex = $this->client->search([
             'index' => $index,
             'type' => $contentTypeName,
             'size' => $scrollSize,
             "scroll" => $scrollTimeout,
-            'body' => \json_decode($input->getArgument('query')),
+            'body' => \json_decode($query),
         ]);
 
         $total = $arrayElasticsearchIndex["hits"]["total"];

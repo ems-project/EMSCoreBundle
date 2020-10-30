@@ -189,6 +189,18 @@
             </li>
         </ul>
     {% endif %}
+    
+    {% if is_granted('ROLE_USER_MANAGEMENT') %}
+        <!-- Sidebar Menu -->
+        <ul class="sidebar-menu">
+            <li class="header">User management</li>
+            <li class="treeview">
+                <a href="{{ path('ems.user.index') }}" id="menu-user-index">
+                    <i class="fa fa-users"></i> <span>Users</span> 
+                </a>
+            </li>
+        </ul>
+    {% endif %}
 	  
 	{% if is_granted('ROLE_ADMIN') %}
       <!-- Sidebar Menu -->
@@ -202,11 +214,6 @@
         <li class="treeview">
           <a href="{{ path('environment.index') }}" id="menu-environment-list">
           	<i class="fa fa-database"></i> <span>Environments</span> 
-          </a>
-        </li>
-        <li class="treeview">
-          <a href="{{ path('ems.user.index') }}" id="menu-user-index">
-          	<i class="fa fa-users"></i> <span>Users</span> 
           </a>
         </li>
         <li class="treeview">

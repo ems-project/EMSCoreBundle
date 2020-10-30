@@ -81,7 +81,7 @@ final class UnlockRevisionsCommand extends Command
     {
         $this->io = new SymfonyStyle($input, $output);
         $this->io->title('Unlock revisions');
-        $this->all = ($input->getOption(self::OPTION_ALL)) ?? false;
+        $this->all = ($input->getOption(self::OPTION_ALL) === true) ?? false;
     }
 
     protected function interact(InputInterface $input, OutputInterface $output): void
@@ -90,10 +90,22 @@ final class UnlockRevisionsCommand extends Command
         $this->checkUserArgument($input);
         $this->checkContentTypeArgument($input);
 
-        $this->user = $input->getArgument(self::ARGUMENT_USER);
+        $user = $input->getArgument(self::ARGUMENT_USER);
+        if (!\is_string($user)) {
+            throw new \RuntimeException('Unexpected user name');
+        }
+        $this->user = $user;
 
         if (!$this->all) {
-            $this->contentType = $this->contentTypeService->getByName($input->getArgument(self::ARGUMENT_CONTENT_TYPE));
+            $name = $input->getArgument(self::ARGUMENT_CONTENT_TYPE);
+            if (!\is_string($name)) {
+                throw new \RuntimeException('Unexpected content type name');
+            }
+            $contentType = $this->contentTypeService->getByName($name);
+            if ($contentType === false) {
+                throw new \RuntimeException('Content type not found');
+            }
+            $this->contentType = $contentType;
         }
     }
 
@@ -156,6 +168,9 @@ final class UnlockRevisionsCommand extends Command
         }
 
         $contentTypeName = $input->getArgument(self::ARGUMENT_CONTENT_TYPE);
+        if (!is_string($contentTypeName)) {
+            throw new \RuntimeException('Content Type name as to be a string');
+        }
         if (false === $this->contentTypeService->getByName($contentTypeName)) {
             $message = \sprintf('The content type "%s" not found', $contentTypeName);
             $this->setContentTypeArgument($input, $message);

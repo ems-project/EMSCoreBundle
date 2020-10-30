@@ -584,6 +584,11 @@ services:
         arguments: ['@ems.service.data', '@doctrine', '@form.factory', '@ems.service.publish', '@logger', '@app.elasticsearch', '@ems.service.contenttype', '@EMS\CoreBundle\Repository\ContentTypeRepository', '@EMS\CoreBundle\Repository\RevisionRepository']
         tags:
             -  { name: console.command }
+    ems.environment.removeexpiredsubmissions:
+        class: EMS\CoreBundle\Command\RemoveExpiredSubmissionsCommand
+        arguments: ['@ems.form_submission', '@logger']
+        tags:
+            -  { name: console.command }
     ems.environment.emailsubmissions:
         class: EMS\CoreBundle\Command\EmailSubmissionsCommand
         arguments: ['@ems.form_submission', '@logger', '@ems.mailer']

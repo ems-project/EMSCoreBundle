@@ -91,4 +91,9 @@ final class FormSubmissionService
 
         return ['submission_id' => $formSubmission->getId()];
     }
+
+    public function removeExpiredSubmissions(): int
+    {
+        return $this->repository->removeAllOutdatedSubmission();
+    }
 }

@@ -1121,7 +1121,7 @@ class DataService
     /**
      * @param ContentType $contentType
      * @param string|null $ouuid
-     * @param array|null $rawData
+     * @param array<mixed>|null $rawData
      * @return Revision
      * @throws DuplicateOuuidException
      * @throws HasNotCircleException
@@ -1187,28 +1187,27 @@ class DataService
         $revision->setLockUntil(new DateTime($this->lockTime));
 
         if ($contentType->getCirclesField()) {
-            $fieldType = $contentType->getFieldType()->getChildByPath($contentType->getCirclesField());
-            if ($fieldType) {
-                /**@var UserInterface $user */
-                $user = $this->userService->getCurrentUser();
-                $options = $fieldType->getDisplayOptions();
-                if (isset($options['multiple']) && $options['multiple']) {
-                    //merge all my circles with the default value
-                    $circles = [];
-                    if (isset($options['defaultValue'])) {
-                        $circles = json_decode($options['defaultValue']);
-                        if (!is_array($circles)) {
-                            $circles = [$circles];
-                        }
-                    }
-                    $circles = array_merge($circles, $user->getCircles());
-                    $revision->setRawData([$contentType->getCirclesField() => $circles]);
-                    $revision->setCircles($circles);
+            if (isset($revision->getRawData()[$contentType->getCirclesField()])) {
+                if (\is_array($revision->getRawData()[$contentType->getCirclesField()])) {
+                    $revision->setCircles($revision->getRawData()[$contentType->getCirclesField()]);
                 } else {
-                    //set first of my circles
-                    if (!empty($user->getCircles())) {
-                        $revision->setRawData([$contentType->getCirclesField() => $user->getCircles()[0]]);
-                        $revision->setCircles([$user->getCircles()[0]]);
+                    $revision->setCircles([$revision->getRawData()[$contentType->getCirclesField()]]);
+                }
+            } else {
+                $fieldType = $contentType->getFieldType()->getChildByPath($contentType->getCirclesField());
+                if ($fieldType) {
+                    /**@var UserInterface $user */
+                    $user = $this->userService->getCurrentUser();
+                    $options = $fieldType->getDisplayOptions();
+                    if (isset($options['multiple']) && $options['multiple']) {
+                        $revision->setRawData(\array_merge($revision->getRawData(), [$contentType->getCirclesField() => $user->getCircles()]));
+                        $revision->setCircles($user->getCircles());
+                    } else {
+                        //set first of my circles
+                        if (!empty($user->getCircles())) {
+                            $revision->setRawData(\array_merge($revision->getRawData(), [$contentType->getCirclesField() => $user->getCircles()[0]]));
+                            $revision->setCircles([$user->getCircles()[0]]);
+                        }
                     }
                 }
             }
@@ -2099,7 +2098,7 @@ class DataService
         return array_values($ouuids);
     }
 
-    public function getDataLink(string $contentTypesCommaList, string $businessId): ?string
+    public function getDataLink(string $contentTypesCommaList, string $businessId): string
     {
         return $this->getDataLinks($contentTypesCommaList, [$businessId])[0] ?? $businessId;
     }

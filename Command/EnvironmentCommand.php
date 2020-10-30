@@ -1,6 +1,5 @@
 <?php
 
-// src/EMS/CoreBundle/Command/GreetCommand.php
 namespace EMS\CoreBundle\Command;
 
 use EMS\CoreBundle\Entity\Environment;
@@ -26,7 +25,7 @@ class EnvironmentCommand extends ContainerAwareCommand
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('ems:environment:list')
@@ -40,15 +39,10 @@ class EnvironmentCommand extends ContainerAwareCommand
         ;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|null|void
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if ($input->hasOption('all')) {
-            $environments = $this->environmentService->getAll();
+            $environments = $this->environmentService->getEnvironments();
         } else {
             $environments = $this->environmentService->getManagedEnvironement();
         }
@@ -57,5 +51,6 @@ class EnvironmentCommand extends ContainerAwareCommand
         foreach ($environments as $environment) {
             $output->writeln($environment->getName());
         }
+        return 0;
     }
 }

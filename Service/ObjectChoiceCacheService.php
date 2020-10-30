@@ -71,7 +71,7 @@ class ObjectChoiceCacheService
                         ];
                     }
 
-                    if ($circleOnly && !$this->authorizationChecker->isGranted('ROLE_ADMIN')) {
+                    if ($circleOnly && !$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT')) {
                         /** @var UserInterface $user */
                         $user = $this->tokenStorage->getToken()->getUser();
                         $circles = $user->getCircles();

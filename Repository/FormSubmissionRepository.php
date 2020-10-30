@@ -38,8 +38,8 @@ class FormSubmissionRepository extends ServiceEntityRepository
     public function removeAllOutdatedSubmission(): int
     {
         $outdatedSubmissions = $this->createQueryBuilder('fs')
-            ->andWhere('fs.expireDate < :olderThan')
-            ->setParameter('olderThan', new \DateTime())
+            ->andWhere('fs.expireDate < :today')
+            ->setParameter('today', new \DateTime())
             ->getQuery()
             ->getResult();
 

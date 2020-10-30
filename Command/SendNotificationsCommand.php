@@ -1,15 +1,12 @@
 <?php
 
-// src/EMS/CoreBundle/Command/GreetCommand.php
 namespace EMS\CoreBundle\Command;
 
-use DateInterval;
-use DateTime;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CoreBundle\Entity\Notification;
 use EMS\CoreBundle\Repository\NotificationRepository;
 use EMS\CoreBundle\Service\NotificationService;
 use EMS\CoreBundle\Service\UserService;
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -19,18 +16,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class SendNotificationsCommand extends ContainerAwareCommand
 {
-    /**@var Registry $doctrine*/
+    /** @var Registry */
     private $doctrine;
-    /**@var Logger $logger*/
+    /** @var Logger */
     private $logger;
-    /**@var UserService $userService*/
+    /** @var UserService */
     private $userService;
-    /**@var NotificationService $notificationService*/
+    /** @var NotificationService */
     private $notificationService;
-    
+    /** @var string */
     private $notificationPendingTimeout;
     
-    public function __construct(Registry $doctrine, Logger $logger, UserService $userService, NotificationService $notificationService, $notificationPendingTimeout)
+    public function __construct(Registry $doctrine, Logger $logger, UserService $userService, NotificationService $notificationService, string $notificationPendingTimeout)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
@@ -42,7 +39,7 @@ class SendNotificationsCommand extends ContainerAwareCommand
         parent::__construct();
     }
     
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('ems:notification:send')
@@ -54,16 +51,18 @@ class SendNotificationsCommand extends ContainerAwareCommand
                 'Do not send emails, just a dry run'
             );
     }
-    
-    private function sendEmails(array $resultSet, OutputInterface $output)
+
+    /**
+     * @param Notification[] $resultSet
+     */
+    private function sendEmails(array $resultSet, OutputInterface $output): void
     {
         $count = count($resultSet);
         $progress = new ProgressBar($output, $count);
         if (!$output->isVerbose()) {
             $progress->start();
         }
-        
-        /**@var Notification $item*/
+
         foreach ($resultSet as $idx => $item) {
             if ($output->isVerbose()) {
                 $output->writeln(($idx + 1) . '/' . $count . ' : ' . $item . ' for ' . $item->getRevision());
@@ -75,7 +74,6 @@ class SendNotificationsCommand extends ContainerAwareCommand
             }
         }
         if (!$output->isVerbose()) {
-            // ensure that the progress bar is at 100%
             $progress->finish();
             $output->writeln("");
         }
@@ -89,10 +87,11 @@ class SendNotificationsCommand extends ContainerAwareCommand
         $this->notificationService->setDryRun($input->getOption('dry-run'));
         
         $em = $this->doctrine->getManager();
-        /**@var NotificationRepository $notificationRepository*/
         $notificationRepository = $em->getRepository('EMSCoreBundle:Notification');
-        
-        //Send all pending notification
+        if (!$notificationRepository instanceof NotificationRepository) {
+            throw new \RuntimeException('Unexpected repository');
+        }
+
         $notifications = $notificationRepository->findBy([
                 'status' => 'pending',
                 'emailed' => null,
@@ -102,22 +101,20 @@ class SendNotificationsCommand extends ContainerAwareCommand
             $this->sendEmails($notifications, $output);
         }
         
-        //Send all reminders
-        
-        $date = new DateTime();
-        $date->sub(new DateInterval($this->notificationPendingTimeout));
+        $date = new \DateTime();
+        $date->sub(new \DateInterval($this->notificationPendingTimeout));
         $notifications = $notificationRepository->findReminders($date);
         
         if (!empty($notifications)) {
             $output->writeln('Sending reminders');
             $this->sendEmails($notifications, $output);
         }
-        
-        //Send all response
+
         $notifications = $notificationRepository->findResponses();
         if (!empty($notifications)) {
             $output->writeln('Sending responses');
             $this->sendEmails($notifications, $output);
         }
+        return 0;
     }
 }

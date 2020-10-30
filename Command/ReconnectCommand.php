@@ -1,35 +1,25 @@
 <?php
 
-// src/EMS/CoreBundle/Command/GreetCommand.php
 namespace EMS\CoreBundle\Command;
 
-use EMS\CoreBundle\Entity\ContentType;
-use EMS\CoreBundle\Repository\ContentTypeRepository;
-use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\ORM\EntityManager;
 use Elasticsearch\Client;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
-use Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use EMS\CoreBundle\Repository\RevisionRepository;
-use Elasticsearch\Common\Exceptions\Missing404Exception;
-use EMS\CoreBundle\Repository\NotificationRepository;
-use Symfony\Component\Console\Helper\ProgressBar;
 
 class ReconnectCommand extends ContainerAwareCommand
 {
 
-    /**@var ContentTypeService*/
+    /** @var ContentTypeService*/
     private $contentTypeService;
 
-    /**@var Client*/
+    /** @var Client*/
     protected $client;
 
-    /**@var EnvironmentService*/
+    /** @var EnvironmentService*/
     protected $environmentService;
     
     public function __construct(Client $client, ContentTypeService $contentTypeService, EnvironmentService $environmentService)
@@ -40,7 +30,7 @@ class ReconnectCommand extends ContainerAwareCommand
         parent::__construct();
     }
     
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('ems:environment:reconnect')
@@ -52,9 +42,14 @@ class ReconnectCommand extends ContainerAwareCommand
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $environmentName = $input->getArgument('name');
+
+        if (!is_string($environmentName)) {
+            throw new \RuntimeException('Unexpected environment name');
+        }
+
         $environment = $this->environmentService->getByName($environmentName);
 
         if (!$environment) {

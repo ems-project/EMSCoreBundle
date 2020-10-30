@@ -161,11 +161,11 @@ class RebuildCommand extends EmsCommand
 
         /** @var ContentType $contentType */
         foreach ($contentTypes as $contentType) {
-            $environment = $contentType->getEnvironment();
-            if ($environment === null) {
+            $contentTypeEnvironment = $contentType->getEnvironment();
+            if ($contentTypeEnvironment === null) {
                 throw new \RuntimeException('Unexpected null environment');
             }
-            if (!$contentType->getDeleted() && $contentType->getEnvironment() && $environment->getManaged()) {
+            if (!$contentType->getDeleted() && $contentType->getEnvironment() && $contentTypeEnvironment->getManaged()) {
                 if ($this->singleTypeIndex) {
                     $indexName = $this->environmentService->getNewIndexName($environment, $contentType);
                     $indexes[] = $indexName;

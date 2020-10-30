@@ -77,6 +77,10 @@ class CreateEnvironmentCommand extends Command
 
         $this->io->section('Execute');
         $environmentName = $input->getArgument(self::ARGUMENT_ENV_NAME);
+        if (!is_string($environmentName)) {
+            throw new \RuntimeException('Environment name as to be a string');
+        }
+
 
         $this->io->note(\sprintf('Creation of the environment "%s"...', $environmentName));
         try {
@@ -100,10 +104,12 @@ class CreateEnvironmentCommand extends Command
     private function checkEnvironmentNameArgument(InputInterface $input): void
     {
         $environmentName = $input->getArgument(self::ARGUMENT_ENV_NAME);
-
         if (null === $environmentName) {
             $message = 'The environment name is not provided';
-            $this->setEnvironmentNameArgument($input, $message);
+            $environmentName = $this->setEnvironmentNameArgument($input, $message);
+        }
+        if (!\is_string($environmentName)) {
+            throw new \RuntimeException('Unexpected environment name argument');
         }
 
         if (false === $this->environmentService->validateEnvironmentName($environmentName)) {
@@ -114,6 +120,9 @@ class CreateEnvironmentCommand extends Command
         }
 
         $environment = $this->environmentService->getAliasByName($environmentName);
+        if (!is_string($environmentName)) {
+            throw new \RuntimeException('Environment name as to be a string');
+        }
         if ($environment) {
             $message = \sprintf('The environment "%s" already exist', $environmentName);
             $this->setEnvironmentNameArgument($input, $message);
@@ -122,7 +131,7 @@ class CreateEnvironmentCommand extends Command
         }
     }
 
-    private function setEnvironmentNameArgument(InputInterface $input, string $message): void
+    private function setEnvironmentNameArgument(InputInterface $input, string $message): string
     {
         if ($input->getOption(self::OPTION_STRICT)) {
             $this->logger->error($message);
@@ -132,5 +141,6 @@ class CreateEnvironmentCommand extends Command
         $this->io->caution($message);
         $environmentName = $this->io->ask('Choose an environment name that doesnt exist');
         $input->setArgument(self::ARGUMENT_ENV_NAME, $environmentName);
+        return $environmentName;
     }
 }

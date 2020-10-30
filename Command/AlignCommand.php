@@ -18,53 +18,51 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class AlignCommand extends Command
 {
+    /** @var string  */
     protected static $defaultName = 'ems:environment:align';
-
     /** @var Registry */
     protected $doctrine;
-
     /** @var LoggerInterface */
     private $logger;
-
     /** @var Client */
     private $client;
-
     /** @var DataService */
     protected $data;
-
     /**@var ContentTypeService */
     private $contentTypeService;
-
     /**@var EnvironmentService */
     private $environmentService;
-
     /**@var PublishService */
     private $publishService;
-
     /** @var SymfonyStyle */
     private $io;
-
-    /** @var string */
+    /** @var int */
     private $scrollSize;
-
     /** @var string */
     private $scrollTimeout;
-
     /** @var string */
     private $searchQuery;
-
+    /** @var string  */
     const ARGUMENT_SOURCE = 'source';
+    /** @var string  */
     const ARGUMENT_TARGET = 'target';
+    /** @var string  */
     const ARGUMENT_SCROLL_SIZE = 'scrollSize';
+    /** @var string  */
     const ARGUMENT_SCROLL_TIMEOUT = 'scrollTimeout';
-
+    /** @var string  */
     const OPTION_FORCE = 'force';
+    /** @var string  */
     const OPTION_SEARCH_QUERY = 'searchQuery';
+    /** @var string  */
     const OPTION_SNAPSHOT = 'snapshot';
+    /** @var string  */
     const OPTION_STRICT = 'strict';
-
+    /** @var string  */
     const DEFAULT_SCROLL_SIZE = '100';
+    /** @var string  */
     const DEFAULT_SCROLL_TIMEOUT = '1m';
+    /** @var string  */
     const DEFAULT_SEARCH_QUERY = '{}';
 
     public function __construct(Registry $doctrine, LoggerInterface $logger, Client $client, DataService $data, ContentTypeService $contentTypeService, EnvironmentService $environmentService, PublishService $publishService)
@@ -80,7 +78,7 @@ class AlignCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->logger->info('Configure the AlignCommand');
 
@@ -141,12 +139,24 @@ class AlignCommand extends Command
         $this->io = new SymfonyStyle($input, $output);
         $this->io->title('Align environments');
 
-        $this->scrollSize = $input->getArgument(self::ARGUMENT_SCROLL_SIZE);
-        $this->scrollTimeout = $input->getArgument(self::ARGUMENT_SCROLL_TIMEOUT);
-        $this->searchQuery = $input->getOption(self::OPTION_SEARCH_QUERY);
+        $scrollSize = \intval($input->getArgument(self::ARGUMENT_SCROLL_SIZE));
+        if ($scrollSize === 0) {
+            throw new \RuntimeException('Unexpected scroll size argument');
+        }
+        $this->scrollSize = $scrollSize;
+        $scrollTimeout = $input->getArgument(self::ARGUMENT_SCROLL_TIMEOUT);
+        if (!\is_string($scrollTimeout)) {
+            throw new \RuntimeException('Unexpected scroll timeout argument');
+        }
+        $this->scrollTimeout = $scrollTimeout;
+        $searchQuery = $input->getOption(self::OPTION_SEARCH_QUERY);
+        if (!\is_string($searchQuery)) {
+            throw new \RuntimeException('Unexpected query argument');
+        }
+        $this->searchQuery = $searchQuery;
     }
 
-    protected function interact(InputInterface $input, OutputInterface $output)
+    protected function interact(InputInterface $input, OutputInterface $output): void
     {
         $this->logger->info('Interact with AlignCommand');
 
@@ -167,10 +177,22 @@ class AlignCommand extends Command
 
         $sourceName = $input->getArgument(self::ARGUMENT_SOURCE);
         $targetName = $input->getArgument(self::ARGUMENT_TARGET);
+        if (!is_string($targetName)) {
+            throw new \RuntimeException('Target name as to be a string');
+        }
+        if (!is_string($sourceName)) {
+            throw new \RuntimeException('Source name as to be a string');
+        }
 
         $this->environmentService->clearCache();
         $source = $this->environmentService->getAliasByName($sourceName);
+        if ($source === false) {
+            throw new \RuntimeException('Source environment not found');
+        }
         $target = $this->environmentService->getAliasByName($targetName);
+        if ($target === false) {
+            throw new \RuntimeException('Target environment not found');
+        }
 
         $arrayElasticsearchIndex = $this->client->search([
             'index' => $source->getAlias(),
@@ -191,14 +213,18 @@ class AlignCommand extends Command
 
         while (count($arrayElasticsearchIndex['hits']['hits'] ?? []) > 0) {
             foreach ($arrayElasticsearchIndex['hits']['hits'] as $hit) {
-                $revision = $this->data->getRevisionByEnvironment($hit['_id'], $this->contentTypeService->getByName($hit['_type']), $source);
+                $contentType = $this->contentTypeService->getByName($hit['_source']['_contenttype']);
+                if ($contentType === false) {
+                    throw new \RuntimeException('Unexpected null content type');
+                }
+                $revision = $this->data->getRevisionByEnvironment($hit['_id'], $contentType, $source);
                 if ($revision->getDeleted()) {
                     ++$deletedRevision;
-                } else if ($revision->getContentType()->getEnvironment() === $target) {
-                    if (!isset($targetIsPreviewEnvironment[$revision->getContentType()->getName()])) {
-                        $targetIsPreviewEnvironment[$revision->getContentType()->getName()] = 0;
+                } else if ($contentType->getEnvironment() === $target) {
+                    if (!isset($targetIsPreviewEnvironment[$contentType->getName()])) {
+                        $targetIsPreviewEnvironment[$contentType->getName()] = 0;
                     }
-                    ++$targetIsPreviewEnvironment[$revision->getContentType()->getName()];
+                    ++$targetIsPreviewEnvironment[$contentType->getName()];
                 } else {
                     if ($this->publishService->publish($revision, $target, true) == 0) {
                         ++$alreadyAligned;
@@ -236,13 +262,16 @@ class AlignCommand extends Command
         return 0;
     }
 
-    private function checkSource(InputInterface $input)
+    private function checkSource(InputInterface $input): void
     {
         $sourceName = $input->getArgument(self::ARGUMENT_SOURCE);
         if ($sourceName === null) {
             $message = 'Source environment not provided';
             $this->setSourceArgument($input, $message);
             return;
+        }
+        if (!is_string($sourceName)) {
+            throw new \RuntimeException('Source name as to be a string');
         }
 
         $source = $this->environmentService->getAliasByName($sourceName);
@@ -256,7 +285,7 @@ class AlignCommand extends Command
         $this->io->note(\sprintf('Continuing with the source environment "%s"', $sourceName));
     }
 
-    private function setSourceArgument(InputInterface $input, $message)
+    private function setSourceArgument(InputInterface $input, string $message): void
     {
         if ($input->getOption(self::OPTION_STRICT)) {
             $this->logger->error($message);
@@ -268,13 +297,16 @@ class AlignCommand extends Command
         $input->setArgument(self::ARGUMENT_SOURCE, $sourceName);
     }
 
-    private function checkTarget(InputInterface $input)
+    private function checkTarget(InputInterface $input): void
     {
         $targetName = $input->getArgument(self::ARGUMENT_TARGET);
         if ($targetName === null) {
             $message = 'Target environment not provided';
             $this->setTargetArgument($input, $message);
             return;
+        }
+        if (!is_string($targetName)) {
+            throw new \RuntimeException('Target name as to be a string');
         }
 
         $this->environmentService->clearCache();
@@ -294,6 +326,9 @@ class AlignCommand extends Command
         }
 
         $sourceName = $input->getArgument(self::ARGUMENT_SOURCE);
+        if (!is_string($sourceName)) {
+            throw new \RuntimeException('Source name as to be a string');
+        }
         $source = $this->environmentService->getAliasByName($sourceName);
 
         if ($source === $target) {
@@ -306,7 +341,7 @@ class AlignCommand extends Command
         $this->io->note(\sprintf('Continuing with the target environment "%s"', $targetName));
     }
 
-    private function setTargetArgument(InputInterface $input, string $message)
+    private function setTargetArgument(InputInterface $input, string $message): void
     {
         if ($input->getOption(self::OPTION_STRICT)) {
             $this->logger->error($message);

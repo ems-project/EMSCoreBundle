@@ -55,6 +55,26 @@ class FormSubmissionRepository extends ServiceEntityRepository
         return $removedCount;
     }
 
+    /**
+     * @param string|null $formInstance
+     * @return FormSubmission[]
+     */
+    public function findFormSubmissions(?string $formInstance = null): array
+    {
+        $qb = $this->createQueryBuilder('fs');
+
+        if ($formInstance) {
+            $qb->andWhere('fs.name = :name')
+            ->setParameter('name', $formInstance);
+        }
+
+        $qb
+            ->andWhere($qb->expr()->isNotNull('fs.data'))
+            ->orderBy('fs.created', 'desc');
+
+        return $qb->getQuery()->getArrayResult();
+    }
+
     public function save(FormSubmission $formSubmission): void
     {
         $this->_em->persist($formSubmission);

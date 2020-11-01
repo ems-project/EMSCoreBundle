@@ -4,6 +4,7 @@
 namespace EMS\CoreBundle\Service;
 
 use Elasticsearch\Client;
+use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Form\Field\ObjectChoiceListItem;
@@ -104,11 +105,12 @@ class ObjectChoiceCacheService
                     //TODO test si > 500... logger
 
                     foreach ($items['hits']['hits'] as $hit) {
-                        if (!isset($choices[$hit['_type'] . ':' . $hit['_id']])) {
-                            $itemContentType = $this->contentTypeService->getByName($hit['_type']);
+                        $hitDocument = new Document($hit);
+                        if (!isset($choices[$hitDocument->getEmsId()])) {
+                            $itemContentType = $this->contentTypeService->getByName($hitDocument->getContentType());
                             $listItem = new ObjectChoiceListItem($hit, $itemContentType ? $itemContentType : null);
                             $choices[$listItem->getValue()] = $listItem;
-                            $this->cache[$hit['_type']][$hit['_id']] = $listItem;
+                            $this->cache[$hitDocument->getContentType()][$hitDocument->getId()] = $listItem;
                         }
                     }
                 } elseif ($withWarning) {
@@ -194,16 +196,17 @@ class ObjectChoiceCacheService
                     'index' => $alias,
                     'body' => $docItem['body']
                 ];
-                $objectId = $docItem['_type'] . ':' . $docItem['_id'];
+                $document = new Document($docItem);
+                $objectId = $document->getEmsId();
                 $result = $this->client->search($params);
                 if ($result['hits']['total'] === 1) {
                     $doc = $result['hits']['hits'][0];
-                    $hitContentType = $this->contentTypeService->getByName($doc['_type']);
+                    $hitContentType = $this->contentTypeService->getByName($document->getContentType());
                     $listItem = new ObjectChoiceListItem($doc, $hitContentType ? $hitContentType : null);
-                    $this->cache[$doc['_type']][$doc['_id']] = $listItem;
+                    $this->cache[$document->getContentType()][$document->getId()] = $listItem;
                     $out[$objectId] = $listItem;
                 } else {
-                    $this->cache[$docItem['_type']][$docItem['_id']] = false;
+                    $this->cache[$document->getContentType()][$document->getId()] = false;
                     if ($withWarning) {
                         $this->logger->warning('service.object_choice_cache.object_key_not_found', [
                             'object_key' => $objectId,

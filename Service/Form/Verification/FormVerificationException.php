@@ -12,7 +12,7 @@ final class FormVerificationException extends \Exception
     /** @var int */
     private $httpCode;
 
-    public function __construct($message = "", int $httpCode = Response::HTTP_BAD_REQUEST)
+    public function __construct(string $message = "", int $httpCode = Response::HTTP_BAD_REQUEST)
     {
         parent::__construct($message);
         $this->httpCode = $httpCode;

@@ -823,7 +823,7 @@ class AppExtension extends AbstractExtension
     }
 
     /**
-     * @return array<array<string>|string>
+     * @return array<int|string, array<int, mixed>>
      */
     public function groupedObjectLoader(string $contentTypeName): array
     {

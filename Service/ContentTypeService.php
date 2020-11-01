@@ -212,7 +212,7 @@ class ContentTypeService
         $repository->setIndexName($environment, $contentType, $name);
     }
 
-    public function getIndex(ContentType $contentType, Environment $environment = null)
+    public function getIndex(ContentType $contentType, Environment $environment = null): string
     {
         if (!$environment) {
             $environment = $contentType->getEnvironment();

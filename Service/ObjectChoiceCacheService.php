@@ -155,9 +155,9 @@ class ObjectChoiceCacheService
                     $choices[$objectId] = $this->cache[$objectType][$objectOuuid];
                 } else {
                     if (!isset($this->fullyLoaded[$objectType])) {
-                        $contentTypeName = $this->contentTypeService->getByName($objectType);
-                        if ($contentTypeName) {
-                            $index = $this->contentTypeService->getIndex($contentTypeName);
+                        $contentType = $this->contentTypeService->getByName($objectType);
+                        if ($contentType) {
+                            $index = $this->contentTypeService->getIndex($contentType);
                             if ($index) {
                                 $missingOuuidsPerIndexAndType[$index][$objectType][] = $objectOuuid;
                             } elseif ($withWarning) {

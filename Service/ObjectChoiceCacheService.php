@@ -9,22 +9,24 @@ use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Form\Field\ObjectChoiceListItem;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class ObjectChoiceCacheService
 {
-    /**@Client $client*/
+    /** @Client $client*/
     private $client;
-    /**@var LoggerInterface $logger*/
+    /** @var LoggerInterface $logger*/
     private $logger;
-    /**@var ContentTypeService $contentTypeService*/
+    /** @var ContentTypeService $contentTypeService*/
     private $contentTypeService;
-    /**@var AuthorizationCheckerInterface $authorizationChecker*/
+    /** @var AuthorizationCheckerInterface $authorizationChecker*/
     protected $authorizationChecker;
-    /**@var TokenStorageInterface $tokenStorage*/
+    /** @var TokenStorageInterface $tokenStorage*/
     protected $tokenStorage;
-    
+    /** @var bool[] */
     private $fullyLoaded;
+    /** @var array<ObjectChoiceListItem[]> */
     private $cache;
     
     public function __construct(Client $client, LoggerInterface $logger, ContentTypeService $contentTypeService, AuthorizationCheckerInterface $authorizationChecker, TokenStorageInterface $tokenStorage)
@@ -38,24 +40,38 @@ class ObjectChoiceCacheService
         $this->fullyLoaded = [];
         $this->cache = [];
     }
-    
 
-    public function loadAll(array &$choices, $types, bool $circleOnly = false, bool $withWarning = true)
+    /**
+     * @param ObjectChoiceListItem[] $choices
+     */
+    public function loadAll(array &$choices, string $types, bool $circleOnly = false, bool $withWarning = true): void
     {
         $aliasTypes = [];
-        
+        $token = $this->tokenStorage->getToken();
+        if (!$token instanceof TokenInterface) {
+            throw new \RuntimeException('Unexpected security token object');
+        }
+        $user = $token->getUser();
+        if (!$user instanceof UserInterface) {
+            throw new \RuntimeException('Unexpected user entity object');
+        }
+
         $cts = explode(',', $types);
         foreach ($cts as $type) {
             if (!isset($this->fullyLoaded[$type])) {
                 $currentType = $this->contentTypeService->getByName($type);
-                if ($currentType) {
-                    if (!isset($aliasTypes[$currentType->getEnvironment()->getAlias()])) {
-                        $aliasTypes[$currentType->getEnvironment()->getAlias()] = [];
+                if ($currentType !== false) {
+                    $currentTypeDefaultEnvironment = $currentType->getEnvironment();
+                    if ($currentTypeDefaultEnvironment === null) {
+                        throw new \RuntimeException(sprintf('Unexpected null environment for content type %s', $type));
                     }
-                    $aliasTypes[$currentType->getEnvironment()->getAlias()][] = $type;
+                    if (!isset($aliasTypes[$currentTypeDefaultEnvironment->getAlias()])) {
+                        $aliasTypes[$currentTypeDefaultEnvironment->getAlias()] = [];
+                    }
+                    $aliasTypes[$currentTypeDefaultEnvironment->getAlias()][] = $type;
                     $params = [
                             'size' =>  '500',
-                            'index' => $currentType->getEnvironment()->getAlias(),
+                            'index' => $currentTypeDefaultEnvironment->getAlias(),
                             'type' => $type,
                     ];
 
@@ -72,8 +88,6 @@ class ObjectChoiceCacheService
                     }
 
                     if ($circleOnly && !$this->authorizationChecker->isGranted('ROLE_ADMIN')) {
-                        /** @var UserInterface $user */
-                        $user = $this->tokenStorage->getToken()->getUser();
                         $circles = $user->getCircles();
                         $ouuids = [];
                         foreach ($circles as $circle) {
@@ -91,7 +105,8 @@ class ObjectChoiceCacheService
 
                     foreach ($items['hits']['hits'] as $hit) {
                         if (!isset($choices[$hit['_type'] . ':' . $hit['_id']])) {
-                            $listItem = new ObjectChoiceListItem($hit, $this->contentTypeService->getByName($hit['_type']));
+                            $itemContentType = $this->contentTypeService->getByName($hit['_type']);
+                            $listItem = new ObjectChoiceListItem($hit, $itemContentType ? $itemContentType : null);
                             $choices[$listItem->getValue()] = $listItem;
                             $this->cache[$hit['_type']][$hit['_id']] = $listItem;
                         }
@@ -104,15 +119,19 @@ class ObjectChoiceCacheService
                 $this->fullyLoaded[$type] = true;
             } else {
                 foreach ($this->cache[$type] as $id => $item) {
-                    if ($item && !isset($choices[$type . ':' . $id])) {
+                    if (!isset($choices[$type . ':' . $id])) {
                         $choices[$type . ':' . $id] = $item;
                     }
                 }
             }
         }
     }
-    
-    public function load($objectIds, bool $circleOnly = false, bool $withWarning = true)
+
+    /**
+     * @param string[] $objectIds
+     * @return ObjectChoiceListItem[]
+     */
+    public function load(array $objectIds, bool $circleOnly = false, bool $withWarning = true): array
     {
         $out = [];
         $queries = [];
@@ -124,9 +143,7 @@ class ObjectChoiceCacheService
                 }
                 
                 if (isset($this->cache[$ref[0]][$ref[1]])) {
-                    if ($this->cache[$ref[0]][$ref[1]]) {
-                        $out[$objectId] = $this->cache[$ref[0]][$ref[1]];
-                    }
+                    $out[$objectId] = $this->cache[$ref[0]][$ref[1]];
                 } else {
                     if (!isset($this->fullyLoaded[$ref[0]])) {
                         $contentType = $this->contentTypeService->getByName($ref[0]);
@@ -181,7 +198,8 @@ class ObjectChoiceCacheService
                 $result = $this->client->search($params);
                 if ($result['hits']['total'] === 1) {
                     $doc = $result['hits']['hits'][0];
-                    $listItem = new ObjectChoiceListItem($doc, $this->contentTypeService->getByName($doc['_type']));
+                    $hitContentType = $this->contentTypeService->getByName($doc['_type']);
+                    $listItem = new ObjectChoiceListItem($doc, $hitContentType ? $hitContentType : null);
                     $this->cache[$doc['_type']][$doc['_id']] = $listItem;
                     $out[$objectId] = $listItem;
                 } else {

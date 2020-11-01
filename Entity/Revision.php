@@ -4,9 +4,9 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Exception\NotLockedException;
 use EMS\CoreBundle\Service\Mapping;
+use Ramsey\Uuid\UuidInterface;
 
 /**
  * Revision
@@ -197,6 +197,13 @@ class Revision
     
     /**not persisted field to ensure that they are all there after a submit */
     private $allFieldsAreThere;
+
+    /**
+     * @var null|UuidInterface
+     *
+     * @ORM\Column(type="uuid", name="version_uuid", unique=false, nullable=true)
+     */
+    private $versionUuid;
     
     /**
      * @ORM\PrePersist
@@ -562,6 +569,11 @@ class Revision
         return $this->ouuid;
     }
 
+    public function hasOuuid(): bool
+    {
+        return $this->ouuid === null;
+    }
+
     /**
      * Set startTime
      *
@@ -770,6 +782,15 @@ class Revision
         return $this->contentType;
     }
 
+    public function getContentTypeName(): string
+    {
+        if (null === $this->contentType) {
+            throw new \Exception('No contentType for revision!');
+        }
+
+        return $this->contentType->getName();
+    }
+
     /**
      * Set version
      *
@@ -928,7 +949,7 @@ class Revision
     /**
      * Set autoSave
      *
-     * @param array $autoSave
+     * @param null|array $autoSave
      *
      * @return Revision
      */
@@ -1077,5 +1098,55 @@ class Revision
     public function hasVersionTags() : bool
     {
         return $this->contentType ? $this->contentType->hasVersionTags() : false;
+    }
+
+    public function getVersionUuid(): ?UuidInterface
+    {
+        return $this->versionUuid;
+    }
+
+    public function getVersionTag(): ?string
+    {
+        return $this->rawData[Mapping::VERSION_TAG] ?? null;
+    }
+
+    public function getVersionTagDefault(): string
+    {
+        $versionTags = $this->contentType ? $this->contentType->getVersionTags() : [];
+
+        if (!isset($versionTags[0]) || !is_string($versionTags[0])) {
+            throw new \Exception(sprintf('No version tags found for contentType %s', $this->getContentTypeName()));
+        }
+
+        return $versionTags[0];
+    }
+
+    public function setVersionUuid(?UuidInterface $versionUuid): void
+    {
+        $this->versionUuid = $versionUuid;
+    }
+
+    public function setVersionTag(string $version): void
+    {
+        $versionTags = $this->contentType ? $this->contentType->getVersionTags() : [];
+
+        if (\in_array($version, $versionTags)) {
+            $this->rawData[Mapping::VERSION_TAG] = $version;
+        }
+    }
+
+    public function setVersionDate(string $field, \DateTimeImmutable $date): void
+    {
+        if (null === $contentType = $this->contentType) {
+            throw new \Exception('ContentType not found');
+        }
+
+        if ('from' === $field) {
+            $this->rawData[$contentType->getVersionDateFromField()] = $date->format(\DateTimeImmutable::ATOM);
+        }
+
+        if ('to' === $field) {
+            $this->rawData[$contentType->getVersionDateToField()] = $date->format(\DateTimeImmutable::ATOM);
+        }
     }
 }

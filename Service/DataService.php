@@ -47,6 +47,7 @@ use EMS\CoreBundle\Twig\AppExtension;
 use Exception;
 use IteratorAggregate;
 use Monolog\Logger;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Form\Form;
@@ -697,6 +698,9 @@ class DataService
         if (isset($objectArray[Mapping::SIGNATURE_FIELD])) {
             unset($objectArray[Mapping::SIGNATURE_FIELD]);
         }
+        if ($revision->hasVersionTags() && null !== $revision->getVersionUuid()) {
+            $objectArray[Mapping::VERSION_UUID] = $revision->getVersionUuid();
+        }
         ArrayTool::normalizeArray($objectArray);
         $json = json_encode($objectArray);
 
@@ -1251,6 +1255,21 @@ class DataService
     {
         $this->setCircles($revision);
         $this->setLabelField($revision);
+        $this->setVersioning($revision);
+    }
+
+    private function setVersioning(Revision $revision): void
+    {
+        if (!$revision->hasVersionTags()) {
+            return;
+        }
+
+        if (null === $revision->getVersionUuid()) {
+            $revision->setVersionUuid(Uuid::uuid4());
+        }
+        if (null === $revision->getVersionTag()) {
+            $revision->setVersionTag($revision->getVersionTagDefault());
+        }
     }
 
     private function setCircles(Revision $revision)
@@ -1328,6 +1347,10 @@ class DataService
                 $newDraft = new Revision($fromRev);
             } else {
                 $newDraft = new Revision($revision);
+            }
+
+            if ($revision->hasVersionTags() && null === $newDraft->getVersionUuid()) {
+                $newDraft->setVersionUuid($revision->getVersionUuid()); //revert to revision without version ouuid
             }
 
             $newDraft->setStartTime($now);

@@ -114,7 +114,7 @@ class RevisionType extends AbstractType
             if (null !== $environment && null !== $contentType && $contentType->hasVersionTags()) {
                 $builder
                     ->add('publish_version_tags', Select2Type::class, [
-                        'placeholder' => 'Silent',
+                        'placeholder' => $revision->getOuuid() ? 'Silent' : null,
                         'choices' => array_combine($contentType->getVersionTags(), $contentType->getVersionTags()),
                         'mapped' => false,
                         'required' => false,

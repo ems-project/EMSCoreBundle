@@ -96,7 +96,10 @@ class UpdateMetaFieldCommand extends EmsCommand
             $iterator = $paginator->getIterator();
         } while ($iterator instanceof \ArrayIterator && $iterator->count());
 
+        $em->flush();
         $progress->finish();
+        $this->dataService->unlockAllRevisions('SYSTEM_UPDATE_META');
+
         return 0;
     }
 }

@@ -112,7 +112,7 @@ class EditController extends AbstractController
                 ]);
             }
 
-            $revision->setAutoSave([]);
+            $revision->setAutoSave(null);
             if (!isset($requestRevision['discard'])) {//Save, Copy, Paste or Finalize
                 //Save anyway
                 /** @var Revision $revision */
@@ -163,7 +163,7 @@ class EditController extends AbstractController
             }
 
             //if Save or Discard
-            if (!isset($requestRevision['publish'])) {
+            if (!isset($requestRevision['publish']) && !isset($requestRevision['publish_version'])) {
                 if (null != $revision->getOuuid()) {
                     if (count($form->getErrors()) === 0 && $contentType->isAutoPublish()) {
                         $this->publishService->silentPublish($revision);

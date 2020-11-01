@@ -66,7 +66,7 @@ class RevisionService
     /**
      * @param array<mixed> $rawData
      */
-    public function saveVersion(Revision $revision, array $rawData, string $version = null): Revision
+    public function saveVersion(Revision $revision, array $rawData, ?string $version = null): Revision
     {
         if (!$revision->hasVersionTags() || $version === null) { //silent publish
             $this->save($revision, $rawData);
@@ -74,13 +74,26 @@ class RevisionService
             return $revision;
         }
 
-        $newVersion = $revision->clone();
-        $this->dataService->lockRevision($newVersion);
+        $now = new \DateTimeImmutable();
 
-        $this->save($newVersion, $rawData);
+        if (!$revision->hasOuuid()) { //create
+            $revision->setVersionDate('from', $now);
+            $revision->setVersionTag($version);
+            $this->dataService->finalizeDraft($revision);
+            return $revision;
+        }
+
+        $newVersion = $revision->clone(); //create new version revision
+        $newVersion->setVersionTag($version);
+        $this->dataService->lockRevision($newVersion);
+        $newVersion->setVersionDate('from', $now);
         $this->dataService->finalizeDraft($newVersion);
 
-        $this->dataService->discardDraft($revision); //discard draft previous version
+        $this->dataService->discardDraft($revision); //discard draft changes previous revision
+
+        $previousVersion = $this->dataService->initNewDraft($revision->getContentTypeName(), $revision->getOuuid());
+        $previousVersion->setVersionDate('to', $now);
+        $this->dataService->finalizeDraft($previousVersion);
 
         return $newVersion;
     }

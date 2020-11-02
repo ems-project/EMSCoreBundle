@@ -52,13 +52,29 @@ interface UserInterface
     public function getDisplayName();
 
     /**
+     * Set forcePasswordChange
+     *
+     * @param boolean $forcePasswordChange
+     *
+     * @return UserInterface
+     */
+    public function setForcePasswordChange(bool $forcePasswordChange);
+
+    /**
+     * Get forcePasswordChange
+     *
+     * @return boolean
+     */
+    public function getForcePasswordChange();
+
+    /**
      * Set allowedToConfigureWysiwyg
      *
      * @param boolean $allowedToConfigureWysiwyg
      *
      * @return UserInterface
      */
-    public function setAllowedToConfigureWysiwyg($allowedToConfigureWysiwyg);
+    public function setAllowedToConfigureWysiwyg(bool $allowedToConfigureWysiwyg);
 
     /**
      * Get allowedToConfigureWysiwyg

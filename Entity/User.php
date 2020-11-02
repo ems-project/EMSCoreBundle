@@ -59,6 +59,13 @@ class User extends BaseUser implements UserInterface
     private $allowedToConfigureWysiwyg;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(name="force_password_change", type="boolean", nullable=true)
+     */
+    private $forcePasswordChange;
+
+    /**
      * @var WysiwygProfile
      *
      * @ORM\ManyToOne(targetEntity="EMS\CoreBundle\Entity\WysiwygProfile", cascade={})
@@ -278,13 +285,37 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
+     * Set forcePasswordChange
+     *
+     * @param boolean $forcePasswordChange
+     *
+     * @return User
+     */
+    public function setForcePasswordChange(bool $forcePasswordChange)
+    {
+        $this->forcePasswordChange = $forcePasswordChange;
+
+        return $this;
+    }
+
+    /**
+     * Get forcePasswordChange
+     *
+     * @return boolean
+     */
+    public function getForcePasswordChange()
+    {
+        return $this->forcePasswordChange;
+    }
+
+    /**
      * Set allowedToConfigureWysiwyg
      *
      * @param boolean $allowedToConfigureWysiwyg
      *
      * @return User
      */
-    public function setAllowedToConfigureWysiwyg($allowedToConfigureWysiwyg)
+    public function setAllowedToConfigureWysiwyg(bool $allowedToConfigureWysiwyg)
     {
         $this->allowedToConfigureWysiwyg = $allowedToConfigureWysiwyg;
 

@@ -68,7 +68,9 @@ class UserController extends AppController
                 'first_options' => array('label' => 'form.password'),
                 'second_options' => array('label' => 'form.password_confirmation'),
                 'invalid_message' => 'fos_user.password.mismatch',))
-
+            ->add('forcePasswordChange', CheckboxType::class, [
+                'required' => false,
+            ])
             ->add('allowedToConfigureWysiwyg', CheckboxType::class, [
                 'required' => false,
             ])
@@ -181,6 +183,10 @@ class UserController extends AppController
             ->add('enabled', CheckboxType::class, [
                 'required' => false,
                 'translation_domain' => EMSCoreBundle::TRANS_DOMAIN
+            ])
+            ->add('forcePasswordChange', CheckboxType::class, [
+                'required' => false,
+                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
             ])
             ->add('allowedToConfigureWysiwyg', CheckboxType::class, [
                 'required' => false,

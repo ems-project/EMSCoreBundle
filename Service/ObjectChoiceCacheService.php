@@ -100,6 +100,7 @@ class ObjectChoiceCacheService
                             if ($result === false) {
                                 continue;
                             }
+                            /** @var array{_id: string, _type: ?string, _source: array} $hit */
                             $hit = $result->getHit();
                             $hitDocument = new Document($hit);
                             if (!isset($choices[$hitDocument->getEmsId()])) {
@@ -197,6 +198,7 @@ class ObjectChoiceCacheService
                     if ($result === false) {
                         continue;
                     }
+                    /** @var array{_id: string, _type: ?string, _source: array} $hit */
                     $hit = $result->getHit();
 
                     $document = new Document($hit);

@@ -12,9 +12,11 @@ use Monolog\Logger;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -32,8 +34,21 @@ class RequestListener
     protected $allowUserRegistration;
     protected $userLoginRoute;
     protected $userRegistrationRoute;
-    
-    public function __construct(\Twig_Environment $twig, Registry $doctrine, Logger $logger, Router $router, Container $container, AuthorizationCheckerInterface $authorizationChecker, Session $session, $allowUserRegistration, $userLoginRoute, $userRegistrationRoute)
+    protected $tokenStorage;
+
+    public function __construct(
+        \Twig_Environment $twig,
+        Registry $doctrine,
+        Logger $logger,
+        Router $router,
+        Container $container,
+        AuthorizationCheckerInterface $authorizationChecker,
+        Session $session,
+        $allowUserRegistration,
+        $userLoginRoute,
+        $userRegistrationRoute,
+        $tokenStorage
+    )
     {
         $this->twig = $twig;
         $this->doctrine = $doctrine;
@@ -45,12 +60,22 @@ class RequestListener
         $this->allowUserRegistration = $allowUserRegistration;
         $this->userLoginRoute = $userLoginRoute;
         $this->userRegistrationRoute = $userRegistrationRoute;
+        $this->tokenStorage = $tokenStorage;
     }
 
     public function onKernelRequest(GetResponseEvent $event)
     {
-        if ($event->getRequest()->get('_route') === $this->userRegistrationRoute && !$this->allowUserRegistration) {
-            $response = new RedirectResponse($this->router->generate($this->userLoginRoute, [], UrlGeneratorInterface::RELATIVE_PATH));
+        $user = $this->tokenStorage->getToken()->getUser();
+        $route = $event->getRequest()->get('_route');
+
+        if ($user == 'anon.' || !$route) {
+            return;
+        }
+
+        $forceChangePassword = $user->getForcePasswordChange();
+
+        if ( $forceChangePassword && $route !==  'fos_user_change_password') {
+            $response = new RedirectResponse($this->router->generate('fos_user_change_password'));
             $event->setResponse($response);
         }
     }

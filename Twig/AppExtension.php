@@ -801,7 +801,7 @@ class AppExtension extends AbstractExtension
             return true;
         }
 
-        if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
+        if ($this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT')) {
             return true;
         }
 
@@ -823,7 +823,7 @@ class AppExtension extends AbstractExtension
     }
 
     /**
-     * @return array<array<string>|string>
+     * @return array<int|string, array<int, mixed>>
      */
     public function groupedObjectLoader(string $contentTypeName): array
     {

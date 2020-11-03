@@ -293,7 +293,7 @@ class EnvironmentService
 
     public function getAllInMyCircle()
     {
-        if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
+        if ($this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT')) {
             return $this->getEnvironments();
         };
 

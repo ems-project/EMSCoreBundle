@@ -214,7 +214,7 @@ class DataService
         if (!empty($publishEnv) && !$this->authorizationChecker->isGranted($revision->getContentType()->getPublishRole() ?: 'ROLE_PUBLISHER')) {
             throw new PrivilegeException($revision, 'You don\'t have publisher role for this content');
         }
-        if (!empty($publishEnv) && is_object($publishEnv) && !empty($publishEnv->getCircles()) && !$this->authorizationChecker->isGranted('ROLE_ADMIN') && !$this->appTwig->inMyCircles($publishEnv->getCircles())) {
+        if (!empty($publishEnv) && is_object($publishEnv) && !empty($publishEnv->getCircles()) && !$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT') && !$this->appTwig->inMyCircles($publishEnv->getCircles())) {
             throw new PrivilegeException($revision, 'You don\'t share any circle with this content');
         }
         if (empty($publishEnv) && !empty($revision->getContentType()->getCirclesField()) && !empty($revision->getRawData()[$revision->getContentType()->getCirclesField()])) {
@@ -1230,7 +1230,7 @@ class DataService
         $userCircles = $this->userService->getCurrentUser()->getCircles();
         $environment = $contentType->getEnvironment();
         $environmentCircles = $environment->getCircles();
-        if (!$this->authorizationChecker->isGranted('ROLE_ADMIN') && !empty($environmentCircles)) {
+        if (!$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT') && !empty($environmentCircles)) {
             if (empty($userCircles)) {
                 throw new HasNotCircleException($environment);
             }

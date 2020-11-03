@@ -23,7 +23,7 @@ class TwigElementsController extends AbstractController
         $revisionRepository = $this->getDoctrine()->getRepository('EMSCoreBundle:Revision');
         $user = $userService->getCurrentUser();
 
-        $temp = $revisionRepository->draftCounterGroupedByContentType($user->getCircles(), $this->isGranted('ROLE_ADMIN'));
+        $temp = $revisionRepository->draftCounterGroupedByContentType($user->getCircles(), $this->isGranted('ROLE_USER_MANAGEMENT'));
         foreach ($temp as $item) {
             $draftCounterGroupedByContentType[$item["content_type_id"]] = $item["counter"];
         }

@@ -274,7 +274,7 @@ final class CoreLdapUser implements SymfonyUserInterface, UserInterface
 
     public function setForcePasswordChange(bool $forcePasswordChange)
     {
-        return $this;
+        return true;
     }
 
     public function getForcePasswordChange()

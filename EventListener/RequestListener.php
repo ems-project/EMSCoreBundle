@@ -49,8 +49,7 @@ class RequestListener
         $userLoginRoute,
         $userRegistrationRoute,
         TokenStorageInterface $tokenStorage
-    )
-    {
+    ) {
         $this->twig = $twig;
         $this->doctrine = $doctrine;
         $this->logger = $logger;
@@ -75,13 +74,13 @@ class RequestListener
 
         $user = $token->getUser();
 
-        if(!$user instanceof User){
+        if (!$user instanceof User) {
             return;
         }
 
         $forceChangePassword = $user->getForcePasswordChange();
 
-        if ( $forceChangePassword && $route !==  'fos_user_change_password') {
+        if ($forceChangePassword && $route !==  'fos_user_change_password') {
             $response = new RedirectResponse($this->router->generate('fos_user_change_password'));
             $event->setResponse($response);
         }

@@ -291,7 +291,7 @@ class User extends BaseUser implements UserInterface
      *
      * @return User
      */
-    public function setForcePasswordChange(bool $forcePasswordChange)
+    public function setForcePasswordChange(bool $forcePasswordChange): UserInterface
     {
         $this->forcePasswordChange = $forcePasswordChange;
 
@@ -303,7 +303,7 @@ class User extends BaseUser implements UserInterface
      *
      * @return boolean
      */
-    public function getForcePasswordChange()
+    public function getForcePasswordChange(): bool
     {
         return $this->forcePasswordChange;
     }
@@ -313,9 +313,8 @@ class User extends BaseUser implements UserInterface
      *
      * @param boolean $allowedToConfigureWysiwyg
      *
-     * @return User
      */
-    public function setAllowedToConfigureWysiwyg(bool $allowedToConfigureWysiwyg)
+    public function setAllowedToConfigureWysiwyg(bool $allowedToConfigureWysiwyg): UserInterface
     {
         $this->allowedToConfigureWysiwyg = $allowedToConfigureWysiwyg;
 

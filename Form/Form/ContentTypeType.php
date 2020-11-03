@@ -153,6 +153,9 @@ class ContentTypeType extends AbstractType
                 ->add('versionTags', CollectionType::class, [
                     'entry_type' => TextType::class,
                     'attr' => [
+                        'class' => 'a2lix_lib_sf_collection',
+                        'data-lang-add' => 'Add version',
+                        'data-lang-remove' => 'X',
                         'data-entry-remove-class' => 'btn btn-danger',
                     ],
                     'entry_options' => [

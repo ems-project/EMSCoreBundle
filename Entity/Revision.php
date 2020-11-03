@@ -785,7 +785,7 @@ class Revision
     public function getContentTypeName(): string
     {
         if (null === $this->contentType) {
-            throw new \Exception('No contentType for revision!');
+            throw new \RuntimeException('No contentType for revision!');
         }
 
         return $this->contentType->getName();

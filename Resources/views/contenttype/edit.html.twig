@@ -157,19 +157,3 @@
     } %}
 
 {% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script type="text/javascript">
-        document.addEventListener("DOMContentLoaded", function(event) {
-            a2lix_lib.sfCollection.init({
-                collectionsSelector: '#content_type_versionTags',
-                manageRemoveEntry: true,
-                lang: {
-                    add: 'Add version',
-                    remove: 'X'
-                }
-            });
-        });
-    </script>
-{% endblock %}

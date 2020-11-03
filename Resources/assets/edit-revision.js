@@ -229,8 +229,6 @@ function addEventListeners(target){
     target.find('button#btn-publish-version').on('click', function(e) {
         e.preventDefault();
         $('#publish-version-modal').modal('show');
-
-        console.debug("cool");
     });
 
     target.find('.remove-content-button').on('click', function(e) {

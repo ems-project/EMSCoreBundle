@@ -7,6 +7,9 @@ use FOS\UserBundle\Event\FilterUserResponseEvent;
 use FOS\UserBundle\Event\GetResponseUserEvent;
 use FOS\UserBundle\FOSUserEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use EMS\CoreBundle\Entity\User;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBag;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class ChangePasswordSubscriber implements EventSubscriberInterface
 {
@@ -19,9 +22,9 @@ class ChangePasswordSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return array<string>
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return array(
             FOSUserEvents::CHANGE_PASSWORD_COMPLETED => 'updateForcePasswordChange',
@@ -29,17 +32,34 @@ class ChangePasswordSubscriber implements EventSubscriberInterface
         );
     }
 
-    public function updateForcePasswordChange(FilterUserResponseEvent $event)
+    public function updateForcePasswordChange(FilterUserResponseEvent $event): void
     {
-        $user = $event->getUser()->setForcePasswordChange(false);
-        $event->getRequest()->getSession()->getFlashBag()->clear();
+        /** @var User $user */
+        $user = $event->getUser();
+        $user->setForcePasswordChange(false);
         $this->userService->updateUser($user);
+
+        /** @var Session<array> $session */
+        $session = $event->getRequest()->getSession();
+
+        /** @var FlashBag $flashBag */
+        $flashBag = $session->getFlashBag();
+        $flashBag->clear();
+        $flashBag->add('notice', 'Your password has been updated.');
     }
 
-    public function showMustChangePasswordMessage(GetResponseUserEvent $event)
+    public function showMustChangePasswordMessage(GetResponseUserEvent $event): void
     {
-        if ($event->getUser()->getForcePasswordChange()) {
-            $event->getRequest()->getSession()->getFlashBag()->add('notice', 'You are required to change your password.');
+        /** @var User $user */
+        $user = $event->getUser();
+        if ($user->getForcePasswordChange()) {
+
+            /** @var Session<array> $session */
+            $session = $event->getRequest()->getSession();
+
+            /** @var FlashBag $flashBag */
+            $flashBag = $session->getFlashBag();
+            $flashBag->add('notice', 'You are required to change your password.');
         }
     }
 }

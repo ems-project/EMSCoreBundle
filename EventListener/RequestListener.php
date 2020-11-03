@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\EventListener;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Command\AbstractEmsCommand;
+use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Exception\LockedException;
 use EMS\CoreBundle\Exception\PrivilegeException;
@@ -12,13 +13,12 @@ use Monolog\Logger;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
-use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Router;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class RequestListener
@@ -34,6 +34,7 @@ class RequestListener
     protected $allowUserRegistration;
     protected $userLoginRoute;
     protected $userRegistrationRoute;
+    /** @var TokenStorageInterface */
     protected $tokenStorage;
 
     public function __construct(
@@ -47,7 +48,7 @@ class RequestListener
         $allowUserRegistration,
         $userLoginRoute,
         $userRegistrationRoute,
-        $tokenStorage
+        TokenStorageInterface $tokenStorage
     )
     {
         $this->twig = $twig;
@@ -65,10 +66,16 @@ class RequestListener
 
     public function onKernelRequest(GetResponseEvent $event)
     {
-        $user = $this->tokenStorage->getToken()->getUser();
+        $token = $this->tokenStorage->getToken();
         $route = $event->getRequest()->get('_route');
 
-        if ($user == 'anon.' || !$route) {
+        if ($token === null || !$route) {
+            return;
+        }
+
+        $user = $token->getUser();
+
+        if(!$user instanceof User){
             return;
         }
 

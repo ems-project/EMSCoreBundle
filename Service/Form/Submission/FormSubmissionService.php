@@ -53,7 +53,7 @@ final class FormSubmissionService
         $data = $formSubmission->getData();
         $data['id'] = $formSubmission->getId();
 
-        $rawJson = \json_encode($data);
+        $rawJson = \json_encode($data, JSON_UNESCAPED_UNICODE);
         if (is_string($rawJson)) {
             $zip->addFromString('data.json', $rawJson);
         }

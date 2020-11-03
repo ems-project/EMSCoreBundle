@@ -247,7 +247,7 @@ class DataController extends AppController
         /** @var RevisionRepository $revisionRep */
         $revisionRep = $em->getRepository('EMSCoreBundle:Revision');
 
-        $revisions = $revisionRep->findInProgresByContentType($contentType, $this->getUserService()->getCurrentUser()->getCircles(), $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN'));
+        $revisions = $revisionRep->findInProgresByContentType($contentType, $this->getUserService()->getCurrentUser()->getCircles(), $this->get('security.authorization_checker')->isGranted('ROLE_USER_MANAGEMENT'));
 
 
         return $this->render('@EMSCore/data/draft-in-progress.html.twig', [
@@ -1639,16 +1639,15 @@ class DataController extends AppController
     }
 
     /**
-     * @param string $key
      * @return RedirectResponse
-     * @throws NonUniqueResultException
      * @Route("/data/link/{key}", name="data.link")
      */
-    public function linkDataAction($key)
+    public function linkDataAction(string $key)
     {
         $category = $type = $ouuid = null;
-        $split = explode(':', $key);
-        if ($split && count($split) == 3) {
+        $split = \explode(':', $key);
+
+        if (\count($split) === 3) {
             $category = $split[0]; // object or asset
             $type = $split[1];
             $ouuid = $split[2];

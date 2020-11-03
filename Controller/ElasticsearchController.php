@@ -490,7 +490,7 @@ class ElasticsearchController extends AppController
                 }
             }
 
-            if ($circleOnly && !$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+            if ($circleOnly && !$this->get('security.authorization_checker')->isGranted('ROLE_USER_MANAGEMENT')) {
                 /**@var UserInterface $user */
                 $user = $this->getUser();
                 $circles = $user->getCircles();

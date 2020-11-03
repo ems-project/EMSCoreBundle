@@ -2,14 +2,9 @@
 
 namespace EMS\CoreBundle\Command;
 
-use DateTime;
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CoreBundle\Entity\ContentType;
-use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
-use Exception;
-use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -37,7 +32,7 @@ class LockCommand extends Command
         $this->revisionRepository = $revisionRepository;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('ems:contenttype:lock')
@@ -51,32 +46,38 @@ class LockCommand extends Command
         ;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|void|null
-     * @throws Exception
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        /** @var $contentType ContentType */
-        if (null === $contentType = $this->contentTypeRepository->findOneBy(['name' => $input->getArgument('contentType')])) {
-            throw new RuntimeException('invalid content type');
+        $timeArgument = $input->getArgument('time');
+        if (!\is_string($timeArgument)) {
+            throw new \RuntimeException('Unexpected time argument');
         }
-        if (!$time = strtotime($input->getArgument('time'))) {
-            throw new RuntimeException('invalid time');
+
+        $contentTypeName = $input->getArgument('contentType');
+        if (!\is_string($contentTypeName)) {
+            throw new \RuntimeException('Unexpected content type name');
+        }
+        $contentType = $this->contentTypeRepository->findOneBy(['name' => $contentTypeName]);
+        if (!$contentType instanceof ContentType) {
+            throw new \RuntimeException('Content type not found');
+        }
+        if (($time = strtotime($timeArgument)) === false) {
+            throw new \RuntimeException('invalid time');
         }
         $by = $input->getOption('user');
-        $force = $input->getOption('force');
+        if (!\is_string($by)) {
+            throw new \RuntimeException('Unexpected user name');
+        }
+        $force = $input->getOption('force') === true;
 
-        $until = new DateTime();
+        $until = new \DateTime();
         $until->setTimestamp($time);
 
         $io = new SymfonyStyle($input, $output);
 
         if ($input->getOption('if-empty') &&
             0 !== $this->revisionRepository->findAllLockedRevisions($contentType, $by)->count()) {
-            return;
+            return 0;
         }
 
         $rows = $this->revisionRepository->lockRevisions($contentType, $until, $by, $force, $input->getOption('id'));
@@ -92,5 +93,6 @@ class LockCommand extends Command
                 $by
             ]));
         }
+        return 0;
     }
 }

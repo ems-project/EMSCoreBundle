@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width"/>
+    <style>
+        @media screen and (max-width: 600px) {
+            .width-full {
+                width: 100% !important;
+            }
+
+            .stack-cell {
+                display: block !important;
+                width: 100% !important;
+            }
+        }
+
+        @media screen and (max-width: 320px) {
+            .email-title {
+                font-size: 20px !important;
+                line-height: 30px !important;
+                padding-top: 15px !important;
+            }
+
+            .email-intro {
+                font-size: 14px !important;
+                line-height: 21px !important;
+            }
+        }
+
+        @media screen and (min-width: 321px) and (max-width: 375px) {
+            .email-title {
+                font-size: 22px !important;
+                line-height: 36px !important;
+            }
+
+        }
+
+        .client-link a {
+            color: #3a383a !important;
+        }
+
+        td {
+            -ms-text-size-adjust: none;
+            -webkit -text-size-adjust: none;
+        }
+
+        table {
+            margin: 0 auto !important;
+        }
+
+    </style>
+    <!--[if gte mso 12]>
+    <style>
+        td {
+            mso-line-height-rule: exactly;
+        }
+    </style>
+    <![endif]-->
+</head>
+<body style="margin: 0; padding: 0;">
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+        <td style="padding: 0 10px;">
+            <!--[if (mso)|(IE)]>
+            <table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
+                <tr>
+                    <td>
+            <![endif]-->
+            <table align="center" border="0" cellpadding="0" cellspacing="0" class="width-full"
+                   style="max-width: 600px;" width="100%">
+                <tr>
+                    <td class="email-title"
+                        style="color: #3a383a; font-family: Georgia, serif; font-size: 42px; font-weight: bold; line-height: 44px; padding-top: 20px; text-transform: uppercase;">
+                        Submissions
+                    </td>
+                </tr>
+                <tr>
+                    <td class="email-intro"
+                        style="color: #3a383a; font-family: Georgia, serif; font-size: 18px; line-height: 27px; padding-top: 5px;">
+                        <table border="1">
+                            <tr>
+                                <th>ID</th>
+                                <th>Label</th>
+                                <th>Submission Date</th>
+                                <th>Expiry Date</th>
+                            </tr>
+                            {% for submission in submissions %}
+                                <tr>
+                                    <td>{{ submission.id }}</td>
+                                    <td>{{ submission.label }}</td>
+                                    <td>{{ submission.created|date('d/m/Y') }}</td>
+                                    <td>{{ submission.expireDate|date('d/m/Y') }}</td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

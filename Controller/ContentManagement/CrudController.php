@@ -393,7 +393,7 @@ class CrudController extends AppController
 
     /**
      * @Route("/api/user-profiles", defaults={"_format": "json"}, methods={"GET"})
-     * @IsGranted({"ROLE_USER_READ", "ROLE_USER_ADMIN", "ROLE_ADMIN"})
+     * @IsGranted({"ROLE_USER_READ", "ROLE_USER_MANAGEMENT", "ROLE_ADMIN"})
      */
     public function getUserProfiles() : JsonResponse
     {

@@ -1,6 +1,5 @@
 <?php
 
-// src/EMS/CoreBundle/Command/GreetCommand.php
 namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -46,26 +45,18 @@ class CleanDeletedContentTypeCommand extends ContainerAwareCommand
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('ems:contenttype:clean')
             ->setDescription('Clean all deleted content types');
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|void|null
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
-
         /** @var ContentTypeRepository $ctRepo */
         $ctRepo = $em->getRepository('EMSCoreBundle:ContentType');
         /** @var FieldTypeRepository $fieldRepo */
@@ -85,14 +76,12 @@ class CleanDeletedContentTypeCommand extends ContainerAwareCommand
         }
         $em->flush();
 
-        /** @var ContentType $contentType */
         $contentTypes = $ctRepo->findBy([
                 'deleted' => true
         ]);
 
         foreach ($contentTypes as $contentType) {
             $output->writeln('Remove deleted content type ' . $contentType->getName());
-            //remove field types
             if ($contentType->getFieldType()) {
                 $contentType->unsetFieldType();
                 $em->persist($contentType);
@@ -149,5 +138,6 @@ class CleanDeletedContentTypeCommand extends ContainerAwareCommand
 
 
         $output->writeln('Done');
+        return 0;
     }
 }

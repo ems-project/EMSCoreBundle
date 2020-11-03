@@ -2,30 +2,34 @@
 
 namespace EMS\CoreBundle\Controller;
 
-use Elasticsearch\Client;
+use Elastica\Client;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\JobService;
+use EMS\CoreBundle\Service\UserService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\HttpFoundation\Response;
 
-class TwigElementsController extends AppController
+class TwigElementsController extends AbstractController
 {
     const ASSET_EXTRACTOR_STATUS_CACHE_ID = 'status.asset_extractor.result';
 
-    public function sideMenuAction(AssetExtractorService $assetExtractorService, Client $client)
+    public function sideMenuAction(AssetExtractorService $assetExtractorService, Client $client, UserService $userService): Response
     {
         $draftCounterGroupedByContentType = [];
 
         /** @var RevisionRepository $revisionRepository */
         $revisionRepository = $this->getDoctrine()->getRepository('EMSCoreBundle:Revision');
-         
-        $temp = $revisionRepository->draftCounterGroupedByContentType($this->get('ems.service.user')->getCurrentUser()->getCircles(), $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN'));
+        $user = $userService->getCurrentUser();
+
+        $temp = $revisionRepository->draftCounterGroupedByContentType($user->getCircles(), $this->isGranted('ROLE_USER_MANAGEMENT'));
         foreach ($temp as $item) {
             $draftCounterGroupedByContentType[$item["content_type_id"]] = $item["counter"];
         }
 
         try {
-            $status = $client->cluster()->health()['status'];
+            $status = $client->getCluster()->getHealth()->getStatus();
         } catch (\Exception $e) {
             $status = 'red';
         }
@@ -43,7 +47,7 @@ class TwigElementsController extends AppController
         );
     }
 
-    public function jobsAction(string $username, JobService $jobService)
+    public function jobsAction(string $username, JobService $jobService): Response
     {
         return $this->render(
             '@EMSCore/elements/jobs-list.html.twig',
@@ -53,7 +57,7 @@ class TwigElementsController extends AppController
         );
     }
 
-    private function getAssetExtractorStatus(AssetExtractorService $assetExtractorService)
+    private function getAssetExtractorStatus(AssetExtractorService $assetExtractorService): string
     {
         try {
             $cache = new FilesystemAdapter('', 60);

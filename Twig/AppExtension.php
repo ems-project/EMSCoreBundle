@@ -7,10 +7,13 @@ use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Elasticsearch\Client;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CommonBundle\Storage\Processor\Config;
 use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\I18n;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
@@ -22,7 +25,6 @@ use EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory;
 use EMS\CoreBundle\Repository\I18nRepository;
 use EMS\CoreBundle\Repository\SequenceRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
-use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\FileService;
 use EMS\CoreBundle\Service\UserService;
@@ -32,32 +34,36 @@ use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
+use Twig\Environment as TwigEnvironment;
 use Twig\TwigFunction;
 
-class AppExtension extends \Twig_Extension
+class AppExtension extends AbstractExtension
 {
-    /**@var FormFactory */
+    /** @var FormFactory */
     protected $formFactory;
-    /**@var FileService */
+    /** @var FileService */
     protected $fileService;
-    /**@var RequestRuntime */
+    /** @var RequestRuntime */
     protected $commonRequestRuntime;
-    /**@var array */
+    /** @var array<mixed> */
     protected $assetConfig;
-
+    /** @var Registry */
     private $doctrine;
+    /** @var UserService */
     private $userService;
+    /** @var AuthorizationCheckerInterface */
     private $authorizationChecker;
-    /**@var ContentTypeService $contentTypeService */
+    /** @var ContentTypeService $contentTypeService */
     private $contentTypeService;
-    /**@var Client $client */
+    /** @var Client $client */
     private $client;
-    /**@var Router $router */
+    /** @var Router $router */
     private $router;
-    /**@var \Twig_Environment $twig */
+    /** @var TwigEnvironment $twig */
     private $twig;
-    /**@var ObjectChoiceListFactory $objectChoiceListFactory */
+    /** @var ObjectChoiceListFactory $objectChoiceListFactory */
     private $objectChoiceListFactory;
     /** @var EnvironmentService */
     private $environmentService;
@@ -66,7 +72,10 @@ class AppExtension extends \Twig_Extension
     /** @var \Swift_Mailer */
     private $mailer;
 
-    public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, Client $client, Router $router, $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, LoggerInterface $logger, FormFactory $formFactory, FileService $fileService, RequestRuntime $commonRequestRuntime, \Swift_Mailer $mailer, array $assetConfig)
+    /**
+     * @param array<mixed> $assetConfig
+     */
+    public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, Client $client, Router $router, TwigEnvironment $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, LoggerInterface $logger, FormFactory $formFactory, FileService $fileService, RequestRuntime $commonRequestRuntime, \Swift_Mailer $mailer, array $assetConfig)
     {
         $this->doctrine = $doctrine;
         $this->authorizationChecker = $authorizationChecker;
@@ -126,8 +135,6 @@ class AppExtension extends \Twig_Extension
     {
         return array(
             new TwigFilter('searches', array($this, 'searchesList')),
-            new TwigFilter('url_generator', array($this, 'toAscii')),
-            new TwigFilter('emsco_webalize', array($this, 'webalize')),
             new TwigFilter('data', array($this, 'data')),
             new TwigFilter('inArray', array($this, 'inArray')),
             new TwigFilter('firstInArray', array($this, 'firstInArray')),
@@ -137,8 +144,8 @@ class AppExtension extends \Twig_Extension
             new TwigFilter('convertJavascriptDateRangeFormat', array($this, 'convertJavascriptDateRangeFormat')),
             new TwigFilter('getTimeFieldTimeFormat', array($this, 'getTimeFieldTimeFormat')),
             new TwigFilter('soapRequest', array($this, 'soapRequest')),
-            new TwigFilter('luma', array($this, 'relativeluminance')),
-            new TwigFilter('contrastratio', array($this, 'contrastratio')),
+            new TwigFilter('luma', array($this, 'relativeLuminance')),
+            new TwigFilter('contrastratio', array($this, 'contrastRatio')),
             new TwigFilter('all_granted', array($this, 'allGranted')),
             new TwigFilter('one_granted', array($this, 'oneGranted')),
             new TwigFilter('in_my_circles', array($this, 'inMyCircles')),
@@ -150,12 +157,12 @@ class AppExtension extends \Twig_Extension
             new TwigFilter('objectChoiceLoader', array($this, 'objectChoiceLoader')),
             new TwigFilter('groupedObjectLoader', array($this, 'groupedObjectLoader')),
             new TwigFilter('propertyPath', array($this, 'propertyPath')),
-            new TwigFilter('is_super', array($this, 'is_super')),
+            new TwigFilter('is_super', array($this, 'isSuper')),
             new TwigFilter('i18n', array($this, 'i18n')),
             new TwigFilter('internal_links', array($this, 'internalLinks')),
             new TwigFilter('src_path', array($this, 'srcPath')),
             new TwigFilter('get_user', array($this, 'getUser')),
-            new TwigFilter('displayname', array($this, 'displayname')),
+            new TwigFilter('displayname', array($this, 'displayName')),
             new TwigFilter('date_difference', array($this, 'dateDifference')),
             new TwigFilter('debug', array($this, 'debug')),
             new TwigFilter('search', array($this, 'search')),
@@ -167,23 +174,26 @@ class AppExtension extends \Twig_Extension
             new TwigFilter('get_field_by_path', array($this, 'getFieldByPath')),
             new TwigFilter('json_decode', array($this, 'jsonDecode')),
             new TwigFilter('get_revision_id', [RevisionRuntime::class, 'getRevisionId']),
+            //deprecated
+            new TwigFilter('url_generator', [Encoder::class, 'webalize'], ['deprecated' => true]),
+            new TwigFilter('emsco_webalize', [Encoder::class, 'webalize'], ['deprecated' => true]),
         );
     }
 
-    public function generateEmailMessage(string $title)
+    public function generateEmailMessage(string $title): \Swift_Message
     {
         return (new \Swift_Message($title));
     }
 
-    public function sendEmail(\Swift_Message $message)
+    public function sendEmail(\Swift_Message $message): void
     {
         $this->mailer->send($message);
     }
 
     /**
-     * @param array $fileField
+     * @param array<mixed> $fileField
      * @param string $processorIdentifier
-     * @param array $assetConfig
+     * @param array<mixed> $assetConfig
      * @param string $route
      * @param string $fileHashField
      * @param string $filenameField
@@ -191,7 +201,7 @@ class AppExtension extends \Twig_Extension
      * @param int $referenceType
      * @return string
      */
-    public function assetPath(array $fileField, string $processorIdentifier, array $assetConfig = [], string $route = 'ems_asset', string $fileHashField = EmsFields::CONTENT_FILE_HASH_FIELD, $filenameField = EmsFields::CONTENT_FILE_NAME_FIELD, $mimeTypeField = EmsFields::CONTENT_MIME_TYPE_FIELD, $referenceType = UrlGeneratorInterface::RELATIVE_PATH): string
+    public function assetPath(array $fileField, string $processorIdentifier, array $assetConfig = [], string $route = 'ems_asset', string $fileHashField = EmsFields::CONTENT_FILE_HASH_FIELD, string $filenameField = EmsFields::CONTENT_FILE_NAME_FIELD, string $mimeTypeField = EmsFields::CONTENT_MIME_TYPE_FIELD, $referenceType = UrlGeneratorInterface::RELATIVE_PATH): string
     {
         $config = $assetConfig;
         if (!isset($config['_config_type'])) {
@@ -199,11 +209,11 @@ class AppExtension extends \Twig_Extension
         }
 
         if (isset($this->assetConfig[$processorIdentifier])) {
-            $config = array_merge($this->assetConfig[$processorIdentifier], $config);
+            $config = \array_merge($this->assetConfig[$processorIdentifier], $config);
         }
 
         // removes invalid options like _sha1, _finalized_by, ..
-        $config = array_intersect_key($config, Config::getDefaults());
+        $config = \array_intersect_key($config, Config::getDefaults());
 
         //_published_datetime can also be removed as it has a sense only if the default config is updated
         if (isset($config['_published_datetime'])) {
@@ -213,35 +223,47 @@ class AppExtension extends \Twig_Extension
         return $this->commonRequestRuntime->assetPath($fileField, $config, $route, $fileHashField, $filenameField, $mimeTypeField, $referenceType);
     }
 
-
-    public function jsonDecode($json, $assoc = true, $depth = 512, $options = 0)
+    /**
+     * @return mixed
+     */
+    public function jsonDecode(string $json, bool $assoc = true, int $depth = 512, int $options = 0)
     {
-        return json_decode($json, $assoc, $depth, $options);
+        return \json_decode($json, $assoc, $depth, $options);
     }
 
-    public function getFieldByPath(ContentType $contentType, $path, $skipVirtualFields = false)
+    public function getFieldByPath(ContentType $contentType, string $path, bool $skipVirtualFields = false): ?FieldType
     {
-        return $this->contentTypeService->getChildByPath($contentType->getFieldType(), $path, $skipVirtualFields);
+        $fieldType = $this->contentTypeService->getChildByPath($contentType->getFieldType(), $path, $skipVirtualFields);
+        if ($fieldType === false) {
+            return null;
+        }
+        return $fieldType;
     }
 
-    public function getFile($hash, $cacheContext = false)
+    public function getFile(string $hash): ?string
     {
-        return $this->fileService->getFile($hash, $cacheContext);
+        return $this->fileService->getFile($hash);
     }
 
-    public function getString($rawData, $field)
+    /**
+     * @param array<mixed> $rawData
+     */
+    public function getString(array $rawData, string $field): ?string
     {
         if (empty($rawData) or !isset($rawData[$field])) {
             return null;
         }
-        if (is_string($rawData[$field])) {
+        if (\is_string($rawData[$field])) {
             return $rawData[$field];
         }
-        return json_encode($rawData[$field]);
+        $encoded = \json_encode($rawData[$field]);
+        if ($encoded === false) {
+            throw new \RuntimeException('Failure on json encode');
+        }
+        return $encoded;
     }
 
-
-    public function diff($a, $b, $compare, $escape = false, $htmlDiff = false, $raw = false)
+    public function diff(?string $a, ?string $b, bool $compare, bool $escape = false, bool $htmlDiff = false, bool $raw = false): string
     {
         $tag = 'span';
         $textClass = '';
@@ -250,7 +272,7 @@ class AppExtension extends \Twig_Extension
         if ($compare && $a !== $b) {
             if ($htmlDiff && $a && $b) {
                 $textClass = 'text-orange';
-                $htmlDiff = new HtmlDiff(($escape ? htmlentities($b) : $this->internalLinks($b)), ($escape ? htmlentities($a) : $this->internalLinks($a)));
+                $htmlDiff = new HtmlDiff(($escape ? htmlentities($b) : $this->internalLinks($b)) ?? '', ($escape ? htmlentities($a) : $this->internalLinks($a)) ?? '');
                 $textLabel = $htmlDiff->build();
             } else {
                 $textClass = false;
@@ -280,12 +302,16 @@ class AppExtension extends \Twig_Extension
         }
 
         if ($raw) {
-            return $textLabel;
+            return $textLabel ?? '';
         }
         return '<' . $tag . ' class="' . $textClass . '">' . $textLabel . '</' . $tag . '>';
     }
 
-    public function diffBoolean($rawData, $compare, $fieldName, $compareRawData)
+    /**
+     * @param mixed|null $rawData
+     * @param mixed|null $compareRawData
+     */
+    public function diffBoolean($rawData, bool $compare, string $fieldName, $compareRawData): string
     {
         $a = $rawData ? true : false;
         $b = isset($compareRawData[$fieldName]) && $compareRawData[$fieldName];
@@ -298,7 +324,11 @@ class AppExtension extends \Twig_Extension
         return '<span class="' . $textClass . '"><i class="fa fa' . ($a ? '-check' : '') . '-square-o"></i></span>';
     }
 
-    public function diffIcon($rawData, $compare, $fieldName, $compareRawData)
+    /**
+     * @param mixed|null $rawData
+     * @param mixed|null $compareRawData
+     */
+    public function diffIcon($rawData, bool $compare, string $fieldName, $compareRawData): string
     {
         $b = $a = null;
         if ($rawData) {
@@ -311,13 +341,20 @@ class AppExtension extends \Twig_Extension
         return $this->diff($a, $b, $compare);
     }
 
-
-    public function diffTime($rawData, $compare, $fieldName, $compareRawData, $format1, $format2)
+    /**
+     * @param mixed|null $rawData
+     * @param mixed|null$compareRawData
+     */
+    public function diffTime($rawData, bool $compare, string $fieldName, $compareRawData, string $format1, string $format2): string
     {
         return $this->diffDate($rawData, $compare, $fieldName, $compareRawData, $format1, $format2, TimeFieldType::STOREFORMAT);
     }
 
-    public function diffDate($rawData, $compare, $fieldName, $compareRawData, $format1, $format2 = false, $internalFormat = false)
+    /**
+     * @param mixed|null $rawData
+     * @param mixed|null $compareRawData
+     */
+    public function diffDate($rawData, bool $compare, string $fieldName, $compareRawData, string $format1, string $format2 = null, string $internalFormat = null): string
     {
         $b = $a = [];
         $out = "";
@@ -351,18 +388,21 @@ class AppExtension extends \Twig_Extension
             } elseif ($internalFormat) {
                 $date = \DateTime::createFromFormat($internalFormat, $item);
             } else {
-                $date = new DateTime($item);
+                $date = new \DateTime($item);
             }
 
+            if ($date === false) {
+                throw new \RuntimeException('Unexpected date format');
+            }
 
             $value = $date->format($format1);
-            $value2 = false;
+            $value2 = null;
 
-            if ($internalFormat) {
+            if ($internalFormat !== null) {
                 $internal = $date->format($internalFormat);
                 $formatedA[] = $internal;
                 $inArray = in_array($internal, $b);
-            } elseif ($format2) {
+            } elseif ($format2 !== null) {
                 $value2 = $date->format($format2);
                 $formatedA[] = $value2;
                 $inArray = in_array($item, $b);
@@ -391,14 +431,17 @@ class AppExtension extends \Twig_Extension
                 } else {
                     $date = new DateTime($item);
                 }
+                if ($date === false) {
+                    throw new \RuntimeException('Unexpected date format');
+                }
 
                 $value = $date->format($format1);
-                $value2 = false;
+                $value2 = null;
 
-                if ($internalFormat) {
+                if ($internalFormat !== null) {
                     $internal = $date->format($internalFormat);
                     $inArray = in_array($internal, $formatedA);
-                } elseif ($format2) {
+                } elseif ($format2 !== null) {
                     $value2 = $date->format($format2);
                     $inArray = in_array($item, $formatedA);
                 } else {
@@ -419,8 +462,13 @@ class AppExtension extends \Twig_Extension
         return $out;
     }
 
-
-    public function diffChoice($rawData, $labels, $choices, $compare, $fieldName, $compareRawData)
+    /**
+     * @param mixed|null $rawData
+     * @param array<mixed>|null $labels
+     * @param array<mixed>|null $choices
+     * @param mixed|null $compareRawData
+     */
+    public function diffChoice($rawData, ?array $labels, ?array $choices, bool $compare, string $fieldName, $compareRawData): string
     {
         $b = $a = [];
         $out = "";
@@ -450,28 +498,28 @@ class AppExtension extends \Twig_Extension
         if ($compare) {
             foreach ($b as $item) {
                 $value = $item;
-                if (is_array($choices) && in_array($value, $choices)) {
+                if (\is_array($choices) && \in_array($value, $choices)) {
                     $idx = array_search($value, $choices, true);
-                    if (is_array($labels) && array_key_exists($idx, $labels)) {
+                    if ($idx !== false && \is_array($labels) && \array_key_exists($idx, $labels)) {
                         $value = $labels[$idx] . ' (' . $value . ')';
                     }
                 }
-                if (!in_array($item, $a)) {
-                    $out .= '<' . $tag . ' class="text-' . $delColor . '"><del class="diffmod">' . htmlentities($value) . '</del></' . $tag . '>';
+                if (!\in_array($item, $a)) {
+                    $out .= '<' . $tag . ' class="text-' . $delColor . '"><del class="diffmod">' . \htmlentities($value) . '</del></' . $tag . '>';
                 }
             }
         }
 
         foreach ($a as $item) {
             $value = $item;
-            if (is_array($choices) && in_array($value, $choices)) {
-                $idx = array_search($value, $choices, true);
-                if (is_array($labels) && array_key_exists($idx, $labels)) {
+            if (\is_array($choices) && \in_array($value, $choices)) {
+                $idx = \array_search($value, $choices, true);
+                if ($idx !== false && \is_array($labels) && \array_key_exists($idx, $labels)) {
                     $value = $this->isSuper() ? $labels[$idx] . ' (' . $item . ')' : $labels[$idx];
                 }
             }
             if (!$compare || in_array($item, $b)) {
-                $out .= '<' . $tag . ' class="" data-ems-id="' . $item . '">' . htmlentities($value) . '</' . $tag . '>';
+                $out .= '<' . $tag . ' class="" data-ems-id="' . $item . '">' . \htmlentities($value) . '</' . $tag . '>';
             } else {
                 $out .= '<' . $tag . ' class="text-' . $insColor . '"><ins class="diffmod">' . htmlentities($value) . '</ins></' . $tag . '>';
             }
@@ -486,7 +534,11 @@ class AppExtension extends \Twig_Extension
     }
 
 
-    public function diffDataLink($rawData, $compare, $fieldName, $compareRawData)
+    /**
+     * @param mixed|null $rawData
+     * @param mixed|null $compareRawData
+     */
+    public function diffDataLink($rawData, bool $compare, string $fieldName, $compareRawData): string
     {
         $b = $a = [];
         $out = "";
@@ -508,7 +560,7 @@ class AppExtension extends \Twig_Extension
         if ($compare) {
             foreach ($b as $item) {
                 if (!in_array($item, $a)) {
-                    $out .= $this->dataLink($item, false, 'del') . ' ';
+                    $out .= $this->dataLink($item, null, 'del') . ' ';
                 }
             }
         }
@@ -517,7 +569,7 @@ class AppExtension extends \Twig_Extension
             if (!$compare || in_array($item, $b)) {
                 $out .= $this->dataLink($item) . ' ';
             } else {
-                $out .= $this->dataLink($item, false, 'ins') . ' ';
+                $out .= $this->dataLink($item, null, 'ins') . ' ';
             }
         }
 
@@ -525,131 +577,145 @@ class AppExtension extends \Twig_Extension
         return $out;
     }
 
-    public function diffColor($rawData, $compare, $fieldName, $compareRawData)
+    /**
+     * @param mixed|null $rawData
+     * @param mixed|null  $compareRawData
+     */
+    public function diffColor($rawData, bool $compare, string $fieldName, $compareRawData): string
     {
         $b = $a = null;
         if ($rawData) {
             $color = $rawData;
-            $a = '<span style="background-color: ' . $color . '; color: ' . ($this->contrastratio($color, '#000000') > $this->contrastratio($color, '#ffffff') ? '#000000' : '#ffffff') . ';">' . $color . '</span> ';
+            $a = '<span style="background-color: ' . $color . '; color: ' . ($this->contrastRatio($color, '#000000') > $this->contrastRatio($color, '#ffffff') ? '#000000' : '#ffffff') . ';">' . $color . '</span> ';
         }
 
         if (isset($compareRawData[$fieldName]) && $compareRawData[$fieldName]) {
             $color = $compareRawData[$fieldName];
-            $b = '<span style="background-color: ' . $color . '; color: ' . ($this->contrastratio($color, '#000000') > $this->contrastratio($color, '#ffffff') ? '#000000' : '#ffffff') . ';">' . $color . '</span> ';
+            $b = '<span style="background-color: ' . $color . '; color: ' . ($this->contrastRatio($color, '#000000') > $this->contrastRatio($color, '#ffffff') ? '#000000' : '#ffffff') . ';">' . $color . '</span> ';
         }
         return $this->diff($a, $b, $compare, false, false, true);
     }
 
-    public function diffRaw($rawData, $compare, $fieldName, $compareRawData)
+    /**
+     * @param mixed|null $rawData
+     * @param mixed|null $compareRawData
+     */
+    public function diffRaw($rawData, bool $compare, string $fieldName, $compareRawData): string
     {
         $b = isset($compareRawData[$fieldName]) ? $compareRawData[$fieldName] : null;
         return $this->diff($rawData, $b, $compare);
     }
 
-
-    public function diffText($rawData, $compare, $fieldName, $compareRawData)
+    /**
+     * @param mixed|null $rawData
+     * @param mixed|null $compareRawData
+     */
+    public function diffText($rawData, bool $compare, string $fieldName, $compareRawData): string
     {
         $b = isset($compareRawData[$fieldName]) ? $compareRawData[$fieldName] : null;
 
         return $this->diff($rawData, $b, $compare, true, true);
     }
 
-
-    public function diffHtml($rawData, $compare, $fieldName, $compareRawData)
+    /**
+     * @param mixed|null $rawData
+     * @param mixed|null $compareRawData
+     */
+    public function diffHtml($rawData, bool $compare, string $fieldName, $compareRawData): string
     {
         $b = isset($compareRawData[$fieldName]) ? $compareRawData[$fieldName] : null;
         return $this->diff($rawData, $b, $compare, false, true, true);
     }
 
 
-    /**
-     * Return a sequence next value
-     * @param string $name
-     * @return integer
-     */
-    public function getSequenceNextValue($name)
+    public function getSequenceNextValue(string $name): int
     {
         $em = $this->doctrine->getManager();
-        /**@var SequenceRepository $repo */
         $repo = $em->getRepository('EMSCoreBundle:Sequence');
-        $out = $repo->nextValue($name);
-        return $out;
-    }
-
-    public function arrayIntersect(array $array1, $array2)
-    {
-        if (!is_array($array2)) {
-            return [];
+        if (!$repo instanceof SequenceRepository) {
+            throw new \RuntimeException('Unexpected repository');
         }
-        return array_intersect($array1, $array2);
-    }
-
-
-    public function arrayMergeRecursive(array $array1, array $_ = null)
-    {
-        return array_merge_recursive($array1, $_);
+        return $repo->nextValue($name);
     }
 
     /**
-     * @deprecated
+     * @param array<mixed> $array1
+     * @param array<mixed> $array2
+     * @return array<mixed>
      */
-    public function toAscii(string $str) : string
+    public function arrayIntersect(array $array1, array $array2): array
     {
-        @trigger_error(sprintf('The "url_generator" Twig filter and the "%s::toAscii" function is deprecated. Used emsco_webalize filter or "%s::webalize" function instead.', AppExtension::class, AppExtension::class), E_USER_DEPRECATED);
-        return $this->webalize($str);
+        return \array_intersect($array1, $array2);
     }
 
-    public function webalize(string $str) : string
+    /**
+     * @param array<mixed> ...$arrays
+     * @return array<mixed>
+     */
+    public function arrayMergeRecursive(array ...$arrays): array
     {
-        $a = array('À', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Æ', 'Ç', 'È', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Î', 'Ï', 'Ð', 'Ñ', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', 'Ø', 'Ù', 'Ú', 'Û', 'Ü', 'Ý', 'ß', 'à', 'á', 'â', 'ã', 'ä', 'å', 'æ', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ñ', 'ò', 'ó', 'ô', 'õ', 'ö', 'ø', 'ù', 'ú', 'û', 'ü', 'ý', 'ÿ', 'Ā', 'ā', 'Ă', 'ă', 'Ą', 'ą', 'Ć', 'ć', 'Ĉ', 'ĉ', 'Ċ', 'ċ', 'Č', 'č', 'Ď', 'ď', 'Đ', 'đ', 'Ē', 'ē', 'Ĕ', 'ĕ', 'Ė', 'ė', 'Ę', 'ę', 'Ě', 'ě', 'Ĝ', 'ĝ', 'Ğ', 'ğ', 'Ġ', 'ġ', 'Ģ', 'ģ', 'Ĥ', 'ĥ', 'Ħ', 'ħ', 'Ĩ', 'ĩ', 'Ī', 'ī', 'Ĭ', 'ĭ', 'Į', 'į', 'İ', 'ı', 'Ĳ', 'ĳ', 'Ĵ', 'ĵ', 'Ķ', 'ķ', 'Ĺ', 'ĺ', 'Ļ', 'ļ', 'Ľ', 'ľ', 'Ŀ', 'ŀ', 'Ł', 'ł', 'Ń', 'ń', 'Ņ', 'ņ', 'Ň', 'ň', 'ŉ', 'Ō', 'ō', 'Ŏ', 'ŏ', 'Ő', 'ő', 'Œ', 'œ', 'Ŕ', 'ŕ', 'Ŗ', 'ŗ', 'Ř', 'ř', 'Ś', 'ś', 'Ŝ', 'ŝ', 'Ş', 'ş', 'Š', 'š', 'Ţ', 'ţ', 'Ť', 'ť', 'Ŧ', 'ŧ', 'Ũ', 'ũ', 'Ū', 'ū', 'Ŭ', 'ŭ', 'Ů', 'ů', 'Ű', 'ű', 'Ų', 'ų', 'Ŵ', 'ŵ', 'Ŷ', 'ŷ', 'Ÿ', 'Ź', 'ź', 'Ż', 'ż', 'Ž', 'ž', 'ſ', 'ƒ', 'Ơ', 'ơ', 'Ư', 'ư', 'Ǎ', 'ǎ', 'Ǐ', 'ǐ', 'Ǒ', 'ǒ', 'Ǔ', 'ǔ', 'Ǖ', 'ǖ', 'Ǘ', 'ǘ', 'Ǚ', 'ǚ', 'Ǜ', 'ǜ', 'Ǻ', 'ǻ', 'Ǽ', 'ǽ', 'Ǿ', 'ǿ', '\'');
-        $b = array('A', 'A', 'A', 'A', 'A', 'A', 'AE', 'C', 'E', 'E', 'E', 'E', 'I', 'I', 'I', 'I', 'D', 'N', 'O', 'O', 'O', 'O', 'O', 'O', 'U', 'U', 'U', 'U', 'Y', 's', 'a', 'a', 'a', 'a', 'a', 'a', 'ae', 'c', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'n', 'o', 'o', 'o', 'o', 'o', 'o', 'u', 'u', 'u', 'u', 'y', 'y', 'A', 'a', 'A', 'a', 'A', 'a', 'C', 'c', 'C', 'c', 'C', 'c', 'C', 'c', 'D', 'd', 'D', 'd', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'G', 'g', 'G', 'g', 'G', 'g', 'G', 'g', 'H', 'h', 'H', 'h', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'IJ', 'ij', 'J', 'j', 'K', 'k', 'L', 'l', 'L', 'l', 'L', 'l', 'L', 'l', 'l', 'l', 'N', 'n', 'N', 'n', 'N', 'n', 'n', 'O', 'o', 'O', 'o', 'O', 'o', 'OE', 'oe', 'R', 'r', 'R', 'r', 'R', 'r', 'S', 's', 'S', 's', 'S', 's', 'S', 's', 'T', 't', 'T', 't', 'T', 't', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'W', 'w', 'Y', 'y', 'Y', 'Z', 'z', 'Z', 'z', 'Z', 'z', 's', 'f', 'O', 'o', 'U', 'u', 'A', 'a', 'I', 'i', 'O', 'o', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'A', 'a', 'AE', 'ae', 'O', 'o', ' ');
-        $clean = str_replace($a, $b, $str);
-
-        $clean = preg_replace("/[^a-zA-Z0-9\_\|\ \-\.]/", '', $clean);
-        $clean = strtolower(trim($clean, '-'));
-        $clean = preg_replace("/[\/\_\|\ \-]+/", '-', $clean);
-
-        return $clean;
+        return \array_merge_recursive($arrays);
     }
 
-    public function cantBeFinalized($message = null, $code = null, $previous = null)
+    public function cantBeFinalized(string $message = '', int $code = 0, \Throwable $previous = null): void
     {
         throw new CantBeFinalizedException($message, $code, $previous);
     }
 
-    public function callUserFunc($function)
+    /**
+     * @param mixed $function
+     * @param mixed ...$parameter
+     * @return mixed
+     */
+    public function callUserFunc($function, ...$parameter)
     {
-        return call_user_func($function);
+        return \call_user_func($function, $parameter);
     }
 
-    public function search(array $params)
+    /**
+     * @param array<mixed> $params
+     * @return array<mixed>
+     */
+    public function search(array $params): array
     {
         return $this->client->search($params);
     }
 
-    public function debug($message, array $context = [])
+    /**
+     * @param array<mixed> $context
+     */
+    public function debug(string $message, array $context = []): void
     {
         $context['twig'] = 'twig';
         $this->logger->debug($message, $context);
     }
 
-    public function dateDifference($date1, $date2, $detailed = false)
+    public function dateDifference(string $date1, string $date2, bool $detailed = false): string
     {
-        $datetime1 = date_create($date1);
-        $datetime2 = date_create($date2);
-        $interval = date_diff($datetime1, $datetime2);
+        $datetime1 = \date_create($date1);
+        $datetime2 = \date_create($date2);
+
+        if ($datetime1 === false || $datetime2 === false) {
+            throw new \RuntimeException('Unexpected date format');
+        }
+
+        $interval = \date_diff($datetime1, $datetime2);
         if ($detailed) {
             return $interval->format('%R%a days %h hours %i minutes');
         }
-        return (intval($interval->format('%R%a')) + 1) . ' days';
+        return (\intval($interval->format('%R%a')) + 1) . ' days';
     }
 
-    public function getUser($username)
+    public function getUser(string $username): ?UserInterface
     {
-        return $this->userService->getUser($username);
+        $user = $this->userService->getUser($username);
+        if ($user === null || $user instanceof UserInterface) {
+            return $user;
+        }
+        throw new \RuntimeException('Unexpected user object');
     }
 
-    public function displayname($username)
+    public function displayName(string $username): string
     {
         /**@var UserInterface $user */
         $user = $this->userService->getUser($username);
@@ -659,11 +725,11 @@ class AppExtension extends \Twig_Extension
         return $username;
     }
 
-    public function srcPath($input, $fileName = false)
+    public function srcPath(string $input, string $fileName = null): ?string
     {
         $path = $this->router->generate('ems_file_view', ['sha1' => '__SHA1__'], UrlGeneratorInterface::ABSOLUTE_PATH);
         $path = substr($path, 0, strlen($path) - 8);
-        $out = preg_replace_callback(
+        return preg_replace_callback(
             '/(ems:\/\/asset:)([^\n\r"\'\?]*)/i',
             function ($matches) use ($path, $fileName) {
                 if ($fileName) {
@@ -673,49 +739,47 @@ class AppExtension extends \Twig_Extension
             },
             $input
         );
-
-        return $out;
     }
 
-    public function internalLinks($input, $fileName = false)
+    public function internalLinks(string $input, string $fileName = null): ?string
     {
         $url = $this->router->generate('data.link', ['key' => 'object:'], UrlGeneratorInterface::ABSOLUTE_PATH);
         $out = preg_replace('/ems:\/\/object:/i', $url, $input);
+
+        if ($out === null) {
+            throw new \RuntimeException('Unexpected null value');
+        }
 
         return $this->srcPath($out, $fileName);
     }
 
 
-    public function i18n($key, $locale = null)
+    public function i18n(string $key, string $locale = null): string
     {
-
         if (empty($locale)) {
             $locale = $this->router->getContext()->getParameter('_locale');
         }
         /**@var I18nRepository $repo */
         $repo = $this->doctrine->getManager()->getRepository('EMSCoreBundle:I18n');
-        /**@var I18n $result */
         $result = $repo->findOneBy([
             'identifier' => $key,
         ]);
 
-        if (empty($result)) {
-            return $key;
+        if ($result instanceof I18n) {
+            return $result->getContentTextforLocale($locale);
         }
-
-        return $result->getContentTextforLocale($locale);
+        return $key;
     }
 
-    /**
-     * Test if the user has some superpowers
-     * @return bool
-     */
-    public function isSuper()
+    public function isSuper(): bool
     {
         return $this->authorizationChecker->isGranted('ROLE_SUPER');
     }
 
-    public function allGranted($roles, $super = false)
+    /**
+     * @param string[] $roles
+     */
+    public function allGranted(array $roles, bool $super = false): bool
     {
         if ($super && !$this->isSuper()) {
             return false;
@@ -728,35 +792,40 @@ class AppExtension extends \Twig_Extension
         return true;
     }
 
-    public function inMyCircles($circles)
+    /**
+     * @param string|string[] $circles
+     */
+    public function inMyCircles($circles): bool
     {
-
-        if (!$circles) {
+        if (\is_array($circles) && count($circles) === 0) {
             return true;
-        } else if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
-            return true;
-        } else if (is_array($circles)) {
-            if (count($circles) > 0) {
-                $user = $this->userService->getCurrentUser(UserService::DONT_DETACH);
-                return count(array_intersect($circles, $user->getCircles())) > 0;
-            } else {
-                return true;
-            }
-        } else if (is_string($circles)) {
-            $user = $this->userService->getCurrentUser(UserService::DONT_DETACH);
-            return in_array($circles, $user->getCircles());
         }
 
+        if ($this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT')) {
+            return true;
+        }
 
-        return false;
+        if (\is_array($circles)) {
+            $user = $this->userService->getCurrentUser(UserService::DONT_DETACH);
+            return \count(\array_intersect($circles, $user->getCircles())) > 0;
+        }
+
+        $user = $this->userService->getCurrentUser(UserService::DONT_DETACH);
+        return \in_array($circles, $user->getCircles());
     }
 
-    public function objectChoiceLoader($contentTypeName)
+    /**
+     * @return array<string>
+     */
+    public function objectChoiceLoader(string $contentTypeName): array
     {
         return $this->objectChoiceListFactory->createLoader($contentTypeName, true)->loadAll();
     }
 
-    public function groupedObjectLoader($contentTypeName)
+    /**
+     * @return array<int|string, array<int, mixed>>
+     */
+    public function groupedObjectLoader(string $contentTypeName): array
     {
         $choices = $this->objectChoiceListFactory->createLoader($contentTypeName, true)->loadAll();
         $out = [];
@@ -769,7 +838,10 @@ class AppExtension extends \Twig_Extension
         return $out;
     }
 
-    public function generateFromTemplate($template, array $params = [])
+    /**
+     * @param array<mixed> $params
+     */
+    public function generateFromTemplate(string $template, array $params = []): ?string
     {
         if (empty($template)) {
             return null;
@@ -782,15 +854,13 @@ class AppExtension extends \Twig_Extension
         return $out;
     }
 
-    public function dataLabel($key, $revisionId = false)
+    public function dataLabel(string $key): string
     {
         $out = $key;
-        $splitted = explode(':', $key);
-        if ($splitted && count($splitted) == 2 && strlen($splitted[0]) > 0 && strlen($splitted[1]) > 0) {
-            $type = $splitted[0];
-            $ouuid = $splitted[1];
-
-            $addAttribute = "";
+        $exploded = explode(':', $key);
+        if (count($exploded) == 2 && strlen($exploded[0]) > 0 && strlen($exploded[1]) > 0) {
+            $type = $exploded[0];
+            $ouuid = $exploded[1];
 
             /**@var \EMS\CoreBundle\Entity\ContentType $contentType */
             $contentType = $this->contentTypeService->getByName($type);
@@ -829,10 +899,9 @@ class AppExtension extends \Twig_Extension
 
                     if ($contentType->getColorField() && $result['_source'][$contentType->getColorField()]) {
                         $color = $result['_source'][$contentType->getColorField()];
-                        $contrasted = $this->contrastratio($color, '#000000') > $this->contrastratio($color, '#ffffff') ? '#000000' : '#ffffff';
+                        $contrasted = $this->contrastRatio($color, '#000000') > $this->contrastRatio($color, '#ffffff') ? '#000000' : '#ffffff';
 
                         $out = '<span class="" style="color:' . $contrasted . ';">' . $out . '</span>';
-                        $addAttribute = ' style="background-color: ' . $result['_source'][$contentType->getColorField()] . ';border-color: ' . $result['_source'][$contentType->getColorField()] . ';"';
                     }
                 } catch (\Exception $e) {
                 }
@@ -841,13 +910,13 @@ class AppExtension extends \Twig_Extension
         return $out;
     }
 
-    public function dataLink($key, $revisionId = false, $diffMod = false)
+    public function dataLink(string $key, string $revisionId = null, string $diffMod = null): string
     {
         $out = $key;
-        $splitted = explode(':', $key);
-        if ($splitted && count($splitted) == 2 && strlen($splitted[0]) > 0 && strlen($splitted[1]) > 0) {
-            $type = $splitted[0];
-            $ouuid = $splitted[1];
+        $exploded = explode(':', $key);
+        if (count($exploded) == 2 && strlen($exploded[0]) > 0 && strlen($exploded[1]) > 0) {
+            $type = $exploded[0];
+            $ouuid = $exploded[1];
 
             $addAttribute = "";
 
@@ -888,13 +957,13 @@ class AppExtension extends \Twig_Extension
 
                     if ($contentType->getColorField() && $result['_source'][$contentType->getColorField()]) {
                         $color = $result['_source'][$contentType->getColorField()];
-                        $contrasted = $this->contrastratio($color, '#000000') > $this->contrastratio($color, '#ffffff') ? '#000000' : '#ffffff';
+                        $contrasted = $this->contrastRatio($color, '#000000') > $this->contrastRatio($color, '#ffffff') ? '#000000' : '#ffffff';
 
                         $out = '<span class="" style="color:' . $contrasted . ';">' . $out . '</span>';
                         $addAttribute = ' style="background-color: ' . $result['_source'][$contentType->getColorField()] . ';border-color: ' . $result['_source'][$contentType->getColorField()] . ';"';
                     }
 
-                    if ($diffMod !== false) {
+                    if ($diffMod !== null) {
                         $out = '<' . $diffMod . ' class="diffmod">' . $out . '<' . $diffMod . '>';
                     }
                 } catch (\Exception $e) {
@@ -909,7 +978,7 @@ class AppExtension extends \Twig_Extension
         return $out;
     }
 
-    public function propertyPath(FormError $error)
+    public function propertyPath(FormError $error): string
     {
         $parent = $error->getOrigin();
         $out = '';
@@ -923,16 +992,19 @@ class AppExtension extends \Twig_Extension
         return $out;
     }
 
-    public function data($key, string $index = null)
+    /**
+     * @return array<mixed>|null
+     */
+    public function data(string $key, string $index = null): ?array
     {
         if (empty($key)) {
             return null;
         }
 
-        $splitted = explode(':', $key);
-        if ($splitted && count($splitted) == 2) {
-            $type = $splitted[0];
-            $ouuid = $splitted[1];
+        $exploded = explode(':', $key);
+        if (count($exploded) === 2) {
+            $type = $exploded[0];
+            $ouuid = $exploded[1];
 
             /**@var \EMS\CoreBundle\Entity\ContentType $contentType */
             $contentType = $this->contentTypeService->getByName($type);
@@ -974,7 +1046,12 @@ class AppExtension extends \Twig_Extension
         return null;
     }
 
-    public function oneGranted($roles, $super = false)
+    /**
+     * @param string[] $roles
+     * @param bool $super
+     * @return bool
+     */
+    public function oneGranted(array $roles, bool $super = false): bool
     {
         if ($super && !$this->isSuper()) {
             return false;
@@ -987,28 +1064,17 @@ class AppExtension extends \Twig_Extension
         return false;
     }
 
-    /**
-     * Calculate relative luminance in sRGB colour space for use in WCAG 2.0 compliance
-     * @link http://www.w3.org/TR/WCAG20/#relativeluminancedef
-     * @param string $col A 3 or 6-digit hex colour string
-     * @return float
-     * @author Marcus Bointon <marcus@synchromedia.co.uk>
-     */
-    public function relativeluminance($col)
+    public function relativeLuminance(string $col): float
     {
-        //Remove any leading #
         $col = trim($col, '#');
-        //Convert 3-digit to 6-digit
         if (strlen($col) == 3) {
             $col = $col[0] . $col[0] . $col[1] . $col[1] . $col[2] . $col[2];
         }
-        //Convert hex to 0-1 scale
         $components = array(
             'r' => hexdec(substr($col, 0, 2)) / 255,
             'g' => hexdec(substr($col, 2, 2)) / 255,
             'b' => hexdec(substr($col, 4, 2)) / 255
         );
-        //Correct for sRGB
         foreach ($components as $c => $v) {
             if ($v <= 0.03928) {
                 $components[$c] = $v / 12.92;
@@ -1016,24 +1082,13 @@ class AppExtension extends \Twig_Extension
                 $components[$c] = pow((($v + 0.055) / 1.055), 2.4);
             }
         }
-        //Calculate relative luminance using ITU-R BT. 709 coefficients
         return ($components['r'] * 0.2126) + ($components['g'] * 0.7152) + ($components['b'] * 0.0722);
     }
 
-    /**
-     * Calculate contrast ratio acording to WCAG 2.0 formula
-     * Will return a value between 1 (no contrast) and 21 (max contrast)
-     * @link http://www.w3.org/TR/WCAG20/#contrast-ratiodef
-     * @param string $c1 A 3 or 6-digit hex colour string
-     * @param string $c2 A 3 or 6-digit hex colour string
-     * @return float
-     * @author Marcus Bointon <marcus@synchromedia.co.uk>
-     */
-    public function contrastratio($c1, $c2)
+    public function contrastRatio(string $c1, string $c2): float
     {
-        $y1 = $this->relativeluminance($c1);
-        $y2 = $this->relativeluminance($c2);
-        //Arrange so $y1 is lightest
+        $y1 = $this->relativeLuminance($c1);
+        $y2 = $this->relativeLuminance($c2);
         if ($y1 < $y2) {
             $y3 = $y1;
             $y1 = $y2;
@@ -1042,74 +1097,105 @@ class AppExtension extends \Twig_Extension
         return ($y1 + 0.05) / ($y2 + 0.05);
     }
 
-    public function md5($value)
+    public function md5(string $value): string
     {
-        return md5($value);
+        return \md5($value);
     }
 
-    public function searchesList($username)
+    /**
+     * @return Search[]
+     */
+    public function searchesList(string $username): array
     {
         $searchRepository = $this->doctrine->getRepository('EMSCoreBundle:Form\Search');
         $searches = $searchRepository->findBy([
             'user' => $username
         ]);
-        return $searches;
+        $out = [];
+        foreach ($searches as $search) {
+            if (! $search instanceof Search) {
+                throw new \RuntimeException('Unexpected class object');
+            }
+            $out[] = $search;
+        }
+        return $out;
     }
 
     /**
      * @deprecated
      * @see https://twig.symfony.com/doc/1.x/functions/dump.html
      */
-    public function dump($object)
+    public function dump(): void
     {
         trigger_error('dump is now integrated by default in twig 1.5', E_USER_DEPRECATED);
     }
 
-    public function convertJavaDateFormat($format)
+    public function convertJavaDateFormat(string $format): string
     {
         return DateFieldType::convertJavaDateFormat($format);
     }
 
-    public function convertJavascriptDateFormat($format)
+    public function convertJavascriptDateFormat(string $format): string
     {
         return DateFieldType::convertJavascriptDateFormat($format);
     }
 
-    public function convertJavascriptDateRangeFormat($format)
+    public function convertJavascriptDateRangeFormat(string $format): string
     {
         return DateRangeFieldType::convertJavascriptDateRangeFormat($format);
     }
 
-    public function getTimeFieldTimeFormat($options)
+    /**
+     * @param array<array<string>> $options
+     */
+    public function getTimeFieldTimeFormat(array $options): string
     {
         return TimeFieldType::getFormat($options);
     }
 
-    public function inArray($needle, $haystack)
+    /**
+     * @param mixed $needle
+     * @param array<mixed> $haystack
+     */
+    public function inArray($needle, array $haystack): bool
     {
-        return is_int(array_search($needle, $haystack));
+        return \array_search($needle, $haystack) !== false;
     }
 
-    public function firstInArray($needle, $haystack)
+    /**
+     * @param mixed $needle
+     * @param array<mixed> $haystack
+     */
+    public function firstInArray($needle, array $haystack): bool
     {
-        return array_search($needle, $haystack) === 0;
+        return \array_search($needle, $haystack) === 0;
     }
 
-    public function getContentType($name)
+    public function getContentType(string $name): ?ContentType
     {
-        return $this->contentTypeService->getByName($name);
+        $contentType = $this->contentTypeService->getByName($name);
+        if ($contentType !== false) {
+            return $contentType;
+        }
+        return null;
     }
 
-    public function getContentTypes()
+    /**
+     * @return ContentType[]
+     */
+    public function getContentTypes(): array
     {
         return $this->contentTypeService->getAll();
     }
 
-    public function getDefaultEnvironments()
+    /**
+     * @return string[]
+     */
+    public function getDefaultEnvironments(): array
     {
         $defaultEnvironments = [];
         /**@var Environment $environment */
-        foreach ($this->environmentService->getAll() as $environment) {
+        foreach ($this->environmentService->getEnvironments() as $environment) {
             if ($environment->getInDefaultSearch()) {
                 $defaultEnvironments[] = $environment->getName();
             }
@@ -1117,53 +1203,53 @@ class AppExtension extends \Twig_Extension
         return $defaultEnvironments;
     }
 
-    public function getEnvironments()
+    /**
+     * @return Environment[]
+     */
+    public function getEnvironments(): array
     {
         return $this->environmentService->getEnvironments();
     }
 
-    public function getEnvironment($name)
+    public function getEnvironment(string $name): ?Environment
     {
-        return $this->environmentService->getAliasByName($name);
+        $environment = $this->environmentService->getAliasByName($name);
+        if ($environment !== false) {
+            return $environment;
+        }
+        return null;
     }
 
 
-    /*
-     * $arguments should contain 'function' key. Optionally 'options' and/or 'parameters'
+    /**
+     * @param mixed $wsdl
+     * @param array{function: string, options?: array, parameters?: mixed} $arguments
+     * @return mixed
      */
-    public function soapRequest($wsdl, $arguments = null)
+    public function soapRequest($wsdl, array $arguments)
     {
         /** @var \SoapClient $soapClient */
         $soapClient = null;
-        if ($arguments && array_key_exists('options', $arguments)) {
+        if (array_key_exists('options', $arguments)) {
             $soapClient = new \SoapClient($wsdl, $arguments['options']);
         } else {
             $soapClient = new \SoapClient($wsdl);
         }
 
-        $function = null;
-        if ($arguments && array_key_exists('function', $arguments)) {
-            $function = $arguments['function'];
-        } else {
-            //TODO: throw error "argument 'function' is obligator"
-        }
+        $function = $arguments['function'];
 
-        $response = null;
-        if ($arguments && array_key_exists('parameters', $arguments)) {
-            $response = $soapClient->$function($arguments['parameters']);
-        } else {
-            $response = $soapClient->$function();
+        if (\array_key_exists('parameters', $arguments)) {
+            return $soapClient->$function($arguments['parameters']);
         }
-
-        return $response;
+        return $soapClient->$function();
     }
 
-    public function csvEscaper($twig, $name, $charset)
+    public function csvEscaper(string $twig, string $name, string $charset): string
     {
         return $name;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return 'app_extension';
     }

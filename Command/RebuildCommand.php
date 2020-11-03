@@ -3,41 +3,39 @@
 namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\Common\Persistence\Mapping\MappingException;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Elasticsearch\Client;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
-use EMS\CoreBundle\Repository\JobRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
+use EMS\CoreBundle\Service\Mapping;
 use Monolog\Logger;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Throwable;
 
 class RebuildCommand extends EmsCommand
 {
+    /** @var Mapping */
     private $mapping;
+    /** @var Registry  */
     private $doctrine;
-
-    /**@var ContentTypeService*/
+    /** @var ContentTypeService*/
     private $contentTypeService;
-    /**@var EnvironmentService*/
+    /** @var EnvironmentService*/
     private $environmentService;
-    /**@var ReindexCommand*/
+    /** @var ReindexCommand*/
     private $reindexCommand;
+    /** @var string */
     private $instanceId;
+    /** @var bool */
     private $singleTypeIndex;
 
-    public function __construct(Registry $doctrine, Logger $logger, Client $client, $mapping, ContentTypeService $contentTypeService, EnvironmentService $environmentService, ReindexCommand $reindexCommand, $instanceId, $singleTypeIndex)
+    public function __construct(Registry $doctrine, Logger $logger, Client $client, Mapping $mapping, ContentTypeService $contentTypeService, EnvironmentService $environmentService, ReindexCommand $reindexCommand, string $instanceId, bool $singleTypeIndex)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
@@ -51,7 +49,7 @@ class RebuildCommand extends EmsCommand
         parent::__construct($logger, $client);
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('ems:environment:rebuild')
@@ -89,20 +87,17 @@ class RebuildCommand extends EmsCommand
         ;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|void|null
-     * @throws MappingException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->formatStyles($output);
 
         if (! $input->getOption('yellow-ok')) {
             $this->waitForGreen($output);
+        }
+
+        $bulkSize = \intval($input->getOption('bulk-size'));
+        if ($bulkSize === 0) {
+            throw new \RuntimeException('Unexpected bulk size option');
         }
 
         if ($input->getOption('sign-data')) {
@@ -112,20 +107,24 @@ class RebuildCommand extends EmsCommand
 
         $signData = !$input->getOption('dont-sign');
 
-        /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
-        /** @var  Client $client */
         $client = $this->client;
         $name = $input->getArgument('name');
-        /** @var EnvironmentRepository $envRepo */
+        if (!\is_string($name)) {
+            throw new \RuntimeException('Unexpected content type name');
+        }
+
         $envRepo = $em->getRepository('EMSCoreBundle:Environment');
+        if (!$envRepo instanceof EnvironmentRepository) {
+            throw new \RuntimeException('Unexpected environment repository');
+        }
 
         /** @var Environment|null $environment */
         $environment = $envRepo->findOneBy(['name' => $name, 'managed' => true]);
 
         if ($environment === null) {
             $output->writeln("WARNING: Environment named " . $name . " not found");
-            return null;
+            return -1;
         }
 
         if ($environment->getAlias() != $this->instanceId . $environment->getName()) {
@@ -142,7 +141,6 @@ class RebuildCommand extends EmsCommand
         /** @var ContentTypeRepository $contentTypeRepository */
         $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
         $contentTypes = $contentTypeRepository->findAll();
-        /** @var ContentType $contentType */
 
         $indexDefaultConfig = $this->environmentService->getIndexAnalysisConfiguration();
         if (!$this->singleTypeIndex) {
@@ -163,7 +161,11 @@ class RebuildCommand extends EmsCommand
 
         /** @var ContentType $contentType */
         foreach ($contentTypes as $contentType) {
-            if (!$contentType->getDeleted() && $contentType->getEnvironment() && $contentType->getEnvironment()->getManaged()) {
+            $contentTypeEnvironment = $contentType->getEnvironment();
+            if ($contentTypeEnvironment === null) {
+                throw new \RuntimeException('Unexpected null environment');
+            }
+            if (!$contentType->getDeleted() && $contentType->getEnvironment() && $contentTypeEnvironment->getManaged()) {
                 if ($this->singleTypeIndex) {
                     $indexName = $this->environmentService->getNewIndexName($environment, $contentType);
                     $indexes[] = $indexName;
@@ -182,7 +184,7 @@ class RebuildCommand extends EmsCommand
                 $output->writeln('A mapping has been defined for ' . $contentType->getSingularName());
 
                 if ($this->singleTypeIndex) {
-                    $this->reindexCommand->reindex($name, $contentType, $indexName, $output, $signData, $input->getOption('bulk-size'));
+                    $this->reindexCommand->reindex($name, $contentType, $indexName, $output, $signData, $bulkSize);
                 }
                 $this->contentTypeService->setSingleTypeIndex($environment, $contentType, $indexName);
 
@@ -199,7 +201,7 @@ class RebuildCommand extends EmsCommand
             /** @var ContentType $contentType */
             foreach ($contentTypes as $contentType) {
                 if (!$contentType->getDeleted() && $contentType->getEnvironment() !== null && $contentType->getEnvironment()->getManaged()) {
-                    $this->reindexCommand->reindex($name, $contentType, $indexName, $output, $signData, $input->getOption('bulk-size'));
+                    $this->reindexCommand->reindex($name, $contentType, $indexName, $output, $signData, $bulkSize);
                     $output->writeln('');
                     $output->writeln($contentType->getPluralName() . ' have been re-indexed ');
                 }
@@ -217,17 +219,13 @@ class RebuildCommand extends EmsCommand
         foreach ($indexes as $index) {
             $output->writeln('     - ' . $index);
         }
+        return 0;
     }
 
     /**
-     * Update the alias of an environment to a new index
-     *
-     * @param string $alias
-     * @param array $toIndexes
-     * @param OutputInterface $output
-     * @param bool $newEnv
+     * @param string[] $toIndexes
      */
-    private function switchAlias($alias, $toIndexes, OutputInterface $output, $newEnv = false)
+    private function switchAlias(string $alias, array $toIndexes, OutputInterface $output, bool $newEnv = false): void
     {
         try {
             $result = $this->client->indices()->getAlias(['name' => $alias]);

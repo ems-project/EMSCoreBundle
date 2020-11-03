@@ -42,7 +42,14 @@ class HtmlStylesRemover implements ContentTransformInterface
 
     protected function removeHtmlStyles(): void
     {
-        while ($node = $this->xpath->query("//*[contains(concat(' ', normalize-space(@class), ' '), '{$this->classNamePrefix}')]")->item(0)) {
+        while ($query = $this->xpath->query("//*[contains(concat(' ', normalize-space(@class), ' '), '{$this->classNamePrefix}')]")) {
+            $node = $query->item(0);
+            if ($node === null) {
+                break;
+            }
+            if ($node->parentNode === null) {
+                throw new \RuntimeException('Unexpected orphan node');
+            }
             $node->parentNode->replaceChild(
                 $this->getInnerNode($node),
                 $node
@@ -53,6 +60,9 @@ class HtmlStylesRemover implements ContentTransformInterface
     private function getInnerNode(\DOMNode $node): \DOMNode
     {
         $doc = $node->ownerDocument;
+        if ($doc === null) {
+            throw new \RuntimeException('Unexpected null document');
+        }
         $fragment = $doc->createDocumentFragment();
 
         /** @var \DOMNode $child */
@@ -80,8 +90,11 @@ class HtmlStylesRemover implements ContentTransformInterface
     protected function outputDocument(): string
     {
         $this->removeTemporaryWrapper();
-
-        return $this->outputHtmlFormat($this->doc->saveHTML());
+        $html = $this->doc->saveHTML();
+        if ($html === false) {
+            throw new \RuntimeException('Unexpected error while dumping in HTML format');
+        }
+        return $this->outputHtmlFormat($html);
     }
 
     private function outputHtmlFormat(string $html): string
@@ -100,6 +113,9 @@ class HtmlStylesRemover implements ContentTransformInterface
     private function removeTemporaryWrapper(): void
     {
         $temporaryWrapper = $this->doc->getElementsByTagName('div')->item(0);
+        if ($temporaryWrapper === null || $temporaryWrapper->parentNode === null) {
+            return;
+        }
         $temporaryWrapper = $temporaryWrapper->parentNode->removeChild($temporaryWrapper);
 
         while ($this->doc->firstChild) {

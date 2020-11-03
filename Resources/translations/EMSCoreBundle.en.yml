@@ -199,7 +199,7 @@ ROLE_SUPER_USER: 'Super User'
 ROLE_SUPER_WEBMASTER: 'Super Webmaster'
 ROLE_USER: User
 ROLE_USER_READ: User read
-ROLE_USER_ADMIN: User Administrator
+ROLE_USER_MANAGEMENT: User Management
 ROLE_WEBMASTER: Webmaster
 Roles: Roles
 ROLE_REVIEWER: Reviewer
@@ -660,6 +660,7 @@ field_type:
     collapse_all_button: 'Expand/Collapse all'
     move_item: 'Move'
     add: 'Add'
+    edit: 'Edit'
 
 form_submissions:
     title: Form Submissions

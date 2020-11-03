@@ -214,11 +214,11 @@ class DataService
         if (!empty($publishEnv) && !$this->authorizationChecker->isGranted($revision->getContentType()->getPublishRole() ?: 'ROLE_PUBLISHER')) {
             throw new PrivilegeException($revision, 'You don\'t have publisher role for this content');
         }
-        if (!empty($publishEnv) && is_object($publishEnv) && !empty($publishEnv->getCircles()) && !$this->authorizationChecker->isGranted('ROLE_ADMIN') && !$this->appTwig->inMyCircles($publishEnv->getCircles())) {
+        if (!empty($publishEnv) && is_object($publishEnv) && !empty($publishEnv->getCircles()) && !$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT') && !$this->appTwig->inMyCircles($publishEnv->getCircles())) {
             throw new PrivilegeException($revision, 'You don\'t share any circle with this content');
         }
         if (empty($publishEnv) && !empty($revision->getContentType()->getCirclesField()) && !empty($revision->getRawData()[$revision->getContentType()->getCirclesField()])) {
-            if (!$this->appTwig->inMyCircles($revision->getRawData()[$revision->getContentType()->getCirclesField()])) {
+            if (!$this->appTwig->inMyCircles($revision->getRawData()[$revision->getContentType()->getCirclesField()] ?? [])) {
                 throw new PrivilegeException($revision);
             }
         }
@@ -454,6 +454,10 @@ class DataService
         $found = false;
         /** @var DataField $dataField*/
         $dataField = $form->getNormData();
+
+        if (!$dataField instanceof DataField) {
+            return true;
+        }
 
         /** @var DataFieldType $dataFieldType */
         $dataFieldType = $form->getConfig()->getType()->getInnerType();
@@ -721,8 +725,11 @@ class DataService
     public function getPublicKey()
     {
         if ($this->private_key && empty($this->public_key)) {
-            $certificate = openssl_pkey_get_private($this->private_key);
-            $details = openssl_pkey_get_details($certificate);
+            $certificate = \openssl_pkey_get_private($this->private_key);
+            if ($certificate === false) {
+                throw new \RuntimeException('Private key not found');
+            }
+            $details = \openssl_pkey_get_details($certificate);
             $this->public_key = $details['key'];
         }
         return $this->public_key;
@@ -732,8 +739,10 @@ class DataService
     {
         if ($this->private_key) {
             $certificate = openssl_pkey_get_private($this->private_key);
-            $details = openssl_pkey_get_details($certificate);
-            return $details;
+            if ($certificate === false) {
+                throw new \RuntimeException('Private key not found');
+            }
+            return openssl_pkey_get_details($certificate);
         }
         return null;
     }
@@ -1112,7 +1121,7 @@ class DataService
     /**
      * @param ContentType $contentType
      * @param string|null $ouuid
-     * @param array|null $rawData
+     * @param array<mixed>|null $rawData
      * @return Revision
      * @throws DuplicateOuuidException
      * @throws HasNotCircleException
@@ -1178,28 +1187,27 @@ class DataService
         $revision->setLockUntil(new DateTime($this->lockTime));
 
         if ($contentType->getCirclesField()) {
-            $fieldType = $contentType->getFieldType()->getChildByPath($contentType->getCirclesField());
-            if ($fieldType) {
-                /**@var UserInterface $user */
-                $user = $this->userService->getCurrentUser();
-                $options = $fieldType->getDisplayOptions();
-                if (isset($options['multiple']) && $options['multiple']) {
-                    //merge all my circles with the default value
-                    $circles = [];
-                    if (isset($options['defaultValue'])) {
-                        $circles = json_decode($options['defaultValue']);
-                        if (!is_array($circles)) {
-                            $circles = [$circles];
-                        }
-                    }
-                    $circles = array_merge($circles, $user->getCircles());
-                    $revision->setRawData([$contentType->getCirclesField() => $circles]);
-                    $revision->setCircles($circles);
+            if (isset($revision->getRawData()[$contentType->getCirclesField()])) {
+                if (\is_array($revision->getRawData()[$contentType->getCirclesField()])) {
+                    $revision->setCircles($revision->getRawData()[$contentType->getCirclesField()]);
                 } else {
-                    //set first of my circles
-                    if (!empty($user->getCircles())) {
-                        $revision->setRawData([$contentType->getCirclesField() => $user->getCircles()[0]]);
-                        $revision->setCircles([$user->getCircles()[0]]);
+                    $revision->setCircles([$revision->getRawData()[$contentType->getCirclesField()]]);
+                }
+            } else {
+                $fieldType = $contentType->getFieldType()->getChildByPath($contentType->getCirclesField());
+                if ($fieldType) {
+                    /**@var UserInterface $user */
+                    $user = $this->userService->getCurrentUser();
+                    $options = $fieldType->getDisplayOptions();
+                    if (isset($options['multiple']) && $options['multiple']) {
+                        $revision->setRawData(\array_merge($revision->getRawData(), [$contentType->getCirclesField() => $user->getCircles()]));
+                        $revision->setCircles($user->getCircles());
+                    } else {
+                        //set first of my circles
+                        if (!empty($user->getCircles())) {
+                            $revision->setRawData(\array_merge($revision->getRawData(), [$contentType->getCirclesField() => $user->getCircles()[0]]));
+                            $revision->setCircles([$user->getCircles()[0]]);
+                        }
                     }
                 }
             }
@@ -1222,7 +1230,7 @@ class DataService
         $userCircles = $this->userService->getCurrentUser()->getCircles();
         $environment = $contentType->getEnvironment();
         $environmentCircles = $environment->getCircles();
-        if (!$this->authorizationChecker->isGranted('ROLE_ADMIN') && !empty($environmentCircles)) {
+        if (!$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT') && !empty($environmentCircles)) {
             if (empty($userCircles)) {
                 throw new HasNotCircleException($environment);
             }
@@ -2090,7 +2098,7 @@ class DataService
         return array_values($ouuids);
     }
 
-    public function getDataLink(string $contentTypesCommaList, string $businessId): ?string
+    public function getDataLink(string $contentTypesCommaList, string $businessId): string
     {
         return $this->getDataLinks($contentTypesCommaList, [$businessId])[0] ?? $businessId;
     }

@@ -320,7 +320,7 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
                     $templateIds[] = $template->getId();
                 } else {
                     $commonCircle = array_intersect($circles, $template->getCirclesTo());
-                    if (!empty($commonCircle) || $this->authorizationChecker->isGranted('ROLE_ADMIN')) {
+                    if (!empty($commonCircle) || $this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT')) {
                         $templateIds[] = $template->getId();
                     }
                 }

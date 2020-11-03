@@ -801,7 +801,7 @@ class AppExtension extends AbstractExtension
             return true;
         }
 
-        if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
+        if ($this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT')) {
             return true;
         }
 

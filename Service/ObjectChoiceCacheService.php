@@ -68,7 +68,7 @@ class ObjectChoiceCacheService
 
                     $query = null;
 
-                    if ($circleOnly && !$this->authorizationChecker->isGranted('ROLE_ADMIN')) {
+                    if ($circleOnly && !$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT')) {
                         $circles = $user->getCircles();
                         $ouuids = [];
                         foreach ($circles as $circle) {

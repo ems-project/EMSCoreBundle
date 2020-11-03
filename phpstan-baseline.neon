@@ -7526,11 +7526,6 @@ parameters:
 			path: Form/Field/ObjectChoiceListItem.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\ObjectChoiceLoader\\:\\:__construct\\(\\) has parameter \\$objectChoiceCacheService with no typehint specified\\.$#"
-			count: 1
-			path: Form/Field/ObjectChoiceLoader.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\ObjectChoiceLoader\\:\\:__construct\\(\\) has parameter \\$types with no typehint specified\\.$#"
 			count: 1
 			path: Form/Field/ObjectChoiceLoader.php
@@ -10730,51 +10725,6 @@ parameters:
 			message: "#^Cannot call method send\\(\\) on object\\|null\\.$#"
 			count: 1
 			path: Service/NotificationService.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\ObjectChoiceCacheService\\:\\:\\$authorizationChecker has no typehint specified\\.$#"
-			count: 1
-			path: Service/ObjectChoiceCacheService.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\ObjectChoiceCacheService\\:\\:\\$tokenStorage has no typehint specified\\.$#"
-			count: 1
-			path: Service/ObjectChoiceCacheService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\ObjectChoiceCacheService\\:\\:loadAll\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: Service/ObjectChoiceCacheService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\ObjectChoiceCacheService\\:\\:loadAll\\(\\) has parameter \\$choices with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Service/ObjectChoiceCacheService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\ObjectChoiceCacheService\\:\\:loadAll\\(\\) has parameter \\$types with no typehint specified\\.$#"
-			count: 1
-			path: Service/ObjectChoiceCacheService.php
-
-		-
-			message: "#^Cannot call method getAlias\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
-			count: 4
-			path: Service/ObjectChoiceCacheService.php
-
-		-
-			message: "#^Parameter \\#2 \\$contentType of class EMS\\\\CoreBundle\\\\Form\\\\Field\\\\ObjectChoiceListItem constructor expects EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null, EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|false given\\.$#"
-			count: 2
-			path: Service/ObjectChoiceCacheService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\ObjectChoiceCacheService\\:\\:load\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: Service/ObjectChoiceCacheService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\ObjectChoiceCacheService\\:\\:load\\(\\) has parameter \\$objectIds with no typehint specified\\.$#"
-			count: 1
-			path: Service/ObjectChoiceCacheService.php
 
 		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:\\$doctrine has no typehint specified\\.$#"

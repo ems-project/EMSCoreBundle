@@ -3,97 +3,112 @@
 
 namespace EMS\CoreBundle\Service;
 
-use Elasticsearch\Client;
+use Elastica\Query\BoolQuery;
+use Elastica\Query\Terms;
+use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Search\Search;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Form\Field\ObjectChoiceListItem;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class ObjectChoiceCacheService
 {
-    /**@Client $client*/
-    private $client;
-    /**@var LoggerInterface $logger*/
+    /** @var LoggerInterface $logger*/
     private $logger;
-    /**@var ContentTypeService $contentTypeService*/
+    /** @var ContentTypeService $contentTypeService*/
     private $contentTypeService;
-    /**@var AuthorizationCheckerInterface $authorizationChecker*/
+    /** @var AuthorizationCheckerInterface $authorizationChecker*/
     protected $authorizationChecker;
-    /**@var TokenStorageInterface $tokenStorage*/
+    /** @var TokenStorageInterface $tokenStorage*/
     protected $tokenStorage;
-    
+    /** @var ElasticaService */
+    private $elasticaService;
+    /** @var bool[] */
     private $fullyLoaded;
+    /** @var array<ObjectChoiceListItem[]> */
     private $cache;
-    
-    public function __construct(Client $client, LoggerInterface $logger, ContentTypeService $contentTypeService, AuthorizationCheckerInterface $authorizationChecker, TokenStorageInterface $tokenStorage)
+
+    public function __construct(LoggerInterface $logger, ContentTypeService $contentTypeService, AuthorizationCheckerInterface $authorizationChecker, TokenStorageInterface $tokenStorage, ElasticaService $elasticaService)
     {
-        $this->client = $client;
         $this->logger = $logger;
         $this->contentTypeService = $contentTypeService;
         $this->authorizationChecker = $authorizationChecker;
         $this->tokenStorage = $tokenStorage;
+        $this->elasticaService = $elasticaService;
 
         $this->fullyLoaded = [];
         $this->cache = [];
     }
-    
 
-    public function loadAll(array &$choices, $types, bool $circleOnly = false, bool $withWarning = true)
+    /**
+     * @param ObjectChoiceListItem[] $choices
+     */
+    public function loadAll(array &$choices, string $types, bool $circleOnly = false, bool $withWarning = true): void
     {
-        $aliasTypes = [];
-        
-        $cts = explode(',', $types);
+        $token = $this->tokenStorage->getToken();
+        if (!$token instanceof TokenInterface) {
+            throw new \RuntimeException('Unexpected security token object');
+        }
+        $user = $token->getUser();
+        if (!$user instanceof UserInterface) {
+            throw new \RuntimeException('Unexpected user entity object');
+        }
+
+        $cts = \explode(',', $types);
         foreach ($cts as $type) {
-            if (!isset($this->fullyLoaded[$type])) {
+            if (! ($this->fullyLoaded[$type] ?? false)) {
                 $currentType = $this->contentTypeService->getByName($type);
-                if ($currentType) {
-                    if (!isset($aliasTypes[$currentType->getEnvironment()->getAlias()])) {
-                        $aliasTypes[$currentType->getEnvironment()->getAlias()] = [];
-                    }
-                    $aliasTypes[$currentType->getEnvironment()->getAlias()][] = $type;
-                    $params = [
-                            'size' =>  '500',
-                            'index' => $currentType->getEnvironment()->getAlias(),
-                            'type' => $type,
-                    ];
+                if ($currentType !== false) {
+                    $index = $this->contentTypeService->getIndex($currentType);
 
-
-                    if ($currentType->getOrderField()) {
-                        $params['body'] = [
-                            'sort' => [
-                                $currentType->getOrderField() => [
-                                    'order' => 'asc',
-                                    'missing' => "_last",
-                                ]
-                            ]
-                        ];
-                    }
+                    $query = null;
 
                     if ($circleOnly && !$this->authorizationChecker->isGranted('ROLE_ADMIN')) {
-                        /** @var UserInterface $user */
-                        $user = $this->tokenStorage->getToken()->getUser();
                         $circles = $user->getCircles();
                         $ouuids = [];
                         foreach ($circles as $circle) {
                             preg_match('/(?P<type>(\w|-)+):(?P<ouuid>(\w|-)+)/', $circle, $matches);
                             $ouuids[] = $matches['ouuid'];
                         }
-
-                        $params['body']['query']['terms'] = [
-                                '_id' => $ouuids,
-                        ];
+                        $query = new Terms('_id', $ouuids);
                     }
 
-                    $items = $this->client->search($params);
-                    //TODO test si > 500... logger
+                    $search = new Search([$index], $query);
+                    $search->setContentTypes([$type]);
 
-                    foreach ($items['hits']['hits'] as $hit) {
-                        if (!isset($choices[$hit['_type'] . ':' . $hit['_id']])) {
-                            $listItem = new ObjectChoiceListItem($hit, $this->contentTypeService->getByName($hit['_type']));
-                            $choices[$listItem->getValue()] = $listItem;
-                            $this->cache[$hit['_type']][$hit['_id']] = $listItem;
+                    if ($currentType->getOrderField()) {
+                        $search->setSort([
+                            $currentType->getOrderField() => [
+                                'order' => 'asc',
+                                'missing' => "_last",
+                            ]
+                        ]);
+                    }
+                    if ($currentType->getLabelField()) {
+                        $search->setSources([$currentType->getLabelField()]);
+                    }
+
+                    $scroll = $this->elasticaService->scroll($search);
+
+                    foreach ($scroll as $resultSet) {
+                        foreach ($resultSet as $result) {
+                            if ($result === false) {
+                                continue;
+                            }
+                            /** @var array{_id: string, _type: ?string, _source: array} $hit */
+                            $hit = $result->getHit();
+                            $hitDocument = new Document($hit);
+                            if (!isset($choices[$hitDocument->getEmsId()])) {
+                                $itemContentType = $this->contentTypeService->getByName($hitDocument->getContentType());
+                                $listItem = new ObjectChoiceListItem($hit, $itemContentType ? $itemContentType : null);
+                                $choices[$listItem->getValue()] = $listItem;
+                                $this->cache[$hitDocument->getContentType()][$hitDocument->getId()] = $listItem;
+                            }
                         }
                     }
                 } elseif ($withWarning) {
@@ -104,60 +119,46 @@ class ObjectChoiceCacheService
                 $this->fullyLoaded[$type] = true;
             } else {
                 foreach ($this->cache[$type] as $id => $item) {
-                    if ($item && !isset($choices[$type . ':' . $id])) {
+                    if (!isset($choices[$type . ':' . $id])) {
                         $choices[$type . ':' . $id] = $item;
                     }
                 }
             }
         }
     }
-    
-    public function load($objectIds, bool $circleOnly = false, bool $withWarning = true)
+
+    /**
+     * @param string[] $objectIds
+     * @return ObjectChoiceListItem[]
+     */
+    public function load(array $objectIds, bool $circleOnly = false, bool $withWarning = true): array
     {
-        $out = [];
-        $queries = [];
+        $choices = [];
+        $missingOuuidsPerIndexAndType = [];
         foreach ($objectIds as $objectId) {
-            if (is_string($objectId) && strpos($objectId, ':') !== false) {
-                $ref = explode(':', $objectId);
-                if (!isset($this->cache[$ref[0]])) {
-                    $this->cache[$ref[0]] = [];
+            if (\is_string($objectId) && \strpos($objectId, ':') !== false) {
+                list($objectType, $objectOuuid) = \explode(':', $objectId);
+                if (!isset($this->cache[$objectType])) {
+                    $this->cache[$objectType] = [];
                 }
-                
-                if (isset($this->cache[$ref[0]][$ref[1]])) {
-                    if ($this->cache[$ref[0]][$ref[1]]) {
-                        $out[$objectId] = $this->cache[$ref[0]][$ref[1]];
-                    }
+
+                if (isset($this->cache[$objectType][$objectOuuid])) {
+                    $choices[$objectId] = $this->cache[$objectType][$objectOuuid];
                 } else {
-                    if (!isset($this->fullyLoaded[$ref[0]])) {
-                        $contentType = $this->contentTypeService->getByName($ref[0]);
+                    if (!isset($this->fullyLoaded[$objectType])) {
+                        $contentType = $this->contentTypeService->getByName($objectType);
                         if ($contentType) {
                             $index = $this->contentTypeService->getIndex($contentType);
                             if ($index) {
-                                if (!array_key_exists($index, $queries)) {
-                                    $queries[$index] = ['docs' => []];
-                                }
-                                $queries[$index]['docs'][] = [
-                                    '_type' => $ref[0],
-                                    '_id' => $ref[1],
-                                    'body' => [
-                                        'query' => [
-                                            'bool' => [
-                                                'must' => [
-                                                    [ 'term' => ['_contenttype' => $ref[0]]],
-                                                    [ 'term' => ['_id' => $ref[1]]]
-                                                ]
-                                            ]
-                                        ]
-                                    ]
-                                ];
+                                $missingOuuidsPerIndexAndType[$index][$objectType][] = $objectOuuid;
                             } elseif ($withWarning) {
                                 $this->logger->warning('service.object_choice_cache.alias_not_found', [
-                                    EmsFields::LOG_CONTENTTYPE_FIELD => $ref[0],
+                                    EmsFields::LOG_CONTENTTYPE_FIELD => $objectType,
                                 ]);
                             }
                         } elseif ($withWarning) {
                             $this->logger->warning('service.object_choice_cache.contenttype_not_found', [
-                                EmsFields::LOG_CONTENTTYPE_FIELD => $ref[0],
+                                EmsFields::LOG_CONTENTTYPE_FIELD => $objectType,
                             ]);
                         }
                     }
@@ -171,29 +172,46 @@ class ObjectChoiceCacheService
             }
         }
 
-        foreach ($queries as $alias => $query) {
-            foreach ($query['docs'] as $docItem) {
-                $params = [
-                    'index' => $alias,
-                    'body' => $docItem['body']
-                ];
-                $objectId = $docItem['_type'] . ':' . $docItem['_id'];
-                $result = $this->client->search($params);
-                if ($result['hits']['total'] === 1) {
-                    $doc = $result['hits']['hits'][0];
-                    $listItem = new ObjectChoiceListItem($doc, $this->contentTypeService->getByName($doc['_type']));
-                    $this->cache[$doc['_type']][$doc['_id']] = $listItem;
-                    $out[$objectId] = $listItem;
-                } else {
-                    $this->cache[$docItem['_type']][$docItem['_id']] = false;
-                    if ($withWarning) {
-                        $this->logger->warning('service.object_choice_cache.object_key_not_found', [
-                            'object_key' => $objectId,
-                        ]);
+        foreach ($missingOuuidsPerIndexAndType as $indexName => $missingOuuidsPerType) {
+            $boolQuery = new BoolQuery();
+            $sourceField = [];
+            foreach ($missingOuuidsPerType as $type => $ouuids) {
+                $ouuidsQuery = $this->elasticaService->filterByContentTypes(new Terms('_id', $ouuids), [$type]);
+                if ($ouuidsQuery !== null) {
+                    $boolQuery->addShould($ouuidsQuery);
+                }
+
+                $contentType = $this->contentTypeService->getByName($type);
+                if ($contentType !== false && !empty($contentType->getLabelField()) && !\in_array($contentType->getLabelField(), $sourceField)) {
+                    $sourceField[] = $contentType->getLabelField();
+                }
+            }
+            $boolQuery->setMinimumShouldMatch(1);
+
+            $search = new Search([$indexName], $boolQuery);
+            $search->setSources($sourceField);
+
+
+            $scroll = $this->elasticaService->scroll($search);
+            foreach ($scroll as $resultSet) {
+                foreach ($resultSet as $result) {
+                    if ($result === false) {
+                        continue;
                     }
+                    /** @var array{_id: string, _type: ?string, _source: array} $hit */
+                    $hit = $result->getHit();
+
+                    $document = new Document($hit);
+                    $contentType = $this->contentTypeService->getByName($document->getContentType());
+                    if ($contentType === false) {
+                        continue;
+                    }
+                    $listItem = new ObjectChoiceListItem($hit, $contentType);
+                    $this->cache[$document->getContentType()][$document->getId()] = $listItem;
+                    $choices[$document->getEmsId()] = $listItem;
                 }
             }
         }
-        return $out;
+        return $choices;
     }
 }

@@ -3,7 +3,6 @@
 namespace EMS\CoreBundle\Command;
 
 use Elasticsearch\Client;
-use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;

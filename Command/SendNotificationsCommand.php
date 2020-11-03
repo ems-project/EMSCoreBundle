@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -26,19 +28,19 @@ class SendNotificationsCommand extends ContainerAwareCommand
     private $notificationService;
     /** @var string */
     private $notificationPendingTimeout;
-    
+
     public function __construct(Registry $doctrine, Logger $logger, UserService $userService, NotificationService $notificationService, string $notificationPendingTimeout)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
         $this->userService = $userService;
         $this->notificationService = $notificationService;
-        
+
         $this->notificationPendingTimeout = $notificationPendingTimeout;
-        
+
         parent::__construct();
     }
-    
+
     protected function configure(): void
     {
         $this
@@ -57,7 +59,7 @@ class SendNotificationsCommand extends ContainerAwareCommand
      */
     private function sendEmails(array $resultSet, OutputInterface $output): void
     {
-        $count = count($resultSet);
+        $count = \count($resultSet);
         $progress = new ProgressBar($output, $count);
         if (!$output->isVerbose()) {
             $progress->start();
@@ -65,9 +67,9 @@ class SendNotificationsCommand extends ContainerAwareCommand
 
         foreach ($resultSet as $idx => $item) {
             if ($output->isVerbose()) {
-                $output->writeln(($idx + 1) . '/' . $count . ' : ' . $item . ' for ' . $item->getRevision());
+                $output->writeln(($idx + 1).'/'.$count.' : '.$item.' for '.$item->getRevision());
             }
-            
+
             $this->notificationService->sendEmail($item);
             if (!$output->isVerbose()) {
                 $progress->advance();
@@ -75,17 +77,17 @@ class SendNotificationsCommand extends ContainerAwareCommand
         }
         if (!$output->isVerbose()) {
             $progress->finish();
-            $output->writeln("");
+            $output->writeln('');
         }
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln('Sending pending notification and response emails to enabled users');
-        
+
         $this->notificationService->setOutput($output->isVerbose() ? $output : null);
         $this->notificationService->setDryRun($input->getOption('dry-run'));
-        
+
         $em = $this->doctrine->getManager();
         $notificationRepository = $em->getRepository('EMSCoreBundle:Notification');
         if (!$notificationRepository instanceof NotificationRepository) {
@@ -100,11 +102,11 @@ class SendNotificationsCommand extends ContainerAwareCommand
             $output->writeln('Sending new notifications');
             $this->sendEmails($notifications, $output);
         }
-        
+
         $date = new \DateTime();
         $date->sub(new \DateInterval($this->notificationPendingTimeout));
         $notifications = $notificationRepository->findReminders($date);
-        
+
         if (!empty($notifications)) {
             $output->writeln('Sending reminders');
             $this->sendEmails($notifications, $output);
@@ -115,6 +117,7 @@ class SendNotificationsCommand extends ContainerAwareCommand
             $output->writeln('Sending responses');
             $this->sendEmails($notifications, $output);
         }
+
         return 0;
     }
 }

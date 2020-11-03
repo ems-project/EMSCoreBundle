@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Service;
 
 use Elasticsearch\Client;
@@ -36,23 +38,20 @@ class Mapping
     /** @var EnvironmentService */
     private $environmentService;
 
-    /** @var FieldTypeType $fieldTypeType */
+    /** @var FieldTypeType */
     private $fieldTypeType;
-    
-    /** @var ElasticsearchService $elasticsearchService */
+
+    /** @var ElasticsearchService */
     private $elasticsearchService;
 
-    /**@var string*/
+    /** @var string */
     private $coreVersion;
 
-    /**@var string*/
+    /** @var string */
     private $instanceId;
-    
+
     /**
-     * Constructor
-     *
-     * @param FieldTypeType $fieldTypeType
-     * @param ElasticsearchService $elasticsearchService
+     * Constructor.
      */
     public function __construct(Client $client, EnvironmentService $environmentService, FieldTypeType $fieldTypeType, ElasticsearchService $elasticsearchService, $coreVersion, $instanceId)
     {
@@ -63,25 +62,25 @@ class Mapping
         $this->coreVersion = $coreVersion;
         $this->instanceId = $instanceId;
     }
-    
+
     public function generateMapping(ContentType $contentType, $withPipeline = false)
     {
         $out = [
-            "properties" => [],
+            'properties' => [],
         ];
 
         if ($this->elasticsearchService->withAllMapping()) {
             $out['_all'] = [
-                "store" => true,
-                "enabled" => true,
+                'store' => true,
+                'enabled' => true,
             ];
         }
-        
+
         if (null != $contentType->getFieldType()) {
             $out['properties'] = $this->fieldTypeType->generateMapping($contentType->getFieldType(), $withPipeline);
         }
-        
-        $out['properties'] = array_merge(
+
+        $out['properties'] = \array_merge(
             [
                 Mapping::HASH_FIELD => $this->elasticsearchService->getKeywordMapping(),
                 Mapping::SIGNATURE_FIELD => $this->elasticsearchService->getNotIndexedStringMapping(),
@@ -99,9 +98,8 @@ class Mapping
             Mapping::CORE_VERSION_META_FIELD => $this->coreVersion,
             Mapping::INSTANCE_ID_META_FIELD => $this->instanceId,
         ];
-        
-        
-        return [ $contentType->getName() => $out ];
+
+        return [$contentType->getName() => $out];
     }
 
     public function dataFieldToArray(DataField $dataField)

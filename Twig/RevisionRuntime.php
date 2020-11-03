@@ -26,6 +26,7 @@ class RevisionRuntime implements RuntimeExtensionInterface
     public function getRevisionId(string $ouuid, string $contentTypeName): ?int
     {
         $revision = $this->revisionService->getCurrentRevisionByOuuidAndContentType($ouuid, $contentTypeName);
+
         return $revision ? $revision->getId() : null;
     }
 }

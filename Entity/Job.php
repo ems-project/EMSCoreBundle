@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * DataField
+ * DataField.
  *
  * @ORM\Table(name="job")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\JobRepository")
@@ -49,14 +51,14 @@ class Job
      * @ORM\Column(name="output", type="text", nullable=true)
      */
     private $output;
-    
+
     /**
      * @var bool
      *
      * @ORM\Column(name="done", type="boolean")
      */
     private $done;
-    
+
     /**
      * @var bool
      *
@@ -70,7 +72,7 @@ class Job
      * @ORM\Column(name="progress", type="integer")
      */
     private $progress;
-    
+
     /**
      * @var array
      *
@@ -93,12 +95,12 @@ class Job
     private $service;
 
     /**
-     * @var null|string
+     * @var string|null
      *
      * @ORM\Column(name="command", type="string", length=2000, nullable=true)
      */
     private $command;
-    
+
     /**
      * @ORM\PrePersist
      * @ORM\PreUpdate
@@ -112,9 +114,9 @@ class Job
     }
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -122,7 +124,7 @@ class Job
     }
 
     /**
-     * Set created
+     * Set created.
      *
      * @param \DateTime $created
      *
@@ -134,9 +136,9 @@ class Job
 
         return $this;
     }
-    
+
     /**
-     * Get created
+     * Get created.
      *
      * @return \DateTime
      */
@@ -144,9 +146,9 @@ class Job
     {
         return $this->created;
     }
-    
+
     /**
-     * Get started
+     * Get started.
      *
      * @return bool
      */
@@ -156,7 +158,7 @@ class Job
     }
 
     /**
-     * Set modified
+     * Set modified.
      *
      * @param \DateTime $modified
      *
@@ -170,7 +172,7 @@ class Job
     }
 
     /**
-     * Get modified
+     * Get modified.
      *
      * @return \DateTime
      */
@@ -180,7 +182,7 @@ class Job
     }
 
     /**
-     * Set user
+     * Set user.
      *
      * @param string $user
      *
@@ -194,7 +196,7 @@ class Job
     }
 
     /**
-     * Get user
+     * Get user.
      *
      * @return string
      */
@@ -204,7 +206,7 @@ class Job
     }
 
     /**
-     * Set status
+     * Set status.
      *
      * @param string $status
      *
@@ -218,7 +220,7 @@ class Job
     }
 
     /**
-     * Get status
+     * Get status.
      *
      * @return string
      */
@@ -226,39 +228,39 @@ class Job
     {
         return $this->status;
     }
-    
+
     /**
-     * Set done
+     * Set done.
      *
-     * @param boolean $done
+     * @param bool $done
      *
      * @return Job
      */
     public function setDone($done)
     {
         $this->done = $done;
-        
+
         return $this;
     }
-    
+
     /**
-     * Set started
+     * Set started.
      *
-     * @param boolean $started
+     * @param bool $started
      *
      * @return Job
      */
     public function setStarted($started)
     {
         $this->started = $started;
-        
+
         return $this;
     }
 
     /**
-     * Get done
+     * Get done.
      *
-     * @return boolean
+     * @return bool
      */
     public function getDone()
     {
@@ -266,9 +268,9 @@ class Job
     }
 
     /**
-     * Set progress
+     * Set progress.
      *
-     * @param integer $progress
+     * @param int $progress
      *
      * @return Job
      */
@@ -280,9 +282,9 @@ class Job
     }
 
     /**
-     * Get progress
+     * Get progress.
      *
-     * @return integer
+     * @return int
      */
     public function getProgress()
     {
@@ -290,7 +292,7 @@ class Job
     }
 
     /**
-     * Set arguments
+     * Set arguments.
      *
      * @param array $arguments
      *
@@ -304,7 +306,7 @@ class Job
     }
 
     /**
-     * Get arguments
+     * Get arguments.
      *
      * @return array
      */
@@ -314,7 +316,7 @@ class Job
     }
 
     /**
-     * Set output
+     * Set output.
      *
      * @param string $output
      *
@@ -328,7 +330,7 @@ class Job
     }
 
     /**
-     * Get output
+     * Get output.
      *
      * @return string
      */
@@ -338,7 +340,7 @@ class Job
     }
 
     /**
-     * Set service
+     * Set service.
      *
      * @param string $service
      *
@@ -352,7 +354,7 @@ class Job
     }
 
     /**
-     * Get service
+     * Get service.
      *
      * @return string|null
      */
@@ -362,7 +364,7 @@ class Job
     }
 
     /**
-     * Set command
+     * Set command.
      *
      * @param string $command
      *
@@ -376,7 +378,7 @@ class Job
     }
 
     /**
-     * Get command
+     * Get command.
      *
      * @return string|null
      */

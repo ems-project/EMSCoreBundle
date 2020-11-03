@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Security;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -13,14 +15,14 @@ class Credentials
     {
     }
 
-    public static function usernamePasswordToken(Request$request, string $providerKey): UsernamePasswordToken
+    public static function usernamePasswordToken(Request $request, string $providerKey): UsernamePasswordToken
     {
         $loginInfo = \json_decode((string) $request->getContent(), true);
 
         $username = $loginInfo['username'] ?? '';
         $password = $loginInfo['password'] ?? '';
 
-        if ($username === '' || $password === '') {
+        if ('' === $username || '' === $password) {
             throw new \RuntimeException('Username and Password should be provided and different from ""');
         }
 

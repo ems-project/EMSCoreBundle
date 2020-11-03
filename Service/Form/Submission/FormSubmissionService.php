@@ -25,7 +25,7 @@ final class FormSubmissionService
         $submission = $this->repository->findById($id);
 
         if (null === $submission) {
-            throw new \Exception(sprintf('form submission not found!'));
+            throw new \Exception(\sprintf('form submission not found!'));
         }
 
         return $submission;
@@ -40,19 +40,19 @@ final class FormSubmissionService
         $zip->open($tempFile, \ZipArchive::CREATE);
 
         $rawJson = \json_encode($formSubmission->getData());
-        if (is_string($rawJson)) {
+        if (\is_string($rawJson)) {
             $zip->addFromString('data.json', $rawJson);
         }
 
         foreach ($formSubmission->getFiles() as $file) {
             $formFile = $file->getFile();
 
-            if (!is_resource($formFile)) {
+            if (!\is_resource($formFile)) {
                 continue;
             }
 
-            $formFileContents = stream_get_contents($formFile);
-            if (is_string($formFileContents)) {
+            $formFileContents = \stream_get_contents($formFile);
+            if (\is_string($formFileContents)) {
                 $zip->addFromString($file->getFilename(), $formFileContents);
             }
         }

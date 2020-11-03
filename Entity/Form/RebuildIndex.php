@@ -1,8 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Entity\Form;
 
 /**
- * RebuildIndex
+ * RebuildIndex.
  */
 class RebuildIndex
 {
@@ -10,9 +13,9 @@ class RebuildIndex
      * @var string
      */
     private $option;
-    
+
     /**
-     * Set the rebuild option
+     * Set the rebuild option.
      *
      * @param string $option
      *
@@ -26,7 +29,7 @@ class RebuildIndex
     }
 
     /**
-     * Get the selected rebuild option
+     * Get the selected rebuild option.
      *
      * @return string
      */

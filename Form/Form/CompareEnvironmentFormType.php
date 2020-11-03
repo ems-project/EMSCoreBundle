@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\Form;
 
 use EMS\CoreBundle\Form\Field\ContentTypePickerType;
@@ -13,9 +15,7 @@ use Symfony\Component\Form\FormEvents;
 class CompareEnvironmentFormType extends AbstractType
 {
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -39,9 +39,9 @@ class CompareEnvironmentFormType extends AbstractType
             ])
             ->add('compare', SubmitEmsType::class, [
                 'attr' => [
-                    'class' => 'btn-primary btn-md'
+                    'class' => 'btn-primary btn-md',
                 ],
-                'icon' => 'fa fa-columns'
+                'icon' => 'fa fa-columns',
             ]);
     }
 }

@@ -1,37 +1,36 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\DataField;
 
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Exception\ContentTypeStructureException;
 use EMS\CoreBundle\Form\DataField\Options\OptionsType;
+use EMS\CoreBundle\Form\Field\SelectPickerType;
 use EMS\CoreBundle\Service\ElasticsearchService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use EMS\CoreBundle\Form\Field\SelectPickerType;
-use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
- * It's the mother class of all specific DataField used in eMS
+ * It's the mother class of all specific DataField used in eMS.
  *
  * @author Mathieu De Keyzer <ems@theus.be>
- *
  */
 abstract class DataFieldType extends AbstractType
 {
-
-    /**@var AuthorizationCheckerInterface $authorizationChecker*/
+    /** @var AuthorizationCheckerInterface $authorizationChecker */
     protected $authorizationChecker;
-    /**@var FormRegistryInterface $formRegistry*/
+    /** @var FormRegistryInterface $formRegistry */
     protected $formRegistry;
-    /**@var ElasticsearchService*/
+    /** @var ElasticsearchService */
     protected $elasticsearchService;
-
 
     public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService)
     {
@@ -45,7 +44,6 @@ abstract class DataFieldType extends AbstractType
         return 'data_field_type';
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -55,12 +53,12 @@ abstract class DataFieldType extends AbstractType
     }
 
     /**
-     * Perfom field specfifc post-finalized treatment. It returns the children if it's a container
+     * Perfom field specfifc post-finalized treatment. It returns the children if it's a container.
      *
      * @param string $type
      * @param string $id
-     * @param DataField $dataField
-     * @param array $previousData
+     * @param array  $previousData
+     *
      * @return array|null
      */
     public function postFinalizeTreatment($type, $id, DataField $dataField, $previousData)
@@ -68,66 +66,59 @@ abstract class DataFieldType extends AbstractType
         return $previousData;
     }
 
-
     /**
-     * form array to DataField
+     * form array to DataField.
      *
      * http://symfony.com/doc/current/form/data_transformers.html#about-model-and-view-transformers
      *
-     * @param array|null|string|integer|float $data
-     * @param FieldType $fieldType
+     * @param array|string|int|float|null $data
+     *
      * @return \EMS\CoreBundle\Entity\DataField
      */
     public function reverseViewTransform($data, FieldType $fieldType)
     {
         $out = new DataField();
 
-        if ((is_string($data) && $data === "") || (is_array($data) && count($data) === 0)) {
+        if ((\is_string($data) && '' === $data) || (\is_array($data) && 0 === \count($data))) {
             $out->setRawData(null);
         } else {
             $out->setRawData($data);
         }
         $out->setFieldType($fieldType);
+
         return $out;
     }
 
-
     /**
-     * datafield to form array :
+     * datafield to form array :.
      *
      * http://symfony.com/doc/current/form/data_transformers.html#about-model-and-view-transformers
      *
-     * @param DataField $dataField
-     * @return array|null|string|integer|float
+     * @return array|string|int|float|null
      */
     public function viewTransform(DataField $dataField)
     {
         return $dataField->getRawData();
     }
 
-
     /**
-     * datafield to raw_data array :
+     * datafield to raw_data array :.
      *
      * http://symfony.com/doc/current/form/data_transformers.html#about-model-and-view-transformers
      *
-     * @param DataField $dataField
-     *
-     * @return array|null|string|integer|float
+     * @return array|string|int|float|null
      */
     public function reverseModelTransform(DataField $dataField)
     {
         return $dataField->getRawData();
     }
 
-
     /**
-     * raw_data array to datafield:
+     * raw_data array to datafield:.
      *
      * http://symfony.com/doc/current/form/data_transformers.html#about-model-and-view-transformers
      *
-     * @param array|null|string|integer|float $data
-     * @param FieldType $fieldType
+     * @param array|string|int|float|null $data
      *
      * @return DataField
      */
@@ -136,10 +127,11 @@ abstract class DataFieldType extends AbstractType
         $out = new DataField();
         $out->setRawData($data);
         $out->setFieldType($fieldType);
+
         return $out;
     }
 
-    /**@var FormRegistryInterface*/
+    /** @var FormRegistryInterface */
     public function getFormRegistry()
     {
         return $this->formRegistry;
@@ -154,7 +146,6 @@ abstract class DataFieldType extends AbstractType
     {
         //by default do nothing
     }
-
 
     public function getDefaultOptions($name)
     {
@@ -175,7 +166,7 @@ abstract class DataFieldType extends AbstractType
     }
 
     /**
-     * Used to display in the content type edit page (instaed of the class path)
+     * Used to display in the content type edit page (instaed of the class path).
      *
      * @return string
      */
@@ -183,40 +174,39 @@ abstract class DataFieldType extends AbstractType
 
     public function isDisabled($options)
     {
-        if (strcmp('cli', php_sapi_name()) === 0) {
+        if (0 === \strcmp('cli', \php_sapi_name())) {
             return false;
         }
 
         /** @var FieldType $fieldType */
-        $fieldType = $options ['metadata'];
+        $fieldType = $options['metadata'];
 
         $enable = ($options['migration'] && !$fieldType->getMigrationgOption('protected', true)) || $this->authorizationChecker->isGranted($fieldType->getMinimumRole());
+
         return !$enable;
     }
 
-
     /**
-     * Get Elasticsearch subquery
+     * Get Elasticsearch subquery.
      *
      * @return array
      */
     public function getElasticsearchQuery(DataField $dataField, array $options = [])
     {
-        throw new \Exception('virtual method should be implemented by child class : ' . get_class($this));
+        throw new \Exception('virtual method should be implemented by child class : '.\get_class($this));
     }
 
     /**
-     * get the data value(s), as string, for the symfony form) in the context of this field
-     *
+     * get the data value(s), as string, for the symfony form) in the context of this field.
      */
     public function getDataValue(DataField &$dataValues, array $options)
     {
         //TODO: should be abstract ??
         throw new \Exception('This function should never be called');
     }
+
     /**
-     * set the data value(s) from a string recieved from the symfony form) in the context of this field
-     *
+     * set the data value(s) from a string recieved from the symfony form) in the context of this field.
      */
     public function setDataValue($input, DataField &$dataValues, array $options)
     {
@@ -225,17 +215,16 @@ abstract class DataFieldType extends AbstractType
     }
 
     /**
-     * get the list of all possible values (if it means something) filter by the values array if not empty
-     *
+     * get the list of all possible values (if it means something) filter by the values array if not empty.
      */
     public function getChoiceList(FieldType $fieldType, array $choices)
     {
         //TODO: should be abstract ??
-        throw new ContentTypeStructureException('The field ' . $fieldType->getName() . ' of the content type ' . $fieldType->getContentType()->getName() . ' does not have a limited list of values!');
+        throw new ContentTypeStructureException('The field '.$fieldType->getName().' of the content type '.$fieldType->getContentType()->getName().' does not have a limited list of values!');
     }
 
     /**
-     * Get a icon to visually identify a FieldType
+     * Get a icon to visually identify a FieldType.
      *
      * @return string
      */
@@ -245,9 +234,7 @@ abstract class DataFieldType extends AbstractType
     }
 
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function configureOptions(OptionsResolver $resolver)
     {
@@ -267,10 +254,11 @@ abstract class DataFieldType extends AbstractType
     }
 
     /**
-     * See if we can asume that we should find this field directly or if its a more complex type such as file or date range
+     * See if we can asume that we should find this field directly or if its a more complex type such as file or date range.
+     *
      * @deprecated
-     * @param array $option
-     * @return boolean
+     *
+     * @return bool
      */
     public static function isVirtualField(array $option)
     {
@@ -278,11 +266,10 @@ abstract class DataFieldType extends AbstractType
     }
 
     /**
-     * Assign data of the dataField based on the elastic index content ($sourceArray)
+     * Assign data of the dataField based on the elastic index content ($sourceArray).
      *
-     * @param DataField $dataField
      * @param string|array $sourceArray
-     * @param bool $isMigration
+     * @param bool         $isMigration
      *
      * @return array
      */
@@ -292,22 +279,23 @@ abstract class DataFieldType extends AbstractType
         if (!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {
             $dataField->setRawData($sourceArray);
         }
+
         return [$dataField->getFieldType()->getName()];
     }
 
     /**
+     * {@inheritdoc}
      *
-     * {@inheritDoc}
      * @see \Symfony\Component\Form\AbstractType::buildView()
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        $view->vars ['class'] = $options ['class'];
-        $view->vars ['lastOfRow'] = $options ['lastOfRow'];
-        $view->vars ['helptext'] = $options ['helptext'];
-        $view->vars ['isContainer'] = $this->isContainer();
+        $view->vars['class'] = $options['class'];
+        $view->vars['lastOfRow'] = $options['lastOfRow'];
+        $view->vars['helptext'] = $options['helptext'];
+        $view->vars['isContainer'] = $this->isContainer();
         if (null == $options['label']) {
-            $view->vars ['label'] = false;
+            $view->vars['label'] = false;
         }
         /** @var DataFieldType $dataFieldType */
         $dataFieldType = $form->getConfig()->getType()->getInnerType();
@@ -318,20 +306,18 @@ abstract class DataFieldType extends AbstractType
         }
     }
 
-
     /**
      * Build an array representing the object, this array is ready to be serialized in json
-     * and push in elasticsearch
+     * and push in elasticsearch.
      */
-
     public function buildObjectArray(DataField $data, array &$out)
     {
-        if (! $data->getFieldType()->getDeleted()) {
-            /**
+        if (!$data->getFieldType()->getDeleted()) {
+            /*
              * by default it serialize the text value.
              * It can be overrided.
              */
-            $out [$data->getFieldType()->getName()] = $data->getTextValue();
+            $out[$data->getFieldType()->getName()] = $data->getTextValue();
         }
     }
 
@@ -340,7 +326,7 @@ abstract class DataFieldType extends AbstractType
      *
      * I.e. container, nested, array, ...
      *
-     * @return boolean
+     * @return bool
      */
     public static function isContainer()
     {
@@ -368,7 +354,7 @@ abstract class DataFieldType extends AbstractType
     /**
      * Test if the field is valid.
      *
-     * @return boolean
+     * @return bool
      */
     public function isValid(DataField &$dataField, DataField $parent = null, &$masterRawData = null)
     {
@@ -376,46 +362,47 @@ abstract class DataFieldType extends AbstractType
             return true;
         }
 
-        return count($dataField->getMessages()) === 0 && $this->isMandatory($dataField, $parent, $masterRawData);
+        return 0 === \count($dataField->getMessages()) && $this->isMandatory($dataField, $parent, $masterRawData);
     }
 
     /**
      * Test if the requirment of the field is reached.
      *
-     * @return boolean
+     * @return bool
      */
     public function isMandatory(DataField &$dataField, DataField $parent = null, &$masterRawData = null)
     {
         $isValidMandatory = true;
         //Get FieldType mandatory option
         $restrictionOptions = $dataField->getFieldType()->getRestrictionOptions();
-        if (isset($restrictionOptions["mandatory"]) && true == $restrictionOptions["mandatory"]) {
-            if ($parent === null || !isset($restrictionOptions["mandatory_if"]) || $parent->getRawData() === null || !empty($this->resolve($masterRawData ?? [], $parent->getRawData(), $restrictionOptions["mandatory_if"]))) {
+        if (isset($restrictionOptions['mandatory']) && true == $restrictionOptions['mandatory']) {
+            if (null === $parent || !isset($restrictionOptions['mandatory_if']) || null === $parent->getRawData() || !empty($this->resolve($masterRawData ?? [], $parent->getRawData(), $restrictionOptions['mandatory_if']))) {
                 //Get rawData
                 $rawData = $dataField->getRawData();
-                if ($rawData === null || (is_string($rawData) && $rawData === "") || (is_array($rawData) && count($rawData) === 0)) {
+                if (null === $rawData || (\is_string($rawData) && '' === $rawData) || (\is_array($rawData) && 0 === \count($rawData))) {
                     $isValidMandatory = false;
-                    $dataField->addMessage("Empty field");
+                    $dataField->addMessage('Empty field');
                 }
             }
         }
+
         return $isValidMandatory;
     }
 
     public static function resolve(array $rawData, array $parentRawData, $path, $default = null)
     {
         $current = $rawData;
-        if (strlen($path) && substr($path, 0, 1) === '.') {
+        if (\strlen($path) && '.' === \substr($path, 0, 1)) {
             $current = $parentRawData;
         }
 
-        $p = strtok($path, '.');
-        while ($p !== false) {
+        $p = \strtok($path, '.');
+        while (false !== $p) {
             if (!isset($current[$p])) {
                 return $default;
             }
             $current = $current[$p];
-            $p = strtok('.');
+            $p = \strtok('.');
         }
 
         return $current;
@@ -426,21 +413,19 @@ abstract class DataFieldType extends AbstractType
         if (!$parent) {
             return false;
         }
-        if (isset($parent->getRawData()['_ems_internal_deleted']) && $parent->getRawData()['_ems_internal_deleted'] == 'deleted') {
+        if (isset($parent->getRawData()['_ems_internal_deleted']) && 'deleted' == $parent->getRawData()['_ems_internal_deleted']) {
             return true;
         }
+
         return $parent->getParent() ? $this->hasDeletedParent($parent->getParent()) : false;
     }
 
     /**
      * Build a Field specific options sub-form (or compount field) (used in edit content type).
-     *
-     * @param FormBuilderInterface $builder
-     * @param array $options
      */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options)
     {
-        /**
+        /*
          * preset with the most used options
          */
         $builder->add('options', OptionsType::class, [
@@ -448,9 +433,9 @@ abstract class DataFieldType extends AbstractType
     }
 
     /**
-     * return true if the field exist as is in elasticsearch
+     * return true if the field exist as is in elasticsearch.
      *
-     * @return boolean
+     * @return bool
      */
     public static function isVirtual(array $option = [])
     {
@@ -458,7 +443,7 @@ abstract class DataFieldType extends AbstractType
     }
 
     /**
-     * return an array filtered with subfields foir this specfic fieldtype (in case of virtualfield wich is not a container (datarange))
+     * return an array filtered with subfields foir this specfic fieldtype (in case of virtualfield wich is not a container (datarange)).
      *
      * @throws \Exception
      *
@@ -470,9 +455,8 @@ abstract class DataFieldType extends AbstractType
     }
 
     /**
-     * Return the json path
+     * Return the json path.
      *
-     * @param FieldType $current
      * @return string|null
      */
     public static function getJsonName(FieldType $current)
@@ -481,19 +465,16 @@ abstract class DataFieldType extends AbstractType
     }
 
     /**
-     * Build an elasticsearch mapping options as an array
-     *
-     * @param FieldType $current
+     * Build an elasticsearch mapping options as an array.
      *
      * @return array
      */
     public function generateMapping(FieldType $current, $withPipeline)
     {
-        $options = $this->elasticsearchService->updateMapping(array_merge(["type" => "string"], array_filter($current->getMappingOptions())));
+        $options = $this->elasticsearchService->updateMapping(\array_merge(['type' => 'string'], \array_filter($current->getMappingOptions())));
 
-        return [ $current->getName() => $options ];
+        return [$current->getName() => $options];
     }
-
 
     /**
      * {@inheritdoc}

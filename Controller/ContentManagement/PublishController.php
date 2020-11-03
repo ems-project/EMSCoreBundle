@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use Doctrine\ORM\NonUniqueResultException;
@@ -34,7 +36,7 @@ class PublishController extends AbstractController
     public function publishToAction(Revision $revisionId, Environment $envId, PublishService $publishService): Response
     {
         $contentType = $revisionId->getContentType();
-        if ($contentType === null) {
+        if (null === $contentType) {
             throw new \RuntimeException('Content type not found');
         }
         if ($contentType->getDeleted()) {
@@ -60,7 +62,7 @@ class PublishController extends AbstractController
     public function unPublishAction(Revision $revisionId, Environment $envId, PublishService $publishService): RedirectResponse
     {
         $contentType = $revisionId->getContentType();
-        if ($contentType === null) {
+        if (null === $contentType) {
             throw new \RuntimeException('Content type not found');
         }
         if ($contentType->getDeleted()) {
@@ -91,10 +93,10 @@ class PublishController extends AbstractController
         $requestBis->setMethod('GET');
         $searchForm->handleRequest($requestBis);
 
-        if (count($search->getEnvironments()) !== 1) {
+        if (1 !== \count($search->getEnvironments())) {
             throw new NotFoundHttpException('Environment not found');
         }
-        if (count($search->getContentTypes()) !== 1) {
+        if (1 !== \count($search->getContentTypes())) {
             throw new NotFoundHttpException('Content type not found');
         }
 
@@ -115,16 +117,16 @@ class PublishController extends AbstractController
             'ignore' => [$environment->getName()],
         ])->add('publish', SubmitEmsType::class, [
             'attr' => [
-                'class' => 'btn-primary btn-md'
+                'class' => 'btn-primary btn-md',
             ],
-            'icon' => 'glyphicon glyphicon-open'
+            'icon' => 'glyphicon glyphicon-open',
         ]);
 
         $body = $searchService->generateSearchBody($search);
         $form = $builder->getForm();
         $form->handleRequest($request);
 
-        $body['query']['bool']['must'] = array_merge($body['query']['bool']['must'] ?? [], [['term' => [EMSSource::FIELD_CONTENT_TYPE => $contentType->getName()]]]);
+        $body['query']['bool']['must'] = \array_merge($body['query']['bool']['must'] ?? [], [['term' => [EMSSource::FIELD_CONTENT_TYPE => $contentType->getName()]]]);
         $counter = $client->search([
             'index' => $environment->getAlias(),
             'body' => $body,
@@ -134,8 +136,8 @@ class PublishController extends AbstractController
         $total = $counter['hits']['total'];
 
         if ($form->isSubmitted()) {
-            $command = sprintf(
-                "ems:environment:align %s %s --force --searchQuery=%s",
+            $command = \sprintf(
+                'ems:environment:align %s %s --force --searchQuery=%s',
                 $environment->getName(),
                 $form->get('toEnvironment')->getData(),
                 \json_encode($body)
@@ -143,12 +145,12 @@ class PublishController extends AbstractController
 
             $user = $this->getUser();
 
-
             if (!$user instanceof UserInterface) {
                 throw new NotFoundHttpException('User not found');
             }
 
             $job = $jobService->createCommand($user, $command);
+
             return $this->redirectToRoute('job.status', [
                 'job' => $job->getId(),
             ]);

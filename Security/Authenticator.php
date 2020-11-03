@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Security;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -46,11 +48,12 @@ class Authenticator
     {
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
-        $response->setContent(json_encode([
+        $response->setContent(\json_encode([
             'success' => false,
             'acknowledged' => true,
             'error' => ['Unauthorized Error'],
         ]))->setStatusCode(401);
+
         return $response;
     }
 
@@ -59,6 +62,7 @@ class Authenticator
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
         $response->setContent($content)->setStatusCode(200);
+
         return $response;
     }
 
@@ -72,6 +76,7 @@ class Authenticator
         if (!$user instanceof UserInterface) {
             throw new \RuntimeException(\sprintf('User should be of type %s', UserInterface::class));
         }
+
         return $user;
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Controller;
 
 use Doctrine\ORM\EntityManager;
@@ -9,6 +11,7 @@ use Doctrine\ORM\ORMException;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\AuthToken;
+use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
@@ -26,12 +29,12 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use EMS\CoreBundle\Entity\User;
 
 class UserController extends AppController
 {
     /**
      * @Route("/user", name="ems.user.index"))
+     *
      * @return Response
      */
     public function indexAction()
@@ -43,6 +46,7 @@ class UserController extends AppController
 
     /**
      * @Route("/user/add", name="user.add")
+     *
      * @return Response
      */
     public function addUserAction(Request $request)
@@ -55,19 +59,19 @@ class UserController extends AppController
         /** @var WysiwygProfileRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:WysiwygProfile');
         $result = $repository->findBy([], ['orderKey' => 'asc'], 1);
-        if (count($result) > 0) {
+        if (\count($result) > 0) {
             $user->setWysiwygProfile($result[0]);
         }
 
         $form = $this->createFormBuilder($user)
-            ->add('username', null, array('label' => 'form.username', 'translation_domain' => 'FOSUserBundle'))
-            ->add('email', EmailType::class, array('label' => 'form.email', 'translation_domain' => 'FOSUserBundle'))
-            ->add('plainPassword', RepeatedType::class, array(
+            ->add('username', null, ['label' => 'form.username', 'translation_domain' => 'FOSUserBundle'])
+            ->add('email', EmailType::class, ['label' => 'form.email', 'translation_domain' => 'FOSUserBundle'])
+            ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
-                'options' => array('translation_domain' => 'FOSUserBundle'),
-                'first_options' => array('label' => 'form.password'),
-                'second_options' => array('label' => 'form.password_confirmation'),
-                'invalid_message' => 'fos_user.password.mismatch',))
+                'options' => ['translation_domain' => 'FOSUserBundle'],
+                'first_options' => ['label' => 'form.password'],
+                'second_options' => ['label' => 'form.password_confirmation'],
+                'invalid_message' => 'fos_user.password.mismatch', ])
 
             ->add('allowedToConfigureWysiwyg', CheckboxType::class, [
                 'required' => false,
@@ -86,26 +90,25 @@ class UserController extends AppController
                 'label' => 'WYSIWYG custom options',
                 'attr' => [
                     'rows' => 8,
-                ]
+                ],
             ]);
 
         if ($circleObject = $this->container->getParameter('ems_core.circles_object')) {
             $form->add('circles', ObjectPickerType::class, [
                 'multiple' => true,
                 'type' => $circleObject,
-                'dynamicLoading' => false
-
+                'dynamicLoading' => false,
             ]);
         }
 
-        $form = $form->add('roles', ChoiceType::class, array('choices' => $this->getUserService()->getExistingRoles(),
+        $form = $form->add('roles', ChoiceType::class, ['choices' => $this->getUserService()->getExistingRoles(),
             'label' => 'Roles',
             'expanded' => true,
             'multiple' => true,
-            'mapped' => true,))
+            'mapped' => true, ])
             ->add('create', SubmitEmsType::class, [
                 'attr' => [
-                    'class' => 'btn-primary btn-sm '
+                    'class' => 'btn-primary btn-sm ',
                 ],
                 'icon' => 'fa fa-plus',
             ])
@@ -126,20 +129,19 @@ class UserController extends AppController
                     'notice',
                     'User created!'
                 );
+
                 return $this->redirectToRoute('ems.user.index');
             }
         }
 
-        return $this->render('@EMSCore/user/add.html.twig', array(
-            'form' => $form->createView()
-        ));
+        return $this->render('@EMSCore/user/add.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
-
 
     /**
      * @param int $id
-     * @param Request $request
-     * @param LoggerInterface $logger
+     *
      * @return RedirectResponse|Response
      *
      * @Route("/user/{id}/edit", name="user.edit")
@@ -152,35 +154,33 @@ class UserController extends AppController
             throw $this->createNotFoundException('user not found');
         }
 
-
         $form = $this->createFormBuilder($user)
-            ->add('email', EmailType::class, array(
+            ->add('email', EmailType::class, [
                 'label' => 'form.email',
                 'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
-            ))
-            ->add('username', null, array(
+            ])
+            ->add('username', null, [
                 'label' => 'form.username',
                 'disabled' => true,
-                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN
-            ))
+                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
+            ])
             ->add('emailNotification', CheckboxType::class, [
                 'required' => false,
-                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN
+                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
             ])
-            ->add('displayName', null, array(
+            ->add('displayName', null, [
                 'label' => 'Display name',
-                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN
-            ))
+                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
+            ])
             ->add('circles', ObjectPickerType::class, [
                 'multiple' => true,
                 'type' => $this->container->getParameter('ems_core.circles_object'),
                 'dynamicLoading' => true,
-                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN
-
+                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
             ])
             ->add('enabled', CheckboxType::class, [
                 'required' => false,
-                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN
+                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
             ])
             ->add('allowedToConfigureWysiwyg', CheckboxType::class, [
                 'required' => false,
@@ -207,18 +207,18 @@ class UserController extends AppController
                 'attr' => [
                     'class' => 'wysiwyg-profile-options',
                 ],
-                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN
+                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
             ])
-            ->add('roles', ChoiceType::class, array('choices' => $this->getExistingRoles(),
+            ->add('roles', ChoiceType::class, ['choices' => $this->getExistingRoles(),
                 'label' => 'Roles',
                 'expanded' => true,
                 'multiple' => true,
                 'mapped' => true,
-                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN
-            ))
+                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
+            ])
             ->add('update', SubmitEmsType::class, [
                 'attr' => [
-                    'class' => 'btn-primary btn-sm '
+                    'class' => 'btn-primary btn-sm ',
                 ],
                 'icon' => 'fa fa-save',
                 'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
@@ -234,18 +234,19 @@ class UserController extends AppController
                 'user_display_name' => $user->getDisplayName(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
             ]);
+
             return $this->redirectToRoute('ems.user.index');
         }
 
-        return $this->render('@EMSCore/user/edit.html.twig', array(
+        return $this->render('@EMSCore/user/edit.html.twig', [
             'form' => $form->createView(),
-            'user' => $user
-        ));
+            'user' => $user,
+        ]);
     }
 
     /**
      * @param int $id
-     * @param LoggerInterface $logger
+     *
      * @return RedirectResponse
      *
      * @Route("/user/{id}/delete", name="user.delete")
@@ -268,19 +269,19 @@ class UserController extends AppController
             'user_display_name' => $displayName,
             EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
         ]);
+
         return $this->redirectToRoute('ems.user.index');
     }
 
     /**
      * @param int $id
-     * @param LoggerInterface $logger
+     *
      * @return RedirectResponse
      *
      * @Route("/user/{id}/enabling", name="user.enabling")
      */
     public function enablingUserAction($id, LoggerInterface $logger)
     {
-
         $user = $this->getUserService()->getUserById($id);
         // test if user exist before modified it
         if (!$user) {
@@ -289,10 +290,10 @@ class UserController extends AppController
 
         if ($user->isEnabled()) {
             $user->setEnabled(false);
-            $message = "log.user.disabled";
+            $message = 'log.user.disabled';
         } else {
             $user->setEnabled(true);
-            $message = "log.user.enabled";
+            $message = 'log.user.enabled';
         }
 
         $this->getUserService()->updateUser($user);
@@ -309,14 +310,13 @@ class UserController extends AppController
 
     /**
      * @param int $id
-     * @param LoggerInterface $logger
+     *
      * @return RedirectResponse
      *
      * @Route("/user/{id}/locking", name="user.locking")
      */
     public function lockingUserAction($id, LoggerInterface $logger)
     {
-
         $user = $this->getUserService()->getUserById($id);
         // test if user exist before modified it
         if (!$user) {
@@ -325,10 +325,10 @@ class UserController extends AppController
 
         if ($user->isLocked()) {
             $user->setLocked(false);
-            $message = "log.user.unlocked";
+            $message = 'log.user.unlocked';
         } else {
             $user->setLocked(true);
-            $message = "log.user.locked";
+            $message = 'log.user.locked';
         }
 
         $this->getUserService()->updateUser($user);
@@ -339,13 +339,15 @@ class UserController extends AppController
             'user_display_name' => $user->getDisplayName(),
             EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
         ]);
+
         return $this->redirectToRoute('ems.user.index');
     }
 
     /**
      * @param string $username
-     * @param LoggerInterface $logger
+     *
      * @return RedirectResponse
+     *
      * @throws ORMException
      * @throws OptimisticLockException
      *
@@ -356,13 +358,13 @@ class UserController extends AppController
         $user = $this->getUserService()->getUser($username, false);
 
         $roles = $user->getRoles();
-        if (!in_array('ROLE_API', $roles)) {
+        if (!\in_array('ROLE_API', $roles)) {
             $logger->error('log.user.cannot_request_api_key', [
                 'user' => $username,
-                'initiator' => $this->getUserService()->getCurrentUser()->getUsername()
+                'initiator' => $this->getUserService()->getCurrentUser()->getUsername(),
             ]);
 
-            throw new \RuntimeException(sprintf('The user %s  does not have the permission to use API functionalities.', $username));
+            throw new \RuntimeException(\sprintf('The user %s  does not have the permission to use API functionalities.', $username));
         }
 
         $authToken = new AuthToken($user);
@@ -385,7 +387,9 @@ class UserController extends AppController
 
     /**
      * @param bool $collapsed
+     *
      * @return Response
+     *
      * @throws ORMException
      * @throws OptimisticLockException
      *
@@ -412,25 +416,27 @@ class UserController extends AppController
     }
 
     /**
-     * Test if email or username exist return on add or edit Form
+     * Test if email or username exist return on add or edit Form.
      */
     private function userExist($user, $action, $form): bool
     {
         /** @var UserManagerInterface $userManager */
         $userManager = $this->get('fos_user.user_manager');
-        $exists = array('email' => $userManager->findUserByEmail($user->getEmail()), 'username' => $userManager->findUserByUsername($user->getUsername()));
-        $messages = array('email' => 'User email already exist!', 'username' => 'Username already exist!');
+        $exists = ['email' => $userManager->findUserByEmail($user->getEmail()), 'username' => $userManager->findUserByUsername($user->getUsername())];
+        $messages = ['email' => 'User email already exist!', 'username' => 'Username already exist!'];
         foreach ($exists as $key => $value) {
             if ($value instanceof User) {
-                if ($action === 'add' || ($action === 'edit' && $value->getId() !== $user->getId())) {
+                if ('add' === $action || ('edit' === $action && $value->getId() !== $user->getId())) {
                     $this->addFlash(
                         'error',
                         $messages[$key]
                     );
+
                     return false;
                 }
             }
         }
+
         return true;
     }
 }

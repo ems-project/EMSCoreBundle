@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace EMS\CoreBundle\Entity\Form;
-
 
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -31,6 +31,7 @@ class ContentTypeJsonUpdate
     public function setJson(UploadedFile $json): ContentTypeJsonUpdate
     {
         $this->json = $json;
+
         return $this;
     }
 
@@ -42,6 +43,7 @@ class ContentTypeJsonUpdate
     public function setDeleteExitingTemplates(bool $deleteExitingTemplates): ContentTypeJsonUpdate
     {
         $this->deleteExitingTemplates = $deleteExitingTemplates;
+
         return $this;
     }
 
@@ -53,6 +55,7 @@ class ContentTypeJsonUpdate
     public function setDeleteExitingViews(bool $deleteExitingViews): ContentTypeJsonUpdate
     {
         $this->deleteExitingViews = $deleteExitingViews;
+
         return $this;
     }
 }

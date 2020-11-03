@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\DataField;
 
 use EMS\CommonBundle\Helper\EmsFields;
@@ -21,20 +23,14 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  * It's used to logically groups subfields together. However a Container is invisible in Elastic search.
  *
  * @author Mathieu De Keyzer <ems@theus.be>
- *
  */
 class IndexedAssetFieldType extends DataFieldType
 {
-
-    /**@var FileService */
+    /** @var FileService */
     private $fileService;
 
     /**
      * {@inheritdoc}
-     *
-     * @param AuthorizationCheckerInterface $authorizationChecker
-     * @param FormRegistryInterface $formRegistry
-     * @param FileService $fileService
      */
     public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, FileService $fileService)
     {
@@ -43,7 +39,7 @@ class IndexedAssetFieldType extends DataFieldType
     }
 
     /**
-     * Get a icon to visually identify a FieldType
+     * Get a icon to visually identify a FieldType.
      *
      * @return string
      */
@@ -53,9 +49,7 @@ class IndexedAssetFieldType extends DataFieldType
     }
 
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function getLabel()
     {
@@ -63,9 +57,7 @@ class IndexedAssetFieldType extends DataFieldType
     }
 
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function getParent()
     {
@@ -73,9 +65,7 @@ class IndexedAssetFieldType extends DataFieldType
     }
 
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options)
     {
@@ -89,10 +79,9 @@ class IndexedAssetFieldType extends DataFieldType
                 'required' => false,
         ]);
 
-
         $optionsForm->get('displayOptions')
         ->add('icon', IconPickerType::class, [
-                'required' => false
+                'required' => false,
         ])
         ->add('imageAssetConfigIdentifier', TextType::class, [
                 'required' => false,
@@ -100,9 +89,7 @@ class IndexedAssetFieldType extends DataFieldType
     }
 
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function configureOptions(OptionsResolver $resolver)
     {
@@ -118,32 +105,33 @@ class IndexedAssetFieldType extends DataFieldType
     public function generateMapping(FieldType $current, $withPipeline)
     {
         $mapping = parent::generateMapping($current, $withPipeline);
+
         return [
             $current->getName() => [
-                    "type" => "nested",
-                    "properties" => [
+                    'type' => 'nested',
+                    'properties' => [
                             EmsFields::CONTENT_MIME_TYPE_FIELD => $this->elasticsearchService->getKeywordMapping(),
                             EmsFields::CONTENT_FILE_HASH_FIELD => $this->elasticsearchService->getKeywordMapping(),
                             EmsFields::CONTENT_FILE_NAME_FIELD => $this->elasticsearchService->getIndexedStringMapping(),
                             EmsFields::CONTENT_FILE_SIZE_FIELD => $this->elasticsearchService->getLongMapping(),
                             '_content' => $mapping[$current->getName()],
-                    ]
-            ]
+                    ],
+            ],
         ];
     }
 
     /**
+     * {@inheritdoc}
      *
-     * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
      */
     public function reverseViewTransform($data, FieldType $fieldType)
     {
         $dataField = parent::reverseViewTransform($data, $fieldType);
         $this->testDataField($dataField);
+
         return $dataField;
     }
-
 
     private function testDataField(DataField $dataField)
     {
@@ -154,7 +142,7 @@ class IndexedAssetFieldType extends DataFieldType
                 $dataField->addMessage('This entry is required');
             }
             $dataField->setRawData(null);
-        } else if (!$this->fileService->head($raw['sha1'])) {
+        } elseif (!$this->fileService->head($raw['sha1'])) {
             $dataField->addMessage('File not found on the server try to re-upload it');
         } else {
             $raw['filesize'] = $this->fileService->getSize($raw['sha1']);
@@ -163,8 +151,8 @@ class IndexedAssetFieldType extends DataFieldType
     }
 
     /**
+     * {@inheritdoc}
      *
-     * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
      */
     public function viewTransform(DataField $dataField)
@@ -174,25 +162,27 @@ class IndexedAssetFieldType extends DataFieldType
         if (empty($out['sha1'])) {
             $out = null;
         }
+
         return $out;
     }
 
     /**
+     * {@inheritdoc}
      *
-     * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::modelTransform()
      */
     public function modelTransform($data, FieldType $fieldType)
     {
-        if (is_array($data)) {
+        if (\is_array($data)) {
             foreach ($data as $id => $content) {
-                if (! in_array($id, ['sha1', 'filename', 'filesize', 'mimetype', '_date', '_author', '_language', '_content', '_title'], true)) {
+                if (!\in_array($id, ['sha1', 'filename', 'filesize', 'mimetype', '_date', '_author', '_language', '_content', '_title'], true)) {
                     unset($data[$id]);
-                } else if ($id !== 'sha1' && empty($data[$id])) {
+                } elseif ('sha1' !== $id && empty($data[$id])) {
                     unset($data[$id]);
                 }
             }
         }
+
         return parent::reverseViewTransform($data, $fieldType);
     }
 }

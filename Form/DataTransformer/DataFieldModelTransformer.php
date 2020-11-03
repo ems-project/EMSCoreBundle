@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\DataTransformer;
 
 use EMS\CoreBundle\Entity\DataField;
@@ -9,9 +12,9 @@ use Symfony\Component\Form\FormRegistryInterface;
 
 class DataFieldModelTransformer implements DataTransformerInterface
 {
-    /**@var FieldType */
+    /** @var FieldType */
     private $fieldType;
-    /**@var FormRegistryInterface */
+    /** @var FormRegistryInterface */
     private $formRegistry;
 
     public function __construct(FieldType $fieldType, FormRegistryInterface $formRegistry)
@@ -23,28 +26,30 @@ class DataFieldModelTransformer implements DataTransformerInterface
     /**
      * Transforms from Model to Norm (array to Datafield).
      *
-     * @param  array $data
+     * @param array $data
+     *
      * @return DataField
      */
     public function transform($data)
     {
-        /**@var DataFieldType $dataFieldType*/
+        /** @var DataFieldType $dataFieldType */
         $dataFieldType = $this->formRegistry->getType($this->fieldType->getType())->getInnerType();
-        
+
         return $dataFieldType->modelTransform($data, $this->fieldType);
     }
 
     /**
      * Transforms from Norm to Model (DataField to array).
      *
-     * @param  DataField $data
+     * @param DataField $data
+     *
      * @return array|float|int|string|null
      */
     public function reverseTransform($data)
     {
-        /**@var DataFieldType $dataFieldType*/
+        /** @var DataFieldType $dataFieldType */
         $dataFieldType = $this->formRegistry->getType($this->fieldType->getType())->getInnerType();
-        
+
         return $dataFieldType->reverseModelTransform($data);
     }
 }

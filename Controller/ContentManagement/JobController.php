@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use EMS\CommonBundle\Helper\Text\Encoder;
@@ -34,7 +36,7 @@ class JobController extends AppController
         $page = $request->query->get('page', 1);
         $from = ($page - 1) * $size;
         $total = $jobService->count();
-        $lastPage = ceil($total / $size);
+        $lastPage = \ceil($total / $size);
 
         return $this->render('@EMSCore/job/index.html.twig', [
             'jobs' => $jobService->scroll($size, $from),
@@ -59,12 +61,11 @@ class JobController extends AppController
         return $this->render('@EMSCore/job/status.html.twig', [
             'job' => $job,
             'status' => $encoder->encodeUrl($job->getStatus()),
-            'output' => $encoder->encodeUrl($converter->convert($job->getOutput()))
+            'output' => $encoder->encodeUrl($converter->convert($job->getOutput())),
         ]);
     }
 
     /**
-     * @param Request $request
      * @return RedirectResponse|Response
      * @Route("/admin/job/add", name="job.add"))
      */
@@ -83,12 +84,11 @@ class JobController extends AppController
         }
 
         return $this->render('@EMSCore/job/add.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 
     /**
-     * @param Job $job
      * @return RedirectResponse
      * @Route("/admin/job/delete/{job}", name="job.delete", methods={"POST"})
      */
@@ -111,9 +111,8 @@ class JobController extends AppController
     }
 
     /**
-     * Ajax action called on the status page
-     * @param Job $job
-     * @param Request $request
+     * Ajax action called on the status page.
+     *
      * @return JsonResponse
      *
      * @Route("/admin/job/start/{job}", name="job.start", methods={"POST"})
@@ -131,7 +130,7 @@ class JobController extends AppController
             return new JsonResponse('job already done');
         }
 
-        set_time_limit(0);
+        \set_time_limit(0);
         if (null !== $job->getService()) {
             $output = $jobService->start($job);
 
@@ -147,10 +146,10 @@ class JobController extends AppController
             } catch (ServiceNotFoundException $e) {
                 $output->writeln('<error>Service not found</error>');
             } catch (InvalidArgumentException $e) {
-                $output->writeln('<error>' . $e->getMessage() . '</error>');
+                $output->writeln('<error>'.$e->getMessage().'</error>');
             } catch (Exception $e) {
                 $output->writeln('An exception has been raised!');
-                $output->writeln('Exception:' . $e->getMessage());
+                $output->writeln('Exception:'.$e->getMessage());
             }
 
             $jobService->finish($job, $output);

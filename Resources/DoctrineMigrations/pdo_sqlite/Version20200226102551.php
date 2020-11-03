@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Application\Migrations;
 
@@ -10,10 +12,10 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20200226102551 extends AbstractMigration
 {
-    public function up(Schema $schema) : void
+    public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+        $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
         $this->addSql('DROP INDEX tuple_index');
         $this->addSql('CREATE TEMPORARY TABLE __temp__revision AS SELECT id, content_type_id, created, modified, auto_save_at, deleted, version, start_time, end_time, draft, lock_by, auto_save_by, lock_until, labelField, finalized_by, sha1, deleted_by, finalized_date, raw_data, auto_save, circles, ouuid FROM revision');
@@ -54,10 +56,10 @@ final class Version20200226102551 extends AbstractMigration
         $this->addSql('DROP TABLE __temp__search_filter');
     }
 
-    public function down(Schema $schema) : void
+    public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+        $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
         $this->addSql('DROP TABLE session');
         $this->addSql('DROP INDEX UNIQ_41BCBAEC588AB49A');

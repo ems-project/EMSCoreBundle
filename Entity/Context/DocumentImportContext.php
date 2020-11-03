@@ -1,18 +1,14 @@
 <?php
 
+declare(strict_types=1);
 
 namespace EMS\CoreBundle\Entity\Context;
 
-
-use Doctrine\ORM\EntityManager;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
-use EMS\CoreBundle\Repository\ContentTypeRepository;
-use EMS\CoreBundle\Repository\RevisionRepository;
 
 class DocumentImportContext
 {
-
     /** @var ContentType */
     private $contentType;
     /** @var string */

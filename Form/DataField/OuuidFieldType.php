@@ -1,21 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\DataField;
 
 class OuuidFieldType extends DataFieldType
 {
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function getLabel()
     {
         return 'Copy of the object identifier';
     }
-    
+
     /**
-     * Get a icon to visually identify a FieldType
+     * Get a icon to visually identify a FieldType.
      *
      * @return string
      */
@@ -23,7 +23,7 @@ class OuuidFieldType extends DataFieldType
     {
         return 'fa fa-key';
     }
-    
+
     public function getBlockPrefix()
     {
         return 'empty';

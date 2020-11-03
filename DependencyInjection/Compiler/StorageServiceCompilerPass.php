@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -14,22 +16,21 @@ class StorageServiceCompilerPass implements CompilerPassInterface
         if (!$container->hasDefinition('ems.service.file')) {
             return;
         }
-        
+
         /** @var Definition $definition */
         $definition = $container->findDefinition(
             'ems.service.file'
         );
-        
-        
+
         $taggedServices = $container->findTaggedServiceIds(
             'ems.storage'
         );
-        
+
         foreach ($taggedServices as $id => $tags) {
             foreach ($tags as $attributes) {
                 $definition->addMethodCall(
                     'addStorageService',
-                    array(new Reference($id))
+                    [new Reference($id)]
                 );
             }
         }

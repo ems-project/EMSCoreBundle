@@ -1,9 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\EventListener;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CommonBundle\Helper\EmsFields;
-use EMS\CoreBundle\Command\AbstractEmsCommand;
 use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Exception\LockedException;
 use EMS\CoreBundle\Exception\PrivilegeException;
@@ -24,7 +26,7 @@ class RequestListener
     protected $twig;
     protected $doctrine;
     protected $logger;
-    /**@var \Symfony\Bundle\FrameworkBundle\Routing\Router*/
+    /** @var \Symfony\Bundle\FrameworkBundle\Routing\Router */
     protected $router;
     protected $container;
     protected $authorizationChecker;
@@ -32,7 +34,7 @@ class RequestListener
     protected $allowUserRegistration;
     protected $userLoginRoute;
     protected $userRegistrationRoute;
-    
+
     public function __construct(\Twig_Environment $twig, Registry $doctrine, Logger $logger, Router $router, Container $container, AuthorizationCheckerInterface $authorizationChecker, Session $session, $allowUserRegistration, $userLoginRoute, $userRegistrationRoute)
     {
         $this->twig = $twig;
@@ -54,19 +56,19 @@ class RequestListener
             $event->setResponse($response);
         }
     }
-    
+
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
         //hide all errors to unauthenticated users
         $exception = $event->getException();
-        
+
         try {
             if ($exception instanceof LockedException || $exception instanceof PrivilegeException) {
                 $this->logger->error('log.revision_error', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD =>  $exception->getRevision()->getContentType(),
-                    EmsFields::LOG_OUUID_FIELD =>  $exception->getRevision()->getOuuid(),
-                    EmsFields::LOG_ERROR_MESSAGE_FIELD =>  $exception->getMessage(),
-                    EmsFields::LOG_EXCEPTION_FIELD =>  $exception,
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $exception->getRevision()->getContentType(),
+                    EmsFields::LOG_OUUID_FIELD => $exception->getRevision()->getOuuid(),
+                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $exception->getMessage(),
+                    EmsFields::LOG_EXCEPTION_FIELD => $exception,
                 ]);
                 /** @var LockedException $exception */
                 if (null == $exception->getRevision()->getOuuid()) {
@@ -76,7 +78,7 @@ class RequestListener
                 } else {
                     $response = new RedirectResponse($this->router->generate('data.revisions', [
                             'type' => $exception->getRevision()->getContentType()->getName(),
-                            'ouuid' => $exception->getRevision()->getOuuid()
+                            'ouuid' => $exception->getRevision()->getOuuid(),
                     ], UrlGeneratorInterface::RELATIVE_PATH));
                 }
                 $event->setResponse($response);
@@ -97,7 +99,7 @@ class RequestListener
             ]);
         }
     }
-    
+
     public function provideTemplateTwigObjects(FilterControllerEvent $event)
     {
         //TODO: move to twig appextension?
@@ -106,16 +108,16 @@ class RequestListener
                 'deleted' => false,
 //                 'rootContentType' => true,
         ], [
-                'orderKey' => 'ASC'
+                'orderKey' => 'ASC',
         ]);
 
         $this->twig->addGlobal('contentTypes', $contentTypes);
-        
+
         $envRepository = $this->doctrine->getRepository('EMSCoreBundle:Environment');
         $contentTypes = $envRepository->findBy([
                 'inDefaultSearch' => true,
         ]);
-        
+
         $defaultEnvironments = [];
         foreach ($contentTypes as $contentType) {
             $defaultEnvironments[] = $contentType->getName();

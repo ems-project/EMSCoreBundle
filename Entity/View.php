@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -7,7 +9,7 @@ use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 
 /**
- * DataField
+ * DataField.
  *
  * @ORM\Table(name="view")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\LinkRepository")
@@ -58,14 +60,14 @@ class View extends JsonDeserializer implements \JsonSerializable
      * @ORM\Column(name="icon", type="string", length=255, nullable=true)
      */
     protected $icon;
-    
+
     /**
      * @var array
      *
      * @ORM\Column(name="options", type="json_array", nullable=true)
      */
     protected $options;
-    
+
     /**
      * @var int
      *
@@ -85,7 +87,6 @@ class View extends JsonDeserializer implements \JsonSerializable
      * @ORM\Column(name="public", type="boolean", options={"default" : 0})
      */
     protected $public;
-
 
     public function __construct()
     {
@@ -115,7 +116,7 @@ class View extends JsonDeserializer implements \JsonSerializable
             $this->orderKey = 0;
         }
     }
-    
+
     /******************************************************************
      *
      * Generated functions
@@ -123,9 +124,9 @@ class View extends JsonDeserializer implements \JsonSerializable
      *******************************************************************/
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -133,7 +134,7 @@ class View extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set created
+     * Set created.
      *
      * @param \DateTime $created
      *
@@ -147,7 +148,7 @@ class View extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get created
+     * Get created.
      *
      * @return \DateTime
      */
@@ -157,7 +158,7 @@ class View extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set modified
+     * Set modified.
      *
      * @param \DateTime $modified
      *
@@ -171,7 +172,7 @@ class View extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get modified
+     * Get modified.
      *
      * @return \DateTime
      */
@@ -181,7 +182,7 @@ class View extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
      *
@@ -195,7 +196,7 @@ class View extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -205,7 +206,7 @@ class View extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set type
+     * Set type.
      *
      * @param string $type
      *
@@ -219,7 +220,7 @@ class View extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get type
+     * Get type.
      *
      * @return string
      */
@@ -229,7 +230,7 @@ class View extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set icon
+     * Set icon.
      *
      * @param string $icon
      *
@@ -243,7 +244,7 @@ class View extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get icon
+     * Get icon.
      *
      * @return string
      */
@@ -253,7 +254,7 @@ class View extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set options
+     * Set options.
      *
      * @param array $options
      *
@@ -267,7 +268,7 @@ class View extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get options
+     * Get options.
      *
      * @return array
      */
@@ -277,9 +278,9 @@ class View extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set orderKey
+     * Set orderKey.
      *
-     * @param integer $orderKey
+     * @param int $orderKey
      *
      * @return View
      */
@@ -291,9 +292,9 @@ class View extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get orderKey
+     * Get orderKey.
      *
-     * @return integer
+     * @return int
      */
     public function getOrderKey()
     {
@@ -301,7 +302,7 @@ class View extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set contentType
+     * Set contentType.
      *
      * @param \EMS\CoreBundle\Entity\ContentType $contentType
      *
@@ -315,7 +316,7 @@ class View extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get contentType
+     * Get contentType.
      *
      * @return \EMS\CoreBundle\Entity\ContentType
      */
@@ -324,38 +325,36 @@ class View extends JsonDeserializer implements \JsonSerializable
         return $this->contentType;
     }
 
-    /**
-     * @return bool
-     */
     public function isPublic(): bool
     {
         return $this->public;
     }
 
-    /**
-     * @param bool $public
-     * @return View
-     */
     public function setPublic(bool $public): View
     {
         $this->public = $public;
+
         return $this;
     }
 
     /**
-     * Specify data which should be serialized to JSON
-     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * Specify data which should be serialized to JSON.
+     *
+     * @see https://php.net/manual/en/jsonserializable.jsonserialize.php
+     *
      * @return mixed data which can be serialized by <b>json_encode</b>,
-     * which is a value of any type other than a resource.
+     *               which is a value of any type other than a resource
+     *
      * @since 5.4.0
      */
     public function jsonSerialize()
     {
-        $json = new JsonClass(get_object_vars($this), __CLASS__);
+        $json = new JsonClass(\get_object_vars($this), __CLASS__);
         $json->removeProperty('id');
         $json->removeProperty('created');
         $json->removeProperty('modified');
         $json->removeProperty('contentType');
+
         return $json;
     }
 }

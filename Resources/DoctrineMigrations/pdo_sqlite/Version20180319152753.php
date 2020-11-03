@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Application\Migrations;
 
 use Doctrine\DBAL\Migrations\AbstractMigration;
@@ -10,13 +12,10 @@ use Doctrine\DBAL\Schema\Schema;
  */
 class Version20180319152753 extends AbstractMigration
 {
-    /**
-     * @param Schema $schema
-     */
     public function up(Schema $schema)
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+        $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
         $this->addSql('CREATE TABLE aggregate_option (id INTEGER NOT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, name VARCHAR(255) NOT NULL, config CLOB DEFAULT NULL, template CLOB DEFAULT NULL, orderKey INTEGER NOT NULL, icon CLOB DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE sort_option (id INTEGER NOT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, name VARCHAR(255) NOT NULL, field CLOB NOT NULL, orderKey INTEGER NOT NULL, inverted BOOLEAN NOT NULL, icon CLOB DEFAULT NULL, PRIMARY KEY(id))');
@@ -159,13 +158,10 @@ class Version20180319152753 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_8D93D649A282F7EA ON user (wysiwyg_profile_id)');
     }
 
-    /**
-     * @param Schema $schema
-     */
     public function down(Schema $schema)
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+        $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
         $this->addSql('DROP TABLE aggregate_option');
         $this->addSql('DROP TABLE sort_option');

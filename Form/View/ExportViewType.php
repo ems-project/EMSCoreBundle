@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\View;
 
 use Dompdf\Adapter\CPDF;
@@ -14,21 +16,20 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Throwable;
 
 class ExportViewType extends ViewType
 {
-    public function getLabel() : string
+    public function getLabel(): string
     {
-        return "Export: perform an elasticsearch query and generate a export with a twig template";
+        return 'Export: perform an elasticsearch query and generate a export with a twig template';
     }
-    
-    public function getName() : string
+
+    public function getName(): string
     {
-        return "Export";
+        return 'Export';
     }
-    
-    public function buildForm(FormBuilderInterface $builder, array $options) : void
+
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
         $builder
@@ -74,7 +75,7 @@ class ExportViewType extends ViewType
                         'None' => null,
                         'Attachment' => 'attachment',
                         'Inline' => 'inline',
-                ]
+                ],
         ])
         ->add('export_type', ChoiceType::class, [
                 'label' => 'Export type',
@@ -84,7 +85,7 @@ class ExportViewType extends ViewType
                 'choices' => [
                         'Raw (HTML, XML, JSON, ...)' => null,
                         'PDF (dompdf)' => 'dompdf',
-                ]
+                ],
         ])
         ->add('pdf_orientation', ChoiceType::class, [
             'required' => false,
@@ -95,21 +96,20 @@ class ExportViewType extends ViewType
         ])
         ->add('pdf_size', ChoiceType::class, [
             'required' => false,
-            'choices' => array_combine(array_keys(CPDF::$PAPER_SIZES), array_keys(CPDF::$PAPER_SIZES)),
+            'choices' => \array_combine(\array_keys(CPDF::$PAPER_SIZES), \array_keys(CPDF::$PAPER_SIZES)),
         ]);
     }
-    
-    public function getBlockPrefix() : string
+
+    public function getBlockPrefix(): string
     {
         return 'export_view';
     }
 
-
-    public function generateResponse(View $view, Request $request) : Response
+    public function generateResponse(View $view, Request $request): Response
     {
         $parameters = $this->getParameters($view, $this->formFactory, $request);
 
-        if (isset($view->getOptions()['export_type']) || $view->getOptions()['export_type'] === 'dompdf') {
+        if (isset($view->getOptions()['export_type']) || 'dompdf' === $view->getOptions()['export_type']) {
             // instantiate and use the dompdf class
             $dompdf = new Dompdf();
             $dompdf->loadHtml($parameters['render']);
@@ -124,9 +124,9 @@ class ExportViewType extends ViewType
             $dompdf->render();
 
             // Output the generated PDF to Browser
-            $dompdf->stream($parameters['filename'] ?? "document.pdf", [
+            $dompdf->stream($parameters['filename'] ?? 'document.pdf', [
                 'compress' => 1,
-                'Attachment' => ( isset($view->getOptions()['disposition'])  && $view->getOptions()['disposition'] === 'attachment') ? 1 : 0,
+                'Attachment' => (isset($view->getOptions()['disposition']) && 'attachment' === $view->getOptions()['disposition']) ? 1 : 0,
             ]);
             exit;
         }
@@ -135,7 +135,7 @@ class ExportViewType extends ViewType
 
         if (!empty($view->getOptions()['disposition'])) {
             $attachment = ResponseHeaderBag::DISPOSITION_ATTACHMENT;
-            if ($view->getOptions()['disposition'] == 'inline') {
+            if ('inline' == $view->getOptions()['disposition']) {
                 $attachment = ResponseHeaderBag::DISPOSITION_INLINE;
             }
             $disposition = $response->headers->makeDisposition($attachment, $parameters['filename']);
@@ -150,13 +150,12 @@ class ExportViewType extends ViewType
         }
 
         $response->setContent($parameters['render']);
-        
+
         return $response;
     }
-  
-    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request) : array
+
+    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
-        
         try {
             $renderQuery = $this->twig->createTemplate($view->getOptions()['body'])->render([
                     'view' => $view,
@@ -164,21 +163,21 @@ class ExportViewType extends ViewType
                     'environment' => $view->getContentType()->getEnvironment(),
             ]);
         } catch (\Throwable $e) {
-            $renderQuery = "{}";
+            $renderQuery = '{}';
         }
-        
+
         $searchQuery = [
                 'index' => $view->getContentType()->getEnvironment()->getAlias(),
                 'type' => $view->getContentType()->getName(),
                 'body' => $renderQuery,
         ];
-        
+
         if (isset($view->getOptions()['size'])) {
             $searchQuery['size'] = $view->getOptions()['size'];
         }
-        
+
         $result = $this->client->search($searchQuery);
-        
+
         try {
             $render = $this->twig->createTemplate($view->getOptions()['template'])->render([
                     'view' => $view,
@@ -187,9 +186,9 @@ class ExportViewType extends ViewType
                     'result' => $result,
             ]);
         } catch (\Throwable $e) {
-            $render = "Something went wrong with the template of the view " . $view->getName() . " for the content type " . $view->getContentType()->getName() . " (" . $e->getMessage() . ")";
+            $render = 'Something went wrong with the template of the view '.$view->getName().' for the content type '.$view->getContentType()->getName().' ('.$e->getMessage().')';
         }
-        
+
         try {
             $filename = $this->twig->createTemplate($view->getOptions()['filename'])->render([
                     'view' => $view,
@@ -198,9 +197,9 @@ class ExportViewType extends ViewType
                     'result' => $result,
             ]);
         } catch (\Throwable $e) {
-            $filename = "Something went wrong with the template of the view " . $view->getName() . " for the content type " . $view->getContentType()->getName() . " (" . $e->getMessage() . ")";
+            $filename = 'Something went wrong with the template of the view '.$view->getName().' for the content type '.$view->getContentType()->getName().' ('.$e->getMessage().')';
         }
-        
+
         return [
                 'render' => $render,
                 'filename' => $filename,

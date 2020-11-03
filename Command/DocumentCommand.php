@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command;
 
 use Elasticsearch\Client;
@@ -21,7 +23,7 @@ use Symfony\Component\Finder\Finder;
 
 class DocumentCommand extends Command
 {
-    /** @var string  */
+    /** @var string */
     protected static $defaultName = 'ems:make:document';
     /** @var DocumentService */
     private $documentService;
@@ -39,9 +41,9 @@ class DocumentCommand extends Command
     private $contentType;
     /** @var string */
     private $archiveFilename;
-    /** @var string  */
+    /** @var string */
     const ARGUMENT_CONTENTTYPE = 'contentTypeName';
-    /** @var string  */
+    /** @var string */
     const ARGUMENT_ARCHIVE = 'archive';
 
     public function __construct(Logger $logger, Client $client, ContentTypeService $contentTypeService, DocumentService $documentService, DataService $dataService)
@@ -54,7 +56,7 @@ class DocumentCommand extends Command
         $this->client = $client;
         parent::__construct();
     }
-    
+
     protected function configure(): void
     {
         $this
@@ -117,43 +119,41 @@ class DocumentCommand extends Command
     {
         $contentTypeName = $input->getArgument(self::ARGUMENT_CONTENTTYPE);
         $archiveFilename = $input->getArgument(self::ARGUMENT_ARCHIVE);
-        if (!is_string($contentTypeName)) {
+        if (!\is_string($contentTypeName)) {
             throw new \RuntimeException('Content Type name as to be a string');
         }
-        if (!is_string($archiveFilename)) {
+        if (!\is_string($archiveFilename)) {
             throw new \RuntimeException('Archive Filename as to be a string');
         }
 
         $this->io->title('Make documents');
         $this->io->section('Checking input');
 
-
         $contentType = $this->contentTypeService->getByName($contentTypeName);
         if (!$contentType instanceof ContentType) {
-            throw new \RuntimeException(sprintf('Content type %s not found', $contentTypeName));
+            throw new \RuntimeException(\sprintf('Content type %s not found', $contentTypeName));
         }
 
         if ($contentType->getDirty()) {
-            throw new \RuntimeException(sprintf('Content type %s is dirty. Please clean it first', $contentTypeName));
+            throw new \RuntimeException(\sprintf('Content type %s is dirty. Please clean it first', $contentTypeName));
         }
         $this->contentType = $contentType;
 
-        if (!file_exists($archiveFilename)) {
-            throw new \RuntimeException(sprintf('Archive file %s does not exist', $archiveFilename));
+        if (!\file_exists($archiveFilename)) {
+            throw new \RuntimeException(\sprintf('Archive file %s does not exist', $archiveFilename));
         }
         $this->archiveFilename = $archiveFilename;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-
-        $options = array_values($input->getOptions());
+        $options = \array_values($input->getOptions());
         list($bulkSize, $rawImport, $dontSignData, $force, $dontFinalize, $replaceBusinessKey) = $options;
 
         $signData = !$dontSignData;
         $finalize = !$dontFinalize;
 
-        $this->io->section(sprintf('Start importing %s from %s', $this->contentType->getPluralName(), $this->archiveFilename));
+        $this->io->section(\sprintf('Start importing %s from %s', $this->contentType->getPluralName(), $this->archiveFilename));
 
         $archive = new Archive();
         $directory = $archive->extractToDirectory($this->archiveFilename);
@@ -167,22 +167,22 @@ class DocumentCommand extends Command
         $loopIndex = 0;
         foreach ($finder as $file) {
             $content = \file_get_contents($file);
-            if ($content === false) {
+            if (false === $content) {
                 $progress->advance();
                 continue;
             }
-            $rawData = json_decode($content, true);
-            $ouuid = basename($file->getFilename(), '.json');
+            $rawData = \json_decode($content, true);
+            $ouuid = \basename($file->getFilename(), '.json');
             if ($replaceBusinessKey) {
                 $dataLink = $this->dataService->getDataLink($this->contentType->getName(), $ouuid);
                 if ($dataLink === $ouuid) {
                     //TODO: Should test if a document already exist with the business key as ouuid
                     //TODO: Check that a document doesn't already exist with the hash value (it has to be new)
                     //TODO: meaby use a UUID generator? Or allow elasticsearch to generate one
-                    $ouuid = sha1($dataLink);
+                    $ouuid = \sha1($dataLink);
                 } else {
-                    $dataLink = explode(':', $dataLink);
-                    $ouuid = array_pop($dataLink);
+                    $dataLink = \explode(':', $dataLink);
+                    $ouuid = \array_pop($dataLink);
                 }
             }
 
@@ -197,7 +197,7 @@ class DocumentCommand extends Command
             }
 
             ++$loopIndex;
-            if ($loopIndex % $bulkSize == 0) {
+            if (0 == $loopIndex % $bulkSize) {
                 $this->documentService->flushAndSend($importerContext);
                 $loopIndex = 0;
             }
@@ -205,8 +205,9 @@ class DocumentCommand extends Command
         }
         $this->documentService->flushAndSend($importerContext);
         $progress->finish();
-        $this->io->writeln("");
-        $this->io->writeln("Import done");
+        $this->io->writeln('');
+        $this->io->writeln('Import done');
+
         return 0;
     }
 }

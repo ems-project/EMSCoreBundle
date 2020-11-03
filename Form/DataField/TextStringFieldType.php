@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\DataField;
 
 use EMS\CoreBundle\Entity\DataField;
@@ -11,38 +13,34 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-                                
+
 /**
- * Basic content type for text (regular text input)
+ * Basic content type for text (regular text input).
  *
  * @author Mathieu De Keyzer <ems@theus.be>
- *
  */
 class TextStringFieldType extends DataFieldType
 {
-     
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function getLabel()
     {
         return 'Text field';
     }
-    
+
     /**
+     * {@inheritdoc}
      *
-     * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::buildView()
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         parent::buildView($view, $form, $options);
-        $view->vars ['class'] = null;
-        $view->vars ['attr']['placeholder'] = $options['placeholder'];
+        $view->vars['class'] = null;
+        $view->vars['attr']['placeholder'] = $options['placeholder'];
     }
-    
+
 //     /**
 //      *
 //      * {@inheritDoc}
@@ -55,19 +53,15 @@ class TextStringFieldType extends DataFieldType
 //         }
 //         return $out;
 //     }
-    
+
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public static function getIcon()
     {
         return 'fa fa-pencil-square-o';
     }
-    
-    
-    
+
     /**
      * {@inheritdoc}
      */
@@ -75,11 +69,9 @@ class TextStringFieldType extends DataFieldType
     {
         return IconTextType::class;
     }
-    
+
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function configureOptions(OptionsResolver $resolver)
     {
@@ -93,34 +85,32 @@ class TextStringFieldType extends DataFieldType
                 'placeholder' => null,
         ]);
     }
-    
+
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options)
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
-        
+
         // String specific display options
         $optionsForm->get('displayOptions')->add('icon', IconPickerType::class, [
-                'required' => false
+                'required' => false,
         ])->add('prefixIcon', IconPickerType::class, [
-                'required' => false
+                'required' => false,
         ])->add('prefixText', IconTextType::class, [
                 'required' => false,
-                'prefixIcon' => 'fa fa-hand-o-left'
+                'prefixIcon' => 'fa fa-hand-o-left',
         ])->add('suffixIcon', IconPickerType::class, [
-                'required' => false
+                'required' => false,
         ])->add('suffixText', IconTextType::class, [
                 'required' => false,
-                'prefixIcon' => 'fa fa-hand-o-right'
+                'prefixIcon' => 'fa fa-hand-o-right',
         ])->add('placeholder', TextType::class, [
                 'required' => false,
         ]);
-        
+
         // String specific mapping options
         $optionsForm->get('mappingOptions')
             ->add('analyzer', AnalyzerPickerType::class)

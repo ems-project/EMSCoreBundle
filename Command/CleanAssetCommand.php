@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManager;
 use Elasticsearch\Client;
 use EMS\CommonBundle\Storage\Service\StorageInterface;
@@ -17,7 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CleanAssetCommand extends EmsCommand
 {
-    /** @var int*/
+    /** @var int */
     const PAGE_SIZE = 10;
 
     /** @var Registry */
@@ -39,7 +40,6 @@ class CleanAssetCommand extends EmsCommand
             ->setName('ems:asset:clean')
             ->setDescription('Clean unreferenced assets on storage services (!even if the storage is shared)');
     }
-
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -68,8 +68,8 @@ class CleanAssetCommand extends EmsCommand
 
             foreach ($hashes as $hash) {
                 $usedCounter = $revRepo->hashReferenced($hash['hash']);
-                if ($usedCounter === 0) {
-                    /**@var StorageInterface $storage */
+                if (0 === $usedCounter) {
+                    /** @var StorageInterface $storage */
                     foreach ($this->fileService->getStorages() as $storage) {
                         $storage->remove($hash['hash']);
                     }
@@ -92,6 +92,7 @@ class CleanAssetCommand extends EmsCommand
         if ($filesInUsed) {
             $output->writeln("<comment>$filesInUsed files are referenced $totalCounter times</comment>");
         }
+
         return 0;
     }
 }

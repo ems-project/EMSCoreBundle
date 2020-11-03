@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Service\Mapping;
 
 /**
- * DataField
+ * DataField.
  *
  * @ORM\Table(name="aggregate_option")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\AggregateOptionRepository")
@@ -43,42 +45,41 @@ class AggregateOption
      * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="config", type="text", nullable=true)
      */
     private $config;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="template", type="text", nullable=true)
      */
     private $template;
-    
+
     /**
      * @var int
      *
      * @ORM\Column(name="orderKey", type="integer")
      */
     private $orderKey;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="icon", type="text", length=255, nullable=true)
      */
     private $icon;
-    
-    
+
     public function __construct()
     {
         $this->config = '{
-    "terms" : { "field" : "' . Mapping::FINALIZED_BY_FIELD . '" }
+    "terms" : { "field" : "'.Mapping::FINALIZED_BY_FIELD.'" }
 }';
-        $this->template = '{% set fieldName = \'' . Mapping::FINALIZED_BY_FIELD . '\' %}
+        $this->template = '{% set fieldName = \''.Mapping::FINALIZED_BY_FIELD.'\' %}
 {% if aggregation.buckets|length > 1  %}
 
 	{% for index in aggregation.buckets %}
@@ -120,7 +121,7 @@ class AggregateOption
 	{% endif %}
 {% endif %}';
     }
-    
+
     /**
      * @ORM\PrePersist
      * @ORM\PreUpdate
@@ -135,7 +136,7 @@ class AggregateOption
             $this->orderKey = 0;
         }
     }
-    
+
     /******************************************************************
      *
      * Generated functions
@@ -143,9 +144,9 @@ class AggregateOption
      *******************************************************************/
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -153,7 +154,7 @@ class AggregateOption
     }
 
     /**
-     * Set created
+     * Set created.
      *
      * @param \DateTime $created
      *
@@ -167,7 +168,7 @@ class AggregateOption
     }
 
     /**
-     * Get created
+     * Get created.
      *
      * @return \DateTime
      */
@@ -177,7 +178,7 @@ class AggregateOption
     }
 
     /**
-     * Set modified
+     * Set modified.
      *
      * @param \DateTime $modified
      *
@@ -191,7 +192,7 @@ class AggregateOption
     }
 
     /**
-     * Get modified
+     * Get modified.
      *
      * @return \DateTime
      */
@@ -201,7 +202,7 @@ class AggregateOption
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
      *
@@ -215,7 +216,7 @@ class AggregateOption
     }
 
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -225,7 +226,7 @@ class AggregateOption
     }
 
     /**
-     * Set config
+     * Set config.
      *
      * @param string $config
      *
@@ -237,9 +238,9 @@ class AggregateOption
 
         return $this;
     }
-    
+
     /**
-     * Get template
+     * Get template.
      *
      * @return string
      */
@@ -247,9 +248,9 @@ class AggregateOption
     {
         return $this->template;
     }
-    
+
     /**
-     * Set template
+     * Set template.
      *
      * @param string $template
      *
@@ -258,12 +259,12 @@ class AggregateOption
     public function setTemplate($template)
     {
         $this->template = $template;
-        
+
         return $this;
     }
-    
+
     /**
-     * Get config
+     * Get config.
      *
      * @return string
      */
@@ -273,9 +274,7 @@ class AggregateOption
     }
 
     /**
-     * Decode config
-     *
-     * @return array
+     * Decode config.
      *
      * @see https://github.com/elastic/elasticsearch-php/issues/660
      */
@@ -283,7 +282,7 @@ class AggregateOption
     {
         $recursiveCheck = function (array &$json) use (&$recursiveCheck) {
             foreach ($json as $field => &$data) {
-                if ($field === 'reverse_nested' && empty($data)) {
+                if ('reverse_nested' === $field && empty($data)) {
                     $data = new \stdClass();
                 } elseif (\is_array($data)) {
                     $recursiveCheck($data);
@@ -297,12 +296,10 @@ class AggregateOption
         return $json;
     }
 
-
-
     /**
-     * Set orderKey
+     * Set orderKey.
      *
-     * @param integer $orderKey
+     * @param int $orderKey
      *
      * @return AggregateOption
      */
@@ -314,17 +311,17 @@ class AggregateOption
     }
 
     /**
-     * Get orderKey
+     * Get orderKey.
      *
-     * @return integer
+     * @return int
      */
     public function getOrderKey()
     {
         return $this->orderKey;
     }
-    
+
     /**
-     * Set icon
+     * Set icon.
      *
      * @param string $icon
      *
@@ -333,12 +330,12 @@ class AggregateOption
     public function setIcon($icon)
     {
         $this->icon = $icon;
-        
+
         return $this;
     }
-    
+
     /**
-     * Get icon
+     * Get icon.
      *
      * @return string
      */

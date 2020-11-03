@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -41,7 +43,6 @@ class Configuration implements ConfigurationInterface
     const ELASTICSEARCH_VERSION = '5.4';
     const SINGLE_TYPE_INDEX = false;
     const SAVE_ASSETS_IN_DB = false;
-
 
     /**
      * {@inheritdoc}

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\ContentTransformer;
 
 class ContentTransformContext
@@ -25,6 +27,7 @@ class ContentTransformContext
         $context = new self();
         $context->dataFieldType = $dataFieldType;
         $context->data = $data;
+
         return $context;
     }
 

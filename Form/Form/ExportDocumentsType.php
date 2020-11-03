@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\Form;
 
-use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Form\ExportDocuments;
 use EMS\CoreBundle\Entity\Template;
 use EMS\CoreBundle\Form\Field\EnvironmentPickerType;
@@ -16,7 +17,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class ExportDocumentsType extends AbstractType
 {
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         /** @var ExportDocuments $data */
@@ -29,7 +29,7 @@ class ExportDocumentsType extends AbstractType
                 $formatChoices[$template->getName()] = $template->getId();
             }
         }
-        
+
         $builder
             ->setAction($data->getAction())
             ->add('query', HiddenType::class, [
@@ -45,9 +45,9 @@ class ExportDocumentsType extends AbstractType
                 'required' => false,
             ])
             ->add('export', SubmitEmsType::class, [
-                'label' => 'Export ' . $data->getContentType()->getPluralName(),
+                'label' => 'Export '.$data->getContentType()->getPluralName(),
                 'attr' => ['class' => 'btn-primary btn-sm '],
-                'icon' => 'glyphicon glyphicon-export'
+                'icon' => 'glyphicon glyphicon-export',
             ]);
     }
 }

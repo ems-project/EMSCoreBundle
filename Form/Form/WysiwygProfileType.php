@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\Form;
 
 use EMS\CoreBundle\EMSCoreBundle;
@@ -12,37 +14,32 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class WysiwygProfileType extends AbstractType
 {
-
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
-
         $builder
             ->add('name', IconTextType::class, [
                 'icon' => 'fa fa-tag',
                 'label' => 'Profile\'s name',
             ])
             ->add('config', CodeEditorType::class, [
-                'language' => 'ace/mode/json'
+                'language' => 'ace/mode/json',
             ])
             ->add('save', SubmitEmsType::class, [
                 'attr' => [
-                    'class' => 'btn-primary btn-sm '
+                    'class' => 'btn-primary btn-sm ',
                 ],
-                'icon' => 'fa fa-save'
+                'icon' => 'fa fa-save',
             ]);
 
         if (!$options['createform']) {
             $builder->add('remove', SubmitEmsType::class, [
                 'attr' => [
-                    'class' => 'btn-primary btn-sm '
+                    'class' => 'btn-primary btn-sm ',
                 ],
-                'icon' => 'fa fa-trash'
+                'icon' => 'fa fa-trash',
             ]);
         }
     }

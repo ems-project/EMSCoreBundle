@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Twig;
 
 use Caxy\HtmlDiff\HtmlDiff;
@@ -34,9 +36,9 @@ use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Twig\Environment as TwigEnvironment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
-use Twig\Environment as TwigEnvironment;
 use Twig\TwigFunction;
 
 class AppExtension extends AbstractExtension
@@ -55,15 +57,15 @@ class AppExtension extends AbstractExtension
     private $userService;
     /** @var AuthorizationCheckerInterface */
     private $authorizationChecker;
-    /** @var ContentTypeService $contentTypeService */
+    /** @var ContentTypeService */
     private $contentTypeService;
-    /** @var Client $client */
+    /** @var Client */
     private $client;
-    /** @var Router $router */
+    /** @var Router */
     private $router;
-    /** @var TwigEnvironment $twig */
+    /** @var TwigEnvironment */
     private $twig;
-    /** @var ObjectChoiceListFactory $objectChoiceListFactory */
+    /** @var ObjectChoiceListFactory */
     private $objectChoiceListFactory;
     /** @var EnvironmentService */
     private $environmentService;
@@ -95,94 +97,94 @@ class AppExtension extends AbstractExtension
     }
 
     /**
+     * {@inheritdoc}
      *
-     * {@inheritDoc}
      * @see Twig_Extension::getFunctions()
      */
     public function getFunctions()
     {
         return [
-            new TwigFunction('get_content_types', array($this, 'getContentTypes')),
-            new TwigFunction('cant_be_finalized', array($this, 'cantBeFinalized')),
-            new TwigFunction('get_default_environments', array($this, 'getDefaultEnvironments')),
-            new TwigFunction('emsco_get_environments', array($this, 'getEnvironments')),
-            new TwigFunction('sequence', array($this, 'getSequenceNextValue')),
-            new TwigFunction('diff_text', array($this, 'diffText'), ['is_safe' => ['html']]),
-            new TwigFunction('diff', array($this, 'diff'), ['is_safe' => ['html']]),
-            new TwigFunction('diff_html', array($this, 'diffHtml'), ['is_safe' => ['html']]),
-            new TwigFunction('diff_icon', array($this, 'diffIcon'), ['is_safe' => ['html']]),
-            new TwigFunction('diff_raw', array($this, 'diffRaw'), ['is_safe' => ['html']]),
-            new TwigFunction('diff_color', array($this, 'diffColor'), ['is_safe' => ['html']]),
-            new TwigFunction('diff_boolean', array($this, 'diffBoolean'), ['is_safe' => ['html']]),
-            new TwigFunction('diff_choice', array($this, 'diffChoice'), ['is_safe' => ['html']]),
-            new TwigFunction('diff_data_link', array($this, 'diffDataLink'), ['is_safe' => ['html']]),
-            new TwigFunction('diff_date', array($this, 'diffDate'), ['is_safe' => ['html']]),
-            new TwigFunction('diff_time', array($this, 'diffTime'), ['is_safe' => ['html']]),
-            new TwigFunction('is_super', array($this, 'isSuper')),
+            new TwigFunction('get_content_types', [$this, 'getContentTypes']),
+            new TwigFunction('cant_be_finalized', [$this, 'cantBeFinalized']),
+            new TwigFunction('get_default_environments', [$this, 'getDefaultEnvironments']),
+            new TwigFunction('emsco_get_environments', [$this, 'getEnvironments']),
+            new TwigFunction('sequence', [$this, 'getSequenceNextValue']),
+            new TwigFunction('diff_text', [$this, 'diffText'], ['is_safe' => ['html']]),
+            new TwigFunction('diff', [$this, 'diff'], ['is_safe' => ['html']]),
+            new TwigFunction('diff_html', [$this, 'diffHtml'], ['is_safe' => ['html']]),
+            new TwigFunction('diff_icon', [$this, 'diffIcon'], ['is_safe' => ['html']]),
+            new TwigFunction('diff_raw', [$this, 'diffRaw'], ['is_safe' => ['html']]),
+            new TwigFunction('diff_color', [$this, 'diffColor'], ['is_safe' => ['html']]),
+            new TwigFunction('diff_boolean', [$this, 'diffBoolean'], ['is_safe' => ['html']]),
+            new TwigFunction('diff_choice', [$this, 'diffChoice'], ['is_safe' => ['html']]),
+            new TwigFunction('diff_data_link', [$this, 'diffDataLink'], ['is_safe' => ['html']]),
+            new TwigFunction('diff_date', [$this, 'diffDate'], ['is_safe' => ['html']]),
+            new TwigFunction('diff_time', [$this, 'diffTime'], ['is_safe' => ['html']]),
+            new TwigFunction('is_super', [$this, 'isSuper']),
             new TwigFunction('emsco_asset_path', [$this, 'assetPath'], ['is_safe' => ['html']]),
-            new TwigFunction('call_user_func', array($this, 'callUserFunc')),
-            new TwigFunction('emsco_generate_email', array($this, 'generateEmailMessage')),
-            new TwigFunction('emsco_send_email', array($this, 'sendEmail')),
+            new TwigFunction('call_user_func', [$this, 'callUserFunc']),
+            new TwigFunction('emsco_generate_email', [$this, 'generateEmailMessage']),
+            new TwigFunction('emsco_send_email', [$this, 'sendEmail']),
         ];
     }
 
     /**
+     * {@inheritdoc}
      *
-     * {@inheritDoc}
      * @see Twig_Extension::getFilters()
      */
     public function getFilters()
     {
-        return array(
-            new TwigFilter('searches', array($this, 'searchesList')),
-            new TwigFilter('data', array($this, 'data')),
-            new TwigFilter('inArray', array($this, 'inArray')),
-            new TwigFilter('firstInArray', array($this, 'firstInArray')),
-            new TwigFilter('md5', array($this, 'md5')),
-            new TwigFilter('convertJavaDateFormat', array($this, 'convertJavaDateFormat')),
-            new TwigFilter('convertJavascriptDateFormat', array($this, 'convertJavascriptDateFormat')),
-            new TwigFilter('convertJavascriptDateRangeFormat', array($this, 'convertJavascriptDateRangeFormat')),
-            new TwigFilter('getTimeFieldTimeFormat', array($this, 'getTimeFieldTimeFormat')),
-            new TwigFilter('soapRequest', array($this, 'soapRequest')),
-            new TwigFilter('luma', array($this, 'relativeLuminance')),
-            new TwigFilter('contrastratio', array($this, 'contrastRatio')),
-            new TwigFilter('all_granted', array($this, 'allGranted')),
-            new TwigFilter('one_granted', array($this, 'oneGranted')),
-            new TwigFilter('in_my_circles', array($this, 'inMyCircles')),
+        return [
+            new TwigFilter('searches', [$this, 'searchesList']),
+            new TwigFilter('data', [$this, 'data']),
+            new TwigFilter('inArray', [$this, 'inArray']),
+            new TwigFilter('firstInArray', [$this, 'firstInArray']),
+            new TwigFilter('md5', [$this, 'md5']),
+            new TwigFilter('convertJavaDateFormat', [$this, 'convertJavaDateFormat']),
+            new TwigFilter('convertJavascriptDateFormat', [$this, 'convertJavascriptDateFormat']),
+            new TwigFilter('convertJavascriptDateRangeFormat', [$this, 'convertJavascriptDateRangeFormat']),
+            new TwigFilter('getTimeFieldTimeFormat', [$this, 'getTimeFieldTimeFormat']),
+            new TwigFilter('soapRequest', [$this, 'soapRequest']),
+            new TwigFilter('luma', [$this, 'relativeLuminance']),
+            new TwigFilter('contrastratio', [$this, 'contrastRatio']),
+            new TwigFilter('all_granted', [$this, 'allGranted']),
+            new TwigFilter('one_granted', [$this, 'oneGranted']),
+            new TwigFilter('in_my_circles', [$this, 'inMyCircles']),
             new TwigFilter('data_link', [$this, 'dataLink'], ['is_safe' => ['html']]),
             new TwigFilter('data_label', [$this, 'dataLabel'], ['is_safe' => ['html']]),
-            new TwigFilter('get_content_type', array($this, 'getContentType')),
-            new TwigFilter('get_environment', array($this, 'getEnvironment')),
-            new TwigFilter('generate_from_template', array($this, 'generateFromTemplate')),
-            new TwigFilter('objectChoiceLoader', array($this, 'objectChoiceLoader')),
-            new TwigFilter('groupedObjectLoader', array($this, 'groupedObjectLoader')),
-            new TwigFilter('propertyPath', array($this, 'propertyPath')),
-            new TwigFilter('is_super', array($this, 'isSuper')),
-            new TwigFilter('i18n', array($this, 'i18n')),
-            new TwigFilter('internal_links', array($this, 'internalLinks')),
-            new TwigFilter('src_path', array($this, 'srcPath')),
-            new TwigFilter('get_user', array($this, 'getUser')),
-            new TwigFilter('displayname', array($this, 'displayName')),
-            new TwigFilter('date_difference', array($this, 'dateDifference')),
-            new TwigFilter('debug', array($this, 'debug')),
-            new TwigFilter('search', array($this, 'search')),
-            new TwigFilter('call_user_func', array($this, 'callUserFunc')),
-            new TwigFilter('merge_recursive', array($this, 'arrayMergeRecursive')),
-            new TwigFilter('array_intersect', array($this, 'arrayIntersect')),
-            new TwigFilter('get_string', array($this, 'getString')),
-            new TwigFilter('get_file', array($this, 'getFile')),
-            new TwigFilter('get_field_by_path', array($this, 'getFieldByPath')),
-            new TwigFilter('json_decode', array($this, 'jsonDecode')),
+            new TwigFilter('get_content_type', [$this, 'getContentType']),
+            new TwigFilter('get_environment', [$this, 'getEnvironment']),
+            new TwigFilter('generate_from_template', [$this, 'generateFromTemplate']),
+            new TwigFilter('objectChoiceLoader', [$this, 'objectChoiceLoader']),
+            new TwigFilter('groupedObjectLoader', [$this, 'groupedObjectLoader']),
+            new TwigFilter('propertyPath', [$this, 'propertyPath']),
+            new TwigFilter('is_super', [$this, 'isSuper']),
+            new TwigFilter('i18n', [$this, 'i18n']),
+            new TwigFilter('internal_links', [$this, 'internalLinks']),
+            new TwigFilter('src_path', [$this, 'srcPath']),
+            new TwigFilter('get_user', [$this, 'getUser']),
+            new TwigFilter('displayname', [$this, 'displayName']),
+            new TwigFilter('date_difference', [$this, 'dateDifference']),
+            new TwigFilter('debug', [$this, 'debug']),
+            new TwigFilter('search', [$this, 'search']),
+            new TwigFilter('call_user_func', [$this, 'callUserFunc']),
+            new TwigFilter('merge_recursive', [$this, 'arrayMergeRecursive']),
+            new TwigFilter('array_intersect', [$this, 'arrayIntersect']),
+            new TwigFilter('get_string', [$this, 'getString']),
+            new TwigFilter('get_file', [$this, 'getFile']),
+            new TwigFilter('get_field_by_path', [$this, 'getFieldByPath']),
+            new TwigFilter('json_decode', [$this, 'jsonDecode']),
             new TwigFilter('get_revision_id', [RevisionRuntime::class, 'getRevisionId']),
             //deprecated
             new TwigFilter('url_generator', [Encoder::class, 'webalize'], ['deprecated' => true]),
             new TwigFilter('emsco_webalize', [Encoder::class, 'webalize'], ['deprecated' => true]),
-        );
+        ];
     }
 
     public function generateEmailMessage(string $title): \Swift_Message
     {
-        return (new \Swift_Message($title));
+        return new \Swift_Message($title);
     }
 
     public function sendEmail(\Swift_Message $message): void
@@ -192,14 +194,8 @@ class AppExtension extends AbstractExtension
 
     /**
      * @param array<mixed> $fileField
-     * @param string $processorIdentifier
      * @param array<mixed> $assetConfig
-     * @param string $route
-     * @param string $fileHashField
-     * @param string $filenameField
-     * @param string $mimeTypeField
-     * @param int $referenceType
-     * @return string
+     * @param int          $referenceType
      */
     public function assetPath(array $fileField, string $processorIdentifier, array $assetConfig = [], string $route = 'ems_asset', string $fileHashField = EmsFields::CONTENT_FILE_HASH_FIELD, string $filenameField = EmsFields::CONTENT_FILE_NAME_FIELD, string $mimeTypeField = EmsFields::CONTENT_MIME_TYPE_FIELD, $referenceType = UrlGeneratorInterface::RELATIVE_PATH): string
     {
@@ -234,9 +230,10 @@ class AppExtension extends AbstractExtension
     public function getFieldByPath(ContentType $contentType, string $path, bool $skipVirtualFields = false): ?FieldType
     {
         $fieldType = $this->contentTypeService->getChildByPath($contentType->getFieldType(), $path, $skipVirtualFields);
-        if ($fieldType === false) {
+        if (false === $fieldType) {
             return null;
         }
+
         return $fieldType;
     }
 
@@ -257,9 +254,10 @@ class AppExtension extends AbstractExtension
             return $rawData[$field];
         }
         $encoded = \json_encode($rawData[$field]);
-        if ($encoded === false) {
+        if (false === $encoded) {
             throw new \RuntimeException('Failure on json encode');
         }
+
         return $encoded;
     }
 
@@ -272,27 +270,27 @@ class AppExtension extends AbstractExtension
         if ($compare && $a !== $b) {
             if ($htmlDiff && $a && $b) {
                 $textClass = 'text-orange';
-                $htmlDiff = new HtmlDiff(($escape ? htmlentities($b) : $this->internalLinks($b)) ?? '', ($escape ? htmlentities($a) : $this->internalLinks($a)) ?? '');
+                $htmlDiff = new HtmlDiff(($escape ? \htmlentities($b) : $this->internalLinks($b)) ?? '', ($escape ? \htmlentities($a) : $this->internalLinks($a)) ?? '');
                 $textLabel = $htmlDiff->build();
             } else {
                 $textClass = false;
-                if ($b !== null) {
+                if (null !== $b) {
                     $textClass = 'text-red';
-                    $textLabel .= '<del class="diffmod">' . ($escape ? htmlentities($b) : $this->internalLinks($b)) . '</del>';
+                    $textLabel .= '<del class="diffmod">'.($escape ? \htmlentities($b) : $this->internalLinks($b)).'</del>';
                 }
 
-                if ($a !== null) {
+                if (null !== $a) {
                     if ($textClass) {
                         $textClass = 'text-orange';
                     } else {
                         $textClass = 'text-green';
                     }
-                    $textLabel .= ' <ins class="diffmod">' . ($escape ? htmlentities($a) : $this->internalLinks($a)) . '</ins>';
+                    $textLabel .= ' <ins class="diffmod">'.($escape ? \htmlentities($a) : $this->internalLinks($a)).'</ins>';
                 }
             }
         } else {
-            if ($a !== null) {
-                $textLabel = ($escape ? htmlentities($a) : $this->internalLinks($a));
+            if (null !== $a) {
+                $textLabel = ($escape ? \htmlentities($a) : $this->internalLinks($a));
             } else {
 //                $textClass = 'text-gray';
 //                $textLabel = '[not defined]';
@@ -304,7 +302,8 @@ class AppExtension extends AbstractExtension
         if ($raw) {
             return $textLabel ?? '';
         }
-        return '<' . $tag . ' class="' . $textClass . '">' . $textLabel . '</' . $tag . '>';
+
+        return '<'.$tag.' class="'.$textClass.'">'.$textLabel.'</'.$tag.'>';
     }
 
     /**
@@ -321,7 +320,7 @@ class AppExtension extends AbstractExtension
             $textClass = 'text-orange';
         }
 
-        return '<span class="' . $textClass . '"><i class="fa fa' . ($a ? '-check' : '') . '-square-o"></i></span>';
+        return '<span class="'.$textClass.'"><i class="fa fa'.($a ? '-check' : '').'-square-o"></i></span>';
     }
 
     /**
@@ -332,12 +331,13 @@ class AppExtension extends AbstractExtension
     {
         $b = $a = null;
         if ($rawData) {
-            $a = '<i class="' . $rawData . '"></i> ' . $rawData;
+            $a = '<i class="'.$rawData.'"></i> '.$rawData;
         }
 
         if (isset($compareRawData[$fieldName]) && $compareRawData[$fieldName]) {
-            $b = '<i class="' . $compareRawData[$fieldName] . '"></i> ' . $compareRawData[$fieldName];
+            $b = '<i class="'.$compareRawData[$fieldName].'"></i> '.$compareRawData[$fieldName];
         }
+
         return $this->diff($a, $b, $compare);
     }
 
@@ -357,22 +357,22 @@ class AppExtension extends AbstractExtension
     public function diffDate($rawData, bool $compare, string $fieldName, $compareRawData, string $format1, string $format2 = null, string $internalFormat = null): string
     {
         $b = $a = [];
-        $out = "";
+        $out = '';
         $tag = 'li';
         $insColor = 'green';
         $delColor = 'red';
 
         if (isset($compareRawData[$fieldName])) {
-            if (is_array($compareRawData[$fieldName])) {
+            if (\is_array($compareRawData[$fieldName])) {
                 $b = $compareRawData[$fieldName];
-            } elseif (is_scalar($compareRawData[$fieldName])) {
+            } elseif (\is_scalar($compareRawData[$fieldName])) {
                 $b = [$compareRawData[$fieldName]];
             }
         }
 
-        if (is_array($rawData)) {
+        if (\is_array($rawData)) {
             $a = $rawData;
-        } elseif (is_scalar($rawData)) {
+        } elseif (\is_scalar($rawData)) {
             $tag = 'span';
             if (!empty($b)) {
                 $insColor = $delColor = 'orange';
@@ -391,34 +391,34 @@ class AppExtension extends AbstractExtension
                 $date = new \DateTime($item);
             }
 
-            if ($date === false) {
+            if (false === $date) {
                 throw new \RuntimeException('Unexpected date format');
             }
 
             $value = $date->format($format1);
             $value2 = null;
 
-            if ($internalFormat !== null) {
+            if (null !== $internalFormat) {
                 $internal = $date->format($internalFormat);
                 $formatedA[] = $internal;
-                $inArray = in_array($internal, $b);
-            } elseif ($format2 !== null) {
+                $inArray = \in_array($internal, $b);
+            } elseif (null !== $format2) {
                 $value2 = $date->format($format2);
                 $formatedA[] = $value2;
-                $inArray = in_array($item, $b);
+                $inArray = \in_array($item, $b);
             } else {
                 $formatedA[] = $value;
-                $inArray = in_array($value, $b);
+                $inArray = \in_array($value, $b);
             }
 
             if ($value2) {
-                $value .= ' (' . $value2 . ')';
+                $value .= ' ('.$value2.')';
             }
 
             if (!$compare || $inArray) {
-                $out .= '<' . $tag . ' class="">' . htmlentities($value) . '</' . $tag . '>';
+                $out .= '<'.$tag.' class="">'.\htmlentities($value).'</'.$tag.'>';
             } else {
-                $out .= '<' . $tag . ' class="text-' . $insColor . '"><ins class="diffmod">' . htmlentities($value) . '</ins></' . $tag . '>';
+                $out .= '<'.$tag.' class="text-'.$insColor.'"><ins class="diffmod">'.\htmlentities($value).'</ins></'.$tag.'>';
             }
         }
 
@@ -431,62 +431,61 @@ class AppExtension extends AbstractExtension
                 } else {
                     $date = new DateTime($item);
                 }
-                if ($date === false) {
+                if (false === $date) {
                     throw new \RuntimeException('Unexpected date format');
                 }
 
                 $value = $date->format($format1);
                 $value2 = null;
 
-                if ($internalFormat !== null) {
+                if (null !== $internalFormat) {
                     $internal = $date->format($internalFormat);
-                    $inArray = in_array($internal, $formatedA);
-                } elseif ($format2 !== null) {
+                    $inArray = \in_array($internal, $formatedA);
+                } elseif (null !== $format2) {
                     $value2 = $date->format($format2);
-                    $inArray = in_array($item, $formatedA);
+                    $inArray = \in_array($item, $formatedA);
                 } else {
-                    $inArray = in_array($value, $formatedA);
+                    $inArray = \in_array($value, $formatedA);
                 }
 
                 if ($value2) {
-                    $value .= ' (' . $value2 . ')';
+                    $value .= ' ('.$value2.')';
                 }
 
                 if (!$inArray) {
-                    $out .= ' <' . $tag . ' class="text-' . $delColor . '"><del class="diffmod">' . htmlentities($value) . '</del></' . $tag . '>';
+                    $out .= ' <'.$tag.' class="text-'.$delColor.'"><del class="diffmod">'.\htmlentities($value).'</del></'.$tag.'>';
                 }
             }
         }
-
 
         return $out;
     }
 
     /**
-     * @param mixed|null $rawData
+     * @param mixed|null        $rawData
      * @param array<mixed>|null $labels
      * @param array<mixed>|null $choices
-     * @param mixed|null $compareRawData
+     * @param mixed|null        $compareRawData
      */
     public function diffChoice($rawData, ?array $labels, ?array $choices, bool $compare, string $fieldName, $compareRawData): string
     {
         $b = $a = [];
-        $out = "";
+        $out = '';
         $tag = 'li';
         $insColor = 'green';
         $delColor = 'red';
 
         if (isset($compareRawData[$fieldName])) {
-            if (is_array($compareRawData[$fieldName])) {
+            if (\is_array($compareRawData[$fieldName])) {
                 $b = $compareRawData[$fieldName];
-            } elseif (is_scalar($compareRawData[$fieldName])) {
+            } elseif (\is_scalar($compareRawData[$fieldName])) {
                 $b = [$compareRawData[$fieldName]];
             }
         }
 
-        if (is_array($rawData)) {
+        if (\is_array($rawData)) {
             $a = $rawData;
-        } elseif (is_scalar($rawData)) {
+        } elseif (\is_scalar($rawData)) {
             $tag = 'span';
             if (!empty($b)) {
                 $insColor = $delColor = 'orange';
@@ -494,18 +493,17 @@ class AppExtension extends AbstractExtension
             $a = [$rawData];
         }
 
-
         if ($compare) {
             foreach ($b as $item) {
                 $value = $item;
                 if (\is_array($choices) && \in_array($value, $choices)) {
-                    $idx = array_search($value, $choices, true);
-                    if ($idx !== false && \is_array($labels) && \array_key_exists($idx, $labels)) {
-                        $value = $labels[$idx] . ' (' . $value . ')';
+                    $idx = \array_search($value, $choices, true);
+                    if (false !== $idx && \is_array($labels) && \array_key_exists($idx, $labels)) {
+                        $value = $labels[$idx].' ('.$value.')';
                     }
                 }
                 if (!\in_array($item, $a)) {
-                    $out .= '<' . $tag . ' class="text-' . $delColor . '"><del class="diffmod">' . \htmlentities($value) . '</del></' . $tag . '>';
+                    $out .= '<'.$tag.' class="text-'.$delColor.'"><del class="diffmod">'.\htmlentities($value).'</del></'.$tag.'>';
                 }
             }
         }
@@ -514,17 +512,16 @@ class AppExtension extends AbstractExtension
             $value = $item;
             if (\is_array($choices) && \in_array($value, $choices)) {
                 $idx = \array_search($value, $choices, true);
-                if ($idx !== false && \is_array($labels) && \array_key_exists($idx, $labels)) {
-                    $value = $this->isSuper() ? $labels[$idx] . ' (' . $item . ')' : $labels[$idx];
+                if (false !== $idx && \is_array($labels) && \array_key_exists($idx, $labels)) {
+                    $value = $this->isSuper() ? $labels[$idx].' ('.$item.')' : $labels[$idx];
                 }
             }
-            if (!$compare || in_array($item, $b)) {
-                $out .= '<' . $tag . ' class="" data-ems-id="' . $item . '">' . \htmlentities($value) . '</' . $tag . '>';
+            if (!$compare || \in_array($item, $b)) {
+                $out .= '<'.$tag.' class="" data-ems-id="'.$item.'">'.\htmlentities($value).'</'.$tag.'>';
             } else {
-                $out .= '<' . $tag . ' class="text-' . $insColor . '"><ins class="diffmod">' . htmlentities($value) . '</ins></' . $tag . '>';
+                $out .= '<'.$tag.' class="text-'.$insColor.'"><ins class="diffmod">'.\htmlentities($value).'</ins></'.$tag.'>';
             }
         }
-
 
         if (empty($out)) {
             $out = '<span class="text-gray">[empty]</span>';
@@ -533,7 +530,6 @@ class AppExtension extends AbstractExtension
         return $out;
     }
 
-
     /**
      * @param mixed|null $rawData
      * @param mixed|null $compareRawData
@@ -541,58 +537,58 @@ class AppExtension extends AbstractExtension
     public function diffDataLink($rawData, bool $compare, string $fieldName, $compareRawData): string
     {
         $b = $a = [];
-        $out = "";
+        $out = '';
 
-        if (is_array($rawData)) {
+        if (\is_array($rawData)) {
             $a = $rawData;
-        } elseif (is_scalar($rawData)) {
+        } elseif (\is_scalar($rawData)) {
             $a = [$rawData];
         }
 
         if (isset($compareRawData[$fieldName])) {
-            if (is_array($compareRawData[$fieldName])) {
+            if (\is_array($compareRawData[$fieldName])) {
                 $b = $compareRawData[$fieldName];
-            } elseif (is_scalar($compareRawData[$fieldName])) {
+            } elseif (\is_scalar($compareRawData[$fieldName])) {
                 $b = [$compareRawData[$fieldName]];
             }
         }
 
         if ($compare) {
             foreach ($b as $item) {
-                if (!in_array($item, $a)) {
-                    $out .= $this->dataLink($item, null, 'del') . ' ';
+                if (!\in_array($item, $a)) {
+                    $out .= $this->dataLink($item, null, 'del').' ';
                 }
             }
         }
 
         foreach ($a as $item) {
-            if (!$compare || in_array($item, $b)) {
-                $out .= $this->dataLink($item) . ' ';
+            if (!$compare || \in_array($item, $b)) {
+                $out .= $this->dataLink($item).' ';
             } else {
-                $out .= $this->dataLink($item, null, 'ins') . ' ';
+                $out .= $this->dataLink($item, null, 'ins').' ';
             }
         }
-
 
         return $out;
     }
 
     /**
      * @param mixed|null $rawData
-     * @param mixed|null  $compareRawData
+     * @param mixed|null $compareRawData
      */
     public function diffColor($rawData, bool $compare, string $fieldName, $compareRawData): string
     {
         $b = $a = null;
         if ($rawData) {
             $color = $rawData;
-            $a = '<span style="background-color: ' . $color . '; color: ' . ($this->contrastRatio($color, '#000000') > $this->contrastRatio($color, '#ffffff') ? '#000000' : '#ffffff') . ';">' . $color . '</span> ';
+            $a = '<span style="background-color: '.$color.'; color: '.($this->contrastRatio($color, '#000000') > $this->contrastRatio($color, '#ffffff') ? '#000000' : '#ffffff').';">'.$color.'</span> ';
         }
 
         if (isset($compareRawData[$fieldName]) && $compareRawData[$fieldName]) {
             $color = $compareRawData[$fieldName];
-            $b = '<span style="background-color: ' . $color . '; color: ' . ($this->contrastRatio($color, '#000000') > $this->contrastRatio($color, '#ffffff') ? '#000000' : '#ffffff') . ';">' . $color . '</span> ';
+            $b = '<span style="background-color: '.$color.'; color: '.($this->contrastRatio($color, '#000000') > $this->contrastRatio($color, '#ffffff') ? '#000000' : '#ffffff').';">'.$color.'</span> ';
         }
+
         return $this->diff($a, $b, $compare, false, false, true);
     }
 
@@ -603,6 +599,7 @@ class AppExtension extends AbstractExtension
     public function diffRaw($rawData, bool $compare, string $fieldName, $compareRawData): string
     {
         $b = isset($compareRawData[$fieldName]) ? $compareRawData[$fieldName] : null;
+
         return $this->diff($rawData, $b, $compare);
     }
 
@@ -624,9 +621,9 @@ class AppExtension extends AbstractExtension
     public function diffHtml($rawData, bool $compare, string $fieldName, $compareRawData): string
     {
         $b = isset($compareRawData[$fieldName]) ? $compareRawData[$fieldName] : null;
+
         return $this->diff($rawData, $b, $compare, false, true, true);
     }
-
 
     public function getSequenceNextValue(string $name): int
     {
@@ -635,12 +632,14 @@ class AppExtension extends AbstractExtension
         if (!$repo instanceof SequenceRepository) {
             throw new \RuntimeException('Unexpected repository');
         }
+
         return $repo->nextValue($name);
     }
 
     /**
      * @param array<mixed> $array1
      * @param array<mixed> $array2
+     *
      * @return array<mixed>
      */
     public function arrayIntersect(array $array1, array $array2): array
@@ -650,6 +649,7 @@ class AppExtension extends AbstractExtension
 
     /**
      * @param array<mixed> ...$arrays
+     *
      * @return array<mixed>
      */
     public function arrayMergeRecursive(array ...$arrays): array
@@ -665,6 +665,7 @@ class AppExtension extends AbstractExtension
     /**
      * @param mixed $function
      * @param mixed ...$parameter
+     *
      * @return mixed
      */
     public function callUserFunc($function, ...$parameter)
@@ -674,6 +675,7 @@ class AppExtension extends AbstractExtension
 
     /**
      * @param array<mixed> $params
+     *
      * @return array<mixed>
      */
     public function search(array $params): array
@@ -695,7 +697,7 @@ class AppExtension extends AbstractExtension
         $datetime1 = \date_create($date1);
         $datetime2 = \date_create($date2);
 
-        if ($datetime1 === false || $datetime2 === false) {
+        if (false === $datetime1 || false === $datetime2) {
             throw new \RuntimeException('Unexpected date format');
         }
 
@@ -703,13 +705,14 @@ class AppExtension extends AbstractExtension
         if ($detailed) {
             return $interval->format('%R%a days %h hours %i minutes');
         }
-        return (\intval($interval->format('%R%a')) + 1) . ' days';
+
+        return (\intval($interval->format('%R%a')) + 1).' days';
     }
 
     public function getUser(string $username): ?UserInterface
     {
         $user = $this->userService->getUser($username);
-        if ($user === null || $user instanceof UserInterface) {
+        if (null === $user || $user instanceof UserInterface) {
             return $user;
         }
         throw new \RuntimeException('Unexpected user object');
@@ -717,25 +720,28 @@ class AppExtension extends AbstractExtension
 
     public function displayName(string $username): string
     {
-        /**@var UserInterface $user */
+        /** @var UserInterface $user */
         $user = $this->userService->getUser($username);
         if (!empty($user)) {
             return $user->getDisplayName();
         }
+
         return $username;
     }
 
     public function srcPath(string $input, string $fileName = null): ?string
     {
         $path = $this->router->generate('ems_file_view', ['sha1' => '__SHA1__'], UrlGeneratorInterface::ABSOLUTE_PATH);
-        $path = substr($path, 0, strlen($path) - 8);
-        return preg_replace_callback(
+        $path = \substr($path, 0, \strlen($path) - 8);
+
+        return \preg_replace_callback(
             '/(ems:\/\/asset:)([^\n\r"\'\?]*)/i',
             function ($matches) use ($path, $fileName) {
                 if ($fileName) {
                     return $this->fileService->getFile($matches[2]);
                 }
-                return $path . $matches[2];
+
+                return $path.$matches[2];
             },
             $input
         );
@@ -744,22 +750,21 @@ class AppExtension extends AbstractExtension
     public function internalLinks(string $input, string $fileName = null): ?string
     {
         $url = $this->router->generate('data.link', ['key' => 'object:'], UrlGeneratorInterface::ABSOLUTE_PATH);
-        $out = preg_replace('/ems:\/\/object:/i', $url, $input);
+        $out = \preg_replace('/ems:\/\/object:/i', $url, $input);
 
-        if ($out === null) {
+        if (null === $out) {
             throw new \RuntimeException('Unexpected null value');
         }
 
         return $this->srcPath($out, $fileName);
     }
 
-
     public function i18n(string $key, string $locale = null): string
     {
         if (empty($locale)) {
             $locale = $this->router->getContext()->getParameter('_locale');
         }
-        /**@var I18nRepository $repo */
+        /** @var I18nRepository $repo */
         $repo = $this->doctrine->getManager()->getRepository('EMSCoreBundle:I18n');
         $result = $repo->findOneBy([
             'identifier' => $key,
@@ -768,6 +773,7 @@ class AppExtension extends AbstractExtension
         if ($result instanceof I18n) {
             return $result->getContentTextforLocale($locale);
         }
+
         return $key;
     }
 
@@ -789,6 +795,7 @@ class AppExtension extends AbstractExtension
                 return false;
             }
         }
+
         return true;
     }
 
@@ -797,7 +804,7 @@ class AppExtension extends AbstractExtension
      */
     public function inMyCircles($circles): bool
     {
-        if (\is_array($circles) && count($circles) === 0) {
+        if (\is_array($circles) && 0 === \count($circles)) {
             return true;
         }
 
@@ -807,10 +814,12 @@ class AppExtension extends AbstractExtension
 
         if (\is_array($circles)) {
             $user = $this->userService->getCurrentUser(UserService::DONT_DETACH);
+
             return \count(\array_intersect($circles, $user->getCircles())) > 0;
         }
 
         $user = $this->userService->getCurrentUser(UserService::DONT_DETACH);
+
         return \in_array($circles, $user->getCircles());
     }
 
@@ -835,6 +844,7 @@ class AppExtension extends AbstractExtension
             }
             $out[$choice->getGroup()][] = $choice;
         }
+
         return $out;
     }
 
@@ -849,24 +859,25 @@ class AppExtension extends AbstractExtension
         try {
             $out = $this->twig->createTemplate($template)->render($params);
         } catch (\Exception $e) {
-            $out = "Error in template: " . $e->getMessage();
+            $out = 'Error in template: '.$e->getMessage();
         }
+
         return $out;
     }
 
     public function dataLabel(string $key): string
     {
         $out = $key;
-        $exploded = explode(':', $key);
-        if (count($exploded) == 2 && strlen($exploded[0]) > 0 && strlen($exploded[1]) > 0) {
+        $exploded = \explode(':', $key);
+        if (2 == \count($exploded) && \strlen($exploded[0]) > 0 && \strlen($exploded[1]) > 0) {
             $type = $exploded[0];
             $ouuid = $exploded[1];
 
-            /**@var \EMS\CoreBundle\Entity\ContentType $contentType */
+            /** @var \EMS\CoreBundle\Entity\ContentType $contentType */
             $contentType = $this->contentTypeService->getByName($type);
             if ($contentType) {
                 if ($contentType->getIcon()) {
-                    $icon = '<i class="' . $contentType->getIcon() . '"></i>&nbsp;&nbsp;';
+                    $icon = '<i class="'.$contentType->getIcon().'"></i>&nbsp;&nbsp;';
                 } else {
                     $icon = '<i class="fa fa-book"></i>&nbsp;&nbsp;';
                 }
@@ -891,40 +902,41 @@ class AppExtension extends AbstractExtension
 
                     if ($contentType->getLabelField()) {
                         $label = $result['_source'][$contentType->getLabelField()];
-                        if ($label && strlen($label) > 0) {
+                        if ($label && \strlen($label) > 0) {
                             $out = $label;
                         }
                     }
-                    $out = $icon . $out;
+                    $out = $icon.$out;
 
                     if ($contentType->getColorField() && $result['_source'][$contentType->getColorField()]) {
                         $color = $result['_source'][$contentType->getColorField()];
                         $contrasted = $this->contrastRatio($color, '#000000') > $this->contrastRatio($color, '#ffffff') ? '#000000' : '#ffffff';
 
-                        $out = '<span class="" style="color:' . $contrasted . ';">' . $out . '</span>';
+                        $out = '<span class="" style="color:'.$contrasted.';">'.$out.'</span>';
                     }
                 } catch (\Exception $e) {
                 }
             }
         }
+
         return $out;
     }
 
     public function dataLink(string $key, string $revisionId = null, string $diffMod = null): string
     {
         $out = $key;
-        $exploded = explode(':', $key);
-        if (count($exploded) == 2 && strlen($exploded[0]) > 0 && strlen($exploded[1]) > 0) {
+        $exploded = \explode(':', $key);
+        if (2 == \count($exploded) && \strlen($exploded[0]) > 0 && \strlen($exploded[1]) > 0) {
             $type = $exploded[0];
             $ouuid = $exploded[1];
 
-            $addAttribute = "";
+            $addAttribute = '';
 
-            /**@var \EMS\CoreBundle\Entity\ContentType $contentType */
+            /** @var \EMS\CoreBundle\Entity\ContentType $contentType */
             $contentType = $this->contentTypeService->getByName($type);
             if ($contentType) {
                 if ($contentType->getIcon()) {
-                    $icon = '<i class="' . $contentType->getIcon() . '"></i>&nbsp;&nbsp;';
+                    $icon = '<i class="'.$contentType->getIcon().'"></i>&nbsp;&nbsp;';
                 } else {
                     $icon = '<i class="fa fa-book"></i>&nbsp;&nbsp;';
                 }
@@ -949,32 +961,33 @@ class AppExtension extends AbstractExtension
 
                     if ($contentType->getLabelField()) {
                         $label = $result['_source'][$contentType->getLabelField()];
-                        if ($label && strlen($label) > 0) {
+                        if ($label && \strlen($label) > 0) {
                             $out = $label;
                         }
                     }
-                    $out = $icon . $out;
+                    $out = $icon.$out;
 
                     if ($contentType->getColorField() && $result['_source'][$contentType->getColorField()]) {
                         $color = $result['_source'][$contentType->getColorField()];
                         $contrasted = $this->contrastRatio($color, '#000000') > $this->contrastRatio($color, '#ffffff') ? '#000000' : '#ffffff';
 
-                        $out = '<span class="" style="color:' . $contrasted . ';">' . $out . '</span>';
-                        $addAttribute = ' style="background-color: ' . $result['_source'][$contentType->getColorField()] . ';border-color: ' . $result['_source'][$contentType->getColorField()] . ';"';
+                        $out = '<span class="" style="color:'.$contrasted.';">'.$out.'</span>';
+                        $addAttribute = ' style="background-color: '.$result['_source'][$contentType->getColorField()].';border-color: '.$result['_source'][$contentType->getColorField()].';"';
                     }
 
-                    if ($diffMod !== null) {
-                        $out = '<' . $diffMod . ' class="diffmod">' . $out . '<' . $diffMod . '>';
+                    if (null !== $diffMod) {
+                        $out = '<'.$diffMod.' class="diffmod">'.$out.'<'.$diffMod.'>';
                     }
                 } catch (\Exception $e) {
                 }
             }
-            $out = '<a class="btn btn-primary btn-sm" href="' . $this->router->generate('data.revisions', [
+            $out = '<a class="btn btn-primary btn-sm" href="'.$this->router->generate('data.revisions', [
                     'type' => $type,
                     'ouuid' => $ouuid,
                     'revisionId' => $revisionId,
-                ], UrlGeneratorInterface::RELATIVE_PATH) . '" ' . $addAttribute . ' >' . $out . '</a>';
+                ], UrlGeneratorInterface::RELATIVE_PATH).'" '.$addAttribute.' >'.$out.'</a>';
         }
+
         return $out;
     }
 
@@ -983,12 +996,13 @@ class AppExtension extends AbstractExtension
         $parent = $error->getOrigin();
         $out = '';
         while ($parent) {
-            $out = $parent->getName() . $out;
+            $out = $parent->getName().$out;
             $parent = $parent->getParent();
             if ($parent) {
-                $out = '_' . $out;
+                $out = '_'.$out;
             }
         }
+
         return $out;
     }
 
@@ -1001,12 +1015,12 @@ class AppExtension extends AbstractExtension
             return null;
         }
 
-        $exploded = explode(':', $key);
-        if (count($exploded) === 2) {
+        $exploded = \explode(':', $key);
+        if (2 === \count($exploded)) {
             $type = $exploded[0];
             $ouuid = $exploded[1];
 
-            /**@var \EMS\CoreBundle\Entity\ContentType $contentType */
+            /** @var \EMS\CoreBundle\Entity\ContentType $contentType */
             $contentType = $this->contentTypeService->getByName($type);
             if ($contentType) {
                 $singleTypeIndex = $this->contentTypeService->getIndex($contentType);
@@ -1021,12 +1035,10 @@ class AppExtension extends AbstractExtension
                                 'should' => [
                                     ['term' => ['_type' => $type]],
                                     ['term' => ['_contenttype' => $type]],
-                                ]
-
-                            ]
-                        ]
-                    ]
-
+                                ],
+                            ],
+                        ],
+                    ],
                 ];
 
                 $result = $this->client->search($body);
@@ -1043,13 +1055,12 @@ class AppExtension extends AbstractExtension
                 return null; //zero hits
             }
         }
+
         return null;
     }
 
     /**
      * @param string[] $roles
-     * @param bool $super
-     * @return bool
      */
     public function oneGranted(array $roles, bool $super = false): bool
     {
@@ -1061,27 +1072,29 @@ class AppExtension extends AbstractExtension
                 return true;
             }
         }
+
         return false;
     }
 
     public function relativeLuminance(string $col): float
     {
-        $col = trim($col, '#');
-        if (strlen($col) == 3) {
-            $col = $col[0] . $col[0] . $col[1] . $col[1] . $col[2] . $col[2];
+        $col = \trim($col, '#');
+        if (3 == \strlen($col)) {
+            $col = $col[0].$col[0].$col[1].$col[1].$col[2].$col[2];
         }
-        $components = array(
-            'r' => hexdec(substr($col, 0, 2)) / 255,
-            'g' => hexdec(substr($col, 2, 2)) / 255,
-            'b' => hexdec(substr($col, 4, 2)) / 255
-        );
+        $components = [
+            'r' => \hexdec(\substr($col, 0, 2)) / 255,
+            'g' => \hexdec(\substr($col, 2, 2)) / 255,
+            'b' => \hexdec(\substr($col, 4, 2)) / 255,
+        ];
         foreach ($components as $c => $v) {
             if ($v <= 0.03928) {
                 $components[$c] = $v / 12.92;
             } else {
-                $components[$c] = pow((($v + 0.055) / 1.055), 2.4);
+                $components[$c] = \pow((($v + 0.055) / 1.055), 2.4);
             }
         }
+
         return ($components['r'] * 0.2126) + ($components['g'] * 0.7152) + ($components['b'] * 0.0722);
     }
 
@@ -1094,6 +1107,7 @@ class AppExtension extends AbstractExtension
             $y1 = $y2;
             $y2 = $y3;
         }
+
         return ($y1 + 0.05) / ($y2 + 0.05);
     }
 
@@ -1109,15 +1123,16 @@ class AppExtension extends AbstractExtension
     {
         $searchRepository = $this->doctrine->getRepository('EMSCoreBundle:Form\Search');
         $searches = $searchRepository->findBy([
-            'user' => $username
+            'user' => $username,
         ]);
         $out = [];
         foreach ($searches as $search) {
-            if (! $search instanceof Search) {
+            if (!$search instanceof Search) {
                 throw new \RuntimeException('Unexpected class object');
             }
             $out[] = $search;
         }
+
         return $out;
     }
 
@@ -1127,7 +1142,7 @@ class AppExtension extends AbstractExtension
      */
     public function dump(): void
     {
-        trigger_error('dump is now integrated by default in twig 1.5', E_USER_DEPRECATED);
+        \trigger_error('dump is now integrated by default in twig 1.5', E_USER_DEPRECATED);
     }
 
     public function convertJavaDateFormat(string $format): string
@@ -1154,29 +1169,30 @@ class AppExtension extends AbstractExtension
     }
 
     /**
-     * @param mixed $needle
+     * @param mixed        $needle
      * @param array<mixed> $haystack
      */
     public function inArray($needle, array $haystack): bool
     {
-        return \array_search($needle, $haystack) !== false;
+        return false !== \array_search($needle, $haystack);
     }
 
     /**
-     * @param mixed $needle
+     * @param mixed        $needle
      * @param array<mixed> $haystack
      */
     public function firstInArray($needle, array $haystack): bool
     {
-        return \array_search($needle, $haystack) === 0;
+        return 0 === \array_search($needle, $haystack);
     }
 
     public function getContentType(string $name): ?ContentType
     {
         $contentType = $this->contentTypeService->getByName($name);
-        if ($contentType !== false) {
+        if (false !== $contentType) {
             return $contentType;
         }
+
         return null;
     }
 
@@ -1194,12 +1210,13 @@ class AppExtension extends AbstractExtension
     public function getDefaultEnvironments(): array
     {
         $defaultEnvironments = [];
-        /**@var Environment $environment */
+        /** @var Environment $environment */
         foreach ($this->environmentService->getEnvironments() as $environment) {
             if ($environment->getInDefaultSearch()) {
                 $defaultEnvironments[] = $environment->getName();
             }
         }
+
         return $defaultEnvironments;
     }
 
@@ -1214,23 +1231,24 @@ class AppExtension extends AbstractExtension
     public function getEnvironment(string $name): ?Environment
     {
         $environment = $this->environmentService->getAliasByName($name);
-        if ($environment !== false) {
+        if (false !== $environment) {
             return $environment;
         }
+
         return null;
     }
 
-
     /**
-     * @param mixed $wsdl
+     * @param mixed                                                        $wsdl
      * @param array{function: string, options?: array, parameters?: mixed} $arguments
+     *
      * @return mixed
      */
     public function soapRequest($wsdl, array $arguments)
     {
         /** @var \SoapClient $soapClient */
         $soapClient = null;
-        if (array_key_exists('options', $arguments)) {
+        if (\array_key_exists('options', $arguments)) {
             $soapClient = new \SoapClient($wsdl, $arguments['options']);
         } else {
             $soapClient = new \SoapClient($wsdl);
@@ -1241,6 +1259,7 @@ class AppExtension extends AbstractExtension
         if (\array_key_exists('parameters', $arguments)) {
             return $soapClient->$function($arguments['parameters']);
         }
+
         return $soapClient->$function();
     }
 

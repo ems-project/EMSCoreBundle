@@ -1,33 +1,34 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Entity;
 
 interface UserInterface
 {
     /**
-     * Get created
+     * Get created.
      *
      * @return \DateTime
      */
     public function getCreated();
-    
+
     /**
-     * Get modified
+     * Get modified.
      *
      * @return \DateTime
      */
     public function getModified();
 
     /**
-     * Get circles
+     * Get circles.
      *
      * @return array
      */
     public function getCircles();
-    
-    
+
     /**
-     * Set circles
+     * Set circles.
      *
      * @param array $circles
      *
@@ -36,7 +37,7 @@ interface UserInterface
     public function setCircles($circles);
 
     /**
-     * Set displayName
+     * Set displayName.
      *
      * @param string $displayName
      *
@@ -45,46 +46,44 @@ interface UserInterface
     public function setDisplayName($displayName);
 
     /**
-     * Get displayName
+     * Get displayName.
      *
      * @return string
      */
     public function getDisplayName();
 
     /**
-     * Set allowedToConfigureWysiwyg
+     * Set allowedToConfigureWysiwyg.
      *
-     * @param boolean $allowedToConfigureWysiwyg
+     * @param bool $allowedToConfigureWysiwyg
      *
      * @return UserInterface
      */
     public function setAllowedToConfigureWysiwyg($allowedToConfigureWysiwyg);
 
     /**
-     * Get allowedToConfigureWysiwyg
+     * Get allowedToConfigureWysiwyg.
      *
-     * @return boolean
+     * @return bool
      */
     public function getAllowedToConfigureWysiwyg();
 
     /**
-     * Set wysiwygProfile
-     *
-     * @param WysiwygProfile $wysiwygProfile
+     * Set wysiwygProfile.
      *
      * @return UserInterface
      */
     public function setWysiwygProfile(WysiwygProfile $wysiwygProfile);
 
     /**
-     * Get wysiwygProfile
+     * Get wysiwygProfile.
      *
      * @return WysiwygProfile
      */
     public function getWysiwygProfile();
 
     /**
-     * Set wysiwygOptions
+     * Set wysiwygOptions.
      *
      * @param string $wysiwygOptions
      *
@@ -93,107 +92,101 @@ interface UserInterface
     public function setWysiwygOptions($wysiwygOptions);
 
     /**
-     * Get wysiwygOptions
+     * Get wysiwygOptions.
      *
      * @return string
      */
     public function getWysiwygOptions();
 
     /**
-     * Set layoutBoxed
+     * Set layoutBoxed.
      *
-     * @param boolean $layoutBoxed
+     * @param bool $layoutBoxed
      *
      * @return UserInterface
      */
     public function setLayoutBoxed($layoutBoxed);
 
     /**
-     * Get layoutBoxed
+     * Get layoutBoxed.
      *
-     * @return boolean
+     * @return bool
      */
     public function getLayoutBoxed();
-    
+
     /**
-     * Set sidebarMini
+     * Set sidebarMini.
      *
-     * @param boolean $sidebarMini
+     * @param bool $sidebarMini
      *
      * @return UserInterface
      */
     public function setSidebarMini($sidebarMini);
-    
+
     /**
-     * Get sidebarMini
+     * Get sidebarMini.
      *
-     * @return boolean
+     * @return bool
      */
     public function getSidebarMini();
-    
-    
+
     /**
-     * Set emailNotification
+     * Set emailNotification.
      *
-     * @param boolean $emailNotification
+     * @param bool $emailNotification
      *
      * @return UserInterface
      */
     public function setEmailNotification($emailNotification);
-    
+
     /**
-     * Get emailNotification
+     * Get emailNotification.
      *
-     * @return boolean
+     * @return bool
      */
     public function getEmailNotification();
-    
+
     /**
-     * Set sidebarCollapse
+     * Set sidebarCollapse.
      *
-     * @param boolean $sidebarCollapse
+     * @param bool $sidebarCollapse
      *
      * @return UserInterface
      */
     public function setSidebarCollapse($sidebarCollapse);
 
     /**
-     * Get sidebarCollapse
+     * Get sidebarCollapse.
      *
-     * @return boolean
+     * @return bool
      */
     public function getSidebarCollapse();
 
     /**
-     * Add authToken
-     *
-     * @param \EMS\CoreBundle\Entity\AuthToken $authToken
+     * Add authToken.
      *
      * @return UserInterface
      */
     public function addAuthToken(\EMS\CoreBundle\Entity\AuthToken $authToken);
 
     /**
-     * Remove authToken
-     *
-     * @param \EMS\CoreBundle\Entity\AuthToken $authToken
+     * Remove authToken.
      */
     public function removeAuthToken(\EMS\CoreBundle\Entity\AuthToken $authToken);
-    
+
     /**
-     * Get authTokens
+     * Get authTokens.
      *
      * @return \Doctrine\Common\Collections\Collection
      */
     public function getAuthTokens();
-    
+
     /**
-     * Is enabled
+     * Is enabled.
      *
-     * @return boolean
+     * @return bool
      */
     public function isEnabled();
-
 
     /**
      * @return string

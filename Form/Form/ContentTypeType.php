@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\Form;
 
 use EMS\CoreBundle\Entity\ContentType;
@@ -19,19 +21,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ContentTypeType extends AbstractType
 {
-    /**
-     *
-     * @param FormBuilderInterface $builder
-     * @param array $options
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
         /** @var ContentType $contentType */
         $contentType = $builder->getData();
-        
-        if (!empty($options['mapping']) && !empty(array_values($options['mapping'])[0]['mappings'][$options['data']->getName()]['properties'])) {
-            $mapping = array_values($options['mapping'])[0]['mappings'][$options['data']->getName()]['properties'];
+
+        if (!empty($options['mapping']) && !empty(\array_values($options['mapping'])[0]['mappings'][$options['data']->getName()]['properties'])) {
+            $mapping = \array_values($options['mapping'])[0]['mappings'][$options['data']->getName()]['properties'];
             $builder->add('labelField', ContentTypeFieldPickerType::class, [
                 'required' => false,
                 'firstLevelOnly' => true,
@@ -40,9 +36,9 @@ class ContentTypeType extends AbstractType
                         'text',
                         'keyword',
                         'string',
-                        'integer'
-                ]]);
-            
+                        'integer',
+                ], ]);
+
             $builder->add('colorField', ContentTypeFieldPickerType::class, [
                 'required' => false,
                 'firstLevelOnly' => true,
@@ -51,7 +47,7 @@ class ContentTypeType extends AbstractType
                         'string',
                         'keyword',
                         'text',
-                ]]);
+                ], ]);
             $builder->add('circlesField', ContentTypeFieldPickerType::class, [
                 'required' => false,
                 'firstLevelOnly' => true,
@@ -60,7 +56,7 @@ class ContentTypeType extends AbstractType
                         'string',
                         'keyword',
                         'text',
-                ]]);
+                ], ]);
             $builder->add('emailField', ContentTypeFieldPickerType::class, [
                 'required' => false,
                 'firstLevelOnly' => true,
@@ -69,7 +65,7 @@ class ContentTypeType extends AbstractType
                         'string',
                         'keyword',
                         'text',
-                ]]);
+                ], ]);
             $builder->add('categoryField', ContentTypeFieldPickerType::class, [
                 'required' => false,
                 'firstLevelOnly' => true,
@@ -78,21 +74,21 @@ class ContentTypeType extends AbstractType
                         'string',
                         'keyword',
                         'text',
-                ]]);
+                ], ]);
             $builder->add('imageField', ContentTypeFieldPickerType::class, [
                 'required' => false,
                 'firstLevelOnly' => true,
                 'mapping' => $mapping,
                 'types' => [
                         'nested',
-                ]]);
+                ], ]);
             $builder->add('assetField', ContentTypeFieldPickerType::class, [
                 'required' => false,
                 'firstLevelOnly' => true,
                 'mapping' => $mapping,
                 'types' => [
                         'nested',
-                ]]);
+                ], ]);
             $builder->add('businessIdField', ContentTypeFieldPickerType::class, [
                     'required' => false,
                     'firstLevelOnly' => false,
@@ -102,7 +98,7 @@ class ContentTypeType extends AbstractType
                             'date',
                             'integer',
                             'string', //TODO: backward compatibility with ES2 To remove?
-                    ]]);
+                    ], ]);
             $builder->add('sortBy', ContentTypeFieldPickerType::class, [
                     'required' => false,
                     'firstLevelOnly' => false,
@@ -112,11 +108,11 @@ class ContentTypeType extends AbstractType
                             'date',
                             'integer',
                             'string', //TODO: backward compatibility with ES2 To remove?
-                    ]]);
+                    ], ]);
             $builder->add('sortOrder', ChoiceType::class, [
                     'required' => false,
                     'label' => 'Default sort order',
-                    'choices'  => [
+                    'choices' => [
                         'Ascending' => 'asc',
                         'Descending' => 'desc',
                     ],
@@ -129,13 +125,11 @@ class ContentTypeType extends AbstractType
                     'text',
                     'keyword',
                     'string',
-                    'integer'
-                ]
+                    'integer',
+                ],
             ]);
             $builder->add('localeField');
         }
-        
-        
 
 //         $builder->add ( 'parentField');
 //         $builder->add ( 'userField');
@@ -162,62 +156,60 @@ class ContentTypeType extends AbstractType
         $builder->add('color', ColorPickerType::class, [
             'required' => false,
         ]);
-        
-        
+
         $builder->add('description', TextareaType::class, [
                 'required' => false,
                 'attr' => [
-                        'class' => 'ckeditor'
-                ]
+                        'class' => 'ckeditor',
+                ],
         ]);
-        
+
         if ($options['twigWithWysiwyg']) {
             $builder->add('indexTwig', TextareaType::class, [
                     'required' => false,
                     'attr' => [
                             'class' => 'ckeditor',
                             'rows' => 10,
-                    ]
+                    ],
             ]);
         } else {
             $builder->add('indexTwig', CodeEditorType::class, [
                     'required' => false,
                     'attr' => [
                     ],
-                    'slug' => 'content_type'
+                    'slug' => 'content_type',
             ]);
         }
-        
+
         $builder->add('extra', TextareaType::class, [
                 'required' => false,
                 'attr' => [
                         'rows' => 10,
-                ]
+                ],
         ]);
-        
-        
+
         $builder->add('save', SubmitEmsType::class, [
                 'attr' => [
-                        'class' => 'btn-primary btn-sm '
+                        'class' => 'btn-primary btn-sm ',
                 ],
-                'icon' => 'fa fa-save'
+                'icon' => 'fa fa-save',
         ]);
         $builder->add('saveAndUpdateMapping', SubmitEmsType::class, [
                 'attr' => [
-                        'class' => 'btn-primary btn-sm '
+                        'class' => 'btn-primary btn-sm ',
                 ],
-                'icon' => 'fa fa-save'
+                'icon' => 'fa fa-save',
         ]);
         $builder->add('saveAndClose', SubmitEmsType::class, [
                 'attr' => [
-                        'class' => 'btn-primary btn-sm '
+                        'class' => 'btn-primary btn-sm ',
                 ],
-                'icon' => 'fa fa-save'
+                'icon' => 'fa fa-save',
         ]);
 
         $builder->add('rootContentType');
         $builder->add('viewRole', RolePickerType::class);
-        
+
         if ($contentType->getEnvironment()->getManaged()) {
             $builder->add('defaultValue', CodeEditorType::class, [
                 'required' => false,
@@ -232,34 +224,32 @@ class ContentTypeType extends AbstractType
             $builder->add('trashRole', RolePickerType::class);
 
             $builder->add('searchLinkDisplayRole', RolePickerType::class, [
-                'label' => 'Display the search link in main navigation'
+                'label' => 'Display the search link in main navigation',
             ]);
             $builder->add('createLinkDisplayRole', RolePickerType::class, [
-                'label' => 'Display the creation link in main navigation'
+                'label' => 'Display the creation link in main navigation',
             ]);
 
             $builder->add('orderField');
             $builder->add('saveAndEditStructure', SubmitEmsType::class, [
                     'attr' => [
-                            'class' => 'btn-primary btn-sm '
+                            'class' => 'btn-primary btn-sm ',
                     ],
-                    'icon' => 'fa fa-save'
+                    'icon' => 'fa fa-save',
             ]);
             $builder->add('saveAndReorder', SubmitEmsType::class, [
                     'attr' => [
-                            'class' => 'btn-primary btn-sm '
+                            'class' => 'btn-primary btn-sm ',
                     ],
-                    'icon' => 'fa fa-reorder'
+                    'icon' => 'fa fa-reorder',
             ]);
         }
-        
+
         return parent::buildForm($builder, $options);
     }
-    
+
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function configureOptions(OptionsResolver $resolver)
     {

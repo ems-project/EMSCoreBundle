@@ -1,12 +1,14 @@
 <?php
+
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Entity\Form;
 
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 
 /**
- * Search
+ * Search.
  *
  * @ORM\Table(name="search")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\SearchRepository")
@@ -21,14 +23,14 @@ class Search implements JsonSerializable
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-    
+
     /**
-     * @var array $filters
+     * @var array
      *
      * @ORM\OneToMany(targetEntity="SearchFilter", mappedBy="search", cascade={"persist", "remove"})
      */
     public $filters;
-    
+
     /**
      * @var string
      *
@@ -36,27 +38,27 @@ class Search implements JsonSerializable
      */
     private $user;
 
-     /**
+    /**
      * @var array
      *
      * @ORM\Column(name="environments", type="json_array")
      */
     public $environments;
 
-     /**
+    /**
      * @var array
      *
      * @ORM\Column(name="contentTypes", type="json_array")
      */
     public $contentTypes;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=100)
      */
     private $name;
-    
+
     /**
      * @var bool
      *
@@ -64,24 +66,21 @@ class Search implements JsonSerializable
      */
     private $default;
 
-
-
     /**
      * @ORM\OneToOne(targetEntity="EMS\CoreBundle\Entity\ContentType", cascade={})
      * @ORM\JoinColumn(name="content_type_id", referencedColumnName="id")
      */
     private $contentType;
 
-    
     /**
-     * @var string $sortBy
+     * @var string
      *
      * @ORM\Column(name="sort_by", type="string", length=100, nullable=true)
      */
     public $sortBy;
-    
+
     /**
-     * @var string $sortOrder
+     * @var string
      *
      * @ORM\Column(name="sort_order", type="string", length=100, nullable=true)
      */
@@ -94,7 +93,6 @@ class Search implements JsonSerializable
      */
     protected $minimumShouldMatch;
 
-
     public function __construct()
     {
         $this->filters = [];
@@ -102,8 +100,6 @@ class Search implements JsonSerializable
         $this->default = false;
         $this->minimumShouldMatch = 1;
     }
-
-
 
     public function jsonSerialize()
     {
@@ -116,18 +112,18 @@ class Search implements JsonSerializable
         ];
 
         $out['filters'] = [];
-        /**@var SearchFilter $filter*/
+        /** @var SearchFilter $filter */
         foreach ($this->filters as $filter) {
             $out['filters'][] = $filter->jsonSerialize();
         }
+
         return $out;
     }
-    
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -135,7 +131,7 @@ class Search implements JsonSerializable
     }
 
     /**
-     * Set user
+     * Set user.
      *
      * @param string $user
      *
@@ -149,7 +145,7 @@ class Search implements JsonSerializable
     }
 
     /**
-     * Get user
+     * Get user.
      *
      * @return string
      */
@@ -159,7 +155,7 @@ class Search implements JsonSerializable
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
      *
@@ -173,7 +169,7 @@ class Search implements JsonSerializable
     }
 
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -183,30 +179,26 @@ class Search implements JsonSerializable
     }
 
     /**
-     * Add filter
-     *
-     * @param SearchFilter $filter
+     * Add filter.
      *
      * @return Search
      */
     public function addFilter(SearchFilter $filter)
     {
         $this->filters[] = $filter;
-        
+
         return $this;
     }
-    
+
     public function resetFilters(array $filters)
     {
         $this->filters = $filters;
-        
+
         return $this;
     }
 
     /**
-     * Remove filter
-     *
-     * @param SearchFilter $filter
+     * Remove filter.
      */
     public function removeFilter(SearchFilter $filter)
     {
@@ -214,7 +206,7 @@ class Search implements JsonSerializable
     }
 
     /**
-     * Get filters
+     * Get filters.
      *
      * @return SearchFilter[]
      */
@@ -224,7 +216,7 @@ class Search implements JsonSerializable
     }
 
     /**
-     * Set sortBy
+     * Set sortBy.
      *
      * @param string $sortBy
      *
@@ -238,7 +230,7 @@ class Search implements JsonSerializable
     }
 
     /**
-     * Get sortBy
+     * Get sortBy.
      *
      * @return string
      */
@@ -248,7 +240,7 @@ class Search implements JsonSerializable
     }
 
     /**
-     * Set sortOrder
+     * Set sortOrder.
      *
      * @param string $sortOrder
      *
@@ -262,7 +254,7 @@ class Search implements JsonSerializable
     }
 
     /**
-     * Get sortOrder
+     * Get sortOrder.
      *
      * @return string
      */
@@ -272,7 +264,7 @@ class Search implements JsonSerializable
     }
 
     /**
-     * Set environments
+     * Set environments.
      *
      * @param array $environments
      *
@@ -286,7 +278,7 @@ class Search implements JsonSerializable
     }
 
     /**
-     * Get environments
+     * Get environments.
      *
      * @return array
      */
@@ -294,9 +286,9 @@ class Search implements JsonSerializable
     {
         return $this->environments;
     }
-    
+
     /**
-     * Set contentTypes
+     * Set contentTypes.
      *
      * @param array $contentTypes
      *
@@ -305,12 +297,12 @@ class Search implements JsonSerializable
     public function setContentTypes($contentTypes)
     {
         $this->contentTypes = $contentTypes;
-        
+
         return $this;
     }
-    
+
     /**
-     * Get contentTypes
+     * Get contentTypes.
      *
      * @return array
      */
@@ -318,9 +310,9 @@ class Search implements JsonSerializable
     {
         return $this->contentTypes;
     }
-    
+
     /**
-     * Set default
+     * Set default.
      *
      * @param bool $default
      *
@@ -329,12 +321,12 @@ class Search implements JsonSerializable
     public function setDefault($default)
     {
         $this->default = $default;
-        
+
         return $this;
     }
-    
+
     /**
-     * Get default
+     * Get default.
      *
      * @return bool
      */
@@ -353,11 +345,13 @@ class Search implements JsonSerializable
 
     /**
      * @param mixed $contentType
+     *
      * @return Search
      */
     public function setContentType($contentType)
     {
         $this->contentType = $contentType;
+
         return $this;
     }
 
@@ -369,6 +363,7 @@ class Search implements JsonSerializable
     public function setMinimumShouldMatch(int $minimumShouldMatch): Search
     {
         $this->minimumShouldMatch = $minimumShouldMatch;
+
         return $this;
     }
 }

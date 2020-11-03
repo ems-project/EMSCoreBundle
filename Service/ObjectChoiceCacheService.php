@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service;
 
@@ -15,18 +16,18 @@ class ObjectChoiceCacheService
 {
     /**@Client $client*/
     private $client;
-    /**@var LoggerInterface $logger*/
+    /** @var LoggerInterface $logger */
     private $logger;
-    /**@var ContentTypeService $contentTypeService*/
+    /** @var ContentTypeService $contentTypeService */
     private $contentTypeService;
-    /**@var AuthorizationCheckerInterface $authorizationChecker*/
+    /** @var AuthorizationCheckerInterface $authorizationChecker */
     protected $authorizationChecker;
-    /**@var TokenStorageInterface $tokenStorage*/
+    /** @var TokenStorageInterface $tokenStorage */
     protected $tokenStorage;
-    
+
     private $fullyLoaded;
     private $cache;
-    
+
     public function __construct(Client $client, LoggerInterface $logger, ContentTypeService $contentTypeService, AuthorizationCheckerInterface $authorizationChecker, TokenStorageInterface $tokenStorage)
     {
         $this->client = $client;
@@ -38,13 +39,12 @@ class ObjectChoiceCacheService
         $this->fullyLoaded = [];
         $this->cache = [];
     }
-    
 
     public function loadAll(array &$choices, $types, bool $circleOnly = false, bool $withWarning = true)
     {
         $aliasTypes = [];
-        
-        $cts = explode(',', $types);
+
+        $cts = \explode(',', $types);
         foreach ($cts as $type) {
             if (!isset($this->fullyLoaded[$type])) {
                 $currentType = $this->contentTypeService->getByName($type);
@@ -54,20 +54,19 @@ class ObjectChoiceCacheService
                     }
                     $aliasTypes[$currentType->getEnvironment()->getAlias()][] = $type;
                     $params = [
-                            'size' =>  '500',
+                            'size' => '500',
                             'index' => $currentType->getEnvironment()->getAlias(),
                             'type' => $type,
                     ];
-
 
                     if ($currentType->getOrderField()) {
                         $params['body'] = [
                             'sort' => [
                                 $currentType->getOrderField() => [
                                     'order' => 'asc',
-                                    'missing' => "_last",
-                                ]
-                            ]
+                                    'missing' => '_last',
+                                ],
+                            ],
                         ];
                     }
 
@@ -77,7 +76,7 @@ class ObjectChoiceCacheService
                         $circles = $user->getCircles();
                         $ouuids = [];
                         foreach ($circles as $circle) {
-                            preg_match('/(?P<type>(\w|-)+):(?P<ouuid>(\w|-)+)/', $circle, $matches);
+                            \preg_match('/(?P<type>(\w|-)+):(?P<ouuid>(\w|-)+)/', $circle, $matches);
                             $ouuids[] = $matches['ouuid'];
                         }
 
@@ -90,7 +89,7 @@ class ObjectChoiceCacheService
                     //TODO test si > 500... logger
 
                     foreach ($items['hits']['hits'] as $hit) {
-                        if (!isset($choices[$hit['_type'] . ':' . $hit['_id']])) {
+                        if (!isset($choices[$hit['_type'].':'.$hit['_id']])) {
                             $listItem = new ObjectChoiceListItem($hit, $this->contentTypeService->getByName($hit['_type']));
                             $choices[$listItem->getValue()] = $listItem;
                             $this->cache[$hit['_type']][$hit['_id']] = $listItem;
@@ -104,25 +103,25 @@ class ObjectChoiceCacheService
                 $this->fullyLoaded[$type] = true;
             } else {
                 foreach ($this->cache[$type] as $id => $item) {
-                    if ($item && !isset($choices[$type . ':' . $id])) {
-                        $choices[$type . ':' . $id] = $item;
+                    if ($item && !isset($choices[$type.':'.$id])) {
+                        $choices[$type.':'.$id] = $item;
                     }
                 }
             }
         }
     }
-    
+
     public function load($objectIds, bool $circleOnly = false, bool $withWarning = true)
     {
         $out = [];
         $queries = [];
         foreach ($objectIds as $objectId) {
-            if (is_string($objectId) && strpos($objectId, ':') !== false) {
-                $ref = explode(':', $objectId);
+            if (\is_string($objectId) && false !== \strpos($objectId, ':')) {
+                $ref = \explode(':', $objectId);
                 if (!isset($this->cache[$ref[0]])) {
                     $this->cache[$ref[0]] = [];
                 }
-                
+
                 if (isset($this->cache[$ref[0]][$ref[1]])) {
                     if ($this->cache[$ref[0]][$ref[1]]) {
                         $out[$objectId] = $this->cache[$ref[0]][$ref[1]];
@@ -133,7 +132,7 @@ class ObjectChoiceCacheService
                         if ($contentType) {
                             $index = $this->contentTypeService->getIndex($contentType);
                             if ($index) {
-                                if (!array_key_exists($index, $queries)) {
+                                if (!\array_key_exists($index, $queries)) {
                                     $queries[$index] = ['docs' => []];
                                 }
                                 $queries[$index]['docs'][] = [
@@ -143,12 +142,12 @@ class ObjectChoiceCacheService
                                         'query' => [
                                             'bool' => [
                                                 'must' => [
-                                                    [ 'term' => ['_contenttype' => $ref[0]]],
-                                                    [ 'term' => ['_id' => $ref[1]]]
-                                                ]
-                                            ]
-                                        ]
-                                    ]
+                                                    ['term' => ['_contenttype' => $ref[0]]],
+                                                    ['term' => ['_id' => $ref[1]]],
+                                                ],
+                                            ],
+                                        ],
+                                    ],
                                 ];
                             } elseif ($withWarning) {
                                 $this->logger->warning('service.object_choice_cache.alias_not_found', [
@@ -163,7 +162,7 @@ class ObjectChoiceCacheService
                     }
                 }
             } else {
-                if (null !== $objectId && $objectId !== "" && $withWarning) {
+                if (null !== $objectId && '' !== $objectId && $withWarning) {
                     $this->logger->warning('service.object_choice_cache.object_key_not_found', [
                         'object_key' => $objectId,
                     ]);
@@ -175,11 +174,11 @@ class ObjectChoiceCacheService
             foreach ($query['docs'] as $docItem) {
                 $params = [
                     'index' => $alias,
-                    'body' => $docItem['body']
+                    'body' => $docItem['body'],
                 ];
-                $objectId = $docItem['_type'] . ':' . $docItem['_id'];
+                $objectId = $docItem['_type'].':'.$docItem['_id'];
                 $result = $this->client->search($params);
-                if ($result['hits']['total'] === 1) {
+                if (1 === $result['hits']['total']) {
                     $doc = $result['hits']['hits'][0];
                     $listItem = new ObjectChoiceListItem($doc, $this->contentTypeService->getByName($doc['_type']));
                     $this->cache[$doc['_type']][$doc['_id']] = $listItem;
@@ -194,6 +193,7 @@ class ObjectChoiceCacheService
                 }
             }
         }
+
         return $out;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace EMS\CoreBundle\Security;
 
@@ -53,7 +53,7 @@ final class CoreLdapUser implements SymfonyUserInterface, UserInterface
 
     public static function fromLdap(SymfonyUserInterface $ldapUser, LdapExtraFields $extraFields): CoreLdapUser
     {
-        if (! $ldapUser instanceof SymfonyLdapUser) {
+        if (!$ldapUser instanceof SymfonyLdapUser) {
             throw new \RuntimeException(\sprintf('Could not create ldap user. Instance should be of type %s', SymfonyLdapUser::class));
         }
 
@@ -76,7 +76,6 @@ final class CoreLdapUser implements SymfonyUserInterface, UserInterface
 
         return $user;
     }
-
 
     public function randomizePassword(): void
     {

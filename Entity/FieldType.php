@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * FieldType
+ * FieldType.
  *
  * @ORM\Table(name="field_type")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\FieldTypeRepository")
@@ -61,14 +62,13 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
      * @ORM\JoinColumn(name="content_type_id", referencedColumnName="id")
      */
     protected $contentType;
-    
+
     /**
      * @var bool
      *
      * @ORM\Column(name="deleted", type="boolean")
      */
     protected $deleted;
-
 
     /**
      * @var string
@@ -105,7 +105,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
      * @ORM\OrderBy({"orderKey" = "ASC"})
      */
     protected $children;
-    
+
     /**
      * @ORM\PrePersist
      * @ORM\PreUpdate
@@ -117,23 +117,22 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
             $this->created = $this->modified;
         }
     }
-    
+
     /**
-     * Update contentType and parent recursively
-     *
+     * Update contentType and parent recursively.
      */
     //TODO: Unrecursify this method
     public function updateAncestorReferences($contentType, $parent)
     {
-           $this->setContentType($contentType);
+        $this->setContentType($contentType);
         $this->setParent($parent);
         foreach ($this->children as $child) {
             $child->updateAncestorReferences(null, $this);
         }
     }
 
-        /**
-     * Get id
+    /**
+     * Get id.
      *
      * @return int
      */
@@ -142,8 +141,8 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         return $this->id;
     }
 
-/**
-     * Set created
+    /**
+     * Set created.
      *
      * @param \DateTime $created
      *
@@ -168,7 +167,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Remove references to parent to prevent circular reference exception
+     * Remove references to parent to prevent circular reference exception.
      */
     public function removeCircularReference()
     {
@@ -177,13 +176,13 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
             foreach ($this->children as $key => $child) {
                 $child->removeCircularReference();
             }
-               $this->setContentType(null);
-               $this->setParent(null);
+            $this->setContentType(null);
+            $this->setParent(null);
         }
     }
-    
+
     /**
-     * set the data value(s) from a string received from the symfony form) in the context of this field
+     * set the data value(s) from a string received from the symfony form) in the context of this field.
      *
      * @return \DateTime
      */
@@ -193,25 +192,26 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
 //         $type = $this->getType();
 //         /** @var DataFieldType $dataFieldType */
 //         $dataFieldType = new $type;
-         
+
 //         $dataFieldType->setDataValue($input, $dataField, $this->getOptions());
     }
-    
+
     public function getFieldsRoles()
     {
         $out = ['ROLE_AUTHOR' => 'ROLE_AUTHOR'];
         if (isset($this->getOptions()['restrictionOptions']) && isset($this->getOptions()['restrictionOptions']['minimum_role']) && $this->getOptions()['restrictionOptions']['minimum_role']) {
             $out[$this->getOptions()['restrictionOptions']['minimum_role']] = $this->getOptions()['restrictionOptions']['minimum_role'];
         }
-        
+
         foreach ($this->children as $child) {
-            $out = array_merge($out, $child->getFieldsRoles());
+            $out = \array_merge($out, $child->getFieldsRoles());
         }
+
         return $out;
     }
-    
+
     /**
-     * get the data value(s) as a string received for the symfony form) in the context of this field
+     * get the data value(s) as a string received for the symfony form) in the context of this field.
      *
      * @return \DateTime
      */
@@ -221,12 +221,12 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
 //         $type = $this->getType();
 //         /** @var DataFieldType $dataFieldType */
 //         $dataFieldType = new $type;
-        
+
 //         return $dataFieldType->getDataValue($dataField, $this->getOptions());
     }
-    
+
     /**
-     * Get created
+     * Get created.
      *
      * @return \DateTime
      */
@@ -236,7 +236,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set modified
+     * Set modified.
      *
      * @param \DateTime $modified
      *
@@ -250,7 +250,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get modified
+     * Get modified.
      *
      * @return \DateTime
      */
@@ -260,7 +260,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set type
+     * Set type.
      *
      * @param string $type
      *
@@ -274,7 +274,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get type
+     * Get type.
      *
      * @return string
      */
@@ -284,7 +284,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
      *
@@ -298,7 +298,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -308,9 +308,9 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set deleted
+     * Set deleted.
      *
-     * @param boolean $deleted
+     * @param bool $deleted
      *
      * @return FieldType
      */
@@ -322,7 +322,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get deleted
+     * Get deleted.
      *
      * @return bool
      */
@@ -332,7 +332,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set description
+     * Set description.
      *
      * @param string $description
      *
@@ -346,7 +346,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get description
+     * Get description.
      *
      * @return string
      */
@@ -361,35 +361,37 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         if (isset($options['displayOptions'])) {
             return $options['displayOptions'];
         }
+
         return [];
     }
-    
-    
+
     public function getDisplayOption($key, $default = null)
     {
         $options = $this->getDisplayOptions();
         if (isset($options[$key])) {
             return $options[$key];
         }
+
         return $default;
     }
-    
-    
+
     public function getMappingOption($key, $default = null)
     {
         $options = $this->getMappingOptions();
         if (isset($options[$key])) {
             return $options[$key];
         }
+
         return $default;
     }
-    
+
     public function getMappingOptions()
     {
         $options = $this->getOptions();
         if (isset($options['mappingOptions'])) {
             return $options['mappingOptions'];
         }
+
         return [];
     }
 
@@ -399,26 +401,27 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         if (isset($options['restrictionOptions'])) {
             return $options['restrictionOptions'];
         }
+
         return [];
     }
-    
-    
-    
+
     public function getMigrationgOption($key, $default = null)
     {
         $options = $this->getMigrationOptions();
         if (isset($options[$key])) {
             return $options[$key];
         }
+
         return $default;
     }
-    
+
     public function getMigrationOptions()
     {
         $options = $this->getOptions();
         if (isset($options['migrationOptions'])) {
             return $options['migrationOptions'];
         }
+
         return [];
     }
 
@@ -428,21 +431,22 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         if (isset($options['extraOptions'])) {
             return $options['extraOptions'];
         }
+
         return [];
     }
-    
+
     public function getMinimumRole()
     {
         $options = $this->getOptions();
         if (isset($options['restrictionOptions']) && isset($options['restrictionOptions']['minimum_role'])) {
             return $options['restrictionOptions']['minimum_role'];
         }
+
         return 'ROLE_AUTHOR';
     }
 
-
     /**
-     * Get only valid children
+     * Get only valid children.
      *
      * @return array
      */
@@ -454,6 +458,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
                 $valid[] = $child;
             }
         }
+
         return $valid;
     }
 
@@ -473,11 +478,11 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
             yield $child;
         }
     }
-    
+
     /**
-     * Set orderKey
+     * Set orderKey.
      *
-     * @param integer $orderKey
+     * @param int $orderKey
      *
      * @return FieldType
      */
@@ -489,7 +494,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get orderKey
+     * Get orderKey.
      *
      * @return int
      */
@@ -499,7 +504,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set contentType
+     * Set contentType.
      *
      * @param ContentType $contentType
      *
@@ -513,21 +518,22 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get contentType
+     * Get contentType.
      *
-     * @return null|ContentType
+     * @return ContentType|null
      */
     public function getContentType()
     {
         $parent = $this;
-        while ($parent->parent != null) {
+        while (null != $parent->parent) {
             $parent = $parent->parent;
         }
+
         return $parent->contentType;
     }
-    
+
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -535,7 +541,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         $this->deleted = false;
         $this->orderKey = 0;
     }
-    
+
 //     /**
 //      * Cette focntion clone casse le CollectionFieldType => impossible d'ajouter un record
 //      */
@@ -554,7 +560,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
 //     }
 
     /**
-     * get a child
+     * get a child.
      *
      * @throws \Exception
      *
@@ -562,23 +568,23 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
      */
     public function __get($key)
     {
-        if (strpos($key, 'ems_') !== 0) {
-             throw new \Exception('unprotected ems get with key ' . $key);
+        if (0 !== \strpos($key, 'ems_')) {
+            throw new \Exception('unprotected ems get with key '.$key);
         } else {
-            $key = substr($key, 4);
+            $key = \substr($key, 4);
         }
         /** @var FieldType $fieldType */
         foreach ($this->getChildren() as $fieldType) {
-            if (!$fieldType->getDeleted() && strcmp($key, $fieldType->getName()) == 0) {
+            if (!$fieldType->getDeleted() && 0 == \strcmp($key, $fieldType->getName())) {
                 return $fieldType;
             }
         }
-    
+
         return null;
     }
 
     /**
-     * set a child
+     * set a child.
      *
      * @throws \Exception
      *
@@ -586,31 +592,29 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
      */
     public function __set($key, $input)
     {
-        if (strpos($key, 'ems_') !== 0) {
-             throw new \Exception('unprotected ems set with key ' . $key);
+        if (0 !== \strpos($key, 'ems_')) {
+            throw new \Exception('unprotected ems set with key '.$key);
         } else {
-            $key = substr($key, 4);
+            $key = \substr($key, 4);
         }
         $found = false;
         /** @var FieldType $child */
         foreach ($this->children as &$child) {
-            if (!$child->getDeleted() && strcmp($key, $child->getName()) == 0) {
+            if (!$child->getDeleted() && 0 == \strcmp($key, $child->getName())) {
                 $found = true;
                 $child = $input;
                 break;
             }
         }
-        if (! $found) {
+        if (!$found) {
             $this->children->add($input);
         }
-         
+
         return $this;
     }
-    
 
-    
     /**
-     * Set parent
+     * Set parent.
      *
      * @param \EMS\CoreBundle\Entity\FieldType $parent
      *
@@ -624,7 +628,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get parent
+     * Get parent.
      *
      * @return \EMS\CoreBundle\Entity\FieldType
      */
@@ -634,9 +638,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Add child
-     *
-     * @param \EMS\CoreBundle\Entity\FieldType $child
+     * Add child.
      *
      * @return FieldType
      */
@@ -648,9 +650,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Remove child
-     *
-     * @param \EMS\CoreBundle\Entity\FieldType $child
+     * Remove child.
      */
     public function removeChild(\EMS\CoreBundle\Entity\FieldType $child)
     {
@@ -658,7 +658,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get children
+     * Get children.
      *
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
@@ -668,7 +668,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get child by path
+     * Get child by path.
      *
      * @return FieldType|false
      *
@@ -676,23 +676,25 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
      */
     public function getChildByPath($path)
     {
-        $elem = explode('.', $path);
+        $elem = \explode('.', $path);
         if (!empty($elem)) {
-            /**@var FieldType $child*/
+            /** @var FieldType $child */
             foreach ($this->children as $child) {
                 if (!$child->getDeleted() && $child->getName() == $elem[0]) {
-                    if (strpos($path, ".")) {
-                        return $child->getChildByPath(substr($path, strpos($path, ".") + 1));
+                    if (\strpos($path, '.')) {
+                        return $child->getChildByPath(\substr($path, \strpos($path, '.') + 1));
                     }
+
                     return $child;
                 }
             }
         }
+
         return false;
     }
 
     /**
-     * Set options
+     * Set options.
      *
      * @param array $options
      *
@@ -706,7 +708,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get options
+     * Get options.
      *
      * @return array
      */
@@ -716,15 +718,18 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Specify data which should be serialized to JSON
-     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * Specify data which should be serialized to JSON.
+     *
+     * @see https://php.net/manual/en/jsonserializable.jsonserialize.php
+     *
      * @return mixed data which can be serialized by <b>json_encode</b>,
-     * which is a value of any type other than a resource.
+     *               which is a value of any type other than a resource
+     *
      * @since 5.4.0
      */
     public function jsonSerialize()
     {
-        $json = new JsonClass(get_object_vars($this), __CLASS__);
+        $json = new JsonClass(\get_object_vars($this), __CLASS__);
         $json->removeProperty('id');
         $json->updateProperty('children', $this->getValidChildren());
 
@@ -751,10 +756,10 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         $defineOptions = $optionsResolver->getDefinedOptions();
         $defineOptions[] = 'label';
 
-        $filtered = array_filter(
+        $filtered = \array_filter(
             $this->getDisplayOptions(),
             function ($value) use ($defineOptions) {
-                return in_array($value, $defineOptions);
+                return \in_array($value, $defineOptions);
             },
             ARRAY_FILTER_USE_KEY
         );

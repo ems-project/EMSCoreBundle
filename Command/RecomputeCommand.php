@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -64,7 +66,7 @@ class RecomputeCommand extends EmsCommand
     const LOCK_BY = 'SYSTEM_RECOMPUTE';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __construct(
         DataService $dataService,
@@ -106,8 +108,9 @@ class RecomputeCommand extends EmsCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if (! $this->em instanceof EntityManager) {
+        if (!$this->em instanceof EntityManager) {
             $output->writeln('The entity manager might not be configured correctly');
+
             return -1;
         }
         $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
@@ -158,10 +161,9 @@ class RecomputeCommand extends EmsCommand
             $missingInIndex = $this->contentTypeService->getIndex($contentType);
         }
 
-        
         do {
             $transactionActive = false;
-            /**@var Revision $revision*/
+            /** @var Revision $revision */
             foreach ($paginator as $revision) {
                 $revisionId = $revision->getId();
                 if (!\is_int($revisionId)) {
@@ -229,7 +231,6 @@ class RecomputeCommand extends EmsCommand
                 $progress->advance();
             }
 
-
             if ($transactionActive) {
                 $this->em->commit();
             }
@@ -239,24 +240,25 @@ class RecomputeCommand extends EmsCommand
         } while ($iterator instanceof \ArrayIterator && $iterator->count());
 
         $progress->finish();
+
         return 0;
     }
 
     private function lock(OutputInterface $output, ContentType $contentType, bool $force = false, bool $ifEmpty = false, bool $id = false): int
     {
         $application = $this->getApplication();
-        if ($application === null) {
+        if (null === $application) {
             throw new \RuntimeException('Application instance not found');
         }
         $command = $application->find('ems:contenttype:lock');
         $arguments = [
-            'command'     => 'ems:contenttype:lock',
+            'command' => 'ems:contenttype:lock',
             'contentType' => $contentType->getName(),
-            'time'        => '+1day',
-            '--user'      => self::LOCK_BY,
-            '--force'     => $force,
-            '--if-empty'  => $ifEmpty,
-            '--id'        => $id
+            'time' => '+1day',
+            '--user' => self::LOCK_BY,
+            '--force' => $force,
+            '--if-empty' => $ifEmpty,
+            '--id' => $id,
         ];
 
         return $command->run(new ArrayInput($arguments), $output);

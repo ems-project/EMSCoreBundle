@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command;
 
 use EMS\CoreBundle\Entity\Environment;
@@ -12,10 +14,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class EnvironmentCommand extends ContainerAwareCommand
 {
-
-    /**@var LoggerInterface */
+    /** @var LoggerInterface */
     private $logger;
-    /**@var EnvironmentService*/
+    /** @var EnvironmentService */
     private $environmentService;
 
     public function __construct(LoggerInterface $logger, EnvironmentService $environmentService)
@@ -51,6 +52,7 @@ class EnvironmentCommand extends ContainerAwareCommand
         foreach ($environments as $environment) {
             $output->writeln($environment->getName());
         }
+
         return 0;
     }
 }

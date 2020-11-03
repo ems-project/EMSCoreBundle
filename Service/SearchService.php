@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Service;
 
 use EMS\CoreBundle\Entity\Form\Search;
@@ -14,7 +16,7 @@ class SearchService
     {
         $this->mapping = $mapping;
     }
-    
+
     public function generateSearchBody(Search $search)
     {
         $mapping = $this->mapping->getMapping($search->getEnvironments());
@@ -31,36 +33,37 @@ class SearchService
                 $esFilter = $this->nestFilter($nestedPath, $esFilter);
             }
 
-            $body["query"]["bool"][$filter->getBooleanClause()][] = $esFilter;
+            $body['query']['bool'][$filter->getBooleanClause()][] = $esFilter;
         }
 
-        if (isset($body["query"]["bool"]['should'])) {
-            $body["query"]["bool"]['minimum_should_match'] = $search->getMinimumShouldMatch();
+        if (isset($body['query']['bool']['should'])) {
+            $body['query']['bool']['minimum_should_match'] = $search->getMinimumShouldMatch();
         }
 
-        if (null != $search->getSortBy() && strlen($search->getSortBy()) > 0) {
-            $body["sort"] = [
-                $search->getSortBy() => array_filter([
+        if (null != $search->getSortBy() && \strlen($search->getSortBy()) > 0) {
+            $body['sort'] = [
+                $search->getSortBy() => \array_filter([
                     'order' => (empty($search->getSortOrder()) ? 'asc' : $search->getSortOrder()),
                     'missing' => '_last',
                     'unmapped_type' => 'long',
                     'nested_path' => $this->getNestedPath($search->getSortBy(), $mapping),
-                ])
+                ]),
             ];
         }
+
         return $body;
     }
 
     private function nestFilter(string $nestedPath, array $esFilter): array
     {
-        $path = explode('.', $nestedPath);
+        $path = \explode('.', $nestedPath);
 
-        for ($i = count($path); $i > 0; --$i) {
+        for ($i = \count($path); $i > 0; --$i) {
             $esFilter = [
-                "nested" => [
-                    "path" => \implode('.', \array_slice($path, 0, $i)),
-                    "query" => $esFilter,
-                ]
+                'nested' => [
+                    'path' => \implode('.', \array_slice($path, 0, $i)),
+                    'query' => $esFilter,
+                ],
             ];
         }
 
@@ -83,10 +86,10 @@ class SearchService
 
             $fieldMapping = $mapping[$field];
 
-            if ($fieldMapping['type'] == 'nested') {
+            if ('nested' == $fieldMapping['type']) {
                 $nestedPath[] = $field;
                 $mapping = $fieldMapping['properties']; //go to nested properties
-            } else if (isset($fieldMapping['fields'])) {
+            } elseif (isset($fieldMapping['fields'])) {
                 $mapping = $fieldMapping['fields']; //go to sub fields
             }
         }

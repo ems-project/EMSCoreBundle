@@ -1,43 +1,40 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\Field;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FileType extends AbstractType
 {
-
-
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        
         $builder->add('sha1', HiddenType::class, [
             'attr' => [
-                    'class' => 'sha1'
+                    'class' => 'sha1',
             ],
             'required' => $options['required'],
         ])
         ->add('mimetype', TextType::class, [
             'attr' => [
-                    'class' => 'type'
+                    'class' => 'type',
             ],
             'required' => $options['required'],
         ])
         ->add('filename', TextType::class, [
                 'attr' => [
-                        'class' => 'name'
+                        'class' => 'name',
                 ],
                 'required' => $options['required'],
         ]);
@@ -45,25 +42,25 @@ class FileType extends AbstractType
         if ($options['meta_fields']) {
             $builder->add('_title', TextType::class, [
                     'attr' => [
-                            'class' => 'title'
+                            'class' => 'title',
                     ],
                     'required' => false,
             ])
             ->add('_date', TextType::class, [
                     'attr' => [
-                            'class' => 'date'
+                            'class' => 'date',
                     ],
                     'required' => false,
             ])
             ->add('_author', TextType::class, [
                     'attr' => [
-                            'class' => 'author'
+                            'class' => 'author',
                     ],
                     'required' => false,
             ])
             ->add('_language', TextType::class, [
                     'attr' => [
-                            'class' => 'language'
+                            'class' => 'language',
                     ],
                     'required' => false,
             ])
@@ -76,6 +73,7 @@ class FileType extends AbstractType
             ]);
         }
     }
+
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
@@ -88,10 +86,9 @@ class FileType extends AbstractType
         parent::buildView($view, $form, $options);
         $view->vars['meta_fields'] = $options['meta_fields'];
     }
+
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function getBlockPrefix()
     {

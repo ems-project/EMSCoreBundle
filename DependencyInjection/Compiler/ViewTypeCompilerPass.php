@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\DependencyInjection\Compiler;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
-use Symfony\Component\DependencyInjection\Reference;
-use EMS\CoreBundle\Form\Form\ViewType;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
 
 class ViewTypeCompilerPass implements CompilerPassInterface
 {
@@ -15,21 +16,21 @@ class ViewTypeCompilerPass implements CompilerPassInterface
         if (!$container->hasDefinition('ems.form.field.viewtypepickertype')) {
             return;
         }
-        
+
         /** @var Definition $definition */
         $definition = $container->findDefinition(
             'ems.form.field.viewtypepickertype'
         );
-        
+
         $taggedServices = $container->findTaggedServiceIds(
             'ems.form.viewtype'
         );
-        
+
         foreach ($taggedServices as $id => $tags) {
             foreach ($tags as $attributes) {
                 $definition->addMethodCall(
                     'addViewType',
-                    array(new Reference($id), $id)
+                    [new Reference($id), $id]
                 );
             }
         }

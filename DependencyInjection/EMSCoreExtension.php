@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\DependencyInjection;
 
 use Ramsey\Uuid\Doctrine\UuidType;
@@ -12,7 +14,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 /**
  * This is the class that loads and manages your bundle configuration.
  *
- * @link http://symfony.com/doc/current/cookbook/bundles/extension.html
+ * @see http://symfony.com/doc/current/cookbook/bundles/extension.html
  */
 class EMSCoreExtension extends Extension implements PrependExtensionInterface
 {
@@ -26,7 +28,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
 
         $container->setParameter('ems_core.from_email', $config['from_email']);
@@ -79,12 +81,12 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
     {
         $out = false;
         //try to identify the ems core version
-        if (file_exists($rootDir . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'composer.lock')) {
-            $lockInfo = json_decode(file_get_contents($rootDir . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'composer.lock'), true);
+        if (\file_exists($rootDir.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'composer.lock')) {
+            $lockInfo = \json_decode(\file_get_contents($rootDir.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'composer.lock'), true);
 
             if (!empty($lockInfo['packages'])) {
                 foreach ($lockInfo['packages'] as $package) {
-                    if (!empty($package['name']) && $package['name'] === 'elasticms/core-bundle') {
+                    if (!empty($package['name']) && 'elasticms/core-bundle' === $package['name']) {
                         if (!empty($package['version'])) {
                             $out = $package['version'];
                         }
@@ -93,18 +95,16 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
                 }
             }
         }
+
         return $out;
     }
 
     public function prepend(ContainerBuilder $container)
     {
-
         // get all bundles
         $bundles = $container->getParameter('kernel.bundles');
 
         $coreVersion = $this->getCoreVersion($container->getParameter('kernel.root_dir'));
-
-
 
         $configs = $container->getExtensionConfig($this->getAlias());
 
@@ -129,13 +129,13 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         ];
 
         if (!empty($configs[0]['template_options'])) {
-            $globals = array_merge($globals, $configs[0]['template_options']);
+            $globals = \array_merge($globals, $configs[0]['template_options']);
         }
 
         if (isset($bundles['TwigBundle'])) {
             $container->prependExtensionConfig('twig', [
                 'globals' => $globals,
-                'form_themes' => ["@EMSCore/form/fields.html.twig"],
+                'form_themes' => ['@EMSCore/form/fields.html.twig'],
             ]);
         }
 
@@ -143,9 +143,9 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
             $container->prependExtensionConfig('doctrine', [
                 'dbal' => [
                     'types' => [
-                        'uuid' => UuidType::class
-                    ]
-                ]
+                        'uuid' => UuidType::class,
+                    ],
+                ],
             ]);
         }
 
@@ -154,7 +154,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
 
     /**
      * @param array<mixed> $configs
-     * @param mixed $bundles
+     * @param mixed        $bundles
      */
     private function prependLocalUser(ContainerBuilder $container, array $configs, $bundles): void
     {
@@ -162,8 +162,8 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
             $container->prependExtensionConfig('doctrine', [
                 'orm' => [
                     'resolve_target_entities' => [
-                        'EMS\CoreBundle\Entity\UserInterface' => 'EMS\CoreBundle\Entity\User'
-                    ]
+                        'EMS\CoreBundle\Entity\UserInterface' => 'EMS\CoreBundle\Entity\User',
+                    ],
                 ],
             ]);
         }
@@ -185,9 +185,9 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
                 'user_class' => 'EMS\CoreBundle\Entity\User',
                 'profile' => [
                     'form' => [
-                        'type' => 'EMS\CoreBundle\Form\UserProfileType'
-                    ]
-                ]
+                        'type' => 'EMS\CoreBundle\Form\UserProfileType',
+                    ],
+                ],
             ]);
         }
     }
@@ -197,13 +197,13 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
      */
     private function loadLdap(ContainerBuilder $container, Loader\YamlFileLoader $loader, array $ldapConfig): void
     {
-        if ($ldapConfig === []) {
+        if ([] === $ldapConfig) {
             return;
         }
 
         $loader->load('ldap.yml');
         foreach ($ldapConfig as $name => $value) {
-            $reference = sprintf('ems_core.ldap.%s', $name);
+            $reference = \sprintf('ems_core.ldap.%s', $name);
             $container->setParameter($reference, $value);
         }
     }

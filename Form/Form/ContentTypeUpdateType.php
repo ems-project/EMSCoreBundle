@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\Form;
 
 use EMS\CoreBundle\EMSCoreBundle;
@@ -14,7 +16,7 @@ class ContentTypeUpdateType extends AbstractType
 {
     /**
      * @param FormBuilderInterface<AbstractType> $builder
-     * @param array<string, mixed> $options
+     * @param array<string, mixed>               $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -42,8 +44,7 @@ class ContentTypeUpdateType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN
-
+            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
         ]);
     }
 }

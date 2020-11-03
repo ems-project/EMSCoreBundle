@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Controller;
 
 use Elastica\Client;
@@ -25,7 +27,7 @@ class TwigElementsController extends AbstractController
 
         $temp = $revisionRepository->draftCounterGroupedByContentType($user->getCircles(), $this->isGranted('ROLE_ADMIN'));
         foreach ($temp as $item) {
-            $draftCounterGroupedByContentType[$item["content_type_id"]] = $item["counter"];
+            $draftCounterGroupedByContentType[$item['content_type_id']] = $item['counter'];
         }
 
         try {
@@ -34,10 +36,10 @@ class TwigElementsController extends AbstractController
             $status = 'red';
         }
 
-
-        if ($status === 'green') {
+        if ('green' === $status) {
             $status = $this->getAssetExtractorStatus($assetExtractorService);
         }
+
         return $this->render(
             '@EMSCore/elements/side-menu.html.twig',
             [

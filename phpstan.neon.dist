@@ -4,10 +4,10 @@ includes:
 parameters:
     excludes_analyse:
         - %currentWorkingDirectory%/vendor/*
-        - %currentWorkingDirectory%/DependencyInjection/Configuration.php
-        - %currentWorkingDirectory%/Resources/DoctrineMigrations
-        - %currentWorkingDirectory%/Resources/public/js
-        - %currentWorkingDirectory%/Controller/AppController.php
+        - %currentWorkingDirectory%/src/DependencyInjection/Configuration.php
+        - %currentWorkingDirectory%/src/Resources/DoctrineMigrations
+        - %currentWorkingDirectory%/src/Resources/public/js
+        - %currentWorkingDirectory%/src/Controller/AppController.php
     ignoreErrors:
         - '#Call to an undefined method [a-zA-Z0-9\\_]+Repository::findOneById().#'
         - '#Call to an undefined method [a-zA-Z0-9\\_]+Repository::findOneByName().#'

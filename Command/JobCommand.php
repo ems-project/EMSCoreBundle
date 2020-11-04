@@ -72,12 +72,18 @@ class JobCommand extends Command
 
         $this->io->success(sprintf('Job completed with the return status "%s" in %s', $job->getStatus(), $interval->format('%a days, %h hours, %i minutes and %s seconds')));
 
-        if ($input->getOption('dump') === true) {
-            $this->io->section('Job\'s output:');
-            $output->write($job->getOutput());
-            $this->io->section('End of job\'s output');
+        if ($input->getOption('dump') !== true) {
+            return 0;
         }
 
+        $jobLog = $job->getOutput();
+        if ($jobLog === null) {
+            $this->io->write('Empty output');
+        } else {
+            $this->io->section('Job\'s output:');
+            $output->write($jobLog);
+            $this->io->section('End of job\'s output');
+        }
         return 0;
     }
 }

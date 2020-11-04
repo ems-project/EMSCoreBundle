@@ -1076,23 +1076,6 @@ class ContentTypeController extends AppController
         ]);
     }
 
-
-    /**
-     * Migrate a content type from its default index
-     *
-     * @param ContentType $contentType
-     * @return RedirectResponse
-     *
-     * @Route("/content-type/migrate/{contentType}", name="contenttype.migrate"), methods={"POST"})
-     */
-    public function migrateAction(ContentType $contentType)
-    {
-        return $this->startJob('ems.contenttype.migrate', [
-            'contentTypeName' => $contentType->getName()
-        ]);
-    }
-
-
     /**
      * Export a content type in Json format
      *

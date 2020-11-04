@@ -44,6 +44,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.date_time_format', $config['date_time_format']);
         $container->setParameter('ems_core.notification_pending_timeout', $config['notification_pending_timeout']);
         $container->setParameter('ems_core.allow_user_registration', $config['allow_user_registration']);
+        $container->setParameter('ems_core.trigger_job_from_web', $config['trigger_job_from_web']);
         $container->setParameter('ems_core.lock_time', $config['lock_time']);
         $container->setParameter('ems_core.template_options', $config['template_options']);
         $container->setParameter('ems_core.user_login_route', $config['user_login_route']);
@@ -120,6 +121,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
             'datepicker_format' => isset($configs[0]['datepicker_format']) ? $configs[0]['datepicker_format'] : Configuration::DATEPICKER_FORMAT,
             'date_time_format' => isset($configs[0]['date_time_format']) ? $configs[0]['date_time_format'] : Configuration::DATE_TIME_FORMAT,
             'allow_user_registration' => isset($configs[0]['allow_user_registration']) ? $configs[0]['allow_user_registration'] : Configuration::ALLOW_USER_REGISTRATION,
+            'trigger_job_from_web' => isset($configs[0]['trigger_job_from_web']) ? $configs[0]['trigger_job_from_web'] : Configuration::TRIGGER_JOB_FROM_WEB,
             'user_login_route' => isset($configs[0]['user_login_route']) ? $configs[0]['user_login_route'] : Configuration::USER_LOGIN_ROUTE,
             'user_logout_route' => isset($configs[0]['user_logout_route']) ? $configs[0]['user_logout_route'] : Configuration::USER_LOGOUT_ROUTE,
             'user_profile_route' => isset($configs[0]['user_profile_route']) ? $configs[0]['user_profile_route'] : Configuration::USER_PROFILE_ROUTE,

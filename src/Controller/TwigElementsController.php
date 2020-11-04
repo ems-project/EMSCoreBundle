@@ -2,7 +2,7 @@
 
 namespace EMS\CoreBundle\Controller;
 
-use Elastica\Client;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\JobService;
@@ -15,7 +15,7 @@ class TwigElementsController extends AbstractController
 {
     const ASSET_EXTRACTOR_STATUS_CACHE_ID = 'status.asset_extractor.result';
 
-    public function sideMenuAction(AssetExtractorService $assetExtractorService, Client $client, UserService $userService): Response
+    public function sideMenuAction(AssetExtractorService $assetExtractorService, ElasticaService $elasticaService, UserService $userService): Response
     {
         $draftCounterGroupedByContentType = [];
 
@@ -28,12 +28,7 @@ class TwigElementsController extends AbstractController
             $draftCounterGroupedByContentType[$item["content_type_id"]] = $item["counter"];
         }
 
-        try {
-            $status = $client->getCluster()->getHealth()->getStatus();
-        } catch (\Exception $e) {
-            $status = 'red';
-        }
-
+        $status = $elasticaService->getHealthStatus();
 
         if ($status === 'green') {
             $status = $this->getAssetExtractorStatus($assetExtractorService);

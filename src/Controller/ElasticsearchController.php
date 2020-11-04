@@ -636,8 +636,12 @@ class ElasticsearchController extends AppController
             $exportDocuments->getEnvironment(),
             '//' . $request->getHttpHost()
         );
+        $user = $this->getUser();
+        if (!$user instanceof UserInterface) {
+            throw new \RuntimeException('Unexpected user object');
+        }
 
-        $job = $jobService->createCommand($this->getUser(), $command);
+        $job = $jobService->createCommand($user, $command);
 
         return $this->redirectToRoute('job.status', [
             'job' => $job->getId(),

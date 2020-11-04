@@ -27,6 +27,7 @@ class Configuration implements ConfigurationInterface
     const DATEPICKER_DAYSOFWEEK_HIGHLIGHTED = [0, 6];
     const NOTIFICATION_PENDING_TIMEOUT = 'P0Y0M15DT0H0M0S';
     const ALLOW_USER_REGISTRATION = false;
+    const TRIGGER_JOB_FROM_WEB = true;
     const LOCK_TIME = '+1 minutes';
     const USER_LOGIN_ROUTE = 'fos_user_security_login';
     const USER_PROFILE_ROUTE = 'fos_user_profile_show';
@@ -71,6 +72,7 @@ class Configuration implements ConfigurationInterface
             ->end()
             ->scalarNode('notification_pending_timeout')->defaultValue(self::NOTIFICATION_PENDING_TIMEOUT)->end()
             ->scalarNode('allow_user_registration')->defaultValue(self::ALLOW_USER_REGISTRATION)->end()
+            ->scalarNode('trigger_job_from_web')->defaultValue(self::TRIGGER_JOB_FROM_WEB)->end()
             ->scalarNode('lock_time')->defaultValue(self::LOCK_TIME)->end()
             ->scalarNode('user_login_route')->defaultValue(self::USER_LOGIN_ROUTE)->end()
             ->scalarNode('user_profile_route')->defaultValue(self::USER_PROFILE_ROUTE)->end()

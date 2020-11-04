@@ -86,6 +86,7 @@ class CollectionItemFieldType extends DataFieldType
                         'migration' => $options['migration'],
                         'with_warning' => $options['with_warning'],
                         'raw_data' =>  $options['raw_data'],
+                        'disabled_fields' => $options['disabled_fields']
                 ], $fieldType->getDisplayOptions());
                 $builder->add($fieldType->getName(), $fieldType->getType(), $options);
                 $builder->get($fieldType->getName())

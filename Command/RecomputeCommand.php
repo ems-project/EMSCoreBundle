@@ -2,13 +2,9 @@
 
 namespace EMS\CoreBundle\Command;
 
-use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\Common\Persistence\Mapping\MappingException;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use EMS\CoreBundle\Entity\ContentType;
@@ -19,9 +15,7 @@ use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\PublishService;
-use Exception;
 use Psr\Log\LoggerInterface;
-use RuntimeException;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -95,7 +89,7 @@ class RecomputeCommand extends EmsCommand
         $this->revisionRepository = $revisionRepository;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('ems:contenttype:recompute')
@@ -106,37 +100,41 @@ class RecomputeCommand extends EmsCommand
             ->addOption('continue', null, InputOption::VALUE_NONE, 'continue a recompute')
             ->addOption('no-align', null, InputOption::VALUE_NONE, "don't keep the revisions aligned to all already aligned environments")
             ->addOption('cron', null, InputOption::VALUE_NONE, 'optimized for automated recurring recompute calls, tries --continue, when no locks are found for user runs command without --continue')
-            ->addOption('id', null, InputOption::VALUE_OPTIONAL, 'recompute a specific id')
+            ->addOption('id', null, InputOption::VALUE_OPTIONAL, 'recompute a specific id', 0)
         ;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|void|null
-     * @throws MappingException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws Exception
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (! $this->em instanceof EntityManager) {
             $output->writeln('The entity manager might not be configured correctly');
-            return null;
+            return -1;
         }
         $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
         $this->em->getConnection()->setAutoCommit(false);
 
         $io = new SymfonyStyle($input, $output);
 
-        /** @var $contentType ContentType */
-        if (null === $contentType = $this->contentTypeRepository->findOneBy(['name' => $input->getArgument('contentType')])) {
-            throw new RuntimeException('invalid content type');
+        $contentTypeName = $input->getArgument('contentType');
+        if (!\is_string($contentTypeName)) {
+            throw new \RuntimeException('Unexpected content type name');
+        }
+        $contentType = $this->contentTypeRepository->findOneBy(['name' => $contentTypeName]);
+        if (!$contentType instanceof ContentType) {
+            throw new \RuntimeException('Content type not found');
         }
 
         if (!$input->getOption('continue') || $input->getOption('cron')) {
-            $this->lock($output, $contentType, $input->getOption('force'), $input->getOption('cron'), $input->getOption('id'));
+            $forceFlag = $input->getOption('force');
+            if (!\is_bool($forceFlag)) {
+                throw new \RuntimeException('Unexpected force option');
+            }
+            $cronFlag = $input->getOption('cron');
+            if (!\is_bool($cronFlag)) {
+                throw new \RuntimeException('Unexpected cron option');
+            }
+            $idFlag = \intval($input->getOption('id'));
+            $this->lock($output, $contentType, $forceFlag, $cronFlag, $idFlag);
         }
 
         $page = 0;
@@ -162,6 +160,11 @@ class RecomputeCommand extends EmsCommand
             $transactionActive = false;
             /**@var Revision $revision*/
             foreach ($paginator as $revision) {
+                $revisionId = $revision->getId();
+                if (!\is_int($revisionId)) {
+                    throw new \RuntimeException('Unexpected null revision id');
+                }
+
                 if ($missingInIndex) {
                     try {
                         $this->client->get([
@@ -169,7 +172,7 @@ class RecomputeCommand extends EmsCommand
                             'type' => $contentType->getName(),
                             'id' => $revision->getOuuid(),
                         ]);
-                        $this->revisionRepository->unlockRevision($revision->getId());
+                        $this->revisionRepository->unlockRevision($revisionId);
                         $progress->advance();
                         continue;
                     } catch (Missing404Exception $e) {
@@ -189,7 +192,7 @@ class RecomputeCommand extends EmsCommand
                 $this->dataService->propagateDataToComputedField($revisionType->get('data'), $objectArray, $contentType, $contentType->getName(), $newRevision->getOuuid(), true);
                 $newRevision->setRawData($objectArray);
 
-                $revision->close(new DateTime('now'));
+                $revision->close(new \DateTime('now'));
                 $newRevision->setDraft(false);
 
                 $this->dataService->sign($revision);
@@ -213,34 +216,36 @@ class RecomputeCommand extends EmsCommand
                     }
                 }
 
-                $this->revisionRepository->unlockRevision($revision->getId());
-                $this->revisionRepository->unlockRevision($newRevision->getId());
+                $this->revisionRepository->unlockRevision($revisionId);
+                $newRevisionId = $newRevision->getId();
+                if (!\is_int($newRevisionId)) {
+                    throw new \RuntimeException('Unexpected null revision id');
+                }
+                $this->revisionRepository->unlockRevision($newRevisionId);
 
                 $progress->advance();
             }
 
-            $paginator = $this->revisionRepository->findAllLockedRevisions($contentType, self::LOCK_BY, $page, $limit);
 
             if ($transactionActive) {
                 $this->em->commit();
             }
             $this->em->clear(Revision::class);
-        } while ($paginator->getIterator()->count());
+            $paginator = $this->revisionRepository->findAllLockedRevisions($contentType, self::LOCK_BY, $page, $limit);
+            $iterator = $paginator->getIterator();
+        } while ($iterator instanceof \ArrayIterator && $iterator->count());
 
         $progress->finish();
+        return 0;
     }
 
-    /**
-     * @param OutputInterface $output
-     * @param ContentType $contentType
-     * @param bool $force
-     * @param bool $ifEmpty
-     * @param bool $id
-     * @throws Exception
-     */
-    private function lock(OutputInterface $output, ContentType $contentType, $force = false, $ifEmpty = false, $id = false)
+    private function lock(OutputInterface $output, ContentType $contentType, bool $force = false, bool $ifEmpty = false, int $id = 0): int
     {
-        $command = $this->getApplication()->find('ems:contenttype:lock');
+        $application = $this->getApplication();
+        if ($application === null) {
+            throw new \RuntimeException('Application instance not found');
+        }
+        $command = $application->find('ems:contenttype:lock');
         $arguments = [
             'command'     => 'ems:contenttype:lock',
             'contentType' => $contentType->getName(),
@@ -251,6 +256,6 @@ class RecomputeCommand extends EmsCommand
             '--id'        => $id
         ];
 
-        $command->run(new ArrayInput($arguments), $output);
+        return $command->run(new ArrayInput($arguments), $output);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Form\Field;
 
+use EMS\CoreBundle\Service\ObjectChoiceCacheService;
 use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
 
 class ObjectChoiceLoader implements ChoiceLoaderInterface
@@ -11,7 +12,7 @@ class ObjectChoiceLoader implements ChoiceLoaderInterface
     private $objectChoiceList;
     
     public function __construct(
-        $objectChoiceCacheService,
+        ObjectChoiceCacheService $objectChoiceCacheService,
         $types,
         bool $loadAll,
         bool $circleOnly,

@@ -75,6 +75,11 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
+				{% if revision.hasVersionTags %}
+					<strong><i class="fa fa-tags margin-r-5"></i> Version</strong>
+					<p class="text-muted">{{ revision.versionTag|default('') }}</p>
+					<hr/>
+				{% endif %}
               <strong><i class="fa fa-map-signs margin-r-5"></i> Status</strong>
 
               <p class="text-muted">

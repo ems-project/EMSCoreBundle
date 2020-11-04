@@ -247,7 +247,7 @@ class DataController extends AppController
         /** @var RevisionRepository $revisionRep */
         $revisionRep = $em->getRepository('EMSCoreBundle:Revision');
 
-        $revisions = $revisionRep->findInProgresByContentType($contentType, $this->getUserService()->getCurrentUser()->getCircles(), $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN'));
+        $revisions = $revisionRep->findInProgresByContentType($contentType, $this->getUserService()->getCurrentUser()->getCircles(), $this->get('security.authorization_checker')->isGranted('ROLE_USER_MANAGEMENT'));
 
 
         return $this->render('@EMSCore/data/draft-in-progress.html.twig', [
@@ -1201,7 +1201,7 @@ class DataController extends AppController
             $em->persist($revision);
             $em->flush();
 
-            $dataService->isValid($form, $revision->getContentType()->getParentField(), $objectArray);
+            $dataService->isValid($form, null, $objectArray);
             $dataService->propagateDataToComputedField($form->get('data'), $objectArray, $revision->getContentType(), $revision->getContentType()->getName(), $revision->getOuuid(), false, false);
 
             $session = $request->getSession();
@@ -1280,218 +1280,6 @@ class DataController extends AppController
             'ouuid' => $revision->getOuuid(),
             'type' => $revision->getContentType()->getName(),
             'revisionId' => $revision->getId(),
-        ]);
-    }
-
-    /**
-     * @param int $revisionId
-     * @param Request $request
-     * @param LoggerInterface $logger
-     * @param DataService $dataService
-     * @param TranslatorInterface $translator
-     * @return RedirectResponse|Response
-     * @throws CoreBundle\Exception\DataStateException
-     * @throws ElasticmsException
-     * @throws LockedException
-     * @throws PrivilegeException
-     * @throws Exception
-     * @Route("/data/draft/edit/{revisionId}", name="ems_revision_edit"))
-     * @Route("/data/draft/edit/{revisionId}", name="revision.edit"))
-     */
-    public function editRevisionAction($revisionId, Request $request, LoggerInterface $logger, DataService $dataService, TranslatorInterface $translator)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        /** @var RevisionRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:Revision');
-        /** @var Revision|null $revision */
-        $revision = $repository->find($revisionId);
-
-        if ($revision === null) {
-            throw new NotFoundHttpException('Unknown revision');
-        }
-
-        $dataService->lockRevision($revision);
-
-        if ($revision->getEndTime() && ! $this->isGranted('ROLE_SUPER')) {
-            throw new ElasticmsException($translator->trans('log.data.revision.only_super_can_finalize_an_archive', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
-                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-            ], EMSCoreBundle::TRANS_DOMAIN));
-        }
-
-        if ($request->isMethod('GET')) {
-            $this->loadAutoSavedVersion($revision, $logger);
-        }
-
-        $form = $this->createForm(RevisionType::class, $revision, [
-            'has_clipboard' => $request->getSession()->has('ems_clipboard'),
-            'has_copy' => $this->getAuthorizationChecker()->isGranted('ROLE_COPY_PASTE'),
-            'raw_data' => $revision->getRawData(),
-        ]);
-
-        $this->getLogger()->debug('Revision\'s form created');
-
-
-        /**little trick to reorder collection*/
-        $requestRevision = $request->request->get('revision');
-        $this->reorderCollection($requestRevision);
-        $request->request->set('revision', $requestRevision);
-        /**end little trick to reorder collection*/
-
-
-        $form->handleRequest($request);
-
-        $this->getLogger()->debug('Revision request form handled');
-
-
-        if ($form->isSubmitted()) {//Save, Finalize or Discard
-            if (empty($request->request->get('revision')) || empty($request->request->get('revision')['allFieldsAreThere']) || !$request->request->get('revision')['allFieldsAreThere']) {
-                $logger->error('log.data.revision.not_completed_request', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                    EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
-                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                ]);
-
-                return $this->redirectToRoute('data.revisions', [
-                    'ouuid' => $revision->getOuuid(),
-                    'type' => $revision->getContentType()->getName(),
-                    'revisionId' => $revision->getId(),
-                ]);
-            }
-
-
-            $revision->setAutoSave(null);
-            if (!array_key_exists('discard', $request->request->get('revision'))) {//Save, Copy, Paste or Finalize
-                //Save anyway
-                /** @var Revision $revision */
-                $revision = $form->getData();
-
-                $this->getLogger()->debug('Revision extracted from the form');
-
-
-                $objectArray = $revision->getRawData();
-
-                if (array_key_exists('paste', $request->request->get('revision'))) {//Paste
-                    $logger->notice('log.data.revision.paste', [
-                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                        EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                        EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-                        EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                    ]);
-                    $objectArray = array_merge($objectArray, $request->getSession()->get('ems_clipboard', []));
-                    $this->getLogger()->debug('Paste data have been merged');
-                }
-
-                if (array_key_exists('copy', $request->request->get('revision'))) {//Copy
-                    $request->getSession()->set('ems_clipboard', $objectArray);
-                    $logger->notice('log.data.document.copy', [
-                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                        EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                        EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-                        EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                    ]);
-                }
-
-                $revision->setRawData($objectArray);
-
-
-                $this->getDataService()->setMetaFields($revision);
-
-                $this->getLogger()->debug('Revision before persist');
-                $em->persist($revision);
-                $em->flush();
-
-                $this->getLogger()->debug('Revision after persist flush');
-
-                if (array_key_exists('publish', $request->request->get('revision'))) {//Finalize
-                    $revision = $dataService->finalizeDraft($revision, $form);
-                    if (count($form->getErrors()) === 0) {
-                        if ($revision->getOuuid()) {
-                            return $this->redirectToRoute('data.revisions', [
-                                'ouuid' => $revision->getOuuid(),
-                                'type' => $revision->getContentType()->getName(),
-                            ]);
-                        } else {
-                            return $this->redirectToRoute('revision.edit', [
-                                'revisionId' => $revision->getId(),
-                            ]);
-                        }
-                    }
-                }
-            }
-
-            //if paste or copy
-            if (array_key_exists('paste', $request->request->get('revision')) || array_key_exists('copy', $request->request->get('revision'))) {//Paste or copy
-                return $this->redirectToRoute('revision.edit', [
-                    'revisionId' => $revisionId,
-                ]);
-            }
-
-            //if Save or Discard
-            if (!array_key_exists('publish', $request->request->get('revision'))) {
-                if (null != $revision->getOuuid()) {
-                    if (count($form->getErrors()) === 0 && $revision->getContentType()->isAutoPublish()) {
-                        $this->getPublishService()->silentPublish($revision);
-                    }
-
-                    return $this->redirectToRoute('data.revisions', [
-                        'ouuid' => $revision->getOuuid(),
-                        'type' => $revision->getContentType()->getName(),
-                        'revisionId' => $revision->getId(),
-                    ]);
-                } else {
-                    return $this->redirectToRoute('data.draft_in_progress', [
-                        'contentTypeId' => $revision->getContentType()->getId(),
-                    ]);
-                }
-            }
-        } else {
-            $objectArray = $revision->getRawData();
-            $isValid = $this->getDataService()->isValid($form, $revision->getContentType()->getParentField(), $objectArray);
-            if (!$isValid) {
-                $logger->warning('log.data.revision.can_finalized', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                    EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                ]);
-            }
-        }
-
-        if ($revision->getContentType()->isAutoPublish()) {
-            $logger->warning('log.data.revision.auto_save_off_with_auto_publish', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                EmsFields::LOG_ENVIRONMENT_FIELD => $revision->getContentType()->getEnvironment()->getName(),
-            ]);
-        }
-
-
-        $objectArray = $revision->getRawData();
-        $dataService->propagateDataToComputedField($form->get('data'), $objectArray, $revision->getContentType(), $revision->getContentType()->getName(), $revision->getOuuid(), false, false);
-
-        if ($revision->getOuuid()) {
-            $messageLog = "log.data.revision.start_edit";
-        } else {
-            $messageLog = "log.data.revision.start_edit_new_document";
-        }
-        $logger->info($messageLog, [
-            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-            EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
-            EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-            EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-        ]);
-
-        return $this->render('@EMSCore/data/edit-revision.html.twig', [
-            'revision' => $revision,
-            'form' => $form->createView(),
-            'stylesSets' => $this->getWysiwygStylesSetService()->getStylesSets(),
         ]);
     }
 
@@ -1639,16 +1427,15 @@ class DataController extends AppController
     }
 
     /**
-     * @param string $key
      * @return RedirectResponse
-     * @throws NonUniqueResultException
      * @Route("/data/link/{key}", name="data.link")
      */
-    public function linkDataAction($key)
+    public function linkDataAction(string $key)
     {
         $category = $type = $ouuid = null;
-        $split = explode(':', $key);
-        if ($split && count($split) == 3) {
+        $split = \explode(':', $key);
+
+        if (\count($split) === 3) {
             $category = $split[0]; // object or asset
             $type = $split[1];
             $ouuid = $split[2];

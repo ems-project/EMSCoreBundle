@@ -35,9 +35,59 @@ class FormSubmissionRepository extends ServiceEntityRepository
         return $qb->getQuery()->getArrayResult();
     }
 
+    public function removeAllOutdatedSubmission(): int
+    {
+        $outdatedSubmissions = $this->createQueryBuilder('fs')
+            ->andWhere('fs.expireDate < :today')
+            ->setParameter('today', new \DateTime())
+            ->getQuery()
+            ->getResult();
+
+        $removedCount = 0;
+
+        foreach ($outdatedSubmissions as $submission) {
+            $this->remove($submission);
+            $removedCount++;
+        }
+
+        $this->flush();
+
+        return $removedCount;
+    }
+
+    /**
+     * @param string|null $formInstance
+     * @return FormSubmission[]
+     */
+    public function findFormSubmissions(?string $formInstance = null): array
+    {
+        $qb = $this->createQueryBuilder('fs');
+
+        if ($formInstance) {
+            $qb->andWhere('fs.name = :name')
+            ->setParameter('name', $formInstance);
+        }
+
+        $qb
+            ->andWhere($qb->expr()->isNotNull('fs.data'))
+            ->orderBy('fs.created', 'desc');
+
+        return $qb->getQuery()->getArrayResult();
+    }
+
     public function save(FormSubmission $formSubmission): void
     {
         $this->_em->persist($formSubmission);
+        $this->_em->flush();
+    }
+
+    public function remove(FormSubmission $formSubmission): void
+    {
+        $this->_em->remove($formSubmission);
+    }
+
+    public function flush(): void
+    {
         $this->_em->flush();
     }
 }

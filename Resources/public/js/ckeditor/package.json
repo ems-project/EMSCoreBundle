@@ -2,7 +2,7 @@
   "_args": [
     [
       "ckeditor@4.12.1",
-      "c:\\dev\\laragon\\www\\elasticms2\\contrib\\src\\vendor\\elasticms\\core-bundle"
+      "C:\\dev\\laragon\\www\\github-elasticms\\vendor\\elasticms\\core-bundle"
     ]
   ],
   "_from": "ckeditor@4.12.1",
@@ -26,7 +26,7 @@
   ],
   "_resolved": "https://registry.npmjs.org/ckeditor/-/ckeditor-4.12.1.tgz",
   "_spec": "4.12.1",
-  "_where": "c:\\dev\\laragon\\www\\elasticms2\\contrib\\src\\vendor\\elasticms\\core-bundle",
+  "_where": "C:\\dev\\laragon\\www\\github-elasticms\\vendor\\elasticms\\core-bundle",
   "author": {
     "name": "CKSource",
     "url": "http://cksource.com/"

@@ -2,6 +2,7 @@ CoreBundle
 =============
 
 [Api documentation](../master/Resources/doc/api.md)
+[Elasticms documentation](../master/Resources/doc/elasticms.md)
 
 Coding standards
 ----------------

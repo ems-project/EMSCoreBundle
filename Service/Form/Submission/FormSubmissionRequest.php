@@ -22,8 +22,8 @@ final class FormSubmissionRequest
     private $files;
     /** @var string */
     private $label;
-    /** @var string */
-    private $deadlineDate;
+    /** @var \DateTime|null */
+    private $expireDate;
 
     public function __construct(Request $request)
     {
@@ -41,7 +41,8 @@ final class FormSubmissionRequest
         $this->data = $submit['data'];
         $this->files = $submit['files'];
         $this->label = $submit['label'] ?? '';
-        $this->deadlineDate = $submit['deadline_date'] ?? '';
+        $formattedDate = \DateTime::createFromFormat('c', $submit['expire_date']);
+        $this->expireDate = $formattedDate != false ? $formattedDate : null;
     }
 
     public function getFormName(): string
@@ -80,15 +81,15 @@ final class FormSubmissionRequest
         return $this->label;
     }
 
-    public function getDeadlineDate(): string
+    public function getExpireDate(): ?\DateTime
     {
-        return $this->deadlineDate;
+        return $this->expireDate;
     }
 
     /**
      * @param array<mixed> $json
      *
-     * @return array{form_name: string, instance: string, locale: string, data: array, files: array, label: string, deadline_date: string}
+     * @return array{form_name: string, instance: string, locale: string, data: array, files: array, label: string, expire_date: string}
      */
     private function resolveJson(array $json): array
     {
@@ -97,17 +98,17 @@ final class FormSubmissionRequest
             ->setRequired(['form_name', 'locale', 'data', 'instance'])
             ->setDefault('files', [])
             ->setDefault('label', '')
-            ->setDefault('deadline_date', '')
+            ->setDefault('expire_date', '')
             ->setAllowedTypes('form_name', 'string')
             ->setAllowedTypes('locale', 'string')
             ->setAllowedTypes('data', 'array')
             ->setAllowedTypes('files', 'array')
             ->setAllowedTypes('label', 'string')
-            ->setAllowedTypes('deadline_date', 'string')
+            ->setAllowedTypes('expire_date', 'string')
         ;
 
         try {
-            /** @var array{form_name: string, instance: string, locale: string, data: array, files: array, label: string, deadline_date: string} $json */
+            /** @var array{form_name: string, instance: string, locale: string, data: array, files: array, label: string, expire_date: string} $json */
             $json = $jsonResolver->resolve($json);
 
             $fileResolver = new OptionsResolver();

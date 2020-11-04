@@ -175,13 +175,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * @var string
      *
-     * @ORM\Column(name="parentField", type="string", length=100, nullable=true)
-     */
-    protected $parentField;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="userField", type="string", length=100, nullable=true)
      */
     protected $userField;
@@ -419,6 +412,27 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
      * @ORM\Column(name="createLinkDisplayRole", type="string", options={"default" : "ROLE_USER"})
      */
     protected $createLinkDisplayRole = 'ROLE_USER';
+
+    /**
+     * @var string[]
+     *
+     * @ORM\Column(name="version_tags", type="json_array", nullable=true)
+     */
+    protected $versionTags = [];
+
+    /**
+     * @var null|string
+     *
+     * @ORM\Column(name="version_date_from_field", type="string", length=100, nullable=true)
+     */
+    protected $versionDateFromField;
+
+    /**
+     * @var null|string
+     *
+     * @ORM\Column(name="version_date_to_field", type="string", length=100, nullable=true)
+     */
+    protected $versionDateToField;
 
 
     public function __construct()
@@ -721,30 +735,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     public function getLabelField()
     {
         return $this->labelField;
-    }
-
-    /**
-     * Set parentField
-     *
-     * @param string $parentField
-     *
-     * @return ContentType
-     */
-    public function setParentField($parentField)
-    {
-        $this->parentField = $parentField;
-
-        return $this;
-    }
-
-    /**
-     * Get parentField
-     *
-     * @return string
-     */
-    public function getParentField()
-    {
-        return $this->parentField;
     }
 
     /**
@@ -1181,12 +1171,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
         return $this;
     }
 
-    /**
-     * Get dirty
-     *
-     * @return boolean
-     */
-    public function getDirty()
+    public function getDirty(): bool
     {
         return $this->dirty;
     }
@@ -1858,5 +1843,57 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     public function getCreateLinkDisplayRole(): string
     {
         return $this->createLinkDisplayRole;
+    }
+
+    public function hasVersionTags(): bool
+    {
+        return \count($this->versionTags) > 0;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getVersionTags(): array
+    {
+        return $this->versionTags;
+    }
+
+    /**
+     * @param string[] $versionTags
+     */
+    public function setVersionTags(array $versionTags): void
+    {
+        $this->versionTags = $versionTags;
+    }
+
+    public function getVersionDateFromField(): ?string
+    {
+        return $this->versionDateFromField;
+    }
+
+    public function setVersionDateFromField(?string $versionDateFromField): void
+    {
+        $this->versionDateFromField = $versionDateFromField;
+    }
+
+    public function getVersionDateToField(): ?string
+    {
+        return $this->versionDateToField;
+    }
+
+    public function setVersionDateToField(?string $versionDateToField): void
+    {
+        $this->versionDateToField = $versionDateToField;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getDisabledDataFields(): array
+    {
+        return array_filter([
+            $this->getVersionDateFromField(),
+            $this->getVersionDateToField()
+        ]);
     }
 }

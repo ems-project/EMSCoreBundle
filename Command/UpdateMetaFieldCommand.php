@@ -2,12 +2,8 @@
 
 namespace EMS\CoreBundle\Command;
 
-use DateInterval;
-use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Elasticsearch\Client;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
@@ -23,8 +19,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class UpdateMetaFieldCommand extends EmsCommand
 {
+    /** @var Registry  */
     protected $doctrine;
-    /**@var DataService */
+    /** @var DataService */
     protected $dataService;
     
     public function __construct(Registry $doctrine, Logger $logger, Client $client, DataService $dataService)
@@ -34,7 +31,7 @@ class UpdateMetaFieldCommand extends EmsCommand
         parent::__construct($logger, $client);
     }
     
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('ems:environment:updatemetafield')
@@ -46,16 +43,12 @@ class UpdateMetaFieldCommand extends EmsCommand
             );
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|void|null
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $name = $input->getArgument('name');
+        if (!\is_string($name)) {
+            throw new \RuntimeException('Unexpected content type name');
+        }
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
 
@@ -67,16 +60,14 @@ class UpdateMetaFieldCommand extends EmsCommand
         $environment = $envRepo->findOneBy(['name' => $name, 'managed' => true]);
 
         if ($environment === null) {
-            $output->writeln("WARNING: Environment named " . $name . " not found");
-            return null;
+            $output->writeln(sprintf("WARNING: Environment named %s not found", $name));
+            return -1;
         }
 
         $page = 0;
         $paginator = $revRepo->getRevisionsPaginatorPerEnvironment($environment, $page);
 
-        // create a new progress bar
         $progress = new ProgressBar($output, $paginator->count());
-        // start and displays the progress bar
         $progress->start();
 
         do {
@@ -86,8 +77,8 @@ class UpdateMetaFieldCommand extends EmsCommand
                     $this->dataService->setMetaFields($revision);
 
                     $revision->setLockBy('SYSTEM_UPDATE_META');
-                    $now = new DateTime();
-                    $until = $now->add(new DateInterval("PT5M"));//+5 minutes
+                    $now = new \DateTime();
+                    $until = $now->add(new \DateInterval("PT5M"));//+5 minutes
                     $revision->setLockUntil($until);
 
                     $em->persist($revision);
@@ -102,8 +93,13 @@ class UpdateMetaFieldCommand extends EmsCommand
 
             ++$page;
             $paginator = $revRepo->getRevisionsPaginatorPerEnvironment($environment, $page);
-        } while ($paginator->getIterator()->count());
+            $iterator = $paginator->getIterator();
+        } while ($iterator instanceof \ArrayIterator && $iterator->count());
 
+        $em->flush();
         $progress->finish();
+        $this->dataService->unlockAllRevisions('SYSTEM_UPDATE_META');
+
+        return 0;
     }
 }

@@ -6,45 +6,26 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Persistence\ObjectManager;
 use EMS\CoreBundle\Command\JobOutput;
 use EMS\CoreBundle\Entity\Job;
+use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Repository\JobRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 class JobService
 {
-    /**
-     * @var Registry
-     */
+    /** @var Registry */
     private $doctrine;
-
-    /**
-     * @var ObjectManager
-     */
+    /** @var ObjectManager */
     private $em;
-
-    /**
-     * @var JobRepository
-     */
+    /** @var JobRepository */
     private $repository;
-
-    /**
-     * @var KernelInterface
-     */
+    /** @var KernelInterface */
     private $kernel;
-
-    /**
-     * @var LoggerInterface
-     */
+    /** @var LoggerInterface */
     private $logger;
 
-    /**
-     * @param Registry        $doctrine
-     * @param KernelInterface $kernel
-     * @param LoggerInterface $logger
-     */
     public function __construct(Registry $doctrine, KernelInterface $kernel, LoggerInterface $logger, JobRepository $jobRepository)
     {
         $this->doctrine = $doctrine;
@@ -54,10 +35,7 @@ class JobService
         $this->logger = $logger;
     }
 
-    /**
-     * Remove all done jobs
-     */
-    public function clean()
+    public function clean(): void
     {
         $doneJobs = $this->repository->findBy(['done' => true]);
         foreach ($doneJobs as $doneJob) {
@@ -67,6 +45,9 @@ class JobService
         $this->em->flush();
     }
 
+    /**
+     * @return Job[]
+     */
     public function findByUser(string $user) : array
     {
         $doneJobs = $this->repository->findBy([
@@ -77,21 +58,12 @@ class JobService
         return $doneJobs;
     }
 
-    /**
-     * @return int
-     */
-    public function count()
+    public function count(): int
     {
-        return (int)$this->repository->countJobs();
+        return \intval($this->repository->countJobs());
     }
 
-    /**
-     * @param UserInterface $user
-     * @param string        $command
-     *
-     * @return Job
-     */
-    public function createCommand(UserInterface $user, $command = null)
+    public function createCommand(UserInterface $user, string $command): Job
     {
         $job = $this->create($user);
         $job->setStatus("Job intialized");
@@ -104,13 +76,9 @@ class JobService
     }
 
     /**
-     * @param UserInterface $user
-     * @param string        $service
-     * @param array         $arguments
-     *
-     * @return Job
+     * @param string[] $arguments
      */
-    public function createService(UserInterface $user, $service, array $arguments)
+    public function createService(UserInterface $user, string $service, array $arguments): Job
     {
         $job = $this->create($user);
         $job->setArguments($arguments);
@@ -123,19 +91,13 @@ class JobService
         return $job;
     }
 
-    /**
-     * @param Job $job
-     */
-    public function delete(Job $job)
+    public function delete(Job $job): void
     {
         $this->em->remove($job);
         $this->em->flush();
     }
 
-    /**
-     * @param Job $job
-     */
-    public function run(Job $job)
+    public function run(Job $job): void
     {
         $output = $this->start($job);
 
@@ -156,22 +118,14 @@ class JobService
     }
 
     /**
-     * @param int $size
-     * @param int $from
-     *
-     * @return array
+     * @return Job[]
      */
-    public function scroll($size, $from)
+    public function scroll(int $size, int $from): array
     {
         return $this->repository->findBy([], ['created' => 'DESC'], $size, $from);
     }
 
-    /**
-     * @param Job $job
-     *
-     * @return JobOutput
-     */
-    public function start(Job $job)
+    public function start(Job $job): JobOutput
     {
         $output = new JobOutput($this->doctrine, $job);
         $output->setDecorated(true);
@@ -185,11 +139,7 @@ class JobService
         return $output;
     }
 
-    /**
-     * @param Job       $job
-     * @param JobOutput $output
-     */
-    public function finish(Job $job, JobOutput $output)
+    public function finish(Job $job, JobOutput $output): void
     {
         $job->setDone(true);
         $job->setProgress(100);

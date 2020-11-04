@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Form\View;
 
 use Elasticsearch\Client;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Nature\ImporterType;
 use EMS\CoreBundle\Service\FileService;
@@ -108,7 +109,12 @@ class ImporterViewType extends ViewType
                 $view->getOptions()['businessKey'] ?? false ? ' --businessKey' : ''
             );
 
-            $job = $this->jobService->createCommand($this->security->getToken()->getUser(), $command);
+            $user = $this->security->getToken()->getUser();
+            if (!$user instanceof UserInterface) {
+                throw new \RuntimeException('Unexpected user object');
+            }
+
+            $job = $this->jobService->createCommand($user, $command);
             return new  RedirectResponse($this->router->generate('job.status', [
                 'job' => $job->getId(),
             ]));

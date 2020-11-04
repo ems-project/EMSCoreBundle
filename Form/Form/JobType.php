@@ -3,19 +3,20 @@
 namespace EMS\CoreBundle\Form\Form;
 
 use EMS\CoreBundle\EMSCoreBundle;
+use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\AbstractType;
-use EMS\CoreBundle\Form\Field\SubmitEmsType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class JobType extends AbstractType
 {
     /**
-     * @param FormBuilderInterface $builder
-     * @param array                $options
+     * @param FormBuilderInterface<Form> $builder
+     * @param array<mixed> $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('command', TextType::class, [
@@ -29,10 +30,7 @@ class JobType extends AbstractType
             ]);
     }
 
-    /**
-     * @param OptionsResolver $resolver
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'translation_domain' => EMSCoreBundle::TRANS_DOMAIN

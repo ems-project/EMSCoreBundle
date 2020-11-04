@@ -19,6 +19,7 @@ use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\Form\SearchFilter;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Template;
+use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Exception\DuplicateOuuidException;
 use EMS\CoreBundle\Exception\ElasticmsException;
@@ -1095,7 +1096,11 @@ class DataController extends AppController
 
             /** @var CoreBundle\Service\JobService $jobService */
             $jobService = $this->get('ems.service.job');
-            $job = $jobService->createCommand($this->getUser(), $command);
+            $user = $this->getUser();
+            if (!$user instanceof UserInterface) {
+                throw new \RuntimeException('Unexpected user object');
+            }
+            $job = $jobService->createCommand($user, $command);
 
             $success = true;
             $logger->notice('log.data.job.initialized', [

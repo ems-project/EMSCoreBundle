@@ -104,10 +104,10 @@ class ReindexCommand extends EmsCommand
         $index = $input->getArgument('index');
         $signData = $input->getOption('sign-data') === true;
 
-        if (!is_string($name)) {
-            throw new \RuntimeException('Unexpected content type name');
+        if (!\is_string($name)) {
+            throw new \RuntimeException('Unexpected environment name');
         }
-        if (!is_string($index)) {
+        if ($index !== null && !\is_string($index)) {
             throw new \RuntimeException('Unexpected index name');
         }
 
@@ -120,12 +120,12 @@ class ReindexCommand extends EmsCommand
         /** @var ContentTypeRepository $ctRepo */
         $ctRepo = $em->getRepository('EMSCoreBundle:ContentType');
 
-        if ($input->hasArgument('content-type')) {
-            $contentTypes = $ctRepo->findBy(['deleted' => false, 'name' => $input->getArgument('content-type')]);
+        $contentTypeName = $input->getArgument('content-type');
+        if (\is_string($contentTypeName)) {
+            $contentTypes = $ctRepo->findBy(['deleted' => false, 'name' => $contentTypeName]);
         } else {
             $contentTypes = $ctRepo->findBy(['deleted' => false]);
         }
-
 
         $bulkSize = \intval($input->getOption('bulk-size'));
         if ($bulkSize === 0) {
@@ -139,7 +139,7 @@ class ReindexCommand extends EmsCommand
         return 0;
     }
 
-    public function reindex(string $name, ContentType $contentType, string $index, OutputInterface $output, bool $signData = true, int $bulkSize = 1000): void
+    public function reindex(string $name, ContentType $contentType, ?string $index, OutputInterface $output, bool $signData = true, int $bulkSize = 1000): void
     {
         $this->logger->notice('command.reindex.start', [
             EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
@@ -162,7 +162,7 @@ class ReindexCommand extends EmsCommand
             /** @var Environment $environment */
             $environment = $environment[0];
             
-            if (!$index) {
+            if ($index === null) {
                 $index = $environment->getAlias();
             }
             $page = 0;

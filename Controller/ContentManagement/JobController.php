@@ -134,34 +134,10 @@ class JobController extends AppController
         }
 
         set_time_limit(0);
-        if (null !== $job->getService()) {
-            $output = $jobService->start($job);
-
-            try {
-                $output->writeln('Job running');
-                /** @var CoreBundle\Command\EmsCommand $command */
-                $command = $this->container->get($job->getService());
-                $input = new ArrayInput($job->getArguments());
-                $command->run($input, $output);
-                $logger->notice('log.data.job.done', [
-                    'job_id' => $job->getId(),
-                ]);
-            } catch (ServiceNotFoundException $e) {
-                $output->writeln('<error>Service not found</error>');
-            } catch (InvalidArgumentException $e) {
-                $output->writeln('<error>' . $e->getMessage() . '</error>');
-            } catch (Exception $e) {
-                $output->writeln('An exception has been raised!');
-                $output->writeln('Exception:' . $e->getMessage());
-            }
-
-            $jobService->finish($job, $output);
-        } else {
-            $jobService->run($job);
-            $logger->notice('log.data.job.done', [
-                'job_id' => $job->getId(),
-            ]);
-        }
+        $jobService->run($job);
+        $logger->notice('log.data.job.done', [
+            'job_id' => $job->getId(),
+        ]);
 
         return $this->returnJsonResponse($request, true, [
             'message' => 'job started',

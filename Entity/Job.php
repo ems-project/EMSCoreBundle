@@ -70,13 +70,6 @@ class Job
      * @ORM\Column(name="progress", type="integer")
      */
     private $progress;
-    
-    /**
-     * @var string[]
-     *
-     * @ORM\Column(name="arguments", type="json", nullable=true)
-     */
-    private $arguments;
 
     /**
      * @var string
@@ -84,13 +77,6 @@ class Job
      * @ORM\Column(name="username", type="string", length=255, nullable=true)
      */
     private $user;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="service", type="string", length=255, nullable=true)
-     */
-    private $service;
 
     /**
      * @var null|string
@@ -200,24 +186,6 @@ class Job
         return $this->progress;
     }
 
-    /**
-     * @param string[] $arguments
-     */
-    public function setArguments(array $arguments): Job
-    {
-        $this->arguments = $arguments;
-
-        return $this;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getArguments(): array
-    {
-        return $this->arguments;
-    }
-
     public function setOutput(string $output): Job
     {
         $this->output = $output;
@@ -228,18 +196,6 @@ class Job
     public function getOutput(): ?string
     {
         return $this->output;
-    }
-
-    public function setService(string $service): Job
-    {
-        $this->service = $service;
-
-        return $this;
-    }
-
-    public function getService(): ?string
-    {
-        return $this->service;
     }
 
     public function setCommand(string $command): Job

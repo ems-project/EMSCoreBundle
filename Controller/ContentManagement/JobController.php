@@ -60,7 +60,8 @@ class JobController extends AppController
         return $this->render('@EMSCore/job/status.html.twig', [
             'job' => $job,
             'status' => $encoder->encodeUrl($job->getStatus()),
-            'output' => $encoder->encodeUrl($converter->convert($job->getOutput()))
+            'output' => $encoder->encodeUrl($converter->convert($job->getOutput())),
+            'launchJob' => $this->getParameter('ems_core.trigger_job_from_web') === true && $job->getStarted() === false
         ]);
     }
 

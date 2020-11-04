@@ -125,15 +125,15 @@ class RecomputeCommand extends EmsCommand
         }
 
         if (!$input->getOption('continue') || $input->getOption('cron')) {
-            $forceFlag = $input->getOption('force');
+            $forceFlag = (bool) $input->getOption('force');
             if (!\is_bool($forceFlag)) {
                 throw new \RuntimeException('Unexpected force option');
             }
-            $cronFlag = $input->getOption('cron');
+            $cronFlag = (bool) $input->getOption('cron');
             if (!\is_bool($cronFlag)) {
                 throw new \RuntimeException('Unexpected cron option');
             }
-            $idFlag = $input->getOption('id');
+            $idFlag = (bool) $input->getOption('id');
             if (!\is_bool($idFlag)) {
                 throw new \RuntimeException('Unexpected id option');
             }

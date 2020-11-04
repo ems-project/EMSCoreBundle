@@ -589,7 +589,7 @@ class RevisionRepository extends EntityRepository
         }
     }
 
-    public function lockRevisions(?ContentType $contentType, \DateTime $until, $by, $force = false, $id = false): int
+    public function lockRevisions(?ContentType $contentType, \DateTime $until, $by, $force = false, $id = 0): int
     {
         $qbSelect = $this->createQueryBuilder('s');
         $qbSelect
@@ -619,7 +619,7 @@ class RevisionRepository extends EntityRepository
             $qbUpdate->setParameter('now', new \DateTime());
         }
 
-        if ($id) {
+        if (\is_int($id) && $id > 0) {
             $qbSelect->andWhere(
                 $qbSelect->expr()->eq('s.ouuid', ':content_id')
             );

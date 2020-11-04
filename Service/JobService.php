@@ -60,12 +60,17 @@ class JobService
 
     public function findNext() : ?Job
     {
-        return $this->repository->findOneBy([
+        $job = $this->repository->findOneBy([
             'started' => false,
             'done' => false,
         ], [
             'created' => 'ASC',
         ]);
+
+        if ($job !== null && !$job instanceof Job) {
+            throw new \RuntimeException('Unexpected Job class object');
+        }
+        return $job;
     }
 
     public function count(): int
@@ -78,22 +83,6 @@ class JobService
         $job = $this->create($user);
         $job->setStatus("Job intialized");
         $job->setCommand($command);
-
-        $this->em->persist($job);
-        $this->em->flush();
-
-        return $job;
-    }
-
-    /**
-     * @param string[] $arguments
-     */
-    public function createService(UserInterface $user, string $service, array $arguments): Job
-    {
-        $job = $this->create($user);
-        $job->setArguments($arguments);
-        $job->setService($service);
-        $job->setStatus("Job prepared");
 
         $this->em->persist($job);
         $this->em->flush();

@@ -17,6 +17,7 @@ use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\RebuildIndex;
 use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Form\Field\ColorPickerType;
 use EMS\CoreBundle\Form\Field\IconTextType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
@@ -26,6 +27,7 @@ use EMS\CoreBundle\Form\Form\RebuildIndexType;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\EnvironmentService;
+use EMS\CoreBundle\Service\JobService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -644,7 +646,7 @@ class EnvironmentController extends AppController
      *
      * @Route("/environment/rebuild/{id}", name="environment.rebuild"))
      */
-    public function rebuild($id, Request $request)
+    public function rebuild($id, Request $request, JobService $jobService)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -663,18 +665,25 @@ class EnvironmentController extends AppController
         $form = $this->createForm(RebuildIndexType::class, $rebuildIndex);
     
         $form->handleRequest($request);
+
+        $user = $this->getUser();
+        if (!$user instanceof UserInterface) {
+            throw new \RuntimeException('Unexpected user object');
+        }
     
         if ($form->isSubmitted() && $form->isValid()) {
             $option = $rebuildIndex->getOption();
 
             switch ($option) {
                 case "newIndex":
-                    return $this->startJob('ems.environment.rebuild', [
-                            'name'    => $environment->getName(),
+                    $job = $jobService->createCommand($user, sprintf('ems:environment:rebuild %s', $environment->getName()));
+                    return $this->redirectToRoute('job.status', [
+                        'job' => $job->getId(),
                     ]);
                 case "sameIndex":
-                    return $this->startJob('ems.environment.reindex', [
-                            'name'    => $environment->getName(),
+                    $job = $jobService->createCommand($user, sprintf('ems:environment:reindex %s', $environment->getName()));
+                    return $this->redirectToRoute('job.status', [
+                        'job' => $job->getId(),
                     ]);
                 default:
                     $this->getLogger()->warning('log.environment.rebuild_unknown_option', [

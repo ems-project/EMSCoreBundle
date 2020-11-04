@@ -224,28 +224,6 @@ class AppController extends Controller
         return $this->logger;
     }
 
-    /**
-     * @param string $service
-     * @param array $arguments
-     *
-     * @return RedirectResponse
-     */
-    protected function startJob($service, $arguments)
-    {
-        /** @var JobService $jobService */
-        $jobService = $this->container->get('ems.service.job');
-        $job = $jobService->createService($this->getUser(), $service, $arguments);
-
-        $this->logger->notice('log.job.prepared', [
-            'command' => $service,
-            'job_id' => $job->getId(),
-        ]);
-        
-        return $this->redirectToRoute('job.status', [
-            'job' => $job->getId(),
-        ]);
-    }
-
     public static function getFormatedTimestamp()
     {
         return date('_Ymd_His');

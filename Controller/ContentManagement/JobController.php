@@ -6,6 +6,7 @@ use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\Job;
+use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Form\Form\JobType;
 use EMS\CoreBundle\Service\JobService;
 use Exception;
@@ -20,6 +21,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class JobController extends AppController
@@ -27,9 +29,9 @@ class JobController extends AppController
     /**
      * @Route("/admin/job", name="job.index"))
      */
-    public function indexAction(Request $request, JobService $jobService)
+    public function indexAction(Request $request, JobService $jobService): Response
     {
-        $size = $this->container->getParameter('ems_core.paging_size');
+        $size = $this->getParameter('ems_core.paging_size');
 
         $page = $request->query->get('page', 1);
         $from = ($page - 1) * $size;
@@ -47,11 +49,10 @@ class JobController extends AppController
     }
 
     /**
-     * @return Response
      * @Route("/job/status/{job}", name="job.status")
      * @Route("/job/status/{job}", name="emsco_job_status")
      */
-    public function jobStatusAction(Job $job, Encoder $encoder)
+    public function jobStatusAction(Job $job, Encoder $encoder): Response
     {
         $theme = new Theme();
         $converter = new AnsiToHtmlConverter($theme);
@@ -64,18 +65,21 @@ class JobController extends AppController
     }
 
     /**
-     * @param Request $request
-     * @return RedirectResponse|Response
      * @Route("/admin/job/add", name="job.add"))
      */
-    public function createAction(Request $request, JobService $jobService)
+    public function createAction(Request $request, JobService $jobService): Response
     {
         $form = $this->createForm(JobType::class, []);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $user = $this->getUser();
+            if (!$user instanceof UserInterface) {
+                throw new NotFoundHttpException('User not found');
+            }
+
             $command = $form->get('command')->getData();
-            $job = $jobService->createCommand($this->getUser(), $command);
+            $job = $jobService->createCommand($user, $command);
 
             return $this->redirectToRoute('job.status', [
                 'job' => $job->getId(),
@@ -89,10 +93,9 @@ class JobController extends AppController
 
     /**
      * @param Job $job
-     * @return RedirectResponse
      * @Route("/admin/job/delete/{job}", name="job.delete", methods={"POST"})
      */
-    public function deleteAction(Job $job, JobService $jobService)
+    public function deleteAction(Job $job, JobService $jobService): RedirectResponse
     {
         $jobService->delete($job);
 
@@ -100,10 +103,9 @@ class JobController extends AppController
     }
 
     /**
-     * @return RedirectResponse
      * @Route("/admin/job/clean", name="job.clean", methods={"POST"})
      */
-    public function cleanAction(JobService $jobService)
+    public function cleanAction(JobService $jobService): RedirectResponse
     {
         $jobService->clean();
 
@@ -111,17 +113,17 @@ class JobController extends AppController
     }
 
     /**
-     * Ajax action called on the status page
-     * @param Job $job
-     * @param Request $request
-     * @return JsonResponse
-     *
      * @Route("/admin/job/start/{job}", name="job.start", methods={"POST"})
      * @Route("/job/start/{job}", name="emsco_job_start", methods={"POST"})
      */
-    public function startJobAction(Job $job, Request $request, JobService $jobService, LoggerInterface $logger)
+    public function startJobAction(Job $job, Request $request, JobService $jobService, LoggerInterface $logger): Response
     {
-        if ($job->getUser() != $this->getUser()->getUsername()) {
+        $user = $this->getUser();
+        if (!$user instanceof UserInterface) {
+            throw new NotFoundHttpException('User not found');
+        }
+
+        if ($job->getUser() != $user->getUsername()) {
             throw new AccessDeniedHttpException();
         }
         //http://blog.alterphp.com/2012/08/how-to-deal-with-asynchronous-request.html

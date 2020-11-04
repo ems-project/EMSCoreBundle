@@ -256,11 +256,6 @@ parameters:
 			path: Controller/ContentManagement/DataController.php
 
 		-
-			message: "#^Parameter \\#1 \\$user of method EMS\\\\CoreBundle\\\\Service\\\\JobService\\:\\:createCommand\\(\\) expects Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface, object\\|null given\\.$#"
-			count: 1
-			path: Controller/ContentManagement/DataController.php
-
-		-
 			message: "#^Cannot call method getUsername\\(\\) on object\\|null\\.$#"
 			count: 1
 			path: Controller/ContentManagement/DataController.php
@@ -374,26 +369,6 @@ parameters:
 			message: "#^Variable \\$environment in PHPDoc tag @var does not match any variable in the foreach loop\\: \\$stat$#"
 			count: 1
 			path: Controller/ContentManagement/EnvironmentController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ContentManagement\\\\JobController\\:\\:indexAction\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: Controller/ContentManagement/JobController.php
-
-		-
-			message: "#^Call to an undefined method Psr\\\\Container\\\\ContainerInterface\\:\\:getParameter\\(\\)\\.$#"
-			count: 1
-			path: Controller/ContentManagement/JobController.php
-
-		-
-			message: "#^Parameter \\#1 \\$user of method EMS\\\\CoreBundle\\\\Service\\\\JobService\\:\\:createCommand\\(\\) expects Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface, object\\|null given\\.$#"
-			count: 1
-			path: Controller/ContentManagement/JobController.php
-
-		-
-			message: "#^Cannot call method getUsername\\(\\) on object\\|null\\.$#"
-			count: 1
-			path: Controller/ContentManagement/JobController.php
 
 		-
 			message: "#^Parameter \\#1 \\$id of method EMS\\\\CoreBundle\\\\Service\\\\AliasService\\:\\:getManagedAlias\\(\\) expects int, string given\\.$#"
@@ -517,11 +492,6 @@ parameters:
 
 		-
 			message: "#^Cannot call method getCircles\\(\\) on object\\|null\\.$#"
-			count: 1
-			path: Controller/ElasticsearchController.php
-
-		-
-			message: "#^Parameter \\#1 \\$user of method EMS\\\\CoreBundle\\\\Service\\\\JobService\\:\\:createCommand\\(\\) expects Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface, object\\|null given\\.$#"
 			count: 1
 			path: Controller/ElasticsearchController.php
 
@@ -2359,26 +2329,6 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\I18n\\:\\:getContent\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Entity/I18n.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\Job\\:\\:\\$arguments type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Entity/Job.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Job\\:\\:updateModified\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: Entity/Job.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Job\\:\\:setArguments\\(\\) has parameter \\$arguments with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Entity/Job.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Job\\:\\:getArguments\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Entity/Job.php
 
 		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\ManagedAlias\\:\\:\\$indexes type has no value type specified in iterable type array\\.$#"
@@ -7966,26 +7916,6 @@ parameters:
 			path: Form/Form/I18nType.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Form\\\\JobType\\:\\:buildForm\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: Form/Form/JobType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Form\\\\JobType\\:\\:buildForm\\(\\) has parameter \\$builder with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormBuilderInterface\\.$#"
-			count: 1
-			path: Form/Form/JobType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Form\\\\JobType\\:\\:buildForm\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Form/Form/JobType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Form\\\\JobType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: Form/Form/JobType.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Form\\\\ManagedAliasType\\:\\:buildForm\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: Form/Form/ManagedAliasType.php
@@ -8567,11 +8497,6 @@ parameters:
 
 		-
 			message: "#^Cannot call method getUser\\(\\) on Symfony\\\\Component\\\\Security\\\\Core\\\\Authentication\\\\Token\\\\TokenInterface\\|null\\.$#"
-			count: 1
-			path: Form/View/ImporterViewType.php
-
-		-
-			message: "#^Parameter \\#1 \\$user of method EMS\\\\CoreBundle\\\\Service\\\\JobService\\:\\:createCommand\\(\\) expects Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface, string\\|Stringable\\|Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface given\\.$#"
 			count: 1
 			path: Form/View/ImporterViewType.php
 
@@ -10445,46 +10370,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$request of class EMS\\\\CoreBundle\\\\Helper\\\\PagingTool constructor expects Symfony\\\\Component\\\\HttpFoundation\\\\Request, Symfony\\\\Component\\\\HttpFoundation\\\\Request\\|null given\\.$#"
 			count: 1
 			path: Service/HelperService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\JobService\\:\\:clean\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: Service/JobService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\JobService\\:\\:findByUser\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Service/JobService.php
-
-		-
-			message: "#^Parameter \\#1 \\$command of method EMS\\\\CoreBundle\\\\Entity\\\\Job\\:\\:setCommand\\(\\) expects string, string\\|null given\\.$#"
-			count: 1
-			path: Service/JobService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\JobService\\:\\:createService\\(\\) has parameter \\$arguments with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Service/JobService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\JobService\\:\\:delete\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: Service/JobService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\JobService\\:\\:run\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: Service/JobService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\JobService\\:\\:scroll\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Service/JobService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\JobService\\:\\:finish\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: Service/JobService.php
 
 		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\Mapping\\:\\:\\$coreVersion has no typehint specified\\.$#"

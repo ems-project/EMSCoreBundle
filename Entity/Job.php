@@ -72,9 +72,9 @@ class Job
     private $progress;
     
     /**
-     * @var array
+     * @var string[]
      *
-     * @ORM\Column(name="arguments", type="json_array", nullable=true)
+     * @ORM\Column(name="arguments", type="json", nullable=true)
      */
     private $arguments;
 
@@ -103,7 +103,7 @@ class Job
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    public function updateModified()
+    public function updateModified(): void
     {
         $this->modified = new \DateTime();
         if (!isset($this->created)) {
@@ -111,192 +111,99 @@ class Job
         }
     }
 
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Set created
-     *
-     * @param \DateTime $created
-     *
-     * @return Job
-     */
-    public function setCreated($created)
+    public function setCreated(\DateTime $created): Job
     {
         $this->created = $created;
 
         return $this;
     }
-    
-    /**
-     * Get created
-     *
-     * @return \DateTime
-     */
-    public function getCreated()
+
+    public function getCreated(): \DateTime
     {
         return $this->created;
     }
     
-    /**
-     * Get started
-     *
-     * @return bool
-     */
-    public function getStarted()
+    public function getStarted(): bool
     {
         return $this->started;
     }
 
-    /**
-     * Set modified
-     *
-     * @param \DateTime $modified
-     *
-     * @return Job
-     */
-    public function setModified($modified)
+    public function setModified(\DateTime $modified): Job
     {
         $this->modified = $modified;
 
         return $this;
     }
 
-    /**
-     * Get modified
-     *
-     * @return \DateTime
-     */
-    public function getModified()
+    public function getModified(): \DateTime
     {
         return $this->modified;
     }
 
-    /**
-     * Set user
-     *
-     * @param string $user
-     *
-     * @return Job
-     */
-    public function setUser($user)
+    public function setUser(string $user): Job
     {
         $this->user = $user;
 
         return $this;
     }
 
-    /**
-     * Get user
-     *
-     * @return string
-     */
-    public function getUser()
+    public function getUser(): string
     {
         return $this->user;
     }
 
-    /**
-     * Set status
-     *
-     * @param string $status
-     *
-     * @return Job
-     */
-    public function setStatus($status)
+    public function setStatus(string $status): Job
     {
         $this->status = $status;
 
         return $this;
     }
 
-    /**
-     * Get status
-     *
-     * @return string
-     */
-    public function getStatus()
+    public function getStatus(): string
     {
         return $this->status;
     }
-    
-    /**
-     * Set done
-     *
-     * @param boolean $done
-     *
-     * @return Job
-     */
-    public function setDone($done)
+
+    public function setDone(bool $done): Job
     {
         $this->done = $done;
         
         return $this;
     }
-    
-    /**
-     * Set started
-     *
-     * @param boolean $started
-     *
-     * @return Job
-     */
-    public function setStarted($started)
+
+    public function setStarted(bool $started): Job
     {
         $this->started = $started;
         
         return $this;
     }
 
-    /**
-     * Get done
-     *
-     * @return boolean
-     */
-    public function getDone()
+    public function getDone(): bool
     {
         return $this->done;
     }
 
-    /**
-     * Set progress
-     *
-     * @param integer $progress
-     *
-     * @return Job
-     */
-    public function setProgress($progress)
+    public function setProgress(int $progress): Job
     {
         $this->progress = $progress;
 
         return $this;
     }
 
-    /**
-     * Get progress
-     *
-     * @return integer
-     */
-    public function getProgress()
+    public function getProgress(): int
     {
         return $this->progress;
     }
 
     /**
-     * Set arguments
-     *
-     * @param array $arguments
-     *
-     * @return Job
+     * @param string[] $arguments
      */
-    public function setArguments($arguments)
+    public function setArguments(array $arguments): Job
     {
         $this->arguments = $arguments;
 
@@ -304,83 +211,45 @@ class Job
     }
 
     /**
-     * Get arguments
-     *
-     * @return array
+     * @return string[]
      */
-    public function getArguments()
+    public function getArguments(): array
     {
         return $this->arguments;
     }
 
-    /**
-     * Set output
-     *
-     * @param string $output
-     *
-     * @return Job
-     */
-    public function setOutput($output)
+    public function setOutput(string $output): Job
     {
         $this->output = $output;
 
         return $this;
     }
 
-    /**
-     * Get output
-     *
-     * @return string
-     */
-    public function getOutput()
+    public function getOutput(): string
     {
         return $this->output;
     }
 
-    /**
-     * Set service
-     *
-     * @param string $service
-     *
-     * @return Job
-     */
-    public function setService($service)
+    public function setService(string $service): Job
     {
         $this->service = $service;
 
         return $this;
     }
 
-    /**
-     * Get service
-     *
-     * @return string|null
-     */
-    public function getService()
+    public function getService(): ?string
     {
         return $this->service;
     }
 
-    /**
-     * Set command
-     *
-     * @param string $command
-     *
-     * @return Job
-     */
-    public function setCommand($command)
+    public function setCommand(string $command): Job
     {
         $this->command = $command;
 
         return $this;
     }
 
-    /**
-     * Get command
-     *
-     * @return string|null
-     */
-    public function getCommand()
+    public function getCommand(): ?string
     {
         return $this->command;
     }

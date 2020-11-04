@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Exception\NotLockedException;
 use EMS\CoreBundle\Service\Mapping;
+use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 /**
@@ -204,6 +205,13 @@ class Revision
      * @ORM\Column(type="uuid", name="version_uuid", unique=false, nullable=true)
      */
     private $versionUuid;
+
+    /**
+     * @var null|String
+     *
+     * @ORM\Column(type="string", name="version_tag", nullable=true)
+     */
+    private $versionTag;
     
     /**
      * @ORM\PrePersist
@@ -358,6 +366,13 @@ class Revision
                 $this->rawData =  $ancestor->rawData;
                 $this->circles =  $ancestor->circles;
                 $this->dataField = new DataField($ancestor->dataField);
+
+                if (null !== $versionUuid = $ancestor->getVersionUuid()) {
+                    $this->setVersionId($versionUuid);
+                }
+                if (null !== $versionTag = $ancestor->getVersionTag()) {
+                    $this->setVersionTag($versionTag);
+                }
             }
         }
         //TODO: Refactoring: Dependency injection of the first Datafield in the Revision.
@@ -571,7 +586,7 @@ class Revision
 
     public function hasOuuid(): bool
     {
-        return $this->ouuid === null;
+        return $this->ouuid !== null;
     }
 
     /**
@@ -1105,48 +1120,96 @@ class Revision
         return $this->versionUuid;
     }
 
-    public function getVersionTag(): ?string
+    public function getVersionDate(string $field): ?\DateTimeImmutable
     {
-        return $this->rawData[Mapping::VERSION_TAG] ?? null;
-    }
-
-    public function getVersionTagDefault(): string
-    {
-        $versionTags = $this->contentType ? $this->contentType->getVersionTags() : [];
-
-        if (!isset($versionTags[0]) || !is_string($versionTags[0])) {
-            throw new \Exception(sprintf('No version tags found for contentType %s', $this->getContentTypeName()));
+        if (null === $contentType = $this->contentType) {
+            throw new \RuntimeException(sprintf('ContentType not found for revision %d', $this->getId()));
         }
 
-        return $versionTags[0];
+        $dateString = null;
+        if ('from' === $field && null !== $dateFromField = $contentType->getVersionDateFromField()) {
+            $dateString = $this->rawData[$dateFromField] ?? null;
+        }
+        if ('to' === $field && null !== $dateToField = $contentType->getVersionDateToField()) {
+            $dateString = $this->rawData[$dateToField] ?? null;
+        }
+
+        if (null === $dateString) {
+            return null;
+        }
+
+        $dateTime = \DateTimeImmutable::createFromFormat(\DateTimeImmutable::ATOM, $dateString);
+
+        return $dateTime ? $dateTime : null;
     }
 
-    public function setVersionUuid(?UuidInterface $versionUuid): void
+    public function getVersionTag(): ?string
+    {
+        return $this->versionTag;
+    }
+
+    /**
+     * Called on initNewDraft or updateMetaFieldCommand
+     */
+    public function setVersionMetaFields(): void
+    {
+        if (!$this->hasVersionTags()) {
+            return;
+        }
+
+        if (null === $this->getVersionUuid()) {
+            $this->setVersionId(Uuid::uuid4());
+        }
+        if (null === $this->getVersionTag()) {
+            $this->setVersionTagDefault();
+        }
+
+        if (null === $this->getVersionDate('from') && null === $this->getVersionDate('to')) {
+            if ($this->hasOuuid()) {
+                $this->setVersionDate('from', \DateTimeImmutable::createFromMutable($this->created)); //migration existing docs
+            } else {
+                $this->setVersionDate('from', new \DateTimeImmutable('now'));
+            }
+        }
+    }
+
+    public function setVersionId(UuidInterface $versionUuid): void
     {
         $this->versionUuid = $versionUuid;
     }
 
-    public function setVersionTag(string $version): void
+    private function setVersionTagDefault(): void
     {
         $versionTags = $this->contentType ? $this->contentType->getVersionTags() : [];
 
-        if (\in_array($version, $versionTags)) {
-            $this->rawData[Mapping::VERSION_TAG] = $version;
+        if (!isset($versionTags[0]) || !is_string($versionTags[0])) {
+            throw new \RuntimeException(sprintf('No version tags found for contentType %s (use hasVersionTags)', $this->getContentTypeName()));
+        }
+
+        $this->setVersionTag($versionTags[0]);
+    }
+
+    public function setVersionTag(string $versionTag): void
+    {
+        $versionTags = $this->contentType ? $this->contentType->getVersionTags() : [];
+
+        if (\in_array($versionTag, $versionTags)) {
+            $this->versionTag = $versionTag;
         }
     }
 
     public function setVersionDate(string $field, \DateTimeImmutable $date): void
     {
         if (null === $contentType = $this->contentType) {
-            throw new \Exception('ContentType not found');
+            throw new \RuntimeException(sprintf('ContentType not found for revision %d', $this->getId()));
         }
 
-        if ('from' === $field) {
-            $this->rawData[$contentType->getVersionDateFromField()] = $date->format(\DateTimeImmutable::ATOM);
+        if ('from' === $field && null !== $dateFromField = $contentType->getVersionDateFromField()) {
+            $this->rawData[$dateFromField] = $date->format(\DateTimeImmutable::ATOM);
         }
 
-        if ('to' === $field) {
-            $this->rawData[$contentType->getVersionDateToField()] = $date->format(\DateTimeImmutable::ATOM);
+        if ('to' === $field && null !== $dateToField = $contentType->getVersionDateToField()) {
+            $this->rawData[$dateToField] = $date->format(\DateTimeImmutable::ATOM);
         }
     }
 }

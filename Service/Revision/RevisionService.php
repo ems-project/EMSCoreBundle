@@ -9,7 +9,6 @@ use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\DataService;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Form\FormInterface;
 
 class RevisionService
 {
@@ -66,25 +65,33 @@ class RevisionService
     /**
      * @param array<mixed> $rawData
      */
-    public function saveVersion(Revision $revision, array $rawData, ?string $version = null): Revision
+    public function saveFinalize(Revision $revision, array $rawData): Revision
     {
-        if (!$revision->hasVersionTags() || $version === null) { //silent publish
-            $this->save($revision, $rawData);
-            $this->dataService->finalizeDraft($revision);
-            return $revision;
+        $this->save($revision, $rawData);
+        $this->dataService->finalizeDraft($revision);
+
+        return $revision;
+    }
+
+    /**
+     * The revision is a draft, version meta fields set in Revision->setVersionMetaFields()
+     *
+     * @param array<mixed> $rawData
+     */
+    public function saveVersion(Revision $revision, array $rawData, ?string $versionTag = null): Revision
+    {
+        if (null !== $versionTag) {
+            $revision->setVersionTag($versionTag); //update version_tag archived versions
+        }
+
+        if (null === $versionTag || null !== $revision->getVersionDate('to') || !$revision->hasOuuid()) {
+            //silent version publish || changing archived version revision || new document draft
+            return $this->saveFinalize($revision, $rawData);
         }
 
         $now = new \DateTimeImmutable();
 
-        if (!$revision->hasOuuid()) { //create
-            $revision->setVersionDate('from', $now);
-            $revision->setVersionTag($version);
-            $this->dataService->finalizeDraft($revision);
-            return $revision;
-        }
-
         $newVersion = $revision->clone(); //create new version revision
-        $newVersion->setVersionTag($version);
         $this->dataService->lockRevision($newVersion);
         $newVersion->setVersionDate('from', $now);
         $this->dataService->finalizeDraft($newVersion);

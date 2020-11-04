@@ -22,6 +22,7 @@ final class Version20201103081655 extends AbstractMigration
         $this->addSql('ALTER TABLE content_type DROP parentfield');
 
         $this->addSql('ALTER TABLE revision ADD version_uuid UUID DEFAULT NULL');
+        $this->addSql('ALTER TABLE revision ADD version_tag VARCHAR(255) DEFAULT NULL');
         $this->addSql('COMMENT ON COLUMN revision.version_uuid IS \'(DC2Type:uuid)\'');
     }
 
@@ -36,5 +37,6 @@ final class Version20201103081655 extends AbstractMigration
         $this->addSql('ALTER TABLE content_type DROP version_tags');
 
         $this->addSql('ALTER TABLE revision DROP version_uuid');
+        $this->addSql('ALTER TABLE revision DROP version_tag');
     }
 }

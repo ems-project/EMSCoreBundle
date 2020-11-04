@@ -698,8 +698,9 @@ class DataService
         if (isset($objectArray[Mapping::SIGNATURE_FIELD])) {
             unset($objectArray[Mapping::SIGNATURE_FIELD]);
         }
-        if ($revision->hasVersionTags() && null !== $revision->getVersionUuid()) {
+        if ($revision->hasVersionTags()) {
             $objectArray[Mapping::VERSION_UUID] = $revision->getVersionUuid();
+            $objectArray[Mapping::VERSION_TAG] = $revision->getVersionTag();
         }
         ArrayTool::normalizeArray($objectArray);
         $json = json_encode($objectArray);
@@ -1255,21 +1256,8 @@ class DataService
     {
         $this->setCircles($revision);
         $this->setLabelField($revision);
-        $this->setVersioning($revision);
-    }
 
-    private function setVersioning(Revision $revision): void
-    {
-        if (!$revision->hasVersionTags()) {
-            return;
-        }
-
-        if (null === $revision->getVersionUuid()) {
-            $revision->setVersionUuid(Uuid::uuid4());
-        }
-        if (null === $revision->getVersionTag()) {
-            $revision->setVersionTag($revision->getVersionTagDefault());
-        }
+        $revision->setVersionMetaFields();
     }
 
     private function setCircles(Revision $revision)
@@ -1347,10 +1335,6 @@ class DataService
                 $newDraft = new Revision($fromRev);
             } else {
                 $newDraft = new Revision($revision);
-            }
-
-            if ($revision->hasVersionTags() && null === $newDraft->getVersionUuid()) {
-                $newDraft->setVersionUuid($revision->getVersionUuid()); //revert to revision without version ouuid
             }
 
             $newDraft->setStartTime($now);
@@ -1686,6 +1670,8 @@ class DataService
         unset($object[Mapping::HASH_FIELD]);
         unset($object[Mapping::FINALIZED_BY_FIELD]);
         unset($object[Mapping::FINALIZATION_DATETIME_FIELD]);
+        unset($object[Mapping::VERSION_TAG]);
+        unset($object[Mapping::VERSION_UUID]);
         if (count($object) > 0) {
             $html = DataService::arrayToHtml($object);
 

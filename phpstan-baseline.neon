@@ -1,146 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\EMSCoreBundle\\:\\:build\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: EMSCoreBundle.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\AppController\\:\\:getTranslator\\(\\) should return Symfony\\\\Component\\\\Translation\\\\TranslatorInterface but returns object\\.$#"
-			count: 1
-			path: src/Controller/AppController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\AppController\\:\\:getElasticsearch\\(\\) should return Elasticsearch\\\\Client but returns object\\.$#"
-			count: 1
-			path: src/Controller/AppController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\AppController\\:\\:getElasticsearchService\\(\\) should return EMS\\\\CoreBundle\\\\Service\\\\ElasticsearchService but returns object\\.$#"
-			count: 1
-			path: src/Controller/AppController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\AppController\\:\\:getWysiwygProfileService\\(\\) should return EMS\\\\CoreBundle\\\\Service\\\\WysiwygProfileService but returns object\\.$#"
-			count: 1
-			path: src/Controller/AppController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\AppController\\:\\:getSortOptionService\\(\\) should return EMS\\\\CoreBundle\\\\Service\\\\SortOptionService but returns object\\.$#"
-			count: 1
-			path: src/Controller/AppController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\AppController\\:\\:getAggregateOptionService\\(\\) should return EMS\\\\CoreBundle\\\\Service\\\\AggregateOptionService but returns object\\.$#"
-			count: 1
-			path: src/Controller/AppController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\AppController\\:\\:getSearchFieldOptionService\\(\\) should return EMS\\\\CoreBundle\\\\Service\\\\SearchFieldOptionService but returns object\\.$#"
-			count: 1
-			path: src/Controller/AppController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\AppController\\:\\:getWysiwygStylesSetService\\(\\) should return EMS\\\\CoreBundle\\\\Service\\\\WysiwygStylesSetService but returns object\\.$#"
-			count: 1
-			path: src/Controller/AppController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\AppController\\:\\:getAuthorizationChecker\\(\\) should return Symfony\\\\Component\\\\Security\\\\Core\\\\Authorization\\\\AuthorizationChecker but returns object\\.$#"
-			count: 1
-			path: src/Controller/AppController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\AppController\\:\\:getSecurityEncoder\\(\\) should return Symfony\\\\Component\\\\Security\\\\Core\\\\Encoder\\\\EncoderFactoryInterface but returns object\\.$#"
-			count: 1
-			path: src/Controller/AppController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\AppController\\:\\:getUserService\\(\\) should return EMS\\\\CoreBundle\\\\Service\\\\UserService but returns object\\.$#"
-			count: 1
-			path: src/Controller/AppController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\AppController\\:\\:getNotificationService\\(\\) should return EMS\\\\CoreBundle\\\\Service\\\\NotificationService but returns object\\.$#"
-			count: 1
-			path: src/Controller/AppController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\AppController\\:\\:getFormatedTimestamp\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Controller/AppController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\AppController\\:\\:getGUID\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Controller/AppController.php
-
-		-
-			message: "#^Parameter \\#1 \\$seed of function mt_srand expects int, float given\\.$#"
-			count: 1
-			path: src/Controller/AppController.php
-
-		-
-			message: "#^Parameter \\#1 \\$prefix of function uniqid expects string, int given\\.$#"
-			count: 1
-			path: src/Controller/AppController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\AppController\\:\\:getAssetExtractorService\\(\\) should return EMS\\\\CoreBundle\\\\Service\\\\AssetExtractorService but returns object\\.$#"
-			count: 1
-			path: src/Controller/AppController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\AppController\\:\\:getDataService\\(\\) should return EMS\\\\CoreBundle\\\\Service\\\\DataService but returns object\\.$#"
-			count: 1
-			path: src/Controller/AppController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\AppController\\:\\:getPublishService\\(\\) should return EMS\\\\CoreBundle\\\\Service\\\\PublishService but returns object\\.$#"
-			count: 1
-			path: src/Controller/AppController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\AppController\\:\\:getContentTypeService\\(\\) should return EMS\\\\CoreBundle\\\\Service\\\\ContentTypeService but returns object\\.$#"
-			count: 1
-			path: src/Controller/AppController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\AppController\\:\\:getEnvironmentService\\(\\) should return EMS\\\\CoreBundle\\\\Service\\\\EnvironmentService but returns object\\.$#"
-			count: 1
-			path: src/Controller/AppController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\AppController\\:\\:returnJsonResponse\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Controller/AppController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\AppController\\:\\:returnJsonResponse\\(\\) has parameter \\$body with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Controller/AppController.php
-
-		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\HttpFoundation\\\\Session\\\\SessionInterface\\:\\:getFlashBag\\(\\)\\.$#"
-			count: 1
-			path: src/Controller/AppController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\AppController\\:\\:returnJson\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Controller/AppController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\AppController\\:\\:returnJson\\(\\) has parameter \\$success with no typehint specified\\.$#"
-			count: 1
-			path: src/Controller/AppController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\AppController\\:\\:returnJson\\(\\) has parameter \\$template with no typehint specified\\.$#"
-			count: 1
-			path: src/Controller/AppController.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ContentManagement\\\\ContentTypeController\\:\\:isValidName\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Controller/ContentManagement/ContentTypeController.php
@@ -961,11 +821,6 @@ parameters:
 			path: src/DependencyInjection/Compiler/ViewTypeCompilerPass.php
 
 		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:addDefaultsIfNotSet\\(\\)\\.$#"
-			count: 1
-			path: src/DependencyInjection/Configuration.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\DependencyInjection\\\\EMSCoreExtension\\:\\:load\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/DependencyInjection/EMSCoreExtension.php
@@ -994,6 +849,11 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\DependencyInjection\\\\EMSCoreExtension\\:\\:prepend\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/DependencyInjection/EMSCoreExtension.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\EMSCoreBundle\\:\\:build\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/EMSCoreBundle.php
 
 		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Elasticsearch\\\\Bulker\\:\\:\\$options type has no value type specified in iterable type array\\.$#"
@@ -2941,61 +2801,6 @@ parameters:
 			path: src/Entity/WysiwygStylesSet.php
 
 		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Event\\\\RevisionEvent\\:\\:\\$revision has no typehint specified\\.$#"
-			count: 1
-			path: src/Event/RevisionEvent.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\RevisionEvent\\:\\:getRevision\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Event/RevisionEvent.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Event\\\\RevisionPublishEvent\\:\\:\\$environment has no typehint specified\\.$#"
-			count: 1
-			path: src/Event/RevisionPublishEvent.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\RevisionPublishEvent\\:\\:getEnvironment\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Event/RevisionPublishEvent.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:\\$toClean type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Event/UpdateRevisionReferersEvent.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:\\$toCreate type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Event/UpdateRevisionReferersEvent.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:__construct\\(\\) has parameter \\$toCleanOuuids with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Event/UpdateRevisionReferersEvent.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:__construct\\(\\) has parameter \\$toCreateOuuids with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Event/UpdateRevisionReferersEvent.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:getToCleanOuuids\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Event/UpdateRevisionReferersEvent.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:getToCreateOuuids\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Event/UpdateRevisionReferersEvent.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:getRefererOuuid\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Event/UpdateRevisionReferersEvent.php
-
-		-
 			message: "#^Property EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:\\$twig has no typehint specified\\.$#"
 			count: 1
 			path: src/EventListener/RequestListener.php
@@ -3079,6 +2884,61 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:provideTemplateTwigObjects\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/EventListener/RequestListener.php
+
+		-
+			message: "#^Property EMS\\\\CoreBundle\\\\Event\\\\RevisionEvent\\:\\:\\$revision has no typehint specified\\.$#"
+			count: 1
+			path: src/Event/RevisionEvent.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\RevisionEvent\\:\\:getRevision\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Event/RevisionEvent.php
+
+		-
+			message: "#^Property EMS\\\\CoreBundle\\\\Event\\\\RevisionPublishEvent\\:\\:\\$environment has no typehint specified\\.$#"
+			count: 1
+			path: src/Event/RevisionPublishEvent.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\RevisionPublishEvent\\:\\:getEnvironment\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Event/RevisionPublishEvent.php
+
+		-
+			message: "#^Property EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:\\$toClean type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Event/UpdateRevisionReferersEvent.php
+
+		-
+			message: "#^Property EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:\\$toCreate type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Event/UpdateRevisionReferersEvent.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:__construct\\(\\) has parameter \\$toCleanOuuids with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Event/UpdateRevisionReferersEvent.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:__construct\\(\\) has parameter \\$toCreateOuuids with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Event/UpdateRevisionReferersEvent.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:getToCleanOuuids\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Event/UpdateRevisionReferersEvent.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:getToCreateOuuids\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Event/UpdateRevisionReferersEvent.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:getRefererOuuid\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Event/UpdateRevisionReferersEvent.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Exception\\\\AssetNotFoundException\\:\\:__construct\\(\\) has parameter \\$hash with no typehint specified\\.$#"
@@ -7086,6 +6946,81 @@ parameters:
 			path: src/Form/Factory/ObjectChoiceListFactory.php
 
 		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:buildForm\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Form/FieldType/FieldTypeType.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:buildForm\\(\\) has parameter \\$builder with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormBuilderInterface\\.$#"
+			count: 1
+			path: src/Form/FieldType/FieldTypeType.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:buildForm\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Form/FieldType/FieldTypeType.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Form/FieldType/FieldTypeType.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:buildView\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Form/FieldType/FieldTypeType.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:buildView\\(\\) has parameter \\$form with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
+			count: 1
+			path: src/Form/FieldType/FieldTypeType.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:buildView\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Form/FieldType/FieldTypeType.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:dataFieldToArray\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Form/FieldType/FieldTypeType.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:dataFieldToArray\\(\\) has parameter \\$dataField with no value type specified in iterable type EMS\\\\CoreBundle\\\\Entity\\\\DataField\\.$#"
+			count: 1
+			path: src/Form/FieldType/FieldTypeType.php
+
+		-
+			message: "#^Cannot call method getType\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"
+			count: 3
+			path: src/Form/FieldType/FieldTypeType.php
+
+		-
+			message: "#^Variable \\$dataFieldType in PHPDoc tag @var does not exist\\.$#"
+			count: 1
+			path: src/Form/FieldType/FieldTypeType.php
+
+		-
+			message: "#^PHPDoc tag @var for variable \\$child has no value type specified in iterable type EMS\\\\CoreBundle\\\\Entity\\\\DataField\\.$#"
+			count: 1
+			path: src/Form/FieldType/FieldTypeType.php
+
+		-
+			message: "#^Cannot call method getDeleted\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"
+			count: 1
+			path: src/Form/FieldType/FieldTypeType.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:generateMapping\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Form/FieldType/FieldTypeType.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:generateMapping\\(\\) has parameter \\$withPipeline with no typehint specified\\.$#"
+			count: 1
+			path: src/Form/FieldType/FieldTypeType.php
+
+		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\AlignIndexesType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Form/Field/AlignIndexesType.php
@@ -7714,81 +7649,6 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\WysiwygStylesSetPickerType\\:\\:getExistingStylesSets\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Form/Field/WysiwygStylesSetPickerType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:buildForm\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/FieldType/FieldTypeType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:buildForm\\(\\) has parameter \\$builder with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormBuilderInterface\\.$#"
-			count: 1
-			path: src/Form/FieldType/FieldTypeType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:buildForm\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Form/FieldType/FieldTypeType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/FieldType/FieldTypeType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:buildView\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/FieldType/FieldTypeType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:buildView\\(\\) has parameter \\$form with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
-			count: 1
-			path: src/Form/FieldType/FieldTypeType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:buildView\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Form/FieldType/FieldTypeType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:dataFieldToArray\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/FieldType/FieldTypeType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:dataFieldToArray\\(\\) has parameter \\$dataField with no value type specified in iterable type EMS\\\\CoreBundle\\\\Entity\\\\DataField\\.$#"
-			count: 1
-			path: src/Form/FieldType/FieldTypeType.php
-
-		-
-			message: "#^Cannot call method getType\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"
-			count: 3
-			path: src/Form/FieldType/FieldTypeType.php
-
-		-
-			message: "#^Variable \\$dataFieldType in PHPDoc tag @var does not exist\\.$#"
-			count: 1
-			path: src/Form/FieldType/FieldTypeType.php
-
-		-
-			message: "#^PHPDoc tag @var for variable \\$child has no value type specified in iterable type EMS\\\\CoreBundle\\\\Entity\\\\DataField\\.$#"
-			count: 1
-			path: src/Form/FieldType/FieldTypeType.php
-
-		-
-			message: "#^Cannot call method getDeleted\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"
-			count: 1
-			path: src/Form/FieldType/FieldTypeType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:generateMapping\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/FieldType/FieldTypeType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:generateMapping\\(\\) has parameter \\$withPipeline with no typehint specified\\.$#"
-			count: 1
-			path: src/Form/FieldType/FieldTypeType.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Form\\\\AggregateOptionType\\:\\:buildForm\\(\\) has no return typehint specified\\.$#"
@@ -8461,6 +8321,21 @@ parameters:
 			path: src/Form/View/CalendarViewType.php
 
 		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\View\\\\CriteriaViewType\\:\\:buildForm\\(\\) has parameter \\$builder with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormBuilderInterface\\.$#"
+			count: 1
+			path: src/Form/View/CriteriaViewType.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\View\\\\CriteriaViewType\\:\\:buildForm\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Form/View/CriteriaViewType.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\View\\\\CriteriaViewType\\:\\:getParameters\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Form/View/CriteriaViewType.php
+
+		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\View\\\\Criteria\\\\CriteriaFilterType\\:\\:buildForm\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Form/View/Criteria/CriteriaFilterType.php
@@ -8489,21 +8364,6 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\View\\\\Criteria\\\\CriteriaFilterType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Form/View/Criteria/CriteriaFilterType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\View\\\\CriteriaViewType\\:\\:buildForm\\(\\) has parameter \\$builder with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormBuilderInterface\\.$#"
-			count: 1
-			path: src/Form/View/CriteriaViewType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\View\\\\CriteriaViewType\\:\\:buildForm\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Form/View/CriteriaViewType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\View\\\\CriteriaViewType\\:\\:getParameters\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Form/View/CriteriaViewType.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\View\\\\ExportViewType\\:\\:buildForm\\(\\) has parameter \\$builder with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormBuilderInterface\\.$#"
@@ -9309,1586 +9169,6 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\WysiwygStylesSetRepository\\:\\:findAll\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Repository/WysiwygStylesSetRepository.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160528181644\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160528181644.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160528181644\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160528181644.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160528181800\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160528181800.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160528181800\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160528181800.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160530112419\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160530112419.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160530112419\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160530112419.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160531151108\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160531151108.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160531151108\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160531151108.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160531165729\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160531165729.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160531165729\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160531165729.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160602130458\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160602130458.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160602130458\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160602130458.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160602135225\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160602135225.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160602135225\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160602135225.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160603094235\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160603094235.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160603094235\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160603094235.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160609000457\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160609000457.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160609000457\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160609000457.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160609174255\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160609174255.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160609174255\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160609174255.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160610014126\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160610014126.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160610014126\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160610014126.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160611000940\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160611000940.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160611000940\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160611000940.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160615100829\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160615100829.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160615100829\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160615100829.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160615101536\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160615101536.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160615101536\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160615101536.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160615144505\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160615144505.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160615144505\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160615144505.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160615145958\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160615145958.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160615145958\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160615145958.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160615160012\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160615160012.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160615160012\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160615160012.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160616114058\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160616114058.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160616114058\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160616114058.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160618155605\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160618155605.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160618155605\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160618155605.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160621100508\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160621100508.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160621100508\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160621100508.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160621134144\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160621134144.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160621134144\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160621134144.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160621170653\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160621170653.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160621170653\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160621170653.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160623090153\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160623090153.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160623090153\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160623090153.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160623150156\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160623150156.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160623150156\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160623150156.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160623205349\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160623205349.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160623205349\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160623205349.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160624092418\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160624092418.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160624092418\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160624092418.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160624101915\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160624101915.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160624101915\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160624101915.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160627135212\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160627135212.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160627135212\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160627135212.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160628131121\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160628131121.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160628131121\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160628131121.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160630101646\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160630101646.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160630101646\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160630101646.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160630131820\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160630131820.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160630131820\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160630131820.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160630134327\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160630134327.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160630134327\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160630134327.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160712074242\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160712074242.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160712074242\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160712074242.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160712163613\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160712163613.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160712163613\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160712163613.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160712164800\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160712164800.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160712164800\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160712164800.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160804150503\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160804150503.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160804150503\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160804150503.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160808100505\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160808100505.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160808100505\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160808100505.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160818233147\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160818233147.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160818233147\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160818233147.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160819170235\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160819170235.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160819170235\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160819170235.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160820151843\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160820151843.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160820151843\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160820151843.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160820210338\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160820210338.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160820210338\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160820210338.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160820234837\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160820234837.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160820234837\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160820234837.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160825182504\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160825182504.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160825182504\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160825182504.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160829215120\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160829215120.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160829215120\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160829215120.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160829215248\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160829215248.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160829215248\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160829215248.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160830094949\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160830094949.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160830094949\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160830094949.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160831100926\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160831100926.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160831100926\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160831100926.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160901185701\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160901185701.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160901185701\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160901185701.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160901191459\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160901191459.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160901191459\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160901191459.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160905160213\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160905160213.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160905160213\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160905160213.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160919101846\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160919101846.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160919101846\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160919101846.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160923024226\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160923024226.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20160923024226\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20160923024226.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161018093816\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161018093816.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161018093816\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161018093816.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161022084319\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161022084319.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161022084319\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161022084319.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161022084512\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161022084512.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161022084512\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161022084512.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161022114007\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161022114007.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161022114007\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161022114007.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161022221131\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161022221131.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161022221131\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161022221131.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161022224708\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161022224708.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161022224708\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161022224708.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161022230355\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161022230355.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161022230355\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161022230355.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161026093840\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161026093840.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161026093840\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161026093840.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161026182049\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161026182049.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161026182049\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161026182049.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161026182844\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161026182844.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161026182844\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161026182844.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161030060634\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161030060634.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161030060634\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161030060634.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161031073625\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161031073625.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161031073625\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161031073625.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161031074022\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161031074022.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161031074022\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161031074022.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161124223719\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161124223719.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161124223719\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161124223719.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161201093343\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161201093343.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161201093343\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161201093343.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161203212309\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161203212309.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161203212309\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161203212309.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161204221357\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161204221357.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161204221357\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161204221357.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161204221734\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161204221734.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20161204221734\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20161204221734.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170101151746\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170101151746.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170101151746\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170101151746.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170101152117\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170101152117.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170101152117\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170101152117.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170304071513\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170304071513.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170304071513\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170304071513.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170410142404\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170410142404.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170410142404\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170410142404.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170514052618\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170514052618.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170514052618\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170514052618.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170515114115\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170515114115.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170515114115\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170515114115.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170519191354\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170519191354.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170519191354\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170519191354.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170524180752\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170524180752.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170524180752\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170524180752.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170604004043\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170604004043.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170604004043\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170604004043.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170611210837\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170611210837.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170611210837\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170611210837.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170623194743\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170623194743.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170623194743\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170623194743.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170704003859\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170704003859.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170704003859\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170704003859.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170810120332\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170810120332.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170810120332\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170810120332.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170814065136\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170814065136.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170814065136\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170814065136.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170814105313\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170814105313.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170814105313\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170814105313.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170814113724\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170814113724.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170814113724\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170814113724.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170814195158\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170814195158.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170814195158\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170814195158.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170814222836\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170814222836.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170814222836\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170814222836.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170815064607\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170815064607.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170815064607\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170815064607.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170829101534\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170829101534.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170829101534\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170829101534.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170923081455\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170923081455.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170923081455\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170923081455.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170923134112\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170923134112.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170923134112\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20170923134112.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20171022202556\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20171022202556.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20171022202556\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20171022202556.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20171108103540\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20171108103540.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20171108103540\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20171108103540.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20171201115454\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20171201115454.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20171201115454\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20171201115454.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180131091124\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20180131091124.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180131091124\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20180131091124.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180304094402\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20180304094402.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180304094402\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20180304094402.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180319152727\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20180319152727.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180319152727\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20180319152727.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180323130914\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20180323130914.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180323130914\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20180323130914.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180328210602\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20180328210602.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180328210602\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20180328210602.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180408102537\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20180408102537.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180408102537\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20180408102537.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180523202734\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20180523202734.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180523202734\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20180523202734.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180620210228\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20180620210228.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180620210228\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20180620210228.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180623200408\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20180623200408.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180623200408\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_mysql/Version20180623200408.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170514085008\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20170514085008.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170514085008\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20170514085008.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170515093233\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20170515093233.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170515093233\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20170515093233.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170515114009\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20170515114009.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170515114009\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20170515114009.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170519191241\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20170519191241.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170519191241\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20170519191241.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170524180701\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20170524180701.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170524180701\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20170524180701.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170603190729\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20170603190729.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170603190729\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20170603190729.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170603232326\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20170603232326.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170603232326\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20170603232326.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170610093606\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20170610093606.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170610093606\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20170610093606.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170810212616\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20170810212616.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170810212616\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20170810212616.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170812193750\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20170812193750.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170812193750\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20170812193750.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170815211151\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20170815211151.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170815211151\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20170815211151.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170829123500\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20170829123500.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170829123500\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20170829123500.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170923081305\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20170923081305.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170923081305\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20170923081305.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170923105230\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20170923105230.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170923105230\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20170923105230.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20171022063229\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20171022063229.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20171022063229\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20171022063229.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20171104085732\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20171104085732.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20171104085732\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20171104085732.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20171201120934\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20171201120934.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20171201120934\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20171201120934.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180111130417\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20180111130417.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180111130417\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20180111130417.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180111131414\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20180111131414.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180111131414\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20180111131414.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180131092334\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20180131092334.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180131092334\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20180131092334.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180303140457\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20180303140457.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180303140457\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20180303140457.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180317184105\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20180317184105.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180317184105\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20180317184105.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180317185353\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20180317185353.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180317185353\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20180317185353.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180318084359\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20180318084359.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180318084359\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20180318084359.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180319085803\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20180319085803.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180319085803\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20180319085803.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180319141827\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20180319141827.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180319141827\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20180319141827.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180323111854\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20180323111854.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180323111854\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20180323111854.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180323121227\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20180323121227.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180323121227\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20180323121227.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180328201351\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20180328201351.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180328201351\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20180328201351.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180409060317\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20180409060317.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180409060317\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20180409060317.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180520174532\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20180520174532.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180520174532\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20180520174532.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180620203055\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20180620203055.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180620203055\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20180620203055.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180623191455\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20180623191455.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180623191455\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_pgsql/Version20180623191455.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170519205125\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20170519205125.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170519205125\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20170519205125.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170524180817\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20170524180817.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170524180817\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20170524180817.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170604011056\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20170604011056.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170604011056\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20170604011056.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170611210801\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20170611210801.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170611210801\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20170611210801.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170810212906\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20170810212906.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170810212906\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20170810212906.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170815212532\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20170815212532.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170815212532\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20170815212532.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170829123318\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20170829123318.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170829123318\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20170829123318.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170923081911\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20170923081911.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170923081911\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20170923081911.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170923134133\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20170923134133.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20170923134133\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20170923134133.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20171022202835\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20171022202835.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20171022202835\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20171022202835.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20171201115903\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20171201115903.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20171201115903\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20171201115903.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20171210092835\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20171210092835.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20171210092835\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20171210092835.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180131093007\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20180131093007.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180131093007\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20180131093007.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180304094733\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20180304094733.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180304094733\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20180304094733.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180319152753\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20180319152753.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180319152753\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20180319152753.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180323130933\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20180323130933.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180323130933\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20180323130933.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180328210749\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20180328210749.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180328210749\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20180328210749.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180416081913\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20180416081913.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180416081913\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20180416081913.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180523202836\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20180523202836.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180523202836\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20180523202836.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180620205107\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20180620205107.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180620205107\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20180620205107.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180623200438\\:\\:up\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20180623200438.php
-
-		-
-			message: "#^Method Application\\\\Migrations\\\\Version20180623200438\\:\\:down\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Resources/DoctrineMigrations/pdo_sqlite/Version20180623200438.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Security\\\\ApiKeyAuthenticator\\:\\:createToken\\(\\) has no return typehint specified\\.$#"

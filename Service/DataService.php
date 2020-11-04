@@ -47,6 +47,7 @@ use EMS\CoreBundle\Twig\AppExtension;
 use Exception;
 use IteratorAggregate;
 use Monolog\Logger;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Form\Form;
@@ -697,6 +698,10 @@ class DataService
         if (isset($objectArray[Mapping::SIGNATURE_FIELD])) {
             unset($objectArray[Mapping::SIGNATURE_FIELD]);
         }
+        if ($revision->hasVersionTags()) {
+            $objectArray[Mapping::VERSION_UUID] = $revision->getVersionUuid();
+            $objectArray[Mapping::VERSION_TAG] = $revision->getVersionTag();
+        }
         ArrayTool::normalizeArray($objectArray);
         $json = json_encode($objectArray);
 
@@ -925,7 +930,7 @@ class DataService
         $objectArray = $this->sign($revision);
 
 
-        if (empty($form) || $this->isValid($form, $revision->getContentType()->getParentField(), $objectArray)) {
+        if (empty($form) || $this->isValid($form, null, $objectArray)) {
             $objectArray[Mapping::PUBLISHED_DATETIME_FIELD] = (new DateTime())->format(DateTime::ISO8601);
 
             $config = [
@@ -1251,6 +1256,8 @@ class DataService
     {
         $this->setCircles($revision);
         $this->setLabelField($revision);
+
+        $revision->setVersionMetaFields();
     }
 
     private function setCircles(Revision $revision)
@@ -1663,6 +1670,8 @@ class DataService
         unset($object[Mapping::HASH_FIELD]);
         unset($object[Mapping::FINALIZED_BY_FIELD]);
         unset($object[Mapping::FINALIZATION_DATETIME_FIELD]);
+        unset($object[Mapping::VERSION_TAG]);
+        unset($object[Mapping::VERSION_UUID]);
         if (count($object) > 0) {
             $html = DataService::arrayToHtml($object);
 

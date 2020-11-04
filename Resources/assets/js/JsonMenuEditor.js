@@ -190,7 +190,7 @@ export default class JsonMenuEditor {
                 });
             } else if (action === 'edit') {
                 target.closest('li').data('label', label).data('object', object);
-                target.closest('li').find('.itemLabel:first').val(label);
+                target.closest('li').find('.itemLabel:first').text(label);
                 self.relocate();
             }
 

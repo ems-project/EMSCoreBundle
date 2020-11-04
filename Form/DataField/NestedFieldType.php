@@ -78,7 +78,8 @@ class NestedFieldType extends DataFieldType
                         'metadata' => $fieldType,
                         'migration' => $options['migration'],
                         'with_warning' => $options['with_warning'],
-                        'label' => false
+                        'label' => false,
+                        'disabled_fields' => $options['disabled_fields']
                 ], $fieldType->getDisplayOptions());
                 $builder->add($fieldType->getName(), $fieldType->getType(), $options);
 

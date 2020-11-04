@@ -226,6 +226,11 @@ function addEventListeners(target){
 
     new EmsListeners(target.get(0), onFormChange);
 
+    target.find('button#btn-publish-version').on('click', function(e) {
+        e.preventDefault();
+        $('#publish-version-modal').modal('show');
+    });
+
     target.find('.remove-content-button').on('click', function(e) {
         // prevent the link from creating a "#" on the URL
         e.preventDefault();
@@ -391,6 +396,16 @@ function addEventListeners(target){
         $(this).datepicker(params);
 
         $(this).on('change', onFormChange);
+    });
+
+    target.find('.datetime-picker').each(function( ) {
+        let $element = $(this);
+        $element.unbind('change');
+        $element.datetimepicker({
+            keepInvalid: true, //otherwise daysOfWeekDisabled or disabledHours will not work!
+            extraFormats: [moment.ISO_8601]
+        });
+        $element.on('change', onFormChange);
     });
 
     target.find('.ems_daterangepicker').each(function( ) {

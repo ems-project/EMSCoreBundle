@@ -107,14 +107,37 @@
 			</div>
 			<div class="btn-group">
 				{% if revision.draft %}
-					{{ form_widget(form.publish) }}
+					{% if form.publish is defined %}
+						{{ form_widget(form.publish) }}
+					{% endif %}
+					{% if form.publish_version is defined %}
+						<button type="button" id="btn-publish-version" class="btn-primary btn-sm btn"><span class="glyphicon glyphicon-open"></span>&nbsp;
+							{{ form.publish_version.vars.label }}
+						</button>
+						<div id="publish-version-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="publish-version-modal">
+							<div class="modal-dialog modal-sm" role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+										<h4 class="modal-title">Publish in {{ revision.contentType.environment.name }}</h4>
+									</div>
+									<div class="modal-body">
+										{{ form_widget(form.publish_version_tags) }}
+									</div>
+									<div class="modal-footer">
+										{{ form_widget(form.publish_version) }}
+										<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" aria-label="Close">Close</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					{% endif %}
                     {% include '@EMSCore/elements/post-button.html.twig' with {
 						'url': path('revision.discard', {'revisionId': revision.id, 'type': revision.contentType.name}),
 						'message': 'Discard this draft ?',
 						'label': 'Discard draft',
 						'icon': 'trash'
 					}%}
-				{% else %}
 				{% endif %}
 			</div>
 		</div>

@@ -12,6 +12,7 @@ use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -133,11 +134,42 @@ class ContentTypeType extends AbstractType
                 ]
             ]);
             $builder->add('localeField');
+
+            $builder
+                ->add('versionDateFromField', ContentTypeFieldPickerType::class, [
+                    'required' => false,
+                    'firstLevelOnly' => false,
+                    'label' => 'From date field',
+                    'mapping' => $mapping,
+                    'types' => ['date']
+                ])
+                ->add('versionDateToField', ContentTypeFieldPickerType::class, [
+                    'required' => false,
+                    'firstLevelOnly' => false,
+                    'label' => 'To date field',
+                    'mapping' => $mapping,
+                    'types' => ['date']
+                ])
+                ->add('versionTags', CollectionType::class, [
+                    'entry_type' => TextType::class,
+                    'attr' => [
+                        'class' => 'a2lix_lib_sf_collection',
+                        'data-lang-add' => 'Add version',
+                        'data-lang-remove' => 'X',
+                        'data-entry-remove-class' => 'btn btn-danger',
+                    ],
+                    'entry_options' => [
+                        'label' => false,
+                        'attr' => ['style' => 'width: 150px; float: left;']
+                    ],
+                    'allow_add' => true,
+                    'allow_delete' => true,
+                    'block_prefix' => 'tags'
+                ]);
         }
         
         
 
-//         $builder->add ( 'parentField');
 //         $builder->add ( 'userField');
 //         $builder->add ( 'dateField');
 //         $builder->add ( 'startDateField');

@@ -15,6 +15,8 @@ class Mapping
     const HASH_FIELD = '_sha1';
     const SIGNATURE_FIELD = '_signature';
     const CONTENT_TYPE_FIELD = '_contenttype';
+    const VERSION_UUID = '_version_uuid';
+    const VERSION_TAG = '_version_tag';
 
     const MAPPING_INTERNAL_FIELDS = [
         Mapping::PUBLISHED_DATETIME_FIELD => Mapping::PUBLISHED_DATETIME_FIELD,
@@ -23,6 +25,8 @@ class Mapping
         Mapping::HASH_FIELD => Mapping::HASH_FIELD,
         Mapping::SIGNATURE_FIELD => Mapping::SIGNATURE_FIELD,
         Mapping::CONTENT_TYPE_FIELD => Mapping::CONTENT_TYPE_FIELD,
+        Mapping::VERSION_UUID => Mapping::VERSION_UUID,
+        Mapping::VERSION_TAG => Mapping::VERSION_TAG,
     ];
 
     const CONTENT_TYPE_META_FIELD = 'content_type';
@@ -92,6 +96,11 @@ class Mapping
             ],
             $out['properties']
         );
+
+        if ($contentType->hasVersionTags()) {
+            $out['properties'][Mapping::VERSION_UUID] = $this->elasticsearchService->getKeywordMapping();
+            $out['properties'][Mapping::VERSION_TAG] = $this->elasticsearchService->getKeywordMapping();
+        }
 
         $out['_meta'] = [
             Mapping::CONTENT_TYPE_META_FIELD => $contentType->getName(),

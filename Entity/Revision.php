@@ -4,9 +4,10 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Exception\NotLockedException;
 use EMS\CoreBundle\Service\Mapping;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 /**
  * Revision
@@ -197,6 +198,20 @@ class Revision
     
     /**not persisted field to ensure that they are all there after a submit */
     private $allFieldsAreThere;
+
+    /**
+     * @var null|UuidInterface
+     *
+     * @ORM\Column(type="uuid", name="version_uuid", unique=false, nullable=true)
+     */
+    private $versionUuid;
+
+    /**
+     * @var null|String
+     *
+     * @ORM\Column(type="string", name="version_tag", nullable=true)
+     */
+    private $versionTag;
     
     /**
      * @ORM\PrePersist
@@ -351,6 +366,13 @@ class Revision
                 $this->rawData =  $ancestor->rawData;
                 $this->circles =  $ancestor->circles;
                 $this->dataField = new DataField($ancestor->dataField);
+
+                if (null !== $versionUuid = $ancestor->getVersionUuid()) {
+                    $this->setVersionId($versionUuid);
+                }
+                if (null !== $versionTag = $ancestor->getVersionTag()) {
+                    $this->setVersionTag($versionTag);
+                }
             }
         }
         //TODO: Refactoring: Dependency injection of the first Datafield in the Revision.
@@ -562,6 +584,11 @@ class Revision
         return $this->ouuid;
     }
 
+    public function hasOuuid(): bool
+    {
+        return $this->ouuid !== null;
+    }
+
     /**
      * Set startTime
      *
@@ -770,6 +797,15 @@ class Revision
         return $this->contentType;
     }
 
+    public function getContentTypeName(): string
+    {
+        if (null === $this->contentType) {
+            throw new \RuntimeException('No contentType for revision!');
+        }
+
+        return $this->contentType->getName();
+    }
+
     /**
      * Set version
      *
@@ -928,7 +964,7 @@ class Revision
     /**
      * Set autoSave
      *
-     * @param array $autoSave
+     * @param null|array $autoSave
      *
      * @return Revision
      */
@@ -1072,5 +1108,108 @@ class Revision
     {
         $this->finalizedDate = $finalizedDate;
         return $this;
+    }
+
+    public function hasVersionTags() : bool
+    {
+        return $this->contentType ? $this->contentType->hasVersionTags() : false;
+    }
+
+    public function getVersionUuid(): ?UuidInterface
+    {
+        return $this->versionUuid;
+    }
+
+    public function getVersionDate(string $field): ?\DateTimeImmutable
+    {
+        if (null === $contentType = $this->contentType) {
+            throw new \RuntimeException(sprintf('ContentType not found for revision %d', $this->getId()));
+        }
+
+        $dateString = null;
+        if ('from' === $field && null !== $dateFromField = $contentType->getVersionDateFromField()) {
+            $dateString = $this->rawData[$dateFromField] ?? null;
+        }
+        if ('to' === $field && null !== $dateToField = $contentType->getVersionDateToField()) {
+            $dateString = $this->rawData[$dateToField] ?? null;
+        }
+
+        if (null === $dateString) {
+            return null;
+        }
+
+        $dateTime = \DateTimeImmutable::createFromFormat(\DateTimeImmutable::ATOM, $dateString);
+
+        return $dateTime ? $dateTime : null;
+    }
+
+    public function getVersionTag(): ?string
+    {
+        return $this->versionTag;
+    }
+
+    /**
+     * Called on initNewDraft or updateMetaFieldCommand
+     */
+    public function setVersionMetaFields(): void
+    {
+        if (!$this->hasVersionTags()) {
+            return;
+        }
+
+        if (null === $this->getVersionUuid()) {
+            $this->setVersionId(Uuid::uuid4());
+        }
+        if (null === $this->getVersionTag()) {
+            $this->setVersionTagDefault();
+        }
+
+        if (null === $this->getVersionDate('from') && null === $this->getVersionDate('to')) {
+            if ($this->hasOuuid()) {
+                $this->setVersionDate('from', \DateTimeImmutable::createFromMutable($this->created)); //migration existing docs
+            } else {
+                $this->setVersionDate('from', new \DateTimeImmutable('now'));
+            }
+        }
+    }
+
+    public function setVersionId(UuidInterface $versionUuid): void
+    {
+        $this->versionUuid = $versionUuid;
+    }
+
+    private function setVersionTagDefault(): void
+    {
+        $versionTags = $this->contentType ? $this->contentType->getVersionTags() : [];
+
+        if (!isset($versionTags[0]) || !is_string($versionTags[0])) {
+            throw new \RuntimeException(sprintf('No version tags found for contentType %s (use hasVersionTags)', $this->getContentTypeName()));
+        }
+
+        $this->setVersionTag($versionTags[0]);
+    }
+
+    public function setVersionTag(string $versionTag): void
+    {
+        $versionTags = $this->contentType ? $this->contentType->getVersionTags() : [];
+
+        if (\in_array($versionTag, $versionTags)) {
+            $this->versionTag = $versionTag;
+        }
+    }
+
+    public function setVersionDate(string $field, \DateTimeImmutable $date): void
+    {
+        if (null === $contentType = $this->contentType) {
+            throw new \RuntimeException(sprintf('ContentType not found for revision %d', $this->getId()));
+        }
+
+        if ('from' === $field && null !== $dateFromField = $contentType->getVersionDateFromField()) {
+            $this->rawData[$dateFromField] = $date->format(\DateTimeImmutable::ATOM);
+        }
+
+        if ('to' === $field && null !== $dateToField = $contentType->getVersionDateToField()) {
+            $this->rawData[$dateToField] = $date->format(\DateTimeImmutable::ATOM);
+        }
     }
 }

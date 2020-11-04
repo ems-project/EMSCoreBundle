@@ -36,6 +36,7 @@ export default class EmsListeners {
         this.addObjectPickerListeners();
         this.addFieldsToDisplayByValue();
         this.addFileUploaderListerners();
+        this.addA2LixLibSfCollection();
     }
 
     addFieldsToDisplayByValue() {
@@ -631,6 +632,20 @@ export default class EmsListeners {
                     panel.find('.collapse').collapse('hide');
                 }
             });
+    }
+
+    addA2LixLibSfCollection()
+    {
+        jquery(this.target).find('.a2lix_lib_sf_collection').each(function () {
+            a2lix_lib.sfCollection.init({
+                collectionsSelector: '#' + $(this).attr('id'),
+                manageRemoveEntry: true,
+                lang: {
+                    add: $(this).data('lang-add'),
+                    remove: $(this).data('lang-remove'),
+                }
+            });
+        });
     }
 
 }

@@ -100,7 +100,7 @@ class RecomputeCommand extends EmsCommand
             ->addOption('continue', null, InputOption::VALUE_NONE, 'continue a recompute')
             ->addOption('no-align', null, InputOption::VALUE_NONE, "don't keep the revisions aligned to all already aligned environments")
             ->addOption('cron', null, InputOption::VALUE_NONE, 'optimized for automated recurring recompute calls, tries --continue, when no locks are found for user runs command without --continue')
-            ->addOption('id', null, InputOption::VALUE_OPTIONAL, 'recompute a specific id')
+            ->addOption('id', null, InputOption::VALUE_OPTIONAL, 'recompute a specific id', 0)
         ;
     }
 
@@ -133,10 +133,7 @@ class RecomputeCommand extends EmsCommand
             if (!\is_bool($cronFlag)) {
                 throw new \RuntimeException('Unexpected cron option');
             }
-            $idFlag = $input->getOption('id');
-            if (!\is_bool($idFlag)) {
-                throw new \RuntimeException('Unexpected id option');
-            }
+            $idFlag = \intval($input->getOption('id'));
             $this->lock($output, $contentType, $forceFlag, $cronFlag, $idFlag);
         }
 
@@ -242,7 +239,7 @@ class RecomputeCommand extends EmsCommand
         return 0;
     }
 
-    private function lock(OutputInterface $output, ContentType $contentType, bool $force = false, bool $ifEmpty = false, bool $id = false): int
+    private function lock(OutputInterface $output, ContentType $contentType, bool $force = false, bool $ifEmpty = false, int $id = 0): int
     {
         $application = $this->getApplication();
         if ($application === null) {

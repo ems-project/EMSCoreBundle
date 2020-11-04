@@ -892,7 +892,7 @@
 				<button style="display:none;" class="btn btn-default btn-sm button-collapse" role="button" aria-expanded="true"></button>
 			</span>
 			<span><i class="{{ node.icon|default('%icon%') }}"></i></span>
-			<span>{{ child.label|default('%label%') }}</span>
+			<span class="itemLabel">{{ child.label|default('%label%') }}</span>
 			<span class="pull-right">
 				<div class="btn-group btn-group-sm">
 					{{ addMenu }}
@@ -946,6 +946,22 @@
 <!-- /.form group -->
 {% endblock datefieldtype_row %}
 
+{% block date_time_field_type_row %}
+	<div class="form-group">
+		<div id="{{ form.vars.id}}__label">
+			{{ form_label(form.value) }}
+		</div>
+		<div class="input-group">
+			<div class="input-group-addon">
+				<i class="fa fa-calendar"></i>
+			</div>
+			{{- form_widget(form.value) -}}
+		</div>
+		<div class="has-error"  id="{{ form.vars.id}}__error">
+			{{- form_errors(form) -}}
+		</div>
+	</div>
+{% endblock date_time_field_type_row %}
 
 {% block assettype_row %}
 <div class="panel panel-default file-uploader-row{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %}">

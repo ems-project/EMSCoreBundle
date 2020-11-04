@@ -266,16 +266,6 @@ parameters:
 			path: Controller/ContentManagement/DataController.php
 
 		-
-			message: "#^Cannot call method getParentField\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 2
-			path: Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Parameter \\#2 \\$parent of method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:isValid\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\DataField\\|null, string given\\.$#"
-			count: 2
-			path: Controller/ContentManagement/DataController.php
-
-		-
 			message: "#^Parameter \\#3 \\$contentType of method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:propagateDataToComputedField\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\ContentType, EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null given\\.$#"
 			count: 2
 			path: Controller/ContentManagement/DataController.php
@@ -9853,16 +9843,6 @@ parameters:
 		-
 			message: "#^Parameter \\#3 \\$contentType of method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:propagateDataToComputedField\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\ContentType, EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null given\\.$#"
 			count: 2
-			path: Service/DataService.php
-
-		-
-			message: "#^Cannot call method getParentField\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 1
-			path: Service/DataService.php
-
-		-
-			message: "#^Parameter \\#2 \\$parent of method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:isValid\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\DataField\\|null, string given\\.$#"
-			count: 1
 			path: Service/DataService.php
 
 		-

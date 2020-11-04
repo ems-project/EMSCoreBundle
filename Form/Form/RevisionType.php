@@ -77,6 +77,7 @@ class RevisionType extends AbstractType
                 'migration' => $options['migration'],
                 'with_warning' => $options['with_warning'],
                 'raw_data' => $options['raw_data'],
+                'disabled_fields' => $contentType->getDisabledDataFields()
         ])->add('save', SubmitEmsType::class, [
                 'attr' => [
                         'class' => 'btn-primary btn-sm '

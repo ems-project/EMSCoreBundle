@@ -183,12 +183,16 @@ abstract class DataFieldType extends AbstractType
 
     public function isDisabled($options)
     {
+        /** @var FieldType $fieldType */
+        $fieldType = $options['metadata'];
+
+        if (\in_array($fieldType->getName(), $options['disabled_fields'] ?? [], true)) {
+            return true;
+        }
+
         if (strcmp('cli', php_sapi_name()) === 0) {
             return false;
         }
-
-        /** @var FieldType $fieldType */
-        $fieldType = $options ['metadata'];
 
         $enable = ($options['migration'] && !$fieldType->getMigrationgOption('protected', true)) || $this->authorizationChecker->isGranted($fieldType->getMinimumRole());
         return !$enable;
@@ -263,6 +267,7 @@ abstract class DataFieldType extends AbstractType
                 'with_warning' => true,
                 'raw_data' => [],
                 'helptext' => null,
+                'disabled_fields' => []
         ]);
     }
 

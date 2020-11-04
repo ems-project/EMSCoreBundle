@@ -138,10 +138,16 @@ class DateTimeFieldType extends DataFieldType
         }
 
         $parseFormat = $fieldType->getDisplayOption('parseFormat', 'd/m/Y H:i:s');
-        $dateTime = \DateTimeImmutable::createFromFormat($parseFormat, $value);
+        $parseDateTime = \DateTimeImmutable::createFromFormat($parseFormat, $value);
+
+        if ($parseDateTime) {
+            return parent::reverseViewTransform($parseDateTime->format(\DateTimeImmutable::ATOM), $fieldType);
+        }
+
+        $dateTime = \DateTimeImmutable::createFromFormat(\DateTimeImmutable::ATOM, $value);
 
         if (false === $dateTime) {
-            throw new DataFormatException(sprintf('Invalid parse format %s for date string: %s', $parseFormat, $value));
+            throw new DataFormatException(sprintf('Invalid parse format %s or ATOM for date string: %s', $parseFormat, $value));
         }
 
         return parent::reverseViewTransform($dateTime->format(\DateTimeImmutable::ATOM), $fieldType);

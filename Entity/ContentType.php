@@ -1885,4 +1885,15 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     {
         $this->versionDateToField = $versionDateToField;
     }
+
+    /**
+     * @return string[]
+     */
+    public function getDisabledDataFields(): array
+    {
+        return array_filter([
+            $this->getVersionDateFromField(),
+            $this->getVersionDateToField()
+        ]);
+    }
 }

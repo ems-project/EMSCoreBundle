@@ -92,6 +92,7 @@ class ContainerFieldType extends DataFieldType
                         'migration' => $options['migration'],
                         'with_warning' => $options['with_warning'],
                         'raw_data' =>  $options['raw_data'],
+                        'disabled_fields' => $options['disabled_fields']
                 ], $child->getDisplayOptions());
 
                 $builder->add($child->getName(), $child->getType(), $options);

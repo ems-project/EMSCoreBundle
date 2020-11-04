@@ -691,6 +691,11 @@ services:
         arguments: ['@logger', '@ems.service.data', '@ems.service.contenttype']
         tags:
             - { name: console.command }
+    ems.job.run:
+        class: EMS\CoreBundle\Command\JobCommand
+        arguments: ['@logger', '@ems.service.job', '%ems_core.date_time_format%']
+        tags:
+            - { name: console.command }
 
 #### security services
     api_key_user_provider:

@@ -58,6 +58,16 @@ class JobService
         return $doneJobs;
     }
 
+    public function findNext() : ?Job
+    {
+        return $this->repository->findOneBy([
+            'started' => false,
+            'done' => false,
+        ], [
+            'created' => 'ASC',
+        ]);
+    }
+
     public function count(): int
     {
         return \intval($this->repository->countJobs());

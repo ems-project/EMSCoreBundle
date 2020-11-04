@@ -225,7 +225,7 @@ class Job
         return $this;
     }
 
-    public function getOutput(): string
+    public function getOutput(): ?string
     {
         return $this->output;
     }

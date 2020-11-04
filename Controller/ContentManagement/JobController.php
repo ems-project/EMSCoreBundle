@@ -126,13 +126,19 @@ class JobController extends AppController
         if ($job->getUser() != $user->getUsername()) {
             throw new AccessDeniedHttpException();
         }
-        //http://blog.alterphp.com/2012/08/how-to-deal-with-asynchronous-request.html
-        $request->getSession()->save();
 
         if ($job->getStarted() && $job->getDone()) {
             return new JsonResponse('job already done');
         }
 
+        if ($this->getParameter('ems_core.trigger_job_from_web') === false) {
+            return $this->returnJsonResponse($request, true, [
+                'message' => 'job is scheduled',
+                'job_id' => $job->getId(),
+            ]);
+        }
+
+        $request->getSession()->save();
         set_time_limit(0);
         $jobService->run($job);
         $logger->notice('log.data.job.done', [

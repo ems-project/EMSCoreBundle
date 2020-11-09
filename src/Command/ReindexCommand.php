@@ -198,7 +198,7 @@ class ReindexCommand extends EmsCommand
                         $bulk['body'][] = [
                                 'index' => [
                                     '_index' => $index,
-                                    '_type' => $contentType->getName(),
+                                    '_type' => $this->mapping->getTypeName($contentType->getName()),
                                     '_id' => $revision->getOuuid(),
                                 ]
                             ];

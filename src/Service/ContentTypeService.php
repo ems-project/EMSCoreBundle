@@ -310,8 +310,8 @@ class ContentTypeService
             if (isset($envs)) {
                 $out = $this->client->indices()->putMapping([
                     'index' => $envs,
-                    'type' => $contentType->getName(),
-                    'body' => $body
+                    'type' => $this->mappingService->getTypeName($contentType->getName()),
+                    'body' => $body,
                 ]);
                 if (isset($out ['acknowledged']) && $out ['acknowledged']) {
                     $contentType->setDirty(false);

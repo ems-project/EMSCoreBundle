@@ -49,9 +49,6 @@ class Mapping
     private $elasticsearchService;
 
     /** @var string*/
-    private $coreVersion;
-
-    /** @var string*/
     private $instanceId;
 
     /** @var ElasticaService */

@@ -69,7 +69,7 @@ class SynchronizeAssetCommand extends EmsCommand
         $this->formatStyles($output);
 
         $storages = [];
-        foreach ($this->fileService->getStorages() as $id => $storage) {
+        foreach ($this->fileService->getStorages() as $storage) {
             $storages[$storage->__toString()] = $storage;
         }
 

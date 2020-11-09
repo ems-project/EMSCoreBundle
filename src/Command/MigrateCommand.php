@@ -56,8 +56,6 @@ class MigrateCommand extends Command
     private $searchQuery;
     /** @var bool */
     private $dontFinalize;
-    /** @var Logger */
-    private $logger;
     /** @var ContentTypeRepository */
     private $contentTypeRepository;
     /** @var SymfonyStyle */
@@ -74,11 +72,10 @@ class MigrateCommand extends Command
     /** @var string  */
     const ARGUMENT_ELASTICSEARCH_INDEX = 'elasticsearchIndex';
 
-    public function __construct(Registry $doctrine, Logger $logger, Client $client, DocumentService $documentService)
+    public function __construct(Registry $doctrine, Client $client, DocumentService $documentService)
     {
         $this->doctrine = $doctrine;
         $this->client = $client;
-        $this->logger = $logger;
         $this->documentService = $documentService;
 
         $em = $this->doctrine->getManager();
@@ -251,7 +248,7 @@ class MigrateCommand extends Command
         $importerContext = $this->documentService->initDocumentImporterContext($this->contentTypeTo, 'SYSTEM_MIGRATE', $this->rawImport, $this->signData, $this->indexInDefaultEnv, $this->bulkSize, !$this->dontFinalize, $this->forceImport);
         
         while (isset($arrayElasticsearchIndex['hits']['hits']) && count($arrayElasticsearchIndex['hits']['hits']) > 0) {
-            foreach ($arrayElasticsearchIndex["hits"]["hits"] as $index => $value) {
+            foreach ($arrayElasticsearchIndex["hits"]["hits"] as $value) {
                 try {
                     $this->documentService->importDocument($importerContext, $value['_id'], $value['_source']);
                 } catch (NotLockedException $e) {

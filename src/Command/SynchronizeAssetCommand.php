@@ -32,8 +32,6 @@ class SynchronizeAssetCommand extends EmsCommand
     protected $databaseDriver;
     /** @var FileService */
     protected $fileService;
-    /** @var int  */
-    const PAGE_SIZE = 10;
 
 
     public function __construct(Logger $logger, Client $client, Registry $doctrine, ContentTypeService $contentTypeService, AssetExtractorService $extractorService, FileService $fileService)

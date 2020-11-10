@@ -13,10 +13,8 @@ use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Form\ExportDocuments;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\Form\SearchFilter;
-use EMS\CoreBundle\Entity\Template;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Form\Field\IconTextType;
-use EMS\CoreBundle\Form\Field\RenderOptionType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\Form\ExportDocumentsType;
 use EMS\CoreBundle\Form\Form\SearchFormType;
@@ -27,9 +25,6 @@ use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\JobService;
 use Exception;
 use Symfony\Component\Form\ClickableInterface;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,12 +35,6 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Throwable;
-use Twig\Error\LoaderError;
-use Twig\Error\SyntaxError;
-use Twig_Error;
-use Twig_Error_Loader;
-use Twig_Error_Syntax;
-use ZipStream\ZipStream;
 
 class ElasticsearchController extends AppController
 {
@@ -820,9 +809,7 @@ class ElasticsearchController extends AppController
 
             //1. Define the parameters for a regular search request
             $params = [
-                '_source_exclude' => ['*.content', '*.attachement'],
                 'version' => true,
-//                     'df'=> isset($field)?$field:'_all',
                 'index' => empty($selectedEnvironments) ? array_keys($environments) : $selectedEnvironments,
                 'type' => empty($search->getContentTypes()) ? array_keys($types) : array_values($search->getContentTypes()),
                 'size' => $this->container->getParameter('ems_core.paging_size'),

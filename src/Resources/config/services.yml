@@ -502,7 +502,7 @@ services:
             - { name: kernel.cache_warmer }
     ems.service.search:
         class: EMS\CoreBundle\Service\SearchService
-        arguments: ['@ems.service.mapping']
+        arguments: ['@ems.service.mapping', '@ems_common.service.elastica']
     ems.service.file:
         class: EMS\CoreBundle\Service\FileService
         arguments: ['@doctrine', '@ems_common.storage.manager', '@ems_common.storage.processor', '%kernel.project_dir%', '%ems_core.upload_folder%', '%ems_core.storage_folder%', '%ems_core.save_assets_in_db%', '%ems_core.ems_remote_host%', '%ems_core.ems_remote_authkey%', '%ems_core.sftp_server%', '%ems_core.sftp_path%', '%ems_core.sftp_user%', '%ems_core.public_key%', '%ems_core.private_key%', '%ems_core.s3_credentials%', '%ems_core.s3_bucket%']

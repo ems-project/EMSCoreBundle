@@ -8,12 +8,12 @@ use Symfony\Component\Validator\ConstraintValidator;
 class IsDifferentPasswordValidator extends ConstraintValidator
 {
     /**
-     * @param mixed $value
+     * @param mixed                          $value
      * @param Constraint|IsDifferentPassword $constraint
      */
     public function validate($value, $constraint): bool
     {
-        if (!$constraint instanceof IsDifferentPassword) {
+        if ( !$constraint instanceof IsDifferentPassword) {
             return false;
         }
 

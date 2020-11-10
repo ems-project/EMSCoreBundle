@@ -110,6 +110,11 @@ class Mapping
             Mapping::CORE_VERSION_META_FIELD => $this->elasticaService->getVersion(),
             Mapping::INSTANCE_ID_META_FIELD => $this->instanceId,
         ];
+
+        $elasticsearchVersion = $this->elasticaService->getVersion();
+        if (\version_compare($elasticsearchVersion, '7.0') >= 0) {
+            return $out;
+        }
         
         return [ $this->getTypeName($contentType->getName()) => $out ];
     }
@@ -121,6 +126,15 @@ class Mapping
             return 'doc';
         }
         return $contentTypeName;
+    }
+
+    public function getTypePath(string $contentTypeName): string
+    {
+        $version = $this->elasticaService->getVersion();
+        if (\version_compare($version, '7.0') >= 0) {
+            return '.';
+        }
+        return $this->getTypeName($contentTypeName);
     }
 
     public function dataFieldToArray(DataField $dataField)

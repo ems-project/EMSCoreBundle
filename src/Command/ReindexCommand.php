@@ -195,12 +195,19 @@ class ReindexCommand extends EmsCommand
                             $bulk['pipeline'] = $this->instanceId . $contentType->getName();
                         }
 
+                        $bulkItem = [
+                            '_index' => $index,
+                            '_id' => $revision->getOuuid(),
+                        ];
+                        $typePath = $this->mapping->getTypePath($contentType->getName());
+
+                        if ($typePath !== '.') {
+                            $bulkItem['_type'] = $typePath;
+                        }
+
+
                         $bulk['body'][] = [
-                                'index' => [
-                                    '_index' => $index,
-                                    '_type' => $this->mapping->getTypeName($contentType->getName()),
-                                    '_id' => $revision->getOuuid(),
-                                ]
+                                'index' => $bulkItem,
                             ];
 
                         $rawData = $revision->getRawData();

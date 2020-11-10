@@ -58,6 +58,7 @@ class SearchService
                     break;
                 case 'should':
                     $boolQuery->addShould($esFilter);
+                    $boolQuery->setMinimumShouldMatch($search->getMinimumShouldMatch());
                     break;
                 case 'must_not':
                     $boolQuery->addMustNot($esFilter);
@@ -69,7 +70,6 @@ class SearchService
                     throw new \RuntimeException('Unexpected operator');
             }
         }
-        $boolQuery->setMinimumShouldMatch($search->getMinimumShouldMatch());
 
         $commonSearch = new CommonSearch($search->getEnvironments(), $this->elasticaService->filterByContentTypes($boolQuery, $search->getContentTypes()));
 

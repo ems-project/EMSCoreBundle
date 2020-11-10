@@ -14,8 +14,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class IndexController extends AppController
 {
-    /** @var LoggerInterface */
-    private $logger;
     /** @var IndexService */
     private $indexService;
 
@@ -25,7 +23,6 @@ class IndexController extends AppController
         FormRegistryInterface $formRegistry,
         RequestRuntime $requestRuntime
     ) {
-        $this->logger = $logger;
         parent::__construct($logger, $formRegistry, $requestRuntime);
         $this->indexService = $indexService;
     }

@@ -29,7 +29,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class PublishController extends AbstractController
 {
     /**
-     * @Route("/publish/to/{revisionId}/{envId}", name="revision.publish_to"))
+     * @Route("/publish/to/{revisionId}/{envId}", name="revision.publish_to")
      */
     public function publishToAction(Revision $revisionId, Environment $envId, PublishService $publishService): Response
     {
@@ -55,7 +55,7 @@ class PublishController extends AbstractController
     }
 
     /**
-     * @Route("/revision/unpublish/{revisionId}/{envId}", name="revision.unpublish"))
+     * @Route("/revision/unpublish/{revisionId}/{envId}", name="revision.unpublish")
      */
     public function unPublishAction(Revision $revisionId, Environment $envId, PublishService $publishService): RedirectResponse
     {
@@ -77,7 +77,7 @@ class PublishController extends AbstractController
     }
 
     /**
-     * @Route("/publish/search-result", name="search.publish", defaults={"deleted": 0, "managed": 1})
+     * @Route("/publish/search-result", name="search.publish", defaults={"deleted"=0, "managed"=1})
      * @Security("has_role('ROLE_PUBLISHER')")
      */
     public function publishSearchResult(Request $request, JobService $jobService, EnvironmentService $environmentService, ContentTypeService $contentTypeService, SearchService $searchService, Client $client): Response

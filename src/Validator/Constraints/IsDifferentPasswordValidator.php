@@ -25,7 +25,6 @@ class IsDifferentPasswordValidator extends ConstraintValidator
                 return false;
             }
         } catch (\Exception $e) {
-
         }
 
         return true;

@@ -2,26 +2,47 @@
 
 namespace EMS\CoreBundle\Service;
 
+use Elastica\Query\BoolQuery;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\Form\Search;
-use EMS\CoreBundle\Entity\Form\SearchFilter;
+use EMS\CommonBundle\Search\Search as CommonSearch;
 
 class SearchService
 {
     /** @var Mapping */
     private $mapping;
+    /** @var ElasticaService */
+    private $elasticaService;
 
-    public function __construct(Mapping $mapping)
+    public function __construct(Mapping $mapping, ElasticaService $elasticaService)
     {
         $this->mapping = $mapping;
+        $this->elasticaService = $elasticaService;
     }
-    
-    public function generateSearchBody(Search $search)
+
+    /**
+     * @deprecated
+     * @return array<mixed>
+     */
+    public function generateSearchBody(Search $search): array
+    {
+        @trigger_error("SearchService::generateSearchBody is deprecated use the SearchService::generateSearch method instead", E_USER_DEPRECATED);
+        $commonSearch = $this->generateSearch($search);
+        $body = [];
+        $query = $commonSearch->getQuery();
+        if ($query !== null) {
+            $body['query'] = $query->toArray();
+        }
+        $body['sort'] = $commonSearch->getSort();
+        return $body;
+    }
+
+    public function generateSearch(Search $search): CommonSearch
     {
         $mapping = $this->mapping->getMapping($search->getEnvironments());
 
-        $body = [];
+        $boolQuery = new BoolQuery();
 
-        /** @var SearchFilter $filter */
         foreach ($search->getFilters() as $filter) {
             if (!$esFilter = $filter->generateEsFilter()) {
                 continue;
@@ -31,26 +52,45 @@ class SearchService
                 $esFilter = $this->nestFilter($nestedPath, $esFilter);
             }
 
-            $body["query"]["bool"][$filter->getBooleanClause()][] = $esFilter;
+            switch ($filter->getBooleanClause()) {
+                case 'must':
+                    $boolQuery->addMust($esFilter);
+                    break;
+                case 'should':
+                    $boolQuery->addShould($esFilter);
+                    break;
+                case 'must_not':
+                    $boolQuery->addMustNot($esFilter);
+                    break;
+                case 'filter':
+                    $boolQuery->addFilter($esFilter);
+                    break;
+                default:
+                    throw new \RuntimeException('Unexpected operator');
+            }
         }
+        $boolQuery->setMinimumShouldMatch($search->getMinimumShouldMatch());
 
-        if (isset($body["query"]["bool"]['should'])) {
-            $body["query"]["bool"]['minimum_should_match'] = $search->getMinimumShouldMatch();
-        }
+        $commonSearch = new CommonSearch($search->getEnvironments(), $this->elasticaService->filterByContentTypes($boolQuery, $search->getContentTypes()));
 
-        if (null != $search->getSortBy() && strlen($search->getSortBy()) > 0) {
-            $body["sort"] = [
+        $sortBy = $search->getSortBy();
+        if (null != $sortBy && strlen($sortBy) > 0) {
+            $commonSearch->setSort([
                 $search->getSortBy() => array_filter([
                     'order' => (empty($search->getSortOrder()) ? 'asc' : $search->getSortOrder()),
-                    'missing' => '_last',
+                    'missing' => '_last' ,
                     'unmapped_type' => 'long',
-                    'nested_path' => $this->getNestedPath($search->getSortBy(), $mapping),
+                    'nested_path' => $this->getNestedPath($sortBy, $mapping),
                 ])
-            ];
+            ]);
         }
-        return $body;
+        return $commonSearch;
     }
 
+    /**
+     * @param array<mixed> $esFilter
+     * @return array<mixed>
+     */
     private function nestFilter(string $nestedPath, array $esFilter): array
     {
         $path = explode('.', $nestedPath);
@@ -67,11 +107,19 @@ class SearchService
         return $esFilter;
     }
 
-    private function getNestedPath(string $field, array $mapping): ?string
+    /**
+     * @param array<mixed> $mapping
+     */
+    private function getNestedPath(string $field, ?array $mapping): ?string
     {
         if (!\strpos($field, '.')) {
             return null;
         }
+
+        if ($mapping === null) {
+            return null;
+        }
+
 
         $nestedPath = [];
         $explode = \explode('.', $field);
@@ -85,7 +133,7 @@ class SearchService
 
             if ($fieldMapping['type'] == 'nested') {
                 $nestedPath[] = $field;
-                $mapping = $fieldMapping['properties']; //go to nested properties
+                $mapping = $fieldMapping['properties'] ?? []; //go to nested properties
             } else if (isset($fieldMapping['fields'])) {
                 $mapping = $fieldMapping['fields']; //go to sub fields
             }

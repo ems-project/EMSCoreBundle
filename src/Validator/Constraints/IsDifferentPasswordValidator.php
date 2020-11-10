@@ -13,7 +13,7 @@ class IsDifferentPasswordValidator extends ConstraintValidator
      */
     public function validate($value, $constraint): bool
     {
-        if ( !$constraint instanceof IsDifferentPassword) {
+        if (! $constraint instanceof IsDifferentPassword) {
             return false;
         }
 

@@ -164,6 +164,11 @@ class Mapping
         $mappings = $indices->getMapping(['index' => $indexes]);
 
         foreach ($mappings as $index) {
+            if (isset($index['mappings']['properties'])) {
+                $result = \array_merge_recursive($index['mappings']['properties'], $result);
+                continue;
+            }
+
             foreach ($index['mappings'] as $type => $mapping) {
                 $result = \array_merge_recursive($mapping['properties'], $result);
             }

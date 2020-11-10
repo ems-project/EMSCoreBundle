@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
+use EMS\CoreBundle\Validator\DTO\Credentials;
 
 class IsDifferentPasswordValidator extends ConstraintValidator
 {
@@ -16,10 +17,17 @@ class IsDifferentPasswordValidator extends ConstraintValidator
         if (! $constraint instanceof IsDifferentPassword) {
             return false;
         }
-        $currentPassword = $_POST['fos_user_change_password_form']['current_password'];
-        $newPassword = $_POST['fos_user_change_password_form']['plainPassword']['first'];
 
-        if ($currentPassword === $newPassword) {
+        try {
+            $credentials = new Credentials(
+                $_POST['fos_user_change_password_form']['current_password'],
+                $_POST['fos_user_change_password_form']['plainPassword']['first']
+            );
+        } catch (\Exception $e) {
+            return true;
+        }
+
+        if ($credentials->getCurrentPassword() === $credentials->getNewPassword()) {
             $this->context->addViolation($constraint->message);
             return false;
         }

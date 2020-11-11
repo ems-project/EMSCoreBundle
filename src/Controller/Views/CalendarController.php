@@ -17,7 +17,7 @@ class CalendarController extends AppController
      * @param Request $request
      * @return Response
      *
-     * @Route("/views/calendar/replan/{view}.json", name="views.calendar.replan", methods={"POST"})
+     * @Route("/views/calendar/replan/{view}.json", name="views.calendar.replan", defaults={"_format"="json"}, methods={"POST"})
      */
     public function updateAction(View $view, Request $request)
     {
@@ -73,7 +73,7 @@ class CalendarController extends AppController
      * @return Response
      * @throws \Exception
      *
-     * @Route("/views/calendar/search/{view}.json", name="views.calendar.search", methods={"GET"})
+     * @Route("/views/calendar/search/{view}.json", name="views.calendar.search", defaults={"_format"="json"}, methods={"GET"})
      */
     public function searchAction(View $view, Request $request)
     {

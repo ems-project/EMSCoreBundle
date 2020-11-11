@@ -7,6 +7,7 @@ use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\ElasticsearchException;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
+use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\AggregateOption;
 use EMS\CoreBundle\Entity\ContentType;
@@ -811,7 +812,6 @@ class ElasticsearchController extends AppController
             $params = [
                 'version' => true,
                 'index' => empty($selectedEnvironments) ? array_keys($environments) : $selectedEnvironments,
-                'type' => empty($search->getContentTypes()) ? array_keys($types) : array_values($search->getContentTypes()),
                 'size' => $this->container->getParameter('ems_core.paging_size'),
                 'from' => ($page - 1) * $this->container->getParameter('ems_core.paging_size')
 
@@ -825,12 +825,6 @@ class ElasticsearchController extends AppController
                 $params['size'] = 10000;
             }
 
-
-            //                "highlight": {
-            //                   "fields": {
-            //                      "_all": {}
-            //                   }
-            //                },
             $body = array_merge($body, json_decode('{
 			   "aggs": {
 			      "types": {
@@ -859,13 +853,14 @@ class ElasticsearchController extends AppController
 
             try {
                 $results = $client->search($params);
-                if ($results['hits']['total'] > 50000) {
+                $response = new CommonResponse($results);
+                if ($response->getTotal() >= 10000) {
                     $this->getLogger()->warning('log.elasticsearch.limit_exceded', [
-                        'total' => $results['hits']['total'],
+                        'total' => $response->getTotal(),
                     ]);
                     $lastPage = ceil(50000 / $this->container->getParameter('ems_core.paging_size'));
                 } else {
-                    $lastPage = ceil($results['hits']['total'] / $this->container->getParameter('ems_core.paging_size'));
+                    $lastPage = ceil($response->getTotal() / $this->container->getParameter('ems_core.paging_size'));
                 }
             } catch (ElasticsearchException $e) {
                 $this->getLogger()->warning('log.error', [
@@ -904,6 +899,7 @@ class ElasticsearchController extends AppController
 
             return $this->render('@EMSCore/elasticsearch/search.html.twig', [
                 'results' => $results,
+                'response' => $response ?? null,
                 'lastPage' => $lastPage,
                 'paginationPath' => 'elasticsearch.search',
                 'types' => $types,

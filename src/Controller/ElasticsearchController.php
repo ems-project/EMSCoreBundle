@@ -402,7 +402,7 @@ class ElasticsearchController extends AppController
 
 
                 $selectedEnvironments = [];
-                if (!empty($search->getEnvironments())) {
+                if (!\is_array($search->getEnvironments())) {
                     foreach ($search->getEnvironments() as $envName) {
                         $temp = $this->getEnvironmentService()->getAliasByName($envName);
                         if ($temp) {

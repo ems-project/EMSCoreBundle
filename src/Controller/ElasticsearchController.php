@@ -733,37 +733,8 @@ class ElasticsearchController extends AppController
                 ]);
             }
 
-            //Next we want 1. see the results, or 2. export the results
-            //So the common step is to fetch the results based on the search presets
             /** @var Search $search */
-            if ($request->query->get('form') && array_key_exists('massExport', $request->query->get('form'))) {
-                //In case of export we saved the search object in json form, time to recuperate it
-                $jsonSearch = $request->query->get('form')['search-data'];
-                $encoders = array(new JsonEncoder());
-                $normalizers = array(new ObjectNormalizer());
-                $serializer = new Serializer($normalizers, $encoders);
-
-                $searchArray = json_decode($jsonSearch, true);
-                $filtersArray = $searchArray['filters'];
-
-                $searchArray['filters'] = null;
-
-                /** @var Search $search */
-                $search = $serializer->deserialize(json_encode($searchArray), Search::class, 'json');
-                foreach ($filtersArray as $rawFilter) {
-                    $jsonFilter = json_encode($rawFilter);
-                    $filter = $serializer->deserialize($jsonFilter, SearchFilter::class, 'json');
-                    if ($filter instanceof SearchFilter) {
-                        $search->addFilter($filter);
-                    } else {
-                        $this->getLogger()->warning('log.elasticsearch.not_able_to_deserialize_filters', [
-                            'json_filters' => $jsonFilter,
-                        ]);
-                    }
-                }
-            } else {
-                $search = $form->getData();
-            }
+            $search = $form->getData();
 
             $body = $this->getSearchService()->generateSearchBody($search);
 
@@ -816,14 +787,6 @@ class ElasticsearchController extends AppController
                 'from' => ($page - 1) * $this->container->getParameter('ems_core.paging_size')
 
             ];
-
-            //2. Override parameters because when exporting we need all results, not paged
-            if ($request->query->get('form') && array_key_exists('massExport', $request->query->get('form'))) {
-                //TODO: size 10000 is the default maximum size of an elasticsearch installation. In case of export it would be better to use the scroll API of elasticsearch in case of performance issues. Or when more then 10000 results are going to be exported.
-                //TODO: consideration: will there be an export limit? Because for giant loads of data it might be better to call an API of the system that needs our exported data. Then again, they could simply connect to elasticsearch as a standalone application!
-                $params['from'] = 0;
-                $params['size'] = 10000;
-            }
 
             $body = array_merge($body, json_decode('{
 			   "aggs": {

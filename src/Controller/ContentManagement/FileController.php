@@ -190,8 +190,8 @@ class FileController extends AbstractController
      * @param FileService $fileService
      * @return Response
      *
-     * @Route("/images/index" , name="ems_images_index", defaults={"_format": "json"}, methods={"GET","HEAD"})
-     * @Route("/api/images" , name="ems_api_images_index", defaults={"_format": "json"}, methods={"GET","HEAD"})
+     * @Route("/images/index", name="ems_images_index", defaults={"_format"="json"}, methods={"GET", "HEAD"})
+     * @Route("/api/images", name="ems_api_images_index", defaults={"_format"="json"}, methods={"GET", "HEAD"})
      */
     public function indexImagesAction(FileService $fileService)
     {
@@ -207,8 +207,8 @@ class FileController extends AbstractController
      * @param LoggerInterface $logger
      * @return Response
      *
-     * @Route("/file/upload" , name="ems_image_upload_url", defaults={"_format": "json"}, methods={"POST"})
-     * @Route("/api/file" , name="ems_api_image_upload_url", defaults={"_format": "json"}, methods={"POST"})
+     * @Route("/file/upload", name="ems_image_upload_url", defaults={"_format"="json"}, methods={"POST"})
+     * @Route("/api/file", name="ems_api_image_upload_url", defaults={"_format"="json"}, methods={"POST"})
      */
     public function uploadFileAction(Request $request, FileService $fileService, LoggerInterface $logger)
     {

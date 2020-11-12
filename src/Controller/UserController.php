@@ -31,7 +31,7 @@ use EMS\CoreBundle\Entity\User;
 class UserController extends AppController
 {
     /**
-     * @Route("/user", name="ems.user.index"))
+     * @Route("/user", name="ems.user.index")
      * @return Response
      */
     public function indexAction()
@@ -117,7 +117,7 @@ class UserController extends AppController
             /** @var UserManagerInterface $userManager */
             $userManager = $this->get('fos_user.user_manager');
 
-            $continue = $this->userExist($user, 'add', $form);
+            $continue = $this->userExist($user, 'add');
 
             if ($continue) {
                 $user->setEnabled(true);
@@ -414,7 +414,7 @@ class UserController extends AppController
     /**
      * Test if email or username exist return on add or edit Form
      */
-    private function userExist($user, $action, $form): bool
+    private function userExist($user, $action): bool
     {
         /** @var UserManagerInterface $userManager */
         $userManager = $this->get('fos_user.user_manager');

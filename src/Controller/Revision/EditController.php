@@ -54,8 +54,8 @@ class EditController extends AbstractController
     }
 
     /**
-     * @Route("/data/draft/edit/{revisionId}", name="ems_revision_edit"))
-     * @Route("/data/draft/edit/{revisionId}", name="revision.edit"))
+     * @Route("/data/draft/edit/{revisionId}", name="ems_revision_edit")
+     * @Route("/data/draft/edit/{revisionId}", name="revision.edit")
      */
     public function editRevision(int $revisionId, Request $request): Response
     {

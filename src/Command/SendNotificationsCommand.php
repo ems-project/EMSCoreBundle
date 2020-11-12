@@ -18,20 +18,14 @@ class SendNotificationsCommand extends ContainerAwareCommand
 {
     /** @var Registry */
     private $doctrine;
-    /** @var Logger */
-    private $logger;
-    /** @var UserService */
-    private $userService;
     /** @var NotificationService */
     private $notificationService;
     /** @var string */
     private $notificationPendingTimeout;
     
-    public function __construct(Registry $doctrine, Logger $logger, UserService $userService, NotificationService $notificationService, string $notificationPendingTimeout)
+    public function __construct(Registry $doctrine, NotificationService $notificationService, string $notificationPendingTimeout)
     {
         $this->doctrine = $doctrine;
-        $this->logger = $logger;
-        $this->userService = $userService;
         $this->notificationService = $notificationService;
         
         $this->notificationPendingTimeout = $notificationPendingTimeout;

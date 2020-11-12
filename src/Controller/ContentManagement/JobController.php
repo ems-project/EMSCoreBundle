@@ -27,7 +27,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class JobController extends AppController
 {
     /**
-     * @Route("/admin/job", name="job.index"))
+     * @Route("/admin/job", name="job.index")
      */
     public function indexAction(Request $request, JobService $jobService): Response
     {
@@ -66,7 +66,7 @@ class JobController extends AppController
     }
 
     /**
-     * @Route("/admin/job/add", name="job.add"))
+     * @Route("/admin/job/add", name="job.add")
      */
     public function createAction(Request $request, JobService $jobService): Response
     {

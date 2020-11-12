@@ -562,12 +562,12 @@ services:
             - '@ems.service.revision'
     ems.contenttype.migrate:
         class: EMS\CoreBundle\Command\MigrateCommand
-        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.document']
+        arguments: ['@doctrine', '@app.elasticsearch', '@ems.service.document']
         tags:
             -  { name: console.command }
     ems.make.document:
         class: EMS\CoreBundle\Command\DocumentCommand
-        arguments: ['@logger', '@app.elasticsearch', '@ems.service.contenttype', '@ems.service.document', '@ems.service.data']
+        arguments: ['@ems.service.contenttype', '@ems.service.document', '@ems.service.data']
         tags:
             -  { name: console.command }
     ems.contenttype.export:
@@ -577,7 +577,7 @@ services:
             -  { name: console.command }
     ems.environment.rebuild:
         class: EMS\CoreBundle\Command\RebuildCommand
-        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.mapping', '@ems.service.contenttype', '@ems.service.environment', '@ems.environment.reindex', '%ems_core.instance_id%', '%ems_core.single_type_index%']
+        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.contenttype', '@ems.service.environment', '@ems.environment.reindex', '%ems_core.instance_id%', '%ems_core.single_type_index%']
         tags:
             -  { name: console.command }
     ems.delete.orphans:
@@ -633,7 +633,7 @@ services:
             -  { name: console.command }
     ems.notification.send:
         class: EMS\CoreBundle\Command\SendNotificationsCommand
-        arguments: ['@doctrine', '@logger', '@ems.service.user', '@ems.service.notification', '%ems_core.notification_pending_timeout%']
+        arguments: ['@doctrine', '@ems.service.notification', '%ems_core.notification_pending_timeout%']
         tags:
             -  { name: console.command }
     ems.revisions.index-file-fields:
@@ -648,7 +648,7 @@ services:
             -  { name: console.command }
     ems.environment.list:
         class: EMS\CoreBundle\Command\EnvironmentCommand
-        arguments: ['@logger', '@ems.service.environment']
+        arguments: ['@ems.service.environment']
         tags:
             -  { name: console.command }
     EMS\CoreBundle\Command\SynchronizeAssetCommand:
@@ -693,7 +693,7 @@ services:
             - { name: console.command }
     ems.job.run:
         class: EMS\CoreBundle\Command\JobCommand
-        arguments: ['@logger', '@ems.service.job', '%ems_core.date_time_format%']
+        arguments: ['@ems.service.job', '%ems_core.date_time_format%']
         tags:
             - { name: console.command }
 
@@ -738,7 +738,7 @@ services:
         resource: '../../Controller/*'
 
     EMS\CoreBundle\Controller\Api\Form\SubmissionController:
-        arguments: ['@ems.form_submission','@logger']
+        arguments: ['@ems.form_submission']
     EMS\CoreBundle\Controller\Api\Form\VerificationController:
         arguments: ['@ems.form_verification', '@logger']
         tags: ['controller.service_arguments']

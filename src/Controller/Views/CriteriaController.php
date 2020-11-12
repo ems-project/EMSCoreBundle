@@ -39,7 +39,7 @@ class CriteriaController extends AppController
      * @throws DataStateException
      * @throws Exception
      *
-     * @Route("/views/criteria/align/{view}", name="views.criteria.align"), methods={"POST"})
+     * @Route("/views/criteria/align/{view}", name="views.criteria.align", methods={"POST"})
      */
     public function alignAction(View $view, Request $request)
     {
@@ -216,7 +216,7 @@ class CriteriaController extends AppController
      * @return Response
      * @throws Exception
      *
-     * @Route("/views/criteria/table/{view}", name="views.criteria.table"), methods={"GET", "POST"})
+     * @Route("/views/criteria/table/{view}", name="views.criteria.table", methods={"GET", "POST"})
      */
     public function generateCriteriaTableAction(View $view, Request $request)
     {
@@ -380,7 +380,7 @@ class CriteriaController extends AppController
         $criteriaFilters = [];
         $criteriaChoiceLists = [];
         /** @var DataField $criteria */
-        foreach ($criteriaUpdateConfig->getCriterion() as $idxName => $criteria) {
+        foreach ($criteriaUpdateConfig->getCriterion() as $criteria) {
             $fieldTypeName = $criteria->getFieldType()->getType();
             /**@var DataFieldType $dataFieldType */
             $dataFieldType = $this->getDataFieldType($fieldTypeName);
@@ -1114,7 +1114,7 @@ class CriteriaController extends AppController
      * @param Request $request
      * @return Response
      *
-     * @Route("/views/criteria/fieldFilter", name="views.criteria.fieldFilter"))
+     * @Route("/views/criteria/fieldFilter", name="views.criteria.fieldFilter")
      */
     public function fieldFilterAction(Request $request)
     {

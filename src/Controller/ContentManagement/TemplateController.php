@@ -105,7 +105,7 @@ class TemplateController extends AppController
      * @throws ORMException
      * @throws OptimisticLockException
      *
-     * @Route("/template/edit/{id}.{_format}", name="template.edit", defaults={"_format": "html"}, methods={"GET","HEAD", "POST"})
+     * @Route("/template/edit/{id}.{_format}", name="template.edit", defaults={"_format"="html"}, methods={"GET", "HEAD", "POST"})
      */
     public function editAction(int $id, Request $request, string $_format): Response
     {

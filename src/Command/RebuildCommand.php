@@ -20,8 +20,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class RebuildCommand extends EmsCommand
 {
-    /** @var Mapping */
-    private $mapping;
     /** @var Registry  */
     private $doctrine;
     /** @var ContentTypeService*/
@@ -35,12 +33,11 @@ class RebuildCommand extends EmsCommand
     /** @var bool */
     private $singleTypeIndex;
 
-    public function __construct(Registry $doctrine, Logger $logger, Client $client, Mapping $mapping, ContentTypeService $contentTypeService, EnvironmentService $environmentService, ReindexCommand $reindexCommand, string $instanceId, bool $singleTypeIndex)
+    public function __construct(Registry $doctrine, Logger $logger, Client $client, ContentTypeService $contentTypeService, EnvironmentService $environmentService, ReindexCommand $reindexCommand, string $instanceId, bool $singleTypeIndex)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
         $this->client = $client;
-        $this->mapping = $mapping;
         $this->contentTypeService = $contentTypeService;
         $this->environmentService = $environmentService;
         $this->reindexCommand = $reindexCommand;

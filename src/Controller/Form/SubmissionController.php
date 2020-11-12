@@ -23,17 +23,13 @@ final class SubmissionController extends AbstractController
     private $formSubmissionService;
     /** @var TranslatorInterface */
     private $translator;
-    /** @var LoggerInterface */
-    private $logger;
 
     public function __construct(
         FormSubmissionService $formSubmissionService,
-        TranslatorInterface $translator,
-        LoggerInterface $logger
+        TranslatorInterface $translator
     ) {
         $this->formSubmissionService = $formSubmissionService;
         $this->translator = $translator;
-        $this->logger = $logger;
     }
 
     /**
@@ -72,7 +68,7 @@ final class SubmissionController extends AbstractController
     }
 
     /**
-     * @Route("/form/submissions/download/{id}", name="form.submissions.download", requirements={"id": "\S+"}, methods={"GET"})
+     * @Route("/form/submissions/download/{id}", name="form.submissions.download", requirements={"id"="\S+"}, methods={"GET"})
      */
     public function download(string $id): Response
     {

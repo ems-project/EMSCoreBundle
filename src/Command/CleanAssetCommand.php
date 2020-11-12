@@ -17,9 +17,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CleanAssetCommand extends EmsCommand
 {
-    /** @var int*/
-    const PAGE_SIZE = 10;
-
     /** @var Registry */
     protected $doctrine;
 

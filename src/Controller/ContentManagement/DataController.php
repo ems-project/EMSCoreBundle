@@ -65,8 +65,8 @@ use Twig_Error_Syntax;
 class DataController extends AppController
 {
     /**
-     * @Route("/data/{name}", name="ems_data_default_search"))
-     * @Route("/data/{name}", name="data.root"))
+     * @Route("/data/{name}", name="ems_data_default_search")
+     * @Route("/data/{name}", name="data.root")
      * @param string $name
      * @return Response
      */
@@ -124,7 +124,7 @@ class DataController extends AppController
 
 
     /**
-     * @Route("/data/in-my-circles/{name}", name="ems_search_in_my_circles"))
+     * @Route("/data/in-my-circles/{name}", name="ems_search_in_my_circles")
      *
      * @param string $name
      * @return Response
@@ -179,7 +179,7 @@ class DataController extends AppController
     /**
      * @param ContentType $contentType
      * @return Response
-     * @Route("/data/trash/{contentType}", name="ems_data_trash"))
+     * @Route("/data/trash/{contentType}", name="ems_data_trash")
      */
     public function trashAction(ContentType $contentType)
     {
@@ -195,7 +195,7 @@ class DataController extends AppController
      * @param string $ouuid
      * @return RedirectResponse
      *
-     * @Route("/data/put-back/{contentType}/{ouuid}", name="ems_data_put_back"), methods={"POST"})
+     * @Route("/data/put-back/{contentType}/{ouuid}", name="ems_data_put_back", methods={"POST"})
      */
     public function putBackAction(ContentType $contentType, $ouuid)
     {
@@ -212,7 +212,7 @@ class DataController extends AppController
      * @param string $ouuid
      * @return RedirectResponse
      *
-     * @Route("/data/empty-trash/{contentType}/{ouuid}", name="ems_data_empty_trash"), methods={"POST"})
+     * @Route("/data/empty-trash/{contentType}/{ouuid}", name="ems_data_empty_trash", methods={"POST"})
      */
     public function emptyTrashAction(ContentType $contentType, $ouuid)
     {
@@ -227,7 +227,7 @@ class DataController extends AppController
     /**
      * @param int $contentTypeId
      * @return Response
-     * @Route("/data/draft/{contentTypeId}", name="data.draft_in_progress"))
+     * @Route("/data/draft/{contentTypeId}", name="data.draft_in_progress")
      */
     public function draftInProgressAction($contentTypeId)
     {
@@ -316,7 +316,7 @@ class DataController extends AppController
      * @param Environment $environment
      * @param LoggerInterface $logger
      * @return RedirectResponse
-     * @Route("/data/revisions-in-environment/{environment}/{type}:{ouuid}", name="data.revision_in_environment", defaults={"deleted":0})
+     * @Route("/data/revisions-in-environment/{environment}/{type}:{ouuid}", name="data.revision_in_environment", defaults={"deleted"=0})
      * @ParamConverter("contentType", options={"mapping": {"type" = "name", "deleted" = "deleted"}})
      * @ParamConverter("environment", options={"mapping": {"environment" = "name"}})
      * @throws NonUniqueResultException
@@ -364,8 +364,8 @@ class DataController extends AppController
      * @throws NonUniqueResultException
      * @throws NoResultException
      *
-     * @Route("/data/revisions/{type}:{ouuid}/{revisionId}/{compareId}", defaults={"revisionId": false, "compareId": false} , name="data.revisions")
-     * @Route("/data/revisions/{type}:{ouuid}/{revisionId}/{compareId}", defaults={"revisionId": false, "compareId": false} , name="ems_content_revisions_view")
+     * @Route("/data/revisions/{type}:{ouuid}/{revisionId}/{compareId}", defaults={"revisionId"=false, "compareId"=false}, name="data.revisions")
+     * @Route("/data/revisions/{type}:{ouuid}/{revisionId}/{compareId}", defaults={"revisionId"=false, "compareId"=false}, name="ems_content_revisions_view")
      */
     public function revisionsDataAction($type, $ouuid, $revisionId, $compareId, Request $request, DataService $dataService, LoggerInterface $logger)
     {
@@ -542,7 +542,7 @@ class DataController extends AppController
      * @param LoggerInterface $logger
      * @return RedirectResponse
      * @throws DuplicateOuuidException
-     * @Route("/data/duplicate/{environment}/{type}/{ouuid}", name="emsco_duplicate_revision"), methods={"POST"})
+     * @Route("/data/duplicate/{environment}/{type}/{ouuid}", name="emsco_duplicate_revision", methods={"POST"})
      */
     public function duplicateAction(string $environment, string $type, string $ouuid, DataService $dataService, LoggerInterface $logger)
     {
@@ -591,7 +591,7 @@ class DataController extends AppController
      * @param LoggerInterface $logger
      * @return RedirectResponse
      *
-     * @Route("/data/copy/{environment}/{type}/{ouuid}", name="revision.copy"), methods={"GET"})
+     * @Route("/data/copy/{environment}/{type}/{ouuid}", name="revision.copy", methods={"GET"})
      */
     public function copyAction($environment, $type, $ouuid, Request $request, LoggerInterface $logger)
     {
@@ -627,7 +627,7 @@ class DataController extends AppController
      * @param DataService $dataService
      * @return RedirectResponse
      *
-     * @Route("/data/new-draft/{type}/{ouuid}", name="revision.new-draft"), methods={"POST"})
+     * @Route("/data/new-draft/{type}/{ouuid}", name="revision.new-draft", methods={"POST"})
      */
     public function newDraftAction(string $type, string $ouuid, DataService $dataService) : RedirectResponse
     {
@@ -646,7 +646,7 @@ class DataController extends AppController
      * @throws Missing404Exception
      * @throws Exception
      * @throws NonUniqueResultException
-     * @Route("/data/delete/{type}/{ouuid}", name="object.delete"), methods={"POST"})
+     * @Route("/data/delete/{type}/{ouuid}", name="object.delete", methods={"POST"})
      */
     public function deleteAction(string $type, string $ouuid, DataService $dataService, LoggerInterface $logger)
     {
@@ -698,7 +698,7 @@ class DataController extends AppController
      *
      * @throws LockedException
      * @throws PrivilegeException
-     * @Route("/data/draft/discard/{revisionId}", name="revision.discard"), methods={"POST"})
+     * @Route("/data/draft/discard/{revisionId}", name="revision.discard", methods={"POST"})
      */
     public function discardRevisionAction($revisionId, LoggerInterface $logger, DataService $dataService)
     {
@@ -748,7 +748,7 @@ class DataController extends AppController
      * @return RedirectResponse
      * @throws LockedException
      * @throws PrivilegeException
-     * @Route("/data/cancel/{revision}", name="revision.cancel"), methods={"POST"})
+     * @Route("/data/cancel/{revision}", name="revision.cancel", methods={"POST"})
      */
     public function cancelModificationsAction(Revision $revision, DataService $dataService, LoggerInterface $logger) : RedirectResponse
     {
@@ -795,7 +795,7 @@ class DataController extends AppController
      * @return RedirectResponse
      * @throws LockedException
      * @throws PrivilegeException
-     * @Route("/data/revision/re-index/{revisionId}", name="revision.reindex"), methods={"POST"})
+     * @Route("/data/revision/re-index/{revisionId}", name="revision.reindex", methods={"POST"})
      */
     public function reindexRevisionAction(LoggerInterface $logger, DataService $dataService, $revisionId, $defaultOnly = false) : RedirectResponse
     {
@@ -882,9 +882,9 @@ class DataController extends AppController
      * @param TranslatorInterface $translator
      * @return mixed
      *
-     * @Route("/public/view/{viewId}", name="ems_custom_view_public", defaults={"public": true})
-     * @Route("/data/custom-index-view/{viewId}", name="data.customindexview", defaults={"public": false})
-     * @Route("/data/custom-index-view/{viewId}", name="ems_custom_view_protected", defaults={"public": false})
+     * @Route("/public/view/{viewId}", name="ems_custom_view_public", defaults={"public"=true})
+     * @Route("/data/custom-index-view/{viewId}", name="data.customindexview", defaults={"public"=false})
+     * @Route("/data/custom-index-view/{viewId}", name="ems_custom_view_protected", defaults={"public"=false})
      */
     public function customIndexViewAction($viewId, $public, Request $request, TranslatorInterface $translator)
     {
@@ -922,9 +922,9 @@ class DataController extends AppController
      * @throws SyntaxError
      * @throws Twig_Error_Loader
      * @throws Twig_Error_Syntax
-     * @Route("/public/template/{environmentName}/{templateId}/{ouuid}/{_download}", defaults={"_download": false, "public": true} , name="ems_data_custom_template_public"))
-     * @Route("/data/custom-view/{environmentName}/{templateId}/{ouuid}/{_download}", defaults={"_download": false, "public": false} , name="data.customview"))
-     * @Route("/data/template/{environmentName}/{templateId}/{ouuid}/{_download}", defaults={"_download": false, "public": false} , name="ems_data_custom_template_protected"))
+     * @Route("/public/template/{environmentName}/{templateId}/{ouuid}/{_download}", defaults={"_download"=false, "public"=true}, name="ems_data_custom_template_public")
+     * @Route("/data/custom-view/{environmentName}/{templateId}/{ouuid}/{_download}", defaults={"_download"=false, "public"=false}, name="data.customview")
+     * @Route("/data/template/{environmentName}/{templateId}/{ouuid}/{_download}", defaults={"_download"=false, "public"=false}, name="ems_data_custom_template_protected")
      */
     public function customViewAction($environmentName, $templateId, $ouuid, $_download, $public, LoggerInterface $logger, TranslatorInterface $translator, ElasticsearchService $elasticsearchService)
     {
@@ -1138,7 +1138,7 @@ class DataController extends AppController
      * @throws LockedException
      * @throws PrivilegeException
      * @throws Exception
-     * @Route("/data/revision/{revisionId}.json", name="revision.ajaxupdate"), defaults={"_format": "json"}, methods={"POST"}))
+     * @Route("/data/revision/{revisionId}.json", name="revision.ajaxupdate", defaults={"_format"="json"}, methods={"POST"})
      */
     public function ajaxUpdateAction($revisionId, Request $request, DataService $dataService, LoggerInterface $logger)
     {
@@ -1234,7 +1234,7 @@ class DataController extends AppController
      * @param Revision $revision
      * @param LoggerInterface $logger
      * @return RedirectResponse|Response
-     * @Route("/data/draft/finalize/{revision}", name="revision.finalize"), methods={"POST"})
+     * @Route("/data/draft/finalize/{revision}", name="revision.finalize", methods={"POST"})
      */
     public function finalizeDraftAction(Revision $revision, LoggerInterface $logger)
     {
@@ -1289,7 +1289,7 @@ class DataController extends AppController
     }
 
     /**
-     * @Route("/data/duplicate-json/{contentType}/{ouuid}", name="emsco_data_duplicate_with_jsoncontent"), methods={"POST"}
+     * @Route("/data/duplicate-json/{contentType}/{ouuid}", name="emsco_data_duplicate_with_jsoncontent", methods={"POST"})
      */
     public function duplicateWithJsonContentAction(ContentType $contentType, string $ouuid, Request $request, DataService $dataService, LoggerInterface $logger): RedirectResponse
     {
@@ -1300,7 +1300,7 @@ class DataController extends AppController
     }
 
     /**
-     * @Route("/data/add-json/{contentType}", name="emsco_data_add_from_jsoncontent"), methods={"POST"}
+     * @Route("/data/add-json/{contentType}", name="emsco_data_add_from_jsoncontent", methods={"POST"})
      */
     public function addFromJsonContentAction(ContentType $contentType, Request $request, DataService $dataService, LoggerInterface $logger): RedirectResponse
     {
@@ -1348,7 +1348,7 @@ class DataController extends AppController
      * @param DataService $dataService
      * @return RedirectResponse|Response
      * @throws HasNotCircleException
-     * @Route("/data/add/{contentType}", name="data.add"))
+     * @Route("/data/add/{contentType}", name="data.add")
      */
     public function addAction(ContentType $contentType, Request $request, DataService $dataService)
     {
@@ -1405,7 +1405,7 @@ class DataController extends AppController
      * @return RedirectResponse
      * @throws ElasticmsException
      * @throws Exception
-     * @Route("/data/revisions/revert/{id}", name="revision.revert"), methods={"POST"}))
+     * @Route("/data/revisions/revert/{id}", name="revision.revert", methods={"POST"})
      */
     public function revertRevisionAction(Revision $revision, DataService $dataService, LoggerInterface $logger)
     {

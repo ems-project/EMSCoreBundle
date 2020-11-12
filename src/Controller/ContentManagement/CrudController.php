@@ -365,7 +365,6 @@ class CrudController extends AppController
      *
      * @Route("/api/meta/{name}", defaults={"_format": "json"}, methods={"GET"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
-     *
      */
     public function getContentTypeInfo(ContentType $contentType)
     {

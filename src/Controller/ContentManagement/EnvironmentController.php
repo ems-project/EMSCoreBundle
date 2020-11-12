@@ -47,7 +47,7 @@ class EnvironmentController extends AppController
      * @throws NoResultException
      * @throws NonUniqueResultException
      *
-     * @Route("/publisher/align", name="environment.align"))
+     * @Route("/publisher/align", name="environment.align")
      * @Security("has_role('ROLE_PUBLISHER')")
      */
     public function alignAction(Request $request)
@@ -304,7 +304,7 @@ class EnvironmentController extends AppController
      * @return RedirectResponse
      * @throws ORMException
      * @throws OptimisticLockException
-     * @Route("/environment/attach/{name}", name="environment.attach"), methods={"POST"})
+     * @Route("/environment/attach/{name}", name="environment.attach", methods={"POST"})
      */
     public function attachAction($name)
     {
@@ -360,7 +360,7 @@ class EnvironmentController extends AppController
      * @param string $name
      * @return RedirectResponse
      *
-     * @Route("/environment/remove/alias/{name}", name="environment.remove.alias"), methods={"POST"})
+     * @Route("/environment/remove/alias/{name}", name="environment.remove.alias", methods={"POST"})
      */
     public function removeAliasAction($name)
     {
@@ -382,7 +382,7 @@ class EnvironmentController extends AppController
      * @throws ORMException
      * @throws OptimisticLockException
      *
-     * @Route("/environment/remove/{id}", name="environment.remove"), methods={"POST"})
+     * @Route("/environment/remove/{id}", name="environment.remove", methods={"POST"})
      */
     public function removeAction(int $id)
     {
@@ -461,7 +461,7 @@ class EnvironmentController extends AppController
      * @return RedirectResponse|Response
      * @throws ORMException
      * @throws OptimisticLockException
-     * @Route("/environment/add", name="environment.add"))
+     * @Route("/environment/add", name="environment.add")
      */
     public function addAction(Request $request)
     {
@@ -550,7 +550,7 @@ class EnvironmentController extends AppController
      * @throws ORMException
      * @throws OptimisticLockException
      *
-     * @Route("/environment/edit/{id}", name="environment.edit"))
+     * @Route("/environment/edit/{id}", name="environment.edit")
      */
     public function editAction(int $id, Request $request)
     {
@@ -597,7 +597,7 @@ class EnvironmentController extends AppController
      * @return Response
      * View environement details (especially the mapping information).
      *
-     * @Route("/environment/{id}", name="environment.view"))
+     * @Route("/environment/{id}", name="environment.view")
      */
     public function viewAction(int $id)
     {
@@ -644,7 +644,7 @@ class EnvironmentController extends AppController
      * @param Request $request
      * @return RedirectResponse|Response
      *
-     * @Route("/environment/rebuild/{id}", name="environment.rebuild"))
+     * @Route("/environment/rebuild/{id}", name="environment.rebuild")
      */
     public function rebuild($id, Request $request, JobService $jobService)
     {

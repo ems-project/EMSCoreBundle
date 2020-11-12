@@ -100,9 +100,8 @@ class HtmlStylesRemover implements ContentTransformInterface
     private function outputHtmlFormat(string $html): string
     {
         $html = \html_entity_decode($html, ENT_QUOTES, 'UTF-8');
-        $html = \rtrim($html);
 
-        return $html;
+        return \rtrim($html);
     }
 
     private function addTemporaryWrapper(string $html): string

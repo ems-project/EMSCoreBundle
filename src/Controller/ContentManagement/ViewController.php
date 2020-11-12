@@ -109,7 +109,7 @@ class ViewController extends AppController
      * @return Response
      * @throws ORMException
      * @throws OptimisticLockException
-     * @Route("/view/edit/{id}.{_format}", name="view.edit", defaults={"_format": "html"})
+     * @Route("/view/edit/{id}.{_format}", name="view.edit", defaults={"_format"="html"})
      */
     public function editAction(string $id, string $_format, Request $request)
     {

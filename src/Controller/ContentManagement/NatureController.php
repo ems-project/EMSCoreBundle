@@ -24,7 +24,7 @@ class NatureController extends AppController
      * @param Request $request
      * @param ContentTypeService $contentTypeService
      * @return RedirectResponse|Response
-     * @Route("/content-type/nature/reorder/{contentType}", name="nature.reorder"))
+     * @Route("/content-type/nature/reorder/{contentType}", name="nature.reorder")
      */
     public function reorderAction(ContentType $contentType, Request $request, ContentTypeService $contentTypeService)
     {

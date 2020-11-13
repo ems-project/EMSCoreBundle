@@ -16,11 +16,15 @@ class AuthToken
      * @ORM\Id
      * @ORM\Column(name="id", type="integer")
      * @ORM\GeneratedValue
+     *
+     * @var int
      */
     protected $id;
 
     /**
      * @ORM\Column(name="value", type="string")
+     *
+     * @var string
      */
     protected $value;
 

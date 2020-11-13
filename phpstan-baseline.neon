@@ -946,16 +946,6 @@ parameters:
 			path: src/Entity/Analyzer.php
 
 		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\AuthToken\\:\\:\\$id has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/AuthToken.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\AuthToken\\:\\:\\$value has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/AuthToken.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\AuthToken\\:\\:updateModified\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Entity/AuthToken.php
@@ -979,26 +969,6 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\CacheAssetExtractor\\:\\:setData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Entity/CacheAssetExtractor.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\:\\:\\$fieldType has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/ContentType.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\:\\:\\$templates has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/ContentType.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\:\\:\\$views has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/ContentType.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\:\\:\\$singleTypeIndexes has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/ContentType.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\:\\:updateModified\\(\\) has no return typehint specified\\.$#"
@@ -1046,11 +1016,6 @@ parameters:
 			path: src/Entity/ContentType.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\:\\:deserializeProperty\\(\\) has parameter \\$value with no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/ContentType.php
-
-		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\:\\:\\$localeField \\(string\\) does not accept string\\|null\\.$#"
 			count: 1
 			path: src/Entity/ContentType.php
@@ -1071,42 +1036,12 @@ parameters:
 			path: src/Entity/DataField.php
 
 		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:\\$fieldType has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/DataField.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:\\$orderKey has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/DataField.php
-
-		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:\\$parent type has no value type specified in iterable type EMS\\\\CoreBundle\\\\Entity\\\\DataField\\.$#"
 			count: 1
 			path: src/Entity/DataField.php
 
 		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:\\$children with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/DataField.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:\\$rawData has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/DataField.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:\\$inputValue has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/DataField.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:\\$marked has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/DataField.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:setChildrenFieldType\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Entity/DataField.php
 
@@ -1126,32 +1061,7 @@ parameters:
 			path: src/Entity/DataField.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:offsetSet\\(\\) has parameter \\$offset with no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/DataField.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:offsetSet\\(\\) has parameter \\$value with no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/DataField.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:offsetExists\\(\\) has parameter \\$offset with no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/DataField.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:offsetUnset\\(\\) has parameter \\$offset with no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/DataField.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:offsetGet\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/DataField.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:offsetGet\\(\\) has parameter \\$offset with no typehint specified\\.$#"
 			count: 1
 			path: src/Entity/DataField.php
 
@@ -1167,11 +1077,6 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:propagateOuuid\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/DataField.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:propagateOuuid\\(\\) has parameter \\$ouuid with no typehint specified\\.$#"
 			count: 1
 			path: src/Entity/DataField.php
 

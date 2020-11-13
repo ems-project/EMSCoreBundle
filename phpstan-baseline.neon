@@ -372,11 +372,6 @@ parameters:
 			path: src/Controller/ContentManagement/TemplateController.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ElasticsearchController\\:\\:phpInfoAction\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Controller/ElasticsearchController.php
-
-		-
 			message: "#^Parameter \\#1 \\$object of method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:remove\\(\\) expects object, object\\|null given\\.$#"
 			count: 1
 			path: src/Controller/ElasticsearchController.php
@@ -473,11 +468,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#3 \\$query of class EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\ExportDocuments constructor expects string, string\\|false given\\.$#"
-			count: 1
-			path: src/Controller/ElasticsearchController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ElasticsearchController\\:\\:getAllContentType\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Controller/ElasticsearchController.php
 

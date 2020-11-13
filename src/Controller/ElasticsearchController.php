@@ -189,7 +189,7 @@ class ElasticsearchController extends AppController
     /**
      * @Route("/admin/phpinfo", name="emsco_phpinfo"))
      */
-    public function phpInfoAction()
+    public function phpInfoAction(): void
     {
         phpinfo();
         exit;
@@ -937,7 +937,10 @@ class ElasticsearchController extends AppController
         }
     }
 
-    private function getAllContentType($results)
+    /**
+     * @return array<string>
+     */
+    private function getAllContentType($results): array
     {
         $out = [];
         foreach ($results['aggregations']['types']['buckets'] as $type) {

@@ -1506,7 +1506,10 @@ class DataController extends AppController
         }
     }
 
-    private function reorderCollection(&$input): void
+    /**
+     * @param array<string> $input
+     */
+    private function reorderCollection(array &$input): void
     {
         if (is_array($input) && !empty($input)) {
             $keys = array_keys($input);

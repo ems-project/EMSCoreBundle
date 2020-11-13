@@ -449,7 +449,7 @@ class EnvironmentController extends AppController
     }
     
     
-    public static function isValidName($name): bool
+    public static function isValidName(string $name): bool
     {
         return preg_match('/^[a-z][a-z0-9\-_]*$/', $name) && strlen($name) <= 100;
     }

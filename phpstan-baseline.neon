@@ -1,11 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ContentManagement\\\\ContentTypeController\\:\\:isValidName\\(\\) has parameter \\$name with no typehint specified\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/ContentTypeController.php
-
-		-
 			message: "#^Parameter \\#1 \\$filename of function file_get_contents expects string, string\\|false given\\.$#"
 			count: 1
 			path: src/Controller/ContentManagement/ContentTypeController.php
@@ -260,12 +255,6 @@ parameters:
 			count: 1
 			path: src/Controller/ContentManagement/DataController.php
 
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ContentManagement\\\\DataController\\:\\:reorderCollection\\(\\) has parameter \\$input with no typehint specified\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/DataController.php
-
 		-
 			message: "#^Cannot call method getEnvironments\\(\\) on object\\|null\\.$#"
 			count: 2
@@ -328,11 +317,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#2 \\$str2 of function strcmp expects string, int\\|string given\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/EnvironmentController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ContentManagement\\\\EnvironmentController\\:\\:isValidName\\(\\) has parameter \\$name with no typehint specified\\.$#"
 			count: 1
 			path: src/Controller/ContentManagement/EnvironmentController.php
 
@@ -472,16 +456,6 @@ parameters:
 			path: src/Controller/ElasticsearchController.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ElasticsearchController\\:\\:getAllContentType\\(\\) has parameter \\$results with no typehint specified\\.$#"
-			count: 1
-			path: src/Controller/ElasticsearchController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\I18nController\\:\\:indexAction\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Controller/I18nController.php
-
-		-
 			message: "#^Call to an undefined method object\\:\\:getRevision\\(\\)\\.$#"
 			count: 1
 			path: src/Controller/NotificationController.php
@@ -518,21 +492,6 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\UserController\\:\\:getExistingRoles\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Controller/UserController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\UserController\\:\\:userExist\\(\\) has parameter \\$action with no typehint specified\\.$#"
-			count: 1
-			path: src/Controller/UserController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\UserController\\:\\:userExist\\(\\) has parameter \\$form with no typehint specified\\.$#"
-			count: 1
-			path: src/Controller/UserController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\UserController\\:\\:userExist\\(\\) has parameter \\$user with no typehint specified\\.$#"
 			count: 1
 			path: src/Controller/UserController.php
 

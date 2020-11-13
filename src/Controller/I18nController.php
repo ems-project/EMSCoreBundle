@@ -24,7 +24,7 @@ class I18nController extends Controller
      * Lists all I18n entities.
      * @Route("/", name="i18n_index", methods={"GET"})
      */
-    public function indexAction(Request $request, I18nService $i18nService)
+    public function indexAction(Request $request, I18nService $i18nService): Response
     {
         $filters = $request->query->get('i18n_form');
          

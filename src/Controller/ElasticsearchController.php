@@ -938,9 +938,10 @@ class ElasticsearchController extends AppController
     }
 
     /**
+     * @param array<array> $results
      * @return array<string>
      */
-    private function getAllContentType($results): array
+    private function getAllContentType(array $results): array
     {
         $out = [];
         foreach ($results['aggregations']['types']['buckets'] as $type) {

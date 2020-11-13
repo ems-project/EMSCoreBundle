@@ -6,7 +6,10 @@ use EMS\CoreBundle\Service\Mapping as EMS;
 
 class Mappings
 {
+    /** @var array<Mappings> */
     private $mappings = [];
+
+    /** @var array<array> */
     private $defaultProperties = [];
 
     public function __construct(array $languageAnalyzers = [])

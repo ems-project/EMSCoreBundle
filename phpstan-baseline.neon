@@ -756,11 +756,6 @@ parameters:
 			path: src/DependencyInjection/EMSCoreExtension.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\DependencyInjection\\\\EMSCoreExtension\\:\\:getCoreVersion\\(\\) has parameter \\$rootDir with no typehint specified\\.$#"
-			count: 1
-			path: src/DependencyInjection/EMSCoreExtension.php
-
-		-
 			message: "#^Parameter \\#1 \\$json of function json_decode expects string, string\\|false given\\.$#"
 			count: 1
 			path: src/DependencyInjection/EMSCoreExtension.php
@@ -826,16 +821,6 @@ parameters:
 			path: src/Elasticsearch/Bulker.php
 
 		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Elasticsearch\\\\Index\\\\Mappings\\:\\:\\$mappings has no typehint specified\\.$#"
-			count: 1
-			path: src/Elasticsearch/Index/Mappings.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Elasticsearch\\\\Index\\\\Mappings\\:\\:\\$defaultProperties has no typehint specified\\.$#"
-			count: 1
-			path: src/Elasticsearch/Index/Mappings.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Elasticsearch\\\\Index\\\\Mappings\\:\\:__construct\\(\\) has parameter \\$languageAnalyzers with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Elasticsearch/Index/Mappings.php
@@ -854,21 +839,6 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Elasticsearch\\\\Index\\\\Mappings\\:\\:getDefaults\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Elasticsearch/Index/Mappings.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Elasticsearch\\\\Index\\\\Settings\\:\\:\\$filters has no typehint specified\\.$#"
-			count: 1
-			path: src/Elasticsearch/Index/Settings.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Elasticsearch\\\\Index\\\\Settings\\:\\:\\$analyzers has no typehint specified\\.$#"
-			count: 1
-			path: src/Elasticsearch/Index/Settings.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Elasticsearch\\\\Index\\\\Settings\\:\\:\\$languageAnalyzers has no typehint specified\\.$#"
-			count: 1
-			path: src/Elasticsearch/Index/Settings.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Elasticsearch\\\\Index\\\\Settings\\:\\:toArray\\(\\) return type has no value type specified in iterable type array\\.$#"

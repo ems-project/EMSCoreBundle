@@ -15,7 +15,7 @@
 	</div>
 
 	<div id="search-page" class="col-md-9">
-		{% if results.hits.total > 0 %}
+		{% if response and response.totalDocuments > 0 %}
 		<div class="box">
 
 			{% if lastPage > 1 %}
@@ -32,30 +32,26 @@
 				</div>
 			{% endif %}
 			<div class="box-body">
-			{% for result in results.hits.hits %}
+			{% for result in response.documents %}
 			<div class="panel panel-default">
 			  <div class="panel-heading">
-			  	{#<span class="text-{{ attribute(indexes, result._index).color }}">#}
-				 	{#{{ attribute(indexes, result._index).name|humanize }} #}
-			  	{#</span>#}
-			  	{#|#}
-			  	{% if attribute(types, result._type) is defined %}
-			  		<span class="text-{{ attribute(types, result._type).color }}">
-					  	<i class="{{ attribute(types, result._type).icon }}"></i>
+			  	{% if attribute(types, result.contentType) is defined %}
+			  		<span class="text-{{ attribute(types, result.contentType).color }}">
+					  	<i class="{{ attribute(types, result.contentType).icon }}"></i>
 						{% if form.vars.data.environments|length != 1 %}
-						  	{{ attribute(types, result._type).singularName|humanize }} |
+						  	{{ attribute(types, result.contentType).singularName|humanize }} |
 						{% endif %}
 
-					  	{% set contentType=attribute(types, result._type) %}
-						{% if (contentType.labelField and attribute(result._source, contentType.labelField)  is defined ) %}
-							{{ attribute(result._source, contentType.labelField) }}{% if is_super() %} <small>({{ result._id }})</small>{% endif %}
+					  	{% set contentType=attribute(types, result.contentType) %}
+						{% if (contentType.labelField and attribute(result.source, contentType.labelField)  is defined ) %}
+							{{ attribute(result.source, contentType.labelField) }}{% if is_super() %} <small>({{ result.id }})</small>{% endif %}
 						{% else %}
-							{{ result._id }}
+							{{ result.id }}
 						{% endif %}
 			  		</span>
 			  	{% else %}
 				  	<i class="fa fa-question"></i>
-				  	{{ result._type|humanize }} | {{ result._id }}
+				  	{{ result.contentType|humanize }} | {{ result.id }}
 			  	{% endif %}
 
 
@@ -68,26 +64,26 @@
 				  		</div>
 			  		</div>
 			  	{% endif %}
-			  	{% if attribute(types, result._type) is defined and attribute(types, result._type).indexTwig %}
+			  	{% if attribute(types, result.contentType) is defined and attribute(types, result.contentType).indexTwig %}
 			  		<div class="panel-body">
 					  	<div class="col-xs-12">{
 					  		{{
-								attribute(types, result._type).indexTwig|generate_from_template({
-									environment: attribute(indexes, result._index),
-									contentType: attribute(types, result._type),
+								attribute(types, result.contentType).indexTwig|generate_from_template({
+									environment: attribute(indexes, result.index),
+									contentType: attribute(types, result.contentType),
 									object: result,
-									source: result._source
+									source: result.source
 								})|raw
 							}}
 				  		</div>
 					</div>
 			  	{% endif %}
 			  		<div class="box-footer">
-			  			{% if attribute(types, result._type) is defined %}
+			  			{% if attribute(types, result.contentType) is defined %}
                             {% include '@EMSCore/elements/object-toolbar.html.twig' with {
-								environment: attribute(indexes, result._index),
-								contentType: attribute(types, result._type),
-								object: result,
+								environment: attribute(indexes, result.index),
+								contentType: attribute(types, result.contentType),
+								object: result.rawDocument,
 							}%}
 						{% endif %}
 					</div>

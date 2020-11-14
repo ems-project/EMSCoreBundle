@@ -818,8 +818,9 @@ class ElasticsearchController extends AppController
                 $results = $client->search($params);
                 $response = new CommonResponse($results);
                 if ($response->getTotal() >= 50000) {
-                    $this->getLogger()->warning('log.elasticsearch.limit_exceded', [
+                    $this->getLogger()->warning('log.elasticsearch.paging_limit_exceeded', [
                         'total' => $response->getTotal(),
+                        'paging' => '50.000',
                     ]);
                     $lastPage = ceil(50000 / $this->container->getParameter('ems_core.paging_size'));
                 } else {

@@ -1,10 +1,8 @@
 {% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
-{% block title %}Search engine: {{ results.hits.total }} results{% endblock %}
-{% block pagetitle %}
-	Search
-{% endblock %} 
-{% block subtitle %}<small><span class=" badge">{{ results.hits.total }}</span></small>{% endblock %} 
+{% block title %}{% if response %}{{ 'views.elasticsearch.search.title'|trans({'%total%': response.total }) }}{% else %}{{ 'views.elasticsearch.search.error_title'|trans }}{%  endif %}{% endblock %}
+{% block pagetitle %}{{ 'views.elasticsearch.search.pagetitle'|trans }}{% endblock %}
+{% block subtitle %}<small><span class=" badge">{% if response %}{{ 'views.elasticsearch.search.subtitle'|trans({'%total%': response.total }) }}{%  endif %}{{ response.total }}</span></small>{% endblock %}
 
 
 
@@ -16,11 +14,11 @@
 			form: form,
 		} %}
 	</div>
-	
+
 	<div id="search-page" class="col-md-9">
 		{% if results.hits.total > 0 %}
 		<div class="box">
-			
+
 			{% if lastPage > 1 %}
 				<div class="box-header">
 
@@ -48,7 +46,7 @@
 						{% if form.vars.data.environments|length != 1 %}
 						  	{{ attribute(types, result._type).singularName|humanize }} |
 						{% endif %}
-					  	
+
 					  	{% set contentType=attribute(types, result._type) %}
 						{% if (contentType.labelField and attribute(result._source, contentType.labelField)  is defined ) %}
 							{{ attribute(result._source, contentType.labelField) }}{% if is_super() %} <small>({{ result._id }})</small>{% endif %}
@@ -57,11 +55,11 @@
 						{% endif %}
 			  		</span>
 			  	{% else %}
-				  	<i class="fa fa-question"></i> 
+				  	<i class="fa fa-question"></i>
 				  	{{ result._type|humanize }} | {{ result._id }}
 			  	{% endif %}
-			  
-			  
+
+
 				{#<span class=" badge pull-right">{{ (result._score*100)|round }}</span>#}
 			  </div>
 			  	{% if result.highlight is defined and result.highlight %}
@@ -73,8 +71,8 @@
 			  	{% endif %}
 			  	{% if attribute(types, result._type) is defined and attribute(types, result._type).indexTwig %}
 			  		<div class="panel-body">
-					  	<div class="col-xs-12">
-					  		{{ 
+					  	<div class="col-xs-12">{
+					  		{{
 								attribute(types, result._type).indexTwig|generate_from_template({
 									environment: attribute(indexes, result._index),
 									contentType: attribute(types, result._type),
@@ -92,15 +90,9 @@
 								contentType: attribute(types, result._type),
 								object: result,
 							}%}
-						{% else %}
-                            {% include '@EMSCore/elements/object-toolbar.html.twig' with {
-								environment: attribute(indexes, result._index),
-								contentType: null,
-								object: result,
-							}%}
 						{% endif %}
 					</div>
-			</div>			
+			</div>
 
 			{% endfor %}
 			</div>
@@ -139,13 +131,13 @@
     				        	{% endif %}
     				        {% endif %}
 				    		<a href="{{ path(paginationPath, currentFilters.all|merge({'search_form[sortBy]': option.field, 'search_form[sortOrder]': order, page: 1})) }}" class="btn btn-block btn-social btn-primary {% if active %} active{% endif %}">
-				    		    <i class="{% if option.icon %}{{ option.icon }}{% else %}fa fa-sort-alpha-asc{% endif %}"></i> 
+				    		    <i class="{% if option.icon %}{{ option.icon }}{% else %}fa fa-sort-alpha-asc{% endif %}"></i>
 				    		    {{ option.name }}
 				    		    {% if active %}
 				    		   		<i class="fa fa-sort-{% if option.inverted %}{{ order=='desc'?'asc':'desc' }}{% else %}{{ order }}{% endif %} pull-right"></i>
 				    		   	{% endif %}
 				    		</a>
-    				    
+
 				       {% endfor %}
 				       {% if currentFilters.all.search_form.sortBy is defined and currentFilters.all.search_form.sortBy %}
         					{% set search_form = currentFilters.all.search_form|merge({'sortBy':null, 'sortOrder':null }) %}
@@ -154,13 +146,13 @@
         						Clear sort options
 							</a>
 				       {% endif %}
-    				    
-    				    
+
+
     			</div>
     		</div>
 		{% endif %}
 
-		
+
 		{% for id, option in aggregateOptions %}
 			{% if attribute(results.aggregations, 'agg_'~id) is defined and (attribute(results.aggregations, 'agg_'~id).buckets|default([])|length > 0 or attribute(results.aggregations, 'agg_'~id).doc_count|default(0) > 0) %}
 			 	<div class="box">
@@ -180,13 +172,13 @@
         		</div>
         	{% endif %}
 	    {% endfor %}
-		
+
 		<div class="box">
 			<div class="box-header">
 				<h3 class="box-title"><i class="fa fa-sitemap"></i> Content types</h3>
 			</div>
 			<div class="box-body">
-				
+
 				{% set cleanedFilters = [] %}
 				{% if currentFilters.all.search_form is defined %}
 					{% for key, filter in currentFilters.all.search_form %}
@@ -198,15 +190,15 @@
 				{% else %}
 					{% set cleanedFilters = currentFilters.all %}
 				{% endif %}
-				
+
 				{% for index in results.aggregations.types.buckets %}
 					{% if attribute(types, index.key) is defined %}
 						<a href="{{ path(paginationPath, cleanedFilters|merge({'search_form[contentTypes][0]': index.key, page: 1})) }}" class="btn btn-block btn-social {% if attribute(types, index.key).color %}bg-{{ attribute(types, index.key).color }}{% else %}bg-gray{% endif %}">
 							<i class="{% if attribute(types, index.key).icon %}{{ attribute(types, index.key).icon }}{% else %}fa fa-book{% endif %}"></i>
 							{% if index.doc_count >1  %}
-								{{ attribute(types, index.key).pluralName }} 
+								{{ attribute(types, index.key).pluralName }}
 							{% else %}
-								{{ attribute(types, index.key).singularName }} 
+								{{ attribute(types, index.key).singularName }}
 							{% endif %}
 							<span class=" badge pull-right">{{ index.doc_count }}</span>
 						</a>
@@ -227,13 +219,13 @@
 				{% endif %}
 			</div>
 		</div>
-		
+
 		<div class="box">
 			<div class="box-header">
 				<h3 class="box-title"><i class="fa fa-database"></i> Environments</h3>
 			</div>
 			<div class="box-body">
-				
+
 				{% set cleanedFilters = [] %}
 				{% if currentFilters.all.search_form is defined %}
 					{% for key, filter in currentFilters.all.search_form %}
@@ -245,11 +237,11 @@
 				{% else %}
 					{% set cleanedFilters = currentFilters.all %}
 				{% endif %}
-				
+
 					{% for index in results.aggregations.indexes.buckets %}
 							<a href="{{ path(paginationPath, cleanedFilters|merge({'search_form[environments][0]': attribute(indexes, index.key).name})) }}" class="btn btn-block btn-social {% if attribute(indexes, index.key).color %}bg-{{ attribute(indexes, index.key).color }}{% else %}bg-gray{% endif %}">
 								<i class="fa fa-eye"></i>
-					            {{ attribute(indexes, index.key).name|humanize }} 
+					            {{ attribute(indexes, index.key).name|humanize }}
 								<span class=" badge pull-right">
 									{{ index.doc_count }}
 								</span>
@@ -265,7 +257,7 @@
 						<div class="btn-group">
                             {% include '@EMSCore/elements/get-button.html.twig' with {
 								'url':  path('search.publish', app.request.query.all ),
-								'label': 'Publish '~results.hits.total~' '~form.contentTypes.vars.value.0|get_content_type.pluralName,
+								'label': 'Publish '~response.total~' '~form.contentTypes.vars.value.0|get_content_type.pluralName,
 								'icon': 'glyphicon glyphicon-open'
 							}%}
 						</div>

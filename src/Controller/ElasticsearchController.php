@@ -25,6 +25,7 @@ use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\JobService;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\ClickableInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -32,9 +33,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
 use Throwable;
 
 class ElasticsearchController extends AppController
@@ -644,7 +642,7 @@ class ElasticsearchController extends AppController
      * @Route("/search", name="ems_search")
      * @Route("/search", name="elasticsearch.search")
      */
-    public function searchAction(Request $request)
+    public function searchAction(Request $request, LoggerInterface $logger)
     {
         try {
             $search = new Search();
@@ -729,7 +727,7 @@ class ElasticsearchController extends AppController
             } else if ($form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && array_key_exists('delete', $request->query->get('search_form'))) {
                 //Form treatment after the "Delete" button has been pressed (to delete a previous saved search preset)
 
-                $this->getLogger()->notice('log.elasticsearch.search_deleted', [
+                $logger->notice('log.elasticsearch.search_deleted', [
                 ]);
             }
 
@@ -814,11 +812,12 @@ class ElasticsearchController extends AppController
 
             $params['body'] = $body;
 
+            $response = null;
             try {
                 $results = $client->search($params);
                 $response = new CommonResponse($results);
                 if ($response->getTotal() >= 50000) {
-                    $this->getLogger()->warning('log.elasticsearch.paging_limit_exceeded', [
+                    $logger->warning('log.elasticsearch.paging_limit_exceeded', [
                         'total' => $response->getTotal(),
                         'paging' => '50.000',
                     ]);
@@ -827,12 +826,18 @@ class ElasticsearchController extends AppController
                     $lastPage = ceil($response->getTotal() / $this->container->getParameter('ems_core.paging_size'));
                 }
             } catch (ElasticsearchException $e) {
-                $this->getLogger()->warning('log.error', [
+                $logger->warning('log.error', [
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
                 ]);
                 $lastPage = 0;
                 $results = ['hits' => ['total' => 0]];
+            }
+
+            if ($response !== null && !$response->isAccurate()) {
+                $logger->warning('log.elasticsearch.search_not_accurate', [
+                    'total' => $response->getTotal(),
+                ]);
             }
 
 

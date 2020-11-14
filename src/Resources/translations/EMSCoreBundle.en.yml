@@ -505,6 +505,7 @@ log:
   filter:
     deleted: 'The filter %filter_name% has been deleted'
   elasticsearch:
+    search_not_accurate: 'The search result is limited to the first %total% documents'
     too_many_document_result: 'Found %total% results for the document %contenttype%:%ouuid% in the environment %environment%'
     too_few_document_result: 'Found %total% results for the document %contenttype%:%ouuid% in the environment %environment%'
     template_error: 'There is something wrong with the template %template_name%'

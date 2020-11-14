@@ -1,9 +1,8 @@
 {% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
-{% block title %}{% if response %}{{ 'views.elasticsearch.search.title'|trans({'%total%': response.total }) }}{% else %}{{ 'views.elasticsearch.search.error_title'|trans }}{%  endif %}{% endblock %}
+{% block title %}{% if response %}{{ 'views.elasticsearch.search.title'|trans({'%total%': response.formattedTotal|default('not-applicable'|trans) }) }}{% else %}{{ 'views.elasticsearch.search.error_title'|trans }}{%  endif %}{% endblock %}
 {% block pagetitle %}{{ 'views.elasticsearch.search.pagetitle'|trans }}{% endblock %}
-{% block subtitle %}<small><span class=" badge">{% if response %}{{ 'views.elasticsearch.search.subtitle'|trans({'%total%': response.total }) }}{%  endif %}{{ response.total }}</span></small>{% endblock %}
-
+{% block subtitle %}<small><span class=" badge">{% if response %}{{ 'views.elasticsearch.search.subtitle'|trans({'%total%': response.formattedTotal|default('not-applicable'|trans) }) }}{% endif %}</span></small>{% endblock %}
 
 
 {% block body %}
@@ -257,7 +256,7 @@
 						<div class="btn-group">
                             {% include '@EMSCore/elements/get-button.html.twig' with {
 								'url':  path('search.publish', app.request.query.all ),
-								'label': 'Publish '~response.total~' '~form.contentTypes.vars.value.0|get_content_type.pluralName,
+								'label': 'Publish '~response.formattedTotal|default('not-applicable'|trans)~' '~form.contentTypes.vars.value.0|get_content_type.pluralName,
 								'icon': 'glyphicon glyphicon-open'
 							}%}
 						</div>

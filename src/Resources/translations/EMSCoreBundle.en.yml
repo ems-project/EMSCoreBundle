@@ -359,8 +359,14 @@ view.macros.data-field-type.collection_added_items: '{1} One %singular% has been
 view.macros.data-field-type.collection_removed_items: '{1} One %singular% has been removed|]1,Inf[ %count% %plural% have been removed'
 data.edit_revision.save_draft: Save draft
 
+not-applicable: 'N/A'
 views:
   elasticsearch:
+    search:
+      pagetitle: 'Search'
+      title: 'Search engine: %total% results'
+      subtitle: '%total%'
+      error_title: Error with the search result
     export-search:
       title: Export documents
 command:

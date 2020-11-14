@@ -817,7 +817,7 @@ class ElasticsearchController extends AppController
             try {
                 $results = $client->search($params);
                 $response = new CommonResponse($results);
-                if ($response->getTotal() >= 10000) {
+                if ($response->getTotal() >= 50000) {
                     $this->getLogger()->warning('log.elasticsearch.limit_exceded', [
                         'total' => $response->getTotal(),
                     ]);

@@ -811,10 +811,14 @@ class ElasticsearchController extends AppController
                 $indexes = $response->getAggregation('indexes');
                 if ($indexes !== null) {
                     foreach ($indexes->getBuckets() as $bucket) {
-                        $aliases = $elasticaService->getAliasesFromIndex($bucket->getKey());
+                        $indexName = $bucket->getKey();
+                        if ($indexName === null) {
+                            continue;
+                        }
+                        $aliases = $elasticaService->getAliasesFromIndex($indexName);
                         foreach ($aliases as $alias) {
                             if (isset($environments[$alias])) {
-                                $mapIndex[$bucket->getKey()] = $environments[$alias];
+                                $mapIndex[$indexName] = $environments[$alias];
                                 break;
                             }
                         }

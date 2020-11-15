@@ -100,9 +100,7 @@ class ObjectChoiceCacheService
                             if ($result === false) {
                                 continue;
                             }
-                            /** @var array{_id: string, _index: string, _type: ?string, _source: array} $hit */
-                            $hit = $result->getHit();
-                            $hitDocument = new Document($hit);
+                            $hitDocument = new Document($result);
                             if (!isset($choices[$hitDocument->getEmsId()])) {
                                 $itemContentType = $this->contentTypeService->getByName($hitDocument->getContentType());
                                 $listItem = new ObjectChoiceListItem($hit, $itemContentType ? $itemContentType : null);
@@ -198,10 +196,7 @@ class ObjectChoiceCacheService
                     if ($result === false) {
                         continue;
                     }
-                    /** @var array{_id: string, _index: string, _type: ?string, _source: array} $hit */
-                    $hit = $result->getHit();
-
-                    $document = new Document($hit);
+                    $document = new Document($result);
                     $contentType = $this->contentTypeService->getByName($document->getContentType());
                     if ($contentType === false) {
                         continue;

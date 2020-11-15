@@ -754,12 +754,10 @@ class ElasticsearchController extends AppController
 
             $assocAliases = $client->indices()->getAliases();
 
-            $mapAlias = [];
             $mapIndex = [];
             foreach ($assocAliases as $index => $aliasNames) {
                 foreach ($aliasNames['aliases'] as $alias => $options) {
                     if (isset($environments[$alias])) {
-                        $mapAlias[$environments[$alias]['alias']] = $environments[$alias];
                         $mapIndex[$index] = $environments[$alias];
                         break;
                     }
@@ -829,7 +827,6 @@ class ElasticsearchController extends AppController
                 'lastPage' => $lastPage,
                 'paginationPath' => 'elasticsearch.search',
                 'types' => $types,
-                'alias' => $mapAlias,
                 'indexes' => $mapIndex,
                 'form' => $form->createView(),
                 'page' => $page,

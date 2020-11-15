@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Service;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Elastica\Aggregation\AbstractAggregation;
 use Elastica\Aggregation\Terms;
+use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\AggregateOption;
 use Psr\Log\LoggerInterface;
@@ -12,6 +13,10 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class AggregateOptionService extends EntityService
 {
+    /** @var string */
+    const CONTENT_TYPES_AGGREGATION = 'types';
+    /** @var string */
+    const INDEXES_AGGREGATION = 'indexes';
     /** @var ElasticaService */
     private $elasticaService;
 
@@ -38,13 +43,13 @@ class AggregateOptionService extends EntityService
     {
         $contentTypeField = '_type';
         if (\version_compare($this->elasticaService->getVersion(), '6.0') >= 0) {
-            $contentTypeField = '_contenttype';
+            $contentTypeField = EMSSource::FIELD_CONTENT_TYPE;
         }
-        $contentTypeAggregation = new Terms('types');
+        $contentTypeAggregation = new Terms(self::CONTENT_TYPES_AGGREGATION);
         $contentTypeAggregation->setSize(15);
         $contentTypeAggregation->setField($contentTypeField);
 
-        $indexAggregation = new Terms('indexes');
+        $indexAggregation = new Terms(self::INDEXES_AGGREGATION);
         $indexAggregation->setSize(15);
         $indexAggregation->setField('_index');
 

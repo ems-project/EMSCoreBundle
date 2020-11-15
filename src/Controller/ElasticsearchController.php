@@ -808,7 +808,7 @@ class ElasticsearchController extends AppController
 
             $mapIndex = [];
             if ($response !== null) {
-                $indexes = $response->getAggregation('indexes');
+                $indexes = $response->getAggregation(AggregateOptionService::INDEXES_AGGREGATION);
                 if ($indexes !== null) {
                     foreach ($indexes->getBuckets() as $bucket) {
                         $indexName = $bucket->getKey();
@@ -853,7 +853,7 @@ class ElasticsearchController extends AppController
      */
     private function getAllContentType(CommonResponse $response): array
     {
-        $aggregation = $response->getAggregation('types');
+        $aggregation = $response->getAggregation(AggregateOptionService::CONTENT_TYPES_AGGREGATION);
         if ($aggregation === null) {
             return [];
         }

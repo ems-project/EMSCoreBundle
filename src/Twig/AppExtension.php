@@ -5,9 +5,12 @@ namespace EMS\CoreBundle\Twig;
 use Caxy\HtmlDiff\HtmlDiff;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Elastica\Query\Term;
 use Elasticsearch\Client;
+use EMS\CommonBundle\Elasticsearch\Exception\SingleResultException;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Helper\Text\Encoder;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Storage\Processor\Config;
 use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\Entity\ContentType;
@@ -38,6 +41,7 @@ use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\Environment as TwigEnvironment;
 use Twig\TwigFunction;
+use \EMS\CommonBundle\Search\Search as CommonSearch;
 
 class AppExtension extends AbstractExtension
 {
@@ -71,11 +75,13 @@ class AppExtension extends AbstractExtension
     private $logger;
     /** @var \Swift_Mailer */
     private $mailer;
+    /** @var ElasticaService */
+    private $elasticaService;
 
     /**
      * @param array<mixed> $assetConfig
      */
-    public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, Client $client, Router $router, TwigEnvironment $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, LoggerInterface $logger, FormFactory $formFactory, FileService $fileService, RequestRuntime $commonRequestRuntime, \Swift_Mailer $mailer, array $assetConfig)
+    public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, Client $client, Router $router, TwigEnvironment $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, LoggerInterface $logger, FormFactory $formFactory, FileService $fileService, RequestRuntime $commonRequestRuntime, \Swift_Mailer $mailer, ElasticaService $elasticaService, array $assetConfig)
     {
         $this->doctrine = $doctrine;
         $this->authorizationChecker = $authorizationChecker;
@@ -91,6 +97,7 @@ class AppExtension extends AbstractExtension
         $this->fileService = $fileService;
         $this->commonRequestRuntime = $commonRequestRuntime;
         $this->mailer = $mailer;
+        $this->elasticaService = $elasticaService;
         $this->assetConfig = $assetConfig;
     }
 
@@ -940,27 +947,29 @@ class AppExtension extends AbstractExtension
 
                     $index = $this->contentTypeService->getIndex($contentType);
 
-                    $result = $this->client->get([
-                        '_source' => $fields,
-                        'id' => $ouuid,
-                        'index' => $index,
-                        'type' => $type,
-                    ]);
+                    $termQuery = new Term();
+                    $termQuery->setTerm('_id', $ouuid);
+                    $search = new CommonSearch([$index], $termQuery);
+                    try {
+                        $document = $this->elasticaService->singleSearch($search);
+                    } catch (SingleResultException $e) {
+                        $document = null;
+                    }
 
-                    if ($contentType->getLabelField()) {
-                        $label = $result['_source'][$contentType->getLabelField()];
+                    if ($document !== null && $contentType->getLabelField()) {
+                        $label = $document->getSource()[$contentType->getLabelField()];
                         if ($label && strlen($label) > 0) {
                             $out = $label;
                         }
                     }
                     $out = $icon . $out;
 
-                    if ($contentType->getColorField() && $result['_source'][$contentType->getColorField()]) {
-                        $color = $result['_source'][$contentType->getColorField()];
+                    if ($document !== null && $contentType->getColorField() && $document->getSource()[$contentType->getColorField()]) {
+                        $color = $document->getSource()[$contentType->getColorField()];
                         $contrasted = $this->contrastRatio($color, '#000000') > $this->contrastRatio($color, '#ffffff') ? '#000000' : '#ffffff';
 
                         $out = '<span class="" style="color:' . $contrasted . ';">' . $out . '</span>';
-                        $addAttribute = ' style="background-color: ' . $result['_source'][$contentType->getColorField()] . ';border-color: ' . $result['_source'][$contentType->getColorField()] . ';"';
+                        $addAttribute = ' style="background-color: ' . $document->getSource()[$contentType->getColorField()] . ';border-color: ' . $document->getSource()[$contentType->getColorField()] . ';"';
                     }
 
                     if ($diffMod !== null) {

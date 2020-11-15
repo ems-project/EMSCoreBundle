@@ -889,23 +889,25 @@ class AppExtension extends AbstractExtension
 
                     $index = $this->contentTypeService->getIndex($contentType);
 
-                    $result = $this->client->get([
-                        '_source' => $fields,
-                        'id' => $ouuid,
-                        'index' => $index,
-                        'type' => $type,
-                    ]);
+                    $termQuery = new Term();
+                    $termQuery->setTerm('_id', $ouuid);
+                    $search = new CommonSearch([$index], $termQuery);
+                    try {
+                        $document = $this->elasticaService->singleSearch($search);
+                    } catch (SingleResultException $e) {
+                        $document = null;
+                    }
 
-                    if ($contentType->getLabelField()) {
-                        $label = $result['_source'][$contentType->getLabelField()];
+                    if ($document !== null && $contentType->getLabelField()) {
+                        $label = $document->getSource()[$contentType->getLabelField()];
                         if ($label && strlen($label) > 0) {
                             $out = $label;
                         }
                     }
                     $out = $icon . $out;
 
-                    if ($contentType->getColorField() && $result['_source'][$contentType->getColorField()]) {
-                        $color = $result['_source'][$contentType->getColorField()];
+                    if ($document !== null && $contentType->getColorField() && $document->getSource()[$contentType->getColorField()]) {
+                        $color = $document->getSource()[$contentType->getColorField()];
                         $contrasted = $this->contrastRatio($color, '#000000') > $this->contrastRatio($color, '#ffffff') ? '#000000' : '#ffffff';
 
                         $out = '<span class="" style="color:' . $contrasted . ';">' . $out . '</span>';

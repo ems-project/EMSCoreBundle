@@ -5,11 +5,11 @@ namespace EMS\CoreBundle\Service;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Elastica\Aggregation\AbstractAggregation;
 use Elastica\Aggregation\Terms;
+use EMS\CommonBundle\Elasticsearch\Aggregation\ElasticaAggregation;
 use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\AggregateOption;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class AggregateOptionService extends EntityService
@@ -66,50 +66,16 @@ class AggregateOptionService extends EntityService
     }
 
     /**
-     * @param array<mixed> $config
+     * @param array<string, mixed> $config
      */
     private function parseAggregation(string $name, array $config): AbstractAggregation
     {
-        $aggregation = null;
-        if (\is_array($config['terms'] ?? null)) {
-            return $this->parseTermsAgg($name, $config);
+        $aggregation = new ElasticaAggregation($name);
+        if (\count($config) !== 1) {
+            throw new \RuntimeException('Unexpected aggregation with multiple, or zero, basename');
         }
-        throw new \RuntimeException('Unsupported aggregation type');
-    }
-
-    /**
-     * @param array<mixed> $config
-     */
-    private function parseTermsAgg(string $name, array $config): AbstractAggregation
-    {
-        $resolver = new OptionsResolver();
-        $resolver->setDefaults([
-            'size' => 10,
-            'field' => null,
-            'order' => null,
-            'min_doc_count' => 1,
-        ])->isRequired('field');
-        $termsConfig = $resolver->resolve($config['terms'] ?? []);
-
-        $aggregation = new Terms($name);
-        $aggregation->setSize($termsConfig['size'] ?? 10);
-        $fieldName = $termsConfig['field'] ?? null;
-        if (!\is_string($fieldName)) {
-            throw new \RuntimeException('Field parameter is mandatory for Terms aggregation');
-        }
-        $aggregation->setField($fieldName);
-        $minDocCount = $termsConfig['min_doc_count'] ?? null;
-        if (!\is_int($minDocCount)) {
-            throw new \RuntimeException('Unexpected min_doc_count value');
-        }
-        $aggregation->setMinimumDocumentCount($minDocCount);
-
-        $order = $termsConfig['order'] ?? null;
-        if ($order === null || !\is_array($order) || \count($order) !== 1) {
-            return $aggregation;
-        }
-        foreach ($order as $field => $direction) {
-            $aggregation->setOrder($field, $direction);
+        foreach ($config as $basename => $param) {
+            $aggregation->setConfig($basename, $param);
         }
         return $aggregation;
     }

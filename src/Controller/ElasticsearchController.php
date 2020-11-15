@@ -749,21 +749,6 @@ class ElasticsearchController extends AppController
 
             $environments = $environmentRepository->findAllAsAssociativeArray('alias');
 
-            /** @var Client $client */
-            $client = $this->getElasticsearch();
-
-            $assocAliases = $client->indices()->getAliases();
-
-            $mapIndex = [];
-            foreach ($assocAliases as $index => $aliasNames) {
-                foreach ($aliasNames['aliases'] as $alias => $options) {
-                    if (isset($environments[$alias])) {
-                        $mapIndex[$index] = $environments[$alias];
-                        break;
-                    }
-                }
-            }
-
             $commonSearch = $searchService->generateSearch($search);
             $commonSearch->setFrom(($page - 1) * $this->getParameter('ems_core.paging_size'));
             $commonSearch->setSize($this->getParameter('ems_core.paging_size'));
@@ -805,7 +790,6 @@ class ElasticsearchController extends AppController
                 $exportForms = [];
                 $contentTypes = $this->getAllContentType($response);
                 foreach ($contentTypes as $name) {
-                    /** @var ContentType $contentType */
                     $contentType = $types[$name];
 
                     $exportForm = $this->createForm(ExportDocumentsType::class, new ExportDocuments(
@@ -821,6 +805,23 @@ class ElasticsearchController extends AppController
                     'exportForms' => $exportForms,
                 ]);
             }
+
+            $mapIndex = [];
+            if ($response !== null) {
+                $indexes = $response->getAggregation('indexes');
+                if ($indexes !== null) {
+                    foreach ($indexes->getBuckets() as $bucket) {
+                        $aliases = $elasticaService->getAliasesFromIndex($bucket->getKey());
+                        foreach ($aliases as $alias) {
+                            if (isset($environments[$alias])) {
+                                $mapIndex[$bucket->getKey()] = $environments[$alias];
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
 
             return $this->render('@EMSCore/elasticsearch/search.html.twig', [
                 'response' => $response ?? null,

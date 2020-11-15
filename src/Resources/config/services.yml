@@ -465,7 +465,7 @@ services:
         arguments: ['@doctrine', '@logger', '@translator']
     ems.service.aggregate_option:
         class: EMS\CoreBundle\Service\AggregateOptionService
-        arguments: ['@doctrine', '@logger', '@translator', '@ems_common.service.elastica', '%ems_core.single_type_index%']
+        arguments: ['@doctrine', '@logger', '@translator', '@ems_common.service.elastica']
     ems.service.sort_option:
         class: EMS\CoreBundle\Service\SortOptionService
         arguments: ['@doctrine', '@logger', '@translator']

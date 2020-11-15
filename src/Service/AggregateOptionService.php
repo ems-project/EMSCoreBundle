@@ -14,14 +14,11 @@ class AggregateOptionService extends EntityService
 {
     /** @var ElasticaService */
     private $elasticaService;
-    /** @var bool */
-    private $singleTypeIndex;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, TranslatorInterface $translator, ElasticaService $elasticaService, bool $singleTypeIndex)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, TranslatorInterface $translator, ElasticaService $elasticaService)
     {
         parent::__construct($doctrine, $logger, $translator);
         $this->elasticaService = $elasticaService;
-        $this->singleTypeIndex = $singleTypeIndex;
     }
 
     protected function getRepositoryIdentifier()
@@ -40,7 +37,7 @@ class AggregateOptionService extends EntityService
     public function getAllAggregations(): array
     {
         $contentTypeField = '_type';
-        if (\version_compare($this->elasticaService->getVersion(), '6.0') >= 0 && !$this->singleTypeIndex) {
+        if (\version_compare($this->elasticaService->getVersion(), '6.0') >= 0) {
             $contentTypeField = '_contenttype';
         }
         $contentTypeAggregation = new Terms('types');

@@ -766,16 +766,6 @@ class ElasticsearchController extends AppController
                 }
             }
 
-            $selectedEnvironments = [];
-            if (!empty($search->getEnvironments())) {
-                foreach ($search->getEnvironments() as $envName) {
-                    $temp = $this->getEnvironmentService()->getAliasByName($envName);
-                    if ($temp) {
-                        $selectedEnvironments[] = $temp->getAlias();
-                    }
-                }
-            }
-
             $commonSearch = $searchService->generateSearch($search);
             $commonSearch->setFrom(($page - 1) * $this->getParameter('ems_core.paging_size'));
             $commonSearch->setSize($this->getParameter('ems_core.paging_size'));

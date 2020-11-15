@@ -14,6 +14,12 @@
 	"keywords" : [
 		"elasticms"
 	],
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/ems-project/EMSCommonBundle"
+		}
+	],
 	"license" : "MIT",
 	"require" : {
 		"php": "^7.2.0",
@@ -27,7 +33,7 @@
 		"caxy/php-htmldiff": "^0.1",
 		"doctrine/doctrine-migrations-bundle" : "^1.3",
 		"dompdf/dompdf": "^0.8",
-		"elasticms/common-bundle": "~1.8.0",
+		"elasticms/common-bundle": "dev-dev/theus77",
 		"guzzlehttp/guzzle" : "^6.3",
 		"maennchen/zipstream-php" : "^0.5",
 		"psr/simple-cache": "^1.0",

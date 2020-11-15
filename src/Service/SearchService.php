@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Service;
 
 use Elastica\Query\BoolQuery;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CommonBundle\Search\Search as CommonSearch;
 
@@ -13,11 +14,14 @@ class SearchService
     private $mapping;
     /** @var ElasticaService */
     private $elasticaService;
+    /** @var EnvironmentService */
+    private $environmentService;
 
-    public function __construct(Mapping $mapping, ElasticaService $elasticaService)
+    public function __construct(Mapping $mapping, ElasticaService $elasticaService, EnvironmentService $environmentService)
     {
         $this->mapping = $mapping;
         $this->elasticaService = $elasticaService;
+        $this->environmentService = $environmentService;
     }
 
     /**
@@ -71,7 +75,16 @@ class SearchService
             }
         }
 
-        $commonSearch = new CommonSearch($search->getEnvironments(), $this->elasticaService->filterByContentTypes($boolQuery, $search->getContentTypes()));
+        $indexes = [];
+        foreach ($search->getEnvironments() as $environmentName) {
+            $environment = $this->environmentService->getByName($environmentName);
+            if (!$environment instanceof Environment) {
+                throw new \RuntimeException(sprintf('Environment %s not found', $environmentName));
+            }
+            $indexes[] = $environment->getAlias();
+        }
+
+        $commonSearch = new CommonSearch($indexes, $this->elasticaService->filterByContentTypes($boolQuery, $search->getContentTypes()));
 
         $sortBy = $search->getSortBy();
         if (null != $sortBy && strlen($sortBy) > 0) {

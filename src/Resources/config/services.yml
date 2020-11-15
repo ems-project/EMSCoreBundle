@@ -465,7 +465,7 @@ services:
         arguments: ['@doctrine', '@logger', '@translator']
     ems.service.aggregate_option:
         class: EMS\CoreBundle\Service\AggregateOptionService
-        arguments: ['@doctrine', '@logger', '@translator']
+        arguments: ['@doctrine', '@logger', '@translator', '@ems_common.service.elastica', '%ems_core.single_type_index%']
     ems.service.sort_option:
         class: EMS\CoreBundle\Service\SortOptionService
         arguments: ['@doctrine', '@logger', '@translator']
@@ -502,7 +502,7 @@ services:
             - { name: kernel.cache_warmer }
     ems.service.search:
         class: EMS\CoreBundle\Service\SearchService
-        arguments: ['@ems.service.mapping', '@ems_common.service.elastica']
+        arguments: ['@ems.service.mapping', '@ems_common.service.elastica', '@ems.service.environment']
     ems.service.file:
         class: EMS\CoreBundle\Service\FileService
         arguments: ['@doctrine', '@ems_common.storage.manager', '@ems_common.storage.processor', '%kernel.project_dir%', '%ems_core.upload_folder%', '%ems_core.storage_folder%', '%ems_core.save_assets_in_db%', '%ems_core.ems_remote_host%', '%ems_core.ems_remote_authkey%', '%ems_core.sftp_server%', '%ems_core.sftp_path%', '%ems_core.sftp_user%', '%ems_core.public_key%', '%ems_core.private_key%', '%ems_core.s3_credentials%', '%ems_core.s3_bucket%']
@@ -722,6 +722,7 @@ services:
     EMS\CommonBundle\Helper\Text\Encoder: '@ems_common.text.encoder'
     EMS\CoreBundle\Service\SearchService: '@ems.service.search'
     EMS\CoreBundle\Service\PublishService: '@ems.service.publish'
+    EMS\CoreBundle\Service\AggregateOptionService: '@ems.service.aggregate_option'
 
 
 

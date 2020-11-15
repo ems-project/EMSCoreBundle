@@ -54,8 +54,6 @@
 				  	{{ result.contentType|humanize }} | {{ result.id }}
 			  	{% endif %}
 
-
-				{#<span class=" badge pull-right">{{ (result._score*100)|round }}</span>#}
 			  </div>
 			  	{% if result.highlight is defined and result.highlight %}
 				  	<div class="panel-body">
@@ -66,7 +64,7 @@
 			  	{% endif %}
 			  	{% if attribute(types, result.contentType) is defined and attribute(types, result.contentType).indexTwig %}
 			  		<div class="panel-body">
-					  	<div class="col-xs-12">{
+					  	<div class="col-xs-12">
 					  		{{
 								attribute(types, result.contentType).indexTwig|generate_from_template({
 									environment: attribute(indexes, result.index),
@@ -83,7 +81,7 @@
                             {% include '@EMSCore/elements/object-toolbar.html.twig' with {
 								environment: attribute(indexes, result.index),
 								contentType: attribute(types, result.contentType),
-								object: result.rawDocument,
+								object: result.raw,
 							}%}
 						{% endif %}
 					</div>
@@ -149,7 +147,7 @@
 
 
 		{% for id, option in aggregateOptions %}
-			{% if attribute(results.aggregations, 'agg_'~id) is defined and (attribute(results.aggregations, 'agg_'~id).buckets|default([])|length > 0 or attribute(results.aggregations, 'agg_'~id).doc_count|default(0) > 0) %}
+			{% if response.getAggregation('agg_'~id) and (response.getAggregation('agg_'~id).buckets|length > 0 or response.getAggregation('agg_'~id).count > 0) %}
 			 	<div class="box">
             		<div class="box-header">
             			<h3 class="box-title"><i class="fa fa-filter"></i> {{ option.name }}</h3>
@@ -158,7 +156,7 @@
         				{{ option.template|generate_from_template({
         				    'option': option,
         				    'id': id,
-        				    'aggregation': attribute(results.aggregations, 'agg_'~id),
+        				    'aggregation': response.getAggregation('agg_'~id).raw,
         				    'currentFilters': currentFilters,
                             'paginationPath': paginationPath,
                             'search': search
@@ -271,7 +269,7 @@
 	{% include '@EMSCore/app/menu.html.twig' with {
 		'item':  'data-index-' ~ attribute(types, form.contentTypes.vars.value.0).id
 	}%}
-{% elseif results.aggregations is defined and results.aggregations.types.buckets|length == 1 %}
+{% elseif response.getAggregation('types').buckets|length == 1 %}
 	{% include '@EMSCore/app/menu.html.twig' with {
 		'item':  'data-index-' ~ attribute(types, results.aggregations.types.buckets.0.key).id
 	}%}

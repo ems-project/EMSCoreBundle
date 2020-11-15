@@ -9,7 +9,7 @@ use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
 use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CommonBundle\Helper\EmsFields;
-use EMS\CoreBundle\Entity\AggregateOption;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Form\ExportDocuments;
 use EMS\CoreBundle\Entity\Form\Search;
@@ -21,9 +21,11 @@ use EMS\CoreBundle\Form\Form\ExportDocumentsType;
 use EMS\CoreBundle\Form\Form\SearchFormType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
+use EMS\CoreBundle\Service\AggregateOptionService;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\JobService;
+use EMS\CoreBundle\Service\SearchService;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\ClickableInterface;
@@ -642,7 +644,7 @@ class ElasticsearchController extends AppController
      * @Route("/search", name="ems_search")
      * @Route("/search", name="elasticsearch.search")
      */
-    public function searchAction(Request $request, LoggerInterface $logger)
+    public function searchAction(Request $request, LoggerInterface $logger, AggregateOptionService $aggregateOptionService, ElasticaService $elasticaService, SearchService $searchService)
     {
         try {
             $search = new Search();
@@ -734,8 +736,6 @@ class ElasticsearchController extends AppController
             /** @var Search $search */
             $search = $form->getData();
 
-            $body = $this->getSearchService()->generateSearchBody($search);
-
             /** @var EntityManager $em */
             $em = $this->getDoctrine()->getManager();
 
@@ -776,62 +776,30 @@ class ElasticsearchController extends AppController
                 }
             }
 
-
-            //1. Define the parameters for a regular search request
-            $params = [
-                'version' => true,
-                'index' => empty($selectedEnvironments) ? array_keys($environments) : $selectedEnvironments,
-                'size' => $this->container->getParameter('ems_core.paging_size'),
-                'from' => ($page - 1) * $this->container->getParameter('ems_core.paging_size')
-
-            ];
-
-            $body = array_merge($body, json_decode('{
-			   "aggs": {
-			      "types": {
-			         "terms": {
-			            "field": "_type",
-						"size": 15
-			         }
-			      },
-			      "indexes": {
-			         "terms": {
-			            "field": "_index",
-						"size": 15
-			         }
-			      }
-			   }
-			}', true));
-
-            $aggregateOptions = $this->getAggregateOptionService()->getAll();
-            /** @var AggregateOption $option */
-            foreach ($aggregateOptions as $id => $option) {
-                $body['aggs']['agg_' . $id] = $option->getConfigDecoded();
-            }
+            $commonSearch = $searchService->generateSearch($search);
+            $commonSearch->setFrom(($page - 1) * $this->getParameter('ems_core.paging_size'));
+            $commonSearch->setSize($this->getParameter('ems_core.paging_size'));
+            $commonSearch->addAggregations($aggregateOptionService->getAllAggregations());
 
 
-            $params['body'] = $body;
-
-            $response = null;
             try {
-                $results = $client->search($params);
-                $response = new CommonResponse($results);
+                $response = new CommonResponse($elasticaService->search($commonSearch));
                 if ($response->getTotal() >= 50000) {
                     $logger->warning('log.elasticsearch.paging_limit_exceeded', [
                         'total' => $response->getTotal(),
                         'paging' => '50.000',
                     ]);
-                    $lastPage = ceil(50000 / $this->container->getParameter('ems_core.paging_size'));
+                    $lastPage = ceil(50000 / $this->getParameter('ems_core.paging_size'));
                 } else {
-                    $lastPage = ceil($response->getTotal() / $this->container->getParameter('ems_core.paging_size'));
+                    $lastPage = ceil($response->getTotal() / $this->getParameter('ems_core.paging_size'));
                 }
             } catch (ElasticsearchException $e) {
                 $logger->warning('log.error', [
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
                 ]);
+                $response = null;
                 $lastPage = 0;
-                $results = ['hits' => ['total' => 0]];
             }
 
             if ($response !== null && !$response->isAccurate()) {
@@ -845,9 +813,9 @@ class ElasticsearchController extends AppController
             $currentFilters->remove('search_form[_token]');
 
             //Form treatment after the "Export results" button has been pressed (= ask for a "content type" <-> "template" mapping)
-            if ($form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && array_key_exists('exportResults', $request->query->get('search_form'))) {
+            if ($response !== null && $form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && array_key_exists('exportResults', $request->query->get('search_form'))) {
                 $exportForms = [];
-                $contentTypes = $this->getAllContentType($results);
+                $contentTypes = $this->getAllContentType($response);
                 foreach ($contentTypes as $name) {
                     /** @var ContentType $contentType */
                     $contentType = $types[$name];
@@ -855,7 +823,7 @@ class ElasticsearchController extends AppController
                     $exportForm = $this->createForm(ExportDocumentsType::class, new ExportDocuments(
                         $contentType,
                         $this->generateUrl('emsco_search_export', ['contentType' => $contentType->getId()]),
-                        json_encode($body)
+                        json_encode($searchService->generateSearchBody($search))
                     ));
 
                     $exportForms[] = $exportForm->createView();
@@ -867,7 +835,6 @@ class ElasticsearchController extends AppController
             }
 
             return $this->render('@EMSCore/elasticsearch/search.html.twig', [
-                'results' => $results,
                 'response' => $response ?? null,
                 'lastPage' => $lastPage,
                 'paginationPath' => 'elasticsearch.search',
@@ -878,22 +845,33 @@ class ElasticsearchController extends AppController
                 'page' => $page,
                 'searchId' => $searchId,
                 'currentFilters' => $request->query,
-                'body' => $body,
+                'body' => $searchService->generateSearchBody($search),
                 'openSearchForm' => $openSearchForm,
                 'search' => $search,
                 'sortOptions' => $this->getSortOptionService()->getAll(),
-                'aggregateOptions' => $aggregateOptions,
+                'aggregateOptions' => $aggregateOptionService->getAll(),
             ]);
         } catch (NoNodesAvailableException $e) {
             return $this->redirectToRoute('elasticsearch.status');
         }
     }
 
-    private function getAllContentType($results)
+    /**
+     * @return string[]
+     */
+    private function getAllContentType(CommonResponse $response): array
     {
+        $aggregation = $response->getAggregation('types');
+        if ($aggregation === null) {
+            return [];
+        }
         $out = [];
-        foreach ($results['aggregations']['types']['buckets'] as $type) {
-            $out[] = $type['key'];
+        foreach ($aggregation->getBuckets() as $bucket) {
+            $key = $bucket->getKey();
+            if ($key === null) {
+                continue;
+            }
+            $out[] = $key;
         }
         return $out;
     }

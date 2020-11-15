@@ -184,16 +184,16 @@
 					{% set cleanedFilters = currentFilters.all %}
 				{% endif %}
 
-				{% for index in results.aggregations.types.buckets %}
+				{% for index in response.getAggregation('types').buckets %}
 					{% if attribute(types, index.key) is defined %}
 						<a href="{{ path(paginationPath, cleanedFilters|merge({'search_form[contentTypes][0]': index.key, page: 1})) }}" class="btn btn-block btn-social {% if attribute(types, index.key).color %}bg-{{ attribute(types, index.key).color }}{% else %}bg-gray{% endif %}">
 							<i class="{% if attribute(types, index.key).icon %}{{ attribute(types, index.key).icon }}{% else %}fa fa-book{% endif %}"></i>
-							{% if index.doc_count >1  %}
+							{% if index.count > 1 %}
 								{{ attribute(types, index.key).pluralName }}
 							{% else %}
 								{{ attribute(types, index.key).singularName }}
 							{% endif %}
-							<span class=" badge pull-right">{{ index.doc_count }}</span>
+							<span class=" badge pull-right">{{ index.count }}</span>
 						</a>
 					{% else %}
     					<a href="{{ path(paginationPath, app.request.query|merge({'search_form[contentTypes][0]': index.key, page: 1})) }}" class="btn btn-block btn-social bg-gray">
@@ -203,11 +203,11 @@
     					</a>
 					{% endif %}
 				{% endfor %}
-				{% if results.aggregations.types.sum_other_doc_count > 0 %}
+				{% if response.getAggregation('types').raw.sum_other_doc_count > 0 %}
 					<a href="#" class="disabled btn btn-block btn-social btn-primary">
 						<i class="fa fa-question"></i>
 						Other
-						<span class=" badge pull-right">{{ results.aggregations.types.sum_other_doc_count }}</span>
+						<span class=" badge pull-right">{{ response.getAggregation('types').raw.sum_other_doc_count }}</span>
 					</a>
 				{% endif %}
 			</div>
@@ -231,19 +231,19 @@
 					{% set cleanedFilters = currentFilters.all %}
 				{% endif %}
 
-					{% for index in results.aggregations.indexes.buckets %}
+					{% for index in response.getAggregation('indexes').buckets %}
 							<a href="{{ path(paginationPath, cleanedFilters|merge({'search_form[environments][0]': attribute(indexes, index.key).name})) }}" class="btn btn-block btn-social {% if attribute(indexes, index.key).color %}bg-{{ attribute(indexes, index.key).color }}{% else %}bg-gray{% endif %}">
 								<i class="fa fa-eye"></i>
 					            {{ attribute(indexes, index.key).name|humanize }}
 								<span class=" badge pull-right">
-									{{ index.doc_count }}
+									{{ index.count }}
 								</span>
 							</a>
 					{% endfor %}
 			</div>
 		</div>
 	</div>
-		{% if body is defined and form.environments.vars.value|length == 1  and form.contentTypes.vars.value|length == 1  and form.contentTypes.vars.value.0|get_content_type.publishRole is defined and is_granted(form.contentTypes.vars.value.0|get_content_type.publishRole) and form.environments.vars.value.0|get_environment.managed and results.hits.total > 1 %}
+		{% if body is defined and form.environments.vars.value|length == 1  and form.contentTypes.vars.value|length == 1  and form.contentTypes.vars.value.0|get_content_type.publishRole is defined and is_granted(form.contentTypes.vars.value.0|get_content_type.publishRole) and form.environments.vars.value.0|get_environment.managed and response.total > 1 %}
 			<div class="col-md-12">
 				<div class="box">
 					<div class="box-footer with-border">
@@ -271,7 +271,7 @@
 	}%}
 {% elseif response.getAggregation('types').buckets|length == 1 %}
 	{% include '@EMSCore/app/menu.html.twig' with {
-		'item':  'data-index-' ~ attribute(types, results.aggregations.types.buckets.0.key).id
+		'item':  'data-index-' ~ attribute(types, response.getAggregation('types').buckets.0.key).id
 	}%}
 {% endif %}
 

@@ -496,11 +496,6 @@ parameters:
 			path: src/Controller/ElasticsearchController.php
 
 		-
-			message: "#^Call to an undefined method Psr\\\\Container\\\\ContainerInterface\\:\\:getParameter\\(\\)\\.$#"
-			count: 4
-			path: src/Controller/ElasticsearchController.php
-
-		-
 			message: "#^Parameter \\#3 \\$query of class EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\ExportDocuments constructor expects string, string\\|false given\\.$#"
 			count: 1
 			path: src/Controller/ElasticsearchController.php

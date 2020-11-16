@@ -848,7 +848,7 @@ class AppExtension extends AbstractExtension
     /**
      * @param array<mixed> $params
      */
-    public function generateFromTemplate(string $template, array $params = []): ?string
+    public function generateFromTemplate(?string $template, array $params = []): ?string
     {
         if (empty($template)) {
             return null;

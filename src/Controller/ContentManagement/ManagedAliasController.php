@@ -56,7 +56,7 @@ class ManagedAliasController extends AppController
      * @throws ORMException
      * @throws OptimisticLockException
      *
-     * @Route("/edit/{id}", requirements={"id": "\d+"}, name="environment_edit_managed_alias")
+     * @Route("/edit/{id}", requirements={"id"="\d+"}, name="environment_edit_managed_alias")
      */
     public function editAction(Request $request, $id)
     {

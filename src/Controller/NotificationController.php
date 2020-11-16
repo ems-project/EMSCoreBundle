@@ -163,7 +163,7 @@ class NotificationController extends AppController
     /**
      * @return Response
      *
-     * @Route("/notification/menu", name="notification.menu"))
+     * @Route("/notification/menu", name="notification.menu")
      */
     public function menuNotificationAction()
     {
@@ -183,9 +183,9 @@ class NotificationController extends AppController
      * @param Request $request
      * @return Response
      *
-     * @Route("/notifications/list", name="notifications.list", defaults={"folder": "inbox"})
-     * @Route("/notifications/inbox", name="notifications.inbox", defaults={"folder": "inbox"})
-     * @Route("/notifications/sent", name="notifications.sent", defaults={"folder": "sent"})
+     * @Route("/notifications/list", name="notifications.list", defaults={"folder"="inbox"})
+     * @Route("/notifications/inbox", name="notifications.inbox", defaults={"folder"="inbox"})
+     * @Route("/notifications/sent", name="notifications.sent", defaults={"folder"="sent"})
      */
     public function listNotificationsAction($folder, Request $request)
     {

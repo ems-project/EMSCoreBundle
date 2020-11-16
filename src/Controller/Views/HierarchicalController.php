@@ -15,7 +15,7 @@ class HierarchicalController extends AppController
      * @param string $key
      * @return Response
      *
-     * @Route("/views/hierarchical/item/{view}/{key}", name="views.hierarchical.item"))
+     * @Route("/views/hierarchical/item/{view}/{key}", name="views.hierarchical.item")
      */
     public function itemAction(View $view, $key)
     {

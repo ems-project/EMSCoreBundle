@@ -117,16 +117,17 @@
                                     </a>
                                 </h3>
                             </div>
-                            <div class="panel-body collapse" id="versioning">
-                                <div class="row">
-                                    <div class="col-md-6">{{ form_row(form.versionDateFromField) }}</div>
-                                    <div class="col-md-6">{{ form_row(form.versionDateToField) }}</div>
-                                    <div class="col-md-12">
-                                        {{ form_row(form.versionTags) }}
+                            {% if form.versionDateFromField is defined %}
+                                <div class="panel-body collapse" id="versioning">
+                                    <div class="row">
+                                        <div class="col-md-6">{{ form_row(form.versionDateFromField) }}</div>
+                                        <div class="col-md-6">{{ form_row(form.versionDateToField) }}</div>
+                                        <div class="col-md-12">
+                                            {{ form_row(form.versionTags) }}
+                                        </div>
                                     </div>
                                 </div>
-
-                            </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

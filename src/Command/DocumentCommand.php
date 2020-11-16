@@ -29,10 +29,6 @@ class DocumentCommand extends Command
     private $contentTypeService;
     /** @var DataService */
     private $dataService;
-    /** @var Logger */
-    private $logger;
-    /** @var Client */
-    private $client;
     /** @var SymfonyStyle */
     private $io;
     /** @var ContentType */
@@ -44,14 +40,11 @@ class DocumentCommand extends Command
     /** @var string  */
     const ARGUMENT_ARCHIVE = 'archive';
 
-    public function __construct(Logger $logger, Client $client, ContentTypeService $contentTypeService, DocumentService $documentService, DataService $dataService)
+    public function __construct(ContentTypeService $contentTypeService, DocumentService $documentService, DataService $dataService)
     {
         $this->contentTypeService = $contentTypeService;
         $this->documentService = $documentService;
         $this->dataService = $dataService;
-        $this->dataService = $dataService;
-        $this->logger = $logger;
-        $this->client = $client;
         parent::__construct();
     }
     

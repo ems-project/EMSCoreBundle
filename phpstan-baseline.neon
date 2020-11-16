@@ -446,11 +446,6 @@ parameters:
 			path: src/Controller/ElasticsearchController.php
 
 		-
-			message: "#^Call to an undefined method Psr\\\\Container\\\\ContainerInterface\\:\\:getParameter\\(\\)\\.$#"
-			count: 4
-			path: src/Controller/ElasticsearchController.php
-
-		-
 			message: "#^Parameter \\#3 \\$query of class EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\ExportDocuments constructor expects string, string\\|false given\\.$#"
 			count: 1
 			path: src/Controller/ElasticsearchController.php
@@ -10529,36 +10524,6 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\SearchFieldOptionService\\:\\:getEntityName\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Service/SearchFieldOptionService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\SearchService\\:\\:generateSearchBody\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/SearchService.php
-
-		-
-			message: "#^Parameter \\#2 \\$mapping of method EMS\\\\CoreBundle\\\\Service\\\\SearchService\\:\\:getNestedPath\\(\\) expects array, array\\|null given\\.$#"
-			count: 2
-			path: src/Service/SearchService.php
-
-		-
-			message: "#^Offset 'query' does not exist on array\\(\\)\\|array\\('query' \\=\\> array\\('bool' \\=\\> array\\<string, array\\<int, mixed\\>\\>\\)\\)\\.$#"
-			count: 1
-			path: src/Service/SearchService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\SearchService\\:\\:nestFilter\\(\\) has parameter \\$esFilter with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Service/SearchService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\SearchService\\:\\:nestFilter\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Service/SearchService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\SearchService\\:\\:getNestedPath\\(\\) has parameter \\$mapping with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Service/SearchService.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\SortOptionService\\:\\:getRepositoryIdentifier\\(\\) has no return typehint specified\\.$#"

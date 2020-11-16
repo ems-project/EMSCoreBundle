@@ -9,7 +9,7 @@ services:
     app.twig_extension: '@EMS\CoreBundle\Twig\AppExtension'
     EMS\CoreBundle\Twig\AppExtension:
         #class: EMS\CoreBundle\Twig\AppExtension
-        arguments: ['@doctrine', '@security.authorization_checker', '@ems.service.user', '@ems.service.contenttype', '@app.elasticsearch', '@router', '@twig', '@ems.form.factories.objectChoiceListFactory', '@ems.service.environment', '@logger', '@form.factory', '@ems.service.file' , '@ems_common.twig.runtime.request', '@mailer', '%ems_core.asset_config%']
+        arguments: ['@doctrine', '@security.authorization_checker', '@ems.service.user', '@ems.service.contenttype', '@app.elasticsearch', '@router', '@twig', '@ems.form.factories.objectChoiceListFactory', '@ems.service.environment', '@logger', '@form.factory', '@ems.service.file' , '@ems_common.twig.runtime.request', '@mailer', '@ems_common.service.elastica', '%ems_core.asset_config%']
         #public: false
         tags:
             - { name: twig.extension, priority: -2000 }
@@ -422,7 +422,7 @@ services:
 ### regular services
     ems.service.mapping:
         class: EMS\CoreBundle\Service\Mapping
-        arguments: ['@app.elasticsearch', '@EMS\CoreBundle\Service\EnvironmentService', '@ems.form.fieldtype.fieldtypetype', '@ems.service.elasticsearch', '%ems_core.version%', '%ems_core.instance_id%']
+        arguments: ['@app.elasticsearch', '@EMS\CoreBundle\Service\EnvironmentService', '@ems.form.fieldtype.fieldtypetype', '@ems.service.elasticsearch', '@ems_common.service.elastica', '%ems_core.instance_id%']
     EMS\CoreBundle\Service\DataService:
         class: EMS\CoreBundle\Service\DataService
         arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '%ems_core.lock_time%', '@app.elasticsearch', '@ems.service.mapping', '%ems_core.instance_id%', '@session', '@form.factory', '@service_container', '@form.registry', '@event_dispatcher', '@ems.service.contenttype', '%ems_core.private_key%', '@logger', '@ems_common.storage.manager', '@twig', '@app.twig_extension', '@ems.service.user', '@EMS\CoreBundle\Repository\RevisionRepository', '@ems.service.environment']
@@ -453,7 +453,7 @@ services:
             - '@logger'
     ems.service.environment: '@EMS\CoreBundle\Service\EnvironmentService'
     EMS\CoreBundle\Service\EnvironmentService:
-        arguments: ['@doctrine', '@session', '@ems.service.user', '@security.authorization_checker', '@service_container', '@logger', '@app.elasticsearch', '%ems_core.single_type_index%']
+        arguments: ['@doctrine', '@session', '@ems.service.user', '@security.authorization_checker', '@service_container', '@logger', '@app.elasticsearch', '@ems_common.service.elastica', '%ems_core.single_type_index%']
     ems.service.contenttype: '@EMS\CoreBundle\Service\ContentTypeService'
     EMS\CoreBundle\Service\ContentTypeService:
         arguments: ['@doctrine', '@logger', '@ems.service.mapping', '@app.elasticsearch', '@ems.service.environment', '@form.registry', '@translator', '%ems_core.instance_id%', '%ems_core.single_type_index%']
@@ -465,7 +465,7 @@ services:
         arguments: ['@doctrine', '@logger', '@translator']
     ems.service.aggregate_option:
         class: EMS\CoreBundle\Service\AggregateOptionService
-        arguments: ['@doctrine', '@logger', '@translator']
+        arguments: ['@doctrine', '@logger', '@translator', '@ems_common.service.elastica']
     ems.service.sort_option:
         class: EMS\CoreBundle\Service\SortOptionService
         arguments: ['@doctrine', '@logger', '@translator']
@@ -502,7 +502,7 @@ services:
             - { name: kernel.cache_warmer }
     ems.service.search:
         class: EMS\CoreBundle\Service\SearchService
-        arguments: ['@ems.service.mapping']
+        arguments: ['@ems.service.mapping', '@ems_common.service.elastica', '@ems.service.environment']
     ems.service.file:
         class: EMS\CoreBundle\Service\FileService
         arguments: ['@doctrine', '@ems_common.storage.manager', '@ems_common.storage.processor', '%kernel.project_dir%', '%ems_core.upload_folder%', '%ems_core.storage_folder%', '%ems_core.save_assets_in_db%', '%ems_core.ems_remote_host%', '%ems_core.ems_remote_authkey%', '%ems_core.sftp_server%', '%ems_core.sftp_path%', '%ems_core.sftp_user%', '%ems_core.public_key%', '%ems_core.private_key%', '%ems_core.s3_credentials%', '%ems_core.s3_bucket%']
@@ -562,12 +562,12 @@ services:
             - '@ems.service.revision'
     ems.contenttype.migrate:
         class: EMS\CoreBundle\Command\MigrateCommand
-        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.document']
+        arguments: ['@doctrine', '@app.elasticsearch', '@ems.service.document']
         tags:
             -  { name: console.command }
     ems.make.document:
         class: EMS\CoreBundle\Command\DocumentCommand
-        arguments: ['@logger', '@app.elasticsearch', '@ems.service.contenttype', '@ems.service.document', '@ems.service.data']
+        arguments: ['@ems.service.contenttype', '@ems.service.document', '@ems.service.data']
         tags:
             -  { name: console.command }
     ems.contenttype.export:
@@ -577,7 +577,7 @@ services:
             -  { name: console.command }
     ems.environment.rebuild:
         class: EMS\CoreBundle\Command\RebuildCommand
-        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.mapping', '@ems.service.contenttype', '@ems.service.environment', '@ems.environment.reindex', '%ems_core.instance_id%', '%ems_core.single_type_index%']
+        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.contenttype', '@ems.service.environment', '@ems.environment.reindex', '%ems_core.instance_id%', '%ems_core.single_type_index%']
         tags:
             -  { name: console.command }
     ems.delete.orphans:
@@ -633,7 +633,7 @@ services:
             -  { name: console.command }
     ems.notification.send:
         class: EMS\CoreBundle\Command\SendNotificationsCommand
-        arguments: ['@doctrine', '@logger', '@ems.service.user', '@ems.service.notification', '%ems_core.notification_pending_timeout%']
+        arguments: ['@doctrine', '@ems.service.notification', '%ems_core.notification_pending_timeout%']
         tags:
             -  { name: console.command }
     ems.revisions.index-file-fields:
@@ -648,7 +648,7 @@ services:
             -  { name: console.command }
     ems.environment.list:
         class: EMS\CoreBundle\Command\EnvironmentCommand
-        arguments: ['@logger', '@ems.service.environment']
+        arguments: ['@ems.service.environment']
         tags:
             -  { name: console.command }
     EMS\CoreBundle\Command\SynchronizeAssetCommand:
@@ -693,7 +693,7 @@ services:
             - { name: console.command }
     ems.job.run:
         class: EMS\CoreBundle\Command\JobCommand
-        arguments: ['@logger', '@ems.service.job', '%ems_core.date_time_format%']
+        arguments: ['@ems.service.job', '%ems_core.date_time_format%']
         tags:
             - { name: console.command }
 
@@ -722,6 +722,7 @@ services:
     EMS\CommonBundle\Helper\Text\Encoder: '@ems_common.text.encoder'
     EMS\CoreBundle\Service\SearchService: '@ems.service.search'
     EMS\CoreBundle\Service\PublishService: '@ems.service.publish'
+    EMS\CoreBundle\Service\AggregateOptionService: '@ems.service.aggregate_option'
 
 
 
@@ -738,12 +739,12 @@ services:
         resource: '../../Controller/*'
 
     EMS\CoreBundle\Controller\Api\Form\SubmissionController:
-        arguments: ['@ems.form_submission','@logger']
+        arguments: ['@ems.form_submission']
     EMS\CoreBundle\Controller\Api\Form\VerificationController:
         arguments: ['@ems.form_verification', '@logger']
         tags: ['controller.service_arguments']
     EMS\CoreBundle\Controller\Revision\EditController:
-        arguments: [ '@ems.service.data', '@logger', '@ems.service.publish', '@ems.service.revision',, '@translator', '@ems.service.wysiwyg_styles_set']
+        arguments: [ '@ems.service.data', '@logger', '@ems.service.publish', '@ems.service.revision', '@translator', '@ems.service.wysiwyg_styles_set']
     EMS\CoreBundle\Controller\AuthTokenController:
         arguments: ['@ems.security.authenticator', '@twig']
     EMS\CoreBundle\Controller\Form\SubmissionController:

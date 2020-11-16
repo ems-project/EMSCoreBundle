@@ -17,18 +17,14 @@ class JobCommand extends Command
     private $jobService;
     /** @var SymfonyStyle */
     private $io;
-    /** @var LoggerInterface */
-    private $logger;
     /**
      * @var string
      */
     private $dateFormat;
 
-    public function __construct(LoggerInterface $logger, JobService $jobService, string $dateFormat)
+    public function __construct(JobService $jobService, string $dateFormat)
     {
         parent::__construct();
-
-        $this->logger = $logger;
         $this->jobService = $jobService;
         $this->dateFormat = $dateFormat;
     }

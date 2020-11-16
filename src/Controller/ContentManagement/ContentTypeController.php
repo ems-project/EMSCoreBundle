@@ -65,7 +65,7 @@ class ContentTypeController extends AppController
     }
 
     /**
-     * @Route("/content-type/json-update/{contentType}", name="emsco_contenttype_update_from_json"))
+     * @Route("/content-type/json-update/{contentType}", name="emsco_contenttype_update_from_json")
      */
     public function updateFromJsonAction(ContentType $contentType, Request $request, ContentTypeService $contentTypeService): Response
     {
@@ -102,7 +102,7 @@ class ContentTypeController extends AppController
      * @return RedirectResponse
      * @throws ORMException
      * @throws OptimisticLockException
-     * @Route("/content-type/remove/{id}", name="contenttype.remove"), methods={"POST"})
+     * @Route("/content-type/remove/{id}", name="contenttype.remove", methods={"POST"})
      */
     public function removeAction($id, LoggerInterface $logger) : RedirectResponse
     {
@@ -140,7 +140,7 @@ class ContentTypeController extends AppController
      * @return RedirectResponse
      * @throws ORMException
      * @throws OptimisticLockException
-     * @Route("/content-type/activate/{contentType}", name="contenttype.activate"), methods={"POST"})
+     * @Route("/content-type/activate/{contentType}", name="contenttype.activate", methods={"POST"})
      */
     public function activateAction(ContentType $contentType, LoggerInterface $logger)
     {
@@ -171,7 +171,7 @@ class ContentTypeController extends AppController
      * @throws ORMException
      * @throws OptimisticLockException
      *
-     * @Route("/content-type/disable/{contentType}", name="contenttype.desactivate"), methods={"POST"})
+     * @Route("/content-type/disable/{contentType}", name="contenttype.desactivate", methods={"POST"})
      */
     public function disableAction(ContentType $contentType)
     {
@@ -191,7 +191,7 @@ class ContentTypeController extends AppController
      * @return RedirectResponse
      * @throws BadRequestHttpException
      *
-     * @Route("/content-type/refresh-mapping/{id}", name="contenttype.refreshmapping"), methods={"POST"})
+     * @Route("/content-type/refresh-mapping/{id}", name="contenttype.refreshmapping", methods={"POST"})
      */
     public function refreshMappingAction(ContentType $id)
     {
@@ -328,7 +328,7 @@ class ContentTypeController extends AppController
      * @return RedirectResponse|Response
      * @throws ORMException
      * @throws OptimisticLockException
-     * @Route("/content-type", name="contenttype.index"))
+     * @Route("/content-type", name="contenttype.index")
      */
     public function indexAction(Request $request, LoggerInterface $logger)
     {
@@ -403,7 +403,7 @@ class ContentTypeController extends AppController
      * @return RedirectResponse|Response
      * @throws ORMException
      * @throws OptimisticLockException
-     * @Route("/content-type/unreferenced", name="contenttype.unreferenced"))
+     * @Route("/content-type/unreferenced", name="contenttype.unreferenced")
      */
     public function unreferencedAction(Request $request, LoggerInterface $logger)
     {
@@ -464,7 +464,7 @@ class ContentTypeController extends AppController
             $mapping = $client->indices()->getMapping([
                 'index' => $alias
             ]);
-            foreach ($mapping as $indexName => $index) {
+            foreach ($mapping as $index) {
                 foreach ($index ['mappings'] as $name => $type) {
                     $already = $contenttypeRepository->findByName($name);
                     if (!$already || $already->getDeleted()) {
@@ -551,7 +551,7 @@ class ContentTypeController extends AppController
      * @return RedirectResponse|Response
      *
      * @throws ElasticmsException
-     * @Route("/content-type/{contentType}/field/{field}", name="ems_contenttype_field_edit"))
+     * @Route("/content-type/{contentType}/field/{field}", name="ems_contenttype_field_edit")
      */
     public function editFieldAction(ContentType $contentType, FieldType $field, Request $request, LoggerInterface $logger)
     {
@@ -750,7 +750,7 @@ class ContentTypeController extends AppController
      * @param Request $request
      * @return RedirectResponse|Response
      *
-     * @Route("/content-type/reorder/{contentType}", name="ems_contenttype_reorder"))
+     * @Route("/content-type/reorder/{contentType}", name="ems_contenttype_reorder")
      */
     public function reorderAction(ContentType $contentType, Request $request)
     {
@@ -782,7 +782,7 @@ class ContentTypeController extends AppController
      * @return RedirectResponse|Response
      * @throws ORMException
      * @throws OptimisticLockException
-     * @Route("/content-type/{id}", name="contenttype.edit"))
+     * @Route("/content-type/{id}", name="contenttype.edit")
      */
     public function editAction($id, Request $request, LoggerInterface $logger)
     {
@@ -885,7 +885,7 @@ class ContentTypeController extends AppController
      * @throws ElasticmsException
      * @throws ORMException
      * @throws OptimisticLockException
-     * @Route("/content-type/structure/{id}", name="contenttype.structure"))
+     * @Route("/content-type/structure/{id}", name="contenttype.structure")
      */
     public function editStructureAction($id, Request $request, LoggerInterface $logger)
     {
@@ -1082,7 +1082,7 @@ class ContentTypeController extends AppController
      * @param ContentType $contentType
      * @return Response
      *
-     * @Route("/content-type/export/{contentType}.{_format}", defaults={"_format" = "json"}, name="contenttype.export"))
+     * @Route("/content-type/export/{contentType}.{_format}", defaults={"_format"="json"}, name="contenttype.export")
      */
     public function exportAction(ContentType $contentType)
     {

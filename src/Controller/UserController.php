@@ -33,7 +33,7 @@ use EMS\CoreBundle\Entity\User;
 class UserController extends AppController
 {
     /**
-     * @Route("/user", name="ems.user.index"))
+     * @Route("/user", name="ems.user.index")
      * @return Response
      */
     public function indexAction()

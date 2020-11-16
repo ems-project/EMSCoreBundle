@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Service;
 
 use Elasticsearch\Client;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Form\FieldType\FieldTypeType;
@@ -37,6 +38,7 @@ class Mapping
 
     /** @var Client */
     private $client;
+
     /** @var EnvironmentService */
     private $environmentService;
 
@@ -46,25 +48,25 @@ class Mapping
     /** @var ElasticsearchService $elasticsearchService */
     private $elasticsearchService;
 
-    /**@var string*/
-    private $coreVersion;
-
-    /**@var string*/
+    /** @var string*/
     private $instanceId;
-    
+
+    /** @var ElasticaService */
+    private $elasticaService;
+
     /**
      * Constructor
      *
      * @param FieldTypeType $fieldTypeType
      * @param ElasticsearchService $elasticsearchService
      */
-    public function __construct(Client $client, EnvironmentService $environmentService, FieldTypeType $fieldTypeType, ElasticsearchService $elasticsearchService, $coreVersion, $instanceId)
+    public function __construct(Client $client, EnvironmentService $environmentService, FieldTypeType $fieldTypeType, ElasticsearchService $elasticsearchService, ElasticaService $elasticaService, $instanceId)
     {
         $this->client = $client;
         $this->environmentService = $environmentService;
         $this->fieldTypeType = $fieldTypeType;
         $this->elasticsearchService = $elasticsearchService;
-        $this->coreVersion = $coreVersion;
+        $this->elasticaService = $elasticaService;
         $this->instanceId = $instanceId;
     }
     
@@ -105,12 +107,34 @@ class Mapping
         $out['_meta'] = [
             Mapping::CONTENT_TYPE_META_FIELD => $contentType->getName(),
             Mapping::GENERATOR_META_FIELD => Mapping::GENERATOR_META_FIELD_VALUE,
-            Mapping::CORE_VERSION_META_FIELD => $this->coreVersion,
+            Mapping::CORE_VERSION_META_FIELD => $this->elasticaService->getVersion(),
             Mapping::INSTANCE_ID_META_FIELD => $this->instanceId,
         ];
+
+        $elasticsearchVersion = $this->elasticaService->getVersion();
+        if (\version_compare($elasticsearchVersion, '7.0') >= 0) {
+            return $out;
+        }
         
-        
-        return [ $contentType->getName() => $out ];
+        return [ $this->getTypeName($contentType->getName()) => $out ];
+    }
+
+    public function getTypeName(string $contentTypeName): string
+    {
+        $version = $this->elasticaService->getVersion();
+        if (\version_compare($version, '6.0') >= 0) {
+            return 'doc';
+        }
+        return $contentTypeName;
+    }
+
+    public function getTypePath(string $contentTypeName): string
+    {
+        $version = $this->elasticaService->getVersion();
+        if (\version_compare($version, '7.0') >= 0) {
+            return '.';
+        }
+        return $this->getTypeName($contentTypeName);
     }
 
     public function dataFieldToArray(DataField $dataField)
@@ -140,6 +164,11 @@ class Mapping
         $mappings = $indices->getMapping(['index' => $indexes]);
 
         foreach ($mappings as $index) {
+            if (isset($index['mappings']['properties'])) {
+                $result = \array_merge_recursive($index['mappings']['properties'], $result);
+                continue;
+            }
+
             foreach ($index['mappings'] as $type => $mapping) {
                 $result = \array_merge_recursive($mapping['properties'], $result);
             }

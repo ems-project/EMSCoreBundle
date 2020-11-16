@@ -208,7 +208,7 @@ class ExportDocumentsCommand extends EmsCommand
         ];
 
         while (isset($arrayElasticsearchIndex['hits']['hits']) && count($arrayElasticsearchIndex['hits']['hits']) > 0) {
-            foreach ($arrayElasticsearchIndex["hits"]["hits"] as $index => $value) {
+            foreach ($arrayElasticsearchIndex["hits"]["hits"] as $value) {
                 if ($contentType->getBusinessIdField() !== null && isset($value['_source'][$contentType->getBusinessIdField()])) {
                     $filename = $value['_source'][$contentType->getBusinessIdField()] . $extension;
                 } else {

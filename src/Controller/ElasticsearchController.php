@@ -7,45 +7,35 @@ use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\ElasticsearchException;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
+use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CommonBundle\Helper\EmsFields;
-use EMS\CoreBundle\Entity\AggregateOption;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Form\ExportDocuments;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\Form\SearchFilter;
-use EMS\CoreBundle\Entity\Template;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Form\Field\IconTextType;
-use EMS\CoreBundle\Form\Field\RenderOptionType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\Form\ExportDocumentsType;
 use EMS\CoreBundle\Form\Form\SearchFormType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
+use EMS\CoreBundle\Service\AggregateOptionService;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\JobService;
+use EMS\CoreBundle\Service\SearchService;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\ClickableInterface;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
 use Throwable;
-use Twig\Error\LoaderError;
-use Twig\Error\SyntaxError;
-use Twig_Error;
-use Twig_Error_Loader;
-use Twig_Error_Syntax;
-use ZipStream\ZipStream;
 
 class ElasticsearchController extends AppController
 {
@@ -55,7 +45,7 @@ class ElasticsearchController extends AppController
      * @param string $name
      * @param Request $request
      * @return RedirectResponse|Response
-     * @Route("/elasticsearch/alias/add/{name}", name="elasticsearch.alias.add"))
+     * @Route("/elasticsearch/alias/add/{name}", name="elasticsearch.alias.add")
      */
     public function addAliasAction(string $name, Request $request)
     {
@@ -108,7 +98,7 @@ class ElasticsearchController extends AppController
      * @param string $_format
      * @return Response
      *
-     * @Route("/health_check.{_format}", defaults={"_format": "html"}, name="health-check")
+     * @Route("/health_check.{_format}", defaults={"_format"="html"}, name="health-check")
      */
     public function healthCheckAction($_format)
     {
@@ -137,7 +127,7 @@ class ElasticsearchController extends AppController
      * @param string $_format
      * @return Response
      *
-     * @Route("/status.{_format}", defaults={"_format": "html"}, name="elasticsearch.status"))
+     * @Route("/status.{_format}", defaults={"_format"="html"}, name="elasticsearch.status")
      */
     public function statusAction($_format)
     {
@@ -187,7 +177,7 @@ class ElasticsearchController extends AppController
     }
 
     /**
-     * @Route("/admin/phpinfo", name="emsco_phpinfo"))
+     * @Route("/admin/phpinfo", name="emsco_phpinfo")
      */
     public function phpInfoAction(): void
     {
@@ -200,7 +190,7 @@ class ElasticsearchController extends AppController
      * @param int $id
      * @return RedirectResponse
      *
-     * @Route("/elasticsearch/delete-search/{id}", name="elasticsearch.search.delete"))
+     * @Route("/elasticsearch/delete-search/{id}", name="elasticsearch.search.delete")
      */
     public function deleteSearchAction($id)
     {
@@ -265,7 +255,7 @@ class ElasticsearchController extends AppController
      * @param string $contentType
      * @return RedirectResponse
      *
-     * @Route("/elasticsearch/set-default-search/{id}/{contentType}", defaults={"contentType": false}, name="ems_search_set_default_search_from", methods={"POST"})
+     * @Route("/elasticsearch/set-default-search/{id}/{contentType}", defaults={"contentType"=false}, name="ems_search_set_default_search_from", methods={"POST"})
      */
     public function setDefaultSearchAction($id, $contentType)
     {
@@ -314,7 +304,7 @@ class ElasticsearchController extends AppController
      * @param string $name
      * @return RedirectResponse
      *
-     * @Route("/elasticsearch/index/delete/{name}", name="elasticsearch.index.delete"))
+     * @Route("/elasticsearch/index/delete/{name}", name="elasticsearch.index.delete")
      */
     public function deleteIndexAction($name)
     {
@@ -340,7 +330,7 @@ class ElasticsearchController extends AppController
      * @param Request $request
      * @return Response
      *
-     * @Route("/search.json", name="elasticsearch.api.search"))
+     * @Route("/search.json", name="elasticsearch.api.search")
      */
     public function searchApiAction(Request $request)
     {
@@ -402,7 +392,7 @@ class ElasticsearchController extends AppController
 
 
                 $selectedEnvironments = [];
-                if (!empty($search->getEnvironments())) {
+                if (!\is_array($search->getEnvironments())) {
                     foreach ($search->getEnvironments() as $envName) {
                         $temp = $this->getEnvironmentService()->getAliasByName($envName);
                         if ($temp) {
@@ -654,7 +644,7 @@ class ElasticsearchController extends AppController
      * @Route("/search", name="ems_search")
      * @Route("/search", name="elasticsearch.search")
      */
-    public function searchAction(Request $request)
+    public function searchAction(Request $request, LoggerInterface $logger, AggregateOptionService $aggregateOptionService, ElasticaService $elasticaService, SearchService $searchService)
     {
         try {
             $search = new Search();
@@ -739,43 +729,12 @@ class ElasticsearchController extends AppController
             } else if ($form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && array_key_exists('delete', $request->query->get('search_form'))) {
                 //Form treatment after the "Delete" button has been pressed (to delete a previous saved search preset)
 
-                $this->getLogger()->notice('log.elasticsearch.search_deleted', [
+                $logger->notice('log.elasticsearch.search_deleted', [
                 ]);
             }
 
-            //Next we want 1. see the results, or 2. export the results
-            //So the common step is to fetch the results based on the search presets
             /** @var Search $search */
-            if ($request->query->get('form') && array_key_exists('massExport', $request->query->get('form'))) {
-                //In case of export we saved the search object in json form, time to recuperate it
-                $jsonSearch = $request->query->get('form')['search-data'];
-                $encoders = array(new JsonEncoder());
-                $normalizers = array(new ObjectNormalizer());
-                $serializer = new Serializer($normalizers, $encoders);
-
-                $searchArray = json_decode($jsonSearch, true);
-                $filtersArray = $searchArray['filters'];
-
-                $searchArray['filters'] = null;
-
-                /** @var Search $search */
-                $search = $serializer->deserialize(json_encode($searchArray), Search::class, 'json');
-                foreach ($filtersArray as $rawFilter) {
-                    $jsonFilter = json_encode($rawFilter);
-                    $filter = $serializer->deserialize($jsonFilter, SearchFilter::class, 'json');
-                    if ($filter instanceof SearchFilter) {
-                        $search->addFilter($filter);
-                    } else {
-                        $this->getLogger()->warning('log.elasticsearch.not_able_to_deserialize_filters', [
-                            'json_filters' => $jsonFilter,
-                        ]);
-                    }
-                }
-            } else {
-                $search = $form->getData();
-            }
-
-            $body = $this->getSearchService()->generateSearchBody($search);
+            $search = $form->getData();
 
             /** @var EntityManager $em */
             $em = $this->getDoctrine()->getManager();
@@ -790,121 +749,52 @@ class ElasticsearchController extends AppController
 
             $environments = $environmentRepository->findAllAsAssociativeArray('alias');
 
-            /** @var Client $client */
-            $client = $this->getElasticsearch();
+            $esSearch = $searchService->generateSearch($search);
+            $esSearch->setFrom(($page - 1) * $this->getParameter('ems_core.paging_size'));
+            $esSearch->setSize($this->getParameter('ems_core.paging_size'));
+            $esSearch->addAggregations($aggregateOptionService->getAllAggregations());
 
-            $assocAliases = $client->indices()->getAliases();
-
-            $mapAlias = [];
-            $mapIndex = [];
-            foreach ($assocAliases as $index => $aliasNames) {
-                foreach ($aliasNames['aliases'] as $alias => $options) {
-                    if (isset($environments[$alias])) {
-                        $mapAlias[$environments[$alias]['alias']] = $environments[$alias];
-                        $mapIndex[$index] = $environments[$alias];
-                        break;
-                    }
-                }
-            }
-
-            $selectedEnvironments = [];
-            if (!empty($search->getEnvironments())) {
-                foreach ($search->getEnvironments() as $envName) {
-                    $temp = $this->getEnvironmentService()->getAliasByName($envName);
-                    if ($temp) {
-                        $selectedEnvironments[] = $temp->getAlias();
-                    }
-                }
-            }
-
-
-            //1. Define the parameters for a regular search request
-            $params = [
-                '_source_exclude' => ['*.content', '*.attachement'],
-                'version' => true,
-//                     'df'=> isset($field)?$field:'_all',
-                'index' => empty($selectedEnvironments) ? array_keys($environments) : $selectedEnvironments,
-                'type' => empty($search->getContentTypes()) ? array_keys($types) : array_values($search->getContentTypes()),
-                'size' => $this->container->getParameter('ems_core.paging_size'),
-                'from' => ($page - 1) * $this->container->getParameter('ems_core.paging_size')
-
-            ];
-
-            //2. Override parameters because when exporting we need all results, not paged
-            if ($request->query->get('form') && array_key_exists('massExport', $request->query->get('form'))) {
-                //TODO: size 10000 is the default maximum size of an elasticsearch installation. In case of export it would be better to use the scroll API of elasticsearch in case of performance issues. Or when more then 10000 results are going to be exported.
-                //TODO: consideration: will there be an export limit? Because for giant loads of data it might be better to call an API of the system that needs our exported data. Then again, they could simply connect to elasticsearch as a standalone application!
-                $params['from'] = 0;
-                $params['size'] = 10000;
-            }
-
-
-            //                "highlight": {
-            //                   "fields": {
-            //                      "_all": {}
-            //                   }
-            //                },
-            $body = array_merge($body, json_decode('{
-			   "aggs": {
-			      "types": {
-			         "terms": {
-			            "field": "_type",
-						"size": 15
-			         }
-			      },
-			      "indexes": {
-			         "terms": {
-			            "field": "_index",
-						"size": 15
-			         }
-			      }
-			   }
-			}', true));
-
-            $aggregateOptions = $this->getAggregateOptionService()->getAll();
-            /** @var AggregateOption $option */
-            foreach ($aggregateOptions as $id => $option) {
-                $body['aggs']['agg_' . $id] = $option->getConfigDecoded();
-            }
-
-
-            $params['body'] = $body;
 
             try {
-                $results = $client->search($params);
-                if ($results['hits']['total'] > 50000) {
-                    $this->getLogger()->warning('log.elasticsearch.limit_exceded', [
-                        'total' => $results['hits']['total'],
+                $response = CommonResponse::fromResultSet($elasticaService->search($esSearch));
+                if ($response->getTotal() >= 50000) {
+                    $logger->warning('log.elasticsearch.paging_limit_exceeded', [
+                        'total' => $response->getTotal(),
+                        'paging' => '50.000',
                     ]);
-                    $lastPage = ceil(50000 / $this->container->getParameter('ems_core.paging_size'));
+                    $lastPage = ceil(50000 / $this->getParameter('ems_core.paging_size'));
                 } else {
-                    $lastPage = ceil($results['hits']['total'] / $this->container->getParameter('ems_core.paging_size'));
+                    $lastPage = ceil($response->getTotal() / $this->getParameter('ems_core.paging_size'));
                 }
             } catch (ElasticsearchException $e) {
-                $this->getLogger()->warning('log.error', [
+                $logger->warning('log.error', [
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
                 ]);
+                $response = null;
                 $lastPage = 0;
-                $results = ['hits' => ['total' => 0]];
             }
 
+            if ($response !== null && !$response->isAccurate()) {
+                $logger->warning('log.elasticsearch.search_not_accurate', [
+                    'total' => $response->getTotal(),
+                ]);
+            }
 
             $currentFilters = $request->query;
             $currentFilters->remove('search_form[_token]');
 
             //Form treatment after the "Export results" button has been pressed (= ask for a "content type" <-> "template" mapping)
-            if ($form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && array_key_exists('exportResults', $request->query->get('search_form'))) {
+            if ($response !== null && $form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && array_key_exists('exportResults', $request->query->get('search_form'))) {
                 $exportForms = [];
-                $contentTypes = $this->getAllContentType($results);
+                $contentTypes = $this->getAllContentType($response);
                 foreach ($contentTypes as $name) {
-                    /** @var ContentType $contentType */
                     $contentType = $types[$name];
 
                     $exportForm = $this->createForm(ExportDocumentsType::class, new ExportDocuments(
                         $contentType,
                         $this->generateUrl('emsco_search_export', ['contentType' => $contentType->getId()]),
-                        json_encode($body)
+                        json_encode($searchService->generateSearchBody($search))
                     ));
 
                     $exportForms[] = $exportForm->createView();
@@ -915,22 +805,42 @@ class ElasticsearchController extends AppController
                 ]);
             }
 
+            $mapIndex = [];
+            if ($response !== null) {
+                $indexes = $response->getAggregation(AggregateOptionService::INDEXES_AGGREGATION);
+                if ($indexes !== null) {
+                    foreach ($indexes->getBuckets() as $bucket) {
+                        $indexName = $bucket->getKey();
+                        if ($indexName === null) {
+                            continue;
+                        }
+                        $aliases = $elasticaService->getAliasesFromIndex($indexName);
+                        foreach ($aliases as $alias) {
+                            if (isset($environments[$alias])) {
+                                $mapIndex[$indexName] = $environments[$alias];
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+
             return $this->render('@EMSCore/elasticsearch/search.html.twig', [
-                'results' => $results,
+                'response' => $response ?? null,
                 'lastPage' => $lastPage,
                 'paginationPath' => 'elasticsearch.search',
                 'types' => $types,
-                'alias' => $mapAlias,
                 'indexes' => $mapIndex,
                 'form' => $form->createView(),
                 'page' => $page,
                 'searchId' => $searchId,
                 'currentFilters' => $request->query,
-                'body' => $body,
+                'body' => $searchService->generateSearchBody($search),
                 'openSearchForm' => $openSearchForm,
                 'search' => $search,
                 'sortOptions' => $this->getSortOptionService()->getAll(),
-                'aggregateOptions' => $aggregateOptions,
+                'aggregateOptions' => $aggregateOptionService->getAll(),
             ]);
         } catch (NoNodesAvailableException $e) {
             return $this->redirectToRoute('elasticsearch.status');
@@ -938,15 +848,14 @@ class ElasticsearchController extends AppController
     }
 
     /**
-     * @param array<array> $results
-     * @return array<string>
+     * @return string[]
      */
-    private function getAllContentType(array $results): array
+    private function getAllContentType(CommonResponse $response): array
     {
-        $out = [];
-        foreach ($results['aggregations']['types']['buckets'] as $type) {
-            $out[] = $type['key'];
+        $aggregation = $response->getAggregation(AggregateOptionService::CONTENT_TYPES_AGGREGATION);
+        if ($aggregation === null) {
+            return [];
         }
-        return $out;
+        return $aggregation->getKeys();
     }
 }

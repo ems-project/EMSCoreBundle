@@ -13,14 +13,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 class EnvironmentCommand extends ContainerAwareCommand
 {
 
-    /**@var LoggerInterface */
-    private $logger;
     /**@var EnvironmentService*/
     private $environmentService;
 
-    public function __construct(LoggerInterface $logger, EnvironmentService $environmentService)
+    public function __construct(EnvironmentService $environmentService)
     {
-        $this->logger = $logger;
         $this->environmentService = $environmentService;
         parent::__construct();
     }

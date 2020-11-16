@@ -45,7 +45,7 @@ class ElasticsearchController extends AppController
      * @param string $name
      * @param Request $request
      * @return RedirectResponse|Response
-     * @Route("/elasticsearch/alias/add/{name}", name="elasticsearch.alias.add"))
+     * @Route("/elasticsearch/alias/add/{name}", name="elasticsearch.alias.add")
      */
     public function addAliasAction(string $name, Request $request)
     {
@@ -98,7 +98,7 @@ class ElasticsearchController extends AppController
      * @param string $_format
      * @return Response
      *
-     * @Route("/health_check.{_format}", defaults={"_format": "html"}, name="health-check")
+     * @Route("/health_check.{_format}", defaults={"_format"="html"}, name="health-check")
      */
     public function healthCheckAction($_format)
     {
@@ -127,7 +127,7 @@ class ElasticsearchController extends AppController
      * @param string $_format
      * @return Response
      *
-     * @Route("/status.{_format}", defaults={"_format": "html"}, name="elasticsearch.status"))
+     * @Route("/status.{_format}", defaults={"_format"="html"}, name="elasticsearch.status")
      */
     public function statusAction($_format)
     {
@@ -177,7 +177,7 @@ class ElasticsearchController extends AppController
     }
 
     /**
-     * @Route("/admin/phpinfo", name="emsco_phpinfo"))
+     * @Route("/admin/phpinfo", name="emsco_phpinfo")
      */
     public function phpInfoAction()
     {
@@ -190,7 +190,7 @@ class ElasticsearchController extends AppController
      * @param int $id
      * @return RedirectResponse
      *
-     * @Route("/elasticsearch/delete-search/{id}", name="elasticsearch.search.delete"))
+     * @Route("/elasticsearch/delete-search/{id}", name="elasticsearch.search.delete")
      */
     public function deleteSearchAction($id)
     {
@@ -255,7 +255,7 @@ class ElasticsearchController extends AppController
      * @param string $contentType
      * @return RedirectResponse
      *
-     * @Route("/elasticsearch/set-default-search/{id}/{contentType}", defaults={"contentType": false}, name="ems_search_set_default_search_from", methods={"POST"})
+     * @Route("/elasticsearch/set-default-search/{id}/{contentType}", defaults={"contentType"=false}, name="ems_search_set_default_search_from", methods={"POST"})
      */
     public function setDefaultSearchAction($id, $contentType)
     {
@@ -304,7 +304,7 @@ class ElasticsearchController extends AppController
      * @param string $name
      * @return RedirectResponse
      *
-     * @Route("/elasticsearch/index/delete/{name}", name="elasticsearch.index.delete"))
+     * @Route("/elasticsearch/index/delete/{name}", name="elasticsearch.index.delete")
      */
     public function deleteIndexAction($name)
     {
@@ -330,7 +330,7 @@ class ElasticsearchController extends AppController
      * @param Request $request
      * @return Response
      *
-     * @Route("/search.json", name="elasticsearch.api.search"))
+     * @Route("/search.json", name="elasticsearch.api.search")
      */
     public function searchApiAction(Request $request)
     {
@@ -392,7 +392,7 @@ class ElasticsearchController extends AppController
 
 
                 $selectedEnvironments = [];
-                if (!empty($search->getEnvironments())) {
+                if (!\is_array($search->getEnvironments())) {
                     foreach ($search->getEnvironments() as $envName) {
                         $temp = $this->getEnvironmentService()->getAliasByName($envName);
                         if ($temp) {

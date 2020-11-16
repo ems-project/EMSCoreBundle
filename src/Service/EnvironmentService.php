@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Service;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Elasticsearch\Client;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
 use Monolog\Logger;
@@ -20,10 +21,10 @@ use EMS\CoreBundle\Entity\Analyzer;
 
 class EnvironmentService
 {
-    /**@var Registry $doctrine */
+    /** @var Registry $doctrine */
     private $doctrine;
 
-    /**@var Session $session*/
+    /** @var Session $session*/
     private $session;
 
     /** @var array */
@@ -35,13 +36,13 @@ class EnvironmentService
     /** @var array */
     private $environmentsById = [];
 
-    /**@var UserService $userService*/
+    /** @var UserService $userService*/
     private $userService;
 
     /** @var AuthorizationCheckerInterface $authorizationChecker*/
     private $authorizationChecker;
 
-    /**@var Container $container*/
+    /** @var Container $container*/
     private $container;
 
     /** @var Logger */
@@ -50,9 +51,8 @@ class EnvironmentService
     /**@var Client */
     private $client;
 
-    /** @var ContentTypeService
-    private $contentTypeService;
-     * */
+    /** @var ElasticaService */
+    private $elasticaService;
 
     /** @var bool */
     private $singleTypeIndex;
@@ -65,6 +65,7 @@ class EnvironmentService
         Container $container,
         Logger $logger,
         Client $client,
+        ElasticaService $elasticaService,
         bool $singleTypeIndex
     ) {
         $this->doctrine = $doctrine;
@@ -74,6 +75,7 @@ class EnvironmentService
         $this->container = $container;
         $this->logger = $logger;
         $this->client = $client;
+        $this->elasticaService = $elasticaService;
         $this->singleTypeIndex = $singleTypeIndex;
     }
 
@@ -189,7 +191,10 @@ class EnvironmentService
         return $environment->getAlias() . AppController::getFormatedTimestamp();
     }
 
-    public function getIndexAnalysisConfiguration()
+    /**
+     * @return array<mixed>
+     */
+    public function getIndexAnalysisConfiguration(): array
     {
         $filters = [];
 
@@ -209,8 +214,10 @@ class EnvironmentService
             $analyzers[$analyzer->getName()] = $analyzer->getOptions();
         }
 
-        $out = [
-            'index' => [
+        $settingsSectionLabel = \version_compare($this->elasticaService->getVersion(), '7.0') >= 0 ? 'settings' : 'index';
+
+        return [
+            $settingsSectionLabel => [
                 'max_result_window' =>     50000,
                 'analysis' => [
                     'filter' => $filters,
@@ -218,8 +225,6 @@ class EnvironmentService
                 ]
             ]
         ];
-
-        return $out;
     }
 
     public function getEnvironmentsStats()

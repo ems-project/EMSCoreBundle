@@ -57,7 +57,6 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.upload_folder', $config['upload_folder']);
         $container->setParameter('ems_core.storage_folder', $config['storage_folder']);
         $container->setParameter('ems_core.tika_server', $config['tika_server']);
-        $container->setParameter('ems_core.elasticsearch_version', $config['elasticsearch_version']);
         $container->setParameter('ems_core.single_type_index', $config['single_type_index']);
         $container->setParameter('ems_core.version', $this->getCoreVersion($container->getParameter('kernel.root_dir')));
         $container->setParameter('ems_core.private_key', $config['private_key']);

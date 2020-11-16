@@ -42,7 +42,7 @@ abstract class EntityService
     }
     
     /**
-     * @return SortOption[]
+     * @return array<mixed>
      */
     public function getAll()
     {

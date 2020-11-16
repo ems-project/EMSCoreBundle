@@ -728,7 +728,7 @@ class ContentTypeController extends AppController
             /** @var FieldType $child */
             foreach ($fieldType->getChildren() as $child) {
                 if (!$child->getDeleted()) {
-                    $order = \array_search('ems_' . $child->getName(), $keys)
+                    $order = \array_search('ems_' . $child->getName(), $keys);
                     if(\is_int($order)) {
                         $child->setOrderKey($order);
                     }

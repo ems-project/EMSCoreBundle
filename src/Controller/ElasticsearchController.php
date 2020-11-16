@@ -756,7 +756,7 @@ class ElasticsearchController extends AppController
 
 
             try {
-                $response = new CommonResponse($elasticaService->search($commonSearch));
+                $response = CommonResponse::fromResultSet($elasticaService->search($commonSearch));
                 if ($response->getTotal() >= 50000) {
                     $logger->warning('log.elasticsearch.paging_limit_exceeded', [
                         'total' => $response->getTotal(),

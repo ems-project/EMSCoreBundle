@@ -7,18 +7,12 @@ use Doctrine\ORM\EntityManager;
 use Elasticsearch\Common\Exceptions\Conflict409Exception;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Storage\Processor\Processor;
-use EMS\CommonBundle\Storage\Service\EntityStorage;
-use EMS\CommonBundle\Storage\Service\FileSystemStorage;
-use EMS\CommonBundle\Storage\Service\HttpStorage;
-use EMS\CommonBundle\Storage\Service\S3Storage;
-use EMS\CommonBundle\Storage\Service\SftpStorage;
 use EMS\CommonBundle\Storage\Service\StorageInterface;
 use EMS\CommonBundle\Storage\StorageManager;
 use EMS\CommonBundle\Storage\StorageServiceMissingException;
 use EMS\CoreBundle\Entity\UploadedAsset;
 use EMS\CoreBundle\Repository\UploadedAssetRepository;
 use Exception;
-use http\Exception\RuntimeException;
 use Psr\Http\Message\StreamInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,72 +20,21 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class FileService
 {
-
-
-    /**@var Registry */
+    /** @var Registry */
     private $doctrine;
-
-    private $uploadFolder;
-    /**@var StorageManager */
+    /** @var StorageManager */
     private $storageManager;
-
-    /**@var integer */
-    private $uploadMinimuNumberOfReplications;
-
-    /**@var Processor */
+    /** @var int */
+    private $uploadMinimumNumberOfReplications;
+    /** @var Processor */
     private $processor;
 
-    /**
-     * @param array{version?:string,credentials?:array{key:string,secret:string},region?:string}|null $s3Credentials
-     */
-    public function __construct(Registry $doctrine, StorageManager $storageManager, Processor $processor, string $projectDir, string $uploadFolder, string $storageFolder, bool $createDbStorageService, string $elasticmsRemoteServer, string $elasticmsRemoteAuthkey, string $sftpServer, string $sftpPath, string $sftpUser, string $publicKey, string $privateKey, array $s3Credentials = null, string $s3Bucket = null)
+    public function __construct(Registry $doctrine, StorageManager $storageManager, Processor $processor)
     {
         $this->doctrine = $doctrine;
-        $this->uploadFolder = $uploadFolder;
         $this->storageManager = $storageManager;
         $this->processor = $processor;
-        $this->uploadMinimuNumberOfReplications = 10;
-
-        if ($storageFolder && !empty($storageFolder)) {
-            if (substr($storageFolder, 0, 2) === ('.' . DIRECTORY_SEPARATOR)) {
-                $this->addStorageService(new FileSystemStorage($projectDir . substr($storageFolder, 1)));
-            } else {
-                $this->addStorageService(new FileSystemStorage($storageFolder));
-            }
-        }
-
-        if (!empty($s3Credentials) && !empty($s3Bucket)) {
-            $this->addStorageService(new S3Storage($s3Credentials, $s3Bucket));
-        }
-
-
-        if ($createDbStorageService) {
-            $this->addStorageService(new EntityStorage($doctrine));
-        }
-
-        if (!empty($elasticmsRemoteServer)) {
-            $this->addStorageService(new HttpStorage($elasticmsRemoteServer, '/data/file/view/', $elasticmsRemoteAuthkey));
-        }
-
-        if (!empty($sftpServer) && !empty($sftpPath) && !empty($sftpPath) && !empty($publicKey) && !empty($privateKey)) {
-            $this->addStorageService(new SftpStorage($sftpServer, $sftpPath, $sftpUser, $publicKey, $privateKey, true));
-        }
-    }
-
-    public function addStorageService(StorageInterface $storageAdapter): void
-    {
-        $this->storageManager->addAdapter($storageAdapter);
-    }
-
-
-    public function getStorageService(string $storageServiceId): ?StorageInterface
-    {
-        foreach ($this->storageManager->getAdapters() as $storageService) {
-            if ($storageService->__toString() == $storageServiceId) {
-                return $storageService;
-            }
-        };
-        return null;
+        $this->uploadMinimumNumberOfReplications = 10;
     }
 
     /**
@@ -261,7 +204,7 @@ class FileService
             $uploadedAsset->setUploaded($uploadedAsset->getSize());
             $uploadedAsset->setAvailable(true);
         } else {
-            $this->storageManager->initUploadFile($hash, $size, $name, $type, $this->uploadMinimuNumberOfReplications);
+            $this->storageManager->initUploadFile($hash, $size, $name, $type, $this->uploadMinimumNumberOfReplications);
         }
 
         $em->persist($uploadedAsset);
@@ -315,7 +258,7 @@ class FileService
 
         $loopCounter = 0;
         foreach ($this->storageManager->getAdapters() as $service) {
-            if ($service->addChunk($hash, $chunk) && ++$loopCounter >= $this->uploadMinimuNumberOfReplications) {
+            if ($service->addChunk($hash, $chunk) && ++$loopCounter >= $this->uploadMinimumNumberOfReplications) {
                 break;
             }
         }
@@ -340,7 +283,7 @@ class FileService
                     throw new Conflict409Exception("Hash mismatched " . $computedHash . ' ' . $uploadedAsset->getSha1());
                 }
 
-                if ($service->finalizeUpload($hash) && ++$loopCounter >= $this->uploadMinimuNumberOfReplications) {
+                if ($service->finalizeUpload($hash) && ++$loopCounter >= $this->uploadMinimumNumberOfReplications) {
                     break;
                 }
             }
@@ -355,17 +298,6 @@ class FileService
         $em->persist($uploadedAsset);
         $em->flush($uploadedAsset);
         return $uploadedAsset;
-    }
-
-    public function create(string $hash, string $fileName): bool
-    {
-        foreach ($this->storageManager->getAdapters() as $service) {
-            if ($service->create($hash, $fileName)) {
-                \unlink($fileName);
-                return true;
-            }
-        }
-        return false;
     }
 
     public function temporaryFilename(string $hash): string

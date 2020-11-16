@@ -10,6 +10,7 @@ use Elasticsearch\Client;
 use EMS\CommonBundle\Elasticsearch\Exception\SingleResultException;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Helper\Text\Encoder;
+use EMS\CommonBundle\Search\Search as CommonSearch;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Storage\Processor\Config;
 use EMS\CommonBundle\Twig\RequestRuntime;
@@ -37,11 +38,10 @@ use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Twig\Environment as TwigEnvironment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
-use Twig\Environment as TwigEnvironment;
 use Twig\TwigFunction;
-use \EMS\CommonBundle\Search\Search as CommonSearch;
 
 class AppExtension extends AbstractExtension
 {

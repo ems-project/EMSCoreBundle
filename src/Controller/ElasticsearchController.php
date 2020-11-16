@@ -749,14 +749,14 @@ class ElasticsearchController extends AppController
 
             $environments = $environmentRepository->findAllAsAssociativeArray('alias');
 
-            $commonSearch = $searchService->generateSearch($search);
-            $commonSearch->setFrom(($page - 1) * $this->getParameter('ems_core.paging_size'));
-            $commonSearch->setSize($this->getParameter('ems_core.paging_size'));
-            $commonSearch->addAggregations($aggregateOptionService->getAllAggregations());
+            $esSearch = $searchService->generateSearch($search);
+            $esSearch->setFrom(($page - 1) * $this->getParameter('ems_core.paging_size'));
+            $esSearch->setSize($this->getParameter('ems_core.paging_size'));
+            $esSearch->addAggregations($aggregateOptionService->getAllAggregations());
 
 
             try {
-                $response = CommonResponse::fromResultSet($elasticaService->search($commonSearch));
+                $response = CommonResponse::fromResultSet($elasticaService->search($esSearch));
                 if ($response->getTotal() >= 50000) {
                     $logger->warning('log.elasticsearch.paging_limit_exceeded', [
                         'total' => $response->getTotal(),
@@ -780,7 +780,6 @@ class ElasticsearchController extends AppController
                     'total' => $response->getTotal(),
                 ]);
             }
-
 
             $currentFilters = $request->query;
             $currentFilters->remove('search_form[_token]');

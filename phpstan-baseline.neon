@@ -1,16 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ContentManagement\\\\ContentTypeController\\:\\:isValidName\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/ContentTypeController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ContentManagement\\\\ContentTypeController\\:\\:isValidName\\(\\) has parameter \\$name with no typehint specified\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/ContentTypeController.php
-
-		-
 			message: "#^Parameter \\#1 \\$filename of function file_get_contents expects string, string\\|false given\\.$#"
 			count: 1
 			path: src/Controller/ContentManagement/ContentTypeController.php
@@ -221,11 +211,6 @@ parameters:
 			path: src/Controller/ContentManagement/DataController.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ContentManagement\\\\DataController\\:\\:discardDraft\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
 			message: "#^Cannot call method getId\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
 			count: 2
 			path: src/Controller/ContentManagement/DataController.php
@@ -267,21 +252,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#3 \\$env of method EMS\\\\CoreBundle\\\\Repository\\\\RevisionRepository\\:\\:findByOuuidAndContentTypeAndEnvironment\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\Environment, EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null given\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ContentManagement\\\\DataController\\:\\:loadAutoSavedVersion\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ContentManagement\\\\DataController\\:\\:reorderCollection\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ContentManagement\\\\DataController\\:\\:reorderCollection\\(\\) has parameter \\$input with no typehint specified\\.$#"
 			count: 1
 			path: src/Controller/ContentManagement/DataController.php
 
@@ -351,16 +321,6 @@ parameters:
 			path: src/Controller/ContentManagement/EnvironmentController.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ContentManagement\\\\EnvironmentController\\:\\:isValidName\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/EnvironmentController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ContentManagement\\\\EnvironmentController\\:\\:isValidName\\(\\) has parameter \\$name with no typehint specified\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/EnvironmentController.php
-
-		-
 			message: "#^Variable \\$environment in PHPDoc tag @var does not match any variable in the foreach loop\\: \\$stat$#"
 			count: 1
 			path: src/Controller/ContentManagement/EnvironmentController.php
@@ -368,11 +328,6 @@ parameters:
 		-
 			message: "#^Parameter \\#1 \\$id of method EMS\\\\CoreBundle\\\\Service\\\\AliasService\\:\\:getManagedAlias\\(\\) expects int, string given\\.$#"
 			count: 2
-			path: src/Controller/ContentManagement/ManagedAliasController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ContentManagement\\\\ManagedAliasController\\:\\:save\\(\\) has no return typehint specified\\.$#"
-			count: 1
 			path: src/Controller/ContentManagement/ManagedAliasController.php
 
 		-
@@ -399,11 +354,6 @@ parameters:
 			message: "#^Call to an undefined method Symfony\\\\Component\\\\Form\\\\FormError\\|Symfony\\\\Component\\\\Form\\\\FormErrorIterator\\:\\:getMessage\\(\\)\\.$#"
 			count: 1
 			path: src/Controller/ContentManagement/TemplateController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ElasticsearchController\\:\\:phpInfoAction\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Controller/ElasticsearchController.php
 
 		-
 			message: "#^Parameter \\#1 \\$object of method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:remove\\(\\) expects object, object\\|null given\\.$#"
@@ -496,29 +446,9 @@ parameters:
 			path: src/Controller/ElasticsearchController.php
 
 		-
-			message: "#^Call to an undefined method Psr\\\\Container\\\\ContainerInterface\\:\\:getParameter\\(\\)\\.$#"
-			count: 4
-			path: src/Controller/ElasticsearchController.php
-
-		-
 			message: "#^Parameter \\#3 \\$query of class EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\ExportDocuments constructor expects string, string\\|false given\\.$#"
 			count: 1
 			path: src/Controller/ElasticsearchController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ElasticsearchController\\:\\:getAllContentType\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Controller/ElasticsearchController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ElasticsearchController\\:\\:getAllContentType\\(\\) has parameter \\$results with no typehint specified\\.$#"
-			count: 1
-			path: src/Controller/ElasticsearchController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\I18nController\\:\\:indexAction\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Controller/I18nController.php
 
 		-
 			message: "#^Call to an undefined method object\\:\\:getRevision\\(\\)\\.$#"
@@ -557,21 +487,6 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\UserController\\:\\:getExistingRoles\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Controller/UserController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\UserController\\:\\:userExist\\(\\) has parameter \\$action with no typehint specified\\.$#"
-			count: 1
-			path: src/Controller/UserController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\UserController\\:\\:userExist\\(\\) has parameter \\$form with no typehint specified\\.$#"
-			count: 1
-			path: src/Controller/UserController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\UserController\\:\\:userExist\\(\\) has parameter \\$user with no typehint specified\\.$#"
 			count: 1
 			path: src/Controller/UserController.php
 
@@ -836,11 +751,6 @@ parameters:
 			path: src/DependencyInjection/EMSCoreExtension.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\DependencyInjection\\\\EMSCoreExtension\\:\\:getCoreVersion\\(\\) has parameter \\$rootDir with no typehint specified\\.$#"
-			count: 1
-			path: src/DependencyInjection/EMSCoreExtension.php
-
-		-
 			message: "#^Parameter \\#1 \\$json of function json_decode expects string, string\\|false given\\.$#"
 			count: 1
 			path: src/DependencyInjection/EMSCoreExtension.php
@@ -906,16 +816,6 @@ parameters:
 			path: src/Elasticsearch/Bulker.php
 
 		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Elasticsearch\\\\Index\\\\Mappings\\:\\:\\$mappings has no typehint specified\\.$#"
-			count: 1
-			path: src/Elasticsearch/Index/Mappings.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Elasticsearch\\\\Index\\\\Mappings\\:\\:\\$defaultProperties has no typehint specified\\.$#"
-			count: 1
-			path: src/Elasticsearch/Index/Mappings.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Elasticsearch\\\\Index\\\\Mappings\\:\\:__construct\\(\\) has parameter \\$languageAnalyzers with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Elasticsearch/Index/Mappings.php
@@ -934,21 +834,6 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Elasticsearch\\\\Index\\\\Mappings\\:\\:getDefaults\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Elasticsearch/Index/Mappings.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Elasticsearch\\\\Index\\\\Settings\\:\\:\\$filters has no typehint specified\\.$#"
-			count: 1
-			path: src/Elasticsearch/Index/Settings.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Elasticsearch\\\\Index\\\\Settings\\:\\:\\$analyzers has no typehint specified\\.$#"
-			count: 1
-			path: src/Elasticsearch/Index/Settings.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Elasticsearch\\\\Index\\\\Settings\\:\\:\\$languageAnalyzers has no typehint specified\\.$#"
-			count: 1
-			path: src/Elasticsearch/Index/Settings.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Elasticsearch\\\\Index\\\\Settings\\:\\:toArray\\(\\) return type has no value type specified in iterable type array\\.$#"
@@ -1056,16 +941,6 @@ parameters:
 			path: src/Entity/Analyzer.php
 
 		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\AuthToken\\:\\:\\$id has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/AuthToken.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\AuthToken\\:\\:\\$value has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/AuthToken.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\AuthToken\\:\\:updateModified\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Entity/AuthToken.php
@@ -1089,26 +964,6 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\CacheAssetExtractor\\:\\:setData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Entity/CacheAssetExtractor.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\:\\:\\$fieldType has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/ContentType.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\:\\:\\$templates has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/ContentType.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\:\\:\\$views has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/ContentType.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\:\\:\\$singleTypeIndexes has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/ContentType.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\:\\:updateModified\\(\\) has no return typehint specified\\.$#"
@@ -1156,11 +1011,6 @@ parameters:
 			path: src/Entity/ContentType.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\:\\:deserializeProperty\\(\\) has parameter \\$value with no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/ContentType.php
-
-		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\:\\:\\$localeField \\(string\\) does not accept string\\|null\\.$#"
 			count: 1
 			path: src/Entity/ContentType.php
@@ -1181,42 +1031,12 @@ parameters:
 			path: src/Entity/DataField.php
 
 		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:\\$fieldType has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/DataField.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:\\$orderKey has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/DataField.php
-
-		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:\\$parent type has no value type specified in iterable type EMS\\\\CoreBundle\\\\Entity\\\\DataField\\.$#"
 			count: 1
 			path: src/Entity/DataField.php
 
 		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:\\$children with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/DataField.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:\\$rawData has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/DataField.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:\\$inputValue has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/DataField.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:\\$marked has no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/DataField.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:setChildrenFieldType\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Entity/DataField.php
 
@@ -1236,32 +1056,7 @@ parameters:
 			path: src/Entity/DataField.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:offsetSet\\(\\) has parameter \\$offset with no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/DataField.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:offsetSet\\(\\) has parameter \\$value with no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/DataField.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:offsetExists\\(\\) has parameter \\$offset with no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/DataField.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:offsetUnset\\(\\) has parameter \\$offset with no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/DataField.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:offsetGet\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/DataField.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:offsetGet\\(\\) has parameter \\$offset with no typehint specified\\.$#"
 			count: 1
 			path: src/Entity/DataField.php
 
@@ -1277,11 +1072,6 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:propagateOuuid\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/DataField.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:propagateOuuid\\(\\) has parameter \\$ouuid with no typehint specified\\.$#"
 			count: 1
 			path: src/Entity/DataField.php
 
@@ -10734,36 +10524,6 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\SearchFieldOptionService\\:\\:getEntityName\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Service/SearchFieldOptionService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\SearchService\\:\\:generateSearchBody\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/SearchService.php
-
-		-
-			message: "#^Parameter \\#2 \\$mapping of method EMS\\\\CoreBundle\\\\Service\\\\SearchService\\:\\:getNestedPath\\(\\) expects array, array\\|null given\\.$#"
-			count: 2
-			path: src/Service/SearchService.php
-
-		-
-			message: "#^Offset 'query' does not exist on array\\(\\)\\|array\\('query' \\=\\> array\\('bool' \\=\\> array\\<string, array\\<int, mixed\\>\\>\\)\\)\\.$#"
-			count: 1
-			path: src/Service/SearchService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\SearchService\\:\\:nestFilter\\(\\) has parameter \\$esFilter with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Service/SearchService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\SearchService\\:\\:nestFilter\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Service/SearchService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\SearchService\\:\\:getNestedPath\\(\\) has parameter \\$mapping with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Service/SearchService.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\SortOptionService\\:\\:getRepositoryIdentifier\\(\\) has no return typehint specified\\.$#"

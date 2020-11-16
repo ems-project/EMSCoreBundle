@@ -56,7 +56,7 @@ class ContentTypeController extends AppController
 {
 
 
-    public static function isValidName($name)
+    public static function isValidName(string $name): bool
     {
         if (in_array($name, [Mapping::HASH_FIELD, Mapping::SIGNATURE_FIELD, Mapping::FINALIZED_BY_FIELD, Mapping::FINALIZATION_DATETIME_FIELD])) {
             return false;

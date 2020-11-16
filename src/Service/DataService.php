@@ -760,7 +760,6 @@ class DataService
         foreach ($revision->getEnvironments() as $environment) {
             try {
                 $indexedItem = $this->client->get([
-                        '_source_exclude' => ['*.attachment', '*._attachment'],
                         'id' => $revision->getOuuid(),
                         'type' => $revision->getContentType()->getName(),
                         'index' => $this->contentTypeService->getIndex($revision->getContentType(), $environment),
@@ -1355,13 +1354,12 @@ class DataService
 
     /**
      * @param Revision $revision
-     * @return bool|int
      * @throws LockedException
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws PrivilegeException
      */
-    public function discardDraft(Revision $revision, $super = false, $username = null)
+    public function discardDraft(Revision $revision, $super = false, $username = null): ?int
     {
         $this->lockRevision($revision, null, $super, $username);
 
@@ -1375,7 +1373,7 @@ class DataService
             throw new BadRequestHttpException('Only authorized on a draft');
         }
 
-        $hasPreviousRevision = false;
+        $hasPreviousRevision = 0;
 
         if (null != $revision->getOuuid()) {
             /** @var QueryBuilder $qb */

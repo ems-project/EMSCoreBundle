@@ -685,7 +685,7 @@ class DataController extends AppController
         ]);
     }
 
-    public function discardDraft(Revision $revision)
+    public function discardDraft(Revision $revision): ?int
     {
         return $this->getDataService()->discardDraft($revision);
     }
@@ -1493,7 +1493,7 @@ class DataController extends AppController
         throw new NotFoundHttpException('Impossible to find this item : ' . $key);
     }
 
-    private function loadAutoSavedVersion(Revision $revision, LoggerInterface $logger)
+    private function loadAutoSavedVersion(Revision $revision, LoggerInterface $logger): void
     {
         if (null != $revision->getAutoSave()) {
             $revision->setRawData($revision->getAutoSave());
@@ -1506,7 +1506,10 @@ class DataController extends AppController
         }
     }
 
-    private function reorderCollection(&$input)
+    /**
+     * @param array<string> $input
+     */
+    private function reorderCollection(array &$input): void
     {
         if (is_array($input) && !empty($input)) {
             $keys = array_keys($input);

@@ -21,12 +21,16 @@ class DataField implements \ArrayAccess, \IteratorAggregate
 
     /**
      * link to the linked FieldType
+     *
+     * @var FieldType|null
      */
     private $fieldType;
     
     
     /**
      * TODO: a retirer???
+     *
+     * @var int
      */
     private $orderKey;
 
@@ -35,29 +39,23 @@ class DataField implements \ArrayAccess, \IteratorAggregate
      */
     private $parent;
     
-    /**
-     *
-     * @var Collection
-     */
+    /** @var Collection */
     private $children;
 
-    /**
-     * object
-     */
+    /** @var mixed */
     private $rawData;
 
-    /**
-     * object
-     */
+    /** @var mixed */
     private $inputValue;
     
-    
+    /** @var array<string> */
     private $messages;
 
+    /** @var bool */
     private $marked;
 
     
-    public function setChildrenFieldType(FieldType $fieldType)
+    public function setChildrenFieldType(FieldType $fieldType): void
     {
         //TODO: test if sub colletion for nested collection
         /** @var FieldType $subType */
@@ -85,13 +83,20 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     {
         throw new \Exception('deprecate');
     }
-    
-    public function offsetSet($offset, $value)
+
+    /**
+     * @param mixed $offset
+     * @param mixed $value
+     */
+    public function offsetSet($offset, $value): void
     {
         $this->initChild($value, $offset);
         $this->children->offsetSet($offset, $value);
     }
-    
+
+    /**
+     * @param mixed $offset
+     */
     public function offsetExists($offset)
     {
         if ((is_int($offset) || ctype_digit($offset)) && !$this->children->offsetExists($offset) && $this->fieldType !== null && $this->fieldType->getChildren()->count() > 0) {
@@ -102,12 +107,18 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         }
         return $this->children->offsetExists($offset);
     }
-    
+
+    /**
+     * @param mixed $offset
+     */
     public function offsetUnset($offset)
     {
         $this->children->offsetUnset($offset);
     }
-    
+
+    /**
+     * @param mixed $offset
+     */
     public function offsetGet($offset)
     {
         $value = $this->children->offsetGet($offset);
@@ -136,8 +147,9 @@ class DataField implements \ArrayAccess, \IteratorAggregate
             ->atPath('textValue')
             ->addViolation();
     }
-    
-    public function propagateOuuid($ouuid)
+
+
+    public function propagateOuuid(string $ouuid)
     {
         if ($this->getFieldType()  && strcmp(OuuidFieldType::class, $this->getFieldType()->getType()) == 0) {
             $this->setTextValue($ouuid);

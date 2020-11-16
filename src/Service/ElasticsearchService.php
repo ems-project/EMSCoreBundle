@@ -251,12 +251,12 @@ class ElasticsearchService
      */
     public function scroll(RequestInterface $request): iterable
     {
-        $scrollResponse = new Response($this->client->search($request->toArray()));
+        $scrollResponse = Response::fromArray($this->client->search($request->toArray()));
 
         while ($scrollResponse->hasDocuments()) {
             yield $scrollResponse;
 
-            $scrollResponse = new Response($this->client->scroll([
+            $scrollResponse = Response::fromArray($this->client->scroll([
                 'scroll_id' =>  $scrollResponse->getScrollId(),
                 'scroll' => $request->getScroll()
             ]));

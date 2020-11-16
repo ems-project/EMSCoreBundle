@@ -359,8 +359,14 @@ view.macros.data-field-type.collection_added_items: '{1} One %singular% has been
 view.macros.data-field-type.collection_removed_items: '{1} One %singular% has been removed|]1,Inf[ %count% %plural% have been removed'
 data.edit_revision.save_draft: Save draft
 
+not-applicable: 'N/A'
 views:
   elasticsearch:
+    search:
+      pagetitle: 'Search'
+      title: 'Search engine: %total% results'
+      subtitle: '%total%'
+      error_title: Error with the search result
     export-search:
       title: Export documents
 command:
@@ -499,11 +505,12 @@ log:
   filter:
     deleted: 'The filter %filter_name% has been deleted'
   elasticsearch:
+    search_not_accurate: 'The search result is limited to the first %total% documents'
     too_many_document_result: 'Found %total% results for the document %contenttype%:%ouuid% in the environment %environment%'
     too_few_document_result: 'Found %total% results for the document %contenttype%:%ouuid% in the environment %environment%'
     template_error: 'There is something wrong with the template %template_name%'
     template_filename_error: 'There is something wrong with the template %template_name%''s filename'
-    limit_exceded: 'The search results are limited to the first 50.000 items'
+    paging_limit_exceeded: 'The paging is limited to the first %paging% items'
     search_deleted: 'A search has been deleted'
     index_not_found: 'Index %index_name% not found'
     index_deleted': 'The index %index_name% has been deleted'

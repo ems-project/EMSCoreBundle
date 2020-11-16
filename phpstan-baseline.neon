@@ -1,56 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Parameter \\#1 \\$filename of function file_get_contents expects string, string\\|false given\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/ContentTypeController.php
-
-		-
-			message: "#^Call to an undefined method object\\:\\:setOrderKey\\(\\)\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/ContentTypeController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ContentManagement\\\\ContentTypeController\\:\\:addNewField\\(\\) has parameter \\$formArray with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/ContentTypeController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ContentManagement\\\\ContentTypeController\\:\\:addNewSubfield\\(\\) has parameter \\$formArray with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/ContentTypeController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ContentManagement\\\\ContentTypeController\\:\\:duplicateField\\(\\) has parameter \\$formArray with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/ContentTypeController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ContentManagement\\\\ContentTypeController\\:\\:removeField\\(\\) has parameter \\$formArray with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/ContentTypeController.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ContentManagement\\\\ContentTypeController\\:\\:reorderFields\\(\\) has parameter \\$formArray with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/ContentTypeController.php
-
-		-
-			message: "#^Parameter \\#1 \\$orderKey of method EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\:\\:setOrderKey\\(\\) expects int, false given\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/ContentTypeController.php
-
-		-
-			message: "#^Cannot call method getAlias\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/ContentTypeController.php
-
-		-
-			message: "#^Cannot call method getManaged\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
-			count: 2
-			path: src/Controller/ContentManagement/ContentTypeController.php
-
-		-
 			message: "#^Cannot call method getManaged\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
 			count: 6
 			path: src/Controller/ContentManagement/CrudController.php

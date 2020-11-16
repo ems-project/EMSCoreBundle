@@ -277,7 +277,13 @@ class ContentTypeController extends AppController
                     $environment = $contentTypeAdded->getEnvironment();
                     /** @var UploadedFile $file */
                     $file = $request->files->get('form')['import'];
-                    $json = file_get_contents($file->getRealPath());
+                    $path = $file->getRealPath();
+
+                    if ($path === false) {
+                        throw new NotFoundHttpException('File not found');
+                    }
+
+                    $json = file_get_contents($path);
 
                     if (! \is_string($json)) {
                         throw new NotFoundHttpException('JSON file not found');
@@ -369,14 +375,13 @@ class ContentTypeController extends AppController
             if (isset($form['contentTypeNames']) && is_array($form['contentTypeNames'])) {
                 $counter = 0;
                 foreach ($form['contentTypeNames'] as $name) {
+                    /** @var ContentType $contentType */
                     $contentType = $contentTypeRepository->findOneBy([
                         'deleted' => false,
                         'name' => $name
                     ]);
-                    if ($contentType) {
-                        $contentType->setOrderKey($counter);
-                        $em->persist($contentType);
-                    }
+                    $contentType->setOrderKey($counter);
+                    $em->persist($contentType);
                     ++$counter;
                 }
 
@@ -486,7 +491,7 @@ class ContentTypeController extends AppController
     /**
      * Try to find (recursively) if there is a new field to add to the content type
      *
-     * @param array $formArray
+     * @param array<mixed> $formArray
      * @param FieldType $fieldType
      * @param LoggerInterface $logger
      * @return bool|string
@@ -583,7 +588,7 @@ class ContentTypeController extends AppController
     /**
      * Try to find (recursively) if there is a new field to add to the content type
      *
-     * @param array $formArray
+     * @param array<mixed> $formArray
      * @param FieldType $fieldType
      * @param LoggerInterface $logger
      * @return bool|string
@@ -632,7 +637,7 @@ class ContentTypeController extends AppController
     /**
      * Try to find (recursively) if there is a field to duplicate
      *
-     * @param array $formArray
+     * @param array<mixed> $formArray
      * @param FieldType $fieldType
      * @param LoggerInterface $logger
      * @return bool|string
@@ -683,7 +688,7 @@ class ContentTypeController extends AppController
     /**
      * Try to find (recursively) if there is a field to remove from the content type
      *
-     * @param array $formArray
+     * @param array<mixed> $formArray
      * @param FieldType $fieldType
      * @param LoggerInterface $logger
      * @return bool
@@ -711,7 +716,7 @@ class ContentTypeController extends AppController
     /**
      * Try to find (recursively) if there is a container where subfields must be reordered in the content type
      *
-     * @param array $formArray
+     * @param array<mixed> $formArray
      * @param FieldType $fieldType
      * @param LoggerInterface $logger
      * @return bool
@@ -723,7 +728,10 @@ class ContentTypeController extends AppController
             /** @var FieldType $child */
             foreach ($fieldType->getChildren() as $child) {
                 if (!$child->getDeleted()) {
-                    $child->setOrderKey(array_search('ems_' . $child->getName(), $keys));
+                    $order = \array_search('ems_' . $child->getName(), $keys)
+                    if(\is_int($order)) {
+                        $child->setOrderKey($order);
+                    }
                 }
             }
 

@@ -856,14 +856,6 @@ class ElasticsearchController extends AppController
         if ($aggregation === null) {
             return [];
         }
-        $out = [];
-        foreach ($aggregation->getBuckets() as $bucket) {
-            $key = $bucket->getKey();
-            if ($key === null) {
-                continue;
-            }
-            $out[] = $key;
-        }
-        return $out;
+        return $aggregation->getKeys();
     }
 }

@@ -15,7 +15,10 @@ abstract class JsonDeserializer
         $this->deserializeProperty($name, $value);
     }
 
-    protected function deserializeProperty(string $name, $value)
+    /**
+     * @param array<mixed> $value
+     */
+    protected function deserializeProperty(string $name, array $value): void
     {
         $dateFields = ['created', 'modified', 'lockUntil'];
 

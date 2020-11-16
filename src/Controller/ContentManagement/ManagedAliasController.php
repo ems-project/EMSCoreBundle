@@ -118,7 +118,7 @@ class ManagedAliasController extends AppController
      * @throws OptimisticLockException
      *
      */
-    private function save(ManagedAlias $managedAlias, array $actions)
+    private function save(ManagedAlias $managedAlias, array $actions): void
     {
         $managedAlias->setAlias($this->getParameter('ems_core.instance_id'));
         $this->getAliasService()->updateAlias($managedAlias->getAlias(), $actions);

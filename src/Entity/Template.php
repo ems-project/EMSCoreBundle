@@ -945,7 +945,10 @@ class Template extends JsonDeserializer implements \JsonSerializable
         return $json;
     }
 
-    protected function deserializeProperty(string $name, $value)
+    /**
+     * @param array<mixed> $value
+     */
+    protected function deserializeProperty(string $name, array $value): void
     {
         switch ($name) {
             case 'environments':

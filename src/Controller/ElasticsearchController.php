@@ -179,7 +179,7 @@ class ElasticsearchController extends AppController
     /**
      * @Route("/admin/phpinfo", name="emsco_phpinfo")
      */
-    public function phpInfoAction()
+    public function phpInfoAction(): void
     {
         phpinfo();
         exit;

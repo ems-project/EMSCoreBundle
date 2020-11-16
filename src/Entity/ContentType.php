@@ -155,6 +155,8 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * @ORM\OneToOne(targetEntity="FieldType", cascade={"persist"})
      * @ORM\JoinColumn(name="field_types_id", referencedColumnName="id")
+     *
+     * @var FieldType
      */
     protected $fieldType;
 
@@ -364,18 +366,24 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     /**
      * @ORM\OneToMany(targetEntity="Template", mappedBy="contentType", cascade={"persist", "remove"})
      * @ORM\OrderBy({"orderKey" = "ASC"})
+     *
+     * @var ArrayCollection<int, Template>
      */
     protected $templates;
 
     /**
      * @ORM\OneToMany(targetEntity="View", mappedBy="contentType", cascade={"persist", "remove"})
      * @ORM\OrderBy({"orderKey" = "ASC"})
+     *
+     * @var ArrayCollection<int, View>
      */
     protected $views;
 
     /**
      * @ORM\OneToMany(targetEntity="SingleTypeIndex", mappedBy="contentType", cascade={"persist", "remove"})
      * @ORM\OrderBy({"name" = "ASC"})
+     *
+     * @var ArrayCollection<int, SingleTypeIndex>
      */
     protected $singleTypeIndexes;
 
@@ -1090,7 +1098,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
      *
      * @return ContentType
      */
-    public function setFieldType(FieldType $fieldType = null)
+    public function setFieldType(FieldType $fieldType)
     {
         $this->fieldType = $fieldType;
 
@@ -1104,7 +1112,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
      */
     public function unsetFieldType()
     {
-        $this->fieldType = null;
+        $this->fieldType = new FieldType();
 
         return $this;
     }
@@ -1760,7 +1768,10 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
         return $json;
     }
 
-    protected function deserializeProperty(string $name, $value)
+    /**
+     * @param array<mixed> $value
+     */
+    protected function deserializeProperty(string $name, array $value): void
     {
         switch ($name) {
             case 'templates':

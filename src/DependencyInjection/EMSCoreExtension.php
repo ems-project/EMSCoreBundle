@@ -75,7 +75,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $this->loadLdap($container, $loader, $config['ldap'] ?? []);
     }
 
-    public static function getCoreVersion($rootDir)
+    public static function getCoreVersion(string $rootDir): string
     {
         $out = false;
         //try to identify the ems core version

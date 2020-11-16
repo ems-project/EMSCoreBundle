@@ -4,8 +4,13 @@ namespace EMS\CoreBundle\Elasticsearch\Index;
 
 class Settings
 {
+    /** @var array<array> */
     private $filters = [];
+
+    /** @var array<array> */
     private $analyzers = [];
+
+    /** @var array<string> */
     private $languageAnalyzers = [];
 
     public function isEmpty(): bool

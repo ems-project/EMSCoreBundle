@@ -22,6 +22,8 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -414,7 +416,7 @@ class UserController extends AppController
     /**
      * Test if email or username exist return on add or edit Form
      */
-    private function userExist($user, $action): bool
+    private function userExist(User $user, string $action): bool
     {
         /** @var UserManagerInterface $userManager */
         $userManager = $this->get('fos_user.user_manager');

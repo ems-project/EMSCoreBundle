@@ -21,6 +21,12 @@ services:
             - '@ems.service.revision'
         tags:
             - { name: twig.runtime, priority: -2000 }
+    app.twig_extension_user: '@EMS\CoreBundle\Twig\UserRuntime'
+    EMS\CoreBundle\Twig\UserRuntime:
+        arguments:
+            - '@ems.service.user'
+        tags:
+            - { name: twig.runtime, priority: -2000 }
     app.listener.request:
         class: EMS\CoreBundle\EventListener\RequestListener
         arguments: ['@twig', '@doctrine', '@logger', '@router', '@service_container', '@security.authorization_checker', '@session', '%ems_core.allow_user_registration%', '%ems_core.user_login_route%', '%ems_core.user_registration_route%']
@@ -460,8 +466,6 @@ services:
     ems.service.user:
         class: EMS\CoreBundle\Service\UserService
         arguments: ['@doctrine', '@session', '@security.token_storage', '%security.role_hierarchy.roles%']
-        tags:
-            - { name: twig.runtime, priority: -2000 }
     ems.service.wysiwyg_profile:
         class: EMS\CoreBundle\Service\WysiwygProfileService
         arguments: ['@doctrine', '@logger', '@translator']

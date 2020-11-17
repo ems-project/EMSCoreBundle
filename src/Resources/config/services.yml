@@ -356,7 +356,7 @@ services:
         class: EMS\CoreBundle\Form\Field\FieldTypePickerType
         tags:
             - { name: form.type }
-            
+
     ems.form.field.wysiwygstylessetpickertype:
         class: EMS\CoreBundle\Form\Field\WysiwygStylesSetPickerType
         arguments: ['@ems.service.wysiwyg_styles_set']
@@ -417,7 +417,7 @@ services:
         arguments: ['@ems.service.alias']
         tags:
             - { name: form.type }
-            
+
 
 ### regular services
     ems.service.mapping:
@@ -460,8 +460,8 @@ services:
     ems.service.user:
         class: EMS\CoreBundle\Service\UserService
         arguments: ['@doctrine', '@session', '@security.token_storage', '%security.role_hierarchy.roles%']
-    	tags:
-              - { name: twig.runtime, priority: -2000 }
+        tags:
+            - { name: twig.runtime, priority: -2000 }
     ems.service.wysiwyg_profile:
         class: EMS\CoreBundle\Service\WysiwygProfileService
         arguments: ['@doctrine', '@logger', '@translator']

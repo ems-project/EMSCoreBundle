@@ -460,6 +460,8 @@ services:
     ems.service.user:
         class: EMS\CoreBundle\Service\UserService
         arguments: ['@doctrine', '@session', '@security.token_storage', '%security.role_hierarchy.roles%']
+    	tags:
+              - { name: twig.runtime, priority: -2000 }
     ems.service.wysiwyg_profile:
         class: EMS\CoreBundle\Service\WysiwygProfileService
         arguments: ['@doctrine', '@logger', '@translator']

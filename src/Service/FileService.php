@@ -40,17 +40,7 @@ class FileService
 
     public function getBase64(string $hash): ?string
     {
-        /**@var StorageInterface $service */
-        foreach ($this->storageManager->getAdapters() as $service) {
-            try {
-                $stream = $service->read($hash);
-            } catch (NotFoundHttpException $e) {
-                continue;
-            }
-
-            return \base64_encode($stream->getContents());
-        }
-        return null;
+        return $this->storageManager->getBase64($hash);
     }
 
     public function getFile(string $hash): ?string
@@ -83,14 +73,11 @@ class FileService
 
     public function getResource(string $hash): ?StreamInterface
     {
-        /**@var StorageInterface $service */
-        foreach ($this->storageManager->getAdapters() as $service) {
-            try {
-                return $service->read($hash);
-            } catch (NotFoundHttpException $e) {
-            }
+        try {
+            return $this->storageManager->getStream($hash);
+        } catch (\Throwable $e) {
+            return null;
         }
-        return null;
     }
 
     public function getStreamResponse(string $sha1, string $disposition, Request $request): Response
@@ -147,10 +134,6 @@ class FileService
 
     public function initUploadFile(string $hash, int $size, string $name, string $type, string $user, string $hashAlgo): UploadedAsset
     {
-        if (empty($this->storageManager->getAdapters())) {
-            throw new StorageServiceMissingException("No storage service have been defined");
-        }
-
         if (strcasecmp($hashAlgo, $this->storageManager->getHashAlgo()) !== 0) {
             throw new StorageServiceMissingException(sprintf("Hash algorithms mismatch: %s vs. %s", $hashAlgo, $this->storageManager->getHashAlgo()));
         }
@@ -223,10 +206,6 @@ class FileService
 
     public function addChunk(string $hash, string $chunk, string $user): UploadedAsset
     {
-        if (empty($this->storageManager->getAdapters())) {
-            throw new StorageServiceMissingException("No storage service have been defined");
-        }
-
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
         /** @var UploadedAssetRepository $repository */
@@ -239,20 +218,13 @@ class FileService
             throw new NotFoundHttpException('Upload job not found');
         }
 
-
-        $loopCounter = 0;
-        foreach ($this->storageManager->getAdapters() as $service) {
-            if ($service->addChunk($hash, $chunk) && ++$loopCounter >= $this->uploadMinimumNumberOfReplications) {
-                break;
-            }
-        }
-
+        $this->storageManager->addChunk($hash, $chunk);
         $uploadedAsset->setUploaded($uploadedAsset->getUploaded() + strlen($chunk));
 
         $em->persist($uploadedAsset);
         $em->flush($uploadedAsset);
 
-        if ($uploadedAsset->getUploaded() == $uploadedAsset->getSize()) {
+        if ($uploadedAsset->getUploaded() === $uploadedAsset->getSize()) {
             $loopCounter = 0;
             foreach ($this->storageManager->getAdapters() as $service) {
                 try {

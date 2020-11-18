@@ -38,14 +38,6 @@ class FileService
         $this->uploadMinimumNumberOfReplications = 10;
     }
 
-    /**
-     * @return StorageInterface[]|iterable
-     */
-    public function getStorages()
-    {
-        return $this->storageManager->getAdapters();
-    }
-
     public function getBase64(string $hash): ?string
     {
         /**@var StorageInterface $service */

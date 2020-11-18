@@ -39,6 +39,11 @@ class FileService
         return $this->storageManager->getBase64($hash);
     }
 
+    public function remove(string $hash): int
+    {
+        return $this->storageManager->remove($hash);
+    }
+
     public function getFile(string $hash): ?string
     {
         $filename = \sprintf('%s%sEMS_cached_%s', sys_get_temp_dir(), DIRECTORY_SEPARATOR, $hash);

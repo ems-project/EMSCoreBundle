@@ -66,10 +66,7 @@ class CleanAssetCommand extends EmsCommand
             foreach ($hashes as $hash) {
                 $usedCounter = $revRepo->hashReferenced($hash['hash']);
                 if ($usedCounter === 0) {
-                    /**@var StorageInterface $storage */
-                    foreach ($this->fileService->getStorages() as $storage) {
-                        $storage->remove($hash['hash']);
-                    }
+                    $this->fileService->remove($hash['hash']);
                     $repository->dereference($hash['hash']);
 
                     ++$filesCleaned;

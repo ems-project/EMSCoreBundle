@@ -45,7 +45,7 @@
 								<td class="text-center" style="width: 10px">{{ from+loop.index }}</td>
 								<td>{{ job.created|date(date_time_format) }}</td>
 								<td>{{ job.modified|date(date_time_format) }}</td>
-								<td>{{ job.service }}{{ job.command }}</td>
+								<td>{{ job.command }}</td>
 								<td>
 									<div class="progress-group">
 					                    <span class="progress-text">{{ job.status }}</span>

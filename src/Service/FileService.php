@@ -200,7 +200,7 @@ class FileService
         throw new NotFoundHttpException(sprintf('File %s not found', $hash));
     }
 
-    public function addChunk(string $hash, string $chunk, string $user, bool $skipShouldSkip): UploadedAsset
+    public function addChunk(string $hash, string $chunk, string $user, bool $skipShouldSkip = true): UploadedAsset
     {
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();

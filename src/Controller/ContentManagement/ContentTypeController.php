@@ -724,14 +724,16 @@ class ContentTypeController extends AppController
     private function reorderFields(array $formArray, FieldType $fieldType, LoggerInterface $logger)
     {
         if (array_key_exists('reorder', $formArray)) {
+            /** @var string[] $keys */
             $keys = array_keys($formArray);
             /** @var FieldType $child */
             foreach ($fieldType->getChildren() as $child) {
                 if (!$child->getDeleted()) {
-                    $order = \array_search('ems_' . $child->getName(), $keys);
-                    if(\is_int($order)) {
-                        $child->setOrderKey($order);
+                    $order = \array_search('ems_' . $child->getName(), $keys, true);
+                    if($order === false || !is_int($order)) {
+                        continue;
                     }
+                    $child->setOrderKey($order);
                 }
             }
 
@@ -817,8 +819,10 @@ class ContentTypeController extends AppController
         $client = $this->getElasticsearch();
 
         try {
+            $env = $contentType->getEnvironment();
+            $index = $env ?  $env->getAlias() : '';
             $mapping = $client->indices()->getMapping([
-                'index' => $contentType->getEnvironment()->getAlias(),
+                'index' => $index,
                 'type' => $contentType->getName()
             ]);
         } catch (\Throwable $e) {
@@ -926,7 +930,9 @@ class ContentTypeController extends AppController
 
             if (array_key_exists('save', $inputContentType) || array_key_exists('saveAndClose', $inputContentType) || array_key_exists('saveAndReorder', $inputContentType)) {
                 $contentType->getFieldType()->updateOrderKeys();
-                $contentType->setDirty($contentType->getEnvironment()->getManaged());
+                $env = $contentType->getEnvironment();
+                $managed = $env ?  $env->getManaged() : false;
+                $contentType->setDirty($managed);
 
                 if ((array_key_exists('saveAndClose', $inputContentType) || array_key_exists('saveAndReorder', $inputContentType)) && $contentType->getDirty()) {
                     $this->getContentTypeService()->updateMapping($contentType);
@@ -1027,7 +1033,9 @@ class ContentTypeController extends AppController
 
         if (in_array($action, ['save', 'saveAndClose'])) {
             $field->updateOrderKeys();
-            $contentType->setDirty($contentType->getEnvironment()->getManaged());
+            $env = $contentType->getEnvironment();
+            $managed = $env ?  $env->getManaged() : false;
+            $contentType->setDirty($managed);
 
 
             $this->getContentTypeService()->persist($contentType);

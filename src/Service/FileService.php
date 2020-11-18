@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Service;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use Elasticsearch\Common\Exceptions\Conflict409Exception;
+use EMS\CommonBundle\Exception\AssetNotFoundException;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Storage\Processor\Processor;
 use EMS\CommonBundle\Storage\Service\StorageInterface;
@@ -216,23 +217,14 @@ class FileService
 
     public function head(string $hash): bool
     {
-        /**@var StorageInterface $service */
-        foreach ($this->storageManager->getAdapters() as $service) {
-            if ($service->head($hash)) {
-                return true;
-            }
-        }
-        return false;
+        return $this->storageManager->head($hash);
     }
 
     public function getSize(string $hash): int
     {
-        /**@var StorageInterface $service */
-        foreach ($this->storageManager->getAdapters() as $service) {
-            try {
-                return $service->getSize($hash);
-            } catch (NotFoundHttpException $e) {
-            }
+        try {
+            return $this->storageManager->getSize($hash);
+        } catch (AssetNotFoundException $e) {
         }
         throw new NotFoundHttpException(sprintf('File %s not found', $hash));
     }

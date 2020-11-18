@@ -2,13 +2,12 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
+use EMS\CommonBundle\Exception\AssetNotFoundException;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\UserInterface;
-use EMS\CoreBundle\Exception\AssetNotFoundException;
 use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\FileService;
 use Exception;
-use http\Exception\RuntimeException;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;

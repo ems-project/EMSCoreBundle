@@ -4,9 +4,9 @@ namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CommonBundle\Common\Converter;
+use EMS\CommonBundle\Exception\AssetNotFoundException;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\CacheAssetExtractor;
-use EMS\CoreBundle\Exception\AssetNotFoundException;
 use EMS\CoreBundle\Tika\TikaWrapper;
 use Exception;
 use Psr\Log\LoggerInterface;

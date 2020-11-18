@@ -6,6 +6,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use Elasticsearch\Common\Exceptions\Conflict409Exception;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Storage\HashMismatchException;
 use EMS\CommonBundle\Storage\NotFoundException;
 use EMS\CommonBundle\Storage\Processor\Processor;
 use EMS\CommonBundle\Storage\StorageManager;
@@ -42,6 +43,14 @@ class FileService
     public function remove(string $hash): int
     {
         return $this->storageManager->remove($hash);
+    }
+
+    /**
+     * @return array<string, bool>
+     */
+    public function getHealthStatuses(): array
+    {
+        return $this->storageManager->getHealthStatuses();
     }
 
     public function getFile(string $hash): ?string
@@ -255,5 +264,21 @@ class FileService
 
         $uploadedAsset->setAvailable(true);
         return $uploadedAsset;
+    }
+
+    public function synchroniseAsset(string $hash): void
+    {
+        $filename = $this->getFile($hash);
+        if ($filename === null) {
+            throw new NotFoundException($hash);
+        }
+
+        $newHash = $this->storageManager->saveFile($filename, false);
+
+        unlink($filename);
+
+        if ($newHash !== $hash) {
+            throw new HashMismatchException($hash, $newHash);
+        }
     }
 }

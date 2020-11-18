@@ -209,7 +209,7 @@ class IndexFileCommand extends EmsCommand
                 if ($file === null  && isset($rawData['content'])) {
                     $fileContent = \base64_decode($rawData['content']);
 
-                    if ($rawData[EmsFields::CONTENT_FILE_HASH_FIELD] ?? null === \sha1($fileContent)) {
+                    if (\sha1($fileContent) === $rawData[EmsFields::CONTENT_FILE_HASH_FIELD] ?? null) {
                         $file = $this->fileService->temporaryFilename($rawData[EmsFields::CONTENT_FILE_HASH_FIELD]);
                         \file_put_contents($file, $fileContent);
                         try {

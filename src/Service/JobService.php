@@ -78,7 +78,7 @@ class JobService
         return \intval($this->repository->countJobs());
     }
 
-    public function createCommand(UserInterface $user, string $command): Job
+    public function createCommand(UserInterface $user, ?string $command): Job
     {
         $job = $this->create($user);
         $job->setStatus("Job intialized");

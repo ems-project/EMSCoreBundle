@@ -6,7 +6,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 use Elasticsearch\Client;
-use EMS\CommonBundle\Storage\Service\StorageInterface;
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\AssetExtractorService;
@@ -22,7 +22,8 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class IndexFileCommand extends EmsCommand
 {
-
+    /** @var string */
+    private const SYSTEM_USERNAME = 'SYSTEM_FILE_INDEXER';
     /** @var Registry  */
     protected $doctrine;
     /** @var ContentTypeService  */
@@ -139,7 +140,7 @@ class IndexFileCommand extends EmsCommand
                 unset($rawData);
 
                 if ($update) {
-                    $revision->setLockBy('SYSTEM_MIGRATE');
+                    $revision->setLockBy(self::SYSTEM_USERNAME);
                     $date = new \DateTime();
                     $date->modify('+5 minutes');
                     $revision->setLockUntil($date);
@@ -205,21 +206,18 @@ class IndexFileCommand extends EmsCommand
             if (isset($rawData['sha1'])) {
                 $file = $this->fileService->getFile($rawData['sha1']);
 
-                if ((!$file || !file_exists($file)) && isset($rawData['content'])) {
-                    $fileContent = base64_decode($rawData['content']);
+                if ($file === null  && isset($rawData['content'])) {
+                    $fileContent = \base64_decode($rawData['content']);
 
-                    if ($rawData['sha1'] === sha1($fileContent)) {
-                        $tempName = $this->fileService->temporaryFilename($rawData['sha1']);
-                        file_put_contents($tempName, $fileContent);
-
-                        /**@var StorageInterface $service*/
-                        foreach ($this->fileService->getStorages() as $service) {
-                            $service->create($rawData['sha1'], $tempName);
-                            $output->writeln('File restored from DB: ' . $rawData['sha1']);
-                            break;
+                    if ($rawData[EmsFields::CONTENT_FILE_HASH_FIELD] ?? null === \sha1($fileContent)) {
+                        $file = $this->fileService->temporaryFilename($rawData[EmsFields::CONTENT_FILE_HASH_FIELD]);
+                        \file_put_contents($file, $fileContent);
+                        try {
+                            $this->fileService->uploadFile($rawData[EmsFields::CONTENT_FILE_NAME_FIELD] ?? 'filename.bin', $rawData[EmsFields::CONTENT_MIME_TYPE_FIELD] ?? 'application/bin', $file, self::SYSTEM_USERNAME);
+                            $output->writeln(\sprintf('File restored from DB: %s', $rawData[EmsFields::CONTENT_FILE_HASH_FIELD]));
+                        } catch (\Throwable $e) {
+                            $file = null;
                         }
-
-                        $file = $this->fileService->getFile($rawData['sha1']);
                     }
                 }
 

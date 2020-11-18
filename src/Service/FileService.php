@@ -40,11 +40,6 @@ class FileService
         return $this->storageManager->getBase64($hash);
     }
 
-    public function remove(string $hash): int
-    {
-        return $this->storageManager->remove($hash);
-    }
-
     /**
      * @return array<string, bool>
      */

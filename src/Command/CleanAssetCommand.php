@@ -34,7 +34,7 @@ class CleanAssetCommand extends EmsCommand
     {
         $this
             ->setName('ems:asset:clean')
-            ->setDescription('Clean unreferenced assets on storage services (!even if the storage is shared)');
+            ->setDescription('Unreference useless assets (no files are deleted from storages)');
     }
 
 
@@ -53,7 +53,7 @@ class CleanAssetCommand extends EmsCommand
         $progress->start();
 
         $page = 0;
-        $filesCleaned = 0;
+        $filesDereference = 0;
         $filesInUsed = 0;
         $totalCounter = 0;
         while (true) {
@@ -66,10 +66,8 @@ class CleanAssetCommand extends EmsCommand
             foreach ($hashes as $hash) {
                 $usedCounter = $revRepo->hashReferenced($hash['hash']);
                 if ($usedCounter === 0) {
-                    $this->fileService->remove($hash['hash']);
                     $repository->dereference($hash['hash']);
-
-                    ++$filesCleaned;
+                    ++$filesDereference;
                 } else {
                     ++$filesInUsed;
                     $totalCounter += $usedCounter;
@@ -80,8 +78,8 @@ class CleanAssetCommand extends EmsCommand
 
         $progress->finish();
         $output->writeln('');
-        if ($filesCleaned) {
-            $output->writeln("<comment>$filesCleaned files have been cleaned</comment>");
+        if ($filesDereference) {
+            $output->writeln("<comment>$filesDereference files have been dereferenced</comment>");
         }
         if ($filesInUsed) {
             $output->writeln("<comment>$filesInUsed files are referenced $totalCounter times</comment>");

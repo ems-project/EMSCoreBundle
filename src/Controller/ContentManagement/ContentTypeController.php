@@ -730,7 +730,7 @@ class ContentTypeController extends AppController
             foreach ($fieldType->getChildren() as $child) {
                 if (!$child->getDeleted()) {
                     $order = \array_search('ems_' . $child->getName(), $keys, true);
-                    if($order === false || !is_int($order)) {
+                    if ($order === false || !is_int($order)) {
                         continue;
                     }
                     $child->setOrderKey($order);

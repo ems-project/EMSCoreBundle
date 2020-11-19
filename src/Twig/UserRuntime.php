@@ -4,27 +4,26 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Twig;
 
-use EMS\CoreBundle\Service\UserService;
+use EMS\CoreBundle\Core\User\UserList;
+use EMS\CoreBundle\Repository\UserRepository;
 use Twig\Extension\RuntimeExtensionInterface;
-use EMS\CoreBundle\Entity\UserInterface;
+
 
 class UserRuntime implements RuntimeExtensionInterface
 {
-    /** @var UserService */
-    private $userService;
-
-    public function __construct(UserService $userService)
+    /** @var UserRepository */
+    private $userRepository;
+    
+    public function __construct(UserRepository $userRepository)
     {
-        $this->userService = $userService;
+        $this->userRepository = $userRepository;
     }
-
+    
     /**
-     * @param string $role
-     * @param array<string> $circles
-     * @return array<UserInterface>
+     * @return UserList
      */
-    public function getUsersForRoleAndCircles(string $role, array $circles): array
+    public function getUsersEnabled(): UserList
     {
-        return $this->userService->getUsersForRoleAndCircles($role, $circles);
+        return $this->userRepository->getUsersEnabled();
     }
 }

@@ -24,7 +24,7 @@ services:
     app.twig_extension_user: '@EMS\CoreBundle\Twig\UserRuntime'
     EMS\CoreBundle\Twig\UserRuntime:
         arguments:
-            - '@ems.service.user'
+            - '@EMS\CoreBundle\Repository\UserRepository'
         tags:
             - { name: twig.runtime, priority: -2000 }
     app.listener.request:
@@ -799,6 +799,11 @@ services:
         factory: ['@doctrine.orm.default_entity_manager', getRepository]
         arguments:
             - EMS\CoreBundle\Entity\Revision
+    EMS\CoreBundle\Repository\UserRepository:
+        class: Doctrine\ORM\EntityRepository
+        factory: ['@doctrine.orm.default_entity_manager', getRepository]
+        arguments:
+            - EMS\CoreBundle\Entity\User
     ems.repository.form_submission:
         class: EMS\CoreBundle\Repository\FormSubmissionRepository
         arguments:

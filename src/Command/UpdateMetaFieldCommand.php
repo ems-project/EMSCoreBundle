@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -19,18 +21,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class UpdateMetaFieldCommand extends EmsCommand
 {
-    /** @var Registry  */
+    /** @var Registry */
     protected $doctrine;
     /** @var DataService */
     protected $dataService;
-    
+
     public function __construct(Registry $doctrine, Logger $logger, Client $client, DataService $dataService)
     {
         $this->doctrine = $doctrine;
         $this->dataService = $dataService;
         parent::__construct($logger, $client);
     }
-    
+
     protected function configure(): void
     {
         $this
@@ -59,8 +61,9 @@ class UpdateMetaFieldCommand extends EmsCommand
         /** @var Environment|null $environment */
         $environment = $envRepo->findOneBy(['name' => $name, 'managed' => true]);
 
-        if ($environment === null) {
-            $output->writeln(sprintf("WARNING: Environment named %s not found", $name));
+        if (null === $environment) {
+            $output->writeln(\sprintf('WARNING: Environment named %s not found', $name));
+
             return -1;
         }
 
@@ -78,12 +81,12 @@ class UpdateMetaFieldCommand extends EmsCommand
 
                     $revision->setLockBy('SYSTEM_UPDATE_META');
                     $now = new \DateTime();
-                    $until = $now->add(new \DateInterval("PT5M"));//+5 minutes
+                    $until = $now->add(new \DateInterval('PT5M')); //+5 minutes
                     $revision->setLockUntil($until);
 
                     $em->persist($revision);
-                     $progress->advance();
-                    if ($progress->getProgress() % 20 == 0) {
+                    $progress->advance();
+                    if (0 == $progress->getProgress() % 20) {
                         $em->flush();
                     }
                 } catch (NotLockedException $e) {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\Form;
 
 use EMS\CoreBundle\Form\Field\EnvironmentPickerType;
@@ -13,22 +15,18 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TreatNotificationsType extends AbstractType
 {
-
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
         $notifications = $options['notifications'];
-        
+
         $builder->add('notifications', CollectionType::class, [
-                'entry_type'   => CheckboxType::class,
+                'entry_type' => CheckboxType::class,
                 'allow_add' => true,
                 'required' => false,
-                'entry_options'  => [
+                'entry_options' => [
                     'label' => null,
                     'required' => false,
                 ],
@@ -43,28 +41,25 @@ class TreatNotificationsType extends AbstractType
 //             ] )
             ->add('response', TextareaType::class, [
                     'attr' => [
-                            'class' => 'ckeditor'
-                    ]
+                            'class' => 'ckeditor',
+                    ],
             ])
             ->add('accept', SubmitEmsType::class, [
                     'attr' => [
-                            'class' => 'btn-success btn-md'
+                            'class' => 'btn-success btn-md',
                     ],
-                    'icon' => 'fa fa-check'
+                    'icon' => 'fa fa-check',
             ])
             ->add('reject', SubmitEmsType::class, [
                     'attr' => [
-                            'class' => 'btn-danger btn-md'
+                            'class' => 'btn-danger btn-md',
                     ],
-                    'icon' => 'fa fa-ban'
+                    'icon' => 'fa fa-ban',
             ]);
     }
 
-
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function configureOptions(OptionsResolver $resolver)
     {

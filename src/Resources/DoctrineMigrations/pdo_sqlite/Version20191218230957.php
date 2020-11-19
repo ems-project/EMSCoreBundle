@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Application\Migrations;
 
@@ -10,10 +12,10 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20191218230957 extends AbstractMigration
 {
-    public function up(Schema $schema) : void
+    public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+        $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
         $this->addSql('CREATE TEMPORARY TABLE __temp__job AS SELECT id, created, modified, output, done, started, progress, username, service, command, status, arguments FROM job');
         $this->addSql('DROP TABLE job');
@@ -148,10 +150,10 @@ final class Version20191218230957 extends AbstractMigration
         $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D649C05FB297 ON user (confirmation_token)');
     }
 
-    public function down(Schema $schema) : void
+    public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+        $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
         $this->addSql('DROP INDEX IDX_8AF9B66CA76ED395');
         $this->addSql('DROP INDEX auth_tokens_value_unique');

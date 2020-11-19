@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\View\Criteria;
 
 use EMS\CoreBundle\Entity\DataField;
@@ -8,23 +10,20 @@ use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Exception;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\CallbackTransformer;
 
 /**
- * It's the mother class of all specific DataField used in eMS
+ * It's the mother class of all specific DataField used in eMS.
  *
  * @author Mathieu De Keyzer <ems@theus.be>
- *
  */
 class CriteriaFilterType extends AbstractType
 {
     /**
-     * @param FormBuilderInterface $builder
-     * @param array $options
      * @throws Exception
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -36,21 +35,21 @@ class CriteriaFilterType extends AbstractType
             $view = $options['view'];
 
             $criteriaField = $view->getContentType()->getFieldType();
-            if ($view->getOptions()['criteriaMode'] == 'internal') {
-                $criteriaField = $view->getContentType()->getFieldType()->__get('ems_' . $view->getOptions()['criteriaField']);
-            } else if ($view->getOptions()['criteriaMode'] == 'another') {
+            if ('internal' == $view->getOptions()['criteriaMode']) {
+                $criteriaField = $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['criteriaField']);
+            } elseif ('another' == $view->getOptions()['criteriaMode']) {
             } else {
                 throw new Exception('Should never happen');
             }
-            
+
             $choices = [];
             $defaultColumn = false;
             $defaultRow = false;
-            
-            $fieldPaths = preg_split("/\\r\\n|\\r|\\n/", $view->getOptions()['criteriaFieldPaths']);
-            
+
+            $fieldPaths = \preg_split('/\\r\\n|\\r|\\n/', $view->getOptions()['criteriaFieldPaths']);
+
             foreach ($fieldPaths as $path) {
-                /**@var FieldType $child*/
+                /** @var FieldType $child */
                 $child = $criteriaField->getChildByPath($path);
                 if ($child) {
                     $label = $child->getDisplayOptions()['label'] ? $child->getDisplayOptions()['label'] : $child->getName();
@@ -60,37 +59,35 @@ class CriteriaFilterType extends AbstractType
                 }
             }
 
-            $builder->add('columnCriteria', ChoiceType::class, array(
-                    'choices'  => $choices,
+            $builder->add('columnCriteria', ChoiceType::class, [
+                    'choices' => $choices,
                     'data' => $defaultColumn,
                     'attr' => [
-                            'class' => 'criteria-filter-columnrow'
-                    ]
-            ));
-            
-            $builder->add('rowCriteria', ChoiceType::class, array(
-                    'choices'  => $choices,
+                            'class' => 'criteria-filter-columnrow',
+                    ],
+            ]);
+
+            $builder->add('rowCriteria', ChoiceType::class, [
+                    'choices' => $choices,
                     'data' => $defaultRow,
                     'attr' => [
-                            'class' => 'criteria-filter-columnrow'
+                            'class' => 'criteria-filter-columnrow',
                     ],
-            ));
-            
+            ]);
+
             $builder->add('manage', SubmitEmsType::class, [
-                    'icon'  => 'fa fa-table',
+                    'icon' => 'fa fa-table',
                     'attr' => [
                             'class' => 'btn-primary',
-                    ]
+                    ],
             ]);
-            
-            
-            
+
             if ($view->getOptions()['categoryFieldPath']) {
                 $categoryField = $view->getContentType()->getFieldType()->getChildByPath($view->getOptions()['categoryFieldPath']);
-                
+
                 if ($categoryField) {
                     $displayOptions = $categoryField->getDisplayOptions();
-                    
+
                     $catOptions = $categoryField->getOptions();
                     if (isset($catOptions['restrictionOptions']) && isset($catOptions['restrictionOptions']['minimum_role'])) {
                         $catOptions['restrictionOptions']['minimum_role'] = null;
@@ -104,7 +101,7 @@ class CriteriaFilterType extends AbstractType
                         $displayOptions['dynamicLoading'] = false;
                     }
                     $builder->add('category', $categoryField->getType(), $displayOptions);
-                    
+
                     $builder->get('category')->addViewTransformer(new CallbackTransformer(
                         function (DataField $dataField) {
                             return ['value' => $dataField->getRawData()];
@@ -115,21 +112,21 @@ class CriteriaFilterType extends AbstractType
                             if (isset($raw['value'])) {
                                 $dataField->setRawData($raw['value']);
                             }
+
                             return $dataField;
                         }
                     ));
                 }
             }
-            
-            
+
             $criterion = $builder->create('criterion', FormType::class, [
                     'label' => ' ',
             ]);
 
-            $fieldPaths = preg_split("/\\r\\n|\\r|\\n/", $view->getOptions()['criteriaFieldPaths']);
-            
+            $fieldPaths = \preg_split('/\\r\\n|\\r|\\n/', $view->getOptions()['criteriaFieldPaths']);
+
             foreach ($fieldPaths as $path) {
-                /**@var FieldType $child*/
+                /** @var FieldType $child */
                 $child = $criteriaField->getChildByPath($path);
                 if ($child) {
                     $childOptions = $child->getOptions();
@@ -137,7 +134,7 @@ class CriteriaFilterType extends AbstractType
                         $childOptions['restrictionOptions']['minimum_role'] = null;
                         $child->setOptions($childOptions);
                     }
-                    
+
                     $displayOptions = $child->getDisplayOptions();
                     $displayOptions['metadata'] = $child;
                     $displayOptions['class'] = 'col-md-12';
@@ -146,36 +143,35 @@ class CriteriaFilterType extends AbstractType
                     }
                     $displayOptions['attr'] =
                         [
-                                'data-name' => $child->getName()
+                                'data-name' => $child->getName(),
                         ];
-                    
-                    $displayOptions['multiple'] = true;//($child->getName() == $defaultRow || $child->getName() == $defaultColumn);
+
+                    $displayOptions['multiple'] = true; //($child->getName() == $defaultRow || $child->getName() == $defaultColumn);
 
                     $criterion->add($child->getName(), $child->getType(), $displayOptions);
                     $criterion->get($child->getName())->addViewTransformer(new CallbackTransformer(
                         function (DataField $dataField) {
-                                return ['value' => $dataField->getRawData()];
+                            return ['value' => $dataField->getRawData()];
                         },
                         function ($raw) use ($child) {
-                                $dataField = new DataField();
-                                $dataField->setFieldType($child);
+                            $dataField = new DataField();
+                            $dataField->setFieldType($child);
                             if (isset($raw['value'])) {
                                 $dataField->setRawData($raw['value']);
                             }
-                                return $dataField;
+
+                            return $dataField;
                         }
                     ));
                 }
             }
-            
+
             $builder->add($criterion);
         }
     }
-    
+
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function configureOptions(OptionsResolver $resolver)
     {

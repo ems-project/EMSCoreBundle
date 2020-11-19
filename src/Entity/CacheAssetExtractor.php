@@ -1,14 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use EMS\CoreBundle\Exception\NotLockedException;
-use EMS\CoreBundle\Service\Mapping;
 
 /**
- * Revision
+ * Revision.
  *
  * @ORM\Table(name="cache_asset_extractor")
  * @ORM\Entity()
@@ -75,11 +74,13 @@ class CacheAssetExtractor
 
     /**
      * @param int $id
+     *
      * @return CacheAssetExtractor
      */
     public function setId($id)
     {
         $this->id = $id;
+
         return $this;
     }
 
@@ -109,11 +110,13 @@ class CacheAssetExtractor
 
     /**
      * @param string $hash
+     *
      * @return CacheAssetExtractor
      */
     public function setHash($hash)
     {
         $this->hash = $hash;
+
         return $this;
     }
 
@@ -127,11 +130,13 @@ class CacheAssetExtractor
 
     /**
      * @param array $data
+     *
      * @return CacheAssetExtractor
      */
     public function setData($data)
     {
         $this->data = $data;
+
         return $this;
     }
 }

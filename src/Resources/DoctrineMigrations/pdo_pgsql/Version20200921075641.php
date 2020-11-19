@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Application\Migrations;
 
@@ -12,13 +14,13 @@ final class Version20200921075641 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+        $this->abortIf('postgresql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
         $this->addSql('ALTER TABLE form_submission ADD expire_date DATE DEFAULT NULL');
     }
 
     public function down(Schema $schema): void
     {
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+        $this->abortIf('postgresql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
         $this->addSql('ALTER TABLE form_submission DROP COLUMN expire_date');
     }
 }

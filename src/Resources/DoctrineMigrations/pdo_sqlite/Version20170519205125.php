@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Application\Migrations;
 
 use Doctrine\DBAL\Migrations\AbstractMigration;
@@ -10,13 +12,10 @@ use Doctrine\DBAL\Schema\Schema;
  */
 class Version20170519205125 extends AbstractMigration
 {
-    /**
-     * @param Schema $schema
-     */
     public function up(Schema $schema)
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+        $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
         $this->addSql('CREATE TABLE revision (id INTEGER NOT NULL, content_type_id BIGINT DEFAULT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, auto_save_at DATETIME DEFAULT NULL, deleted BOOLEAN NOT NULL, version INTEGER DEFAULT 1 NOT NULL, ouuid VARCHAR(255) DEFAULT NULL, start_time DATETIME NOT NULL, end_time DATETIME DEFAULT NULL, draft BOOLEAN NOT NULL, lock_by VARCHAR(255) DEFAULT NULL, auto_save_by VARCHAR(255) DEFAULT NULL, lock_until DATETIME DEFAULT NULL, raw_data CLOB DEFAULT NULL, auto_save CLOB DEFAULT NULL, circles CLOB DEFAULT NULL, labelField VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_6D6315CC1A445520 ON revision (content_type_id)');
@@ -59,16 +58,13 @@ class Version20170519205125 extends AbstractMigration
         $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D649A0D96FBF ON "user" (email_canonical)');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D649C05FB297 ON "user" (confirmation_token)');
         $my_json_var = '[{"locale":"en","text":"<div class=\"box\"><div class=\"box-header with-border\"><h3 class=\"box-title\">Based on Symfony 3, Bootstrap 3 and AdminLTE</h3> </div> <div class=\"box-body\" style=\"display: block;\"><p>Visit <a href=\"http://www.elasticms.eu/\">elasticms.eu</a></p></div></div>"}]';
-        $this->addSql('INSERT INTO `i18n` (`id`, `created`, `modified`, `identifier`, `content`) VALUES (NULL, \'2017-05-19 21:04:48\', \'2017-05-19 21:21:27\', \'ems.documentation.body\', \'' . $my_json_var . '\')');
+        $this->addSql('INSERT INTO `i18n` (`id`, `created`, `modified`, `identifier`, `content`) VALUES (NULL, \'2017-05-19 21:04:48\', \'2017-05-19 21:21:27\', \'ems.documentation.body\', \''.$my_json_var.'\')');
     }
 
-    /**
-     * @param Schema $schema
-     */
     public function down(Schema $schema)
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+        $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
         $this->addSql('DROP TABLE revision');
         $this->addSql('DROP TABLE environment_revision');

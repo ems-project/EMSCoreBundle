@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * DataField
+ * DataField.
  *
  * @ORM\Table(name="search_field_option")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\SearchFieldOptionRepository")
@@ -21,42 +23,42 @@ class SearchFieldOption
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-    
+
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="created", type="datetime")
      */
     private $created;
-    
+
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="modified", type="datetime")
      */
     private $modified;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="field", type="text", length=255)
      */
     private $field;
-    
+
     /**
      * @var int
      *
      * @ORM\Column(name="orderKey", type="integer")
      */
     private $orderKey;
-    
+
     /**
      * @var string
      *
@@ -92,25 +94,25 @@ class SearchFieldOption
             $this->orderKey = 0;
         }
     }
-    
+
     /******************************************************************
      *
      * Generated functions
      *
      *******************************************************************/
-    
+
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
         return $this->id;
     }
-    
+
     /**
-     * Set created
+     * Set created.
      *
      * @param \DateTime $created
      *
@@ -119,12 +121,12 @@ class SearchFieldOption
     public function setCreated($created)
     {
         $this->created = $created;
-        
+
         return $this;
     }
-    
+
     /**
-     * Get created
+     * Get created.
      *
      * @return \DateTime
      */
@@ -132,9 +134,9 @@ class SearchFieldOption
     {
         return $this->created;
     }
-    
+
     /**
-     * Set modified
+     * Set modified.
      *
      * @param \DateTime $modified
      *
@@ -143,12 +145,12 @@ class SearchFieldOption
     public function setModified($modified)
     {
         $this->modified = $modified;
-        
+
         return $this;
     }
-    
+
     /**
-     * Get modified
+     * Get modified.
      *
      * @return \DateTime
      */
@@ -156,9 +158,9 @@ class SearchFieldOption
     {
         return $this->modified;
     }
-    
+
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
      *
@@ -167,12 +169,12 @@ class SearchFieldOption
     public function setName($name)
     {
         $this->name = $name;
-        
+
         return $this;
     }
-    
+
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -180,9 +182,9 @@ class SearchFieldOption
     {
         return $this->name;
     }
-    
+
     /**
-     * Set field
+     * Set field.
      *
      * @param string $field
      *
@@ -191,12 +193,12 @@ class SearchFieldOption
     public function setField($field)
     {
         $this->field = $field;
-        
+
         return $this;
     }
-    
+
     /**
-     * Get field
+     * Get field.
      *
      * @return string
      */
@@ -204,33 +206,33 @@ class SearchFieldOption
     {
         return $this->field;
     }
-    
+
     /**
-     * Set orderKey
+     * Set orderKey.
      *
-     * @param integer $orderKey
+     * @param int $orderKey
      *
      * @return SearchFieldOption
      */
     public function setOrderKey($orderKey)
     {
         $this->orderKey = $orderKey;
-        
+
         return $this;
     }
-    
+
     /**
-     * Get orderKey
+     * Get orderKey.
      *
-     * @return integer
+     * @return int
      */
     public function getOrderKey()
     {
         return $this->orderKey;
     }
-    
+
     /**
-     * Set icon
+     * Set icon.
      *
      * @param string $icon
      *
@@ -239,12 +241,12 @@ class SearchFieldOption
     public function setIcon($icon)
     {
         $this->icon = $icon;
-        
+
         return $this;
     }
-    
+
     /**
-     * Get icon
+     * Get icon.
      *
      * @return string
      */
@@ -263,11 +265,13 @@ class SearchFieldOption
 
     /**
      * @param array|null $contentTypes
+     *
      * @return SearchFieldOption
      */
     public function setContentTypes($contentTypes)
     {
         $this->contentTypes = $contentTypes;
+
         return $this;
     }
 
@@ -281,11 +285,13 @@ class SearchFieldOption
 
     /**
      * @param array|null $operators
+     *
      * @return SearchFieldOption
      */
     public function setOperators($operators)
     {
         $this->operators = $operators;
+
         return $this;
     }
 }

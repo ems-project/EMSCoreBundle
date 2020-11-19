@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Service;
 
 use Elastica\Query\BoolQuery;
+use EMS\CommonBundle\Search\Search as CommonSearch;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\Search;
-use EMS\CommonBundle\Search\Search as CommonSearch;
 
 class SearchService
 {
@@ -26,18 +28,20 @@ class SearchService
 
     /**
      * @deprecated
+     *
      * @return array<mixed>
      */
     public function generateSearchBody(Search $search): array
     {
-        @trigger_error("SearchService::generateSearchBody is deprecated use the SearchService::generateSearch method instead", E_USER_DEPRECATED);
+        @\trigger_error('SearchService::generateSearchBody is deprecated use the SearchService::generateSearch method instead', E_USER_DEPRECATED);
         $commonSearch = $this->generateSearch($search);
         $body = [];
         $query = $commonSearch->getQuery();
-        if ($query !== null) {
+        if (null !== $query) {
             $body['query'] = $query->toArray();
         }
         $body['sort'] = $commonSearch->getSort();
+
         return $body;
     }
 
@@ -79,7 +83,7 @@ class SearchService
         foreach ($search->getEnvironments() as $environmentName) {
             $environment = $this->environmentService->getByName($environmentName);
             if (!$environment instanceof Environment) {
-                throw new \RuntimeException(sprintf('Environment %s not found', $environmentName));
+                throw new \RuntimeException(\sprintf('Environment %s not found', $environmentName));
             }
             $indexes[] = $environment->getAlias();
         }
@@ -87,33 +91,35 @@ class SearchService
         $commonSearch = new CommonSearch($indexes, $this->elasticaService->filterByContentTypes($boolQuery, $search->getContentTypes()));
 
         $sortBy = $search->getSortBy();
-        if (null != $sortBy && strlen($sortBy) > 0) {
+        if (null != $sortBy && \strlen($sortBy) > 0) {
             $commonSearch->setSort([
-                $search->getSortBy() => array_filter([
+                $search->getSortBy() => \array_filter([
                     'order' => (empty($search->getSortOrder()) ? 'asc' : $search->getSortOrder()),
-                    'missing' => '_last' ,
+                    'missing' => '_last',
                     'unmapped_type' => 'long',
                     'nested_path' => $this->getNestedPath($sortBy, $mapping),
-                ])
+                ]),
             ]);
         }
+
         return $commonSearch;
     }
 
     /**
      * @param array<mixed> $esFilter
+     *
      * @return array<mixed>
      */
     private function nestFilter(string $nestedPath, array $esFilter): array
     {
-        $path = explode('.', $nestedPath);
+        $path = \explode('.', $nestedPath);
 
-        for ($i = count($path); $i > 0; --$i) {
+        for ($i = \count($path); $i > 0; --$i) {
             $esFilter = [
-                "nested" => [
-                    "path" => \implode('.', \array_slice($path, 0, $i)),
-                    "query" => $esFilter,
-                ]
+                'nested' => [
+                    'path' => \implode('.', \array_slice($path, 0, $i)),
+                    'query' => $esFilter,
+                ],
             ];
         }
 
@@ -129,10 +135,9 @@ class SearchService
             return null;
         }
 
-        if ($mapping === null) {
+        if (null === $mapping) {
             return null;
         }
-
 
         $nestedPath = [];
         $explode = \explode('.', $field);
@@ -144,10 +149,10 @@ class SearchService
 
             $fieldMapping = $mapping[$field];
 
-            if ($fieldMapping['type'] == 'nested') {
+            if ('nested' == $fieldMapping['type']) {
                 $nestedPath[] = $field;
                 $mapping = $fieldMapping['properties'] ?? []; //go to nested properties
-            } else if (isset($fieldMapping['fields'])) {
+            } elseif (isset($fieldMapping['fields'])) {
                 $mapping = $fieldMapping['fields']; //go to sub fields
             }
         }

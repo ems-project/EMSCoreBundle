@@ -1,11 +1,12 @@
 <?php
+
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Event;
 
 use EMS\CoreBundle\Entity\Revision;
 use Symfony\Component\EventDispatcher\Event;
 
-/**
- */
 class RevisionEvent extends Event
 {
     protected $revision;

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -30,12 +33,14 @@ class AuthToken
 
     /**
      * @ORM\Column(name="created", type="datetime")
+     *
      * @var \DateTime
      */
     protected $created;
 
     /**
      * @ORM\Column(name="modified", type="datetime")
+     *
      * @var \DateTime
      */
     protected $modified;
@@ -43,19 +48,20 @@ class AuthToken
     /**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="authTokens")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     *
      * @var UserInterface
      */
     protected $user;
 
     /**
-     * Constructor: initialize the authentication key
+     * Constructor: initialize the authentication key.
      */
     public function __construct(UserInterface $user)
     {
-        $this->value = base64_encode(random_bytes(50));
+        $this->value = \base64_encode(\random_bytes(50));
         $this->user = $user;
     }
-    
+
     /**
      * @ORM\PrePersist
      * @ORM\PreUpdate
@@ -69,9 +75,9 @@ class AuthToken
     }
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -79,7 +85,7 @@ class AuthToken
     }
 
     /**
-     * Set value
+     * Set value.
      *
      * @param string $value
      *
@@ -93,7 +99,7 @@ class AuthToken
     }
 
     /**
-     * Get value
+     * Get value.
      *
      * @return string
      */
@@ -103,7 +109,7 @@ class AuthToken
     }
 
     /**
-     * Set created
+     * Set created.
      *
      * @param \DateTime $created
      *
@@ -117,7 +123,7 @@ class AuthToken
     }
 
     /**
-     * Get created
+     * Get created.
      *
      * @return \DateTime
      */
@@ -127,7 +133,7 @@ class AuthToken
     }
 
     /**
-     * Set modified
+     * Set modified.
      *
      * @param \DateTime $modified
      *
@@ -141,7 +147,7 @@ class AuthToken
     }
 
     /**
-     * Get modified
+     * Get modified.
      *
      * @return \DateTime
      */
@@ -151,9 +157,7 @@ class AuthToken
     }
 
     /**
-     * Set user
-     *
-     * @param \EMS\CoreBundle\Entity\UserInterface $user
+     * Set user.
      *
      * @return AuthToken
      */
@@ -165,7 +169,7 @@ class AuthToken
     }
 
     /**
-     * Get user
+     * Get user.
      *
      * @return \EMS\CoreBundle\Entity\UserInterface
      */

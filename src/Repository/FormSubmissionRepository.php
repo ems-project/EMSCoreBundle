@@ -47,7 +47,7 @@ class FormSubmissionRepository extends ServiceEntityRepository
 
         foreach ($outdatedSubmissions as $submission) {
             $this->remove($submission);
-            $removedCount++;
+            ++$removedCount;
         }
 
         $this->flush();
@@ -56,7 +56,6 @@ class FormSubmissionRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param string|null $formInstance
      * @return FormSubmission[]
      */
     public function findFormSubmissions(?string $formInstance = null): array

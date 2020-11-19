@@ -75,7 +75,6 @@ final class RevisionCopyCommand extends Command implements CommandInterface
                 'Bulk size',
                 25
             );
-        ;
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
@@ -108,14 +107,14 @@ final class RevisionCopyCommand extends Command implements CommandInterface
 
         $request = $copyContext->makeRequest();
         $size = \intval($input->getOption(self::OPTION_BULK_SIZE));
-        if ($size === 0) {
+        if (0 === $size) {
             throw new \RuntimeException('Unexpected bulk size argument');
         }
         $request->setSize($size);
 
         foreach ($this->elasticsearchService->scroll($request) as $i => $response) {
             if (0 === $i) {
-                $this->io->note(sprintf('Found %s documents', $response->getTotal()));
+                $this->io->note(\sprintf('Found %s documents', $response->getTotal()));
             }
 
             $this->copy($copyContext, $response->getDocumentCollection());
@@ -123,7 +122,7 @@ final class RevisionCopyCommand extends Command implements CommandInterface
 
         $countCopies = \count($this->copies);
         $this->io->newLine();
-        $this->io->success(sprintf('Created %d copies', $countCopies));
+        $this->io->success(\sprintf('Created %d copies', $countCopies));
 
         return $countCopies;
     }

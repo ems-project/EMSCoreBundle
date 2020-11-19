@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Application\Migrations;
 
 use Doctrine\DBAL\Migrations\AbstractMigration;
@@ -10,13 +12,10 @@ use Doctrine\DBAL\Schema\Schema;
  */
 class Version20180523202836 extends AbstractMigration
 {
-    /**
-     * @param Schema $schema
-     */
     public function up(Schema $schema)
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+        $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
         $this->addSql('CREATE TABLE cache_asset_extractor (id INTEGER NOT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, hash VARCHAR(255) NOT NULL, data CLOB DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_83D3C2A4D1B862B8 ON cache_asset_extractor (hash)');
@@ -168,13 +167,10 @@ class Version20180523202836 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_8D93D649A282F7EA ON user (wysiwyg_profile_id)');
     }
 
-    /**
-     * @param Schema $schema
-     */
     public function down(Schema $schema)
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+        $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
         $this->addSql('DROP TABLE cache_asset_extractor');
         $this->addSql('DROP INDEX UNIQ_D45083255E237E06');

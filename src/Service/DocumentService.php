@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service;
-
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
@@ -18,7 +18,6 @@ use Symfony\Component\Form\FormFactoryInterface;
 
 class DocumentService
 {
-
     /** @var DataService */
     protected $dataService;
     /** @var FormFactoryInterface */
@@ -45,7 +44,7 @@ class DocumentService
         $this->instanceId = $instanceId;
     }
 
-    public function initDocumentImporterContext(ContentType $contentType, string $lockUser, bool $rawImport, bool $signData, bool $indexInDefaultEnv, int $bulkSize, bool $finalize, bool $force) : DocumentImportContext
+    public function initDocumentImporterContext(ContentType $contentType, string $lockUser, bool $rawImport, bool $signData, bool $indexInDefaultEnv, int $bulkSize, bool $finalize, bool $force): DocumentImportContext
     {
         $manager = $this->doctrine->getManager();
         if (!$manager instanceof EntityManager) {
@@ -57,21 +56,20 @@ class DocumentService
         $this->bulker->setSize($bulkSize);
 
         $repository = $this->entityManager->getRepository('EMSCoreBundle:Revision');
-        if (! $repository instanceof RevisionRepository) {
+        if (!$repository instanceof RevisionRepository) {
             throw new \Exception('Can not get the Revision Repository');
         }
 
         $this->revisionRepository = $repository;
 
         $repository = $this->entityManager->getRepository('EMSCoreBundle:ContentType');
-        if (! $repository instanceof ContentTypeRepository) {
+        if (!$repository instanceof ContentTypeRepository) {
             throw new \Exception('Can not get the ContentType Repository');
         }
         $this->contentTypeRepository = $repository;
 
         return new DocumentImportContext($contentType, $lockUser, $rawImport, $signData, $indexInDefaultEnv, $finalize, $force);
     }
-
 
     public function flushAndSend(DocumentImportContext $documentImportContext)
     {
@@ -80,7 +78,6 @@ class DocumentService
             $this->bulker->send(true);
         }
     }
-
 
     private function submitData(DocumentImportContext $documentImportContext, Revision $revision, Revision $previousRevision = null)
     {
@@ -146,7 +143,7 @@ class DocumentService
             ];
 
             if ($newRevision->getContentType()->getHavePipelines()) {
-                $indexConfig['pipeline'] = $this->instanceId . $documentImportContext->getContentType()->getName();
+                $indexConfig['pipeline'] = $this->instanceId.$documentImportContext->getContentType()->getName();
             }
             $body = $documentImportContext->shouldSignData() ? $this->dataService->sign($newRevision) : $newRevision->getRawData();
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
@@ -13,7 +15,7 @@ class IsDifferentPasswordValidator extends ConstraintValidator
      */
     public function validate($value, $constraint): bool
     {
-        if (! $constraint instanceof IsDifferentPassword) {
+        if (!$constraint instanceof IsDifferentPassword) {
             return false;
         }
 
@@ -22,6 +24,7 @@ class IsDifferentPasswordValidator extends ConstraintValidator
             $new = $_POST['fos_user_change_password_form']['plainPassword']['first'];
             if ($old === $new) {
                 $this->context->addViolation($constraint->message);
+
                 return false;
             }
         } catch (\Exception $e) {

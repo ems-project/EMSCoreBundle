@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
@@ -14,15 +16,15 @@ class AliasNameValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         $regex = '/^[a-z][a-z0-9\-_]*$/';
-        
-        if (!preg_match($regex, $value) || strlen($value) > 100) {
-             $this->context
+
+        if (!\preg_match($regex, $value) || \strlen($value) > 100) {
+            $this->context
                 ->buildViolation($constraint->invalid)
                 ->setParameter('{{ regex }}', $regex)
                 ->atPath('name')
                 ->addViolation()
             ;
-             
+
             return;
         }
     }

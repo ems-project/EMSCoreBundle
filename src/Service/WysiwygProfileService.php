@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -10,51 +12,47 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class WysiwygProfileService
 {
-    /**@var Registry $doctrine */
+    /** @var Registry $doctrine */
     private $doctrine;
-    /**@var LoggerInterface $logger*/
+    /** @var LoggerInterface $logger */
     private $logger;
-    /**@var TranslatorInterface $translator */
+    /** @var TranslatorInterface $translator */
     private $translator;
-    
+
     public function __construct(Registry $doctrine, LoggerInterface $logger, TranslatorInterface $translator)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
         $this->translator = $translator;
     }
-    
-    
+
     public function getProfiles()
     {
         $em = $this->doctrine->getManager();
-        /**@var WysiwygProfileRepository */
+        /** @var WysiwygProfileRepository */
         $repository = $em->getRepository('EMSCoreBundle:WysiwygProfile');
-        
+
         $profiles = $repository->findAll();
-        
+
         return $profiles;
     }
-    
+
     /**
+     * @param int $id
      *
-     * @param integer $id
-     * @return WysiwygProfile|NULL
+     * @return WysiwygProfile|null
      */
     public function get($id)
     {
         $em = $this->doctrine->getManager();
-        /**@var WysiwygProfileRepository */
+        /** @var WysiwygProfileRepository */
         $repository = $em->getRepository('EMSCoreBundle:WysiwygProfile');
-        
+
         $profile = $repository->find($id);
-        
+
         return $profile;
     }
-    
-    
-    
-    
+
     public function saveProfile(WysiwygProfile $profile)
     {
         $em = $this->doctrine->getManager();
@@ -64,8 +62,7 @@ class WysiwygProfileService
             'profile_name' => $profile->getName(),
         ]);
     }
-    
-    
+
     public function remove(WysiwygProfile $profile)
     {
         $em = $this->doctrine->getManager();

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use Doctrine\ORM\EntityManager;
@@ -24,6 +26,7 @@ class ViewController extends AppController
 {
     /**
      * @param string $type
+     *
      * @return Response
      *
      * @Route("/view/{type}", name="view.index")
@@ -40,20 +43,20 @@ class ViewController extends AppController
             'name' => $type,
         ]);
 
-        if (!$contentTypes || count($contentTypes) != 1) {
+        if (!$contentTypes || 1 != \count($contentTypes)) {
             throw new NotFoundHttpException('Content type not found');
         }
 
-
         return $this->render('@EMSCore/view/index.html.twig', [
-            'contentType' => $contentTypes[0]
+            'contentType' => $contentTypes[0],
         ]);
     }
 
     /**
      * @param string $type
-     * @param Request $request
+     *
      * @return RedirectResponse|Response
+     *
      * @throws ORMException
      * @throws OptimisticLockException
      *
@@ -72,7 +75,7 @@ class ViewController extends AppController
             'name' => $type,
         ]);
 
-        if (!$contentTypes || count($contentTypes) != 1) {
+        if (!$contentTypes || 1 != \count($contentTypes)) {
             throw new NotFoundHttpException('Content type not found');
         }
 
@@ -92,21 +95,19 @@ class ViewController extends AppController
             ]);
 
             return $this->redirectToRoute('view.edit', [
-                'id' => $view->getId()
+                'id' => $view->getId(),
             ]);
         }
 
         return $this->render('@EMSCore/view/add.html.twig', [
             'contentType' => $contentTypes[0],
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 
     /**
-     * @param string $id
-     * @param string $_format
-     * @param Request $request
      * @return Response
+     *
      * @throws ORMException
      * @throws OptimisticLockException
      * @Route("/view/edit/{id}.{_format}", name="view.edit", defaults={"_format"="html"})
@@ -121,13 +122,13 @@ class ViewController extends AppController
         /** @var View|null $view */
         $view = $viewRepository->find($id);
 
-        if ($view === null) {
+        if (null === $view) {
             throw new NotFoundHttpException('View type not found');
         }
 
         $form = $this->createFormBuilder($view)
             ->add('name', IconTextType::class, [
-                'icon' => 'fa fa-tag'
+                'icon' => 'fa fa-tag',
             ])
             ->add('public', CheckboxType::class, [
                 'required' => false,
@@ -135,7 +136,7 @@ class ViewController extends AppController
             ->add('icon', IconPickerType::class, [
                 'required' => false,
             ])
-            ->add('options', get_class($this->get($view->getType())), [
+            ->add('options', \get_class($this->get($view->getType())), [
                 'view' => $view,
             ])
             ->add('save', SubmitEmsType::class, [
@@ -143,13 +144,13 @@ class ViewController extends AppController
                     'class' => 'btn-primary btn-sm',
                     'data-ajax-save-url' => $this->generateUrl('view.edit', ['id' => $id, '_format' => 'json']),
                 ],
-                'icon' => 'fa fa-save'
+                'icon' => 'fa fa-save',
             ])
             ->add('saveAndClose', SubmitEmsType::class, [
                 'attr' => [
                     'class' => 'btn-primary btn-sm',
                 ],
-                'icon' => 'fa fa-save'
+                'icon' => 'fa fa-save',
             ])
             ->getForm();
 
@@ -163,27 +164,26 @@ class ViewController extends AppController
                 'view_name' => $view->getName(),
             ]);
 
-            if ($_format === 'json') {
+            if ('json' === $_format) {
                 return $this->render('@EMSCore/ajax/notification.json.twig', [
                     'success' => true,
                 ]);
             }
 
             return $this->redirectToRoute('view.index', [
-                'type' => $view->getContentType()->getName()
+                'type' => $view->getContentType()->getName(),
             ]);
         }
 
         return $this->render('@EMSCore/view/edit.html.twig', [
             'form' => $form->createView(),
-            'view' => $view
+            'view' => $view,
         ]);
     }
 
-
     /**
-     * @param View $view
      * @return RedirectResponse
+     *
      * @throws ORMException
      * @throws OptimisticLockException
      *
@@ -204,7 +204,9 @@ class ViewController extends AppController
 
     /**
      * @param int $id
+     *
      * @return RedirectResponse
+     *
      * @throws ORMException
      * @throws OptimisticLockException
      *
@@ -212,7 +214,6 @@ class ViewController extends AppController
      */
     public function removeAction($id)
     {
-
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         /** @var ViewRepository $viewRepository */
@@ -221,7 +222,7 @@ class ViewController extends AppController
         /** @var View|null $view */
         $view = $viewRepository->find($id);
 
-        if ($view === null) {
+        if (null === $view) {
             throw new NotFoundHttpException('View not found');
         }
 
@@ -233,7 +234,7 @@ class ViewController extends AppController
         ]);
 
         return $this->redirectToRoute('view.index', [
-            'type' => $view->getContentType()->getName()
+            'type' => $view->getContentType()->getName(),
         ]);
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\Form;
 
 use EMS\CoreBundle\Entity\Template;
@@ -13,21 +15,17 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class ViewType extends AbstractType
 {
-    
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        
         /** @var Template $template */
         $template = $builder->getData();
-        
+
         $builder
         ->add('name', IconTextType::class, [
-            'icon' => 'fa fa-tag'
+            'icon' => 'fa fa-tag',
         ])
         ->add('icon', IconPickerType::class, [
             'required' => false,
@@ -42,7 +40,7 @@ class ViewType extends AbstractType
                 'attr' => [
                     'class' => 'btn-primary btn-sm',
                 ],
-                'icon' => 'fa fa-save'
+                'icon' => 'fa fa-save',
         ]);
     }
 }

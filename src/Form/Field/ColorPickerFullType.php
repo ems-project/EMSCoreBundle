@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\Field;
 
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -7,9 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 class ColorPickerFullType extends TextType
 {
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function getBlockPrefix()
     {

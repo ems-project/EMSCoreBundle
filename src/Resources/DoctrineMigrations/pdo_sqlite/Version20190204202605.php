@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Application\Migrations;
 
@@ -10,10 +12,10 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20190204202605 extends AbstractMigration
 {
-    public function up(Schema $schema) : void
+    public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+        $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
         $this->addSql('DROP INDEX UNIQ_8D93D649C05FB297');
         $this->addSql('DROP INDEX UNIQ_8D93D649A0D96FBF');
@@ -166,10 +168,10 @@ final class Version20190204202605 extends AbstractMigration
         $this->addSql('UPDATE asset_storage SET confirmed = \'1\'');
     }
 
-    public function down(Schema $schema) : void
+    public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+        $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
         $this->addSql('DROP INDEX asset_key_index');
         $this->addSql('CREATE TEMPORARY TABLE __temp__asset_storage AS SELECT id, created, modified, hash, context, contents, last_update_date, size FROM asset_storage');

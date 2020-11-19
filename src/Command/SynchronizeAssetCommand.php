@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -19,7 +21,6 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 
 class SynchronizeAssetCommand extends EmsCommand
 {
-
     /** @var Registry */
     protected $doctrine;
     /** @var ContentTypeService */
@@ -32,7 +33,6 @@ class SynchronizeAssetCommand extends EmsCommand
     protected $databaseDriver;
     /** @var FileService */
     protected $fileService;
-
 
     public function __construct(Logger $logger, Client $client, Registry $doctrine, ContentTypeService $contentTypeService, AssetExtractorService $extractorService, FileService $fileService)
     {
@@ -56,7 +56,6 @@ class SynchronizeAssetCommand extends EmsCommand
             );
     }
 
-
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         /** @var EntityManager $em */
@@ -73,16 +72,16 @@ class SynchronizeAssetCommand extends EmsCommand
 
         if (\count($storages) < 2) {
             $output->writeln('<error>There is nothing to synchronize as there is less than 2 storage services</error>');
+
             return 1;
         }
 
-
-        if (! $input->getOption('all')) {
-            /**@var QuestionHelper $helper */
+        if (!$input->getOption('all')) {
+            /** @var QuestionHelper $helper */
             $helper = $this->getHelper('question');
             $question = new ChoiceQuestion(
                 'Please select the storage services to synchronize',
-                array_keys($storages),
+                \array_keys($storages),
                 0
             );
             $question->setMultiselect(true);
@@ -100,9 +99,8 @@ class SynchronizeAssetCommand extends EmsCommand
         }
 
         foreach ($storagesToSynchronize as $service) {
-            $output->writeln('You have selected: ' . $service->__toString());
+            $output->writeln('You have selected: '.$service->__toString());
         }
-
 
         $progress = new ProgressBar($output, $repository->countHashes());
         $progress->start();
@@ -119,9 +117,9 @@ class SynchronizeAssetCommand extends EmsCommand
             foreach ($hashes as $hash) {
                 $file = $this->fileService->getFile($hash['hash']);
 
-                if ($file === null) {
+                if (null === $file) {
                     $output->writeln('');
-                    $output->writeln('<comment>File not found ' . $hash['hash'] . '</comment>');
+                    $output->writeln('<comment>File not found '.$hash['hash'].'</comment>');
                     ++$fileNotFound;
                     $progress->advance();
                     continue;
@@ -130,11 +128,11 @@ class SynchronizeAssetCommand extends EmsCommand
                 foreach ($storagesToSynchronize as $storage) {
                     if (!$storage->head($hash['hash']) && !$storage->create($hash['hash'], $file)) {
                         $output->writeln('');
-                        $output->writeln('<comment>EMS was not able to synchronize on the service ' . $storage . '</comment>');
+                        $output->writeln('<comment>EMS was not able to synchronize on the service '.$storage.'</comment>');
                     }
                 }
 
-                unlink($file);
+                \unlink($file);
                 $progress->advance();
             }
         }
@@ -142,8 +140,9 @@ class SynchronizeAssetCommand extends EmsCommand
         $progress->finish();
         $output->writeln('');
         if ($fileNotFound > 0) {
-            $output->writeln('<comment>' . $fileNotFound . ' files not found</comment>');
+            $output->writeln('<comment>'.$fileNotFound.' files not found</comment>');
         }
+
         return 0;
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\View;
 
 use Elasticsearch\Client;
@@ -15,16 +17,15 @@ use Twig\Environment;
 
 abstract class ViewType extends AbstractType
 {
-
-    /**@var Environment $twig*/
+    /** @var Environment $twig */
     protected $twig;
-    /** @var Client $client */
+    /** @var Client */
     protected $client;
-    /**@var FormFactory*/
+    /** @var FormFactory */
     protected $formFactory;
-    /**@var LoggerInterface*/
+    /** @var LoggerInterface */
     protected $logger;
-    
+
     public function __construct(FormFactory $formFactory, Environment $twig, Client $client, LoggerInterface $logger)
     {
         $this->twig = $twig;
@@ -32,26 +33,27 @@ abstract class ViewType extends AbstractType
         $this->formFactory = $formFactory;
         $this->logger = $logger;
     }
-    
-    abstract public function getLabel() : string;
-    
-    abstract public function getName() : string;
 
-    abstract public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request) : array;
-    
-    public function configureOptions(OptionsResolver $resolver) : void
+    abstract public function getLabel(): string;
+
+    abstract public function getName(): string;
+
+    abstract public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array;
+
+    public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(array (
+        $resolver->setDefaults([
                 'view' => null,
-                'label' => $this->getName() . ' options',
-        ));
+                'label' => $this->getName().' options',
+        ]);
     }
 
-    public function generateResponse(View $view, Request $request) : Response
+    public function generateResponse(View $view, Request $request): Response
     {
         $response = new Response();
         $parameters = $this->getParameters($view, $this->formFactory, $request);
-        $response->setContent($this->twig->render('@EMSCore/view/custom/' . $this->getBlockPrefix() . '.html.twig', $parameters));
+        $response->setContent($this->twig->render('@EMSCore/view/custom/'.$this->getBlockPrefix().'.html.twig', $parameters));
+
         return $response;
     }
 }

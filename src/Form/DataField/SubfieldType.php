@@ -1,28 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\DataField;
 
-use Symfony\Component\Form\FormBuilderInterface;
-use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\FormBuilderInterface;
 
 //TODO:Refact Class name "SubfieldType" to "SubfieldFieldType"
 class SubfieldType extends DataFieldType
 {
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function getLabel()
     {
         return 'Virtual subfield (used to define alternatives analyzers)';
     }
-    
+
     /**
-     * Get a icon to visually identify a FieldType
+     * Get a icon to visually identify a FieldType.
      *
      * @return string
      */
@@ -30,28 +30,24 @@ class SubfieldType extends DataFieldType
     {
         return 'fa fa-sitemap';
     }
-    
+
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function importData(DataField $dataField, $sourceArray, $isMigration)
     {
         //do nothing as it's a virtual field
     }
-    
+
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options)
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
         $optionsForm->remove('displayOptions')->remove('migrationOptions')->remove('restrictionOptions');
-        
+
         // String specific mapping options
         $optionsForm->get('mappingOptions')
             ->add('analyzer', AnalyzerPickerType::class)
@@ -59,27 +55,21 @@ class SubfieldType extends DataFieldType
                     'required' => false,
             ]);
     }
-    
-    
+
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function generateMapping(FieldType $current, $withPipeline)
     {
-
-        $options = $this->elasticsearchService->updateMapping(array_merge(["type" => "string"], array_filter($current->getMappingOptions())));
+        $options = $this->elasticsearchService->updateMapping(\array_merge(['type' => 'string'], \array_filter($current->getMappingOptions())));
 
         return [
-                'fields' => [$current->getName() => $options]
+                'fields' => [$current->getName() => $options],
         ];
     }
-    
+
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function buildObjectArray(DataField $data, array &$out)
     {

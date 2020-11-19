@@ -30,7 +30,7 @@ final class ProcessType extends AbstractType
     {
         $builder
             ->add('submissionId', HiddenType::class, [
-                'constraints' => new NotBlank()
+                'constraints' => new NotBlank(),
             ])
             ->add('save', SubmitType::class)
         ;
@@ -43,7 +43,7 @@ final class ProcessType extends AbstractType
         $resolver->setDefaults([
             'method' => 'POST',
             'translation_domain' => false,
-            'action' => $this->router->generate('form.submissions.process')
+            'action' => $this->router->generate('form.submissions.process'),
         ]);
     }
 }

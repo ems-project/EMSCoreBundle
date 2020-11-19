@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command;
 
 use Elasticsearch\Client;
@@ -32,6 +34,7 @@ class DeleteOrphanIndexesCommand extends EmsCommand
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->indexService->deleteOrphanIndexes();
+
         return 0;
     }
 }

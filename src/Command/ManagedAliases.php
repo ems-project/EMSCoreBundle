@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command;
 
 use EMS\CoreBundle\Entity\ManagedAlias;
@@ -12,9 +14,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ManagedAliases extends ContainerAwareCommand
 {
-    /** @var Logger  */
+    /** @var Logger */
     protected $logger;
-    /** @var AliasService  */
+    /** @var AliasService */
     protected $aliasService;
 
     public function __construct(Logger $logger, AliasService $aliasService)
@@ -23,7 +25,7 @@ class ManagedAliases extends ContainerAwareCommand
         $this->aliasService = $aliasService;
         parent::__construct();
     }
-    
+
     protected function configure(): void
     {
         $this
@@ -41,10 +43,11 @@ class ManagedAliases extends ContainerAwareCommand
             $output->writeln($alias->getName());
             if ($detailed) {
                 foreach ($alias->getIndexes() as $index) {
-                    $output->writeln(sprintf(' - Index: %s (%d)', $index['name'], $index['count']));
+                    $output->writeln(\sprintf(' - Index: %s (%d)', $index['name'], $index['count']));
                 }
             }
         }
+
         return 0;
     }
 }

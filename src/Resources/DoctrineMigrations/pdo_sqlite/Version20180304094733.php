@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Application\Migrations;
 
 use Doctrine\DBAL\Migrations\AbstractMigration;
@@ -10,13 +12,10 @@ use Doctrine\DBAL\Schema\Schema;
  */
 class Version20180304094733 extends AbstractMigration
 {
-    /**
-     * @param Schema $schema
-     */
     public function up(Schema $schema)
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+        $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
         $this->addSql('CREATE TABLE wysiwyg_styles_set (id INTEGER NOT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, name VARCHAR(255) NOT NULL, config CLOB DEFAULT NULL, orderKey INTEGER NOT NULL, PRIMARY KEY(id))');
         $this->addSql('DROP INDEX IDX_6D6315CC1A445520');
@@ -158,13 +157,10 @@ class Version20180304094733 extends AbstractMigration
         $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D649C05FB297 ON user (confirmation_token)');
     }
 
-    /**
-     * @param Schema $schema
-     */
     public function down(Schema $schema)
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+        $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
         $this->addSql('DROP TABLE wysiwyg_styles_set');
         $this->addSql('DROP INDEX UNIQ_D45083255E237E06');

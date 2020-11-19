@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Application\Migrations;
 
 use Doctrine\DBAL\Migrations\AbstractMigration;
@@ -10,13 +12,10 @@ use Doctrine\DBAL\Schema\Schema;
  */
 class Version20170514085008 extends AbstractMigration
 {
-    /**
-     * @param Schema $schema
-     */
     public function up(Schema $schema)
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+        $this->abortIf('postgresql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('CREATE SEQUENCE revision_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE content_type_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
@@ -92,13 +91,10 @@ class Version20170514085008 extends AbstractMigration
         $this->addSql('ALTER TABLE view ADD CONSTRAINT FK_FEFDAB8E1A445520 FOREIGN KEY (content_type_id) REFERENCES content_type (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
     }
 
-    /**
-     * @param Schema $schema
-     */
     public function down(Schema $schema)
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
+        $this->abortIf('postgresql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('ALTER TABLE environment_revision DROP CONSTRAINT FK_895F7B701DFA7C8F');
         $this->addSql('ALTER TABLE notification DROP CONSTRAINT FK_BF5476CA1DFA7C8F');

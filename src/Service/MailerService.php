@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Service;
 
-use http\Env;
 use Swift_Mailer;
 use Swift_Message;
 
@@ -19,9 +20,8 @@ class MailerService
 
     /**
      * MailerService constructor.
-     * @param Swift_Mailer $mailer
+     *
      * @param array<string> $fromMail
-     * @param string $fromName
      */
     public function __construct(Swift_Mailer $mailer, array $fromMail, string $fromName)
     {
@@ -32,8 +32,6 @@ class MailerService
 
     /**
      * @param array<string> $emails
-     * @param string $title
-     * @param string $body
      */
     public function sendMail(array $emails, string $title, string $body): void
     {

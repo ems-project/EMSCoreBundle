@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * DataField
+ * DataField.
  *
  * @ORM\Table(name="sort_option")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\SortOptionRepository")
@@ -21,56 +23,56 @@ class SortOption
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-    
+
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="created", type="datetime")
      */
     private $created;
-    
+
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="modified", type="datetime")
      */
     private $modified;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="field", type="text", length=255)
      */
     private $field;
-    
+
     /**
      * @var int
      *
      * @ORM\Column(name="orderKey", type="integer")
      */
     private $orderKey;
-    
+
     /**
      * @var bool
      *
      * @ORM\Column(name="inverted", type="boolean")
      */
     private $inverted;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="icon", type="text", length=255, nullable=true)
      */
     private $icon;
-    
+
     /**
      * @ORM\PrePersist
      * @ORM\PreUpdate
@@ -85,25 +87,25 @@ class SortOption
             $this->orderKey = 0;
         }
     }
-    
+
     /******************************************************************
      *
      * Generated functions
      *
      *******************************************************************/
-    
+
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
         return $this->id;
     }
-    
+
     /**
-     * Set created
+     * Set created.
      *
      * @param \DateTime $created
      *
@@ -112,12 +114,12 @@ class SortOption
     public function setCreated($created)
     {
         $this->created = $created;
-        
+
         return $this;
     }
-    
+
     /**
-     * Get created
+     * Get created.
      *
      * @return \DateTime
      */
@@ -125,9 +127,9 @@ class SortOption
     {
         return $this->created;
     }
-    
+
     /**
-     * Set modified
+     * Set modified.
      *
      * @param \DateTime $modified
      *
@@ -136,12 +138,12 @@ class SortOption
     public function setModified($modified)
     {
         $this->modified = $modified;
-        
+
         return $this;
     }
-    
+
     /**
-     * Get modified
+     * Get modified.
      *
      * @return \DateTime
      */
@@ -149,9 +151,9 @@ class SortOption
     {
         return $this->modified;
     }
-    
+
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
      *
@@ -160,12 +162,12 @@ class SortOption
     public function setName($name)
     {
         $this->name = $name;
-        
+
         return $this;
     }
-    
+
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -173,9 +175,9 @@ class SortOption
     {
         return $this->name;
     }
-    
+
     /**
-     * Set field
+     * Set field.
      *
      * @param string $field
      *
@@ -184,12 +186,12 @@ class SortOption
     public function setField($field)
     {
         $this->field = $field;
-        
+
         return $this;
     }
-    
+
     /**
-     * Get field
+     * Get field.
      *
      * @return string
      */
@@ -197,57 +199,57 @@ class SortOption
     {
         return $this->field;
     }
-    
+
     /**
-     * Set orderKey
+     * Set orderKey.
      *
-     * @param integer $orderKey
+     * @param int $orderKey
      *
      * @return SortOption
      */
     public function setOrderKey($orderKey)
     {
         $this->orderKey = $orderKey;
-        
+
         return $this;
     }
-    
+
     /**
-     * Get orderKey
+     * Get orderKey.
      *
-     * @return integer
+     * @return int
      */
     public function getOrderKey()
     {
         return $this->orderKey;
     }
-    
+
     /**
-     * Set inverted
+     * Set inverted.
      *
-     * @param boolean $inverted
+     * @param bool $inverted
      *
      * @return SortOption
      */
     public function setInverted($inverted)
     {
         $this->inverted = $inverted;
-        
+
         return $this;
     }
-    
+
     /**
-     * Get inverted
+     * Get inverted.
      *
-     * @return boolean
+     * @return bool
      */
     public function getInverted()
     {
         return $this->inverted;
     }
-    
+
     /**
-     * Set icon
+     * Set icon.
      *
      * @param string $icon
      *
@@ -256,12 +258,12 @@ class SortOption
     public function setIcon($icon)
     {
         $this->icon = $icon;
-        
+
         return $this;
     }
-    
+
     /**
-     * Get icon
+     * Get icon.
      *
      * @return string
      */

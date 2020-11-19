@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\ContentTransformer;
 
 use EMS\CoreBundle\Form\DataField\WysiwygFieldType;
@@ -22,7 +24,7 @@ class HtmlStylesRemover implements ContentTransformInterface
 
     public function canTransform(ContentTransformContext $contentTransformContext): bool
     {
-        return $contentTransformContext->getDataFieldType() === WysiwygFieldType::class;
+        return WysiwygFieldType::class === $contentTransformContext->getDataFieldType();
     }
 
     public function transform(ContentTransformContext $contentTransformContext): string
@@ -44,10 +46,10 @@ class HtmlStylesRemover implements ContentTransformInterface
     {
         while ($query = $this->xpath->query("//*[contains(concat(' ', normalize-space(@class), ' '), '{$this->classNamePrefix}')]")) {
             $node = $query->item(0);
-            if ($node === null) {
+            if (null === $node) {
                 break;
             }
-            if ($node->parentNode === null) {
+            if (null === $node->parentNode) {
                 throw new \RuntimeException('Unexpected orphan node');
             }
             $node->parentNode->replaceChild(
@@ -60,7 +62,7 @@ class HtmlStylesRemover implements ContentTransformInterface
     private function getInnerNode(\DOMNode $node): \DOMNode
     {
         $doc = $node->ownerDocument;
-        if ($doc === null) {
+        if (null === $doc) {
             throw new \RuntimeException('Unexpected null document');
         }
         $fragment = $doc->createDocumentFragment();
@@ -91,9 +93,10 @@ class HtmlStylesRemover implements ContentTransformInterface
     {
         $this->removeTemporaryWrapper();
         $html = $this->doc->saveHTML();
-        if ($html === false) {
+        if (false === $html) {
             throw new \RuntimeException('Unexpected error while dumping in HTML format');
         }
+
         return $this->outputHtmlFormat($html);
     }
 
@@ -106,13 +109,13 @@ class HtmlStylesRemover implements ContentTransformInterface
 
     private function addTemporaryWrapper(string $html): string
     {
-        return '<div>' . $html . '</div>';
+        return '<div>'.$html.'</div>';
     }
 
     private function removeTemporaryWrapper(): void
     {
         $temporaryWrapper = $this->doc->getElementsByTagName('div')->item(0);
-        if ($temporaryWrapper === null || $temporaryWrapper->parentNode === null) {
+        if (null === $temporaryWrapper || null === $temporaryWrapper->parentNode) {
             return;
         }
         $temporaryWrapper = $temporaryWrapper->parentNode->removeChild($temporaryWrapper);

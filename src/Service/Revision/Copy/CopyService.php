@@ -35,7 +35,7 @@ final class CopyService
             }
 
             $copiedRevision = $revision->clone();
-            $copiedRevision->setRawData(array_merge($copiedRevision->getRawData(), $copyContext->getMerge()));
+            $copiedRevision->setRawData(\array_merge($copiedRevision->getRawData(), $copyContext->getMerge()));
 
             $this->finalizeRevision($copiedRevision);
 

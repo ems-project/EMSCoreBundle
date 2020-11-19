@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -10,7 +12,7 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 /**
- * Revision
+ * Revision.
  *
  * @ORM\Table(name="revision", uniqueConstraints={@ORM\UniqueConstraint(name="tuple_index", columns={"end_time", "ouuid"})})
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\RevisionRepository")
@@ -19,7 +21,7 @@ use Ramsey\Uuid\UuidInterface;
 class Revision
 {
     /**
-     * @var null|int
+     * @var int|null
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
@@ -42,7 +44,7 @@ class Revision
     private $modified;
 
     /**
-     * @var null|\DateTime
+     * @var \DateTime|null
      *
      * @ORM\Column(name="auto_save_at", type="datetime", nullable=true)
      */
@@ -62,19 +64,19 @@ class Revision
      * @ORM\JoinColumn(name="content_type_id", referencedColumnName="id")
      */
     private $contentType;
-    
+
     private $dataField;
-    
+
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="version", type="integer")
      * @ORM\Version
      */
     private $version;
-    
+
     /**
-     * @var null|string
+     * @var string|null
      *
      * @ORM\Column(name="ouuid", type="string", length=255, nullable=true, options={"collation":"utf8_bin"})
      */
@@ -100,16 +102,16 @@ class Revision
      * @ORM\Column(name="draft", type="boolean")
      */
     private $draft;
-    
+
     /**
-     * @var null|string
+     * @var string|null
      *
      * @ORM\Column(name="finalized_by", type="string", length=255, nullable=true)
      */
     private $finalizedBy;
 
     /**
-     * @var null|\DateTime
+     * @var \DateTime|null
      *
      * @ORM\Column(name="finalized_date", type="datetime", nullable=true)
      */
@@ -119,30 +121,30 @@ class Revision
      * @var \DateTime
      */
     private $tryToFinalizeOn;
-    
+
     /**
      * @var string|null
      *
      * @ORM\Column(name="deleted_by", type="string", length=255, nullable=true)
      */
     private $deletedBy;
-    
+
     /**
-     * @var null|string
+     * @var string|null
      *
      * @ORM\Column(name="lock_by", type="string", length=255, nullable=true)
      */
     private $lockBy;
 
     /**
-     * @var null|string
+     * @var string|null
      *
      * @ORM\Column(name="auto_save_by", type="string", length=255, nullable=true)
      */
     private $autoSaveBy;
 
     /**
-     * @var null|\DateTime
+     * @var \DateTime|null
      *
      * @ORM\Column(name="lock_until", type="datetime", nullable=true)
      */
@@ -169,7 +171,7 @@ class Revision
     private $rawData;
 
     /**
-     * @var null|array
+     * @var array|null
      *
      * @ORM\Column(name="auto_save", type="json_array", nullable=true)
      */
@@ -181,38 +183,38 @@ class Revision
      * @ORM\Column(name="circles", type="simple_array", nullable=true)
      */
     private $circles;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="labelField", type="text", nullable=true)
      */
     private $labelField;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="sha1", type="string", nullable=true)
      */
     private $sha1;
-    
+
     /**not persisted field to ensure that they are all there after a submit */
     private $allFieldsAreThere;
 
     /**
-     * @var null|UuidInterface
+     * @var UuidInterface|null
      *
      * @ORM\Column(type="uuid", name="version_uuid", unique=false, nullable=true)
      */
     private $versionUuid;
 
     /**
-     * @var null|String
+     * @var string|null
      *
      * @ORM\Column(type="string", name="version_tag", nullable=true)
      */
     private $versionTag;
-    
+
     /**
      * @ORM\PrePersist
      * @ORM\PreUpdate
@@ -223,17 +225,16 @@ class Revision
         if (!isset($this->created)) {
             $this->created = $this->modified;
         }
-        
+
         if (null == $this->lockBy || null == $this->lockUntil || new \DateTime() > $this->lockUntil) {
             throw new NotLockedException($this);
         }
     }
-    
+
     private function addVirtualFields(FieldType $fieldType, array $data)
     {
-        
         $out = [];
-        /**@var FieldType $child*/
+        /** @var FieldType $child */
         foreach ($fieldType->getChildren() as $child) {
             if (!$child->getDeleted()) {
                 $type = $child->getType();
@@ -247,7 +248,7 @@ class Revision
                     if ($type::isContainer()) {
                         if (isset($data[$child->getName()])) {
                             if ($type::isCollection()) {
-                                if (is_array($data[$child->getName()])) {
+                                if (\is_array($data[$child->getName()])) {
                                     $out[$child->getName()] = [];
                                     foreach ($data[$child->getName()] as $idx => $item) {
                                         $out[$child->getName()][$idx] = self::addVirtualFields($child, $item);
@@ -267,34 +268,35 @@ class Revision
                 }
             }
         }
+
         return $out;
     }
-    
-    
+
     /**
-     * Add the virtual fields to the raw data and return it (the data)
+     * Add the virtual fields to the raw data and return it (the data).
      *
      * @return array
      */
     public function getData()
     {
         $out = $this->addVirtualFields($this->getContentType()->getFieldType(), $this->rawData);
+
         return $out;
     }
-   
+
     private function removeVirtualField(FieldType $fieldType, array $data)
     {
         $out = [];
-        /**@var FieldType $child*/
+        /** @var FieldType $child */
         foreach ($fieldType->getChildren() as $child) {
             if (!$child->getDeleted()) {
                 $type = $child->getType();
                 if ($type::isVirtual($child->getOptions())) {
                     if (isset($data[$child->getName()]) && !empty($data[$child->getName()])) {
                         if ($type::isContainer()) {
-                            $out = array_merge_recursive($out, self::removeVirtualField($child, $data[$child->getName()]));
+                            $out = \array_merge_recursive($out, self::removeVirtualField($child, $data[$child->getName()]));
                         } else {
-                            $out = array_merge_recursive($out, $data[$child->getName()]);
+                            $out = \array_merge_recursive($out, $data[$child->getName()]);
                         }
                     }
                 } else {
@@ -308,53 +310,54 @@ class Revision
                             } else {
                                 $out[$child->getName()] = self::removeVirtualField($child, $data[$child->getName()]);
                             }
-                            
-                            if (is_array($out[$child->getName()]) && empty($out[$child->getName()])) {
+
+                            if (\is_array($out[$child->getName()]) && empty($out[$child->getName()])) {
                                 unset($out[$child->getName()]);
                             }
                         }
                     } else {
-                        if (isset($data[$child->getName()]) && $data[$child->getName()] !== null) {
+                        if (isset($data[$child->getName()]) && null !== $data[$child->getName()]) {
                             $out[$child->getName()] = $data[$child->getName()];
                         }
                     }
                 }
             }
         }
+
         return $out;
     }
-    
+
     /**
-     * Remove virtual fields ans save the raw data
+     * Remove virtual fields ans save the raw data.
      *
-     * @param array $data
      * @return \EMS\CoreBundle\Entity\Revision
      */
     public function setData(array $data)
     {
         $this->rawData = $this->removeVirtualField($this->getContentType()->getFieldType(), $data);
+
         return $this;
     }
-    
+
     public function buildObject()
     {
         return [
             '_id' => $this->ouuid,
             '_type' => $this->contentType->getName(),
-            '_source' => $this->rawData
+            '_source' => $this->rawData,
         ];
     }
-    
+
     public function __construct()
     {
         $this->deleted = false;
         $this->allFieldsAreThere = false;
         $this->environments = new ArrayCollection();
         $this->notifications = new ArrayCollection();
-        
-        $a = func_get_args();
-        $i = func_num_args();
-        if ($i == 1) {
+
+        $a = \func_get_args();
+        $i = \func_num_args();
+        if (1 == $i) {
             if ($a[0] instanceof Revision) {
                 /** @var Revision $ancestor */
                 $ancestor = $a[0];
@@ -363,8 +366,8 @@ class Revision
                 $this->allFieldsAreThere = $ancestor->allFieldsAreThere;
                 $this->ouuid = $ancestor->ouuid;
                 $this->contentType = $ancestor->contentType;
-                $this->rawData =  $ancestor->rawData;
-                $this->circles =  $ancestor->circles;
+                $this->rawData = $ancestor->rawData;
+                $this->circles = $ancestor->circles;
                 $this->dataField = new DataField($ancestor->dataField);
 
                 if (null !== $versionUuid = $ancestor->getVersionUuid()) {
@@ -377,24 +380,24 @@ class Revision
         }
         //TODO: Refactoring: Dependency injection of the first Datafield in the Revision.
     }
-    
+
     public function __toString()
     {
         $out = 'New instance';
         if ($this->ouuid) {
             $out = $this->ouuid;
         }
-        if ($this->contentType !== null) {
-            $out = $this->contentType->getName() . ':' . $out;
+        if (null !== $this->contentType) {
+            $out = $this->contentType->getName().':'.$out;
             if (!empty($this->id)) {
-                $out .=  '#' . $this->id;
+                $out .= '#'.$this->id;
             }
         }
-        
-        
-        if ($this->contentType !== null && $this->contentType->getLabelField() && $this->rawData && isset($this->rawData[$this->contentType->getLabelField()])) {
-            return $this->rawData[$this->contentType->getLabelField()] . " ($out)";
+
+        if (null !== $this->contentType && $this->contentType->getLabelField() && $this->rawData && isset($this->rawData[$this->contentType->getLabelField()])) {
+            return $this->rawData[$this->contentType->getLabelField()]." ($out)";
         }
+
         return $out;
     }
 
@@ -404,14 +407,14 @@ class Revision
                 '_index' => 'N/A',
                 '_source' => $object,
                 '_id' => $this->ouuid,
-                '_type' => $this->getContentType()->getName()
+                '_type' => $this->getContentType()->getName(),
         ];
-        
+
         return $object;
     }
 
     /**
-     * Create a draft from a revision
+     * Create a draft from a revision.
      *
      * @return Revision
      */
@@ -451,9 +454,7 @@ class Revision
     }
 
     /**
-     * Close a revision
-     *
-     * @param \DateTime $endTime
+     * Close a revision.
      */
     public function close(\DateTime $endTime)
     {
@@ -464,7 +465,7 @@ class Revision
     }
 
     /**
-     * Get allFieldAreThere
+     * Get allFieldAreThere.
      *
      * @return bool
      */
@@ -473,23 +474,20 @@ class Revision
         return $this->allFieldsAreThere;
     }
 
-
-    /**
-     *
-     */
     public function setAllFieldsAreThere($allFieldsAreThere)
     {
         $this->allFieldsAreThere = !empty($allFieldsAreThere);
+
         return $this;
     }
 
-    public function getId() : ?int
+    public function getId(): ?int
     {
         return $this->id;
     }
 
     /**
-     * Set created
+     * Set created.
      *
      * @param \DateTime $created
      *
@@ -503,7 +501,7 @@ class Revision
     }
 
     /**
-     * Get created
+     * Get created.
      *
      * @return \DateTime
      */
@@ -513,7 +511,7 @@ class Revision
     }
 
     /**
-     * Set modified
+     * Set modified.
      *
      * @param \DateTime $modified
      *
@@ -527,7 +525,7 @@ class Revision
     }
 
     /**
-     * Get modified
+     * Get modified.
      *
      * @return \DateTime
      */
@@ -537,7 +535,7 @@ class Revision
     }
 
     /**
-     * Set deleted
+     * Set deleted.
      *
      * @param bool $deleted
      *
@@ -551,7 +549,7 @@ class Revision
     }
 
     /**
-     * Get deleted
+     * Get deleted.
      *
      * @return bool
      */
@@ -561,7 +559,7 @@ class Revision
     }
 
     /**
-     * Set ouuid
+     * Set ouuid.
      *
      * @param string $ouuid
      *
@@ -575,7 +573,7 @@ class Revision
     }
 
     /**
-     * Get ouuid
+     * Get ouuid.
      *
      * @return string
      */
@@ -586,11 +584,11 @@ class Revision
 
     public function hasOuuid(): bool
     {
-        return $this->ouuid !== null;
+        return null !== $this->ouuid;
     }
 
     /**
-     * Set startTime
+     * Set startTime.
      *
      * @param \DateTime $startTime
      *
@@ -604,7 +602,7 @@ class Revision
     }
 
     /**
-     * Get startTime
+     * Get startTime.
      *
      * @return \DateTime
      */
@@ -614,7 +612,7 @@ class Revision
     }
 
     /**
-     * Set endTime
+     * Set endTime.
      *
      * @param \DateTime|null $endTime
      *
@@ -628,7 +626,7 @@ class Revision
     }
 
     /**
-     * Get endTime
+     * Get endTime.
      *
      * @return \DateTime|null
      */
@@ -638,7 +636,7 @@ class Revision
     }
 
     /**
-     * Set draft
+     * Set draft.
      *
      * @param bool $draft
      *
@@ -652,7 +650,7 @@ class Revision
     }
 
     /**
-     * Get draft
+     * Get draft.
      *
      * @return bool
      */
@@ -660,9 +658,9 @@ class Revision
     {
         return $this->draft;
     }
-    
+
     /**
-     * Set lockBy
+     * Set lockBy.
      *
      * @param string $lockBy
      *
@@ -671,12 +669,12 @@ class Revision
     public function setLockBy($lockBy)
     {
         $this->lockBy = $lockBy;
-        
+
         return $this;
     }
-    
+
     /**
-     * Get lockBy
+     * Get lockBy.
      *
      * @return string
      */
@@ -684,9 +682,9 @@ class Revision
     {
         return $this->lockBy;
     }
-    
+
     /**
-     * Set rawDataFinalizedBy
+     * Set rawDataFinalizedBy.
      *
      * @param string $finalizedBy
      *
@@ -697,11 +695,12 @@ class Revision
         $this->rawData[Mapping::FINALIZED_BY_FIELD] = $finalizedBy;
         $this->tryToFinalizeOn = new \DateTime();
         $this->rawData[Mapping::FINALIZATION_DATETIME_FIELD] = ($this->tryToFinalizeOn)->format(\DateTime::ISO8601);
+
         return $this;
     }
-    
+
     /**
-     * Set finalizedBy
+     * Set finalizedBy.
      *
      * @param string $finalizedBy
      *
@@ -711,12 +710,12 @@ class Revision
     {
         $this->finalizedBy = $finalizedBy;
         $this->finalizedDate = $this->tryToFinalizeOn;
-        
+
         return $this;
     }
-    
+
     /**
-     * Get finalizedBy
+     * Get finalizedBy.
      *
      * @return string
      */
@@ -724,9 +723,9 @@ class Revision
     {
         return $this->finalizedBy;
     }
-    
+
     /**
-     * Set deletedBy
+     * Set deletedBy.
      *
      * @param string|null $deletedBy
      *
@@ -735,12 +734,12 @@ class Revision
     public function setDeletedBy($deletedBy)
     {
         $this->deletedBy = $deletedBy;
-        
+
         return $this;
     }
-    
+
     /**
-     * Get deletedBy
+     * Get deletedBy.
      *
      * @return string|null
      */
@@ -750,7 +749,7 @@ class Revision
     }
 
     /**
-     * Set lockUntil
+     * Set lockUntil.
      *
      * @param \DateTime $lockUntil
      *
@@ -764,7 +763,7 @@ class Revision
     }
 
     /**
-     * Get lockUntil
+     * Get lockUntil.
      *
      * @return \DateTime
      */
@@ -774,7 +773,7 @@ class Revision
     }
 
     /**
-     * Set contentType
+     * Set contentType.
      *
      * @param ContentType $contentType
      *
@@ -788,7 +787,7 @@ class Revision
     }
 
     /**
-     * Get contentType
+     * Get contentType.
      *
      * @return ContentType|null
      */
@@ -807,9 +806,9 @@ class Revision
     }
 
     /**
-     * Set version
+     * Set version.
      *
-     * @param integer $version
+     * @param int $version
      *
      * @return Revision
      */
@@ -821,9 +820,9 @@ class Revision
     }
 
     /**
-     * Get version
+     * Get version.
      *
-     * @return integer
+     * @return int
      */
     public function getVersion()
     {
@@ -831,7 +830,7 @@ class Revision
     }
 
     /**
-     * Set dataField
+     * Set dataField.
      *
      * @param \EMS\CoreBundle\Entity\DataField $dataField
      *
@@ -845,7 +844,7 @@ class Revision
     }
 
     /**
-     * Get dataField
+     * Get dataField.
      *
      * @return \EMS\CoreBundle\Entity\DataField
      */
@@ -855,9 +854,7 @@ class Revision
     }
 
     /**
-     * Add environment
-     *
-     * @param \EMS\CoreBundle\Entity\Environment $environment
+     * Add environment.
      *
      * @return Revision
      */
@@ -869,9 +866,7 @@ class Revision
     }
 
     /**
-     * Remove environment
-     *
-     * @param \EMS\CoreBundle\Entity\Environment $environment
+     * Remove environment.
      */
     public function removeEnvironment(\EMS\CoreBundle\Entity\Environment $environment)
     {
@@ -879,7 +874,7 @@ class Revision
     }
 
     /**
-     * Get environments
+     * Get environments.
      *
      * @return \Doctrine\Common\Collections\Collection
      */
@@ -888,9 +883,8 @@ class Revision
         return $this->environments;
     }
 
-
     /**
-     * Set rawData
+     * Set rawData.
      *
      * @param array $rawData
      *
@@ -904,7 +898,7 @@ class Revision
     }
 
     /**
-     * Get rawData
+     * Get rawData.
      *
      * @return array
      */
@@ -914,7 +908,7 @@ class Revision
     }
 
     /**
-     * Set autoSaveAt
+     * Set autoSaveAt.
      *
      * @param \DateTime $autoSaveAt
      *
@@ -928,7 +922,7 @@ class Revision
     }
 
     /**
-     * Get autoSaveAt
+     * Get autoSaveAt.
      *
      * @return \DateTime
      */
@@ -938,7 +932,7 @@ class Revision
     }
 
     /**
-     * Set autoSaveBy
+     * Set autoSaveBy.
      *
      * @param string $autoSaveBy
      *
@@ -952,7 +946,7 @@ class Revision
     }
 
     /**
-     * Get autoSaveBy
+     * Get autoSaveBy.
      *
      * @return string
      */
@@ -962,9 +956,9 @@ class Revision
     }
 
     /**
-     * Set autoSave
+     * Set autoSave.
      *
-     * @param null|array $autoSave
+     * @param array|null $autoSave
      *
      * @return Revision
      */
@@ -976,7 +970,7 @@ class Revision
     }
 
     /**
-     * Get autoSave
+     * Get autoSave.
      *
      * @return array
      */
@@ -984,9 +978,9 @@ class Revision
     {
         return $this->autoSave;
     }
-    
+
     /**
-     * Set localField
+     * Set localField.
      *
      * @param string$labelField
      *
@@ -994,14 +988,13 @@ class Revision
      */
     public function setLabelField($labelField)
     {
-        
         $this->labelField = $labelField;
-        
+
         return $this;
     }
-    
+
     /**
-     * Get labelField
+     * Get labelField.
      *
      * @return string
      */
@@ -1009,9 +1002,9 @@ class Revision
     {
         return $this->labelField;
     }
-    
+
     /**
-     * Set sha1
+     * Set sha1.
      *
      * @param string $sha1
      *
@@ -1020,12 +1013,12 @@ class Revision
     public function setSha1($sha1)
     {
         $this->sha1 = $sha1;
-        
+
         return $this;
     }
-    
+
     /**
-     * Get sha1
+     * Get sha1.
      *
      * @return string
      */
@@ -1033,9 +1026,9 @@ class Revision
     {
         return $this->sha1;
     }
-    
+
     /**
-     * Set circles
+     * Set circles.
      *
      * @param array $circles
      *
@@ -1044,12 +1037,12 @@ class Revision
     public function setCircles($circles)
     {
         $this->circles = $circles;
-    
+
         return $this;
     }
-    
+
     /**
-     * Get circles
+     * Get circles.
      *
      * @return array
      */
@@ -1059,9 +1052,7 @@ class Revision
     }
 
     /**
-     * Add notification
-     *
-     * @param \EMS\CoreBundle\Entity\Notification $notification
+     * Add notification.
      *
      * @return Revision
      */
@@ -1073,9 +1064,7 @@ class Revision
     }
 
     /**
-     * Remove notification
-     *
-     * @param \EMS\CoreBundle\Entity\Notification $notification
+     * Remove notification.
      */
     public function removeNotification(\EMS\CoreBundle\Entity\Notification $notification)
     {
@@ -1083,7 +1072,7 @@ class Revision
     }
 
     /**
-     * Get notifications
+     * Get notifications.
      *
      * @return \Doctrine\Common\Collections\Collection
      */
@@ -1101,16 +1090,16 @@ class Revision
     }
 
     /**
-     * @param \DateTime $finalizedDate
      * @return Revision
      */
     public function setFinalizedDate(\DateTime $finalizedDate)
     {
         $this->finalizedDate = $finalizedDate;
+
         return $this;
     }
 
-    public function hasVersionTags() : bool
+    public function hasVersionTags(): bool
     {
         return $this->contentType ? $this->contentType->hasVersionTags() : false;
     }
@@ -1123,7 +1112,7 @@ class Revision
     public function getVersionDate(string $field): ?\DateTimeImmutable
     {
         if (null === $contentType = $this->contentType) {
-            throw new \RuntimeException(sprintf('ContentType not found for revision %d', $this->getId()));
+            throw new \RuntimeException(\sprintf('ContentType not found for revision %d', $this->getId()));
         }
 
         $dateString = null;
@@ -1149,7 +1138,7 @@ class Revision
     }
 
     /**
-     * Called on initNewDraft or updateMetaFieldCommand
+     * Called on initNewDraft or updateMetaFieldCommand.
      */
     public function setVersionMetaFields(): void
     {
@@ -1182,8 +1171,8 @@ class Revision
     {
         $versionTags = $this->contentType ? $this->contentType->getVersionTags() : [];
 
-        if (!isset($versionTags[0]) || !is_string($versionTags[0])) {
-            throw new \RuntimeException(sprintf('No version tags found for contentType %s (use hasVersionTags)', $this->getContentTypeName()));
+        if (!isset($versionTags[0]) || !\is_string($versionTags[0])) {
+            throw new \RuntimeException(\sprintf('No version tags found for contentType %s (use hasVersionTags)', $this->getContentTypeName()));
         }
 
         $this->setVersionTag($versionTags[0]);
@@ -1201,7 +1190,7 @@ class Revision
     public function setVersionDate(string $field, \DateTimeImmutable $date): void
     {
         if (null === $contentType = $this->contentType) {
-            throw new \RuntimeException(sprintf('ContentType not found for revision %d', $this->getId()));
+            throw new \RuntimeException(\sprintf('ContentType not found for revision %d', $this->getId()));
         }
 
         if ('from' === $field && null !== $dateFromField = $contentType->getVersionDateFromField()) {

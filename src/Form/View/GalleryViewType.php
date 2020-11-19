@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\View;
 
 use Elasticsearch\Client;
@@ -7,7 +9,6 @@ use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Form\SearchFormType;
 use EMS\CoreBundle\Service\SearchService;
-use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -18,27 +19,26 @@ use Twig_Environment;
 
 class GalleryViewType extends ViewType
 {
-    
-    /**@var SearchService */
+    /** @var SearchService */
     private $searchService;
-    
+
     public function __construct(FormFactory $formFactory, Twig_Environment $twig, Client $client, LoggerInterface $logger, SearchService $searchService)
     {
         parent::__construct($formFactory, $twig, $client, $logger);
         $this->searchService = $searchService;
     }
-    
-    public function getLabel() : string
+
+    public function getLabel(): string
     {
-        return "Gallery: a view where you can browse images";
+        return 'Gallery: a view where you can browse images';
     }
-    
-    public function getName() : string
+
+    public function getName(): string
     {
-        return "Gallery";
+        return 'Gallery';
     }
-    
-    public function buildForm(FormBuilderInterface $builder, array $options) : void
+
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
         $builder->add('imageField', TextType::class, [
@@ -54,53 +54,49 @@ class GalleryViewType extends ViewType
                 'required' => false,
         ]);
     }
-    
-    public function getBlockPrefix() : string
+
+    public function getBlockPrefix(): string
     {
         return 'gallery_view';
     }
 
-
-    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request) : array
+    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
-        
-
         $search = new Search();
-        if ($request->query->get('search_form', false) === false) {
-            $search->getFilters()[0]->setField($view->getOptions()['imageField'] . '.sha1');
+        if (false === $request->query->get('search_form', false)) {
+            $search->getFilters()[0]->setField($view->getOptions()['imageField'].'.sha1');
             $search->getFilters()[0]->setBooleanClause('must');
         }
-        
+
         $form = $formFactory->create(SearchFormType::class, $search, [
                 'method' => 'GET',
                 'light' => true,
         ]);
-        
+
         $form->handleRequest($request);
-        
+
         $search = $form->getData();
-        
+
         $body = $this->searchService->generateSearchBody($search);
-        
-        
+
         $searchQuery = [
                 'index' => $view->getContentType()->getEnvironment()->getAlias(),
                 'type' => $view->getContentType()->getName(),
-                "from" => 0,
-                "size" => 1000,
-                "body" => $body,
+                'from' => 0,
+                'size' => 1000,
+                'body' => $body,
         ];
-        
+
         if (isset($view->getOptions()['sourceFields'])) {
             $searchQuery['_source'] = $view->getOptions()['sourceFields'];
         }
-        
+
         $data = $this->client->search($searchQuery);
-        
+
         return [
             'view' => $view,
-            'field' => $view->getContentType()->getFieldType()->__get('ems_' . $view->getOptions()['imageField']),
-            'imageAssetConfigIdentifier' => $view->getContentType()->getFieldType()->__get('ems_' . $view->getOptions()['imageAssetConfigIdentifier']),
+            'field' => $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['imageField']),
+            'imageAssetConfigIdentifier' => $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['imageAssetConfigIdentifier']),
             'contentType' => $view->getContentType(),
             'environment' => $view->getContentType()->getEnvironment(),
             'form' => $form->createView(),

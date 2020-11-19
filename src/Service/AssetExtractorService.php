@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -14,11 +16,10 @@ use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
 class AssetExtractorService implements CacheWarmerInterface
 {
-
     private const CONTENT_EP = '/tika';
     private const HELLO_EP = '/tika';
     private const META_EP = '/meta';
-    
+
     /** @var ?string */
     private $tikaServer;
 
@@ -27,14 +28,14 @@ class AssetExtractorService implements CacheWarmerInterface
 
     /** @var ?string */
     private $tikaDownloadUrl;
-    
-    /** @var RestClientService $rest*/
+
+    /** @var RestClientService */
     private $rest;
-    
+
     /** @var LoggerInterface */
     private $logger;
 
-    /** @var Registry $doctrine */
+    /** @var Registry */
     private $doctrine;
 
     /** @var FileService */
@@ -42,8 +43,7 @@ class AssetExtractorService implements CacheWarmerInterface
 
     /** @var ?TikaWrapper */
     private $wrapper = null;
-    
-    
+
     public function __construct(RestClientService $rest, LoggerInterface $logger, Registry $doctrine, FileService $fileService, ?string $tikaServer, string $projectDir, ?string $tikaDownloadUrl)
     {
         $this->tikaServer = $tikaServer;
@@ -61,8 +61,8 @@ class AssetExtractorService implements CacheWarmerInterface
             return $this->wrapper;
         }
 
-        $filename = $this->projectDir . '/var/tika-app.jar';
-        if (! \file_exists($filename) && $this->tikaDownloadUrl) {
+        $filename = $this->projectDir.'/var/tika-app.jar';
+        if (!\file_exists($filename) && $this->tikaDownloadUrl) {
             try {
                 \file_put_contents($filename, \fopen($this->tikaDownloadUrl, 'r'));
             } catch (\Throwable $e) {
@@ -72,32 +72,35 @@ class AssetExtractorService implements CacheWarmerInterface
             }
         }
 
-        if (! file_exists($filename)) {
+        if (!\file_exists($filename)) {
             throw new \RuntimeException("Tika's jar not found");
         }
 
         $this->wrapper = new TikaWrapper($filename);
+
         return $this->wrapper;
     }
 
     /**
      * @return array{code:int,content:string}
      */
-    public function hello():array
+    public function hello(): array
     {
-        if (! empty($this->tikaServer)) {
+        if (!empty($this->tikaServer)) {
             $client = $this->rest->getClient($this->tikaServer);
             $result = $client->get(self::HELLO_EP);
+
             return [
                     'code' => $result->getStatusCode(),
                     'content' => $result->getBody()->__toString(),
             ];
         } else {
             $temporaryName = \tempnam(\sys_get_temp_dir(), 'TikaWrapperTest');
-            if ($temporaryName === false) {
+            if (false === $temporaryName) {
                 throw new \RuntimeException('It was possible to generate a temporary filename');
             }
             \file_put_contents($temporaryName, "elasticms's built in TikaWrapper : àêïôú");
+
             return [
                 'code' => 200,
                 'content' => $this->cleanString($this->getTikaWrapper()->getText($temporaryName)),
@@ -110,20 +113,19 @@ class AssetExtractorService implements CacheWarmerInterface
      */
     public function extractData(string $hash, string $file = null, bool $forced = false)
     {
-
         $manager = $this->doctrine->getManager();
         $repository = $manager->getRepository('EMSCoreBundle:CacheAssetExtractor');
 
-        /**@var CacheAssetExtractor $cacheData*/
+        /** @var CacheAssetExtractor $cacheData */
         $cacheData = $repository->findOneBy([
-            'hash' => $hash
+            'hash' => $hash,
         ]);
 
         if ($cacheData instanceof CacheAssetExtractor) {
             return $cacheData->getData();
         }
 
-        if ($file === null || !\file_exists($file)) {
+        if (null === $file || !\file_exists($file)) {
             $file = $this->fileService->getFile($hash);
         }
 
@@ -132,7 +134,7 @@ class AssetExtractorService implements CacheWarmerInterface
         }
 
         $filesize = \filesize($file);
-        if ($filesize === false) {
+        if (false === $filesize) {
             throw new \RuntimeException('Not able to get asset size');
         }
         if (!$forced && \filesize($file) > (3 * 1024 * 1024)) {
@@ -140,31 +142,32 @@ class AssetExtractorService implements CacheWarmerInterface
                 'filesize' => Converter::formatBytes($filesize),
                 'max_size' => '3 MB',
             ]);
+
             return [];
         }
 
         $out = [];
         $canBePersisted = true;
-        if (! empty($this->tikaServer)) {
+        if (!empty($this->tikaServer)) {
             try {
                 $client = $this->rest->getClient($this->tikaServer, $forced ? 900 : 30);
                 $body = \file_get_contents($file);
                 $result = $client->put(self::META_EP, [
                         'body' => $body,
                         'headers' => [
-                            'Accept' => 'application/json'
+                            'Accept' => 'application/json',
                         ],
                 ]);
-                
+
                 $out = \json_decode($result->getBody()->__toString(), true);
-                
+
                 $result = $client->put(self::CONTENT_EP, [
                         'body' => $body,
                         'headers' => [
                                 'Accept' => 'text/plain',
                         ],
                 ]);
-                
+
                 $out['content'] = $result->getBody()->__toString();
             } catch (Exception $e) {
                 $this->logger->error('service.asset_extractor.extract_error', [
@@ -180,11 +183,11 @@ class AssetExtractorService implements CacheWarmerInterface
                 $out = AssetExtractorService::convertMetaToArray($this->getTikaWrapper()->getMetadata($file));
                 if (!isset($out['content'])) {
                     $text = $this->getTikaWrapper()->getText($file);
-                    if (!mb_check_encoding($text)) {
-                        $text = mb_convert_encoding($text, mb_internal_encoding(), 'ASCII');
+                    if (!\mb_check_encoding($text)) {
+                        $text = \mb_convert_encoding($text, \mb_internal_encoding(), 'ASCII');
                     }
-                    $text = (preg_replace('/(\n)(\s*\n)+/', '${1}', $text));
-                    $out['content'] =  $text;
+                    $text = (\preg_replace('/(\n)(\s*\n)+/', '${1}', $text));
+                    $out['content'] = $text;
                 }
                 if (!isset($out['language'])) {
                     $out['language'] = AssetExtractorService::cleanString($this->getTikaWrapper()->getLanguage($file));
@@ -216,17 +219,19 @@ class AssetExtractorService implements CacheWarmerInterface
                 ]);
             }
         }
+
         return $out;
     }
 
     private static function cleanString(string $string): string
     {
         if (!\mb_check_encoding($string)) {
-            $string = \mb_convert_encoding($string, mb_internal_encoding(), 'ASCII');
+            $string = \mb_convert_encoding($string, \mb_internal_encoding(), 'ASCII');
         }
-        if (!is_string($string)) {
+        if (!\is_string($string)) {
             throw new \RuntimeException('Unexpected issue while multi byte encoded data');
         }
+
         return \preg_replace('/\n|\r/', '', $string) ?? '';
     }
 
@@ -238,21 +243,22 @@ class AssetExtractorService implements CacheWarmerInterface
         if (!\mb_check_encoding($data)) {
             $data = \mb_convert_encoding($data, \mb_internal_encoding(), 'ASCII');
         }
-        $cleaned = \preg_replace("/\r/", "", $data);
-        if ($cleaned === null) {
+        $cleaned = \preg_replace("/\r/", '', $data);
+        if (null === $cleaned) {
             throw new \RuntimeException('It was possible to parse meta information');
         }
         $matches = [];
         \preg_match_all(
-            "/^(.*): (.*)$/m",
+            '/^(.*): (.*)$/m',
             $cleaned,
             $matches,
             PREG_PATTERN_ORDER
         );
         $metaArray = \array_combine($matches[1], $matches[2]);
-        if ($metaArray === false) {
+        if (false === $metaArray) {
             return [];
         }
+
         return $metaArray;
     }
 

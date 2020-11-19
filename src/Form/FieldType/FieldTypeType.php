@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\FieldType;
 
 use EMS\CoreBundle\Entity\DataField;
@@ -9,25 +11,25 @@ use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Form\DataField\SubfieldType;
 use EMS\CoreBundle\Form\Field\FieldTypePickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use Monolog\Logger;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormView;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormRegistryInterface;
-use Monolog\Logger;
+use Symfony\Component\Form\FormView;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FieldTypeType extends AbstractType
 {
-    /** @var FieldTypePickerType $fieldTypePickerType */
+    /** @var FieldTypePickerType */
     private $fieldTypePickerType;
-    /** @var FormRegistryInterface $formRegistry */
+    /** @var FormRegistryInterface */
     private $formRegistry;
-    /** @var Logger $logger */
+    /** @var Logger */
     private $logger;
-    
+
     public function __construct(FieldTypePickerType $fieldTypePickerType, FormRegistryInterface $formRegistry, Logger $logger)
     {
         $this->fieldTypePickerType = $fieldTypePickerType;
@@ -35,11 +37,6 @@ class FieldTypeType extends AbstractType
         $this->logger = $logger;
     }
 
-
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array $options
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         /** @var FieldType $fieldType */
@@ -50,15 +47,14 @@ class FieldTypeType extends AbstractType
         /** @var DataFieldType $dataFieldType */
         $dataFieldType = $this->formRegistry->getType($fieldType->getType())->getInnerType();
         $fieldType->filterDisplayOptions($dataFieldType);
-        
+
         $dataFieldType->buildOptionsForm($builder, $options);
-        
-        
+
         if ($dataFieldType->isContainer()) {
             $builder->add('ems:internal:add:field:class', FieldTypePickerType::class, [
                     'label' => 'Field\'s type',
                     'mapped' => false,
-                    'required' => false
+                    'required' => false,
             ]);
             $builder->add('ems:internal:add:field:name', TextType::class, [
                     'label' => 'Field\'s machine name',
@@ -68,37 +64,37 @@ class FieldTypeType extends AbstractType
 
             $builder->add('add', SubmitEmsType::class, [
                     'attr' => [
-                            'class' => 'btn-primary '
+                            'class' => 'btn-primary ',
                     ],
-                    'icon' => 'fa fa-plus'
+                    'icon' => 'fa fa-plus',
             ]);
-        } else if (strcmp(SubfieldType::class, $fieldType->getType()) != 0) {
+        } elseif (0 != \strcmp(SubfieldType::class, $fieldType->getType())) {
             $builder->add('ems:internal:add:subfield:name', TextType::class, [
                     'label' => 'Subfield\'s name',
                     'mapped' => false,
                     'required' => false,
             ]);
-            
+
             $builder->add('subfield', SubmitEmsType::class, [
                     'label' => 'Add',
                     'attr' => [
-                            'class' => 'btn-primary '
+                            'class' => 'btn-primary ',
                     ],
-                    'icon' => 'fa fa-plus'
+                    'icon' => 'fa fa-plus',
             ]);
-            
+
             $builder->add('ems:internal:add:subfield:target_name', TextType::class, [
                     'label' => 'New field\'s machine name',
                     'mapped' => false,
                     'required' => false,
             ]);
-            
+
             $builder->add('duplicate', SubmitEmsType::class, [
                     'label' => 'Duplicate',
                     'attr' => [
-                            'class' => 'btn-primary '
+                            'class' => 'btn-primary ',
                     ],
-                    'icon' => 'fa fa-paste'
+                    'icon' => 'fa fa-paste',
             ]);
         }
         if (!$options['editSubfields']) {
@@ -111,19 +107,19 @@ class FieldTypeType extends AbstractType
         if (null != $fieldType->getParent() && $options['editSubfields']) {
             $builder->add('remove', SubmitEmsType::class, [
                     'attr' => [
-                            'class' => 'btn-danger btn-xs'
+                            'class' => 'btn-danger btn-xs',
                     ],
-                    'icon' => 'fa fa-trash'
+                    'icon' => 'fa fa-trash',
             ]);
         }
 
-        if ($fieldType !== null && null != $fieldType->getChildren() && $fieldType->getChildren()->count() > 0) {
+        if (null !== $fieldType && null != $fieldType->getChildren() && $fieldType->getChildren()->count() > 0) {
             $childFound = false;
             /** @var FieldType $field */
             foreach ($fieldType->getChildren() as $idx => $field) {
-                if (!$field->getDeleted() && ( $options['editSubfields'] || $field->getType() === SubfieldType::class)) {
+                if (!$field->getDeleted() && ($options['editSubfields'] || SubfieldType::class === $field->getType())) {
                     $childFound = true;
-                    $builder->add('ems_' . $field->getName(), FieldTypeType::class, [
+                    $builder->add('ems_'.$field->getName(), FieldTypeType::class, [
                             'data' => $field,
                             'container' => true,
                             'editSubfields' => $options['editSubfields'],
@@ -133,28 +129,24 @@ class FieldTypeType extends AbstractType
             if ($childFound && $options['editSubfields']) {
                 $builder->add('reorder', SubmitEmsType::class, [
                         'attr' => [
-                                'class' => 'btn-primary '
+                                'class' => 'btn-primary ',
                         ],
-                        'icon' => 'fa fa-reorder'
+                        'icon' => 'fa fa-reorder',
                 ]);
             }
         }
     }
 
-    /**
-     * @param OptionsResolver $resolver
-     */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => 'EMS\CoreBundle\Entity\FieldType',
             'container' => false,
             'path' => false,
             'new_field' => false,
             'editSubfields' => true,
-        ));
+        ]);
     }
-
 
     /**
      * {@inheritdoc}
@@ -163,15 +155,15 @@ class FieldTypeType extends AbstractType
     {
         /*get options for twig context*/
         parent::buildView($view, $form, $options);
-        $view->vars ['editSubfields'] = $options ['editSubfields'];
+        $view->vars['editSubfields'] = $options['editSubfields'];
     }
-    
+
     public function dataFieldToArray(DataField $dataField)
     {
         $out = [];
-        
+
         $this->logger->debug('dataFieldToArray for a type', [$dataField->getFieldType()->getType()]);
-        
+
 //         $dataFieldType = new CollectionItemFieldType();
 
         /** @var DataFieldType $dataFieldType */
@@ -182,43 +174,43 @@ class FieldTypeType extends AbstractType
             $this->logger->debug('Field Type not found shoud be a collectionn item');
             $dataFieldType = $this->formRegistry->getType(CollectionItemFieldType::class)->getInnerType();
         }
-         
-        $this->logger->debug('build object array 2', [ get_class($dataFieldType) ]);
-        
+
+        $this->logger->debug('build object array 2', [\get_class($dataFieldType)]);
+
         $dataFieldType->buildObjectArray($dataField, $out);
-        
-        
-        $this->logger->debug('Builded', [json_encode($out), ]);
+
+        $this->logger->debug('Builded', [\json_encode($out)]);
 
         /** @var DataField $child */
         foreach ($dataField->getChildren() as $child) {
             $this->logger->debug('build object array for child', [$child->getFieldType()]);
-        
+
             //its a Collection Item
-            if ($child->getFieldType() == null) {
+            if (null == $child->getFieldType()) {
                 $this->logger->debug('empty');
                 $subOut = [];
                 foreach ($child->getChildren() as $grandchild) {
-                    $subOut = array_merge($subOut, $this->dataFieldToArray($grandchild));
+                    $subOut = \array_merge($subOut, $this->dataFieldToArray($grandchild));
                 }
                 $out[$dataFieldType->getJsonName($dataField->getFieldType())][] = $subOut;
-            } else if (! $child->getFieldType()->getDeleted()) {
+            } elseif (!$child->getFieldType()->getDeleted()) {
                 $this->logger->debug('not deleted');
                 if ($dataFieldType->isNested()) {
-                    $out[$dataFieldType->getJsonName($dataField->getFieldType())] = array_merge($out[$dataFieldType->getJsonName($dataField->getFieldType())], $this->dataFieldToArray($child));
+                    $out[$dataFieldType->getJsonName($dataField->getFieldType())] = \array_merge($out[$dataFieldType->getJsonName($dataField->getFieldType())], $this->dataFieldToArray($child));
                 } else {
-                    $out = array_merge($out, $this->dataFieldToArray($child));
+                    $out = \array_merge($out, $this->dataFieldToArray($child));
                 }
             }
-            
+
             $this->logger->debug('build array for child done', [$child->getFieldType()]);
         }
+
         return $out;
     }
-    
+
     public function generateMapping(FieldType $fieldType, $withPipeline = false)
     {
-         /** @var DataFieldType $dataFieldType */
+        /** @var DataFieldType $dataFieldType */
         $dataFieldType = $this->formRegistry->getType($fieldType->getType())->getInnerType();
         $mapping = $dataFieldType->generateMapping($fieldType, $withPipeline);
         $jsonName = $dataFieldType->getJsonName($fieldType);
@@ -229,29 +221,30 @@ class FieldTypeType extends AbstractType
 
         /** @var FieldType $child */
         foreach ($fieldType->getChildren() as $child) {
-            if (! $child->getDeleted()) {
-                if ($jsonName !== null) {
-                    if (isset($mapping[$jsonName]["properties"])) {
-                        if (isset($mapping[$jsonName]["properties"]["attachment"]["properties"]["content"])) {
-                            $mapping[$jsonName]["properties"]["attachment"]["properties"]["content"] = array_merge_recursive($mapping[$jsonName]["properties"]["attachment"]["properties"]["content"], $this->generateMapping($child, $withPipeline));
-                        } elseif (isset($mapping[$jsonName]["properties"]["_content"])) {
-                            $mapping[$jsonName]["properties"]["_content"] = array_merge_recursive($mapping[$jsonName]["properties"]["_content"], $this->generateMapping($child, $withPipeline));
-                        } elseif (isset($mapping[$jsonName]["properties"]["filename"])) {
-                            $mapping[$jsonName]["properties"]["filename"] = array_merge_recursive($mapping[$jsonName]["properties"]["filename"], $this->generateMapping($child, $withPipeline));
+            if (!$child->getDeleted()) {
+                if (null !== $jsonName) {
+                    if (isset($mapping[$jsonName]['properties'])) {
+                        if (isset($mapping[$jsonName]['properties']['attachment']['properties']['content'])) {
+                            $mapping[$jsonName]['properties']['attachment']['properties']['content'] = \array_merge_recursive($mapping[$jsonName]['properties']['attachment']['properties']['content'], $this->generateMapping($child, $withPipeline));
+                        } elseif (isset($mapping[$jsonName]['properties']['_content'])) {
+                            $mapping[$jsonName]['properties']['_content'] = \array_merge_recursive($mapping[$jsonName]['properties']['_content'], $this->generateMapping($child, $withPipeline));
+                        } elseif (isset($mapping[$jsonName]['properties']['filename'])) {
+                            $mapping[$jsonName]['properties']['filename'] = \array_merge_recursive($mapping[$jsonName]['properties']['filename'], $this->generateMapping($child, $withPipeline));
                         } else {
-                            $mapping[$jsonName]["properties"] = array_merge_recursive($mapping[$jsonName]["properties"], $this->generateMapping($child, $withPipeline));
+                            $mapping[$jsonName]['properties'] = \array_merge_recursive($mapping[$jsonName]['properties'], $this->generateMapping($child, $withPipeline));
                         }
                     } else {
-                        $mapping[$jsonName] = array_merge_recursive($mapping[$jsonName], $this->generateMapping($child, $withPipeline));
+                        $mapping[$jsonName] = \array_merge_recursive($mapping[$jsonName], $this->generateMapping($child, $withPipeline));
                     }
                 } else {
-                    $mapping = array_merge_recursive($mapping, $this->generateMapping($child, $withPipeline));
+                    $mapping = \array_merge_recursive($mapping, $this->generateMapping($child, $withPipeline));
                 }
             }
         }
+
         return $mapping;
     }
-    
+
     /**
      * {@inheritdoc}
      */

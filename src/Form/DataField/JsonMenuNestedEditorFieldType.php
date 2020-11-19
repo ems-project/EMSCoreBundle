@@ -96,7 +96,7 @@ class JsonMenuNestedEditorFieldType extends DataFieldType
 
         $builder->get('options')->get('mappingOptions')->add('analyzer', AnalyzerPickerType::class);
         $builder->get('options')->get('displayOptions')->add('icon', IconPickerType::class, [
-            'required' => false
+            'required' => false,
         ]);
     }
 

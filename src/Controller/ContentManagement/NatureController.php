@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use EMS\CommonBundle\Helper\EmsFields;
@@ -16,21 +18,17 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class NatureController extends AppController
 {
-
     const MAX_ELEM = 400;
 
     /**
-     * @param ContentType $contentType
-     * @param Request $request
-     * @param ContentTypeService $contentTypeService
      * @return RedirectResponse|Response
      * @Route("/content-type/nature/reorder/{contentType}", name="nature.reorder")
      */
     public function reorderAction(ContentType $contentType, Request $request, ContentTypeService $contentTypeService)
     {
-        @trigger_error(sprintf('The "%s::reorderAction" controller is deprecated. Use a sort view instead.', NatureController::class), E_USER_DEPRECATED);
+        @\trigger_error(\sprintf('The "%s::reorderAction" controller is deprecated. Use a sort view instead.', NatureController::class), E_USER_DEPRECATED);
 
-        if ($contentType->getOrderField() == null) {
+        if (null == $contentType->getOrderField()) {
             $this->getLogger()->warning('log.nature.order_field_not_defined', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
             ]);
@@ -53,8 +51,7 @@ class NatureController extends AppController
             ]);
         }
 
-
-        if ($orderField->getRestrictionOptions()['minimum_role'] != null && !$this->isGranted($orderField->getRestrictionOptions()['minimum_role'])) {
+        if (null != $orderField->getRestrictionOptions()['minimum_role'] && !$this->isGranted($orderField->getRestrictionOptions()['minimum_role'])) {
             $this->getLogger()->warning('log.nature.not_authorized', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                 'order_field_name' => $contentType->getOrderField(),
@@ -71,7 +68,7 @@ class NatureController extends AppController
             'size' => 400,
             'body' => [
                 'sort' => $contentType->getOrderField(),
-            ]
+            ],
         ]);
 
         if ($result['hits']['total'] > $this::MAX_ELEM) {
@@ -88,9 +85,7 @@ class NatureController extends AppController
             'result' => $result,
         ]);
 
-
         $form->handleRequest($request);
-
 
         /** @var DataService $dataService */
         $dataService = $this->getDataService();

@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * DataField
+ * DataField.
  *
  * @ORM\Table(name="wysiwyg_profile")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\WysiwygProfileRepository")
@@ -42,21 +44,21 @@ class WysiwygProfile
      * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="config", type="text", nullable=true)
      */
     private $config;
-    
+
     /**
      * @var int
      *
      * @ORM\Column(name="orderKey", type="integer")
      */
     private $orderKey;
-    
+
     /**
      * @ORM\PrePersist
      * @ORM\PreUpdate
@@ -71,7 +73,7 @@ class WysiwygProfile
             $this->orderKey = 0;
         }
     }
-    
+
     /******************************************************************
      *
      * Generated functions
@@ -79,9 +81,9 @@ class WysiwygProfile
      *******************************************************************/
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -89,7 +91,7 @@ class WysiwygProfile
     }
 
     /**
-     * Set created
+     * Set created.
      *
      * @param \DateTime $created
      *
@@ -103,7 +105,7 @@ class WysiwygProfile
     }
 
     /**
-     * Get created
+     * Get created.
      *
      * @return \DateTime
      */
@@ -113,7 +115,7 @@ class WysiwygProfile
     }
 
     /**
-     * Set modified
+     * Set modified.
      *
      * @param \DateTime $modified
      *
@@ -127,7 +129,7 @@ class WysiwygProfile
     }
 
     /**
-     * Get modified
+     * Get modified.
      *
      * @return \DateTime
      */
@@ -137,7 +139,7 @@ class WysiwygProfile
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
      *
@@ -151,7 +153,7 @@ class WysiwygProfile
     }
 
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -161,7 +163,7 @@ class WysiwygProfile
     }
 
     /**
-     * Set config
+     * Set config.
      *
      * @param string $config
      *
@@ -175,7 +177,7 @@ class WysiwygProfile
     }
 
     /**
-     * Get config
+     * Get config.
      *
      * @return string
      */
@@ -185,9 +187,9 @@ class WysiwygProfile
     }
 
     /**
-     * Set orderKey
+     * Set orderKey.
      *
-     * @param integer $orderKey
+     * @param int $orderKey
      *
      * @return WysiwygProfile
      */
@@ -199,9 +201,9 @@ class WysiwygProfile
     }
 
     /**
-     * Get orderKey
+     * Get orderKey.
      *
-     * @return integer
+     * @return int
      */
     public function getOrderKey()
     {

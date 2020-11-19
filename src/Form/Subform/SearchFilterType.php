@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\Subform;
 
 use EMS\CoreBundle\Entity\SearchFieldOption;
@@ -13,15 +15,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SearchFilterType extends AbstractType
 {
-
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
         if ($options['is_super'] || empty($options['searchFields'])) {
             $builder->add('field', TextType::class, [
                 'required' => false,
@@ -31,11 +29,12 @@ class SearchFilterType extends AbstractType
                 'choices' => $options['searchFieldsData'],
                 'required' => false,
                 'choice_attr' => function ($category, $key, $index) use ($options) {
-                    /**@var SearchFieldOption $searchFieldOption*/
-                    $searchFieldOption =  $options['searchFields'][$key];
+                    /** @var SearchFieldOption $searchFieldOption */
+                    $searchFieldOption = $options['searchFields'][$key];
+
                     return [
-                        'data-content-types' => json_encode($searchFieldOption->getContentTypes()),
-                        'data-operators' => json_encode($searchFieldOption->getOperators()),
+                        'data-content-types' => \json_encode($searchFieldOption->getContentTypes()),
+                        'data-operators' => \json_encode($searchFieldOption->getOperators()),
                     ];
                 },
             ]);
@@ -44,7 +43,7 @@ class SearchFilterType extends AbstractType
         $builder->add('boost', $options['is_super'] ? NumberType::class : HiddenType::class, [
             'required' => false,
         ]);
-        
+
         $builder->add('operator', ChoiceType::class, [
             'choices' => [
                 'Query (and)' => 'query_and',
@@ -55,23 +54,23 @@ class SearchFilterType extends AbstractType
                 'Prefix' => 'prefix',
                 'Match phrase' => 'match_phrase',
                 'Match phrase prefix' => 'match_phrase_prefix',
-            ]
+            ],
         ]);
-        
+
         $builder->add('booleanClause', ChoiceType::class, [
             'choices' => [
                 'Must' => 'must',
                 'Should' => 'should',
                 'Must not' => 'must_not',
                 'Filter' => 'filter',
-            ]
+            ],
         ]);
-        
+
         $builder->add('pattern', TextType::class, [
             'required' => false,
         ]);
     }
-    
+
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
@@ -81,11 +80,9 @@ class SearchFilterType extends AbstractType
             'searchFieldsData' => [],
         ]);
     }
-    
+
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function getBlockPrefix()
     {

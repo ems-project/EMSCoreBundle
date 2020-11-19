@@ -1,24 +1,24 @@
 <?php
+
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Security;
 
-use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use EMS\CoreBundle\Service\UserService;
+use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class ApiKeyUserProvider implements UserProviderInterface
 {
-
-    
-
-    /**@var UserService $userService*/
+    /** @var UserService $userService */
     private $userService;
-    
+
     public function __construct(UserService $userService)
     {
         $this->userService = $userService;
     }
-    
+
     public function getUsernameForApiKey($apiKey)
     {
         // Look up the username based on the token in the database, via

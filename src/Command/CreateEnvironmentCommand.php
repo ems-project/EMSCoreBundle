@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command;
 
 use EMS\CoreBundle\Service\DataService;
@@ -77,16 +79,16 @@ class CreateEnvironmentCommand extends Command
 
         $this->io->section('Execute');
         $environmentName = $input->getArgument(self::ARGUMENT_ENV_NAME);
-        if (!is_string($environmentName)) {
+        if (!\is_string($environmentName)) {
             throw new \RuntimeException('Environment name as to be a string');
         }
-
 
         $this->io->note(\sprintf('Creation of the environment "%s"...', $environmentName));
         try {
             $environment = $this->environmentService->createEnvironment($environmentName);
         } catch (\Exception $e) {
             $this->io->error($e->getMessage());
+
             return -1;
         }
 
@@ -94,10 +96,12 @@ class CreateEnvironmentCommand extends Command
             $this->dataService->createAndMapIndex($environment);
         } catch (\Exception $e) {
             $this->io->error($e->getMessage());
+
             return -1;
         }
 
         $this->io->success(\sprintf('The environment "%s" was created.', $environmentName));
+
         return 0;
     }
 
@@ -116,17 +120,19 @@ class CreateEnvironmentCommand extends Command
             $message = 'The new environment name must respects the following regex /^[a-z][a-z0-9\-_]*$/';
             $this->setEnvironmentNameArgument($input, $message);
             $this->checkEnvironmentNameArgument($input);
+
             return;
         }
 
         $environment = $this->environmentService->getAliasByName($environmentName);
-        if (!is_string($environmentName)) {
+        if (!\is_string($environmentName)) {
             throw new \RuntimeException('Environment name as to be a string');
         }
         if ($environment) {
             $message = \sprintf('The environment "%s" already exist', $environmentName);
             $this->setEnvironmentNameArgument($input, $message);
             $this->checkEnvironmentNameArgument($input);
+
             return;
         }
     }
@@ -141,6 +147,7 @@ class CreateEnvironmentCommand extends Command
         $this->io->caution($message);
         $environmentName = $this->io->ask('Choose an environment name that doesnt exist');
         $input->setArgument(self::ARGUMENT_ENV_NAME, $environmentName);
+
         return $environmentName;
     }
 }

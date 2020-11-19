@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Elasticsearch;
 
 use Elasticsearch\Client;
@@ -60,11 +62,6 @@ class Bulker
      */
     private $errors;
 
-    /**
-     * @param Factory         $factory
-     * @param array           $options
-     * @param LoggerInterface $logger
-     */
     public function __construct(Factory $factory, array $options, LoggerInterface $logger)
     {
         $this->factory = $factory;
@@ -74,25 +71,17 @@ class Bulker
         $this->client = $this->getClient();
     }
 
-    /**
-     * @return bool
-     */
     public function hasErrors(): bool
     {
         return !empty($this->errors);
     }
 
-    /**
-     * @return array
-     */
     public function getErrors(): array
     {
         return $this->errors;
     }
 
     /**
-     * @param LoggerInterface $logger
-     *
      * @return Bulker
      */
     public function setLogger(LoggerInterface $logger)
@@ -102,11 +91,6 @@ class Bulker
         return $this;
     }
 
-    /**
-     * @param int $size
-     *
-     * @return Bulker
-     */
     public function setSize(int $size): Bulker
     {
         $this->size = $size;
@@ -114,11 +98,6 @@ class Bulker
         return $this;
     }
 
-    /**
-     * @param bool $singleIndex
-     *
-     * @return Bulker
-     */
     public function setSingleIndex(bool $singleIndex): Bulker
     {
         $this->singleIndex = $singleIndex;
@@ -126,11 +105,6 @@ class Bulker
         return $this;
     }
 
-    /**
-     * @param bool $enableSha1
-     *
-     * @return Bulker
-     */
     public function setEnableSha1(bool $enableSha1): Bulker
     {
         $this->enableSha1 = $enableSha1;
@@ -138,17 +112,10 @@ class Bulker
         return $this;
     }
 
-    /**
-     * @param array $config
-     * @param array $body
-     * @param bool  $upsert
-     *
-     * @return bool
-     */
     public function index(array $config, array $body, bool $upsert = false): bool
     {
         if ($this->enableSha1) {
-            $body['_sha1'] = sha1(json_encode($body));
+            $body['_sha1'] = \sha1(\json_encode($body));
         }
 
         if ($upsert) {
@@ -159,40 +126,28 @@ class Bulker
             $this->params['body'][] = $body;
         }
 
-        $this->counter++;
+        ++$this->counter;
 
         return $this->send();
     }
 
-    /**
-     * @param DocumentInterface $document
-     * @param string            $index
-     * @param bool              $upsert
-     *
-     * @return bool
-     */
     public function indexDocument(DocumentInterface $document, string $index, bool $upsert = false): bool
     {
         $config = [
             '_index' => $index,
-            '_type'  => ($this->singleIndex ? 'doc' : $document->getType()),
-            '_id'    => $document->getId(),
+            '_type' => ($this->singleIndex ? 'doc' : $document->getType()),
+            '_id' => $document->getId(),
         ];
         $body = $document->getSource();
 
         if ($this->singleIndex) {
-            $body = array_merge(['_contenttype' => $document->getType()], $body);
+            $body = \array_merge(['_contenttype' => $document->getType()], $body);
         }
 
         return $this->index($config, $body, $upsert);
     }
 
     /**
-     * @param bool $force
-     * @param bool $retry
-     *
-     * @return bool
-     *
      * @throws NoNodesAvailableException
      */
     public function send(bool $force = false, bool $retry = false): bool
@@ -216,6 +171,7 @@ class Bulker
             if (!$retry) {
                 $this->logger->info('No nodes available trying new client');
                 $this->client = $this->getClient();
+
                 return $this->send($force, true);
             } else {
                 throw $e;
@@ -233,13 +189,10 @@ class Bulker
         return $this->factory->fromConfig($this->options);
     }
 
-    /**
-     * @param array $response
-     */
     private function logResponse(array $response)
     {
         foreach ($response['items'] as $item) {
-            $action = array_shift($item);
+            $action = \array_shift($item);
 
             if (!isset($action['error'])) {
                 continue; //no error
@@ -247,16 +200,16 @@ class Bulker
 
             $this->errors[] = $action;
             $this->logger->critical('{type} {id} : {error} {reason}', [
-                'type'   => $action['_type'],
-                'id'     => $action['_id'],
-                'error'  => $action['error']['type'],
+                'type' => $action['_type'],
+                'id' => $action['_id'],
+                'error' => $action['error']['type'],
                 'reason' => $action['error']['reason'],
             ]);
         }
 
         $this->logger->debug('bulked {count} items in {took}ms', [
-            'count' => count($response['items']),
-            'took'  => $response['took'],
+            'count' => \count($response['items']),
+            'took' => $response['took'],
         ]);
     }
 }

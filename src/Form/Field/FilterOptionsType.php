@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\Field;
 
 use Symfony\Component\Form\AbstractType;
@@ -12,8 +14,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class FilterOptionsType extends AbstractType
 {
-    
-    
     const FIELDS_BY_TYPE = [
             'standard' => [],
             'stop' => [
@@ -35,14 +35,11 @@ class FilterOptionsType extends AbstractType
             ],
             'asciifolding' => [
                     'preserve_original',
-            ]
+            ],
     ];
-    
-    
+
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -179,21 +176,22 @@ class FilterOptionsType extends AbstractType
                 'attr' => ['class' => 'filter_option fields-to-display-for fields-to-display-for-elision'],
                 'required' => false,
         ]);
-        
+
         $textArea2Array = new CallbackTransformer(
             function ($tagsAsArray) {
-                if (is_array($tagsAsArray)) {
+                if (\is_array($tagsAsArray)) {
                     // transform the array to a string
-                    return implode(', ', $tagsAsArray);
+                    return \implode(', ', $tagsAsArray);
                 }
-                    return $tagsAsArray;
+
+                return $tagsAsArray;
             },
             function ($tagsAsString) {
-                    // transform the string back to an array
-                    return explode(', ', $tagsAsString);
+                // transform the string back to an array
+                return \explode(', ', $tagsAsString);
             }
         );
-        
+
         $builder->get('articles')->addModelTransformer($textArea2Array);
         $builder->get('keywords')->addModelTransformer($textArea2Array);
     }

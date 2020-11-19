@@ -1,33 +1,33 @@
 <?php
+
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\Field;
 
 use EMS\CoreBundle\Entity\ContentType;
 
 class ObjectChoiceListItem
 {
-
     private $label;
     private $title;
     private $value;
     private $group;
     private $color;
-    
-    
+
     public function __construct(array &$object, ?ContentType $contentType)
     {
-        $this->value = $object['_type'] . ':' . $object['_id'];
-        
+        $this->value = $object['_type'].':'.$object['_id'];
 
         $this->group = null;
         $this->color = null;
         if (null !== $contentType && $contentType->getCategoryField() && isset($object['_source'][$contentType->getCategoryField()])) {
             $this->group = $object['_source'][$contentType->getCategoryField()];
         }
-        
-        $this->label = '<i class="fa fa-question" data-ouuid="' . $this->value . '"></i>&nbsp;&nbsp;' . $this->value;
+
+        $this->label = '<i class="fa fa-question" data-ouuid="'.$this->value.'"></i>&nbsp;&nbsp;'.$this->value;
         if (null !== $contentType) {
             $icon = null !== $contentType->getIcon() ? $contentType->getIcon() : 'fa fa-question';
-            $this->label = sprintf('<i class="%s" data-ouuid="%s"></i>&nbsp;&nbsp;', $icon, $this->value);
+            $this->label = \sprintf('<i class="%s" data-ouuid="%s"></i>&nbsp;&nbsp;', $icon, $this->value);
             if (null !== $contentType->getLabelField() && isset($object['_source'][$contentType->getLabelField()])) {
                 $this->label .= $object['_source'][$contentType->getLabelField()];
                 $this->title = $object['_source'][$contentType->getLabelField()];
@@ -36,20 +36,17 @@ class ObjectChoiceListItem
                 $this->title = $this->value;
             }
 
-
             if (null !== $contentType->getColorField() && isset($object['_source'][$contentType->getColorField()])) {
                 $this->color = $object['_source'][$contentType->getColorField()];
             }
         }
     }
-    
-    
-    
+
     public function getValue()
     {
         return $this->value;
     }
-    
+
     public function getLabel()
     {
         return $this->label;
@@ -59,12 +56,12 @@ class ObjectChoiceListItem
     {
         return $this->title;
     }
-    
+
     public function getGroup()
     {
         return $this->group;
     }
-    
+
     public function getColor()
     {
         return $this->color;

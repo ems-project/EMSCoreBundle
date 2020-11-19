@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\Form;
 
 use EMS\CoreBundle\EMSCoreBundle;
@@ -14,26 +16,26 @@ class JobType extends AbstractType
 {
     /**
      * @param FormBuilderInterface<Form> $builder
-     * @param array<mixed> $options
+     * @param array<mixed>               $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('command', TextType::class, [
-                'required' => false
+                'required' => false,
             ])
             ->add('launch', SubmitEmsType::class, [
                 'attr' => [
-                    'class' => 'btn-primary btn-sm '
+                    'class' => 'btn-primary btn-sm ',
                 ],
-                'icon' => 'fa fa-save'
+                'icon' => 'fa fa-save',
             ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN
+            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
         ]);
     }
 }

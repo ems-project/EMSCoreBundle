@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -101,14 +103,13 @@ class User extends BaseUser implements UserInterface
      */
     private $sidebarCollapse;
 
-     /**
-      * @var Collection<int,AuthToken>
-      *
-      * @ORM\OneToMany(targetEntity="AuthToken", mappedBy="user", cascade={"remove"})
-      * @ORM\OrderBy({"created" = "ASC"})
-      */
+    /**
+     * @var Collection<int,AuthToken>
+     *
+     * @ORM\OneToMany(targetEntity="AuthToken", mappedBy="user", cascade={"remove"})
+     * @ORM\OrderBy({"created" = "ASC"})
+     */
     private $authTokens;
-
 
     public function __construct()
     {
@@ -164,12 +165,12 @@ class User extends BaseUser implements UserInterface
             'roles' => $this->getRoles(),
             'email' => $this->getEmail(),
             'circles' => $this->getCircles(),
-            'lastLogin' => $this->getLastLogin() !== null ? $this->getLastLogin()->format('c') : null,
+            'lastLogin' => null !== $this->getLastLogin() ? $this->getLastLogin()->format('c') : null,
         ];
     }
 
     /**
-     * Get created
+     * Get created.
      *
      * @return \DateTime
      */
@@ -179,7 +180,7 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Get modified
+     * Get modified.
      *
      * @return \DateTime
      */
@@ -189,7 +190,7 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Get circles
+     * Get circles.
      *
      * @return array
      */
@@ -199,7 +200,7 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Get expiresAt
+     * Get expiresAt.
      *
      * @return \DateTime
      */
@@ -209,7 +210,7 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Set created
+     * Set created.
      *
      * @param \DateTime $created
      *
@@ -223,7 +224,7 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Set modified
+     * Set modified.
      *
      * @param \DateTime $modified
      *
@@ -237,7 +238,7 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Set circles
+     * Set circles.
      *
      * @param array $circles
      *
@@ -251,7 +252,7 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Set displayName
+     * Set displayName.
      *
      * @param string $displayName
      *
@@ -265,7 +266,7 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Get displayName
+     * Get displayName.
      *
      * @return string
      */
@@ -274,13 +275,14 @@ class User extends BaseUser implements UserInterface
         if (empty($this->displayName)) {
             return $this->getUsername();
         }
+
         return $this->displayName;
     }
 
     /**
-     * Set allowedToConfigureWysiwyg
+     * Set allowedToConfigureWysiwyg.
      *
-     * @param boolean $allowedToConfigureWysiwyg
+     * @param bool $allowedToConfigureWysiwyg
      *
      * @return User
      */
@@ -292,9 +294,9 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Get allowedToConfigureWysiwyg
+     * Get allowedToConfigureWysiwyg.
      *
-     * @return boolean
+     * @return bool
      */
     public function getAllowedToConfigureWysiwyg()
     {
@@ -302,9 +304,7 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Set wysiwygProfile
-     *
-     * @param WysiwygProfile $wysiwygProfile
+     * Set wysiwygProfile.
      *
      * @return User
      */
@@ -316,7 +316,7 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Get wysiwygProfile
+     * Get wysiwygProfile.
      *
      * @return WysiwygProfile
      */
@@ -326,7 +326,7 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Set wysiwygOptions
+     * Set wysiwygOptions.
      *
      * @param string $wysiwygOptions
      *
@@ -340,7 +340,7 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Get wysiwygOptions
+     * Get wysiwygOptions.
      *
      * @return string
      */
@@ -350,9 +350,9 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Set layoutBoxed
+     * Set layoutBoxed.
      *
-     * @param boolean $layoutBoxed
+     * @param bool $layoutBoxed
      *
      * @return User
      */
@@ -364,9 +364,9 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Get layoutBoxed
+     * Get layoutBoxed.
      *
-     * @return boolean
+     * @return bool
      */
     public function getLayoutBoxed()
     {
@@ -374,9 +374,9 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Set sidebarMini
+     * Set sidebarMini.
      *
-     * @param boolean $sidebarMini
+     * @param bool $sidebarMini
      *
      * @return User
      */
@@ -388,9 +388,9 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Get sidebarMini
+     * Get sidebarMini.
      *
-     * @return boolean
+     * @return bool
      */
     public function getSidebarMini()
     {
@@ -398,9 +398,9 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Set sidebarCollapse
+     * Set sidebarCollapse.
      *
-     * @param boolean $sidebarCollapse
+     * @param bool $sidebarCollapse
      *
      * @return User
      */
@@ -412,9 +412,9 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Get sidebarCollapse
+     * Get sidebarCollapse.
      *
-     * @return boolean
+     * @return bool
      */
     public function getSidebarCollapse()
     {
@@ -422,9 +422,7 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Add authToken
-     *
-     * @param \EMS\CoreBundle\Entity\AuthToken $authToken
+     * Add authToken.
      *
      * @return User
      */
@@ -436,9 +434,7 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Remove authToken
-     *
-     * @param \EMS\CoreBundle\Entity\AuthToken $authToken
+     * Remove authToken.
      */
     public function removeAuthToken(\EMS\CoreBundle\Entity\AuthToken $authToken)
     {
@@ -446,7 +442,7 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Get authTokens
+     * Get authTokens.
      *
      * @return Collection
      */
@@ -455,11 +451,10 @@ class User extends BaseUser implements UserInterface
         return $this->authTokens;
     }
 
-
     /**
-     * Set emailNotification
+     * Set emailNotification.
      *
-     * @param boolean $emailNotification
+     * @param bool $emailNotification
      *
      * @return User
      */
@@ -471,9 +466,9 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Get emailNotification
+     * Get emailNotification.
      *
-     * @return boolean
+     * @return bool
      */
     public function getEmailNotification()
     {
@@ -481,9 +476,9 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Is enabled
+     * Is enabled.
      *
-     * @return boolean
+     * @return bool
      */
     public function isEnabled()
     {

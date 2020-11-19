@@ -12,13 +12,13 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormView;
 
 /**
- * Dto object for passing the nested to forms to the view layer
+ * Dto object for passing the nested to forms to the view layer.
  */
 final class JsonMenuNestedEditor
 {
     /** @var FieldType */
     private $fieldType;
-    /** @var FormFactoryInterface  */
+    /** @var FormFactoryInterface */
     private $formFactory;
 
     public function __construct(FieldType $fieldType, FormFactoryInterface $formFactory)
@@ -65,9 +65,9 @@ final class JsonMenuNestedEditor
             $form->add('label', TextType::class, ['mapped' => false]);
 
             foreach ($node->getChildren() as $nodeChild) {
-                $form->add($nodeChild->getName(), $nodeChild->getType(), array_merge([
+                $form->add($nodeChild->getName(), $nodeChild->getType(), \array_merge([
                     'metadata' => $nodeChild,
-                    'mapped' => false
+                    'mapped' => false,
                 ], $nodeChild->getDisplayOptions()));
             }
 
@@ -80,7 +80,7 @@ final class JsonMenuNestedEditor
 
     private function createNodeFormName(FieldType $node): string
     {
-        return sprintf('form_%s_%s', $this->fieldType->getName(), $node->getName());
+        return \sprintf('form_%s_%s', $this->fieldType->getName(), $node->getName());
     }
 
     /**
@@ -100,20 +100,20 @@ final class JsonMenuNestedEditor
             $type = $child->getType();
 
             if ($type::isContainer() && !$type::isNested()) {
-                $containerStructure = $this->createStructure($child, $formName, array_merge($path, [$child->getName()]));
+                $containerStructure = $this->createStructure($child, $formName, \array_merge($path, [$child->getName()]));
 
-                if (is_array($containerStructure)) {
-                    $out = array_merge_recursive($out, $containerStructure);
+                if (\is_array($containerStructure)) {
+                    $out = \array_merge_recursive($out, $containerStructure);
                 }
             } else {
-                $out[$child->getName()] = $this->createStructure($child, $formName, array_merge($path, [$child->getName()]));
+                $out[$child->getName()] = $this->createStructure($child, $formName, \array_merge($path, [$child->getName()]));
             }
         }
 
-        if (\count($out) === 0) {
-            $formPath = sprintf('%s[%s]', $formName, implode('][', $path));
+        if (0 === \count($out)) {
+            $formPath = \sprintf('%s[%s]', $formName, \implode('][', $path));
 
-            if ($fieldType->getType() === DataLinkFieldType::class) {
+            if (DataLinkFieldType::class === $fieldType->getType()) {
                 $formPath .= '[value]';
             }
 

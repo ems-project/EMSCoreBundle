@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Elasticsearch\Index;
 
 class Settings
@@ -24,7 +26,7 @@ class Settings
             'analysis' => [
                 'filter' => $this->filters,
                 'analyzer' => $this->analyzers,
-            ]
+            ],
         ];
     }
 
@@ -99,7 +101,7 @@ class Settings
 
         return $this;
     }
-    
+
     private function createCustomAnalyzer(array $filters): array
     {
         return [

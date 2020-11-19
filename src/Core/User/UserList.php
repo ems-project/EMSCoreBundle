@@ -19,7 +19,7 @@ class UserList
     
     /**
      *
-     * @return array <\EMS\CoreBundle\Entity\User>
+     * @return array <User>
      */
     public function getUsers(): array
     {
@@ -27,12 +27,11 @@ class UserList
     }
     /**
      * @param array<string> $roles
-     * @return UserList
      */
     public function getForRoles(array $roles): UserList
     {
         $usersList = [];
-        /** \EMS\CoreBundle\Entity\User $user */
+        /** User $user */
         foreach ($this->getUsers() as $user) {
             if (!empty(\array_intersect($roles, $user->getRoles()))) {
                 $usersList[] = $user;
@@ -43,12 +42,11 @@ class UserList
     
     /**
      * @param array<string> $circles
-     * @return UserList
      */
     public function getForCircles(array $circles): UserList
     {
         $usersList = [];
-        /** \EMS\CoreBundle\Entity\User $user */
+        /** User $user */
         foreach ($this->getUsers() as $user) {
             if (!empty(\array_intersect($circles, $user->getCircles()))) {
                 $usersList[] = $user;

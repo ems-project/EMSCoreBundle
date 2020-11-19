@@ -2,6 +2,9 @@
 
 namespace EMS\CoreBundle\Repository;
 
+use EMS\CoreBundle\Core\User\UserList;
+use EMS\CoreBundle\Entity\User;
+
 /**
  * UserRepository
  *
@@ -14,13 +17,10 @@ interface UserRepositoryInterface
      *
      * @param string $role
      * @param array<string> $circles
-     * @return array <\EMS\CoreBundle\Entity\User>
+     * @return array <User>
      */
-    public function findForRoleAndCircles($role, $circles);
+    public function findForRoleAndCircles($role, $circles): array;
     
-    /**
-     *
-     * @return \EMS\CoreBundle\Core\User\UserList
-     */
-    public function getUsersEnabled();
+
+    public function getUsersEnabled(): UserList;
 }

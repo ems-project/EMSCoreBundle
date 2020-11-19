@@ -13,10 +13,8 @@ use EMS\CoreBundle\Core\User\UserList;
  */
 class UserRepository extends \Doctrine\ORM\EntityRepository implements UserRepositoryInterface
 {
-    /**
-     * {@inheritDoc}
-     */
-    public function findForRoleAndCircles($role, $circles)
+
+    public function findForRoleAndCircles($role, $circles): array
     {
         $resultSet = $this->createQueryBuilder('u')
             ->where('u.roles like :role')
@@ -37,9 +35,6 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserRepos
         return $resultSet;
     }
     
-    /**
-     *  {@inheritDoc}
-     */
     public function getUsersEnabled() : UserList
     {
         $resultSet = $this->findBy([

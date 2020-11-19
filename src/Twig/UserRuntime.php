@@ -9,7 +9,7 @@ use EMS\CoreBundle\Repository\UserRepository;
 use Twig\Extension\RuntimeExtensionInterface;
 
 
-class UserRuntime implements RuntimeExtensionInterface
+final class UserRuntime implements RuntimeExtensionInterface
 {
     /** @var UserRepository */
     private $userRepository;
@@ -19,9 +19,6 @@ class UserRuntime implements RuntimeExtensionInterface
         $this->userRepository = $userRepository;
     }
     
-    /**
-     * @return UserList
-     */
     public function getUsersEnabled(): UserList
     {
         return $this->userRepository->getUsersEnabled();

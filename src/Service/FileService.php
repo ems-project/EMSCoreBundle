@@ -9,6 +9,7 @@ use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Storage\HashMismatchException;
 use EMS\CommonBundle\Storage\NotFoundException;
 use EMS\CommonBundle\Storage\Processor\Processor;
+use EMS\CommonBundle\Storage\Service\StorageInterface;
 use EMS\CommonBundle\Storage\StorageManager;
 use EMS\CommonBundle\Storage\StorageServiceMissingException;
 use EMS\CoreBundle\Entity\UploadedAsset;
@@ -185,7 +186,7 @@ class FileService
             $uploadedAsset->setUploaded($uploadedAsset->getSize());
             $uploadedAsset->setAvailable(true);
         } else {
-            $this->storageManager->initUploadFile($hash, $size, $name, $type);
+            $this->storageManager->initUploadFile($hash, $size, $name, $type, StorageInterface::STORAGE_USAGE_ASSET);
         }
 
         $em->persist($uploadedAsset);
@@ -223,7 +224,7 @@ class FileService
             throw new NotFoundHttpException('Upload job not found');
         }
 
-        $this->storageManager->addChunk($hash, $chunk, $skipShouldSkip);
+        $this->storageManager->addChunk($hash, $chunk, StorageInterface::STORAGE_USAGE_ASSET);
         $uploadedAsset->setUploaded($uploadedAsset->getUploaded() + \strlen($chunk));
 
         $em->persist($uploadedAsset);
@@ -231,7 +232,7 @@ class FileService
 
         if ($uploadedAsset->getUploaded() === $uploadedAsset->getSize()) {
             try {
-                $this->storageManager->finalizeUpload($hash, $uploadedAsset->getSize(), $skipShouldSkip);
+                $this->storageManager->finalizeUpload($hash, $uploadedAsset->getSize(), StorageInterface::STORAGE_USAGE_ASSET);
                 $uploadedAsset->setAvailable(true);
             } catch (\Throwable $e) {
                 $em->remove($uploadedAsset);
@@ -252,7 +253,7 @@ class FileService
 
     private function saveFile(string $filename, UploadedAsset $uploadedAsset): UploadedAsset
     {
-        $hash = $this->storageManager->saveFile($filename);
+        $hash = $this->storageManager->saveFile($filename, StorageInterface::STORAGE_USAGE_ASSET);
         if ($hash != $uploadedAsset->getSha1()) {
             throw new Conflict409Exception(sprintf('Hash mismatched %s >< %s', $hash, $uploadedAsset->getSha1()));
         }
@@ -268,7 +269,7 @@ class FileService
             throw new NotFoundException($hash);
         }
 
-        $newHash = $this->storageManager->saveFile($filename, false);
+        $newHash = $this->storageManager->saveFile($filename, StorageInterface::STORAGE_USAGE_BACKUP);
 
         unlink($filename);
 

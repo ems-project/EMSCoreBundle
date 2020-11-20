@@ -820,7 +820,10 @@ class ContentTypeController extends AppController
 
         try {
             $env = $contentType->getEnvironment();
-            $index = $env ?  $env->getAlias() : '';
+            if (!$env) {
+                throw new \RuntimeException('Unexpected not found environment');
+            }
+            $index = $env->getAlias();
             $mapping = $client->indices()->getMapping([
                 'index' => $index,
                 'type' => $contentType->getName()
@@ -931,7 +934,10 @@ class ContentTypeController extends AppController
             if (array_key_exists('save', $inputContentType) || array_key_exists('saveAndClose', $inputContentType) || array_key_exists('saveAndReorder', $inputContentType)) {
                 $contentType->getFieldType()->updateOrderKeys();
                 $env = $contentType->getEnvironment();
-                $managed = $env ?  $env->getManaged() : false;
+                if (!$env) {
+                    throw new \RuntimeException('Unexpected not found environment');
+                }
+                $managed = $env->getManaged();
                 $contentType->setDirty($managed);
 
                 if ((array_key_exists('saveAndClose', $inputContentType) || array_key_exists('saveAndReorder', $inputContentType)) && $contentType->getDirty()) {
@@ -1034,7 +1040,10 @@ class ContentTypeController extends AppController
         if (in_array($action, ['save', 'saveAndClose'])) {
             $field->updateOrderKeys();
             $env = $contentType->getEnvironment();
-            $managed = $env ?  $env->getManaged() : false;
+            if (!$env) {
+                throw new \RuntimeException('Unexpected not found environment');
+            }
+            $managed = $env->getManaged();
             $contentType->setDirty($managed);
 
 

@@ -12,12 +12,15 @@ use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\QueryBuilder;
+use Elastica\Query\Term;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use EMS\CommonBundle\Common\Document;
 use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Helper\ArrayTool;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Search\Search as CommonSearch;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Storage\StorageManager;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
@@ -127,6 +130,8 @@ class DataService
     private $storageManager;
     /** @var EnvironmentService */
     private $environmentService;
+    /** @var ElasticaService */
+    private $elasticaService;
 
     public function __construct(
         Registry $doctrine,
@@ -149,7 +154,8 @@ class DataService
         AppExtension $appExtension,
         UserService $userService,
         RevisionRepository $revisionRepository,
-        EnvironmentService $environmentService
+        EnvironmentService $environmentService,
+        ElasticaService $elasticaService
     ) {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
@@ -172,6 +178,7 @@ class DataService
         $this->contentTypeService = $contentTypeService;
         $this->userService = $userService;
         $this->environmentService = $environmentService;
+        $this->elasticaService = $elasticaService;
 
         $this->public_key = null;
         $this->private_key = null;
@@ -759,11 +766,14 @@ class DataService
         //test integrity
         foreach ($revision->getEnvironments() as $environment) {
             try {
-                $indexedItem = $this->client->get([
-                        'id' => $revision->getOuuid(),
-                        'type' => $revision->getContentType()->getName(),
-                        'index' => $this->contentTypeService->getIndex($revision->getContentType(), $environment),
-                ])['_source'];
+                $idTerm = new Term();
+                $idTerm->setTerm('_id', $revision->getOuuid());
+                $query = $this->elasticaService->filterByContentTypes($idTerm, [$revision->getContentType()->getName()]);
+                $index = $this->contentTypeService->getIndex($revision->getContentType(), $environment);
+                $search = new CommonSearch([$index], $query);
+                $document = $this->elasticaService->singleSearch($search);
+
+                $indexedItem = $document->getSource();
 
                 ArrayTool::normalizeArray($indexedItem);
 

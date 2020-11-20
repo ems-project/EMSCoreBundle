@@ -4,9 +4,13 @@ namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\NoResultException;
+use Elastica\Aggregation\Terms;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\BadRequest400Exception;
+use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Search\Search;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
@@ -26,6 +30,9 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class ContentTypeService
 {
+    /** @var string */
+    private const CONTENT_TYPE_AGGREGATION_NAME = 'content-types';
+
     /** @var Registry $doctrine */
     protected $doctrine;
 
@@ -37,6 +44,8 @@ class ContentTypeService
     
     /** @var Client*/
     private $client;
+    /** @var ElasticaService */
+    private $elasticaService;
     
     /** @var EnvironmentService $environmentService */
     private $environmentService;
@@ -59,13 +68,13 @@ class ContentTypeService
     protected $singleTypeIndex;
 
 
-
-    public function __construct(Registry $doctrine, LoggerInterface $logger, Mapping $mappingService, Client $client, EnvironmentService $environmentService, FormRegistryInterface $formRegistry, TranslatorInterface $translator, $instanceId, $singleTypeIndex)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, Mapping $mappingService, Client $client, ElasticaService $elasticaService, EnvironmentService $environmentService, FormRegistryInterface $formRegistry, TranslatorInterface $translator, $instanceId, $singleTypeIndex)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
         $this->mappingService = $mappingService;
         $this->client = $client;
+        $this->elasticaService = $elasticaService;
         $this->environmentService = $environmentService;
         $this->formRegistry = $formRegistry;
         $this->instanceId = $instanceId;
@@ -528,5 +537,52 @@ class ContentTypeService
         $contentType->reset($contentTypeRepository->nextOrderKey());
         $this->persist($contentType);
         return $contentType;
+    }
+
+    /**
+     * @return array<array{name: string, alias: string, envId: int, count: int}>
+     */
+    public function getUnreferencedContentTypes(): array
+    {
+        $unreferencedContentTypes = [];
+        foreach ($this->environmentService->getUnmanagedEnvironments() as $environment) {
+            try {
+                $unreferencedContentTypes = \array_merge($unreferencedContentTypes, $this->getUnreferencedContentTypesPerEnvironment($environment));
+            } catch (\Throwable $e) {
+                $this->logger->error('log.service.content-type.get-unreferenced-content-type.unexpected-error', [
+                    EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
+                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                ]);
+            }
+        }
+        return $unreferencedContentTypes;
+    }
+
+    /**
+     * @return array<array{name: string, alias: string, envId: int, count: int}>
+     */
+    private function getUnreferencedContentTypesPerEnvironment(Environment $environment): array
+    {
+        $aggregateByContentType = new Terms(self::CONTENT_TYPE_AGGREGATION_NAME);
+        $aggregateByContentType->setField(EMSSource::FIELD_CONTENT_TYPE);
+        $aggregateByContentType->setSize(30);
+        $search = new Search([$environment->getAlias()]);
+        $search->setSize(0);
+        $search->addAggregation($aggregateByContentType);
+        $resultSet = $this->elasticaService->search($search);
+        $contentTypeNames = $resultSet->getAggregation(self::CONTENT_TYPE_AGGREGATION_NAME)['buckets'] ?? [];
+        $unreferencedContentTypes = [];
+        foreach ($contentTypeNames as $contentTypeName) {
+            $name = $contentTypeName['key'] ?? null;
+            if ($name !== null && $this->getByName($name) === false) {
+                $unreferencedContentTypes[] = [
+                    'name' => $name,
+                    'alias' => $environment->getAlias(),
+                    'envId' => $environment->getId(),
+                    'count' => \intval($contentTypeName['doc_count'] ?? 0),
+                ];
+            }
+        }
+        return $unreferencedContentTypes;
     }
 }

@@ -10,6 +10,8 @@ use Dompdf\Dompdf;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CoreBundle;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\EMSCoreBundle;
@@ -39,6 +41,7 @@ use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\ElasticsearchService;
 use EMS\CoreBundle\Service\Mapping;
+use EMS\CoreBundle\Service\SearchService;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -367,7 +370,7 @@ class DataController extends AppController
      * @Route("/data/revisions/{type}:{ouuid}/{revisionId}/{compareId}", defaults={"revisionId"=false, "compareId"=false}, name="data.revisions")
      * @Route("/data/revisions/{type}:{ouuid}/{revisionId}/{compareId}", defaults={"revisionId"=false, "compareId"=false}, name="ems_content_revisions_view")
      */
-    public function revisionsDataAction($type, $ouuid, $revisionId, $compareId, Request $request, DataService $dataService, LoggerInterface $logger)
+    public function revisionsDataAction($type, $ouuid, $revisionId, $compareId, Request $request, DataService $dataService, LoggerInterface $logger, SearchService $searchService, ElasticaService $elasticaService)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -385,9 +388,14 @@ class DataController extends AppController
         /** @var ContentType $contentType */
         $contentType = $contentTypes[0];
 
-        if (!$contentType->getEnvironment()->getManaged()) {
+        $defaultEnvironment = $contentType->getEnvironment();
+        if ($defaultEnvironment === null) {
+            throw new \RuntimeException('Unexpected nul environment');
+        }
+
+        if (!$defaultEnvironment->getManaged()) {
             return $this->redirectToRoute('data.view', [
-                'environmentName' => $contentType->getEnvironment()->getName(),
+                'environmentName' => $defaultEnvironment->getName(),
                 'type' => $type,
                 'ouuid' => $ouuid
             ]);
@@ -483,45 +491,39 @@ class DataController extends AppController
         $dataFields = $this->getDataService()->getDataFieldsStructure($form->get('data'));
 
 
-        /** @var Client $client */
-        $client = $this->getElasticsearch();
-
-
         $searchForm = new Search();
         $searchForm->setContentTypes($this->getContentTypeService()->getAllNames());
-        $searchForm->setEnvironments($this->getContentTypeService()->getAllDefaultEnvironmentNames());
+        $searchForm->setEnvironments([$defaultEnvironment->getName()]);
         $searchForm->setSortBy('_uid');
         $searchForm->setSortOrder('asc');
 
         $filter = $searchForm->getFilters()[0];
         $filter->setBooleanClause('should');
-        $filter->setField($revision->getContentType()->getRefererFieldName());
+        $filter->setField($contentType->getRefererFieldName());
         $filter->setPattern(sprintf('%s:%s', $type, $ouuid));
         $filter->setOperator('term');
 
         $filter = new SearchFilter();
         $filter->setBooleanClause('should');
-        $filter->setField($revision->getContentType()->getRefererFieldName());
+        $filter->setField($contentType->getRefererFieldName());
         $filter->setPattern(sprintf('"%s:%s"', $type, $ouuid));
         $filter->setOperator('match_and');
         $searchForm->addFilter($filter);
 
         $searchForm->setMinimumShouldMatch(1);
+        $esSearch = $searchService->generateSearch($searchForm);
+        $esSearch->setSize(100);
+        $esSearch->setSources([]);
 
-        $refParams = [
-            '_source' => false,
-            'type' => $searchForm->getContentTypes(),
-            'index' => $revision->getContentType()->getEnvironment()->getAlias(),
-            'size' => 100,
-            'body' => $this->getSearchService()->generateSearchBody($searchForm),
-        ];
+        $referrerResultSet = $elasticaService->search($esSearch);
+        $referrerResponse = CommonResponse::fromResultSet($referrerResultSet);
 
         return $this->render('@EMSCore/data/revisions-data.html.twig', [
             'revision' => $revision,
             'revisionsSummary' => $revisionsSummary,
             'availableEnv' => $availableEnv,
             'object' => $revision->getObject($objectArray),
-            'referrers' => $client->search($refParams),
+            'referrerResponse' => $referrerResponse,
             'page' => $page,
             'lastPage' => $lastPage,
             'counter' => $counter,

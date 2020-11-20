@@ -1507,23 +1507,26 @@ class DataController extends AppController
     }
 
     /**
-     * @param array<string> $input
+     * @param array<mixed> $input
      */
     private function reorderCollection(array &$input): void
     {
-        if (is_array($input) && !empty($input)) {
-            $keys = array_keys($input);
-            if (is_int($keys[0])) {
-                sort($keys);
-                $temp = [];
-                $loop0 = 0;
-                foreach ($input as $item) {
-                    $temp[$keys[$loop0]] = $item;
-                    ++$loop0;
-                }
-                $input = $temp;
+        if (empty($input)) {
+            return;
+        }
+        $keys = \array_keys($input);
+        if (\is_int($keys[0])) {
+            \sort($keys);
+            $temp = [];
+            $loop0 = 0;
+            foreach ($input as $item) {
+                $temp[$keys[$loop0]] = $item;
+                ++$loop0;
             }
-            foreach ($input as &$elem) {
+            $input = $temp;
+        }
+        foreach ($input as &$elem) {
+            if (\is_array($elem)) {
                 $this->reorderCollection($elem);
             }
         }

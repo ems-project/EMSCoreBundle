@@ -723,6 +723,7 @@ services:
     EMS\CoreBundle\Service\SearchService: '@ems.service.search'
     EMS\CoreBundle\Service\PublishService: '@ems.service.publish'
     EMS\CoreBundle\Service\AggregateOptionService: '@ems.service.aggregate_option'
+    EMS\CoreBundle\Service\Mapping: '@ems.service.mapping'
 
 
 

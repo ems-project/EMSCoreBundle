@@ -34,9 +34,9 @@ class ContentTypeType extends AbstractType
         if ($environment === null) {
             throw new \RuntimeException('Unexpected null environment');
         }
-        
-        if (!empty($options['mapping']) && !empty(array_values($options['mapping'])[0]['mappings'][$options['data']->getName()]['properties'])) {
-            $mapping = array_values($options['mapping'])[0]['mappings'][$options['data']->getName()]['properties'];
+
+        $mapping = $options['mapping'] ?? null;
+        if ($mapping !== null) {
             $builder->add('labelField', ContentTypeFieldPickerType::class, [
                 'required' => false,
                 'firstLevelOnly' => true,

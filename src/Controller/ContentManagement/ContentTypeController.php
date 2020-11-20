@@ -784,7 +784,7 @@ class ContentTypeController extends AppController
      * @throws OptimisticLockException
      * @Route("/content-type/{id}", name="contenttype.edit")
      */
-    public function editAction($id, Request $request, LoggerInterface $logger)
+    public function editAction($id, Request $request, LoggerInterface $logger, Mapping $mappingService)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -803,22 +803,20 @@ class ContentTypeController extends AppController
             return $this->redirectToRoute('contenttype.index');
         }
 
+        $environment = $contentType->getEnvironment();
+        if ($environment === null) {
+            throw new \RuntimeException('Unexpected null environment');
+        }
+
         $inputContentType = $request->request->get('content_type');
-
-        /** @var  Client $client */
-        $client = $this->getElasticsearch();
-
         try {
-            $mapping = $client->indices()->getMapping([
-                'index' => $contentType->getEnvironment()->getAlias(),
-                'type' => $contentType->getName()
-            ]);
+            $mapping = $mappingService->getMapping([$environment->getName()]);
         } catch (\Throwable $e) {
             $logger->warning('log.contenttype.mapping.not_found', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
             ]);
-            $mapping = [];
+            $mapping = null;
         }
 
         $form = $this->createForm(ContentTypeType::class, $contentType, [
@@ -870,7 +868,7 @@ class ContentTypeController extends AppController
         return $this->render('@EMSCore/contenttype/edit.html.twig', [
             'form' => $form->createView(),
             'contentType' => $contentType,
-            'mapping' => isset(current($mapping) ['mappings'] [$contentType->getName()] ['properties']) ? current($mapping) ['mappings'] [$contentType->getName()] ['properties'] : false
+            'mapping' => $mapping
         ]);
     }
 

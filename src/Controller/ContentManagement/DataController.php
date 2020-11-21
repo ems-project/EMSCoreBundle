@@ -9,9 +9,9 @@ use Doctrine\ORM\NoResultException;
 use Dompdf\Dompdf;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
+use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
-use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CoreBundle;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\EMSCoreBundle;
@@ -261,54 +261,29 @@ class DataController extends AppController
     }
 
     /**
-     * @param string $environmentName
-     * @param string $type
-     * @param string $ouuid
-     * @return Response
      * @Route("/data/view/{environmentName}/{type}/{ouuid}", name="data.view")
      */
-    public function viewDataAction($environmentName, $type, $ouuid)
+    public function viewDataAction(string $environmentName, string $type, string $ouuid, SearchService $searchService, ContentTypeService $contentTypeService, CoreBundle\Service\EnvironmentService $environmentService): Response
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-
-        /** @var EnvironmentRepository $environmentRepo */
-        $environmentRepo = $em->getRepository('EMSCoreBundle:Environment');
-        $environments = $environmentRepo->findBy([
-            'name' => $environmentName,
-        ]);
-        if (!$environments || count($environments) != 1) {
-            throw new NotFoundHttpException('Environment not found');
+        $environment = $environmentService->getByName($environmentName);
+        if ($environment === false) {
+            throw new NotFoundHttpException(\sprintf('Environment %s not found', $environmentName));
         }
 
-        /** @var ContentTypeRepository $contentTypeRepo */
-        $contentTypeRepo = $em->getRepository('EMSCoreBundle:ContentType');
-        $contentTypes = $contentTypeRepo->findBy([
-            'name' => $type,
-            'deleted' => false,
-        ]);
-
-        /**@var ContentType $contentType */
-        $contentType = null;
-        if ($contentTypes && count($contentTypes) == 1) {
-            $contentType = $contentTypes[0];
+        $contentType = $contentTypeService->getByName($type);
+        if ($contentType === false) {
+            throw new NotFoundHttpException(\sprintf('Content type %s not found', $type));
         }
 
         try {
-            /** @var Client $client */
-            $client = $this->getElasticsearch();
-            $result = $client->get([
-                'index' => $this->getContentTypeService()->getIndex($contentType, $environments[0]),
-                'type' => $type,
-                'id' => $ouuid,
-            ]);
-        } catch (Throwable $e) {
-            throw new NotFoundHttpException($type . ' not found');
+            $document = $searchService->getDocument($contentType, $ouuid);
+        } catch (\Throwable $e) {
+            throw new NotFoundHttpException(\sprintf('Document %s with identifier %s not found in environment %s', $contentType->getSingularName(), $ouuid, $environmentName));
         }
 
         return $this->render('@EMSCore/data/view-data.html.twig', [
-            'object' => $result,
-            'environment' => $environments[0],
+            'object' => $document->getRaw(),
+            'environment' => $environment,
             'contentType' => $contentType,
         ]);
     }

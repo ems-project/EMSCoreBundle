@@ -130,8 +130,8 @@ class DataService
     private $storageManager;
     /** @var EnvironmentService */
     private $environmentService;
-    /** @var ElasticaService */
-    private $elasticaService;
+    /** @var SearchService */
+    private $searchService;
 
     public function __construct(
         Registry $doctrine,
@@ -155,7 +155,7 @@ class DataService
         UserService $userService,
         RevisionRepository $revisionRepository,
         EnvironmentService $environmentService,
-        ElasticaService $elasticaService
+        SearchService $searchService
     ) {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
@@ -178,7 +178,7 @@ class DataService
         $this->contentTypeService = $contentTypeService;
         $this->userService = $userService;
         $this->environmentService = $environmentService;
-        $this->elasticaService = $elasticaService;
+        $this->searchService = $searchService;
 
         $this->public_key = null;
         $this->private_key = null;
@@ -762,17 +762,15 @@ class DataService
     public function testIntegrityInIndexes(Revision $revision)
     {
         $this->sign($revision);
+        $contentType = $revision->getContentType();
+        if ($contentType === null) {
+            throw new \RuntimeException('Unexpected null content type');
+        }
 
         //test integrity
         foreach ($revision->getEnvironments() as $environment) {
             try {
-                $idTerm = new Term();
-                $idTerm->setTerm('_id', $revision->getOuuid());
-                $query = $this->elasticaService->filterByContentTypes($idTerm, [$revision->getContentType()->getName()]);
-                $index = $this->contentTypeService->getIndex($revision->getContentType(), $environment);
-                $search = new CommonSearch([$index], $query);
-                $document = $this->elasticaService->singleSearch($search);
-
+                $document = $this->searchService->getDocument($contentType, $revision->getOuuid());
                 $indexedItem = $document->getSource();
 
                 ArrayTool::normalizeArray($indexedItem);

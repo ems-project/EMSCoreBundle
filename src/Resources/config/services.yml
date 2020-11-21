@@ -437,7 +437,7 @@ services:
     EMS\CoreBundle\Service\AliasService: '@ems.service.alias'
     ems.service.index:
         class: EMS\CoreBundle\Service\IndexService
-        arguments: ['@ems.service.alias', '@app.elasticsearch', '@logger']
+        arguments: ['@ems.service.alias', '@ems_common.elastica.client', '@logger']
     EMS\CoreBundle\Service\IndexService: '@ems.service.index'
     ems.elasticsearch.bulker:
         class: EMS\CoreBundle\Elasticsearch\Bulker

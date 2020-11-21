@@ -2,7 +2,7 @@
 
 namespace EMS\CoreBundle\Service;
 
-use Elasticsearch\Client;
+use Elastica\Client;
 use Psr\Log\LoggerInterface;
 
 final class IndexService
@@ -26,9 +26,7 @@ final class IndexService
         $this->aliasService->build();
         foreach ($this->aliasService->getOrphanIndexes() as $index) {
             try {
-                $this->client->indices()->delete([
-                    'index' => $index['name'],
-                ]);
+                $this->client->getIndex($index['name'])->delete();
                 $this->logger->notice('log.index.delete_orphan_index', [
                     'index_name' => $index['name'],
                 ]);

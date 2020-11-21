@@ -437,7 +437,7 @@ services:
     EMS\CoreBundle\Service\AliasService: '@ems.service.alias'
     ems.service.index:
         class: EMS\CoreBundle\Service\IndexService
-        arguments: ['@ems.service.alias', '@ems_common.elastica.client', '@logger']
+        arguments: ['@ems.service.alias', '@ems_common.elastica.client', '@ems.service.contenttype', '@logger', '@ems.service.mapping']
     EMS\CoreBundle\Service\IndexService: '@ems.service.index'
     ems.elasticsearch.bulker:
         class: EMS\CoreBundle\Elasticsearch\Bulker
@@ -587,7 +587,7 @@ services:
             -  { name: console.command }
     ems.environment.recompute:
         class: EMS\CoreBundle\Command\RecomputeCommand
-        arguments: ['@ems.service.data', '@doctrine', '@form.factory', '@ems.service.publish', '@logger', '@app.elasticsearch', '@ems.service.contenttype', '@EMS\CoreBundle\Repository\ContentTypeRepository', '@EMS\CoreBundle\Repository\RevisionRepository']
+        arguments: ['@ems.service.data', '@doctrine', '@form.factory', '@ems.service.publish', '@logger', '@app.elasticsearch', '@ems.service.contenttype', '@EMS\CoreBundle\Repository\ContentTypeRepository', '@EMS\CoreBundle\Repository\RevisionRepository', '@ems.service.index']
         tags:
             -  { name: console.command }
     ems.environment.removeexpiredsubmissions:

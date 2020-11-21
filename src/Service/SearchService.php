@@ -3,10 +3,13 @@
 namespace EMS\CoreBundle\Service;
 
 use Elastica\Query\BoolQuery;
+use Elastica\Query\Term;
+use EMS\CommonBundle\Elasticsearch\Document\Document;
+use EMS\CommonBundle\Search\Search as CommonSearch;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\Search;
-use EMS\CommonBundle\Search\Search as CommonSearch;
 
 class SearchService
 {
@@ -16,12 +19,15 @@ class SearchService
     private $elasticaService;
     /** @var EnvironmentService */
     private $environmentService;
+    /** @var ContentTypeService */
+    private $contentTypeService;
 
-    public function __construct(Mapping $mapping, ElasticaService $elasticaService, EnvironmentService $environmentService)
+    public function __construct(Mapping $mapping, ElasticaService $elasticaService, EnvironmentService $environmentService, ContentTypeService $contentTypeService)
     {
         $this->mapping = $mapping;
         $this->elasticaService = $elasticaService;
         $this->environmentService = $environmentService;
+        $this->contentTypeService = $contentTypeService;
     }
 
     /**
@@ -98,6 +104,20 @@ class SearchService
             ]);
         }
         return $commonSearch;
+    }
+
+    public function getDocument(ContentType $contentType, string $ouuid): Document
+    {
+        $environment = $contentType->getEnvironment();
+        if ($environment === null) {
+            throw new \RuntimeException('Unexpected nul environment');
+        }
+        $idTerm = new Term();
+        $idTerm->setTerm('_id', $ouuid);
+        $query = $this->elasticaService->filterByContentTypes($idTerm, [$contentType->getName()]);
+        $index = $this->contentTypeService->getIndex($contentType, $environment);
+        $search = new CommonSearch([$index], $query);
+        return $this->elasticaService->singleSearch($search);
     }
 
     /**

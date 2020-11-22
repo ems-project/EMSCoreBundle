@@ -422,7 +422,7 @@ services:
 ### regular services
     ems.service.mapping:
         class: EMS\CoreBundle\Service\Mapping
-        arguments: ['@app.elasticsearch', '@EMS\CoreBundle\Service\EnvironmentService', '@ems.form.fieldtype.fieldtypetype', '@ems.service.elasticsearch', '@ems_common.service.elastica', '%ems_core.instance_id%']
+        arguments: ['@ems_common.elastica.client', '@EMS\CoreBundle\Service\EnvironmentService', '@ems.form.fieldtype.fieldtypetype', '@ems.service.elasticsearch', '@ems_common.service.elastica', '%ems_core.instance_id%']
     EMS\CoreBundle\Service\DataService:
         class: EMS\CoreBundle\Service\DataService
         arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '%ems_core.lock_time%', '@app.elasticsearch', '@ems.service.mapping', '%ems_core.instance_id%', '@session', '@form.factory', '@service_container', '@form.registry', '@event_dispatcher', '@ems.service.contenttype', '%ems_core.private_key%', '@logger', '@ems_common.storage.manager', '@twig', '@app.twig_extension', '@ems.service.user', '@EMS\CoreBundle\Repository\RevisionRepository', '@ems.service.environment', '@ems.service.search']
@@ -587,7 +587,7 @@ services:
             -  { name: console.command }
     ems.environment.recompute:
         class: EMS\CoreBundle\Command\RecomputeCommand
-        arguments: ['@ems.service.data', '@doctrine', '@form.factory', '@ems.service.publish', '@logger', '@app.elasticsearch', '@ems.service.contenttype', '@EMS\CoreBundle\Repository\ContentTypeRepository', '@EMS\CoreBundle\Repository\RevisionRepository', '@ems.service.index']
+        arguments: ['@ems.service.data', '@doctrine', '@form.factory', '@ems.service.publish', '@logger', '@app.elasticsearch', '@ems.service.contenttype', '@EMS\CoreBundle\Repository\ContentTypeRepository', '@EMS\CoreBundle\Repository\RevisionRepository', '@ems.service.index', '@ems.service.search']
         tags:
             -  { name: console.command }
     ems.environment.removeexpiredsubmissions:

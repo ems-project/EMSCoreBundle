@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Service;
 
 use Elastica\Client;
+use Elasticsearch\Endpoints\Index;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 use Psr\Log\LoggerInterface;
@@ -58,8 +59,12 @@ final class IndexService
         if ($environment === null) {
             throw new \RuntimeException('Unexpected null environment');
         }
-        $index = $this->contentTypeService->getIndex($contentType, $environment);
-        $path = $this->mapping->getTypePath($contentType);
-        $this->client->getIndex($index)->getType($path)->createDocument($revision->getOuuid(), $revision->getRawData());
+
+        $endpoint = new Index();
+        $endpoint->setType($this->mapping->getTypeName($contentType));
+        $endpoint->setIndex($this->contentTypeService->getIndex($contentType, $environment));
+        $endpoint->setBody($revision->getRawData());
+        $endpoint->setID($revision->getOuuid());
+        $this->client->requestEndpoint($endpoint);
     }
 }

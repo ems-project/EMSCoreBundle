@@ -122,6 +122,9 @@ class Mapping
     public function getTypeName(string $contentTypeName): string
     {
         $version = $this->elasticaService->getVersion();
+        if (\version_compare($version, '7.0') >= 0) {
+            return '_doc';
+        }
         if (\version_compare($version, '6.0') >= 0) {
             return 'doc';
         }

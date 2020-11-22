@@ -2,7 +2,8 @@
 
 namespace EMS\CoreBundle\Service;
 
-use Elasticsearch\Client;
+use Elastica\Client as ElasticaClient;
+use Elastica\Exception\ResponseException;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\DataField;
@@ -10,15 +11,22 @@ use EMS\CoreBundle\Form\FieldType\FieldTypeType;
 
 class Mapping
 {
-    const PUBLISHED_DATETIME_FIELD = '_published_datetime';
+    /** @var string */
     const FINALIZATION_DATETIME_FIELD = '_finalization_datetime';
+    /** @var string */
     const FINALIZED_BY_FIELD = '_finalized_by';
+    /** @var string */
     const HASH_FIELD = '_sha1';
+    /** @var string */
     const SIGNATURE_FIELD = '_signature';
+    /** @var string */
     const CONTENT_TYPE_FIELD = '_contenttype';
+    /** @var string */
     const VERSION_UUID = '_version_uuid';
+    /** @var string */
     const VERSION_TAG = '_version_tag';
-
+    /** @var string */
+    /** @var array<string, string> */
     const MAPPING_INTERNAL_FIELDS = [
         Mapping::PUBLISHED_DATETIME_FIELD => Mapping::PUBLISHED_DATETIME_FIELD,
         Mapping::FINALIZATION_DATETIME_FIELD => Mapping::FINALIZATION_DATETIME_FIELD,
@@ -29,30 +37,31 @@ class Mapping
         Mapping::VERSION_UUID => Mapping::VERSION_UUID,
         Mapping::VERSION_TAG => Mapping::VERSION_TAG,
     ];
-
+    /** @var string */
     const CONTENT_TYPE_META_FIELD = 'content_type';
+    /** @var string */
     const GENERATOR_META_FIELD = 'generator';
+    /** @var string */
     const GENERATOR_META_FIELD_VALUE = 'elasticms';
+    /** @var string */
     const CORE_VERSION_META_FIELD = 'core_version';
+    /** @var string */
     const INSTANCE_ID_META_FIELD = 'instance_id';
-
-    /** @var Client */
-    private $client;
+    /** @var string */
+    const PUBLISHED_DATETIME_FIELD = '_published_datetime';
 
     /** @var EnvironmentService */
     private $environmentService;
-
     /** @var FieldTypeType $fieldTypeType */
     private $fieldTypeType;
-    
     /** @var ElasticsearchService $elasticsearchService */
     private $elasticsearchService;
-
     /** @var string*/
     private $instanceId;
-
     /** @var ElasticaService */
     private $elasticaService;
+    /** @var ElasticaClient */
+    private $elasticaClient;
 
     /**
      * Constructor
@@ -60,9 +69,9 @@ class Mapping
      * @param FieldTypeType $fieldTypeType
      * @param ElasticsearchService $elasticsearchService
      */
-    public function __construct(Client $client, EnvironmentService $environmentService, FieldTypeType $fieldTypeType, ElasticsearchService $elasticsearchService, ElasticaService $elasticaService, $instanceId)
+    public function __construct(ElasticaClient $elasticaClient, EnvironmentService $environmentService, FieldTypeType $fieldTypeType, ElasticsearchService $elasticsearchService, ElasticaService $elasticaService, $instanceId)
     {
-        $this->client = $client;
+        $this->elasticaClient = $elasticaClient;
         $this->environmentService = $environmentService;
         $this->fieldTypeType = $fieldTypeType;
         $this->elasticsearchService = $elasticsearchService;
@@ -147,36 +156,27 @@ class Mapping
 
     public function getMapping(array $environmentNames): ?array
     {
-        $indices = $this->client->indices();
-        $indexes = [];
+        $mergeMapping = [];
+        foreach ($environmentNames as $environmentName) {
+            try {
+                $environment = $this->environmentService->getByName($environmentName);
+                if ($environment === false) {
+                    continue;
+                }
+                $mappings = $this->elasticaClient->getIndex($environment->getAlias())->getMapping();
 
-        foreach ($environmentNames as $name) {
-            $env = $this->environmentService->getByName($name);
+                if (isset($mappings['_meta']) && isset($mappings['properties'])) {
+                    $mergeMapping = \array_merge_recursive($mappings['properties'], $mergeMapping);
+                    continue;
+                }
 
-            if ($env && $indices->exists(['index' => $env->getAlias()])) {
-                $indexes[] = $env->getAlias();
-            }
-        }
-
-        $result = [];
-
-        if (empty($indexes)) {
-            return $result;
-        }
-
-        $mappings = $indices->getMapping(['index' => $indexes]);
-
-        foreach ($mappings as $index) {
-            if (isset($index['mappings']['properties'])) {
-                $result = \array_merge_recursive($index['mappings']['properties'], $result);
+                foreach ($mappings as $mapping) {
+                    $mergeMapping = \array_merge_recursive($mapping['properties'], $mergeMapping);
+                }
+            } catch (ResponseException $e) {
                 continue;
             }
-
-            foreach ($index['mappings'] as $type => $mapping) {
-                $result = \array_merge_recursive($mapping['properties'], $result);
-            }
         }
-
-        return $result;
+        return $mergeMapping;
     }
 }

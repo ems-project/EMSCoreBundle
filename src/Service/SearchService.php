@@ -5,8 +5,10 @@ namespace EMS\CoreBundle\Service;
 use Elastica\Query\BoolQuery;
 use Elastica\Query\Term;
 use EMS\CommonBundle\Elasticsearch\Document\Document;
+use EMS\CommonBundle\Elasticsearch\Exception\SingleResultException;
 use EMS\CommonBundle\Search\Search as CommonSearch;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\Search;
@@ -117,7 +119,14 @@ class SearchService
         $query = $this->elasticaService->filterByContentTypes($idTerm, [$contentType->getName()]);
         $index = $this->contentTypeService->getIndex($contentType, $environment);
         $search = new CommonSearch([$index], $query);
-        return $this->elasticaService->singleSearch($search);
+        try {
+            return $this->elasticaService->singleSearch($search);
+        } catch (SingleResultException $e) {
+            if ($e->getTotal() === 0) {
+                throw new NotFoundException();
+            }
+            throw $e;
+        }
     }
 
     /**

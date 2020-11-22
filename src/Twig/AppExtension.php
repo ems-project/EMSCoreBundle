@@ -7,7 +7,7 @@ use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Elastica\Query\Term;
 use Elasticsearch\Client;
-use EMS\CommonBundle\Elasticsearch\Exception\SingleResultException;
+use EMS\CommonBundle\Elasticsearch\Exception\NotSingleResultException;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CommonBundle\Search\Search as CommonSearch;
@@ -894,7 +894,7 @@ class AppExtension extends AbstractExtension
                     $search = new CommonSearch([$index], $termQuery);
                     try {
                         $document = $this->elasticaService->singleSearch($search);
-                    } catch (SingleResultException $e) {
+                    } catch (NotSingleResultException $e) {
                         $document = null;
                     }
 
@@ -954,7 +954,7 @@ class AppExtension extends AbstractExtension
                     $search = new CommonSearch([$index], $termQuery);
                     try {
                         $document = $this->elasticaService->singleSearch($search);
-                    } catch (SingleResultException $e) {
+                    } catch (NotSingleResultException $e) {
                         $document = null;
                     }
 

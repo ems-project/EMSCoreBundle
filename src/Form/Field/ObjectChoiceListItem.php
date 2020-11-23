@@ -1,76 +1,82 @@
 <?php
+
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\Field;
 
+use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CoreBundle\Entity\ContentType;
 
 class ObjectChoiceListItem
 {
 
+    /** @var string */
     private $label;
+    /** @var null|string */
     private $title;
+    /** @var string */
     private $value;
-    private $group;
-    private $color;
+    /** @var null|string */
+    private $group = null;
+    /** @var null|string */
+    private $color = null;
     
     
-    public function __construct(array &$object, ?ContentType $contentType)
+    public function __construct(Document $document, ?ContentType $contentType)
     {
-        $this->value = $object['_type'] . ':' . $object['_id'];
-        
+        $source = $document->getSource();
+        $this->value = $document->getEmsId();
+        $icon = 'fa fa-question';
+        $this->title = $this->value;
 
-        $this->group = null;
-        $this->color = null;
-        if (null !== $contentType && $contentType->getCategoryField() && isset($object['_source'][$contentType->getCategoryField()])) {
-            $this->group = $object['_source'][$contentType->getCategoryField()];
-        }
-        
-        $this->label = '<i class="fa fa-question" data-ouuid="' . $this->value . '"></i>&nbsp;&nbsp;' . $this->value;
-        if (null !== $contentType) {
-            $icon = null !== $contentType->getIcon() ? $contentType->getIcon() : 'fa fa-question';
-            $this->label = sprintf('<i class="%s" data-ouuid="%s"></i>&nbsp;&nbsp;', $icon, $this->value);
-            if (null !== $contentType->getLabelField() && isset($object['_source'][$contentType->getLabelField()])) {
-                $this->label .= $object['_source'][$contentType->getLabelField()];
-                $this->title = $object['_source'][$contentType->getLabelField()];
-            } else {
-                $this->label .= $this->value;
-                $this->title = $this->value;
+        if ($contentType !== null) {
+            $labelField = $contentType->getLabelField();
+            if ($labelField !== null) {
+                $this->title = $source[$labelField] ?? $this->title;
             }
-
-
-            if (null !== $contentType->getColorField() && isset($object['_source'][$contentType->getColorField()])) {
-                $this->color = $object['_source'][$contentType->getColorField()];
+            $categoryField = $contentType->getCategoryField();
+            if ($categoryField !== null) {
+                $this->group = $source[$categoryField] ?? null;
+            }
+            $colorField = $contentType->getColorField();
+            if ($colorField !== null) {
+                $this->color = $source[$colorField] ?? null;
+            }
+            $contentTypeIcon = $contentType->getIcon();
+            if ($contentTypeIcon !== null) {
+                $icon = $contentTypeIcon;
             }
         }
+
+        $this->label = \sprintf('<i class="%s" data-ouuid="%s"></i>&nbsp;&nbsp;%s', $icon, $this->value, $this->title);
     }
     
-    
-    
-    public function getValue()
+    public function getValue(): string
     {
         return $this->value;
     }
     
-    public function getLabel()
+    public function getLabel(): string
     {
         return $this->label;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
     
-    public function getGroup()
+    public function getGroup(): ?string
     {
         return $this->group;
     }
     
-    public function getColor()
+    public function getColor(): ?string
     {
         return $this->color;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getValue();
     }

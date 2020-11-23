@@ -80,14 +80,14 @@ class UploadedAsset
     private $available;
 
     /**
-     * @var int
+     * @var int|string
      *
      * @ORM\Column(name="size", type="bigint")
      */
     private $size;
 
     /**
-     * @var int
+     * @var int|string
      *
      * @ORM\Column(name="uploaded", type="bigint")
      */
@@ -309,52 +309,26 @@ class UploadedAsset
         return $this->available;
     }
 
-    /**
-     * Set size
-     *
-     * @param integer $size
-     *
-     * @return UploadedAsset
-     */
-    public function setSize($size)
+    public function setSize(int $size) : UploadedAsset
     {
         $this->size = $size;
-
         return $this;
     }
 
-    /**
-     * Get size
-     *
-     * @return integer
-     */
-    public function getSize()
+    public function getSize(): int
     {
-        return $this->size;
+        return \intval($this->size);
     }
 
-    /**
-     * Set uploaded
-     *
-     * @param integer $uploaded
-     *
-     * @return UploadedAsset
-     */
-    public function setUploaded($uploaded)
+    public function setUploaded(int $uploaded) : UploadedAsset
     {
         $this->uploaded = $uploaded;
-
         return $this;
     }
 
-    /**
-     * Get uploaded
-     *
-     * @return integer
-     */
-    public function getUploaded()
+    public function getUploaded(): int
     {
-        return $this->uploaded;
+        return \intval($this->uploaded);
     }
 
     /**

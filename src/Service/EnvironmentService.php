@@ -285,6 +285,16 @@ class EnvironmentService
     }
 
     /**
+     * @return Environment[]
+     */
+    public function getUnmanagedEnvironments() : array
+    {
+        return \array_filter($this->getEnvironments(), function (Environment $environment) {
+            return !$environment->getManaged();
+        });
+    }
+
+    /**
      * @deprecated use getEnvironments directly!
      * @return boolean|array
      */

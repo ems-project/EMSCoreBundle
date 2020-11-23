@@ -482,6 +482,10 @@ search:
   aggregate_option_label: 'Aggregate Option'
 
 log:
+  service:
+    content-type:
+      get-unreferenced-content-type:
+        unexpected-error: 'Unexpected error while get unreferenced content type from environment %environment%: %error_message%'
   warning:
     asset_extract:
       file_to_large: 'As this file is larger (%filesize%) than %max_size% its content has not been automatically extracted. You can either force the extraction or specify it manually in the "Info" menu.'

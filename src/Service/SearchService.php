@@ -2,11 +2,14 @@
 
 namespace EMS\CoreBundle\Service;
 
-use Elastica\Query\BoolQuery;
+use EMS\CommonBundle\Elasticsearch\Document\Document;
+use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
+use EMS\CommonBundle\Elasticsearch\Exception\NotSingleResultException;
+use EMS\CommonBundle\Search\Search as CommonSearch;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\Search;
-use EMS\CommonBundle\Search\Search as CommonSearch;
 
 class SearchService
 {
@@ -16,12 +19,15 @@ class SearchService
     private $elasticaService;
     /** @var EnvironmentService */
     private $environmentService;
+    /** @var ContentTypeService */
+    private $contentTypeService;
 
-    public function __construct(Mapping $mapping, ElasticaService $elasticaService, EnvironmentService $environmentService)
+    public function __construct(Mapping $mapping, ElasticaService $elasticaService, EnvironmentService $environmentService, ContentTypeService $contentTypeService)
     {
         $this->mapping = $mapping;
         $this->elasticaService = $elasticaService;
         $this->environmentService = $environmentService;
+        $this->contentTypeService = $contentTypeService;
     }
 
     /**
@@ -45,7 +51,7 @@ class SearchService
     {
         $mapping = $this->mapping->getMapping($search->getEnvironments());
 
-        $boolQuery = new BoolQuery();
+        $boolQuery = $this->elasticaService->getBoolQuery();
 
         foreach ($search->getFilters() as $filter) {
             if (!$esFilter = $filter->generateEsFilter()) {
@@ -98,6 +104,24 @@ class SearchService
             ]);
         }
         return $commonSearch;
+    }
+
+    public function getDocument(ContentType $contentType, string $ouuid): Document
+    {
+        $environment = $contentType->getEnvironment();
+        if ($environment === null) {
+            throw new \RuntimeException('Unexpected nul environment');
+        }
+        $index = $this->contentTypeService->getIndex($contentType, $environment);
+        $search = $this->elasticaService->generateTermsSearch([$index], '_id', [$ouuid], [$contentType->getName()]);
+        try {
+            return $this->elasticaService->singleSearch($search);
+        } catch (NotSingleResultException $e) {
+            if ($e->getTotal() === 0) {
+                throw new NotFoundException();
+            }
+            throw $e;
+        }
     }
 
     /**

@@ -3,8 +3,6 @@
 
 namespace EMS\CoreBundle\Service;
 
-use Elastica\Query\BoolQuery;
-use Elastica\Query\Terms;
 use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Search\Search;
@@ -66,8 +64,6 @@ class ObjectChoiceCacheService
                 if ($currentType !== false) {
                     $index = $this->contentTypeService->getIndex($currentType);
 
-                    $query = null;
-
                     if ($circleOnly && !$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT')) {
                         $circles = $user->getCircles();
                         $ouuids = [];
@@ -75,10 +71,11 @@ class ObjectChoiceCacheService
                             preg_match('/(?P<type>(\w|-)+):(?P<ouuid>(\w|-)+)/', $circle, $matches);
                             $ouuids[] = $matches['ouuid'];
                         }
-                        $query = new Terms('_id', $ouuids);
+                        $search = $this->elasticaService->generateTermsSearch([$index], '_id', $ouuids);
+                    } else {
+                        $search = new Search([$index]);
                     }
 
-                    $search = new Search([$index], $query);
                     $search->setContentTypes([$type]);
 
                     if ($currentType->getOrderField()) {
@@ -171,10 +168,10 @@ class ObjectChoiceCacheService
         }
 
         foreach ($missingOuuidsPerIndexAndType as $indexName => $missingOuuidsPerType) {
-            $boolQuery = new BoolQuery();
+            $boolQuery = $this->elasticaService->getBoolQuery();
             $sourceField = [];
             foreach ($missingOuuidsPerType as $type => $ouuids) {
-                $ouuidsQuery = $this->elasticaService->filterByContentTypes(new Terms('_id', $ouuids), [$type]);
+                $ouuidsQuery = $this->elasticaService->filterByContentTypes($this->elasticaService->getTermsQuery('_id', $ouuids), [$type]);
                 if ($ouuidsQuery !== null) {
                     $boolQuery->addShould($ouuidsQuery);
                 }

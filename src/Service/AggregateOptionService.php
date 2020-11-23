@@ -3,8 +3,6 @@
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Elastica\Aggregation\AbstractAggregation;
-use Elastica\Aggregation\Terms;
 use EMS\CommonBundle\Elasticsearch\Aggregation\ElasticaAggregation;
 use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
 use EMS\CommonBundle\Service\ElasticaService;
@@ -27,6 +25,14 @@ class AggregateOptionService extends EntityService
         $this->elasticaService = $elasticaService;
     }
 
+    public function getContentTypeField(): string
+    {
+        if (\version_compare($this->elasticaService->getVersion(), '6.0') >= 0) {
+            return EMSSource::FIELD_CONTENT_TYPE;
+        }
+        return '_type';
+    }
+
     protected function getRepositoryIdentifier()
     {
         return 'EMSCoreBundle:AggregateOption';
@@ -38,23 +44,11 @@ class AggregateOptionService extends EntityService
     }
 
     /**
-     * @return AbstractAggregation[]
+     * @return ElasticaAggregation[]
      */
     public function getAllAggregations(): array
     {
-        $contentTypeField = '_type';
-        if (\version_compare($this->elasticaService->getVersion(), '6.0') >= 0) {
-            $contentTypeField = EMSSource::FIELD_CONTENT_TYPE;
-        }
-        $contentTypeAggregation = new Terms(self::CONTENT_TYPES_AGGREGATION);
-        $contentTypeAggregation->setSize(15);
-        $contentTypeAggregation->setField($contentTypeField);
-
-        $indexAggregation = new Terms(self::INDEXES_AGGREGATION);
-        $indexAggregation->setSize(15);
-        $indexAggregation->setField('_index');
-
-        $aggregations = [$contentTypeAggregation, $indexAggregation];
+        $aggregations = [];
 
         foreach ($this->getAll() as $id => $option) {
             if (!$option instanceof AggregateOption) {
@@ -68,7 +62,7 @@ class AggregateOptionService extends EntityService
     /**
      * @param array<string, mixed> $config
      */
-    private function parseAggregation(string $name, array $config): AbstractAggregation
+    private function parseAggregation(string $name, array $config): ElasticaAggregation
     {
         $aggregation = new ElasticaAggregation($name);
         if (\count($config) !== 1) {

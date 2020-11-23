@@ -7211,51 +7211,6 @@ parameters:
 			path: src/Form/Field/ObjectChoiceList.php
 
 		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Form\\\\Field\\\\ObjectChoiceListItem\\:\\:\\$title has no typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/ObjectChoiceListItem.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\ObjectChoiceListItem\\:\\:__construct\\(\\) has parameter \\$object with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Form/Field/ObjectChoiceListItem.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Form\\\\Field\\\\ObjectChoiceListItem\\:\\:\\$group \\(null\\) does not accept mixed\\.$#"
-			count: 1
-			path: src/Form/Field/ObjectChoiceListItem.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Form\\\\Field\\\\ObjectChoiceListItem\\:\\:\\$color \\(null\\) does not accept mixed\\.$#"
-			count: 1
-			path: src/Form/Field/ObjectChoiceListItem.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\ObjectChoiceListItem\\:\\:getValue\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/ObjectChoiceListItem.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\ObjectChoiceListItem\\:\\:getLabel\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/ObjectChoiceListItem.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\ObjectChoiceListItem\\:\\:getTitle\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/ObjectChoiceListItem.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\ObjectChoiceListItem\\:\\:getGroup\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/ObjectChoiceListItem.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\ObjectChoiceListItem\\:\\:getColor\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/ObjectChoiceListItem.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\ObjectChoiceLoader\\:\\:__construct\\(\\) has parameter \\$types with no typehint specified\\.$#"
 			count: 1
 			path: src/Form/Field/ObjectChoiceLoader.php

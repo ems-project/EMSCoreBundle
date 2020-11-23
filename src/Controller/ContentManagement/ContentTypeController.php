@@ -5,7 +5,6 @@ namespace EMS\CoreBundle\Controller\ContentManagement;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
-use Elasticsearch\Client;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
@@ -410,7 +409,7 @@ class ContentTypeController extends AppController
      * @throws OptimisticLockException
      * @Route("/content-type/unreferenced", name="contenttype.unreferenced")
      */
-    public function unreferencedAction(Request $request, LoggerInterface $logger)
+    public function unreferencedAction(Request $request, LoggerInterface $logger, ContentTypeService $contentTypeService)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -452,39 +451,9 @@ class ContentTypeController extends AppController
             return $this->redirectToRoute('contenttype.unreferenced');
         }
 
-        /** @var ContentTypeRepository $contenttypeRepository */
-        $contenttypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
-
-        $environments = $environmetRepository->findBy([
-            'managed' => false
-        ]);
-
-        /** @var  Client $client */
-        $client = $this->getElasticsearch();
-
-        $referencedContentTypes = [];
-        /** @var Environment $environment */
-        foreach ($environments as $environment) {
-            $alias = $environment->getAlias();
-            $mapping = $client->indices()->getMapping([
-                'index' => $alias
-            ]);
-            foreach ($mapping as $index) {
-                foreach ($index ['mappings'] as $name => $type) {
-                    $already = $contenttypeRepository->findByName($name);
-                    if (!$already || $already->getDeleted()) {
-                        $referencedContentTypes [] = [
-                            'name' => $name,
-                            'alias' => $alias,
-                            'envId' => $environment->getId()
-                        ];
-                    }
-                }
-            }
-        }
 
         return $this->render('@EMSCore/contenttype/unreferenced.html.twig', [
-            'referencedContentTypes' => $referencedContentTypes
+            'referencedContentTypes' => $contentTypeService->getUnreferencedContentTypes(),
         ]);
     }
 
@@ -794,7 +763,7 @@ class ContentTypeController extends AppController
      * @throws OptimisticLockException
      * @Route("/content-type/{id}", name="contenttype.edit")
      */
-    public function editAction($id, Request $request, LoggerInterface $logger)
+    public function editAction($id, Request $request, LoggerInterface $logger, Mapping $mappingService)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -813,27 +782,20 @@ class ContentTypeController extends AppController
             return $this->redirectToRoute('contenttype.index');
         }
 
+        $environment = $contentType->getEnvironment();
+        if ($environment === null) {
+            throw new \RuntimeException('Unexpected null environment');
+        }
+
         $inputContentType = $request->request->get('content_type');
-
-        /** @var  Client $client */
-        $client = $this->getElasticsearch();
-
         try {
-            $env = $contentType->getEnvironment();
-            if (!$env) {
-                throw new \RuntimeException('Unexpected not found environment');
-            }
-            $index = $env->getAlias();
-            $mapping = $client->indices()->getMapping([
-                'index' => $index,
-                'type' => $contentType->getName()
-            ]);
+            $mapping = $mappingService->getMapping([$environment->getName()]);
         } catch (\Throwable $e) {
             $logger->warning('log.contenttype.mapping.not_found', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
             ]);
-            $mapping = [];
+            $mapping = null;
         }
 
         $form = $this->createForm(ContentTypeType::class, $contentType, [
@@ -885,7 +847,7 @@ class ContentTypeController extends AppController
         return $this->render('@EMSCore/contenttype/edit.html.twig', [
             'form' => $form->createView(),
             'contentType' => $contentType,
-            'mapping' => isset(current($mapping) ['mappings'] [$contentType->getName()] ['properties']) ? current($mapping) ['mappings'] [$contentType->getName()] ['properties'] : false
+            'mapping' => $mapping
         ]);
     }
 

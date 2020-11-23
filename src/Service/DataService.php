@@ -127,6 +127,8 @@ class DataService
     private $storageManager;
     /** @var EnvironmentService */
     private $environmentService;
+    /** @var SearchService */
+    private $searchService;
 
     public function __construct(
         Registry $doctrine,
@@ -149,7 +151,8 @@ class DataService
         AppExtension $appExtension,
         UserService $userService,
         RevisionRepository $revisionRepository,
-        EnvironmentService $environmentService
+        EnvironmentService $environmentService,
+        SearchService $searchService
     ) {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
@@ -172,6 +175,7 @@ class DataService
         $this->contentTypeService = $contentTypeService;
         $this->userService = $userService;
         $this->environmentService = $environmentService;
+        $this->searchService = $searchService;
 
         $this->public_key = null;
         $this->private_key = null;
@@ -755,15 +759,16 @@ class DataService
     public function testIntegrityInIndexes(Revision $revision)
     {
         $this->sign($revision);
+        $contentType = $revision->getContentType();
+        if ($contentType === null) {
+            throw new \RuntimeException('Unexpected null content type');
+        }
 
         //test integrity
         foreach ($revision->getEnvironments() as $environment) {
             try {
-                $indexedItem = $this->client->get([
-                        'id' => $revision->getOuuid(),
-                        'type' => $revision->getContentType()->getName(),
-                        'index' => $this->contentTypeService->getIndex($revision->getContentType(), $environment),
-                ])['_source'];
+                $document = $this->searchService->getDocument($contentType, $revision->getOuuid());
+                $indexedItem = $document->getSource();
 
                 ArrayTool::normalizeArray($indexedItem);
 

@@ -208,20 +208,20 @@
           <!-- Custom Tabs -->
           <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
-              <li class="active"><a href="#tab_referrers" data-toggle="tab" aria-expanded="true">{{ 'Linked documents in'|trans }} {{ revision.contentType.environment.name|capitalize }} <small>{{ referrers.hits.hits|length }}/{{ referrers.hits.total }}</small></a></li>
+              <li class="active"><a href="#tab_referrers" data-toggle="tab" aria-expanded="true">{{ 'Linked documents in'|trans }} {{ revision.contentType.environment.name|capitalize }} <small>{{ referrerResponse.documents|length }}/{{ referrerResponse.formattedTotal }}</small></a></li>
               <li class=""><a href="#tab_revisions" data-toggle="tab" aria-expanded="false">Revisions <small>{{ revisionsSummary|length }}/{{ counter }}</small></a></li>
             </ul>
             <div class="tab-content">
               <div class="tab-pane active" id="tab_referrers">
 	              <div class="box">
 					<div class="box-body">
-						{% if referrers.hits.total == 0 %}
+						{% if referrerResponse.total == 0 %}
 							{{ 'This document does not have any linked document'|trans }}
 						{% else %}
 						
 							<div class="btn-group">
-								{% for obj in referrers.hits.hits %}
-									{{ (obj._type~':'~obj._id)|data_link|raw }}
+								{% for obj in referrerResponse.getDocuments %}
+									{{ obj.emsId|data_link|raw }}
 								{% endfor %}
 							</div>
 						{% endif %}

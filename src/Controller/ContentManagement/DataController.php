@@ -9,7 +9,9 @@ use Doctrine\ORM\NoResultException;
 use Dompdf\Dompdf;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
+use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\EMSCoreBundle;
@@ -39,6 +41,7 @@ use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\ElasticsearchService;
 use EMS\CoreBundle\Service\Mapping;
+use EMS\CoreBundle\Service\SearchService;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -258,54 +261,29 @@ class DataController extends AppController
     }
 
     /**
-     * @param string $environmentName
-     * @param string $type
-     * @param string $ouuid
-     * @return Response
      * @Route("/data/view/{environmentName}/{type}/{ouuid}", name="data.view")
      */
-    public function viewDataAction($environmentName, $type, $ouuid)
+    public function viewDataAction(string $environmentName, string $type, string $ouuid, SearchService $searchService, ContentTypeService $contentTypeService, CoreBundle\Service\EnvironmentService $environmentService): Response
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-
-        /** @var EnvironmentRepository $environmentRepo */
-        $environmentRepo = $em->getRepository('EMSCoreBundle:Environment');
-        $environments = $environmentRepo->findBy([
-            'name' => $environmentName,
-        ]);
-        if (!$environments || count($environments) != 1) {
-            throw new NotFoundHttpException('Environment not found');
+        $environment = $environmentService->getByName($environmentName);
+        if ($environment === false) {
+            throw new NotFoundHttpException(\sprintf('Environment %s not found', $environmentName));
         }
 
-        /** @var ContentTypeRepository $contentTypeRepo */
-        $contentTypeRepo = $em->getRepository('EMSCoreBundle:ContentType');
-        $contentTypes = $contentTypeRepo->findBy([
-            'name' => $type,
-            'deleted' => false,
-        ]);
-
-        /**@var ContentType $contentType */
-        $contentType = null;
-        if ($contentTypes && count($contentTypes) == 1) {
-            $contentType = $contentTypes[0];
+        $contentType = $contentTypeService->getByName($type);
+        if ($contentType === false) {
+            throw new NotFoundHttpException(\sprintf('Content type %s not found', $type));
         }
 
         try {
-            /** @var Client $client */
-            $client = $this->getElasticsearch();
-            $result = $client->get([
-                'index' => $this->getContentTypeService()->getIndex($contentType, $environments[0]),
-                'type' => $type,
-                'id' => $ouuid,
-            ]);
-        } catch (Throwable $e) {
-            throw new NotFoundHttpException($type . ' not found');
+            $document = $searchService->getDocument($contentType, $ouuid);
+        } catch (\Throwable $e) {
+            throw new NotFoundHttpException(\sprintf('Document %s with identifier %s not found in environment %s', $contentType->getSingularName(), $ouuid, $environmentName));
         }
 
         return $this->render('@EMSCore/data/view-data.html.twig', [
-            'object' => $result,
-            'environment' => $environments[0],
+            'object' => $document->getRaw(),
+            'environment' => $environment,
             'contentType' => $contentType,
         ]);
     }
@@ -367,7 +345,7 @@ class DataController extends AppController
      * @Route("/data/revisions/{type}:{ouuid}/{revisionId}/{compareId}", defaults={"revisionId"=false, "compareId"=false}, name="data.revisions")
      * @Route("/data/revisions/{type}:{ouuid}/{revisionId}/{compareId}", defaults={"revisionId"=false, "compareId"=false}, name="ems_content_revisions_view")
      */
-    public function revisionsDataAction($type, $ouuid, $revisionId, $compareId, Request $request, DataService $dataService, LoggerInterface $logger)
+    public function revisionsDataAction($type, $ouuid, $revisionId, $compareId, Request $request, DataService $dataService, LoggerInterface $logger, SearchService $searchService, ElasticaService $elasticaService)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -385,9 +363,14 @@ class DataController extends AppController
         /** @var ContentType $contentType */
         $contentType = $contentTypes[0];
 
-        if (!$contentType->getEnvironment()->getManaged()) {
+        $defaultEnvironment = $contentType->getEnvironment();
+        if ($defaultEnvironment === null) {
+            throw new \RuntimeException('Unexpected nul environment');
+        }
+
+        if (!$defaultEnvironment->getManaged()) {
             return $this->redirectToRoute('data.view', [
-                'environmentName' => $contentType->getEnvironment()->getName(),
+                'environmentName' => $defaultEnvironment->getName(),
                 'type' => $type,
                 'ouuid' => $ouuid
             ]);
@@ -483,45 +466,39 @@ class DataController extends AppController
         $dataFields = $this->getDataService()->getDataFieldsStructure($form->get('data'));
 
 
-        /** @var Client $client */
-        $client = $this->getElasticsearch();
-
-
         $searchForm = new Search();
         $searchForm->setContentTypes($this->getContentTypeService()->getAllNames());
-        $searchForm->setEnvironments($this->getContentTypeService()->getAllDefaultEnvironmentNames());
+        $searchForm->setEnvironments([$defaultEnvironment->getName()]);
         $searchForm->setSortBy('_uid');
         $searchForm->setSortOrder('asc');
 
         $filter = $searchForm->getFilters()[0];
         $filter->setBooleanClause('should');
-        $filter->setField($revision->getContentType()->getRefererFieldName());
+        $filter->setField($contentType->getRefererFieldName());
         $filter->setPattern(sprintf('%s:%s', $type, $ouuid));
         $filter->setOperator('term');
 
         $filter = new SearchFilter();
         $filter->setBooleanClause('should');
-        $filter->setField($revision->getContentType()->getRefererFieldName());
+        $filter->setField($contentType->getRefererFieldName());
         $filter->setPattern(sprintf('"%s:%s"', $type, $ouuid));
         $filter->setOperator('match_and');
         $searchForm->addFilter($filter);
 
         $searchForm->setMinimumShouldMatch(1);
+        $esSearch = $searchService->generateSearch($searchForm);
+        $esSearch->setSize(100);
+        $esSearch->setSources([]);
 
-        $refParams = [
-            '_source' => false,
-            'type' => $searchForm->getContentTypes(),
-            'index' => $revision->getContentType()->getEnvironment()->getAlias(),
-            'size' => 100,
-            'body' => $this->getSearchService()->generateSearchBody($searchForm),
-        ];
+        $referrerResultSet = $elasticaService->search($esSearch);
+        $referrerResponse = CommonResponse::fromResultSet($referrerResultSet);
 
         return $this->render('@EMSCore/data/revisions-data.html.twig', [
             'revision' => $revision,
             'revisionsSummary' => $revisionsSummary,
             'availableEnv' => $availableEnv,
             'object' => $revision->getObject($objectArray),
-            'referrers' => $client->search($refParams),
+            'referrerResponse' => $referrerResponse,
             'page' => $page,
             'lastPage' => $lastPage,
             'counter' => $counter,
@@ -1507,23 +1484,26 @@ class DataController extends AppController
     }
 
     /**
-     * @param array<string> $input
+     * @param array<mixed> $input
      */
     private function reorderCollection(array &$input): void
     {
-        if (is_array($input) && !empty($input)) {
-            $keys = array_keys($input);
-            if (is_int($keys[0])) {
-                sort($keys);
-                $temp = [];
-                $loop0 = 0;
-                foreach ($input as $item) {
-                    $temp[$keys[$loop0]] = $item;
-                    ++$loop0;
-                }
-                $input = $temp;
+        if (empty($input)) {
+            return;
+        }
+        $keys = \array_keys($input);
+        if (\is_int($keys[0])) {
+            \sort($keys);
+            $temp = [];
+            $loop0 = 0;
+            foreach ($input as $item) {
+                $temp[$keys[$loop0]] = $item;
+                ++$loop0;
             }
-            foreach ($input as &$elem) {
+            $input = $temp;
+        }
+        foreach ($input as &$elem) {
+            if (\is_array($elem)) {
                 $this->reorderCollection($elem);
             }
         }

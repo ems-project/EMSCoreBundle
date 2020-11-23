@@ -422,10 +422,10 @@ services:
 ### regular services
     ems.service.mapping:
         class: EMS\CoreBundle\Service\Mapping
-        arguments: ['@app.elasticsearch', '@EMS\CoreBundle\Service\EnvironmentService', '@ems.form.fieldtype.fieldtypetype', '@ems.service.elasticsearch', '@ems_common.service.elastica', '%ems_core.instance_id%']
+        arguments: ['@ems_common.elastica.client', '@EMS\CoreBundle\Service\EnvironmentService', '@ems.form.fieldtype.fieldtypetype', '@ems.service.elasticsearch', '@ems_common.service.elastica', '%ems_core.instance_id%']
     EMS\CoreBundle\Service\DataService:
         class: EMS\CoreBundle\Service\DataService
-        arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '%ems_core.lock_time%', '@app.elasticsearch', '@ems.service.mapping', '%ems_core.instance_id%', '@session', '@form.factory', '@service_container', '@form.registry', '@event_dispatcher', '@ems.service.contenttype', '%ems_core.private_key%', '@logger', '@ems_common.storage.manager', '@twig', '@app.twig_extension', '@ems.service.user', '@EMS\CoreBundle\Repository\RevisionRepository', '@ems.service.environment']
+        arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '%ems_core.lock_time%', '@app.elasticsearch', '@ems.service.mapping', '%ems_core.instance_id%', '@session', '@form.factory', '@service_container', '@form.registry', '@event_dispatcher', '@ems.service.contenttype', '%ems_core.private_key%', '@logger', '@ems_common.storage.manager', '@twig', '@app.twig_extension', '@ems.service.user', '@EMS\CoreBundle\Repository\RevisionRepository', '@ems.service.environment', '@ems.service.search']
         tags:
             - { name: kernel.event_listener, event: ems_core.revision.update_referers, method: updateReferers, priority: 0 }
     ems.service.revision:
@@ -437,7 +437,7 @@ services:
     EMS\CoreBundle\Service\AliasService: '@ems.service.alias'
     ems.service.index:
         class: EMS\CoreBundle\Service\IndexService
-        arguments: ['@ems.service.alias', '@app.elasticsearch', '@logger']
+        arguments: ['@ems.service.alias', '@ems_common.elastica.client', '@ems.service.contenttype', '@logger', '@ems.service.mapping']
     EMS\CoreBundle\Service\IndexService: '@ems.service.index'
     ems.elasticsearch.bulker:
         class: EMS\CoreBundle\Elasticsearch\Bulker
@@ -456,7 +456,7 @@ services:
         arguments: ['@doctrine', '@session', '@ems.service.user', '@security.authorization_checker', '@service_container', '@logger', '@app.elasticsearch', '@ems_common.service.elastica', '%ems_core.single_type_index%']
     ems.service.contenttype: '@EMS\CoreBundle\Service\ContentTypeService'
     EMS\CoreBundle\Service\ContentTypeService:
-        arguments: ['@doctrine', '@logger', '@ems.service.mapping', '@app.elasticsearch', '@ems.service.environment', '@form.registry', '@translator', '%ems_core.instance_id%', '%ems_core.single_type_index%']
+        arguments: ['@doctrine', '@logger', '@ems.service.mapping', '@app.elasticsearch', '@ems_common.service.elastica', '@ems.service.environment', '@form.registry', '@translator', '%ems_core.instance_id%', '%ems_core.single_type_index%']
     ems.service.user:
         class: EMS\CoreBundle\Service\UserService
         arguments: ['@doctrine', '@session', '@security.token_storage', '%security.role_hierarchy.roles%']
@@ -502,7 +502,7 @@ services:
             - { name: kernel.cache_warmer }
     ems.service.search:
         class: EMS\CoreBundle\Service\SearchService
-        arguments: ['@ems.service.mapping', '@ems_common.service.elastica', '@ems.service.environment']
+        arguments: ['@ems.service.mapping', '@ems_common.service.elastica', '@ems.service.environment', '@ems.service.contenttype']
     ems.service.file:
         class: EMS\CoreBundle\Service\FileService
         arguments: ['@doctrine', '@ems_common.storage.manager', '@ems_common.storage.processor', '%kernel.project_dir%']
@@ -587,7 +587,7 @@ services:
             -  { name: console.command }
     ems.environment.recompute:
         class: EMS\CoreBundle\Command\RecomputeCommand
-        arguments: ['@ems.service.data', '@doctrine', '@form.factory', '@ems.service.publish', '@logger', '@app.elasticsearch', '@ems.service.contenttype', '@EMS\CoreBundle\Repository\ContentTypeRepository', '@EMS\CoreBundle\Repository\RevisionRepository']
+        arguments: ['@ems.service.data', '@doctrine', '@form.factory', '@ems.service.publish', '@logger', '@app.elasticsearch', '@ems.service.contenttype', '@EMS\CoreBundle\Repository\ContentTypeRepository', '@EMS\CoreBundle\Repository\RevisionRepository', '@ems.service.index', '@ems.service.search']
         tags:
             -  { name: console.command }
     ems.environment.removeexpiredsubmissions:
@@ -723,6 +723,7 @@ services:
     EMS\CoreBundle\Service\SearchService: '@ems.service.search'
     EMS\CoreBundle\Service\PublishService: '@ems.service.publish'
     EMS\CoreBundle\Service\AggregateOptionService: '@ems.service.aggregate_option'
+    EMS\CoreBundle\Service\Mapping: '@ems.service.mapping'
 
 
 

@@ -2,7 +2,10 @@
 
 namespace EMS\CoreBundle\Service;
 
-use Elasticsearch\Client;
+use Elastica\Client;
+use Elasticsearch\Endpoints\Index;
+use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\Revision;
 use Psr\Log\LoggerInterface;
 
 final class IndexService
@@ -13,12 +16,18 @@ final class IndexService
     private $client;
     /** @var LoggerInterface */
     private $logger;
+    /** @var ContentTypeService */
+    private $contentTypeService;
+    /** @var Mapping */
+    private $mapping;
 
-    public function __construct(AliasService $aliasService, Client $client, LoggerInterface $logger)
+    public function __construct(AliasService $aliasService, Client $client, ContentTypeService $contentTypeService, LoggerInterface $logger, Mapping $mapping)
     {
         $this->aliasService = $aliasService;
         $this->client = $client;
         $this->logger = $logger;
+        $this->contentTypeService = $contentTypeService;
+        $this->mapping = $mapping;
     }
 
     public function deleteOrphanIndexes(): void
@@ -26,9 +35,7 @@ final class IndexService
         $this->aliasService->build();
         foreach ($this->aliasService->getOrphanIndexes() as $index) {
             try {
-                $this->client->indices()->delete([
-                    'index' => $index['name'],
-                ]);
+                $this->client->getIndex($index['name'])->delete();
                 $this->logger->notice('log.index.delete_orphan_index', [
                     'index_name' => $index['name'],
                 ]);
@@ -38,5 +45,26 @@ final class IndexService
                 ]);
             }
         }
+    }
+
+    public function indexRevision(Revision $revision, ?Environment $environment = null): void
+    {
+        $contentType = $revision->getContentType();
+        if ($contentType === null) {
+            throw new \RuntimeException('Unexpected null content type');
+        }
+        if ($environment === null) {
+            $environment = $contentType->getEnvironment();
+        }
+        if ($environment === null) {
+            throw new \RuntimeException('Unexpected null environment');
+        }
+
+        $endpoint = new Index();
+        $endpoint->setType($this->mapping->getTypeName($contentType));
+        $endpoint->setIndex($this->contentTypeService->getIndex($contentType, $environment));
+        $endpoint->setBody($revision->getRawData());
+        $endpoint->setID($revision->getOuuid());
+        $this->client->requestEndpoint($endpoint);
     }
 }

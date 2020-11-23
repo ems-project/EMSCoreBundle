@@ -7,7 +7,7 @@ use Symfony\Component\Form\ChoiceList\ChoiceListInterface;
 
 class ObjectChoiceList implements ChoiceListInterface
 {
-    /** @var ObjectChoiceCacheService $objectChoiceCacheService */
+    /** @var ObjectChoiceCacheService */
     private $objectChoiceCacheService;
 
     private $types;
@@ -54,7 +54,7 @@ class ObjectChoiceList implements ChoiceListInterface
      */
     public function getValues()
     {
-        return array_keys($this->choices);
+        return \array_keys($this->choices);
     }
 
     /**
@@ -85,7 +85,7 @@ class ObjectChoiceList implements ChoiceListInterface
     {
         $this->choices = $this->objectChoiceCacheService->load($choices, $this->circleOnly, $this->withWarning);
 
-        return array_keys($this->choices);
+        return \array_keys($this->choices);
     }
 
     /**
@@ -95,7 +95,7 @@ class ObjectChoiceList implements ChoiceListInterface
     {
         $this->choices = $this->objectChoiceCacheService->load($choices, $this->circleOnly, $this->withWarning);
 
-        return array_keys($this->choices);
+        return \array_keys($this->choices);
     }
 
     public function loadAll($types)

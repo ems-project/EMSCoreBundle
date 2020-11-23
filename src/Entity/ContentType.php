@@ -1742,7 +1742,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     {
         $this->getFieldType()->removeCircularReference();
 
-        $json = new JsonClass(get_object_vars($this), __CLASS__);
+        $json = new JsonClass(\get_object_vars($this), __CLASS__);
         $json->removeProperty('id');
         $json->removeProperty('environment');
         $json->handlePersistentCollections('templates', 'views', 'singleTypeIndexes');
@@ -1889,7 +1889,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
      */
     public function getDisabledDataFields(): array
     {
-        return array_filter([
+        return \array_filter([
             $this->getVersionDateFromField(),
             $this->getVersionDateToField(),
         ]);

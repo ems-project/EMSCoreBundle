@@ -28,9 +28,9 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 class DataLinkFieldType extends DataFieldType
 {
-    /** @var Client $client */
+    /** @var Client */
     protected $client;
-    /** @var EventDispatcherInterface $dispatcher */
+    /** @var EventDispatcherInterface */
     protected $dispatcher;
 
     /**
@@ -82,16 +82,16 @@ class DataLinkFieldType extends DataFieldType
      */
     public function getElasticsearchQuery(DataField $dataField, array $options = [])
     {
-        $opt = array_merge([
+        $opt = \array_merge([
                 'nested' => '',
         ], $options);
-        if (strlen($opt['nested'])) {
+        if (\strlen($opt['nested'])) {
             $opt['nested'] .= '.';
         }
 
         $data = $dataField->getRawData();
         $out = [];
-        if (is_array($data)) {
+        if (\is_array($data)) {
             $out = [
                 'terms' => [
                         $opt['nested'].$dataField->getFieldType()->getName() => $data,
@@ -147,10 +147,10 @@ class DataLinkFieldType extends DataFieldType
             $rawData = $data->getRawData();
 
             if (!empty($rawData)) {
-                usort($rawData, function ($a, $b) use ($event) {
+                \usort($rawData, function ($a, $b) use ($event) {
                     if (!empty($event->getData()['value'])) {
-                        $indexA = array_search($a, $event->getData()['value']);
-                        $indexB = array_search($b, $event->getData()['value']);
+                        $indexA = \array_search($a, $event->getData()['value']);
+                        $indexB = \array_search($b, $event->getData()['value']);
                         if (false === $indexA || $indexA > $indexB) {
                             return 1;
                         }
@@ -234,9 +234,9 @@ class DataLinkFieldType extends DataFieldType
         /** @var ObjectChoiceLoader $loader */
         $loader = $objectPickerType->getChoiceListFactory()->createLoader($fieldType->getDisplayOptions()['type'], true /*count($choices) == 0 || !$fieldType->getDisplayOptions()['dynamicLoading']*/);
         $all = $loader->loadAll();
-        if (count($choices) > 0) {
+        if (\count($choices) > 0) {
             foreach ($all as $key => $data) {
-                if (!in_array($key, $choices)) {
+                if (!\in_array($key, $choices)) {
                     unset($all[$key]);
                 }
             }
@@ -293,23 +293,23 @@ class DataLinkFieldType extends DataFieldType
             $temp = [];
             if (null === $data) {
                 $out->setRawData([]);
-            } elseif (is_array($data)) {
+            } elseif (\is_array($data)) {
                 foreach ($data as $item) {
-                    if (is_string($item)) {
+                    if (\is_string($item)) {
                         $temp[] = $item;
                     } else {
-                        $out->addMessage('Some data was not able to be imported: '.json_encode($item));
+                        $out->addMessage('Some data was not able to be imported: '.\json_encode($item));
                     }
                 }
-            } elseif (is_string($data)) {
+            } elseif (\is_string($data)) {
                 $temp[] = $data;
                 $out->addMessage('Data converted into array');
             } else {
-                $out->addMessage('Data was not able to be imported: '.json_encode($data));
+                $out->addMessage('Data was not able to be imported: '.\json_encode($data));
             }
             $out->setRawData($temp);
         } else {
-            if (is_string($data)) {
+            if (\is_string($data)) {
                 return $out;
             }
             if (empty($data)) {
@@ -318,18 +318,18 @@ class DataLinkFieldType extends DataFieldType
                 return $out;
             }
 
-            if (is_array($data)) {
-                if (0 == count($data)) {
+            if (\is_array($data)) {
+                if (0 == \count($data)) {
                     $out->setRawData(null);
-                } elseif (is_string($data[0])) {
+                } elseif (\is_string($data[0])) {
                     $out->setRawData($data[0]);
-                    if (count($data) > 0) {
+                    if (\count($data) > 0) {
                         $out->addMessage('Data converted into string, somae data migth be lost');
                     }
                 }
             } else {
                 $out->setRawData(null);
-                $out->addMessage('Data was not able to be imported: '.json_encode($data));
+                $out->addMessage('Data was not able to be imported: '.\json_encode($data));
             }
         }
 

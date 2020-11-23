@@ -18,7 +18,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 class NotificationRepository extends \Doctrine\ORM\EntityRepository
 {
-    /** @var AuthorizationCheckerInterface $authorizationChecker */
+    /** @var AuthorizationCheckerInterface */
     protected $authorizationChecker;
 
     public function setAuthorizationChecker(AuthorizationCheckerInterface $authorizationChecker)
@@ -300,7 +300,7 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
                 if (empty($template->getCirclesTo())) {
                     $templateIds[] = $template->getId();
                 } else {
-                    $commonCircle = array_intersect($circles, $template->getCirclesTo());
+                    $commonCircle = \array_intersect($circles, $template->getCirclesTo());
                     if (!empty($commonCircle) || $this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT')) {
                         $templateIds[] = $template->getId();
                     }
@@ -335,7 +335,7 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
         foreach ($results as $template) {
             /** @var \EMS\CoreBundle\Entity\Environment $environment */
             foreach ($template->getEnvironments() as $environment) {
-                if (empty($environment->getCircles()) || count(array_intersect($environment->getCircles(), $user->getCircles())) > 0) {
+                if (empty($environment->getCircles()) || \count(\array_intersect($environment->getCircles(), $user->getCircles())) > 0) {
                     $templateIds[] = $template->getId();
                     break;
                 }

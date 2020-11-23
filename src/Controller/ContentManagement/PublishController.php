@@ -91,10 +91,10 @@ class PublishController extends AbstractController
         $requestBis->setMethod('GET');
         $searchForm->handleRequest($requestBis);
 
-        if (1 !== count($search->getEnvironments())) {
+        if (1 !== \count($search->getEnvironments())) {
             throw new NotFoundHttpException('Environment not found');
         }
-        if (1 !== count($search->getContentTypes())) {
+        if (1 !== \count($search->getContentTypes())) {
             throw new NotFoundHttpException('Content type not found');
         }
 
@@ -124,7 +124,7 @@ class PublishController extends AbstractController
         $form = $builder->getForm();
         $form->handleRequest($request);
 
-        $body['query']['bool']['must'] = array_merge($body['query']['bool']['must'] ?? [], [['term' => [EMSSource::FIELD_CONTENT_TYPE => $contentType->getName()]]]);
+        $body['query']['bool']['must'] = \array_merge($body['query']['bool']['must'] ?? [], [['term' => [EMSSource::FIELD_CONTENT_TYPE => $contentType->getName()]]]);
         $counter = $client->search([
             'index' => $environment->getAlias(),
             'body' => $body,
@@ -134,7 +134,7 @@ class PublishController extends AbstractController
         $total = $counter['hits']['total'];
 
         if ($form->isSubmitted()) {
-            $command = sprintf(
+            $command = \sprintf(
                 'ems:environment:align %s %s --force --searchQuery=%s',
                 $environment->getName(),
                 $form->get('toEnvironment')->getData(),

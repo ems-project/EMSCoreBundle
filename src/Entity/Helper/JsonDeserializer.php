@@ -51,14 +51,14 @@ abstract class JsonDeserializer
 
     private function isJsonClassArray($array): bool
     {
-        if (!is_array($array)) {
+        if (!\is_array($array)) {
             return false;
         }
 
         $keys = [JsonClass::CLASS_INDEX, JsonClass::CONSTRUCTOR_ARGUMNETS_INDEX, JsonClass::PROPERTIES_INDEX];
 
         foreach ($keys as $key) {
-            if (!array_key_exists($key, $array)) {
+            if (!\array_key_exists($key, $array)) {
                 return false;
             }
         }

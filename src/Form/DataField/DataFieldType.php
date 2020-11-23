@@ -23,9 +23,9 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 abstract class DataFieldType extends AbstractType
 {
-    /** @var AuthorizationCheckerInterface $authorizationChecker */
+    /** @var AuthorizationCheckerInterface */
     protected $authorizationChecker;
-    /** @var FormRegistryInterface $formRegistry */
+    /** @var FormRegistryInterface */
     protected $formRegistry;
     /** @var ElasticsearchService */
     protected $elasticsearchService;
@@ -77,7 +77,7 @@ abstract class DataFieldType extends AbstractType
     {
         $out = new DataField();
 
-        if ((is_string($data) && '' === $data) || (is_array($data) && 0 === count($data))) {
+        if ((\is_string($data) && '' === $data) || (\is_array($data) && 0 === \count($data))) {
             $out->setRawData(null);
         } else {
             $out->setRawData($data);
@@ -172,7 +172,7 @@ abstract class DataFieldType extends AbstractType
 
     public function isDisabled($options)
     {
-        if (0 === strcmp('cli', php_sapi_name())) {
+        if (0 === \strcmp('cli', \php_sapi_name())) {
             return false;
         }
 
@@ -195,7 +195,7 @@ abstract class DataFieldType extends AbstractType
      */
     public function getElasticsearchQuery(DataField $dataField, array $options = [])
     {
-        throw new \Exception('virtual method should be implemented by child class : '.get_class($this));
+        throw new \Exception('virtual method should be implemented by child class : '.\get_class($this));
     }
 
     /**
@@ -365,7 +365,7 @@ abstract class DataFieldType extends AbstractType
             return true;
         }
 
-        return 0 === count($dataField->getMessages()) && $this->isMandatory($dataField, $parent, $masterRawData);
+        return 0 === \count($dataField->getMessages()) && $this->isMandatory($dataField, $parent, $masterRawData);
     }
 
     /**
@@ -382,7 +382,7 @@ abstract class DataFieldType extends AbstractType
             if (null === $parent || !isset($restrictionOptions['mandatory_if']) || null === $parent->getRawData() || !empty($this->resolve($masterRawData ?? [], $parent->getRawData(), $restrictionOptions['mandatory_if']))) {
                 //Get rawData
                 $rawData = $dataField->getRawData();
-                if (null === $rawData || (is_string($rawData) && '' === $rawData) || (is_array($rawData) && 0 === count($rawData))) {
+                if (null === $rawData || (\is_string($rawData) && '' === $rawData) || (\is_array($rawData) && 0 === \count($rawData))) {
                     $isValidMandatory = false;
                     $dataField->addMessage('Empty field');
                 }
@@ -395,17 +395,17 @@ abstract class DataFieldType extends AbstractType
     public static function resolve(array $rawData, array $parentRawData, $path, $default = null)
     {
         $current = $rawData;
-        if (strlen($path) && '.' === substr($path, 0, 1)) {
+        if (\strlen($path) && '.' === \substr($path, 0, 1)) {
             $current = $parentRawData;
         }
 
-        $p = strtok($path, '.');
+        $p = \strtok($path, '.');
         while (false !== $p) {
             if (!isset($current[$p])) {
                 return $default;
             }
             $current = $current[$p];
-            $p = strtok('.');
+            $p = \strtok('.');
         }
 
         return $current;
@@ -474,7 +474,7 @@ abstract class DataFieldType extends AbstractType
      */
     public function generateMapping(FieldType $current, $withPipeline)
     {
-        $options = $this->elasticsearchService->updateMapping(array_merge(['type' => 'string'], array_filter($current->getMappingOptions())));
+        $options = $this->elasticsearchService->updateMapping(\array_merge(['type' => 'string'], \array_filter($current->getMappingOptions())));
 
         return [$current->getName() => $options];
     }

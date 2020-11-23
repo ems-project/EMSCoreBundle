@@ -137,14 +137,14 @@ class ManagedAliasController extends AppController
     {
         $actions = [];
         $submitted = $form->get('indexes')->getData();
-        $indexes = array_keys($form->getConfig()->getOption('indexes'));
+        $indexes = \array_keys($form->getConfig()->getOption('indexes'));
 
         if (empty($submitted)) {
             return $actions;
         }
 
         foreach ($indexes as $index) {
-            if (in_array($index, $submitted)) {
+            if (\in_array($index, $submitted)) {
                 $actions['add'][] = $index;
             } else {
                 $actions['remove'][] = $index;

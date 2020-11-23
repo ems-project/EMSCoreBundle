@@ -10,11 +10,11 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class WysiwygProfileService
 {
-    /** @var Registry $doctrine */
+    /** @var Registry */
     private $doctrine;
-    /** @var LoggerInterface $logger */
+    /** @var LoggerInterface */
     private $logger;
-    /** @var TranslatorInterface $translator */
+    /** @var TranslatorInterface */
     private $translator;
 
     public function __construct(Registry $doctrine, LoggerInterface $logger, TranslatorInterface $translator)

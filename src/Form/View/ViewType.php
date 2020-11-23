@@ -15,7 +15,7 @@ use Twig\Environment;
 
 abstract class ViewType extends AbstractType
 {
-    /** @var Environment $twig */
+    /** @var Environment */
     protected $twig;
     /** @var Client */
     protected $client;

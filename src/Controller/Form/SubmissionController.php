@@ -79,7 +79,7 @@ final class SubmissionController extends AbstractController
             $response->headers->set('Content-Type', 'application/zip');
             $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
                 ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-                sprintf('%s.zip', $formSubmission->getId())
+                \sprintf('%s.zip', $formSubmission->getId())
             ));
 
             return $response;

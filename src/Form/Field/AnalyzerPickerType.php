@@ -9,7 +9,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AnalyzerPickerType extends SelectPickerType
 {
-    /** @var Registry $doctrine */
+    /** @var Registry */
     private $doctrine;
 
     public function __construct(Registry $doctrine)

@@ -44,10 +44,10 @@ class AlignManagedAliases extends ContainerAwareCommand
     {
         $sourceName = $input->getArgument('source');
         $targetName = $input->getArgument('target');
-        if (!is_string($targetName)) {
+        if (!\is_string($targetName)) {
             throw new \RuntimeException('Target name as to be a string');
         }
-        if (!is_string($sourceName)) {
+        if (!\is_string($sourceName)) {
             throw new \RuntimeException('Source name as to be a string');
         }
 
@@ -71,12 +71,12 @@ class AlignManagedAliases extends ContainerAwareCommand
         }
 
         if (empty($actions['add']) && empty($actions['remove'])) {
-            $output->writeln(sprintf('The alias %s was already aligned to the alias %s', $targetName, $sourceName));
+            $output->writeln(\sprintf('The alias %s was already aligned to the alias %s', $targetName, $sourceName));
 
             return 0;
         }
         $this->aliasService->updateAlias($target->getAlias(), $actions);
-        $output->writeln(sprintf('The alias %s has been aligned to the alias %s', $targetName, $sourceName));
+        $output->writeln(\sprintf('The alias %s has been aligned to the alias %s', $targetName, $sourceName));
 
         return 0;
     }

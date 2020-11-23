@@ -76,7 +76,7 @@ class ContainerFieldType extends DataFieldType
         foreach ($fieldType->getChildren() as $child) {
             if (!$child->getDeleted()) {
                 /* merge the default options with the ones specified by the user */
-                $options = array_merge([
+                $options = \array_merge([
                         'metadata' => $child,
                         'label' => false,
                         'migration' => $options['migration'],

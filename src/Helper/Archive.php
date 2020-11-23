@@ -19,7 +19,7 @@ class Archive
 
     public function extractToDirectory(string $filename): string
     {
-        if (is_dir($filename)) {
+        if (\is_dir($filename)) {
             return $filename;
         }
 
@@ -41,7 +41,7 @@ class Archive
     {
         $zip = new \ZipArchive();
         if (true !== $zip->open($filename)) {
-            throw new \Exception(sprintf('Archive file %s can not be open', $filename));
+            throw new \Exception(\sprintf('Archive file %s can not be open', $filename));
         }
 
         $workingDirectory = $this->getWorkingDirectory();
@@ -53,7 +53,7 @@ class Archive
 
     private function getWorkingDirectory(): string
     {
-        $workingDirectory = tempnam(sys_get_temp_dir(), 'ArchiveHelper');
+        $workingDirectory = \tempnam(\sys_get_temp_dir(), 'ArchiveHelper');
         $filesystem = new Filesystem();
         $filesystem->remove($workingDirectory);
         $filesystem->mkdir($workingDirectory);

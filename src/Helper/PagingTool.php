@@ -21,7 +21,7 @@ class PagingTool
     {
         $this->repository = $repository;
         $this->pageSize = $pageSize;
-        $this->lastPage = ceil(count($repository->findAll()) / $pageSize);
+        $this->lastPage = \ceil(\count($repository->findAll()) / $pageSize);
         $this->page = $request->query->get('page', 1);
         $this->orderField = $request->query->get('orderField', $defaultOrderField);
         $this->orderDirection = $request->query->get('orderDirection', 'asc');

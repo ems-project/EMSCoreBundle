@@ -44,7 +44,7 @@ class CriteriaFilterType extends AbstractType
             $defaultColumn = false;
             $defaultRow = false;
 
-            $fieldPaths = preg_split('/\\r\\n|\\r|\\n/', $view->getOptions()['criteriaFieldPaths']);
+            $fieldPaths = \preg_split('/\\r\\n|\\r|\\n/', $view->getOptions()['criteriaFieldPaths']);
 
             foreach ($fieldPaths as $path) {
                 /** @var FieldType $child */
@@ -121,7 +121,7 @@ class CriteriaFilterType extends AbstractType
                     'label' => ' ',
             ]);
 
-            $fieldPaths = preg_split('/\\r\\n|\\r|\\n/', $view->getOptions()['criteriaFieldPaths']);
+            $fieldPaths = \preg_split('/\\r\\n|\\r|\\n/', $view->getOptions()['criteriaFieldPaths']);
 
             foreach ($fieldPaths as $path) {
                 /** @var FieldType $child */

@@ -46,7 +46,7 @@ class CalendarController extends AppController
             if ($field->getMappingOptions()['nested']) {
                 $rawData[$field->getName()] = $input;
             } else {
-                $rawData = array_merge($rawData, $input);
+                $rawData = \array_merge($rawData, $input);
             }
 
             $revision->setRawData($rawData);
@@ -84,7 +84,7 @@ class CalendarController extends AppController
         $form->handleRequest($request);
 
         $search = $form->getData();
-        /** @var Search $search */
+        /* @var Search $search */
         $search->setEnvironments([$view->getContentType()->getName()]);
 
         $body = $this->getSearchService()->generateSearchBody($search);

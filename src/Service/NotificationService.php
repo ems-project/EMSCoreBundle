@@ -30,24 +30,24 @@ use Twig_Environment;
 
 class NotificationService
 {
-    /** @var Registry $doctrine */
+    /** @var Registry */
     private $doctrine;
-    /** @var UserService $userService */
+    /** @var UserService */
     private $userService;
-    /** @var Logger $logger */
+    /** @var Logger */
     private $logger;
-    /** @var Session $session */
+    /** @var Session */
     private $session;
-    /** @var Container $container */
+    /** @var Container */
     private $container;
-    /** @var DataService $dataService */
+    /** @var DataService */
     private $dataService;
     private $sender;
-    /** @var Twig_Environment $twig */
+    /** @var Twig_Environment */
     private $twig;
 
     //** non-service members **
-    /** @var OutputInterface $output */
+    /** @var OutputInterface */
     private $output;
     private $dryRun;
 
@@ -528,7 +528,7 @@ class NotificationService
     {
         $fromCircles = $this->dataService->getDataCircles($notification->getRevision());
 
-        $toCircles = array_unique(array_merge($fromCircles, $notification->getTemplate()->getCirclesTo()));
+        $toCircles = \array_unique(\array_merge($fromCircles, $notification->getTemplate()->getCirclesTo()));
 
         $fromUser = $this->usersToEmailAddresses([$this->userService->getUser($notification->getUsername())]);
         $toUsers = $this->usersToEmailAddresses($this->userService->getUsersForRoleAndCircles($notification->getTemplate()->getRoleTo(), $toCircles));
@@ -555,7 +555,7 @@ class NotificationService
             $message->setSubject($notification->getTemplate().' for '.$notification->getRevision())
                 ->setFrom($this->sender['address'], $this->sender['sender_name'])
                 ->setTo($toUsers)
-                ->setCc(array_unique(array_merge($ccUsers, $fromUser)))
+                ->setCc(\array_unique(\array_merge($ccUsers, $fromUser)))
                 ->setBody($body, empty($notification->getTemplate()->getEmailContentType()) ? 'text/html' : $notification->getTemplate()->getEmailContentType());
             $notification->setEmailed(new DateTime());
         } else {
@@ -570,7 +570,7 @@ class NotificationService
             $message->setSubject($notification->getTemplate().' for '.$notification->getRevision().' has been '.$notification->getStatus())
                 ->setFrom($this->sender['address'], $this->sender['sender_name'])
                 ->setTo($fromUser)
-                ->setCc(array_unique(array_merge($ccUsers, $toUsers)))
+                ->setCc(\array_unique(\array_merge($ccUsers, $toUsers)))
                 ->setBody($body, 'text/html');
             $notification->setResponseEmailed(new DateTime());
         }

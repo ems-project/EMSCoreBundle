@@ -48,7 +48,7 @@ class CriteriaUpdateConfig
             throw new \Exception('Should never happen');
         }
 
-        $fieldPaths = preg_split('/\\r\\n|\\r|\\n/', $view->getOptions()['criteriaFieldPaths']);
+        $fieldPaths = \preg_split('/\\r\\n|\\r|\\n/', $view->getOptions()['criteriaFieldPaths']);
 
         foreach ($fieldPaths as $path) {
             $child = $criteriaField->getChildByPath($path);

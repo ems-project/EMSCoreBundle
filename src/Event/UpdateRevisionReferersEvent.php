@@ -45,7 +45,7 @@ class UpdateRevisionReferersEvent extends Event
      */
     public function getToCleanOuuids()
     {
-        return array_diff($this->toClean, $this->toCreate);
+        return \array_diff($this->toClean, $this->toCreate);
     }
 
     /**
@@ -55,7 +55,7 @@ class UpdateRevisionReferersEvent extends Event
      */
     public function getToCreateOuuids()
     {
-        return array_diff($this->toCreate, $this->toClean);
+        return \array_diff($this->toCreate, $this->toClean);
     }
 
     /**

@@ -28,7 +28,7 @@ class UploadedAssetRepository extends \Doctrine\ORM\EntityRepository
         ]);
 
         try {
-            return intval($qb->getQuery()->getSingleScalarResult());
+            return \intval($qb->getQuery()->getSingleScalarResult());
         } catch (NonUniqueResultException $e) {
             return 0;
         }
@@ -52,7 +52,7 @@ class UploadedAssetRepository extends \Doctrine\ORM\EntityRepository
 
         $out = [];
         foreach ($qb->getQuery()->getArrayResult() as $record) {
-            if (isset($record['hash']) && is_string($record['hash'])) {
+            if (isset($record['hash']) && \is_string($record['hash'])) {
                 $out[] = ['hash' => $record['hash']];
             }
         }
@@ -93,6 +93,6 @@ class UploadedAssetRepository extends \Doctrine\ORM\EntityRepository
         if (null === $uploadedAsset || $uploadedAsset instanceof UploadedAsset) {
             return $uploadedAsset;
         }
-        throw new \RuntimeException(\sprintf('Unexpected class object %s', get_class($uploadedAsset)));
+        throw new \RuntimeException(\sprintf('Unexpected class object %s', \get_class($uploadedAsset)));
     }
 }

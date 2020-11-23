@@ -13,11 +13,11 @@ use Symfony\Component\HttpFoundation\Session\Session;
 class ObjectChoiceListFactory extends DefaultChoiceListFactory
 {
     private $client;
-    /** @var Session $session */
+    /** @var Session */
     private $session;
-    /** @var ContentTypeService $contentTypes */
+    /** @var ContentTypeService */
     private $contentTypes;
-    /** @var ObjectChoiceCacheService $objectChoiceCacheService */
+    /** @var ObjectChoiceCacheService */
     private $objectChoiceCacheService;
 
     /**

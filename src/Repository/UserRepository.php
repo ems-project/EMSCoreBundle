@@ -25,7 +25,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserRepos
         if (!empty($circles)) {
             /** @var \EMS\CoreBundle\Entity\UserInterface $user */
             foreach ($resultSet as $idx => $user) {
-                if (empty(array_intersect($circles, $user->getCircles()))) {
+                if (empty(\array_intersect($circles, $user->getCircles()))) {
                     unset($resultSet[$idx]);
                 }
             }

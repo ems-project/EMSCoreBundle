@@ -66,7 +66,7 @@ class ExportDocumentsCommand extends EmsCommand
             ->addArgument(
                 'format',
                 InputArgument::OPTIONAL,
-                sprintf('The format of the output: %s or the id of the content type\' template', \implode(', ', TemplateService::EXPORT_FORMATS)),
+                \sprintf('The format of the output: %s or the id of the content type\' template', \implode(', ', TemplateService::EXPORT_FORMATS)),
                 'json'
             )
             ->addArgument(
@@ -113,11 +113,11 @@ class ExportDocumentsCommand extends EmsCommand
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $contentTypeName = $input->getArgument('contentTypeName');
-        if (!is_string($contentTypeName)) {
+        if (!\is_string($contentTypeName)) {
             throw new \RuntimeException('Unexpected content type name argument');
         }
         $format = $input->getArgument('format');
-        if (!is_string($format)) {
+        if (!\is_string($format)) {
             throw new \RuntimeException('Unexpected format argument');
         }
         $scrollSize = $input->getOption('scrollSize');
@@ -129,7 +129,7 @@ class ExportDocumentsCommand extends EmsCommand
         }
         $contentType = $this->contentTypeService->getByName($contentTypeName);
         if (!$contentType instanceof ContentType) {
-            $output->writeln(sprintf('WARNING: Content type named %s not found', $contentType));
+            $output->writeln(\sprintf('WARNING: Content type named %s not found', $contentType));
 
             return -1;
         }
@@ -143,12 +143,12 @@ class ExportDocumentsCommand extends EmsCommand
             $index = $environment->getAlias();
             $environmentName = $environment->getName();
         } else {
-            if (!is_string($environmentName)) {
+            if (!\is_string($environmentName)) {
                 throw new \RuntimeException('Environment name as to be a string');
             }
             $environment = $this->environmentService->getByName($environmentName);
             if (false === $environment) {
-                $output->writeln(sprintf('WARNING: Environment named %s not found', $environmentName));
+                $output->writeln(\sprintf('WARNING: Environment named %s not found', $environmentName));
 
                 return -1;
             }
@@ -175,7 +175,7 @@ class ExportDocumentsCommand extends EmsCommand
         $zip = new ZipArchive();
         $zip->open($outZipPath, ZIPARCHIVE::CREATE);
         $extension = '';
-        if (!in_array($format, TemplateService::EXPORT_FORMATS)) {
+        if (!\in_array($format, TemplateService::EXPORT_FORMATS)) {
             $this->templateService->init($format);
             $useTemplate = true;
             $accumulateInOneFile = $this->templateService->getTemplate()->getAccumulateInOneFile();
@@ -183,14 +183,14 @@ class ExportDocumentsCommand extends EmsCommand
                 $extension = '.'.$this->templateService->getTemplate()->getExtension();
             }
         } else {
-            $accumulateInOneFile = in_array($format, [TemplateService::MERGED_JSON_FORMAT, TemplateService::MERGED_XML_FORMAT]);
+            $accumulateInOneFile = \in_array($format, [TemplateService::MERGED_JSON_FORMAT, TemplateService::MERGED_XML_FORMAT]);
             $useTemplate = false;
             if (false !== \strpos($format, TemplateService::JSON_FORMAT)) {
                 $extension = '.json';
             } elseif (false !== \strpos($format, TemplateService::XML_FORMAT)) {
                 $extension = '.xml';
             } else {
-                $output->writeln(sprintf('WARNING: Format %s not found', $format));
+                $output->writeln(\sprintf('WARNING: Format %s not found', $format));
 
                 return -1;
             }
@@ -205,7 +205,7 @@ class ExportDocumentsCommand extends EmsCommand
             'last' => (1 === $total),
         ];
 
-        while (isset($arrayElasticsearchIndex['hits']['hits']) && count($arrayElasticsearchIndex['hits']['hits']) > 0) {
+        while (isset($arrayElasticsearchIndex['hits']['hits']) && \count($arrayElasticsearchIndex['hits']['hits']) > 0) {
             foreach ($arrayElasticsearchIndex['hits']['hits'] as $value) {
                 if (null !== $contentType->getBusinessIdField() && isset($value['_source'][$contentType->getBusinessIdField()])) {
                     $filename = $value['_source'][$contentType->getBusinessIdField()].$extension;
@@ -270,21 +270,21 @@ class ExportDocumentsCommand extends EmsCommand
 
         if ($accumulateInOneFile) {
             if ($useTemplate) {
-                $accumulatedContent = implode('', $accumulatedContent);
+                $accumulatedContent = \implode('', $accumulatedContent);
             } elseif (false !== \strpos($format, TemplateService::JSON_FORMAT)) {
                 $accumulatedContent = \json_encode($accumulatedContent);
             } elseif (false !== \strpos($format, TemplateService::XML_FORMAT)) {
                 $accumulatedContent = $this->templateService->getXml($contentType, $accumulatedContent, true);
             } else {
-                $output->writeln(sprintf('WARNING: Format %s not found', $format));
+                $output->writeln(\sprintf('WARNING: Format %s not found', $format));
 
                 return -1;
             }
             $zip->addFromString('emsExport'.$extension, $accumulatedContent);
         }
 
-        if (sizeof($errorList) > 0) {
-            $zip->addFromString('All-Errors.txt', implode("\n", $errorList));
+        if (\sizeof($errorList) > 0) {
+            $zip->addFromString('All-Errors.txt', \implode("\n", $errorList));
         }
 
         $zip->close();

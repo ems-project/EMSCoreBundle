@@ -56,8 +56,8 @@ class DateTimeFieldType extends DataFieldType
             'attr' => [
                 'class' => 'datetime-picker',
                 'data-date-format' => $fieldType->getDisplayOption('displayFormat', 'D/MM/YYYY HH:mm:ss'),
-                'data-date-days-of-week-disabled' => sprintf('[%s]', $fieldType->getDisplayOption('daysOfWeekDisabled')),
-                'data-date-disabled-hours' => sprintf('[%s]', $fieldType->getDisplayOption('hoursDisabled')),
+                'data-date-days-of-week-disabled' => \sprintf('[%s]', $fieldType->getDisplayOption('daysOfWeekDisabled')),
+                'data-date-disabled-hours' => \sprintf('[%s]', $fieldType->getDisplayOption('hoursDisabled')),
             ],
         ]);
     }
@@ -70,9 +70,9 @@ class DateTimeFieldType extends DataFieldType
     public function generateMapping(FieldType $current, $withPipeline): array
     {
         return [
-            $current->getName() => array_merge(
+            $current->getName() => \array_merge(
                 ['type' => 'date', 'format' => 'date_time_no_millis'],
-                array_filter($current->getMappingOptions())
+                \array_filter($current->getMappingOptions())
             ),
         ];
     }
@@ -116,7 +116,7 @@ class DateTimeFieldType extends DataFieldType
         $data = parent::viewTransform($dataField);
         $value = null;
 
-        if (is_string($data) && '' !== $data) {
+        if (\is_string($data) && '' !== $data) {
             $dateTime = \DateTimeImmutable::createFromFormat(\DateTimeImmutable::ATOM, $data);
             $value = $dateTime ? $dateTime->format(\DateTimeImmutable::ATOM) : null;
         }
@@ -147,7 +147,7 @@ class DateTimeFieldType extends DataFieldType
         $dateTime = \DateTimeImmutable::createFromFormat(\DateTimeImmutable::ATOM, $value);
 
         if (false === $dateTime) {
-            throw new DataFormatException(sprintf('Invalid parse format %s or ATOM for date string: %s', $parseFormat, $value));
+            throw new DataFormatException(\sprintf('Invalid parse format %s or ATOM for date string: %s', $parseFormat, $value));
         }
 
         return parent::reverseViewTransform($dateTime->format(\DateTimeImmutable::ATOM), $fieldType);

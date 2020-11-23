@@ -46,7 +46,7 @@ class SearchFormType extends AbstractType
 
         $searchFields = [];
         $searchFieldsData = [];
-        /** @var SortOption $sortOption */
+        /* @var SortOption $sortOption */
         foreach ($this->searchFieldOptionService->getAll() as $searchFieldOption) {
             $searchFieldsData[$searchFieldOption->getName()] = $searchFieldOption->getField();
             $searchFields[$searchFieldOption->getName()] = $searchFieldOption;

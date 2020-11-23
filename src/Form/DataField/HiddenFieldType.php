@@ -54,7 +54,7 @@ class HiddenFieldType extends DataFieldType
     {
         $out = parent::viewTransform($dataField);
 
-        return ['value' => json_encode($out)];
+        return ['value' => \json_encode($out)];
     }
 
     /**
@@ -66,7 +66,7 @@ class HiddenFieldType extends DataFieldType
     {
         $dataField = parent::reverseViewTransform($data, $fieldType);
         try {
-            $value = json_decode($data['value']);
+            $value = \json_decode($data['value']);
             $dataField->setRawData($value);
         } catch (\Exception $e) {
             $dataField->setRawData(null);

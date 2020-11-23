@@ -9,7 +9,7 @@ use EMS\CoreBundle\Repository\I18nRepository;
 
 class I18nService
 {
-    /** @var Registry $doctrine */
+    /** @var Registry */
     private $doctrine;
     /** @var I18nRepository */
     private $repository;

@@ -53,7 +53,7 @@ class CollectionFieldType extends DataFieldType
     {
         $migrationOptions = $dataField->getFieldType()->getMigrationOptions();
         if (!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {
-            if (!is_array($sourceArray)) {
+            if (!\is_array($sourceArray)) {
                 $sourceArray = [$sourceArray];
             }
 
@@ -70,7 +70,7 @@ class CollectionFieldType extends DataFieldType
                         $grandChild->setParent($colItem);
                         $grandChild->setFieldType($childFieldType);
                         $this->dataService->updateDataStructure($childFieldType, $grandChild);
-                        if (is_array($item)) {
+                        if (\is_array($item)) {
                             $this->dataService->updateDataValue($grandChild, $item, $isMigration);
                         } else {
                             $this->logger->warning('form.data_field.collection.import_not_an_array', [
@@ -144,7 +144,7 @@ class CollectionFieldType extends DataFieldType
 
         $restrictionOptions = $dataField->getFieldType()->getRestrictionOptions();
 
-        if (!empty($restrictionOptions['min']) && (null === $dataField->getRawData() ? 0 : count($dataField->getRawData())) < $restrictionOptions['min']) {
+        if (!empty($restrictionOptions['min']) && (null === $dataField->getRawData() ? 0 : \count($dataField->getRawData())) < $restrictionOptions['min']) {
             if (1 == $restrictionOptions['min']) {
                 $dataField->addMessage('At least 1 item is required');
             } else {
@@ -153,7 +153,7 @@ class CollectionFieldType extends DataFieldType
             $isValid = false;
         }
 
-        if (!empty($restrictionOptions['max']) && count($dataField->getRawData()) > $restrictionOptions['max']) {
+        if (!empty($restrictionOptions['max']) && \count($dataField->getRawData()) > $restrictionOptions['max']) {
             $dataField->addMessage('Too many items (max '.$restrictionOptions['max'].')');
             $isValid = false;
         }

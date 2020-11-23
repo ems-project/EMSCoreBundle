@@ -65,7 +65,7 @@ class FileController extends AbstractController
         try {
             $data = $assetExtractorService->extractData($sha1, null, $forced);
         } catch (NotFoundException $e) {
-            throw new NotFoundHttpException(sprintf('Asset %s not found', $sha1));
+            throw new NotFoundHttpException(\sprintf('Asset %s not found', $sha1));
         }
 
         $response = $this->render('@EMSCore/ajax/extract-data-file.json.twig', [
@@ -91,7 +91,7 @@ class FileController extends AbstractController
     public function initUploadFileAction($sha1, $size, bool $apiRoute, Request $request, FileService $fileService, LoggerInterface $logger)
     {
         if ($sha1 || $size) {
-            @trigger_error('You should use the routes emsco_file_data_init_upload or emsco_file_api_init_upload which doesn\'t require url parameters', E_USER_DEPRECATED);
+            @\trigger_error('You should use the routes emsco_file_data_init_upload or emsco_file_api_init_upload which doesn\'t require url parameters', E_USER_DEPRECATED);
         }
 
         $requestContent = $request->getContent();
@@ -99,7 +99,7 @@ class FileController extends AbstractController
             throw new \RuntimeException('Unexpected body content');
         }
 
-        $params = json_decode($requestContent, true);
+        $params = \json_decode($requestContent, true);
         $name = isset($params['name']) ? $params['name'] : 'upload.bin';
         $type = isset($params['type']) ? $params['type'] : 'application/bin';
         $hash = isset($params['hash']) ? $params['hash'] : $sha1;
@@ -148,7 +148,7 @@ class FileController extends AbstractController
     {
         if ($sha1) {
             $hash = $sha1;
-            @trigger_error('You should use the routes emsco_file_data_chunk_upload or emsco_file_api_chunk_upload which use a hash parameter', E_USER_DEPRECATED);
+            @\trigger_error('You should use the routes emsco_file_data_chunk_upload or emsco_file_api_chunk_upload which use a hash parameter', E_USER_DEPRECATED);
         }
 
         $chunk = $request->getContent();
@@ -254,7 +254,7 @@ class FileController extends AbstractController
     {
         $userObject = $this->getUser();
         if (!$userObject instanceof UserInterface) {
-            throw new \RuntimeException(sprintf('Unexpected User class %s', null === $userObject ? 'null' : get_class($userObject)));
+            throw new \RuntimeException(\sprintf('Unexpected User class %s', null === $userObject ? 'null' : \get_class($userObject)));
         }
 
         return $userObject->getUsername();

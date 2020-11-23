@@ -113,7 +113,7 @@ class Bulker
     public function index(array $config, array $body, bool $upsert = false): bool
     {
         if ($this->enableSha1) {
-            $body['_sha1'] = sha1(json_encode($body));
+            $body['_sha1'] = \sha1(\json_encode($body));
         }
 
         if ($upsert) {
@@ -139,7 +139,7 @@ class Bulker
         $body = $document->getSource();
 
         if ($this->singleIndex) {
-            $body = array_merge(['_contenttype' => $document->getType()], $body);
+            $body = \array_merge(['_contenttype' => $document->getType()], $body);
         }
 
         return $this->index($config, $body, $upsert);
@@ -190,7 +190,7 @@ class Bulker
     private function logResponse(array $response)
     {
         foreach ($response['items'] as $item) {
-            $action = array_shift($item);
+            $action = \array_shift($item);
 
             if (!isset($action['error'])) {
                 continue; //no error
@@ -206,7 +206,7 @@ class Bulker
         }
 
         $this->logger->debug('bulked {count} items in {took}ms', [
-            'count' => count($response['items']),
+            'count' => \count($response['items']),
             'took' => $response['took'],
         ]);
     }

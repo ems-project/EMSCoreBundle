@@ -97,7 +97,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
      */
     public function offsetExists($offset)
     {
-        if ((is_int($offset) || ctype_digit($offset)) && !$this->children->offsetExists($offset) && null !== $this->fieldType && $this->fieldType->getChildren()->count() > 0) {
+        if ((\is_int($offset) || \ctype_digit($offset)) && !$this->children->offsetExists($offset) && null !== $this->fieldType && $this->fieldType->getChildren()->count() > 0) {
             $value = new DataField();
             $this->initChild($value, $offset);
             $this->children->offsetSet($offset, $value);
@@ -147,7 +147,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
 
     public function propagateOuuid(string $ouuid)
     {
-        if ($this->getFieldType() && 0 == strcmp(OuuidFieldType::class, $this->getFieldType()->getType())) {
+        if ($this->getFieldType() && 0 == \strcmp(OuuidFieldType::class, $this->getFieldType()->getType())) {
             $this->setTextValue($ouuid);
         }
         foreach ($this->children as $child) {
@@ -157,11 +157,11 @@ class DataField implements \ArrayAccess, \IteratorAggregate
 
     public function __toString()
     {
-        if (null !== $this->rawData && is_string($this->rawData)) {
+        if (null !== $this->rawData && \is_string($this->rawData)) {
             return $this->rawData;
         }
 
-        return json_encode($this->rawData);
+        return \json_encode($this->rawData);
     }
 
     public function orderChildren()
@@ -170,7 +170,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
 
         if (null == $this->getFieldType()) {
             $children = $this->getParent()->getFieldType()->getChildren();
-        } elseif (0 != strcmp($this->getFieldType()->getType(), CollectionFieldType::class)) {
+        } elseif (0 != \strcmp($this->getFieldType()->getType(), CollectionFieldType::class)) {
             $children = $this->getFieldType()->getChildren();
         }
 
@@ -203,8 +203,8 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         $this->messages = [];
 
         //TODO: should use the clone method
-        $a = func_get_args();
-        $i = func_num_args();
+        $a = \func_get_args();
+        $i = \func_num_args();
         if ($i >= 1 && $a[0] instanceof DataField) {
             /** @var DataField $ancestor */
             $ancestor = $a[0];
@@ -223,10 +223,10 @@ class DataField implements \ArrayAccess, \IteratorAggregate
 
     public function __set($key, $input)
     {
-        if (0 !== strpos($key, 'ems_')) {
+        if (0 !== \strpos($key, 'ems_')) {
             throw new \Exception('unprotected ems set with key '.$key);
         } else {
-            $key = substr($key, 4);
+            $key = \substr($key, 4);
         }
 
         if (null === $input || $input instanceof DataField) {
@@ -246,7 +246,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
 
             /** @var DataField $dataField */
             foreach ($this->children as &$dataField) {
-                if (null != $dataField->getFieldType() && !$dataField->getFieldType()->getDeleted() && 0 == strcmp($key, $dataField->getFieldType()->getName())) {
+                if (null != $dataField->getFieldType() && !$dataField->getFieldType()->getDeleted() && 0 == \strcmp($key, $dataField->getFieldType()->getName())) {
                     $found = true;
                     $dataField = $input;
                     break;
@@ -308,19 +308,19 @@ class DataField implements \ArrayAccess, \IteratorAggregate
      */
     public function __get($key)
     {
-        if (0 !== strpos($key, 'ems_')) {
+        if (0 !== \strpos($key, 'ems_')) {
             throw new \Exception('unprotected ems get with key '.$key);
         } else {
-            $key = substr($key, 4);
+            $key = \substr($key, 4);
         }
 
-        if ($this->getFieldType() && 0 == strcmp($this->getFieldType()->getType(), CollectionFieldType::class)) {
+        if ($this->getFieldType() && 0 == \strcmp($this->getFieldType()->getType(), CollectionFieldType::class)) {
             //Symfony wants iterate on children
             return $this;
         } else {
             /** @var DataField $dataField */
             foreach ($this->children as $dataField) {
-                if (null != $dataField->getFieldType() && !$dataField->getFieldType()->getDeleted() && 0 == strcmp($key, $dataField->getFieldType()->getName())) {
+                if (null != $dataField->getFieldType() && !$dataField->getFieldType()->getDeleted() && 0 == \strcmp($key, $dataField->getFieldType()->getName())) {
                     return $dataField;
                 }
             }
@@ -343,17 +343,17 @@ class DataField implements \ArrayAccess, \IteratorAggregate
      */
     public function getTextValue()
     {
-        if (is_array($this->rawData) && 0 === count($this->rawData)) {
+        if (\is_array($this->rawData) && 0 === \count($this->rawData)) {
             return null; //empty array means null/empty
         }
 
-        if (null !== $this->rawData && !is_string($this->rawData)) {
-            if (is_array($this->rawData) && 1 == count($this->rawData) && is_string($this->rawData[0])) {
+        if (null !== $this->rawData && !\is_string($this->rawData)) {
+            if (\is_array($this->rawData) && 1 == \count($this->rawData) && \is_string($this->rawData[0])) {
                 $this->addMessage('String expected, single string in array instead');
 
                 return $this->rawData[0];
             }
-            $this->addMessage('String expected from the DB: '.print_r($this->rawData, true));
+            $this->addMessage('String expected from the DB: '.\print_r($this->rawData, true));
         }
 
         return $this->rawData;
@@ -425,12 +425,12 @@ class DataField implements \ArrayAccess, \IteratorAggregate
      */
     public function getFloatValue()
     {
-        if (is_array($this->rawData) && 0 === count($this->rawData)) {
+        if (\is_array($this->rawData) && 0 === \count($this->rawData)) {
             return null; //empty array means null/empty
         }
 
-        if (null !== $this->rawData && !is_finite($this->rawData)) {
-            throw new DataFormatException('Float or double expected: '.print_r($this->rawData, true));
+        if (null !== $this->rawData && !\is_finite($this->rawData)) {
+            throw new DataFormatException('Float or double expected: '.\print_r($this->rawData, true));
         }
 
         return $this->rawData;
@@ -459,7 +459,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
 
     public function addMessage($message)
     {
-        if (!in_array($message, $this->messages)) {
+        if (!\in_array($message, $this->messages)) {
             $this->messages[] = $message;
         }
     }
@@ -470,8 +470,8 @@ class DataField implements \ArrayAccess, \IteratorAggregate
             $this->rawData = null;
         } else {
             foreach ($rawData as $item) {
-                if (!is_string($item)) {
-                    throw new DataFormatException('String expected: '.print_r($item, true));
+                if (!\is_string($item)) {
+                    throw new DataFormatException('String expected: '.\print_r($item, true));
                 }
             }
             $this->rawData = $rawData;
@@ -491,8 +491,8 @@ class DataField implements \ArrayAccess, \IteratorAggregate
             return null;
         }
 
-        if (!is_array($this->rawData)) {
-            $this->addMessage('Array expected from the DB: '.print_r($this->rawData, true));
+        if (!\is_array($this->rawData)) {
+            $this->addMessage('Array expected from the DB: '.\print_r($this->rawData, true));
 
             return null;
         }
@@ -500,8 +500,8 @@ class DataField implements \ArrayAccess, \IteratorAggregate
         $textValue = $this->rawData;
 
         foreach ($textValue as $idx => $item) {
-            if (!is_string($item)) {
-                $this->addMessage('String expected for the item '.$idx.' from the DB: '.print_r($this->rawData, true));
+            if (!\is_string($item)) {
+                $this->addMessage('String expected for the item '.$idx.' from the DB: '.\print_r($this->rawData, true));
                 $textValue[$idx] = '';
             }
         }
@@ -516,20 +516,20 @@ class DataField implements \ArrayAccess, \IteratorAggregate
      */
     public function getIntegerValue()
     {
-        if (is_array($this->rawData)) {
-            $this->addMessage('Integer expected array found: '.print_r($this->rawData, true));
+        if (\is_array($this->rawData)) {
+            $this->addMessage('Integer expected array found: '.\print_r($this->rawData, true));
 
-            return count($this->rawData); //empty array means null/empty
+            return \count($this->rawData); //empty array means null/empty
         }
 
-        if (null === $this->rawData || is_int($this->rawData)) {
+        if (null === $this->rawData || \is_int($this->rawData)) {
             return $this->rawData;
-        } elseif (intval($this->rawData) || 0 === $this->rawData || '0' === $this->rawData) {
-            return intval($this->rawData);
+        } elseif (\intval($this->rawData) || 0 === $this->rawData || '0' === $this->rawData) {
+            return \intval($this->rawData);
 //             return $this->rawData;
 //             throw new DataFormatException('Integer expected: '.print_r($this->rawData, true));
         }
-        $this->addMessage('Integer expected: '.print_r($this->rawData, true));
+        $this->addMessage('Integer expected: '.\print_r($this->rawData, true));
 
         return $this->rawData;
     }
@@ -543,12 +543,12 @@ class DataField implements \ArrayAccess, \IteratorAggregate
      */
     public function setIntegerValue($rawData)
     {
-        if (null === $rawData || is_int($rawData)) {
+        if (null === $rawData || \is_int($rawData)) {
             $this->rawData = $rawData;
-        } elseif (intval($rawData) || '0' === $rawData) {
-            $this->rawData = intval($rawData);
+        } elseif (\intval($rawData) || '0' === $rawData) {
+            $this->rawData = \intval($rawData);
         } else {
-            $this->addMessage('Integer expected: '.print_r($rawData, true));
+            $this->addMessage('Integer expected: '.\print_r($rawData, true));
             $this->rawData = $rawData;
         }
 
@@ -562,12 +562,12 @@ class DataField implements \ArrayAccess, \IteratorAggregate
      */
     public function getBooleanValue()
     {
-        if (is_array($this->rawData) && 0 === count($this->rawData)) {
+        if (\is_array($this->rawData) && 0 === \count($this->rawData)) {
             return null; //empty array means null/empty
         }
 
-        if (null !== $this->rawData && !is_bool($this->rawData)) {
-            throw new DataFormatException('Boolean expected: '.print_r($this->rawData, true));
+        if (null !== $this->rawData && !\is_bool($this->rawData)) {
+            throw new DataFormatException('Boolean expected: '.\print_r($this->rawData, true));
         }
 
         return $this->rawData;
@@ -577,11 +577,11 @@ class DataField implements \ArrayAccess, \IteratorAggregate
     {
         $out = [];
         if (null !== $this->rawData) {
-            if (!is_array($this->rawData)) {
-                throw new DataFormatException('Array expected: '.print_r($this->rawData, true));
+            if (!\is_array($this->rawData)) {
+                throw new DataFormatException('Array expected: '.\print_r($this->rawData, true));
             }
             foreach ($this->rawData as $item) {
-                /** @var \DateTime $converted */
+                /* @var \DateTime $converted */
                 $out[] = \DateTime::createFromFormat(\DateTime::ISO8601, $item);
             }
         }
@@ -635,7 +635,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
      */
     public function setEncodedText($text)
     {
-        $this->rawData = json_decode($text, true);
+        $this->rawData = \json_decode($text, true);
 
         return $this;
     }
@@ -647,7 +647,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
      */
     public function getEncodedText()
     {
-        return json_encode($this->rawData);
+        return \json_encode($this->rawData);
     }
 
     /**

@@ -112,14 +112,14 @@ class RevisionType extends AbstractType
                 $builder
                     ->add('publish_version_tags', Select2Type::class, [
                         'placeholder' => $revision->getOuuid() ? 'Silent' : null,
-                        'choices' => array_combine($contentType->getVersionTags(), $contentType->getVersionTags()),
+                        'choices' => \array_combine($contentType->getVersionTags(), $contentType->getVersionTags()),
                         'mapped' => false,
                         'required' => false,
                     ])
                     ->add('publish_version', SubmitEmsType::class, [
                         'attr' => ['class' => 'btn-primary btn-sm'],
                         'icon' => 'glyphicon glyphicon-open',
-                        'label' => sprintf('Publish in %s', $environment->getName()),
+                        'label' => \sprintf('Publish in %s', $environment->getName()),
                     ]);
             } else {
                 $builder->add('publish', SubmitEmsType::class, [

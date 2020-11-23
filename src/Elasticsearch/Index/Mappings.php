@@ -48,7 +48,7 @@ class Mappings
     {
         return [
             '_all' => ['store' => true, 'enabled' => true],
-            'properties' => array_merge([
+            'properties' => \array_merge([
                 EMS::CONTENT_TYPE_FIELD => ['type' => 'keyword'],
                 EMS::HASH_FIELD => ['type' => 'keyword'],
             ], $this->defaultProperties),

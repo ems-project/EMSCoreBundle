@@ -84,15 +84,15 @@ class SynchronizeAssetCommand extends EmsCommand
                 try {
                     $this->fileService->synchroniseAsset($hash['hash']);
                 } catch (NotFoundException $e) {
-                    $message = sprintf('File not found %s', $hash['hash']);
+                    $message = \sprintf('File not found %s', $hash['hash']);
                     $output->writeln('');
-                    $output->writeln(sprintf('<comment>%s</comment>', $message));
+                    $output->writeln(\sprintf('<comment>%s</comment>', $message));
                     ++$filesInError;
                 } catch (\Throwable $e) {
                     ++$filesInError;
-                    $message = sprintf('Error with file identified by %s : %s', $hash['hash'], $e->getMessage());
+                    $message = \sprintf('Error with file identified by %s : %s', $hash['hash'], $e->getMessage());
                     $output->writeln('');
-                    $output->writeln(sprintf('<error>%s</error>', $message));
+                    $output->writeln(\sprintf('<error>%s</error>', $message));
                     $this->logger->warning($message);
                 }
                 $progress->advance();
@@ -102,7 +102,7 @@ class SynchronizeAssetCommand extends EmsCommand
         $progress->finish();
         $output->writeln('');
         if ($filesInError > 0) {
-            $output->writeln(sprintf('<comment>%d files not found or in error</comment>', $filesInError));
+            $output->writeln(\sprintf('<comment>%d files not found or in error</comment>', $filesInError));
         }
 
         return 0;

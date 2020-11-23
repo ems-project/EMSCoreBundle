@@ -34,7 +34,7 @@ final class CopyContextFactory
         $environment = $this->environmentService->getByName($name);
 
         if (false === $environment) {
-            throw new \InvalidArgumentException(sprintf('Environment %s not found', $name));
+            throw new \InvalidArgumentException(\sprintf('Environment %s not found', $name));
         }
 
         return $environment;
@@ -44,8 +44,8 @@ final class CopyContextFactory
     {
         $decoded = \json_decode($json, true);
 
-        if (null === $decoded || JSON_ERROR_NONE !== json_last_error()) {
-            throw new \InvalidArgumentException(sprintf('Invalid JSON %s (%s)', $json, json_last_error_msg()));
+        if (null === $decoded || JSON_ERROR_NONE !== \json_last_error()) {
+            throw new \InvalidArgumentException(\sprintf('Invalid JSON %s (%s)', $json, \json_last_error_msg()));
         }
 
         return $decoded;

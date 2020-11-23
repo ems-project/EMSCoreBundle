@@ -61,7 +61,7 @@ class LockCommand extends Command
         if (!$contentType instanceof ContentType) {
             throw new \RuntimeException('Content type not found');
         }
-        if (($time = strtotime($timeArgument)) === false) {
+        if (($time = \strtotime($timeArgument)) === false) {
             throw new \RuntimeException('invalid time');
         }
         $by = $input->getOption('user');
@@ -85,7 +85,7 @@ class LockCommand extends Command
         if (0 === $rows) {
             $io->error('no revisions locked, try force?');
         } else {
-            $io->success(vsprintf('%s locked %d %s revisions until %s by %s', [
+            $io->success(\vsprintf('%s locked %d %s revisions until %s by %s', [
                 ($force ? 'FORCE ' : ''),
                 $rows,
                 $contentType->getName(),

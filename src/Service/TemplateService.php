@@ -63,7 +63,7 @@ class TemplateService
 
     public function render(Document $document, ContentType $contentType, string $environment, array $extraContext = []): string
     {
-        $context = array_merge($extraContext, [
+        $context = \array_merge($extraContext, [
             'environment' => $environment,
             'contentType' => $contentType,
             'object' => $document,
@@ -104,7 +104,7 @@ class TemplateService
             if (\is_array($fieldData)) {
                 $this->addNested($xmlDocument, $child, $index, $fieldData);
             } else {
-                $child->appendChild($xmlDocument->createElement($index, htmlspecialchars($fieldData)));
+                $child->appendChild($xmlDocument->createElement($index, \htmlspecialchars($fieldData)));
             }
         }
     }

@@ -102,8 +102,8 @@ class WysiwygFieldType extends DataFieldType
     {
         $path = $this->router->generate('ems_file_view', ['sha1' => '__SHA1__'], UrlGeneratorInterface::ABSOLUTE_PATH);
 
-        $out = preg_replace_callback(
-            '/('.preg_quote(substr($path, 0, strlen($path) - 8), '/').')([^\n\r"\'\?]*)/i',
+        $out = \preg_replace_callback(
+            '/('.\preg_quote(\substr($path, 0, \strlen($path) - 8), '/').')([^\n\r"\'\?]*)/i',
             function ($matches) {
                 return 'ems://asset:'.$matches[2];
             },
@@ -130,8 +130,8 @@ class WysiwygFieldType extends DataFieldType
         }
 
         $path = $this->router->generate('ems_file_view', ['sha1' => '__SHA1__'], UrlGeneratorInterface::ABSOLUTE_PATH);
-        $path = substr($path, 0, strlen($path) - 8);
-        $out = preg_replace_callback(
+        $path = \substr($path, 0, \strlen($path) - 8);
+        $out = \preg_replace_callback(
             '/(ems:\/\/asset:)([^\n\r"\'\?]*)/i',
             function ($matches) use ($path) {
                 return $path.$matches[2];

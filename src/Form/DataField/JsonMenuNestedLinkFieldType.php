@@ -105,11 +105,11 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
             $menu = $this->decoder->jsonMenuNestedDecode($json);
 
             foreach ($menu as $item) {
-                if (\count($allowTypes) > 0 && !in_array($item->getType(), $allowTypes)) {
+                if (\count($allowTypes) > 0 && !\in_array($item->getType(), $allowTypes)) {
                     continue;
                 }
 
-                $label = implode(' > ', array_map(function (JsonMenuNested $p) {
+                $label = \implode(' > ', \array_map(function (JsonMenuNested $p) {
                     return $p->getLabel();
                 }, $item->getPath()));
 
@@ -230,24 +230,24 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
             return ['value' => []];
         }
 
-        if (is_string($temp)) {
+        if (\is_string($temp)) {
             return ['value' => [$temp]];
         }
 
-        if (is_array($temp)) {
+        if (\is_array($temp)) {
             $out = [];
             foreach ($temp as $item) {
-                if (is_string($item) || is_integer($item)) {
+                if (\is_string($item) || \is_integer($item)) {
                     $out[] = $item;
                 } else {
-                    $dataField->addMessage('Was not able to import the data : '.json_encode($temp));
+                    $dataField->addMessage('Was not able to import the data : '.\json_encode($temp));
                 }
             }
 
             return ['value' => $out];
         }
 
-        $dataField->addMessage('Was not able to import the data : '.json_encode($temp));
+        $dataField->addMessage('Was not able to import the data : '.\json_encode($temp));
 
         return ['value' => []];
     }

@@ -51,8 +51,8 @@ class ColorPickerFieldType extends DataFieldType
     public function modelTransform($data, FieldType $fieldType)
     {
         $dataField = parent::modelTransform($data, $fieldType);
-        if (null !== $data && !is_string($data)) {
-            $dataField->addMessage('Not able to import data from the database:'.json_encode($data));
+        if (null !== $data && !\is_string($data)) {
+            $dataField->addMessage('Not able to import data from the database:'.\json_encode($data));
             $dataField->setRawData(null);
         }
 

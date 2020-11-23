@@ -31,7 +31,7 @@ class JobController extends AppController
         $page = $request->query->get('page', 1);
         $from = ($page - 1) * $size;
         $total = $jobService->count();
-        $lastPage = ceil($total / $size);
+        $lastPage = \ceil($total / $size);
 
         return $this->render('@EMSCore/job/index.html.twig', [
             'jobs' => $jobService->scroll($size, $from),
@@ -134,7 +134,7 @@ class JobController extends AppController
         }
 
         $request->getSession()->save();
-        set_time_limit(0);
+        \set_time_limit(0);
         $jobService->run($job);
         $logger->notice('log.data.job.done', [
             'job_id' => $job->getId(),

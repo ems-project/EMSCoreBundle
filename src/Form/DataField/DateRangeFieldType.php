@@ -78,9 +78,9 @@ class DateRangeFieldType extends DataFieldType
 
         $format = DateRangeFieldType::convertJavascriptDateRangeFormat($options['displayOptions']['locale']['format']);
 
-        $inputs = explode(' - ', $input);
+        $inputs = \explode(' - ', $input);
 
-        if (2 == count($inputs)) {
+        if (2 == \count($inputs)) {
             $convertedDates = [];
 
             $fromConverted = \DateTime::createFromFormat($format, $inputs[0]);
@@ -198,7 +198,7 @@ class DateRangeFieldType extends DataFieldType
                 'icon' => $options['icon'],
                 'attr' => [
                     'class' => 'ems_daterangepicker',
-                    'data-display-option' => json_encode($fieldType->getDisplayOptions()),
+                    'data-display-option' => \json_encode($fieldType->getDisplayOptions()),
                 ],
         ]);
     }
@@ -227,15 +227,15 @@ class DateRangeFieldType extends DataFieldType
     {
         $dateFormat = $format;
         //see http://www.daterangepicker.com/#examples
-        $dateFormat = str_replace('DD', 'd', $dateFormat);
-        $dateFormat = str_replace('MM', 'm', $dateFormat);
-        $dateFormat = str_replace('YYYY', 'Y', $dateFormat);
-        $dateFormat = str_replace('YY', 'y', $dateFormat);
-        $dateFormat = str_replace('hh', 'h', $dateFormat);
-        $dateFormat = str_replace('HH', 'H', $dateFormat);
-        $dateFormat = str_replace('mm', 'i', $dateFormat);
-        $dateFormat = str_replace('ss', 's', $dateFormat);
-        $dateFormat = str_replace('aa', 'A', $dateFormat);
+        $dateFormat = \str_replace('DD', 'd', $dateFormat);
+        $dateFormat = \str_replace('MM', 'm', $dateFormat);
+        $dateFormat = \str_replace('YYYY', 'Y', $dateFormat);
+        $dateFormat = \str_replace('YY', 'y', $dateFormat);
+        $dateFormat = \str_replace('hh', 'h', $dateFormat);
+        $dateFormat = \str_replace('HH', 'H', $dateFormat);
+        $dateFormat = \str_replace('mm', 'i', $dateFormat);
+        $dateFormat = \str_replace('ss', 's', $dateFormat);
+        $dateFormat = \str_replace('aa', 'A', $dateFormat);
 
         return $dateFormat;
     }
@@ -287,7 +287,7 @@ class DateRangeFieldType extends DataFieldType
                     $rawData = [];
                 }
 
-                $out = array_merge($out, $rawData);
+                $out = \array_merge($out, $rawData);
             }
         }
     }

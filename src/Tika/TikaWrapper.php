@@ -52,7 +52,7 @@ class TikaWrapper
      */
     public function getWordCount($fileName)
     {
-        return str_word_count($this->getText($fileName));
+        return \str_word_count($this->getText($fileName));
     }
 
     /**

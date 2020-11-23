@@ -171,9 +171,9 @@ class IndexedAssetFieldType extends DataFieldType
      */
     public function modelTransform($data, FieldType $fieldType)
     {
-        if (is_array($data)) {
+        if (\is_array($data)) {
             foreach ($data as $id => $content) {
-                if (!in_array($id, ['sha1', 'filename', 'filesize', 'mimetype', '_date', '_author', '_language', '_content', '_title'], true)) {
+                if (!\in_array($id, ['sha1', 'filename', 'filesize', 'mimetype', '_date', '_author', '_language', '_content', '_title'], true)) {
                     unset($data[$id]);
                 } elseif ('sha1' !== $id && empty($data[$id])) {
                     unset($data[$id]);

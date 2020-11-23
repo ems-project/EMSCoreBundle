@@ -43,7 +43,7 @@ class I18nController extends Controller
         $count = $i18nService->count($filters);
         // for pagination
         $paging_size = $this->getParameter('ems_core.paging_size');
-        $lastPage = ceil($count / $paging_size);
+        $lastPage = \ceil($count / $paging_size);
         $page = $request->query->get('page', 1);
 
         $i18ns = $i18nService->findAll(($page - 1) * $paging_size, $paging_size, $filters);
@@ -113,7 +113,7 @@ class I18nController extends Controller
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $em = $this->getDoctrine()->getManager();
             //renumber array elements
-            $i18n->setContent(array_values($i18n->getContent()));
+            $i18n->setContent(\array_values($i18n->getContent()));
             $em->persist($i18n);
             $em->flush();
 

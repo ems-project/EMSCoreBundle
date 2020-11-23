@@ -119,7 +119,7 @@ class EditController extends AbstractController
 
                 if (isset($requestRevision['paste'])) {
                     $this->logger->notice('log.data.revision.paste', LoggingContext::update($revision));
-                    $objectArray = array_merge($objectArray, $request->getSession()->get('ems_clipboard', []));
+                    $objectArray = \array_merge($objectArray, $request->getSession()->get('ems_clipboard', []));
                     $this->logger->debug('Paste data have been merged');
                 }
 
@@ -140,7 +140,7 @@ class EditController extends AbstractController
                 }
 
                 if ((isset($requestRevision['publish']) || isset($requestRevision['publish_version']))
-                    && 0 === count($form->getErrors())) {
+                    && 0 === \count($form->getErrors())) {
                     if ($revision->getOuuid()) {
                         return $this->redirectToRoute('data.revisions', [
                             'ouuid' => $revision->getOuuid(),
@@ -161,7 +161,7 @@ class EditController extends AbstractController
             //if Save or Discard
             if (!isset($requestRevision['publish']) && !isset($requestRevision['publish_version'])) {
                 if (null != $revision->getOuuid()) {
-                    if (0 === count($form->getErrors()) && $contentType->isAutoPublish()) {
+                    if (0 === \count($form->getErrors()) && $contentType->isAutoPublish()) {
                         $this->publishService->silentPublish($revision);
                     }
 
@@ -215,7 +215,7 @@ class EditController extends AbstractController
 
         $keys = \array_keys($input);
         if (\is_int($keys[0])) {
-            sort($keys);
+            \sort($keys);
             $temp = [];
             $loop0 = 0;
             foreach ($input as $item) {

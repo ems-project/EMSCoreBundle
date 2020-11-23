@@ -246,7 +246,7 @@ class Revision
                     if ($type::isContainer()) {
                         if (isset($data[$child->getName()])) {
                             if ($type::isCollection()) {
-                                if (is_array($data[$child->getName()])) {
+                                if (\is_array($data[$child->getName()])) {
                                     $out[$child->getName()] = [];
                                     foreach ($data[$child->getName()] as $idx => $item) {
                                         $out[$child->getName()][$idx] = self::addVirtualFields($child, $item);
@@ -292,9 +292,9 @@ class Revision
                 if ($type::isVirtual($child->getOptions())) {
                     if (isset($data[$child->getName()]) && !empty($data[$child->getName()])) {
                         if ($type::isContainer()) {
-                            $out = array_merge_recursive($out, self::removeVirtualField($child, $data[$child->getName()]));
+                            $out = \array_merge_recursive($out, self::removeVirtualField($child, $data[$child->getName()]));
                         } else {
-                            $out = array_merge_recursive($out, $data[$child->getName()]);
+                            $out = \array_merge_recursive($out, $data[$child->getName()]);
                         }
                     }
                 } else {
@@ -309,7 +309,7 @@ class Revision
                                 $out[$child->getName()] = self::removeVirtualField($child, $data[$child->getName()]);
                             }
 
-                            if (is_array($out[$child->getName()]) && empty($out[$child->getName()])) {
+                            if (\is_array($out[$child->getName()]) && empty($out[$child->getName()])) {
                                 unset($out[$child->getName()]);
                             }
                         }
@@ -353,8 +353,8 @@ class Revision
         $this->environments = new ArrayCollection();
         $this->notifications = new ArrayCollection();
 
-        $a = func_get_args();
-        $i = func_num_args();
+        $a = \func_get_args();
+        $i = \func_num_args();
         if (1 == $i) {
             if ($a[0] instanceof Revision) {
                 /** @var Revision $ancestor */
@@ -1110,7 +1110,7 @@ class Revision
     public function getVersionDate(string $field): ?\DateTimeImmutable
     {
         if (null === $contentType = $this->contentType) {
-            throw new \RuntimeException(sprintf('ContentType not found for revision %d', $this->getId()));
+            throw new \RuntimeException(\sprintf('ContentType not found for revision %d', $this->getId()));
         }
 
         $dateString = null;
@@ -1169,8 +1169,8 @@ class Revision
     {
         $versionTags = $this->contentType ? $this->contentType->getVersionTags() : [];
 
-        if (!isset($versionTags[0]) || !is_string($versionTags[0])) {
-            throw new \RuntimeException(sprintf('No version tags found for contentType %s (use hasVersionTags)', $this->getContentTypeName()));
+        if (!isset($versionTags[0]) || !\is_string($versionTags[0])) {
+            throw new \RuntimeException(\sprintf('No version tags found for contentType %s (use hasVersionTags)', $this->getContentTypeName()));
         }
 
         $this->setVersionTag($versionTags[0]);
@@ -1188,7 +1188,7 @@ class Revision
     public function setVersionDate(string $field, \DateTimeImmutable $date): void
     {
         if (null === $contentType = $this->contentType) {
-            throw new \RuntimeException(sprintf('ContentType not found for revision %d', $this->getId()));
+            throw new \RuntimeException(\sprintf('ContentType not found for revision %d', $this->getId()));
         }
 
         if ('from' === $field && null !== $dateFromField = $contentType->getVersionDateFromField()) {

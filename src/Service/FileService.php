@@ -51,7 +51,7 @@ class FileService
 
     public function getFile(string $hash): ?string
     {
-        $filename = \sprintf('%s%sEMS_cached_%s', sys_get_temp_dir(), DIRECTORY_SEPARATOR, $hash);
+        $filename = \sprintf('%s%sEMS_cached_%s', \sys_get_temp_dir(), DIRECTORY_SEPARATOR, $hash);
         if (\file_exists($filename) && $this->storageManager->computeFileHash($filename) === $hash) {
             return $filename;
         }
@@ -62,17 +62,17 @@ class FileService
         }
 
         if (!$handle = \fopen($filename, 'w')) {
-            throw new \RuntimeException(sprintf('Can\'t open a temporary file %s', $filename));
+            throw new \RuntimeException(\sprintf('Can\'t open a temporary file %s', $filename));
         }
 
         while (!$stream->eof()) {
             if (false === \fwrite($handle, $stream->read(8192))) {
-                throw new \RuntimeException(sprintf('Can\'t write in temporary file %s', $filename));
+                throw new \RuntimeException(\sprintf('Can\'t write in temporary file %s', $filename));
             }
         }
 
         if (false === \fclose($handle)) {
-            throw new \RuntimeException(sprintf('Can\'t close the temporary file %s', $filename));
+            throw new \RuntimeException(\sprintf('Can\'t close the temporary file %s', $filename));
         }
 
         return $filename;
@@ -124,7 +124,7 @@ class FileService
         $hash = $this->storageManager->computeFileHash($filename);
         $size = \filesize($filename);
         if (false === $size) {
-            throw new \RuntimeException(sprintf('Can\'t get file size of %s', $filename));
+            throw new \RuntimeException(\sprintf('Can\'t get file size of %s', $filename));
         }
         $uploadedAsset = $this->initUploadFile($hash, $size, $name, $type, $user, $this->storageManager->getHashAlgo());
         if (!$uploadedAsset->getAvailable()) {
@@ -141,8 +141,8 @@ class FileService
 
     public function initUploadFile(string $hash, int $size, string $name, string $type, string $user, string $hashAlgo): UploadedAsset
     {
-        if (0 !== strcasecmp($hashAlgo, $this->storageManager->getHashAlgo())) {
-            throw new StorageServiceMissingException(sprintf('Hash algorithms mismatch: %s vs. %s', $hashAlgo, $this->storageManager->getHashAlgo()));
+        if (0 !== \strcasecmp($hashAlgo, $this->storageManager->getHashAlgo())) {
+            throw new StorageServiceMissingException(\sprintf('Hash algorithms mismatch: %s vs. %s', $hashAlgo, $this->storageManager->getHashAlgo()));
         }
 
         /** @var EntityManager $em */
@@ -206,7 +206,7 @@ class FileService
             return $this->storageManager->getSize($hash);
         } catch (NotFoundException $e) {
         }
-        throw new NotFoundHttpException(sprintf('File %s not found', $hash));
+        throw new NotFoundHttpException(\sprintf('File %s not found', $hash));
     }
 
     public function addChunk(string $hash, string $chunk, string $user, bool $skipShouldSkip = true): UploadedAsset
@@ -247,7 +247,7 @@ class FileService
 
     public function temporaryFilename(string $hash): string
     {
-        return sys_get_temp_dir().DIRECTORY_SEPARATOR.$hash;
+        return \sys_get_temp_dir().DIRECTORY_SEPARATOR.$hash;
     }
 
     private function saveFile(string $filename, UploadedAsset $uploadedAsset): UploadedAsset
@@ -271,7 +271,7 @@ class FileService
 
         $newHash = $this->storageManager->saveFile($filename, StorageInterface::STORAGE_USAGE_BACKUP);
 
-        unlink($filename);
+        \unlink($filename);
 
         if ($newHash !== $hash) {
             throw new HashMismatchException($hash, $newHash);

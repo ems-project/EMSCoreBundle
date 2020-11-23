@@ -67,7 +67,7 @@ class ObjectChoiceCacheService
                         $circles = $user->getCircles();
                         $ouuids = [];
                         foreach ($circles as $circle) {
-                            preg_match('/(?P<type>(\w|-)+):(?P<ouuid>(\w|-)+)/', $circle, $matches);
+                            \preg_match('/(?P<type>(\w|-)+):(?P<ouuid>(\w|-)+)/', $circle, $matches);
                             $ouuids[] = $matches['ouuid'];
                         }
                         $search = $this->elasticaService->generateTermsSearch([$index], '_id', $ouuids);

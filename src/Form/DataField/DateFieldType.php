@@ -40,12 +40,12 @@ class DateFieldType extends DataFieldType
         } else {
             $format = \DateTime::ISO8601;
         }
-        if (is_string($data)) {
+        if (\is_string($data)) {
             $dates[] = \DateTime::createFromFormat($format, $data);
 
             return parent::modelTransform($dates, $fieldType);
         }
-        if (is_array($data)) {
+        if (\is_array($data)) {
             foreach ($data as $dataValue) {
                 $dates[] = \DateTime::createFromFormat($format, $dataValue);
             }
@@ -53,7 +53,7 @@ class DateFieldType extends DataFieldType
             return parent::modelTransform($dates, $fieldType);
         }
         $out = parent::modelTransform(null, $fieldType);
-        $out->addMessage('Was not able to import:'.json_encode($data));
+        $out->addMessage('Was not able to import:'.\json_encode($data));
 
         return $out;
     }
@@ -98,7 +98,7 @@ class DateFieldType extends DataFieldType
                 }
             }
         }
-        $temp = ['value' => implode(',', $out)];
+        $temp = ['value' => \implode(',', $out)];
 
         return $temp;
     }
@@ -107,7 +107,7 @@ class DateFieldType extends DataFieldType
     {
         $dates = [];
         $format = DateFieldType::convertJavascriptDateFormat($fieldType->getDisplayOption('displayFormat', 'dd/mm/yyyy'));
-        foreach (explode(',', $data['value']) as $date) {
+        foreach (\explode(',', $data['value']) as $date) {
             if (!empty($date)) {
                 $dates[] = \DateTime::createFromFormat($format, $date);
             }
@@ -138,7 +138,7 @@ class DateFieldType extends DataFieldType
             if (null == $sourceArray) {
                 $sourceArray = [];
             }
-            if (is_string($sourceArray)) {
+            if (\is_string($sourceArray)) {
                 $sourceArray = [$sourceArray];
             }
             $data = [];
@@ -201,10 +201,10 @@ class DateFieldType extends DataFieldType
     public function generateMapping(FieldType $current, $withPipeline)
     {
         return [
-                $current->getName() => array_merge([
+                $current->getName() => \array_merge([
                         'type' => 'date',
                         'format' => 'date_time_no_millis',
-                ], array_filter($current->getMappingOptions())),
+                ], \array_filter($current->getMappingOptions())),
         ];
     }
 
@@ -230,7 +230,7 @@ class DateFieldType extends DataFieldType
                 }
             } else {
                 $dates = null;
-                if (null !== $data->getRawData() && count($data->getRawData()) >= 1) {
+                if (null !== $data->getRawData() && \count($data->getRawData()) >= 1) {
                     /** @var \DateTime $converted */
                     $dateTime = \DateTime::createFromFormat(\DateTime::ISO8601, $data->getRawData()[0]);
                     if ($dateTime) {
@@ -250,14 +250,14 @@ class DateFieldType extends DataFieldType
     {
         $dateFormat = $format;
         //TODO: naive approch....find a way to comvert java date format into php
-        $dateFormat = str_replace('dd', 'd', $dateFormat);
-        $dateFormat = str_replace('MM', 'm', $dateFormat);
-        $dateFormat = str_replace('yyyy', 'Y', $dateFormat);
-        $dateFormat = str_replace('hh', 'g', $dateFormat);
-        $dateFormat = str_replace('HH', 'G', $dateFormat);
-        $dateFormat = str_replace('mm', 'i', $dateFormat);
-        $dateFormat = str_replace('ss', 's', $dateFormat);
-        $dateFormat = str_replace('aa', 'A', $dateFormat);
+        $dateFormat = \str_replace('dd', 'd', $dateFormat);
+        $dateFormat = \str_replace('MM', 'm', $dateFormat);
+        $dateFormat = \str_replace('yyyy', 'Y', $dateFormat);
+        $dateFormat = \str_replace('hh', 'g', $dateFormat);
+        $dateFormat = \str_replace('HH', 'G', $dateFormat);
+        $dateFormat = \str_replace('mm', 'i', $dateFormat);
+        $dateFormat = \str_replace('ss', 's', $dateFormat);
+        $dateFormat = \str_replace('aa', 'A', $dateFormat);
 
         return $dateFormat;
     }
@@ -266,16 +266,16 @@ class DateFieldType extends DataFieldType
     {
         $dateFormat = $format;
         //see https://bootstrap-datepicker.readthedocs.io/en/latest/options.html#format
-        $dateFormat = str_replace('yyyy', 'Y', $dateFormat);
-        $dateFormat = str_replace('yy', 'y', $dateFormat);
-        $dateFormat = str_replace('DD', 'l', $dateFormat);
-        $dateFormat = str_replace('D', 'D', $dateFormat);
-        $dateFormat = str_replace('dd', 'd', $dateFormat);
+        $dateFormat = \str_replace('yyyy', 'Y', $dateFormat);
+        $dateFormat = \str_replace('yy', 'y', $dateFormat);
+        $dateFormat = \str_replace('DD', 'l', $dateFormat);
+        $dateFormat = \str_replace('D', 'D', $dateFormat);
+        $dateFormat = \str_replace('dd', 'd', $dateFormat);
         //         $dateFormat = str_replace('d', 't', $dateFormat);
-        $dateFormat = str_replace('mm', 'm', $dateFormat);
+        $dateFormat = \str_replace('mm', 'm', $dateFormat);
         //         $dateFormat = str_replace('m', 'n', $dateFormat);
-        $dateFormat = str_replace('MM', 'F', $dateFormat);
-        $dateFormat = str_replace('M', 'M', $dateFormat);
+        $dateFormat = \str_replace('MM', 'F', $dateFormat);
+        $dateFormat = \str_replace('M', 'M', $dateFormat);
 
         return $dateFormat;
     }

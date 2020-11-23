@@ -23,32 +23,32 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class PublishService
 {
-    /** @var Registry $doctrine */
+    /** @var Registry */
     protected $doctrine;
-    /** @var AuthorizationCheckerInterface $authorizationChecker */
+    /** @var AuthorizationCheckerInterface */
     protected $authorizationChecker;
-    /** @var TokenStorageInterface $tokenStorage */
+    /** @var TokenStorageInterface */
     protected $tokenStorage;
     protected $lockTime;
     /**@Client $client*/
     protected $client;
-    /** @var Mapping $mapping */
+    /** @var Mapping */
     protected $mapping;
     protected $instanceId;
     protected $em;
     /** @var RevisionRepository */
     protected $revRepository;
-    /** @var Session $session */
+    /** @var Session */
     protected $session;
-    /** @var ContentTypeService $contentTypeService */
+    /** @var ContentTypeService */
     protected $contentTypeService;
-    /** @var EnvironmentService $environmentService */
+    /** @var EnvironmentService */
     protected $environmentService;
 
-    /** @var DataService $dataService */
+    /** @var DataService */
     protected $dataService;
 
-    /** @var UserService $userService */
+    /** @var UserService */
     protected $userService;
 
     /** @var EventDispatcherInterface */
@@ -206,7 +206,7 @@ class PublishService
     {
         if (!$command) {
             $user = $this->userService->getCurrentUser();
-            if (!empty($environment->getCircles()) && !$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT') && empty(array_intersect($environment->getCircles(), $user->getCircles()))) {
+            if (!empty($environment->getCircles()) && !$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT') && empty(\array_intersect($environment->getCircles(), $user->getCircles()))) {
                 $this->logger->warning('service.publish.not_in_circles', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
@@ -315,7 +315,7 @@ class PublishService
     {
         if (!$command) {
             $user = $this->userService->getCurrentUser();
-            if (!empty($environment->getCircles() && !$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT') && empty(array_intersect($environment->getCircles(), $user->getCircles())))) {
+            if (!empty($environment->getCircles() && !$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT') && empty(\array_intersect($environment->getCircles(), $user->getCircles())))) {
                 $this->logger->warning('service.publish.not_in_circles', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),

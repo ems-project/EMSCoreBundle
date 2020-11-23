@@ -90,7 +90,7 @@ class ContentTypeService
      */
     public function getChildByPath(FieldType $fieldType, $path, $skipVirtualFields = false)
     {
-        $elem = explode('.', $path);
+        $elem = \explode('.', $path);
         if (!empty($elem)) {
             /** @var FieldType $child */
             foreach ($fieldType->getChildren() as $child) {
@@ -102,8 +102,8 @@ class ContentTypeService
                             return $fieldTypeByPath;
                         }
                     } elseif ($child->getName() == $elem[0]) {
-                        if (strpos($path, '.')) {
-                            $fieldTypeByPath = $this->getChildByPath($fieldType, substr($path, strpos($path, '.') + 1), $skipVirtualFields);
+                        if (\strpos($path, '.')) {
+                            $fieldTypeByPath = $this->getChildByPath($fieldType, \substr($path, \strpos($path, '.') + 1), $skipVirtualFields);
                             if ($fieldTypeByPath) {
                                 return $fieldTypeByPath;
                             }
@@ -150,7 +150,7 @@ class ContentTypeService
     {
         $out = [];
         foreach ($fieldType->getChildren() as $child) {
-            $out = array_merge($out, $this->listAllFields($child));
+            $out = \array_merge($out, $this->listAllFields($child));
         }
         $out['key_'.$fieldType->getId()] = $fieldType;
 
@@ -161,7 +161,7 @@ class ContentTypeService
     {
         $fieldType->getChildren()->clear();
         foreach ($newStructure as $key => $item) {
-            if (array_key_exists('key_'.$item['id'], $ids)) {
+            if (\array_key_exists('key_'.$item['id'], $ids)) {
                 $fieldType->getChildren()->add($ids['key_'.$item['id']]);
                 $ids['key_'.$item['id']]->setParent($fieldType);
                 $ids['key_'.$item['id']]->setOrderKey($key);
@@ -203,7 +203,7 @@ class ContentTypeService
                 }
 
                 if ($dataFieldType->isContainer()) {
-                    $pipelines = array_merge($pipelines, $this->generatePipeline($child));
+                    $pipelines = \array_merge($pipelines, $this->generatePipeline($child));
                 }
             }
         }
@@ -263,9 +263,9 @@ class ContentTypeService
             }
         } catch (BadRequest400Exception $e) {
             $contentType->setHavePipelines(false);
-            $message = json_decode($e->getMessage(), true);
+            $message = \json_decode($e->getMessage(), true);
             if (!empty($e->getPrevious())) {
-                $message = json_decode($e->getPrevious()->getMessage(), true);
+                $message = \json_decode($e->getPrevious()->getMessage(), true);
             }
 
             $this->logger->error('service.contenttype.pipelines_error', [
@@ -280,8 +280,8 @@ class ContentTypeService
         try {
             $body = $this->environmentService->getIndexAnalysisConfiguration();
             if (!$envs) {
-                $envs = array_reduce($this->environmentService->getManagedEnvironement(), function ($envs, $item) use ($contentType, $body) {
-                    /** @var Environment $item */
+                $envs = \array_reduce($this->environmentService->getManagedEnvironement(), function ($envs, $item) use ($contentType, $body) {
+                    /* @var Environment $item */
                     try {
                         $index = $this->getIndex($contentType, $item);
                     } catch (NoResultException $e) {
@@ -332,7 +332,7 @@ class ContentTypeService
                     $this->logger->warning('service.contenttype.mappings_error', [
                         EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                         'environments' => $envs,
-                        'elasticsearch_dump' => print_r($out, true),
+                        'elasticsearch_dump' => \print_r($out, true),
                     ]);
                 }
             }
@@ -342,9 +342,9 @@ class ContentTypeService
             $em->flush();
         } catch (BadRequest400Exception $e) {
             $contentType->setDirty(true);
-            $message = json_decode($e->getMessage(), true);
+            $message = \json_decode($e->getMessage(), true);
             if (!empty($e->getPrevious())) {
-                $message = json_decode($e->getPrevious()->getMessage(), true);
+                $message = \json_decode($e->getPrevious()->getMessage(), true);
             }
 
             $this->logger->error('service.contenttype.should_reindex', [
@@ -397,7 +397,7 @@ class ContentTypeService
             }
         }
 
-        return array_keys($out);
+        return \array_keys($out);
     }
 
     public function getAllAliases()
@@ -411,7 +411,7 @@ class ContentTypeService
             }
         }
 
-        return implode(',', $out);
+        return \implode(',', $out);
     }
 
     public function getAll()
@@ -440,7 +440,7 @@ class ContentTypeService
     {
         $this->loadEnvironment();
 
-        return implode(',', array_keys($this->contentTypeArrayByName));
+        return \implode(',', \array_keys($this->contentTypeArrayByName));
     }
 
     public function updateFromJson(ContentType $contentType, string $json, bool $isDeleteExitingTemplates, bool $isDeleteExitingViews): void
@@ -467,7 +467,7 @@ class ContentTypeService
         $meta = JsonClass::fromJsonString($json);
         $contentType = $meta->jsonDeserialize($contentType);
         if (!$contentType instanceof ContentType) {
-            throw new \Exception(sprintf('ContentType expected for import, got %s', $meta->getClass()));
+            throw new \Exception(\sprintf('ContentType expected for import, got %s', $meta->getClass()));
         }
         $contentType->setEnvironment($environment);
 

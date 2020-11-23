@@ -38,7 +38,7 @@ class NotificationFormType extends AbstractType
                 ->where("t.renderOption = 'notification'");
             },
             'choice_label' => function ($value, $key, $index) {
-                /** @var Template $value */
+                /* @var Template $value */
                 return '<i class="'.$value->getContentType()->getIcon().' text-'.$value->getContentType()->getColor().'"></i>&nbsp;&nbsp;'.$value->getName().' for '.$value->getContentType()->getSingularName();
             },
             'multiple' => true,

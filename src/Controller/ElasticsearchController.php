@@ -178,7 +178,7 @@ class ElasticsearchController extends AppController
      */
     public function phpInfoAction(): void
     {
-        phpinfo();
+        \phpinfo();
         exit;
     }
 
@@ -364,14 +364,14 @@ class ElasticsearchController extends AppController
                 $search->resetFilters($search->getFilters()->getValues());
 
                 $queryString = $pattern;
-                if (!empty($pattern) && !in_array(substr($pattern, strlen($pattern) - 1), [' ', '?', '*', '.', '/'])) {
+                if (!empty($pattern) && !\in_array(\substr($pattern, \strlen($pattern) - 1), [' ', '?', '*', '.', '/'])) {
                     $queryString .= '*';
                 }
 
                 /** @var SearchFilter $filter */
                 foreach ($search->getFilters() as &$filter) {
                     if (empty($filter->getPattern())) {
-                        if (in_array($filter->getOperator(), ['query_and', 'query_or'])) {
+                        if (\in_array($filter->getOperator(), ['query_and', 'query_or'])) {
                             $filter->setPattern($queryString);
                         } else {
                             $filter->setPattern($pattern);
@@ -418,17 +418,17 @@ class ElasticsearchController extends AppController
                     }
                 }
             } else {
-                $types = array_keys($allTypes);
+                $types = \array_keys($allTypes);
             }
         } else {
-            $types = explode(',', $types);
+            $types = \explode(',', $types);
         }
 
         if (!empty($types)) {
             $aliases = [];
             $service = $this->getEnvironmentService();
             if (empty($environments)) {
-                /** @var EnvironmentService $service */
+                /* @var EnvironmentService $service */
                 foreach ($types as $type) {
                     $ct = $contentTypeRepository->findByName($type);
                     if ($ct) {
@@ -439,7 +439,7 @@ class ElasticsearchController extends AppController
                     }
                 }
             } else {
-                $environments = explode(',', $environments);
+                $environments = \explode(',', $environments);
                 foreach ($environments as $environment) {
                     $alias = $service->getAliasByName($environment);
                     if ($alias) {
@@ -448,8 +448,8 @@ class ElasticsearchController extends AppController
                 }
             }
             $params = [
-                'index' => array_unique($aliases),
-                'type' => array_unique($types),
+                'index' => \array_unique($aliases),
+                'type' => \array_unique($types),
                 'size' => $pageSize,
                 'from' => ($page - 1) * $pageSize,
                 'body' => [
@@ -462,10 +462,10 @@ class ElasticsearchController extends AppController
             ];
 
             $matches = [];
-            if (preg_match('/^[a-z][a-z0-9\-_]*:/i', $pattern, $matches)) {
-                $filterType = substr($matches[0], 0, strlen($matches[0]) - 1);
-                if (in_array($filterType, $types, true)) {
-                    $pattern = (string) substr($pattern, strlen($matches[0]));
+            if (\preg_match('/^[a-z][a-z0-9\-_]*:/i', $pattern, $matches)) {
+                $filterType = \substr($matches[0], 0, \strlen($matches[0]) - 1);
+                if (\in_array($filterType, $types, true)) {
+                    $pattern = (string) \substr($pattern, \strlen($matches[0]));
                     $params['type'] = $filterType;
                 }
             }
@@ -477,7 +477,7 @@ class ElasticsearchController extends AppController
 
                 $ouuids = [];
                 foreach ($circles as $circle) {
-                    preg_match('/(?P<type>\w+):(?P<ouuid>\w+)/', $circle, $matches);
+                    \preg_match('/(?P<type>\w+):(?P<ouuid>\w+)/', $circle, $matches);
                     $ouuids[] = $matches['ouuid'];
                 }
 
@@ -488,9 +488,9 @@ class ElasticsearchController extends AppController
                 ];
             }
 
-            $patterns = explode(' ', $pattern);
+            $patterns = \explode(' ', $pattern);
 
-            for ($i = 0; $i < (count($patterns) - 1); ++$i) {
+            for ($i = 0; $i < (\count($patterns) - 1); ++$i) {
                 $params['body']['query']['bool']['must'][] = [
                     'query_string' => [
                         'default_field' => '_all',
@@ -506,7 +506,7 @@ class ElasticsearchController extends AppController
                 ],
             ];
 
-            if (1 == count($types)) {
+            if (1 == \count($types)) {
                 $searchRepository = $em->getRepository('EMSCoreBundle:Form\Search');
                 $contentType = $this->getContentTypeService()->getByName($types[0]);
 
@@ -519,14 +519,14 @@ class ElasticsearchController extends AppController
                     $search->resetFilters($search->getFilters()->getValues());
 
                     $queryString = $pattern;
-                    if (!empty($pattern) && !in_array(substr($pattern, strlen($pattern) - 1), [' ', '?', '*', '.', '/'])) {
+                    if (!empty($pattern) && !\in_array(\substr($pattern, \strlen($pattern) - 1), [' ', '?', '*', '.', '/'])) {
                         $queryString .= '*';
                     }
 
                     /** @var SearchFilter $filter */
                     foreach ($search->getFilters() as &$filter) {
                         if (empty($filter->getPattern())) {
-                            if (in_array($filter->getOperator(), ['query_and', 'query_or'])) {
+                            if (\in_array($filter->getOperator(), ['query_and', 'query_or'])) {
                                 $filter->setPattern($queryString);
                             } else {
                                 $filter->setPattern($pattern);
@@ -602,7 +602,7 @@ class ElasticsearchController extends AppController
 
         /** @var ExportDocuments */
         $exportDocuments = $form->getData();
-        $command = sprintf(
+        $command = \sprintf(
             "ems:contenttype:export %s %s '%s'%s --environment=%s --baseUrl=%s",
             $contentType->getName(),
             $exportDocuments->getFormat(),
@@ -694,7 +694,7 @@ class ElasticsearchController extends AppController
             }
 
             //Form treatment after the "Save" button has been pressed (= ask for a name to save the search preset)
-            if ($form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && array_key_exists('save', $request->query->get('search_form'))) {
+            if ($form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && \array_key_exists('save', $request->query->get('search_form'))) {
                 $form = $this->createFormBuilder($search)
                     ->add('name', TextType::class)
                     ->add('save_search', SubmitEmsType::class, [
@@ -709,7 +709,7 @@ class ElasticsearchController extends AppController
                 return $this->render('@EMSCore/elasticsearch/save-search.html.twig', [
                     'form' => $form->createView(),
                 ]);
-            } elseif ($form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && array_key_exists('delete', $request->query->get('search_form'))) {
+            } elseif ($form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && \array_key_exists('delete', $request->query->get('search_form'))) {
                 //Form treatment after the "Delete" button has been pressed (to delete a previous saved search preset)
 
                 $logger->notice('log.elasticsearch.search_deleted', [
@@ -747,9 +747,9 @@ class ElasticsearchController extends AppController
                         'total' => $response->getTotal(),
                         'paging' => '50.000',
                     ]);
-                    $lastPage = ceil(50000 / $this->getParameter('ems_core.paging_size'));
+                    $lastPage = \ceil(50000 / $this->getParameter('ems_core.paging_size'));
                 } else {
-                    $lastPage = ceil($response->getTotal() / $this->getParameter('ems_core.paging_size'));
+                    $lastPage = \ceil($response->getTotal() / $this->getParameter('ems_core.paging_size'));
                 }
             } catch (ElasticsearchException $e) {
                 $logger->warning('log.error', [
@@ -770,7 +770,7 @@ class ElasticsearchController extends AppController
             $currentFilters->remove('search_form[_token]');
 
             //Form treatment after the "Export results" button has been pressed (= ask for a "content type" <-> "template" mapping)
-            if (null !== $response && $form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && array_key_exists('exportResults', $request->query->get('search_form'))) {
+            if (null !== $response && $form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && \array_key_exists('exportResults', $request->query->get('search_form'))) {
                 $exportForms = [];
                 $contentTypes = $this->getAllContentType($response);
                 foreach ($contentTypes as $name) {
@@ -779,7 +779,7 @@ class ElasticsearchController extends AppController
                     $exportForm = $this->createForm(ExportDocumentsType::class, new ExportDocuments(
                         $contentType,
                         $this->generateUrl('emsco_search_export', ['contentType' => $contentType->getId()]),
-                        json_encode($searchService->generateSearchBody($search))
+                        \json_encode($searchService->generateSearchBody($search))
                     ));
 
                     $exportForms[] = $exportForm->createView();

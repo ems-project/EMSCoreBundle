@@ -128,13 +128,13 @@ class PasswordFieldType extends DataFieldType
             //new password defined?
             switch ($fieldType->getDisplayOptions()['encryption']) {
                 case 'md5':
-                    $out = md5($data['password_value']);
+                    $out = \md5($data['password_value']);
                     break;
                 case 'bcrypt_12':
-                    $out = password_hash($data['password_value'], PASSWORD_BCRYPT, ['cost' => 12]);
+                    $out = \password_hash($data['password_value'], PASSWORD_BCRYPT, ['cost' => 12]);
                     break;
                 default:
-                    $out = sha1($data['password_value']);
+                    $out = \sha1($data['password_value']);
             }
         }
 
@@ -149,10 +149,10 @@ class PasswordFieldType extends DataFieldType
         if (!$data->getFieldType()->getDeleted()) {
             switch ($data->getFieldType()->getDisplayOptions()['encryption']) {
                 case 'md5':
-                    $out[$data->getFieldType()->getName()] = md5($data->getTextValue());
+                    $out[$data->getFieldType()->getName()] = \md5($data->getTextValue());
                     break;
                 default:
-                    $out[$data->getFieldType()->getName()] = sha1($data->getTextValue());
+                    $out[$data->getFieldType()->getName()] = \sha1($data->getTextValue());
                     break;
             }
         }

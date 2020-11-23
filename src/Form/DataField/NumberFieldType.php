@@ -65,7 +65,7 @@ class NumberFieldType extends DataFieldType
         $isValid = parent::isValid($dataField, $parent, $masterRawData);
 
         $rawData = $dataField->getRawData();
-        if (!empty($rawData) && !is_numeric($rawData)) {
+        if (!empty($rawData) && !\is_numeric($rawData)) {
             $isValid = false;
             $dataField->addMessage('Not a number');
         }
@@ -93,7 +93,7 @@ class NumberFieldType extends DataFieldType
     public function generateMapping(FieldType $current, $withPipeline)
     {
         return [
-                $current->getName() => array_merge(['type' => 'double'], array_filter($current->getMappingOptions())),
+                $current->getName() => \array_merge(['type' => 'double'], \array_filter($current->getMappingOptions())),
         ];
     }
 
@@ -149,8 +149,8 @@ class NumberFieldType extends DataFieldType
 
         $message = false;
         if (null !== $temp) {
-            if (is_numeric($temp)) {
-                $temp = doubleval($temp);
+            if (\is_numeric($temp)) {
+                $temp = \doubleval($temp);
             } else {
                 $message = 'It is not a float value:'.$temp;
             }

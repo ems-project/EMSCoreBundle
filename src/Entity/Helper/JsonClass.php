@@ -54,7 +54,7 @@ class JsonClass implements \JsonSerializable
 
     public function hasProperty(string $name): bool
     {
-        return array_key_exists($name, $this->properties);
+        return \array_key_exists($name, $this->properties);
     }
 
     public function handlePersistentCollections(...$properties): void

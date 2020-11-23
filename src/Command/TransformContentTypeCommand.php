@@ -126,7 +126,7 @@ final class TransformContentTypeCommand extends Command
         }
 
         $contentTypeName = $input->getArgument(self::ARGUMENT_CONTENT_TYPE);
-        if (!is_string($contentTypeName)) {
+        if (!\is_string($contentTypeName)) {
             throw new \RuntimeException('Content type name as to be a string');
         }
 

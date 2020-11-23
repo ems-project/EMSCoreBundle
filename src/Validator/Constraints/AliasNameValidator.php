@@ -15,7 +15,7 @@ class AliasNameValidator extends ConstraintValidator
     {
         $regex = '/^[a-z][a-z0-9\-_]*$/';
 
-        if (!preg_match($regex, $value) || strlen($value) > 100) {
+        if (!\preg_match($regex, $value) || \strlen($value) > 100) {
             $this->context
                 ->buildViolation($constraint->invalid)
                 ->setParameter('{{ regex }}', $regex)

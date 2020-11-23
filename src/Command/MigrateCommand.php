@@ -186,7 +186,7 @@ class MigrateCommand extends Command
             throw new \RuntimeException('Unexpected Content type To name');
         }
         $this->contentTypeNameTo = $contentTypeNameTo;
-        $this->scrollSize = intval($input->getArgument(self::ARGUMENT_SCROLL_SIZE));
+        $this->scrollSize = \intval($input->getArgument(self::ARGUMENT_SCROLL_SIZE));
         if (0 === $this->scrollSize) {
             throw new \RuntimeException('Unexpected scroll size argument');
         }
@@ -196,12 +196,12 @@ class MigrateCommand extends Command
         }
         $this->scrollTimeout = $scrollTimeout;
 
-        $options = array_values($input->getOptions());
+        $options = \array_values($input->getOptions());
         list($this->bulkSize, $this->forceImport, $this->rawImport, $this->signData, $this->searchQuery, $this->dontFinalize) = $options;
 
         $contentTypeTo = $this->contentTypeRepository->findOneBy(['name' => $this->contentTypeNameTo, 'deleted' => false]);
         if (null === $contentTypeTo || !$contentTypeTo instanceof ContentType) {
-            $this->io->error(sprintf('Content type "%s" not found', $this->contentTypeNameTo));
+            $this->io->error(\sprintf('Content type "%s" not found', $this->contentTypeNameTo));
 
             return -1;
         }
@@ -213,13 +213,13 @@ class MigrateCommand extends Command
         $this->defaultEnv = $defaultEnv;
 
         if ($this->contentTypeTo->getDirty()) {
-            $this->io->error(sprintf('Content type "%s" is dirty. Please clean it first', $this->contentTypeNameTo));
+            $this->io->error(\sprintf('Content type "%s" is dirty. Please clean it first', $this->contentTypeNameTo));
 
             return -1;
         }
 
         $this->indexInDefaultEnv = true;
-        if (0 === strcmp($this->defaultEnv->getAlias(), $this->elasticsearchIndex) && 0 === strcmp($this->contentTypeNameFrom, $this->contentTypeNameTo)) {
+        if (0 === \strcmp($this->defaultEnv->getAlias(), $this->elasticsearchIndex) && 0 === \strcmp($this->contentTypeNameFrom, $this->contentTypeNameTo)) {
             if (!$this->forceImport) {
                 $this->io->error('You can not import a content type on himself with the --force option');
 
@@ -233,7 +233,7 @@ class MigrateCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->io->section(sprintf('Start migration of %s', $this->contentTypeTo->getPluralName()));
+        $this->io->section(\sprintf('Start migration of %s', $this->contentTypeTo->getPluralName()));
 
         $arrayElasticsearchIndex = $this->client->search([
                 'index' => $this->elasticsearchIndex,
@@ -246,7 +246,7 @@ class MigrateCommand extends Command
         $progress = $this->io->createProgressBar($arrayElasticsearchIndex['hits']['total']);
         $importerContext = $this->documentService->initDocumentImporterContext($this->contentTypeTo, 'SYSTEM_MIGRATE', $this->rawImport, $this->signData, $this->indexInDefaultEnv, $this->bulkSize, !$this->dontFinalize, $this->forceImport);
 
-        while (isset($arrayElasticsearchIndex['hits']['hits']) && count($arrayElasticsearchIndex['hits']['hits']) > 0) {
+        while (isset($arrayElasticsearchIndex['hits']['hits']) && \count($arrayElasticsearchIndex['hits']['hits']) > 0) {
             foreach ($arrayElasticsearchIndex['hits']['hits'] as $value) {
                 try {
                     $this->documentService->importDocument($importerContext, $value['_id'], $value['_source']);

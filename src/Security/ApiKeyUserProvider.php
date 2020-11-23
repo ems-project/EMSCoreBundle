@@ -9,7 +9,7 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class ApiKeyUserProvider implements UserProviderInterface
 {
-    /** @var UserService $userService */
+    /** @var UserService */
     private $userService;
 
     public function __construct(UserService $userService)

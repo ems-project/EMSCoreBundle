@@ -23,7 +23,7 @@ class ViewTypePickerType extends SelectPickerType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'choices' => array_keys($this->viewTypes),
+            'choices' => \array_keys($this->viewTypes),
             'attr' => [
                     'data-live-search' => true,
             ],

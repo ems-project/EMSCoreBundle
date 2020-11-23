@@ -54,11 +54,11 @@ class ContentTypeController extends AppController
 {
     public static function isValidName(string $name): bool
     {
-        if (in_array($name, [Mapping::HASH_FIELD, Mapping::SIGNATURE_FIELD, Mapping::FINALIZED_BY_FIELD, Mapping::FINALIZATION_DATETIME_FIELD])) {
+        if (\in_array($name, [Mapping::HASH_FIELD, Mapping::SIGNATURE_FIELD, Mapping::FINALIZED_BY_FIELD, Mapping::FINALIZATION_DATETIME_FIELD])) {
             return false;
         }
 
-        return preg_match('/^[a-z][a-z0-9\-_]*$/i', $name) && strlen($name) <= 100;
+        return \preg_match('/^[a-z][a-z0-9\-_]*$/i', $name) && \strlen($name) <= 100;
     }
 
     /**
@@ -256,7 +256,7 @@ class ContentTypeController extends AppController
                 'deleted' => false,
             ]);
 
-            if (0 != count($contentTypes)) {
+            if (0 != \count($contentTypes)) {
                 $form->get('name')->addError(new FormError('Another content type named '.$contentTypeAdded->getName().' already exists'));
             }
 
@@ -279,7 +279,7 @@ class ContentTypeController extends AppController
                         throw new NotFoundHttpException('File not found');
                     }
 
-                    $json = file_get_contents($path);
+                    $json = \file_get_contents($path);
 
                     if (!\is_string($json)) {
                         throw new NotFoundHttpException('JSON file not found');
@@ -366,7 +366,7 @@ class ContentTypeController extends AppController
 
         if ($request->isMethod('POST')) {
             $form = $request->get('form');
-            if (isset($form['contentTypeNames']) && is_array($form['contentTypeNames'])) {
+            if (isset($form['contentTypeNames']) && \is_array($form['contentTypeNames'])) {
                 $counter = 0;
                 foreach ($form['contentTypeNames'] as $name) {
                     /** @var ContentType $contentType */
@@ -461,11 +461,11 @@ class ContentTypeController extends AppController
      */
     private function addNewField(array $formArray, FieldType $fieldType, LoggerInterface $logger)
     {
-        if (array_key_exists('add', $formArray)) {
+        if (\array_key_exists('add', $formArray)) {
             if (isset($formArray['ems:internal:add:field:name'])
-                && 0 != strcmp($formArray['ems:internal:add:field:name'], '')
+                && 0 != \strcmp($formArray['ems:internal:add:field:name'], '')
                 && isset($formArray['ems:internal:add:field:class'])
-                && 0 != strcmp($formArray['ems:internal:add:field:class'], '')) {
+                && 0 != \strcmp($formArray['ems:internal:add:field:class'], '')) {
                 if ($this->isValidName($formArray['ems:internal:add:field:name'])) {
                     $fieldTypeNameOrServiceName = $formArray['ems:internal:add:field:class'];
                     $fieldName = $formArray['ems:internal:add:field:name'];
@@ -554,9 +554,9 @@ class ContentTypeController extends AppController
      */
     private function addNewSubfield(array $formArray, FieldType $fieldType, LoggerInterface $logger)
     {
-        if (array_key_exists('subfield', $formArray)) {
+        if (\array_key_exists('subfield', $formArray)) {
             if (isset($formArray['ems:internal:add:subfield:name'])
-                && 0 !== strcmp($formArray['ems:internal:add:subfield:name'], '')) {
+                && 0 !== \strcmp($formArray['ems:internal:add:subfield:name'], '')) {
                 if ($this->isValidName($formArray['ems:internal:add:subfield:name'])) {
                     $child = new FieldType();
                     $child->setName($formArray['ems:internal:add:subfield:name']);
@@ -604,9 +604,9 @@ class ContentTypeController extends AppController
      */
     private function duplicateField(array $formArray, FieldType $fieldType, LoggerInterface $logger)
     {
-        if (array_key_exists('duplicate', $formArray)) {
+        if (\array_key_exists('duplicate', $formArray)) {
             if (isset($formArray['ems:internal:add:subfield:target_name'])
-                && 0 !== strcmp($formArray['ems:internal:add:subfield:target_name'], '')) {
+                && 0 !== \strcmp($formArray['ems:internal:add:subfield:target_name'], '')) {
                 if ($this->isValidName($formArray['ems:internal:add:subfield:target_name'])) {
                     $new = clone $fieldType;
                     $new->setName($formArray['ems:internal:add:subfield:target_name']);
@@ -635,8 +635,8 @@ class ContentTypeController extends AppController
                 if (!$child->getDeleted()) {
                     $out = $this->duplicateField($formArray['ems_'.$child->getName()], $child, $logger);
                     if (false !== $out) {
-                        if (is_string($out) && 'first' == substr($out, 0, 5)) {
-                            return substr($out, 5);
+                        if (\is_string($out) && 'first' == \substr($out, 0, 5)) {
+                            return \substr($out, 5);
                         }
 
                         return '_ems_'.$child->getName().$out;
@@ -657,7 +657,7 @@ class ContentTypeController extends AppController
      */
     private function removeField(array $formArray, FieldType $fieldType, LoggerInterface $logger)
     {
-        if (array_key_exists('remove', $formArray)) {
+        if (\array_key_exists('remove', $formArray)) {
             $fieldType->setDeleted(true);
             $logger->notice('log.contenttype.field.deleted', [
                 'field_name' => $fieldType->getName(),
@@ -686,14 +686,14 @@ class ContentTypeController extends AppController
      */
     private function reorderFields(array $formArray, FieldType $fieldType, LoggerInterface $logger)
     {
-        if (array_key_exists('reorder', $formArray)) {
+        if (\array_key_exists('reorder', $formArray)) {
             /** @var string[] $keys */
-            $keys = array_keys($formArray);
+            $keys = \array_keys($formArray);
             /** @var FieldType $child */
             foreach ($fieldType->getChildren() as $child) {
                 if (!$child->getDeleted()) {
                     $order = \array_search('ems_'.$child->getName(), $keys, true);
-                    if (false === $order || !is_int($order)) {
+                    if (false === $order || !\is_int($order)) {
                         continue;
                     }
                     $child->setOrderKey($order);
@@ -734,7 +734,7 @@ class ContentTypeController extends AppController
 
         if ($form->isSubmitted()) {
             $data = $form->getData();
-            $structure = json_decode($data['items'], true);
+            $structure = \json_decode($data['items'], true);
             $this->getContentTypeService()->reorderFields($contentType, $structure);
 
             return $this->redirectToRoute('contenttype.edit', ['id' => $contentType->getId()]);
@@ -802,8 +802,8 @@ class ContentTypeController extends AppController
         if ($form->isSubmitted() && $form->isValid()) {
             $contentType->getFieldType()->setName('source');
 
-            if (array_key_exists('save', $inputContentType) || array_key_exists('saveAndUpdateMapping', $inputContentType) || array_key_exists('saveAndClose', $inputContentType) || array_key_exists('saveAndEditStructure', $inputContentType) || array_key_exists('saveAndReorder', $inputContentType)) {
-                if (array_key_exists('saveAndUpdateMapping', $inputContentType)) {
+            if (\array_key_exists('save', $inputContentType) || \array_key_exists('saveAndUpdateMapping', $inputContentType) || \array_key_exists('saveAndClose', $inputContentType) || \array_key_exists('saveAndEditStructure', $inputContentType) || \array_key_exists('saveAndReorder', $inputContentType)) {
+                if (\array_key_exists('saveAndUpdateMapping', $inputContentType)) {
                     $this->getContentTypeService()->updateMapping($contentType);
                 }
                 $em->persist($contentType);
@@ -814,13 +814,13 @@ class ContentTypeController extends AppController
                         EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                     ]);
                 }
-                if (array_key_exists('saveAndClose', $inputContentType)) {
+                if (\array_key_exists('saveAndClose', $inputContentType)) {
                     return $this->redirectToRoute('contenttype.index');
-                } elseif (array_key_exists('saveAndEditStructure', $inputContentType)) {
+                } elseif (\array_key_exists('saveAndEditStructure', $inputContentType)) {
                     return $this->redirectToRoute('contenttype.structure', [
                         'id' => $id,
                     ]);
-                } elseif (array_key_exists('saveAndReorder', $inputContentType)) {
+                } elseif (\array_key_exists('saveAndReorder', $inputContentType)) {
                     return $this->redirectToRoute('ems_contenttype_reorder', [
                         'contentType' => $id,
                     ]);
@@ -887,7 +887,7 @@ class ContentTypeController extends AppController
         if ($form->isSubmitted() && $form->isValid()) {
             $contentType->getFieldType()->setName('source');
 
-            if (array_key_exists('save', $inputContentType) || array_key_exists('saveAndClose', $inputContentType) || array_key_exists('saveAndReorder', $inputContentType)) {
+            if (\array_key_exists('save', $inputContentType) || \array_key_exists('saveAndClose', $inputContentType) || \array_key_exists('saveAndReorder', $inputContentType)) {
                 $contentType->getFieldType()->updateOrderKeys();
                 $env = $contentType->getEnvironment();
                 if (!$env) {
@@ -896,7 +896,7 @@ class ContentTypeController extends AppController
                 $managed = $env->getManaged();
                 $contentType->setDirty($managed);
 
-                if ((array_key_exists('saveAndClose', $inputContentType) || array_key_exists('saveAndReorder', $inputContentType)) && $contentType->getDirty()) {
+                if ((\array_key_exists('saveAndClose', $inputContentType) || \array_key_exists('saveAndReorder', $inputContentType)) && $contentType->getDirty()) {
                     $this->getContentTypeService()->updateMapping($contentType);
                 }
 
@@ -907,12 +907,12 @@ class ContentTypeController extends AppController
                         EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                     ]);
                 }
-                if (array_key_exists('saveAndClose', $inputContentType)) {
+                if (\array_key_exists('saveAndClose', $inputContentType)) {
                     return $this->redirectToRoute('contenttype.edit', [
                         'id' => $id,
                     ]);
                 }
-                if (array_key_exists('saveAndReorder', $inputContentType)) {
+                if (\array_key_exists('saveAndReorder', $inputContentType)) {
                     return $this->redirectToRoute('ems_contenttype_reorder', [
                         'contentType' => $id,
                     ]);
@@ -996,7 +996,7 @@ class ContentTypeController extends AppController
         $em = $this->getDoctrine()->getManager();
         $contentType->getFieldType()->setName('source');
 
-        if (in_array($action, ['save', 'saveAndClose'])) {
+        if (\in_array($action, ['save', 'saveAndClose'])) {
             $field->updateOrderKeys();
             $env = $contentType->getEnvironment();
             if (!$env) {

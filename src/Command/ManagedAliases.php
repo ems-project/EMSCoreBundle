@@ -41,7 +41,7 @@ class ManagedAliases extends ContainerAwareCommand
             $output->writeln($alias->getName());
             if ($detailed) {
                 foreach ($alias->getIndexes() as $index) {
-                    $output->writeln(sprintf(' - Index: %s (%d)', $index['name'], $index['count']));
+                    $output->writeln(\sprintf(' - Index: %s (%d)', $index['name'], $index['count']));
                 }
             }
         }

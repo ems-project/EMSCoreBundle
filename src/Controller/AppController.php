@@ -221,7 +221,7 @@ class AppController extends Controller
         if ($dataFieldType instanceof DataFieldType) {
             return $dataFieldType;
         }
-        throw new ElasticmsException(sprintf('Expecting a DataFieldType instance, got a %s', get_class($dataFieldType)));
+        throw new ElasticmsException(\sprintf('Expecting a DataFieldType instance, got a %s', \get_class($dataFieldType)));
     }
 
     /**
@@ -236,20 +236,20 @@ class AppController extends Controller
 
     public static function getFormatedTimestamp()
     {
-        return date('_Ymd_His');
+        return \date('_Ymd_His');
     }
 
     protected function getGUID()
     {
-        mt_srand((float) microtime() * 10000); //optional for php 4.2.0 and up.
-        $charid = strtolower(md5(uniqid(rand(), true)));
-        $hyphen = chr(45); // "-"
+        \mt_srand((float) \microtime() * 10000); //optional for php 4.2.0 and up.
+        $charid = \strtolower(\md5(\uniqid(\rand(), true)));
+        $hyphen = \chr(45); // "-"
         $uuid =
-         substr($charid, 0, 8).$hyphen
-        .substr($charid, 8, 4).$hyphen
-        .substr($charid, 12, 4).$hyphen
-        .substr($charid, 16, 4).$hyphen
-        .substr($charid, 20, 12);
+         \substr($charid, 0, 8).$hyphen
+        .\substr($charid, 8, 4).$hyphen
+        .\substr($charid, 12, 4).$hyphen
+        .\substr($charid, 16, 4).$hyphen
+        .\substr($charid, 20, 12);
 
         return $uuid;
     }
@@ -316,7 +316,7 @@ class AppController extends Controller
         }
 
         $response = new Response();
-        $response->setContent(json_encode($body));
+        $response->setContent(\json_encode($body));
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;

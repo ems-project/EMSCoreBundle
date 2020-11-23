@@ -93,7 +93,7 @@ class FormSubmissionFile
         $this->modified = $now;
 
         $this->formSubmission = $formSubmission;
-        $this->file = base64_decode($file['base64']);
+        $this->file = \base64_decode($file['base64']);
         $this->filename = $file['filename'];
         $this->formField = $file['form_field'];
         $this->mimeType = $file['mimeType'];

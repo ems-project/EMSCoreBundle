@@ -56,16 +56,16 @@ class JobCommand extends Command
 
         $this->io->title('Preparing the job');
         $this->io->listing([
-            sprintf('ID: %d', $job->getId()),
-            sprintf('Command: %s', $job->getCommand()),
-            sprintf('User: %s', $job->getUser()),
-            sprintf('Created: %s', $job->getCreated()->format($this->dateFormat)),
+            \sprintf('ID: %d', $job->getId()),
+            \sprintf('Command: %s', $job->getCommand()),
+            \sprintf('User: %s', $job->getUser()),
+            \sprintf('Created: %s', $job->getCreated()->format($this->dateFormat)),
         ]);
         $start = new \DateTime();
         $this->jobService->run($job);
         $interval = \date_diff($start, new \DateTime());
 
-        $this->io->success(sprintf('Job completed with the return status "%s" in %s', $job->getStatus(), $interval->format('%a days, %h hours, %i minutes and %s seconds')));
+        $this->io->success(\sprintf('Job completed with the return status "%s" in %s', $job->getStatus(), $interval->format('%a days, %h hours, %i minutes and %s seconds')));
 
         if (true !== $input->getOption('dump')) {
             return 0;

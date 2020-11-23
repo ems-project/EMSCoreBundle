@@ -12,11 +12,11 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 abstract class EntityService
 {
-    /** @var Registry $doctrine */
+    /** @var Registry */
     protected $doctrine;
     /** @var LoggerInterface */
     protected $logger;
-    /** @var TranslatorInterface $translator */
+    /** @var TranslatorInterface */
     protected $translator;
 
     public function __construct(Registry $doctrine, LoggerInterface $logger, TranslatorInterface $translator)
@@ -32,7 +32,7 @@ abstract class EntityService
 
     public function reorder(FormInterface $reorderForm)
     {
-        $order = json_decode($reorderForm->getData()['items'], true);
+        $order = \json_decode($reorderForm->getData()['items'], true);
         $i = 1;
         foreach ($order as $id) {
             $item = $this->get($id);

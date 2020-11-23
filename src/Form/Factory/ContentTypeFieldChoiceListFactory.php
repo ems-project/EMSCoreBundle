@@ -10,7 +10,7 @@ use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
 
 class ContentTypeFieldChoiceListFactory extends DefaultChoiceListFactory
 {
-    /** @var ContentTypeService $contentTypesService */
+    /** @var ContentTypeService */
     private $contentTypesService;
 
     /**

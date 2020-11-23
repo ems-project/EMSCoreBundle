@@ -274,13 +274,13 @@ class AppExtension extends AbstractExtension
         if ($compare && $a !== $b) {
             if ($htmlDiff && $a && $b) {
                 $textClass = 'text-orange';
-                $htmlDiff = new HtmlDiff(($escape ? htmlentities($b) : $this->internalLinks($b)) ?? '', ($escape ? htmlentities($a) : $this->internalLinks($a)) ?? '');
+                $htmlDiff = new HtmlDiff(($escape ? \htmlentities($b) : $this->internalLinks($b)) ?? '', ($escape ? \htmlentities($a) : $this->internalLinks($a)) ?? '');
                 $textLabel = $htmlDiff->build();
             } else {
                 $textClass = false;
                 if (null !== $b) {
                     $textClass = 'text-red';
-                    $textLabel .= '<del class="diffmod">'.($escape ? htmlentities($b) : $this->internalLinks($b)).'</del>';
+                    $textLabel .= '<del class="diffmod">'.($escape ? \htmlentities($b) : $this->internalLinks($b)).'</del>';
                 }
 
                 if (null !== $a) {
@@ -289,12 +289,12 @@ class AppExtension extends AbstractExtension
                     } else {
                         $textClass = 'text-green';
                     }
-                    $textLabel .= ' <ins class="diffmod">'.($escape ? htmlentities($a) : $this->internalLinks($a)).'</ins>';
+                    $textLabel .= ' <ins class="diffmod">'.($escape ? \htmlentities($a) : $this->internalLinks($a)).'</ins>';
                 }
             }
         } else {
             if (null !== $a) {
-                $textLabel = ($escape ? htmlentities($a) : $this->internalLinks($a));
+                $textLabel = ($escape ? \htmlentities($a) : $this->internalLinks($a));
             } else {
 //                $textClass = 'text-gray';
 //                $textLabel = '[not defined]';
@@ -367,16 +367,16 @@ class AppExtension extends AbstractExtension
         $delColor = 'red';
 
         if (isset($compareRawData[$fieldName])) {
-            if (is_array($compareRawData[$fieldName])) {
+            if (\is_array($compareRawData[$fieldName])) {
                 $b = $compareRawData[$fieldName];
-            } elseif (is_scalar($compareRawData[$fieldName])) {
+            } elseif (\is_scalar($compareRawData[$fieldName])) {
                 $b = [$compareRawData[$fieldName]];
             }
         }
 
-        if (is_array($rawData)) {
+        if (\is_array($rawData)) {
             $a = $rawData;
-        } elseif (is_scalar($rawData)) {
+        } elseif (\is_scalar($rawData)) {
             $tag = 'span';
             if (!empty($b)) {
                 $insColor = $delColor = 'orange';
@@ -405,14 +405,14 @@ class AppExtension extends AbstractExtension
             if (null !== $internalFormat) {
                 $internal = $date->format($internalFormat);
                 $formatedA[] = $internal;
-                $inArray = in_array($internal, $b);
+                $inArray = \in_array($internal, $b);
             } elseif (null !== $format2) {
                 $value2 = $date->format($format2);
                 $formatedA[] = $value2;
-                $inArray = in_array($item, $b);
+                $inArray = \in_array($item, $b);
             } else {
                 $formatedA[] = $value;
-                $inArray = in_array($value, $b);
+                $inArray = \in_array($value, $b);
             }
 
             if ($value2) {
@@ -420,9 +420,9 @@ class AppExtension extends AbstractExtension
             }
 
             if (!$compare || $inArray) {
-                $out .= '<'.$tag.' class="">'.htmlentities($value).'</'.$tag.'>';
+                $out .= '<'.$tag.' class="">'.\htmlentities($value).'</'.$tag.'>';
             } else {
-                $out .= '<'.$tag.' class="text-'.$insColor.'"><ins class="diffmod">'.htmlentities($value).'</ins></'.$tag.'>';
+                $out .= '<'.$tag.' class="text-'.$insColor.'"><ins class="diffmod">'.\htmlentities($value).'</ins></'.$tag.'>';
             }
         }
 
@@ -444,12 +444,12 @@ class AppExtension extends AbstractExtension
 
                 if (null !== $internalFormat) {
                     $internal = $date->format($internalFormat);
-                    $inArray = in_array($internal, $formatedA);
+                    $inArray = \in_array($internal, $formatedA);
                 } elseif (null !== $format2) {
                     $value2 = $date->format($format2);
-                    $inArray = in_array($item, $formatedA);
+                    $inArray = \in_array($item, $formatedA);
                 } else {
-                    $inArray = in_array($value, $formatedA);
+                    $inArray = \in_array($value, $formatedA);
                 }
 
                 if ($value2) {
@@ -457,7 +457,7 @@ class AppExtension extends AbstractExtension
                 }
 
                 if (!$inArray) {
-                    $out .= ' <'.$tag.' class="text-'.$delColor.'"><del class="diffmod">'.htmlentities($value).'</del></'.$tag.'>';
+                    $out .= ' <'.$tag.' class="text-'.$delColor.'"><del class="diffmod">'.\htmlentities($value).'</del></'.$tag.'>';
                 }
             }
         }
@@ -480,16 +480,16 @@ class AppExtension extends AbstractExtension
         $delColor = 'red';
 
         if (isset($compareRawData[$fieldName])) {
-            if (is_array($compareRawData[$fieldName])) {
+            if (\is_array($compareRawData[$fieldName])) {
                 $b = $compareRawData[$fieldName];
-            } elseif (is_scalar($compareRawData[$fieldName])) {
+            } elseif (\is_scalar($compareRawData[$fieldName])) {
                 $b = [$compareRawData[$fieldName]];
             }
         }
 
-        if (is_array($rawData)) {
+        if (\is_array($rawData)) {
             $a = $rawData;
-        } elseif (is_scalar($rawData)) {
+        } elseif (\is_scalar($rawData)) {
             $tag = 'span';
             if (!empty($b)) {
                 $insColor = $delColor = 'orange';
@@ -501,7 +501,7 @@ class AppExtension extends AbstractExtension
             foreach ($b as $item) {
                 $value = $item;
                 if (\is_array($choices) && \in_array($value, $choices)) {
-                    $idx = array_search($value, $choices, true);
+                    $idx = \array_search($value, $choices, true);
                     if (false !== $idx && \is_array($labels) && \array_key_exists($idx, $labels)) {
                         $value = $labels[$idx].' ('.$value.')';
                     }
@@ -520,10 +520,10 @@ class AppExtension extends AbstractExtension
                     $value = $this->isSuper() ? $labels[$idx].' ('.$item.')' : $labels[$idx];
                 }
             }
-            if (!$compare || in_array($item, $b)) {
+            if (!$compare || \in_array($item, $b)) {
                 $out .= '<'.$tag.' class="" data-ems-id="'.$item.'">'.\htmlentities($value).'</'.$tag.'>';
             } else {
-                $out .= '<'.$tag.' class="text-'.$insColor.'"><ins class="diffmod">'.htmlentities($value).'</ins></'.$tag.'>';
+                $out .= '<'.$tag.' class="text-'.$insColor.'"><ins class="diffmod">'.\htmlentities($value).'</ins></'.$tag.'>';
             }
         }
 
@@ -543,30 +543,30 @@ class AppExtension extends AbstractExtension
         $b = $a = [];
         $out = '';
 
-        if (is_array($rawData)) {
+        if (\is_array($rawData)) {
             $a = $rawData;
-        } elseif (is_scalar($rawData)) {
+        } elseif (\is_scalar($rawData)) {
             $a = [$rawData];
         }
 
         if (isset($compareRawData[$fieldName])) {
-            if (is_array($compareRawData[$fieldName])) {
+            if (\is_array($compareRawData[$fieldName])) {
                 $b = $compareRawData[$fieldName];
-            } elseif (is_scalar($compareRawData[$fieldName])) {
+            } elseif (\is_scalar($compareRawData[$fieldName])) {
                 $b = [$compareRawData[$fieldName]];
             }
         }
 
         if ($compare) {
             foreach ($b as $item) {
-                if (!in_array($item, $a)) {
+                if (!\in_array($item, $a)) {
                     $out .= $this->dataLink($item, null, 'del').' ';
                 }
             }
         }
 
         foreach ($a as $item) {
-            if (!$compare || in_array($item, $b)) {
+            if (!$compare || \in_array($item, $b)) {
                 $out .= $this->dataLink($item).' ';
             } else {
                 $out .= $this->dataLink($item, null, 'ins').' ';
@@ -736,9 +736,9 @@ class AppExtension extends AbstractExtension
     public function srcPath(string $input, string $fileName = null): ?string
     {
         $path = $this->router->generate('ems_file_view', ['sha1' => '__SHA1__'], UrlGeneratorInterface::ABSOLUTE_PATH);
-        $path = substr($path, 0, strlen($path) - 8);
+        $path = \substr($path, 0, \strlen($path) - 8);
 
-        return preg_replace_callback(
+        return \preg_replace_callback(
             '/(ems:\/\/asset:)([^\n\r"\'\?]*)/i',
             function ($matches) use ($path, $fileName) {
                 if ($fileName) {
@@ -754,7 +754,7 @@ class AppExtension extends AbstractExtension
     public function internalLinks(string $input, string $fileName = null): ?string
     {
         $url = $this->router->generate('data.link', ['key' => 'object:'], UrlGeneratorInterface::ABSOLUTE_PATH);
-        $out = preg_replace('/ems:\/\/object:/i', $url, $input);
+        $out = \preg_replace('/ems:\/\/object:/i', $url, $input);
 
         if (null === $out) {
             throw new \RuntimeException('Unexpected null value');
@@ -808,7 +808,7 @@ class AppExtension extends AbstractExtension
      */
     public function inMyCircles($circles): bool
     {
-        if (\is_array($circles) && 0 === count($circles)) {
+        if (\is_array($circles) && 0 === \count($circles)) {
             return true;
         }
 
@@ -872,8 +872,8 @@ class AppExtension extends AbstractExtension
     public function dataLabel(string $key): string
     {
         $out = $key;
-        $exploded = explode(':', $key);
-        if (2 == count($exploded) && strlen($exploded[0]) > 0 && strlen($exploded[1]) > 0) {
+        $exploded = \explode(':', $key);
+        if (2 == \count($exploded) && \strlen($exploded[0]) > 0 && \strlen($exploded[1]) > 0) {
             $type = $exploded[0];
             $ouuid = $exploded[1];
 
@@ -906,7 +906,7 @@ class AppExtension extends AbstractExtension
 
                     if (null !== $document && $contentType->getLabelField()) {
                         $label = $document->getSource()[$contentType->getLabelField()];
-                        if ($label && strlen($label) > 0) {
+                        if ($label && \strlen($label) > 0) {
                             $out = $label;
                         }
                     }
@@ -929,8 +929,8 @@ class AppExtension extends AbstractExtension
     public function dataLink(string $key, string $revisionId = null, string $diffMod = null): string
     {
         $out = $key;
-        $exploded = explode(':', $key);
-        if (2 == count($exploded) && strlen($exploded[0]) > 0 && strlen($exploded[1]) > 0) {
+        $exploded = \explode(':', $key);
+        if (2 == \count($exploded) && \strlen($exploded[0]) > 0 && \strlen($exploded[1]) > 0) {
             $type = $exploded[0];
             $ouuid = $exploded[1];
 
@@ -965,7 +965,7 @@ class AppExtension extends AbstractExtension
 
                     if (null !== $document && $contentType->getLabelField()) {
                         $label = $document->getSource()[$contentType->getLabelField()];
-                        if ($label && strlen($label) > 0) {
+                        if ($label && \strlen($label) > 0) {
                             $out = $label;
                         }
                     }
@@ -1019,8 +1019,8 @@ class AppExtension extends AbstractExtension
             return null;
         }
 
-        $exploded = explode(':', $key);
-        if (2 === count($exploded)) {
+        $exploded = \explode(':', $key);
+        if (2 === \count($exploded)) {
             $type = $exploded[0];
             $ouuid = $exploded[1];
 
@@ -1082,20 +1082,20 @@ class AppExtension extends AbstractExtension
 
     public function relativeLuminance(string $col): float
     {
-        $col = trim($col, '#');
-        if (3 == strlen($col)) {
+        $col = \trim($col, '#');
+        if (3 == \strlen($col)) {
             $col = $col[0].$col[0].$col[1].$col[1].$col[2].$col[2];
         }
         $components = [
-            'r' => hexdec(substr($col, 0, 2)) / 255,
-            'g' => hexdec(substr($col, 2, 2)) / 255,
-            'b' => hexdec(substr($col, 4, 2)) / 255,
+            'r' => \hexdec(\substr($col, 0, 2)) / 255,
+            'g' => \hexdec(\substr($col, 2, 2)) / 255,
+            'b' => \hexdec(\substr($col, 4, 2)) / 255,
         ];
         foreach ($components as $c => $v) {
             if ($v <= 0.03928) {
                 $components[$c] = $v / 12.92;
             } else {
-                $components[$c] = pow((($v + 0.055) / 1.055), 2.4);
+                $components[$c] = \pow((($v + 0.055) / 1.055), 2.4);
             }
         }
 
@@ -1146,7 +1146,7 @@ class AppExtension extends AbstractExtension
      */
     public function dump(): void
     {
-        trigger_error('dump is now integrated by default in twig 1.5', E_USER_DEPRECATED);
+        \trigger_error('dump is now integrated by default in twig 1.5', E_USER_DEPRECATED);
     }
 
     public function convertJavaDateFormat(string $format): string
@@ -1252,7 +1252,7 @@ class AppExtension extends AbstractExtension
     {
         /** @var \SoapClient $soapClient */
         $soapClient = null;
-        if (array_key_exists('options', $arguments)) {
+        if (\array_key_exists('options', $arguments)) {
             $soapClient = new \SoapClient($wsdl, $arguments['options']);
         } else {
             $soapClient = new \SoapClient($wsdl);

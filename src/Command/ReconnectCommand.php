@@ -45,7 +45,7 @@ class ReconnectCommand extends ContainerAwareCommand
     {
         $environmentName = $input->getArgument('name');
 
-        if (!is_string($environmentName)) {
+        if (!\is_string($environmentName)) {
             throw new \RuntimeException('Unexpected environment name');
         }
 

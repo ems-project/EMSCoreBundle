@@ -171,7 +171,7 @@ final class UnlockRevisionsCommand extends Command
         }
 
         $contentTypeName = $input->getArgument(self::ARGUMENT_CONTENT_TYPE);
-        if (!is_string($contentTypeName)) {
+        if (!\is_string($contentTypeName)) {
             throw new \RuntimeException('Content Type name as to be a string');
         }
         if (false === $this->contentTypeService->getByName($contentTypeName)) {

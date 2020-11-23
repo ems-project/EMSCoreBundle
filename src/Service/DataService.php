@@ -181,7 +181,7 @@ class DataService
 
         if (!empty($privateKey)) {
             try {
-                $this->private_key = openssl_pkey_get_private(file_get_contents($privateKey));
+                $this->private_key = \openssl_pkey_get_private(\file_get_contents($privateKey));
             } catch (Exception $e) {
                 $this->logger->warning('service.data.not_able_to_load_the_private_key', [
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
@@ -216,7 +216,7 @@ class DataService
         if (!empty($publishEnv) && !$this->authorizationChecker->isGranted($revision->getContentType()->getPublishRole() ?: 'ROLE_PUBLISHER')) {
             throw new PrivilegeException($revision, 'You don\'t have publisher role for this content');
         }
-        if (!empty($publishEnv) && is_object($publishEnv) && !empty($publishEnv->getCircles()) && !$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT') && !$this->appTwig->inMyCircles($publishEnv->getCircles())) {
+        if (!empty($publishEnv) && \is_object($publishEnv) && !empty($publishEnv->getCircles()) && !$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT') && !$this->appTwig->inMyCircles($publishEnv->getCircles())) {
             throw new PrivilegeException($revision, 'You don\'t share any circle with this content');
         }
         if (empty($publishEnv) && !empty($revision->getContentType()->getCirclesField()) && !empty($revision->getRawData()[$revision->getContentType()->getCirclesField()])) {
@@ -278,7 +278,7 @@ class DataService
         if ($revision->getContentType()->getCirclesField()) {
             $fieldValue = $revision->getRawData()[$revision->getContentType()->getCirclesField()];
             if (!empty($fieldValue)) {
-                if (is_array($fieldValue)) {
+                if (\is_array($fieldValue)) {
                     return $fieldValue;
                 } else {
                     $out[] = $fieldValue;
@@ -330,11 +330,11 @@ class DataService
 
         foreach ($items as $contentType => $ouuids) {
             $contentType = $this->contentTypeService->getByName($contentType);
-            if ($contentType instanceof ContentType && $contentType->getBusinessIdField() && count($ouuids) > 0) {
+            if ($contentType instanceof ContentType && $contentType->getBusinessIdField() && \count($ouuids) > 0) {
                 $result = $this->client->search([
                     'index' => $contentType->getEnvironment()->getAlias(),
                     'body' => [
-                        'size' => sizeof($ouuids),
+                        'size' => \sizeof($ouuids),
                         '_source' => $contentType->getBusinessIdField(),
                         'query' => [
                             'bool' => [
@@ -357,7 +357,7 @@ class DataService
                     'scroll' => self::SCROLL_TIMEOUT,
                 ]);
 
-                while (count($result['hits']['hits'] ?? []) > 0) {
+                while (\count($result['hits']['hits'] ?? []) > 0) {
                     foreach ($result['hits']['hits'] as $hits) {
                         $dataLink = $contentType->getName().':'.$hits['_id'];
                         $businessKeys[$dataLink] = $hits['_source'][$contentType->getBusinessIdField()] ?? $hits['_id'];
@@ -371,7 +371,7 @@ class DataService
             }
         }
 
-        return array_values($businessKeys);
+        return \array_values($businessKeys);
     }
 
     public function getBusinessId(string $key): ?string
@@ -392,7 +392,7 @@ class DataService
                 }
 
                 if ($dataFieldType instanceof DataLinkFieldType) {
-                    if (is_string($data)) {
+                    if (\is_string($data)) {
                         return [$name => $this->getBusinessId($data)];
                     }
 
@@ -431,7 +431,7 @@ class DataService
                     if (!$childType->isVirtual()) {
                         $childData = $rawData[$child->getName()] ?? null;
                     }
-                    $output = array_merge($output, $this->walkRecursive($child, $childData, $callback));
+                    $output = \array_merge($output, $this->walkRecursive($child, $childData, $callback));
                 }
             }
         }
@@ -478,12 +478,12 @@ class DataService
                     'path' => $path,
                     'finalize' => $finalize,
                 ]);
-                $out = trim($out);
+                $out = \trim($out);
 
-                if (strlen($out) > 0) {
-                    $json = json_decode($out, true);
-                    $meg = json_last_error_msg();
-                    if (0 == strcasecmp($meg, 'No error')) {
+                if (\strlen($out) > 0) {
+                    $json = \json_decode($out, true);
+                    $meg = \json_last_error_msg();
+                    if (0 == \strcasecmp($meg, 'No error')) {
                         $objectArray[$dataField->getFieldType()->getName()] = $json;
                         $found = true;
                     } else {
@@ -530,9 +530,9 @@ class DataService
                     ]);
 
                     if ($dataField->getFieldType()->getDisplayOptions()['json']) {
-                        $out = json_decode($out, true);
+                        $out = \json_decode($out, true);
                     } else {
-                        $out = trim($out);
+                        $out = \trim($out);
                     }
                 } catch (Exception $e) {
                     if ($e->getPrevious() && $e->getPrevious() instanceof CantBeFinalizedException) {
@@ -546,7 +546,7 @@ class DataService
                     ]);
                 }
             }
-            if (null !== $out && false !== $out && (!is_array($out) || !empty($out))) {
+            if (null !== $out && false !== $out && (!\is_array($out) || !empty($out))) {
                 $objectArray[$dataField->getFieldType()->getName()] = $out;
             } elseif (isset($objectArray[$dataField->getFieldType()->getName()])) {
                 unset($objectArray[$dataField->getFieldType()->getName()]);
@@ -599,7 +599,7 @@ class DataService
 
     public static function isInternalField(string $fieldName)
     {
-        return in_array($fieldName, ['_ems_internal_deleted', 'remove_collection_item']);
+        return \in_array($fieldName, ['_ems_internal_deleted', 'remove_collection_item']);
     }
 
     public function generateInputValues(DataField $dataField)
@@ -674,7 +674,7 @@ class DataService
      */
     public static function ksortRecursive(&$array, $sort_flags = SORT_REGULAR)
     {
-        @trigger_error('DataService::ksortRecursive is deprecated use the ArrayTool::normalizeArray instead', E_USER_DEPRECATED);
+        @\trigger_error('DataService::ksortRecursive is deprecated use the ArrayTool::normalizeArray instead', E_USER_DEPRECATED);
 
         ArrayTool::normalizeArray($array, $sort_flags);
     }
@@ -699,21 +699,21 @@ class DataService
             $objectArray[Mapping::VERSION_TAG] = $revision->getVersionTag();
         }
         ArrayTool::normalizeArray($objectArray);
-        $json = json_encode($objectArray);
+        $json = \json_encode($objectArray);
 
         $revision->setSha1($this->storageManager->computeStringHash($json));
         $objectArray[Mapping::HASH_FIELD] = $revision->getSha1();
 
         if (!$silentPublish && $this->private_key) {
             $signature = null;
-            if (openssl_sign($json, $signature, $this->private_key, OPENSSL_ALGO_SHA1)) {
-                $objectArray[Mapping::SIGNATURE_FIELD] = base64_encode($signature);
+            if (\openssl_sign($json, $signature, $this->private_key, OPENSSL_ALGO_SHA1)) {
+                $objectArray[Mapping::SIGNATURE_FIELD] = \base64_encode($signature);
             } else {
                 $this->logger->warning('service.data.not_able_to_sign', [
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                    EmsFields::LOG_ERROR_MESSAGE_FIELD => openssl_error_string(),
+                    EmsFields::LOG_ERROR_MESSAGE_FIELD => \openssl_error_string(),
                 ]);
             }
         }
@@ -740,12 +740,12 @@ class DataService
     public function getCertificateInfo()
     {
         if ($this->private_key) {
-            $certificate = openssl_pkey_get_private($this->private_key);
+            $certificate = \openssl_pkey_get_private($this->private_key);
             if (false === $certificate) {
                 throw new \RuntimeException('Private key not found');
             }
 
-            return openssl_pkey_get_details($certificate);
+            return \openssl_pkey_get_details($certificate);
         }
 
         return null;
@@ -785,12 +785,12 @@ class DataService
                     unset($indexedItem[Mapping::HASH_FIELD]);
 
                     if (isset($indexedItem[Mapping::SIGNATURE_FIELD])) {
-                        $binary_signature = base64_decode($indexedItem[Mapping::SIGNATURE_FIELD]);
+                        $binary_signature = \base64_decode($indexedItem[Mapping::SIGNATURE_FIELD]);
                         unset($indexedItem[Mapping::SIGNATURE_FIELD]);
-                        $data = json_encode($indexedItem);
+                        $data = \json_encode($indexedItem);
 
                         // Check signature
-                        $ok = openssl_verify($data, $binary_signature, $this->getPublicKey(), self::ALGO);
+                        $ok = \openssl_verify($data, $binary_signature, $this->getPublicKey(), self::ALGO);
                         if (0 === $ok) {
                             $this->logger->warning('service.data.check_signature_failed', [
                                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
@@ -803,12 +803,12 @@ class DataService
                                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                                EmsFields::LOG_ERROR_MESSAGE_FIELD => openssl_error_string(),
+                                EmsFields::LOG_ERROR_MESSAGE_FIELD => \openssl_error_string(),
                                 EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
                             ]);
                         }
                     } else {
-                        $data = json_encode($indexedItem);
+                        $data = \json_encode($indexedItem);
                         if ($this->private_key) {
                             $this->logger->warning('service.data.revision_not_signed', [
                                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
@@ -1017,10 +1017,10 @@ class DataService
             if (empty($dataField->getMessages())) {
                 continue;
             }
-            if (1 === sizeof($dataField->getMessages())) {
+            if (1 === \sizeof($dataField->getMessages())) {
                 $errorMessage = $dataField->getMessages()[0];
             } else {
-                $errorMessage = sprintf('["%s"]', \implode('","', $dataField->getMessages()));
+                $errorMessage = \sprintf('["%s"]', \implode('","', $dataField->getMessages()));
             }
 
             $fieldName = $fieldForm->getNormData()->getFieldType()->getDisplayOption('label', $fieldForm->getNormData()->getFieldType()->getName());
@@ -1090,7 +1090,7 @@ class DataService
                 'deleted' => false,
         ]);
 
-        if (1 != count($contentTypes)) {
+        if (1 != \count($contentTypes)) {
             throw new NotFoundHttpException('Unknown content type');
         }
         $contentType = $contentTypes[0];
@@ -1106,13 +1106,13 @@ class DataService
                 'deleted' => false,
         ]);
 
-        if (1 == count($revisions)) {
+        if (1 == \count($revisions)) {
             if ($revisions[0] instanceof Revision && null == $revisions[0]->getEndTime()) {
                 return $revisions[0];
             } else {
                 throw new NotFoundHttpException('Revision for ouuid '.$ouuid.' and contenttype '.$type.' with end time '.$revisions[0]->getEndTime());
             }
-        } elseif (0 == count($revisions)) {
+        } elseif (0 == \count($revisions)) {
             throw new NotFoundHttpException('Revision not found for ouuid '.$ouuid.' and contenttype '.$type);
         } else {
             throw new Exception('Too much newest revisions available for ouuid '.$ouuid.' and contenttype '.$type);
@@ -1147,7 +1147,7 @@ class DataService
                     'environment' => $contentType->getEnvironment(),
                     'contentType' => $contentType,
                 ]);
-                $raw = json_decode($defaultValue, true);
+                $raw = \json_decode($defaultValue, true);
                 if (null === $raw) {
                     $this->logger->error('service.data.default_value_error', [
                         EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
@@ -1167,10 +1167,10 @@ class DataService
         }
 
         if ($rawData) {
-            $rawData = array_diff_key($rawData, Mapping::MAPPING_INTERNAL_FIELDS);
+            $rawData = \array_diff_key($rawData, Mapping::MAPPING_INTERNAL_FIELDS);
 
             if ($revision->getRawData()) {
-                $revision->setRawData(array_replace_recursive($rawData, $revision->getRawData()));
+                $revision->setRawData(\array_replace_recursive($rawData, $revision->getRawData()));
             } else {
                 $revision->setRawData($rawData);
             }
@@ -1234,7 +1234,7 @@ class DataService
             }
             $found = false;
             foreach ($userCircles as $userCircle) {
-                if (in_array($userCircle, $environmentCircles)) {
+                if (\in_array($userCircle, $environmentCircles)) {
                     $found = true;
                     break;
                 }
@@ -1257,7 +1257,7 @@ class DataService
     {
         $objectArray = $revision->getRawData();
         if (!empty($revision->getContentType()->getCirclesField()) && isset($objectArray[$revision->getContentType()->getCirclesField()]) && !empty($objectArray[$revision->getContentType()->getCirclesField()])) {
-            $revision->setCircles(is_array($objectArray[$revision->getContentType()->getCirclesField()]) ? $objectArray[$revision->getContentType()->getCirclesField()] : [$objectArray[$revision->getContentType()->getCirclesField()]]);
+            $revision->setCircles(\is_array($objectArray[$revision->getContentType()->getCirclesField()]) ? $objectArray[$revision->getContentType()->getCirclesField()] : [$objectArray[$revision->getContentType()->getCirclesField()]]);
         } else {
             $revision->setCircles(null);
         }
@@ -1380,7 +1380,7 @@ class DataService
 
             $result = $query->getResult();
 
-            if (1 == count($result)) {
+            if (1 == \count($result)) {
                 /** @var Revision $previous */
                 $previous = $result[0];
                 $this->lockRevision($previous, null, $super, $username);
@@ -1422,7 +1422,7 @@ class DataService
                 'deleted' => false,
                 'name' => $type,
         ]);
-        if (!$contentTypes || 1 != count($contentTypes)) {
+        if (!$contentTypes || 1 != \count($contentTypes)) {
             throw new NotFoundHttpException('Content Type not found');
         }
 
@@ -1587,7 +1587,7 @@ class DataService
                             $child->setEncodedText($field->getDisplayOptions()['defaultValue']);
                         }
                     }
-                    if (0 != strcmp($field->getType(), CollectionFieldType::class)) {
+                    if (0 != \strcmp($field->getType(), CollectionFieldType::class)) {
                         $this->updateDataStructure($field, $child);
                     }
                 }
@@ -1616,7 +1616,7 @@ class DataService
                     foreach ($treatedFields as $fieldName) {
                         unset($elasticIndexDatas[$fieldName]);
                     }
-                } elseif (array_key_exists($fieldName, $elasticIndexDatas)) {
+                } elseif (\array_key_exists($fieldName, $elasticIndexDatas)) {
                     $treatedFields = $dataFieldType->importData($dataField, $elasticIndexDatas[$fieldName], $isMigration);
                     foreach ($treatedFields as $fieldName) {
                         unset($elasticIndexDatas[$fieldName]);
@@ -1650,7 +1650,7 @@ class DataService
         unset($object[Mapping::FINALIZATION_DATETIME_FIELD]);
         unset($object[Mapping::VERSION_TAG]);
         unset($object[Mapping::VERSION_UUID]);
-        if (count($object) > 0) {
+        if (\count($object) > 0) {
             $html = DataService::arrayToHtml($object);
 
             $this->logger->warning('service.data.data_not_consumed', [
@@ -1658,7 +1658,7 @@ class DataService
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
-                'count' => count($object),
+                'count' => \count($object),
                 'data' => $html,
             ]);
         }
@@ -1750,7 +1750,7 @@ class DataService
         $out = '<ul>';
         foreach ($array as $id => $item) {
             $out .= '<li>'.$id.':';
-            if (is_array($item)) {
+            if (\is_array($item)) {
                 $out .= DataService::arrayToHtml($item);
             } else {
                 $out .= $item;
@@ -1839,7 +1839,7 @@ class DataService
                 'deleted' => false,
         ]);
 
-        if (1 != count($contentTypes)) {
+        if (1 != \count($contentTypes)) {
             throw new NotFoundHttpException('Unknown content type');
         }
         $contentType = $contentTypes[0];
@@ -1853,7 +1853,7 @@ class DataService
                 'deleted' => false,
         ]);
 
-        if (1 == count($revisions)) {
+        if (1 == \count($revisions)) {
             if ($revisions[0] instanceof Revision && null == $revisions[0]->getEndTime()) {
                 $revision = $revisions[0];
 
@@ -1861,7 +1861,7 @@ class DataService
             } else {
                 throw new Exception('Revision for ouuid '.$id.' and contenttype '.$type.' with end time '.$revisions[0]->getEndTime());
             }
-        } elseif (0 == count($revisions)) {
+        } elseif (0 == \count($revisions)) {
             throw new NotFoundHttpException('Revision not found for id '.$id.' and contenttype '.$type);
         } else {
             throw new Exception('Too much newest revisions available for ouuid '.$id.' and contenttype '.$type);
@@ -1889,7 +1889,7 @@ class DataService
             if ('replace' === $replaceOrMerge) {
                 $newDraft->setRawData($rawData);
             } elseif ('merge' === $replaceOrMerge) {
-                $newRawData = array_merge($revision->getRawData(), $rawData);
+                $newRawData = \array_merge($revision->getRawData(), $rawData);
                 $newDraft->setRawData($newRawData);
             } else {
                 $this->logger->error('service.data.unknown_update_type', [
@@ -1959,15 +1959,15 @@ class DataService
     {
         $form = null;
         foreach ($event->getToCleanOuuids() as $ouuid) {
-            $key = explode(':', $ouuid);
+            $key = \explode(':', $ouuid);
             try {
                 $revision = $this->initNewDraft($key[0], $key[1]);
                 $data = $revision->getRawData();
                 if (empty($data[$event->getTargetField()])) {
                     $data[$event->getTargetField()] = [];
                 }
-                if (in_array($event->getRefererOuuid(), $data[$event->getTargetField()])) {
-                    $data[$event->getTargetField()] = array_diff($data[$event->getTargetField()], [$event->getRefererOuuid()]);
+                if (\in_array($event->getRefererOuuid(), $data[$event->getTargetField()])) {
+                    $data[$event->getTargetField()] = \array_diff($data[$event->getTargetField()], [$event->getRefererOuuid()]);
                     $revision->setRawData($data);
 
                     $this->finalizeDraft($revision, $form, null, false);
@@ -1985,14 +1985,14 @@ class DataService
         }
 
         foreach ($event->getToCreateOuuids() as $ouuid) {
-            $key = explode(':', $ouuid);
+            $key = \explode(':', $ouuid);
             try {
                 $revision = $this->initNewDraft($key[0], $key[1]);
                 $data = $revision->getRawData();
                 if (empty($data[$event->getTargetField()])) {
                     $data[$event->getTargetField()] = [];
                 }
-                if (!in_array($event->getRefererOuuid(), $data[$event->getTargetField()])) {
+                if (!\in_array($event->getRefererOuuid(), $data[$event->getTargetField()])) {
                     $data[$event->getTargetField()][] = $event->getRefererOuuid();
                     $revision->setRawData($data);
 
@@ -2042,13 +2042,13 @@ class DataService
             }
         }
 
-        foreach (explode(',', $contentTypesCommaList) as $contentTypeName) {
+        foreach (\explode(',', $contentTypesCommaList) as $contentTypeName) {
             $contentType = $this->contentTypeService->getByName($contentTypeName);
-            if ($contentType->getBusinessIdField() && count($ouuids) > 0) {
+            if ($contentType->getBusinessIdField() && \count($ouuids) > 0) {
                 $result = $this->client->search([
                     'index' => $contentType->getEnvironment()->getAlias(),
                     'body' => [
-                        'size' => sizeof($ouuids),
+                        'size' => \sizeof($ouuids),
                         '_source' => $contentType->getBusinessIdField(),
                         'query' => [
                             'bool' => [
@@ -2071,9 +2071,9 @@ class DataService
                     'scroll' => self::SCROLL_TIMEOUT,
                 ]);
 
-                while (count($result['hits']['hits'] ?? []) > 0) {
+                while (\count($result['hits']['hits'] ?? []) > 0) {
                     foreach ($result['hits']['hits'] as $hits) {
-                        $key = sprintf('%s:%s', $contentType->getName(), $hits['_id']);
+                        $key = \sprintf('%s:%s', $contentType->getName(), $hits['_id']);
                         $ouuids[$hits['_source'][$contentType->getBusinessIdField()]] = $key;
                         $this->cacheOuuids[$contentTypesCommaList][$contentType->getBusinessIdField()] = $key;
                     }
@@ -2085,7 +2085,7 @@ class DataService
             }
         }
 
-        return array_values($ouuids);
+        return \array_values($ouuids);
     }
 
     public function getDataLink(string $contentTypesCommaList, string $businessId): string
@@ -2100,7 +2100,7 @@ class DataService
         $revision->setOuuid($ouuid);
         $revisionType = $this->formFactory->create(RevisionType::class, $revision, ['migration' => true, 'raw_data' => $revision->getRawData(), 'with_warning' => false]);
         $result = $this->walkRecursive($revisionType->get('data'), $rawData, function (string $name, $data, DataFieldType $dataFieldType, DataField $dataField) {
-            if (null !== $data && (!is_array($data) || count($data) > 0)) {
+            if (null !== $data && (!\is_array($data) || \count($data) > 0)) {
                 if ($dataFieldType->isVirtual()) {
                     return $data;
                 }
@@ -2114,7 +2114,7 @@ class DataService
                     return [$name => $data];
                 }
 
-                if (is_string($data)) {
+                if (\is_string($data)) {
                     return [$name => $this->getDataLink($typesList, $data)];
                 }
 

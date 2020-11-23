@@ -38,7 +38,7 @@ class WysiwygController extends AppController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            $order = json_decode($form->getData()['items'], true);
+            $order = \json_decode($form->getData()['items'], true);
             $i = 1;
             foreach ($order as $id) {
                 $profile = $this->getWysiwygProfileService()->get($id);
@@ -56,7 +56,7 @@ class WysiwygController extends AppController
         $formStylesSet->handleRequest($request);
 
         if ($formStylesSet->isSubmitted()) {
-            $order = json_decode($formStylesSet->getData()['items'], true);
+            $order = \json_decode($formStylesSet->getData()['items'], true);
             $i = 1;
             foreach ($order as $id) {
                 $stylesSet = $this->getWysiwygStylesSetService()->get($id);
@@ -93,11 +93,11 @@ class WysiwygController extends AppController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            json_decode($profile->getConfig(), true);
-            if (json_last_error()) {
-                $form->get('config')->addError(new FormError($this->getTranslator()->trans('wysiwyg.invalid_config_format', ['%msg%' => json_last_error_msg()], EMSCoreBundle::TRANS_DOMAIN)));
+            \json_decode($profile->getConfig(), true);
+            if (\json_last_error()) {
+                $form->get('config')->addError(new FormError($this->getTranslator()->trans('wysiwyg.invalid_config_format', ['%msg%' => \json_last_error_msg()], EMSCoreBundle::TRANS_DOMAIN)));
             } else {
-                $profile->setOrderKey(100 + count($this->getWysiwygProfileService()->getProfiles()));
+                $profile->setOrderKey(100 + \count($this->getWysiwygProfileService()->getProfiles()));
                 $this->getWysiwygProfileService()->saveProfile($profile);
 
                 return $this->redirectToRoute('ems_wysiwyg_index');
@@ -126,11 +126,11 @@ class WysiwygController extends AppController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            json_decode($stylesSet->getConfig(), true);
-            if (json_last_error()) {
-                $form->get('config')->addError(new FormError($this->getTranslator()->trans('wysiwyg.invalid_config_format', ['%msg%' => json_last_error_msg()], 'EMSCoreBundle')));
+            \json_decode($stylesSet->getConfig(), true);
+            if (\json_last_error()) {
+                $form->get('config')->addError(new FormError($this->getTranslator()->trans('wysiwyg.invalid_config_format', ['%msg%' => \json_last_error_msg()], 'EMSCoreBundle')));
             } else {
-                $stylesSet->setOrderKey(100 + count($this->getWysiwygStylesSetService()->getStylesSets()));
+                $stylesSet->setOrderKey(100 + \count($this->getWysiwygStylesSetService()->getStylesSets()));
                 $this->getWysiwygStylesSetService()->save($stylesSet);
 
                 return $this->redirectToRoute('ems_wysiwyg_index');
@@ -163,9 +163,9 @@ class WysiwygController extends AppController
             }
 
             if ($form->isSubmitted() && $form->isValid()) {
-                json_decode($stylesSet->getConfig(), true);
-                if (json_last_error()) {
-                    $form->get('config')->addError(new FormError($this->getTranslator()->trans('wysiwyg.invalid_config_format', ['%msg%' => json_last_error_msg()], 'EMSCoreBundle')));
+                \json_decode($stylesSet->getConfig(), true);
+                if (\json_last_error()) {
+                    $form->get('config')->addError(new FormError($this->getTranslator()->trans('wysiwyg.invalid_config_format', ['%msg%' => \json_last_error_msg()], 'EMSCoreBundle')));
                 } else {
                     $this->getWysiwygStylesSetService()->save($stylesSet);
 
@@ -200,9 +200,9 @@ class WysiwygController extends AppController
             }
 
             if ($form->isSubmitted() && $form->isValid()) {
-                json_decode($profile->getConfig(), true);
-                if (json_last_error()) {
-                    $form->get('config')->addError(new FormError($this->getTranslator()->trans('wysiwyg.invalid_config_format', ['%msg%' => json_last_error_msg()], 'EMSCoreBundle')));
+                \json_decode($profile->getConfig(), true);
+                if (\json_last_error()) {
+                    $form->get('config')->addError(new FormError($this->getTranslator()->trans('wysiwyg.invalid_config_format', ['%msg%' => \json_last_error_msg()], 'EMSCoreBundle')));
                 } else {
                     $this->getWysiwygProfileService()->saveProfile($profile);
 

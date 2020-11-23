@@ -35,7 +35,7 @@ class ContentTypeFieldChoiceList implements ChoiceListInterface
      */
     public function getValues()
     {
-        return array_keys($this->choices);
+        return \array_keys($this->choices);
     }
 
     /**
@@ -64,7 +64,7 @@ class ContentTypeFieldChoiceList implements ChoiceListInterface
      */
     public function getChoicesForValues(array $choices)
     {
-        return array_values($choices);
+        return \array_values($choices);
     }
 
     /**
@@ -72,19 +72,19 @@ class ContentTypeFieldChoiceList implements ChoiceListInterface
      */
     public function getValuesForChoices(array $choices)
     {
-        return array_values($choices);
+        return \array_values($choices);
     }
 
     private function recursiveLoad($mapping, $path = '')
     {
         foreach ($mapping as $key => $field) {
             $newPath = (empty($path) ? '' : $path.'.').$key;
-            if (isset($field['type']) && false !== array_search($field['type'], $this->types)) {
+            if (isset($field['type']) && false !== \array_search($field['type'], $this->types)) {
                 $this->choices[$newPath] = new ContentTypeFieldChoiceListItem($newPath, $newPath);
             }
             if (isset($field['fields'])) {
                 foreach ($field['fields'] as $fieldName => $field) {
-                    if (isset($field['type']) && false !== array_search($field['type'], $this->types)) {
+                    if (isset($field['type']) && false !== \array_search($field['type'], $this->types)) {
                         $fieldPath = $newPath.'.'.$fieldName;
                         $this->choices[$fieldPath] = new ContentTypeFieldChoiceListItem($fieldPath, $fieldPath);
                     }
@@ -110,7 +110,7 @@ class ContentTypeFieldChoiceList implements ChoiceListInterface
     public function loadChoices(array $choices)
     {
         foreach ($choices as $choice) {
-            $path = explode('.', $choice);
+            $path = \explode('.', $choice);
 
             $target = $this->mapping;
             $value = '';

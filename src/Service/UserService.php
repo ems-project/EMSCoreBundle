@@ -13,11 +13,11 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class UserService
 {
-    /** @var Registry $doctrine */
+    /** @var Registry */
     private $doctrine;
-    /** @var Session $session */
+    /** @var Session */
     private $session;
-    /** @var TokenStorageInterface $tokenStorage */
+    /** @var TokenStorageInterface */
     private $tokenStorage;
 
     /** @var UserInterface|null */

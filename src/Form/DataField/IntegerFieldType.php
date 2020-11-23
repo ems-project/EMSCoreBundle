@@ -37,7 +37,7 @@ class IntegerFieldType extends DataFieldType
         $isValid = parent::isValid($dataField, $parent, $masterRawData);
 
         $rawData = $dataField->getRawData();
-        if (!empty($rawData) && !is_numeric($rawData)) {
+        if (!empty($rawData) && !\is_numeric($rawData)) {
             $isValid = false;
             $dataField->addMessage('Not a integer');
         }
@@ -83,7 +83,7 @@ class IntegerFieldType extends DataFieldType
     public function generateMapping(FieldType $current, $withPipeline)
     {
         return [
-                $current->getName() => $this->elasticsearchService->updateMapping(array_merge(['type' => 'integer'], array_filter($current->getMappingOptions()))),
+                $current->getName() => $this->elasticsearchService->updateMapping(\array_merge(['type' => 'integer'], \array_filter($current->getMappingOptions()))),
         ];
     }
 
@@ -138,8 +138,8 @@ class IntegerFieldType extends DataFieldType
 
         $message = false;
         if (null !== $temp) {
-            if (is_numeric($temp)) {
-                $temp = intval($temp);
+            if (\is_numeric($temp)) {
+                $temp = \intval($temp);
             } else {
                 $message = 'It is not a integer value';
             }

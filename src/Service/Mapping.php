@@ -92,7 +92,7 @@ class Mapping
             $out['properties'] = $this->fieldTypeType->generateMapping($contentType->getFieldType(), $withPipeline);
         }
 
-        $out['properties'] = array_merge(
+        $out['properties'] = \array_merge(
             [
                 Mapping::HASH_FIELD => $this->elasticsearchService->getKeywordMapping(),
                 Mapping::SIGNATURE_FIELD => $this->elasticsearchService->getNotIndexedStringMapping(),

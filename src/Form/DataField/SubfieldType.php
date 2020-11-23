@@ -59,7 +59,7 @@ class SubfieldType extends DataFieldType
      */
     public function generateMapping(FieldType $current, $withPipeline)
     {
-        $options = $this->elasticsearchService->updateMapping(array_merge(['type' => 'string'], array_filter($current->getMappingOptions())));
+        $options = $this->elasticsearchService->updateMapping(\array_merge(['type' => 'string'], \array_filter($current->getMappingOptions())));
 
         return [
                 'fields' => [$current->getName() => $options],

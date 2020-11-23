@@ -42,8 +42,8 @@ class ManagedAliasType extends AbstractType
                 'attr' => ['rows' => '6'],
             ])
             ->add('indexes', ChoiceType::class, [
-                'data' => array_keys($data->getIndexes()),
-                'choices' => array_keys($options['indexes']),
+                'data' => \array_keys($data->getIndexes()),
+                'choices' => \array_keys($options['indexes']),
                 'choice_label' => function ($val) {
                     return $val;
                 },

@@ -48,7 +48,7 @@ class CrudController extends AppController
             throw new BadRequestHttpException('You can not create content for a managed content type');
         }
 
-        $rawdata = json_decode($request->getContent(), true);
+        $rawdata = \json_decode($request->getContent(), true);
         if (empty($rawdata)) {
             throw new BadRequestHttpException('Not a valid JSON message');
         }
@@ -260,7 +260,7 @@ class CrudController extends AppController
             throw new BadRequestHttpException('You can not replace content for a managed content type');
         }
 
-        $rawdata = json_decode($request->getContent(), true);
+        $rawdata = \json_decode($request->getContent(), true);
         if (empty($rawdata)) {
             throw new BadRequestHttpException('Not a valid JSON message');
         }
@@ -311,7 +311,7 @@ class CrudController extends AppController
             throw new BadRequestHttpException('You can not merge content for a managed content type');
         }
 
-        $rawdata = json_decode($request->getContent(), true);
+        $rawdata = \json_decode($request->getContent(), true);
         if (empty($rawdata)) {
             throw new BadRequestHttpException('Not a valid JSON message for revision '.$ouuid.' and contenttype '.$contentType->getName());
         }

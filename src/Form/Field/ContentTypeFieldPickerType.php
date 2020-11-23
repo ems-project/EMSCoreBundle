@@ -8,7 +8,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ContentTypeFieldPickerType extends SelectPickerType
 {
-    /** @var ChoiceListFactoryInterface $choiceListFactory */
+    /** @var ChoiceListFactoryInterface */
     private $choiceListFactory;
 
     public function __construct(ChoiceListFactoryInterface $factory)

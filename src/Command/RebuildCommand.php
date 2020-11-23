@@ -151,7 +151,7 @@ class RebuildCommand extends EmsCommand
             }
         }
 
-        $output->writeln(count($contentTypes).' content types will be re-indexed');
+        $output->writeln(\count($contentTypes).' content types will be re-indexed');
 
         $countContentType = 1;
 
@@ -186,7 +186,7 @@ class RebuildCommand extends EmsCommand
 
                 if ($this->singleTypeIndex) {
                     $output->writeln('');
-                    $output->writeln($contentType->getPluralName().' have been re-indexed '.$countContentType.'/'.count($contentTypes));
+                    $output->writeln($contentType->getPluralName().' have been re-indexed '.$countContentType.'/'.\count($contentTypes));
                 }
                 ++$countContentType;
             }

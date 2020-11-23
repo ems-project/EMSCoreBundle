@@ -173,7 +173,7 @@ class DataController extends AppController
         return $this->forward('EMSCoreBundle:Elasticsearch:search', [
             'query' => null,
         ], [
-            'search_form' => json_decode(json_encode($searchForm), true),
+            'search_form' => \json_decode(\json_encode($searchForm), true),
         ]);
     }
 
@@ -348,7 +348,7 @@ class DataController extends AppController
             'deleted' => false,
             'name' => $type,
         ]);
-        if (!$contentTypes || 1 != count($contentTypes)) {
+        if (!$contentTypes || 1 != \count($contentTypes)) {
             throw new NotFoundHttpException('Content Type not found');
         }
         /** @var ContentType $contentType */
@@ -370,7 +370,7 @@ class DataController extends AppController
         /** @var RevisionRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:Revision');
 
-        /** @var Revision $revision */
+        /* @var Revision $revision */
         if (!$revisionId) {
             $revision = $repository->findOneBy([
                 'endTime' => null,
@@ -461,13 +461,13 @@ class DataController extends AppController
         $filter = $searchForm->getFilters()[0];
         $filter->setBooleanClause('should');
         $filter->setField($contentType->getRefererFieldName());
-        $filter->setPattern(sprintf('%s:%s', $type, $ouuid));
+        $filter->setPattern(\sprintf('%s:%s', $type, $ouuid));
         $filter->setOperator('term');
 
         $filter = new SearchFilter();
         $filter->setBooleanClause('should');
         $filter->setField($contentType->getRefererFieldName());
-        $filter->setPattern(sprintf('"%s:%s"', $type, $ouuid));
+        $filter->setPattern(\sprintf('"%s:%s"', $type, $ouuid));
         $filter->setOperator('match_and');
         $searchForm->addFilter($filter);
 
@@ -880,7 +880,7 @@ class DataController extends AppController
             'name' => $environmentName,
         ]);
 
-        if (!$environment || 1 != count($environment)) {
+        if (!$environment || 1 != \count($environment)) {
             throw new NotFoundHttpException('Environment type not found');
         }
 
@@ -930,9 +930,9 @@ class DataController extends AppController
             ]);
             exit;
         }
-        if ($_download || (0 === strcmp($template->getRenderOption(), RenderOptionType::EXPORT) && !$template->getPreview())) {
+        if ($_download || (0 === \strcmp($template->getRenderOption(), RenderOptionType::EXPORT) && !$template->getPreview())) {
             if (null != $template->getMimeType()) {
-                header('Content-Type: '.$template->getMimeType());
+                \header('Content-Type: '.$template->getMimeType());
             }
 
             $filename = $ouuid;
@@ -956,7 +956,7 @@ class DataController extends AppController
                     'object' => $document,
                     'source' => $document->getSource(),
                 ]);
-                $filename = preg_replace('~[\r\n]+~', '', $filename);
+                $filename = \preg_replace('~[\r\n]+~', '', $filename);
             }
 
             if (!empty($template->getDisposition())) {
@@ -964,12 +964,12 @@ class DataController extends AppController
                 if ('inline' == $template->getDisposition()) {
                     $attachment = ResponseHeaderBag::DISPOSITION_INLINE;
                 }
-                header("Content-Disposition: $attachment; filename=".$filename.($template->getExtension() ? '.'.$template->getExtension() : ''));
+                \header("Content-Disposition: $attachment; filename=".$filename.($template->getExtension() ? '.'.$template->getExtension() : ''));
             }
             if (null != $template->getAllowOrigin()) {
-                header('Access-Control-Allow-Origin: '.$template->getAllowOrigin());
-                header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept, Accept-Language, If-None-Match, If-Modified-Since');
-                header('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS');
+                \header('Access-Control-Allow-Origin: '.$template->getAllowOrigin());
+                \header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept, Accept-Language, If-None-Match, If-Modified-Since');
+                \header('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS');
             }
 
             $output = $body->render([
@@ -1182,7 +1182,7 @@ class DataController extends AppController
             }
 
             $revision = $this->getDataService()->finalizeDraft($revision, $form);
-            if (0 !== count($form->getErrors())) {
+            if (0 !== \count($form->getErrors())) {
                 $logger->error('log.data.revision.can_finalized_as_invalid', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),

@@ -30,7 +30,7 @@ use Twig_Environment;
 
 class HierarchicalViewType extends ViewType
 {
-    /** @var Session $session */
+    /** @var Session */
     protected $session;
 
     /** @var DataService */
@@ -73,7 +73,7 @@ class HierarchicalViewType extends ViewType
                 'type' => $view->getContentType()->getName(),
         ]);
 
-        $mapping = array_values($mapping)[0]['mappings'][$view->getContentType()->getName()]['properties'];
+        $mapping = \array_values($mapping)[0]['mappings'][$view->getContentType()->getName()]['properties'];
 
         $fieldType = new FieldType();
 
@@ -149,8 +149,8 @@ class HierarchicalViewType extends ViewType
         if (empty($view->getOptions()['parent'])) {
             throw new NotFoundHttpException('Parent menu not found');
         }
-        $parentId = explode(':', $view->getOptions()['parent']);
-        if (2 != count($parentId)) {
+        $parentId = \explode(':', $view->getOptions()['parent']);
+        if (2 != \count($parentId)) {
             throw new NotFoundHttpException('Parent menu not found: '.$view->getOptions()['parent']);
         }
 
@@ -181,7 +181,7 @@ class HierarchicalViewType extends ViewType
 
         if ($form->isSubmitted()) {
             $data = $form->getData();
-            $structure = json_decode($data['structure'], true);
+            $structure = \json_decode($data['structure'], true);
 
             $this->reorder($view->getOptions()['parent'], $view, $structure);
 
@@ -209,7 +209,7 @@ class HierarchicalViewType extends ViewType
 
     public function reorder($itemKey, View $view, $structure): void
     {
-        $temp = explode(':', $itemKey);
+        $temp = \explode(':', $itemKey);
         $type = $temp[0];
         $ouuid = $temp[1];
         try {
@@ -218,7 +218,7 @@ class HierarchicalViewType extends ViewType
             $data[$view->getOptions()['field']] = [];
             foreach ($structure as $item) {
                 $data[$view->getOptions()['field']][] = $item['id'];
-                if (explode(':', $item['id'])[0] == $view->getContentType()->getName()) {
+                if (\explode(':', $item['id'])[0] == $view->getContentType()->getName()) {
                     $this->reorder($item['id'], $view, isset($item['children']) ? $item['children'] : []);
                 }
             }

@@ -28,7 +28,7 @@ class ComputedFieldType extends DataFieldType
     {
         if (!empty($current->getMappingOptions()) && !empty($current->getMappingOptions()['mappingOptions'])) {
             try {
-                $mapping = json_decode($current->getMappingOptions()['mappingOptions'], true);
+                $mapping = \json_decode($current->getMappingOptions()['mappingOptions'], true);
 
                 return [$current->getName() => $this->elasticsearchService->updateMapping($mapping)];
             } catch (\Exception $e) {
@@ -121,7 +121,7 @@ class ComputedFieldType extends DataFieldType
     {
         $out = parent::viewTransform($dataField);
 
-        return ['value' => json_encode($out)];
+        return ['value' => \json_encode($out)];
     }
 
     /**
@@ -133,7 +133,7 @@ class ComputedFieldType extends DataFieldType
     {
         $dataField = parent::reverseViewTransform($data, $fieldType);
         try {
-            $value = json_decode($data['value']);
+            $value = \json_decode($data['value']);
             $dataField->setRawData($value);
         } catch (\Exception $e) {
             $dataField->setRawData(null);

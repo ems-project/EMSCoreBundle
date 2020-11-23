@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class HelperService
 {
-    /** @var Registry $doctrine */
+    /** @var Registry */
     protected $doctrine;
     private $pagingSize;
     private $requestStack;

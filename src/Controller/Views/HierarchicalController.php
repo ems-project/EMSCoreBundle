@@ -18,7 +18,7 @@ class HierarchicalController extends AppController
      */
     public function itemAction(View $view, $key)
     {
-        $ouuid = explode(':', $key);
+        $ouuid = \explode(':', $key);
         $contentType = $this->getContentTypeService()->getByName($ouuid[0]);
         $index = $this->getContentTypeService()->getIndex($contentType);
         $item = $this->getElasticsearch()->get([

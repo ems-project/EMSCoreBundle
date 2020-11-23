@@ -58,7 +58,7 @@ class UserController extends AppController
         /** @var WysiwygProfileRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:WysiwygProfile');
         $result = $repository->findBy([], ['orderKey' => 'asc'], 1);
-        if (count($result) > 0) {
+        if (\count($result) > 0) {
             $user->setWysiwygProfile($result[0]);
         }
 
@@ -357,13 +357,13 @@ class UserController extends AppController
         $user = $this->getUserService()->getUser($username, false);
 
         $roles = $user->getRoles();
-        if (!in_array('ROLE_API', $roles)) {
+        if (!\in_array('ROLE_API', $roles)) {
             $logger->error('log.user.cannot_request_api_key', [
                 'user' => $username,
                 'initiator' => $this->getUserService()->getCurrentUser()->getUsername(),
             ]);
 
-            throw new \RuntimeException(sprintf('The user %s  does not have the permission to use API functionalities.', $username));
+            throw new \RuntimeException(\sprintf('The user %s  does not have the permission to use API functionalities.', $username));
         }
 
         $authToken = new AuthToken($user);

@@ -51,7 +51,7 @@ class ChoiceFieldType extends DataFieldType
     public function choiceAttr($choiceValue, $key, $value)
     {
         $out = [];
-        if (false !== $this->fakeIndex && is_int($choiceValue) && $choiceValue >= $this->fakeIndex) {
+        if (false !== $this->fakeIndex && \is_int($choiceValue) && $choiceValue >= $this->fakeIndex) {
             $out['class'] = 'input-to-hide';
         }
 
@@ -67,8 +67,8 @@ class ChoiceFieldType extends DataFieldType
         $fieldType = $builder->getOptions()['metadata'];
 
         $choices = [];
-        $values = explode("\n", str_replace("\r", '', $options['choices']));
-        $labels = explode("\n", str_replace("\r", '', $options['labels']));
+        $values = \explode("\n", \str_replace("\r", '', $options['choices']));
+        $labels = \explode("\n", \str_replace("\r", '', $options['labels']));
 
         foreach ($values as $id => $value) {
             if ('' != $value) {
@@ -82,7 +82,7 @@ class ChoiceFieldType extends DataFieldType
 
         if ($options['linked_collection']) {
             $idx = 0;
-            if (isset($options['raw_data'][$options['linked_collection']]) && is_array($options['raw_data'][$options['linked_collection']])) {
+            if (isset($options['raw_data'][$options['linked_collection']]) && \is_array($options['raw_data'][$options['linked_collection']])) {
                 foreach ($options['raw_data'][$options['linked_collection']] as $idx => $child) {
                     $choices['#'.$idx.': '.((isset($child[$options['collection_label_field']]) && null !== $child[$options['collection_label_field']]) ? $child[$options['collection_label_field']] : '')] = $idx;
                 }
@@ -219,31 +219,31 @@ class ChoiceFieldType extends DataFieldType
         if ($dataField->getFieldType()->getDisplayOptions()['multiple']) {
             if (empty($temp)) {
                 $out = [];
-            } elseif (is_string($temp)) {
+            } elseif (\is_string($temp)) {
                 $out = [$temp];
-            } elseif (is_array($temp)) {
+            } elseif (\is_array($temp)) {
                 $out = [];
                 foreach ($temp as $item) {
-                    if (is_string($item) || is_integer($item)) {
+                    if (\is_string($item) || \is_integer($item)) {
                         $out[] = $item;
                     } else {
-                        $dataField->addMessage('Was not able to import the data : '.json_encode($item));
+                        $dataField->addMessage('Was not able to import the data : '.\json_encode($item));
                     }
                 }
             } else {
-                $dataField->addMessage('Was not able to import the data : '.json_encode($out));
+                $dataField->addMessage('Was not able to import the data : '.\json_encode($out));
                 $out = [];
             }
         } else { //not mutiple
             if (null === $temp) {
                 $out = null;
-            } elseif (is_string($temp) || is_integer($temp)) {
+            } elseif (\is_string($temp) || \is_integer($temp)) {
                 $out = $temp;
-            } elseif (is_array($temp) && null != $temp && (is_string(array_shift($temp)) || is_integer(array_shift($temp)))) {
-                $out = array_shift($temp);
-                $dataField->addMessage('Only the first item has been imported : '.json_encode($temp));
+            } elseif (\is_array($temp) && null != $temp && (\is_string(\array_shift($temp)) || \is_integer(\array_shift($temp)))) {
+                $out = \array_shift($temp);
+                $dataField->addMessage('Only the first item has been imported : '.\json_encode($temp));
             } else {
-                $dataField->addMessage('Was not able to import the data : '.json_encode($temp));
+                $dataField->addMessage('Was not able to import the data : '.\json_encode($temp));
                 $out = '';
             }
         }

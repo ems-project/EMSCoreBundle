@@ -25,7 +25,7 @@ use Twig_Environment;
 
 class SorterViewType extends ViewType
 {
-    /** @var Session $session */
+    /** @var Session */
     protected $session;
     /** @var DataService */
     protected $dataService;
@@ -62,7 +62,7 @@ class SorterViewType extends ViewType
                 'type' => $view->getContentType()->getName(),
         ]);
 
-        $mapping = array_values($mapping)[0]['mappings'][$view->getContentType()->getName()]['properties'];
+        $mapping = \array_values($mapping)[0]['mappings'][$view->getContentType()->getName()]['properties'];
 
         $builder
         ->add('body', CodeEditorType::class, [
@@ -107,7 +107,7 @@ class SorterViewType extends ViewType
             $renderQuery = '{}';
         }
 
-        $boby = json_decode($renderQuery, true);
+        $boby = \json_decode($renderQuery, true);
 
         $boby['sort'] = [
                 $view->getOptions()['field'] => [

@@ -42,7 +42,7 @@ class AnalyzerOptionsType extends AbstractType
         ],
     ];
 
-    /** @var Registry $doctrine */
+    /** @var Registry */
     private $doctrine;
 
     public function __construct(Registry $doctrine)

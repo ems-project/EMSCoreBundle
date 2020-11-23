@@ -70,7 +70,7 @@ class AssetExtractorService implements CacheWarmerInterface
             }
         }
 
-        if (!file_exists($filename)) {
+        if (!\file_exists($filename)) {
             throw new \RuntimeException("Tika's jar not found");
         }
 
@@ -181,10 +181,10 @@ class AssetExtractorService implements CacheWarmerInterface
                 $out = AssetExtractorService::convertMetaToArray($this->getTikaWrapper()->getMetadata($file));
                 if (!isset($out['content'])) {
                     $text = $this->getTikaWrapper()->getText($file);
-                    if (!mb_check_encoding($text)) {
-                        $text = mb_convert_encoding($text, mb_internal_encoding(), 'ASCII');
+                    if (!\mb_check_encoding($text)) {
+                        $text = \mb_convert_encoding($text, \mb_internal_encoding(), 'ASCII');
                     }
-                    $text = (preg_replace('/(\n)(\s*\n)+/', '${1}', $text));
+                    $text = (\preg_replace('/(\n)(\s*\n)+/', '${1}', $text));
                     $out['content'] = $text;
                 }
                 if (!isset($out['language'])) {
@@ -224,9 +224,9 @@ class AssetExtractorService implements CacheWarmerInterface
     private static function cleanString(string $string): string
     {
         if (!\mb_check_encoding($string)) {
-            $string = \mb_convert_encoding($string, mb_internal_encoding(), 'ASCII');
+            $string = \mb_convert_encoding($string, \mb_internal_encoding(), 'ASCII');
         }
-        if (!is_string($string)) {
+        if (!\is_string($string)) {
             throw new \RuntimeException('Unexpected issue while multi byte encoded data');
         }
 

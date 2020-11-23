@@ -51,7 +51,7 @@ class KeywordsViewType extends ViewType
 
         $retDoc = $this->client->search($searchQuery);
 
-        foreach (explode('.', $view->getOptions()['pathToBuckets']) as $attribute) {
+        foreach (\explode('.', $view->getOptions()['pathToBuckets']) as $attribute) {
             $retDoc = $retDoc[$attribute];
         }
 

@@ -138,7 +138,7 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable
         $this->options = $options;
 
         foreach ($this->options as $key => $data) {
-            if ('type' != $key and !in_array($key, AnalyzerOptionsType::FIELDS_BY_TYPE[$this->options['type']])) {
+            if ('type' != $key and !\in_array($key, AnalyzerOptionsType::FIELDS_BY_TYPE[$this->options['type']])) {
                 unset($this->options[$key]);
             } elseif (null === $this->options[$key]) {
                 unset($this->options[$key]);
@@ -290,7 +290,7 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable
      */
     public function jsonSerialize()
     {
-        $json = new JsonClass(get_object_vars($this), __CLASS__);
+        $json = new JsonClass(\get_object_vars($this), __CLASS__);
         $json->removeProperty('id');
 
         return $json;

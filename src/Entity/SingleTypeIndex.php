@@ -218,7 +218,7 @@ class SingleTypeIndex extends JsonDeserializer implements \JsonSerializable
      */
     public function jsonSerialize()
     {
-        $json = new JsonClass(get_object_vars($this), __CLASS__);
+        $json = new JsonClass(\get_object_vars($this), __CLASS__);
         $json->removeProperty('id');
         $json->removeProperty('environment');
         $json->removeProperty('contentType');

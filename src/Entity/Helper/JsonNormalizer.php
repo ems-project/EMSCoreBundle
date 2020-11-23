@@ -54,12 +54,12 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
         $reflectionClass = new \ReflectionClass($object);
 
         $data['__jsonclass__'] = [
-                get_class($object),
+                \get_class($object),
                 [], // constructor arguments
         ];
         //Parsing all methods of the object
         foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
-            if ('get' !== strtolower(substr($reflectionMethod->getName(), 0, 3)) && 'is' !== strtolower(substr($reflectionMethod->getName(), 0, 2))) {
+            if ('get' !== \strtolower(\substr($reflectionMethod->getName(), 0, 3)) && 'is' !== \strtolower(\substr($reflectionMethod->getName(), 0, 2))) {
                 continue;
             }
 
@@ -67,7 +67,7 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
                 continue;
             }
 
-            $property = lcfirst(('get' === strtolower(substr($reflectionMethod->getName(), 0, 3))) ? substr($reflectionMethod->getName(), 3) : substr($reflectionMethod->getName(), 2));
+            $property = \lcfirst(('get' === \strtolower(\substr($reflectionMethod->getName(), 0, 3))) ? \substr($reflectionMethod->getName(), 3) : \substr($reflectionMethod->getName(), 2));
             $value = $reflectionMethod->invoke($object);
             if ('deleted' == $property && true == $value) {
                 break;
@@ -75,7 +75,7 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
             if (null != $value) {
                 //If you want to parse a new object, provide here the way to normalize it.
                 if ($object instanceof ContentType) {
-                    if (in_array($property, $this->toSkip['ContentType'])) {
+                    if (\in_array($property, $this->toSkip['ContentType'])) {
                         continue;
                     }
                     if ($value instanceof FieldType) {
@@ -96,7 +96,7 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
                         $value = $arrayValues;
                     }
                 } elseif ($object instanceof FieldType) {
-                    if (in_array($property, $this->toSkip['FieldType'])) {
+                    if (\in_array($property, $this->toSkip['FieldType'])) {
                         continue;
                     }
                     if ('validChildren' == $property) {
@@ -109,11 +109,11 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
                         $value = $arrayValues;
                     }
                 } elseif ($object instanceof Template) {
-                    if (in_array($property, $this->toSkip['Template'])) {
+                    if (\in_array($property, $this->toSkip['Template'])) {
                         continue;
                     }
                 } elseif ($object instanceof View) {
-                    if (in_array($property, $this->toSkip['View'])) {
+                    if (\in_array($property, $this->toSkip['View'])) {
                         continue;
                     }
                 }
@@ -165,8 +165,8 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
             } elseif ("EMS\CoreBundle\Entity\View" == $class && 'contentType' == $property) {
                 $object->setContentType($context['contentType']);
             } else {
-                $setter = 'set'.ucfirst($property);
-                if (method_exists($object, $setter)) {
+                $setter = 'set'.\ucfirst($property);
+                if (\method_exists($object, $setter)) {
                     $object->$setter($value);
                 }
             }
@@ -183,7 +183,7 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
      */
     public function supportsNormalization($data, $format = null)
     {
-        return is_object($data) && 'json' === $format;
+        return \is_object($data) && 'json' === $format;
     }
 
     /**

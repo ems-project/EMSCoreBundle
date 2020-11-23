@@ -60,7 +60,7 @@ class UpdateMetaFieldCommand extends EmsCommand
         $environment = $envRepo->findOneBy(['name' => $name, 'managed' => true]);
 
         if (null === $environment) {
-            $output->writeln(sprintf('WARNING: Environment named %s not found', $name));
+            $output->writeln(\sprintf('WARNING: Environment named %s not found', $name));
 
             return -1;
         }

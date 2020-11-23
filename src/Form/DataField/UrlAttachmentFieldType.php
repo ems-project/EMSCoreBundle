@@ -68,17 +68,17 @@ class UrlAttachmentFieldType extends DataFieldType
                 $dataField->addMessage('This entry is required');
             }
             $dataField->setRawData(['_url' => null, '_content' => '']);
-        } elseif (is_string($data)) {
+        } elseif (\is_string($data)) {
             try {
-                $content = file_get_contents($data);
+                $content = \file_get_contents($data);
                 $rawData = [
                     '_url' => $data,
-                    '_content' => base64_encode($content),
-                    '_size' => strlen($content),
+                    '_content' => \base64_encode($content),
+                    '_size' => \strlen($content),
                 ];
                 $dataField->setRawData($rawData);
             } catch (\Exception $e) {
-                $dataField->addMessage(sprintf(
+                $dataField->addMessage(\sprintf(
                     'Impossible to fetch the ressource due to %s',
                     $e->getMessage()
                 ));
@@ -89,9 +89,9 @@ class UrlAttachmentFieldType extends DataFieldType
                 ]);
             }
         } else {
-            $dataField->addMessage(sprintf(
+            $dataField->addMessage(\sprintf(
                 'Data not supported: %s',
-                json_encode($data)
+                \json_encode($data)
             ));
         }
 
@@ -105,9 +105,9 @@ class UrlAttachmentFieldType extends DataFieldType
      */
     public function modelTransform($data, FieldType $fieldType)
     {
-        if (is_array($data)) {
+        if (\is_array($data)) {
             foreach ($data as $id => $content) {
-                if (!in_array($id, ['_url', '_size'], true)) {
+                if (!\in_array($id, ['_url', '_size'], true)) {
                     unset($data[$id]);
                 }
             }
@@ -124,10 +124,10 @@ class UrlAttachmentFieldType extends DataFieldType
         $out = parent::viewTransform($data);
         if (!empty($out)) {
             if (!empty($out['_url'])) {
-                if (is_string($out['_url'])) {
+                if (\is_string($out['_url'])) {
                     return $out['_url'];
                 }
-                $data->addMessage('Non supported input data : '.json_encode($out));
+                $data->addMessage('Non supported input data : '.\json_encode($out));
             }
         }
 

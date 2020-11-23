@@ -93,7 +93,7 @@ class TimeFieldType extends DataFieldType
     {
         $out = parent::viewTransform($data);
 
-        if (is_array($out) && 0 === count($out)) {
+        if (\is_array($out) && 0 === \count($out)) {
             return ''; //empty array means null/empty
         }
 
@@ -130,10 +130,10 @@ class TimeFieldType extends DataFieldType
     public function generateMapping(FieldType $current, $withPipeline)
     {
         return [
-                $current->getName() => array_merge([
+                $current->getName() => \array_merge([
                         'type' => 'date',
                         'format' => TimeFieldType::INDEXFORMAT,
-                ], array_filter($current->getMappingOptions())),
+                ], \array_filter($current->getMappingOptions())),
         ];
     }
 

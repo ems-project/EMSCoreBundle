@@ -178,10 +178,10 @@ class AlignCommand extends Command
 
         $sourceName = $input->getArgument(self::ARGUMENT_SOURCE);
         $targetName = $input->getArgument(self::ARGUMENT_TARGET);
-        if (!is_string($targetName)) {
+        if (!\is_string($targetName)) {
             throw new \RuntimeException('Target name as to be a string');
         }
-        if (!is_string($sourceName)) {
+        if (!\is_string($sourceName)) {
             throw new \RuntimeException('Source name as to be a string');
         }
 
@@ -212,7 +212,7 @@ class AlignCommand extends Command
         $alreadyAligned = 0;
         $targetIsPreviewEnvironment = [];
 
-        while (count($arrayElasticsearchIndex['hits']['hits'] ?? []) > 0) {
+        while (\count($arrayElasticsearchIndex['hits']['hits'] ?? []) > 0) {
             foreach ($arrayElasticsearchIndex['hits']['hits'] as $hit) {
                 $contentType = $this->contentTypeService->getByName($hit['_source']['_contenttype']);
                 if (false === $contentType) {
@@ -273,7 +273,7 @@ class AlignCommand extends Command
 
             return;
         }
-        if (!is_string($sourceName)) {
+        if (!\is_string($sourceName)) {
             throw new \RuntimeException('Source name as to be a string');
         }
 
@@ -310,7 +310,7 @@ class AlignCommand extends Command
 
             return;
         }
-        if (!is_string($targetName)) {
+        if (!\is_string($targetName)) {
             throw new \RuntimeException('Target name as to be a string');
         }
 
@@ -333,7 +333,7 @@ class AlignCommand extends Command
         }
 
         $sourceName = $input->getArgument(self::ARGUMENT_SOURCE);
-        if (!is_string($sourceName)) {
+        if (!\is_string($sourceName)) {
             throw new \RuntimeException('Source name as to be a string');
         }
         $source = $this->environmentService->getAliasByName($sourceName);

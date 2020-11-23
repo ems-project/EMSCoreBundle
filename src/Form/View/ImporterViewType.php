@@ -96,7 +96,7 @@ class ImporterViewType extends ViewType
             $fileArray = $form->getData()['archive'];
             $filename = $this->fileService->getFile($fileArray[EmsFields::CONTENT_FILE_HASH_FIELD] ?? 'missing');
 
-            $command = sprintf(
+            $command = \sprintf(
                 'ems:make:document %s %s%s%s%s%s%s',
                 $view->getContentType()->getName(),
                 $filename,

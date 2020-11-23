@@ -31,8 +31,8 @@ class SearchFilterType extends AbstractType
                     $searchFieldOption = $options['searchFields'][$key];
 
                     return [
-                        'data-content-types' => json_encode($searchFieldOption->getContentTypes()),
-                        'data-operators' => json_encode($searchFieldOption->getOperators()),
+                        'data-content-types' => \json_encode($searchFieldOption->getContentTypes()),
+                        'data-operators' => \json_encode($searchFieldOption->getOperators()),
                     ];
                 },
             ]);

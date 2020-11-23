@@ -61,7 +61,7 @@ class JSONFieldType extends DataFieldType
      */
     public function viewTransform(DataField $dataField)
     {
-        return ['value' => json_encode($dataField->getRawData())];
+        return ['value' => \json_encode($dataField->getRawData())];
     }
 
     public function reverseViewTransform($input, FieldType $fieldType)
@@ -71,9 +71,9 @@ class JSONFieldType extends DataFieldType
         if (null === $input) {
             $dataValues->setRawData(null);
         } else {
-            $data = @json_decode($input['value']);
+            $data = @\json_decode($input['value']);
             if (null === $data
-                    && JSON_ERROR_NONE !== json_last_error()) {
+                    && JSON_ERROR_NONE !== \json_last_error()) {
                 $dataValues->setRawData($input['value']);
             } else {
                 $dataValues->setRawData($data);
@@ -116,9 +116,9 @@ class JSONFieldType extends DataFieldType
         $isValid = parent::isValid($dataField, $parent, $masterRawData);
         $rawData = $dataField->getRawData();
         if (null !== $rawData) {
-            $data = @json_decode($rawData);
+            $data = @\json_decode($rawData);
 
-            if (JSON_ERROR_NONE !== json_last_error()) {
+            if (JSON_ERROR_NONE !== \json_last_error()) {
                 $isValid = false;
                 $dataField->addMessage('Not a valid JSON');
             }
@@ -154,7 +154,7 @@ class JSONFieldType extends DataFieldType
     public function generateMapping(FieldType $current, $withPipeline)
     {
         if (!empty($current->getMappingOptions()) && !empty($current->getMappingOptions()['mappingOptions'])) {
-            return [$current->getName() => json_decode($current->getMappingOptions()['mappingOptions'], true)];
+            return [$current->getName() => \json_decode($current->getMappingOptions()['mappingOptions'], true)];
         }
 
         return [];

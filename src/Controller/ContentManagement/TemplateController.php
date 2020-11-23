@@ -34,7 +34,7 @@ class TemplateController extends AppController
             'name' => $type,
         ]);
 
-        if (!$contentTypes || 1 != count($contentTypes)) {
+        if (!$contentTypes || 1 != \count($contentTypes)) {
             throw new NotFoundHttpException('Content type not found');
         }
 
@@ -61,7 +61,7 @@ class TemplateController extends AppController
             'name' => $type,
         ]);
 
-        if (!$contentTypes || 1 != count($contentTypes)) {
+        if (!$contentTypes || 1 != \count($contentTypes)) {
             throw new NotFoundHttpException('Content type not found');
         }
 

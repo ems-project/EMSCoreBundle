@@ -96,7 +96,7 @@ class ElasticsearchService
      */
     public function compare($version)
     {
-        return version_compare($this->getVersion(), $version);
+        return \version_compare($this->getVersion(), $version);
     }
 
     /**
@@ -106,7 +106,7 @@ class ElasticsearchService
      */
     public function getKeywordMapping()
     {
-        if (version_compare($this->getVersion(), '5') > 0) {
+        if (\version_compare($this->getVersion(), '5') > 0) {
             return [
                 'type' => 'keyword',
             ];
@@ -126,7 +126,7 @@ class ElasticsearchService
     public function convertMapping(array $in)
     {
         $out = $in;
-        if (version_compare($this->getVersion(), '5') > 0) {
+        if (\version_compare($this->getVersion(), '5') > 0) {
             if (isset($out['analyzer']) && 'keyword' === $out['analyzer']) {
                 $out['type'] = 'keyword';
                 unset($out['analyzer']);
@@ -156,11 +156,11 @@ class ElasticsearchService
      */
     public function updateMapping($mapping)
     {
-        if (isset($mapping['copy_to']) && !empty($mapping['copy_to']) && is_string($mapping['copy_to'])) {
-            $mapping['copy_to'] = explode(',', $mapping['copy_to']);
+        if (isset($mapping['copy_to']) && !empty($mapping['copy_to']) && \is_string($mapping['copy_to'])) {
+            $mapping['copy_to'] = \explode(',', $mapping['copy_to']);
         }
 
-        if (version_compare($this->getVersion(), '5') > 0) {
+        if (\version_compare($this->getVersion(), '5') > 0) {
             if ('string' === $mapping['type']) {
                 if ((isset($mapping['analyzer']) && 'keyword' === $mapping['analyzer']) || (empty($mapping['analyzer']) && isset($mapping['index']) && 'not_analyzed' === $mapping['index'])) {
                     $mapping['type'] = 'keyword';
@@ -201,7 +201,7 @@ class ElasticsearchService
      */
     public function getNotIndexedStringMapping()
     {
-        if (version_compare($this->getVersion(), '5') > 0) {
+        if (\version_compare($this->getVersion(), '5') > 0) {
             return [
                 'type' => 'text',
                 'index' => false,
@@ -221,7 +221,7 @@ class ElasticsearchService
      */
     public function getIndexedStringMapping()
     {
-        if (version_compare($this->getVersion(), '5') > 0) {
+        if (\version_compare($this->getVersion(), '5') > 0) {
             return [
                 'type' => 'text',
                 'index' => true,
@@ -248,7 +248,7 @@ class ElasticsearchService
 
     public function withAllMapping()
     {
-        return version_compare($this->getVersion(), '5.6') < 0;
+        return \version_compare($this->getVersion(), '5.6') < 0;
     }
 
     /**

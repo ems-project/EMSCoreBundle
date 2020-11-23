@@ -37,7 +37,7 @@ class SearchService
      */
     public function generateSearchBody(Search $search): array
     {
-        @trigger_error('SearchService::generateSearchBody is deprecated use the SearchService::generateSearch method instead', E_USER_DEPRECATED);
+        @\trigger_error('SearchService::generateSearchBody is deprecated use the SearchService::generateSearch method instead', E_USER_DEPRECATED);
         $commonSearch = $this->generateSearch($search);
         $body = [];
         $query = $commonSearch->getQuery();
@@ -87,7 +87,7 @@ class SearchService
         foreach ($search->getEnvironments() as $environmentName) {
             $environment = $this->environmentService->getByName($environmentName);
             if (!$environment instanceof Environment) {
-                throw new \RuntimeException(sprintf('Environment %s not found', $environmentName));
+                throw new \RuntimeException(\sprintf('Environment %s not found', $environmentName));
             }
             $indexes[] = $environment->getAlias();
         }
@@ -95,9 +95,9 @@ class SearchService
         $commonSearch = new CommonSearch($indexes, $this->elasticaService->filterByContentTypes($boolQuery, $search->getContentTypes()));
 
         $sortBy = $search->getSortBy();
-        if (null != $sortBy && strlen($sortBy) > 0) {
+        if (null != $sortBy && \strlen($sortBy) > 0) {
             $commonSearch->setSort([
-                $search->getSortBy() => array_filter([
+                $search->getSortBy() => \array_filter([
                     'order' => (empty($search->getSortOrder()) ? 'asc' : $search->getSortOrder()),
                     'missing' => '_last',
                     'unmapped_type' => 'long',
@@ -134,9 +134,9 @@ class SearchService
      */
     private function nestFilter(string $nestedPath, array $esFilter): array
     {
-        $path = explode('.', $nestedPath);
+        $path = \explode('.', $nestedPath);
 
-        for ($i = count($path); $i > 0; --$i) {
+        for ($i = \count($path); $i > 0; --$i) {
             $esFilter = [
                 'nested' => [
                     'path' => \implode('.', \array_slice($path, 0, $i)),

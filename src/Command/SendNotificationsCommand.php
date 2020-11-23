@@ -49,7 +49,7 @@ class SendNotificationsCommand extends ContainerAwareCommand
      */
     private function sendEmails(array $resultSet, OutputInterface $output): void
     {
-        $count = count($resultSet);
+        $count = \count($resultSet);
         $progress = new ProgressBar($output, $count);
         if (!$output->isVerbose()) {
             $progress->start();

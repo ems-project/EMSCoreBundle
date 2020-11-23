@@ -177,16 +177,16 @@ class FilterOptionsType extends AbstractType
 
         $textArea2Array = new CallbackTransformer(
             function ($tagsAsArray) {
-                if (is_array($tagsAsArray)) {
+                if (\is_array($tagsAsArray)) {
                     // transform the array to a string
-                    return implode(', ', $tagsAsArray);
+                    return \implode(', ', $tagsAsArray);
                 }
 
                 return $tagsAsArray;
             },
             function ($tagsAsString) {
                 // transform the string back to an array
-                return explode(', ', $tagsAsString);
+                return \explode(', ', $tagsAsString);
             }
         );
 

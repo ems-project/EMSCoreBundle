@@ -114,7 +114,7 @@ final class RevisionCopyCommand extends Command implements CommandInterface
 
         foreach ($this->elasticsearchService->scroll($request) as $i => $response) {
             if (0 === $i) {
-                $this->io->note(sprintf('Found %s documents', $response->getTotal()));
+                $this->io->note(\sprintf('Found %s documents', $response->getTotal()));
             }
 
             $this->copy($copyContext, $response->getDocumentCollection());
@@ -122,7 +122,7 @@ final class RevisionCopyCommand extends Command implements CommandInterface
 
         $countCopies = \count($this->copies);
         $this->io->newLine();
-        $this->io->success(sprintf('Created %d copies', $countCopies));
+        $this->io->success(\sprintf('Created %d copies', $countCopies));
 
         return $countCopies;
     }

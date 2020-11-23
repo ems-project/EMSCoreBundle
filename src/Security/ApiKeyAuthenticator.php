@@ -43,7 +43,7 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
     public function authenticateToken(TokenInterface $token, UserProviderInterface $userProvider, $providerKey)
     {
         if (!$userProvider instanceof ApiKeyUserProvider) {
-            throw new \InvalidArgumentException(sprintf('The user provider must be an instance of ApiKeyUserProvider (%s was given).', get_class($userProvider)));
+            throw new \InvalidArgumentException(\sprintf('The user provider must be an instance of ApiKeyUserProvider (%s was given).', \get_class($userProvider)));
         }
 
         $apiKey = $token->getCredentials();
@@ -52,7 +52,7 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
         if (!$username) {
             // CAUTION: this message will be returned to the client
             // (so don't put any un-trusted messages / error strings here)
-            throw new CustomUserMessageAuthenticationException(sprintf('API Key "%s" does not exist.', $apiKey));
+            throw new CustomUserMessageAuthenticationException(\sprintf('API Key "%s" does not exist.', $apiKey));
         }
 
         $user = $userProvider->loadUserByUsername($username);
@@ -70,7 +70,7 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
         return new Response(
             // this contains information about *why* authentication failed
                 // use it, or return your own message
-            strtr($exception->getMessageKey(), $exception->getMessageData()),
+            \strtr($exception->getMessageKey(), $exception->getMessageData()),
             401
         );
     }

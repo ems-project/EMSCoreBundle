@@ -75,9 +75,9 @@ class JsonMenuLinkFieldType extends DataFieldType
                 $icon = $contentType->getIcon() ?? 'fa fa-file';
                 $label = $hit['_id'];
                 if (null !== $contentType->getLabelField() && ($hit['_source'][$contentType->getLabelField()] ?? false)) {
-                    $label = htmlentities($hit['_source'][$contentType->getLabelField()]);
+                    $label = \htmlentities($hit['_source'][$contentType->getLabelField()]);
                 }
-                $label = sprintf('<i class="%s"></i> %s <span class="sr-only">(%s)</span> /', $icon, $label, $hit['_id']);
+                $label = \sprintf('<i class="%s"></i> %s <span class="sr-only">(%s)</span> /', $icon, $label, $hit['_id']);
 
                 if ($options['allow_link_to_root'] ?? false) {
                     $choices[$label] = $hit['_id'];
@@ -85,7 +85,7 @@ class JsonMenuLinkFieldType extends DataFieldType
 
                 $jsonMenu = $this->decoder->jsonMenuDecode($hit['_source'][$options['json_menu_field']] ?? '{}', '/');
                 foreach ($jsonMenu->getUids() as $uid) {
-                    if (!in_array($uid, $alreadyAssignedUids)) {
+                    if (!\in_array($uid, $alreadyAssignedUids)) {
                         if (($jsonMenu->getItem($uid)['contentType'] ?? false) === $fieldType->getContentType()->getName()) {
                             $choices[$label.$jsonMenu->getSlug($uid)] = $uid;
                         }
@@ -182,24 +182,24 @@ class JsonMenuLinkFieldType extends DataFieldType
             return ['value' => []];
         }
 
-        if (is_string($temp)) {
+        if (\is_string($temp)) {
             return ['value' => [$temp]];
         }
 
-        if (is_array($temp)) {
+        if (\is_array($temp)) {
             $out = [];
             foreach ($temp as $item) {
-                if (is_string($item) || is_integer($item)) {
+                if (\is_string($item) || \is_integer($item)) {
                     $out[] = $item;
                 } else {
-                    $dataField->addMessage('Was not able to import the data : '.json_encode($temp));
+                    $dataField->addMessage('Was not able to import the data : '.\json_encode($temp));
                 }
             }
 
             return ['value' => $out];
         }
 
-        $dataField->addMessage('Was not able to import the data : '.json_encode($temp));
+        $dataField->addMessage('Was not able to import the data : '.\json_encode($temp));
 
         return ['value' => []];
     }
@@ -227,9 +227,9 @@ class JsonMenuLinkFieldType extends DataFieldType
 
         $uids = [];
         foreach ($result['hits']['hits'] as $hit) {
-            $uids = array_merge($uids, $hit['_source'][$fieldType->getName()] ?? []);
+            $uids = \array_merge($uids, $hit['_source'][$fieldType->getName()] ?? []);
         }
 
-        return array_diff($uids, $rawData[$fieldType->getName()] ?? []);
+        return \array_diff($uids, $rawData[$fieldType->getName()] ?? []);
     }
 }

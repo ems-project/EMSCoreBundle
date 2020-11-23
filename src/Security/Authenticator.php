@@ -46,7 +46,7 @@ class Authenticator
     {
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
-        $response->setContent(json_encode([
+        $response->setContent(\json_encode([
             'success' => false,
             'acknowledged' => true,
             'error' => ['Unauthorized Error'],

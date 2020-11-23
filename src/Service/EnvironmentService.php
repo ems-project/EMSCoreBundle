@@ -108,7 +108,7 @@ class EnvironmentService
 
     public function validateEnvironmentName(string $name): bool
     {
-        return \preg_match('/^[a-z][a-z0-9\-_]*$/', $name) && strlen($name) <= 100;
+        return \preg_match('/^[a-z][a-z0-9\-_]*$/', $name) && \strlen($name) <= 100;
     }
 
     public function setSnapshotTag(Environment $environment, bool $value = true): void
@@ -138,7 +138,7 @@ class EnvironmentService
 
     public function getEnvironmentNames(): array
     {
-        return array_keys($this->getEnvironments());
+        return \array_keys($this->getEnvironments());
     }
 
     /**
@@ -165,7 +165,7 @@ class EnvironmentService
      */
     public function getNotSnapshotEnvironmentsNames(): array
     {
-        return array_keys($this->getNotSnapshotEnvironments());
+        return \array_keys($this->getNotSnapshotEnvironments());
     }
 
     public function getEnvironmentsById(): array
@@ -283,7 +283,7 @@ class EnvironmentService
 
     public function getManagedEnvironement()
     {
-        return array_filter($this->getEnvironments(), function (Environment $environment) {
+        return \array_filter($this->getEnvironments(), function (Environment $environment) {
             return $environment->getManaged();
         });
     }
@@ -320,13 +320,13 @@ class EnvironmentService
 
         $user = $this->userService->getCurrentUser();
 
-        return array_filter($this->getEnvironments(), function ($environment) use ($user) {
+        return \array_filter($this->getEnvironments(), function ($environment) use ($user) {
             /** @var Environment $environment */
             if (empty($environment->getCircles())) {
                 return true;
             }
 
-            return count(array_intersect($user->getCircles(), $environment->getCircles())) >= 1;
+            return \count(\array_intersect($user->getCircles(), $environment->getCircles())) >= 1;
         });
     }
 

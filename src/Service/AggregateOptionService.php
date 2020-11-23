@@ -55,7 +55,7 @@ class AggregateOptionService extends EntityService
             if (!$option instanceof AggregateOption) {
                 throw new \RuntimeException('Unexpected AggregateOption object');
             }
-            $aggregations[] = $this->parseAggregation(sprintf('agg_%s', $id), $option->getConfigDecoded());
+            $aggregations[] = $this->parseAggregation(\sprintf('agg_%s', $id), $option->getConfigDecoded());
         }
 
         return $aggregations;

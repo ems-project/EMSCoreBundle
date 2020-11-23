@@ -11,7 +11,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class EmsCollectionType extends CollectionType
 {
-    /** @var AuthorizationCheckerInterface $authorizationChecker */
+    /** @var AuthorizationCheckerInterface */
     protected $authorizationChecker;
 
     public function __construct(AuthorizationCheckerInterface $authorizationChecker)
@@ -33,12 +33,12 @@ class EmsCollectionType extends CollectionType
         $entryOptions = $fieldType->getDisplayOptions();
 
         $disabled = false;
-        if (0 !== strcmp('cli', php_sapi_name())) {
+        if (0 !== \strcmp('cli', \php_sapi_name())) {
             $enable = ($options['migration'] && !$fieldType->getMigrationgOption('protected', true)) || $this->authorizationChecker->isGranted($fieldType->getMinimumRole());
             $disabled = !$enable;
         }
 
-        $options = array_merge($options, [
+        $options = \array_merge($options, [
                 'entry_type' => CollectionItemFieldType::class,
                 'entry_options' => [
                     'metadata' => $fieldType,

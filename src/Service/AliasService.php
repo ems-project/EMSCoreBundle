@@ -153,7 +153,7 @@ class AliasService
             $indexes[$name] = ['name' => $name, 'count' => $data['docs.count']];
         }
 
-        ksort($indexes);
+        \ksort($indexes);
 
         return $indexes;
     }
@@ -167,7 +167,7 @@ class AliasService
     {
         $aliases = $this->getAliases();
 
-        return array_filter($aliases, function (array $alias) {
+        return \array_filter($aliases, function (array $alias) {
             return null === $alias['environment'] && false === $alias['managed'];
         });
     }
@@ -198,17 +198,17 @@ class AliasService
         $managedAliases = $this->managedAliasRepo->findAllAliases();
 
         foreach ($data as $index => $info) {
-            $aliases = array_keys($info['aliases']);
+            $aliases = \array_keys($info['aliases']);
 
-            if (0 === count($aliases)) {
+            if (0 === \count($aliases)) {
                 $this->addOrphanIndex($index);
                 continue;
             }
 
             foreach ($aliases as $alias) {
-                if (array_key_exists($alias, $environmentAliases)) {
+                if (\array_key_exists($alias, $environmentAliases)) {
                     $this->addAlias($alias, $index, $environmentAliases[$alias]);
-                } elseif (in_array($alias, $managedAliases)) {
+                } elseif (\in_array($alias, $managedAliases)) {
                     $this->addAlias($alias, $index, [], true);
                 } else {
                     $this->addAlias($alias, $index);
@@ -327,7 +327,7 @@ class AliasService
     {
         $indexesAliases = $this->client->indices()->getAliases();
 
-        return array_filter(
+        return \array_filter(
             $indexesAliases,
             [$this, 'validIndexName'],
             \ARRAY_FILTER_USE_KEY
@@ -341,6 +341,6 @@ class AliasService
      */
     private function validIndexName($name)
     {
-        return 0 != strcmp($name[0], '.');
+        return 0 != \strcmp($name[0], '.');
     }
 }

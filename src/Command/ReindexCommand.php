@@ -156,7 +156,7 @@ class ReindexCommand extends EmsCommand
         $revRepo = $em->getRepository('EMSCoreBundle:Revision');
         $environment = $envRepo->findBy(['name' => $name, 'managed' => true]);
 
-        if ($environment && 1 == count($environment)) {
+        if ($environment && 1 == \count($environment)) {
             /** @var Environment $environment */
             $environment = $environment[0];
 
@@ -211,7 +211,7 @@ class ReindexCommand extends EmsCommand
                     }
 
                     $progress->advance();
-                    if (count($bulk['body'] ?? []) >= (2 * $bulkSize)) {
+                    if (\count($bulk['body'] ?? []) >= (2 * $bulkSize)) {
                         $this->treatBulkResponse($this->client->bulk($bulk));
                         unset($bulk);
                         $bulk = [];
@@ -225,7 +225,7 @@ class ReindexCommand extends EmsCommand
                 $iterator = $paginator->getIterator();
             } while ($iterator instanceof \ArrayIterator && $iterator->count());
 
-            if (count($bulk)) {
+            if (\count($bulk)) {
                 $this->treatBulkResponse($this->client->bulk($bulk));
             }
 

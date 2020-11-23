@@ -39,12 +39,12 @@ class AlignIndexesType extends SelectPickerType
             'multiple' => false,
             'label' => 'Align with:',
             'placeholder' => 'select managed alias',
-            'choices' => array_keys($choices),
+            'choices' => \array_keys($choices),
             'choice_attr' => function ($name) use ($choices) {
                 $managedAlias = $choices[$name];
 
                 return [
-                    'data-indexes' => '["'.implode('", "', array_keys($managedAlias->getIndexes())).'"]',
+                    'data-indexes' => '["'.\implode('", "', \array_keys($managedAlias->getIndexes())).'"]',
                     'data-content' => '<span class="text-'.$managedAlias->getColor().'"><i class="fa fa-code-fork"></i>&nbsp;&nbsp;'.$managedAlias->getName().'</span>',
                 ];
             },

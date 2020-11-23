@@ -56,7 +56,7 @@ class AuthToken
      */
     public function __construct(UserInterface $user)
     {
-        $this->value = base64_encode(random_bytes(50));
+        $this->value = \base64_encode(\random_bytes(50));
         $this->user = $user;
     }
 

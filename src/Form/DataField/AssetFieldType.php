@@ -96,7 +96,7 @@ class AssetFieldType extends DataFieldType
     public function generateMapping(FieldType $current, $withPipeline)
     {
         return [
-            $current->getName() => array_merge([
+            $current->getName() => \array_merge([
                     'type' => 'nested',
                     'properties' => [
                             'mimetype' => $this->elasticsearchService->getKeywordMapping(),
@@ -104,7 +104,7 @@ class AssetFieldType extends DataFieldType
                             'filename' => $this->elasticsearchService->getIndexedStringMapping(),
                             'filesize' => $this->elasticsearchService->getLongMapping(),
                     ],
-            ], array_filter($current->getMappingOptions())),
+            ], \array_filter($current->getMappingOptions())),
         ];
     }
 
@@ -161,9 +161,9 @@ class AssetFieldType extends DataFieldType
      */
     public function modelTransform($data, FieldType $fieldType)
     {
-        if (is_array($data)) {
+        if (\is_array($data)) {
             foreach ($data as $id => $content) {
-                if (!in_array($id, ['sha1', 'filename', 'mimetype'], true)) {
+                if (!\in_array($id, ['sha1', 'filename', 'mimetype'], true)) {
                     unset($data[$id]);
                 }
             }

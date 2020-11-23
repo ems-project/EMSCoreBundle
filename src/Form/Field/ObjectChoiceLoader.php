@@ -7,7 +7,7 @@ use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
 
 class ObjectChoiceLoader implements ChoiceLoaderInterface
 {
-    /** @var ObjectChoiceList $objectChoiceList */
+    /** @var ObjectChoiceList */
     private $objectChoiceList;
 
     public function __construct(

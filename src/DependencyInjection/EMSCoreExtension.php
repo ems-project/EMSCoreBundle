@@ -69,8 +69,8 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
     {
         $out = false;
         //try to identify the ems core version
-        if (file_exists($rootDir.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'composer.lock')) {
-            $lockInfo = json_decode(file_get_contents($rootDir.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'composer.lock'), true);
+        if (\file_exists($rootDir.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'composer.lock')) {
+            $lockInfo = \json_decode(\file_get_contents($rootDir.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'composer.lock'), true);
 
             if (!empty($lockInfo['packages'])) {
                 foreach ($lockInfo['packages'] as $package) {
@@ -118,7 +118,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         ];
 
         if (!empty($configs[0]['template_options'])) {
-            $globals = array_merge($globals, $configs[0]['template_options']);
+            $globals = \array_merge($globals, $configs[0]['template_options']);
         }
 
         if (isset($bundles['TwigBundle'])) {
@@ -192,7 +192,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
 
         $loader->load('ldap.yml');
         foreach ($ldapConfig as $name => $value) {
-            $reference = sprintf('ems_core.ldap.%s', $name);
+            $reference = \sprintf('ems_core.ldap.%s', $name);
             $container->setParameter($reference, $value);
         }
     }

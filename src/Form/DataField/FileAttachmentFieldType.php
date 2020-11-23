@@ -65,9 +65,9 @@ class FileAttachmentFieldType extends DataFieldType
 
     public function modelTransform($data, FieldType $fieldType)
     {
-        if (is_array($data)) {
+        if (\is_array($data)) {
             foreach ($data as $id => $content) {
-                if (!in_array($id, ['sha1', 'filename', 'mimetype'], true)) {
+                if (!\in_array($id, ['sha1', 'filename', 'mimetype'], true)) {
                     unset($data[$id]);
                 }
             }

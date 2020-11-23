@@ -40,11 +40,11 @@ class SelectFieldType extends DataFieldType
         $fieldType = $builder->getOptions()['metadata'];
 
         $choices = [];
-        $values = explode("\n", str_replace("\r", '', $options['choices']));
-        $labels = explode("\n", str_replace("\r", '', $options['labels']));
+        $values = \explode("\n", \str_replace("\r", '', $options['choices']));
+        $labels = \explode("\n", \str_replace("\r", '', $options['labels']));
 
         foreach ($values as $id => $value) {
-            if (isset($labels[$id]) && strlen($labels[$id]) > 0) {
+            if (isset($labels[$id]) && \strlen($labels[$id]) > 0) {
                 $choices[$labels[$id]] = $value;
             } else {
                 $choices[$value] = $value;
@@ -158,31 +158,31 @@ class SelectFieldType extends DataFieldType
         if ($dataField->getFieldType()->getDisplayOptions()['multiple']) {
             if (empty($temp)) {
                 $out = [];
-            } elseif (is_string($temp)) {
+            } elseif (\is_string($temp)) {
                 $out = [$temp];
-            } elseif (is_array($temp)) {
+            } elseif (\is_array($temp)) {
                 $out = [];
                 foreach ($temp as $item) {
-                    if (is_string($item)) {
+                    if (\is_string($item)) {
                         $out[] = $item;
                     } else {
-                        $dataField->addMessage(sprintf('Was not able to import the data : %s', json_encode($item, JSON_PRETTY_PRINT)));
+                        $dataField->addMessage(\sprintf('Was not able to import the data : %s', \json_encode($item, JSON_PRETTY_PRINT)));
                     }
                 }
             } else {
-                $dataField->addMessage(sprintf('Was not able to import the data : %s', json_encode($temp, JSON_PRETTY_PRINT)));
+                $dataField->addMessage(\sprintf('Was not able to import the data : %s', \json_encode($temp, JSON_PRETTY_PRINT)));
                 $out = [];
             }
         } else { //not mutiple
             if (null === $temp) {
                 $out = null;
-            } elseif (is_string($temp)) {
+            } elseif (\is_string($temp)) {
                 $out = $temp;
-            } elseif (is_array($temp) && !empty($temp) && is_string(array_shift($temp))) {
-                $out = array_shift($temp);
-                $dataField->addMessage(sprintf('Only the first item has been imported : %s ', json_encode($temp, JSON_PRETTY_PRINT)));
+            } elseif (\is_array($temp) && !empty($temp) && \is_string(\array_shift($temp))) {
+                $out = \array_shift($temp);
+                $dataField->addMessage(\sprintf('Only the first item has been imported : %s ', \json_encode($temp, JSON_PRETTY_PRINT)));
             } else {
-                $dataField->addMessage(sprintf('Was not able to import the data : %s', json_encode($temp, JSON_PRETTY_PRINT)));
+                $dataField->addMessage(\sprintf('Was not able to import the data : %s', \json_encode($temp, JSON_PRETTY_PRINT)));
                 $out = '';
             }
         }

@@ -63,7 +63,7 @@ class EmailFieldType extends DataFieldType
         $isValid = parent::isValid($dataField, $parent, $masterRawData);
 
         $rawData = $dataField->getRawData();
-        if (!empty($rawData) && false === filter_var($rawData, FILTER_VALIDATE_EMAIL)) {
+        if (!empty($rawData) && false === \filter_var($rawData, FILTER_VALIDATE_EMAIL)) {
             $isValid = false;
             $dataField->addMessage('Not a valid email address');
         }
@@ -81,11 +81,11 @@ class EmailFieldType extends DataFieldType
         if (empty($data)) {
             return parent::modelTransform(null, $fieldType);
         }
-        if (is_string($data)) {
+        if (\is_string($data)) {
             return parent::modelTransform($data, $fieldType);
         }
         $out = parent::modelTransform(null, $fieldType);
-        $out->addMessage('ems was not able to import the data: '.json_encode($data));
+        $out->addMessage('ems was not able to import the data: '.\json_encode($data));
 
         return $out;
     }

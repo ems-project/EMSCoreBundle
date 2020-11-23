@@ -217,11 +217,11 @@ class NotificationController extends AppController
         $rejectedNotifications = [];
         if ('sent' == $folder) {
             $notifications = $this->getNotificationService()->listSentNotifications(($page - 1) * $paging_size, $paging_size, $filters);
-            $lastPage = ceil($countSent / $paging_size);
+            $lastPage = \ceil($countSent / $paging_size);
         } else {
             $notifications = $this->getNotificationService()->listInboxNotifications(($page - 1) * $paging_size, $paging_size, $filters);
             $rejectedNotifications = $this->getNotificationService()->listRejectedNotifications(($page - 1) * $paging_size, $paging_size, $filters);
-            $lastPage = ceil(($countRejected > $countPending ? $countRejected : $countPending) / $paging_size);
+            $lastPage = \ceil(($countRejected > $countPending ? $countRejected : $countPending) / $paging_size);
         }
 
         $treatNotification = new TreatNotifications();

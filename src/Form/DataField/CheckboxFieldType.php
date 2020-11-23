@@ -117,7 +117,7 @@ class CheckboxFieldType extends DataFieldType
     public function generateMapping(FieldType $current, $withPipeline)
     {
         return [
-                $current->getName() => $this->elasticsearchService->updateMapping(array_merge(['type' => 'boolean'], array_filter($current->getMappingOptions()))),
+                $current->getName() => $this->elasticsearchService->updateMapping(\array_merge(['type' => 'boolean'], \array_filter($current->getMappingOptions()))),
         ];
     }
 

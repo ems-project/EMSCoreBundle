@@ -90,7 +90,7 @@ class RevisionRepository extends EntityRepository
         if ('postgresql' === $this->getEntityManager()->getConnection()->getDatabasePlatform()->getName()) {
             $result = $this->getEntityManager()->getConnection()->fetchAll("select count(*) as counter FROM public.revision where raw_data::text like '%$hash%'");
 
-            return intval($result[0]['counter']);
+            return \intval($result[0]['counter']);
         }
 
         try {
@@ -100,7 +100,7 @@ class RevisionRepository extends EntityRepository
                 ->setParameter('hash', "%$hash%");
             $query = $qb->getQuery();
 
-            return intval($query->getSingleScalarResult());
+            return \intval($query->getSingleScalarResult());
         } catch (NonUniqueResultException $e) {
             return 0;
         }
@@ -279,7 +279,7 @@ class RevisionRepository extends EntityRepository
                 'false' => false,
         ]);
         if (!empty($contentTypes)) {
-            $qb->andWhere('c.name in (\''.implode("','", $contentTypes).'\')');
+            $qb->andWhere('c.name in (\''.\implode("','", $contentTypes).'\')');
         }
 
         return $qb;
@@ -358,7 +358,7 @@ class RevisionRepository extends EntityRepository
      */
     public function revisionsLastPage($ouuid, ContentType $contentType)
     {
-        return floor($this->countRevisions($ouuid, $contentType) / 5.0) + 1;
+        return \floor($this->countRevisions($ouuid, $contentType) / 5.0) + 1;
     }
 
     /**
@@ -426,7 +426,7 @@ class RevisionRepository extends EntityRepository
 
         $result = $qb->getQuery()->getResult();
 
-        if (count($result) > 1) {
+        if (\count($result) > 1) {
             throw new NonUniqueResultException($ouuid.' is publish multiple times in '.$env->getName());
         }
 
@@ -452,7 +452,7 @@ class RevisionRepository extends EntityRepository
         ]);
 
         $out = $qb->getQuery()->getArrayResult();
-        if (count($out) > 1) {
+        if (\count($out) > 1) {
             throw new NonUniqueResultException($ouuid.' is publish multiple times in '.$env);
         }
 

@@ -149,7 +149,7 @@ class IndexFileCommand extends EmsCommand
                 $progress->advance();
             }
 
-            if (count($revisions) == $limit) {
+            if (\count($revisions) == $limit) {
                 unset($revisions);
                 $offset += $limit;
             } else {
@@ -186,7 +186,7 @@ class IndexFileCommand extends EmsCommand
                 return false;
             }
 
-            if (is_array($data)) {
+            if (\is_array($data)) {
                 if ($this->findField($rawData[$key], $field, $output, $onlyWithIngestedContent, $onlyMissingContent)) {
                     return true;
                 }
@@ -277,9 +277,9 @@ class IndexFileCommand extends EmsCommand
         }
         $dbName = $connection->getDatabase();
 
-        if (in_array($connection->getDriver()->getName(), ['pdo_pgsql'])) {
+        if (\in_array($connection->getDriver()->getName(), ['pdo_pgsql'])) {
             $query = "SELECT pg_size_pretty(pg_database_size('$dbName')) AS size";
-        } elseif (in_array($connection->getDriver()->getName(), ['pdo_mysql'])) {
+        } elseif (\in_array($connection->getDriver()->getName(), ['pdo_mysql'])) {
             $query = "SELECT SUM(data_length + index_length)/1024/1024 AS size FROM information_schema.TABLES WHERE table_schema='$dbName' GROUP BY table_schema";
         } else {
             throw new \RuntimeException('Not supported driver');
@@ -288,7 +288,7 @@ class IndexFileCommand extends EmsCommand
         $stmt->execute();
         $size = $stmt->fetchAll();
 
-        if (is_array($size) && isset($size[0]['size'])) {
+        if (\is_array($size) && isset($size[0]['size'])) {
             $row = "The database size is {$size[0]['size']} MB";
         } else {
             $row = 'Undefined';

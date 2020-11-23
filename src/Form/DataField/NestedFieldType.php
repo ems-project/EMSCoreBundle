@@ -64,7 +64,7 @@ class NestedFieldType extends DataFieldType
         foreach ($fieldType->getChildren() as $fieldType) {
             if (!$fieldType->getDeleted()) {
                 /* merge the default options with the ones specified by the user */
-                $options = array_merge([
+                $options = \array_merge([
                         'metadata' => $fieldType,
                         'migration' => $options['migration'],
                         'with_warning' => $options['with_warning'],

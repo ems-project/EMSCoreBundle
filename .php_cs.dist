@@ -15,7 +15,7 @@ return PhpCsFixer\Config::create()
         '@Symfony' => true,
         //'declare_strict_types' => true,
         //'final_class' => true,
-        //'native_function_invocation' => true
+        'native_function_invocation' => true
     ])
     ->setRiskyAllowed(true)
     ->setFinder($finder)

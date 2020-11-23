@@ -202,7 +202,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         }
 
         foreach ($this->children as $child) {
-            $out = array_merge($out, $child->getFieldsRoles());
+            $out = \array_merge($out, $child->getFieldsRoles());
         }
 
         return $out;
@@ -566,14 +566,14 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
      */
     public function __get($key)
     {
-        if (0 !== strpos($key, 'ems_')) {
+        if (0 !== \strpos($key, 'ems_')) {
             throw new \Exception('unprotected ems get with key '.$key);
         } else {
-            $key = substr($key, 4);
+            $key = \substr($key, 4);
         }
         /** @var FieldType $fieldType */
         foreach ($this->getChildren() as $fieldType) {
-            if (!$fieldType->getDeleted() && 0 == strcmp($key, $fieldType->getName())) {
+            if (!$fieldType->getDeleted() && 0 == \strcmp($key, $fieldType->getName())) {
                 return $fieldType;
             }
         }
@@ -590,15 +590,15 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
      */
     public function __set($key, $input)
     {
-        if (0 !== strpos($key, 'ems_')) {
+        if (0 !== \strpos($key, 'ems_')) {
             throw new \Exception('unprotected ems set with key '.$key);
         } else {
-            $key = substr($key, 4);
+            $key = \substr($key, 4);
         }
         $found = false;
         /** @var FieldType $child */
         foreach ($this->children as &$child) {
-            if (!$child->getDeleted() && 0 == strcmp($key, $child->getName())) {
+            if (!$child->getDeleted() && 0 == \strcmp($key, $child->getName())) {
                 $found = true;
                 $child = $input;
                 break;
@@ -674,13 +674,13 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
      */
     public function getChildByPath($path)
     {
-        $elem = explode('.', $path);
+        $elem = \explode('.', $path);
         if (!empty($elem)) {
             /** @var FieldType $child */
             foreach ($this->children as $child) {
                 if (!$child->getDeleted() && $child->getName() == $elem[0]) {
-                    if (strpos($path, '.')) {
-                        return $child->getChildByPath(substr($path, strpos($path, '.') + 1));
+                    if (\strpos($path, '.')) {
+                        return $child->getChildByPath(\substr($path, \strpos($path, '.') + 1));
                     }
 
                     return $child;
@@ -727,7 +727,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
      */
     public function jsonSerialize()
     {
-        $json = new JsonClass(get_object_vars($this), __CLASS__);
+        $json = new JsonClass(\get_object_vars($this), __CLASS__);
         $json->removeProperty('id');
         $json->updateProperty('children', $this->getValidChildren());
 
@@ -757,10 +757,10 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         $defineOptions = $optionsResolver->getDefinedOptions();
         $defineOptions[] = 'label';
 
-        $filtered = array_filter(
+        $filtered = \array_filter(
             $this->getDisplayOptions(),
             function ($value) use ($defineOptions) {
-                return in_array($value, $defineOptions);
+                return \in_array($value, $defineOptions);
             },
             ARRAY_FILTER_USE_KEY
         );

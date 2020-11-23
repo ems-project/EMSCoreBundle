@@ -16,7 +16,7 @@ class FieldTypePickerType extends SelectPickerType
 
     public function addDataFieldType($dataField)
     {
-        $this->dataFieldTypes[get_class($dataField)] = $dataField;
+        $this->dataFieldTypes[\get_class($dataField)] = $dataField;
     }
 
     public function getDataFieldType($dataFieldTypeId)
@@ -27,7 +27,7 @@ class FieldTypePickerType extends SelectPickerType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'choices' => array_keys($this->dataFieldTypes),
+            'choices' => \array_keys($this->dataFieldTypes),
             'attr' => [
                     'data-live-search' => true,
             ],

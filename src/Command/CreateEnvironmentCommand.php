@@ -77,7 +77,7 @@ class CreateEnvironmentCommand extends Command
 
         $this->io->section('Execute');
         $environmentName = $input->getArgument(self::ARGUMENT_ENV_NAME);
-        if (!is_string($environmentName)) {
+        if (!\is_string($environmentName)) {
             throw new \RuntimeException('Environment name as to be a string');
         }
 
@@ -123,7 +123,7 @@ class CreateEnvironmentCommand extends Command
         }
 
         $environment = $this->environmentService->getAliasByName($environmentName);
-        if (!is_string($environmentName)) {
+        if (!\is_string($environmentName)) {
             throw new \RuntimeException('Environment name as to be a string');
         }
         if ($environment) {

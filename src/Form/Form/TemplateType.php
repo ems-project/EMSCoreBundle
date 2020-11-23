@@ -138,7 +138,7 @@ class TemplateType extends AbstractType
                 ],
         ])->add('size', ChoiceType::class, [
             'required' => false,
-            'choices' => array_combine(array_keys(CPDF::$PAPER_SIZES), array_keys(CPDF::$PAPER_SIZES)),
+            'choices' => \array_combine(\array_keys(CPDF::$PAPER_SIZES), \array_keys(CPDF::$PAPER_SIZES)),
         ])->add('disposition', ChoiceType::class, [
             'label' => 'File diposition',
             'expanded' => true,

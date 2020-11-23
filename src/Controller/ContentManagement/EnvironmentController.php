@@ -71,7 +71,7 @@ class EnvironmentController extends AppController
             if ($data['environment'] == $data['withEnvironment']) {
                 $form->addError(new FormError('Source and target environments must be different'));
             } else {
-                if (array_key_exists('alignWith', $request->request->get('compare_environment_form'))) {
+                if (\array_key_exists('alignWith', $request->request->get('compare_environment_form'))) {
                     $alignTo = [];
                     $alignTo[$request->query->get('withEnvironment')] = $request->query->get('withEnvironment');
                     $alignTo[$request->query->get('environment')] = $request->query->get('environment');
@@ -88,7 +88,7 @@ class EnvironmentController extends AppController
                     ]);
 
                     foreach ($revision->getEnvironments() as $item) {
-                        if (array_key_exists($item->getName(), $alignTo)) {
+                        if (\array_key_exists($item->getName(), $alignTo)) {
                             unset($alignTo[$item->getName()]);
                         }
                     }
@@ -123,10 +123,10 @@ class EnvironmentController extends AppController
                             $this->getPublishService()->alignRevision($revision->getContentType()->getName(), $revision->getOuuid(), $revision->getEnvironments()->first()->getName(), $env);
                         }
                     }
-                } elseif (array_key_exists('alignLeft', $request->request->get('compare_environment_form'))) {
+                } elseif (\array_key_exists('alignLeft', $request->request->get('compare_environment_form'))) {
                     foreach ($request->request->get('compare_environment_form')['item_to_align'] as $item) {
-                        $exploded = explode(':', $item);
-                        if (2 == count($exploded)) {
+                        $exploded = \explode(':', $item);
+                        if (2 == \count($exploded)) {
                             $this->getPublishService()->alignRevision($exploded[0], $exploded[1], $request->query->get('withEnvironment'), $request->query->get('environment'));
                         } else {
                             $this->getLogger()->warning('log.environment.wrong_ouuid', [
@@ -134,10 +134,10 @@ class EnvironmentController extends AppController
                             ]);
                         }
                     }
-                } elseif (array_key_exists('alignRight', $request->request->get('compare_environment_form'))) {
+                } elseif (\array_key_exists('alignRight', $request->request->get('compare_environment_form'))) {
                     foreach ($request->request->get('compare_environment_form')['item_to_align'] as $item) {
-                        $exploded = explode(':', $item);
-                        if (2 == count($exploded)) {
+                        $exploded = \explode(':', $item);
+                        if (2 == \count($exploded)) {
                             $this->getPublishService()->alignRevision($exploded[0], $exploded[1], $request->query->get('environment'), $request->query->get('withEnvironment'));
                         } else {
                             $this->getLogger()->warning('log.environment.wrong_ouuid', [
@@ -145,7 +145,7 @@ class EnvironmentController extends AppController
                             ]);
                         }
                     }
-                } elseif (array_key_exists('compare', $request->request->get('compare_environment_form'))) {
+                } elseif (\array_key_exists('compare', $request->request->get('compare_environment_form'))) {
                     $request->query->set('environment', $data['environment']);
                     $request->query->set('withEnvironment', $data['withEnvironment']);
                     $request->query->set('contentTypes', $data['contentTypes']);
@@ -204,7 +204,7 @@ class EnvironmentController extends AppController
             $total = $repository->countDifferencesBetweenEnvironment($env->getId(), $withEnvi->getId(), $contentTypes);
             if ($total) {
                 $contentTypeService = $this->getContentTypeService();
-                $lastPage = ceil($total / $paging_size);
+                $lastPage = \ceil($total / $paging_size);
                 if ($page > $lastPage) {
                     $page = $lastPage;
                 }
@@ -217,12 +217,12 @@ class EnvironmentController extends AppController
                     $orderField,
                     $orderDirection
                 );
-                for ($index = 0; $index < count($results); ++$index) {
+                for ($index = 0; $index < \count($results); ++$index) {
                     $results[$index]['contentType'] = $contentTypeService->getByName($results[$index]['content_type_name']);
 //                     $results[$index]['revisionEnvironment'] = $repository->findOneById($results[$index]['rId']);
 //TODO: is it the better options? to concatenate and split things?
-                    $minrevid = explode('/', $results[$index]['minrevid']); //1/81522/2017-03-08 14:32:52 => e.id/r.id/r.created
-                    $maxrevid = explode('/', $results[$index]['maxrevid']);
+                    $minrevid = \explode('/', $results[$index]['minrevid']); //1/81522/2017-03-08 14:32:52 => e.id/r.id/r.created
+                    $maxrevid = \explode('/', $results[$index]['maxrevid']);
                     if ($minrevid[0] == $env->getId()) {
                         $results[$index]['revisionEnvironment'] = $repository->findOneById($minrevid[1]);
                         $results[$index]['revisionWithEnvironment'] = $repository->findOneById($maxrevid[1]);
@@ -308,7 +308,7 @@ class EnvironmentController extends AppController
                     'index' => $name,
             ]);
 
-            if (0 != strcmp($name, array_keys($indexes)[0])) {
+            if (0 != \strcmp($name, \array_keys($indexes)[0])) {
                 /** @var EntityManager $em */
                 $em = $this->getDoctrine()->getManager();
 
@@ -317,7 +317,7 @@ class EnvironmentController extends AppController
                         'name' => $name,
                 ]);
 
-                if (0 == count($anotherObject)) {
+                if (0 == \count($anotherObject)) {
                     $environment = new Environment();
                     $environment->setName($name);
                     $environment->setAlias($name);
@@ -395,7 +395,7 @@ class EnvironmentController extends AppController
                 ]);
                 $client->indices()->deleteAlias([
                         'name' => $environment->getAlias(),
-                        'index' => array_keys($indexes)[0],
+                        'index' => \array_keys($indexes)[0],
                 ]);
             } catch (Missing404Exception $e) {
                 $this->getLogger()->warning('log.environment.alias_not_found', [
@@ -443,7 +443,7 @@ class EnvironmentController extends AppController
 
     public static function isValidName(string $name): bool
     {
-        return preg_match('/^[a-z][a-z0-9\-_]*$/', $name) && strlen($name) <= 100;
+        return \preg_match('/^[a-z][a-z0-9\-_]*$/', $name) && \strlen($name) <= 100;
     }
 
     /**
@@ -490,7 +490,7 @@ class EnvironmentController extends AppController
                         'name' => $environment->getName(),
                 ]);
 
-                if (0 != count($anotherObject)) {
+                if (0 != \count($anotherObject)) {
                     //TODO: test name format
                     $form->get('name')->addError(new FormError('Another environment named '.$environment->getName().' already exists'));
                 } else {
@@ -662,13 +662,13 @@ class EnvironmentController extends AppController
 
             switch ($option) {
                 case 'newIndex':
-                    $job = $jobService->createCommand($user, sprintf('ems:environment:rebuild %s', $environment->getName()));
+                    $job = $jobService->createCommand($user, \sprintf('ems:environment:rebuild %s', $environment->getName()));
 
                     return $this->redirectToRoute('job.status', [
                         'job' => $job->getId(),
                     ]);
                 case 'sameIndex':
-                    $job = $jobService->createCommand($user, sprintf('ems:environment:reindex %s', $environment->getName()));
+                    $job = $jobService->createCommand($user, \sprintf('ems:environment:reindex %s', $environment->getName()));
 
                     return $this->redirectToRoute('job.status', [
                         'job' => $job->getId(),
@@ -751,7 +751,7 @@ class EnvironmentController extends AppController
 
             if ($request->isMethod('POST')) {
                 $form = $request->get('form');
-                if (isset($form['environmentNames']) && is_array($form['environmentNames'])) {
+                if (isset($form['environmentNames']) && \is_array($form['environmentNames'])) {
                     $counter = 0;
                     foreach ($form['environmentNames'] as $name) {
                         $contentType = $this->getEnvironmentService()->getByName($name);

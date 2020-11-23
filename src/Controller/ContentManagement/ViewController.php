@@ -41,7 +41,7 @@ class ViewController extends AppController
             'name' => $type,
         ]);
 
-        if (!$contentTypes || 1 != count($contentTypes)) {
+        if (!$contentTypes || 1 != \count($contentTypes)) {
             throw new NotFoundHttpException('Content type not found');
         }
 
@@ -73,7 +73,7 @@ class ViewController extends AppController
             'name' => $type,
         ]);
 
-        if (!$contentTypes || 1 != count($contentTypes)) {
+        if (!$contentTypes || 1 != \count($contentTypes)) {
             throw new NotFoundHttpException('Content type not found');
         }
 
@@ -134,7 +134,7 @@ class ViewController extends AppController
             ->add('icon', IconPickerType::class, [
                 'required' => false,
             ])
-            ->add('options', get_class($this->get($view->getType())), [
+            ->add('options', \get_class($this->get($view->getType())), [
                 'view' => $view,
             ])
             ->add('save', SubmitEmsType::class, [

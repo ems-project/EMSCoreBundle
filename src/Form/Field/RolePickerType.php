@@ -42,7 +42,7 @@ class RolePickerType extends SelectPickerType
     private function getExistingRoles()
     {
         $roleHierarchy = $this->userService->getsecurityRoles();
-        $roles = array_keys($roleHierarchy);
+        $roles = \array_keys($roleHierarchy);
 
         $theRoles['not-defined'] = 'not-defined';
         $theRoles['ROLE_USER'] = 'ROLE_USER';

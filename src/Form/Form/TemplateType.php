@@ -22,10 +22,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TemplateType extends AbstractType
 {
-
     private $choices;
     private $service;
     private $circleType;
+
     public function __construct($circleType, EnvironmentService $service)
     {
         $this->service = $service;
@@ -33,23 +33,17 @@ class TemplateType extends AbstractType
         $this->choices = null;
     }
 
-
     public function configureOptions(OptionsResolver $resolver)
     {
         parent::configureOptions($resolver);
         $resolver->setDefault('ajax-save-url', null);
     }
 
-    /**
-     *
-     * @param FormBuilderInterface $builder
-     * @param array $options
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
         ->add('name', IconTextType::class, [
-            'icon' => 'fa fa-tag'
+            'icon' => 'fa fa-tag',
         ])
         ->add('icon', IconPickerType::class, [
             'required' => false,
@@ -66,18 +60,19 @@ class TemplateType extends AbstractType
         ])
         ->add('environments', ChoiceType::class, [
                 'attr' => [
-                    'class' => 'select2'
+                    'class' => 'select2',
                 ],
                  'multiple' => true,
                 'choices' => $this->service->getAll(),
                 'required' => false,
                 'choice_label' => function (Environment $value) {
-                    return '<i class="fa fa-square text-' . $value->getColor() . '"></i>&nbsp;&nbsp;' . $value->getName();
+                    return '<i class="fa fa-square text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getName();
                 },
                 'choice_value' => function (Environment $value) {
-                    if ($value != null) {
+                    if (null != $value) {
                         return $value->getId();
                     }
+
                     return $value;
                 },
         ])
@@ -115,13 +110,13 @@ class TemplateType extends AbstractType
                 'required' => false,
                 'attr' => [
                 ],
-                'slug' => 'template-body'
+                'slug' => 'template-body',
         ])
         ->add('header', TextareaType::class, [
             'required' => false,
             'attr' => [
                 'rows' => '10',
-            ]
+            ],
         ])
          ->add('roleCc', RolePickerType::class)
         ->add('roleTo', RolePickerType::class)
@@ -153,7 +148,7 @@ class TemplateType extends AbstractType
                 'None' => null,
                 'Attachment' => 'attachment',
                 'Inline' => 'inline',
-            ]
+            ],
         ])
         ->add('allow_origin', TextType::class, [
             'label' => 'The Access-Control-Allow-Originm header',
@@ -165,7 +160,7 @@ class TemplateType extends AbstractType
             'attr' => [
                 'class' => 'btn-primary btn-sm ',
             ],
-            'icon' => 'fa fa-save'
+            'icon' => 'fa fa-save',
         ]);
 
         if ($options['ajax-save-url']) {
@@ -174,7 +169,7 @@ class TemplateType extends AbstractType
                     'class' => 'btn-primary btn-sm ',
                     'data-ajax-save-url' => $options['ajax-save-url'],
                 ],
-                'icon' => 'fa fa-save'
+                'icon' => 'fa fa-save',
             ]);
         }
     }

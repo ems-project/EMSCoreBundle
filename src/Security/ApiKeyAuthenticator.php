@@ -1,4 +1,5 @@
 <?php
+
 namespace EMS\CoreBundle\Security;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -6,8 +7,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\PreAuthenticatedToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Authentication\SimplePreAuthenticatorInterface;
 
@@ -42,12 +43,7 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
     public function authenticateToken(TokenInterface $token, UserProviderInterface $userProvider, $providerKey)
     {
         if (!$userProvider instanceof ApiKeyUserProvider) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    'The user provider must be an instance of ApiKeyUserProvider (%s was given).',
-                    get_class($userProvider)
-                )
-            );
+            throw new \InvalidArgumentException(sprintf('The user provider must be an instance of ApiKeyUserProvider (%s was given).', get_class($userProvider)));
         }
 
         $apiKey = $token->getCredentials();
@@ -56,9 +52,7 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
         if (!$username) {
             // CAUTION: this message will be returned to the client
             // (so don't put any un-trusted messages / error strings here)
-            throw new CustomUserMessageAuthenticationException(
-                sprintf('API Key "%s" does not exist.', $apiKey)
-            );
+            throw new CustomUserMessageAuthenticationException(sprintf('API Key "%s" does not exist.', $apiKey));
         }
 
         $user = $userProvider->loadUserByUsername($username);
@@ -70,7 +64,7 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
             $user->getRoles()
         );
     }
-    
+
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
         return new Response(

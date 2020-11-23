@@ -11,7 +11,6 @@ use EMS\CoreBundle\Service\TemplateService;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Twig\Environment;
-use Twig\TemplateWrapper;
 
 final class FormSubmissionService
 {
@@ -93,7 +92,6 @@ final class FormSubmissionService
     }
 
     /**
-     * @param string|null $formInstance
      * @return FormSubmission[]
      */
     public function getFormSubmissions(?string $formInstance = null): array
@@ -112,7 +110,6 @@ final class FormSubmissionService
     }
 
     /**
-     * @param FormSubmissionRequest $submitRequest
      * @return array{submission_id: string}
      */
     public function submit(FormSubmissionRequest $submitRequest): array
@@ -124,24 +121,24 @@ final class FormSubmissionService
         return ['submission_id' => $formSubmission->getId()];
     }
 
-
     public function removeExpiredSubmissions(): int
     {
         return $this->repository->removeAllOutdatedSubmission();
     }
-  
+
     /**
      * @param array<FormSubmission> $submissions
      */
     public function generateMailBody(array $submissions): string
     {
         try {
-            if ($submissions === []) {
+            if ([] === $submissions) {
                 return $this->twig->createTemplate('There are no submissions for this form')->render();
             }
+
             return $this->twig->render('@EMSCore/email/submissions.email.twig', ['submissions' => $submissions]);
         } catch (\Exception $e) {
-            return $this->twig->createTemplate("Error in body template: " . $e->getMessage())->render();
+            return $this->twig->createTemplate('Error in body template: '.$e->getMessage())->render();
         }
     }
 }

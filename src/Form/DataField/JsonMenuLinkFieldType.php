@@ -23,7 +23,6 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class JsonMenuLinkFieldType extends DataFieldType
 {
-
     /** @var Client */
     private $client;
     /** @var ContentTypeService */
@@ -43,7 +42,7 @@ class JsonMenuLinkFieldType extends DataFieldType
     {
         return 'JSON menu link field';
     }
-    
+
     public static function getIcon()
     {
         return 'fa fa-link';
@@ -51,18 +50,18 @@ class JsonMenuLinkFieldType extends DataFieldType
 
     public function buildObjectArray(DataField $data, array &$out)
     {
-        if (! $data->getFieldType()->getDeleted()) {
-            $out [$data->getFieldType()->getName()] = $data->getArrayTextValue();
+        if (!$data->getFieldType()->getDeleted()) {
+            $out[$data->getFieldType()->getName()] = $data->getArrayTextValue();
         }
     }
-    
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         /** @var FieldType $fieldType */
         $fieldType = $builder->getOptions()['metadata'];
 
         $choices = [];
-        if ($options['json_menu_field'] !== false && $options['json_menu_content_type'] !== false && $options['query'] !== false) {
+        if (false !== $options['json_menu_field'] && false !== $options['json_menu_content_type'] && false !== $options['query']) {
             $contentType = $this->contentTypeService->getByName($options['json_menu_content_type']);
             $result = $this->client->search([
                 'index' => $contentType->getEnvironment()->getAlias(),
@@ -75,7 +74,7 @@ class JsonMenuLinkFieldType extends DataFieldType
             foreach ($result['hits']['hits'] as $hit) {
                 $icon = $contentType->getIcon() ?? 'fa fa-file';
                 $label = $hit['_id'];
-                if ($contentType->getLabelField() !== null && ($hit['_source'][$contentType->getLabelField()] ?? false)) {
+                if (null !== $contentType->getLabelField() && ($hit['_source'][$contentType->getLabelField()] ?? false)) {
                     $label = htmlentities($hit['_source'][$contentType->getLabelField()]);
                 }
                 $label = sprintf('<i class="%s"></i> %s <span class="sr-only">(%s)</span> /', $icon, $label, $hit['_id']);
@@ -88,29 +87,28 @@ class JsonMenuLinkFieldType extends DataFieldType
                 foreach ($jsonMenu->getUids() as $uid) {
                     if (!in_array($uid, $alreadyAssignedUids)) {
                         if (($jsonMenu->getItem($uid)['contentType'] ?? false) === $fieldType->getContentType()->getName()) {
-                            $choices[$label . $jsonMenu->getSlug($uid)] = $uid;
+                            $choices[$label.$jsonMenu->getSlug($uid)] = $uid;
                         }
                     }
                 }
             }
         }
-        
+
         $builder->add('value', ChoiceType::class, [
                 'label' => (isset($options['label']) ? $options['label'] : $fieldType->getName()),
                 'required' => false,
                 'disabled' => $this->isDisabled($options),
                 'choices' => $choices,
-                'empty_data'  => null,
+                'empty_data' => null,
                 'multiple' => true,
                 'expanded' => $options['expanded'],
         ]);
     }
 
-
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         parent::buildView($view, $form, $options);
-        $view->vars ['attr'] = [
+        $view->vars['attr'] = [
             'data-multiple' => true,
             'data-expanded' => $options['expanded'],
             'class' => 'select2',
@@ -127,7 +125,7 @@ class JsonMenuLinkFieldType extends DataFieldType
         $resolver->setDefault('json_menu_field', false);
         $resolver->setDefault('query', false);
     }
-    
+
     public function buildOptionsForm(FormBuilderInterface $builder, array $options)
     {
         parent::buildOptionsForm($builder, $options);
@@ -157,34 +155,35 @@ class JsonMenuLinkFieldType extends DataFieldType
     {
         $out = parent::getDefaultOptions($name);
         $out['mappingOptions']['index'] = 'not_analyzed';
+
         return $out;
     }
-    
+
     public function getBlockPrefix()
     {
         return 'ems_choice';
     }
-    
-    
+
     public function reverseViewTransform($data, FieldType $fieldType)
     {
         $value = null;
         if (isset($data['value'])) {
             $value = $data['value'];
         }
+
         return parent::reverseViewTransform($value, $fieldType);
     }
-    
+
     public function viewTransform(DataField $dataField)
     {
         $temp = parent::viewTransform($dataField);
 
         if (empty($temp)) {
-            return [ 'value' => [] ];
+            return ['value' => []];
         }
 
         if (is_string($temp)) {
-            return [ 'value' => [$temp]];
+            return ['value' => [$temp]];
         }
 
         if (is_array($temp)) {
@@ -193,19 +192,20 @@ class JsonMenuLinkFieldType extends DataFieldType
                 if (is_string($item) || is_integer($item)) {
                     $out[] = $item;
                 } else {
-                    $dataField->addMessage('Was not able to import the data : ' . json_encode($temp));
+                    $dataField->addMessage('Was not able to import the data : '.json_encode($temp));
                 }
             }
-            return [ 'value' => $out ];
+
+            return ['value' => $out];
         }
 
-        $dataField->addMessage('Was not able to import the data : ' . json_encode($temp));
+        $dataField->addMessage('Was not able to import the data : '.json_encode($temp));
+
         return ['value' => []];
     }
 
     private function collectAlreadyAssignedJsonMenuUids(FieldType $fieldType, array $rawData)
     {
-
         $result = $this->client->search([
             'size' => 5000,
             'index' => $fieldType->getContentType()->getEnvironment()->getAlias(),
@@ -215,11 +215,11 @@ class JsonMenuLinkFieldType extends DataFieldType
                     'bool' => [
                         'must' => [
                             [
-                                'term' => [ '_contenttype' => $fieldType->getContentType()->getName() ],
-                            ],[
-                                'exists' => [ 'field' => $fieldType->getName() ],
-                            ]
-                        ]
+                                'term' => ['_contenttype' => $fieldType->getContentType()->getName()],
+                            ], [
+                                'exists' => ['field' => $fieldType->getName()],
+                            ],
+                        ],
                     ],
                 ],
             ],

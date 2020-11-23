@@ -7,24 +7,24 @@ use Elasticsearch\Client;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Controller\AppController;
+use EMS\CoreBundle\Entity\Analyzer;
 use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\Filter;
+use EMS\CoreBundle\Repository\AnalyzerRepository;
+use EMS\CoreBundle\Repository\EnvironmentRepository;
+use EMS\CoreBundle\Repository\FilterRepository;
 use Monolog\Logger;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use EMS\CoreBundle\Entity\Environment;
-use EMS\CoreBundle\Repository\EnvironmentRepository;
-use EMS\CoreBundle\Repository\FilterRepository;
-use EMS\CoreBundle\Entity\Filter;
-use EMS\CoreBundle\Repository\AnalyzerRepository;
-use EMS\CoreBundle\Entity\Analyzer;
 
 class EnvironmentService
 {
-    /** @var Registry $doctrine */
+    /** @var Registry */
     private $doctrine;
 
-    /** @var Session $session*/
+    /** @var Session */
     private $session;
 
     /** @var array */
@@ -36,19 +36,19 @@ class EnvironmentService
     /** @var array */
     private $environmentsById = [];
 
-    /** @var UserService $userService*/
+    /** @var UserService */
     private $userService;
 
-    /** @var AuthorizationCheckerInterface $authorizationChecker*/
+    /** @var AuthorizationCheckerInterface */
     private $authorizationChecker;
 
-    /** @var Container $container*/
+    /** @var Container */
     private $container;
 
     /** @var Logger */
     private $logger;
 
-    /**@var Client */
+    /** @var Client */
     private $client;
 
     /** @var ElasticaService */
@@ -87,7 +87,7 @@ class EnvironmentService
 
         $environment = new Environment();
         $environment->setName($name);
-        $environment->setAlias($this->container->getParameter('ems_core.instance_id') . $environment->getName());
+        $environment->setAlias($this->container->getParameter('ems_core.instance_id').$environment->getName());
         $environment->setManaged(true);
         $environment->setSnapshot($snapshot);
 
@@ -122,7 +122,7 @@ class EnvironmentService
 
     public function getEnvironments(): array
     {
-        if ($this->environments !== []) {
+        if ([] !== $this->environments) {
             return $this->environments;
         }
 
@@ -146,7 +146,7 @@ class EnvironmentService
      */
     public function getNotSnapshotEnvironments(): array
     {
-        if ($this->notSnapshotEnvironments !== []) {
+        if ([] !== $this->notSnapshotEnvironments) {
             return $this->notSnapshotEnvironments;
         }
 
@@ -170,7 +170,7 @@ class EnvironmentService
 
     public function getEnvironmentsById(): array
     {
-        if ($this->environmentsById !== []) {
+        if ([] !== $this->environmentsById) {
             return $this->environmentsById;
         }
 
@@ -186,9 +186,10 @@ class EnvironmentService
     public function getNewIndexName(Environment $environment, ContentType $contentType)
     {
         if ($this->singleTypeIndex) {
-            return $environment->getAlias() . '_' . $contentType->getName() . AppController::getFormatedTimestamp();
+            return $environment->getAlias().'_'.$contentType->getName().AppController::getFormatedTimestamp();
         }
-        return $environment->getAlias() . AppController::getFormatedTimestamp();
+
+        return $environment->getAlias().AppController::getFormatedTimestamp();
     }
 
     /**
@@ -198,18 +199,18 @@ class EnvironmentService
     {
         $filters = [];
 
-        /**@var FilterRepository $filterRepository*/
+        /** @var FilterRepository $filterRepository */
         $filterRepository = $this->doctrine->getRepository('EMSCoreBundle:Filter');
-        /**@var Filter $filter*/
+        /** @var Filter $filter */
         foreach ($filterRepository->findAll() as $filter) {
             $filters[$filter->getName()] = $filter->getOptions();
         }
 
         $analyzers = [];
 
-        /**@var AnalyzerRepository $analyzerRepository*/
+        /** @var AnalyzerRepository $analyzerRepository */
         $analyzerRepository = $this->doctrine->getRepository('EMSCoreBundle:Analyzer');
-        /**@var Analyzer $analyzer*/
+        /** @var Analyzer $analyzer */
         foreach ($analyzerRepository->findAll() as $analyzer) {
             $analyzers[$analyzer->getName()] = $analyzer->getOptions();
         }
@@ -218,18 +219,18 @@ class EnvironmentService
 
         return [
             $settingsSectionLabel => [
-                'max_result_window' =>     50000,
+                'max_result_window' => 50000,
                 'analysis' => [
                     'filter' => $filters,
                     'analyzer' => $analyzers,
-                ]
-            ]
+                ],
+            ],
         ];
     }
 
     public function getEnvironmentsStats()
     {
-        /**@var EnvironmentRepository $repo*/
+        /** @var EnvironmentRepository $repo */
         $repo = $this->doctrine->getManager()->getRepository('EMSCoreBundle:Environment');
         $stats = $repo->getEnvironmentsStats();
 
@@ -241,8 +242,8 @@ class EnvironmentService
     }
 
     /**
-     *
      * @param string $name
+     *
      * @return Environment|false
      */
     public function getAliasByName($name)
@@ -251,8 +252,8 @@ class EnvironmentService
     }
 
     /**
-     *
      * @param string $name
+     *
      * @return Environment|false
      */
     public function getByName($name)
@@ -260,11 +261,13 @@ class EnvironmentService
         if (isset($this->getEnvironments()[$name])) {
             return $this->getEnvironments()[$name];
         }
+
         return false;
     }
 
     /**
      * @param string $id
+     *
      * @return Environment|false
      *
      * @deprecated cant find usage of this function, should be removed if proven so!
@@ -274,6 +277,7 @@ class EnvironmentService
         if (isset($this->getEnvironmentsById()[$id])) {
             return $this->getEnvironmentsById()[$id];
         }
+
         return false;
     }
 
@@ -287,7 +291,7 @@ class EnvironmentService
     /**
      * @return Environment[]
      */
-    public function getUnmanagedEnvironments() : array
+    public function getUnmanagedEnvironments(): array
     {
         return \array_filter($this->getEnvironments(), function (Environment $environment) {
             return !$environment->getManaged();
@@ -296,13 +300,15 @@ class EnvironmentService
 
     /**
      * @deprecated use getEnvironments directly!
-     * @return boolean|array
+     *
+     * @return bool|array
      */
     public function getAll()
     {
-        if ($this->getEnvironments() === []) {
+        if ([] === $this->getEnvironments()) {
             return false;
         }
+
         return $this->getEnvironments();
     }
 
@@ -310,11 +316,12 @@ class EnvironmentService
     {
         if ($this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT')) {
             return $this->getEnvironments();
-        };
+        }
 
         $user = $this->userService->getCurrentUser();
+
         return array_filter($this->getEnvironments(), function ($environment) use ($user) {
-            /** @var Environment $environment*/
+            /** @var Environment $environment */
             if (empty($environment->getCircles())) {
                 return true;
             }

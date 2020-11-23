@@ -1,8 +1,6 @@
 <?php
 
-
 namespace EMS\CoreBundle\Service;
-
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CommonBundle\Common\Document;
@@ -21,14 +19,13 @@ class TemplateService
     const MERGED_XML_FORMAT = 'merged-xml';
     const EXPORT_FORMATS = [self::JSON_FORMAT, self::XML_FORMAT, self::MERGED_JSON_FORMAT, self::MERGED_XML_FORMAT];
 
-
-    /**@var LoggerInterface */
+    /** @var LoggerInterface */
     private $logger;
 
-    /**@var Registry */
+    /** @var Registry */
     private $doctrine;
 
-    /**@var Environment */
+    /** @var Environment */
     private $twig;
 
     /** @var Template */
@@ -55,11 +52,12 @@ class TemplateService
         $em = $this->doctrine->getManager();
         $this->template = $em->getRepository(Template::class)->find($templateId);
 
-        if ($this->template === null) {
+        if (null === $this->template) {
             throw new \Exception('Template not found');
         }
 
         $this->twigTemplate = $this->twig->createTemplate($this->template->getBody());
+
         return $this;
     }
 
@@ -71,6 +69,7 @@ class TemplateService
             'object' => $document,
             'source' => $document->getSource(),
         ]);
+
         return $this->twigTemplate->render($context);
     }
 
@@ -78,15 +77,16 @@ class TemplateService
     {
         $xmlDocument = new \DOMDocument();
         if ($arrayOfDocument) {
-            $root = $xmlDocument->appendChild($xmlDocument->createElement("documents"));
+            $root = $xmlDocument->appendChild($xmlDocument->createElement('documents'));
             foreach ($source as $ouuid => $rawData) {
                 $this->addNested($xmlDocument, $root, $contentType->getName(), $rawData, ['OUUID' => $ouuid]);
             }
-        } elseif ($ouuid !== null) {
+        } elseif (null !== $ouuid) {
             $this->addNested($xmlDocument, $xmlDocument, $contentType->getName(), $source, ['OUUID' => $ouuid]);
         } else {
             throw new \Exception('OUUID madatory in cas of simple document');
         }
+
         return $xmlDocument->saveXML();
     }
 
@@ -100,7 +100,7 @@ class TemplateService
         }
 
         foreach ($rawData as $fieldName => $fieldData) {
-            $index = (\is_int($fieldName) ? self::EMS_INDEX_PREFIX : '') . $fieldName;
+            $index = (\is_int($fieldName) ? self::EMS_INDEX_PREFIX : '').$fieldName;
             if (\is_array($fieldData)) {
                 $this->addNested($xmlDocument, $child, $index, $fieldData);
             } else {

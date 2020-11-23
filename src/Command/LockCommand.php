@@ -68,7 +68,7 @@ class LockCommand extends Command
         if (!\is_string($by)) {
             throw new \RuntimeException('Unexpected user name');
         }
-        $force = $input->getOption('force') === true;
+        $force = true === $input->getOption('force');
 
         $until = new \DateTime();
         $until->setTimestamp($time);
@@ -90,9 +90,10 @@ class LockCommand extends Command
                 $rows,
                 $contentType->getName(),
                 $until->format('Y-m-d H:i:s'),
-                $by
+                $by,
             ]));
         }
+
         return 0;
     }
 }

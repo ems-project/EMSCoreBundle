@@ -15,13 +15,11 @@ use Psr\Log\LoggerInterface;
 
 class ElasticsearchService
 {
-
     /** @var ?string */
     private $cachedVersion;
 
     /** @var LoggerInterface */
     private $logger;
-
 
     /** @var Client */
     private $client;
@@ -34,18 +32,18 @@ class ElasticsearchService
     }
 
     /**
-     * Returns the parameter specified version
+     * Returns the parameter specified version.
      *
      * @return string
      */
     public function getVersion()
     {
-        if ($this->cachedVersion === null) {
+        if (null === $this->cachedVersion) {
             $this->cachedVersion = $this->client->info()['version']['number'];
         }
+
         return $this->cachedVersion;
     }
-
 
     public function get(Environment $environment, ContentType $contentType, $ouuid): Document
     {
@@ -63,7 +61,7 @@ class ElasticsearchService
                     ],
                 ],
                 'size' => 1,
-            ]
+            ],
         ]);
 
         if (0 === $result['hits']['total']) {
@@ -89,11 +87,11 @@ class ElasticsearchService
         return new Document($contentType->getName(), $ouuid, $result['hits']['hits'][0]['_source']);
     }
 
-
     /**
-     * Compare the parameter specified version with a string
+     * Compare the parameter specified version with a string.
      *
      * @param string $version
+     *
      * @return mixed
      */
     public function compare($version)
@@ -102,7 +100,8 @@ class ElasticsearchService
     }
 
     /**
-     * Return a keyword mapping (not analyzed)
+     * Return a keyword mapping (not analyzed).
+     *
      * @return string[]
      */
     public function getKeywordMapping()
@@ -112,58 +111,58 @@ class ElasticsearchService
                 'type' => 'keyword',
             ];
         }
+
         return [
             'type' => 'string',
-            'index' => 'not_analyzed'
+            'index' => 'not_analyzed',
         ];
     }
 
-
-
     /**
-     * Convert mapping
+     * Convert mapping.
+     *
      * @return string[]
      */
     public function convertMapping(array $in)
     {
         $out = $in;
         if (version_compare($this->getVersion(), '5') > 0) {
-            if (isset($out['analyzer']) && $out['analyzer'] === 'keyword') {
+            if (isset($out['analyzer']) && 'keyword' === $out['analyzer']) {
                 $out['type'] = 'keyword';
                 unset($out['analyzer']);
                 unset($out['fielddata']);
                 unset($out['index']);
-            } elseif (isset($out['index']) && $out['index'] === 'not_analyzed') {
+            } elseif (isset($out['index']) && 'not_analyzed' === $out['index']) {
                 $out['type'] = 'keyword';
                 unset($out['analyzer']);
                 unset($out['fielddata']);
                 unset($out['index']);
-            } elseif (isset($out['type']) && $out['type'] === 'string') {
+            } elseif (isset($out['type']) && 'string' === $out['type']) {
                 $out['type'] = 'text';
-            } elseif (isset($out['type']) && $out['type'] === 'keyword') {
+            } elseif (isset($out['type']) && 'keyword' === $out['type']) {
                 unset($out['analyzer']);
                 unset($out['fielddata']);
                 unset($out['index']);
             }
         }
+
         return $out;
     }
 
-
     /**
-     * Return a keyword mapping (not analyzed)
+     * Return a keyword mapping (not analyzed).
+     *
      * @return string[]
      */
     public function updateMapping($mapping)
     {
-
         if (isset($mapping['copy_to']) && !empty($mapping['copy_to']) && is_string($mapping['copy_to'])) {
             $mapping['copy_to'] = explode(',', $mapping['copy_to']);
         }
 
         if (version_compare($this->getVersion(), '5') > 0) {
-            if ($mapping['type'] === 'string') {
-                if ((isset($mapping['analyzer']) && $mapping['analyzer'] === 'keyword') || (empty($mapping['analyzer']) && isset($mapping['index']) && $mapping['index'] === 'not_analyzed')) {
+            if ('string' === $mapping['type']) {
+                if ((isset($mapping['analyzer']) && 'keyword' === $mapping['analyzer']) || (empty($mapping['analyzer']) && isset($mapping['index']) && 'not_analyzed' === $mapping['index'])) {
                     $mapping['type'] = 'keyword';
                     unset($mapping['analyzer']);
                 } else {
@@ -171,30 +170,33 @@ class ElasticsearchService
                 }
             }
 
-            if (isset($mapping['index']) && $mapping['index'] === 'No') {
+            if (isset($mapping['index']) && 'No' === $mapping['index']) {
                 $mapping['index'] = false;
             }
-            if (isset($mapping['index']) && $mapping['index'] !== false) {
+            if (isset($mapping['index']) && false !== $mapping['index']) {
                 $mapping['index'] = true;
             }
         }
+
         return $mapping;
     }
-    
+
     /**
-     * Return a datetime mapping
+     * Return a datetime mapping.
+     *
      * @return string[]
      */
     public function getDateTimeMapping()
     {
         return [
             'type' => 'date',
-            'format' => 'date_time_no_millis'
+            'format' => 'date_time_no_millis',
         ];
     }
 
     /**
-     * Return a not indexed text mapping
+     * Return a not indexed text mapping.
+     *
      * @return array
      */
     public function getNotIndexedStringMapping()
@@ -205,14 +207,16 @@ class ElasticsearchService
                 'index' => false,
             ];
         }
+
         return [
             'type' => 'string',
-            'index' => 'no'
+            'index' => 'no',
         ];
     }
 
     /**
-     * Return a indexed text mapping
+     * Return a indexed text mapping.
+     *
      * @return array
      */
     public function getIndexedStringMapping()
@@ -223,20 +227,22 @@ class ElasticsearchService
                 'index' => true,
             ];
         }
+
         return [
             'type' => 'string',
-            'index' => 'analyzed'
+            'index' => 'analyzed',
         ];
     }
 
     /**
-     * Return a indexed text mapping
+     * Return a indexed text mapping.
+     *
      * @return string[]
      */
     public function getLongMapping()
     {
         return [
-            "type" => "long",
+            'type' => 'long',
         ];
     }
 
@@ -256,8 +262,8 @@ class ElasticsearchService
             yield $scrollResponse;
 
             $scrollResponse = Response::fromArray($this->client->scroll([
-                'scroll_id' =>  $scrollResponse->getScrollId(),
-                'scroll' => $request->getScroll()
+                'scroll_id' => $scrollResponse->getScrollId(),
+                'scroll' => $request->getScroll(),
             ]));
         }
     }

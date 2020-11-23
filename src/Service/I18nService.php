@@ -2,21 +2,20 @@
 
 namespace EMS\CoreBundle\Service;
 
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Persistence\ObjectManager;
 use EMS\CoreBundle\Entity\I18n;
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CoreBundle\Repository\I18nRepository;
 
 class I18nService
 {
-    
-    /**@var Registry $doctrine */
+    /** @var Registry $doctrine */
     private $doctrine;
-    /** @var I18nRepository $repository */
+    /** @var I18nRepository */
     private $repository;
-    /** @var ObjectManager $manager */
+    /** @var ObjectManager */
     private $manager;
-    
+
     public function __construct(Registry $doctrine, I18nRepository $i18nRepository)
     {
         $this->doctrine = $doctrine;
@@ -30,10 +29,11 @@ class I18nService
     public function count(array $filters = null): int
     {
         $identifier = null;
-        
-        if ($filters != null && isset($filters['identifier']) && !empty($filters['identifier'])) {
+
+        if (null != $filters && isset($filters['identifier']) && !empty($filters['identifier'])) {
             $identifier = $filters['identifier'];
         }
+
         return $this->repository->countWithFilter($identifier);
     }
 
@@ -45,15 +45,17 @@ class I18nService
 
     /**
      * @param array<string>|null $filters
+     *
      * @return iterable|I18n[]
      */
     public function findAll(int $from, int $limit, array $filters = null): iterable
     {
         $identifier = null;
-        
-        if ($filters != null && isset($filters['identifier']) && !empty($filters['identifier'])) {
+
+        if (null != $filters && isset($filters['identifier']) && !empty($filters['identifier'])) {
             $identifier = $filters['identifier'];
         }
+
         return $this->repository->findByWithFilter($limit, $from, $identifier);
     }
 }

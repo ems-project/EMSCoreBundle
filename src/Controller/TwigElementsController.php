@@ -25,14 +25,15 @@ class TwigElementsController extends AbstractController
 
         $temp = $revisionRepository->draftCounterGroupedByContentType($user->getCircles(), $this->isGranted('ROLE_USER_MANAGEMENT'));
         foreach ($temp as $item) {
-            $draftCounterGroupedByContentType[$item["content_type_id"]] = $item["counter"];
+            $draftCounterGroupedByContentType[$item['content_type_id']] = $item['counter'];
         }
 
         $status = $elasticaService->getHealthStatus();
 
-        if ($status === 'green') {
+        if ('green' === $status) {
             $status = $this->getAssetExtractorStatus($assetExtractorService);
         }
+
         return $this->render(
             '@EMSCore/elements/side-menu.html.twig',
             [

@@ -7,10 +7,9 @@ use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
 
 class ObjectChoiceLoader implements ChoiceLoaderInterface
 {
-    
-    /**@var ObjectChoiceList $objectChoiceList*/
+    /** @var ObjectChoiceList $objectChoiceList */
     private $objectChoiceList;
-    
+
     public function __construct(
         ObjectChoiceCacheService $objectChoiceCacheService,
         $types,
@@ -29,7 +28,6 @@ class ObjectChoiceLoader implements ChoiceLoaderInterface
         return $this->objectChoiceList;
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -44,15 +42,17 @@ class ObjectChoiceLoader implements ChoiceLoaderInterface
     public function loadChoicesForValues(array $values, $value = null)
     {
         $this->objectChoiceList->loadChoices($values);
+
         return $values;
     }
-    
+
     /**
      * {@inheritdoc}
      */
     public function loadValuesForChoices(array $choices, $value = null)
     {
         $this->objectChoiceList->loadChoices($choices);
+
         return $choices;
     }
 }

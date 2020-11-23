@@ -10,17 +10,13 @@ use Doctrine\DBAL\Schema\Schema;
  */
 class Version20170604004043 extends AbstractMigration
 {
-    /**
-     * @param Schema $schema
-     */
     public function up(Schema $schema)
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('CREATE TABLE wysiwyg_profile (id INT AUTO_INCREMENT NOT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, name VARCHAR(255) NOT NULL, config LONGTEXT DEFAULT NULL, orderKey INT NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
-        
-        
+
         $this->addSql('INSERT INTO wysiwyg_profile VALUES (NULL, \'2017-06-03 23:51:05\', \'2017-06-04 02:32:49\', \'Standard\', \'{
 "plugins": "adv_link,uploadimage,imagebrowser,a11yhelp,basicstyles,bidi,blockquote,clipboard,colorbutton,colordialog,contextmenu,dialogadvtab,div,elementspath,enterkey,entities,filebrowser,find,floatingspace,format,horizontalrule,htmlwriter,image2,indentlist,indentblock,justify,language,list,liststyle,magicline,maximize,newpage,pastefromword,pastetext,preview,removeformat,resize,save,scayt,selectall,showborders,sourcearea,specialchar,stylescombo,tab,table,tabletools,templates,toolbar,undo,wsc,wysiwygarea",
 "pasteFromWordRemoveFontStyles": true,
@@ -143,29 +139,23 @@ class Version20170604004043 extends AbstractMigration
 }
 ]
 }\', 4)');
-        
-        
+
         $this->addSql('ALTER TABLE user ADD wysiwyg_profile_id INT DEFAULT NULL');
-        
+
         $this->addSql('UPDATE user SET wysiwyg_profile_id = 1');
         $this->addSql('UPDATE user SET wysiwyg_profile_id = 3 where wysiwyg_profile = \'full\'');
         $this->addSql('UPDATE user SET wysiwyg_profile_id = 2 where wysiwyg_profile = \'light\'');
         $this->addSql('UPDATE user SET wysiwyg_profile_id = NULL where wysiwyg_profile = \'custom\'');
-        
-        
-        
+
         $this->addSql('ALTER TABLE user DROP wysiwyg_profile');
         $this->addSql('ALTER TABLE user ADD CONSTRAINT FK_8D93D649A282F7EA FOREIGN KEY (wysiwyg_profile_id) REFERENCES wysiwyg_profile (id)');
         $this->addSql('CREATE INDEX IDX_8D93D649A282F7EA ON user (wysiwyg_profile_id)');
     }
 
-    /**
-     * @param Schema $schema
-     */
     public function down(Schema $schema)
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('ALTER TABLE `user` DROP FOREIGN KEY FK_8D93D649A282F7EA');
         $this->addSql('DROP TABLE wysiwyg_profile');

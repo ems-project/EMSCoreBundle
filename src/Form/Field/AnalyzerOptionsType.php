@@ -2,21 +2,19 @@
 
 namespace EMS\CoreBundle\Form\Field;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use EMS\CoreBundle\Repository\FilterRepository;
 use EMS\CoreBundle\Entity\Filter;
+use EMS\CoreBundle\Repository\FilterRepository;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
 
 class AnalyzerOptionsType extends AbstractType
 {
-
-
     const FIELDS_BY_TYPE = [
         'standard' => [
             'stopwords',
@@ -44,21 +42,17 @@ class AnalyzerOptionsType extends AbstractType
         ],
     ];
 
-
-    /**@var Registry $doctrine */
+    /** @var Registry $doctrine */
     private $doctrine;
 
     public function __construct(Registry $doctrine)
     {
-//'@doctrine'
+        //'@doctrine'
         $this->doctrine = $doctrine;
     }
 
-
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -73,7 +67,7 @@ class AnalyzerOptionsType extends AbstractType
             'label' => 'form.analyzer.type',
             'attr' => [
                 'class' => 'fields-to-display-by-input-value',
-            ]
+            ],
         ])->add('tokenizer', ChoiceType::class, [
             'attr' => ['class' => 'analyzer_option fields-to-display-for fields-to-display-for-custom'],
             'required' => false,
@@ -155,13 +149,12 @@ class AnalyzerOptionsType extends AbstractType
                         'form.analyzer.filter.built_in.word_delimiter' => 'word_delimiter',
                     ],
                     'form.analyzer.filter.customized' => [
-
                     ],
                 ];
 
-                /**@var FilterRepository $repository */
+                /** @var FilterRepository $repository */
                 $repository = $this->doctrine->getRepository('EMSCoreBundle:Filter');
-                /**@var Filter $filter */
+                /** @var Filter $filter */
                 foreach ($repository->findAll() as $filter) {
                     $out['Customized'][$filter->getLabel()] = $filter->getName();
                 }

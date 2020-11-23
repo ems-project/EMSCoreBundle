@@ -5,7 +5,7 @@ namespace EMS\CoreBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Notification
+ * Notification.
  *
  * @ORM\Table(name="notification")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\NotificationRepository")
@@ -30,14 +30,14 @@ class Notification
      * @ORM\Column(name="created", type="datetime")
      */
     private $created;
-    
+
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="modified", type="datetime")
      */
     private $modified;
-    
+
     /**
      * @ORM\ManyToOne(targetEntity="Template")
      * @ORM\JoinColumn(name="template_id", referencedColumnName="id")
@@ -92,7 +92,7 @@ class Notification
      */
     private $revision;
 
-       /**
+    /**
      * @ORM\ManyToOne(targetEntity="Environment")
      * @ORM\JoinColumn(name="environment_id", referencedColumnName="id")
      */
@@ -111,15 +111,14 @@ class Notification
      * @ORM\Column(name="response_emailed", type="datetime", nullable=true)
      */
     private $responseEmailed;
-    
-    
+
     private $counter;
 
     public function __toString()
     {
-        return $this->getTemplate()->getName() . '#' . $this->id;
+        return $this->getTemplate()->getName().'#'.$this->id;
     }
-    
+
     /**
      * @ORM\PrePersist
      * @ORM\PreUpdate
@@ -133,7 +132,7 @@ class Notification
     }
 
     /**
-     * Get id
+     * Get id.
      *
      * @return int
      */
@@ -141,9 +140,9 @@ class Notification
     {
         return $this->id;
     }
-    
+
     /**
-     * Set created
+     * Set created.
      *
      * @param \DateTime $created
      *
@@ -152,12 +151,12 @@ class Notification
     public function setCreated($created)
     {
         $this->created = $created;
-    
+
         return $this;
     }
-    
+
     /**
-     * Get created
+     * Get created.
      *
      * @return \DateTime
      */
@@ -165,9 +164,9 @@ class Notification
     {
         return $this->created;
     }
-    
+
     /**
-     * Set modified
+     * Set modified.
      *
      * @param \DateTime $modified
      *
@@ -176,12 +175,12 @@ class Notification
     public function setModified($modified)
     {
         $this->modified = $modified;
-    
+
         return $this;
     }
-    
+
     /**
-     * Get modified
+     * Get modified.
      *
      * @return \DateTime
      */
@@ -189,12 +188,9 @@ class Notification
     {
         return $this->modified;
     }
-    
 
     /**
-     * Set template
-     *
-     * @param \EMS\CoreBundle\Entity\Template $template
+     * Set template.
      *
      * @return Notification
      */
@@ -206,7 +202,7 @@ class Notification
     }
 
     /**
-     * Get template
+     * Get template.
      *
      * @return \EMS\CoreBundle\Entity\Template
      */
@@ -216,7 +212,7 @@ class Notification
     }
 
     /**
-     * Set username
+     * Set username.
      *
      * @param string $username
      *
@@ -230,7 +226,7 @@ class Notification
     }
 
     /**
-     * Get username
+     * Get username.
      *
      * @return string
      */
@@ -240,7 +236,7 @@ class Notification
     }
 
     /**
-     * Set status
+     * Set status.
      *
      * @param string $status
      *
@@ -254,7 +250,7 @@ class Notification
     }
 
     /**
-     * Get status
+     * Get status.
      *
      * @return string
      */
@@ -264,7 +260,7 @@ class Notification
     }
 
     /**
-     * Set sentTimestamp
+     * Set sentTimestamp.
      *
      * @param \DateTime $sentTimestamp
      *
@@ -278,9 +274,9 @@ class Notification
     }
 
     /**
-     * Get counter
+     * Get counter.
      *
-     * @return integer
+     * @return int
      */
     public function getCounter()
     {
@@ -288,9 +284,9 @@ class Notification
     }
 
     /**
-     * Set counter
+     * Set counter.
      *
-     * @param integer $counter
+     * @param int $counter
      *
      * @return Notification
      */
@@ -302,7 +298,7 @@ class Notification
     }
 
     /**
-     * Get sentTimestamp
+     * Get sentTimestamp.
      *
      * @return \DateTime
      */
@@ -312,7 +308,7 @@ class Notification
     }
 
     /**
-     * Set responseText
+     * Set responseText.
      *
      * @param string $responseText
      *
@@ -326,7 +322,7 @@ class Notification
     }
 
     /**
-     * Get responseText
+     * Get responseText.
      *
      * @return string
      */
@@ -336,7 +332,7 @@ class Notification
     }
 
     /**
-     * Set responseTimestamp
+     * Set responseTimestamp.
      *
      * @param \DateTime $responseTimestamp
      *
@@ -350,7 +346,7 @@ class Notification
     }
 
     /**
-     * Get responseTimestamp
+     * Get responseTimestamp.
      *
      * @return \DateTime
      */
@@ -367,7 +363,7 @@ class Notification
     }
 
     /**
-     * Get revision
+     * Get revision.
      *
      * @return \EMS\CoreBundle\Entity\Revision
      */
@@ -384,7 +380,7 @@ class Notification
     }
 
     /**
-     * Get environment
+     * Get environment.
      *
      * @return \EMS\CoreBundle\Entity\Environment
      */
@@ -394,7 +390,7 @@ class Notification
     }
 
     /**
-     * Set responseBy
+     * Set responseBy.
      *
      * @param string $responseBy
      *
@@ -408,7 +404,7 @@ class Notification
     }
 
     /**
-     * Get responseBy
+     * Get responseBy.
      *
      * @return string
      */
@@ -418,7 +414,7 @@ class Notification
     }
 
     /**
-     * Set emailed
+     * Set emailed.
      *
      * @param \DateTime $emailed
      *
@@ -432,7 +428,7 @@ class Notification
     }
 
     /**
-     * Get emailed
+     * Get emailed.
      *
      * @return \DateTime
      */
@@ -442,7 +438,7 @@ class Notification
     }
 
     /**
-     * Set responseEmailed
+     * Set responseEmailed.
      *
      * @param \DateTime $responseEmailed
      *
@@ -456,7 +452,7 @@ class Notification
     }
 
     /**
-     * Get responseEmailed
+     * Get responseEmailed.
      *
      * @return \DateTime
      */

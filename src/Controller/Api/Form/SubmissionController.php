@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller\Api\Form;
 
 use EMS\CoreBundle\Service\Form\Submission\FormSubmissionException;
-use EMS\CoreBundle\Service\Form\Submission\FormSubmissionService;
 use EMS\CoreBundle\Service\Form\Submission\FormSubmissionRequest;
+use EMS\CoreBundle\Service\Form\Submission\FormSubmissionService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -38,6 +38,7 @@ final class SubmissionController extends AbstractController
             return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage(), ['exception' => $e]);
+
             return new JsonResponse([], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

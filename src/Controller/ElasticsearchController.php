@@ -40,42 +40,39 @@ use Throwable;
 class ElasticsearchController extends AppController
 {
     /**
-     * Create an alias for an index
+     * Create an alias for an index.
      *
-     * @param string $name
-     * @param Request $request
      * @return RedirectResponse|Response
      * @Route("/elasticsearch/alias/add/{name}", name="elasticsearch.alias.add")
      */
     public function addAliasAction(string $name, Request $request)
     {
-
-        /** @var  Client $client */
+        /** @var Client $client */
         $client = $this->getElasticsearch();
 
         $form = $this->createFormBuilder([])->add('name', IconTextType::class, [
             'icon' => 'fa fa-key',
-            'required' => true
+            'required' => true,
         ])->add('save', SubmitEmsType::class, [
             'label' => 'Add',
             'icon' => 'fa fa-plus',
             'attr' => [
-                'class' => 'btn btn-primary pull-right'
-            ]
+                'class' => 'btn btn-primary pull-right',
+            ],
         ])->getForm();
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $params ['body'] = [
+            $params['body'] = [
                 'actions' => [
                     [
                         'add' => [
                             'index' => $name,
                             'alias' => $form->get('name')->getData(),
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ];
 
             $client->indices()->updateAliases($params);
@@ -84,9 +81,8 @@ class ElasticsearchController extends AppController
                 'index_name' => $name,
             ]);
 
-            return $this->redirectToRoute("environment.index");
+            return $this->redirectToRoute('environment.index');
         }
-
 
         return $this->render('@EMSCore/elasticsearch/add-alias.html.twig', [
             'form' => $form->createView(),
@@ -96,6 +92,7 @@ class ElasticsearchController extends AppController
 
     /**
      * @param string $_format
+     *
      * @return Response
      *
      * @Route("/health_check.{_format}", defaults={"_format"="html"}, name="health-check")
@@ -106,8 +103,7 @@ class ElasticsearchController extends AppController
             $client = $this->getElasticsearch();
             $status = $client->cluster()->health();
 
-
-            $response = $this->render('@EMSCore/elasticsearch/status.' . $_format . '.twig', [
+            $response = $this->render('@EMSCore/elasticsearch/status.'.$_format.'.twig', [
                 'status' => $status,
                 'globalStatus' => $status['status'],
             ]);
@@ -119,12 +115,13 @@ class ElasticsearchController extends AppController
 
             return $response;
         } catch (Exception $e) {
-            throw new ServiceUnavailableHttpException('Due to ' . $e->getMessage());
+            throw new ServiceUnavailableHttpException('Due to '.$e->getMessage());
         }
     }
 
     /**
      * @param string $_format
+     *
      * @return Response
      *
      * @Route("/status.{_format}", defaults={"_format"="html"}, name="elasticsearch.status")
@@ -161,7 +158,7 @@ class ElasticsearchController extends AppController
                 }
             }
 
-            return $this->render('@EMSCore/elasticsearch/status.' . $_format . '.twig', [
+            return $this->render('@EMSCore/elasticsearch/status.'.$_format.'.twig', [
                 'status' => $status,
                 'certificate' => $certificateInformation,
                 'tika' => $tika,
@@ -170,7 +167,7 @@ class ElasticsearchController extends AppController
                 'specifiedVersion' => $this->getElasticsearchService()->getVersion(),
             ]);
         } catch (NoNodesAvailableException $e) {
-            return $this->render('@EMSCore/elasticsearch/no-nodes-available.' . $_format . '.twig', [
+            return $this->render('@EMSCore/elasticsearch/no-nodes-available.'.$_format.'.twig', [
                 'cluster' => $this->getParameter('ems_core.elasticsearch_cluster'),
             ]);
         }
@@ -185,9 +182,9 @@ class ElasticsearchController extends AppController
         exit;
     }
 
-
     /**
      * @param int $id
+     *
      * @return RedirectResponse
      *
      * @Route("/elasticsearch/delete-search/{id}", name="elasticsearch.search.delete")
@@ -205,31 +202,29 @@ class ElasticsearchController extends AppController
         $em->remove($search);
         $em->flush();
 
-        return $this->redirectToRoute("elasticsearch.search");
+        return $this->redirectToRoute('elasticsearch.search');
     }
 
     /**
-     * @param Request $request
      * @return Response
      *
      * @Route("/quick-search", name="ems_quick_search", methods={"GET"})
      */
     public function quickSearchAction(Request $request)
     {
-
         $query = $request->query->get('q', false);
 
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('EMSCoreBundle:Form\Search');
 
-        /**@var Search $search */
+        /** @var Search $search */
         $search = $repository->findOneBy([
             'default' => true,
         ]);
         if ($search) {
             $em->detach($search);
             $search->resetFilters($search->getFilters()->getValues());
-            /**@var SearchFilter $filter */
+            /** @var SearchFilter $filter */
             foreach ($search->getFilters() as &$filter) {
                 if (empty($filter->getPattern())) {
                     $filter->setPattern($query);
@@ -237,7 +232,7 @@ class ElasticsearchController extends AppController
             }
         } else {
             $search = new Search();
-            if ($query !== false) {
+            if (false !== $query) {
                 $search->getFilters()[0]->setPattern($query)->setBooleanClause('must');
             }
         }
@@ -249,10 +244,10 @@ class ElasticsearchController extends AppController
         ]);
     }
 
-
     /**
-     * @param int $id
+     * @param int    $id
      * @param string $contentType
+     *
      * @return RedirectResponse
      *
      * @Route("/elasticsearch/set-default-search/{id}/{contentType}", defaults={"contentType"=false}, name="ems_search_set_default_search_from", methods={"POST"})
@@ -267,7 +262,7 @@ class ElasticsearchController extends AppController
             $searchs = $repository->findBy([
                 'contentType' => $contentType->getId(),
             ]);
-            /**@var Search $search */
+            /** @var Search $search */
             foreach ($searchs as $search) {
                 $search->setContentType(null);
                 $em->persist($search);
@@ -284,7 +279,7 @@ class ElasticsearchController extends AppController
             $searchs = $repository->findBy([
                 'default' => true,
             ]);
-            /**@var Search $search */
+            /** @var Search $search */
             foreach ($searchs as $search) {
                 $search->setDefault(false);
                 $em->persist($search);
@@ -297,18 +292,19 @@ class ElasticsearchController extends AppController
             ]);
         }
 
-        return $this->redirectToRoute("elasticsearch.search", ['searchId' => $id]);
+        return $this->redirectToRoute('elasticsearch.search', ['searchId' => $id]);
     }
 
     /**
      * @param string $name
+     *
      * @return RedirectResponse
      *
      * @Route("/elasticsearch/index/delete/{name}", name="elasticsearch.index.delete")
      */
     public function deleteIndexAction($name)
     {
-        /** @var  Client $client */
+        /** @var Client $client */
         $client = $this->getElasticsearch();
         try {
             $client->indices()->delete([
@@ -323,11 +319,11 @@ class ElasticsearchController extends AppController
                 'index_name' => $name,
             ]);
         }
+
         return $this->redirectToRoute('environment.index');
     }
 
     /**
-     * @param Request $request
      * @return Response
      *
      * @Route("/search.json", name="elasticsearch.api.search")
@@ -354,7 +350,6 @@ class ElasticsearchController extends AppController
 
         $allTypes = $contentTypeRepository->findAllAsAssociativeArray();
 
-
         if ($searchId) {
             $searchRepository = $em->getRepository('EMSCoreBundle:Form\Search');
             $search = $searchRepository->findOneBy([
@@ -363,18 +358,17 @@ class ElasticsearchController extends AppController
 
             $params = [];
 
-
-            /**@var Search $search */
+            /** @var Search $search */
             if ($search) {
                 $em->detach($search);
                 $search->resetFilters($search->getFilters()->getValues());
 
                 $queryString = $pattern;
-                if (!empty($pattern) && ! in_array(substr($pattern, strlen($pattern) - 1), [' ', '?', '*', '.', '/'])) {
+                if (!empty($pattern) && !in_array(substr($pattern, strlen($pattern) - 1), [' ', '?', '*', '.', '/'])) {
                     $queryString .= '*';
                 }
 
-                /**@var SearchFilter $filter */
+                /** @var SearchFilter $filter */
                 foreach ($search->getFilters() as &$filter) {
                     if (empty($filter->getPattern())) {
                         if (in_array($filter->getOperator(), ['query_and', 'query_or'])) {
@@ -389,7 +383,6 @@ class ElasticsearchController extends AppController
 
                 /** @var Client $client */
                 $client = $this->getElasticsearch();
-
 
                 $selectedEnvironments = [];
                 if (!\is_array($search->getEnvironments())) {
@@ -415,7 +408,6 @@ class ElasticsearchController extends AppController
             }
         }
 
-
         if (empty($types)) {
             $types = [];
             // For search only in contentType with Asset field == $assetName.
@@ -432,12 +424,11 @@ class ElasticsearchController extends AppController
             $types = explode(',', $types);
         }
 
-
         if (!empty($types)) {
             $aliases = [];
             $service = $this->getEnvironmentService();
             if (empty($environments)) {
-                /**@var EnvironmentService $service */
+                /** @var EnvironmentService $service */
                 foreach ($types as $type) {
                     $ct = $contentTypeRepository->findByName($type);
                     if ($ct) {
@@ -464,11 +455,10 @@ class ElasticsearchController extends AppController
                 'body' => [
                     'query' => [
                         'bool' => [
-                            'must' => []
-                        ]
-                    ]
-                ]
-
+                            'must' => [],
+                        ],
+                    ],
+                ],
             ];
 
             $matches = [];
@@ -481,7 +471,7 @@ class ElasticsearchController extends AppController
             }
 
             if ($circleOnly && !$this->get('security.authorization_checker')->isGranted('ROLE_USER_MANAGEMENT')) {
-                /**@var UserInterface $user */
+                /** @var UserInterface $user */
                 $user = $this->getUser();
                 $circles = $user->getCircles();
 
@@ -494,10 +484,9 @@ class ElasticsearchController extends AppController
                 $params['body']['query']['bool']['must'][] = [
                     'terms' => [
                         '_id' => $ouuids,
-                    ]
+                    ],
                 ];
             }
-
 
             $patterns = explode(' ', $pattern);
 
@@ -506,18 +495,18 @@ class ElasticsearchController extends AppController
                     'query_string' => [
                         'default_field' => '_all',
                         'query' => $patterns[$i],
-                    ]
+                    ],
                 ];
             }
 
             $params['body']['query']['bool']['must'][] = [
                 'query_string' => [
                     'default_field' => '_all',
-                    'query' => '*' . $patterns[$i] . '*',
-                ]
+                    'query' => '*'.$patterns[$i].'*',
+                ],
             ];
 
-            if (count($types) == 1) {
+            if (1 == count($types)) {
                 $searchRepository = $em->getRepository('EMSCoreBundle:Form\Search');
                 $contentType = $this->getContentTypeService()->getByName($types[0]);
 
@@ -525,17 +514,16 @@ class ElasticsearchController extends AppController
                     'contentType' => $contentType->getId(),
                 ]);
 
-
                 if ($search) {
                     $em->detach($search);
                     $search->resetFilters($search->getFilters()->getValues());
 
                     $queryString = $pattern;
-                    if (!empty($pattern) && ! in_array(substr($pattern, strlen($pattern) - 1), [' ', '?', '*', '.', '/'])) {
+                    if (!empty($pattern) && !in_array(substr($pattern, strlen($pattern) - 1), [' ', '?', '*', '.', '/'])) {
                         $queryString .= '*';
                     }
 
-                    /**@var SearchFilter $filter */
+                    /** @var SearchFilter $filter */
                     foreach ($search->getFilters() as &$filter) {
                         if (empty($filter->getPattern())) {
                             if (in_array($filter->getOperator(), ['query_and', 'query_or'])) {
@@ -548,7 +536,7 @@ class ElasticsearchController extends AppController
                     $body = $this->getSearchService()->generateSearchBody($search);
                     $params['body'] = $body;
                 } else {
-                    /**@var ContentTypeService $contentTypeService */
+                    /** @var ContentTypeService $contentTypeService */
                     $contentTypeService = $this->getContentTypeService();
                     $contentType = $contentTypeService->getByName($types[0]);
                     if ($contentType && $contentType->getOrderField()) {
@@ -556,11 +544,10 @@ class ElasticsearchController extends AppController
                             $contentType->getOrderField() => [
                                 'order' => 'asc',
                                 'missing' => '_last',
-                            ]
+                            ],
                         ];
                     }
                 }
-
 
                 if ($contentType && $contentType->getLabelField()) {
                     $params['_source'] = [$contentType->getLabelField()];
@@ -570,13 +557,12 @@ class ElasticsearchController extends AppController
                     $params['body']['query']['bool']['must'][] = [
                         'term' => [
                             $contentType->getCategoryField() => [
-                                'value' => $category
-                            ]
-                        ]
+                                'value' => $category,
+                            ],
+                        ],
                     ];
                 }
             }
-
 
             //http://blog.alterphp.com/2012/08/how-to-deal-with-asynchronous-request.html
             $request->getSession()->save();
@@ -597,7 +583,6 @@ class ElasticsearchController extends AppController
                 ],
             ];
         }
-
 
         return $this->render('@EMSCore/elasticsearch/search.json.twig', [
             'results' => $results,
@@ -624,7 +609,7 @@ class ElasticsearchController extends AppController
             $exportDocuments->getQuery(),
             $exportDocuments->isWithBusinessKey() ? ' --withBusinessId' : '',
             $exportDocuments->getEnvironment(),
-            '//' . $request->getHttpHost()
+            '//'.$request->getHttpHost()
         );
         $user = $this->getUser();
         if (!$user instanceof UserInterface) {
@@ -640,6 +625,7 @@ class ElasticsearchController extends AppController
 
     /**
      * @return RedirectResponse|Response
+     *
      * @throws Throwable
      * @Route("/search", name="ems_search")
      * @Route("/search", name="elasticsearch.search")
@@ -650,10 +636,9 @@ class ElasticsearchController extends AppController
             $search = new Search();
 
             //Save the form (uses POST method)
-            if ($request->getMethod() == "POST") {
+            if ('POST' == $request->getMethod()) {
 //                 $request->query->get('search_form')['name'] = $request->request->get('form')['name'];
                 $request->request->set('search_form', $request->query->get('search_form'));
-
 
                 $form = $this->createForm(SearchFormType::class, $search);
 
@@ -673,7 +658,7 @@ class ElasticsearchController extends AppController
                 $em->flush();
 
                 return $this->redirectToRoute('elasticsearch.search', [
-                    'searchId' => $search->getId()
+                    'searchId' => $search->getId(),
                 ]);
             }
 
@@ -694,13 +679,11 @@ class ElasticsearchController extends AppController
                 }
             }
 
-
             $form = $this->createForm(SearchFormType::class, $search, [
                 'method' => 'GET',
                 'action' => $this->generateUrl('ems_search'),
                 'savedSearch' => $searchId,
             ]);
-
 
             $form->handleRequest($request);
 
@@ -717,7 +700,7 @@ class ElasticsearchController extends AppController
                     ->add('save_search', SubmitEmsType::class, [
                         'label' => 'Save',
                         'attr' => [
-                            'class' => 'btn btn-primary pull-right'
+                            'class' => 'btn btn-primary pull-right',
                         ],
                         'icon' => 'fa fa-save',
                     ])
@@ -726,7 +709,7 @@ class ElasticsearchController extends AppController
                 return $this->render('@EMSCore/elasticsearch/save-search.html.twig', [
                     'form' => $form->createView(),
                 ]);
-            } else if ($form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && array_key_exists('delete', $request->query->get('search_form'))) {
+            } elseif ($form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && array_key_exists('delete', $request->query->get('search_form'))) {
                 //Form treatment after the "Delete" button has been pressed (to delete a previous saved search preset)
 
                 $logger->notice('log.elasticsearch.search_deleted', [
@@ -777,7 +760,7 @@ class ElasticsearchController extends AppController
                 $lastPage = 0;
             }
 
-            if ($response !== null && !$response->isAccurate()) {
+            if (null !== $response && !$response->isAccurate()) {
                 $logger->warning('log.elasticsearch.search_not_accurate', [
                     'total' => $response->getTotal(),
                 ]);
@@ -787,7 +770,7 @@ class ElasticsearchController extends AppController
             $currentFilters->remove('search_form[_token]');
 
             //Form treatment after the "Export results" button has been pressed (= ask for a "content type" <-> "template" mapping)
-            if ($response !== null && $form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && array_key_exists('exportResults', $request->query->get('search_form'))) {
+            if (null !== $response && $form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && array_key_exists('exportResults', $request->query->get('search_form'))) {
                 $exportForms = [];
                 $contentTypes = $this->getAllContentType($response);
                 foreach ($contentTypes as $name) {
@@ -808,12 +791,12 @@ class ElasticsearchController extends AppController
             }
 
             $mapIndex = [];
-            if ($response !== null) {
+            if (null !== $response) {
                 $indexes = $response->getAggregation(AggregateOptionService::INDEXES_AGGREGATION);
-                if ($indexes !== null) {
+                if (null !== $indexes) {
                     foreach ($indexes->getBuckets() as $bucket) {
                         $indexName = $bucket->getKey();
-                        if ($indexName === null) {
+                        if (null === $indexName) {
                             continue;
                         }
                         $aliases = $elasticaService->getAliasesFromIndex($indexName);
@@ -826,7 +809,6 @@ class ElasticsearchController extends AppController
                     }
                 }
             }
-
 
             return $this->render('@EMSCore/elasticsearch/search.html.twig', [
                 'response' => $response ?? null,
@@ -855,9 +837,10 @@ class ElasticsearchController extends AppController
     private function getAllContentType(CommonResponse $response): array
     {
         $aggregation = $response->getAggregation(AggregateOptionService::CONTENT_TYPES_AGGREGATION);
-        if ($aggregation === null) {
+        if (null === $aggregation) {
             return [];
         }
+
         return $aggregation->getKeys();
     }
 }

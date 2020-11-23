@@ -87,7 +87,7 @@ final class TransformContentTypeCommand extends Command
             throw new \RuntimeException('Unexpected content type name');
         }
         $contentType = $this->contentTypeService->getByName($contentTypeName);
-        if ($contentType === false) {
+        if (false === $contentType) {
             throw new \RuntimeException('Unexpected content type name');
         }
         $this->contentType = $contentType;
@@ -114,6 +114,7 @@ final class TransformContentTypeCommand extends Command
         $this->io->progressFinish();
 
         $this->io->success(\sprintf('Transformation of "%s" content type done', $this->contentType->getPluralName()));
+
         return 0;
     }
 
@@ -171,6 +172,7 @@ final class TransformContentTypeCommand extends Command
                 if (empty($user)) {
                     throw new \RuntimeException('User cannot be empty.');
                 }
+
                 return $user;
             }
         );

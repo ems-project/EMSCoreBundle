@@ -2,19 +2,13 @@
 
 namespace EMS\CoreBundle\Form\Form;
 
-use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
-use EMS\CoreBundle\Form\Field\SubmitEmsType;
 
 class RebuildIndexType extends AbstractType
 {
-    /**
-     *
-     * @param FormBuilderInterface $builder
-     * @param array $options
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $options = [
@@ -24,13 +18,13 @@ class RebuildIndexType extends AbstractType
         $builder
         ->add('option', ChoiceType::class, [
                 'choices' => $options,
-                'expanded' => true
+                'expanded' => true,
         ])
          ->add('rebuild', SubmitEmsType::class, [
                 'attr' => [
-                        'class' => 'btn-primary btn-sm '
+                        'class' => 'btn-primary btn-sm ',
                 ],
-                'icon' => 'fa fa-recycle'
+                'icon' => 'fa fa-recycle',
          ]);
     }
 }

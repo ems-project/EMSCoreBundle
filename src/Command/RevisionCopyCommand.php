@@ -75,7 +75,6 @@ final class RevisionCopyCommand extends Command implements CommandInterface
                 'Bulk size',
                 25
             );
-        ;
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
@@ -108,7 +107,7 @@ final class RevisionCopyCommand extends Command implements CommandInterface
 
         $request = $copyContext->makeRequest();
         $size = \intval($input->getOption(self::OPTION_BULK_SIZE));
-        if ($size === 0) {
+        if (0 === $size) {
             throw new \RuntimeException('Unexpected bulk size argument');
         }
         $request->setSize($size);

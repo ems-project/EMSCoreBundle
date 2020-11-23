@@ -5,7 +5,7 @@ namespace EMS\CoreBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * I18n
+ * I18n.
  *
  * @ORM\Table(name="i18n")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\I18nRepository")
@@ -44,7 +44,7 @@ class I18n
      */
     private $identifier;
 
-     /**
+    /**
      * @var array
      *
      * @ORM\Column(name="content", type="json_array")
@@ -63,11 +63,10 @@ class I18n
         }
     }
 
-
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -75,7 +74,7 @@ class I18n
     }
 
     /**
-     * Set created
+     * Set created.
      *
      * @param \DateTime $created
      *
@@ -89,7 +88,7 @@ class I18n
     }
 
     /**
-     * Get created
+     * Get created.
      *
      * @return \DateTime
      */
@@ -99,7 +98,7 @@ class I18n
     }
 
     /**
-     * Set modified
+     * Set modified.
      *
      * @param \DateTime $modified
      *
@@ -113,7 +112,7 @@ class I18n
     }
 
     /**
-     * Get modified
+     * Get modified.
      *
      * @return \DateTime
      */
@@ -123,7 +122,7 @@ class I18n
     }
 
     /**
-     * Set content
+     * Set content.
      *
      * @param array $content
      *
@@ -137,7 +136,7 @@ class I18n
     }
 
     /**
-     * Get content
+     * Get content.
      *
      * @return array
      */
@@ -145,11 +144,12 @@ class I18n
     {
         return $this->content;
     }
-    
+
     /**
-     * Get content of locale
+     * Get content of locale.
      *
      * @param string $locale
+     *
      * @return string
      */
     public function getContentTextforLocale($locale)
@@ -161,12 +161,12 @@ class I18n
                 }
             }
         }
-        
-        return "no match found for key" . $this->getIdentifier() .  " with locale " . $locale;
+
+        return 'no match found for key'.$this->getIdentifier().' with locale '.$locale;
     }
 
     /**
-     * Set identifier
+     * Set identifier.
      *
      * @param string $identifier
      *
@@ -180,7 +180,7 @@ class I18n
     }
 
     /**
-     * Get identifier
+     * Get identifier.
      *
      * @return string
      */

@@ -9,22 +9,20 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Throwable;
 
 class ReportViewType extends ViewType
 {
+    public function getLabel(): string
+    {
+        return 'Report: perform an elasticsearch query and generate a report with a twig template';
+    }
 
-    public function getLabel() : string
+    public function getName(): string
     {
-        return "Report: perform an elasticsearch query and generate a report with a twig template";
+        return 'Report';
     }
-    
-    public function getName() : string
-    {
-        return "Report";
-    }
-    
-    public function buildForm(FormBuilderInterface $builder, array $options) : void
+
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
         $builder
@@ -54,15 +52,14 @@ class ReportViewType extends ViewType
                 ],
         ]);
     }
-    
-    public function getBlockPrefix() : string
+
+    public function getBlockPrefix(): string
     {
         return 'report_view';
     }
 
-    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request) : array
+    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
-
         try {
             $renderQuery = $this->twig->createTemplate($view->getOptions()['body'])->render([
                     'view' => $view,
@@ -70,21 +67,21 @@ class ReportViewType extends ViewType
                     'environment' => $view->getContentType()->getEnvironment(),
             ]);
         } catch (Exception $e) {
-            $renderQuery = "{}";
+            $renderQuery = '{}';
         }
-        
+
         $searchQuery = [
             'index' => $view->getContentType()->getEnvironment()->getAlias(),
             'type' => $view->getContentType()->getName(),
             'body' => $renderQuery,
         ];
-        
+
         if (isset($view->getOptions()['size'])) {
             $searchQuery['size'] = $view->getOptions()['size'];
         }
-        
+
         $result = $this->client->search($searchQuery);
-        
+
         try {
             $render = $this->twig->createTemplate($view->getOptions()['template'])->render([
                 'view' => $view,
@@ -93,7 +90,7 @@ class ReportViewType extends ViewType
                 'result' => $result,
             ]);
         } catch (Exception $e) {
-            $render = "Something went wrong with the template of the view " . $view->getName() . " for the content type " . $view->getContentType()->getName() . " (" . $e->getMessage() . ")";
+            $render = 'Something went wrong with the template of the view '.$view->getName().' for the content type '.$view->getContentType()->getName().' ('.$e->getMessage().')';
         }
         try {
             $javascript = $this->twig->createTemplate($view->getOptions()['javascript'])->render([
@@ -103,7 +100,7 @@ class ReportViewType extends ViewType
                 'result' => $result,
             ]);
         } catch (Exception $e) {
-            $javascript = "";
+            $javascript = '';
         }
         try {
             $header = $this->twig->createTemplate($view->getOptions()['header'])->render([
@@ -113,7 +110,7 @@ class ReportViewType extends ViewType
                 'result' => $result,
             ]);
         } catch (Exception $e) {
-            $header = "";
+            $header = '';
         }
 
         return [

@@ -57,7 +57,7 @@ class FileService
         }
         $stream = $this->getResource($hash);
 
-        if ($stream === null) {
+        if (null === $stream) {
             return null;
         }
 
@@ -66,14 +66,15 @@ class FileService
         }
 
         while (!$stream->eof()) {
-            if (\fwrite($handle, $stream->read(8192)) === false) {
+            if (false === \fwrite($handle, $stream->read(8192))) {
                 throw new \RuntimeException(sprintf('Can\'t write in temporary file %s', $filename));
             }
         }
 
-        if (\fclose($handle) === false) {
+        if (false === \fclose($handle)) {
             throw new \RuntimeException(sprintf('Can\'t close the temporary file %s', $filename));
         }
+
         return $filename;
     }
 
@@ -90,18 +91,18 @@ class FileService
     {
         $config = $this->processor->configFactory($sha1, [
             EmsFields::ASSET_CONFIG_MIME_TYPE => $request->query->get('type', 'application/octet-stream'),
-            EmsFields::ASSET_CONFIG_DISPOSITION => $disposition
+            EmsFields::ASSET_CONFIG_DISPOSITION => $disposition,
         ]);
         $filename = $request->query->get('name', 'filename');
+
         return $this->processor->getStreamedResponse($request, $config, $filename, true);
     }
 
     /**
      * @return UploadedAsset[]|iterable
      */
-    public function getImages():iterable
+    public function getImages(): iterable
     {
-
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
         /** @var UploadedAssetRepository $repository */
@@ -114,15 +115,15 @@ class FileService
             ->groupBy('a.type, a.name, a.sha1, a.user');
 
         $query = $qb->getQuery();
+
         return $query->getResult();
     }
 
     public function uploadFile(string $name, string $type, string $filename, string $user): UploadedAsset
     {
-
         $hash = $this->storageManager->computeFileHash($filename);
         $size = \filesize($filename);
-        if ($size === false) {
+        if (false === $size) {
             throw new \RuntimeException(sprintf('Can\'t get file size of %s', $filename));
         }
         $uploadedAsset = $this->initUploadFile($hash, $size, $name, $type, $user, $this->storageManager->getHashAlgo());
@@ -140,15 +141,14 @@ class FileService
 
     public function initUploadFile(string $hash, int $size, string $name, string $type, string $user, string $hashAlgo): UploadedAsset
     {
-        if (strcasecmp($hashAlgo, $this->storageManager->getHashAlgo()) !== 0) {
-            throw new StorageServiceMissingException(sprintf("Hash algorithms mismatch: %s vs. %s", $hashAlgo, $this->storageManager->getHashAlgo()));
+        if (0 !== strcasecmp($hashAlgo, $this->storageManager->getHashAlgo())) {
+            throw new StorageServiceMissingException(sprintf('Hash algorithms mismatch: %s vs. %s', $hashAlgo, $this->storageManager->getHashAlgo()));
         }
 
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
         /** @var UploadedAssetRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:UploadedAsset');
-
 
         /** @var UploadedAsset|null $uploadedAsset */
         $uploadedAsset = $repository->findOneBy([
@@ -157,7 +157,7 @@ class FileService
             'user' => $user,
         ]);
 
-        if ($uploadedAsset === null) {
+        if (null === $uploadedAsset) {
             $uploadedAsset = new UploadedAsset();
             $uploadedAsset->setSha1($hash);
             $uploadedAsset->setUser($user);
@@ -165,7 +165,6 @@ class FileService
             $uploadedAsset->setHashAlgo($hashAlgo);
             $uploadedAsset->setUploaded(0);
         }
-
 
         $uploadedAsset->setType($type);
         $uploadedAsset->setName($name);
@@ -196,7 +195,6 @@ class FileService
         return $uploadedAsset;
     }
 
-
     public function head(string $hash): bool
     {
         return $this->storageManager->head($hash);
@@ -218,10 +216,9 @@ class FileService
         /** @var UploadedAssetRepository $repository */
         $repository = $em->getRepository('EMSCoreBundle:UploadedAsset');
 
-
         $uploadedAsset = $repository->getInProgress($hash, $user);
 
-        if ($uploadedAsset === null) {
+        if (null === $uploadedAsset) {
             throw new NotFoundHttpException('Upload job not found');
         }
 
@@ -244,12 +241,13 @@ class FileService
 
         $em->persist($uploadedAsset);
         $em->flush($uploadedAsset);
+
         return $uploadedAsset;
     }
 
     public function temporaryFilename(string $hash): string
     {
-        return sys_get_temp_dir() . DIRECTORY_SEPARATOR . $hash;
+        return sys_get_temp_dir().DIRECTORY_SEPARATOR.$hash;
     }
 
     private function saveFile(string $filename, UploadedAsset $uploadedAsset): UploadedAsset
@@ -260,13 +258,14 @@ class FileService
         }
 
         $uploadedAsset->setAvailable(true);
+
         return $uploadedAsset;
     }
 
     public function synchroniseAsset(string $hash): void
     {
         $filename = $this->getFile($hash);
-        if ($filename === null) {
+        if (null === $filename) {
             throw new NotFoundException($hash);
         }
 

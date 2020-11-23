@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Command;
 
-use Elasticsearch\Client;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Exception\NotLockedException;
@@ -10,7 +9,6 @@ use EMS\CoreBundle\Helper\Archive;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\DocumentService;
-use Monolog\Logger;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,7 +19,7 @@ use Symfony\Component\Finder\Finder;
 
 class DocumentCommand extends Command
 {
-    /** @var string  */
+    /** @var string */
     protected static $defaultName = 'ems:make:document';
     /** @var DocumentService */
     private $documentService;
@@ -35,9 +33,9 @@ class DocumentCommand extends Command
     private $contentType;
     /** @var string */
     private $archiveFilename;
-    /** @var string  */
+    /** @var string */
     const ARGUMENT_CONTENTTYPE = 'contentTypeName';
-    /** @var string  */
+    /** @var string */
     const ARGUMENT_ARCHIVE = 'archive';
 
     public function __construct(ContentTypeService $contentTypeService, DocumentService $documentService, DataService $dataService)
@@ -47,7 +45,7 @@ class DocumentCommand extends Command
         $this->dataService = $dataService;
         parent::__construct();
     }
-    
+
     protected function configure(): void
     {
         $this
@@ -120,7 +118,6 @@ class DocumentCommand extends Command
         $this->io->title('Make documents');
         $this->io->section('Checking input');
 
-
         $contentType = $this->contentTypeService->getByName($contentTypeName);
         if (!$contentType instanceof ContentType) {
             throw new \RuntimeException(sprintf('Content type %s not found', $contentTypeName));
@@ -139,7 +136,6 @@ class DocumentCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-
         $options = array_values($input->getOptions());
         list($bulkSize, $rawImport, $dontSignData, $force, $dontFinalize, $replaceBusinessKey) = $options;
 
@@ -160,7 +156,7 @@ class DocumentCommand extends Command
         $loopIndex = 0;
         foreach ($finder as $file) {
             $content = \file_get_contents($file);
-            if ($content === false) {
+            if (false === $content) {
                 $progress->advance();
                 continue;
             }
@@ -190,7 +186,7 @@ class DocumentCommand extends Command
             }
 
             ++$loopIndex;
-            if ($loopIndex % $bulkSize == 0) {
+            if (0 == $loopIndex % $bulkSize) {
                 $this->documentService->flushAndSend($importerContext);
                 $loopIndex = 0;
             }
@@ -198,8 +194,9 @@ class DocumentCommand extends Command
         }
         $this->documentService->flushAndSend($importerContext);
         $progress->finish();
-        $this->io->writeln("");
-        $this->io->writeln("Import done");
+        $this->io->writeln('');
+        $this->io->writeln('Import done');
+
         return 0;
     }
 }

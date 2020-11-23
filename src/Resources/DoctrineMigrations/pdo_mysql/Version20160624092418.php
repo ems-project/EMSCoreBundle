@@ -10,26 +10,20 @@ use Doctrine\DBAL\Schema\Schema;
  */
 class Version20160624092418 extends AbstractMigration
 {
-    /**
-     * @param Schema $schema
-     */
     public function up(Schema $schema)
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf('mysql' != $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('ALTER TABLE template ADD environment_id INT DEFAULT NULL, ADD active TINYINT(1) NOT NULL, ADD role LONGTEXT NOT NULL COMMENT \'(DC2Type:json_array)\', ADD role_to LONGTEXT NOT NULL COMMENT \'(DC2Type:json_array)\', ADD role_cc LONGTEXT NOT NULL COMMENT \'(DC2Type:json_array)\', ADD circles LONGTEXT DEFAULT NULL COMMENT \'(DC2Type:json_array)\', ADD response_template LONGTEXT DEFAULT NULL, DROP recipient');
         $this->addSql('ALTER TABLE template ADD CONSTRAINT FK_97601F83903E3A94 FOREIGN KEY (environment_id) REFERENCES environment (id)');
         $this->addSql('CREATE INDEX IDX_97601F83903E3A94 ON template (environment_id)');
     }
 
-    /**
-     * @param Schema $schema
-     */
     public function down(Schema $schema)
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf('mysql' != $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('ALTER TABLE template DROP FOREIGN KEY FK_97601F83903E3A94');
         $this->addSql('DROP INDEX IDX_97601F83903E3A94 ON template');

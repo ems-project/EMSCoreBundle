@@ -6,9 +6,10 @@ use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
 
 class ContentTypeFieldChoiceLoader implements ChoiceLoaderInterface
 {
+    /** @var ContentTypeFieldChoiceList */
+    private $contentTypeFieldChoiceList;
 
-    /**@var ContentTypeFieldChoiceList*/
-    private $contentTypeFieldChoiceList;public function __construct(array $mapping, array $types, $firstLevelOnly)
+    public function __construct(array $mapping, array $types, $firstLevelOnly)
     {
         $this->contentTypeFieldChoiceList = new ContentTypeFieldChoiceList($mapping, $types, $firstLevelOnly);
     }
@@ -20,7 +21,6 @@ class ContentTypeFieldChoiceLoader implements ChoiceLoaderInterface
     {
         return $this->contentTypeFieldChoiceList;
     }
-
 
     /**
      * {@inheritdoc}
@@ -36,6 +36,7 @@ class ContentTypeFieldChoiceLoader implements ChoiceLoaderInterface
     public function loadChoicesForValues(array $values, $value = null)
     {
         $this->contentTypeFieldChoiceList->loadChoices($values);
+
         return $values;
     }
 
@@ -45,6 +46,7 @@ class ContentTypeFieldChoiceLoader implements ChoiceLoaderInterface
     public function loadValuesForChoices(array $choices, $value = null)
     {
         $this->contentTypeFieldChoiceList->loadChoices($choices);
+
         return $choices;
     }
 }

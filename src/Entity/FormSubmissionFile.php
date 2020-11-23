@@ -110,7 +110,7 @@ class FormSubmissionFile
     }
 
     /**
-     * @return null|resource
+     * @return resource|null
      */
     public function getFile()
     {

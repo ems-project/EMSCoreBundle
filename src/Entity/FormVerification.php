@@ -65,7 +65,7 @@ class FormVerification
         $this->expirationDate = $now->modify(self::EXPIRATION_TIME);
 
         $this->value = $value;
-        $this->code = sprintf("%06d", mt_rand(1, 999999));
+        $this->code = sprintf('%06d', mt_rand(1, 999999));
     }
 
     public function getId(): string

@@ -15,12 +15,10 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class ExtractAssetCommand extends EmsCommand
 {
-
     /** @var AssetExtractorService */
     protected $extractorService;
     /** @var StorageManager */
     protected $storageManager;
-
 
     public function __construct(Logger $logger, Client $client, AssetExtractorService $extractorService, StorageManager $storageManager)
     {
@@ -67,7 +65,7 @@ class ExtractAssetCommand extends EmsCommand
         /** @var SplFileInfo $file */
         foreach ($fileIterator as $file) {
             $realPath = $file->getRealPath();
-            if ($realPath === false) {
+            if (false === $realPath) {
                 $progress->advance();
                 continue;
             }
@@ -79,6 +77,7 @@ class ExtractAssetCommand extends EmsCommand
             $progress->advance();
         }
         $progress->finish();
+
         return 0;
     }
 }

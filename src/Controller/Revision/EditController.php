@@ -69,12 +69,8 @@ class EditController extends AbstractController
             throw new NotFoundException('ContentType not found!');
         }
 
-        if ($revision->getEndTime() && ! $this->isGranted('ROLE_SUPER')) {
-            throw new ElasticmsException($this->translator->trans(
-                'log.data.revision.only_super_can_finalize_an_archive',
-                LoggingContext::read($revision),
-                EMSCoreBundle::TRANS_DOMAIN
-            ));
+        if ($revision->getEndTime() && !$this->isGranted('ROLE_SUPER')) {
+            throw new ElasticmsException($this->translator->trans('log.data.revision.only_super_can_finalize_an_archive', LoggingContext::read($revision), EMSCoreBundle::TRANS_DOMAIN));
         }
 
         if ($request->isMethod('GET') && null != $revision->getAutoSave()) {
@@ -144,7 +140,7 @@ class EditController extends AbstractController
                 }
 
                 if ((isset($requestRevision['publish']) || isset($requestRevision['publish_version']))
-                    && count($form->getErrors()) === 0) {
+                    && 0 === count($form->getErrors())) {
                     if ($revision->getOuuid()) {
                         return $this->redirectToRoute('data.revisions', [
                             'ouuid' => $revision->getOuuid(),
@@ -165,7 +161,7 @@ class EditController extends AbstractController
             //if Save or Discard
             if (!isset($requestRevision['publish']) && !isset($requestRevision['publish_version'])) {
                 if (null != $revision->getOuuid()) {
-                    if (count($form->getErrors()) === 0 && $contentType->isAutoPublish()) {
+                    if (0 === count($form->getErrors()) && $contentType->isAutoPublish()) {
                         $this->publishService->silentPublish($revision);
                     }
 

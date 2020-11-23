@@ -10,36 +10,31 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ObjectPickerType extends Select2Type
 {
-    /**@var ChoiceListFactoryInterface $choiceListFactory*/
+    /** @var ChoiceListFactoryInterface $choiceListFactory */
     private $choiceListFactory;
 
-    
     public function __construct(ChoiceListFactoryInterface $factory)
     {
         $this->choiceListFactory = $factory;
         parent::__construct($factory);
     }
-    
-    
+
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        
         /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'required' => false,
             'dynamicLoading' => true,
             'sortable' => false,
             'with_warning' => true,
             'choice_loader' => function (Options $options) {
-                $loadAll =     $options->offsetGet('dynamicLoading') ? false : true;
-                $circleOnly =     $options->offsetGet('circle-only');
-                $withWarning =     $options->offsetGet('with_warning');
+                $loadAll = $options->offsetGet('dynamicLoading') ? false : true;
+                $circleOnly = $options->offsetGet('circle-only');
+                $withWarning = $options->offsetGet('with_warning');
 
                 return $this->choiceListFactory->createLoader($options->offsetGet('type'), $loadAll, $circleOnly, $withWarning);
             },
@@ -60,15 +55,14 @@ class ObjectPickerType extends Select2Type
                 return $value->getValue();
             },
             'multiple' => false,
-            'type' => null ,
-            'searchId' => null ,
-            'circle-only' => false ,
-
-        ));
+            'type' => null,
+            'searchId' => null,
+            'circle-only' => false,
+        ]);
     }
-    
+
     /**
-     * Returns the choice list factory (getter function)
+     * Returns the choice list factory (getter function).
      *
      * @return ChoiceListFactoryInterface
      */
@@ -76,25 +70,21 @@ class ObjectPickerType extends Select2Type
     {
         return $this->choiceListFactory;
     }
-    
+
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        $view->vars ['attr']['data-type'] = $options['type'];
-        $view->vars ['attr']['data-search-id'] = $options['searchId'];
-        $view->vars ['attr']['data-circle-only'] = $options['circle-only'];
-        $view->vars ['attr']['data-dynamic-loading'] = $options['dynamicLoading'];
-        $view->vars ['attr']['data-sortable'] = $options['sortable'];
+        $view->vars['attr']['data-type'] = $options['type'];
+        $view->vars['attr']['data-search-id'] = $options['searchId'];
+        $view->vars['attr']['data-circle-only'] = $options['circle-only'];
+        $view->vars['attr']['data-dynamic-loading'] = $options['dynamicLoading'];
+        $view->vars['attr']['data-sortable'] = $options['sortable'];
     }
-    
+
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function getBlockPrefix()
     {

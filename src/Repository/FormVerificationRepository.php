@@ -40,7 +40,7 @@ class FormVerificationRepository extends ServiceEntityRepository
             ->andWhere($qb->expr()->gte('fv.expirationDate', ':now'))
             ->setParameters([
                 'value' => $value,
-                'now' => new \DateTimeImmutable()
+                'now' => new \DateTimeImmutable(),
             ]);
 
         $formVerification = $qb->getQuery()->getOneOrNullResult();

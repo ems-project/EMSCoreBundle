@@ -8,7 +8,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class DefaultController extends Controller
 {
-
     /**
      * @return Response
      * @Route("/documentation", name="documentation")
@@ -18,7 +17,6 @@ class DefaultController extends Controller
         // replace this example code with whatever you need
         return $this->render('@EMSCore/default/documentation.html.twig');
     }
-
 
     /**
      * @return Response

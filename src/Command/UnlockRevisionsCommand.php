@@ -81,7 +81,7 @@ final class UnlockRevisionsCommand extends Command
     {
         $this->io = new SymfonyStyle($input, $output);
         $this->io->title('Unlock revisions');
-        $this->all = ($input->getOption(self::OPTION_ALL) === true) ?? false;
+        $this->all = (true === $input->getOption(self::OPTION_ALL)) ?? false;
     }
 
     protected function interact(InputInterface $input, OutputInterface $output): void
@@ -102,7 +102,7 @@ final class UnlockRevisionsCommand extends Command
                 throw new \RuntimeException('Unexpected content type name');
             }
             $contentType = $this->contentTypeService->getByName($name);
-            if ($contentType === false) {
+            if (false === $contentType) {
                 throw new \RuntimeException('Content type not found');
             }
             $this->contentType = $contentType;
@@ -120,10 +120,12 @@ final class UnlockRevisionsCommand extends Command
         } catch (\Exception $e) {
             $this->io->error($e->getMessage());
             $this->logger->error($e->getMessage());
+
             return -1;
         }
 
         $this->io->success(\sprintf('%s revisions have been unlocked', $count));
+
         return 0;
     }
 
@@ -150,6 +152,7 @@ final class UnlockRevisionsCommand extends Command
                 if (empty($user)) {
                     throw new \RuntimeException('User cannot be empty.');
                 }
+
                 return $user;
             }
         );

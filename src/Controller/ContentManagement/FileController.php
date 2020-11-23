@@ -20,7 +20,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class FileController extends AbstractController
 {
-
     /**
      * @Route("/data/file/view/{sha1}" , name="ems.file.view", methods={"GET","HEAD"})
      * @Route("/data/file/view/{sha1}" , name="ems_file_view", methods={"GET","HEAD"})
@@ -45,7 +44,7 @@ class FileController extends AbstractController
     /**
      * @Route("/data/file/extract/forced/{sha1}.{_format}" , name="ems_file_extract_forced", defaults={"_format" = "json"}, methods={"GET","HEAD"})
      */
-    public function extractFileContentForced(AssetExtractorService $assetExtractorService, Request $request, string $sha1) : Response
+    public function extractFileContentForced(AssetExtractorService $assetExtractorService, Request $request, string $sha1): Response
     {
         return $this->extractFileContent($assetExtractorService, $request, $sha1, true);
     }
@@ -53,7 +52,7 @@ class FileController extends AbstractController
     /**
      * @Route("/data/file/extract/{sha1}.{_format}" , name="ems_file_extract", defaults={"_format" = "json"}, methods={"GET","HEAD"})
      */
-    public function extractFileContent(AssetExtractorService $assetExtractorService, Request $request, string $sha1, bool $forced = false) : Response
+    public function extractFileContent(AssetExtractorService $assetExtractorService, Request $request, string $sha1, bool $forced = false): Response
     {
         if ($request->hasSession()) {
             $session = $request->getSession();
@@ -74,16 +73,14 @@ class FileController extends AbstractController
             'data' => $data,
         ]);
         $response->headers->set('Content-Type', 'application/json');
+
         return $response;
     }
 
     /**
      * @param string $sha1
-     * @param int $size
-     * @param bool $apiRoute
-     * @param Request $request
-     * @param FileService $fileService
-     * @param LoggerInterface $logger
+     * @param int    $size
+     *
      * @return Response
      *
      * @Route("/data/file/init-upload/{sha1}/{size}" , name="file.init-upload", defaults={"_format" = "json", "apiRoute"=false}, methods={"POST"})
@@ -108,10 +105,10 @@ class FileController extends AbstractController
         $hash = isset($params['hash']) ? $params['hash'] : $sha1;
         $size = isset($params['size']) ? $params['size'] : $size;
         $algo = isset($params['algo']) ? $params['algo'] : 'sha1';
-        
+
         $user = $this->getUsername();
 
-        if (empty($hash) || empty($algo) || (empty($size) && $size !== 0)) {
+        if (empty($hash) || empty($algo) || (empty($size) && 0 !== $size)) {
             throw new BadRequestHttpException('Bad Request, invalid json parameters');
         }
 
@@ -128,7 +125,6 @@ class FileController extends AbstractController
             ]);
         }
 
-
         return $this->render('@EMSCore/ajax/file.json.twig', [
             'success' => true,
             'asset' => $uploadedAsset,
@@ -139,10 +135,8 @@ class FileController extends AbstractController
     /**
      * @param string $sha1
      * @param string $hash
-     * @param bool $apiRoute
-     * @param Request $request
-     * @param FileService $fileService
-     * @param LoggerInterface $logger
+     * @param bool   $apiRoute
+     *
      * @return Response
      *
      * @Route("/data/file/upload-chunk/{sha1}", name="file.uploadchunk", defaults={"_format" = "json", "hash" = null, "apiRoute"=false}, methods={"POST"})
@@ -186,7 +180,6 @@ class FileController extends AbstractController
     }
 
     /**
-     * @param FileService $fileService
      * @return Response
      *
      * @Route("/images/index", name="ems_images_index", defaults={"_format"="json"}, methods={"GET", "HEAD"})
@@ -195,15 +188,13 @@ class FileController extends AbstractController
     public function indexImagesAction(FileService $fileService)
     {
         $images = $fileService->getImages();
+
         return $this->render('@EMSCore/ajax/images.json.twig', [
             'images' => $images,
         ]);
     }
 
     /**
-     * @param Request $request
-     * @param FileService $fileService
-     * @param LoggerInterface $logger
      * @return Response
      *
      * @Route("/file/upload", name="ems_image_upload_url", defaults={"_format"="json"}, methods={"POST"})
@@ -211,14 +202,14 @@ class FileController extends AbstractController
      */
     public function uploadFileAction(Request $request, FileService $fileService, LoggerInterface $logger)
     {
-        /**@var UploadedFile $file */
+        /** @var UploadedFile $file */
         $file = $request->files->get('upload');
         $type = $request->get('type', false);
 
         if ($file && !$file->getError()) {
             $name = $file->getClientOriginalName();
 
-            if ($type === false) {
+            if (false === $type) {
                 try {
                     $type = $file->getMimeType();
                 } catch (Exception $e) {
@@ -241,19 +232,19 @@ class FileController extends AbstractController
                 ]);
             }
 
-
             return $this->render('@EMSCore/ajax/multipart.json.twig', [
                 'success' => true,
                 'asset' => $uploadedAsset,
             ]);
-        } else if ($file->getError()) {
+        } elseif ($file->getError()) {
             $logger->warning('log.file.upload_error', [
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $file->getError()
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $file->getError(),
             ]);
             $this->render('@EMSCore/ajax/notification.json.twig', [
                 'success' => false,
             ]);
         }
+
         return $this->render('@EMSCore/ajax/notification.json.twig', [
             'success' => false,
         ]);
@@ -263,8 +254,9 @@ class FileController extends AbstractController
     {
         $userObject = $this->getUser();
         if (!$userObject instanceof UserInterface) {
-            throw new \RuntimeException(sprintf('Unexpected User class %s', $userObject === null ? 'null' : get_class($userObject)));
+            throw new \RuntimeException(sprintf('Unexpected User class %s', null === $userObject ? 'null' : get_class($userObject)));
         }
+
         return $userObject->getUsername();
     }
 }

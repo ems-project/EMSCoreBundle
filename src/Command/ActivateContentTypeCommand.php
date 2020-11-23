@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command;
 
 use EMS\CommonBundle\Helper\EmsFields;
@@ -22,7 +24,7 @@ class ActivateContentTypeCommand extends Command
     protected $contentTypeService;
     /** @var SymfonyStyle */
     private $io;
-    /**@var LoggerInterface */
+    /** @var LoggerInterface */
     private $logger;
     /** @var bool */
     private $deactivate;
@@ -78,7 +80,7 @@ class ActivateContentTypeCommand extends Command
         foreach ($types as $type) {
             try {
                 $contentType = $this->contentTypeService->getByName($type);
-                if ($contentType === false) {
+                if (false === $contentType) {
                     throw new \RuntimeException('Content Type not found');
                 }
                 if ($contentType->getDirty() && !$this->deactivate && !$force) {
@@ -95,6 +97,7 @@ class ActivateContentTypeCommand extends Command
                 $this->io->error($e->getMessage());
             }
         }
+
         return 0;
     }
 
@@ -105,16 +108,16 @@ class ActivateContentTypeCommand extends Command
 
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
-        $this->deactivate = $input->getOption(self::DEACTIVATE) === true;
+        $this->deactivate = true === $input->getOption(self::DEACTIVATE);
         $this->io->title($this->deactivate ? 'Deactivate contenttypes' : 'Activate contenttypes');
         $this->io->section('Checking input');
 
         $types = $input->getArgument(self::ARGUMENT_CONTENTTYPES);
-        if ($types === null || \is_string($types)) {
+        if (null === $types || \is_string($types)) {
             throw new \RuntimeException('Unexpected content type names');
         }
 
-        if (!$input->getOption(self::OPTION_ALL) && count($types) == 0) {
+        if (!$input->getOption(self::OPTION_ALL) && 0 == count($types)) {
             $this->chooseTypes($input, $output);
         }
 

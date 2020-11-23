@@ -2,38 +2,35 @@
 
 namespace EMS\CoreBundle\Form\DataField;
 
+use EMS\CoreBundle\Entity\DataField;
+use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use EMS\CoreBundle\Entity\DataField;
-use EMS\CoreBundle\Entity\FieldType;
-            
+
 /**
  * Defined a Container content type.
  * It's used to logically groups subfields together. However a Container is invisible in Elastic search.
  *
  * @author Mathieu De Keyzer <ems@theus.be>
- *
  */
 class TextareaFieldType extends DataFieldType
 {
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function getLabel()
     {
         return 'Textarea field';
     }
-    
+
     /**
-     * Get a icon to visually identify a FieldType
+     * Get a icon to visually identify a FieldType.
      *
      * @return string
      */
@@ -48,18 +45,17 @@ class TextareaFieldType extends DataFieldType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         /** @var FieldType $fieldType */
-        $fieldType = $builder->getOptions() ['metadata'];
+        $fieldType = $builder->getOptions()['metadata'];
         $builder->add('value', TextareaType::class, [
                 'attr' => [
                         'rows' => $options['rows'],
                         'placeholder' => $options['placeholder'],
                 ],
-                'label' => (null != $options ['label'] ? $options ['label'] : $fieldType->getName()),
+                'label' => (null != $options['label'] ? $options['label'] : $fieldType->getName()),
                 'required' => false,
                 'disabled' => $this->isDisabled($options),
         ]);
     }
-
 
     /**
      * {@inheritdoc}
@@ -68,9 +64,9 @@ class TextareaFieldType extends DataFieldType
     {
         /*get options for twig context*/
         parent::buildView($view, $form, $options);
-        $view->vars ['icon'] = $options ['icon'];
+        $view->vars['icon'] = $options['icon'];
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -82,17 +78,15 @@ class TextareaFieldType extends DataFieldType
         $resolver->setDefault('rows', null);
         $resolver->setDefault('placeholder', null);
     }
-    
+
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options)
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
-        
+
         // String specific mapping options
         $optionsForm->get('mappingOptions')
         ->add('analyzer', AnalyzerPickerType::class)
@@ -105,37 +99,38 @@ class TextareaFieldType extends DataFieldType
             'required' => false,
         ]);
     }
-    
-    
+
     /**
+     * {@inheritdoc}
      *
-     * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::getBlockPrefix()
      */
     public function getBlockPrefix()
     {
         return 'bypassdatafield';
     }
-    
+
     /**
+     * {@inheritdoc}
      *
-     * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
      */
     public function viewTransform(DataField $dataField)
     {
         $out = parent::viewTransform($dataField);
+
         return ['value' => $out];
     }
-    
+
     /**
+     * {@inheritdoc}
      *
-     * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
      */
     public function reverseViewTransform($data, FieldType $fieldType)
     {
         $value = $data['value'];
+
         return parent::reverseViewTransform($value, $fieldType);
     }
 }

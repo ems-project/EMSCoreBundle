@@ -1,11 +1,12 @@
 <?php
+
 namespace EMS\CoreBundle\Entity\Form;
 
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 
 /**
- * SearchFilter
+ * SearchFilter.
  *
  * @ORM\Table(name="search_filter")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\SearchFilterRepository")
@@ -26,37 +27,37 @@ class SearchFilter implements JsonSerializable
      * @ORM\JoinColumn(name="search_id", referencedColumnName="id")
      */
     private $search;
-    
+
     /**
-     * @var string $pattern
+     * @var string
      *
      * @ORM\Column(name="pattern", type="string", length=200, nullable=true)
      */
     public $pattern;
-    
+
     /**
-     * @var string $field
+     * @var string
      *
      * @ORM\Column(name="field", type="string", length=100, nullable=true)
      */
     public $field;
-    
+
     /**
-     * @var string $booleanClause
+     * @var string
      *
      * @ORM\Column(name="boolean_clause", type="string", length=20, nullable=true)
      */
     public $booleanClause;
-    
+
     /**
-     * @var string $operator
+     * @var string
      *
      * @ORM\Column(name="operator", type="string", length=50)
      */
     public $operator;
-    
+
     /**
-     * @var float $boost
+     * @var float
      *
      * @ORM\Column(name="boost", type="decimal", scale=2, nullable=true)
      */
@@ -64,7 +65,7 @@ class SearchFilter implements JsonSerializable
 
     public function __construct()
     {
-        $this->operator = "query_and";
+        $this->operator = 'query_and';
     }
 
     public function jsonSerialize()
@@ -83,51 +84,51 @@ class SearchFilter implements JsonSerializable
         $out = false;
         if ($this->field || $this->pattern) {
             $field = $this->field;
-            
+
             switch ($this->operator) {
                 case 'match_and':
                     $out = [
-                        "match" => [
-                            $field ? $field : "_all" => [
-                                "query" =>  $this->pattern ?? "",
-                                "operator" => "AND",
-                                "boost" => $this->boost ?? 1,
-                            ]
-                        ]
+                        'match' => [
+                            $field ? $field : '_all' => [
+                                'query' => $this->pattern ?? '',
+                                'operator' => 'AND',
+                                'boost' => $this->boost ?? 1,
+                            ],
+                        ],
                     ];
                     break;
                 case 'match_phrase':
                     $out = [
-                        "match_phrase" => [
-                            $field ?? "_all" => $this->pattern ?? ""
-                        ]
+                        'match_phrase' => [
+                            $field ?? '_all' => $this->pattern ?? '',
+                        ],
                     ];
                     break;
                 case 'match_phrase_prefix':
                     $out = [
-                        "match_phrase_prefix" => [
-                            $field ?? "_all" => [ "query" => $this->pattern ?? ""]
-                        ]
+                        'match_phrase_prefix' => [
+                            $field ?? '_all' => ['query' => $this->pattern ?? ''],
+                        ],
                     ];
                     break;
                 case 'match_or':
                     $out = [
-                        "match" => [
-                                $field ?? "_all" => [
-                                "query" =>  $this->pattern ? $this->pattern : "",
-                                "operator" => "OR",
-                                "boost" => $this->boost ?? 1,
-                                ]
-                        ]
+                        'match' => [
+                                $field ?? '_all' => [
+                                'query' => $this->pattern ? $this->pattern : '',
+                                'operator' => 'OR',
+                                'boost' => $this->boost ?? 1,
+                                ],
+                        ],
                     ];
                     break;
                 case 'query_and':
                     $out = [
-                        "query_string" => [
-                            "query" =>  $this->pattern ?? "*",
-                            "default_operator" => "AND",
-                            "boost" => $this->boost ?? 1,
-                        ]
+                        'query_string' => [
+                            'query' => $this->pattern ?? '*',
+                            'default_operator' => 'AND',
+                            'boost' => $this->boost ?? 1,
+                        ],
                     ];
                     if (!empty($field)) {
                         $out['query_string']['default_field'] = $field;
@@ -135,11 +136,11 @@ class SearchFilter implements JsonSerializable
                     break;
                 case 'query_or':
                     $out = [
-                        "query_string" => [
-                            "query" =>  $this->pattern ?? "*",
-                            "default_operator" => "OR",
-                            "boost" => $this->boost ?? 1,
-                        ]
+                        'query_string' => [
+                            'query' => $this->pattern ?? '*',
+                            'default_operator' => 'OR',
+                            'boost' => $this->boost ?? 1,
+                        ],
                     ];
                     if (!empty($field)) {
                         $out['query_string']['default_field'] = $field;
@@ -147,31 +148,31 @@ class SearchFilter implements JsonSerializable
                     break;
                 case 'term':
                     $out = [
-                        "term" => [
-                            $field ? $field : "_all" => [
-                                "value" => $this->pattern ?? "*",
-                                "boost" => $this->boost ?? 1,
-                            ]
-                        ]
+                        'term' => [
+                            $field ? $field : '_all' => [
+                                'value' => $this->pattern ?? '*',
+                                'boost' => $this->boost ?? 1,
+                            ],
+                        ],
                     ];
                     break;
                 case 'prefix':
                     $out = [
-                        "prefix" => [
-                            $field ? $field : "_all" => [
-                                "value" => $this->pattern ?? "*",
-                            ]
-                        ]
+                        'prefix' => [
+                            $field ? $field : '_all' => [
+                                'value' => $this->pattern ?? '*',
+                            ],
+                        ],
                     ];
                     break;
             }
         }
-        
+
         return $out;
     }
 
     /**
-     * Get pattern
+     * Get pattern.
      *
      * @return string
      */
@@ -182,16 +183,18 @@ class SearchFilter implements JsonSerializable
 
     /**
      * @param string $pattern
+     *
      * @return SearchFilter
      */
     public function setPattern($pattern)
     {
         $this->pattern = $pattern;
+
         return $this;
     }
 
     /**
-     * Get field
+     * Get field.
      *
      * @return string
      */
@@ -199,20 +202,23 @@ class SearchFilter implements JsonSerializable
     {
         return $this->field;
     }
+
     /**
-     * Set field
+     * Set field.
      *
      * @param string $field
+     *
      * @return SearchFilter
      */
     public function setField($field)
     {
         $this->field = $field;
+
         return $this;
     }
 
     /**
-     * Get operator
+     * Get operator.
      *
      * @return string
      */
@@ -220,19 +226,21 @@ class SearchFilter implements JsonSerializable
     {
         return $this->operator;
     }
+
     /**
-     * Set operator
+     * Set operator.
      *
      * @param string $operator
      */
     public function setOperator($operator)
     {
         $this->operator = $operator;
+
         return $this;
     }
 
     /**
-     * Get boost
+     * Get boost.
      *
      * @return float
      */
@@ -240,22 +248,23 @@ class SearchFilter implements JsonSerializable
     {
         return $this->boost;
     }
+
     /**
-     * Set boost
+     * Set boost.
      *
      * @param float $boost
      */
     public function setBoost($boost)
     {
         $this->boost = $boost;
+
         return $this;
     }
-    
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -263,7 +272,7 @@ class SearchFilter implements JsonSerializable
     }
 
     /**
-     * Set search
+     * Set search.
      *
      * @param \EMS\CoreBundle\Entity\Form\Search $search
      *
@@ -277,7 +286,7 @@ class SearchFilter implements JsonSerializable
     }
 
     /**
-     * Get search
+     * Get search.
      *
      * @return \EMS\CoreBundle\Entity\Form\Search
      */
@@ -287,7 +296,7 @@ class SearchFilter implements JsonSerializable
     }
 
     /**
-     * Set booleanClause
+     * Set booleanClause.
      *
      * @param string $booleanClause
      *
@@ -301,7 +310,7 @@ class SearchFilter implements JsonSerializable
     }
 
     /**
-     * Get booleanClause
+     * Get booleanClause.
      *
      * @return string
      */

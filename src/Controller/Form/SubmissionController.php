@@ -6,7 +6,6 @@ namespace EMS\CoreBundle\Controller\Form;
 
 use EMS\CoreBundle\Form\Submission\ProcessType;
 use EMS\CoreBundle\Service\Form\Submission\FormSubmissionService;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;

@@ -24,7 +24,7 @@ class Settings
             'analysis' => [
                 'filter' => $this->filters,
                 'analyzer' => $this->analyzers,
-            ]
+            ],
         ];
     }
 
@@ -99,7 +99,7 @@ class Settings
 
         return $this;
     }
-    
+
     private function createCustomAnalyzer(array $filters): array
     {
         return [

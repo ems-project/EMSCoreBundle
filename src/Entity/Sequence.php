@@ -5,7 +5,7 @@ namespace EMS\CoreBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Analyzer
+ * Analyzer.
  *
  * @ORM\Table(name="sequence")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\SequenceRepository")
@@ -21,7 +21,7 @@ class Sequence
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-    
+
     /**
      * @var string
      *
@@ -42,31 +42,28 @@ class Sequence
      * @ORM\Column(name="modified", type="datetime")
      */
     private $modified;
-    
+
     /**
      * @var int
      *
      * @ORM\Column(name="value", type="integer", nullable=false)
-     *
      */
     private $value;
-    
+
     /**
      * @var int
      *
      * @ORM\Version @ORM\Column(name="version", type="integer", nullable=false)
-     *
      */
     private $version;
-    
-    
+
     public function __construct($name)
     {
         $this->value = 1;
         $this->version = 0;
         $this->name = $name;
     }
-    
+
     /**
      * @ORM\PrePersist
      * @ORM\PreUpdate
@@ -80,9 +77,8 @@ class Sequence
         }
     }
 
-
     /**
-     * Get id
+     * Get id.
      *
      * @return int
      */
@@ -90,9 +86,9 @@ class Sequence
     {
         return $this->id;
     }
-    
+
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
      *
@@ -101,12 +97,12 @@ class Sequence
     public function setName($name)
     {
         $this->name = $name;
-        
+
         return $this;
     }
-    
+
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -116,7 +112,7 @@ class Sequence
     }
 
     /**
-     * Set created
+     * Set created.
      *
      * @param \DateTime $created
      *
@@ -130,7 +126,7 @@ class Sequence
     }
 
     /**
-     * Get created
+     * Get created.
      *
      * @return \DateTime
      */
@@ -140,7 +136,7 @@ class Sequence
     }
 
     /**
-     * Set modified
+     * Set modified.
      *
      * @param \DateTime $modified
      *
@@ -154,7 +150,7 @@ class Sequence
     }
 
     /**
-     * Get modified
+     * Get modified.
      *
      * @return \DateTime
      */
@@ -162,46 +158,47 @@ class Sequence
     {
         return $this->modified;
     }
-    
+
     /**
-     * Set value
+     * Set value.
      *
-     * @param integer $value
+     * @param int $value
      *
      * @return Sequence
      */
     public function setValue($value)
     {
         $this->value = $value;
-        
+
         return $this;
     }
-    
+
     /**
-     * Get value
+     * Get value.
      *
-     * @return integer
+     * @return int
      */
     public function getValue()
     {
         return $this->value;
     }
-    
+
     /**
-     * inc
+     * inc.
      *
-     * @return integer
+     * @return int
      */
     public function inc()
     {
         $this->value = $this->value + 1;
+
         return $this->value;
     }
-    
+
     /**
-     * Get version
+     * Get version.
      *
-     * @return integer
+     * @return int
      */
     public function getVersion()
     {

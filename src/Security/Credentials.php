@@ -13,14 +13,14 @@ class Credentials
     {
     }
 
-    public static function usernamePasswordToken(Request$request, string $providerKey): UsernamePasswordToken
+    public static function usernamePasswordToken(Request $request, string $providerKey): UsernamePasswordToken
     {
         $loginInfo = \json_decode((string) $request->getContent(), true);
 
         $username = $loginInfo['username'] ?? '';
         $password = $loginInfo['password'] ?? '';
 
-        if ($username === '' || $password === '') {
+        if ('' === $username || '' === $password) {
             throw new \RuntimeException('Username and Password should be provided and different from ""');
         }
 

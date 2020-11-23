@@ -5,7 +5,7 @@ namespace EMS\CoreBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Sessions
+ * Sessions.
  *
  * @ORM\Table(name="session")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\SessionRepository")
@@ -28,14 +28,12 @@ class Session
      */
     private $data;
 
-
     /**
      * @var int
      *
      * @ORM\Column(name="time", type="integer", options={"unsigned":true})
      */
     private $time;
-
 
     /**
      * @var int
@@ -44,21 +42,15 @@ class Session
      */
     private $lifetime;
 
-    /**
-     * @return string
-     */
     public function getId(): string
     {
         return $this->id;
     }
 
-    /**
-     * @param string $id
-     * @return Session
-     */
     public function setId(string $id): Session
     {
         $this->id = $id;
+
         return $this;
     }
 
@@ -72,47 +64,35 @@ class Session
 
     /**
      * @param resource $data
-     * @return Session
      */
     public function setData($data): Session
     {
         $this->data = $data;
+
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getTime(): int
     {
         return $this->time;
     }
 
-    /**
-     * @param int $time
-     * @return Session
-     */
     public function setTime(int $time): Session
     {
         $this->time = $time;
+
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getLifetime(): int
     {
         return $this->lifetime;
     }
 
-    /**
-     * @param int $lifetime
-     * @return Session
-     */
     public function setLifetime(int $lifetime): Session
     {
         $this->lifetime = $lifetime;
+
         return $this;
     }
 }

@@ -44,7 +44,7 @@ final class CopyContextFactory
     {
         $decoded = \json_decode($json, true);
 
-        if (null === $decoded || json_last_error() !== JSON_ERROR_NONE) {
+        if (null === $decoded || JSON_ERROR_NONE !== json_last_error()) {
             throw new \InvalidArgumentException(sprintf('Invalid JSON %s (%s)', $json, json_last_error_msg()));
         }
 

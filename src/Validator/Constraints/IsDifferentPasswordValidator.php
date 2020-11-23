@@ -13,7 +13,7 @@ class IsDifferentPasswordValidator extends ConstraintValidator
      */
     public function validate($value, $constraint): bool
     {
-        if (! $constraint instanceof IsDifferentPassword) {
+        if (!$constraint instanceof IsDifferentPassword) {
             return false;
         }
 
@@ -25,6 +25,7 @@ class IsDifferentPasswordValidator extends ConstraintValidator
         $new = $_POST['fos_user_change_password_form']['plainPassword']['first'];
         if ($old === $new) {
             $this->context->addViolation($constraint->message);
+
             return false;
         }
 

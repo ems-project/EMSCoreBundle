@@ -58,7 +58,7 @@ class DateTimeFieldType extends DataFieldType
                 'data-date-format' => $fieldType->getDisplayOption('displayFormat', 'D/MM/YYYY HH:mm:ss'),
                 'data-date-days-of-week-disabled' => sprintf('[%s]', $fieldType->getDisplayOption('daysOfWeekDisabled')),
                 'data-date-disabled-hours' => sprintf('[%s]', $fieldType->getDisplayOption('hoursDisabled')),
-            ]
+            ],
         ]);
     }
 
@@ -73,7 +73,7 @@ class DateTimeFieldType extends DataFieldType
             $current->getName() => array_merge(
                 ['type' => 'date', 'format' => 'date_time_no_millis'],
                 array_filter($current->getMappingOptions())
-            )
+            ),
         ];
     }
 
@@ -113,7 +113,7 @@ class DateTimeFieldType extends DataFieldType
      */
     public function viewTransform(DataField $dataField): array
     {
-        $data =  parent::viewTransform($dataField);
+        $data = parent::viewTransform($dataField);
         $value = null;
 
         if (is_string($data) && '' !== $data) {

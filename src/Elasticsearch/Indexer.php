@@ -15,11 +15,6 @@ class Indexer
     /** @var LoggerInterface */
     private $logger;
 
-    /**
-     * @param Factory         $factory
-     * @param array           $options
-     * @param LoggerInterface $logger
-     */
     public function __construct(Factory $factory, array $options, LoggerInterface $logger)
     {
         $this->factory = $factory;
@@ -30,6 +25,7 @@ class Indexer
     public function setLogger(LoggerInterface $logger): Indexer
     {
         $this->logger = $logger;
+
         return $this;
     }
 

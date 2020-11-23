@@ -24,19 +24,19 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DeleteCommand extends Command
 {
-    /** @var Client  */
+    /** @var Client */
     protected $client;
-    /** @var Mapping  */
+    /** @var Mapping */
     protected $mapping;
-    /** @var Registry  */
+    /** @var Registry */
     protected $doctrine;
-    /** @var Logger  */
+    /** @var Logger */
     protected $logger;
-    /** @var ContainerInterface  */
+    /** @var ContainerInterface */
     protected $container;
-    /**@var ContentTypeService*/
+    /** @var ContentTypeService */
     private $contentTypeService;
-    /**@var EnvironmentService*/
+    /** @var EnvironmentService */
     private $environmentService;
 
     public function __construct(Registry $doctrine, Logger $logger, Client $client, Mapping $mapping, ContainerInterface $container, ContentTypeService $contentTypeService, EnvironmentService $environmentService)
@@ -50,7 +50,7 @@ class DeleteCommand extends Command
         $this->environmentService = $environmentService;
         parent::__construct();
     }
-    
+
     protected function configure(): void
     {
         $this
@@ -65,10 +65,9 @@ class DeleteCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
-        /** @var  Client $client */
+        /** @var Client $client */
         $client = $this->client;
         $name = $input->getArgument('name');
         if (!\is_string($name)) {
@@ -79,12 +78,12 @@ class DeleteCommand extends Command
         /** @var ContentType|null $contentType */
         $contentType = $ctRepo->findOneBy([
                 'name' => $name,
-                'deleted' => 0
-                
+                'deleted' => 0,
         ]);
 
         if (!$contentType instanceof ContentType) {
-            $output->writeln("Content type " . $name . " not found");
+            $output->writeln('Content type '.$name.' not found');
+
             return -1;
         }
 
@@ -96,21 +95,21 @@ class DeleteCommand extends Command
 
         $counter = 0;
         $total = $revRepo->countByContentType($contentType);
-        if ($total == 0) {
-            $output->writeln("Content type \"" . $name . "\" is already empty");
+        if (0 == $total) {
+            $output->writeln('Content type "'.$name.'" is already empty');
         } else {
             $progress = new ProgressBar($output, $total);
             $progress->start();
 
             $environmentsIndex = [];
-            /**@var Environment $environment*/
+            /** @var Environment $environment */
             foreach ($this->environmentService->getManagedEnvironement() as $environment) {
                 $environmentsIndex[$environment->getName()] = $this->contentTypeService->getIndex($contentType, $environment);
             }
 
             while ($revRepo->countByContentType($contentType) > 0) {
                 $revisions = $revRepo->findByContentType($contentType, null, 20);
-                /**@var Revision $revision */
+                /** @var Revision $revision */
                 foreach ($revisions as $revision) {
                     foreach ($revision->getEnvironments() as $environment) {
                         try {
@@ -141,8 +140,9 @@ class DeleteCommand extends Command
             }
 
             $progress->finish();
-            $output->writeln(" deleting content type " . $name);
+            $output->writeln(' deleting content type '.$name);
         }
+
         return 0;
     }
 }

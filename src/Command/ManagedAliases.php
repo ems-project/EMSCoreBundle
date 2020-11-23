@@ -12,9 +12,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ManagedAliases extends ContainerAwareCommand
 {
-    /** @var Logger  */
+    /** @var Logger */
     protected $logger;
-    /** @var AliasService  */
+    /** @var AliasService */
     protected $aliasService;
 
     public function __construct(Logger $logger, AliasService $aliasService)
@@ -23,7 +23,7 @@ class ManagedAliases extends ContainerAwareCommand
         $this->aliasService = $aliasService;
         parent::__construct();
     }
-    
+
     protected function configure(): void
     {
         $this
@@ -45,6 +45,7 @@ class ManagedAliases extends ContainerAwareCommand
                 }
             }
         }
+
         return 0;
     }
 }

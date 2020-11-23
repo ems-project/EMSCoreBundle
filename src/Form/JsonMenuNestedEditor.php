@@ -12,13 +12,13 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormView;
 
 /**
- * Dto object for passing the nested to forms to the view layer
+ * Dto object for passing the nested to forms to the view layer.
  */
 final class JsonMenuNestedEditor
 {
     /** @var FieldType */
     private $fieldType;
-    /** @var FormFactoryInterface  */
+    /** @var FormFactoryInterface */
     private $formFactory;
 
     public function __construct(FieldType $fieldType, FormFactoryInterface $formFactory)
@@ -67,7 +67,7 @@ final class JsonMenuNestedEditor
             foreach ($node->getChildren() as $nodeChild) {
                 $form->add($nodeChild->getName(), $nodeChild->getType(), array_merge([
                     'metadata' => $nodeChild,
-                    'mapped' => false
+                    'mapped' => false,
                 ], $nodeChild->getDisplayOptions()));
             }
 
@@ -110,10 +110,10 @@ final class JsonMenuNestedEditor
             }
         }
 
-        if (\count($out) === 0) {
+        if (0 === \count($out)) {
             $formPath = sprintf('%s[%s]', $formName, implode('][', $path));
 
-            if ($fieldType->getType() === DataLinkFieldType::class) {
+            if (DataLinkFieldType::class === $fieldType->getType()) {
                 $formPath .= '[value]';
             }
 

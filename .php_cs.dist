@@ -12,7 +12,7 @@ $finder = PhpCsFixer\Finder::create()
 
 return PhpCsFixer\Config::create()
     ->setRules([
-        //'@Symfony' => true,
+        '@Symfony' => true,
         //'declare_strict_types' => true,
         //'final_class' => true,
         //'native_function_invocation' => true

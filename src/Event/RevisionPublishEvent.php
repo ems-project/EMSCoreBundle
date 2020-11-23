@@ -1,12 +1,10 @@
 <?php
+
 namespace EMS\CoreBundle\Event;
 
-use Symfony\Component\EventDispatcher\Event;
-use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\Revision;
 
-/**
- */
 class RevisionPublishEvent extends RevisionEvent
 {
     const NAME = 'revision.publish';

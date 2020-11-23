@@ -1,6 +1,5 @@
 <?php
 
-
 namespace EMS\CoreBundle\Service;
 
 use EMS\CommonBundle\Elasticsearch\Document\Document;
@@ -16,13 +15,13 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class ObjectChoiceCacheService
 {
-    /** @var LoggerInterface $logger*/
+    /** @var LoggerInterface */
     private $logger;
-    /** @var ContentTypeService $contentTypeService*/
+    /** @var ContentTypeService */
     private $contentTypeService;
-    /** @var AuthorizationCheckerInterface $authorizationChecker*/
+    /** @var AuthorizationCheckerInterface */
     protected $authorizationChecker;
-    /** @var TokenStorageInterface $tokenStorage*/
+    /** @var TokenStorageInterface */
     protected $tokenStorage;
     /** @var ElasticaService */
     private $elasticaService;
@@ -59,9 +58,9 @@ class ObjectChoiceCacheService
 
         $cts = \explode(',', $types);
         foreach ($cts as $type) {
-            if (! ($this->fullyLoaded[$type] ?? false)) {
+            if (!($this->fullyLoaded[$type] ?? false)) {
                 $currentType = $this->contentTypeService->getByName($type);
-                if ($currentType !== false) {
+                if (false !== $currentType) {
                     $index = $this->contentTypeService->getIndex($currentType);
 
                     if ($circleOnly && !$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT')) {
@@ -82,8 +81,8 @@ class ObjectChoiceCacheService
                         $search->setSort([
                             $currentType->getOrderField() => [
                                 'order' => 'asc',
-                                'missing' => "_last",
-                            ]
+                                'missing' => '_last',
+                            ],
                         ]);
                     }
                     if ($currentType->getLabelField()) {
@@ -94,7 +93,7 @@ class ObjectChoiceCacheService
 
                     foreach ($scroll as $resultSet) {
                         foreach ($resultSet as $result) {
-                            if ($result === false) {
+                            if (false === $result) {
                                 continue;
                             }
                             $hitDocument = Document::fromResult($result);
@@ -114,8 +113,8 @@ class ObjectChoiceCacheService
                 $this->fullyLoaded[$type] = true;
             } else {
                 foreach ($this->cache[$type] as $id => $item) {
-                    if (!isset($choices[$type . ':' . $id])) {
-                        $choices[$type . ':' . $id] = $item;
+                    if (!isset($choices[$type.':'.$id])) {
+                        $choices[$type.':'.$id] = $item;
                     }
                 }
             }
@@ -124,6 +123,7 @@ class ObjectChoiceCacheService
 
     /**
      * @param string[] $objectIds
+     *
      * @return ObjectChoiceListItem[]
      */
     public function load(array $objectIds, bool $circleOnly = false, bool $withWarning = true): array
@@ -131,7 +131,7 @@ class ObjectChoiceCacheService
         $choices = [];
         $missingOuuidsPerIndexAndType = [];
         foreach ($objectIds as $objectId) {
-            if (\is_string($objectId) && \strpos($objectId, ':') !== false) {
+            if (\is_string($objectId) && false !== \strpos($objectId, ':')) {
                 list($objectType, $objectOuuid) = \explode(':', $objectId);
                 if (!isset($this->cache[$objectType])) {
                     $this->cache[$objectType] = [];
@@ -159,7 +159,7 @@ class ObjectChoiceCacheService
                     }
                 }
             } else {
-                if (null !== $objectId && $objectId !== "" && $withWarning) {
+                if (null !== $objectId && '' !== $objectId && $withWarning) {
                     $this->logger->warning('service.object_choice_cache.object_key_not_found', [
                         'object_key' => $objectId,
                     ]);
@@ -172,12 +172,12 @@ class ObjectChoiceCacheService
             $sourceField = [];
             foreach ($missingOuuidsPerType as $type => $ouuids) {
                 $ouuidsQuery = $this->elasticaService->filterByContentTypes($this->elasticaService->getTermsQuery('_id', $ouuids), [$type]);
-                if ($ouuidsQuery !== null) {
+                if (null !== $ouuidsQuery) {
                     $boolQuery->addShould($ouuidsQuery);
                 }
 
                 $contentType = $this->contentTypeService->getByName($type);
-                if ($contentType !== false && !empty($contentType->getLabelField()) && !\in_array($contentType->getLabelField(), $sourceField)) {
+                if (false !== $contentType && !empty($contentType->getLabelField()) && !\in_array($contentType->getLabelField(), $sourceField)) {
                     $sourceField[] = $contentType->getLabelField();
                 }
             }
@@ -186,16 +186,15 @@ class ObjectChoiceCacheService
             $search = new Search([$indexName], $boolQuery);
             $search->setSources($sourceField);
 
-
             $scroll = $this->elasticaService->scroll($search);
             foreach ($scroll as $resultSet) {
                 foreach ($resultSet as $result) {
-                    if ($result === false) {
+                    if (false === $result) {
                         continue;
                     }
                     $document = Document::fromResult($result);
                     $contentType = $this->contentTypeService->getByName($document->getContentType());
-                    if ($contentType === false) {
+                    if (false === $contentType) {
                         continue;
                     }
                     $listItem = new ObjectChoiceListItem($document, $contentType);
@@ -204,6 +203,7 @@ class ObjectChoiceCacheService
                 }
             }
         }
+
         return $choices;
     }
 }

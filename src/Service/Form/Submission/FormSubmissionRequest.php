@@ -42,7 +42,7 @@ final class FormSubmissionRequest
         $this->files = $submit['files'];
         $this->label = $submit['label'] ?? '';
         $formattedDate = \DateTime::createFromFormat('c', $submit['expire_date']);
-        $this->expireDate = $formattedDate != false ? $formattedDate : null;
+        $this->expireDate = false != $formattedDate ? $formattedDate : null;
     }
 
     public function getFormName(): string

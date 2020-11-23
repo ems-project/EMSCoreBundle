@@ -12,17 +12,14 @@ class AlignIndexesType extends SelectPickerType
      * @var AliasService
      */
     private $aliasService;
-    
-    /**
-     * @param AliasService $aliasService
-     */
+
     public function __construct(AliasService $aliasService)
     {
         parent::__construct();
-        
+
         $this->aliasService = $aliasService;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -30,12 +27,12 @@ class AlignIndexesType extends SelectPickerType
     {
         $managedAliases = $this->aliasService->getManagedAliases();
         $choices = [];
-        
+
         foreach ($managedAliases as $managedAlias) {
             /* @var $managedAlias ManagedAlias */
             $choices[$managedAlias->getName()] = $managedAlias;
         }
-        
+
         $resolver->setDefaults([
             'mapped' => false,
             'required' => false,
@@ -45,12 +42,12 @@ class AlignIndexesType extends SelectPickerType
             'choices' => array_keys($choices),
             'choice_attr' => function ($name) use ($choices) {
                 $managedAlias = $choices[$name];
-            
+
                 return [
-                    'data-indexes' => '["' . implode('", "', array_keys($managedAlias->getIndexes())) . '"]',
-                    'data-content' => '<span class="text-' . $managedAlias->getColor() . '"><i class="fa fa-code-fork"></i>&nbsp;&nbsp;' . $managedAlias->getName() . '</span>'
+                    'data-indexes' => '["'.implode('", "', array_keys($managedAlias->getIndexes())).'"]',
+                    'data-content' => '<span class="text-'.$managedAlias->getColor().'"><i class="fa fa-code-fork"></i>&nbsp;&nbsp;'.$managedAlias->getName().'</span>',
                 ];
-            }
+            },
         ]);
     }
 }

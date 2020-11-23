@@ -8,7 +8,7 @@ use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Form\Field\AnalyzerOptionsType;
 
 /**
- * Analyzer
+ * Analyzer.
  *
  * @ORM\Table(name="analyzer")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\AnalyzerRepository")
@@ -24,28 +24,28 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, unique=true)
      */
     protected $name;
-    
+
     /**
      * @var bool
      *
      * @ORM\Column(name="dirty", type="boolean")
      */
     protected $dirty;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="label", type="string", length=255)
      */
     protected $label;
-    
+
     /**
      * @var array
      *
@@ -66,21 +66,20 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable
      * @ORM\Column(name="modified", type="datetime")
      */
     protected $modified;
-    
+
     /**
      * @var int
      *
      * @ORM\Column(name="order_key", type="integer", nullable=true)
      */
     protected $orderKey;
-    
-    
+
     public function __construct()
     {
         $this->options = [];
         $this->dirty = true;
     }
-    
+
     /**
      * @ORM\PrePersist
      * @ORM\PreUpdate
@@ -93,9 +92,8 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable
         }
     }
 
-
     /**
-     * Get id
+     * Get id.
      *
      * @return int
      */
@@ -103,9 +101,9 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable
     {
         return $this->id;
     }
-    
+
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
      *
@@ -114,12 +112,12 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable
     public function setName($name)
     {
         $this->name = $name;
-        
+
         return $this;
     }
-    
+
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -129,7 +127,7 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set options
+     * Set options.
      *
      * @param array $options
      *
@@ -138,20 +136,20 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable
     public function setOptions($options)
     {
         $this->options = $options;
-        
-        
+
         foreach ($this->options as $key => $data) {
-            if ($key != 'type' and !in_array($key, AnalyzerOptionsType::FIELDS_BY_TYPE[$this->options['type']])) {
+            if ('type' != $key and !in_array($key, AnalyzerOptionsType::FIELDS_BY_TYPE[$this->options['type']])) {
                 unset($this->options[$key]);
-            } else if ($this->options[$key] === null) {
+            } elseif (null === $this->options[$key]) {
                 unset($this->options[$key]);
             }
         }
+
         return $this;
     }
 
     /**
-     * Get options
+     * Get options.
      *
      * @return array
      */
@@ -161,7 +159,7 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set created
+     * Set created.
      *
      * @param \DateTime $created
      *
@@ -175,7 +173,7 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get created
+     * Get created.
      *
      * @return \DateTime
      */
@@ -185,7 +183,7 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set modified
+     * Set modified.
      *
      * @param \DateTime $modified
      *
@@ -199,7 +197,7 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get modified
+     * Get modified.
      *
      * @return \DateTime
      */
@@ -207,33 +205,33 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable
     {
         return $this->modified;
     }
-    
+
     /**
-     * Set dirty
+     * Set dirty.
      *
-     * @param boolean $dirty
+     * @param bool $dirty
      *
      * @return Analyzer
      */
     public function setDirty($dirty)
     {
         $this->dirty = $dirty;
-        
+
         return $this;
     }
-    
+
     /**
-     * Get dirty
+     * Get dirty.
      *
-     * @return boolean
+     * @return bool
      */
     public function getDirty()
     {
         return $this->dirty;
     }
-    
+
     /**
-     * Set label
+     * Set label.
      *
      * @param string $label
      *
@@ -242,12 +240,12 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable
     public function setLabel($label)
     {
         $this->label = $label;
-        
+
         return $this;
     }
-    
+
     /**
-     * Get label
+     * Get label.
      *
      * @return string
      */
@@ -255,25 +253,25 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable
     {
         return $this->label;
     }
-    
+
     /**
-     * Set orderKey
+     * Set orderKey.
      *
-     * @param integer $orderKey
+     * @param int $orderKey
      *
      * @return Analyzer
      */
     public function setOrderKey($orderKey)
     {
         $this->orderKey = $orderKey;
-        
+
         return $this;
     }
-    
+
     /**
-     * Get orderKey
+     * Get orderKey.
      *
-     * @return integer
+     * @return int
      */
     public function getOrderKey()
     {
@@ -281,10 +279,13 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Specify data which should be serialized to JSON
-     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * Specify data which should be serialized to JSON.
+     *
+     * @see https://php.net/manual/en/jsonserializable.jsonserialize.php
+     *
      * @return mixed data which can be serialized by <b>json_encode</b>,
-     * which is a value of any type other than a resource.
+     *               which is a value of any type other than a resource
+     *
      * @since 5.4.0
      */
     public function jsonSerialize()

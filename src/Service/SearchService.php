@@ -32,18 +32,20 @@ class SearchService
 
     /**
      * @deprecated
+     *
      * @return array<mixed>
      */
     public function generateSearchBody(Search $search): array
     {
-        @trigger_error("SearchService::generateSearchBody is deprecated use the SearchService::generateSearch method instead", E_USER_DEPRECATED);
+        @trigger_error('SearchService::generateSearchBody is deprecated use the SearchService::generateSearch method instead', E_USER_DEPRECATED);
         $commonSearch = $this->generateSearch($search);
         $body = [];
         $query = $commonSearch->getQuery();
-        if ($query !== null) {
+        if (null !== $query) {
             $body['query'] = $query->toArray();
         }
         $body['sort'] = $commonSearch->getSort();
+
         return $body;
     }
 
@@ -97,19 +99,20 @@ class SearchService
             $commonSearch->setSort([
                 $search->getSortBy() => array_filter([
                     'order' => (empty($search->getSortOrder()) ? 'asc' : $search->getSortOrder()),
-                    'missing' => '_last' ,
+                    'missing' => '_last',
                     'unmapped_type' => 'long',
                     'nested_path' => $this->getNestedPath($sortBy, $mapping),
-                ])
+                ]),
             ]);
         }
+
         return $commonSearch;
     }
 
     public function getDocument(ContentType $contentType, string $ouuid): Document
     {
         $environment = $contentType->getEnvironment();
-        if ($environment === null) {
+        if (null === $environment) {
             throw new \RuntimeException('Unexpected nul environment');
         }
         $index = $this->contentTypeService->getIndex($contentType, $environment);
@@ -117,7 +120,7 @@ class SearchService
         try {
             return $this->elasticaService->singleSearch($search);
         } catch (NotSingleResultException $e) {
-            if ($e->getTotal() === 0) {
+            if (0 === $e->getTotal()) {
                 throw new NotFoundException();
             }
             throw $e;
@@ -126,6 +129,7 @@ class SearchService
 
     /**
      * @param array<mixed> $esFilter
+     *
      * @return array<mixed>
      */
     private function nestFilter(string $nestedPath, array $esFilter): array
@@ -134,10 +138,10 @@ class SearchService
 
         for ($i = count($path); $i > 0; --$i) {
             $esFilter = [
-                "nested" => [
-                    "path" => \implode('.', \array_slice($path, 0, $i)),
-                    "query" => $esFilter,
-                ]
+                'nested' => [
+                    'path' => \implode('.', \array_slice($path, 0, $i)),
+                    'query' => $esFilter,
+                ],
             ];
         }
 
@@ -153,10 +157,9 @@ class SearchService
             return null;
         }
 
-        if ($mapping === null) {
+        if (null === $mapping) {
             return null;
         }
-
 
         $nestedPath = [];
         $explode = \explode('.', $field);
@@ -168,10 +171,10 @@ class SearchService
 
             $fieldMapping = $mapping[$field];
 
-            if ($fieldMapping['type'] == 'nested') {
+            if ('nested' == $fieldMapping['type']) {
                 $nestedPath[] = $field;
                 $mapping = $fieldMapping['properties'] ?? []; //go to nested properties
-            } else if (isset($fieldMapping['fields'])) {
+            } elseif (isset($fieldMapping['fields'])) {
                 $mapping = $fieldMapping['fields']; //go to sub fields
             }
         }

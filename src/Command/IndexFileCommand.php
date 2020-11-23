@@ -24,19 +24,18 @@ class IndexFileCommand extends EmsCommand
 {
     /** @var string */
     private const SYSTEM_USERNAME = 'SYSTEM_FILE_INDEXER';
-    /** @var Registry  */
+    /** @var Registry */
     protected $doctrine;
-    /** @var ContentTypeService  */
+    /** @var ContentTypeService */
     protected $contentTypeService;
-    /** @var AssetExtractorService  */
+    /** @var AssetExtractorService */
     protected $extractorService;
     /** @var string */
     protected $databaseName;
     /** @var string */
     protected $databaseDriver;
-    /** @var FileService  */
+    /** @var FileService */
     protected $fileService;
-
 
     public function __construct(Logger $logger, Client $client, Registry $doctrine, ContentTypeService $contentTypeService, AssetExtractorService $extractorService, FileService $fileService)
     {
@@ -78,14 +77,13 @@ class IndexFileCommand extends EmsCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $output->writeln("Please do a backup of your DB first!");
+        $output->writeln('Please do a backup of your DB first!');
         $helper = $this->getHelper('question');
         $question = new ConfirmationQuestion('Continue?', false);
 
         if (!$helper->ask($input, $output, $question)) {
             return -1;
         }
-
 
         $contentTypeName = $input->getArgument('contentType');
         if (!\is_string($contentTypeName)) {
@@ -96,7 +94,6 @@ class IndexFileCommand extends EmsCommand
             throw new \RuntimeException('Unexpected field name');
         }
 
-
         $output->write('DB size before the migration : ');
         $this->dbSize($output);
 
@@ -105,8 +102,8 @@ class IndexFileCommand extends EmsCommand
             throw new \RuntimeException('Content type not found');
         }
 
-        $onlyWithIngestedContent = $input->getOption('only-with-ingested-content') === true;
-        $onlyMissingContent = $input->getOption('missing-content-only') === true;
+        $onlyWithIngestedContent = true === $input->getOption('only-with-ingested-content');
+        $onlyMissingContent = true === $input->getOption('missing-content-only');
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
         /** @var RevisionRepository $revisionRepository */
@@ -161,12 +158,13 @@ class IndexFileCommand extends EmsCommand
         }
 
         $progress->finish();
-        $output->writeln("");
-        $output->writeln("Migration done");
-        $output->writeln("Please rebuild your environments and update your field type");
+        $output->writeln('');
+        $output->writeln('Migration done');
+        $output->writeln('Please rebuild your environments and update your field type');
 
         $output->write('DB size after the migration : ');
         $this->dbSize($output);
+
         return 0;
     }
 
@@ -179,11 +177,12 @@ class IndexFileCommand extends EmsCommand
             if ($key === $field) {
                 if ($onlyMissingContent && isset($rawData[$key]['_content'])) {
                     //do nothing in this case as a content has been already extracted
-                } else if ($onlyWithIngestedContent && !isset($rawData[$key]['content'])) {
+                } elseif ($onlyWithIngestedContent && !isset($rawData[$key]['content'])) {
                     //do nothing in this case as a there is no ingested (binary) content
                 } else {
                     return $this->migrate($rawData[$key], $output);
                 }
+
                 return false;
             }
 
@@ -193,6 +192,7 @@ class IndexFileCommand extends EmsCommand
                 }
             }
         }
+
         return false;
     }
 
@@ -206,7 +206,7 @@ class IndexFileCommand extends EmsCommand
             if (isset($rawData['sha1'])) {
                 $file = $this->fileService->getFile($rawData['sha1']);
 
-                if ($file === null  && isset($rawData['content'])) {
+                if (null === $file && isset($rawData['content'])) {
                     $fileContent = \base64_decode($rawData['content']);
 
                     if (\sha1($fileContent) === $rawData[EmsFields::CONTENT_FILE_HASH_FIELD] ?? null) {
@@ -256,10 +256,11 @@ class IndexFileCommand extends EmsCommand
                         }
                     }
                 } else {
-                    $output->writeln('File not found:' . $rawData['sha1']);
+                    $output->writeln('File not found:'.$rawData['sha1']);
                 }
             }
         }
+
         return $updated;
     }
 
@@ -286,7 +287,6 @@ class IndexFileCommand extends EmsCommand
         $stmt = $em->getConnection()->prepare($query);
         $stmt->execute();
         $size = $stmt->fetchAll();
-
 
         if (is_array($size) && isset($size[0]['size'])) {
             $row = "The database size is {$size[0]['size']} MB";

@@ -4,52 +4,43 @@ namespace EMS\CoreBundle\Form\DataField;
 
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Form\Field\IconTextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use EMS\CoreBundle\Form\Field\IconTextType;
-use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Basic content type for text (regular text input)
+ * Basic content type for text (regular text input).
  *
  * @author Mathieu De Keyzer <ems@theus.be>
- *
  */
 class TimeFieldType extends DataFieldType
 {
-    
     const STOREFORMAT = 'H:i:s';
     const INDEXFORMAT = 'HH:mm:ss';
-    
-    
+
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function getLabel()
     {
         return 'Time field';
     }
-    
+
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public static function getIcon()
     {
         return 'fa fa-clock-o';
     }
-    
+
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function importData(DataField $dataField, $sourceArray, $isMigration)
     {
@@ -65,61 +56,60 @@ class TimeFieldType extends DataFieldType
                 $dataField->addMessage('Not able to parse the date');
             }
         }
+
         return [$dataField->getFieldType()->getName()];
     }
-    
+
     /**
-     * Convert options into PHP date format string
+     * Convert options into PHP date format string.
      *
      * @param array $options
+     *
      * @return string
      */
     public static function getFormat($options)
     {
-        
         if ($options['displayOptions']['showMeridian']) {
-            $format = "g:i";
+            $format = 'g:i';
         } else {
-            $format = "G:i";
+            $format = 'G:i';
         }
-        
+
         if ($options['displayOptions']['showSeconds']) {
-            $format .= ":s";
+            $format .= ':s';
         }
-        
+
         if ($options['displayOptions']['showMeridian']) {
-            $format .= " A";
+            $format .= ' A';
         }
+
         return $format;
     }
-    
+
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function viewTransform(DataField $data)
     {
         $out = parent::viewTransform($data);
-        
-        if (is_array($out) && count($out) === 0) {
+
+        if (is_array($out) && 0 === count($out)) {
             return ''; //empty array means null/empty
         }
 
         $format = $this->getFormat($data->getFieldType()->getOptions());
 
-        /**@var \DateTime $converted*/
+        /** @var \DateTime $converted */
         $dateTime = \DateTime::createFromFormat(TimeFieldType::STOREFORMAT, $out);
         if ($dateTime) {
             return $dateTime->format($format);
         }
+
         return '';
     }
-    
+
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function reverseViewTransform($data, FieldType $fieldType)
     {
@@ -130,28 +120,25 @@ class TimeFieldType extends DataFieldType
         } else {
             $out = null;
         }
+
         return parent::reverseViewTransform($out, $fieldType);
     }
-    
+
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function generateMapping(FieldType $current, $withPipeline)
     {
         return [
                 $current->getName() => array_merge([
-                        "type" => "date",
-                        "format" => TimeFieldType::INDEXFORMAT,
-                ], array_filter($current->getMappingOptions()))
+                        'type' => 'date',
+                        'format' => TimeFieldType::INDEXFORMAT,
+                ], array_filter($current->getMappingOptions())),
         ];
     }
 
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function configureOptions(OptionsResolver $resolver)
     {
@@ -164,8 +151,7 @@ class TimeFieldType extends DataFieldType
         $resolver->setDefault('showSeconds', false);
         $resolver->setDefault('explicitMode', true);
     }
-    
-    
+
     /**
      * {@inheritdoc}
      */
@@ -177,7 +163,7 @@ class TimeFieldType extends DataFieldType
         if (empty($attr['class'])) {
             $attr['class'] = '';
         }
-        
+
         $attr['class'] .= ' timepicker';
         $attr['data-show-meridian'] = $options['showMeridian'] ? 'true' : 'false';
 //         $attr['data-provide'] = 'timepicker';
@@ -188,10 +174,10 @@ class TimeFieldType extends DataFieldType
         if ($options['minuteStep']) {
             $attr['data-minute-step'] = $options['minuteStep'];
         }
-        
-        $view->vars ['attr'] = $attr;
+
+        $view->vars['attr'] = $attr;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -199,23 +185,21 @@ class TimeFieldType extends DataFieldType
     {
         return IconTextType    ::class;
     }
-    
+
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options)
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
-    
-         // String specific display options
+
+        // String specific display options
         $optionsForm->get('mappingOptions')->add('format', TextType::class, [
                 'required' => false,
                 'empty_data' => 'HH:mm:ss',
                 'attr' => [
-                    'placeholder' => 'i.e. HH:mm:ss'
+                    'placeholder' => 'i.e. HH:mm:ss',
                 ],
         ]);
 
@@ -225,11 +209,11 @@ class TimeFieldType extends DataFieldType
         ]);
         $optionsForm->get('displayOptions')->add('showMeridian', CheckboxType::class, [
                 'required' => false,
-                'label' => 'Show meridian (true: 12hr, false: 24hr)'
+                'label' => 'Show meridian (true: 12hr, false: 24hr)',
         ]);
         $optionsForm->get('displayOptions')->add('defaultTime', TextType::class, [
                 'required' => false,
-                 'label' => 'Default time (empty: current time, \'11:23\': specific time, \'false\': do not set a default time)'
+                 'label' => 'Default time (empty: current time, \'11:23\': specific time, \'false\': do not set a default time)',
         ]);
         $optionsForm->get('displayOptions')->add('showSeconds', CheckboxType::class, [
                 'required' => false,

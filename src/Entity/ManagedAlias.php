@@ -2,13 +2,12 @@
 
 namespace EMS\CoreBundle\Entity;
 
-use EMS\CoreBundle\Validator\Constraints as EMSAssert;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\PrePersist;
+use EMS\CoreBundle\Validator\Constraints as EMSAssert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
- * Managed Alias
+ * Managed Alias.
  *
  * @ORM\Table(name="managed_alias")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\ManagedAliasRepository")
@@ -26,7 +25,7 @@ class ManagedAlias
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-    
+
     /**
      * @var string
      *
@@ -35,7 +34,7 @@ class ManagedAlias
      * @ORM\Column(name="name", type="string", length=255, unique=true)
      */
     private $name;
-    
+
     /**
      * @var string
      * @ORM\Column(name="alias", type="string", length=255, unique=true)
@@ -55,17 +54,17 @@ class ManagedAlias
      * @ORM\Column(name="modified", type="datetime")
      */
     private $modified;
-    
+
     /**
      * @var array
      */
     private $indexes = [];
-    
+
     /**
      * @var int
      */
     private $total;
-  
+
     /**
      * @var string
      *
@@ -79,15 +78,15 @@ class ManagedAlias
      * @ORM\Column(name="extra", type="text", nullable=true)
      */
     private $extra;
-    
+
     /**
-     * Managed Alias
+     * Managed Alias.
      */
     public function __construct()
     {
         $this->created = new \DateTime();
     }
-    
+
     /**
      * @return string
      */
@@ -95,7 +94,7 @@ class ManagedAlias
     {
         return $this->name;
     }
-  
+
     /**
      * @ORM\PrePersist
      * @ORM\PreUpdate
@@ -104,7 +103,7 @@ class ManagedAlias
     {
         $this->modified = new \DateTime();
     }
-    
+
     /**
      * @return int
      */
@@ -128,7 +127,7 @@ class ManagedAlias
     {
         return $this->modified;
     }
-    
+
     /**
      * @return string
      */
@@ -148,7 +147,7 @@ class ManagedAlias
 
         return $this;
     }
-    
+
     /**
      * @return string
      */
@@ -156,13 +155,13 @@ class ManagedAlias
     {
         return $this->alias;
     }
-    
+
     /**
      * @param string $instanceId
      */
     public function setAlias($instanceId)
     {
-        $this->alias = $instanceId . $this->getName();
+        $this->alias = $instanceId.$this->getName();
     }
 
     /**
@@ -172,10 +171,8 @@ class ManagedAlias
     {
         return $this->indexes;
     }
-    
+
     /**
-     * @param array $indexes
-     *
      * @return ManagedAlias
      */
     public function setIndexes(array $indexes)
@@ -184,7 +181,7 @@ class ManagedAlias
 
         return $this;
     }
-    
+
     /**
      * @return int
      */
@@ -201,10 +198,10 @@ class ManagedAlias
     public function setTotal($total)
     {
         $this->total = $total;
-        
+
         return $this;
     }
-        
+
     /**
      * @return string
      */
@@ -212,7 +209,7 @@ class ManagedAlias
     {
         return $this->color;
     }
- 
+
     /**
      * @param string $color
      *

@@ -18,7 +18,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class AlignCommand extends Command
 {
-    /** @var string  */
+    /** @var string */
     protected static $defaultName = 'ems:environment:align';
     /** @var Registry */
     protected $doctrine;
@@ -28,11 +28,11 @@ class AlignCommand extends Command
     private $client;
     /** @var DataService */
     protected $data;
-    /**@var ContentTypeService */
+    /** @var ContentTypeService */
     private $contentTypeService;
-    /**@var EnvironmentService */
+    /** @var EnvironmentService */
     private $environmentService;
-    /**@var PublishService */
+    /** @var PublishService */
     private $publishService;
     /** @var SymfonyStyle */
     private $io;
@@ -42,27 +42,27 @@ class AlignCommand extends Command
     private $scrollTimeout;
     /** @var string */
     private $searchQuery;
-    /** @var string  */
+    /** @var string */
     const ARGUMENT_SOURCE = 'source';
-    /** @var string  */
+    /** @var string */
     const ARGUMENT_TARGET = 'target';
-    /** @var string  */
+    /** @var string */
     const ARGUMENT_SCROLL_SIZE = 'scrollSize';
-    /** @var string  */
+    /** @var string */
     const ARGUMENT_SCROLL_TIMEOUT = 'scrollTimeout';
-    /** @var string  */
+    /** @var string */
     const OPTION_FORCE = 'force';
-    /** @var string  */
+    /** @var string */
     const OPTION_SEARCH_QUERY = 'searchQuery';
-    /** @var string  */
+    /** @var string */
     const OPTION_SNAPSHOT = 'snapshot';
-    /** @var string  */
+    /** @var string */
     const OPTION_STRICT = 'strict';
-    /** @var string  */
+    /** @var string */
     const DEFAULT_SCROLL_SIZE = '100';
-    /** @var string  */
+    /** @var string */
     const DEFAULT_SCROLL_TIMEOUT = '1m';
-    /** @var string  */
+    /** @var string */
     const DEFAULT_SEARCH_QUERY = '{}';
 
     public function __construct(Registry $doctrine, LoggerInterface $logger, Client $client, DataService $data, ContentTypeService $contentTypeService, EnvironmentService $environmentService, PublishService $publishService)
@@ -140,7 +140,7 @@ class AlignCommand extends Command
         $this->io->title('Align environments');
 
         $scrollSize = \intval($input->getArgument(self::ARGUMENT_SCROLL_SIZE));
-        if ($scrollSize === 0) {
+        if (0 === $scrollSize) {
             throw new \RuntimeException('Unexpected scroll size argument');
         }
         $this->scrollSize = $scrollSize;
@@ -172,6 +172,7 @@ class AlignCommand extends Command
         $this->io->section('Execute');
         if (!$input->getOption(self::OPTION_FORCE)) {
             $this->io->error('Has protection, the force option is mandatory.');
+
             return -1;
         }
 
@@ -186,11 +187,11 @@ class AlignCommand extends Command
 
         $this->environmentService->clearCache();
         $source = $this->environmentService->getAliasByName($sourceName);
-        if ($source === false) {
+        if (false === $source) {
             throw new \RuntimeException('Source environment not found');
         }
         $target = $this->environmentService->getAliasByName($targetName);
-        if ($target === false) {
+        if (false === $target) {
             throw new \RuntimeException('Target environment not found');
         }
 
@@ -214,19 +215,19 @@ class AlignCommand extends Command
         while (count($arrayElasticsearchIndex['hits']['hits'] ?? []) > 0) {
             foreach ($arrayElasticsearchIndex['hits']['hits'] as $hit) {
                 $contentType = $this->contentTypeService->getByName($hit['_source']['_contenttype']);
-                if ($contentType === false) {
+                if (false === $contentType) {
                     throw new \RuntimeException('Unexpected null content type');
                 }
                 $revision = $this->data->getRevisionByEnvironment($hit['_id'], $contentType, $source);
                 if ($revision->getDeleted()) {
                     ++$deletedRevision;
-                } else if ($contentType->getEnvironment() === $target) {
+                } elseif ($contentType->getEnvironment() === $target) {
                     if (!isset($targetIsPreviewEnvironment[$contentType->getName()])) {
                         $targetIsPreviewEnvironment[$contentType->getName()] = 0;
                     }
                     ++$targetIsPreviewEnvironment[$contentType->getName()];
                 } else {
-                    if ($this->publishService->publish($revision, $target, true) == 0) {
+                    if (0 == $this->publishService->publish($revision, $target, true)) {
                         ++$alreadyAligned;
                     }
                 }
@@ -259,15 +260,17 @@ class AlignCommand extends Command
         }
 
         $this->io->success(\sprintf('Environments %s -> %s were aligned.', $sourceName, $targetName));
+
         return 0;
     }
 
     private function checkSource(InputInterface $input): void
     {
         $sourceName = $input->getArgument(self::ARGUMENT_SOURCE);
-        if ($sourceName === null) {
+        if (null === $sourceName) {
             $message = 'Source environment not provided';
             $this->setSourceArgument($input, $message);
+
             return;
         }
         if (!is_string($sourceName)) {
@@ -275,10 +278,11 @@ class AlignCommand extends Command
         }
 
         $source = $this->environmentService->getAliasByName($sourceName);
-        if ($source === false) {
+        if (false === $source) {
             $message = \sprintf('Source environment "%s" not found', $sourceName);
             $this->setSourceArgument($input, $message);
             $this->checkSource($input);
+
             return;
         }
 
@@ -300,9 +304,10 @@ class AlignCommand extends Command
     private function checkTarget(InputInterface $input): void
     {
         $targetName = $input->getArgument(self::ARGUMENT_TARGET);
-        if ($targetName === null) {
+        if (null === $targetName) {
             $message = 'Target environment not provided';
             $this->setTargetArgument($input, $message);
+
             return;
         }
         if (!is_string($targetName)) {
@@ -311,10 +316,11 @@ class AlignCommand extends Command
 
         $this->environmentService->clearCache();
         $target = $this->environmentService->getByName($targetName);
-        if ($target === false) {
+        if (false === $target) {
             $message = \sprintf('Target environment "%s" not found', $targetName);
             $this->setTargetArgument($input, $message);
             $this->checkTarget($input);
+
             return;
         }
 
@@ -322,6 +328,7 @@ class AlignCommand extends Command
             $message = 'Target cannot be a snapshot';
             $this->setTargetArgument($input, $message);
             $this->checkTarget($input);
+
             return;
         }
 
@@ -335,6 +342,7 @@ class AlignCommand extends Command
             $message = 'Target and source are the same environment, it\'s aligned ;-)';
             $this->setTargetArgument($input, $message);
             $this->checkTarget($input);
+
             return;
         }
 

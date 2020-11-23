@@ -13,11 +13,8 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class MigrationOptionsType extends AbstractType
 {
-    
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {

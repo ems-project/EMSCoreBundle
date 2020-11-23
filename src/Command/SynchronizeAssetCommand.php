@@ -17,7 +17,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class SynchronizeAssetCommand extends EmsCommand
 {
-
     /** @var Registry */
     protected $doctrine;
     /** @var ContentTypeService */
@@ -30,7 +29,6 @@ class SynchronizeAssetCommand extends EmsCommand
     protected $databaseDriver;
     /** @var FileService */
     protected $fileService;
-
 
     public function __construct(Logger $logger, Client $client, Registry $doctrine, ContentTypeService $contentTypeService, AssetExtractorService $extractorService, FileService $fileService)
     {
@@ -47,7 +45,6 @@ class SynchronizeAssetCommand extends EmsCommand
             ->setName('ems:asset:synchronize')
             ->setDescription('Synchronize registered assets on storage services');
     }
-
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -67,9 +64,9 @@ class SynchronizeAssetCommand extends EmsCommand
 
         if (\count($storagesList) < 2) {
             $output->writeln('<error>There is nothing to synchronize as there is less than 2 healthy storage services</error>');
+
             return 1;
         }
-
 
         $progress = new ProgressBar($output, $repository->countHashes());
         $progress->start();
@@ -107,6 +104,7 @@ class SynchronizeAssetCommand extends EmsCommand
         if ($filesInError > 0) {
             $output->writeln(sprintf('<comment>%d files not found or in error</comment>', $filesInError));
         }
+
         return 0;
     }
 }

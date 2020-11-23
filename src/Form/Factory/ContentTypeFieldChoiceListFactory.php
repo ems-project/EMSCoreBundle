@@ -1,4 +1,5 @@
 <?php
+
 namespace EMS\CoreBundle\Form\Factory;
 
 use EMS\CoreBundle\Form\Field\ContentTypeFieldChoiceLoader;
@@ -9,20 +10,19 @@ use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
 
 class ContentTypeFieldChoiceListFactory extends DefaultChoiceListFactory
 {
-
-    /**@var ContentTypeService $contentTypesService*/
+    /** @var ContentTypeService $contentTypesService */
     private $contentTypesService;
 
     /**
-     * constructor called by the service mechanisme
+     * constructor called by the service mechanisme.
      */
     public function __construct(ContentTypeService $contentTypesService)
     {
         $this->contentTypesService = $contentTypesService;
     }
-    
+
     /**
-     * instanciate a ObjectChoiceLoader (with the required services)
+     * instanciate a ObjectChoiceLoader (with the required services).
      */
     public function createLoader(array $mapping, array $types, $firstLevelOnly)
     {

@@ -25,14 +25,13 @@ use Twig_Environment;
 
 class SorterViewType extends ViewType
 {
-    
-    /**@var Session $session*/
+    /** @var Session $session */
     protected $session;
-    /**@var DataService */
+    /** @var DataService */
     protected $dataService;
-    /**@var Router */
+    /** @var Router */
     protected $router;
-    
+
     public function __construct(FormFactory $formFactory, Twig_Environment $twig, Client $client, LoggerInterface $logger, Session $session, DataService $dataService, Router $router)
     {
         parent::__construct($formFactory, $twig, $client, $logger);
@@ -41,31 +40,30 @@ class SorterViewType extends ViewType
         $this->router = $router;
     }
 
-    public function getLabel() : string
+    public function getLabel(): string
     {
-        return "Sorter: order a sub set (based on a ES query)";
+        return 'Sorter: order a sub set (based on a ES query)';
     }
-    
-    public function getName() : string
+
+    public function getName(): string
     {
-        return "Sorter";
+        return 'Sorter';
     }
-    
-    public function buildForm(FormBuilderInterface $builder, array $options) : void
+
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
-        
-        /**@var View $view */
+
+        /** @var View $view */
         $view = $options['view'];
-        
+
         $mapping = $this->client->indices()->getMapping([
                 'index' => $view->getContentType()->getEnvironment()->getAlias(),
-                'type' => $view->getContentType()->getName()
+                'type' => $view->getContentType()->getName(),
         ]);
-        
+
         $mapping = array_values($mapping)[0]['mappings'][$view->getContentType()->getName()]['properties'];
-        
-        
+
         $builder
         ->add('body', CodeEditorType::class, [
                 'label' => 'The Elasticsearch body query [JSON Twig]',
@@ -84,24 +82,21 @@ class SorterViewType extends ViewType
                 'types' => [
                     'integer',
                     'long',
-                ]]);
+                ], ]);
     }
-    
-    public function getBlockPrefix() : string
+
+    public function getBlockPrefix(): string
     {
         return 'sorter_view';
     }
-    
 
-    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request) : array
+    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
-        
         return [];
     }
-    
-    public function generateResponse(View $view, Request $request) : Response
+
+    public function generateResponse(View $view, Request $request): Response
     {
-        
         try {
             $renderQuery = $this->twig->createTemplate($view->getOptions()['body'])->render([
                     'view' => $view,
@@ -109,45 +104,45 @@ class SorterViewType extends ViewType
                     'environment' => $view->getContentType()->getEnvironment(),
             ]);
         } catch (Throwable $e) {
-            $renderQuery = "{}";
+            $renderQuery = '{}';
         }
-        
+
         $boby = json_decode($renderQuery, true);
-        
+
         $boby['sort'] = [
                 $view->getOptions()['field'] => [
                         'order' => 'asc',
-                        "missing" => "_last",
-                ]
+                        'missing' => '_last',
+                ],
         ];
-        
+
         $searchQuery = [
                 'index' => $view->getContentType()->getEnvironment()->getAlias(),
                 'type' => $view->getContentType()->getName(),
                 'body' => $boby,
         ];
-        
+
         $searchQuery['size'] = 100;
         if (isset($view->getOptions()['size'])) {
             $searchQuery['size'] = $view->getOptions()['size'];
         }
-        
+
         $result = $this->client->search($searchQuery);
-        
+
         if ($result['hits']['total'] > $searchQuery['size']) {
             $this->logger->warning('form.view.sorter.too_many_documents', [
                 'total' => $result['hits']['total'],
             ]);
         }
-        
+
         $data = [];
-        
+
         $form = $this->formFactory->create(ReorderType::class, $data, [
                 'result' => $result,
         ]);
-        
+
         $form->handleRequest($request);
-        
+
         if ($form->isSubmitted()) {
             $counter = 1;
             foreach ($request->request->get('reorder')['items'] as $itemKey => $value) {
@@ -175,16 +170,16 @@ class SorterViewType extends ViewType
                     'contentTypeId' => $view->getContentType()->getId(),
             ], UrlGeneratorInterface::RELATIVE_PATH));
         }
-        
-        
+
         $response = new Response();
-        $response->setContent($this->twig->render('@EMSCore/view/custom/' . $this->getBlockPrefix() . '.html.twig', [
+        $response->setContent($this->twig->render('@EMSCore/view/custom/'.$this->getBlockPrefix().'.html.twig', [
                 'result' => $result,
                 'view' => $view,
                 'form' => $form->createView(),
                 'contentType' => $view->getContentType(),
                 'environment' => $view->getContentType()->getEnvironment(),
         ]));
+
         return $response;
     }
 }

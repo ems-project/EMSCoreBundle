@@ -53,7 +53,7 @@ class JsonMenuEditorFieldType extends DataFieldType
 
         $attr = \array_merge(
             [
-                'class' => ''
+                'class' => '',
             ],
             $view->vars['attr'],
             [
@@ -69,7 +69,6 @@ class JsonMenuEditorFieldType extends DataFieldType
         $view->vars['item_types'] = $options['itemTypes'];
         $view->vars['node_types'] = $options['nodeTypes'];
     }
-
 
     /**
      * {@inheritdoc}
@@ -93,9 +92,7 @@ class JsonMenuEditorFieldType extends DataFieldType
     }
 
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options)
     {
@@ -104,7 +101,7 @@ class JsonMenuEditorFieldType extends DataFieldType
 
         $optionsForm->get('mappingOptions')->add('analyzer', AnalyzerPickerType::class);
         $optionsForm->get('displayOptions')->add('icon', IconPickerType::class, [
-            'required' => false
+            'required' => false,
         ])->add('maxDepth', IntegerType::class, [
             'required' => false,
         ])->add('nodeTypes', TextType::class, [

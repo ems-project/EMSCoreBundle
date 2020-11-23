@@ -2,12 +2,11 @@
 
 namespace EMS\CoreBundle\Form\Field;
 
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RenderOptionType extends ChoiceType
 {
-
     const EMBED = 'embed';
     const EXPORT = 'export';
     const EXTERNALLINK = 'externalLink';
@@ -21,15 +20,12 @@ class RenderOptionType extends ChoiceType
         'External link' => self::EXTERNALLINK,
         'Notification' => self::NOTIFICATION,
         'Job' => self::JOB,
-        'PDF' => self::PDF
+        'PDF' => self::PDF,
     ];
-    
-    /**
-     * @param OptionsResolver $resolver
-     */
+
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'choices' => $this->choices,
             'multiple' => false,
             'expanded' => false,
@@ -41,9 +37,9 @@ class RenderOptionType extends ChoiceType
                 return $value;
             },
             'choice_attr' => null,
-            'preferred_choices' => array(),
+            'preferred_choices' => [],
             'group_by' => null,
-            'empty_data' => "",
+            'empty_data' => '',
             'placeholder' => null,
             'error_bubbling' => false,
             'compound' => null,
@@ -52,6 +48,6 @@ class RenderOptionType extends ChoiceType
             // See https://github.com/symfony/symfony/pull/5582
             'data_class' => null,
             'choice_translation_domain' => true,
-        ));
+        ]);
     }
 }

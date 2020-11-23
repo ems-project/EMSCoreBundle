@@ -4,12 +4,12 @@ namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
-use Elasticsearch\Common\Exceptions\Conflict409Exception;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Storage\HashMismatchException;
 use EMS\CommonBundle\Storage\NotFoundException;
 use EMS\CommonBundle\Storage\Processor\Processor;
 use EMS\CommonBundle\Storage\Service\StorageInterface;
+use EMS\CommonBundle\Storage\SizeMismatchException;
 use EMS\CommonBundle\Storage\StorageManager;
 use EMS\CommonBundle\Storage\StorageServiceMissingException;
 use EMS\CoreBundle\Entity\UploadedAsset;
@@ -176,12 +176,13 @@ class FileService
         }
 
         if ($uploadedAsset->getSize() != $size) {
-            throw new Conflict409Exception("Target size mismatched " . $uploadedAsset->getSize() . ' ' . $size);
+            throw new SizeMismatchException($hash, $uploadedAsset->getSize(), $size);
         }
 
         if ($this->head($hash)) {
-            if ($this->getSize($hash) !== $size) {
-                throw new Conflict409Exception("Hash conflict");
+            $hashSize = $this->getSize($hash);
+            if ($hashSize !== $size) {
+                throw new SizeMismatchException($hash, $hashSize, $size);
             }
             $uploadedAsset->setUploaded($uploadedAsset->getSize());
             $uploadedAsset->setAvailable(true);
@@ -255,7 +256,7 @@ class FileService
     {
         $hash = $this->storageManager->saveFile($filename, StorageInterface::STORAGE_USAGE_ASSET);
         if ($hash != $uploadedAsset->getSha1()) {
-            throw new Conflict409Exception(sprintf('Hash mismatched %s >< %s', $hash, $uploadedAsset->getSha1()));
+            throw new HashMismatchException($hash, $uploadedAsset->getSha1());
         }
 
         $uploadedAsset->setAvailable(true);

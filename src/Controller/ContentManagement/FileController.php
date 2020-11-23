@@ -3,12 +3,11 @@
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Storage\NotFoundException;
 use EMS\CoreBundle\Entity\UserInterface;
-use EMS\CoreBundle\Exception\AssetNotFoundException;
 use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\FileService;
 use Exception;
-use http\Exception\RuntimeException;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -66,7 +65,7 @@ class FileController extends AbstractController
 
         try {
             $data = $assetExtractorService->extractData($sha1, null, $forced);
-        } catch (AssetNotFoundException $e) {
+        } catch (NotFoundException $e) {
             throw new NotFoundHttpException(sprintf('Asset %s not found', $sha1));
         }
 

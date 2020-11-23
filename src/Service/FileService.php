@@ -6,6 +6,8 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use Elasticsearch\Common\Exceptions\Conflict409Exception;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Storage\HashMismatchException;
+use EMS\CommonBundle\Storage\NotFoundException;
 use EMS\CommonBundle\Storage\Processor\Processor;
 use EMS\CommonBundle\Storage\Service\StorageInterface;
 use EMS\CommonBundle\Storage\StorageManager;
@@ -24,8 +26,6 @@ class FileService
     private $doctrine;
     /** @var StorageManager */
     private $storageManager;
-    /** @var int */
-    private $uploadMinimumNumberOfReplications;
     /** @var Processor */
     private $processor;
 
@@ -34,30 +34,19 @@ class FileService
         $this->doctrine = $doctrine;
         $this->storageManager = $storageManager;
         $this->processor = $processor;
-        $this->uploadMinimumNumberOfReplications = 10;
-    }
-
-    /**
-     * @return StorageInterface[]|iterable
-     */
-    public function getStorages()
-    {
-        return $this->storageManager->getAdapters();
     }
 
     public function getBase64(string $hash): ?string
     {
-        /**@var StorageInterface $service */
-        foreach ($this->storageManager->getAdapters() as $service) {
-            try {
-                $stream = $service->read($hash);
-            } catch (NotFoundHttpException $e) {
-                continue;
-            }
+        return $this->storageManager->getBase64($hash);
+    }
 
-            return \base64_encode($stream->getContents());
-        }
-        return null;
+    /**
+     * @return array<string, bool>
+     */
+    public function getHealthStatuses(): array
+    {
+        return $this->storageManager->getHealthStatuses();
     }
 
     public function getFile(string $hash): ?string
@@ -90,14 +79,11 @@ class FileService
 
     public function getResource(string $hash): ?StreamInterface
     {
-        /**@var StorageInterface $service */
-        foreach ($this->storageManager->getAdapters() as $service) {
-            try {
-                return $service->read($hash);
-            } catch (NotFoundHttpException $e) {
-            }
+        try {
+            return $this->storageManager->getStream($hash);
+        } catch (\Throwable $e) {
+            return null;
         }
-        return null;
     }
 
     public function getStreamResponse(string $sha1, string $disposition, Request $request): Response
@@ -154,10 +140,6 @@ class FileService
 
     public function initUploadFile(string $hash, int $size, string $name, string $type, string $user, string $hashAlgo): UploadedAsset
     {
-        if (empty($this->storageManager->getAdapters())) {
-            throw new StorageServiceMissingException("No storage service have been defined");
-        }
-
         if (strcasecmp($hashAlgo, $this->storageManager->getHashAlgo()) !== 0) {
             throw new StorageServiceMissingException(sprintf("Hash algorithms mismatch: %s vs. %s", $hashAlgo, $this->storageManager->getHashAlgo()));
         }
@@ -198,13 +180,13 @@ class FileService
         }
 
         if ($this->head($hash)) {
-            if ($this->getSize($hash) != $size) { //one is a string the other is a number
+            if ($this->getSize($hash) !== $size) {
                 throw new Conflict409Exception("Hash conflict");
             }
             $uploadedAsset->setUploaded($uploadedAsset->getSize());
             $uploadedAsset->setAvailable(true);
         } else {
-            $this->storageManager->initUploadFile($hash, $size, $name, $type, $this->uploadMinimumNumberOfReplications);
+            $this->storageManager->initUploadFile($hash, $size, $name, $type, StorageInterface::STORAGE_USAGE_ASSET);
         }
 
         $em->persist($uploadedAsset);
@@ -216,33 +198,20 @@ class FileService
 
     public function head(string $hash): bool
     {
-        /**@var StorageInterface $service */
-        foreach ($this->storageManager->getAdapters() as $service) {
-            if ($service->head($hash)) {
-                return true;
-            }
-        }
-        return false;
+        return $this->storageManager->head($hash);
     }
 
     public function getSize(string $hash): int
     {
-        /**@var StorageInterface $service */
-        foreach ($this->storageManager->getAdapters() as $service) {
-            try {
-                return $service->getSize($hash);
-            } catch (NotFoundHttpException $e) {
-            }
+        try {
+            return $this->storageManager->getSize($hash);
+        } catch (NotFoundException $e) {
         }
         throw new NotFoundHttpException(sprintf('File %s not found', $hash));
     }
 
-    public function addChunk(string $hash, string $chunk, string $user): UploadedAsset
+    public function addChunk(string $hash, string $chunk, string $user, bool $skipShouldSkip = true): UploadedAsset
     {
-        if (empty($this->storageManager->getAdapters())) {
-            throw new StorageServiceMissingException("No storage service have been defined");
-        }
-
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
         /** @var UploadedAssetRepository $repository */
@@ -255,40 +224,17 @@ class FileService
             throw new NotFoundHttpException('Upload job not found');
         }
 
-
-        $loopCounter = 0;
-        foreach ($this->storageManager->getAdapters() as $service) {
-            if ($service->addChunk($hash, $chunk) && ++$loopCounter >= $this->uploadMinimumNumberOfReplications) {
-                break;
-            }
-        }
-
-        $uploadedAsset->setUploaded($uploadedAsset->getUploaded() + strlen($chunk));
+        $this->storageManager->addChunk($hash, $chunk, StorageInterface::STORAGE_USAGE_ASSET);
+        $uploadedAsset->setUploaded($uploadedAsset->getUploaded() + \strlen($chunk));
 
         $em->persist($uploadedAsset);
         $em->flush($uploadedAsset);
 
-        if ($uploadedAsset->getUploaded() == $uploadedAsset->getSize()) {
-            $loopCounter = 0;
-            foreach ($this->storageManager->getAdapters() as $service) {
-                try {
-                    $handler = $service->read($uploadedAsset->getSha1(), false);
-                } catch (NotFoundHttpException $e) {
-                    continue;
-                }
-
-                $computedHash = $this->storageManager->computeStringHash($handler->getContents());
-
-                if ($computedHash != $uploadedAsset->getSha1()) {
-                    throw new Conflict409Exception("Hash mismatched " . $computedHash . ' ' . $uploadedAsset->getSha1());
-                }
-
-                if ($service->finalizeUpload($hash) && ++$loopCounter >= $this->uploadMinimumNumberOfReplications) {
-                    break;
-                }
-            }
-
-            if ($loopCounter === 0) {
+        if ($uploadedAsset->getUploaded() === $uploadedAsset->getSize()) {
+            try {
+                $this->storageManager->finalizeUpload($hash, $uploadedAsset->getSize(), StorageInterface::STORAGE_USAGE_ASSET);
+                $uploadedAsset->setAvailable(true);
+            } catch (\Throwable $e) {
                 $em->remove($uploadedAsset);
                 $em->flush($uploadedAsset);
                 throw new Exception('Was not able to finalize or confirmed the upload in at least one storage service');
@@ -307,20 +253,28 @@ class FileService
 
     private function saveFile(string $filename, UploadedAsset $uploadedAsset): UploadedAsset
     {
-        $hash = $this->storageManager->computeFileHash($filename);
+        $hash = $this->storageManager->saveFile($filename, StorageInterface::STORAGE_USAGE_ASSET);
         if ($hash != $uploadedAsset->getSha1()) {
             throw new Conflict409Exception(sprintf('Hash mismatched %s >< %s', $hash, $uploadedAsset->getSha1()));
         }
 
-        /**@var StorageInterface $service */
-        foreach ($this->storageManager->getAdapters() as $service) {
-            if ($service->create($uploadedAsset->getSha1(), $filename)) {
-                $uploadedAsset->setAvailable(true);
-                \unlink($filename);
-                break;
-            }
+        $uploadedAsset->setAvailable(true);
+        return $uploadedAsset;
+    }
+
+    public function synchroniseAsset(string $hash): void
+    {
+        $filename = $this->getFile($hash);
+        if ($filename === null) {
+            throw new NotFoundException($hash);
         }
 
-        return $uploadedAsset;
+        $newHash = $this->storageManager->saveFile($filename, StorageInterface::STORAGE_USAGE_BACKUP);
+
+        unlink($filename);
+
+        if ($newHash !== $hash) {
+            throw new HashMismatchException($hash, $newHash);
+        }
     }
 }

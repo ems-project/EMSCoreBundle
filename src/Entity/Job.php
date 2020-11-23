@@ -198,7 +198,7 @@ class Job
         return $this->output;
     }
 
-    public function setCommand(string $command): Job
+    public function setCommand(?string $command): Job
     {
         $this->command = $command;
 

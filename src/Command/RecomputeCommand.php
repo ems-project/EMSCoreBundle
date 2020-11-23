@@ -6,7 +6,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
 use Elasticsearch\Client;
-use Elasticsearch\Common\Exceptions\Missing404Exception;
+use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\Form\RevisionType;
@@ -14,7 +14,9 @@ use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
+use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\PublishService;
+use EMS\CoreBundle\Service\SearchService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
@@ -26,46 +28,27 @@ use Symfony\Component\Form\FormFactoryInterface;
 
 class RecomputeCommand extends EmsCommand
 {
-    /**
-     * @var ObjectManager
-     */
-    private $em;
-
-    /**
-     * @var DataService
-     */
-    private $dataService;
-
-    /**
-     * @var FormFactoryInterface
-     */
-    private $formFactory;
-
-    /**
-     * @var PublishService
-     */
-    private $publishService;
-
-    /**
-     * @var ContentTypeRepository
-     */
-    private $contentTypeRepository;
-
-    /**
-     * @var RevisionRepository
-     */
-    private $revisionRepository;
-
-    /**
-     * @var ContentTypeService
-     */
-    private $contentTypeService;
-
+    /** @var string  */
     const LOCK_BY = 'SYSTEM_RECOMPUTE';
+    /** @var ObjectManager */
+    private $em;
+    /** @var DataService */
+    private $dataService;
+    /** @var FormFactoryInterface */
+    private $formFactory;
+    /** @var PublishService */
+    private $publishService;
+    /** @var ContentTypeRepository */
+    private $contentTypeRepository;
+    /** @var RevisionRepository */
+    private $revisionRepository;
+    /** @var ContentTypeService */
+    private $contentTypeService;
+    /** @var IndexService */
+    private $indexService;
+    /** @var SearchService */
+    private $searchService;
 
-    /**
-     * @inheritdoc
-     */
     public function __construct(
         DataService $dataService,
         Registry $doctrine,
@@ -75,7 +58,9 @@ class RecomputeCommand extends EmsCommand
         Client $client,
         ContentTypeService $contentTypeService,
         ContentTypeRepository $contentTypeRepository,
-        RevisionRepository $revisionRepository
+        RevisionRepository $revisionRepository,
+        IndexService $indexService,
+        SearchService $searchService
     ) {
         parent::__construct($logger, $client);
 
@@ -87,6 +72,8 @@ class RecomputeCommand extends EmsCommand
         $this->em = $doctrine->getManager();
         $this->contentTypeRepository = $contentTypeRepository;
         $this->revisionRepository = $revisionRepository;
+        $this->indexService = $indexService;
+        $this->searchService = $searchService;
     }
 
     protected function configure(): void
@@ -167,18 +154,13 @@ class RecomputeCommand extends EmsCommand
 
                 if ($missingInIndex) {
                     try {
-                        $this->client->get([
-                            'index' => $missingInIndex,
-                            'type' => $contentType->getName(),
-                            'id' => $revision->getOuuid(),
-                        ]);
+                        $this->searchService->getDocument($contentType, $revision->getOuuid());
                         $this->revisionRepository->unlockRevision($revisionId);
                         $progress->advance();
                         continue;
-                    } catch (Missing404Exception $e) {
+                    } catch (NotFoundException $e) {
                     }
                 }
-
                 $transactionActive = true;
 
                 /** @var Revision $revision */
@@ -202,12 +184,7 @@ class RecomputeCommand extends EmsCommand
                 $this->em->persist($newRevision);
                 $this->em->flush();
 
-                $this->client->index([
-                    'index' => $this->contentTypeService->getIndex($contentType),
-                    'body' => $newRevision->getRawData(),
-                    'id' => $newRevision->getOuuid(),
-                    'type' => $contentType->getName(),
-                ]);
+                $this->indexService->indexRevision($newRevision);
 
                 if (!$input->getOption('no-align')) {
                     foreach ($revision->getEnvironments() as $environment) {
@@ -236,6 +213,7 @@ class RecomputeCommand extends EmsCommand
         } while ($iterator instanceof \ArrayIterator && $iterator->count());
 
         $progress->finish();
+        $output->writeln('');
         return 0;
     }
 

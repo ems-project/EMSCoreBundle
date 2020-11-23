@@ -3,12 +3,11 @@
 namespace EMS\CoreBundle\Service;
 
 use Elasticsearch\Client;
+use EMS\CommonBundle\Common\Document;
+use EMS\CommonBundle\Elasticsearch\Exception\NotSingleResultException;
 use EMS\CommonBundle\Elasticsearch\Request\RequestInterface;
-use EMS\CommonBundle\Elasticsearch\Request\ScrollRequest;
 use EMS\CommonBundle\Elasticsearch\Response\Response;
 use EMS\CommonBundle\Elasticsearch\Response\ResponseInterface;
-use EMS\CoreBundle\Exception\SingleResultException;
-use EMS\CommonBundle\Common\Document;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
@@ -74,7 +73,7 @@ class ElasticsearchService
                 EmsFields::LOG_OUUID_FIELD => $ouuid,
                 EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
             ]);
-            throw new SingleResultException('Expected one result, got 0');
+            throw new NotSingleResultException(0);
         }
 
         if (1 !== $result['hits']['total']) {
@@ -84,7 +83,7 @@ class ElasticsearchService
                 EmsFields::LOG_OUUID_FIELD => $ouuid,
                 EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
             ]);
-            throw new SingleResultException(sprintf('Expected one result, got %s', $result['hits']['total']));
+            throw new NotSingleResultException($result['hits']['total']);
         }
 
         return new Document($contentType->getName(), $ouuid, $result['hits']['hits'][0]['_source']);

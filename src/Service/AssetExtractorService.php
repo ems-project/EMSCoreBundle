@@ -5,8 +5,8 @@ namespace EMS\CoreBundle\Service;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CommonBundle\Common\Converter;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Storage\NotFoundException;
 use EMS\CoreBundle\Entity\CacheAssetExtractor;
-use EMS\CoreBundle\Exception\AssetNotFoundException;
 use EMS\CoreBundle\Tika\TikaWrapper;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -128,7 +128,7 @@ class AssetExtractorService implements CacheWarmerInterface
         }
 
         if (!$file || !\file_exists($file)) {
-            throw new AssetNotFoundException($hash);
+            throw new NotFoundException($hash);
         }
 
         $filesize = \filesize($file);

@@ -5,7 +5,6 @@ namespace EMS\CoreBundle\Controller\ContentManagement;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
-use Elasticsearch\Client;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
@@ -277,7 +276,13 @@ class ContentTypeController extends AppController
                     $environment = $contentTypeAdded->getEnvironment();
                     /** @var UploadedFile $file */
                     $file = $request->files->get('form')['import'];
-                    $json = file_get_contents($file->getRealPath());
+                    $path = $file->getRealPath();
+
+                    if ($path === false) {
+                        throw new NotFoundHttpException('File not found');
+                    }
+
+                    $json = file_get_contents($path);
 
                     if (! \is_string($json)) {
                         throw new NotFoundHttpException('JSON file not found');
@@ -369,14 +374,13 @@ class ContentTypeController extends AppController
             if (isset($form['contentTypeNames']) && is_array($form['contentTypeNames'])) {
                 $counter = 0;
                 foreach ($form['contentTypeNames'] as $name) {
+                    /** @var ContentType $contentType */
                     $contentType = $contentTypeRepository->findOneBy([
                         'deleted' => false,
                         'name' => $name
                     ]);
-                    if ($contentType) {
-                        $contentType->setOrderKey($counter);
-                        $em->persist($contentType);
-                    }
+                    $contentType->setOrderKey($counter);
+                    $em->persist($contentType);
                     ++$counter;
                 }
 
@@ -405,7 +409,7 @@ class ContentTypeController extends AppController
      * @throws OptimisticLockException
      * @Route("/content-type/unreferenced", name="contenttype.unreferenced")
      */
-    public function unreferencedAction(Request $request, LoggerInterface $logger)
+    public function unreferencedAction(Request $request, LoggerInterface $logger, ContentTypeService $contentTypeService)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -447,46 +451,16 @@ class ContentTypeController extends AppController
             return $this->redirectToRoute('contenttype.unreferenced');
         }
 
-        /** @var ContentTypeRepository $contenttypeRepository */
-        $contenttypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
-
-        $environments = $environmetRepository->findBy([
-            'managed' => false
-        ]);
-
-        /** @var  Client $client */
-        $client = $this->getElasticsearch();
-
-        $referencedContentTypes = [];
-        /** @var Environment $environment */
-        foreach ($environments as $environment) {
-            $alias = $environment->getAlias();
-            $mapping = $client->indices()->getMapping([
-                'index' => $alias
-            ]);
-            foreach ($mapping as $index) {
-                foreach ($index ['mappings'] as $name => $type) {
-                    $already = $contenttypeRepository->findByName($name);
-                    if (!$already || $already->getDeleted()) {
-                        $referencedContentTypes [] = [
-                            'name' => $name,
-                            'alias' => $alias,
-                            'envId' => $environment->getId()
-                        ];
-                    }
-                }
-            }
-        }
 
         return $this->render('@EMSCore/contenttype/unreferenced.html.twig', [
-            'referencedContentTypes' => $referencedContentTypes
+            'referencedContentTypes' => $contentTypeService->getUnreferencedContentTypes(),
         ]);
     }
 
     /**
      * Try to find (recursively) if there is a new field to add to the content type
      *
-     * @param array $formArray
+     * @param array<mixed> $formArray
      * @param FieldType $fieldType
      * @param LoggerInterface $logger
      * @return bool|string
@@ -583,7 +557,7 @@ class ContentTypeController extends AppController
     /**
      * Try to find (recursively) if there is a new field to add to the content type
      *
-     * @param array $formArray
+     * @param array<mixed> $formArray
      * @param FieldType $fieldType
      * @param LoggerInterface $logger
      * @return bool|string
@@ -632,7 +606,7 @@ class ContentTypeController extends AppController
     /**
      * Try to find (recursively) if there is a field to duplicate
      *
-     * @param array $formArray
+     * @param array<mixed> $formArray
      * @param FieldType $fieldType
      * @param LoggerInterface $logger
      * @return bool|string
@@ -683,7 +657,7 @@ class ContentTypeController extends AppController
     /**
      * Try to find (recursively) if there is a field to remove from the content type
      *
-     * @param array $formArray
+     * @param array<mixed> $formArray
      * @param FieldType $fieldType
      * @param LoggerInterface $logger
      * @return bool
@@ -711,7 +685,7 @@ class ContentTypeController extends AppController
     /**
      * Try to find (recursively) if there is a container where subfields must be reordered in the content type
      *
-     * @param array $formArray
+     * @param array<mixed> $formArray
      * @param FieldType $fieldType
      * @param LoggerInterface $logger
      * @return bool
@@ -719,11 +693,16 @@ class ContentTypeController extends AppController
     private function reorderFields(array $formArray, FieldType $fieldType, LoggerInterface $logger)
     {
         if (array_key_exists('reorder', $formArray)) {
+            /** @var string[] $keys */
             $keys = array_keys($formArray);
             /** @var FieldType $child */
             foreach ($fieldType->getChildren() as $child) {
                 if (!$child->getDeleted()) {
-                    $child->setOrderKey(array_search('ems_' . $child->getName(), $keys));
+                    $order = \array_search('ems_' . $child->getName(), $keys, true);
+                    if ($order === false || !is_int($order)) {
+                        continue;
+                    }
+                    $child->setOrderKey($order);
                 }
             }
 
@@ -784,7 +763,7 @@ class ContentTypeController extends AppController
      * @throws OptimisticLockException
      * @Route("/content-type/{id}", name="contenttype.edit")
      */
-    public function editAction($id, Request $request, LoggerInterface $logger)
+    public function editAction($id, Request $request, LoggerInterface $logger, Mapping $mappingService)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -803,22 +782,20 @@ class ContentTypeController extends AppController
             return $this->redirectToRoute('contenttype.index');
         }
 
+        $environment = $contentType->getEnvironment();
+        if ($environment === null) {
+            throw new \RuntimeException('Unexpected null environment');
+        }
+
         $inputContentType = $request->request->get('content_type');
-
-        /** @var  Client $client */
-        $client = $this->getElasticsearch();
-
         try {
-            $mapping = $client->indices()->getMapping([
-                'index' => $contentType->getEnvironment()->getAlias(),
-                'type' => $contentType->getName()
-            ]);
+            $mapping = $mappingService->getMapping([$environment->getName()]);
         } catch (\Throwable $e) {
             $logger->warning('log.contenttype.mapping.not_found', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
             ]);
-            $mapping = [];
+            $mapping = null;
         }
 
         $form = $this->createForm(ContentTypeType::class, $contentType, [
@@ -870,7 +847,7 @@ class ContentTypeController extends AppController
         return $this->render('@EMSCore/contenttype/edit.html.twig', [
             'form' => $form->createView(),
             'contentType' => $contentType,
-            'mapping' => isset(current($mapping) ['mappings'] [$contentType->getName()] ['properties']) ? current($mapping) ['mappings'] [$contentType->getName()] ['properties'] : false
+            'mapping' => $mapping
         ]);
     }
 
@@ -918,7 +895,12 @@ class ContentTypeController extends AppController
 
             if (array_key_exists('save', $inputContentType) || array_key_exists('saveAndClose', $inputContentType) || array_key_exists('saveAndReorder', $inputContentType)) {
                 $contentType->getFieldType()->updateOrderKeys();
-                $contentType->setDirty($contentType->getEnvironment()->getManaged());
+                $env = $contentType->getEnvironment();
+                if (!$env) {
+                    throw new \RuntimeException('Unexpected not found environment');
+                }
+                $managed = $env->getManaged();
+                $contentType->setDirty($managed);
 
                 if ((array_key_exists('saveAndClose', $inputContentType) || array_key_exists('saveAndReorder', $inputContentType)) && $contentType->getDirty()) {
                     $this->getContentTypeService()->updateMapping($contentType);
@@ -1019,7 +1001,12 @@ class ContentTypeController extends AppController
 
         if (in_array($action, ['save', 'saveAndClose'])) {
             $field->updateOrderKeys();
-            $contentType->setDirty($contentType->getEnvironment()->getManaged());
+            $env = $contentType->getEnvironment();
+            if (!$env) {
+                throw new \RuntimeException('Unexpected not found environment');
+            }
+            $managed = $env->getManaged();
+            $contentType->setDirty($managed);
 
 
             $this->getContentTypeService()->persist($contentType);

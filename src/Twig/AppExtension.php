@@ -5,12 +5,10 @@ namespace EMS\CoreBundle\Twig;
 use Caxy\HtmlDiff\HtmlDiff;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Elastica\Query\Term;
 use Elasticsearch\Client;
-use EMS\CommonBundle\Elasticsearch\Exception\SingleResultException;
+use EMS\CommonBundle\Elasticsearch\Exception\NotSingleResultException;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Helper\Text\Encoder;
-use EMS\CommonBundle\Search\Search as CommonSearch;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Storage\Processor\Config;
 use EMS\CommonBundle\Twig\RequestRuntime;
@@ -130,6 +128,7 @@ class AppExtension extends AbstractExtension
             new TwigFunction('call_user_func', array($this, 'callUserFunc')),
             new TwigFunction('emsco_generate_email', array($this, 'generateEmailMessage')),
             new TwigFunction('emsco_send_email', array($this, 'sendEmail')),
+            new TwigFunction('emsco_users_enabled', [UserRuntime::class, 'getUsersEnabled']),
         ];
     }
 
@@ -888,13 +887,11 @@ class AppExtension extends AbstractExtension
                     }
 
                     $index = $this->contentTypeService->getIndex($contentType);
+                    $search = $this->elasticaService->generateTermsSearch([$index], '_id', [$ouuid]);
 
-                    $termQuery = new Term();
-                    $termQuery->setTerm('_id', $ouuid);
-                    $search = new CommonSearch([$index], $termQuery);
                     try {
                         $document = $this->elasticaService->singleSearch($search);
-                    } catch (SingleResultException $e) {
+                    } catch (NotSingleResultException $e) {
                         $document = null;
                     }
 
@@ -949,12 +946,10 @@ class AppExtension extends AbstractExtension
 
                     $index = $this->contentTypeService->getIndex($contentType);
 
-                    $termQuery = new Term();
-                    $termQuery->setTerm('_id', $ouuid);
-                    $search = new CommonSearch([$index], $termQuery);
+                    $search = $this->elasticaService->generateTermsSearch([$index], '_id', [$ouuid]);
                     try {
                         $document = $this->elasticaService->singleSearch($search);
-                    } catch (SingleResultException $e) {
+                    } catch (NotSingleResultException $e) {
                         $document = null;
                     }
 

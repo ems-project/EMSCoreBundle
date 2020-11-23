@@ -128,6 +128,7 @@ class AppExtension extends AbstractExtension
             new TwigFunction('call_user_func', array($this, 'callUserFunc')),
             new TwigFunction('emsco_generate_email', array($this, 'generateEmailMessage')),
             new TwigFunction('emsco_send_email', array($this, 'sendEmail')),
+            new TwigFunction('emsco_users_enabled', [UserRuntime::class, 'getUsersEnabled']),
         ];
     }
 

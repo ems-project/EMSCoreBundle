@@ -21,6 +21,12 @@ services:
             - '@ems.service.revision'
         tags:
             - { name: twig.runtime, priority: -2000 }
+    app.twig_extension_user: '@EMS\CoreBundle\Twig\UserRuntime'
+    EMS\CoreBundle\Twig\UserRuntime:
+        arguments:
+            - '@EMS\CoreBundle\Repository\UserRepository'
+        tags:
+            - { name: twig.runtime, priority: -2000 }
     app.listener.request:
         class: EMS\CoreBundle\EventListener\RequestListener
         arguments: ['@twig', '@doctrine', '@logger', '@router', '@service_container', '@security.authorization_checker', '@session', '%ems_core.allow_user_registration%', '%ems_core.user_login_route%', '%ems_core.user_registration_route%']
@@ -356,7 +362,7 @@ services:
         class: EMS\CoreBundle\Form\Field\FieldTypePickerType
         tags:
             - { name: form.type }
-            
+
     ems.form.field.wysiwygstylessetpickertype:
         class: EMS\CoreBundle\Form\Field\WysiwygStylesSetPickerType
         arguments: ['@ems.service.wysiwyg_styles_set']
@@ -417,7 +423,7 @@ services:
         arguments: ['@ems.service.alias']
         tags:
             - { name: form.type }
-            
+
 
 ### regular services
     ems.service.mapping:
@@ -794,6 +800,11 @@ services:
         factory: ['@doctrine.orm.default_entity_manager', getRepository]
         arguments:
             - EMS\CoreBundle\Entity\Revision
+    EMS\CoreBundle\Repository\UserRepository:
+        class: Doctrine\ORM\EntityRepository
+        factory: ['@doctrine.orm.default_entity_manager', getRepository]
+        arguments:
+            - EMS\CoreBundle\Entity\User
     ems.repository.form_submission:
         class: EMS\CoreBundle\Repository\FormSubmissionRepository
         arguments:

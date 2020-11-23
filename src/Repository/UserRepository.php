@@ -3,6 +3,8 @@
 namespace EMS\CoreBundle\Repository;
 
 
+use EMS\CoreBundle\Core\User\UserList;
+
 /**
  * UserRepository
  *
@@ -11,7 +13,8 @@ namespace EMS\CoreBundle\Repository;
  */
 class UserRepository extends \Doctrine\ORM\EntityRepository implements UserRepositoryInterface
 {
-    public function findForRoleAndCircles($role, $circles)
+
+    public function findForRoleAndCircles($role, $circles): array
     {
         $resultSet = $this->createQueryBuilder('u')
             ->where('u.roles like :role')
@@ -30,5 +33,13 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserRepos
             }
         }
         return $resultSet;
+    }
+    
+    public function getUsersEnabled() : UserList
+    {
+        $resultSet = $this->findBy([
+            'enabled' => true
+        ]);
+        return new UserList($resultSet);
     }
 }

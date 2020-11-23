@@ -4,7 +4,6 @@ namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\NoResultException;
-use Elastica\Aggregation\Terms;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\BadRequest400Exception;
 use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
@@ -563,12 +562,9 @@ class ContentTypeService
      */
     private function getUnreferencedContentTypesPerEnvironment(Environment $environment): array
     {
-        $aggregateByContentType = new Terms(self::CONTENT_TYPE_AGGREGATION_NAME);
-        $aggregateByContentType->setField(EMSSource::FIELD_CONTENT_TYPE);
-        $aggregateByContentType->setSize(30);
         $search = new Search([$environment->getAlias()]);
         $search->setSize(0);
-        $search->addAggregation($aggregateByContentType);
+        $search->addTermsAggregation(self::CONTENT_TYPE_AGGREGATION_NAME, EMSSource::FIELD_CONTENT_TYPE, 30);
         $resultSet = $this->elasticaService->search($search);
         $contentTypeNames = $resultSet->getAggregation(self::CONTENT_TYPE_AGGREGATION_NAME)['buckets'] ?? [];
         $unreferencedContentTypes = [];

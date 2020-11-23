@@ -752,8 +752,10 @@ class ElasticsearchController extends AppController
             $esSearch = $searchService->generateSearch($search);
             $esSearch->setFrom(($page - 1) * $this->getParameter('ems_core.paging_size'));
             $esSearch->setSize($this->getParameter('ems_core.paging_size'));
-            $esSearch->addAggregations($aggregateOptionService->getAllAggregations());
 
+            $esSearch->addTermsAggregation(AggregateOptionService::CONTENT_TYPES_AGGREGATION, $aggregateOptionService->getContentTypeField(), 15);
+            $esSearch->addTermsAggregation(AggregateOptionService::INDEXES_AGGREGATION, '_index', 15);
+            $esSearch->addAggregations($aggregateOptionService->getAllAggregations());
 
             try {
                 $response = CommonResponse::fromResultSet($elasticaService->search($esSearch));

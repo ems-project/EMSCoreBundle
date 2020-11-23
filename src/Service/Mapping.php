@@ -3,7 +3,6 @@
 namespace EMS\CoreBundle\Service;
 
 use Elastica\Client as ElasticaClient;
-use Elastica\Exception\ResponseException;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\DataField;
@@ -173,7 +172,7 @@ class Mapping
                 foreach ($mappings as $mapping) {
                     $mergeMapping = \array_merge_recursive($mapping['properties'], $mergeMapping);
                 }
-            } catch (ResponseException $e) {
+            } catch (\Throwable $e) {
                 continue;
             }
         }

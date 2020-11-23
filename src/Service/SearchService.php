@@ -2,8 +2,6 @@
 
 namespace EMS\CoreBundle\Service;
 
-use Elastica\Query\BoolQuery;
-use Elastica\Query\Term;
 use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CommonBundle\Elasticsearch\Exception\NotSingleResultException;
@@ -53,7 +51,7 @@ class SearchService
     {
         $mapping = $this->mapping->getMapping($search->getEnvironments());
 
-        $boolQuery = new BoolQuery();
+        $boolQuery = $this->elasticaService->getBoolQuery();
 
         foreach ($search->getFilters() as $filter) {
             if (!$esFilter = $filter->generateEsFilter()) {
@@ -114,11 +112,8 @@ class SearchService
         if ($environment === null) {
             throw new \RuntimeException('Unexpected nul environment');
         }
-        $idTerm = new Term();
-        $idTerm->setTerm('_id', $ouuid);
-        $query = $this->elasticaService->filterByContentTypes($idTerm, [$contentType->getName()]);
         $index = $this->contentTypeService->getIndex($contentType, $environment);
-        $search = new CommonSearch([$index], $query);
+        $search = $this->elasticaService->generateTermsSearch([$index], '_id', [$ouuid], [$contentType->getName()]);
         try {
             return $this->elasticaService->singleSearch($search);
         } catch (NotSingleResultException $e) {

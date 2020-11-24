@@ -25,6 +25,7 @@ class ContentTransformContext
         $context = new self();
         $context->dataFieldType = $dataFieldType;
         $context->data = $data;
+
         return $context;
     }
 

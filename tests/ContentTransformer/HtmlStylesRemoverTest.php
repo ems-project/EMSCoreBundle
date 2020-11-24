@@ -3,9 +3,8 @@
 namespace EMS\CoreBundle\Tests\ContentTransformer;
 
 use EMS\CoreBundle\ContentTransformer\ContentTransformContext;
-use EMS\CoreBundle\Form\DataField\WysiwygFieldType;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use EMS\CoreBundle\ContentTransformer\HtmlStylesRemover;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class HtmlStylesRemoverTest extends WebTestCase
 {

@@ -3,10 +3,8 @@
 namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManager;
 use Elasticsearch\Client;
-use EMS\CommonBundle\Storage\Service\StorageInterface;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\UploadedAssetRepository;
 use EMS\CoreBundle\Service\FileService;
@@ -37,7 +35,6 @@ class CleanAssetCommand extends EmsCommand
             ->setDescription('Unreference useless assets (no files are deleted from storages)');
     }
 
-
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         /** @var EntityManager $em */
@@ -65,7 +62,7 @@ class CleanAssetCommand extends EmsCommand
 
             foreach ($hashes as $hash) {
                 $usedCounter = $revRepo->hashReferenced($hash['hash']);
-                if ($usedCounter === 0) {
+                if (0 === $usedCounter) {
                     $repository->dereference($hash['hash']);
                     ++$filesDereference;
                 } else {
@@ -84,6 +81,7 @@ class CleanAssetCommand extends EmsCommand
         if ($filesInUsed) {
             $output->writeln("<comment>$filesInUsed files are referenced $totalCounter times</comment>");
         }
+
         return 0;
     }
 }

@@ -30,6 +30,7 @@ class AggregateOptionService extends EntityService
         if (\version_compare($this->elasticaService->getVersion(), '6.0') >= 0) {
             return EMSSource::FIELD_CONTENT_TYPE;
         }
+
         return '_type';
     }
 
@@ -37,7 +38,7 @@ class AggregateOptionService extends EntityService
     {
         return 'EMSCoreBundle:AggregateOption';
     }
-    
+
     protected function getEntityName()
     {
         return 'Aggregate Option';
@@ -54,8 +55,9 @@ class AggregateOptionService extends EntityService
             if (!$option instanceof AggregateOption) {
                 throw new \RuntimeException('Unexpected AggregateOption object');
             }
-            $aggregations[] = $this->parseAggregation(sprintf('agg_%s', $id), $option->getConfigDecoded());
+            $aggregations[] = $this->parseAggregation(\sprintf('agg_%s', $id), $option->getConfigDecoded());
         }
+
         return $aggregations;
     }
 
@@ -65,12 +67,13 @@ class AggregateOptionService extends EntityService
     private function parseAggregation(string $name, array $config): ElasticaAggregation
     {
         $aggregation = new ElasticaAggregation($name);
-        if (\count($config) !== 1) {
+        if (1 !== \count($config)) {
             throw new \RuntimeException('Unexpected aggregation with multiple, or zero, basename');
         }
         foreach ($config as $basename => $param) {
             $aggregation->setConfig($basename, $param);
         }
+
         return $aggregation;
     }
 }

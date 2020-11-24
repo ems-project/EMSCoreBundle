@@ -12,27 +12,27 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 abstract class EntityService
 {
-    /**@var Registry $doctrine */
+    /** @var Registry */
     protected $doctrine;
-    /**@var LoggerInterface*/
+    /** @var LoggerInterface */
     protected $logger;
-    /**@var TranslatorInterface $translator */
+    /** @var TranslatorInterface */
     protected $translator;
-    
+
     public function __construct(Registry $doctrine, LoggerInterface $logger, TranslatorInterface $translator)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
         $this->translator = $translator;
     }
-    
+
     abstract protected function getRepositoryIdentifier();
+
     abstract protected function getEntityName();
-    
-    
+
     public function reorder(FormInterface $reorderForm)
     {
-        $order = json_decode($reorderForm->getData()['items'], true);
+        $order = \json_decode($reorderForm->getData()['items'], true);
         $i = 1;
         foreach ($order as $id) {
             $item = $this->get($id);
@@ -40,7 +40,7 @@ abstract class EntityService
             $this->save($item);
         }
     }
-    
+
     /**
      * @return array<mixed>
      */
@@ -48,30 +48,32 @@ abstract class EntityService
     {
         /** @var SortOption[] $items */
         $items = $this->getRepository()->findAll();
+
         return $items;
     }
-    
+
     /**
      * @return ObjectRepository
      */
     private function getRepository()
     {
         $em = $this->doctrine->getManager();
+
         return $em->getRepository($this->getRepositoryIdentifier());
     }
-    
+
     /**
+     * @param int $id
      *
-     * @param integer $id
      * @return SortOption|null
      */
     public function get($id)
     {
         /** @var SortOption|null $item */
         $item = $this->getRepository()->find($id);
+
         return $item;
     }
-
 
     public function create($entity)
     {
@@ -81,7 +83,7 @@ abstract class EntityService
             ->select('COUNT(a)')
             ->getQuery()
             ->getSingleScalarResult();
-        
+
         $entity->setOrderKey(100 + $count);
         $this->update($entity);
 
@@ -90,7 +92,7 @@ abstract class EntityService
             'entity_name' => $entity->getName(),
         ]);
     }
-    
+
     public function save($entity)
     {
         $this->update($entity);
@@ -99,14 +101,14 @@ abstract class EntityService
             'entity_name' => $entity->getName(),
         ]);
     }
-    
+
     private function update($entity)
     {
         $em = $this->doctrine->getManager();
         $em->persist($entity);
         $em->flush();
     }
-    
+
     public function remove($entity)
     {
         $em = $this->doctrine->getManager();

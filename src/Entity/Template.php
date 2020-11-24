@@ -7,7 +7,7 @@ use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 
 /**
- * DataField
+ * DataField.
  *
  * @ORM\Table(name="template")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\TemplateRepository")
@@ -15,7 +15,6 @@ use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
  */
 class Template extends JsonDeserializer implements \JsonSerializable
 {
-    
     /**
      * @var int
      *
@@ -52,34 +51,34 @@ class Template extends JsonDeserializer implements \JsonSerializable
      * @ORM\Column(name="icon", type="string", length=255, nullable=true)
      */
     protected $icon;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="body", type="text", nullable=true)
      */
     protected $body;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="header", type="text", nullable=true)
      */
     protected $header;
-    
+
     /**
      * @var bool
      *
      * @ORM\Column(name="edit_with_wysiwyg", type="boolean")
      */
     protected $editWithWysiwyg;
-    
+
     /** @var string
      *
      * @ORM\Column(name="render_option", type="string")
      */
     protected $renderOption;
-    
+
     /**
      * @var int
      *
@@ -92,88 +91,87 @@ class Template extends JsonDeserializer implements \JsonSerializable
      * @ORM\JoinColumn(name="content_type_id", referencedColumnName="id")
      */
     protected $contentType;
-    
+
     /**
      * @var bool
      *
      * @ORM\Column(name="accumulate_in_one_file", type="boolean")
      */
     protected $accumulateInOneFile;
-    
+
     /** @var string
 
-    /**
      * @var bool
      *
      * @ORM\Column(name="preview", type="boolean")
      */
     protected $preview;
-    
+
     /** @var string
      *
      * @ORM\Column(name="mime_type", type="string", nullable=true)
      */
     protected $mimeType;
-    
+
     /** @var string
      *
      * @ORM\Column(name="filename", type="text", nullable=true)
      */
     protected $filename;
-    
+
     /** @var string
      *
      * @ORM\Column(name="extension", type="string", nullable=true)
      */
     protected $extension;
-    
+
     /**
      * @var bool
      *
      * @ORM\Column(name="active", type="boolean")
      */
     protected $active;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="role", type="string")
      */
     protected $role;
-       
-       /**
-        * @ORM\ManyToMany(targetEntity="Environment", cascade={"persist"})
-        * @ORM\JoinTable(name="environment_template",
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Environment", cascade={"persist"})
+     * @ORM\JoinTable(name="environment_template",
      *      joinColumns={@ORM\JoinColumn(name="template_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="environment_id", referencedColumnName="id")}
      *      )
      */
     protected $environments;
-       
-       /** @var string
-       *
-       * @ORM\Column(name="role_to", type="string")
-       */
+
+    /** @var string
+     *
+     * @ORM\Column(name="role_to", type="string")
+     */
     protected $roleTo;
-       
-       /** @var string
-       *
-       * @ORM\Column(name="role_cc", type="string")
-       */
+
+    /** @var string
+     *
+     * @ORM\Column(name="role_cc", type="string")
+     */
     protected $roleCc;
-       
-       /**
-        * @var array
-        *
-        * @ORM\Column(name="circles_to", type="json_array", nullable=true)
-        */
+
+    /**
+     * @var array
+     *
+     * @ORM\Column(name="circles_to", type="json_array", nullable=true)
+     */
     protected $circlesTo;
-       
-       /**
-        * @var string
-        *
-        * @ORM\Column(name="response_template", type="text", nullable=true)
-        */
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="response_template", type="text", nullable=true)
+     */
     protected $responseTemplate;
 
     /** @var string
@@ -229,14 +227,11 @@ class Template extends JsonDeserializer implements \JsonSerializable
             $this->orderKey = 0;
         }
     }
-    
-    
-
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -244,7 +239,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set created
+     * Set created.
      *
      * @param \DateTime $created
      *
@@ -258,7 +253,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get created
+     * Get created.
      *
      * @return \DateTime
      */
@@ -268,7 +263,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set modified
+     * Set modified.
      *
      * @param \DateTime $modified
      *
@@ -282,7 +277,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get modified
+     * Get modified.
      *
      * @return \DateTime
      */
@@ -292,7 +287,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
      *
@@ -306,7 +301,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -316,7 +311,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set icon
+     * Set icon.
      *
      * @param string $icon
      *
@@ -330,7 +325,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get icon
+     * Get icon.
      *
      * @return string
      */
@@ -340,7 +335,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set body
+     * Set body.
      *
      * @param string $body
      *
@@ -354,7 +349,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get body
+     * Get body.
      *
      * @return string
      */
@@ -364,9 +359,9 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set editWithWysiwyg
+     * Set editWithWysiwyg.
      *
-     * @param boolean $editWithWysiwyg
+     * @param bool $editWithWysiwyg
      *
      * @return Template
      */
@@ -378,9 +373,9 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get editWithWysiwyg
+     * Get editWithWysiwyg.
      *
-     * @return boolean
+     * @return bool
      */
     public function getEditWithWysiwyg()
     {
@@ -388,7 +383,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set renderOption
+     * Set renderOption.
      *
      * @param string $renderOption
      *
@@ -402,7 +397,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get renderOption
+     * Get renderOption.
      *
      * @return string
      */
@@ -412,9 +407,9 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set orderKey
+     * Set orderKey.
      *
-     * @param integer $orderKey
+     * @param int $orderKey
      *
      * @return Template
      */
@@ -426,9 +421,9 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get orderKey
+     * Get orderKey.
      *
-     * @return integer
+     * @return int
      */
     public function getOrderKey()
     {
@@ -436,9 +431,9 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set accumulateInOneFile
+     * Set accumulateInOneFile.
      *
-     * @param boolean $accumulateInOneFile
+     * @param bool $accumulateInOneFile
      *
      * @return Template
      */
@@ -450,9 +445,9 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get accumulateInOneFile
+     * Get accumulateInOneFile.
      *
-     * @return boolean
+     * @return bool
      */
     public function getAccumulateInOneFile()
     {
@@ -460,9 +455,9 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set preview
+     * Set preview.
      *
-     * @param boolean $preview
+     * @param bool $preview
      *
      * @return Template
      */
@@ -474,9 +469,9 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get preview
+     * Get preview.
      *
-     * @return boolean
+     * @return bool
      */
     public function getPreview()
     {
@@ -484,7 +479,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set mimeType
+     * Set mimeType.
      *
      * @param string $mimeType
      *
@@ -498,7 +493,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get mimeType
+     * Get mimeType.
      *
      * @return string
      */
@@ -508,7 +503,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set filename
+     * Set filename.
      *
      * @param string $filename
      *
@@ -522,7 +517,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get filename
+     * Get filename.
      *
      * @return string
      */
@@ -532,7 +527,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set extension
+     * Set extension.
      *
      * @param string $extension
      *
@@ -546,7 +541,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get extension
+     * Get extension.
      *
      * @return string
      */
@@ -556,9 +551,9 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set active
+     * Set active.
      *
-     * @param boolean $active
+     * @param bool $active
      *
      * @return Template
      */
@@ -570,9 +565,9 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get active
+     * Get active.
      *
-     * @return boolean
+     * @return bool
      */
     public function getActive()
     {
@@ -580,7 +575,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set role
+     * Set role.
      *
      * @param string $role
      *
@@ -594,7 +589,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get role
+     * Get role.
      *
      * @return string
      */
@@ -604,7 +599,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set roleTo
+     * Set roleTo.
      *
      * @param string $roleTo
      *
@@ -618,7 +613,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get roleTo
+     * Get roleTo.
      *
      * @return string
      */
@@ -628,7 +623,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set roleCc
+     * Set roleCc.
      *
      * @param string $roleCc
      *
@@ -642,7 +637,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get roleCc
+     * Get roleCc.
      *
      * @return string
      */
@@ -652,7 +647,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set circlesTo
+     * Set circlesTo.
      *
      * @param array $circlesTo
      *
@@ -666,7 +661,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get circlesTo
+     * Get circlesTo.
      *
      * @return array
      */
@@ -676,7 +671,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set responseTemplate
+     * Set responseTemplate.
      *
      * @param string $responseTemplate
      *
@@ -690,7 +685,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get responseTemplate
+     * Get responseTemplate.
      *
      * @return string
      */
@@ -700,7 +695,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set contentType
+     * Set contentType.
      *
      * @param \EMS\CoreBundle\Entity\ContentType $contentType
      *
@@ -714,7 +709,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get contentType
+     * Get contentType.
      *
      * @return \EMS\CoreBundle\Entity\ContentType
      */
@@ -722,8 +717,9 @@ class Template extends JsonDeserializer implements \JsonSerializable
     {
         return $this->contentType;
     }
+
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -731,19 +727,16 @@ class Template extends JsonDeserializer implements \JsonSerializable
         $this->public = false;
     }
 
-
     /**
-     * ToString
+     * ToString.
      */
     public function __toString()
     {
         return $this->name;
     }
-    
+
     /**
-     * Add environment
-     *
-     * @param \EMS\CoreBundle\Entity\Environment $environment
+     * Add environment.
      *
      * @return Template
      */
@@ -755,9 +748,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Remove environment
-     *
-     * @param \EMS\CoreBundle\Entity\Environment $environment
+     * Remove environment.
      */
     public function removeEnvironment(\EMS\CoreBundle\Entity\Environment $environment)
     {
@@ -765,7 +756,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get environments
+     * Get environments.
      *
      * @return \Doctrine\Common\Collections\Collection
      */
@@ -773,13 +764,13 @@ class Template extends JsonDeserializer implements \JsonSerializable
     {
         return $this->environments->toArray();
     }
-    
+
     /**
-     * is Environment Exist
+     * is Environment Exist.
      *
      * Use in twig object-views-button.html.twig
      *
-     * @return boolean
+     * @return bool
      */
     public function isEnvironmentExist($name)
     {
@@ -788,11 +779,12 @@ class Template extends JsonDeserializer implements \JsonSerializable
                 return true;
             }
         }
+
         return false;
     }
 
     /**
-     * Set emailContentType
+     * Set emailContentType.
      *
      * @param string $emailContentType
      *
@@ -806,7 +798,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get emailContentType
+     * Get emailContentType.
      *
      * @return string
      */
@@ -816,7 +808,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set header
+     * Set header.
      *
      * @param string $header
      *
@@ -830,7 +822,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get header
+     * Get header.
      *
      * @return string
      */
@@ -849,11 +841,13 @@ class Template extends JsonDeserializer implements \JsonSerializable
 
     /**
      * @param string $orientation
+     *
      * @return Template
      */
     public function setOrientation($orientation)
     {
         $this->orientation = $orientation;
+
         return $this;
     }
 
@@ -867,29 +861,25 @@ class Template extends JsonDeserializer implements \JsonSerializable
 
     /**
      * @param string $size
+     *
      * @return Template
      */
     public function setSize($size)
     {
         $this->size = $size;
+
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isPublic(): bool
     {
         return $this->public;
     }
 
-    /**
-     * @param bool $public
-     * @return Template
-     */
     public function setPublic(bool $public): Template
     {
         $this->public = $public;
+
         return $this;
     }
 
@@ -903,11 +893,13 @@ class Template extends JsonDeserializer implements \JsonSerializable
 
     /**
      * @param string $allowOrigin
+     *
      * @return Template
      */
     public function setAllowOrigin($allowOrigin)
     {
         $this->allowOrigin = $allowOrigin;
+
         return $this;
     }
 
@@ -921,27 +913,33 @@ class Template extends JsonDeserializer implements \JsonSerializable
 
     /**
      * @param string $disposition
+     *
      * @return Template
      */
     public function setDisposition($disposition)
     {
         $this->disposition = $disposition;
+
         return $this;
     }
 
     /**
-     * Specify data which should be serialized to JSON
-     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * Specify data which should be serialized to JSON.
+     *
+     * @see https://php.net/manual/en/jsonserializable.jsonserialize.php
+     *
      * @return mixed data which can be serialized by <b>json_encode</b>,
-     * which is a value of any type other than a resource.
+     *               which is a value of any type other than a resource
+     *
      * @since 5.4.0
      */
     public function jsonSerialize()
     {
-        $json = new JsonClass(get_object_vars($this), __CLASS__);
+        $json = new JsonClass(\get_object_vars($this), __CLASS__);
         $json->removeProperty('id');
         $json->removeProperty('contentType');
         $json->removeProperty('environments');
+
         return $json;
     }
 

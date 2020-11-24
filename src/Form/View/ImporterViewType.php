@@ -43,17 +43,17 @@ class ImporterViewType extends ViewType
         $this->router = $router;
     }
 
-    public function getLabel() : string
+    public function getLabel(): string
     {
-        return "Importer: form to import a zip file containing JSON files";
+        return 'Importer: form to import a zip file containing JSON files';
     }
 
-    public function getName() : string
+    public function getName(): string
     {
-        return "Importer";
+        return 'Importer';
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options) : void
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
         $builder
@@ -79,13 +79,12 @@ class ImporterViewType extends ViewType
             ]);
     }
 
-
-    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request) : array
+    public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
         return [];
     }
 
-    public function generateResponse(View $view, Request $request) : Response
+    public function generateResponse(View $view, Request $request): Response
     {
         $form = $this->formFactory->create(ImporterType::class, [
             'view' => $view,
@@ -97,9 +96,8 @@ class ImporterViewType extends ViewType
             $fileArray = $form->getData()['archive'];
             $filename = $this->fileService->getFile($fileArray[EmsFields::CONTENT_FILE_HASH_FIELD] ?? 'missing');
 
-
-            $command = sprintf(
-                "ems:make:document %s %s%s%s%s%s%s",
+            $command = \sprintf(
+                'ems:make:document %s %s%s%s%s%s%s',
                 $view->getContentType()->getName(),
                 $filename,
                 $view->getOptions()['rawImport'] ?? false ? ' --raw' : '',
@@ -115,6 +113,7 @@ class ImporterViewType extends ViewType
             }
 
             $job = $this->jobService->createCommand($user, $command);
+
             return new  RedirectResponse($this->router->generate('job.status', [
                 'job' => $job->getId(),
             ]));
@@ -127,6 +126,7 @@ class ImporterViewType extends ViewType
             'contentType' => $view->getContentType(),
             'environment' => $view->getContentType()->getEnvironment(),
         ]));
+
         return $response;
     }
 }

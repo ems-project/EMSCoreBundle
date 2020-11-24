@@ -23,14 +23,11 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class SearchFormType extends AbstractType
 {
-
-
-
-    /** @var AuthorizationCheckerInterface $authorizationChecker*/
+    /** @var AuthorizationCheckerInterface */
     private $authorizationChecker;
-    /** @var SortOptionService $sortOptionService*/
+    /** @var SortOptionService */
     private $sortOptionService;
-    /** @var SearchFieldOptionService $searchFieldOptionService*/
+    /** @var SearchFieldOptionService */
     private $searchFieldOptionService;
 
     public function __construct(AuthorizationCheckerInterface $authorizationChecker, SortOptionService $sortOptionService, SearchFieldOptionService $searchFieldOptionService)
@@ -41,9 +38,7 @@ class SearchFormType extends AbstractType
     }
 
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -51,22 +46,21 @@ class SearchFormType extends AbstractType
 
         $searchFields = [];
         $searchFieldsData = [];
-        /**@var SortOption $sortOption*/
+        /* @var SortOption $sortOption */
         foreach ($this->searchFieldOptionService->getAll() as $searchFieldOption) {
             $searchFieldsData[$searchFieldOption->getName()] = $searchFieldOption->getField();
             $searchFields[$searchFieldOption->getName()] = $searchFieldOption;
         }
 
-
-        $builder->add('filters', CollectionType::class, array(
-            'entry_type'   => SearchFilterType::class,
-            'allow_add'    => true,
+        $builder->add('filters', CollectionType::class, [
+            'entry_type' => SearchFilterType::class,
+            'allow_add' => true,
             'entry_options' => [
-                'is_super'     => $isSuper,
+                'is_super' => $isSuper,
                 'searchFieldsData' => $searchFieldsData,
                 'searchFields' => $searchFields,
             ],
-        ));
+        ]);
         if ($options['light']) {
             $builder->add('applyFilters', SubmitEmsType::class, [
                 'attr' => [
@@ -83,7 +77,7 @@ class SearchFormType extends AbstractType
             } else {
                 $sortFields = [];
                 $sortFieldIcons = [];
-                /**@var SortOption $sortOption*/
+                /** @var SortOption $sortOption */
                 foreach ($sortOptions as $sortOption) {
                     $sortFields[$sortOption->getName()] = $sortOption->getField();
                     $sortFieldIcons[$sortOption->getField()] = $sortOption->getIcon();
@@ -94,7 +88,7 @@ class SearchFormType extends AbstractType
                     'choices' => $sortFields,
                     'choice_attr' => function ($category, $key, $index) use ($sortFieldIcons) {
                         return [
-                            'data-content' => '<span class=""><i class="' . ($sortFieldIcons[$index] ?: 'fa fa-square') . '"></i>&nbsp;&nbsp;' . $key . '</span>'
+                            'data-content' => '<span class=""><i class="'.($sortFieldIcons[$index] ?: 'fa fa-square').'"></i>&nbsp;&nbsp;'.$key.'</span>',
                         ];
                     },
                     'attr' => [
@@ -103,7 +97,6 @@ class SearchFormType extends AbstractType
                 ]);
             }
 
-
             $builder->add('sortOrder', ChoiceType::class, [
                 'choices' => [
                     'Ascending' => 'asc',
@@ -111,7 +104,7 @@ class SearchFormType extends AbstractType
                 ],
                 'choice_attr' => function ($category, $key, $index) {
                     return [
-                        'data-content' => '<span class=""><i class="fa fa-sort-' . $index . '"></i>&nbsp;&nbsp;' . $key . '</span>'
+                        'data-content' => '<span class=""><i class="fa fa-sort-'.$index.'"></i>&nbsp;&nbsp;'.$key.'</span>',
                     ];
                 },
                 'attr' => [
@@ -124,18 +117,18 @@ class SearchFormType extends AbstractType
                 'required' => false,
                 'empty_data' => '1',
                 'attr' => [
-                    'min' => 0
-                ]
+                    'min' => 0,
+                ],
             ]);
 
             $builder->add('search', SubmitEmsType::class, [
                     'attr' => [
-                            'class' => 'btn-primary btn-md'
+                            'class' => 'btn-primary btn-md',
                     ],
-                    'icon' => 'fa fa-search'
+                    'icon' => 'fa fa-search',
             ])->add('exportResults', SubmitEmsType::class, [
                     'attr' => [
-                            'class' => 'btn-primary btn-sm'
+                            'class' => 'btn-primary btn-sm',
                     ],
                     'icon' => 'glyphicon glyphicon-export',
             ])->add('environments', EnvironmentPickerType::class, [
@@ -149,7 +142,7 @@ class SearchFormType extends AbstractType
             if (!$options['savedSearch']) {
                 $builder->add('save', SubmitEmsType::class, [
                         'attr' => [
-                                'class' => 'btn-primary btn-md'
+                                'class' => 'btn-primary btn-md',
                         ],
                         'icon' => 'fa fa-save',
                 ]);
@@ -157,9 +150,6 @@ class SearchFormType extends AbstractType
         }
     }
 
-    /**
-     * @param OptionsResolver $resolver
-     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
@@ -170,11 +160,9 @@ class SearchFormType extends AbstractType
             'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
         ]);
     }
-    
+
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {

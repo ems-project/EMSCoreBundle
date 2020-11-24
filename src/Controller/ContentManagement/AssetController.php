@@ -26,10 +26,6 @@ class AssetController extends AbstractController
     }
 
     /**
-     * @param string $hash
-     * @param string $hash_config
-     * @param string $filename
-     * @param Request $request
      * @return Response
      *
      * @Route("/data/asset/{hash_config}/{hash}/{filename}" , name="ems_asset", methods={"GET","HEAD"})
@@ -40,22 +36,17 @@ class AssetController extends AbstractController
         try {
             return $this->processor->getResponse($request, $hash, $hash_config, $filename);
         } catch (NotFoundException $e) {
-            throw new NotFoundHttpException(sprintf('File %s/%s/%s not found', $hash_config, $hash, $filename));
+            throw new NotFoundHttpException(\sprintf('File %s/%s/%s not found', $hash_config, $hash, $filename));
         }
     }
 
-
     /**
      * @deprecated
-     * @param Request $request
-     * @param string $processor
-     * @param string $hash
-     * @return Response
      * @Route("/asset/{processor}/{hash}", name="ems_asset_processor", methods={"GET","HEAD"})
      */
     public function assetProcessorAction(Request $request, string $processor, string $hash): Response
     {
-        @trigger_error(sprintf('The "%s::assetProcessorAction" controller is deprecated. Used "%s::assetAction" instead.', AssetController::class, AssetController::class), E_USER_DEPRECATED);
+        @\trigger_error(\sprintf('The "%s::assetProcessorAction" controller is deprecated. Used "%s::assetAction" instead.', AssetController::class, AssetController::class), E_USER_DEPRECATED);
 
         return $this->redirect($this->appExtension->assetPath([
             EmsFields::CONTENT_FILE_HASH_FIELD => $hash,

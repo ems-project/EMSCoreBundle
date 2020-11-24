@@ -10,68 +10,57 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class WysiwygStylesSetService
 {
-    /**@var Registry $doctrine */
+    /** @var Registry */
     private $doctrine;
-    /**@var LoggerInterface $logger*/
+    /** @var LoggerInterface */
     private $logger;
-    /**@var TranslatorInterface $translator */
+    /** @var TranslatorInterface */
     private $translator;
-    
+
     public function __construct(Registry $doctrine, LoggerInterface $logger, TranslatorInterface $translator)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
         $this->translator = $translator;
     }
-    
-    
+
     public function getStylesSets()
     {
         $em = $this->doctrine->getManager();
-        /**@var WysiwygStylesSetRepository */
+        /** @var WysiwygStylesSetRepository */
         $repository = $em->getRepository('EMSCoreBundle:WysiwygStylesSet');
-        
+
         $profiles = $repository->findAll();
-        
+
         return $profiles;
     }
-    
+
     /**
+     * @param int $id
      *
-     * @param integer $id
-     * @return WysiwygStylesSet|NULL
+     * @return WysiwygStylesSet|null
      */
     public function get($id)
     {
         $em = $this->doctrine->getManager();
-        /**@var WysiwygStylesSetRepository */
+        /** @var WysiwygStylesSetRepository */
         $repository = $em->getRepository('EMSCoreBundle:WysiwygStylesSet');
-        
+
         $profile = $repository->find($id);
-        
+
         return $profile;
     }
-    
-    
-    
-    /**
-     *
-     * @param WysiwygStylesSet $stylesSet
-     */
+
     public function save(WysiwygStylesSet $stylesSet)
     {
         $em = $this->doctrine->getManager();
         $em->persist($stylesSet);
         $em->flush();
         $this->logger->notice('service.wysiwyg_styles_set.updated', [
-            'wysiwyg_styles_set_name' => $stylesSet->getName()
+            'wysiwyg_styles_set_name' => $stylesSet->getName(),
         ]);
     }
-    
-    /**
-     *
-     * @param WysiwygStylesSet $stylesSet
-     */
+
     public function remove(WysiwygStylesSet $stylesSet)
     {
         $name = $stylesSet->getName();

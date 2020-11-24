@@ -50,13 +50,13 @@ final class IndexService
     public function indexRevision(Revision $revision, ?Environment $environment = null): void
     {
         $contentType = $revision->getContentType();
-        if ($contentType === null) {
+        if (null === $contentType) {
             throw new \RuntimeException('Unexpected null content type');
         }
-        if ($environment === null) {
+        if (null === $environment) {
             $environment = $contentType->getEnvironment();
         }
-        if ($environment === null) {
+        if (null === $environment) {
             throw new \RuntimeException('Unexpected null environment');
         }
 

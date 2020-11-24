@@ -12,11 +12,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class WysiwygStylesSetType extends AbstractType
 {
-
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -26,21 +23,21 @@ class WysiwygStylesSetType extends AbstractType
                 'label' => 'Styles set\'s name',
             ])
             ->add('config', CodeEditorType::class, [
-                'language' => 'ace/mode/json'
+                'language' => 'ace/mode/json',
             ])
             ->add('save', SubmitEmsType::class, [
                 'attr' => [
-                    'class' => 'btn-primary btn-sm '
+                    'class' => 'btn-primary btn-sm ',
                 ],
-                'icon' => 'fa fa-save'
+                'icon' => 'fa fa-save',
             ]);
 
         if (!$options['createform']) {
             $builder->add('remove', SubmitEmsType::class, [
                 'attr' => [
-                    'class' => 'btn-primary btn-sm '
+                    'class' => 'btn-primary btn-sm ',
                 ],
-                'icon' => 'fa fa-trash'
+                'icon' => 'fa fa-trash',
             ]);
         }
     }
@@ -49,8 +46,7 @@ class WysiwygStylesSetType extends AbstractType
     {
         $resolver->setDefaults([
             'createform' => false,
-            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN
-
+            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
         ]);
     }
 }

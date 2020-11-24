@@ -27,9 +27,9 @@ final class FormSubmissionRequest
 
     public function __construct(Request $request)
     {
-        $json = json_decode((string) $request->getContent(), true);
+        $json = \json_decode((string) $request->getContent(), true);
 
-        if (!is_array($json)) {
+        if (!\is_array($json)) {
             throw new FormSubmissionException('invalid JSON!');
         }
 
@@ -42,7 +42,7 @@ final class FormSubmissionRequest
         $this->files = $submit['files'];
         $this->label = $submit['label'] ?? '';
         $formattedDate = \DateTime::createFromFormat('c', $submit['expire_date']);
-        $this->expireDate = $formattedDate != false ? $formattedDate : null;
+        $this->expireDate = false != $formattedDate ? $formattedDate : null;
     }
 
     public function getFormName(): string
@@ -114,7 +114,7 @@ final class FormSubmissionRequest
             $fileResolver = new OptionsResolver();
             $fileResolver->setRequired(['filename', 'mimeType', 'base64', 'size', 'form_field']);
 
-            $json['files'] = array_map(function (array $file) use ($fileResolver) {
+            $json['files'] = \array_map(function (array $file) use ($fileResolver) {
                 return $fileResolver->resolve($file);
             }, $json['files']);
 

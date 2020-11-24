@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Service;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Elasticsearch\Client;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\ManagedAlias;
@@ -15,31 +14,31 @@ class AliasService
      * @var Client
      */
     private $client;
-    
+
     /**
      * @var EnvironmentRepository
      */
     private $envRepo;
-    
+
     /**
      * @var ManagedAliasRepository
      */
     private $managedAliasRepo;
-    
+
     /**
-     * [name => [indexes, total, environment, managed]]
+     * [name => [indexes, total, environment, managed]].
      *
      * @var array
      */
     private $aliases = [];
 
     /**
-     * [name => [[name => count]]
+     * [name => [[name => count]].
      *
      * @var array
      */
     private $orphanIndexes = [];
-    
+
     /**
      * @var bool
      */
@@ -71,9 +70,9 @@ class AliasService
     {
         return $this->aliases[$name];
     }
-    
+
     /**
-     * Get all aliases
+     * Get all aliases.
      *
      * @return array
      */
@@ -114,28 +113,28 @@ class AliasService
 
         return $managedAlias;
     }
-    
+
     /**
      * @return ManagedAlias[]
      */
     public function getManagedAliases()
     {
         $managedAliases = $this->managedAliasRepo->findAll();
-        
+
         foreach ($managedAliases as $managedAlias) {
             /* @var $managedAlias ManagedAlias */
             if (!$this->hasAlias($managedAlias->getAlias())) {
                 continue;
             }
-            
+
             $alias = $this->getAlias($managedAlias->getAlias());
             $managedAlias->setIndexes($alias['indexes']);
             $managedAlias->setTotal($alias['total']);
         }
-        
+
         return $managedAliases;
     }
-    
+
     /**
      * @return array
      */
@@ -143,38 +142,38 @@ class AliasService
     {
         $indexes = [];
         $indices = $this->client->cat()->indices();
-        
+
         foreach ($indices as $data) {
             $name = $data['index'];
-            
+
             if (!$this->validIndexName($name)) {
                 continue;
             }
-            
+
             $indexes[$name] = ['name' => $name, 'count' => $data['docs.count']];
         }
-        
-        ksort($indexes);
-        
+
+        \ksort($indexes);
+
         return $indexes;
     }
-    
+
     /**
-     * Aliases without an environment
+     * Aliases without an environment.
      *
      * @return array
      */
     public function getUnreferencedAliases()
     {
         $aliases = $this->getAliases();
-        
-        return array_filter($aliases, function (array $alias) {
-            return $alias['environment'] === null && $alias['managed'] === false;
+
+        return \array_filter($aliases, function (array $alias) {
+            return null === $alias['environment'] && false === $alias['managed'];
         });
     }
 
     /**
-     * Indexes without aliases
+     * Indexes without aliases.
      *
      * @return array
      */
@@ -184,7 +183,7 @@ class AliasService
     }
 
     /**
-     * Build orphan indexes, unreferenced aliases
+     * Build orphan indexes, unreferenced aliases.
      *
      * @return self
      */
@@ -193,38 +192,37 @@ class AliasService
         if ($this->isBuild) {
             return $this;
         }
-        
+
         $data = $this->getData();
         $environmentAliases = $this->envRepo->findAllAliases();
         $managedAliases = $this->managedAliasRepo->findAllAliases();
-        
+
         foreach ($data as $index => $info) {
-            $aliases = array_keys($info['aliases']);
-            
-            if (0 === count($aliases)) {
+            $aliases = \array_keys($info['aliases']);
+
+            if (0 === \count($aliases)) {
                 $this->addOrphanIndex($index);
                 continue;
             }
-            
+
             foreach ($aliases as $alias) {
-                if (array_key_exists($alias, $environmentAliases)) {
+                if (\array_key_exists($alias, $environmentAliases)) {
                     $this->addAlias($alias, $index, $environmentAliases[$alias]);
-                } else if (in_array($alias, $managedAliases)) {
+                } elseif (\in_array($alias, $managedAliases)) {
                     $this->addAlias($alias, $index, [], true);
                 } else {
                     $this->addAlias($alias, $index);
                 }
             }
         }
-        
+
         $this->isBuild = true;
-        
+
         return $this;
     }
-    
+
     /**
      * @param string $alias
-     * @param array  $actions
      *
      * @return void
      */
@@ -233,20 +231,20 @@ class AliasService
         if (empty($actions)) {
             return;
         }
-        
+
         $json = [];
-        
+
         foreach ($actions as $type => $indexes) {
             foreach ($indexes as $index) {
                 $json[] = [$type => ['index' => $index, 'alias' => $alias]];
             }
         }
-        
+
         $this->client->indices()->updateAliases([
-            'body' => ['actions' => $json]
+            'body' => ['actions' => $json],
         ]);
     }
-    
+
     /**
      * @param string $name
      *
@@ -257,25 +255,24 @@ class AliasService
         if (!$this->hasAlias($name)) {
             return false;
         }
-        
+
         $actions = [];
         $alias = $this->getAlias($name);
-        
+
         foreach ($alias['indexes'] as $index) {
             $actions[] = ['remove' => ['index' => $index['name'], 'alias' => $name]];
         }
-        
+
         $this->client->indices()->updateAliases([
-            'body' => ['actions' => $actions]
+            'body' => ['actions' => $actions],
         ]);
-        
+
         return true;
     }
-        
+
     /**
      * @param string $name
      * @param string $index
-     * @param array  $env
      * @param bool   $managed
      *
      * @return void
@@ -284,9 +281,10 @@ class AliasService
     {
         if ($this->hasAlias($name)) {
             $this->aliases[$name]['indexes'][$index] = $this->getIndex($index);
+
             return;
         }
-        
+
         $this->aliases[$name] = [
             'indexes' => [$index => $this->getIndex($index)],
             'total' => $this->count($name),
@@ -294,7 +292,7 @@ class AliasService
             'managed' => isset($env['managed']) ? $env['managed'] : $managed,
         ];
     }
-    
+
     /**
      * @param string $name
      */
@@ -302,12 +300,12 @@ class AliasService
     {
         $this->orphanIndexes[] = $this->getIndex($name);
     }
-    
+
     private function getIndex($name)
     {
         return ['name' => $name, 'count' => $this->count($name)];
     }
-    
+
     /**
      * @param string $name
      *
@@ -316,12 +314,12 @@ class AliasService
     private function count($name)
     {
         $result = $this->client->count(['index' => $name]);
-        
+
         return isset($result['count']) ? (int) $result['count'] : 0;
     }
 
     /**
-     * Filters out indexes that start with .*
+     * Filters out indexes that start with .*.
      *
      * @return array
      */
@@ -329,13 +327,13 @@ class AliasService
     {
         $indexesAliases = $this->client->indices()->getAliases();
 
-        return array_filter(
+        return \array_filter(
             $indexesAliases,
             [$this, 'validIndexName'],
             \ARRAY_FILTER_USE_KEY
         );
     }
-    
+
     /**
      * @param string $name
      *
@@ -343,6 +341,6 @@ class AliasService
      */
     private function validIndexName($name)
     {
-        return strcmp($name{0}, '.') != 0;
+        return 0 != \strcmp($name[0], '.');
     }
 }

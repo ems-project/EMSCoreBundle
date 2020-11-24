@@ -10,42 +10,34 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class BouttonGroupType extends TextType
 {
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array (
+        $resolver->setDefaults([
                 'compound' => false,
-                'buttons' => [ ]
-        ));
+                'buttons' => [],
+        ]);
     }
-    
+
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        $view->vars ['buttons'] = $options ['buttons'];
+        $view->vars['buttons'] = $options['buttons'];
     }
-    
+
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function getParent()
     {
         return TextType::class;
     }
-    
+
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function getBlockPrefix()
     {

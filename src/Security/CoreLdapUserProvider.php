@@ -75,13 +75,13 @@ class CoreLdapUserProvider extends LdapUserProvider
         }
 
         if (!$user instanceof UserInterface) {
-            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
+            throw new UnsupportedUserException(\sprintf('Instances of "%s" are not supported.', \get_class($user)));
         }
 
         $refreshedUser = $this->userService->getUser($user->getUsername(), false);
 
         if (!$refreshedUser instanceof SymfonyUserInterface) {
-            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($refreshedUser)));
+            throw new UnsupportedUserException(\sprintf('Instances of "%s" are not supported.', \get_class($refreshedUser)));
         }
 
         return $refreshedUser;

@@ -16,15 +16,15 @@ class UserList
     {
         $this->users = $users;
     }
-    
+
     /**
-     *
      * @return array <User>
      */
     public function getUsers(): array
     {
         return $this->users;
     }
+
     /**
      * @param array<string> $roles
      */
@@ -37,9 +37,10 @@ class UserList
                 $usersList[] = $user;
             }
         }
+
         return new UserList($usersList);
     }
-    
+
     /**
      * @param array<string> $circles
      */
@@ -52,6 +53,7 @@ class UserList
                 $usersList[] = $user;
             }
         }
+
         return new UserList($usersList);
     }
 }

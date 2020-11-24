@@ -2,11 +2,11 @@
 
 namespace EMS\CoreBundle\Form\DataField\Options;
 
+use EMS\CoreBundle\Form\Field\RolePickerType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\FormBuilderInterface;
-use EMS\CoreBundle\Form\Field\RolePickerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
 
 /**
  * It's a coumpound field for field specific restriction option.
@@ -15,11 +15,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
  */
 class RestrictionOptionsType extends AbstractType
 {
-    
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {

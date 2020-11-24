@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command;
 
 use EMS\CommonBundle\Helper\EmsFields;
@@ -22,7 +24,7 @@ class ActivateContentTypeCommand extends Command
     protected $contentTypeService;
     /** @var SymfonyStyle */
     private $io;
-    /**@var LoggerInterface */
+    /** @var LoggerInterface */
     private $logger;
     /** @var bool */
     private $deactivate;
@@ -42,30 +44,30 @@ class ActivateContentTypeCommand extends Command
     protected function configure(): void
     {
         parent::configure();
-        $fileNames = implode(', ', $this->contentTypeService->getAllNames());
+        $fileNames = \implode(', ', $this->contentTypeService->getAllNames());
         $this
             ->addArgument(
                 self::ARGUMENT_CONTENTTYPES,
                 InputArgument::IS_ARRAY,
-                sprintf('Optional array of contenttypes to create. Allowed values: [%s]', $fileNames)
+                \sprintf('Optional array of contenttypes to create. Allowed values: [%s]', $fileNames)
             )
             ->addOption(
                 self::OPTION_ALL,
                 null,
                 InputOption::VALUE_NONE,
-                sprintf('Make all contenttypes: [%s]', $fileNames)
+                \sprintf('Make all contenttypes: [%s]', $fileNames)
             )
             ->addOption(
                 self::DEACTIVATE,
                 null,
                 InputOption::VALUE_NONE,
-                sprintf('Deactivate contenttypes')
+                \sprintf('Deactivate contenttypes')
             )
             ->addOption(
                 self::FORCE,
                 null,
                 InputOption::VALUE_NONE,
-                sprintf('Activate the contenttypes even if the mapping is not up to date (flagged as draft)')
+                \sprintf('Activate the contenttypes even if the mapping is not up to date (flagged as draft)')
             );
     }
 
@@ -78,11 +80,11 @@ class ActivateContentTypeCommand extends Command
         foreach ($types as $type) {
             try {
                 $contentType = $this->contentTypeService->getByName($type);
-                if ($contentType === false) {
+                if (false === $contentType) {
                     throw new \RuntimeException('Content Type not found');
                 }
                 if ($contentType->getDirty() && !$this->deactivate && !$force) {
-                    $this->io->error(sprintf('Content type %s is dirty please update it\'s mapping or use the force flag', $contentType->getName()));
+                    $this->io->error(\sprintf('Content type %s is dirty please update it\'s mapping or use the force flag', $contentType->getName()));
                     continue;
                 }
                 $contentType->setActive(!$this->deactivate);
@@ -95,6 +97,7 @@ class ActivateContentTypeCommand extends Command
                 $this->io->error($e->getMessage());
             }
         }
+
         return 0;
     }
 
@@ -105,16 +108,16 @@ class ActivateContentTypeCommand extends Command
 
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
-        $this->deactivate = $input->getOption(self::DEACTIVATE) === true;
+        $this->deactivate = true === $input->getOption(self::DEACTIVATE);
         $this->io->title($this->deactivate ? 'Deactivate contenttypes' : 'Activate contenttypes');
         $this->io->section('Checking input');
 
         $types = $input->getArgument(self::ARGUMENT_CONTENTTYPES);
-        if ($types === null || \is_string($types)) {
+        if (null === $types || \is_string($types)) {
             throw new \RuntimeException('Unexpected content type names');
         }
 
-        if (!$input->getOption(self::OPTION_ALL) && count($types) == 0) {
+        if (!$input->getOption(self::OPTION_ALL) && 0 == \count($types)) {
             $this->chooseTypes($input, $output);
         }
 
@@ -128,17 +131,17 @@ class ActivateContentTypeCommand extends Command
         $helper = $this->getHelper('question');
         $question = new ChoiceQuestion(
             $this->deactivate ? 'Select the contenttypes you want to deactivate' : 'Select the contenttypes you want to activate',
-            array_merge([self::OPTION_ALL], $this->contentTypeService->getAllNames())
+            \array_merge([self::OPTION_ALL], $this->contentTypeService->getAllNames())
         );
         $question->setMultiselect(true);
 
         $types = $helper->ask($input, $output, $question);
-        if (in_array(self::OPTION_ALL, $types)) {
+        if (\in_array(self::OPTION_ALL, $types)) {
             $input->setOption(self::OPTION_ALL, true);
-            $this->io->note(sprintf('Continuing with option --%s', self::OPTION_ALL));
+            $this->io->note(\sprintf('Continuing with option --%s', self::OPTION_ALL));
         } else {
             $input->setArgument(self::ARGUMENT_CONTENTTYPES, $types);
-            $this->io->note(['Continuing with contenttypes:', implode(', ', $types)]);
+            $this->io->note(['Continuing with contenttypes:', \implode(', ', $types)]);
         }
     }
 
@@ -146,6 +149,6 @@ class ActivateContentTypeCommand extends Command
     {
         $types = $this->contentTypeService->getAllNames();
         $input->setArgument(self::ARGUMENT_CONTENTTYPES, $types);
-        $this->io->note(['Continuing with contenttypes:', implode(', ', $types)]);
+        $this->io->note(['Continuing with contenttypes:', \implode(', ', $types)]);
     }
 }

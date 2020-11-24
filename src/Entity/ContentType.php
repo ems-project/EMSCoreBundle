@@ -1,4 +1,5 @@
 <?php
+
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -9,7 +10,7 @@ use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Form\DataField\ContainerFieldType;
 
 /**
- * ContentType
+ * ContentType.
  *
  * @ORM\Table(name="content_type")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\ContentTypeRepository")
@@ -357,7 +358,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     protected $active;
 
     /**
-     * @var null|Environment
+     * @var Environment|null
      * @ORM\ManyToOne(targetEntity="Environment", inversedBy="contentTypesHavingThisAsDefault")
      * @ORM\JoinColumn(name="environment_id", referencedColumnName="id")
      */
@@ -429,23 +430,21 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     protected $versionTags = [];
 
     /**
-     * @var null|string
+     * @var string|null
      *
      * @ORM\Column(name="version_date_from_field", type="string", length=100, nullable=true)
      */
     protected $versionDateFromField;
 
     /**
-     * @var null|string
+     * @var string|null
      *
      * @ORM\Column(name="version_date_to_field", type="string", length=100, nullable=true)
      */
     protected $versionDateToField;
 
-
     public function __construct()
     {
-
         $this->templates = new ArrayCollection();
         $this->views = new ArrayCollection();
         $this->singleTypeIndexes = new ArrayCollection();
@@ -462,7 +461,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
         $this->setFieldType($fieldType);
         $this->setAskForOuuid(true);
     }
-
 
     public function __toString()
     {
@@ -493,9 +491,8 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
         }
     }
 
-
     /**
-     * Get id
+     * Get id.
      *
      * @return int
      */
@@ -505,7 +502,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set created
+     * Set created.
      *
      * @param \DateTime $created
      *
@@ -519,7 +516,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get created
+     * Get created.
      *
      * @return \DateTime
      */
@@ -529,7 +526,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set modified
+     * Set modified.
      *
      * @param \DateTime $modified
      *
@@ -543,7 +540,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get modified
+     * Get modified.
      *
      * @return \DateTime
      */
@@ -553,7 +550,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
      *
@@ -567,7 +564,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -577,7 +574,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set icon
+     * Set icon.
      *
      * @param string $icon
      *
@@ -591,7 +588,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get icon
+     * Get icon.
      *
      * @return string|null
      */
@@ -600,9 +597,8 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
         return $this->icon;
     }
 
-
     /**
-     * Set description
+     * Set description.
      *
      * @param string $description
      *
@@ -616,7 +612,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get description
+     * Get description.
      *
      * @return string
      */
@@ -626,7 +622,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set lockBy
+     * Set lockBy.
      *
      * @param string $lockBy
      *
@@ -640,7 +636,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get lockBy
+     * Get lockBy.
      *
      * @return string
      */
@@ -650,7 +646,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set lockUntil
+     * Set lockUntil.
      *
      * @param \DateTime $lockUntil
      *
@@ -664,7 +660,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get lockUntil
+     * Get lockUntil.
      *
      * @return \DateTime
      */
@@ -674,9 +670,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set deleted
+     * Set deleted.
      *
-     * @param boolean $deleted
+     * @param bool $deleted
      *
      * @return ContentType
      */
@@ -688,9 +684,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get deleted
+     * Get deleted.
      *
-     * @return boolean
+     * @return bool
      */
     public function getDeleted()
     {
@@ -698,7 +694,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set color
+     * Set color.
      *
      * @param string $color
      *
@@ -712,7 +708,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get color
+     * Get color.
      *
      * @return string
      */
@@ -722,7 +718,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set labelField
+     * Set labelField.
      *
      * @param string $labelField
      *
@@ -736,7 +732,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get labelField
+     * Get labelField.
      *
      * @return string
      */
@@ -746,7 +742,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set dateField
+     * Set dateField.
      *
      * @param string $dateField
      *
@@ -760,7 +756,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get dateField
+     * Get dateField.
      *
      * @return string
      */
@@ -770,7 +766,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set endDateField
+     * Set endDateField.
      *
      * @param string $endDateField
      *
@@ -784,7 +780,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get endDateField
+     * Get endDateField.
      *
      * @return string
      */
@@ -794,7 +790,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set locationField
+     * Set locationField.
      *
      * @param string $locationField
      *
@@ -808,7 +804,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get locationField
+     * Get locationField.
      *
      * @return string
      */
@@ -818,7 +814,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set ouuidField
+     * Set ouuidField.
      *
      * @param string $ouuidField
      *
@@ -832,7 +828,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get ouuidField
+     * Get ouuidField.
      *
      * @return string
      */
@@ -842,7 +838,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set imageField
+     * Set imageField.
      *
      * @param string $imageField
      *
@@ -856,7 +852,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get imageField
+     * Get imageField.
      *
      * @return string
      */
@@ -866,7 +862,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set videoField
+     * Set videoField.
      *
      * @param string $videoField
      *
@@ -880,7 +876,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get videoField
+     * Get videoField.
      *
      * @return string
      */
@@ -890,9 +886,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set orderKey
+     * Set orderKey.
      *
-     * @param integer $orderKey
+     * @param int $orderKey
      *
      * @return ContentType
      */
@@ -904,9 +900,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get orderKey
+     * Get orderKey.
      *
-     * @return integer
+     * @return int
      */
     public function getOrderKey()
     {
@@ -914,9 +910,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set rootContentType
+     * Set rootContentType.
      *
-     * @param boolean $rootContentType
+     * @param bool $rootContentType
      *
      * @return ContentType
      */
@@ -928,9 +924,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get rootContentType
+     * Get rootContentType.
      *
-     * @return boolean
+     * @return bool
      */
     public function getRootContentType()
     {
@@ -938,7 +934,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set pluralName
+     * Set pluralName.
      *
      * @param string $pluralName
      *
@@ -952,7 +948,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get pluralName
+     * Get pluralName.
      *
      * @return string
      */
@@ -962,7 +958,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set startDateField
+     * Set startDateField.
      *
      * @param string $startDateField
      *
@@ -976,7 +972,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get startDateField
+     * Get startDateField.
      *
      * @return string
      */
@@ -986,7 +982,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set userField
+     * Set userField.
      *
      * @param string $userField
      *
@@ -1000,7 +996,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get userField
+     * Get userField.
      *
      * @return string
      */
@@ -1010,7 +1006,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set indexTwig
+     * Set indexTwig.
      *
      * @param string $indexTwig
      *
@@ -1024,7 +1020,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get indexTwig
+     * Get indexTwig.
      *
      * @return string
      */
@@ -1034,7 +1030,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set extra
+     * Set extra.
      *
      * @param string $extra
      *
@@ -1048,7 +1044,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get extra
+     * Get extra.
      *
      * @return string
      */
@@ -1058,7 +1054,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get fieldType
+     * Get fieldType.
      *
      * @return FieldType
      */
@@ -1068,9 +1064,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set active
+     * Set active.
      *
-     * @param boolean $active
+     * @param bool $active
      *
      * @return ContentType
      */
@@ -1082,9 +1078,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get active
+     * Get active.
      *
-     * @return boolean
+     * @return bool
      */
     public function getActive()
     {
@@ -1092,9 +1088,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set fieldType
-     *
-     * @param FieldType $fieldType
+     * Set fieldType.
      *
      * @return ContentType
      */
@@ -1106,7 +1100,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Unset fieldType
+     * Unset fieldType.
      *
      * @return ContentType
      */
@@ -1118,7 +1112,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set environment
+     * Set environment.
      *
      * @param Environment $environment
      *
@@ -1132,7 +1126,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get environment
+     * Get environment.
      *
      * @return Environment|null
      */
@@ -1142,7 +1136,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set categoryField
+     * Set categoryField.
      *
      * @param string $categoryField
      *
@@ -1156,7 +1150,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get categoryField
+     * Get categoryField.
      *
      * @return string
      */
@@ -1166,9 +1160,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set dirty
+     * Set dirty.
      *
-     * @param boolean $dirty
+     * @param bool $dirty
      *
      * @return ContentType
      */
@@ -1185,9 +1179,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set editTwigWithWysiwyg
+     * Set editTwigWithWysiwyg.
      *
-     * @param boolean $editTwigWithWysiwyg
+     * @param bool $editTwigWithWysiwyg
      *
      * @return ContentType
      */
@@ -1199,9 +1193,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get editTwigWithWysiwyg
+     * Get editTwigWithWysiwyg.
      *
-     * @return boolean
+     * @return bool
      */
     public function getEditTwigWithWysiwyg()
     {
@@ -1209,9 +1203,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set webContent
+     * Set webContent.
      *
-     * @param boolean $webContent
+     * @param bool $webContent
      *
      * @return ContentType
      */
@@ -1223,9 +1217,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get webContent
+     * Get webContent.
      *
-     * @return boolean
+     * @return bool
      */
     public function getWebContent()
     {
@@ -1233,9 +1227,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Add template
-     *
-     * @param Template $template
+     * Add template.
      *
      * @return ContentType
      */
@@ -1247,9 +1239,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Remove template
-     *
-     * @param Template $template
+     * Remove template.
      */
     public function removeTemplate(Template $template)
     {
@@ -1257,7 +1247,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get templates
+     * Get templates.
      *
      * @return \Doctrine\Common\Collections\Collection
      */
@@ -1267,9 +1257,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Add view
-     *
-     * @param View $view
+     * Add view.
      *
      * @return ContentType
      */
@@ -1281,9 +1269,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Remove view
-     *
-     * @param View $view
+     * Remove view.
      */
     public function removeView(View $view)
     {
@@ -1291,7 +1277,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get views
+     * Get views.
      *
      * @return \Doctrine\Common\Collections\Collection
      */
@@ -1301,9 +1287,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set askForOuuid
+     * Set askForOuuid.
      *
-     * @param boolean $askForOuuid
+     * @param bool $askForOuuid
      *
      * @return ContentType
      */
@@ -1315,9 +1301,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get askForOuuid
+     * Get askForOuuid.
      *
-     * @return boolean
+     * @return bool
      */
     public function getAskForOuuid()
     {
@@ -1325,7 +1311,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set colorField
+     * Set colorField.
      *
      * @param string $colorField
      *
@@ -1339,7 +1325,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get colorField
+     * Get colorField.
      *
      * @return string
      */
@@ -1349,7 +1335,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set circlesField
+     * Set circlesField.
      *
      * @param string $circlesField
      *
@@ -1363,7 +1349,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get circlesField
+     * Get circlesField.
      *
      * @return string
      */
@@ -1373,7 +1359,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set emailField
+     * Set emailField.
      *
      * @param string $emailField
      *
@@ -1387,7 +1373,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get emailField
+     * Get emailField.
      *
      * @return string
      */
@@ -1397,7 +1383,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set createRole
+     * Set createRole.
      *
      * @param string $createRole
      *
@@ -1411,7 +1397,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get createRole
+     * Get createRole.
      *
      * @return string
      */
@@ -1421,7 +1407,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set editRole
+     * Set editRole.
      *
      * @param string $editRole
      *
@@ -1435,7 +1421,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get editRole
+     * Get editRole.
      *
      * @return string
      */
@@ -1445,7 +1431,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set assetField
+     * Set assetField.
      *
      * @param string $assetField
      *
@@ -1459,7 +1445,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get assetField
+     * Get assetField.
      *
      * @return string
      */
@@ -1469,7 +1455,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set orderField
+     * Set orderField.
      *
      * @param string $orderField
      *
@@ -1483,7 +1469,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get orderField
+     * Get orderField.
      *
      * @return string
      */
@@ -1493,7 +1479,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set sortBy
+     * Set sortBy.
      *
      * @param string $sortBy
      *
@@ -1507,7 +1493,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get sortBy
+     * Get sortBy.
      *
      * @return string
      */
@@ -1517,7 +1503,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set refererFieldName
+     * Set refererFieldName.
      *
      * @param string $refererFieldName
      *
@@ -1531,7 +1517,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get refererFieldName
+     * Get refererFieldName.
      *
      * @return string
      */
@@ -1541,7 +1527,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set viewRole
+     * Set viewRole.
      *
      * @param string $viewRole
      *
@@ -1555,7 +1541,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get viewRole
+     * Get viewRole.
      *
      * @return string
      */
@@ -1565,7 +1551,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set publishRole
+     * Set publishRole.
      *
      * @param string $publishRole
      *
@@ -1579,7 +1565,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get publishRole
+     * Get publishRole.
      *
      * @return string
      */
@@ -1589,7 +1575,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set trashRole
+     * Set trashRole.
      *
      * @param string $trashRole
      *
@@ -1603,7 +1589,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get trashRole
+     * Get trashRole.
      *
      * @return string
      */
@@ -1613,9 +1599,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set havePipelines
+     * Set havePipelines.
      *
-     * @param boolean $havePipelines
+     * @param bool $havePipelines
      *
      * @return ContentType
      */
@@ -1627,9 +1613,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get havePipelines
+     * Get havePipelines.
      *
-     * @return boolean
+     * @return bool
      */
     public function getHavePipelines()
     {
@@ -1637,7 +1623,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set singularName
+     * Set singularName.
      *
      * @param string $singularName
      *
@@ -1651,7 +1637,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get singularName
+     * Get singularName.
      *
      * @return string
      */
@@ -1673,9 +1659,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Add single type index
-     *
-     * @param SingleTypeIndex $index
+     * Add single type index.
      *
      * @return ContentType
      */
@@ -1687,9 +1671,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Remove single type index
-     *
-     * @param SingleTypeIndex $index
+     * Remove single type index.
      */
     public function removeSingleTypeIndex(SingleTypeIndex $index)
     {
@@ -1697,7 +1679,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get single type indexes
+     * Get single type indexes.
      *
      * @return Collection
      */
@@ -1716,29 +1698,25 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
 
     /**
      * @param string $defaultValue
+     *
      * @return ContentType
      */
     public function setDefaultValue($defaultValue)
     {
         $this->defaultValue = $defaultValue;
+
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isAutoPublish(): bool
     {
         return $this->autoPublish;
     }
 
-    /**
-     * @param bool $autoPublish
-     * @return ContentType
-     */
     public function setAutoPublish(bool $autoPublish): ContentType
     {
         $this->autoPublish = $autoPublish;
+
         return $this;
     }
 
@@ -1751,20 +1729,24 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Specify data which should be serialized to JSON
-     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * Specify data which should be serialized to JSON.
+     *
+     * @see https://php.net/manual/en/jsonserializable.jsonserialize.php
+     *
      * @return mixed data which can be serialized by <b>json_encode</b>,
-     * which is a value of any type other than a resource.
+     *               which is a value of any type other than a resource
+     *
      * @since 5.4.0
      */
     public function jsonSerialize()
     {
         $this->getFieldType()->removeCircularReference();
 
-        $json = new JsonClass(get_object_vars($this), __CLASS__);
+        $json = new JsonClass(\get_object_vars($this), __CLASS__);
         $json->removeProperty('id');
         $json->removeProperty('environment');
         $json->handlePersistentCollections('templates', 'views', 'singleTypeIndexes');
+
         return $json;
     }
 
@@ -1809,12 +1791,14 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     public function setBusinessIdField(string $businessIdField): ContentType
     {
         $this->businessIdField = $businessIdField;
+
         return $this;
     }
 
     public function setTranslationField(string $translationField): ContentType
     {
         $this->translationField = $translationField;
+
         return $this;
     }
 
@@ -1826,6 +1810,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     public function setLocaleField(?string $localeField): ContentType
     {
         $this->localeField = $localeField;
+
         return $this;
     }
 
@@ -1837,6 +1822,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     public function setSearchLinkDisplayRole(string $searchLinkDisplayRole): ContentType
     {
         $this->searchLinkDisplayRole = $searchLinkDisplayRole;
+
         return $this;
     }
 
@@ -1848,6 +1834,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     public function setCreateLinkDisplayRole(string $createLinkDisplayRole): ContentType
     {
         $this->createLinkDisplayRole = $createLinkDisplayRole;
+
         return $this;
     }
 
@@ -1902,9 +1889,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
      */
     public function getDisabledDataFields(): array
     {
-        return array_filter([
+        return \array_filter([
             $this->getVersionDateFromField(),
-            $this->getVersionDateToField()
+            $this->getVersionDateToField(),
         ]);
     }
 }

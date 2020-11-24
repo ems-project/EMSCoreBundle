@@ -8,33 +8,27 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ContentTypeFieldPickerType extends SelectPickerType
 {
-    
-    /**@var ChoiceListFactoryInterface $choiceListFactory*/
+    /** @var ChoiceListFactoryInterface */
     private $choiceListFactory;
 
-    
     public function __construct(ChoiceListFactoryInterface $factory)
     {
         $this->choiceListFactory = $factory;
         parent::__construct($factory);
     }
-    
-    
+
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        
         /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'firstLevelOnly' => false,
             'types' => [],
             'mapping' => [],
-                
+
             'choice_loader' => function (Options $options) {
                 return $this->choiceListFactory->createLoader($options->offsetGet('mapping'), $options->offsetGet('types'), $options->offsetGet('firstLevelOnly'));
             },
@@ -49,7 +43,6 @@ class ContentTypeFieldPickerType extends SelectPickerType
             },
             'multiple' => false,
             'choice_translation_domain' => false,
-            
-        ));
+        ]);
     }
 }

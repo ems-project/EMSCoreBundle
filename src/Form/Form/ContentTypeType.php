@@ -20,23 +20,17 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ContentTypeType extends AbstractType
 {
-    /**
-     *
-     * @param FormBuilderInterface $builder
-     * @param array $options
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
         /** @var ContentType $contentType */
         $contentType = $builder->getData();
         $environment = $contentType->getEnvironment();
-        if ($environment === null) {
+        if (null === $environment) {
             throw new \RuntimeException('Unexpected null environment');
         }
 
         $mapping = $options['mapping'] ?? null;
-        if ($mapping !== null) {
+        if (null !== $mapping) {
             $builder->add('labelField', ContentTypeFieldPickerType::class, [
                 'required' => false,
                 'firstLevelOnly' => true,
@@ -45,9 +39,9 @@ class ContentTypeType extends AbstractType
                         'text',
                         'keyword',
                         'string',
-                        'integer'
-                ]]);
-            
+                        'integer',
+                ], ]);
+
             $builder->add('colorField', ContentTypeFieldPickerType::class, [
                 'required' => false,
                 'firstLevelOnly' => true,
@@ -56,7 +50,7 @@ class ContentTypeType extends AbstractType
                         'string',
                         'keyword',
                         'text',
-                ]]);
+                ], ]);
             $builder->add('circlesField', ContentTypeFieldPickerType::class, [
                 'required' => false,
                 'firstLevelOnly' => true,
@@ -65,7 +59,7 @@ class ContentTypeType extends AbstractType
                         'string',
                         'keyword',
                         'text',
-                ]]);
+                ], ]);
             $builder->add('emailField', ContentTypeFieldPickerType::class, [
                 'required' => false,
                 'firstLevelOnly' => true,
@@ -74,7 +68,7 @@ class ContentTypeType extends AbstractType
                         'string',
                         'keyword',
                         'text',
-                ]]);
+                ], ]);
             $builder->add('categoryField', ContentTypeFieldPickerType::class, [
                 'required' => false,
                 'firstLevelOnly' => true,
@@ -83,21 +77,21 @@ class ContentTypeType extends AbstractType
                         'string',
                         'keyword',
                         'text',
-                ]]);
+                ], ]);
             $builder->add('imageField', ContentTypeFieldPickerType::class, [
                 'required' => false,
                 'firstLevelOnly' => true,
                 'mapping' => $mapping,
                 'types' => [
                         'nested',
-                ]]);
+                ], ]);
             $builder->add('assetField', ContentTypeFieldPickerType::class, [
                 'required' => false,
                 'firstLevelOnly' => true,
                 'mapping' => $mapping,
                 'types' => [
                         'nested',
-                ]]);
+                ], ]);
             $builder->add('businessIdField', ContentTypeFieldPickerType::class, [
                     'required' => false,
                     'firstLevelOnly' => false,
@@ -107,7 +101,7 @@ class ContentTypeType extends AbstractType
                             'date',
                             'integer',
                             'string', //TODO: backward compatibility with ES2 To remove?
-                    ]]);
+                    ], ]);
             $builder->add('sortBy', ContentTypeFieldPickerType::class, [
                     'required' => false,
                     'firstLevelOnly' => false,
@@ -117,11 +111,11 @@ class ContentTypeType extends AbstractType
                             'date',
                             'integer',
                             'string', //TODO: backward compatibility with ES2 To remove?
-                    ]]);
+                    ], ]);
             $builder->add('sortOrder', ChoiceType::class, [
                     'required' => false,
                     'label' => 'Default sort order',
-                    'choices'  => [
+                    'choices' => [
                         'Ascending' => 'asc',
                         'Descending' => 'desc',
                     ],
@@ -134,8 +128,8 @@ class ContentTypeType extends AbstractType
                     'text',
                     'keyword',
                     'string',
-                    'integer'
-                ]
+                    'integer',
+                ],
             ]);
             $builder->add('localeField');
 
@@ -146,14 +140,14 @@ class ContentTypeType extends AbstractType
                         'firstLevelOnly' => false,
                         'label' => 'From date field',
                         'mapping' => $mapping,
-                        'types' => ['date']
+                        'types' => ['date'],
                     ])
                     ->add('versionDateToField', ContentTypeFieldPickerType::class, [
                         'required' => false,
                         'firstLevelOnly' => false,
                         'label' => 'To date field',
                         'mapping' => $mapping,
-                        'types' => ['date']
+                        'types' => ['date'],
                     ])
                     ->add('versionTags', CollectionType::class, [
                         'entry_type' => TextType::class,
@@ -165,15 +159,14 @@ class ContentTypeType extends AbstractType
                         ],
                         'entry_options' => [
                             'label' => false,
-                            'attr' => ['style' => 'width: 150px; float: left;']
+                            'attr' => ['style' => 'width: 150px; float: left;'],
                         ],
                         'allow_add' => true,
                         'allow_delete' => true,
-                        'block_prefix' => 'tags'
+                        'block_prefix' => 'tags',
                     ]);
             }
         }
-        
 
         $builder->add('refererFieldName');
         $builder->add('editTwigWithWysiwyg', CheckboxType::class, [
@@ -196,62 +189,60 @@ class ContentTypeType extends AbstractType
         $builder->add('color', ColorPickerType::class, [
             'required' => false,
         ]);
-        
-        
+
         $builder->add('description', TextareaType::class, [
                 'required' => false,
                 'attr' => [
-                        'class' => 'ckeditor'
-                ]
+                        'class' => 'ckeditor',
+                ],
         ]);
-        
+
         if ($options['twigWithWysiwyg']) {
             $builder->add('indexTwig', TextareaType::class, [
                     'required' => false,
                     'attr' => [
                             'class' => 'ckeditor',
                             'rows' => 10,
-                    ]
+                    ],
             ]);
         } else {
             $builder->add('indexTwig', CodeEditorType::class, [
                     'required' => false,
                     'attr' => [
                     ],
-                    'slug' => 'content_type'
+                    'slug' => 'content_type',
             ]);
         }
-        
+
         $builder->add('extra', TextareaType::class, [
                 'required' => false,
                 'attr' => [
                         'rows' => 10,
-                ]
+                ],
         ]);
-        
-        
+
         $builder->add('save', SubmitEmsType::class, [
                 'attr' => [
-                        'class' => 'btn-primary btn-sm '
+                        'class' => 'btn-primary btn-sm ',
                 ],
-                'icon' => 'fa fa-save'
+                'icon' => 'fa fa-save',
         ]);
         $builder->add('saveAndUpdateMapping', SubmitEmsType::class, [
                 'attr' => [
-                        'class' => 'btn-primary btn-sm '
+                        'class' => 'btn-primary btn-sm ',
                 ],
-                'icon' => 'fa fa-save'
+                'icon' => 'fa fa-save',
         ]);
         $builder->add('saveAndClose', SubmitEmsType::class, [
                 'attr' => [
-                        'class' => 'btn-primary btn-sm '
+                        'class' => 'btn-primary btn-sm ',
                 ],
-                'icon' => 'fa fa-save'
+                'icon' => 'fa fa-save',
         ]);
 
         $builder->add('rootContentType');
         $builder->add('viewRole', RolePickerType::class);
-        
+
         if ($contentType->getEnvironment()->getManaged()) {
             $builder->add('defaultValue', CodeEditorType::class, [
                 'required' => false,
@@ -266,34 +257,32 @@ class ContentTypeType extends AbstractType
             $builder->add('trashRole', RolePickerType::class);
 
             $builder->add('searchLinkDisplayRole', RolePickerType::class, [
-                'label' => 'Display the search link in main navigation'
+                'label' => 'Display the search link in main navigation',
             ]);
             $builder->add('createLinkDisplayRole', RolePickerType::class, [
-                'label' => 'Display the creation link in main navigation'
+                'label' => 'Display the creation link in main navigation',
             ]);
 
             $builder->add('orderField');
             $builder->add('saveAndEditStructure', SubmitEmsType::class, [
                     'attr' => [
-                            'class' => 'btn-primary btn-sm '
+                            'class' => 'btn-primary btn-sm ',
                     ],
-                    'icon' => 'fa fa-save'
+                    'icon' => 'fa fa-save',
             ]);
             $builder->add('saveAndReorder', SubmitEmsType::class, [
                     'attr' => [
-                            'class' => 'btn-primary btn-sm '
+                            'class' => 'btn-primary btn-sm ',
                     ],
-                    'icon' => 'fa fa-reorder'
+                    'icon' => 'fa fa-reorder',
             ]);
         }
-        
+
         return parent::buildForm($builder, $options);
     }
-    
+
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function configureOptions(OptionsResolver $resolver)
     {

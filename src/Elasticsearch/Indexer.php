@@ -15,11 +15,6 @@ class Indexer
     /** @var LoggerInterface */
     private $logger;
 
-    /**
-     * @param Factory         $factory
-     * @param array           $options
-     * @param LoggerInterface $logger
-     */
     public function __construct(Factory $factory, array $options, LoggerInterface $logger)
     {
         $this->factory = $factory;
@@ -30,6 +25,7 @@ class Indexer
     public function setLogger(LoggerInterface $logger): Indexer
     {
         $this->logger = $logger;
+
         return $this;
     }
 
@@ -72,8 +68,8 @@ class Indexer
         if ($removeRegex && $indices->existsAlias(['name' => $alias])) {
             $infoAlias = $indices->getAlias(['name' => $alias]);
 
-            foreach (array_keys($infoAlias) as $oldIndex) {
-                if (!preg_match($removeRegex, $oldIndex)) {
+            foreach (\array_keys($infoAlias) as $oldIndex) {
+                if (!\preg_match($removeRegex, $oldIndex)) {
                     continue;
                 }
 
@@ -88,7 +84,7 @@ class Indexer
         $indices->updateAliases(['body' => ['actions' => $actions]]);
         $this->logger->info('Alias {alias} is now pointing to {index}', ['alias' => $alias, 'index' => $newIndex]);
 
-        array_map([$this, 'delete'], $delete);
+        \array_map([$this, 'delete'], $delete);
     }
 
     public function getAliasesByIndex(string $indexName): array

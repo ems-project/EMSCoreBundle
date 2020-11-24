@@ -21,8 +21,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class ManagedAliasController extends AppController
 {
     /**
-     * @param Request $request
      * @return RedirectResponse|Response
+     *
      * @throws ORMException
      * @throws OptimisticLockException
      *
@@ -38,8 +38,9 @@ class ManagedAliasController extends AppController
             $this->save($managedAlias, $this->getIndexActions($form));
 
             $this->getLogger()->notice('log.managed_alias.created', [
-                'managed_alias_name' => $managedAlias->getName()
+                'managed_alias_name' => $managedAlias->getName(),
             ]);
+
             return $this->redirectToRoute('environment.index');
         }
 
@@ -50,9 +51,10 @@ class ManagedAliasController extends AppController
     }
 
     /**
-     * @param Request $request
      * @param string $id
+     *
      * @return RedirectResponse|Response
+     *
      * @throws ORMException
      * @throws OptimisticLockException
      *
@@ -61,23 +63,23 @@ class ManagedAliasController extends AppController
     public function editAction(Request $request, $id)
     {
         $managedAlias = $this->getAliasService()->getManagedAlias($id);
-        
+
         if (!$managedAlias) {
             throw new NotFoundHttpException('Unknow managed alias');
         }
-        
+
         $form = $this->createForm(ManagedAliasType::class, $managedAlias);
         $form->handleRequest($request);
-        
+
         if ($form->isSubmitted() && $form->isValid()) {
             $this->save($managedAlias, $this->getIndexActions($form));
             $this->getLogger()->notice('log.managed_alias.updated', [
-                'managed_alias_name' => $managedAlias->getName()
+                'managed_alias_name' => $managedAlias->getName(),
             ]);
-            
+
             return $this->redirectToRoute('environment.index');
         }
-        
+
         return $this->render('@EMSCore/environment/managed_alias.html.twig', [
             'new' => false,
             'form' => $form->createView(),
@@ -86,7 +88,9 @@ class ManagedAliasController extends AppController
 
     /**
      * @param string $id
+     *
      * @return RedirectResponse
+     *
      * @throws ORMException
      * @throws OptimisticLockException
      *
@@ -95,28 +99,25 @@ class ManagedAliasController extends AppController
     public function removeAction($id)
     {
         $managedAlias = $this->getAliasService()->getManagedAlias($id);
-        
+
         if ($managedAlias) {
             $this->getAliasService()->removeAlias($managedAlias->getAlias());
-            
+
             /* @var $em EntityManager */
             $em = $this->getDoctrine()->getManager();
             $em->remove($managedAlias);
             $em->flush();
             $this->getLogger()->notice('log.managed_alias.deleted', [
-                'managed_alias_name' => $managedAlias->getName()
+                'managed_alias_name' => $managedAlias->getName(),
             ]);
         }
-        
+
         return $this->redirectToRoute('environment.index');
     }
 
     /**
-     * @param ManagedAlias $managedAlias
-     * @param array $actions
      * @throws ORMException
      * @throws OptimisticLockException
-     *
      */
     private function save(ManagedAlias $managedAlias, array $actions): void
     {
@@ -128,30 +129,28 @@ class ManagedAliasController extends AppController
         $em->persist($managedAlias);
         $em->flush();
     }
-    
+
     /**
-     * @param FormInterface $form
-     *
      * @return array
      */
     private function getIndexActions(FormInterface $form)
     {
         $actions = [];
         $submitted = $form->get('indexes')->getData();
-        $indexes = array_keys($form->getConfig()->getOption('indexes'));
-        
+        $indexes = \array_keys($form->getConfig()->getOption('indexes'));
+
         if (empty($submitted)) {
             return $actions;
         }
-        
+
         foreach ($indexes as $index) {
-            if (in_array($index, $submitted)) {
+            if (\in_array($index, $submitted)) {
                 $actions['add'][] = $index;
             } else {
                 $actions['remove'][] = $index;
             }
         }
-        
+
         return $actions;
     }
 }

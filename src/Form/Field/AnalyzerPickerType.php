@@ -3,28 +3,22 @@
 namespace EMS\CoreBundle\Form\Field;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use EMS\CoreBundle\Repository\AnalyzerRepository;
 use EMS\CoreBundle\Entity\Analyzer;
+use EMS\CoreBundle\Repository\AnalyzerRepository;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AnalyzerPickerType extends SelectPickerType
 {
-    
-    
-    /**@var Registry $doctrine */
+    /** @var Registry */
     private $doctrine;
-    
+
     public function __construct(Registry $doctrine)
     {
-//'@doctrine'
+        //'@doctrine'
         parent::__construct();
         $this->doctrine = $doctrine;
     }
 
-    
-    /**
-     * @param OptionsResolver $resolver
-     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $built_in = [
@@ -67,9 +61,9 @@ class AnalyzerPickerType extends SelectPickerType
                 'Spanish' => 'spanish',
                 'Swedish' => 'swedish',
                 'Turkish' => 'turkish',
-                'Thai' => 'thai'
+                'Thai' => 'thai',
         ];
-        
+
         $choices = [
                 'Not defined' => null,
                 'Built-in' => $built_in,
@@ -77,33 +71,29 @@ class AnalyzerPickerType extends SelectPickerType
                 'Customized' => [
                 ],
         ];
-        
-        
-        
-        
-        /**@var AnalyzerRepository $repository*/
+
+        /** @var AnalyzerRepository $repository */
         $repository = $this->doctrine->getRepository('EMSCoreBundle:Analyzer');
-        /**@var Analyzer $analyzer*/
+        /** @var Analyzer $analyzer */
         foreach ($repository->findAll() as $analyzer) {
             $choices['Customized'][$analyzer->getLabel()] = $analyzer->getName();
         }
-        
-        
+
         parent::configureOptions($resolver);
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'required' => false,
             'choices' => $choices,
             'attr' => [
-                    'data-live-search' => true
+                    'data-live-search' => true,
             ],
             'choice_attr' => function ($category, $key, $index) {
                 return [
-                        'data-content' => $this->humanize($key)
+                        'data-content' => $this->humanize($key),
                 ];
             },
             'choice_value' => function ($value) {
                 return $value;
             },
-        ));
+        ]);
     }
 }

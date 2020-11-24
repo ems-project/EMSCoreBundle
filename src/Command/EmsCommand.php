@@ -11,19 +11,19 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class EmsCommand extends ContainerAwareCommand
 {
-    /** @var Client*/
+    /** @var Client */
     protected $client;
-    /** @var LoggerInterface*/
+    /** @var LoggerInterface */
     protected $logger;
-    
+
     public function __construct(LoggerInterface $logger, Client $client)
     {
         $this->logger = $logger;
         $this->client = $client;
-        
+
         parent::__construct();
     }
-    
+
     protected function configure(): void
     {
         $this
@@ -34,16 +34,16 @@ class EmsCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->waitForGreen($output);
+
         return 0;
     }
-    
+
     protected function formatStyles(OutputInterface &$output): void
     {
-        $output->getFormatter()->setStyle('error', new OutputFormatterStyle('red', 'yellow', array('bold')));
-        $output->getFormatter()->setStyle('comment', new OutputFormatterStyle('yellow', null, array('bold')));
+        $output->getFormatter()->setStyle('error', new OutputFormatterStyle('red', 'yellow', ['bold']));
+        $output->getFormatter()->setStyle('comment', new OutputFormatterStyle('yellow', null, ['bold']));
         $output->getFormatter()->setStyle('notice', new OutputFormatterStyle('blue', null));
     }
-    
 
     protected function waitForGreen(OutputInterface $output): void
     {

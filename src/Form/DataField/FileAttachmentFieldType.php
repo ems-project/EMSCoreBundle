@@ -22,17 +22,13 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  * It's used to logically groups subfields together. However a Container is invisible in Elastic search.
  *
  * @author Mathieu De Keyzer <ems@theus.be>
- *
  */
 class FileAttachmentFieldType extends DataFieldType
 {
-
-    /**@var FileService */
+    /** @var FileService */
     private $fileService;
-    /**@var LoggerInterface */
+    /** @var LoggerInterface */
     private $logger;
-
-
 
     public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, FileService $fileService, LoggerInterface $logger)
     {
@@ -42,7 +38,7 @@ class FileAttachmentFieldType extends DataFieldType
     }
 
     /**
-     * Get a icon to visually identify a FieldType
+     * Get a icon to visually identify a FieldType.
      *
      * @return string
      */
@@ -59,9 +55,9 @@ class FileAttachmentFieldType extends DataFieldType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         /** @var FieldType $fieldType */
-        $fieldType = $options ['metadata'];
+        $fieldType = $options['metadata'];
         $builder->add('value', AssetType::class, [
-                'label' => (null != $options ['label'] ? $options ['label'] : $fieldType->getName()),
+                'label' => (null != $options['label'] ? $options['label'] : $fieldType->getName()),
                 'disabled' => $this->isDisabled($options),
                 'required' => false,
         ]);
@@ -69,13 +65,14 @@ class FileAttachmentFieldType extends DataFieldType
 
     public function modelTransform($data, FieldType $fieldType)
     {
-        if (is_array($data)) {
+        if (\is_array($data)) {
             foreach ($data as $id => $content) {
-                if (! in_array($id, ['sha1', 'filename', 'mimetype'], true)) {
+                if (!\in_array($id, ['sha1', 'filename', 'mimetype'], true)) {
                     unset($data[$id]);
                 }
             }
         }
+
         return parent::reverseViewTransform($data, $fieldType);
     }
 
@@ -89,7 +86,7 @@ class FileAttachmentFieldType extends DataFieldType
                 $this->logger->warning('form.data_field.file_attachment.file_not_found', [
                     'file_hash' => $rawData[EmsFields::CONTENT_FILE_HASH_FIELD],
                 ]);
-                $rawData['content'] = "";
+                $rawData['content'] = '';
             }
             $rawData['filesize'] = $this->fileService->getSize($rawData['sha1']);
             if (!$rawData['filesize']) {
@@ -98,8 +95,9 @@ class FileAttachmentFieldType extends DataFieldType
 
             $dataField->setRawData($rawData);
         } else {
-            $dataField->setRawData(['content' => ""]);
+            $dataField->setRawData(['content' => '']);
         }
+
         return $dataField;
     }
 
@@ -110,7 +108,6 @@ class FileAttachmentFieldType extends DataFieldType
 
     public function viewTransform(DataField $dataField)
     {
-
         $rawData = $dataField->getRawData();
 
         if (!empty($rawData) && !empty($rawData['sha1'])) {
@@ -119,9 +116,9 @@ class FileAttachmentFieldType extends DataFieldType
         } else {
             $rawData = [];
         }
+
         return ['value' => $rawData];
     }
-
 
     public function buildOptionsForm(FormBuilderInterface $builder, array $options)
     {
@@ -138,22 +135,21 @@ class FileAttachmentFieldType extends DataFieldType
 
         $optionsForm->get('displayOptions')
             ->add('icon', IconPickerType::class, [
-                    'required' => false
+                    'required' => false,
             ])
             ->add('imageAssetConfigIdentifier', TextType::class, [
                     'required' => false,
             ]);
     }
 
-
     public function buildObjectArray(DataField $data, array &$out)
     {
-        if (! $data->getFieldType()->getDeleted()) {
-            /**
+        if (!$data->getFieldType()->getDeleted()) {
+            /*
              * by default it serialize the text value.
              * It can be overrided.
              */
-            $out [$data->getFieldType()->getName()] = $data->getRawData();
+            $out[$data->getFieldType()->getName()] = $data->getRawData();
         }
     }
 
@@ -169,14 +165,14 @@ class FileAttachmentFieldType extends DataFieldType
     {
         $mapping = parent::generateMapping($current, $withPipeline);
         $body = [
-                "type" => "nested",
-                "properties" => [
+                'type' => 'nested',
+                'properties' => [
                         EmsFields::CONTENT_MIME_TYPE_FIELD => $this->elasticsearchService->getKeywordMapping(),
                         EmsFields::CONTENT_FILE_HASH_FIELD => $this->elasticsearchService->getKeywordMapping(),
                         EmsFields::CONTENT_FILE_NAME_FIELD => $this->elasticsearchService->getIndexedStringMapping(),
                         EmsFields::CONTENT_FILE_SIZE_FIELD => $this->elasticsearchService->getLongMapping(),
                         'content' => [
-                            "type" => "binary",
+                            'type' => 'binary',
                         ],
                 ],
             ];
@@ -195,7 +191,7 @@ class FileAttachmentFieldType extends DataFieldType
 
             $body['properties']['attachment'] = [
 //                 "type" => "nested",
-                "properties" => [
+                'properties' => [
                     'content' => $mapping[$current->getName()],
 //                     'author'=> [
 //                         "type" => "text",
@@ -215,10 +211,9 @@ class FileAttachmentFieldType extends DataFieldType
 //                     'title'=> [
 //                         "type" => "text",
 //                     ]
-                ]
+                ],
             ];
         }
-
 
         return [
             $current->getName() => $body,
@@ -228,11 +223,11 @@ class FileAttachmentFieldType extends DataFieldType
     public static function generatePipeline(FieldType $current)
     {
         return [
-            "attachment" => [
-                'field' => $current->getName() . '.content',
-                'target_field' => $current->getName() . '.attachment',
+            'attachment' => [
+                'field' => $current->getName().'.content',
+                'target_field' => $current->getName().'.attachment',
                 'indexed_chars' => 1000000,
-            ]
+            ],
         ];
     }
 }

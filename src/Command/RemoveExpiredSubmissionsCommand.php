@@ -3,11 +3,11 @@
 namespace EMS\CoreBundle\Command;
 
 use EMS\CommonBundle\Command\CommandInterface;
+use EMS\CoreBundle\Service\Form\Submission\FormSubmissionService;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use EMS\CoreBundle\Service\Form\Submission\FormSubmissionService;
-use Symfony\Component\Console\Command\Command;
 
 class RemoveExpiredSubmissionsCommand extends Command implements CommandInterface
 {

@@ -6,7 +6,6 @@ namespace EMS\CoreBundle\Controller\Form;
 
 use EMS\CoreBundle\Form\Submission\ProcessType;
 use EMS\CoreBundle\Service\Form\Submission\FormSubmissionService;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -80,7 +79,7 @@ final class SubmissionController extends AbstractController
             $response->headers->set('Content-Type', 'application/zip');
             $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
                 ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-                sprintf('%s.zip', $formSubmission->getId())
+                \sprintf('%s.zip', $formSubmission->getId())
             ));
 
             return $response;

@@ -3,14 +3,14 @@
 namespace EMS\CoreBundle\Command;
 
 use EMS\CommonBundle\Command\CommandInterface;
+use EMS\CoreBundle\Service\Form\Submission\FormSubmissionService;
+use EMS\CoreBundle\Service\MailerService;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use EMS\CoreBundle\Service\Form\Submission\FormSubmissionService;
-use Symfony\Component\Console\Command\Command;
-use EMS\CoreBundle\Service\MailerService;
 
 class EmailSubmissionsCommand extends Command implements CommandInterface
 {

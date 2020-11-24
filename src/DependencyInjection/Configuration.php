@@ -42,7 +42,6 @@ class Configuration implements ConfigurationInterface
     const SINGLE_TYPE_INDEX = false;
     const SAVE_ASSETS_IN_DB = false;
 
-
     /**
      * {@inheritdoc}
      */

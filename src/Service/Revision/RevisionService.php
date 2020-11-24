@@ -74,7 +74,7 @@ class RevisionService
     }
 
     /**
-     * The revision is a draft, version meta fields set in Revision->setVersionMetaFields()
+     * The revision is a draft, version meta fields set in Revision->setVersionMetaFields().
      *
      * @param array<mixed> $rawData
      */

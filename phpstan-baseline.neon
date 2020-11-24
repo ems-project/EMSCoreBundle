@@ -1,6 +1,36 @@
 parameters:
 	ignoreErrors:
 		-
+			message: "#^Access to constant SETS on an unknown class Rector\\\\Core\\\\Configuration\\\\Option\\.$#"
+			count: 1
+			path: rector.php
+
+		-
+			message: "#^Access to constant DEAD_CODE on an unknown class Rector\\\\Set\\\\ValueObject\\\\SetList\\.$#"
+			count: 1
+			path: rector.php
+
+		-
+			message: "#^Access to constant PHP_VERSION_FEATURES on an unknown class Rector\\\\Core\\\\Configuration\\\\Option\\.$#"
+			count: 1
+			path: rector.php
+
+		-
+			message: "#^Access to constant PATHS on an unknown class Rector\\\\Core\\\\Configuration\\\\Option\\.$#"
+			count: 1
+			path: rector.php
+
+		-
+			message: "#^Access to constant EXCLUDE_PATHS on an unknown class Rector\\\\Core\\\\Configuration\\\\Option\\.$#"
+			count: 1
+			path: rector.php
+
+		-
+			message: "#^Caught class EMS\\\\CommonBundle\\\\Elasticsearch\\\\Exception\\\\NotFoundException not found\\.$#"
+			count: 1
+			path: src/Command/RecomputeCommand.php
+
+		-
 			message: "#^Cannot call method getManaged\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
 			count: 6
 			path: src/Controller/ContentManagement/CrudController.php
@@ -16,42 +46,22 @@ parameters:
 			path: src/Controller/ContentManagement/CrudController.php
 
 		-
-			message: "#^Call to an undefined method object\\:\\:getId\\(\\)\\.$#"
-			count: 1
+			message: "#^Negated boolean expression is always false\\.$#"
+			count: 3
 			path: src/Controller/ContentManagement/DataController.php
 
 		-
-			message: "#^Call to an undefined method object\\:\\:jsonSerialize\\(\\)\\.$#"
-			count: 1
+			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
+			count: 3
 			path: src/Controller/ContentManagement/DataController.php
 
 		-
-			message: "#^Call to an undefined method object\\:\\:getName\\(\\)\\.$#"
+			message: "#^Parameter \\#1 \\$sortOrder of method EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\Search\\:\\:setSortOrder\\(\\) expects string, string\\|null given\\.$#"
 			count: 2
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Call to an undefined method object\\:\\:getEnvironment\\(\\)\\.$#"
-			count: 2
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Call to an undefined method object\\:\\:getSortBy\\(\\)\\.$#"
-			count: 4
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Call to an undefined method object\\:\\:getSortOrder\\(\\)\\.$#"
-			count: 4
 			path: src/Controller/ContentManagement/DataController.php
 
 		-
 			message: "#^Cannot call method getCircles\\(\\) on object\\|null\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Call to an undefined method object\\:\\:getCirclesField\\(\\)\\.$#"
 			count: 1
 			path: src/Controller/ContentManagement/DataController.php
 
@@ -63,16 +73,6 @@ parameters:
 		-
 			message: "#^Call to an undefined method object\\:\\:isGranted\\(\\)\\.$#"
 			count: 1
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Cannot call method getManaged\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
-			count: 2
 			path: src/Controller/ContentManagement/DataController.php
 
 		-
@@ -102,7 +102,7 @@ parameters:
 
 		-
 			message: "#^Call to an undefined method object\\:\\:getContentType\\(\\)\\.$#"
-			count: 5
+			count: 2
 			path: src/Controller/ContentManagement/DataController.php
 
 		-
@@ -132,11 +132,6 @@ parameters:
 
 		-
 			message: "#^Call to an undefined method object\\:\\:getRawData\\(\\)\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Cannot call method getAlias\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
 			count: 1
 			path: src/Controller/ContentManagement/DataController.php
 
@@ -206,23 +201,23 @@ parameters:
 			path: src/Controller/ContentManagement/DataController.php
 
 		-
-			message: "#^Cannot call method getEnvironments\\(\\) on object\\|null\\.$#"
-			count: 2
+			message: "#^Cannot call method getEnvironment\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
+			count: 1
 			path: src/Controller/ContentManagement/EnvironmentController.php
 
 		-
-			message: "#^Cannot call method getContentType\\(\\) on object\\|null\\.$#"
-			count: 5
+			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
+			count: 1
 			path: src/Controller/ContentManagement/EnvironmentController.php
 
 		-
-			message: "#^Cannot call method getOuuid\\(\\) on object\\|null\\.$#"
-			count: 3
+			message: "#^Cannot call method getPublishRole\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
+			count: 1
 			path: src/Controller/ContentManagement/EnvironmentController.php
 
 		-
-			message: "#^Cannot call method getId\\(\\) on object\\|null\\.$#"
-			count: 2
+			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
+			count: 1
 			path: src/Controller/ContentManagement/EnvironmentController.php
 
 		-
@@ -271,9 +266,14 @@ parameters:
 			path: src/Controller/ContentManagement/EnvironmentController.php
 
 		-
-			message: "#^Variable \\$environment in PHPDoc tag @var does not match any variable in the foreach loop\\: \\$stat$#"
+			message: "#^Left side of && is always true\\.$#"
 			count: 1
-			path: src/Controller/ContentManagement/EnvironmentController.php
+			path: src/Controller/ContentManagement/FileController.php
+
+		-
+			message: "#^Parameter \\#3 \\$filename of method EMS\\\\CoreBundle\\\\Service\\\\FileService\\:\\:uploadFile\\(\\) expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/Controller/ContentManagement/FileController.php
 
 		-
 			message: "#^Parameter \\#1 \\$id of method EMS\\\\CoreBundle\\\\Service\\\\AliasService\\:\\:getManagedAlias\\(\\) expects int, string given\\.$#"
@@ -311,28 +311,18 @@ parameters:
 			path: src/Controller/ElasticsearchController.php
 
 		-
-			message: "#^Call to an undefined method object\\:\\:getFilters\\(\\)\\.$#"
-			count: 6
+			message: "#^If condition is always true\\.$#"
+			count: 2
 			path: src/Controller/ElasticsearchController.php
 
 		-
-			message: "#^Call to an undefined method object\\:\\:resetFilters\\(\\)\\.$#"
-			count: 3
-			path: src/Controller/ElasticsearchController.php
-
-		-
-			message: "#^Call to an undefined method object\\:\\:jsonSerialize\\(\\)\\.$#"
-			count: 1
+			message: "#^Cannot call method getValues\\(\\) on array\\<EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\SearchFilter\\>\\.$#"
+			count: 2
 			path: src/Controller/ElasticsearchController.php
 
 		-
 			message: "#^Cannot call method getId\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|false\\.$#"
 			count: 2
-			path: src/Controller/ElasticsearchController.php
-
-		-
-			message: "#^Call to an undefined method object\\:\\:setContentType\\(\\)\\.$#"
-			count: 1
 			path: src/Controller/ElasticsearchController.php
 
 		-
@@ -351,27 +341,7 @@ parameters:
 			path: src/Controller/ElasticsearchController.php
 
 		-
-			message: "#^Call to an undefined method object\\:\\:setDefault\\(\\)\\.$#"
-			count: 1
-			path: src/Controller/ElasticsearchController.php
-
-		-
 			message: "#^Cannot call method setDefault\\(\\) on object\\|null\\.$#"
-			count: 1
-			path: src/Controller/ElasticsearchController.php
-
-		-
-			message: "#^Parameter \\#1 \\$search of method EMS\\\\CoreBundle\\\\Service\\\\SearchService\\:\\:generateSearchBody\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\Search, object given\\.$#"
-			count: 2
-			path: src/Controller/ElasticsearchController.php
-
-		-
-			message: "#^Call to an undefined method object\\:\\:getEnvironments\\(\\)\\.$#"
-			count: 2
-			path: src/Controller/ElasticsearchController.php
-
-		-
-			message: "#^Call to an undefined method object\\:\\:getContentTypes\\(\\)\\.$#"
 			count: 1
 			path: src/Controller/ElasticsearchController.php
 
@@ -386,7 +356,17 @@ parameters:
 			path: src/Controller/ElasticsearchController.php
 
 		-
-			message: "#^Cannot call method getCircles\\(\\) on object\\|null\\.$#"
+			message: "#^Call to an undefined method object\\:\\:getFilters\\(\\)\\.$#"
+			count: 2
+			path: src/Controller/ElasticsearchController.php
+
+		-
+			message: "#^Call to an undefined method object\\:\\:resetFilters\\(\\)\\.$#"
+			count: 1
+			path: src/Controller/ElasticsearchController.php
+
+		-
+			message: "#^Parameter \\#1 \\$search of method EMS\\\\CoreBundle\\\\Service\\\\SearchService\\:\\:generateSearchBody\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\Search, object given\\.$#"
 			count: 1
 			path: src/Controller/ElasticsearchController.php
 
@@ -396,14 +376,14 @@ parameters:
 			path: src/Controller/ElasticsearchController.php
 
 		-
-			message: "#^Parameter \\#3 \\$query of class EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\ExportDocuments constructor expects string, string\\|false given\\.$#"
-			count: 1
+			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Search\\\\Search\\:\\:addTermsAggregation\\(\\)\\.$#"
+			count: 2
 			path: src/Controller/ElasticsearchController.php
 
 		-
-			message: "#^Call to an undefined method object\\:\\:getRevision\\(\\)\\.$#"
+			message: "#^Parameter \\#3 \\$query of class EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\ExportDocuments constructor expects string, string\\|false given\\.$#"
 			count: 1
-			path: src/Controller/NotificationController.php
+			path: src/Controller/ElasticsearchController.php
 
 		-
 			message: "#^Call to an undefined method object\\:\\:accept\\(\\)\\.$#"
@@ -426,11 +406,6 @@ parameters:
 			path: src/Controller/NotificationController.php
 
 		-
-			message: "#^Call to an undefined method object\\:\\:generate\\(\\)\\.$#"
-			count: 1
-			path: src/Controller/NotificationController.php
-
-		-
 			message: "#^Call to an undefined method Psr\\\\Container\\\\ContainerInterface\\:\\:getParameter\\(\\)\\.$#"
 			count: 2
 			path: src/Controller/UserController.php
@@ -448,6 +423,11 @@ parameters:
 		-
 			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"
 			count: 5
+			path: src/Controller/Views/CalendarController.php
+
+		-
+			message: "#^Variable \\$to in PHPDoc tag @var does not match assigned variable \\$from\\.$#"
+			count: 1
 			path: src/Controller/Views/CalendarController.php
 
 		-
@@ -487,6 +467,11 @@ parameters:
 
 		-
 			message: "#^Cannot call method getChildByPath\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"
+			count: 1
+			path: src/Controller/Views/CriteriaController.php
+
+		-
+			message: "#^If condition is always true\\.$#"
 			count: 1
 			path: src/Controller/Views/CriteriaController.php
 
@@ -533,11 +518,6 @@ parameters:
 		-
 			message: "#^Cannot call method getAlias\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
 			count: 3
-			path: src/Controller/Views/CriteriaController.php
-
-		-
-			message: "#^Call to an undefined method object\\:\\:createLoader\\(\\)\\.$#"
-			count: 1
 			path: src/Controller/Views/CriteriaController.php
 
 		-
@@ -692,11 +672,6 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\DependencyInjection\\\\EMSCoreExtension\\:\\:load\\(\\) has parameter \\$configs with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/DependencyInjection/EMSCoreExtension.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\DependencyInjection\\\\EMSCoreExtension\\:\\:getCoreVersion\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/DependencyInjection/EMSCoreExtension.php
 
@@ -956,11 +931,6 @@ parameters:
 			path: src/Entity/ContentType.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\:\\:deserializeProperty\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/ContentType.php
-
-		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\:\\:\\$localeField \\(string\\) does not accept string\\|null\\.$#"
 			count: 1
 			path: src/Entity/ContentType.php
@@ -987,11 +957,6 @@ parameters:
 
 		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\DataField\\:\\:\\$children with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
-			count: 1
-			path: src/Entity/DataField.php
-
-		-
-			message: "#^Variable \\$subType in PHPDoc tag @var does not exist\\.$#"
 			count: 1
 			path: src/Entity/DataField.php
 
@@ -1211,7 +1176,7 @@ parameters:
 			path: src/Entity/DataField.php
 
 		-
-			message: "#^Strict comparison using \\=\\=\\= between mixed and 0 will always evaluate to false\\.$#"
+			message: "#^Strict comparison using \\=\\=\\= between 0 and mixed will always evaluate to false\\.$#"
 			count: 1
 			path: src/Entity/DataField.php
 
@@ -1611,16 +1576,6 @@ parameters:
 			path: src/Entity/FieldType.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\:\\:deserializeProperty\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/FieldType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\:\\:deserializeProperty\\(\\) has parameter \\$value with no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/FieldType.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\:\\:filterDisplayOptions\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Entity/FieldType.php
@@ -1943,16 +1898,6 @@ parameters:
 		-
 			message: "#^Parameter \\#1 \\$jsonString of static method EMS\\\\CoreBundle\\\\Entity\\\\Helper\\\\JsonClass\\:\\:fromJsonString\\(\\) expects string, string\\|false given\\.$#"
 			count: 2
-			path: src/Entity/Helper/JsonDeserializer.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Helper\\\\JsonDeserializer\\:\\:deserializeProperty\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Helper/JsonDeserializer.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Helper\\\\JsonDeserializer\\:\\:deserializeProperty\\(\\) has parameter \\$value with no typehint specified\\.$#"
-			count: 1
 			path: src/Entity/Helper/JsonDeserializer.php
 
 		-
@@ -2441,16 +2386,6 @@ parameters:
 			path: src/Entity/Template.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Template\\:\\:deserializeProperty\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Template.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Template\\:\\:deserializeProperty\\(\\) has parameter \\$value with no typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Template.php
-
-		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Entity\\\\User\\:\\:\\$circles type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Entity/User.php
@@ -2556,11 +2491,6 @@ parameters:
 			path: src/EventListener/RequestListener.php
 
 		-
-			message: "#^Property EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:\\$router has no typehint specified\\.$#"
-			count: 1
-			path: src/EventListener/RequestListener.php
-
-		-
 			message: "#^Property EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:\\$container has no typehint specified\\.$#"
 			count: 1
 			path: src/EventListener/RequestListener.php
@@ -2607,6 +2537,11 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:__construct\\(\\) has parameter \\$userRegistrationRoute with no typehint specified\\.$#"
+			count: 1
+			path: src/EventListener/RequestListener.php
+
+		-
+			message: "#^Property EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:\\$router \\(Symfony\\\\Bundle\\\\FrameworkBundle\\\\Routing\\\\Router\\) does not accept Symfony\\\\Component\\\\Routing\\\\Router\\.$#"
 			count: 1
 			path: src/EventListener/RequestListener.php
 
@@ -2679,11 +2614,6 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:getRefererOuuid\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Event/UpdateRevisionReferersEvent.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Exception\\\\AssetNotFoundException\\:\\:__construct\\(\\) has parameter \\$hash with no typehint specified\\.$#"
-			count: 1
-			path: src/Exception/AssetNotFoundException.php
 
 		-
 			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
@@ -3296,6 +3226,11 @@ parameters:
 			path: src/Form/DataField/CollectionItemFieldType.php
 
 		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Form\\\\ResolvedFormTypeInterface\\:\\:buildObjectArray\\(\\)\\.$#"
+			count: 1
+			path: src/Form/DataField/CollectionItemFieldType.php
+
+		-
 			message: "#^Cannot call method getDeleted\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"
 			count: 1
 			path: src/Form/DataField/CollectionItemFieldType.php
@@ -3614,21 +3549,6 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\DataField\\\\CopyToFieldType\\:\\:buildObjectArray\\(\\) has parameter \\$out with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Form/DataField/CopyToFieldType.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Form\\\\DataField\\\\DataFieldType\\:\\:\\$authorizationChecker has no typehint specified\\.$#"
-			count: 1
-			path: src/Form/DataField/DataFieldType.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Form\\\\DataField\\\\DataFieldType\\:\\:\\$formRegistry has no typehint specified\\.$#"
-			count: 1
-			path: src/Form/DataField/DataFieldType.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Form\\\\DataField\\\\DataFieldType\\:\\:\\$elasticsearchService has no typehint specified\\.$#"
-			count: 1
-			path: src/Form/DataField/DataFieldType.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\DataField\\\\DataFieldType\\:\\:buildForm\\(\\) has no return typehint specified\\.$#"
@@ -4026,16 +3946,6 @@ parameters:
 			path: src/Form/DataField/DataFieldType.php
 
 		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Form\\\\DataField\\\\DataLinkFieldType\\:\\:\\$client has no typehint specified\\.$#"
-			count: 1
-			path: src/Form/DataField/DataLinkFieldType.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Form\\\\DataField\\\\DataLinkFieldType\\:\\:\\$dispatcher has no typehint specified\\.$#"
-			count: 1
-			path: src/Form/DataField/DataLinkFieldType.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\DataField\\\\DataLinkFieldType\\:\\:postFinalizeTreatment\\(\\) has parameter \\$dataField with no value type specified in iterable type EMS\\\\CoreBundle\\\\Entity\\\\DataField\\.$#"
 			count: 1
 			path: src/Form/DataField/DataLinkFieldType.php
@@ -4058,6 +3968,16 @@ parameters:
 		-
 			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"
 			count: 5
+			path: src/Form/DataField/DataLinkFieldType.php
+
+		-
+			message: "#^Method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
+			count: 1
+			path: src/Form/DataField/DataLinkFieldType.php
+
+		-
+			message: "#^Parameter \\#1 \\$event of method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) expects object, string given\\.$#"
+			count: 1
 			path: src/Form/DataField/DataLinkFieldType.php
 
 		-
@@ -4147,6 +4067,11 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\DataField\\\\DataLinkFieldType\\:\\:getChoiceList\\(\\) has parameter \\$choices with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Form/DataField/DataLinkFieldType.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Form\\\\ChoiceList\\\\Factory\\\\ChoiceListFactoryInterface\\:\\:createLoader\\(\\)\\.$#"
 			count: 1
 			path: src/Form/DataField/DataLinkFieldType.php
 
@@ -4343,6 +4268,11 @@ parameters:
 		-
 			message: "#^Cannot call method getDeleted\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"
 			count: 1
+			path: src/Form/DataField/DateFieldType.php
+
+		-
+			message: "#^Variable \\$converted in PHPDoc tag @var does not match assigned variable \\$dateTime\\.$#"
+			count: 2
 			path: src/Form/DataField/DateFieldType.php
 
 		-
@@ -5471,6 +5401,11 @@ parameters:
 			path: src/Form/DataField/NestedFieldType.php
 
 		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Form\\\\ResolvedFormTypeInterface\\:\\:buildObjectArray\\(\\)\\.$#"
+			count: 1
+			path: src/Form/DataField/NestedFieldType.php
+
+		-
 			message: "#^Cannot call method getDeleted\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"
 			count: 1
 			path: src/Form/DataField/NestedFieldType.php
@@ -6336,6 +6271,11 @@ parameters:
 			path: src/Form/DataField/TimeFieldType.php
 
 		-
+			message: "#^Variable \\$converted in PHPDoc tag @var does not match assigned variable \\$dateTime\\.$#"
+			count: 1
+			path: src/Form/DataField/TimeFieldType.php
+
+		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\DataField\\\\TimeFieldType\\:\\:reverseViewTransform\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Form/DataField/TimeFieldType.php
@@ -6397,6 +6337,16 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\DataField\\\\UrlAttachmentFieldType\\:\\:reverseViewTransform\\(\\) return type has no value type specified in iterable type EMS\\\\CoreBundle\\\\Entity\\\\DataField\\.$#"
+			count: 1
+			path: src/Form/DataField/UrlAttachmentFieldType.php
+
+		-
+			message: "#^PHPDoc tag @var for variable \\$out has no value type specified in iterable type EMS\\\\CoreBundle\\\\Entity\\\\DataField\\.$#"
+			count: 1
+			path: src/Form/DataField/UrlAttachmentFieldType.php
+
+		-
+			message: "#^Variable \\$out in PHPDoc tag @var does not match assigned variable \\$dataField\\.$#"
 			count: 1
 			path: src/Form/DataField/UrlAttachmentFieldType.php
 
@@ -6586,22 +6536,12 @@ parameters:
 			path: src/Form/DataTransformer/DataFieldModelTransformer.php
 
 		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Form\\\\FormTypeInterface\\:\\:modelTransform\\(\\)\\.$#"
-			count: 1
-			path: src/Form/DataTransformer/DataFieldModelTransformer.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\DataTransformer\\\\DataFieldModelTransformer\\:\\:reverseTransform\\(\\) has parameter \\$data with no value type specified in iterable type EMS\\\\CoreBundle\\\\Entity\\\\DataField\\.$#"
 			count: 1
 			path: src/Form/DataTransformer/DataFieldModelTransformer.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\DataTransformer\\\\DataFieldModelTransformer\\:\\:reverseTransform\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Form/DataTransformer/DataFieldModelTransformer.php
-
-		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Form\\\\FormTypeInterface\\:\\:reverseModelTransform\\(\\)\\.$#"
 			count: 1
 			path: src/Form/DataTransformer/DataFieldModelTransformer.php
 
@@ -6616,7 +6556,7 @@ parameters:
 			path: src/Form/DataTransformer/DataFieldViewTransformer.php
 
 		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Form\\\\FormTypeInterface\\:\\:viewTransform\\(\\)\\.$#"
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\DataTransformer\\\\DataFieldViewTransformer\\:\\:transform\\(\\) should return array\\|string but returns array\\|float\\|int\\|string\\|null\\.$#"
 			count: 1
 			path: src/Form/DataTransformer/DataFieldViewTransformer.php
 
@@ -6627,11 +6567,6 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\DataTransformer\\\\DataFieldViewTransformer\\:\\:reverseTransform\\(\\) return type has no value type specified in iterable type EMS\\\\CoreBundle\\\\Entity\\\\DataField\\.$#"
-			count: 1
-			path: src/Form/DataTransformer/DataFieldViewTransformer.php
-
-		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Form\\\\FormTypeInterface\\:\\:reverseViewTransform\\(\\)\\.$#"
 			count: 1
 			path: src/Form/DataTransformer/DataFieldViewTransformer.php
 
@@ -6661,7 +6596,7 @@ parameters:
 			path: src/Form/Factory/ObjectChoiceListFactory.php
 
 		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Form\\\\Factory\\\\ObjectChoiceListFactory\\:\\:\\$session has no typehint specified\\.$#"
+			message: "#^Property EMS\\\\CoreBundle\\\\Form\\\\Factory\\\\ObjectChoiceListFactory\\:\\:\\$session type has no value type specified in iterable type Symfony\\\\Component\\\\HttpFoundation\\\\Session\\\\Session\\.$#"
 			count: 1
 			path: src/Form/Factory/ObjectChoiceListFactory.php
 
@@ -6781,27 +6716,7 @@ parameters:
 			path: src/Form/Field/AnalyzerOptionsType.php
 
 		-
-			message: "#^Call to an undefined method object\\:\\:getLabel\\(\\)\\.$#"
-			count: 1
-			path: src/Form/Field/AnalyzerOptionsType.php
-
-		-
-			message: "#^Call to an undefined method object\\:\\:getName\\(\\)\\.$#"
-			count: 1
-			path: src/Form/Field/AnalyzerOptionsType.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\AnalyzerPickerType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/AnalyzerPickerType.php
-
-		-
-			message: "#^Call to an undefined method object\\:\\:getLabel\\(\\)\\.$#"
-			count: 1
-			path: src/Form/Field/AnalyzerPickerType.php
-
-		-
-			message: "#^Call to an undefined method object\\:\\:getName\\(\\)\\.$#"
 			count: 1
 			path: src/Form/Field/AnalyzerPickerType.php
 
@@ -7491,11 +7406,6 @@ parameters:
 			path: src/Form/Form/EditFieldTypeType.php
 
 		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Form\\\\Form\\\\EmsCollectionType\\:\\:\\$authorizationChecker has no typehint specified\\.$#"
-			count: 1
-			path: src/Form/Form/EmsCollectionType.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Form\\\\EmsCollectionType\\:\\:buildForm\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Form/Form/EmsCollectionType.php
@@ -8056,6 +7966,11 @@ parameters:
 			path: src/Form/View/Criteria/CriteriaFilterType.php
 
 		-
+			message: "#^If condition is always true\\.$#"
+			count: 2
+			path: src/Form/View/Criteria/CriteriaFilterType.php
+
+		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\View\\\\Criteria\\\\CriteriaFilterType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Form/View/Criteria/CriteriaFilterType.php
@@ -8101,22 +8016,7 @@ parameters:
 			path: src/Form/View/GalleryViewType.php
 
 		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Form\\\\View\\\\HierarchicalViewType\\:\\:\\$session has no typehint specified\\.$#"
-			count: 1
-			path: src/Form/View/HierarchicalViewType.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Form\\\\View\\\\HierarchicalViewType\\:\\:\\$dataService has no typehint specified\\.$#"
-			count: 1
-			path: src/Form/View/HierarchicalViewType.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Form\\\\View\\\\HierarchicalViewType\\:\\:\\$router has no typehint specified\\.$#"
-			count: 1
-			path: src/Form/View/HierarchicalViewType.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Form\\\\View\\\\HierarchicalViewType\\:\\:\\$contentTypeService has no typehint specified\\.$#"
+			message: "#^Property EMS\\\\CoreBundle\\\\Form\\\\View\\\\HierarchicalViewType\\:\\:\\$session type has no value type specified in iterable type Symfony\\\\Component\\\\HttpFoundation\\\\Session\\\\Session\\.$#"
 			count: 1
 			path: src/Form/View/HierarchicalViewType.php
 
@@ -8132,6 +8032,11 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\View\\\\HierarchicalViewType\\:\\:buildForm\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Form/View/HierarchicalViewType.php
+
+		-
+			message: "#^Cannot call method getAlias\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
 			count: 1
 			path: src/Form/View/HierarchicalViewType.php
 
@@ -8211,17 +8116,7 @@ parameters:
 			path: src/Form/View/ReportViewType.php
 
 		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Form\\\\View\\\\SorterViewType\\:\\:\\$session has no typehint specified\\.$#"
-			count: 1
-			path: src/Form/View/SorterViewType.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Form\\\\View\\\\SorterViewType\\:\\:\\$dataService has no typehint specified\\.$#"
-			count: 1
-			path: src/Form/View/SorterViewType.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Form\\\\View\\\\SorterViewType\\:\\:\\$router has no typehint specified\\.$#"
+			message: "#^Property EMS\\\\CoreBundle\\\\Form\\\\View\\\\SorterViewType\\:\\:\\$session type has no value type specified in iterable type Symfony\\\\Component\\\\HttpFoundation\\\\Session\\\\Session\\.$#"
 			count: 1
 			path: src/Form/View/SorterViewType.php
 
@@ -8241,29 +8136,14 @@ parameters:
 			path: src/Form/View/SorterViewType.php
 
 		-
+			message: "#^Cannot call method getAlias\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
+			count: 2
+			path: src/Form/View/SorterViewType.php
+
+		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\View\\\\SorterViewType\\:\\:getParameters\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Form/View/SorterViewType.php
-
-		-
-			message: "#^Cannot call method getAlias\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
-			count: 1
-			path: src/Form/View/SorterViewType.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Form\\\\View\\\\ViewType\\:\\:\\$twig has no typehint specified\\.$#"
-			count: 1
-			path: src/Form/View/ViewType.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Form\\\\View\\\\ViewType\\:\\:\\$formFactory has no typehint specified\\.$#"
-			count: 1
-			path: src/Form/View/ViewType.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Form\\\\View\\\\ViewType\\:\\:\\$logger has no typehint specified\\.$#"
-			count: 1
-			path: src/Form/View/ViewType.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\View\\\\ViewType\\:\\:getParameters\\(\\) return type has no value type specified in iterable type array\\.$#"
@@ -8474,11 +8354,6 @@ parameters:
 			message: "#^Cannot call method fetchAll\\(\\) on Doctrine\\\\DBAL\\\\Driver\\\\ResultStatement\\|int\\.$#"
 			count: 1
 			path: src/Repository/ManagedAliasRepository.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:\\$authorizationChecker has no typehint specified\\.$#"
-			count: 1
-			path: src/Repository/NotificationRepository.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:setAuthorizationChecker\\(\\) has no return typehint specified\\.$#"
@@ -8826,36 +8701,6 @@ parameters:
 			path: src/Repository/TemplateRepository.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\UserRepository\\:\\:findForRoleAndCircles\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Repository/UserRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\UserRepository\\:\\:findForRoleAndCircles\\(\\) has parameter \\$circles with no typehint specified\\.$#"
-			count: 1
-			path: src/Repository/UserRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\UserRepository\\:\\:findForRoleAndCircles\\(\\) has parameter \\$role with no typehint specified\\.$#"
-			count: 1
-			path: src/Repository/UserRepository.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\UserRepositoryInterface\\:\\:findForRoleAndCircles\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Repository/UserRepositoryInterface.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\UserRepositoryInterface\\:\\:findForRoleAndCircles\\(\\) has parameter \\$circles with no typehint specified\\.$#"
-			count: 1
-			path: src/Repository/UserRepositoryInterface.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\UserRepositoryInterface\\:\\:findForRoleAndCircles\\(\\) has parameter \\$role with no typehint specified\\.$#"
-			count: 1
-			path: src/Repository/UserRepositoryInterface.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Repository\\\\WysiwygProfileRepository\\:\\:findAll\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Repository/WysiwygProfileRepository.php
@@ -9006,6 +8851,11 @@ parameters:
 			path: src/Service/AliasService.php
 
 		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: src/Service/AssetExtractorService.php
+
+		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\ContentTypeService\\:\\:\\$instanceId has no typehint specified\\.$#"
 			count: 1
 			path: src/Service/ContentTypeService.php
@@ -9122,6 +8972,11 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\ContentTypeService\\:\\:getAllNames\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Service/ContentTypeService.php
+
+		-
+			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Search\\\\Search\\:\\:addTermsAggregation\\(\\)\\.$#"
 			count: 1
 			path: src/Service/ContentTypeService.php
 
@@ -9331,6 +9186,11 @@ parameters:
 			path: src/Service/DataService.php
 
 		-
+			message: "#^Elseif branch is unreachable because previous condition is always true\\.$#"
+			count: 1
+			path: src/Service/DataService.php
+
+		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:isInternalField\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Service/DataService.php
@@ -9372,7 +9232,7 @@ parameters:
 
 		-
 			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 24
+			count: 23
 			path: src/Service/DataService.php
 
 		-
@@ -9411,11 +9271,6 @@ parameters:
 			path: src/Service/DataService.php
 
 		-
-			message: "#^Parameter \\#1 \\$contentType of method EMS\\\\CoreBundle\\\\Service\\\\ContentTypeService\\:\\:getIndex\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\ContentType, EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null given\\.$#"
-			count: 3
-			path: src/Service/DataService.php
-
-		-
 			message: "#^Parameter \\#1 \\$data of function openssl_verify expects string, string\\|false given\\.$#"
 			count: 1
 			path: src/Service/DataService.php
@@ -9432,6 +9287,11 @@ parameters:
 
 		-
 			message: "#^Parameter \\#3 \\$contentType of method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:propagateDataToComputedField\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\ContentType, EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null given\\.$#"
+			count: 2
+			path: src/Service/DataService.php
+
+		-
+			message: "#^Parameter \\#1 \\$contentType of method EMS\\\\CoreBundle\\\\Service\\\\ContentTypeService\\:\\:getIndex\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\ContentType, EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null given\\.$#"
 			count: 2
 			path: src/Service/DataService.php
 
@@ -9502,7 +9362,7 @@ parameters:
 
 		-
 			message: "#^PHPDoc tag @var for variable \\$subForm has no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
-			count: 1
+			count: 2
 			path: src/Service/DataService.php
 
 		-
@@ -9572,11 +9432,6 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:discardDraft\\(\\) has parameter \\$username with no typehint specified\\.$#"
-			count: 1
-			path: src/Service/DataService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:discardDraft\\(\\) should return bool\\|int but returns int\\|false\\|null\\.$#"
 			count: 1
 			path: src/Service/DataService.php
 
@@ -9691,6 +9546,11 @@ parameters:
 			path: src/Service/DataService.php
 
 		-
+			message: "#^PHPDoc tag @var for variable \\$out has no value type specified in iterable type EMS\\\\CoreBundle\\\\Entity\\\\DataField\\.$#"
+			count: 1
+			path: src/Service/DataService.php
+
+		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:updateReferers\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Service/DataService.php
@@ -9781,6 +9641,16 @@ parameters:
 			path: src/Service/ElasticsearchService.php
 
 		-
+			message: "#^Instantiated class EMS\\\\CommonBundle\\\\Elasticsearch\\\\Exception\\\\NotSingleResultException not found\\.$#"
+			count: 2
+			path: src/Service/ElasticsearchService.php
+
+		-
+			message: "#^Throwing object of an unknown class EMS\\\\CommonBundle\\\\Elasticsearch\\\\Exception\\\\NotSingleResultException\\.$#"
+			count: 2
+			path: src/Service/ElasticsearchService.php
+
+		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\ElasticsearchService\\:\\:convertMapping\\(\\) has parameter \\$in with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Service/ElasticsearchService.php
@@ -9804,21 +9674,6 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\ElasticsearchService\\:\\:withAllMapping\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Service/ElasticsearchService.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\EntityService\\:\\:\\$doctrine has no typehint specified\\.$#"
-			count: 1
-			path: src/Service/EntityService.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\EntityService\\:\\:\\$logger has no typehint specified\\.$#"
-			count: 1
-			path: src/Service/EntityService.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\EntityService\\:\\:\\$translator has no typehint specified\\.$#"
-			count: 1
-			path: src/Service/EntityService.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\EntityService\\:\\:getRepositoryIdentifier\\(\\) has no return typehint specified\\.$#"
@@ -9946,32 +9801,7 @@ parameters:
 			path: src/Service/EnvironmentService.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\EnvironmentService\\:\\:getIndexAnalysisConfiguration\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/EnvironmentService.php
-
-		-
-			message: "#^Call to an undefined method object\\:\\:getName\\(\\)\\.$#"
-			count: 2
-			path: src/Service/EnvironmentService.php
-
-		-
-			message: "#^Call to an undefined method object\\:\\:getOptions\\(\\)\\.$#"
-			count: 2
-			path: src/Service/EnvironmentService.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\EnvironmentService\\:\\:getEnvironmentsStats\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/EnvironmentService.php
-
-		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectRepository\\:\\:getEnvironmentsStats\\(\\)\\.$#"
-			count: 1
-			path: src/Service/EnvironmentService.php
-
-		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectRepository\\:\\:getDeletedRevisionsPerEnvironment\\(\\)\\.$#"
 			count: 1
 			path: src/Service/EnvironmentService.php
 
@@ -9991,9 +9821,64 @@ parameters:
 			path: src/Service/EnvironmentService.php
 
 		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\HelperService\\:\\:\\$doctrine has no typehint specified\\.$#"
+			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Storage\\\\StorageManager\\:\\:getBase64\\(\\)\\.$#"
 			count: 1
-			path: src/Service/HelperService.php
+			path: src/Service/FileService.php
+
+		-
+			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Storage\\\\StorageManager\\:\\:getHealthStatuses\\(\\)\\.$#"
+			count: 1
+			path: src/Service/FileService.php
+
+		-
+			message: "#^Instantiated class EMS\\\\CommonBundle\\\\Storage\\\\SizeMismatchException not found\\.$#"
+			count: 2
+			path: src/Service/FileService.php
+
+		-
+			message: "#^Throwing object of an unknown class EMS\\\\CommonBundle\\\\Storage\\\\SizeMismatchException\\.$#"
+			count: 2
+			path: src/Service/FileService.php
+
+		-
+			message: "#^Access to undefined constant EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\StorageInterface\\:\\:STORAGE_USAGE_ASSET\\.$#"
+			count: 4
+			path: src/Service/FileService.php
+
+		-
+			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Storage\\\\StorageManager\\:\\:getSize\\(\\)\\.$#"
+			count: 1
+			path: src/Service/FileService.php
+
+		-
+			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Storage\\\\StorageManager\\:\\:addChunk\\(\\)\\.$#"
+			count: 1
+			path: src/Service/FileService.php
+
+		-
+			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Storage\\\\StorageManager\\:\\:finalizeUpload\\(\\)\\.$#"
+			count: 1
+			path: src/Service/FileService.php
+
+		-
+			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Storage\\\\StorageManager\\:\\:saveFile\\(\\)\\.$#"
+			count: 2
+			path: src/Service/FileService.php
+
+		-
+			message: "#^Instantiated class EMS\\\\CommonBundle\\\\Storage\\\\HashMismatchException not found\\.$#"
+			count: 2
+			path: src/Service/FileService.php
+
+		-
+			message: "#^Throwing object of an unknown class EMS\\\\CommonBundle\\\\Storage\\\\HashMismatchException\\.$#"
+			count: 2
+			path: src/Service/FileService.php
+
+		-
+			message: "#^Access to undefined constant EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\StorageInterface\\:\\:STORAGE_USAGE_BACKUP\\.$#"
+			count: 1
+			path: src/Service/FileService.php
 
 		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\HelperService\\:\\:\\$pagingSize has no typehint specified\\.$#"
@@ -10031,19 +9916,9 @@ parameters:
 			path: src/Service/HelperService.php
 
 		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\Mapping\\:\\:\\$coreVersion has no typehint specified\\.$#"
+			message: "#^Parameter \\#2 \\$repository of class EMS\\\\CoreBundle\\\\Helper\\\\PagingTool constructor expects Doctrine\\\\ORM\\\\EntityRepository, Doctrine\\\\Persistence\\\\ObjectRepository given\\.$#"
 			count: 1
-			path: src/Service/Mapping.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\Mapping\\:\\:\\$instanceId has no typehint specified\\.$#"
-			count: 1
-			path: src/Service/Mapping.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\Mapping\\:\\:__construct\\(\\) has parameter \\$coreVersion with no typehint specified\\.$#"
-			count: 1
-			path: src/Service/Mapping.php
+			path: src/Service/HelperService.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\Mapping\\:\\:__construct\\(\\) has parameter \\$instanceId with no typehint specified\\.$#"
@@ -10097,6 +9972,11 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\NotificationService\\:\\:__construct\\(\\) has parameter \\$session with no value type specified in iterable type Symfony\\\\Component\\\\HttpFoundation\\\\Session\\\\Session\\.$#"
+			count: 1
+			path: src/Service/NotificationService.php
+
+		-
+			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\NotificationService\\:\\:\\$output \\(Symfony\\\\Component\\\\Console\\\\Output\\\\OutputInterface\\) does not accept null\\.$#"
 			count: 1
 			path: src/Service/NotificationService.php
 
@@ -10201,6 +10081,11 @@ parameters:
 			path: src/Service/NotificationService.php
 
 		-
+			message: "#^Parameter \\#2 \\$contentType of method EMS\\\\CoreBundle\\\\Repository\\\\NotificationRepository\\:\\:countNotificationByUuidAndContentType\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\ContentType, EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null given\\.$#"
+			count: 2
+			path: src/Service/NotificationService.php
+
+		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\NotificationService\\:\\:listArchivesNotifications\\(\\) has parameter \\$filters with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Service/NotificationService.php
@@ -10241,6 +10126,11 @@ parameters:
 			path: src/Service/NotificationService.php
 
 		-
+			message: "#^Call to an undefined method EMS\\\\CoreBundle\\\\Entity\\\\UserInterface\\:\\:getEmail\\(\\)\\.$#"
+			count: 1
+			path: src/Service/NotificationService.php
+
+		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\NotificationService\\:\\:sendEmail\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Service/NotificationService.php
@@ -10251,19 +10141,19 @@ parameters:
 			path: src/Service/NotificationService.php
 
 		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:\\$doctrine has no typehint specified\\.$#"
+			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Service\\\\ElasticaService\\:\\:generateTermsSearch\\(\\)\\.$#"
 			count: 1
-			path: src/Service/PublishService.php
+			path: src/Service/ObjectChoiceCacheService.php
 
 		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:\\$authorizationChecker has no typehint specified\\.$#"
+			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Service\\\\ElasticaService\\:\\:getBoolQuery\\(\\)\\.$#"
 			count: 1
-			path: src/Service/PublishService.php
+			path: src/Service/ObjectChoiceCacheService.php
 
 		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:\\$tokenStorage has no typehint specified\\.$#"
+			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Service\\\\ElasticaService\\:\\:getTermsQuery\\(\\)\\.$#"
 			count: 1
-			path: src/Service/PublishService.php
+			path: src/Service/ObjectChoiceCacheService.php
 
 		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:\\$lockTime has no typehint specified\\.$#"
@@ -10272,11 +10162,6 @@ parameters:
 
 		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:\\$client has no typehint specified\\.$#"
-			count: 1
-			path: src/Service/PublishService.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:\\$mapping has no typehint specified\\.$#"
 			count: 1
 			path: src/Service/PublishService.php
 
@@ -10291,42 +10176,7 @@ parameters:
 			path: src/Service/PublishService.php
 
 		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:\\$revRepository has no typehint specified\\.$#"
-			count: 1
-			path: src/Service/PublishService.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:\\$session has no typehint specified\\.$#"
-			count: 1
-			path: src/Service/PublishService.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:\\$contentTypeService has no typehint specified\\.$#"
-			count: 1
-			path: src/Service/PublishService.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:\\$environmentService has no typehint specified\\.$#"
-			count: 1
-			path: src/Service/PublishService.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:\\$dataService has no typehint specified\\.$#"
-			count: 1
-			path: src/Service/PublishService.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:\\$userService has no typehint specified\\.$#"
-			count: 1
-			path: src/Service/PublishService.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:\\$dispatcher has no typehint specified\\.$#"
-			count: 1
-			path: src/Service/PublishService.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:\\$logger has no typehint specified\\.$#"
+			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:\\$session type has no value type specified in iterable type Symfony\\\\Component\\\\HttpFoundation\\\\Session\\\\Session\\.$#"
 			count: 1
 			path: src/Service/PublishService.php
 
@@ -10346,13 +10196,58 @@ parameters:
 			path: src/Service/PublishService.php
 
 		-
+			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:\\$revRepository \\(EMS\\\\CoreBundle\\\\Repository\\\\RevisionRepository\\) does not accept Doctrine\\\\Persistence\\\\ObjectRepository\\.$#"
+			count: 1
+			path: src/Service/PublishService.php
+
+		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:alignRevision\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Service/PublishService.php
+
+		-
+			message: "#^Cannot call method getEnvironment\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|false\\.$#"
+			count: 1
+			path: src/Service/PublishService.php
+
+		-
+			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
+			count: 3
+			path: src/Service/PublishService.php
+
+		-
+			message: "#^Cannot call method getPublishRole\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|false\\.$#"
+			count: 1
+			path: src/Service/PublishService.php
+
+		-
+			message: "#^Parameter \\#1 \\$contentType of method EMS\\\\CoreBundle\\\\Repository\\\\RevisionRepository\\:\\:findByOuuidAndContentTypeAndEnvironment\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\ContentType, EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|false given\\.$#"
+			count: 2
+			path: src/Service/PublishService.php
+
+		-
+			message: "#^Parameter \\#3 \\$env of method EMS\\\\CoreBundle\\\\Repository\\\\RevisionRepository\\:\\:findByOuuidAndContentTypeAndEnvironment\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\Environment, EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|false given\\.$#"
+			count: 2
+			path: src/Service/PublishService.php
+
+		-
+			message: "#^Parameter \\#2 \\$environment of method EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:unpublish\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\Environment, EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|false given\\.$#"
+			count: 1
+			path: src/Service/PublishService.php
+
+		-
+			message: "#^Parameter \\#2 \\$environment of method EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:publish\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\Environment, EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|false given\\.$#"
 			count: 1
 			path: src/Service/PublishService.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:silentPublish\\(\\) has no return typehint specified\\.$#"
 			count: 1
+			path: src/Service/PublishService.php
+
+		-
+			message: "#^Parameter \\#1 \\$contentType of method EMS\\\\CoreBundle\\\\Service\\\\ContentTypeService\\:\\:getIndex\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\ContentType, EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null given\\.$#"
+			count: 2
 			path: src/Service/PublishService.php
 
 		-
@@ -10371,18 +10266,28 @@ parameters:
 			path: src/Service/PublishService.php
 
 		-
-			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
-			count: 2
-			path: src/Service/PublishService.php
-
-		-
 			message: "#^Cannot call method getPublishRole\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
 			count: 2
 			path: src/Service/PublishService.php
 
 		-
+			message: "#^Call to an undefined method object\\:\\:prepare\\(\\)\\.$#"
+			count: 3
+			path: src/Service/PublishService.php
+
+		-
 			message: "#^PHPDoc tag @var for variable \\$statement has no value type specified in iterable type Doctrine\\\\DBAL\\\\Statement\\.$#"
 			count: 3
+			path: src/Service/PublishService.php
+
+		-
+			message: "#^Method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
+			count: 2
+			path: src/Service/PublishService.php
+
+		-
+			message: "#^Parameter \\#1 \\$event of method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) expects object, string given\\.$#"
+			count: 2
 			path: src/Service/PublishService.php
 
 		-
@@ -10429,6 +10334,41 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\SearchFieldOptionService\\:\\:getEntityName\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Service/SearchFieldOptionService.php
+
+		-
+			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Service\\\\ElasticaService\\:\\:getBoolQuery\\(\\)\\.$#"
+			count: 1
+			path: src/Service/SearchService.php
+
+		-
+			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Service\\\\ElasticaService\\:\\:generateTermsSearch\\(\\)\\.$#"
+			count: 1
+			path: src/Service/SearchService.php
+
+		-
+			message: "#^Caught class EMS\\\\CommonBundle\\\\Elasticsearch\\\\Exception\\\\NotSingleResultException not found\\.$#"
+			count: 1
+			path: src/Service/SearchService.php
+
+		-
+			message: "#^Call to method getTotal\\(\\) on an unknown class EMS\\\\CommonBundle\\\\Elasticsearch\\\\Exception\\\\NotSingleResultException\\.$#"
+			count: 1
+			path: src/Service/SearchService.php
+
+		-
+			message: "#^Instantiated class EMS\\\\CommonBundle\\\\Elasticsearch\\\\Exception\\\\NotFoundException not found\\.$#"
+			count: 1
+			path: src/Service/SearchService.php
+
+		-
+			message: "#^Throwing object of an unknown class EMS\\\\CommonBundle\\\\Elasticsearch\\\\Exception\\\\NotFoundException\\.$#"
+			count: 1
+			path: src/Service/SearchService.php
+
+		-
+			message: "#^Throwing object of an unknown class EMS\\\\CommonBundle\\\\Elasticsearch\\\\Exception\\\\NotSingleResultException\\.$#"
+			count: 1
+			path: src/Service/SearchService.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\SortOptionService\\:\\:getRepositoryIdentifier\\(\\) has no return typehint specified\\.$#"
@@ -10541,11 +10481,6 @@ parameters:
 			path: src/Service/UserService.php
 
 		-
-			message: "#^Call to an undefined method object\\:\\:getUser\\(\\)\\.$#"
-			count: 1
-			path: src/Service/UserService.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\UserService\\:\\:getUserById\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Service/UserService.php
@@ -10611,11 +10546,6 @@ parameters:
 			path: src/Service/UserService.php
 
 		-
-			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectRepository\\:\\:findForRoleAndCircles\\(\\)\\.$#"
-			count: 1
-			path: src/Service/UserService.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\UserService\\:\\:deleteUser\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Service/UserService.php
@@ -10669,6 +10599,21 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\WysiwygStylesSetService\\:\\:remove\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Service/WysiwygStylesSetService.php
+
+		-
+			message: "#^If condition is always true\\.$#"
+			count: 3
+			path: src/Twig/AppExtension.php
+
+		-
+			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Service\\\\ElasticaService\\:\\:generateTermsSearch\\(\\)\\.$#"
+			count: 2
+			path: src/Twig/AppExtension.php
+
+		-
+			message: "#^Caught class EMS\\\\CommonBundle\\\\Elasticsearch\\\\Exception\\\\NotSingleResultException not found\\.$#"
+			count: 2
+			path: src/Twig/AppExtension.php
 
 		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Validator\\\\Constraints\\\\AliasName\\:\\:\\$invalid has no typehint specified\\.$#"

@@ -126,7 +126,7 @@ services:
             - { name: form.type }
     ems.fieldtype.json_menu_nested_editor:
         class: EMS\CoreBundle\Form\DataField\JsonMenuNestedEditorFieldType
-        arguments: ['@form.factory', '@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch']
+        arguments: ['@form.factory', '@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@router']
         tags:
             - { name: ems.form.datafieldtype, alias: json_menu_nested }
             - { name: form.type }
@@ -278,6 +278,7 @@ services:
         tags:
             - { name: form.type }
 
+
 #### Begin list available ems views type ###
     EMS\CoreBundle\Form\Form\SearchFormType:
         arguments: ['@security.authorization_checker', '@ems.service.sort_option', '@ems.service.search_field_option']
@@ -401,6 +402,11 @@ services:
     ems.form.form.revisiontype:
         class: EMS\CoreBundle\Form\Form\RevisionType
         arguments: ['@form.registry']
+        tags:
+            - { name: form.type }
+    ems.form.revision_json_menu_nested:
+        class: EMS\CoreBundle\Form\Form\RevisionJsonMenuNestedType
+        arguments: [ '@form.registry' ]
         tags:
             - { name: form.type }
     ems.form.field.analyzeroptionstype:
@@ -746,12 +752,14 @@ services:
         resource: '../../Controller/*'
 
     EMS\CoreBundle\Controller\Api\Form\SubmissionController:
-        arguments: ['@ems.form_submission']
+        arguments: ['@ems.form_submission', '@logger']
     EMS\CoreBundle\Controller\Api\Form\VerificationController:
         arguments: ['@ems.form_verification', '@logger']
         tags: ['controller.service_arguments']
     EMS\CoreBundle\Controller\Revision\EditController:
         arguments: [ '@ems.service.data', '@logger', '@ems.service.publish', '@ems.service.revision', '@translator', '@ems.service.wysiwyg_styles_set']
+    EMS\CoreBundle\Controller\Revision\JsonMenuNestedController:
+        arguments: ['@ems.service.revision', '@doctrine']
     EMS\CoreBundle\Controller\AuthTokenController:
         arguments: ['@ems.security.authenticator', '@twig']
     EMS\CoreBundle\Controller\Form\SubmissionController:

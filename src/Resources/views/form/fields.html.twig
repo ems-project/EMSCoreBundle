@@ -845,8 +845,7 @@
 
 {% block json_menu_nested_editor_fieldtype_widget %}
 	{{  form_widget(form) }}
-	{%- set editor = form.vars.json_menu_nested_editor -%}
-	{%- set nodes = editor.nodes -%}
+	{%- set nodes = form.vars.nodes -%}
 	{% set addMenu %}
 		{% if nodes|length > 0 %}
 			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -857,7 +856,7 @@
 			<ul class="dropdown-menu">
 				{% for node in nodes %}
 					<li>
-						<a type="button" class="json_menu_nested_add_item_button" data-action="add" data-node="{{ node|json_encode }}">
+						<a type="button" class="json-menu-nested-add" data-action="add" data-node="{{ node|json_encode }}">
 							{%- if node.icon|default(false) -%}<i class="{{ node.icon }}"></i>{%- endif -%}
 							{{ 'field_type.json_menu_editor.add_item'|trans({'%singular%': node.label}) }}
 						</a>
@@ -896,7 +895,7 @@
 			<span class="pull-right">
 				<div class="btn-group btn-group-sm">
 					{{ addMenu }}
-					<button type="button" class="btn btn-primary json_menu_nested_edit_item_button"
+					<button type="button" class="btn btn-primary json-menu-nested-edit"
 					   data-action="edit"
 					   {% if node is defined %}data-node="{{ node|json_encode }}"{% endif %}
 					   title="{{- 'field_type.json_menu_editor.edit'|trans -}}">
@@ -1352,32 +1351,30 @@
 
 {%- block form_end -%}
 	{{ parent() }}
-	{%- for editor in form.vars.all_json_menu_nested_editor|default([]) -%}
-		<div id="json-menu-nested-modal-{{ editor.name }}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="jsonNestedModal-{{ editor.name }}">
-			<div class="modal-dialog" role="document">
+	{%- for modalName in form.vars.json_menu_nested_modal_names|default([]) -%}
+		<div class="modal fade json-menu-nested-modal" id="{{- modalName -}}" tabindex="-1" role="dialog">
+			<div class="modal-dialog modal-lg" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-						<h4 class="modal-title" id="json-menu-nested-modal"></h4>
+						<h4 class="modal-title"></h4>
 					</div>
-					<div class="modal-body">
-						{%- for nodeForm in editor.nodeForms -%}
-							{{ form_start(nodeForm, {'attr': { 'class': 'json-nested-form', 'data-structure': nodeForm.vars.structure|json_encode } }) }}
-							{{ form(nodeForm) }}
-							{{ form_end(nodeForm) }}
-						{%- endfor -%}
-					</div>
-					<div class="modal-footer">
-						<div class="btn-group">
-							<button type="button" class="btn-add btn-action btn btn-primary"><i class="fa fa-plus"></i>&nbsp;Add</button>
-							<button type="button" class="btn-edit  btn-action btn btn-primary"><i class="fa fa-save"></i>&nbsp;Save</button>
+					<div class="modal-body modal-loading">
+						<div class="progress" style="margin-bottom: 0;">
+							<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+								<span class="sr-only">100% Complete</span>
+							</div>
 						</div>
+					</div>
+					<div class="modal-body ajax-content" style="display:none;"></div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="button" class="btn-json-menu-nested-save btn btn-primary" style="display:none;"><i class="fa fa-save"></i>&nbsp;Save</button>
 					</div>
 				</div>
 			</div>
 		</div>
 	{%- endfor -%}
 {%- endblock -%}
-
 {# Errors #}
 

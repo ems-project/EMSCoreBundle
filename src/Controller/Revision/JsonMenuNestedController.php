@@ -61,7 +61,6 @@ class JsonMenuNestedController extends AbstractController
             'label' => $form->get('label')->getData(),
             'html' => $this->renderView('@EMSCore/data/json-menu-nested.html.twig', [
                 'form' => $form->createView(),
-                'revision' => $revision,
                 'fieldType' => $fieldType,
             ]),
         ]));

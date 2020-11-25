@@ -628,7 +628,7 @@
 	<div id="{{ form.vars.id }}" class="container-fluid">
 		<div class="row">
 			{% for child in form.iterator %}
-				<div class="{% if child.vars.data.fieldType.options.displayOptions.class is defined %}{{ child.vars.data.fieldType.options.displayOptions.class }}{% endif %}{% if child.vars.errors|length > 0 and not child.vars.isContainer  %} has-error{% endif %}">
+				<div class="{% if child.vars.data.fieldType.options.displayOptions.class is defined %}{{ child.vars.data.fieldType.options.displayOptions.class }}{% endif %}{% if child.vars.errors|length > 0 and not child.vars.isContainer|default(false)  %} has-error{% endif %}">
     				{{- form_row(child) -}}
 				</div>
 				{% if child.vars.lastOfRow is defined and child.vars.lastOfRow %}

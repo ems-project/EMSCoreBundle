@@ -1,5 +1,6 @@
 import jquery from 'jquery';
 import EmsListeners from './EmsListeners';
+import {addEventListeners as editRevisionAddEventListeners} from './../edit-revision';
 require('./nestedSortable');
 
 const uuidv4 = require('uuid/v4');
@@ -55,10 +56,10 @@ export default class JsonMenuEditor {
 
         if (this.isNested) {
             jTarget.find('.json-menu-nested-add').on('click', function() {
-                self.$nestedModal.data('target', $(this)).modal('show');
+                self.$nestedModal.modal('show', $(this));
             });
             jTarget.find('.json-menu-nested-edit').on('click', function() {
-                self.$nestedModal.data('target', $(this)).modal('show');
+                self.$nestedModal.modal('show', $(this));
             });
         }
     }
@@ -146,6 +147,11 @@ export default class JsonMenuEditor {
         }
         function modalStateloading($modal) {
             $modal.find('.modal-loading').show();
+            $modal.find('.ckeditor_ems').each(function () {
+                if (CKEDITOR.instances.hasOwnProperty($(this).attr('id'))) {
+                    CKEDITOR.instances[$(this).attr('id')].destroy();
+                }
+            });
             $modal.find('.ajax-content').html('').hide();
             $modal.find('.btn-json-menu-nested-save').hide();
         }
@@ -155,31 +161,45 @@ export default class JsonMenuEditor {
             $modal.find('.btn-json-menu-nested-save').prop('disabled', true);
         }
 
-        this.$nestedModal.on('hide.bs.modal', function () { modalStateloading($(this)); });
-        this.$nestedModal.on('show.bs.modal', function () {
-            let $target =  $(this).data('target');
+        $(document).on('hide.bs.modal', '.json-menu-nested-modal', function (event) {
+            if (event.target.id === `json-menu-nested-modal-${self.name}`) {
+                modalStateloading($(this));
+            }
+        });
+        $(document).on('show.bs.modal', '.json-menu-nested-modal', function (event) {
+            if (event.target.id !== `json-menu-nested-modal-${self.name}`) {
+                return;
+            }
+
+            let $target =  $(event.relatedTarget);
+            self.$nestedModal.data('target', $target);
+
             let action = $target.data('action'); //add or edit
             let node = $target.data('node');
             let nodeIcon = node.icon ? `<i class="${node.icon}"></i>` : '';
-            $(this).find('.modal-title').html(`${nodeIcon} <span>${action} ${node.label}</span>`);
+            let prefixTitle = action === 'edit' ? 'Edit: ' : 'Add: ';
+            $(this).find('.modal-title').html(`${nodeIcon} <span>${prefixTitle} ${node.label}</span>`);
 
             let data = {};
             if ('edit' === action) {
                 data = $target.closest('li').data('object');
                 data.label = $target.closest('li').data('label');
             }
-
             self.ajaxNestedModal(node.url, JSON.stringify(data), 'application/json', function () {
                 modalStateActive(self.$nestedModal);
             });
         });
 
         this.$nestedModal.on('click', '.btn-json-menu-nested-save', function () {
-            let form = self.$nestedModal.find('form[name="json-menu-nested-form"]')
-            let formContent = form.serialize();
             let $target = self.$nestedModal.data('target');
             let action = $target.data('action');
             let node = $target.data('node');
+
+            for (let i in CKEDITOR.instances) {
+                if(CKEDITOR.instances.hasOwnProperty(i)) { CKEDITOR.instances[i].updateElement(); }
+            }
+            let form = self.$nestedModal.find(`form[name="json-menu-nested-form-${node.name}"]`);
+            let formContent = form.serialize();
 
             modalStateSaving(self.$nestedModal);
             self.ajaxNestedModal(node.url, formContent, 'application/x-www-form-urlencoded', function(response) {
@@ -220,12 +240,11 @@ export default class JsonMenuEditor {
                     let response = JSON.parse(httpRequest.responseText);
                     if (response.hasOwnProperty('html')) {
                         self.$nestedModal.find('.ajax-content').html(response.html);
-                        new EmsListeners(self.$nestedModal.get(0));
+                        self.$nestedModal.find(':input').each(function (){ $(this).addClass('ignore-ems-update'); });
+                        editRevisionAddEventListeners(self.$nestedModal.find('form'));
                     }
 
-                    if (typeof callback !== 'undefined') {
-                        callback(response);
-                    }
+                    if (typeof callback !== 'undefined') { callback(response); }
                 } else {
                     console.error('There was a problem with the request.');
                 }

@@ -371,9 +371,11 @@ function addEventListeners(target){
 
         $( this ).unbind( "change" );
 
-        $( this ).timepicker(settings).on('changeTime.timepicker', onFormChange);
-
-
+        if ($(this).not('.ignore-ems-update')) {
+            $( this ).timepicker(settings).on('changeTime.timepicker', onFormChange);
+        } else {
+            $( this ).timepicker(settings);
+        }
     });
 
 
@@ -395,7 +397,7 @@ function addEventListeners(target){
 
         $(this).datepicker(params);
 
-        $(this).on('change', onFormChange);
+        $(this).not(".ignore-ems-update").on('change', onFormChange);
     });
 
     target.find('.datetime-picker').each(function( ) {
@@ -405,7 +407,7 @@ function addEventListeners(target){
             keepInvalid: true, //otherwise daysOfWeekDisabled or disabledHours will not work!
             extraFormats: [moment.ISO_8601]
         });
-        $element.on('change', onFormChange);
+        $element.not(".ignore-ems-update").on('change', onFormChange);
     });
 
     target.find('.ems_daterangepicker').each(function( ) {
@@ -413,11 +415,11 @@ function addEventListeners(target){
         const options = $(this).data('display-option');
         $(this).unbind('change');
 
-        $(this).daterangepicker(
-            options,
-            function() {
-                onFormChange();
-            });
+        if ($(this).not('.ignore-ems-update')) {
+            $(this).daterangepicker(options, function() { onFormChange(); });
+        } else {
+            $(this).daterangepicker(options);
+        }
     });
 }
 
@@ -427,20 +429,19 @@ $(window).ready(function() {
     updateChoiceFieldTypes();
     updateCollectionLabel();
 
-    for(let i=0; i < stylesSets.length; ++i) {
-        CKEDITOR.stylesSet.add(
-            stylesSets[i].name,
-            stylesSets[i].config
-        );
+    if (typeof stylesSets !== 'undefined') {
+        for(let i=0; i < stylesSets.length; ++i) {
+            CKEDITOR.stylesSet.add(
+                stylesSets[i].name,
+                stylesSets[i].config
+            );
+        }
     }
 
     CKEDITOR.plugins.addExternal('adv_link', assetPath+'bundles/emscore/js/cke-plugins/adv_link/plugin.js', '' );
     CKEDITOR.plugins.addExternal('div', assetPath+'bundles/emscore/js/cke-plugins/div/plugin.js', '' );
     CKEDITOR.plugins.addExternal('imagebrowser', assetPath+'bundles/emscore/js/cke-plugins/imagebrowser/plugin.js', '' );
     addEventListeners($('form[name=revision]'));
-    $('form.json-nested-form').each(function() {
-        addEventListeners($(this));
-    });
 });
 
 $(document).keydown(function(e) {
@@ -466,4 +467,8 @@ $(document).keydown(function(e) {
     return true;
 
 });
+
+export {
+    addEventListeners
+}
 

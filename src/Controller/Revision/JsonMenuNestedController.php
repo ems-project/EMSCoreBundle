@@ -44,7 +44,7 @@ class JsonMenuNestedController extends AbstractController
         }
 
         $content = $request->getContent();
-        $data = is_string($content) ? \json_decode($content, true) : [];
+        $data = \is_string($content) ? \json_decode($content, true) : [];
 
         $form = $this->createForm(RevisionJsonMenuNestedType::class, $data, [
             'field_type' => $fieldType,

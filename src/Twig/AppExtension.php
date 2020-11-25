@@ -31,6 +31,7 @@ use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\FileService;
 use EMS\CoreBundle\Service\UserService;
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -129,6 +130,7 @@ class AppExtension extends AbstractExtension
             new TwigFunction('emsco_generate_email', [$this, 'generateEmailMessage']),
             new TwigFunction('emsco_send_email', [$this, 'sendEmail']),
             new TwigFunction('emsco_users_enabled', [UserRuntime::class, 'getUsersEnabled']),
+            new TwigFunction('emsco_uuid', [Uuid::class, 'uuid4']),
         ];
     }
 

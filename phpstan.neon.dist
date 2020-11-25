@@ -2,8 +2,9 @@ includes:
     - phpstan-baseline.neon
 
 parameters:
+    paths:
+        - %currentWorkingDirectory%/src
     excludes_analyse:
-        - %currentWorkingDirectory%/vendor/*
         - %currentWorkingDirectory%/src/DependencyInjection/Configuration.php
         - %currentWorkingDirectory%/src/Resources/DoctrineMigrations
         - %currentWorkingDirectory%/src/Resources/public/js

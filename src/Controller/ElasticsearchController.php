@@ -328,16 +328,15 @@ class ElasticsearchController extends AppController
      *
      * @Route("/search.json", name="elasticsearch.api.search")
      */
-    public function searchApiAction(Request $request)
+    public function searchApiAction(Request $request, LoggerInterface $logger, SearchService $searchService, ElasticaService $elasticaService)
     {
-        $this->getLogger()->debug('At the begin of search api action');
+        $logger->debug('At the begin of search api action');
         $pattern = $request->query->get('q');
         $page = $request->query->get('page', 1);
         $environments = $request->query->get('environment');
         $types = $request->query->get('type');
         $searchId = $request->query->get('searchId');
         $category = $request->query->get('category', false);
-        // Added for ckeditor adv_link plugin.
         $assetName = $request->query->get('asset_name', false);
         $circleOnly = $request->query->get('circle', false);
         $pageSize = 30;
@@ -356,13 +355,9 @@ class ElasticsearchController extends AppController
                 'id' => $searchId,
             ]);
 
-            $params = [];
-
             /** @var Search $search */
             if ($search) {
-                $em->detach($search);
                 $search->resetFilters($search->getFilters()->getValues());
-
                 $queryString = $pattern;
                 if (!empty($pattern) && !\in_array(\substr($pattern, \strlen($pattern) - 1), [' ', '?', '*', '.', '/'])) {
                     $queryString .= '*';
@@ -378,31 +373,15 @@ class ElasticsearchController extends AppController
                         }
                     }
                 }
-                $body = $this->getSearchService()->generateSearchBody($search);
-                $params['body'] = $body;
+                $search->setContentTypes($search->getContentTypes());
+                $commonSearch = $searchService->generateSearch($search);
+                $commonSearch->setFrom(($page - 1) * $pageSize);
+                $commonSearch->setSize($pageSize);
 
-                /** @var Client $client */
-                $client = $this->getElasticsearch();
-
-                $selectedEnvironments = [];
-                if (!\is_array($search->getEnvironments())) {
-                    foreach ($search->getEnvironments() as $envName) {
-                        $temp = $this->getEnvironmentService()->getAliasByName($envName);
-                        if ($temp) {
-                            $selectedEnvironments[] = $temp->getAlias();
-                        }
-                    }
-                }
-
-                $params['index'] = $selectedEnvironments;
-                $params['type'] = $search->getContentTypes();
-                $params['size'] = $pageSize;
-                $params['from'] = ($page - 1) * $pageSize;
-
-                $results = $client->search($params);
+                $results = $elasticaService->search($commonSearch);
 
                 return $this->render('@EMSCore/elasticsearch/search.json.twig', [
-                    'results' => $results,
+                    'results' => $results->getResponse()->getData(),
                     'types' => $allTypes,
                 ]);
             }
@@ -570,10 +549,10 @@ class ElasticsearchController extends AppController
             /** @var Client $client */
             $client = $this->getElasticsearch();
 
-            $this->getLogger()->debug('Before search api');
+            $logger->debug('Before search api');
             $results = $client->search($params);
 
-            $this->getLogger()->debug('After search api');
+            $logger->debug('After search api');
         } else {
             //there is no type matching this request
             $results = [

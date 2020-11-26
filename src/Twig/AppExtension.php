@@ -1015,7 +1015,7 @@ class AppExtension extends AbstractExtension
     /**
      * @return array<mixed>|null
      */
-    public function data(string $key, string $index = null): ?array
+    public function data(?string $key, string $index = null): ?array
     {
         if (empty($key)) {
             return null;

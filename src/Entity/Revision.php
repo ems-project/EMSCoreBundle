@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Core\Revision\RawDataTransformer;
 use EMS\CoreBundle\Exception\NotLockedException;
 use EMS\CoreBundle\Service\Mapping;
 use Ramsey\Uuid\Uuid;
@@ -229,47 +230,6 @@ class Revision
         }
     }
 
-    private function addVirtualFields(FieldType $fieldType, array $data)
-    {
-        $out = [];
-        /** @var FieldType $child */
-        foreach ($fieldType->getChildren() as $child) {
-            if (!$child->getDeleted()) {
-                $type = $child->getType();
-                if ($type::isVirtual($child->getOptions())) {
-                    if ($type::isContainer()) {
-                        $out[$child->getName()] = self::addVirtualFields($child, $data);
-                    } else {
-                        $out[$child->getName()] = $type::filterSubField($data, $child->getOptions());
-                    }
-                } else {
-                    if ($type::isContainer()) {
-                        if (isset($data[$child->getName()])) {
-                            if ($type::isCollection()) {
-                                if (\is_array($data[$child->getName()])) {
-                                    $out[$child->getName()] = [];
-                                    foreach ($data[$child->getName()] as $idx => $item) {
-                                        $out[$child->getName()][$idx] = self::addVirtualFields($child, $item);
-                                    }
-                                }
-                            } elseif (\is_array($data[$child->getName()])) {
-                                $out[$child->getName()] = self::addVirtualFields($child, $data[$child->getName()]);
-                            } else {
-                                $out[$child->getName()] = $data[$child->getName()];
-                            }
-                        }
-                    } else {
-                        if (isset($data[$child->getName()]) && null !== $data[$child->getName()]) {
-                            $out[$child->getName()] = $data[$child->getName()];
-                        }
-                    }
-                }
-            }
-        }
-
-        return $out;
-    }
-
     /**
      * Add the virtual fields to the raw data and return it (the data).
      *
@@ -277,52 +237,7 @@ class Revision
      */
     public function getData()
     {
-        $out = $this->addVirtualFields($this->getContentType()->getFieldType(), $this->rawData);
-
-        return $out;
-    }
-
-    private function removeVirtualField(FieldType $fieldType, array $data)
-    {
-        $out = [];
-        /** @var FieldType $child */
-        foreach ($fieldType->getChildren() as $child) {
-            if (!$child->getDeleted()) {
-                $type = $child->getType();
-                if ($type::isVirtual($child->getOptions())) {
-                    if (isset($data[$child->getName()]) && !empty($data[$child->getName()])) {
-                        if ($type::isContainer()) {
-                            $out = \array_merge_recursive($out, self::removeVirtualField($child, $data[$child->getName()]));
-                        } else {
-                            $out = \array_merge_recursive($out, $data[$child->getName()]);
-                        }
-                    }
-                } else {
-                    if ($type::isContainer() && \is_array($data[$child->getName()])) {
-                        if (isset($data[$child->getName()]) && !empty($data[$child->getName()])) {
-                            if ($type::isCollection()) {
-                                $out[$child->getName()] = [];
-                                foreach ($data[$child->getName()] as $itemIdx => $item) {
-                                    $out[$child->getName()][$itemIdx] = self::removeVirtualField($child, $item);
-                                }
-                            } else {
-                                $out[$child->getName()] = self::removeVirtualField($child, $data[$child->getName()]);
-                            }
-
-                            if (\is_array($out[$child->getName()]) && empty($out[$child->getName()])) {
-                                unset($out[$child->getName()]);
-                            }
-                        }
-                    } else {
-                        if (isset($data[$child->getName()]) && null !== $data[$child->getName()]) {
-                            $out[$child->getName()] = $data[$child->getName()];
-                        }
-                    }
-                }
-            }
-        }
-
-        return $out;
+        return RawDataTransformer::transform($this->getContentType()->getFieldType(), $this->rawData);
     }
 
     /**
@@ -332,7 +247,7 @@ class Revision
      */
     public function setData(array $data)
     {
-        $this->rawData = $this->removeVirtualField($this->getContentType()->getFieldType(), $data);
+        $this->rawData = RawDataTransformer::reverseTransform($this->getContentType()->getFieldType(), $data);
 
         return $this;
     }

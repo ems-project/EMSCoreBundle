@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Controller\Revision;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Persistence\ObjectRepository;
 use EMS\CommonBundle\Storage\NotFoundException;
+use EMS\CoreBundle\Core\Revision\RawDataTransformer;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Form\RevisionJsonMenuNestedType;
 use EMS\CoreBundle\Repository\FieldTypeRepository;
@@ -39,21 +40,30 @@ class JsonMenuNestedController extends AbstractController
             throw new NotFoundHttpException('Unknown revision');
         }
 
-        if (null === $fieldType = $this->fieldTypeRepository->find($fieldTypeId)) {
+        $fieldType = $this->fieldTypeRepository->find($fieldTypeId);
+
+        if (null === $fieldType || !$fieldType instanceof FieldType) {
             throw new NotFoundException('Unknown fieldtype');
         }
 
-        $content = $request->getContent();
-        $data = \is_string($content) ? \json_decode($content, true) : [];
+        $label = null;
+        $rawData = [];
 
-        $form = $this->createForm(RevisionJsonMenuNestedType::class, $data, [
-            'field_type' => $fieldType,
-        ]);
+        if ('json' === $request->getContentType()) {
+            $requestContent = $request->getContent();
+            $rawData = \is_string($requestContent) ? \json_decode($requestContent, true) : [];
+            $label = $rawData['label'] ?? null;
+        }
+
+        $data = RawDataTransformer::transform($fieldType, $rawData);
+        $data['label'] = $label;
+
+        $form = $this->createForm(RevisionJsonMenuNestedType::class, $data, ['field_type' => $fieldType]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $object = $form->getData();
-            unset($object['label']);
+            $formData = $form->getData();
+            $object = RawDataTransformer::reverseTransform($fieldType, $formData);
         }
 
         return new JsonResponse(\array_filter([

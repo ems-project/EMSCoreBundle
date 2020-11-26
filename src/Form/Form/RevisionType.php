@@ -31,15 +31,15 @@ class RevisionType extends AbstractType
      */
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
-        $jsonMenuNestedEditors = [];
+        $jsonMenuNestedModalNames = [];
 
         foreach ($this->allChildren($form) as $child) {
-            if ($child->getConfig()->hasOption('json_menu_nested_editor')) {
-                $jsonMenuNestedEditors[] = $child->getConfig()->getOption('json_menu_nested_editor');
+            if ($child->getConfig()->hasOption('json_menu_nested_modal')) {
+                $jsonMenuNestedModalNames[] = \sprintf('json-menu-nested-modal-%s', $child->getName());
             }
         }
 
-        $view->vars['all_json_menu_nested_editor'] = $jsonMenuNestedEditors;
+        $view->vars['json_menu_nested_modal_names'] = $jsonMenuNestedModalNames;
     }
 
     /**

@@ -15,8 +15,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/filter")
- * @author Mathieu De Keyzer <ems@theus.be>
  *
+ * @author Mathieu De Keyzer <ems@theus.be>
  */
 class FilterController extends AppController
 {
@@ -34,9 +34,9 @@ class FilterController extends AppController
 
     /**
      * Edit a filter entity.
-     * @param Filter $filter
-     * @param Request $request
+     *
      * @return RedirectResponse|Response
+     *
      * @throws ORMException
      * @throws OptimisticLockException
      *
@@ -44,22 +44,21 @@ class FilterController extends AppController
      */
     public function editAction(Filter $filter, Request $request)
     {
-        
         $form = $this->createForm(FilterType::class, $filter);
-        
+
         $form->handleRequest($request);
-        
+
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var EntityManager $em */
             $em = $this->getDoctrine()->getManager();
-            $filter =  $form->getData();
+            $filter = $form->getData();
             $em->persist($filter);
             $em->flush($filter);
-            
+
             return $this->redirectToRoute('ems_filter_index', [
             ]);
         }
-        
+
         return $this->render('@EMSCore/filter/edit.html.twig', [
                 'form' => $form->createView(),
         ]);
@@ -67,8 +66,9 @@ class FilterController extends AppController
 
     /**
      * Creates a new filter entity.
-     * @param Filter $filter
+     *
      * @return RedirectResponse
+     *
      * @throws ORMException
      * @throws OptimisticLockException
      *
@@ -76,7 +76,6 @@ class FilterController extends AppController
      */
     public function deleteAction(Filter $filter)
     {
-        
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         $em->remove($filter);
@@ -85,14 +84,16 @@ class FilterController extends AppController
         $this->getLogger()->notice('log.filter.deleted', [
             'filter_name' => $filter->getName(),
         ]);
+
         return $this->redirectToRoute('ems_filter_index', [
         ]);
     }
 
     /**
      * Creates a new elasticsearch filter entity.
-     * @param Request $request
+     *
      * @return RedirectResponse|Response
+     *
      * @throws ORMException
      * @throws OptimisticLockException
      *
@@ -102,20 +103,20 @@ class FilterController extends AppController
     {
         $filter = new Filter();
         $form = $this->createForm(FilterType::class, $filter);
-        
+
         $form->handleRequest($request);
-        
+
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var EntityManager $em */
             $em = $this->getDoctrine()->getManager();
-            $filter =  $form->getData();
+            $filter = $form->getData();
             $em->persist($filter);
             $em->flush($filter);
-            
+
             return $this->redirectToRoute('ems_filter_index', [
             ]);
         }
-        
+
         return $this->render('@EMSCore/filter/add.html.twig', [
                 'form' => $form->createView(),
         ]);

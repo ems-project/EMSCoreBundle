@@ -11,12 +11,12 @@ class I18nRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('i')
         ->select('COUNT(i)');
-        
-        if ($identifier != null) {
+
+        if (null != $identifier) {
             $qb->where('i.identifier LIKE :identifier')
-            ->setParameter('identifier', '%' . $identifier . '%');
+            ->setParameter('identifier', '%'.$identifier.'%');
         }
-        
+
         return $qb->getQuery()
         ->getSingleScalarResult();
     }
@@ -26,19 +26,18 @@ class I18nRepository extends EntityRepository
      */
     public function findByWithFilter(int $limit, int $from, ?string $identifier): iterable
     {
-        
         $qb = $this->createQueryBuilder('i')
         ->select('i');
-        
-        if ($identifier != null) {
+
+        if (null != $identifier) {
             $qb->where('i.identifier LIKE :identifier')
-            ->setParameter('identifier', '%' . $identifier . '%');
+            ->setParameter('identifier', '%'.$identifier.'%');
         }
-        
+
         $qb->orderBy('i.identifier', 'ASC')
         ->setFirstResult($from)
         ->setMaxResults($limit);
-        
+
         return $qb->getQuery()->getResult();
     }
 }

@@ -48,17 +48,18 @@ class JobService
     /**
      * @return Job[]
      */
-    public function findByUser(string $user) : array
+    public function findByUser(string $user): array
     {
         $doneJobs = $this->repository->findBy([
             'user' => $user,
         ], [
             'created' => 'DESC',
         ], 20);
+
         return $doneJobs;
     }
 
-    public function findNext() : ?Job
+    public function findNext(): ?Job
     {
         $job = $this->repository->findOneBy([
             'started' => false,
@@ -67,9 +68,10 @@ class JobService
             'created' => 'ASC',
         ]);
 
-        if ($job !== null && !$job instanceof Job) {
+        if (null !== $job && !$job instanceof Job) {
             throw new \RuntimeException('Unexpected Job class object');
         }
+
         return $job;
     }
 
@@ -81,7 +83,7 @@ class JobService
     public function createCommand(UserInterface $user, ?string $command): Job
     {
         $job = $this->create($user);
-        $job->setStatus("Job intialized");
+        $job->setStatus('Job intialized');
         $job->setCommand($command);
 
         $this->em->persist($job);
@@ -105,12 +107,12 @@ class JobService
             $application->setAutoExit(false);
 
             $command = (null === $job->getCommand() ? 'list' : $job->getCommand());
-            $input = new ArgvInput(self::getArgv('console ' . $command));
+            $input = new ArgvInput(self::getArgv('console '.$command));
 
             $application->run($input, $output);
         } catch (\Exception $e) {
             $output->writeln('An exception has been raised!');
-            $output->writeln('Exception:' . $e->getMessage());
+            $output->writeln('Exception:'.$e->getMessage());
         }
 
         $this->finish($job, $output);
@@ -128,7 +130,7 @@ class JobService
     {
         $output = new JobOutput($this->doctrine, $job);
         $output->setDecorated(true);
-        $output->writeln("Job ready to be launch");
+        $output->writeln('Job ready to be launch');
 
         $job->setStarted(true);
 
@@ -146,12 +148,10 @@ class JobService
         $this->em->persist($job);
         $this->em->flush();
 
-        $this->logger->info('Job ' . $job->getCommand() . ' completed.');
+        $this->logger->info('Job '.$job->getCommand().' completed.');
     }
 
     /**
-     * @param UserInterface $user
-     *
      * @return Job
      */
     private function create(UserInterface $user)

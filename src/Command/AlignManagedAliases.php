@@ -11,9 +11,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class AlignManagedAliases extends ContainerAwareCommand
 {
-    /** @var Logger  */
+    /** @var Logger */
     protected $logger;
-    /** @var AliasService  */
+    /** @var AliasService */
     protected $aliasService;
 
     public function __construct(Logger $logger, AliasService $aliasService)
@@ -22,7 +22,7 @@ class AlignManagedAliases extends ContainerAwareCommand
         $this->aliasService = $aliasService;
         parent::__construct();
     }
-    
+
     protected function configure(): void
     {
         $this
@@ -42,13 +42,12 @@ class AlignManagedAliases extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-
         $sourceName = $input->getArgument('source');
         $targetName = $input->getArgument('target');
-        if (!is_string($targetName)) {
+        if (!\is_string($targetName)) {
             throw new \RuntimeException('Target name as to be a string');
         }
-        if (!is_string($sourceName)) {
+        if (!\is_string($sourceName)) {
             throw new \RuntimeException('Source name as to be a string');
         }
 
@@ -72,11 +71,13 @@ class AlignManagedAliases extends ContainerAwareCommand
         }
 
         if (empty($actions['add']) && empty($actions['remove'])) {
-            $output->writeln(sprintf("The alias %s was already aligned to the alias %s", $targetName, $sourceName));
+            $output->writeln(\sprintf('The alias %s was already aligned to the alias %s', $targetName, $sourceName));
+
             return 0;
         }
         $this->aliasService->updateAlias($target->getAlias(), $actions);
-        $output->writeln(sprintf("The alias %s has been aligned to the alias %s", $targetName, $sourceName));
+        $output->writeln(\sprintf('The alias %s has been aligned to the alias %s', $targetName, $sourceName));
+
         return 0;
     }
 }

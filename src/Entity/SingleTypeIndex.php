@@ -1,13 +1,13 @@
 <?php
+
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
-use EMS\CoreBundle\Form\DataField\ContainerFieldType;
 
 /**
- * ContentType
+ * ContentType.
  *
  * @ORM\Table(name="single_type_index")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\SingleTypeIndexRepository")
@@ -63,7 +63,7 @@ class SingleTypeIndex extends JsonDeserializer implements \JsonSerializable
     {
         return $this->name;
     }
-    
+
     /**
      * @ORM\PrePersist
      * @ORM\PreUpdate
@@ -75,10 +75,9 @@ class SingleTypeIndex extends JsonDeserializer implements \JsonSerializable
             $this->created = $this->modified;
         }
     }
-    
 
     /**
-     * Get id
+     * Get id.
      *
      * @return int
      */
@@ -88,7 +87,7 @@ class SingleTypeIndex extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set created
+     * Set created.
      *
      * @param \DateTime $created
      *
@@ -102,7 +101,7 @@ class SingleTypeIndex extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get created
+     * Get created.
      *
      * @return \DateTime
      */
@@ -112,7 +111,7 @@ class SingleTypeIndex extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set modified
+     * Set modified.
      *
      * @param \DateTime $modified
      *
@@ -126,7 +125,7 @@ class SingleTypeIndex extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get modified
+     * Get modified.
      *
      * @return \DateTime
      */
@@ -136,7 +135,7 @@ class SingleTypeIndex extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
      *
@@ -150,7 +149,7 @@ class SingleTypeIndex extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -160,7 +159,7 @@ class SingleTypeIndex extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set environment
+     * Set environment.
      *
      * @param Environment $environment
      *
@@ -174,7 +173,7 @@ class SingleTypeIndex extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get environment
+     * Get environment.
      *
      * @return Environment
      */
@@ -183,9 +182,8 @@ class SingleTypeIndex extends JsonDeserializer implements \JsonSerializable
         return $this->environment;
     }
 
-
     /**
-     * Set content type
+     * Set content type.
      *
      * @param ContentType $contentType
      *
@@ -199,7 +197,7 @@ class SingleTypeIndex extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get content type
+     * Get content type.
      *
      * @return ContentType
      */
@@ -209,18 +207,22 @@ class SingleTypeIndex extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Specify data which should be serialized to JSON
-     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * Specify data which should be serialized to JSON.
+     *
+     * @see https://php.net/manual/en/jsonserializable.jsonserialize.php
+     *
      * @return mixed data which can be serialized by <b>json_encode</b>,
-     * which is a value of any type other than a resource.
+     *               which is a value of any type other than a resource
+     *
      * @since 5.4.0
      */
     public function jsonSerialize()
     {
-        $json = new JsonClass(get_object_vars($this), __CLASS__);
+        $json = new JsonClass(\get_object_vars($this), __CLASS__);
         $json->removeProperty('id');
         $json->removeProperty('environment');
         $json->removeProperty('contentType');
+
         return $json;
     }
 }

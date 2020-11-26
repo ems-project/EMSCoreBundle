@@ -1,4 +1,5 @@
 <?php
+
 namespace EMS\CoreBundle\Controller;
 
 use EMS\CoreBundle\Security\Authenticator;

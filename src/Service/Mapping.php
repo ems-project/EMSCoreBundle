@@ -51,11 +51,11 @@ class Mapping
 
     /** @var EnvironmentService */
     private $environmentService;
-    /** @var FieldTypeType $fieldTypeType */
+    /** @var FieldTypeType */
     private $fieldTypeType;
-    /** @var ElasticsearchService $elasticsearchService */
+    /** @var ElasticsearchService */
     private $elasticsearchService;
-    /** @var string*/
+    /** @var string */
     private $instanceId;
     /** @var ElasticaService */
     private $elasticaService;
@@ -63,10 +63,7 @@ class Mapping
     private $elasticaClient;
 
     /**
-     * Constructor
-     *
-     * @param FieldTypeType $fieldTypeType
-     * @param ElasticsearchService $elasticsearchService
+     * Constructor.
      */
     public function __construct(ElasticaClient $elasticaClient, EnvironmentService $environmentService, FieldTypeType $fieldTypeType, ElasticsearchService $elasticsearchService, ElasticaService $elasticaService, $instanceId)
     {
@@ -77,25 +74,25 @@ class Mapping
         $this->elasticaService = $elasticaService;
         $this->instanceId = $instanceId;
     }
-    
+
     public function generateMapping(ContentType $contentType, $withPipeline = false)
     {
         $out = [
-            "properties" => [],
+            'properties' => [],
         ];
 
         if ($this->elasticsearchService->withAllMapping()) {
             $out['_all'] = [
-                "store" => true,
-                "enabled" => true,
+                'store' => true,
+                'enabled' => true,
             ];
         }
-        
+
         if (null != $contentType->getFieldType()) {
             $out['properties'] = $this->fieldTypeType->generateMapping($contentType->getFieldType(), $withPipeline);
         }
-        
-        $out['properties'] = array_merge(
+
+        $out['properties'] = \array_merge(
             [
                 Mapping::HASH_FIELD => $this->elasticsearchService->getKeywordMapping(),
                 Mapping::SIGNATURE_FIELD => $this->elasticsearchService->getNotIndexedStringMapping(),
@@ -123,8 +120,8 @@ class Mapping
         if (\version_compare($elasticsearchVersion, '7.0') >= 0) {
             return $out;
         }
-        
-        return [ $this->getTypeName($contentType->getName()) => $out ];
+
+        return [$this->getTypeName($contentType->getName()) => $out];
     }
 
     public function getTypeName(string $contentTypeName): string
@@ -136,6 +133,7 @@ class Mapping
         if (\version_compare($version, '6.0') >= 0) {
             return 'doc';
         }
+
         return $contentTypeName;
     }
 
@@ -145,6 +143,7 @@ class Mapping
         if (\version_compare($version, '7.0') >= 0) {
             return '.';
         }
+
         return $this->getTypeName($contentTypeName);
     }
 
@@ -159,7 +158,7 @@ class Mapping
         foreach ($environmentNames as $environmentName) {
             try {
                 $environment = $this->environmentService->getByName($environmentName);
-                if ($environment === false) {
+                if (false === $environment) {
                     continue;
                 }
                 $mappings = $this->elasticaClient->getIndex($environment->getAlias())->getMapping();
@@ -176,6 +175,7 @@ class Mapping
                 continue;
             }
         }
+
         return $mergeMapping;
     }
 }

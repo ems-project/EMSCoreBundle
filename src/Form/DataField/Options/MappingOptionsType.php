@@ -15,11 +15,8 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class MappingOptionsType extends AbstractType
 {
-    
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -29,8 +26,8 @@ class MappingOptionsType extends AbstractType
                         'Not defined' => null,
                         'No' => 'no',
                         'Analyzed' => 'analyzed',
-                        'Not Analyzed' => 'not_analyzed'
-                ]
+                        'Not Analyzed' => 'not_analyzed',
+                ],
         ]);
     }
 }

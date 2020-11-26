@@ -3,7 +3,6 @@
 namespace EMS\CoreBundle\Entity\Helper;
 
 use Doctrine\ORM\PersistentCollection;
-use EMS\CoreBundle\Entity\ContentType;
 
 class JsonClass implements \JsonSerializable
 {
@@ -55,13 +54,13 @@ class JsonClass implements \JsonSerializable
 
     public function hasProperty(string $name): bool
     {
-        return array_key_exists($name, $this->properties);
+        return \array_key_exists($name, $this->properties);
     }
 
     public function handlePersistentCollections(...$properties): void
     {
         foreach ($properties as $property) {
-            if (! $this->hasProperty($property) || ! $this->properties[$property] instanceof PersistentCollection) {
+            if (!$this->hasProperty($property) || !$this->properties[$property] instanceof PersistentCollection) {
                 continue;
             }
             $value = $this->properties[$property]->toArray();
@@ -70,10 +69,13 @@ class JsonClass implements \JsonSerializable
     }
 
     /**
-     * Specify data which should be serialized to JSON
-     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * Specify data which should be serialized to JSON.
+     *
+     * @see https://php.net/manual/en/jsonserializable.jsonserialize.php
+     *
      * @return mixed data which can be serialized by <b>json_encode</b>,
-     * which is a value of any type other than a resource.
+     *               which is a value of any type other than a resource
+     *
      * @since 5.4.0
      */
     public function jsonSerialize()
@@ -89,12 +91,12 @@ class JsonClass implements \JsonSerializable
     {
         $reflectionClass = new \ReflectionClass($this->class);
         $instance = $object;
-        if ($instance === null) {
+        if (null === $instance) {
             $instance = $reflectionClass->newInstance(...$this->constructorArguments);
         }
 
         foreach ($this->properties as $name => $value) {
-            if (! $reflectionClass->hasProperty($name)) {
+            if (!$reflectionClass->hasProperty($name)) {
                 continue;
             }
 

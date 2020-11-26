@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Form\DataField;
 
-use Doctrine\Common\Collections\Collection;
 use Elasticsearch\Client;
 use EMS\CommonBundle\Json\Decoder;
 use EMS\CommonBundle\Json\JsonMenuNested;
@@ -48,7 +47,7 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
     {
         return 'JSON menu nested link field';
     }
-    
+
     public static function getIcon(): string
     {
         return 'fa fa-link';
@@ -67,7 +66,7 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
         }
 
         if (!$fieldType->getDeleted()) {
-            $out [$fieldType->getName()] = $data->getArrayTextValue();
+            $out[$fieldType->getName()] = $data->getArrayTextValue();
         }
     }
 
@@ -106,24 +105,24 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
             $menu = $this->decoder->jsonMenuNestedDecode($json);
 
             foreach ($menu as $item) {
-                if (\count($allowTypes) > 0 && !in_array($item->getType(), $allowTypes)) {
+                if (\count($allowTypes) > 0 && !\in_array($item->getType(), $allowTypes)) {
                     continue;
                 }
 
-                $label = implode(' > ', array_map(function (JsonMenuNested $p) {
+                $label = \implode(' > ', \array_map(function (JsonMenuNested $p) {
                     return $p->getLabel();
                 }, $item->getPath()));
 
                 $choices[$label] = $item->getId();
             }
         }
-        
+
         $builder->add('value', ChoiceType::class, [
             'label' => (isset($options['label']) ? $options['label'] : $fieldType->getName()),
             'required' => false,
             'disabled' => $this->isDisabled($options),
             'choices' => $choices,
-            'empty_data'  => null,
+            'empty_data' => null,
             'multiple' => $options['multiple'],
             'expanded' => $options['expanded'],
         ]);
@@ -136,7 +135,7 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         parent::buildView($view, $form, $options);
-        $view->vars ['attr'] = [
+        $view->vars['attr'] = [
             'data-multiple' => $options['multiple'],
             'data-expanded' => $options['expanded'],
             'class' => 'select2',
@@ -194,9 +193,10 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
     {
         $out = parent::getDefaultOptions($name);
         $out['mappingOptions']['index'] = 'not_analyzed';
+
         return $out;
     }
-    
+
     public function getBlockPrefix(): string
     {
         return 'ems_choice';
@@ -213,6 +213,7 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
         if (isset($data['value'])) {
             $value = $data['value'];
         }
+
         return parent::reverseViewTransform($value, $fieldType);
     }
 
@@ -226,26 +227,28 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
         $temp = parent::viewTransform($dataField);
 
         if (empty($temp)) {
-            return [ 'value' => [] ];
+            return ['value' => []];
         }
 
-        if (is_string($temp)) {
-            return [ 'value' => [$temp]];
+        if (\is_string($temp)) {
+            return ['value' => [$temp]];
         }
 
-        if (is_array($temp)) {
+        if (\is_array($temp)) {
             $out = [];
             foreach ($temp as $item) {
-                if (is_string($item) || is_integer($item)) {
+                if (\is_string($item) || \is_integer($item)) {
                     $out[] = $item;
                 } else {
-                    $dataField->addMessage('Was not able to import the data : ' . json_encode($temp));
+                    $dataField->addMessage('Was not able to import the data : '.\json_encode($temp));
                 }
             }
-            return [ 'value' => $out ];
+
+            return ['value' => $out];
         }
 
-        $dataField->addMessage('Was not able to import the data : ' . json_encode($temp));
+        $dataField->addMessage('Was not able to import the data : '.\json_encode($temp));
+
         return ['value' => []];
     }
 }

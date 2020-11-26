@@ -71,7 +71,7 @@ class TransformContentTypeService
 
                 $revisionType = $this->formFactory->create(RevisionType::class, $revision);
                 $result = $this->dataService->walkRecursive($revisionType->get('data'), $hit['_source'], function (string $name, $data, DataFieldType $dataFieldType, DataField $dataField) use (&$isChanged) {
-                    if ($data === null) {
+                    if (null === $data) {
                         return [];
                     }
                     if ($dataFieldType->isVirtual()) {
@@ -85,6 +85,7 @@ class TransformContentTypeService
                         $contentTransformContext->setTransformedData($dataTransformed);
                         if ($transformer->hasChanges($contentTransformContext)) {
                             $isChanged = true;
+
                             return [$name => $dataTransformed];
                         }
                     }
@@ -119,7 +120,7 @@ class TransformContentTypeService
     private function getTransformer(DataField $dataField): ?ContentTransformInterface
     {
         $transformerClass = $dataField->getFieldType()->getMigrationgOption('transformer');
-        if ($transformerClass === null) {
+        if (null === $transformerClass) {
             return null;
         }
 
@@ -129,6 +130,7 @@ class TransformContentTypeService
     public function getTotal(ContentType $contentType): int
     {
         $scroll = $this->getScroll($contentType);
+
         return $scroll['hits']['total'];
     }
 
@@ -146,8 +148,8 @@ class TransformContentTypeService
                             ['term' => ['_contenttype' => $contentType->getName()]],
                         ],
                     ],
-                ]
-            ]
+                ],
+            ],
         ]);
     }
 }

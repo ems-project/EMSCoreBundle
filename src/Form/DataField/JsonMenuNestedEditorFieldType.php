@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Form\DataField;
 
 use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
-use EMS\CoreBundle\Form\JsonMenuNestedEditor;
 use EMS\CoreBundle\Service\ElasticsearchService;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -15,24 +15,28 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\Form\FormView;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class JsonMenuNestedEditorFieldType extends DataFieldType
 {
     /** @var FormFactoryInterface */
     private $formFactory;
+    /** @var UrlGeneratorInterface */
+    private $urlGenerator;
 
     public function __construct(
         FormFactoryInterface $formFactory,
         AuthorizationCheckerInterface $authorizationChecker,
         FormRegistryInterface $formRegistry,
-        ElasticsearchService $elasticsearchService
+        ElasticsearchService $elasticsearchService,
+        UrlGeneratorInterface $urlGenerator
     ) {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
 
         $this->formFactory = $formFactory;
+        $this->urlGenerator = $urlGenerator;
     }
 
     public function getLabel(): string
@@ -64,16 +68,11 @@ class JsonMenuNestedEditorFieldType extends DataFieldType
     {
         parent::configureOptions($resolver);
 
-        $formFactory = $this->formFactory;
         $resolver
-            ->setDefault('json_menu_nested_editor', null)
-            ->setDefault('icon', null)
-            ->setNormalizer('json_menu_nested_editor', function (Options $options) use ($formFactory) {
-                /** @var FieldType $fieldType */
-                $fieldType = $options['metadata'];
-
-                return new JsonMenuNestedEditor($fieldType, $formFactory);
-            });
+            ->setDefaults([
+                'icon' => null,
+                'json_menu_nested_modal' => true,
+            ]);
     }
 
     /**
@@ -96,7 +95,7 @@ class JsonMenuNestedEditorFieldType extends DataFieldType
 
         $builder->get('options')->get('mappingOptions')->add('analyzer', AnalyzerPickerType::class);
         $builder->get('options')->get('displayOptions')->add('icon', IconPickerType::class, [
-            'required' => false
+            'required' => false,
         ]);
     }
 
@@ -108,12 +107,25 @@ class JsonMenuNestedEditorFieldType extends DataFieldType
     {
         parent::buildView($view, $form, $options);
 
-        $disabled = true;
-        if ($options['metadata'] instanceof FieldType) {
-            $disabled = !$this->authorizationChecker->isGranted($options['metadata']->getMinimumRole());
+        /** @var Revision $revision */
+        $revision = $form->getRoot()->getData();
+        /** @var FieldType $fieldType */
+        $fieldType = $options['metadata'];
+
+        $nodes = [];
+        foreach ($fieldType->getJsonMenuNestedNodeChildren() as $node) {
+            $nodes[$node->getName()] = [
+                'name' => $node->getName(),
+                'label' => $node->getDisplayOption('label', $node->getName()),
+                'icon' => $node->getDisplayOption('icon', null),
+                'url' => $this->urlGenerator->generate('revision.edit.nested-modal', [
+                    'revisionId' => $revision->getId(),
+                    'fieldTypeId' => $node->getId(),
+                ]),
+            ];
         }
 
-        $view->vars['disabled'] = $disabled;
-        $view->vars['json_menu_nested_editor'] = $options['json_menu_nested_editor'];
+        $view->vars['disabled'] = !$this->authorizationChecker->isGranted($fieldType->getMinimumRole());
+        $view->vars['nodes'] = $nodes;
     }
 }

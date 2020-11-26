@@ -8,7 +8,7 @@ use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 
 /**
- * Environment
+ * Environment.
  *
  * @ORM\Table(name="environment")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\EnvironmentRepository")
@@ -52,41 +52,41 @@ class Environment extends JsonDeserializer implements \JsonSerializable
      * @ORM\Column(name="alias", type="string", length=255)
      */
     protected $alias;
-    
+
     /**
      * @var array
      */
     protected $indexes;
-    
+
     /**
      * @var int
      */
     protected $total;
-    
+
     /**
-     * @var integer
+     * @var int
      */
     protected $counter;
-    
+
     /**
-     * @var integer
+     * @var int
      */
     protected $deletedRevision;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="color", type="string", length=50, nullable=true)
      */
     protected $color;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="baseUrl", type="string", length=1024, nullable=true)
      */
     protected $baseUrl;
-    
+
     /**
      * @var bool
      *
@@ -112,7 +112,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
      * @ORM\Column(name="circles", type="json_array", nullable=true)
      */
     protected $circles;
-    
+
     /**
      * @var bool
      *
@@ -126,13 +126,12 @@ class Environment extends JsonDeserializer implements \JsonSerializable
      * @ORM\Column(name="extra", type="text", nullable=true)
      */
     protected $extra;
-    
 
     /**
      * @ORM\OneToMany(targetEntity="ContentType", mappedBy="environment", cascade={"remove"})
      */
     protected $contentTypesHavingThisAsDefault;
-    
+
     /**
      * @var int
      *
@@ -145,8 +144,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
      * @ORM\OrderBy({"name" = "ASC"})
      */
     protected $singleTypeIndexes;
-    
-    
+
     /**
      * @ORM\PrePersist
      * @ORM\PreUpdate
@@ -158,26 +156,26 @@ class Environment extends JsonDeserializer implements \JsonSerializable
             $this->created = $this->modified;
         }
     }
-    
+
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
         $this->revisions = new \Doctrine\Common\Collections\ArrayCollection();
         $this->singleTypeIndexes = new \Doctrine\Common\Collections\ArrayCollection();
     }
-    
+
     /**
-     * ToString
+     * ToString.
      */
     public function __toString()
     {
         return $this->name;
     }
-    
+
     /**
-     * Get id
+     * Get id.
      *
      * @return int
      */
@@ -187,7 +185,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set created
+     * Set created.
      *
      * @param \DateTime $created
      *
@@ -201,7 +199,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get created
+     * Get created.
      *
      * @return \DateTime
      */
@@ -211,7 +209,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set modified
+     * Set modified.
      *
      * @param \DateTime $modified
      *
@@ -225,7 +223,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get modified
+     * Get modified.
      *
      * @return \DateTime
      */
@@ -235,7 +233,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
      *
@@ -249,7 +247,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -259,9 +257,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set index
-     *
-     * @param array $indexes
+     * Set index.
      *
      * @return Environment
      */
@@ -273,7 +269,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get indexes
+     * Get indexes.
      *
      * @return array
      */
@@ -281,8 +277,9 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     {
         return $this->indexes;
     }
+
     /**
-     * Set total
+     * Set total.
      *
      * @param int $total
      *
@@ -296,7 +293,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get total
+     * Get total.
      *
      * @return int
      */
@@ -306,18 +303,19 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get counter
+     * Get counter.
      *
-     * @return integer
+     * @return int
      */
     public function getCounter()
     {
         return $this->counter;
     }
+
     /**
-     * Set counter
+     * Set counter.
      *
-     * @param integer $counter
+     * @param int $counter
      *
      * @return Environment
      */
@@ -329,18 +327,19 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get counter of deleted revision
+     * Get counter of deleted revision.
      *
-     * @return integer
+     * @return int
      */
     public function getDeletedRevision()
     {
         return $this->deletedRevision;
     }
+
     /**
-     * Set counter of deleted revision
+     * Set counter of deleted revision.
      *
-     * @param integer $deletedRevision
+     * @param int $deletedRevision
      *
      * @return Environment
      */
@@ -350,12 +349,9 @@ class Environment extends JsonDeserializer implements \JsonSerializable
 
         return $this;
     }
-    
 
     /**
-     * Add revision
-     *
-     * @param \EMS\CoreBundle\Entity\Revision $revision
+     * Add revision.
      *
      * @return Environment
      */
@@ -367,9 +363,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Remove revision
-     *
-     * @param \EMS\CoreBundle\Entity\Revision $revision
+     * Remove revision.
      */
     public function removeRevision(\EMS\CoreBundle\Entity\Revision $revision)
     {
@@ -377,7 +371,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get revisions
+     * Get revisions.
      *
      * @return \Doctrine\Common\Collections\Collection
      */
@@ -387,9 +381,9 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set managed
+     * Set managed.
      *
-     * @param boolean $managed
+     * @param bool $managed
      *
      * @return Environment
      */
@@ -401,7 +395,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get managed
+     * Get managed.
      *
      * @return bool
      */
@@ -411,9 +405,9 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set snapshot
+     * Set snapshot.
      *
-     * @param boolean $snapshot
+     * @param bool $snapshot
      *
      * @return Environment
      */
@@ -425,7 +419,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get snapshot
+     * Get snapshot.
      *
      * @return bool
      */
@@ -435,7 +429,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set color
+     * Set color.
      *
      * @param string $color
      *
@@ -449,7 +443,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get color
+     * Get color.
      *
      * @return string
      */
@@ -459,7 +453,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set alias
+     * Set alias.
      *
      * @param string $alias
      *
@@ -473,7 +467,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get alias
+     * Get alias.
      *
      * @return string
      */
@@ -483,7 +477,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set baseUrl
+     * Set baseUrl.
      *
      * @param string $baseUrl
      *
@@ -497,7 +491,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get baseUrl
+     * Get baseUrl.
      *
      * @return string
      */
@@ -512,10 +506,10 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     public function setCircles(array $circles): Environment
     {
         $this->circles = $circles;
-    
+
         return $this;
     }
-    
+
     /**
      * @return string[]
      */
@@ -525,9 +519,9 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set inDefaultSearch
+     * Set inDefaultSearch.
      *
-     * @param boolean $inDefaultSearch
+     * @param bool $inDefaultSearch
      *
      * @return Environment
      */
@@ -539,9 +533,9 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get inDefaultSearch
+     * Get inDefaultSearch.
      *
-     * @return boolean
+     * @return bool
      */
     public function getInDefaultSearch()
     {
@@ -549,7 +543,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Set extra
+     * Set extra.
      *
      * @param string $extra
      *
@@ -563,7 +557,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get extra
+     * Get extra.
      *
      * @return string
      */
@@ -573,9 +567,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Add contentTypesHavingThisAsDefault
-     *
-     * @param \EMS\CoreBundle\Entity\ContentType $contentTypesHavingThisAsDefault
+     * Add contentTypesHavingThisAsDefault.
      *
      * @return Environment
      */
@@ -587,9 +579,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Remove contentTypesHavingThisAsDefault
-     *
-     * @param \EMS\CoreBundle\Entity\ContentType $contentTypesHavingThisAsDefault
+     * Remove contentTypesHavingThisAsDefault.
      */
     public function removeContentTypesHavingThisAsDefault(\EMS\CoreBundle\Entity\ContentType $contentTypesHavingThisAsDefault)
     {
@@ -597,7 +587,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get contentTypesHavingThisAsDefault
+     * Get contentTypesHavingThisAsDefault.
      *
      * @return \Doctrine\Common\Collections\Collection
      */
@@ -605,25 +595,25 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     {
         return $this->contentTypesHavingThisAsDefault;
     }
-    
+
     /**
-     * Set orderKey
+     * Set orderKey.
      *
-     * @param integer $orderKey
+     * @param int $orderKey
      *
      * @return Environment
      */
     public function setOrderKey($orderKey)
     {
         $this->orderKey = $orderKey;
-        
+
         return $this;
     }
-    
+
     /**
-     * Get orderKey
+     * Get orderKey.
      *
-     * @return integer
+     * @return int
      */
     public function getOrderKey()
     {
@@ -631,9 +621,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Add single type index
-     *
-     * @param SingleTypeIndex $index
+     * Add single type index.
      *
      * @return Environment
      */
@@ -645,9 +633,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Remove single type index
-     *
-     * @param SingleTypeIndex $index
+     * Remove single type index.
      */
     public function removeSingleTypeIndex(SingleTypeIndex $index)
     {
@@ -655,7 +641,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Get single type indexes
+     * Get single type indexes.
      *
      * @return Collection
      */
@@ -665,15 +651,18 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Specify data which should be serialized to JSON
-     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * Specify data which should be serialized to JSON.
+     *
+     * @see https://php.net/manual/en/jsonserializable.jsonserialize.php
+     *
      * @return mixed data which can be serialized by <b>json_encode</b>,
-     * which is a value of any type other than a resource.
+     *               which is a value of any type other than a resource
+     *
      * @since 5.4.0
      */
     public function jsonSerialize()
     {
-        $json = new JsonClass(get_object_vars($this), __CLASS__);
+        $json = new JsonClass(\get_object_vars($this), __CLASS__);
         $json->removeProperty('id');
 
         return $json;

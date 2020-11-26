@@ -32,6 +32,7 @@ class DeleteOrphanIndexesCommand extends EmsCommand
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->indexService->deleteOrphanIndexes();
+
         return 0;
     }
 }

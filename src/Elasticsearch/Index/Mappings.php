@@ -15,7 +15,7 @@ class Mappings
     public function __construct(array $languageAnalyzers = [])
     {
         foreach ($languageAnalyzers as $language => $analyzer) {
-            $this->defaultProperties['all_' . $language] = [
+            $this->defaultProperties['all_'.$language] = [
                 'type' => 'text',
                 'store' => true,
                 'analyzer' => $analyzer,
@@ -48,10 +48,10 @@ class Mappings
     {
         return [
             '_all' => ['store' => true, 'enabled' => true],
-            'properties' => array_merge([
+            'properties' => \array_merge([
                 EMS::CONTENT_TYPE_FIELD => ['type' => 'keyword'],
                 EMS::HASH_FIELD => ['type' => 'keyword'],
-            ], $this->defaultProperties)
+            ], $this->defaultProperties),
         ];
     }
 }

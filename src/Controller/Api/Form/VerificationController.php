@@ -38,6 +38,7 @@ final class VerificationController extends AbstractController
             return new JsonResponse(['message' => $e->getMessage()], $e->getHttpCode());
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage(), ['exception' => $e]);
+
             return new JsonResponse([], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -58,6 +59,7 @@ final class VerificationController extends AbstractController
             return new JsonResponse(['message' => $e->getMessage()], $e->getHttpCode());
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage(), ['exception' => $e]);
+
             return new JsonResponse([], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

@@ -2,10 +2,8 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use Elasticsearch\Client;
 use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\Controller\AppController;
-use EMS\CoreBundle\Service\AliasService;
 use EMS\CoreBundle\Service\IndexService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormRegistryInterface;

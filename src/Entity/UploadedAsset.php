@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use EMS\CommonBundle\Helper\EmsFields;
 
 /**
- * DataField
+ * DataField.
  *
  * @ORM\Table(name="uploaded_asset")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\UploadedAssetRepository")
@@ -43,28 +43,28 @@ class UploadedAsset
      * @ORM\Column(name="status", type="string", length=64, nullable=true)
      */
     private $status;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="sha1", type="string", length=128)
      */
     private $sha1;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=1024)
      */
     private $name;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="type", type="string", length=1024)
      */
     private $type;
-    
+
     /**
      * @var string
      *
@@ -99,8 +99,6 @@ class UploadedAsset
      * @ORM\Column(name="hash_algo", type="string", length=32, options={"default" : "sha1"})
      */
     private $hashAlgo;
-    
-
 
     /**
      * @ORM\PrePersist
@@ -132,9 +130,9 @@ class UploadedAsset
     }
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -142,7 +140,7 @@ class UploadedAsset
     }
 
     /**
-     * Set created
+     * Set created.
      *
      * @param \DateTime $created
      *
@@ -156,7 +154,7 @@ class UploadedAsset
     }
 
     /**
-     * Get created
+     * Get created.
      *
      * @return \DateTime
      */
@@ -166,7 +164,7 @@ class UploadedAsset
     }
 
     /**
-     * Set modified
+     * Set modified.
      *
      * @param \DateTime $modified
      *
@@ -180,7 +178,7 @@ class UploadedAsset
     }
 
     /**
-     * Get modified
+     * Get modified.
      *
      * @return \DateTime
      */
@@ -190,7 +188,7 @@ class UploadedAsset
     }
 
     /**
-     * Set status
+     * Set status.
      *
      * @param string $status
      *
@@ -204,7 +202,7 @@ class UploadedAsset
     }
 
     /**
-     * Get status
+     * Get status.
      *
      * @return string
      */
@@ -214,7 +212,7 @@ class UploadedAsset
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
      *
@@ -228,7 +226,7 @@ class UploadedAsset
     }
 
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -238,7 +236,7 @@ class UploadedAsset
     }
 
     /**
-     * Set type
+     * Set type.
      *
      * @param string $type
      *
@@ -252,7 +250,7 @@ class UploadedAsset
     }
 
     /**
-     * Get type
+     * Get type.
      *
      * @return string
      */
@@ -262,7 +260,7 @@ class UploadedAsset
     }
 
     /**
-     * Set user
+     * Set user.
      *
      * @param string $user
      *
@@ -276,7 +274,7 @@ class UploadedAsset
     }
 
     /**
-     * Get user
+     * Get user.
      *
      * @return string
      */
@@ -286,9 +284,9 @@ class UploadedAsset
     }
 
     /**
-     * Set available
+     * Set available.
      *
-     * @param boolean $available
+     * @param bool $available
      *
      * @return UploadedAsset
      */
@@ -300,18 +298,19 @@ class UploadedAsset
     }
 
     /**
-     * Get available
+     * Get available.
      *
-     * @return boolean
+     * @return bool
      */
     public function getAvailable()
     {
         return $this->available;
     }
 
-    public function setSize(int $size) : UploadedAsset
+    public function setSize(int $size): UploadedAsset
     {
         $this->size = $size;
+
         return $this;
     }
 
@@ -320,9 +319,10 @@ class UploadedAsset
         return \intval($this->size);
     }
 
-    public function setUploaded(int $uploaded) : UploadedAsset
+    public function setUploaded(int $uploaded): UploadedAsset
     {
         $this->uploaded = $uploaded;
+
         return $this;
     }
 
@@ -332,7 +332,7 @@ class UploadedAsset
     }
 
     /**
-     * Set sha1
+     * Set sha1.
      *
      * @param string $sha1
      *
@@ -346,19 +346,19 @@ class UploadedAsset
     }
 
     /**
-     * Get sha1
+     * Get sha1.
      *
      * @return string
      */
     public function getSha1()
     {
-        return ($this->sha1);
+        return $this->sha1;
     }
 
     /**
      * @return array{filename:string,filesize:int,mimetype:string,sha1:string,_hash_algo:string}
      */
-    public function getData():array
+    public function getData(): array
     {
         return [
             EmsFields::CONTENT_FILE_NAME_FIELD => $this->getName(),
@@ -369,21 +369,15 @@ class UploadedAsset
         ];
     }
 
-    /**
-     * @return string
-     */
     public function getHashAlgo(): string
     {
         return $this->hashAlgo;
     }
 
-    /**
-     * @param string $hashAlgo
-     * @return UploadedAsset
-     */
     public function setHashAlgo(string $hashAlgo): UploadedAsset
     {
         $this->hashAlgo = $hashAlgo;
+
         return $this;
     }
 }

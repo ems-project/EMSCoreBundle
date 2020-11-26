@@ -1,4 +1,5 @@
 <?php
+
 namespace EMS\CoreBundle\Entity\Form;
 
 use EMS\CoreBundle\Entity\ContentType;
@@ -18,7 +19,6 @@ class ExportDocuments
     /** @var string */
     private $environment;
 
-
     public function __construct(ContentType $contentType, string $action = '', string $query = '{}')
     {
         $this->action = $action;
@@ -34,6 +34,7 @@ class ExportDocuments
     public function setAction(string $action): ExportDocuments
     {
         $this->action = $action;
+
         return $this;
     }
 
@@ -45,6 +46,7 @@ class ExportDocuments
     public function setQuery(string $query): ExportDocuments
     {
         $this->query = $query;
+
         return $this;
     }
 
@@ -56,6 +58,7 @@ class ExportDocuments
     public function setFormat(string $format): ExportDocuments
     {
         $this->format = $format;
+
         return $this;
     }
 
@@ -67,6 +70,7 @@ class ExportDocuments
     public function setWithBusinessKey(bool $withBusinessKey): ExportDocuments
     {
         $this->withBusinessKey = $withBusinessKey;
+
         return $this;
     }
 
@@ -78,6 +82,7 @@ class ExportDocuments
     public function setContentType(ContentType $contentType): ExportDocuments
     {
         $this->contentType = $contentType;
+
         return $this;
     }
 
@@ -89,6 +94,7 @@ class ExportDocuments
     public function setEnvironment(string $environment): ExportDocuments
     {
         $this->environment = $environment;
+
         return $this;
     }
 }

@@ -5,7 +5,7 @@ namespace EMS\CoreBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * DataField
+ * DataField.
  *
  * @ORM\Table(name="job")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\JobRepository")
@@ -49,14 +49,14 @@ class Job
      * @ORM\Column(name="output", type="text", nullable=true)
      */
     private $output;
-    
+
     /**
      * @var bool
      *
      * @ORM\Column(name="done", type="boolean")
      */
     private $done;
-    
+
     /**
      * @var bool
      *
@@ -79,12 +79,12 @@ class Job
     private $user;
 
     /**
-     * @var null|string
+     * @var string|null
      *
      * @ORM\Column(name="command", type="string", length=2000, nullable=true)
      */
     private $command;
-    
+
     /**
      * @ORM\PrePersist
      * @ORM\PreUpdate
@@ -113,7 +113,7 @@ class Job
     {
         return $this->created;
     }
-    
+
     public function getStarted(): bool
     {
         return $this->started;
@@ -158,14 +158,14 @@ class Job
     public function setDone(bool $done): Job
     {
         $this->done = $done;
-        
+
         return $this;
     }
 
     public function setStarted(bool $started): Job
     {
         $this->started = $started;
-        
+
         return $this;
     }
 

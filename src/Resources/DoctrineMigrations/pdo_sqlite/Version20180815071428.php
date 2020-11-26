@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Application\Migrations;
 
@@ -10,10 +12,10 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20180815071428 extends AbstractMigration
 {
-    public function up(Schema $schema) : void
+    public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+        $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
         $this->addSql('CREATE TABLE asset_storage (id INTEGER NOT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, hash VARCHAR(128) NOT NULL, context VARCHAR(128) DEFAULT NULL, contents BLOB NOT NULL, last_update_date INTEGER NOT NULL, size BIGINT NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE UNIQUE INDEX asset_key_index ON asset_storage (hash, context)');
@@ -166,10 +168,10 @@ final class Version20180815071428 extends AbstractMigration
         $this->addSql('DROP TABLE __temp__job');
     }
 
-    public function down(Schema $schema) : void
+    public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+        $this->abortIf('sqlite' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'sqlite\'.');
 
         $this->addSql('DROP TABLE asset_storage');
         $this->addSql('DROP INDEX IDX_8AF9B66CA76ED395');

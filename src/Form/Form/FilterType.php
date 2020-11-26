@@ -11,36 +11,29 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FilterType extends AbstractType
 {
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array $options
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', null, array('required' => true))
-            ->add('label', null, array('required' => true))
+            ->add('name', null, ['required' => true])
+            ->add('label', null, ['required' => true])
             ->add('options', FilterOptionsType::class, [
                 'attr' => [
-                    'class' => 'fields-to-display-by-value'
+                    'class' => 'fields-to-display-by-value',
                 ],
             ])
             ->add('save', SubmitEmsType::class, [
                     'label' => 'Save',
                     'attr' => [
-                            'class' => 'btn btn-primary pull-right'
+                            'class' => 'btn btn-primary pull-right',
                     ],
                     'icon' => 'fa fa-save',
             ]);
     }
-    
-    /**
-     * @param OptionsResolver $resolver
-     */
+
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Filter::class
+            'data_class' => Filter::class,
         ]);
     }
 }

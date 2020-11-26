@@ -1,4 +1,5 @@
 <?php
+
 namespace EMS\CoreBundle\Form;
 
 use Doctrine\ORM\EntityRepository;
@@ -11,27 +12,18 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-
 class UserProfileType extends AbstractType
 {
-    
-    /**@var TokenStorageInterface */
+    /** @var TokenStorageInterface */
     private $tokenStorage;
-    
+
     public function __construct(TokenStorageInterface $tokenStorage)
     {
         $this->tokenStorage = $tokenStorage;
     }
-    
-    
-    /**
-     *
-     * @param FormBuilderInterface $builder
-     * @param array $options
-     */
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-
         $builder
             ->add('displayName')
             ->add('emailNotification', CheckboxType::class, [
@@ -41,7 +33,7 @@ class UserProfileType extends AbstractType
             ->add('sidebarMini')
             ->add('sidebarCollapse')
             ->remove('username');
-        
+
         $builder
             ->add('wysiwygProfile', EntityType::class, [
                 'required' => false,
@@ -66,8 +58,6 @@ class UserProfileType extends AbstractType
             ]);
     }
 
-
-
     /**
      * {@inheritdoc}
      */
@@ -77,7 +67,7 @@ class UserProfileType extends AbstractType
         parent::configureOptions($resolver);
         $resolver->setDefault('translation_domain', EMSCoreBundle::TRANS_DOMAIN);
     }
-    
+
     public function getParent()
     {
         return 'FOS\UserBundle\Form\Type\ProfileFormType';

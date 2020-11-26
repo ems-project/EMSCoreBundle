@@ -25,25 +25,16 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  * It's used to logically groups subfields together. However a Container is invisible in Elastic search.
  *
  * @author Mathieu De Keyzer <ems@theus.be>
-
- *
  */
 class DataLinkFieldType extends DataFieldType
 {
-
-    /**@var Client $client*/
+    /** @var Client */
     protected $client;
-    /**@var EventDispatcherInterface $dispatcher*/
+    /** @var EventDispatcherInterface */
     protected $dispatcher;
 
-
     /**
-     * Contructor
-     *
-     * @param AuthorizationCheckerInterface $authorizationChecker
-     * @param FormRegistryInterface $formRegistry
-     * @param Client $client
-     * @param EventDispatcherInterface $dispatcher
+     * Contructor.
      */
     public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, Client $client, EventDispatcherInterface $dispatcher)
     {
@@ -53,8 +44,8 @@ class DataLinkFieldType extends DataFieldType
     }
 
     /**
+     * {@inheritdoc}
      *
-     * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::postFinalizeTreatment()
      */
     public function postFinalizeTreatment($type, $id, DataField $dataField, $previousData)
@@ -72,13 +63,12 @@ class DataLinkFieldType extends DataFieldType
 
             $this->dispatcher->dispatch(UpdateRevisionReferersEvent::NAME, new UpdateRevisionReferersEvent($type, $id, $dataField->getFieldType()->getExtraOptions()['updateReferersField'], $referersToRemove, $referersToAdd));
         }
+
         return parent::postFinalizeTreatment($type, $id, $dataField, $previousData);
     }
 
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function getLabel()
     {
@@ -86,32 +76,32 @@ class DataLinkFieldType extends DataFieldType
     }
 
     /**
-     * Get Elasticsearch subquery
+     * Get Elasticsearch subquery.
      *
      * @return array
      */
     public function getElasticsearchQuery(DataField $dataField, array $options = [])
     {
-        $opt = array_merge([
+        $opt = \array_merge([
                 'nested' => '',
         ], $options);
-        if (strlen($opt['nested'])) {
+        if (\strlen($opt['nested'])) {
             $opt['nested'] .= '.';
         }
 
         $data = $dataField->getRawData();
         $out = [];
-        if (is_array($data)) {
+        if (\is_array($data)) {
             $out = [
                 'terms' => [
-                        $opt['nested'] . $dataField->getFieldType()->getName() => $data
-                ]
+                        $opt['nested'].$dataField->getFieldType()->getName() => $data,
+                ],
             ];
         } else {
             $out = [
                     'term' => [
-                            $opt['nested'] . $dataField->getFieldType()->getName() => $data
-                    ]
+                            $opt['nested'].$dataField->getFieldType()->getName() => $data,
+                    ],
             ];
         }
 
@@ -119,7 +109,7 @@ class DataLinkFieldType extends DataFieldType
     }
 
     /**
-     * Get a icon to visually identify a FieldType
+     * Get a icon to visually identify a FieldType.
      *
      * @return string
      */
@@ -129,16 +119,14 @@ class DataLinkFieldType extends DataFieldType
     }
 
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function buildObjectArray(DataField $data, array &$out)
     {
-        if (! $data->getFieldType()->getDeleted()) {
+        if (!$data->getFieldType()->getDeleted()) {
             $options = $data->getFieldType()->getDisplayOptions();
             if (isset($options['multiple']) && $options['multiple']) {
-                $out [$data->getFieldType()->getName()] = $data->getArrayTextValue();
+                $out[$data->getFieldType()->getName()] = $data->getArrayTextValue();
             } else {
                 parent::buildObjectArray($data, $out);
             }
@@ -146,15 +134,12 @@ class DataLinkFieldType extends DataFieldType
     }
 
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
         /** @var FieldType $fieldType */
-        $fieldType = $options ['metadata'];
+        $fieldType = $options['metadata'];
 
         //Add an event listener in order to sort existing normData before the merge in MergeCollectionListener
         $listener = function (FormEvent $event) {
@@ -162,17 +147,18 @@ class DataLinkFieldType extends DataFieldType
             $rawData = $data->getRawData();
 
             if (!empty($rawData)) {
-                usort($rawData, function ($a, $b) use ($event) {
+                \usort($rawData, function ($a, $b) use ($event) {
                     if (!empty($event->getData()['value'])) {
-                        $indexA = array_search($a, $event->getData()['value']);
-                        $indexB = array_search($b, $event->getData()['value']);
-                        if ($indexA === false || $indexA > $indexB) {
+                        $indexA = \array_search($a, $event->getData()['value']);
+                        $indexB = \array_search($b, $event->getData()['value']);
+                        if (false === $indexA || $indexA > $indexB) {
                             return 1;
                         }
-                        if ($indexB === false || $indexA < $indexB) {
+                        if (false === $indexB || $indexA < $indexB) {
                             return -1;
                         }
                     }
+
                     return 0;
                 });
                 $event->getForm()->setData($rawData);
@@ -180,7 +166,7 @@ class DataLinkFieldType extends DataFieldType
         };
 
         $builder->add('value', ObjectPickerType::class, [
-            'label' => (null != $options ['label'] ? $options ['label'] : $fieldType->getName()),
+            'label' => (null != $options['label'] ? $options['label'] : $fieldType->getName()),
             'required' => false,
             'disabled' => $this->isDisabled($options),
             'multiple' => $options['multiple'],
@@ -189,7 +175,7 @@ class DataLinkFieldType extends DataFieldType
             'dynamicLoading' => $options['dynamicLoading'],
             'sortable' => $options['sortable'],
             'with_warning' => $options['with_warning'],
-            'circle-only' => ($fieldType->getContentType() && $fieldType->getContentType()->getCirclesField() === $fieldType->getName())
+            'circle-only' => ($fieldType->getContentType() && $fieldType->getContentType()->getCirclesField() === $fieldType->getName()),
         ]);
 
         if ($options['sortable']) {
@@ -198,9 +184,7 @@ class DataLinkFieldType extends DataFieldType
     }
 
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function configureOptions(OptionsResolver $resolver)
     {
@@ -216,11 +200,8 @@ class DataLinkFieldType extends DataFieldType
         $resolver->setDefault('dynamicLoading', true);
     }
 
-
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function getDefaultOptions($name)
     {
@@ -232,11 +213,9 @@ class DataLinkFieldType extends DataFieldType
         return $out;
     }
 
-
-
     /**
+     * {@inheritdoc}
      *
-     * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::getBlockPrefix()
      */
     public function getBlockPrefix()
@@ -245,35 +224,30 @@ class DataLinkFieldType extends DataFieldType
     }
 
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function getChoiceList(FieldType $fieldType, array $choices)
     {
-
-        /**@var ObjectPickerType $objectPickerType*/
+        /** @var ObjectPickerType $objectPickerType */
         $objectPickerType = $this->formRegistry->getType(ObjectPickerType::class)->getInnerType();
 
-
-        /**@var ObjectChoiceLoader $loader */
+        /** @var ObjectChoiceLoader $loader */
         $loader = $objectPickerType->getChoiceListFactory()->createLoader($fieldType->getDisplayOptions()['type'], true /*count($choices) == 0 || !$fieldType->getDisplayOptions()['dynamicLoading']*/);
         $all = $loader->loadAll();
-        if (count($choices) > 0) {
+        if (\count($choices) > 0) {
             foreach ($all as $key => $data) {
-                if (! in_array($key, $choices)) {
+                if (!\in_array($key, $choices)) {
                     unset($all[$key]);
                 }
             }
 //             return $loader->loadChoiceList()->loadChoices($choices);
         }
+
         return $all;
     }
 
     /**
-     *
      * {@inheritdoc}
-     *
      */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options)
     {
@@ -299,7 +273,6 @@ class DataLinkFieldType extends DataFieldType
                 'required' => false,
         ]);
 
-
         // String specific mapping options
         $optionsForm->get('mappingOptions')
             ->add('analyzer', AnalyzerPickerType::class)
@@ -309,8 +282,8 @@ class DataLinkFieldType extends DataFieldType
     }
 
     /**
+     * {@inheritdoc}
      *
-     * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::modelTransform()
      */
     public function modelTransform($data, FieldType $fieldType)
@@ -320,62 +293,64 @@ class DataLinkFieldType extends DataFieldType
             $temp = [];
             if (null === $data) {
                 $out->setRawData([]);
-            } elseif (is_array($data)) {
+            } elseif (\is_array($data)) {
                 foreach ($data as $item) {
-                    if (is_string($item)) {
+                    if (\is_string($item)) {
                         $temp[] = $item;
                     } else {
-                        $out->addMessage('Some data was not able to be imported: ' . json_encode($item));
+                        $out->addMessage('Some data was not able to be imported: '.\json_encode($item));
                     }
                 }
-            } elseif (is_string($data)) {
+            } elseif (\is_string($data)) {
                 $temp[] = $data;
                 $out->addMessage('Data converted into array');
             } else {
-                $out->addMessage('Data was not able to be imported: ' . json_encode($data));
+                $out->addMessage('Data was not able to be imported: '.\json_encode($data));
             }
             $out->setRawData($temp);
         } else {
-            if (is_string($data)) {
+            if (\is_string($data)) {
                 return $out;
             }
             if (empty($data)) {
                 $out->setRawData(null);
+
                 return $out;
             }
 
-
-            if (is_array($data)) {
-                if (count($data) == 0) {
+            if (\is_array($data)) {
+                if (0 == \count($data)) {
                     $out->setRawData(null);
-                } elseif (is_string($data[0])) {
+                } elseif (\is_string($data[0])) {
                     $out->setRawData($data[0]);
-                    if (count($data) > 0) {
+                    if (\count($data) > 0) {
                         $out->addMessage('Data converted into string, somae data migth be lost');
                     }
                 }
             } else {
                 $out->setRawData(null);
-                $out->addMessage('Data was not able to be imported: ' . json_encode($data));
+                $out->addMessage('Data was not able to be imported: '.\json_encode($data));
             }
         }
+
         return $out;
     }
 
     /**
+     * {@inheritdoc}
      *
-     * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
      */
     public function viewTransform(DataField $dataField)
     {
         $out = parent::viewTransform($dataField);
-        return [ 'value' => $out ];
+
+        return ['value' => $out];
     }
 
     /**
+     * {@inheritdoc}
      *
-     * {@inheritDoc}
      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::reverseViewTransform()
      */
     public function reverseViewTransform($data, FieldType $fieldType)
@@ -386,6 +361,7 @@ class DataLinkFieldType extends DataFieldType
         }
 
         $out = parent::reverseViewTransform($data, $fieldType);
+
         return $out;
     }
 }

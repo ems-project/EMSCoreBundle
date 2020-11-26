@@ -16,12 +16,12 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $parameters->set(Option::PHP_VERSION_FEATURES, '7.3');
 
     $parameters->set(Option::PATHS, [
-        __DIR__ . '/src',
-        __DIR__ . '/tests'
+        __DIR__.'/src',
+        __DIR__.'/tests',
     ]);
 
     $parameters->set(Option::EXCLUDE_PATHS, [
-        __DIR__ . '/src/Resources',
+        __DIR__.'/src/Resources',
     ]);
 
     // get services (needed for register a single rule)

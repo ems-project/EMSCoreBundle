@@ -13,7 +13,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ImporterType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options) : void
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
            ->add('archive', FileType::class, [
@@ -21,13 +21,13 @@ class ImporterType extends AbstractType
            ])
            ->add('import', SubmitEmsType::class, [
                'attr' => [
-                   'class' => 'btn-danger'
+                   'class' => 'btn-danger',
                ],
-               'icon' => 'glyphicon glyphicon-import'
+               'icon' => 'glyphicon glyphicon-import',
            ]);
     }
 
-    public function configureOptions(OptionsResolver $resolver) : void
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'view' => null,

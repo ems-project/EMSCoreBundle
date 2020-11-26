@@ -61,14 +61,14 @@ class LockCommand extends Command
         if (!$contentType instanceof ContentType) {
             throw new \RuntimeException('Content type not found');
         }
-        if (($time = strtotime($timeArgument)) === false) {
+        if (($time = \strtotime($timeArgument)) === false) {
             throw new \RuntimeException('invalid time');
         }
         $by = $input->getOption('user');
         if (!\is_string($by)) {
             throw new \RuntimeException('Unexpected user name');
         }
-        $force = $input->getOption('force') === true;
+        $force = true === $input->getOption('force');
 
         $until = new \DateTime();
         $until->setTimestamp($time);
@@ -85,14 +85,15 @@ class LockCommand extends Command
         if (0 === $rows) {
             $io->error('no revisions locked, try force?');
         } else {
-            $io->success(vsprintf('%s locked %d %s revisions until %s by %s', [
+            $io->success(\vsprintf('%s locked %d %s revisions until %s by %s', [
                 ($force ? 'FORCE ' : ''),
                 $rows,
                 $contentType->getName(),
                 $until->format('Y-m-d H:i:s'),
-                $by
+                $by,
             ]));
         }
+
         return 0;
     }
 }

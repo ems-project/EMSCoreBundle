@@ -3,19 +3,14 @@
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use EMS\CommonBundle\Helper\Text\Encoder;
-use EMS\CoreBundle;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\Job;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Form\Form\JobType;
 use EMS\CoreBundle\Service\JobService;
-use Exception;
 use Psr\Log\LoggerInterface;
 use SensioLabs\AnsiConverter\AnsiToHtmlConverter;
 use SensioLabs\AnsiConverter\Theme\Theme;
-use Symfony\Component\Console\Exception\InvalidArgumentException;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,7 +31,7 @@ class JobController extends AppController
         $page = $request->query->get('page', 1);
         $from = ($page - 1) * $size;
         $total = $jobService->count();
-        $lastPage = ceil($total / $size);
+        $lastPage = \ceil($total / $size);
 
         return $this->render('@EMSCore/job/index.html.twig', [
             'jobs' => $jobService->scroll($size, $from),
@@ -61,7 +56,7 @@ class JobController extends AppController
             'job' => $job,
             'status' => $encoder->encodeUrl($job->getStatus()),
             'output' => $encoder->encodeUrl($converter->convert($job->getOutput())),
-            'launchJob' => $this->getParameter('ems_core.trigger_job_from_web') === true && $job->getStarted() === false
+            'launchJob' => true === $this->getParameter('ems_core.trigger_job_from_web') && false === $job->getStarted(),
         ]);
     }
 
@@ -88,12 +83,11 @@ class JobController extends AppController
         }
 
         return $this->render('@EMSCore/job/add.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 
     /**
-     * @param Job $job
      * @Route("/admin/job/delete/{job}", name="job.delete", methods={"POST"})
      */
     public function deleteAction(Job $job, JobService $jobService): RedirectResponse
@@ -132,7 +126,7 @@ class JobController extends AppController
             return new JsonResponse('job already done');
         }
 
-        if ($this->getParameter('ems_core.trigger_job_from_web') === false) {
+        if (false === $this->getParameter('ems_core.trigger_job_from_web')) {
             return $this->returnJsonResponse($request, true, [
                 'message' => 'job is scheduled',
                 'job_id' => $job->getId(),
@@ -140,7 +134,7 @@ class JobController extends AppController
         }
 
         $request->getSession()->save();
-        set_time_limit(0);
+        \set_time_limit(0);
         $jobService->run($job);
         $logger->notice('log.data.job.done', [
             'job_id' => $job->getId(),

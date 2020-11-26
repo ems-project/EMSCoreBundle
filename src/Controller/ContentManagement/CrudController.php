@@ -24,7 +24,6 @@ use Throwable;
 
 class CrudController extends AppController
 {
-
     /** @var UserService */
     private $userService;
 
@@ -36,8 +35,7 @@ class CrudController extends AppController
 
     /**
      * @param string $ouuid
-     * @param ContentType $contentType
-     * @param Request $request
+     *
      * @return Response
      *
      * @Route("/api/data/{name}/create/{ouuid}", defaults={"ouuid": null, "_format": "json"}, methods={"POST"})
@@ -46,12 +44,11 @@ class CrudController extends AppController
      */
     public function createAction($ouuid, ContentType $contentType, Request $request)
     {
-
         if (!$contentType->getEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not create content for a managed content type');
         }
 
-        $rawdata = json_decode($request->getContent(), true);
+        $rawdata = \json_decode($request->getContent(), true);
         if (empty($rawdata)) {
             throw new BadRequestHttpException('Not a valid JSON message');
         }
@@ -68,6 +65,7 @@ class CrudController extends AppController
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
                 ]);
             }
+
             return $this->render('@EMSCore/ajax/notification.json.twig', [
                     'success' => false,
                     'ouuid' => $ouuid,
@@ -84,7 +82,7 @@ class CrudController extends AppController
 
     /**
      * @param string $ouuid
-     * @param ContentType $contentType
+     *
      * @return Response
      *
      * @Route("/api/data/{name}/{ouuid}", defaults={"ouuid": null, "_format": "json"}, methods={"GET"})
@@ -93,7 +91,6 @@ class CrudController extends AppController
      */
     public function getAction($ouuid, ContentType $contentType)
     {
-
         try {
             $revision = $this->getDataService()->getNewestRevision($contentType->getName(), $ouuid);
         } catch (Exception $e) {
@@ -106,6 +103,7 @@ class CrudController extends AppController
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
                 ]);
             }
+
             return $this->render('@EMSCore/ajax/revision.json.twig', [
                     'success' => false,
                     'ouuid' => $ouuid,
@@ -123,8 +121,9 @@ class CrudController extends AppController
 
     /**
      * @param int $id
-     * @param ContentType $contentType
+     *
      * @return Response
+     *
      * @throws DataStateException
      * @throws Throwable
      *
@@ -133,7 +132,6 @@ class CrudController extends AppController
      */
     public function finalizeAction($id, ContentType $contentType)
     {
-
         if (!$contentType->getEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not finalize content for a managed content type');
         }
@@ -158,12 +156,13 @@ class CrudController extends AppController
             }
             $out['success'] = false;
         }
+
         return $this->render('@EMSCore/ajax/notification.json.twig', $out);
     }
 
     /**
      * @param string $id
-     * @param ContentType $contentType
+     *
      * @return Response
      *
      * @Route("/api/data/{name}/discard/{id}", defaults={"_format": "json"}, methods={"POST"})
@@ -171,7 +170,6 @@ class CrudController extends AppController
      */
     public function discardAction($id, ContentType $contentType)
     {
-
         if (!$contentType->getEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not discard content for a managed content type');
         }
@@ -191,12 +189,14 @@ class CrudController extends AppController
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
                 ]);
             }
+
             return $this->render('@EMSCore/ajax/notification.json.twig', [
                     'success' => $isDiscard,
                     'type' => $contentType->getName(),
                     'revision_id' => $id,
             ]);
         }
+
         return $this->render('@EMSCore/ajax/notification.json.twig', [
                 'success' => $isDiscard,
                 'type' => $contentType->getName(),
@@ -206,7 +206,7 @@ class CrudController extends AppController
 
     /**
      * @param string $ouuid
-     * @param ContentType $contentType
+     *
      * @return Response
      *
      * @Route("/api/data/{name}/delete/{ouuid}", defaults={"_format": "json"}, methods={"POST"})
@@ -238,6 +238,7 @@ class CrudController extends AppController
                 ]);
             }
         }
+
         return $this->render('@EMSCore/ajax/notification.json.twig', [
                 'success' => $isDeleted,
                 'ouuid' => $ouuid,
@@ -247,8 +248,7 @@ class CrudController extends AppController
 
     /**
      * @param string $ouuid
-     * @param ContentType $contentType
-     * @param Request $request
+     *
      * @return Response
      *
      * @Route("/api/data/{name}/replace/{ouuid}", defaults={"_format": "json"}, methods={"POST"})
@@ -256,12 +256,11 @@ class CrudController extends AppController
      */
     public function replaceAction($ouuid, ContentType $contentType, Request $request)
     {
-
         if (!$contentType->getEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not replace content for a managed content type');
         }
 
-        $rawdata = json_decode($request->getContent(), true);
+        $rawdata = \json_decode($request->getContent(), true);
         if (empty($rawdata)) {
             throw new BadRequestHttpException('Not a valid JSON message');
         }
@@ -281,6 +280,7 @@ class CrudController extends AppController
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
                 ]);
             }
+
             return $this->render('@EMSCore/ajax/notification.json.twig', [
                     'success' => $isReplaced,
                     'ouuid' => $ouuid,
@@ -288,6 +288,7 @@ class CrudController extends AppController
                     'revision_id' => null,
             ]);
         }
+
         return $this->render('@EMSCore/ajax/notification.json.twig', [
                 'success' => $isReplaced,
                 'ouuid' => $ouuid,
@@ -298,8 +299,7 @@ class CrudController extends AppController
 
     /**
      * @param string $ouuid
-     * @param ContentType $contentType
-     * @param Request $request
+     *
      * @return Response
      *
      * @Route("/api/data/{name}/merge/{ouuid}", defaults={"_format": "json"}, methods={"POST"})
@@ -307,23 +307,22 @@ class CrudController extends AppController
      */
     public function mergeAction($ouuid, ContentType $contentType, Request $request)
     {
-
         if (!$contentType->getEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not merge content for a managed content type');
         }
 
-        $rawdata = json_decode($request->getContent(), true);
+        $rawdata = \json_decode($request->getContent(), true);
         if (empty($rawdata)) {
-            throw new BadRequestHttpException('Not a valid JSON message for revision ' . $ouuid . ' and contenttype ' . $contentType->getName());
+            throw new BadRequestHttpException('Not a valid JSON message for revision '.$ouuid.' and contenttype '.$contentType->getName());
         }
 
         try {
             $revision = $this->getDataService()->getNewestRevision($contentType->getName(), $ouuid);
-            $newDraft = $this->getDataService()->replaceData($revision, $rawdata, "merge");
+            $newDraft = $this->getDataService()->replaceData($revision, $rawdata, 'merge');
             $isMerged = ($revision->getId() != $newDraft->getId()) ? true : false;
         } catch (Exception $e) {
             if ($e instanceof NotFoundHttpException) {
-                 throw $e;
+                throw $e;
             } else {
                 $this->getLogger()->error('log.crud.merge_error', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
@@ -332,6 +331,7 @@ class CrudController extends AppController
                 ]);
             }
             $isMerged = false;
+
             return $this->render('@EMSCore/ajax/notification.json.twig', [
                     'success' => $isMerged,
                     'ouuid' => $ouuid,
@@ -339,6 +339,7 @@ class CrudController extends AppController
                     'revision_id' => null,
             ]);
         }
+
         return $this->render('@EMSCore/ajax/notification.json.twig', [
                 'success' => $isMerged,
                 'ouuid' => $ouuid,
@@ -360,7 +361,6 @@ class CrudController extends AppController
     }
 
     /**
-     * @param ContentType $contentType
      * @return Response
      *
      * @Route("/api/meta/{name}", defaults={"_format": "json"}, methods={"GET"})
@@ -380,10 +380,10 @@ class CrudController extends AppController
     public function getUserProfile(): JsonResponse
     {
         $user = $this->getUser();
-        if (! $user instanceof User) {
+        if (!$user instanceof User) {
             throw new \RuntimeException('User profile class not recognized');
         }
-        if (! $user->isEnabled()) {
+        if (!$user->isEnabled()) {
             throw new \RuntimeException('User disabled');
         }
 
@@ -394,7 +394,7 @@ class CrudController extends AppController
      * @Route("/api/user-profiles", defaults={"_format": "json"}, methods={"GET"})
      * @IsGranted({"ROLE_USER_READ", "ROLE_USER_MANAGEMENT", "ROLE_ADMIN"})
      */
-    public function getUserProfiles() : JsonResponse
+    public function getUserProfiles(): JsonResponse
     {
         $users = [];
         foreach ($this->userService->getAllUsers() as $user) {
@@ -402,6 +402,7 @@ class CrudController extends AppController
                 $users[] = $user->toArray();
             }
         }
+
         return $this->json($users);
     }
 }

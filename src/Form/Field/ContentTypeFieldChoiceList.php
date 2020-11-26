@@ -1,4 +1,5 @@
 <?php
+
 namespace EMS\CoreBundle\Form\Field;
 
 use Symfony\Component\Form\ChoiceList\ChoiceListInterface;
@@ -6,11 +7,11 @@ use Symfony\Component\Form\ChoiceList\ChoiceListInterface;
 class ContentTypeFieldChoiceList implements ChoiceListInterface
 {
     private $choices;
-    
+
     private $types;
     private $firstLevelOnly;
     private $mapping;
-    
+
     public function __construct(array $mapping, array $types, $firstLevelOnly)
     {
         $this->choices = [];
@@ -18,24 +19,25 @@ class ContentTypeFieldChoiceList implements ChoiceListInterface
         $this->firstLevelOnly = $firstLevelOnly;
         $this->mapping = $mapping;
     }
-    
+
     /**
      * {@inheritdoc}
      */
     public function getChoices()
     {
         $this->loadAll();
+
         return $this->choices;
     }
-    
+
     /**
      * {@inheritdoc}
      */
     public function getValues()
     {
-        return array_keys($this->choices);
+        return \array_keys($this->choices);
     }
-    
+
     /**
      * @return array
      */
@@ -45,9 +47,10 @@ class ContentTypeFieldChoiceList implements ChoiceListInterface
         foreach ($this->choices as $key => $choice) {
             $values[$key] = $key;
         }
+
         return [$values];
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -55,34 +58,34 @@ class ContentTypeFieldChoiceList implements ChoiceListInterface
     {
         return $this->choices;
     }
-    
+
     /**
      * {@inheritdoc}
      */
     public function getChoicesForValues(array $choices)
     {
-        return array_values($choices);
+        return \array_values($choices);
     }
-    
+
     /**
      * {@inheritdoc}
      */
     public function getValuesForChoices(array $choices)
     {
-        return array_values($choices);
+        return \array_values($choices);
     }
-    
+
     private function recursiveLoad($mapping, $path = '')
     {
         foreach ($mapping as $key => $field) {
-            $newPath = (empty($path) ? '' : $path . '.') . $key;
-            if (isset($field['type']) && array_search($field['type'], $this->types) !== false) {
+            $newPath = (empty($path) ? '' : $path.'.').$key;
+            if (isset($field['type']) && false !== \array_search($field['type'], $this->types)) {
                 $this->choices[$newPath] = new ContentTypeFieldChoiceListItem($newPath, $newPath);
             }
             if (isset($field['fields'])) {
                 foreach ($field['fields'] as $fieldName => $field) {
-                    if (isset($field['type']) && array_search($field['type'], $this->types) !== false) {
-                        $fieldPath = $newPath . '.' . $fieldName;
+                    if (isset($field['type']) && false !== \array_search($field['type'], $this->types)) {
+                        $fieldPath = $newPath.'.'.$fieldName;
                         $this->choices[$fieldPath] = new ContentTypeFieldChoiceListItem($fieldPath, $fieldPath);
                     }
                 }
@@ -92,32 +95,29 @@ class ContentTypeFieldChoiceList implements ChoiceListInterface
             }
         }
     }
-    
+
     public function loadAll()
     {
         $this->choices[''] = new ContentTypeFieldChoiceListItem(null, 'Select a field if apply');
         $this->recursiveLoad($this->mapping);
+
         return $this->choices;
     }
-    
+
     /**
-     * intiate (or re-initiate) the choices array based on the list of key passed in parameter
-     *
-     * @param array $choices
+     * intiate (or re-initiate) the choices array based on the list of key passed in parameter.
      */
     public function loadChoices(array $choices)
     {
-        
-        
         foreach ($choices as $choice) {
-            $path = explode('.', $choice);
-            
+            $path = \explode('.', $choice);
+
             $target = $this->mapping;
             $value = '';
             $label = '';
             foreach ($path as $child) {
                 if (isset($target[$child])) {
-                    $value = (empty($value) ? '' : '.') . $child;
+                    $value = (empty($value) ? '' : '.').$child;
                     $label = $child;
                 } else {
                     break;
@@ -127,6 +127,7 @@ class ContentTypeFieldChoiceList implements ChoiceListInterface
                 $this->choices[$value] = new ContentTypeFieldChoiceListItem($value, $label);
             }
         }
+
         return $this->choices;
     }
 }

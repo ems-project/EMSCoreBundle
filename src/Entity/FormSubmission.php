@@ -65,7 +65,7 @@ class FormSubmission
     private $locale;
 
     /**
-     * @var null|array<string, mixed>
+     * @var array<string, mixed>|null
      *
      * @ORM\Column(name="data", type="json_array", nullable=true)
      */
@@ -158,7 +158,7 @@ class FormSubmission
     }
 
     /**
-     * @return null|array<string, mixed>
+     * @return array<string, mixed>|null
      */
     public function getData(): ?array
     {
@@ -219,6 +219,7 @@ class FormSubmission
     public function setProcessTryCounter(int $processTryCounter): FormSubmission
     {
         $this->processTryCounter = $processTryCounter;
+
         return $this;
     }
 
@@ -230,6 +231,7 @@ class FormSubmission
     public function setProcessId(string $processId): FormSubmission
     {
         $this->processId = $processId;
+
         return $this;
     }
 }

@@ -5,7 +5,7 @@ namespace EMS\CoreBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * DataField
+ * DataField.
  *
  * @ORM\Table(name="wysiwyg_styles_set")
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\WysiwygStylesSetRepository")
@@ -42,21 +42,21 @@ class WysiwygStylesSet
      * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="config", type="text", nullable=true)
      */
     private $config;
-    
+
     /**
      * @var int
      *
      * @ORM\Column(name="orderKey", type="integer")
      */
     private $orderKey;
-    
+
     /**
      * @ORM\PrePersist
      * @ORM\PreUpdate
@@ -71,7 +71,7 @@ class WysiwygStylesSet
             $this->orderKey = 0;
         }
     }
-    
+
     /******************************************************************
      *
      * Generated functions
@@ -79,9 +79,9 @@ class WysiwygStylesSet
      *******************************************************************/
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -89,7 +89,7 @@ class WysiwygStylesSet
     }
 
     /**
-     * Set created
+     * Set created.
      *
      * @param \DateTime $created
      *
@@ -103,7 +103,7 @@ class WysiwygStylesSet
     }
 
     /**
-     * Get created
+     * Get created.
      *
      * @return \DateTime
      */
@@ -113,7 +113,7 @@ class WysiwygStylesSet
     }
 
     /**
-     * Set modified
+     * Set modified.
      *
      * @param \DateTime $modified
      *
@@ -127,7 +127,7 @@ class WysiwygStylesSet
     }
 
     /**
-     * Get modified
+     * Get modified.
      *
      * @return \DateTime
      */
@@ -137,7 +137,7 @@ class WysiwygStylesSet
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
      *
@@ -151,7 +151,7 @@ class WysiwygStylesSet
     }
 
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -161,7 +161,7 @@ class WysiwygStylesSet
     }
 
     /**
-     * Set config
+     * Set config.
      *
      * @param string $config
      *
@@ -175,7 +175,7 @@ class WysiwygStylesSet
     }
 
     /**
-     * Get config
+     * Get config.
      *
      * @return string
      */
@@ -185,9 +185,9 @@ class WysiwygStylesSet
     }
 
     /**
-     * Set orderKey
+     * Set orderKey.
      *
-     * @param integer $orderKey
+     * @param int $orderKey
      *
      * @return WysiwygStylesSet
      */
@@ -199,9 +199,9 @@ class WysiwygStylesSet
     }
 
     /**
-     * Get orderKey
+     * Get orderKey.
      *
-     * @return integer
+     * @return int
      */
     public function getOrderKey()
     {

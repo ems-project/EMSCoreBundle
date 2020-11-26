@@ -9,19 +9,17 @@ use EMS\CoreBundle\Entity\ContentType;
 
 class ObjectChoiceListItem
 {
-
     /** @var string */
     private $label;
-    /** @var null|string */
+    /** @var string|null */
     private $title;
     /** @var string */
     private $value;
-    /** @var null|string */
+    /** @var string|null */
     private $group = null;
-    /** @var null|string */
+    /** @var string|null */
     private $color = null;
-    
-    
+
     public function __construct(Document $document, ?ContentType $contentType)
     {
         $source = $document->getSource();
@@ -29,33 +27,33 @@ class ObjectChoiceListItem
         $icon = 'fa fa-question';
         $this->title = $this->value;
 
-        if ($contentType !== null) {
+        if (null !== $contentType) {
             $labelField = $contentType->getLabelField();
-            if ($labelField !== null) {
+            if (null !== $labelField) {
                 $this->title = $source[$labelField] ?? $this->title;
             }
             $categoryField = $contentType->getCategoryField();
-            if ($categoryField !== null) {
+            if (null !== $categoryField) {
                 $this->group = $source[$categoryField] ?? null;
             }
             $colorField = $contentType->getColorField();
-            if ($colorField !== null) {
+            if (null !== $colorField) {
                 $this->color = $source[$colorField] ?? null;
             }
             $contentTypeIcon = $contentType->getIcon();
-            if ($contentTypeIcon !== null) {
+            if (null !== $contentTypeIcon) {
                 $icon = $contentTypeIcon;
             }
         }
 
         $this->label = \sprintf('<i class="%s" data-ouuid="%s"></i>&nbsp;&nbsp;%s', $icon, $this->value, $this->title);
     }
-    
+
     public function getValue(): string
     {
         return $this->value;
     }
-    
+
     public function getLabel(): string
     {
         return $this->label;
@@ -65,12 +63,12 @@ class ObjectChoiceListItem
     {
         return $this->title;
     }
-    
+
     public function getGroup(): ?string
     {
         return $this->group;
     }
-    
+
     public function getColor(): ?string
     {
         return $this->color;

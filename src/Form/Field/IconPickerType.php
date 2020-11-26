@@ -6,7 +6,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class IconPickerType extends SelectPickerType
 {
-    
     private $choices = [
          'not-defined' => null,
          'ems-ball' => 'ems-icon-ball',
@@ -823,25 +822,22 @@ class IconPickerType extends SelectPickerType
         'menu-down' => 'glyphicon glyphicon-menu-down',
         'menu-up' => 'glyphicon glyphicon-menu-up',
     ];
-    
-    /**
-     * @param OptionsResolver $resolver
-     */
+
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'choices' => $this->choices,
             'attr' => [
-                    'data-live-search' => true
+                    'data-live-search' => true,
             ],
             'choice_attr' => function ($category, $key, $index) {
                 return [
-                        'data-content' => "<i class='" . $category . "'></i>&nbsp;" . $this->humanize($key)
+                        'data-content' => "<i class='".$category."'></i>&nbsp;".$this->humanize($key),
                 ];
             },
             'choice_value' => function ($value) {
                 return $value;
             },
-        ));
+        ]);
     }
 }

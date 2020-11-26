@@ -10,7 +10,6 @@ use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Exception\NotLockedException;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Service\DocumentService;
-use Monolog\Logger;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,9 +21,9 @@ class MigrateCommand extends Command
 {
     protected static $defaultName = 'ems:contenttype:migrate';
 
-    /** @var Client  */
+    /** @var Client */
     protected $client;
-    /** @var Registry  */
+    /** @var Registry */
     protected $doctrine;
     /** @var DocumentService */
     private $documentService;
@@ -38,7 +37,7 @@ class MigrateCommand extends Command
     private $scrollSize;
     /** @var string */
     private $scrollTimeout;
-    /** @var boolean */
+    /** @var bool */
     private $indexInDefaultEnv;
     /** @var Environment */
     private $defaultEnv;
@@ -61,15 +60,15 @@ class MigrateCommand extends Command
     /** @var SymfonyStyle */
     private $io;
 
-    /** @var string  */
+    /** @var string */
     const ARGUMENT_CONTENTTYPE_NAME_FROM = 'contentTypeNameFrom';
-    /** @var string  */
+    /** @var string */
     const ARGUMENT_CONTENTTYPE_NAME_TO = 'contentTypeNameTo';
-    /** @var string  */
+    /** @var string */
     const ARGUMENT_SCROLL_SIZE = 'scrollSize';
-    /** @var string  */
+    /** @var string */
     const ARGUMENT_SCROLL_TIMEOUT = 'scrollTimeout';
-    /** @var string  */
+    /** @var string */
     const ARGUMENT_ELASTICSEARCH_INDEX = 'elasticsearchIndex';
 
     public function __construct(Registry $doctrine, Client $client, DocumentService $documentService)
@@ -80,7 +79,7 @@ class MigrateCommand extends Command
 
         $em = $this->doctrine->getManager();
         $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
-        if (! $contentTypeRepository instanceof ContentTypeRepository) {
+        if (!$contentTypeRepository instanceof ContentTypeRepository) {
             throw new \Exception('Wrong ContentTypeRepository repository instance');
         }
 
@@ -164,7 +163,6 @@ class MigrateCommand extends Command
         $this->io = new SymfonyStyle($input, $output);
     }
 
-
     protected function interact(InputInterface $input, OutputInterface $output): int
     {
         $this->io->title('Start migration');
@@ -181,15 +179,15 @@ class MigrateCommand extends Command
         }
         $this->contentTypeNameFrom = $contentTypeNameFrom;
         $contentTypeNameTo = $input->getArgument(self::ARGUMENT_CONTENTTYPE_NAME_TO);
-        if ($contentTypeNameTo === null) {
+        if (null === $contentTypeNameTo) {
             $contentTypeNameTo = $this->contentTypeNameFrom;
         }
         if (!\is_string($contentTypeNameTo)) {
             throw new \RuntimeException('Unexpected Content type To name');
         }
         $this->contentTypeNameTo = $contentTypeNameTo;
-        $this->scrollSize = intval($input->getArgument(self::ARGUMENT_SCROLL_SIZE));
-        if ($this->scrollSize === 0) {
+        $this->scrollSize = \intval($input->getArgument(self::ARGUMENT_SCROLL_SIZE));
+        if (0 === $this->scrollSize) {
             throw new \RuntimeException('Unexpected scroll size argument');
         }
         $scrollTimeout = $input->getArgument(self::ARGUMENT_SCROLL_TIMEOUT);
@@ -198,57 +196,58 @@ class MigrateCommand extends Command
         }
         $this->scrollTimeout = $scrollTimeout;
 
-
-        $options = array_values($input->getOptions());
+        $options = \array_values($input->getOptions());
         list($this->bulkSize, $this->forceImport, $this->rawImport, $this->signData, $this->searchQuery, $this->dontFinalize) = $options;
 
+        $contentTypeTo = $this->contentTypeRepository->findOneBy(['name' => $this->contentTypeNameTo, 'deleted' => false]);
+        if (null === $contentTypeTo || !$contentTypeTo instanceof ContentType) {
+            $this->io->error(\sprintf('Content type "%s" not found', $this->contentTypeNameTo));
 
-        $contentTypeTo = $this->contentTypeRepository->findOneBy(array("name" => $this->contentTypeNameTo, 'deleted' => false));
-        if ($contentTypeTo === null || !$contentTypeTo instanceof ContentType) {
-            $this->io->error(sprintf('Content type "%s" not found', $this->contentTypeNameTo));
             return -1;
         }
         $this->contentTypeTo = $contentTypeTo;
         $defaultEnv = $this->contentTypeTo->getEnvironment();
-        if ($defaultEnv === null) {
+        if (null === $defaultEnv) {
             throw new \RuntimeException('Unexpected null environment');
         }
         $this->defaultEnv = $defaultEnv;
 
         if ($this->contentTypeTo->getDirty()) {
-            $this->io->error(sprintf('Content type "%s" is dirty. Please clean it first', $this->contentTypeNameTo));
+            $this->io->error(\sprintf('Content type "%s" is dirty. Please clean it first', $this->contentTypeNameTo));
+
             return -1;
         }
 
         $this->indexInDefaultEnv = true;
-        if (strcmp($this->defaultEnv->getAlias(), $this->elasticsearchIndex) === 0 && strcmp($this->contentTypeNameFrom, $this->contentTypeNameTo) === 0) {
+        if (0 === \strcmp($this->defaultEnv->getAlias(), $this->elasticsearchIndex) && 0 === \strcmp($this->contentTypeNameFrom, $this->contentTypeNameTo)) {
             if (!$this->forceImport) {
                 $this->io->error('You can not import a content type on himself with the --force option');
+
                 return -1;
             }
             $this->indexInDefaultEnv = false;
         }
+
         return 0;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-
-        $this->io->section(sprintf('Start migration of %s', $this->contentTypeTo->getPluralName()));
+        $this->io->section(\sprintf('Start migration of %s', $this->contentTypeTo->getPluralName()));
 
         $arrayElasticsearchIndex = $this->client->search([
                 'index' => $this->elasticsearchIndex,
                 'type' => $this->contentTypeNameFrom,
                 'size' => $this->scrollSize,
-                "scroll" => $this->scrollTimeout,
+                'scroll' => $this->scrollTimeout,
                 'body' => $this->searchQuery,
         ]);
 
-        $progress = $this->io->createProgressBar($arrayElasticsearchIndex["hits"]["total"]);
+        $progress = $this->io->createProgressBar($arrayElasticsearchIndex['hits']['total']);
         $importerContext = $this->documentService->initDocumentImporterContext($this->contentTypeTo, 'SYSTEM_MIGRATE', $this->rawImport, $this->signData, $this->indexInDefaultEnv, $this->bulkSize, !$this->dontFinalize, $this->forceImport);
-        
-        while (isset($arrayElasticsearchIndex['hits']['hits']) && count($arrayElasticsearchIndex['hits']['hits']) > 0) {
-            foreach ($arrayElasticsearchIndex["hits"]["hits"] as $value) {
+
+        while (isset($arrayElasticsearchIndex['hits']['hits']) && \count($arrayElasticsearchIndex['hits']['hits']) > 0) {
+            foreach ($arrayElasticsearchIndex['hits']['hits'] as $value) {
                 try {
                     $this->documentService->importDocument($importerContext, $value['_id'], $value['_source']);
                 } catch (NotLockedException $e) {
@@ -266,8 +265,9 @@ class MigrateCommand extends Command
             ]);
         }
         $progress->finish();
-        $this->io->writeln("");
-        $this->io->writeln("Migration done");
+        $this->io->writeln('');
+        $this->io->writeln('Migration done');
+
         return 0;
     }
 }

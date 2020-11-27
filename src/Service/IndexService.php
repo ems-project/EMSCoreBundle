@@ -34,16 +34,21 @@ final class IndexService
     {
         $this->aliasService->build();
         foreach ($this->aliasService->getOrphanIndexes() as $index) {
-            try {
-                $this->client->getIndex($index['name'])->delete();
-                $this->logger->notice('log.index.delete_orphan_index', [
-                    'index_name' => $index['name'],
-                ]);
-            } catch (\RuntimeException $e) {
-                $this->logger->notice('log.index.index_not_found', [
-                    'index_name' => $index['name'],
-                ]);
-            }
+            $this->deleteIndex($index['name']);
+        }
+    }
+
+    public function deleteIndex(string $indexName): void
+    {
+        try {
+            $this->client->getIndex($indexName)->delete();
+            $this->logger->notice('log.index.delete_orphan_index', [
+                'index_name' => $indexName,
+            ]);
+        } catch (\RuntimeException $e) {
+            $this->logger->notice('log.index.index_not_found', [
+                'index_name' => $indexName,
+            ]);
         }
     }
 

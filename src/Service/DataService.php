@@ -81,10 +81,8 @@ class DataService
     /** @var string */
     protected $instanceId;
 
-    //TODO: service should be stateless
     /** @var array */
     private $cacheBusinessKey = [];
-    //TODO: service should be stateless
     /** @var array */
     private $cacheOuuids = [];
 
@@ -128,6 +126,8 @@ class DataService
     private $environmentService;
     /** @var SearchService */
     private $searchService;
+    /** @var IndexService */
+    private $indexService;
 
     public function __construct(
         Registry $doctrine,
@@ -151,7 +151,8 @@ class DataService
         UserService $userService,
         RevisionRepository $revisionRepository,
         EnvironmentService $environmentService,
-        SearchService $searchService
+        SearchService $searchService,
+        IndexService $indexService
     ) {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
@@ -175,6 +176,7 @@ class DataService
         $this->userService = $userService;
         $this->environmentService = $environmentService;
         $this->searchService = $searchService;
+        $this->indexService = $indexService;
 
         $this->public_key = null;
         $this->private_key = null;
@@ -931,25 +933,9 @@ class DataService
         $objectArray = $this->sign($revision);
 
         if (empty($form) || $this->isValid($form, null, $objectArray)) {
-            $objectArray[Mapping::PUBLISHED_DATETIME_FIELD] = (new DateTime())->format(DateTime::ISO8601);
-
-            $config = [
-              'index' => $this->contentTypeService->getIndex($revision->getContentType()),
-              'type' => $revision->getContentType()->getName(),
-              'body' => $objectArray,
-            ];
-
-            if ($revision->getContentType()->getHavePipelines()) {
-                $config['pipeline'] = $this->instanceId.$revision->getContentType()->getName();
-            }
-
-            if (empty($revision->getOuuid())) {
-                $status = $this->client->index($config);
-                $revision->setOuuid($status['_id']);
-            } else {
-                $config['id'] = $revision->getOuuid();
-                $this->client->index($config);
-
+            $ouuid = $revision->getOuuid();
+            $this->indexService->indexRevision($revision);
+            if (null !== $ouuid) {
                 $item = $repository->findByOuuidContentTypeAndEnvironment($revision);
                 if ($item) {
                     $this->lockRevision($item, null, false, $username);
@@ -1441,12 +1427,7 @@ class DataService
             /** @var Environment $environment */
             foreach ($revision->getEnvironments() as $environment) {
                 try {
-                    $this->client->delete([
-                        'index' => $this->contentTypeService->getIndex($revision->getContentType()),
-                        'type' => $revision->getContentType()->getName(),
-                        'id' => $revision->getOuuid(),
-                        'refresh' => true,
-                    ]);
+                    $this->indexService->delete($revision, $environment);
                     $this->logger->notice('service.data.unpublished', [
                         EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                         EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),

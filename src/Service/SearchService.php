@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Service;
 
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CommonBundle\Elasticsearch\Exception\NotSingleResultException;
@@ -10,6 +11,7 @@ use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\Search;
+use EMS\CoreBundle\Entity\Form\SearchFilter;
 
 class SearchService
 {
@@ -21,13 +23,16 @@ class SearchService
     private $environmentService;
     /** @var ContentTypeService */
     private $contentTypeService;
+    /** @var Registry */
+    private $doctrine;
 
-    public function __construct(Mapping $mapping, ElasticaService $elasticaService, EnvironmentService $environmentService, ContentTypeService $contentTypeService)
+    public function __construct(Registry $doctrine, Mapping $mapping, ElasticaService $elasticaService, EnvironmentService $environmentService, ContentTypeService $contentTypeService)
     {
         $this->mapping = $mapping;
         $this->elasticaService = $elasticaService;
         $this->environmentService = $environmentService;
         $this->contentTypeService = $contentTypeService;
+        $this->doctrine = $doctrine;
     }
 
     /**
@@ -180,5 +185,40 @@ class SearchService
         }
 
         return \implode('.', $nestedPath);
+    }
+
+    /**
+     * @param string[] $contentTypes
+     */
+    public function getDefaultSearch(array $contentTypes = []): Search
+    {
+        $searchRepository = $this->doctrine->getRepository('EMSCoreBundle:Form\Search');
+
+        $search = null;
+        if (1 === \sizeof($contentTypes)) {
+            $search = $searchRepository->findOneBy([
+                'contentType' => \array_pop($contentTypes),
+            ]);
+        }
+
+        if (!$search instanceof Search) {
+            $search = $searchRepository->findOneBy([
+                'default' => true,
+            ]);
+        }
+
+        if (!$search instanceof Search) {
+            $search = new Search();
+            $filter = new SearchFilter();
+            $filter->setBooleanClause('must');
+            $filter->setOperator('match_and');
+        } else {
+            $search->resetFilters();
+        }
+        if (\count($contentTypes) > 0) {
+            $search->setContentTypes($contentTypes);
+        }
+
+        return $search;
     }
 }

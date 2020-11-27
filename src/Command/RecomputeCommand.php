@@ -48,8 +48,6 @@ class RecomputeCommand extends EmsCommand
     private $indexService;
     /** @var SearchService */
     private $searchService;
-    /** @var Client */
-    protected $client;
     /** @var LoggerInterface */
     protected $logger;
 
@@ -59,7 +57,6 @@ class RecomputeCommand extends EmsCommand
         FormFactoryInterface $formFactory,
         PublishService $publishService,
         LoggerInterface $logger,
-        Client $client,
         ContentTypeService $contentTypeService,
         ContentTypeRepository $contentTypeRepository,
         RevisionRepository $revisionRepository,
@@ -67,7 +64,6 @@ class RecomputeCommand extends EmsCommand
         SearchService $searchService
     ) {
         $this->logger = $logger;
-        $this->client = $client;
         parent::__construct();
 
         $this->dataService = $dataService;

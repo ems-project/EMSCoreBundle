@@ -14,8 +14,8 @@ use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\Mapping;
-use Monolog\Logger;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
@@ -30,7 +30,7 @@ class DeleteCommand extends Command
     protected $mapping;
     /** @var Registry */
     protected $doctrine;
-    /** @var Logger */
+    /** @var LoggerInterface */
     protected $logger;
     /** @var ContainerInterface */
     protected $container;
@@ -39,7 +39,7 @@ class DeleteCommand extends Command
     /** @var EnvironmentService */
     private $environmentService;
 
-    public function __construct(Registry $doctrine, Logger $logger, Client $client, Mapping $mapping, ContainerInterface $container, ContentTypeService $contentTypeService, EnvironmentService $environmentService)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, Client $client, Mapping $mapping, ContainerInterface $container, ContentTypeService $contentTypeService, EnvironmentService $environmentService)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;

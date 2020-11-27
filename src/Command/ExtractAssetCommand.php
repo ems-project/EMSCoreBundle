@@ -5,7 +5,7 @@ namespace EMS\CoreBundle\Command;
 use Elasticsearch\Client;
 use EMS\CommonBundle\Storage\StorageManager;
 use EMS\CoreBundle\Service\AssetExtractorService;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -19,12 +19,18 @@ class ExtractAssetCommand extends EmsCommand
     protected $extractorService;
     /** @var StorageManager */
     protected $storageManager;
+    /** @var Client */
+    protected $client;
+    /** @var LoggerInterface */
+    protected $logger;
 
-    public function __construct(Logger $logger, Client $client, AssetExtractorService $extractorService, StorageManager $storageManager)
+    public function __construct(LoggerInterface $logger, Client $client, AssetExtractorService $extractorService, StorageManager $storageManager)
     {
         $this->extractorService = $extractorService;
         $this->storageManager = $storageManager;
-        parent::__construct($logger, $client);
+        $this->logger = $logger;
+        $this->client = $client;
+        parent::__construct();
     }
 
     protected function configure(): void

@@ -12,7 +12,7 @@ use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\FileService;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -36,14 +36,20 @@ class IndexFileCommand extends EmsCommand
     protected $databaseDriver;
     /** @var FileService */
     protected $fileService;
+    /** @var Client */
+    protected $client;
+    /** @var LoggerInterface */
+    protected $logger;
 
-    public function __construct(Logger $logger, Client $client, Registry $doctrine, ContentTypeService $contentTypeService, AssetExtractorService $extractorService, FileService $fileService)
+    public function __construct(LoggerInterface $logger, Client $client, Registry $doctrine, ContentTypeService $contentTypeService, AssetExtractorService $extractorService, FileService $fileService)
     {
         $this->doctrine = $doctrine;
         $this->contentTypeService = $contentTypeService;
         $this->extractorService = $extractorService;
         $this->fileService = $fileService;
-        parent::__construct($logger, $client);
+        $this->logger = $logger;
+        $this->client = $client;
+        parent::__construct();
     }
 
     protected function configure(): void

@@ -11,7 +11,7 @@ use EMS\CoreBundle\Exception\NotLockedException;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\DataService;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -23,12 +23,18 @@ class UpdateMetaFieldCommand extends EmsCommand
     protected $doctrine;
     /** @var DataService */
     protected $dataService;
+    /** @var Client */
+    protected $client;
+    /** @var LoggerInterface */
+    protected $logger;
 
-    public function __construct(Registry $doctrine, Logger $logger, Client $client, DataService $dataService)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, Client $client, DataService $dataService)
     {
         $this->doctrine = $doctrine;
         $this->dataService = $dataService;
-        parent::__construct($logger, $client);
+        $this->logger = $logger;
+        $this->client = $client;
+        parent::__construct();
     }
 
     protected function configure(): void

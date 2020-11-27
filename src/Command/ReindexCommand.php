@@ -14,8 +14,8 @@ use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\Mapping;
-use Monolog\Logger;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -30,7 +30,7 @@ class ReindexCommand extends EmsCommand
     protected $mapping;
     /** @var Registry */
     protected $doctrine;
-    /** @var Logger */
+    /** @var LoggerInterface */
     protected $logger;
     /** @var ContainerInterface */
     protected $container;
@@ -45,7 +45,7 @@ class ReindexCommand extends EmsCommand
     /** @var int */
     private $error;
 
-    public function __construct(Registry $doctrine, Logger $logger, Client $client, Mapping $mapping, ContainerInterface $container, string $instanceId, DataService $dataService)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, Client $client, Mapping $mapping, ContainerInterface $container, string $instanceId, DataService $dataService)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
@@ -54,7 +54,7 @@ class ReindexCommand extends EmsCommand
         $this->container = $container;
         $this->instanceId = $instanceId;
         $this->dataService = $dataService;
-        parent::__construct($logger, $client);
+        parent::__construct();
 
         $this->count = 0;
         $this->deleted = 0;

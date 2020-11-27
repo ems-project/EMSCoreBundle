@@ -17,15 +17,20 @@ class CleanAssetCommand extends EmsCommand
 {
     /** @var Registry */
     protected $doctrine;
-
     /** @var FileService */
     protected $fileService;
+    /** @var Client */
+    protected $client;
+    /** @var LoggerInterface */
+    protected $logger;
 
     public function __construct(LoggerInterface $logger, Client $client, Registry $doctrine, FileService $fileService)
     {
         $this->doctrine = $doctrine;
         $this->fileService = $fileService;
-        parent::__construct($logger, $client);
+        $this->logger = $logger;
+        $this->client = $client;
+        parent::__construct();
     }
 
     protected function configure(): void

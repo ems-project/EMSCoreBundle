@@ -48,6 +48,10 @@ class RecomputeCommand extends EmsCommand
     private $indexService;
     /** @var SearchService */
     private $searchService;
+    /** @var Client */
+    protected $client;
+    /** @var LoggerInterface */
+    protected $logger;
 
     public function __construct(
         DataService $dataService,
@@ -62,7 +66,9 @@ class RecomputeCommand extends EmsCommand
         IndexService $indexService,
         SearchService $searchService
     ) {
-        parent::__construct($logger, $client);
+        $this->logger = $logger;
+        $this->client = $client;
+        parent::__construct();
 
         $this->dataService = $dataService;
         $this->formFactory = $formFactory;

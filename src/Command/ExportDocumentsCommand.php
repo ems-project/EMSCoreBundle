@@ -11,7 +11,7 @@ use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\TemplateService;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -25,7 +25,7 @@ class ExportDocumentsCommand extends EmsCommand
 {
     /** @var Client */
     protected $client;
-    /** @var Logger */
+    /** @var LoggerInterface */
     protected $logger;
     /** @var DataService */
     protected $dataService;
@@ -40,7 +40,7 @@ class ExportDocumentsCommand extends EmsCommand
     /** @var string */
     protected $instanceId;
 
-    public function __construct(Logger $logger, Client $client, TemplateService $templateService, DataService $dataService, ContentTypeService $contentTypeService, EnvironmentService $environmentService, RequestRuntime $runtime, string $instanceId)
+    public function __construct(LoggerInterface $logger, Client $client, TemplateService $templateService, DataService $dataService, ContentTypeService $contentTypeService, EnvironmentService $environmentService, RequestRuntime $runtime, string $instanceId)
     {
         $this->logger = $logger;
         $this->templateService = $templateService;
@@ -50,7 +50,7 @@ class ExportDocumentsCommand extends EmsCommand
         $this->instanceId = $instanceId;
         $this->contentTypeService = $contentTypeService;
         $this->runtime = $runtime;
-        parent::__construct($logger, $client);
+        parent::__construct();
     }
 
     protected function configure(): void

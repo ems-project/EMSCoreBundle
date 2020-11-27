@@ -12,7 +12,7 @@ use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -34,19 +34,23 @@ class RebuildCommand extends EmsCommand
     private $singleTypeIndex;
     /** @var ElasticaService */
     private $elasticaService;
+    /** @var Client */
+    protected $client;
+    /** @var LoggerInterface */
+    protected $logger;
 
-    public function __construct(Registry $doctrine, Logger $logger, Client $client, ContentTypeService $contentTypeService, EnvironmentService $environmentService, ReindexCommand $reindexCommand, ElasticaService $elasticaService, string $instanceId, bool $singleTypeIndex)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, Client $client, ContentTypeService $contentTypeService, EnvironmentService $environmentService, ReindexCommand $reindexCommand, ElasticaService $elasticaService, string $instanceId, bool $singleTypeIndex)
     {
         $this->doctrine = $doctrine;
-        $this->logger = $logger;
-        $this->client = $client;
         $this->contentTypeService = $contentTypeService;
         $this->environmentService = $environmentService;
         $this->reindexCommand = $reindexCommand;
         $this->instanceId = $instanceId;
         $this->singleTypeIndex = $singleTypeIndex;
         $this->elasticaService = $elasticaService;
-        parent::__construct($logger, $client);
+        $this->logger = $logger;
+        $this->client = $client;
+        parent::__construct();
     }
 
     protected function configure(): void
@@ -89,10 +93,9 @@ class RebuildCommand extends EmsCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $yellowOk = $input->getOption('yellow-ok') === true;
+        $yellowOk = true === $input->getOption('yellow-ok');
         $this->formatStyles($output);
         $this->waitFor($yellowOk, $output);
-
 
         $bulkSize = \intval($input->getOption('bulk-size'));
         if (0 === $bulkSize) {
@@ -203,7 +206,6 @@ class RebuildCommand extends EmsCommand
                 }
             }
         }
-
 
         $this->waitFor($yellowOk, $output);
 

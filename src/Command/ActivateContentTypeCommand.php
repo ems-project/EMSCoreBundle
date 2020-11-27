@@ -6,7 +6,6 @@ namespace EMS\CoreBundle\Command;
 
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Service\ContentTypeService;
-use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -34,7 +33,7 @@ class ActivateContentTypeCommand extends Command
     const DEACTIVATE = 'deactivate';
     const FORCE = 'force';
 
-    public function __construct(Logger $logger, ContentTypeService $contentTypeService)
+    public function __construct(LoggerInterface $logger, ContentTypeService $contentTypeService)
     {
         $this->contentTypeService = $contentTypeService;
         $this->logger = $logger;

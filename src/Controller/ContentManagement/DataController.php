@@ -1058,7 +1058,12 @@ class DataController extends AppController
             ]);
         }
 
-        return $this->returnJson($success);
+        $response = $this->render('@EMSCore/ajax/notification.json.twig', [
+            'success' => $success,
+        ]);
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
     }
 
     /**

@@ -4,7 +4,6 @@ namespace EMS\CoreBundle\Service;
 
 use Elastica\Client;
 use Elasticsearch\Endpoints\Index;
-use Elasticsearch\Endpoints\Indices\Aliases\Update;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 use Psr\Log\LoggerInterface;
@@ -80,25 +79,13 @@ final class IndexService
      */
     public function updateAlias(string $aliasName, array $indexesToRemove, array $indexesToAdd): void
     {
-        $action = [];
-        foreach ($indexesToRemove as $index) {
-            $action[] = [
-                'remove' => [
-                    'index' => $index,
-                    'alias' => $aliasName,
-                ],
-            ];
+        $actions = [];
+        if (\count($indexesToRemove) > 0) {
+            $actions['remove'] = $indexesToRemove;
         }
-        foreach ($indexesToAdd as $index) {
-            $action[] = [
-                'add' => [
-                    'index' => $index,
-                    'alias' => $aliasName,
-                ],
-            ];
+        if (\count($indexesToAdd) > 0) {
+            $actions['add'] = $indexesToAdd;
         }
-        $endpoint = new Update();
-        $endpoint->setBody(['actions' => $action]);
-        $this->client->requestEndpoint($endpoint);
+        $this->aliasService->updateAlias($aliasName, $actions);
     }
 }

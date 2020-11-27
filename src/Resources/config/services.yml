@@ -624,7 +624,7 @@ services:
             -  { name: console.command }
     ems.contenttype.delete:
         class: EMS\CoreBundle\Command\DeleteCommand
-        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.mapping', '@service_container', '@ems.service.contenttype', '@ems.service.environment']
+        arguments: ['@doctrine', '@logger', '@ems.service.index', '@ems.service.mapping', '@service_container', '@ems.service.contenttype', '@ems.service.environment']
         tags:
             -  { name: console.command }
     ems.contenttype.lock:

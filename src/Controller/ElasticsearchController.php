@@ -23,7 +23,10 @@ use EMS\CoreBundle\Form\Form\SearchFormType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Service\AggregateOptionService;
+use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\ContentTypeService;
+use EMS\CoreBundle\Service\DataService;
+use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\SearchService;
 use Exception;
@@ -115,23 +118,17 @@ class ElasticsearchController extends AppController
     }
 
     /**
-     * @param string $_format
-     *
-     * @return Response
-     *
      * @Route("/status.{_format}", defaults={"_format"="html"}, name="elasticsearch.status")
      */
-    public function statusAction($_format)
+    public function statusAction(string $_format, ElasticaService $elasticaService, DataService $dataService, AssetExtractorService $assetExtractorService, LoggerInterface $logger): Response
     {
         try {
-            $client = $this->getElasticsearch();
-            $status = $client->cluster()->health();
-            $certificateInformation = $this->getDataService()->getCertificateInfo();
+            $status = $elasticaService->getClusterHealth();
+            $certificateInformation = $dataService->getCertificateInfo();
 
             $globalStatus = 'green';
-            $tika = null;
             try {
-                $tika = ($this->getAssetExtractorService()->hello());
+                $tika = ($assetExtractorService->hello());
             } catch (Exception $e) {
                 $globalStatus = 'yellow';
                 $tika = [
@@ -143,11 +140,11 @@ class ElasticsearchController extends AppController
             if ('html' === $_format && 'green' !== $status['status']) {
                 $globalStatus = $status['status'];
                 if ('red' === $status['status']) {
-                    $this->getLogger()->error('log.elasticsearch.cluster_red', [
+                    $logger->error('log.elasticsearch.cluster_red', [
                         'color_status' => $status['status'],
                     ]);
                 } else {
-                    $this->getLogger()->warning('log.elasticsearch.cluster_yellow', [
+                    $logger->warning('log.elasticsearch.cluster_yellow', [
                         'color_status' => $status['status'],
                     ]);
                 }
@@ -158,8 +155,8 @@ class ElasticsearchController extends AppController
                 'certificate' => $certificateInformation,
                 'tika' => $tika,
                 'globalStatus' => $globalStatus,
-                'info' => $client->info(),
-                'specifiedVersion' => $this->getElasticsearchService()->getVersion(),
+                'info' => $elasticaService->getClusterInfo(),
+                'specifiedVersion' => $elasticaService->getVersion(),
             ]);
         } catch (NoNodesAvailableException $e) {
             return $this->render('@EMSCore/elasticsearch/no-nodes-available.'.$_format.'.twig', [
@@ -291,26 +288,17 @@ class ElasticsearchController extends AppController
     }
 
     /**
-     * @param string $name
-     *
-     * @return RedirectResponse
-     *
      * @Route("/elasticsearch/index/delete/{name}", name="elasticsearch.index.delete")
      */
-    public function deleteIndexAction($name)
+    public function deleteIndexAction(string $name, LoggerInterface $logger, IndexService $indexService): RedirectResponse
     {
-        /** @var Client $client */
-        $client = $this->getElasticsearch();
         try {
-            $client->indices()->delete([
-                'index' => $name,
-            ]);
-
-            $this->getLogger()->notice('log.elasticsearch.index_deleted', [
+            $indexService->deleteIndex($name);
+            $logger->notice('log.elasticsearch.index_deleted', [
                 'index_name' => $name,
             ]);
         } catch (Missing404Exception $e) {
-            $this->getLogger()->warning('log.elasticsearch.index_not_found', [
+            $logger->warning('log.elasticsearch.index_not_found', [
                 'index_name' => $name,
             ]);
         }

@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Elasticsearch\Client;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
@@ -31,8 +32,10 @@ class RebuildCommand extends EmsCommand
     private $instanceId;
     /** @var bool */
     private $singleTypeIndex;
+    /** @var ElasticaService */
+    private $elasticaService;
 
-    public function __construct(Registry $doctrine, Logger $logger, Client $client, ContentTypeService $contentTypeService, EnvironmentService $environmentService, ReindexCommand $reindexCommand, string $instanceId, bool $singleTypeIndex)
+    public function __construct(Registry $doctrine, Logger $logger, Client $client, ContentTypeService $contentTypeService, EnvironmentService $environmentService, ReindexCommand $reindexCommand, ElasticaService $elasticaService, string $instanceId, bool $singleTypeIndex)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
@@ -42,6 +45,7 @@ class RebuildCommand extends EmsCommand
         $this->reindexCommand = $reindexCommand;
         $this->instanceId = $instanceId;
         $this->singleTypeIndex = $singleTypeIndex;
+        $this->elasticaService = $elasticaService;
         parent::__construct($logger, $client);
     }
 
@@ -85,11 +89,10 @@ class RebuildCommand extends EmsCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $yellowOk = $input->getOption('yellow-ok') === true;
         $this->formatStyles($output);
+        $this->waitFor($yellowOk, $output);
 
-        if (!$input->getOption('yellow-ok')) {
-            $this->waitForGreen($output);
-        }
 
         $bulkSize = \intval($input->getOption('bulk-size'));
         if (0 === $bulkSize) {
@@ -146,9 +149,8 @@ class RebuildCommand extends EmsCommand
             ]);
 
             $output->writeln('A new index '.$indexName.' has been created');
-            if (!$input->getOption('yellow-ok')) {
-                $this->waitForGreen($output);
-            }
+
+            $this->waitFor($yellowOk, $output);
         }
 
         $output->writeln(\count($contentTypes).' content types will be re-indexed');
@@ -171,9 +173,8 @@ class RebuildCommand extends EmsCommand
                     ]);
 
                     $output->writeln('A new index '.$indexName.' has been created');
-                    if (!$input->getOption('yellow-ok')) {
-                        $this->waitForGreen($output);
-                    }
+
+                    $this->waitFor($yellowOk, $output);
                 }
 
                 $this->contentTypeService->updateMapping($contentType, $indexName);
@@ -203,9 +204,9 @@ class RebuildCommand extends EmsCommand
             }
         }
 
-        if (!$input->getOption('yellow-ok')) {
-            $this->waitForGreen($output);
-        }
+
+        $this->waitFor($yellowOk, $output);
+
         if (empty($indexes)) {
             $indexes = [$singleIndexName];
         }
@@ -256,6 +257,17 @@ class RebuildCommand extends EmsCommand
                     'name' => $alias,
                 ]);
             }
+        }
+    }
+
+    private function waitFor(bool $yellowOk, OutputInterface $output): void
+    {
+        if ($yellowOk) {
+            $output->writeln('Waiting for yellow...');
+            $this->elasticaService->getClusterHealth('yellow', '30s');
+        } else {
+            $output->writeln('Waiting for green...');
+            $this->elasticaService->getClusterHealth('green', '30s');
         }
     }
 }

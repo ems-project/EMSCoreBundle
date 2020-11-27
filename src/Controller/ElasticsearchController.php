@@ -3,7 +3,6 @@
 namespace EMS\CoreBundle\Controller;
 
 use Doctrine\ORM\EntityManager;
-use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\ElasticsearchException;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
@@ -48,11 +47,8 @@ class ElasticsearchController extends AppController
      * @return RedirectResponse|Response
      * @Route("/elasticsearch/alias/add/{name}", name="elasticsearch.alias.add")
      */
-    public function addAliasAction(string $name, Request $request)
+    public function addAliasAction(string $name, Request $request, LoggerInterface $logger, IndexService $indexService)
     {
-        /** @var Client $client */
-        $client = $this->getElasticsearch();
-
         $form = $this->createFormBuilder([])->add('name', IconTextType::class, [
             'icon' => 'fa fa-key',
             'required' => true,
@@ -67,20 +63,10 @@ class ElasticsearchController extends AppController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $params['body'] = [
-                'actions' => [
-                    [
-                        'add' => [
-                            'index' => $name,
-                            'alias' => $form->get('name')->getData(),
-                        ],
-                    ],
-                ],
-            ];
-
-            $client->indices()->updateAliases($params);
-            $this->getLogger()->notice('log.elasticsearch.alias_added', [
-                'alias_name' => $form->get('name')->getData(),
+            $aliasName = $form->get('name')->getData();
+            $indexService->updateAlias($aliasName, [], [$name]);
+            $logger->notice('log.elasticsearch.alias_added', [
+                'alias_name' => $aliasName,
                 'index_name' => $name,
             ]);
 

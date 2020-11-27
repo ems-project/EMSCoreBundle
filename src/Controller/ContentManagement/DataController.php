@@ -577,7 +577,7 @@ class DataController extends AppController
     }
 
     /**
-     * @Route("/data/new-draft/{type}/{ouuid}", name="revision.new-draft", methods={"POST"})
+     * @Route("/data/new-draft/{type}/{ouuid}", name="revision.new-draft")
      */
     public function newDraftAction(string $type, string $ouuid, DataService $dataService): RedirectResponse
     {

@@ -3,7 +3,6 @@
 namespace EMS\CoreBundle\Controller;
 
 use Doctrine\ORM\EntityManager;
-use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\ElasticsearchException;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
@@ -23,7 +22,10 @@ use EMS\CoreBundle\Form\Form\SearchFormType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Service\AggregateOptionService;
+use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\ContentTypeService;
+use EMS\CoreBundle\Service\DataService;
+use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\SearchService;
 use Exception;
@@ -45,11 +47,8 @@ class ElasticsearchController extends AppController
      * @return RedirectResponse|Response
      * @Route("/elasticsearch/alias/add/{name}", name="elasticsearch.alias.add")
      */
-    public function addAliasAction(string $name, Request $request)
+    public function addAliasAction(string $name, Request $request, LoggerInterface $logger, IndexService $indexService)
     {
-        /** @var Client $client */
-        $client = $this->getElasticsearch();
-
         $form = $this->createFormBuilder([])->add('name', IconTextType::class, [
             'icon' => 'fa fa-key',
             'required' => true,
@@ -64,20 +63,10 @@ class ElasticsearchController extends AppController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $params['body'] = [
-                'actions' => [
-                    [
-                        'add' => [
-                            'index' => $name,
-                            'alias' => $form->get('name')->getData(),
-                        ],
-                    ],
-                ],
-            ];
-
-            $client->indices()->updateAliases($params);
-            $this->getLogger()->notice('log.elasticsearch.alias_added', [
-                'alias_name' => $form->get('name')->getData(),
+            $aliasName = $form->get('name')->getData();
+            $indexService->updateAlias($aliasName, [], [$name]);
+            $logger->notice('log.elasticsearch.alias_added', [
+                'alias_name' => $aliasName,
                 'index_name' => $name,
             ]);
 
@@ -91,21 +80,16 @@ class ElasticsearchController extends AppController
     }
 
     /**
-     * @param string $_format
-     *
-     * @return Response
-     *
      * @Route("/health_check.{_format}", defaults={"_format"="html"}, name="health-check")
      */
-    public function healthCheckAction($_format)
+    public function healthCheckAction(string $_format, ElasticaService $elasticaService): Response
     {
         try {
-            $client = $this->getElasticsearch();
-            $status = $client->cluster()->health();
+            $health = $elasticaService->getClusterHealth();
 
             $response = $this->render('@EMSCore/elasticsearch/status.'.$_format.'.twig', [
-                'status' => $status,
-                'globalStatus' => $status['status'],
+                'status' => $health,
+                'globalStatus' => $health['status'] ?? 'red',
             ]);
 
             $allowOrigin = $this->getParameter('ems_core.health_check_allow_origin');
@@ -120,23 +104,17 @@ class ElasticsearchController extends AppController
     }
 
     /**
-     * @param string $_format
-     *
-     * @return Response
-     *
      * @Route("/status.{_format}", defaults={"_format"="html"}, name="elasticsearch.status")
      */
-    public function statusAction($_format)
+    public function statusAction(string $_format, ElasticaService $elasticaService, DataService $dataService, AssetExtractorService $assetExtractorService, LoggerInterface $logger): Response
     {
         try {
-            $client = $this->getElasticsearch();
-            $status = $client->cluster()->health();
-            $certificateInformation = $this->getDataService()->getCertificateInfo();
+            $status = $elasticaService->getClusterHealth();
+            $certificateInformation = $dataService->getCertificateInfo();
 
             $globalStatus = 'green';
-            $tika = null;
             try {
-                $tika = ($this->getAssetExtractorService()->hello());
+                $tika = ($assetExtractorService->hello());
             } catch (Exception $e) {
                 $globalStatus = 'yellow';
                 $tika = [
@@ -148,11 +126,11 @@ class ElasticsearchController extends AppController
             if ('html' === $_format && 'green' !== $status['status']) {
                 $globalStatus = $status['status'];
                 if ('red' === $status['status']) {
-                    $this->getLogger()->error('log.elasticsearch.cluster_red', [
+                    $logger->error('log.elasticsearch.cluster_red', [
                         'color_status' => $status['status'],
                     ]);
                 } else {
-                    $this->getLogger()->warning('log.elasticsearch.cluster_yellow', [
+                    $logger->warning('log.elasticsearch.cluster_yellow', [
                         'color_status' => $status['status'],
                     ]);
                 }
@@ -163,8 +141,8 @@ class ElasticsearchController extends AppController
                 'certificate' => $certificateInformation,
                 'tika' => $tika,
                 'globalStatus' => $globalStatus,
-                'info' => $client->info(),
-                'specifiedVersion' => $this->getElasticsearchService()->getVersion(),
+                'info' => $elasticaService->getClusterInfo(),
+                'specifiedVersion' => $elasticaService->getVersion(),
             ]);
         } catch (NoNodesAvailableException $e) {
             return $this->render('@EMSCore/elasticsearch/no-nodes-available.'.$_format.'.twig', [
@@ -296,26 +274,17 @@ class ElasticsearchController extends AppController
     }
 
     /**
-     * @param string $name
-     *
-     * @return RedirectResponse
-     *
      * @Route("/elasticsearch/index/delete/{name}", name="elasticsearch.index.delete")
      */
-    public function deleteIndexAction($name)
+    public function deleteIndexAction(string $name, LoggerInterface $logger, IndexService $indexService): RedirectResponse
     {
-        /** @var Client $client */
-        $client = $this->getElasticsearch();
         try {
-            $client->indices()->delete([
-                'index' => $name,
-            ]);
-
-            $this->getLogger()->notice('log.elasticsearch.index_deleted', [
+            $indexService->deleteIndex($name);
+            $logger->notice('log.elasticsearch.index_deleted', [
                 'index_name' => $name,
             ]);
         } catch (Missing404Exception $e) {
-            $this->getLogger()->warning('log.elasticsearch.index_not_found', [
+            $logger->warning('log.elasticsearch.index_not_found', [
                 'index_name' => $name,
             ]);
         }

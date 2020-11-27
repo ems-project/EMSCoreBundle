@@ -5,7 +5,6 @@ namespace EMS\CoreBundle\Command;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
-use Elasticsearch\Client;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;

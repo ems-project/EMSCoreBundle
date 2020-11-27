@@ -650,7 +650,7 @@ services:
             -  { name: console.command }
     ems.environment.reconnect:
         class: EMS\CoreBundle\Command\ReconnectCommand
-        arguments: ['@app.elasticsearch', '@ems.service.contenttype', '@ems.service.environment']
+        arguments: ['@ems_common.elastica.client', '@ems.service.contenttype', '@ems.service.environment', '%ems_core.single_type_index%']
         tags:
             -  { name: console.command }
     ems.environment.list:

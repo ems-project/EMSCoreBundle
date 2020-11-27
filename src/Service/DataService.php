@@ -1907,11 +1907,6 @@ class DataService
         return $revision;
     }
 
-    public function waitForGreen()
-    {
-        $this->client->cluster()->health(['wait_for_status' => 'green']);
-    }
-
     public function getDataFieldsStructure(FormInterface $form)
     {
         /** @var DataField $out */

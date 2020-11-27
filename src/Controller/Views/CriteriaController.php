@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Controller\Views;
 use Doctrine\ORM\EntityManager;
 use Elasticsearch\Client;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
@@ -40,7 +41,7 @@ class CriteriaController extends AppController
      *
      * @Route("/views/criteria/align/{view}", name="views.criteria.align", methods={"POST"})
      */
-    public function alignAction(View $view, Request $request)
+    public function alignAction(View $view, Request $request, ElasticaService $elasticaService)
     {
         $criteriaUpdateConfig = new CriteriaUpdateConfig($view, $this->getLogger());
         $form = $this->createForm(CriteriaFilterType::class, $criteriaUpdateConfig, [
@@ -184,7 +185,7 @@ class CriteriaController extends AppController
             $this->getDataService()->finalizeDraft($revision);
         }
         \sleep(2);
-        $this->getDataService()->waitForGreen();
+        $elasticaService->getClusterHealth('green', '20s');
 
         return $this->forward('EMSCoreBundle:Views\Criteria:generateCriteriaTable', ['view' => $view]);
     }
@@ -630,8 +631,6 @@ class CriteriaController extends AppController
             $rawData[$multipleField][] = $multipleValueToAdd;
             $revision->setRawData($rawData);
 
-//             $revision= $this->getDataService()->finalizeDraft($revision);
-//             $this->getDataService()->waitForGreen();
             $message = $multipleValueToAdd;
             foreach ($rawData as $key => $value) {
                 if ($key != $multipleField && $key != $targetFieldName) {

@@ -1916,7 +1916,6 @@ class DataService
                 $out->addChild($item->getNormData());
                 $this->getDataFieldsStructure($item);
             }
-            //else shoudl be a sub-field
         }
 
         return $out;

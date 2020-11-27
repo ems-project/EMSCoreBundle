@@ -663,7 +663,7 @@ services:
         tags:
             - { name: console.command }
     EMS\CoreBundle\Command\CleanAssetCommand:
-        arguments: ['@logger', '@app.elasticsearch', '@doctrine', '@ems.service.file']
+        arguments: ['@logger', '@doctrine', '@ems.service.file']
         tags:
             - { name: console.command }
     EMS\CoreBundle\Command\AlignManagedAliases:

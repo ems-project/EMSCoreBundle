@@ -514,7 +514,7 @@ services:
             - { name: kernel.cache_warmer }
     ems.service.search:
         class: EMS\CoreBundle\Service\SearchService
-        arguments: ['@ems.service.mapping', '@ems_common.service.elastica', '@ems.service.environment', '@ems.service.contenttype']
+        arguments: ['@doctrine', '@ems.service.mapping', '@ems_common.service.elastica', '@ems.service.environment', '@ems.service.contenttype']
     ems.service.file:
         class: EMS\CoreBundle\Service\FileService
         arguments: ['@doctrine', '@ems_common.storage.manager', '@ems_common.storage.processor', '%kernel.project_dir%']

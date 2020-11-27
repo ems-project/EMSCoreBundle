@@ -9,6 +9,7 @@ use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
 use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Search\Search as CommonSearch;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Form\ExportDocuments;
@@ -23,7 +24,6 @@ use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Service\AggregateOptionService;
 use EMS\CoreBundle\Service\ContentTypeService;
-use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\SearchService;
 use Exception;
@@ -223,7 +223,7 @@ class ElasticsearchController extends AppController
         ]);
         if ($search) {
             $em->detach($search);
-            $search->resetFilters($search->getFilters()->getValues());
+            $search->resetFilters();
             /** @var SearchFilter $filter */
             foreach ($search->getFilters() as &$filter) {
                 if (empty($filter->getPattern())) {
@@ -328,243 +328,110 @@ class ElasticsearchController extends AppController
      *
      * @Route("/search.json", name="elasticsearch.api.search")
      */
-    public function searchApiAction(Request $request, LoggerInterface $logger, SearchService $searchService, ElasticaService $elasticaService)
+    public function searchApiAction(Request $request, LoggerInterface $logger, SearchService $searchService, ElasticaService $elasticaService, ContentTypeService $contentTypeService)
     {
-        $logger->debug('At the begin of search api action');
-        $pattern = $request->query->get('q');
-        $page = $request->query->get('page', 1);
-        $environments = $request->query->get('environment');
-        $types = $request->query->get('type');
-        $searchId = $request->query->get('searchId');
-        $category = $request->query->get('category', false);
+        $pattern = $request->query->get('q', '');
+        $page = \intval($request->query->get('page', 1));
+        $environments = $request->query->get('environment', null);
+        $types = $request->query->get('type', null);
+        $searchId = $request->query->get('searchId', null);
+        $category = $request->query->get('category', null);
         $assetName = $request->query->get('asset_name', false);
         $circleOnly = $request->query->get('circle', false);
         $pageSize = 30;
 
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
-
         /** @var ContentTypeRepository $contentTypeRepository */
         $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
 
         $allTypes = $contentTypeRepository->findAllAsAssociativeArray();
 
-        if ($searchId) {
+        $contentTypes = [];
+        if (!empty($types)) {
+            $contentTypes = \explode(',', $types);
+        }
+
+        $search = null;
+        if (null !== $searchId) {
             $searchRepository = $em->getRepository('EMSCoreBundle:Form\Search');
             $search = $searchRepository->findOneBy([
                 'id' => $searchId,
             ]);
-
-            /** @var Search $search */
-            if ($search) {
-                $search->resetFilters($search->getFilters()->getValues());
-                $queryString = $pattern;
-                if (!empty($pattern) && !\in_array(\substr($pattern, \strlen($pattern) - 1), [' ', '?', '*', '.', '/'])) {
-                    $queryString .= '*';
-                }
-
-                /** @var SearchFilter $filter */
-                foreach ($search->getFilters() as &$filter) {
-                    if (empty($filter->getPattern())) {
-                        if (\in_array($filter->getOperator(), ['query_and', 'query_or'])) {
-                            $filter->setPattern($queryString);
-                        } else {
-                            $filter->setPattern($pattern);
-                        }
-                    }
-                }
-                $search->setContentTypes($search->getContentTypes());
-                $commonSearch = $searchService->generateSearch($search);
-                $commonSearch->setFrom(($page - 1) * $pageSize);
-                $commonSearch->setSize($pageSize);
-
-                $results = $elasticaService->search($commonSearch);
-
-                return $this->render('@EMSCore/elasticsearch/search.json.twig', [
-                    'results' => $results->getResponse()->getData(),
-                    'types' => $allTypes,
-                ]);
-            }
         }
 
-        if (empty($types)) {
-            $types = [];
+        if (!$search instanceof Search) {
+            $search = $searchService->getDefaultSearch($contentTypes);
+        }
+
+        if ($assetName) {
             // For search only in contentType with Asset field == $assetName.
-            if ($assetName) {
-                foreach ($allTypes as $key => $value) {
-                    if (!empty($value->getAssetField())) {
-                        $types[] = $key;
-                    }
+            $contentTypes = [];
+            foreach ($allTypes as $key => $value) {
+                if (!empty($value->getAssetField())) {
+                    $contentTypes[] = $key;
                 }
-            } else {
-                $types = \array_keys($allTypes);
             }
-        } else {
-            $types = \explode(',', $types);
         }
 
-        if (!empty($types)) {
-            $aliases = [];
-            $service = $this->getEnvironmentService();
-            if (empty($environments)) {
-                /* @var EnvironmentService $service */
-                foreach ($types as $type) {
-                    $ct = $contentTypeRepository->findByName($type);
-                    if ($ct) {
-                        $alias = $service->getAliasByName($ct->getEnvironment()->getName());
-                        if ($alias) {
-                            $aliases[] = $alias->getAlias();
-                        }
-                    }
-                }
-            } else {
-                $environments = \explode(',', $environments);
-                foreach ($environments as $environment) {
-                    $alias = $service->getAliasByName($environment);
-                    if ($alias) {
-                        $aliases[] = $alias->getAlias();
-                    }
-                }
-            }
-            $params = [
-                'index' => \array_unique($aliases),
-                'type' => \array_unique($types),
-                'size' => $pageSize,
-                'from' => ($page - 1) * $pageSize,
-                'body' => [
-                    'query' => [
-                        'bool' => [
-                            'must' => [],
-                        ],
-                    ],
-                ],
-            ];
-
-            $matches = [];
-            if (\preg_match('/^[a-z][a-z0-9\-_]*:/i', $pattern, $matches)) {
-                $filterType = \substr($matches[0], 0, \strlen($matches[0]) - 1);
-                if (\in_array($filterType, $types, true)) {
-                    $pattern = (string) \substr($pattern, \strlen($matches[0]));
-                    $params['type'] = $filterType;
-                }
-            }
-
-            if ($circleOnly && !$this->get('security.authorization_checker')->isGranted('ROLE_USER_MANAGEMENT')) {
-                /** @var UserInterface $user */
-                $user = $this->getUser();
-                $circles = $user->getCircles();
-
-                $ouuids = [];
-                foreach ($circles as $circle) {
-                    \preg_match('/(?P<type>\w+):(?P<ouuid>\w+)/', $circle, $matches);
-                    $ouuids[] = $matches['ouuid'];
-                }
-
-                $params['body']['query']['bool']['must'][] = [
-                    'terms' => [
-                        '_id' => $ouuids,
-                    ],
-                ];
-            }
-
-            $patterns = \explode(' ', $pattern);
-
-            for ($i = 0; $i < (\count($patterns) - 1); ++$i) {
-                $params['body']['query']['bool']['must'][] = [
-                    'query_string' => [
-                        'default_field' => '_all',
-                        'query' => $patterns[$i],
-                    ],
-                ];
-            }
-
-            $params['body']['query']['bool']['must'][] = [
-                'query_string' => [
-                    'default_field' => '_all',
-                    'query' => '*'.$patterns[$i].'*',
-                ],
-            ];
-
-            if (1 == \count($types)) {
-                $searchRepository = $em->getRepository('EMSCoreBundle:Form\Search');
-                $contentType = $this->getContentTypeService()->getByName($types[0]);
-
-                $search = $searchRepository->findOneBy([
-                    'contentType' => $contentType->getId(),
-                ]);
-
-                if ($search) {
-                    $em->detach($search);
-                    $search->resetFilters($search->getFilters()->getValues());
-
-                    $queryString = $pattern;
-                    if (!empty($pattern) && !\in_array(\substr($pattern, \strlen($pattern) - 1), [' ', '?', '*', '.', '/'])) {
-                        $queryString .= '*';
-                    }
-
-                    /** @var SearchFilter $filter */
-                    foreach ($search->getFilters() as &$filter) {
-                        if (empty($filter->getPattern())) {
-                            if (\in_array($filter->getOperator(), ['query_and', 'query_or'])) {
-                                $filter->setPattern($queryString);
-                            } else {
-                                $filter->setPattern($pattern);
-                            }
-                        }
-                    }
-                    $body = $this->getSearchService()->generateSearchBody($search);
-                    $params['body'] = $body;
-                } else {
-                    /** @var ContentTypeService $contentTypeService */
-                    $contentTypeService = $this->getContentTypeService();
-                    $contentType = $contentTypeService->getByName($types[0]);
-                    if ($contentType && $contentType->getOrderField()) {
-                        $params['body']['sort'] = [
-                            $contentType->getOrderField() => [
-                                'order' => 'asc',
-                                'missing' => '_last',
-                            ],
-                        ];
-                    }
-                }
-
-                if ($contentType && $contentType->getLabelField()) {
-                    $params['_source'] = [$contentType->getLabelField()];
-                }
-
-                if ($category && $contentType && $contentType->getCategoryField()) {
-                    $params['body']['query']['bool']['must'][] = [
-                        'term' => [
-                            $contentType->getCategoryField() => [
-                                'value' => $category,
-                            ],
-                        ],
-                    ];
-                }
-            }
-
-            //http://blog.alterphp.com/2012/08/how-to-deal-with-asynchronous-request.html
-            $request->getSession()->save();
-
-            /** @var Client $client */
-            $client = $this->getElasticsearch();
-
-            $logger->debug('Before search api');
-            $results = $client->search($params);
-
-            $logger->debug('After search api');
-        } else {
-            //there is no type matching this request
-            $results = [
-                'hits' => [
-                    'total' => 0,
-                    'hits' => [],
-                ],
-            ];
+        if (\count($contentTypes) > 0) {
+            $search->setContentTypes($contentTypes);
         }
+
+        if (!empty($environments) && null === $searchId) {
+            $search->setEnvironments(\explode(',', $environments));
+        }
+
+        $search->setSearchPattern($pattern, true);
+        $commonSearch = $searchService->generateSearch($search);
+
+        if ($circleOnly && !$this->get('security.authorization_checker')->isGranted('ROLE_USER_MANAGEMENT')) {
+            /** @var UserInterface $user */
+            $user = $this->getUser();
+            $circles = $user->getCircles();
+
+            $ouuids = [];
+            foreach ($circles as $circle) {
+                \preg_match('/(?P<type>\w+):(?P<ouuid>\w+)/', $circle, $matches);
+                $ouuids[] = $matches['ouuid'];
+            }
+            $query = $commonSearch->getQuery();
+            $boolQuery = $elasticaService->getBoolQuery();
+            if (!$query instanceof $boolQuery) {
+                if (null !== $query) {
+                    $boolQuery->addMust($query);
+                }
+                $query = $boolQuery;
+            }
+            $query->addMust($elasticaService->getTermsQuery('_id', $ouuids));
+            $commonSearch = new CommonSearch($commonSearch->getIndices(), $query);
+        }
+
+        if (null !== $category && 1 === \count($contentTypes)) {
+            $contentType = $contentTypeService->getByName(\array_pop($contentTypes));
+            if (false !== $contentType) {
+                $categoryField = $contentType->getCategoryField();
+                if (null !== $categoryField) {
+                    $boolQuery = $elasticaService->getBoolQuery();
+                    $query = $commonSearch->getQuery();
+                    if (!$query instanceof $boolQuery) {
+                        if (null !== $query) {
+                            $boolQuery->addMust($query);
+                        }
+                        $query = $boolQuery;
+                    }
+                    $query->addMust($elasticaService->getTermsQuery($categoryField, $category));
+                    $commonSearch = new CommonSearch($commonSearch->getIndices(), $query);
+                }
+            }
+        }
+
+        $commonSearch->setFrom(($page - 1) * $pageSize);
+        $commonSearch->setSize($pageSize);
+        $results = $elasticaService->search($commonSearch);
 
         return $this->render('@EMSCore/elasticsearch/search.json.twig', [
-            'results' => $results,
+            'results' => $results->getResponse()->getData(),
             'types' => $allTypes,
         ]);
     }

@@ -659,7 +659,7 @@ services:
         tags:
             -  { name: console.command }
     EMS\CoreBundle\Command\SynchronizeAssetCommand:
-        arguments: ['@logger', '@app.elasticsearch', '@doctrine', '@ems.service.contenttype', '@ems.service.asset_extractor', '@ems.service.file']
+        arguments: ['@logger', '@doctrine', '@ems.service.contenttype', '@ems.service.asset_extractor', '@ems.service.file']
         tags:
             - { name: console.command }
     EMS\CoreBundle\Command\CleanAssetCommand:

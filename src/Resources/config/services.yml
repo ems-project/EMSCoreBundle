@@ -589,7 +589,7 @@ services:
             -  { name: console.command }
     ems.delete.orphans:
         class: EMS\CoreBundle\Command\DeleteOrphanIndexesCommand
-        arguments: ['@logger', '@app.elasticsearch', '@ems.service.index']
+        arguments: ['@ems.service.index']
         tags:
             -  { name: console.command }
     ems.environment.recompute:

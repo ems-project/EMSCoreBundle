@@ -2,28 +2,20 @@
 
 namespace EMS\CoreBundle\Command;
 
-use Elasticsearch\Client;
 use EMS\CoreBundle\Service\IndexService;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class DeleteOrphanIndexesCommand extends EmsCommand
 {
-    /** @var LoggerInterface */
-    protected $logger;
     /** @var IndexService */
     protected $indexService;
-    /** @var Client */
-    protected $client;
 
     protected static $defaultName = 'ems:delete:orphans';
 
-    public function __construct(LoggerInterface $logger, Client $client, IndexService $indexService)
+    public function __construct(IndexService $indexService)
     {
         $this->indexService = $indexService;
-        $this->logger = $logger;
-        $this->client = $client;
         parent::__construct();
     }
 

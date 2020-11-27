@@ -52,7 +52,7 @@ final class IndexService
         }
     }
 
-    public function indexRevision(Revision $revision, ?Environment $environment = null): void
+    public function indexRevision(Revision $revision, ?Environment $environment = null): bool
     {
         $contentType = $revision->getContentType();
         if (null === $contentType) {
@@ -65,12 +65,17 @@ final class IndexService
             throw new \RuntimeException('Unexpected null environment');
         }
 
+        $objectArray = $revision->getRawData();
+        $objectArray[Mapping::PUBLISHED_DATETIME_FIELD] = (new \DateTime())->format(\DateTime::ISO8601);
+
         $endpoint = new Index();
         $endpoint->setType($this->mapping->getTypeName($contentType));
         $endpoint->setIndex($this->contentTypeService->getIndex($contentType, $environment));
-        $endpoint->setBody($revision->getRawData());
+        $endpoint->setBody($objectArray);
         $endpoint->setID($revision->getOuuid());
-        $this->client->requestEndpoint($endpoint);
+        $result = $this->client->requestEndpoint($endpoint)->getData();
+
+        return \intval($result['_shards']['successful'] ?? 0) > 0;
     }
 
     /**

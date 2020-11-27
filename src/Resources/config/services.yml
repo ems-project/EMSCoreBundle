@@ -635,7 +635,7 @@ services:
 
     ems.contenttype.clean:
         class: EMS\CoreBundle\Command\CleanDeletedContentTypeCommand
-        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.mapping', '@service_container']
+        arguments: ['@doctrine', '@logger', '@ems.service.mapping', '@service_container']
         tags:
             -  { name: console.command }
     ems.notification.send:

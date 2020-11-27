@@ -609,7 +609,7 @@ services:
             -  { name: console.command }
     ems.environment.updatemetafield:
         class: EMS\CoreBundle\Command\UpdateMetaFieldCommand
-        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.data']
+        arguments: ['@doctrine', '@logger', '@ems.service.data']
         tags:
             -  { name: console.command }
     ems.environment.align:

@@ -4,7 +4,6 @@ namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
-use Elasticsearch\Client;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Exception\NotLockedException;
@@ -23,17 +22,14 @@ class UpdateMetaFieldCommand extends EmsCommand
     protected $doctrine;
     /** @var DataService */
     protected $dataService;
-    /** @var Client */
-    protected $client;
     /** @var LoggerInterface */
     protected $logger;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, Client $client, DataService $dataService)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, DataService $dataService)
     {
         $this->doctrine = $doctrine;
         $this->dataService = $dataService;
         $this->logger = $logger;
-        $this->client = $client;
         parent::__construct();
     }
 

@@ -551,11 +551,6 @@ services:
         arguments: ['@ems.repository.form_verification']
 
 ### command services ###
-    ems.environment.ems:
-        class: EMS\CoreBundle\Command\EmsCommand
-        arguments: ['@logger', '@app.elasticsearch']
-        tags:
-            -  { name: console.command }
     ems.command.revision.copy:
         class: EMS\CoreBundle\Command\RevisionCopyCommand
         arguments:

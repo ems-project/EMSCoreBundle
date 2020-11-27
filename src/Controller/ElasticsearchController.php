@@ -91,21 +91,16 @@ class ElasticsearchController extends AppController
     }
 
     /**
-     * @param string $_format
-     *
-     * @return Response
-     *
      * @Route("/health_check.{_format}", defaults={"_format"="html"}, name="health-check")
      */
-    public function healthCheckAction($_format)
+    public function healthCheckAction(string $_format, ElasticaService $elasticaService): Response
     {
         try {
-            $client = $this->getElasticsearch();
-            $status = $client->cluster()->health();
+            $health = $elasticaService->getClusterHealth();
 
             $response = $this->render('@EMSCore/elasticsearch/status.'.$_format.'.twig', [
-                'status' => $status,
-                'globalStatus' => $status['status'],
+                'status' => $health,
+                'globalStatus' => $health['status'] ?? 'red',
             ]);
 
             $allowOrigin = $this->getParameter('ems_core.health_check_allow_origin');

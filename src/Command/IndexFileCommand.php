@@ -5,7 +5,6 @@ namespace EMS\CoreBundle\Command;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
-use Elasticsearch\Client;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\RevisionRepository;
@@ -36,19 +35,16 @@ class IndexFileCommand extends EmsCommand
     protected $databaseDriver;
     /** @var FileService */
     protected $fileService;
-    /** @var Client */
-    protected $client;
     /** @var LoggerInterface */
     protected $logger;
 
-    public function __construct(LoggerInterface $logger, Client $client, Registry $doctrine, ContentTypeService $contentTypeService, AssetExtractorService $extractorService, FileService $fileService)
+    public function __construct(LoggerInterface $logger, Registry $doctrine, ContentTypeService $contentTypeService, AssetExtractorService $extractorService, FileService $fileService)
     {
         $this->doctrine = $doctrine;
         $this->contentTypeService = $contentTypeService;
         $this->extractorService = $extractorService;
         $this->fileService = $fileService;
         $this->logger = $logger;
-        $this->client = $client;
         parent::__construct();
     }
 

@@ -1988,20 +1988,13 @@ class DataService
 
     public function createAndMapIndex(Environment $environment): void
     {
+        $body = $this->environmentService->getIndexAnalysisConfiguration();
         $indexName = $environment->getAlias().AppController::getFormatedTimestamp();
-        $this->client->indices()->create([
-            'index' => $indexName,
-            'body' => $this->environmentService->getIndexAnalysisConfiguration(),
-        ]);
+        $this->mapping->createIndex($indexName, $body, $environment->getAlias());
 
         foreach ($this->contentTypeService->getAll() as $contentType) {
             $this->contentTypeService->updateMapping($contentType, $indexName);
         }
-
-        $this->client->indices()->putAlias([
-            'index' => $indexName,
-            'name' => $environment->getAlias(),
-        ]);
     }
 
     public function getDataLinks(string $contentTypesCommaList, array $businessIds): array

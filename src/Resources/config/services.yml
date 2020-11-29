@@ -569,7 +569,7 @@ services:
             - '@ems.service.revision'
     ems.contenttype.migrate:
         class: EMS\CoreBundle\Command\MigrateCommand
-        arguments: ['@doctrine', '@app.elasticsearch', '@ems.service.document']
+        arguments: ['@doctrine', '@ems_common.service.elastica', '@ems.service.document']
         tags:
             -  { name: console.command }
     ems.make.document:

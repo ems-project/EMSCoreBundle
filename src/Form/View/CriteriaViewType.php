@@ -20,13 +20,16 @@ use Twig_Environment;
 
 class CriteriaViewType extends ViewType
 {
+    /** @var Client */
+    private $client;
     /** @var Router */
     protected $router;
 
     public function __construct(FormFactory $formFactory, Twig_Environment $twig, Client $client, LoggerInterface $logger, Router $router)
     {
-        parent::__construct($formFactory, $twig, $client, $logger);
+        parent::__construct($formFactory, $twig, $logger);
         $this->router = $router;
+        $this->client = $client;
     }
 
     public function getLabel(): string

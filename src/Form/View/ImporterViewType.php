@@ -33,14 +33,17 @@ class ImporterViewType extends ViewType
     private $security;
     /** @var Router */
     private $router;
+    /** @var Client */
+    private $client;
 
     public function __construct(FormFactory $formFactory, Environment $twig, Client $client, LoggerInterface $logger, FileService $fileService, JobService $jobService, TokenStorageInterface $security, Router $router)
     {
-        parent::__construct($formFactory, $twig, $client, $logger);
+        parent::__construct($formFactory, $twig, $logger);
         $this->fileService = $fileService;
         $this->jobService = $jobService;
         $this->security = $security;
         $this->router = $router;
+        $this->client = $client;
     }
 
     public function getLabel(): string

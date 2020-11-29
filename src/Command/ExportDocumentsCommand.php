@@ -2,9 +2,9 @@
 
 namespace EMS\CoreBundle\Command;
 
-use Elasticsearch\Client;
 use EMS\CommonBundle\Common\Document;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Service\ContentTypeService;
@@ -23,8 +23,6 @@ use ZipArchive;
 
 class ExportDocumentsCommand extends EmsCommand
 {
-    /** @var Client */
-    protected $client;
     /** @var LoggerInterface */
     protected $logger;
     /** @var DataService */
@@ -39,17 +37,19 @@ class ExportDocumentsCommand extends EmsCommand
     protected $runtime;
     /** @var string */
     protected $instanceId;
+    /** @var ElasticaService */
+    private $elasticaService;
 
-    public function __construct(LoggerInterface $logger, Client $client, TemplateService $templateService, DataService $dataService, ContentTypeService $contentTypeService, EnvironmentService $environmentService, RequestRuntime $runtime, string $instanceId)
+    public function __construct(LoggerInterface $logger, TemplateService $templateService, DataService $dataService, ContentTypeService $contentTypeService, EnvironmentService $environmentService, RequestRuntime $runtime, ElasticaService $elasticaService, string $instanceId)
     {
         $this->logger = $logger;
         $this->templateService = $templateService;
-        $this->client = $client;
         $this->dataService = $dataService;
         $this->environmentService = $environmentService;
         $this->instanceId = $instanceId;
         $this->contentTypeService = $contentTypeService;
         $this->runtime = $runtime;
+        $this->elasticaService = $elasticaService;
         parent::__construct();
     }
 
@@ -120,8 +120,11 @@ class ExportDocumentsCommand extends EmsCommand
         if (!\is_string($format)) {
             throw new \RuntimeException('Unexpected format argument');
         }
-        $scrollSize = $input->getOption('scrollSize');
+        $scrollSize = \intval($input->getOption('scrollSize'));
         $scrollTimeout = $input->getOption('scrollTimeout');
+        if (!\is_string($scrollTimeout)) {
+            throw new \RuntimeException('Unexpected scroll timeout argument');
+        }
         $withBusinessId = $input->getOption('withBusinessId');
         $baseUrl = $input->getOption('baseUrl');
         if (null !== $baseUrl && !\is_string($baseUrl)) {
@@ -158,16 +161,20 @@ class ExportDocumentsCommand extends EmsCommand
         if (!\is_string($query)) {
             throw new \RuntimeException('Unexpected query argument');
         }
+        $body = \json_decode($query, true);
+        if (isset($body['sort'])) {
+            unset($body['sort']);
+        }
 
-        $arrayElasticsearchIndex = $this->client->search([
+        $search = $this->elasticaService->convertElasticsearchSearch([
             'index' => $index,
             'type' => $contentTypeName,
             'size' => $scrollSize,
-            'scroll' => $scrollTimeout,
-            'body' => \json_decode($query),
+            'body' => $body,
         ]);
 
-        $total = $arrayElasticsearchIndex['hits']['total'];
+        $scroll = $this->elasticaService->scroll($search, $scrollTimeout);
+        $total = $this->elasticaService->count($search);
         $progress = new ProgressBar($output, $total);
         $progress->start();
 
@@ -205,18 +212,21 @@ class ExportDocumentsCommand extends EmsCommand
             'last' => (1 === $total),
         ];
 
-        while (isset($arrayElasticsearchIndex['hits']['hits']) && \count($arrayElasticsearchIndex['hits']['hits']) > 0) {
-            foreach ($arrayElasticsearchIndex['hits']['hits'] as $value) {
-                if (null !== $contentType->getBusinessIdField() && isset($value['_source'][$contentType->getBusinessIdField()])) {
-                    $filename = $value['_source'][$contentType->getBusinessIdField()].$extension;
+        foreach ($scroll as $resultSet) {
+            foreach ($resultSet as $result) {
+                if (false === $result) {
+                    continue;
+                }
+                if (null !== $contentType->getBusinessIdField() && isset($result->getData()[$contentType->getBusinessIdField()])) {
+                    $filename = $result->getData()[$contentType->getBusinessIdField()].$extension;
                 } else {
-                    $filename = $value['_id'].$extension;
+                    $filename = $result->getId().$extension;
                 }
 
                 if ($withBusinessId) {
-                    $document = $this->dataService->hitToBusinessDocument($contentType, $value);
+                    $document = $this->dataService->hitToBusinessDocument($contentType, $result->getHit());
                 } else {
-                    $document = new Document($contentType->getName(), $value['_id'], $value['_source']);
+                    $document = new Document($contentType->getName(), $result->getId(), $result->getData());
                 }
 
                 if ($useTemplate) {
@@ -250,7 +260,7 @@ class ExportDocumentsCommand extends EmsCommand
                 }
 
                 if ($accumulateInOneFile) {
-                    $accumulatedContent[$value['_id']] = $content;
+                    $accumulatedContent[$result->getId()] = $content;
                 } else {
                     $zip->addFromString($filename, $content);
                 }
@@ -260,12 +270,6 @@ class ExportDocumentsCommand extends EmsCommand
                 $loop['first'] = false;
                 $loop['last'] = ($total === $loop['index']);
             }
-
-            $scroll_id = $arrayElasticsearchIndex['_scroll_id'];
-            $arrayElasticsearchIndex = $this->client->scroll([
-                'scroll_id' => $scroll_id,
-                'scroll' => $scrollTimeout,
-            ]);
         }
 
         if ($accumulateInOneFile) {

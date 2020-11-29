@@ -4,7 +4,6 @@ namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
-use Elasticsearch\Client;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Elasticsearch\Bulker;
 use EMS\CoreBundle\Entity\ContentType;
@@ -25,8 +24,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ReindexCommand extends EmsCommand
 {
-    /** @var Client */
-    protected $client;
     /** @var Mapping */
     protected $mapping;
     /** @var Registry */

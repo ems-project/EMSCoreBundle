@@ -2,71 +2,49 @@
 
 namespace EMS\CoreBundle\Elasticsearch;
 
-use Elasticsearch\Client;
+use Elastica\Bulk;
+use Elastica\Bulk\Action;
+use Elastica\Bulk\Response;
+use Elastica\Bulk\ResponseSet;
+use Elastica\Client;
 use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
-use EMS\CommonBundle\Elasticsearch\DocumentInterface;
-use EMS\CommonBundle\Elasticsearch\Factory;
+use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
+use EMS\CoreBundle\Service\DataService;
+use EMS\CoreBundle\Service\Mapping;
 use Psr\Log\LoggerInterface;
 
 class Bulker
 {
-    /**
-     * @var Factory
-     */
-    private $factory;
-
-    /**
-     * @var array
-     */
-    private $options;
-
-    /**
-     * @var Client
-     */
+    /** @var LoggerInterface */
+    private $logger;
+    /** @var DataService */
+    private $dataService;
+    /** @var Mapping */
+    private $mapping;
+    /** @var int */
+    private $counter = 0;
+    /** @var int */
+    private $size = 500;
+    /** @var bool */
+    private $singleTypeIndex;
+    /** @var bool */
+    private $sign = true;
+    /** @var array */
+    private $errors = [];
+    /** @var Bulk */
+    private $bulk;
+    /** @var Client */
     private $client;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * @var array
-     */
-    private $params = ['body' => []];
-
-    /**
-     * @var int
-     */
-    private $counter = 0;
-
-    /**
-     * @var int
-     */
-    private $size = 500;
-
-    /**
-     * @var bool
-     */
-    private $singleIndex = false;
-
-    /**
-     * @var bool
-     */
-    private $enableSha1 = true;
-
-    /**
-     * @var array
-     */
-    private $errors;
-
-    public function __construct(Factory $factory, array $options, LoggerInterface $logger)
+    public function __construct(Client $client, LoggerInterface $logger, DataService $dataService, Mapping $mapping, bool $singleTypeIndex)
     {
-        $this->factory = $factory;
-        $this->options = $options;
+        $this->client = $client;
         $this->logger = $logger;
+        $this->dataService = $dataService;
+        $this->mapping = $mapping;
+        $this->singleTypeIndex = $singleTypeIndex;
 
-        $this->client = $this->getClient();
+        $this->bulk = new Bulk($this->client);
     }
 
     public function hasErrors(): bool
@@ -79,10 +57,7 @@ class Bulker
         return $this->errors;
     }
 
-    /**
-     * @return Bulker
-     */
-    public function setLogger(LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger): Bulker
     {
         $this->logger = $logger;
 
@@ -96,53 +71,47 @@ class Bulker
         return $this;
     }
 
-    public function setSingleIndex(bool $singleIndex): Bulker
+    public function setSign(bool $sign): Bulker
     {
-        $this->singleIndex = $singleIndex;
+        $this->sign = $sign;
 
         return $this;
     }
 
-    public function setEnableSha1(bool $enableSha1): Bulker
+    public function index(string $contentType, string $ouuid, string $index, array &$body, bool $upsert = false): bool
     {
-        $this->enableSha1 = $enableSha1;
+        $body[Mapping::CONTENT_TYPE_FIELD] = $contentType;
+        $body[Mapping::PUBLISHED_DATETIME_FIELD] = (new \DateTime())->format(\DateTime::ISO8601);
+        if ($this->sign) {
+            $this->dataService->signRaw($body);
+        }
 
-        return $this;
-    }
-
-    public function index(array $config, array $body, bool $upsert = false): bool
-    {
-        if ($this->enableSha1) {
-            $body['_sha1'] = \sha1(\json_encode($body));
+        $action = new Action();
+        $action->setIndex($index);
+        $action->setId($ouuid);
+        $typePath = $this->mapping->getTypePath($contentType);
+        if ('.' !== $typePath) {
+            $action->setType($typePath);
         }
 
         if ($upsert) {
-            $this->params['body'][] = ['update' => $config];
-            $this->params['body'][] = ['doc' => $body, 'doc_as_upsert' => true];
+            $action->setOpType(Action::OP_TYPE_UPDATE);
+            $action->setSource(['doc' => $body, 'doc_as_upsert' => true]);
         } else {
-            $this->params['body'][] = ['index' => $config];
-            $this->params['body'][] = $body;
+            $action->setOpType(Action::OP_TYPE_INDEX);
+            $action->setSource($body);
         }
-
+        $this->bulk->addAction($action);
         ++$this->counter;
 
         return $this->send();
     }
 
-    public function indexDocument(DocumentInterface $document, string $index, bool $upsert = false): bool
+    public function indexDocument(DocumentInterface $document, string $index): bool
     {
-        $config = [
-            '_index' => $index,
-            '_type' => ($this->singleIndex ? 'doc' : $document->getType()),
-            '_id' => $document->getId(),
-        ];
         $body = $document->getSource();
 
-        if ($this->singleIndex) {
-            $body = \array_merge(['_contenttype' => $document->getType()], $body);
-        }
-
-        return $this->index($config, $body, $upsert);
+        return $this->index($document->getContentType(), $document->getId(), $index, $body);
     }
 
     /**
@@ -159,22 +128,20 @@ class Bulker
         }
 
         try {
-            $response = $this->client->bulk($this->params);
+            $response = $this->bulk->send();
             $this->logResponse($response);
-
-            $this->params = ['body' => []];
+            $this->bulk = new Bulk($this->client);
             $this->counter = 0;
             unset($response);
         } catch (NoNodesAvailableException $e) {
             if (!$retry) {
-                $this->logger->info('No nodes available trying new client');
-                $this->client = $this->getClient();
+                $this->logger->info('No nodes available retry');
 
                 return $this->send($force, true);
             } else {
                 throw $e;
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->errors[] = $e;
             $this->logger->critical($e->getMessage());
         }
@@ -182,32 +149,25 @@ class Bulker
         return true;
     }
 
-    private function getClient(): Client
+    private function logResponse(ResponseSet $response)
     {
-        return $this->factory->fromConfig($this->options);
-    }
-
-    private function logResponse(array $response)
-    {
-        foreach ($response['items'] as $item) {
-            $action = \array_shift($item);
-
-            if (!isset($action['error'])) {
+        foreach ($response as $item) {
+            if (!$item instanceof Response) {
+                continue;
+            }
+            if (!$item->hasError()) {
                 continue; //no error
             }
 
-            $this->errors[] = $action;
-            $this->logger->critical('{type} {id} : {error} {reason}', [
-                'type' => $action['_type'],
-                'id' => $action['_id'],
-                'error' => $action['error']['type'],
-                'reason' => $action['error']['reason'],
+            $this->errors[] = $item;
+            $this->logger->critical('{error}', [
+                'error' => $item->getErrorMessage(),
             ]);
         }
 
-        $this->logger->debug('bulked {count} items in {took}ms', [
-            'count' => \count($response['items']),
-            'took' => $response['took'],
+        $this->logger->notice('bulked {count} items in {took}ms', [
+            'count' => $response,
+            'took' => $response->getQueryTime(),
         ]);
     }
 }

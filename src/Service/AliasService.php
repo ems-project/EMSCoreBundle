@@ -288,6 +288,7 @@ class AliasService
     private function count($name)
     {
         $search = new Search([$name]);
+
         return $this->elasticaService->count($search);
     }
 

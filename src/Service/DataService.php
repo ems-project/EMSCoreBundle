@@ -681,44 +681,55 @@ class DataService
         ArrayTool::normalizeArray($array, $sort_flags);
     }
 
-    public function sign(Revision $revision, $silentPublish = false)
+    /**
+     * @param array<mixed> $objectArray
+     */
+    public function signRaw(array &$objectArray): string
     {
-        if ($silentPublish && $revision->getAutoSave()) {
-            $objectArray = $revision->getAutoSave();
-        } else {
-            $objectArray = $revision->getRawData();
-        }
-
-        $objectArray[Mapping::CONTENT_TYPE_FIELD] = $revision->getContentType()->getName();
         if (isset($objectArray[Mapping::HASH_FIELD])) {
             unset($objectArray[Mapping::HASH_FIELD]);
         }
         if (isset($objectArray[Mapping::SIGNATURE_FIELD])) {
             unset($objectArray[Mapping::SIGNATURE_FIELD]);
         }
-        if ($revision->hasVersionTags()) {
-            $objectArray[Mapping::VERSION_UUID] = $revision->getVersionUuid();
-            $objectArray[Mapping::VERSION_TAG] = $revision->getVersionTag();
+        if (isset($objectArray[Mapping::PUBLISHED_DATETIME_FIELD])) {
+            unset($objectArray[Mapping::PUBLISHED_DATETIME_FIELD]);
         }
         ArrayTool::normalizeArray($objectArray);
         $json = \json_encode($objectArray);
 
-        $revision->setSha1($this->storageManager->computeStringHash($json));
-        $objectArray[Mapping::HASH_FIELD] = $revision->getSha1();
+        $hash = $this->storageManager->computeStringHash($json);
+        $objectArray[Mapping::HASH_FIELD] = $hash;
 
-        if (!$silentPublish && $this->private_key) {
+        if ($this->private_key) {
             $signature = null;
             if (\openssl_sign($json, $signature, $this->private_key, OPENSSL_ALGO_SHA1)) {
                 $objectArray[Mapping::SIGNATURE_FIELD] = \base64_encode($signature);
             } else {
                 $this->logger->warning('service.data.not_able_to_sign', [
-                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => \openssl_error_string(),
                 ]);
             }
         }
+
+        return $hash;
+    }
+
+    public function sign(Revision $revision, $silentPublish = false)
+    {
+        $objectArray[Mapping::CONTENT_TYPE_FIELD] = $revision->getContentType();
+        if ($silentPublish && $revision->getAutoSave()) {
+            $objectArray = $revision->getAutoSave();
+        } else {
+            $objectArray = $revision->getRawData();
+        }
+        if ($revision->hasVersionTags()) {
+            $objectArray[Mapping::VERSION_UUID] = $revision->getVersionUuid();
+            $objectArray[Mapping::VERSION_TAG] = $revision->getVersionTag();
+        }
+
+        $hash = $this->signRaw($objectArray);
+        $revision->setSha1($hash);
 
         $revision->setRawData($objectArray);
 

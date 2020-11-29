@@ -454,9 +454,11 @@ services:
     ems.elasticsearch.bulker:
         class: EMS\CoreBundle\Elasticsearch\Bulker
         arguments:
-            - '@ems_common.elasticsearch.factory'
-            - { hosts: "%ems_core.elasticsearch_cluster%" }
+            - '@ems_common.elastica.client'
             - '@logger'
+            - '@ems.service.data'
+            - '@ems.service.mapping'
+            - '%ems_core.single_type_index%'
     ems.elasticsearch.indexer:
         class: EMS\CoreBundle\Elasticsearch\Indexer
         arguments:
@@ -619,7 +621,7 @@ services:
             -  { name: console.command }
     ems.environment.reindex:
         class: EMS\CoreBundle\Command\ReindexCommand
-        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.mapping', '@service_container', '%ems_core.instance_id%', '@ems.service.data']
+        arguments: ['@doctrine', '@logger', '@ems.service.mapping', '@service_container', '%ems_core.instance_id%', '@ems.service.data', '@ems.elasticsearch.bulker']
         tags:
             -  { name: console.command }
     ems.contenttype.delete:

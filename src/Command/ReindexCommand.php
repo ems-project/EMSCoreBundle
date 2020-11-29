@@ -6,6 +6,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use Elasticsearch\Client;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Elasticsearch\Bulker;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
@@ -44,16 +45,18 @@ class ReindexCommand extends EmsCommand
     private $deleted;
     /** @var int */
     private $error;
+    /** @var Bulker */
+    private $bulker;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, Client $client, Mapping $mapping, ContainerInterface $container, string $instanceId, DataService $dataService)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, Mapping $mapping, ContainerInterface $container, string $instanceId, DataService $dataService, Bulker $bulker)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
-        $this->client = $client;
         $this->mapping = $mapping;
         $this->container = $container;
         $this->instanceId = $instanceId;
         $this->dataService = $dataService;
+        $this->bulker = $bulker;
         parent::__construct();
 
         $this->count = 0;
@@ -164,7 +167,8 @@ class ReindexCommand extends EmsCommand
                 $index = $environment->getAlias();
             }
             $page = 0;
-            $bulk = [];
+            $this->bulker->setSign($signData);
+            $this->bulker->setSize($bulkSize);
             $paginator = $revRepo->getRevisionsPaginatorPerEnvironmentAndContentType($environment, $contentType, $page);
 
             $output->writeln('');
@@ -183,39 +187,11 @@ class ReindexCommand extends EmsCommand
                             EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                         ]);
                     } else {
-                        if ($signData) {
-                            $this->dataService->sign($revision);
-                        }
-
-                        if (empty($bulk) && $contentType->getHavePipelines()) {
-                            $bulk['pipeline'] = $this->instanceId.$contentType->getName();
-                        }
-
-                        $bulkItem = [
-                            '_index' => $index,
-                            '_id' => $revision->getOuuid(),
-                        ];
-                        $typePath = $this->mapping->getTypePath($contentType->getName());
-
-                        if ('.' !== $typePath) {
-                            $bulkItem['_type'] = $typePath;
-                        }
-
-                        $bulk['body'][] = [
-                                'index' => $bulkItem,
-                            ];
-
                         $rawData = $revision->getRawData();
-                        $rawData[Mapping::PUBLISHED_DATETIME_FIELD] = (new \DateTime())->format(\DateTime::ISO8601);
-                        $bulk['body'][] = $rawData;
+                        $this->bulker->index($contentType->getName(), $revision->getOuuid(), $index, $rawData);
                     }
 
                     $progress->advance();
-                    if (\count($bulk['body'] ?? []) >= (2 * $bulkSize)) {
-                        $this->treatBulkResponse($this->client->bulk($bulk));
-                        unset($bulk);
-                        $bulk = [];
-                    }
                 }
 
                 $em->clear(Revision::class);
@@ -224,10 +200,7 @@ class ReindexCommand extends EmsCommand
                 $paginator = $revRepo->getRevisionsPaginatorPerEnvironmentAndContentType($environment, $contentType, $page);
                 $iterator = $paginator->getIterator();
             } while ($iterator instanceof \ArrayIterator && $iterator->count());
-
-            if (\count($bulk)) {
-                $this->treatBulkResponse($this->client->bulk($bulk));
-            }
+            $this->bulker->send(true);
 
             $progress->finish();
             $output->writeln('');

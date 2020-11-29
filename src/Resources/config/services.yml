@@ -584,7 +584,7 @@ services:
             -  { name: console.command }
     ems.environment.rebuild:
         class: EMS\CoreBundle\Command\RebuildCommand
-        arguments: ['@doctrine', '@logger', '@app.elasticsearch', '@ems.service.contenttype', '@ems.service.environment', '@ems.environment.reindex', '@ems_common.service.elastica', '%ems_core.instance_id%', '%ems_core.single_type_index%']
+        arguments: ['@doctrine', '@logger', '@ems.service.contenttype', '@ems.service.environment', '@ems.environment.reindex', '@ems_common.service.elastica', '@ems.service.mapping', '@ems.service.alias', '%ems_core.instance_id%', '%ems_core.single_type_index%']
         tags:
             -  { name: console.command }
     ems.delete.orphans:

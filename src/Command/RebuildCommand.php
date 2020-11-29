@@ -3,15 +3,16 @@
 namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Elasticsearch\Client;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
+use EMS\CoreBundle\Service\AliasService;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
+use EMS\CoreBundle\Service\Mapping;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -34,12 +35,14 @@ class RebuildCommand extends EmsCommand
     private $singleTypeIndex;
     /** @var ElasticaService */
     private $elasticaService;
-    /** @var Client */
-    protected $client;
     /** @var LoggerInterface */
     protected $logger;
+    /** @var Mapping */
+    private $mapping;
+    /** @var AliasService */
+    private $aliasService;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, Client $client, ContentTypeService $contentTypeService, EnvironmentService $environmentService, ReindexCommand $reindexCommand, ElasticaService $elasticaService, string $instanceId, bool $singleTypeIndex)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, ContentTypeService $contentTypeService, EnvironmentService $environmentService, ReindexCommand $reindexCommand, ElasticaService $elasticaService, Mapping $mapping, AliasService $aliasService, string $instanceId, bool $singleTypeIndex)
     {
         $this->doctrine = $doctrine;
         $this->contentTypeService = $contentTypeService;
@@ -49,7 +52,8 @@ class RebuildCommand extends EmsCommand
         $this->singleTypeIndex = $singleTypeIndex;
         $this->elasticaService = $elasticaService;
         $this->logger = $logger;
-        $this->client = $client;
+        $this->mapping = $mapping;
+        $this->aliasService = $aliasService;
         parent::__construct();
     }
 
@@ -86,13 +90,14 @@ class RebuildCommand extends EmsCommand
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'Number of item that will be indexed together during the same elasticsearch operation',
-                1000
+                500
             )
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $this->aliasService->build();
         $yellowOk = true === $input->getOption('yellow-ok');
         $this->formatStyles($output);
         $this->waitFor($yellowOk, $output);
@@ -110,7 +115,6 @@ class RebuildCommand extends EmsCommand
         $signData = !$input->getOption('dont-sign');
 
         $em = $this->doctrine->getManager();
-        $client = $this->client;
         $name = $input->getArgument('name');
         if (!\is_string($name)) {
             throw new \RuntimeException('Unexpected content type name');
@@ -144,12 +148,9 @@ class RebuildCommand extends EmsCommand
         $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
         $contentTypes = $contentTypeRepository->findAll();
 
-        $indexDefaultConfig = $this->environmentService->getIndexAnalysisConfiguration();
+        $body = $this->environmentService->getIndexAnalysisConfiguration();
         if (!$this->singleTypeIndex) {
-            $client->indices()->create([
-                'index' => $indexName,
-                'body' => $indexDefaultConfig,
-            ]);
+            $this->mapping->createIndex($indexName, $body);
 
             $output->writeln('A new index '.$indexName.' has been created');
 
@@ -170,10 +171,7 @@ class RebuildCommand extends EmsCommand
                 if ($this->singleTypeIndex) {
                     $indexName = $this->environmentService->getNewIndexName($environment, $contentType);
                     $indexes[] = $indexName;
-                    $client->indices()->create([
-                        'index' => $indexName,
-                        'body' => $indexDefaultConfig,
-                    ]);
+                    $this->mapping->createIndex($indexName, $body);
 
                     $output->writeln('A new index '.$indexName.' has been created');
 
@@ -226,40 +224,16 @@ class RebuildCommand extends EmsCommand
      */
     private function switchAlias(string $alias, array $toIndexes, OutputInterface $output, bool $newEnv = false): void
     {
-        try {
-            $result = $this->client->indices()->getAlias(['name' => $alias]);
-            $params['body']['actions'] = [];
-
-            foreach ($result as $id => $item) {
-                $params['body']['actions'][] = [
-                    'remove' => [
-                        'index' => $id,
-                        'alias' => $alias,
-                    ],
-                ];
-            }
-
-            foreach ($toIndexes as $index) {
-                $params['body']['actions'][] = [
-                    'add' => [
-                        'index' => $index,
-                        'alias' => $alias,
-                    ],
-                ];
-            }
-
-            $this->client->indices()->updateAliases($params);
-        } catch (\Throwable $e) {
-            if (!$newEnv) {
-                $output->writeln('WARNING : Alias '.$alias.' not found');
-            }
-            foreach ($toIndexes as $index) {
-                $this->client->indices()->putAlias([
-                    'index' => $index,
-                    'name' => $alias,
-                ]);
+        $indexesToRemove = [];
+        if ($this->aliasService->hasAlias($alias)) {
+            foreach ($this->aliasService->getAlias($alias)['indexes'] as $id => $item) {
+                $indexesToRemove[] = $id;
             }
         }
+        $this->aliasService->updateAlias($alias, [
+            'remove' => $indexesToRemove,
+            'add' => $toIndexes,
+        ]);
     }
 
     private function waitFor(bool $yellowOk, OutputInterface $output): void

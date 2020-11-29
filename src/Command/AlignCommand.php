@@ -3,7 +3,7 @@
 namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Elasticsearch\Client;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\EnvironmentService;
@@ -24,8 +24,6 @@ class AlignCommand extends Command
     protected $doctrine;
     /** @var LoggerInterface */
     private $logger;
-    /** @var Client */
-    private $client;
     /** @var DataService */
     protected $data;
     /** @var ContentTypeService */
@@ -34,6 +32,8 @@ class AlignCommand extends Command
     private $environmentService;
     /** @var PublishService */
     private $publishService;
+    /** @var ElasticaService */
+    private $elasticaService;
     /** @var SymfonyStyle */
     private $io;
     /** @var int */
@@ -65,11 +65,11 @@ class AlignCommand extends Command
     /** @var string */
     const DEFAULT_SEARCH_QUERY = '{}';
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, Client $client, DataService $data, ContentTypeService $contentTypeService, EnvironmentService $environmentService, PublishService $publishService)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, ElasticaService $elasticaService, DataService $data, ContentTypeService $contentTypeService, EnvironmentService $environmentService, PublishService $publishService)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
-        $this->client = $client;
+        $this->elasticaService = $elasticaService;
         $this->data = $data;
         $this->contentTypeService = $contentTypeService;
         $this->environmentService = $environmentService;
@@ -195,14 +195,14 @@ class AlignCommand extends Command
             throw new \RuntimeException('Target environment not found');
         }
 
-        $arrayElasticsearchIndex = $this->client->search([
+        $search = $this->elasticaService->convertElasticsearchSearch([
             'index' => $source->getAlias(),
             'size' => $this->scrollSize,
-            'scroll' => $this->scrollTimeout,
             'body' => $this->searchQuery,
         ]);
 
-        $total = $arrayElasticsearchIndex['hits']['total'];
+        $scroll = $this->elasticaService->scroll($search, $this->scrollTimeout);
+        $total = $this->elasticaService->count($search);
 
         $this->io->note(\sprintf('The source environment contains %s elements, start aligning environments...', $total));
 
@@ -212,13 +212,16 @@ class AlignCommand extends Command
         $alreadyAligned = 0;
         $targetIsPreviewEnvironment = [];
 
-        while (\count($arrayElasticsearchIndex['hits']['hits'] ?? []) > 0) {
-            foreach ($arrayElasticsearchIndex['hits']['hits'] as $hit) {
-                $contentType = $this->contentTypeService->getByName($hit['_source']['_contenttype']);
+        foreach ($scroll as $resultSet) {
+            foreach ($resultSet as $result) {
+                if (false === $result) {
+                    continue;
+                }
+                $contentType = $this->contentTypeService->getByName($result->getSource()['_contenttype']);
                 if (false === $contentType) {
                     throw new \RuntimeException('Unexpected null content type');
                 }
-                $revision = $this->data->getRevisionByEnvironment($hit['_id'], $contentType, $source);
+                $revision = $this->data->getRevisionByEnvironment($result->getId(), $contentType, $source);
                 if ($revision->getDeleted()) {
                     ++$deletedRevision;
                 } elseif ($contentType->getEnvironment() === $target) {
@@ -233,11 +236,6 @@ class AlignCommand extends Command
                 }
                 $this->io->progressAdvance();
             }
-
-            $arrayElasticsearchIndex = $this->client->scroll([
-                'scroll_id' => $arrayElasticsearchIndex['_scroll_id'],
-                'scroll' => $this->scrollTimeout,
-            ]);
         }
 
         $this->io->progressFinish();

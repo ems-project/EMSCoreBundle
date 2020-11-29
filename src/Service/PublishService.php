@@ -2,12 +2,10 @@
 
 namespace EMS\CoreBundle\Service;
 
-use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Statement;
 use Doctrine\ORM\NonUniqueResultException;
-use Elasticsearch\Client;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
@@ -29,13 +27,10 @@ class PublishService
     protected $authorizationChecker;
     /** @var TokenStorageInterface */
     protected $tokenStorage;
-    protected $lockTime;
-    /**@Client $client*/
-    protected $client;
     /** @var Mapping */
     protected $mapping;
+    /** @var string */
     protected $instanceId;
-    protected $em;
     /** @var RevisionRepository */
     protected $revRepository;
     /** @var Session */
@@ -44,25 +39,22 @@ class PublishService
     protected $contentTypeService;
     /** @var EnvironmentService */
     protected $environmentService;
-
     /** @var DataService */
     protected $dataService;
-
     /** @var UserService */
     protected $userService;
-
     /** @var EventDispatcherInterface */
     protected $dispatcher;
-
     /** @var LoggerInterface */
     protected $logger;
+    /** @var IndexService */
+    private $indexService;
 
     public function __construct(
         Registry $doctrine,
         AuthorizationCheckerInterface $authorizationChecker,
         TokenStorageInterface $tokenStorage,
-        $lockTime,
-        Client $client,
+        IndexService $indexService,
         Mapping $mapping,
         $instanceId,
         Session $session,
@@ -76,12 +68,10 @@ class PublishService
         $this->doctrine = $doctrine;
         $this->authorizationChecker = $authorizationChecker;
         $this->tokenStorage = $tokenStorage;
-        $this->lockTime = $lockTime;
-        $this->client = $client;
+        $this->indexService = $indexService;
         $this->mapping = $mapping;
         $this->instanceId = $instanceId;
-        $this->em = $this->doctrine->getManager();
-        $this->revRepository = $this->em->getRepository('EMSCoreBundle:Revision');
+        $this->revRepository = $this->doctrine->getManager()->getRepository('EMSCoreBundle:Revision');
         $this->session = $session;
         $this->contentTypeService = $contentTypeService;
         $this->environmentService = $environmentService;
@@ -160,28 +150,22 @@ class PublishService
                 return;
             }
 
-            $body = $this->dataService->sign($revision, true);
-            $index = $this->contentTypeService->getIndex($revision->getContentType());
-
-            $body[Mapping::PUBLISHED_DATETIME_FIELD] = (new DateTime())->format(DateTime::ISO8601);
-            $config = [
-                'id' => $revision->getOuuid(),
-                'index' => $index,
-                'type' => $revision->getContentType()->getName(),
-                'body' => $body,
-            ];
-
-            if ($revision->getContentType()->getHavePipelines()) {
-                $config['pipeline'] = $this->instanceId.$revision->getContentType()->getName();
+            $this->dataService->sign($revision, true);
+            if ($this->indexService->indexRevision($revision)) {
+                $this->logger->notice('service.publish.draft_published', [
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                    EmsFields::LOG_ENVIRONMENT_FIELD => $revision->getContentType()->getEnvironment()->getName(),
+                    EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
+                ]);
+            } else {
+                $this->logger->warning('service.publish.draft_published_failed', [
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                    EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
+                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                ]);
             }
-
-            $this->client->index($config);
-            $this->logger->notice('service.publish.draft_published', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                EmsFields::LOG_ENVIRONMENT_FIELD => $revision->getContentType()->getEnvironment()->getName(),
-                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-            ]);
         } catch (Exception $e) {
             $this->logger->warning('service.publish.publish_draft_error', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
@@ -258,22 +242,23 @@ class PublishService
             $statement->execute();
         }
 
-        $body = $this->dataService->sign($revision);
-        $index = $this->contentTypeService->getIndex($revision->getContentType(), $environment);
-
-        $body[Mapping::PUBLISHED_DATETIME_FIELD] = (new DateTime())->format(DateTime::ISO8601);
-        $config = [
-                'id' => $revision->getOuuid(),
-                'index' => $index,
-                'type' => $revision->getContentType()->getName(),
-                'body' => $body,
-        ];
-
-        if ($revision->getContentType()->getHavePipelines()) {
-            $config['pipeline'] = $this->instanceId.$revision->getContentType()->getName();
+        $this->dataService->sign($revision, true);
+        if ($this->indexService->indexRevision($revision, $environment)) {
+            $this->logger->notice('service.publish.publish', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
+                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
+            ]);
+        } else {
+            $this->logger->warning('service.publish.publish_failed', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
+                EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
+                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+            ]);
         }
-
-        $this->client->index($config);
 
         if (!$already) {
             /** @var Statement $statement */
@@ -356,11 +341,7 @@ class PublishService
         $statement->execute();
 
         try {
-            $this->client->delete([
-                    'id' => $revision->getOuuid(),
-                    'index' => $environment->getAlias(),
-                    'type' => $revision->getContentType()->getName(),
-            ]);
+            $this->indexService->delete($revision, $environment);
             $this->logger->notice('service.publish.unpublished', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
@@ -369,7 +350,7 @@ class PublishService
             ]);
 
             $this->dispatcher->dispatch(RevisionUnpublishEvent::NAME, new RevisionUnpublishEvent($revision, $environment));
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             if (!$revision->getDeleted()) {
                 $this->logger->warning('service.publish.already_unpublished', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),

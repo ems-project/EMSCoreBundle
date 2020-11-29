@@ -49,7 +49,7 @@ class EnvironmentController extends AppController
      * @Route("/publisher/align", name="environment.align")
      * @Security("has_role('ROLE_PUBLISHER')")
      */
-    public function alignAction(Request $request)
+    public function alignAction(Request $request, Client $client)
     {
         $data = [];
         $env = [];
@@ -57,8 +57,6 @@ class EnvironmentController extends AppController
 
         /** @var EnvironmentService $environmentService */
         $environmentService = $this->getEnvironmentService();
-        /** @var Client $client */
-        $client = $this->getElasticsearch();
 
         $form = $this->createForm(CompareEnvironmentFormType::class, $data, [
         ]);
@@ -299,10 +297,8 @@ class EnvironmentController extends AppController
      * @throws OptimisticLockException
      * @Route("/environment/attach/{name}", name="environment.attach", methods={"POST"})
      */
-    public function attachAction($name)
+    public function attachAction($name, Client $client)
     {
-        /** @var Client $client */
-        $client = $this->getElasticsearch();
         try {
             $indexes = $client->indices()->get([
                     'index' => $name,
@@ -377,7 +373,7 @@ class EnvironmentController extends AppController
      *
      * @Route("/environment/remove/{id}", name="environment.remove", methods={"POST"})
      */
-    public function removeAction(int $id)
+    public function removeAction(int $id, Client $client)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -386,8 +382,6 @@ class EnvironmentController extends AppController
         /** @var Environment $environment */
         $environment = $repository->find($id);
 
-        /** @var Client $client */
-        $client = $this->getElasticsearch();
         if ($environment->getManaged()) {
             try {
                 $indexes = $client->indices()->get([
@@ -455,7 +449,7 @@ class EnvironmentController extends AppController
      * @throws OptimisticLockException
      * @Route("/environment/add", name="environment.add")
      */
-    public function addAction(Request $request)
+    public function addAction(Request $request, Client $client)
     {
         $environment = new Environment();
 
@@ -501,7 +495,7 @@ class EnvironmentController extends AppController
                     $em->flush();
 
                     $indexName = $environment->getAlias().AppController::getFormatedTimestamp();
-                    $this->getElasticsearch()->indices()->create([
+                    $client->indices()->create([
                             'index' => $indexName,
                             'body' => $this->getEnvironmentService()->getIndexAnalysisConfiguration(),
                     ]);
@@ -510,7 +504,7 @@ class EnvironmentController extends AppController
                         $this->getContentTypeService()->updateMapping($contentType, $indexName);
                     }
 
-                    $this->getElasticsearch()->indices()->putAlias([
+                    $client->indices()->putAlias([
                         'index' => $indexName,
                         'name' => $environment->getAlias(),
                     ]);
@@ -585,7 +579,7 @@ class EnvironmentController extends AppController
      *
      * @Route("/environment/{id}", name="environment.view")
      */
-    public function viewAction(int $id)
+    public function viewAction(int $id, Client $client)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -599,9 +593,6 @@ class EnvironmentController extends AppController
         if (null === $environment) {
             throw new NotFoundHttpException('Unknow environment');
         }
-
-        /** @var Client $client */
-        $client = $this->getElasticsearch();
 
         try {
             $info = $client->indices()->getMapping([
@@ -719,9 +710,8 @@ class EnvironmentController extends AppController
             $names = [];
             $aliasService = $this->getAliasService();
 
-            $environments = []; //$repository->findAll();
+            $environments = [];
             $stats = $this->getEnvironmentService()->getEnvironmentsStats();
-//            $statsDeleted = $this->getEnvironmentService()->getDe EnvironmentsStats();
             /* @var  Environment $environment */
             foreach ($stats as $stat) {
                 $environment = $stat['environment'];
@@ -772,11 +762,11 @@ class EnvironmentController extends AppController
             }
 
             return $this->render('@EMSCore/environment/index.html.twig', [
-                    'environments' => $environments,
-                    'orphanIndexes' => $aliasService->getOrphanIndexes(),
-                    'unreferencedAliases' => $aliasService->getUnreferencedAliases(),
-                                        'managedAliases' => $aliasService->getManagedAliases(),
-                    'form' => $form->createView(),
+                'environments' => $environments,
+                'orphanIndexes' => $aliasService->getOrphanIndexes(),
+                'unreferencedAliases' => $aliasService->getUnreferencedAliases(),
+                'managedAliases' => $aliasService->getManagedAliases(),
+                'form' => $form->createView(),
             ]);
         } catch (NoNodesAvailableException $e) {
             return $this->redirectToRoute('elasticsearch.status');

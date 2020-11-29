@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Controller\Views;
 
+use Elasticsearch\Client;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\View;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,12 +17,12 @@ class HierarchicalController extends AppController
      *
      * @Route("/views/hierarchical/item/{view}/{key}", name="views.hierarchical.item")
      */
-    public function itemAction(View $view, $key)
+    public function itemAction(View $view, $key, Client $client)
     {
         $ouuid = \explode(':', $key);
         $contentType = $this->getContentTypeService()->getByName($ouuid[0]);
         $index = $this->getContentTypeService()->getIndex($contentType);
-        $item = $this->getElasticsearch()->get([
+        $item = $client->get([
                 'index' => $index,
                 'type' => $ouuid[0],
                 'id' => $ouuid[1],

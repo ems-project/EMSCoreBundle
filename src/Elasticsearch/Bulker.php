@@ -107,11 +107,11 @@ class Bulker
         return $this->send();
     }
 
-    public function indexDocument(DocumentInterface $document, string $index): bool
+    public function indexDocument(DocumentInterface $document, string $index, bool $upsert = false): bool
     {
         $body = $document->getSource();
 
-        return $this->index($document->getContentType(), $document->getId(), $index, $body);
+        return $this->index($document->getContentType(), $document->getId(), $index, $body, $upsert);
     }
 
     /**

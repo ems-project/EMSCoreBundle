@@ -198,13 +198,13 @@ services:
             - { name: form.type }
     ems.fieldtype.json_menu_link:
         class: EMS\CoreBundle\Form\DataField\JsonMenuLinkFieldType
-        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@ems.service.contenttype', '@ems_common.elastica.client', '@ems_common.json.decoder']
+        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@ems.service.contenttype', '@ems_common.service.elastica', '@ems_common.json.decoder']
         tags:
             - { name: ems.form.datafieldtype, alias: json_menu_link }
             - { name: form.type }
     ems.fieldtype.json_menu_nested_link:
         class: EMS\CoreBundle\Form\DataField\JsonMenuNestedLinkFieldType
-        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@ems_common.elastica.client', '@ems_common.json.decoder']
+        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@ems_common.service.elastica', '@ems_common.json.decoder']
         tags:
             - { name: ems.form.datafieldtype, alias: json_menu_nested_link }
             - { name: form.type }
@@ -437,7 +437,7 @@ services:
         arguments: ['@logger', '@ems_common.elastica.client', '@EMS\CoreBundle\Service\EnvironmentService', '@ems.form.fieldtype.fieldtypetype', '@ems.service.elasticsearch', '@ems_common.service.elastica', '%ems_core.instance_id%', '%ems_core.single_type_index%']
     EMS\CoreBundle\Service\DataService:
         class: EMS\CoreBundle\Service\DataService
-        arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '%ems_core.lock_time%', '@app.elasticsearch', '@ems.service.mapping', '%ems_core.instance_id%', '@session', '@form.factory', '@service_container', '@form.registry', '@event_dispatcher', '@ems.service.contenttype', '%ems_core.private_key%', '@logger', '@ems_common.storage.manager', '@twig', '@app.twig_extension', '@ems.service.user', '@EMS\CoreBundle\Repository\RevisionRepository', '@ems.service.environment', '@ems.service.search', '@ems.service.index']
+        arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '%ems_core.lock_time%', '@ems_common.service.elastica', '@ems.service.mapping', '%ems_core.instance_id%', '@session', '@form.factory', '@service_container', '@form.registry', '@event_dispatcher', '@ems.service.contenttype', '%ems_core.private_key%', '@logger', '@ems_common.storage.manager', '@twig', '@app.twig_extension', '@ems.service.user', '@EMS\CoreBundle\Repository\RevisionRepository', '@ems.service.environment', '@ems.service.search', '@ems.service.index']
         tags:
             - { name: kernel.event_listener, event: ems_core.revision.update_referers, method: updateReferers, priority: 0 }
     ems.service.revision:

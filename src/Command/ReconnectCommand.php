@@ -2,7 +2,8 @@
 
 namespace EMS\CoreBundle\Command;
 
-use Elasticsearch\Client;
+use Elastica\Client;
+use Elasticsearch\Endpoints\Indices\Mapping\Get;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -21,11 +22,15 @@ class ReconnectCommand extends ContainerAwareCommand
     /** @var EnvironmentService */
     protected $environmentService;
 
-    public function __construct(Client $client, ContentTypeService $contentTypeService, EnvironmentService $environmentService)
+    /** @var bool */
+    private $singleTypeIndex;
+
+    public function __construct(Client $client, ContentTypeService $contentTypeService, EnvironmentService $environmentService, bool $singleTypeIndex)
     {
         $this->client = $client;
         $this->contentTypeService = $contentTypeService;
         $this->environmentService = $environmentService;
+        $this->singleTypeIndex = $singleTypeIndex;
         parent::__construct();
     }
 
@@ -43,6 +48,11 @@ class ReconnectCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        if (!$this->singleTypeIndex) {
+            $output->writeln('This commands is for single type indexes config');
+            exit;
+        }
+
         $environmentName = $input->getArgument('name');
 
         if (!\is_string($environmentName)) {
@@ -57,9 +67,9 @@ class ReconnectCommand extends ContainerAwareCommand
             return -1;
         }
 
-        $mappings = $this->client->indices()->getMapping([
-            'index' => $environment->getAlias(),
-        ]);
+        $endpoint = new Get();
+        $endpoint->setIndex($environment->getAlias());
+        $mappings = $this->client->requestEndpoint($endpoint)->getData();
 
         foreach ($mappings as $index => $indexMapping) {
             foreach ($indexMapping['mappings'] as $type => $typeMapping) {

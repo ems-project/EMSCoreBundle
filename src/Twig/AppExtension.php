@@ -5,10 +5,12 @@ namespace EMS\CoreBundle\Twig;
 use Caxy\HtmlDiff\HtmlDiff;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Elasticsearch\Client;
+use Elastica\ResultSet;
+use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CommonBundle\Elasticsearch\Exception\NotSingleResultException;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Helper\Text\Encoder;
+use EMS\CommonBundle\Search\Search as CommonSearch;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Storage\Processor\Config;
 use EMS\CommonBundle\Twig\RequestRuntime;
@@ -19,7 +21,6 @@ use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\I18n;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
-use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Form\DataField\DateFieldType;
 use EMS\CoreBundle\Form\DataField\DateRangeFieldType;
 use EMS\CoreBundle\Form\DataField\TimeFieldType;
@@ -29,6 +30,7 @@ use EMS\CoreBundle\Repository\SequenceRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\FileService;
+use EMS\CoreBundle\Service\SearchService;
 use EMS\CoreBundle\Service\UserService;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
@@ -60,8 +62,6 @@ class AppExtension extends AbstractExtension
     private $authorizationChecker;
     /** @var ContentTypeService */
     private $contentTypeService;
-    /** @var Client */
-    private $client;
     /** @var Router */
     private $router;
     /** @var TwigEnvironment */
@@ -76,17 +76,18 @@ class AppExtension extends AbstractExtension
     private $mailer;
     /** @var ElasticaService */
     private $elasticaService;
+    /** @var SearchService */
+    private $searchService;
 
     /**
      * @param array<mixed> $assetConfig
      */
-    public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, Client $client, Router $router, TwigEnvironment $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, LoggerInterface $logger, FormFactory $formFactory, FileService $fileService, RequestRuntime $commonRequestRuntime, \Swift_Mailer $mailer, ElasticaService $elasticaService, array $assetConfig)
+    public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, Router $router, TwigEnvironment $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, LoggerInterface $logger, FormFactory $formFactory, FileService $fileService, RequestRuntime $commonRequestRuntime, \Swift_Mailer $mailer, ElasticaService $elasticaService, SearchService $searchService, array $assetConfig)
     {
         $this->doctrine = $doctrine;
         $this->authorizationChecker = $authorizationChecker;
         $this->userService = $userService;
         $this->contentTypeService = $contentTypeService;
-        $this->client = $client;
         $this->router = $router;
         $this->twig = $twig;
         $this->objectChoiceListFactory = $objectChoiceListFactory;
@@ -97,6 +98,7 @@ class AppExtension extends AbstractExtension
         $this->commonRequestRuntime = $commonRequestRuntime;
         $this->mailer = $mailer;
         $this->elasticaService = $elasticaService;
+        $this->searchService = $searchService;
         $this->assetConfig = $assetConfig;
     }
 
@@ -173,7 +175,8 @@ class AppExtension extends AbstractExtension
             new TwigFilter('displayname', [$this, 'displayName']),
             new TwigFilter('date_difference', [$this, 'dateDifference']),
             new TwigFilter('debug', [$this, 'debug']),
-            new TwigFilter('search', [$this, 'search']),
+            new TwigFilter('search', [$this, 'deprecatedSearch'], ['deprecated' => true, 'alternative' => 'emsco_search']),
+            new TwigFilter('emsco_search', [$this, 'search']),
             new TwigFilter('call_user_func', [$this, 'callUserFunc']),
             new TwigFilter('merge_recursive', [$this, 'arrayMergeRecursive']),
             new TwigFilter('array_intersect', [$this, 'arrayIntersect']),
@@ -680,13 +683,53 @@ class AppExtension extends AbstractExtension
     }
 
     /**
+     * @deprecated
+     *
      * @param array<mixed> $params
      *
      * @return array<mixed>
      */
-    public function search(array $params): array
+    public function deprecatedSearch(array $params): array
     {
-        return $this->client->search($params);
+        $search = $this->elasticaService->convertElasticsearchSearch($params);
+
+        return $this->elasticaService->search($search)->getResponse()->getData();
+    }
+
+    /**
+     * @param string[]          $indexes
+     * @param array<mixed>      $body
+     * @param string[]          $contentTypes
+     * @param array<mixed>|null $sort
+     * @param string[]|null     $sources
+     */
+    public function search(array $indexes, array $body = [], array $contentTypes = [], ?int $size = null, int $from = 0, ?array $sort = null, ?array $sources = null): ResultSet
+    {
+        $query = $this->elasticaService->filterByContentTypes(null, $contentTypes);
+
+        $boolQuery = $this->elasticaService->getBoolQuery();
+        if (!empty($body) && $query instanceof $boolQuery) {
+            $query->addMust($body);
+        } elseif (!empty($body)) {
+            if (null !== $query) {
+                $boolQuery->addMust($query);
+            }
+            $query = $boolQuery;
+            $query->addMust($body);
+        }
+        $search = new CommonSearch($indexes, $query);
+        if (null !== $size) {
+            $search->setSize($size);
+        }
+        $search->setFrom($from);
+        if (null !== $sort) {
+            $search->setSort($sort);
+        }
+        if (null !== $sources) {
+            $search->setSources($sources);
+        }
+
+        return $this->elasticaService->search($search);
     }
 
     /**
@@ -1022,47 +1065,24 @@ class AppExtension extends AbstractExtension
         }
 
         $exploded = \explode(':', $key);
-        if (2 === \count($exploded)) {
-            $type = $exploded[0];
-            $ouuid = $exploded[1];
+        if (2 !== \count($exploded)) {
+            return null;
+        }
+        $type = $exploded[0];
+        $ouuid = $exploded[1];
 
-            /** @var \EMS\CoreBundle\Entity\ContentType $contentType */
-            $contentType = $this->contentTypeService->getByName($type);
-            if ($contentType) {
-                $singleTypeIndex = $this->contentTypeService->getIndex($contentType);
-
-                $body = [
-                    'index' => $index ?? $singleTypeIndex,
-                    'body' => [
-                        'query' => [
-                            'bool' => [
-                                'must' => [['term' => ['_id' => $ouuid]]],
-                                'minimum_should_match' => 1,
-                                'should' => [
-                                    ['term' => ['_type' => $type]],
-                                    ['term' => ['_contenttype' => $type]],
-                                ],
-                            ],
-                        ],
-                    ],
-                ];
-
-                $result = $this->client->search($body);
-                $total = $result['hits']['total'];
-
-                if (1 === $total) {
-                    return $result['hits']['hits'][0]['_source'];
-                }
-
-                if ($total > 1) {
-                    throw new ElasticmsException(\sprintf('Multiple hits for ems key "%s" (%d) on alias/index "%s"', $key, $total, $index));
-                }
-
-                return null; //zero hits
-            }
+        $contentType = $this->contentTypeService->getByName($type);
+        if (!$contentType instanceof ContentType) {
+            return null;
         }
 
-        return null;
+        try {
+            $document = $this->searchService->getDocument($contentType, $ouuid);
+
+            return $document->getSource();
+        } catch (NotFoundException $e) {
+            return null;
+        }
     }
 
     /**

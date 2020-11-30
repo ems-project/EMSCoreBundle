@@ -2,16 +2,29 @@
 
 namespace EMS\CoreBundle\Form\View;
 
+use Elasticsearch\Client;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Twig\Environment;
 
 class ReportViewType extends ViewType
 {
+    /** @var Client */
+    private $client;
+
+    public function __construct(FormFactory $formFactory, Environment $twig, Client $client, LoggerInterface $logger)
+    {
+        parent::__construct($formFactory, $twig, $logger);
+        $this->client = $client;
+    }
+
     public function getLabel(): string
     {
         return 'Report: perform an elasticsearch query and generate a report with a twig template';

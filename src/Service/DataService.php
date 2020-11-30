@@ -81,10 +81,8 @@ class DataService
     /** @var string */
     protected $instanceId;
 
-    //TODO: service should be stateless
     /** @var array */
     private $cacheBusinessKey = [];
-    //TODO: service should be stateless
     /** @var array */
     private $cacheOuuids = [];
 
@@ -128,6 +126,8 @@ class DataService
     private $environmentService;
     /** @var SearchService */
     private $searchService;
+    /** @var IndexService */
+    private $indexService;
 
     public function __construct(
         Registry $doctrine,
@@ -151,7 +151,8 @@ class DataService
         UserService $userService,
         RevisionRepository $revisionRepository,
         EnvironmentService $environmentService,
-        SearchService $searchService
+        SearchService $searchService,
+        IndexService $indexService
     ) {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
@@ -175,6 +176,7 @@ class DataService
         $this->userService = $userService;
         $this->environmentService = $environmentService;
         $this->searchService = $searchService;
+        $this->indexService = $indexService;
 
         $this->public_key = null;
         $this->private_key = null;
@@ -679,44 +681,55 @@ class DataService
         ArrayTool::normalizeArray($array, $sort_flags);
     }
 
-    public function sign(Revision $revision, $silentPublish = false)
+    /**
+     * @param array<mixed> $objectArray
+     */
+    public function signRaw(array &$objectArray): string
     {
-        if ($silentPublish && $revision->getAutoSave()) {
-            $objectArray = $revision->getAutoSave();
-        } else {
-            $objectArray = $revision->getRawData();
-        }
-
-        $objectArray[Mapping::CONTENT_TYPE_FIELD] = $revision->getContentType()->getName();
         if (isset($objectArray[Mapping::HASH_FIELD])) {
             unset($objectArray[Mapping::HASH_FIELD]);
         }
         if (isset($objectArray[Mapping::SIGNATURE_FIELD])) {
             unset($objectArray[Mapping::SIGNATURE_FIELD]);
         }
-        if ($revision->hasVersionTags()) {
-            $objectArray[Mapping::VERSION_UUID] = $revision->getVersionUuid();
-            $objectArray[Mapping::VERSION_TAG] = $revision->getVersionTag();
+        if (isset($objectArray[Mapping::PUBLISHED_DATETIME_FIELD])) {
+            unset($objectArray[Mapping::PUBLISHED_DATETIME_FIELD]);
         }
         ArrayTool::normalizeArray($objectArray);
         $json = \json_encode($objectArray);
 
-        $revision->setSha1($this->storageManager->computeStringHash($json));
-        $objectArray[Mapping::HASH_FIELD] = $revision->getSha1();
+        $hash = $this->storageManager->computeStringHash($json);
+        $objectArray[Mapping::HASH_FIELD] = $hash;
 
-        if (!$silentPublish && $this->private_key) {
+        if ($this->private_key) {
             $signature = null;
             if (\openssl_sign($json, $signature, $this->private_key, OPENSSL_ALGO_SHA1)) {
                 $objectArray[Mapping::SIGNATURE_FIELD] = \base64_encode($signature);
             } else {
                 $this->logger->warning('service.data.not_able_to_sign', [
-                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => \openssl_error_string(),
                 ]);
             }
         }
+
+        return $hash;
+    }
+
+    public function sign(Revision $revision, $silentPublish = false)
+    {
+        $objectArray[Mapping::CONTENT_TYPE_FIELD] = $revision->getContentType();
+        if ($silentPublish && $revision->getAutoSave()) {
+            $objectArray = $revision->getAutoSave();
+        } else {
+            $objectArray = $revision->getRawData();
+        }
+        if ($revision->hasVersionTags()) {
+            $objectArray[Mapping::VERSION_UUID] = $revision->getVersionUuid();
+            $objectArray[Mapping::VERSION_TAG] = $revision->getVersionTag();
+        }
+
+        $hash = $this->signRaw($objectArray);
+        $revision->setSha1($hash);
 
         $revision->setRawData($objectArray);
 
@@ -931,25 +944,9 @@ class DataService
         $objectArray = $this->sign($revision);
 
         if (empty($form) || $this->isValid($form, null, $objectArray)) {
-            $objectArray[Mapping::PUBLISHED_DATETIME_FIELD] = (new DateTime())->format(DateTime::ISO8601);
-
-            $config = [
-              'index' => $this->contentTypeService->getIndex($revision->getContentType()),
-              'type' => $revision->getContentType()->getName(),
-              'body' => $objectArray,
-            ];
-
-            if ($revision->getContentType()->getHavePipelines()) {
-                $config['pipeline'] = $this->instanceId.$revision->getContentType()->getName();
-            }
-
-            if (empty($revision->getOuuid())) {
-                $status = $this->client->index($config);
-                $revision->setOuuid($status['_id']);
-            } else {
-                $config['id'] = $revision->getOuuid();
-                $this->client->index($config);
-
+            $ouuid = $revision->getOuuid();
+            $this->indexService->indexRevision($revision);
+            if (null !== $ouuid) {
                 $item = $repository->findByOuuidContentTypeAndEnvironment($revision);
                 if ($item) {
                     $this->lockRevision($item, null, false, $username);
@@ -1441,12 +1438,7 @@ class DataService
             /** @var Environment $environment */
             foreach ($revision->getEnvironments() as $environment) {
                 try {
-                    $this->client->delete([
-                        'index' => $this->contentTypeService->getIndex($revision->getContentType()),
-                        'type' => $revision->getContentType()->getName(),
-                        'id' => $revision->getOuuid(),
-                        'refresh' => true,
-                    ]);
+                    $this->indexService->delete($revision, $environment);
                     $this->logger->notice('service.data.unpublished', [
                         EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                         EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
@@ -1926,11 +1918,6 @@ class DataService
         return $revision;
     }
 
-    public function waitForGreen()
-    {
-        $this->client->cluster()->health(['wait_for_status' => 'green']);
-    }
-
     public function getDataFieldsStructure(FormInterface $form)
     {
         /** @var DataField $out */
@@ -1940,7 +1927,6 @@ class DataService
                 $out->addChild($item->getNormData());
                 $this->getDataFieldsStructure($item);
             }
-            //else shoudl be a sub-field
         }
 
         return $out;
@@ -2013,20 +1999,13 @@ class DataService
 
     public function createAndMapIndex(Environment $environment): void
     {
+        $body = $this->environmentService->getIndexAnalysisConfiguration();
         $indexName = $environment->getAlias().AppController::getFormatedTimestamp();
-        $this->client->indices()->create([
-            'index' => $indexName,
-            'body' => $this->environmentService->getIndexAnalysisConfiguration(),
-        ]);
+        $this->mapping->createIndex($indexName, $body, $environment->getAlias());
 
         foreach ($this->contentTypeService->getAll() as $contentType) {
             $this->contentTypeService->updateMapping($contentType, $indexName);
         }
-
-        $this->client->indices()->putAlias([
-            'index' => $indexName,
-            'name' => $environment->getAlias(),
-        ]);
     }
 
     public function getDataLinks(string $contentTypesCommaList, array $businessIds): array

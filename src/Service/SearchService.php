@@ -118,7 +118,7 @@ class SearchService
     {
         $environment = $contentType->getEnvironment();
         if (null === $environment) {
-            throw new \RuntimeException('Unexpected nul environment');
+            throw new \RuntimeException('Unexpected null environment');
         }
         $index = $this->contentTypeService->getIndex($contentType, $environment);
         $search = $this->elasticaService->generateTermsSearch([$index], '_id', [$ouuid], [$contentType->getName()]);

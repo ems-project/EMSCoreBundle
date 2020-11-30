@@ -2,8 +2,9 @@
 
 namespace EMS\CoreBundle\Service;
 
-use Elasticsearch\Client;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Search\Search;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\ContentTransformer\ContentTransformContext;
 use EMS\CoreBundle\ContentTransformer\ContentTransformInterface;
 use EMS\CoreBundle\Entity\ContentType;
@@ -16,32 +17,29 @@ use Symfony\Component\Form\FormFactoryInterface;
 
 class TransformContentTypeService
 {
+    /** @var int */
+    const DEFAULT_SCROLL_SIZE = 100;
+
     /** @var LoggerInterface */
     private $logger;
-
-    /** @var Client */
-    private $client;
-
     /** @var ContentTypeService */
     private $contentTypeService;
-
     /** @var DataService */
     private $dataService;
-
     /** @var FormFactoryInterface */
     private $formFactory;
-
-    const DEFAULT_SCROLL_SIZE = 100;
+    /** @var ElasticaService */
+    private $elasticaService;
 
     public function __construct(
         LoggerInterface $logger,
-        Client $client,
+        ElasticaService $elasticaService,
         ContentTypeService $contentTypeService,
         DataService $dataService,
         FormFactoryInterface $formFactory
     ) {
         $this->logger = $logger;
-        $this->client = $client;
+        $this->elasticaService = $elasticaService;
         $this->contentTypeService = $contentTypeService;
         $this->dataService = $dataService;
         $this->formFactory = $formFactory;
@@ -49,13 +47,16 @@ class TransformContentTypeService
 
     public function transform(ContentType $contentType, string $user): \Generator
     {
-        $total = $this->getTotal($contentType);
-        for ($from = 0; $from < $total; $from = $from + self::DEFAULT_SCROLL_SIZE) {
-            $scroll = $this->getScroll($contentType, $from);
+        $search = $this->getSearch($contentType);
+        $scroll = $this->elasticaService->scroll($search, '10m');
 
-            foreach ($scroll['hits']['hits'] as $hit) {
+        foreach ($scroll as $resultSet) {
+            foreach ($resultSet as $result) {
+                if (false === $result) {
+                    continue;
+                }
                 $isChanged = false;
-                $ouuid = $hit['_id'];
+                $ouuid = $result->getId();
                 $revision = $this->dataService->getNewestRevision($contentType->getName(), $ouuid);
 
                 if ($revision->getDraft()) {
@@ -70,7 +71,7 @@ class TransformContentTypeService
                 }
 
                 $revisionType = $this->formFactory->create(RevisionType::class, $revision);
-                $result = $this->dataService->walkRecursive($revisionType->get('data'), $hit['_source'], function (string $name, $data, DataFieldType $dataFieldType, DataField $dataField) use (&$isChanged) {
+                $result = $this->dataService->walkRecursive($revisionType->get('data'), $result->getSource(), function (string $name, $data, DataFieldType $dataFieldType, DataField $dataField) use (&$isChanged) {
                     if (null === $data) {
                         return [];
                     }
@@ -129,27 +130,17 @@ class TransformContentTypeService
 
     public function getTotal(ContentType $contentType): int
     {
-        $scroll = $this->getScroll($contentType);
+        $search = $this->getSearch($contentType);
 
-        return $scroll['hits']['total'];
+        return $this->elasticaService->count($search);
     }
 
-    private function getScroll(ContentType $contentType, int $from = 0): array
+    private function getSearch(ContentType $contentType): Search
     {
-        return $this->client->search([
-            'index' => $this->contentTypeService->getIndex($contentType),
-            'size' => self::DEFAULT_SCROLL_SIZE,
-            'from' => $from,
-            'body' => [
-                'query' => [
-                    'bool' => [
-                        'must' => [
-                            ['term' => ['_type' => $contentType->getName()]],
-                            ['term' => ['_contenttype' => $contentType->getName()]],
-                        ],
-                    ],
-                ],
-            ],
-        ]);
+        $query = $this->elasticaService->filterByContentTypes(null, [$contentType->getName()]);
+        $search = new Search([$this->contentTypeService->getIndex($contentType)], $query);
+        $search->setSize(self::DEFAULT_SCROLL_SIZE);
+
+        return $search;
     }
 }

@@ -6,6 +6,8 @@ use Elastica\Client as ElasticaClient;
 use Elasticsearch\Endpoints\Cat\Indices;
 use Elasticsearch\Endpoints\Indices\Alias\Get;
 use Elasticsearch\Endpoints\Indices\Aliases\Update;
+use EMS\CommonBundle\Search\Search;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\ManagedAlias;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\ManagedAliasRepository;
@@ -24,12 +26,15 @@ class AliasService
     private $isBuild = false;
     /** @var ElasticaClient */
     private $elasticaClient;
+    /** @var ElasticaService */
+    private $elasticaService;
 
-    public function __construct(ElasticaClient $elasticaClient, EnvironmentRepository $environmentRepository, ManagedAliasRepository $managedAliasRepository)
+    public function __construct(ElasticaClient $elasticaClient, EnvironmentRepository $environmentRepository, ManagedAliasRepository $managedAliasRepository, ElasticaService $elasticaService)
     {
         $this->envRepo = $environmentRepository;
         $this->managedAliasRepo = $managedAliasRepository;
         $this->elasticaClient = $elasticaClient;
+        $this->elasticaService = $elasticaService;
     }
 
     public function hasAlias(string $name): bool
@@ -282,7 +287,9 @@ class AliasService
      */
     private function count($name)
     {
-        return $this->elasticaClient->getIndex($name)->count();
+        $search = new Search([$name]);
+
+        return $this->elasticaService->count($search);
     }
 
     /**

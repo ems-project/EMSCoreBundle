@@ -2,33 +2,35 @@
 
 namespace EMS\CoreBundle\Controller\Views;
 
+use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\View;
+use EMS\CoreBundle\Service\ContentTypeService;
+use EMS\CoreBundle\Service\SearchService;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class HierarchicalController extends AppController
 {
     /**
-     * @param string $key
-     *
-     * @return Response
-     *
      * @Route("/views/hierarchical/item/{view}/{key}", name="views.hierarchical.item")
      */
-    public function itemAction(View $view, $key)
+    public function itemAction(View $view, string $key, ContentTypeService $contentTypeService, SearchService $searchService): Response
     {
         $ouuid = \explode(':', $key);
-        $contentType = $this->getContentTypeService()->getByName($ouuid[0]);
-        $index = $this->getContentTypeService()->getIndex($contentType);
-        $item = $this->getElasticsearch()->get([
-                'index' => $index,
-                'type' => $ouuid[0],
-                'id' => $ouuid[1],
-        ]);
+        $contentType = $contentTypeService->getByName($ouuid[0]);
+        if (false === $contentType) {
+            throw new NotFoundHttpException(\sprintf('Content type %s not found', $ouuid[0]));
+        }
+        try {
+            $document = $searchService->getDocument($contentType, $ouuid[1]);
+        } catch (NotFoundException $e) {
+            throw new NotFoundHttpException(\sprintf('Document %s not found', $ouuid[1]));
+        }
 
         return $this->render('@EMSCore/view/custom/hierarchical_add_item.html.twig', [
-                'data' => $item['_source'],
+                'data' => $document->getSource(),
                 'view' => $view,
                 'contentType' => $contentType,
                 'key' => $ouuid,

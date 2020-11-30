@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Controller;
 
-use Elasticsearch\Client;
 use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
@@ -57,16 +56,6 @@ class AppController extends Controller
     protected function getTranslator()
     {
         return $this->get('translator');
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return Client
-     */
-    protected function getElasticsearch()
-    {
-        return $this->get('app.elasticsearch');
     }
 
     /**

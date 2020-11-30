@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Form\DataField;
 
-use Elasticsearch\Client;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Event\UpdateRevisionReferersEvent;
@@ -28,18 +27,15 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 class DataLinkFieldType extends DataFieldType
 {
-    /** @var Client */
-    protected $client;
     /** @var EventDispatcherInterface */
     protected $dispatcher;
 
     /**
      * Contructor.
      */
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, Client $client, EventDispatcherInterface $dispatcher)
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, EventDispatcherInterface $dispatcher)
     {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
-        $this->client = $client;
         $this->dispatcher = $dispatcher;
     }
 

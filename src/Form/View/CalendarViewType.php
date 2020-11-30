@@ -5,18 +5,26 @@ namespace EMS\CoreBundle\Form\View;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Form\SearchFormType;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Twig\Environment;
 
 class CalendarViewType extends ViewType
 {
+    public function __construct(FormFactory $formFactory, Environment $twig, LoggerInterface $logger)
+    {
+        parent::__construct($formFactory, $twig, $logger);
+    }
+
     public function getLabel(): string
     {
-        return 'Calendar: a view where you can planify your object';
+        return 'Calendar: a view where you can schedule your object';
     }
 
     public function getName(): string

@@ -3,15 +3,17 @@
 namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Elasticsearch\Client;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
+use EMS\CoreBundle\Service\AliasService;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
-use Monolog\Logger;
+use EMS\CoreBundle\Service\Mapping;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -31,18 +33,28 @@ class RebuildCommand extends EmsCommand
     private $instanceId;
     /** @var bool */
     private $singleTypeIndex;
+    /** @var ElasticaService */
+    private $elasticaService;
+    /** @var LoggerInterface */
+    protected $logger;
+    /** @var Mapping */
+    private $mapping;
+    /** @var AliasService */
+    private $aliasService;
 
-    public function __construct(Registry $doctrine, Logger $logger, Client $client, ContentTypeService $contentTypeService, EnvironmentService $environmentService, ReindexCommand $reindexCommand, string $instanceId, bool $singleTypeIndex)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, ContentTypeService $contentTypeService, EnvironmentService $environmentService, ReindexCommand $reindexCommand, ElasticaService $elasticaService, Mapping $mapping, AliasService $aliasService, string $instanceId, bool $singleTypeIndex)
     {
         $this->doctrine = $doctrine;
-        $this->logger = $logger;
-        $this->client = $client;
         $this->contentTypeService = $contentTypeService;
         $this->environmentService = $environmentService;
         $this->reindexCommand = $reindexCommand;
         $this->instanceId = $instanceId;
         $this->singleTypeIndex = $singleTypeIndex;
-        parent::__construct($logger, $client);
+        $this->elasticaService = $elasticaService;
+        $this->logger = $logger;
+        $this->mapping = $mapping;
+        $this->aliasService = $aliasService;
+        parent::__construct();
     }
 
     protected function configure(): void
@@ -78,18 +90,17 @@ class RebuildCommand extends EmsCommand
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'Number of item that will be indexed together during the same elasticsearch operation',
-                1000
+                500
             )
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $this->aliasService->build();
+        $yellowOk = true === $input->getOption('yellow-ok');
         $this->formatStyles($output);
-
-        if (!$input->getOption('yellow-ok')) {
-            $this->waitForGreen($output);
-        }
+        $this->waitFor($yellowOk, $output);
 
         $bulkSize = \intval($input->getOption('bulk-size'));
         if (0 === $bulkSize) {
@@ -104,7 +115,6 @@ class RebuildCommand extends EmsCommand
         $signData = !$input->getOption('dont-sign');
 
         $em = $this->doctrine->getManager();
-        $client = $this->client;
         $name = $input->getArgument('name');
         if (!\is_string($name)) {
             throw new \RuntimeException('Unexpected content type name');
@@ -138,17 +148,13 @@ class RebuildCommand extends EmsCommand
         $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
         $contentTypes = $contentTypeRepository->findAll();
 
-        $indexDefaultConfig = $this->environmentService->getIndexAnalysisConfiguration();
+        $body = $this->environmentService->getIndexAnalysisConfiguration();
         if (!$this->singleTypeIndex) {
-            $client->indices()->create([
-                'index' => $indexName,
-                'body' => $indexDefaultConfig,
-            ]);
+            $this->mapping->createIndex($indexName, $body);
 
             $output->writeln('A new index '.$indexName.' has been created');
-            if (!$input->getOption('yellow-ok')) {
-                $this->waitForGreen($output);
-            }
+
+            $this->waitFor($yellowOk, $output);
         }
 
         $output->writeln(\count($contentTypes).' content types will be re-indexed');
@@ -165,15 +171,11 @@ class RebuildCommand extends EmsCommand
                 if ($this->singleTypeIndex) {
                     $indexName = $this->environmentService->getNewIndexName($environment, $contentType);
                     $indexes[] = $indexName;
-                    $client->indices()->create([
-                        'index' => $indexName,
-                        'body' => $indexDefaultConfig,
-                    ]);
+                    $this->mapping->createIndex($indexName, $body);
 
                     $output->writeln('A new index '.$indexName.' has been created');
-                    if (!$input->getOption('yellow-ok')) {
-                        $this->waitForGreen($output);
-                    }
+
+                    $this->waitFor($yellowOk, $output);
                 }
 
                 $this->contentTypeService->updateMapping($contentType, $indexName);
@@ -203,9 +205,8 @@ class RebuildCommand extends EmsCommand
             }
         }
 
-        if (!$input->getOption('yellow-ok')) {
-            $this->waitForGreen($output);
-        }
+        $this->waitFor($yellowOk, $output);
+
         if (empty($indexes)) {
             $indexes = [$singleIndexName];
         }
@@ -223,39 +224,26 @@ class RebuildCommand extends EmsCommand
      */
     private function switchAlias(string $alias, array $toIndexes, OutputInterface $output, bool $newEnv = false): void
     {
-        try {
-            $result = $this->client->indices()->getAlias(['name' => $alias]);
-            $params['body']['actions'] = [];
+        $indexesToRemove = [];
+        if ($this->aliasService->hasAlias($alias)) {
+            foreach ($this->aliasService->getAlias($alias)['indexes'] as $id => $item) {
+                $indexesToRemove[] = $id;
+            }
+        }
+        $this->aliasService->updateAlias($alias, [
+            'remove' => $indexesToRemove,
+            'add' => $toIndexes,
+        ]);
+    }
 
-            foreach ($result as $id => $item) {
-                $params['body']['actions'][] = [
-                    'remove' => [
-                        'index' => $id,
-                        'alias' => $alias,
-                    ],
-                ];
-            }
-
-            foreach ($toIndexes as $index) {
-                $params['body']['actions'][] = [
-                    'add' => [
-                        'index' => $index,
-                        'alias' => $alias,
-                    ],
-                ];
-            }
-
-            $this->client->indices()->updateAliases($params);
-        } catch (\Throwable $e) {
-            if (!$newEnv) {
-                $output->writeln('WARNING : Alias '.$alias.' not found');
-            }
-            foreach ($toIndexes as $index) {
-                $this->client->indices()->putAlias([
-                    'index' => $index,
-                    'name' => $alias,
-                ]);
-            }
+    private function waitFor(bool $yellowOk, OutputInterface $output): void
+    {
+        if ($yellowOk) {
+            $output->writeln('Waiting for yellow...');
+            $this->elasticaService->getClusterHealth('yellow', '30s');
+        } else {
+            $output->writeln('Waiting for green...');
+            $this->elasticaService->getClusterHealth('green', '30s');
         }
     }
 }

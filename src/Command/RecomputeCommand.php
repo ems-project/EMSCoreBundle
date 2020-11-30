@@ -5,7 +5,6 @@ namespace EMS\CoreBundle\Command;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
-use Elasticsearch\Client;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;
@@ -48,6 +47,8 @@ class RecomputeCommand extends EmsCommand
     private $indexService;
     /** @var SearchService */
     private $searchService;
+    /** @var LoggerInterface */
+    protected $logger;
 
     public function __construct(
         DataService $dataService,
@@ -55,14 +56,14 @@ class RecomputeCommand extends EmsCommand
         FormFactoryInterface $formFactory,
         PublishService $publishService,
         LoggerInterface $logger,
-        Client $client,
         ContentTypeService $contentTypeService,
         ContentTypeRepository $contentTypeRepository,
         RevisionRepository $revisionRepository,
         IndexService $indexService,
         SearchService $searchService
     ) {
-        parent::__construct($logger, $client);
+        $this->logger = $logger;
+        parent::__construct();
 
         $this->dataService = $dataService;
         $this->formFactory = $formFactory;

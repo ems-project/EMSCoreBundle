@@ -72,8 +72,14 @@ final class IndexService
         $endpoint->setType($this->mapping->getTypeName($contentType));
         $endpoint->setIndex($this->contentTypeService->getIndex($contentType, $environment));
         $endpoint->setBody($objectArray);
-        $endpoint->setID($revision->getOuuid());
+        if ($revision->hasOuuid()) {
+            $endpoint->setID($revision->getOuuid());
+        }
         $result = $this->client->requestEndpoint($endpoint)->getData();
+
+        if (!$revision->hasOuuid()) {
+            $revision->setOuuid($result['_id']);
+        }
 
         return \intval($result['_shards']['successful'] ?? 0) > 0;
     }
@@ -92,5 +98,22 @@ final class IndexService
             $actions['add'] = $indexesToAdd;
         }
         $this->aliasService->updateAlias($aliasName, $actions);
+    }
+
+    public function delete(Revision $revision, ?Environment $environment = null): void
+    {
+        $contentType = $revision->getContentType();
+        if (null === $contentType) {
+            throw new \RuntimeException('Unexpected null content type');
+        }
+        if (null === $environment) {
+            $environment = $contentType->getEnvironment();
+        }
+        if (null === $environment) {
+            throw new \RuntimeException('Unexpected null environment');
+        }
+        $index = $this->contentTypeService->getIndex($contentType, $environment);
+        $path = $this->mapping->getTypePath($contentType->getName());
+        $this->client->deleteIds([$revision->getOuuid()], $index, $path);
     }
 }

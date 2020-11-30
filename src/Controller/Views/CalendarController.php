@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Controller\Views;
 
+use Elasticsearch\Client;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\Form\Search;
@@ -74,7 +75,7 @@ class CalendarController extends AppController
      *
      * @Route("/views/calendar/search/{view}.json", name="views.calendar.search", defaults={"_format"="json"}, methods={"GET"})
      */
-    public function searchAction(View $view, Request $request)
+    public function searchAction(View $view, Request $request, Client $client)
     {
         $search = new Search();
         $form = $this->createForm(SearchFormType::class, $search, [
@@ -140,7 +141,7 @@ class CalendarController extends AppController
                 'body' => $body,
         ];
 
-        $data = $this->getElasticsearch()->search($searchQuery);
+        $data = $client->search($searchQuery);
 
         return $this->render('@EMSCore/view/custom/calendar_search.json.twig', [
                 'success' => true,

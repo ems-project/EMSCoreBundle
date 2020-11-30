@@ -23,7 +23,6 @@ class ElasticsearchService
         return $this->elasticaService->getVersion();
     }
 
-
     /**
      * Compare the parameter specified version with a string.
      *

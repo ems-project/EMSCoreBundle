@@ -2,8 +2,8 @@
 
 namespace EMS\CoreBundle\Form\DataField;
 
-use Elasticsearch\Client;
 use EMS\CommonBundle\Json\Decoder;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
@@ -23,17 +23,17 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class JsonMenuLinkFieldType extends DataFieldType
 {
-    /** @var Client */
-    private $client;
     /** @var ContentTypeService */
     private $contentTypeService;
     /** @var Decoder */
     private $decoder;
+    /** @var ElasticaService */
+    private $elasticaService;
 
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, ContentTypeService $contentTypeService, Client $client, Decoder $decoder)
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, ContentTypeService $contentTypeService, ElasticaService $elasticaService, Decoder $decoder)
     {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
-        $this->client = $client;
+        $this->elasticaService = $elasticaService;
         $this->contentTypeService = $contentTypeService;
         $this->decoder = $decoder;
     }
@@ -63,7 +63,8 @@ class JsonMenuLinkFieldType extends DataFieldType
         $choices = [];
         if (false !== $options['json_menu_field'] && false !== $options['json_menu_content_type'] && false !== $options['query']) {
             $contentType = $this->contentTypeService->getByName($options['json_menu_content_type']);
-            $result = $this->client->search([
+
+            $search = $this->elasticaService->convertElasticsearchSearch([
                 'index' => $contentType->getEnvironment()->getAlias(),
                 'type' => $contentType->getName(),
                 'body' => $options['query'],
@@ -71,23 +72,29 @@ class JsonMenuLinkFieldType extends DataFieldType
 
             $alreadyAssignedUids = $this->collectAlreadyAssignedJsonMenuUids($fieldType, $options['raw_data'] ?? []);
 
-            foreach ($result['hits']['hits'] as $hit) {
-                $icon = $contentType->getIcon() ?? 'fa fa-file';
-                $label = $hit['_id'];
-                if (null !== $contentType->getLabelField() && ($hit['_source'][$contentType->getLabelField()] ?? false)) {
-                    $label = \htmlentities($hit['_source'][$contentType->getLabelField()]);
-                }
-                $label = \sprintf('<i class="%s"></i> %s <span class="sr-only">(%s)</span> /', $icon, $label, $hit['_id']);
+            $scroll = $this->elasticaService->scroll($search);
+            foreach ($scroll as $resultSet) {
+                foreach ($resultSet as $result) {
+                    if (false === $result) {
+                        continue;
+                    }
+                    $icon = $contentType->getIcon() ?? 'fa fa-file';
+                    $label = $result->getId();
+                    if (null !== $contentType->getLabelField() && ($result->getSource()[$contentType->getLabelField()] ?? false)) {
+                        $label = \htmlentities($result->getSource()[$contentType->getLabelField()]);
+                    }
+                    $label = \sprintf('<i class="%s"></i> %s <span class="sr-only">(%s)</span> /', $icon, $label, $result->getId());
 
-                if ($options['allow_link_to_root'] ?? false) {
-                    $choices[$label] = $hit['_id'];
-                }
+                    if ($options['allow_link_to_root'] ?? false) {
+                        $choices[$label] = $result->getId();
+                    }
 
-                $jsonMenu = $this->decoder->jsonMenuDecode($hit['_source'][$options['json_menu_field']] ?? '{}', '/');
-                foreach ($jsonMenu->getUids() as $uid) {
-                    if (!\in_array($uid, $alreadyAssignedUids)) {
-                        if (($jsonMenu->getItem($uid)['contentType'] ?? false) === $fieldType->getContentType()->getName()) {
-                            $choices[$label.$jsonMenu->getSlug($uid)] = $uid;
+                    $jsonMenu = $this->decoder->jsonMenuDecode($result->getSource()[$options['json_menu_field']] ?? '{}', '/');
+                    foreach ($jsonMenu->getUids() as $uid) {
+                        if (!\in_array($uid, $alreadyAssignedUids)) {
+                            if (($jsonMenu->getItem($uid)['contentType'] ?? false) === $fieldType->getContentType()->getName()) {
+                                $choices[$label.$jsonMenu->getSlug($uid)] = $uid;
+                            }
                         }
                     }
                 }
@@ -206,17 +213,16 @@ class JsonMenuLinkFieldType extends DataFieldType
 
     private function collectAlreadyAssignedJsonMenuUids(FieldType $fieldType, array $rawData)
     {
-        $result = $this->client->search([
-            'size' => 5000,
+        $search = $this->elasticaService->convertElasticsearchSearch([
+            'size' => 500,
             'index' => $fieldType->getContentType()->getEnvironment()->getAlias(),
             '_source' => $fieldType->getName(),
+            'type' => $fieldType->getContentType()->getName(),
             'body' => [
                 'query' => [
                     'bool' => [
                         'must' => [
                             [
-                                'term' => ['_contenttype' => $fieldType->getContentType()->getName()],
-                            ], [
                                 'exists' => ['field' => $fieldType->getName()],
                             ],
                         ],
@@ -226,8 +232,14 @@ class JsonMenuLinkFieldType extends DataFieldType
         ]);
 
         $uids = [];
-        foreach ($result['hits']['hits'] as $hit) {
-            $uids = \array_merge($uids, $hit['_source'][$fieldType->getName()] ?? []);
+        $scroll = $this->elasticaService->scroll($search);
+        foreach ($scroll as $resultSet) {
+            foreach ($resultSet as $result) {
+                if (false === $result) {
+                    continue;
+                }
+                $uids = \array_merge($uids, $result->getSource()[$fieldType->getName()] ?? []);
+            }
         }
 
         return \array_diff($uids, $rawData[$fieldType->getName()] ?? []);

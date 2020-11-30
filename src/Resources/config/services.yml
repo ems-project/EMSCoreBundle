@@ -535,7 +535,7 @@ services:
         arguments: ['@doctrine', '@kernel', '@logger', '@EMS\CoreBundle\Repository\JobRepository']
     ems.service.transformcontenttype:
         class: EMS\CoreBundle\Service\TransformContentTypeService
-        arguments: ['@logger', '@app.elasticsearch', '@ems.service.contenttype', '@ems.service.data', '@form.factory']
+        arguments: ['@logger', '@ems_common.service.elastica', '@ems.service.contenttype', '@ems.service.data', '@form.factory']
     ems.service.document:
         class: EMS\CoreBundle\Service\DocumentService
         arguments: ['@doctrine', '@ems.service.data', '@form.factory', '@ems.elasticsearch.bulker', '%ems_core.instance_id%']

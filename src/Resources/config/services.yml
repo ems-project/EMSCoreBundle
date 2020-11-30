@@ -298,7 +298,7 @@ services:
             - { name: form.type }
     ems.view.export:
         class: EMS\CoreBundle\Form\View\ExportViewType
-        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger']
+        arguments: ['@form.factory', '@twig', '@ems_common.elastica.client', '@logger']
         tags:
             - { name: ems.form.viewtype, alias: export }
             - { name: form.type }

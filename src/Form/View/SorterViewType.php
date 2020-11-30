@@ -2,13 +2,15 @@
 
 namespace EMS\CoreBundle\Form\View;
 
-use Elasticsearch\Client;
+use EMS\CommonBundle\Elasticsearch\Response\Response as EmsResponse;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\ContentTypeFieldPickerType;
 use EMS\CoreBundle\Form\Nature\ReorderType;
 use EMS\CoreBundle\Service\DataService;
+use EMS\CoreBundle\Service\Mapping;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -25,22 +27,27 @@ use Twig_Environment;
 
 class SorterViewType extends ViewType
 {
+    /** @var int */
+    const SEARCH_SIZE = 100;
     /** @var Session */
     protected $session;
     /** @var DataService */
     protected $dataService;
     /** @var Router */
     protected $router;
-    /** @var Client */
-    protected $client;
+    /** @var Mapping */
+    protected $mapping;
+    /** @var ElasticaService */
+    private $elasticaService;
 
-    public function __construct(FormFactory $formFactory, Twig_Environment $twig, Client $client, LoggerInterface $logger, Session $session, DataService $dataService, Router $router)
+    public function __construct(FormFactory $formFactory, Twig_Environment $twig, Mapping $mapping, ElasticaService $elasticaService, LoggerInterface $logger, Session $session, DataService $dataService, Router $router)
     {
         parent::__construct($formFactory, $twig, $logger);
-        $this->client = $client;
+        $this->mapping = $mapping;
         $this->session = $session;
         $this->dataService = $dataService;
         $this->router = $router;
+        $this->elasticaService = $elasticaService;
     }
 
     public function getLabel(): string
@@ -60,12 +67,7 @@ class SorterViewType extends ViewType
         /** @var View $view */
         $view = $options['view'];
 
-        $mapping = $this->client->indices()->getMapping([
-                'index' => $view->getContentType()->getEnvironment()->getAlias(),
-                'type' => $view->getContentType()->getName(),
-        ]);
-
-        $mapping = \array_values($mapping)[0]['mappings'][$view->getContentType()->getName()]['properties'];
+        $mapping = $this->mapping->getMapping([$view->getContentType()->getEnvironment()->getAlias()]);
 
         $builder
         ->add('body', CodeEditorType::class, [
@@ -125,23 +127,25 @@ class SorterViewType extends ViewType
                 'body' => $boby,
         ];
 
-        $searchQuery['size'] = 100;
+        $searchQuery['size'] = self::SEARCH_SIZE;
         if (isset($view->getOptions()['size'])) {
             $searchQuery['size'] = $view->getOptions()['size'];
         }
 
-        $result = $this->client->search($searchQuery);
+        $search = $this->elasticaService->convertElasticsearchSearch($searchQuery);
+        $resultSet = $this->elasticaService->search($search);
+        $response = EmsResponse::fromResultSet($resultSet);
 
-        if ($result['hits']['total'] > $searchQuery['size']) {
+        if ($response->getTotal() > self::SEARCH_SIZE) {
             $this->logger->warning('form.view.sorter.too_many_documents', [
-                'total' => $result['hits']['total'],
+                'total' => $response->getTotal(),
             ]);
         }
 
         $data = [];
 
         $form = $this->formFactory->create(ReorderType::class, $data, [
-                'result' => $result,
+            'result' => $resultSet->getResponse()->getData(),
         ]);
 
         $form->handleRequest($request);
@@ -176,7 +180,7 @@ class SorterViewType extends ViewType
 
         $response = new Response();
         $response->setContent($this->twig->render('@EMSCore/view/custom/'.$this->getBlockPrefix().'.html.twig', [
-                'result' => $result,
+                'result' => $resultSet->getResponse()->getData(),
                 'view' => $view,
                 'form' => $form->createView(),
                 'contentType' => $view->getContentType(),

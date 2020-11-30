@@ -298,13 +298,13 @@ services:
             - { name: form.type }
     ems.view.export:
         class: EMS\CoreBundle\Form\View\ExportViewType
-        arguments: ['@form.factory', '@twig', '@ems_common.elastica.client', '@logger']
+        arguments: ['@form.factory', '@twig', '@ems_common.service.elastica', '@logger']
         tags:
             - { name: ems.form.viewtype, alias: export }
             - { name: form.type }
     ems.view.sorter:
         class: EMS\CoreBundle\Form\View\SorterViewType
-        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger', '@session', '@ems.service.data', '@router']
+        arguments: ['@form.factory', '@twig', '@ems.service.mapping', '@ems_common.service.elastica', '@logger', '@session', '@ems.service.data', '@router']
         tags:
             - { name: ems.form.viewtype, alias: sorter }
             - { name: form.type }
@@ -316,7 +316,7 @@ services:
             - { name: form.type }
     ems.view.report:
         class: EMS\CoreBundle\Form\View\ReportViewType
-        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger']
+        arguments: ['@form.factory', '@twig', '@ems_common.service.elastica', '@logger']
         tags:
             - { name: ems.form.viewtype, alias: report }
             - { name: form.type }

@@ -78,11 +78,11 @@ class JsonMenuNestedEditorFieldType extends DataFieldType
     /**
      * @param bool $withPipeline
      *
-     * @return array<string, array{'type': 'string'}>
+     * @return array<string, array{type: string}>
      */
     public function generateMapping(FieldType $current, $withPipeline): array
     {
-        return [$current->getName() => ['type' => 'string']];
+        return [$current->getName() => ['type' => 'text']];
     }
 
     /**

@@ -286,7 +286,7 @@ services:
             - { name: form.type }
     ems.view.keywords:
         class: EMS\CoreBundle\Form\View\KeywordsViewType
-        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger']
+        arguments: ['@form.factory', '@twig', '@ems_common.service.elastica', '@logger']
         tags:
             - { name: ems.form.viewtype, alias: keywords }
             - { name: form.type }

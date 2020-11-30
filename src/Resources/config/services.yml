@@ -467,7 +467,7 @@ services:
             - '@logger'
     ems.service.environment: '@EMS\CoreBundle\Service\EnvironmentService'
     EMS\CoreBundle\Service\EnvironmentService:
-        arguments: ['@doctrine', '@session', '@ems.service.user', '@security.authorization_checker', '@service_container', '@logger', '@app.elasticsearch', '@ems_common.service.elastica', '%ems_core.single_type_index%']
+        arguments: ['@doctrine', '@session', '@ems.service.user', '@security.authorization_checker', '@service_container', '@logger', '@ems_common.service.elastica', '%ems_core.single_type_index%']
     ems.service.contenttype: '@EMS\CoreBundle\Service\ContentTypeService'
     EMS\CoreBundle\Service\ContentTypeService:
         arguments: ['@doctrine', '@logger', '@ems.service.mapping', '@ems_common.service.elastica', '@ems.service.environment', '@form.registry', '@translator', '%ems_core.instance_id%', '%ems_core.single_type_index%']

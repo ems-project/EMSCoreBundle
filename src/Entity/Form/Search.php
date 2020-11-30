@@ -280,13 +280,11 @@ class Search implements JsonSerializable
     }
 
     /**
-     * Get environments.
-     *
-     * @return array
+     * @return string[]
      */
-    public function getEnvironments()
+    public function getEnvironments(): array
     {
-        return $this->environments;
+        return $this->environments ?? [];
     }
 
     /**

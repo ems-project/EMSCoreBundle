@@ -88,6 +88,9 @@ class SearchService
                     throw new \RuntimeException('Unexpected operator');
             }
         }
+        if (0 === $boolQuery->count()) {
+            $boolQuery = null;
+        }
 
         $indexes = [];
         foreach ($search->getEnvironments() as $environmentName) {

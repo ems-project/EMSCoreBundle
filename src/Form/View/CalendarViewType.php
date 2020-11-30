@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Form\View;
 
-use Elasticsearch\Client;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Form\SearchFormType;
@@ -18,13 +17,9 @@ use Twig\Environment;
 
 class CalendarViewType extends ViewType
 {
-    /** @var Client */
-    private $client;
-
-    public function __construct(FormFactory $formFactory, Environment $twig, Client $client, LoggerInterface $logger)
+    public function __construct(FormFactory $formFactory, Environment $twig, LoggerInterface $logger)
     {
         parent::__construct($formFactory, $twig, $logger);
-        $this->client = $client;
     }
 
     public function getLabel(): string

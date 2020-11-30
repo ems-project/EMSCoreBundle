@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Form\View;
 
-use Elasticsearch\Client;
 use EMS\CoreBundle\Entity\Form\CriteriaUpdateConfig;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\View\Criteria\CriteriaFilterType;
@@ -20,16 +19,13 @@ use Twig_Environment;
 
 class CriteriaViewType extends ViewType
 {
-    /** @var Client */
-    private $client;
     /** @var Router */
     protected $router;
 
-    public function __construct(FormFactory $formFactory, Twig_Environment $twig, Client $client, LoggerInterface $logger, Router $router)
+    public function __construct(FormFactory $formFactory, Twig_Environment $twig, LoggerInterface $logger, Router $router)
     {
         parent::__construct($formFactory, $twig, $logger);
         $this->router = $router;
-        $this->client = $client;
     }
 
     public function getLabel(): string

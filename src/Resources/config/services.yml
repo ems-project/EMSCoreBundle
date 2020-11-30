@@ -292,7 +292,7 @@ services:
             - { name: form.type }
     ems.view.criteria:
         class: EMS\CoreBundle\Form\View\CriteriaViewType
-        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger', '@router']
+        arguments: ['@form.factory', '@twig', '@logger', '@router']
         tags:
             - { name: ems.form.viewtype, alias: criteria }
             - { name: form.type }
@@ -322,7 +322,7 @@ services:
             - { name: form.type }
     ems.view.calendar:
         class: EMS\CoreBundle\Form\View\CalendarViewType
-        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger']
+        arguments: ['@form.factory', '@twig', '@logger']
         tags:
             - { name: ems.form.viewtype, alias: calendar }
             - { name: form.type }

@@ -136,6 +136,7 @@ class Bulker
         } catch (NoNodesAvailableException $e) {
             if (!$retry) {
                 $this->logger->info('No nodes available retry');
+                \sleep(10);
 
                 return $this->send($force, true);
             } else {

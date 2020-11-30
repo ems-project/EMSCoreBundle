@@ -2,24 +2,28 @@
 
 namespace EMS\CoreBundle\Elasticsearch;
 
-use Elasticsearch\Client;
-use EMS\CommonBundle\Elasticsearch\Factory;
+use EMS\CoreBundle\Service\AliasService;
+use EMS\CoreBundle\Service\IndexService;
+use EMS\CoreBundle\Service\Mapping;
 use Psr\Log\LoggerInterface;
 
 class Indexer
 {
-    /** @var Factory */
-    private $factory;
-    /** @var array */
-    private $options;
     /** @var LoggerInterface */
     private $logger;
+    /** @var IndexService */
+    private $indexService;
+    /** @var Mapping */
+    private $mapping;
+    /** @var AliasService */
+    private $aliasService;
 
-    public function __construct(Factory $factory, array $options, LoggerInterface $logger)
+    public function __construct(IndexService $indexService, LoggerInterface $logger, Mapping $mapping, AliasService $aliasService)
     {
-        $this->factory = $factory;
-        $this->options = $options;
         $this->logger = $logger;
+        $this->indexService = $indexService;
+        $this->mapping = $mapping;
+        $this->aliasService = $aliasService;
     }
 
     public function setLogger(LoggerInterface $logger): Indexer
@@ -31,27 +35,25 @@ class Indexer
 
     public function exists(string $name): bool
     {
-        return $this->getClient()->indices()->exists(['index' => $name]);
+        return $this->indexService->hasIndex($name);
     }
 
     public function delete(string $name): void
     {
-        $params = ['index' => $name];
-        $this->getClient()->indices()->delete($params);
-        $this->logger->warning('Deleted index {index}', $params);
+        $this->indexService->deleteIndex($name);
+        $this->logger->warning('Deleted index {index}', ['index' => $name]);
     }
 
     public function create(string $name, array $settings, array $mappings): void
     {
         $body = \array_filter(['settings' => $settings, 'mappings' => $mappings]);
-
-        $this->getClient()->indices()->create(['index' => $name, 'body' => $body]);
+        $this->mapping->createIndex($name, $body);
         $this->logger->info('Created index {index}', ['index' => $name]);
     }
 
     public function update(string $name, array $mappings, string $type): void
     {
-        $this->getClient()->indices()->putMapping(['index' => $name, 'body' => $mappings, 'type' => $type]);
+        $this->mapping->updateMapping($name, $mappings, $type);
         $this->logger->info('Update index {index}\'s mapping', ['index' => $name]);
     }
 
@@ -61,39 +63,32 @@ class Indexer
      */
     public function atomicSwitch(string $alias, string $newIndex, string $removeRegex = null, bool $clean = false): void
     {
-        $indices = $this->getClient()->indices();
-        $actions = [['add' => ['index' => $newIndex, 'alias' => $alias]]];
-        $delete = [];
+        $indexesToAdd = [$newIndex];
+        $indexesToRemove = [];
+        $indexesToDelete = [];
 
-        if ($removeRegex && $indices->existsAlias(['name' => $alias])) {
-            $infoAlias = $indices->getAlias(['name' => $alias]);
-
-            foreach (\array_keys($infoAlias) as $oldIndex) {
-                if (!\preg_match($removeRegex, $oldIndex)) {
+        if (!empty($removeRegex)) {
+            foreach ($this->indexService->getIndexesByAlias($alias) as $index) {
+                if (!\preg_match($removeRegex, $index)) {
                     continue;
                 }
-
-                $actions[] = ['remove' => ['index' => $oldIndex, 'alias' => $alias]];
-
-                if ($clean) {
-                    $delete[] = $oldIndex;
-                }
+                $indexesToRemove[] = $index;
+                $indexesToDelete[] = $index;
             }
         }
 
-        $indices->updateAliases(['body' => ['actions' => $actions]]);
+        $this->aliasService->updateAlias($alias, ['add' => $indexesToAdd, 'remove' => $indexesToRemove]);
         $this->logger->info('Alias {alias} is now pointing to {index}', ['alias' => $alias, 'index' => $newIndex]);
-
-        \array_map([$this, 'delete'], $delete);
+        if (!$clean) {
+            return;
+        }
+        foreach ($indexesToDelete as $index) {
+            $this->indexService->deleteIndex($index);
+        }
     }
 
     public function getAliasesByIndex(string $indexName): array
     {
-        return $this->getClient()->indices()->getAlias(['index' => $indexName]);
-    }
-
-    private function getClient(): Client
-    {
-        return $this->factory->fromConfig($this->options);
+        return $this->indexService->getAliasesByIndex($indexName);
     }
 }

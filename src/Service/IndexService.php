@@ -4,6 +4,8 @@ namespace EMS\CoreBundle\Service;
 
 use Elastica\Client;
 use Elasticsearch\Endpoints\Index;
+use Elasticsearch\Endpoints\Indices\Alias\Get;
+use Elasticsearch\Endpoints\Indices\Exists;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 use Psr\Log\LoggerInterface;
@@ -115,5 +117,53 @@ final class IndexService
         $index = $this->contentTypeService->getIndex($contentType, $environment);
         $path = $this->mapping->getTypePath($contentType->getName());
         $this->client->deleteIds([$revision->getOuuid()], $index, $path);
+    }
+
+    public function hasIndex(string $name): bool
+    {
+        $endpoint = new Exists();
+        $endpoint->setIndex($name);
+        $result = $this->client->requestEndpoint($endpoint);
+
+        return $result->isOk();
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getIndexesByAlias(?string $alias): array
+    {
+        return \array_keys($this->getAliases($alias));
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getAliasesByIndex(?string $indexName): array
+    {
+        $aliases = [];
+        foreach ($this->getAliases($indexName) as $index) {
+            $aliases = \array_merge($aliases, \array_keys($index['aliases'] ?? []));
+        }
+
+        return $aliases;
+    }
+
+    /**
+     * @return array<string, array{aliases: array<string, array<mixed>> }>
+     */
+    private function getAliases(?string $indexName): array
+    {
+        $endpoint = new Get();
+        if (null !== $indexName) {
+            $endpoint->setIndex($indexName);
+        }
+        $result = $this->client->requestEndpoint($endpoint);
+        $data = $result->getData();
+        if (!\is_array($data)) {
+            return [];
+        }
+
+        return $data;
     }
 }

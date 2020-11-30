@@ -96,7 +96,7 @@ services:
             - { name: form.type }
     ems.fieldtype.dataLink:
         class: EMS\CoreBundle\Form\DataField\DataLinkFieldType
-        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@app.elasticsearch', '@event_dispatcher']
+        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@event_dispatcher']
         tags:
             - { name: ems.form.datafieldtype, alias: datalink }
             - { name: form.type }
@@ -334,7 +334,7 @@ services:
             - { name: form.type }
     ems.view.importer:
         class: EMS\CoreBundle\Form\View\ImporterViewType
-        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger', '@ems.service.file', '@ems.service.job', '@security.token_storage', '@router']
+        arguments: ['@form.factory', '@twig', '@logger', '@ems.service.file', '@ems.service.job', '@security.token_storage', '@router']
         tags:
             - { name: ems.form.viewtype, alias: importer }
             - { name: form.type }

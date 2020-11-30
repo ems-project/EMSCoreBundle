@@ -4,7 +4,6 @@ namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
-use Elasticsearch\Client;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Template;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
@@ -21,8 +20,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class CleanDeletedContentTypeCommand extends ContainerAwareCommand
 {
-    /** @var Client */
-    protected $client;
     /** @var Mapping */
     protected $mapping;
     /** @var Registry */
@@ -32,11 +29,10 @@ class CleanDeletedContentTypeCommand extends ContainerAwareCommand
     /** @var ContainerInterface */
     protected $container;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, Client $client, Mapping $mapping, ContainerInterface $container)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, Mapping $mapping, ContainerInterface $container)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
-        $this->client = $client;
         $this->mapping = $mapping;
         $this->container = $container;
         parent::__construct();

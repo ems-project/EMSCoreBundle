@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Form\View;
 
-use Elasticsearch\Client;
 use EMS\CoreBundle\Entity\View;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\AbstractType;
@@ -17,17 +16,14 @@ abstract class ViewType extends AbstractType
 {
     /** @var Environment */
     protected $twig;
-    /** @var Client */
-    protected $client;
     /** @var FormFactory */
     protected $formFactory;
     /** @var LoggerInterface */
     protected $logger;
 
-    public function __construct(FormFactory $formFactory, Environment $twig, Client $client, LoggerInterface $logger)
+    public function __construct(FormFactory $formFactory, Environment $twig, LoggerInterface $logger)
     {
         $this->twig = $twig;
-        $this->client = $client;
         $this->formFactory = $formFactory;
         $this->logger = $logger;
     }

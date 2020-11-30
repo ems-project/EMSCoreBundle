@@ -15,8 +15,6 @@ class DocumentImportContext
     private $shouldRawImport;
     /** @var bool */
     private $shouldIndexInDefaultEnv;
-    /** @var bool */
-    private $shouldSignData;
     /** @var Environment */
     private $environment;
     /** @var bool */
@@ -24,11 +22,10 @@ class DocumentImportContext
     /** @var bool */
     private $shouldForce;
 
-    public function __construct(ContentType $contentType, string $lockUser, bool $shouldRawImport, bool $signData, bool $shouldIndexInDefaultEnv, bool $shouldFinalize, bool $shouldForceImport)
+    public function __construct(ContentType $contentType, string $lockUser, bool $shouldRawImport, bool $shouldIndexInDefaultEnv, bool $shouldFinalize, bool $shouldForceImport)
     {
         $this->contentType = $contentType;
         $this->shouldIndexInDefaultEnv = $shouldIndexInDefaultEnv;
-        $this->shouldSignData = $signData;
         $this->lockUser = $lockUser;
         $this->shouldRawImport = $shouldRawImport;
         $this->shouldFinalize = $shouldFinalize;
@@ -54,11 +51,6 @@ class DocumentImportContext
     public function shouldIndexInDefaultEnv(): bool
     {
         return $this->shouldIndexInDefaultEnv;
-    }
-
-    public function shouldSignData(): bool
-    {
-        return $this->shouldSignData;
     }
 
     public function getEnvironment(): Environment

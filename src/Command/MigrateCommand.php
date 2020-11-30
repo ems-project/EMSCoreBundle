@@ -3,7 +3,7 @@
 namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Elasticsearch\Client;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
@@ -21,8 +21,8 @@ class MigrateCommand extends Command
 {
     protected static $defaultName = 'ems:contenttype:migrate';
 
-    /** @var Client */
-    protected $client;
+    /** @var ElasticaService */
+    private $elasticaService;
     /** @var Registry */
     protected $doctrine;
     /** @var DocumentService */
@@ -71,10 +71,10 @@ class MigrateCommand extends Command
     /** @var string */
     const ARGUMENT_ELASTICSEARCH_INDEX = 'elasticsearchIndex';
 
-    public function __construct(Registry $doctrine, Client $client, DocumentService $documentService)
+    public function __construct(Registry $doctrine, ElasticaService $elasticaService, DocumentService $documentService)
     {
         $this->doctrine = $doctrine;
-        $this->client = $client;
+        $this->elasticaService = $elasticaService;
         $this->documentService = $documentService;
 
         $em = $this->doctrine->getManager();
@@ -235,21 +235,26 @@ class MigrateCommand extends Command
     {
         $this->io->section(\sprintf('Start migration of %s', $this->contentTypeTo->getPluralName()));
 
-        $arrayElasticsearchIndex = $this->client->search([
-                'index' => $this->elasticsearchIndex,
-                'type' => $this->contentTypeNameFrom,
-                'size' => $this->scrollSize,
-                'scroll' => $this->scrollTimeout,
-                'body' => $this->searchQuery,
+        $search = $this->elasticaService->convertElasticsearchSearch([
+            'index' => $this->elasticsearchIndex,
+            'type' => $this->contentTypeNameFrom,
+            'size' => $this->scrollSize,
+            'body' => $this->searchQuery,
         ]);
 
-        $progress = $this->io->createProgressBar($arrayElasticsearchIndex['hits']['total']);
+        $scroll = $this->elasticaService->scroll($search, $this->scrollTimeout);
+        $total = $this->elasticaService->count($search);
+
+        $progress = $this->io->createProgressBar($total);
         $importerContext = $this->documentService->initDocumentImporterContext($this->contentTypeTo, 'SYSTEM_MIGRATE', $this->rawImport, $this->signData, $this->indexInDefaultEnv, $this->bulkSize, !$this->dontFinalize, $this->forceImport);
 
-        while (isset($arrayElasticsearchIndex['hits']['hits']) && \count($arrayElasticsearchIndex['hits']['hits']) > 0) {
-            foreach ($arrayElasticsearchIndex['hits']['hits'] as $value) {
+        foreach ($scroll as $resultSet) {
+            foreach ($resultSet as $result) {
+                if (false === $result) {
+                    continue;
+                }
                 try {
-                    $this->documentService->importDocument($importerContext, $value['_id'], $value['_source']);
+                    $this->documentService->importDocument($importerContext, $result->getId(), $result->getSource());
                 } catch (NotLockedException $e) {
                     $this->io->error($e);
                 } catch (CantBeFinalizedException $e) {
@@ -258,11 +263,6 @@ class MigrateCommand extends Command
                 $progress->advance();
             }
             $this->documentService->flushAndSend($importerContext);
-
-            $arrayElasticsearchIndex = $this->client->scroll([
-                'scroll_id' => $arrayElasticsearchIndex['_scroll_id'],
-                'scroll' => $this->scrollTimeout,
-            ]);
         }
         $progress->finish();
         $this->io->writeln('');

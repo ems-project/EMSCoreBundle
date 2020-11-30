@@ -4,18 +4,17 @@ namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
-use Elasticsearch\Client;
 use EMS\CoreBundle\Entity\ContentType;
-use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\NotificationRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
+use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\Mapping;
-use Monolog\Logger;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
@@ -24,13 +23,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DeleteCommand extends Command
 {
-    /** @var Client */
-    protected $client;
+    /** @var IndexService */
+    private $indexService;
     /** @var Mapping */
     protected $mapping;
     /** @var Registry */
     protected $doctrine;
-    /** @var Logger */
+    /** @var LoggerInterface */
     protected $logger;
     /** @var ContainerInterface */
     protected $container;
@@ -39,11 +38,11 @@ class DeleteCommand extends Command
     /** @var EnvironmentService */
     private $environmentService;
 
-    public function __construct(Registry $doctrine, Logger $logger, Client $client, Mapping $mapping, ContainerInterface $container, ContentTypeService $contentTypeService, EnvironmentService $environmentService)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, IndexService $indexService, Mapping $mapping, ContainerInterface $container, ContentTypeService $contentTypeService, EnvironmentService $environmentService)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
-        $this->client = $client;
+        $this->indexService = $indexService;
         $this->mapping = $mapping;
         $this->container = $container;
         $this->contentTypeService = $contentTypeService;
@@ -67,8 +66,6 @@ class DeleteCommand extends Command
     {
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
-        /** @var Client $client */
-        $client = $this->client;
         $name = $input->getArgument('name');
         if (!\is_string($name)) {
             throw new \RuntimeException('Unexpected content type name argument');
@@ -101,23 +98,13 @@ class DeleteCommand extends Command
             $progress = new ProgressBar($output, $total);
             $progress->start();
 
-            $environmentsIndex = [];
-            /** @var Environment $environment */
-            foreach ($this->environmentService->getManagedEnvironement() as $environment) {
-                $environmentsIndex[$environment->getName()] = $this->contentTypeService->getIndex($contentType, $environment);
-            }
-
             while ($revRepo->countByContentType($contentType) > 0) {
                 $revisions = $revRepo->findByContentType($contentType, null, 20);
                 /** @var Revision $revision */
                 foreach ($revisions as $revision) {
                     foreach ($revision->getEnvironments() as $environment) {
                         try {
-                            $client->delete([
-                                    'index' => $environmentsIndex[$environment->getName()],
-                                    'type' => $contentType->getName(),
-                                    'id' => $revision->getOuuid(),
-                            ]);
+                            $this->indexService->delete($revision, $environment);
                         } catch (\Throwable $e) {
                             //Deleting something that is not present shouldn't make problem.
                         }

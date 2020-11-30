@@ -2,13 +2,14 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
+use EMS\CommonBundle\Elasticsearch\Response\Response as EmsResponse;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Form\Nature\ReorderType;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
-use Exception;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,7 +23,7 @@ class NatureController extends AppController
      * @return RedirectResponse|Response
      * @Route("/content-type/nature/reorder/{contentType}", name="nature.reorder")
      */
-    public function reorderAction(ContentType $contentType, Request $request, ContentTypeService $contentTypeService)
+    public function reorderAction(ContentType $contentType, Request $request, ContentTypeService $contentTypeService, ElasticaService $elasticaService)
     {
         @\trigger_error(\sprintf('The "%s::reorderAction" controller is deprecated. Use a sort view instead.', NatureController::class), E_USER_DEPRECATED);
 
@@ -60,27 +61,34 @@ class NatureController extends AppController
             ]);
         }
 
-        $result = $this->getElasticsearch()->search([
+        $search = $elasticaService->convertElasticsearchSearch([
             'index' => $contentType->getEnvironment()->getAlias(),
             'type' => $contentType->getName(),
             'size' => 400,
             'body' => [
-                'sort' => $contentType->getOrderField(),
+                'sort' => [
+                    $contentType->getOrderField() => [
+                        'order' => 'asc',
+                        'missing' => '_last',
+                    ],
+                ],
             ],
         ]);
+        $resultSet = $elasticaService->search($search);
+        $response = EmsResponse::fromResultSet($resultSet);
 
-        if ($result['hits']['total'] > $this::MAX_ELEM) {
+        if ($response->getTotal() > $this::MAX_ELEM) {
             $this->getLogger()->error('log.nature.too_many_documents', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                 'order_field_name' => $contentType->getOrderField(),
-                'total' => $result['hits']['total'],
+                'total' => $response->getTotal(),
             ]);
         }
 
         $data = [];
 
         $form = $this->createForm(ReorderType::class, $data, [
-            'result' => $result,
+            'result' => $resultSet->getResponse()->getData(),
         ]);
 
         $form->handleRequest($request);
@@ -97,7 +105,7 @@ class NatureController extends AppController
                     $data[$contentType->getOrderField()] = $counter++;
                     $revision->setRawData($data);
                     $dataService->finalizeDraft($revision);
-                } catch (Exception $e) {
+                } catch (\Throwable $e) {
                     $this->getLogger()->warning('log.nature.issue_with_document', [
                         EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                         EmsFields::LOG_OUUID_FIELD => $itemKey,
@@ -119,7 +127,7 @@ class NatureController extends AppController
         return $this->render('@EMSCore/nature/reorder.html.twig', [
             'contentType' => $contentType,
             'form' => $form->createView(),
-            'result' => $result,
+            'result' => $resultSet->getResponse()->getData(),
         ]);
     }
 }

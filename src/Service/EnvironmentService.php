@@ -3,7 +3,6 @@
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Elasticsearch\Client;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Controller\AppController;
@@ -48,9 +47,6 @@ class EnvironmentService
     /** @var Logger */
     private $logger;
 
-    /** @var Client */
-    private $client;
-
     /** @var ElasticaService */
     private $elasticaService;
 
@@ -64,7 +60,6 @@ class EnvironmentService
         AuthorizationCheckerInterface $authorizationChecker,
         Container $container,
         Logger $logger,
-        Client $client,
         ElasticaService $elasticaService,
         bool $singleTypeIndex
     ) {
@@ -74,7 +69,6 @@ class EnvironmentService
         $this->authorizationChecker = $authorizationChecker;
         $this->container = $container;
         $this->logger = $logger;
-        $this->client = $client;
         $this->elasticaService = $elasticaService;
         $this->singleTypeIndex = $singleTypeIndex;
     }

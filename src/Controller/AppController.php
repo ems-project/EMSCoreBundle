@@ -2,16 +2,13 @@
 
 namespace EMS\CoreBundle\Controller;
 
-use Elasticsearch\Client;
 use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Service\AggregateOptionService;
 use EMS\CoreBundle\Service\AliasService;
-use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
-use EMS\CoreBundle\Service\ElasticsearchService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\HelperService;
 use EMS\CoreBundle\Service\NotificationService;
@@ -28,7 +25,6 @@ use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
-use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Twig_Environment;
 
@@ -60,26 +56,6 @@ class AppController extends Controller
     protected function getTranslator()
     {
         return $this->get('translator');
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return Client
-     */
-    protected function getElasticsearch()
-    {
-        return $this->get('app.elasticsearch');
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return ElasticsearchService
-     */
-    protected function getElasticsearchService()
-    {
-        return $this->get('ems.service.elasticsearch');
     }
 
     /**
@@ -140,16 +116,6 @@ class AppController extends Controller
     protected function getAuthorizationChecker()
     {
         return $this->get('security.authorization_checker');
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return EncoderFactoryInterface
-     */
-    protected function getSecurityEncoder()
-    {
-        return $this->get('security.encoder_factory');
     }
 
     /**
@@ -239,31 +205,6 @@ class AppController extends Controller
         return \date('_Ymd_His');
     }
 
-    protected function getGUID()
-    {
-        \mt_srand((float) \microtime() * 10000); //optional for php 4.2.0 and up.
-        $charid = \strtolower(\md5(\uniqid(\rand(), true)));
-        $hyphen = \chr(45); // "-"
-        $uuid =
-         \substr($charid, 0, 8).$hyphen
-        .\substr($charid, 8, 4).$hyphen
-        .\substr($charid, 12, 4).$hyphen
-        .\substr($charid, 16, 4).$hyphen
-        .\substr($charid, 20, 12);
-
-        return $uuid;
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return AssetExtractorService
-     */
-    public function getAssetExtractorService()
-    {
-        return $this->get('ems.service.asset_extractor');
-    }
-
     /**
      * @deprecated use dependency injection
      *
@@ -317,16 +258,6 @@ class AppController extends Controller
 
         $response = new Response();
         $response->setContent(\json_encode($body));
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;
-    }
-
-    protected function returnJson($success, $template = '@EMSCore/ajax/notification.json.twig')
-    {
-        $response = $this->render($template, [
-            'success' => $success,
-        ]);
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;

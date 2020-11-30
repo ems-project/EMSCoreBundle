@@ -4,7 +4,7 @@ namespace EMS\CoreBundle\Command;
 
 use EMS\CoreBundle\Entity\ManagedAlias;
 use EMS\CoreBundle\Service\AliasService;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -12,12 +12,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ManagedAliases extends ContainerAwareCommand
 {
-    /** @var Logger */
+    /** @var LoggerInterface */
     protected $logger;
     /** @var AliasService */
     protected $aliasService;
 
-    public function __construct(Logger $logger, AliasService $aliasService)
+    public function __construct(LoggerInterface $logger, AliasService $aliasService)
     {
         $this->logger = $logger;
         $this->aliasService = $aliasService;

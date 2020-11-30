@@ -2,79 +2,56 @@
 
 namespace EMS\CoreBundle\Service;
 
-use Elasticsearch\Client;
-use EMS\CoreBundle\Entity\Environment;
+use Elastica\Client as ElasticaClient;
+use Elasticsearch\Endpoints\Cat\Indices;
+use Elasticsearch\Endpoints\Indices\Alias\Get;
+use Elasticsearch\Endpoints\Indices\Aliases\Update;
+use EMS\CommonBundle\Search\Search;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\ManagedAlias;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\ManagedAliasRepository;
 
 class AliasService
 {
-    /**
-     * @var Client
-     */
-    private $client;
-
-    /**
-     * @var EnvironmentRepository
-     */
+    /** @var EnvironmentRepository */
     private $envRepo;
-
-    /**
-     * @var ManagedAliasRepository
-     */
+    /** @var ManagedAliasRepository */
     private $managedAliasRepo;
-
-    /**
-     * [name => [indexes, total, environment, managed]].
-     *
-     * @var array
-     */
+    /** @var array<string, array{total: int, indexes: array, environment: string, managed: bool}> */
     private $aliases = [];
-
-    /**
-     * [name => [[name => count]].
-     *
-     * @var array
-     */
+    /** @var array<array{name: string, count: int}> */
     private $orphanIndexes = [];
-
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $isBuild = false;
+    /** @var ElasticaClient */
+    private $elasticaClient;
+    /** @var ElasticaService */
+    private $elasticaService;
 
-    public function __construct(Client $client, EnvironmentRepository $environmentRepository, ManagedAliasRepository $managedAliasRepository)
+    public function __construct(ElasticaClient $elasticaClient, EnvironmentRepository $environmentRepository, ManagedAliasRepository $managedAliasRepository, ElasticaService $elasticaService)
     {
-        $this->client = $client;
         $this->envRepo = $environmentRepository;
         $this->managedAliasRepo = $managedAliasRepository;
+        $this->elasticaClient = $elasticaClient;
+        $this->elasticaService = $elasticaService;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasAlias($name)
+    public function hasAlias(string $name): bool
     {
         return isset($this->aliases[$name]);
     }
 
     /**
-     * @param string $name
-     *
-     * @return array
+     * @return array{total: int, indexes: array, environment: string, managed: bool}
      */
-    public function getAlias($name)
+    public function getAlias(string $name)
     {
         return $this->aliases[$name];
     }
 
     /**
-     * Get all aliases.
-     *
-     * @return array
+     * @return array<string, array{total: int, indexes: array, environment: string, managed: bool}>
      */
     public function getAliases()
     {
@@ -117,7 +94,7 @@ class AliasService
     /**
      * @return ManagedAlias[]
      */
-    public function getManagedAliases()
+    public function getManagedAliases(): array
     {
         $managedAliases = $this->managedAliasRepo->findAll();
 
@@ -141,7 +118,11 @@ class AliasService
     public function getAllIndexes()
     {
         $indexes = [];
-        $indices = $this->client->cat()->indices();
+        $endpoint = new Indices();
+        $endpoint->setParams([
+            'format' => 'JSON',
+        ]);
+        $indices = $this->elasticaClient->requestEndpoint($endpoint)->getData();
 
         foreach ($indices as $data) {
             $name = $data['index'];
@@ -222,50 +203,43 @@ class AliasService
     }
 
     /**
-     * @param string $alias
-     *
-     * @return void
+     * @param array<mixed> $actions
      */
-    public function updateAlias($alias, array $actions)
+    public function updateAlias(string $alias, array $actions): void
     {
         if (empty($actions)) {
             return;
         }
 
         $json = [];
-
         foreach ($actions as $type => $indexes) {
             foreach ($indexes as $index) {
                 $json[] = [$type => ['index' => $index, 'alias' => $alias]];
             }
         }
 
-        $this->client->indices()->updateAliases([
-            'body' => ['actions' => $json],
-        ]);
+        $endpoint = new Update();
+        $endpoint->setBody(['actions' => $json]);
+        $this->elasticaClient->requestEndpoint($endpoint);
     }
 
     /**
      * @param string $name
-     *
-     * @return bool
      */
-    public function removeAlias($name)
+    public function removeAlias($name): bool
     {
         if (!$this->hasAlias($name)) {
             return false;
         }
 
-        $actions = [];
+        $indexesToRemove = [];
         $alias = $this->getAlias($name);
 
         foreach ($alias['indexes'] as $index) {
-            $actions[] = ['remove' => ['index' => $index['name'], 'alias' => $name]];
+            $indexesToRemove[] = $index['name'];
         }
 
-        $this->client->indices()->updateAliases([
-            'body' => ['actions' => $actions],
-        ]);
+        $this->updateAlias($name, ['actions' => ['remove' => $indexesToRemove]]);
 
         return true;
     }
@@ -313,9 +287,9 @@ class AliasService
      */
     private function count($name)
     {
-        $result = $this->client->count(['index' => $name]);
+        $search = new Search([$name]);
 
-        return isset($result['count']) ? (int) $result['count'] : 0;
+        return $this->elasticaService->count($search);
     }
 
     /**
@@ -325,7 +299,8 @@ class AliasService
      */
     private function getData()
     {
-        $indexesAliases = $this->client->indices()->getAliases();
+        $endpoint = new Get();
+        $indexesAliases = $this->elasticaClient->requestEndpoint($endpoint)->getData();
 
         return \array_filter(
             $indexesAliases,

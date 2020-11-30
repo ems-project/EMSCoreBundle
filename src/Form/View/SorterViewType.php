@@ -31,10 +31,13 @@ class SorterViewType extends ViewType
     protected $dataService;
     /** @var Router */
     protected $router;
+    /** @var Client */
+    protected $client;
 
     public function __construct(FormFactory $formFactory, Twig_Environment $twig, Client $client, LoggerInterface $logger, Session $session, DataService $dataService, Router $router)
     {
-        parent::__construct($formFactory, $twig, $client, $logger);
+        parent::__construct($formFactory, $twig, $logger);
+        $this->client = $client;
         $this->session = $session;
         $this->dataService = $dataService;
         $this->router = $router;

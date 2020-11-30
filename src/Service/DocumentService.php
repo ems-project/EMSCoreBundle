@@ -50,7 +50,7 @@ class DocumentService
         }
         $this->entityManager = $manager;
         $this->entityManager->getConnection()->getConfiguration()->setSQLLogger(null);
-        $this->bulker->setEnableSha1(false);
+        $this->bulker->setSign($signData);
         $this->bulker->setSize($bulkSize);
 
         $repository = $this->entityManager->getRepository('EMSCoreBundle:Revision');
@@ -66,7 +66,7 @@ class DocumentService
         }
         $this->contentTypeRepository = $repository;
 
-        return new DocumentImportContext($contentType, $lockUser, $rawImport, $signData, $indexInDefaultEnv, $finalize, $force);
+        return new DocumentImportContext($contentType, $lockUser, $rawImport, $indexInDefaultEnv, $finalize, $force);
     }
 
     public function flushAndSend(DocumentImportContext $documentImportContext)
@@ -143,9 +143,9 @@ class DocumentService
             if ($newRevision->getContentType()->getHavePipelines()) {
                 $indexConfig['pipeline'] = $this->instanceId.$documentImportContext->getContentType()->getName();
             }
-            $body = $documentImportContext->shouldSignData() ? $this->dataService->sign($newRevision) : $newRevision->getRawData();
+            $body = $newRevision->getRawData();
 
-            $this->bulker->index($indexConfig, $body);
+            $this->bulker->index($documentImportContext->getContentType()->getName(), $ouuid, $documentImportContext->getEnvironment()->getAlias(), $body);
         }
 
         $newRevision->setDraft(!$documentImportContext->shouldFinalize());

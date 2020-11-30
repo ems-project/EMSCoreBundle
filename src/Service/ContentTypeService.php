@@ -4,7 +4,6 @@ namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\NoResultException;
-use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\BadRequest400Exception;
 use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
 use EMS\CommonBundle\Helper\EmsFields;
@@ -16,7 +15,6 @@ use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\SingleTypeIndex;
 use EMS\CoreBundle\Exception\ContentTypeAlreadyExistException;
-use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\FieldTypeRepository;
 use EMS\CoreBundle\Repository\SingleTypeIndexRepository;
@@ -34,44 +32,32 @@ class ContentTypeService
 
     /** @var Registry */
     protected $doctrine;
-
     /** @var LoggerInterface */
     protected $logger;
-
     /** @var Mapping */
     private $mappingService;
-
-    /** @var Client */
-    private $client;
     /** @var ElasticaService */
     private $elasticaService;
-
     /** @var EnvironmentService */
     private $environmentService;
-
     /** @var FormRegistryInterface */
     private $formRegistry;
-
     /** @var TranslatorInterface */
     private $translator;
-
+    /** @var string */
     private $instanceId;
-
     /** @var ContentType[] */
     protected $orderedContentTypes = [];
-
     /** @var ContentType[] */
     protected $contentTypeArrayByName = [];
-
     /** @var bool */
     protected $singleTypeIndex;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, Mapping $mappingService, Client $client, ElasticaService $elasticaService, EnvironmentService $environmentService, FormRegistryInterface $formRegistry, TranslatorInterface $translator, $instanceId, $singleTypeIndex)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, Mapping $mappingService, ElasticaService $elasticaService, EnvironmentService $environmentService, FormRegistryInterface $formRegistry, TranslatorInterface $translator, $instanceId, $singleTypeIndex)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
         $this->mappingService = $mappingService;
-        $this->client = $client;
         $this->elasticaService = $elasticaService;
         $this->environmentService = $environmentService;
         $this->formRegistry = $formRegistry;
@@ -189,28 +175,6 @@ class ContentTypeService
         ]);
     }
 
-    private function generatePipeline(FieldType $fieldType)
-    {
-        $pipelines = [];
-        /** @var FieldType $child */
-        foreach ($fieldType->getChildren() as $child) {
-            if (!$child->getDeleted()) {
-                /** @var DataFieldType $dataFieldType */
-                $dataFieldType = $this->formRegistry->getType($child->getType())->getInnerType();
-                $pipeline = $dataFieldType->generatePipeline($child);
-                if ($pipeline) {
-                    $pipelines[] = $pipeline;
-                }
-
-                if ($dataFieldType->isContainer()) {
-                    $pipelines = \array_merge($pipelines, $this->generatePipeline($child));
-                }
-            }
-        }
-
-        return $pipelines;
-    }
-
     public function setSingleTypeIndex(Environment $environment, ContentType $contentType, string $name)
     {
         $em = $this->doctrine->getManager();
@@ -242,40 +206,6 @@ class ContentTypeService
     public function updateMapping(ContentType $contentType, $envs = false)
     {
         $contentType->setHavePipelines(false);
-        try {
-            if (!empty($contentType->getFieldType())) {
-                $pipelines = $this->generatePipeline($contentType->getFieldType());
-                if (!empty($pipelines)) {
-                    $body = [
-                            'description' => 'Extract attachment information for the content type '.$contentType->getName(),
-                            'processors' => $pipelines,
-                    ];
-                    $this->client->ingest()->putPipeline([
-                            'id' => $this->instanceId.$contentType->getName(),
-                            'body' => $body,
-                    ]);
-                    $contentType->setHavePipelines(true);
-
-                    $this->logger->notice('service.contenttype.pipelines', [
-                        EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                    ]);
-                }
-            }
-        } catch (BadRequest400Exception $e) {
-            $contentType->setHavePipelines(false);
-            $message = \json_decode($e->getMessage(), true);
-            if (!empty($e->getPrevious())) {
-                $message = \json_decode($e->getPrevious()->getMessage(), true);
-            }
-
-            $this->logger->error('service.contenttype.pipelines_error', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                EmsFields::LOG_EXCEPTION_FIELD => $e,
-                'elasticsearch_error_type' => $message['error']['type'],
-                'elasticsearch_error_reason' => $message['error']['reason'],
-            ]);
-        }
 
         try {
             $body = $this->environmentService->getIndexAnalysisConfiguration();
@@ -289,19 +219,7 @@ class ContentTypeService
                         $this->setSingleTypeIndex($item, $contentType, $index);
                     }
 
-                    $indexExist = $this->client->indices()->exists(['index' => $index]);
-
-                    if (!$indexExist) {
-                        $this->client->indices()->create([
-                            'index' => $index,
-                            'body' => $body,
-                        ]);
-
-                        $this->client->indices()->putAlias([
-                            'index' => $index,
-                            'name' => $item->getAlias(),
-                        ]);
-                    }
+                    $this->mappingService->createIndex($index, $body, $item->getAlias());
 
                     if (isset($envs)) {
                         $envs .= ','.$index;
@@ -313,27 +231,11 @@ class ContentTypeService
                 });
             }
 
-            $body = $this->mappingService->generateMapping($contentType, $contentType->getHavePipelines());
             if (isset($envs)) {
-                $out = $this->client->indices()->putMapping([
-                    'index' => $envs,
-                    'type' => $this->mappingService->getTypePath($contentType->getName()),
-                    'body' => $body,
-                ]);
-
-                if (isset($out['acknowledged']) && $out['acknowledged']) {
+                if ($this->mappingService->putMapping($contentType, $envs)) {
                     $contentType->setDirty(false);
-                    $this->logger->notice('service.contenttype.mappings_updated', [
-                        EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                        'environments' => $envs,
-                    ]);
                 } else {
                     $contentType->setDirty(true);
-                    $this->logger->warning('service.contenttype.mappings_error', [
-                        EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                        'environments' => $envs,
-                        'elasticsearch_dump' => \print_r($out, true),
-                    ]);
                 }
             }
 

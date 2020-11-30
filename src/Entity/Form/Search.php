@@ -188,8 +188,12 @@ class Search implements JsonSerializable
         return $this;
     }
 
-    public function resetFilters(array $filters)
+    public function resetFilters(): Search
     {
+        $filters = [];
+        foreach ($this->filters as $filter) {
+            $filters[] = $filter;
+        }
         $this->filters = $filters;
 
         return $this;
@@ -363,5 +367,26 @@ class Search implements JsonSerializable
         $this->minimumShouldMatch = $minimumShouldMatch;
 
         return $this;
+    }
+
+    public function setSearchPattern(string $pattern, bool $liveSearch = false): void
+    {
+        $queryString = $pattern;
+        if ($liveSearch && !\strlen($pattern) > 0 && !\in_array(\substr($pattern, -1), [' ', '?', '*', '.', '/'])) {
+            $queryString .= '*';
+        }
+
+        $filters = [];
+        foreach ($this->getFilters() as &$filter) {
+            if (empty($filter->getPattern())) {
+                if (\in_array($filter->getOperator(), ['query_and', 'query_or'])) {
+                    $filter->setPattern($queryString);
+                } else {
+                    $filter->setPattern($pattern);
+                }
+            }
+            $filters[] = $filter;
+        }
+        $this->filters = $filters;
     }
 }

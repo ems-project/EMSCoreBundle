@@ -34,20 +34,25 @@ final class IndexService
     {
         $this->aliasService->build();
         foreach ($this->aliasService->getOrphanIndexes() as $index) {
-            try {
-                $this->client->getIndex($index['name'])->delete();
-                $this->logger->notice('log.index.delete_orphan_index', [
-                    'index_name' => $index['name'],
-                ]);
-            } catch (\RuntimeException $e) {
-                $this->logger->notice('log.index.index_not_found', [
-                    'index_name' => $index['name'],
-                ]);
-            }
+            $this->deleteIndex($index['name']);
         }
     }
 
-    public function indexRevision(Revision $revision, ?Environment $environment = null): void
+    public function deleteIndex(string $indexName): void
+    {
+        try {
+            $this->client->getIndex($indexName)->delete();
+            $this->logger->notice('log.index.delete_orphan_index', [
+                'index_name' => $indexName,
+            ]);
+        } catch (\RuntimeException $e) {
+            $this->logger->notice('log.index.index_not_found', [
+                'index_name' => $indexName,
+            ]);
+        }
+    }
+
+    public function indexRevision(Revision $revision, ?Environment $environment = null): bool
     {
         $contentType = $revision->getContentType();
         if (null === $contentType) {
@@ -60,11 +65,55 @@ final class IndexService
             throw new \RuntimeException('Unexpected null environment');
         }
 
+        $objectArray = $revision->getRawData();
+        $objectArray[Mapping::PUBLISHED_DATETIME_FIELD] = (new \DateTime())->format(\DateTime::ISO8601);
+
         $endpoint = new Index();
         $endpoint->setType($this->mapping->getTypeName($contentType));
         $endpoint->setIndex($this->contentTypeService->getIndex($contentType, $environment));
-        $endpoint->setBody($revision->getRawData());
-        $endpoint->setID($revision->getOuuid());
-        $this->client->requestEndpoint($endpoint);
+        $endpoint->setBody($objectArray);
+        if ($revision->hasOuuid()) {
+            $endpoint->setID($revision->getOuuid());
+        }
+        $result = $this->client->requestEndpoint($endpoint)->getData();
+
+        if (!$revision->hasOuuid()) {
+            $revision->setOuuid($result['_id']);
+        }
+
+        return \intval($result['_shards']['successful'] ?? 0) > 0;
+    }
+
+    /**
+     * @param string[] $indexesToAdd
+     * @param string[] $indexesToRemove
+     */
+    public function updateAlias(string $aliasName, array $indexesToRemove, array $indexesToAdd): void
+    {
+        $actions = [];
+        if (\count($indexesToRemove) > 0) {
+            $actions['remove'] = $indexesToRemove;
+        }
+        if (\count($indexesToAdd) > 0) {
+            $actions['add'] = $indexesToAdd;
+        }
+        $this->aliasService->updateAlias($aliasName, $actions);
+    }
+
+    public function delete(Revision $revision, ?Environment $environment = null): void
+    {
+        $contentType = $revision->getContentType();
+        if (null === $contentType) {
+            throw new \RuntimeException('Unexpected null content type');
+        }
+        if (null === $environment) {
+            $environment = $contentType->getEnvironment();
+        }
+        if (null === $environment) {
+            throw new \RuntimeException('Unexpected null environment');
+        }
+        $index = $this->contentTypeService->getIndex($contentType, $environment);
+        $path = $this->mapping->getTypePath($contentType->getName());
+        $this->client->deleteIds([$revision->getOuuid()], $index, $path);
     }
 }

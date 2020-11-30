@@ -2,12 +2,10 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use DateTime;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Dompdf\Dompdf;
-use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CommonBundle\Helper\EmsFields;
@@ -40,9 +38,9 @@ use EMS\CoreBundle\Repository\ViewRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\ElasticsearchService;
-use EMS\CoreBundle\Service\Mapping;
+use EMS\CoreBundle\Service\EnvironmentService;
+use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\SearchService;
-use Exception;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -58,7 +56,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraints\Regex;
-use Throwable;
 use Twig\Error\LoaderError;
 use Twig\Error\SyntaxError;
 use Twig_Error;
@@ -255,7 +252,7 @@ class DataController extends AppController
     /**
      * @Route("/data/view/{environmentName}/{type}/{ouuid}", name="data.view")
      */
-    public function viewDataAction(string $environmentName, string $type, string $ouuid, SearchService $searchService, ContentTypeService $contentTypeService, CoreBundle\Service\EnvironmentService $environmentService): Response
+    public function viewDataAction(string $environmentName, string $type, string $ouuid, SearchService $searchService, ContentTypeService $contentTypeService, EnvironmentService $environmentService): Response
     {
         $environment = $environmentService->getByName($environmentName);
         if (false === $environment) {
@@ -502,18 +499,22 @@ class DataController extends AppController
      * @throws DuplicateOuuidException
      * @Route("/data/duplicate/{environment}/{type}/{ouuid}", name="emsco_duplicate_revision", methods={"POST"})
      */
-    public function duplicateAction(string $environment, string $type, string $ouuid, DataService $dataService, LoggerInterface $logger)
+    public function duplicateAction(string $environment, string $type, string $ouuid, DataService $dataService, LoggerInterface $logger, ContentTypeService $contentTypeService, EnvironmentService $environmentService)
     {
-        $contentType = $this->getContentTypeService()->getByName($type);
-        if (!$contentType) {
-            throw new NotFoundHttpException('Content type '.$type.' not found');
+        $contentType = $contentTypeService->getByName($type);
+        if (false === $contentType) {
+            throw new NotFoundHttpException(\sprintf('Content type %s not found', $type));
+        }
+        $environmentObject = $environmentService->getByName($environment);
+        if (false === $environmentObject) {
+            throw new NotFoundHttpException(\sprintf('Environment %s not found', $environment));
         }
 
-        $dataRaw = $this->getElasticsearch()->get([
-            'index' => $this->getContentTypeService()->getIndex($contentType),
-            'id' => $ouuid,
-            'type' => $type,
-        ]);
+        try {
+            $dataRaw = $dataService->getRevisionByEnvironment($ouuid, $contentType, $environmentObject)->getRawData();
+        } catch (NoResultException $e) {
+            throw new NotFoundHttpException(\sprintf('Revision %s not found', $ouuid));
+        }
 
         if ($contentType->getAskForOuuid()) {
             $logger->warning('log.data.document.cant_duplicate_when_waiting_ouuid', [
@@ -528,7 +529,7 @@ class DataController extends AppController
             ]);
         }
 
-        $revision = $dataService->newDocument($contentType, null, $dataRaw['_source']);
+        $revision = $dataService->newDocument($contentType, null, $dataRaw);
 
         $logger->notice('log.data.document.duplicated', [
             EmsFields::LOG_OUUID_FIELD => $ouuid,
@@ -541,28 +542,26 @@ class DataController extends AppController
     }
 
     /**
-     * @param string $environment
-     * @param string $type
-     * @param string $ouuid
-     *
-     * @return RedirectResponse
-     *
      * @Route("/data/copy/{environment}/{type}/{ouuid}", name="revision.copy", methods={"GET"})
      */
-    public function copyAction($environment, $type, $ouuid, Request $request, LoggerInterface $logger)
+    public function copyAction(string $environment, string $type, string $ouuid, Request $request, LoggerInterface $logger, DataService $dataService, ContentTypeService $contentTypeService, EnvironmentService $environmentService): RedirectResponse
     {
-        $contentType = $this->getContentTypeService()->getByName($type);
+        $contentType = $contentTypeService->getByName($type);
         if (!$contentType) {
             throw new NotFoundHttpException('Content type '.$type.' not found');
         }
+        $environmentObject = $environmentService->getByName($environment);
+        if (false === $environmentObject) {
+            throw new NotFoundHttpException(\sprintf('Environment %s not found', $environment));
+        }
 
-        $dataRaw = $this->getElasticsearch()->get([
-            'index' => $this->getContentTypeService()->getIndex($contentType),
-            'id' => $ouuid,
-            'type' => $type,
-        ]);
+        try {
+            $dataRaw = $dataService->getRevisionByEnvironment($ouuid, $contentType, $environmentObject)->getRawData();
+        } catch (NoResultException $e) {
+            throw new NotFoundHttpException(\sprintf('Revision %s not found', $ouuid));
+        }
 
-        $request->getSession()->set('ems_clipboard', $dataRaw['_source']);
+        $request->getSession()->set('ems_clipboard', $dataRaw);
 
         $logger->notice('log.data.document.copy', [
             EmsFields::LOG_OUUID_FIELD => $ouuid,
@@ -590,7 +589,7 @@ class DataController extends AppController
      * @return RedirectResponse
      *
      * @throws Missing404Exception
-     * @throws Exception
+     * @throws \Exception
      * @throws NonUniqueResultException
      * @Route("/data/delete/{type}/{ouuid}", name="object.delete", methods={"POST"})
      */
@@ -645,7 +644,7 @@ class DataController extends AppController
      * @throws PrivilegeException
      * @Route("/data/draft/discard/{revisionId}", name="revision.discard", methods={"POST"})
      */
-    public function discardRevisionAction($revisionId, LoggerInterface $logger, DataService $dataService)
+    public function discardRevisionAction($revisionId, LoggerInterface $logger, DataService $dataService, IndexService $indexService)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -667,11 +666,11 @@ class DataController extends AppController
         $autoPublish = $revision->getContentType()->isAutoPublish();
         $ouuid = $revision->getOuuid();
 
-        $hasPreviousRevision = $this->discardDraft($revision);
+        $previousRevisionId = $this->discardDraft($revision);
 
-        if (null != $ouuid && $hasPreviousRevision) {
+        if (null != $ouuid && null !== $previousRevisionId && $previousRevisionId > 0) {
             if ($autoPublish) {
-                return $this->reindexRevisionAction($logger, $dataService, $hasPreviousRevision, true);
+                return $this->reindexRevisionAction($logger, $dataService, $indexService, $previousRevisionId, true);
             }
 
             return $this->redirectToRoute('data.revisions', [
@@ -727,14 +726,9 @@ class DataController extends AppController
     }
 
     /**
-     * @param int  $revisionId
-     * @param bool $defaultOnly
-     *
-     * @throws LockedException
-     * @throws PrivilegeException
      * @Route("/data/revision/re-index/{revisionId}", name="revision.reindex", methods={"POST"})
      */
-    public function reindexRevisionAction(LoggerInterface $logger, DataService $dataService, $revisionId, $defaultOnly = false): RedirectResponse
+    public function reindexRevisionAction(LoggerInterface $logger, DataService $dataService, IndexService $indexService, int $revisionId, bool $defaultOnly = false): RedirectResponse
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -750,28 +744,14 @@ class DataController extends AppController
 
         $dataService->lockRevision($revision);
 
-        /** @var Client $client */
-        $client = $this->getElasticsearch();
-
         try {
-            $this->getDataService()->reloadData($revision);
-
-            $objectArray = $this->getDataService()->sign($revision);
-
-            $objectArray[Mapping::PUBLISHED_DATETIME_FIELD] = (new DateTime())->format(DateTime::ISO8601);
+            $dataService->reloadData($revision);
+            $dataService->sign($revision);
 
             /** @var Environment $environment */
             foreach ($revision->getEnvironments() as $environment) {
                 if (!$defaultOnly || $environment === $revision->getContentType()->getEnvironment()) {
-                    $index = $this->getContentTypeService()->getIndex($revision->getContentType(), $environment);
-
-                    $result = $client->index([
-                        'id' => $revision->getOuuid(),
-                        'index' => $index,
-                        'type' => $revision->getContentType()->getName(),
-                        'body' => $objectArray,
-                    ]);
-                    if (isset($result['_shards']['successful']) && $result['_shards']['successful'] > 0) {
+                    if ($indexService->indexRevision($revision, $environment)) {
                         $logger->notice('log.data.revision.reindex', [
                             EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                             EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
@@ -792,7 +772,7 @@ class DataController extends AppController
             }
             $em->persist($revision);
             $em->flush();
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             $logger->warning('log.data.revision.reindex_failed', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
@@ -849,7 +829,7 @@ class DataController extends AppController
      *
      * @return Response
      *
-     * @throws Throwable
+     * @throws \Throwable
      * @throws LoaderError
      * @throws SyntaxError
      * @throws Twig_Error_Loader
@@ -999,7 +979,7 @@ class DataController extends AppController
      *
      * @return Response
      *
-     * @throws Throwable
+     * @throws \Throwable
      * @Route("/data/custom-view-job/{environmentName}/{templateId}/{ouuid}", name="ems_job_custom_view", methods={"POST"})
      */
     public function customViewJobAction($environmentName, $templateId, $ouuid, LoggerInterface $logger, ElasticsearchService $esService, Request $request)
@@ -1049,7 +1029,7 @@ class DataController extends AppController
                 'jobUrl' => $this->generateUrl('emsco_job_start', ['job' => $job->getId()], UrlGeneratorInterface::ABSOLUTE_PATH),
                 'url' => $this->generateUrl('emsco_job_status', ['job' => $job->getId()], UrlGeneratorInterface::ABSOLUTE_PATH),
             ]);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             $logger->error('log.data.job.initialize_failed', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $template->getContentType()->getName(),
                 EmsFields::LOG_OUUID_FIELD => $ouuid,
@@ -1058,7 +1038,12 @@ class DataController extends AppController
             ]);
         }
 
-        return $this->returnJson($success);
+        $response = $this->render('@EMSCore/ajax/notification.json.twig', [
+            'success' => $success,
+        ]);
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
     }
 
     /**
@@ -1068,7 +1053,7 @@ class DataController extends AppController
      *
      * @throws LockedException
      * @throws PrivilegeException
-     * @throws Exception
+     * @throws \Exception
      * @Route("/data/revision/{revisionId}.json", name="revision.ajaxupdate", defaults={"_format"="json"}, methods={"POST"})
      */
     public function ajaxUpdateAction($revisionId, Request $request, DataService $dataService, LoggerInterface $logger)
@@ -1129,7 +1114,7 @@ class DataController extends AppController
             $objectArray = $revision->getRawData();
             $revision->setRawData($backup);
 
-            $revision->setAutoSaveAt(new DateTime());
+            $revision->setAutoSaveAt(new \DateTime());
             $revision->setAutoSaveBy($this->getUser()->getUsername());
 
             $em->persist($revision);
@@ -1195,7 +1180,7 @@ class DataController extends AppController
                     'revisionId' => $revision->getId(),
                 ]);
             }
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             $logger->error('log.data.revision.can_finalized_error', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
@@ -1260,7 +1245,7 @@ class DataController extends AppController
             return $this->redirectToRoute('revision.edit', [
                 'revisionId' => $revision->getId(),
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $logger->error('log.data.revision.init_document_from_array', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
@@ -1333,7 +1318,7 @@ class DataController extends AppController
      * @return RedirectResponse
      *
      * @throws ElasticmsException
-     * @throws Exception
+     * @throws \Exception
      * @Route("/data/revisions/revert/{id}", name="revision.revert", methods={"POST"})
      */
     public function revertRevisionAction(Revision $revision, DataService $dataService, LoggerInterface $logger)

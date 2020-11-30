@@ -19,11 +19,14 @@ class GalleryViewType extends ViewType
 {
     /** @var SearchService */
     private $searchService;
+    /** @var Client */
+    private $client;
 
     public function __construct(FormFactory $formFactory, Twig_Environment $twig, Client $client, LoggerInterface $logger, SearchService $searchService)
     {
-        parent::__construct($formFactory, $twig, $client, $logger);
+        parent::__construct($formFactory, $twig, $logger);
         $this->searchService = $searchService;
+        $this->client = $client;
     }
 
     public function getLabel(): string

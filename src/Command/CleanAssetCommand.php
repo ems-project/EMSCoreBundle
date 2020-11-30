@@ -4,7 +4,6 @@ namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
-use Elasticsearch\Client;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\UploadedAssetRepository;
 use EMS\CoreBundle\Service\FileService;
@@ -17,15 +16,17 @@ class CleanAssetCommand extends EmsCommand
 {
     /** @var Registry */
     protected $doctrine;
-
     /** @var FileService */
     protected $fileService;
+    /** @var LoggerInterface */
+    protected $logger;
 
-    public function __construct(LoggerInterface $logger, Client $client, Registry $doctrine, FileService $fileService)
+    public function __construct(LoggerInterface $logger, Registry $doctrine, FileService $fileService)
     {
         $this->doctrine = $doctrine;
         $this->fileService = $fileService;
-        parent::__construct($logger, $client);
+        $this->logger = $logger;
+        parent::__construct();
     }
 
     protected function configure(): void

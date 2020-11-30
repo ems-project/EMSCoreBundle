@@ -37,7 +37,6 @@ use EMS\CoreBundle\Repository\TemplateRepository;
 use EMS\CoreBundle\Repository\ViewRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
-use EMS\CoreBundle\Service\ElasticsearchService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\SearchService;
@@ -838,7 +837,7 @@ class DataController extends AppController
      * @Route("/data/custom-view/{environmentName}/{templateId}/{ouuid}/{_download}", defaults={"_download"=false, "public"=false}, name="data.customview")
      * @Route("/data/template/{environmentName}/{templateId}/{ouuid}/{_download}", defaults={"_download"=false, "public"=false}, name="ems_data_custom_template_protected")
      */
-    public function customViewAction($environmentName, $templateId, $ouuid, $_download, $public, LoggerInterface $logger, TranslatorInterface $translator, ElasticsearchService $elasticsearchService)
+    public function customViewAction($environmentName, $templateId, $ouuid, $_download, $public, LoggerInterface $logger, TranslatorInterface $translator, SearchService $searchService)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -867,7 +866,7 @@ class DataController extends AppController
         /** @var Environment $environment */
         $environment = $environment[0];
 
-        $document = $elasticsearchService->get($environment, $template->getContentType(), $ouuid);
+        $document = $searchService->get($environment, $template->getContentType(), $ouuid);
 
         $twig = $this->getTwig();
 
@@ -982,7 +981,7 @@ class DataController extends AppController
      * @throws \Throwable
      * @Route("/data/custom-view-job/{environmentName}/{templateId}/{ouuid}", name="ems_job_custom_view", methods={"POST"})
      */
-    public function customViewJobAction($environmentName, $templateId, $ouuid, LoggerInterface $logger, ElasticsearchService $esService, Request $request)
+    public function customViewJobAction($environmentName, $templateId, $ouuid, LoggerInterface $logger, SearchService $searchService, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         /** @var Template|null $template * */
@@ -994,7 +993,7 @@ class DataController extends AppController
             throw new NotFoundHttpException();
         }
 
-        $document = $esService->get($env, $template->getContentType(), $ouuid);
+        $document = $searchService->get($env, $template->getContentType(), $ouuid);
 
         $success = false;
         try {

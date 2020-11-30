@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service\Revision\Copy;
 
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Service\EnvironmentService;
 
@@ -11,16 +12,19 @@ final class CopyContextFactory
 {
     /** @var EnvironmentService */
     private $environmentService;
+    /** @var ElasticaService */
+    private $elasticaService;
 
-    public function __construct(EnvironmentService $environmentService)
+    public function __construct(EnvironmentService $environmentService, ElasticaService $elasticaService)
     {
         $this->environmentService = $environmentService;
+        $this->elasticaService = $elasticaService;
     }
 
     public function fromJSON(string $environmentName, string $searchJSON, string $mergeJSON = ''): CopyContext
     {
-        $environment = $this->getEnvironment($environmentName);
-        $copyRequest = new CopyContext($environment, $this->jsonDecode($searchJSON));
+        $search = $this->elasticaService->convertElasticsearchBody([$this->getEnvironment($environmentName)->getName()], [], $this->jsonDecode($searchJSON));
+        $copyRequest = new CopyContext($search);
 
         if ('' !== $mergeJSON) {
             $copyRequest->setMerge($this->jsonDecode($mergeJSON));

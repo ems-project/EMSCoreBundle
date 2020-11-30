@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command;
 
+use Elastica\Scroll;
 use EMS\CommonBundle\Command\CommandInterface;
-use EMS\CommonBundle\Elasticsearch\Document\DocumentCollectionInterface;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Service\ElasticsearchService;
 use EMS\CoreBundle\Service\Revision\Copy\CopyContext;
@@ -26,6 +27,8 @@ final class RevisionCopyCommand extends Command implements CommandInterface
     private $copyService;
     /** @var ElasticsearchService */
     private $elasticsearchService;
+    /** @var ElasticaService */
+    private $elasticaService;
     /** @var SymfonyStyle */
     private $io;
     /** @var Revision[] */
@@ -41,12 +44,14 @@ final class RevisionCopyCommand extends Command implements CommandInterface
     public function __construct(
         CopyContextFactory $copyRequestFactory,
         CopyService $copyService,
-        ElasticsearchService $elasticsearchService
+        ElasticsearchService $elasticsearchService,
+        ElasticaService $elasticaService
     ) {
         parent::__construct();
         $this->copyContextFactory = $copyRequestFactory;
         $this->copyService = $copyService;
         $this->elasticsearchService = $elasticsearchService;
+        $this->elasticaService = $elasticaService;
     }
 
     protected function configure(): void
@@ -105,20 +110,16 @@ final class RevisionCopyCommand extends Command implements CommandInterface
             $jsonMerge
         );
 
-        $request = $copyContext->makeRequest();
+        $search = $copyContext->getSearch();
         $size = \intval($input->getOption(self::OPTION_BULK_SIZE));
         if (0 === $size) {
             throw new \RuntimeException('Unexpected bulk size argument');
         }
-        $request->setSize($size);
-
-        foreach ($this->elasticsearchService->scroll($request) as $i => $response) {
-            if (0 === $i) {
-                $this->io->note(\sprintf('Found %s documents', $response->getTotal()));
-            }
-
-            $this->copy($copyContext, $response->getDocumentCollection());
-        }
+        $search->setSize($size);
+        $scroll = $this->elasticaService->scroll($search);
+        $total = $this->elasticaService->count($search);
+        $this->io->note(\sprintf('Found %d documents', $total));
+        $this->copy($copyContext, $scroll, $total);
 
         $countCopies = \count($this->copies);
         $this->io->newLine();
@@ -127,13 +128,18 @@ final class RevisionCopyCommand extends Command implements CommandInterface
         return $countCopies;
     }
 
-    private function copy(CopyContext $copyContext, DocumentCollectionInterface $documents): void
+    private function copy(CopyContext $copyContext, Scroll $scroll, int $total): void
     {
-        $progressBar = $this->io->createProgressBar($documents->count());
+        $progressBar = $this->io->createProgressBar($total);
 
-        foreach ($this->copyService->copyFromDocuments($copyContext, $documents) as $copiedRevision) {
-            $this->copies[] = $copiedRevision;
-            $progressBar->advance();
+        foreach ($scroll as $resultSet) {
+            foreach ($resultSet as $result) {
+                if (false === $result) {
+                    continue;
+                }
+                $this->copies[] = $this->copyService->copyFromResult($copyContext, $result);
+                $progressBar->advance();
+            }
         }
 
         $progressBar->finish();

@@ -2,90 +2,27 @@
 
 namespace EMS\CoreBundle\Service;
 
-use Elasticsearch\Client;
-use EMS\CommonBundle\Common\Document;
-use EMS\CommonBundle\Elasticsearch\Exception\NotSingleResultException;
-use EMS\CommonBundle\Elasticsearch\Request\RequestInterface;
-use EMS\CommonBundle\Elasticsearch\Response\Response;
-use EMS\CommonBundle\Elasticsearch\Response\ResponseInterface;
-use EMS\CommonBundle\Helper\EmsFields;
-use EMS\CoreBundle\Entity\ContentType;
-use EMS\CoreBundle\Entity\Environment;
+use EMS\CommonBundle\Service\ElasticaService;
 use Psr\Log\LoggerInterface;
 
 class ElasticsearchService
 {
-    /** @var ?string */
-    private $cachedVersion;
-
     /** @var LoggerInterface */
     private $logger;
+    /** @var ElasticaService */
+    private $elasticaService;
 
-    /** @var Client */
-    private $client;
-
-    public function __construct(Client $client, LoggerInterface $logger)
+    public function __construct(LoggerInterface $logger, ElasticaService $elasticaService)
     {
-        $this->client = $client;
         $this->logger = $logger;
-        $this->cachedVersion = null;
+        $this->elasticaService = $elasticaService;
     }
 
-    /**
-     * Returns the parameter specified version.
-     *
-     * @return string
-     */
-    public function getVersion()
+    public function getVersion(): string
     {
-        if (null === $this->cachedVersion) {
-            $this->cachedVersion = $this->client->info()['version']['number'];
-        }
-
-        return $this->cachedVersion;
+        return $this->elasticaService->getVersion();
     }
 
-    public function get(Environment $environment, ContentType $contentType, $ouuid): Document
-    {
-        $result = $this->client->search([
-            'index' => $environment->getAlias(),
-            'body' => [
-                'query' => [
-                    'bool' => [
-                        'must' => [['term' => ['_id' => $ouuid]]],
-                        'minimum_should_match' => 1,
-                        'should' => [
-                            ['term' => ['_type' => $contentType->getName()]],
-                            ['term' => ['_contenttype' => $contentType->getName()]],
-                        ],
-                    ],
-                ],
-                'size' => 1,
-            ],
-        ]);
-
-        if (0 === $result['hits']['total']) {
-            $this->logger->error('log.elasticsearch.too_few_document_result', [
-                'total' => $result['hits']['total'],
-                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                EmsFields::LOG_OUUID_FIELD => $ouuid,
-                EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-            ]);
-            throw new NotSingleResultException(0);
-        }
-
-        if (1 !== $result['hits']['total']) {
-            $this->logger->error('log.elasticsearch.too_many_document_result', [
-                'total' => $result['hits']['total'],
-                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                EmsFields::LOG_OUUID_FIELD => $ouuid,
-                EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-            ]);
-            throw new NotSingleResultException($result['hits']['total']);
-        }
-
-        return new Document($contentType->getName(), $ouuid, $result['hits']['hits'][0]['_source']);
-    }
 
     /**
      * Compare the parameter specified version with a string.
@@ -249,22 +186,5 @@ class ElasticsearchService
     public function withAllMapping()
     {
         return \version_compare($this->getVersion(), '5.6') < 0;
-    }
-
-    /**
-     * @return iterable|ResponseInterface[]
-     */
-    public function scroll(RequestInterface $request): iterable
-    {
-        $scrollResponse = Response::fromArray($this->client->search($request->toArray()));
-
-        while ($scrollResponse->hasDocuments()) {
-            yield $scrollResponse;
-
-            $scrollResponse = Response::fromArray($this->client->scroll([
-                'scroll_id' => $scrollResponse->getScrollId(),
-                'scroll' => $request->getScroll(),
-            ]));
-        }
     }
 }

@@ -7,7 +7,6 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
-use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
 use EMS\CommonBundle\Helper\EmsFields;
@@ -444,7 +443,7 @@ class EnvironmentController extends AppController
      * @throws OptimisticLockException
      * @Route("/environment/add", name="environment.add")
      */
-    public function addAction(Request $request, Client $client)
+    public function addAction(Request $request, Mapping $mapping, IndexService $indexService)
     {
         $environment = new Environment();
 
@@ -474,8 +473,8 @@ class EnvironmentController extends AppController
                 /** @var EntityManager $em */
                 $em = $this->getDoctrine()->getManager();
 
-                $environmetRepository = $em->getRepository('EMSCoreBundle:Environment');
-                $anotherObject = $environmetRepository->findBy([
+                $environmentRepository = $em->getRepository('EMSCoreBundle:Environment');
+                $anotherObject = $environmentRepository->findBy([
                         'name' => $environment->getName(),
                 ]);
 
@@ -490,19 +489,13 @@ class EnvironmentController extends AppController
                     $em->flush();
 
                     $indexName = $environment->getAlias().AppController::getFormatedTimestamp();
-                    $client->indices()->create([
-                            'index' => $indexName,
-                            'body' => $this->getEnvironmentService()->getIndexAnalysisConfiguration(),
-                    ]);
+                    $mapping->createIndex($indexName, $this->getEnvironmentService()->getIndexAnalysisConfiguration());
 
                     foreach ($this->getContentTypeService()->getAll() as $contentType) {
                         $this->getContentTypeService()->updateMapping($contentType, $indexName);
                     }
 
-                    $client->indices()->putAlias([
-                        'index' => $indexName,
-                        'name' => $environment->getAlias(),
-                    ]);
+                    $indexService->updateAlias($environment->getAlias(), [], [$indexName]);
 
                     $this->getLogger()->notice('log.environment.created', [
                         EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),

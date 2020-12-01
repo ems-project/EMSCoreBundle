@@ -310,7 +310,7 @@ services:
             - { name: form.type }
     ems.view.hierarchical:
         class: EMS\CoreBundle\Form\View\HierarchicalViewType
-        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger', '@session', '@ems.service.data', '@router', '@ems.service.contenttype']
+        arguments: ['@form.factory', '@twig', '@ems.service.search', '@ems.service.mapping', '@logger', '@session', '@ems.service.data', '@router', '@ems.service.contenttype']
         tags:
             - { name: ems.form.viewtype, alias: hierarchical }
             - { name: form.type }

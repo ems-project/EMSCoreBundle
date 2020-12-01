@@ -328,7 +328,7 @@ services:
             - { name: form.type }
     ems.view.gallery:
         class: EMS\CoreBundle\Form\View\GalleryViewType
-        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger', '@ems.service.search']
+        arguments: ['@form.factory', '@twig', '@ems_common.service.elastica', '@logger', '@ems.service.search']
         tags:
             - { name: ems.form.viewtype, alias: gallery }
             - { name: form.type }

@@ -11,8 +11,8 @@ use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
 use EMS\CommonBundle\Helper\EmsFields;
-use EMS\CoreBundle;
 use EMS\CoreBundle\Controller\AppController;
+use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\RebuildIndex;
@@ -26,8 +26,10 @@ use EMS\CoreBundle\Form\Form\EditEnvironmentType;
 use EMS\CoreBundle\Form\Form\RebuildIndexType;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
+use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\JobService;
+use EMS\CoreBundle\Service\SearchService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -49,14 +51,11 @@ class EnvironmentController extends AppController
      * @Route("/publisher/align", name="environment.align")
      * @Security("has_role('ROLE_PUBLISHER')")
      */
-    public function alignAction(Request $request, Client $client)
+    public function alignAction(Request $request, SearchService $searchService, EnvironmentService $environmentService, ContentTypeService $contentTypeService)
     {
         $data = [];
         $env = [];
         $withEnvi = [];
-
-        /** @var EnvironmentService $environmentService */
-        $environmentService = $this->getEnvironmentService();
 
         $form = $this->createForm(CompareEnvironmentFormType::class, $data, [
         ]);
@@ -201,7 +200,6 @@ class EnvironmentController extends AppController
 
             $total = $repository->countDifferencesBetweenEnvironment($env->getId(), $withEnvi->getId(), $contentTypes);
             if ($total) {
-                $contentTypeService = $this->getContentTypeService();
                 $lastPage = \ceil($total / $paging_size);
                 if ($page > $lastPage) {
                     $page = $lastPage;
@@ -228,21 +226,20 @@ class EnvironmentController extends AppController
                         $results[$index]['revisionEnvironment'] = $repository->findOneById($maxrevid[1]);
                         $results[$index]['revisionWithEnvironment'] = $repository->findOneById($minrevid[1]);
                     }
+
+                    $contentType = $results[$index]['contentType'];
+                    if (false === $contentType) {
+                        throw new \RuntimeException(\sprintf('Content type %s not found', $results[$index]['contentType']));
+                    }
                     try {
-                        $results[$index]['objectEnvironment'] = $client->get([
-                                        'id' => $results[$index]['ouuid'],
-                                        'index' => $this->getContentTypeService()->getIndex($results[$index]['contentType'], $env),
-                                        'type' => $results[$index]['content_type_name'],
-                                ]);
+                        $document = $searchService->getDocument($contentType, $results[$index]['ouuid'], $env ? $env : null);
+                        $results[$index]['objectEnvironment'] = $document->getRaw();
                     } catch (Missing404Exception $e) {
                         $results[$index]['objectEnvironment'] = null; //This revision doesn't exist in this environment, but it's ok.
                     }
                     try {
-                        $results[$index]['objectWithEnvironment'] = $client->get([
-                                'id' => $results[$index]['ouuid'],
-                                'index' => $this->getContentTypeService()->getIndex($results[$index]['contentType'], $withEnvi),
-                                'type' => $results[$index]['content_type_name'],
-                        ]);
+                        $document = $searchService->getDocument($contentType, $results[$index]['ouuid'], $withEnvi ? $withEnvi : null);
+                        $results[$index]['objectWithEnvironment'] = $document->getRaw();
                     } catch (Missing404Exception $e) {
                         $results[$index]['objectWithEnvironment'] = null; //This revision doesn't exist in this environment, but it's ok.
                     }
@@ -266,22 +263,22 @@ class EnvironmentController extends AppController
         }
 
         return $this->render('@EMSCore/environment/align.html.twig', [
-                'form' => $form->createView(),
-                 'results' => $results,
-                'lastPage' => $lastPage,
-                'paginationPath' => 'environment.align',
-                'page' => $page,
-                'paging_size' => $paging_size,
-                'total' => $total,
-                'currentFilters' => $request->query,
-                'fromEnv' => $env,
-                'withEnv' => $withEnvi,
-                'environment' => $environment,
-                'withEnvironment' => $withEnvironment,
-                'environments' => $environmentService->getAll(),
-                 'orderField' => $orderField,
-                 'orderDirection' => $orderDirection,
-                'contentTypes' => $this->getContentTypeService()->getAll(),
+            'form' => $form->createView(),
+            'results' => $results,
+            'lastPage' => $lastPage,
+            'paginationPath' => 'environment.align',
+            'page' => $page,
+            'paging_size' => $paging_size,
+            'total' => $total,
+            'currentFilters' => $request->query,
+            'fromEnv' => $env,
+            'withEnv' => $withEnvi,
+            'environment' => $environment,
+            'withEnvironment' => $withEnvironment,
+            'environments' => $environmentService->getAll(),
+            'orderField' => $orderField,
+            'orderDirection' => $orderDirection,
+            'contentTypes' => $contentTypeService->getAll(),
          ]);
     }
 
@@ -704,7 +701,7 @@ class EnvironmentController extends AppController
                 ],
                 'label' => 'controller.environment.index.reorder_submit_button',
                 'icon' => 'fa fa-reorder',
-                'translation_domain' => CoreBundle\EMSCoreBundle::TRANS_DOMAIN,
+                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
             ]);
 
             $names = [];

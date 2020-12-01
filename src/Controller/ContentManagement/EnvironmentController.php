@@ -28,6 +28,7 @@ use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
+use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\SearchService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -294,14 +295,10 @@ class EnvironmentController extends AppController
      * @throws OptimisticLockException
      * @Route("/environment/attach/{name}", name="environment.attach", methods={"POST"})
      */
-    public function attachAction($name, Client $client)
+    public function attachAction($name, IndexService $indexService)
     {
         try {
-            $indexes = $client->indices()->get([
-                    'index' => $name,
-            ]);
-
-            if (0 != \strcmp($name, \array_keys($indexes)[0])) {
+            if ($indexService->hasIndex($name)) {
                 /** @var EntityManager $em */
                 $em = $this->getDoctrine()->getManager();
 

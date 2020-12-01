@@ -30,6 +30,7 @@ use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\JobService;
+use EMS\CoreBundle\Service\Mapping;
 use EMS\CoreBundle\Service\SearchService;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -573,7 +574,7 @@ class EnvironmentController extends AppController
      *
      * @Route("/environment/{id}", name="environment.view")
      */
-    public function viewAction(int $id, Client $client)
+    public function viewAction(int $id, Mapping $mapping)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -589,9 +590,7 @@ class EnvironmentController extends AppController
         }
 
         try {
-            $info = $client->indices()->getMapping([
-                    'index' => $environment->getAlias(),
-            ]);
+            $info = $mapping->getMapping([$environment->getName()]);
         } catch (Missing404Exception $e) {
             $this->getLogger()->error('log.environment.alias_missing', [
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),

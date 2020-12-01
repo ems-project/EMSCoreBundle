@@ -31,6 +31,7 @@ use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\SearchService;
+use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -367,7 +368,7 @@ class EnvironmentController extends AppController
      *
      * @Route("/environment/remove/{id}", name="environment.remove", methods={"POST"})
      */
-    public function removeAction(int $id, Client $client)
+    public function removeAction(int $id, IndexService $indexService, LoggerInterface $logger)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -376,54 +377,53 @@ class EnvironmentController extends AppController
         /** @var Environment $environment */
         $environment = $repository->find($id);
 
+        if (0 !== $environment->getRevisions()->count()) {
+            $logger->error('log.environment.not_empty', [
+                EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
+            ]);
+
+            return $this->redirectToRoute('environment.index');
+        }
+
         if ($environment->getManaged()) {
-            try {
-                $indexes = $client->indices()->get([
-                        'index' => $environment->getAlias(),
-                ]);
-                $client->indices()->deleteAlias([
-                        'name' => $environment->getAlias(),
-                        'index' => \array_keys($indexes)[0],
-                ]);
-            } catch (Missing404Exception $e) {
-                $this->getLogger()->warning('log.environment.alias_not_found', [
+            $indexes = $indexService->getIndexesByAlias($environment->getAlias());
+            if (empty($indexes)) {
+                $logger->warning('log.environment.alias_not_found', [
                     'alias' => $environment->getAlias(),
                 ]);
             }
+            foreach ($indexes as $index) {
+                $indexService->deleteIndex($index);
+            }
         }
-        if (0 != $environment->getRevisions()->count()) {
-            $this->getLogger()->error('log.environment.not_empty', [
+
+        $linked = false;
+        /** @var ContentType $contentType */
+        foreach ($environment->getContentTypesHavingThisAsDefault() as $contentType) {
+            if (!$contentType->getDeleted()) {
+                $linked = true;
+                break;
+            }
+        }
+
+        if ($linked) {
+            $logger->error('log.environment.is_default', [
                 EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
             ]);
         } else {
-            $linked = false;
             /** @var ContentType $contentType */
             foreach ($environment->getContentTypesHavingThisAsDefault() as $contentType) {
-                if (!$contentType->getDeleted()) {
-                    $linked = true;
-                    break;
-                }
-            }
-
-            if ($linked) {
-                $this->getLogger()->error('log.environment.is_default', [
-                    EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-                ]);
-            } else {
-                /** @var ContentType $contentType */
-                foreach ($environment->getContentTypesHavingThisAsDefault() as $contentType) {
-                    $contentType->getFieldType()->setContentType(null);
-                    $em->persist($contentType->getFieldType());
-                    $em->flush();
-                    $em->remove($contentType);
-                    $em->flush();
-                }
-                $em->remove($environment);
+                $contentType->getFieldType()->setContentType(null);
+                $em->persist($contentType->getFieldType());
                 $em->flush();
-                $this->getLogger()->notice('log.environment.deleted', [
-                    EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-                ]);
+                $em->remove($contentType);
+                $em->flush();
             }
+            $em->remove($environment);
+            $em->flush();
+            $logger->notice('log.environment.deleted', [
+                EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
+            ]);
         }
 
         return $this->redirectToRoute('environment.index');

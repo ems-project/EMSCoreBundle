@@ -134,11 +134,11 @@ class SorterViewType extends ViewType
 
         $search = $this->elasticaService->convertElasticsearchSearch($searchQuery);
         $resultSet = $this->elasticaService->search($search);
-        $response = EmsResponse::fromResultSet($resultSet);
+        $emsResponse = EmsResponse::fromResultSet($resultSet);
 
-        if ($response->getTotal() > self::SEARCH_SIZE) {
+        if ($emsResponse->getTotal() > self::SEARCH_SIZE) {
             $this->logger->warning('form.view.sorter.too_many_documents', [
-                'total' => $response->getTotal(),
+                'total' => $emsResponse->getTotal(),
             ]);
         }
 
@@ -180,7 +180,7 @@ class SorterViewType extends ViewType
 
         $response = new Response();
         $response->setContent($this->twig->render('@EMSCore/view/custom/'.$this->getBlockPrefix().'.html.twig', [
-                'result' => $resultSet->getResponse()->getData(),
+                'response' => $emsResponse,
                 'view' => $view,
                 'form' => $form->createView(),
                 'contentType' => $view->getContentType(),

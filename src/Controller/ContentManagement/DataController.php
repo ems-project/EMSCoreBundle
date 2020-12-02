@@ -876,10 +876,12 @@ class DataController extends AppController
             $logger->error('log.template.twig.error', [
                 'template_id' => $template->getId(),
                 'template_name' => $template->getName(),
+                'error_message' => $e->getMessage(),
             ]);
             $body = $twig->createTemplate($translator->trans('log.template.twig.error', [
                 '%template_id%' => $template->getId(),
                 '%template_name%' => $template->getName(),
+                '%error_message%' => $e->getMessage(),
             ], EMSCoreBundle::TRANS_DOMAIN));
         }
 

@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Service;
 
 use Elastica\Client;
+use Elastica\Exception\ResponseException;
 use Elasticsearch\Endpoints\Index;
 use Elasticsearch\Endpoints\Indices\Alias\Get;
 use Elasticsearch\Endpoints\Indices\Exists;
@@ -158,7 +159,11 @@ final class IndexService
         if (null !== $indexName) {
             $endpoint->setIndex($indexName);
         }
-        $result = $this->client->requestEndpoint($endpoint);
+        try {
+            $result = $this->client->requestEndpoint($endpoint);
+        } catch (ResponseException $e) {
+            return [];
+        }
         $data = $result->getData();
         if (!\is_array($data)) {
             return [];

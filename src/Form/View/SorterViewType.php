@@ -67,7 +67,7 @@ class SorterViewType extends ViewType
         /** @var View $view */
         $view = $options['view'];
 
-        $mapping = $this->mapping->getMapping([$view->getContentType()->getEnvironment()->getAlias()]);
+        $mapping = $this->mapping->getMapping([$view->getContentType()->getEnvironment()->getName()]);
 
         $builder
         ->add('body', CodeEditorType::class, [

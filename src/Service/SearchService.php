@@ -209,9 +209,10 @@ class SearchService
 
         $search = null;
         if (1 === \sizeof($contentTypes)) {
-            $search = $searchRepository->findOneBy([
-                'contentType' => \array_pop($contentTypes),
-            ]);
+            $contentTypeName = \array_pop($contentTypes);
+            if (null !== $contentTypeName && null !== $contentType = $this->contentTypeService->getByName($contentTypeName)) {
+                $search = $searchRepository->findOneBy(['contentType' => $contentType]);
+            }
         }
 
         if (!$search instanceof Search) {

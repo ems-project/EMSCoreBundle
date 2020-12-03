@@ -560,7 +560,7 @@ services:
             - { name: console.command }
     ems.factory.revision_copy_context:
         class: EMS\CoreBundle\Service\Revision\Copy\CopyContextFactory
-        arguments: ['@ems.service.environment']
+        arguments: ['@ems.service.environment', '@ems_common.service.elastica']
     ems.service.revision_copy:
         class: EMS\CoreBundle\Service\Revision\Copy\CopyService
         arguments:

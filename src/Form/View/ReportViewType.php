@@ -2,7 +2,7 @@
 
 namespace EMS\CoreBundle\Form\View;
 
-use Elasticsearch\Client;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
 use Exception;
@@ -16,13 +16,13 @@ use Twig\Environment;
 
 class ReportViewType extends ViewType
 {
-    /** @var Client */
-    private $client;
+    /** @var ElasticaService */
+    private $elasticaService;
 
-    public function __construct(FormFactory $formFactory, Environment $twig, Client $client, LoggerInterface $logger)
+    public function __construct(FormFactory $formFactory, Environment $twig, ElasticaService $elasticaService, LoggerInterface $logger)
     {
         parent::__construct($formFactory, $twig, $logger);
-        $this->client = $client;
+        $this->elasticaService = $elasticaService;
     }
 
     public function getLabel(): string
@@ -93,14 +93,15 @@ class ReportViewType extends ViewType
             $searchQuery['size'] = $view->getOptions()['size'];
         }
 
-        $result = $this->client->search($searchQuery);
+        $search = $this->elasticaService->convertElasticsearchSearch($searchQuery);
+        $resultSet = $this->elasticaService->search($search);
 
         try {
             $render = $this->twig->createTemplate($view->getOptions()['template'])->render([
                 'view' => $view,
                 'contentType' => $view->getContentType(),
                 'environment' => $view->getContentType()->getEnvironment(),
-                'result' => $result,
+                'result' => $resultSet->getResponse()->getData(),
             ]);
         } catch (Exception $e) {
             $render = 'Something went wrong with the template of the view '.$view->getName().' for the content type '.$view->getContentType()->getName().' ('.$e->getMessage().')';
@@ -110,7 +111,7 @@ class ReportViewType extends ViewType
                 'view' => $view,
                 'contentType' => $view->getContentType(),
                 'environment' => $view->getContentType()->getEnvironment(),
-                'result' => $result,
+                'result' => $resultSet->getResponse()->getData(),
             ]);
         } catch (Exception $e) {
             $javascript = '';
@@ -120,7 +121,7 @@ class ReportViewType extends ViewType
                 'view' => $view,
                 'contentType' => $view->getContentType(),
                 'environment' => $view->getContentType()->getEnvironment(),
-                'result' => $result,
+                'result' => $resultSet->getResponse()->getData(),
             ]);
         } catch (Exception $e) {
             $header = '';

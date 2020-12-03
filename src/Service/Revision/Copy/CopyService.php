@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service\Revision\Copy;
 
-use EMS\CommonBundle\Elasticsearch\Document\DocumentCollectionInterface;
+use Elastica\Result;
+use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
+use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
@@ -22,25 +24,22 @@ final class CopyService
         $this->revisionService = $revisionService;
     }
 
-    /**
-     * @return \Generator|Revision[]
-     */
-    public function copyFromDocuments(CopyContext $copyContext, DocumentCollectionInterface $documents): \Generator
+    public function copyFromResult(CopyContext $copyContext, Result $document): Revision
     {
-        foreach ($documents as $document) {
-            $revision = $this->revisionService->getCurrentRevisionForDocument($document);
-
-            if (null === $revision) {
-                continue;
-            }
-
-            $copiedRevision = $revision->clone();
-            $copiedRevision->setRawData(\array_merge($copiedRevision->getRawData(), $copyContext->getMerge()));
-
-            $this->finalizeRevision($copiedRevision);
-
-            yield $revision;
+        $contentTypeName = $document->getSource()[EMSSource::FIELD_CONTENT_TYPE] ?? null;
+        if (!\is_string($contentTypeName)) {
+            throw new \RuntimeException('Unexpected not string content type');
         }
+        $revision = $this->revisionService->getCurrentRevisionByOuuidAndContentType($contentTypeName, $document->getId());
+        if (null === $revision) {
+            throw new NotFoundException($document->getId());
+        }
+
+        $copiedRevision = $revision->clone();
+        $copiedRevision->setRawData(\array_merge($copiedRevision->getRawData(), $copyContext->getMerge()));
+        $this->finalizeRevision($copiedRevision);
+
+        return $revision;
     }
 
     private function finalizeRevision(Revision $copiedRevision): void

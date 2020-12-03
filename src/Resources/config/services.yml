@@ -36,11 +36,6 @@ services:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
             #- { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
             #kernel.response or kernel.terminate
-    app.elasticsearch: '@Elasticsearch\Client'
-    Elasticsearch\Client:
-        factory: 'ems_common.elasticsearch.factory:fromConfig'
-        arguments:
-              - { hosts: "%ems_core.elasticsearch_cluster%" }
     app.twig.extension.stringloader:
         class: Twig_Extension_StringLoader
         tags:
@@ -198,13 +193,13 @@ services:
             - { name: form.type }
     ems.fieldtype.json_menu_link:
         class: EMS\CoreBundle\Form\DataField\JsonMenuLinkFieldType
-        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@ems.service.contenttype', '@app.elasticsearch', '@ems_common.json.decoder']
+        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@ems.service.contenttype', '@ems_common.service.elastica', '@ems_common.json.decoder']
         tags:
             - { name: ems.form.datafieldtype, alias: json_menu_link }
             - { name: form.type }
     ems.fieldtype.json_menu_nested_link:
         class: EMS\CoreBundle\Form\DataField\JsonMenuNestedLinkFieldType
-        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@app.elasticsearch', '@ems_common.json.decoder']
+        arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch', '@ems_common.service.elastica', '@ems_common.json.decoder']
         tags:
             - { name: ems.form.datafieldtype, alias: json_menu_nested_link }
             - { name: form.type }
@@ -286,7 +281,7 @@ services:
             - { name: form.type }
     ems.view.keywords:
         class: EMS\CoreBundle\Form\View\KeywordsViewType
-        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger']
+        arguments: ['@form.factory', '@twig', '@ems_common.service.elastica', '@logger']
         tags:
             - { name: ems.form.viewtype, alias: keywords }
             - { name: form.type }
@@ -298,25 +293,25 @@ services:
             - { name: form.type }
     ems.view.export:
         class: EMS\CoreBundle\Form\View\ExportViewType
-        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger']
+        arguments: ['@form.factory', '@twig', '@ems_common.service.elastica', '@logger']
         tags:
             - { name: ems.form.viewtype, alias: export }
             - { name: form.type }
     ems.view.sorter:
         class: EMS\CoreBundle\Form\View\SorterViewType
-        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger', '@session', '@ems.service.data', '@router']
+        arguments: ['@form.factory', '@twig', '@ems.service.mapping', '@ems_common.service.elastica', '@logger', '@session', '@ems.service.data', '@router']
         tags:
             - { name: ems.form.viewtype, alias: sorter }
             - { name: form.type }
     ems.view.hierarchical:
         class: EMS\CoreBundle\Form\View\HierarchicalViewType
-        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger', '@session', '@ems.service.data', '@router', '@ems.service.contenttype']
+        arguments: ['@form.factory', '@twig', '@ems.service.search', '@ems.service.mapping', '@logger', '@session', '@ems.service.data', '@router', '@ems.service.contenttype']
         tags:
             - { name: ems.form.viewtype, alias: hierarchical }
             - { name: form.type }
     ems.view.report:
         class: EMS\CoreBundle\Form\View\ReportViewType
-        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger']
+        arguments: ['@form.factory', '@twig', '@ems_common.service.elastica', '@logger']
         tags:
             - { name: ems.form.viewtype, alias: report }
             - { name: form.type }
@@ -328,7 +323,7 @@ services:
             - { name: form.type }
     ems.view.gallery:
         class: EMS\CoreBundle\Form\View\GalleryViewType
-        arguments: ['@form.factory', '@twig', '@app.elasticsearch', '@logger', '@ems.service.search']
+        arguments: ['@form.factory', '@twig', '@ems_common.service.elastica', '@logger', '@ems.service.search']
         tags:
             - { name: ems.form.viewtype, alias: gallery }
             - { name: form.type }
@@ -437,7 +432,7 @@ services:
         arguments: ['@logger', '@ems_common.elastica.client', '@EMS\CoreBundle\Service\EnvironmentService', '@ems.form.fieldtype.fieldtypetype', '@ems.service.elasticsearch', '@ems_common.service.elastica', '%ems_core.instance_id%', '%ems_core.single_type_index%']
     EMS\CoreBundle\Service\DataService:
         class: EMS\CoreBundle\Service\DataService
-        arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '%ems_core.lock_time%', '@app.elasticsearch', '@ems.service.mapping', '%ems_core.instance_id%', '@session', '@form.factory', '@service_container', '@form.registry', '@event_dispatcher', '@ems.service.contenttype', '%ems_core.private_key%', '@logger', '@ems_common.storage.manager', '@twig', '@app.twig_extension', '@ems.service.user', '@EMS\CoreBundle\Repository\RevisionRepository', '@ems.service.environment', '@ems.service.search', '@ems.service.index']
+        arguments: ['@doctrine', '@security.authorization_checker', '@security.token_storage', '%ems_core.lock_time%', '@ems_common.service.elastica', '@ems.service.mapping', '%ems_core.instance_id%', '@session', '@form.factory', '@service_container', '@form.registry', '@event_dispatcher', '@ems.service.contenttype', '%ems_core.private_key%', '@logger', '@ems_common.storage.manager', '@twig', '@app.twig_extension', '@ems.service.user', '@EMS\CoreBundle\Repository\RevisionRepository', '@ems.service.environment', '@ems.service.search', '@ems.service.index']
         tags:
             - { name: kernel.event_listener, event: ems_core.revision.update_referers, method: updateReferers, priority: 0 }
     ems.service.revision:
@@ -462,9 +457,10 @@ services:
     ems.elasticsearch.indexer:
         class: EMS\CoreBundle\Elasticsearch\Indexer
         arguments:
-            - '@ems_common.elasticsearch.factory'
-            - { hosts: "%ems_core.elasticsearch_cluster%" }
+            - '@ems.service.index'
             - '@logger'
+            - '@ems.service.mapping'
+            - '@ems.service.alias'
     ems.service.environment: '@EMS\CoreBundle\Service\EnvironmentService'
     EMS\CoreBundle\Service\EnvironmentService:
         arguments: ['@doctrine', '@session', '@ems.service.user', '@security.authorization_checker', '@service_container', '@logger', '@ems_common.service.elastica', '%ems_core.single_type_index%']
@@ -525,7 +521,7 @@ services:
         arguments: ['@doctrine', '@request_stack', '%ems_core.paging_size%']
     ems.service.elasticsearch:
         class: EMS\CoreBundle\Service\ElasticsearchService
-        arguments: ['@app.elasticsearch', '@logger']
+        arguments: ['@logger', '@ems_common.service.elastica']
     ems.service.template:
         class: EMS\CoreBundle\Service\TemplateService
         arguments: ['@doctrine', '@logger', '@twig']
@@ -559,6 +555,7 @@ services:
             - '@ems.factory.revision_copy_context'
             - '@ems.service.revision_copy'
             - '@ems.service.elasticsearch'
+            - '@ems_common.service.elastica'
         tags:
             - { name: console.command }
     ems.factory.revision_copy_context:
@@ -766,7 +763,7 @@ services:
 ### Loggers ####
     ems_common.monolog.ems_handler:
         class: EMS\CommonBundle\Logger\ElasticsearchLogger
-        arguments: ['info', '%ems_core.instance_id%', '', 'ems_core', '@app.elasticsearch', '@security.helper']
+        arguments: ['info', '%ems_core.instance_id%', '', 'ems_core', '@ems_common.elastica.client', '@security.helper']
         tags:
             - { name: kernel.cache_warmer }
             - { name: kernel.event_listener, event: kernel.terminate }

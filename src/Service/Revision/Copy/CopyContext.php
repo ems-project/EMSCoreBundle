@@ -4,23 +4,18 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service\Revision\Copy;
 
-use EMS\CommonBundle\Elasticsearch\Request\Request;
-use EMS\CommonBundle\Elasticsearch\Request\RequestInterface;
-use EMS\CoreBundle\Entity\Environment;
+use EMS\CommonBundle\Search\Search;
 
 final class CopyContext
 {
-    /** @var Environment */
-    private $environment;
-    /** @var array */
+    /** @var array<mixed> */
     private $merge;
-    /** @var array */
-    private $searchQuery;
+    /** @var Search */
+    private $search;
 
-    public function __construct(Environment $environment, array $searchQuery)
+    public function __construct(Search $searchQuery)
     {
-        $this->environment = $environment;
-        $this->searchQuery = $searchQuery;
+        $this->search = $searchQuery;
         $this->merge = [];
     }
 
@@ -29,9 +24,9 @@ final class CopyContext
         return $this->merge;
     }
 
-    public function makeRequest(): RequestInterface
+    public function getSearch(): Search
     {
-        return new Request($this->environment->getAlias(), $this->searchQuery);
+        return $this->search;
     }
 
     public function setMerge(array $merge): void

@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Form\View;
 
-use Elasticsearch\Client;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
@@ -12,6 +11,8 @@ use EMS\CoreBundle\Form\Field\ContentTypeFieldPickerType;
 use EMS\CoreBundle\Form\Nature\ReorganizeType;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
+use EMS\CoreBundle\Service\Mapping;
+use EMS\CoreBundle\Service\SearchService;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\CallbackTransformer;
@@ -38,16 +39,19 @@ class HierarchicalViewType extends ViewType
 
     /** @var Router */
     protected $router;
-    /** @var Client */
-    private $client;
 
     /** @var ContentTypeService */
     protected $contentTypeService;
+    /** @var Mapping */
+    private $mapping;
+    /** @var SearchService */
+    private $searchService;
 
-    public function __construct(FormFactory $formFactory, Twig_Environment $twig, Client $client, LoggerInterface $logger, Session $session, DataService $dataService, Router $router, ContentTypeService $contentTypeService)
+    public function __construct(FormFactory $formFactory, Twig_Environment $twig, SearchService $searchService, Mapping $mapping, LoggerInterface $logger, Session $session, DataService $dataService, Router $router, ContentTypeService $contentTypeService)
     {
         parent::__construct($formFactory, $twig, $logger);
-        $this->client = $client;
+        $this->searchService = $searchService;
+        $this->mapping = $mapping;
         $this->session = $session;
         $this->dataService = $dataService;
         $this->router = $router;
@@ -70,13 +74,12 @@ class HierarchicalViewType extends ViewType
 
         /** @var View $view */
         $view = $options['view'];
+        $environment = $view->getContentType()->getEnvironment();
+        if (null === $environment) {
+            throw new \RuntimeException('Unexpected null environment');
+        }
 
-        $mapping = $this->client->indices()->getMapping([
-                'index' => $view->getContentType()->getEnvironment()->getAlias(),
-                'type' => $view->getContentType()->getName(),
-        ]);
-
-        $mapping = \array_values($mapping)[0]['mappings'][$view->getContentType()->getName()]['properties'];
+        $mapping = $this->mapping->getMapping([$environment->getName()]);
 
         $fieldType = new FieldType();
 
@@ -157,15 +160,16 @@ class HierarchicalViewType extends ViewType
             throw new NotFoundHttpException('Parent menu not found: '.$view->getOptions()['parent']);
         }
 
-        $index = $this->contentTypeService->getIndex($view->getContentType());
+        $contentType = $view->getContentType();
+        $environment = $contentType->getEnvironment();
+        if (null === $environment) {
+            throw new \RuntimeException('Unexpected null environment');
+        }
 
         $parent = null;
         try {
-            $parent = $this->client->get([
-                    'index' => $index,
-                    'type' => $parentId[0],
-                    'id' => $parentId[1],
-            ]);
+            $document = $this->searchService->getDocument($contentType, $parentId[1]);
+            $parent = $document->getRaw();
         } catch (Exception $e) {
             throw new NotFoundHttpException('Parent menu not found: '.$view->getOptions()['parent']);
         }

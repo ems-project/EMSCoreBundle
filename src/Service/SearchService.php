@@ -3,7 +3,8 @@
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use EMS\CommonBundle\Elasticsearch\Document\Document;
+use EMS\CommonBundle\Common\Document;
+use EMS\CommonBundle\Elasticsearch\Document\Document as ElasticsearchDocument;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CommonBundle\Elasticsearch\Exception\NotSingleResultException;
 use EMS\CommonBundle\Search\Search as CommonSearch;
@@ -87,6 +88,9 @@ class SearchService
                     throw new \RuntimeException('Unexpected operator');
             }
         }
+        if (0 === $boolQuery->count()) {
+            $boolQuery = null;
+        }
 
         $indexes = [];
         foreach ($search->getEnvironments() as $environmentName) {
@@ -114,9 +118,11 @@ class SearchService
         return $commonSearch;
     }
 
-    public function getDocument(ContentType $contentType, string $ouuid): Document
+    public function getDocument(ContentType $contentType, string $ouuid, ?Environment $environment = null): ElasticsearchDocument
     {
-        $environment = $contentType->getEnvironment();
+        if (null === $environment) {
+            $environment = $contentType->getEnvironment();
+        }
         if (null === $environment) {
             throw new \RuntimeException('Unexpected null environment');
         }
@@ -130,6 +136,13 @@ class SearchService
             }
             throw $e;
         }
+    }
+
+    public function get(Environment $environment, ContentType $contentType, string $ouuid): Document
+    {
+        $document = $this->getDocument($contentType, $ouuid, $environment);
+
+        return new Document($document->getContentType(), $document->getId(), $document->getSource());
     }
 
     /**

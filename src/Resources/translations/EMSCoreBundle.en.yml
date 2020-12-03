@@ -620,7 +620,7 @@ log:
     updated: 'The template %template_name% has been updated'
     deleted: 'The template %template_name% has been deleted'
     twig:
-      error: 'Error during the Twig generation of ems://template:%template_id%'
+      error: 'Error during the Twig generation of ems://template:%template_id% with the error message: %error_message%'
   error: 'This page/action has encountered an error: %error_message%'
   data:
     job:

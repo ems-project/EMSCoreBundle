@@ -7,12 +7,11 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
-use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
 use EMS\CommonBundle\Helper\EmsFields;
-use EMS\CoreBundle;
 use EMS\CoreBundle\Controller\AppController;
+use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\RebuildIndex;
@@ -26,8 +25,13 @@ use EMS\CoreBundle\Form\Form\EditEnvironmentType;
 use EMS\CoreBundle\Form\Form\RebuildIndexType;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
+use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
+use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\JobService;
+use EMS\CoreBundle\Service\Mapping;
+use EMS\CoreBundle\Service\SearchService;
+use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -49,14 +53,11 @@ class EnvironmentController extends AppController
      * @Route("/publisher/align", name="environment.align")
      * @Security("has_role('ROLE_PUBLISHER')")
      */
-    public function alignAction(Request $request, Client $client)
+    public function alignAction(Request $request, SearchService $searchService, EnvironmentService $environmentService, ContentTypeService $contentTypeService)
     {
         $data = [];
         $env = [];
         $withEnvi = [];
-
-        /** @var EnvironmentService $environmentService */
-        $environmentService = $this->getEnvironmentService();
 
         $form = $this->createForm(CompareEnvironmentFormType::class, $data, [
         ]);
@@ -201,7 +202,6 @@ class EnvironmentController extends AppController
 
             $total = $repository->countDifferencesBetweenEnvironment($env->getId(), $withEnvi->getId(), $contentTypes);
             if ($total) {
-                $contentTypeService = $this->getContentTypeService();
                 $lastPage = \ceil($total / $paging_size);
                 if ($page > $lastPage) {
                     $page = $lastPage;
@@ -228,21 +228,20 @@ class EnvironmentController extends AppController
                         $results[$index]['revisionEnvironment'] = $repository->findOneById($maxrevid[1]);
                         $results[$index]['revisionWithEnvironment'] = $repository->findOneById($minrevid[1]);
                     }
+
+                    $contentType = $results[$index]['contentType'];
+                    if (false === $contentType) {
+                        throw new \RuntimeException(\sprintf('Content type %s not found', $results[$index]['contentType']));
+                    }
                     try {
-                        $results[$index]['objectEnvironment'] = $client->get([
-                                        'id' => $results[$index]['ouuid'],
-                                        'index' => $this->getContentTypeService()->getIndex($results[$index]['contentType'], $env),
-                                        'type' => $results[$index]['content_type_name'],
-                                ]);
+                        $document = $searchService->getDocument($contentType, $results[$index]['ouuid'], $env ? $env : null);
+                        $results[$index]['objectEnvironment'] = $document->getRaw();
                     } catch (Missing404Exception $e) {
                         $results[$index]['objectEnvironment'] = null; //This revision doesn't exist in this environment, but it's ok.
                     }
                     try {
-                        $results[$index]['objectWithEnvironment'] = $client->get([
-                                'id' => $results[$index]['ouuid'],
-                                'index' => $this->getContentTypeService()->getIndex($results[$index]['contentType'], $withEnvi),
-                                'type' => $results[$index]['content_type_name'],
-                        ]);
+                        $document = $searchService->getDocument($contentType, $results[$index]['ouuid'], $withEnvi ? $withEnvi : null);
+                        $results[$index]['objectWithEnvironment'] = $document->getRaw();
                     } catch (Missing404Exception $e) {
                         $results[$index]['objectWithEnvironment'] = null; //This revision doesn't exist in this environment, but it's ok.
                     }
@@ -266,22 +265,22 @@ class EnvironmentController extends AppController
         }
 
         return $this->render('@EMSCore/environment/align.html.twig', [
-                'form' => $form->createView(),
-                 'results' => $results,
-                'lastPage' => $lastPage,
-                'paginationPath' => 'environment.align',
-                'page' => $page,
-                'paging_size' => $paging_size,
-                'total' => $total,
-                'currentFilters' => $request->query,
-                'fromEnv' => $env,
-                'withEnv' => $withEnvi,
-                'environment' => $environment,
-                'withEnvironment' => $withEnvironment,
-                'environments' => $environmentService->getAll(),
-                 'orderField' => $orderField,
-                 'orderDirection' => $orderDirection,
-                'contentTypes' => $this->getContentTypeService()->getAll(),
+            'form' => $form->createView(),
+            'results' => $results,
+            'lastPage' => $lastPage,
+            'paginationPath' => 'environment.align',
+            'page' => $page,
+            'paging_size' => $paging_size,
+            'total' => $total,
+            'currentFilters' => $request->query,
+            'fromEnv' => $env,
+            'withEnv' => $withEnvi,
+            'environment' => $environment,
+            'withEnvironment' => $withEnvironment,
+            'environments' => $environmentService->getAll(),
+            'orderField' => $orderField,
+            'orderDirection' => $orderDirection,
+            'contentTypes' => $contentTypeService->getAll(),
          ]);
     }
 
@@ -297,14 +296,10 @@ class EnvironmentController extends AppController
      * @throws OptimisticLockException
      * @Route("/environment/attach/{name}", name="environment.attach", methods={"POST"})
      */
-    public function attachAction($name, Client $client)
+    public function attachAction($name, IndexService $indexService)
     {
         try {
-            $indexes = $client->indices()->get([
-                    'index' => $name,
-            ]);
-
-            if (0 != \strcmp($name, \array_keys($indexes)[0])) {
+            if ($indexService->hasIndex($name)) {
                 /** @var EntityManager $em */
                 $em = $this->getDoctrine()->getManager();
 
@@ -373,7 +368,7 @@ class EnvironmentController extends AppController
      *
      * @Route("/environment/remove/{id}", name="environment.remove", methods={"POST"})
      */
-    public function removeAction(int $id, Client $client)
+    public function removeAction(int $id, IndexService $indexService, LoggerInterface $logger)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -382,54 +377,53 @@ class EnvironmentController extends AppController
         /** @var Environment $environment */
         $environment = $repository->find($id);
 
+        if (0 !== $environment->getRevisions()->count()) {
+            $logger->error('log.environment.not_empty', [
+                EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
+            ]);
+
+            return $this->redirectToRoute('environment.index');
+        }
+
         if ($environment->getManaged()) {
-            try {
-                $indexes = $client->indices()->get([
-                        'index' => $environment->getAlias(),
-                ]);
-                $client->indices()->deleteAlias([
-                        'name' => $environment->getAlias(),
-                        'index' => \array_keys($indexes)[0],
-                ]);
-            } catch (Missing404Exception $e) {
-                $this->getLogger()->warning('log.environment.alias_not_found', [
+            $indexes = $indexService->getIndexesByAlias($environment->getAlias());
+            if (empty($indexes)) {
+                $logger->warning('log.environment.alias_not_found', [
                     'alias' => $environment->getAlias(),
                 ]);
             }
+            foreach ($indexes as $index) {
+                $indexService->deleteIndex($index);
+            }
         }
-        if (0 != $environment->getRevisions()->count()) {
-            $this->getLogger()->error('log.environment.not_empty', [
+
+        $linked = false;
+        /** @var ContentType $contentType */
+        foreach ($environment->getContentTypesHavingThisAsDefault() as $contentType) {
+            if (!$contentType->getDeleted()) {
+                $linked = true;
+                break;
+            }
+        }
+
+        if ($linked) {
+            $logger->error('log.environment.is_default', [
                 EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
             ]);
         } else {
-            $linked = false;
             /** @var ContentType $contentType */
             foreach ($environment->getContentTypesHavingThisAsDefault() as $contentType) {
-                if (!$contentType->getDeleted()) {
-                    $linked = true;
-                    break;
-                }
-            }
-
-            if ($linked) {
-                $this->getLogger()->error('log.environment.is_default', [
-                    EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-                ]);
-            } else {
-                /** @var ContentType $contentType */
-                foreach ($environment->getContentTypesHavingThisAsDefault() as $contentType) {
-                    $contentType->getFieldType()->setContentType(null);
-                    $em->persist($contentType->getFieldType());
-                    $em->flush();
-                    $em->remove($contentType);
-                    $em->flush();
-                }
-                $em->remove($environment);
+                $contentType->getFieldType()->setContentType(null);
+                $em->persist($contentType->getFieldType());
                 $em->flush();
-                $this->getLogger()->notice('log.environment.deleted', [
-                    EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-                ]);
+                $em->remove($contentType);
+                $em->flush();
             }
+            $em->remove($environment);
+            $em->flush();
+            $logger->notice('log.environment.deleted', [
+                EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
+            ]);
         }
 
         return $this->redirectToRoute('environment.index');
@@ -449,7 +443,7 @@ class EnvironmentController extends AppController
      * @throws OptimisticLockException
      * @Route("/environment/add", name="environment.add")
      */
-    public function addAction(Request $request, Client $client)
+    public function addAction(Request $request, Mapping $mapping, IndexService $indexService)
     {
         $environment = new Environment();
 
@@ -479,8 +473,8 @@ class EnvironmentController extends AppController
                 /** @var EntityManager $em */
                 $em = $this->getDoctrine()->getManager();
 
-                $environmetRepository = $em->getRepository('EMSCoreBundle:Environment');
-                $anotherObject = $environmetRepository->findBy([
+                $environmentRepository = $em->getRepository('EMSCoreBundle:Environment');
+                $anotherObject = $environmentRepository->findBy([
                         'name' => $environment->getName(),
                 ]);
 
@@ -495,19 +489,13 @@ class EnvironmentController extends AppController
                     $em->flush();
 
                     $indexName = $environment->getAlias().AppController::getFormatedTimestamp();
-                    $client->indices()->create([
-                            'index' => $indexName,
-                            'body' => $this->getEnvironmentService()->getIndexAnalysisConfiguration(),
-                    ]);
+                    $mapping->createIndex($indexName, $this->getEnvironmentService()->getIndexAnalysisConfiguration());
 
                     foreach ($this->getContentTypeService()->getAll() as $contentType) {
                         $this->getContentTypeService()->updateMapping($contentType, $indexName);
                     }
 
-                    $client->indices()->putAlias([
-                        'index' => $indexName,
-                        'name' => $environment->getAlias(),
-                    ]);
+                    $indexService->updateAlias($environment->getAlias(), [], [$indexName]);
 
                     $this->getLogger()->notice('log.environment.created', [
                         EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
@@ -579,7 +567,7 @@ class EnvironmentController extends AppController
      *
      * @Route("/environment/{id}", name="environment.view")
      */
-    public function viewAction(int $id, Client $client)
+    public function viewAction(int $id, Mapping $mapping)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -595,9 +583,7 @@ class EnvironmentController extends AppController
         }
 
         try {
-            $info = $client->indices()->getMapping([
-                    'index' => $environment->getAlias(),
-            ]);
+            $info = $mapping->getMapping([$environment->getName()]);
         } catch (Missing404Exception $e) {
             $this->getLogger()->error('log.environment.alias_missing', [
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
@@ -704,7 +690,7 @@ class EnvironmentController extends AppController
                 ],
                 'label' => 'controller.environment.index.reorder_submit_button',
                 'icon' => 'fa fa-reorder',
-                'translation_domain' => CoreBundle\EMSCoreBundle::TRANS_DOMAIN,
+                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
             ]);
 
             $names = [];

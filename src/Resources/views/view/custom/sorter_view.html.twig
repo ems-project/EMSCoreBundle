@@ -12,12 +12,14 @@
 				<div class="box-body">
 					<ul class="list-group sortable ui-sortable"
 						id="content_type_structure_fieldType_modal_reorder_list">
-                        {% for hit in result.hits.hits %}
-							<li class="list-group-item ui-sortable-handle">
-								<i class="glyphicon glyphicon-move"></i>
-                                {{ (hit._type~':'~hit._id)|data_link }}
-                                {{ form_widget(attribute(form.items, hit._id)) }}
-							</li>
+                        {% for document in response.getDocuments %}
+							{% if document %}
+								<li class="list-group-item ui-sortable-handle">
+									<i class="glyphicon glyphicon-move"></i>
+									{{ document.emsId|data_link }}
+									{{ form_widget(attribute(form.items, document.id)) }}
+								</li>
+							{% endif %}
                         {% endfor %}
 					</ul>
 				</div>

@@ -2,7 +2,7 @@
 
 namespace EMS\CoreBundle\Form\View;
 
-use Elasticsearch\Client;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\View;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -15,13 +15,13 @@ use Twig\Environment;
 
 class KeywordsViewType extends ViewType
 {
-    /** @var Client */
-    private $client;
+    /** @var ElasticaService */
+    private $elasticaService;
 
-    public function __construct(FormFactory $formFactory, Environment $twig, Client $client, LoggerInterface $logger)
+    public function __construct(FormFactory $formFactory, Environment $twig, ElasticaService $elasticaService, LoggerInterface $logger)
     {
         parent::__construct($formFactory, $twig, $logger);
-        $this->client = $client;
+        $this->elasticaService = $elasticaService;
     }
 
     public function getLabel(): string
@@ -62,14 +62,15 @@ class KeywordsViewType extends ViewType
             'body' => $view->getOptions()['aggsQuery'],
         ];
 
-        $retDoc = $this->client->search($searchQuery);
+        $search = $this->elasticaService->convertElasticsearchSearch($searchQuery);
+        $resultSet = $this->elasticaService->search($search);
 
         foreach (\explode('.', $view->getOptions()['pathToBuckets']) as $attribute) {
-            $retDoc = $retDoc[$attribute];
+            $retDoc = $resultSet->getResponse()->getData()[$attribute];
         }
 
         return [
-            'keywords' => $retDoc,
+            'keywords' => $resultSet->getResponse()->getData(),
             'view' => $view,
             'contentType' => $view->getContentType(),
             'environment' => $view->getContentType()->getEnvironment(),

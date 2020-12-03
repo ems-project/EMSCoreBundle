@@ -2,14 +2,13 @@
 
 namespace EMS\CoreBundle\Form\DataField;
 
-use Elasticsearch\Client;
 use EMS\CommonBundle\Json\Decoder;
 use EMS\CommonBundle\Json\JsonMenuNested;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
-use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\ElasticsearchService;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -24,22 +23,20 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class JsonMenuNestedLinkFieldType extends DataFieldType
 {
-    /** @var Client */
-    private $client;
-    /** @var ContentTypeService */
-    private $contentTypeService;
     /** @var Decoder */
     private $decoder;
+    /** @var ElasticaService */
+    private $elasticaService;
 
     public function __construct(
         AuthorizationCheckerInterface $authorizationChecker,
         FormRegistryInterface $formRegistry,
         ElasticsearchService $elasticsearchService,
-        Client $client,
+        ElasticaService $elasticaService,
         Decoder $decoder
     ) {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
-        $this->client = $client;
+        $this->elasticaService = $elasticaService;
         $this->decoder = $decoder;
     }
 
@@ -90,30 +87,36 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
             return;
         }
 
-        $result = $this->client->search([
+        $search = $this->elasticaService->convertElasticsearchSearch([
             'index' => $index,
             'body' => $options['query'],
         ]);
 
-        foreach ($result['hits']['hits'] as $hit) {
-            $json = $hit['_source'][$options['json_menu_nested_field']] ?? false;
+        $scroll = $this->elasticaService->scroll($search);
+        foreach ($scroll as $resultSet) {
+            foreach ($resultSet as $result) {
+                if (false === $result) {
+                    continue;
+                }
+                $json = $result->getSource()[$options['json_menu_nested_field']] ?? false;
 
-            if (!$json) {
-                continue;
-            }
-
-            $menu = $this->decoder->jsonMenuNestedDecode($json);
-
-            foreach ($menu as $item) {
-                if (\count($allowTypes) > 0 && !\in_array($item->getType(), $allowTypes)) {
+                if (!$json) {
                     continue;
                 }
 
-                $label = \implode(' > ', \array_map(function (JsonMenuNested $p) {
-                    return $p->getLabel();
-                }, $item->getPath()));
+                $menu = $this->decoder->jsonMenuNestedDecode($json);
 
-                $choices[$label] = $item->getId();
+                foreach ($menu as $item) {
+                    if (\count($allowTypes) > 0 && !\in_array($item->getType(), $allowTypes)) {
+                        continue;
+                    }
+
+                    $label = \implode(' > ', \array_map(function (JsonMenuNested $p) {
+                        return $p->getLabel();
+                    }, $item->getPath()));
+
+                    $choices[$label] = $item->getId();
+                }
             }
         }
 

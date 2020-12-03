@@ -2,7 +2,7 @@
 
 namespace EMS\CoreBundle\Form\View;
 
-use Elasticsearch\Client;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Form\SearchFormType;
@@ -19,14 +19,14 @@ class GalleryViewType extends ViewType
 {
     /** @var SearchService */
     private $searchService;
-    /** @var Client */
-    private $client;
+    /** @var ElasticaService */
+    private $elasticaService;
 
-    public function __construct(FormFactory $formFactory, Twig_Environment $twig, Client $client, LoggerInterface $logger, SearchService $searchService)
+    public function __construct(FormFactory $formFactory, Twig_Environment $twig, ElasticaService $elasticaService, LoggerInterface $logger, SearchService $searchService)
     {
         parent::__construct($formFactory, $twig, $logger);
         $this->searchService = $searchService;
-        $this->client = $client;
+        $this->elasticaService = $elasticaService;
     }
 
     public function getLabel(): string
@@ -92,7 +92,8 @@ class GalleryViewType extends ViewType
             $searchQuery['_source'] = $view->getOptions()['sourceFields'];
         }
 
-        $data = $this->client->search($searchQuery);
+        $search = $this->elasticaService->convertElasticsearchSearch($searchQuery);
+        $resultSet = $this->elasticaService->search($search);
 
         return [
             'view' => $view,
@@ -101,7 +102,7 @@ class GalleryViewType extends ViewType
             'contentType' => $view->getContentType(),
             'environment' => $view->getContentType()->getEnvironment(),
             'form' => $form->createView(),
-            'data' => $data,
+            'data' => $resultSet->getResponse()->getData(),
         ];
     }
 }

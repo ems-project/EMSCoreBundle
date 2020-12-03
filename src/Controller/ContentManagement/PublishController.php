@@ -3,8 +3,7 @@
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use Doctrine\ORM\NonUniqueResultException;
-use Elasticsearch\Client;
-use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\Search;
@@ -80,7 +79,7 @@ class PublishController extends AbstractController
      * @Route("/publish/search-result", name="search.publish", defaults={"deleted"=0, "managed"=1})
      * @Security("has_role('ROLE_PUBLISHER')")
      */
-    public function publishSearchResult(Request $request, JobService $jobService, EnvironmentService $environmentService, ContentTypeService $contentTypeService, SearchService $searchService, Client $client): Response
+    public function publishSearchResult(Request $request, JobService $jobService, EnvironmentService $environmentService, ContentTypeService $contentTypeService, SearchService $searchService, ElasticaService $elasticaService): Response
     {
         $search = new Search();
         $searchForm = $this->createForm(SearchFormType::class, $search, [
@@ -120,25 +119,20 @@ class PublishController extends AbstractController
             'icon' => 'glyphicon glyphicon-open',
         ]);
 
-        $body = $searchService->generateSearchBody($search);
         $form = $builder->getForm();
         $form->handleRequest($request);
-
-        $body['query']['bool']['must'] = \array_merge($body['query']['bool']['must'] ?? [], [['term' => [EMSSource::FIELD_CONTENT_TYPE => $contentType->getName()]]]);
-        $counter = $client->search([
-            'index' => $environment->getAlias(),
-            'body' => $body,
-            'size' => 0,
-        ]);
-
-        $total = $counter['hits']['total'];
+        $search->setEnvironments([$environment->getName()]);
+        $search->setContentTypes([$contentType->getName()]);
+        $emsSearch = $searchService->generateSearch($search);
+        $total = $elasticaService->count($emsSearch);
+        $query = $emsSearch->getQuery();
 
         if ($form->isSubmitted()) {
             $command = \sprintf(
                 'ems:environment:align %s %s --force --searchQuery=%s',
                 $environment->getName(),
                 $form->get('toEnvironment')->getData(),
-                \json_encode($body)
+                \json_encode(['query' => null === $query ? [] : $query->toArray()])
             );
 
             $user = $this->getUser();

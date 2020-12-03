@@ -12,12 +12,12 @@ use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\QueryBuilder;
-use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use EMS\CommonBundle\Common\Document;
 use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Helper\ArrayTool;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Storage\StorageManager;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
@@ -94,8 +94,8 @@ class DataService
     protected $authorizationChecker;
     /** @var TokenStorageInterface */
     protected $tokenStorage;
-    /** @Client $client*/
-    protected $client;
+    /** @var ElasticaService */
+    protected $elasticaService;
     /** @var Mapping */
     protected $mapping;
     /** @var ObjectManager */
@@ -134,7 +134,7 @@ class DataService
         AuthorizationCheckerInterface $authorizationChecker,
         TokenStorageInterface $tokenStorage,
         string $lockTime,
-        Client $client,
+        ElasticaService $elasticaService,
         Mapping $mapping,
         string $instanceId,
         Session $session,
@@ -159,7 +159,7 @@ class DataService
         $this->authorizationChecker = $authorizationChecker;
         $this->tokenStorage = $tokenStorage;
         $this->lockTime = $lockTime;
-        $this->client = $client;
+        $this->elasticaService = $elasticaService;
         $this->mapping = $mapping;
         $this->instanceId = $instanceId;
         $this->em = $this->doctrine->getManager();
@@ -333,10 +333,9 @@ class DataService
         foreach ($items as $contentType => $ouuids) {
             $contentType = $this->contentTypeService->getByName($contentType);
             if ($contentType instanceof ContentType && $contentType->getBusinessIdField() && \count($ouuids) > 0) {
-                $result = $this->client->search([
+                $search = $this->elasticaService->convertElasticsearchSearch([
                     'index' => $contentType->getEnvironment()->getAlias(),
                     'body' => [
-                        'size' => \sizeof($ouuids),
                         '_source' => $contentType->getBusinessIdField(),
                         'query' => [
                             'bool' => [
@@ -356,19 +355,18 @@ class DataService
                         ],
                     ],
                     'size' => 100,
-                    'scroll' => self::SCROLL_TIMEOUT,
                 ]);
 
-                while (\count($result['hits']['hits'] ?? []) > 0) {
-                    foreach ($result['hits']['hits'] as $hits) {
-                        $dataLink = $contentType->getName().':'.$hits['_id'];
-                        $businessKeys[$dataLink] = $hits['_source'][$contentType->getBusinessIdField()] ?? $hits['_id'];
+                $scroll = $this->elasticaService->scroll($search, self::SCROLL_TIMEOUT);
+                foreach ($scroll as $resultSet) {
+                    foreach ($resultSet as $result) {
+                        if (false === $result) {
+                            continue;
+                        }
+                        $dataLink = $contentType->getName().':'.$result->getId();
+                        $businessKeys[$dataLink] = $result->getSource()[$contentType->getBusinessIdField()] ?? $result->getId();
                         $this->cacheBusinessKey[$dataLink] = $businessKeys[$dataLink];
                     }
-                    $result = $this->client->scroll([
-                        'scroll_id' => $result['_scroll_id'],
-                        'scroll' => self::SCROLL_TIMEOUT,
-                    ]);
                 }
             }
         }
@@ -2024,7 +2022,7 @@ class DataService
         foreach (\explode(',', $contentTypesCommaList) as $contentTypeName) {
             $contentType = $this->contentTypeService->getByName($contentTypeName);
             if ($contentType->getBusinessIdField() && \count($ouuids) > 0) {
-                $result = $this->client->search([
+                $search = $this->elasticaService->convertElasticsearchSearch([
                     'index' => $contentType->getEnvironment()->getAlias(),
                     'body' => [
                         'size' => \sizeof($ouuids),
@@ -2047,19 +2045,18 @@ class DataService
                         ],
                     ],
                     'size' => 100,
-                    'scroll' => self::SCROLL_TIMEOUT,
                 ]);
 
-                while (\count($result['hits']['hits'] ?? []) > 0) {
-                    foreach ($result['hits']['hits'] as $hits) {
-                        $key = \sprintf('%s:%s', $contentType->getName(), $hits['_id']);
-                        $ouuids[$hits['_source'][$contentType->getBusinessIdField()]] = $key;
+                $scroll = $this->elasticaService->scroll($search, self::SCROLL_TIMEOUT);
+                foreach ($scroll as $resultSet) {
+                    foreach ($resultSet as $result) {
+                        if (false === $result) {
+                            continue;
+                        }
+                        $key = \sprintf('%s:%s', $contentType->getName(), $result->getId());
+                        $ouuids[$result->getSource()[$contentType->getBusinessIdField()]] = $key;
                         $this->cacheOuuids[$contentTypesCommaList][$contentType->getBusinessIdField()] = $key;
                     }
-                    $result = $this->client->scroll([
-                        'scroll_id' => $result['_scroll_id'],
-                        'scroll' => self::SCROLL_TIMEOUT,
-                    ]);
                 }
             }
         }

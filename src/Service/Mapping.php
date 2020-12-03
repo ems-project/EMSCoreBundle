@@ -248,4 +248,16 @@ class Mapping
 
         return true;
     }
+
+    /**
+     * @param array<mixed> $mappings
+     */
+    public function updateMapping(string $name, array $mappings, string $type): void
+    {
+        $endpoint = new MappingPut();
+        $endpoint->setIndex($name);
+        $endpoint->setBody($mappings);
+        $endpoint->setType($this->getTypePath($type));
+        $this->elasticaClient->requestEndpoint($endpoint);
+    }
 }

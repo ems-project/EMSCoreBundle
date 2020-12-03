@@ -322,7 +322,7 @@ class ElasticsearchController extends AppController
         }
 
         $search = null;
-        if (null !== $searchId) {
+        if (\is_int($searchId)) {
             $searchRepository = $em->getRepository('EMSCoreBundle:Form\Search');
             $search = $searchRepository->findOneBy([
                 'id' => $searchId,

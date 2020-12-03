@@ -166,6 +166,24 @@ class Mapping
         return $this->fieldTypeType->dataFieldToArray($dataField);
     }
 
+    /**
+     * @param array<mixed> $mapping1
+     * @param array<mixed> $mapping2
+     *
+     * @return array<mixed>
+     */
+    private function mergeMappings($mapping1, $mapping2): array
+    {
+        $mapping = \array_merge($mapping1, $mapping2);
+        foreach ($mapping as $name => $fields) {
+            if (isset($fields['properties']) && isset($mapping1[$name]) && isset($mapping1[$name]['properties'])) {
+                $mapping[$name]['properties'] = $this->mergeMappings($mapping[$name]['properties'], $mapping1[$name]['properties']);
+            }
+        }
+
+        return $mapping;
+    }
+
     public function getMapping(array $environmentNames): ?array
     {
         $mergeMapping = [];
@@ -178,12 +196,12 @@ class Mapping
                 $mappings = $this->elasticaClient->getIndex($environment->getAlias())->getMapping();
 
                 if (isset($mappings['_meta']) && isset($mappings['properties'])) {
-                    $mergeMapping = \array_merge_recursive($mappings['properties'], $mergeMapping);
+                    $mergeMapping = $this->mergeMappings($mappings['properties'], $mergeMapping);
                     continue;
                 }
 
                 foreach ($mappings as $mapping) {
-                    $mergeMapping = \array_merge_recursive($mapping['properties'], $mergeMapping);
+                    $mergeMapping = $this->mergeMappings($mapping['properties'], $mergeMapping);
                 }
             } catch (\Throwable $e) {
                 continue;

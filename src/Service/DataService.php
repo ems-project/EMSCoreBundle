@@ -771,7 +771,10 @@ class DataService
             throw new \RuntimeException('Unexpected null content type');
         }
 
-        //test integrity
+        if ($revision->getModified() > new DateTime('-10 seconds')) {
+            return;
+        }
+
         foreach ($revision->getEnvironments() as $environment) {
             try {
                 $document = $this->searchService->getDocument($contentType, $revision->getOuuid());

@@ -84,6 +84,7 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('tika_server')->defaultValue(self::TIKA_SERVER)->end()
             ->scalarNode('elasticsearch_version')->defaultValue('depreacted')->end()
             ->booleanNode('single_type_index')->defaultValue(self::SINGLE_TYPE_INDEX)->end()
+            ->booleanNode('pre_generated_ouuids')->defaultValue(false)->end()
             ->arrayNode('template_options')->defaultValue([])->prototype('variable')->end()->end()
             ->scalarNode('health_check_allow_origin')->defaultValue(null)->end()
             ->scalarNode('tika_download_url')->defaultValue(null)->end()

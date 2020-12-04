@@ -7,8 +7,8 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
-use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
+use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\EMSCoreBundle;
@@ -236,13 +236,13 @@ class EnvironmentController extends AppController
                     try {
                         $document = $searchService->getDocument($contentType, $results[$index]['ouuid'], $env ? $env : null);
                         $results[$index]['objectEnvironment'] = $document->getRaw();
-                    } catch (Missing404Exception $e) {
+                    } catch (NotFoundException $e) {
                         $results[$index]['objectEnvironment'] = null; //This revision doesn't exist in this environment, but it's ok.
                     }
                     try {
                         $document = $searchService->getDocument($contentType, $results[$index]['ouuid'], $withEnvi ? $withEnvi : null);
                         $results[$index]['objectWithEnvironment'] = $document->getRaw();
-                    } catch (Missing404Exception $e) {
+                    } catch (NotFoundException $e) {
                         $results[$index]['objectWithEnvironment'] = null; //This revision doesn't exist in this environment, but it's ok.
                     }
                 }
@@ -327,7 +327,7 @@ class EnvironmentController extends AppController
                     ]);
                 }
             }
-        } catch (Missing404Exception $e) {
+        } catch (NotFoundException $e) {
             $this->getLogger()->error('log.error', [
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                 EmsFields::LOG_EXCEPTION_FIELD => $e,
@@ -584,7 +584,7 @@ class EnvironmentController extends AppController
 
         try {
             $info = $mapping->getMapping([$environment->getName()]);
-        } catch (Missing404Exception $e) {
+        } catch (NotFoundException $e) {
             $this->getLogger()->error('log.environment.alias_missing', [
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                 EmsFields::LOG_EXCEPTION_FIELD => $e,

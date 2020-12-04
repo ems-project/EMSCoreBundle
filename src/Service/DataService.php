@@ -12,9 +12,9 @@ use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\QueryBuilder;
-use Elasticsearch\Common\Exceptions\Missing404Exception;
 use EMS\CommonBundle\Common\Document;
 use EMS\CommonBundle\Common\EMSLink;
+use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CommonBundle\Helper\ArrayTool;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
@@ -47,6 +47,7 @@ use EMS\CoreBundle\Twig\AppExtension;
 use Exception;
 use IteratorAggregate;
 use Monolog\Logger;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Form\Form;
@@ -128,6 +129,8 @@ class DataService
     private $searchService;
     /** @var IndexService */
     private $indexService;
+    /** @var bool */
+    private $preGeneratedOuuids;
 
     public function __construct(
         Registry $doctrine,
@@ -152,7 +155,8 @@ class DataService
         RevisionRepository $revisionRepository,
         EnvironmentService $environmentService,
         SearchService $searchService,
-        IndexService $indexService
+        IndexService $indexService,
+        bool $preGeneratedOuuids
     ) {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
@@ -177,6 +181,7 @@ class DataService
         $this->environmentService = $environmentService;
         $this->searchService = $searchService;
         $this->indexService = $indexService;
+        $this->preGeneratedOuuids = $preGeneratedOuuids;
 
         $this->public_key = null;
         $this->private_key = null;
@@ -771,7 +776,10 @@ class DataService
             throw new \RuntimeException('Unexpected null content type');
         }
 
-        //test integrity
+        if ($revision->getModified() > new DateTime('-10 seconds')) {
+            return;
+        }
+
         foreach ($revision->getEnvironments() as $environment) {
             try {
                 $document = $this->searchService->getDocument($contentType, $revision->getOuuid());
@@ -923,6 +931,10 @@ class DataService
 
         if (!empty($revision->getAutoSave())) {
             throw new DataStateException('An auto save is pending, it can not be finalized.');
+        }
+
+        if (!$revision->hasOuuid() && $this->preGeneratedOuuids) {
+            $revision->setOuuid(Uuid::uuid4()->toString());
         }
 
         $objectArray = $revision->getRawData();
@@ -1399,12 +1411,6 @@ class DataService
     /**
      * @param string $type
      * @param string $ouuid
-     *
-     * @throws LockedException
-     * @throws Missing404Exception
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PrivilegeException
      */
     public function delete($type, $ouuid)
     {
@@ -1445,7 +1451,7 @@ class DataService
                         EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
                         EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
                     ]);
-                } catch (Missing404Exception $e) {
+                } catch (NotFoundException $e) {
                     if (!$revision->getDeleted()) {
                         $this->logger->warning('service.data.already_unpublished', [
                             EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),

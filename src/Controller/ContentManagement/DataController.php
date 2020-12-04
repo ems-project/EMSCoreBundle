@@ -6,7 +6,6 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Dompdf\Dompdf;
-use Elasticsearch\Common\Exceptions\Missing404Exception;
 use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
@@ -587,9 +586,6 @@ class DataController extends AppController
     /**
      * @return RedirectResponse
      *
-     * @throws Missing404Exception
-     * @throws \Exception
-     * @throws NonUniqueResultException
      * @Route("/data/delete/{type}/{ouuid}", name="object.delete", methods={"POST"})
      */
     public function deleteAction(string $type, string $ouuid, DataService $dataService, LoggerInterface $logger)

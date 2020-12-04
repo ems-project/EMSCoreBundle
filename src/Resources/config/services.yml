@@ -440,7 +440,7 @@ services:
         arguments: ['@ems.service.data', '@logger', '@EMS\CoreBundle\Repository\RevisionRepository']
     ems.service.alias:
         class: EMS\CoreBundle\Service\AliasService
-        arguments: ['@ems_common.elastica.client', '@EMS\CoreBundle\Repository\EnvironmentRepository', '@EMS\CoreBundle\Repository\ManagedAliasRepository', '@ems_common.service.elastica']
+        arguments: ['@logger', '@ems_common.elastica.client', '@EMS\CoreBundle\Repository\EnvironmentRepository', '@EMS\CoreBundle\Repository\ManagedAliasRepository', '@ems_common.service.elastica']
     EMS\CoreBundle\Service\AliasService: '@ems.service.alias'
     ems.service.index:
         class: EMS\CoreBundle\Service\IndexService

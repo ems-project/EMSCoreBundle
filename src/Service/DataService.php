@@ -47,6 +47,7 @@ use EMS\CoreBundle\Twig\AppExtension;
 use Exception;
 use IteratorAggregate;
 use Monolog\Logger;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Form\Form;
@@ -128,6 +129,8 @@ class DataService
     private $searchService;
     /** @var IndexService */
     private $indexService;
+    /** @var bool */
+    private $preGeneratedOuuids;
 
     public function __construct(
         Registry $doctrine,
@@ -152,7 +155,8 @@ class DataService
         RevisionRepository $revisionRepository,
         EnvironmentService $environmentService,
         SearchService $searchService,
-        IndexService $indexService
+        IndexService $indexService,
+        bool $preGeneratedOuuids
     ) {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
@@ -177,6 +181,7 @@ class DataService
         $this->environmentService = $environmentService;
         $this->searchService = $searchService;
         $this->indexService = $indexService;
+        $this->preGeneratedOuuids = $preGeneratedOuuids;
 
         $this->public_key = null;
         $this->private_key = null;
@@ -923,6 +928,10 @@ class DataService
 
         if (!empty($revision->getAutoSave())) {
             throw new DataStateException('An auto save is pending, it can not be finalized.');
+        }
+
+        if (!$revision->hasOuuid() && $this->preGeneratedOuuids) {
+            $revision->setOuuid(Uuid::uuid4()->toString());
         }
 
         $objectArray = $revision->getRawData();

@@ -715,12 +715,13 @@ class DataService
 
     public function sign(Revision $revision, $silentPublish = false)
     {
-        $objectArray[Mapping::CONTENT_TYPE_FIELD] = $revision->getContentType();
         if ($silentPublish && $revision->getAutoSave()) {
             $objectArray = $revision->getAutoSave();
         } else {
             $objectArray = $revision->getRawData();
         }
+
+        $objectArray[Mapping::CONTENT_TYPE_FIELD] = $revision->getContentType()->getName();
         if ($revision->hasVersionTags()) {
             $objectArray[Mapping::VERSION_UUID] = $revision->getVersionUuid();
             $objectArray[Mapping::VERSION_TAG] = $revision->getVersionTag();

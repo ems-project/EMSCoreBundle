@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Service;
 
+use Elastica\Aggregation\Terms;
 use Elastica\Client as ElasticaClient;
 use Elasticsearch\Endpoints\Cat\Indices;
 use Elasticsearch\Endpoints\Indices\Alias\Get;
@@ -11,9 +12,11 @@ use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\ManagedAlias;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\ManagedAliasRepository;
+use Psr\Log\LoggerInterface;
 
 class AliasService
 {
+    private const COUNTER_AGGREGATION = 'counter_aggregation';
     /** @var EnvironmentRepository */
     private $envRepo;
     /** @var ManagedAliasRepository */
@@ -28,10 +31,16 @@ class AliasService
     private $elasticaClient;
     /** @var ElasticaService */
     private $elasticaService;
+    /** @var array<string, int> */
+    private $counterIndexes;
+    /** @var LoggerInterface */
+    private $logger;
 
-    public function __construct(ElasticaClient $elasticaClient, EnvironmentRepository $environmentRepository, ManagedAliasRepository $managedAliasRepository, ElasticaService $elasticaService)
+    public function __construct(LoggerInterface $logger, ElasticaClient $elasticaClient, EnvironmentRepository $environmentRepository, ManagedAliasRepository $managedAliasRepository, ElasticaService $elasticaService)
     {
+        $this->counterIndexes = [];
         $this->envRepo = $environmentRepository;
+        $this->logger = $logger;
         $this->managedAliasRepo = $managedAliasRepository;
         $this->elasticaClient = $elasticaClient;
         $this->elasticaService = $elasticaService;
@@ -45,7 +54,7 @@ class AliasService
     /**
      * @return array{total: int, indexes: array, environment: string, managed: bool}
      */
-    public function getAlias(string $name)
+    public function getAlias(string $name): array
     {
         return $this->aliases[$name];
     }
@@ -53,22 +62,17 @@ class AliasService
     /**
      * @return array<string, array{total: int, indexes: array, environment: string, managed: bool}>
      */
-    public function getAliases()
+    public function getAliases(): array
     {
         return $this->aliases;
     }
 
-    /**
-     * @param int $id
-     *
-     * @return ManagedAlias|null
-     */
-    public function getManagedAlias($id)
+    public function getManagedAlias(int $id): ?ManagedAlias
     {
         /** @var ManagedAlias|null $managedAlias */
         $managedAlias = $this->managedAliasRepo->find($id);
 
-        if ($this->hasAlias($managedAlias->getAlias())) {
+        if (null !== $managedAlias && $this->hasAlias($managedAlias->getAlias())) {
             $alias = $this->getAlias($managedAlias->getAlias());
             $managedAlias->setIndexes($alias['indexes']);
         }
@@ -76,12 +80,16 @@ class AliasService
         return $managedAlias;
     }
 
-    public function getManagedAliasByName(string $name)
+    public function getManagedAliasByName(string $name): ManagedAlias
     {
         /** @var ManagedAlias|null $managedAlias */
         $managedAlias = $this->managedAliasRepo->findOneBy([
             'name' => $name,
         ]);
+
+        if (null === $managedAlias) {
+            throw new \RuntimeException('Unexpected null managed alias');
+        }
 
         if ($this->hasAlias($managedAlias->getAlias())) {
             $alias = $this->getAlias($managedAlias->getAlias());
@@ -113,9 +121,9 @@ class AliasService
     }
 
     /**
-     * @return array
+     * @return array<mixed>
      */
-    public function getAllIndexes()
+    public function getAllIndexes(): array
     {
         $indexes = [];
         $endpoint = new Indices();
@@ -140,11 +148,9 @@ class AliasService
     }
 
     /**
-     * Aliases without an environment.
-     *
-     * @return array
+     * @return array<mixed>
      */
-    public function getUnreferencedAliases()
+    public function getUnreferencedAliases(): array
     {
         $aliases = $this->getAliases();
 
@@ -154,21 +160,14 @@ class AliasService
     }
 
     /**
-     * Indexes without aliases.
-     *
-     * @return array
+     * @return array<mixed>
      */
-    public function getOrphanIndexes()
+    public function getOrphanIndexes(): array
     {
         return $this->orphanIndexes;
     }
 
-    /**
-     * Build orphan indexes, unreferenced aliases.
-     *
-     * @return self
-     */
-    public function build()
+    public function build(): self
     {
         if ($this->isBuild) {
             return $this;
@@ -177,6 +176,34 @@ class AliasService
         $data = $this->getData();
         $environmentAliases = $this->envRepo->findAllAliases();
         $managedAliases = $this->managedAliasRepo->findAllAliases();
+
+        $search = new Search(['*']);
+        $terms = new Terms(self::COUNTER_AGGREGATION);
+        $terms->setField('_index');
+        $terms->setSize(2000);
+        $search->addAggregation($terms);
+        $search->setSize(0);
+        $aggregation = $this->elasticaService->search($search)->getAggregation(self::COUNTER_AGGREGATION);
+        if (0 !== ($aggregation['sum_other_doc_count'] ?? 0) || \count($aggregation['buckets'] ?? []) >= 2000) {
+            $this->logger->warning('service.alias.too_many_indexes');
+        }
+        $this->counterIndexes = [];
+        foreach ($aggregation['buckets'] ?? [] as $bucket) {
+            $index = $bucket['key'] ?? '';
+            if (\is_string($index) && $this->validIndexName($index)) {
+                $this->counterIndexes[$bucket['key']] = $bucket['doc_count'];
+            }
+        }
+
+        foreach ($data as $index => $info) {
+            $aliases = \array_keys($info['aliases']);
+            foreach ($aliases as $alias) {
+                if (\is_string($alias) && !isset($this->counterIndexes[$alias])) {
+                    $this->counterIndexes[$alias] = 0;
+                }
+                $this->counterIndexes[$alias] += $this->counterIndexes[$index];
+            }
+        }
 
         foreach ($data as $index => $info) {
             $aliases = \array_keys($info['aliases']);
@@ -187,6 +214,9 @@ class AliasService
             }
 
             foreach ($aliases as $alias) {
+                if (!\is_string($alias)) {
+                    continue;
+                }
                 if (\array_key_exists($alias, $environmentAliases)) {
                     $this->addAlias($alias, $index, $environmentAliases[$alias]);
                 } elseif (\in_array($alias, $managedAliases)) {
@@ -196,7 +226,6 @@ class AliasService
                 }
             }
         }
-
         $this->isBuild = true;
 
         return $this;
@@ -223,10 +252,7 @@ class AliasService
         $this->elasticaClient->requestEndpoint($endpoint);
     }
 
-    /**
-     * @param string $name
-     */
-    public function removeAlias($name): bool
+    public function removeAlias(string $name): bool
     {
         if (!$this->hasAlias($name)) {
             return false;
@@ -245,13 +271,9 @@ class AliasService
     }
 
     /**
-     * @param string $name
-     * @param string $index
-     * @param bool   $managed
-     *
-     * @return void
+     * @param array<mixed> $env
      */
-    private function addAlias($name, $index, array $env = [], $managed = false)
+    private function addAlias(string $name, string $index, array $env = [], bool $managed = false): void
     {
         if ($this->hasAlias($name)) {
             $this->aliases[$name]['indexes'][$index] = $this->getIndex($index);
@@ -267,37 +289,28 @@ class AliasService
         ];
     }
 
-    /**
-     * @param string $name
-     */
-    private function addOrphanIndex($name)
+    private function addOrphanIndex(string $name): void
     {
         $this->orphanIndexes[] = $this->getIndex($name);
     }
 
-    private function getIndex($name)
+    /**
+     * @return array{name: string, count: int}
+     */
+    private function getIndex(string $name): array
     {
         return ['name' => $name, 'count' => $this->count($name)];
     }
 
-    /**
-     * @param string $name
-     *
-     * @return int
-     */
-    private function count($name)
+    private function count(string $name): int
     {
-        $search = new Search([$name]);
-
-        return $this->elasticaService->count($search);
+        return $this->counterIndexes[$name] ?? 0;
     }
 
     /**
-     * Filters out indexes that start with .*.
-     *
-     * @return array
+     * @return array<mixed>
      */
-    private function getData()
+    private function getData(): array
     {
         $endpoint = new Get();
         $indexesAliases = $this->elasticaClient->requestEndpoint($endpoint)->getData();
@@ -309,13 +322,8 @@ class AliasService
         );
     }
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    private function validIndexName($name)
+    private function validIndexName(string $index): bool
     {
-        return 0 != \strcmp($name[0], '.');
+        return \strlen($index) > 0 && '.' !== \substr($index, 0, 1);
     }
 }

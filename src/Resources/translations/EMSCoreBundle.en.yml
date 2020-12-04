@@ -375,6 +375,8 @@ command:
     start: 'Start reindexing %contenttype% in %environment%'
     end: 'The content type %contenttype%''s documents have been reindexed in %environment% (index: %index%)'
 service:
+  alias:
+    too_many_indexes: 'There is too many indexes'
   contenttype:
     should_reindex: 'You should try to rebuild the indexes for  %contenttype%. Message from Elasticsearch; %elasticsearch_error_type% : %elasticsearch_error_reason%'
     mappings_error: 'Mappings update for %contenttype% in %environments% failed : %elasticsearch_dump%'

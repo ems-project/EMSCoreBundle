@@ -4,8 +4,8 @@ namespace EMS\CoreBundle\Controller;
 
 use Doctrine\ORM\EntityManager;
 use Elasticsearch\Common\Exceptions\ElasticsearchException;
-use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
+use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Search\Search as CommonSearch;
@@ -283,7 +283,7 @@ class ElasticsearchController extends AppController
             $logger->notice('log.elasticsearch.index_deleted', [
                 'index_name' => $name,
             ]);
-        } catch (Missing404Exception $e) {
+        } catch (NotFoundException $e) {
             $logger->warning('log.elasticsearch.index_not_found', [
                 'index_name' => $name,
             ]);

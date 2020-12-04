@@ -12,9 +12,9 @@ use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\QueryBuilder;
-use Elasticsearch\Common\Exceptions\Missing404Exception;
 use EMS\CommonBundle\Common\Document;
 use EMS\CommonBundle\Common\EMSLink;
+use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CommonBundle\Helper\ArrayTool;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
@@ -1399,12 +1399,6 @@ class DataService
     /**
      * @param string $type
      * @param string $ouuid
-     *
-     * @throws LockedException
-     * @throws Missing404Exception
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PrivilegeException
      */
     public function delete($type, $ouuid)
     {
@@ -1445,7 +1439,7 @@ class DataService
                         EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
                         EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
                     ]);
-                } catch (Missing404Exception $e) {
+                } catch (NotFoundException $e) {
                     if (!$revision->getDeleted()) {
                         $this->logger->warning('service.data.already_unpublished', [
                             EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),

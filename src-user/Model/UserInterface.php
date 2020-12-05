@@ -11,13 +11,13 @@
 
 namespace FOS\UserBundle\Model;
 
-use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 
 /**
  * @author Thibault Duplessis <thibault.duplessis@gmail.com>
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-interface UserInterface extends AdvancedUserInterface, \Serializable
+interface UserInterface extends SymfonyUserInterface, \Serializable
 {
     const ROLE_DEFAULT = 'ROLE_USER';
 
@@ -221,4 +221,16 @@ interface UserInterface extends AdvancedUserInterface, \Serializable
      * @return static
      */
     public function removeRole($role);
+
+    /**
+     * Checks whether the user is locked.
+     *
+     * Internally, if this method returns false, the authentication system
+     * will throw a LockedException and prevent login.
+     *
+     * @return bool true if the user is not locked, false otherwise
+     *
+     * @see LockedException
+     */
+    public function isAccountNonLocked(): bool;
 }

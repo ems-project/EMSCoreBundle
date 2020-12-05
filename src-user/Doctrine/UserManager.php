@@ -33,10 +33,7 @@ class UserManager extends BaseUserManager
     /**
      * Constructor.
      *
-     * @param PasswordUpdaterInterface $passwordUpdater
-     * @param CanonicalFieldsUpdater   $canonicalFieldsUpdater
-     * @param ObjectManager            $om
-     * @param string                   $class
+     * @param string $class
      */
     public function __construct(PasswordUpdaterInterface $passwordUpdater, CanonicalFieldsUpdater $canonicalFieldsUpdater, ObjectManager $om, $class)
     {
@@ -60,7 +57,7 @@ class UserManager extends BaseUserManager
      */
     public function getClass()
     {
-        if (false !== strpos($this->class, ':')) {
+        if (false !== \strpos($this->class, ':')) {
             $metadata = $this->objectManager->getClassMetadata($this->class);
             $this->class = $metadata->getName();
         }

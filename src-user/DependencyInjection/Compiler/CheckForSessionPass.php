@@ -30,7 +30,7 @@ class CheckForSessionPass implements CompilerPassInterface
         if ($container->has('fos_user.session') && !$container->has('session')) {
             $message = 'FOSUserBundle requires the "session" service to be available.';
 
-            if (class_exists(Recipe::class)) {
+            if (\class_exists(Recipe::class)) {
                 $message .= ' Uncomment the "session" section in "config/packages/framework.yaml" to activate it.';
             }
 

@@ -106,7 +106,7 @@ abstract class User implements UserInterface, GroupableInterface
     public function __construct()
     {
         $this->enabled = false;
-        $this->roles = array();
+        $this->roles = [];
     }
 
     /**
@@ -122,12 +122,12 @@ abstract class User implements UserInterface, GroupableInterface
      */
     public function addRole($role)
     {
-        $role = strtoupper($role);
+        $role = \strtoupper($role);
         if ($role === static::ROLE_DEFAULT) {
             return $this;
         }
 
-        if (!in_array($role, $this->roles, true)) {
+        if (!\in_array($role, $this->roles, true)) {
             $this->roles[] = $role;
         }
 
@@ -139,7 +139,7 @@ abstract class User implements UserInterface, GroupableInterface
      */
     public function serialize()
     {
-        return serialize(array(
+        return \serialize([
             $this->password,
             $this->salt,
             $this->usernameCanonical,
@@ -148,7 +148,7 @@ abstract class User implements UserInterface, GroupableInterface
             $this->id,
             $this->email,
             $this->emailCanonical,
-        ));
+        ]);
     }
 
     /**
@@ -156,16 +156,16 @@ abstract class User implements UserInterface, GroupableInterface
      */
     public function unserialize($serialized)
     {
-        $data = unserialize($serialized);
+        $data = \unserialize($serialized);
 
-        if (13 === count($data)) {
+        if (13 === \count($data)) {
             // Unserializing a User object from 1.3.x
             unset($data[4], $data[5], $data[6], $data[9], $data[10]);
-            $data = array_values($data);
-        } elseif (11 === count($data)) {
+            $data = \array_values($data);
+        } elseif (11 === \count($data)) {
             // Unserializing a User from a dev version somewhere between 2.0-alpha3 and 2.0-beta1
             unset($data[4], $data[7], $data[8]);
-            $data = array_values($data);
+            $data = \array_values($data);
         }
 
         list(
@@ -278,13 +278,13 @@ abstract class User implements UserInterface, GroupableInterface
         $roles = $this->roles;
 
         foreach ($this->getGroups() as $group) {
-            $roles = array_merge($roles, $group->getRoles());
+            $roles = \array_merge($roles, $group->getRoles());
         }
 
         // we need to make sure to have at least one role
         $roles[] = static::ROLE_DEFAULT;
 
-        return array_unique($roles);
+        return \array_unique($roles);
     }
 
     /**
@@ -292,7 +292,7 @@ abstract class User implements UserInterface, GroupableInterface
      */
     public function hasRole($role)
     {
-        return in_array(strtoupper($role), $this->getRoles(), true);
+        return \in_array(\strtoupper($role), $this->getRoles(), true);
     }
 
     /**
@@ -337,9 +337,9 @@ abstract class User implements UserInterface, GroupableInterface
      */
     public function removeRole($role)
     {
-        if (false !== $key = array_search(strtoupper($role), $this->roles, true)) {
+        if (false !== $key = \array_search(\strtoupper($role), $this->roles, true)) {
             unset($this->roles[$key]);
-            $this->roles = array_values($this->roles);
+            $this->roles = \array_values($this->roles);
         }
 
         return $this;
@@ -472,7 +472,7 @@ abstract class User implements UserInterface, GroupableInterface
     /**
      * Gets the timestamp that the user requested a password reset.
      *
-     * @return null|\DateTime
+     * @return \DateTime|null
      */
     public function getPasswordRequestedAt()
     {
@@ -485,7 +485,7 @@ abstract class User implements UserInterface, GroupableInterface
     public function isPasswordRequestNonExpired($ttl)
     {
         return $this->getPasswordRequestedAt() instanceof \DateTime &&
-               $this->getPasswordRequestedAt()->getTimestamp() + $ttl > time();
+               $this->getPasswordRequestedAt()->getTimestamp() + $ttl > \time();
     }
 
     /**
@@ -493,7 +493,7 @@ abstract class User implements UserInterface, GroupableInterface
      */
     public function setRoles(array $roles)
     {
-        $this->roles = array();
+        $this->roles = [];
 
         foreach ($roles as $role) {
             $this->addRole($role);
@@ -515,7 +515,7 @@ abstract class User implements UserInterface, GroupableInterface
      */
     public function getGroupNames()
     {
-        $names = array();
+        $names = [];
         foreach ($this->getGroups() as $group) {
             $names[] = $group->getName();
         }
@@ -528,7 +528,7 @@ abstract class User implements UserInterface, GroupableInterface
      */
     public function hasGroup($name)
     {
-        return in_array($name, $this->getGroupNames());
+        return \in_array($name, $this->getGroupNames());
     }
 
     /**

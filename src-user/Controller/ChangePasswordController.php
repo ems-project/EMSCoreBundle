@@ -47,14 +47,12 @@ class ChangePasswordController extends Controller
     /**
      * Change user password.
      *
-     * @param Request $request
-     *
      * @return Response
      */
     public function changePasswordAction(Request $request)
     {
         $user = $this->getUser();
-        if (!is_object($user) || !$user instanceof UserInterface) {
+        if (!\is_object($user) || !$user instanceof UserInterface) {
             throw new AccessDeniedException('This user does not have access to this section.');
         }
 
@@ -86,8 +84,8 @@ class ChangePasswordController extends Controller
             return $response;
         }
 
-        return $this->render('@FOSUser/ChangePassword/change_password.html.twig', array(
+        return $this->render('@FOSUser/ChangePassword/change_password.html.twig', [
             'form' => $form->createView(),
-        ));
+        ]);
     }
 }

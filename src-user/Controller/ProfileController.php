@@ -49,26 +49,24 @@ class ProfileController extends Controller
     public function showAction()
     {
         $user = $this->getUser();
-        if (!is_object($user) || !$user instanceof UserInterface) {
+        if (!\is_object($user) || !$user instanceof UserInterface) {
             throw new AccessDeniedException('This user does not have access to this section.');
         }
 
-        return $this->render('@FOSUser/Profile/show.html.twig', array(
+        return $this->render('@FOSUser/Profile/show.html.twig', [
             'user' => $user,
-        ));
+        ]);
     }
 
     /**
      * Edit the user.
-     *
-     * @param Request $request
      *
      * @return Response
      */
     public function editAction(Request $request)
     {
         $user = $this->getUser();
-        if (!is_object($user) || !$user instanceof UserInterface) {
+        if (!\is_object($user) || !$user instanceof UserInterface) {
             throw new AccessDeniedException('This user does not have access to this section.');
         }
 
@@ -100,8 +98,8 @@ class ProfileController extends Controller
             return $response;
         }
 
-        return $this->render('@FOSUser/Profile/edit.html.twig', array(
+        return $this->render('@FOSUser/Profile/edit.html.twig', [
             'form' => $form->createView(),
-        ));
+        ]);
     }
 }

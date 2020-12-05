@@ -34,14 +34,14 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('fos_user');
 
-        $supportedDrivers = array('orm', 'mongodb', 'couchdb', 'custom');
+        $supportedDrivers = ['orm', 'mongodb', 'couchdb', 'custom'];
 
         $rootNode
             ->children()
                 ->scalarNode('db_driver')
                     ->validate()
                         ->ifNotInArray($supportedDrivers)
-                        ->thenInvalid('The driver %s is not supported. Please choose one of '.json_encode($supportedDrivers))
+                        ->thenInvalid('The driver %s is not supported. Please choose one of '.\json_encode($supportedDrivers))
                     ->end()
                     ->cannotBeOverwritten()
                     ->isRequired()
@@ -86,9 +86,6 @@ class Configuration implements ConfigurationInterface
         return $treeBuilder;
     }
 
-    /**
-     * @param ArrayNodeDefinition $node
-     */
     private function addProfileSection(ArrayNodeDefinition $node)
     {
         $node
@@ -105,7 +102,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('name')->defaultValue('fos_user_profile_form')->end()
                                 ->arrayNode('validation_groups')
                                     ->prototype('scalar')->end()
-                                    ->defaultValue(array('Profile', 'Default'))
+                                    ->defaultValue(['Profile', 'Default'])
                                 ->end()
                             ->end()
                         ->end()
@@ -114,9 +111,6 @@ class Configuration implements ConfigurationInterface
             ->end();
     }
 
-    /**
-     * @param ArrayNodeDefinition $node
-     */
     private function addRegistrationSection(ArrayNodeDefinition $node)
     {
         $node
@@ -146,7 +140,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('name')->defaultValue('fos_user_registration_form')->end()
                                 ->arrayNode('validation_groups')
                                     ->prototype('scalar')->end()
-                                    ->defaultValue(array('Registration', 'Default'))
+                                    ->defaultValue(['Registration', 'Default'])
                                 ->end()
                             ->end()
                         ->end()
@@ -155,9 +149,6 @@ class Configuration implements ConfigurationInterface
             ->end();
     }
 
-    /**
-     * @param ArrayNodeDefinition $node
-     */
     private function addResettingSection(ArrayNodeDefinition $node)
     {
         $node
@@ -188,7 +179,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('name')->defaultValue('fos_user_resetting_form')->end()
                                 ->arrayNode('validation_groups')
                                     ->prototype('scalar')->end()
-                                    ->defaultValue(array('ResetPassword', 'Default'))
+                                    ->defaultValue(['ResetPassword', 'Default'])
                                 ->end()
                             ->end()
                         ->end()
@@ -197,9 +188,6 @@ class Configuration implements ConfigurationInterface
             ->end();
     }
 
-    /**
-     * @param ArrayNodeDefinition $node
-     */
     private function addChangePasswordSection(ArrayNodeDefinition $node)
     {
         $node
@@ -215,7 +203,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('name')->defaultValue('fos_user_change_password_form')->end()
                                 ->arrayNode('validation_groups')
                                     ->prototype('scalar')->end()
-                                    ->defaultValue(array('ChangePassword', 'Default'))
+                                    ->defaultValue(['ChangePassword', 'Default'])
                                 ->end()
                             ->end()
                         ->end()
@@ -224,9 +212,6 @@ class Configuration implements ConfigurationInterface
             ->end();
     }
 
-    /**
-     * @param ArrayNodeDefinition $node
-     */
     private function addServiceSection(ArrayNodeDefinition $node)
     {
         $node
@@ -246,9 +231,6 @@ class Configuration implements ConfigurationInterface
             ->end();
     }
 
-    /**
-     * @param ArrayNodeDefinition $node
-     */
     private function addGroupSection(ArrayNodeDefinition $node)
     {
         $node
@@ -266,7 +248,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('name')->defaultValue('fos_user_group_form')->end()
                                 ->arrayNode('validation_groups')
                                     ->prototype('scalar')->end()
-                                    ->defaultValue(array('Registration', 'Default'))
+                                    ->defaultValue(['Registration', 'Default'])
                                 ->end()
                             ->end()
                         ->end()

@@ -27,8 +27,6 @@ class UserProvider implements UserProviderInterface
 
     /**
      * Constructor.
-     *
-     * @param UserManagerInterface $userManager
      */
     public function __construct(UserManagerInterface $userManager)
     {
@@ -43,7 +41,7 @@ class UserProvider implements UserProviderInterface
         $user = $this->findUser($username);
 
         if (!$user) {
-            throw new UsernameNotFoundException(sprintf('Username "%s" does not exist.', $username));
+            throw new UsernameNotFoundException(\sprintf('Username "%s" does not exist.', $username));
         }
 
         return $user;
@@ -55,15 +53,15 @@ class UserProvider implements UserProviderInterface
     public function refreshUser(SecurityUserInterface $user)
     {
         if (!$user instanceof UserInterface) {
-            throw new UnsupportedUserException(sprintf('Expected an instance of FOS\UserBundle\Model\UserInterface, but got "%s".', get_class($user)));
+            throw new UnsupportedUserException(\sprintf('Expected an instance of FOS\UserBundle\Model\UserInterface, but got "%s".', \get_class($user)));
         }
 
-        if (!$this->supportsClass(get_class($user))) {
-            throw new UnsupportedUserException(sprintf('Expected an instance of %s, but got "%s".', $this->userManager->getClass(), get_class($user)));
+        if (!$this->supportsClass(\get_class($user))) {
+            throw new UnsupportedUserException(\sprintf('Expected an instance of %s, but got "%s".', $this->userManager->getClass(), \get_class($user)));
         }
 
-        if (null === $reloadedUser = $this->userManager->findUserBy(array('id' => $user->getId()))) {
-            throw new UsernameNotFoundException(sprintf('User with ID "%s" could not be reloaded.', $user->getId()));
+        if (null === $reloadedUser = $this->userManager->findUserBy(['id' => $user->getId()])) {
+            throw new UsernameNotFoundException(\sprintf('User with ID "%s" could not be reloaded.', $user->getId()));
         }
 
         return $reloadedUser;
@@ -76,7 +74,7 @@ class UserProvider implements UserProviderInterface
     {
         $userClass = $this->userManager->getClass();
 
-        return $userClass === $class || is_subclass_of($class, $userClass);
+        return $userClass === $class || \is_subclass_of($class, $userClass);
     }
 
     /**

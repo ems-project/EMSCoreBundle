@@ -50,8 +50,6 @@ class RegistrationController extends Controller
     }
 
     /**
-     * @param Request $request
-     *
      * @return Response
      */
     public function registerAction(Request $request)
@@ -96,9 +94,9 @@ class RegistrationController extends Controller
             }
         }
 
-        return $this->render('@FOSUser/Registration/register.html.twig', array(
+        return $this->render('@FOSUser/Registration/register.html.twig', [
             'form' => $form->createView(),
-        ));
+        ]);
     }
 
     /**
@@ -119,16 +117,15 @@ class RegistrationController extends Controller
             return new RedirectResponse($this->container->get('router')->generate('fos_user_security_login'));
         }
 
-        return $this->render('@FOSUser/Registration/check_email.html.twig', array(
+        return $this->render('@FOSUser/Registration/check_email.html.twig', [
             'user' => $user,
-        ));
+        ]);
     }
 
     /**
      * Receive the confirmation token from user email provider, login the user.
      *
-     * @param Request $request
-     * @param string  $token
+     * @param string $token
      *
      * @return Response
      */
@@ -139,7 +136,7 @@ class RegistrationController extends Controller
         $user = $userManager->findUserByConfirmationToken($token);
 
         if (null === $user) {
-            throw new NotFoundHttpException(sprintf('The user with confirmation token "%s" does not exist', $token));
+            throw new NotFoundHttpException(\sprintf('The user with confirmation token "%s" does not exist', $token));
         }
 
         $user->setConfirmationToken(null);
@@ -166,14 +163,14 @@ class RegistrationController extends Controller
     public function confirmedAction(Request $request)
     {
         $user = $this->getUser();
-        if (!is_object($user) || !$user instanceof UserInterface) {
+        if (!\is_object($user) || !$user instanceof UserInterface) {
             throw new AccessDeniedException('This user does not have access to this section.');
         }
 
-        return $this->render('@FOSUser/Registration/confirmed.html.twig', array(
+        return $this->render('@FOSUser/Registration/confirmed.html.twig', [
             'user' => $user,
             'targetUrl' => $this->getTargetUrlFromSession($request->getSession()),
-        ));
+        ]);
     }
 
     /**
@@ -181,7 +178,7 @@ class RegistrationController extends Controller
      */
     private function getTargetUrlFromSession(SessionInterface $session)
     {
-        $key = sprintf('_security.%s.target_path', $this->tokenStorage->getToken()->getProviderKey());
+        $key = \sprintf('_security.%s.target_path', $this->tokenStorage->getToken()->getProviderKey());
 
         if ($session->has($key)) {
             return $session->get($key);

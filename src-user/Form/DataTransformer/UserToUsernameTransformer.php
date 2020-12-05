@@ -30,8 +30,6 @@ class UserToUsernameTransformer implements DataTransformerInterface
 
     /**
      * UserToUsernameTransformer constructor.
-     *
-     * @param UserManagerInterface $userManager
      */
     public function __construct(UserManagerInterface $userManager)
     {
@@ -75,7 +73,7 @@ class UserToUsernameTransformer implements DataTransformerInterface
             return;
         }
 
-        if (!is_string($value)) {
+        if (!\is_string($value)) {
             throw new UnexpectedTypeException($value, 'string');
         }
 

@@ -37,7 +37,7 @@ abstract class Group implements GroupInterface
      * @param string $name
      * @param array  $roles
      */
-    public function __construct($name, $roles = array())
+    public function __construct($name, $roles = [])
     {
         $this->name = $name;
         $this->roles = $roles;
@@ -49,7 +49,7 @@ abstract class Group implements GroupInterface
     public function addRole($role)
     {
         if (!$this->hasRole($role)) {
-            $this->roles[] = strtoupper($role);
+            $this->roles[] = \strtoupper($role);
         }
 
         return $this;
@@ -76,7 +76,7 @@ abstract class Group implements GroupInterface
      */
     public function hasRole($role)
     {
-        return in_array(strtoupper($role), $this->roles, true);
+        return \in_array(\strtoupper($role), $this->roles, true);
     }
 
     /**
@@ -92,9 +92,9 @@ abstract class Group implements GroupInterface
      */
     public function removeRole($role)
     {
-        if (false !== $key = array_search(strtoupper($role), $this->roles, true)) {
+        if (false !== $key = \array_search(\strtoupper($role), $this->roles, true)) {
             unset($this->roles[$key]);
-            $this->roles = array_values($this->roles);
+            $this->roles = \array_values($this->roles);
         }
 
         return $this;

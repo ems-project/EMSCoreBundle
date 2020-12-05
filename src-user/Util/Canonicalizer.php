@@ -22,10 +22,10 @@ class Canonicalizer implements CanonicalizerInterface
             return;
         }
 
-        $encoding = mb_detect_encoding($string);
+        $encoding = \mb_detect_encoding($string);
         $result = $encoding
-            ? mb_convert_case($string, MB_CASE_LOWER, $encoding)
-            : mb_convert_case($string, MB_CASE_LOWER);
+            ? \mb_convert_case($string, MB_CASE_LOWER, $encoding)
+            : \mb_convert_case($string, MB_CASE_LOWER);
 
         return $result;
     }

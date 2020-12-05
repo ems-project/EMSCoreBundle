@@ -45,10 +45,6 @@ class UserManipulator
 
     /**
      * UserManipulator constructor.
-     *
-     * @param UserManagerInterface     $userManager
-     * @param EventDispatcherInterface $dispatcher
-     * @param RequestStack             $requestStack
      */
     public function __construct(UserManagerInterface $userManager, EventDispatcherInterface $dispatcher, RequestStack $requestStack)
     {
@@ -214,7 +210,7 @@ class UserManipulator
         $user = $this->userManager->findUserByUsername($username);
 
         if (!$user) {
-            throw new \InvalidArgumentException(sprintf('User identified by "%s" username does not exist.', $username));
+            throw new \InvalidArgumentException(\sprintf('User identified by "%s" username does not exist.', $username));
         }
 
         return $user;

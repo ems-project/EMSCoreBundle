@@ -33,7 +33,7 @@ class PasswordUpdater implements PasswordUpdaterInterface
     {
         $plainPassword = $user->getPlainPassword();
 
-        if (0 === strlen($plainPassword)) {
+        if (0 === \strlen($plainPassword)) {
             return;
         }
 
@@ -42,7 +42,7 @@ class PasswordUpdater implements PasswordUpdaterInterface
         if ($encoder instanceof BCryptPasswordEncoder) {
             $user->setSalt(null);
         } else {
-            $salt = rtrim(str_replace('+', '.', base64_encode(random_bytes(32))), '=');
+            $salt = \rtrim(\str_replace('+', '.', \base64_encode(\random_bytes(32))), '=');
             $user->setSalt($salt);
         }
 

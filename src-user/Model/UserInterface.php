@@ -161,8 +161,6 @@ interface UserInterface extends AdvancedUserInterface, \Serializable
     /**
      * Sets the timestamp that the user requested a password reset.
      *
-     * @param null|\DateTime $date
-     *
      * @return static
      */
     public function setPasswordRequestedAt(\DateTime $date = null);
@@ -178,8 +176,6 @@ interface UserInterface extends AdvancedUserInterface, \Serializable
 
     /**
      * Sets the last login time.
-     *
-     * @param \DateTime|null $time
      *
      * @return static
      */
@@ -203,8 +199,6 @@ interface UserInterface extends AdvancedUserInterface, \Serializable
      * Sets the roles of the user.
      *
      * This overwrites any previous roles.
-     *
-     * @param array $roles
      *
      * @return static
      */

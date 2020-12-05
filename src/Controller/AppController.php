@@ -5,7 +5,6 @@ namespace EMS\CoreBundle\Controller;
 use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
-use EMS\CoreBundle\Service\AliasService;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\EnvironmentService;
@@ -34,16 +33,6 @@ class AppController extends Controller
         $this->logger = $logger;
         $this->formRegistry = $formRegistry;
         $this->requestRuntime = $requestRuntime;
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return AliasService
-     */
-    protected function getAliasService()
-    {
-        return $this->container->get('ems.service.alias')->build();
     }
 
     /**

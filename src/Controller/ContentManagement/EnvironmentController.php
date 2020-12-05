@@ -25,6 +25,7 @@ use EMS\CoreBundle\Form\Form\EditEnvironmentType;
 use EMS\CoreBundle\Form\Form\RebuildIndexType;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
+use EMS\CoreBundle\Service\AliasService;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\IndexService;
@@ -347,9 +348,9 @@ class EnvironmentController extends AppController
      *
      * @Route("/environment/remove/alias/{name}", name="environment.remove.alias", methods={"POST"})
      */
-    public function removeAliasAction($name)
+    public function removeAliasAction($name, AliasService $aliasService)
     {
-        if ($this->getAliasService()->removeAlias($name)) {
+        if ($aliasService->removeAlias($name)) {
             $this->getLogger()->notice('log.environment.alias_removed', [
                 'alias' => $name,
             ]);
@@ -675,7 +676,7 @@ class EnvironmentController extends AppController
      * @Route("/environment", name="environment.index")
      * @Route("/environment", name="ems_environment_index")
      */
-    public function indexAction(Request $request)
+    public function indexAction(Request $request, AliasService $aliasService)
     {
         try {
             /** @var EntityManager $em */
@@ -695,7 +696,6 @@ class EnvironmentController extends AppController
             ]);
 
             $names = [];
-            $aliasService = $this->getAliasService();
 
             $environments = [];
             $stats = $this->getEnvironmentService()->getEnvironmentsStats();

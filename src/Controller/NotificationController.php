@@ -15,6 +15,7 @@ use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\NotificationRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
+use EMS\CoreBundle\Service\NotificationService;
 use Symfony\Component\Form\ClickableInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,7 +34,7 @@ class NotificationController extends AppController
      *
      * @Route("/notification/add/{objectId}.json", name="notification.ajaxnotification", methods={"POST"})
      */
-    public function ajaxNotificationAction(Request $request)
+    public function ajaxNotificationAction(Request $request, NotificationService $notificationService)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -68,7 +69,7 @@ class NotificationController extends AppController
             throw new NotFoundHttpException('Unknown revision');
         }
 
-        $success = $this->getNotificationService()->addNotification($templateId, $revision, $env);
+        $success = $notificationService->addNotification($templateId, $revision, $env);
 
         return $this->render('@EMSCore/ajax/notification.json.twig', [
                 'success' => $success,
@@ -80,9 +81,9 @@ class NotificationController extends AppController
      *
      * @Route("/notification/cancel/{notification}", name="notification.cancel", methods={"POST"})
      */
-    public function cancelNotificationsAction(Notification $notification)
+    public function cancelNotificationsAction(Notification $notification, NotificationService $notificationService)
     {
-        $this->getNotificationService()->setStatus($notification, 'cancelled');
+        $notificationService->setStatus($notification, 'cancelled');
 
         return $this->redirectToRoute('notifications.sent');
     }
@@ -92,9 +93,9 @@ class NotificationController extends AppController
      *
      * @Route("/notification/acknowledge/{notification}", name="notification.acknowledge", methods={"POST"})
      */
-    public function acknowledgeNotificationsAction(Notification $notification)
+    public function acknowledgeNotificationsAction(Notification $notification, NotificationService $notificationService)
     {
-        $this->getNotificationService()->setStatus($notification, 'acknowledged');
+        $notificationService->setStatus($notification, 'acknowledged');
 
         return $this->redirectToRoute('notifications.inbox');
     }
@@ -179,7 +180,7 @@ class NotificationController extends AppController
      * @Route("/notifications/inbox", name="notifications.inbox", defaults={"folder"="inbox"})
      * @Route("/notifications/sent", name="notifications.sent", defaults={"folder"="sent"})
      */
-    public function listNotificationsAction($folder, Request $request)
+    public function listNotificationsAction($folder, Request $request, NotificationService $notificationService)
     {
         $filters = $request->query->get('notification_form');
 
@@ -201,9 +202,9 @@ class NotificationController extends AppController
         $repositoryNotification = $em->getRepository('EMSCoreBundle:Notification');
         $repositoryNotification->setAuthorizationChecker($this->get('security.authorization_checker'));
 
-        $countRejected = $this->getNotificationService()->countRejected();
-        $countPending = $this->getNotificationService()->countPending();
-        $countSent = $this->getNotificationService()->countSent();
+        $countRejected = $notificationService->countRejected();
+        $countPending = $notificationService->countPending();
+        $countSent = $notificationService->countSent();
         $count = $countRejected + $countPending;
 
         // for pagination
@@ -216,11 +217,11 @@ class NotificationController extends AppController
 
         $rejectedNotifications = [];
         if ('sent' == $folder) {
-            $notifications = $this->getNotificationService()->listSentNotifications(($page - 1) * $paging_size, $paging_size, $filters);
+            $notifications = $notificationService->listSentNotifications(($page - 1) * $paging_size, $paging_size, $filters);
             $lastPage = \ceil($countSent / $paging_size);
         } else {
-            $notifications = $this->getNotificationService()->listInboxNotifications(($page - 1) * $paging_size, $paging_size, $filters);
-            $rejectedNotifications = $this->getNotificationService()->listRejectedNotifications(($page - 1) * $paging_size, $paging_size, $filters);
+            $notifications = $notificationService->listInboxNotifications(($page - 1) * $paging_size, $paging_size, $filters);
+            $rejectedNotifications = $notificationService->listRejectedNotifications(($page - 1) * $paging_size, $paging_size, $filters);
             $lastPage = \ceil(($countRejected > $countPending ? $countRejected : $countPending) / $paging_size);
         }
 

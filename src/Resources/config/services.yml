@@ -732,7 +732,7 @@ services:
     EMS\CoreBundle\Service\Mapping: '@ems.service.mapping'
     EMS\CoreBundle\Service\SortOptionService: '@ems.service.sort_option'
     EMS\CoreBundle\Service\WysiwygProfileService: '@ems.service.wysiwyg_profile'
-
+    EMS\CoreBundle\Service\SearchFieldOptionService: '@ems.service.search_field_option'
 
 
 #### Will be mark as deprecated soon

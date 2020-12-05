@@ -13,6 +13,7 @@ use EMS\CoreBundle\Form\Form\ReorderType;
 use EMS\CoreBundle\Form\Form\SearchFieldOptionType;
 use EMS\CoreBundle\Form\Form\SortOptionType;
 use EMS\CoreBundle\Service\AggregateOptionService;
+use EMS\CoreBundle\Service\SearchFieldOptionService;
 use EMS\CoreBundle\Service\SortOptionService;
 use Symfony\Component\Form\ClickableInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -35,7 +36,7 @@ class SearchController extends AppController
      *
      * @Route("/", name="ems_search_options_index", methods={"GET","POST"})
      */
-    public function indexAction(Request $request, SortOptionService $sortOptionService, AggregateOptionService $aggregateOptionService)
+    public function indexAction(Request $request, SortOptionService $sortOptionService, AggregateOptionService $aggregateOptionService, SearchFieldOptionService $searchFieldOptionService)
     {
         $reorderSortOptionForm = $this->createForm(ReorderType::class);
         $reorderSortOptionForm->handleRequest($request);
@@ -56,7 +57,7 @@ class SearchController extends AppController
         $searchFieldOptionForm = $this->createForm(ReorderTerType::class);
         $searchFieldOptionForm->handleRequest($request);
         if ($searchFieldOptionForm->isSubmitted()) {
-            $this->getSearchFieldOptionService()->reorder($searchFieldOptionForm);
+            $searchFieldOptionService->reorder($searchFieldOptionForm);
 
             return $this->redirectToRoute('ems_search_options_index');
         }
@@ -64,7 +65,7 @@ class SearchController extends AppController
         return $this->render('@EMSCore/search-options/index.html.twig', [
                 'sortOptions' => $sortOptionService->getAll(),
                 'aggregateOptions' => $aggregateOptionService->getAll(),
-                'searchFieldOptions' => $this->getSearchFieldOptionService()->getAll(),
+                'searchFieldOptions' => $searchFieldOptionService->getAll(),
                 'sortOptionReorderForm' => $reorderSortOptionForm->createView(),
                 'aggregateOptionReorderForm' => $reorderAggregateOptionForm->createView(),
                 'searchFieldOptionReorderForm' => $searchFieldOptionForm->createView(),
@@ -105,7 +106,7 @@ class SearchController extends AppController
      *
      * @Route("/search-field/new", name="ems_search_field_option_new", methods={"GET","POST"})
      */
-    public function newSearchFieldOptionAction(Request $request, TranslatorInterface $translator)
+    public function newSearchFieldOptionAction(Request $request, TranslatorInterface $translator, SearchFieldOptionService $searchFieldOptionService)
     {
         $searchFieldOption = new SearchFieldOption();
         $form = $this->createForm(SearchFieldOptionType::class, $searchFieldOption, [
@@ -114,7 +115,7 @@ class SearchController extends AppController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getSearchFieldOptionService()->create($searchFieldOption);
+            $searchFieldOptionService->create($searchFieldOption);
 
             return $this->redirectToRoute('ems_search_options_index');
         }
@@ -192,7 +193,7 @@ class SearchController extends AppController
      *
      * @Route("/search-field/{id}", name="ems_search_field_option_edit", methods={"GET","POST"})
      */
-    public function editSearchFieldOptionAction(Request $request, SearchFieldOption $searchFieldOption, TranslatorInterface $translator)
+    public function editSearchFieldOptionAction(Request $request, SearchFieldOption $searchFieldOption, TranslatorInterface $translator, SearchFieldOptionService $searchFieldOptionService)
     {
         $form = $this->createForm(SearchFieldOptionType::class, $searchFieldOption);
         $form->handleRequest($request);
@@ -200,13 +201,13 @@ class SearchController extends AppController
         if ($form->isSubmitted()) {
             $removeButton = $form->get('remove');
             if ($removeButton instanceof ClickableInterface && $removeButton->isClicked()) {
-                $this->getSearchFieldOptionService()->remove($searchFieldOption);
+                $searchFieldOptionService->remove($searchFieldOption);
 
                 return $this->redirectToRoute('ems_search_options_index');
             }
 
             if ($form->isSubmitted() && $form->isValid()) {
-                $this->getSearchFieldOptionService()->save($searchFieldOption);
+                $searchFieldOptionService->save($searchFieldOption);
 
                 return $this->redirectToRoute('ems_search_options_index');
             }

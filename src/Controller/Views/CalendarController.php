@@ -8,6 +8,7 @@ use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Form\SearchFormType;
+use EMS\CoreBundle\Service\SearchService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -75,7 +76,7 @@ class CalendarController extends AppController
      *
      * @Route("/views/calendar/search/{view}.json", name="views.calendar.search", defaults={"_format"="json"}, methods={"GET"})
      */
-    public function searchAction(View $view, Request $request, ElasticaService $elasticaService)
+    public function searchAction(View $view, Request $request, ElasticaService $elasticaService, SearchService $searchService)
     {
         $search = new Search();
         $form = $this->createForm(SearchFormType::class, $search, [
@@ -88,7 +89,7 @@ class CalendarController extends AppController
         /* @var Search $search */
         $search->setEnvironments([$view->getContentType()->getName()]);
 
-        $body = $this->getSearchService()->generateSearchBody($search);
+        $body = $searchService->generateSearchBody($search);
 
         /** @var \DateTime $from */
         /** @var \DateTime $to */

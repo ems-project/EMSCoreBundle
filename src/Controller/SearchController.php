@@ -12,6 +12,7 @@ use EMS\CoreBundle\Form\Form\ReorderTerType;
 use EMS\CoreBundle\Form\Form\ReorderType;
 use EMS\CoreBundle\Form\Form\SearchFieldOptionType;
 use EMS\CoreBundle\Form\Form\SortOptionType;
+use EMS\CoreBundle\Service\AggregateOptionService;
 use EMS\CoreBundle\Service\SortOptionService;
 use Symfony\Component\Form\ClickableInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -34,7 +35,7 @@ class SearchController extends AppController
      *
      * @Route("/", name="ems_search_options_index", methods={"GET","POST"})
      */
-    public function indexAction(Request $request, SortOptionService $sortOptionService)
+    public function indexAction(Request $request, SortOptionService $sortOptionService, AggregateOptionService $aggregateOptionService)
     {
         $reorderSortOptionForm = $this->createForm(ReorderType::class);
         $reorderSortOptionForm->handleRequest($request);
@@ -47,7 +48,7 @@ class SearchController extends AppController
         $reorderAggregateOptionForm = $this->createForm(ReorderBisType::class);
         $reorderAggregateOptionForm->handleRequest($request);
         if ($reorderAggregateOptionForm->isSubmitted()) {
-            $this->getAggregateOptionService()->reorder($reorderAggregateOptionForm);
+            $aggregateOptionService->reorder($reorderAggregateOptionForm);
 
             return $this->redirectToRoute('ems_search_options_index');
         }
@@ -62,7 +63,7 @@ class SearchController extends AppController
 
         return $this->render('@EMSCore/search-options/index.html.twig', [
                 'sortOptions' => $sortOptionService->getAll(),
-                'aggregateOptions' => $this->getAggregateOptionService()->getAll(),
+                'aggregateOptions' => $aggregateOptionService->getAll(),
                 'searchFieldOptions' => $this->getSearchFieldOptionService()->getAll(),
                 'sortOptionReorderForm' => $reorderSortOptionForm->createView(),
                 'aggregateOptionReorderForm' => $reorderAggregateOptionForm->createView(),
@@ -131,7 +132,7 @@ class SearchController extends AppController
      *
      * @Route("/aggregate/new", name="ems_search_aggregate_option_new", methods={"GET","POST"})
      */
-    public function newAggregateOptionAction(Request $request, TranslatorInterface $translator)
+    public function newAggregateOptionAction(Request $request, TranslatorInterface $translator, AggregateOptionService $aggregateOptionService)
     {
         $aggregateOption = new AggregateOption();
         $form = $this->createForm(AggregateOptionType::class, $aggregateOption, [
@@ -140,7 +141,7 @@ class SearchController extends AppController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getAggregateOptionService()->create($aggregateOption);
+            $aggregateOptionService->create($aggregateOption);
 
             return $this->redirectToRoute('ems_search_options_index');
         }
@@ -224,7 +225,7 @@ class SearchController extends AppController
      *
      * @Route("/aggregate/{id}", name="ems_search_aggregate_option_edit", methods={"GET","POST"})
      */
-    public function editAggregagteOptionAction(Request $request, AggregateOption $option, TranslatorInterface $translator)
+    public function editAggregagteOptionAction(Request $request, AggregateOption $option, TranslatorInterface $translator, AggregateOptionService $aggregateOptionService)
     {
         $form = $this->createForm(AggregateOptionType::class, $option);
         $form->handleRequest($request);
@@ -232,13 +233,13 @@ class SearchController extends AppController
         if ($form->isSubmitted()) {
             $removeButton = $form->get('remove');
             if ($removeButton instanceof ClickableInterface && $removeButton->isClicked()) {
-                $this->getAggregateOptionService()->remove($option);
+                $aggregateOptionService->remove($option);
 
                 return $this->redirectToRoute('ems_search_options_index');
             }
 
             if ($form->isSubmitted() && $form->isValid()) {
-                $this->getAggregateOptionService()->save($option);
+                $aggregateOptionService->save($option);
 
                 return $this->redirectToRoute('ems_search_options_index');
             }

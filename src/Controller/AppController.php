@@ -48,16 +48,6 @@ class AppController extends Controller
     /**
      * @deprecated use dependency injection
      *
-     * @return AggregateOptionService
-     */
-    protected function getAggregateOptionService()
-    {
-        return $this->get('ems.service.aggregate_option');
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
      * @return SearchFieldOptionService
      */
     protected function getSearchFieldOptionService()

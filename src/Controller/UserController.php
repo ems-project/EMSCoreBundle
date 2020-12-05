@@ -14,6 +14,7 @@ use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Repository\WysiwygProfileRepository;
+use EMS\CoreBundle\Service\UserService;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -48,7 +49,7 @@ class UserController extends AppController
      *
      * @return Response
      */
-    public function addUserAction(Request $request)
+    public function addUserAction(Request $request, UserService $userService)
     {
         $user = new User();
 
@@ -100,7 +101,7 @@ class UserController extends AppController
             ]);
         }
 
-        $form = $form->add('roles', ChoiceType::class, ['choices' => $this->getUserService()->getExistingRoles(),
+        $form = $form->add('roles', ChoiceType::class, ['choices' => $userService->getExistingRoles(),
             'label' => 'Roles',
             'expanded' => true,
             'multiple' => true,
@@ -145,9 +146,9 @@ class UserController extends AppController
      *
      * @Route("/user/{id}/edit", name="user.edit")
      */
-    public function editUserAction($id, Request $request, LoggerInterface $logger)
+    public function editUserAction($id, Request $request, LoggerInterface $logger, UserService $userService)
     {
-        $user = $this->getUserService()->getUserById($id);
+        $user = $userService->getUserById($id);
         // test if user exist before modified it
         if (!$user) {
             throw $this->createNotFoundException('user not found');
@@ -208,7 +209,7 @@ class UserController extends AppController
                 ],
                 'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
             ])
-            ->add('roles', ChoiceType::class, ['choices' => $this->getExistingRoles(),
+            ->add('roles', ChoiceType::class, ['choices' => $this->getExistingRoles($userService),
                 'label' => 'Roles',
                 'expanded' => true,
                 'multiple' => true,
@@ -227,7 +228,7 @@ class UserController extends AppController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getUserService()->updateUser($user);
+            $userService->updateUser($user);
             $logger->notice('log.user.updated', [
                 'username_managed' => $user->getUsername(),
                 'user_display_name' => $user->getDisplayName(),
@@ -250,9 +251,9 @@ class UserController extends AppController
      *
      * @Route("/user/{id}/delete", name="user.delete")
      */
-    public function removeUserAction($id, LoggerInterface $logger)
+    public function removeUserAction($id, LoggerInterface $logger, UserService $userService)
     {
-        $user = $this->getUserService()->getUserById($id);
+        $user = $userService->getUserById($id);
         // test if user exist before modified it
         if (!$user) {
             throw $this->createNotFoundException('user not found');
@@ -260,7 +261,7 @@ class UserController extends AppController
 
         $username = $user->getUsername();
         $displayName = $user->getDisplayName();
-        $this->getUserService()->deleteUser($user);
+        $userService->deleteUser($user);
         $this->getDoctrine()->getManager()->flush();
 
         $logger->notice('log.user.deleted', [
@@ -279,9 +280,9 @@ class UserController extends AppController
      *
      * @Route("/user/{id}/enabling", name="user.enabling")
      */
-    public function enablingUserAction($id, LoggerInterface $logger)
+    public function enablingUserAction($id, LoggerInterface $logger, UserService $userService)
     {
-        $user = $this->getUserService()->getUserById($id);
+        $user = $userService->getUserById($id);
         // test if user exist before modified it
         if (!$user) {
             throw $this->createNotFoundException('user not found');
@@ -295,7 +296,7 @@ class UserController extends AppController
             $message = 'log.user.enabled';
         }
 
-        $this->getUserService()->updateUser($user);
+        $userService->updateUser($user);
         $this->getDoctrine()->getManager()->flush();
 
         $logger->notice($message, [
@@ -314,9 +315,9 @@ class UserController extends AppController
      *
      * @Route("/user/{id}/locking", name="user.locking")
      */
-    public function lockingUserAction($id, LoggerInterface $logger)
+    public function lockingUserAction($id, LoggerInterface $logger, UserService $userService)
     {
-        $user = $this->getUserService()->getUserById($id);
+        $user = $userService->getUserById($id);
         // test if user exist before modified it
         if (!$user) {
             throw $this->createNotFoundException('user not found');
@@ -330,7 +331,7 @@ class UserController extends AppController
             $message = 'log.user.locked';
         }
 
-        $this->getUserService()->updateUser($user);
+        $userService->updateUser($user);
         $this->getDoctrine()->getManager()->flush();
 
         $logger->notice($message, [
@@ -352,15 +353,15 @@ class UserController extends AppController
      *
      * @Route("/user/{username}/apikey", name="EMS_user_apikey", methods={"POST"})
      */
-    public function apiKeyAction($username, LoggerInterface $logger)
+    public function apiKeyAction($username, LoggerInterface $logger, UserService $userService)
     {
-        $user = $this->getUserService()->getUser($username, false);
+        $user = $userService->getUser($username, false);
 
         $roles = $user->getRoles();
         if (!\in_array('ROLE_API', $roles)) {
             $logger->error('log.user.cannot_request_api_key', [
                 'user' => $username,
-                'initiator' => $this->getUserService()->getCurrentUser()->getUsername(),
+                'initiator' => $userService->getCurrentUser()->getUsername(),
             ]);
 
             throw new \RuntimeException(\sprintf('The user %s  does not have the permission to use API functionalities.', $username));
@@ -394,9 +395,9 @@ class UserController extends AppController
      *
      * @Route("/profile/sidebar-collapse/{collapsed}", name="user.sidebar-collapse", methods={"POST"})
      */
-    public function sidebarCollapseAction($collapsed)
+    public function sidebarCollapseAction($collapsed, UserService $userService)
     {
-        $user = $this->getUserService()->getUser($this->getUserService()->getCurrentUser()->getUsername(), false);
+        $user = $userService->getUser($userService->getCurrentUser()->getUsername(), false);
         $user->setSidebarCollapse($collapsed);
 
         /** @var EntityManager $em */
@@ -409,9 +410,9 @@ class UserController extends AppController
         ]);
     }
 
-    private function getExistingRoles()
+    private function getExistingRoles(UserService $userService)
     {
-        return $this->getUserService()->getExistingRoles();
+        return $userService->getExistingRoles();
     }
 
     /**

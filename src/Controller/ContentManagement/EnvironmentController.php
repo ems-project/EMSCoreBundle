@@ -41,6 +41,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class EnvironmentController extends AppController
 {
@@ -53,7 +54,7 @@ class EnvironmentController extends AppController
      * @Route("/publisher/align", name="environment.align")
      * @Security("has_role('ROLE_PUBLISHER')")
      */
-    public function alignAction(Request $request, SearchService $searchService, EnvironmentService $environmentService, ContentTypeService $contentTypeService)
+    public function alignAction(Request $request, SearchService $searchService, EnvironmentService $environmentService, ContentTypeService $contentTypeService, AuthorizationCheckerInterface $authorizationChecker)
     {
         $data = [];
         $env = [];
@@ -105,7 +106,7 @@ class EnvironmentController extends AppController
                             break;
                         }
 
-                        if (!$this->getAuthorizationChecker()->isGranted($revision->getContentType()->getPublishRole())) {
+                        if (!$authorizationChecker->isGranted($revision->getContentType()->getPublishRole())) {
                             $this->getLogger()->warning('log.environment.dont_have_publish_role', [
                                 EmsFields::LOG_ENVIRONMENT_FIELD => $env,
                                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType(),

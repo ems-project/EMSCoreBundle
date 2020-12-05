@@ -31,6 +31,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class CriteriaController extends AppController
 {
@@ -191,14 +192,12 @@ class CriteriaController extends AppController
         return $this->forward('EMSCoreBundle:Views\Criteria:generateCriteriaTable', ['view' => $view]);
     }
 
-    private function isAuthorized(FieldType $criteriaField)
+    private function isAuthorized(FieldType $criteriaField, AuthorizationCheckerInterface $security)
     {
-        $security = $this->getAuthorizationChecker();
-
         $authorized = empty($criteriaField->getMinimumRole()) || $security->isGranted($criteriaField->getMinimumRole());
         if ($authorized) {
             foreach ($criteriaField->getChildren() as $child) {
-                $authorized = $this->isAuthorized($child);
+                $authorized = $this->isAuthorized($child, $security);
                 if (!$authorized) {
                     break;
                 }
@@ -215,7 +214,7 @@ class CriteriaController extends AppController
      *
      * @Route("/views/criteria/table/{view}", name="views.criteria.table", methods={"GET", "POST"})
      */
-    public function generateCriteriaTableAction(View $view, Request $request, ElasticaService $elasticaService)
+    public function generateCriteriaTableAction(View $view, Request $request, ElasticaService $elasticaService, AuthorizationCheckerInterface $authorizationChecker)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -281,7 +280,7 @@ class CriteriaController extends AppController
         $rowField = null;
         $fieldPaths = \preg_split('/\\r\\n|\\r|\\n/', $view->getOptions()['criteriaFieldPaths']);
 
-        $authorized = $this->isAuthorized($criteriaField) && $this->getAuthorizationChecker()->isGranted($view->getContentType()->getEditRole());
+        $authorized = $this->isAuthorized($criteriaField, $authorizationChecker) && $authorizationChecker->isGranted($view->getContentType()->getEditRole());
 
         foreach ($fieldPaths as $path) {
             /** @var FieldType $child */
@@ -293,7 +292,7 @@ class CriteriaController extends AppController
                     $rowField = $child;
                 }
 
-                $authorized = $authorized && $this->isAuthorized($child);
+                $authorized = $authorized && $this->isAuthorized($child, $authorizationChecker);
             }
         }
         if (!$authorized) {
@@ -481,7 +480,7 @@ class CriteriaController extends AppController
      *
      * @Route("/views/criteria/addCriterion/{view}", name="views.criteria.add", methods={"POST"})
      */
-    public function addCriteriaAction(View $view, Request $request, ElasticaService $elasticaService)
+    public function addCriteriaAction(View $view, Request $request, ElasticaService $elasticaService, AuthorizationCheckerInterface $authorizationChecker)
     {
         $filters = $request->request->get('filters');
         $target = $request->request->get('target');
@@ -499,7 +498,7 @@ class CriteriaController extends AppController
             /** @var Revision $revision */
             $revision = $this->getDataService()->getNewestRevision($type, $ouuid);
 
-            $authorized = $this->getAuthorizationChecker()->isGranted($view->getContentType()->getEditRole());
+            $authorized = $authorizationChecker->isGranted($view->getContentType()->getEditRole());
             if (!$authorized) {
                 $this->getLogger()->warning('log.view.criteria.update_privilege_issue', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),

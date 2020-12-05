@@ -13,13 +13,11 @@ use EMS\CoreBundle\Service\HelperService;
 use EMS\CoreBundle\Service\NotificationService;
 use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\SearchService;
-use EMS\CoreBundle\Service\UserService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use Twig_Environment;
 
 class AppController extends Controller
@@ -40,26 +38,6 @@ class AppController extends Controller
         $this->logger = $logger;
         $this->formRegistry = $formRegistry;
         $this->requestRuntime = $requestRuntime;
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return AuthorizationChecker
-     */
-    protected function getAuthorizationChecker()
-    {
-        return $this->get('security.authorization_checker');
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return UserService
-     */
-    protected function getUserService()
-    {
-        return $this->get('ems.service.user');
     }
 
     /**

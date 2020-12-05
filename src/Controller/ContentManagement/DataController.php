@@ -39,6 +39,7 @@ use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\SearchService;
+use EMS\CoreBundle\Service\UserService;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -222,7 +223,7 @@ class DataController extends AppController
      * @return Response
      * @Route("/data/draft/{contentTypeId}", name="data.draft_in_progress")
      */
-    public function draftInProgressAction($contentTypeId)
+    public function draftInProgressAction($contentTypeId, UserService $userService)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -239,7 +240,7 @@ class DataController extends AppController
         /** @var RevisionRepository $revisionRep */
         $revisionRep = $em->getRepository('EMSCoreBundle:Revision');
 
-        $revisions = $revisionRep->findInProgresByContentType($contentType, $this->getUserService()->getCurrentUser()->getCircles(), $this->get('security.authorization_checker')->isGranted('ROLE_USER_MANAGEMENT'));
+        $revisions = $revisionRep->findInProgresByContentType($contentType, $userService->getCurrentUser()->getCircles(), $this->get('security.authorization_checker')->isGranted('ROLE_USER_MANAGEMENT'));
 
         return $this->render('@EMSCore/data/draft-in-progress.html.twig', [
             'contentType' => $contentType,

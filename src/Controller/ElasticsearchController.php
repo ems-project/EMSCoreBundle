@@ -28,6 +28,7 @@ use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\SearchService;
+use EMS\CoreBundle\Service\SortOptionService;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\ClickableInterface;
@@ -445,7 +446,7 @@ class ElasticsearchController extends AppController
      * @Route("/search", name="ems_search")
      * @Route("/search", name="elasticsearch.search")
      */
-    public function searchAction(Request $request, LoggerInterface $logger, AggregateOptionService $aggregateOptionService, ElasticaService $elasticaService, SearchService $searchService)
+    public function searchAction(Request $request, LoggerInterface $logger, AggregateOptionService $aggregateOptionService, ElasticaService $elasticaService, SearchService $searchService, SortOptionService $sortOptionService)
     {
         try {
             $search = new Search();
@@ -638,7 +639,7 @@ class ElasticsearchController extends AppController
                 'body' => $searchService->generateSearchBody($search),
                 'openSearchForm' => $openSearchForm,
                 'search' => $search,
-                'sortOptions' => $this->getSortOptionService()->getAll(),
+                'sortOptions' => $sortOptionService->getAll(),
                 'aggregateOptions' => $aggregateOptionService->getAll(),
             ]);
         } catch (NoNodesAvailableException $e) {

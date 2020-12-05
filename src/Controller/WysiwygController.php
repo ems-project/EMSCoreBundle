@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Wysiwyg controller.
@@ -83,7 +84,7 @@ class WysiwygController extends AppController
      *
      * @Route("/profile/new", name="ems_wysiwyg_profile_new", methods={"GET", "POST"})
      */
-    public function newProfileAction(Request $request)
+    public function newProfileAction(Request $request, TranslatorInterface $translator)
     {
         $profile = new WysiwygProfile();
 
@@ -95,7 +96,7 @@ class WysiwygController extends AppController
         if ($form->isSubmitted() && $form->isValid()) {
             \json_decode($profile->getConfig(), true);
             if (\json_last_error()) {
-                $form->get('config')->addError(new FormError($this->getTranslator()->trans('wysiwyg.invalid_config_format', ['%msg%' => \json_last_error_msg()], EMSCoreBundle::TRANS_DOMAIN)));
+                $form->get('config')->addError(new FormError($translator->trans('wysiwyg.invalid_config_format', ['%msg%' => \json_last_error_msg()], EMSCoreBundle::TRANS_DOMAIN)));
             } else {
                 $profile->setOrderKey(100 + \count($this->getWysiwygProfileService()->getProfiles()));
                 $this->getWysiwygProfileService()->saveProfile($profile);
@@ -116,7 +117,7 @@ class WysiwygController extends AppController
      *
      * @Route("/styles-set/new", name="ems_wysiwyg_styles_set_new", methods={"GET", "POST"})
      */
-    public function newStylesSetAction(Request $request)
+    public function newStylesSetAction(Request $request, TranslatorInterface $translator)
     {
         $stylesSet = new WysiwygStylesSet();
 
@@ -128,7 +129,7 @@ class WysiwygController extends AppController
         if ($form->isSubmitted() && $form->isValid()) {
             \json_decode($stylesSet->getConfig(), true);
             if (\json_last_error()) {
-                $form->get('config')->addError(new FormError($this->getTranslator()->trans('wysiwyg.invalid_config_format', ['%msg%' => \json_last_error_msg()], 'EMSCoreBundle')));
+                $form->get('config')->addError(new FormError($translator->trans('wysiwyg.invalid_config_format', ['%msg%' => \json_last_error_msg()], 'EMSCoreBundle')));
             } else {
                 $stylesSet->setOrderKey(100 + \count($this->getWysiwygStylesSetService()->getStylesSets()));
                 $this->getWysiwygStylesSetService()->save($stylesSet);
@@ -149,7 +150,7 @@ class WysiwygController extends AppController
      *
      * @Route("/styles-set/{id}", name="ems_wysiwyg_styles_set_edit", methods={"GET", "POST"})
      */
-    public function editStylesSetAction(Request $request, WysiwygStylesSet $stylesSet)
+    public function editStylesSetAction(Request $request, WysiwygStylesSet $stylesSet, TranslatorInterface $translator)
     {
         $form = $this->createForm(WysiwygStylesSetType::class, $stylesSet);
         $form->handleRequest($request);
@@ -165,7 +166,7 @@ class WysiwygController extends AppController
             if ($form->isSubmitted() && $form->isValid()) {
                 \json_decode($stylesSet->getConfig(), true);
                 if (\json_last_error()) {
-                    $form->get('config')->addError(new FormError($this->getTranslator()->trans('wysiwyg.invalid_config_format', ['%msg%' => \json_last_error_msg()], 'EMSCoreBundle')));
+                    $form->get('config')->addError(new FormError($translator->trans('wysiwyg.invalid_config_format', ['%msg%' => \json_last_error_msg()], 'EMSCoreBundle')));
                 } else {
                     $this->getWysiwygStylesSetService()->save($stylesSet);
 
@@ -186,7 +187,7 @@ class WysiwygController extends AppController
      *
      * @Route("/profile/{id}", name="ems_wysiwyg_profile_edit", methods={"GET", "POST"})
      */
-    public function editProfileAction(Request $request, WysiwygProfile $profile)
+    public function editProfileAction(Request $request, WysiwygProfile $profile, TranslatorInterface $translator)
     {
         $form = $this->createForm(WysiwygProfileType::class, $profile);
         $form->handleRequest($request);
@@ -202,7 +203,7 @@ class WysiwygController extends AppController
             if ($form->isSubmitted() && $form->isValid()) {
                 \json_decode($profile->getConfig(), true);
                 if (\json_last_error()) {
-                    $form->get('config')->addError(new FormError($this->getTranslator()->trans('wysiwyg.invalid_config_format', ['%msg%' => \json_last_error_msg()], 'EMSCoreBundle')));
+                    $form->get('config')->addError(new FormError($translator->trans('wysiwyg.invalid_config_format', ['%msg%' => \json_last_error_msg()], 'EMSCoreBundle')));
                 } else {
                     $this->getWysiwygProfileService()->saveProfile($profile);
 

@@ -15,7 +15,6 @@ use EMS\CoreBundle\Service\NotificationService;
 use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\SearchFieldOptionService;
 use EMS\CoreBundle\Service\SearchService;
-use EMS\CoreBundle\Service\SortOptionService;
 use EMS\CoreBundle\Service\UserService;
 use EMS\CoreBundle\Service\WysiwygProfileService;
 use EMS\CoreBundle\Service\WysiwygStylesSetService;
@@ -25,7 +24,6 @@ use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
-use Symfony\Component\Translation\TranslatorInterface;
 use Twig_Environment;
 
 class AppController extends Controller
@@ -51,31 +49,11 @@ class AppController extends Controller
     /**
      * @deprecated use dependency injection
      *
-     * @return TranslatorInterface
-     */
-    protected function getTranslator()
-    {
-        return $this->get('translator');
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
      * @return WysiwygProfileService
      */
     protected function getWysiwygProfileService()
     {
         return $this->get('ems.service.wysiwyg_profile');
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return SortOptionService
-     */
-    protected function getSortOptionService()
-    {
-        return $this->get('ems.service.sort_option');
     }
 
     /**

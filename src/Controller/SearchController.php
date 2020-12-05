@@ -12,11 +12,13 @@ use EMS\CoreBundle\Form\Form\ReorderTerType;
 use EMS\CoreBundle\Form\Form\ReorderType;
 use EMS\CoreBundle\Form\Form\SearchFieldOptionType;
 use EMS\CoreBundle\Form\Form\SortOptionType;
+use EMS\CoreBundle\Service\SortOptionService;
 use Symfony\Component\Form\ClickableInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Wysiwyg controller.
@@ -32,12 +34,12 @@ class SearchController extends AppController
      *
      * @Route("/", name="ems_search_options_index", methods={"GET","POST"})
      */
-    public function indexAction(Request $request)
+    public function indexAction(Request $request, SortOptionService $sortOptionService)
     {
         $reorderSortOptionForm = $this->createForm(ReorderType::class);
         $reorderSortOptionForm->handleRequest($request);
         if ($reorderSortOptionForm->isSubmitted()) {
-            $this->getSortOptionService()->reorder($reorderSortOptionForm);
+            $sortOptionService->reorder($reorderSortOptionForm);
 
             return $this->redirectToRoute('ems_search_options_index');
         }
@@ -59,7 +61,7 @@ class SearchController extends AppController
         }
 
         return $this->render('@EMSCore/search-options/index.html.twig', [
-                'sortOptions' => $this->getSortOptionService()->getAll(),
+                'sortOptions' => $sortOptionService->getAll(),
                 'aggregateOptions' => $this->getAggregateOptionService()->getAll(),
                 'searchFieldOptions' => $this->getSearchFieldOptionService()->getAll(),
                 'sortOptionReorderForm' => $reorderSortOptionForm->createView(),
@@ -75,7 +77,7 @@ class SearchController extends AppController
      *
      * @Route("/sort/new", name="ems_search_sort_option_new", methods={"GET","POST"})
      */
-    public function newSortOptionAction(Request $request)
+    public function newSortOptionAction(Request $request, SortOptionService $sortOptionService, TranslatorInterface $translator)
     {
         $sortOption = new SortOption();
         $form = $this->createForm(SortOptionType::class, $sortOption, [
@@ -84,13 +86,13 @@ class SearchController extends AppController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getSortOptionService()->create($sortOption);
+            $sortOptionService->create($sortOption);
 
             return $this->redirectToRoute('ems_search_options_index');
         }
 
         return $this->render('@EMSCore/entity/new.html.twig', [
-            'entity_name' => $this->getTranslator()->trans('search.sort_option_label', [], EMSCoreExtension::TRANS_DOMAIN),
+            'entity_name' => $translator->trans('search.sort_option_label', [], EMSCoreExtension::TRANS_DOMAIN),
             'form' => $form->createView(),
         ]);
     }
@@ -102,7 +104,7 @@ class SearchController extends AppController
      *
      * @Route("/search-field/new", name="ems_search_field_option_new", methods={"GET","POST"})
      */
-    public function newSearchFieldOptionAction(Request $request)
+    public function newSearchFieldOptionAction(Request $request, TranslatorInterface $translator)
     {
         $searchFieldOption = new SearchFieldOption();
         $form = $this->createForm(SearchFieldOptionType::class, $searchFieldOption, [
@@ -117,7 +119,7 @@ class SearchController extends AppController
         }
 
         return $this->render('@EMSCore/entity/new.html.twig', [
-            'entity_name' => $this->getTranslator()->trans('search.search_field_option_label', [], EMSCoreExtension::TRANS_DOMAIN),
+            'entity_name' => $translator->trans('search.search_field_option_label', [], EMSCoreExtension::TRANS_DOMAIN),
             'form' => $form->createView(),
         ]);
     }
@@ -129,7 +131,7 @@ class SearchController extends AppController
      *
      * @Route("/aggregate/new", name="ems_search_aggregate_option_new", methods={"GET","POST"})
      */
-    public function newAggregateOptionAction(Request $request)
+    public function newAggregateOptionAction(Request $request, TranslatorInterface $translator)
     {
         $aggregateOption = new AggregateOption();
         $form = $this->createForm(AggregateOptionType::class, $aggregateOption, [
@@ -144,7 +146,7 @@ class SearchController extends AppController
         }
 
         return $this->render('@EMSCore/entity/new.html.twig', [
-                'entity_name' => $this->getTranslator()->trans('search.aggregate_option_label', [], EMSCoreExtension::TRANS_DOMAIN),
+                'entity_name' => $translator->trans('search.aggregate_option_label', [], EMSCoreExtension::TRANS_DOMAIN),
                 'form' => $form->createView(),
         ]);
     }
@@ -156,7 +158,7 @@ class SearchController extends AppController
      *
      * @Route("/sort/{id}", name="ems_search_sort_option_edit", methods={"GET","POST"})
      */
-    public function editSortOptionAction(Request $request, SortOption $sortOption)
+    public function editSortOptionAction(Request $request, SortOption $sortOption, SortOptionService $sortOptionService, TranslatorInterface $translator)
     {
         $form = $this->createForm(SortOptionType::class, $sortOption);
         $form->handleRequest($request);
@@ -164,20 +166,20 @@ class SearchController extends AppController
         if ($form->isSubmitted()) {
             $removeButton = $form->get('remove');
             if ($removeButton instanceof ClickableInterface && $removeButton->isClicked()) {
-                $this->getSortOptionService()->remove($sortOption);
+                $sortOptionService->remove($sortOption);
 
                 return $this->redirectToRoute('ems_search_options_index');
             }
 
             if ($form->isSubmitted() && $form->isValid()) {
-                $this->getSortOptionService()->save($sortOption);
+                $sortOptionService->save($sortOption);
 
                 return $this->redirectToRoute('ems_search_options_index');
             }
         }
 
         return $this->render('@EMSCore/entity/edit.html.twig', [
-                'entity_name' => $this->getTranslator()->trans('search.sort_option_label', [], EMSCoreExtension::TRANS_DOMAIN),
+                'entity_name' => $translator->trans('search.sort_option_label', [], EMSCoreExtension::TRANS_DOMAIN),
                 'form' => $form->createView(),
         ]);
     }
@@ -189,7 +191,7 @@ class SearchController extends AppController
      *
      * @Route("/search-field/{id}", name="ems_search_field_option_edit", methods={"GET","POST"})
      */
-    public function editSearchFieldOptionAction(Request $request, SearchFieldOption $searchFieldOption)
+    public function editSearchFieldOptionAction(Request $request, SearchFieldOption $searchFieldOption, TranslatorInterface $translator)
     {
         $form = $this->createForm(SearchFieldOptionType::class, $searchFieldOption);
         $form->handleRequest($request);
@@ -210,7 +212,7 @@ class SearchController extends AppController
         }
 
         return $this->render('@EMSCore/entity/edit.html.twig', [
-                'entity_name' => $this->getTranslator()->trans('search.search_field_option_label', [], EMSCoreExtension::TRANS_DOMAIN),
+                'entity_name' => $translator->trans('search.search_field_option_label', [], EMSCoreExtension::TRANS_DOMAIN),
                 'form' => $form->createView(),
         ]);
     }
@@ -222,7 +224,7 @@ class SearchController extends AppController
      *
      * @Route("/aggregate/{id}", name="ems_search_aggregate_option_edit", methods={"GET","POST"})
      */
-    public function editAggregagteOptionAction(Request $request, AggregateOption $option)
+    public function editAggregagteOptionAction(Request $request, AggregateOption $option, TranslatorInterface $translator)
     {
         $form = $this->createForm(AggregateOptionType::class, $option);
         $form->handleRequest($request);
@@ -243,7 +245,7 @@ class SearchController extends AppController
         }
 
         return $this->render('@EMSCore/entity/edit.html.twig', [
-                'entity_name' => $this->getTranslator()->trans('search.aggregate_option_label', [], EMSCoreExtension::TRANS_DOMAIN),
+                'entity_name' => $translator->trans('search.aggregate_option_label', [], EMSCoreExtension::TRANS_DOMAIN),
                 'form' => $form->createView(),
         ]);
     }

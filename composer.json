@@ -66,7 +66,8 @@
 	},
 	"autoload" : {
 		"psr-4" : {
-			"EMS\\CoreBundle\\" : "src/"
+			"EMS\\CoreBundle\\" : "src/",
+			"FOS\\UserBundle\\" : "src-user/"
 		}
 	},
 	"autoload-dev" : {

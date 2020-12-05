@@ -112,7 +112,7 @@ class DataController extends AppController
             $searchForm->setSortOrder($contentType->getSortOrder());
         }
 
-        return $this->forward('EMSCoreBundle:Elasticsearch:search', [
+        return $this->forward('EMS\CoreBundle\Controller\ElasticsearchController::searchAction', [
             'query' => null,
         ], [
             'search_form' => $searchForm->jsonSerialize(),

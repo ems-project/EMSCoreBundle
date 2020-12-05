@@ -731,6 +731,7 @@ services:
     EMS\CoreBundle\Service\AggregateOptionService: '@ems.service.aggregate_option'
     EMS\CoreBundle\Service\Mapping: '@ems.service.mapping'
     EMS\CoreBundle\Service\SortOptionService: '@ems.service.sort_option'
+    EMS\CoreBundle\Service\WysiwygProfileService: '@ems.service.wysiwyg_profile'
 
 
 

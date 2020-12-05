@@ -16,7 +16,6 @@ use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\SearchFieldOptionService;
 use EMS\CoreBundle\Service\SearchService;
 use EMS\CoreBundle\Service\UserService;
-use EMS\CoreBundle\Service\WysiwygProfileService;
 use EMS\CoreBundle\Service\WysiwygStylesSetService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -44,16 +43,6 @@ class AppController extends Controller
         $this->logger = $logger;
         $this->formRegistry = $formRegistry;
         $this->requestRuntime = $requestRuntime;
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return WysiwygProfileService
-     */
-    protected function getWysiwygProfileService()
-    {
-        return $this->get('ems.service.wysiwyg_profile');
     }
 
     /**

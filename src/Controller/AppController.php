@@ -17,7 +17,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Twig_Environment;
 
 class AppController extends Controller
 {
@@ -37,16 +36,6 @@ class AppController extends Controller
         $this->logger = $logger;
         $this->formRegistry = $formRegistry;
         $this->requestRuntime = $requestRuntime;
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return Twig_Environment
-     */
-    protected function getTwig()
-    {
-        return $this->container->get('twig');
     }
 
     /**

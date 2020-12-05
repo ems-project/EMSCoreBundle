@@ -55,11 +55,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraints\Regex;
+use Twig\Environment as TwigEnvironment;
+use Twig\Error\Error;
 use Twig\Error\LoaderError;
 use Twig\Error\SyntaxError;
-use Twig_Error;
-use Twig_Error_Loader;
-use Twig_Error_Syntax;
 
 class DataController extends AppController
 {
@@ -828,13 +827,11 @@ class DataController extends AppController
      * @throws \Throwable
      * @throws LoaderError
      * @throws SyntaxError
-     * @throws Twig_Error_Loader
-     * @throws Twig_Error_Syntax
      * @Route("/public/template/{environmentName}/{templateId}/{ouuid}/{_download}", defaults={"_download"=false, "public"=true}, name="ems_data_custom_template_public")
      * @Route("/data/custom-view/{environmentName}/{templateId}/{ouuid}/{_download}", defaults={"_download"=false, "public"=false}, name="data.customview")
      * @Route("/data/template/{environmentName}/{templateId}/{ouuid}/{_download}", defaults={"_download"=false, "public"=false}, name="ems_data_custom_template_protected")
      */
-    public function customViewAction($environmentName, $templateId, $ouuid, $_download, $public, LoggerInterface $logger, TranslatorInterface $translator, SearchService $searchService)
+    public function customViewAction($environmentName, $templateId, $ouuid, $_download, $public, LoggerInterface $logger, TranslatorInterface $translator, SearchService $searchService, TwigEnvironment $twig)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -865,11 +862,9 @@ class DataController extends AppController
 
         $document = $searchService->get($environment, $template->getContentType(), $ouuid);
 
-        $twig = $this->getTwig();
-
         try {
             $body = $twig->createTemplate($template->getBody());
-        } catch (Twig_Error $e) {
+        } catch (Error $e) {
             $logger->error('log.template.twig.error', [
                 'template_id' => $template->getId(),
                 'template_name' => $template->getName(),
@@ -917,7 +912,7 @@ class DataController extends AppController
             if (null != $template->getFilename()) {
                 try {
                     $filename = $twig->createTemplate($template->getFilename());
-                } catch (Twig_Error $e) {
+                } catch (Error $e) {
                     $logger->error('log.template.twig.error', [
                         'template_id' => $template->getId(),
                         'template_name' => $template->getName(),
@@ -980,7 +975,7 @@ class DataController extends AppController
      * @throws \Throwable
      * @Route("/data/custom-view-job/{environmentName}/{templateId}/{ouuid}", name="ems_job_custom_view", methods={"POST"})
      */
-    public function customViewJobAction($environmentName, $templateId, $ouuid, LoggerInterface $logger, SearchService $searchService, Request $request)
+    public function customViewJobAction($environmentName, $templateId, $ouuid, LoggerInterface $logger, SearchService $searchService, Request $request, TwigEnvironment $twig)
     {
         $em = $this->getDoctrine()->getManager();
         /** @var Template|null $template * */
@@ -996,7 +991,7 @@ class DataController extends AppController
 
         $success = false;
         try {
-            $command = $this->getTwig()->createTemplate($template->getBody())->render([
+            $command = $twig->createTemplate($template->getBody())->render([
                 'environment' => $env->getName(),
                 'contentType' => $template->getContentType(),
                 'object' => $document,

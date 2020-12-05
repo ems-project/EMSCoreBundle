@@ -9,7 +9,6 @@ use EMS\CoreBundle\Service\AliasService;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\EnvironmentService;
-use EMS\CoreBundle\Service\HelperService;
 use EMS\CoreBundle\Service\PublishService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -35,16 +34,6 @@ class AppController extends Controller
         $this->logger = $logger;
         $this->formRegistry = $formRegistry;
         $this->requestRuntime = $requestRuntime;
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return HelperService
-     */
-    protected function getHelperService()
-    {
-        return $this->container->get('ems.service.helper');
     }
 
     /**

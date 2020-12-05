@@ -735,6 +735,7 @@ services:
     EMS\CoreBundle\Service\SearchFieldOptionService: '@ems.service.search_field_option'
     EMS\CoreBundle\Service\WysiwygStylesSetService: '@ems.service.wysiwyg_styles_set'
     EMS\CoreBundle\Service\NotificationService: '@ems.service.notification'
+    EMS\CoreBundle\Service\HelperService: '@ems.service.helper'
 
 #### Will be mark as deprecated soon
     ems.service.data:

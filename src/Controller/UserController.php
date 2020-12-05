@@ -14,6 +14,7 @@ use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Repository\WysiwygProfileRepository;
+use EMS\CoreBundle\Service\HelperService;
 use EMS\CoreBundle\Service\UserService;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -37,10 +38,10 @@ class UserController extends AppController
      *
      * @return Response
      */
-    public function indexAction()
+    public function indexAction(HelperService $helperService)
     {
         return $this->render('@EMSCore/user/index.html.twig', [
-            'paging' => $this->getHelperService()->getPagingTool('EMSCoreBundle:User', 'ems.user.index', 'username'),
+            'paging' => $helperService->getPagingTool('EMSCoreBundle:User', 'ems.user.index', 'username'),
         ]);
     }
 

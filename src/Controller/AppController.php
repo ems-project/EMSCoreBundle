@@ -12,10 +12,8 @@ use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\HelperService;
 use EMS\CoreBundle\Service\NotificationService;
 use EMS\CoreBundle\Service\PublishService;
-use EMS\CoreBundle\Service\SearchFieldOptionService;
 use EMS\CoreBundle\Service\SearchService;
 use EMS\CoreBundle\Service\UserService;
-use EMS\CoreBundle\Service\WysiwygStylesSetService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormRegistryInterface;
@@ -42,16 +40,6 @@ class AppController extends Controller
         $this->logger = $logger;
         $this->formRegistry = $formRegistry;
         $this->requestRuntime = $requestRuntime;
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return WysiwygStylesSetService
-     */
-    protected function getWysiwygStylesSetService()
-    {
-        return $this->get('ems.service.wysiwyg_styles_set');
     }
 
     /**

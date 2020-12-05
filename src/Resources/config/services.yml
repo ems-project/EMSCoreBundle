@@ -733,7 +733,7 @@ services:
     EMS\CoreBundle\Service\SortOptionService: '@ems.service.sort_option'
     EMS\CoreBundle\Service\WysiwygProfileService: '@ems.service.wysiwyg_profile'
     EMS\CoreBundle\Service\SearchFieldOptionService: '@ems.service.search_field_option'
-
+    EMS\CoreBundle\Service\WysiwygStylesSetService: '@ems.service.wysiwyg_styles_set'
 
 #### Will be mark as deprecated soon
     ems.service.data:

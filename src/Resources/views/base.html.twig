@@ -119,7 +119,7 @@
 {#           <!-- /.messages-menu -->#}
 
 		{% if app.user %}
-		  {{ render(controller('EMSCoreBundle:Notification:menuNotification')) }}
+		  {{ render(controller('EMS\\CoreBundle\\Controller\\NotificationController::menuNotificationAction')) }}
         {% endif %}
 
           <!-- Tasks Menu -->
@@ -201,7 +201,7 @@
   </header>
   
 		{% if app.user %}
-		  	{{ render(controller('EMSCoreBundle:TwigElements:sideMenu')) }}
+		  	{{ render(controller('EMS\\CoreBundle\\Controller\\TwigElementsController::sideMenuAction')) }}
 		{% else %}
             {% include '@EMSCore/elements/side-menu.html.twig' with {
 				'contentTypes': get_content_types()
@@ -344,7 +344,7 @@
           <h3 class="control-sidebar-heading">Last commands</h3>
           <ul class="control-sidebar-menu" id="commands-log">
               {% if app.user %}
-                  {{ render(controller('EMSCoreBundle:TwigElements:jobs', {
+                  {{ render(controller('EMS\\CoreBundle\\Controller\\TwigElementsController::jobsAction', {
                       'username' : app.user.username
                   } ) ) }}
               {% endif %}

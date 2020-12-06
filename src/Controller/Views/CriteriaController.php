@@ -45,7 +45,7 @@ class CriteriaController extends AppController
      *
      * @Route("/views/criteria/align/{view}", name="views.criteria.align", methods={"POST"})
      */
-    public function alignAction(View $view, Request $request, ElasticaService $elasticaService, DataService $dataService, ContentTypeService $contentTypeService)
+    public function alignAction(View $view, Request $request, ElasticaService $elasticaService, DataService $dataService, ContentTypeService $contentTypeService, ObjectChoiceListFactory $objectChoiceListFactory)
     {
         $criteriaUpdateConfig = new CriteriaUpdateConfig($view, $this->getLogger());
         $form = $this->createForm(CriteriaFilterType::class, $criteriaUpdateConfig, [
@@ -56,7 +56,7 @@ class CriteriaController extends AppController
         /** @var CriteriaUpdateConfig $criteriaUpdateConfig */
         $criteriaUpdateConfig = $form->getData();
 
-        $tables = $this->generateCriteriaTable($view, $criteriaUpdateConfig, $elasticaService, $contentTypeService);
+        $tables = $this->generateCriteriaTable($view, $criteriaUpdateConfig, $elasticaService, $contentTypeService, $objectChoiceListFactory);
         $params = \explode(':', $request->request->all()['alignOn']);
 
         $isRowAlign = ('row' == $params[0]);
@@ -216,7 +216,7 @@ class CriteriaController extends AppController
      *
      * @Route("/views/criteria/table/{view}", name="views.criteria.table", methods={"GET", "POST"})
      */
-    public function generateCriteriaTableAction(View $view, Request $request, ElasticaService $elasticaService, AuthorizationCheckerInterface $authorizationChecker, ContentTypeService $contentTypeService)
+    public function generateCriteriaTableAction(View $view, Request $request, ElasticaService $elasticaService, AuthorizationCheckerInterface $authorizationChecker, ContentTypeService $contentTypeService, ObjectChoiceListFactory $objectChoiceListFactory)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -302,7 +302,7 @@ class CriteriaController extends AppController
             ]);
         }
 
-        $tables = $this->generateCriteriaTable($view, $criteriaUpdateConfig, $elasticaService, $contentTypeService);
+        $tables = $this->generateCriteriaTable($view, $criteriaUpdateConfig, $elasticaService, $contentTypeService, $objectChoiceListFactory);
 
         return $this->render('@EMSCore/view/custom/criteria_table.html.twig', [
             'table' => $tables['table'],
@@ -328,7 +328,7 @@ class CriteriaController extends AppController
      * @throws PerformanceException
      * @throws Exception
      */
-    public function generateCriteriaTable(View $view, CriteriaUpdateConfig $criteriaUpdateConfig, ElasticaService $elasticaService, ContentTypeService $contentTypeService)
+    public function generateCriteriaTable(View $view, CriteriaUpdateConfig $criteriaUpdateConfig, ElasticaService $elasticaService, ContentTypeService $contentTypeService, ObjectChoiceListFactory $objectChoiceListFactory)
     {
         $contentType = $view->getContentType();
 
@@ -432,8 +432,6 @@ class CriteriaController extends AppController
             }
         }
 
-        /** @var ObjectChoiceListFactory $objectChoiceListFactory */
-        $objectChoiceListFactory = $this->get('ems.form.factories.objectChoiceListFactory');
         $loader = $objectChoiceListFactory->createLoader($loaderTypes, false);
 
         /** @var Document $document */

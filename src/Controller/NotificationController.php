@@ -161,7 +161,7 @@ class NotificationController extends AppController
      *
      * @Route("/notification/menu", name="notification.menu")
      */
-    public function menuNotificationAction(AuthorizationCheckerInterface $authorizationChecker)
+    public function menuNotificationAction(AuthorizationCheckerInterface $authorizationChecker, NotificationService $notificationService)
     {
         // TODO use a service to pass authorization_checker to repositoryNotification.
         $em = $this->getDoctrine()->getManager();
@@ -169,7 +169,7 @@ class NotificationController extends AppController
         $repositoryNotification = $em->getRepository('EMSCoreBundle:Notification');
         $repositoryNotification->setAuthorizationChecker($authorizationChecker);
 
-        $vars['counter'] = $this->get('ems.service.notification')->menuNotification();
+        $vars['counter'] = $notificationService->menuNotification();
 
         return $this->render('@EMSCore/notification/menu.html.twig', $vars);
     }

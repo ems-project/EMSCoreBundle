@@ -107,7 +107,7 @@ class NotificationController extends AppController
      *
      * @Route("/notification/treat", name="notification.treat", methods={"POST"})
      */
-    public function treatNotificationsAction(Request $request, PublishService $publishService, EnvironmentService $environmentService)
+    public function treatNotificationsAction(Request $request, PublishService $publishService, EnvironmentService $environmentService, NotificationService $notificationService)
     {
         $treatNotification = new TreatNotifications();
         $form = $this->createForm(TreatNotificationsType::class, $treatNotification, [
@@ -144,11 +144,11 @@ class NotificationController extends AppController
             }
 
             if ($treatNotification->getAccept()) {
-                $this->get('ems.service.notification')->accept($notification, $treatNotification);
+                $notificationService->accept($notification, $treatNotification);
             }
 
             if ($treatNotification->getReject()) {
-                $this->get('ems.service.notification')->reject($notification, $treatNotification);
+                $notificationService->reject($notification, $treatNotification);
             }
         }
 

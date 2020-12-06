@@ -9,7 +9,6 @@ use Dompdf\Dompdf;
 use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
-use EMS\CoreBundle;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\ContentType;
@@ -38,6 +37,7 @@ use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\IndexService;
+use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\SearchService;
 use EMS\CoreBundle\Service\UserService;
@@ -976,7 +976,7 @@ class DataController extends AppController
      * @throws \Throwable
      * @Route("/data/custom-view-job/{environmentName}/{templateId}/{ouuid}", name="ems_job_custom_view", methods={"POST"})
      */
-    public function customViewJobAction($environmentName, $templateId, $ouuid, LoggerInterface $logger, SearchService $searchService, Request $request, TwigEnvironment $twig)
+    public function customViewJobAction($environmentName, $templateId, $ouuid, LoggerInterface $logger, SearchService $searchService, Request $request, TwigEnvironment $twig, JobService $jobService)
     {
         $em = $this->getDoctrine()->getManager();
         /** @var Template|null $template * */
@@ -999,8 +999,6 @@ class DataController extends AppController
                 'source' => $document->getSource(),
             ]);
 
-            /** @var CoreBundle\Service\JobService $jobService */
-            $jobService = $this->get('ems.service.job');
             $user = $this->getUser();
             if (!$user instanceof UserInterface) {
                 throw new \RuntimeException('Unexpected user object');

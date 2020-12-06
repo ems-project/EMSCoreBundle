@@ -50,7 +50,7 @@ class UserController extends AppController
      *
      * @return Response
      */
-    public function addUserAction(Request $request, UserService $userService)
+    public function addUserAction(Request $request, UserService $userService, UserManagerInterface $userManager)
     {
         $user = new User();
 
@@ -118,9 +118,6 @@ class UserController extends AppController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var UserManagerInterface $userManager */
-            $userManager = $this->get('fos_user.user_manager');
-
             $continue = $this->userExist($user, 'add');
 
             if ($continue) {

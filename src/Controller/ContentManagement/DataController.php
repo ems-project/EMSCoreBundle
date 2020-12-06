@@ -54,6 +54,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraints\Regex;
 use Twig\Environment as TwigEnvironment;
@@ -223,7 +224,7 @@ class DataController extends AppController
      * @return Response
      * @Route("/data/draft/{contentTypeId}", name="data.draft_in_progress")
      */
-    public function draftInProgressAction($contentTypeId, UserService $userService)
+    public function draftInProgressAction($contentTypeId, UserService $userService, AuthorizationCheckerInterface $authorizationChecker)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -240,7 +241,7 @@ class DataController extends AppController
         /** @var RevisionRepository $revisionRep */
         $revisionRep = $em->getRepository('EMSCoreBundle:Revision');
 
-        $revisions = $revisionRep->findInProgresByContentType($contentType, $userService->getCurrentUser()->getCircles(), $this->get('security.authorization_checker')->isGranted('ROLE_USER_MANAGEMENT'));
+        $revisions = $revisionRep->findInProgresByContentType($contentType, $userService->getCurrentUser()->getCircles(), $authorizationChecker->isGranted('ROLE_USER_MANAGEMENT'));
 
         return $this->render('@EMSCore/data/draft-in-progress.html.twig', [
             'contentType' => $contentType,

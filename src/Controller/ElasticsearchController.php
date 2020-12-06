@@ -38,6 +38,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Throwable;
 
 class ElasticsearchController extends AppController
@@ -298,7 +299,7 @@ class ElasticsearchController extends AppController
      *
      * @Route("/search.json", name="elasticsearch.api.search")
      */
-    public function searchApiAction(Request $request, LoggerInterface $logger, SearchService $searchService, ElasticaService $elasticaService, ContentTypeService $contentTypeService)
+    public function searchApiAction(Request $request, LoggerInterface $logger, SearchService $searchService, ElasticaService $elasticaService, ContentTypeService $contentTypeService, AuthorizationCheckerInterface $authorizationChecker)
     {
         $pattern = $request->query->get('q', '');
         $page = \intval($request->query->get('page', 1));
@@ -355,7 +356,7 @@ class ElasticsearchController extends AppController
         $search->setSearchPattern($pattern, true);
         $commonSearch = $searchService->generateSearch($search);
 
-        if ($circleOnly && !$this->get('security.authorization_checker')->isGranted('ROLE_USER_MANAGEMENT')) {
+        if ($circleOnly && !$authorizationChecker->isGranted('ROLE_USER_MANAGEMENT')) {
             /** @var UserInterface $user */
             $user = $this->getUser();
             $circles = $user->getCircles();

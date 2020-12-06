@@ -26,6 +26,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class NotificationController extends AppController
 {
@@ -160,13 +161,13 @@ class NotificationController extends AppController
      *
      * @Route("/notification/menu", name="notification.menu")
      */
-    public function menuNotificationAction()
+    public function menuNotificationAction(AuthorizationCheckerInterface $authorizationChecker)
     {
         // TODO use a service to pass authorization_checker to repositoryNotification.
         $em = $this->getDoctrine()->getManager();
         /** @var NotificationRepository $repositoryNotification */
         $repositoryNotification = $em->getRepository('EMSCoreBundle:Notification');
-        $repositoryNotification->setAuthorizationChecker($this->get('security.authorization_checker'));
+        $repositoryNotification->setAuthorizationChecker($authorizationChecker);
 
         $vars['counter'] = $this->get('ems.service.notification')->menuNotification();
 
@@ -182,7 +183,7 @@ class NotificationController extends AppController
      * @Route("/notifications/inbox", name="notifications.inbox", defaults={"folder"="inbox"})
      * @Route("/notifications/sent", name="notifications.sent", defaults={"folder"="sent"})
      */
-    public function listNotificationsAction($folder, Request $request, NotificationService $notificationService)
+    public function listNotificationsAction($folder, Request $request, NotificationService $notificationService, AuthorizationCheckerInterface $authorizationChecker, RouterInterface $router)
     {
         $filters = $request->query->get('notification_form');
 
@@ -202,7 +203,7 @@ class NotificationController extends AppController
         $em = $this->getDoctrine()->getManager();
         /** @var NotificationRepository $repositoryNotification */
         $repositoryNotification = $em->getRepository('EMSCoreBundle:Notification');
-        $repositoryNotification->setAuthorizationChecker($this->get('security.authorization_checker'));
+        $repositoryNotification->setAuthorizationChecker($authorizationChecker);
 
         $countRejected = $notificationService->countRejected();
         $countPending = $notificationService->countPending();
@@ -229,8 +230,6 @@ class NotificationController extends AppController
 
         $treatNotification = new TreatNotifications();
 
-        /** @var RouterInterface $router */
-        $router = $this->get('router');
         $treatForm = $this->createForm(TreatNotificationsType::class, $treatNotification, [
                  'action' => $router->generate('notification.treat', [], UrlGeneratorInterface::RELATIVE_PATH),
                  'notifications' => $notifications,

@@ -7,7 +7,7 @@ use EMS\CoreBundle\Entity\I18n;
 use EMS\CoreBundle\Form\Form\I18nFormType;
 use EMS\CoreBundle\Form\Form\I18nType;
 use EMS\CoreBundle\Service\I18nService;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @Route("/i18n")
  */
-class I18nController extends Controller
+class I18nController extends AbstractController
 {
     /**
      * Lists all I18n entities.

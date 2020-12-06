@@ -6,12 +6,12 @@ use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
 use Psr\Log\LoggerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class AppController extends Controller
+class AppController extends AbstractController
 {
     /** @var LoggerInterface */
     private $logger;

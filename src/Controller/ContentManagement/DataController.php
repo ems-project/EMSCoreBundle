@@ -41,6 +41,7 @@ use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\SearchService;
 use EMS\CoreBundle\Service\UserService;
+use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -55,8 +56,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment as TwigEnvironment;
 use Twig\Error\Error;
 use Twig\Error\LoaderError;
@@ -797,7 +798,7 @@ class DataController extends AppController
      * @Route("/data/custom-index-view/{viewId}", name="data.customindexview", defaults={"public"=false})
      * @Route("/data/custom-index-view/{viewId}", name="ems_custom_view_protected", defaults={"public"=false})
      */
-    public function customIndexViewAction($viewId, $public, Request $request, TranslatorInterface $translator)
+    public function customIndexViewAction($viewId, $public, Request $request, TranslatorInterface $translator, ContainerInterface $container)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -810,9 +811,8 @@ class DataController extends AppController
         if (null === $view || ($public && !$view->isPublic())) {
             throw new NotFoundHttpException($translator->trans('log.view.not_found', ['%view_id%' => $viewId], EMSCoreBundle::TRANS_DOMAIN));
         }
-
         /** @var ViewType $viewType */
-        $viewType = $this->get($view->getType());
+        $viewType = $container->get($view->getType());
 
         return $viewType->generateResponse($view, $request);
     }

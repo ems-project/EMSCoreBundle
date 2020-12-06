@@ -31,6 +31,7 @@ use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\Mapping;
+use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\SearchService;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -55,7 +56,7 @@ class EnvironmentController extends AppController
      * @Route("/publisher/align", name="environment.align")
      * @Security("has_role('ROLE_PUBLISHER')")
      */
-    public function alignAction(Request $request, SearchService $searchService, EnvironmentService $environmentService, ContentTypeService $contentTypeService, AuthorizationCheckerInterface $authorizationChecker)
+    public function alignAction(Request $request, SearchService $searchService, EnvironmentService $environmentService, ContentTypeService $contentTypeService, AuthorizationCheckerInterface $authorizationChecker, PublishService $publishService)
     {
         $data = [];
         $env = [];
@@ -121,14 +122,14 @@ class EnvironmentController extends AppController
 
                     if ($continue) {
                         foreach ($alignTo as $env) {
-                            $this->getPublishService()->alignRevision($revision->getContentType()->getName(), $revision->getOuuid(), $revision->getEnvironments()->first()->getName(), $env);
+                            $publishService->alignRevision($revision->getContentType()->getName(), $revision->getOuuid(), $revision->getEnvironments()->first()->getName(), $env);
                         }
                     }
                 } elseif (\array_key_exists('alignLeft', $request->request->get('compare_environment_form'))) {
                     foreach ($request->request->get('compare_environment_form')['item_to_align'] as $item) {
                         $exploded = \explode(':', $item);
                         if (2 == \count($exploded)) {
-                            $this->getPublishService()->alignRevision($exploded[0], $exploded[1], $request->query->get('withEnvironment'), $request->query->get('environment'));
+                            $publishService->alignRevision($exploded[0], $exploded[1], $request->query->get('withEnvironment'), $request->query->get('environment'));
                         } else {
                             $this->getLogger()->warning('log.environment.wrong_ouuid', [
                                 EmsFields::LOG_OUUID_FIELD => $item,
@@ -139,7 +140,7 @@ class EnvironmentController extends AppController
                     foreach ($request->request->get('compare_environment_form')['item_to_align'] as $item) {
                         $exploded = \explode(':', $item);
                         if (2 == \count($exploded)) {
-                            $this->getPublishService()->alignRevision($exploded[0], $exploded[1], $request->query->get('environment'), $request->query->get('withEnvironment'));
+                            $publishService->alignRevision($exploded[0], $exploded[1], $request->query->get('environment'), $request->query->get('withEnvironment'));
                         } else {
                             $this->getLogger()->warning('log.environment.wrong_ouuid', [
                                 EmsFields::LOG_OUUID_FIELD => $item,
@@ -445,7 +446,7 @@ class EnvironmentController extends AppController
      * @throws OptimisticLockException
      * @Route("/environment/add", name="environment.add")
      */
-    public function addAction(Request $request, Mapping $mapping, IndexService $indexService)
+    public function addAction(Request $request, Mapping $mapping, IndexService $indexService, ContentTypeService $contentTypeService)
     {
         $environment = new Environment();
 
@@ -493,8 +494,8 @@ class EnvironmentController extends AppController
                     $indexName = $environment->getAlias().AppController::getFormatedTimestamp();
                     $mapping->createIndex($indexName, $this->getEnvironmentService()->getIndexAnalysisConfiguration());
 
-                    foreach ($this->getContentTypeService()->getAll() as $contentType) {
-                        $this->getContentTypeService()->updateMapping($contentType, $indexName);
+                    foreach ($contentTypeService->getAll() as $contentType) {
+                        $contentTypeService->updateMapping($contentType, $indexName);
                     }
 
                     $indexService->updateAlias($environment->getAlias(), [], [$indexName]);

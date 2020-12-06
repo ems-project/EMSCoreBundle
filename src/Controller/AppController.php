@@ -5,9 +5,7 @@ namespace EMS\CoreBundle\Controller;
 use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
-use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
-use EMS\CoreBundle\Service\PublishService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormRegistryInterface;
@@ -59,26 +57,6 @@ class AppController extends Controller
     public static function getFormatedTimestamp()
     {
         return \date('_Ymd_His');
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return PublishService
-     */
-    public function getPublishService()
-    {
-        return $this->get('ems.service.publish');
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return ContentTypeService
-     */
-    public function getContentTypeService()
-    {
-        return $this->get('ems.service.contenttype');
     }
 
     /**

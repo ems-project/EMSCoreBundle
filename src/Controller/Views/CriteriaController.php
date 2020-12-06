@@ -25,6 +25,7 @@ use EMS\CoreBundle\Form\Field\ObjectChoiceListItem;
 use EMS\CoreBundle\Form\View\Criteria\CriteriaFilterType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
+use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use Exception;
 use Symfony\Component\Form\FormError;
@@ -44,7 +45,7 @@ class CriteriaController extends AppController
      *
      * @Route("/views/criteria/align/{view}", name="views.criteria.align", methods={"POST"})
      */
-    public function alignAction(View $view, Request $request, ElasticaService $elasticaService, DataService $dataService)
+    public function alignAction(View $view, Request $request, ElasticaService $elasticaService, DataService $dataService, ContentTypeService $contentTypeService)
     {
         $criteriaUpdateConfig = new CriteriaUpdateConfig($view, $this->getLogger());
         $form = $this->createForm(CriteriaFilterType::class, $criteriaUpdateConfig, [
@@ -55,7 +56,7 @@ class CriteriaController extends AppController
         /** @var CriteriaUpdateConfig $criteriaUpdateConfig */
         $criteriaUpdateConfig = $form->getData();
 
-        $tables = $this->generateCriteriaTable($view, $criteriaUpdateConfig, $elasticaService);
+        $tables = $this->generateCriteriaTable($view, $criteriaUpdateConfig, $elasticaService, $contentTypeService);
         $params = \explode(':', $request->request->all()['alignOn']);
 
         $isRowAlign = ('row' == $params[0]);
@@ -215,7 +216,7 @@ class CriteriaController extends AppController
      *
      * @Route("/views/criteria/table/{view}", name="views.criteria.table", methods={"GET", "POST"})
      */
-    public function generateCriteriaTableAction(View $view, Request $request, ElasticaService $elasticaService, AuthorizationCheckerInterface $authorizationChecker)
+    public function generateCriteriaTableAction(View $view, Request $request, ElasticaService $elasticaService, AuthorizationCheckerInterface $authorizationChecker, ContentTypeService $contentTypeService)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -301,7 +302,7 @@ class CriteriaController extends AppController
             ]);
         }
 
-        $tables = $this->generateCriteriaTable($view, $criteriaUpdateConfig, $elasticaService);
+        $tables = $this->generateCriteriaTable($view, $criteriaUpdateConfig, $elasticaService, $contentTypeService);
 
         return $this->render('@EMSCore/view/custom/criteria_table.html.twig', [
             'table' => $tables['table'],
@@ -327,7 +328,7 @@ class CriteriaController extends AppController
      * @throws PerformanceException
      * @throws Exception
      */
-    public function generateCriteriaTable(View $view, CriteriaUpdateConfig $criteriaUpdateConfig, ElasticaService $elasticaService)
+    public function generateCriteriaTable(View $view, CriteriaUpdateConfig $criteriaUpdateConfig, ElasticaService $elasticaService, ContentTypeService $contentTypeService)
     {
         $contentType = $view->getContentType();
 
@@ -427,7 +428,7 @@ class CriteriaController extends AppController
             $targetField = $contentType->getFieldType()->getChildByPath($view->getOptions()['targetField']);
             if ($targetField && isset($targetField->getOptions()['displayOptions']['type'])) {
                 $loaderTypes = $targetField->getOptions()['displayOptions']['type'];
-                $targetContentType = $this->getContentTypeService()->getByName($loaderTypes);
+                $targetContentType = $contentTypeService->getByName($loaderTypes);
             }
         }
 

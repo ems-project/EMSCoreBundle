@@ -16,6 +16,7 @@ use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\NotificationRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\NotificationService;
+use EMS\CoreBundle\Service\PublishService;
 use Symfony\Component\Form\ClickableInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -105,7 +106,7 @@ class NotificationController extends AppController
      *
      * @Route("/notification/treat", name="notification.treat", methods={"POST"})
      */
-    public function treatNotificationsAction(Request $request)
+    public function treatNotificationsAction(Request $request, PublishService $publishService)
     {
         $treatNotification = new TreatNotifications();
         $form = $this->createForm(TreatNotificationsType::class, $treatNotification, [
@@ -138,7 +139,7 @@ class NotificationController extends AppController
             }
 
             if (!empty($publishIn)) {
-                $this->getPublishService()->publish($notification->getRevision(), $publishIn);
+                $publishService->publish($notification->getRevision(), $publishIn);
             }
 
             if ($treatNotification->getAccept()) {

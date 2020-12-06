@@ -38,6 +38,7 @@ use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\IndexService;
+use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\SearchService;
 use EMS\CoreBundle\Service\UserService;
 use Psr\Log\LoggerInterface;
@@ -331,7 +332,7 @@ class DataController extends AppController
      * @Route("/data/revisions/{type}:{ouuid}/{revisionId}/{compareId}", defaults={"revisionId"=false, "compareId"=false}, name="data.revisions")
      * @Route("/data/revisions/{type}:{ouuid}/{revisionId}/{compareId}", defaults={"revisionId"=false, "compareId"=false}, name="ems_content_revisions_view")
      */
-    public function revisionsDataAction($type, $ouuid, $revisionId, $compareId, Request $request, DataService $dataService, LoggerInterface $logger, SearchService $searchService, ElasticaService $elasticaService)
+    public function revisionsDataAction($type, $ouuid, $revisionId, $compareId, Request $request, DataService $dataService, LoggerInterface $logger, SearchService $searchService, ElasticaService $elasticaService, ContentTypeService $contentTypeService)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -448,7 +449,7 @@ class DataController extends AppController
         $dataFields = $dataService->getDataFieldsStructure($form->get('data'));
 
         $searchForm = new Search();
-        $searchForm->setContentTypes($this->getContentTypeService()->getAllNames());
+        $searchForm->setContentTypes($contentTypeService->getAllNames());
         $searchForm->setEnvironments([$defaultEnvironment->getName()]);
         $searchForm->setSortBy('_uid');
         $searchForm->setSortOrder('asc');
@@ -684,7 +685,7 @@ class DataController extends AppController
      * @throws PrivilegeException
      * @Route("/data/cancel/{revision}", name="revision.cancel", methods={"POST"})
      */
-    public function cancelModificationsAction(Revision $revision, DataService $dataService, LoggerInterface $logger): RedirectResponse
+    public function cancelModificationsAction(Revision $revision, DataService $dataService, LoggerInterface $logger, PublishService $publishService): RedirectResponse
     {
         $contentTypeId = $revision->getContentType()->getId();
         $type = $revision->getContentType()->getName();
@@ -699,7 +700,7 @@ class DataController extends AppController
 
         if (null != $ouuid) {
             if ($revision->getContentType()->isAutoPublish()) {
-                $this->getPublishService()->silentPublish($revision);
+                $publishService->silentPublish($revision);
 
                 $logger->warning('log.data.revision.auto_publish_rollback', [
                     EmsFields::LOG_OUUID_FIELD => $ouuid,
@@ -1049,7 +1050,7 @@ class DataController extends AppController
      * @throws \Exception
      * @Route("/data/revision/{revisionId}.json", name="revision.ajaxupdate", defaults={"_format"="json"}, methods={"POST"})
      */
-    public function ajaxUpdateAction($revisionId, Request $request, DataService $dataService, LoggerInterface $logger)
+    public function ajaxUpdateAction($revisionId, Request $request, DataService $dataService, LoggerInterface $logger, PublishService $publishService)
     {
         $em = $this->getDoctrine()->getManager();
         $formErrors = [];
@@ -1124,7 +1125,7 @@ class DataController extends AppController
             $formErrors = $form->getErrors(true, true);
 
             if (0 === $formErrors->count() && $revision->getContentType()->isAutoPublish()) {
-                $this->getPublishService()->silentPublish($revision);
+                $publishService->silentPublish($revision);
             }
         }
 
@@ -1341,7 +1342,7 @@ class DataController extends AppController
      * @return RedirectResponse
      * @Route("/data/link/{key}", name="data.link")
      */
-    public function linkDataAction(string $key)
+    public function linkDataAction(string $key, ContentTypeService $ctService)
     {
         $category = $type = $ouuid = null;
         $split = \explode(':', $key);
@@ -1358,9 +1359,6 @@ class DataController extends AppController
 
             /** @var RevisionRepository $repository */
             $repository = $em->getRepository('EMSCoreBundle:Revision');
-
-            /** @var ContentTypeService $ctService */
-            $ctService = $this->getContentTypeService();
 
             $contentType = $ctService->getByName($type);
 

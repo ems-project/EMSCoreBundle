@@ -231,13 +231,13 @@ class ElasticsearchController extends AppController
      *
      * @Route("/elasticsearch/set-default-search/{id}/{contentType}", defaults={"contentType"=false}, name="ems_search_set_default_search_from", methods={"POST"})
      */
-    public function setDefaultSearchAction($id, $contentType)
+    public function setDefaultSearchAction($id, $contentType, ContentTypeService $contentTypeService)
     {
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('EMSCoreBundle:Form\Search');
 
         if ($contentType) {
-            $contentType = $this->getContentTypeService()->getByName($contentType);
+            $contentType = $contentTypeService->getByName($contentType);
             $searchs = $repository->findBy([
                 'contentType' => $contentType->getId(),
             ]);

@@ -118,7 +118,7 @@ class UserController extends AppController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $continue = $this->userExist($user, 'add');
+            $continue = $this->userExist($user, 'add', $userManager);
 
             if ($continue) {
                 $user->setEnabled(true);
@@ -416,10 +416,8 @@ class UserController extends AppController
     /**
      * Test if email or username exist return on add or edit Form.
      */
-    private function userExist(User $user, string $action): bool
+    private function userExist(User $user, string $action, UserManagerInterface $userManager): bool
     {
-        /** @var UserManagerInterface $userManager */
-        $userManager = $this->get('fos_user.user_manager');
         $exists = ['email' => $userManager->findUserByEmail($user->getEmail()), 'username' => $userManager->findUserByUsername($user->getUsername())];
         $messages = ['email' => 'User email already exist!', 'username' => 'Username already exist!'];
         foreach ($exists as $key => $value) {

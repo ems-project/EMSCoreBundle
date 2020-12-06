@@ -589,12 +589,12 @@ class DataController extends AppController
      *
      * @Route("/data/delete/{type}/{ouuid}", name="object.delete", methods={"POST"})
      */
-    public function deleteAction(string $type, string $ouuid, DataService $dataService, LoggerInterface $logger)
+    public function deleteAction(string $type, string $ouuid, DataService $dataService, LoggerInterface $logger, EnvironmentService $environmentService)
     {
         $revision = $dataService->getNewestRevision($type, $ouuid);
         $contentType = $revision->getContentType();
         $found = false;
-        foreach ($this->getEnvironmentService()->getAll() as $environment) {
+        foreach ($environmentService->getAll() as $environment) {
             /** @var Environment $environment */
             if ($environment !== $revision->getContentType()->getEnvironment()) {
                 try {

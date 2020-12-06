@@ -446,7 +446,7 @@ class EnvironmentController extends AppController
      * @throws OptimisticLockException
      * @Route("/environment/add", name="environment.add")
      */
-    public function addAction(Request $request, Mapping $mapping, IndexService $indexService, ContentTypeService $contentTypeService)
+    public function addAction(Request $request, Mapping $mapping, IndexService $indexService, ContentTypeService $contentTypeService, EnvironmentService $environmentService)
     {
         $environment = new Environment();
 
@@ -492,7 +492,7 @@ class EnvironmentController extends AppController
                     $em->flush();
 
                     $indexName = $environment->getAlias().AppController::getFormatedTimestamp();
-                    $mapping->createIndex($indexName, $this->getEnvironmentService()->getIndexAnalysisConfiguration());
+                    $mapping->createIndex($indexName, $environmentService->getIndexAnalysisConfiguration());
 
                     foreach ($contentTypeService->getAll() as $contentType) {
                         $contentTypeService->updateMapping($contentType, $indexName);
@@ -677,7 +677,7 @@ class EnvironmentController extends AppController
      * @Route("/environment", name="environment.index")
      * @Route("/environment", name="ems_environment_index")
      */
-    public function indexAction(Request $request, AliasService $aliasService)
+    public function indexAction(Request $request, AliasService $aliasService, EnvironmentService $environmentService)
     {
         try {
             /** @var EntityManager $em */
@@ -699,7 +699,7 @@ class EnvironmentController extends AppController
             $names = [];
 
             $environments = [];
-            $stats = $this->getEnvironmentService()->getEnvironmentsStats();
+            $stats = $environmentService->getEnvironmentsStats();
             /* @var  Environment $environment */
             foreach ($stats as $stat) {
                 $environment = $stat['environment'];
@@ -732,7 +732,7 @@ class EnvironmentController extends AppController
                 if (isset($form['environmentNames']) && \is_array($form['environmentNames'])) {
                     $counter = 0;
                     foreach ($form['environmentNames'] as $name) {
-                        $contentType = $this->getEnvironmentService()->getByName($name);
+                        $contentType = $environmentService->getByName($name);
                         if ($contentType) {
                             $contentType->setOrderKey($counter);
                             $em->persist($contentType);

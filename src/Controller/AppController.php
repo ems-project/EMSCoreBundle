@@ -5,7 +5,6 @@ namespace EMS\CoreBundle\Controller;
 use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
-use EMS\CoreBundle\Service\EnvironmentService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormRegistryInterface;
@@ -57,16 +56,6 @@ class AppController extends Controller
     public static function getFormatedTimestamp()
     {
         return \date('_Ymd_His');
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return EnvironmentService
-     */
-    public function getEnvironmentService()
-    {
-        return $this->get('ems.service.environment');
     }
 
     protected function returnJsonResponse(Request $request, bool $success, array $body = [])

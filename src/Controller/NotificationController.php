@@ -15,6 +15,7 @@ use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\NotificationRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
+use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\NotificationService;
 use EMS\CoreBundle\Service\PublishService;
 use Symfony\Component\Form\ClickableInterface;
@@ -106,7 +107,7 @@ class NotificationController extends AppController
      *
      * @Route("/notification/treat", name="notification.treat", methods={"POST"})
      */
-    public function treatNotificationsAction(Request $request, PublishService $publishService)
+    public function treatNotificationsAction(Request $request, PublishService $publishService, EnvironmentService $environmentService)
     {
         $treatNotification = new TreatNotifications();
         $form = $this->createForm(TreatNotificationsType::class, $treatNotification, [
@@ -126,7 +127,7 @@ class NotificationController extends AppController
         $em = $this->getDoctrine()->getManager();
         $repositoryNotification = $em->getRepository('EMSCoreBundle:Notification');
 
-        $publishIn = $this->getEnvironmentService()->getAliasByName($treatNotification->getPublishTo());
+        $publishIn = $environmentService->getAliasByName($treatNotification->getPublishTo());
 
         foreach ($treatNotification->getNotifications() as $notificationId => $true) {
             /** @var Notification $notification */

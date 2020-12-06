@@ -176,11 +176,11 @@ class DataController extends AppController
      * @return Response
      * @Route("/data/trash/{contentType}", name="ems_data_trash")
      */
-    public function trashAction(ContentType $contentType)
+    public function trashAction(ContentType $contentType, DataService $dataService)
     {
         return $this->render('@EMSCore/data/trash.html.twig', [
             'contentType' => $contentType,
-            'revisions' => $this->getDataService()->getAllDeleted($contentType),
+            'revisions' => $dataService->getAllDeleted($contentType),
         ]);
     }
 
@@ -191,9 +191,9 @@ class DataController extends AppController
      *
      * @Route("/data/put-back/{contentType}/{ouuid}", name="ems_data_put_back", methods={"POST"})
      */
-    public function putBackAction(ContentType $contentType, $ouuid)
+    public function putBackAction(ContentType $contentType, $ouuid, DataService $dataService)
     {
-        $revId = $this->getDataService()->putBack($contentType, $ouuid);
+        $revId = $dataService->putBack($contentType, $ouuid);
 
         return $this->redirectToRoute('ems_revision_edit', [
             'revisionId' => $revId,
@@ -207,9 +207,9 @@ class DataController extends AppController
      *
      * @Route("/data/empty-trash/{contentType}/{ouuid}", name="ems_data_empty_trash", methods={"POST"})
      */
-    public function emptyTrashAction(ContentType $contentType, $ouuid)
+    public function emptyTrashAction(ContentType $contentType, $ouuid, DataService $dataService)
     {
-        $this->getDataService()->emptyTrash($contentType, $ouuid);
+        $dataService->emptyTrash($contentType, $ouuid);
 
         return $this->redirectToRoute('ems_data_trash', [
             'contentType' => $contentType->getId(),
@@ -283,10 +283,10 @@ class DataController extends AppController
      *
      * @throws NonUniqueResultException
      */
-    public function revisionInEnvironmentDataAction(ContentType $contentType, string $ouuid, Environment $environment, LoggerInterface $logger)
+    public function revisionInEnvironmentDataAction(ContentType $contentType, string $ouuid, Environment $environment, LoggerInterface $logger, DataService $dataService)
     {
         try {
-            $revision = $this->getDataService()->getRevisionByEnvironment($ouuid, $contentType, $environment);
+            $revision = $dataService->getRevisionByEnvironment($ouuid, $contentType, $environment);
 
             return $this->redirectToRoute('data.revisions', [
                 'type' => $contentType->getName(),
@@ -308,11 +308,11 @@ class DataController extends AppController
     /**
      * @Route("/public-key" , name="ems_get_public_key")
      */
-    public function publicKey(): Response
+    public function publicKey(DataService $dataService): Response
     {
         $response = new Response();
         $response->headers->set('Content-Type', 'text/plain');
-        $response->setContent($this->getDataService()->getPublicKey());
+        $response->setContent($dataService->getPublicKey());
 
         return $response;
     }
@@ -445,7 +445,7 @@ class DataController extends AppController
 
         $objectArray = $form->getData()->getRawData();
 
-        $dataFields = $this->getDataService()->getDataFieldsStructure($form->get('data'));
+        $dataFields = $dataService->getDataFieldsStructure($form->get('data'));
 
         $searchForm = new Search();
         $searchForm->setContentTypes($this->getContentTypeService()->getAllNames());
@@ -625,9 +625,9 @@ class DataController extends AppController
         ]);
     }
 
-    public function discardDraft(Revision $revision): ?int
+    public function discardDraft(Revision $revision, DataService $dataService): ?int
     {
-        return $this->getDataService()->discardDraft($revision);
+        return $dataService->discardDraft($revision);
     }
 
     /**
@@ -661,7 +661,7 @@ class DataController extends AppController
         $autoPublish = $revision->getContentType()->isAutoPublish();
         $ouuid = $revision->getOuuid();
 
-        $previousRevisionId = $this->discardDraft($revision);
+        $previousRevisionId = $this->discardDraft($revision, $dataService);
 
         if (null != $ouuid && null !== $previousRevisionId && $previousRevisionId > 0) {
             if ($autoPublish) {
@@ -1141,9 +1141,9 @@ class DataController extends AppController
      * @return RedirectResponse|Response
      * @Route("/data/draft/finalize/{revision}", name="revision.finalize", methods={"POST"})
      */
-    public function finalizeDraftAction(Revision $revision, LoggerInterface $logger)
+    public function finalizeDraftAction(Revision $revision, LoggerInterface $logger, DataService $dataService)
     {
-        $this->getDataService()->loadDataStructure($revision);
+        $dataService->loadDataStructure($revision);
         try {
             $form = $this->createForm(RevisionType::class, $revision, ['raw_data' => $revision->getRawData()]);
             if (!empty($revision->getAutoSave())) {
@@ -1159,7 +1159,7 @@ class DataController extends AppController
                 ]);
             }
 
-            $revision = $this->getDataService()->finalizeDraft($revision, $form);
+            $revision = $dataService->finalizeDraft($revision, $form);
             if (0 !== \count($form->getErrors())) {
                 $logger->error('log.data.revision.can_finalized_as_invalid', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),

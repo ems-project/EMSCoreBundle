@@ -6,7 +6,6 @@ use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Service\ContentTypeService;
-use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\PublishService;
 use Psr\Log\LoggerInterface;
@@ -60,16 +59,6 @@ class AppController extends Controller
     public static function getFormatedTimestamp()
     {
         return \date('_Ymd_His');
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return DataService
-     */
-    public function getDataService()
-    {
-        return $this->get('ems.service.data');
     }
 
     /**

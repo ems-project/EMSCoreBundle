@@ -23,7 +23,7 @@ class NatureController extends AppController
      * @return RedirectResponse|Response
      * @Route("/content-type/nature/reorder/{contentType}", name="nature.reorder")
      */
-    public function reorderAction(ContentType $contentType, Request $request, ContentTypeService $contentTypeService, ElasticaService $elasticaService)
+    public function reorderAction(ContentType $contentType, Request $request, ContentTypeService $contentTypeService, ElasticaService $elasticaService, DataService $dataService)
     {
         @\trigger_error(\sprintf('The "%s::reorderAction" controller is deprecated. Use a sort view instead.', NatureController::class), E_USER_DEPRECATED);
 
@@ -93,8 +93,6 @@ class NatureController extends AppController
 
         $form->handleRequest($request);
 
-        /** @var DataService $dataService */
-        $dataService = $this->getDataService();
         $counter = 1;
 
         if ($form->isSubmitted()) {

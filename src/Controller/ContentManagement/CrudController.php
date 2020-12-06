@@ -8,6 +8,7 @@ use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Exception\DataStateException;
+use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\UserService;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -42,7 +43,7 @@ class CrudController extends AppController
      * @Route("/api/data/{name}/draft/{ouuid}", defaults={"ouuid": null, "_format": "json"}, methods={"POST"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      */
-    public function createAction($ouuid, ContentType $contentType, Request $request)
+    public function createAction($ouuid, ContentType $contentType, Request $request, DataService $dataService)
     {
         if (!$contentType->getEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not create content for a managed content type');
@@ -54,7 +55,7 @@ class CrudController extends AppController
         }
 
         try {
-            $newRevision = $this->getDataService()->createData($ouuid, $rawdata, $contentType);
+            $newRevision = $dataService->createData($ouuid, $rawdata, $contentType);
         } catch (Exception $e) {
             if (($e instanceof NotFoundHttpException) or ($e instanceof BadRequestHttpException)) {
                 throw $e;
@@ -89,10 +90,10 @@ class CrudController extends AppController
      * @Route("/api/data/{name}/get/{ouuid}", defaults={"ouuid": null, "_format": "json"}, methods={"GET"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      */
-    public function getAction($ouuid, ContentType $contentType)
+    public function getAction($ouuid, ContentType $contentType, DataService $dataService)
     {
         try {
-            $revision = $this->getDataService()->getNewestRevision($contentType->getName(), $ouuid);
+            $revision = $dataService->getNewestRevision($contentType->getName(), $ouuid);
         } catch (Exception $e) {
             if (($e instanceof NotFoundHttpException) or ($e instanceof BadRequestHttpException)) {
                 throw $e;
@@ -130,7 +131,7 @@ class CrudController extends AppController
      * @Route("/api/data/{name}/finalize/{id}", defaults={"_format": "json"}, methods={"POST"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      */
-    public function finalizeAction($id, ContentType $contentType)
+    public function finalizeAction($id, ContentType $contentType, DataService $dataService)
     {
         if (!$contentType->getEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not finalize content for a managed content type');
@@ -140,8 +141,8 @@ class CrudController extends AppController
             'success' => 'false',
         ];
         try {
-            $revision = $this->getDataService()->getRevisionById($id, $contentType);
-            $newRevision = $this->getDataService()->finalizeDraft($revision);
+            $revision = $dataService->getRevisionById($id, $contentType);
+            $newRevision = $dataService->finalizeDraft($revision);
             $out['success'] = !$newRevision->getDraft();
             $out['ouuid'] = $newRevision->getOuuid();
         } catch (Exception $e) {
@@ -168,15 +169,15 @@ class CrudController extends AppController
      * @Route("/api/data/{name}/discard/{id}", defaults={"_format": "json"}, methods={"POST"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      */
-    public function discardAction($id, ContentType $contentType)
+    public function discardAction($id, ContentType $contentType, DataService $dataService)
     {
         if (!$contentType->getEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not discard content for a managed content type');
         }
 
         try {
-            $revision = $this->getDataService()->getRevisionById($id, $contentType);
-            $this->getDataService()->discardDraft($revision);
+            $revision = $dataService->getRevisionById($id, $contentType);
+            $dataService->discardDraft($revision);
             $isDiscard = ($revision->getId() != $id) ? true : false;
         } catch (Exception $e) {
             $isDiscard = false;
@@ -212,7 +213,7 @@ class CrudController extends AppController
      * @Route("/api/data/{name}/delete/{ouuid}", defaults={"_format": "json"}, methods={"POST"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      */
-    public function deleteAction($ouuid, ContentType $contentType)
+    public function deleteAction($ouuid, ContentType $contentType, DataService $dataService)
     {
         $isDeleted = false;
         if (!$contentType->getEnvironment()->getManaged()) {
@@ -220,7 +221,7 @@ class CrudController extends AppController
         }
 
         try {
-            $this->getDataService()->delete($contentType->getName(), $ouuid);
+            $dataService->delete($contentType->getName(), $ouuid);
             $this->getLogger()->notice('log.crud.deleted', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                 EmsFields::LOG_OUUID_FIELD => $ouuid,
@@ -254,7 +255,7 @@ class CrudController extends AppController
      * @Route("/api/data/{name}/replace/{ouuid}", defaults={"_format": "json"}, methods={"POST"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      */
-    public function replaceAction($ouuid, ContentType $contentType, Request $request)
+    public function replaceAction($ouuid, ContentType $contentType, Request $request, DataService $dataService)
     {
         if (!$contentType->getEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not replace content for a managed content type');
@@ -266,8 +267,8 @@ class CrudController extends AppController
         }
 
         try {
-            $revision = $this->getDataService()->getNewestRevision($contentType->getName(), $ouuid);
-            $newDraft = $this->getDataService()->replaceData($revision, $rawdata);
+            $revision = $dataService->getNewestRevision($contentType->getName(), $ouuid);
+            $newDraft = $dataService->replaceData($revision, $rawdata);
             $isReplaced = ($revision->getId() != $newDraft->getId()) ? true : false;
         } catch (Exception $e) {
             $isReplaced = false;
@@ -305,7 +306,7 @@ class CrudController extends AppController
      * @Route("/api/data/{name}/merge/{ouuid}", defaults={"_format": "json"}, methods={"POST"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      */
-    public function mergeAction($ouuid, ContentType $contentType, Request $request)
+    public function mergeAction($ouuid, ContentType $contentType, Request $request, DataService $dataService)
     {
         if (!$contentType->getEnvironment()->getManaged()) {
             throw new BadRequestHttpException('You can not merge content for a managed content type');
@@ -317,8 +318,8 @@ class CrudController extends AppController
         }
 
         try {
-            $revision = $this->getDataService()->getNewestRevision($contentType->getName(), $ouuid);
-            $newDraft = $this->getDataService()->replaceData($revision, $rawdata, 'merge');
+            $revision = $dataService->getNewestRevision($contentType->getName(), $ouuid);
+            $newDraft = $dataService->replaceData($revision, $rawdata, 'merge');
             $isMerged = ($revision->getId() != $newDraft->getId()) ? true : false;
         } catch (Exception $e) {
             if ($e instanceof NotFoundHttpException) {

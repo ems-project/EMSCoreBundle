@@ -239,8 +239,8 @@ class ChoiceFieldType extends DataFieldType
                 $out = null;
             } elseif (\is_string($temp) || \is_integer($temp)) {
                 $out = $temp;
-            } elseif (\is_array($temp) && null != $temp && (\is_string(\array_shift($temp)) || \is_integer(\array_shift($temp)))) {
-                $out = \array_shift($temp);
+            } elseif (\is_array($temp) && null != $temp && (\is_string(\array_values($temp)[0]) || \is_integer(\array_values($temp)[0]))) {
+                $out = \array_values($temp)[0];
                 $dataField->addMessage('Only the first item has been imported : '.\json_encode($temp));
             } else {
                 $dataField->addMessage('Was not able to import the data : '.\json_encode($temp));

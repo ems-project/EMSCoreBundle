@@ -8,6 +8,7 @@ use Doctrine\ORM\ORMException;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\Filter;
 use EMS\CoreBundle\Form\Form\FilterType;
+use EMS\CoreBundle\Service\HelperService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,10 +26,10 @@ class FilterController extends AppController
      *
      * @Route("/", name="ems_filter_index")
      */
-    public function indexAction()
+    public function indexAction(HelperService $helperService)
     {
         return $this->render('@EMSCore/filter/index.html.twig', [
-                'paging' => $this->getHelperService()->getPagingTool('EMSCoreBundle:Filter', 'ems_filter_index', 'name'),
+                'paging' => $helperService->getPagingTool('EMSCoreBundle:Filter', 'ems_filter_index', 'name'),
         ]);
     }
 

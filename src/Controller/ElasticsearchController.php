@@ -28,6 +28,7 @@ use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\SearchService;
+use EMS\CoreBundle\Service\SortOptionService;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\ClickableInterface;
@@ -37,6 +38,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Throwable;
 
 class ElasticsearchController extends AppController
@@ -230,13 +232,13 @@ class ElasticsearchController extends AppController
      *
      * @Route("/elasticsearch/set-default-search/{id}/{contentType}", defaults={"contentType"=false}, name="ems_search_set_default_search_from", methods={"POST"})
      */
-    public function setDefaultSearchAction($id, $contentType)
+    public function setDefaultSearchAction($id, $contentType, ContentTypeService $contentTypeService)
     {
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('EMSCoreBundle:Form\Search');
 
         if ($contentType) {
-            $contentType = $this->getContentTypeService()->getByName($contentType);
+            $contentType = $contentTypeService->getByName($contentType);
             $searchs = $repository->findBy([
                 'contentType' => $contentType->getId(),
             ]);
@@ -297,7 +299,7 @@ class ElasticsearchController extends AppController
      *
      * @Route("/search.json", name="elasticsearch.api.search")
      */
-    public function searchApiAction(Request $request, LoggerInterface $logger, SearchService $searchService, ElasticaService $elasticaService, ContentTypeService $contentTypeService)
+    public function searchApiAction(Request $request, LoggerInterface $logger, SearchService $searchService, ElasticaService $elasticaService, ContentTypeService $contentTypeService, AuthorizationCheckerInterface $authorizationChecker)
     {
         $pattern = $request->query->get('q', '');
         $page = \intval($request->query->get('page', 1));
@@ -354,7 +356,7 @@ class ElasticsearchController extends AppController
         $search->setSearchPattern($pattern, true);
         $commonSearch = $searchService->generateSearch($search);
 
-        if ($circleOnly && !$this->get('security.authorization_checker')->isGranted('ROLE_USER_MANAGEMENT')) {
+        if ($circleOnly && !$authorizationChecker->isGranted('ROLE_USER_MANAGEMENT')) {
             /** @var UserInterface $user */
             $user = $this->getUser();
             $circles = $user->getCircles();
@@ -445,7 +447,7 @@ class ElasticsearchController extends AppController
      * @Route("/search", name="ems_search")
      * @Route("/search", name="elasticsearch.search")
      */
-    public function searchAction(Request $request, LoggerInterface $logger, AggregateOptionService $aggregateOptionService, ElasticaService $elasticaService, SearchService $searchService)
+    public function searchAction(Request $request, LoggerInterface $logger, AggregateOptionService $aggregateOptionService, ElasticaService $elasticaService, SearchService $searchService, SortOptionService $sortOptionService)
     {
         try {
             $search = new Search();
@@ -638,7 +640,7 @@ class ElasticsearchController extends AppController
                 'body' => $searchService->generateSearchBody($search),
                 'openSearchForm' => $openSearchForm,
                 'search' => $search,
-                'sortOptions' => $this->getSortOptionService()->getAll(),
+                'sortOptions' => $sortOptionService->getAll(),
                 'aggregateOptions' => $aggregateOptionService->getAll(),
             ]);
         } catch (NoNodesAvailableException $e) {

@@ -47,8 +47,8 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('ems_core');
+        $treeBuilder = new TreeBuilder('ems_core');
+        $rootNode = $treeBuilder->getRootNode();
 
         $rootNode->addDefaultsIfNotSet()->children()
             ->scalarNode('paging_size')->defaultValue(self::PAGING_SIZE)->end()

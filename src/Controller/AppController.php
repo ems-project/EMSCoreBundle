@@ -5,30 +5,13 @@ namespace EMS\CoreBundle\Controller;
 use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
-use EMS\CoreBundle\Service\AggregateOptionService;
-use EMS\CoreBundle\Service\AliasService;
-use EMS\CoreBundle\Service\ContentTypeService;
-use EMS\CoreBundle\Service\DataService;
-use EMS\CoreBundle\Service\EnvironmentService;
-use EMS\CoreBundle\Service\HelperService;
-use EMS\CoreBundle\Service\NotificationService;
-use EMS\CoreBundle\Service\PublishService;
-use EMS\CoreBundle\Service\SearchFieldOptionService;
-use EMS\CoreBundle\Service\SearchService;
-use EMS\CoreBundle\Service\SortOptionService;
-use EMS\CoreBundle\Service\UserService;
-use EMS\CoreBundle\Service\WysiwygProfileService;
-use EMS\CoreBundle\Service\WysiwygStylesSetService;
 use Psr\Log\LoggerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
-use Symfony\Component\Translation\TranslatorInterface;
-use Twig_Environment;
 
-class AppController extends Controller
+class AppController extends AbstractController
 {
     /** @var LoggerInterface */
     private $logger;
@@ -46,136 +29,6 @@ class AppController extends Controller
         $this->logger = $logger;
         $this->formRegistry = $formRegistry;
         $this->requestRuntime = $requestRuntime;
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return TranslatorInterface
-     */
-    protected function getTranslator()
-    {
-        return $this->get('translator');
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return WysiwygProfileService
-     */
-    protected function getWysiwygProfileService()
-    {
-        return $this->get('ems.service.wysiwyg_profile');
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return SortOptionService
-     */
-    protected function getSortOptionService()
-    {
-        return $this->get('ems.service.sort_option');
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return AggregateOptionService
-     */
-    protected function getAggregateOptionService()
-    {
-        return $this->get('ems.service.aggregate_option');
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return SearchFieldOptionService
-     */
-    protected function getSearchFieldOptionService()
-    {
-        return $this->get('ems.service.search_field_option');
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return WysiwygStylesSetService
-     */
-    protected function getWysiwygStylesSetService()
-    {
-        return $this->get('ems.service.wysiwyg_styles_set');
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return AuthorizationChecker
-     */
-    protected function getAuthorizationChecker()
-    {
-        return $this->get('security.authorization_checker');
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return UserService
-     */
-    protected function getUserService()
-    {
-        return $this->get('ems.service.user');
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return NotificationService
-     */
-    protected function getNotificationService()
-    {
-        return $this->get('ems.service.notification');
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return Twig_Environment
-     */
-    protected function getTwig()
-    {
-        return $this->container->get('twig');
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return SearchService
-     */
-    protected function getSearchService()
-    {
-        return $this->container->get('ems.service.search');
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return HelperService
-     */
-    protected function getHelperService()
-    {
-        return $this->container->get('ems.service.helper');
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return AliasService
-     */
-    protected function getAliasService()
-    {
-        return $this->container->get('ems.service.alias')->build();
     }
 
     /**
@@ -203,46 +56,6 @@ class AppController extends Controller
     public static function getFormatedTimestamp()
     {
         return \date('_Ymd_His');
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return DataService
-     */
-    public function getDataService()
-    {
-        return $this->get('ems.service.data');
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return PublishService
-     */
-    public function getPublishService()
-    {
-        return $this->get('ems.service.publish');
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return ContentTypeService
-     */
-    public function getContentTypeService()
-    {
-        return $this->get('ems.service.contenttype');
-    }
-
-    /**
-     * @deprecated use dependency injection
-     *
-     * @return EnvironmentService
-     */
-    public function getEnvironmentService()
-    {
-        return $this->get('ems.service.environment');
     }
 
     protected function returnJsonResponse(Request $request, bool $success, array $body = [])

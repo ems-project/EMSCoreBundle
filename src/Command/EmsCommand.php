@@ -2,11 +2,11 @@
 
 namespace EMS\CoreBundle\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Output\OutputInterface;
 
-abstract class EmsCommand extends ContainerAwareCommand
+abstract class EmsCommand extends Command
 {
     protected function formatStyles(OutputInterface &$output): void
     {

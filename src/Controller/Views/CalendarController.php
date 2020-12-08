@@ -8,6 +8,8 @@ use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Form\SearchFormType;
+use EMS\CoreBundle\Service\DataService;
+use EMS\CoreBundle\Service\SearchService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -19,12 +21,12 @@ class CalendarController extends AppController
      *
      * @Route("/views/calendar/replan/{view}.json", name="views.calendar.replan", defaults={"_format"="json"}, methods={"POST"})
      */
-    public function updateAction(View $view, Request $request)
+    public function updateAction(View $view, Request $request, DataService $dataService)
     {
         try {
             $ouuid = $request->request->get('ouuid', false);
             $type = $view->getContentType()->getName();
-            $revision = $this->getDataService()->initNewDraft($type, $ouuid);
+            $revision = $dataService->initNewDraft($type, $ouuid);
 
             $rawData = $revision->getRawData();
             $field = $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['dateRangeField']);
@@ -51,7 +53,7 @@ class CalendarController extends AppController
             }
 
             $revision->setRawData($rawData);
-            $this->getDataService()->finalizeDraft($revision);
+            $dataService->finalizeDraft($revision);
 
             return $this->render('@EMSCore/view/custom/calendar_replan.json.twig', [
                     'success' => true,
@@ -75,7 +77,7 @@ class CalendarController extends AppController
      *
      * @Route("/views/calendar/search/{view}.json", name="views.calendar.search", defaults={"_format"="json"}, methods={"GET"})
      */
-    public function searchAction(View $view, Request $request, ElasticaService $elasticaService)
+    public function searchAction(View $view, Request $request, ElasticaService $elasticaService, SearchService $searchService)
     {
         $search = new Search();
         $form = $this->createForm(SearchFormType::class, $search, [
@@ -88,7 +90,7 @@ class CalendarController extends AppController
         /* @var Search $search */
         $search->setEnvironments([$view->getContentType()->getName()]);
 
-        $body = $this->getSearchService()->generateSearchBody($search);
+        $body = $searchService->generateSearchBody($search);
 
         /** @var \DateTime $from */
         /** @var \DateTime $to */

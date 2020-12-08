@@ -26,7 +26,7 @@ Please take some time to refactor the deprecated functions to use dependency inj
 
 If you want to regenerate a PHPStan baseline run this command:
 ```
-vendor/bin/phpstan analyse --configuration phpstan.neon.dist src/ tests/ src-user/ --generate-baseline
+vendor/bin/phpstan analyse --generate-baseline
 ```
 
 Documentation

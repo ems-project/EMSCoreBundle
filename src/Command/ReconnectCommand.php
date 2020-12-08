@@ -6,12 +6,12 @@ use Elastica\Client;
 use Elasticsearch\Endpoints\Indices\Mapping\Get;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ReconnectCommand extends ContainerAwareCommand
+class ReconnectCommand extends Command
 {
     /** @var ContentTypeService */
     private $contentTypeService;

@@ -178,8 +178,8 @@ class SelectFieldType extends DataFieldType
                 $out = null;
             } elseif (\is_string($temp)) {
                 $out = $temp;
-            } elseif (\is_array($temp) && !empty($temp) && \is_string(\array_shift($temp))) {
-                $out = \array_shift($temp);
+            } elseif (\is_array($temp) && !empty($temp) && \is_string(\array_values($temp)[0])) {
+                $out = \array_values($temp)[0];
                 $dataField->addMessage(\sprintf('Only the first item has been imported : %s ', \json_encode($temp, JSON_PRETTY_PRINT)));
             } else {
                 $dataField->addMessage(\sprintf('Was not able to import the data : %s', \json_encode($temp, JSON_PRETTY_PRINT)));

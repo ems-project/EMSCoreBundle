@@ -12,7 +12,6 @@ use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\Search;
-use EMS\CoreBundle\Entity\Form\SearchFilter;
 
 class SearchService
 {
@@ -85,7 +84,7 @@ class SearchService
                     $boolQuery->addFilter($esFilter);
                     break;
                 default:
-                    throw new \RuntimeException('Unexpected operator');
+                    throw new \RuntimeException(\sprintf('Unexpected %s boolean clause', $filter->getBooleanClause()));
             }
         }
         if (0 === $boolQuery->count()) {
@@ -209,8 +208,8 @@ class SearchService
 
         $search = null;
         if (1 === \sizeof($contentTypes)) {
-            $contentTypeName = \array_pop($contentTypes);
-            if (null !== $contentTypeName && null !== $contentType = $this->contentTypeService->getByName($contentTypeName)) {
+            $contentTypeName = \array_values($contentTypes)[0];
+            if (null !== $contentType = $this->contentTypeService->getByName($contentTypeName)) {
                 $search = $searchRepository->findOneBy(['contentType' => $contentType]);
             }
         }
@@ -219,18 +218,30 @@ class SearchService
             $search = $searchRepository->findOneBy([
                 'default' => true,
             ]);
+            if ($search instanceof Search and \count($search->getContentTypes()) > 0) {
+                $contentTypesNotCovertByTheDefaultSearch = \array_diff($contentTypes, $search->getContentTypes());
+                if (\count($contentTypesNotCovertByTheDefaultSearch) > 0) {
+                    $search = null;
+                }
+            }
         }
 
         if (!$search instanceof Search) {
             $search = new Search();
-            $filter = new SearchFilter();
-            $filter->setBooleanClause('must');
-            $filter->setOperator('match_and');
         } else {
             $search->resetFilters();
         }
-        if (\count($contentTypes) > 0) {
-            $search->setContentTypes($contentTypes);
+        $search->setContentTypes($contentTypes);
+        if (0 === \count($search->getEnvironments())) {
+            $all = [];
+            $defaults = [];
+            foreach ($this->environmentService->getEnvironments() as $environment) {
+                $all[] = $environment->getName();
+                if ($environment->getInDefaultSearch()) {
+                    $defaults[] = $environment->getName();
+                }
+            }
+            $search->setEnvironments(\count($defaults) > 0 ? $defaults : $all);
         }
 
         return $search;

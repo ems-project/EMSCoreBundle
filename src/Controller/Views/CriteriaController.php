@@ -25,12 +25,15 @@ use EMS\CoreBundle\Form\Field\ObjectChoiceListItem;
 use EMS\CoreBundle\Form\View\Criteria\CriteriaFilterType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
+use EMS\CoreBundle\Service\ContentTypeService;
+use EMS\CoreBundle\Service\DataService;
 use Exception;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class CriteriaController extends AppController
 {
@@ -42,7 +45,7 @@ class CriteriaController extends AppController
      *
      * @Route("/views/criteria/align/{view}", name="views.criteria.align", methods={"POST"})
      */
-    public function alignAction(View $view, Request $request, ElasticaService $elasticaService)
+    public function alignAction(View $view, Request $request, ElasticaService $elasticaService, DataService $dataService, ContentTypeService $contentTypeService, ObjectChoiceListFactory $objectChoiceListFactory)
     {
         $criteriaUpdateConfig = new CriteriaUpdateConfig($view, $this->getLogger());
         $form = $this->createForm(CriteriaFilterType::class, $criteriaUpdateConfig, [
@@ -53,7 +56,7 @@ class CriteriaController extends AppController
         /** @var CriteriaUpdateConfig $criteriaUpdateConfig */
         $criteriaUpdateConfig = $form->getData();
 
-        $tables = $this->generateCriteriaTable($view, $criteriaUpdateConfig, $elasticaService);
+        $tables = $this->generateCriteriaTable($view, $criteriaUpdateConfig, $elasticaService, $contentTypeService, $objectChoiceListFactory);
         $params = \explode(':', $request->request->all()['alignOn']);
 
         $isRowAlign = ('row' == $params[0]);
@@ -98,10 +101,10 @@ class CriteriaController extends AppController
                                     $ouuid = $structuredTarget[1];
 
                                     /** @var Revision $revision */
-                                    $revision = $this->getDataService()->getNewestRevision($type, $ouuid);
+                                    $revision = $dataService->getNewestRevision($type, $ouuid);
                                 }
 
-                                if ($revision = $this->removeCriteria($filters, $revision, $criteriaField)) {
+                                if ($revision = $this->removeCriteria($filters, $revision, $criteriaField, $dataService)) {
                                     $itemToFinalize[$toremove->getValue()] = $revision;
                                 }
                             } else {
@@ -117,7 +120,7 @@ class CriteriaController extends AppController
                                     $rawData[$targetFieldName] = $toremove->getValue();
                                 }
 
-                                $revision = $this->removeCriteriaRevision($elasticaService, $view, $rawData, $targetFieldName, $itemToFinalize);
+                                $revision = $this->removeCriteriaRevision($elasticaService, $view, $rawData, $targetFieldName, $dataService, $itemToFinalize);
 //                                 $revision = $this->addCriteriaRevision($view, $rawData, $targetFieldName, $itemToFinalize);
                                 if ($revision) {
                                     $itemToFinalize[$revision->getOuuid()] = $revision;
@@ -152,10 +155,10 @@ class CriteriaController extends AppController
                                     $ouuid = $structuredTarget[1];
 
                                     /** @var Revision $revision */
-                                    $revision = $this->getDataService()->getNewestRevision($type, $ouuid);
+                                    $revision = $dataService->getNewestRevision($type, $ouuid);
                                 }
 
-                                if ($revision = $this->addCriteria($filters, $revision, $criteriaField)) {
+                                if ($revision = $this->addCriteria($filters, $revision, $criteriaField, $dataService)) {
                                     $itemToFinalize[$toadd->getValue()] = $revision;
                                 }
                             } else {
@@ -171,7 +174,7 @@ class CriteriaController extends AppController
                                     $rawData[$targetFieldName] = $toadd->getValue();
                                 }
 
-                                $revision = $this->addCriteriaRevision($elasticaService, $view, $rawData, $targetFieldName, $itemToFinalize);
+                                $revision = $this->addCriteriaRevision($elasticaService, $view, $rawData, $targetFieldName, $dataService, $itemToFinalize);
                                 if ($revision) {
                                     $itemToFinalize[$revision->getOuuid()] = $revision;
                                 }
@@ -183,7 +186,7 @@ class CriteriaController extends AppController
         }
 
         foreach ($itemToFinalize as $revision) {
-            $this->getDataService()->finalizeDraft($revision);
+            $dataService->finalizeDraft($revision);
         }
         \sleep(2);
         $elasticaService->getClusterHealth('green', '20s');
@@ -191,14 +194,12 @@ class CriteriaController extends AppController
         return $this->forward('EMSCoreBundle:Views\Criteria:generateCriteriaTable', ['view' => $view]);
     }
 
-    private function isAuthorized(FieldType $criteriaField)
+    private function isAuthorized(FieldType $criteriaField, AuthorizationCheckerInterface $security)
     {
-        $security = $this->getAuthorizationChecker();
-
         $authorized = empty($criteriaField->getMinimumRole()) || $security->isGranted($criteriaField->getMinimumRole());
         if ($authorized) {
             foreach ($criteriaField->getChildren() as $child) {
-                $authorized = $this->isAuthorized($child);
+                $authorized = $this->isAuthorized($child, $security);
                 if (!$authorized) {
                     break;
                 }
@@ -215,7 +216,7 @@ class CriteriaController extends AppController
      *
      * @Route("/views/criteria/table/{view}", name="views.criteria.table", methods={"GET", "POST"})
      */
-    public function generateCriteriaTableAction(View $view, Request $request, ElasticaService $elasticaService)
+    public function generateCriteriaTableAction(View $view, Request $request, ElasticaService $elasticaService, AuthorizationCheckerInterface $authorizationChecker, ContentTypeService $contentTypeService, ObjectChoiceListFactory $objectChoiceListFactory)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -281,7 +282,7 @@ class CriteriaController extends AppController
         $rowField = null;
         $fieldPaths = \preg_split('/\\r\\n|\\r|\\n/', $view->getOptions()['criteriaFieldPaths']);
 
-        $authorized = $this->isAuthorized($criteriaField) && $this->getAuthorizationChecker()->isGranted($view->getContentType()->getEditRole());
+        $authorized = $this->isAuthorized($criteriaField, $authorizationChecker) && $authorizationChecker->isGranted($view->getContentType()->getEditRole());
 
         foreach ($fieldPaths as $path) {
             /** @var FieldType $child */
@@ -293,7 +294,7 @@ class CriteriaController extends AppController
                     $rowField = $child;
                 }
 
-                $authorized = $authorized && $this->isAuthorized($child);
+                $authorized = $authorized && $this->isAuthorized($child, $authorizationChecker);
             }
         }
         if (!$authorized) {
@@ -301,7 +302,7 @@ class CriteriaController extends AppController
             ]);
         }
 
-        $tables = $this->generateCriteriaTable($view, $criteriaUpdateConfig, $elasticaService);
+        $tables = $this->generateCriteriaTable($view, $criteriaUpdateConfig, $elasticaService, $contentTypeService, $objectChoiceListFactory);
 
         return $this->render('@EMSCore/view/custom/criteria_table.html.twig', [
             'table' => $tables['table'],
@@ -327,7 +328,7 @@ class CriteriaController extends AppController
      * @throws PerformanceException
      * @throws Exception
      */
-    public function generateCriteriaTable(View $view, CriteriaUpdateConfig $criteriaUpdateConfig, ElasticaService $elasticaService)
+    public function generateCriteriaTable(View $view, CriteriaUpdateConfig $criteriaUpdateConfig, ElasticaService $elasticaService, ContentTypeService $contentTypeService, ObjectChoiceListFactory $objectChoiceListFactory)
     {
         $contentType = $view->getContentType();
 
@@ -427,12 +428,10 @@ class CriteriaController extends AppController
             $targetField = $contentType->getFieldType()->getChildByPath($view->getOptions()['targetField']);
             if ($targetField && isset($targetField->getOptions()['displayOptions']['type'])) {
                 $loaderTypes = $targetField->getOptions()['displayOptions']['type'];
-                $targetContentType = $this->getContentTypeService()->getByName($loaderTypes);
+                $targetContentType = $contentTypeService->getByName($loaderTypes);
             }
         }
 
-        /** @var ObjectChoiceListFactory $objectChoiceListFactory */
-        $objectChoiceListFactory = $this->get('ems.form.factories.objectChoiceListFactory');
         $loader = $objectChoiceListFactory->createLoader($loaderTypes, false);
 
         /** @var Document $document */
@@ -481,7 +480,7 @@ class CriteriaController extends AppController
      *
      * @Route("/views/criteria/addCriterion/{view}", name="views.criteria.add", methods={"POST"})
      */
-    public function addCriteriaAction(View $view, Request $request, ElasticaService $elasticaService)
+    public function addCriteriaAction(View $view, Request $request, ElasticaService $elasticaService, AuthorizationCheckerInterface $authorizationChecker, DataService $dataService)
     {
         $filters = $request->request->get('filters');
         $target = $request->request->get('target');
@@ -497,9 +496,9 @@ class CriteriaController extends AppController
             $ouuid = $structuredTarget[1];
 
             /** @var Revision $revision */
-            $revision = $this->getDataService()->getNewestRevision($type, $ouuid);
+            $revision = $dataService->getNewestRevision($type, $ouuid);
 
-            $authorized = $this->getAuthorizationChecker()->isGranted($view->getContentType()->getEditRole());
+            $authorized = $authorizationChecker->isGranted($view->getContentType()->getEditRole());
             if (!$authorized) {
                 $this->getLogger()->warning('log.view.criteria.update_privilege_issue', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
@@ -526,8 +525,8 @@ class CriteriaController extends AppController
             }
 
             try {
-                if ($revision = $this->addCriteria($filters, $revision, $criteriaField)) {
-                    $this->getDataService()->finalizeDraft($revision);
+                if ($revision = $this->addCriteria($filters, $revision, $criteriaField, $dataService)) {
+                    $dataService->finalizeDraft($revision);
                 }
             } catch (LockedException $e) {
                 $this->getLogger()->warning('log.view.criteria.locked_revision', [
@@ -554,9 +553,9 @@ class CriteriaController extends AppController
                 $targetFieldName = \array_pop($pathTargetField);
                 $rawData[$targetFieldName] = $target;
             }
-            $revision = $this->addCriteriaRevision($elasticaService, $view, $rawData, $targetFieldName);
+            $revision = $this->addCriteriaRevision($elasticaService, $view, $rawData, $targetFieldName, $dataService);
             if ($revision) {
-                $this->getDataService()->finalizeDraft($revision);
+                $dataService->finalizeDraft($revision);
             }
         }
 
@@ -572,7 +571,7 @@ class CriteriaController extends AppController
      *
      * @throws DataStateException
      */
-    public function addCriteriaRevision(ElasticaService $elasticaService, View $view, array $rawData, $targetFieldName, array $loadedRevision = [])
+    public function addCriteriaRevision(ElasticaService $elasticaService, View $view, array $rawData, $targetFieldName, DataService $dataService, array $loadedRevision = [])
     {
         $multipleField = $this->getMultipleField($view->getContentType()->getFieldType());
 
@@ -639,7 +638,7 @@ class CriteriaController extends AppController
                 }
             }
 
-            $revision = $this->getDataService()->finalizeDraft($revision);
+            $revision = $dataService->finalizeDraft($revision);
 
             $this->getLogger()->notice('log.view.criteria.new_criteria', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
@@ -659,7 +658,7 @@ class CriteriaController extends AppController
                 if (isset($loadedRevision[$document->getId()])) {
                     $revision = $loadedRevision[$document->getId()];
                 } else {
-                    $revision = $this->getDataService()->initNewDraft($view->getContentType()->getName(), $document->getId());
+                    $revision = $dataService->initNewDraft($view->getContentType()->getName(), $document->getId());
                 }
             }
 
@@ -721,7 +720,7 @@ class CriteriaController extends AppController
      *
      * @throws Exception
      */
-    public function addCriteria($filters, Revision $revision, $criteriaField)
+    public function addCriteria($filters, Revision $revision, $criteriaField, DataService $dataService)
     {
         $rawData = $revision->getRawData();
         if (!isset($rawData[$criteriaField])) {
@@ -742,7 +741,7 @@ class CriteriaController extends AppController
                 if ($multipleField && false === \array_search($filters[$multipleField], $criteriaSet[$multipleField])) {
                     $criteriaSet[$multipleField][] = $filters[$multipleField];
                     if (!$revision->getDraft()) {
-                        $revision = $this->getDataService()->initNewDraft($revision->getContentType()->getName(), $revision->getOuuid(), $revision);
+                        $revision = $dataService->initNewDraft($revision->getContentType()->getName(), $revision->getOuuid(), $revision);
                     }
                     $revision->setRawData($rawData);
                     $this->getLogger()->notice('log.view.criteria.added', [
@@ -778,7 +777,7 @@ class CriteriaController extends AppController
             }
             $rawData[$criteriaField][] = $newCriterion;
             if (!$revision->getDraft()) {
-                $revision = $this->getDataService()->initNewDraft($revision->getContentType()->getName(), $revision->getOuuid(), $revision);
+                $revision = $dataService->initNewDraft($revision->getContentType()->getName(), $revision->getOuuid(), $revision);
             }
             $revision->setRawData($rawData);
 
@@ -796,7 +795,7 @@ class CriteriaController extends AppController
      *
      * @Route("/views/criteria/removeCriterion/{view}", name="views.criteria.remove", methods={"POST"})
      */
-    public function removeCriteriaAction(View $view, Request $request, ElasticaService $elasticaService)
+    public function removeCriteriaAction(View $view, Request $request, ElasticaService $elasticaService, DataService $dataService)
     {
         $filters = $request->request->get('filters');
         $target = $request->request->get('target');
@@ -812,7 +811,7 @@ class CriteriaController extends AppController
             $ouuid = $structuredTarget[1];
 
             /** @var Revision $revision */
-            $revision = $this->getDataService()->getNewestRevision($type, $ouuid);
+            $revision = $dataService->getNewestRevision($type, $ouuid);
 
             if ($revision->getDraft()) {
                 $this->getLogger()->warning('log.view.criteria.draft_in_progress', [
@@ -828,8 +827,8 @@ class CriteriaController extends AppController
             }
 
             try {
-                if ($revision = $this->removeCriteria($filters, $revision, $criteriaField)) {
-                    $this->getDataService()->finalizeDraft($revision);
+                if ($revision = $this->removeCriteria($filters, $revision, $criteriaField, $dataService)) {
+                    $dataService->finalizeDraft($revision);
                 }
             } catch (LockedException $e) {
                 $this->getLogger()->warning('log.view.criteria.locked_revision', [
@@ -856,9 +855,9 @@ class CriteriaController extends AppController
                 $targetFieldName = \array_pop($pathTargetField);
                 $rawData[$targetFieldName] = $target;
             }
-            $revision = $this->removeCriteriaRevision($elasticaService, $view, $rawData, $targetFieldName);
+            $revision = $this->removeCriteriaRevision($elasticaService, $view, $rawData, $targetFieldName, $dataService);
             if ($revision) {
-                $this->getDataService()->finalizeDraft($revision);
+                $dataService->finalizeDraft($revision);
             }
         }
 
@@ -874,7 +873,7 @@ class CriteriaController extends AppController
      *
      * @throws Exception
      */
-    public function removeCriteriaRevision(ElasticaService $elasticaService, View $view, array $rawData, $targetFieldName, array $loadedRevision = [])
+    public function removeCriteriaRevision(ElasticaService $elasticaService, View $view, array $rawData, $targetFieldName, DataService $dataService, array $loadedRevision = [])
     {
         $multipleField = $this->getMultipleField($view->getContentType()->getFieldType());
 
@@ -918,7 +917,7 @@ class CriteriaController extends AppController
                 if (isset($loadedRevision[$document->getId()])) {
                     $revision = $loadedRevision[$document->getId()];
                 } else {
-                    $revision = $this->getDataService()->getNewestRevision($view->getContentType()->getName(), $document->getId());
+                    $revision = $dataService->getNewestRevision($view->getContentType()->getName(), $document->getId());
                 }
             }
             if (null === $queryDocument) {
@@ -928,7 +927,7 @@ class CriteriaController extends AppController
             $multipleValueToRemove = $rawData[$multipleField];
             $rawData = $revision->getRawData();
             if (($key = \array_search($multipleValueToRemove, $rawData[$multipleField])) !== false) {
-                $revision = $this->getDataService()->initNewDraft($view->getContentType()->getName(), $queryDocument->getId());
+                $revision = $dataService->initNewDraft($view->getContentType()->getName(), $queryDocument->getId());
                 unset($rawData[$multipleField][$key]);
                 $rawData[$multipleField] = \array_values($rawData[$multipleField]);
                 $revision->setRawData($rawData);
@@ -984,7 +983,7 @@ class CriteriaController extends AppController
      *
      * @throws Exception
      */
-    public function removeCriteria($filters, Revision $revision, $criteriaField)
+    public function removeCriteria($filters, Revision $revision, $criteriaField, DataService $dataService)
     {
         $rawData = $revision->getRawData();
         if (!isset($rawData[$criteriaField])) {
@@ -1018,7 +1017,7 @@ class CriteriaController extends AppController
                         }
 
                         if (!$revision->getDraft()) {
-                            $revision = $this->getDataService()->initNewDraft($revision->getContentType()->getName(), $revision->getOuuid(), $revision);
+                            $revision = $dataService->initNewDraft($revision->getContentType()->getName(), $revision->getOuuid(), $revision);
                         }
                         $revision->setRawData($rawData);
                         $this->getLogger()->notice('log.view.criteria.removed', [
@@ -1036,7 +1035,7 @@ class CriteriaController extends AppController
                     $rawData[$criteriaField][$index] = \array_values($rawData[$criteriaField][$index]);
 
                     if (!$revision->getDraft()) {
-                        $revision = $this->getDataService()->initNewDraft($revision->getContentType()->getName(), $revision->getOuuid(), $revision);
+                        $revision = $dataService->initNewDraft($revision->getContentType()->getName(), $revision->getOuuid(), $revision);
                     }
                     $revision->setRawData($rawData);
                     $this->getLogger()->notice('log.view.criteria.removed', [

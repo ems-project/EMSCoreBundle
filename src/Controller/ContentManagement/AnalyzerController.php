@@ -9,6 +9,7 @@ use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\Analyzer;
 use EMS\CoreBundle\Form\Form\AnalyzerType;
+use EMS\CoreBundle\Service\HelperService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,10 +26,10 @@ class AnalyzerController extends AppController
     /**
      * @Route("/", name="ems_analyzer_index")
      */
-    public function indexAction(): Response
+    public function indexAction(HelperService $helperService): Response
     {
         return $this->render('@EMSCore/analyzer/index.html.twig', [
-                'paging' => $this->getHelperService()->getPagingTool('EMSCoreBundle:Analyzer', 'ems_analyzer_index', 'name'),
+                'paging' => $helperService->getPagingTool('EMSCoreBundle:Analyzer', 'ems_analyzer_index', 'name'),
         ]);
     }
 

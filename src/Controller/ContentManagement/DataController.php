@@ -9,7 +9,6 @@ use Dompdf\Dompdf;
 use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
-use EMS\CoreBundle;
 use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\ContentType;
@@ -38,7 +37,11 @@ use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\IndexService;
+use EMS\CoreBundle\Service\JobService;
+use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\SearchService;
+use EMS\CoreBundle\Service\UserService;
+use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -52,13 +55,13 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Twig\Environment as TwigEnvironment;
+use Twig\Error\Error;
 use Twig\Error\LoaderError;
 use Twig\Error\SyntaxError;
-use Twig_Error;
-use Twig_Error_Loader;
-use Twig_Error_Syntax;
 
 class DataController extends AppController
 {
@@ -112,7 +115,7 @@ class DataController extends AppController
             $searchForm->setSortOrder($contentType->getSortOrder());
         }
 
-        return $this->forward('EMSCoreBundle:Elasticsearch:search', [
+        return $this->forward('EMS\CoreBundle\Controller\ElasticsearchController::searchAction', [
             'query' => null,
         ], [
             'search_form' => $searchForm->jsonSerialize(),
@@ -176,11 +179,11 @@ class DataController extends AppController
      * @return Response
      * @Route("/data/trash/{contentType}", name="ems_data_trash")
      */
-    public function trashAction(ContentType $contentType)
+    public function trashAction(ContentType $contentType, DataService $dataService)
     {
         return $this->render('@EMSCore/data/trash.html.twig', [
             'contentType' => $contentType,
-            'revisions' => $this->getDataService()->getAllDeleted($contentType),
+            'revisions' => $dataService->getAllDeleted($contentType),
         ]);
     }
 
@@ -191,9 +194,9 @@ class DataController extends AppController
      *
      * @Route("/data/put-back/{contentType}/{ouuid}", name="ems_data_put_back", methods={"POST"})
      */
-    public function putBackAction(ContentType $contentType, $ouuid)
+    public function putBackAction(ContentType $contentType, $ouuid, DataService $dataService)
     {
-        $revId = $this->getDataService()->putBack($contentType, $ouuid);
+        $revId = $dataService->putBack($contentType, $ouuid);
 
         return $this->redirectToRoute('ems_revision_edit', [
             'revisionId' => $revId,
@@ -207,9 +210,9 @@ class DataController extends AppController
      *
      * @Route("/data/empty-trash/{contentType}/{ouuid}", name="ems_data_empty_trash", methods={"POST"})
      */
-    public function emptyTrashAction(ContentType $contentType, $ouuid)
+    public function emptyTrashAction(ContentType $contentType, $ouuid, DataService $dataService)
     {
-        $this->getDataService()->emptyTrash($contentType, $ouuid);
+        $dataService->emptyTrash($contentType, $ouuid);
 
         return $this->redirectToRoute('ems_data_trash', [
             'contentType' => $contentType->getId(),
@@ -222,7 +225,7 @@ class DataController extends AppController
      * @return Response
      * @Route("/data/draft/{contentTypeId}", name="data.draft_in_progress")
      */
-    public function draftInProgressAction($contentTypeId)
+    public function draftInProgressAction($contentTypeId, UserService $userService, AuthorizationCheckerInterface $authorizationChecker)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -239,7 +242,7 @@ class DataController extends AppController
         /** @var RevisionRepository $revisionRep */
         $revisionRep = $em->getRepository('EMSCoreBundle:Revision');
 
-        $revisions = $revisionRep->findInProgresByContentType($contentType, $this->getUserService()->getCurrentUser()->getCircles(), $this->get('security.authorization_checker')->isGranted('ROLE_USER_MANAGEMENT'));
+        $revisions = $revisionRep->findInProgresByContentType($contentType, $userService->getCurrentUser()->getCircles(), $authorizationChecker->isGranted('ROLE_USER_MANAGEMENT'));
 
         return $this->render('@EMSCore/data/draft-in-progress.html.twig', [
             'contentType' => $contentType,
@@ -283,10 +286,10 @@ class DataController extends AppController
      *
      * @throws NonUniqueResultException
      */
-    public function revisionInEnvironmentDataAction(ContentType $contentType, string $ouuid, Environment $environment, LoggerInterface $logger)
+    public function revisionInEnvironmentDataAction(ContentType $contentType, string $ouuid, Environment $environment, LoggerInterface $logger, DataService $dataService)
     {
         try {
-            $revision = $this->getDataService()->getRevisionByEnvironment($ouuid, $contentType, $environment);
+            $revision = $dataService->getRevisionByEnvironment($ouuid, $contentType, $environment);
 
             return $this->redirectToRoute('data.revisions', [
                 'type' => $contentType->getName(),
@@ -308,11 +311,11 @@ class DataController extends AppController
     /**
      * @Route("/public-key" , name="ems_get_public_key")
      */
-    public function publicKey(): Response
+    public function publicKey(DataService $dataService): Response
     {
         $response = new Response();
         $response->headers->set('Content-Type', 'text/plain');
-        $response->setContent($this->getDataService()->getPublicKey());
+        $response->setContent($dataService->getPublicKey());
 
         return $response;
     }
@@ -331,7 +334,7 @@ class DataController extends AppController
      * @Route("/data/revisions/{type}:{ouuid}/{revisionId}/{compareId}", defaults={"revisionId"=false, "compareId"=false}, name="data.revisions")
      * @Route("/data/revisions/{type}:{ouuid}/{revisionId}/{compareId}", defaults={"revisionId"=false, "compareId"=false}, name="ems_content_revisions_view")
      */
-    public function revisionsDataAction($type, $ouuid, $revisionId, $compareId, Request $request, DataService $dataService, LoggerInterface $logger, SearchService $searchService, ElasticaService $elasticaService)
+    public function revisionsDataAction($type, $ouuid, $revisionId, $compareId, Request $request, DataService $dataService, LoggerInterface $logger, SearchService $searchService, ElasticaService $elasticaService, ContentTypeService $contentTypeService)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -445,10 +448,10 @@ class DataController extends AppController
 
         $objectArray = $form->getData()->getRawData();
 
-        $dataFields = $this->getDataService()->getDataFieldsStructure($form->get('data'));
+        $dataFields = $dataService->getDataFieldsStructure($form->get('data'));
 
         $searchForm = new Search();
-        $searchForm->setContentTypes($this->getContentTypeService()->getAllNames());
+        $searchForm->setContentTypes($contentTypeService->getAllNames());
         $searchForm->setEnvironments([$defaultEnvironment->getName()]);
         $searchForm->setSortBy('_uid');
         $searchForm->setSortOrder('asc');
@@ -588,12 +591,12 @@ class DataController extends AppController
      *
      * @Route("/data/delete/{type}/{ouuid}", name="object.delete", methods={"POST"})
      */
-    public function deleteAction(string $type, string $ouuid, DataService $dataService, LoggerInterface $logger)
+    public function deleteAction(string $type, string $ouuid, DataService $dataService, LoggerInterface $logger, EnvironmentService $environmentService)
     {
         $revision = $dataService->getNewestRevision($type, $ouuid);
         $contentType = $revision->getContentType();
         $found = false;
-        foreach ($this->getEnvironmentService()->getAll() as $environment) {
+        foreach ($environmentService->getAll() as $environment) {
             /** @var Environment $environment */
             if ($environment !== $revision->getContentType()->getEnvironment()) {
                 try {
@@ -625,9 +628,9 @@ class DataController extends AppController
         ]);
     }
 
-    public function discardDraft(Revision $revision): ?int
+    public function discardDraft(Revision $revision, DataService $dataService): ?int
     {
-        return $this->getDataService()->discardDraft($revision);
+        return $dataService->discardDraft($revision);
     }
 
     /**
@@ -661,7 +664,7 @@ class DataController extends AppController
         $autoPublish = $revision->getContentType()->isAutoPublish();
         $ouuid = $revision->getOuuid();
 
-        $previousRevisionId = $this->discardDraft($revision);
+        $previousRevisionId = $this->discardDraft($revision, $dataService);
 
         if (null != $ouuid && null !== $previousRevisionId && $previousRevisionId > 0) {
             if ($autoPublish) {
@@ -684,7 +687,7 @@ class DataController extends AppController
      * @throws PrivilegeException
      * @Route("/data/cancel/{revision}", name="revision.cancel", methods={"POST"})
      */
-    public function cancelModificationsAction(Revision $revision, DataService $dataService, LoggerInterface $logger): RedirectResponse
+    public function cancelModificationsAction(Revision $revision, DataService $dataService, LoggerInterface $logger, PublishService $publishService): RedirectResponse
     {
         $contentTypeId = $revision->getContentType()->getId();
         $type = $revision->getContentType()->getName();
@@ -699,7 +702,7 @@ class DataController extends AppController
 
         if (null != $ouuid) {
             if ($revision->getContentType()->isAutoPublish()) {
-                $this->getPublishService()->silentPublish($revision);
+                $publishService->silentPublish($revision);
 
                 $logger->warning('log.data.revision.auto_publish_rollback', [
                     EmsFields::LOG_OUUID_FIELD => $ouuid,
@@ -795,7 +798,7 @@ class DataController extends AppController
      * @Route("/data/custom-index-view/{viewId}", name="data.customindexview", defaults={"public"=false})
      * @Route("/data/custom-index-view/{viewId}", name="ems_custom_view_protected", defaults={"public"=false})
      */
-    public function customIndexViewAction($viewId, $public, Request $request, TranslatorInterface $translator)
+    public function customIndexViewAction($viewId, $public, Request $request, TranslatorInterface $translator, ContainerInterface $container)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -808,9 +811,8 @@ class DataController extends AppController
         if (null === $view || ($public && !$view->isPublic())) {
             throw new NotFoundHttpException($translator->trans('log.view.not_found', ['%view_id%' => $viewId], EMSCoreBundle::TRANS_DOMAIN));
         }
-
         /** @var ViewType $viewType */
-        $viewType = $this->get($view->getType());
+        $viewType = $container->get($view->getType());
 
         return $viewType->generateResponse($view, $request);
     }
@@ -827,13 +829,11 @@ class DataController extends AppController
      * @throws \Throwable
      * @throws LoaderError
      * @throws SyntaxError
-     * @throws Twig_Error_Loader
-     * @throws Twig_Error_Syntax
      * @Route("/public/template/{environmentName}/{templateId}/{ouuid}/{_download}", defaults={"_download"=false, "public"=true}, name="ems_data_custom_template_public")
      * @Route("/data/custom-view/{environmentName}/{templateId}/{ouuid}/{_download}", defaults={"_download"=false, "public"=false}, name="data.customview")
      * @Route("/data/template/{environmentName}/{templateId}/{ouuid}/{_download}", defaults={"_download"=false, "public"=false}, name="ems_data_custom_template_protected")
      */
-    public function customViewAction($environmentName, $templateId, $ouuid, $_download, $public, LoggerInterface $logger, TranslatorInterface $translator, SearchService $searchService)
+    public function customViewAction($environmentName, $templateId, $ouuid, $_download, $public, LoggerInterface $logger, TranslatorInterface $translator, SearchService $searchService, TwigEnvironment $twig)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -864,11 +864,9 @@ class DataController extends AppController
 
         $document = $searchService->get($environment, $template->getContentType(), $ouuid);
 
-        $twig = $this->getTwig();
-
         try {
             $body = $twig->createTemplate($template->getBody());
-        } catch (Twig_Error $e) {
+        } catch (Error $e) {
             $logger->error('log.template.twig.error', [
                 'template_id' => $template->getId(),
                 'template_name' => $template->getName(),
@@ -916,7 +914,7 @@ class DataController extends AppController
             if (null != $template->getFilename()) {
                 try {
                     $filename = $twig->createTemplate($template->getFilename());
-                } catch (Twig_Error $e) {
+                } catch (Error $e) {
                     $logger->error('log.template.twig.error', [
                         'template_id' => $template->getId(),
                         'template_name' => $template->getName(),
@@ -979,7 +977,7 @@ class DataController extends AppController
      * @throws \Throwable
      * @Route("/data/custom-view-job/{environmentName}/{templateId}/{ouuid}", name="ems_job_custom_view", methods={"POST"})
      */
-    public function customViewJobAction($environmentName, $templateId, $ouuid, LoggerInterface $logger, SearchService $searchService, Request $request)
+    public function customViewJobAction($environmentName, $templateId, $ouuid, LoggerInterface $logger, SearchService $searchService, Request $request, TwigEnvironment $twig, JobService $jobService)
     {
         $em = $this->getDoctrine()->getManager();
         /** @var Template|null $template * */
@@ -995,15 +993,13 @@ class DataController extends AppController
 
         $success = false;
         try {
-            $command = $this->getTwig()->createTemplate($template->getBody())->render([
+            $command = $twig->createTemplate($template->getBody())->render([
                 'environment' => $env->getName(),
                 'contentType' => $template->getContentType(),
                 'object' => $document,
                 'source' => $document->getSource(),
             ]);
 
-            /** @var CoreBundle\Service\JobService $jobService */
-            $jobService = $this->get('ems.service.job');
             $user = $this->getUser();
             if (!$user instanceof UserInterface) {
                 throw new \RuntimeException('Unexpected user object');
@@ -1053,7 +1049,7 @@ class DataController extends AppController
      * @throws \Exception
      * @Route("/data/revision/{revisionId}.json", name="revision.ajaxupdate", defaults={"_format"="json"}, methods={"POST"})
      */
-    public function ajaxUpdateAction($revisionId, Request $request, DataService $dataService, LoggerInterface $logger)
+    public function ajaxUpdateAction($revisionId, Request $request, DataService $dataService, LoggerInterface $logger, PublishService $publishService)
     {
         $em = $this->getDoctrine()->getManager();
         $formErrors = [];
@@ -1128,7 +1124,7 @@ class DataController extends AppController
             $formErrors = $form->getErrors(true, true);
 
             if (0 === $formErrors->count() && $revision->getContentType()->isAutoPublish()) {
-                $this->getPublishService()->silentPublish($revision);
+                $publishService->silentPublish($revision);
             }
         }
 
@@ -1145,9 +1141,9 @@ class DataController extends AppController
      * @return RedirectResponse|Response
      * @Route("/data/draft/finalize/{revision}", name="revision.finalize", methods={"POST"})
      */
-    public function finalizeDraftAction(Revision $revision, LoggerInterface $logger)
+    public function finalizeDraftAction(Revision $revision, LoggerInterface $logger, DataService $dataService)
     {
-        $this->getDataService()->loadDataStructure($revision);
+        $dataService->loadDataStructure($revision);
         try {
             $form = $this->createForm(RevisionType::class, $revision, ['raw_data' => $revision->getRawData()]);
             if (!empty($revision->getAutoSave())) {
@@ -1163,7 +1159,7 @@ class DataController extends AppController
                 ]);
             }
 
-            $revision = $this->getDataService()->finalizeDraft($revision, $form);
+            $revision = $dataService->finalizeDraft($revision, $form);
             if (0 !== \count($form->getErrors())) {
                 $logger->error('log.data.revision.can_finalized_as_invalid', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
@@ -1345,7 +1341,7 @@ class DataController extends AppController
      * @return RedirectResponse
      * @Route("/data/link/{key}", name="data.link")
      */
-    public function linkDataAction(string $key)
+    public function linkDataAction(string $key, ContentTypeService $ctService)
     {
         $category = $type = $ouuid = null;
         $split = \explode(':', $key);
@@ -1362,9 +1358,6 @@ class DataController extends AppController
 
             /** @var RevisionRepository $repository */
             $repository = $em->getRepository('EMSCoreBundle:Revision');
-
-            /** @var ContentTypeService $ctService */
-            $ctService = $this->getContentTypeService();
 
             $contentType = $ctService->getByName($type);
 

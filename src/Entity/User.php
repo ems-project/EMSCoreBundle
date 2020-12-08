@@ -473,12 +473,7 @@ class User extends BaseUser implements UserInterface
         return $this->emailNotification;
     }
 
-    /**
-     * Is enabled.
-     *
-     * @return bool
-     */
-    public function isEnabled()
+    public function isEnabled(): bool
     {
         return $this->enabled;
     }

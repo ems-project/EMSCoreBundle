@@ -190,10 +190,10 @@ class ContentTypeController extends AppController
      *
      * @Route("/content-type/refresh-mapping/{id}", name="contenttype.refreshmapping", methods={"POST"})
      */
-    public function refreshMappingAction(ContentType $id)
+    public function refreshMappingAction(ContentType $id, ContentTypeService $contentTypeService)
     {
-        $this->getContentTypeService()->updateMapping($id);
-        $this->getContentTypeService()->persist($id);
+        $contentTypeService->updateMapping($id);
+        $contentTypeService->persist($id);
 
         return $this->redirectToRoute('contenttype.index');
     }
@@ -207,7 +207,7 @@ class ContentTypeController extends AppController
      * @throws OptimisticLockException
      * @Route("/content-type/add", name="contenttype.add")
      */
-    public function addAction(Request $request, LoggerInterface $logger)
+    public function addAction(Request $request, LoggerInterface $logger, ContentTypeService $contentTypeService)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -287,11 +287,11 @@ class ContentTypeController extends AppController
                     if (!$environment instanceof Environment) {
                         throw new NotFoundHttpException('Environment not found');
                     }
-                    $contentType = $this->getContentTypeService()->contentTypeFromJson($json, $environment);
+                    $contentType = $contentTypeService->contentTypeFromJson($json, $environment);
                     $contentType->setName($name);
                     $contentType->setSingularName($singularName);
                     $contentType->setPluralName($pluralName);
-                    $contentType = $this->getContentTypeService()->importContentType($contentType);
+                    $contentType = $contentTypeService->importContentType($contentType);
                 } else {
                     $contentType = $contentTypeAdded;
                     $contentType->setAskForOuuid(false);
@@ -517,7 +517,7 @@ class ContentTypeController extends AppController
      * @throws ElasticmsException
      * @Route("/content-type/{contentType}/field/{field}", name="ems_contenttype_field_edit")
      */
-    public function editFieldAction(ContentType $contentType, FieldType $field, Request $request, LoggerInterface $logger)
+    public function editFieldAction(ContentType $contentType, FieldType $field, Request $request, LoggerInterface $logger, ContentTypeService $contentTypeService)
     {
         $editFieldType = new EditFieldType($field);
 
@@ -535,7 +535,7 @@ class ContentTypeController extends AppController
             /** @var Button $clickable */
             $clickable = $form->getClickedButton();
 
-            return $this->treatFieldSubmit($contentType, $field, $clickable->getName(), $subFieldName, $logger);
+            return $this->treatFieldSubmit($contentType, $field, $clickable->getName(), $subFieldName, $logger, $contentTypeService);
         }
 
         return $this->render('@EMSCore/contenttype/field.html.twig', [
@@ -724,7 +724,7 @@ class ContentTypeController extends AppController
      *
      * @Route("/content-type/reorder/{contentType}", name="ems_contenttype_reorder")
      */
-    public function reorderAction(ContentType $contentType, Request $request)
+    public function reorderAction(ContentType $contentType, Request $request, ContentTypeService $contentTypeService)
     {
         $data = [];
         $form = $this->createForm(ReorderType::class, $data, [
@@ -735,7 +735,7 @@ class ContentTypeController extends AppController
         if ($form->isSubmitted()) {
             $data = $form->getData();
             $structure = \json_decode($data['items'], true);
-            $this->getContentTypeService()->reorderFields($contentType, $structure);
+            $contentTypeService->reorderFields($contentType, $structure);
 
             return $this->redirectToRoute('contenttype.edit', ['id' => $contentType->getId()]);
         }
@@ -757,7 +757,7 @@ class ContentTypeController extends AppController
      * @throws OptimisticLockException
      * @Route("/content-type/{id}", name="contenttype.edit")
      */
-    public function editAction($id, Request $request, LoggerInterface $logger, Mapping $mappingService)
+    public function editAction($id, Request $request, LoggerInterface $logger, Mapping $mappingService, ContentTypeService $contentTypeService)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -804,7 +804,7 @@ class ContentTypeController extends AppController
 
             if (\array_key_exists('save', $inputContentType) || \array_key_exists('saveAndUpdateMapping', $inputContentType) || \array_key_exists('saveAndClose', $inputContentType) || \array_key_exists('saveAndEditStructure', $inputContentType) || \array_key_exists('saveAndReorder', $inputContentType)) {
                 if (\array_key_exists('saveAndUpdateMapping', $inputContentType)) {
-                    $this->getContentTypeService()->updateMapping($contentType);
+                    $contentTypeService->updateMapping($contentType);
                 }
                 $em->persist($contentType);
                 $em->flush();
@@ -858,7 +858,7 @@ class ContentTypeController extends AppController
      * @throws OptimisticLockException
      * @Route("/content-type/structure/{id}", name="contenttype.structure")
      */
-    public function editStructureAction($id, Request $request, LoggerInterface $logger)
+    public function editStructureAction($id, Request $request, LoggerInterface $logger, ContentTypeService $contentTypeService)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -897,10 +897,10 @@ class ContentTypeController extends AppController
                 $contentType->setDirty($managed);
 
                 if ((\array_key_exists('saveAndClose', $inputContentType) || \array_key_exists('saveAndReorder', $inputContentType)) && $contentType->getDirty()) {
-                    $this->getContentTypeService()->updateMapping($contentType);
+                    $contentTypeService->updateMapping($contentType);
                 }
 
-                $this->getContentTypeService()->persist($contentType);
+                $contentTypeService->persist($contentType);
 
                 if ($contentType->getDirty()) {
                     $logger->warning('log.contenttype.dirty', [
@@ -990,7 +990,7 @@ class ContentTypeController extends AppController
      *
      * @throws ElasticmsException
      */
-    private function treatFieldSubmit(ContentType $contentType, FieldType $field, $action, $subFieldName, LoggerInterface $logger)
+    private function treatFieldSubmit(ContentType $contentType, FieldType $field, $action, $subFieldName, LoggerInterface $logger, ContentTypeService $contentTypeService)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -1005,8 +1005,8 @@ class ContentTypeController extends AppController
             $managed = $env->getManaged();
             $contentType->setDirty($managed);
 
-            $this->getContentTypeService()->persist($contentType);
-            $this->getContentTypeService()->persistField($field);
+            $contentTypeService->persist($contentType);
+            $contentTypeService->persistField($field);
 
             if ($contentType->getDirty()) {
                 $logger->warning('log.contenttype.dirty', [

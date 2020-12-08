@@ -13,6 +13,7 @@ use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\Form\ViewType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\ViewRepository;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -110,7 +111,7 @@ class ViewController extends AppController
      * @throws OptimisticLockException
      * @Route("/view/edit/{id}.{_format}", name="view.edit", defaults={"_format"="html"})
      */
-    public function editAction(string $id, string $_format, Request $request)
+    public function editAction(string $id, string $_format, Request $request, ContainerInterface $container)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -134,7 +135,7 @@ class ViewController extends AppController
             ->add('icon', IconPickerType::class, [
                 'required' => false,
             ])
-            ->add('options', \get_class($this->get($view->getType())), [
+            ->add('options', \get_class($container->get($view->getType())), [
                 'view' => $view,
             ])
             ->add('save', SubmitEmsType::class, [

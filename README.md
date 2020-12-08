@@ -24,6 +24,11 @@ composer phpstan
 Controller/ApplController.php is excluded 
 Please take some time to refactor the deprecated functions to use dependency injection instead of getting services from the container
 
+If you want to regenerate a PHPStan baseline run this command:
+```
+vendor/bin/phpstan analyse --generate-baseline
+```
+
 Documentation
 -------------
 * [Installation](../master/Resources/doc/install.md)

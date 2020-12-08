@@ -1,34 +1,1369 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Access to constant SETS on an unknown class Rector\\\\Core\\\\Configuration\\\\Option\\.$#"
+			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\ActivateUserCommand\\:\\:configure\\(\\) has no return typehint specified\\.$#"
 			count: 1
-			path: rector.php
+			path: src-user/Command/ActivateUserCommand.php
 
 		-
-			message: "#^Access to constant DEAD_CODE on an unknown class Rector\\\\Set\\\\ValueObject\\\\SetList\\.$#"
+			message: "#^Parameter \\#1 \\$username of method FOS\\\\UserBundle\\\\Util\\\\UserManipulator\\:\\:activate\\(\\) expects string, array\\<string\\>\\|string\\|null given\\.$#"
 			count: 1
-			path: rector.php
+			path: src-user/Command/ActivateUserCommand.php
 
 		-
-			message: "#^Access to constant PHP_VERSION_FEATURES on an unknown class Rector\\\\Core\\\\Configuration\\\\Option\\.$#"
+			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\ActivateUserCommand\\:\\:execute\\(\\) should return int but return statement is missing\\.$#"
 			count: 1
-			path: rector.php
+			path: src-user/Command/ActivateUserCommand.php
 
 		-
-			message: "#^Access to constant PATHS on an unknown class Rector\\\\Core\\\\Configuration\\\\Option\\.$#"
+			message: "#^Parameter \\#2 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, array\\<string\\>\\|string\\|null given\\.$#"
 			count: 1
-			path: rector.php
+			path: src-user/Command/ActivateUserCommand.php
 
 		-
-			message: "#^Access to constant EXCLUDE_PATHS on an unknown class Rector\\\\Core\\\\Configuration\\\\Option\\.$#"
+			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\ActivateUserCommand\\:\\:interact\\(\\) has no return typehint specified\\.$#"
 			count: 1
-			path: rector.php
+			path: src-user/Command/ActivateUserCommand.php
 
 		-
-			message: "#^Caught class EMS\\\\CommonBundle\\\\Elasticsearch\\\\Exception\\\\NotFoundException not found\\.$#"
+			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\ChangePasswordCommand\\:\\:configure\\(\\) has no return typehint specified\\.$#"
 			count: 1
-			path: src/Command/RecomputeCommand.php
+			path: src-user/Command/ChangePasswordCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$username of method FOS\\\\UserBundle\\\\Util\\\\UserManipulator\\:\\:changePassword\\(\\) expects string, array\\<string\\>\\|string\\|null given\\.$#"
+			count: 1
+			path: src-user/Command/ChangePasswordCommand.php
+
+		-
+			message: "#^Parameter \\#2 \\$password of method FOS\\\\UserBundle\\\\Util\\\\UserManipulator\\:\\:changePassword\\(\\) expects string, array\\<string\\>\\|string\\|null given\\.$#"
+			count: 1
+			path: src-user/Command/ChangePasswordCommand.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\ChangePasswordCommand\\:\\:execute\\(\\) should return int but return statement is missing\\.$#"
+			count: 1
+			path: src-user/Command/ChangePasswordCommand.php
+
+		-
+			message: "#^Parameter \\#2 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, array\\<string\\>\\|string\\|null given\\.$#"
+			count: 1
+			path: src-user/Command/ChangePasswordCommand.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\ChangePasswordCommand\\:\\:interact\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Command/ChangePasswordCommand.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\CreateUserCommand\\:\\:configure\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Command/CreateUserCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$username of method FOS\\\\UserBundle\\\\Util\\\\UserManipulator\\:\\:create\\(\\) expects string, array\\<string\\>\\|string\\|null given\\.$#"
+			count: 1
+			path: src-user/Command/CreateUserCommand.php
+
+		-
+			message: "#^Parameter \\#2 \\$password of method FOS\\\\UserBundle\\\\Util\\\\UserManipulator\\:\\:create\\(\\) expects string, array\\<string\\>\\|string\\|null given\\.$#"
+			count: 1
+			path: src-user/Command/CreateUserCommand.php
+
+		-
+			message: "#^Parameter \\#3 \\$email of method FOS\\\\UserBundle\\\\Util\\\\UserManipulator\\:\\:create\\(\\) expects string, array\\<string\\>\\|string\\|null given\\.$#"
+			count: 1
+			path: src-user/Command/CreateUserCommand.php
+
+		-
+			message: "#^Parameter \\#5 \\$superadmin of method FOS\\\\UserBundle\\\\Util\\\\UserManipulator\\:\\:create\\(\\) expects bool, array\\<string\\>\\|bool\\|string\\|null given\\.$#"
+			count: 1
+			path: src-user/Command/CreateUserCommand.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\CreateUserCommand\\:\\:execute\\(\\) should return int but return statement is missing\\.$#"
+			count: 1
+			path: src-user/Command/CreateUserCommand.php
+
+		-
+			message: "#^Parameter \\#2 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, array\\<string\\>\\|string\\|null given\\.$#"
+			count: 1
+			path: src-user/Command/CreateUserCommand.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\CreateUserCommand\\:\\:interact\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Command/CreateUserCommand.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\DeactivateUserCommand\\:\\:configure\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Command/DeactivateUserCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$username of method FOS\\\\UserBundle\\\\Util\\\\UserManipulator\\:\\:deactivate\\(\\) expects string, array\\<string\\>\\|string\\|null given\\.$#"
+			count: 1
+			path: src-user/Command/DeactivateUserCommand.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\DeactivateUserCommand\\:\\:execute\\(\\) should return int but return statement is missing\\.$#"
+			count: 1
+			path: src-user/Command/DeactivateUserCommand.php
+
+		-
+			message: "#^Parameter \\#2 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, array\\<string\\>\\|string\\|null given\\.$#"
+			count: 1
+			path: src-user/Command/DeactivateUserCommand.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\DeactivateUserCommand\\:\\:interact\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Command/DeactivateUserCommand.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\DemoteUserCommand\\:\\:configure\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Command/DemoteUserCommand.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\DemoteUserCommand\\:\\:executeRoleCommand\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Command/DemoteUserCommand.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\PromoteUserCommand\\:\\:configure\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Command/PromoteUserCommand.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\PromoteUserCommand\\:\\:executeRoleCommand\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Command/PromoteUserCommand.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\RoleCommand\\:\\:configure\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Command/RoleCommand.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\RoleCommand\\:\\:execute\\(\\) should return int but return statement is missing\\.$#"
+			count: 1
+			path: src-user/Command/RoleCommand.php
+
+		-
+			message: "#^Parameter \\#3 \\$username of method FOS\\\\UserBundle\\\\Command\\\\RoleCommand\\:\\:executeRoleCommand\\(\\) expects string, array\\<string\\>\\|string\\|null given\\.$#"
+			count: 1
+			path: src-user/Command/RoleCommand.php
+
+		-
+			message: "#^Parameter \\#5 \\$role of method FOS\\\\UserBundle\\\\Command\\\\RoleCommand\\:\\:executeRoleCommand\\(\\) expects string, array\\<string\\>\\|string\\|null given\\.$#"
+			count: 1
+			path: src-user/Command/RoleCommand.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\RoleCommand\\:\\:executeRoleCommand\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Command/RoleCommand.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Command\\\\RoleCommand\\:\\:interact\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Command/RoleCommand.php
+
+		-
+			message: "#^Method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
+			count: 3
+			path: src-user/Controller/ChangePasswordController.php
+
+		-
+			message: "#^Parameter \\#1 \\$event of method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) expects object, string given\\.$#"
+			count: 3
+			path: src-user/Controller/ChangePasswordController.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Controller\\\\GroupController\\:\\:listAction\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Controller/GroupController.php
+
+		-
+			message: "#^Method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
+			count: 7
+			path: src-user/Controller/GroupController.php
+
+		-
+			message: "#^Parameter \\#1 \\$event of method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) expects object, string given\\.$#"
+			count: 7
+			path: src-user/Controller/GroupController.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Controller\\\\ProfileController\\:\\:showAction\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Controller/ProfileController.php
+
+		-
+			message: "#^Method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
+			count: 3
+			path: src-user/Controller/ProfileController.php
+
+		-
+			message: "#^Parameter \\#1 \\$event of method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) expects object, string given\\.$#"
+			count: 3
+			path: src-user/Controller/ProfileController.php
+
+		-
+			message: "#^Method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
+			count: 6
+			path: src-user/Controller/RegistrationController.php
+
+		-
+			message: "#^Parameter \\#1 \\$event of method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) expects object, string given\\.$#"
+			count: 6
+			path: src-user/Controller/RegistrationController.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Controller\\\\RegistrationController\\:\\:checkEmailAction\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Controller/RegistrationController.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Controller\\\\RegistrationController\\:\\:confirmedAction\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Controller/RegistrationController.php
+
+		-
+			message: "#^Cannot call method getProviderKey\\(\\) on Symfony\\\\Component\\\\Security\\\\Core\\\\Authentication\\\\Token\\\\TokenInterface\\|null\\.$#"
+			count: 1
+			path: src-user/Controller/RegistrationController.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Controller\\\\ResettingController\\:\\:requestAction\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Controller/ResettingController.php
+
+		-
+			message: "#^Method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
+			count: 7
+			path: src-user/Controller/ResettingController.php
+
+		-
+			message: "#^Parameter \\#1 \\$event of method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) expects object, string given\\.$#"
+			count: 7
+			path: src-user/Controller/ResettingController.php
+
+		-
+			message: "#^PHPDoc tag @var has invalid value \\(\\$session Session\\)\\: Unexpected token \"\\$session\", expected type at offset 9$#"
+			count: 1
+			path: src-user/Controller/SecurityController.php
+
+		-
+			message: "#^Strict comparison using \\=\\=\\= between null and Symfony\\\\Component\\\\HttpFoundation\\\\Session\\\\SessionInterface will always evaluate to false\\.$#"
+			count: 1
+			path: src-user/Controller/SecurityController.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Controller\\\\SecurityController\\:\\:checkAction\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Controller/SecurityController.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Controller\\\\SecurityController\\:\\:logoutAction\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Controller/SecurityController.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Controller\\\\SecurityController\\:\\:renderLogin\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Controller/SecurityController.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\Compiler\\\\CheckForMailerPass\\:\\:process\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/Compiler/CheckForMailerPass.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\Compiler\\\\CheckForSessionPass\\:\\:process\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/Compiler/CheckForSessionPass.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\Compiler\\\\InjectRememberMeServicesPass\\:\\:process\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/Compiler/InjectRememberMeServicesPass.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\Compiler\\\\InjectUserCheckerPass\\:\\:process\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/Compiler/InjectUserCheckerPass.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\Compiler\\\\ValidationPass\\:\\:process\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/Compiler/ValidationPass.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/Configuration.php
+
+		-
+			message: "#^Parameter \\#1 \\$node of method FOS\\\\UserBundle\\\\DependencyInjection\\\\Configuration\\:\\:addProfileSection\\(\\) expects Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\ArrayNodeDefinition, Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition given\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/Configuration.php
+
+		-
+			message: "#^Parameter \\#1 \\$node of method FOS\\\\UserBundle\\\\DependencyInjection\\\\Configuration\\:\\:addChangePasswordSection\\(\\) expects Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\ArrayNodeDefinition, Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition given\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/Configuration.php
+
+		-
+			message: "#^Parameter \\#1 \\$node of method FOS\\\\UserBundle\\\\DependencyInjection\\\\Configuration\\:\\:addRegistrationSection\\(\\) expects Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\ArrayNodeDefinition, Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition given\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/Configuration.php
+
+		-
+			message: "#^Parameter \\#1 \\$node of method FOS\\\\UserBundle\\\\DependencyInjection\\\\Configuration\\:\\:addResettingSection\\(\\) expects Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\ArrayNodeDefinition, Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition given\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/Configuration.php
+
+		-
+			message: "#^Parameter \\#1 \\$node of method FOS\\\\UserBundle\\\\DependencyInjection\\\\Configuration\\:\\:addServiceSection\\(\\) expects Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\ArrayNodeDefinition, Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition given\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/Configuration.php
+
+		-
+			message: "#^Parameter \\#1 \\$node of method FOS\\\\UserBundle\\\\DependencyInjection\\\\Configuration\\:\\:addGroupSection\\(\\) expects Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\ArrayNodeDefinition, Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition given\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/Configuration.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\Configuration\\:\\:addProfileSection\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/Configuration.php
+
+		-
+			message: "#^Cannot call method scalarNode\\(\\) on Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeParentInterface\\|null\\.$#"
+			count: 6
+			path: src-user/DependencyInjection/Configuration.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\Configuration\\:\\:addRegistrationSection\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/Configuration.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\Configuration\\:\\:addResettingSection\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/Configuration.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\Configuration\\:\\:addChangePasswordSection\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/Configuration.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\Configuration\\:\\:addServiceSection\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/Configuration.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\Configuration\\:\\:addGroupSection\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/Configuration.php
+
+		-
+			message: "#^Property FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:\\$doctrineDrivers type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/FOSUserExtension.php
+
+		-
+			message: "#^Property FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:\\$mailerNeeded has no typehint specified\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/FOSUserExtension.php
+
+		-
+			message: "#^Property FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:\\$sessionNeeded has no typehint specified\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/FOSUserExtension.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:load\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/FOSUserExtension.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:load\\(\\) has parameter \\$configs with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/FOSUserExtension.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:remapParameters\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/FOSUserExtension.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:remapParameters\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/FOSUserExtension.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:remapParameters\\(\\) has parameter \\$map with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/FOSUserExtension.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:remapParametersNamespaces\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/FOSUserExtension.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:remapParametersNamespaces\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/FOSUserExtension.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:remapParametersNamespaces\\(\\) has parameter \\$namespaces with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/FOSUserExtension.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:loadProfile\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/FOSUserExtension.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:loadProfile\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/FOSUserExtension.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:loadRegistration\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/FOSUserExtension.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:loadRegistration\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/FOSUserExtension.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:loadRegistration\\(\\) has parameter \\$fromEmail with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/FOSUserExtension.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:loadChangePassword\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/FOSUserExtension.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:loadChangePassword\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/FOSUserExtension.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:loadResetting\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/FOSUserExtension.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:loadResetting\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/FOSUserExtension.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:loadResetting\\(\\) has parameter \\$fromEmail with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/FOSUserExtension.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:loadGroups\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/FOSUserExtension.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\FOSUserExtension\\:\\:loadGroups\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/FOSUserExtension.php
+
+		-
+			message: "#^Access to constant prePersist on an unknown class Doctrine\\\\ODM\\\\CouchDB\\\\Event\\.$#"
+			count: 1
+			path: src-user/Doctrine/CouchDB/UserListener.php
+
+		-
+			message: "#^Access to constant preUpdate on an unknown class Doctrine\\\\ODM\\\\CouchDB\\\\Event\\.$#"
+			count: 1
+			path: src-user/Doctrine/CouchDB/UserListener.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\CouchDB\\\\UserListener\\:\\:prePersist\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Doctrine/CouchDB/UserListener.php
+
+		-
+			message: "#^Parameter \\$args of method FOS\\\\UserBundle\\\\Doctrine\\\\CouchDB\\\\UserListener\\:\\:prePersist\\(\\) has invalid typehint type Doctrine\\\\ODM\\\\CouchDB\\\\Event\\\\LifecycleEventArgs\\.$#"
+			count: 1
+			path: src-user/Doctrine/CouchDB/UserListener.php
+
+		-
+			message: "#^Call to method getDocument\\(\\) on an unknown class Doctrine\\\\ODM\\\\CouchDB\\\\Event\\\\LifecycleEventArgs\\.$#"
+			count: 2
+			path: src-user/Doctrine/CouchDB/UserListener.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\CouchDB\\\\UserListener\\:\\:preUpdate\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Doctrine/CouchDB/UserListener.php
+
+		-
+			message: "#^Parameter \\$args of method FOS\\\\UserBundle\\\\Doctrine\\\\CouchDB\\\\UserListener\\:\\:preUpdate\\(\\) has invalid typehint type Doctrine\\\\ODM\\\\CouchDB\\\\Event\\\\LifecycleEventArgs\\.$#"
+			count: 1
+			path: src-user/Doctrine/CouchDB/UserListener.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\CouchDB\\\\UserListener\\:\\:updateUserFields\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Doctrine/CouchDB/UserListener.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\GroupManager\\:\\:deleteGroup\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Doctrine/GroupManager.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\GroupManager\\:\\:findGroupBy\\(\\) has parameter \\$criteria with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Doctrine/GroupManager.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\GroupManager\\:\\:findGroupBy\\(\\) should return FOS\\\\UserBundle\\\\Model\\\\GroupInterface but returns object\\|null\\.$#"
+			count: 1
+			path: src-user/Doctrine/GroupManager.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\GroupManager\\:\\:findGroups\\(\\) return type has no value type specified in iterable type Traversable\\.$#"
+			count: 1
+			path: src-user/Doctrine/GroupManager.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\GroupManager\\:\\:findGroups\\(\\) should return Traversable but returns array\\<object\\>\\.$#"
+			count: 1
+			path: src-user/Doctrine/GroupManager.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\GroupManager\\:\\:updateGroup\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Doctrine/GroupManager.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\GroupManager\\:\\:updateGroup\\(\\) has parameter \\$andFlush with no typehint specified\\.$#"
+			count: 1
+			path: src-user/Doctrine/GroupManager.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\UserListener\\:\\:prePersist\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Doctrine/UserListener.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\UserListener\\:\\:preUpdate\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Doctrine/UserListener.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\UserListener\\:\\:updateUserFields\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Doctrine/UserListener.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\UserListener\\:\\:recomputeChangeSet\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Doctrine/UserListener.php
+
+		-
+			message: "#^Parameter \\#1 \\$class of method Doctrine\\\\ORM\\\\UnitOfWork\\:\\:recomputeSingleEntityChangeSet\\(\\) expects Doctrine\\\\ORM\\\\Mapping\\\\ClassMetadata, Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata given\\.$#"
+			count: 1
+			path: src-user/Doctrine/UserListener.php
+
+		-
+			message: "#^Class Doctrine\\\\ODM\\\\MongoDB\\\\DocumentManager not found\\.$#"
+			count: 1
+			path: src-user/Doctrine/UserListener.php
+
+		-
+			message: "#^Call to method getUnitOfWork\\(\\) on an unknown class Doctrine\\\\ODM\\\\MongoDB\\\\DocumentManager\\.$#"
+			count: 1
+			path: src-user/Doctrine/UserListener.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\UserManager\\:\\:deleteUser\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Doctrine/UserManager.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\UserManager\\:\\:findUserBy\\(\\) has parameter \\$criteria with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Doctrine/UserManager.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\UserManager\\:\\:findUserBy\\(\\) should return FOS\\\\UserBundle\\\\Model\\\\UserInterface\\|null but returns object\\|null\\.$#"
+			count: 1
+			path: src-user/Doctrine/UserManager.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\UserManager\\:\\:findUsers\\(\\) return type has no value type specified in iterable type Traversable\\.$#"
+			count: 1
+			path: src-user/Doctrine/UserManager.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\UserManager\\:\\:findUsers\\(\\) should return Traversable but returns array\\<object\\>\\.$#"
+			count: 1
+			path: src-user/Doctrine/UserManager.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\UserManager\\:\\:reloadUser\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Doctrine/UserManager.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\UserManager\\:\\:updateUser\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Doctrine/UserManager.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Doctrine\\\\UserManager\\:\\:updateUser\\(\\) has parameter \\$andFlush with no typehint specified\\.$#"
+			count: 1
+			path: src-user/Doctrine/UserManager.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Event\\\\FilterGroupResponseEvent\\:\\:setResponse\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Event/FilterGroupResponseEvent.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Event\\\\FilterUserResponseEvent\\:\\:setResponse\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Event/FilterUserResponseEvent.php
+
+		-
+			message: "#^Property FOS\\\\UserBundle\\\\Event\\\\FormEvent\\:\\:\\$form type has no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
+			count: 1
+			path: src-user/Event/FormEvent.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Event\\\\FormEvent\\:\\:__construct\\(\\) has parameter \\$form with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
+			count: 1
+			path: src-user/Event/FormEvent.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Event\\\\FormEvent\\:\\:getForm\\(\\) return type has no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
+			count: 1
+			path: src-user/Event/FormEvent.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Event\\\\FormEvent\\:\\:setResponse\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Event/FormEvent.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Event\\\\GetResponseGroupEvent\\:\\:setResponse\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Event/GetResponseGroupEvent.php
+
+		-
+			message: "#^Property FOS\\\\UserBundle\\\\Event\\\\UserEvent\\:\\:\\$user \\(FOS\\\\UserBundle\\\\Model\\\\UserInterface\\) does not accept Symfony\\\\Component\\\\Security\\\\Core\\\\User\\\\UserInterface\\|null\\.$#"
+			count: 1
+			path: src-user/Event/GetResponseNullableUserEvent.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Event\\\\GetResponseUserEvent\\:\\:setResponse\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Event/GetResponseUserEvent.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Event\\\\UserEvent\\:\\:getRequest\\(\\) should return Symfony\\\\Component\\\\HttpFoundation\\\\Request but returns Symfony\\\\Component\\\\HttpFoundation\\\\Request\\|null\\.$#"
+			count: 1
+			path: src-user/Event/UserEvent.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\EventListener\\\\AuthenticationListener\\:\\:getSubscribedEvents\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/EventListener/AuthenticationListener.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\EventListener\\\\AuthenticationListener\\:\\:authenticate\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/EventListener/AuthenticationListener.php
+
+		-
+			message: "#^Method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
+			count: 1
+			path: src-user/EventListener/AuthenticationListener.php
+
+		-
+			message: "#^Parameter \\#1 \\$event of method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) expects object, string given\\.$#"
+			count: 1
+			path: src-user/EventListener/AuthenticationListener.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\EventListener\\\\EmailConfirmationListener\\:\\:getSubscribedEvents\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/EventListener/EmailConfirmationListener.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\EventListener\\\\EmailConfirmationListener\\:\\:onRegistrationSuccess\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/EventListener/EmailConfirmationListener.php
+
+		-
+			message: "#^PHPDoc tag @var has invalid value \\(\\$user \\\\FOS\\\\UserBundle\\\\Model\\\\UserInterface\\)\\: Unexpected token \"\\$user\", expected type at offset 9$#"
+			count: 1
+			path: src-user/EventListener/EmailConfirmationListener.php
+
+		-
+			message: "#^Property FOS\\\\UserBundle\\\\EventListener\\\\FlashListener\\:\\:\\$session type has no value type specified in iterable type Symfony\\\\Component\\\\HttpFoundation\\\\Session\\\\Session\\.$#"
+			count: 1
+			path: src-user/EventListener/FlashListener.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\EventListener\\\\FlashListener\\:\\:__construct\\(\\) has parameter \\$session with no value type specified in iterable type Symfony\\\\Component\\\\HttpFoundation\\\\Session\\\\Session\\.$#"
+			count: 1
+			path: src-user/EventListener/FlashListener.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\EventListener\\\\FlashListener\\:\\:getSubscribedEvents\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/EventListener/FlashListener.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\EventListener\\\\FlashListener\\:\\:addSuccessFlash\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/EventListener/FlashListener.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\EventListener\\\\FlashListener\\:\\:trans\\(\\) has parameter \\$params with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/EventListener/FlashListener.php
+
+		-
+			message: "#^Property FOS\\\\UserBundle\\\\EventListener\\\\LastLoginListener\\:\\:\\$userManager has no typehint specified\\.$#"
+			count: 1
+			path: src-user/EventListener/LastLoginListener.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\EventListener\\\\LastLoginListener\\:\\:getSubscribedEvents\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/EventListener/LastLoginListener.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\EventListener\\\\LastLoginListener\\:\\:onImplicitLogin\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/EventListener/LastLoginListener.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\EventListener\\\\LastLoginListener\\:\\:onSecurityInteractiveLogin\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/EventListener/LastLoginListener.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\EventListener\\\\ResettingListener\\:\\:getSubscribedEvents\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/EventListener/ResettingListener.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\EventListener\\\\ResettingListener\\:\\:onResettingResetInitialize\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/EventListener/ResettingListener.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\EventListener\\\\ResettingListener\\:\\:onResettingResetSuccess\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/EventListener/ResettingListener.php
+
+		-
+			message: "#^PHPDoc tag @var has invalid value \\(\\$user \\\\FOS\\\\UserBundle\\\\Model\\\\UserInterface\\)\\: Unexpected token \"\\$user\", expected type at offset 9$#"
+			count: 1
+			path: src-user/EventListener/ResettingListener.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\EventListener\\\\ResettingListener\\:\\:onResettingResetRequest\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/EventListener/ResettingListener.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\FOSUserBundle\\:\\:build\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/FOSUserBundle.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\FOSUserBundle\\:\\:addRegisterMappingsPass\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/FOSUserBundle.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\DataTransformer\\\\UserToUsernameTransformer\\:\\:transform\\(\\) should return string\\|null but empty return statement found\\.$#"
+			count: 1
+			path: src-user/Form/DataTransformer/UserToUsernameTransformer.php
+
+		-
+			message: "#^Strict comparison using \\=\\=\\= between null and string will always evaluate to false\\.$#"
+			count: 1
+			path: src-user/Form/DataTransformer/UserToUsernameTransformer.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\DataTransformer\\\\UserToUsernameTransformer\\:\\:reverseTransform\\(\\) should return FOS\\\\UserBundle\\\\Model\\\\UserInterface but empty return statement found\\.$#"
+			count: 1
+			path: src-user/Form/DataTransformer/UserToUsernameTransformer.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\DataTransformer\\\\UserToUsernameTransformer\\:\\:reverseTransform\\(\\) should return FOS\\\\UserBundle\\\\Model\\\\UserInterface but returns FOS\\\\UserBundle\\\\Model\\\\UserInterface\\|null\\.$#"
+			count: 1
+			path: src-user/Form/DataTransformer/UserToUsernameTransformer.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Factory\\\\FactoryInterface\\:\\:createForm\\(\\) return type has no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
+			count: 1
+			path: src-user/Form/Factory/FactoryInterface.php
+
+		-
+			message: "#^Property FOS\\\\UserBundle\\\\Form\\\\Factory\\\\FormFactory\\:\\:\\$validationGroups type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Form/Factory/FormFactory.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Factory\\\\FormFactory\\:\\:__construct\\(\\) has parameter \\$validationGroups with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Form/Factory/FormFactory.php
+
+		-
+			message: "#^Property FOS\\\\UserBundle\\\\Form\\\\Factory\\\\FormFactory\\:\\:\\$validationGroups \\(array\\) does not accept array\\|null\\.$#"
+			count: 1
+			path: src-user/Form/Factory/FormFactory.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Factory\\\\FormFactory\\:\\:createForm\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Form/Factory/FormFactory.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Factory\\\\FormFactory\\:\\:createForm\\(\\) return type has no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
+			count: 1
+			path: src-user/Form/Factory/FormFactory.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Type\\\\ChangePasswordFormType\\:\\:buildForm\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Form/Type/ChangePasswordFormType.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Type\\\\ChangePasswordFormType\\:\\:buildForm\\(\\) has parameter \\$builder with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormBuilderInterface\\.$#"
+			count: 1
+			path: src-user/Form/Type/ChangePasswordFormType.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Type\\\\ChangePasswordFormType\\:\\:buildForm\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Form/Type/ChangePasswordFormType.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Type\\\\ChangePasswordFormType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Form/Type/ChangePasswordFormType.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Type\\\\ChangePasswordFormType\\:\\:getName\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Form/Type/ChangePasswordFormType.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Type\\\\GroupFormType\\:\\:buildForm\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Form/Type/GroupFormType.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Type\\\\GroupFormType\\:\\:buildForm\\(\\) has parameter \\$builder with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormBuilderInterface\\.$#"
+			count: 1
+			path: src-user/Form/Type/GroupFormType.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Type\\\\GroupFormType\\:\\:buildForm\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Form/Type/GroupFormType.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Type\\\\GroupFormType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Form/Type/GroupFormType.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Type\\\\GroupFormType\\:\\:getName\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Form/Type/GroupFormType.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Type\\\\ProfileFormType\\:\\:buildForm\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Form/Type/ProfileFormType.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Type\\\\ProfileFormType\\:\\:buildForm\\(\\) has parameter \\$builder with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormBuilderInterface\\.$#"
+			count: 1
+			path: src-user/Form/Type/ProfileFormType.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Type\\\\ProfileFormType\\:\\:buildForm\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Form/Type/ProfileFormType.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Type\\\\ProfileFormType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Form/Type/ProfileFormType.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Type\\\\ProfileFormType\\:\\:getName\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Form/Type/ProfileFormType.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Type\\\\ProfileFormType\\:\\:buildUserForm\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Form/Type/ProfileFormType.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Type\\\\ProfileFormType\\:\\:buildUserForm\\(\\) has parameter \\$builder with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormBuilderInterface\\.$#"
+			count: 1
+			path: src-user/Form/Type/ProfileFormType.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Type\\\\ProfileFormType\\:\\:buildUserForm\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Form/Type/ProfileFormType.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Type\\\\RegistrationFormType\\:\\:buildForm\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Form/Type/RegistrationFormType.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Type\\\\RegistrationFormType\\:\\:buildForm\\(\\) has parameter \\$builder with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormBuilderInterface\\.$#"
+			count: 1
+			path: src-user/Form/Type/RegistrationFormType.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Type\\\\RegistrationFormType\\:\\:buildForm\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Form/Type/RegistrationFormType.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Type\\\\RegistrationFormType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Form/Type/RegistrationFormType.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Type\\\\RegistrationFormType\\:\\:getName\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Form/Type/RegistrationFormType.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Type\\\\ResettingFormType\\:\\:buildForm\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Form/Type/ResettingFormType.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Type\\\\ResettingFormType\\:\\:buildForm\\(\\) has parameter \\$builder with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormBuilderInterface\\.$#"
+			count: 1
+			path: src-user/Form/Type/ResettingFormType.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Type\\\\ResettingFormType\\:\\:buildForm\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Form/Type/ResettingFormType.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Type\\\\ResettingFormType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Form/Type/ResettingFormType.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Type\\\\ResettingFormType\\:\\:getName\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Form/Type/ResettingFormType.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Type\\\\UsernameFormType\\:\\:buildForm\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Form/Type/UsernameFormType.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Type\\\\UsernameFormType\\:\\:buildForm\\(\\) has parameter \\$builder with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormBuilderInterface\\.$#"
+			count: 1
+			path: src-user/Form/Type/UsernameFormType.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Form\\\\Type\\\\UsernameFormType\\:\\:buildForm\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Form/Type/UsernameFormType.php
+
+		-
+			message: "#^Property FOS\\\\UserBundle\\\\Mailer\\\\Mailer\\:\\:\\$parameters type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Mailer/Mailer.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Mailer\\\\Mailer\\:\\:__construct\\(\\) has parameter \\$parameters with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Mailer/Mailer.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Mailer\\\\Mailer\\:\\:sendConfirmationEmailMessage\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Mailer/Mailer.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Mailer\\\\Mailer\\:\\:sendResettingEmailMessage\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Mailer/Mailer.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Mailer\\\\Mailer\\:\\:sendEmailMessage\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Mailer/Mailer.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Mailer\\\\Mailer\\:\\:sendEmailMessage\\(\\) has parameter \\$fromEmail with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Mailer/Mailer.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Mailer\\\\Mailer\\:\\:sendEmailMessage\\(\\) has parameter \\$toEmail with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Mailer/Mailer.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Mailer\\\\MailerInterface\\:\\:sendConfirmationEmailMessage\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Mailer/MailerInterface.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Mailer\\\\MailerInterface\\:\\:sendResettingEmailMessage\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Mailer/MailerInterface.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Mailer\\\\NoopMailer\\:\\:sendConfirmationEmailMessage\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Mailer/NoopMailer.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Mailer\\\\NoopMailer\\:\\:sendResettingEmailMessage\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Mailer/NoopMailer.php
+
+		-
+			message: "#^Property FOS\\\\UserBundle\\\\Mailer\\\\TwigSwiftMailer\\:\\:\\$parameters type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Mailer/TwigSwiftMailer.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Mailer\\\\TwigSwiftMailer\\:\\:__construct\\(\\) has parameter \\$parameters with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Mailer/TwigSwiftMailer.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Mailer\\\\TwigSwiftMailer\\:\\:sendConfirmationEmailMessage\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Mailer/TwigSwiftMailer.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Mailer\\\\TwigSwiftMailer\\:\\:sendResettingEmailMessage\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Mailer/TwigSwiftMailer.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Mailer\\\\TwigSwiftMailer\\:\\:sendMessage\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Mailer/TwigSwiftMailer.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Mailer\\\\TwigSwiftMailer\\:\\:sendMessage\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Mailer/TwigSwiftMailer.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Mailer\\\\TwigSwiftMailer\\:\\:sendMessage\\(\\) has parameter \\$fromEmail with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Mailer/TwigSwiftMailer.php
+
+		-
+			message: "#^Property FOS\\\\UserBundle\\\\Model\\\\Group\\:\\:\\$roles type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Model/Group.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Model\\\\Group\\:\\:__construct\\(\\) has parameter \\$roles with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Model/Group.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Model\\\\Group\\:\\:getRoles\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Model/Group.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Model\\\\Group\\:\\:setRoles\\(\\) has parameter \\$roles with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Model/Group.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Model\\\\GroupInterface\\:\\:getRoles\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Model/GroupInterface.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Model\\\\GroupInterface\\:\\:setRoles\\(\\) has parameter \\$roles with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Model/GroupInterface.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Model\\\\GroupManagerInterface\\:\\:deleteGroup\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Model/GroupManagerInterface.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Model\\\\GroupManagerInterface\\:\\:findGroupBy\\(\\) has parameter \\$criteria with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Model/GroupManagerInterface.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Model\\\\GroupManagerInterface\\:\\:findGroups\\(\\) return type has no value type specified in iterable type Traversable\\.$#"
+			count: 1
+			path: src-user/Model/GroupManagerInterface.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Model\\\\GroupManagerInterface\\:\\:updateGroup\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Model/GroupManagerInterface.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Model\\\\GroupableInterface\\:\\:getGroups\\(\\) return type has no value type specified in iterable type Traversable\\.$#"
+			count: 1
+			path: src-user/Model/GroupableInterface.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Model\\\\GroupableInterface\\:\\:getGroupNames\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Model/GroupableInterface.php
+
+		-
+			message: "#^Property FOS\\\\UserBundle\\\\Model\\\\User\\:\\:\\$groups with generic interface Doctrine\\\\Common\\\\Collections\\\\Collection does not specify its types\\: TKey, T$#"
+			count: 1
+			path: src-user/Model/User.php
+
+		-
+			message: "#^Property FOS\\\\UserBundle\\\\Model\\\\User\\:\\:\\$roles type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Model/User.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Model\\\\User\\:\\:eraseCredentials\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Model/User.php
+
+		-
+			message: "#^Property FOS\\\\UserBundle\\\\Model\\\\User\\:\\:\\$plainPassword \\(string\\) does not accept null\\.$#"
+			count: 1
+			path: src-user/Model/User.php
+
+		-
+			message: "#^Property FOS\\\\UserBundle\\\\Model\\\\User\\:\\:\\$salt \\(string\\) does not accept string\\|null\\.$#"
+			count: 1
+			path: src-user/Model/User.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Model\\\\User\\:\\:setRoles\\(\\) has parameter \\$roles with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Model/User.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Model\\\\User\\:\\:getGroups\\(\\) return type has no value type specified in iterable type Traversable\\.$#"
+			count: 1
+			path: src-user/Model/User.php
+
+		-
+			message: "#^Ternary operator condition is always true\\.$#"
+			count: 1
+			path: src-user/Model/User.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Model\\\\User\\:\\:getGroupNames\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Model/User.php
+
+		-
+			message: "#^Call to an undefined method Traversable\\:\\:contains\\(\\)\\.$#"
+			count: 2
+			path: src-user/Model/User.php
+
+		-
+			message: "#^Call to an undefined method Traversable\\:\\:add\\(\\)\\.$#"
+			count: 1
+			path: src-user/Model/User.php
+
+		-
+			message: "#^Call to an undefined method Traversable\\:\\:removeElement\\(\\)\\.$#"
+			count: 1
+			path: src-user/Model/User.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Model\\\\UserInterface\\:\\:setRoles\\(\\) has parameter \\$roles with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Model/UserInterface.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Model\\\\UserManager\\:\\:updateCanonicalFields\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Model/UserManager.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Model\\\\UserManager\\:\\:updatePassword\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Model/UserManager.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Model\\\\UserManagerInterface\\:\\:deleteUser\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Model/UserManagerInterface.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Model\\\\UserManagerInterface\\:\\:findUserBy\\(\\) has parameter \\$criteria with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src-user/Model/UserManagerInterface.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Model\\\\UserManagerInterface\\:\\:findUsers\\(\\) return type has no value type specified in iterable type Traversable\\.$#"
+			count: 1
+			path: src-user/Model/UserManagerInterface.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Model\\\\UserManagerInterface\\:\\:reloadUser\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Model/UserManagerInterface.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Model\\\\UserManagerInterface\\:\\:updateUser\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Model/UserManagerInterface.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Model\\\\UserManagerInterface\\:\\:updateCanonicalFields\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Model/UserManagerInterface.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Model\\\\UserManagerInterface\\:\\:updatePassword\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Model/UserManagerInterface.php
+
+		-
+			message: "#^Property FOS\\\\UserBundle\\\\Security\\\\LoginManager\\:\\:\\$rememberMeService \\(Symfony\\\\Component\\\\Security\\\\Http\\\\RememberMe\\\\RememberMeServicesInterface\\) does not accept Symfony\\\\Component\\\\Security\\\\Http\\\\RememberMe\\\\RememberMeServicesInterface\\|null\\.$#"
+			count: 1
+			path: src-user/Security/LoginManager.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Security\\\\LoginManager\\:\\:logInUser\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Security/LoginManager.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Security\\\\LoginManagerInterface\\:\\:logInUser\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Security/LoginManagerInterface.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Util\\\\CanonicalFieldsUpdater\\:\\:updateCanonicalFields\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Util/CanonicalFieldsUpdater.php
+
+		-
+			message: "#^Parameter \\#1 \\$usernameCanonical of method FOS\\\\UserBundle\\\\Model\\\\UserInterface\\:\\:setUsernameCanonical\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: src-user/Util/CanonicalFieldsUpdater.php
+
+		-
+			message: "#^Parameter \\#1 \\$emailCanonical of method FOS\\\\UserBundle\\\\Model\\\\UserInterface\\:\\:setEmailCanonical\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: src-user/Util/CanonicalFieldsUpdater.php
+
+		-
+			message: "#^Parameter \\#1 \\$string of method FOS\\\\UserBundle\\\\Util\\\\CanonicalizerInterface\\:\\:canonicalize\\(\\) expects string, string\\|null given\\.$#"
+			count: 2
+			path: src-user/Util/CanonicalFieldsUpdater.php
+
+		-
+			message: "#^Strict comparison using \\=\\=\\= between null and string will always evaluate to false\\.$#"
+			count: 1
+			path: src-user/Util/Canonicalizer.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Util\\\\Canonicalizer\\:\\:canonicalize\\(\\) should return string but empty return statement found\\.$#"
+			count: 1
+			path: src-user/Util/Canonicalizer.php
+
+		-
+			message: "#^Parameter \\#2 \\$request of class FOS\\\\UserBundle\\\\Event\\\\UserEvent constructor expects Symfony\\\\Component\\\\HttpFoundation\\\\Request\\|null, FOS\\\\UserBundle\\\\Util\\\\Request given\\.$#"
+			count: 6
+			path: src-user/Util/UserManipulator.php
+
+		-
+			message: "#^Method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) invoked with 2 parameters, 1 required\\.$#"
+			count: 6
+			path: src-user/Util/UserManipulator.php
+
+		-
+			message: "#^Parameter \\#1 \\$event of method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:dispatch\\(\\) expects object, string given\\.$#"
+			count: 6
+			path: src-user/Util/UserManipulator.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Util\\\\UserManipulator\\:\\:activate\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Util/UserManipulator.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Util\\\\UserManipulator\\:\\:deactivate\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Util/UserManipulator.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Util\\\\UserManipulator\\:\\:changePassword\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Util/UserManipulator.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Util\\\\UserManipulator\\:\\:promote\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Util/UserManipulator.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Util\\\\UserManipulator\\:\\:demote\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Util/UserManipulator.php
+
+		-
+			message: "#^Return typehint of method FOS\\\\UserBundle\\\\Util\\\\UserManipulator\\:\\:getRequest\\(\\) has invalid type FOS\\\\UserBundle\\\\Util\\\\Request\\.$#"
+			count: 1
+			path: src-user/Util/UserManipulator.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Util\\\\UserManipulator\\:\\:getRequest\\(\\) should return FOS\\\\UserBundle\\\\Util\\\\Request but returns Symfony\\\\Component\\\\HttpFoundation\\\\Request\\|null\\.$#"
+			count: 1
+			path: src-user/Util/UserManipulator.php
+
+		-
+			message: "#^Method FOS\\\\UserBundle\\\\Validator\\\\Initializer\\:\\:initialize\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/Validator/Initializer.php
 
 		-
 			message: "#^Cannot call method getManaged\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
@@ -92,7 +1427,7 @@ parameters:
 
 		-
 			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 21
+			count: 20
 			path: src/Controller/ContentManagement/DataController.php
 
 		-
@@ -163,11 +1498,6 @@ parameters:
 		-
 			message: "#^Cannot call method isAutoPublish\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
 			count: 3
-			path: src/Controller/ContentManagement/DataController.php
-
-		-
-			message: "#^Parameter \\#1 \\$contentType of method EMS\\\\CoreBundle\\\\Service\\\\ContentTypeService\\:\\:getIndex\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\ContentType, EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null given\\.$#"
-			count: 1
 			path: src/Controller/ContentManagement/DataController.php
 
 		-
@@ -251,21 +1581,6 @@ parameters:
 			path: src/Controller/ContentManagement/EnvironmentController.php
 
 		-
-			message: "#^Parameter \\#2 \\$environment of method EMS\\\\CoreBundle\\\\Service\\\\ContentTypeService\\:\\:getIndex\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null, EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|false given\\.$#"
-			count: 2
-			path: src/Controller/ContentManagement/EnvironmentController.php
-
-		-
-			message: "#^Parameter \\#1 \\$input of function array_keys expects array, bool given\\.$#"
-			count: 2
-			path: src/Controller/ContentManagement/EnvironmentController.php
-
-		-
-			message: "#^Parameter \\#2 \\$str2 of function strcmp expects string, int\\|string given\\.$#"
-			count: 1
-			path: src/Controller/ContentManagement/EnvironmentController.php
-
-		-
 			message: "#^Left side of && is always true\\.$#"
 			count: 1
 			path: src/Controller/ContentManagement/FileController.php
@@ -312,17 +1627,12 @@ parameters:
 
 		-
 			message: "#^If condition is always true\\.$#"
-			count: 2
-			path: src/Controller/ElasticsearchController.php
-
-		-
-			message: "#^Cannot call method getValues\\(\\) on array\\<EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\SearchFilter\\>\\.$#"
-			count: 2
+			count: 1
 			path: src/Controller/ElasticsearchController.php
 
 		-
 			message: "#^Cannot call method getId\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|false\\.$#"
-			count: 2
+			count: 1
 			path: src/Controller/ElasticsearchController.php
 
 		-
@@ -346,38 +1656,13 @@ parameters:
 			path: src/Controller/ElasticsearchController.php
 
 		-
-			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
-			count: 1
-			path: src/Controller/ElasticsearchController.php
-
-		-
 			message: "#^Call to an undefined method object\\:\\:isGranted\\(\\)\\.$#"
-			count: 1
-			path: src/Controller/ElasticsearchController.php
-
-		-
-			message: "#^Call to an undefined method object\\:\\:getFilters\\(\\)\\.$#"
-			count: 2
-			path: src/Controller/ElasticsearchController.php
-
-		-
-			message: "#^Call to an undefined method object\\:\\:resetFilters\\(\\)\\.$#"
-			count: 1
-			path: src/Controller/ElasticsearchController.php
-
-		-
-			message: "#^Parameter \\#1 \\$search of method EMS\\\\CoreBundle\\\\Service\\\\SearchService\\:\\:generateSearchBody\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\Search, object given\\.$#"
 			count: 1
 			path: src/Controller/ElasticsearchController.php
 
 		-
 			message: "#^Cannot call method getUsername\\(\\) on object\\|null\\.$#"
 			count: 1
-			path: src/Controller/ElasticsearchController.php
-
-		-
-			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Search\\\\Search\\:\\:addTermsAggregation\\(\\)\\.$#"
-			count: 2
 			path: src/Controller/ElasticsearchController.php
 
 		-
@@ -434,16 +1719,6 @@ parameters:
 			message: "#^Cannot call method getAlias\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
 			count: 1
 			path: src/Controller/Views/CalendarController.php
-
-		-
-			message: "#^Parameter \\#3 \\$targetFieldName of method EMS\\\\CoreBundle\\\\Controller\\\\Views\\\\CriteriaController\\:\\:removeCriteriaRevision\\(\\) expects string, string\\|null given\\.$#"
-			count: 2
-			path: src/Controller/Views/CriteriaController.php
-
-		-
-			message: "#^Parameter \\#3 \\$targetFieldName of method EMS\\\\CoreBundle\\\\Controller\\\\Views\\\\CriteriaController\\:\\:addCriteriaRevision\\(\\) expects string, string\\|null given\\.$#"
-			count: 2
-			path: src/Controller/Views/CriteriaController.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\Views\\\\CriteriaController\\:\\:isAuthorized\\(\\) has no return typehint specified\\.$#"
@@ -626,11 +1901,6 @@ parameters:
 			path: src/Controller/Views/CriteriaController.php
 
 		-
-			message: "#^Parameter \\#1 \\$contentType of method EMS\\\\CoreBundle\\\\Service\\\\ContentTypeService\\:\\:getIndex\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\ContentType, EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|false given\\.$#"
-			count: 1
-			path: src/Controller/Views/HierarchicalController.php
-
-		-
 			message: "#^Cannot call method setOrderKey\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\WysiwygProfile\\|null\\.$#"
 			count: 1
 			path: src/Controller/WysiwygController.php
@@ -691,22 +1961,7 @@ parameters:
 			path: src/EMSCoreBundle.php
 
 		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Elasticsearch\\\\Bulker\\:\\:\\$options type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Elasticsearch/Bulker.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Elasticsearch\\\\Bulker\\:\\:\\$params type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Elasticsearch/Bulker.php
-
-		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Elasticsearch\\\\Bulker\\:\\:\\$errors type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Elasticsearch/Bulker.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Elasticsearch\\\\Bulker\\:\\:__construct\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Elasticsearch/Bulker.php
 
@@ -721,22 +1976,7 @@ parameters:
 			path: src/Elasticsearch/Bulker.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Elasticsearch\\\\Bulker\\:\\:index\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Elasticsearch/Bulker.php
-
-		-
-			message: "#^Parameter \\#1 \\$str of function sha1 expects string, string\\|false given\\.$#"
-			count: 1
-			path: src/Elasticsearch/Bulker.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Elasticsearch\\\\Bulker\\:\\:logResponse\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Elasticsearch/Bulker.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Elasticsearch\\\\Bulker\\:\\:logResponse\\(\\) has parameter \\$response with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Elasticsearch/Bulker.php
 
@@ -804,16 +2044,6 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Elasticsearch\\\\Index\\\\Settings\\:\\:getFilterStop\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Elasticsearch/Index/Settings.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Elasticsearch\\\\Indexer\\:\\:\\$options type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Elasticsearch/Indexer.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Elasticsearch\\\\Indexer\\:\\:__construct\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Elasticsearch/Indexer.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Elasticsearch\\\\Indexer\\:\\:create\\(\\) has parameter \\$mappings with no value type specified in iterable type array\\.$#"
@@ -1681,27 +2911,12 @@ parameters:
 			path: src/Entity/Form/Search.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\Search\\:\\:resetFilters\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Form/Search.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\Search\\:\\:resetFilters\\(\\) has parameter \\$filters with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Form/Search.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\Search\\:\\:removeFilter\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Entity/Form/Search.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\Search\\:\\:setEnvironments\\(\\) has parameter \\$environments with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Form/Search.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\Search\\:\\:getEnvironments\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Entity/Form/Search.php
 
@@ -2076,16 +3291,6 @@ parameters:
 			path: src/Entity/Revision.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Revision\\:\\:addVirtualFields\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Revision.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Revision\\:\\:addVirtualFields\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Entity/Revision.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Revision\\:\\:getData\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Entity/Revision.php
@@ -2093,16 +3298,6 @@ parameters:
 		-
 			message: "#^Cannot call method getFieldType\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
 			count: 2
-			path: src/Entity/Revision.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Revision\\:\\:removeVirtualField\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Entity/Revision.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Entity\\\\Revision\\:\\:removeVirtualField\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
 			path: src/Entity/Revision.php
 
 		-
@@ -2476,6 +3671,61 @@ parameters:
 			path: src/Entity/WysiwygStylesSet.php
 
 		-
+			message: "#^Property EMS\\\\CoreBundle\\\\Event\\\\RevisionEvent\\:\\:\\$revision has no typehint specified\\.$#"
+			count: 1
+			path: src/Event/RevisionEvent.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\RevisionEvent\\:\\:getRevision\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Event/RevisionEvent.php
+
+		-
+			message: "#^Property EMS\\\\CoreBundle\\\\Event\\\\RevisionPublishEvent\\:\\:\\$environment has no typehint specified\\.$#"
+			count: 1
+			path: src/Event/RevisionPublishEvent.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\RevisionPublishEvent\\:\\:getEnvironment\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Event/RevisionPublishEvent.php
+
+		-
+			message: "#^Property EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:\\$toClean type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Event/UpdateRevisionReferersEvent.php
+
+		-
+			message: "#^Property EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:\\$toCreate type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Event/UpdateRevisionReferersEvent.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:__construct\\(\\) has parameter \\$toCleanOuuids with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Event/UpdateRevisionReferersEvent.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:__construct\\(\\) has parameter \\$toCreateOuuids with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Event/UpdateRevisionReferersEvent.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:getToCleanOuuids\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Event/UpdateRevisionReferersEvent.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:getToCreateOuuids\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Event/UpdateRevisionReferersEvent.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:getRefererOuuid\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Event/UpdateRevisionReferersEvent.php
+
+		-
 			message: "#^Property EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:\\$twig has no typehint specified\\.$#"
 			count: 1
 			path: src/EventListener/RequestListener.php
@@ -2559,61 +3809,6 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\EventListener\\\\RequestListener\\:\\:provideTemplateTwigObjects\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/EventListener/RequestListener.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Event\\\\RevisionEvent\\:\\:\\$revision has no typehint specified\\.$#"
-			count: 1
-			path: src/Event/RevisionEvent.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\RevisionEvent\\:\\:getRevision\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Event/RevisionEvent.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Event\\\\RevisionPublishEvent\\:\\:\\$environment has no typehint specified\\.$#"
-			count: 1
-			path: src/Event/RevisionPublishEvent.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\RevisionPublishEvent\\:\\:getEnvironment\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Event/RevisionPublishEvent.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:\\$toClean type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Event/UpdateRevisionReferersEvent.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:\\$toCreate type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Event/UpdateRevisionReferersEvent.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:__construct\\(\\) has parameter \\$toCleanOuuids with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Event/UpdateRevisionReferersEvent.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:__construct\\(\\) has parameter \\$toCreateOuuids with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Event/UpdateRevisionReferersEvent.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:getToCleanOuuids\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Event/UpdateRevisionReferersEvent.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:getToCreateOuuids\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Event/UpdateRevisionReferersEvent.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Event\\\\UpdateRevisionReferersEvent\\:\\:getRefererOuuid\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Event/UpdateRevisionReferersEvent.php
 
 		-
 			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
@@ -6621,81 +7816,6 @@ parameters:
 			path: src/Form/Factory/ObjectChoiceListFactory.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:buildForm\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/FieldType/FieldTypeType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:buildForm\\(\\) has parameter \\$builder with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormBuilderInterface\\.$#"
-			count: 1
-			path: src/Form/FieldType/FieldTypeType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:buildForm\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Form/FieldType/FieldTypeType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/FieldType/FieldTypeType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:buildView\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/FieldType/FieldTypeType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:buildView\\(\\) has parameter \\$form with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
-			count: 1
-			path: src/Form/FieldType/FieldTypeType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:buildView\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Form/FieldType/FieldTypeType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:dataFieldToArray\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/FieldType/FieldTypeType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:dataFieldToArray\\(\\) has parameter \\$dataField with no value type specified in iterable type EMS\\\\CoreBundle\\\\Entity\\\\DataField\\.$#"
-			count: 1
-			path: src/Form/FieldType/FieldTypeType.php
-
-		-
-			message: "#^Cannot call method getType\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"
-			count: 3
-			path: src/Form/FieldType/FieldTypeType.php
-
-		-
-			message: "#^Variable \\$dataFieldType in PHPDoc tag @var does not exist\\.$#"
-			count: 1
-			path: src/Form/FieldType/FieldTypeType.php
-
-		-
-			message: "#^PHPDoc tag @var for variable \\$child has no value type specified in iterable type EMS\\\\CoreBundle\\\\Entity\\\\DataField\\.$#"
-			count: 1
-			path: src/Form/FieldType/FieldTypeType.php
-
-		-
-			message: "#^Cannot call method getDeleted\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"
-			count: 1
-			path: src/Form/FieldType/FieldTypeType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:generateMapping\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/FieldType/FieldTypeType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:generateMapping\\(\\) has parameter \\$withPipeline with no typehint specified\\.$#"
-			count: 1
-			path: src/Form/FieldType/FieldTypeType.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\AlignIndexesType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Form/Field/AlignIndexesType.php
@@ -7259,6 +8379,81 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\WysiwygStylesSetPickerType\\:\\:getExistingStylesSets\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Form/Field/WysiwygStylesSetPickerType.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:buildForm\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Form/FieldType/FieldTypeType.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:buildForm\\(\\) has parameter \\$builder with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormBuilderInterface\\.$#"
+			count: 1
+			path: src/Form/FieldType/FieldTypeType.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:buildForm\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Form/FieldType/FieldTypeType.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Form/FieldType/FieldTypeType.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:buildView\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Form/FieldType/FieldTypeType.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:buildView\\(\\) has parameter \\$form with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormInterface\\.$#"
+			count: 1
+			path: src/Form/FieldType/FieldTypeType.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:buildView\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Form/FieldType/FieldTypeType.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:dataFieldToArray\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Form/FieldType/FieldTypeType.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:dataFieldToArray\\(\\) has parameter \\$dataField with no value type specified in iterable type EMS\\\\CoreBundle\\\\Entity\\\\DataField\\.$#"
+			count: 1
+			path: src/Form/FieldType/FieldTypeType.php
+
+		-
+			message: "#^Cannot call method getType\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"
+			count: 3
+			path: src/Form/FieldType/FieldTypeType.php
+
+		-
+			message: "#^Variable \\$dataFieldType in PHPDoc tag @var does not exist\\.$#"
+			count: 1
+			path: src/Form/FieldType/FieldTypeType.php
+
+		-
+			message: "#^PHPDoc tag @var for variable \\$child has no value type specified in iterable type EMS\\\\CoreBundle\\\\Entity\\\\DataField\\.$#"
+			count: 1
+			path: src/Form/FieldType/FieldTypeType.php
+
+		-
+			message: "#^Cannot call method getDeleted\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"
+			count: 1
+			path: src/Form/FieldType/FieldTypeType.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:generateMapping\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Form/FieldType/FieldTypeType.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\FieldType\\\\FieldTypeType\\:\\:generateMapping\\(\\) has parameter \\$withPipeline with no typehint specified\\.$#"
+			count: 1
+			path: src/Form/FieldType/FieldTypeType.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Form\\\\AggregateOptionType\\:\\:buildForm\\(\\) has no return typehint specified\\.$#"
@@ -7926,21 +9121,6 @@ parameters:
 			path: src/Form/View/CalendarViewType.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\View\\\\CriteriaViewType\\:\\:buildForm\\(\\) has parameter \\$builder with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormBuilderInterface\\.$#"
-			count: 1
-			path: src/Form/View/CriteriaViewType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\View\\\\CriteriaViewType\\:\\:buildForm\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Form/View/CriteriaViewType.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\View\\\\CriteriaViewType\\:\\:getParameters\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Form/View/CriteriaViewType.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\View\\\\Criteria\\\\CriteriaFilterType\\:\\:buildForm\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Form/View/Criteria/CriteriaFilterType.php
@@ -7974,6 +9154,21 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\View\\\\Criteria\\\\CriteriaFilterType\\:\\:configureOptions\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Form/View/Criteria/CriteriaFilterType.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\View\\\\CriteriaViewType\\:\\:buildForm\\(\\) has parameter \\$builder with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormBuilderInterface\\.$#"
+			count: 1
+			path: src/Form/View/CriteriaViewType.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\View\\\\CriteriaViewType\\:\\:buildForm\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Form/View/CriteriaViewType.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\View\\\\CriteriaViewType\\:\\:getParameters\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Form/View/CriteriaViewType.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\View\\\\ExportViewType\\:\\:buildForm\\(\\) has parameter \\$builder with no value type specified in iterable type Symfony\\\\Component\\\\Form\\\\FormBuilderInterface\\.$#"
@@ -8032,11 +9227,6 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\View\\\\HierarchicalViewType\\:\\:buildForm\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Form/View/HierarchicalViewType.php
-
-		-
-			message: "#^Cannot call method getAlias\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
 			count: 1
 			path: src/Form/View/HierarchicalViewType.php
 
@@ -8136,12 +9326,12 @@ parameters:
 			path: src/Form/View/SorterViewType.php
 
 		-
-			message: "#^Cannot call method getAlias\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
-			count: 2
+			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\View\\\\SorterViewType\\:\\:getParameters\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
 			path: src/Form/View/SorterViewType.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\View\\\\SorterViewType\\:\\:getParameters\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: "#^Cannot call method getAlias\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\Environment\\|null\\.$#"
 			count: 1
 			path: src/Form/View/SorterViewType.php
 
@@ -8771,11 +9961,6 @@ parameters:
 			path: src/Service/AssetExtractorService.php
 
 		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\ContentTypeService\\:\\:\\$instanceId has no typehint specified\\.$#"
-			count: 1
-			path: src/Service/ContentTypeService.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\ContentTypeService\\:\\:__construct\\(\\) has parameter \\$instanceId with no typehint specified\\.$#"
 			count: 1
 			path: src/Service/ContentTypeService.php
@@ -8827,11 +10012,6 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\ContentTypeService\\:\\:reorderFields\\(\\) has parameter \\$newStructure with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Service/ContentTypeService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\ContentTypeService\\:\\:generatePipeline\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Service/ContentTypeService.php
 
@@ -8891,22 +10071,12 @@ parameters:
 			path: src/Service/ContentTypeService.php
 
 		-
-			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Search\\\\Search\\:\\:addTermsAggregation\\(\\)\\.$#"
-			count: 1
-			path: src/Service/ContentTypeService.php
-
-		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:\\$cacheBusinessKey type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Service/DataService.php
 
 		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:\\$cacheOuuids type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Service/DataService.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:\\$client has no typehint specified\\.$#"
 			count: 1
 			path: src/Service/DataService.php
 
@@ -9136,6 +10306,16 @@ parameters:
 			path: src/Service/DataService.php
 
 		-
+			message: "#^Parameter \\#1 \\$string of method EMS\\\\CommonBundle\\\\Storage\\\\StorageManager\\:\\:computeStringHash\\(\\) expects string, string\\|false given\\.$#"
+			count: 2
+			path: src/Service/DataService.php
+
+		-
+			message: "#^Parameter \\#1 \\$data of function openssl_sign expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/Service/DataService.php
+
+		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:sign\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Service/DataService.php
@@ -9147,17 +10327,7 @@ parameters:
 
 		-
 			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 23
-			path: src/Service/DataService.php
-
-		-
-			message: "#^Parameter \\#1 \\$string of method EMS\\\\CommonBundle\\\\Storage\\\\StorageManager\\:\\:computeStringHash\\(\\) expects string, string\\|false given\\.$#"
-			count: 2
-			path: src/Service/DataService.php
-
-		-
-			message: "#^Parameter \\#1 \\$data of function openssl_sign expects string, string\\|false given\\.$#"
-			count: 1
+			count: 19
 			path: src/Service/DataService.php
 
 		-
@@ -9203,16 +10373,6 @@ parameters:
 		-
 			message: "#^Parameter \\#3 \\$contentType of method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:propagateDataToComputedField\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\ContentType, EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null given\\.$#"
 			count: 2
-			path: src/Service/DataService.php
-
-		-
-			message: "#^Parameter \\#1 \\$contentType of method EMS\\\\CoreBundle\\\\Service\\\\ContentTypeService\\:\\:getIndex\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\ContentType, EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null given\\.$#"
-			count: 2
-			path: src/Service/DataService.php
-
-		-
-			message: "#^Cannot call method getHavePipelines\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 1
 			path: src/Service/DataService.php
 
 		-
@@ -9446,11 +10606,6 @@ parameters:
 			path: src/Service/DataService.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:waitForGreen\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Service/DataService.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\DataService\\:\\:getDataFieldsStructure\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Service/DataService.php
@@ -9549,21 +10704,6 @@ parameters:
 			message: "#^Cannot call method getHavePipelines\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
 			count: 1
 			path: src/Service/DocumentService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\ElasticsearchService\\:\\:get\\(\\) has parameter \\$ouuid with no typehint specified\\.$#"
-			count: 1
-			path: src/Service/ElasticsearchService.php
-
-		-
-			message: "#^Instantiated class EMS\\\\CommonBundle\\\\Elasticsearch\\\\Exception\\\\NotSingleResultException not found\\.$#"
-			count: 2
-			path: src/Service/ElasticsearchService.php
-
-		-
-			message: "#^Throwing object of an unknown class EMS\\\\CommonBundle\\\\Elasticsearch\\\\Exception\\\\NotSingleResultException\\.$#"
-			count: 2
-			path: src/Service/ElasticsearchService.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\ElasticsearchService\\:\\:convertMapping\\(\\) has parameter \\$in with no value type specified in iterable type array\\.$#"
@@ -9736,66 +10876,6 @@ parameters:
 			path: src/Service/EnvironmentService.php
 
 		-
-			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Storage\\\\StorageManager\\:\\:getBase64\\(\\)\\.$#"
-			count: 1
-			path: src/Service/FileService.php
-
-		-
-			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Storage\\\\StorageManager\\:\\:getHealthStatuses\\(\\)\\.$#"
-			count: 1
-			path: src/Service/FileService.php
-
-		-
-			message: "#^Instantiated class EMS\\\\CommonBundle\\\\Storage\\\\SizeMismatchException not found\\.$#"
-			count: 2
-			path: src/Service/FileService.php
-
-		-
-			message: "#^Throwing object of an unknown class EMS\\\\CommonBundle\\\\Storage\\\\SizeMismatchException\\.$#"
-			count: 2
-			path: src/Service/FileService.php
-
-		-
-			message: "#^Access to undefined constant EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\StorageInterface\\:\\:STORAGE_USAGE_ASSET\\.$#"
-			count: 4
-			path: src/Service/FileService.php
-
-		-
-			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Storage\\\\StorageManager\\:\\:getSize\\(\\)\\.$#"
-			count: 1
-			path: src/Service/FileService.php
-
-		-
-			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Storage\\\\StorageManager\\:\\:addChunk\\(\\)\\.$#"
-			count: 1
-			path: src/Service/FileService.php
-
-		-
-			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Storage\\\\StorageManager\\:\\:finalizeUpload\\(\\)\\.$#"
-			count: 1
-			path: src/Service/FileService.php
-
-		-
-			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Storage\\\\StorageManager\\:\\:saveFile\\(\\)\\.$#"
-			count: 2
-			path: src/Service/FileService.php
-
-		-
-			message: "#^Instantiated class EMS\\\\CommonBundle\\\\Storage\\\\HashMismatchException not found\\.$#"
-			count: 2
-			path: src/Service/FileService.php
-
-		-
-			message: "#^Throwing object of an unknown class EMS\\\\CommonBundle\\\\Storage\\\\HashMismatchException\\.$#"
-			count: 2
-			path: src/Service/FileService.php
-
-		-
-			message: "#^Access to undefined constant EMS\\\\CommonBundle\\\\Storage\\\\Service\\\\StorageInterface\\:\\:STORAGE_USAGE_BACKUP\\.$#"
-			count: 1
-			path: src/Service/FileService.php
-
-		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\HelperService\\:\\:\\$pagingSize has no typehint specified\\.$#"
 			count: 1
 			path: src/Service/HelperService.php
@@ -9834,11 +10914,6 @@ parameters:
 			message: "#^Parameter \\#2 \\$repository of class EMS\\\\CoreBundle\\\\Helper\\\\PagingTool constructor expects Doctrine\\\\ORM\\\\EntityRepository, Doctrine\\\\Persistence\\\\ObjectRepository given\\.$#"
 			count: 1
 			path: src/Service/HelperService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\Mapping\\:\\:__construct\\(\\) has parameter \\$instanceId with no typehint specified\\.$#"
-			count: 1
-			path: src/Service/Mapping.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\Mapping\\:\\:generateMapping\\(\\) has no return typehint specified\\.$#"
@@ -10056,52 +11131,12 @@ parameters:
 			path: src/Service/NotificationService.php
 
 		-
-			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Service\\\\ElasticaService\\:\\:generateTermsSearch\\(\\)\\.$#"
-			count: 1
-			path: src/Service/ObjectChoiceCacheService.php
-
-		-
-			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Service\\\\ElasticaService\\:\\:getBoolQuery\\(\\)\\.$#"
-			count: 1
-			path: src/Service/ObjectChoiceCacheService.php
-
-		-
-			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Service\\\\ElasticaService\\:\\:getTermsQuery\\(\\)\\.$#"
-			count: 1
-			path: src/Service/ObjectChoiceCacheService.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:\\$lockTime has no typehint specified\\.$#"
-			count: 1
-			path: src/Service/PublishService.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:\\$client has no typehint specified\\.$#"
-			count: 1
-			path: src/Service/PublishService.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:\\$instanceId has no typehint specified\\.$#"
-			count: 1
-			path: src/Service/PublishService.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:\\$em has no typehint specified\\.$#"
-			count: 1
-			path: src/Service/PublishService.php
-
-		-
 			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:\\$session type has no value type specified in iterable type Symfony\\\\Component\\\\HttpFoundation\\\\Session\\\\Session\\.$#"
 			count: 1
 			path: src/Service/PublishService.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:__construct\\(\\) has parameter \\$instanceId with no typehint specified\\.$#"
-			count: 1
-			path: src/Service/PublishService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\PublishService\\:\\:__construct\\(\\) has parameter \\$lockTime with no typehint specified\\.$#"
 			count: 1
 			path: src/Service/PublishService.php
 
@@ -10161,18 +11196,8 @@ parameters:
 			path: src/Service/PublishService.php
 
 		-
-			message: "#^Parameter \\#1 \\$contentType of method EMS\\\\CoreBundle\\\\Service\\\\ContentTypeService\\:\\:getIndex\\(\\) expects EMS\\\\CoreBundle\\\\Entity\\\\ContentType, EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null given\\.$#"
-			count: 2
-			path: src/Service/PublishService.php
-
-		-
 			message: "#^Cannot call method getName\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 19
-			path: src/Service/PublishService.php
-
-		-
-			message: "#^Cannot call method getHavePipelines\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\ContentType\\|null\\.$#"
-			count: 2
+			count: 17
 			path: src/Service/PublishService.php
 
 		-
@@ -10211,21 +11236,6 @@ parameters:
 			path: src/Service/PublishService.php
 
 		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\Revision\\\\Copy\\\\CopyContext\\:\\:\\$merge type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Service/Revision/Copy/CopyContext.php
-
-		-
-			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\Revision\\\\Copy\\\\CopyContext\\:\\:\\$searchQuery type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Service/Revision/Copy/CopyContext.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\Revision\\\\Copy\\\\CopyContext\\:\\:__construct\\(\\) has parameter \\$searchQuery with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Service/Revision/Copy/CopyContext.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\Revision\\\\Copy\\\\CopyContext\\:\\:getMerge\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Service/Revision/Copy/CopyContext.php
@@ -10249,41 +11259,6 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\SearchFieldOptionService\\:\\:getEntityName\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Service/SearchFieldOptionService.php
-
-		-
-			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Service\\\\ElasticaService\\:\\:getBoolQuery\\(\\)\\.$#"
-			count: 1
-			path: src/Service/SearchService.php
-
-		-
-			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Service\\\\ElasticaService\\:\\:generateTermsSearch\\(\\)\\.$#"
-			count: 1
-			path: src/Service/SearchService.php
-
-		-
-			message: "#^Caught class EMS\\\\CommonBundle\\\\Elasticsearch\\\\Exception\\\\NotSingleResultException not found\\.$#"
-			count: 1
-			path: src/Service/SearchService.php
-
-		-
-			message: "#^Call to method getTotal\\(\\) on an unknown class EMS\\\\CommonBundle\\\\Elasticsearch\\\\Exception\\\\NotSingleResultException\\.$#"
-			count: 1
-			path: src/Service/SearchService.php
-
-		-
-			message: "#^Instantiated class EMS\\\\CommonBundle\\\\Elasticsearch\\\\Exception\\\\NotFoundException not found\\.$#"
-			count: 1
-			path: src/Service/SearchService.php
-
-		-
-			message: "#^Throwing object of an unknown class EMS\\\\CommonBundle\\\\Elasticsearch\\\\Exception\\\\NotFoundException\\.$#"
-			count: 1
-			path: src/Service/SearchService.php
-
-		-
-			message: "#^Throwing object of an unknown class EMS\\\\CommonBundle\\\\Elasticsearch\\\\Exception\\\\NotSingleResultException\\.$#"
-			count: 1
-			path: src/Service/SearchService.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\SortOptionService\\:\\:getRepositoryIdentifier\\(\\) has no return typehint specified\\.$#"
@@ -10357,11 +11332,6 @@ parameters:
 
 		-
 			message: "#^Cannot call method getMigrationgOption\\(\\) on EMS\\\\CoreBundle\\\\Entity\\\\FieldType\\|null\\.$#"
-			count: 1
-			path: src/Service/TransformContentTypeService.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\TransformContentTypeService\\:\\:getScroll\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Service/TransformContentTypeService.php
 
@@ -10517,16 +11487,6 @@ parameters:
 
 		-
 			message: "#^If condition is always true\\.$#"
-			count: 3
-			path: src/Twig/AppExtension.php
-
-		-
-			message: "#^Call to an undefined method EMS\\\\CommonBundle\\\\Service\\\\ElasticaService\\:\\:generateTermsSearch\\(\\)\\.$#"
-			count: 2
-			path: src/Twig/AppExtension.php
-
-		-
-			message: "#^Caught class EMS\\\\CommonBundle\\\\Elasticsearch\\\\Exception\\\\NotSingleResultException not found\\.$#"
 			count: 2
 			path: src/Twig/AppExtension.php
 
@@ -10539,89 +11499,4 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Validator\\\\Constraints\\\\AliasNameValidator\\:\\:validate\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Validator/Constraints/AliasNameValidator.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\ContentTransformer\\\\HtmlStylesRemoverTest\\:\\:assertEqualsInputOutPut\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: tests/ContentTransformer/HtmlStylesRemoverTest.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\ContentTransformer\\\\HtmlStylesRemoverTest\\:\\:assertEqualsInputOutPut\\(\\) has parameter \\$input with no typehint specified\\.$#"
-			count: 1
-			path: tests/ContentTransformer/HtmlStylesRemoverTest.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\ContentTransformer\\\\HtmlStylesRemoverTest\\:\\:assertEqualsInputOutPut\\(\\) has parameter \\$output with no typehint specified\\.$#"
-			count: 1
-			path: tests/ContentTransformer/HtmlStylesRemoverTest.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\ContentTransformer\\\\HtmlStylesRemoverTest\\:\\:testRemoveSimpleInline\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: tests/ContentTransformer/HtmlStylesRemoverTest.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\ContentTransformer\\\\HtmlStylesRemoverTest\\:\\:testRemoveSimpleBlock\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: tests/ContentTransformer/HtmlStylesRemoverTest.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\ContentTransformer\\\\HtmlStylesRemoverTest\\:\\:testInlineNestedInAlertBlock\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: tests/ContentTransformer/HtmlStylesRemoverTest.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\ContentTransformer\\\\HtmlStylesRemoverTest\\:\\:testBlockNestedInReadmoreBlock\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: tests/ContentTransformer/HtmlStylesRemoverTest.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\ContentTransformer\\\\HtmlStylesRemoverTest\\:\\:testSpanToRemoveFollowedByEmOrStrong\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: tests/ContentTransformer/HtmlStylesRemoverTest.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\ContentTransformer\\\\HtmlStylesRemoverTest\\:\\:testSpanToRemoveWithStrongInsideIt\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: tests/ContentTransformer/HtmlStylesRemoverTest.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\ContentTransformer\\\\HtmlStylesRemoverTest\\:\\:testDivToRemoveWithTagsInsideIt\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: tests/ContentTransformer/HtmlStylesRemoverTest.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\ContentTransformer\\\\HtmlStylesRemoverTest\\:\\:testDivToRemoveWithSpanToRemoveInsideItWithOtherTags\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: tests/ContentTransformer/HtmlStylesRemoverTest.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\ContentTransformer\\\\HtmlStylesRemoverTest\\:\\:testDivtoRemoveWithSpanToRemoveInsideItWithOtherTagsBis\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: tests/ContentTransformer/HtmlStylesRemoverTest.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\ContentTransformer\\\\HtmlStylesRemoverTest\\:\\:testSpanToRemoveWithAnotherSpanInsideIt\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: tests/ContentTransformer/HtmlStylesRemoverTest.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\ContentTransformer\\\\HtmlStylesRemoverTest\\:\\:testClassRemovableStyleWithinBulletPoints\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: tests/ContentTransformer/HtmlStylesRemoverTest.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\ContentTransformer\\\\HtmlStylesRemoverTest\\:\\:testClassRemovableStyleWithinBulletPoints2\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: tests/ContentTransformer/HtmlStylesRemoverTest.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\ContentTransformer\\\\HtmlStylesRemoverTest\\:\\:testClassRemovableStyleWithinTable\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: tests/ContentTransformer/HtmlStylesRemoverTest.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\Controller\\\\DefaultControllerTest\\:\\:testIndex\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: tests/Controller/DefaultControllerTest.php
 

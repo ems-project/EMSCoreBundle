@@ -114,6 +114,9 @@ class EnvironmentService
         $em->flush();
     }
 
+    /**
+     * @return Environment[]
+     */
     public function getEnvironments(): array
     {
         if ([] !== $this->environments) {

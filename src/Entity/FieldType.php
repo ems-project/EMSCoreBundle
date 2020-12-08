@@ -735,9 +735,9 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * @param array<mixed> $value
+     * @param mixed $value
      */
-    protected function deserializeProperty(string $name, array $value): void
+    protected function deserializeProperty(string $name, $value): void
     {
         switch ($name) {
             case 'children':

@@ -379,7 +379,7 @@ class ElasticsearchController extends AppController
         }
 
         if (null !== $category && 1 === \count($contentTypes)) {
-            $contentType = $contentTypeService->getByName(\array_pop($contentTypes));
+            $contentType = $contentTypeService->getByName(\array_values($contentTypes)[0]);
             if (false !== $contentType) {
                 $categoryField = $contentType->getCategoryField();
                 if (null !== $categoryField) {

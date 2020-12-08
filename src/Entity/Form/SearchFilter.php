@@ -66,6 +66,7 @@ class SearchFilter implements JsonSerializable
     public function __construct()
     {
         $this->operator = 'query_and';
+        $this->booleanClause = 'must';
     }
 
     public function jsonSerialize()

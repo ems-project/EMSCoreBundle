@@ -698,6 +698,7 @@ class EnvironmentController extends AppController
 
             $names = [];
 
+            $aliasService->build();
             $environments = [];
             $stats = $environmentService->getEnvironmentsStats();
             /* @var  Environment $environment */

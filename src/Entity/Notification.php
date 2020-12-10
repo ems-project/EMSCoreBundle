@@ -194,7 +194,7 @@ class Notification
      *
      * @return Notification
      */
-    public function setTemplate(\EMS\CoreBundle\Entity\Template $template)
+    public function setTemplate(Template $template)
     {
         $this->template = $template;
 

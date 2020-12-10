@@ -159,7 +159,7 @@ class AuthToken
      *
      * @return AuthToken
      */
-    public function setUser(\EMS\CoreBundle\Entity\UserInterface $user)
+    public function setUser(UserInterface $user)
     {
         $this->user = $user;
 

@@ -306,7 +306,7 @@ class View extends JsonDeserializer implements \JsonSerializable
      *
      * @return View
      */
-    public function setContentType(\EMS\CoreBundle\Entity\ContentType $contentType = null)
+    public function setContentType(ContentType $contentType = null)
     {
         $this->contentType = $contentType;
 

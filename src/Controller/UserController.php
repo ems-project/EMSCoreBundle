@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\AuthToken;
 use EMS\CoreBundle\Entity\User;
@@ -25,7 +26,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,6 +34,17 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class UserController extends AppController
 {
+    /**
+     * @var string|null
+     */
+    private $circleObject;
+
+    public function __construct(LoggerInterface $logger, FormRegistryInterface $formRegistry, RequestRuntime $requestRuntime, ?string $circleObject)
+    {
+        parent::__construct($logger, $formRegistry, $requestRuntime);
+        $this->circleObject = $circleObject;
+    }
+
     /**
      * @Route("/user", name="ems.user.index")
      *
@@ -94,7 +106,7 @@ class UserController extends AppController
                 ],
             ]);
 
-        if ($circleObject = $this->container->getParameter('ems_core.circles_object')) {
+        if ($circleObject = $this->circleObject) {
             $form->add('circles', ObjectPickerType::class, [
                 'multiple' => true,
                 'type' => $circleObject,
@@ -172,7 +184,7 @@ class UserController extends AppController
             ])
             ->add('circles', ObjectPickerType::class, [
                 'multiple' => true,
-                'type' => $this->container->getParameter('ems_core.circles_object'),
+                'type' => $this->circleObject,
                 'dynamicLoading' => true,
                 'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
             ])

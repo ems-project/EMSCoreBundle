@@ -6,7 +6,7 @@
 
     <services>
         <defaults autowire="true" autoconfigure="true" public="true"/>
-        <prototype namespace="EMS\CoreBundle\Controller\" resource="../../Controller/*" exclude="../../Controller/{UserController.php,Api/Form/SubmissionController.php,Api/Form/VerificationController.php,AuthTokenController.php,Form/SubmissionController.php,Revision/EditController.php,Revision/JsonMenuNestedController.php}"/>
+        <prototype namespace="EMS\CoreBundle\Controller\" resource="../../Controller/*" exclude="../../Controller/{UserController.php,Api,AuthTokenController.php,Form,Revision/EditController.php,Revision/JsonMenuNestedController.php}"/>
 
         <service id="EMS\CoreBundle\Controller\Api\Form\SubmissionController" public="true">
             <argument type="service" id="ems.form_submission" />

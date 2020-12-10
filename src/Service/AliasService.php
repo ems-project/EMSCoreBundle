@@ -201,7 +201,7 @@ class AliasService
                 if (\is_string($alias) && !isset($this->counterIndexes[$alias])) {
                     $this->counterIndexes[$alias] = 0;
                 }
-                $this->counterIndexes[$alias] += $this->counterIndexes[$index];
+                $this->counterIndexes[$alias] += $this->counterIndexes[$index] ?? 0;
             }
         }
 

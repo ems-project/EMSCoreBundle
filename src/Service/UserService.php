@@ -127,7 +127,7 @@ class UserService
 
     public function getExistingRoles()
     {
-        $roleHierarchy = $this->securityRoles; //securityRolesthis->container->getParameter('security.role_hierarchy.roles');
+        $roleHierarchy = $this->securityRoles;
 
         $out = [];
 

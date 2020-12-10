@@ -14,7 +14,6 @@ use EMS\CoreBundle\Repository\AnalyzerRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\FilterRepository;
 use Monolog\Logger;
-use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -41,9 +40,6 @@ class EnvironmentService
     /** @var AuthorizationCheckerInterface */
     private $authorizationChecker;
 
-    /** @var Container */
-    private $container;
-
     /** @var Logger */
     private $logger;
 
@@ -52,25 +48,27 @@ class EnvironmentService
 
     /** @var bool */
     private $singleTypeIndex;
+    /** @var string */
+    private $instanceId;
 
     public function __construct(
         Registry $doctrine,
         Session $session,
         UserService $userService,
         AuthorizationCheckerInterface $authorizationChecker,
-        Container $container,
         Logger $logger,
         ElasticaService $elasticaService,
-        bool $singleTypeIndex
+        bool $singleTypeIndex,
+        string $instanceId
     ) {
         $this->doctrine = $doctrine;
         $this->session = $session;
         $this->userService = $userService;
         $this->authorizationChecker = $authorizationChecker;
-        $this->container = $container;
         $this->logger = $logger;
         $this->elasticaService = $elasticaService;
         $this->singleTypeIndex = $singleTypeIndex;
+        $this->instanceId = $instanceId;
     }
 
     public function createEnvironment(string $name, $snapshot = false): Environment
@@ -81,7 +79,7 @@ class EnvironmentService
 
         $environment = new Environment();
         $environment->setName($name);
-        $environment->setAlias($this->container->getParameter('ems_core.instance_id').$environment->getName());
+        $environment->setAlias($this->instanceId.$environment->getName());
         $environment->setManaged(true);
         $environment->setSnapshot($snapshot);
 

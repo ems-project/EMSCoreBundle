@@ -5,8 +5,6 @@ namespace EMS\CoreBundle\Service;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CommonBundle\Common\Document;
 use EMS\CommonBundle\Elasticsearch\Document\Document as ElasticsearchDocument;
-use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
-use EMS\CommonBundle\Elasticsearch\Exception\NotSingleResultException;
 use EMS\CommonBundle\Search\Search as CommonSearch;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\ContentType;
@@ -126,15 +124,8 @@ class SearchService
             throw new \RuntimeException('Unexpected null environment');
         }
         $index = $this->contentTypeService->getIndex($contentType, $environment);
-        $search = $this->elasticaService->generateTermsSearch([$index], '_id', [$ouuid], [$contentType->getName()]);
-        try {
-            return $this->elasticaService->singleSearch($search);
-        } catch (NotSingleResultException $e) {
-            if (0 === $e->getTotal()) {
-                throw new NotFoundException();
-            }
-            throw $e;
-        }
+
+        return $this->elasticaService->getDocument($index, $contentType->getName(), $ouuid);
     }
 
     public function get(Environment $environment, ContentType $contentType, string $ouuid): Document

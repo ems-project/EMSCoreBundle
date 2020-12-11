@@ -618,7 +618,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
      *
      * @return FieldType
      */
-    public function setParent(\EMS\CoreBundle\Entity\FieldType $parent = null)
+    public function setParent(FieldType $parent = null)
     {
         $this->parent = $parent;
 
@@ -640,7 +640,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
      *
      * @return FieldType
      */
-    public function addChild(\EMS\CoreBundle\Entity\FieldType $child)
+    public function addChild(FieldType $child)
     {
         $this->children[] = $child;
 
@@ -650,7 +650,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     /**
      * Remove child.
      */
-    public function removeChild(\EMS\CoreBundle\Entity\FieldType $child)
+    public function removeChild(FieldType $child)
     {
         $this->children->removeElement($child);
     }

@@ -165,12 +165,12 @@ interface UserInterface
      *
      * @return UserInterface
      */
-    public function addAuthToken(\EMS\CoreBundle\Entity\AuthToken $authToken);
+    public function addAuthToken(AuthToken $authToken);
 
     /**
      * Remove authToken.
      */
-    public function removeAuthToken(\EMS\CoreBundle\Entity\AuthToken $authToken);
+    public function removeAuthToken(AuthToken $authToken);
 
     /**
      * Get authTokens.

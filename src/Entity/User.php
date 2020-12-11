@@ -424,7 +424,7 @@ class User extends BaseUser implements UserInterface
      *
      * @return User
      */
-    public function addAuthToken(\EMS\CoreBundle\Entity\AuthToken $authToken)
+    public function addAuthToken(AuthToken $authToken)
     {
         $this->authTokens[] = $authToken;
 
@@ -434,7 +434,7 @@ class User extends BaseUser implements UserInterface
     /**
      * Remove authToken.
      */
-    public function removeAuthToken(\EMS\CoreBundle\Entity\AuthToken $authToken)
+    public function removeAuthToken(AuthToken $authToken)
     {
         $this->authTokens->removeElement($authToken);
     }

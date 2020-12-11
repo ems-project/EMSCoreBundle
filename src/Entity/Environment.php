@@ -355,7 +355,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
      *
      * @return Environment
      */
-    public function addRevision(\EMS\CoreBundle\Entity\Revision $revision)
+    public function addRevision(Revision $revision)
     {
         $this->revisions[] = $revision;
 
@@ -365,7 +365,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     /**
      * Remove revision.
      */
-    public function removeRevision(\EMS\CoreBundle\Entity\Revision $revision)
+    public function removeRevision(Revision $revision)
     {
         $this->revisions->removeElement($revision);
     }
@@ -571,7 +571,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
      *
      * @return Environment
      */
-    public function addContentTypesHavingThisAsDefault(\EMS\CoreBundle\Entity\ContentType $contentTypesHavingThisAsDefault)
+    public function addContentTypesHavingThisAsDefault(ContentType $contentTypesHavingThisAsDefault)
     {
         $this->contentTypesHavingThisAsDefault[] = $contentTypesHavingThisAsDefault;
 
@@ -581,7 +581,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     /**
      * Remove contentTypesHavingThisAsDefault.
      */
-    public function removeContentTypesHavingThisAsDefault(\EMS\CoreBundle\Entity\ContentType $contentTypesHavingThisAsDefault)
+    public function removeContentTypesHavingThisAsDefault(ContentType $contentTypesHavingThisAsDefault)
     {
         $this->contentTypesHavingThisAsDefault->removeElement($contentTypesHavingThisAsDefault);
     }

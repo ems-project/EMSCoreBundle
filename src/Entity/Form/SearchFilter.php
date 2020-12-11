@@ -279,7 +279,7 @@ class SearchFilter implements JsonSerializable
      *
      * @return SearchFilter
      */
-    public function setSearch(\EMS\CoreBundle\Entity\Form\Search $search = null)
+    public function setSearch(Search $search = null)
     {
         $this->search = $search;
 

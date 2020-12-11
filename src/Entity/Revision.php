@@ -749,7 +749,7 @@ class Revision
      *
      * @return Revision
      */
-    public function setDataField(\EMS\CoreBundle\Entity\DataField $dataField = null)
+    public function setDataField(DataField $dataField = null)
     {
         $this->dataField = $dataField;
 
@@ -771,7 +771,7 @@ class Revision
      *
      * @return Revision
      */
-    public function addEnvironment(\EMS\CoreBundle\Entity\Environment $environment)
+    public function addEnvironment(Environment $environment)
     {
         $this->environments[] = $environment;
 
@@ -781,7 +781,7 @@ class Revision
     /**
      * Remove environment.
      */
-    public function removeEnvironment(\EMS\CoreBundle\Entity\Environment $environment)
+    public function removeEnvironment(Environment $environment)
     {
         $this->environments->removeElement($environment);
     }
@@ -969,7 +969,7 @@ class Revision
      *
      * @return Revision
      */
-    public function addNotification(\EMS\CoreBundle\Entity\Notification $notification)
+    public function addNotification(Notification $notification)
     {
         $this->notifications[] = $notification;
 
@@ -979,7 +979,7 @@ class Revision
     /**
      * Remove notification.
      */
-    public function removeNotification(\EMS\CoreBundle\Entity\Notification $notification)
+    public function removeNotification(Notification $notification)
     {
         $this->notifications->removeElement($notification);
     }

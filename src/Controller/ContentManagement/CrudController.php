@@ -39,8 +39,8 @@ class CrudController extends AppController
      *
      * @return Response
      *
-     * @Route("/api/data/{name}/create/{ouuid}", defaults={"ouuid": null, "_format": "json"}, methods={"POST"})
-     * @Route("/api/data/{name}/draft/{ouuid}", defaults={"ouuid": null, "_format": "json"}, methods={"POST"})
+     * @Route("/{interface}/data/{name}/create/{ouuid}", defaults={"ouuid": null, "_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"POST"})
+     * @Route("/{interface}/data/{name}/draft/{ouuid}", defaults={"ouuid": null, "_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"POST"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      */
     public function createAction($ouuid, ContentType $contentType, Request $request, DataService $dataService)
@@ -86,8 +86,8 @@ class CrudController extends AppController
      *
      * @return Response
      *
-     * @Route("/api/data/{name}/{ouuid}", defaults={"ouuid": null, "_format": "json"}, methods={"GET"})
-     * @Route("/api/data/{name}/get/{ouuid}", defaults={"ouuid": null, "_format": "json"}, methods={"GET"})
+     * @Route("/{interface}/data/{name}/{ouuid}", defaults={"ouuid": null, "_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"GET"})
+     * @Route("/{interface}/data/{name}/get/{ouuid}", defaults={"ouuid": null, "_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"GET"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      */
     public function getAction($ouuid, ContentType $contentType, DataService $dataService)
@@ -128,7 +128,7 @@ class CrudController extends AppController
      * @throws DataStateException
      * @throws Throwable
      *
-     * @Route("/api/data/{name}/finalize/{id}", defaults={"_format": "json"}, methods={"POST"})
+     * @Route("/{interface}/data/{name}/finalize/{id}", defaults={"_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"POST"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      */
     public function finalizeAction($id, ContentType $contentType, DataService $dataService)
@@ -166,7 +166,7 @@ class CrudController extends AppController
      *
      * @return Response
      *
-     * @Route("/api/data/{name}/discard/{id}", defaults={"_format": "json"}, methods={"POST"})
+     * @Route("/{interface}/data/{name}/discard/{id}", defaults={"_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"POST"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      */
     public function discardAction($id, ContentType $contentType, DataService $dataService)
@@ -210,7 +210,7 @@ class CrudController extends AppController
      *
      * @return Response
      *
-     * @Route("/api/data/{name}/delete/{ouuid}", defaults={"_format": "json"}, methods={"POST"})
+     * @Route("/{interface}/data/{name}/delete/{ouuid}", defaults={"_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"POST"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      */
     public function deleteAction($ouuid, ContentType $contentType, DataService $dataService)
@@ -252,7 +252,7 @@ class CrudController extends AppController
      *
      * @return Response
      *
-     * @Route("/api/data/{name}/replace/{ouuid}", defaults={"_format": "json"}, methods={"POST"})
+     * @Route("/{interface}/data/{name}/replace/{ouuid}", defaults={"_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"POST"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      */
     public function replaceAction($ouuid, ContentType $contentType, Request $request, DataService $dataService)
@@ -303,7 +303,7 @@ class CrudController extends AppController
      *
      * @return Response
      *
-     * @Route("/api/data/{name}/merge/{ouuid}", defaults={"_format": "json"}, methods={"POST"})
+     * @Route("/{interface}/data/{name}/merge/{ouuid}", defaults={"_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"POST"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      */
     public function mergeAction($ouuid, ContentType $contentType, Request $request, DataService $dataService)
@@ -352,7 +352,7 @@ class CrudController extends AppController
     /**
      * @return Response
      *
-     * @Route("/api/test", defaults={"_format": "json"}, name="api.test", methods={"GET"})
+     * @Route("/{interface}/test", defaults={"_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, name="api.test", methods={"GET"})
      */
     public function testAction()
     {
@@ -364,7 +364,7 @@ class CrudController extends AppController
     /**
      * @return Response
      *
-     * @Route("/api/meta/{name}", defaults={"_format": "json"}, methods={"GET"})
+     * @Route("/{interface}/meta/{name}", defaults={"_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"GET"})
      * @ParamConverter("contentType", options={"mapping": {"name": "name", "deleted": 0, "active": 1}})
      */
     public function getContentTypeInfo(ContentType $contentType)
@@ -376,7 +376,7 @@ class CrudController extends AppController
     }
 
     /**
-     * @Route("/api/user-profile", defaults={"_format": "json"}, methods={"GET"})
+     * @Route("/{interface}/user-profile", defaults={"_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"GET"})
      */
     public function getUserProfile(): JsonResponse
     {
@@ -392,7 +392,7 @@ class CrudController extends AppController
     }
 
     /**
-     * @Route("/api/user-profiles", defaults={"_format": "json"}, methods={"GET"})
+     * @Route("/{interface}/user-profiles", defaults={"_format": "json", "interface": "api"}, requirements={"interface": "api|json"}, methods={"GET"})
      * @IsGranted({"ROLE_USER_READ", "ROLE_USER_MANAGEMENT", "ROLE_ADMIN"})
      */
     public function getUserProfiles(): JsonResponse

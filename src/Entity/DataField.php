@@ -681,7 +681,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate
      *
      * @return DataField
      */
-    public function setFieldType(\EMS\CoreBundle\Entity\FieldType $fieldType = null)
+    public function setFieldType(FieldType $fieldType = null)
     {
         $this->fieldType = $fieldType;
 

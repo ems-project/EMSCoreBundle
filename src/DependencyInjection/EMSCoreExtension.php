@@ -26,8 +26,10 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('services.yml');
+        $yamlLoader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $xmlLoader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $yamlLoader->load('services.yml');
+        $xmlLoader->load('controllers.xml');
 
         $container->setParameter('ems_core.from_email', $config['from_email']);
         $container->setParameter('ems_core.instance_id', $config['instance_id']);
@@ -63,7 +65,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.health_check_allow_origin', $config['health_check_allow_origin']);
         $container->setParameter('ems_core.tika_download_url', $config['tika_download_url']);
 
-        $this->loadLdap($container, $loader, $config['ldap'] ?? []);
+        $this->loadLdap($container, $yamlLoader, $config['ldap'] ?? []);
     }
 
     public static function getCoreVersion(string $rootDir): string

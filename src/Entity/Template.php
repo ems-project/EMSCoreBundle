@@ -701,7 +701,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
      *
      * @return Template
      */
-    public function setContentType(\EMS\CoreBundle\Entity\ContentType $contentType = null)
+    public function setContentType(ContentType $contentType = null)
     {
         $this->contentType = $contentType;
 
@@ -740,7 +740,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
      *
      * @return Template
      */
-    public function addEnvironment(\EMS\CoreBundle\Entity\Environment $environment)
+    public function addEnvironment(Environment $environment)
     {
         $this->environments[] = $environment;
 
@@ -750,7 +750,7 @@ class Template extends JsonDeserializer implements \JsonSerializable
     /**
      * Remove environment.
      */
-    public function removeEnvironment(\EMS\CoreBundle\Entity\Environment $environment)
+    public function removeEnvironment(Environment $environment)
     {
         $this->environments->removeElement($environment);
     }

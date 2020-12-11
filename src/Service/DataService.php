@@ -2,8 +2,6 @@
 
 namespace EMS\CoreBundle\Service;
 
-use DateInterval;
-use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
@@ -204,7 +202,7 @@ class DataService
         if (empty($lockerUsername)) {
             $lockerUsername = $this->tokenStorage->getToken()->getUsername();
         }
-        if ($revision->getLockBy() === $lockerUsername && $revision->getLockUntil() > (new DateTime())) {
+        if ($revision->getLockBy() === $lockerUsername && $revision->getLockUntil() > (new \DateTime())) {
             $this->revRepository->unlockRevision($revision->getId());
         }
     }
@@ -245,7 +243,7 @@ class DataService
         } else {
             $lockerUsername = $username;
         }
-        $now = new DateTime();
+        $now = new \DateTime();
         if ($revision->getLockBy() != $lockerUsername && $now < $revision->getLockUntil()) {
             throw new LockedException($revision);
         }
@@ -255,14 +253,14 @@ class DataService
         }
         //TODO: test circles
 
-        $this->revRepository->lockRevision($revision->getId(), $lockerUsername, new DateTime($this->lockTime));
+        $this->revRepository->lockRevision($revision->getId(), $lockerUsername, new \DateTime($this->lockTime));
 
         $revision->setLockBy($lockerUsername);
         if ($username) {
             //lock by a console script
-            $revision->setLockUntil(new DateTime('+30 seconds'));
+            $revision->setLockUntil(new \DateTime('+30 seconds'));
         } else {
-            $revision->setLockUntil(new DateTime($this->lockTime));
+            $revision->setLockUntil(new \DateTime($this->lockTime));
         }
 
         $em->flush();
@@ -614,7 +612,7 @@ class DataService
         }
         if (!empty($dataField->getFieldType()) && !empty($dataField->getFieldType()->getType())) {
             $dataFieldType = $this->formRegistry->getType($dataField->getFieldType()->getType())->getInnerType();
-            if ($dataFieldType instanceof  DataFieldType) {
+            if ($dataFieldType instanceof DataFieldType) {
                 $dataFieldType->generateInput($dataField);
             } elseif (!DataService::isInternalField($dataField->getFieldType()->getName())) {
                 $this->logger->warning('service.data.not_a_data_field', [
@@ -634,8 +632,8 @@ class DataService
      */
     public function createData($ouuid, array $rawdata, ContentType $contentType, $byARealUser = true)
     {
-        $now = new DateTime();
-        $until = $now->add(new DateInterval($byARealUser ? 'PT5M' : 'PT1M')); //+5 minutes
+        $now = new \DateTime();
+        $until = $now->add(new \DateInterval($byARealUser ? 'PT5M' : 'PT1M')); //+5 minutes
         $newRevision = new Revision();
         $newRevision->setContentType($contentType);
         $newRevision->setOuuid($ouuid);
@@ -776,7 +774,7 @@ class DataService
             throw new \RuntimeException('Unexpected null content type');
         }
 
-        if ($revision->getModified() > new DateTime('-10 seconds')) {
+        if ($revision->getModified() > new \DateTime('-10 seconds')) {
             return;
         }
 
@@ -1184,7 +1182,7 @@ class DataService
             }
         }
 
-        $now = new DateTime('now');
+        $now = new \DateTime('now');
         $revision->setContentType($contentType);
         $revision->setDraft(true);
         $revision->setOuuid($ouuid);
@@ -1192,7 +1190,7 @@ class DataService
         $revision->setStartTime($now);
         $revision->setEndTime(null);
         $revision->setLockBy($this->userService->getCurrentUser()->getUsername());
-        $revision->setLockUntil(new DateTime($this->lockTime));
+        $revision->setLockUntil(new \DateTime($this->lockTime));
 
         if ($contentType->getCirclesField()) {
             if (isset($revision->getRawData()[$contentType->getCirclesField()])) {
@@ -1326,7 +1324,7 @@ class DataService
         $this->lockRevision($revision, null, false, $username);
 
         if (!$revision->getDraft()) {
-            $now = new DateTime();
+            $now = new \DateTime();
 
             if ($fromRev) {
                 $newDraft = new Revision($fromRev);
@@ -1726,8 +1724,8 @@ class DataService
      */
     public function getEmptyRevision(ContentType $contentType, $user)
     {
-        $now = new DateTime();
-        $until = $now->add(new DateInterval('PT5M')); //+5 minutes
+        $now = new \DateTime();
+        $until = $now->add(new \DateInterval('PT5M')); //+5 minutes
         $newRevision = new Revision();
         $newRevision->setContentType($contentType);
         $newRevision->addEnvironment($contentType->getEnvironment());
@@ -1879,7 +1877,7 @@ class DataService
             $em = $this->doctrine->getManager();
             $this->lockRevision($revision);
 
-            $now = new DateTime();
+            $now = new \DateTime();
 
             $newDraft = new Revision($revision);
 

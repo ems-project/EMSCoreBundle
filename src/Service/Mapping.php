@@ -140,25 +140,12 @@ class Mapping
 
     public function getTypeName(string $contentTypeName): string
     {
-        $version = $this->elasticaService->getVersion();
-        if (\version_compare($version, '7.0') >= 0) {
-            return '_doc';
-        }
-        if (\version_compare($version, '6.0') >= 0) {
-            return 'doc';
-        }
-
-        return $contentTypeName;
+        return $this->elasticaService->getTypeName($contentTypeName);
     }
 
     public function getTypePath(string $contentTypeName): string
     {
-        $version = $this->elasticaService->getVersion();
-        if (\version_compare($version, '7.0') >= 0) {
-            return '.';
-        }
-
-        return $this->getTypeName($contentTypeName);
+        return $this->elasticaService->getTypePath($contentTypeName);
     }
 
     public function dataFieldToArray(DataField $dataField)

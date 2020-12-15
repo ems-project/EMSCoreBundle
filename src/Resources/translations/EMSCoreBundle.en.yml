@@ -367,6 +367,8 @@ table:
     empty: 'Nothing to show here'
 channel:
   actions:
+    delete_confirm: 'Delete the channel "%label%"?'
+    delete: 'Delete'
     edit: 'Edit'
   menu: 'Channels'
   add:

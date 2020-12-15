@@ -33,4 +33,10 @@ final class ChannelRepository extends ServiceEntityRepository
         $this->getEntityManager()->persist($channel);
         $this->getEntityManager()->flush();
     }
+
+    public function delete(Channel $channel): void
+    {
+        $this->getEntityManager()->remove($channel);
+        $this->getEntityManager()->flush();
+    }
 }

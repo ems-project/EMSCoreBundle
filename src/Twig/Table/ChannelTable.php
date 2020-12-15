@@ -62,6 +62,7 @@ final class ChannelTable implements TableInterface
     {
         return [
             TableAction::getAction('ems_core_channel_edit', 'channel', 'channel.actions.edit', 'pencil'),
+            TableAction::postAction('ems_core_channel_delete', 'channel', 'channel.actions.delete', 'trash', 'channel.actions.delete_confirm'),
         ];
     }
 }

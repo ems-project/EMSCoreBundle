@@ -62,4 +62,11 @@ final class ChannelController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+    public function delete(Channel $channel): Response
+    {
+        $this->channelService->delete($channel);
+
+        return $this->redirectToRoute('ems_core_channel_index');
+    }
 }

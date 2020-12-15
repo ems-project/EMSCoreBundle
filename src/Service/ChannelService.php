@@ -34,4 +34,9 @@ final class ChannelService
         }
         $this->channelRepository->create($channel);
     }
+
+    public function delete(Channel $channel): void
+    {
+        $this->channelRepository->delete($channel);
+    }
 }

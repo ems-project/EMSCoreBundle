@@ -1,0 +1,31 @@
+{% trans_default_domain 'EMSCoreBundle' %}
+
+<div class="row">
+	<div class="col-md-12">
+		<div class="box box-primary">
+			{{ form_start(form) }}
+			<div class="box-header with-border">
+				<h3 class="box-title">{{ label|trans }}</h3>
+			</div>
+
+			<div class="box-body">
+				<div class="row row-no-gutters">
+					<div class="col-md-4">
+						{{ form_row(form.name) }}
+					</div>
+				</div>
+				<div class="row row-no-gutters">
+					<div class="col-md-4">
+						{{ form_row(form.slug) }}
+					</div>
+				</div>
+			</div>
+			<div class="box-footer">
+				{{ form_widget(form.save, {
+					'label': save_action_key
+				}) }}
+			</div>
+            {{ form_end(form) }}
+		</div>
+	</div>
+</div>

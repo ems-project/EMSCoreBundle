@@ -9,5 +9,12 @@ interface TableInterface extends \Countable, \IteratorAggregate
 {
     public function getTitleTransKey(): string;
 
+    public function getAddTransKey(): string;
+
     public function isSortable(): bool;
+
+    /**
+     * @return iterable<TableColumn>
+     */
+    public function getColumns(): iterable;
 }

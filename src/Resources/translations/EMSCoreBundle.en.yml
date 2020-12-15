@@ -361,9 +361,18 @@ data.edit_revision.save_draft: Save draft
 
 table:
   index:
+    column:
+      actions: 'Actions'
+      loop_count: '#'
     empty: 'Nothing to show here'
 channel:
-  table:
+  menu: 'Channels'
+  add:
+    title: 'Add a channel'
+    save: 'Create'
+  index:
+    column:
+      name: 'Name'
     title: 'List of channels'
 not-applicable: 'N/A'
 views:
@@ -459,6 +468,10 @@ contenttype:
   action:
     update_from_json: 'Update from JSON'
 form:
+  form:
+    channel:
+      slug: 'URL''s identifier (url''s slug)'
+      name: 'Channel''s name'
   contenttype:
     json_update:
       deleteExitingTemplates: 'Delete existing templates'

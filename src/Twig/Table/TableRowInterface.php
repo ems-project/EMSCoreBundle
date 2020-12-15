@@ -6,4 +6,5 @@ namespace EMS\CoreBundle\Twig\Table;
 
 interface TableRowInterface
 {
+    public function getData(): object;
 }

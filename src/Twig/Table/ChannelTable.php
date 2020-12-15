@@ -23,7 +23,12 @@ final class ChannelTable implements TableInterface
 
     public function getTitleTransKey(): string
     {
-        return 'channel.table.title';
+        return 'channel.index.title';
+    }
+
+    public function getAddTransKey(): string
+    {
+        return 'channel.add.title';
     }
 
     public function isSortable(): bool
@@ -44,5 +49,12 @@ final class ChannelTable implements TableInterface
     public function count(): int
     {
         return \count($this->channels);
+    }
+
+    public function getColumns(): iterable
+    {
+        return [
+            new TableColumn('channel.index.column.name', 'name'),
+        ];
     }
 }

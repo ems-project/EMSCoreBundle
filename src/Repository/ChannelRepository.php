@@ -22,4 +22,15 @@ final class ChannelRepository extends ServiceEntityRepository
     {
         return $this->findBy([], ['orderKey' => 'ASC']);
     }
+
+    public function counter(): int
+    {
+        return parent::count([]);
+    }
+
+    public function create(Channel $channel): void
+    {
+        $this->getEntityManager()->persist($channel);
+        $this->getEntityManager()->flush();
+    }
 }

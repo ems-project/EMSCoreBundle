@@ -9,6 +9,11 @@
 <div class="row">
     <div class="col-md-12">
         <div class="box ">
+            <div class="box-header with-border">
+                <div class="btn-group  pull-right">
+                    <a class="btn btn-xs btn-primary" href="{{ path('ems_core_channel_add') }}"><i class="fa fa-plus"></i> {{ table.addTransKey|trans }}</a>
+                </div>
+            </div>
             <div class="box-body with-border">
                 <div class="table-responsive">
                     <table class="table table-condensed table-striped" data-datatable="{{ {
@@ -17,22 +22,22 @@
                         <thead>
                         <tr role="row">
                             <th class="nowrap text-center">{{ 'table.index.column.loop_count'|trans }}</th>
-                            <th class="nowrap">{{ 'table.index.column.action'|trans }}</th>
+                            {% for column in table.columns %}
+                                <th class="nowrap">{{ column.titleKey|trans }}</th>
+                            {% endfor %}
+                            <th class="nowrap">{{ 'table.index.column.actions'|trans }}</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>A</td>
-                            <td>B</td>
-                        </tr>
-                        <tr>
-                            <td>A</td>
-                            <td>B</td>
-                        </tr>
-                        <tr>
-                            <td>A</td>
-                            <td>B</td>
-                        </tr>
+                            {% for line in table %}
+                                <tr>
+                                    <td class="text-center">{{ loop.index }}</td>
+                                    {% for column in table.columns %}
+                                        <th class="nowrap">{{ attribute(line.data, column.attribute) }}</th>
+                                    {% endfor %}
+                                    <td>B</td>
+                                </tr>
+                            {%  endfor %}
                         </tbody>
                     </table>
                 </div>

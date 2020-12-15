@@ -99,7 +99,7 @@ final class Channel
         $this->modified = new \DateTime();
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -109,7 +109,7 @@ final class Channel
         $this->name = $name;
     }
 
-    public function getSlug(): string
+    public function getSlug(): ?string
     {
         return $this->slug;
     }

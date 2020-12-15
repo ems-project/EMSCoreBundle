@@ -17,4 +17,12 @@ final class ChannelRow implements TableRowInterface
     {
         $this->channel = $channel;
     }
+
+    /**
+     * @return Channel
+     */
+    public function getData(): object
+    {
+        return $this->channel;
+    }
 }

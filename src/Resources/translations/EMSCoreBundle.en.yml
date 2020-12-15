@@ -379,6 +379,7 @@ channel:
     save: 'Save'
   index:
     column:
+      slug: 'URL''s slug'
       name: 'Name'
     title: 'List of channels'
 not-applicable: 'N/A'

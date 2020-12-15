@@ -55,6 +55,7 @@ final class ChannelTable implements TableInterface
     {
         return [
             new TableColumn('channel.index.column.name', 'name'),
+            new TableColumn('channel.index.column.slug', 'slug'),
         ];
     }
 

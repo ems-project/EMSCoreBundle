@@ -2,12 +2,12 @@
 
 namespace EMS\CoreBundle\Twig\Table;
 
-interface TableInterface
+/**
+ * @extends \IteratorAggregate<string, TableRowInterface>
+ */
+interface TableInterface extends \Countable, \IteratorAggregate
 {
     public function getTitleTransKey(): string;
 
-    public function getTotal(): int;
-
     public function isSortable(): bool;
-
 }

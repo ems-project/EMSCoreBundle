@@ -26,13 +26,23 @@ final class ChannelTable implements TableInterface
         return 'channel.table.title';
     }
 
-    public function getTotal(): int
-    {
-        return \count($this->channels);
-    }
-
     public function isSortable(): bool
     {
         return true;
+    }
+
+    /**
+     * @return \IteratorAggregate<string, ChannelRow>
+     */
+    public function getIterator(): iterable
+    {
+        foreach ($this->channels as $channel) {
+            yield $channel->getId() => new ChannelRow($channel);
+        }
+    }
+
+    public function count(): int
+    {
+        return \count($this->channels);
     }
 }

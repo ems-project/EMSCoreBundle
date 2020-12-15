@@ -359,6 +359,12 @@ view.macros.data-field-type.collection_added_items: '{1} One %singular% has been
 view.macros.data-field-type.collection_removed_items: '{1} One %singular% has been removed|]1,Inf[ %count% %plural% have been removed'
 data.edit_revision.save_draft: Save draft
 
+table:
+  index:
+    empty: 'Nothing to show here'
+channel:
+  table:
+    title: 'List of channels'
 not-applicable: 'N/A'
 views:
   elasticsearch:

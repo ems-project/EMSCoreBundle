@@ -28,6 +28,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
 
         $yamlLoader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $xmlLoader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $xmlLoader->load('repositories.xml');
         $yamlLoader->load('services.yml');
         $xmlLoader->load('controllers.xml');
 

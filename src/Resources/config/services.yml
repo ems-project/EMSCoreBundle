@@ -535,6 +535,10 @@ services:
     ems.service.document:
         class: EMS\CoreBundle\Service\DocumentService
         arguments: ['@doctrine', '@ems.service.data', '@form.factory', '@ems.elasticsearch.bulker', '%ems_core.instance_id%']
+    EMS\CoreBundle\Service\ChannelService: '@ems.service.channel'
+    ems.service.channel:
+        class: EMS\CoreBundle\Service\ChannelService
+        arguments: ['@ems.repository.channel']
     ems.security.authenticator:
         class: EMS\CoreBundle\Security\Authenticator
         arguments: [ '@security.authentication.manager', '@doctrine', '@ems.service.user']

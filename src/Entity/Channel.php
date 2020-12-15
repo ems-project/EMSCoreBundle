@@ -14,7 +14,7 @@ use Ramsey\Uuid\UuidInterface;
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks()
  */
-class Channel
+final class Channel
 {
     /**
      * @var UuidInterface
@@ -52,7 +52,7 @@ class Channel
      *
      * @ORM\Column(name="public", type="boolean", options={"default" : 0})
      */
-    protected $public;
+    private $public;
 
     /**
      * @var string
@@ -66,7 +66,14 @@ class Channel
      *
      * @ORM\Column(name="options", type="json", nullable=true)
      */
-    protected $options;
+    private $options;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="order_key", type="integer")
+     */
+    private $orderKey;
 
     public function __construct()
     {
@@ -146,5 +153,15 @@ class Channel
     public function setOptions(array $options): void
     {
         $this->options = $options;
+    }
+
+    public function getOrderKey(): int
+    {
+        return $this->orderKey;
+    }
+
+    public function setOrderKey(int $orderKey): void
+    {
+        $this->orderKey = $orderKey;
     }
 }

@@ -185,6 +185,14 @@ import EmsListeners from "./EmsListeners";
         });
     }
 
+    function initDatatable() {
+        $('[data-datatable]').each(function(){
+            const table = $(this);
+            const config = table.data('datatable');
+            table.DataTable();
+        });
+    }
+
     function initAjaxFormSave() {
         $('button[data-ajax-save-url]').each(function(){
             const button = $(this);
@@ -243,6 +251,7 @@ import EmsListeners from "./EmsListeners";
         initCodeEditorThemeAngLanguage();
         autoOpenModal(queryString());
         startPendingJob();
+        initDatatable();
         initAjaxFormSave();
 
         //cron to update the cluster status

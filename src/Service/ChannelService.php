@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service;
 
+use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Entity\Channel;
 use EMS\CoreBundle\Repository\ChannelRepository;
 
@@ -32,6 +33,16 @@ final class ChannelService
         if (0 === $channel->getOrderKey()) {
             $channel->setOrderKey($this->channelRepository->counter() + 1);
         }
+        $encoder = new Encoder();
+        $slug = $channel->getSlug();
+        if (null === $slug) {
+            throw new \RuntimeException('Unexpected null slug');
+        }
+        $webalized = $encoder->webalize($slug);
+        if (null === $webalized) {
+            throw new \RuntimeException('Unexpected null webalized slug');
+        }
+        $channel->setSlug($webalized);
         $this->channelRepository->create($channel);
     }
 

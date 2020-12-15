@@ -3,6 +3,7 @@ import jquery from 'jquery';
 import ace from 'ace-builds/src-noconflict/ace';
 require('icheck');
 import JsonMenuEditor from './JsonMenuEditor';
+import Table from './table';
 import FileUploader from "./FileUploader";
 
 
@@ -27,6 +28,7 @@ export default class EmsListeners {
     addListeners() {
         this.addCheckBoxListeners();
         this.addJsonMenuEditorListeners();
+        this.addTableListeners();
         this.addSelect2Listeners();
         this.addCollapsibleCollectionListeners();
         this.addSortableListListeners();
@@ -585,6 +587,14 @@ export default class EmsListeners {
         jquery(this.target).find(".select2").select2({
             allowClear: true,
             escapeMarkup: function (markup) { return markup; }
+        });
+    }
+
+    addTableListeners() {
+        const table = new Table();
+
+        jquery(this.target).find(".core-data-table").each(function() {
+            table.dataTable(this);
         });
     }
 

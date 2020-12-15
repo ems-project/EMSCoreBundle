@@ -1,0 +1,16 @@
+{% block table %}
+{# @var table EMS\CoreBundle\Core\Table\TableInterface #}
+<div class="box">
+    <div class="box-body">
+        <table id="{{ table.name }}" class="core-data-table table table-striped table-bordered" style="width:100%"
+                data-url="{{ path('ems.table.data', {'name': table.name  }) }}">
+            <thead>
+                <tr>
+                    {% for column in table.columns %}<th>{{ column }}</th>{% endfor %}
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

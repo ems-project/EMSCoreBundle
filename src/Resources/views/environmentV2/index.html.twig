@@ -1,0 +1,19 @@
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}{{ 'view.environment.index.title'|trans }}{% endblock %}
+{% block pagetitle %}{{ 'view.environment.index.pagetitle'|trans }}{% endblock %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li>
+            <i class="fa fa-database"></i> {{ 'view.environment.index.environment_breadcrumb'|trans }}
+        </li>
+        <li>
+            {{ 'view.environment.index.index_breadcrumb'|trans }}
+        </li>
+    </ol>
+{% endblock %}
+
+{% block body %}
+    {{ emsco_table(unreferencedAliasesTable) }}
+{% endblock %}

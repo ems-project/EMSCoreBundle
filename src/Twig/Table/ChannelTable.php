@@ -57,4 +57,11 @@ final class ChannelTable implements TableInterface
             new TableColumn('channel.index.column.name', 'name'),
         ];
     }
+
+    public function getActions(): iterable
+    {
+        return [
+            TableAction::getAction('ems_core_channel_edit', 'channel', 'channel.actions.edit', 'pencil'),
+        ];
+    }
 }

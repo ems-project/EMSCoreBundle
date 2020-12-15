@@ -9,7 +9,7 @@
 			{% endif  %}
 		{% endif %}
 		{% if label is defined %}
-			{{ label }}
+			{{ label|trans }}
 		{% elseif rawlabel is defined %}
 			{{ rawlabel|raw }}
 		{% endif %} 

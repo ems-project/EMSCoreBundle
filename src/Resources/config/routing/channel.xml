@@ -10,5 +10,8 @@
     <route id="ems_core_channel_add" path="/add" methods="GET POST">
         <default key="_controller">EMS\CoreBundle\Controller\ChannelController:add</default>
     </route>
+    <route id="ems_core_channel_edit" path="/{channel}" methods="GET POST">
+        <default key="_controller">EMS\CoreBundle\Controller\ChannelController:edit</default>
+    </route>
 
 </routes>

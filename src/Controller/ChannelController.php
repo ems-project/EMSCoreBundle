@@ -43,16 +43,22 @@ final class ChannelController extends AbstractController
     public function add(Request $request): Response
     {
         $channel = new Channel();
+
+        return $this->edit($request, $channel, '@EMSCore/channel/add.html.twig');
+    }
+
+    public function edit(Request $request, Channel $channel, string $view = '@EMSCore/channel/edit.html.twig'): Response
+    {
         $form = $this->createForm(ChannelType::class, $channel);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->channelService->create($channel);
+            $this->channelService->update($channel);
 
             return $this->redirectToRoute('ems_core_channel_index');
         }
 
-        return $this->render('@EMSCore/channel/add.html.twig', [
+        return $this->render($view, [
             'form' => $form->createView(),
         ]);
     }

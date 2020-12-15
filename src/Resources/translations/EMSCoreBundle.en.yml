@@ -366,10 +366,15 @@ table:
       loop_count: '#'
     empty: 'Nothing to show here'
 channel:
+  actions:
+    edit: 'Edit'
   menu: 'Channels'
   add:
     title: 'Add a channel'
     save: 'Create'
+  edit:
+    title: 'Edit a channel'
+    save: 'Save'
   index:
     column:
       name: 'Name'

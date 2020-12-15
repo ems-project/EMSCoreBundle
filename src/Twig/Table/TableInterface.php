@@ -17,4 +17,9 @@ interface TableInterface extends \Countable, \IteratorAggregate
      * @return iterable<TableColumn>
      */
     public function getColumns(): iterable;
+
+    /**
+     * @return iterable<TableAction>
+     */
+    public function getActions(): iterable;
 }

@@ -27,9 +27,11 @@ final class ChannelService
         return $this->channelRepository->getAll();
     }
 
-    public function create(Channel $channel): void
+    public function update(Channel $channel): void
     {
-        $channel->setOrderKey($this->channelRepository->counter() + 1);
+        if (0 === $channel->getOrderKey()) {
+            $channel->setOrderKey($this->channelRepository->counter() + 1);
+        }
         $this->channelRepository->create($channel);
     }
 }

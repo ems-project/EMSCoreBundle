@@ -157,7 +157,7 @@ final class Channel
 
     public function getOrderKey(): int
     {
-        return $this->orderKey;
+        return $this->orderKey ?? 0;
     }
 
     public function setOrderKey(int $orderKey): void

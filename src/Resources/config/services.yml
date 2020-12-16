@@ -538,7 +538,7 @@ services:
     EMS\CoreBundle\Service\ChannelService: '@ems.service.channel'
     ems.service.channel:
         class: EMS\CoreBundle\Service\ChannelService
-        arguments: ['@ems.repository.channel']
+        arguments: ['@ems.repository.channel', '@logger']
     ems.security.authenticator:
         class: EMS\CoreBundle\Security\Authenticator
         arguments: [ '@security.authentication.manager', '@doctrine', '@ems.service.user']

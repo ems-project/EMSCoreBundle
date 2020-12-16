@@ -6,10 +6,12 @@ namespace EMS\CoreBundle\Controller;
 
 use EMS\CoreBundle\Entity\Channel;
 use EMS\CoreBundle\Form\Form\ChannelType;
+use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Service\ChannelService;
 use EMS\CoreBundle\Twig\Table\ChannelTable;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -30,13 +32,26 @@ final class ChannelController extends AbstractController
         $this->channelService = $channelService;
     }
 
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $channels = $this->channelService->getAll();
         $table = new ChannelTable($channels);
+        $form = $this->createForm(TableType::class, $table);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $deleteAction = $form->get(ChannelTable::DELETE_ACTION);
+            if ($deleteAction instanceof SubmitButton && $deleteAction->isClicked()) {
+                $this->channelService->deleteByIds($table->getSelected());
+            } else {
+                $this->logger->error('log.controller.channel.unknown_action');
+            }
+
+            return $this->redirectToRoute('ems_core_channel_index');
+        }
 
         return $this->render('@EMSCore/table/index.html.twig', [
             'table' => $table,
+            'form' => $form->createView(),
         ]);
     }
 

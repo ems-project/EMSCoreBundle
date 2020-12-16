@@ -14,8 +14,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 final class ChannelType extends AbstractType
 {
     /**
-     * @param FormBuilderInterface<Channel> $builder
-     * @param array<string, mixed>          $options
+     * @param FormBuilderInterface<AbstractType> $builder
+     * @param array<string, mixed>               $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

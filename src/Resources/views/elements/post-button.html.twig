@@ -9,7 +9,7 @@
 			{% endif  %}
 		{% endif %}
 		{% if label is defined %}
-			{{ label|trans }}
+			{{ label|trans({'%label%' : itemLabel|default('%label%')}) }}
 		{% elseif rawlabel is defined %}
 			{{ rawlabel|raw }}
 		{% endif %} 
@@ -47,7 +47,7 @@
 			{% endif %}
 			f.submit(); 
 			
-			return false;">{{ message|trans }}</a></li>
+			return false;">{{ message|trans({'%label%' : itemLabel|default('%label%')}) }}</a></li>
   </ul>
 </div>
 {% else %}

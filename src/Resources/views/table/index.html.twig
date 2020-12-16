@@ -8,47 +8,62 @@
 {% block body %}
 <div class="row">
     <div class="col-md-12">
+        {{ form_start(form) }}
         <div class="box ">
             <div class="box-header with-border">
                 <div class="btn-group  pull-right">
-                    <a class="btn btn-xs btn-primary" href="{{ path('ems_core_channel_add') }}"><i class="fa fa-plus"></i> {{ table.addTransKey|trans }}</a>
+                    <a class="btn btn-primary" href="{{ path('ems_core_channel_add') }}"><i class="fa fa-plus"></i> {{ table.addTransKey|trans }}</a>
                 </div>
             </div>
             <div class="box-body with-border">
                 <div class="table-responsive">
                     <table class="table table-condensed table-striped" data-datatable="{{ {
-
+                        order: table.tableActions|length > 0 ? 1 : 0
                     }|json_encode|e('html_attr') }}">
                         <thead>
-                        <tr role="row">
-                            <th class="nowrap text-center">{{ 'table.index.column.loop_count'|trans }}</th>
-                            {% for column in table.columns %}
-                                <th class="nowrap">{{ column.titleKey|trans }}</th>
-                            {% endfor %}
-                            <th class="nowrap">{{ 'table.index.column.actions'|trans }}</th>
-                        </tr>
+                            <tr role="row">
+                                {% if table.tableActions|length > 0 %}
+                                    <th class="fit" data-orderable="false">
+                                        <input type="checkbox" value="" data-grouped-checkbox-target=".{{ table.attributeName|e('html_attr') }}-to-select">
+                                    </th>
+                                {% endif %}
+                                <th class="text-center fit">{{ 'table.index.column.loop_count'|trans }}</th>
+                                {% for column in table.columns %}
+                                    <th class="nowrap">{{ column.titleKey|trans }}</th>
+                                {% endfor %}
+                                <th class="nowrap" data-orderable="false">{{ 'table.index.column.actions'|trans }}</th>
+                            </tr>
                         </thead>
                         <tbody>
                             {% for line in table %}
                                 <tr>
+                                    {% if table.tableActions|length > 0 %}
+                                        <td class="{{ table.attributeName|e('html_attr') }}-to-select">
+                                            {% for chekbox in form.selected|filter(f => f.vars.value == line.data.id) %}
+                                                {{ form_widget(chekbox) }}
+                                            {%  endfor %}
+                                        </td>
+                                    {% endif %}
                                     <td class="text-center">{{ loop.index }}</td>
                                     {% for column in table.columns %}
                                         <td class="nowrap">{{ attribute(line.data, column.attribute) }}</td>
                                     {% endfor %}
-                                    <td>
+                                    <td data-search="">
                                         <div class="btn-group">
-                                            {% for action in table.actions %}
+                                            {% for action in table.itemActions %}
                                                 {% if action.post %}
                                                     {% include '@EMSCore/elements/post-button.html.twig' with {
-                                                        'url': path(action.route, action.routeParameters|merge({(action.attributeName): line.data.id})),
+                                                        'url': path(action.route, action.routeParameters|merge({(table.attributeName): line.data.id})),
                                                         'message': action.messageKey,
                                                         'label': action.labelKey,
+                                                        'itemLabel': attribute(line.data, table.labelAttribute),
                                                         'icon': action.icon
                                                     }%}
                                                 {% else %}
                                                     {% include '@EMSCore/elements/get-button.html.twig' with {
-                                                        'url':  path(action.route, action.routeParameters|merge({(action.attributeName): line.data.id})),
+                                                        'url':  path(action.route, action.routeParameters|merge({(table.attributeName): line.data.id})),
                                                         'label': action.labelKey,
+                                                        'itemLabel': attribute(line.data, table.labelAttribute),
                                                         'icon': action.icon
                                                     }%}
                                                 {% endif %}
@@ -61,7 +76,17 @@
                     </table>
                 </div>
             </div>
+            {% if table.tableActions|length > 0 %}
+                <div class="box-footer with-border">
+                    <div class="btn-group">
+                        {% for action in table.tableActions %}
+                            {{ form_widget(attribute(form, action.name)) }}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
         </div>
+        {{ form_end(form) }}
     </div>
 </div>
 {%  endblock %}

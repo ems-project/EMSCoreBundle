@@ -7,85 +7,33 @@ namespace EMS\CoreBundle\Twig\Table;
 final class TableAction
 {
     /**
-     * @var bool
-     */
-    private $post;
-    /**
      * @var string
      */
-    private $route;
-    /**
-     * @var array<string, mixed>
-     */
-    private $routeParameters;
-    /**
-     * @var string
-     */
-    private $attributeName;
-    /**
-     * @var string
-     */
-    private $icon;
+    private $name;
     /**
      * @var string
      */
     private $labelKey;
     /**
-     * @var string|null
+     * @var string
      */
-    private $messageKey;
-
+    private $confirmationKey;
     /**
-     * @param array<string, mixed> $routeParameters
+     * @var string
      */
-    private function __construct(bool $post, string $route, string $attributeName, string $labelKey, string $icon, ?string $messageKey, array $routeParameters)
+    private $icon;
+
+    public function __construct(string $name, string $icon, string $labelKey, string $confirmationKey)
     {
-        $this->post = $post;
-        $this->route = $route;
-        $this->attributeName = $attributeName;
-        $this->routeParameters = $routeParameters;
-        $this->labelKey = $labelKey;
+        $this->name = $name;
         $this->icon = $icon;
-        $this->messageKey = $messageKey;
+        $this->labelKey = $labelKey;
+        $this->confirmationKey = $confirmationKey;
     }
 
-    /**
-     * @param array<string, mixed> $routeParameters
-     */
-    public static function postAction(string $route, string $attributeName, string $labelKey, string $icon, string $messageKey, array $routeParameters = []): TableAction
+    public function getName(): string
     {
-        return new self(true, $route, $attributeName, $labelKey, $icon, $messageKey, $routeParameters);
-    }
-
-    /**
-     * @param array<string, mixed> $routeParameters
-     */
-    public static function getAction(string $route, string $attributeName, string $labelKey, string $icon, array $routeParameters = []): TableAction
-    {
-        return new self(false, $route, $attributeName, $labelKey, $icon, null, $routeParameters);
-    }
-
-    public function isPost(): bool
-    {
-        return $this->post;
-    }
-
-    public function getRoute(): string
-    {
-        return $this->route;
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function getRouteParameters(): array
-    {
-        return $this->routeParameters;
-    }
-
-    public function getAttributeName(): string
-    {
-        return $this->attributeName;
+        return $this->name;
     }
 
     public function getLabelKey(): string
@@ -93,13 +41,13 @@ final class TableAction
         return $this->labelKey;
     }
 
+    public function getConfirmationKey(): string
+    {
+        return $this->confirmationKey;
+    }
+
     public function getIcon(): string
     {
         return $this->icon;
-    }
-
-    public function getMessageKey(): ?string
-    {
-        return $this->messageKey;
     }
 }

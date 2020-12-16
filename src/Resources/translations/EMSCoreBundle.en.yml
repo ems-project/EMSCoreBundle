@@ -367,7 +367,9 @@ table:
     empty: 'Nothing to show here'
 channel:
   actions:
-    delete_confirm: 'Delete the channel "%label%"?'
+    delete_selected_confirm: 'Delete all selected channels?'
+    delete_selected: 'Delete selected'
+    delete_confirm: 'Delete the "%label%" channel?'
     delete: 'Delete'
     edit: 'Edit'
   menu: 'Channels'
@@ -511,7 +513,12 @@ search:
   aggregate_option_label: 'Aggregate Option'
 
 log:
+  controller:
+    channel:
+      unknown_action: 'Unknown action'
   service:
+    channel:
+      delete: 'The channel %name% has been deleted'
     content-type:
       get-unreferenced-content-type:
         unexpected-error: 'Unexpected error while get unreferenced content type from environment %environment%: %error_message%'

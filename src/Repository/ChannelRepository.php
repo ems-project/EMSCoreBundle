@@ -39,4 +39,18 @@ final class ChannelRepository extends ServiceEntityRepository
         $this->getEntityManager()->remove($channel);
         $this->getEntityManager()->flush();
     }
+
+    /**
+     * @param string[] $ids
+     *
+     * @return Channel[]
+     */
+    public function getByIds(array $ids): array
+    {
+        $queryBuilder = $this->createQueryBuilder('channel');
+        $queryBuilder->where('channel.id IN (:ids)')
+            ->setParameter('ids', $ids);
+
+        return $queryBuilder->getQuery()->getResult();
+    }
 }

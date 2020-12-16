@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Service;
 use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Entity\Channel;
 use EMS\CoreBundle\Repository\ChannelRepository;
+use Psr\Log\LoggerInterface;
 
 final class ChannelService
 {
@@ -14,10 +15,15 @@ final class ChannelService
      * @var ChannelRepository
      */
     private $channelRepository;
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
-    public function __construct(ChannelRepository $channelRepository)
+    public function __construct(ChannelRepository $channelRepository, LoggerInterface $logger)
     {
         $this->channelRepository = $channelRepository;
+        $this->logger = $logger;
     }
 
     /**
@@ -48,6 +54,20 @@ final class ChannelService
 
     public function delete(Channel $channel): void
     {
+        $name = $channel->getName();
         $this->channelRepository->delete($channel);
+        $this->logger->warning('log.service.channel.delete', [
+            'name' => $name,
+        ]);
+    }
+
+    /**
+     * @param string[] $ids
+     */
+    public function deleteByIds(array $ids): void
+    {
+        foreach ($this->channelRepository->getByIds($ids) as $channel) {
+            $this->delete($channel);
+        }
     }
 }

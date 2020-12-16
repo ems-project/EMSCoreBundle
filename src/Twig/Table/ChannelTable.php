@@ -8,10 +8,16 @@ use EMS\CoreBundle\Entity\Channel;
 
 final class ChannelTable implements TableInterface
 {
+    /** @var string */
+    public const DELETE_ACTION = 'delete';
     /**
      * @var Channel[]
      */
     private $channels;
+    /**
+     * @var string[]
+     */
+    private $selected = [];
 
     /**
      * @param Channel[] $channels
@@ -46,6 +52,16 @@ final class ChannelTable implements TableInterface
         }
     }
 
+    public function getAttributeName(): string
+    {
+        return 'channel';
+    }
+
+    public function getLabelAttribute(): string
+    {
+        return 'name';
+    }
+
     public function count(): int
     {
         return \count($this->channels);
@@ -59,11 +75,34 @@ final class ChannelTable implements TableInterface
         ];
     }
 
-    public function getActions(): iterable
+    public function getItemActions(): iterable
     {
         return [
-            TableAction::getAction('ems_core_channel_edit', 'channel', 'channel.actions.edit', 'pencil'),
-            TableAction::postAction('ems_core_channel_delete', 'channel', 'channel.actions.delete', 'trash', 'channel.actions.delete_confirm'),
+            TableItemAction::getAction('ems_core_channel_edit', 'channel.actions.edit', 'pencil'),
+            TableItemAction::postAction('ems_core_channel_delete', 'channel.actions.delete', 'trash', 'channel.actions.delete_confirm'),
         ];
+    }
+
+    public function getTableActions(): iterable
+    {
+        return [
+            new TableAction(self::DELETE_ACTION, 'fa fa-trash', 'channel.actions.delete_selected', 'channel.actions.delete_selected_confirm'),
+        ];
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getSelected(): array
+    {
+        return $this->selected;
+    }
+
+    /**
+     * @param string[] $selected
+     */
+    public function setSelected(array $selected): void
+    {
+        $this->selected = $selected;
     }
 }

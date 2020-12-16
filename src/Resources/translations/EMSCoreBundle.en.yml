@@ -383,6 +383,7 @@ channel:
     column:
       slug: 'URL''s slug'
       name: 'Name'
+      public: 'Public access'
     title: 'List of channels'
 not-applicable: 'N/A'
 views:
@@ -480,6 +481,7 @@ contenttype:
 form:
   form:
     channel:
+      public: 'Does this channel can be available to non-authenticated users ?'
       slug: 'URL''s identifier (url''s slug)'
       name: 'Channel''s name'
   contenttype:

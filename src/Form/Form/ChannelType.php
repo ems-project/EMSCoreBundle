@@ -8,6 +8,7 @@ use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\Channel;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -22,6 +23,7 @@ final class ChannelType extends AbstractType
         $builder
             ->add('name', null, ['required' => true])
             ->add('slug', null, ['required' => true])
+            ->add('public', CheckboxType::class, ['required' => false])
             ->add('save', SubmitEmsType::class, [
                 'attr' => [
                     'class' => 'btn-primary btn-sm ',

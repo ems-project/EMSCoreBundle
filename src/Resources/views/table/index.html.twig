@@ -46,7 +46,14 @@
                                     {% endif %}
                                     <td class="text-center">{{ loop.index }}</td>
                                     {% for column in table.columns %}
-                                        <td class="nowrap">{{ attribute(line.data, column.attribute) }}</td>
+                                        {% set value = attribute(line.data, column.attribute)  %}
+                                        <td class="nowrap">
+                                            {%  if attribute(column.valueToIconMapping, value) is defined %}
+                                                <i class="{{ attribute(column.valueToIconMapping, value)  }}"></i> <span class="sr-only">{{ value }}</span>
+                                            {%  else %}
+                                                {{ value }}
+                                            {% endif %}
+                                        </td>
                                     {% endfor %}
                                     <td data-search="">
                                         <div class="btn-group">

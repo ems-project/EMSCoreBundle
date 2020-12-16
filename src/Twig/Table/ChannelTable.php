@@ -72,7 +72,7 @@ final class ChannelTable implements TableInterface
         return [
             new TableColumn('channel.index.column.name', 'name'),
             new TableColumn('channel.index.column.slug', 'slug'),
-            new TableColumn('channel.index.column.public', 'public'),
+            new TableColumn('channel.index.column.public', 'public', [true => 'fa fa-check']),
         ];
     }
 

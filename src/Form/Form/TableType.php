@@ -10,11 +10,15 @@ use EMS\CoreBundle\Twig\Table\TableAction;
 use EMS\CoreBundle\Twig\Table\TableInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class TableType extends AbstractType
 {
+    public const REORDER_ACTION = 'reorderAction';
+
     /**
      * @param FormBuilderInterface<AbstractType> $builder
      * @param array<string, mixed>               $options
@@ -30,16 +34,28 @@ final class TableType extends AbstractType
             $choices[$id] = $id;
         }
 
-        $builder
-            ->add('selected', ChoiceType::class, [
-                'choices' => $choices,
-                'choice_label' => function ($choice, $key, $value) {
-                    return false;
-                },
-                'expanded' => true,
-                'multiple' => true,
-                'label' => false,
+        $builder->add('selected', ChoiceType::class, [
+            'choices' => $choices,
+            'choice_label' => function ($choice, $key, $value) {
+                return false;
+            },
+            'expanded' => true,
+            'multiple' => true,
+            'label' => false,
+        ]);
+        if ($data->isSortable()) {
+            $builder->add('reordered', CollectionType::class, [
+                'entry_type' => HiddenType::class,
+                'entry_options' => [],
+                'data' => $choices,
+            ])->add(self::REORDER_ACTION, SubmitEmsType::class, [
+                'attr' => [
+                    'class' => 'btn-danger',
+                ],
+                'icon' => 'fa fa-reorder',
+                'label' => 'table.index.button.reorder',
             ]);
+        }
         /** @var TableAction $action */
         foreach ($data->getTableActions() as $action) {
             $builder

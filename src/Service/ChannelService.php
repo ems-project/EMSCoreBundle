@@ -70,4 +70,15 @@ final class ChannelService
             $this->delete($channel);
         }
     }
+
+    /**
+     * @param array<string, int> $ids
+     */
+    public function reorderByIds(array $ids): void
+    {
+        foreach ($this->channelRepository->getByIds(\array_keys($ids)) as $channel) {
+            $channel->setOrderKey($ids[$channel->getId()] ?? 0);
+            $this->channelRepository->create($channel);
+        }
+    }
 }

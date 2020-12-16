@@ -18,6 +18,10 @@ final class ChannelTable implements TableInterface
      * @var string[]
      */
     private $selected = [];
+    /**
+     * @var string[]
+     */
+    private $reordered = [];
 
     /**
      * @param Channel[] $channels
@@ -105,5 +109,26 @@ final class ChannelTable implements TableInterface
     public function setSelected(array $selected): void
     {
         $this->selected = $selected;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getReordered(): array
+    {
+        return $this->reordered;
+    }
+
+    /**
+     * @param string[] $reordered
+     */
+    public function setReordered(array $reordered): void
+    {
+        $this->reordered = $reordered;
+    }
+
+    public function getReorderTransKey(): string
+    {
+        return 'channel.index.reorder';
     }
 }

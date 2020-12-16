@@ -361,6 +361,9 @@ data.edit_revision.save_draft: Save draft
 
 table:
   index:
+    button:
+      reorder: 'Reorder'
+      close: 'Close'
     column:
       actions: 'Actions'
       loop_count: '#'
@@ -380,6 +383,7 @@ channel:
     title: 'Edit a channel'
     save: 'Save'
   index:
+    reorder: 'Reorder channels'
     column:
       slug: 'URL''s slug'
       name: 'Name'

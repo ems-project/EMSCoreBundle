@@ -9,6 +9,8 @@ interface TableInterface extends \Countable, \IteratorAggregate
 {
     public function getTitleTransKey(): string;
 
+    public function getReorderTransKey(): string;
+
     public function getAddTransKey(): string;
 
     public function isSortable(): bool;

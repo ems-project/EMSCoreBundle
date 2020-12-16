@@ -40,8 +40,12 @@ final class ChannelController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $deleteAction = $form->get(ChannelTable::DELETE_ACTION);
+            $reorderAction = $form->get(TableType::REORDER_ACTION);
             if ($deleteAction instanceof SubmitButton && $deleteAction->isClicked()) {
                 $this->channelService->deleteByIds($table->getSelected());
+            } elseif ($reorderAction instanceof SubmitButton && $reorderAction->isClicked()) {
+                $newOrder = $request->get('table', [])['reordered'] ?? [];
+                $this->channelService->reorderByIds(\array_flip(\array_values($newOrder)));
             } else {
                 $this->logger->error('log.controller.channel.unknown_action');
             }

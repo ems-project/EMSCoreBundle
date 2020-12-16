@@ -53,8 +53,7 @@ final class ChannelController extends AbstractController
             return $this->redirectToRoute('ems_core_channel_index');
         }
 
-        return $this->render('@EMSCore/table/index.html.twig', [
-            'table' => $table,
+        return $this->render('@EMSCore/channel/index.html.twig', [
             'form' => $form->createView(),
         ]);
     }

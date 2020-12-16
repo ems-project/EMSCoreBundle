@@ -1,11 +1,5 @@
-{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
-
-{% block title %}{{ table.titleTransKey|trans }}{% endblock %}
-
-
-{% block pagetitle %}{{ block('title') }}{% endblock %}
-
-{% block body %}
+{% trans_default_domain 'EMSCoreBundle' %}
+{% set table = form.vars.data %}
 <div class="row">
     <div class="col-md-12">
         {{ form_start(form) }}
@@ -135,4 +129,3 @@
         {{ form_end(form) }}
     </div>
 </div>
-{%  endblock %}

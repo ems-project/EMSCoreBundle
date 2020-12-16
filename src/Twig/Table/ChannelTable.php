@@ -31,11 +31,6 @@ final class ChannelTable implements TableInterface
         $this->channels = $channels;
     }
 
-    public function getTitleTransKey(): string
-    {
-        return 'channel.index.title';
-    }
-
     public function getAddTransKey(): string
     {
         return 'channel.add.title';

@@ -7,8 +7,6 @@ namespace EMS\CoreBundle\Twig\Table;
  */
 interface TableInterface extends \Countable, \IteratorAggregate
 {
-    public function getTitleTransKey(): string;
-
     public function getReorderTransKey(): string;
 
     public function getAddTransKey(): string;
@@ -43,4 +41,14 @@ interface TableInterface extends \Countable, \IteratorAggregate
      * @param string[] $selected
      */
     public function setSelected(array $selected): void;
+
+    /**
+     * @return string[]
+     */
+    public function getReordered();
+
+    /**
+     * @param string[] $reordered
+     */
+    public function setReordered(array $reordered): void;
 }

@@ -1,0 +1,17 @@
+{% extends '@EMSCore/base.html.twig' %}
+{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}{{ 'channel.index.title'|trans }}{% endblock %}
+{% block pagetitle %}{{ block('title') }}{% endblock %}
+
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><i class="fa fa-road"></i> {{ 'channel.menu'|trans }}</li>
+   	</ol>
+{% endblock %}
+
+{% block body %}
+    {% include "@EMSCore/table/index.html.twig" with {
+    	form: form,
+    } %}
+{% endblock %}

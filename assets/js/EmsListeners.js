@@ -320,24 +320,6 @@ export default class EmsListeners {
     }
 
 
-    fileSelectHandler(e) {
-
-        // cancel event and hover styling
-        this.fileDragHover(e);
-
-        // fetch FileList object
-        const files = e.target.files || e.dataTransfer.files;
-
-        // process all File objects
-        for (let i = 0; i < files.length; ++i) {
-            if(files.hasOwnProperty(i)){
-                this.initFileUploader(files[i], this);
-                break;
-            }
-        }
-    }
-
-
     fileDataExtrator(container, forced=false) {
         const self = this;
 
@@ -463,7 +445,16 @@ export default class EmsListeners {
             // file drop
             this.addEventListener("dragover", self.fileDragHover, false);
             this.addEventListener("dragleave", self.fileDragHover, false);
-            this.addEventListener("drop", self.fileSelectHandler, false);
+            this.addEventListener("drop", function(e) {
+                self.fileDragHover(e);
+                const files = e.target.files || e.dataTransfer.files;
+                for (let i = 0; i < files.length; ++i) {
+                    if(files.hasOwnProperty(i)){
+                        self.initFileUploader(files[i], $(this).closest(".file-uploader-row"));
+                        break;
+                    }
+                }
+            }, false);
         });
     }
 

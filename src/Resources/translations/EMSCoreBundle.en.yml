@@ -364,6 +364,7 @@ table:
     button:
       reorder: 'Reorder'
       close: 'Close'
+      add: 'Add'
     column:
       actions: 'Actions'
       loop_count: '#'

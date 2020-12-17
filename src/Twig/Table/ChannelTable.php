@@ -6,22 +6,12 @@ namespace EMS\CoreBundle\Twig\Table;
 
 use EMS\CoreBundle\Entity\Channel;
 
-final class ChannelTable implements TableInterface
+final class ChannelTable extends TableAbstract
 {
-    /** @var string */
-    public const DELETE_ACTION = 'delete';
     /**
      * @var Channel[]
      */
     private $channels;
-    /**
-     * @var string[]
-     */
-    private $selected = [];
-    /**
-     * @var string[]
-     */
-    private $reordered = [];
 
     /**
      * @param Channel[] $channels
@@ -29,11 +19,6 @@ final class ChannelTable implements TableInterface
     public function __construct(array $channels)
     {
         $this->channels = $channels;
-    }
-
-    public function getAddTransKey(): string
-    {
-        return 'channel.add.title';
     }
 
     public function isSortable(): bool
@@ -54,11 +39,6 @@ final class ChannelTable implements TableInterface
     public function getAttributeName(): string
     {
         return 'channel';
-    }
-
-    public function getLabelAttribute(): string
-    {
-        return 'name';
     }
 
     public function count(): int
@@ -88,42 +68,5 @@ final class ChannelTable implements TableInterface
         return [
             new TableAction(self::DELETE_ACTION, 'fa fa-trash', 'channel.actions.delete_selected', 'channel.actions.delete_selected_confirm'),
         ];
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getSelected(): array
-    {
-        return $this->selected;
-    }
-
-    /**
-     * @param string[] $selected
-     */
-    public function setSelected(array $selected): void
-    {
-        $this->selected = $selected;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getReordered(): array
-    {
-        return $this->reordered;
-    }
-
-    /**
-     * @param string[] $reordered
-     */
-    public function setReordered(array $reordered): void
-    {
-        $this->reordered = $reordered;
-    }
-
-    public function getReorderTransKey(): string
-    {
-        return 'channel.index.reorder';
     }
 }

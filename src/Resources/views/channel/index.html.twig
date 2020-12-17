@@ -11,5 +11,8 @@
 {% endblock %}
 
 {% block body %}
-	{{ form(form) }}
+	{{ form(form, {
+		reorder_label: 'channel.index.reorder',
+		add_label: 'channel.add.title'
+	}) }}
 {% endblock %}

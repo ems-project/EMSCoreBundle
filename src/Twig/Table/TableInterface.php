@@ -7,10 +7,6 @@ namespace EMS\CoreBundle\Twig\Table;
  */
 interface TableInterface extends \Countable, \IteratorAggregate
 {
-    public function getReorderTransKey(): string;
-
-    public function getAddTransKey(): string;
-
     public function isSortable(): bool;
 
     public function getAttributeName(): string;

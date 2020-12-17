@@ -359,6 +359,7 @@ view.macros.data-field-type.collection_added_items: '{1} One %singular% has been
 view.macros.data-field-type.collection_removed_items: '{1} One %singular% has been removed|]1,Inf[ %count% %plural% have been removed'
 data.edit_revision.save_draft: Save draft
 
+
 table:
   index:
     button:
@@ -484,6 +485,15 @@ contenttype:
   action:
     update_from_json: 'Update from JSON'
 form:
+  subform:
+    channel:
+      translationContentType: 'Translation content type'
+      routeContentType: 'Route content type'
+      searchConfig: 'Search config'
+      templateContentType: 'Template content type'
+      environment: 'Environment'
+      instanceId: 'Instance Ids'
+      locales: 'Locales'
   form:
     channel:
       public: 'Does this channel can be available to non-authenticated users ?'

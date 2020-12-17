@@ -1,0 +1,78 @@
+<?php
+
+declare(strict_types=1);
+
+namespace EMS\CoreBundle\Form\Subform;
+
+use EMS\CoreBundle\EMSCoreBundle;
+use EMS\CoreBundle\Form\Field\CodeEditorType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+final class ChannelOptionsType extends AbstractType
+{
+    /**
+     * @param FormBuilderInterface<AbstractType> $builder
+     * @param array<string, mixed>               $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $builder
+            ->add('locales', TextareaType::class, [
+                'required' => true,
+                'row_attr' => [
+                    'class' => 'col-md-1',
+                ],
+                'attr' => [
+                    'rows' => 4,
+                ],
+            ])
+            ->add('instanceId', TextareaType::class, [
+                'required' => true,
+                'row_attr' => [
+                    'class' => 'col-md-3',
+                ],
+            ])
+            ->add('environment', null, [
+                'required' => true,
+                'row_attr' => [
+                    'class' => 'col-md-3',
+                ],
+            ])
+            ->add('translationContentType', null, [
+                'required' => true,
+                'row_attr' => [
+                    'class' => 'col-md-3',
+                ],
+            ])
+            ->add('routeContentType', null, [
+                'required' => true,
+                'row_attr' => [
+                    'class' => 'col-md-3',
+                ],
+            ])
+            ->add('templateContentType', null, [
+                'required' => true,
+                'row_attr' => [
+                    'class' => 'col-md-3',
+                ],
+            ])
+            ->add('searchConfig', CodeEditorType::class, [
+                'required' => true,
+                'language' => 'ace/mode/json',
+                'row_attr' => [
+                    'class' => 'col-md-6',
+                ],
+            ]);
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'label_format' => 'form.subform.channel.%name%',
+            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
+        ]);
+    }
+}

@@ -7,6 +7,8 @@ namespace EMS\CoreBundle\Form\Form;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\Channel;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Form\Subform\ChannelOptionsType;
+use EMS\CoreBundle\Form\Transformer\ChannelOptionsTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -21,15 +23,32 @@ final class ChannelType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', null, ['required' => true])
-            ->add('slug', null, ['required' => true])
-            ->add('public', CheckboxType::class, ['required' => false])
+            ->add('name', null, [
+                'required' => true,
+                'row_attr' => [
+                    'class' => 'col-md-3',
+                ],
+            ])
+            ->add('slug', null, [
+                'required' => true,
+                'row_attr' => [
+                    'class' => 'col-md-3',
+                ],
+            ])
+            ->add('public', CheckboxType::class, [
+                'required' => false,
+                'row_attr' => [
+                    'class' => 'col-md-12',
+                ],
+            ])
+            ->add('options', ChannelOptionsType::class)
             ->add('save', SubmitEmsType::class, [
                 'attr' => [
                     'class' => 'btn-primary btn-sm ',
                 ],
                 'icon' => 'fa fa-save',
             ]);
+        $builder->get('options')->addModelTransformer(new ChannelOptionsTransformer());
     }
 
     public function configureOptions(OptionsResolver $resolver): void

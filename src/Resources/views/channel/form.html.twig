@@ -9,20 +9,16 @@
 			</div>
 
 			<div class="box-body">
-				<div class="row row-no-gutters">
-					<div class="col-md-4">
-						{{ form_row(form.name) }}
-					</div>
-				</div>
-				<div class="row row-no-gutters">
-					<div class="col-md-4">
-						{{ form_row(form.slug) }}
-					</div>
-				</div>
-				<div class="row row-no-gutters">
-					<div class="col-md-12">
-						{{ form_row(form.public) }}
-					</div>
+				<div class="row">
+					{{ form_row(form.name) }}
+					<div class="clearfix"></div>
+					{{ form_row(form.slug) }}
+					<div class="clearfix"></div>
+					{{ form_row(form.public) }}
+					{% for item in form.options %}
+						<div class="clearfix"></div>
+						{{ form_row(item) }}
+					{% endfor %}
 				</div>
 			</div>
 			<div class="box-footer">

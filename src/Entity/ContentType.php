@@ -1106,7 +1106,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
      */
     public function unsetFieldType()
     {
-        $this->fieldType = new FieldType();
+        $this->fieldType = null;
 
         return $this;
     }

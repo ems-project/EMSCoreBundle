@@ -1,25 +1,27 @@
+{% use "bootstrap_3_layout.html.twig" %}
 {% trans_default_domain 'EMSCoreBundle' %}
-{% set table = form.vars.data %}
-<div class="row">
-    <div class="col-md-12">
-        {{ form_start(form) }}
-        <div class="box ">
-            <div class="box-header with-border">
-                <div class="btn-group  pull-right">
-                    <a class="btn btn-primary" href="{{ path('ems_core_channel_add') }}"><i class="fa fa-plus"></i> {{ table.addTransKey|trans }}</a>
-                    {%  if table.sortable %}
-                        <button type="button" class="btn" data-toggle="modal" data-target="#{{ table.attributeName|e('html_attr') }}_modal_reorder">
-                            <i class="fa fa-reorder"></i> {{ table.reorderTransKey|trans }}
-                        </button>
-                    {% endif %}
+{% block emsco_form_table_type_widget %}
+    {% set table = form.vars.data %}
+    <div class="row">
+        <div class="col-md-12">
+            {{ form_start(form) }}
+            <div class="box ">
+                <div class="box-header with-border">
+                    <div class="btn-group  pull-right">
+                        <a class="btn btn-primary" href="{{ path('ems_core_channel_add') }}"><i class="fa fa-plus"></i> {{ table.addTransKey|trans }}</a>
+                        {%  if table.sortable %}
+                            <button type="button" class="btn" data-toggle="modal" data-target="#{{ table.attributeName|e('html_attr') }}_modal_reorder">
+                                <i class="fa fa-reorder"></i> {{ table.reorderTransKey|trans }}
+                            </button>
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
-            <div class="box-body with-border">
-                <div class="table-responsive">
-                    <table class="table table-condensed table-striped" data-datatable="{{ {
-                        order: table.tableActions|length > 0 ? 1 : 0
-                    }|json_encode|e('html_attr') }}">
-                        <thead>
+                <div class="box-body with-border">
+                    <div class="table-responsive">
+                        <table class="table table-condensed table-striped" data-datatable="{{ {
+                            order: table.tableActions|length > 0 ? 1 : 0
+                        }|json_encode|e('html_attr') }}">
+                            <thead>
                             <tr role="row">
                                 {% if table.tableActions|length > 0 %}
                                     <th class="fit" data-orderable="false">
@@ -32,8 +34,8 @@
                                 {% endfor %}
                                 <th class="nowrap" data-orderable="false">{{ 'table.index.column.actions'|trans }}</th>
                             </tr>
-                        </thead>
-                        <tbody>
+                            </thead>
+                            <tbody>
                             {% for line in table %}
                                 <tr>
                                     {% if table.tableActions|length > 0 %}
@@ -78,54 +80,55 @@
                                     </td>
                                 </tr>
                             {%  endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            {% if table.tableActions|length > 0 %}
-                <div class="box-footer with-border">
-                    <div class="btn-group">
-                        {% for action in table.tableActions %}
-                            {{ form_widget(attribute(form, action.name)) }}
-                        {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-            {% endif %}
-        </div>
-        {%  if table.sortable %}
-            <div class="modal fade" id="{{ table.attributeName|e('html_attr') }}_modal_reorder" tabindex="-1" role="dialog" aria-labelledby="{{ table.attributeName|e('html_attr') }}_modal_reorder_label">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" id="{{ table.attributeName|e('html_attr') }}_modal_reorder_label">
-                                <strong>{{ table.reorderTransKey|trans }}</strong>
-                            </h4>
+                {% if table.tableActions|length > 0 %}
+                    <div class="box-footer with-border">
+                        <div class="btn-group">
+                            {% for action in table.tableActions %}
+                                {{ form_widget(attribute(form, action.name)) }}
+                            {% endfor %}
                         </div>
-                        <div class="modal-body">
-                            <ul class="list-group sortable" id="{{ table.attributeName|e('html_attr') }}_modal_reorder_list">
-                                {% for child in form.reordered %}
-                                    <li class="list-group-item">
-                                        <i class="glyphicon glyphicon-move"></i>
+                    </div>
+                {% endif %}
+            </div>
+            {%  if table.sortable %}
+                <div class="modal fade" id="{{ table.attributeName|e('html_attr') }}_modal_reorder" tabindex="-1" role="dialog" aria-labelledby="{{ table.attributeName|e('html_attr') }}_modal_reorder_label">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="{{ table.attributeName|e('html_attr') }}_modal_reorder_label">
+                                    <strong>{{ table.reorderTransKey|trans }}</strong>
+                                </h4>
+                            </div>
+                            <div class="modal-body">
+                                <ul class="list-group sortable" id="{{ table.attributeName|e('html_attr') }}_modal_reorder_list">
+                                    {% for child in form.reordered %}
+                                        <li class="list-group-item">
+                                            <i class="glyphicon glyphicon-move"></i>
 
-                                        {% for line in table|filter(line => child.vars.value == line.data.id) %}
-                                            {{ attribute(line.data, table.labelAttribute) }}
-                                        {% endfor %}
-                                        {{ form_row( child ) }}
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                        <div class="modal-footer">
-                            <div class="btn-group">
-                                {{ form_widget(form.reorderAction) }}
-                                <button type="button" class="btn" data-dismiss="modal"><i class="fa fa-close"></i> {{ 'table.index.button.close'|trans }}</button>
+                                            {% for line in table|filter(line => child.vars.value == line.data.id) %}
+                                                {{ attribute(line.data, table.labelAttribute) }}
+                                            {% endfor %}
+                                            {{ form_row( child ) }}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="btn-group">
+                                    {{ form_widget(form.reorderAction) }}
+                                    <button type="button" class="btn" data-dismiss="modal"><i class="fa fa-close"></i> {{ 'table.index.button.close'|trans }}</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        {% endif %}
-        {{ form_end(form) }}
+            {% endif %}
+            {{ form_end(form) }}
+        </div>
     </div>
-</div>
+{% endblock %}

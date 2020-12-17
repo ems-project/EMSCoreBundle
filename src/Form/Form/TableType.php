@@ -76,4 +76,9 @@ final class TableType extends AbstractType
             'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
         ]);
     }
+
+    public function getBlockPrefix(): string
+    {
+        return 'emsco_form_table_type';
+    }
 }

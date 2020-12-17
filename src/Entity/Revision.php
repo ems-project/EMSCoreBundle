@@ -817,11 +817,13 @@ class Revision
      */
     public function getRawData()
     {
+        $rawData = $this->rawData;
+
         if (null !== $this->versionUuid) {
-            $this->rawData['_version_uuid'] = $this->versionUuid;
+            $rawData['_version_uuid'] = $this->versionUuid;
         }
 
-        return $this->rawData;
+        return $rawData;
     }
 
     /**

@@ -817,7 +817,13 @@ class Revision
      */
     public function getRawData()
     {
-        return $this->rawData;
+        $rawData = $this->rawData;
+
+        if (null !== $this->versionUuid) {
+            $rawData['_version_uuid'] = $this->versionUuid;
+        }
+
+        return $rawData;
     }
 
     /**
@@ -1060,7 +1066,8 @@ class Revision
         }
 
         if (null === $this->getVersionUuid()) {
-            $this->setVersionId(Uuid::uuid4());
+            $versionId = $this->rawData['_version_uuid'] ? Uuid::fromString($this->rawData['_version_uuid']) : Uuid::uuid4();
+            $this->setVersionId($versionId);
         }
         if (null === $this->getVersionTag()) {
             $this->setVersionTagDefault();

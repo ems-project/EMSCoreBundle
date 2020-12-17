@@ -157,7 +157,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
      * @ORM\OneToOne(targetEntity="FieldType", cascade={"persist"})
      * @ORM\JoinColumn(name="field_types_id", referencedColumnName="id")
      *
-     * @var FieldType
+     * @var ?FieldType
      */
     protected $fieldType;
 
@@ -1060,6 +1060,10 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
      */
     public function getFieldType()
     {
+        if (null === $this->fieldType) {
+            throw new \RuntimeException('Field type is unset!');
+        }
+
         return $this->fieldType;
     }
 

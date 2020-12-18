@@ -9,7 +9,7 @@ use EMS\CoreBundle\Entity\Channel;
 use EMS\CoreBundle\Repository\ChannelRepository;
 use Psr\Log\LoggerInterface;
 
-final class ChannelService
+final class ChannelService implements EntityServiceInterface
 {
     /**
      * @var ChannelRepository
@@ -80,5 +80,28 @@ final class ChannelService
             $channel->setOrderKey($ids[$channel->getId()] ?? 0);
             $this->channelRepository->create($channel);
         }
+    }
+
+    public function isSortable(): bool
+    {
+        return true;
+    }
+
+    /**
+     * @return Channel[]
+     */
+    public function get(int $from, int $size): array
+    {
+        return $this->channelRepository->get($from, $size);
+    }
+
+    public function getEntityName(): string
+    {
+        return 'channel';
+    }
+
+    public function count(): int
+    {
+        return $this->channelRepository->counter();
     }
 }

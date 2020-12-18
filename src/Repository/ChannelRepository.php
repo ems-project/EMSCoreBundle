@@ -53,4 +53,18 @@ final class ChannelRepository extends ServiceEntityRepository
 
         return $queryBuilder->getQuery()->getResult();
     }
+
+    /**
+     * @return Channel[]
+     */
+    public function get(int $from, int $size): array
+    {
+        $query = $this->createQueryBuilder('c')
+            ->orderBy('c.orderKey', 'ASC')
+            ->setFirstResult($from)
+            ->setMaxResults($size)
+            ->getQuery();
+
+        return $query->execute();
+    }
 }

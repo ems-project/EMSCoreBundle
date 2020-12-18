@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller;
 
 use EMS\CoreBundle\Entity\Channel;
-use EMS\CoreBundle\Form\Data\ChannelTable;
+use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Form\ChannelType;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Service\ChannelService;
@@ -34,12 +34,11 @@ final class ChannelController extends AbstractController
 
     public function index(Request $request): Response
     {
-        $channels = $this->channelService->getAll();
-        $table = new ChannelTable($channels);
+        $table = new EntityTable($this->channelService);
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $deleteAction = $form->get(ChannelTable::DELETE_ACTION);
+            $deleteAction = $form->get(EntityTable::DELETE_ACTION);
             $reorderAction = $form->get(TableType::REORDER_ACTION);
             if ($deleteAction instanceof SubmitButton && $deleteAction->isClicked()) {
                 $this->channelService->deleteByIds($table->getSelected());

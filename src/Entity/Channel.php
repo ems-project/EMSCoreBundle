@@ -14,7 +14,7 @@ use Ramsey\Uuid\UuidInterface;
  * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks()
  */
-final class Channel
+final class Channel implements EntityInterface
 {
     /**
      * @var UuidInterface

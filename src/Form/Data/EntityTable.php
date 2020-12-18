@@ -4,46 +4,47 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Data;
 
-use EMS\CoreBundle\Entity\Channel;
+use EMS\CoreBundle\Service\EntityServiceInterface;
 
-final class ChannelTable extends TableAbstract
+final class EntityTable extends TableAbstract
 {
-    /**
-     * @var Channel[]
-     */
-    private $channels;
+    /** @var EntityServiceInterface */
+    private $entityService;
+    /** @var int */
+    private $size;
+    /** @var int */
+    private $from;
 
-    /**
-     * @param Channel[] $channels
-     */
-    public function __construct(array $channels)
+    public function __construct(EntityServiceInterface $entityService, int $from = 0, int $size = 50)
     {
-        $this->channels = $channels;
+        $this->entityService = $entityService;
+        $this->from = $from;
+        $this->size = $size;
     }
 
     public function isSortable(): bool
     {
-        return true;
+        return $this->entityService->isSortable();
     }
 
     /**
-     * @return \IteratorAggregate<string, ChannelRow>
+     * @return \IteratorAggregate<string, EntityRow>
      */
     public function getIterator(): iterable
     {
-        foreach ($this->channels as $channel) {
-            yield $channel->getId() => new ChannelRow($channel);
+        foreach ($this->entityService->get($this->from, $this->size) as $entity) {
+            yield \strval($entity->getId()) => new EntityRow($entity);
         }
     }
 
     public function getAttributeName(): string
     {
-        return 'channel';
+        return $this->entityService->getEntityName();
     }
 
     public function count(): int
     {
-        return \count($this->channels);
+        return $this->entityService->count();
     }
 
     public function getColumns(): iterable

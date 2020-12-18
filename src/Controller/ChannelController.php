@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller;
 
 use EMS\CoreBundle\Entity\Channel;
+use EMS\CoreBundle\Form\Data\ChannelTable;
 use EMS\CoreBundle\Form\Form\ChannelType;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Service\ChannelService;
-use EMS\CoreBundle\Twig\Table\ChannelTable;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\SubmitButton;

@@ -1,6 +1,6 @@
 <?php
 
-namespace EMS\CoreBundle\Twig\Table;
+namespace EMS\CoreBundle\Form\Data;
 
 /**
  * @extends \IteratorAggregate<string, TableRowInterface>

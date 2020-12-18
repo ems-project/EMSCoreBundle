@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Twig\Table;
+namespace EMS\CoreBundle\Form\Data;
 
 use EMS\CoreBundle\Entity\Channel;
 

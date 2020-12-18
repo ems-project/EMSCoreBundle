@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Form\Form;
 
 use EMS\CoreBundle\EMSCoreBundle;
+use EMS\CoreBundle\Form\Data\TableAction;
+use EMS\CoreBundle\Form\Data\TableInterface;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
-use EMS\CoreBundle\Twig\Table\TableAction;
-use EMS\CoreBundle\Twig\Table\TableInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;

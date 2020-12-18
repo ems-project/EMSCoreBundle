@@ -11,6 +11,7 @@ use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Service\ChannelService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Form;
 use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -38,13 +39,18 @@ final class ChannelController extends AbstractController
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $deleteAction = $form->get(EntityTable::DELETE_ACTION);
-            $reorderAction = $form->get(TableType::REORDER_ACTION);
-            if ($deleteAction instanceof SubmitButton && $deleteAction->isClicked()) {
-                $this->channelService->deleteByIds($table->getSelected());
-            } elseif ($reorderAction instanceof SubmitButton && $reorderAction->isClicked()) {
-                $newOrder = $request->get($form->getName(), [])['reordered'] ?? [];
-                $this->channelService->reorderByIds(\array_flip(\array_values($newOrder)));
+            if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
+                switch ($action->getName()) {
+                    case EntityTable::DELETE_ACTION:
+                        $this->channelService->deleteByIds($table->getSelected());
+                        break;
+                    case TableType::REORDER_ACTION:
+                        $newOrder = $request->get($form->getName(), [])['reordered'] ?? [];
+                        $this->channelService->reorderByIds(\array_flip(\array_values($newOrder)));
+                        break;
+                    default:
+                        $this->logger->error('log.controller.channel.unknown_action');
+                }
             } else {
                 $this->logger->error('log.controller.channel.unknown_action');
             }

@@ -9,13 +9,9 @@ abstract class TableAbstract implements TableInterface
     /** @var string */
     public const DELETE_ACTION = 'delete';
 
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     private $selected = [];
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     private $reordered = [];
 
     public function isSortable(): bool

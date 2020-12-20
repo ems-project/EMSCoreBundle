@@ -6,29 +6,17 @@ namespace EMS\CoreBundle\Form\Data;
 
 final class TableItemAction
 {
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $post;
-    /**
-     * @var string
-     */
+    /** @var string */
     private $route;
-    /**
-     * @var array<string, mixed>
-     */
+    /** @var array<string, mixed> */
     private $routeParameters;
-    /**
-     * @var string
-     */
+    /** @var string */
     private $icon;
-    /**
-     * @var string
-     */
+    /** @var string */
     private $labelKey;
-    /**
-     * @var string|null
-     */
+    /** @var string|null */
     private $messageKey;
 
     /**

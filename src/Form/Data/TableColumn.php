@@ -6,17 +6,11 @@ namespace EMS\CoreBundle\Form\Data;
 
 final class TableColumn
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $titleKey;
-    /**
-     * @var string
-     */
+    /** @var string */
     private $attribute;
-    /**
-     * @var array<mixed, string>
-     */
+    /** @var array<mixed, string> */
     private $valueToIconMapping;
 
     /**

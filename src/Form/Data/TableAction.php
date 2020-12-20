@@ -6,21 +6,13 @@ namespace EMS\CoreBundle\Form\Data;
 
 final class TableAction
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $name;
-    /**
-     * @var string
-     */
+    /** @var string */
     private $labelKey;
-    /**
-     * @var string
-     */
+    /** @var string */
     private $confirmationKey;
-    /**
-     * @var string
-     */
+    /** @var string */
     private $icon;
 
     public function __construct(string $name, string $icon, string $labelKey, string $confirmationKey)

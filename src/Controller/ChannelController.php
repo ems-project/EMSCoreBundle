@@ -18,13 +18,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class ChannelController extends AbstractController
 {
-    /**
-     * @var LoggerInterface
-     */
+    /** @var LoggerInterface */
     private $logger;
-    /**
-     * @var ChannelService
-     */
+    /** @var ChannelService */
     private $channelService;
 
     public function __construct(LoggerInterface $logger, ChannelService $channelService)

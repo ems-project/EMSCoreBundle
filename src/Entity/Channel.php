@@ -83,6 +83,12 @@ final class Channel implements EntityInterface
         $this->created = $now;
         $this->modified = $now;
         $this->public = false;
+        $this->options = [
+            'translationContentType' => 'label',
+            'routeContentType' => 'route',
+            'templateContentType' => 'template',
+            'searchConfig' => '{}',
+        ];
     }
 
     public function getId(): string

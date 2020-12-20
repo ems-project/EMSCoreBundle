@@ -16,7 +16,7 @@ use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\Router;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class RequestListener
@@ -24,7 +24,7 @@ class RequestListener
     protected $twig;
     protected $doctrine;
     protected $logger;
-    /** @var \Symfony\Bundle\FrameworkBundle\Routing\Router */
+    /** @var RouterInterface */
     protected $router;
     protected $container;
     protected $authorizationChecker;
@@ -33,7 +33,7 @@ class RequestListener
     protected $userLoginRoute;
     protected $userRegistrationRoute;
 
-    public function __construct(\Twig_Environment $twig, Registry $doctrine, Logger $logger, Router $router, Container $container, AuthorizationCheckerInterface $authorizationChecker, Session $session, $allowUserRegistration, $userLoginRoute, $userRegistrationRoute)
+    public function __construct(\Twig_Environment $twig, Registry $doctrine, Logger $logger, RouterInterface $router, Container $container, AuthorizationCheckerInterface $authorizationChecker, Session $session, $allowUserRegistration, $userLoginRoute, $userRegistrationRoute)
     {
         $this->twig = $twig;
         $this->doctrine = $doctrine;

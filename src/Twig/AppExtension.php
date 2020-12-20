@@ -37,7 +37,7 @@ use Ramsey\Uuid\Uuid;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\Router;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Twig\Environment as TwigEnvironment;
 use Twig\Extension\AbstractExtension;
@@ -62,7 +62,7 @@ class AppExtension extends AbstractExtension
     private $authorizationChecker;
     /** @var ContentTypeService */
     private $contentTypeService;
-    /** @var Router */
+    /** @var RouterInterface */
     private $router;
     /** @var TwigEnvironment */
     private $twig;
@@ -82,7 +82,7 @@ class AppExtension extends AbstractExtension
     /**
      * @param array<mixed> $assetConfig
      */
-    public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, Router $router, TwigEnvironment $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, LoggerInterface $logger, FormFactory $formFactory, FileService $fileService, RequestRuntime $commonRequestRuntime, \Swift_Mailer $mailer, ElasticaService $elasticaService, SearchService $searchService, array $assetConfig)
+    public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, RouterInterface $router, TwigEnvironment $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, LoggerInterface $logger, FormFactory $formFactory, FileService $fileService, RequestRuntime $commonRequestRuntime, \Swift_Mailer $mailer, ElasticaService $elasticaService, SearchService $searchService, array $assetConfig)
     {
         $this->doctrine = $doctrine;
         $this->authorizationChecker = $authorizationChecker;

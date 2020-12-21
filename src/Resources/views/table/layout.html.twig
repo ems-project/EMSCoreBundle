@@ -6,7 +6,12 @@
                 data-url="{{ path('ems.table.data', {'name': table.name  }) }}">
             <thead>
                 <tr>
-                    {% for column in table.columns %}<th>{{ column }}</th>{% endfor %}
+{#                    {% for column in table.columns %}<th>{{ column }}</th>{% endfor %}#}
+                    <td data-name="#">#</td>
+                    <td data-name="name">name</td>
+                    <td data-name="indexes">indexes</td>
+                    <td data-name="total">total</td>
+                    <td data-name="action" data-type="html" data-prototype="{{- block('columnButtons')|e('html_attr') -}}">action</td>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -14,3 +19,7 @@
     </div>
 </div>
 {% endblock %}
+
+{%- block columnButtons -%}
+    <a href="{{ path('environment-v2.index') }}" class="btn btn-primary btn-sm">test</a>
+{%- endblock -%}

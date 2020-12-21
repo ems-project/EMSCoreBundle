@@ -25,7 +25,7 @@ class TableController extends AbstractController
     public function index(string $name): JsonResponse
     {
         $data = [];
-        $rows = 10000;
+        $rows = 1000;
 
         while ($rows-- > 0) {
             $data[] = [

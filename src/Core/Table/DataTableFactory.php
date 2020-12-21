@@ -19,6 +19,11 @@ final class DataTableFactory implements TableFactoryInterface
     {
         $type = $this->typeRegistry->getByTypeClass($typeClass);
 
+
+
+
+
+
         $optionsResolver = $this->getOptionResolver();
         $type->configureOptions($optionsResolver);
         $resolvedOptions = $optionsResolver->resolve($options);
@@ -26,7 +31,7 @@ final class DataTableFactory implements TableFactoryInterface
         $dataTable = new DataTable($type->getName(), $resolvedOptions);
         $type->buildTable($dataTable, $resolvedOptions);
 
-        $dataTable->setRows($type->buildRows());
+       // $dataTable->setRows($type->buildRows());
 
         return $dataTable;
     }

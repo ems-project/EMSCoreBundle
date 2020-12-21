@@ -11,8 +11,6 @@ interface TypeInterface
 {
     public function buildTable(TableInterface $table, array $options): void;
 
-    public function buildRows(): array;
-
     public function getName(): string;
     public function configureOptions(OptionsResolver $optionsResolver): void;
 }

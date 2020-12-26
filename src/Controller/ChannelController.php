@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Controller;
 
 use EMS\CoreBundle\Entity\Channel;
 use EMS\CoreBundle\Form\Data\EntityTable;
+use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Form\ChannelType;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Service\ChannelService;
@@ -32,6 +33,13 @@ final class ChannelController extends AbstractController
     public function index(Request $request): Response
     {
         $table = new EntityTable($this->channelService);
+        $table->addColumn('channel.index.column.name', 'name');
+        $table->addColumn('channel.index.column.slug', 'slug');
+        $table->addColumn('channel.index.column.public', 'public', [true => 'fa fa-check']);
+        $table->addItemGetAction('ems_core_channel_edit', 'channel.actions.edit', 'pencil');
+        $table->addItemPostAction('ems_core_channel_delete', 'channel.actions.delete', 'trash', 'channel.actions.delete_confirm');
+        $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'channel.actions.delete_selected', 'channel.actions.delete_selected_confirm');
+
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

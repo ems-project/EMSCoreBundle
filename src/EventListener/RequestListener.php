@@ -21,6 +21,8 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class RequestListener
 {
+    /** @var string */
+    public const EMSCO_CHANNEL_ROUTE_REGEX = '/^emsco\\.channel\\.(?P<environment>([a-z\\-0-1_]+))\\..*/';
     protected $twig;
     protected $doctrine;
     protected $logger;
@@ -56,7 +58,7 @@ class RequestListener
 
         $route = $event->getRequest()->get('_route');
         $matches = [];
-        if (\is_string($route) && 1 === \preg_match('/^emsco\\.channel\\.(?P<environment>([a-z\\-0-1_]+))\\..*/', $route, $matches)) {
+        if (\is_string($route) && 1 === \preg_match(self::EMSCO_CHANNEL_ROUTE_REGEX, $route, $matches)) {
             $request = $event->getRequest();
             $environment = $matches['environment'] ?? null;
             if (!\is_string($environment)) {

@@ -20,6 +20,7 @@ use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\I18n;
 use EMS\CoreBundle\Entity\UserInterface;
+use EMS\CoreBundle\EventListener\RequestListener;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Form\DataField\DateFieldType;
 use EMS\CoreBundle\Form\DataField\DateRangeFieldType;
@@ -1565,7 +1566,7 @@ class AppExtension extends AbstractExtension
     public function getPath(string $name, array $parameters = [], bool $relative = false): string
     {
         $environment = $this->getChannelEnvironment();
-        if (null !== $environment && !\in_array($name, self::PROTECTED_ROUTE_NAMES)) {
+        if (null !== $environment && !\in_array($name, self::PROTECTED_ROUTE_NAMES) && !\preg_match(RequestListener::EMSCO_CHANNEL_ROUTE_REGEX, $name)) {
             $name = \sprintf('emsco.channel.%s.%s', $environment, $name);
         }
 
@@ -1578,7 +1579,7 @@ class AppExtension extends AbstractExtension
     public function getUrl(string $name, array $parameters = [], bool $schemeRelative = false): string
     {
         $environment = $this->getChannelEnvironment();
-        if (null !== $environment && !\in_array($name, self::PROTECTED_ROUTE_NAMES)) {
+        if (null !== $environment && !\in_array($name, self::PROTECTED_ROUTE_NAMES) && !\preg_match(RequestListener::EMSCO_CHANNEL_ROUTE_REGEX, $name)) {
             $name = \sprintf('emsco.channel.%s.%s', $environment, $name);
         }
 

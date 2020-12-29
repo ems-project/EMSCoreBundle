@@ -34,7 +34,7 @@ services:
             #- { name: kernel.event_listener, event: kernel.controller, method: provideTemplateTwigObjects, priority: -20 }
             #- { name: kernel.event_listener, event: kernel.terminate, method: startJob }
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
-            #- { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
             #kernel.response or kernel.terminate
     app.twig.extension.stringloader:
         class: Twig_Extension_StringLoader
@@ -539,6 +539,12 @@ services:
     ems.service.channel:
         class: EMS\CoreBundle\Service\ChannelService
         arguments: ['@ems.repository.channel', '@logger']
+    EMS\CoreBundle\Service\ChannelRegisterService: '@ems.service.channel_register'
+    ems.service.channel_register:
+        class: EMS\CoreBundle\Service\ChannelRegisterService
+        arguments: ['@ems.repository.channel', '@ems_common.service.elastica', '@logger', '@emsch.helper_cache', '@cache.app']
+        tags:
+            - { name: emsch.router }
     ems.security.authenticator:
         class: EMS\CoreBundle\Security\Authenticator
         arguments: [ '@security.authentication.manager', '@doctrine', '@ems.service.user']
@@ -755,6 +761,7 @@ services:
         tags:
             - { name: kernel.cache_warmer }
             - { name: kernel.event_listener, event: kernel.terminate }
+            - { name: kernel.event_listener, event: console.terminate }
     ems_common.monolog.flash_handler:
         class: EMS\CommonBundle\Logger\FlashMessageLogger
         arguments: ['@session', '@translator', 'EMSCoreBundle']

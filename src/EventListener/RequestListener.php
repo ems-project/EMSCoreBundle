@@ -53,6 +53,20 @@ class RequestListener
             $response = new RedirectResponse($this->router->generate($this->userLoginRoute, [], UrlGeneratorInterface::RELATIVE_PATH));
             $event->setResponse($response);
         }
+
+
+        $route = $event->getRequest()->get('_route');
+        $matches = [];
+        if (\is_string($route) && \preg_match('/^emsco\\.channel\\.(?P<environment>([a-z\\-0-1_]+))\\..*/', $route, $matches) === 1) {
+            $request = $event->getRequest();
+            $environment = $matches['environment'] ?? null;
+            if (!is_string($environment)) {
+                throw new \RuntimeException('Unexpected not found environment in matching route');
+            }
+
+            $request->attributes->set('_environment', $environment);
+        }
+
     }
 
     public function onKernelException(GetResponseForExceptionEvent $event)

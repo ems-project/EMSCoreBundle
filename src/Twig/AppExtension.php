@@ -34,8 +34,10 @@ use EMS\CoreBundle\Service\SearchService;
 use EMS\CoreBundle\Service\UserService;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
+use Symfony\Bridge\Twig\Extension\RoutingExtension;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactory;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -46,6 +48,7 @@ use Twig\TwigFunction;
 
 class AppExtension extends AbstractExtension
 {
+    const PROTECTED_ROUTE_NAMES = ['_wdt', '_profiler_home'];
     /** @var FormFactory */
     protected $formFactory;
     /** @var FileService */
@@ -78,11 +81,13 @@ class AppExtension extends AbstractExtension
     private $elasticaService;
     /** @var SearchService */
     private $searchService;
+    private RoutingExtension $routingExtension;
+    private RequestStack $requestStack;
 
     /**
      * @param array<mixed> $assetConfig
      */
-    public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, RouterInterface $router, TwigEnvironment $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, LoggerInterface $logger, FormFactory $formFactory, FileService $fileService, RequestRuntime $commonRequestRuntime, \Swift_Mailer $mailer, ElasticaService $elasticaService, SearchService $searchService, array $assetConfig)
+    public function __construct(Registry $doctrine, AuthorizationCheckerInterface $authorizationChecker, UserService $userService, ContentTypeService $contentTypeService, RouterInterface $router, TwigEnvironment $twig, ObjectChoiceListFactory $objectChoiceListFactory, EnvironmentService $environmentService, LoggerInterface $logger, FormFactory $formFactory, FileService $fileService, RequestRuntime $commonRequestRuntime, \Swift_Mailer $mailer, ElasticaService $elasticaService, SearchService $searchService, RoutingExtension $routingExtension, RequestStack $requestStack, array $assetConfig)
     {
         $this->doctrine = $doctrine;
         $this->authorizationChecker = $authorizationChecker;
@@ -99,6 +104,8 @@ class AppExtension extends AbstractExtension
         $this->mailer = $mailer;
         $this->elasticaService = $elasticaService;
         $this->searchService = $searchService;
+        $this->routingExtension = $routingExtension;
+        $this->requestStack = $requestStack;
         $this->assetConfig = $assetConfig;
     }
 
@@ -133,6 +140,8 @@ class AppExtension extends AbstractExtension
             new TwigFunction('emsco_send_email', [$this, 'sendEmail']),
             new TwigFunction('emsco_users_enabled', [UserRuntime::class, 'getUsersEnabled']),
             new TwigFunction('emsco_uuid', [Uuid::class, 'uuid4']),
+            new TwigFunction('path', [$this, 'getPath'], ['is_safe_callback' => [$this->routingExtension, 'isUrlGenerationSafe']]),
+            new TwigFunction('url', [$this, 'getUrl'], ['is_safe_callback' => [$this->routingExtension, 'isUrlGenerationSafe']]),
         ];
     }
 
@@ -1297,5 +1306,41 @@ class AppExtension extends AbstractExtension
     public function getName(): string
     {
         return 'app_extension';
+    }
+
+    private function getChannelEnvironment(): ?string
+    {
+        $request = $this->requestStack->getCurrentRequest();
+        if (null !== $request) {
+            return $request->attributes->get('_environment', null);
+        }
+
+        return null;
+    }
+
+    /**
+     * @param array<mixed> $parameters
+     */
+    public function getPath(string $name, array $parameters = [], bool $relative = false): string
+    {
+        $environment = $this->getChannelEnvironment();
+        if (null !== $environment && !\in_array($name, self::PROTECTED_ROUTE_NAMES)) {
+            $name = \sprintf('emsco.channel.%s.%s', $environment, $name);
+        }
+
+        return $this->routingExtension->getPath($name, $parameters, $relative);
+    }
+
+    /**
+     * @param array<mixed> $parameters
+     */
+    public function getUrl(string $name, array $parameters = [], bool $schemeRelative = false): string
+    {
+        $environment = $this->getChannelEnvironment();
+        if (null !== $environment && !\in_array($name, self::PROTECTED_ROUTE_NAMES)) {
+            $name = \sprintf('emsco.channel.%s.%s', $environment, $name);
+        }
+
+        return $this->routingExtension->getUrl($name, $parameters, $schemeRelative);
     }
 }

@@ -48,7 +48,8 @@ use Twig\TwigFunction;
 
 class AppExtension extends AbstractExtension
 {
-    const PROTECTED_ROUTE_NAMES = ['_wdt', '_profiler_home'];
+    private const PROTECTED_ROUTE_NAMES = ['_wdt', '_profiler_home'];
+    private const NOT_IN_CHANNEL_CONTEXT = 'The use of elasticms core twig functions/filters is not allowed in channel context';
     /** @var FormFactory */
     protected $formFactory;
     /** @var FileService */
@@ -202,11 +203,19 @@ class AppExtension extends AbstractExtension
 
     public function generateEmailMessage(string $title): \Swift_Message
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         return new \Swift_Message($title);
     }
 
     public function sendEmail(\Swift_Message $message): void
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         $this->mailer->send($message);
     }
 
@@ -217,6 +226,10 @@ class AppExtension extends AbstractExtension
      */
     public function assetPath(array $fileField, string $processorIdentifier, array $assetConfig = [], string $route = 'ems_asset', string $fileHashField = EmsFields::CONTENT_FILE_HASH_FIELD, string $filenameField = EmsFields::CONTENT_FILE_NAME_FIELD, string $mimeTypeField = EmsFields::CONTENT_MIME_TYPE_FIELD, $referenceType = UrlGeneratorInterface::RELATIVE_PATH): string
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         $config = $assetConfig;
         if (!isset($config['_config_type'])) {
             $config['_config_type'] = 'image';
@@ -242,11 +255,19 @@ class AppExtension extends AbstractExtension
      */
     public function jsonDecode(string $json, bool $assoc = true, int $depth = 512, int $options = 0)
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         return \json_decode($json, $assoc, $depth, $options);
     }
 
     public function getFieldByPath(ContentType $contentType, string $path, bool $skipVirtualFields = false): ?FieldType
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         $fieldType = $this->contentTypeService->getChildByPath($contentType->getFieldType(), $path, $skipVirtualFields);
         if (false === $fieldType) {
             return null;
@@ -257,6 +278,10 @@ class AppExtension extends AbstractExtension
 
     public function getFile(string $hash): ?string
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         return $this->fileService->getFile($hash);
     }
 
@@ -265,6 +290,10 @@ class AppExtension extends AbstractExtension
      */
     public function getString(array $rawData, string $field): ?string
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         if (empty($rawData) or !isset($rawData[$field])) {
             return null;
         }
@@ -281,6 +310,10 @@ class AppExtension extends AbstractExtension
 
     public function diff(?string $a, ?string $b, bool $compare, bool $escape = false, bool $htmlDiff = false, bool $raw = false): string
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         $tag = 'span';
         $textClass = '';
         $textLabel = '';
@@ -330,6 +363,10 @@ class AppExtension extends AbstractExtension
      */
     public function diffBoolean($rawData, bool $compare, string $fieldName, $compareRawData): string
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         $a = $rawData ? true : false;
         $b = isset($compareRawData[$fieldName]) && $compareRawData[$fieldName];
 
@@ -347,6 +384,10 @@ class AppExtension extends AbstractExtension
      */
     public function diffIcon($rawData, bool $compare, string $fieldName, $compareRawData): string
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         $b = $a = null;
         if ($rawData) {
             $a = '<i class="'.$rawData.'"></i> '.$rawData;
@@ -365,6 +406,10 @@ class AppExtension extends AbstractExtension
      */
     public function diffTime($rawData, bool $compare, string $fieldName, $compareRawData, string $format1, string $format2): string
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         return $this->diffDate($rawData, $compare, $fieldName, $compareRawData, $format1, $format2, TimeFieldType::STOREFORMAT);
     }
 
@@ -374,6 +419,10 @@ class AppExtension extends AbstractExtension
      */
     public function diffDate($rawData, bool $compare, string $fieldName, $compareRawData, string $format1, string $format2 = null, string $internalFormat = null): string
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         $b = $a = [];
         $out = '';
         $tag = 'li';
@@ -487,6 +536,10 @@ class AppExtension extends AbstractExtension
      */
     public function diffChoice($rawData, ?array $labels, ?array $choices, bool $compare, string $fieldName, $compareRawData): string
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         $b = $a = [];
         $out = '';
         $tag = 'li';
@@ -554,6 +607,10 @@ class AppExtension extends AbstractExtension
      */
     public function diffDataLink($rawData, bool $compare, string $fieldName, $compareRawData): string
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         $b = $a = [];
         $out = '';
 
@@ -596,6 +653,10 @@ class AppExtension extends AbstractExtension
      */
     public function diffColor($rawData, bool $compare, string $fieldName, $compareRawData): string
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         $b = $a = null;
         if ($rawData) {
             $color = $rawData;
@@ -616,6 +677,10 @@ class AppExtension extends AbstractExtension
      */
     public function diffRaw($rawData, bool $compare, string $fieldName, $compareRawData): string
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         $b = isset($compareRawData[$fieldName]) ? $compareRawData[$fieldName] : null;
 
         return $this->diff($rawData, $b, $compare);
@@ -627,6 +692,10 @@ class AppExtension extends AbstractExtension
      */
     public function diffText($rawData, bool $compare, string $fieldName, $compareRawData): string
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         $b = isset($compareRawData[$fieldName]) ? $compareRawData[$fieldName] : null;
 
         return $this->diff($rawData, $b, $compare, true, true);
@@ -638,6 +707,10 @@ class AppExtension extends AbstractExtension
      */
     public function diffHtml($rawData, bool $compare, string $fieldName, $compareRawData): string
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         $b = isset($compareRawData[$fieldName]) ? $compareRawData[$fieldName] : null;
 
         return $this->diff($rawData, $b, $compare, false, true, true);
@@ -645,6 +718,10 @@ class AppExtension extends AbstractExtension
 
     public function getSequenceNextValue(string $name): int
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         $em = $this->doctrine->getManager();
         $repo = $em->getRepository('EMSCoreBundle:Sequence');
         if (!$repo instanceof SequenceRepository) {
@@ -662,6 +739,10 @@ class AppExtension extends AbstractExtension
      */
     public function arrayIntersect(array $array1, array $array2): array
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         return \array_intersect($array1, $array2);
     }
 
@@ -672,11 +753,19 @@ class AppExtension extends AbstractExtension
      */
     public function arrayMergeRecursive(array ...$arrays): array
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         return \array_merge_recursive($arrays);
     }
 
     public function cantBeFinalized(string $message = '', int $code = 0, \Throwable $previous = null): void
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         throw new CantBeFinalizedException($message, $code, $previous);
     }
 
@@ -688,6 +777,10 @@ class AppExtension extends AbstractExtension
      */
     public function callUserFunc($function, ...$parameter)
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         return \call_user_func($function, $parameter);
     }
 
@@ -700,6 +793,10 @@ class AppExtension extends AbstractExtension
      */
     public function deprecatedSearch(array $params): array
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         $search = $this->elasticaService->convertElasticsearchSearch($params);
 
         return $this->elasticaService->search($search)->getResponse()->getData();
@@ -714,6 +811,10 @@ class AppExtension extends AbstractExtension
      */
     public function search(array $indexes, array $body = [], array $contentTypes = [], ?int $size = null, int $from = 0, ?array $sort = null, ?array $sources = null): ResultSet
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         $query = $this->elasticaService->filterByContentTypes(null, $contentTypes);
 
         $boolQuery = $this->elasticaService->getBoolQuery();
@@ -746,12 +847,20 @@ class AppExtension extends AbstractExtension
      */
     public function debug(string $message, array $context = []): void
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         $context['twig'] = 'twig';
         $this->logger->debug($message, $context);
     }
 
     public function dateDifference(string $date1, string $date2, bool $detailed = false): string
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         $datetime1 = \date_create($date1);
         $datetime2 = \date_create($date2);
 
@@ -769,6 +878,10 @@ class AppExtension extends AbstractExtension
 
     public function getUser(string $username): ?UserInterface
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         $user = $this->userService->getUser($username);
         if (null === $user || $user instanceof UserInterface) {
             return $user;
@@ -778,6 +891,10 @@ class AppExtension extends AbstractExtension
 
     public function displayName(string $username): string
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         /** @var UserInterface $user */
         $user = $this->userService->getUser($username);
         if (!empty($user)) {
@@ -789,6 +906,10 @@ class AppExtension extends AbstractExtension
 
     public function srcPath(string $input, string $fileName = null): ?string
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         $path = $this->router->generate('ems_file_view', ['sha1' => '__SHA1__'], UrlGeneratorInterface::ABSOLUTE_PATH);
         $path = \substr($path, 0, \strlen($path) - 8);
 
@@ -807,6 +928,10 @@ class AppExtension extends AbstractExtension
 
     public function internalLinks(string $input, string $fileName = null): ?string
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         $url = $this->router->generate('data.link', ['key' => 'object:'], UrlGeneratorInterface::ABSOLUTE_PATH);
         $out = \preg_replace('/ems:\/\/object:/i', $url, $input);
 
@@ -819,6 +944,10 @@ class AppExtension extends AbstractExtension
 
     public function i18n(string $key, string $locale = null): string
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         if (empty($locale)) {
             $locale = $this->router->getContext()->getParameter('_locale');
         }
@@ -837,6 +966,10 @@ class AppExtension extends AbstractExtension
 
     public function isSuper(): bool
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         return $this->authorizationChecker->isGranted('ROLE_SUPER');
     }
 
@@ -845,6 +978,10 @@ class AppExtension extends AbstractExtension
      */
     public function allGranted(array $roles, bool $super = false): bool
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         if ($super && !$this->isSuper()) {
             return false;
         }
@@ -862,6 +999,10 @@ class AppExtension extends AbstractExtension
      */
     public function inMyCircles($circles): bool
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         if (\is_array($circles) && 0 === \count($circles)) {
             return true;
         }
@@ -886,6 +1027,10 @@ class AppExtension extends AbstractExtension
      */
     public function objectChoiceLoader(string $contentTypeName): array
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         return $this->objectChoiceListFactory->createLoader($contentTypeName, true)->loadAll();
     }
 
@@ -894,6 +1039,10 @@ class AppExtension extends AbstractExtension
      */
     public function groupedObjectLoader(string $contentTypeName): array
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         $choices = $this->objectChoiceListFactory->createLoader($contentTypeName, true)->loadAll();
         $out = [];
         foreach ($choices as $choice) {
@@ -911,6 +1060,10 @@ class AppExtension extends AbstractExtension
      */
     public function generateFromTemplate(?string $template, array $params = []): ?string
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         if (empty($template)) {
             return null;
         }
@@ -925,6 +1078,10 @@ class AppExtension extends AbstractExtension
 
     public function dataLabel(string $key): string
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         $out = $key;
         $exploded = \explode(':', $key);
         if (2 == \count($exploded) && \strlen($exploded[0]) > 0 && \strlen($exploded[1]) > 0) {
@@ -982,6 +1139,10 @@ class AppExtension extends AbstractExtension
 
     public function dataLink(string $key, string $revisionId = null, string $diffMod = null): string
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         $out = $key;
         $exploded = \explode(':', $key);
         if (2 == \count($exploded) && \strlen($exploded[0]) > 0 && \strlen($exploded[1]) > 0) {
@@ -1051,6 +1212,10 @@ class AppExtension extends AbstractExtension
 
     public function propertyPath(FormError $error): string
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         $parent = $error->getOrigin();
         $out = '';
         while ($parent) {
@@ -1069,6 +1234,10 @@ class AppExtension extends AbstractExtension
      */
     public function data(?string $key, string $index = null): ?array
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         if (empty($key)) {
             return null;
         }
@@ -1099,6 +1268,10 @@ class AppExtension extends AbstractExtension
      */
     public function oneGranted(array $roles, bool $super = false): bool
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         if ($super && !$this->isSuper()) {
             return false;
         }
@@ -1113,6 +1286,10 @@ class AppExtension extends AbstractExtension
 
     public function relativeLuminance(string $col): float
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         $col = \trim($col, '#');
         if (3 == \strlen($col)) {
             $col = $col[0].$col[0].$col[1].$col[1].$col[2].$col[2];
@@ -1135,6 +1312,10 @@ class AppExtension extends AbstractExtension
 
     public function contrastRatio(string $c1, string $c2): float
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         $y1 = $this->relativeLuminance($c1);
         $y2 = $this->relativeLuminance($c2);
         if ($y1 < $y2) {
@@ -1148,6 +1329,10 @@ class AppExtension extends AbstractExtension
 
     public function md5(string $value): string
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         return \md5($value);
     }
 
@@ -1156,6 +1341,10 @@ class AppExtension extends AbstractExtension
      */
     public function searchesList(string $username): array
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         $searchRepository = $this->doctrine->getRepository('EMSCoreBundle:Form\Search');
         $searches = $searchRepository->findBy([
             'user' => $username,
@@ -1177,21 +1366,37 @@ class AppExtension extends AbstractExtension
      */
     public function dump(): void
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         \trigger_error('dump is now integrated by default in twig 1.5', E_USER_DEPRECATED);
     }
 
     public function convertJavaDateFormat(string $format): string
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         return DateFieldType::convertJavaDateFormat($format);
     }
 
     public function convertJavascriptDateFormat(string $format): string
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         return DateFieldType::convertJavascriptDateFormat($format);
     }
 
     public function convertJavascriptDateRangeFormat(string $format): string
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         return DateRangeFieldType::convertJavascriptDateRangeFormat($format);
     }
 
@@ -1200,6 +1405,10 @@ class AppExtension extends AbstractExtension
      */
     public function getTimeFieldTimeFormat(array $options): string
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         return TimeFieldType::getFormat($options);
     }
 
@@ -1209,6 +1418,10 @@ class AppExtension extends AbstractExtension
      */
     public function inArray($needle, array $haystack): bool
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         return false !== \array_search($needle, $haystack);
     }
 
@@ -1218,11 +1431,19 @@ class AppExtension extends AbstractExtension
      */
     public function firstInArray($needle, array $haystack): bool
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         return 0 === \array_search($needle, $haystack);
     }
 
     public function getContentType(string $name): ?ContentType
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         $contentType = $this->contentTypeService->getByName($name);
         if (false !== $contentType) {
             return $contentType;
@@ -1236,6 +1457,10 @@ class AppExtension extends AbstractExtension
      */
     public function getContentTypes(): array
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         return $this->contentTypeService->getAll();
     }
 
@@ -1244,6 +1469,10 @@ class AppExtension extends AbstractExtension
      */
     public function getDefaultEnvironments(): array
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         $defaultEnvironments = [];
         /** @var Environment $environment */
         foreach ($this->environmentService->getEnvironments() as $environment) {
@@ -1260,11 +1489,19 @@ class AppExtension extends AbstractExtension
      */
     public function getEnvironments(): array
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         return $this->environmentService->getEnvironments();
     }
 
     public function getEnvironment(string $name): ?Environment
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         $environment = $this->environmentService->getAliasByName($name);
         if (false !== $environment) {
             return $environment;
@@ -1281,6 +1518,10 @@ class AppExtension extends AbstractExtension
      */
     public function soapRequest($wsdl, array $arguments)
     {
+        if (null !== $this->getChannelEnvironment()) {
+            throw new \RuntimeException(self::NOT_IN_CHANNEL_CONTEXT);
+        }
+
         /** @var \SoapClient $soapClient */
         $soapClient = null;
         if (\array_key_exists('options', $arguments)) {

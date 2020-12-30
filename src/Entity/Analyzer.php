@@ -148,14 +148,15 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable
         return $this;
     }
 
-    /**
-     * Get options.
-     *
-     * @return array
-     */
-    public function getOptions()
+    public function getOptions(string $esVersion): array
     {
-        return $this->options;
+        $options = $this->options ?? [];
+
+        if (\version_compare($esVersion, '7.0') >= 0) {
+            $options['filter'] = \array_filter($options['filter'], function (string $f) { return 'standard' !== $f; });
+        }
+
+        return $options;
     }
 
     /**

@@ -29,36 +29,6 @@ final class ChannelOptionsType extends AbstractType
                     'rows' => 4,
                 ],
             ])
-            ->add('instanceId', TextareaType::class, [
-                'required' => true,
-                'row_attr' => [
-                    'class' => 'col-md-3',
-                ],
-            ])
-            ->add('environment', null, [
-                'required' => true,
-                'row_attr' => [
-                    'class' => 'col-md-3',
-                ],
-            ])
-            ->add('translationContentType', null, [
-                'required' => true,
-                'row_attr' => [
-                    'class' => 'col-md-3',
-                ],
-            ])
-            ->add('routeContentType', null, [
-                'required' => true,
-                'row_attr' => [
-                    'class' => 'col-md-3',
-                ],
-            ])
-            ->add('templateContentType', null, [
-                'required' => true,
-                'row_attr' => [
-                    'class' => 'col-md-3',
-                ],
-            ])
             ->add('searchConfig', CodeEditorType::class, [
                 'required' => true,
                 'language' => 'ace/mode/json',

@@ -12,12 +12,7 @@ final class ChannelOptionsTransformer implements DataTransformerInterface
     {
         $locales = $value['locales'] ?? [];
         if (\is_array($locales)) {
-            $locales = \implode('\n', $locales);
-        }
-
-        $instanceId = $value['instanceId'] ?? [];
-        if (\is_array($instanceId)) {
-            $instanceId = \implode('|', $instanceId);
+            $locales = \implode(PHP_EOL, $locales);
         }
 
         $searchConfig = \json_decode($value['searchConfig'] ?? '', true);
@@ -29,11 +24,6 @@ final class ChannelOptionsTransformer implements DataTransformerInterface
 
         return [
             'locales' => $locales,
-            'instanceId' => $instanceId,
-            'environment' => $value['environment'] ?? '',
-            'translationContentType' => $value['translationContentType'] ?? '',
-            'routeContentType' => $value['routeContentType'] ?? '',
-            'templateContentType' => $value['templateContentType'] ?? '',
             'searchConfig' => $searchConfig,
         ];
     }
@@ -44,21 +34,10 @@ final class ChannelOptionsTransformer implements DataTransformerInterface
         if (!\is_string($locales)) {
             throw new \RuntimeException('Unexpected locales');
         }
-        $locales = \explode('\n', $locales);
-
-        $instanceId = $value['instanceId'];
-        if (!\is_string($instanceId)) {
-            throw new \RuntimeException('Unexpected instanceId');
-        }
-        $instanceId = \explode('|', $instanceId);
+        $locales = \preg_split("/\r\n|\n|\r/", $locales);
 
         return [
             'locales' => $locales,
-            'instanceId' => $instanceId,
-            'environment' => $value['environment'] ?? '',
-            'translationContentType' => $value['translationContentType'] ?? '',
-            'routeContentType' => $value['routeContentType'] ?? '',
-            'templateContentType' => $value['templateContentType'] ?? '',
             'searchConfig' => $value['searchConfig'] ?? '',
         ];
     }

@@ -542,7 +542,7 @@ services:
     EMS\CoreBundle\Helper\Channel\RouteHelper: '@ems.helper.channel.route_helper'
     ems.helper.channel.route_helper:
         class: EMS\CoreBundle\Helper\Channel\RouteHelper
-        arguments: ['@ems.repository.channel', '@ems_common.service.elastica', '@logger', '@emsch.helper_cache', '@cache.app']
+        arguments: ['@ems.repository.channel', '@ems_common.service.elastica', '@emsch.manager.client_request', '@logger', '@emsch.helper_cache', '@cache.app']
         tags:
             - { name: emsch.router }
     ems.security.authenticator:

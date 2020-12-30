@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Helper\Channel;
 
 use EMS\ClientHelperBundle\Helper\Cache\CacheHelper;
 use EMS\ClientHelperBundle\Helper\Elasticsearch\ClientRequest;
+use EMS\ClientHelperBundle\Helper\Elasticsearch\ClientRequestManager;
 use EMS\ClientHelperBundle\Helper\Environment\Environment;
 use EMS\ClientHelperBundle\Helper\Environment\SingleEnvironmentHelper;
 use EMS\ClientHelperBundle\Helper\Routing\BaseRouter;
@@ -24,16 +25,19 @@ final class RouteHelper extends BaseRouter
     private LoggerInterface $logger;
     private CacheHelper $cache;
     private AdapterInterface $adapter;
+    private ClientRequestManager $clientRequestManager;
 
     public function __construct(
         ChannelRepository $channelRepository,
         ElasticaService $elasticaService,
+        ClientRequestManager $clientRequestManager,
         LoggerInterface $logger,
         CacheHelper $cache,
         AdapterInterface $adapter
     ) {
         $this->channelRepository = $channelRepository;
         $this->elasticaService = $elasticaService;
+        $this->clientRequestManager = $clientRequestManager;
         $this->logger = $logger;
         $this->cache = $cache;
         $this->adapter = $adapter;
@@ -57,6 +61,10 @@ final class RouteHelper extends BaseRouter
 
     private function addEMSRoutes(RouteCollection $collection): void
     {
+        $defaultClientRequest = $this->clientRequestManager->getDefault();
+        $indexPrefix = $defaultClientRequest->getOption('[index_prefix]');
+        $routeType = $defaultClientRequest->getOption('[route_type]');
+
         foreach ($this->channelRepository->getAll() as $channel) {
             $locale = $channel->getOptions()['locales'][0] ?? null;
             if (!\is_string($locale)) {
@@ -71,14 +79,19 @@ final class RouteHelper extends BaseRouter
                 throw new \RuntimeException('Unexpected slug type');
             }
 
-            $name = $channel->getOptions()['environment'];
+            $name = $channel->getSlug();
+            if (null === $name) {
+                throw new \RuntimeException('Unexpected null environment');
+            }
 
-            $options = [];
+            $options = [
+                'route_type' => $routeType,
+            ];
 
             $environment = new Environment($name, $options);
             $environmentHelper = new SingleEnvironmentHelper($name, $environment, $locale);
             $clientRequest = new ClientRequest($this->elasticaService, $environmentHelper, $this->logger, $this->adapter, $slug, [
-                ClientRequest::OPTION_INDEX_PREFIX => \implode(',', $channel->getOptions()['instanceId']),
+                ClientRequest::OPTION_INDEX_PREFIX => $indexPrefix,
             ]);
 
             $routes = $this->getRoutes($slug, $clientRequest);

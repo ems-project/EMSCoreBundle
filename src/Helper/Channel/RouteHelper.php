@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Service;
+namespace EMS\CoreBundle\Helper\Channel;
 
 use EMS\ClientHelperBundle\Helper\Cache\CacheHelper;
 use EMS\ClientHelperBundle\Helper\Elasticsearch\ClientRequest;
@@ -17,7 +17,7 @@ use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\Cache\CacheItem;
 use Symfony\Component\Routing\RouteCollection;
 
-final class ChannelRegisterService extends BaseRouter
+final class RouteHelper extends BaseRouter
 {
     private ChannelRepository $channelRepository;
     private ElasticaService $elasticaService;

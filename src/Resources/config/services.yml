@@ -539,9 +539,9 @@ services:
     ems.service.channel:
         class: EMS\CoreBundle\Service\ChannelService
         arguments: ['@ems.repository.channel', '@logger']
-    EMS\CoreBundle\Service\ChannelRegisterService: '@ems.service.channel_register'
-    ems.service.channel_register:
-        class: EMS\CoreBundle\Service\ChannelRegisterService
+    EMS\CoreBundle\Helper\Channel\RouteHelper: '@ems.helper.channel.route_helper'
+    ems.helper.channel.route_helper:
+        class: EMS\CoreBundle\Helper\Channel\RouteHelper
         arguments: ['@ems.repository.channel', '@ems_common.service.elastica', '@logger', '@emsch.helper_cache', '@cache.app']
         tags:
             - { name: emsch.router }

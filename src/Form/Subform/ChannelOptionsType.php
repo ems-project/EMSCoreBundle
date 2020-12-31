@@ -7,7 +7,6 @@ namespace EMS\CoreBundle\Form\Subform;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -20,15 +19,6 @@ final class ChannelOptionsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('locales', TextareaType::class, [
-                'required' => true,
-                'row_attr' => [
-                    'class' => 'col-md-1',
-                ],
-                'attr' => [
-                    'rows' => 4,
-                ],
-            ])
             ->add('searchConfig', CodeEditorType::class, [
                 'required' => true,
                 'language' => 'ace/mode/json',

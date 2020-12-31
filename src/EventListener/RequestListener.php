@@ -3,70 +3,65 @@
 namespace EMS\CoreBundle\EventListener;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use EMS\ClientHelperBundle\Helper\Environment\Environment;
+use EMS\ClientHelperBundle\Helper\Environment\EnvironmentHelper;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Exception\LockedException;
 use EMS\CoreBundle\Exception\PrivilegeException;
+use EMS\CoreBundle\Repository\ChannelRepository;
 use Exception;
 use Monolog\Logger;
-use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Twig\Environment as TwigEnvironment;
 
 class RequestListener
 {
     /** @var string */
     public const EMSCO_CHANNEL_ROUTE_REGEX = '/^emsco\\.channel\\.(?P<environment>([a-z\\-0-1_]+))\\..*/';
-    protected $twig;
-    protected $doctrine;
-    protected $logger;
-    /** @var RouterInterface */
-    protected $router;
-    protected $container;
-    protected $authorizationChecker;
-    protected $session;
-    protected $allowUserRegistration;
-    protected $userLoginRoute;
-    protected $userRegistrationRoute;
+    private TwigEnvironment $twig;
+    private Registry $doctrine;
+    private Logger $logger;
+    private RouterInterface $router;
+    private ChannelRepository $channelRepository;
+    private EnvironmentHelper $environmentHelper;
 
-    public function __construct(\Twig_Environment $twig, Registry $doctrine, Logger $logger, RouterInterface $router, Container $container, AuthorizationCheckerInterface $authorizationChecker, Session $session, $allowUserRegistration, $userLoginRoute, $userRegistrationRoute)
+    public function __construct(TwigEnvironment $twig, Registry $doctrine, Logger $logger, RouterInterface $router, ChannelRepository $channelRepository, EnvironmentHelper $environmentHelper)
     {
         $this->twig = $twig;
         $this->doctrine = $doctrine;
         $this->logger = $logger;
         $this->router = $router;
-        $this->container = $container;
-        $this->authorizationChecker = $authorizationChecker;
-        $this->session = $session;
-        $this->allowUserRegistration = $allowUserRegistration;
-        $this->userLoginRoute = $userLoginRoute;
-        $this->userRegistrationRoute = $userRegistrationRoute;
+        $this->channelRepository = $channelRepository;
+        $this->environmentHelper = $environmentHelper;
     }
 
-    public function onKernelRequest(GetResponseEvent $event)
+    public function onKernelRequest(GetResponseEvent $event): void
     {
-        if ($event->getRequest()->get('_route') === $this->userRegistrationRoute && !$this->allowUserRegistration) {
-            $response = new RedirectResponse($this->router->generate($this->userLoginRoute, [], UrlGeneratorInterface::RELATIVE_PATH));
-            $event->setResponse($response);
-        }
-
-        $route = $event->getRequest()->get('_route');
         $matches = [];
-        if (\is_string($route) && 1 === \preg_match(self::EMSCO_CHANNEL_ROUTE_REGEX, $route, $matches)) {
-            $request = $event->getRequest();
-            $environment = $matches['environment'] ?? null;
-            if (!\is_string($environment)) {
-                throw new \RuntimeException('Unexpected not found environment in matching route');
+        if ($event->isMasterRequest() && \preg_match('/^\\/channel\\/(?P<environment>([a-z\\-0-1_]+))(\\/)?/', $event->getRequest()->getPathInfo(), $matches)) {
+            foreach ($this->channelRepository->getAll() as $channel) {
+                if ($matches['environment'] === $channel->getSlug()) {
+                    $this->environmentHelper->addEnvironment(new Environment($channel->getSlug(), [
+                        'base_url' => \sprintf('channel/%s', $channel->getSlug()),
+                        'route_prefix' => \sprintf('emsco.channel.%s.', $channel->getSlug()),
+                    ]));
+                }
             }
-
-            $request->attributes->set('_environment', $environment);
         }
+
+        // TODO: move the next block to the FOS controller:
+//        if ($event->getRequest()->get('_route') === $this->userRegistrationRoute && !$this->allowUserRegistration) {
+//            $response = new RedirectResponse($this->router->generate($this->userLoginRoute, [], UrlGeneratorInterface::RELATIVE_PATH));
+//            $event->setResponse($response);
+//        }
+//
     }
 
     public function onKernelException(GetResponseForExceptionEvent $event)
@@ -131,6 +126,7 @@ class RequestListener
         ]);
 
         $defaultEnvironments = [];
+        /** @var ContentType $contentType */
         foreach ($contentTypes as $contentType) {
             $defaultEnvironments[] = $contentType->getName();
         }

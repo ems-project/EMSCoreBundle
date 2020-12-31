@@ -2,11 +2,11 @@
 
 namespace EMS\CoreBundle\Service;
 
-use Elastica\Client as ElasticaClient;
 use Elasticsearch\Endpoints\Indices\Alias\Put;
 use Elasticsearch\Endpoints\Indices\Create;
 use Elasticsearch\Endpoints\Indices\Exists;
 use Elasticsearch\Endpoints\Indices\Mapping\Put as MappingPut;
+use EMS\CommonBundle\Elasticsearch\Client;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\ContentType;
@@ -65,7 +65,7 @@ class Mapping
     private $instanceId;
     /** @var ElasticaService */
     private $elasticaService;
-    /** @var ElasticaClient */
+    /** @var Client */
     private $elasticaClient;
     /** @var LoggerInterface */
     private $logger;
@@ -75,7 +75,7 @@ class Mapping
     /**
      * Constructor.
      */
-    public function __construct(LoggerInterface $logger, ElasticaClient $elasticaClient, EnvironmentService $environmentService, FieldTypeType $fieldTypeType, ElasticsearchService $elasticsearchService, ElasticaService $elasticaService, string $instanceId, bool $singleTypeIndex)
+    public function __construct(LoggerInterface $logger, Client $elasticaClient, EnvironmentService $environmentService, FieldTypeType $fieldTypeType, ElasticsearchService $elasticsearchService, ElasticaService $elasticaService, string $instanceId, bool $singleTypeIndex)
     {
         $this->elasticaClient = $elasticaClient;
         $this->environmentService = $environmentService;

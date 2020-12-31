@@ -2,8 +2,8 @@
 
 namespace EMS\CoreBundle\Command;
 
-use Elastica\Client;
 use Elasticsearch\Endpoints\Indices\Mapping\Get;
+use EMS\CommonBundle\Elasticsearch\Client;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use Symfony\Component\Console\Command\Command;

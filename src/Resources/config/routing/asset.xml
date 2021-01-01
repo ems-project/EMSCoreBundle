@@ -4,8 +4,9 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <import resource="@EMSCoreBundle/Resources/config/routing/channel.xml"
-            prefix="/channel-admin" />
-    <import resource="@EMSCoreBundle/Resources/config/routing/asset.xml"
-            prefix="/bundles" />
+    <route id="ems_core_asset_proxy" path="/emsch_assets/{requestPath}" methods="GET">
+        <default key="_controller">EMS\ClientHelperBundle\Controller\AssetController:proxyFromRefererPattern</default>
+        <requirement key="requestPath">.+</requirement>
+    </route>
+
 </routes>

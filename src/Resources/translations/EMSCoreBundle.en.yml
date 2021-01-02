@@ -732,3 +732,9 @@ form_submissions:
       confirm_body: |
           After confirmation you can NOT download the form data anymore!
           Are you sure, you want to delete the form submission?
+
+view:
+  elements:
+    side-menu:
+      chanel-admin:
+        index-link: 'Channels'

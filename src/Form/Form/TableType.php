@@ -45,6 +45,11 @@ final class TableType extends AbstractType
             'multiple' => true,
             'label' => false,
         ]);
+
+        if (0 === $data->count()) {
+            return;
+        }
+
         if ($data->isSortable()) {
             $builder->add('reordered', CollectionType::class, [
                 'entry_type' => HiddenType::class,

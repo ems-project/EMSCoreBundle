@@ -9,7 +9,7 @@
                 <div class="box-header with-border">
                     <div class="btn-group  pull-right">
                         <a class="btn btn-primary" href="{{ path('ems_core_channel_add') }}"><i class="fa fa-plus"></i> {{ add_label|default(form.vars.add_label)|trans }}</a>
-                        {%  if table.sortable %}
+                        {%  if table.sortable and table.count > 1 %}
                             <button type="button" class="btn" data-toggle="modal" data-target="#{{ table.attributeName|e('html_attr') }}_modal_reorder">
                                 <i class="fa fa-reorder"></i> {{ reorder_label|default(form.vars.reorder_label)|trans }}
                             </button>
@@ -84,7 +84,7 @@
                         </table>
                     </div>
                 </div>
-                {% if table.tableActions|length > 0 %}
+                {% if table.tableActions|length > 0 and table.count > 0 %}
                     <div class="box-footer with-border">
                         <div class="btn-group">
                             {% for action in table.tableActions %}
@@ -94,7 +94,7 @@
                     </div>
                 {% endif %}
             </div>
-            {%  if table.sortable %}
+            {%  if table.sortable and table.count > 1 %}
                 <div class="modal fade" id="{{ table.attributeName|e('html_attr') }}_modal_reorder" tabindex="-1" role="dialog" aria-labelledby="{{ table.attributeName|e('html_attr') }}_modal_reorder_label">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">

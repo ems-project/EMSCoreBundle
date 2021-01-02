@@ -14,9 +14,11 @@ use EMS\CoreBundle\Repository\ChannelRepository;
 use Exception;
 use Monolog\Logger;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Twig\Environment as TwigEnvironment;
@@ -42,17 +44,24 @@ class RequestListener
         $this->environmentHelper = $environmentHelper;
     }
 
-    public function onKernelRequest(GetResponseEvent $event): void
+    public function onKernelRequest(RequestEvent $event): void
     {
         $matches = [];
         if ($event->isMasterRequest() && \preg_match('/^\\/channel\\/(?P<channel>([a-z\\-0-1_]+))(\\/)?/', $event->getRequest()->getPathInfo(), $matches)) {
             foreach ($this->channelRepository->getAll() as $channel) {
-                if ($matches['channel'] === $channel->getName()) {
-                    $this->environmentHelper->addEnvironment(new Environment($channel->getName(), [
-                        'base_url' => \sprintf('channel/%s', $channel->getName()),
-                        'route_prefix' => \sprintf('emsco.channel.%s.', $channel->getName()),
-                    ]));
+                if ($matches['channel'] !== $channel->getName()) {
+                    continue;
                 }
+
+                if (!$channel->isPublic() && $this->isAnonymousUser($event->getRequest())) {
+                    throw new AccessDeniedHttpException();
+                }
+
+                $this->environmentHelper->addEnvironment(new Environment($channel->getName(), [
+                    'base_url' => \sprintf('channel/%s', $channel->getName()),
+                    'route_prefix' => \sprintf('emsco.channel.%s.', $channel->getName()),
+                ]));
+                break;
             }
         }
 
@@ -64,10 +73,10 @@ class RequestListener
 //
     }
 
-    public function onKernelException(GetResponseForExceptionEvent $event)
+    public function onKernelException(ExceptionEvent $event)
     {
         //hide all errors to unauthenticated users
-        $exception = $event->getException();
+        $exception = $event->getThrowable();
 
         try {
             if ($exception instanceof LockedException || $exception instanceof PrivilegeException) {
@@ -107,7 +116,7 @@ class RequestListener
         }
     }
 
-    public function provideTemplateTwigObjects(FilterControllerEvent $event)
+    public function provideTemplateTwigObjects(ControllerEvent $event)
     {
         //TODO: move to twig appextension?
         $repository = $this->doctrine->getRepository('EMSCoreBundle:ContentType');
@@ -132,5 +141,10 @@ class RequestListener
         }
 
         $this->twig->addGlobal('defaultEnvironments', $defaultEnvironments);
+    }
+
+    private function isAnonymousUser(Request $request): bool
+    {
+        return null === $request->getSession()->get('_security_main');
     }
 }

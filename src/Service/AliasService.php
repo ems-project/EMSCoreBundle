@@ -183,10 +183,18 @@ class AliasService
         $terms->setSize(2000);
         $search->addAggregation($terms);
         $search->setSize(0);
-        $aggregation = $this->elasticaService->search($search)->getAggregation(self::COUNTER_AGGREGATION);
-        if (0 !== ($aggregation['sum_other_doc_count'] ?? 0) || \count($aggregation['buckets'] ?? []) >= 2000) {
-            $this->logger->warning('service.alias.too_many_indexes');
+
+        $resultSet = $this->elasticaService->search($search);
+
+        if ($resultSet->hasAggregations()) {
+            $aggregation = $resultSet->getAggregation(self::COUNTER_AGGREGATION);
+            if (0 !== ($aggregation['sum_other_doc_count'] ?? 0) || \count($aggregation['buckets'] ?? []) >= 2000) {
+                $this->logger->warning('service.alias.too_many_indexes');
+            }
+        } else {
+            $aggregation = [];
         }
+
         $this->counterIndexes = [];
         foreach ($aggregation['buckets'] ?? [] as $bucket) {
             $index = $bucket['key'] ?? '';

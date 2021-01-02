@@ -34,7 +34,7 @@ final class ChannelController extends AbstractController
     {
         $table = new EntityTable($this->channelService);
         $table->addColumn('channel.index.column.name', 'name');
-        $table->addColumn('channel.index.column.slug', 'slug');
+        $table->addColumn('channel.index.column.environment', 'environment');
         $table->addColumn('channel.index.column.public', 'public', [true => 'fa fa-check']);
         $table->addItemGetAction('ems_core_channel_edit', 'channel.actions.edit', 'pencil');
         $table->addItemPostAction('ems_core_channel_delete', 'channel.actions.delete', 'trash', 'channel.actions.delete_confirm');

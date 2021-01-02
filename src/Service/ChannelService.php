@@ -36,7 +36,7 @@ final class ChannelService implements EntityServiceInterface
             $channel->setOrderKey($this->channelRepository->counter() + 1);
         }
         $encoder = new Encoder();
-        $slug = $channel->getSlug();
+        $slug = $channel->getEnvironment();
         if (null === $slug) {
             throw new \RuntimeException('Unexpected null slug');
         }
@@ -44,7 +44,7 @@ final class ChannelService implements EntityServiceInterface
         if (null === $webalized) {
             throw new \RuntimeException('Unexpected null webalized slug');
         }
-        $channel->setSlug($webalized);
+        $channel->setEnvironment($webalized);
         $this->channelRepository->create($channel);
     }
 

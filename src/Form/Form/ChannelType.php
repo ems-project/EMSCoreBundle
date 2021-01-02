@@ -29,7 +29,7 @@ final class ChannelType extends AbstractType
                     'class' => 'col-md-3',
                 ],
             ])
-            ->add('slug', null, [
+            ->add('environment', null, [
                 'required' => true,
                 'row_attr' => [
                     'class' => 'col-md-3',

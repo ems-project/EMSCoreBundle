@@ -387,7 +387,7 @@ channel:
   index:
     reorder: 'Reorder channels'
     column:
-      slug: 'URL''s slug'
+      environment: 'Environment''s identifier'
       name: 'Name'
       public: 'Public access'
     title: 'List of channels'
@@ -487,17 +487,11 @@ contenttype:
 form:
   subform:
     channel:
-      translationContentType: 'Translation content type'
-      routeContentType: 'Route content type'
       searchConfig: 'Search config'
-      templateContentType: 'Template content type'
-      environment: 'Environment'
-      instanceId: 'Instance Ids'
-      locales: 'Locales'
   form:
     channel:
+      environment: 'Environment''s slug identifier'
       public: 'Does this channel can be available to non-authenticated users ?'
-      slug: 'URL''s identifier (url''s slug)'
       name: 'Channel''s name'
   contenttype:
     json_update:

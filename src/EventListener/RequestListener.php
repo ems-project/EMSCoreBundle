@@ -47,10 +47,10 @@ class RequestListener
         $matches = [];
         if ($event->isMasterRequest() && \preg_match('/^\\/channel\\/(?P<environment>([a-z\\-0-1_]+))(\\/)?/', $event->getRequest()->getPathInfo(), $matches)) {
             foreach ($this->channelRepository->getAll() as $channel) {
-                if ($matches['environment'] === $channel->getSlug()) {
-                    $this->environmentHelper->addEnvironment(new Environment($channel->getSlug(), [
-                        'base_url' => \sprintf('channel/%s', $channel->getSlug()),
-                        'route_prefix' => \sprintf('emsco.channel.%s.', $channel->getSlug()),
+                if ($matches['environment'] === $channel->getEnvironment()) {
+                    $this->environmentHelper->addEnvironment(new Environment($channel->getEnvironment(), [
+                        'base_url' => \sprintf('channel/%s', $channel->getEnvironment()),
+                        'route_prefix' => \sprintf('emsco.channel.%s.', $channel->getEnvironment()),
                     ]));
                 }
             }

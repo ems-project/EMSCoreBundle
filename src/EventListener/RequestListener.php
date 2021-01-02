@@ -45,12 +45,12 @@ class RequestListener
     public function onKernelRequest(GetResponseEvent $event): void
     {
         $matches = [];
-        if ($event->isMasterRequest() && \preg_match('/^\\/channel\\/(?P<environment>([a-z\\-0-1_]+))(\\/)?/', $event->getRequest()->getPathInfo(), $matches)) {
+        if ($event->isMasterRequest() && \preg_match('/^\\/channel\\/(?P<channel>([a-z\\-0-1_]+))(\\/)?/', $event->getRequest()->getPathInfo(), $matches)) {
             foreach ($this->channelRepository->getAll() as $channel) {
-                if ($matches['environment'] === $channel->getEnvironment()) {
-                    $this->environmentHelper->addEnvironment(new Environment($channel->getEnvironment(), [
-                        'base_url' => \sprintf('channel/%s', $channel->getEnvironment()),
-                        'route_prefix' => \sprintf('emsco.channel.%s.', $channel->getEnvironment()),
+                if ($matches['channel'] === $channel->getName()) {
+                    $this->environmentHelper->addEnvironment(new Environment($channel->getName(), [
+                        'base_url' => \sprintf('channel/%s', $channel->getName()),
+                        'route_prefix' => \sprintf('emsco.channel.%s.', $channel->getName()),
                     ]));
                 }
             }

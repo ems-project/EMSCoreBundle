@@ -387,8 +387,8 @@ channel:
   index:
     reorder: 'Reorder channels'
     column:
-      environment: 'Environment''s identifier'
-      name: 'Name'
+      name: 'Channel''s name identifier'
+      label: 'Label'
       public: 'Public access'
     title: 'List of channels'
 not-applicable: 'N/A'
@@ -490,9 +490,9 @@ form:
       searchConfig: 'Search config'
   form:
     channel:
-      environment: 'Environment''s slug identifier'
+      name: 'Environment''s name identifier'
       public: 'Does this channel can be available to non-authenticated users ?'
-      name: 'Channel''s name'
+      label: 'Channel''s label'
   contenttype:
     json_update:
       deleteExitingTemplates: 'Delete existing templates'

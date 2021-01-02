@@ -23,13 +23,13 @@ final class ChannelType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', null, [
+            ->add('label', null, [
                 'required' => true,
                 'row_attr' => [
                     'class' => 'col-md-3',
                 ],
             ])
-            ->add('environment', null, [
+            ->add('name', null, [
                 'required' => true,
                 'row_attr' => [
                     'class' => 'col-md-3',

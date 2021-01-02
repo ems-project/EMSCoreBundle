@@ -13,7 +13,7 @@ final class Version20201215133710 extends AbstractMigration
     {
         $this->abortIf('postgresql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE TABLE channel (id UUID NOT NULL, created TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, modified TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, name VARCHAR(255) NOT NULL, public BOOLEAN DEFAULT \'false\' NOT NULL, environment VARCHAR(255) NOT NULL, options JSON DEFAULT NULL, order_key INT NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE channel (id UUID NOT NULL, created TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, modified TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, name VARCHAR(255) NOT NULL, public BOOLEAN DEFAULT \'false\' NOT NULL, label VARCHAR(255) NOT NULL, options JSON DEFAULT NULL, order_key INT NOT NULL, PRIMARY KEY(id))');
         $this->addSql('COMMENT ON COLUMN channel.id IS \'(DC2Type:uuid)\'');
         $this->addSql('ALTER TABLE job DROP arguments');
         $this->addSql('ALTER TABLE job DROP service');

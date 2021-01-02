@@ -57,9 +57,9 @@ final class Channel implements EntityInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="environment", type="string", length=255)
+     * @ORM\Column(name="label", type="string", length=255)
      */
-    private $environment;
+    private $label;
 
     /**
      * @var array<string, mixed>
@@ -115,14 +115,14 @@ final class Channel implements EntityInterface
         $this->name = $name;
     }
 
-    public function getEnvironment(): ?string
+    public function getLabel(): ?string
     {
-        return $this->environment;
+        return $this->label;
     }
 
-    public function setEnvironment(string $slug): void
+    public function setLabel(string $label): void
     {
-        $this->environment = $slug;
+        $this->label = $label;
     }
 
     public function isPublic(): bool

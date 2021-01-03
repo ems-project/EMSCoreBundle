@@ -173,7 +173,7 @@ class Channel implements EntityInterface
 
     public function getDefaultRoute(): ?string
     {
-        if (!\is_string($this->options['entryRoute'] ?? null)) {
+        if (!\is_string($this->options['entryRoute'] ?? null) || 0 === \strlen($this->options['entryRoute'])) {
             return null;
         }
 

@@ -6,12 +6,12 @@ namespace EMS\CoreBundle\Form\Data;
 
 final class TableColumn
 {
-    /** @var string */
-    private $titleKey;
-    /** @var string */
-    private $attribute;
+    private string $titleKey;
+    private string $attribute;
     /** @var array<mixed, string> */
-    private $valueToIconMapping;
+    private array $valueToIconMapping;
+    private ?string $routeProperty = null;
+    private ?string $routeTarget = '_blank';
 
     /**
      * @param array<mixed, string> $valueToIconMapping
@@ -39,5 +39,25 @@ final class TableColumn
     public function getValueToIconMapping(): array
     {
         return $this->valueToIconMapping;
+    }
+
+    public function setRouteProperty(string $routeProperty): void
+    {
+        $this->routeProperty = $routeProperty;
+    }
+
+    public function getRouteProperty(): ?string
+    {
+        return $this->routeProperty;
+    }
+
+    public function setRouteTarget(?string $target): ?string
+    {
+        return $this->routeTarget = $target;
+    }
+
+    public function getRouteTarget(): ?string
+    {
+        return $this->routeTarget;
     }
 }

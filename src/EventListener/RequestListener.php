@@ -68,19 +68,7 @@ class RequestListener
                 $baseUrl = \vsprintf('%s://%s%s/channel/%s', [$request->getScheme(), $request->getHttpHost(), $request->getBasePath(), $channelName]);
                 $searchConfig = \json_decode($channel->getOptions()['searchConfig'] ?? '{}', true);
                 $attributes = \json_decode($channel->getOptions()['attributes'] ?? '{}', true);
-                foreach ($attributes as $name => $value) {
-                    if (!\is_string($value)) {
-                        $value = \json_encode($value);
-                        if (false === $value) {
-                            continue;
-                        }
-                    }
-                    $request->attributes->set($name, $value);
-
-                    if ('_locale' === $name) {
-                        $request->setLocale($value);
-                    }
-                }
+                $this->setAttributesInRequest($attributes, $request);
 
                 $this->environmentHelper->addEnvironment(new Environment($channelName, [
                     'base_url' => \sprintf('channel/%s', $channelName),
@@ -172,5 +160,25 @@ class RequestListener
     private function isAnonymousUser(Request $request): bool
     {
         return null === $request->getSession()->get('_security_main');
+    }
+
+    /**
+     * @param array<string, mixed> $attributes
+     */
+    private function setAttributesInRequest(array $attributes, Request $request): void
+    {
+        foreach ($attributes as $name => $value) {
+            if (!\is_string($value)) {
+                $value = \json_encode($value);
+                if (false === $value) {
+                    continue;
+                }
+            }
+            $request->attributes->set($name, $value);
+
+            if ('_locale' === $name) {
+                $request->setLocale($value);
+            }
+        }
     }
 }

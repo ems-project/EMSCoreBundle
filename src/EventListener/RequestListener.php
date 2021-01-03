@@ -59,11 +59,24 @@ class RequestListener
                 }
 
                 $baseUrl = \vsprintf('%s://%s%s/channel/%s', [$request->getScheme(), $request->getHttpHost(), $request->getBasePath(), $channel->getName()]);
+                $searchConfig = \json_decode($channel->getOptions()['searchConfig'] ?? '{}', true);
+                $attributes = \json_decode($channel->getOptions()['attributes'] ?? '{}', true);
+                foreach ($attributes as $name => $value) {
+                    if (!\is_string($value)) {
+                        $value = \json_encode($value);
+                    }
+                    $request->attributes->set($name, $value);
+
+                    if ('_locale' === $name) {
+                        $request->setLocale($value);
+                    }
+                }
 
                 $this->environmentHelper->addEnvironment(new Environment($channel->getName(), [
                     'base_url' => \sprintf('channel/%s', $channel->getName()),
                     'route_prefix' => \sprintf('emsco.channel.%s.', $channel->getName()),
                     'regex' => \sprintf('/^%s/', \preg_quote($baseUrl, '/')),
+                    'search_config' => $searchConfig,
                 ]));
             }
         }

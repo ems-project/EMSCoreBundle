@@ -740,3 +740,6 @@ view:
     side-menu:
       chanel-admin:
         index-link: 'Channels'
+  icon:
+    class:
+      channel: 'fa fa-road'

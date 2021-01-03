@@ -49,15 +49,19 @@
                                     {% for column in table.columns %}
                                         {% set value = attribute(line.data, column.attribute)  %}
                                         <td class="nowrap">
+                                            {% set path = false %}
                                             {% if column.routeProperty and attribute(line.data, column.routeProperty)|default(false) %}
-                                                <a href="{{ path(attribute(line.data, column.routeProperty)) }}" {% if column.routeTarget %}target="{{ column.routeTarget|replace({'%value%'    : value}) }}"{% endif %}>
+                                                {% set path = path(attribute(line.data, column.routeProperty)) %}
+                                            {% endif %}
+                                            {% if path %}
+                                                <a href="{{ path }}" {% if column.routeTarget %}target="{{ column.routeTarget|replace({'%value%'    : value}) }}"{% endif %}>
                                             {% endif %}
                                             {%  if attribute(column.valueToIconMapping, value) is defined %}
                                                 <i class="{{ attribute(column.valueToIconMapping, value)  }}"></i> <span class="sr-only">{{ value }}</span>
                                             {%  else %}
                                                 {{ value }}
                                             {% endif %}
-                                            {% if column.routeProperty and attribute(line.data, column.routeProperty)|default(false) %}
+                                            {% if path %}
                                                 </a>
                                             {% endif %}
                                         </td>

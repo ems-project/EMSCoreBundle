@@ -40,6 +40,7 @@ use Symfony\Bridge\Twig\Extension\RoutingExtension;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -1564,26 +1565,40 @@ class AppExtension extends AbstractExtension
     /**
      * @param array<mixed> $parameters
      */
-    public function getPath(string $name, array $parameters = [], bool $relative = false): string
+    public function getPath(string $name, array $parameters = [], bool $relative = false): ?string
     {
         $environment = $this->getChannelEnvironment();
         if (null !== $environment && !\in_array($name, self::PROTECTED_ROUTE_NAMES) && !\preg_match(RequestListener::EMSCO_CHANNEL_ROUTE_REGEX, $name)) {
             $name = Channel::generateChannelRoute($environment, $name);
         }
 
-        return $this->routingExtension->getPath($name, $parameters, $relative);
+        try {
+            return $this->routingExtension->getPath($name, $parameters, $relative);
+        } catch (RouteNotFoundException $e) {
+            if (null === $environment) {
+                return null;
+            }
+            throw $e;
+        }
     }
 
     /**
      * @param array<mixed> $parameters
      */
-    public function getUrl(string $name, array $parameters = [], bool $schemeRelative = false): string
+    public function getUrl(string $name, array $parameters = [], bool $schemeRelative = false): ?string
     {
         $environment = $this->getChannelEnvironment();
         if (null !== $environment && !\in_array($name, self::PROTECTED_ROUTE_NAMES) && !\preg_match(RequestListener::EMSCO_CHANNEL_ROUTE_REGEX, $name)) {
             $name = Channel::generateChannelRoute($environment, $name);
         }
 
-        return $this->routingExtension->getUrl($name, $parameters, $schemeRelative);
+        try {
+            return $this->routingExtension->getUrl($name, $parameters, $schemeRelative);
+        } catch (RouteNotFoundException $e) {
+            if (null === $environment) {
+                return null;
+            }
+            throw $e;
+        }
     }
 }

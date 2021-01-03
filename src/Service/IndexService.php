@@ -2,11 +2,11 @@
 
 namespace EMS\CoreBundle\Service;
 
-use Elastica\Client;
 use Elastica\Exception\ResponseException;
 use Elasticsearch\Endpoints\Index;
 use Elasticsearch\Endpoints\Indices\Alias\Get;
 use Elasticsearch\Endpoints\Indices\Exists;
+use EMS\CommonBundle\Elasticsearch\Client;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 use Psr\Log\LoggerInterface;

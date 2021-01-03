@@ -33,7 +33,9 @@ final class ChannelController extends AbstractController
     public function index(Request $request): Response
     {
         $table = new EntityTable($this->channelService);
-        $table->addColumn('channel.index.column.label', 'label');
+        $labelColumn = $table->addColumn('channel.index.column.label', 'label');
+        $labelColumn->setRouteProperty('defaultRoute');
+        $labelColumn->setRouteTarget('channel_%value%');
         $table->addColumn('channel.index.column.name', 'name');
         $table->addColumn('channel.index.column.public', 'public', [true => 'fa fa-check']);
         $table->addItemGetAction('ems_core_channel_edit', 'channel.actions.edit', 'pencil');

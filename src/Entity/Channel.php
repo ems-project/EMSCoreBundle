@@ -170,4 +170,18 @@ class Channel implements EntityInterface
     {
         $this->orderKey = $orderKey;
     }
+
+    public function getDefaultRoute(): ?string
+    {
+        if (!\is_string($this->options['entryRoute'] ?? null)) {
+            return null;
+        }
+
+        return self::generateChannelRoute($this->name, $this->options['entryRoute']);
+    }
+
+    public static function generateChannelRoute(string $channelName, string $emschRoute): string
+    {
+        return \sprintf('emsco.channel.%s.%s', $channelName, $emschRoute);
+    }
 }

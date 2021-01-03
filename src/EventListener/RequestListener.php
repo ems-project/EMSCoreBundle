@@ -26,7 +26,8 @@ use Twig\Environment as TwigEnvironment;
 class RequestListener
 {
     /** @var string */
-    public const EMSCO_CHANNEL_ROUTE_REGEX = '/^emsco\\.channel\\.(?P<environment>([a-z\\-0-1_]+))\\..*/';
+    public const EMSCO_CHANNEL_ROUTE_REGEX = '/^emsco\\.channel\\.(?P<environment>([a-z\\-0-9_]+))\\..*/';
+    public const EMSCO_CHANNEL_PATH_REGEX = '/^\\/channel\\/(?P<channel>([a-z\\-0-9_]+))(\\/)?/';
     private TwigEnvironment $twig;
     private Registry $doctrine;
     private Logger $logger;
@@ -49,7 +50,7 @@ class RequestListener
         $request = $event->getRequest();
         if ($event->isMasterRequest()) {
             $matches = [];
-            \preg_match('/^\\/channel\\/(?P<channel>([a-z\\-0-9_]+))(\\/)?/', $request->getPathInfo(), $matches);
+            \preg_match(self::EMSCO_CHANNEL_PATH_REGEX, $request->getPathInfo(), $matches);
             foreach ($this->channelRepository->getAll() as $channel) {
                 if (
                     $channel->getName() === ($matches['channel'] ?? null)

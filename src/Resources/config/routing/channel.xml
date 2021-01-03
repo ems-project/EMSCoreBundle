@@ -10,10 +10,10 @@
     <route id="ems_core_channel_add" path="/add" methods="GET POST">
         <default key="_controller">EMS\CoreBundle\Controller\ChannelController:add</default>
     </route>
-    <route id="ems_core_channel_edit" path="/{channel}" methods="GET POST">
+    <route id="ems_core_channel_edit" path="/edit/{channel}" methods="GET POST">
         <default key="_controller">EMS\CoreBundle\Controller\ChannelController:edit</default>
     </route>
-    <route id="ems_core_channel_delete" path="/{channel}/delete" methods="POST">
+    <route id="ems_core_channel_delete" path="/delete/{channel}" methods="POST">
         <default key="_controller">EMS\CoreBundle\Controller\ChannelController:delete</default>
     </route>
 

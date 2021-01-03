@@ -46,27 +46,30 @@ class RequestListener
 
     public function onKernelRequest(RequestEvent $event): void
     {
-        $matches = [];
-        if ($event->isMasterRequest() && \preg_match('/^\\/channel\\/(?P<channel>([a-z\\-0-1_]+))(\\/)?/', $event->getRequest()->getPathInfo(), $matches)) {
+        $request = $event->getRequest();
+        if ($event->isMasterRequest()) {
+            $matches = [];
+            \preg_match('/^\\/channel\\/(?P<channel>([a-z\\-0-9_]+))(\\/)?/', $request->getPathInfo(), $matches);
             foreach ($this->channelRepository->getAll() as $channel) {
-                if ($matches['channel'] !== $channel->getName()) {
-                    continue;
+                if (
+                    $channel->getName() === ($matches['channel'] ?? null)
+                    && !$channel->isPublic()
+                    && $this->isAnonymousUser($request)) {
+                    throw new AccessDeniedHttpException('Access restricted to authenticated user');
                 }
 
-                if (!$channel->isPublic() && $this->isAnonymousUser($event->getRequest())) {
-                    throw new AccessDeniedHttpException();
-                }
+                $baseUrl = \vsprintf('%s://%s%s/channel/%s', [$request->getScheme(), $request->getHttpHost(), $request->getBasePath(), $channel->getName()]);
 
                 $this->environmentHelper->addEnvironment(new Environment($channel->getName(), [
                     'base_url' => \sprintf('channel/%s', $channel->getName()),
                     'route_prefix' => \sprintf('emsco.channel.%s.', $channel->getName()),
+                    'regex' => \sprintf('/^%s/', \preg_quote($baseUrl, '/')),
                 ]));
-                break;
             }
         }
 
         // TODO: move the next block to the FOS controller:
-//        if ($event->getRequest()->get('_route') === $this->userRegistrationRoute && !$this->allowUserRegistration) {
+//        if ($request->get('_route') === $this->userRegistrationRoute && !$this->allowUserRegistration) {
 //            $response = new RedirectResponse($this->router->generate($this->userLoginRoute, [], UrlGeneratorInterface::RELATIVE_PATH));
 //            $event->setResponse($response);
 //        }

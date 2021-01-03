@@ -25,6 +25,13 @@ final class ChannelOptionsType extends AbstractType
                     'class' => 'col-md-6',
                 ],
             ])
+            ->add('attributes', CodeEditorType::class, [
+                'required' => true,
+                'language' => 'ace/mode/json',
+                'row_attr' => [
+                    'class' => 'col-md-6',
+                ],
+            ])
             ->add('searchConfig', CodeEditorType::class, [
                 'required' => true,
                 'language' => 'ace/mode/json',

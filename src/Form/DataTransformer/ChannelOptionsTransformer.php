@@ -10,16 +10,13 @@ final class ChannelOptionsTransformer implements DataTransformerInterface
 {
     public function transform($value)
     {
-        $searchConfig = \json_decode($value['searchConfig'] ?? '', true);
-        if (null === $searchConfig) {
-            $searchConfig = $value['searchConfig'] ?? '';
-        } else {
-            $searchConfig = \json_encode($searchConfig ?? '', JSON_PRETTY_PRINT);
-        }
+        $searchConfig = $this->jsonFormat($value, 'searchConfig');
+        $attributes = $this->jsonFormat($value, 'attributes');
 
         return [
             'searchConfig' => $searchConfig,
             'entryRoute' => $value['entryRoute'] ?? null,
+            'attributes' => $attributes,
         ];
     }
 
@@ -28,6 +25,19 @@ final class ChannelOptionsTransformer implements DataTransformerInterface
         return [
             'searchConfig' => $value['searchConfig'] ?? '',
             'entryRoute' => $value['entryRoute'] ?? '',
+            'attributes' => $value['attributes'] ?? '',
         ];
+    }
+
+    private function jsonFormat(array $value, string $attribute): string
+    {
+        $formatted = \json_decode($value[$attribute] ?? '', true);
+        if (null === $formatted) {
+            $formatted = $value[$attribute] ?? '';
+        } else {
+            $formatted = \json_encode($formatted ?? '', JSON_PRETTY_PRINT);
+        }
+
+        return $formatted;
     }
 }

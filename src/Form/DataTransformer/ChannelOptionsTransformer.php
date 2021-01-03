@@ -19,6 +19,7 @@ final class ChannelOptionsTransformer implements DataTransformerInterface
 
         return [
             'searchConfig' => $searchConfig,
+            'entryRoute' => $value['entryRoute'] ?? null,
         ];
     }
 
@@ -26,6 +27,7 @@ final class ChannelOptionsTransformer implements DataTransformerInterface
     {
         return [
             'searchConfig' => $value['searchConfig'] ?? '',
+            'entryRoute' => $value['entryRoute'] ?? '',
         ];
     }
 }

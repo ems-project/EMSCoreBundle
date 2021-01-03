@@ -487,6 +487,7 @@ contenttype:
 form:
   subform:
     channel:
+      entryRoute: 'Default entry route'
       searchConfig: 'Search config'
   form:
     channel:

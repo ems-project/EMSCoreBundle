@@ -19,6 +19,12 @@ final class ChannelOptionsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('entryRoute', null, [
+                'required' => false,
+                'row_attr' => [
+                    'class' => 'col-md-6',
+                ],
+            ])
             ->add('searchConfig', CodeEditorType::class, [
                 'required' => true,
                 'language' => 'ace/mode/json',

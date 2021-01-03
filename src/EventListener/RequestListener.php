@@ -6,6 +6,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\ClientHelperBundle\Helper\Environment\Environment;
 use EMS\ClientHelperBundle\Helper\Environment\EnvironmentHelper;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Entity\Channel;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Exception\LockedException;
@@ -52,19 +53,27 @@ class RequestListener
             $matches = [];
             \preg_match(self::EMSCO_CHANNEL_PATH_REGEX, $request->getPathInfo(), $matches);
             foreach ($this->channelRepository->getAll() as $channel) {
+                $channelName = $channel->getName();
+                if (null === $channelName) {
+                    continue;
+                }
+
                 if (
-                    $channel->getName() === ($matches['channel'] ?? null)
+                    $channelName === ($matches['channel'] ?? null)
                     && !$channel->isPublic()
                     && $this->isAnonymousUser($request)) {
                     throw new AccessDeniedHttpException('Access restricted to authenticated user');
                 }
 
-                $baseUrl = \vsprintf('%s://%s%s/channel/%s', [$request->getScheme(), $request->getHttpHost(), $request->getBasePath(), $channel->getName()]);
+                $baseUrl = \vsprintf('%s://%s%s/channel/%s', [$request->getScheme(), $request->getHttpHost(), $request->getBasePath(), $channelName]);
                 $searchConfig = \json_decode($channel->getOptions()['searchConfig'] ?? '{}', true);
                 $attributes = \json_decode($channel->getOptions()['attributes'] ?? '{}', true);
                 foreach ($attributes as $name => $value) {
                     if (!\is_string($value)) {
                         $value = \json_encode($value);
+                        if (false === $value) {
+                            continue;
+                        }
                     }
                     $request->attributes->set($name, $value);
 
@@ -73,9 +82,9 @@ class RequestListener
                     }
                 }
 
-                $this->environmentHelper->addEnvironment(new Environment($channel->getName(), [
-                    'base_url' => \sprintf('channel/%s', $channel->getName()),
-                    'route_prefix' => \sprintf('emsco.channel.%s.', $channel->getName()),
+                $this->environmentHelper->addEnvironment(new Environment($channelName, [
+                    'base_url' => \sprintf('channel/%s', $channelName),
+                    'route_prefix' => Channel::generateChannelRoute($channelName, ''),
                     'regex' => \sprintf('/^%s/', \preg_quote($baseUrl, '/')),
                     'search_config' => $searchConfig,
                 ]));

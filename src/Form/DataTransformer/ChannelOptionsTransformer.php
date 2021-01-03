@@ -29,6 +29,9 @@ final class ChannelOptionsTransformer implements DataTransformerInterface
         ];
     }
 
+    /**
+     * @param array<string, mixed> $value
+     */
     private function jsonFormat(array $value, string $attribute): string
     {
         $formatted = \json_decode($value[$attribute] ?? '', true);

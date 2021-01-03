@@ -14,6 +14,7 @@ use EMS\CommonBundle\Search\Search as CommonSearch;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Storage\Processor\Config;
 use EMS\CommonBundle\Twig\RequestRuntime;
+use EMS\CoreBundle\Entity\Channel;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
@@ -1567,7 +1568,7 @@ class AppExtension extends AbstractExtension
     {
         $environment = $this->getChannelEnvironment();
         if (null !== $environment && !\in_array($name, self::PROTECTED_ROUTE_NAMES) && !\preg_match(RequestListener::EMSCO_CHANNEL_ROUTE_REGEX, $name)) {
-            $name = \sprintf('emsco.channel.%s.%s', $environment, $name);
+            $name = Channel::generateChannelRoute($environment, $name);
         }
 
         return $this->routingExtension->getPath($name, $parameters, $relative);
@@ -1580,7 +1581,7 @@ class AppExtension extends AbstractExtension
     {
         $environment = $this->getChannelEnvironment();
         if (null !== $environment && !\in_array($name, self::PROTECTED_ROUTE_NAMES) && !\preg_match(RequestListener::EMSCO_CHANNEL_ROUTE_REGEX, $name)) {
-            $name = \sprintf('emsco.channel.%s.%s', $environment, $name);
+            $name = Channel::generateChannelRoute($environment, $name);
         }
 
         return $this->routingExtension->getUrl($name, $parameters, $schemeRelative);

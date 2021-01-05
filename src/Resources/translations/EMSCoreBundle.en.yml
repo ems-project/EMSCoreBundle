@@ -359,6 +359,38 @@ view.macros.data-field-type.collection_added_items: '{1} One %singular% has been
 view.macros.data-field-type.collection_removed_items: '{1} One %singular% has been removed|]1,Inf[ %count% %plural% have been removed'
 data.edit_revision.save_draft: Save draft
 
+
+table:
+  index:
+    button:
+      reorder: 'Reorder'
+      close: 'Close'
+      add: 'Add'
+    column:
+      actions: 'Actions'
+      loop_count: '#'
+    empty: 'Nothing to show here'
+channel:
+  actions:
+    delete_selected_confirm: 'Delete all selected channels?'
+    delete_selected: 'Delete selected'
+    delete_confirm: 'Delete the "%label%" channel?'
+    delete: 'Delete'
+    edit: 'Edit'
+  menu: 'Channels'
+  add:
+    title: 'Add a channel'
+    save: 'Create'
+  edit:
+    title: 'Edit a channel'
+    save: 'Save'
+  index:
+    reorder: 'Reorder channels'
+    column:
+      name: 'Channel''s name identifier'
+      label: 'Label'
+      public: 'Public access'
+    title: 'List of channels'
 not-applicable: 'N/A'
 views:
   elasticsearch:
@@ -453,6 +485,16 @@ contenttype:
   action:
     update_from_json: 'Update from JSON'
 form:
+  subform:
+    channel:
+      attributes: 'Request extra attributes'
+      entryRoute: 'Default entry route'
+      searchConfig: 'Search config'
+  form:
+    channel:
+      name: 'Environment''s name identifier'
+      public: 'Does this channel can be available to non-authenticated users ?'
+      label: 'Channel''s label'
   contenttype:
     json_update:
       deleteExitingTemplates: 'Delete existing templates'
@@ -484,7 +526,12 @@ search:
   aggregate_option_label: 'Aggregate Option'
 
 log:
+  controller:
+    channel:
+      unknown_action: 'Unknown action'
   service:
+    channel:
+      delete: 'The channel %name% has been deleted'
     content-type:
       get-unreferenced-content-type:
         unexpected-error: 'Unexpected error while get unreferenced content type from environment %environment%: %error_message%'
@@ -687,3 +734,12 @@ form_submissions:
       confirm_body: |
           After confirmation you can NOT download the form data anymore!
           Are you sure, you want to delete the form submission?
+
+view:
+  elements:
+    side-menu:
+      chanel-admin:
+        index-link: 'Channels'
+  icon:
+    class:
+      channel: 'fa fa-road'

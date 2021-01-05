@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\Router;
+use Symfony\Component\Routing\RouterInterface;
 use Throwable;
 use Twig_Environment;
 
@@ -33,14 +33,14 @@ class SorterViewType extends ViewType
     protected $session;
     /** @var DataService */
     protected $dataService;
-    /** @var Router */
+    /** @var RouterInterface */
     protected $router;
     /** @var Mapping */
     protected $mapping;
     /** @var ElasticaService */
     private $elasticaService;
 
-    public function __construct(FormFactory $formFactory, Twig_Environment $twig, Mapping $mapping, ElasticaService $elasticaService, LoggerInterface $logger, Session $session, DataService $dataService, Router $router)
+    public function __construct(FormFactory $formFactory, Twig_Environment $twig, Mapping $mapping, ElasticaService $elasticaService, LoggerInterface $logger, Session $session, DataService $dataService, RouterInterface $router)
     {
         parent::__construct($formFactory, $twig, $logger);
         $this->mapping = $mapping;

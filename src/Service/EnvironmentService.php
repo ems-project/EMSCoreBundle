@@ -192,6 +192,7 @@ class EnvironmentService
      */
     public function getIndexAnalysisConfiguration(): array
     {
+        $esVersion = $this->elasticaService->getVersion();
         $filters = [];
 
         /** @var FilterRepository $filterRepository */
@@ -207,10 +208,10 @@ class EnvironmentService
         $analyzerRepository = $this->doctrine->getRepository('EMSCoreBundle:Analyzer');
         /** @var Analyzer $analyzer */
         foreach ($analyzerRepository->findAll() as $analyzer) {
-            $analyzers[$analyzer->getName()] = $analyzer->getOptions();
+            $analyzers[$analyzer->getName()] = $analyzer->getOptions($esVersion);
         }
 
-        $settingsSectionLabel = \version_compare($this->elasticaService->getVersion(), '7.0') >= 0 ? 'settings' : 'index';
+        $settingsSectionLabel = \version_compare($esVersion, '7.0') >= 0 ? 'settings' : 'index';
 
         return [
             $settingsSectionLabel => [

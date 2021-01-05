@@ -28,6 +28,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
 
         $yamlLoader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $xmlLoader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $xmlLoader->load('repositories.xml');
         $yamlLoader->load('services.yml');
         $xmlLoader->load('controllers.xml');
 
@@ -127,7 +128,10 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         if (isset($bundles['TwigBundle'])) {
             $container->prependExtensionConfig('twig', [
                 'globals' => $globals,
-                'form_themes' => ['@EMSCore/form/fields.html.twig'],
+                'form_themes' => [
+                    '@EMSCore/form/fields.html.twig',
+                    '@EMSCore/form/forms.html.twig',
+                ],
             ]);
         }
 

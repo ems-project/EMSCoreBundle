@@ -1,0 +1,144 @@
+{% use "bootstrap_3_layout.html.twig" %}
+{% trans_default_domain 'EMSCoreBundle' %}
+{% block emsco_form_table_type_widget %}
+    {% set table = form.vars.data %}
+    <div class="row">
+        <div class="col-md-12">
+            {{ form_start(form) }}
+            <div class="box ">
+                <div class="box-header with-border">
+                    <div class="btn-group  pull-right">
+                        <a class="btn btn-primary" href="{{ path('ems_core_channel_add') }}"><i class="fa fa-plus"></i> {{ add_label|default(form.vars.add_label)|trans }}</a>
+                        {%  if table.sortable and table.count > 1 %}
+                            <button type="button" class="btn" data-toggle="modal" data-target="#{{ table.attributeName|e('html_attr') }}_modal_reorder">
+                                <i class="fa fa-reorder"></i> {{ reorder_label|default(form.vars.reorder_label)|trans }}
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="box-body with-border">
+                    <div class="table-responsive">
+                        <table class="table table-condensed table-striped" data-datatable="{{ {
+                            order: table.tableActions|length > 0 ? 1 : 0
+                        }|json_encode|e('html_attr') }}">
+                            <thead>
+                            <tr role="row">
+                                {% if table.tableActions|length > 0 %}
+                                    <th class="fit" data-orderable="false">
+                                        <input type="checkbox" value="" data-grouped-checkbox-target=".{{ table.attributeName|e('html_attr') }}-to-select">
+                                    </th>
+                                {% endif %}
+                                <th class="text-center fit">{{ 'table.index.column.loop_count'|trans }}</th>
+                                {% for column in table.columns %}
+                                    <th class="nowrap">{{ column.titleKey|trans }}</th>
+                                {% endfor %}
+                                <th class="nowrap" data-orderable="false">{{ 'table.index.column.actions'|trans }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for line in table %}
+                                <tr>
+                                    {% if table.tableActions|length > 0 %}
+                                        <td class="{{ table.attributeName|e('html_attr') }}-to-select">
+                                            {% for chekbox in form.selected|filter(f => f.vars.value == line.data.id) %}
+                                                {{ form_widget(chekbox) }}
+                                            {%  endfor %}
+                                        </td>
+                                    {% endif %}
+                                    <td class="text-center">{{ loop.index }}</td>
+                                    {% for column in table.columns %}
+                                        {% set value = attribute(line.data, column.attribute)  %}
+                                        <td class="nowrap">
+                                            {% set path = false %}
+                                            {% if column.routeProperty and attribute(line.data, column.routeProperty)|default(false) %}
+                                                {% set path = path(attribute(line.data, column.routeProperty)) %}
+                                            {% endif %}
+                                            {% if path %}
+                                                <a href="{{ path }}" {% if column.routeTarget %}target="{{ column.routeTarget|replace({'%value%'    : value}) }}"{% endif %}>
+                                            {% endif %}
+                                            {%  if attribute(column.valueToIconMapping, value) is defined %}
+                                                <i class="{{ attribute(column.valueToIconMapping, value)  }}"></i> <span class="sr-only">{{ value }}</span>
+                                            {%  else %}
+                                                {{ value }}
+                                            {% endif %}
+                                            {% if path %}
+                                                </a>
+                                            {% endif %}
+                                        </td>
+                                    {% endfor %}
+                                    <td data-search="">
+                                        <div class="btn-group">
+                                            {% for action in table.itemActions %}
+                                                {% if action.post %}
+                                                    {% include '@EMSCore/elements/post-button.html.twig' with {
+                                                        'url': path(action.route, action.routeParameters|merge({(table.attributeName): line.data.id})),
+                                                        'message': action.messageKey,
+                                                        'label': action.labelKey,
+                                                        'itemLabel': attribute(line.data, table.labelAttribute),
+                                                        'icon': action.icon
+                                                    }%}
+                                                {% else %}
+                                                    {% include '@EMSCore/elements/get-button.html.twig' with {
+                                                        'url':  path(action.route, action.routeParameters|merge({(table.attributeName): line.data.id})),
+                                                        'label': action.labelKey,
+                                                        'itemLabel': attribute(line.data, table.labelAttribute),
+                                                        'icon': action.icon
+                                                    }%}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </td>
+                                </tr>
+                            {%  endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% if table.tableActions|length > 0 and table.count > 0 %}
+                    <div class="box-footer with-border">
+                        <div class="btn-group">
+                            {% for action in table.tableActions %}
+                                {{ form_widget(attribute(form, action.name)) }}
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            {%  if table.sortable and table.count > 1 %}
+                <div class="modal fade" id="{{ table.attributeName|e('html_attr') }}_modal_reorder" tabindex="-1" role="dialog" aria-labelledby="{{ table.attributeName|e('html_attr') }}_modal_reorder_label">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="{{ table.attributeName|e('html_attr') }}_modal_reorder_label">
+                                    <strong>{{ reorder_label|default(form.vars.reorder_label)|trans }}</strong>
+                                </h4>
+                            </div>
+                            <div class="modal-body">
+                                <ul class="list-group sortable" id="{{ table.attributeName|e('html_attr') }}_modal_reorder_list">
+                                    {% for child in form.reordered %}
+                                        <li class="list-group-item">
+                                            <i class="glyphicon glyphicon-move"></i>
+
+                                            {% for line in table|filter(line => child.vars.value == line.data.id) %}
+                                                {{ attribute(line.data, table.labelAttribute) }}
+                                            {% endfor %}
+                                            {{ form_row( child ) }}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="btn-group">
+                                    {{ form_widget(form.reorderAction) }}
+                                    <button type="button" class="btn" data-dismiss="modal"><i class="fa fa-close"></i> {{ 'table.index.button.close'|trans }}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

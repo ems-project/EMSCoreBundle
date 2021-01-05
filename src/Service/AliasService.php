@@ -3,10 +3,10 @@
 namespace EMS\CoreBundle\Service;
 
 use Elastica\Aggregation\Terms;
-use Elastica\Client as ElasticaClient;
 use Elasticsearch\Endpoints\Cat\Indices;
 use Elasticsearch\Endpoints\Indices\Alias\Get;
 use Elasticsearch\Endpoints\Indices\Aliases\Update;
+use EMS\CommonBundle\Elasticsearch\Client;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\ManagedAlias;
@@ -27,7 +27,7 @@ class AliasService
     private $orphanIndexes = [];
     /** @var bool */
     private $isBuild = false;
-    /** @var ElasticaClient */
+    /** @var Client */
     private $elasticaClient;
     /** @var ElasticaService */
     private $elasticaService;
@@ -36,7 +36,7 @@ class AliasService
     /** @var LoggerInterface */
     private $logger;
 
-    public function __construct(LoggerInterface $logger, ElasticaClient $elasticaClient, EnvironmentRepository $environmentRepository, ManagedAliasRepository $managedAliasRepository, ElasticaService $elasticaService)
+    public function __construct(LoggerInterface $logger, Client $elasticaClient, EnvironmentRepository $environmentRepository, ManagedAliasRepository $managedAliasRepository, ElasticaService $elasticaService)
     {
         $this->counterIndexes = [];
         $this->envRepo = $environmentRepository;
@@ -183,10 +183,18 @@ class AliasService
         $terms->setSize(2000);
         $search->addAggregation($terms);
         $search->setSize(0);
-        $aggregation = $this->elasticaService->search($search)->getAggregation(self::COUNTER_AGGREGATION);
-        if (0 !== ($aggregation['sum_other_doc_count'] ?? 0) || \count($aggregation['buckets'] ?? []) >= 2000) {
-            $this->logger->warning('service.alias.too_many_indexes');
+
+        $resultSet = $this->elasticaService->search($search);
+
+        if ($resultSet->hasAggregations()) {
+            $aggregation = $resultSet->getAggregation(self::COUNTER_AGGREGATION);
+            if (0 !== ($aggregation['sum_other_doc_count'] ?? 0) || \count($aggregation['buckets'] ?? []) >= 2000) {
+                $this->logger->warning('service.alias.too_many_indexes');
+            }
+        } else {
+            $aggregation = [];
         }
+
         $this->counterIndexes = [];
         foreach ($aggregation['buckets'] ?? [] as $bucket) {
             $index = $bucket['key'] ?? '';

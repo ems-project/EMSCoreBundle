@@ -21,3 +21,9 @@ span.select2-container {
 ul.navbar-nav>.user-menu>.dropdown-menu>li.user-header {
   height: auto;
 }
+
+.table td.fit,
+.table th.fit {
+  white-space: nowrap;
+  width: 1%;
+}

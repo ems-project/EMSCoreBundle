@@ -3,62 +3,94 @@
 namespace EMS\CoreBundle\EventListener;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use EMS\ClientHelperBundle\Helper\Environment\Environment;
+use EMS\ClientHelperBundle\Helper\Environment\EnvironmentHelper;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Entity\Channel;
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Exception\LockedException;
 use EMS\CoreBundle\Exception\PrivilegeException;
+use EMS\CoreBundle\Repository\ChannelRepository;
 use Exception;
 use Monolog\Logger;
-use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\Router;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Routing\RouterInterface;
+use Twig\Environment as TwigEnvironment;
 
 class RequestListener
 {
-    protected $twig;
-    protected $doctrine;
-    protected $logger;
-    /** @var \Symfony\Bundle\FrameworkBundle\Routing\Router */
-    protected $router;
-    protected $container;
-    protected $authorizationChecker;
-    protected $session;
-    protected $allowUserRegistration;
-    protected $userLoginRoute;
-    protected $userRegistrationRoute;
+    /** @var string */
+    public const EMSCO_CHANNEL_ROUTE_REGEX = '/^emsco\\.channel\\.(?P<environment>([a-z\\-0-9_]+))\\..*/';
+    public const EMSCO_CHANNEL_PATH_REGEX = '/^\\/channel\\/(?P<channel>([a-z\\-0-9_]+))(\\/)?/';
+    private TwigEnvironment $twig;
+    private Registry $doctrine;
+    private Logger $logger;
+    private RouterInterface $router;
+    private ChannelRepository $channelRepository;
+    private EnvironmentHelper $environmentHelper;
 
-    public function __construct(\Twig_Environment $twig, Registry $doctrine, Logger $logger, Router $router, Container $container, AuthorizationCheckerInterface $authorizationChecker, Session $session, $allowUserRegistration, $userLoginRoute, $userRegistrationRoute)
+    public function __construct(TwigEnvironment $twig, Registry $doctrine, Logger $logger, RouterInterface $router, ChannelRepository $channelRepository, EnvironmentHelper $environmentHelper)
     {
         $this->twig = $twig;
         $this->doctrine = $doctrine;
         $this->logger = $logger;
         $this->router = $router;
-        $this->container = $container;
-        $this->authorizationChecker = $authorizationChecker;
-        $this->session = $session;
-        $this->allowUserRegistration = $allowUserRegistration;
-        $this->userLoginRoute = $userLoginRoute;
-        $this->userRegistrationRoute = $userRegistrationRoute;
+        $this->channelRepository = $channelRepository;
+        $this->environmentHelper = $environmentHelper;
     }
 
-    public function onKernelRequest(GetResponseEvent $event)
+    public function onKernelRequest(RequestEvent $event): void
     {
-        if ($event->getRequest()->get('_route') === $this->userRegistrationRoute && !$this->allowUserRegistration) {
-            $response = new RedirectResponse($this->router->generate($this->userLoginRoute, [], UrlGeneratorInterface::RELATIVE_PATH));
-            $event->setResponse($response);
+        $request = $event->getRequest();
+        if ($event->isMasterRequest()) {
+            $matches = [];
+            \preg_match(self::EMSCO_CHANNEL_PATH_REGEX, $request->getPathInfo(), $matches);
+            foreach ($this->channelRepository->getAll() as $channel) {
+                $channelName = $channel->getName();
+                if (null === $channelName) {
+                    continue;
+                }
+
+                if (
+                    $channelName === ($matches['channel'] ?? null)
+                    && !$channel->isPublic()
+                    && $this->isAnonymousUser($request)) {
+                    throw new AccessDeniedHttpException('Access restricted to authenticated user');
+                }
+
+                $baseUrl = \vsprintf('%s://%s%s/channel/%s', [$request->getScheme(), $request->getHttpHost(), $request->getBasePath(), $channelName]);
+                $searchConfig = \json_decode($channel->getOptions()['searchConfig'] ?? '{}', true);
+                $attributes = \json_decode($channel->getOptions()['attributes'] ?? '{}', true);
+                $this->setAttributesInRequest($attributes, $request);
+
+                $this->environmentHelper->addEnvironment(new Environment($channelName, [
+                    'base_url' => \sprintf('channel/%s', $channelName),
+                    'route_prefix' => Channel::generateChannelRoute($channelName, ''),
+                    'regex' => \sprintf('/^%s/', \preg_quote($baseUrl, '/')),
+                    'search_config' => $searchConfig,
+                ]));
+            }
         }
+
+        // TODO: move the next block to the FOS controller:
+//        if ($request->get('_route') === $this->userRegistrationRoute && !$this->allowUserRegistration) {
+//            $response = new RedirectResponse($this->router->generate($this->userLoginRoute, [], UrlGeneratorInterface::RELATIVE_PATH));
+//            $event->setResponse($response);
+//        }
+//
     }
 
-    public function onKernelException(GetResponseForExceptionEvent $event)
+    public function onKernelException(ExceptionEvent $event)
     {
         //hide all errors to unauthenticated users
-        $exception = $event->getException();
+        $exception = $event->getThrowable();
 
         try {
             if ($exception instanceof LockedException || $exception instanceof PrivilegeException) {
@@ -98,7 +130,7 @@ class RequestListener
         }
     }
 
-    public function provideTemplateTwigObjects(FilterControllerEvent $event)
+    public function provideTemplateTwigObjects(ControllerEvent $event)
     {
         //TODO: move to twig appextension?
         $repository = $this->doctrine->getRepository('EMSCoreBundle:ContentType');
@@ -117,10 +149,36 @@ class RequestListener
         ]);
 
         $defaultEnvironments = [];
+        /** @var ContentType $contentType */
         foreach ($contentTypes as $contentType) {
             $defaultEnvironments[] = $contentType->getName();
         }
 
         $this->twig->addGlobal('defaultEnvironments', $defaultEnvironments);
+    }
+
+    private function isAnonymousUser(Request $request): bool
+    {
+        return null === $request->getSession()->get('_security_main');
+    }
+
+    /**
+     * @param array<string, mixed> $attributes
+     */
+    private function setAttributesInRequest(array $attributes, Request $request): void
+    {
+        foreach ($attributes as $name => $value) {
+            if (!\is_string($value)) {
+                $value = \json_encode($value);
+                if (false === $value) {
+                    continue;
+                }
+            }
+            $request->attributes->set($name, $value);
+
+            if ('_locale' === $name) {
+                $request->setLocale($value);
+            }
+        }
     }
 }

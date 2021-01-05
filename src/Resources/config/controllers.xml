@@ -50,5 +50,10 @@
             <argument type="service" id="logger" />
             <tag name="controller.service_arguments"/>
         </service>
+        <service id="EMS\CoreBundle\Controller\ChannelController" public="true">
+            <argument type="service" id="logger" />
+            <argument type="service" id="ems.service.channel" />
+            <tag name="controller.service_arguments"/>
+        </service>
     </services>
 </container>

@@ -67,8 +67,10 @@ class RequestListener
 
                 $baseUrl = \vsprintf('%s://%s%s/channel/%s', [$request->getScheme(), $request->getHttpHost(), $request->getBasePath(), $channelName]);
                 $searchConfig = \json_decode($channel->getOptions()['searchConfig'] ?? '{}', true);
-                $attributes = \json_decode($channel->getOptions()['attributes'] ?? '{}', true);
-                $this->setAttributesInRequest($attributes, $request);
+                $attributes = \json_decode($channel->getOptions()['attributes'] ?? null, true);
+                if (\is_array($attributes)) {
+                    $this->setAttributesInRequest($attributes, $request);
+                }
 
                 $this->environmentHelper->addEnvironment(new Environment($channelName, [
                     'base_url' => \sprintf('channel/%s', $channelName),

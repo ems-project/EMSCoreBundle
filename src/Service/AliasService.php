@@ -56,6 +56,10 @@ class AliasService
      */
     public function getAlias(string $name): array
     {
+        if (!$this->isBuild) {
+            $this->build();
+        }
+
         return $this->aliases[$name];
     }
 
@@ -64,6 +68,10 @@ class AliasService
      */
     public function getAliases(): array
     {
+        if (!$this->isBuild) {
+            $this->build();
+        }
+
         return $this->aliases;
     }
 

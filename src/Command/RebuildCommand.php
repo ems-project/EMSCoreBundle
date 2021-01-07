@@ -164,9 +164,6 @@ class RebuildCommand extends EmsCommand
             if (!$contentType->getDeleted() && $contentType->getEnvironment() && $contentTypeEnvironment->getManaged()) {
                 $this->contentTypeService->updateMapping($contentType, $indexName);
                 $output->writeln('A mapping has been defined for '.$contentType->getSingularName());
-
-                $this->contentTypeService->setSingleTypeIndex($environment, $contentType, $indexName);
-
                 ++$countContentType;
             }
         }

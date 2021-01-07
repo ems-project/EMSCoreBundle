@@ -3,7 +3,6 @@
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\ORM\NoResultException;
 use Elasticsearch\Common\Exceptions\BadRequest400Exception;
 use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
 use EMS\CommonBundle\Helper\EmsFields;
@@ -16,7 +15,6 @@ use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Exception\ContentTypeAlreadyExistException;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\FieldTypeRepository;
-use EMS\CoreBundle\Repository\SingleTypeIndexRepository;
 use EMS\CoreBundle\Repository\TemplateRepository;
 use EMS\CoreBundle\Repository\ViewRepository;
 use Psr\Log\LoggerInterface;
@@ -171,14 +169,6 @@ class ContentTypeService
         ]);
     }
 
-    public function setSingleTypeIndex(Environment $environment, ContentType $contentType, string $name)
-    {
-        $em = $this->doctrine->getManager();
-        /** @var SingleTypeIndexRepository $repository */
-        $repository = $em->getRepository('EMSCoreBundle:SingleTypeIndex');
-        $repository->setIndexName($environment, $contentType, $name);
-    }
-
     public function getIndex(ContentType $contentType, Environment $environment = null): string
     {
         if (!$environment) {
@@ -197,13 +187,7 @@ class ContentTypeService
             if (!$envs) {
                 $envs = \array_reduce($this->environmentService->getManagedEnvironement(), function ($envs, $item) use ($contentType, $body) {
                     /* @var Environment $item */
-                    try {
-                        $index = $this->getIndex($contentType, $item);
-                    } catch (NoResultException $e) {
-                        $index = $this->environmentService->getNewIndexName($item, $contentType);
-                        $this->setSingleTypeIndex($item, $contentType, $index);
-                    }
-
+                    $index = $this->getIndex($contentType, $item);
                     $this->mappingService->createIndex($index, $body, $item->getAlias());
 
                     if (isset($envs)) {

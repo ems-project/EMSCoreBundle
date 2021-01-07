@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Entity;
 
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
@@ -140,12 +139,6 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     protected $orderKey;
 
     /**
-     * @ORM\OneToMany(targetEntity="SingleTypeIndex", mappedBy="environment", cascade={"persist", "remove"})
-     * @ORM\OrderBy({"name" = "ASC"})
-     */
-    protected $singleTypeIndexes;
-
-    /**
      * @ORM\Column(name="update_referrers", type="boolean", nullable=false, options={"default": false}))
      */
     protected bool $updateReferrers = false;
@@ -168,7 +161,6 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     public function __construct()
     {
         $this->revisions = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->singleTypeIndexes = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -623,36 +615,6 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     public function getOrderKey()
     {
         return $this->orderKey;
-    }
-
-    /**
-     * Add single type index.
-     *
-     * @return Environment
-     */
-    public function addSingleTypeIndex(SingleTypeIndex $index)
-    {
-        $this->singleTypeIndexes[] = $index;
-
-        return $this;
-    }
-
-    /**
-     * Remove single type index.
-     */
-    public function removeSingleTypeIndex(SingleTypeIndex $index)
-    {
-        $this->singleTypeIndexes->removeElement($index);
-    }
-
-    /**
-     * Get single type indexes.
-     *
-     * @return Collection
-     */
-    public function getSingleTypeIndexes()
-    {
-        return $this->singleTypeIndexes;
     }
 
     public function isUpdateReferrers(): bool

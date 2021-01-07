@@ -146,6 +146,11 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     protected $singleTypeIndexes;
 
     /**
+     * @ORM\Column(name="update_referrers", type="boolean", nullable=false, options={"default": false}))
+     */
+    protected bool $updateReferrers = false;
+
+    /**
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
@@ -648,6 +653,16 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     public function getSingleTypeIndexes()
     {
         return $this->singleTypeIndexes;
+    }
+
+    public function isUpdateReferrers(): bool
+    {
+        return $this->updateReferrers;
+    }
+
+    public function setUpdateReferrers(bool $updateReferrers): void
+    {
+        $this->updateReferrers = $updateReferrers;
     }
 
     /**

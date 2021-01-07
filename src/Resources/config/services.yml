@@ -650,11 +650,6 @@ services:
         arguments: ['@logger', '@doctrine', '@ems.service.contenttype', '@ems.service.asset_extractor', '@ems.service.file']
         tags:
             -  { name: console.command }
-    ems.environment.reconnect:
-        class: EMS\CoreBundle\Command\ReconnectCommand
-        arguments: ['@ems_common.elastica.client', '@ems.service.contenttype', '@ems.service.environment']
-        tags:
-            -  { name: console.command }
     ems.environment.list:
         class: EMS\CoreBundle\Command\EnvironmentCommand
         arguments: ['@ems.service.environment']

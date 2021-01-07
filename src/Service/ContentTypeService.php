@@ -13,7 +13,6 @@ use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
-use EMS\CoreBundle\Entity\SingleTypeIndex;
 use EMS\CoreBundle\Exception\ContentTypeAlreadyExistException;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\FieldTypeRepository;
@@ -50,10 +49,8 @@ class ContentTypeService
     protected $orderedContentTypes = [];
     /** @var ContentType[] */
     protected $contentTypeArrayByName = [];
-    /** @var bool */
-    protected $singleTypeIndex;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, Mapping $mappingService, ElasticaService $elasticaService, EnvironmentService $environmentService, FormRegistryInterface $formRegistry, TranslatorInterface $translator, $instanceId, $singleTypeIndex)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, Mapping $mappingService, ElasticaService $elasticaService, EnvironmentService $environmentService, FormRegistryInterface $formRegistry, TranslatorInterface $translator, $instanceId)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
@@ -63,7 +60,6 @@ class ContentTypeService
         $this->formRegistry = $formRegistry;
         $this->instanceId = $instanceId;
         $this->translator = $translator;
-        $this->singleTypeIndex = $singleTypeIndex;
     }
 
     /**
@@ -187,17 +183,6 @@ class ContentTypeService
     {
         if (!$environment) {
             $environment = $contentType->getEnvironment();
-        }
-
-        if ($this->singleTypeIndex) {
-            $em = $this->doctrine->getManager();
-            /** @var SingleTypeIndexRepository $repository */
-            $repository = $em->getRepository('EMSCoreBundle:SingleTypeIndex');
-
-            /** @var SingleTypeIndex $singleTypeIndex */
-            $singleTypeIndex = $repository->getIndexName($contentType, $environment);
-
-            return $singleTypeIndex->getName();
         }
 
         return $environment->getAlias();

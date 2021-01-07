@@ -58,7 +58,6 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.application_menu_controller', $config['application_menu_controller']);
         $container->setParameter('ems_core.asset_config', $config['asset_config']);
         $container->setParameter('ems_core.tika_server', $config['tika_server']);
-        $container->setParameter('ems_core.single_type_index', $config['single_type_index']);
         $container->setParameter('ems_core.pre_generated_ouuids', $config['pre_generated_ouuids']);
         $container->setParameter('ems_core.version', $this->getCoreVersion($container->getParameter('kernel.root_dir')));
         $container->setParameter('ems_core.private_key', $config['private_key']);

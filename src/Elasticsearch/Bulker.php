@@ -26,8 +26,6 @@ class Bulker
     /** @var int */
     private $size = 500;
     /** @var bool */
-    private $singleTypeIndex;
-    /** @var bool */
     private $sign = true;
     /** @var array */
     private $errors = [];
@@ -36,14 +34,12 @@ class Bulker
     /** @var Client */
     private $client;
 
-    public function __construct(Client $client, LoggerInterface $logger, DataService $dataService, Mapping $mapping, bool $singleTypeIndex)
+    public function __construct(Client $client, LoggerInterface $logger, DataService $dataService, Mapping $mapping)
     {
         $this->client = $client;
         $this->logger = $logger;
         $this->dataService = $dataService;
         $this->mapping = $mapping;
-        $this->singleTypeIndex = $singleTypeIndex;
-
         $this->bulk = new Bulk($this->client);
     }
 

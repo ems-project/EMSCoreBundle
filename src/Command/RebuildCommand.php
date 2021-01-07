@@ -31,8 +31,6 @@ class RebuildCommand extends EmsCommand
     private $reindexCommand;
     /** @var string */
     private $instanceId;
-    /** @var bool */
-    private $singleTypeIndex;
     /** @var ElasticaService */
     private $elasticaService;
     /** @var LoggerInterface */
@@ -42,14 +40,13 @@ class RebuildCommand extends EmsCommand
     /** @var AliasService */
     private $aliasService;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, ContentTypeService $contentTypeService, EnvironmentService $environmentService, ReindexCommand $reindexCommand, ElasticaService $elasticaService, Mapping $mapping, AliasService $aliasService, string $instanceId, bool $singleTypeIndex)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, ContentTypeService $contentTypeService, EnvironmentService $environmentService, ReindexCommand $reindexCommand, ElasticaService $elasticaService, Mapping $mapping, AliasService $aliasService, string $instanceId)
     {
         $this->doctrine = $doctrine;
         $this->contentTypeService = $contentTypeService;
         $this->environmentService = $environmentService;
         $this->reindexCommand = $reindexCommand;
         $this->instanceId = $instanceId;
-        $this->singleTypeIndex = $singleTypeIndex;
         $this->elasticaService = $elasticaService;
         $this->logger = $logger;
         $this->mapping = $mapping;
@@ -149,13 +146,10 @@ class RebuildCommand extends EmsCommand
         $contentTypes = $contentTypeRepository->findAll();
 
         $body = $this->environmentService->getIndexAnalysisConfiguration();
-        if (!$this->singleTypeIndex) {
-            $this->mapping->createIndex($indexName, $body);
 
-            $output->writeln('A new index '.$indexName.' has been created');
-
-            $this->waitFor($yellowOk, $output);
-        }
+        $this->mapping->createIndex($indexName, $body);
+        $output->writeln('A new index '.$indexName.' has been created');
+        $this->waitFor($yellowOk, $output);
 
         $output->writeln(\count($contentTypes).' content types will be re-indexed');
 
@@ -168,40 +162,21 @@ class RebuildCommand extends EmsCommand
                 throw new \RuntimeException('Unexpected null environment');
             }
             if (!$contentType->getDeleted() && $contentType->getEnvironment() && $contentTypeEnvironment->getManaged()) {
-                if ($this->singleTypeIndex) {
-                    $indexName = $this->environmentService->getNewIndexName($environment, $contentType);
-                    $indexes[] = $indexName;
-                    $this->mapping->createIndex($indexName, $body);
-
-                    $output->writeln('A new index '.$indexName.' has been created');
-
-                    $this->waitFor($yellowOk, $output);
-                }
-
                 $this->contentTypeService->updateMapping($contentType, $indexName);
                 $output->writeln('A mapping has been defined for '.$contentType->getSingularName());
 
-                if ($this->singleTypeIndex) {
-                    $this->reindexCommand->reindex($name, $contentType, $indexName, $output, $signData, $bulkSize);
-                }
                 $this->contentTypeService->setSingleTypeIndex($environment, $contentType, $indexName);
 
-                if ($this->singleTypeIndex) {
-                    $output->writeln('');
-                    $output->writeln($contentType->getPluralName().' have been re-indexed '.$countContentType.'/'.\count($contentTypes));
-                }
                 ++$countContentType;
             }
         }
 
-        if (!$this->singleTypeIndex) {
-            /** @var ContentType $contentType */
-            foreach ($contentTypes as $contentType) {
-                if (!$contentType->getDeleted() && null !== $contentType->getEnvironment() && $contentType->getEnvironment()->getManaged()) {
-                    $this->reindexCommand->reindex($name, $contentType, $indexName, $output, $signData, $bulkSize);
-                    $output->writeln('');
-                    $output->writeln($contentType->getPluralName().' have been re-indexed ');
-                }
+        /** @var ContentType $contentType */
+        foreach ($contentTypes as $contentType) {
+            if (!$contentType->getDeleted() && null !== $contentType->getEnvironment() && $contentType->getEnvironment()->getManaged()) {
+                $this->reindexCommand->reindex($name, $contentType, $indexName, $output, $signData, $bulkSize);
+                $output->writeln('');
+                $output->writeln($contentType->getPluralName().' have been re-indexed ');
             }
         }
 

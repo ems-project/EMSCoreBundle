@@ -22,15 +22,11 @@ class ReconnectCommand extends Command
     /** @var EnvironmentService */
     protected $environmentService;
 
-    /** @var bool */
-    private $singleTypeIndex;
-
-    public function __construct(Client $client, ContentTypeService $contentTypeService, EnvironmentService $environmentService, bool $singleTypeIndex)
+    public function __construct(Client $client, ContentTypeService $contentTypeService, EnvironmentService $environmentService)
     {
         $this->client = $client;
         $this->contentTypeService = $contentTypeService;
         $this->environmentService = $environmentService;
-        $this->singleTypeIndex = $singleTypeIndex;
         parent::__construct();
     }
 
@@ -48,10 +44,8 @@ class ReconnectCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if (!$this->singleTypeIndex) {
-            $output->writeln('This commands is for single type indexes config');
-            exit;
-        }
+        $output->writeln('This commands is for single type indexes config');
+        exit;
 
         $environmentName = $input->getArgument('name');
 

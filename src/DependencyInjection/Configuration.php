@@ -39,7 +39,6 @@ class Configuration implements ConfigurationInterface
     const PUBLIC_KEY = null;
     const ASSET_CONFIG = [];
     const TIKA_SERVER = null;
-    const SINGLE_TYPE_INDEX = false;
     const SAVE_ASSETS_IN_DB = false;
 
     /**
@@ -83,7 +82,6 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('public_key')->defaultValue(self::PUBLIC_KEY)->end()
             ->scalarNode('tika_server')->defaultValue(self::TIKA_SERVER)->end()
             ->scalarNode('elasticsearch_version')->defaultValue('depreacted')->end()
-            ->booleanNode('single_type_index')->defaultValue(self::SINGLE_TYPE_INDEX)->end()
             ->booleanNode('pre_generated_ouuids')->defaultValue(false)->end()
             ->arrayNode('template_options')->defaultValue([])->prototype('variable')->end()->end()
             ->scalarNode('health_check_allow_origin')->defaultValue(null)->end()

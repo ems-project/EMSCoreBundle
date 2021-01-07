@@ -69,13 +69,11 @@ class Mapping
     private $elasticaClient;
     /** @var LoggerInterface */
     private $logger;
-    /** @var bool */
-    private $singleTypeIndex;
 
     /**
      * Constructor.
      */
-    public function __construct(LoggerInterface $logger, Client $elasticaClient, EnvironmentService $environmentService, FieldTypeType $fieldTypeType, ElasticsearchService $elasticsearchService, ElasticaService $elasticaService, string $instanceId, bool $singleTypeIndex)
+    public function __construct(LoggerInterface $logger, Client $elasticaClient, EnvironmentService $environmentService, FieldTypeType $fieldTypeType, ElasticsearchService $elasticsearchService, ElasticaService $elasticaService, string $instanceId)
     {
         $this->elasticaClient = $elasticaClient;
         $this->environmentService = $environmentService;
@@ -84,7 +82,6 @@ class Mapping
         $this->elasticaService = $elasticaService;
         $this->instanceId = $instanceId;
         $this->logger = $logger;
-        $this->singleTypeIndex = $singleTypeIndex;
     }
 
     public function generateMapping(ContentType $contentType, $withPipeline = false)
@@ -126,9 +123,6 @@ class Mapping
             Mapping::CORE_VERSION_META_FIELD => $this->elasticaService->getVersion(),
             Mapping::INSTANCE_ID_META_FIELD => $this->instanceId,
         ];
-        if ($this->singleTypeIndex) {
-            $out['_meta'][Mapping::CONTENT_TYPE_META_FIELD] = $contentType->getName();
-        }
 
         $elasticsearchVersion = $this->elasticaService->getVersion();
         if (\version_compare($elasticsearchVersion, '7.0') >= 0) {

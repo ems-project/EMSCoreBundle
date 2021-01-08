@@ -2026,6 +2026,13 @@ class DataService
 
         foreach (\explode(',', $contentTypesCommaList) as $contentTypeName) {
             $contentType = $this->contentTypeService->getByName($contentTypeName);
+            if (false === $contentType) {
+                $this->logger->warning('log.service.data.get_data_links.content_type_not_found', [
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $contentTypeName,
+                ]);
+                continue;
+            }
+
             if ($contentType->getBusinessIdField() && \count($ouuids) > 0) {
                 $search = $this->elasticaService->convertElasticsearchSearch([
                     'index' => $contentType->getEnvironment()->getAlias(),

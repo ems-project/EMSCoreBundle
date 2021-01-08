@@ -4,7 +4,6 @@ namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CommonBundle\Service\ElasticaService;
-use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
@@ -138,19 +137,17 @@ class RebuildCommand extends EmsCommand
             $output->writeln('Alias has been aligned to '.$environment->getAlias());
         }
 
-        $singleIndexName = $indexName = $environment->getNewIndexName();
-        $indexes = [];
-
         /** @var ContentTypeRepository $contentTypeRepository */
         $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
         $contentTypes = $contentTypeRepository->findAll();
 
         $body = $this->environmentService->getIndexAnalysisConfiguration();
 
-        $this->mapping->createIndex($indexName, $body);
-        $output->writeln('A new index '.$indexName.' has been created');
-        $this->waitFor($yellowOk, $output);
+        $newIndexName = $environment->getNewIndexName();
+        $this->mapping->createIndex($newIndexName, $body);
 
+        $output->writeln('A new index '.$newIndexName.' has been created');
+        $this->waitFor($yellowOk, $output);
         $output->writeln(\count($contentTypes).' content types will be re-indexed');
 
         $countContentType = 1;
@@ -162,7 +159,7 @@ class RebuildCommand extends EmsCommand
                 throw new \RuntimeException('Unexpected null environment');
             }
             if (!$contentType->getDeleted() && $contentType->getEnvironment() && $contentTypeEnvironment->getManaged()) {
-                $this->contentTypeService->updateMapping($contentType, $indexName);
+                $this->contentTypeService->updateMapping($contentType, $newIndexName);
                 $output->writeln('A mapping has been defined for '.$contentType->getSingularName());
                 ++$countContentType;
             }
@@ -171,41 +168,34 @@ class RebuildCommand extends EmsCommand
         /** @var ContentType $contentType */
         foreach ($contentTypes as $contentType) {
             if (!$contentType->getDeleted() && null !== $contentType->getEnvironment() && $contentType->getEnvironment()->getManaged()) {
-                $this->reindexCommand->reindex($name, $contentType, $indexName, $output, $signData, $bulkSize);
+                $this->reindexCommand->reindex($name, $contentType, $newIndexName, $output, $signData, $bulkSize);
                 $output->writeln('');
                 $output->writeln($contentType->getPluralName().' have been re-indexed ');
             }
         }
 
         $this->waitFor($yellowOk, $output);
-
-        if (empty($indexes)) {
-            $indexes = [$singleIndexName];
-        }
-        $this->switchAlias($environment->getAlias(), $indexes, $output, true);
-        $output->writeln('The alias <info>'.$environment->getName().'</info> is now pointing to :');
-        foreach ($indexes as $index) {
-            $output->writeln('     - '.$index);
-        }
+        $this->atomicSwitch($environment, $newIndexName, $output);
 
         return 0;
     }
 
-    /**
-     * @param string[] $toIndexes
-     */
-    private function switchAlias(string $alias, array $toIndexes, OutputInterface $output, bool $newEnv = false): void
+    private function atomicSwitch(Environment $environment, string $newIndexName, OutputInterface $output): void
     {
-        $indexesToRemove = [];
-        if ($this->aliasService->hasAlias($alias)) {
-            foreach ($this->aliasService->getAlias($alias)['indexes'] as $id => $item) {
-                $indexesToRemove[] = $id;
+        $currentIndex = $this->aliasService->getEnvironmentIndex($environment);
+        $this->aliasService->atomicSwitch($environment->getAlias(), $newIndexName, $currentIndex);
+        $output->writeln(\sprintf('The alias <info>%s</info> is now point to : %s', $environment->getAlias(), $newIndexName));
+
+        if ($currentIndex && $environment->isUpdateReferrers()) {
+            foreach ($this->aliasService->getReferrers($currentIndex) as $referrerAlias) {
+                if ($referrerAlias['name'] === $environment->getAlias()) {
+                    continue;
+                }
+
+                $this->aliasService->atomicSwitch($referrerAlias['name'], $newIndexName, $currentIndex);
+                $output->writeln(\sprintf('The referrer alias <info>%s</info> is now point to : %s', $referrerAlias['name'], $newIndexName));
             }
         }
-        $this->aliasService->updateAlias($alias, [
-            'remove' => $indexesToRemove,
-            'add' => $toIndexes,
-        ]);
     }
 
     private function waitFor(bool $yellowOk, OutputInterface $output): void

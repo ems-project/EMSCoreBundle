@@ -9,6 +9,7 @@ use Elasticsearch\Endpoints\Indices\Aliases\Update;
 use EMS\CommonBundle\Elasticsearch\Client;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\ManagedAlias;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\ManagedAliasRepository;
@@ -21,7 +22,7 @@ class AliasService
     private $envRepo;
     /** @var ManagedAliasRepository */
     private $managedAliasRepo;
-    /** @var array<string, array{total: int, indexes: array, environment: string, managed: bool}> */
+    /** @var array<string, array{name: string, total: int, indexes: array, environment: string, managed: bool}> */
     private $aliases = [];
     /** @var array<array{name: string, count: int}> */
     private $orphanIndexes = [];
@@ -46,13 +47,21 @@ class AliasService
         $this->elasticaService = $elasticaService;
     }
 
+    public function atomicSwitch(string $alias, string $newIndex, ?string $removeIndex = null): void
+    {
+        $this->updateAlias($alias, [
+            'remove' => $removeIndex ? [$removeIndex] : [],
+            'add' => [$newIndex],
+        ]);
+    }
+
     public function hasAlias(string $name): bool
     {
         return isset($this->aliases[$name]);
     }
 
     /**
-     * @return array{total: int, indexes: array, environment: string, managed: bool}
+     * @return array{name: string, total: int, indexes: array, environment: string, managed: bool}
      */
     public function getAlias(string $name): array
     {
@@ -64,7 +73,7 @@ class AliasService
     }
 
     /**
-     * @return array<string, array{total: int, indexes: array, environment: string, managed: bool}>
+     * @return array<string, array{name: string, total: int, indexes: array, environment: string, managed: bool}>
      */
     public function getAliases(): array
     {
@@ -77,6 +86,10 @@ class AliasService
 
     public function getManagedAlias(int $id): ?ManagedAlias
     {
+        if (!$this->isBuild) {
+            $this->build();
+        }
+
         /** @var ManagedAlias|null $managedAlias */
         $managedAlias = $this->managedAliasRepo->find($id);
 
@@ -153,6 +166,28 @@ class AliasService
         \ksort($indexes);
 
         return $indexes;
+    }
+
+    public function getEnvironmentIndex(Environment $environment): ?string
+    {
+        if (!$this->hasAlias($environment->getAlias())) {
+            return null;
+        }
+
+        $alias = $this->getAlias($environment->getAlias());
+
+        return \array_keys($alias['indexes'])[0];
+    }
+
+    /**
+     * @return array<string, array{name: string, total: int, indexes: array, environment: string, managed: bool}>
+     */
+    public function getReferrers(string $indexName): array
+    {
+        return \array_filter(
+            $this->aliases,
+            fn (array $alias) => \array_key_exists($indexName, $alias['indexes'])
+        );
     }
 
     /**
@@ -298,6 +333,7 @@ class AliasService
         }
 
         $this->aliases[$name] = [
+            'name' => $name,
             'indexes' => [$index => $this->getIndex($index)],
             'total' => $this->count($name),
             'environment' => isset($env['name']) ? $env['name'] : null,

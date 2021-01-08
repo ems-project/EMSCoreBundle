@@ -475,7 +475,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable
 
     public function getNewIndexName(): string
     {
-        return sprintf('%s_%s', $this->getAlias(), (new \DateTimeImmutable())->format('Ymd_His'));
+        return \sprintf('%s_%s', $this->getAlias(), (new \DateTimeImmutable())->format('Ymd_His'));
     }
 
     /**

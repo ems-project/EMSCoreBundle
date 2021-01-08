@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Entity;
 
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
@@ -140,10 +139,9 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     protected $orderKey;
 
     /**
-     * @ORM\OneToMany(targetEntity="SingleTypeIndex", mappedBy="environment", cascade={"persist", "remove"})
-     * @ORM\OrderBy({"name" = "ASC"})
+     * @ORM\Column(name="update_referrers", type="boolean", nullable=false, options={"default": false}))
      */
-    protected $singleTypeIndexes;
+    protected bool $updateReferrers = false;
 
     /**
      * @ORM\PrePersist
@@ -163,7 +161,6 @@ class Environment extends JsonDeserializer implements \JsonSerializable
     public function __construct()
     {
         $this->revisions = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->singleTypeIndexes = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -476,6 +473,11 @@ class Environment extends JsonDeserializer implements \JsonSerializable
         return $this->alias;
     }
 
+    public function getNewIndexName(): string
+    {
+        return \sprintf('%s_%s', $this->getAlias(), (new \DateTimeImmutable())->format('Ymd_His'));
+    }
+
     /**
      * Set baseUrl.
      *
@@ -620,34 +622,14 @@ class Environment extends JsonDeserializer implements \JsonSerializable
         return $this->orderKey;
     }
 
-    /**
-     * Add single type index.
-     *
-     * @return Environment
-     */
-    public function addSingleTypeIndex(SingleTypeIndex $index)
+    public function isUpdateReferrers(): bool
     {
-        $this->singleTypeIndexes[] = $index;
-
-        return $this;
+        return $this->updateReferrers;
     }
 
-    /**
-     * Remove single type index.
-     */
-    public function removeSingleTypeIndex(SingleTypeIndex $index)
+    public function setUpdateReferrers(bool $updateReferrers): void
     {
-        $this->singleTypeIndexes->removeElement($index);
-    }
-
-    /**
-     * Get single type indexes.
-     *
-     * @return Collection
-     */
-    public function getSingleTypeIndexes()
-    {
-        return $this->singleTypeIndexes;
+        $this->updateReferrers = $updateReferrers;
     }
 
     /**

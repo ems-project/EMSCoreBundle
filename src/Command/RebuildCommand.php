@@ -4,7 +4,6 @@ namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CommonBundle\Service\ElasticaService;
-use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
@@ -31,8 +30,6 @@ class RebuildCommand extends EmsCommand
     private $reindexCommand;
     /** @var string */
     private $instanceId;
-    /** @var bool */
-    private $singleTypeIndex;
     /** @var ElasticaService */
     private $elasticaService;
     /** @var LoggerInterface */
@@ -42,14 +39,13 @@ class RebuildCommand extends EmsCommand
     /** @var AliasService */
     private $aliasService;
 
-    public function __construct(Registry $doctrine, LoggerInterface $logger, ContentTypeService $contentTypeService, EnvironmentService $environmentService, ReindexCommand $reindexCommand, ElasticaService $elasticaService, Mapping $mapping, AliasService $aliasService, string $instanceId, bool $singleTypeIndex)
+    public function __construct(Registry $doctrine, LoggerInterface $logger, ContentTypeService $contentTypeService, EnvironmentService $environmentService, ReindexCommand $reindexCommand, ElasticaService $elasticaService, Mapping $mapping, AliasService $aliasService, string $instanceId)
     {
         $this->doctrine = $doctrine;
         $this->contentTypeService = $contentTypeService;
         $this->environmentService = $environmentService;
         $this->reindexCommand = $reindexCommand;
         $this->instanceId = $instanceId;
-        $this->singleTypeIndex = $singleTypeIndex;
         $this->elasticaService = $elasticaService;
         $this->logger = $logger;
         $this->mapping = $mapping;
@@ -141,22 +137,17 @@ class RebuildCommand extends EmsCommand
             $output->writeln('Alias has been aligned to '.$environment->getAlias());
         }
 
-        $singleIndexName = $indexName = $environment->getAlias().AppController::getFormatedTimestamp();
-        $indexes = [];
-
         /** @var ContentTypeRepository $contentTypeRepository */
         $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
         $contentTypes = $contentTypeRepository->findAll();
 
         $body = $this->environmentService->getIndexAnalysisConfiguration();
-        if (!$this->singleTypeIndex) {
-            $this->mapping->createIndex($indexName, $body);
 
-            $output->writeln('A new index '.$indexName.' has been created');
+        $newIndexName = $environment->getNewIndexName();
+        $this->mapping->createIndex($newIndexName, $body);
 
-            $this->waitFor($yellowOk, $output);
-        }
-
+        $output->writeln('A new index '.$newIndexName.' has been created');
+        $this->waitFor($yellowOk, $output);
         $output->writeln(\count($contentTypes).' content types will be re-indexed');
 
         $countContentType = 1;
@@ -168,72 +159,32 @@ class RebuildCommand extends EmsCommand
                 throw new \RuntimeException('Unexpected null environment');
             }
             if (!$contentType->getDeleted() && $contentType->getEnvironment() && $contentTypeEnvironment->getManaged()) {
-                if ($this->singleTypeIndex) {
-                    $indexName = $this->environmentService->getNewIndexName($environment, $contentType);
-                    $indexes[] = $indexName;
-                    $this->mapping->createIndex($indexName, $body);
-
-                    $output->writeln('A new index '.$indexName.' has been created');
-
-                    $this->waitFor($yellowOk, $output);
-                }
-
-                $this->contentTypeService->updateMapping($contentType, $indexName);
+                $this->contentTypeService->updateMapping($contentType, $newIndexName);
                 $output->writeln('A mapping has been defined for '.$contentType->getSingularName());
-
-                if ($this->singleTypeIndex) {
-                    $this->reindexCommand->reindex($name, $contentType, $indexName, $output, $signData, $bulkSize);
-                }
-                $this->contentTypeService->setSingleTypeIndex($environment, $contentType, $indexName);
-
-                if ($this->singleTypeIndex) {
-                    $output->writeln('');
-                    $output->writeln($contentType->getPluralName().' have been re-indexed '.$countContentType.'/'.\count($contentTypes));
-                }
                 ++$countContentType;
             }
         }
 
-        if (!$this->singleTypeIndex) {
-            /** @var ContentType $contentType */
-            foreach ($contentTypes as $contentType) {
-                if (!$contentType->getDeleted() && null !== $contentType->getEnvironment() && $contentType->getEnvironment()->getManaged()) {
-                    $this->reindexCommand->reindex($name, $contentType, $indexName, $output, $signData, $bulkSize);
-                    $output->writeln('');
-                    $output->writeln($contentType->getPluralName().' have been re-indexed ');
-                }
+        /** @var ContentType $contentType */
+        foreach ($contentTypes as $contentType) {
+            if (!$contentType->getDeleted() && null !== $contentType->getEnvironment() && $contentType->getEnvironment()->getManaged()) {
+                $this->reindexCommand->reindex($name, $contentType, $newIndexName, $output, $signData, $bulkSize);
+                $output->writeln('');
+                $output->writeln($contentType->getPluralName().' have been re-indexed ');
             }
         }
 
         $this->waitFor($yellowOk, $output);
 
-        if (empty($indexes)) {
-            $indexes = [$singleIndexName];
-        }
-        $this->switchAlias($environment->getAlias(), $indexes, $output, true);
-        $output->writeln('The alias <info>'.$environment->getName().'</info> is now pointing to :');
-        foreach ($indexes as $index) {
-            $output->writeln('     - '.$index);
+        $atomicSwitch = $this->aliasService->atomicSwitch($environment, $newIndexName);
+
+        foreach ($atomicSwitch as $action) {
+            if (isset($action['add'])) {
+                $output->writeln(\sprintf('The alias <info>%s</info> is now point to : %s', $action['add']['alias'], $action['add']['index']));
+            }
         }
 
         return 0;
-    }
-
-    /**
-     * @param string[] $toIndexes
-     */
-    private function switchAlias(string $alias, array $toIndexes, OutputInterface $output, bool $newEnv = false): void
-    {
-        $indexesToRemove = [];
-        if ($this->aliasService->hasAlias($alias)) {
-            foreach ($this->aliasService->getAlias($alias)['indexes'] as $id => $item) {
-                $indexesToRemove[] = $id;
-            }
-        }
-        $this->aliasService->updateAlias($alias, [
-            'remove' => $indexesToRemove,
-            'add' => $toIndexes,
-        ]);
     }
 
     private function waitFor(bool $yellowOk, OutputInterface $output): void

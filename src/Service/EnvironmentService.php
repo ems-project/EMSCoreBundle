@@ -5,9 +5,7 @@ namespace EMS\CoreBundle\Service;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
-use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\Analyzer;
-use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Filter;
 use EMS\CoreBundle\Repository\AnalyzerRepository;
@@ -46,8 +44,6 @@ class EnvironmentService
     /** @var ElasticaService */
     private $elasticaService;
 
-    /** @var bool */
-    private $singleTypeIndex;
     /** @var string */
     private $instanceId;
 
@@ -58,7 +54,6 @@ class EnvironmentService
         AuthorizationCheckerInterface $authorizationChecker,
         Logger $logger,
         ElasticaService $elasticaService,
-        bool $singleTypeIndex,
         string $instanceId
     ) {
         $this->doctrine = $doctrine;
@@ -67,7 +62,6 @@ class EnvironmentService
         $this->authorizationChecker = $authorizationChecker;
         $this->logger = $logger;
         $this->elasticaService = $elasticaService;
-        $this->singleTypeIndex = $singleTypeIndex;
         $this->instanceId = $instanceId;
     }
 
@@ -176,15 +170,6 @@ class EnvironmentService
         }
 
         return $this->environmentsById;
-    }
-
-    public function getNewIndexName(Environment $environment, ContentType $contentType)
-    {
-        if ($this->singleTypeIndex) {
-            return $environment->getAlias().'_'.$contentType->getName().AppController::getFormatedTimestamp();
-        }
-
-        return $environment->getAlias().AppController::getFormatedTimestamp();
     }
 
     /**

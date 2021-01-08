@@ -3,7 +3,6 @@
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
@@ -381,14 +380,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     protected $views;
 
     /**
-     * @ORM\OneToMany(targetEntity="SingleTypeIndex", mappedBy="contentType", cascade={"persist", "remove"})
-     * @ORM\OrderBy({"name" = "ASC"})
-     *
-     * @var ArrayCollection<int, SingleTypeIndex>
-     */
-    protected $singleTypeIndexes;
-
-    /**
      * @var string
      * @ORM\Column(name="default_value", type="text", nullable=true)
      */
@@ -447,7 +438,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     {
         $this->templates = new ArrayCollection();
         $this->views = new ArrayCollection();
-        $this->singleTypeIndexes = new ArrayCollection();
 
         $this->dirty = true;
         $this->editTwigWithWysiwyg = true;
@@ -1663,36 +1653,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * Add single type index.
-     *
-     * @return ContentType
-     */
-    public function addSingleTypeIndex(SingleTypeIndex $index)
-    {
-        $this->singleTypeIndexes[] = $index;
-
-        return $this;
-    }
-
-    /**
-     * Remove single type index.
-     */
-    public function removeSingleTypeIndex(SingleTypeIndex $index)
-    {
-        $this->singleTypeIndexes->removeElement($index);
-    }
-
-    /**
-     * Get single type indexes.
-     *
-     * @return Collection
-     */
-    public function getSingleTypeIndexes()
-    {
-        return $this->singleTypeIndexes;
-    }
-
-    /**
      * @return string
      */
     public function getDefaultValue()
@@ -1749,7 +1709,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
         $json = new JsonClass(\get_object_vars($this), __CLASS__);
         $json->removeProperty('id');
         $json->removeProperty('environment');
-        $json->handlePersistentCollections('templates', 'views', 'singleTypeIndexes');
+        $json->handlePersistentCollections('templates', 'views');
 
         return $json;
     }
@@ -1772,14 +1732,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
                 foreach ($this->deserializeArray($value) as $view) {
                     $this->addView($view);
                     $view->setContentType($this);
-                }
-                break;
-
-            case 'singleTypeIndexes':
-                /** @var SingleTypeIndex $index */
-                foreach ($this->deserializeArray($value) as $index) {
-                    $this->addSingleTypeIndex($index);
-                    $index->setContentType($this);
                 }
                 break;
             default:

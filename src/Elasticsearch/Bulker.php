@@ -76,11 +76,12 @@ class Bulker
 
     public function index(string $contentType, string $ouuid, string $index, array &$body, bool $upsert = false): bool
     {
-        $body[Mapping::CONTENT_TYPE_FIELD] = $contentType;
-        $body[Mapping::PUBLISHED_DATETIME_FIELD] = (new \DateTime())->format(\DateTime::ISO8601);
         if ($this->sign) {
             $this->dataService->signRaw($body);
         }
+
+        $body[Mapping::CONTENT_TYPE_FIELD] = $contentType;
+        $body[Mapping::PUBLISHED_DATETIME_FIELD] = (new \DateTime())->format(\DateTime::ISO8601);
 
         $action = new Action();
         $action->setIndex($index);

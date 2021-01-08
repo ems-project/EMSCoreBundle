@@ -23,6 +23,7 @@ use ZipArchive;
 
 class ExportDocumentsCommand extends EmsCommand
 {
+    const OUTPUT_FILE_ARGUMENT = 'outputFile';
     /** @var LoggerInterface */
     protected $logger;
     /** @var DataService */
@@ -74,6 +75,12 @@ class ExportDocumentsCommand extends EmsCommand
                 InputArgument::OPTIONAL,
                 'The query to run',
                 '{}'
+            )
+            ->addArgument(
+                self::OUTPUT_FILE_ARGUMENT,
+                InputArgument::OPTIONAL,
+                'The zip output file',
+                null
             )
             ->addOption(
                 'environment',
@@ -178,7 +185,10 @@ class ExportDocumentsCommand extends EmsCommand
         $progress = new ProgressBar($output, $total);
         $progress->start();
 
-        $outZipPath = \tempnam(\sys_get_temp_dir(), 'emsExport').'.zip';
+        $outZipPath = $input->getArgument(self::OUTPUT_FILE_ARGUMENT);
+        if (!\is_string($outZipPath)) {
+            $outZipPath = \tempnam(\sys_get_temp_dir(), 'emsExport').'.zip';
+        }
         $zip = new ZipArchive();
         $zip->open($outZipPath, ZIPARCHIVE::CREATE);
         $extension = '';

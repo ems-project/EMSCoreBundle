@@ -71,6 +71,9 @@
 			"EMS\\CoreBundle\\Tests\\" : "tests/"
 		}
 	},
+	"config": {
+		"lock": false
+	},
 	"extra" : {
 		"branch-alias" : {
 			"dev-master" : "1.8.x-dev",

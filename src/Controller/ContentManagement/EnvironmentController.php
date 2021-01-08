@@ -491,7 +491,7 @@ class EnvironmentController extends AppController
                     $em->persist($environment);
                     $em->flush();
 
-                    $indexName = $environment->getAlias().AppController::getFormatedTimestamp();
+                    $indexName = $environment->getNewIndexName();
                     $mapping->createIndex($indexName, $environmentService->getIndexAnalysisConfiguration());
 
                     foreach ($contentTypeService->getAll() as $contentType) {

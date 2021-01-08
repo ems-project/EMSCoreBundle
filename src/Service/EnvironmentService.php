@@ -174,11 +174,6 @@ class EnvironmentService
         return $this->environmentsById;
     }
 
-    public function getNewIndexName(Environment $environment, ContentType $contentType)
-    {
-        return $environment->getAlias().AppController::getFormatedTimestamp();
-    }
-
     /**
      * @return array<mixed>
      */

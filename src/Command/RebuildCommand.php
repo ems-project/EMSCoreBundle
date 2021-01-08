@@ -138,7 +138,7 @@ class RebuildCommand extends EmsCommand
             $output->writeln('Alias has been aligned to '.$environment->getAlias());
         }
 
-        $singleIndexName = $indexName = $environment->getAlias().AppController::getFormatedTimestamp();
+        $singleIndexName = $indexName = $environment->getNewIndexName();
         $indexes = [];
 
         /** @var ContentTypeRepository $contentTypeRepository */

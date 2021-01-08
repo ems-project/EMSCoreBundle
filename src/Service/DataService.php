@@ -2003,7 +2003,7 @@ class DataService
     public function createAndMapIndex(Environment $environment): void
     {
         $body = $this->environmentService->getIndexAnalysisConfiguration();
-        $indexName = $environment->getAlias().AppController::getFormatedTimestamp();
+        $indexName = $environment->getNewIndexName();
         $this->mapping->createIndex($indexName, $body, $environment->getAlias());
 
         foreach ($this->contentTypeService->getAll() as $contentType) {

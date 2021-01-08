@@ -473,6 +473,11 @@ class Environment extends JsonDeserializer implements \JsonSerializable
         return $this->alias;
     }
 
+    public function getNewIndexName(): string
+    {
+        return sprintf('%s_%s', $this->getAlias(), (new \DateTimeImmutable())->format('Ymd_His'));
+    }
+
     /**
      * Set baseUrl.
      *

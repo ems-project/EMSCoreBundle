@@ -17,7 +17,6 @@ use EMS\CommonBundle\Helper\ArrayTool;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Storage\StorageManager;
-use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\Environment;
@@ -2003,7 +2002,7 @@ class DataService
     public function createAndMapIndex(Environment $environment): void
     {
         $body = $this->environmentService->getIndexAnalysisConfiguration();
-        $indexName = $environment->getAlias().AppController::getFormatedTimestamp();
+        $indexName = $environment->getNewIndexName();
         $this->mapping->createIndex($indexName, $body, $environment->getAlias());
 
         foreach ($this->contentTypeService->getAll() as $contentType) {

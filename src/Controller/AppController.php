@@ -53,11 +53,6 @@ class AppController extends AbstractController
         return $this->logger;
     }
 
-    public static function getFormatedTimestamp()
-    {
-        return \date('_Ymd_His');
-    }
-
     protected function returnJsonResponse(Request $request, bool $success, array $body = [])
     {
         $body['success'] = $success;

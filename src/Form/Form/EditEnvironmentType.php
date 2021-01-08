@@ -39,6 +39,8 @@ class EditEnvironmentType extends AbstractType
                 'required' => false,
         ])->add('inDefaultSearch', CheckboxType::class, [
             'required' => false,
+        ])->add('updateReferrers', CheckboxType::class, [
+            'required' => false,
         ])->add('extra', TextareaType::class, [
             'required' => false,
             'attr' => [

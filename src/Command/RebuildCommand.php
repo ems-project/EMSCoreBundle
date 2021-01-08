@@ -175,27 +175,16 @@ class RebuildCommand extends EmsCommand
         }
 
         $this->waitFor($yellowOk, $output);
-        $this->atomicSwitch($environment, $newIndexName, $output);
 
-        return 0;
-    }
+        $atomicSwitch = $this->aliasService->atomicSwitch($environment, $newIndexName);
 
-    private function atomicSwitch(Environment $environment, string $newIndexName, OutputInterface $output): void
-    {
-        $currentIndex = $this->aliasService->getEnvironmentIndex($environment);
-        $this->aliasService->atomicSwitch($environment->getAlias(), $newIndexName, $currentIndex);
-        $output->writeln(\sprintf('The alias <info>%s</info> is now point to : %s', $environment->getAlias(), $newIndexName));
-
-        if ($currentIndex && $environment->isUpdateReferrers()) {
-            foreach ($this->aliasService->getReferrers($currentIndex) as $referrerAlias) {
-                if ($referrerAlias['name'] === $environment->getAlias()) {
-                    continue;
-                }
-
-                $this->aliasService->atomicSwitch($referrerAlias['name'], $newIndexName, $currentIndex);
-                $output->writeln(\sprintf('The referrer alias <info>%s</info> is now point to : %s', $referrerAlias['name'], $newIndexName));
+        foreach ($atomicSwitch as $action) {
+            if (isset($action['add'])) {
+                $output->writeln(\sprintf('The alias <info>%s</info> is now point to : %s', $action['add']['alias'], $action['add']['index']));
             }
         }
+
+        return 0;
     }
 
     private function waitFor(bool $yellowOk, OutputInterface $output): void

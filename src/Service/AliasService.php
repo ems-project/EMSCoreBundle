@@ -47,12 +47,35 @@ class AliasService
         $this->elasticaService = $elasticaService;
     }
 
-    public function atomicSwitch(string $alias, string $newIndex, ?string $removeIndex = null): void
+    /**
+     * @return array<int, array{ add: array{alias: string, index: string}} | array{remove: array{alias: string, index: string}} >
+     */
+    public function atomicSwitch(Environment $environment, string $newIndex): array
     {
-        $this->updateAlias($alias, [
-            'remove' => $removeIndex ? [$removeIndex] : [],
-            'add' => [$newIndex],
-        ]);
+        $aliasName = $environment->getAlias();
+        $actions = [];
+        $actions[] = ['add' => ['alias' => $aliasName, 'index' => $newIndex]];
+
+        if ($oldIndex = $this->getEnvironmentIndex($environment)) {
+            $actions[] = ['remove' => ['alias' => $aliasName, 'index' => $oldIndex]];
+
+            if ($environment->isUpdateReferrers()) {
+                foreach ($this->getReferrers($oldIndex) as $referrerAlias) {
+                    if ($referrerAlias['name'] === $environment->getAlias()) {
+                        continue;
+                    }
+
+                    $actions[] = ['remove' => ['alias' => $referrerAlias['name'], 'index' => $oldIndex]];
+                    $actions[] = ['add' => ['alias' => $referrerAlias['name'], 'index' => $newIndex]];
+                }
+            }
+        }
+
+        $endpoint = new Update();
+        $endpoint->setBody(['actions' => $actions]);
+        $this->elasticaClient->requestEndpoint($endpoint);
+
+        return $actions;
     }
 
     public function hasAlias(string $name): bool
@@ -168,7 +191,7 @@ class AliasService
         return $indexes;
     }
 
-    public function getEnvironmentIndex(Environment $environment): ?string
+    private function getEnvironmentIndex(Environment $environment): ?string
     {
         if (!$this->hasAlias($environment->getAlias())) {
             return null;
@@ -182,7 +205,7 @@ class AliasService
     /**
      * @return array<string, array{name: string, total: int, indexes: array, environment: string, managed: bool}>
      */
-    public function getReferrers(string $indexName): array
+    private function getReferrers(string $indexName): array
     {
         return \array_filter(
             $this->aliases,

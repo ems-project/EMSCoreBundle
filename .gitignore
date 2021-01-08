@@ -1,11 +1,3 @@
-/.sass-cache/
-/.settings/
-.DS_Store
-/.project
-/.buildpath
-*.yml~
-/.idea/
 /node_modules/
 /vendor
-/composer.lock
 /.php_cs.cache

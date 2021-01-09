@@ -136,7 +136,10 @@ class DateRangeFieldType extends DataFieldType
      */
     public static function isVirtual(array $option = [])
     {
-        return !$option['mappingOptions']['nested'];
+        if (!isset($option['mappingOptions'])) {
+            return false;
+        }
+        return !$option['mappingOptions']['nested'] ?? false;
     }
 
     /**

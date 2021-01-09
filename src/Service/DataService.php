@@ -431,13 +431,13 @@ class DataService
                 if ($childType instanceof DataFieldType) {
                     $childData = $rawData;
 
-                    $subDataField = $form->getData();
+                    $subDataField = $form->getNormData();
                     if ($subDataField instanceof DataField && null !== $subFieldType = $subDataField->getFieldType()) {
                         $subOptions = $subFieldType->getOptions();
                     } else {
                         $subOptions = [];
                     }
-                    if (!$childType->isVirtual($subOptions)) {
+                    if (!$childType->isVirtual($subOptions ?? [])) {
                         $childData = $rawData[$child->getName()] ?? null;
                     }
                     $output = \array_merge($output, $this->walkRecursive($child, $childData, $callback));

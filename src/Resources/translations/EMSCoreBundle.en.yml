@@ -387,7 +387,7 @@ channel:
   index:
     reorder: 'Reorder channels'
     column:
-      name: 'Channel''s name identifier'
+      name: 'Channel''s alias'
       label: 'Label'
       public: 'Public access'
     title: 'List of channels'
@@ -492,7 +492,7 @@ form:
       searchConfig: 'Search config'
   form:
     channel:
-      name: 'Environment''s name identifier'
+      name: 'Channel''s alias'
       public: 'Does this channel can be available to non-authenticated users ?'
       label: 'Channel''s label'
   contenttype:
@@ -526,6 +526,8 @@ search:
   aggregate_option_label: 'Aggregate Option'
 
 log:
+  channel:
+    alias_not_found: 'The channel %channel% can''t be registered as it''s alias %alias% is missing'
   controller:
     channel:
       unknown_action: 'Unknown action'

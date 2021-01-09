@@ -12,6 +12,7 @@ use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Exception\LockedException;
 use EMS\CoreBundle\Exception\PrivilegeException;
 use EMS\CoreBundle\Repository\ChannelRepository;
+use EMS\CoreBundle\Service\IndexService;
 use Exception;
 use Monolog\Logger;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -35,8 +36,9 @@ class RequestListener
     private RouterInterface $router;
     private ChannelRepository $channelRepository;
     private EnvironmentHelper $environmentHelper;
+    private IndexService $aliasService;
 
-    public function __construct(TwigEnvironment $twig, Registry $doctrine, Logger $logger, RouterInterface $router, ChannelRepository $channelRepository, EnvironmentHelper $environmentHelper)
+    public function __construct(TwigEnvironment $twig, Registry $doctrine, Logger $logger, RouterInterface $router, ChannelRepository $channelRepository, EnvironmentHelper $environmentHelper, IndexService $aliasService)
     {
         $this->twig = $twig;
         $this->doctrine = $doctrine;
@@ -44,6 +46,7 @@ class RequestListener
         $this->router = $router;
         $this->channelRepository = $channelRepository;
         $this->environmentHelper = $environmentHelper;
+        $this->aliasService = $aliasService;
     }
 
     public function onKernelRequest(RequestEvent $event): void
@@ -70,6 +73,14 @@ class RequestListener
                 $attributes = \json_decode($channel->getOptions()['attributes'] ?? null, true);
                 if (\is_array($attributes)) {
                     $this->setAttributesInRequest($attributes, $request);
+                }
+
+                if (!$this->aliasService->hasIndex($channelName)) {
+                    $this->logger->warning('log.channel.alias_not_found', [
+                        'alias' => $channelName,
+                        'channel' => $channel->getLabel(),
+                    ]);
+                    continue;
                 }
 
                 $this->environmentHelper->addEnvironment(new Environment($channelName, [

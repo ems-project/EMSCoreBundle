@@ -430,7 +430,14 @@ class DataService
                 $childType = $child->getConfig()->getType()->getInnerType();
                 if ($childType instanceof DataFieldType) {
                     $childData = $rawData;
-                    if (!$childType->isVirtual()) {
+
+                    $subDataField = $form->getNormData();
+                    if ($subDataField instanceof DataField && null !== $subFieldType = $subDataField->getFieldType()) {
+                        $subOptions = $subFieldType->getOptions();
+                    } else {
+                        $subOptions = [];
+                    }
+                    if (!$childType->isVirtual($subOptions ?? [])) {
                         $childData = $rawData[$child->getName()] ?? null;
                     }
                     $output = \array_merge($output, $this->walkRecursive($child, $childData, $callback));

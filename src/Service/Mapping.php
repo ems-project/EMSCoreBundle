@@ -90,15 +90,22 @@ class Mapping
             'properties' => [],
         ];
 
+        if (null != $contentType->getFieldType()) {
+            $out['properties'] = $this->fieldTypeType->generateMapping($contentType->getFieldType(), $withPipeline);
+        }
+
         if ($this->elasticsearchService->withAllMapping()) {
             $out['_all'] = [
                 'store' => true,
                 'enabled' => true,
             ];
-        }
-
-        if (null != $contentType->getFieldType()) {
-            $out['properties'] = $this->fieldTypeType->generateMapping($contentType->getFieldType(), $withPipeline);
+        } elseif (\version_compare($this->elasticaService->getVersion(), '7.0') < 0) {
+            foreach ($out['properties'] as $name => &$options) {
+                if (\in_array($options['type'], ['text', 'keyword'], true)) {
+                    $options['copy_to'] = array_unique(array_merge(['_all'], $options['copy_to'] ?? []));
+                }
+            }
+            $out['properties'] = \array_merge(['_all' => ['type' => 'text']], $out['properties']);
         }
 
         $out['properties'] = \array_merge(

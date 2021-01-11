@@ -60,6 +60,10 @@ class RequestListener
                 if (null === $channelName) {
                     continue;
                 }
+                $channelAlias = $channel->getAlias();
+                if (null === $channelAlias) {
+                    continue;
+                }
 
                 if (
                     $channelName === ($matches['channel'] ?? null)
@@ -75,16 +79,17 @@ class RequestListener
                     $this->setAttributesInRequest($attributes, $request);
                 }
 
-                if (!$this->aliasService->hasIndex($channelName)) {
+                if (!$this->aliasService->hasIndex($channelAlias)) {
                     $this->logger->warning('log.channel.alias_not_found', [
-                        'alias' => $channelName,
-                        'channel' => $channel->getLabel(),
+                        'alias' => $channelAlias,
+                        'channel' => $channelName,
                     ]);
                     continue;
                 }
 
                 $this->environmentHelper->addEnvironment(new Environment($channelName, [
                     'base_url' => \sprintf('channel/%s', $channelName),
+                    'alias' => $channelAlias,
                     'route_prefix' => Channel::generateChannelRoute($channelName, ''),
                     'regex' => \sprintf('/^%s/', \preg_quote($baseUrl, '/')),
                     'search_config' => $searchConfig,

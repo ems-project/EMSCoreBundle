@@ -100,6 +100,11 @@ class Mapping
                 'enabled' => true,
             ];
         } else {
+            foreach ($out['properties'] as $name => &$options) {
+                if (\in_array($options['type'], ['text', 'keyword'], true)) {
+                    $options['copy_to'] = array_unique(array_merge(['_all'], $options['copy_to'] ?? []));
+                }
+            }
             $out['properties'] = \array_merge(['_all' => ['type' => 'text']], $out['properties']);
         }
 

@@ -328,6 +328,7 @@ class AliasService
 
     public function removeAlias(string $name): bool
     {
+        $this->build();
         if (!$this->hasAlias($name)) {
             return false;
         }

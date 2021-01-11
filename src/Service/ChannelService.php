@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service;
 
-use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Entity\Channel;
 use EMS\CoreBundle\Repository\ChannelRepository;
 use Psr\Log\LoggerInterface;

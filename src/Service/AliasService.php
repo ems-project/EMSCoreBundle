@@ -339,7 +339,7 @@ class AliasService
             $indexesToRemove[] = $index['name'];
         }
 
-        $this->updateAlias($name, ['actions' => ['remove' => $indexesToRemove]]);
+        $this->updateAlias($name, ['remove' => $indexesToRemove]);
 
         return true;
     }

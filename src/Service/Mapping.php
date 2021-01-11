@@ -90,15 +90,17 @@ class Mapping
             'properties' => [],
         ];
 
+        if (null != $contentType->getFieldType()) {
+            $out['properties'] = $this->fieldTypeType->generateMapping($contentType->getFieldType(), $withPipeline);
+        }
+
         if ($this->elasticsearchService->withAllMapping()) {
             $out['_all'] = [
                 'store' => true,
                 'enabled' => true,
             ];
-        }
-
-        if (null != $contentType->getFieldType()) {
-            $out['properties'] = $this->fieldTypeType->generateMapping($contentType->getFieldType(), $withPipeline);
+        } else {
+            $out['properties'] = \array_merge(['_all' => ['type' => 'text']], $out['properties']);
         }
 
         $out['properties'] = \array_merge(

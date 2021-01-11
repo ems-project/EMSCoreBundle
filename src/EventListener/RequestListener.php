@@ -75,9 +75,6 @@ class RequestListener
                 $baseUrl = \vsprintf('%s://%s%s/channel/%s', [$request->getScheme(), $request->getHttpHost(), $request->getBasePath(), $channelName]);
                 $searchConfig = \json_decode($channel->getOptions()['searchConfig'] ?? '{}', true);
                 $attributes = \json_decode($channel->getOptions()['attributes'] ?? null, true);
-                if (\is_array($attributes)) {
-                    $this->setAttributesInRequest($attributes, $request);
-                }
 
                 if (!$this->aliasService->hasIndex($channelAlias)) {
                     $this->logger->warning('log.channel.alias_not_found', [
@@ -86,14 +83,19 @@ class RequestListener
                     ]);
                     continue;
                 }
-
-                $this->environmentHelper->addEnvironment(new Environment($channelName, [
-                    'base_url' => \sprintf('channel/%s', $channelName),
-                    'alias' => $channelAlias,
-                    'route_prefix' => Channel::generateChannelRoute($channelName, ''),
-                    'regex' => \sprintf('/^%s/', \preg_quote($baseUrl, '/')),
+                $options = [
+                    Environment::BASE_URL_CONFIG => \sprintf('channel/%s', $channelName),
+                    Environment::ALIAS_CONFIG => $channelAlias,
+                    Environment::ROUTE_PREFIX_CONFIG => Channel::generateChannelRoute($channelName, ''),
+                    Environment::REGEX_CONFIG => \sprintf('/^%s/', \preg_quote($baseUrl, '/')),
                     'search_config' => $searchConfig,
-                ]));
+                ];
+
+                if (\is_array($attributes)) {
+                    $options[Environment::REQUEST_CONFIG] = $attributes;
+                }
+
+                $this->environmentHelper->addEnvironment(new Environment($channelName, $options));
             }
         }
 
@@ -178,25 +180,5 @@ class RequestListener
     private function isAnonymousUser(Request $request): bool
     {
         return null === $request->getSession()->get('_security_main');
-    }
-
-    /**
-     * @param array<string, mixed> $attributes
-     */
-    private function setAttributesInRequest(array $attributes, Request $request): void
-    {
-        foreach ($attributes as $name => $value) {
-            if (!\is_string($value)) {
-                $value = \json_encode($value);
-                if (false === $value) {
-                    continue;
-                }
-            }
-            $request->attributes->set($name, $value);
-
-            if ('_locale' === $name) {
-                $request->setLocale($value);
-            }
-        }
     }
 }

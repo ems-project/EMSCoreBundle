@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service;
 
+use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Entity\Channel;
 use EMS\CoreBundle\Repository\ChannelRepository;
 use Psr\Log\LoggerInterface;
@@ -34,6 +35,16 @@ final class ChannelService implements EntityServiceInterface
         if (0 === $channel->getOrderKey()) {
             $channel->setOrderKey($this->channelRepository->counter() + 1);
         }
+        $encoder = new Encoder();
+        $name = $channel->getName();
+        if (null === $name) {
+            throw new \RuntimeException('Unexpected null name');
+        }
+        $webalized = $encoder->webalize($name);
+        if (null === $webalized) {
+            throw new \RuntimeException('Unexpected null webalized name');
+        }
+        $channel->setName($webalized);
         $this->channelRepository->create($channel);
     }
 

@@ -48,6 +48,13 @@ class Channel implements EntityInterface
     private $name;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="alias", type="string", length=255)
+     */
+    private $alias;
+
+    /**
      * @var bool
      *
      * @ORM\Column(name="public", type="boolean", options={"default" : 0})
@@ -113,6 +120,16 @@ class Channel implements EntityInterface
     public function setName(string $name): void
     {
         $this->name = $name;
+    }
+
+    public function getAlias(): ?string
+    {
+        return $this->alias;
+    }
+
+    public function setAlias(string $alias): void
+    {
+        $this->alias = $alias;
     }
 
     public function getLabel(): ?string

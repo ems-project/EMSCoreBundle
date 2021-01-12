@@ -387,7 +387,8 @@ channel:
   index:
     reorder: 'Reorder channels'
     column:
-      name: 'Channel''s alias'
+      name: 'Name'
+      alias: 'Alias'
       label: 'Label'
       public: 'Public access'
     title: 'List of channels'
@@ -492,9 +493,10 @@ form:
       searchConfig: 'Search config'
   form:
     channel:
-      name: 'Channel''s alias'
+      name: 'Name'
+      alias: 'Alias'
       public: 'Does this channel can be available to non-authenticated users ?'
-      label: 'Channel''s label'
+      label: 'Label'
   contenttype:
     json_update:
       deleteExitingTemplates: 'Delete existing templates'

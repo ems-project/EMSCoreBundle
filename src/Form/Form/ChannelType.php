@@ -35,6 +35,12 @@ final class ChannelType extends AbstractType
                     'class' => 'col-md-3',
                 ],
             ])
+            ->add('alias', null, [
+                'required' => true,
+                'row_attr' => [
+                    'class' => 'col-md-3',
+                ],
+            ])
             ->add('public', CheckboxType::class, [
                 'required' => false,
                 'row_attr' => [

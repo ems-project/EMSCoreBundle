@@ -328,6 +328,7 @@ class AliasService
 
     public function removeAlias(string $name): bool
     {
+        $this->build();
         if (!$this->hasAlias($name)) {
             return false;
         }
@@ -339,7 +340,7 @@ class AliasService
             $indexesToRemove[] = $index['name'];
         }
 
-        $this->updateAlias($name, ['actions' => ['remove' => $indexesToRemove]]);
+        $this->updateAlias($name, ['remove' => $indexesToRemove]);
 
         return true;
     }

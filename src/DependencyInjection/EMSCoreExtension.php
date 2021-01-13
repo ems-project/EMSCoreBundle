@@ -130,7 +130,6 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
             $container->prependExtensionConfig('twig', [
                 'globals' => $globals,
                 'form_themes' => [
-                    '@EMSCore/form/forms.html.twig',
                     '@EMSCore/form/fields.html.twig',
                 ],
             ]);

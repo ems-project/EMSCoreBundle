@@ -306,7 +306,7 @@ class ElasticsearchController extends AppController
         $environments = $request->query->get('environment', null);
         $types = $request->query->get('type', null);
         $requestSearchId = $request->query->get('searchId', null);
-        $searchId = $requestSearchId ? intval($requestSearchId) : null;
+        $searchId = null !== $requestSearchId ? \intval($requestSearchId) : null;
         $category = $request->query->get('category', null);
         $assetName = $request->query->get('asset_name', false);
         $circleOnly = $request->query->get('circle', false);

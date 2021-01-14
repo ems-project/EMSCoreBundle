@@ -20,7 +20,7 @@ final class Version20201215133710 extends AbstractMigration
         $this->addSql('ALTER TABLE form_submission ALTER label SET NOT NULL');
         $this->addSql('ALTER TABLE form_submission ALTER deadline_date SET NOT NULL');
         $this->addSql('ALTER TABLE form_submission ALTER expire_date SET NOT NULL');
-        $this->addSql('DROP INDEX asset_key_index');
+        $this->addSql('DROP INDEX IF EXISTS asset_key_index');
         $this->addSql('ALTER TABLE asset_storage DROP context');
         $this->addSql('ALTER TABLE asset_storage DROP last_update_date');
         $this->addSql('ALTER TABLE asset_storage ALTER hash TYPE VARCHAR(1024)');

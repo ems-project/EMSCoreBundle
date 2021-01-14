@@ -305,7 +305,8 @@ class ElasticsearchController extends AppController
         $page = \intval($request->query->get('page', 1));
         $environments = $request->query->get('environment', null);
         $types = $request->query->get('type', null);
-        $searchId = $request->query->get('searchId', null);
+        $requestSearchId = $request->query->get('searchId', null);
+        $searchId = null !== $requestSearchId ? \intval($requestSearchId) : null;
         $category = $request->query->get('category', null);
         $assetName = $request->query->get('asset_name', false);
         $circleOnly = $request->query->get('circle', false);
@@ -399,10 +400,10 @@ class ElasticsearchController extends AppController
 
         $commonSearch->setFrom(($page - 1) * $pageSize);
         $commonSearch->setSize($pageSize);
-        $results = $elasticaService->search($commonSearch);
+        $response = CommonResponse::fromResultSet($elasticaService->search($commonSearch));
 
         return $this->render('@EMSCore/elasticsearch/search.json.twig', [
-            'results' => $results->getResponse()->getData(),
+            'results' => $response,
             'types' => $allTypes,
         ]);
     }

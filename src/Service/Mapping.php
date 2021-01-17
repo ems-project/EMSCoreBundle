@@ -183,7 +183,7 @@ class Mapping
                 }
                 $mappings = $this->elasticaClient->getIndex($environment->getAlias())->getMapping();
 
-                if (isset($mappings['_meta']) && isset($mappings['properties'])) {
+                if (isset($mappings['properties'])) {
                     $mergeMapping = $this->mergeMappings($mappings['properties'], $mergeMapping);
                     continue;
                 }

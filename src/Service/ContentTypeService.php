@@ -458,4 +458,16 @@ class ContentTypeService
 
         return $unreferencedContentTypes;
     }
+
+    public function update(ContentType $contentType, bool $mustBeReset = true): void
+    {
+        $em = $this->doctrine->getManager();
+        /** @var ContentTypeRepository $contentTypeRepository */
+        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
+        if ($mustBeReset) {
+            $contentType->reset($contentTypeRepository->nextOrderKey());
+        }
+        $this->persist($contentType);
+        $em->flush();
+    }
 }

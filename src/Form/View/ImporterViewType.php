@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Form\View;
 
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Command\DocumentCommand;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Nature\ImporterType;
@@ -96,7 +97,8 @@ class ImporterViewType extends ViewType
             $filename = $this->fileService->getFile($fileArray[EmsFields::CONTENT_FILE_HASH_FIELD] ?? 'missing');
 
             $command = \sprintf(
-                'ems:make:document %s %s%s%s%s%s%s',
+                '%s %s %s%s%s%s%s%s',
+                DocumentCommand::COMMAND,
                 $view->getContentType()->getName(),
                 $filename,
                 $view->getOptions()['rawImport'] ?? false ? ' --raw' : '',

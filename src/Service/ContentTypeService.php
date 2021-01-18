@@ -330,6 +330,7 @@ class ContentTypeService
         }
 
         $updatedContentType = $this->contentTypeFromJson($json, $environment, $contentType);
+
         return $this->importContentType($updatedContentType);
     }
 

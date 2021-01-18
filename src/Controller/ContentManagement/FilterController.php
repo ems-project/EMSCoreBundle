@@ -134,7 +134,7 @@ class FilterController extends AppController
         $response->setEncodingOptions(JSON_PRETTY_PRINT);
         $disposition = $response->headers->makeDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            $filter->getName() . '.json'
+            $filter->getName().'.json'
         );
         $response->headers->set('Content-Disposition', $disposition);
 

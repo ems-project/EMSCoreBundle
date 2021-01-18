@@ -36,6 +36,10 @@ final class ChannelRegistrar
         $matches = [];
         \preg_match(self::EMSCO_CHANNEL_PATH_REGEX, $request->getPathInfo(), $matches);
 
+        if (\count($matches) === 0) {
+            return;
+        }
+
         foreach ($this->channelRepository->getAll() as $channel) {
             $channelName = $channel->getName();
             if (null === $channelName) {

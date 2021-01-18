@@ -257,7 +257,7 @@ class ExportDocumentsCommand extends EmsCommand
                     if ($accumulateInOneFile) {
                         $content = $document->getSource();
                     } elseif (false !== \strpos($format, TemplateService::JSON_FORMAT)) {
-                        $content = \json_encode($document->getSource());
+                        $content = \json_encode($document->getSource(), JSON_PRETTY_PRINT);
                     } elseif (false !== \strpos($format, TemplateService::XML_FORMAT)) {
                         $content = $this->templateService->getXml($contentType, $document->getSource(), false, $document->getOuuid());
                     } else {

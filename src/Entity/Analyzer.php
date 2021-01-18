@@ -11,7 +11,7 @@ use EMS\CoreBundle\Form\Field\AnalyzerOptionsType;
  * Analyzer.
  *
  * @ORM\Table(name="analyzer")
- * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\AnalyzerRepository")
+ * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks()
  */
 class Analyzer extends JsonDeserializer implements \JsonSerializable
@@ -148,9 +148,13 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable
         return $this;
     }
 
-    public function getOptions(string $esVersion): array
+    public function getOptions(?string $esVersion = null): array
     {
         $options = $this->options ?? [];
+
+        if (null === $esVersion) {
+            return $options;
+        }
 
         if (\version_compare($esVersion, '7.0') >= 0) {
             $options['filter'] = \array_filter($options['filter'], function (string $f) { return 'standard' !== $f; });

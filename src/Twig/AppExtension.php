@@ -21,7 +21,6 @@ use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\I18n;
 use EMS\CoreBundle\Entity\UserInterface;
-use EMS\CoreBundle\EventListener\RequestListener;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Form\DataField\DateFieldType;
 use EMS\CoreBundle\Form\DataField\DateRangeFieldType;
@@ -29,6 +28,7 @@ use EMS\CoreBundle\Form\DataField\TimeFieldType;
 use EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory;
 use EMS\CoreBundle\Repository\I18nRepository;
 use EMS\CoreBundle\Repository\SequenceRepository;
+use EMS\CoreBundle\Service\Channel\ChannelRegistrar;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\FileService;
@@ -1568,7 +1568,7 @@ class AppExtension extends AbstractExtension
     public function getPath(string $name, array $parameters = [], bool $relative = false): ?string
     {
         $environment = $this->getChannelEnvironment();
-        if (null !== $environment && !\in_array($name, self::PROTECTED_ROUTE_NAMES) && !\preg_match(RequestListener::EMSCO_CHANNEL_ROUTE_REGEX, $name)) {
+        if (null !== $environment && !\in_array($name, self::PROTECTED_ROUTE_NAMES) && !\preg_match(ChannelRegistrar::EMSCO_CHANNEL_ROUTE_REGEX, $name)) {
             $name = Channel::generateChannelRoute($environment, $name);
         }
 
@@ -1588,7 +1588,7 @@ class AppExtension extends AbstractExtension
     public function getUrl(string $name, array $parameters = [], bool $schemeRelative = false): ?string
     {
         $environment = $this->getChannelEnvironment();
-        if (null !== $environment && !\in_array($name, self::PROTECTED_ROUTE_NAMES) && !\preg_match(RequestListener::EMSCO_CHANNEL_ROUTE_REGEX, $name)) {
+        if (null !== $environment && !\in_array($name, self::PROTECTED_ROUTE_NAMES) && !\preg_match(ChannelRegistrar::EMSCO_CHANNEL_ROUTE_REGEX, $name)) {
             $name = Channel::generateChannelRoute($environment, $name);
         }
 

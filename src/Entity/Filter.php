@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Form\Field\FilterOptionsType;
 
 /**
@@ -12,7 +13,7 @@ use EMS\CoreBundle\Form\Field\FilterOptionsType;
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\FilterRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class Filter
+class Filter implements \JsonSerializable
 {
     /**
      * @var int
@@ -274,5 +275,13 @@ class Filter
     public function getOrderKey()
     {
         return $this->orderKey;
+    }
+
+    public function jsonSerialize(): JsonClass
+    {
+        $json = new JsonClass(\get_object_vars($this), __CLASS__);
+        $json->removeProperty('id');
+
+        return $json;
     }
 }

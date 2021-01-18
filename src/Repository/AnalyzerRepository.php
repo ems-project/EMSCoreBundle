@@ -18,7 +18,7 @@ class AnalyzerRepository extends ServiceEntityRepository
         $analyzer = $this->findOneBy([
             'name' => $name,
         ]);
-        if (!$analyzer instanceof Analyzer) {
+        if (null !== $analyzer && !$analyzer instanceof Analyzer) {
             throw new \RuntimeException('Unexpected analyzer type');
         }
 

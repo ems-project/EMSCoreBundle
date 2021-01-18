@@ -11,5 +11,8 @@
         <service id="ems.repository.analyzer" class="EMS\CoreBundle\Repository\AnalyzerRepository" public="true">
             <argument type="service" id="doctrine"/>
         </service>
+        <service id="ems.repository.filter" class="EMS\CoreBundle\Repository\FilterRepository" public="true">
+            <argument type="service" id="doctrine"/>
+        </service>
     </services>
 </container>

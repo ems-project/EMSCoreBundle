@@ -7,12 +7,28 @@ namespace EMS\CoreBundle\Repository;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use EMS\CoreBundle\Entity\Channel;
+use EMS\CoreBundle\Exception\NotFoundException;
 
 final class ChannelRepository extends ServiceEntityRepository
 {
     public function __construct(Registry $registry)
     {
         parent::__construct($registry, Channel::class);
+    }
+
+    public function findRegistered(string $channelName): Channel
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb
+            ->andWhere($qb->expr()->eq('c.name', ':channel_name'))
+            ->andWhere($qb->expr()->isNotNull('c.alias'))
+            ->setParameter('channel_name', $channelName);
+
+        if (null === $channel = $qb->getQuery()->getOneOrNullResult()) {
+            throw NotFoundException::channelByName($channelName);
+        }
+
+        return $channel;
     }
 
     /**

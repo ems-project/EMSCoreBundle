@@ -32,7 +32,7 @@ final class ChannelController extends AbstractController
     {
         $table = new EntityTable($this->channelService);
         $labelColumn = $table->addColumn('channel.index.column.label', 'label');
-        $labelColumn->setRouteProperty('defaultRoute');
+        $labelColumn->setRoutePath('entryPath');
         $labelColumn->setRouteTarget('channel_%value%');
         $table->addColumn('channel.index.column.name', 'name');
         $table->addColumn('channel.index.column.alias', 'alias');

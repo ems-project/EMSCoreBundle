@@ -489,7 +489,7 @@ form:
   subform:
     channel:
       attributes: 'Request extra attributes'
-      entryRoute: 'Default entry route'
+      entryPath: 'Default entry path'
       searchConfig: 'Search config'
   form:
     channel:

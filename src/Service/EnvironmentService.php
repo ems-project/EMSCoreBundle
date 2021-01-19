@@ -320,4 +320,14 @@ class EnvironmentService
         $this->notSnapshotEnvironments = [];
         $this->environmentsById = [];
     }
+
+    public function updateEnvironment(Environment $environment): void
+    {
+        $em = $this->doctrine->getManager();
+        if (null === $environment->getAlias()) {
+            $environment->setAlias($this->instanceId.$environment->getName());
+        }
+        $em->persist($environment);
+        $em->flush();
+    }
 }

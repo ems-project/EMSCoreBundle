@@ -11,7 +11,7 @@ use EMS\CoreBundle\Form\Field\AnalyzerOptionsType;
  * Analyzer.
  *
  * @ORM\Table(name="analyzer")
- * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\AnalyzerRepository")
+ * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks()
  */
 class Analyzer extends JsonDeserializer implements \JsonSerializable
@@ -148,9 +148,13 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable
         return $this;
     }
 
-    public function getOptions(string $esVersion): array
+    public function getOptions(?string $esVersion = null): array
     {
         $options = $this->options ?? [];
+
+        if (null === $esVersion) {
+            return $options;
+        }
 
         if (\version_compare($esVersion, '7.0') >= 0) {
             $options['filter'] = \array_filter($options['filter'], function (string $f) { return 'standard' !== $f; });
@@ -279,17 +283,7 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable
         return $this->orderKey;
     }
 
-    /**
-     * Specify data which should be serialized to JSON.
-     *
-     * @see https://php.net/manual/en/jsonserializable.jsonserialize.php
-     *
-     * @return mixed data which can be serialized by <b>json_encode</b>,
-     *               which is a value of any type other than a resource
-     *
-     * @since 5.4.0
-     */
-    public function jsonSerialize()
+    public function jsonSerialize(): JsonClass
     {
         $json = new JsonClass(\get_object_vars($this), __CLASS__);
         $json->removeProperty('id');

@@ -314,7 +314,7 @@ class ContentTypeService
         return \implode(',', \array_keys($this->contentTypeArrayByName));
     }
 
-    public function updateFromJson(ContentType $contentType, string $json, bool $isDeleteExitingTemplates, bool $isDeleteExitingViews): void
+    public function updateFromJson(ContentType $contentType, string $json, bool $isDeleteExitingTemplates, bool $isDeleteExitingViews): ContentType
     {
         $this->deleteFields($contentType);
         if ($isDeleteExitingTemplates) {
@@ -330,7 +330,8 @@ class ContentTypeService
         }
 
         $updatedContentType = $this->contentTypeFromJson($json, $environment, $contentType);
-        $this->importContentType($updatedContentType);
+
+        return $this->importContentType($updatedContentType);
     }
 
     public function contentTypeFromJson(string $json, Environment $environment, ContentType $contentType = null): ContentType
@@ -457,5 +458,17 @@ class ContentTypeService
         }
 
         return $unreferencedContentTypes;
+    }
+
+    public function update(ContentType $contentType, bool $mustBeReset = true): void
+    {
+        $em = $this->doctrine->getManager();
+        /** @var ContentTypeRepository $contentTypeRepository */
+        $contentTypeRepository = $em->getRepository('EMSCoreBundle:ContentType');
+        if ($mustBeReset) {
+            $contentType->reset($contentTypeRepository->nextOrderKey());
+        }
+        $this->persist($contentType);
+        $em->flush();
     }
 }

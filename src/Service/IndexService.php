@@ -7,6 +7,7 @@ use Elasticsearch\Endpoints\Index;
 use Elasticsearch\Endpoints\Indices\Alias\Get;
 use Elasticsearch\Endpoints\Indices\Exists;
 use EMS\CommonBundle\Elasticsearch\Client;
+use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 use Psr\Log\LoggerInterface;
@@ -69,22 +70,37 @@ final class IndexService
         }
 
         $objectArray = $revision->getRawData();
-        $objectArray[Mapping::PUBLISHED_DATETIME_FIELD] = (new \DateTime())->format(\DateTime::ISO8601);
 
+        $ouuid = $this->indexDocument($this->contentTypeService->getIndex($contentType, $environment), $contentType->getName(), $revision->getOuuid(), $objectArray);
+        if (null !== $ouuid) {
+            $revision->setOuuid($ouuid);
+        }
+
+        return null !== $ouuid;
+    }
+
+    /**
+     * @param array<string, mixed> $source
+     */
+    public function indexDocument(string $index, string $contentTypeName, ?string $ouuid, array $source): ?string
+    {
+        $source[Mapping::PUBLISHED_DATETIME_FIELD] = (new \DateTime())->format(\DateTime::ISO8601);
+        $source[EMSSource::FIELD_CONTENT_TYPE] = $contentTypeName;
         $endpoint = new Index();
-        $endpoint->setType($this->mapping->getTypeName($contentType));
-        $endpoint->setIndex($this->contentTypeService->getIndex($contentType, $environment));
-        $endpoint->setBody($objectArray);
-        if ($revision->hasOuuid()) {
-            $endpoint->setID($revision->getOuuid());
+        $endpoint->setType($this->mapping->getTypeName($contentTypeName));
+        $endpoint->setIndex($index);
+        $endpoint->setBody($source);
+        if (null !== $ouuid) {
+            $endpoint->setID($ouuid);
         }
         $result = $this->client->requestEndpoint($endpoint)->getData();
 
-        if (!$revision->hasOuuid()) {
-            $revision->setOuuid($result['_id']);
+        $ouuid = null;
+        if (\is_array($result) && \intval($result['_shards']['successful'] ?? 0) > 0) {
+            $ouuid = $result['_id'];
         }
 
-        return \intval($result['_shards']['successful'] ?? 0) > 0;
+        return $ouuid;
     }
 
     /**

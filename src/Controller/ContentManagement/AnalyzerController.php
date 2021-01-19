@@ -11,9 +11,11 @@ use EMS\CoreBundle\Entity\Analyzer;
 use EMS\CoreBundle\Form\Form\AnalyzerType;
 use EMS\CoreBundle\Service\HelperService;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -133,5 +135,21 @@ class AnalyzerController extends AppController
         return $this->render('@EMSCore/analyzer/add.html.twig', [
                 'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * @Route("/export/{analyzer}.json", name="emsco_analyzer_export")
+     */
+    public function export(Analyzer $analyzer): Response
+    {
+        $response = new JsonResponse($analyzer);
+        $response->setEncodingOptions(JSON_PRETTY_PRINT);
+        $disposition = $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $analyzer->getName().'.json'
+        );
+        $response->headers->set('Content-Disposition', $disposition);
+
+        return $response;
     }
 }

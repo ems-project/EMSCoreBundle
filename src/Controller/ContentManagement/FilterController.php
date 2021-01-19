@@ -9,9 +9,11 @@ use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\Filter;
 use EMS\CoreBundle\Form\Form\FilterType;
 use EMS\CoreBundle\Service\HelperService;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -121,5 +123,21 @@ class FilterController extends AppController
         return $this->render('@EMSCore/filter/add.html.twig', [
                 'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * @Route("/export/{filter}.json", name="emsco_filter_export")
+     */
+    public function export(Filter $filter): Response
+    {
+        $response = new JsonResponse($filter);
+        $response->setEncodingOptions(JSON_PRETTY_PRINT);
+        $disposition = $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $filter->getName().'.json'
+        );
+        $response->headers->set('Content-Disposition', $disposition);
+
+        return $response;
     }
 }

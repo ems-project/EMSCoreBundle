@@ -81,6 +81,11 @@
 											'label': 'Edit',
 											'icon': 'pencil'
 										}%}
+                                        {% include '@EMSCore/elements/get-button.html.twig' with {
+											'url':  path('emsco_filter_export', {'filter': filter.id}),
+											'label': 'Export',
+											'icon': 'sign-out'
+										}%}
                                         {% include '@EMSCore/elements/post-button.html.twig' with {
 											'url': path('ems_filter_delete', {'filter': filter.id}),
 											'message': 'Delete the filter ' ~ filter.name ~ ' ?',

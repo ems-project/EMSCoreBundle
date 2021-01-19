@@ -48,7 +48,7 @@ final class ChannelRegistrar
             throw new AccessDeniedHttpException('Access restricted to authenticated user');
         }
 
-        $baseUrl = \vsprintf('%s://%s%s/channel/%s', [$request->getScheme(), $request->getHttpHost(), $request->getBasePath(), $channelName]);
+        $baseUrl = \vsprintf('%s://%s%s', [$request->getScheme(), $request->getHttpHost(), $request->getBasePath()]);
         $searchConfig = \json_decode($channel->getOptions()['searchConfig'] ?? '{}', true);
         $attributes = \json_decode($channel->getOptions()['attributes'] ?? null, true);
 
@@ -57,12 +57,13 @@ final class ChannelRegistrar
                 'alias' => $alias,
                 'channel' => $channel,
             ]);
+
             return;
         }
         $options = [
-            Environment::BASE_URL => \sprintf('channel/%s', $channelName),
             Environment::ALIAS_CONFIG => $alias,
-            Environment::REGEX_CONFIG => \sprintf('/^%s/', \preg_quote($baseUrl, '/')),
+            Environment::ROUTE_PREFIX => \sprintf('channel/%s', $channelName),
+            Environment::REGEX_CONFIG => \sprintf('/^%s.*/', \preg_quote($baseUrl, '/')),
             'search_config' => $searchConfig,
         ];
 
@@ -77,5 +78,4 @@ final class ChannelRegistrar
     {
         return null === $request->getSession()->get('_security_main');
     }
-
 }

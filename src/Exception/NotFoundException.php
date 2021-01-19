@@ -10,6 +10,6 @@ final class NotFoundException extends NotFoundHttpException
 {
     public static function channelByName(string $channelName): self
     {
-        return new self(sprintf('Channel with name %s not found!', $channelName));
+        return new self(\sprintf('Channel with name %s not found!', $channelName));
     }
 }

@@ -100,7 +100,7 @@ class Bulker
             $action->setSource(['doc' => $source, 'doc_as_upsert' => true]);
         } else {
             $action->setOpType(Action::OP_TYPE_INDEX);
-            /** @phpstan-ignore-next-line */
+            /* @phpstan-ignore-next-line */
             $action->setSource($source);
         }
         $this->bulk->addAction($action);

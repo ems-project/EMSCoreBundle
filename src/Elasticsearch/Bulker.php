@@ -6,6 +6,7 @@ use Elastica\Bulk;
 use Elastica\Bulk\Action;
 use Elastica\Bulk\Response;
 use Elastica\Bulk\ResponseSet;
+use Elastica\JSON;
 use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
 use EMS\CommonBundle\Elasticsearch\Client;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
@@ -91,12 +92,15 @@ class Bulker
             $action->setType($typePath);
         }
 
+        //@todo check this with a elastica 7
+        $source = JSON::stringify($body, JSON_UNESCAPED_UNICODE); //elastica actions do not support fields named 'doc' or 'doc_as_upsert'
+
         if ($upsert) {
             $action->setOpType(Action::OP_TYPE_UPDATE);
-            $action->setSource(['doc' => $body, 'doc_as_upsert' => true]);
+            $action->setSource(['doc' => $source, 'doc_as_upsert' => true]);
         } else {
             $action->setOpType(Action::OP_TYPE_INDEX);
-            $action->setSource($body);
+            $action->setSource($source);
         }
         $this->bulk->addAction($action);
         ++$this->counter;

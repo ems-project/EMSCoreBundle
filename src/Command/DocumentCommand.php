@@ -19,8 +19,10 @@ use Symfony\Component\Finder\Finder;
 
 class DocumentCommand extends Command
 {
+    public const COMMAND = 'ems:contenttype:import';
+
     /** @var string */
-    protected static $defaultName = 'ems:make:document';
+    protected static $defaultName = self::COMMAND;
     /** @var DocumentService */
     private $documentService;
     /** @var ContentTypeService */

@@ -81,6 +81,11 @@
 											'label': 'Edit',
 											'icon': 'pencil'
 										}%}
+										{% include '@EMSCore/elements/get-button.html.twig' with {
+											'url':  path('emsco_analyzer_export', {'analyzer': analyzer.id}),
+											'label': 'Export',
+											'icon': 'sign-out'
+										}%}
                                         {% include '@EMSCore/elements/post-button.html.twig' with {
 											'url': path('ems_analyzer_delete', {'analyzer': analyzer.id}),
 											'message': 'Delete the analyzer ' ~ analyzer.name ~ ' ?',

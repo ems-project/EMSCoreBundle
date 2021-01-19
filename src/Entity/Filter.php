@@ -3,16 +3,18 @@
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Entity\Helper\JsonClass;
+use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Form\Field\FilterOptionsType;
 
 /**
  * Analyzer.
  *
  * @ORM\Table(name="filter")
- * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\FilterRepository")
+ * @ORM\Entity()
  * @ORM\HasLifecycleCallbacks()
  */
-class Filter
+class Filter extends JsonDeserializer implements \JsonSerializable
 {
     /**
      * @var int
@@ -28,49 +30,49 @@ class Filter
      *
      * @ORM\Column(name="name", type="string", length=255, unique=true)
      */
-    private $name;
+    protected $name;
 
     /**
      * @var bool
      *
      * @ORM\Column(name="dirty", type="boolean")
      */
-    private $dirty;
+    protected $dirty;
 
     /**
      * @var string
      *
      * @ORM\Column(name="label", type="string", length=255)
      */
-    private $label;
+    protected $label;
 
     /**
      * @var array
      *
      * @ORM\Column(name="options", type="json_array")
      */
-    private $options;
+    protected $options;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="created", type="datetime")
      */
-    private $created;
+    protected $created;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="modified", type="datetime")
      */
-    private $modified;
+    protected $modified;
 
     /**
      * @var int
      *
      * @ORM\Column(name="order_key", type="integer", nullable=true)
      */
-    private $orderKey;
+    protected $orderKey;
 
     public function __construct()
     {
@@ -274,5 +276,13 @@ class Filter
     public function getOrderKey()
     {
         return $this->orderKey;
+    }
+
+    public function jsonSerialize(): JsonClass
+    {
+        $json = new JsonClass(\get_object_vars($this), __CLASS__);
+        $json->removeProperty('id');
+
+        return $json;
     }
 }

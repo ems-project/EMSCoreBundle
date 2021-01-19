@@ -1069,7 +1069,7 @@ class ContentTypeController extends AppController
      */
     public function exportAction(ContentType $contentType)
     {
-        $jsonContent = \json_encode($contentType);
+        $jsonContent = \json_encode($contentType, JSON_PRETTY_PRINT);
 
         $response = new Response($jsonContent);
         $disposition = $response->headers->makeDisposition(

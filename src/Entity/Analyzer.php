@@ -160,7 +160,7 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable
             $options['filter'] = \array_filter($options['filter'], function (string $f) { return 'standard' !== $f; });
         }
 
-        return $options;
+        return \array_filter($options);
     }
 
     /**

@@ -89,6 +89,7 @@ class RecomputeCommand extends EmsCommand
             ->addOption('no-align', null, InputOption::VALUE_NONE, "don't keep the revisions aligned to all already aligned environments")
             ->addOption('cron', null, InputOption::VALUE_NONE, 'optimized for automated recurring recompute calls, tries --continue, when no locks are found for user runs command without --continue')
             ->addOption('id', null, InputOption::VALUE_OPTIONAL, 'recompute a specific id', 0)
+            ->addOption('deep', null, InputOption::VALUE_NONE, 'deep recompute form will be submitted and transformers triggered')
         ;
     }
 
@@ -126,17 +127,13 @@ class RecomputeCommand extends EmsCommand
             $this->lock($output, $contentType, $forceFlag, $cronFlag, $idFlag);
         }
 
+        $optionDeep = \boolval($input->getOption('deep'));
         $page = 0;
         $limit = 200;
         $paginator = $this->revisionRepository->findAllLockedRevisions($contentType, self::LOCK_BY, $page, $limit);
 
         $progress = $io->createProgressBar($paginator->count());
         $progress->start();
-
-        $revisionType = $this->formFactory->create(RevisionType::class, null, [
-            'migration' => true,
-            'content_type' => $contentType,
-        ]);
 
         $missingInIndex = false;
 
@@ -148,6 +145,11 @@ class RecomputeCommand extends EmsCommand
             $transactionActive = false;
             /** @var Revision $revision */
             foreach ($paginator as $revision) {
+                $revisionType = $this->formFactory->create(RevisionType::class, null, [
+                    'migration' => true,
+                    'content_type' => $contentType,
+                ]);
+
                 $revisionId = $revision->getId();
                 if (!\is_int($revisionId)) {
                     throw new \RuntimeException('Unexpected null revision id');
@@ -166,8 +168,13 @@ class RecomputeCommand extends EmsCommand
 
                 /** @var Revision $revision */
                 $newRevision = $revision->convertToDraft();
+                $revisionType->setData($newRevision); //bind new revision on form
 
-                $revisionType->setData($newRevision);
+                if ($optionDeep) {
+                    $viewData = $this->dataService->getSubmitData($revisionType->get('data')); //get view data of new revision
+                    $revisionType->submit(['data' => $viewData]); // submit new revision (reverse model transformers called
+                }
+
                 $objectArray = $newRevision->getRawData();
 
                 //@todo maybe improve the data binding like the migration?

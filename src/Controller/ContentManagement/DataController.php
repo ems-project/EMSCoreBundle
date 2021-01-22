@@ -266,7 +266,7 @@ class DataController extends AppController
         }
 
         try {
-            $document = $searchService->getDocument($contentType, $ouuid);
+            $document = $searchService->getDocument($contentType, $ouuid, $environment);
         } catch (\Throwable $e) {
             throw new NotFoundHttpException(\sprintf('Document %s with identifier %s not found in environment %s', $contentType->getSingularName(), $ouuid, $environmentName));
         }

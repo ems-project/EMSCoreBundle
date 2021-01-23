@@ -155,19 +155,6 @@
 			</div>
 		</div>
     {% endif %}
-    {% if is_granted('ROLE_ADMIN') %}
-		<div class="col-md-6 col-lg-8">
-			<div class="box box box-solid">
-				<div class="box-header with-border bg-green">
-					<h4 class="box-title">
-						<i class="icon fa fa-info fa-2x"></i>
-                        {{ 'PHP Info'|trans }}</strong>
-					</h4>
-				</div>
-				<div class="box-body "><a href="{{ path('emsco_phpinfo') }}" class="btn btn-primary">{{ 'emsco.elasticsearch.status.html.goto_phpinfo'|trans }}</a></div>
-			</div>
-		</div>
-    {% endif %}
 
 </div>
 {% include '@EMSCore/app/menu.html.twig' with {

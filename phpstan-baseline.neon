@@ -291,12 +291,27 @@ parameters:
 			path: src-user/DependencyInjection/Compiler/InjectRememberMeServicesPass.php
 
 		-
+			message: "#^Binary operation \"\\.\" between 'security…' and array\\|bool\\|float\\|int\\|string\\|null results in an error\\.$#"
+			count: 4
+			path: src-user/DependencyInjection/Compiler/InjectRememberMeServicesPass.php
+
+		-
 			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\Compiler\\\\InjectUserCheckerPass\\:\\:process\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src-user/DependencyInjection/Compiler/InjectUserCheckerPass.php
 
 		-
+			message: "#^Binary operation \"\\.\" between 'security\\.user…' and array\\|bool\\|float\\|int\\|string\\|null results in an error\\.$#"
+			count: 2
+			path: src-user/DependencyInjection/Compiler/InjectUserCheckerPass.php
+
+		-
 			message: "#^Method FOS\\\\UserBundle\\\\DependencyInjection\\\\Compiler\\\\ValidationPass\\:\\:process\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src-user/DependencyInjection/Compiler/ValidationPass.php
+
+		-
+			message: "#^Binary operation \"\\.\" between 'C\\:\\\\\\\\dev\\\\\\\\laragon\\\\\\\\www…' and array\\|bool\\|float\\|int\\|string\\|null results in an error\\.$#"
 			count: 1
 			path: src-user/DependencyInjection/Compiler/ValidationPass.php
 
@@ -1571,8 +1586,23 @@ parameters:
 			path: src/Controller/ContentManagement/EnvironmentController.php
 
 		-
+			message: "#^Binary operation \"\\*\" between \\(float\\|int\\) and array\\|bool\\|float\\|int\\|string\\|null results in an error\\.$#"
+			count: 1
+			path: src/Controller/ContentManagement/EnvironmentController.php
+
+		-
+			message: "#^Parameter \\#5 \\$limit of method EMS\\\\CoreBundle\\\\Repository\\\\RevisionRepository\\:\\:compareEnvironment\\(\\) expects int, array\\|bool\\|float\\|int\\|string\\|null given\\.$#"
+			count: 1
+			path: src/Controller/ContentManagement/EnvironmentController.php
+
+		-
 			message: "#^Parameter \\#1 \\$id of method EMS\\\\CoreBundle\\\\Repository\\\\RevisionRepository\\:\\:findOneById\\(\\) expects int, string given\\.$#"
 			count: 4
+			path: src/Controller/ContentManagement/EnvironmentController.php
+
+		-
+			message: "#^Binary operation \"\\.\" between array\\|bool\\|float\\|int\\|string\\|null and string results in an error\\.$#"
+			count: 1
 			path: src/Controller/ContentManagement/EnvironmentController.php
 
 		-
@@ -1586,12 +1616,27 @@ parameters:
 			path: src/Controller/ContentManagement/FileController.php
 
 		-
+			message: "#^Binary operation \"\\*\" between \\(float\\|int\\) and array\\|bool\\|float\\|int\\|string\\|null results in an error\\.$#"
+			count: 1
+			path: src/Controller/ContentManagement/JobController.php
+
+		-
+			message: "#^Parameter \\#1 \\$size of method EMS\\\\CoreBundle\\\\Service\\\\JobService\\:\\:scroll\\(\\) expects int, array\\|bool\\|float\\|int\\|string\\|null given\\.$#"
+			count: 1
+			path: src/Controller/ContentManagement/JobController.php
+
+		-
 			message: "#^Parameter \\#1 \\$id of method EMS\\\\CoreBundle\\\\Service\\\\AliasService\\:\\:getManagedAlias\\(\\) expects int, string given\\.$#"
 			count: 2
 			path: src/Controller/ContentManagement/ManagedAliasController.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\ContentManagement\\\\ManagedAliasController\\:\\:save\\(\\) has parameter \\$actions with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Controller/ContentManagement/ManagedAliasController.php
+
+		-
+			message: "#^Parameter \\#1 \\$instanceId of method EMS\\\\CoreBundle\\\\Entity\\\\ManagedAlias\\:\\:setAlias\\(\\) expects string, array\\|bool\\|float\\|int\\|string\\|null given\\.$#"
 			count: 1
 			path: src/Controller/ContentManagement/ManagedAliasController.php
 
@@ -1614,6 +1659,11 @@ parameters:
 			message: "#^Call to an undefined method Symfony\\\\Component\\\\Form\\\\FormError\\|Symfony\\\\Component\\\\Form\\\\FormErrorIterator\\:\\:getMessage\\(\\)\\.$#"
 			count: 1
 			path: src/Controller/ContentManagement/TemplateController.php
+
+		-
+			message: "#^Parameter \\#2 \\$values of method Symfony\\\\Component\\\\HttpFoundation\\\\ResponseHeaderBag\\:\\:set\\(\\) expects array\\<string\\>\\|string, array\\|float\\|int\\|string\\|true given\\.$#"
+			count: 1
+			path: src/Controller/ElasticsearchController.php
 
 		-
 			message: "#^Parameter \\#1 \\$object of method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:remove\\(\\) expects object, object\\|null given\\.$#"
@@ -1656,9 +1706,44 @@ parameters:
 			path: src/Controller/ElasticsearchController.php
 
 		-
+			message: "#^Binary operation \"\\*\" between \\(float\\|int\\) and array\\|bool\\|float\\|int\\|string\\|null results in an error\\.$#"
+			count: 1
+			path: src/Controller/ElasticsearchController.php
+
+		-
+			message: "#^Parameter \\#1 \\$size of method EMS\\\\CommonBundle\\\\Search\\\\Search\\:\\:setSize\\(\\) expects int, array\\|bool\\|float\\|int\\|string\\|null given\\.$#"
+			count: 1
+			path: src/Controller/ElasticsearchController.php
+
+		-
 			message: "#^Parameter \\#3 \\$query of class EMS\\\\CoreBundle\\\\Entity\\\\Form\\\\ExportDocuments constructor expects string, string\\|false given\\.$#"
 			count: 1
 			path: src/Controller/ElasticsearchController.php
+
+		-
+			message: "#^Binary operation \"\\*\" between \\(float\\|int\\) and array\\|bool\\|float\\|int\\|string\\|null results in an error\\.$#"
+			count: 1
+			path: src/Controller/I18nController.php
+
+		-
+			message: "#^Parameter \\#2 \\$limit of method EMS\\\\CoreBundle\\\\Service\\\\I18nService\\:\\:findAll\\(\\) expects int, array\\|bool\\|float\\|int\\|string\\|null given\\.$#"
+			count: 1
+			path: src/Controller/I18nController.php
+
+		-
+			message: "#^Binary operation \"\\*\" between \\(float\\|int\\) and array\\|bool\\|float\\|int\\|string\\|null results in an error\\.$#"
+			count: 3
+			path: src/Controller/NotificationController.php
+
+		-
+			message: "#^Parameter \\#2 \\$limit of method EMS\\\\CoreBundle\\\\Service\\\\NotificationService\\:\\:listSentNotifications\\(\\) expects int, array\\|bool\\|float\\|int\\|string\\|null given\\.$#"
+			count: 1
+			path: src/Controller/NotificationController.php
+
+		-
+			message: "#^Parameter \\#2 \\$limit of method EMS\\\\CoreBundle\\\\Service\\\\NotificationService\\:\\:listInboxNotifications\\(\\) expects int, array\\|bool\\|float\\|int\\|string\\|null given\\.$#"
+			count: 1
+			path: src/Controller/NotificationController.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Controller\\\\UserController\\:\\:getExistingRoles\\(\\) has no return typehint specified\\.$#"
@@ -1911,12 +1996,27 @@ parameters:
 			path: src/DependencyInjection/EMSCoreExtension.php
 
 		-
+			message: "#^Parameter \\#1 \\$rootDir of method EMS\\\\CoreBundle\\\\DependencyInjection\\\\EMSCoreExtension\\:\\:getCoreVersion\\(\\) expects string, array\\|bool\\|float\\|int\\|string\\|null given\\.$#"
+			count: 2
+			path: src/DependencyInjection/EMSCoreExtension.php
+
+		-
 			message: "#^Parameter \\#1 \\$json of function json_decode expects string, string\\|false given\\.$#"
 			count: 1
 			path: src/DependencyInjection/EMSCoreExtension.php
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\DependencyInjection\\\\EMSCoreExtension\\:\\:prepend\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/DependencyInjection/EMSCoreExtension.php
+
+		-
+			message: "#^Cannot access offset 'TwigBundle' on array\\|bool\\|float\\|int\\|string\\|null\\.$#"
+			count: 1
+			path: src/DependencyInjection/EMSCoreExtension.php
+
+		-
+			message: "#^Cannot access offset 'DoctrineBundle' on array\\|bool\\|float\\|int\\|string\\|null\\.$#"
 			count: 1
 			path: src/DependencyInjection/EMSCoreExtension.php
 
@@ -7291,7 +7391,7 @@ parameters:
 			path: src/Form/DataField/TimeFieldType.php
 
 		-
-			message: "#^Parameter \\#2 \\$time of static method DateTime\\:\\:createFromFormat\\(\\) expects string, array\\|string given\\.$#"
+			message: "#^Parameter \\#2 \\$datetime of static method DateTime\\:\\:createFromFormat\\(\\) expects string, array\\|string given\\.$#"
 			count: 1
 			path: src/Form/DataField/TimeFieldType.php
 
@@ -7321,7 +7421,7 @@ parameters:
 			path: src/Form/DataField/TimeFieldType.php
 
 		-
-			message: "#^Parameter \\#2 \\$time of static method DateTime\\:\\:createFromFormat\\(\\) expects string, array\\|float\\|int\\|string\\|null given\\.$#"
+			message: "#^Parameter \\#2 \\$datetime of static method DateTime\\:\\:createFromFormat\\(\\) expects string, array\\|float\\|int\\|string\\|null given\\.$#"
 			count: 2
 			path: src/Form/DataField/TimeFieldType.php
 

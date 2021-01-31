@@ -8,9 +8,12 @@ use EMS\CoreBundle\Form\Field\AssetType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 use EMS\CoreBundle\Service\ElasticsearchService;
 use EMS\CoreBundle\Service\FileService;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormRegistryInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -71,6 +74,9 @@ class AssetFieldType extends DataFieldType
         $optionsForm->remove('mappingOptions');
         // an optional icon can't be specified ritgh to the container label
         $optionsForm->get('displayOptions')
+        ->add('multiple', CheckboxType::class, [
+            'required' => false,
+        ])
         ->add('icon', IconPickerType::class, [
                 'required' => false,
         ])
@@ -90,6 +96,12 @@ class AssetFieldType extends DataFieldType
         $resolver->setDefault('imageAssetConfigIdentifier', null);
     }
 
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        parent::buildView($view, $form, $options);
+        $view->vars['multiple'] = $options['multiple'];
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -99,10 +111,10 @@ class AssetFieldType extends DataFieldType
             $current->getName() => \array_merge([
                     'type' => 'nested',
                     'properties' => [
-                            'mimetype' => $this->elasticsearchService->getKeywordMapping(),
-                            'sha1' => $this->elasticsearchService->getKeywordMapping(),
-                            'filename' => $this->elasticsearchService->getIndexedStringMapping(),
-                            'filesize' => $this->elasticsearchService->getLongMapping(),
+                        'mimetype' => $this->elasticsearchService->getKeywordMapping(),
+                        'sha1' => $this->elasticsearchService->getKeywordMapping(),
+                        'filename' => $this->elasticsearchService->getIndexedStringMapping(),
+                        'filesize' => $this->elasticsearchService->getLongMapping(),
                     ],
             ], \array_filter($current->getMappingOptions())),
         ];
@@ -121,20 +133,41 @@ class AssetFieldType extends DataFieldType
         return $dataField;
     }
 
-    private function testDataField(DataField $dataField)
+    private function testDataField(DataField $dataField): void
     {
-        $raw = $dataField->getRawData();
-
-        if ((empty($raw) || empty($raw['sha1']))) {
-            if ($dataField->getFieldType()->getRestrictionOptions()['mandatory']) {
-                $dataField->addMessage('This entry is required');
-            }
-            $dataField->setRawData(null);
-        } elseif (!$this->fileService->head($raw['sha1'])) {
-            $dataField->addMessage('File not found on the server try to re-upload it');
+        $isMultiple = true === $dataField->getFieldType()->getDisplayOption('multiple', false);
+        if ($isMultiple) {
+            $data = $dataField->getRawData()['files'] ?? [];
         } else {
-            $raw['filesize'] = $this->fileService->getSize($raw['sha1']);
-            $dataField->setRawData($raw);
+            $data = [$dataField->getRawData()];
+        }
+
+
+        if (empty($data) && $dataField->getFieldType()->getRestrictionOptions()['mandatory'] ?? false) {
+            $dataField->addMessage('This entry is required');
+            $dataField->setRawData(null);
+        }
+
+        $rawData = [];
+        foreach ($data as $fileInfo) {
+            if ((empty($fileInfo) || empty($fileInfo['sha1']))) {
+                if ($dataField->getFieldType()->getRestrictionOptions()['mandatory']) {
+                    $dataField->addMessage('This entry is required');
+                }
+            } elseif (!$this->fileService->head($fileInfo['sha1'])) {
+                $dataField->addMessage(\sprintf('File %s not found on the server try to re-upload it', $fileInfo['filename']));
+            } else {
+                $fileInfo['filesize'] = $this->fileService->getSize($fileInfo['sha1']);
+                $rawData[] = $fileInfo;
+            }
+        }
+
+        if ($isMultiple) {
+            $dataField->setRawData($rawData);
+        } elseif (\count($rawData) === 0) {
+            $dataField->setRawData(null);
+        } else {
+            $dataField->setRawData(\reset($rawData));
         }
     }
 
@@ -146,8 +179,7 @@ class AssetFieldType extends DataFieldType
     public function viewTransform(DataField $dataField)
     {
         $out = parent::viewTransform($dataField);
-
-        if (empty($out['sha1'])) {
+        if ($dataField->getFieldType()->getDisplayOption('multiple') !== true && empty($out['sha1'])) {
             $out = null;
         }
 
@@ -161,42 +193,11 @@ class AssetFieldType extends DataFieldType
      */
     public function modelTransform($data, FieldType $fieldType)
     {
-        if (\is_array($data)) {
-            foreach ($data as $id => $content) {
-                if (!\in_array($id, ['sha1', 'filename', 'mimetype'], true)) {
-                    unset($data[$id]);
-                }
-            }
+        $out = parent::reverseViewTransform($data, $fieldType);
+        if ($fieldType->getDisplayOption('multiple') === true) {
+            $out->setRawData(['files' => $out->getRawData()]);
         }
 
-        return parent::reverseViewTransform($data, $fieldType);
+        return $out;
     }
-
-//     public function convertInput(DataField $dataField) {
-//         if(!empty($dataField->getInputValue()) && !empty($dataField->getInputValue()['sha1'])){
-//             $rawData = $dataField->getInputValue();
-//             $rawData['filesize'] = $this->fileService->getSize($rawData['sha1']);
-//             if(!$rawData['filesize']){
-//                 unset($rawData['filesize']);
-//             }
-
-//             $dataField->setRawData($rawData);
-//         }
-//         else{
-//             $dataField->setRawData(null);
-//         }
-//     }
-
-//     public function generateInput(DataField $dataField){
-//         $rawData = $dataField->getRawData();
-
-//         if(!empty($rawData) && !empty($rawData['sha1'])){
-//             unset($rawData['filesize']);
-//             $dataField->setInputValue($rawData);
-//         }
-//         else {
-//             $dataField->setInputValue(null);
-//         }
-//         return $this;
-//     }
 }

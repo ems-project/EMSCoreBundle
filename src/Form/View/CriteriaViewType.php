@@ -6,7 +6,6 @@ use EMS\CoreBundle\Entity\Form\CriteriaUpdateConfig;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\View\Criteria\CriteriaFilterType;
 use Psr\Log\LoggerInterface;
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -15,14 +14,14 @@ use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Twig_Environment;
+use Symfony\Component\Routing\RouterInterface;
+use Twig\Environment;
 
 class CriteriaViewType extends ViewType
 {
-    /** @var Router */
-    protected $router;
+    protected RouterInterface $router;
 
-    public function __construct(FormFactory $formFactory, Twig_Environment $twig, LoggerInterface $logger, Router $router)
+    public function __construct(FormFactory $formFactory, Environment $twig, LoggerInterface $logger, RouterInterface $router)
     {
         parent::__construct($formFactory, $twig, $logger);
         $this->router = $router;

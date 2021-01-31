@@ -21,16 +21,18 @@
 			{% set icon = ('<i class=\"' ~ attribute(types, doc.getContentType).icon ~ '\"> </i> ') %}
 		{% endif %}
 
-			{% if attribute(types, doc.getContentType).labelField is defined %}
-				{% set labelField = attribute(types, doc.getContentType).labelField %}
-				{% if attribute(doc.source, labelField) is defined %}
-					{% set item = item|merge({ "text": (attribute(doc.source, labelField)) }) %}
-				{% else %}
-					{% set item = item|merge({ "text": item.id }) %}
-				{% endif %}
+		{% if attribute(types, doc.getContentType).labelField is defined %}
+			{% set labelField = attribute(types, doc.getContentType).labelField %}
+			{% if attribute(doc.source, labelField) is defined %}
+				{% set item = item|merge({ "text": (attribute(doc.source, labelField)) }) %}
 			{% else %}
 				{% set item = item|merge({ "text": item.id }) %}
 			{% endif %}
+		{% else %}
+			{% set item = item|merge({ "text": item.id }) %}
+		{% endif %}
+
+		{% set item = item|merge({ "text": icon ~ item.text }) %}
 
 		{% set items = items|merge([item]) %}
 	{% endfor %}

@@ -763,3 +763,7 @@ view:
   icon:
     class:
       channel: 'fa fa-road'
+  macros:
+    data-field-type:
+      menu-option-button: 'Options'
+      modal-close-button: 'Close'

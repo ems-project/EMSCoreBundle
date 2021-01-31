@@ -8,9 +8,13 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Persistence\ObjectRepository;
 use EMS\CommonBundle\Storage\NotFoundException;
 use EMS\CoreBundle\Core\Revision\RawDataTransformer;
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\Form\RevisionJsonMenuNestedType;
+use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Repository\FieldTypeRepository;
+use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -24,11 +28,63 @@ class JsonMenuNestedController extends AbstractController
     private $revisionService;
     /** @var ObjectRepository|FieldTypeRepository */
     private $fieldTypeRepository;
+    private DataService $dataService;
 
-    public function __construct(RevisionService $revisionService, Registry $doctrine)
+    public function __construct(RevisionService $revisionService, Registry $doctrine, DataService $dataService)
     {
         $this->revisionService = $revisionService;
+        $this->dataService = $dataService;
         $this->fieldTypeRepository = $doctrine->getRepository(FieldType::class);
+    }
+
+    /**
+     * @Route("/data/revisions/nested-preview-modal/{fieldTypeId}", name="revision.edit.nested-preview-modal", methods={"POST"})
+     */
+    public function modalPreview(Request $request, int $fieldTypeId): JsonResponse
+    {
+        $fieldType = $this->fieldTypeRepository->find($fieldTypeId);
+
+        if (null === $fieldType || !$fieldType instanceof FieldType) {
+            throw new NotFoundException('Unknown fieldtype');
+        }
+        $label = null;
+        $rawData = [];
+
+        if ('json' === $request->getContentType()) {
+            $requestContent = $request->getContent();
+            $rawData = \is_string($requestContent) ? \json_decode($requestContent, true) : [];
+        }
+
+        $subField = null;
+        foreach ($fieldType->getChildren() as $child) {
+            if (!$child instanceof FieldType) {
+                continue;
+            }
+            if ($child->getName() === $rawData['type'] ?? null) {
+                $subField = $child;
+            }
+        }
+
+
+        if (null === $subField || !$subField instanceof FieldType) {
+            throw new NotFoundException('Unknown fieldtype');
+        }
+
+        $contentType = new ContentType();
+        $contentType->setFieldType($subField);
+        $revision = new Revision();
+        $revision->setRawData($rawData['object']);
+        $revision->setContentType($contentType);
+        $form = $this->createForm(RevisionType::class, $revision, ['raw_data' => $rawData['object']]);
+        $dataFields = $this->dataService->getDataFieldsStructure($form->get('data'));
+
+        return new JsonResponse(\array_filter([
+            'html' => $this->renderView('@EMSCore/data/json-menu-nested-preview.html.twig', [
+                'dataFields' => $dataFields,
+                'fieldType' => $fieldType,
+                'rawData' => $rawData,
+            ]),
+        ]));
     }
 
     /**

@@ -243,6 +243,35 @@ import EmsListeners from "./EmsListeners";
         });
     }
 
+    function initJsonMenuModal() {
+        $(document).on('show.bs.modal', '.json-menu-preview-modal', function (event) {
+            const modal = $('#'+event.target.id);
+            const url = modal.data('url');
+            const item = JSON.stringify(modal.data('item'));
+            const self = this;
+
+            let httpRequest = new XMLHttpRequest();
+            httpRequest.open("POST", url, true);
+            httpRequest.setRequestHeader('Content-Type', 'application/json');
+            httpRequest.onreadystatechange = function() {
+                const content = modal.find('.modal-preview-content');
+                modal.find('.modal-loading').hide();
+                if (httpRequest.readyState === XMLHttpRequest.DONE) {
+                    if (httpRequest.status === 200) {
+                        let response = JSON.parse(httpRequest.responseText);
+                        if (response.hasOwnProperty('html')) {
+                            content.html(response.html);
+                        }
+
+                    } else {
+                        content.html('There was a problem with the request.');
+                    }
+                }
+            };
+            httpRequest.send(item);
+        });
+    }
+
     $(document).ready(function() {
         activeMenu();
         loadLazyImages();
@@ -256,6 +285,7 @@ import EmsListeners from "./EmsListeners";
         startPendingJob();
         initDatatable();
         initAjaxFormSave();
+        initJsonMenuModal();
 
         //cron to update the cluster status
         window.setInterval(function(){

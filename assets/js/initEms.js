@@ -248,7 +248,6 @@ import EmsListeners from "./EmsListeners";
             const modal = $('#'+event.target.id);
             const url = modal.data('url');
             const item = JSON.stringify(modal.data('item'));
-            const self = this;
 
             let httpRequest = new XMLHttpRequest();
             httpRequest.open("POST", url, true);
@@ -291,8 +290,6 @@ import EmsListeners from "./EmsListeners";
         window.setInterval(function(){
             updateStatusFct();
         }, 180000);
-
-        //60000 every minute
     });
 
 }));

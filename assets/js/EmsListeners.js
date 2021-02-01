@@ -142,6 +142,7 @@ export default class EmsListeners {
 
             let maxLevels = nestedList.data('nested-max-level');
             let isTree = nestedList.data('nested-is-tree');
+            let handle = nestedList.data('nested-handle');
 
             if(typeof maxLevels === 'undefined') {
                 maxLevels = 1;
@@ -157,9 +158,13 @@ export default class EmsListeners {
                 isTree = ( isTree === 'true' );
             }
 
+            if(typeof handle === 'undefined') {
+                handle = 'div';
+            }
+
             nestedList.nestedSortable({
                 forcePlaceholderSize: true,
-                handle: 'div',
+                handle: handle,
                 helper: 'clone',
                 items: 'li',
                 opacity: .6,
@@ -223,6 +228,40 @@ export default class EmsListeners {
 
     }
 
+    initFilesUploader(files, context)  {
+        const container = $(context).closest(".file-uploader-row");
+        const template = container.data('multiple');
+        const previewTab = container.find(".tab-pane.asset-preview-tab");
+        const uploadTab = container.find(".tab-pane.asset-upload-tab");
+        const listTab = container.find(".tab-pane.asset-list-tab > ol");
+
+        if (typeof template !== 'undefined') {
+            listTab.removeClass('hidden');
+            previewTab.addClass('hidden');
+            uploadTab.addClass('hidden');
+        }
+
+        let nextId = parseInt(listTab.attr('data-file-list-index'));
+        listTab.attr('data-file-list-index', nextId+files.length);
+
+        for (let i = 0; i < files.length; ++i) {
+            if (!files.hasOwnProperty(i)) {
+                continue;
+            }
+
+            if (typeof template !== 'undefined') {
+
+                const subContainer = $(template.replace(/__name__/g, nextId++));
+                listTab.append(subContainer);
+                new EmsListeners(subContainer.get(0), this.onChangeCallback);
+                this.initFileUploader(files[i], subContainer);
+            } else {
+                this.initFileUploader(files[i], container);
+                break;
+            }
+        }
+    }
+
 
     initFileUploader(fileHandler, container){
         const mainDiv = $(container);
@@ -246,18 +285,17 @@ export default class EmsListeners {
         const titleInput = mainDiv.find(".title");
         const self = this;
 
-
-        previewTab.hide();
-        uploadTab.show();
+        previewTab.addClass('hidden');
+        uploadTab.removeClass('hidden');
 
         const fileUploader = new FileUploader({
             file: fileHandler,
             algo: this.hashAlgo,
             initUrl: this.initUpload,
             emsListener: this,
-            onHashAvailable: function(sha1, type, name){
-                $(sha1Input).val(sha1);
-                $(assetHashSignature).empty().append(sha1);
+            onHashAvailable: function(hash, type, name){
+                $(sha1Input).val(hash);
+                $(assetHashSignature).empty().append(hash);
                 $(typeInput).val(type);
                 $(nameInput).val(name);
                 $(dateInput).val('');
@@ -283,10 +321,9 @@ export default class EmsListeners {
                 previewLink.attr('src', previewUrl);
                 viewButton.removeClass("disabled");
                 clearButton.removeClass("disabled");
-                previewTab.show();
-                uploadTab.hide();
+                previewTab.removeClass('hidden');
+                uploadTab.addClass('hidden');
 
-                console.log(self.onChangeCallback);
 
                 if(metaFields && $(contentInput).length) {
                     self.fileDataExtrator(container);
@@ -383,15 +420,27 @@ export default class EmsListeners {
         const target = jquery(this.target);
         const self = this;
 
-        target.find(".file-uploader-input").fileinput({
-            'showUpload':false,
-            'showCaption': false,
-            'showPreview': false,
-            'showRemove': false,
-            'showCancel': false,
-            'showClose': false,
-            'browseIcon': '<i class="fa fa-upload"></i>&nbsp;',
-            'browseLabel': 'Upload file'
+        const fileInputs = target.find(".file-uploader-input");
+
+        fileInputs.each(function(){
+            const fileField = $(this);
+            const browseLabel = fileField.data('label');
+            if(typeof browseLabel === 'undefined') {
+                handle = 'Upload file';
+            }
+
+
+            fileField.fileinput({
+                'showUpload':false,
+                'showCaption': false,
+                'showPreview': false,
+                'showRemove': false,
+                'showCancel': false,
+                'showClose': false,
+                'browseIcon': '<i class="fa fa-upload"></i>&nbsp;',
+                'browseLabel': browseLabel
+            });
+
         });
 
         target.find(".extract-file-info").click(function() {
@@ -429,15 +478,15 @@ export default class EmsListeners {
             $(progressBar).css('width', '0%');
             $(progressText).html('');
             $(progressNumber).html('');
-            previewTab.hide();
-            uploadTab.show();
+            previewTab.addClass('hidden');
+            uploadTab.removeClass('hidden');
             $(parent).find('.view-asset-button').addClass('disabled');
             $(this).addClass('disabled');
             return false
         });
 
         target.find(".file-uploader-input").change(function(){
-            self.initFileUploader($(this)[0].files[0], $(this).closest(".file-uploader-row"));
+            self.initFilesUploader($(this)[0].files, this);
         });
 
 
@@ -448,12 +497,7 @@ export default class EmsListeners {
             this.addEventListener("drop", function(e) {
                 self.fileDragHover(e);
                 const files = e.target.files || e.dataTransfer.files;
-                for (let i = 0; i < files.length; ++i) {
-                    if(files.hasOwnProperty(i)){
-                        self.initFileUploader(files[i], $(this).closest(".file-uploader-row"));
-                        break;
-                    }
-                }
+                self.initFilesUploader(files, this);
             }, false);
         });
     }

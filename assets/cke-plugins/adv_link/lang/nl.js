@@ -3,6 +3,11 @@ Copyright (c) 2003-2015, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.md or http://ckeditor.com/license
 */
 CKEDITOR.plugins.setLang( 'adv_link', 'nl', {
+    file: 'Bestand',
+    selectFileLabel: 'Upload',
+    selectFileTitle: 'Upload',
+    selectFileFilenameLabel: 'Bestandsnaam',
+    selectFileFilenameTitle: 'Bestandsnaam',
 	localPages:'Internal link',
 	asset:'Asset',
 	localPages:'Interne link',

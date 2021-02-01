@@ -128,7 +128,6 @@ Remove: Remove
 'Styles set''s name': 'Styles set''s name'
 'Trash for content type %name%': 'Trash for content type %name%'
 Update: Update
-'Upload file': 'Upload file'
 'User profile': 'User profile'
 'Users list': 'Users list'
 'with Symfony %version%': 'with Symfony %version%'
@@ -740,6 +739,23 @@ form_submissions:
           Are you sure, you want to delete the form submission?
 
 view:
+  form:
+    fields:
+      asset:
+        info-modal-button: Info
+        init-upload: Upload is starting
+        upload-file: Upload file
+        upload-files: Upload files
+        drag-n-drop-files: Drag and drop your files here
+        drag-n-drop-file: Drag and drop your file here
+        view-button: 'View'
+        remove-button: 'Remove'
+        move-button: 'Move'
+        file-hash: 'File''s hash'
+        file-info: 'File''s information'
+        close-modal: 'Close'
+        preview: 'File preview of field %label%'
+        clear-button: 'Clear'
   elements:
     side-menu:
       chanel-admin:
@@ -747,3 +763,10 @@ view:
   icon:
     class:
       channel: 'fa fa-road'
+  macros:
+    data-field-type:
+      menu-option-button: 'View'
+      modal-close-button: 'Close'
+  data:
+    json-menu-nested-json-preview:
+      field-type-not-found: 'The type definition associated to this item is missing (probably deleted).'

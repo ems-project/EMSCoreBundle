@@ -38,16 +38,10 @@ class JsonMenuNestedController extends AbstractController
     }
 
     /**
-     * @Route("/data/revisions/nested-preview-modal/{fieldTypeId}", name="revision.edit.nested-preview-modal", methods={"POST"})
+     * @Route("/data/revisions-modal/{fieldType}", name="revision.edit.nested-preview-modal", methods={"POST"})
      */
-    public function modalPreview(Request $request, int $fieldTypeId): JsonResponse
+    public function modalPreview(Request $request, FieldType $fieldType): JsonResponse
     {
-        $fieldType = $this->fieldTypeRepository->find($fieldTypeId);
-
-        if (null === $fieldType || !$fieldType instanceof FieldType) {
-            throw new NotFoundException('Unknown fieldtype');
-        }
-        $label = null;
         $rawData = [];
 
         if ('json' === $request->getContentType()) {
@@ -57,16 +51,21 @@ class JsonMenuNestedController extends AbstractController
 
         $subField = null;
         foreach ($fieldType->getChildren() as $child) {
-            if (!$child instanceof FieldType) {
+            if (!$child instanceof FieldType || $child->getDeleted()) {
                 continue;
             }
             if ($child->getName() === $rawData['type'] ?? null) {
                 $subField = $child;
+                break;
             }
         }
 
-        if (null === $subField || !$subField instanceof FieldType) {
-            throw new NotFoundException('Unknown fieldtype');
+        if (!$subField instanceof FieldType) {
+            return new JsonResponse(\array_filter([
+                'html' => $this->renderView('@EMSCore/data/json-menu-nested-json-preview.html.twig', [
+                    'rawData' => $rawData['object'] ?? [],
+                ]),
+            ]));
         }
 
         $contentType = new ContentType();
@@ -80,8 +79,7 @@ class JsonMenuNestedController extends AbstractController
         return new JsonResponse(\array_filter([
             'html' => $this->renderView('@EMSCore/data/json-menu-nested-preview.html.twig', [
                 'dataFields' => $dataFields,
-                'fieldType' => $fieldType,
-                'rawData' => $rawData,
+                'rawData' => $rawData['object'] ?? [],
             ]),
         ]));
     }

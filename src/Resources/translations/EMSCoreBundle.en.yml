@@ -765,5 +765,8 @@ view:
       channel: 'fa fa-road'
   macros:
     data-field-type:
-      menu-option-button: 'Options'
+      menu-option-button: 'View'
       modal-close-button: 'Close'
+  data:
+    json-menu-nested-json-preview:
+      field-type-not-found: 'The type definition associated to this item is missing (probably deleted).'

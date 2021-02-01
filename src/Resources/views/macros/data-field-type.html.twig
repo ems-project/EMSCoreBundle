@@ -661,10 +661,10 @@
 					<h3 class="box-title">{{ item.label|default('') }}</h3>
 					<div class="btn-group pull-right">
 						<button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-{{ item.id }}">
-							<span class="fa fa-gears"></span>
+							<span class="fa fa-eye"></span>
 							{{ 'view.macros.data-field-type.menu-option-button'|trans }}
 						</button>
-						<div class="modal fade json-menu-preview-modal" tabindex="-1" role="dialog" id="modal-{{ item.id }}" data-url="{{ path('revision.edit.nested-preview-modal', {fieldTypeId: dataField.fieldType.id}) }}" data-item="{{ item|json_encode|e('html_attr') }}">
+						<div class="modal fade json-menu-preview-modal" tabindex="-1" role="dialog" id="modal-{{ item.id }}" data-url="{{ path('revision.edit.nested-preview-modal', {fieldType: dataField.fieldType.id}) }}" data-item="{{ item|json_encode|e('html_attr') }}">
 							<div class="modal-dialog modal-lg" role="document">
 								<div class="modal-content">
 									<div class="modal-header">

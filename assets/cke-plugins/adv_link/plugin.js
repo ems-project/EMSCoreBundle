@@ -592,6 +592,10 @@
 					set[ 'data-cke-saved-href' ] = data.localPage;
 
 					break;
+				case 'fileLink':// @simo
+					set[ 'data-cke-saved-href' ] = data.fileLink;
+
+					break;
 				case 'asset':
 					set[ 'data-cke-saved-href' ] = data.asset;
 

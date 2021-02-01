@@ -49,7 +49,7 @@ class TimeFieldType extends DataFieldType
             $format = $dataField->getFieldType()->getMappingOptions()['format'];
             $format = DateFieldType::convertJavaDateFormat($format);
 
-            $timeObject = \DateTime::createFromFormat($format, $sourceArray);
+            $timeObject = \DateTime::createFromFormat($format, \strval($sourceArray));
             if ($timeObject) {
                 $dataField->setRawData($timeObject->format(\DateTime::ISO8601));
             } else {
@@ -100,7 +100,7 @@ class TimeFieldType extends DataFieldType
         $format = $this->getFormat($data->getFieldType()->getOptions());
 
         /** @var \DateTime $converted */
-        $dateTime = \DateTime::createFromFormat(TimeFieldType::STOREFORMAT, $out);
+        $dateTime = \DateTime::createFromFormat(TimeFieldType::STOREFORMAT, \strval($out));
         if ($dateTime) {
             return $dateTime->format($format);
         }
@@ -114,7 +114,7 @@ class TimeFieldType extends DataFieldType
     public function reverseViewTransform($data, FieldType $fieldType)
     {
         $format = $this->getFormat($fieldType->getOptions());
-        $converted = \DateTime::createFromFormat($format, $data);
+        $converted = \DateTime::createFromFormat($format, \strval($data));
         if ($converted) {
             $out = $converted->format($this::STOREFORMAT);
         } else {

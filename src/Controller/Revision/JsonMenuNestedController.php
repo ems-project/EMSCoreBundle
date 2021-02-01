@@ -65,7 +65,6 @@ class JsonMenuNestedController extends AbstractController
             }
         }
 
-
         if (null === $subField || !$subField instanceof FieldType) {
             throw new NotFoundException('Unknown fieldtype');
         }

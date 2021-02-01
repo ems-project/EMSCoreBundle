@@ -20,7 +20,7 @@ class AssetType extends AbstractType
             $builder->add('files', CollectionType::class, [
                 'entry_type' => AssetType::class,
                 'entry_options' => [
-                    'multiple' => false
+                    'multiple' => false,
                 ],
                 'allow_add' => true,
                 'prototype' => true,
@@ -45,11 +45,9 @@ class AssetType extends AbstractType
                 'required' => $options['required'],
             ]);
         }
-
     }
 
-
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
         $resolver->setDefault('multiple', false);

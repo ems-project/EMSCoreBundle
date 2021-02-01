@@ -96,7 +96,11 @@ class AssetFieldType extends DataFieldType
         $resolver->setDefault('imageAssetConfigIdentifier', null);
     }
 
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    /**
+     * @param FormInterface<mixed> $form
+     * @param array<string, mixed> $options
+     */
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         parent::buildView($view, $form, $options);
         $view->vars['multiple'] = $options['multiple'];
@@ -135,13 +139,22 @@ class AssetFieldType extends DataFieldType
 
     private function testDataField(DataField $dataField): void
     {
-        $isMultiple = true === $dataField->getFieldType()->getDisplayOption('multiple', false);
-        if ($isMultiple) {
-            $data = $dataField->getRawData()['files'] ?? [];
-        } else {
-            $data = [$dataField->getRawData()];
+        $fieldType = $dataField->getFieldType();
+        if (null === $fieldType || !$fieldType instanceof FieldType) {
+            throw new \RuntimeException('Unexpected fieldType type');
         }
 
+        $rawData = $dataField->getRawData();
+        if (!\is_array($rawData)) {
+            return;
+        }
+
+        $isMultiple = true === $fieldType->getDisplayOption('multiple', false);
+        if ($isMultiple) {
+            $data = $rawData['files'] ?? [];
+        } else {
+            $data = [$rawData];
+        }
 
         if (empty($data) && $dataField->getFieldType()->getRestrictionOptions()['mandatory'] ?? false) {
             $dataField->addMessage('This entry is required');
@@ -151,7 +164,7 @@ class AssetFieldType extends DataFieldType
         $rawData = [];
         foreach ($data as $fileInfo) {
             if ((empty($fileInfo) || empty($fileInfo['sha1']))) {
-                if ($dataField->getFieldType()->getRestrictionOptions()['mandatory']) {
+                if ($fieldType->getRestrictionOptions()['mandatory']) {
                     $dataField->addMessage('This entry is required');
                 }
             } elseif (!$this->fileService->head($fileInfo['sha1'])) {
@@ -164,7 +177,7 @@ class AssetFieldType extends DataFieldType
 
         if ($isMultiple) {
             $dataField->setRawData($rawData);
-        } elseif (\count($rawData) === 0) {
+        } elseif (0 === \count($rawData)) {
             $dataField->setRawData(null);
         } else {
             $dataField->setRawData(\reset($rawData));
@@ -178,8 +191,13 @@ class AssetFieldType extends DataFieldType
      */
     public function viewTransform(DataField $dataField)
     {
+        $fieldType = $dataField->getFieldType();
+        if (null === $fieldType || !$fieldType instanceof FieldType) {
+            throw new \RuntimeException('Unexpected fieldType type');
+        }
+
         $out = parent::viewTransform($dataField);
-        if ($dataField->getFieldType()->getDisplayOption('multiple') !== true && empty($out['sha1'])) {
+        if (true !== $fieldType->getDisplayOption('multiple') && empty($out['sha1'])) {
             $out = null;
         }
 
@@ -194,7 +212,7 @@ class AssetFieldType extends DataFieldType
     public function modelTransform($data, FieldType $fieldType)
     {
         $out = parent::reverseViewTransform($data, $fieldType);
-        if ($fieldType->getDisplayOption('multiple') === true) {
+        if (true === $fieldType->getDisplayOption('multiple')) {
             $out->setRawData(['files' => $out->getRawData()]);
         }
 

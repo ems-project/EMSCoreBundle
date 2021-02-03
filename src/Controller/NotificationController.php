@@ -13,7 +13,6 @@ use EMS\CoreBundle\Form\Form\NotificationFormType;
 use EMS\CoreBundle\Form\Form\TreatNotificationsType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
-use EMS\CoreBundle\Repository\NotificationRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\NotificationService;
@@ -163,12 +162,6 @@ class NotificationController extends AppController
      */
     public function menuNotificationAction(AuthorizationCheckerInterface $authorizationChecker, NotificationService $notificationService)
     {
-        // TODO use a service to pass authorization_checker to repositoryNotification.
-        $em = $this->getDoctrine()->getManager();
-        /** @var NotificationRepository $repositoryNotification */
-        $repositoryNotification = $em->getRepository('EMSCoreBundle:Notification');
-        $repositoryNotification->setAuthorizationChecker($authorizationChecker);
-
         $vars['counter'] = $notificationService->menuNotification();
 
         return $this->render('@EMSCore/notification/menu.html.twig', $vars);
@@ -198,12 +191,6 @@ class NotificationController extends AppController
             //TODO: what for?
             $form->getData();
         }
-
-        //TODO: use a service to pass authorization_checker to repositoryNotification.
-        $em = $this->getDoctrine()->getManager();
-        /** @var NotificationRepository $repositoryNotification */
-        $repositoryNotification = $em->getRepository('EMSCoreBundle:Notification');
-        $repositoryNotification->setAuthorizationChecker($authorizationChecker);
 
         $countRejected = $notificationService->countRejected();
         $countPending = $notificationService->countPending();

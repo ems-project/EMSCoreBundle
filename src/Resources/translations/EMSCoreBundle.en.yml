@@ -533,6 +533,8 @@ log:
     channel:
       unknown_action: 'Unknown action'
   service:
+    action:
+      delete: 'The action %name% has been deleted'
     channel:
       delete: 'The channel %name% has been deleted'
     content-type:

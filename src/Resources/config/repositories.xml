@@ -14,11 +14,13 @@
         <service id="ems.repository.filter" class="EMS\CoreBundle\Repository\FilterRepository" public="true">
             <argument type="service" id="doctrine"/>
         </service>
+        <service id="ems.repository.notification" alias="EMS\CoreBundle\Repository\NotificationRepository"/>
         <service id="EMS\CoreBundle\Repository\NotificationRepository" public="true">
             <argument type="service" id="doctrine"/>
             <argument type="service" id="security.authorization_checker"/>
             <tag name="doctrine.repository_service"/>
         </service>
+        <service id="ems.repository.template" alias="EMS\CoreBundle\Repository\TemplateRepository"/>
         <service id="EMS\CoreBundle\Repository\TemplateRepository" public="true">
             <argument type="service" id="doctrine"/>
             <tag name="doctrine.repository_service"/>

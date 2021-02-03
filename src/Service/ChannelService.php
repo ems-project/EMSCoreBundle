@@ -96,8 +96,15 @@ final class ChannelService implements EntityServiceInterface
         return 'channel';
     }
 
-    public function count(): int
+    /**
+     * @param mixed $context
+     */
+    public function count($context = null): int
     {
+        if (null !== $context) {
+            throw new \RuntimeException('Unexpected non-null object');
+        }
+
         return $this->channelRepository->counter();
     }
 }

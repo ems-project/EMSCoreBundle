@@ -17,5 +17,8 @@ interface EntityServiceInterface
 
     public function getEntityName(): string;
 
-    public function count(): int;
+    /**
+     * @param mixed $context
+     */
+    public function count($context = null): int;
 }

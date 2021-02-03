@@ -2,8 +2,17 @@
 
 namespace EMS\CoreBundle\Repository;
 
-class TemplateRepository extends \Doctrine\ORM\EntityRepository
+use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use EMS\CoreBundle\Entity\Template;
+
+class TemplateRepository extends ServiceEntityRepository
 {
+    public function __construct(Registry $registry)
+    {
+        parent::__construct($registry, Template::class);
+    }
+
     /**
      * Retrieve all Template by a render_option defined and a ContentType Filter.
      *

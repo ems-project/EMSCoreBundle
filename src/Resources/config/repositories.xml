@@ -19,5 +19,9 @@
             <argument type="service" id="security.authorization_checker"/>
             <tag name="doctrine.repository_service"/>
         </service>
+        <service id="EMS\CoreBundle\Repository\TemplateRepository" public="true">
+            <argument type="service" id="doctrine"/>
+            <tag name="doctrine.repository_service"/>
+        </service>
     </services>
 </container>

@@ -6,19 +6,30 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use EMS\CommonBundle\Helper\EmsFields;
-use EMS\CoreBundle\Controller\AppController;
 use EMS\CoreBundle\Entity\Template;
 use EMS\CoreBundle\Form\Form\TemplateType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\TemplateRepository;
+use EMS\CoreBundle\Service\ActionService;
+use Psr\Log\LoggerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
-class TemplateController extends AppController
+class ActionController extends AbstractController
 {
+    private LoggerInterface $logger;
+    private ActionService $actionService;
+
+    public function __construct(LoggerInterface $logger, ActionService $actionService)
+    {
+        $this->logger = $logger;
+        $this->actionService = $actionService;
+    }
+
     /**
      * @Route("/template/{type}", name="template.index", methods={"GET","HEAD"})
      */
@@ -75,7 +86,7 @@ class TemplateController extends AppController
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($template);
             $em->flush();
-            $this->getLogger()->notice('log.template.added', [
+            $this->logger->notice('log.template.added', [
                 'template_name' => $template->getName(),
             ]);
 
@@ -120,7 +131,7 @@ class TemplateController extends AppController
             $em->persist($template);
             $em->flush();
 
-            $this->getLogger()->notice('log.template.updated', [
+            $this->logger->notice('log.template.updated', [
                 'template_name' => $template->getName(),
             ]);
 
@@ -137,7 +148,7 @@ class TemplateController extends AppController
 
         if ('json' === $_format) {
             foreach ($form->getErrors() as $error) {
-                $this->getLogger()->error('log.error', [
+                $this->logger->error('log.error', [
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $error->getMessage(),
                 ]);
             }
@@ -176,7 +187,7 @@ class TemplateController extends AppController
         $em->remove($template);
         $em->flush();
 
-        $this->getLogger()->notice('log.template.deleted', [
+        $this->logger->notice('log.template.deleted', [
             'template_name' => $template->getName(),
         ]);
 

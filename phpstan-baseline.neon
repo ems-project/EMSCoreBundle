@@ -1658,7 +1658,7 @@ parameters:
 		-
 			message: "#^Call to an undefined method Symfony\\\\Component\\\\Form\\\\FormError\\|Symfony\\\\Component\\\\Form\\\\FormErrorIterator\\:\\:getMessage\\(\\)\\.$#"
 			count: 1
-			path: src/Controller/ContentManagement/TemplateController.php
+			path: src/Controller/ContentManagement/ActionController.php
 
 		-
 			message: "#^Parameter \\#2 \\$values of method Symfony\\\\Component\\\\HttpFoundation\\\\ResponseHeaderBag\\:\\:set\\(\\) expects array\\<string\\>\\|string, array\\|float\\|int\\|string\\|true given\\.$#"

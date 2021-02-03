@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Template;
 
 class TemplateRepository extends ServiceEntityRepository
@@ -39,5 +40,58 @@ class TemplateRepository extends ServiceEntityRepository
         $results = $query->getResult();
 
         return $results;
+    }
+
+    /**
+     * @return Template[]
+     */
+    public function getAll(ContentType $contentType): array
+    {
+        return $this->findBy(['contentType' => $contentType], ['orderKey' => 'ASC']);
+    }
+
+    public function counter(ContentType $contentType): int
+    {
+        return parent::count(['contentType' => $contentType]);
+    }
+
+    public function delete(Template $template): void
+    {
+        $this->getEntityManager()->remove($template);
+        $this->getEntityManager()->flush();
+    }
+
+    public function create(Template $template): void
+    {
+        $this->getEntityManager()->persist($template);
+        $this->getEntityManager()->flush();
+    }
+
+    /**
+     * @param string[] $ids
+     *
+     * @return Template[]
+     */
+    public function getByIds(array $ids): array
+    {
+        $queryBuilder = $this->createQueryBuilder('template');
+        $queryBuilder->where('template.id IN (:ids)')
+            ->setParameter('ids', $ids);
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
+     * @return Template[]
+     */
+    public function get(int $from, int $size): array
+    {
+        $query = $this->createQueryBuilder('t')
+            ->orderBy('t.orderKey', 'ASC')
+            ->setFirstResult($from)
+            ->setMaxResults($size)
+            ->getQuery();
+
+        return $query->execute();
     }
 }

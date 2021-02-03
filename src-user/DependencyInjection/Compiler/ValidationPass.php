@@ -33,7 +33,7 @@ class ValidationPass implements CompilerPassInterface
         $storage = $container->getParameter('fos_user.storage');
 
         if (!\is_string($storage)) {
-            return;
+            throw new \RuntimeException('Unexpected non string storage parameter');
         }
 
         if ('custom' === $storage) {

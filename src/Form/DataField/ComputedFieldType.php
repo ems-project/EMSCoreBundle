@@ -94,11 +94,6 @@ class ComputedFieldType extends DataFieldType
         ->add('copy_to', TextType::class, [
                 'required' => false,
         ]);
-
-        $optionsForm->get('extraOptions')->add('clear_on_copy', CheckboxType::class, [
-            'required' => false,
-        ]);
-
         $optionsForm->remove('restrictionOptions');
         $optionsForm->remove('migrationOptions');
     }

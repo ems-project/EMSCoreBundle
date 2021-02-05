@@ -1058,6 +1058,25 @@ class ContentType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
+     * @return string[]
+     */
+    public function getClearOnCopyProperties(): array
+    {
+        $clearPropertyNames = [];
+
+        foreach ($this->getFieldType()->loopChildren() as $child) {
+            $extraOptions = $child->getExtraOptions();
+            $clearOnCopy = isset($extraOptions['clear_on_copy']) ? \boolval($extraOptions['clear_on_copy']) : false;
+
+            if ($clearOnCopy) {
+                $clearPropertyNames[] = $child->getName();
+            }
+        }
+
+        return $clearPropertyNames;
+    }
+
+    /**
      * Set active.
      *
      * @param bool $active

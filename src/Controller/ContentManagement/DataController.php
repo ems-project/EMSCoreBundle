@@ -512,7 +512,7 @@ class DataController extends AppController
         }
 
         try {
-            $dataRaw = $dataService->getRevisionByEnvironment($ouuid, $contentType, $environmentObject)->getRawData();
+            $dataRaw = $dataService->getRevisionByEnvironment($ouuid, $contentType, $environmentObject)->getCopyRawData();
         } catch (NoResultException $e) {
             throw new NotFoundHttpException(\sprintf('Revision %s not found', $ouuid));
         }
@@ -557,7 +557,7 @@ class DataController extends AppController
         }
 
         try {
-            $dataRaw = $dataService->getRevisionByEnvironment($ouuid, $contentType, $environmentObject)->getRawData();
+            $dataRaw = $dataService->getRevisionByEnvironment($ouuid, $contentType, $environmentObject)->getCopyRawData();
         } catch (NoResultException $e) {
             throw new NotFoundHttpException(\sprintf('Revision %s not found', $ouuid));
         }

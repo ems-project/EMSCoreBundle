@@ -8341,11 +8341,6 @@ parameters:
 			path: src/Form/Field/RolePickerType.php
 
 		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\RolePickerType\\:\\:getExistingRoles\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: src/Form/Field/RolePickerType.php
-
-		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Form\\\\Field\\\\SelectPickerType\\:\\:humanize\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Form/Field/SelectPickerType.php
@@ -11261,6 +11256,11 @@ parameters:
 			path: src/Service/UserService.php
 
 		-
+			message: "#^Property EMS\\\\CoreBundle\\\\Service\\\\UserService\\:\\:\\$userRepository \\(EMS\\\\CoreBundle\\\\Repository\\\\UserRepository\\) does not accept Doctrine\\\\Persistence\\\\ObjectRepository\\.$#"
+			count: 1
+			path: src/Service/UserService.php
+
+		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\UserService\\:\\:findUsernameByApikey\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Service/UserService.php
@@ -11347,6 +11347,11 @@ parameters:
 
 		-
 			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\UserService\\:\\:getsecurityRoles\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Service/UserService.php
+
+		-
+			message: "#^Method EMS\\\\CoreBundle\\\\Service\\\\UserService\\:\\:listUserRoles\\(\\) should return array\\<string, string\\> but returns array\\<int\\|string, int\\|string\\>\\.$#"
 			count: 1
 			path: src/Service/UserService.php
 

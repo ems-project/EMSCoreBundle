@@ -1146,6 +1146,31 @@
 	{{ _self.messages(dataField) }}
 {% endblock %}
 
+{% block EMS_CoreBundle_Form_DataField_SelectUserPropertyFieldType %}
+	<dl>
+		<dt>
+			{% if dataField.fieldType.displayOptions.label is defined %}
+				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
+			{% else %}
+				{{ dataField.fieldType.name|raw }}
+			{% endif %}
+		</dt>
+		<dd>
+			{% if dataField.rawData is iterable %}
+				<ul>
+					{% for i, p in dataField.rawData|default([]) %}
+						{% set compareI = attribute(compareRawData,dataField.fieldType.name)|default([]) %}
+						<li>{{ diff_text(p, compare, dataField.fieldType.name, attribute(compareI, i)|default ) }}</li>
+					{% endfor %}
+				</ul>
+			{% else %}
+				{{ diff_text(dataField.rawData, compare, dataField.fieldType.name, compareRawData) }}
+			{% endif %}
+		</dd>
+	</dl>
+	{{ _self.messages(dataField) }}
+{% endblock %}
+
 {% block EMS_CoreBundle_Form_DataField_TimeFieldType %}
 	<dl>
 		<dt>

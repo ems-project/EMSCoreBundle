@@ -311,11 +311,6 @@ parameters:
 			path: src-user/DependencyInjection/Compiler/ValidationPass.php
 
 		-
-			message: "#^Binary operation \"\\.\" between '/Users/dame/dev…' and array\\|bool\\|float\\|int\\|string\\|null results in an error\\.$#"
-			count: 1
-			path: src-user/DependencyInjection/Compiler/ValidationPass.php
-
-		-
 			message: "#^Call to an undefined method Symfony\\\\Component\\\\Config\\\\Definition\\\\Builder\\\\NodeDefinition\\:\\:children\\(\\)\\.$#"
 			count: 1
 			path: src-user/DependencyInjection/Configuration.php
@@ -11384,89 +11379,4 @@ parameters:
 			message: "#^Method EMS\\\\CoreBundle\\\\Validator\\\\Constraints\\\\AliasNameValidator\\:\\:validate\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Validator/Constraints/AliasNameValidator.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\ContentTransformer\\\\HtmlStylesRemoverTest\\:\\:assertEqualsInputOutPut\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: tests/ContentTransformer/HtmlStylesRemoverTest.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\ContentTransformer\\\\HtmlStylesRemoverTest\\:\\:assertEqualsInputOutPut\\(\\) has parameter \\$input with no typehint specified\\.$#"
-			count: 1
-			path: tests/ContentTransformer/HtmlStylesRemoverTest.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\ContentTransformer\\\\HtmlStylesRemoverTest\\:\\:assertEqualsInputOutPut\\(\\) has parameter \\$output with no typehint specified\\.$#"
-			count: 1
-			path: tests/ContentTransformer/HtmlStylesRemoverTest.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\ContentTransformer\\\\HtmlStylesRemoverTest\\:\\:testRemoveSimpleInline\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: tests/ContentTransformer/HtmlStylesRemoverTest.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\ContentTransformer\\\\HtmlStylesRemoverTest\\:\\:testRemoveSimpleBlock\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: tests/ContentTransformer/HtmlStylesRemoverTest.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\ContentTransformer\\\\HtmlStylesRemoverTest\\:\\:testInlineNestedInAlertBlock\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: tests/ContentTransformer/HtmlStylesRemoverTest.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\ContentTransformer\\\\HtmlStylesRemoverTest\\:\\:testBlockNestedInReadmoreBlock\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: tests/ContentTransformer/HtmlStylesRemoverTest.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\ContentTransformer\\\\HtmlStylesRemoverTest\\:\\:testSpanToRemoveFollowedByEmOrStrong\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: tests/ContentTransformer/HtmlStylesRemoverTest.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\ContentTransformer\\\\HtmlStylesRemoverTest\\:\\:testSpanToRemoveWithStrongInsideIt\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: tests/ContentTransformer/HtmlStylesRemoverTest.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\ContentTransformer\\\\HtmlStylesRemoverTest\\:\\:testDivToRemoveWithTagsInsideIt\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: tests/ContentTransformer/HtmlStylesRemoverTest.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\ContentTransformer\\\\HtmlStylesRemoverTest\\:\\:testDivToRemoveWithSpanToRemoveInsideItWithOtherTags\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: tests/ContentTransformer/HtmlStylesRemoverTest.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\ContentTransformer\\\\HtmlStylesRemoverTest\\:\\:testDivtoRemoveWithSpanToRemoveInsideItWithOtherTagsBis\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: tests/ContentTransformer/HtmlStylesRemoverTest.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\ContentTransformer\\\\HtmlStylesRemoverTest\\:\\:testSpanToRemoveWithAnotherSpanInsideIt\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: tests/ContentTransformer/HtmlStylesRemoverTest.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\ContentTransformer\\\\HtmlStylesRemoverTest\\:\\:testClassRemovableStyleWithinBulletPoints\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: tests/ContentTransformer/HtmlStylesRemoverTest.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\ContentTransformer\\\\HtmlStylesRemoverTest\\:\\:testClassRemovableStyleWithinBulletPoints2\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: tests/ContentTransformer/HtmlStylesRemoverTest.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\ContentTransformer\\\\HtmlStylesRemoverTest\\:\\:testClassRemovableStyleWithinTable\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: tests/ContentTransformer/HtmlStylesRemoverTest.php
-
-		-
-			message: "#^Method EMS\\\\CoreBundle\\\\Tests\\\\Controller\\\\DefaultControllerTest\\:\\:testIndex\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: tests/Controller/DefaultControllerTest.php
 

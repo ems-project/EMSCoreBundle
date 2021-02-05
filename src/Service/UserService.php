@@ -219,7 +219,7 @@ class UserService
     }
 
     /**
-     * @param String[] $roles
+     * @param string[] $roles
      *
      * @return User[]
      */

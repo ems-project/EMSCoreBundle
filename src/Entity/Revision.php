@@ -1066,7 +1066,7 @@ class Revision
         }
 
         if (null === $this->getVersionUuid()) {
-            $versionId = $this->rawData['_version_uuid'] ? Uuid::fromString($this->rawData['_version_uuid']) : Uuid::uuid4();
+            $versionId = isset($this->rawData['_version_uuid']) ? Uuid::fromString($this->rawData['_version_uuid']) : Uuid::uuid4();
             $this->setVersionId($versionId);
         }
         if (null === $this->getVersionTag()) {

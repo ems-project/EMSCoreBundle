@@ -303,7 +303,7 @@ function addEventListeners(target){
         }
 
         const language = $( this ).attr('data-lang');
-        if(content_css){
+        if(language){
             ckconfig.language = language;
         }
 

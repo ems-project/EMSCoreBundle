@@ -48,14 +48,17 @@ final class SelectUserPropertyFieldType extends DataFieldType
 
     /**
      * @param FormBuilderInterface<FormBuilderInterface> $builder
-     * @param array<mixed>                               $options
+     * @param array<string, mixed>                       $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
 
-        /** @var FieldType $fieldType */
         $fieldType = $options['metadata'];
+
+        if (!$fieldType instanceof FieldType) {
+            return;
+        }
 
         $builder->add('value', SelectUserPropertyType::class, [
             'label' => (null != $options['label'] ? $options['label'] : $fieldType->getName()),
@@ -82,7 +85,7 @@ final class SelectUserPropertyFieldType extends DataFieldType
 
     /**
      * @param FormBuilderInterface<FormBuilderInterface> $builder
-     * @param array<mixed>                               $options
+     * @param array<string, mixed>                       $options
      */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {

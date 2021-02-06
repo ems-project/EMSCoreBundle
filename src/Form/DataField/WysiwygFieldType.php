@@ -7,6 +7,7 @@ use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use EMS\CoreBundle\Form\Field\WysiwygStylesSetPickerType;
 use EMS\CoreBundle\Service\ElasticsearchService;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType as TextareaSymfonyType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -14,6 +15,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\Intl\Locales;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -71,6 +73,7 @@ class WysiwygFieldType extends DataFieldType
             $attr['class'] = '';
         }
 
+        $attr['data-lang'] = $options['language'];
         $attr['data-height'] = $options['height'];
         $attr['data-format-tags'] = $options['format_tags'];
         $attr['data-styles-set'] = $options['styles_set'];
@@ -87,6 +90,7 @@ class WysiwygFieldType extends DataFieldType
         /*set the default option value for this kind of compound field*/
         parent::configureOptions($resolver);
         $resolver->setDefault('icon', null);
+        $resolver->setDefault('language', null);
         $resolver->setDefault('height', 400);
         $resolver->setDefault('format_tags', 'p;h1;h2;h3;h4;h5;h6;pre;address;div');
         $resolver->setDefault('styles_set', 'default');
@@ -171,15 +175,16 @@ class WysiwygFieldType extends DataFieldType
         ->add('copy_to', TextType::class, [
                 'required' => false,
         ]);
-        $optionsForm->get('displayOptions')->add('height', IntegerType::class, [
+        $optionsForm->get('displayOptions')
+            ->add('language', ChoiceType::class, [
                 'required' => false,
-        ])->add('format_tags', TextType::class, [
-                'required' => false,
-        ])->add('styles_set', WysiwygStylesSetPickerType::class, [
-                'required' => false,
-        ])->add('content_css', TextType::class, [
-                'required' => false,
-        ]);
+                'choices' => \array_flip(Locales::getNames()),
+            ])
+            ->add('height', IntegerType::class, ['required' => false])
+            ->add('format_tags', TextType::class, ['required' => false])
+            ->add('styles_set', WysiwygStylesSetPickerType::class, ['required' => false])
+            ->add('content_css', TextType::class, ['required' => false])
+        ;
         $optionsForm->get('migrationOptions')->add('transformer', TextType::class, [
             'required' => false,
         ]);

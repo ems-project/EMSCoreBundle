@@ -93,8 +93,8 @@
                                             'icon': 'sitemap'
                                         }%}
                                         {% include '@EMSCore/elements/get-button.html.twig' with {
-											'url': path('template.index', {'type': contentType.name}),
-											'label': 'Templates',
+											'url': path('ems_core_action_index', {'contentType': contentType.id}),
+											'label': 'Actions',
 											'icon': 'file-text-o'
 										}%}
                                         {% include '@EMSCore/elements/get-button.html.twig' with {

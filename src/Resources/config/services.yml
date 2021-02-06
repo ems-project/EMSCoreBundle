@@ -261,6 +261,12 @@ services:
         arguments: ['@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch']
         tags:
             - { name: form.type }
+    ems.fieldtype.select_user_property:
+        class: EMS\CoreBundle\Form\DataField\SelectUserPropertyFieldType
+        arguments: [ '@ems.service.user', '@security.authorization_checker', '@form.registry', '@ems.service.elasticsearch']
+        tags:
+            - { name: ems.form.datafieldtype, alias: select_user_property }
+            - { name: form.type }
 #### End list available ems FieldType ###
 #### Begin list of extended symfony types for ems field type needs###
     ems.exteneded.collectiontype:
@@ -424,6 +430,11 @@ services:
         arguments: ['@ems.service.alias']
         tags:
             - { name: form.type }
+    ems.form.field.select_user_property:
+        class: EMS\CoreBundle\Form\Field\SelectUserPropertyType
+        arguments: [  '@ems.service.user' ]
+        tags:
+            - { name: form.type }
 
 
 ### regular services
@@ -468,7 +479,7 @@ services:
         arguments: ['@doctrine', '@logger', '@ems.service.mapping', '@ems_common.service.elastica', '@ems.service.environment', '@form.registry', '@translator', '%ems_core.instance_id%']
     ems.service.user:
         class: EMS\CoreBundle\Service\UserService
-        arguments: ['@doctrine', '@session', '@security.token_storage', '%security.role_hierarchy.roles%']
+        arguments: ['@doctrine', '@session', '@security.token_storage', '@security.helper', '%security.role_hierarchy.roles%']
     ems.service.wysiwyg_profile:
         class: EMS\CoreBundle\Service\WysiwygProfileService
         arguments: ['@doctrine', '@logger', '@translator']
@@ -538,6 +549,10 @@ services:
     ems.service.channel:
         class: EMS\CoreBundle\Service\ChannelService
         arguments: ['@ems.repository.channel', '@logger']
+    EMS\CoreBundle\Service\ActionService: '@ems.service.action'
+    ems.service.action:
+        class: EMS\CoreBundle\Service\ActionService
+        arguments: ['@ems.repository.template', '@logger']
     ems.security.authenticator:
         class: EMS\CoreBundle\Security\Authenticator
         arguments: [ '@security.authentication.manager', '@doctrine', '@ems.service.user']

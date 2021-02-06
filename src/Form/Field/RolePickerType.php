@@ -7,10 +7,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RolePickerType extends SelectPickerType
 {
-    /**
-     * @var UserService
-     */
-    private $userService;
+    private UserService $userService;
 
     public function __construct(UserService $userService)
     {
@@ -20,13 +17,11 @@ class RolePickerType extends SelectPickerType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $choices = $this->getExistingRoles();
+        $choices = \array_merge(['not-defined' => 'not-defined'], $this->userService->listUserRoles());
 
         $resolver->setDefaults([
             'choices' => $choices,
-            'attr' => [
-                    'data-live-search' => true,
-            ],
+            'attr' => ['data-live-search' => true],
             'choice_attr' => function ($category, $key, $index) {
                 //TODO: it would be nice to translate the roles
                 return [
@@ -37,21 +32,5 @@ class RolePickerType extends SelectPickerType
                 return $value;
             },
         ]);
-    }
-
-    private function getExistingRoles()
-    {
-        $roleHierarchy = $this->userService->getsecurityRoles();
-        $roles = \array_keys($roleHierarchy);
-
-        $theRoles['not-defined'] = 'not-defined';
-        $theRoles['ROLE_USER'] = 'ROLE_USER';
-
-        foreach ($roles as $role) {
-            $theRoles[$role] = $role;
-        }
-        $theRoles['ROLE_API'] = 'ROLE_API';
-
-        return $theRoles;
     }
 }

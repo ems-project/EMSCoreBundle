@@ -126,4 +126,9 @@ abstract class TableAbstract implements TableInterface
     {
         return $this->tableActions;
     }
+
+    public function countTableActions(): int
+    {
+        return \count($this->tableActions);
+    }
 }

@@ -1,0 +1,26 @@
+name: Code Quality
+on: [pull_request, push]
+jobs:
+  php-cs-fixer:
+    name: PHP-CS-Fixer
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: PHP-CS-Fixer
+        uses: docker://oskarstark/php-cs-fixer-ga:2.17.5
+        with:
+          args: --diff --dry-run --config=.php_cs.dist
+
+  phpstan:
+    name: PHPStan
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+      - name: PHPStan
+        uses: docker://oskarstark/phpstan-ga
+        env:
+          CHECK_PLATFORM_REQUIREMENTS: false
+          REQUIRE_DEV: true
+        with:
+          args: analyse --configuration=phpstan.neon.dist

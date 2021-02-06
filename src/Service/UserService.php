@@ -5,11 +5,14 @@ namespace EMS\CoreBundle\Service;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManagerInterface;
 use EMS\CoreBundle\Entity\AuthToken;
+use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\UserInterface;
+use EMS\CoreBundle\Repository\UserRepository;
 use EMS\CoreBundle\Repository\UserRepositoryInterface;
 use EMS\CoreBundle\Security\CoreLdapUser;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Security;
 
 class UserService
 {
@@ -25,15 +28,20 @@ class UserService
 
     private $securityRoles;
 
+    private UserRepository $userRepository;
+    private Security $security;
+
     const DONT_DETACH = false;
 
-    public function __construct(Registry $doctrine, Session $session, TokenStorageInterface $tokenStorage, $securityRoles)
+    public function __construct(Registry $doctrine, Session $session, TokenStorageInterface $tokenStorage, Security $security, $securityRoles)
     {
         $this->doctrine = $doctrine;
         $this->session = $session;
         $this->tokenStorage = $tokenStorage;
         $this->currentUser = null;
         $this->securityRoles = $securityRoles;
+        $this->security = $security;
+        $this->userRepository = $doctrine->getManager()->getRepository(User::class);
     }
 
     public function findUsernameByApikey($apiKey)
@@ -185,5 +193,52 @@ class UserService
     public function getsecurityRoles()
     {
         return $this->securityRoles;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function listUserDisplayProperties(): array
+    {
+        return [
+            'Display name' => 'displayName',
+            'Username' => 'username',
+            'Email' => 'email',
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function listUserRoles(): array
+    {
+        $roleHierarchy = $this->getsecurityRoles();
+        $roles = \array_merge(['ROLE_USER'], \array_keys($roleHierarchy), ['ROLE_API']);
+
+        return \array_combine($roles, $roles);
+    }
+
+    /**
+     * @param string[] $roles
+     *
+     * @return User[]
+     */
+    public function findUsersWithRoles(array $roles): array
+    {
+        $users = $this->userRepository->findBy(['enabled' => true]);
+
+        if (0 === \count($roles)) {
+            return $users;
+        }
+
+        return \array_filter($users, function (User $user) use ($roles) {
+            foreach ($roles as $role) {
+                if ($user->hasRole($role)) {
+                    return true;
+                }
+            }
+
+            return false;
+        });
     }
 }

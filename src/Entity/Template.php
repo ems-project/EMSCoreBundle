@@ -13,7 +13,7 @@ use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\TemplateRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class Template extends JsonDeserializer implements \JsonSerializable
+class Template extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
     /**
      * @var int
